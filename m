@@ -2,120 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851CF39F147
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8663039F149
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhFHIro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:47:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:32892 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbhFHIrj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:47:39 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C9B71219D1;
-        Tue,  8 Jun 2021 08:45:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623141944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ID1bWZyEeEYFe3Gi87astaP82RqRwCiiT0XcxH56fxI=;
-        b=0WEOmP8SOwAOt39qT/z5az300cOjhJG0AqGFTMiuIAirfHD5c93CfZWdp6d1AiD9h7RkB5
-        WDaL+vvLmyz5/sT8uxWQ25HH83bb6sRpu+Y17OY5TMtZRSXhig35z4euQJ58FFLmJaSTEW
-        IGbx1g8bKVAjtqFhJpdSwnExi/vzMPQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623141944;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ID1bWZyEeEYFe3Gi87astaP82RqRwCiiT0XcxH56fxI=;
-        b=YgVgGDWs3dTKUfzCXl3Cx0JSeLvr+YL/LLV7pJzTCIJxVVpx81ornHaz8zkGxRklYfGFaZ
-        8SWpo1fOSKjeWeBQ==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id BE02FA3B99;
-        Tue,  8 Jun 2021 08:45:44 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8BE491F2C94; Tue,  8 Jun 2021 10:45:44 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 10:45:44 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org,
-        Jan Kara <jack@suse.com>
-Subject: Re: [PATCH v8 3/8] writeback, cgroup: increment isw_nr_in_flight
- before grabbing an inode
-Message-ID: <20210608084544.GB5562@quack2.suse.cz>
-References: <20210608013123.1088882-1-guro@fb.com>
- <20210608013123.1088882-4-guro@fb.com>
+        id S231286AbhFHIrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:47:51 -0400
+Received: from ni.piap.pl ([195.187.100.5]:35046 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231278AbhFHIrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 04:47:49 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ni.piap.pl (Postfix) with ESMTPSA id 736B344426B;
+        Tue,  8 Jun 2021 10:45:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 736B344426B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1623141955; bh=1ssAuGc37YgsCuK3ii+Tsnzzdd2ubaNvVoRXSIkosQE=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=fA/vwDBrraA2VFHZCDFTsKgMAs5rmrQAj4xWvyHcHrhuuaBcCc6rIDeRjFLwcSP1k
+         md5WfcXHCUx74MJ/vxyBA4W2v9Rj0RDn0joZ+Qi2s8DEQkgasHk9XRc3aw5QfXWbvU
+         rIBcBY0k7goXtXCrxEyJanPIQr1E8kWlAa/xnAaQ=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Tim Harvey <tharvey@gateworks.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] TDA1997x: enable EDID support
+References: <m3sg1uq6xu.fsf@t19.piap.pl>
+        <dbb99d7b-18eb-317c-911a-b982486848fa@xs4all.nl>
+        <m3eeddhora.fsf@t19.piap.pl>
+        <CAJ+vNU0E_0pB-1T+VpdmjJNVirAwCUNjKVbEV4wEbqHOzURj_A@mail.gmail.com>
+        <m3k0n57y72.fsf@t19.piap.pl>
+        <e9acc316-54c4-0387-eaaf-18dfb4dce34e@xs4all.nl>
+Sender: khalasa@piap.pl
+Date:   Tue, 08 Jun 2021 10:45:55 +0200
+In-Reply-To: <e9acc316-54c4-0387-eaaf-18dfb4dce34e@xs4all.nl> (Hans Verkuil's
+        message of "Tue, 8 Jun 2021 09:27:24 +0200")
+Message-ID: <m3czsw922k.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608013123.1088882-4-guro@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 07-06-21 18:31:18, Roman Gushchin wrote:
-> isw_nr_in_flight is used do determine whether the inode switch queue
-> should be flushed from the umount path. Currently it's increased
-> after grabbing an inode and even scheduling the switch work. It means
-> the umount path can be walked past cleanup_offline_cgwb() with active
-> inode references, which can result in a "Busy inodes after unmount."
-> message and use-after-free issues (with inode->i_sb which gets freed).
-> 
-> Fix it by incrementing isw_nr_in_flight before doing anything with
-> the inode and decrementing in the case when switching wasn't scheduled.
-> 
-> The problem hasn't yet been seen in the real life and was discovered
-> by Jan Kara by looking into the code.
-> 
-> Suggested-by: Jan Kara <jack@suse.com>
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+Hans Verkuil <hverkuil@xs4all.nl> writes:
 
-Looks good. Feel free to add:
+> OK, I think the history is clear. Can you post a v2 with a Fixes tag and
+> comment a bit on why this was not caught before?
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Sure, will do. That "Fixes" tag... since it's from the beginning (the
+Gateworks' branch was never a part of the official tree), do I still
+need it? It would have to point to the initial submission of this
+driver.
+--=20
+Krzysztof Ha=C5=82asa
 
-								Honza
-
-
-> ---
->  fs/fs-writeback.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 3564efcc4b78..e2cc860a001b 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -505,6 +505,8 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
->  	if (!isw)
->  		return;
->  
-> +	atomic_inc(&isw_nr_in_flight);
-> +
->  	/* find and pin the new wb */
->  	rcu_read_lock();
->  	memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
-> @@ -535,11 +537,10 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
->  	 * Let's continue after I_WB_SWITCH is guaranteed to be visible.
->  	 */
->  	call_rcu(&isw->rcu_head, inode_switch_wbs_rcu_fn);
-> -
-> -	atomic_inc(&isw_nr_in_flight);
->  	return;
->  
->  out_free:
-> +	atomic_dec(&isw_nr_in_flight);
->  	if (isw->new_wb)
->  		wb_put(isw->new_wb);
->  	kfree(isw);
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
