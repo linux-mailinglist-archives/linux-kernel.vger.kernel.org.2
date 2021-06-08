@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B913A004A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5091039FFCA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235136AbhFHSlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:41:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
+        id S234365AbhFHSgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:36:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235124AbhFHSjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:39:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 308C761027;
-        Tue,  8 Jun 2021 18:33:57 +0000 (UTC)
+        id S234015AbhFHSem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:34:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C85E6136D;
+        Tue,  8 Jun 2021 18:31:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177237;
-        bh=4+1yte7jhTdz7NboCFWqBUsW1EGS/+n9JNpTFRzG1Zs=;
+        s=korg; t=1623177107;
+        bh=xOS2PbQ2jw+mG5w9NoOKZXEQ4ElpEmkbT3G7YRh6QW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mMdf2+izO6XSIhLFitU1YDYQvU2XdY8fzSozikIWDALR0Q05Un96ADT+sT+OU5EyK
-         /1+dBERRYNzOLxX3eyfhsUHaiUoJ8aluaP2qspi3w/O3TqPSdDxRllsO9J/KGLbnSR
-         Vy9SPk1iXftdVn4MMRBBHsaeJcYrw2bW3KChgOEA=
+        b=QOp2MHonw65/dwCAv+3mai3e3+dlaERsUHaiPitM2T4WvaXglgUQU27JLQ7IAiFgZ
+         XGanYKhQIU7qAnRjIgoTTXdGRoNRy5ylLQG9JV5dL1dMcJBeIs//txoyHivAJPGQal
+         8vOD7MfJtKk6sHQISF2guLAHq+d+dDCVmukDKAWs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.19 36/58] btrfs: fix error handling in btrfs_del_csums
-Date:   Tue,  8 Jun 2021 20:27:17 +0200
-Message-Id: <20210608175933.464050533@linuxfoundation.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Frank van der Linden <fllinden@amazon.com>
+Subject: [PATCH 4.14 35/47] bpf: Update selftests to reflect new error states
+Date:   Tue,  8 Jun 2021 20:27:18 +0200
+Message-Id: <20210608175931.630730855@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
+References: <20210608175930.477274100@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,93 +41,228 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit b86652be7c83f70bf406bed18ecf55adb9bfb91b upstream.
+commit d7a5091351756d0ae8e63134313c455624e36a13 upstream.
 
-Error injection stress would sometimes fail with checksums on disk that
-did not have a corresponding extent.  This occurred because the pattern
-in btrfs_del_csums was
+Update various selftest error messages:
 
-	while (1) {
-		ret = btrfs_search_slot();
-		if (ret < 0)
-			break;
-	}
-	ret = 0;
-out:
-	btrfs_free_path(path);
-	return ret;
+ * The 'Rx tried to sub from different maps, paths, or prohibited types'
+   is reworked into more specific/differentiated error messages for better
+   guidance.
 
-If we got an error from btrfs_search_slot we'd clear the error because
-we were breaking instead of goto out.  Instead of using goto out, simply
-handle the cases where we may leave a random value in ret, and get rid
-of the
+ * The change into 'value -4294967168 makes map_value pointer be out of
+   bounds' is due to moving the mixed bounds check into the speculation
+   handling and thus occuring slightly later than above mentioned sanity
+   check.
 
-	ret = 0;
-out:
+ * The change into 'math between map_value pointer and register with
+   unbounded min value' is similarly due to register sanity check coming
+   before the mixed bounds check.
 
-pattern and simply allow break to have the proper error reporting.  With
-this fix we properly abort the transaction and do not commit thinking we
-successfully deleted the csum.
+ * The case of 'map access: known scalar += value_ptr from different maps'
+   now loads fine given masks are the same from the different paths (despite
+   max map value size being different).
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+[fllinden@amazon.com - 4.14 backport, account for split test_verifier and
+different / missing tests]
+Signed-off-by: Frank van der Linden <fllinden@amazon.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/file-item.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ tools/testing/selftests/bpf/test_verifier.c |   34 +++++++++-------------------
+ 1 file changed, 12 insertions(+), 22 deletions(-)
 
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -586,7 +586,7 @@ int btrfs_del_csums(struct btrfs_trans_h
- 	u64 end_byte = bytenr + len;
- 	u64 csum_end;
- 	struct extent_buffer *leaf;
--	int ret;
-+	int ret = 0;
- 	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
- 	int blocksize_bits = fs_info->sb->s_blocksize_bits;
- 
-@@ -605,6 +605,7 @@ int btrfs_del_csums(struct btrfs_trans_h
- 		path->leave_spinning = 1;
- 		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
- 		if (ret > 0) {
-+			ret = 0;
- 			if (path->slots[0] == 0)
- 				break;
- 			path->slots[0]--;
-@@ -661,7 +662,7 @@ int btrfs_del_csums(struct btrfs_trans_h
- 			ret = btrfs_del_items(trans, root, path,
- 					      path->slots[0], del_nr);
- 			if (ret)
--				goto out;
-+				break;
- 			if (key.offset == bytenr)
- 				break;
- 		} else if (key.offset < bytenr && csum_end > end_byte) {
-@@ -705,8 +706,9 @@ int btrfs_del_csums(struct btrfs_trans_h
- 			ret = btrfs_split_item(trans, root, path, &key, offset);
- 			if (ret && ret != -EAGAIN) {
- 				btrfs_abort_transaction(trans, ret);
--				goto out;
-+				break;
- 			}
-+			ret = 0;
- 
- 			key.offset = end_byte - 1;
- 		} else {
-@@ -716,8 +718,6 @@ int btrfs_del_csums(struct btrfs_trans_h
- 		}
- 		btrfs_release_path(path);
- 	}
--	ret = 0;
--out:
- 	btrfs_free_path(path);
- 	return ret;
- }
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -2243,7 +2243,7 @@ static struct bpf_test tests[] = {
+ 			BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_0, -8),
+ 			BPF_EXIT_INSN(),
+ 		},
+-		.errstr_unpriv = "R1 tried to add from different maps, paths, or prohibited types",
++		.errstr_unpriv = "R1 stack pointer arithmetic goes out of range",
+ 		.result_unpriv = REJECT,
+ 		.result = ACCEPT,
+ 	},
+@@ -6220,7 +6220,6 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.fixup_map1 = { 3 },
+ 		.errstr = "unbounded min value",
+-		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
+ 		.result = REJECT,
+ 	},
+ 	{
+@@ -6245,7 +6244,6 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.fixup_map1 = { 3 },
+ 		.errstr = "unbounded min value",
+-		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
+ 		.result = REJECT,
+ 	},
+ 	{
+@@ -6272,7 +6270,6 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.fixup_map1 = { 3 },
+ 		.errstr = "unbounded min value",
+-		.errstr_unpriv = "R8 has unknown scalar with mixed signed bounds",
+ 		.result = REJECT,
+ 	},
+ 	{
+@@ -6298,7 +6295,6 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.fixup_map1 = { 3 },
+ 		.errstr = "unbounded min value",
+-		.errstr_unpriv = "R8 has unknown scalar with mixed signed bounds",
+ 		.result = REJECT,
+ 	},
+ 	{
+@@ -6347,7 +6343,6 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.fixup_map1 = { 3 },
+ 		.errstr = "unbounded min value",
+-		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
+ 		.result = REJECT,
+ 	},
+ 	{
+@@ -6419,7 +6414,6 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.fixup_map1 = { 3 },
+ 		.errstr = "unbounded min value",
+-		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
+ 		.result = REJECT,
+ 	},
+ 	{
+@@ -6471,7 +6465,6 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.fixup_map1 = { 3 },
+ 		.errstr = "unbounded min value",
+-		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
+ 		.result = REJECT,
+ 	},
+ 	{
+@@ -6499,7 +6492,6 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.fixup_map1 = { 3 },
+ 		.errstr = "unbounded min value",
+-		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
+ 		.result = REJECT,
+ 	},
+ 	{
+@@ -6526,7 +6518,6 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.fixup_map1 = { 3 },
+ 		.errstr = "unbounded min value",
+-		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
+ 		.result = REJECT,
+ 	},
+ 	{
+@@ -6556,7 +6547,6 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.fixup_map1 = { 3 },
+ 		.errstr = "unbounded min value",
+-		.errstr_unpriv = "R7 has unknown scalar with mixed signed bounds",
+ 		.result = REJECT,
+ 	},
+ 	{
+@@ -6615,7 +6605,6 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.fixup_map1 = { 3 },
+ 		.errstr = "unbounded min value",
+-		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
+ 		.result = REJECT,
+ 		.result_unpriv = REJECT,
+ 	},
+@@ -7779,7 +7768,7 @@ static struct bpf_test tests[] = {
+ 			BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1),
+ 			BPF_EXIT_INSN(),
+ 		},
+-		.errstr_unpriv = "R0 tried to sub from different maps, paths, or prohibited types",
++		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
+ 		.errstr = "R0 tried to subtract pointer from scalar",
+ 		.result = REJECT,
+ 	},
+@@ -7794,7 +7783,7 @@ static struct bpf_test tests[] = {
+ 			BPF_ALU64_REG(BPF_SUB, BPF_REG_1, BPF_REG_0),
+ 			BPF_EXIT_INSN(),
+ 		},
+-		.errstr_unpriv = "R1 tried to sub from different maps, paths, or prohibited types",
++		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
+ 		.result_unpriv = REJECT,
+ 		.result = ACCEPT,
+ 	},
+@@ -7806,22 +7795,23 @@ static struct bpf_test tests[] = {
+ 			BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1),
+ 			BPF_EXIT_INSN(),
+ 		},
+-		.errstr_unpriv = "R0 tried to sub from different maps, paths, or prohibited types",
++		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
+ 		.errstr = "R0 tried to subtract pointer from scalar",
+ 		.result = REJECT,
+ 	},
+ 	{
+ 		"check deducing bounds from const, 4",
+ 		.insns = {
++			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
+ 			BPF_MOV64_IMM(BPF_REG_0, 0),
+ 			BPF_JMP_IMM(BPF_JSLE, BPF_REG_0, 0, 1),
+ 			BPF_EXIT_INSN(),
+ 			BPF_JMP_IMM(BPF_JSGE, BPF_REG_0, 0, 1),
+ 			BPF_EXIT_INSN(),
+-			BPF_ALU64_REG(BPF_SUB, BPF_REG_1, BPF_REG_0),
++			BPF_ALU64_REG(BPF_SUB, BPF_REG_6, BPF_REG_0),
+ 			BPF_EXIT_INSN(),
+ 		},
+-		.errstr_unpriv = "R1 tried to sub from different maps, paths, or prohibited types",
++		.errstr_unpriv = "R6 has pointer with unsupported alu operation",
+ 		.result_unpriv = REJECT,
+ 		.result = ACCEPT,
+ 	},
+@@ -7833,7 +7823,7 @@ static struct bpf_test tests[] = {
+ 			BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1),
+ 			BPF_EXIT_INSN(),
+ 		},
+-		.errstr_unpriv = "R0 tried to sub from different maps, paths, or prohibited types",
++		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
+ 		.errstr = "R0 tried to subtract pointer from scalar",
+ 		.result = REJECT,
+ 	},
+@@ -7846,7 +7836,7 @@ static struct bpf_test tests[] = {
+ 			BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1),
+ 			BPF_EXIT_INSN(),
+ 		},
+-		.errstr_unpriv = "R0 tried to sub from different maps, paths, or prohibited types",
++		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
+ 		.errstr = "R0 tried to subtract pointer from scalar",
+ 		.result = REJECT,
+ 	},
+@@ -7860,7 +7850,7 @@ static struct bpf_test tests[] = {
+ 				    offsetof(struct __sk_buff, mark)),
+ 			BPF_EXIT_INSN(),
+ 		},
+-		.errstr_unpriv = "R1 tried to sub from different maps, paths, or prohibited types",
++		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
+ 		.errstr = "dereference of modified ctx ptr",
+ 		.result = REJECT,
+ 	},
+@@ -7874,7 +7864,7 @@ static struct bpf_test tests[] = {
+ 				    offsetof(struct __sk_buff, mark)),
+ 			BPF_EXIT_INSN(),
+ 		},
+-		.errstr_unpriv = "R1 tried to add from different maps, paths, or prohibited types",
++		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
+ 		.errstr = "dereference of modified ctx ptr",
+ 		.result = REJECT,
+ 	},
+@@ -7886,7 +7876,7 @@ static struct bpf_test tests[] = {
+ 			BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1),
+ 			BPF_EXIT_INSN(),
+ 		},
+-		.errstr_unpriv = "R0 tried to sub from different maps, paths, or prohibited types",
++		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
+ 		.errstr = "R0 tried to subtract pointer from scalar",
+ 		.result = REJECT,
+ 	},
 
 
