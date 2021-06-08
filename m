@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D41A39F9C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1554339F9CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbhFHPAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:00:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37430 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233540AbhFHPAT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:00:19 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lqdBP-0003XW-MY; Tue, 08 Jun 2021 14:58:23 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] net: usb: asix: ax88772: Fix less than zero comparison of a u16
-Date:   Tue,  8 Jun 2021 15:58:23 +0100
-Message-Id: <20210608145823.159467-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S233702AbhFHPBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:01:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233590AbhFHPBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 11:01:38 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D31D261183;
+        Tue,  8 Jun 2021 14:59:44 +0000 (UTC)
+Date:   Tue, 8 Jun 2021 10:59:43 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] ring-buffer: remove leading spaces before tabs
+Message-ID: <20210608105943.2376328c@oasis.local.home>
+In-Reply-To: <20210608081051.13382-1-thunder.leizhen@huawei.com>
+References: <20210608081051.13382-1-thunder.leizhen@huawei.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, 8 Jun 2021 16:10:51 +0800
+Zhen Lei <thunder.leizhen@huawei.com> wrote:
 
-The comparison of the u16 priv->phy_addr < 0 is always false because
-phy_addr is unsigned. Fix this by assigning the return from the call
-to function asix_read_phy_addr to int ret and using this for the
-less than zero error check comparison.
+> 1) Run the following command to find and remove the leading spaces before
+>    tabs:
+>    find kernel/trace/ -type f | xargs sed -r -i 's/^[ ]+\t/\t/'
+> 2) Manually check and correct if necessary
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-Addresses-Coverity: ("Unsigned compared against 0")
-Fixes: e532a096be0e ("net: usb: asix: ax88772: add phylib support")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/usb/asix_devices.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Sorry, but I do not accept whitespace changes. Clean ups like this is
+only welcomed if they come along with actual changes to the code around
+them. Otherwise, this just causes extra churn and unwelcomed work for
+the maintainer.
 
-diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
-index 57dafb3262d9..211c5a87eb15 100644
---- a/drivers/net/usb/asix_devices.c
-+++ b/drivers/net/usb/asix_devices.c
-@@ -704,9 +704,10 @@ static int ax88772_init_phy(struct usbnet *dev)
- 	struct asix_common_private *priv = dev->driver_priv;
- 	int ret;
- 
--	priv->phy_addr = asix_read_phy_addr(dev, true);
--	if (priv->phy_addr < 0)
-+	ret = asix_read_phy_addr(dev, true);
-+	if (ret < 0)
- 		return priv->phy_addr;
-+	priv->phy_addr = ret;
- 
- 	snprintf(priv->phy_name, sizeof(priv->phy_name), PHY_ID_FMT,
- 		 priv->mdio->id, priv->phy_addr);
--- 
-2.31.1
+-- Steve
+
+
+> ---
+>  kernel/trace/ring_buffer.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index 833ade3d0b00..a555258556c5 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -5887,7 +5887,7 @@ static __init int test_ringbuffer(void)
+>  		}
+>  
+>  		kthread_bind(rb_threads[cpu], cpu);
+> - 		wake_up_process(rb_threads[cpu]);
+> +		wake_up_process(rb_threads[cpu]);
+>  	}
+>  
+>  	/* Now create the rb hammer! */
 
