@@ -2,88 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9308139FC53
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A6E39FC5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhFHQZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 12:25:46 -0400
-Received: from mail-pg1-f177.google.com ([209.85.215.177]:41912 "EHLO
-        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232123AbhFHQZp (ORCPT
+        id S232874AbhFHQZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 12:25:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40532 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231678AbhFHQZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:25:45 -0400
-Received: by mail-pg1-f177.google.com with SMTP id l184so1393154pgd.8;
-        Tue, 08 Jun 2021 09:23:36 -0700 (PDT)
+        Tue, 8 Jun 2021 12:25:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623169437;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aDHyqkHT8tP5woeTV+rBNHR8on5450qVlxL0Zzlav/M=;
+        b=WKd15jttWawYyp5gelo4GVniUUXZ9N8d2g/MLalxdCFPfndKel14ZqBUm2a9zou5AGwfAx
+        C4JlZgQQKymRRD2F/eq192eFRcS4MitLCXV70vNqYkyGrjNwx9plTpnhxf1hbiQsDD5duH
+        w1FbNWn8+FbA07w4lkUMGGOCGtjcWv4=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-177-04pDp7zaMXqykB7xePQJ9g-1; Tue, 08 Jun 2021 12:23:55 -0400
+X-MC-Unique: 04pDp7zaMXqykB7xePQJ9g-1
+Received: by mail-ot1-f71.google.com with SMTP id 10-20020a9d0f0a0000b02903c030760be3so2027640ott.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 09:23:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=qCqEbRr/ZPdmz8AchOJtyzKCBs+O43d8wPQ5fZZFjhk=;
-        b=YNuXS3Okmlo1KkF/+e+wHVaYweLf8URsjuNIoLH2O90LshTx/p5cCBRBhxB/jBmPiB
-         ueAf+6qv6lE8gKxYDmkwr8RLS0crcjiW3612B18/9xPuEWSfBK53mAVdHpbpQ0YaYQmr
-         GjMg4vbL0XeP5XDVy3ISz74vXEriUP3Pjubcwz0d3f8X6Oem0HT4LN+a2tLeHKcrH8U6
-         i0s6MV2p+oVSEFuzcoG49ROXFjEaSX5048vVPRPEbsJwpu449UuMoTAL5uhOKfgFO3PJ
-         1cffb5/EDp/DZAWgtMhNxwNDMIaVHTN1+JgZgao/HPnVHCFF2KtbSO1JQ9wZZFkGs0gu
-         b7Cw==
-X-Gm-Message-State: AOAM531E/zD2fwUWJ6ujik/TbBv8DpUpxZzMVUj9BgDGgdV87rK/8n5Q
-        aCp+VWbKG6Z6YQRoLski7JBZs3RqI5o=
-X-Google-Smtp-Source: ABdhPJw4bmfvWGcz16m0nccIT5A1wyVoaTqb2ljpnWRWjedCwkO8zIDp8El5QdjOUdkYia3UO1TSlw==
-X-Received: by 2002:a65:5684:: with SMTP id v4mr22680238pgs.218.1623169415549;
-        Tue, 08 Jun 2021 09:23:35 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id p40sm4440358pfw.142.2021.06.08.09.23.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 09:23:34 -0700 (PDT)
-Subject: Re: [PATCH 02/16] MIPS: don't include <linux/genhd.h> in
- <asm/mach-rc32434/rb.h>
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geoff Levand <geoff@infradead.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        ceph-devel@vger.kernel.org
-References: <20210608160603.1535935-1-hch@lst.de>
- <20210608160603.1535935-3-hch@lst.de>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <9a073f63-65f6-6f3d-600d-e3900707fd06@acm.org>
-Date:   Tue, 8 Jun 2021 09:23:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        bh=aDHyqkHT8tP5woeTV+rBNHR8on5450qVlxL0Zzlav/M=;
+        b=ViFHPoUoJF5Bs2b1ntFjLD0+yXcrJzLNfx6UYSQ1URFfORJS/1yzryixt55iUUUyaO
+         iW+IVa0hGt254yHOxx4UTptT30olr0/2gjQeFZ+n1AqofJI87XySHlm1lK6nuVRt62WG
+         n0Dz2PD9eUy0mDuLnudIRAkBeZYyJ6dx+IJl1hlPjvTUtaIsaF7zpnSP3x+toP7sfeij
+         U9wA1kazVPhQyomSPQdMkcHuknehdBZNsab6KPIm4urkrYB0aQetx3UG0jsU6qvCKoSB
+         njUReiUuJqfL8OJ1awMGXB6J/SzfyZM79cuvNLI6QyOOoQYLNB/M8foh4lGmk9Gf0XtJ
+         VIMw==
+X-Gm-Message-State: AOAM53082OCfAxvoWKtfw3ovLOf2oh2IcjWeOPPyFOawayayjV2V+PGy
+        6sFOyIv2kouKhHCDEhRlRCyGRZuWj77B6IHmxg8L+weNhgKfXnVBfwbcPqWPoYvmcNGAGqFpGFu
+        aUfkUKd/7AbraKgk4gxI4E0ig
+X-Received: by 2002:a05:6808:488:: with SMTP id z8mr3357381oid.135.1623169434975;
+        Tue, 08 Jun 2021 09:23:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzL3V0dlSLYkqToSWjx9Po9II62z4yYLpcjOlV4KUq87+yWIQQ0CfaVL3XV3QpauOYsA+4Gjg==
+X-Received: by 2002:a05:6808:488:: with SMTP id z8mr3357367oid.135.1623169434800;
+        Tue, 08 Jun 2021 09:23:54 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s4sm3225773otr.80.2021.06.08.09.23.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 09:23:54 -0700 (PDT)
+From:   trix@redhat.com
+To:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
+        michal.simek@xilinx.com, gregkh@linuxfoundation.org,
+        dinguyen@kernel.org, krzysztof.kozlowski@canonical.com,
+        nava.manne@xilinx.com, yilun.xu@intel.com, davidgow@google.com,
+        fpacheco@redhat.com, richard.gong@intel.com, luca@lucaceresoli.net
+Cc:     linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH 0/7] fpga: reorganize to subdirs
+Date:   Tue,  8 Jun 2021 09:23:32 -0700
+Message-Id: <20210608162340.3010204-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <20210608160603.1535935-3-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 9:05 AM, Christoph Hellwig wrote:
-> There is no need to include genhd.h from a random arch header, and not
-> doing so prevents the possibility for nasty include loops.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/mips/include/asm/mach-rc32434/rb.h | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/mach-rc32434/rb.h b/arch/mips/include/asm/mach-rc32434/rb.h
-> index d502673a4f6c..34d179ca020b 100644
-> --- a/arch/mips/include/asm/mach-rc32434/rb.h
-> +++ b/arch/mips/include/asm/mach-rc32434/rb.h
-> @@ -7,8 +7,6 @@
->  #ifndef __ASM_RC32434_RB_H
->  #define __ASM_RC32434_RB_H
->  
-> -#include <linux/genhd.h>
-> -
->  #define REGBASE		0x18000000
->  #define IDT434_REG_BASE ((volatile void *) KSEG1ADDR(REGBASE))
->  #define UART0BASE	0x58000
+From: Tom Rix <trix@redhat.com>
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+The incoming xrt patchset has a toplevel subdir xrt/
+The current fpga/ uses a single dir with filename prefixes to subdivide owners
+For consistency, there should be only one way to organize the fpga/ dir.
+Because the subdir model scales better, refactor to use it.
+The discussion wrt xrt is here:
+https://lore.kernel.org/linux-fpga/68e85a4f-4a10-1ff9-0443-aa565878c855@redhat.com/
+
+Follow drivers/net/ethernet/ which has control configs
+NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+Since fpgas do not have many vendors, drop the 'VENDOR' and use
+FPGA_BLA.
+
+There are several new subdirs
+altera/
+dfl/
+lattice/
+xilinx/
+
+Each subdir has a Kconfig that has a new/reused
+
+if FPGA_BLA
+  ... existing configs ...
+endif FPGA_BLA
+
+Which is sourced into the main fpga/Kconfig
+
+Each subdir has a Makefile whose transversal is controlled in the
+fpga/Makefile by
+
+obj-$(CONFIG_FPGA_BLA) += bla/
+
+For many of the moved files, they had a prefix bla-* that matched their
+new subdir dir name bla/.  Those filename are overspecified.  So they
+were simplified by removing the 'bla-' prefix.  If they were *.h files
+their guards were also changed.
+
+Some cleanup to arrange thing alphabetically and make fpga/Makefile's
+whitespace look more like net/'s
+
+Tom Rix (7):
+  fpga: dfl: reorganize to subdir layout
+  fpga: xilinx: reorganize to subdir layout
+  fpga: altera: reorganize to subdir layout
+  fpga: lattice: reorganize to subdir layout
+  fpga: dfl: remove dfl- prefix on files
+  fpga: xilinx: remove xilinx- prefix on files
+  fpga: altera: remove altera- prefix on files
+
+ Documentation/fpga/dfl.rst                    |   4 +-
+ MAINTAINERS                                   |   2 +-
+ drivers/fpga/Kconfig                          | 204 +-----------------
+ drivers/fpga/Makefile                         |  47 +---
+ drivers/fpga/altera/Kconfig                   |  79 +++++++
+ drivers/fpga/altera/Makefile                  |  12 ++
+ drivers/fpga/{altera-cvp.c => altera/cvp.c}   |   0
+ .../fpga2sdram.c}                             |   0
+ .../freeze-bridge.c}                          |   0
+ .../{altera-hps2fpga.c => altera/hps2fpga.c}  |   0
+ .../pr-ip-core-plat.c}                        |   0
+ .../pr-ip-core.c}                             |   0
+ .../fpga/{altera-ps-spi.c => altera/ps-spi.c} |   0
+ drivers/fpga/{ => altera}/socfpga-a10.c       |   0
+ drivers/fpga/{ => altera}/socfpga.c           |   0
+ drivers/fpga/{ => altera}/stratix10-soc.c     |   0
+ drivers/fpga/{ => altera}/ts73xx-fpga.c       |   0
+ drivers/fpga/dfl/Kconfig                      |  80 +++++++
+ drivers/fpga/dfl/Makefile                     |  17 ++
+ .../afu-dma-region.c}                         |   2 +-
+ .../fpga/{dfl-afu-error.c => dfl/afu-error.c} |   2 +-
+ .../fpga/{dfl-afu-main.c => dfl/afu-main.c}   |   2 +-
+ .../{dfl-afu-region.c => dfl/afu-region.c}    |   2 +-
+ drivers/fpga/{dfl-afu.h => dfl/afu.h}         |   6 +-
+ drivers/fpga/{ => dfl}/dfl.c                  |   0
+ drivers/fpga/{ => dfl}/dfl.h                  |   0
+ drivers/fpga/{dfl-fme-br.c => dfl/fme-br.c}   |   2 +-
+ .../fpga/{dfl-fme-error.c => dfl/fme-error.c} |   2 +-
+ .../fpga/{dfl-fme-main.c => dfl/fme-main.c}   |   2 +-
+ drivers/fpga/{dfl-fme-mgr.c => dfl/fme-mgr.c} |   2 +-
+ .../fpga/{dfl-fme-perf.c => dfl/fme-perf.c}   |   2 +-
+ drivers/fpga/{dfl-fme-pr.c => dfl/fme-pr.c}   |   4 +-
+ drivers/fpga/{dfl-fme-pr.h => dfl/fme-pr.h}   |   6 +-
+ .../{dfl-fme-region.c => dfl/fme-region.c}    |   2 +-
+ drivers/fpga/{dfl-fme.h => dfl/fme.h}         |   6 +-
+ .../{dfl-n3000-nios.c => dfl/n3000-nios.c}    |   0
+ drivers/fpga/{dfl-pci.c => dfl/pci.c}         |   0
+ drivers/fpga/lattice/Kconfig                  |  22 ++
+ drivers/fpga/lattice/Makefile                 |   4 +
+ drivers/fpga/{ => lattice}/ice40-spi.c        |   0
+ drivers/fpga/{ => lattice}/machxo2-spi.c      |   0
+ drivers/fpga/xilinx/Kconfig                   |  48 +++++
+ drivers/fpga/xilinx/Makefile                  |   8 +
+ .../pr-decoupler.c}                           |   0
+ drivers/fpga/{xilinx-spi.c => xilinx/spi.c}   |   0
+ drivers/fpga/{ => xilinx}/zynq-fpga.c         |   0
+ drivers/fpga/{ => xilinx}/zynqmp-fpga.c       |   0
+ 47 files changed, 306 insertions(+), 263 deletions(-)
+ create mode 100644 drivers/fpga/altera/Kconfig
+ create mode 100644 drivers/fpga/altera/Makefile
+ rename drivers/fpga/{altera-cvp.c => altera/cvp.c} (100%)
+ rename drivers/fpga/{altera-fpga2sdram.c => altera/fpga2sdram.c} (100%)
+ rename drivers/fpga/{altera-freeze-bridge.c => altera/freeze-bridge.c} (100%)
+ rename drivers/fpga/{altera-hps2fpga.c => altera/hps2fpga.c} (100%)
+ rename drivers/fpga/{altera-pr-ip-core-plat.c => altera/pr-ip-core-plat.c} (100%)
+ rename drivers/fpga/{altera-pr-ip-core.c => altera/pr-ip-core.c} (100%)
+ rename drivers/fpga/{altera-ps-spi.c => altera/ps-spi.c} (100%)
+ rename drivers/fpga/{ => altera}/socfpga-a10.c (100%)
+ rename drivers/fpga/{ => altera}/socfpga.c (100%)
+ rename drivers/fpga/{ => altera}/stratix10-soc.c (100%)
+ rename drivers/fpga/{ => altera}/ts73xx-fpga.c (100%)
+ create mode 100644 drivers/fpga/dfl/Kconfig
+ create mode 100644 drivers/fpga/dfl/Makefile
+ rename drivers/fpga/{dfl-afu-dma-region.c => dfl/afu-dma-region.c} (99%)
+ rename drivers/fpga/{dfl-afu-error.c => dfl/afu-error.c} (99%)
+ rename drivers/fpga/{dfl-afu-main.c => dfl/afu-main.c} (99%)
+ rename drivers/fpga/{dfl-afu-region.c => dfl/afu-region.c} (99%)
+ rename drivers/fpga/{dfl-afu.h => dfl/afu.h} (98%)
+ rename drivers/fpga/{ => dfl}/dfl.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl.h (100%)
+ rename drivers/fpga/{dfl-fme-br.c => dfl/fme-br.c} (99%)
+ rename drivers/fpga/{dfl-fme-error.c => dfl/fme-error.c} (99%)
+ rename drivers/fpga/{dfl-fme-main.c => dfl/fme-main.c} (99%)
+ rename drivers/fpga/{dfl-fme-mgr.c => dfl/fme-mgr.c} (99%)
+ rename drivers/fpga/{dfl-fme-perf.c => dfl/fme-perf.c} (99%)
+ rename drivers/fpga/{dfl-fme-pr.c => dfl/fme-pr.c} (99%)
+ rename drivers/fpga/{dfl-fme-pr.h => dfl/fme-pr.h} (96%)
+ rename drivers/fpga/{dfl-fme-region.c => dfl/fme-region.c} (98%)
+ rename drivers/fpga/{dfl-fme.h => dfl/fme.h} (95%)
+ rename drivers/fpga/{dfl-n3000-nios.c => dfl/n3000-nios.c} (100%)
+ rename drivers/fpga/{dfl-pci.c => dfl/pci.c} (100%)
+ create mode 100644 drivers/fpga/lattice/Kconfig
+ create mode 100644 drivers/fpga/lattice/Makefile
+ rename drivers/fpga/{ => lattice}/ice40-spi.c (100%)
+ rename drivers/fpga/{ => lattice}/machxo2-spi.c (100%)
+ create mode 100644 drivers/fpga/xilinx/Kconfig
+ create mode 100644 drivers/fpga/xilinx/Makefile
+ rename drivers/fpga/{xilinx-pr-decoupler.c => xilinx/pr-decoupler.c} (100%)
+ rename drivers/fpga/{xilinx-spi.c => xilinx/spi.c} (100%)
+ rename drivers/fpga/{ => xilinx}/zynq-fpga.c (100%)
+ rename drivers/fpga/{ => xilinx}/zynqmp-fpga.c (100%)
+
+-- 
+2.26.3
+
