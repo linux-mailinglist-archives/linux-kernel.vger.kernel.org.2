@@ -2,184 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47AEC3A00E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352AB3A00C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbhFHSsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:48:51 -0400
-Received: from mail-ed1-f46.google.com ([209.85.208.46]:42515 "EHLO
-        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232603AbhFHSmg (ORCPT
+        id S235034AbhFHSrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:47:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235106AbhFHSmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:42:36 -0400
-Received: by mail-ed1-f46.google.com with SMTP id i13so25722537edb.9;
-        Tue, 08 Jun 2021 11:40:26 -0700 (PDT)
+        Tue, 8 Jun 2021 14:42:45 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BE6C0611BC
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 11:39:59 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id l184so1709336pgd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 11:39:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W/V7ksUiiZB58zMxMRkULUFDegQBYCL2IF/rhUEMXHc=;
-        b=IJbqV6FUUfi7qCArMillGRxl4VycBJhs5gYs1Lf0mMvJYu5kw345uaLWVcikHjOxiy
-         TFJQhy70+KtzUmpSPBAGITjsAaU9yHpuRah8PWUPx3giAgGmLDxqxAxGFPEvIjWZjadh
-         /XjD+XNLZrd1n4PDsyvZtPLrlI1pJCUtfwVXSCJ8CiAXMFZFYxladyIDH8tGjl30wMkf
-         vtr/ZiqQVcAVouktL/hMNvpZFd06DgNsv1ovNfmfLhFR4HIfRNfViVNesEUjSkCN7EZV
-         pNso+09KKYl9bWgGxOaRKlV2AfV7pPF7LZelGToKFJmpdo8SJ2CMdKHVVOa5ZFr1TDSi
-         +4Mg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ggAVsZg/cXVvUqOkLCWYOUQSB2LS7JfS85VC4f/i35Q=;
+        b=A+zfVz8+HcNRW0Fu44E5Rx1laJBsnN/evN5OVcSQxI6o5VY7aMp/wkbk7YZEddRyqf
+         j6V+36FDLYuzRKK0DZJdGdBLB1Y5CRMIUggAtmTOBJhRrwD5l/9iHbx4GyRMeC21ZXxf
+         5f54CDraX2aeQzPczl3kziJJa3SLjW7q/K6iE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=W/V7ksUiiZB58zMxMRkULUFDegQBYCL2IF/rhUEMXHc=;
-        b=GFGF6Xkp/7aqtHEYmokIbaHLRxFmlZFj70DLZsZXpQXaoI+aAWIrqyRNuTGruk1zs/
-         PQNm8YCD9hlS7+a5lPf4FgFIMS8YKaFUs6QXZGrg/T7MwONmmdAO+WfbHIzdlBYgOVTT
-         vcJjGrBuGZXddPv+q6hW1MD9yqRR0Caj7nzhRMVcscDB2P2cmPEtQS1daFJcE9G1MIqR
-         mdxpnOaDFHpONejmhTU+TE2ty4gCT5pgHHif0kmG4XtDXMv89tOjMmwy8Vpz22r2wlRO
-         OvA5RAgPrZlcMF0sUfsBoOHj3gf0XCeu7rIQ0B0XPwnLy2NogbDk+6GP5ZDT3WDbth1I
-         ds9w==
-X-Gm-Message-State: AOAM533uTpn2LR4Zk5tqDwN0soQrS/BUootlVlHP/f5cVoZ+knD5iAGo
-        EXeeKV3VzX3A3Jl8E7WyYDm76RNVs6VPCg==
-X-Google-Smtp-Source: ABdhPJxi/SXwX8f6NHTk5beJ5dr9fZw0669BTAJnkBXZ5K/oYpH7fAlpLbYQC+bUjrsGqeChFLoUQw==
-X-Received: by 2002:a50:8dc6:: with SMTP id s6mr27186109edh.50.1623177566310;
-        Tue, 08 Jun 2021 11:39:26 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id z7sm174358ejm.122.2021.06.08.11.39.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 11:39:25 -0700 (PDT)
-Subject: Re: [PATCH v6 5/8] arm: dts: rockchip: Add SFC to RK3036
-To:     Jon Lin <jon.lin@rock-chips.com>, linux-spi@vger.kernel.org
-Cc:     broonie@kernel.org, robh+dt@kernel.org, heiko@sntech.de,
-        hjc@rock-chips.com, yifeng.zhao@rock-chips.com,
-        sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org,
-        linux-mtd@lists.infradead.org, p.yadav@ti.com,
-        macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Chris Morgan <macromorgan@hotmail.com>
-References: <20210608022644.21074-1-jon.lin@rock-chips.com>
- <20210608023305.25371-1-jon.lin@rock-chips.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <b5f29e1c-f4ec-7a08-a97c-8a516ba6649a@gmail.com>
-Date:   Tue, 8 Jun 2021 20:39:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        bh=ggAVsZg/cXVvUqOkLCWYOUQSB2LS7JfS85VC4f/i35Q=;
+        b=EuHuYqAvqSVDNHqeq8in256gC5g6trZ2/P7Vm7t0zq/f99fuKfJqG8WrFb1JyyAJeN
+         lZGy7yI7NENYQuA0kIn5HgDgJ7BG8S15XAKjVosozEHErZJIWuNiH9Ieri8HHAxT0p/3
+         CrR2yWDOi5sGoK43aAfl8Q96wF7meCGrcBxuo5Uc63ieqnSgoBJ+N3/vFWjVQO1I/zUm
+         WDTckdC9bhlucI6gsRubCzX+MI/hKNmpA+WSd2mH/O14d7CGLGxwkmoWPq2Dp0J/aFwU
+         uwJaEl5fvblIS3tiBvxYfSOs6K0fmoYmUR+K65g+gjFd2NXWAAUB9s7hjvwtyOJclyVt
+         dVRQ==
+X-Gm-Message-State: AOAM533ii6EiwkrhtPjm7U68KqLb1MJqb7UjYfOeI4q98QqlhSdIfdmd
+        XpxjvcLZgBJNxXA2gIfDsgCdxA==
+X-Google-Smtp-Source: ABdhPJxQcETaq1CxSn2r98DdBqfCgzxobh8dnkqILoMHMZd+vnkG8uyC7KrRE3gaJyWFsbkQFdmt4g==
+X-Received: by 2002:a63:ee11:: with SMTP id e17mr15958908pgi.323.1623177598571;
+        Tue, 08 Jun 2021 11:39:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f6sm11613587pfb.28.2021.06.08.11.39.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 11:39:57 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Marco Elver <elver@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        "Lin, Zhenpeng" <zplin@psu.edu>, Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH v4 0/3] Actually fix freelist pointer vs redzoning
+Date:   Tue,  8 Jun 2021 11:39:52 -0700
+Message-Id: <20210608183955.280836-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210608023305.25371-1-jon.lin@rock-chips.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+v4:
+- remove redundant size check
+v3: https://lore.kernel.org/lkml/20201015033712.1491731-1-keescook@chromium.org
+v2: https://lore.kernel.org/lkml/20201009195411.4018141-1-keescook@chromium.org
+v1: https://lore.kernel.org/lkml/20201008233443.3335464-1-keescook@chromium.org
+
+This fixes redzoning vs the freelist pointer (both for middle-position
+and very small caches). Both are "theoretical" fixes, in that I see no
+evidence of such small-sized caches actually be used in the kernel, but
+that's no reason to let the bugs continue to exist, especially since
+people doing local development keep tripping over it. :)
+
+Thanks!
+
+-Kees
 
 
-On 6/8/21 4:33 AM, Jon Lin wrote:
-> From: Chris Morgan <macromorgan@hotmail.com>
-> 
-> Add a devicetree entry for the Rockchip SFC for the RK3036 SOC.
-> 
-> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
-> ---
-> 
-> Changes in v6: None
-> Changes in v5: None
-> Changes in v4: None
-> Changes in v3: None
-> Changes in v2: None
-> Changes in v1: None
-> 
->  arch/arm/boot/dts/rk3036.dtsi | 42 +++++++++++++++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/rk3036.dtsi b/arch/arm/boot/dts/rk3036.dtsi
-> index e24230d50a78..e7faf815ca74 100644
-> --- a/arch/arm/boot/dts/rk3036.dtsi
-> +++ b/arch/arm/boot/dts/rk3036.dtsi
-> @@ -206,6 +206,17 @@
->  		status = "disabled";
->  	};
->  
-> +	sfc: spi@10208000 {
-> +		compatible = "rockchip,rk3036-sfc";
-> +		reg = <0x10208000 0x4000>;
-> +		interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks = <&cru HCLK_SFC>, <&cru SCLK_SFC>;
-> +		clock-names = "hclk_sfc", "clk_sfc";
-> +		pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus4>;
-> +		pinctrl-names = "default";
-> +		status = "disabled";
-> +	};
-> +
->  	sdmmc: mmc@10214000 {
->  		compatible = "rockchip,rk3036-dw-mshc", "rockchip,rk3288-dw-mshc";
->  		reg = <0x10214000 0x4000>;
-> @@ -684,6 +695,37 @@
->  			};
->  		};
->  
+Kees Cook (3):
+  mm/slub: Clarify verification reporting
+  mm/slub: Fix redzoning for small allocations
+  mm/slub: Actually fix freelist pointer vs redzoning
 
-> +		serial_flash {
+ Documentation/vm/slub.rst | 10 +++++-----
+ mm/slab_common.c          |  3 +--
+ mm/slub.c                 | 36 +++++++++++++++---------------------
+ 3 files changed, 21 insertions(+), 28 deletions(-)
 
-sfc {
+-- 
+2.25.1
 
-Nodes are sort alphabetically.
-Sort other patches with sfc nodes in this serie as well.
-Maybe rename nodename consistent with sfc label?
-Similar to nfc nodes?
-
-> +			sfc_bus4: sfc-bus4 {
-> +				rockchip,pins =
-
-> +					<1 RK_PD0 3 &pcfg_pull_none>,
-> +					<1 RK_PD1 3 &pcfg_pull_none>,
-> +					<1 RK_PD2 3 &pcfg_pull_none>,
-> +					<1 RK_PD3 3 &pcfg_pull_none>;
-
-Keep align with the rest in the pinctrl node.
-Check that in other sfc patches as well.
-
-> +			};
-> +
-> +			sfc_bus2: sfc-bus2 {
-> +				rockchip,pins =
-
-> +					<1 RK_PD0 3 &pcfg_pull_none>,
-> +					<1 RK_PD1 3 &pcfg_pull_none>;
-
-dito
-
-> +			};
-> +
-> +			sfc_cs0: sfc-cs0 {
-> +				rockchip,pins =
-
-> +					<2 RK_PA2 3 &pcfg_pull_none>;
-
-dito
-
-> +			};
-> +
-> +			sfc_cs1: sfc-cs1 {
-> +				rockchip,pins =
-
-> +					<2 RK_PA3 3 &pcfg_pull_none>;
-
-dito
-
-> +			};
-> +
-> +			sfc_clk: sfc-clk {
-> +				rockchip,pins =
-
-> +					<2 RK_PA4 3 &pcfg_pull_none>;
-
-dito
-
-> +			};
-> +		};
-> +
->  		emac {
->  			emac_xfer: emac-xfer {
->  				rockchip,pins = <2 RK_PB2 1 &pcfg_pull_default>, /* crs_dvalid */
-> 
