@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2533A0143
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A883A0229
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236058AbhFHStr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:49:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42126 "EHLO mail.kernel.org"
+        id S236423AbhFHTBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:01:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235742AbhFHSoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:44:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 961EF61359;
-        Tue,  8 Jun 2021 18:36:41 +0000 (UTC)
+        id S236521AbhFHSy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:54:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1661D613BF;
+        Tue,  8 Jun 2021 18:41:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177402;
-        bh=M+zKhaIuEUGO4xa6uK+sG9Nn7z4s6Psx9iEw9U7UOps=;
+        s=korg; t=1623177678;
+        bh=Ct2y1DboPrBZ5Cexz1asFmMRBWYxox2NdRgexmhse0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WzfdggDG4LIpk4J8Fk1U5XXBZnCQiKQYuLgVroQptzkHtqcUvEQZKzJQ/j3VZsyYa
-         Qx8L96SdKYy/D4EtyPRaH3Tg6alntN4ZXWUbtaynUsPTlRFkEwo7OcWvTl1Qdmge4v
-         4kwmYrau2Bmsf8LoxMVSYLvJH6wF+6hFyUqcSWUY=
+        b=o0yqmyLLcPU1wUgEzkq1xD9J/ZzcTHk8Hupix+DdaxjnQT0uOVkK+BqcrEYu8gEJa
+         cSuQKl07iPNKQvzQbuaAsiL1CvqWhvekAgko32TivHTNn8AzU0bP+AKXuSkcjRAaDd
+         0WT1Jn13e2ELUmRgfYKrk2qBzk6DoxeGwGxEBUPs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 09/78] vfio/pci: Fix error return code in vfio_ecap_init()
-Date:   Tue,  8 Jun 2021 20:26:38 +0200
-Message-Id: <20210608175935.583353021@linuxfoundation.org>
+        stable@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 059/137] arm64: dts: ti: j7200-main: Mark Main NAVSS as dma-coherent
+Date:   Tue,  8 Jun 2021 20:26:39 +0200
+Message-Id: <20210608175944.374456043@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
 
-[ Upstream commit d1ce2c79156d3baf0830990ab06d296477b93c26 ]
+[ Upstream commit 52ae30f55a2a40cff549fac95de82f25403bd387 ]
 
-The error code returned from vfio_ext_cap_len() is stored in 'len', not
-in 'ret'.
+Traffic through main NAVSS interconnect is coherent wrt ARM caches on
+J7200 SoC.  Add missing dma-coherent property to main_navss node.
 
-Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-Id: <20210515020458.6771-1-thunder.leizhen@huawei.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Also add dma-ranges to be consistent with mcu_navss node
+and with AM65/J721e main_navss and mcu_navss nodes.
+
+Fixes: d361ed88455fe ("arm64: dts: ti: Add support for J7200 SoC")
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+Link: https://lore.kernel.org/r/20210510180601.19458-1-vigneshr@ti.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci_config.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index bf32997c557f..50cd17fcf754 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -1576,7 +1576,7 @@ static int vfio_ecap_init(struct vfio_pci_device *vdev)
- 			if (len == 0xFF) {
- 				len = vfio_ext_cap_len(vdev, ecap, epos);
- 				if (len < 0)
--					return ret;
-+					return len;
- 			}
- 		}
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+index 72d6496e88dd..689538244392 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+@@ -78,6 +78,8 @@
+ 		#size-cells = <2>;
+ 		ranges = <0x00 0x30000000 0x00 0x30000000 0x00 0x0c400000>;
+ 		ti,sci-dev-id = <199>;
++		dma-coherent;
++		dma-ranges;
  
+ 		main_navss_intr: interrupt-controller1 {
+ 			compatible = "ti,sci-intr";
 -- 
 2.30.2
 
