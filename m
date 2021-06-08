@@ -2,129 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799523A01AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C34F3A0401
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234098AbhFHSzn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Jun 2021 14:55:43 -0400
-Received: from hosting.gsystem.sk ([212.5.213.30]:45190 "EHLO
-        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235988AbhFHStk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:49:40 -0400
-Received: from [192.168.0.2] (188-167-68-178.dynamic.chello.sk [188.167.68.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id 427CF7A014A;
-        Tue,  8 Jun 2021 20:47:45 +0200 (CEST)
-From:   Ondrej Zary <linux@zary.sk>
-To:     Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: nouveau broken on Riva TNT2 in 5.13.0-rc4: NULL pointer dereference in nouveau_bo_sync_for_device
-Date:   Tue, 8 Jun 2021 20:47:42 +0200
-User-Agent: KMail/1.9.10
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Christian =?iso-8859-1?q?K=F6nig?= <christian.koenig@amd.com>
-References: <202106052143.52488.linux@zary.sk> <202106062316.03369.linux@zary.sk> <202106072258.43836.linux@zary.sk>
-In-Reply-To: <202106072258.43836.linux@zary.sk>
-X-KMail-QuotePrefix: > 
+        id S239753AbhFHTZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:25:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237870AbhFHTNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:13:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D8F561429;
+        Tue,  8 Jun 2021 18:49:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623178181;
+        bh=mkZddtvemX7SZ3/W2EA5INNUZ5bKZfSFMWe9TGtl/Dk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=nVUytxhH47ZnJYyZxWjW+udYyN+3snizcWsgK3RLppHC1NGMs/g/dQXpEAvxHTPHF
+         Mnu4FUCpc8RQhOmdS6dM5d+fc5n8R4VZ2RaYzB3tq2X0ql3RKJNnRNWSHoZlvrLDd0
+         cejNlj5+sdoTgqVM8IkdLkQNWVCbWFo7cxiR/oE5WsOpaj/03JN53DD0lVF9gn6PFJ
+         wF2TDO5xy7+WsCPMyS/VEyFsSBaCazPvfuC9JQV+QGQyuvTW4DCf9gj7j8SJAb+mWp
+         QyuQaNLfNXwTDjYFNhP8zUx92b6hlN7Pwyxrpi35I/YJKRqxF5JpvUu4JStI/s3fl5
+         WFurUUblPTzUA==
+Subject: Re: [PATCH] thermal: devfreq_cooling: Fix kernel-doc
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Yang Li <yang.lee@linux.alibaba.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>, amitk@kernel.org,
+        linux-pm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <1623145562-111662-1-git-send-email-yang.lee@linux.alibaba.com>
+ <CAKwvOdmyXV09ZxcDqQ6x43f+Eze4h40W2AoKcCmUhGM2gUWsnQ@mail.gmail.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <6335deba-9e94-61e0-89a1-8905be0e35a1@kernel.org>
+Date:   Tue, 8 Jun 2021 11:49:40 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
-Message-Id: <202106082047.42658.linux@zary.sk>
+In-Reply-To: <CAKwvOdmyXV09ZxcDqQ6x43f+Eze4h40W2AoKcCmUhGM2gUWsnQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 07 June 2021 22:58:43 Ondrej Zary wrote:
-> On Sunday 06 June 2021 23:16:03 Ondrej Zary wrote:
-> > On Saturday 05 June 2021 23:34:23 Ondrej Zary wrote:
-> > > On Saturday 05 June 2021 21:43:52 Ondrej Zary wrote:
-> > > > Hello,
-> > > > I'm testing 5.13.0-rc4 and nouveau crashes with NULL pointer dereference in nouveau_bo_sync_for_device.
-> > > > Found various reports like this but that was back in februaryso that should be fixed now.
-> > > 
-> > > So it is the same bug. Broken since 5.11. This revert fixes it in 5.11:
-> > > https://lists.freedesktop.org/archives/dri-devel/2021-February/298531.html
-> > > 
-> > > Added some debug printks to nouveau_bo_sync_for_device:
-> > > [   22.225048] ttm_dma=fc33b500
-> > > [   22.225066] ttm_dma->num_pages=18
-> > > [   22.225071] i=0 num_pages=16
-> > > [   22.225077] ttm_dma->dma_address=00000000
-> > > [   22.225094] BUG: kernel NULL pointer dereference, address: 00000000
-> > > 
-> > > So ttm->dma_address is NULL.
-> > > 
-> > 
-> > Tested reverting f295c8cfec833c2707ff1512da10d65386dde7af again and it does not work...
-> > Not sure what I did before.
-> > 
-> > Bisecting between 5.10 and 5.11 is impossible - I keep hitting neverending stream of bugs.
-> > As always with nouveau...
+On 6/8/2021 11:39 AM, Nick Desaulniers wrote:
+> On Tue, Jun 8, 2021 at 2:46 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+>>
+>> Fix function name in devfreq_cooling.c kernel-doc comment
+>> to remove a warning found by clang(make W=1 LLVM=1).
+>>
+>> drivers/thermal/devfreq_cooling.c:479: warning: expecting prototype for
+>> devfreq_cooling_em_register_power(). Prototype was for
+>> devfreq_cooling_em_register() instead.
+>>
+>> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+>> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > 
-> e34b8feeaa4b65725b25f49c9b08a0f8707e8e86 seems to be the first bad commit
-> Going back one commit makes it crash in a different way:
+> That compiler warning doesn't come from kernel-doc.  Your diff looks
+> good (the comment was wrong), but the commit message is curious.
+
+No, this is indeed kernel-doc complaining. Clang should not even be 
+mentioned in the commit message:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/kernel-doc?h=v5.13-rc5#n1228
+
+The warning could probably be improved to say "definition" instead of 
+"prototype" in certain cases but *shrugs*.
+
+This warning is similar to -Wmissing-prototypes from clang but refers to 
+the fact that the comment claims it is documenting one function but it 
+is really documenting another.
+
+Cheers,
+Nathan
+
+> Usually that warning is from when the function prototype does not
+> exist for a function with extern linkage.  It looks like that's always
+> provided though in include/linux/devfreq_cooling.h.  Can you share a
+> link to the original report?
 > 
-> [   55.444208] BUG: kernel NULL pointer dereference, address: 000001b0
-> [   55.444219] #PF: supervisor read access in kernel mode
-> [   55.444222] #PF: error_code(0x0000) - not-present page
-> [   55.444225] *pde = 00000000
-> [   55.444231] Oops: 0000 [#1] SMP
-> [   55.444237] CPU: 0 PID: 1740 Comm: Xorg Not tainted 5.9.0-rc5+ #361
-> [   55.444240] Hardware name:  /848P-ICH5, BIOS 6.00 PG 02/03/2005
-> [   55.444321] EIP: nouveau_bo_wr16+0x8/0x27 [nouveau]
-> [   55.444326] Code: 85 ff 74 0d 80 7d f3 00 74 07 80 a6 f4 01 00 00 fe 89 f0 e8 0c ef ff ff 8d 65 f4 89 f8 5b 5e 5f 5d c3 55 01 d2 89 e5 53 89 c3 <03> 93 b0 01 00 00 0f b7 c1 f6 83 b8 01 00 00 80 74 07 e8 40 49 69
-> [   55.444330] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
-> [   55.444334] ESI: 00000020 EDI: e7a14400 EBP: e786fd98 ESP: e786fd94
-> [   55.444338] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00210246
-> [   55.444341] CR0: 80050033 CR2: 000001b0 CR3: 27896000 CR4: 00000690
-> [   55.444344] Call Trace:
-> [   55.444395]  nv04_crtc_cursor_set+0x148/0x1d8 [nouveau]
-> [   55.444442]  ? ttm_bo_reserve.constprop.15+0x1c/0x1c [nouveau]
-> [   55.444451]  drm_mode_cursor_common+0x13b/0x1ad
-> [   55.444497]  ? ttm_bo_reserve.constprop.15+0x1c/0x1c [nouveau]
-> [   55.444504]  drm_mode_cursor_ioctl+0x2e/0x36
-> [   55.444509]  ? drm_mode_setplane+0x203/0x203
-> [   55.444514]  drm_ioctl_kernel+0x66/0x99
-> [   55.444518]  drm_ioctl+0x211/0x2d8
-> [   55.444522]  ? drm_mode_setplane+0x203/0x203
-> [   55.444529]  ? _cond_resched+0x1e/0x22
-> [   55.444533]  ? mutex_lock+0xb/0x24
-> [   55.444582]  ? nouveau_bo_add_io_reserve_lru+0x53/0x58 [nouveau]
-> [   55.444589]  ? rpm_resume.part.13+0x72/0x365
-> [   55.444594]  ? ktime_get_mono_fast_ns+0x5e/0xf2
-> [   55.444598]  ? __pm_runtime_resume+0x5b/0x63
-> [   55.444647]  nouveau_drm_ioctl+0x65/0x81 [nouveau]
-> [   55.444696]  ? nouveau_cli_work+0xc3/0xc3 [nouveau]
-> [   55.444702]  vfs_ioctl+0x1a/0x24
-> [   55.444706]  __ia32_sys_ioctl+0x583/0x59d
-> [   55.444711]  ? doublefault_shim+0x120/0x120
-> [   55.444717]  ? exit_to_user_mode_prepare+0x71/0xba
-> [   55.444721]  do_int80_syscall_32+0x2c/0x39
-> [   55.444725]  entry_INT80_32+0xf0/0xf0
-> [   55.444729] EIP: 0xb7fb2092
-> [   55.444733] Code: 00 00 00 e9 90 ff ff ff ff a3 24 00 00 00 68 30 00 00 00 e9 80 ff ff ff ff a3 e8 ff ff ff 66 90 00 00 00 00 00 00 00 00 cd 80 <c3> 8d b4 26 00 00 00 00 8d b6 00 00 00 00 8b 1c 24 c3 8d b4 26 00
-> [   55.444737] EAX: ffffffda EBX: 0000000e ECX: c01c64a3 EDX: bfe89750
-> [   55.444741] ESI: 02580b40 EDI: c01c64a3 EBP: 0000000e ESP: bfe89704
-> [   55.444744] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00200292
-> [   55.444748] Modules linked in: i2c_dev nouveau serial_cs snd_intel8x0 snd_ac97_codec wmi hwmon ttm ac97_bus 8139cp snd_pcm pcmcia snd_timer snd sg soundcore psmouse yenta_socket serio_raw pcmcia_rsrc pcmcia_core intel_agp parport_pc parport
-> [   55.444769] CR2: 00000000000001b0
-> [   55.444774] ---[ end trace e2b0d4c3c2e4e488 ]---
-> [   55.444827] EIP: nouveau_bo_wr16+0x8/0x27 [nouveau]
-> [   55.444831] Code: 85 ff 74 0d 80 7d f3 00 74 07 80 a6 f4 01 00 00 fe 89 f0 e8 0c ef ff ff 8d 65 f4 89 f8 5b 5e 5f 5d c3 55 01 d2 89 e5 53 89 c3 <03> 93 b0 01 00 00 0f b7 c1 f6 83 b8 01 00 00 80 74 07 e8 40 49 69
-> [   55.444835] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
-> [   55.444838] ESI: 00000020 EDI: e7a14400 EBP: e786fd98 ESP: e786fd94
-> [   55.444842] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00210246
-> [   55.444845] CR0: 80050033 CR2: 000001b0 CR3: 27896000 CR4: 00000690
-
-Bisected this crash:
-# first bad commit: [141b15e59175aa174ca1f7596188bd15a7ca17ba] drm/nouveau: move io_reserve_lru handling into the driver v5
-
-Adding Christian König to CC.
-
-
--- 
-Ondrej Zary
+>> ---
+>>   drivers/thermal/devfreq_cooling.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+>> index 3a788ac..5a86cff 100644
+>> --- a/drivers/thermal/devfreq_cooling.c
+>> +++ b/drivers/thermal/devfreq_cooling.c
+>> @@ -458,7 +458,7 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
+>>   EXPORT_SYMBOL_GPL(devfreq_cooling_register);
+>>
+>>   /**
+>> - * devfreq_cooling_em_register_power() - Register devfreq cooling device with
+>> + * devfreq_cooling_em_register() - Register devfreq cooling device with
+>>    *             power information and automatically register Energy Model (EM)
+>>    * @df:                Pointer to devfreq device.
+>>    * @dfc_power: Pointer to devfreq_cooling_power.
+>> --
+>> 1.8.3.1
+>>
+> 
+> 
