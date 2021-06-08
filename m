@@ -2,358 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA87239ED09
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C1E39ED0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhFHDY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 23:24:59 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:42151 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230266AbhFHDY6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 23:24:58 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B82C1580396;
-        Mon,  7 Jun 2021 23:22:57 -0400 (EDT)
-Received: from imap43 ([10.202.2.93])
-  by compute2.internal (MEProxy); Mon, 07 Jun 2021 23:22:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=4Xae7CRnIiDzhAqUcXAYIJ05byHEZlC
-        LmNlNacGJVLg=; b=LmtxlVZIGmrmI3YiKQglPKp8Ei7sIPAxLn4co4xSj8hT9I6
-        vOwjsZcwC+RmffNaOmLpuBySzYfUATwdCTJprIi6OT9MDq1JcZOF7oC+3VCofg/p
-        pp+jsisVS8xYYd+zfQZIea4KA/UxOPCwVPF7hISIrOHVxG8ofjvUutkvNwCCeil4
-        AW9OaFkgRPy/RFI3hqu2WE5s9zeA/6SYrlJeM/Uhu8lgGa+IU3ZaFZh/maYJ2d5v
-        kdXHEhIYuzDGxhrWQna8bmxQoxKvmftFlOYF+OcO1NMM8Vth+9pBPmGvwlHiTqwO
-        1SMtFlLrA7KVVv7XxArh6Bf4m2BdylMHE9RlxZg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4Xae7C
-        RnIiDzhAqUcXAYIJ05byHEZlCLmNlNacGJVLg=; b=Y8I8hG9N23jDnYt+zn9G24
-        2AsCx79Rvg4jjOKGjGfcHXXy0XqngQ5iO0B2arVT53vp9aB/3B6jZMiU0eNgF8ME
-        zCJeENeVZVR8fhGl30jvpe6JNVqp8QBXBiFOlrndQTYnEpnm6qVZoZ0+gyjeW55t
-        d3AoC865cZpwc6Qy+tBcmc0f2kFXrecH3Go81nft04rzhl8Hzf+bYsDC2HofaZwG
-        fzbixzZS2QhowhtTF30v9ESbi/NZaa79PzGWRNP60OXGtL/n7O6jzzV2NJWm9cUM
-        YrmENVpwKjUMpJkQ5SgRF7CzPndXSVuQ0MG1x4HXDGDoEnf8b4ARQWItYnGc8wIA
-        ==
-X-ME-Sender: <xms:juK-YG0lIqzFY6oiMV3QATe9JK0GRwP18f4fWo7l08m06SaUD58ZuQ>
-    <xme:juK-YJH5m0Zh9-aSdIuOBoFQ3xOnW2gV20kIFReKtsslj1dkSQF3qC-2a0ThXMTeR
-    LyGNhXWyyEVkd9E2Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgieduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
-    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:juK-YO7grfmyv5wfDoTA712uoiRpqBsD4aK9SbDtq7LcgCfCv1s7Aw>
-    <xmx:juK-YH0Faot6n486U3zedjuq1CRPmNCLrc36qTCEwXtD1y0tbWC5ew>
-    <xmx:juK-YJFokk7mq5f2NqVFtMCfmHVCEAkQ0eMbvW2lI5rSTCZ2p3UgVA>
-    <xmx:keK-YB9BGGos1ga8je9QS6qaw0BqCfShxns4nJ0cYnUnxqmo1Mjsfg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 2FFC0AC0062; Mon,  7 Jun 2021 23:22:54 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
-Mime-Version: 1.0
-Message-Id: <b8734d24-715c-46b3-ac70-e9c7c845a01b@www.fastmail.com>
-In-Reply-To: <20210608025033.GB2948@aspeedtech.com>
-References: <20210607071514.11727-1-steven_lee@aspeedtech.com>
- <20210607071514.11727-5-steven_lee@aspeedtech.com>
- <f3805ca3-3d77-4482-b75f-3e869625e0bc@www.fastmail.com>
- <20210608025033.GB2948@aspeedtech.com>
-Date:   Tue, 08 Jun 2021 12:52:24 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Steven Lee" <steven_lee@aspeedtech.com>
-Cc:     "Linus Walleij" <linus.walleij@linaro.org>,
-        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        "Hongwei Zhang" <Hongweiz@ami.com>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Billy Tsai" <billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH v4 4/7] gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
-Content-Type: text/plain
+        id S231325AbhFHDZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 23:25:01 -0400
+Received: from mail-db8eur05on2089.outbound.protection.outlook.com ([40.107.20.89]:54240
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231228AbhFHDZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 23:25:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PIm5ymVk3rd2Vq9R5QZUHaP8aSvDN4N9ZpDYPeWFOo1kAmArm71PSqotZe8L3aJs7Z4TTpMgWYg7GbMw4wMXfJfIj5cBvysfG08sc+sTDLZPLkk12iLew+2HBxKX0Xz9ZBNv4qR5ITc1XwJ/q1qV99KXHr/mncArbTVhNokU6IDyYTPxIWrwjyXcZ9LpSDUgQKRYW8y3QPg5zR6ZryCwfgl6kPE2ofMQCz9YRPcLfRyFwXL8OjciQ2JpHnnDGGqcJo2av1kCQbYICaY6IDsHeChIbEdop7aDp2Cpc3A0KaRrRck6Tf/r7a3esrdpvkqqCwu9Q4Bsw+PBuYIUK9wg8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=57ZsbmAp3tsrf0NnxY2KG3xPAvCM9d4eSWl9r8Blzwg=;
+ b=CZOKLZUnBDAptw4jmaDzPpFRuD5SIiwh3SNQczEV330cRw0qIDHExvyXNUWdgVIurNbu43hOWxOtcNlDXSobDHKW0wqFNGB14Q4BjlRMNxRsfRSy/Gyv8Xx1nELGGr0ZetAz9PNvn0LcjTYqEUNEfiobE8fPdFvQgxptZsC2lXthRb7WKKbJXegsVMtyKHf2fNb6LlejVBMaKB4EzZqiv1hF0B/6UxB+1KH3xnIRW/NILk+WeIHMZcK15CoBYzeMT3CGjjwGXZkxtC9Emc4S2pcmDoBCHVdHJ7lQ8rOBtyA/onp4ngooFGt8xZ3WK8TOfuk9mCBFVw7eoYrL7U5FEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=57ZsbmAp3tsrf0NnxY2KG3xPAvCM9d4eSWl9r8Blzwg=;
+ b=Whgp0FIDTdSev792CNV2iss/sPqXn7RJU+xmalDbkR/M04bI94e3MOsru0Yt9a/htzqOOp1vzmsR/QLeXtQrA/LsUNn7iSiawuR4easYxh3BNowZE8xnb49F/NZnlVFxbik11VzyIYYj0TxeexPaKw8NOinqYmD8715TLSOk1ZU=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB6PR0402MB2728.eurprd04.prod.outlook.com (2603:10a6:4:97::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Tue, 8 Jun
+ 2021 03:23:06 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf%9]) with mapi id 15.20.4195.030; Tue, 8 Jun 2021
+ 03:23:05 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH V1 net-next 0/2] net: fec: fix TX bandwidth fluctuations
+Thread-Topic: [PATCH V1 net-next 0/2] net: fec: fix TX bandwidth fluctuations
+Thread-Index: AQHXUvDdAkrP6ejNDkGcbE4OJnlbKqr3PELAgAAgsQCAEidCwA==
+Date:   Tue, 8 Jun 2021 03:23:05 +0000
+Message-ID: <DB8PR04MB679556065CABCB72C79815D7E6379@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20210527120722.16965-1-qiangqing.zhang@nxp.com>
+ <DB8PR04MB679585D9D94C0D5D90003ED2E6239@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <YK+nRkzOhQHn9LDO@lunn.ch>
+In-Reply-To: <YK+nRkzOhQHn9LDO@lunn.ch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lunn.ch; dkim=none (message not signed)
+ header.d=none;lunn.ch; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 48a8193e-c7a4-492a-3472-08d92a2cbb5c
+x-ms-traffictypediagnostic: DB6PR0402MB2728:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR0402MB272810F187E7261E20D5CBD6E6379@DB6PR0402MB2728.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UK0qbw1H6rDSXPi7a2V+nM85iyZrEWleeedJXs4Ht9ktbxm0B6h/zGzTfjTxh8W8W/pfetz+3KAHjGgZGKu/qSwi4X26RtD5fmGCe5Rvt3azRqrlSiO6tFG/SMKFkm1dHXMOOf7byH5cw1HWtyUF2ipLc+AWmvFWpBIGvcL7lxD4iGZL0vn4ttP8KSekygjWKJaX2lRX258nDFBKHp4QTJNNfBUeTyldPyUy5t917+jr4a5f32d9yaxwaaei0xKcNxrLFYDNLRBMXZ2JUsRlN2+OZMHZfXA1NdOW0pyX78f84ZE6gqK9Te5vkpdFBK8CUMzLdPuZQLTP5xJi76Ln3cYjAOtNIdlt1Yk2oCc2zWfGqUGHJRW6dRPKd+SUbHJvgM005X7kA4gUxguRbq5aBtmtijO8nr4P7wOQBrTxW1897ESUNU6HNoAmKmzs8O3Kl5f/hE3AuAQ3ty0qw/WbnBuziC+mraGK5V5bSAl+j66AZjkbKnUMEAf0DhP4AtSFqoXJhfbgtWthgz/QupGI9KtK5JKtxdUZ8fDbhMaYzgOd0w3hOfMu0a5OANUEqKU9p72KhMjW/uNOSGuUvbV0sQnAfh/y8tpXuaLk12oIpdc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(366004)(346002)(39860400002)(5660300002)(83380400001)(66946007)(9686003)(64756008)(66476007)(66556008)(66446008)(6506007)(54906003)(76116006)(55016002)(4326008)(4744005)(38100700002)(33656002)(52536014)(316002)(86362001)(186003)(478600001)(71200400001)(122000001)(2906002)(53546011)(26005)(6916009)(8676002)(7696005)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?UUIycEZGUmxqdjgreDlmRjV4SXJ0SjV3Zy9hM3RWSk5tMkZKclJUWHlPY3Jl?=
+ =?gb2312?B?WEhDZXdhSzl5WWNSRjZyck1XS1dQWmRKYTc4Wmp5dHV2Q2FaVkptYnk0YWFB?=
+ =?gb2312?B?MHNyTzNhY1kzbFRZNGprWnFsVU9Fd1hKTDNIVGVHUUFiQVkvYk8rWFFTTzNU?=
+ =?gb2312?B?dWJHd2I5V01nUWZsbjJDcGkzSDFGYTdlZUxtS2QzTllycUxKdXJYTjFKK2dH?=
+ =?gb2312?B?VTFYREt6RWZSZDVqMUV0WkpBVSt1MU1iYnU3Y0I1OE9rQXZUNkh3enJpL0RL?=
+ =?gb2312?B?QllwSVZCVzNydk1qUmNRKzZSZDErTlJiYnlOQVhsSDluQ1Q3QlRUQUl6M25s?=
+ =?gb2312?B?YnE1L1BwTW9URVpvd1BOZVVGM2s5WDBSRUQ5MHJEOUl6QnVXbWt1ZXhSY2lW?=
+ =?gb2312?B?QWpKdXZuTFpJY2c1RlYyK0lCOC9ZOERuRlEvTFJGMGZZZXI5aFF0RHAzUXdN?=
+ =?gb2312?B?VlpSNVhJRGhJQStUemN5R1dIbUxGamFCcFp6MGdnY0NKT2dhVkkxcSsyNjFh?=
+ =?gb2312?B?QllFK3piYWhvazZjRVBZM3pBUXZFYUtFbTFGdGdVMkUzR1VkYU9TQ2VRQUpS?=
+ =?gb2312?B?dFRtby8vK08zbDRBcHl2VmF2eFZ3L3ZSL29nZ3cvVWZuME1SL2lNY2gwT2hj?=
+ =?gb2312?B?WmxrMFhKU1laUkRjMmpCUDJscmJIWmk5N1F0K2lLREhiQUdPL1A5eFhsZnlu?=
+ =?gb2312?B?YjJKNEdXcXJWVnlzb2hKb3dIdGQ2eDQzdWNvWWhINDEwdnp6UnJ0bWJXbGE2?=
+ =?gb2312?B?eVVKNEs2SzFZeHpaWkNEM0tXTlFLWDhFUXI3T1JKSWQrOUdXNWRLOWZUbE92?=
+ =?gb2312?B?RnBxYWxEeWk5Z0dGdzVSMzVMeHdlTndJUk92WmhuZnpXQVF1cS9jbjlUMDA3?=
+ =?gb2312?B?aUhOUUJwc1hSTFM0NmtHQVY0K002elE5Mi9nL1dFU3FQcVM4bHBaQ015bjBV?=
+ =?gb2312?B?ZjJablVuN0NGTTlLbXdvdnhybVVVZFo2c1h6b2o5OGVkblN0VTZ5aEwwQnh6?=
+ =?gb2312?B?bGFrWGpuS0ZER3lwZXFMZDVDemJZZklsZ1QwYmVXVnVDZ0tHcVpObkZGUWRJ?=
+ =?gb2312?B?SVljRGh5ZEtqdzJjVHVIYXpVZTFpYmxpbGU1N1BqWGZwbG1SQm9nTkFDdjF4?=
+ =?gb2312?B?ck9YaXlaVjczdHYwdjUvNmxmRFdqU29JbnYzQ1YxWHQ2Z3M5ZXZJVnE2L3Vi?=
+ =?gb2312?B?emlHbFNLQUpMSlRUamVWVHF6WnoyN2NCWlNDaklOelk0ZjROYkV2S2VCa1Zi?=
+ =?gb2312?B?NGlEdjRUR1UrSXREMkNRNThra1NRVEhnM0VtQXZyQVlQV0pIR3NTL2FteVhs?=
+ =?gb2312?B?YlBUbTJmZmhyZm5yMHdoWEVvWWxyV1RBalljNFNuUjR5Z2JjK09DZGNSVFND?=
+ =?gb2312?B?eGFPQTNOdElMS0g5RmdVdzhJR1NNakxwTG10eXhiOFFWUHRtK0dSb3lnSEtS?=
+ =?gb2312?B?a09WV0gyR1VqbFlTNS9QSE5wQVB5NlVsWjNIdW90TVZZeCs2Z0NWWGtoZDVR?=
+ =?gb2312?B?R21TRFlIRjRISTNPenU0VDlFWlpydzQrdWJHNTJyb3NvMkREajhRM3JMUFZj?=
+ =?gb2312?B?VmhNRVJiVEZXVzJmYU02QTZ4dW44c2w4TXRjWWUrRW5jTWdJRjFPaWFETGJ3?=
+ =?gb2312?B?cnQvVjVkZW1Ea0Y3NWRSV1pVSDBNeVV3dFNNMDNLUkN4OFpMYk84L1JqVk5F?=
+ =?gb2312?B?eEJVcml0SnBqL1B1RHNWeUMvL01ISUpDTDFlNkRuZlVhWnlKdVB5T1lWWHdB?=
+ =?gb2312?Q?o2722SbXLKKBdxQnb6IwRB4nQnZZZ+hdSAjrqZw?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48a8193e-c7a4-492a-3472-08d92a2cbb5c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2021 03:23:05.8262
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vtGTa7ZktiDMKn+5h5257TP6rSBqjRR6uwn9+FTajnbdmZSUM3DoA3G0hWA5GnzKmin6aEN7zxdi0tca8+l6Ig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2728
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, 8 Jun 2021, at 12:20, Steven Lee wrote:
-> The 06/08/2021 07:43, Andrew Jeffery wrote:
-> > 
-> > 
-> > On Mon, 7 Jun 2021, at 16:45, Steven Lee wrote:
-> > > AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
-> > > with 80 pins.
-> > > In the current driver, the maximum number of gpio pins of SoC is hardcoded
-> > > as 80 and the gpio pin count mask for GPIO Configuration register is
-> > > hardcode as GENMASK(9,6). In addition, some functions use the hardcoded
-> > > value to calculate the gpio offset.
-> > > The patch adds ast2600 compatibles and platform data that includes the
-> > > max number of gpio pins supported by ast2600 and gpio pin count mask for
-> > > GPIO Configuration register.
-> > > The patch also modifies some functions to pass aspeed_sgpio struct for
-> > > calculating gpio offset without using the hardcoded value.
-> > > 
-> > > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> > > ---
-> > >  drivers/gpio/gpio-aspeed-sgpio.c | 110 +++++++++++++++++++++----------
-> > >  1 file changed, 76 insertions(+), 34 deletions(-)
-> > > 
-> > > diff --git a/drivers/gpio/gpio-aspeed-sgpio.c b/drivers/gpio/gpio-aspeed-sgpio.c
-> > > index 64e54f8c30d2..8b893356f0ca 100644
-> > > --- a/drivers/gpio/gpio-aspeed-sgpio.c
-> > > +++ b/drivers/gpio/gpio-aspeed-sgpio.c
-> > > @@ -35,12 +35,18 @@
-> > >  #define ASPEED_SGPIO_CLK_DIV_MASK	GENMASK(31, 16)
-> > >  #define ASPEED_SGPIO_ENABLE		BIT(0)
-> > >  
-> > > +struct aspeed_sgpio_pdata {
-> > > +	const u32 pin_mask;
-> > > +	int max_ngpios;
-> > > +};
-> > > +
-> > >  struct aspeed_sgpio {
-> > >  	struct gpio_chip chip;
-> > >  	struct clk *pclk;
-> > >  	spinlock_t lock;
-> > >  	void __iomem *base;
-> > >  	int irq;
-> > > +	int max_ngpios;
-> > >  	int n_sgpio;
-> > >  };
-> > >  
-> > > @@ -75,7 +81,13 @@ static const struct aspeed_sgpio_bank 
-> > > aspeed_sgpio_banks[] = {
-> > >  		.val_regs = 0x0038,
-> > >  		.rdata_reg = 0x0078,
-> > >  		.irq_regs = 0x003C,
-> > > -		.names = { "I", "J" },
-> > > +		.names = { "I", "J", "K", "L" },
-> > > +	},
-> > > +	{
-> > > +		.val_regs = 0x0090,
-> > > +		.rdata_reg = 0x007C,
-> > > +		.irq_regs = 0x0094,
-> > > +		.names = { "M", "N", "O", "P" },
-> > >  	},
-> > >  };
-> > >  
-> > > @@ -121,15 +133,15 @@ static void __iomem *bank_reg(struct aspeed_sgpio *gpio,
-> > >  	}
-> > >  }
-> > >  
-> > > -#define GPIO_BANK(x)    ((x % SGPIO_OUTPUT_OFFSET) >> 5)
-> > > -#define GPIO_OFFSET(x)  ((x % SGPIO_OUTPUT_OFFSET) & 0x1f)
-> > > -#define GPIO_BIT(x)     BIT(GPIO_OFFSET(x))
-> > > +#define GPIO_BANK(x, gpio)    ((x % (gpio)->max_ngpios) >> 5)
-> > 
-> > I couldn't stop myself from commenting on this: The 'context' parameter should be first (by convention), so:
-> > 
-> > #define GPIO_BANK(gpio, x) ((x % (gpio)->max_ngpios) >> 5)
-> > 
-> > There's another fix necessary here too - the x needs to be parenthesised:
-> > 
-> > #define GPIO_BANK(gpio, x) (((x) % (gpio)->max_ngpios) >> 5)
-> > 
-> > > +#define GPIO_OFFSET(x)        ((x) & GENMASK(4, 0))
-> > > +#define GPIO_BIT(x, gpio)     BIT(GPIO_OFFSET(x % (gpio)->max_ngpios))
-> > 
-> > Again, put the context parameter first. And again we should add the parentheses around x in the expression.
-> > 
-> > >  
-> > > -static const struct aspeed_sgpio_bank *to_bank(unsigned int offset)
-> > > +static const struct aspeed_sgpio_bank *to_bank(unsigned int offset, 
-> > > const struct aspeed_sgpio *gpio)
-> > >  {
-> > >  	unsigned int bank;
-> > >  
-> > > -	bank = GPIO_BANK(offset);
-> > > +	bank = GPIO_BANK(offset, gpio);
-> > >  
-> > >  	WARN_ON(bank >= ARRAY_SIZE(aspeed_sgpio_banks));
-> > >  	return &aspeed_sgpio_banks[bank];
-> > > @@ -139,18 +151,19 @@ static int aspeed_sgpio_init_valid_mask(struct 
-> > > gpio_chip *gc,
-> > >  		unsigned long *valid_mask, unsigned int ngpios)
-> > >  {
-> > >  	struct aspeed_sgpio *sgpio = gpiochip_get_data(gc);
-> > > +	int max_ngpios = sgpio->max_ngpios;
-> > >  	int n = sgpio->n_sgpio;
-> > > -	int c = SGPIO_OUTPUT_OFFSET - n;
-> > > +	int c = max_ngpios - n;
-> > >  
-> > > -	WARN_ON(ngpios < MAX_NR_HW_SGPIO * 2);
-> > > +	WARN_ON(ngpios < max_ngpios * 2);
-> > >  
-> > >  	/* input GPIOs in the lower range */
-> > >  	bitmap_set(valid_mask, 0, n);
-> > >  	bitmap_clear(valid_mask, n, c);
-> > >  
-> > > -	/* output GPIOS above SGPIO_OUTPUT_OFFSET */
-> > > -	bitmap_set(valid_mask, SGPIO_OUTPUT_OFFSET, n);
-> > > -	bitmap_clear(valid_mask, SGPIO_OUTPUT_OFFSET + n, c);
-> > > +	/* output GPIOS above max_ngpios */
-> > > +	bitmap_set(valid_mask, max_ngpios, n);
-> > > +	bitmap_clear(valid_mask, max_ngpios + n, c);
-> > >  
-> > >  	return 0;
-> > >  }
-> > > @@ -161,30 +174,30 @@ static void 
-> > > aspeed_sgpio_irq_init_valid_mask(struct gpio_chip *gc,
-> > >  	struct aspeed_sgpio *sgpio = gpiochip_get_data(gc);
-> > >  	int n = sgpio->n_sgpio;
-> > >  
-> > > -	WARN_ON(ngpios < MAX_NR_HW_SGPIO * 2);
-> > > +	WARN_ON(ngpios < sgpio->max_ngpios * 2);
-> > >  
-> > >  	/* input GPIOs in the lower range */
-> > >  	bitmap_set(valid_mask, 0, n);
-> > >  	bitmap_clear(valid_mask, n, ngpios - n);
-> > >  }
-> > >  
-> > > -static bool aspeed_sgpio_is_input(unsigned int offset)
-> > > +static bool aspeed_sgpio_is_input(unsigned int offset, const struct 
-> > > aspeed_sgpio *gpio)
-> > >  {
-> > > -	return offset < SGPIO_OUTPUT_OFFSET;
-> > > +	return offset < gpio->max_ngpios;
-> > >  }
-> > >  
-> > >  static int aspeed_sgpio_get(struct gpio_chip *gc, unsigned int offset)
-> > >  {
-> > >  	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
-> > > -	const struct aspeed_sgpio_bank *bank = to_bank(offset);
-> > > +	const struct aspeed_sgpio_bank *bank = to_bank(offset, gpio);
-> > >  	unsigned long flags;
-> > >  	enum aspeed_sgpio_reg reg;
-> > >  	int rc = 0;
-> > >  
-> > >  	spin_lock_irqsave(&gpio->lock, flags);
-> > >  
-> > > -	reg = aspeed_sgpio_is_input(offset) ? reg_val : reg_rdata;
-> > > -	rc = !!(ioread32(bank_reg(gpio, bank, reg)) & GPIO_BIT(offset));
-> > > +	reg = aspeed_sgpio_is_input(offset, gpio) ? reg_val : reg_rdata;
-> > > +	rc = !!(ioread32(bank_reg(gpio, bank, reg)) & GPIO_BIT(offset, gpio));
-> > >  
-> > >  	spin_unlock_irqrestore(&gpio->lock, flags);
-> > >  
-> > > @@ -194,11 +207,11 @@ static int aspeed_sgpio_get(struct gpio_chip *gc, 
-> > > unsigned int offset)
-> > >  static int sgpio_set_value(struct gpio_chip *gc, unsigned int offset, 
-> > > int val)
-> > >  {
-> > >  	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
-> > > -	const struct aspeed_sgpio_bank *bank = to_bank(offset);
-> > > +	const struct aspeed_sgpio_bank *bank = to_bank(offset, gpio);
-> > >  	void __iomem *addr_r, *addr_w;
-> > >  	u32 reg = 0;
-> > >  
-> > > -	if (aspeed_sgpio_is_input(offset))
-> > > +	if (aspeed_sgpio_is_input(offset, gpio))
-> > >  		return -EINVAL;
-> > >  
-> > >  	/* Since this is an output, read the cached value from rdata, then
-> > > @@ -209,9 +222,9 @@ static int sgpio_set_value(struct gpio_chip *gc, 
-> > > unsigned int offset, int val)
-> > >  	reg = ioread32(addr_r);
-> > >  
-> > >  	if (val)
-> > > -		reg |= GPIO_BIT(offset);
-> > > +		reg |= GPIO_BIT(offset, gpio);
-> > >  	else
-> > > -		reg &= ~GPIO_BIT(offset);
-> > > +		reg &= ~GPIO_BIT(offset, gpio);
-> > >  
-> > >  	iowrite32(reg, addr_w);
-> > >  
-> > > @@ -232,7 +245,9 @@ static void aspeed_sgpio_set(struct gpio_chip *gc, 
-> > > unsigned int offset, int val)
-> > >  
-> > >  static int aspeed_sgpio_dir_in(struct gpio_chip *gc, unsigned int offset)
-> > >  {
-> > > -	return aspeed_sgpio_is_input(offset) ? 0 : -EINVAL;
-> > > +	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
-> > > +
-> > > +	return aspeed_sgpio_is_input(offset, gpio) ? 0 : -EINVAL;
-> > >  }
-> > >  
-> > >  static int aspeed_sgpio_dir_out(struct gpio_chip *gc, unsigned int 
-> > > offset, int val)
-> > > @@ -253,7 +268,9 @@ static int aspeed_sgpio_dir_out(struct gpio_chip 
-> > > *gc, unsigned int offset, int v
-> > >  
-> > >  static int aspeed_sgpio_get_direction(struct gpio_chip *gc, unsigned 
-> > > int offset)
-> > >  {
-> > > -	return !!aspeed_sgpio_is_input(offset);
-> > > +	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
-> > > +
-> > > +	return !!aspeed_sgpio_is_input(offset, gpio);
-> > >  }
-> > >  
-> > >  static void irqd_to_aspeed_sgpio_data(struct irq_data *d,
-> > > @@ -268,8 +285,8 @@ static void irqd_to_aspeed_sgpio_data(struct irq_data *d,
-> > >  	WARN_ON(!internal);
-> > >  
-> > >  	*gpio = internal;
-> > > -	*bank = to_bank(*offset);
-> > > -	*bit = GPIO_BIT(*offset);
-> > > +	*bank = to_bank(*offset, internal);
-> > > +	*bit = GPIO_BIT(*offset, internal);
-> > >  }
-> > >  
-> > >  static void aspeed_sgpio_irq_ack(struct irq_data *d)
-> > > @@ -466,9 +483,21 @@ static int aspeed_sgpio_setup_irqs(struct 
-> > > aspeed_sgpio *gpio,
-> > >  	return 0;
-> > >  }
-> > >  
-> > > +static const struct aspeed_sgpio_pdata ast2600_sgpiom_128_pdata = {
-> > > +	.max_ngpios = 128,
-> > > +	.pin_mask = GENMASK(10, 6),
-> > > +};
-> > > +
-> > > +static const struct aspeed_sgpio_pdata ast2600_sgpiom_80_pdata = {
-> > > +	.max_ngpios = 80,
-> > > +	.pin_mask = GENMASK(10, 6),
-> > > +};
-> > > +
-> > >  static const struct of_device_id aspeed_sgpio_of_table[] = {
-> > >  	{ .compatible = "aspeed,ast2400-sgpio" },
-> > >  	{ .compatible = "aspeed,ast2500-sgpio" },
-> > 
-> > Add .data for these too.
-> > 
-> 
-> I was wondering if I can define a platform data for both ast2400 and
-> ast2500 as they have the same configurations.
-> 
-> For example:
-> 
-> static const struct aspeed_sgpio_pdata ast2400_sgpio_pdata = {
-> 	.max_ngpios = 80,
-> 	.pin_mask = GENMASK(9, 6),
-> };
-> 
-> static const struct of_device_id aspeed_sgpio_of_table[] = {
-> 	{ .compatible = "aspeed,ast2400-sgpio", .data = ast2400_sgpio_pdata, },
-> 	{ .compatible = "aspeed,ast2500-sgpio", .data = ast2400_sgpio_pdata, },
-> 
-
-Yep, that's fine.
-
-Cheers,
-
-Andrew
+DQpIaSBGcmllZGVyLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEFu
+ZHJldyBMdW5uIDxhbmRyZXdAbHVubi5jaD4NCj4gU2VudDogMjAyMcTqNdTCMjfI1SAyMjowNg0K
+PiBUbzogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gQ2M6IGRhdmVt
+QGRhdmVtbG9mdC5uZXQ7IGt1YmFAa2VybmVsLm9yZzsgZnJpZWRlci5zY2hyZW1wZkBrb250cm9u
+LmRlOw0KPiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
+b3JnOyBkbC1saW51eC1pbXgNCj4gPGxpbnV4LWlteEBueHAuY29tPg0KPiBTdWJqZWN0OiBSZTog
+W1BBVENIIFYxIG5ldC1uZXh0IDAvMl0gbmV0OiBmZWM6IGZpeCBUWCBiYW5kd2lkdGggZmx1Y3R1
+YXRpb25zDQo+IA0KPiBPbiBUaHUsIE1heSAyNywgMjAyMSBhdCAxMjoxMDo0N1BNICswMDAwLCBK
+b2FraW0gWmhhbmcgd3JvdGU6DQo+ID4NCj4gPiBIaSBGcmllZGVyLA0KPiA+DQo+ID4gQXMgd2Ug
+dGFsa2VkIGJlZm9yZSwgY291bGQgeW91IHBsZWFzZSBoZWxwIHRlc3QgdGhlIHBhdGNoZXMgd2hl
+biB5b3UgYXJlDQo+IGZyZWU/IFRoYW5rcy4NCj4gDQo+IEhpIEZyaWVkZXINCj4gDQo+IElmIHlv
+dSBjYW4sIGNvdWxkIHlvdSBhbHNvIHRlc3QgaXQgd2l0aCB0cmFmZmljIHdpdGggYSBtaXh0dXJl
+IG9mIFZMQU4gcHJpb3JpdGllcy4NCj4gWW91IG1pZ2h0IHdhbnQgdG8gZm9yY2UgdGhlIGxpbmsg
+dG8gMTBGdWxsLCBzbyB5b3UgY2FuIG92ZXJsb2FkIGl0LiBUaGVuIHNlZQ0KPiB3aGF0IHRyYWZm
+aWMgYWN0dWFsbHkgbWFrZXMgaXQgdGhyb3VnaC4NCg0KRGlkIHlvdXIgbWFpbGJveCBnZXQgYm9t
+YmVkLCBsZXQgeW91IG1pc3MgdGhpcyBtYWlsLCBob3BlIHlvdSBjYW4gc2VlIHRoaXMgcmVwbHku
+DQoNCkNvdWxkIHlvdSBwbGVhc2UgZ2l2ZSBzb21lIGZlZWRiYWNrIGlmIGl0IGlzIHBvc3NpYmxl
+PyBUaGFua3MgOi0pDQoNCkJlc3QgUmVnYXJkcywNCkpvYWtpbSBaaGFuZw0KPiAJIEFuZHJldw0K
