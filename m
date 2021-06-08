@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017033A00EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8508139FFA0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235735AbhFHSs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:48:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36824 "EHLO mail.kernel.org"
+        id S233497AbhFHSet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:34:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234881AbhFHSnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:43:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39C21613CD;
-        Tue,  8 Jun 2021 18:35:55 +0000 (UTC)
+        id S234587AbhFHSdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:33:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BC9A613AC;
+        Tue,  8 Jun 2021 18:31:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177355;
-        bh=FHSmhnPejxX14+DhU0J9Z6mRM5qZiTB3aOK5+V2taTU=;
+        s=korg; t=1623177063;
+        bh=YxdeiHOy2hyiCULXUy9RIlLXnXSrI3pEcvAernlVT6E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mCbiI2Qw5NivE/pGDDZRVmLw3DkTNhPMauIlVgVZPN6CRbSGoFt9iVliKmNakiXmC
-         PYOs3hZAK1Jmx/fkFCpIIUUxkPLQ11j6vMZUwVWE10pSIVOyZuqXtPt/XWEp8gU0U4
-         Xp3UOYNYnpkLf6WmnuqHEB+M+uL4cFbl6daVjNyY=
+        b=Rpo2Qo10xolQDunrtR1kwzlRYRFPoVrc/Q1HnK8d7ahMGtdMSBH+vyAvBJB73Hhaw
+         7ALOe/Cbyu4KXkJ0oLuK5tzHMeg8tFzFloHZAApZ49PqNII+0H4YMIkp/Ktp7ORB13
+         IOunS4Erfv440pQMRENHncv8ECzBFrNPJHlXoRc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Vishakha Jambekar <vishakha.jambekar@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 22/78] ixgbevf: add correct exception tracing for XDP
-Date:   Tue,  8 Jun 2021 20:26:51 +0200
-Message-Id: <20210608175936.011537638@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 09/47] HID: i2c-hid: fix format string mismatch
+Date:   Tue,  8 Jun 2021 20:26:52 +0200
+Message-Id: <20210608175930.786097798@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
+References: <20210608175930.477274100@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit faae81420d162551b6ef2d804aafc00f4cd68e0e ]
+[ Upstream commit dc5f9f55502e13ba05731d5046a14620aa2ff456 ]
 
-Add missing exception tracing to XDP when a number of different
-errors can occur. The support was only partial. Several errors
-where not logged which would confuse the user quite a lot not
-knowing where and why the packets disappeared.
+clang doesn't like printing a 32-bit integer using %hX format string:
 
-Fixes: 21092e9ce8b1 ("ixgbevf: Add support for XDP_TX action")
-Reported-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Tested-by: Vishakha Jambekar <vishakha.jambekar@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+drivers/hid/i2c-hid/i2c-hid-core.c:994:18: error: format specifies type 'unsigned short' but the argument has type '__u32' (aka 'unsigned int') [-Werror,-Wformat]
+                 client->name, hid->vendor, hid->product);
+                               ^~~~~~~~~~~
+drivers/hid/i2c-hid/i2c-hid-core.c:994:31: error: format specifies type 'unsigned short' but the argument has type '__u32' (aka 'unsigned int') [-Werror,-Wformat]
+                 client->name, hid->vendor, hid->product);
+                                            ^~~~~~~~~~~~
+
+Use an explicit cast to truncate it to the low 16 bits instead.
+
+Fixes: 9ee3e06610fd ("HID: i2c-hid: override HID descriptors for certain devices")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/hid/i2c-hid/i2c-hid-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-index 64ec0e7c64b4..be8e6d4e376e 100644
---- a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-+++ b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-@@ -1079,11 +1079,14 @@ static struct sk_buff *ixgbevf_run_xdp(struct ixgbevf_adapter *adapter,
- 	case XDP_TX:
- 		xdp_ring = adapter->xdp_ring[rx_ring->queue_index];
- 		result = ixgbevf_xmit_xdp_ring(xdp_ring, xdp);
-+		if (result == IXGBEVF_XDP_CONSUMED)
-+			goto out_failure;
- 		break;
- 	default:
- 		bpf_warn_invalid_xdp_action(act);
- 		/* fallthrough */
- 	case XDP_ABORTED:
-+out_failure:
- 		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
- 		/* fallthrough -- handle aborts by dropping packet */
- 	case XDP_DROP:
+diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+index 0294cac4c856..b16bf4358485 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -1092,8 +1092,8 @@ static int i2c_hid_probe(struct i2c_client *client,
+ 	hid->vendor = le16_to_cpu(ihid->hdesc.wVendorID);
+ 	hid->product = le16_to_cpu(ihid->hdesc.wProductID);
+ 
+-	snprintf(hid->name, sizeof(hid->name), "%s %04hX:%04hX",
+-		 client->name, hid->vendor, hid->product);
++	snprintf(hid->name, sizeof(hid->name), "%s %04X:%04X",
++		 client->name, (u16)hid->vendor, (u16)hid->product);
+ 	strlcpy(hid->phys, dev_name(&client->dev), sizeof(hid->phys));
+ 
+ 	ihid->quirks = i2c_hid_lookup_quirk(hid->vendor, hid->product);
 -- 
 2.30.2
 
