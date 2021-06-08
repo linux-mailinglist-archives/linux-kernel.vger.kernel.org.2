@@ -2,85 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0BD39F9DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88F539F9E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbhFHPF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:05:28 -0400
-Received: from mail-vs1-f47.google.com ([209.85.217.47]:38802 "EHLO
-        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233754AbhFHPF1 (ORCPT
+        id S233774AbhFHPGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233712AbhFHPGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:05:27 -0400
-Received: by mail-vs1-f47.google.com with SMTP id x8so11035418vso.5;
-        Tue, 08 Jun 2021 08:03:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1tcavaqmFgqNru+gTTtU+o+V3Wc54CY1nbaCwXIhlxU=;
-        b=uIRTr4NTIrCrzyP8SpNuCQCiRF7hwTFyAUvth+zNPswaeRmLx6/XiaphAtAhbUog9L
-         j8t8l2E/RPGfzVZsJiz1/8wJscJ7eKCfv1STbsgyArkDPfi1xuxIOqPJWwacodinNKTo
-         s43JIQiiTCYU+qscWZAN7LBP6HUI0nBNBDpYYE249pr+nzCLSvW48nOx9DV/bPFbfjef
-         4RvfEt01SzXnCUfcXV2I0WWsEaJRfmgO35cYy4OFBUqg9m6qBhysEBcyLZaQtTEfbsP2
-         NkermI6r+JnN0GhJYntowmK5LNn43wTHS2eGxgb5b1TIkvyTdQxxG7/MdctclT3xnv/I
-         ZNgQ==
-X-Gm-Message-State: AOAM532JZoBDbkZ8yfxd8nxQJWiS3z36LpuShUvaKieH1sp3w/k/Acfe
-        MfLNHlWMzl0JWdBNodry0XkL+fTDmRWkbqH8AxE=
-X-Google-Smtp-Source: ABdhPJxLbvwTDX+9ZW5dPiJNBelOmingVkZ8kJ37buiWKcOpa7RYgnef9tMvJgQGeEA/J35nVuqllVSOzmn6Mcy2thE=
-X-Received: by 2002:a05:6102:c4c:: with SMTP id y12mr620420vss.18.1623164609788;
- Tue, 08 Jun 2021 08:03:29 -0700 (PDT)
+        Tue, 8 Jun 2021 11:06:23 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF57DC061574;
+        Tue,  8 Jun 2021 08:04:30 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 91A511F42CA8
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, acme@kernel.org,
+        Andrey Semashev <andrey.semashev@gmail.com>, corbet@lwn.net,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
+        joel@joelfernandes.org, kernel@collabora.com,
+        krisman@collabora.com, libc-alpha@sourceware.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
+        Ingo Molnar <mingo@redhat.com>, pgriffais@valvesoftware.com,
+        Peter Oskolkov <posk@posk.io>,
+        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <20210603195924.361327-1-andrealmeid@collabora.com>
+ <1622799088.hsuspipe84.astroid@bobo.none>
+ <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
+ <1622853816.mokf23xgnt.astroid@bobo.none>
+ <22137ccd-c5e6-9fcc-a176-789558e9ab1e@collabora.com>
+ <20210608122622.oxf662ruaawrtyrd@linutronix.de>
+ <YL99cR0H+7xgU8L1@hirez.programming.kicks-ass.net>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <7ab1a38e-5ba6-843d-9fa8-7480914c3d15@collabora.com>
+Date:   Tue, 8 Jun 2021 12:04:18 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210603221758.10305-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210603221758.10305-11-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210603221758.10305-11-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 8 Jun 2021 17:03:18 +0200
-Message-ID: <CAMuHMdVyEEA7q9eKRmVRSFMs8Jcfx-V9QjZJqqnf7mBeaKi8QQ@mail.gmail.com>
-Subject: Re: [PATCH v2 10/12] serial: sh-sci: Add support for RZ/G2L SoC
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YL99cR0H+7xgU8L1@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 12:18 AM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> From: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Add serial support for RZ/G2L SoC with earlycon and
-> extended mode register support.
->
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Às 11:23 de 08/06/21, Peter Zijlstra escreveu:
+> On Tue, Jun 08, 2021 at 02:26:22PM +0200, Sebastian Andrzej Siewior wrote:
+>> On 2021-06-07 12:40:54 [-0300], André Almeida wrote:
+>>>
+>>> When I first read Thomas proposal for per table process, I thought that
+>>> the main goal there was to solve NUMA locality issues, not RT latency,
+>>> but I think you are right. However, re-reading the thread at [0], it
+>>> seems that the RT problems where not completely solved in that
+>>> interface, maybe the people involved with that patchset can help to shed
+>>> some light on it.
+>>>
+>>> Otherwise, this same proposal could be integrated in futex2, given that
+>>> we would only need to provide to userland some extra flags and add some
+>>> `if`s around the hash table code (in a very similar way the NUMA code
+>>> will be implemented in futex2).
+>>
+>> There are slides at [0] describing some attempts and the kernel tree [1]
+>> from that time.
+>>
+>> The process-table solves the problem to some degree that two random
+>> process don't collide on the same hash bucket. But as Peter Zijlstra
+>> pointed out back then two threads from the same task could collide on
+>> the same hash bucket (and with ASLR not always). So the collision is
+>> there but limited and this was not perfect.
+>>
+>> All the attempts with API extensions didn't go well because glibc did
+>> not want to change a bit. This starts with a mutex that has a static
+>> initializer which has to work (I don't remember why the first
+>> pthread_mutex_lock() could not fail with -ENOMEM but there was
+>> something) and ends with glibc's struct mutex which is full and has no
+>> room for additional data storage.
+>>
+>> The additional data in user's struct mutex + init would have the benefit
+>> that instead uaddr (which is hashed for the in-kernel lookup) a cookie
+>> could be used for the hash-less lookup (and NUMA pointer where memory
+>> should be stored).
+>>
+>> So. We couldn't change a thing back then so nothing did happen. We
+>> didn't want to create a new interface and a library implementing it plus
+>> all the functionality around it (like pthread_cond, phtread_barrier, …).
+>> Not to mention that if glibc continues to use the "old" locking
+>> internally then the application is still affected by the hash-collision
+>> locking (or the NUMA problem) should it block on the lock.
+> 
+> There's more futex users than glibc, and some of them are really hurting
+> because of the NUMA issue. Oracle used to (I've no idea what they do or
+> do not do these days) use sysvsem because the futex hash table was a
+> massive bottleneck for them.
+> 
+> And as Nick said, other vendors are having the same problems.
 
-FTR,
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Since we're talking about NUMA, which userspace communities would be
+able to provide feedback about the futex2() NUMA-aware feature, to check
+if this interface would help solving those issues?
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> And if you don't extend the futex to store the nid you put the waiter in
+> (see all the problems above) you will have to do wakeups on all nodes,
+> which is both slower than it is today, and scales possibly even worse.
+> 
+> The whole numa-aware qspinlock saga is in part because of futex.
+> 
+> 
+> That said; if we're going to do the whole futex-vector thing, we really
+> do need a new interface, because the futex multiplex monster is about to
+> crumble (see the fun wrt timeouts for example).
+> 
+> And if we're going to do a new interface, we ought to make one that can
+> solve all these problems. Now, ideally glibc will bring forth some
+> opinions, but if they don't want to play, we'll go back to the good old
+> days of non-standard locking libraries.. we're halfway there already due
+> to glibc not wanting to break with POSIX were we know POSIX was just
+> dead wrong broken.
+> 
+> See: https://github.com/dvhart/librtpi
+> 
+> 
