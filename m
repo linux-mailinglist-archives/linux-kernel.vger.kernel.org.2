@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDDD39FB7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDBA39FB20
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbhFHQCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 12:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
+        id S232636AbhFHPrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233318AbhFHQB4 (ORCPT
+        with ESMTP id S231268AbhFHPrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:01:56 -0400
-X-Greylist: delayed 600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Jun 2021 09:00:03 PDT
-Received: from mxwww.masterlogin.de (mxwww.masterlogin.de [IPv6:2a03:2900:1:1::a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4EEC061574;
-        Tue,  8 Jun 2021 09:00:03 -0700 (PDT)
-Received: from mxout4.routing.net (unknown [192.168.10.112])
-        by backup.mxwww.masterlogin.de (Postfix) with ESMTPS id 37DED2C52D;
-        Tue,  8 Jun 2021 15:45:55 +0000 (UTC)
-Received: from mxbox4.masterlogin.de (unknown [192.168.10.79])
-        by mxout4.routing.net (Postfix) with ESMTP id 619DA10081F;
-        Tue,  8 Jun 2021 15:45:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
-        s=20200217; t=1623167148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=98Qit1hMtPHZc/TS5dL5TLvDSnXeL0iSq1KTlz2Fj4Y=;
-        b=Iuhw/LqB8uiWEGDmraAJxW1QmzpUpi9yQ86fUmAiLQUYrSGgN4y3cP6HCt6VbhsVuZriB4
-        JmcWW72XI53HVnl+QAB2sqy9KFdUuPMx5Whv0Mu+fyuAq3mVQQPjx+oKgHgcYmnQF6r7Dd
-        fuq4cYG7k3Z18G1o0qLI1U7pTEGpmEo=
-Received: from localhost.localdomain (fttx-pool-217.61.145.142.bambit.de [217.61.145.142])
-        by mxbox4.masterlogin.de (Postfix) with ESMTPSA id AA073804E7;
-        Tue,  8 Jun 2021 15:45:47 +0000 (UTC)
-From:   Frank Wunderlich <linux@fw-web.de>
-To:     linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] thermal: mediatek: add sensors-support
-Date:   Tue,  8 Jun 2021 17:45:30 +0200
-Message-Id: <20210608154530.70074-1-linux@fw-web.de>
-X-Mailer: git-send-email 2.25.1
+        Tue, 8 Jun 2021 11:47:52 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5EAC061574;
+        Tue,  8 Jun 2021 08:45:48 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id u24so25046328edy.11;
+        Tue, 08 Jun 2021 08:45:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=punlm3oWnlQpGTmoym5vrb/f2rcna+QtiUgMPDsatf4=;
+        b=H8Nu4vT7bsEjPWBvTOWc0dWdP+FG5G/I4YCfBVfu4PkWO+nUolranjpmoHNC/nQ1mZ
+         Z/9EdWAQgrWHuyyOrrYHtQjWpClx8WLYUlo/m5QzvCyk06NB/2YH4l21WEjaP4wbiPQ6
+         Q65RjoLea5WU49AD2bNym37JA94b1gf5uS3UJoHxoVqkBX3dB6s4nhAHHCKmE7C3yD3d
+         o3iFnekVNMxSA8r+LPg/yxrbpdSHzu9WLe4Y5vHFPqYonOupxSRG7hSBPVjmRtNMTc2p
+         4/n+KlBp+kJnD0FqDQm/QvGyrYxfcdLBqjQ8gpFVvC6mjAGT23IB/vinVC7XYjIC5y5K
+         t2MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=punlm3oWnlQpGTmoym5vrb/f2rcna+QtiUgMPDsatf4=;
+        b=GezEf4TibyIq4KOaPYA+yBKm0mUDbj8VLjO7+mYubSfbne2Qed5J8YofcQvfkch60q
+         yg+wOnxc3R5RkIPXxhPhHOwp2DVdh9GGqy8xfCQKxXfZipzSwT4iO7RPZHaKYyIZvVHX
+         iPevI29MA6JIM0XnfVaxd4wUytuwt4iKXm7HMeMQFtNyzwyzKFnmwnPs4q/HXdQDN7oI
+         PYc8iEqxPbnk2djV4lGhw0teP4aU87izW4/nhKd7qNK1V9JsoeiuhfMeaH6zAF5crCcE
+         isbnErXA1cam5F92mJbJnZLg70vdJ3IPsmM4EIP/VPoIhIpu393tnrK6Vd38HNB6myaG
+         o2cw==
+X-Gm-Message-State: AOAM530ATMOiBIOQr1hKiRIH1lIFyUTXCrssYn9YmHC0DEQhCpxKWLkV
+        zLMCPxUay9JIGakXEO1UluLp8nS5rVNrJQ==
+X-Google-Smtp-Source: ABdhPJy0UifSThFXavPmbq1T1ZvkgmL2HZgrxBBMEZm3HoBZDjx3q74MkxtTxIXipLDHcVcXv9M8Ng==
+X-Received: by 2002:aa7:cc19:: with SMTP id q25mr25588574edt.56.1623167146925;
+        Tue, 08 Jun 2021 08:45:46 -0700 (PDT)
+Received: from [192.168.178.196] ([171.33.179.232])
+        by smtp.gmail.com with ESMTPSA id p10sm42670edy.86.2021.06.08.08.45.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 08:45:46 -0700 (PDT)
+Subject: Re: Backporting fix for #199981 to 4.19.y?
+To:     Greg KH <greg@kroah.com>, Salvatore Bonaccorso <carnil@debian.org>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <c75fcd12-e661-bc03-e077-077799ef1c44@gmail.com>
+ <YLiNrCFFGEmltssD@kroah.com> <5399984e-0860-170e-377e-1f4bf3ccb3a0@gmail.com>
+ <YLiel5ZEcq+mlshL@kroah.com> <addc193a-5b19-f7f3-5f26-cdce643cd436@gmail.com>
+ <YLpJyhTNF+MLPHCi@kroah.com> <YLzAw27CQpdEshBl@eldamar.lan>
+ <YL+AMiD7falsvZOf@kroah.com>
+From:   =?UTF-8?Q?Lauren=c8=9biu_P=c4=83ncescu?= <lpancescu@gmail.com>
+Message-ID: <41c228f1-451e-d5b5-f4a4-bd1bf13389fb@gmail.com>
+Date:   Tue, 8 Jun 2021 17:45:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <YL+AMiD7falsvZOf@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Mail-ID: 8400b1d9-070e-406d-af5d-86a2ada1c8ff
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+Hi Greg,
 
-add HWMON-support to mediateks thermal driver to allow lm-sensors
-userspace tools read soc temperature
+On 6/8/21 4:35 PM, Greg KH wrote:
+> I do not see a commit a46393c02c76 in Linus's tree :(
+> 
+> Are you sure these ids are correct?
 
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
----
-v4: change message to dev_warn as suggested by matthias
-v3: drop no_hwmon
-v2: drop ifdef and used devm_thermal_add_hwmon_sysfs
----
- drivers/thermal/mtk_thermal.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Sorry for the confusion, I think the correct ids are 
+d737f333b211361b6e239fc753b84c3be2634aaa and 
+b1c0330823fe842dbb34641f1410f0afa51c29d3.
 
-diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
-index 97e8678ccf0e..ede94eadddda 100644
---- a/drivers/thermal/mtk_thermal.c
-+++ b/drivers/thermal/mtk_thermal.c
-@@ -23,6 +23,8 @@
- #include <linux/reset.h>
- #include <linux/types.h>
- 
-+#include "thermal_hwmon.h"
-+
- /* AUXADC Registers */
- #define AUXADC_CON1_SET_V	0x008
- #define AUXADC_CON1_CLR_V	0x00c
-@@ -1087,6 +1089,10 @@ static int mtk_thermal_probe(struct platform_device *pdev)
- 		goto err_disable_clk_peri_therm;
- 	}
- 
-+	ret = devm_thermal_add_hwmon_sysfs(tzdev);
-+	if (ret)
-+		dev_warn(&pdev->dev, "error in thermal_add_hwmon_sysfs");
-+
- 	return 0;
- 
- err_disable_clk_peri_therm:
--- 
-2.25.1
-
+Thanks,
+Laurențiu
