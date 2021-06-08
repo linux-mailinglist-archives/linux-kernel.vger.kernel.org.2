@@ -2,296 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B470B39EB0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB51439EB27
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbhFHA5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 20:57:22 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:60303 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230266AbhFHA5U (ORCPT
+        id S230494AbhFHBCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:02:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41105 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230209AbhFHBCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 20:57:20 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0D74358058A;
-        Mon,  7 Jun 2021 20:55:28 -0400 (EDT)
-Received: from imap43 ([10.202.2.93])
-  by compute2.internal (MEProxy); Mon, 07 Jun 2021 20:55:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=S1oGl43iTjA4wirSPtURQ/6OAgOvqX3
-        4gNUW8MSgy74=; b=RTiLK+IEkumxJFWbFoHfr5tJuhxy9bjIrxTt0xgvBkYw/WI
-        GOWqfva4w8Kq7zJw1Pj8LpdXn1TgFobuAwJRSSKCCSNZKRZueeP6lPoP4VI1V0jJ
-        ea6Yfta2EnsVkeYmafq92BGtd541PxOlFJV+LFyjAGax1doYZKblslKSRDN8pRiC
-        jgMkYYkO2UxoqMUtaIV6A/X+zMfKU3hwOHc+RMrbHEenZddvEt3py2eYm8j8uDLn
-        LCqkU2SOWiKqxk9hfEl3Ral2m3wfY+YLdjgWq5EbQw5CdwjYE44UKRhl2S58Q/2K
-        GEqFC7THp0JdBKx5Grm94qIe0rfFKL2QPL51ZHQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=S1oGl4
-        3iTjA4wirSPtURQ/6OAgOvqX34gNUW8MSgy74=; b=qao3GYVw3WKcjil3PpD+ji
-        SoKoNwdTOu7qRoIGR87ZEBtsHAIYrR6wplRSFIOgvA6p1vZUV5aZaooVuv88s94m
-        /7mELqaEIZR+2g+TAjhq/nz980Kzkf2vUMif2IQ2LlmFskcQ0YAWlFnE6eAqlPXK
-        +iX9XCC1DazxFa0F2beGFhdRcdBgXrw+s3YteiOkH8zPsg7X4mli/UbPsRCfu8wn
-        NQHXVuJz1gPmEQw2GBGJz8/bExTsN1rPkeJTk/bv3e3vl6kA/UzrWYCgUMH1rgkb
-        GRw+PEKAzBjwrb28Tz6Q4OsYpKrM9NtnKT4TfzvPJ47iKFxKzD1nuvjsXplv2WKQ
-        ==
-X-ME-Sender: <xms:_r--YL0RzLV40qbpaz7Sia1M2CRPFd-bqMIO7kJpW7X4i9EParOyLw>
-    <xme:_r--YKF3BUi3ZymtEO6n853xBrg7jwRbyw9rtf9P4UEtnhivAmcBu5FJCnJZsE4Tj
-    EP6WvINquN4cWurMQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgfeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
-    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:_r--YL7tmnGjhYaZQVGxGahwqX5QaMDsnm4eGQKWkMxBk_OIlNhuvQ>
-    <xmx:_r--YA1am8T52ZPvZjREBvdSiNqiqw4IFe25wa0xJUI16yCxSgOu7Q>
-    <xmx:_r--YOHJTM8c9_hQwivPQLOHd5iY-r7XjaB3aORdbiYC0THfvIu4JA>
-    <xmx:AMC-YKE-lLoiXiPoxdtU4YUBEI3lj7x3YNAM03hOFUc_9TTgTQdh_g>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 00ED1AC0062; Mon,  7 Jun 2021 20:55:26 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
-Mime-Version: 1.0
-Message-Id: <e5487cab-2ca0-46c2-a644-46d8b3070eac@www.fastmail.com>
-In-Reply-To: <df0d31e9-c4e1-4cf0-b800-c5dadfb43420@www.fastmail.com>
-References: <20210510054213.1610760-1-andrew@aj.id.au>
- <20210510054213.1610760-15-andrew@aj.id.au> <YKdfeJJM/4LYFKe4@packtop>
- <df0d31e9-c4e1-4cf0-b800-c5dadfb43420@www.fastmail.com>
-Date:   Tue, 08 Jun 2021 10:25:04 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Zev Weiss" <zweiss@equinix.com>
-Cc:     "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "Corey Minyard" <minyard@acm.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "Tomer Maimon" <tmaimon77@gmail.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "Avi Fishman" <avifishman70@gmail.com>,
-        "Patrick Venture" <venture@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Tali Perry" <tali.perry1@gmail.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Benjamin Fair" <benjaminfair@google.com>,
-        "Arnd Bergmann" <arnd@arndb.de>
-Subject: =?UTF-8?Q?Re:_[PATCH_v3_14/16]_ipmi:_kcs=5Fbmc=5Faspeed:_Implement_KCS_S?=
- =?UTF-8?Q?erIRQ_configuration?=
-Content-Type: text/plain
+        Mon, 7 Jun 2021 21:02:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623114029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l9Hxnp9TzX1Qa0LPCbDI+r/Swgm1W5T0HqpzgDaMsIM=;
+        b=cJCSUgDFNaKbpGVyueCsW9AsPJ87rUUNJ2uMBjgxXT2QJvdiZBdYfxXHP3+/3p6nGYzEWg
+        tmD9Sw/ctpoL8CGN2Jao+RWPj6m+4UmOTw2ch+nQomfNLK+jYu4/ul7/uLSGdM5FMIH/GF
+        Uck9AV0RXzwXaKJm07iuCruZvckdEOY=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-229-ZtjKPfJSM66UnieZPUkJUg-1; Mon, 07 Jun 2021 21:00:28 -0400
+X-MC-Unique: ZtjKPfJSM66UnieZPUkJUg-1
+Received: by mail-pj1-f72.google.com with SMTP id 15-20020a17090a0f0fb029016ad0f32fd0so11810033pjy.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:00:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=l9Hxnp9TzX1Qa0LPCbDI+r/Swgm1W5T0HqpzgDaMsIM=;
+        b=F1kuMFNQzelmtDQs9DAj1UVyrwMyKaS4XfeVWUIRMrK9BdnvBul4sPEawjrHK7PTS9
+         P//BqPU3D/10CdwY7vxCk97EPydBKbrYrPt/YQM/K90d/xaq7740QjxvanotRdlz8I4I
+         M5bPMwd2EQVSzYnRbuFR2H1UGvGNK6p3tIUrzRbDqx3WOiWxiERVB2NQkvjKZIFiedQk
+         OKCXglKpZgNbF0ViuADnSt4AqSHqHgKB4bb06PoljMPIE2fLfF0uOGZKJuwtXvfVQgpI
+         ZDZW0RmePnyuejSuSvCFWDOnsjuuQRY2NeFou2KeHxGYKTqJZheKw/t9tUGYEycTrtQv
+         L6Fw==
+X-Gm-Message-State: AOAM533FMmy4RZYsdbM5KwPAU2v6GVSkmCIiAwmS1LAidyN3DCU0GW4Y
+        Pdu/xbeHo5UPr5mUImMTFUGtQRMcUbQvu9p28L2z0mX9U2csqXHrPBxElKZijtzpmLag3RwmHt3
+        TjND8+xmeV5/R4P1Za5HRl1UW
+X-Received: by 2002:a17:90a:db0f:: with SMTP id g15mr1973146pjv.156.1623114026999;
+        Mon, 07 Jun 2021 18:00:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwYWbmdIHR4JeIkPyMKnrD47V0fE4/gLC34oE2C1BXzJ6Yk+6wQV2cQXaOEH+lTIww5tPr8Pg==
+X-Received: by 2002:a17:90a:db0f:: with SMTP id g15mr1973123pjv.156.1623114026742;
+        Mon, 07 Jun 2021 18:00:26 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id w142sm9258485pff.154.2021.06.07.18.00.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 18:00:26 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Gerd Hoffmann <kraxel@redhat.com>
+References: <20210602120111.5e5bcf93.alex.williamson@redhat.com>
+ <20210602180925.GH1002214@nvidia.com>
+ <20210602130053.615db578.alex.williamson@redhat.com>
+ <20210602195404.GI1002214@nvidia.com>
+ <20210602143734.72fb4fa4.alex.williamson@redhat.com>
+ <6a9426d7-ed55-e006-9c4c-6b7c78142e39@redhat.com>
+ <20210603130927.GZ1002214@nvidia.com>
+ <65614634-1db4-7119-1a90-64ba5c6e9042@redhat.com>
+ <20210604115805.GG1002214@nvidia.com>
+ <895671cc-5ef8-bc1a-734c-e9e2fdf03652@redhat.com>
+ <20210607141424.GF1002214@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <1cf9651a-b8ee-11f1-1f70-db3492a76400@redhat.com>
+Date:   Tue, 8 Jun 2021 09:00:15 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210607141424.GF1002214@nvidia.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+ÔÚ 2021/6/7 ÏÂÎç10:14, Jason Gunthorpe Ð´µÀ:
+> On Mon, Jun 07, 2021 at 11:18:33AM +0800, Jason Wang wrote:
+>
+>> Note that no drivers call these things doesn't meant it was not
+>> supported by the spec.
+> Of course it does. If the spec doesn't define exactly when the driver
+> should call the cache flushes for no-snoop transactions then the
+> protocol doesn't support no-soop.
 
-On Tue, 8 Jun 2021, at 10:11, Andrew Jeffery wrote:
-> 
-> 
-> On Fri, 21 May 2021, at 16:51, Zev Weiss wrote:
-> > On Mon, May 10, 2021 at 12:42:11AM CDT, Andrew Jeffery wrote:
-> > >Apply the SerIRQ ID and level/sense behaviours from the devicetree if
-> > >provided.
-> > >
-> > >Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> > >---
-> > > drivers/char/ipmi/kcs_bmc_aspeed.c | 182 ++++++++++++++++++++++++++++-
-> > > 1 file changed, 180 insertions(+), 2 deletions(-)
-> > >
-> > >diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
-> > >index 8a0b1e18e945..9b81806b4dcb 100644
-> > >--- a/drivers/char/ipmi/kcs_bmc_aspeed.c
-> > >+++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
-> > >@@ -9,6 +9,7 @@
-> > > #include <linux/errno.h>
-> > > #include <linux/interrupt.h>
-> > > #include <linux/io.h>
-> > >+#include <linux/irq.h>
-> > > #include <linux/mfd/syscon.h>
-> > > #include <linux/module.h>
-> > > #include <linux/of.h>
-> > >@@ -28,6 +29,22 @@
-> > >
-> > > #define KCS_CHANNEL_MAX     4
-> > >
-> > >+/*
-> > >+ * Field class descriptions
-> > >+ *
-> > >+ * LPCyE	Enable LPC channel y
-> > >+ * IBFIEy	Input Buffer Full IRQ Enable for LPC channel y
-> > >+ * IRQxEy	Assert SerIRQ x for LPC channel y (Deprecated, use IDyIRQX, IRQXEy)
-> > >+ * IDyIRQX	Use the specified 4-bit SerIRQ for LPC channel y
-> > >+ * SELyIRQX	SerIRQ polarity for LPC channel y (low: 0, high: 1)
-> > >+ * IRQXEy	Assert the SerIRQ specified in IDyIRQX for LPC channel y
-> > >+ */
-> > >+
-> > >+#define LPC_TYIRQX_LOW       0b00
-> > >+#define LPC_TYIRQX_HIGH      0b01
-> > >+#define LPC_TYIRQX_RSVD      0b10
-> > >+#define LPC_TYIRQX_RISING    0b11
-> > >+
-> > > #define LPC_HICR0            0x000
-> > > #define     LPC_HICR0_LPC3E          BIT(7)
-> > > #define     LPC_HICR0_LPC2E          BIT(6)
-> > >@@ -39,6 +56,19 @@
-> > > #define LPC_HICR4            0x010
-> > > #define     LPC_HICR4_LADR12AS       BIT(7)
-> > > #define     LPC_HICR4_KCSENBL        BIT(2)
-> > >+#define LPC_SIRQCR0	     0x070
-> > >+/* IRQ{12,1}E1 are deprecated as of AST2600 A3 but necessary for prior chips */
-> > >+#define     LPC_SIRQCR0_IRQ12E1	     BIT(1)
-> > >+#define     LPC_SIRQCR0_IRQ1E1	     BIT(0)
-> > >+#define LPC_HICR5	     0x080
-> > >+#define     LPC_HICR5_ID3IRQX_MASK   GENMASK(23, 20)
-> > >+#define     LPC_HICR5_ID3IRQX_SHIFT  20
-> > >+#define     LPC_HICR5_ID2IRQX_MASK   GENMASK(19, 16)
-> > >+#define     LPC_HICR5_ID2IRQX_SHIFT  16
-> > >+#define     LPC_HICR5_SEL3IRQX       BIT(15)
-> > >+#define     LPC_HICR5_IRQXE3         BIT(14)
-> > >+#define     LPC_HICR5_SEL2IRQX       BIT(13)
-> > >+#define     LPC_HICR5_IRQXE2         BIT(12)
-> > > #define LPC_LADR3H           0x014
-> > > #define LPC_LADR3L           0x018
-> > > #define LPC_LADR12H          0x01C
-> > >@@ -55,6 +85,13 @@
-> > > #define LPC_HICRB            0x100
-> > > #define     LPC_HICRB_IBFIF4         BIT(1)
-> > > #define     LPC_HICRB_LPC4E          BIT(0)
-> > >+#define LPC_HICRC            0x104
-> > >+#define     LPC_HICRC_ID4IRQX_MASK   GENMASK(7, 4)
-> > >+#define     LPC_HICRC_ID4IRQX_SHIFT  4
-> > >+#define     LPC_HICRC_TY4IRQX_MASK   GENMASK(3, 2)
-> > >+#define     LPC_HICRC_TY4IRQX_SHIFT  2
-> > >+#define     LPC_HICRC_OBF4_AUTO_CLR  BIT(1)
-> > >+#define     LPC_HICRC_IRQXE4         BIT(0)
-> > > #define LPC_LADR4            0x110
-> > > #define LPC_IDR4             0x114
-> > > #define LPC_ODR4             0x118
-> > >@@ -62,11 +99,21 @@
-> > >
-> > > #define OBE_POLL_PERIOD	     (HZ / 2)
-> > >
-> > >+enum aspeed_kcs_irq_mode {
-> > >+	aspeed_kcs_irq_none,
-> > >+	aspeed_kcs_irq_serirq,
-> > >+};
-> > >+
-> > > struct aspeed_kcs_bmc {
-> > > 	struct kcs_bmc_device kcs_bmc;
-> > >
-> > > 	struct regmap *map;
-> > >
-> > >+	struct {
-> > >+		enum aspeed_kcs_irq_mode mode;
-> > >+		int id;
-> > >+	} upstream_irq;
-> > >+
-> > > 	struct {
-> > > 		spinlock_t lock;
-> > > 		bool remove;
-> > >@@ -103,6 +150,49 @@ static void aspeed_kcs_outb(struct kcs_bmc_device *kcs_bmc, u32 reg, u8 data)
-> > >
-> > > 	rc = regmap_write(priv->map, reg, data);
-> > > 	WARN(rc != 0, "regmap_write() failed: %d\n", rc);
-> > >+
-> > >+	/* Trigger the upstream IRQ on ODR writes, if enabled */
-> > >+
-> > >+	switch (reg) {
-> > >+	case LPC_ODR1:
-> > >+	case LPC_ODR2:
-> > >+	case LPC_ODR3:
-> > >+	case LPC_ODR4:
-> > >+		break;
-> > >+	default:
-> > >+		return;
-> > >+	}
-> > >+
-> > >+	if (priv->upstream_irq.mode != aspeed_kcs_irq_serirq)
-> > >+		return;
-> > >+
-> > >+	switch (kcs_bmc->channel) {
-> > >+	case 1:
-> > >+		switch (priv->upstream_irq.id) {
-> > >+		case 12:
-> > >+			regmap_update_bits(priv->map, LPC_SIRQCR0, LPC_SIRQCR0_IRQ12E1,
-> > >+					   LPC_SIRQCR0_IRQ12E1);
-> > >+			break;
-> > >+		case 1:
-> > >+			regmap_update_bits(priv->map, LPC_SIRQCR0, LPC_SIRQCR0_IRQ1E1,
-> > >+					   LPC_SIRQCR0_IRQ1E1);
-> > >+			break;
 
-This is the code supporting the comment below.
+Just to make sure we are in the same page. What I meant is, if the DMA 
+behavior like (no-snoop) is device specific. There's no need to mandate 
+a virtio general attributes. We can describe it per device. The devices 
+implemented in the current spec does not use non-coherent DMA doesn't 
+mean any future devices won't do that. The driver could choose to use 
+transport (e.g PCI), platform (ACPI) or device specific (general virtio 
+command) way to detect and flush cache when necessary.
 
-> > >+		default:
-> > >+			break;
-> > >+		}
-> > >+		break;
-> > >+	case 2:
-> > >+		regmap_update_bits(priv->map, LPC_HICR5, LPC_HICR5_IRQXE2, LPC_HICR5_IRQXE2);
-> > >+		break;
-> > >+	case 3:
-> > >+		regmap_update_bits(priv->map, LPC_HICR5, LPC_HICR5_IRQXE3, LPC_HICR5_IRQXE3);
-> > >+		break;
-> > >+	case 4:
-> > >+		regmap_update_bits(priv->map, LPC_HICRC, LPC_HICRC_IRQXE4, LPC_HICRC_IRQXE4);
-> > >+		break;
-> > >+	default:
-> > >+		break;
-> > >+	}
-> > > }
-> > >
-> > > static void aspeed_kcs_updateb(struct kcs_bmc_device *kcs_bmc, u32 reg, u8 mask, u8 val)
-> > >@@ -161,6 +251,73 @@ static void aspeed_kcs_set_address(struct kcs_bmc_device *kcs_bmc, u16 addr)
-> > > 	}
-> > > }
-> > >
-> > >+static inline int aspeed_kcs_map_serirq_type(u32 dt_type)
-> > >+{
-> > >+	switch (dt_type) {
-> > >+	case IRQ_TYPE_EDGE_RISING:
-> > >+		return LPC_TYIRQX_RISING;
-> > >+	case IRQ_TYPE_LEVEL_HIGH:
-> > >+		return LPC_TYIRQX_HIGH;
-> > >+	case IRQ_TYPE_LEVEL_LOW:
-> > >+		return LPC_TYIRQX_LOW;
-> > >+	default:
-> > >+		return -EINVAL;
-> > >+	}
-> > >+}
-> > >+
-> > >+static int aspeed_kcs_config_upstream_irq(struct aspeed_kcs_bmc *priv, u32 id, u32 dt_type)
-> > >+{
-> > >+	unsigned int mask, val, hw_type;
-> > >+
-> > >+	if (id > 15)
-> > >+		return -EINVAL;
-> > >+
-> > >+	hw_type = aspeed_kcs_map_serirq_type(dt_type);
-> > >+	if (hw_type < 0)
-> > >+		return hw_type;
-> > >+
-> > >+	priv->upstream_irq.mode = aspeed_kcs_irq_serirq;
-> > >+	priv->upstream_irq.id = id;
-> > >+
-> > >+	switch (priv->kcs_bmc.channel) {
-> > >+	case 1:
-> > >+		/* Needs IRQxE1 rather than (ID1IRQX, SEL1IRQX, IRQXE1) before AST2600 A3 */
-> > 
-> > I'm struggling a bit with understanding this comment, and relating it to
-> > the code -- it sounds like "we need to do things one way on A3 and
-> > later, and another way on pre-A3", but then...we just break without
-> > doing anything at all either way.  Can you clarify any further?
-> 
-> Hah! You're struggling because it doesn't make any sense, the code's 
-> gone missing :/ I'll fix that up.
 
-Wait, no, this is fine. I just refreshed my memory on what's happening here. This function just configures the SerIRQ - in the case of channel 1 no configuration is necessary as it only has a fixed set of IRQs that we can associate with it. To enable one of them, we just set the appropriate bit in aspeed_kcs_outb() above.
+>
+> no-snoop is only used in very specific sequences of operations, like
+> certain GPU usages, because regaining coherence on x86 is incredibly
+> expensive.
+>
+> ie I wouldn't ever expect a NIC to use no-snoop because NIC's expect
+> packets to be processed by the CPU.
 
-Andrew
+
+For NIC yes. But virtio is more that just NIC. We've already supported 
+GPU and crypto devices. In this case, no-snoop will be useful since the 
+data is not necessarily expected to be processed by CPU.
+
+And a lot of other type of devices are being proposed.
+
+Thanks
+
+
+>
+> "non-coherent DMA" is some general euphemism that evokes images of
+> embedded platforms that don't have coherent DMA at all and have low
+> cost ways to regain coherence. This is not at all what we are talking
+> about here at all.
+>   
+> Jason
+>
+
