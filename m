@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D2639F9EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B42939FA05
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233755AbhFHPHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:07:31 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37612 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233354AbhFHPH3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:07:29 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lqdIM-00044T-OR; Tue, 08 Jun 2021 15:05:34 +0000
-Subject: NAK: [PATCH][next] net: usb: asix: ax88772: Fix less than zero
- comparison of a u16
-From:   Colin Ian King <colin.king@canonical.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210608145823.159467-1-colin.king@canonical.com>
-Message-ID: <26127b07-6f9e-12bb-6d2e-edf6819c08f1@canonical.com>
-Date:   Tue, 8 Jun 2021 16:05:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233792AbhFHPJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:09:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233354AbhFHPJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 11:09:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72DAD60231;
+        Tue,  8 Jun 2021 15:07:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623164835;
+        bh=lajIHORbgJ+gWe5oTfc6aVhrXAeM6lou0+BZHByrUtU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IPLsSo+lStgbkrGD95c1N+i4o+7icKQaErXt7eVH8HXyDaZXinWmoIm3jT4lcLunS
+         pUFVHW+VAfY2UfAba1pD9AO5lQAQhI+pn+PLdOj2a1H+iIf0uYf7Qb6SwIvSAAfhkx
+         hNky0noLcyfwBcCra0jFW7uyAQW5XC/vbEB4T//mxqmdddWdvHXkTc+sudcAKRhaMq
+         LHrusek43suRFhaSbD21Pz0x8TRSEjl1Uhq3o0crVH1xrXr/Gz7j7kNvBGlewioi9P
+         7CdAOV9XMSby4QsVxMME0OVFdSMb8R4gLCLcZoxMGGfK8TUHoVwlCURTVcfY3Heu/B
+         PDM1RrxCKmX/A==
+From:   matthias.bgg@kernel.org
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Sean Wang <sean.wang@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Matthias Brugger <mbrugger@suse.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Subject: [PATCH] pinctrl: mediatek: fix mode encoding
+Date:   Tue,  8 Jun 2021 17:06:56 +0200
+Message-Id: <20210608150656.29007-1-matthias.bgg@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210608145823.159467-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/06/2021 15:58, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The comparison of the u16 priv->phy_addr < 0 is always false because
-> phy_addr is unsigned. Fix this by assigning the return from the call
-> to function asix_read_phy_addr to int ret and using this for the
-> less than zero error check comparison.
-> 
-> Addresses-Coverity: ("Unsigned compared against 0")
-> Fixes: e532a096be0e ("net: usb: asix: ax88772: add phylib support")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/usb/asix_devices.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
-> index 57dafb3262d9..211c5a87eb15 100644
-> --- a/drivers/net/usb/asix_devices.c
-> +++ b/drivers/net/usb/asix_devices.c
-> @@ -704,9 +704,10 @@ static int ax88772_init_phy(struct usbnet *dev)
->  	struct asix_common_private *priv = dev->driver_priv;
->  	int ret;
->  
-> -	priv->phy_addr = asix_read_phy_addr(dev, true);
-> -	if (priv->phy_addr < 0)
-> +	ret = asix_read_phy_addr(dev, true);
-> +	if (ret < 0)
->  		return priv->phy_addr;
-> +	priv->phy_addr = ret;
->  
->  	snprintf(priv->phy_name, sizeof(priv->phy_name), PHY_ID_FMT,
->  		 priv->mdio->id, priv->phy_addr);
-> 
+From: Matthias Brugger <mbrugger@suse.com>
 
-Wrong commit message. I'll send a new fix.
+Pin modes are encoded in the SoC data structure. Use that value to set
+IES SMT.
 
-Colin
+Cc: Fabien Parent <fparent@baylibre.com>
+Cc: Sean Wang <sean.wang@kernel.org>
+Cc: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Cc: linux-mediatek@lists.infradead.org
+Fixes: 696beef77521 ("pinctrl: mediatek: move bit assignment")
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+---
+
+ drivers/pinctrl/mediatek/pinctrl-mtk-common.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
+index 525b1aa7f7a6..5f7c421ab6e7 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
+@@ -134,13 +134,13 @@ static int mtk_pconf_set_ies_smt(struct mtk_pinctrl *pctl, unsigned pin,
+ 			pin, pctl->devdata->port_align, value, arg);
+ 	}
+ 
+-	bit = BIT(pin & 0xf);
+-
+ 	if (arg == PIN_CONFIG_INPUT_ENABLE)
+ 		offset = pctl->devdata->ies_offset;
+ 	else
+ 		offset = pctl->devdata->smt_offset;
+ 
++	bit = BIT(offset & pctl->devdata->mode_mask);
++
+ 	if (value)
+ 		reg_addr = SET_ADDR(mtk_get_port(pctl, pin) + offset, pctl);
+ 	else
+-- 
+2.31.1
+
