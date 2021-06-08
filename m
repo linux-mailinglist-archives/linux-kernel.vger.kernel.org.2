@@ -2,120 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A2F39F947
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5639439F98B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233419AbhFHOhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:37:31 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:50319 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232911AbhFHOh1 (ORCPT
+        id S233603AbhFHOvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:51:20 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48406 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233530AbhFHOvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:37:27 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id AC4C81B4E;
-        Tue,  8 Jun 2021 10:35:32 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 08 Jun 2021 10:35:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=Z
-        BJEHdSWntFaR1di2cSYSVQKl/fJ/upIcuZ2McqMt3g=; b=Vs/gpuN0XDSjEVmTZ
-        s+k72E87oIbJdsjp5jXxFvTwf/5nl5azsb8mNBFhMrrAWoZjKiVa+FR0AqU66ENY
-        gQSOgkKCuUs5EKhHf8aqCp6cZx4tmz2x6/S352Xsf7ViQ0eQ+027IRA37tVx3U0x
-        dXa7SmczRo0jaUA2nb5nD9Da6fRantnSYPAmoovy5eYu+0keS29ASuVdNzH2C3Ne
-        g34IkgS8JGol3AS0xZdjQD8avM0ifiCt6bsygULVf6UhPLHm7+UUrHd92oeiYQOy
-        b2es+H+UrQ5HDHN0dBBgE2E36PaHSbq6uXptn5rVBQv0usc6s4lXzfIXR/ChGAtG
-        5CXyA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=ZBJEHdSWntFaR1di2cSYSVQKl/fJ/upIcuZ2McqMt
-        3g=; b=R9A8/zV2lR1tYxZVdW09dhtrB2QCcG0OeZz/0WO4MzgfZS5rYW4wvtVFk
-        ngOQ/KYVGSWfbNlsIdkPlqax6PIN6tXI5Wywxack9CpYOiEWSr9qvxjCGqSBFsmx
-        Q+D/qx0zXD/nHSYHeb+Wim8M7pqrVyjr+EPHMYUUL8p5ecOZvk4DdxD30p85Z6WK
-        CINy8KSL5SyrDW4v1jbJP1w2GJZK6f7Vx4TaVUY+PMIV1lH3v8rJ3l4ukO41OTi6
-        WGekZpjg9z55WPZwFZls/wb0iN07g1QIQ7DPVepJOGyBWr0dD4x8JaygvbG5UUWW
-        /0thip0HFtAFYEHO8onBOJ7ZmniuA==
-X-ME-Sender: <xms:NIC_YEX4TTGeJlFBXEuvjN6UL7Pm8a9oGcHYsLH3hbgS3p_A3mEFCg>
-    <xme:NIC_YInP0gizG2_pcQo03cRpUOGOje16rXstCIWnSe9Z7Nz2nQr9WkmaMCP3Suqr9
-    1hQIrWodnGHuw>
-X-ME-Received: <xmr:NIC_YIbL4z83uK_ODFzVnyvsgvQ1Z8GToxnWmGOFbEE0JY9M2YyCBMEV9WZcR-Iwns3Tb-1BG5dj1HKI0EZgNBZzkkessLZ2>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtledgieefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeeije
-    euvdffuedvffdtteefuefhkeehgfeuffejveettdelgfeuudffffetfedtnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:NIC_YDV4Q_V_BW82WnQQk5JD2UFYtspmAyLtP10BjUGgz-MhNgveeQ>
-    <xmx:NIC_YOmQ2Q78PP7mIZHTngzP-EdwFFwmBDVC4R29DmxX8NgYvEYSpg>
-    <xmx:NIC_YIelhvD32bMx3XWTs-Wv3sH-ixdkSUbNUpioRQQKrif7zEmkOA>
-    <xmx:NIC_YMb4bSs_ip0kAqJDK6Q1RsfkaG4_iurF7Nl7ytP_TkoCEZNz1w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 8 Jun 2021 10:35:31 -0400 (EDT)
-Date:   Tue, 8 Jun 2021 16:35:30 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Salvatore Bonaccorso <carnil@debian.org>
-Cc:     =?utf-8?Q?Lauren=C8=9Biu_P=C4=83ncescu?= <lpancescu@gmail.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Backporting fix for #199981 to 4.19.y?
-Message-ID: <YL+AMiD7falsvZOf@kroah.com>
-References: <c75fcd12-e661-bc03-e077-077799ef1c44@gmail.com>
- <YLiNrCFFGEmltssD@kroah.com>
- <5399984e-0860-170e-377e-1f4bf3ccb3a0@gmail.com>
- <YLiel5ZEcq+mlshL@kroah.com>
- <addc193a-5b19-f7f3-5f26-cdce643cd436@gmail.com>
- <YLpJyhTNF+MLPHCi@kroah.com>
- <YLzAw27CQpdEshBl@eldamar.lan>
+        Tue, 8 Jun 2021 10:51:19 -0400
+Message-Id: <20210608143617.565868844@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623163765;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ot1Q1zefd/zaAtJg7GVY8sdI4qtA+CpzvvUDCHO3GSE=;
+        b=1DMRnq9jHsbfilOuwHDDmyJllsmP2sAH7XuRPIDyZwfKgZyW2w9Pl3+7SSsLc5dllS4KCT
+        gir/vMcxmzrQC8x5rqslca3bMUlWZryzvSMcz13GpRC2zGBp4HLQboOM0wcwJl7VAWOWn5
+        ppA9B/IiE85qn0BX2u0nzSUcBWC4M2fWoc0tj7zVJzc1LigcHmrj8un9c3tdMIMZZNsA+i
+        PkfE2/V6o8KHiu/gisUzr7/mFRYrZvlOR1wSj321NjJvvWDL6ATDMC4QH9HVhAmds9b6bN
+        WFH/Ugt+AV3iJKdzOrgN/gQJY9SwgxaibXvFG3z0pW3F7DSmuth+hbFQlVrXrg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623163765;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ot1Q1zefd/zaAtJg7GVY8sdI4qtA+CpzvvUDCHO3GSE=;
+        b=b6MFDJXGEbu8RuTiBH93C2VhprXSMtKwK8EMblpCfew3D3s2V1nsW40GN7dwbqjrVvbnc5
+        rnWB/Kse6ynF6UDA==
+Date:   Tue, 08 Jun 2021 16:36:17 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>, Rik van Riel <riel@surriel.com>
+Subject: [patch V3 0/6] x86/fpu: Mop up XSAVES and related damage
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YLzAw27CQpdEshBl@eldamar.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 02:34:11PM +0200, Salvatore Bonaccorso wrote:
-> Hi Laurențiu, Greg,
-> 
-> On Fri, Jun 04, 2021 at 05:42:02PM +0200, Greg KH wrote:
-> > On Fri, Jun 04, 2021 at 04:50:19PM +0200, Laurențiu Păncescu wrote:
-> > > Hi Greg,
-> > > 
-> > > On 6/3/21 11:19 AM, Greg KH wrote:
-> > > > That commit does not apply cleanly and I need a backported version.  Can
-> > > > you do that and test it to verify it works and then send it to us to be
-> > > > applied?
-> > > 
-> > > I now have a patch against linux-4.19.y, tested on my EeePC just now: the
-> > > battery status and discharge rate are shown correctly.
-> > > 
-> > > I've never submitted a patch before, should I put "commit <short-hash>
-> > > upstream." as the first line of my commit message, followed by another line
-> > > stating which branch I would like this to be merged to? Should I also
-> > > include the original commit message of the backported commit? And then use
-> > > git format-patch? I just read through [1] and [2], but they don't say
-> > > anything specific about commit messages for backported patches.
-> > 
-> > Yes, what you describe here should be great.  Look at the stable mailing
-> > list archives on lore.kernel.org for other examples of this happening,
-> > https://lore.kernel.org/r/20210603162852.1814513-1-zsm@chromium.org is
-> > one example.
-> 
-> Instead of doing a specific backport, maybe it is enough to pick
-> a46393c02c76 ("ACPI: probe ECDT before loading AML tables regardless
-> of module-level code flag") frst on 4.19.y and then the mentioned fix
-> b1c0330823fe ("ACPI: EC: Look for ECDT EC after calling
-> acpi_load_tables()").
-
-I do not see a commit a46393c02c76 in Linus's tree :(
-
-Are you sure these ids are correct?
-
-thanks,
-
-greg k-h
+c3lzemJvdCByZXBvcnRlZCBhIHdhcm5vbiBmb3IgWFJTVE9SIHJhaXNpbmcgI0dQOgoKICBodHRw
+czovL2xvcmUua2VybmVsLm9yZy9yLzAwMDAwMDAwMDAwMDRjNDUzOTA1YzMwZjgzMzRAZ29vZ2xl
+LmNvbQoKd2l0aCBhIHN5emNhbGxlciByZXByb2R1Y2VyIGFuZCBhIGNvbmNsdXNpdmUgYmlzZWN0
+IHJlc3VsdC4gIEl0IHRvb2sgYQp3aGlsZSB0byBkZXN0aWxsIGEgc2ltcGxlIEMgcmVwcm9kdWNl
+ciBvdXQgb2YgaXQgd2hpY2ggYWxsb3dlZCB0byBwaW4gcG9pbnQKdGhlIHJvb3QgY2F1c2U6IFRo
+ZSByZWNlbnQgYWRkaXRpb24gb2Ygc3VwZXJ2aXNvciBYU1RBVEVzIGJyb2tlIHRoZSBzaWduYWwK
+cmVzdG9yZSBwYXRoIGZvciB0aGUgY2FzZSB3aGVyZSB0aGUgc2lnbmFsIGhhbmRsZXIgd3JlY2th
+Z2VkIHRoZSBYU1RBVEUgb24Kc3RhY2sgYmVjYXVzZSBpdCBkb2VzIG5vdCBzYW5pdGl6ZSB0aGUg
+WFNUQVRFIGhlYWRlciB3aGljaCBjYXVzZXMgYQpzdWJzZXF1ZW50IFhSU1RPUiB0byBmYWlsIGFu
+ZCAjR1AuCgpUaGUgZm9sbG93aW5nIHNlcmllcyBhZGRyZXNzZXMgdGhlIHByb2JsZW0gYW5kIGZp
+eGVzIHJlbGF0ZWQgaXNzdWVzCndoaWNoIHdlcmUgZm91bmQgd2hpbGUgaW5zcGVjdGluZyB0aGUg
+cmVsYXRlZCBjaGFuZ2VzIGFuZCB0ZXN0aW5nCnNpZ25hbCByZXN0b3JlIGFuZCBQS1JVLgoKVjIg
+b2YgdGhpcyBjYW4gYmUgZm91bmQgaGVyZToKCiAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8y
+MDIxMDYwNTIzNDc0Mi43MTI0NjQ5NzRAbGludXRyb25peC5kZQoKQ2hhbmdlcyB2cy4gVjI6Cgog
+IC0gRHJvcCB0aGUgY2xlYW51cCBwYXRjaGVzIGZvciBub3csIHNvIHRoZSBidWcgZml4ZXMgbWFr
+ZSBwcm9ncmVzcwoKICAtIEZpeCB0aGUgUEtSVSBjb250ZXh0IHN3aXRjaCBjb2RlCgogIC0gQWRk
+cmVzcyByZXZpZXcgY29tbWVudHMKClRoYW5rcywKCgl0Z2x4Cg==
