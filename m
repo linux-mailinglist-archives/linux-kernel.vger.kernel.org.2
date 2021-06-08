@@ -2,141 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA523A045B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629B13A0483
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238318AbhFHTcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:32:31 -0400
-Received: from mail-ej1-f51.google.com ([209.85.218.51]:37728 "EHLO
-        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236248AbhFHTQw (ORCPT
+        id S239381AbhFHTgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237457AbhFHT1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:16:52 -0400
-Received: by mail-ej1-f51.google.com with SMTP id ce15so34387030ejb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 12:14:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TnPZuLFfXVjs03glCG/NEJe45z/p4M5cwaRAiE/dZNE=;
-        b=WjT/1t2hnc4lrL4Ov/OK3JtI3+VvdnBj7mss5S7l/BhvmXoZE1KANhdBp1KkZZzpKu
-         G+uGjS9LYODYL6KBgUvGq1TTC4RIXocqoKJxDQ6SB7HgDrbqLPXQqPwOKQcpqWkOusm3
-         m83//r9c1JL8PIDzzXEJfxiurG4HuvGmtwy30ze513+UgDO6ezlP13pNKZgYC6zaRlz6
-         cvJjfMfTL2hNI2y3ZbW1mcbsRR/iONAwW1rqQF0iFje1gM1UpRLNn4UIq4OXg7hBW2uz
-         jmuomuGQxkY+XYb9Sll8fWADSACRerwSK1BdJsFN9BZLifqWAQp+C26HCw3gE+afPZR3
-         5wWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TnPZuLFfXVjs03glCG/NEJe45z/p4M5cwaRAiE/dZNE=;
-        b=tkhqhfAJ0EKo/hey1re9e/yyPYw7OiEOXOzB5OP7nojWHikPKp00399Mv9NAJUKgXg
-         Wp9KORgBK+Q8lVSO5SOeocMXexGJRHENsj60N/V2PXQpYs/C4vZJtLhCIsE8b68Y827E
-         q9LZgehg3VcUPi/JrgYJuPkqMufhoHxUchHPw9RxY3A3PNvOc7vQLfhwuda9fzoPHjTh
-         V/NYViqzWN7Z/FOXHaa+XmbPlPO9gsauP06R/qrA/EHysgpImpT+rL/WoQqMIm2A3h3o
-         svYvYkEizoVUbjeMQAFattSSBT4FW0GpxBAEdeWXVsSTVozhrgb7RCWYY0KfxJPUNkvp
-         dlYw==
-X-Gm-Message-State: AOAM532yRc8NVDqB2yTUBY3yvfvZuBEWBgn+pIyHJxFaHP3/10hwEtk8
-        TX73RfM/vr7yLpDwMbNRoBlLA/N7NqEwyYvUgGwzGw==
-X-Google-Smtp-Source: ABdhPJzx1yEoxWuOvBxfGpFn/VsQvEyHafi5CLg/00k/rhXeTQuSL9yeai5MeFwcTWD34e1XDH3vIRVStp8vnYebQ7Q=
-X-Received: by 2002:a17:906:9d05:: with SMTP id fn5mr24814568ejc.133.1623179638149;
- Tue, 08 Jun 2021 12:13:58 -0700 (PDT)
+        Tue, 8 Jun 2021 15:27:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF4CC061145
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:15:45 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623179743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xpUTcgt9Db4fGK9KLuaGCNDp2pGb6o/dByUyoxYEx5U=;
+        b=BN5IH59vh1e+DPYuw49sUZHDEeTnd/lgi6bnTCKxffoKYfQkk+e74PKwOJnEYfS5beq81i
+        U+TJ5xez9btTFBsrx83Y3PyWxU2n/Qb3jL9c1H94lb2uZYAE/YIIJEKmQSA9mAQugnyhz/
+        eAPIddcs9K8yqJFe/xL3kvN7AJhg0AD9ae9Z7pVUZ6X/q2ENVVCPQAd7W0sVJw1WgNRR4L
+        pr8nJ8OKsG8kWyE/SS/gFcug6fJuqkjuRJngls2TTkCMTRCT2r9019jJpeuRgOReTXrgMJ
+        zMyFX4urhYwWQIH2IbXBB6NzdCc9TJzhhC4rYTw5XitMGyxA/PCFeiCeBxvydQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623179743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xpUTcgt9Db4fGK9KLuaGCNDp2pGb6o/dByUyoxYEx5U=;
+        b=qL9aq7S4s62MSQ6Cp23mIMKAHT5Qe8+COVCh9KkSAyTyLY0Yksg5JAfUHp+s6JiXO7DbRS
+        EFJ1OKT0W4LyFCAQ==
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Rik van Riel <riel@surriel.com>
+Subject: Re: [patch V3 4/6] x86/pkru: Make PKRU=0 actually work
+In-Reply-To: <YL+PYz/cZPhSVmf2@zn.tnic>
+References: <20210608143617.565868844@linutronix.de> <20210608144346.045616965@linutronix.de> <YL+PYz/cZPhSVmf2@zn.tnic>
+Date:   Tue, 08 Jun 2021 21:15:42 +0200
+Message-ID: <87tum8xj4x.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210608175932.263480586@linuxfoundation.org> <20210608175933.214613488@linuxfoundation.org>
-In-Reply-To: <20210608175933.214613488@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 9 Jun 2021 00:43:46 +0530
-Message-ID: <CA+G9fYvFujaoUqbLh_gcfnPjUVVQD=VHqi6k2ruf57BO1tR5ag@mail.gmail.com>
-Subject: Re: [PATCH 4.19 28/58] ARM: dts: imx6q-dhcom: Add PU,VDD1P1,VDD2P5 regulators
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        Ludwig Zenz <lzenz@dh-electronics.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 at 00:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Jun 08 2021 at 17:40, Borislav Petkov wrote:
+> Just typos:
 >
-> From: Marek Vasut <marex@denx.de>
+> On Tue, Jun 08, 2021 at 04:36:21PM +0200, Thomas Gleixner wrote:
+>> So that wreckages any copy_to/from_user() on the way back to user space
 >
-> commit 8967b27a6c1c19251989c7ab33c058d16e4a5f53 upstream.
+> wrecks
 >
-> Per schematic, both PU and SOC regulator are supplied from LTC3676 SW1
-> via VDDSOC_IN rail, add the PU input. Both VDD1P1, VDD2P5 are supplied
-> from LTC3676 SW2 via VDDHIGH_IN rail, add both inputs.
+>> which hits memory which is protected by the default PKRU value.
+>> 
+>> Assumed that this does not fail (pure luck) then T1 goes back to user
+>> space and because TIF_NEED_FPU_LOAD is set it ends up in
+>> 
+>> switch_fpu_return()
+>>     __fpregs_load_activate()
+>>       if (!fpregs_state_valid()) {
+>> 	 load_XSTATE_from_task();
+>>       }
+>> 
+>> But if nothing touched the FPU between T1 scheduling out and in the
+> 							       ^^
 >
-> While no instability or problems are currently observed, the regulators
-> should be fully described in DT and that description should fully match
-> the hardware, else this might lead to unforseen issues later. Fix this.
->
-> Fixes: 52c7a088badd ("ARM: dts: imx6q: Add support for the DHCOM iMX6 SoM and PDK2")
-> Reviewed-by: Fabio Estevam <festevam@gmail.com>
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Cc: Christoph Niedermaier <cniedermaier@dh-electronics.com>
-> Cc: Fabio Estevam <festevam@gmail.com>
-> Cc: Ludwig Zenz <lzenz@dh-electronics.com>
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
-> Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  arch/arm/boot/dts/imx6q-dhcom-som.dtsi |   12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> --- a/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
-> +++ b/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
-> @@ -407,6 +407,18 @@
->         vin-supply = <&sw1_reg>;
->  };
->
-> +&reg_pu {
-> +       vin-supply = <&sw1_reg>;
-> +};
-> +
-> +&reg_vdd1p1 {
-> +       vin-supply = <&sw2_reg>;
-> +};
-> +
-> +&reg_vdd2p5 {
-> +       vin-supply = <&sw2_reg>;
-> +};
-> +
->  &uart1 {
->         pinctrl-names = "default";
->         pinctrl-0 = <&pinctrl_uart1>;
+> 							s/in/if/ it
+> 							seems.
 
-arm dtb build failed on stable rc 4.19
+No. It should be 
 
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm
-CROSS_COMPILE=arm-linux-gnueabihf- 'CC=sccache
-arm-linux-gnueabihf-gcc' 'HOSTCC=sccache gcc'
-Error: /builds/linux/arch/arm/boot/dts/imx6q-dhcom-som.dtsi:414.1-12
-Label or path reg_vdd1p1 not found
-Error: /builds/linux/arch/arm/boot/dts/imx6q-dhcom-som.dtsi:418.1-12
-Label or path reg_vdd2p5 not found
-FATAL ERROR: Syntax error parsing input tree
-make[2]: *** [scripts/Makefile.lib:294:
-arch/arm/boot/dts/imx6q-dhcom-pdk2.dtb] Error 1
+But if nothing touched the FPU between T1 scheduling out and back in,
+then the fpregs_state is still valid which means switch_fpu_return()
+does nothing and just clears TIF_NEED_FPU_LOAD. Back to user space with
+DEFAULT_PKRU loaded. -> FAIL #2!
 
-Reported-by:  Linux Kernel Functional Testing <lkft@linaro.org>
+>> +		 * XRSTOR will set PKRU to 0. If the bit is not set then
+>> +		 * get_xsave_addr() will return NULL because the PKRU value
+>> +		 * in memory is not valid. This means pkru_val has to be
+>> +		 * set to 0 and not to init_pkru_value.
+>> +		 */
+>>  		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
+>> -		if (pk)
+>> -			pkru_val = pk->pkru;
+>> +		pkru_val = pk ? pk->pkru : 0;
+>>  	}
+>
+> Hohumm, let's see who cries out... :-\
 
-build url:
-https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1328891505#L477
+Why? It was clearly wrong and I can reproduce it with a hack which
+forces a schedule to a kernel thread and it fails all the way back to
+user space.
 
-Config:
-https://builds.tuxbuild.com/1tg0YjTz4ow5CkHv0bzTc05pVs5/config
+I chased that because I observed sporadic failures when forcing PKRU to
+init state and then observed the default key being written. I had some
+extra trace_printks there to analyze something completely different :)
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+
+        tglx
