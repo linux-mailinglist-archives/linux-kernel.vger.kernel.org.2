@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E40B39FBEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751E739FC12
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233809AbhFHQJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 12:09:33 -0400
-Received: from mga17.intel.com ([192.55.52.151]:57605 "EHLO mga17.intel.com"
+        id S233898AbhFHQMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 12:12:05 -0400
+Received: from mga06.intel.com ([134.134.136.31]:30081 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232798AbhFHQIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:08:40 -0400
-IronPort-SDR: ef2tUwRpaXZ4yBKq6QE5S1yuMMS5NGiAuCeCC+RsoZedl1swafkY6q73a4bT8g7mCDFvRxJLhX
- 7+Ma/vMUk5jQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="185249925"
+        id S233890AbhFHQKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 12:10:23 -0400
+IronPort-SDR: LZtikXsyiXO6HoM7kXOhvkMqtybD5V5X2iGUYu8t05tv/MvbfQ3elhRZ4QkKxf1j9Y0Cf4fPES
+ 2nlDmhYwVgwQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="266028109"
 X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="185249925"
+   d="scan'208";a="266028109"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 09:06:47 -0700
-IronPort-SDR: ejlF24rmLC3FQ4+zAV5ifYEShFLyGBkaVimSIpQAJhK2oKWh32GfEUgkiChqJPvkOdJq9JvQgx
- x8kv4Ubn+Hvw==
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 09:08:29 -0700
+IronPort-SDR: KFXe8+ulpfTVWOpGDLjKZp2tn1ZVL4fkwDHykJJ8WZe6fhQ+y/+GULIeG08MlVSEWPOFfYzfCR
+ e2xoxQC2I+fg==
 X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="637686229"
+   d="scan'208";a="637686611"
 Received: from ciball-mobl1.amr.corp.intel.com (HELO [10.252.140.48]) ([10.252.140.48])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 09:06:46 -0700
-Subject: Re: [patch V3 4/6] x86/pkru: Make PKRU=0 actually work
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 09:08:28 -0700
+Subject: Re: [patch V3 0/6] x86/fpu: Mop up XSAVES and related damage
 To:     Thomas Gleixner <tglx@linutronix.de>,
         LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
@@ -33,9 +33,8 @@ Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
         Tony Luck <tony.luck@intel.com>,
         Yu-cheng Yu <yu-cheng.yu@intel.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Rik van Riel <riel@surriel.com>, Borislav Petkov <bp@suse.de>
+        Borislav Petkov <bp@suse.de>, Rik van Riel <riel@surriel.com>
 References: <20210608143617.565868844@linutronix.de>
- <20210608144346.045616965@linutronix.de>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -80,12 +79,12 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <80208a08-eee7-5725-d9ce-7b11fc5b2ab1@intel.com>
-Date:   Tue, 8 Jun 2021 09:06:44 -0700
+Message-ID: <50b6f69f-398c-7cc4-9ad1-0f3f27c5ba63@intel.com>
+Date:   Tue, 8 Jun 2021 09:08:28 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210608144346.045616965@linutronix.de>
+In-Reply-To: <20210608143617.565868844@linutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -93,15 +92,6 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 7:36 AM, Thomas Gleixner wrote:
-> When user space brings PKRU into init state, then the kernel handling is
-> broken:
+The series as a whole looks good to me.  So, especially for the PKRU parts:
 
-Nit: while setting PKRU=0 _can_ trigger this issue (on AMD), the
-underlying problem is truly with the init state and not simply with any
-wrpkru(0).  IOW, I like the changelog better than the subject.
-
-Maybe something like this would be more precise:
-
-	x86/pkru: Write hardware init value to PKRU when xstate is init
-
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
