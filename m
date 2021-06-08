@@ -2,260 +2,366 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B744C39EADE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E3A39EAE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhFHAkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 20:40:07 -0400
-Received: from mga01.intel.com ([192.55.52.88]:63759 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230209AbhFHAkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 20:40:06 -0400
-IronPort-SDR: 4W9U8ECziSZU1ScDGlgOKBhg4yKFPJgIxV0pN5B0w4AnVyjOUg67l4oEkZOi9mr3XczhZ+sEZD
- 4gmlfdTi9B2w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="226086133"
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="226086133"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 17:38:14 -0700
-IronPort-SDR: s95zH8NAbUU0BR+idcxClf6YJ18jainXzWii12i/px4J2/vnUAiQtHgH99Jsx8FefISjaJHHdd
- Ty7I0+35YM+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="551418168"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 07 Jun 2021 17:38:12 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lqPkx-0008dM-Vk; Tue, 08 Jun 2021 00:38:11 +0000
-Date:   Tue, 08 Jun 2021 08:37:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 23721c8e92f73f9f89e7362c50c2996a5c9ad483
-Message-ID: <60bebbb5.k4YxU46FNufye3a1%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S230361AbhFHAoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 20:44:00 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:41443 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230209AbhFHAn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 20:43:57 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A4532580521;
+        Mon,  7 Jun 2021 20:42:05 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Mon, 07 Jun 2021 20:42:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=2Dz5T6DYy+fXN4aKeq2FKpMfs4yt9Xw
+        PZiHKWRrEE4U=; b=XXYQ0vSWUlxeC3BHESxT2pAlOB0ljlZQWPP4lHXsUxOmuCj
+        DCa+8ewD5oDWY221BH10V6wRCQrWId/D6bwy69d720h0ne7bLdQoNnE1/vM/PA10
+        YvZeNbnAkz32ILq9MfhGoaNAekd2u3Pcd7ScMMEojB2TwTNa/OCorcO+N8FhgaAM
+        Ruswz67iv0rFY7kMEq9qq82BAoTEMhmzo2YNt8mIryG8FlkTwz93jZI2UIqaSO9O
+        VfvuXfjWRK/uTdb/leMhs4auC1T7Tmb2c7pojFCQX0p+Nl5UvTeFH4jsjp2lK+ra
+        Of9kjsJpAO79diPOWZkgy1BqG2YUAGEj1nH4yRw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=2Dz5T6
+        DYy+fXN4aKeq2FKpMfs4yt9XwPZiHKWRrEE4U=; b=cPT8aJ1SZs0xbE5uM9ol7Y
+        QSisSRaPx3ENK0bVSQOAHi5PZQisPyDZJpewXmXgO+3fcatiWrvk5OhPfX5FJV5c
+        5APHksuOkS1afFKnZUEeg2ZjD+hdQJ/tClqIuX4EuqjPfXFR+fdh3Y3aoWzdh3jd
+        WpdR9jDzM5EGObI5rS8Izl/5CfCBlcDMl8xY+DYHWpwJPkOO+Ii2rGT/Vz5Ay2n7
+        zw8iL0dbNVbUKOBJWguhWmwGLXkBEmZY4xZ8GL6PhJE1LRyy950mkEPGYgv3hPJx
+        crQFSYusos45UXbIbMWuxTXZLipRv36dIhW9EYG/IpVEbho8N4bqWr8pTq1y42JQ
+        ==
+X-ME-Sender: <xms:2ry-YG7IM9sTYEgWWfALNuL4fgaV2r7d08Bby6GzlZqHMXubdcr6rg>
+    <xme:2ry-YP5GfUxB4GOpXK027O6oqHuvND--LIX2YOa9_ygVcaQJLWc8UVkqyQyrF13Ba
+    MAUUNPUmTm_bQK_yw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgvdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:2ry-YFfGp8zxCNjGS8vUdkxFBARMsfujJKA6adS_VeI8mXj8dIzrBg>
+    <xmx:2ry-YDIJuW68DzY4XqqIEI3JxnQlJ0K7DKMLSRWaKr0y6xk1yuaElg>
+    <xmx:2ry-YKKaZ3XYbMiuC3Ox6ScVZZc7B4LfY5Ks8s05tdyRTsGyGGXpfg>
+    <xmx:3by-YFaiexj72tssGHVuS-R02iaG1wrm9y4doX44vCxUYX2jD29vMQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 87753AC0062; Mon,  7 Jun 2021 20:42:02 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <df0d31e9-c4e1-4cf0-b800-c5dadfb43420@www.fastmail.com>
+In-Reply-To: <YKdfeJJM/4LYFKe4@packtop>
+References: <20210510054213.1610760-1-andrew@aj.id.au>
+ <20210510054213.1610760-15-andrew@aj.id.au> <YKdfeJJM/4LYFKe4@packtop>
+Date:   Tue, 08 Jun 2021 10:11:42 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Zev Weiss" <zweiss@equinix.com>
+Cc:     "openipmi-developer@lists.sourceforge.net" 
+        <openipmi-developer@lists.sourceforge.net>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "Corey Minyard" <minyard@acm.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "Tomer Maimon" <tmaimon77@gmail.com>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "Avi Fishman" <avifishman70@gmail.com>,
+        "Patrick Venture" <venture@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Tali Perry" <tali.perry1@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Benjamin Fair" <benjaminfair@google.com>,
+        "Arnd Bergmann" <arnd@arndb.de>
+Subject: =?UTF-8?Q?Re:_[PATCH_v3_14/16]_ipmi:_kcs=5Fbmc=5Faspeed:_Implement_KCS_S?=
+ =?UTF-8?Q?erIRQ_configuration?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: 23721c8e92f73f9f89e7362c50c2996a5c9ad483  x86/crash: Remove crash_reserve_low_1M()
 
-elapsed time: 732m
 
-configs tested: 198
-configs skipped: 3
+On Fri, 21 May 2021, at 16:51, Zev Weiss wrote:
+> On Mon, May 10, 2021 at 12:42:11AM CDT, Andrew Jeffery wrote:
+> >Apply the SerIRQ ID and level/sense behaviours from the devicetree if
+> >provided.
+> >
+> >Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> >---
+> > drivers/char/ipmi/kcs_bmc_aspeed.c | 182 ++++++++++++++++++++++++++++-
+> > 1 file changed, 180 insertions(+), 2 deletions(-)
+> >
+> >diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
+> >index 8a0b1e18e945..9b81806b4dcb 100644
+> >--- a/drivers/char/ipmi/kcs_bmc_aspeed.c
+> >+++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
+> >@@ -9,6 +9,7 @@
+> > #include <linux/errno.h>
+> > #include <linux/interrupt.h>
+> > #include <linux/io.h>
+> >+#include <linux/irq.h>
+> > #include <linux/mfd/syscon.h>
+> > #include <linux/module.h>
+> > #include <linux/of.h>
+> >@@ -28,6 +29,22 @@
+> >
+> > #define KCS_CHANNEL_MAX     4
+> >
+> >+/*
+> >+ * Field class descriptions
+> >+ *
+> >+ * LPCyE	Enable LPC channel y
+> >+ * IBFIEy	Input Buffer Full IRQ Enable for LPC channel y
+> >+ * IRQxEy	Assert SerIRQ x for LPC channel y (Deprecated, use IDyIRQX, IRQXEy)
+> >+ * IDyIRQX	Use the specified 4-bit SerIRQ for LPC channel y
+> >+ * SELyIRQX	SerIRQ polarity for LPC channel y (low: 0, high: 1)
+> >+ * IRQXEy	Assert the SerIRQ specified in IDyIRQX for LPC channel y
+> >+ */
+> >+
+> >+#define LPC_TYIRQX_LOW       0b00
+> >+#define LPC_TYIRQX_HIGH      0b01
+> >+#define LPC_TYIRQX_RSVD      0b10
+> >+#define LPC_TYIRQX_RISING    0b11
+> >+
+> > #define LPC_HICR0            0x000
+> > #define     LPC_HICR0_LPC3E          BIT(7)
+> > #define     LPC_HICR0_LPC2E          BIT(6)
+> >@@ -39,6 +56,19 @@
+> > #define LPC_HICR4            0x010
+> > #define     LPC_HICR4_LADR12AS       BIT(7)
+> > #define     LPC_HICR4_KCSENBL        BIT(2)
+> >+#define LPC_SIRQCR0	     0x070
+> >+/* IRQ{12,1}E1 are deprecated as of AST2600 A3 but necessary for prior chips */
+> >+#define     LPC_SIRQCR0_IRQ12E1	     BIT(1)
+> >+#define     LPC_SIRQCR0_IRQ1E1	     BIT(0)
+> >+#define LPC_HICR5	     0x080
+> >+#define     LPC_HICR5_ID3IRQX_MASK   GENMASK(23, 20)
+> >+#define     LPC_HICR5_ID3IRQX_SHIFT  20
+> >+#define     LPC_HICR5_ID2IRQX_MASK   GENMASK(19, 16)
+> >+#define     LPC_HICR5_ID2IRQX_SHIFT  16
+> >+#define     LPC_HICR5_SEL3IRQX       BIT(15)
+> >+#define     LPC_HICR5_IRQXE3         BIT(14)
+> >+#define     LPC_HICR5_SEL2IRQX       BIT(13)
+> >+#define     LPC_HICR5_IRQXE2         BIT(12)
+> > #define LPC_LADR3H           0x014
+> > #define LPC_LADR3L           0x018
+> > #define LPC_LADR12H          0x01C
+> >@@ -55,6 +85,13 @@
+> > #define LPC_HICRB            0x100
+> > #define     LPC_HICRB_IBFIF4         BIT(1)
+> > #define     LPC_HICRB_LPC4E          BIT(0)
+> >+#define LPC_HICRC            0x104
+> >+#define     LPC_HICRC_ID4IRQX_MASK   GENMASK(7, 4)
+> >+#define     LPC_HICRC_ID4IRQX_SHIFT  4
+> >+#define     LPC_HICRC_TY4IRQX_MASK   GENMASK(3, 2)
+> >+#define     LPC_HICRC_TY4IRQX_SHIFT  2
+> >+#define     LPC_HICRC_OBF4_AUTO_CLR  BIT(1)
+> >+#define     LPC_HICRC_IRQXE4         BIT(0)
+> > #define LPC_LADR4            0x110
+> > #define LPC_IDR4             0x114
+> > #define LPC_ODR4             0x118
+> >@@ -62,11 +99,21 @@
+> >
+> > #define OBE_POLL_PERIOD	     (HZ / 2)
+> >
+> >+enum aspeed_kcs_irq_mode {
+> >+	aspeed_kcs_irq_none,
+> >+	aspeed_kcs_irq_serirq,
+> >+};
+> >+
+> > struct aspeed_kcs_bmc {
+> > 	struct kcs_bmc_device kcs_bmc;
+> >
+> > 	struct regmap *map;
+> >
+> >+	struct {
+> >+		enum aspeed_kcs_irq_mode mode;
+> >+		int id;
+> >+	} upstream_irq;
+> >+
+> > 	struct {
+> > 		spinlock_t lock;
+> > 		bool remove;
+> >@@ -103,6 +150,49 @@ static void aspeed_kcs_outb(struct kcs_bmc_device *kcs_bmc, u32 reg, u8 data)
+> >
+> > 	rc = regmap_write(priv->map, reg, data);
+> > 	WARN(rc != 0, "regmap_write() failed: %d\n", rc);
+> >+
+> >+	/* Trigger the upstream IRQ on ODR writes, if enabled */
+> >+
+> >+	switch (reg) {
+> >+	case LPC_ODR1:
+> >+	case LPC_ODR2:
+> >+	case LPC_ODR3:
+> >+	case LPC_ODR4:
+> >+		break;
+> >+	default:
+> >+		return;
+> >+	}
+> >+
+> >+	if (priv->upstream_irq.mode != aspeed_kcs_irq_serirq)
+> >+		return;
+> >+
+> >+	switch (kcs_bmc->channel) {
+> >+	case 1:
+> >+		switch (priv->upstream_irq.id) {
+> >+		case 12:
+> >+			regmap_update_bits(priv->map, LPC_SIRQCR0, LPC_SIRQCR0_IRQ12E1,
+> >+					   LPC_SIRQCR0_IRQ12E1);
+> >+			break;
+> >+		case 1:
+> >+			regmap_update_bits(priv->map, LPC_SIRQCR0, LPC_SIRQCR0_IRQ1E1,
+> >+					   LPC_SIRQCR0_IRQ1E1);
+> >+			break;
+> >+		default:
+> >+			break;
+> >+		}
+> >+		break;
+> >+	case 2:
+> >+		regmap_update_bits(priv->map, LPC_HICR5, LPC_HICR5_IRQXE2, LPC_HICR5_IRQXE2);
+> >+		break;
+> >+	case 3:
+> >+		regmap_update_bits(priv->map, LPC_HICR5, LPC_HICR5_IRQXE3, LPC_HICR5_IRQXE3);
+> >+		break;
+> >+	case 4:
+> >+		regmap_update_bits(priv->map, LPC_HICRC, LPC_HICRC_IRQXE4, LPC_HICRC_IRQXE4);
+> >+		break;
+> >+	default:
+> >+		break;
+> >+	}
+> > }
+> >
+> > static void aspeed_kcs_updateb(struct kcs_bmc_device *kcs_bmc, u32 reg, u8 mask, u8 val)
+> >@@ -161,6 +251,73 @@ static void aspeed_kcs_set_address(struct kcs_bmc_device *kcs_bmc, u16 addr)
+> > 	}
+> > }
+> >
+> >+static inline int aspeed_kcs_map_serirq_type(u32 dt_type)
+> >+{
+> >+	switch (dt_type) {
+> >+	case IRQ_TYPE_EDGE_RISING:
+> >+		return LPC_TYIRQX_RISING;
+> >+	case IRQ_TYPE_LEVEL_HIGH:
+> >+		return LPC_TYIRQX_HIGH;
+> >+	case IRQ_TYPE_LEVEL_LOW:
+> >+		return LPC_TYIRQX_LOW;
+> >+	default:
+> >+		return -EINVAL;
+> >+	}
+> >+}
+> >+
+> >+static int aspeed_kcs_config_upstream_irq(struct aspeed_kcs_bmc *priv, u32 id, u32 dt_type)
+> >+{
+> >+	unsigned int mask, val, hw_type;
+> >+
+> >+	if (id > 15)
+> >+		return -EINVAL;
+> >+
+> >+	hw_type = aspeed_kcs_map_serirq_type(dt_type);
+> >+	if (hw_type < 0)
+> >+		return hw_type;
+> >+
+> >+	priv->upstream_irq.mode = aspeed_kcs_irq_serirq;
+> >+	priv->upstream_irq.id = id;
+> >+
+> >+	switch (priv->kcs_bmc.channel) {
+> >+	case 1:
+> >+		/* Needs IRQxE1 rather than (ID1IRQX, SEL1IRQX, IRQXE1) before AST2600 A3 */
+> 
+> I'm struggling a bit with understanding this comment, and relating it to
+> the code -- it sounds like "we need to do things one way on A3 and
+> later, and another way on pre-A3", but then...we just break without
+> doing anything at all either way.  Can you clarify any further?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hah! You're struggling because it doesn't make any sense, the code's gone missing :/ I'll fix that up.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                     loongson2k_defconfig
-sh                          r7780mp_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                      pxa255-idp_defconfig
-arm                         assabet_defconfig
-arc                          axs103_defconfig
-arm                     davinci_all_defconfig
-powerpc64                           defconfig
-powerpc                     sbc8548_defconfig
-arm                       versatile_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                     akebono_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                       ppc64_defconfig
-arm                        multi_v7_defconfig
-powerpc                    sam440ep_defconfig
-m68k                         amcore_defconfig
-arm                           viper_defconfig
-sh                     sh7710voipgw_defconfig
-s390                          debug_defconfig
-arc                            hsdk_defconfig
-mips                            e55_defconfig
-powerpc                 mpc85xx_cds_defconfig
-mips                          rm200_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                           omap1_defconfig
-sh                             sh03_defconfig
-sh                          sdk7780_defconfig
-sparc64                          alldefconfig
-h8300                    h8300h-sim_defconfig
-powerpc                     ksi8560_defconfig
-s390                                defconfig
-powerpc                 xes_mpc85xx_defconfig
-arm                           sama5_defconfig
-mips                        omega2p_defconfig
-s390                             alldefconfig
-sh                            migor_defconfig
-openrisc                         alldefconfig
-powerpc                    mvme5100_defconfig
-mips                  decstation_64_defconfig
-mips                          ath79_defconfig
-powerpc                      ppc44x_defconfig
-m68k                            q40_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                             ezx_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                           se7343_defconfig
-arc                     nsimosci_hs_defconfig
-mips                      pic32mzda_defconfig
-riscv                            alldefconfig
-arm                        cerfcube_defconfig
-mips                      malta_kvm_defconfig
-arm                          ep93xx_defconfig
-alpha                            allyesconfig
-powerpc                mpc7448_hpc2_defconfig
-sh                        sh7757lcr_defconfig
-powerpc                  mpc866_ads_defconfig
-sh                 kfr2r09-romimage_defconfig
-x86_64                           allyesconfig
-arm                            lart_defconfig
-mips                           ip32_defconfig
-riscv                          rv32_defconfig
-powerpc                   motionpro_defconfig
-arm                      jornada720_defconfig
-arm                        realview_defconfig
-m68k                            mac_defconfig
-x86_64                            allnoconfig
-powerpc                     tqm8548_defconfig
-powerpc                     tqm8540_defconfig
-arm                           sunxi_defconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                    adder875_defconfig
-x86_64                           alldefconfig
-arm                            hisi_defconfig
-arm                             pxa_defconfig
-arm                        shmobile_defconfig
-sh                   sh7770_generic_defconfig
-m68k                                defconfig
-xtensa                           allyesconfig
-mips                       bmips_be_defconfig
-powerpc                      pasemi_defconfig
-mips                           ci20_defconfig
-riscv                    nommu_k210_defconfig
-arc                              allyesconfig
-sh                          rsk7264_defconfig
-arm                             mxs_defconfig
-um                             i386_defconfig
-powerpc                      ppc6xx_defconfig
-arm                         axm55xx_defconfig
-mips                         db1xxx_defconfig
-arm                      footbridge_defconfig
-h8300                     edosk2674_defconfig
-nds32                             allnoconfig
-mips                           jazz_defconfig
-arm                        mvebu_v5_defconfig
-arc                        nsimosci_defconfig
-xtensa                  nommu_kc705_defconfig
-powerpc                 mpc832x_mds_defconfig
-sh                             espt_defconfig
-arc                           tb10x_defconfig
-powerpc                         wii_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                         ps3_defconfig
-powerpc                     mpc5200_defconfig
-m68k                       m5208evb_defconfig
-sparc                       sparc64_defconfig
-powerpc                 canyonlands_defconfig
-sh                          lboxre2_defconfig
-sh                               alldefconfig
-mips                           mtx1_defconfig
-powerpc                          g5_defconfig
-arm                         mv78xx0_defconfig
-um                           x86_64_defconfig
-s390                       zfcpdump_defconfig
-sh                            hp6xx_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                            qcom_defconfig
-arm                         s5pv210_defconfig
-powerpc                 linkstation_defconfig
-ia64                        generic_defconfig
-powerpc                     taishan_defconfig
-arm                         palmz72_defconfig
-arm                         lpc32xx_defconfig
-sh                      rts7751r2d1_defconfig
-sh                                  defconfig
-powerpc                        warp_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                          allmodconfig
-arm                          lpd270_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc                        fsp2_defconfig
-x86_64                              defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-csky                                defconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210607
-i386                 randconfig-a006-20210607
-i386                 randconfig-a004-20210607
-i386                 randconfig-a001-20210607
-i386                 randconfig-a002-20210607
-i386                 randconfig-a005-20210607
-x86_64               randconfig-a015-20210607
-x86_64               randconfig-a011-20210607
-x86_64               randconfig-a014-20210607
-x86_64               randconfig-a012-20210607
-x86_64               randconfig-a016-20210607
-x86_64               randconfig-a013-20210607
-i386                 randconfig-a015-20210607
-i386                 randconfig-a013-20210607
-i386                 randconfig-a011-20210607
-i386                 randconfig-a016-20210607
-i386                 randconfig-a014-20210607
-i386                 randconfig-a012-20210607
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-um                            kunit_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Unfortunately due to hardware/firmware limitations I wasn't able to test channel 1.
 
-clang tested configs:
-x86_64               randconfig-b001-20210607
-x86_64               randconfig-a002-20210607
-x86_64               randconfig-a004-20210607
-x86_64               randconfig-a003-20210607
-x86_64               randconfig-a006-20210607
-x86_64               randconfig-a005-20210607
-x86_64               randconfig-a001-20210607
+> 
+> >+		break;
+> >+	case 2:
+> >+		if (!(hw_type == LPC_TYIRQX_LOW || hw_type == LPC_TYIRQX_HIGH))
+> >+			return -EINVAL;
+> >+
+> >+		mask = LPC_HICR5_SEL2IRQX | LPC_HICR5_ID2IRQX_MASK;
+> >+		val = (id << LPC_HICR5_ID2IRQX_SHIFT);
+> >+		val |= (hw_type == LPC_TYIRQX_HIGH) ? LPC_HICR5_SEL2IRQX : 0;
+> >+		regmap_update_bits(priv->map, LPC_HICR5, mask, val);
+> >+
+> >+		break;
+> >+	case 3:
+> >+		if (!(hw_type == LPC_TYIRQX_LOW || hw_type == LPC_TYIRQX_HIGH))
+> >+			return -EINVAL;
+> >+
+> >+		mask = LPC_HICR5_SEL3IRQX | LPC_HICR5_ID3IRQX_MASK;
+> >+		val = (id << LPC_HICR5_ID3IRQX_SHIFT);
+> >+		val |= (hw_type == LPC_TYIRQX_HIGH) ? LPC_HICR5_SEL3IRQX : 0;
+> >+		regmap_update_bits(priv->map, LPC_HICR5, mask, val);
+> >+
+> >+		break;
+> >+	case 4:
+> >+		mask = LPC_HICRC_ID4IRQX_MASK | LPC_HICRC_TY4IRQX_MASK | LPC_HICRC_OBF4_AUTO_CLR;
+> >+		val = (id << LPC_HICRC_ID4IRQX_SHIFT) | (hw_type << LPC_HICRC_TY4IRQX_SHIFT);
+> >+		regmap_update_bits(priv->map, LPC_HICRC, mask, val);
+> >+		break;
+> >+	default:
+> >+		dev_warn(priv->kcs_bmc.dev,
+> >+			 "SerIRQ configuration not supported on KCS channel %d\n",
+> >+			 priv->kcs_bmc.channel);
+> >+		return -EINVAL;
+> >+	}
+> >+
+> >+	return 0;
+> >+}
+> >+
+> > static void aspeed_kcs_enable_channel(struct kcs_bmc_device *kcs_bmc, bool enable)
+> > {
+> > 	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
+> >@@ -262,7 +419,7 @@ static irqreturn_t aspeed_kcs_irq(int irq, void *arg)
+> > 	return kcs_bmc_handle_event(kcs_bmc);
+> > }
+> >
+> >-static int aspeed_kcs_config_irq(struct kcs_bmc_device *kcs_bmc,
+> >+static int aspeed_kcs_config_downstream_irq(struct kcs_bmc_device *kcs_bmc,
+> > 			struct platform_device *pdev)
+> > {
+> > 	struct device *dev = &pdev->dev;
+> >@@ -366,6 +523,8 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
+> > 	struct aspeed_kcs_bmc *priv;
+> > 	struct device_node *np;
+> > 	int rc, channel, addr;
+> >+	bool have_upstream_irq;
+> >+	u32 upstream_irq[2];
+> >
+> > 	np = pdev->dev.of_node->parent;
+> > 	if (!of_device_is_compatible(np, "aspeed,ast2400-lpc-v2") &&
+> >@@ -374,6 +533,7 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
+> > 		dev_err(&pdev->dev, "unsupported LPC device binding\n");
+> > 		return -ENODEV;
+> > 	}
+> >+
+> > 	ops = of_device_get_match_data(&pdev->dev);
+> > 	if (!ops)
+> > 		return -EINVAL;
+> >@@ -386,6 +546,13 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
+> > 	if (addr < 0)
+> > 		return addr;
+> >
+> >+	np = pdev->dev.of_node;
+> >+	rc = of_property_read_u32_array(np, "aspeed,lpc-interrupts", upstream_irq, 2);
+> >+	if ((rc && rc != -EINVAL))
+> 
+> I think we could probably get by with slightly fewer parens here...
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Yeah, not sure what happened there :)
+
+Andrew
