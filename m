@@ -2,214 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0571439EB54
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5E339EB57
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhFHB1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhFHB1e (ORCPT
+        id S231185AbhFHB2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:28:30 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:54173 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230209AbhFHB23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:27:34 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C63C061574;
-        Mon,  7 Jun 2021 18:25:28 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id ei4so10914437pjb.3;
-        Mon, 07 Jun 2021 18:25:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=9or9kWeQKVtCH1EkhikcuqwJeODMnwDBrNDPM5zN6nU=;
-        b=FU2f2964xr/SgPnmutRsW6uD26YSGVNtLh9+uxsZO/AfzPvIjiC8uJ9ZZoC+5Y8+GJ
-         lC0enHqvNWQ2iU+TWuzaMlWTEO2gpkdu6gqV7atUVyigpChnNs4b1iF64OYcY+VxWvPe
-         9R/wY7B5JXubweemSLcHlVUMiydHC/eXj6U13s65RJhLguObeVQXadeNmZp6kFB1aMw7
-         MiqCiYDuifvX6rhXvKJRKoJnM0QjvfdwwwEDcRYamiricKMzUdOkf4Kb4KSbP/pLVG6+
-         WQRZCJJUROcwcGGvAqyAGbrn/clMPck8rfXiWBDN4RJ2sANJYhCHtk+vxsXBS9og8VM1
-         x2cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=9or9kWeQKVtCH1EkhikcuqwJeODMnwDBrNDPM5zN6nU=;
-        b=ZKNFLmJUUjpYWAyM4Z1fsC5GrDSlfaOC7jY0pOik1Zeeoc1iuIIk82EOW0Iv/eQicK
-         SETSlxUYSb0bVxSF3NlSkcreTLTEzXjuLwKk3S4FS4J77MR7xoqdTw6tEG9evFQYuNkZ
-         6o/o9m5/1b8y9uvzQFJHqMZa+lQrM2kX5qVQXyGj5+DpqK80fDnsn5F/C2AUmgelH7aQ
-         HKSPhNXhUoovSfleUVGlKwaHG0Ir/EYbf6P21JqNrYTZ+P4WESRdqI3IVQnxcu1j6ptK
-         1G5EV11QrdykHdmc7PCpJwkQYNihqNPwLsExOSp8QKDQN+fUHgq+cpmx3uMpmw0g/4L/
-         ld/g==
-X-Gm-Message-State: AOAM533pKn6Jw/joKduXJf3ROG4fEOtPv7NsJi4vUtpgcK0VhgKOImIJ
-        pRx0Bdqkbc986RHBEFjNVK4=
-X-Google-Smtp-Source: ABdhPJxQ3AWTk/Bqmrt5PUVUAJ7rGKI8NLaqvgU/Pd/kVL8WtarQF9ZlwxF3SWMyS1qxGLYZrKWOfg==
-X-Received: by 2002:a17:90a:3484:: with SMTP id p4mr23645127pjb.2.1623115528135;
-        Mon, 07 Jun 2021 18:25:28 -0700 (PDT)
-Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
-        by smtp.gmail.com with ESMTPSA id 11sm9506927pge.57.2021.06.07.18.25.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 18:25:27 -0700 (PDT)
-Date:   Tue, 08 Jun 2021 11:25:22 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
-To:     =?iso-8859-1?b?QW5kcuk=?= Almeida <andrealmeid@collabora.com>,
-        Andrey Semashev <andrey.semashev@gmail.com>
-Cc:     acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
-        joel@joelfernandes.org, kernel@collabora.com,
-        krisman@collabora.com, libc-alpha@sourceware.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
-        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
-References: <20210603195924.361327-1-andrealmeid@collabora.com>
-        <1622799088.hsuspipe84.astroid@bobo.none>
-        <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
-        <1622853816.mokf23xgnt.astroid@bobo.none>
-        <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
-        <1622980258.cfsuodze38.astroid@bobo.none>
-        <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
-In-Reply-To: <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
+        Mon, 7 Jun 2021 21:28:29 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 34623580583;
+        Mon,  7 Jun 2021 21:26:37 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 07 Jun 2021 21:26:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        WH1t09n48tt98CsYrFQhoATRT0+qevpaW5ZsSX8+uss=; b=x5ExHTr/8FY2UUUp
+        NpEuvTuhBpj4TfDzVODt3vX7O2lqkiXn577w6P8YD92JvJ31+ZJ52w2crqtZA6gj
+        q15MqKlUCmofb/6i5wUDI9kKquSrxIRe4YIzwCdEM6HhYu1tB2vDFOIP5B/vOw4/
+        v05oU+yi8qs9sqHpmGJRkii0hAfX6w1y88sJFhDq3G+OHImQYFB0JJ8YE9dKnqIN
+        wBOBLw5h8cIWciV1G6HnVkj70a8AFNzl7l41tjPIlf+o4DvnWZh7YLNUuk5nVoOw
+        /AuMJKLMmHzi/6erBlSDwBf1gqYty7Ot0QCgBhMMbv4B8Vg7UXtGtU8Dso29RA9V
+        CVdUvw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=WH1t09n48tt98CsYrFQhoATRT0+qevpaW5ZsSX8+u
+        ss=; b=SSMxKToEY4iFxsW7V017XYUYOhIvdeYbo5oG/kGo8HTwH5Rzvlv5Tv86C
+        IvtrdU92WbBK25JRaL7Wt5tPzIOOLegc5kEMgLs6/33B9WddZfNR6XyRqqP1+qhA
+        MA8TapDsDwgUbxT1UY2yIyXD0a73qfzc/sWJIgemPfbbKSo7HCzuFy00/mllNMd0
+        GV9KfCB+F0ob7ZHLH+4ccSdr9+CKCjjxPAABP+baJHVpMXD+DGzKEYWPLwNu9v7b
+        l5e6sL2jqzNMJ6DotYcL1Vl1FAp78/ECDDG/BcYdndzr6VV2pJVAWR6W1AMMWMyU
+        YrXJVTk63ui6Lm+y25yB0yrh8Mz1w==
+X-ME-Sender: <xms:Sce-YAaCS4nD2zGyY-8A0OjaGc0-7f9r8X3hRlAWxBrUUG52fxRU6Q>
+    <xme:Sce-YLbcdaUJLXtLeuJ0qd8NyuruDvtG_iBQgYDmaVzvuPEo7GLHLnHs_7alMzaBY
+    kaQkjNcD_5d>
+X-ME-Received: <xmr:Sce-YK_VopoVvguWZmafKhLYUrLOA4br2zqHFlNRoM6HxYLMQtw4FbqC6_l05-NMjrAmWWClm2usF4j8zLRZkA_fSj0I-w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgfeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:Sse-YKqhhyfs3dNu1DkO08bkM_nsPjL6ctJtg-Xzp3SltzTyA7kX2w>
+    <xmx:Sse-YLpV-mBgA3WdaTYIi2xE1GqCYIrzxmtYZkIEqZr76gKNGTY0Lw>
+    <xmx:Sse-YIQ4-gdIcHNhdLxcABMiEHFfNcItEYi33ct-bggAD3s5FGBT5g>
+    <xmx:Tce-YER0X1Xy_ssBGqhya4EOjF1jTbaiGwf-dmc4Q6BalkqQsIKLzw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Jun 2021 21:26:28 -0400 (EDT)
+Message-ID: <d4a3f3c717e786e8d0d26d044ef3dbe8b913452c.camel@themaw.net>
+Subject: Re: [PATCH v5 2/6] kernfs: add a revision to identify directory
+ node changes
+From:   Ian Kent <raven@themaw.net>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 08 Jun 2021 09:26:25 +0800
+In-Reply-To: <87a6o1k1cu.fsf@disp2133>
+References: <162306058093.69474.2367505736322611930.stgit@web.messagingengine.com>
+         <162306071065.69474.8064509709844383785.stgit@web.messagingengine.com>
+         <87a6o1k1cu.fsf@disp2133>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Message-Id: <1623114630.pc8fq7r5y9.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Andrey Semashev's message of June 6, 2021 11:15 pm:
-> On 6/6/21 2:57 PM, Nicholas Piggin wrote:
->> Excerpts from Andrey Semashev's message of June 5, 2021 6:56 pm:
->>> On 6/5/21 4:09 AM, Nicholas Piggin wrote:
->>>> Excerpts from Andr=C3=A9 Almeida's message of June 5, 2021 6:01 am:
->>>>> =C3=80s 08:36 de 04/06/21, Nicholas Piggin escreveu:
->>>>
->>>>>> I'll be burned at the stake for suggesting it but it would be great =
-if
->>>>>> we could use file descriptors. At least for the shared futex, maybe
->>>>>> private could use a per-process futex allocator. It solves all of th=
-e
->>>>>> above, although I'm sure has many of its own problem. It may not pla=
-y
->>>>>> so nicely with the pthread mutex API because of the whole static
->>>>>> initialiser problem, but the first futex proposal did use fds. But i=
-t's
->>>>>> an example of an alternate API.
->>>>>>
->>>>>
->>>>> FDs and futex doesn't play well, because for futex_wait() you need to
->>>>> tell the kernel the expected value in the futex address to avoid
->>>>> sleeping in a free lock. FD operations (poll, select) don't have this
->>>>> `value` argument, so they could sleep forever, but I'm not sure if yo=
-u
->>>>> had taken this in consideration.
->>>>
->>>> I had. The futex wait API would take a fd additional. The only
->>>> difference is the waitqueue that is used when a sleep or wake is
->>>> required is derived from the fd, not from an address.
->>>>
->>>> I think the bigger sticking points would be if it's too heavyweight an
->>>> object to use (which could be somewhat mitigated with a simpler ida
->>>> allocator although that's difficult to do with shared), and whether li=
-bc
->>>> could sanely use them due to the static initialiser problem of pthread
->>>> mutexes.
->>>
->>> The static initialization feature is not the only benefit of the curren=
-t
->>> futex design, and probably not the most important one. You can work
->>> around the static initialization in userspace, e.g. by initializing fd
->>> to an invalid value and creating a valid fd upon the first use. Althoug=
-h
->>> that would still incur a performance penalty and add a new source of
->>> failure.
->>=20
->> Sounds like a serious problem, but maybe it isn't. On the other hand,
->> maybe we don't have to support pthread mutexes as they are anyway
->> because futex already does that fairly well.
->>=20
->>> What is more important is that waiting on fd always requires a kernel
->>> call. This will be terrible for performance of uncontended locks, which
->>> is the majority of time.
->>=20
->> No. As I said just before, it would be the same except the waitqueue is
->> derived from fd rather than address.
->=20
-> Sorry, in that case I'm not sure I understand how that would work. You=20
-> do need to allocate a fd, do you?
+On Mon, 2021-06-07 at 12:53 -0500, Eric W. Biederman wrote:
+> Ian Kent <raven@themaw.net> writes:
+> 
+> > Add a revision counter to kernfs directory nodes so it can be used
+> > to detect if a directory node has changed.
+> > 
+> > There's an assumption that sizeof(unsigned long) <= sizeof(pointer)
+> > on all architectures and as far as I know that assumption holds.
+> > 
+> > So adding a revision counter to the struct kernfs_elem_dir variant
+> > of
+> > the kernfs_node type union won't increase the size of the
+> > kernfs_node
+> > struct. This is because struct kernfs_elem_dir is at least
+> > sizeof(pointer) smaller than the largest union variant. It's
+> > tempting
+> > to make the revision counter a u64 but that would increase the size
+> > of
+> > kernfs_node on archs where sizeof(pointer) is smaller than the
+> > revision
+> > counter.
+> > 
+> > Signed-off-by: Ian Kent <raven@themaw.net>
+> > ---
+> >  fs/kernfs/dir.c             |    8 ++++++++
+> >  fs/kernfs/kernfs-internal.h |   24 ++++++++++++++++++++++++
+> >  include/linux/kernfs.h      |    5 +++++
+> >  3 files changed, 37 insertions(+)
+> > 
+> > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> > index 33166ec90a112..b88432c48851f 100644
+> > --- a/fs/kernfs/dir.c
+> > +++ b/fs/kernfs/dir.c
+> > @@ -372,6 +372,7 @@ static int kernfs_link_sibling(struct
+> > kernfs_node *kn)
+> >         /* successfully added, account subdir number */
+> >         if (kernfs_type(kn) == KERNFS_DIR)
+> >                 kn->parent->dir.subdirs++;
+> > +       kernfs_inc_rev(kn->parent);
+> >  
+> >         return 0;
+> >  }
+> > @@ -394,6 +395,7 @@ static bool kernfs_unlink_sibling(struct
+> > kernfs_node *kn)
+> >  
+> >         if (kernfs_type(kn) == KERNFS_DIR)
+> >                 kn->parent->dir.subdirs--;
+> > +       kernfs_inc_rev(kn->parent);
+> >  
+> >         rb_erase(&kn->rb, &kn->parent->dir.children);
+> >         RB_CLEAR_NODE(&kn->rb);
+> > @@ -1105,6 +1107,12 @@ static struct dentry
+> > *kernfs_iop_lookup(struct inode *dir,
+> >  
+> >         /* instantiate and hash dentry */
+> >         ret = d_splice_alias(inode, dentry);
+> > +       if (!IS_ERR(ret)) {
+> > +               if (unlikely(ret))
+> > +                       kernfs_set_rev(parent, ret);
+> > +               else
+> > +                       kernfs_set_rev(parent, dentry);
+> 
+> Do we care about d_time on non-NULL dentries?
 
-Yes. As I said, imagine a futex_wait API that also takes a fd. The
-wait queue is derived from that fd rather than the hash table.
+Would we ever need to use it avoid a search for any other cases?
 
->>> Another important point is that a futex that is not being waited on
->>> consumes zero kernel resources while fd is a limited resource even when
->>> not used. You can have millions futexes in userspace and you are
->>> guaranteed not to exhaust any limit as long as you have memory. That is
->>> an important feature, and the current userspace is relying on it by
->>> assuming that creating mutexes and condition variables is cheap.
->>=20
->> Is it an important feture? Would 1 byte of kernel memory per uncontended
->> futex be okay? 10? 100?
->>=20
->> I do see it's very nice the current design that requires no
->> initialization for uncontended, I'm just asking questions to get an idea
->> of what constraints we're working with. We have a pretty good API
->> already which can support unlimited uncontended futexes, so I'm
->> wondering do we really need another very very similar API that doesn't
->> fix the really difficult problems of the existing one?
->=20
-> It does provide the very much needed features that are missing in the=20
-> current futex. Namely, more futex sizes and wait for multiple. So the=20
-> argument of "why have two similar APIs" is not quite fair. It would be,=20
-> if there was feature parity with futex.
+Probably not ... those export ops mean that some dentries might
+not have d_time set.
 
-It does provide some extra features sure, with some straightforward=20
-extension of the existing API. The really interesting or tricky part of
-the API is left unchanged though.
+Maybe it's best to put a comment in about only using it for
+negative dentries and set it unconditionally in ->lookup() as
+you describe.
 
-My line of thinking is that while we're changing the API anyway, we=20
-should see if it can be changed to help those other problems too.
+> 
+> For d_splice_alias to return a different dentry implies
+> that the dentry was non-NULL.
+> 
+> I am wondering if having a guarantee that d_time never changes could
+> help simplify the implementation.  For never changing it would see to
+> make sense to call kernfs_set_rev before d_splice_alias on dentry,
+> and
+> simply not worry about it after d_splice_alias.
 
-> I believe, the low cost of a futex is an important feature, and was one=20
-> of the reasons for its original design and introduction.
+Yes, I was tempted to do that.
 
-It is of course. The first futex proposal did use fds, interestingly.
-I didn't look back further into the libc side of that thing, but maybe
-I should.
+> 
+> > +       }
+> >   out_unlock:
+> >         mutex_unlock(&kernfs_mutex);
+> >         return ret;
+> > diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-
+> > internal.h
+> > index ccc3b44f6306f..1536002584fc4 100644
+> > --- a/fs/kernfs/kernfs-internal.h
+> > +++ b/fs/kernfs/kernfs-internal.h
+> > @@ -81,6 +81,30 @@ static inline struct kernfs_node
+> > *kernfs_dentry_node(struct dentry *dentry)
+> >         return d_inode(dentry)->i_private;
+> >  }
+> >  
+> > +static inline void kernfs_set_rev(struct kernfs_node *kn,
+> > +                                 struct dentry *dentry)
+> > +{
+> > +       if (kernfs_type(kn) == KERNFS_DIR)
+> > +               dentry->d_time = kn->dir.rev;
+> > +}
+> > +
+> > +static inline void kernfs_inc_rev(struct kernfs_node *kn)
+> > +{
+> > +       if (kernfs_type(kn) == KERNFS_DIR)
+> > +               kn->dir.rev++;
+> > +}
+> > +
+> > +static inline bool kernfs_dir_changed(struct kernfs_node *kn,
+> > +                                     struct dentry *dentry)
+> > +{
+> > +       if (kernfs_type(kn) == KERNFS_DIR) {
+> > +               /* Not really a time bit it does what's needed */
+> > +               if (time_after(kn->dir.rev, dentry->d_time))
+> > +                       return true;
+> 
+> Why not simply make this:
+>                 if (kn->dir.rev != dentry->d_time)
+>                         return true;
+> 
+> I don't see what is gained by not counting as changed something in
+> the
+> wrong half of the values.
 
-> Otherwise we=20
-> would be using eventfds in mutexes.
+Yes, it was like that originally and really shouldn't make
+any difference. I'll change it back.
 
-I don't think so, not even if eventfd came before the futex syscall.
+Ian
+> 
+> > +       }
+> > +       return false;
+> > +}
+> > +
+> >  extern const struct super_operations kernfs_sops;
+> >  extern struct kmem_cache *kernfs_node_cache, *kernfs_iattrs_cache;
+> >  
+> > diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
+> > index 9e8ca8743c268..7947acb1163d7 100644
+> > --- a/include/linux/kernfs.h
+> > +++ b/include/linux/kernfs.h
+> > @@ -98,6 +98,11 @@ struct kernfs_elem_dir {
+> >          * better directly in kernfs_node but is here to save
+> > space.
+> >          */
+> >         struct kernfs_root      *root;
+> > +       /*
+> > +        * Monotonic revision counter, used to identify if a
+> > directory
+> > +        * node has changed during revalidation.
+> > +        */
+> > +       unsigned long rev;
+> >  };
+> >  
+> >  struct kernfs_elem_symlink {
+> 
+> Eric
 
->=20
-> One other feature that I didn't mention earlier and which follows from=20
-> its "address in memory" design is the ability to use futexes in=20
-> process-shared memory. This is important for process-shared pthread=20
-> components, too, but has its own value even without this, if you use=20
-> futexes directly. With fds, you can't place the fd in a shared memory=20
-> since every process needs to have its own fd referring to the same=20
-> kernel object, and passing fds cannot be done without a UNIX socket.=20
-> This is incompatible with pthreads API design and would require=20
-> non-trivial design changes to the applications using futexes directly.
->=20
 
-That may be true. file is a natural object to share such a resource, but=20
-the means to share the fd is not so easy. OTOH you could also use a=20
-syscall to open the same file and get a new fd.
-
-Are shared pthread mutexes using existing pthread APIs that are today
-implemented okay with futex1 system call a good reason to constrain=20
-futex2 I wonder? Or do we have an opportunity to make a bigger change
-to the API so it suffers less from non deterministic latency (for
-example)?
-
-I don't want to limit it to just files vs addresses, fds was an example=20
-of something that could solve some of the problems.
-
-Thanks,
-Nick
