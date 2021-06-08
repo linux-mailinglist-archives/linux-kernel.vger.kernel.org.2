@@ -2,88 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE0F39F0FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6769239F0FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhFHId7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:33:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52794 "EHLO mail.kernel.org"
+        id S231143AbhFHIeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:34:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229507AbhFHId5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:33:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 299D06124B;
-        Tue,  8 Jun 2021 08:32:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623141125;
-        bh=bWFAmKd3DNZ+NkTU8ZsF5ftLYqiBVXsIWH5ZAF+xP4U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hFI58qU597v46ZY746x3xrEZgo6uu+TuqBXM9QpZ2/baCj6ZTtmHTrfO6RkDw4yfm
-         Lnjwl1iQCvCdFRAScDBLAMqVYI1Fv88Jue3ktj71s3EobuX3WQBNRDxKxZLL9bva7L
-         sUapmD98BOr6hBnhyvo0pponS2gGC1rSy6lwLlrs=
-Date:   Tue, 8 Jun 2021 10:32:02 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Salvatore Bonaccorso <carnil@debian.org>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linma <linma@zju.edu.cn>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hao Xiong <mart1n@zju.edu.cn>, stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] Bluetooth: fix the erroneous flush_work() order
-Message-ID: <YL8rAlo56DT9Ok0B@kroah.com>
-References: <20210525123902.189012-1-gregkh@linuxfoundation.org>
- <BF0493D4-AB96-44D3-8229-9EA6D084D260@holtmann.org>
- <YL73vTBtgWkaup+A@eldamar.lan>
+        id S231338AbhFHIeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 04:34:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAF4561183;
+        Tue,  8 Jun 2021 08:32:09 +0000 (UTC)
+Date:   Tue, 8 Jun 2021 09:32:07 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Marek Kedzierski <mkedzier@redhat.com>,
+        Hui Zhu <teawater@gmail.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-acpi@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Baoquan He <bhe@redhat.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Joe Perches <joe@perches.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Jia He <justin.he@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org
+Subject: Re: [PATCH v1 04/12] mm/memory_hotplug: remove nid parameter from
+ arch_remove_memory()
+Message-ID: <20210608083206.GE17957@arm.com>
+References: <20210607195430.48228-1-david@redhat.com>
+ <20210607195430.48228-5-david@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YL73vTBtgWkaup+A@eldamar.lan>
+In-Reply-To: <20210607195430.48228-5-david@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 06:53:17AM +0200, Salvatore Bonaccorso wrote:
-> Hi Greg,
+On Mon, Jun 07, 2021 at 09:54:22PM +0200, David Hildenbrand wrote:
+> The parameter is unused, let's remove it.
 > 
-> On Thu, May 27, 2021 at 10:14:59PM +0200, Marcel Holtmann wrote:
-> > Hi Greg,
-> > 
-> > > In the cleanup routine for failed initialization of HCI device,
-> > > the flush_work(&hdev->rx_work) need to be finished before the
-> > > flush_work(&hdev->cmd_work). Otherwise, the hci_rx_work() can
-> > > possibly invoke new cmd_work and cause a bug, like double free,
-> > > in late processings.
-> > > 
-> > > This was assigned CVE-2021-3564.
-> > > 
-> > > This patch reorder the flush_work() to fix this bug.
-> > > 
-> > > Cc: Marcel Holtmann <marcel@holtmann.org>
-> > > Cc: Johan Hedberg <johan.hedberg@gmail.com>
-> > > Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-> > > Cc: "David S. Miller" <davem@davemloft.net>
-> > > Cc: Jakub Kicinski <kuba@kernel.org>
-> > > Cc: linux-bluetooth@vger.kernel.org
-> > > Cc: netdev@vger.kernel.org
-> > > Cc: linux-kernel@vger.kernel.org
-> > > Signed-off-by: Lin Ma <linma@zju.edu.cn>
-> > > Signed-off-by: Hao Xiong <mart1n@zju.edu.cn>
-> > > Cc: stable <stable@vger.kernel.org>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > ---
-> > > net/bluetooth/hci_core.c | 7 ++++++-
-> > > 1 file changed, 6 insertions(+), 1 deletion(-)
-> > 
-> > patch has been applied to bluetooth-stable tree.
-> 
-> Can you queue this one as well for the stable series? It is
-> 6a137caec23aeb9e036cdfd8a46dd8a366460e5d commit upstream and in
-> 5.13-rc5.
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Laurent Dufour <ldufour@linux.ibm.com>
+> Cc: Sergei Trofimovich <slyfox@gentoo.org>
+> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Cc: Michel Lespinasse <michel@lespinasse.org>
+> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+> Cc: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+> Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+> Cc: Joe Perches <joe@perches.com>
+> Cc: Pierre Morel <pmorel@linux.ibm.com>
+> Cc: Jia He <justin.he@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-ia64@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-sh@vger.kernel.org
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/arm64/mm/mmu.c            | 3 +--
 
-It's now queued up, thanks.
-
-greg k-h
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
