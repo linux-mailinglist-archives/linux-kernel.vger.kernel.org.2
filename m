@@ -2,166 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1513039F9A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BB439F9A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbhFHO4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233288AbhFHO4K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:56:10 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021B0C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 07:54:18 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id t40so8767290oiw.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 07:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YOoJEAvOVqbK4v61piMRQZKD7D+2Wxv5vNkMO12sWiQ=;
-        b=lp04WpJQ5cFn5howqG+MuDdJmNjwz8GlRj1bvoRTW/1I82dmb2yowy8E3iTj5P2fK1
-         mJCMvw2jkZq7wEuGTj2c9Gfryglr6XrC3y6ONNynB7tR+ixr4p8DGlTPJXNTcvINFB/b
-         RsvE8qxy/Hgu5wsPSlEDQbHSgI5Emy8/3GoZf0dMzrGi/d9nrOu5jqpa4xzzxyQVUlsp
-         l+dnGZF2k0aWDYhh3TZ3w7Lc8/TbQrHzIommbszYqPYXkgYtdjnMGBBO713Jijdy5C7R
-         2qOV0ci+YShmXDfSL9uhhkf3g7eEll6wpaP7r4OsGr9Bq5c+PUHJV9YIZSVQHDgA5MLm
-         HrYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YOoJEAvOVqbK4v61piMRQZKD7D+2Wxv5vNkMO12sWiQ=;
-        b=OU2p72d5gRPy8WCctFzblYGamUDSKZzH3+pnHLX7rrBcKpcEPDuogveuOlKMm8G0Mu
-         7lsN7ZhzH8k8bSuf+b0kyrqUWLQCdiSlRYxJzrMLJTucCLmzulWIZjzObg0Od2j9wxUW
-         2EwtTGWGHK4y1yVgn1Fl78zbYM011fBvbJokX6rV33JA+8dK1HCOMSjLHj6hlCEKgsBj
-         xfXRkDDNMExzXZw7iaq5eLX3Y742GuahOcSMuzV5lkOOID2VHEGzp7qHdfRQflz1wtSM
-         pek+NEYrBkBSj51EJTWpCk9yJSA9LvnmZkbxcXTyLErrgRxxDV3EDoVJKKIqRC2HwFID
-         IjIw==
-X-Gm-Message-State: AOAM531Y6dGF5U582w38MdExtCYZ5JkiU7Qq86lDT6+2Tzh9CIFLOXoT
-        yNdpOiilQwRut6szZ62MP2lOzDqLgqFBH4MNCE8=
-X-Google-Smtp-Source: ABdhPJzvWbYI44VZl2fltwTHhC1u82++xVlMbWzDht7tkDoco05BKY+OWKvuT9uVpyvyGieu9ZnU0SGmONh+j5r/uic=
-X-Received: by 2002:a05:6808:249:: with SMTP id m9mr3105250oie.120.1623164056486;
- Tue, 08 Jun 2021 07:54:16 -0700 (PDT)
+        id S233607AbhFHO4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:56:32 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:15502 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232833AbhFHO4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:56:31 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4FztYn36F5z9trp;
+        Tue,  8 Jun 2021 16:54:37 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 470n_Hf-Cc4b; Tue,  8 Jun 2021 16:54:37 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FztYl2NxWzBDhb;
+        Tue,  8 Jun 2021 16:54:35 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 338438B7C1;
+        Tue,  8 Jun 2021 16:54:35 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id CBcAUjaryt1b; Tue,  8 Jun 2021 16:54:35 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9FE408B7BF;
+        Tue,  8 Jun 2021 16:54:34 +0200 (CEST)
+Subject: Re: [PATCH v3 resend 11/15] powerpc: convert to
+ setup_initial_init_mm()
+To:     Souptick Joarder <jrdr.linux@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
+ <20210608083418.137226-12-wangkefeng.wang@huawei.com>
+ <CAFqt6zZWanzsy=F4LVUkovQE-wqKd0CNG-n=Sx7SBddord6Gcg@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <215985fd-67d5-731f-743c-ea446b55bb8d@csgroup.eu>
+Date:   Tue, 8 Jun 2021 16:54:09 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <1623068820-2479-1-git-send-email-yangtiezhu@loongson.cn>
- <0d1b517f-797f-e87d-4edd-8474b16993ed@amd.com> <CADnq5_PvZRu0h60dn-=4v0aXBOaNy=s0KjmeuSndDzU3C8qFog@mail.gmail.com>
- <31de1f2e-5030-3a01-782b-df659d0d2869@loongson.cn>
-In-Reply-To: <31de1f2e-5030-3a01-782b-df659d0d2869@loongson.cn>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 8 Jun 2021 10:54:05 -0400
-Message-ID: <CADnq5_PMrv7imajh2SNJQL3nOBj8OKwV5Ud=1LQnKn0kN4SoNw@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon: Always call radeon_suspend_kms() in radeon_pci_shutdown()
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jianmin Lv <lvjianmin@loongson.cn>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAFqt6zZWanzsy=F4LVUkovQE-wqKd0CNG-n=Sx7SBddord6Gcg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 10:26 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> On 06/07/2021 09:42 PM, Alex Deucher wrote:
-> > On Mon, Jun 7, 2021 at 8:30 AM Christian K=C3=B6nig <christian.koenig@a=
-md.com> wrote:
-> >> Am 07.06.21 um 14:27 schrieb Tiezhu Yang:
-> >>> radeon_suspend_kms() puts the hw in the suspend state (all asics),
-> >>> it should always call radeon_suspend_kms() in radeon_pci_shutdown(),
-> >>> this is a normal cleanup process to avoid more operations on radeon,
-> >>> just remove #ifdef CONFIG_PPC64 and the related comments.
-> >> Well NAK.
-> >>
-> >> Alex knows more about the details but suspending should not be part of
-> >> the pci shotdown process at all.
-> >>
-> >> We just add that here to enforce a GPU reset on PPC64 boards for some
-> >> reason.
-> > Everything in the comment still applies.
-> >
-> > Alex
->
-> Hi Alex and Christian,
->
-> Thanks for your quick reply. What do you think of the following changes?
-> If it is OK, I will send v2. If no, please ignore it.
->
-> Any comments will be much appreciated.
 
-Looks fine.  Please send it out.
 
-Alex
+Le 08/06/2021 à 16:36, Souptick Joarder a écrit :
+> On Tue, Jun 8, 2021 at 1:56 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>>
+>> Use setup_initial_init_mm() helper to simplify code.
+>>
+>> Note klimit is (unsigned long) _end, with new helper,
+>> will use _end directly.
+> 
+> With this change klimit left with no user in this file and can be
+> moved to some appropriate header.
+> But in a separate series.
 
->
-> Thanks,
-> Tiezhu
->
->
-> Subject: [PATCH] drm/radeon: Call radeon_suspend_kms() in
->   radeon_pci_shutdown() for Loongson64
->
-> On the Loongson64 platform used with Radeon GPU, shutdown or reboot faile=
-d
-> when console=3Dtty is in the boot cmdline.
->
-> radeon_suspend_kms() puts the hw in the suspend state, especially set fb
-> state as FBINFO_STATE_SUSPENDED:
->
->      if (fbcon) {
->          console_lock();
->          radeon_fbdev_set_suspend(rdev, 1);
->          console_unlock();
->      }
->
-> Then avoid to do any more fb operations in the related functions:
->
->      if (p->state !=3D FBINFO_STATE_RUNNING)
->          return;
->
-> So call radeon_suspend_kms() in radeon_pci_shutdown() for Loongson64 to f=
-ix
-> this issue, it looks like some kind of workaround like powerpc.
->
-> Co-developed-by: Jianmin Lv <lvjianmin@loongson.cn>
-> Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->   drivers/gpu/drm/radeon/radeon_drv.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_drv.c
-> b/drivers/gpu/drm/radeon/radeon_drv.c
-> index efeb115..daabbf5 100644
-> --- a/drivers/gpu/drm/radeon/radeon_drv.c
-> +++ b/drivers/gpu/drm/radeon/radeon_drv.c
-> @@ -386,13 +386,13 @@ radeon_pci_shutdown(struct pci_dev *pdev)
->       if (radeon_device_is_virtual())
->           radeon_pci_remove(pdev);
->
-> -#ifdef CONFIG_PPC64
-> +#if defined(CONFIG_PPC64) || defined(CONFIG_MACH_LOONGSON64)
->       /*
->        * Some adapters need to be suspended before a
->        * shutdown occurs in order to prevent an error
-> -     * during kexec.
-> -     * Make this power specific becauase it breaks
-> -     * some non-power boards.
-> +     * during kexec, shutdown or reboot.
-> +     * Make this power and Loongson specific becauase
-> +     * it breaks some other boards.
->        */
->       radeon_suspend_kms(pci_get_drvdata(pdev), true, true, false);
->   #endif
-> --
-> 2.1.0
->
+I have a patch to remove klimit, see 
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/9fa9ba6807c17f93f35a582c199c646c4a8bfd9c.1622800638.git.christophe.leroy@csgroup.eu/
+
+Christophe
+
+
+> 
+>>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>> Cc: linuxppc-dev@lists.ozlabs.org
+>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>> ---
+>>   arch/powerpc/kernel/setup-common.c | 5 +----
+>>   1 file changed, 1 insertion(+), 4 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
+>> index 74a98fff2c2f..96697c6e1e16 100644
+>> --- a/arch/powerpc/kernel/setup-common.c
+>> +++ b/arch/powerpc/kernel/setup-common.c
+>> @@ -927,10 +927,7 @@ void __init setup_arch(char **cmdline_p)
+>>
+>>          klp_init_thread_info(&init_task);
+>>
+>> -       init_mm.start_code = (unsigned long)_stext;
+>> -       init_mm.end_code = (unsigned long) _etext;
+>> -       init_mm.end_data = (unsigned long) _edata;
+>> -       init_mm.brk = klimit;
+>> +       setup_initial_init_mm(_stext, _etext, _edata, _end);
+>>
+>>          mm_iommu_init(&init_mm);
+>>          irqstack_early_init();
+>> --
+>> 2.26.2
+>>
+>>
