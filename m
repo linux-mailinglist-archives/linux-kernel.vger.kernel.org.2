@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DED3A005A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE1339FF92
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234847AbhFHSmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:42:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36506 "EHLO mail.kernel.org"
+        id S231678AbhFHSeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:34:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235013AbhFHSiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:38:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58091613C3;
-        Tue,  8 Jun 2021 18:33:18 +0000 (UTC)
+        id S234453AbhFHScx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:32:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FF1C613D2;
+        Tue,  8 Jun 2021 18:30:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177198;
-        bh=s45wJ5rZtojdQGdv+cS59wcafAGlC7qrnKm3C39J09g=;
+        s=korg; t=1623177049;
+        bh=OVFZw5IZGcniThpzYD3uOPi9zfoCyEc2eNlSoz8KL5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B+K9hMK0gW5P4kGI4zognxz/NtcB5Lp9Vf/SHFpOzcvNDRl6e0CNpCG5szqa/5JHI
-         oC0pO88Afqc/1ymXR4rS2s1PbAxkFWEtN97FASgoe1O10OT9qagLncPsXA5gSB6Tsp
-         FdVrB2lorVjeRHtXjkOgSZXRAPxn6ncMo9seOfu4=
+        b=A8P0iZ8zVEdDd/TXO0VPKwgELxoeq/hODm/KEb6lTIrIgoC9kLqfffpD66oHGd7qz
+         7Ykp1lK9Tz/OWL7LRfbAiZ8iLS65ldNL3kf66GZOpYVuakytjb5Lbbx/nriesFX0UI
+         n9z1UPVa6vZRjzBtQ+96WLNRZyjW81ee24F8YTOU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 05/58] efi: cper: fix snprintf() use in cper_dimm_err_location()
+Subject: [PATCH 4.14 03/47] efi: cper: fix snprintf() use in cper_dimm_err_location()
 Date:   Tue,  8 Jun 2021 20:26:46 +0200
-Message-Id: <20210608175932.456600721@linuxfoundation.org>
+Message-Id: <20210608175930.590546634@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
+References: <20210608175930.477274100@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -64,10 +64,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-index 116989cf3d45..97da083afd32 100644
+index 209dc5aefc31..efbb13c6581e 100644
 --- a/drivers/firmware/efi/cper.c
 +++ b/drivers/firmware/efi/cper.c
-@@ -275,8 +275,7 @@ static int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg)
+@@ -380,8 +380,7 @@ static int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg)
  	if (!msg || !(mem->validation_bits & CPER_MEM_VALID_MODULE_HANDLE))
  		return 0;
  
@@ -77,7 +77,7 @@ index 116989cf3d45..97da083afd32 100644
  	dmi_memdev_name(mem->mem_dev_handle, &bank, &device);
  	if (bank && device)
  		n = snprintf(msg, len, "DIMM location: %s %s ", bank, device);
-@@ -285,7 +284,6 @@ static int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg)
+@@ -390,7 +389,6 @@ static int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg)
  			     "DIMM location: not present. DMI handle: 0x%.4x ",
  			     mem->mem_dev_handle);
  
