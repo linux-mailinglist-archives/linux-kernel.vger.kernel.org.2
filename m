@@ -2,99 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78633A0652
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF6F3A0651
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbhFHVn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 17:43:57 -0400
-Received: from nautica.notk.org ([91.121.71.147]:37908 "EHLO nautica.notk.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234344AbhFHVnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 17:43:55 -0400
-X-Greylist: delayed 165346 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Jun 2021 17:43:55 EDT
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 3FB5CC022; Tue,  8 Jun 2021 23:42:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1623188520; bh=BzT3wyhqpB6185zh00HzeGjst0xNZzNRNRcMkS0h4Ek=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TPCVJJPheMdSOTumApcB7X+1E/NcOwTUaPkWOc0lpWofraySQuqK/Fcz1QR6mNJu/
-         JbIBKs/drSoZzxeIaf8DU0tcv9YgrMNiR9LgzEx5Jp9SRNagHzDD3i7zi+FOEo/XNJ
-         PbSCFfPCoCcvdEbuB9SHmSId3kCsa3A9i6hzSXy45RUsscxetLrLqsMCTUaNMm49UN
-         bwYG+NWjh/K8BEQOhSdGCCVa17ZOAdaJ6qeDg+T+pKZf2Yhee13uQc7YW8WObvi3GL
-         70AEi/UPGVfR2Jv2x6K94NNblVioAzUPYNkVqPqAoBESmnu/nAN5SlJ3uRurgWzvvm
-         BCngHHHE4/VLg==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id B5FE2C01A;
-        Tue,  8 Jun 2021 23:41:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1623188519; bh=BzT3wyhqpB6185zh00HzeGjst0xNZzNRNRcMkS0h4Ek=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hZs7zDSzWVrirXlYRkb+jr8ZfGHEWgLxIP6E4ym/fYo38OHCnrgAXLk03GvlJ80wc
-         x4mK1vQ5pH8UOHFvd8L4zqag2eWJnnMdHYfznLUafJ+oP8csmM21fusFJhPGd2IHMP
-         x2A+h/66ugFwS/ecXQDBFnfvvyZGsFSNO6ofK0bLXiyzQARFG4DcbZyQFti3B4i1my
-         A1JVbDm/2VNinrbZODsGhJfERVUeNRvAsCBcacT/cJA9HGmH/LIBAiFl42Et7hhdXk
-         NDJ/fB7kpmf30DKYvH2PI4iaXRNGopmekboUxPqkpuDH/pgxlmDD+K+kI4L1avIiaK
-         H/hT4xQFNqKGw==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 4cf7185a;
-        Tue, 8 Jun 2021 21:41:53 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 06:41:38 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Vivek Goyal <vgoyal@redhat.com>,
-        Changbin Du <changbin.du@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>, viro@zeniv.linux.org.uk,
-        stefanha@redhat.com,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        dgilbert@redhat.com, v9fs-developer@lists.sourceforge.net,
-        Enrico Weigelt <lkml@metux.net>
-Subject: Re: [PATCH] init/do_mounts.c: Add root="fstag:<tag>" syntax for root
- device
-Message-ID: <YL/kEpcaYE/Jr0J7@codewreck.org>
-References: <20210608153524.GB504497@redhat.com>
+        id S234656AbhFHVnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 17:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234344AbhFHVnv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 17:43:51 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49431C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 14:41:58 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id o9so14811187pgd.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 14:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6UTFwgGaZl+fn/RYJyiPsWbP182wWR0oIXNeHYzwJQA=;
+        b=vjMLtn3OfN3Eun12/4wGEsK4B3v7SKRflcwqzjuqPCqhj+YyNKYgfhxXFTdqZM1Cqd
+         HlCv+z/ZOJrjWw6tv2kuBukESKyE1Y9tkYFX6Qcmtp5yOnX/rwFI9rOk8+M9rfnGuUeM
+         hPutUZt2M7CVvVJqDQfm56pTN7s+FdAD/GnjhFKjjq8vk4/crY3lazNZDaVFvlzYQ6Oi
+         9cMaLGpHF/blQ1Hpu77FJbEFMwtIeuEqBHrda0h14qh+8ualtiKfK9CpUik8k7VCriWq
+         BPZi6cWJozc0ZDkDzn1BrobRbN4KQZd4h6KVYjTfFnbtbKopcQSR/FTjMYWj+dc1I+6J
+         NkoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6UTFwgGaZl+fn/RYJyiPsWbP182wWR0oIXNeHYzwJQA=;
+        b=P+6+xMommj3CGnnZgS9ny0/K7FiQwwdW/wnkui86TBk/rv/H0uL+1msNJIxMn/pg7v
+         L2oayE84cq3vfXcf/3lAfJPsGwI/fa+cy7tucy7l7SDmxjmTeh6UBKV94EzHXRSdNvy2
+         E+RMaF9M6ckPH9Gtp45UlHw2BNLEWqHw8JPYftG+IxqqyLHVPpaLY3C1is94OJnKZBl+
+         5SLLYV8lKF9dvo/kvjmcGqYAawt8xs4Q0b1GjQr/zIbEOfHasjifAnWesnr8oDlWZJox
+         hsLFuimTyVRndYhMIJqouxh8U8sqx3mJWRGBYuIjbQL91VCf59/4xdeElRDEPDmsdu+I
+         BMnw==
+X-Gm-Message-State: AOAM532U5IHTMuMM+pgd2YKICN4q0l8hOZ7FQu0iZWzZxpkv2vVKMngR
+        Ga9KV9tD4eL+UkMbIocrh8X4+yx/Zf32VzOMAKmC2Q==
+X-Google-Smtp-Source: ABdhPJy8nUBzFUu6yHxfMYdoVePFeGsHZXT9FY1ei/AKa0MmJL5mxsQjULhKDFOv/h4+45S0FWBT+cXuoTHXoAdzlJ8=
+X-Received: by 2002:a63:195b:: with SMTP id 27mr287943pgz.450.1623188517724;
+ Tue, 08 Jun 2021 14:41:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210608153524.GB504497@redhat.com>
+References: <CAPcyv4jQ=Fcga3jyUzthjPW9O962vhy3L5XUM6jqR5Z_Zq83LQ@mail.gmail.com>
+ <20210608213527.739474-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20210608213527.739474-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 8 Jun 2021 14:41:46 -0700
+Message-ID: <CAPcyv4iD2YBSZ8tp3Eue9+gmJ8=4gWRXy-CJucdppvBbcUo1kw@mail.gmail.com>
+Subject: Re: [RFC v2-fix-v3 1/1] x86/tdx: Skip WBINVD instruction for TDX guest
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-... And that's why I told Changbin Du a few times his patches needed
-more Ccs :/
+[ add Rafael and linux-acpi ]
 
-FWIW: we just got last month a couple of patches that would allow
-initrd-less 9p root mount (using the nfs/cifs method described below
-with root=/dev/v9fs)
-
-Vivek Goyal wrote on Tue, Jun 08, 2021 at 11:35:24AM -0400:
-> NFS and CIFS use "root=/dev/nfs" and CIFS passes "root=/dev/cifs" and
-> actual root device details come from filesystem specific kernel
-> command line options.
-> 
-> virtiofs does not seem to fit in any of the above categories. In fact
-> we have 9pfs which can be used to boot from but it also does not
-> have a proper syntax to specify rootfs and does not fit into any of
-> the existing syntax. They both expect a device "tag" to be passed
-> in a device to be mounted. And filesystem knows how to parse and
-> use "tag".
-> 
-> So this patch proposes that we add a new prefix "fstag:" which specifies
-> that identifier which follows is filesystem specific tag and its not
-> a block device. Just pass this tag to filesystem and filesystem will
-> figure out how to mount it.
-
-
-...However I agree something more generic would be welcome in my
-opinion, so I like this approach.
-
-I'll give it a try for 9p over the weekend and report back.
-
--- 
-Dominique
+On Tue, Jun 8, 2021 at 2:35 PM Kuppuswamy Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+> Current TDX spec does not have support to emulate the WBINVD
+> instruction. So, add support to skip WBINVD instruction in
+> drivers that are currently enabled in the TDX guest.
+>
+> Functionally only devices outside the CPU (such as DMA devices,
+> or persistent memory for flushing) can notice the external side
+> effects from WBINVD's cache flushing for write back mappings.
+> One exception here is MKTME, but that is not visible outside
+> the TDX module and not possible inside a TDX guest.
+>
+> Currently TDX does not support DMA, because DMA typically needs
+> uncached access for MMIO, and the current TDX module always
+> sets the IgnorePAT bit, which prevents that.
+>
+> Persistent memory is also currently not supported. Another code
+> path that uses WBINVD is the MTRR driver, but EPT/virtualization
+> always disables MTRRs so those are not needed. This all implies
+> WBINVD is not needed with current TDX.
+>
+> So, most drivers/code-paths that use wbinvd instructions are
+> already disabled for TDX guest platforms via config-option/BIOS.
+> Following are the list of drivers that use wbinvd instruction
+> and are still enabled for TDX guests.
+>
+> drivers/acpi/sleep.c
+> drivers/acpi/acpica/hwsleep.c
+>
+> Since cache is always coherent in TDX guests, making wbinvd as
+> noop should not cause any issues. This behavior is the same as
+> KVM guest.
+>
+> Also, hwsleep shouldn't happen for TDX guest because the TDX
+> BIOS won't enable it, but it's better to disable it anyways
+>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+>
+> Changes since RFC v2-fix-v2:
+>  * Instead of handling WBINVD #VE exception as nop, we skip its
+>    usage in currently enabled drivers.
+>  * Adapted commit log for above change.
+>
+>  arch/x86/kernel/tdx.c           |  1 +
+>  drivers/acpi/acpica/hwsleep.c   | 12 +++++++++---
+>  drivers/acpi/sleep.c            | 26 +++++++++++++++++++++++---
+>  include/linux/protected_guest.h |  2 ++
+>  4 files changed, 35 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+> index 1caf9fa5bb30..e33928131e6a 100644
+> --- a/arch/x86/kernel/tdx.c
+> +++ b/arch/x86/kernel/tdx.c
+> @@ -100,6 +100,7 @@ bool tdx_protected_guest_has(unsigned long flag)
+>         case PR_GUEST_MEM_ENCRYPT_ACTIVE:
+>         case PR_GUEST_UNROLL_STRING_IO:
+>         case PR_GUEST_SHARED_MAPPING_INIT:
+> +       case PR_GUEST_DISABLE_WBINVD:
+>                 return true;
+>         }
+>
+> diff --git a/drivers/acpi/acpica/hwsleep.c b/drivers/acpi/acpica/hwsleep.c
+> index 14baa13bf848..9d40df1b8a74 100644
+> --- a/drivers/acpi/acpica/hwsleep.c
+> +++ b/drivers/acpi/acpica/hwsleep.c
+> @@ -9,6 +9,7 @@
+>   *****************************************************************************/
+>
+>  #include <acpi/acpi.h>
+> +#include <linux/protected_guest.h>
+>  #include "accommon.h"
+>
+>  #define _COMPONENT          ACPI_HARDWARE
+> @@ -108,9 +109,14 @@ acpi_status acpi_hw_legacy_sleep(u8 sleep_state)
+>         pm1a_control |= sleep_enable_reg_info->access_bit_mask;
+>         pm1b_control |= sleep_enable_reg_info->access_bit_mask;
+>
+> -       /* Flush caches, as per ACPI specification */
+> -
+> -       ACPI_FLUSH_CPU_CACHE();
+> +       /*
+> +        * WBINVD instruction is not supported in TDX
+> +        * guest. Since ACPI_FLUSH_CPU_CACHE() uses
+> +        * WBINVD, skip cache flushes for TDX guests.
+> +        */
+> +       if (prot_guest_has(PR_GUEST_DISABLE_WBINVD))
+> +               /* Flush caches, as per ACPI specification */
+> +               ACPI_FLUSH_CPU_CACHE();
+>
+>         status = acpi_os_enter_sleep(sleep_state, pm1a_control, pm1b_control);
+>         if (status == AE_CTRL_TERMINATE) {
+> diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+> index df386571da98..3d6c213481f0 100644
+> --- a/drivers/acpi/sleep.c
+> +++ b/drivers/acpi/sleep.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/acpi.h>
+>  #include <linux/module.h>
+>  #include <linux/syscore_ops.h>
+> +#include <linux/protected_guest.h>
+>  #include <asm/io.h>
+>  #include <trace/events/power.h>
+>
+> @@ -71,7 +72,14 @@ static int acpi_sleep_prepare(u32 acpi_state)
+>                 acpi_set_waking_vector(acpi_wakeup_address);
+>
+>         }
+> -       ACPI_FLUSH_CPU_CACHE();
+> +
+> +       /*
+> +        * WBINVD instruction is not supported in TDX
+> +        * guest. Since ACPI_FLUSH_CPU_CACHE() uses
+> +        * WBINVD, skip cache flushes for TDX guests.
+> +        */
+> +       if (prot_guest_has(PR_GUEST_DISABLE_WBINVD))
+> +               ACPI_FLUSH_CPU_CACHE();
+>  #endif
+>         printk(KERN_INFO PREFIX "Preparing to enter system sleep state S%d\n",
+>                 acpi_state);
+> @@ -566,7 +574,13 @@ static int acpi_suspend_enter(suspend_state_t pm_state)
+>         u32 acpi_state = acpi_target_sleep_state;
+>         int error;
+>
+> -       ACPI_FLUSH_CPU_CACHE();
+> +       /*
+> +        * WBINVD instruction is not supported in TDX
+> +        * guest. Since ACPI_FLUSH_CPU_CACHE() uses
+> +        * WBINVD, skip cache flushes for TDX guests.
+> +        */
+> +       if (prot_guest_has(PR_GUEST_DISABLE_WBINVD))
+> +               ACPI_FLUSH_CPU_CACHE();
+>
+>         trace_suspend_resume(TPS("acpi_suspend"), acpi_state, true);
+>         switch (acpi_state) {
+> @@ -899,7 +913,13 @@ static int acpi_hibernation_enter(void)
+>  {
+>         acpi_status status = AE_OK;
+>
+> -       ACPI_FLUSH_CPU_CACHE();
+> +       /*
+> +        * WBINVD instruction is not supported in TDX
+> +        * guest. Since ACPI_FLUSH_CPU_CACHE() uses
+> +        * WBINVD, skip cache flushes for TDX guests.
+> +        */
+> +       if (prot_guest_has(PR_GUEST_DISABLE_WBINVD))
+> +               ACPI_FLUSH_CPU_CACHE();
+>
+>         /* This shouldn't return.  If it returns, we have a problem */
+>         status = acpi_enter_sleep_state(ACPI_STATE_S4);
+> diff --git a/include/linux/protected_guest.h b/include/linux/protected_guest.h
+> index adfa62e2615e..0ec4dab86f67 100644
+> --- a/include/linux/protected_guest.h
+> +++ b/include/linux/protected_guest.h
+> @@ -18,6 +18,8 @@
+>  #define PR_GUEST_HOST_MEM_ENCRYPT              0x103
+>  /* Support for shared mapping initialization (after early init) */
+>  #define PR_GUEST_SHARED_MAPPING_INIT           0x104
+> +/* Support to disable WBINVD */
+> +#define PR_GUEST_DISABLE_WBINVD                        0x105
+>
+>  #if defined(CONFIG_INTEL_TDX_GUEST) || defined(CONFIG_AMD_MEM_ENCRYPT)
+>
+> --
+> 2.25.1
+>
