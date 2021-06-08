@@ -2,188 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B9539EC4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6B639EC35
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhFHCqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 22:46:31 -0400
-Received: from gw.atmark-techno.com ([13.115.124.170]:56432 "EHLO
-        gw.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhFHCqa (ORCPT
+        id S231243AbhFHChz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 22:37:55 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3462 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230377AbhFHChx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 22:46:30 -0400
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
-        by gw.atmark-techno.com (Postfix) with ESMTPS id 0638D80221
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 11:35:22 +0900 (JST)
-Received: by mail-pf1-f200.google.com with SMTP id b8-20020a056a000a88b02902e97a71383dso8735891pfl.13
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 19:35:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JT31p1ca8pgh5l0QaXINbe3tri/dpwj61zppPFhJm4E=;
-        b=JEHAlAMF6U6GTpFAauPlfYWHcdpnljLHFye3n9GEEfL8a04RdsSfLPtTtjq/eQ6nuG
-         4cj8hmCIW3fDWvp2MYPs9p2EuubB9SwCAYTvjfvsMSC2GdlYH2i4eJdIjkIC0L89SrNE
-         VYPYTwbL51Zj3tZuW5/rFdr2K59dqSDSG/JhiIjJyHMopVf/3sdbJF6uoC5fiABFsU11
-         Nun2cIvNhp99r6e78fwLh+EOlRhXACiCutxhYtAMe05FEaEqvHdAJP+lS4PSXVf3HkTP
-         bzRXQfg71RgOzphSdfWQx25XZObZ8B7FA3EGUjdyUswxoxls5uFlKITKsVzSQn0Q1/Ta
-         cfOA==
-X-Gm-Message-State: AOAM531jsDlnY1+ODsWYu9+uZRfQiNx2STYJCyEybyJLu/5pw8JQZaLl
-        hvUdYyhGd9Z2AY9n2/Keunc6/xfMy1/mhtJZ5bU2siFfUCGGeUcRs8F7gYoZfq1p8DiXGLFONIB
-        Z0i7lLP92r8j6mFhfNBhJFo2yrtRm
-X-Received: by 2002:a63:4b18:: with SMTP id y24mr20471813pga.438.1623119721100;
-        Mon, 07 Jun 2021 19:35:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjuuaAPz9mNpOHbgkNdLeGmigjHU2ser0YtxZY9wU5GgthrW3/tAFdM+FQVhF+lXsXcyIw3Q==
-X-Received: by 2002:a63:4b18:: with SMTP id y24mr20471791pga.438.1623119720760;
-        Mon, 07 Jun 2021 19:35:20 -0700 (PDT)
-Received: from pc-0115 (117.209.187.35.bc.googleusercontent.com. [35.187.209.117])
-        by smtp.gmail.com with ESMTPSA id h16sm9383147pfk.119.2021.06.07.19.35.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Jun 2021 19:35:20 -0700 (PDT)
-Received: from martinet by pc-0115 with local (Exim 4.94.2)
-        (envelope-from <martinet@pc-0115>)
-        id 1lqRaI-005t6V-NT; Tue, 08 Jun 2021 11:35:18 +0900
-Date:   Tue, 8 Jun 2021 11:35:08 +0900
-From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jianxiong Gao <jxgao@google.com>,
-        "Lukas F. Hartmann" <lukas@mntmn.com>,
-        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
- stable/for-linus-5.12)
-Message-ID: <YL7XXNOnbaDgmTB9@atmark-techno.com>
-References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local>
+        Mon, 7 Jun 2021 22:37:53 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzZ6039Gkz6x6Q;
+        Tue,  8 Jun 2021 10:32:56 +0800 (CST)
+Received: from dggema718-chm.china.huawei.com (10.3.20.82) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 10:35:59 +0800
+Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
+ dggema718-chm.china.huawei.com (10.3.20.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 10:35:58 +0800
+Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
+ dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
+ Tue, 8 Jun 2021 10:35:58 +0800
+From:   zhengyongjun <zhengyongjun3@huawei.com>
+To:     yuehaibing <yuehaibing@huawei.com>,
+        "patchwork-bot+netdevbpf@kernel.org" 
+        <patchwork-bot+netdevbpf@kernel.org>
+CC:     "jmaloy@redhat.com" <jmaloy@redhat.com>,
+        "ying.xue@windriver.com" <ying.xue@windriver.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "tipc-discussion@lists.sourceforge.net" 
+        <tipc-discussion@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggbmV0LW5leHRdIHRpcGM6IFJldHVybiB0aGUgY29y?=
+ =?utf-8?Q?rect_errno_code?=
+Thread-Topic: [PATCH net-next] tipc: Return the correct errno code
+Thread-Index: AQHXWOGc9Q9RY5DeKECVhQca9yM8QKsD1uUAgAUJqwCAAIuC4A==
+Date:   Tue, 8 Jun 2021 02:35:58 +0000
+Message-ID: <c86d09aa9dae46edaf11e3be44f32459@huawei.com>
+References: <20210604014702.2087584-1-zhengyongjun3@huawei.com>
+ <162284160438.23356.17911968954229324185.git-patchwork-notify@kernel.org>
+ <410bbe52-5ead-4719-d711-8dc355a9a5f4@huawei.com>
+In-Reply-To: <410bbe52-5ead-4719-d711-8dc355a9a5f4@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.64]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm not able to find any individual mails for Christoph's patches so
-replying to the PR.
-
-In particular, this commit:
-Konrad Rzeszutek Wilk wrote on Fri, Feb 26, 2021 at 11:00:08AM -0500:
-> Christoph Hellwig (8):
->       swiotlb: don't modify orig_addr in swiotlb_tbl_sync_single
-
-merged as 16fc3cef33a0, breaks caam as used today (thanks Lukas for
-bisecting it!)
-
-
-More precisely, drivers/crypto/caam/caamalg.c does a lot of mappings
-that aren't aligned:
-
-dma_sync_single_for_device(jrdev, ctx->sh_desc_enc_dma,
-                           desc_bytes(desc), ctx->dir);
-dma_sync_single_for_device(jrdev, ctx->sh_desc_dec_dma,
-                           desc_bytes(desc), ctx->dir);
-
-
-which can be caught by crypto tests with this caam enabled, for example
-adding a warning when an unaligned mapping happens I get this trace:
---------
-[ 1628.670226]  swiotlb_tbl_sync_single+0x74/0xa0
-[ 1628.674677]  dma_sync_single_for_device+0xe4/0x110
-[ 1628.679472]  skcipher_setkey+0xd0/0xf0
-[ 1628.683224]  des3_skcipher_setkey+0x74/0xac
-[ 1628.687416]  crypto_skcipher_setkey+0x54/0x110
-[ 1628.691866]  crypto_authenc_setkey+0x94/0xd0
-[ 1628.696138]  crypto_aead_setkey+0x34/0x10c
-[ 1628.700236]  test_aead_vec_cfg+0x3a0/0x770
-[ 1628.704338]  test_aead+0xac/0x130
-[ 1628.707656]  alg_test_aead+0xa8/0x190
-[ 1628.711324]  alg_test.part.0+0xf4/0x41c
-[ 1628.715161]  alg_test+0x1c/0x60
-[ 1628.718307]  do_test+0x37ec/0x4c50
-[ 1628.721709]  do_test+0x4bec/0x4c50
-[ 1628.725114]  tcrypt_mod_init+0x54/0xac
-[ 1628.728864]  do_one_initcall+0x4c/0x1b0
-[ 1628.732701]  kernel_init_freeable+0x1d0/0x234
-[ 1628.737060]  kernel_init+0x10/0x114
-[ 1628.740550]  ret_from_fork+0x10/0x24
------
-
-and the tests themselves also fail (all or at least most of them) with
-e.g.
-------
-[    8.454233] caam_jr 30901000.jr: 40001713: DECO: desc idx 23: Header Error. Invalid length or parity, or certain other problems.
-[    8.465820] alg: ahash: hmac-sha256-caam final() failed with err -22 on test vector 0, cfg="init+update+final aligned buffer"
-[    8.477149] ------------[ cut here ]------------
-[    8.481781] alg: self-tests for hmac-sha256-caam (hmac(sha256)) failed (rc=-22)
-[    8.481818] WARNING: CPU: 2 PID: 295 at crypto/testmgr.c:5645 alg_test.part.0+0x128/0x41c
-[    8.497307] Modules linked in:
-[    8.500365] CPU: 2 PID: 295 Comm: cryptomgr_test Tainted: G        W         5.13.0-rc5-00002-gc98cdee6172e #23
-[    8.510455] Hardware name: NXP i.MX8MPlus EVK board (DT)
-[    8.515767] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-[    8.521778] pc : alg_test.part.0+0x128/0x41c
-[    8.526050] lr : alg_test.part.0+0x128/0x41c
-[    8.530324] sp : ffff80001371bd10
-[    8.533637] x29: ffff80001371bd10 x28: 000000000000008f x27: 000000000000008f
-[    8.540785] x26: 000000000000008f x25: 0000000000000400 x24: ffff8000111658c8
-[    8.547930] x23: ffff0000c02aaa80 x22: 000000000001008f x21: ffff0000c02aaa00
-[    8.555075] x20: 0000000000000085 x19: 00000000ffffffea x18: 00000000fffffffc
-[    8.562221] x17: 0000000000000001 x16: 0000000000000003 x15: 0000000000000020
-[    8.569365] x14: ffffffffffffffff x13: 00000000000003e7 x12: ffff80001371b9e0
-[    8.576511] x11: ffff80001188c940 x10: ffff800011844300 x9 : ffff800011886b98
-[    8.583658] x8 : ffff80001182eb98 x7 : ffff800011886b98 x6 : ffffffffffff0888
-[    8.590801] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
-[    8.597945] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff0000c1684e00
-[    8.605093] Call trace:
-[    8.607540]  alg_test.part.0+0x128/0x41c
-[    8.611467]  alg_test+0x1c/0x60
-[    8.614608]  cryptomgr_test+0x28/0x50
-[    8.618275]  kthread+0x154/0x160
-[    8.621511]  ret_from_fork+0x10/0x24
-[    8.625088] ---[ end trace 2d195377ee3c219e ]---
-------
-
-
-
-Looking at it a bit further it seems to me that swiotlb_bounce() should
-either keep the offset (re-adding the line that was removed except it
-would go back in swiotlb_bounce, diff at end of mail), or the size
-should be adjusted to cover from the start of the page up until the
-original offset + size which would also probably work (not tested)
-
-That, or make unaligned mappings forbidden and warn when we see one, but
-I have no idea what other component could be doing some -- I'm not sure
-if what the caam code does it legitimate (e.g. would it be possible to
-do the mappings once at init and use them?), but the swiotlb code
-doesn't look quite right.
-
-
-For now I'll just revert this locally but there must have been a reason
-the adjustment got removed in the first place, what's the best way
-forward?
-
-
-
-
-
---- (for 5.13-rc1+)
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 8ca7d505d61c..3acdd77edfed 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -349,6 +349,7 @@ static void swiotlb_bounce(struct device *dev, phys_addr_t tlb_addr, size_t size
- 
- 	if (orig_addr == INVALID_PHYS_ADDR)
- 		return;
-+	orig_addr += (unsigned long)tlb_addr & (IO_TLB_SIZE - 1);
- 
- 	if (size > alloc_size) {
- 		dev_WARN_ONCE(dev, 1,
----
-
-Thanks,
--- 
-Dominique
+VGhhbmtzIGZvciB5b3VyIGFkdmljZSwgSSB3aWxsIGZpeCBpdCByaWdodCBub3cgOikNCg0KLS0t
+LS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6OiB5dWVoYWliaW5nIA0K5Y+R6YCB5pe26Ze0
+OiAyMDIx5bm0NuaciDjml6UgMTA6MTYNCuaUtuS7tuS6ujogcGF0Y2h3b3JrLWJvdCtuZXRkZXZi
+cGZAa2VybmVsLm9yZzsgemhlbmd5b25nanVuIDx6aGVuZ3lvbmdqdW4zQGh1YXdlaS5jb20+DQrm
+ioTpgIE6IGptYWxveUByZWRoYXQuY29tOyB5aW5nLnh1ZUB3aW5kcml2ZXIuY29tOyBkYXZlbUBk
+YXZlbWxvZnQubmV0OyBrdWJhQGtlcm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IHRp
+cGMtZGlzY3Vzc2lvbkBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQ7IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
+cm5lbC5vcmcNCuS4u+mimDogUmU6IFtQQVRDSCBuZXQtbmV4dF0gdGlwYzogUmV0dXJuIHRoZSBj
+b3JyZWN0IGVycm5vIGNvZGUNCg0KDQpPbiAyMDIxLzYvNSA1OjIwLCBwYXRjaHdvcmstYm90K25l
+dGRldmJwZkBrZXJuZWwub3JnIHdyb3RlOg0KPiBIZWxsbzoNCj4gDQo+IFRoaXMgcGF0Y2ggd2Fz
+IGFwcGxpZWQgdG8gbmV0ZGV2L25ldC1uZXh0LmdpdCAocmVmcy9oZWFkcy9tYXN0ZXIpOg0KDQpU
+aGlzIHNob3VsZCBub3QgYmUgYXBwbGllZC4NCg0KdGlwY19ub2RlX3htaXQoKSBub3cgY2hlY2sg
+LUVOT0JVRlMgcmF0aGVyIHRoYW4gLUVOT01FTS4NCg0KWW9uZ2p1biwgbWF5YmUgeW91IGZpeCB0
+aGlzIG5vdz8NCg0KPiANCj4gT24gRnJpLCA0IEp1biAyMDIxIDA5OjQ3OjAyICswODAwIHlvdSB3
+cm90ZToNCj4+IFdoZW4ga2FsbG9jIG9yIGttZW1kdXAgZmFpbGVkLCBzaG91bGQgcmV0dXJuIEVO
+T01FTSByYXRoZXIgdGhhbiBFTk9CVUYuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogWmhlbmcgWW9u
+Z2p1biA8emhlbmd5b25nanVuM0BodWF3ZWkuY29tPg0KPj4gLS0tDQo+PiAgbmV0L3RpcGMvbGlu
+ay5jIHwgNiArKystLS0NCj4+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRl
+bGV0aW9ucygtKQ0KPiANCj4gSGVyZSBpcyB0aGUgc3VtbWFyeSB3aXRoIGxpbmtzOg0KPiAgIC0g
+W25ldC1uZXh0XSB0aXBjOiBSZXR1cm4gdGhlIGNvcnJlY3QgZXJybm8gY29kZQ0KPiAgICAgaHR0
+cHM6Ly9naXQua2VybmVsLm9yZy9uZXRkZXYvbmV0LW5leHQvYy8wZWZlYTNjNjQ5ZjANCj4gDQo+
+IFlvdSBhcmUgYXdlc29tZSwgdGhhbmsgeW91IQ0KPiAtLQ0KPiBEZWV0LWRvb3QtZG90LCBJIGFt
+IGEgYm90Lg0KPiBodHRwczovL2tvcmcuZG9jcy5rZXJuZWwub3JnL3BhdGNod29yay9wd2JvdC5o
+dG1sDQo+IA0KPiANCj4gLg0KPiANCg==
