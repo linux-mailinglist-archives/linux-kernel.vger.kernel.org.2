@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C5F3A019F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E853A0325
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236750AbhFHSzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:55:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44348 "EHLO mail.kernel.org"
+        id S235047AbhFHTNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:13:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235786AbhFHStN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:49:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FC6B61460;
-        Tue,  8 Jun 2021 18:38:53 +0000 (UTC)
+        id S235343AbhFHTBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:01:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4288661359;
+        Tue,  8 Jun 2021 18:45:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177534;
-        bh=Jss5QohljpTZK5YQFe2a/he3ZQtbDuqj2C0MBXBnO2o=;
+        s=korg; t=1623177901;
+        bh=4FxsOxl0IxUm91bhDt+hrgMMQPhGIbt4bIOedGfT3gk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tFFgmqaT/C9I+THPsPDjkiusuYjC/2Wg45kgYnXbT9fO+IW/iP8U3IZ+OZOsRX2+X
-         u/wmNFPlrQxUwQEv8r8eLGtUtT0h4jB40wEGBeAgcNOER3f7bme0lZxJ/kPHCgUIum
-         LLUJLN7KyFroQaBOEpsjy1fXDtCp+ZBlQlx+b4ys=
+        b=L/ZvE1zyZtOxhC+G06e+UN0wf/SBC6JfWvnNG8heuLTRHwbDo32pY+G7YTl55Pvyx
+         dqeIrRECXKYuUVrFrthzTHMsdFCazni2zOt6FIKid1tf8jfEfwH5OZ32EOH8VkC+Pn
+         +0PiRn0jQ49D0Z3GbiDRTylIN3yFTwcNltOmuYcU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Murphy <lists@colorremedies.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.4 69/78] btrfs: fix unmountable seed device after fstrim
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 118/137] powerpc/kprobes: Fix validation of prefixed instructions across page boundary
 Date:   Tue,  8 Jun 2021 20:27:38 +0200
-Message-Id: <20210608175937.602886335@linuxfoundation.org>
+Message-Id: <20210608175946.363092965@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,111 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-commit 5e753a817b2d5991dfe8a801b7b1e8e79a1c5a20 upstream.
+commit 82123a3d1d5a306fdf50c968a474cc60fe43a80f upstream.
 
-The following test case reproduces an issue of wrongly freeing in-use
-blocks on the readonly seed device when fstrim is called on the rw sprout
-device. As shown below.
+When checking if the probed instruction is the suffix of a prefixed
+instruction, we access the instruction at the previous word. If the
+probed instruction is the very first word of a module, we can end up
+trying to access an invalid page.
 
-Create a seed device and add a sprout device to it:
+Fix this by skipping the check for all instructions at the beginning of
+a page. Prefixed instructions cannot cross a 64-byte boundary and as
+such, we don't expect to encounter a suffix as the very first word in a
+page for kernel text. Even if there are prefixed instructions crossing
+a page boundary (from a module, for instance), the instruction will be
+illegal, so preventing probing on the suffix of such prefix instructions
+isn't worthwhile.
 
-  $ mkfs.btrfs -fq -dsingle -msingle /dev/loop0
-  $ btrfstune -S 1 /dev/loop0
-  $ mount /dev/loop0 /btrfs
-  $ btrfs dev add -f /dev/loop1 /btrfs
-  BTRFS info (device loop0): relocating block group 290455552 flags system
-  BTRFS info (device loop0): relocating block group 1048576 flags system
-  BTRFS info (device loop0): disk added /dev/loop1
-  $ umount /btrfs
-
-Mount the sprout device and run fstrim:
-
-  $ mount /dev/loop1 /btrfs
-  $ fstrim /btrfs
-  $ umount /btrfs
-
-Now try to mount the seed device, and it fails:
-
-  $ mount /dev/loop0 /btrfs
-  mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/loop0, missing codepage or helper program, or other error.
-
-Block 5292032 is missing on the readonly seed device:
-
- $ dmesg -kt | tail
- <snip>
- BTRFS error (device loop0): bad tree block start, want 5292032 have 0
- BTRFS warning (device loop0): couldn't read-tree root
- BTRFS error (device loop0): open_ctree failed
-
->From the dump-tree of the seed device (taken before the fstrim). Block
-5292032 belonged to the block group starting at 5242880:
-
-  $ btrfs inspect dump-tree -e /dev/loop0 | grep -A1 BLOCK_GROUP
-  <snip>
-  item 3 key (5242880 BLOCK_GROUP_ITEM 8388608) itemoff 16169 itemsize 24
-  	block group used 114688 chunk_objectid 256 flags METADATA
-  <snip>
-
->From the dump-tree of the sprout device (taken before the fstrim).
-fstrim used block-group 5242880 to find the related free space to free:
-
-  $ btrfs inspect dump-tree -e /dev/loop1 | grep -A1 BLOCK_GROUP
-  <snip>
-  item 1 key (5242880 BLOCK_GROUP_ITEM 8388608) itemoff 16226 itemsize 24
-  	block group used 32768 chunk_objectid 256 flags METADATA
-  <snip>
-
-BPF kernel tracing the fstrim command finds the missing block 5292032
-within the range of the discarded blocks as below:
-
-  kprobe:btrfs_discard_extent {
-  	printf("freeing start %llu end %llu num_bytes %llu:\n",
-  		arg1, arg1+arg2, arg2);
-  }
-
-  freeing start 5259264 end 5406720 num_bytes 147456
-  <snip>
-
-Fix this by avoiding the discard command to the readonly seed device.
-
-Reported-by: Chris Murphy <lists@colorremedies.com>
-CC: stable@vger.kernel.org # 4.4+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Fixes: b4657f7650ba ("powerpc/kprobes: Don't allow breakpoints on suffixes")
+Cc: stable@vger.kernel.org # v5.8+
+Reported-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/0df9a032a05576a2fa8e97d1b769af2ff0eafbd6.1621416666.git.naveen.n.rao@linux.vnet.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/extent-tree.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/powerpc/kernel/kprobes.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1338,16 +1338,20 @@ int btrfs_discard_extent(struct btrfs_fs
- 		for (i = 0; i < bbio->num_stripes; i++, stripe++) {
- 			u64 bytes;
- 			struct request_queue *req_q;
-+			struct btrfs_device *device = stripe->dev;
+--- a/arch/powerpc/kernel/kprobes.c
++++ b/arch/powerpc/kernel/kprobes.c
+@@ -108,7 +108,6 @@ int arch_prepare_kprobe(struct kprobe *p
+ 	int ret = 0;
+ 	struct kprobe *prev;
+ 	struct ppc_inst insn = ppc_inst_read((struct ppc_inst *)p->addr);
+-	struct ppc_inst prefix = ppc_inst_read((struct ppc_inst *)(p->addr - 1));
  
--			if (!stripe->dev->bdev) {
-+			if (!device->bdev) {
- 				ASSERT(btrfs_test_opt(fs_info, DEGRADED));
- 				continue;
- 			}
--			req_q = bdev_get_queue(stripe->dev->bdev);
-+			req_q = bdev_get_queue(device->bdev);
- 			if (!blk_queue_discard(req_q))
- 				continue;
- 
--			ret = btrfs_issue_discard(stripe->dev->bdev,
-+			if (!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state))
-+				continue;
-+
-+			ret = btrfs_issue_discard(device->bdev,
- 						  stripe->physical,
- 						  stripe->length,
- 						  &bytes);
+ 	if ((unsigned long)p->addr & 0x03) {
+ 		printk("Attempt to register kprobe at an unaligned address\n");
+@@ -116,7 +115,8 @@ int arch_prepare_kprobe(struct kprobe *p
+ 	} else if (IS_MTMSRD(insn) || IS_RFID(insn) || IS_RFI(insn)) {
+ 		printk("Cannot register a kprobe on rfi/rfid or mtmsr[d]\n");
+ 		ret = -EINVAL;
+-	} else if (ppc_inst_prefixed(prefix)) {
++	} else if ((unsigned long)p->addr & ~PAGE_MASK &&
++		   ppc_inst_prefixed(ppc_inst_read((struct ppc_inst *)(p->addr - 1)))) {
+ 		printk("Cannot register a kprobe on the second word of prefixed instruction\n");
+ 		ret = -EINVAL;
+ 	}
 
 
