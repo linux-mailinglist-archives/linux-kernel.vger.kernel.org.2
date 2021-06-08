@@ -2,116 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F41D3A04A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791C13A04A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233944AbhFHTtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbhFHTtR (ORCPT
+        id S234228AbhFHTuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:50:37 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54160 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229845AbhFHTu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:49:17 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8875EC061787
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:47:07 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so20431372otu.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 12:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oPH7MZcO8dfsKVtwmd/nA3Va8+4eG9+TiTHrp2cp3M8=;
-        b=oLExvtz2vC3ZuG9Uv3AoRpeHuDhy82B1oEhVzpn4N4xM/jruf3KPUstlvjh3BbmB8U
-         nHLCynKK69yvuTMO7ExTmctiKRjmjNK/P4aywFkLcoUlMDjJpcaeMRE58qeTJKybgYPv
-         hft6+nx6wJvHuO8J/t1KKRwtASb+OkcdqE9ALFF6UAhQtHXlGX83s3YljRyvmqZ1+zxf
-         COFh4ntNiG5WF+532jqy6nwYAItHG8q7mzYoNEmQqggrOCWJc3Y4069uIP13tD5waW0T
-         w1B0kmaMfw7fkLPxI4qxdAlMsVy7B/RUP48yJVromzBmW1onBiYES0DCjSQTipobCnp6
-         oeJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oPH7MZcO8dfsKVtwmd/nA3Va8+4eG9+TiTHrp2cp3M8=;
-        b=klYtpd/grQvCrVIAQFTJosDIhnVgcwXulGbTi+aX/5G42WHhKpm/2cAyehac/FtFPv
-         dsLTPihM62898PVUpI3OuadkeMAnWnD1AXygOjMtSqnzNdoQfM8mEg84K7DS1tIBVUpi
-         SfrcYbH9iFOS/y2W/fNY2c+Ql52N2nv3jZf8D1r3tLMhjrx5AMbUXoK2dq0pDkvbk1QL
-         EFSOEXm+CpRSDorJVEjUSAQvv2oRElePYc8ky9b5wAoGan7VlWuhavK4JMzlyBPKMMuU
-         pWrDB1/iqNubKSplEJXZ7RgbyPgm3ibL7RH3ILqVebgsnEC1205kY/G3udRE1DQ/2MTX
-         5vow==
-X-Gm-Message-State: AOAM530zPgwdD6x/XIy24BId8d5K9cgNz0deyrhVw9xCF2UhLqpD5pOm
-        mKrrAz1PUgM+90gKzz/k+9x2mA==
-X-Google-Smtp-Source: ABdhPJy/E30JyOor+4/AQuCo+sTmNhondzp8OHJ/IghLHF2Q7V57nQkV1rpBJF6i3AHB1P2Kzs8gxg==
-X-Received: by 2002:a05:6830:3089:: with SMTP id f9mr9913816ots.276.1623181626810;
-        Tue, 08 Jun 2021 12:47:06 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m10sm195799oig.9.2021.06.08.12.47.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 12:47:06 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 14:47:04 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH v3 3/3] arm64: dts: qcom: Add support for SONY Xperia X
- Performance / XZ / XZs (msm8996, Tone platform)
-Message-ID: <YL/JOJibHOXYCOty@builder.lan>
-References: <20210608152737.154218-1-konrad.dybcio@somainline.org>
- <20210608152737.154218-3-konrad.dybcio@somainline.org>
- <YL+dSBRwS3bf1ztb@gerhold.net>
- <409ef9ca-0533-ddc3-3332-5cc2af0aa1e0@somainline.org>
+        Tue, 8 Jun 2021 15:50:27 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 158JhxIc159290;
+        Tue, 8 Jun 2021 15:48:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=T+GhJj+B5oDuExla5uOSQKs7oMeENVFPj0/O7uKmuQ4=;
+ b=B8GGq14uwkHma4SbtwyYSwGQL2tsvAYufU3aBN2TFKiIUbW3V+62fctihqPEsDoaPDIr
+ z76AAUI41R8iAJB1ylAR5AxsveBJr5T+NK7fQe4wpyY9qJn+TL1jJJFlV6QRZ2sRb0ZR
+ 14/nRGTlCsXp0guHrcAKa6F0abM32atIw0lkQu9sHGwpqMUpPA1LHiaI1NuZxTNqJG17
+ PmpNxoEXwa4sdqi9wPX4nE8hsgcCmuD+wfIwgGiPuRtqlAAy9gfZULcLLRCaXENKeXmH
+ 4boebzDKa7uo19Z/EYYVFJkfckK2IJShs6kdbNdPZ+Y7OS0WsM01FUwsEU5DDAimzW5N +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 392eycg2us-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Jun 2021 15:48:20 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 158JiQSa160686;
+        Tue, 8 Jun 2021 15:48:19 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 392eycg2tr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Jun 2021 15:48:19 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 158JhX88029559;
+        Tue, 8 Jun 2021 19:48:18 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3900w8hq56-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Jun 2021 19:48:17 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 158JlQwr32440806
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Jun 2021 19:47:26 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 307885204E;
+        Tue,  8 Jun 2021 19:48:15 +0000 (GMT)
+Received: from [9.160.30.75] (unknown [9.160.30.75])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 5C17252050;
+        Tue,  8 Jun 2021 19:48:10 +0000 (GMT)
+Subject: Re: [RFC PATCH 0/3] Allow access to confidential computing secret
+ area
+To:     jejb@linux.ibm.com, Andi Kleen <ak@linux.intel.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, linux-efi@vger.kernel.org,
+        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Jim Cadden <jcadden@ibm.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Laszlo Ersek <lersek@redhat.com>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20210513062634.2481118-1-dovmurik@linux.ibm.com>
+ <2c8ae998-6dd0-bcb9-f735-e90da05ab9d9@amd.com> <YKZAUdbikp2Pt0XV@work-vm>
+ <ccdf0059-7e39-7895-2733-412dbe4b13f1@linux.intel.com>
+ <c316c49c-03db-22e3-0072-ebaf3c7f2ca2@amd.com>
+ <45842efd-7b6b-496f-d161-e5786760078d@linux.intel.com>
+ <YKuXI9TUBa3sjY3e@work-vm>
+ <81aa5e70-ab94-393c-92e1-fdac14708aff@linux.intel.com>
+ <ddfbcb36b928f6b0a1e9b3262b55cce48a3c326c.camel@linux.ibm.com>
+From:   Dov Murik <dovmurik@linux.ibm.com>
+Message-ID: <d5e352ab-8713-7864-8bf4-a8699cd4f607@linux.ibm.com>
+Date:   Tue, 8 Jun 2021 22:48:10 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <409ef9ca-0533-ddc3-3332-5cc2af0aa1e0@somainline.org>
+In-Reply-To: <ddfbcb36b928f6b0a1e9b3262b55cce48a3c326c.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: G5BmeTCPp5iaee8eR5_kLh98SBkJe_P1
+X-Proofpoint-ORIG-GUID: GPPg4mzJsCpt2ASXNYNNzOqhLw53CbbX
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-08_14:2021-06-04,2021-06-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 clxscore=1011
+ malwarescore=0 spamscore=0 mlxscore=0 adultscore=0 impostorscore=0
+ priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106080126
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08 Jun 14:08 CDT 2021, Konrad Dybcio wrote:
 
+
+On 24/05/2021 20:12, James Bottomley wrote:
+> On Mon, 2021-05-24 at 09:31 -0700, Andi Kleen wrote:
+>> On 5/24/2021 5:08 AM, Dr. David Alan Gilbert wrote:
+>>> * Andi K
+>>> Is there any way we could merge these two so that the TDX/SVKL
+>>> would look similar to SEV/ES to userspace?  If we needed some
+>>> initrd glue here for luks it would be great if we could have one
+>>> piece of glue. [I'm not sure if the numbering/naming of the
+>>> secrets, and their format are defined in the same way]
+>> Maybe. There might well be differences in the contents as you say.
+>> So far SVKL doesn't really exist yet,  initially there will be the
+>> initrd based agents. The agents definitely will need to know about
+>> TDX.
+>>> Do you think the ioctl is preferable to read+ftruncate/unlink ?
+>>> And if it was an ioctl, again could we get some standardisation
+>>> here - i.e. maybe a /dev/confguest with a CONF_COMP_GET_KEY etc ?
+>>
+>> The advantage of the two ioctls is that they are very simple.
+>> Anything with a file system would be a lot more complicated. For
+>> security related code simplicity is a virtue.
 > 
-> >> +/delete-node/ &hdmi;
-> >> +/delete-node/ &hdmi_phy;
-> >> +/delete-node/ &mdp5_intf3_out;
-> > Is it not enough to set those to status = "disabled"? Kind of strange
-> > that you have to delete those entirely. I guess ideally "hdmi" should
-> > even be disabled by default in the SoC device tree.
+> This RFC contained the FS code.  In size terms its very comparable to
+> your ioctl.
 > 
-> Saving memory and bloat where possible. Deleting these makes inspecting decompiled
-> DTBs simpler and allows for ever so slightly bigger kernel images (the boot partition is finite).
+>> Also since it's a really simple read and clear model I don't expect
+>> the value to be used widely, since it will be gone after boot
+>> anyways.
+> 
+> Enumeration looks to be problematic with your interface ... what are
+> you supposed to do, keep calling ACPI_SVKL_GET_KEY_INFO on an advancing
+> index until it gives you an error and then try to work out what key
+> you're interested in by one of its numeric properties?
+> 
+> I think a GUIDed structure actually helps here because we don't have to
+> have someone assign, say, u16 types to keys we're interested in and the
+> filesystem does all the enumeration for us.  It also means new use
+> cases can simply expand the properties without waiting for any
+> internals to catch up.
 > 
 
-While that is true, the typical method is to disable the nodes, so
-please follow that.
 
-> 
-> 
-> >> +
-> >> +	panel_tvdd: tvdd-regulator {
-> >> +		compatible = "regulator-fixed";
-> >> +		regulator-name = "panel_tvdd";
-> >> +		gpio = <&tlmm 50 GPIO_ACTIVE_HIGH>;
-> > regulator-fixed is active-low without "enable-active-high;"
-> > If that's what you want it's probably more clear to write
-> > GPIO_ACTIVE_LOW. Otherwise, perhaps you forgot that property? :)
-> 
-> Interestingly enough it doesn't work *with* the property, but does without :|
+Following the discussion here (and in various other meetings), the next
+version of this patch series will keep the securityfs interface but will
+introduce an unlink operation for the securityfs entries that will do
+the following:
 
-The regulator-fixed driver overrides the flag by the presence of
-'enable-active-high" property, so if it works without said property that
-would imply that your control is active-low.
+1. Remove the file entry from the securityfs dir
 
-So please make the flag reflect that.
+2. Overwrite the secret data memory (memzero_explicit)
 
-Regards,
-Bjorn
+3. Overwrite the GUID in the data memory with some invalid GUID
+(ffffffff-ffff-.... ?), so that if the module is removed and loaded
+again, the securityfs dir will not contain this entry (we'll ignore
+these invalid GUIDs in the iteration).
+
+
+
+Dov
