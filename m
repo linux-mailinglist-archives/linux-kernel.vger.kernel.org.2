@@ -2,99 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 474C73A0549
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D727E3A055B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhFHUxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 16:53:05 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:39658 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhFHUxF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 16:53:05 -0400
-Received: by mail-oi1-f179.google.com with SMTP id m137so19031874oig.6;
-        Tue, 08 Jun 2021 13:50:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=wwiC9g3wdjtEd/NglS+/cMH7OphwcIAcmbuqcv3Ok7k=;
-        b=J8LOUbherMDmvXidgkArQhPvt0YqjnnY684fYJ6lNL+Lec7FpIUeEr4jZXEJ5qxber
-         p503phu2u0wanSawQNbwsEc/58QKYOhzEEE4AkTHQ4Q/7XXEDPgBn+74dGwnQ3pxLN/x
-         l+Ph1q2+jTGFEtS1eZU+BJxK2m1HyrLY38TR9WSylXCaxe8hpjahv1qdqNDlPjaAo0Jg
-         y07vpVxbFT6SPj9ZeSNe4zjWWu5Q7ief4Dp8Hb2mDJTyKFaCynVmZ+Dq4i65eG7a0iOA
-         bRR66njzibmqXd89k/hHqcVQSHP676zBlXAtE9Ix3zEeSIdKzYOTtVmCH1aVA74Rst+V
-         eeyw==
-X-Gm-Message-State: AOAM53230duynbxpftLF8TKtn5/hYI0RYC8b0bBaYK95FvteJQJ+OIwo
-        5RqMG4Dk/RE8ySbA0cZpXA==
-X-Google-Smtp-Source: ABdhPJxBg367eNdR+0mi3NKIw48pRIV9UMfAqjUgOOTnSa4EARGainMEL2UgOd9HbWQFQI5IwpJbiw==
-X-Received: by 2002:aca:4d3:: with SMTP id 202mr4164214oie.9.1623185458371;
-        Tue, 08 Jun 2021 13:50:58 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b26sm2974012otf.69.2021.06.08.13.50.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 13:50:57 -0700 (PDT)
-Received: (nullmailer pid 1556861 invoked by uid 1000);
-        Tue, 08 Jun 2021 20:50:56 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     bjorn.andersson@linaro.org, bgoswami@codeaurora.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com, perex@perex.cz, devicetree@vger.kernel.org,
-        broonie@kernel.org, plai@codeaurora.org, tiwai@suse.de
-In-Reply-To: <20210607152836.17154-2-srinivas.kandagatla@linaro.org>
-References: <20210607152836.17154-1-srinivas.kandagatla@linaro.org> <20210607152836.17154-2-srinivas.kandagatla@linaro.org>
-Subject: Re: [RFC PATCH 01/13] soc: dt-bindings: qcom: add gpr bindings
-Date:   Tue, 08 Jun 2021 15:50:56 -0500
-Message-Id: <1623185456.792100.1556860.nullmailer@robh.at.kernel.org>
+        id S232376AbhFHUzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 16:55:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230241AbhFHUzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 16:55:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50FDD61185;
+        Tue,  8 Jun 2021 20:53:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1623185608;
+        bh=LNh7Y6mVzEZqHsWDQ4sClUvLVuVgzf2mb6C9pDd6JCg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IPlcdF4AtoRx+wHzooyA152aUyb07j+tLH3zvr99iBtOmD12hleyCTQMETMnX1j2f
+         wxt61+zZoxqQgLKwL1thbqXR5O5Ji/1kw82dSi0wBg179Rb9GTK9Tyw6M6jCDo4f40
+         86Jax7a0feg5gC4p1coavdk/ua5pJD4PFXTkTUyc=
+Date:   Tue, 8 Jun 2021 13:53:27 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Marco Elver <elver@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        "Lin, Zhenpeng" <zplin@psu.edu>, Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v4 0/3] Actually fix freelist pointer vs redzoning
+Message-Id: <20210608135327.be8a120ba3b1686bc62e6d7e@linux-foundation.org>
+In-Reply-To: <20210608183955.280836-1-keescook@chromium.org>
+References: <20210608183955.280836-1-keescook@chromium.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Jun 2021 16:28:24 +0100, Srinivas Kandagatla wrote:
-> Qualcomm Generic Packet router aka GPR is the IPC mechanism found
-> in AudioReach next generation signal processing framework to perform
-> command and response messages between various processors.
-> 
-> GPR has concepts of static and dynamic port, all static services like
-> APM (Audio Processing Manager), PRM (Proxy resource manager) have
-> fixed port numbers where as dynamic services like graphs have dynamic
-> port numbers which are allocated at runtime. All GPR packet messages
-> will have source and destination domain and port along with opcode
-> and payload.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../bindings/soc/qcom/qcom,gpr.yaml           | 74 +++++++++++++++++++
->  1 file changed, 74 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,gpr.yaml
-> 
+On Tue,  8 Jun 2021 11:39:52 -0700 Kees Cook <keescook@chromium.org> wrote:
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> This fixes redzoning vs the freelist pointer (both for middle-position
+> and very small caches). Both are "theoretical" fixes, in that I see no
+> evidence of such small-sized caches actually be used in the kernel, but
+> that's no reason to let the bugs continue to exist, especially since
+> people doing local development keep tripping over it. :)
 
-yamllint warnings/errors:
+So I don't think this is suitable -stable material?
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/soc/qcom/qcom,gpr.example.dts:19:18: fatal error: dt-bindings/soc/qcom,gpr.h: No such file or directory
-   19 |         #include <dt-bindings/soc/qcom,gpr.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/soc/qcom/qcom,gpr.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1416: dt_binding_check] Error 2
-\ndoc reference errors (make refcheckdocs):
+It's a bit odd that patches 2&3 were cc:stable but #1 was not.  Makes
+one afraid that 2&3 might have had a dependency anyway.
 
-See https://patchwork.ozlabs.org/patch/1488752
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+So I'm thinking that the whole series can just be for 5.14-rc1, in the
+sent order.
 
