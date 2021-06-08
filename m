@@ -2,114 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E1839F497
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E091639F4A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbhFHLFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbhFHLFr (ORCPT
+        id S231573AbhFHLJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:09:38 -0400
+Received: from mail-pf1-f179.google.com ([209.85.210.179]:34425 "EHLO
+        mail-pf1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231303AbhFHLJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:05:47 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53FBC061574;
-        Tue,  8 Jun 2021 04:03:54 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id a1so21687938lfr.12;
-        Tue, 08 Jun 2021 04:03:54 -0700 (PDT)
+        Tue, 8 Jun 2021 07:09:36 -0400
+Received: by mail-pf1-f179.google.com with SMTP id g6so15441713pfq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 04:07:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pbvnIUDlmrsEz7h8hsEn+CaTGHHdDs7PDJp6JoerDy8=;
-        b=YVlYGp7EtT824NClgDG3hbnLiRHH4a8GrUF0qmRSNSqA5P7bo1VluGiSOyfx9lyzZ8
-         0qRUBMbXgS/EEDmZK1lvMVrQA4x1OdSvwQPrVv2wDizQwJIxlMDx15vrZSRWK4/H4NhA
-         izYjmFl79M4SiuGX4SxWSL0cKgc3OYrAaEy0WdnsicUjtq0ZMGPbNUcPEAW73xedwgog
-         EOltv+xwTvV/CBDqhQl5KzfeeRvAlVTr6zTxVPRQTuUclXXgsm/cIo5hTYGBRBzQBJbo
-         jcpn2EM2RCzETCjZHjtALTv6wSJtBpJGD3tqipHpeH9LkafEIwFlOlSi0PNshiQ3lLiy
-         V6YA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=agz9CSylDXq5In5z8KQvrOkrG9eT9u+AOTvuu0ZY5Nc=;
+        b=kGJnoao0/Q/HCganKG1fHKbr1Rvvy+ZswfjL1itdz2Fa3nj6p0fdUcUGr9zmUrRqh3
+         i+EaiDMe2/M8vkPY13QjEDQDK04NGqhOr1bzlDllU0QlBDpYJaO4bE4DuYMY1sbkQLsy
+         q61tkrjOHNH1WfEYj6pgQ4UrB8wObwr9PCvR8TZobNvIy2cZp0uJjDmHEyBLvdB74UZi
+         4haMcQI5taiEdShso56uQeGBHkg1S4gjWzKzSDMQ0GCc8qF9J2JYuG5dBPnml6u8PUt9
+         Ln6S5lxSWmgLYzvv/F2qKIfEsk5f8apHSuxrNTdXyih+OHNHW8vnJ9tiUHWJeJ6+j1cv
+         7p+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=pbvnIUDlmrsEz7h8hsEn+CaTGHHdDs7PDJp6JoerDy8=;
-        b=nnn1p8tmhjls7efkY4p0ziTCJWVN4EPIECS7dG88P1mucqXCENoojzHpworZyV/UnP
-         q7kIpVSnIUzrDilbXZoKOtrOdLPd8aWMOoMAWcqVpH4+cvx2njqF36G57bzOlR1iLqBi
-         LHi0eQ3K2OXu4yW1RE6BRV67ILxpGQOL2AD6iab0JQh+VgpzfYa3YKOn7uAa2vOOZ7yy
-         fhPxop4CqRpCSM3Mz56uvcIjlsFIc8+VTx8Ql+/1R883Z0epl9wb6rt22Go3SJe4+Chr
-         B2zKq6tF9F9aWmCZFocWZ4ZYVkTuSf6nIWgmlxNt+MSDPT1fR1Zwb4g1JPX+UU2U2/5i
-         5iuA==
-X-Gm-Message-State: AOAM533Sxyej8C8Fq8I3DKdVNz/6JNJ3PNw6/CgB2NcqSZjyEHrjABPc
-        Wq/Y7g5byu5mRX2hszOk1KQ=
-X-Google-Smtp-Source: ABdhPJxY4clPUf+kJEyTCGanb9QmdPfQfH9en2/Ins7WQwtCUTKyOZIBj5brYMql77/RoBELy+eFOw==
-X-Received: by 2002:ac2:43a3:: with SMTP id t3mr3746636lfl.183.1623150233042;
-        Tue, 08 Jun 2021 04:03:53 -0700 (PDT)
-Received: from [192.168.1.2] (broadband-5-228-51-184.ip.moscow.rt.ru. [5.228.51.184])
-        by smtp.gmail.com with ESMTPSA id x8sm1805778lfn.186.2021.06.08.04.03.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 04:03:52 -0700 (PDT)
-Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Cc:     acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
-        joel@joelfernandes.org, kernel@collabora.com,
-        krisman@collabora.com, libc-alpha@sourceware.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
-        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
-References: <20210603195924.361327-1-andrealmeid@collabora.com>
- <1622799088.hsuspipe84.astroid@bobo.none>
- <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
- <1622853816.mokf23xgnt.astroid@bobo.none>
- <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
- <1622980258.cfsuodze38.astroid@bobo.none>
- <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
- <1623114630.pc8fq7r5y9.astroid@bobo.none>
-From:   Andrey Semashev <andrey.semashev@gmail.com>
-Message-ID: <b3488d1b-a4ff-8791-d960-a5f7ae2ea8b3@gmail.com>
-Date:   Tue, 8 Jun 2021 14:03:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=agz9CSylDXq5In5z8KQvrOkrG9eT9u+AOTvuu0ZY5Nc=;
+        b=afshtwUWHdNNXbeDgV9Wrn1md/s+XwS32NNBadR+cZEfK4+oWgs4qxpBqy26XVLFar
+         NfRbcN3t/tTJrSI/1mT05jhpg48wrNPEIT8to6ESojPfLIbMGi8/zYF1LeBCRk8NGHKd
+         lI4qHUV5D1W4irphJFTTr1zsa/eLBalBPDSOgm37jSE90zQ5eKAp6DExoIOeO8MU6odY
+         YOOrew69mtFU4I9dJfNpkVQ3LdCDUZm7/jfBq9BMmgr9QM2xySJG8DcBXURuRZ1bEszk
+         ldkXONjvylLbd5lQR3W4u8jX1zV1y2OHUQUl51v117bllpQxXUz4a7Zm+zaf3qUFaKtX
+         voOQ==
+X-Gm-Message-State: AOAM531d9VBDLhO0/ByYtTmoy1CfRD73/8TRf8XTkuhK43vSP07ipJa5
+        SDW9BTB6JVcYOfDCN97EHC0=
+X-Google-Smtp-Source: ABdhPJw+2vg8VRQZjpROEMosr54/72J0JLFObMsUY2RUtiQT6wgQDH+LwDd8IMe+yGnWjpe5wSHOag==
+X-Received: by 2002:a63:954e:: with SMTP id t14mr22339484pgn.427.1623150403690;
+        Tue, 08 Jun 2021 04:06:43 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id a9sm10264209pfo.69.2021.06.08.04.06.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 04:06:43 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+c3a706cec1ea99e1c693@syzkaller.appspotmail.com
+Subject: [PATCH] drm: Fix use-after-free read in drm_getunique()
+Date:   Tue,  8 Jun 2021 19:04:36 +0800
+Message-Id: <20210608110436.239583-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1623114630.pc8fq7r5y9.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 4:25 AM, Nicholas Piggin wrote:
-> 
-> Are shared pthread mutexes using existing pthread APIs that are today
-> implemented okay with futex1 system call a good reason to constrain
-> futex2 I wonder? Or do we have an opportunity to make a bigger change
-> to the API so it suffers less from non deterministic latency (for
-> example)?
+There is a time-of-check-to-time-of-use error in drm_getunique() due
+to retrieving file_priv->master prior to locking the device's master
+mutex.
 
-If futex2 is not able to cover futex1 use cases then it cannot be viewed 
-as a replacement. In the long term this means futex1 cannot be 
-deprecated and has to be maintained. My impression was that futex1 was 
-basically unmaintainable(*) and futex2 was an evolution of futex1 so 
-that users of futex1 could migrate relatively easily and futex1 
-eventually removed. Maybe my impression was wrong, but I would like to 
-see futex2 as a replacement and extension of futex1, so the latter can 
-be deprecated at some point.
+An example can be seen in the crash report of the use-after-free error
+found by Syzbot:
+https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
 
-In any case, creating a new API should consider requirements of its 
-potential users. If futex2 is intended to eventually replace futex1 then 
-all current futex1 users are potential users of futex2. If not, then the 
-futex2 submission should list its intended users, at least in general 
-terms, and their requirements that led to the proposed API design.
+In the report, the master pointer was used after being freed. This is
+because another process had acquired the device's master mutex in
+drm_setmaster_ioctl(), then overwrote fpriv->master in
+drm_new_set_master(). The old value of fpriv->master was subsequently
+freed before the mutex was unlocked.
 
-(*) I use "unmaintainable" in a broad sense here. It exists and works in 
-newer kernel versions and may receive code changes that are necessary to 
-keep it working, but maintainers refuse any extensions or modifications 
-of the code, mostly because of its complexity.
+To fix this, we lock the device's master mutex before retrieving the
+pointer from from fpriv->master. This patch passes the Syzbot
+reproducer test.
+
+Reported-by: syzbot+c3a706cec1ea99e1c693@syzkaller.appspotmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+---
+
+In this patch, I made the assumption that dev and file_priv->master->dev refer to the same struct drm_device*, and from my test runs this seemed to be the case. If this was a wrong assumption to make, please let me know.
+
+ drivers/gpu/drm/drm_ioctl.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
+index d273d1a8603a..495a4767a443 100644
+--- a/drivers/gpu/drm/drm_ioctl.c
++++ b/drivers/gpu/drm/drm_ioctl.c
+@@ -118,17 +118,18 @@ int drm_getunique(struct drm_device *dev, void *data,
+ 		  struct drm_file *file_priv)
+ {
+ 	struct drm_unique *u = data;
+-	struct drm_master *master = file_priv->master;
++	struct drm_master *master;
+ 
+-	mutex_lock(&master->dev->master_mutex);
++	mutex_lock(&dev->master_mutex);
++	master = file_priv->master;
+ 	if (u->unique_len >= master->unique_len) {
+ 		if (copy_to_user(u->unique, master->unique, master->unique_len)) {
+-			mutex_unlock(&master->dev->master_mutex);
++			mutex_unlock(&dev->master_mutex);
+ 			return -EFAULT;
+ 		}
+ 	}
+ 	u->unique_len = master->unique_len;
+-	mutex_unlock(&master->dev->master_mutex);
++	mutex_unlock(&dev->master_mutex);
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
+
