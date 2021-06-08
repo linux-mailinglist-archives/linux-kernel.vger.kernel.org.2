@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E92039F3EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6B239F3F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhFHKqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:46:34 -0400
-Received: from smtp.outgoing.loopia.se ([93.188.3.37]:37506 "EHLO
+        id S231826AbhFHKql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:46:41 -0400
+Received: from smtp.outgoing.loopia.se ([93.188.3.37]:37447 "EHLO
         smtp.outgoing.loopia.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhFHKqY (ORCPT
+        with ESMTP id S231712AbhFHKqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:46:24 -0400
+        Tue, 8 Jun 2021 06:46:33 -0400
 Received: from s807.loopia.se (localhost [127.0.0.1])
-        by s807.loopia.se (Postfix) with ESMTP id D4FEF706D64
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:44:25 +0200 (CEST)
-Received: from s645.loopia.se (unknown [172.22.191.5])
-        by s807.loopia.se (Postfix) with ESMTP id C413F2E2C379;
-        Tue,  8 Jun 2021 12:44:25 +0200 (CEST)
+        by s807.loopia.se (Postfix) with ESMTP id D749410C6094
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:44:26 +0200 (CEST)
+Received: from s645.loopia.se (unknown [172.22.191.6])
+        by s807.loopia.se (Postfix) with ESMTP id C67A22E2C462;
+        Tue,  8 Jun 2021 12:44:26 +0200 (CEST)
 Received: from s475.loopia.se (unknown [172.22.191.6])
-        by s645.loopia.se (Postfix) with ESMTP id B08F6157A06C;
-        Tue,  8 Jun 2021 12:44:25 +0200 (CEST)
+        by s645.loopia.se (Postfix) with ESMTP id B7871157A051;
+        Tue,  8 Jun 2021 12:44:26 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at amavis.loopia.se
 X-Spam-Flag: NO
 X-Spam-Score: -1
@@ -29,23 +29,23 @@ X-Spam-Status: No, score=-1 tagged_above=-999 required=6.2
         tests=[ALL_TRUSTED=-1] autolearn=disabled
 Received: from s934.loopia.se ([172.22.191.6])
         by s475.loopia.se (s475.loopia.se [172.22.190.15]) (amavisd-new, port 10024)
-        with LMTP id bn0oEDiOqU8h; Tue,  8 Jun 2021 12:44:24 +0200 (CEST)
+        with LMTP id jf-nS95sGvU9; Tue,  8 Jun 2021 12:44:26 +0200 (CEST)
 X-Loopia-Auth: user
 X-Loopia-User: carl@hgsystem.se
 X-Loopia-Originating-IP: 155.4.133.180
 Received: from localhost.localdomain (h-155-4-133-180.NA.cust.bahnhof.se [155.4.133.180])
         (Authenticated sender: carl@hgsystem.se)
-        by s934.loopia.se (Postfix) with ESMTPSA id 9FDB47CE9FF;
-        Tue,  8 Jun 2021 12:44:24 +0200 (CEST)
+        by s934.loopia.se (Postfix) with ESMTPSA id 039B67CE99E;
+        Tue,  8 Jun 2021 12:44:25 +0200 (CEST)
 From:   Erik Rosen <erik.rosen@metormote.com>
 To:     Jean Delvare <jdelvare@suse.com>,
         Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>, Dlinux-hwmon@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Erik Rosen <erik.rosen@metormote.com>
-Subject: [PATCH v5 4/5] hwmon: (pmbus/pim4328) Add PMBus driver for PIM4006, PIM4328 and PIM4820
-Date:   Tue,  8 Jun 2021 12:44:15 +0200
-Message-Id: <20210608104416.6941-5-erik.rosen@metormote.com>
+Subject: [PATCH v5 5/5] hwmon: (pmbus/pim4328) Add documentation for the pim4328 PMBus driver
+Date:   Tue,  8 Jun 2021 12:44:16 +0200
+Message-Id: <20210608104416.6941-6-erik.rosen@metormote.com>
 X-Mailer: git-send-email 2.11.0 (Apple Git-81)
 In-Reply-To: <20210608104416.6941-1-erik.rosen@metormote.com>
 References: <20210608104416.6941-1-erik.rosen@metormote.com>
@@ -53,285 +53,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add hardware monitoring support for Flex power interface modules PIM4006,
-PIM4328 and PIM4820.
+Add documentation and index link for pim4328 PMBus driver.
 
 Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
 ---
- drivers/hwmon/pmbus/Kconfig   |   9 ++
- drivers/hwmon/pmbus/Makefile  |   1 +
- drivers/hwmon/pmbus/pim4328.c | 233 ++++++++++++++++++++++++++++++++++
- 3 files changed, 243 insertions(+)
- create mode 100644 drivers/hwmon/pmbus/pim4328.c
+ Documentation/hwmon/index.rst   |   1 +
+ Documentation/hwmon/pim4328.rst | 105 ++++++++++++++++++++++++++++++++
+ 2 files changed, 106 insertions(+)
+ create mode 100644 Documentation/hwmon/pim4328.rst
 
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index 37a5c39784fa..001527c71269 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -257,6 +257,15 @@ config SENSORS_MP2975
- 	  This driver can also be built as a module. If so, the module will
- 	  be called mp2975.
- 
-+config SENSORS_PIM4328
-+	tristate "Flex PIM4328 and compatibles"
-+	help
-+	  If you say yes here you get hardware monitoring support for Flex
-+	  PIM4328, PIM4820 and PIM4006 Power Interface Modules.
-+
-+	  This driver can also be built as a module. If so, the module will
-+	  be called pim4328.
-+
- config SENSORS_PM6764TR
- 	tristate "ST PM6764TR"
- 	help
-diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-index f8dcc27cd56a..2a12397535ba 100644
---- a/drivers/hwmon/pmbus/Makefile
-+++ b/drivers/hwmon/pmbus/Makefile
-@@ -39,3 +39,4 @@ obj-$(CONFIG_SENSORS_UCD9000)	+= ucd9000.o
- obj-$(CONFIG_SENSORS_UCD9200)	+= ucd9200.o
- obj-$(CONFIG_SENSORS_XDPE122)	+= xdpe12284.o
- obj-$(CONFIG_SENSORS_ZL6100)	+= zl6100.o
-+obj-$(CONFIG_SENSORS_PIM4328)   += pim4328.o
-diff --git a/drivers/hwmon/pmbus/pim4328.c b/drivers/hwmon/pmbus/pim4328.c
+diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+index 9ed60fa84cbe..719625f8f755 100644
+--- a/Documentation/hwmon/index.rst
++++ b/Documentation/hwmon/index.rst
+@@ -150,6 +150,7 @@ Hardware Monitoring Kernel Drivers
+    pc87360
+    pc87427
+    pcf8591
++   pim4328
+    pm6764tr
+    pmbus
+    powr1220
+diff --git a/Documentation/hwmon/pim4328.rst b/Documentation/hwmon/pim4328.rst
 new file mode 100644
-index 000000000000..273ff6e57654
+index 000000000000..70c9e7a6882c
 --- /dev/null
-+++ b/drivers/hwmon/pmbus/pim4328.c
-@@ -0,0 +1,233 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Hardware monitoring driver for PIM4006, PIM4328 and PIM4820
-+ *
-+ * Copyright (c) 2021 Flextronics International Sweden AB
-+ */
++++ b/Documentation/hwmon/pim4328.rst
+@@ -0,0 +1,105 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+#include <linux/err.h>
-+#include <linux/i2c.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/pmbus.h>
-+#include <linux/slab.h>
-+#include "pmbus.h"
++Kernel driver pim4328
++=====================
 +
-+enum chips { pim4006, pim4328, pim4820 };
++Supported chips:
 +
-+struct pim4328_data {
-+	enum chips id;
-+	struct pmbus_driver_info info;
-+};
++  * Flex PIM4328
 +
-+#define to_pim4328_data(x)  container_of(x, struct pim4328_data, info)
++    Prefix: 'pim4328', 'bmr455'
 +
-+/* PIM4006 and PIM4328 */
-+#define PIM4328_MFR_READ_VINA		0xd3
-+#define PIM4328_MFR_READ_VINB		0xd4
++    Addresses scanned: -
 +
-+/* PIM4006 */
-+#define PIM4328_MFR_READ_IINA		0xd6
-+#define PIM4328_MFR_READ_IINB		0xd7
-+#define PIM4328_MFR_FET_CHECKSTATUS	0xd9
++    Datasheet:
 +
-+/* PIM4328 */
-+#define PIM4328_MFR_STATUS_BITS		0xd5
++https://flexpowermodules.com/resources/fpm-techspec-pim4328
 +
-+/* PIM4820 */
-+#define PIM4328_MFR_READ_STATUS		0xd0
++  * Flex PIM4820
 +
-+static const struct i2c_device_id pim4328_id[] = {
-+	{"bmr455", pim4328},
-+	{"pim4006", pim4006},
-+	{"pim4106", pim4006},
-+	{"pim4206", pim4006},
-+	{"pim4306", pim4006},
-+	{"pim4328", pim4328},
-+	{"pim4406", pim4006},
-+	{"pim4820", pim4820},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, pim4328_id);
++    Prefixes: 'pim4820'
 +
-+static int pim4328_read_word_data(struct i2c_client *client, int page,
-+				  int phase, int reg)
-+{
-+	int ret;
++    Addresses scanned: -
 +
-+	if (page > 0)
-+		return -ENXIO;
++    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-pim4820
 +
-+	if (phase == 0xff)
-+		return -ENODATA;
++  * Flex PIM4006, PIM4106, PIM4206, PIM4306, PIM4406
 +
-+	switch (reg) {
-+	case PMBUS_READ_VIN:
-+		ret = pmbus_read_word_data(client, page, phase,
-+					   phase == 0 ? PIM4328_MFR_READ_VINA
-+						      : PIM4328_MFR_READ_VINB);
-+		break;
-+	case PMBUS_READ_IIN:
-+		ret = pmbus_read_word_data(client, page, phase,
-+					   phase == 0 ? PIM4328_MFR_READ_IINA
-+						      : PIM4328_MFR_READ_IINB);
-+		break;
-+	default:
-+		ret = -ENODATA;
-+	}
++    Prefixes: 'pim4006', 'pim4106', 'pim4206', 'pim4306', 'pim4406'
 +
-+	return ret;
-+}
++    Addresses scanned: -
 +
-+static int pim4328_read_byte_data(struct i2c_client *client, int page, int reg)
-+{
-+	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
-+	struct pim4328_data *data = to_pim4328_data(info);
-+	int ret, status;
++    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-pim4006
 +
-+	if (page > 0)
-+		return -ENXIO;
++Author: Erik Rosen <erik.rosen@metormote.com>
 +
-+	switch (reg) {
-+	case PMBUS_STATUS_BYTE:
-+		ret = pmbus_read_byte_data(client, page, PMBUS_STATUS_BYTE);
-+		if (ret < 0)
-+			return ret;
-+		if (data->id == pim4006) {
-+			status = pmbus_read_word_data(client, page, 0xff,
-+						      PIM4328_MFR_FET_CHECKSTATUS);
-+			if (status < 0)
-+				return status;
-+			if (status & 0x0630) /* Input UV */
-+				ret |= PB_STATUS_VIN_UV;
-+		} else if (data->id == pim4328) {
-+			status = pmbus_read_byte_data(client, page,
-+						      PIM4328_MFR_STATUS_BITS);
-+			if (status < 0)
-+				return status;
-+			if (status & 0x04) /* Input UV */
-+				ret |= PB_STATUS_VIN_UV;
-+			if (status & 0x40) /* Output UV */
-+				ret |= PB_STATUS_NONE_ABOVE;
-+		} else if (data->id == pim4820) {
-+			status = pmbus_read_byte_data(client, page,
-+						      PIM4328_MFR_READ_STATUS);
-+			if (status < 0)
-+				return status;
-+			if (status & 0x05) /* Input OV or OC */
-+				ret |= PB_STATUS_NONE_ABOVE;
-+			if (status & 0x1a) /* Input UV */
-+				ret |= PB_STATUS_VIN_UV;
-+			if (status & 0x40) /* OT */
-+				ret |= PB_STATUS_TEMPERATURE;
-+		}
-+		break;
-+	default:
-+		ret = -ENODATA;
-+	}
 +
-+	return ret;
-+}
++Description
++-----------
 +
-+static int pim4328_probe(struct i2c_client *client)
-+{
-+	int status;
-+	u8 device_id[I2C_SMBUS_BLOCK_MAX + 1];
-+	const struct i2c_device_id *mid;
-+	struct pim4328_data *data;
-+	struct pmbus_driver_info *info;
-+	struct pmbus_platform_data *pdata;
-+	struct device *dev = &client->dev;
++This driver supports hardware monitoring for Flex PIM4328 and
++compatible digital power interface modules.
 +
-+	if (!i2c_check_functionality(client->adapter,
-+				     I2C_FUNC_SMBUS_READ_BYTE_DATA
-+				     | I2C_FUNC_SMBUS_BLOCK_DATA))
-+		return -ENODEV;
++The driver is a client driver to the core PMBus driver. Please see
++Documentation/hwmon/pmbus.rst and Documentation.hwmon/pmbus-core for details
++on PMBus client drivers.
 +
-+	data = devm_kzalloc(&client->dev, sizeof(struct pim4328_data),
-+			    GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
 +
-+	status = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, device_id);
-+	if (status < 0) {
-+		dev_err(&client->dev, "Failed to read Manufacturer Model\n");
-+		return status;
-+	}
-+	for (mid = pim4328_id; mid->name[0]; mid++) {
-+		if (!strncasecmp(mid->name, device_id, strlen(mid->name)))
-+			break;
-+	}
-+	if (!mid->name[0]) {
-+		dev_err(&client->dev, "Unsupported device\n");
-+		return -ENODEV;
-+	}
++Usage Notes
++-----------
 +
-+	if (strcmp(client->name, mid->name))
-+		dev_notice(&client->dev,
-+			   "Device mismatch: Configured %s, detected %s\n",
-+			   client->name, mid->name);
++This driver does not auto-detect devices. You will have to instantiate the
++devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
++details.
 +
-+	data->id = mid->driver_data;
-+	info = &data->info;
-+	info->pages = 1;
-+	info->read_byte_data = pim4328_read_byte_data;
-+	info->read_word_data = pim4328_read_word_data;
 +
-+	pdata = devm_kzalloc(dev, sizeof(struct pmbus_platform_data),
-+			     GFP_KERNEL);
-+	if (!pdata)
-+		return -ENOMEM;
-+	dev->platform_data = pdata;
-+	pdata->flags = PMBUS_NO_CAPABILITY | PMBUS_NO_WRITE_PROTECT;
++Platform data support
++---------------------
 +
-+	switch (data->id) {
-+	case pim4006:
-+		info->phases[0] = 2;
-+		info->func[0] = PMBUS_PHASE_VIRTUAL | PMBUS_HAVE_VIN
-+			| PMBUS_HAVE_TEMP | PMBUS_HAVE_IOUT;
-+		info->pfunc[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN;
-+		info->pfunc[1] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN;
-+		break;
-+	case pim4328:
-+		info->phases[0] = 2;
-+		info->func[0] = PMBUS_PHASE_VIRTUAL
-+			| PMBUS_HAVE_VCAP | PMBUS_HAVE_VIN
-+			| PMBUS_HAVE_TEMP | PMBUS_HAVE_IOUT;
-+		info->pfunc[0] = PMBUS_HAVE_VIN;
-+		info->pfunc[1] = PMBUS_HAVE_VIN;
-+		info->format[PSC_VOLTAGE_IN] = direct;
-+		info->format[PSC_TEMPERATURE] = direct;
-+		info->format[PSC_CURRENT_OUT] = direct;
-+		pdata->flags |= PMBUS_USE_COEFFICIENTS_CMD;
-+		break;
-+	case pim4820:
-+		info->func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_TEMP
-+			| PMBUS_HAVE_IIN;
-+		info->format[PSC_VOLTAGE_IN] = direct;
-+		info->format[PSC_TEMPERATURE] = direct;
-+		info->format[PSC_CURRENT_IN] = direct;
-+		pdata->flags |= PMBUS_USE_COEFFICIENTS_CMD;
-+		break;
-+	default:
-+		return -ENODEV;
-+	}
++The driver supports standard PMBus driver platform data.
 +
-+	return pmbus_do_probe(client, info);
-+}
 +
-+static struct i2c_driver pim4328_driver = {
-+	.driver = {
-+		   .name = "pim4328",
-+		   },
-+	.probe_new = pim4328_probe,
-+	.id_table = pim4328_id,
-+};
++Sysfs entries
++-------------
 +
-+module_i2c_driver(pim4328_driver);
++The following attributes are supported. All attributes are read-only.
 +
-+MODULE_AUTHOR("Erik Rosen <erik.rosen@metormote.com>");
-+MODULE_DESCRIPTION("PMBus driver for PIM4006, PIM4328, PIM4820 power interface modules");
-+MODULE_LICENSE("GPL");
-+MODULE_IMPORT_NS(PMBUS);
++======================= ========================================================
++in1_label		"vin"
++in1_input		Measured input voltage.
++in1_alarm		Input voltage alarm.
++
++in2_label		"vin.0"
++in2_input		Measured input voltage on input A.
++
++			PIM4328 and PIM4X06
++
++in3_label		"vin.1"
++in3_input		Measured input voltage on input B.
++
++			PIM4328 and PIM4X06
++
++in4_label		"vcap"
++in4_input		Measured voltage on holdup capacitor.
++
++			PIM4328
++
++curr1_label		"iin.0"
++curr1_input		Measured input current on input A.
++
++			PIM4X06
++
++curr2_label		"iin.1"
++curr2_input		Measured input current on input B.
++
++			PIM4X06
++
++currX_label		"iout1"
++currX_input		Measured output current.
++currX_alarm		Output current alarm.
++
++			X is 1 for PIM4820, 3 otherwise.
++
++temp1_input		Measured temperature.
++temp1_alarm		High temperature alarm.
++======================= ========================================================
 -- 
 2.20.1
 
