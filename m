@@ -2,135 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C366139FDB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E3439FD9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhFHRc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:32:59 -0400
-Received: from mail-qv1-f41.google.com ([209.85.219.41]:43770 "EHLO
-        mail-qv1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233067AbhFHRc5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:32:57 -0400
-Received: by mail-qv1-f41.google.com with SMTP id e18so11210605qvm.10
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:31:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5iTTcnEmTfembJ+1uyx3iDFNZSnQPXZr+n41PTIaxsQ=;
-        b=Y5LC8khEOg/81kB3kO/4DnceDZQD2wJvbbOb9htCqVDvG79i3u9KzeMqg7EkaTlDLS
-         jvT7n8SjbCBjHYms8Jnvo2N35gYpe1GtOP643LB6jnymFrRyxJqB8uzjNTlzhXfzaFwJ
-         nanZGAJbBotCaO1/bfeDrhOzqj6OvopAVvPnKVKyb8eude8LltVOvJtYKb/5HfkNSzOo
-         5XqjZ4+5TAwReTji5MPZbb9Z7srJVZ2eRYmyH0f52XLtFPXiEtdD0IACohYxE3jkbGq/
-         TSessnNOyDT3ge8RZtNQYqLQWvW9svehN0LHF4Aeux5Y2eD40HXkWyQLvEm/wxwZLYRV
-         Gyug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5iTTcnEmTfembJ+1uyx3iDFNZSnQPXZr+n41PTIaxsQ=;
-        b=mQCHNxqbiLmJA+RmT1sF69lhD1OjNr+JBT/5FynjOSHD+fMTWOa6VXwvMODSMz9iI0
-         FL0t7qV8eZJc2/pTDOrwprEHKzVP753SYM56YtF4xpkGH+EL44TUjr1j+7vRAbSypLbd
-         4En+I1SQ+ZR7qSO81b3sAXwMSolaRytO5Fel21RVYifkNo92vy5x3ezTrQwQg+JQvflw
-         8G2jLVmMtUNitjKHapiMSX0mLa39GvdV6c36bzDXlyqEF1gwJJBYdCHRDrFe2IEBmaAb
-         GxMNAAR7k026dIUM6FKrdKAWYogx1t2VA+QdSksItzC2s1CAeUosYSpFN5SKTbFBd4Y7
-         /BDg==
-X-Gm-Message-State: AOAM532bnjFthBe/FCWe3WmCV37VNYUofvUBW8j4nnUzX9tCB7rWEXuD
-        F20Huszt1lFJQA1ilvJCTTR29Q==
-X-Google-Smtp-Source: ABdhPJwlJ63UJzGcxuw+MAyhjOGHtzO+tePHYiAZkwXO7YJMIEUZLK8buNXDGwyy3AtTIDfZM19xnA==
-X-Received: by 2002:a0c:e18d:: with SMTP id p13mr1229492qvl.16.1623173403538;
-        Tue, 08 Jun 2021 10:30:03 -0700 (PDT)
-Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id d10sm9482983qke.47.2021.06.08.10.30.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 10:30:03 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 2/5] drm/msm/a6xx: use AOP-initialized PDC for a650
-Date:   Tue,  8 Jun 2021 13:27:45 -0400
-Message-Id: <20210608172808.11803-3-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210608172808.11803-1-jonathan@marek.ca>
-References: <20210608172808.11803-1-jonathan@marek.ca>
+        id S233005AbhFHRbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:31:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231652AbhFHRbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 13:31:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE00061375;
+        Tue,  8 Jun 2021 17:29:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623173386;
+        bh=ItzIBqXzJpZDik1ri9ZEy8dxLAgX/jhstdp/QleUEsE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=G9S49rKKT40nOKxSt69vJEFFnV8Nn1Avanob9mZSh5tccDrdgUcm+1K5/b7V+fiug
+         ANtP7zi+Ii87TBfezRzw2P4IZwtJwz9qqKmN56J3Wi4aYgipkd1QOyplk2bvJ4CTv8
+         LBTE3Uvs56lWYlAPTytWFKWIdGZAvJg2D43+Hzfo70M86F7v0xD0B714ccUm7R85UA
+         viojxo48doTrAaLZCKM3uplWuFy4bIiQWJQzpCp/nM1oD/ycfO+Sog0HxtpiF/OeNz
+         Sqi71l6fUlrR1ui3lVnBRj20+hTIIipY6JyZK/O407e+tCEozQom731MentiJ7UAcG
+         JdU+3CLk8wMJQ==
+Date:   Tue, 8 Jun 2021 10:29:45 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     moyufeng <moyufeng@huawei.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Parav Pandit <parav@mellanox.com>,
+        Or Gerlitz <gerlitz.or@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "lipeng (Y)" <lipeng321@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        <shenjian15@huawei.com>, "chenhao (DY)" <chenhao288@hisilicon.com>,
+        Jiaran Zhang <zhangjiaran@huawei.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
+Message-ID: <20210608102945.3edff79a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <530ff54c-3cee-0eb6-30b0-b607826f68cf@huawei.com>
+References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
+        <20190304174551.2300b7bc@cakuba.netronome.com>
+        <VI1PR0501MB22718228FC8198C068EFC455D1720@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+        <76785913-b1bf-f126-a41e-14cd0f922100@huawei.com>
+        <20210531223711.19359b9a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
+        <20210601143451.4b042a94@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <cf961f69-c559-eaf0-e168-b014779a1519@huawei.com>
+        <20210602093440.15dc5713@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <857e7a19-1559-b929-fd15-05e8f38e9d45@huawei.com>
+        <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <c9afecb5-3c0e-6421-ea58-b041d8173636@huawei.com>
+        <20210604114109.3a7ada85@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <4e7a41ed-3f4d-d55d-8302-df3bc42dedd4@huawei.com>
+        <20210607124643.1bb1c6a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <530ff54c-3cee-0eb6-30b0-b607826f68cf@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SM8250 AOP firmware already sets up PDC registers for us, and it only needs
-to be enabled. This path will be used for other newer GPUs.
+On Tue, 8 Jun 2021 20:10:37 +0800 Yunsheng Lin wrote:
+> >> I am not sure if controller concept already existed is reusable for
+> >> the devlink instance representing problem for multi-function which
+> >> shares common resource in the same ASIC. If not, we do need to pick
+> >> up other name.
+> >>
+> >> Another thing I am not really think throught is how is the VF represented
+> >> by the devlink instance when VF is passed through to a VM.
+> >> I was thinking about VF is represented as devlink port, just like PF(with
+> >> different port flavour), and VF devlink port only exist on the same host
+> >> as PF(which assumes PF is never passed through to a VM), so it may means
+> >> the PF is responsible for creating the devlink port for VF when VF is passed
+> >> through to a VM?
+> >>
+> >> Or do we need to create a devlink instance for VF in the VM too when the
+> >> VF is passed through to a VM? Or more specificly, does user need to query
+> >> or configure devlink info or configuration in a VM? If not, then devlink
+> >> instance in VM seems unnecessary?  
+> > 
+> > I believe the current best practice is to create a devlink instance for
+> > the VF with a devlink port of type "virtual". Such instance represents
+> > a "virtualized" view of the device.  
+> 
+> Afer discussion with Parav in other thread, I undersood it was the current
+> practice, but I am not sure I understand why it is current *best* practice.
+> 
+> If we allow all PF of a ASCI to register to the same devlink instance, does
+> it not make sense that all VF under one PF also register to the same devlink
+> instance that it's PF is registering to when they are in the same host?
+> 
+> For eswitch legacy mode, whether VF and PF are the same host or not, the VF
+> can also provide the serial number of a ASIC to register to the devlink instance,
+> if that devlink instance does not exist yet, just create that devlink instance
+> according to the serial number, just like PF does.
+> 
+> For eswitch DEVLINK_ESWITCH_MODE_SWITCHDEV mode, the flavour type for devlink
+> port instance representing the netdev of VF function is FLAVOUR_VIRTUAL, the
+> flavour type for devlink port instance representing the representor netdev of
+> VF is FLAVOUR_PCI_VF, which are different type, so they can register to the same
+> devlink instance even when both of the devlink port instance is in the same host?
+> 
+> Is there any reason why VF use its own devlink instance?
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+Primary use case for VFs is virtual environments where guest isn't
+trusted, so tying the VF to the main devlink instance, over which guest
+should have no control is counter productive.
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index 3d55e153fa9c..c1ee02d6371d 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -512,19 +512,26 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
- 	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
- 	struct platform_device *pdev = to_platform_device(gmu->dev);
- 	void __iomem *pdcptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc");
--	void __iomem *seqptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc_seq");
-+	void __iomem *seqptr;
- 	uint32_t pdc_address_offset;
-+	bool pdc_in_aop = false;
- 
--	if (!pdcptr || !seqptr)
-+	if (!pdcptr)
- 		goto err;
- 
--	if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
-+	if (adreno_is_a650(adreno_gpu))
-+		pdc_in_aop = true;
-+	else if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
- 		pdc_address_offset = 0x30090;
--	else if (adreno_is_a650(adreno_gpu))
--		pdc_address_offset = 0x300a0;
- 	else
- 		pdc_address_offset = 0x30080;
- 
-+	if (!pdc_in_aop) {
-+		seqptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc_seq");
-+		if (!seqptr)
-+			goto err;
-+	}
-+
- 	/* Disable SDE clock gating */
- 	gmu_write_rscc(gmu, REG_A6XX_GPU_RSCC_RSC_STATUS0_DRV0, BIT(24));
- 
-@@ -556,6 +563,9 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
- 		gmu_write_rscc(gmu, REG_A6XX_RSCC_SEQ_MEM_0_DRV0 + 4, 0x0020e8a8);
- 	}
- 
-+	if (pdc_in_aop)
-+		goto setup_pdc;
-+
- 	/* Load PDC sequencer uCode for power up and power down sequence */
- 	pdc_write(seqptr, REG_A6XX_PDC_GPU_SEQ_MEM_0, 0xfebea1e1);
- 	pdc_write(seqptr, REG_A6XX_PDC_GPU_SEQ_MEM_0 + 1, 0xa5a4a3a2);
-@@ -596,6 +606,7 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
- 	pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD0_DATA + 8, 0x3);
- 
- 	/* Setup GPU PDC */
-+setup_pdc:
- 	pdc_write(pdcptr, REG_A6XX_PDC_GPU_SEQ_START_ADDR, 0);
- 	pdc_write(pdcptr, REG_A6XX_PDC_GPU_ENABLE_PDC, 0x80000001);
- 
--- 
-2.26.1
+> >> I meant we could still allow the user to provide a more meaningful
+> >> name to indicate a devlink instance besides the id.  
+> > 
+> > To clarify/summarize my statement above serial number may be a useful
+> > addition but PCI device names should IMHO remain the primary
+> > identifiers, even if it means devlink instances with multiple names.  
+> 
+> I am not sure I understand what does it mean by "devlink instances with
+> multiple names"?
+> 
+> Does that mean whenever a devlink port instance is registered to a devlink
+> instance, that devlink instance get a new name according to the PCI device
+> which the just registered devlink port instance corresponds to?
 
+Not devlink port, new PCI device. Multiple ports may reside on the same
+PCI function, some ports don't have a function (e.g. Ethernet ports).
