@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8992C3A061B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623723A063B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234337AbhFHVl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 17:41:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44274 "EHLO mail.kernel.org"
+        id S234447AbhFHVmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 17:42:45 -0400
+Received: from mga01.intel.com ([192.55.52.88]:45443 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231208AbhFHVl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 17:41:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7AE9061375;
-        Tue,  8 Jun 2021 21:40:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623188404;
-        bh=CnTX+GzqUcAUmzuVB7l0JCf4hYJxelVKFuf9qhDfC4k=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=LzwDogR+mYwqeazs/7T+Y0Gyax9D97aMT9JZb4W+Jiy/dllSMes1YlaKkMK7Av5rn
-         +vqf0xzPmlPL2WceAaPNBkcvj+TYE+3hkaGsJCTx8WO1s7X6Rr3wZaTvhW3U1ldEMv
-         /oNwj3dtYkAr/m+IGGzUUfnI6+xrfreCJToNyDGV09glgz4eY7k+XmVOMX8NBmYU2Z
-         m68xlSrf8KVO1As1WhilV11IIWxEkQAPOGmzWI9O3pW1M6v1L2sPnh1ZtYEe1UxF/Q
-         5puwh5IoRS7skZD70vYJX+lA94+r+I8GHuY9A50ViAsKTUAYcRN3ObeiU+bjeJi2fo
-         BJWC3WwldIb6Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6B26D60BE2;
-        Tue,  8 Jun 2021 21:40:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234276AbhFHVmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 17:42:42 -0400
+IronPort-SDR: Mwkvxd1uGcDfwu83ySw4nwO58ejLyHO9p5kZ9bnZVj9K4obzbbFwHluyBqOiGbzn5qZt62a9/l
+ lKHydsqgZZ0w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="226309333"
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="226309333"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 14:40:48 -0700
+IronPort-SDR: YHHSLCsVEKiLOA60qU3ailMiBn65b5jbvmwtrkJE2+nTG+p9FpmsLWCddbECCgZa45bsRYJD8A
+ qvAqTlNCW7Qg==
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="448057487"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 14:40:47 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, Dave Hansen <dave.hansen@intel.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Tony Luck <tony.luck@intel.com>
+Subject: [RFC PATCH 0/4] Machine check recovery for SGX
+Date:   Tue,  8 Jun 2021 14:40:34 -0700
+Message-Id: <20210608214038.1026259-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v6 0/3] Enable 2.5Gbps speed for stmmac
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162318840443.3200.14704248998012548360.git-patchwork-notify@kernel.org>
-Date:   Tue, 08 Jun 2021 21:40:04 +0000
-References: <20210608035158.4869-1-michael.wei.hong.sit@intel.com>
-In-Reply-To: <20210608035158.4869-1-michael.wei.hong.sit@intel.com>
-To:     Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Cc:     Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        davem@davemloft.net, mcoquelin.stm32@gmail.com,
-        weifeng.voon@intel.com, boon.leong.ong@intel.com,
-        tee.min.tan@intel.com, vee.khee.wong@linux.intel.com,
-        vee.khee.wong@intel.com, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        vladimir.oltean@nxp.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Early draft because there are people outside of Intel that want to
+see how this is coming along, and this is the easiest way to share.
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+I wouldn't advise running this code on a production system as testing
+has been very light.
 
-On Tue,  8 Jun 2021 11:51:55 +0800 you wrote:
-> Intel mGbE supports 2.5Gbps link speed by overclocking the clock rate
-> by 2.5 times to support 2.5Gbps link speed. In this mode, the serdes/PHY
-> operates at a serial baud rate of 3.125 Gbps and the PCS data path and
-> GMII interface of the MAC operate at 312.5 MHz instead of 125 MHz.
-> This is configured in the BIOS during boot up. The kernel driver is not able
-> access to modify the clock rate for 1Gbps/2.5G mode on the fly. The way to
-> determine the current 1G/2.5G mode is by reading a dedicated adhoc
-> register through mdio bus.
-> 
-> [...]
+SGX memory pages are allocated from special protected memory ranges
+and do not have Linux "struct page" structures to manage them.
 
-Here is the summary with links:
-  - [net-next,v6,1/3] net: stmmac: split xPCS setup from mdio register
-    https://git.kernel.org/netdev/net-next/c/597a68ce3216
-  - [net-next,v6,2/3] net: pcs: add 2500BASEX support for Intel mGbE controller
-    https://git.kernel.org/netdev/net-next/c/f27abde3042a
-  - [net-next,v6,3/3] net: stmmac: enable Intel mGbE 2.5Gbps link speed
-    https://git.kernel.org/netdev/net-next/c/46682cb86a37
+A recent architecture change results in new behavior for SGX enclaves
+on a system when a recoverable local machine check occurs.
+a) If the machine check is triggered by code executing outside of an
+   enclave, then it can be handled as normal by the OS. Enclaves are
+   not affected
+b) If the machine check is triggered by code in an enclave, then that
+   enclave cannot be re-entered. But other enclaves on the system can
+   continue to execute.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+This means that "recovery" from an error in an active enclave page
+will result in the termination of that enclave.
 
+Memory controller patrol scrubbing may find errors in unused SGX pages.
+Those can simply be removed from the free list so that they will not
+be used.
+
+On bare metal there are two cases for "regular" SGX pages:
+1) Error is found by patrol scrubber. Action is to remove the page
+   from the enclave. If the page isn't accessed again, then the enclave
+   can continue to execute. If the page is accessed the page cannot be
+   replaced, so the enclave will be terminated.
+   This part of the code (and the free page part) tested using
+   /sys/devices/system/memory/hard_offline_page to call memory_failure().
+
+2) Error triggers a machine check when enclave code accesses poison. In
+   this case a SIGBUS is sent to the task that owns the enclave (just
+   like the non-SGX case).
+   This part of the code has been tested with EINJ error injection.
+
+Poison in other types of SGX pages (e.g. SECS) isn't handled yet.
+
+The virtualization case is just a shell. Linux doesn't know how the
+guest is using each page. For now just SIGKILL the task (qemu?) that
+owns the SGX pages.
+This part of the code compiles, but has not been tested.
+
+Tony Luck (4):
+  x86/sgx: Track phase and type of SGX EPC pages
+  x86/sgx: Add basic infrastructure to recover from errors in SGX memory
+  x86/sgx: Hook sgx_memory_failure() into mainline code
+  x86/sgx: Add hook to error injection address validation
+
+ .../firmware-guide/acpi/apei/einj.rst         |  19 +++
+ arch/x86/include/asm/sgx.h                    |   6 +
+ arch/x86/kernel/cpu/sgx/encl.c                |   4 +-
+ arch/x86/kernel/cpu/sgx/ioctl.c               |   4 +-
+ arch/x86/kernel/cpu/sgx/main.c                | 147 +++++++++++++++++-
+ arch/x86/kernel/cpu/sgx/sgx.h                 |  17 +-
+ arch/x86/kernel/cpu/sgx/virt.c                |  11 +-
+ drivers/acpi/apei/einj.c                      |   3 +-
+ include/linux/mm.h                            |  15 ++
+ mm/memory-failure.c                           |   4 +
+ 10 files changed, 219 insertions(+), 11 deletions(-)
+
+-- 
+2.29.2
 
