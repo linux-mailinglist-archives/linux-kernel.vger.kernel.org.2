@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F71D39F339
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B39139F33B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhFHKLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:11:38 -0400
-Received: from mail-lf1-f48.google.com ([209.85.167.48]:46830 "EHLO
-        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbhFHKLf (ORCPT
+        id S230272AbhFHKL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:11:56 -0400
+Received: from mail-lj1-f174.google.com ([209.85.208.174]:38859 "EHLO
+        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230293AbhFHKLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:11:35 -0400
-Received: by mail-lf1-f48.google.com with SMTP id m21so15477843lfg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 03:09:42 -0700 (PDT)
+        Tue, 8 Jun 2021 06:11:55 -0400
+Received: by mail-lj1-f174.google.com with SMTP id s22so5831617ljg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 03:10:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0p4gNJywAN3I6UnH9N1ZNXkMA7T40D7e5tXK5aYE/i8=;
-        b=M/dtGJ8TQlqSMrcFirIULbBeXB0NndIdhhRjFYDtwjFjheIEc6/P8E4xCwA/1/TZq2
-         X18hhmPpD7uBv9+qKP+JTt623mo1AWsjNCk3JxeCiDw/pd8WL9IbDyVNLRiSypHsfo1X
-         e3N7JRM7Y0t2L6wZJ6p3kQPgvIyQryAyqiOKN7k2RYx8sUh89IWXmjkzy/hMzGZ16qpb
-         NzMr81NZeJuB69XVPLd44L+Nc2YT4bBDozR9B+WNV8fqn6sN7Eaxom0tf3w3x++9v8G+
-         e/l4+zDkPM2ekxjUUzSPnMHLtOdEOsRz8ZITOXG1z84bsYoYH7UPZSn5BRdgWv5dyeqK
-         kjYQ==
-X-Gm-Message-State: AOAM5323OpWgAjvgXGrqlUiG8KO07TMM2xdn2/2Ofop9gTFItudLRLNO
-        XOQjBA0rLprvmS9OUv73NdI=
-X-Google-Smtp-Source: ABdhPJxogbHzYrmmvbnW9SikO5L9bstP7FTxJHVumR5EWCeUc7Ovx/bKTmCloyEn2/rvmJubAPHdZw==
-X-Received: by 2002:a19:5e18:: with SMTP id s24mr15251819lfb.545.1623146981981;
-        Tue, 08 Jun 2021 03:09:41 -0700 (PDT)
+        bh=CYu3AQufKRlOTXLiwA6qsIvmg55rZ/YYav/O+FxGH2o=;
+        b=mmqP7sPdRwpDWtROUsnSVKw5qW+0SUKtEqDbU2o6YUA104MWRROZUa78oIZ+3jmXED
+         /eGaC65Ceteztepx7A1gQWoDGwGwpqaCqncCV7NU/jjYzhQ4+BKIZTKshthfSdmPCmfr
+         lLU3JVfnwYzqG2868Ez+OmD6Lh27HkWpPu/G2ITDGJwRHFPzfepNyWQEoXLdy1InHBUK
+         Lt/Li4E9//IQv0l3C8zZ0/uQ2ArfN6HwXQsiyX6/mX1X86oU6qflN5BINqNzHpIgWKhF
+         ngxDTSA2iRqBewEuqJUwEmoG9ww+PmXv61mL2g70iCZQRXXiq+2Gsw5S1h5HCS9rvdEV
+         m+gw==
+X-Gm-Message-State: AOAM5313gP+Mii1S0nztmjtTqrH6a9EK2/8LvSvBPzGMIGwhbq0kDXG4
+        qnbew05zwcD7eXmZeqUMCv0=
+X-Google-Smtp-Source: ABdhPJy0f155vZTJeNwhgFZuz9Hy4VIzmLQFqPBHpPQ9PA1Q5q5UoIh3fA0yH3XgBal49NRRY/OcOA==
+X-Received: by 2002:a2e:9945:: with SMTP id r5mr18057096ljj.324.1623147001691;
+        Tue, 08 Jun 2021 03:10:01 -0700 (PDT)
 Received: from dc7vkhyh15000m40t6jht-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id l3sm1964503lfe.230.2021.06.08.03.09.40
+        by smtp.gmail.com with ESMTPSA id b10sm1146554ljf.72.2021.06.08.03.10.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 03:09:41 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 13:09:34 +0300
+        Tue, 08 Jun 2021 03:10:01 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 13:09:55 +0300
 From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         Matti Vaittinen <mazziesaccount@gmail.com>
@@ -46,13 +46,13 @@ Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v2 1/5] devm-helpers: Add resource managed version of
- work init
-Message-ID: <94ff4175e7f2ff134ed2fa7d6e7641005cc9784b.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
+Subject: [PATCH RESEND v2 2/5] extcon: extcon-max14577: Fix potential
+ work-queue cancellation race
+Message-ID: <ee8545f59ae3a93f0a70f640ecbd7e31cfadbcb9.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
 References: <cover.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
+        protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
 Content-Disposition: inline
 In-Reply-To: <cover.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
@@ -60,61 +60,81 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---9jxsPFA5p3P2qPhR
+--PEIAKu/WMn1b1Hv9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-A few drivers which need a work-queue must cancel work at driver detach.
-Some of those implement remove() solely for this purpose. Help drivers to
-avoid unnecessary remove and error-branch implementation by adding managed
-verision of work initialization. This will also help drivers to avoid
-mixing manual and devm based unwinding when other resources are handled by
-devm.
+The extcon IRQ schedules a work item. IRQ is requested using devm while
+WQ is cancelld at remove(). This mixing of devm and manual unwinding has
+potential case where the WQ has been emptied (.remove() was ran) but
+devm unwinding of IRQ was not yet done. It is possible the IRQ is triggered
+at this point scheduling new work item to the already flushed queue.
+
+Use new devm_work_autocancel() to remove the remove() and to kill the bug.
 
 Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 ---
- include/linux/devm-helpers.h | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
 
-diff --git a/include/linux/devm-helpers.h b/include/linux/devm-helpers.h
-index f40f77717a24..74891802200d 100644
---- a/include/linux/devm-helpers.h
-+++ b/include/linux/devm-helpers.h
-@@ -51,4 +51,29 @@ static inline int devm_delayed_work_autocancel(struct de=
-vice *dev,
- 	return devm_add_action(dev, devm_delayed_work_drop, w);
+Please note that the change is compile-tested only. All proper testing is
+highly appreciated.
+---
+ drivers/extcon/extcon-max14577.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/extcon/extcon-max14577.c b/drivers/extcon/extcon-max14=
+577.c
+index ace523924e58..5476f48ed74b 100644
+--- a/drivers/extcon/extcon-max14577.c
++++ b/drivers/extcon/extcon-max14577.c
+@@ -6,6 +6,7 @@
+ // Chanwoo Choi <cw00.choi@samsung.com>
+ // Krzysztof Kozlowski <krzk@kernel.org>
+=20
++#include <linux/devm-helpers.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/i2c.h>
+@@ -673,7 +674,10 @@ static int max14577_muic_probe(struct platform_device =
+*pdev)
+ 	platform_set_drvdata(pdev, info);
+ 	mutex_init(&info->mutex);
+=20
+-	INIT_WORK(&info->irq_work, max14577_muic_irq_work);
++	ret =3D devm_work_autocancel(&pdev->dev, &info->irq_work,
++				   max14577_muic_irq_work);
++	if (ret)
++		return ret;
+=20
+ 	switch (max14577->dev_type) {
+ 	case MAXIM_DEVICE_TYPE_MAX77836:
+@@ -766,15 +770,6 @@ static int max14577_muic_probe(struct platform_device =
+*pdev)
+ 	return ret;
  }
 =20
-+static inline void devm_work_drop(void *res)
-+{
-+	cancel_work_sync(res);
-+}
-+
-+/**
-+ * devm_work_autocancel - Resource-managed work allocation
-+ * @dev:	Device which lifetime work is bound to
-+ * @w:		Work to be added (and automatically cancelled)
-+ * @worker:	Worker function
-+ *
-+ * Initialize work which is automatically cancelled when driver is detache=
-d.
-+ * A few drivers need to queue work which must be cancelled before driver
-+ * is detached to avoid accessing removed resources.
-+ * devm_work_autocancel() can be used to omit the explicit
-+ * cancelleation when driver is detached.
-+ */
-+static inline int devm_work_autocancel(struct device *dev,
-+				       struct work_struct *w,
-+				       work_func_t worker)
-+{
-+	INIT_WORK(w, worker);
-+	return devm_add_action(dev, devm_work_drop, w);
-+}
-+
- #endif
+-static int max14577_muic_remove(struct platform_device *pdev)
+-{
+-	struct max14577_muic_info *info =3D platform_get_drvdata(pdev);
+-
+-	cancel_work_sync(&info->irq_work);
+-
+-	return 0;
+-}
+-
+ static const struct platform_device_id max14577_muic_id[] =3D {
+ 	{ "max14577-muic", MAXIM_DEVICE_TYPE_MAX14577, },
+ 	{ "max77836-muic", MAXIM_DEVICE_TYPE_MAX77836, },
+@@ -797,7 +792,6 @@ static struct platform_driver max14577_muic_driver =3D {
+ 		.of_match_table =3D of_max14577_muic_dt_match,
+ 	},
+ 	.probe		=3D max14577_muic_probe,
+-	.remove		=3D max14577_muic_remove,
+ 	.id_table	=3D max14577_muic_id,
+ };
+=20
 --=20
 2.25.4
 
@@ -131,19 +151,19 @@ Simon says - in Latin please.
 ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
 Thanks to Simon Glass for the translation =3D]=20
 
---9jxsPFA5p3P2qPhR
+--PEIAKu/WMn1b1Hv9
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmC/Qd4ACgkQeFA3/03a
-ocVfjAf/TXwSLAWwMrpwPhfRWyy2kMdMH1Z8G20g7aQ+1aF7/w5iyhtX4YoXFeiM
-p0YaVSuKrDKNTOo3/HPpoinlkns1hUBnP02qbUnoFs5A8fqpx8/cdEaTJ5E5Q1eR
-EatkB3Kz0CEerT17/yGZ32WZfyPH1w6QtqETkvuaJC5sijG4Bqgnq6w7Dt6UeQqq
-IkAuo5aD6xnf/400KYA8TQ7Ik6VEZ3VjybCSohYgJ2iFhdEnEGVgU/bDlSZb3bwu
-Jm9+C/yrmkmD58MT8YdIRTD9u98Jx6JTp8OV1f4oCg5CtHa9WAQQ3Surku6J0C06
-DLHbJr6TS53SDeOusMkSp93RiS9d8Q==
-=p2gc
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmC/QfMACgkQeFA3/03a
+ocXBOAgAru11cm78N6s0m1MOShhE/asUfMyiq2Cxcz2x7fw3OACzwFlfp+R32ar/
+fUHwetVFmjogoMhJmQ/jXp1caqcKeje+fsXiIBONwA3BqTuNFWF0+PJQHA83do//
+SbGVinvYQBeRatkLky4B6mJVbQH0WxCY2cTuG+CvKqalHEgFsUJb/B/29TAK5udf
+vl5LFwgkYTglI2wjp/dKzYcqUQBJo9FBLb92at/gLFbOz0RTkzVI6ZLHG3JVhik1
+nAnin1FR9pPZtwdV8QLnJ8N7QbIuN3VD9tpA+/oo7Q51HNeXGA43gU664Qx8MAIU
+u91yTAXvYr6vh32ew7OKVdf4nUEHEg==
+=3cFl
 -----END PGP SIGNATURE-----
 
---9jxsPFA5p3P2qPhR--
+--PEIAKu/WMn1b1Hv9--
