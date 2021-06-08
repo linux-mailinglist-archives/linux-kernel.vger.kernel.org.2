@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97EE3A00B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F333A00C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235335AbhFHSqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:46:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
+        id S235112AbhFHSqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:46:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235218AbhFHSmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:42:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A35B3613F9;
-        Tue,  8 Jun 2021 18:35:35 +0000 (UTC)
+        id S235277AbhFHSmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:42:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 843646143E;
+        Tue,  8 Jun 2021 18:35:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177336;
-        bh=IvrP3YfhhYkYUECsX0Lr7/Ijq4XLCcdj/PEOmIFUSZQ=;
+        s=korg; t=1623177339;
+        bh=n7jHnSCUhWTcbzPHUkPCGxMPD1LYam3aJehWBgA4Bn8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bsExUbyNIfod+oDO8elio78f8d/EfD8K0j+h7NwWFvGOATzzZoUoUEmkBbL0y24Xc
-         +NX5ddfZ4TMrmgctA9/rZSs277S0Wg/vxQFGjAgo4LuCGpFwAtarweHSQP3mmRBZMt
-         6ivMNm+PdxYZfqTILtZqEu1YU/B8cCHknepMnxbg=
+        b=CM2XrnhjgOO7sMobcWt2m06d7vKTqEx4JeULDthYZr5VqllD2EldBRNOLpY9JatQc
+         zzltTvlugOKVzHk60kenx4eCfmstNFNVBO9nhJhBZgILygd+KdrbA53jhGcqtopzL1
+         hB4+TQeIexjLYJVM8F//MegEsTbb04HGDZQEK0Xg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ariel Levkovich <lariel@nvidia.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Xiang Chen <chenxiang66@hisilicon.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Bob Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 16/78] net/sched: act_ct: Fix ct template allocation for zone 0
-Date:   Tue,  8 Jun 2021 20:26:45 +0200
-Message-Id: <20210608175935.821304198@linuxfoundation.org>
+Subject: [PATCH 5.4 17/78] ACPICA: Clean up context mutex during object deletion
+Date:   Tue,  8 Jun 2021 20:26:46 +0200
+Message-Id: <20210608175935.852114464@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
 References: <20210608175935.254388043@linuxfoundation.org>
@@ -41,57 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ariel Levkovich <lariel@nvidia.com>
+From: Erik Kaneda <erik.kaneda@intel.com>
 
-[ Upstream commit fb91702b743dec78d6507c53a2dec8a8883f509d ]
+[ Upstream commit e4dfe108371214500ee10c2cf19268f53acaa803 ]
 
-Fix current behavior of skipping template allocation in case the
-ct action is in zone 0.
+ACPICA commit bc43c878fd4ff27ba75b1d111b97ee90d4a82707
 
-Skipping the allocation may cause the datapath ct code to ignore the
-entire ct action with all its attributes (commit, nat) in case the ct
-action in zone 0 was preceded by a ct clear action.
-
-The ct clear action sets the ct_state to untracked and resets the
-skb->_nfct pointer. Under these conditions and without an allocated
-ct template, the skb->_nfct pointer will remain NULL which will
-cause the tc ct action handler to exit without handling commit and nat
-actions, if such exist.
-
-For example, the following rule in OVS dp:
-recirc_id(0x2),ct_state(+new-est-rel-rpl+trk),ct_label(0/0x1), \
-in_port(eth0),actions:ct_clear,ct(commit,nat(src=10.11.0.12)), \
-recirc(0x37a)
-
-Will result in act_ct skipping the commit and nat actions in zone 0.
-
-The change removes the skipping of template allocation for zone 0 and
-treats it the same as any other zone.
-
-Fixes: b57dc7c13ea9 ("net/sched: Introduce action ct")
-Signed-off-by: Ariel Levkovich <lariel@nvidia.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Link: https://lore.kernel.org/r/20210526170110.54864-1-lariel@nvidia.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: c27f3d011b08 ("Fix race in GenericSerialBus (I2C) and GPIO OpRegion parameter handling")
+Link: https://github.com/acpica/acpica/commit/bc43c878
+Reported-by: John Garry <john.garry@huawei.com>
+Reported-by: Xiang Chen <chenxiang66@hisilicon.com>
+Tested-by: Xiang Chen <chenxiang66@hisilicon.com>
+Signed-off-by: Erik Kaneda <erik.kaneda@intel.com>
+Signed-off-by: Bob Moore <robert.moore@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/act_ct.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/acpi/acpica/utdelete.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
-index 6119c31dcd07..31eb8eefc868 100644
---- a/net/sched/act_ct.c
-+++ b/net/sched/act_ct.c
-@@ -648,9 +648,6 @@ static int tcf_ct_fill_params(struct net *net,
- 				   sizeof(p->zone));
- 	}
+diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelete.c
+index 4c0d4e434196..72d2c0b65633 100644
+--- a/drivers/acpi/acpica/utdelete.c
++++ b/drivers/acpi/acpica/utdelete.c
+@@ -285,6 +285,14 @@ static void acpi_ut_delete_internal_obj(union acpi_operand_object *object)
+ 		}
+ 		break;
  
--	if (p->zone == NF_CT_DEFAULT_ZONE_ID)
--		return 0;
--
- 	nf_ct_zone_init(&zone, p->zone, NF_CT_DEFAULT_ZONE_DIR, 0);
- 	tmpl = nf_ct_tmpl_alloc(net, &zone, GFP_KERNEL);
- 	if (!tmpl) {
++	case ACPI_TYPE_LOCAL_ADDRESS_HANDLER:
++
++		ACPI_DEBUG_PRINT((ACPI_DB_ALLOCATIONS,
++				  "***** Address handler %p\n", object));
++
++		acpi_os_delete_mutex(object->address_space.context_mutex);
++		break;
++
+ 	default:
+ 
+ 		break;
 -- 
 2.30.2
 
