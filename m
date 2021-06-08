@@ -2,136 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1314239F8DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BA439F8E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbhFHOVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:21:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48248 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233129AbhFHOVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:21:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 348BA6135D;
-        Tue,  8 Jun 2021 14:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623161967;
-        bh=vgomed/fFV+dy2eA01Kw/duzevIkt+qd3SY8fxSJQqQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F8y/iDcySfPiZkIvhGmow9mMEg9/j+KXYzhWk4FubYL/3zr27JWltTfjxBoQ8UQnK
-         jpFCivxVElEYPE8vgGcOPiQLoZMDGWv99OcClsUMcuHXiCpHF5hwJTS5sTJ2jJ7UPi
-         fSRxxu4hRl3sCuzNE3aTywoIC/KD4ADu1crThHbsTlkQ40Rh9uk6X+tPAkBzl8xff8
-         9lBU+n4ccZyI9KOI3qiiZvFYGi70sth7VVpImUup8d3N64Y74QdJzwo4LAi1qQHGwV
-         HqSNa9aPcQ/1+4VKOzQuQ4mtNr1nTgKDLYNIi9Br8l0UyiTazHessLkcXd17cdSzl3
-         /IuQSo5CeFYQg==
-Date:   Tue, 8 Jun 2021 17:19:17 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] memory-hotplug.rst: remove locking details from
- admin-guide
-Message-ID: <YL98ZermcxfZ9LJn@kernel.org>
-References: <20210608133855.20397-1-david@redhat.com>
- <20210608133855.20397-2-david@redhat.com>
+        id S233315AbhFHOXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:23:08 -0400
+Received: from mail-pg1-f178.google.com ([209.85.215.178]:36390 "EHLO
+        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233166AbhFHOXG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:23:06 -0400
+Received: by mail-pg1-f178.google.com with SMTP id 27so16637387pgy.3;
+        Tue, 08 Jun 2021 07:21:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JtHZTnQSoYh0AEkVETNPL+hjy9vyaWFCSiTeWDIJXLo=;
+        b=ssWmJBv/KgfH3Dp+nlZZ1rNCnEwlYwUK7JEgZT0Cc/0kL6BeIdf+g//8fo5KF9kCHe
+         RavVPhWuyfAo3QqdT68vg9Cjqej8tmF4Fxu01juOc4s7GDJQvBgZhRdmr/lZFFxfueto
+         HVInMcqBwQgT6pTu/MzyO95nt4KYhbrTG/UpIkUmULt8pO0Ko041gEBSWFnDZvDl+QGF
+         DejO7EpI8/vcjjG6qBE4zu4aHLiQ0VlTw5Et2HBFaNxQVJfVf4ue0ZXcrY11XPsuGHm+
+         9tklUQx9MLhFfC/YqlQmM5idmPkJSdIoaCYUmDEFhQJ1C4G0SX3KfBP42m/xsSVDxDvh
+         ef2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JtHZTnQSoYh0AEkVETNPL+hjy9vyaWFCSiTeWDIJXLo=;
+        b=WTPOm7T1omzUTUDKmtpZAcTRjp+LVEHedGXoesd++KOn5dM+k0VUc+6/vso1QDxgG1
+         OHqlIiI2P5H2SNBhbtZfOtI14xgOsENwfkMhkcCuCr/hyJCnOXu9TkwQLSrGxD0ejK6p
+         igVlxPrSVsXljjtkg5FRrZCHn2R/O8EYeE2rhHnhUz97bCDTXQVmlPy/UTyz8WSIJUBD
+         nPQJWEXFPUPfMaMtfYHQlYI1V6aD/BmfB4bF76l2XINc1i6Y+wA77JaGelLGgIjDqDB0
+         ORPbCmVBFAD3eor//VbT2LP2CfMgkyBtJJVEAJ4p5aRcWEUv9ewbNQ/b33mTIRgnzqj4
+         MKhw==
+X-Gm-Message-State: AOAM532lz9yS61CFWEviw3XdHl8R+q0X4Wg3fqYtBKtv1NnmEuJW1YOF
+        aFEFPzpdUfjc5wd1e8eE3WJA8UZHTaoBIiFG
+X-Google-Smtp-Source: ABdhPJw8YkK1dHLFMft90Rc+UoTgKLQ/mfuldPMHIkGGF7+wWat2/pnIL3EAgh4NHXHaVSejbETY5g==
+X-Received: by 2002:a05:6a00:a89:b029:2ee:da59:e89c with SMTP id b9-20020a056a000a89b02902eeda59e89cmr113082pfl.17.1623162013560;
+        Tue, 08 Jun 2021 07:20:13 -0700 (PDT)
+Received: from localhost (185.212.56.112.16clouds.com. [185.212.56.112])
+        by smtp.gmail.com with ESMTPSA id j24sm8718437pfe.58.2021.06.08.07.20.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 07:20:13 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 22:20:11 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     helgaas@kernel.org, corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        mika.westerberg@linux.intel.com, rric@kernel.org,
+        bhelgaas@google.com, wsa@kernel.org, Sanket.Goswami@amd.com,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v7 1/4] PCI: Introduce pcim_alloc_irq_vectors()
+Message-ID: <20210608142011.GA1030842@nuc8i5>
+References: <20210607153916.1021016-1-zhengdejin5@gmail.com>
+ <20210607153916.1021016-2-zhengdejin5@gmail.com>
+ <YL5FcivbsIBnVvo0@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210608133855.20397-2-david@redhat.com>
+In-Reply-To: <YL5FcivbsIBnVvo0@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 03:38:54PM +0200, David Hildenbrand wrote:
-> We have the same content at Documentation/core-api/memory-hotplug.rst
-> and it doesn't fit into the admin-guide. The documentation was
-> accidentially duplicated when merging.
+On Mon, Jun 07, 2021 at 07:12:34PM +0300, Andy Shevchenko wrote:
+> On Mon, Jun 07, 2021 at 11:39:13PM +0800, Dejin Zheng wrote:
+> > Introduce pcim_alloc_irq_vectors(), a device-managed version of
+> > pci_alloc_irq_vectors(). Introducing this function can simplify
+> > the error handling path in many drivers.
+> > 
+> > And use pci_free_irq_vectors() to replace some code in pcim_release(),
+> > they are equivalent, and no functional change. It is more explicit
+> > that pcim_alloc_irq_vectors() is a device-managed function.
 > 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Muchun Song <songmuchun@bytedance.com>
-> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: linux-doc@vger.kernel.org
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-
-> ---
->  .../admin-guide/mm/memory-hotplug.rst         | 39 -------------------
->  1 file changed, 39 deletions(-)
+> ...
 > 
-> diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
-> index c6bae2d77160..a783cf7c8e4c 100644
-> --- a/Documentation/admin-guide/mm/memory-hotplug.rst
-> +++ b/Documentation/admin-guide/mm/memory-hotplug.rst
-> @@ -415,45 +415,6 @@ Need more implementation yet....
->   - Guard from remove if not yet.
->  
->  
-> -Locking Internals
-> -=================
-> -
-> -When adding/removing memory that uses memory block devices (i.e. ordinary RAM),
-> -the device_hotplug_lock should be held to:
-> -
-> -- synchronize against online/offline requests (e.g. via sysfs). This way, memory
-> -  block devices can only be accessed (.online/.state attributes) by user
-> -  space once memory has been fully added. And when removing memory, we
-> -  know nobody is in critical sections.
-> -- synchronize against CPU hotplug and similar (e.g. relevant for ACPI and PPC)
-> -
-> -Especially, there is a possible lock inversion that is avoided using
-> -device_hotplug_lock when adding memory and user space tries to online that
-> -memory faster than expected:
-> -
-> -- device_online() will first take the device_lock(), followed by
-> -  mem_hotplug_lock
-> -- add_memory_resource() will first take the mem_hotplug_lock, followed by
-> -  the device_lock() (while creating the devices, during bus_add_device()).
-> -
-> -As the device is visible to user space before taking the device_lock(), this
-> -can result in a lock inversion.
-> -
-> -onlining/offlining of memory should be done via device_online()/
-> -device_offline() - to make sure it is properly synchronized to actions
-> -via sysfs. Holding device_hotplug_lock is advised (to e.g. protect online_type)
-> -
-> -When adding/removing/onlining/offlining memory or adding/removing
-> -heterogeneous/device memory, we should always hold the mem_hotplug_lock in
-> -write mode to serialise memory hotplug (e.g. access to global/zone
-> -variables).
-> -
-> -In addition, mem_hotplug_lock (in contrast to device_hotplug_lock) in read
-> -mode allows for a quite efficient get_online_mems/put_online_mems
-> -implementation, so code accessing memory can protect from that memory
-> -vanishing.
-> -
-> -
->  Future Work
->  ===========
->  
+> > When CONFIG_PCI=n, there is no stub for pci_is_managed(), but
+> > pcim_alloc_irq_vectors() will use it, so add one like other similar stubs.
+> > Otherwise there can be build errors, as here by kernel test robot
+> > reported:
+> > include/linux/pci.h: In function 'pcim_alloc_irq_vectors':
+> > >> include/linux/pci.h:1847:7: error: implicit declaration of function 'pci_is_managed' [-Werror=implicit-function-declaration]
+> >     1847 |  if (!pci_is_managed(dev))
+> >          |       ^~~~~~~~~~~~~~
+> 
+> This is rather changelog related material. No need to pollute commit message
+> with this.
+>
+Okey.
+
+> ...
+> 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> 
+> It's new functionality. Why this tag is here?
+> Use comments (similar location than changelog) to give a credit if you wish.
+>
+Got it, Thanks!
+
+> > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Reviewed-by: Robert Richter <rric@kernel.org>
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+> > ---
+> > v6 -> v7:
+> > 	- rebase to PCI next branch
+> > 	- add a stub for pci_is_managed() when disable PCI for
+> > 	  fix build error in sparc architecture.
+> > v5 -> v6:
+> > 	- rebase to 5.13-rc4
+> > v4 -> v5:
+> > 	- Remove the check of enable device in pcim_alloc_irq_vectors()
+> > 	  and make it as a static line function.
+> > v3 -> v4:
+> > 	- No change
+> > v2 -> v3:
+> > 	- Add some commit comments for replace some codes in
+> > 	  pcim_release() by pci_free_irq_vectors().
+> > v1 -> v2:
+> > 	- Use pci_free_irq_vectors() to replace some code in
+> > 	  pcim_release().
+> > 	- Modify some commit messages.
+> > 
+> >  drivers/pci/pci.c   |  5 +----
+> >  include/linux/pci.h | 25 +++++++++++++++++++++++++
+> >  2 files changed, 26 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index 452351025a09..e3b3fc59bd35 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -1989,10 +1989,7 @@ static void pcim_release(struct device *gendev, void *res)
+> >  	struct pci_devres *this = res;
+> >  	int i;
+> >  
+> > -	if (dev->msi_enabled)
+> > -		pci_disable_msi(dev);
+> > -	if (dev->msix_enabled)
+> > -		pci_disable_msix(dev);
+> > +	pci_free_irq_vectors(dev);
+> >  
+> >  	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++)
+> >  		if (this->region_mask & (1 << i))
+> > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > index c20211e59a57..5783262c4643 100644
+> > --- a/include/linux/pci.h
+> > +++ b/include/linux/pci.h
+> > @@ -1730,6 +1730,7 @@ static inline struct pci_dev *pci_get_class(unsigned int class,
+> >  
+> >  static inline void pci_set_master(struct pci_dev *dev) { }
+> >  static inline int pci_enable_device(struct pci_dev *dev) { return -EIO; }
+> > +static inline int pci_is_managed(struct pci_dev *pdev) { return 0; }
+> >  static inline void pci_disable_device(struct pci_dev *dev) { }
+> >  static inline int pcim_enable_device(struct pci_dev *pdev) { return -EIO; }
+> >  static inline int pci_assign_resource(struct pci_dev *dev, int i)
+> > @@ -1825,6 +1826,30 @@ pci_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
+> >  					      NULL);
+> >  }
+> >  
+> > +/**
+> > + * pcim_alloc_irq_vectors - a device-managed pci_alloc_irq_vectors()
+> > + * @dev:		PCI device to operate on
+> > + * @min_vecs:		minimum number of vectors required (must be >= 1)
+> > + * @max_vecs:		maximum (desired) number of vectors
+> > + * @flags:		flags or quirks for the allocation
+> > + *
+> > + * Return the number of vectors allocated, (which might be smaller than
+> > + * @max_vecs) if successful, or a negative error code on error. If less
+> > + * than @min_vecs interrupt vectors are available for @dev the function
+> > + * will fail with -ENOSPC.
+> > + *
+> > + * It depends on calling pcim_enable_device() to make IRQ resources
+> > + * manageable.
+> > + */
+> > +static inline int
+> > +pcim_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
+> > +			unsigned int max_vecs, unsigned int flags)
+> > +{
+> > +	if (!pci_is_managed(dev))
+> > +		return -EINVAL;
+> > +	return pci_alloc_irq_vectors(dev, min_vecs, max_vecs, flags);
+> > +}
+> > +
+> >  /* Include architecture-dependent settings and functions */
+> >  
+> >  #include <asm/pci.h>
+> > -- 
+> > 2.30.1
+> > 
+> 
 > -- 
-> 2.31.1
+> With Best Regards,
+> Andy Shevchenko
 > 
-
--- 
-Sincerely yours,
-Mike.
+> 
