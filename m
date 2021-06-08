@@ -2,156 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F2239FC9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B40839FC9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhFHQdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 12:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231675AbhFHQdj (ORCPT
+        id S233845AbhFHQe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 12:34:56 -0400
+Received: from mail-ej1-f54.google.com ([209.85.218.54]:41479 "EHLO
+        mail-ej1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233380AbhFHQez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:33:39 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09013C061574;
-        Tue,  8 Jun 2021 09:31:39 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id ba2so23507218edb.2;
-        Tue, 08 Jun 2021 09:31:38 -0700 (PDT)
+        Tue, 8 Jun 2021 12:34:55 -0400
+Received: by mail-ej1-f54.google.com with SMTP id ho18so22634680ejc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 09:33:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WUaKdqkyjh6EzjeWuZqdi2dYNMKlRLnh+NM1sHEfuao=;
-        b=X+CfpsFyq5hloeViHoJlyIds19uSTtUIlXAf7k7HrrJUDrSreBvTIyOHADrMjqCAEq
-         No4vVonjSBSX0Ql67lfm9mL8pDnFKjMF3mKZsNVqW/Pq6NBek2wKwW1hxbkgrKzu8tC4
-         43kO6TYrViuMaxdFjtiwt6J3TA6tHdQywILSow1IEt3NiZeVn2MTqF/aR0fLIxaGrV1w
-         ozG0OpRHBTDGcY06ZL/er2groWt3t9mndbpDjrnFXgIt92u4v22hUGD8Jtr+J3EiYFn7
-         eAPF1kPCdip9/viRZCIxtzLQB8eEnh7syshU+OfZSfYsV+FGiRrIs+VEHhi41s8cQ7hf
-         c1sw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=hWkOGoUtVtV8FzZIYvtLihscdJc/AoYQpTw6WbnU7Nw=;
+        b=fXgLcXa2w87ln2btJbQraQXHXiGELYbP5LupPcB7myYKqcu6NVlx4DY99oXDbTa0iJ
+         xWS2p9E5JbYbO8VcykZ6r5bOys01zOkyw5TWrisdw9B+B/9yY16jsPg9GSUholD4VE+w
+         j3foV8rY7hKomZwvqzakSYHrSXFMOILGi7nzcJ2jk2y/DP12hy2khy1msJhwgJxtRmFG
+         k6a6Pwa4QHgkqW8RBS6lIM4t0BtwgcNiIbcqS89dlX6cSOa4NerRNw7ansyBa4Vs6g5w
+         9wbNQNn1IbwvEWZvEdhbZzrL4Uu1BCSW+d5BexKdhPEPPc841OL4G/30MX8q/+T0r1ke
+         L4Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WUaKdqkyjh6EzjeWuZqdi2dYNMKlRLnh+NM1sHEfuao=;
-        b=HphpeI/aXUYcvWZHcIon2HL5/7g6V2xFf0FX+8p/A6hxWKa49xE50BLFNc7x1l8CaF
-         77OWSCB9VkN0KV9bE+X2n0L9Lb1sD9bAYeGj17VWtBjVMEoQSj8AiCa7aaK0jDWhbvCh
-         RjSbWOKj3aOzXqa4oKgEjgmF4g9qqnZsxCAO4FMo2+xOpfnuo3g3aa5eSWBuGRSrrEmv
-         lGmqxO4QMSzoDI1BWe8r1+L/bBuKNEa7TfARFBi8AH8J05Vfo8e2sP9vmNO7uS5kTSSX
-         eHj1QK0c1X/qmbJ+N/ZwiXrTCRifNHNIxULqBG9cze0jHXYF1nenNxbZegAywkeYV0Il
-         9KWg==
-X-Gm-Message-State: AOAM531Lqas9dpggSS2PT5C8VJgDcN84GlQ/m9hcNaTDmfdy42Nng7lD
-        1oFDoDLzX7TaHDIFb1OEieA=
-X-Google-Smtp-Source: ABdhPJzzR0UxUuKFEEiY/gFD3U2yfUWNfHociiNEWPmaKlEGhRv6BT2dZsFeIRBn1A82AD/+Z6C00Q==
-X-Received: by 2002:a05:6402:1592:: with SMTP id c18mr19539617edv.2.1623169896749;
-        Tue, 08 Jun 2021 09:31:36 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id f18sm74848ejz.119.2021.06.08.09.31.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 09:31:36 -0700 (PDT)
-Subject: Re: [PATCH v6 4/8] clk: rockchip: Add support for hclk_sfc on rk3036
-To:     Jon Lin <jon.lin@rock-chips.com>, linux-spi@vger.kernel.org
-Cc:     broonie@kernel.org, robh+dt@kernel.org, heiko@sntech.de,
-        hjc@rock-chips.com, yifeng.zhao@rock-chips.com,
-        sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org,
-        linux-mtd@lists.infradead.org, p.yadav@ti.com,
-        macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Chris Morgan <macromorgan@hotmail.com>
-References: <20210608022644.21074-1-jon.lin@rock-chips.com>
- <20210608022644.21074-5-jon.lin@rock-chips.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <4a4524f5-ee85-c7f6-aa95-1df84f2a8a99@gmail.com>
-Date:   Tue, 8 Jun 2021 18:31:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=hWkOGoUtVtV8FzZIYvtLihscdJc/AoYQpTw6WbnU7Nw=;
+        b=HWxISAMxtixug9APnQq9XhAKHEtNY5MRnBpG+GmhN5KIHyez+UH19G9B22s/xgP7uB
+         VGzN8o75ikV5phicxQMV+pafFr2B3MwB8jx1ehoQjB80634c9nG5hrA9+LN3rDu1XWoB
+         J31uGJ1u6eZmSJN9aYHhvbhr4/FHbHJ/WOxHUjDscgYJsYblQoZEcGyC8aKwREkR5a1E
+         mnYkyWXgYXpvO+86UXZtCz+yWU05hMgTtvd0rnJZpbPtZX+fAEhvPGIJ6Zz+p2oauCZu
+         wwx0s2ILR7XpEf6OuT+kVOeV9YXw8kM4lLJQXZmSYygKh51h9M8urADZtidTgSAGjx3f
+         Ly3Q==
+X-Gm-Message-State: AOAM531I9qLsPiF90z7mkT7ePWO+TeO5yOUiMwALT9Gw5qINSni/zyrq
+        60E0v6IaiQI/qciEjqxlRmBYsHrv13n/0g==
+X-Google-Smtp-Source: ABdhPJyCZUGjO10/Bh4SU9DcJaQK7Cdfy2yI2+cY/S03tVpAXjPIk8DZNa2Xy1DPy2Uof56jdAKN9g==
+X-Received: by 2002:a17:906:1704:: with SMTP id c4mr11389765eje.182.1623169921329;
+        Tue, 08 Jun 2021 09:32:01 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id s18sm94847ejh.12.2021.06.08.09.32.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 09:32:00 -0700 (PDT)
+References: <20210429083823.59546-1-jbrunet@baylibre.com>
+ <162008674673.40672.14279142646066453043.b4-ty@baylibre.com>
+ <CAMuHMdVhrMNzuXkD9BQxPaiwS41bsOyJU_kwGYwk5ftto-AGBQ@mail.gmail.com>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>
+Subject: Re: [PATCH RESEND] arm64: meson: select COMMON_CLK
+In-reply-to: <CAMuHMdVhrMNzuXkD9BQxPaiwS41bsOyJU_kwGYwk5ftto-AGBQ@mail.gmail.com>
+Message-ID: <1jczsw1fnj.fsf@starbuckisacylon.baylibre.com>
+Date:   Tue, 08 Jun 2021 18:32:00 +0200
 MIME-Version: 1.0
-In-Reply-To: <20210608022644.21074-5-jon.lin@rock-chips.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jon,
 
-For rk3036 we might need another fix added to this serie as well.
+On Tue 08 Jun 2021 at 11:52, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-clk: rockchip: rk3036: fix up the sclk_sfc parent error
-https://github.com/rockchip-linux/kernel/commit/100718ef0d44872db1672b6a88030374c0d1613b
+> Hi Jerome,
+>
+> On Tue, May 4, 2021 at 2:06 AM Kevin Hilman <khilman@baylibre.com> wrote:
+>> On Thu, 29 Apr 2021 10:38:23 +0200, Jerome Brunet wrote:
+>> > This fix the recent removal of clock drivers selection.
+>> > While it is not necessary to select the clock drivers themselves, we need
+>> > to select a proper implementation of the clock API, which for the meson, is
+>> > CCF
+>>
+>> Applied, thanks!
+>>
+>> [1/1] arm64: meson: select COMMON_CLK
+>>       commit: aea7a80ad5effd48f44a7a08c3903168be038a43
+>>
+>> Best regards,
+>> --
+>> Kevin Hilman <khilman@baylibre.com>
+>
+> Why is this needed, and why would this make any difference?
+> COMMON_CLK is always enabled on arm64, as the main ARM64 symbol in
+> arch/arm64/Kconfig selects it.
 
-===
-Add more people for clk driver changes:
+Ah indeed. Shortly after commit ba66a25536dd was merged I remember I had
+problem with COMMON_CLK (or any other clock implementation) being
+selected. TBH, I don't remember it exactly ...
 
-M:	Michael Turquette <mturquette@baylibre.com>
-M:	Stephen Boyd <sboyd@kernel.org>
-L:	linux-clk@vger.kernel.org
+For sure this was a mistake.
+Neil, can you still drop it and do you need a revert ?
 
-===
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
 
-Johan
-
-On 6/8/21 4:26 AM, Jon Lin wrote:
-
-> From: Chris Morgan <macromorgan@hotmail.com>
-
-From: Randy Li <randy.li@rock-chips.com>
-
-> 
-> Add support for the bus clock for the serial flash controller on the
-> rk3036. Taken from the Rockchip BSP kernel but not tested on real
-> hardware (as I lack a 3036 based SoC to test).
-> 
-
-Signed-off-by: Randy Li <randy.li@rock-chips.com>
-
-Maybe give credit to the original author?
-clk: rockchip: rk3036: export the sfc clocks
-https://github.com/rockchip-linux/kernel/commit/600925e8ef6edbdda0a4ac6b3c55b0199be1e03e
-
-> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
-> ---
-> 
-> Changes in v6: None
-> Changes in v5: None
-> Changes in v4: None
-> Changes in v3: None
-> Changes in v2: None
-> Changes in v1: None
-> 
->  drivers/clk/rockchip/clk-rk3036.c      | 2 +-
->  include/dt-bindings/clock/rk3036-cru.h | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/rockchip/clk-rk3036.c b/drivers/clk/rockchip/clk-rk3036.c
-> index 91d56ad45817..ebb628733f6d 100644
-> --- a/drivers/clk/rockchip/clk-rk3036.c
-> +++ b/drivers/clk/rockchip/clk-rk3036.c
-> @@ -403,7 +403,7 @@ static struct rockchip_clk_branch rk3036_clk_branches[] __initdata = {
->  	GATE(HCLK_OTG0, "hclk_otg0", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(5), 13, GFLAGS),
->  	GATE(HCLK_OTG1, "hclk_otg1", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(7), 3, GFLAGS),
->  	GATE(HCLK_I2S, "hclk_i2s", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 2, GFLAGS),
-
-> -	GATE(0, "hclk_sfc", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(3), 14, GFLAGS),
-> +	GATE(HCLK_SFC, "hclk_sfc", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(3), 14, GFLAGS),
-
-Maybe CLK_IGNORE_UNUSED should be changed to 0 ?
-
->  	GATE(HCLK_MAC, "hclk_mac", "hclk_peri", 0, RK2928_CLKGATE_CON(3), 5, GFLAGS),
->  
->  	/* pclk_peri gates */
-> diff --git a/include/dt-bindings/clock/rk3036-cru.h b/include/dt-bindings/clock/rk3036-cru.h
-> index 35a5a01f9697..a96a9870ad59 100644
-> --- a/include/dt-bindings/clock/rk3036-cru.h
-> +++ b/include/dt-bindings/clock/rk3036-cru.h
-> @@ -81,6 +81,7 @@
->  #define HCLK_OTG0		449
->  #define HCLK_OTG1		450
->  #define HCLK_NANDC		453
-> +#define HCLK_SFC		454
->  #define HCLK_SDMMC		456
->  #define HCLK_SDIO		457
->  #define HCLK_EMMC		459
-> 
