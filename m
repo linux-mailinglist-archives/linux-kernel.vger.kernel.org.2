@@ -2,142 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5576339EEB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9D539EEBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhFHG2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 02:28:12 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49860 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhFHG2J (ORCPT
+        id S229797AbhFHGbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 02:31:38 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3466 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229942AbhFHGbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 02:28:09 -0400
-Received: from [50.53.41.238] (helo=[192.168.192.153])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <john.johansen@canonical.com>)
-        id 1lqVBj-0007ee-Ue; Tue, 08 Jun 2021 06:26:12 +0000
-Subject: Re: [PATCH -next] apparmor: fix doc warning
-To:     ChenXiaoSong <chenxiaosong2@huawei.com>, jmorris@namei.org,
-        serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com
-References: <20210607063022.329320-1-chenxiaosong2@huawei.com>
-From:   John Johansen <john.johansen@canonical.com>
-Autocrypt: addr=john.johansen@canonical.com; prefer-encrypt=mutual; keydata=
- LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUlOQkU1bXJQb0JFQURB
- azE5UHNnVmdCS2tJbW1SMmlzUFE2bzdLSmhUVEtqSmR3VmJrV1NuTm4rbzZVcDVrCm5LUDFm
- NDlFQlFsY2VXZzF5cC9Od2JSOGFkK2VTRU8vdW1hL0srUHFXdkJwdEtDOVNXRDk3Rkc0dUI0
- L2Nhb20KTEVVOTdzTFFNdG52R1dkeHJ4VlJHTTRhbnpXWU1neno1VFptSWlWVFo0M091NVZw
- YVMxVnoxWlN4UDNoL3hLTgpaci9UY1c1V1FhaTh1M1BXVm5ia2poU1pQSHYxQmdoTjY5cXhF
- UG9tckpCbTFnbXR4M1ppVm1GWGx1d1RtVGdKCk9rcEZvbDduYkowaWxuWUhyQTdTWDNDdFIx
- dXBlVXBNYS9XSWFuVk85NldkVGpISElhNDNmYmhtUXViZTR0eFMKM0ZjUUxPSlZxUXN4NmxF
- OUI3cUFwcG05aFExMHFQV3dkZlB5LyswVzZBV3ROdTVBU2lHVkNJbld6bDJIQnFZZAovWmxs
- OTN6VXErTklvQ244c0RBTTlpSCt3dGFHRGNKeXdJR0luK2VkS050SzcyQU1nQ2hUZy9qMVpv
- V0g2WmVXClBqdVVmdWJWelp0bzFGTW9HSi9TRjRNbWRRRzFpUU50ZjRzRlpiRWdYdXk5Y0dp
- MmJvbUYwenZ5QkpTQU5weGwKS05CRFlLek42S3owOUhVQWtqbEZNTmdvbUwvY2pxZ0FCdEF4
- NTlMK2RWSVpmYUYyODFwSWNVWnp3dmg1K0pvRwplT1c1dUJTTWJFN0wzOG5zem9veWtJSjVY
- ckFjaGtKeE5mejdrK0ZuUWVLRWtOekVkMkxXYzNRRjRCUVpZUlQ2ClBISGdhM1JneWtXNSsx
- d1RNcUpJTGRtdGFQYlhyRjNGdm5WMExSUGN2NHhLeDdCM2ZHbTd5Z2Rvb3dBUkFRQUIKdEIx
- S2IyaHVJRXB2YUdGdWMyVnVJRHhxYjJodVFHcHFiWGd1Ym1WMFBva0NPZ1FUQVFvQUpBSWJB
- d1VMQ1FnSApBd1VWQ2drSUN3VVdBZ01CQUFJZUFRSVhnQVVDVG8wWVZ3SVpBUUFLQ1JBRkx6
- WndHTlhEMkx4SkQvOVRKWkNwCndsbmNUZ1llcmFFTWVEZmtXdjhjMUlzTTFqMEFtRTRWdEwr
- ZkU3ODBaVlA5Z2tqZ2tkWVN4dDdlY0VUUFRLTWEKWlNpc3JsMVJ3cVUwb29nWGRYUVNweHJH
- SDAxaWN1LzJuMGpjWVNxWUtnZ1B4eTc4QkdzMkxacTRYUGZKVFptSApaR25YR3EvZURyL21T
- bmowYWF2QkptTVo2amJpUHo2eUh0QllQWjlmZG84YnRjendQNDFZZVdvSXUyNi84SUk2CmYw
- WG0zVkM1b0FhOHY3UmQrUldaYThUTXdsaHpIRXh4ZWwzanRJN0l6ek9zbm1FOS84RG0wQVJE
- NWlUTENYd1IKMWN3SS9KOUJGL1MxWHY4UE4xaHVUM0l0Q05kYXRncDh6cW9Ka2dQVmptdnlM
- NjRRM2ZFa1liZkhPV3NhYmE5LwprQVZ0Qk56OVJURmg3SUhEZkVDVmFUb3VqQmQ3QnRQcXIr
- cUlqV0ZhZEpEM0k1ZUxDVkp2VnJyb2xyQ0FUbEZ0Ck4zWWtRczZKbjFBaUlWSVUzYkhSOEdq
- ZXZnejVMbDZTQ0dIZ1Jya3lScG5TWWFVL3VMZ24zN042QVl4aS9RQUwKK2J5M0N5RUZManpX
- QUV2eVE4YnEzSXVjbjdKRWJoUy9KLy9kVXFMb2VVZjh0c0dpMDB6bXJJVFpZZUZZQVJoUQpN
- dHNmaXpJclZEdHoxaVBmL1pNcDVnUkJuaXlqcFhuMTMxY20zTTNndjZIclFzQUdubjhBSnJ1
- OEdEaTVYSllJCmNvLzEreC9xRWlOMm5DbGFBT3BiaHpOMmVVdlBEWTVXMHEzYkEvWnAybWZH
- NTJ2YlJJK3RRMEJyMUhkL3ZzbnQKVUhPOTAzbU1aZXAyTnpOM0JaNXFFdlB2RzRyVzVacTJE
- cHliV2JRclNtOW9iaUJLYjJoaGJuTmxiaUE4YW05bwpiaTVxYjJoaGJuTmxia0JqWVc1dmJt
- bGpZV3d1WTI5dFBva0NOd1FUQVFvQUlRVUNUbzBYV2dJYkF3VUxDUWdICkF3VVZDZ2tJQ3dV
- V0FnTUJBQUllQVFJWGdBQUtDUkFGTHpad0dOWEQySXRNRC85anliYzg3ZE00dUFIazZ5Tk0K
- TjBZL0JGbW10VFdWc09CaHFPbm9iNGkzOEJyRE8yQzFoUUNQQ1FlNExMczEvNHB0ZW92UXQ4
- QjJGeXJQVmp3Zwo3alpUSE5LNzRyNmxDQ1Z4eDN5dTFCN1U5UG80VlRrY3NsVmIxL3FtV3V4
- OFhXY040eXZrVHFsTCtHeHB5Sm45CjlaWmZmWEpjNk9oNlRtT2ZiS0d2TXV1djVhclNJQTNK
- SEZMZjlhTHZadEExaXNKVXI3cFM5YXBnOXVUVUdVcDcKd2ZWMFdUNlQzZUczbXRVVTJ1cDVK
- VjQ4NTBMMDVqSFM2dVdpZS9ZK3lmSk9iaXlyeE4vNlpxVzVHb25oTEJxLwptc3pjVjV2QlQz
- QkRWZTNSdkY2WGRNOU9oUG4xK1k4MXg1NCt2UTExM044aUx3RjdHR2ExNFp5SVZBTlpEMEkw
- CkhqUnZhMmsvUnFJUlR6S3l1UEg1cGtsY0tIVlBFRk1tT3pNVCtGT294Tmp2Uys3K3dHMktN
- RFlFbUhQcjFQSkIKWlNaZUh6SzE5dGZhbFBNcHBGeGkrc3lZTGFnTjBtQjdKSFF3WTdjclV1
- T0RoeWNxNjBZVnoxdGFFeWd1M1l2MgoyL0kxRUNHSHZLSEc2d2M5MG80M0MvZWxIRUNYbkVo
- N3RLcGxEY3BJQytPQ21NeEtIaFI0NitYY1p2Z3c0RGdiCjdjYTgzZVFSM0NHODlMdlFwVzJM
- TEtFRUJEajdoWmhrTGJra1BSWm0zdzhKWTQ0YXc4VnRneFdkblNFTUNMeEwKSU9OaDZ1Wjcv
- L0RZVnRjSWFNSllrZWJhWnRHZENwMElnVVpiMjQvVmR2WkNZYk82MkhrLzNWbzFuWHdIVUVz
- Mwo2RC92MWJUMFJaRmk2OUxnc0NjT2N4NGdZTGtDRFFST1pxejZBUkFBb3F3NmtrQmhXeU0x
- ZnZnYW1BVmplWjZuCktFZm5SV2JrQzk0TDFFc0pMdXAzV2IyWDBBQk5PSFNrYlNENHBBdUMy
- dEtGL0VHQnQ1Q1A3UWRWS1JHY1F6QWQKNmIyYzFJZHk5Ukx3Nnc0Z2krbm4vZDFQbTFra1lo
- a1NpNXpXYUlnMG01UlFVaytFbDh6a2Y1dGNFLzFOMFo1TwpLMkpoandGdTViWDBhMGw0Y0ZH
- V1ZRRWNpVk1ES1J0eE1qRXRrM1N4RmFsbTZaZFEycHAyODIyY2xucTR6WjltCld1MWQyd2F4
- aXorYjVJYTR3ZURZYTduNDFVUmNCRVViSkFnbmljSmtKdENUd3lJeElXMktuVnlPcmp2a1F6
- SUIKdmFQMEZkUDJ2dlpvUE1kbENJek9sSWtQTGd4RTBJV3VlVFhlQkpoTnMwMXBiOGJMcW1U
- SU1sdTRMdkJFTEEvdgplaWFqajVzOHk1NDJIL2FIc2ZCZjRNUVVoSHhPL0JaVjdoMDZLU1Vm
- SWFZN09nQWdLdUdOQjNVaWFJVVM1K2E5CmduRU9RTER4S1J5L2E3UTF2OVMrTnZ4KzdqOGlI
- M2prUUpoeFQ2WkJoWkdSeDBna0gzVCtGMG5ORG01TmFKVXMKYXN3Z0pycUZaa1VHZDJNcm0x
- cW5Ld1hpQXQ4U0ljRU5kcTMzUjBLS0tSQzgwWGd3ajhKbjMwdlhMU0crTk8xRwpIMFVNY0F4
- TXd5L3B2azZMVTVKR2paUjczSjVVTFZoSDRNTGJEZ2dEM21QYWlHOCtmb3RUckpVUHFxaGc5
- aHlVCkVQcFlHN3NxdDc0WG43OStDRVpjakxIenlsNnZBRkUyVzBreGxMdFF0VVpVSE8zNmFm
- RnY4cUdwTzNacVB2akIKVXVhdFhGNnR2VVFDd2YzSDZYTUFFUUVBQVlrQ0h3UVlBUW9BQ1FV
- Q1RtYXMrZ0liREFBS0NSQUZMelp3R05YRAoyRC9YRC8wZGRNLzRhaTFiK1RsMWp6bkthalgz
- a0crTWVFWWVJNGY0MHZjbzNyT0xyblJHRk9jYnl5ZlZGNjlNCktlcGllNE93b0kxamNUVTBB
- RGVjbmJXbkROSHByMFNjenhCTXJvM2Juckxoc212anVuVFlJdnNzQlp0QjRhVkoKanVMSUxQ
- VWxuaEZxYTdmYlZxMFpRamJpVi9ydDJqQkVOZG05cGJKWjZHam5wWUljQWJQQ0NhL2ZmTDQv
- U1FSUwpZSFhvaEdpaVM0eTVqQlRtSzVsdGZld0xPdzAyZmtleEgrSUpGcnJHQlhEU2c2bjJT
- Z3hubisrTkYzNGZYY205CnBpYXczbUtzSUNtKzBoZE5oNGFmR1o2SVdWOFBHMnRlb29WRHA0
- ZFlpaCsreFgvWFM4ekJDYzFPOXc0bnpsUDIKZ0t6bHFTV2JoaVdwaWZSSkJGYTRXdEFlSlRk
- WFlkMzdqL0JJNFJXV2hueXc3YUFQTkdqMzN5dEdITlVmNlJvMgovanRqNHRGMXkvUUZYcWpK
- Ry93R2pwZHRSZmJ0VWpxTEhJc3ZmUE5OSnEvOTU4cDc0bmRBQ2lkbFdTSHpqK09wCjI2S3Bi
- Rm5td05PMHBzaVVzbmh2SEZ3UE8vdkFibDNSc1I1KzBSbytodnMyY0VtUXV2OXIvYkRsQ2Zw
- enAydDMKY0srcmh4VXFpc094OERaZnoxQm5rYW9DUkZidnZ2ays3TC9mb21QbnRHUGtxSmNp
- WUU4VEdIa1p3MWhPa3UrNApPb00yR0I1bkVEbGorMlRGL2pMUStFaXBYOVBrUEpZdnhmUmxD
- NmRLOFBLS2ZYOUtkZm1BSWNnSGZuVjFqU24rCjh5SDJkakJQdEtpcVcwSjY5YUlzeXg3aVYv
- MDNwYVBDakpoN1hxOXZBenlkTjVVL1VBPT0KPTZQL2IKLS0tLS1FTkQgUEdQIFBVQkxJQyBL
- RVkgQkxPQ0stLS0tLQo=
-Organization: Canonical
-Message-ID: <a837dce7-f28b-6975-2a48-a763451da8a6@canonical.com>
-Date:   Mon, 7 Jun 2021 23:26:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Jun 2021 02:31:36 -0400
+Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzgHg5YHhz6wL4;
+        Tue,  8 Jun 2021 14:26:39 +0800 (CST)
+Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
+ dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 14:29:42 +0800
+Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
+ dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
+ Tue, 8 Jun 2021 14:29:42 +0800
+From:   zhengyongjun <zhengyongjun3@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIIHYzXSBwaW5nOiBDaGVjayByZXR1cm4gdmFsdWUgb2Yg?=
+ =?gb2312?B?ZnVuY3Rpb24gJ3BpbmdfcXVldWVfcmN2X3NrYic=?=
+Thread-Topic: [PATCH v3] ping: Check return value of function
+ 'ping_queue_rcv_skb'
+Thread-Index: AQHXXAlUyIkiRM5YAUWY4tkTbJcb1KsJGzQAgACL8kA=
+Date:   Tue, 8 Jun 2021 06:29:42 +0000
+Message-ID: <28ed7b10e53a45989c1de37be0d7cdf5@huawei.com>
+References: <20210608020853.3091939-1-zhengyongjun3@huawei.com>
+ <YL8JWqVbhMtfPJbb@unreal>
+In-Reply-To: <YL8JWqVbhMtfPJbb@unreal>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.64]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20210607063022.329320-1-chenxiaosong2@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/6/21 11:30 PM, ChenXiaoSong wrote:
-> Fix gcc W=1 warning:
-> 
-> security/apparmor/apparmorfs.c:2125: warning: Function parameter or member 'p' not described in '__next_profile'
-> 
-> Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
-
-Thanks I have pulled this into my tree
-
-> ---
->  security/apparmor/apparmorfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
-> index 5bb9b9910aee..4720b8b9239c 100644
-> --- a/security/apparmor/apparmorfs.c
-> +++ b/security/apparmor/apparmorfs.c
-> @@ -2114,7 +2114,7 @@ static struct aa_profile *__first_profile(struct aa_ns *root,
->  
->  /**
->   * __next_profile - step to the next profile in a profile tree
-> - * @profile: current profile in tree (NOT NULL)
-> + * @p: current profile in tree (NOT NULL)
->   *
->   * Perform a depth first traversal on the profile tree in a namespace
->   *
-> 
-
+VGhhbmtzIGZvciB5b3VyIHN1Z2dlc3QsIEkgc2VuZCBwYXRjaCB2NCBub3cgOikNCg0KLS0tLS3T
+yrz+1K28/i0tLS0tDQq3orz+yMs6IExlb24gUm9tYW5vdnNreSBbbWFpbHRvOmxlb25Aa2VybmVs
+Lm9yZ10gDQq3osvNyrG85DogMjAyMcTqNtTCOMjVIDE0OjA4DQrK1bz+yMs6IHpoZW5neW9uZ2p1
+biA8emhlbmd5b25nanVuM0BodWF3ZWkuY29tPg0Ks63LzTogZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsg
+eW9zaGZ1amlAbGludXgtaXB2Ni5vcmc7IGRzYWhlcm5Aa2VybmVsLm9yZzsga3ViYUBrZXJuZWwu
+b3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
+DQrW98ziOiBSZTogW1BBVENIIHYzXSBwaW5nOiBDaGVjayByZXR1cm4gdmFsdWUgb2YgZnVuY3Rp
+b24gJ3BpbmdfcXVldWVfcmN2X3NrYicNCg0KT24gVHVlLCBKdW4gMDgsIDIwMjEgYXQgMTA6MDg6
+NTNBTSArMDgwMCwgWmhlbmcgWW9uZ2p1biB3cm90ZToNCj4gRnVuY3Rpb24gJ3BpbmdfcXVldWVf
+cmN2X3NrYicgbm90IGFsd2F5cyByZXR1cm4gc3VjY2Vzcywgd2hpY2ggd2lsbCANCj4gYWxzbyBy
+ZXR1cm4gZmFpbC4gSWYgbm90IGNoZWNrIHRoZSB3cm9uZyByZXR1cm4gdmFsdWUgb2YgaXQsIGxl
+YWQgdG8gDQo+IGZ1bmN0aW9uIGBwaW5nX3JjdmAgcmV0dXJuIHN1Y2Nlc3MuDQo+IA0KPiBTaWdu
+ZWQtb2ZmLWJ5OiBaaGVuZyBZb25nanVuIDx6aGVuZ3lvbmdqdW4zQGh1YXdlaS5jb20+DQo+IC0t
+LQ0KPiB2MjoNCj4gLSB1c2UgcmMgYXMgcmV0dXJuIHZhbHVlIHRvIG1ha2UgY29kZSBsb29rIGNs
+ZWFuZXINCj4gdjM6DQo+IC0gZGVsZXRlIHVubmVjZXNzYXJ5IGJyYWNlcyB7fQ0KPiAgbmV0L2lw
+djQvcGluZy5jIHwgOCArKysrLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygr
+KSwgNCBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9uZXQvaXB2NC9waW5nLmMgYi9u
+ZXQvaXB2NC9waW5nLmMgaW5kZXggDQo+IDFjOWY3MWEzNzI1OC4uYWY5ZGEyZjdkYzg1IDEwMDY0
+NA0KPiAtLS0gYS9uZXQvaXB2NC9waW5nLmMNCj4gKysrIGIvbmV0L2lwdjQvcGluZy5jDQo+IEBA
+IC05NjMsMTkgKzk2MywxOSBAQCBib29sIHBpbmdfcmN2KHN0cnVjdCBza19idWZmICpza2IpDQo+
+ICAJLyogUHVzaCBJQ01QIGhlYWRlciBiYWNrICovDQo+ICAJc2tiX3B1c2goc2tiLCBza2ItPmRh
+dGEgLSAodTggKilpY21waCk7DQo+ICANCj4gKwlib29sIHJjID0gZmFsc2U7DQoNCkRlY2xhcmF0
+aW9uIG9mIG5ldyB2YXJpYWJsZXMgaW4gdGhlIG1pZGRsZSBvZiBmdW5jdGlvbiBpcyBDKyssIHdo
+aWxlIHRoZSBrZXJuZWwgaXMgd3JpdHRlbiBpbiBDLiBQbGVhc2UgcHV0IHZhcmlhYmxlIGRlY2xh
+cmF0aW9uIGF0IHRoZSBiZWdpbm5pbmcgb2YgZnVuY3Rpb24uDQoNClRoYW5rcw0KDQo+ICAJc2sg
+PSBwaW5nX2xvb2t1cChuZXQsIHNrYiwgbnRvaHMoaWNtcGgtPnVuLmVjaG8uaWQpKTsNCj4gIAlp
+ZiAoc2spIHsNCj4gIAkJc3RydWN0IHNrX2J1ZmYgKnNrYjIgPSBza2JfY2xvbmUoc2tiLCBHRlBf
+QVRPTUlDKTsNCj4gIA0KPiAgCQlwcl9kZWJ1ZygicmN2IG9uIHNvY2tldCAlcFxuIiwgc2spOw0K
+PiAtCQlpZiAoc2tiMikNCj4gLQkJCXBpbmdfcXVldWVfcmN2X3NrYihzaywgc2tiMik7DQo+ICsJ
+CWlmIChza2IyICYmICFwaW5nX3F1ZXVlX3Jjdl9za2Ioc2ssIHNrYjIpKQ0KPiArCQkJcmMgPSB0
+cnVlOw0KPiAgCQlzb2NrX3B1dChzayk7DQo+IC0JCXJldHVybiB0cnVlOw0KPiAgCX0NCj4gIAlw
+cl9kZWJ1Zygibm8gc29ja2V0LCBkcm9wcGluZ1xuIik7DQo+ICANCj4gLQlyZXR1cm4gZmFsc2U7
+DQo+ICsJcmV0dXJuIHJjOw0KPiAgfQ0KPiAgRVhQT1JUX1NZTUJPTF9HUEwocGluZ19yY3YpOw0K
+PiAgDQo+IC0tDQo+IDIuMjUuMQ0KPiANCg==
