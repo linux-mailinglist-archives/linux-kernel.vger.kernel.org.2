@@ -2,94 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4B839F8E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8954A39F8EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233297AbhFHOW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:22:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233171AbhFHOW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:22:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D36B660FE9;
-        Tue,  8 Jun 2021 14:20:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623162034;
-        bh=HIjfdYmy1mTiOKJ3G+Wb1ajuH0CxVdj2NhvkjfwnlVQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QHufanTg9UstcH6XnmIY5hfMbAyyjEWCcYNeq6ejN46KO2ixz/O3roSV/N8B5ved3
-         Jk1NcZjY74jq4e3PpHKbSLLqaJ3qmBoARv/3fwNPCZ39j7ONyOkqi8gkC9Xaj2mbY4
-         OTooSz8XU/nit0Sb82mKxXYPSLBUtjqZadIhQadXjgkdYwF1G/AT1GOQKCPOQlWKXH
-         XNBvOas/pnUUYtUvz+czv5golUSRz/f9XqB6+GzhRs0JJ1dEDvSV7w7pJ+4GDHqaIU
-         0RY8NCctwSxOFcWsl18VWkQROP82cwR6ZHvPhRxnGKn0N5FxOgFfFuGKMG86zJ7jjv
-         3W1tSFNkQr0qg==
-Date:   Tue, 8 Jun 2021 15:20:19 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: Re: [PATCH v2 4/4] PM: domains: Drop/restore performance state votes
- for devices at system PM
-Message-ID: <20210608142019.GG4200@sirena.org.uk>
-References: <20210603093438.138705-1-ulf.hansson@linaro.org>
- <20210603093438.138705-5-ulf.hansson@linaro.org>
- <CAPDyKFp2dKFQpLMgazXumCxf=FHQ9bdadXUkGsjiAwniF8p2dw@mail.gmail.com>
- <YL9oMVqox7GVASen@gerhold.net>
- <CAPDyKFrvrikCZLX1EvmLZumeCnfAxUUssO2OWc130TG8oey=qw@mail.gmail.com>
+        id S233285AbhFHOZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:25:11 -0400
+Received: from mail-pg1-f169.google.com ([209.85.215.169]:41917 "EHLO
+        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233166AbhFHOZK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:25:10 -0400
+Received: by mail-pg1-f169.google.com with SMTP id l184so1096087pgd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 07:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BAmmwujFPDYuTf8Nk8r107UNyufgvunoQovoidHV4hs=;
+        b=GN8FIpsvD34VDm3S1nG0nJU480AOWvpNxkyOgRQTMzWyT/DuARnYu5j11GhQAGBvut
+         rqHlQkqMPMkS7gCLip5jbWkNUhzAVGywKNloNUKLLCbN2BIH4Yk65AR3IchCDk1iCqPK
+         zQYCeu5XcRLOQj7ALaQSMHKlCorL1gVSXNFnuH7M3SR0LTJ/mtvCSXvC+MrUiF7et4d6
+         it8qG7pteKSKLCVoYD+qzv6hHTDKpRUdddnqFCXlxbCvtTz/SamsJWutWEYl8T84tvCf
+         3lJG3rm5EV80QJJZhlyV5hToED47Snh7Rm5AfmRAILLWK2XauenINtE8WmmT2lIYoUlN
+         R6sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BAmmwujFPDYuTf8Nk8r107UNyufgvunoQovoidHV4hs=;
+        b=Clmnjs6nnhzHs4AcWjJejzGSKYMT8wQWV2xmcWFKrNwSov+7cXuYLEL/SNwGoKsH7C
+         j1XCxfe+YhL/Z49wI8/36SIS1nLV7btE0UUPrnSo0vwqROwE4mLTCDYcnZa4lF0YRVSs
+         a2htW90GukSccKpPlZ+olU6nTglyMmtEvYWWOUo3kiU4zLwetbXyOnCoANVMDbB0D7dI
+         ZM9aQDOuFgoUX1ZXTdJV+4lRb2y+zXokwBiROK9EJXO3XK+STkEJGyXbeo6GEmO8YwyI
+         3Ylj7gxJYArRe8BlD2BGBnyHIhEmFrc/aClwQIXwgadBzpsgSgOBLknp4q0R6N87/lQn
+         e9uw==
+X-Gm-Message-State: AOAM533xyfLp3qRRXm/hUGON1fM/MkVZiU15f135Xot3Pn2oRfcMGuMQ
+        R5QKeYzb4sDVv651I1aGrRdC3SFTigw=
+X-Google-Smtp-Source: ABdhPJw24v7KS/kRTltJouyO9S1Vv/mnP2U8zB2VYYXcKlY88wncI2V7FbjNqGlU5LTMUNWdgPlQsg==
+X-Received: by 2002:a63:803:: with SMTP id 3mr22720865pgi.344.1623162122601;
+        Tue, 08 Jun 2021 07:22:02 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g13sm2653318pfv.65.2021.06.08.07.21.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 07:22:02 -0700 (PDT)
+Subject: Re: [GIT PULL 1/1] bcm2835-dt-next-2021-06-08
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210608100543.691185-1-nsaenzju@redhat.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <4f3bf1bb-1544-85f4-0539-033f36f86d19@gmail.com>
+Date:   Tue, 8 Jun 2021 07:21:56 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KIzF6Cje4W/osXrF"
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFrvrikCZLX1EvmLZumeCnfAxUUssO2OWc130TG8oey=qw@mail.gmail.com>
-X-Cookie: Auction:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210608100543.691185-1-nsaenzju@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nicolas,
 
---KIzF6Cje4W/osXrF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 6/8/2021 3:05 AM, Nicolas Saenz Julienne wrote:
+> Hi Florian,
+> 
+> The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+> 
+>   Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git tags/bcm2835-dt-next-2021-06-08
+> 
+> for you to fetch changes up to ca5909b7fa6af9c7b9a215a8708926e44345a220:
+> 
+>   arm64: dts: broadcom: Add reference to RPi 400 (2021-06-08 10:44:36 +0200)
+> 
+> ----------------------------------------------------------------
 
-On Tue, Jun 08, 2021 at 04:08:55PM +0200, Ulf Hansson wrote:
+How about:
 
-> Honestly, I am not sure about what the regulator-fixed-domain intends
-> to model, but I assume it's something that fits well to be modelled as
-> a plain regulator, to start with.
+https://lore.kernel.org/linux-arm-kernel/1622981777-5023-5-git-send-email-stefan.wahren@i2se.com/
 
-> Perhaps Mark can chime in and spread some light over this?
+can you add this to this pull request?
 
-IIRC it's for situations where there's a device that's normally built as
-a separate chip that got built into a bigger SoC and wants to rear end
-something onto a power domain, I guess especially if the power domain
-doesn't cover the whole of a Linux device.
+> 
+> - Fixup MMC node names
+> - Fixup led node names
+> - Introduce new devicetree file for Raspberry Pi 400
+> - Fix issue with dwc2's FIFO's size
+> - Add VEC compatible for bcm2711
+> 
+> ----------------------------------------------------------------
+> Mateusz Kwiatkowski (1):
+>       ARM: boot: dts: bcm2711: Add BCM2711 VEC compatible
+> 
+> Stefan Wahren (6):
+>       Revert "ARM: dts: bcm283x: increase dwc2's RX FIFO size"
+>       ARM: dts: bcm283x: Fix up MMC node names
+>       ARM: dts: Move BCM2711 RPi specific into separate dtsi
+>       ARM: dts: bcm283x: Fix up GPIO LED node names
+>       ARM: dts: Add Raspberry Pi 400 support
+>       arm64: dts: broadcom: Add reference to RPi 400
+> 
+>  arch/arm/boot/dts/Makefile                        |  1 +
+>  arch/arm/boot/dts/bcm2711-rpi-4-b.dts             | 85 ++++-------------------
+>  arch/arm/boot/dts/bcm2711-rpi-400.dts             | 45 ++++++++++++
+>  arch/arm/boot/dts/bcm2711-rpi.dtsi                | 74 ++++++++++++++++++++
+>  arch/arm/boot/dts/bcm2711.dtsi                    |  3 +-
+>  arch/arm/boot/dts/bcm2835-rpi-a-plus.dts          |  4 +-
+>  arch/arm/boot/dts/bcm2835-rpi-a.dts               |  2 +-
+>  arch/arm/boot/dts/bcm2835-rpi-b-plus.dts          |  4 +-
+>  arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts          |  2 +-
+>  arch/arm/boot/dts/bcm2835-rpi-b.dts               |  2 +-
+>  arch/arm/boot/dts/bcm2835-rpi-cm1.dtsi            |  2 +-
+>  arch/arm/boot/dts/bcm2835-rpi-zero-w.dts          |  2 +-
+>  arch/arm/boot/dts/bcm2835-rpi-zero.dts            |  2 +-
+>  arch/arm/boot/dts/bcm2835-rpi.dtsi                |  2 +-
+>  arch/arm/boot/dts/bcm2836-rpi-2-b.dts             |  4 +-
+>  arch/arm/boot/dts/bcm2837-rpi-3-a-plus.dts        |  4 +-
+>  arch/arm/boot/dts/bcm2837-rpi-3-b-plus.dts        |  4 +-
+>  arch/arm/boot/dts/bcm2837-rpi-3-b.dts             |  2 +-
+>  arch/arm/boot/dts/bcm2837-rpi-cm3.dtsi            |  2 +-
+>  arch/arm/boot/dts/bcm283x-rpi-usb-otg.dtsi        |  2 +-
+>  arch/arm/boot/dts/bcm283x-rpi-usb-peripheral.dtsi |  2 +-
+>  arch/arm/boot/dts/bcm283x.dtsi                    |  2 +-
+>  arch/arm64/boot/dts/broadcom/Makefile             |  3 +-
+>  arch/arm64/boot/dts/broadcom/bcm2711-rpi-400.dts  |  2 +
+>  24 files changed, 160 insertions(+), 97 deletions(-)
+>  create mode 100644 arch/arm/boot/dts/bcm2711-rpi-400.dts
+>  create mode 100644 arch/arm/boot/dts/bcm2711-rpi.dtsi
+>  create mode 100644 arch/arm64/boot/dts/broadcom/bcm2711-rpi-400.dts
+> 
 
---KIzF6Cje4W/osXrF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC/fKIACgkQJNaLcl1U
-h9CDbwf9Ett6A9yT6kCMwKY16CHTSdgFwOxfrV/bgjoSyph+f3tT31mZLbM3DHol
-7D4nq6EAVR/AGYB7OAsZoHgr9yur2RvWWwA1hKlLTle8H+kL0HuK3kZuUqeyqSpU
-s8FrLDH88MCUgjLc9pU0j0hINcD3e1qANqflGK/3cXB8+G2WAjSh0719iRYdbw1Z
-k+nvcrw5UC8yBm7aoaeNUL81gCcEvanLnjvKg6ht9/lxRi9+KfOjiib3vW9hTk64
-NCOJXBGsi/+83s2x+WZXi+B/2SwjhmCqODilMwj61QP6kihLxXmb26iCJK5imt2q
-/bNYGkW36TdNg5hA4/Cvj5ANJCOpTw==
-=R/90
------END PGP SIGNATURE-----
-
---KIzF6Cje4W/osXrF--
+-- 
+Florian
