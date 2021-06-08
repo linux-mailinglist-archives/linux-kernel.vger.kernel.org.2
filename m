@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DD63A005F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B4B3A0094
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235269AbhFHSmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:42:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35816 "EHLO mail.kernel.org"
+        id S235924AbhFHSpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:45:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235219AbhFHSjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:39:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D462613CC;
-        Tue,  8 Jun 2021 18:34:02 +0000 (UTC)
+        id S235108AbhFHSlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:41:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59BFA61439;
+        Tue,  8 Jun 2021 18:35:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177242;
-        bh=2APocfDjz0qG4uOXuqNChhRUgIpmZ5ufesWxVRnU2Z8=;
+        s=korg; t=1623177314;
+        bh=JMC0ZDdJYN5mh4Dd9SGXk9gzGcYabtw+NxbZdtMdboo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A3v+9okr/77fhCVnTqMA866O/6a58R0HTUi8qhE61T4vCXvV5Wnj7KKAICp7s+6Rq
-         Dc5xqBQavo4m1/IwD5VGaxhDrdETeP/r+VBr6kpvcYelF3dOEs1svv9QaSnZPklfsl
-         YnqikBbJhS11y5U5AK4pa3l8nk9/a4XY7ew5fNvY=
+        b=kOk9rDyf4oYToeAu7QAHxlGmeqhTURHiOosPKUWfUwWD+x97Uf/4K2kJg7/gS9Odf
+         XQE93cgnVwwDjR8zVtSQGv59KX1AJouGr8YX5rd6yC/EMIASChHqMOJrUpAP4IArTh
+         49gBebqHA+yTBOUhn1DqoTNnqJzesFla6y1BoT/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.19 38/58] btrfs: fixup error handling in fixup_inode_link_counts
-Date:   Tue,  8 Jun 2021 20:27:19 +0200
-Message-Id: <20210608175933.529291084@linuxfoundation.org>
+        stable@vger.kernel.org, Mina Almasry <almasrymina@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 39/58] mm, hugetlb: fix simple resv_huge_pages underflow on UFFDIO_COPY
+Date:   Tue,  8 Jun 2021 20:27:20 +0200
+Message-Id: <20210608175933.560654165@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
 References: <20210608175932.263480586@linuxfoundation.org>
@@ -39,85 +44,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Mina Almasry <almasrymina@google.com>
 
-commit 011b28acf940eb61c000059dd9e2cfcbf52ed96b upstream.
+[ Upstream commit d84cf06e3dd8c5c5b547b5d8931015fc536678e5 ]
 
-This function has the following pattern
+The userfaultfd hugetlb tests cause a resv_huge_pages underflow.  This
+happens when hugetlb_mcopy_atomic_pte() is called with !is_continue on
+an index for which we already have a page in the cache.  When this
+happens, we allocate a second page, double consuming the reservation,
+and then fail to insert the page into the cache and return -EEXIST.
 
-	while (1) {
-		ret = whatever();
-		if (ret)
-			goto out;
-	}
-	ret = 0
-out:
-	return ret;
+To fix this, we first check if there is a page in the cache which
+already consumed the reservation, and return -EEXIST immediately if so.
 
-However several places in this while loop we simply break; when there's
-a problem, thus clearing the return value, and in one case we do a
-return -EIO, and leak the memory for the path.
+There is still a rare condition where we fail to copy the page contents
+AND race with a call for hugetlb_no_page() for this index and again we
+will underflow resv_huge_pages.  That is fixed in a more complicated
+patch not targeted for -stable.
 
-Fix this by re-arranging the loop to deal with ret == 1 coming from
-btrfs_search_slot, and then simply delete the
+Test:
 
-	ret = 0;
-out:
+  Hacked the code locally such that resv_huge_pages underflows produce a
+  warning, then:
 
-bit so everybody can break if there is an error, which will allow for
-proper error handling to occur.
+  ./tools/testing/selftests/vm/userfaultfd hugetlb_shared 10
+	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
+  ./tools/testing/selftests/vm/userfaultfd hugetlb 10
+	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
 
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Both tests succeed and produce no warnings.  After the test runs number
+of free/resv hugepages is correct.
+
+[mike.kravetz@oracle.com: changelog fixes]
+
+Link: https://lkml.kernel.org/r/20210528004649.85298-1-almasrymina@google.com
+Fixes: 8fb5debc5fcd ("userfaultfd: hugetlbfs: add hugetlb_mcopy_atomic_pte for userfaultfd support")
+Signed-off-by: Mina Almasry <almasrymina@google.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tree-log.c |   13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ mm/hugetlb.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -1699,6 +1699,7 @@ static noinline int fixup_inode_link_cou
- 			break;
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 2f769a661568..c69f12e4c149 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4154,10 +4154,20 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+ 	struct page *page;
  
- 		if (ret == 1) {
-+			ret = 0;
- 			if (path->slots[0] == 0)
- 				break;
- 			path->slots[0]--;
-@@ -1711,17 +1712,19 @@ static noinline int fixup_inode_link_cou
- 
- 		ret = btrfs_del_item(trans, root, path);
- 		if (ret)
--			goto out;
-+			break;
- 
- 		btrfs_release_path(path);
- 		inode = read_one_inode(root, key.offset);
--		if (!inode)
--			return -EIO;
-+		if (!inode) {
-+			ret = -EIO;
-+			break;
+ 	if (!*pagep) {
+-		ret = -ENOMEM;
++		/* If a page already exists, then it's UFFDIO_COPY for
++		 * a non-missing case. Return -EEXIST.
++		 */
++		if (vm_shared &&
++		    hugetlbfs_pagecache_present(h, dst_vma, dst_addr)) {
++			ret = -EEXIST;
++			goto out;
++		}
++
+ 		page = alloc_huge_page(dst_vma, dst_addr, 0);
+-		if (IS_ERR(page))
++		if (IS_ERR(page)) {
++			ret = -ENOMEM;
+ 			goto out;
 +		}
  
- 		ret = fixup_inode_link_count(trans, root, inode);
- 		iput(inode);
- 		if (ret)
--			goto out;
-+			break;
- 
- 		/*
- 		 * fixup on a directory may create new entries,
-@@ -1730,8 +1733,6 @@ static noinline int fixup_inode_link_cou
- 		 */
- 		key.offset = (u64)-1;
- 	}
--	ret = 0;
--out:
- 	btrfs_release_path(path);
- 	return ret;
- }
+ 		ret = copy_huge_page_from_user(page,
+ 						(const void __user *) src_addr,
+-- 
+2.30.2
+
 
 
