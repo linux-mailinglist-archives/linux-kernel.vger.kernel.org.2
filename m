@@ -2,115 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DC639EEA7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6D539EEAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhFHGZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 02:25:12 -0400
-Received: from mail-mw2nam12on2045.outbound.protection.outlook.com ([40.107.244.45]:4705
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230289AbhFHGZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 02:25:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jLBLA8Reh9hEveAhkJdjlFMfNhlJ4bxbAalLANCW6NlQogCd+clbJC2/O7VGp7SHKPphd4A0ywYAU0sJipfw9aGyF4i66+LQBTpzU//Ml9Y/qn3GyDyxOWWtzMDKmpNkorQnD4FxccOhXorzmP3SV9jI40SefNk5Rq7tqNSxYKdXWz8M7D511pzbU5a6NIaXbC0joX22zmErk0f/YYBZKWjFVBZO6XD0CowFAiJ6CSiiRAMFHrf9R0B1UTeGTXt4TgU6kgwYppsgarUdlMnoNDTQMSA9GPqX4TT7dn2J+zryb74g3LqWVYD7Am2JnpDRH0n01gdzUEEM8lZU2452sA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rN6egOLREeb92qmNz+XP3TkvZFXZQV/9vo5ukzVu+bQ=;
- b=M4BuMSgdIh+tD1mezFtrXj3Kh7oeO+mrGYmMjIPUw857oVVOT5k6MhswY/0Y8rR9b+ep9cspuXMpKj7WRb61lcc+b5ro9Qpd8Hq6iHD2uZQGs1fIg2Z9wv1sTYuwABtBAGz28XwY/r6I/oishayb1857oN+1uwxQgjmR36TLE+d8F+smdQTLauR9ys0RaCOuaol3RDdeC3jkxxIQ//8Zu6n3YUMHI2PXgIagkBaiK8glS1rEA2K6nVXpIKDkiwVM3zxrUGdOgZrAzd9NIOI7di4F7w2F8DiZDvKTJJZtzaZufbB3daXXvDFbDtt2U60sVpjlvXNRYVShP0Nprt/reA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rN6egOLREeb92qmNz+XP3TkvZFXZQV/9vo5ukzVu+bQ=;
- b=JSZ19edi3uGa5Ydj6uFlWPGWsL4WJQJmlSBh3nMHVmvzs+cB9ixfj8rdzPR9t3nrfN06LEP3JXfjRNRRSYojdgz1Tc1cAP9go97WcLG7zuhpffgoNXRXsxZjOB9tq2ul47IF68Qg3TvTvb6cbh39lZtknK0aF85sZRGtKIojJsNRiU9m+LG995uSb4tO7/aKTMbaxNl7xuVbTy0hbcqsIbVt4YcR9P5Ss2CHcBZCOrK49ouotGbJsp34Pzbm/HUoK3E1v7qCDlkaOlstPMoUGGp6xT7USZOJ0OR0h0dCK+chxPzlZZzFOe10W+L+mZ6b7mJppQHFos1T7HB1TAdQ9A==
-Received: from MWHPR14CA0004.namprd14.prod.outlook.com (2603:10b6:300:ae::14)
- by BN8PR12MB3348.namprd12.prod.outlook.com (2603:10b6:408:47::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Tue, 8 Jun
- 2021 06:23:15 +0000
-Received: from CO1NAM11FT057.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:ae:cafe::83) by MWHPR14CA0004.outlook.office365.com
- (2603:10b6:300:ae::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend
- Transport; Tue, 8 Jun 2021 06:23:15 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT057.mail.protection.outlook.com (10.13.174.205) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4195.22 via Frontend Transport; Tue, 8 Jun 2021 06:23:15 +0000
-Received: from localhost (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Jun
- 2021 06:23:14 +0000
-Date:   Tue, 8 Jun 2021 09:23:11 +0300
-From:   Ido Schimmel <idosch@nvidia.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Petr Machata <petrm@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the net tree
-Message-ID: <YL8Mz573gNRktQTh@shredder>
-References: <20210608085325.61c6056f@canb.auug.org.au>
+        id S230268AbhFHG1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 02:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhFHG1l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 02:27:41 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F22DC061574;
+        Mon,  7 Jun 2021 23:25:49 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id i34so9304296pgl.9;
+        Mon, 07 Jun 2021 23:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RrqMQQw+zyDQz8W5Pf4InGemf1VZYUDcnFyZS7qTzmw=;
+        b=tETnaZW3TpJpc/8X40JYpd3IMJhYRTq7v4i7TgrcC6nGZ3pHtI7tB1VRmbs1dT3qzr
+         FTHQnZEL55KfxWo25Jve8S3HKtxvwiAtG/u1YwC2RVu6VqRtj0qWWaqdNbFdy+vtRYZJ
+         6PffoA26B3WYdHdT3SFGlVUvqp0ForXf4o3nbsxqAse6suHV8NrfkrdXadg0b1M7OpQF
+         a3R+UUAeJgYwCaeIMFovExKWcpKAKgF1O2LpwIf4WEHbT/hCHZeqaSSQeucmSqoD+chj
+         ocB7NOG8J5bs9DjuGmUGYE7yWgrNJRvqd8rey+G+wC2u9RP2gYkodrYAjKjJ1/qWLpa7
+         9/IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RrqMQQw+zyDQz8W5Pf4InGemf1VZYUDcnFyZS7qTzmw=;
+        b=nYRq/6AdSeb3Uhu4e2Ba9W5655EbaiIT2oP7/oIcOnLSVYhp7xY5KYZg8qqx1qXGbr
+         jKNoe3PIZFjGnTIppVxT6cmwzo9q4TkP918SXYHZz3iOqKmUia1dY32eA/ht5beRZKJB
+         reySU/7HJ060b32YSsrztQF6YtIOabQv88csTIavKanmn8DlXY1nZSuffR9d1coKui6g
+         vDL7QlATqyIUpdaNoFPIJkltS3XGrhDgFriDpCpnjoHQJDho5tWgp28tfsQNnd7NsW8L
+         KHwBfDrbVglhVZXbPhyuIjdQH0ZGqce3w9n11RphCfF/AYYKcZUYe0iI8H4SKyFSyAE+
+         UiVQ==
+X-Gm-Message-State: AOAM531EtPvT9t79xlrCupW8CZChCtcptTRIapBi/xo4rLu0CKAD0Lf3
+        2NHELzfOWQc+1PZ/BcBC+l4=
+X-Google-Smtp-Source: ABdhPJyc1MNUiOLHKeDCFRslLq0cck6M5tuxOM0JqIS6J2BJu/nREQ98nY+ZnSgsf1CZkVgQzgkL+w==
+X-Received: by 2002:aa7:85d3:0:b029:2ef:109a:7f08 with SMTP id z19-20020aa785d30000b02902ef109a7f08mr10326163pfn.23.1623133548479;
+        Mon, 07 Jun 2021 23:25:48 -0700 (PDT)
+Received: from [10.104.8.180] ([119.28.155.243])
+        by smtp.gmail.com with ESMTPSA id w10sm9950791pfg.196.2021.06.07.23.25.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 23:25:48 -0700 (PDT)
+Subject: Re: [PATCH] docs/zh_CN: add a translation for index
+To:     Hu Haowen <src.res@email.cn>,
+        teng sterling <sterlingteng@gmail.com>
+Cc:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yanteng Si <siyanteng@loongson.cn>
+References: <20210607093433.39160-1-src.res@email.cn>
+ <CAMU9jJrkxTUgS0P3tpr-Udw9WqUgqCJ2D0G+ja5UX=B+4DRw7g@mail.gmail.com>
+ <f9418c90-fe60-b26c-18d3-ecd3e9c506ab@email.cn>
+ <CAMU9jJq95fasAjbosE23gziHNL5zAcC-OUe-=uqDMefXCif-rw@mail.gmail.com>
+ <02eb1a41-d1f8-535b-c545-aa0514a50555@email.cn>
+From:   Alex Shi <seakeel@gmail.com>
+Message-ID: <970431f4-86fc-e81b-eec4-c3c276ca0242@gmail.com>
+Date:   Tue, 8 Jun 2021 14:25:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210608085325.61c6056f@canb.auug.org.au>
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1403c89b-a653-43ff-e511-08d92a45e66e
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3348:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB3348F192523160115B6F3122B2379@BN8PR12MB3348.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:134;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8gTJcLczDcY6EB5cDd0MGUTS15DPk+3vUfARdCAm15CVadf12kg6ykKeNE0abrKWZPKPCNGEY3yi2cgVCKjUBce1wDg3kA+XOqSbll6ccnJgKoW0ik4QT5zI+7+bNWs/pNBiA0erheg23pdYi26xRHyLYcTtn4UqoOazpa3IsBB1FmZ9C8XlO4VUlOvTxJnKEKT3KVo4A58hKA/kwkjMftDgNSJozItuPO6CXbdtoOWDNVVqToIgo1jnzCFM2JMH2EzdtqrsWSziVS8+OMaMagl5zjQpEncsNCjnCO2LEtahND52H565/hUip30AqErExTKwytn50tJRsx3Vt5luv3bx7vMr1N9W6WcRAbRrO7o4vHQzrijNwL3t1dHBPWT8wG0jtTUk9A1g3eCMH841B7axrP4Oc552fHdwQYdXB5r+blxENT9GuNvLpYJq3pIXxQjZylx1WwMn+GEyr5Gvas1kDDRXaPPyTX/pQGvxR2W88nlRMaXcEeV6zEXfP/vyJ5BZs5YMWtrrBaLZxreiEAYwanNjJcvtN18SGe6ojd9jvtcR/HOp441SXJnfwhYhqsDmS2IvogpjEHPRADJ5vufXcJSqa6OxTyTE+J2T5WhPb6VxOHEE9kdIT3hElscT3UzwGvLU9bbtXWOtdDc5ww==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(7916004)(4636009)(376002)(396003)(346002)(39860400002)(136003)(36840700001)(46966006)(70206006)(6666004)(86362001)(82310400003)(33716001)(36906005)(70586007)(316002)(6916009)(82740400003)(47076005)(426003)(54906003)(356005)(5660300002)(336012)(26005)(16526019)(8676002)(4326008)(7636003)(2906002)(8936002)(36860700001)(186003)(478600001)(9686003)(4744005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 06:23:15.5773
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1403c89b-a653-43ff-e511-08d92a45e66e
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT057.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3348
+In-Reply-To: <02eb1a41-d1f8-535b-c545-aa0514a50555@email.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 08:53:25AM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->   d566ed04e42b ("mlxsw: spectrum_qdisc: Pass handle, not band number to find_class()")
-> 
-> Fixes tag
-> 
->   Fixes: 28052e618b04 ("mlxsw: spectrum_qdisc: Track children per qdisc")
-> 
-> has these problem(s):
-> 
->   - Target SHA1 does not exist
-> 
-> Maybe you meant
-> 
-> Fixes: 51d52ed95550 ("mlxsw: spectrum_qdisc: Track children per qdisc")
 
-Yes, correct. Sorry about that. The first was an internal tag. Will
-double-check next time.
+
+On 6/8/21 10:48 AM, Hu Haowen wrote:
+> 
+> 在 2021/6/8 上午9:41, teng sterling 写道:
+>> Hu Haowen <src.res@email.cn> 于2021年6月7日周一 下午9:52写道：
+>>>
+>>> 在 2021/6/7 下午9:40, teng sterling 写道:
+>>>> CC siyanteng@loongson.cn
+>>>> Hu Haowen <src.res@email.cn> 于2021年6月7日周一 下午5:37写道：
+>>>>> The original file has added a former intro in commit b51208d41c6a4e7fc2f0
+>>>>> ("docs: Tweak the top-level Sphinx page") and hence update the Chinese
+>>>>> version for it.
+>>>>>
+>>>>> Signed-off-by: Hu Haowen <src.res@email.cn>
+>>>>> ---
+>>>>>    Documentation/translations/zh_CN/index.rst | 5 +++++
+>>>>>    1 file changed, 5 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
+>>>>> index 1f953d3439a5..003126abc0d6 100644
+>>>>> --- a/Documentation/translations/zh_CN/index.rst
+>>>>> +++ b/Documentation/translations/zh_CN/index.rst
+>>>>> @@ -17,6 +17,11 @@
+>>>>>       **翻译计划:*kernel's documentation*
+>>>>>       内核中文文档欢迎任何翻译投稿，特别是关于内核用户和管理员指南部分。
+>>>>>
+>>>>> +这是内核文档树的顶级目录。内核文档，就像内核本身一样，在很大程度上是一项正
+>>>> how about:
+>>>>
+>>>> 这是中文内核文档树的顶级目录。
+>>>
+>>> But the English version says "kernel's documentation". It seems that we
+>>> should add an explanation for readers in order to drag them out of the
+>>> dilemma on whether he or she should update En version at first, as your
+>>> thought picking ideas from "disclaimer-zh_CN".
+>>>
+>>> What's your opinion, maintainers?
+>> When the original documentation is updated, the Chinese documentation
+>> has to follow. I think we have reached a consensus on this point.
+>> However, this file is described in this directory as zh_CN, so I think
+>> it needs to be localized. But the localization will conflict with
+>> "disclaimer-zh_CN".
+> 
+> 
+> Hmm... That's an issue. Does that mean we should edit "disclaimer-zh_CN"
+> as well to avoid the conflict?
+> 
+
+the disclaimer is for single docs, shorter is better. For this file, we don't
+have to copy exactly from original index.rst. 
+
+Thanks
+Alex
