@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356C53A00F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567BD3A005B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236194AbhFHSuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:50:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42390 "EHLO mail.kernel.org"
+        id S234494AbhFHSmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:42:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235813AbhFHSpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:45:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BA1E613E7;
-        Tue,  8 Jun 2021 18:36:55 +0000 (UTC)
+        id S234772AbhFHSjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:39:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD0F361416;
+        Tue,  8 Jun 2021 18:33:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177416;
-        bh=aIVceECrece3lKh6IYH5h0B+zZvoHSSwcqkerJK00yo=;
+        s=korg; t=1623177224;
+        bh=Ew1Knobs1H/oN+ChSOTUBmttnfCXX80iNLO3lfS1ChM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OkhpeRb0SUpzhuC3zgUq/DE9DEVSoEYzrFM+HAbW5qRDadooW/9OAvdyKd7kUzAt1
-         6WEoaqf5V7DW670wSjdG0wp4t6RNiX+jS6GmG2v3+jcL5nznXI4xNem2Qy+yjOig6U
-         fi+XP87OL/Vepm4IcLCjnwOHUGmPLWCaWnvxKgZ0=
+        b=WeN7XyaQFveSQqNYZlv0nGRGI/9vyuuar9PVmCfKm6pURz7tHN/s43+dmJxX0E0v1
+         HZLUTQmvYjUpK94O5eQZKePPTg9viPTb1w61mEXxYbgX/9BxdZR3wkm5rT0x7E/P2B
+         K3REUGbsF/XsTHjFoqMw+s2VcQZI9ViroeRYkiYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johnny Chuang <johnny.chuang.emc@gmail.com>,
-        Harry Cutts <hcutts@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH 5.4 44/78] HID: i2c-hid: Skip ELAN power-on command after reset
+        stable@vger.kernel.org, Junxiao Bi <junxiao.bi@oracle.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Jan Kara <jack@suse.cz>, Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
+        Jun Piao <piaojun@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 32/58] ocfs2: fix data corruption by fallocate
 Date:   Tue,  8 Jun 2021 20:27:13 +0200
-Message-Id: <20210608175936.753729257@linuxfoundation.org>
+Message-Id: <20210608175933.340671479@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
+References: <20210608175932.263480586@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,63 +45,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johnny Chuang <johnny.chuang.emc@gmail.com>
+From: Junxiao Bi <junxiao.bi@oracle.com>
 
-commit ca66a6770bd9d6d99e469debd1c7363ac455daf9 upstream.
+commit 6bba4471f0cc1296fe3c2089b9e52442d3074b2e upstream.
 
-For ELAN touchscreen, we found our boot code of IC was not flexible enough
-to receive and handle this command.
-Once the FW main code of our controller is crashed for some reason,
-the controller could not be enumerated successfully to be recognized
-by the system host. therefore, it lost touch functionality.
+When fallocate punches holes out of inode size, if original isize is in
+the middle of last cluster, then the part from isize to the end of the
+cluster will be zeroed with buffer write, at that time isize is not yet
+updated to match the new size, if writeback is kicked in, it will invoke
+ocfs2_writepage()->block_write_full_page() where the pages out of inode
+size will be dropped.  That will cause file corruption.  Fix this by
+zero out eof blocks when extending the inode size.
 
-Add quirk for skip send power-on command after reset.
-It will impact to ELAN touchscreen and touchpad on HID over I2C projects.
+Running the following command with qemu-image 4.2.1 can get a corrupted
+coverted image file easily.
 
-Fixes: 43b7029f475e ("HID: i2c-hid: Send power-on command after reset").
+    qemu-img convert -p -t none -T none -f qcow2 $qcow_image \
+             -O qcow2 -o compat=1.1 $qcow_image.conv
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
-Reviewed-by: Harry Cutts <hcutts@chromium.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Tested-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+The usage of fallocate in qemu is like this, it first punches holes out
+of inode size, then extend the inode size.
+
+    fallocate(11, FALLOC_FL_KEEP_SIZE|FALLOC_FL_PUNCH_HOLE, 2276196352, 65536) = 0
+    fallocate(11, 0, 2276196352, 65536) = 0
+
+v1: https://www.spinics.net/lists/linux-fsdevel/msg193999.html
+v2: https://lore.kernel.org/linux-fsdevel/20210525093034.GB4112@quack2.suse.cz/T/
+
+Link: https://lkml.kernel.org/r/20210528210648.9124-1-junxiao.bi@oracle.com
+Signed-off-by: Junxiao Bi <junxiao.bi@oracle.com>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Gang He <ghe@suse.com>
+Cc: Jun Piao <piaojun@huawei.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hid/i2c-hid/i2c-hid-core.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ fs/ocfs2/file.c |   55 ++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 50 insertions(+), 5 deletions(-)
 
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -50,6 +50,7 @@
- #define I2C_HID_QUIRK_BOGUS_IRQ			BIT(4)
- #define I2C_HID_QUIRK_RESET_ON_RESUME		BIT(5)
- #define I2C_HID_QUIRK_BAD_INPUT_SIZE		BIT(6)
-+#define I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET	BIT(7)
+--- a/fs/ocfs2/file.c
++++ b/fs/ocfs2/file.c
+@@ -1864,6 +1864,45 @@ out:
+ }
  
- 
- /* flags */
-@@ -185,6 +186,11 @@ static const struct i2c_hid_quirks {
- 		 I2C_HID_QUIRK_RESET_ON_RESUME },
- 	{ USB_VENDOR_ID_ITE, I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720,
- 		I2C_HID_QUIRK_BAD_INPUT_SIZE },
-+	/*
-+	 * Sending the wakeup after reset actually break ELAN touchscreen controller
-+	 */
-+	{ USB_VENDOR_ID_ELAN, HID_ANY_ID,
-+		 I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET },
- 	{ 0, 0 }
- };
- 
-@@ -468,7 +474,8 @@ static int i2c_hid_hwreset(struct i2c_cl
+ /*
++ * zero out partial blocks of one cluster.
++ *
++ * start: file offset where zero starts, will be made upper block aligned.
++ * len: it will be trimmed to the end of current cluster if "start + len"
++ *      is bigger than it.
++ */
++static int ocfs2_zeroout_partial_cluster(struct inode *inode,
++					u64 start, u64 len)
++{
++	int ret;
++	u64 start_block, end_block, nr_blocks;
++	u64 p_block, offset;
++	u32 cluster, p_cluster, nr_clusters;
++	struct super_block *sb = inode->i_sb;
++	u64 end = ocfs2_align_bytes_to_clusters(sb, start);
++
++	if (start + len < end)
++		end = start + len;
++
++	start_block = ocfs2_blocks_for_bytes(sb, start);
++	end_block = ocfs2_blocks_for_bytes(sb, end);
++	nr_blocks = end_block - start_block;
++	if (!nr_blocks)
++		return 0;
++
++	cluster = ocfs2_bytes_to_clusters(sb, start);
++	ret = ocfs2_get_clusters(inode, cluster, &p_cluster,
++				&nr_clusters, NULL);
++	if (ret)
++		return ret;
++	if (!p_cluster)
++		return 0;
++
++	offset = start_block - ocfs2_clusters_to_blocks(sb, cluster);
++	p_block = ocfs2_clusters_to_blocks(sb, p_cluster) + offset;
++	return sb_issue_zeroout(sb, p_block, nr_blocks, GFP_NOFS);
++}
++
++/*
+  * Parts of this function taken from xfs_change_file_space()
+  */
+ static int __ocfs2_change_file_space(struct file *file, struct inode *inode,
+@@ -1873,7 +1912,7 @@ static int __ocfs2_change_file_space(str
+ {
+ 	int ret;
+ 	s64 llen;
+-	loff_t size;
++	loff_t size, orig_isize;
+ 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
+ 	struct buffer_head *di_bh = NULL;
+ 	handle_t *handle;
+@@ -1904,6 +1943,7 @@ static int __ocfs2_change_file_space(str
+ 		goto out_inode_unlock;
  	}
  
- 	/* At least some SIS devices need this after reset */
--	ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
-+	if (!(ihid->quirks & I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET))
-+		ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
++	orig_isize = i_size_read(inode);
+ 	switch (sr->l_whence) {
+ 	case 0: /*SEEK_SET*/
+ 		break;
+@@ -1911,7 +1951,7 @@ static int __ocfs2_change_file_space(str
+ 		sr->l_start += f_pos;
+ 		break;
+ 	case 2: /*SEEK_END*/
+-		sr->l_start += i_size_read(inode);
++		sr->l_start += orig_isize;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -1965,6 +2005,14 @@ static int __ocfs2_change_file_space(str
+ 	default:
+ 		ret = -EINVAL;
+ 	}
++
++	/* zeroout eof blocks in the cluster. */
++	if (!ret && change_size && orig_isize < size) {
++		ret = ocfs2_zeroout_partial_cluster(inode, orig_isize,
++					size - orig_isize);
++		if (!ret)
++			i_size_write(inode, size);
++	}
+ 	up_write(&OCFS2_I(inode)->ip_alloc_sem);
+ 	if (ret) {
+ 		mlog_errno(ret);
+@@ -1981,9 +2029,6 @@ static int __ocfs2_change_file_space(str
+ 		goto out_inode_unlock;
+ 	}
  
- out_unlock:
- 	mutex_unlock(&ihid->reset_lock);
+-	if (change_size && i_size_read(inode) < size)
+-		i_size_write(inode, size);
+-
+ 	inode->i_ctime = inode->i_mtime = current_time(inode);
+ 	ret = ocfs2_mark_inode_dirty(handle, inode, di_bh);
+ 	if (ret < 0)
 
 
