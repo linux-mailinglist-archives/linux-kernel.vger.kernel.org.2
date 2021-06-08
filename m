@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB8C3A0450
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B903A044C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238392AbhFHT3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:29:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39610 "EHLO mail.kernel.org"
+        id S237804AbhFHT3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:29:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234614AbhFHTQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:16:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D1AA61954;
-        Tue,  8 Jun 2021 18:50:47 +0000 (UTC)
+        id S237413AbhFHTP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:15:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A35461961;
+        Tue,  8 Jun 2021 18:50:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178247;
-        bh=IWzbsvazQ/Rv68RMwi2/R6ZolNNYvus/0NQQowmYP0o=;
+        s=korg; t=1623178250;
+        bh=4ddSBV52IP3ArNMigX3kU2VUXDvUeF9NBjityjzBDeU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ov9A4YTH0s/hNXeu8t2KQyZ84wP7Z1MVmLiLWo7+mjEh9TZXqCVWoiClUiIs3+j10
-         Ly2bvxJM3B0ozm8bXXdWFyQCOWsrDdQs+CjU2QmhBCgtMlNBbR9D2QwskC1lD7MPU5
-         4gsEoUNORArg0XVDQEpc0d1DeNkL6XkT736/8VbA=
+        b=1yp1P40ys2WJqJAIRLgGhTab56gdB1mlkYzMr+7eqUIi/UNUEEnfGXqAWHFULgpS6
+         zNNdzD4klkDWhQimMl1DFIdWYVqsZk+MjkgvvdBa+qzRAjW54LAGByNnjHirrytqpd
+         oEVXEtDuII91ZASyP7CpHxZy6XaCxHPDAMD5Jhdk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pu Wen <puwen@hygon.cn>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [PATCH 5.12 132/161] x86/sev: Check SME/SEV support in CPUID first
-Date:   Tue,  8 Jun 2021 20:27:42 +0200
-Message-Id: <20210608175949.910197372@linuxfoundation.org>
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Fabiano Rosas <farosas@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.12 133/161] KVM: PPC: Book3S HV: Save host FSCR in the P7/8 path
+Date:   Tue,  8 Jun 2021 20:27:43 +0200
+Message-Id: <20210608175949.943194998@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -40,69 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pu Wen <puwen@hygon.cn>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-commit 009767dbf42ac0dbe3cf48c1ee224f6b778aa85a upstream.
+commit 1438709e6328925ef496dafd467dbd0353137434 upstream.
 
-The first two bits of the CPUID leaf 0x8000001F EAX indicate whether SEV
-or SME is supported, respectively. It's better to check whether SEV or
-SME is actually supported before accessing the MSR_AMD64_SEV to check
-whether SEV or SME is enabled.
+Similar to commit 25edcc50d76c ("KVM: PPC: Book3S HV: Save and restore
+FSCR in the P9 path"), ensure the P7/8 path saves and restores the host
+FSCR. The logic explained in that patch actually applies there to the
+old path well: a context switch can be made before kvmppc_vcpu_run_hv
+restores the host FSCR and returns.
 
-This is both a bare-metal issue and a guest/VM issue. Since the first
-generation Hygon Dhyana CPU doesn't support the MSR_AMD64_SEV, reading that
-MSR results in a #GP - either directly from hardware in the bare-metal
-case or via the hypervisor (because the RDMSR is actually intercepted)
-in the guest/VM case, resulting in a failed boot. And since this is very
-early in the boot phase, rdmsrl_safe()/native_read_msr_safe() can't be
-used.
+Now both the p9 and the p7/8 paths now save and restore their FSCR, it
+no longer needs to be restored at the end of kvmppc_vcpu_run_hv
 
-So check the CPUID bits first, before accessing the MSR.
-
- [ tlendacky: Expand and improve commit message. ]
- [ bp: Massage commit message. ]
-
-Fixes: eab696d8e8b9 ("x86/sev: Do not require Hypervisor CPUID bit for SEV guests")
-Signed-off-by: Pu Wen <puwen@hygon.cn>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: <stable@vger.kernel.org> # v5.10+
-Link: https://lkml.kernel.org/r/20210602070207.2480-1-puwen@hygon.cn
+Fixes: b005255e12a3 ("KVM: PPC: Book3S HV: Context-switch new POWER8 SPRs")
+Cc: stable@vger.kernel.org # v3.14+
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Reviewed-by: Fabiano Rosas <farosas@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210526125851.3436735-1-npiggin@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/mm/mem_encrypt_identity.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ arch/powerpc/kvm/book3s_hv.c            |    1 -
+ arch/powerpc/kvm/book3s_hv_rmhandlers.S |    7 +++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -504,10 +504,6 @@ void __init sme_enable(struct boot_param
- #define AMD_SME_BIT	BIT(0)
- #define AMD_SEV_BIT	BIT(1)
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -4418,7 +4418,6 @@ static int kvmppc_vcpu_run_hv(struct kvm
+ 		mtspr(SPRN_EBBRR, ebb_regs[1]);
+ 		mtspr(SPRN_BESCR, ebb_regs[2]);
+ 		mtspr(SPRN_TAR, user_tar);
+-		mtspr(SPRN_FSCR, current->thread.fscr);
+ 	}
+ 	mtspr(SPRN_VRSAVE, user_vrsave);
  
--	/* Check the SEV MSR whether SEV or SME is enabled */
--	sev_status   = __rdmsr(MSR_AMD64_SEV);
--	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
--
+--- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
++++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+@@ -59,6 +59,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_ARCH_300)
+ #define STACK_SLOT_UAMOR	(SFS-88)
+ #define STACK_SLOT_DAWR1	(SFS-96)
+ #define STACK_SLOT_DAWRX1	(SFS-104)
++#define STACK_SLOT_FSCR		(SFS-112)
+ /* the following is used by the P9 short path */
+ #define STACK_SLOT_NVGPRS	(SFS-152)	/* 18 gprs */
+ 
+@@ -686,6 +687,8 @@ BEGIN_FTR_SECTION
+ 	std	r6, STACK_SLOT_DAWR0(r1)
+ 	std	r7, STACK_SLOT_DAWRX0(r1)
+ 	std	r8, STACK_SLOT_IAMR(r1)
++	mfspr	r5, SPRN_FSCR
++	std	r5, STACK_SLOT_FSCR(r1)
+ END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
+ BEGIN_FTR_SECTION
+ 	mfspr	r6, SPRN_DAWR1
+@@ -1663,6 +1666,10 @@ FTR_SECTION_ELSE
+ 	ld	r7, STACK_SLOT_HFSCR(r1)
+ 	mtspr	SPRN_HFSCR, r7
+ ALT_FTR_SECTION_END_IFCLR(CPU_FTR_ARCH_300)
++BEGIN_FTR_SECTION
++	ld	r5, STACK_SLOT_FSCR(r1)
++	mtspr	SPRN_FSCR, r5
++END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
  	/*
- 	 * Check for the SME/SEV feature:
- 	 *   CPUID Fn8000_001F[EAX]
-@@ -519,11 +515,16 @@ void __init sme_enable(struct boot_param
- 	eax = 0x8000001f;
- 	ecx = 0;
- 	native_cpuid(&eax, &ebx, &ecx, &edx);
--	if (!(eax & feature_mask))
-+	/* Check whether SEV or SME is supported */
-+	if (!(eax & (AMD_SEV_BIT | AMD_SME_BIT)))
- 		return;
- 
- 	me_mask = 1UL << (ebx & 0x3f);
- 
-+	/* Check the SEV MSR whether SEV or SME is enabled */
-+	sev_status   = __rdmsr(MSR_AMD64_SEV);
-+	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
-+
- 	/* Check if memory encryption is enabled */
- 	if (feature_mask == AMD_SME_BIT) {
- 		/*
+ 	 * Restore various registers to 0, where non-zero values
+ 	 * set by the guest could disrupt the host.
 
 
