@@ -2,164 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B41F39EE12
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 07:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7E739EE16
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 07:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhFHFZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 01:25:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230287AbhFHFZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 01:25:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 825CB6023E;
-        Tue,  8 Jun 2021 05:24:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623129841;
-        bh=vmPy9qQ76N9fa08r7q9z1d4jWLhEmNm4iqen1DXlowg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cmwoTKffEgSK2C9dzNjDeM7Qj4xHb+SeXl0Rh4/5L/2+i17W07bu9wzBcYRDKnIkl
-         ZlNt5Row3y3b960fFQj2mLZfKhKDkwesu0tOwSAck1uTA8c7q/6+yEW9CVnYeMPQGY
-         pBawojXRDgPS+Iv3PuwxAF+ONP/OTZdMcnWarFb6vyl9ESoMuY5xA6A13pnwn3IRaY
-         rU00Xy4DLgCXLaXtsHh6++qodTK7AL2lRRtweLYkmp3FY6VFl1exaZ7/DybP7xFoWx
-         X/c31JXzZo52gcXaJm32rzjBn9FeSVakP23P6Vllimy44Z8ADvIbVsWhLqsntKcYiZ
-         F2ABVd+oBhl7g==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Shay Drory <shayd@nvidia.com>
-Subject: [PATCH rdma-rc v2] RDMA/core: Simplify addition of restrack object
-Date:   Tue,  8 Jun 2021 08:23:48 +0300
-Message-Id: <e2eed941f912b2068e371fd37f43b8cf5082a0e6.1623129597.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S230351AbhFHF0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 01:26:46 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46768 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229657AbhFHF0p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 01:26:45 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1585Ohcv071596;
+        Tue, 8 Jun 2021 00:24:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623129883;
+        bh=MiomeBKdGuUjQiTfzTbKXHj9oqvow/F9u+TZwL2rqzQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=fmA5DM2/FigyKfCnoYtQVeqzSk7KEszIHf1vNTR5Ex7t+U0ZhJd9a7vMKwzERTQrF
+         bu9hG6SZO5/Vlk9+OTaZIQ4WEkACOqJyqRueJMx0B/YMP2fB2fqDUv5WHfUJIF/QLT
+         NSGAsgl08t7Kdg8QUE9a7xHjEjAzAI0RCVXeybzY=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1585OhBg007040
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Jun 2021 00:24:43 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
+ 2021 00:24:43 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 8 Jun 2021 00:24:43 -0500
+Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1585OcEO026973;
+        Tue, 8 Jun 2021 00:24:39 -0500
+Subject: Re: [PATCH v2 1/2] arm64: dts: ti: am65: align ti,pindir-d0-out-d1-in
+ property with dt-shema
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210608051414.14873-1-a-govindraju@ti.com>
+ <20210608051414.14873-2-a-govindraju@ti.com>
+ <8d466cbc-eb35-42a8-d4d6-5bcf44cf965e@siemens.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <fb6c6c73-a29b-e190-b4c0-3b8b030d8268@ti.com>
+Date:   Tue, 8 Jun 2021 10:54:37 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <8d466cbc-eb35-42a8-d4d6-5bcf44cf965e@siemens.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Hi Jan,
 
-Change location of rdma_restrack_add() callers to be near attachment
-to device logic. Such improvement fixes the bug where task_struct was
-acquired but not released, causing to resource leak.
+On 08/06/21 10:50 am, Jan Kiszka wrote:
+> On 08.06.21 07:14, Aswath Govindraju wrote:
+>> ti,pindir-d0-out-d1-in property is expected to be of type boolean.
+>> Therefore, fix the property accordingly.
+>>
+> 
+> Is there a patch for Documentation/devicetree/bindings/spi/omap-spi.txt
+> on the way as well that makes this even clearer?
+> 
 
-  ucma_create_id() {
-    ucma_alloc_ctx();
-    rdma_create_user_id() {
-      rdma_restrack_new();
-      rdma_restrack_set_name() {
-        rdma_restrack_attach_task.part.0(); <--- task_struct was gotten
-      }
-    }
-    ucma_destroy_private_ctx() {
-      ucma_put_ctx();
-      rdma_destroy_id() {
-        _destroy_id()                       <--- id_priv was freed
-      }
-    }
-  }
+Yes, these fixes are a part of conversion of omap-spi.txt to yaml
+format. In the yaml file the type for the property is mentioned.
 
-Fixes: cb5cd0ea4eb3 ("RDMA/core: Add CM to restrack after successful attachment to a device")
-Reported-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-Changelog
-v2:
- * Added bug report analysis
-v1: https://lore.kernel.org/linux-rdma/f72e27d5c82cd9beec7670141afa62786836c569.1622956637.git.leonro@nvidia.com/T/#u
----
- drivers/infiniband/core/cma.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+Link to yaml conversion patch,
+https://lore.kernel.org/patchwork/project/lkml/list/?series=503240
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index ab148a696c0c..e6b81cd4775a 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -462,6 +462,7 @@ static void cma_attach_to_dev(struct rdma_id_private *id_priv,
- 			      struct cma_device *cma_dev)
- {
- 	_cma_attach_to_dev(id_priv, cma_dev);
-+	rdma_restrack_add(&id_priv->res);
- 	id_priv->gid_type =
- 		cma_dev->default_gid_type[id_priv->id.port_num -
- 					  rdma_start_port(cma_dev->device)];
-@@ -691,7 +692,6 @@ static int cma_ib_acquire_dev(struct rdma_id_private *id_priv,
- 	mutex_lock(&lock);
- 	cma_attach_to_dev(id_priv, listen_id_priv->cma_dev);
- 	mutex_unlock(&lock);
--	rdma_restrack_add(&id_priv->res);
- 	return 0;
- }
- 
-@@ -746,10 +746,8 @@ static int cma_iw_acquire_dev(struct rdma_id_private *id_priv,
- 	}
- 
- out:
--	if (!ret) {
-+	if (!ret)
- 		cma_attach_to_dev(id_priv, cma_dev);
--		rdma_restrack_add(&id_priv->res);
--	}
- 
- 	mutex_unlock(&lock);
- 	return ret;
-@@ -810,7 +808,6 @@ static int cma_resolve_ib_dev(struct rdma_id_private *id_priv)
- 
- found:
- 	cma_attach_to_dev(id_priv, cma_dev);
--	rdma_restrack_add(&id_priv->res);
- 	mutex_unlock(&lock);
- 	addr = (struct sockaddr_ib *)cma_src_addr(id_priv);
- 	memcpy(&addr->sib_addr, &sgid, sizeof(sgid));
-@@ -1852,6 +1849,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
- {
- 	cma_cancel_operation(id_priv, state);
- 
-+	rdma_restrack_del(&id_priv->res);
- 	if (id_priv->cma_dev) {
- 		if (rdma_cap_ib_cm(id_priv->id.device, 1)) {
- 			if (id_priv->cm_id.ib)
-@@ -1861,7 +1859,6 @@ static void _destroy_id(struct rdma_id_private *id_priv,
- 				iw_destroy_cm_id(id_priv->cm_id.iw);
- 		}
- 		cma_leave_mc_groups(id_priv);
--		rdma_restrack_del(&id_priv->res);
- 		cma_release_dev(id_priv);
- 	}
- 
-@@ -3208,7 +3205,6 @@ static int cma_bind_loopback(struct rdma_id_private *id_priv)
- 	ib_addr_set_pkey(&id_priv->id.route.addr.dev_addr, pkey);
- 	id_priv->id.port_num = p;
- 	cma_attach_to_dev(id_priv, cma_dev);
--	rdma_restrack_add(&id_priv->res);
- 	cma_set_loopback(cma_src_addr(id_priv));
- out:
- 	mutex_unlock(&lock);
-@@ -3241,7 +3237,6 @@ static void addr_handler(int status, struct sockaddr *src_addr,
- 		if (status)
- 			pr_debug_ratelimited("RDMA CM: ADDR_ERROR: failed to acquire device. status %d\n",
- 					     status);
--		rdma_restrack_add(&id_priv->res);
- 	} else if (status) {
- 		pr_debug_ratelimited("RDMA CM: ADDR_ERROR: failed to resolve IP. status %d\n", status);
- 	}
-@@ -3853,12 +3848,12 @@ int rdma_bind_addr(struct rdma_cm_id *id, struct sockaddr *addr)
- 	if (ret)
- 		goto err2;
- 
--	if (!cma_any_addr(addr))
--		rdma_restrack_add(&id_priv->res);
- 	return 0;
- err2:
- 	if (id_priv->cma_dev)
- 		cma_release_dev(id_priv);
-+	if (!cma_any_addr(addr))
-+		rdma_restrack_del(&id_priv->res);
- err1:
- 	cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_IDLE);
- 	return ret;
--- 
-2.31.1
+>> Fixes: e180f76d0641 ("arm64: dts: ti: Add support for Siemens IOT2050 boards")
+>> Fixes: 5da94b50475a ("arm64: dts: ti: k3-am654: Enable main domain McSPI0")
+>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+>> ---
+>>  arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi | 2 +-
+>>  arch/arm64/boot/dts/ti/k3-am654-base-board.dts     | 2 +-
+>>  2 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+>> index f4ec9ed52939..23d51b6a9cf2 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+>> @@ -575,7 +575,7 @@
+>>  
+>>  	#address-cells = <1>;
+>>  	#size-cells= <0>;
+>> -	ti,pindir-d0-out-d1-in = <1>;
+>> +	ti,pindir-d0-out-d1-in;
+>>  };
+>>  
+> 
+> Acked-by: Jan Kiszka <jan.kiszka@siemens.com>
+> 
+
+Thanks,
+Aswath
+
+> Jan
+> 
+>>  &tscadc0 {
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+>> index eddb2ffb93ca..1b947e2c2e74 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+>> @@ -299,7 +299,7 @@
+>>  	pinctrl-0 = <&main_spi0_pins_default>;
+>>  	#address-cells = <1>;
+>>  	#size-cells= <0>;
+>> -	ti,pindir-d0-out-d1-in = <1>;
+>> +	ti,pindir-d0-out-d1-in;
+>>  
+>>  	flash@0{
+>>  		compatible = "jedec,spi-nor";
+>>
+> 
+> 
 
