@@ -2,150 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C477339FF0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A7439FF0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232603AbhFHS2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:28:39 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:5820 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbhFHS2i (ORCPT
+        id S232747AbhFHS3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231652AbhFHS27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:28:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1623176805; x=1654712805;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=FFLVRsCcASVsiIAsUT4PrF7+V5NBDaTHFgV0iJLcLK8=;
-  b=HaRZHbi6jHCkIFhUqCGJNu2SMY+V8NGyjVaBr/jcmoGT+MLNfjQU0n+E
-   QhIjy0O518DD17kJWA6VY2sNSz5WrzTDEgHOCPRI3cAXCCQQSOzTsCmoi
-   1oRwfLa3U3Lx8ZdzxcVb+u4BM2nSt6E1MFvBiWNDcw89DKxzWqIE8xefY
-   NofNKWl/TdVfPjQ7HYybFCQ1j62Ec41KMQX6CFQmRhgsSlxRvTknEqRlK
-   lgMJoB//74KlpKBNIsuoHY0Px8OojES9dkjZS7sOLe/xzhDgrdGNY6bXj
-   OkQJ1hojtC0Jtm0WyDuLmXyadzmowmAVjwnF8bXemX0VqT2J8PiMXFUB3
-   Q==;
-IronPort-SDR: MgdrN/n4VN9XcO/12eSiZOqpJuUtdxyuhoETkqenQngafsZRmj2VksIx6449F8xxFE8ORmIr50
- ULqGoRhvjzKLl5l3Qukq/3hiIri4cI/9HeRUDMTQdY3CbpChJ3zLFUF8QY76A8BN4RsoYYnuNv
- uouxKjCQW0vOXAzpCOpUJdT4/En0dIzBy4h11HBB+2Lo6uItQPeH5O2COWjYl6jchpMMhgD59K
- sW57JQS40AovUoO9vn4t9czQjtYezUw0eh73iqWdnNd4vZKmiRWKCg0PPa6f1+l5KbtCKzKTi4
- FlM=
-X-IronPort-AV: E=Sophos;i="5.83,259,1616428800"; 
-   d="scan'208";a="282617504"
-Received: from mail-co1nam11lp2168.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.168])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Jun 2021 02:26:44 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JR2gZ04pjm1XWvE7RStrwIRylCwcRt/zpLNP/HhAd/LPnEzifTivyIx2D0lsUo0tGx8/NjRyKhaELUOR3B0osjZ9y2Qvzw4b+jY+ddjMEBgeQWKIylaqp24h0rZaEGhMciTnwk18JR4ctrmKqsAKpDTBxrcPCwcMuoG27QnIubYz72qBNzCykWwQGT8pzvA2DesFujTZw7ubF+8FYikpxAqC1Pd4qhEHh/GbXNYI4WnJB656suCSUnWW4f8FtE1LP66FKRb42ehMPmKI5wEdkDxyNWgkyv3VN21z0uwNgr/1hy7ZeJ/vjJDRlt3zyoCik4m5AlaE4x6+4ap4fUDXfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FFLVRsCcASVsiIAsUT4PrF7+V5NBDaTHFgV0iJLcLK8=;
- b=JzWc/JHcnVXDK26hztEdurFh3MtjJkTPV4vIgBeQ2ORJKkqRIWvUrc6frVpPqlOjQkMvGU2CNjai2u+iU9MW/lMK000hmkx3vpO0Cpcevr/Y1rai++llOMsQE26urm6XLfD4sAI9Rsmb92LgJDCwQia/GzpwIzO5TaDi1TsauWXUEAP+ZBMX4RWHClZGaAArytTDR1pmq8rCJZcCaC8d8H62MymdqgAroyYeHtuOEBBxHU13XAc1YgtIKuxTxpWpdIXOi/BPzZYyEHI+Kxku69V9svmLSuES0WFti3AyiF8lTQziOGVOwRn3KYODxt4KDKvS4ss1IFfCuCv1FpDHvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Tue, 8 Jun 2021 14:28:59 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EB7C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 11:26:52 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id g6so16383394pfq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 11:26:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FFLVRsCcASVsiIAsUT4PrF7+V5NBDaTHFgV0iJLcLK8=;
- b=t756i6FJ66QrkEw+s0rdsGol+Mu78Nv8OtPXpaUk9PQQ29jx6znue9JziTnu9kKs6zv910AlUmjqkWCUm6SvxgExAJ94+gfDK8Wo1OmDS5sWFrQvVI7U3+9tEJvRGra8+l6G+ZAV822uShGZNRo+ARWHJqGmpKI3RUHEAHE78mA=
-Received: from DM6PR04MB4972.namprd04.prod.outlook.com (2603:10b6:5:fc::10) by
- DM6PR04MB6985.namprd04.prod.outlook.com (2603:10b6:5:244::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4195.25; Tue, 8 Jun 2021 18:26:43 +0000
-Received: from DM6PR04MB4972.namprd04.prod.outlook.com
- ([fe80::8dc6:ecf:9d83:615f]) by DM6PR04MB4972.namprd04.prod.outlook.com
- ([fe80::8dc6:ecf:9d83:615f%7]) with mapi id 15.20.4195.030; Tue, 8 Jun 2021
- 18:26:43 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-CC:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geoff Levand <geoff@infradead.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Subject: Re: [PATCH 13/16] block: use memcpy_from_bvec in
- bio_copy_kern_endio_read
-Thread-Topic: [PATCH 13/16] block: use memcpy_from_bvec in
- bio_copy_kern_endio_read
-Thread-Index: AQHXXICXL+hXOI9ud0+HHe7YcVMXyQ==
-Date:   Tue, 8 Jun 2021 18:26:43 +0000
-Message-ID: <DM6PR04MB497233791A3AC31473747A6486379@DM6PR04MB4972.namprd04.prod.outlook.com>
-References: <20210608160603.1535935-1-hch@lst.de>
- <20210608160603.1535935-14-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7598f6be-66d2-4267-2bcf-08d92aaaf78a
-x-ms-traffictypediagnostic: DM6PR04MB6985:
-x-microsoft-antispam-prvs: <DM6PR04MB69857E617DE6CF0F91EA7A3086379@DM6PR04MB6985.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:972;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UqeL8ruPKP5mrGsqFQx0hu4uWEudRopcMlI2MjLI8beyUV2yM0BsJCvR+70DZkhxUyY6QchdClbz7WM+BxdTfYZp/sAU2jb2V/0BxQutd4Z/3DcU1vsiNL+KA0JyyOHxsOX9n/DGtyDQwB7fcxodZRbm3JZ+hiNHK2BuFUIa4D5l22LxdB/wB6QUqHcsBjUr1DkEmwJ8DlPcJKgFhFRR+lz4oaHPu+sWr4/sqbd6v0CTO5aOwdhTSajavw2rHSy898q1eynfJUot6aAHUW6jPTWMXXoPkMhUfIpHu+OLlr6d2TX0uv2GtcyAhImI+2qxiLkHR74FONWZbxcNkZhDIpuBCAxB1oXWsqNzWptJFpCaV8+XLsVdF835QZpKL5sf+XNOKZmS1jIvOppowOXUOSeorZ1gyPLUpsCZBJYukXdETKNvhCMvJhQMnu4lVnolZINeHKwUyBIgd9Gg2rUUAhrBAPF3wUWH+XdEZcl0bIYmE9hROC2OLpo82GqsxbpnhSt7KUwJFphSGi/fml/p0bZv9wpJzAWvJ8h16DIRo1LV0EfL78H9m0zBd8cB7mmRoeEvEWaIinloLS93lZz87g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB4972.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(39860400002)(396003)(136003)(38100700002)(122000001)(5660300002)(9686003)(316002)(7416002)(186003)(4326008)(66476007)(91956017)(55016002)(66446008)(558084003)(64756008)(52536014)(478600001)(54906003)(66556008)(110136005)(53546011)(26005)(71200400001)(66946007)(86362001)(33656002)(8936002)(76116006)(8676002)(7696005)(6506007)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4d6t/H0C1J7T08fFTJtfiLHJ8FXxyBRadbmBZQdDE7lEg+5gIlnvS+NEOTbN?=
- =?us-ascii?Q?7ql4nGMoFwLXAzUNX6kBp4GAfMZTEpoPDouIMxnjpUSWA6e5E4AI/6HaRGa5?=
- =?us-ascii?Q?zgv9dVIsdFv6/PwwHxtesfekgJdjcO5kSk8VHCAF8WZ6phbicGeBpP804lal?=
- =?us-ascii?Q?F6q12U4zFmithELhpQroIgsO5GebpkZ4dI/dJNvmC6Ch92jDMVOB7SCS6lDn?=
- =?us-ascii?Q?C9+FONAdoJJi3S8o1HHoF+eMu2F940ca4u2bvw4LqN1qBjR8AH/LOOJoF1Zb?=
- =?us-ascii?Q?cPemMPZzhwwOvQqenEMjMkydqF954yX1sFCOw4e2uGJvRZx1m9inYscLuKMy?=
- =?us-ascii?Q?03M8n5nUNJ6vbYgdBootbZz9TmZIYXzujNUiWtd9XfjQm+/YmBLc7auo0U7/?=
- =?us-ascii?Q?pCJsZigvZT73tad6thSqY6L+Xi3p9bVC4qZkBN1Lo+zn6Ja5wI1ZI3D3di0s?=
- =?us-ascii?Q?CHlxEHq+Vsj3ZNSBQjnQ326o8QXF6D14UB/UQXmTu7Of6cyNHuLo0ILfgflu?=
- =?us-ascii?Q?BBoSbIJY+Sj6i4rH0jt0c3nMoLgCN3WuGiFjURrlViwTu+EY9+HKCdZhjS/B?=
- =?us-ascii?Q?g3ZG30QNKcEbJvzkYkFZurVw5Nnovimg167CPCDK13VrKn+dEypYpd5eJzot?=
- =?us-ascii?Q?+v+JPkbOJztjOn3sV/x1F0gMUGz2D5HUHETEViyHOV67aiZVUl0mzGF7DxYW?=
- =?us-ascii?Q?FZyGmPDVtctdyp6ZbzY1tKgCd8+0U45x+Rj8wv1l3ClCOSuAJWvOE3nsfY7q?=
- =?us-ascii?Q?BKzyNBCNy0TyG64gfujY43KP4qYja3RFybr3q1bQt3WnIQbvV3xScYnwfWYA?=
- =?us-ascii?Q?9TyeTXeSkglKEGy0kS3EZ/VYhbg8pyLZ+PIkcuI0UOK05u3VzZwZAbcwnWzd?=
- =?us-ascii?Q?pXjTvDP4C2nXLbzo2jBDFY3IS+86iWP9rH5k7BljFAmIWMXJPCT1Ji71l9Kx?=
- =?us-ascii?Q?y/VcBGVdS6I2ZfF867F7lXL+FMeRzfmfij1IzPVSwVnZ76WRRE0KyIcCeCXi?=
- =?us-ascii?Q?Ala9vH748sGci52r/a4lGi6Q1BIUtK4012j1tZttV6/KbgIoOQvt11b/uwXI?=
- =?us-ascii?Q?H4leATUY+fzrWxE41CjjOGLQtMAWOLzeewiFyXrgvpbtl0j+C6W4GRWoKtay?=
- =?us-ascii?Q?uCIr10TEs+mJKoueqx4xuGkyuyjRhdwv/+bNqZsNeTKyuiPp+JEV99T0PMRM?=
- =?us-ascii?Q?RVWi2edMIPcURl3kGyg+TlMsrkwVeGeHIz6GIjQUU7NvO+X7M14subh3BwaH?=
- =?us-ascii?Q?65FeXTQnczKv1yMlLZo9ySfciObvMDGnlaq2OYsDnC+arZcJJwnHiXanXGKB?=
- =?us-ascii?Q?Tj+jRTTZJkjrJCNzIOzgZw46?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ndln2EuNlB+CP5mLiP3hdXT+nVwUYUAuTcfdG/dVXpU=;
+        b=JL0mYsIjZFqW0K0buK/ZoqO8gB6RoLQ1xk0cIT0uvFwpxp0HDL0jLR647mH4HWhXWK
+         7yGLyni/v6LOZwD66AOwZsqEf1AqrwLX+thpddZOS198keGEBHxxvv3ftPkMCrf+gHO+
+         v3Hid4jVRPXCkteont5eNR9OzdANVZqDTlqHU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ndln2EuNlB+CP5mLiP3hdXT+nVwUYUAuTcfdG/dVXpU=;
+        b=odFiwR/WcwZ9g+oMxLqWs+cIZ++VlrPo40WgfkjhnJBaqI4z6A3uYU4Lm+VF0PlZOf
+         nI+AEAD2XaKotpbE308pKs8lxgvMensMvpoBg82J81ZoV9gfzuKw94OD7wDhtG3VA6DZ
+         jQHylq3gTFRdpq7vfPyZ4xk8AXpQ2IKavg6zr+X6nezPVdmiZBfHlrG8M8J5I0DVt0yF
+         g2jsCZj3npSgHwUDyxIPjVwr9vj0Sy5qEjyZMu33DiiBjYHEu0jcJ90oFoY49oQp2zla
+         myinUHWfjF2spvmvhaN+9QZeAxEuXMXO7annjHTSr35FNXHv+hf2crNlXhL0oVlFL3B2
+         UyPw==
+X-Gm-Message-State: AOAM530IeHhfzDAgPD1bnJQL0E/Ei0FtKcmYmx2S+AQLOXl5c9toj4b7
+        SMKczArbgvtryISgDSB0PNqMBg==
+X-Google-Smtp-Source: ABdhPJwTV2ZRR+J0IP/czfDPzPV669yVdHAMzM/WGvcXMbGOKH9gqjfxZrHbaKtAgI6WYhPrnRrgBA==
+X-Received: by 2002:a63:ff22:: with SMTP id k34mr23730897pgi.336.1623176812105;
+        Tue, 08 Jun 2021 11:26:52 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y5sm11635762pfo.25.2021.06.08.11.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 11:26:51 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 11:26:50 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Lin, Zhenpeng" <zplin@psu.edu>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] slub: choose the right freelist pointer location when
+ creating small caches
+Message-ID: <202106081125.E2DA4DE8@keescook>
+References: <6746FEEA-FD69-4792-8DDA-C78F5FE7DA02@psu.edu>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB4972.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7598f6be-66d2-4267-2bcf-08d92aaaf78a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2021 18:26:43.3521
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pWkE2rApkEXLlDjnRSuOKRlnpQAi0sgnOy2G3AuTbZU7BH/prbb1hbgUdpf8It9+mUWfEv9M8O6poBEA/YvA53b0qYWInRXQtmPkam0coqo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6985
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6746FEEA-FD69-4792-8DDA-C78F5FE7DA02@psu.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 09:09, Christoph Hellwig wrote:=0A=
-> Use memcpy_from_bvec instead of open coding the logic.=0A=
->=0A=
-> Signed-off-by: Christoph Hellwig <hch@lst.de>=0A=
-=0A=
-Looks good.=0A=
-=0A=
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
-=0A=
+On Sat, Jun 05, 2021 at 01:58:13AM +0000, Lin, Zhenpeng wrote:
+> When enabling CONFIG_SLUB_DEBUG and booting with "slub_debug=Z", the
+> kernel crashes at creating caches if the object size is smaller
+> than 2*sizeof(void*). The problem is due to the wrong calculation
+> of freepointer_area. The freelist pointer can be stored in the
+> middle of object only if the object size is not smaller than
+> 2*sizeof(void*). Otherwise, the freelist pointer will be corrupted by
+> SLUB_RED_ZONE.
+> 
+> Fixes: 3202fa62fb43 ("slub: relocate freelist pointer to middle of object")
+> Fixes: 89b83f282d8b ("slub: avoid redzone when choosing freepointer location")
+> Signed-off-by: Zhenpeng Lin <zplin@psu.edu>
+> ---
+> mm/slub.c | 4 ++--
+> 1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 3f96e099817a..cb23233ee683 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3704,7 +3704,7 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+> 	 * can't use that portion for writing the freepointer, so
+> 	 * s->offset must be limited within this for the general case.
+> 	 */
+> -	freepointer_area = size;
+> +	freepointer_area = s->object_size;
+> 
+> #ifdef CONFIG_SLUB_DEBUG
+> 	/*
+> @@ -3751,7 +3751,7 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+> 		 */
+> 		s->offset = size;
+> 		size += sizeof(void *);
+> -	} else if (freepointer_area > sizeof(void *)) {
+> +	} else if (freepointer_area >= 2 * sizeof(void *)) {
+> 		/*
+> 		 * Store freelist pointer near middle of object to keep
+> 		 * it away from the edges of the object to avoid small
+> --
+> 2.17.1
+
+NAK, I'd prefer this get cleaned up more completely, especially since
+there are no objects of that size in the kernel currently:
+
+https://lore.kernel.org/lkml/20201015033712.1491731-1-keescook@chromium.org/
+
+-- 
+Kees Cook
