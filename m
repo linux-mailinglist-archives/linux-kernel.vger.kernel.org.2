@@ -2,114 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BBF3A06AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38AF3A06B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234229AbhFHWTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 18:19:10 -0400
-Received: from mga03.intel.com ([134.134.136.65]:24422 "EHLO mga03.intel.com"
+        id S234282AbhFHWUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 18:20:18 -0400
+Received: from ozlabs.org ([203.11.71.1]:57611 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhFHWTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 18:19:09 -0400
-IronPort-SDR: Z4yt8EIa/yFWa1cOhRaX1nTioOAufQsHsaug0B1ykujHuciE2AGvZFUyoG0nkrjfJ0eX6QjlRF
- vgCD6y+HTlcg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="204978864"
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="204978864"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 15:17:11 -0700
-IronPort-SDR: X4kV1572j00CEByy05DM9UFMaTbGMkrQqVydBvzePj8j45d2fEWWZyfsyafVRaMDMRqiclE58u
- kH88GopTxC6A==
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="637801595"
-Received: from ciball-mobl1.amr.corp.intel.com (HELO [10.252.140.48]) ([10.252.140.48])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 15:17:10 -0700
-Subject: Re: [RFC v2-fix-v3 1/1] x86/tdx: Skip WBINVD instruction for TDX
- guest
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <CAPcyv4jQ=Fcga3jyUzthjPW9O962vhy3L5XUM6jqR5Z_Zq83LQ@mail.gmail.com>
- <20210608213527.739474-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <ec55256c-3a44-5265-fea8-018a229e92da@intel.com>
-Date:   Tue, 8 Jun 2021 15:17:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229548AbhFHWUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 18:20:17 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G04Pp0K1hz9sT6;
+        Wed,  9 Jun 2021 08:18:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623190702;
+        bh=OO63knGY6UYblmAqT8CT6DRPTVb3FfilKXIezBExOAQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PzXTpfYOUZJGlJpKBlpHTfpV/uuEVonz6Xv+yz4pmYk7XZd8kIAZkVkfQ/WuE3Hxt
+         i+mc6fV/ovqa4ntjOOXEKK4bPSZayqWY6WoPXCfH2l5WY2cwfKtYfja5NaGwd3ZL7h
+         6LPHlh6bHwmQR5n+kdPH4f5LgF+T7fVv1z1TzH+RrWFAXq+nqfO9l+sOGO78KJs2ls
+         kGEXvSnlJl0aHhgmoUsYHI3/lxDiN+4c2oH7MPLPzcr+nRCvbOH7ksE7KD1Ws4n1JF
+         sIU6VNyQHVemrdJgOepwf06iPlSE+mlV+9bAgsP0t+LREDIsUFiIsZFANHjwYk8g7h
+         oJ2Ry6XtATb3g==
+Date:   Wed, 9 Jun 2021 08:18:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the kvm-fixes tree
+Message-ID: <20210609081821.03275041@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210608213527.739474-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/HgdO5VVvVWqgUjwB4oiQ6Ah";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 2:35 PM, Kuppuswamy Sathyanarayanan wrote:
-> Persistent memory is also currently not supported. Another code
-> path that uses WBINVD is the MTRR driver, but EPT/virtualization
-> always disables MTRRs so those are not needed. This all implies
-> WBINVD is not needed with current TDX.
+--Sig_/HgdO5VVvVWqgUjwB4oiQ6Ah
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It's one thing to declare something unsupported.  It's quite another to
-declare it unsupported and then back it up with code to ensure that any
-attempted use is thwarted.
+Hi all,
 
-This patch certainly shows us half of the solution.  But, to be
-complete, we also need to see the other half: where is the patch or
-documentation for why it is not *possible* to encounter persistent
-memory in a TDX guest?
+Commit
 
-BTW, "persistent memory" is much more than Intel Optane DCPMM.
+  f31500b0d437 ("KVM: x86: Ensure liveliness of nested VM-Enter fail tracep=
+oint message")
+
+is missing a Signed-off-by from its committer
+
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/HgdO5VVvVWqgUjwB4oiQ6Ah
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC/7K0ACgkQAVBC80lX
+0Gz4awf9GVE82lz9w56N6yNPFHKd9B5yNZIDdYrQky2v130V/Qcyrkx+gxoK0gLx
+TVJnEnMle/1ONNmAoNmKOm0Ae3misfgY6IRT+HCpJFegilRy5r5idIZ38y7JJJDo
+MNE1kh85gSxFuZ6ucVdP7JLk4g3OQzdkxaWYs8VyF+9+KrsOwfWmLCXk5gy8yopN
+qefxZpfhaYjiLKgrbxuPkGgD41Oo0fsYgJMNcVsU0GWSsSR7/eeWGMqP8BFey4ns
+snk9+pk9ByYGwBY3zlcwOy65RuuuJVnvvx++RQN89elqbQHhI6ImSdBjPrpZ/lqA
+KMJTOSQajwbSq65e3k3mou8NVWcxMQ==
+=HLnu
+-----END PGP SIGNATURE-----
+
+--Sig_/HgdO5VVvVWqgUjwB4oiQ6Ah--
