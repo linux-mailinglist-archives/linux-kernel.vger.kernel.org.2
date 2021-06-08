@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF3639FC89
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8AC39FC8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbhFHQ3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 12:29:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28129 "EHLO
+        id S233826AbhFHQ3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 12:29:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49762 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231678AbhFHQ3b (ORCPT
+        by vger.kernel.org with ESMTP id S232850AbhFHQ3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:29:31 -0400
+        Tue, 8 Jun 2021 12:29:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623169657;
+        s=mimecast20190719; t=1623169660;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KwKEefJtvG5O4GXlLD+oJ84/ugnabyJFojY0GxM0/KQ=;
-        b=Zj+j4vNPPS+qRJ/KUSXwiQkgTxkHkqDp+uq3H2d+tL6yyywpSUSvmek9SU71FFBvgfusKP
-        tmeAcq3GjTa2h5CNFT5k6uCVEfB+lp/Zpx/l6ZCMIef+/OokJbfRwDFHXWLgbHqmvx2ln8
-        wz/N6hhUGGrprcs94p9bYoTWMocx+Nc=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-PVGBJa5sMomHIkwVMrHxAg-1; Tue, 08 Jun 2021 12:27:18 -0400
-X-MC-Unique: PVGBJa5sMomHIkwVMrHxAg-1
-Received: by mail-wr1-f69.google.com with SMTP id l13-20020adfe9cd0000b0290119a0645c8fso6683276wrn.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 09:27:18 -0700 (PDT)
+        bh=asiVDrcr3C9UCU4OkZBTmAXK+wgy0ErQseo2MDm6t8Q=;
+        b=LJmg5I+36bsmCDS2GTPLkczCQXBgPmnSsJSlPZw2ZnbQy/yp5aNUnU7rvHP+r5PAT35BtY
+        JbLHYYNlV522qoFq2mVFYrFzgFqxIncRVYkMaYoeOZKSMzyAzBes7qfLTvYusdjeta4OZr
+        S/YefF0vlxe0+hYSxUVVFlobgJ5AV0c=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-slmYwHUbOgWBMNflmauQRA-1; Tue, 08 Jun 2021 12:27:39 -0400
+X-MC-Unique: slmYwHUbOgWBMNflmauQRA-1
+Received: by mail-wr1-f72.google.com with SMTP id h104-20020adf90710000b029010de8455a3aso9667224wrh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 09:27:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=KwKEefJtvG5O4GXlLD+oJ84/ugnabyJFojY0GxM0/KQ=;
-        b=p0wWniohBjB9LGpVezN2iXkWO53NVW4U5RYPBK26Bc8VZWi0nIgNpx5/9Cy50zsmEC
-         eIkGoGjdUkjtZXsHfuFymlCObZTENhatfbYusxlPOon07EJGRTFMVc1TK/VfOH6JvHDC
-         B2OwrpYJe2DwRC4PfNIxE67fsUJyqkLNJesC5+o258O3YctkqA1EY643DRn2XbUhIyeY
-         1iWrEsAXS7sdqhGHuuPBm0PGhn0DzxwPjNFE7+Djosz+9BB7TNh9qpNGMznMuEQez/zc
-         HL3GP9AWRtFqvWRX1nGiRk5YErvXD2yFQ7EL1q3Vv6yyG+7AVYui09DPpjZ2zIHQ/JGs
-         1+tw==
-X-Gm-Message-State: AOAM531QhuTymTupqsNrOaoFtf+QQixCFqjlgcxcDtd9gOa5z7bdoUE0
-        KKfGoIrS+UcGe8jr/EqZPOLKSO6z1jMU49579vtV5HgJn0JmipXR/oXDEhYVw0Q30Ib4zgl8BLA
-        z70TGJYv2Y4/AFcbq2m8P2slB
-X-Received: by 2002:a5d:64ec:: with SMTP id g12mr23643275wri.137.1623169637581;
-        Tue, 08 Jun 2021 09:27:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzhJ105w3KL5Uw0wAiuzK1NcADpvygfyGVRcUm7KixEdHqO9SnoC9xoj454XiibhdRSik/tPw==
-X-Received: by 2002:a5d:64ec:: with SMTP id g12mr23643262wri.137.1623169637429;
-        Tue, 08 Jun 2021 09:27:17 -0700 (PDT)
+        bh=asiVDrcr3C9UCU4OkZBTmAXK+wgy0ErQseo2MDm6t8Q=;
+        b=FZx+pkGyHhGJlxrBJqp0HX8wAUoVLu+MqIOsh6RtscddIsmdU8NTZgkY4X0OVejeIz
+         Mm0rlVPM2LzfNhrdVisppD0Yloy4pO8SFlC9O2GZ1AugowGcpiPSzkUmlup6kycPcbJo
+         OtXdSaMOKiri3VxbmED4PfR5p4hoSirD++EkwR+/bLJ6BE1Azeo1JwV+R2cbNVY1eUU2
+         dC58ySCF/fDKIUxu8I9f0gk2zEuXjnvod89FP4NtDo1c+saFHEDpfVYRrWtTn//LFIUu
+         eVyz2c88m+0gWMl64tBQgSrHsoyBe5Ty+saTzo853lPRDAA5qP+geVeSMME9ZZUvvmf8
+         377A==
+X-Gm-Message-State: AOAM530elGECoB5mWtH2Ex48xOFynub5mOQgxtHU9z9AIWisx7alb5//
+        Xqb+jS7/TvVUWDhiIib3FSqzC7geP3bVuOdOuYrMeSTOIs+GvYXKv21pzdaReqCkis+XPrBTLv6
+        3Zak3GitwSoQDXS9isUBmiyXy
+X-Received: by 2002:a1c:6a09:: with SMTP id f9mr5106796wmc.91.1623169657867;
+        Tue, 08 Jun 2021 09:27:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx224q959eBxyvmX7Lh/dIzHMfwSAHno7UOD8fFKKC0gSqJA6B+xZpK+RKOzj/QWplseMAhfw==
+X-Received: by 2002:a1c:6a09:: with SMTP id f9mr5106777wmc.91.1623169657651;
+        Tue, 08 Jun 2021 09:27:37 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id 62sm22634353wrm.1.2021.06.08.09.27.16
+        by smtp.gmail.com with ESMTPSA id z11sm19581679wrs.7.2021.06.08.09.27.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 09:27:16 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] KVM: LAPIC: Reset TMCCT during vCPU reset
+        Tue, 08 Jun 2021 09:27:37 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] KVM: X86: Let's harden the ipi fastpath condition
+ edge-trigger mode
 To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
         kvm@vger.kernel.org
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -61,14 +62,14 @@ Cc:     Sean Christopherson <seanjc@google.com>,
         Jim Mattson <jmattson@google.com>,
         Joerg Roedel <joro@8bytes.org>
 References: <1623050385-100988-1-git-send-email-wanpengli@tencent.com>
- <1623050385-100988-2-git-send-email-wanpengli@tencent.com>
+ <1623050385-100988-3-git-send-email-wanpengli@tencent.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0584d79d-9f2c-52dd-5dcc-beffd18f265b@redhat.com>
-Date:   Tue, 8 Jun 2021 18:27:15 +0200
+Message-ID: <24c86369-4308-9480-4f7f-7d4131fc9bab@redhat.com>
+Date:   Tue, 8 Jun 2021 18:27:35 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <1623050385-100988-2-git-send-email-wanpengli@tencent.com>
+In-Reply-To: <1623050385-100988-3-git-send-email-wanpengli@tencent.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -79,36 +80,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 07/06/21 09:19, Wanpeng Li wrote:
 > From: Wanpeng Li <wanpengli@tencent.com>
 > 
-> The value of the current counter register after reset is 0 for both
-> Intel and AMD, let's do it in kvm, though, the TMCCT is always computed
-> on-demand and never directly readable.
+> Let's harden the ipi fastpath condition edge-trigger mode.
 
-It's useless though since it's never read except by KVM_SET_LAPIC. 
-Perhaps instead set TMCCT to 0 in kvm_apic_set_state, instead of keeping 
-the value that was filled in by KVM_GET_LAPIC?
+This is not a good commit message...  And if it's a bug, it needs a 
+kvm-unit-tests testcase.
 
 Paolo
 
-> Reviewed-by: Jim Mattson <jmattson@google.com>
 > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 > ---
-> v1 -> v2:
->   * update patch description
-> 
->   arch/x86/kvm/lapic.c | 1 +
+>   arch/x86/kvm/x86.c | 1 +
 >   1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 6d72d8f..cbfdecd 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2352,6 +2352,7 @@ void kvm_lapic_reset(struct kvm_vcpu *vcpu, bool init_event)
->   	kvm_lapic_set_reg(apic, APIC_ICR2, 0);
->   	kvm_lapic_set_reg(apic, APIC_TDCR, 0);
->   	kvm_lapic_set_reg(apic, APIC_TMICT, 0);
-> +	kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
->   	for (i = 0; i < 8; i++) {
->   		kvm_lapic_set_reg(apic, APIC_IRR + 0x10 * i, 0);
->   		kvm_lapic_set_reg(apic, APIC_ISR + 0x10 * i, 0);
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index b594275..dbd3e9d 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1922,6 +1922,7 @@ static int handle_fastpath_set_x2apic_icr_irqoff(struct kvm_vcpu *vcpu, u64 data
+>   		return 1;
+>   
+>   	if (((data & APIC_SHORT_MASK) == APIC_DEST_NOSHORT) &&
+> +		((data & APIC_INT_LEVELTRIG) == 0) &&
+>   		((data & APIC_DEST_MASK) == APIC_DEST_PHYSICAL) &&
+>   		((data & APIC_MODE_MASK) == APIC_DM_FIXED) &&
+>   		((u32)(data >> 32) != X2APIC_BROADCAST)) {
 > 
 
