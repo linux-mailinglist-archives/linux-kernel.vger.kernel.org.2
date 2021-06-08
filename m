@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6AA3A07E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 01:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013E13A07EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 01:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235608AbhFHXmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 19:42:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58658 "EHLO mail.kernel.org"
+        id S235534AbhFHXmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 19:42:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235534AbhFHXl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235536AbhFHXl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Jun 2021 19:41:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id DB9516135D;
+Received: by mail.kernel.org (Postfix) with ESMTPS id E679A61352;
         Tue,  8 Jun 2021 23:40:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623195605;
-        bh=asuigViU94Z+G8zC7OJBirg/0y+s7flxrq+e54fzWUc=;
+        bh=7smAwj36Y0do9tPeG4lDnw5wjf9WaWS6wNo+jMx9fAk=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=f2UzZUc1pFkisyrZrxTLF7n7C2143ZI7PS/lbUxgjdQ7TTPqBf3QjfibeX55EDicU
-         LvNOGadJFtE2Bs81VEzPAwLjIxA92IFdvg97z+opeJLUYBo8dGkWG6wUm1rKqx/zAm
-         erQHy2QBeNeg8ABkJTNUHM0ywW/uFgtb9nGSGuPZocxn88AzSquOCuMmI/Qm2NIPeQ
-         dubluOB0ofzAstXQ/2CYIqRIreAr+2KFi7r8if/OnBYguGqSw7lqSbS5HEwtJltYBs
-         +hYBuhbpLkbsw9iqYuvaTG6WNyiQLg++1fsluJYqTXaNeGEGheKwRVP6KB0QAWu/Vm
-         XnCczo90sLLlg==
+        b=W9V82pPbs9BA1Iy+PCM9pT3hvKTvpxJxl7nbsLM/bQ20su1N3E6Ihr3Dz1MH1uncU
+         foJGJph/uLvPqbp+gMR1oifyyUvSx9PTrIy0Rx7u5yoNGXnmecixlfncK3i+jaB/Yh
+         k8mn66u75RE15po94zrha8aVGm4m4t1MLkFqFvBapSZVVGUHyYeO0SIkqDOG/F1nfS
+         3emxvnhH172bRCmpNAVfNzlxWk/GenGTEFQ9LFXCUKtm4yMdxK/sG9+kqhU1isu7Ne
+         /5Td7wsf5h7P+F5vZjfW2U2CaUcTHMjJwuiMb11OR9y3JwfG+IjZk4qTgcDc17CGG6
+         5PVxkME+oIKqg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D649D609D2;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E07CC60CD1;
         Tue,  8 Jun 2021 23:40:05 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: nixge: simplify code with devm platform
- functions
+Subject: Re: [PATCH net-next] ethernet/qlogic: Use list_for_each_entry() to
+ simplify code in qlcnic_hw.c
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162319560587.24693.1959913819853334374.git-patchwork-notify@kernel.org>
+Message-Id: <162319560591.24693.16780473741484256213.git-patchwork-notify@kernel.org>
 Date:   Tue, 08 Jun 2021 23:40:05 +0000
-References: <20210608135622.3009485-1-yangyingliang@huawei.com>
-In-Reply-To: <20210608135622.3009485-1-yangyingliang@huawei.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org
+References: <20210608132908.68891-1-wanghai38@huawei.com>
+In-Reply-To: <20210608132908.68891-1-wanghai38@huawei.com>
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     shshaikh@marvell.com, manishc@marvell.com, davem@davemloft.net,
+        kuba@kernel.org, GR-Linux-NIC-Dev@marvell.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,19 +48,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue, 8 Jun 2021 21:56:22 +0800 you wrote:
-> Use devm_platform_get_and_ioremap_resource() and
-> devm_platform_ioremap_resource_byname to simplify
-> code.
+On Tue, 8 Jun 2021 13:29:08 +0000 you wrote:
+> Convert list_for_each() to list_for_each_entry() where
+> applicable. This simplifies the code.
 > 
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 > ---
->  drivers/net/ethernet/ni/nixge.c | 8 ++------
+>  drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c | 8 ++------
 >  1 file changed, 2 insertions(+), 6 deletions(-)
 
 Here is the summary with links:
-  - [net-next] net: nixge: simplify code with devm platform functions
-    https://git.kernel.org/netdev/net-next/c/5b38b97f40a7
+  - [net-next] ethernet/qlogic: Use list_for_each_entry() to simplify code in qlcnic_hw.c
+    https://git.kernel.org/netdev/net-next/c/78595dfcb29b
 
 You are awesome, thank you!
 --
