@@ -2,66 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CB439FC2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9053939FC2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbhFHQPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 12:15:12 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40083 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbhFHQPK (ORCPT
+        id S231384AbhFHQPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 12:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230205AbhFHQP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:15:10 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lqeLp-0000zO-PA; Tue, 08 Jun 2021 16:13:13 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Dave Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Alon Levy <alevy@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: qxl: ensure surf.data is ininitialized
-Date:   Tue,  8 Jun 2021 17:13:13 +0100
-Message-Id: <20210608161313.161922-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 8 Jun 2021 12:15:28 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CACC061574;
+        Tue,  8 Jun 2021 09:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=/xv5Jd1LwNtxUXxsgwOwvaHap3qm6MsdrqO3O+zcubA=; b=KpCZpuPjzDDgo7hKOjKWoYKdrx
+        3ijnLI0y/XyeyHf4+WjkzsgiULBb4KZq5ltjJeEQWXm7DI37AWZgBzxyx5/kTWVpOQtkh4kkOsZCn
+        tOdNzMrsBUrbUCwXIAd9n9JVXQAbZYoWWUwYd7bo8zSkl7WGf75Wb2baR5K8erQQ+UA+jd5rsVYxw
+        pfi91HDJ6P1HE7FMalEUeWhL30npvOeaZo3JeyudlfanXaSWTLGWkRexoaA/TfYl3cihWiA/FOXvt
+        xY0lhA5WuHKmP4xwUAVPxB6Uq6HKUkGuom9C3j2KVXdgFON3/zqxrauY2FAlHviwkihCGC6LKiN6l
+        l/biNxJQ==;
+Received: from [2001:4bb8:192:ff5f:74ed:7c4f:a5ee:8dcb] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lqeM5-009SvR-SW; Tue, 08 Jun 2021 16:13:30 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     axboe@kernel.dk
+Cc:     keescook@chromium.org, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com, gmpy.liaowx@gmail.com,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mark pstore-blk as broken
+Date:   Tue,  8 Jun 2021 18:13:27 +0200
+Message-Id: <20210608161327.1537919-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+pstore-blk just pokes directly into the pagecache for the block
+device without going through the file operations for that by faking
+up it's own file operations that do not match the block device ones.
 
-The object surf is not fully initialized and the uninitialized
-field surf.data is being copied by the call to qxl_bo_create
-via the call to qxl_gem_object_create. Set surf.data to zero
-to ensure garbage data from the stack is not being copied.
+As this breaks the control of the block layer of it's page cache,
+and even now just works by accident only the best thing is to just
+disable this driver.
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: f64122c1f6ad ("drm: add new QXL driver. (v1.4)")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 17639f67c1d6 ("pstore/blk: Introduce backend for block devices")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/gpu/drm/qxl/qxl_dumb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/pstore/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/qxl/qxl_dumb.c b/drivers/gpu/drm/qxl/qxl_dumb.c
-index a635d9fdf8ac..d636ba685451 100644
---- a/drivers/gpu/drm/qxl/qxl_dumb.c
-+++ b/drivers/gpu/drm/qxl/qxl_dumb.c
-@@ -58,6 +58,8 @@ int qxl_mode_dumb_create(struct drm_file *file_priv,
- 	surf.height = args->height;
- 	surf.stride = pitch;
- 	surf.format = format;
-+	surf.data = 0;
-+
- 	r = qxl_gem_object_create_with_handle(qdev, file_priv,
- 					      QXL_GEM_DOMAIN_CPU,
- 					      args->size, &surf, &qobj,
+diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
+index 8adabde685f1..328da35da390 100644
+--- a/fs/pstore/Kconfig
++++ b/fs/pstore/Kconfig
+@@ -173,6 +173,7 @@ config PSTORE_BLK
+ 	tristate "Log panic/oops to a block device"
+ 	depends on PSTORE
+ 	depends on BLOCK
++	depends on BROKEN
+ 	select PSTORE_ZONE
+ 	default n
+ 	help
 -- 
-2.31.1
+2.30.2
 
