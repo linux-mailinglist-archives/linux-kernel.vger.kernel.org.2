@@ -2,153 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8293A000D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3500539FF9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234797AbhFHSis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:38:48 -0400
+        id S234205AbhFHSeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:34:46 -0400
 Received: from mail.kernel.org ([198.145.29.99]:57406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234589AbhFHSgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:36:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24A8A613EF;
-        Tue,  8 Jun 2021 18:32:42 +0000 (UTC)
+        id S233188AbhFHSdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:33:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19ED2613EA;
+        Tue,  8 Jun 2021 18:31:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177162;
-        bh=yi/cYojqO+xXBwjtIA4+VWUBUFcFIVlCg0igrPPHSKE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Na5due/FrYkYMJ9yYPc5w+CVDqN80d/7vYIWG9Osq0s95xTz7XcNVNh9vGqUoFLv7
-         89Smo+KRyfusSpISydTq+jbWbb78A5pxKmSR0s7ilykfcgmW3LvgeKvredDvFGYM4u
-         rqCGlLpZxVHW+sMEnY+d8BNmHiiBAhiTg5LgwP8g=
+        s=korg; t=1623177065;
+        bh=o4FQTxVlCFgKrace+hgNmsSGyQOTm96P8opXarYCAc8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=AHy1Qba8PiQamtaj4pKRTTH9ZqPMfCt5AD9Ko3kM5owEZeVh9Stck2RzzVlyCWT3C
+         g4j8kqIrRd98yhKsUr8ckAeE2M1+3Of5vuHgn1I5+QE703M0VaS+hSmPg4+7o1QzTJ
+         YQ1pcf2h85eCZEjKavXhF7eaPOxSJY517euZW4aA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Grant Grundler <grundler@chromium.org>,
-        Hayes Wang <hayeswang@realtek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 01/58] net: usb: cdc_ncm: dont spew notifications
-Date:   Tue,  8 Jun 2021 20:26:42 +0200
-Message-Id: <20210608175932.311886575@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.14 00/47] 4.14.236-rc1 review
+Date:   Tue,  8 Jun 2021 20:26:43 +0200
+Message-Id: <20210608175930.477274100@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+MIME-Version: 1.0
 User-Agent: quilt/0.66
 X-stable: review
 X-Patchwork-Hint: ignore
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.236-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.14.236-rc1
+X-KernelTest-Deadline: 2021-06-10T17:59+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grant Grundler <grundler@chromium.org>
+This is the start of the stable review cycle for the 4.14.236 release.
+There are 47 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-[ Upstream commit de658a195ee23ca6aaffe197d1d2ea040beea0a2 ]
+Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
+Anything received after that time might be too late.
 
-RTL8156 sends notifications about every 32ms.
-Only display/log notifications when something changes.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.236-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+and the diffstat can be found below.
 
-This issue has been reported by others:
-	https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1832472
-	https://lkml.org/lkml/2020/8/27/1083
+thanks,
 
-...
-[785962.779840] usb 1-1: new high-speed USB device number 5 using xhci_hcd
-[785962.929944] usb 1-1: New USB device found, idVendor=0bda, idProduct=8156, bcdDevice=30.00
-[785962.929949] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=6
-[785962.929952] usb 1-1: Product: USB 10/100/1G/2.5G LAN
-[785962.929954] usb 1-1: Manufacturer: Realtek
-[785962.929956] usb 1-1: SerialNumber: 000000001
-[785962.991755] usbcore: registered new interface driver cdc_ether
-[785963.017068] cdc_ncm 1-1:2.0: MAC-Address: 00:24:27:88:08:15
-[785963.017072] cdc_ncm 1-1:2.0: setting rx_max = 16384
-[785963.017169] cdc_ncm 1-1:2.0: setting tx_max = 16384
-[785963.017682] cdc_ncm 1-1:2.0 usb0: register 'cdc_ncm' at usb-0000:00:14.0-1, CDC NCM, 00:24:27:88:08:15
-[785963.019211] usbcore: registered new interface driver cdc_ncm
-[785963.023856] usbcore: registered new interface driver cdc_wdm
-[785963.025461] usbcore: registered new interface driver cdc_mbim
-[785963.038824] cdc_ncm 1-1:2.0 enx002427880815: renamed from usb0
-[785963.089586] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-[785963.121673] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-[785963.153682] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-...
+greg k-h
 
-This is about 2KB per second and will overwrite all contents of a 1MB
-dmesg buffer in under 10 minutes rendering them useless for debugging
-many kernel problems.
+-------------
+Pseudo-Shortlog of commits:
 
-This is also an extra 180 MB/day in /var/logs (or 1GB per week) rendering
-the majority of those logs useless too.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.14.236-rc1
 
-When the link is up (expected state), spew amount is >2x higher:
-...
-[786139.600992] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.632997] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-[786139.665097] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.697100] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-[786139.729094] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.761108] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-...
+Jan Beulich <jbeulich@suse.com>
+    xen-pciback: redo VF placement in the virtual topology
 
-Chrome OS cannot support RTL8156 until this is fixed.
+Cheng Jian <cj.chengjian@huawei.com>
+    sched/fair: Optimize select_idle_cpu
 
-Signed-off-by: Grant Grundler <grundler@chromium.org>
-Reviewed-by: Hayes Wang <hayeswang@realtek.com>
-Link: https://lore.kernel.org/r/20210120011208.3768105-1-grundler@chromium.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/usb/cdc_ncm.c  | 12 +++++++++++-
- include/linux/usb/usbnet.h |  2 ++
- 2 files changed, 13 insertions(+), 1 deletion(-)
+Sean Christopherson <seanjc@google.com>
+    KVM: SVM: Truncate GPR value for DR and CR accesses in !64-bit mode
 
-diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
-index faca70c3647d..82ec00a7370d 100644
---- a/drivers/net/usb/cdc_ncm.c
-+++ b/drivers/net/usb/cdc_ncm.c
-@@ -1590,6 +1590,15 @@ cdc_ncm_speed_change(struct usbnet *dev,
- 	uint32_t rx_speed = le32_to_cpu(data->DLBitRRate);
- 	uint32_t tx_speed = le32_to_cpu(data->ULBitRate);
- 
-+	/* if the speed hasn't changed, don't report it.
-+	 * RTL8156 shipped before 2021 sends notification about every 32ms.
-+	 */
-+	if (dev->rx_speed == rx_speed && dev->tx_speed == tx_speed)
-+		return;
-+
-+	dev->rx_speed = rx_speed;
-+	dev->tx_speed = tx_speed;
-+
- 	/*
- 	 * Currently the USB-NET API does not support reporting the actual
- 	 * device speed. Do print it instead.
-@@ -1633,7 +1642,8 @@ static void cdc_ncm_status(struct usbnet *dev, struct urb *urb)
- 		 * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
- 		 * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
- 		 */
--		usbnet_link_change(dev, !!event->wValue, 0);
-+		if (netif_carrier_ok(dev->net) != !!event->wValue)
-+			usbnet_link_change(dev, !!event->wValue, 0);
- 		break;
- 
- 	case USB_CDC_NOTIFY_SPEED_CHANGE:
-diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h
-index e2ec3582e549..452ca06ed253 100644
---- a/include/linux/usb/usbnet.h
-+++ b/include/linux/usb/usbnet.h
-@@ -83,6 +83,8 @@ struct usbnet {
- #		define EVENT_LINK_CHANGE	11
- #		define EVENT_SET_RX_MODE	12
- #		define EVENT_NO_IP_ALIGN	13
-+	u32			rx_speed;	/* in bps - NOT Mbps */
-+	u32			tx_speed;	/* in bps - NOT Mbps */
- };
- 
- static inline struct usb_driver *driver_of(struct usb_interface *intf)
--- 
-2.30.2
+Michael Chan <michael.chan@broadcom.com>
+    bnxt_en: Remove the setting of dev_port.
 
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: No need to simulate speculative domain for immediates
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Fix mask direction swap upon off reg sign change
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Wrap aux data inside bpf_sanitize_info container
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Fix leakage of uninitialized bpf stack under speculation
+
+Alexei Starovoitov <ast@kernel.org>
+    selftests/bpf: make 'dubious pointer arithmetic' test useful
+
+Alexei Starovoitov <ast@fb.com>
+    selftests/bpf: fix test_align
+
+Alexei Starovoitov <ast@kernel.org>
+    bpf/verifier: disallow pointer subtraction
+
+Alexei Starovoitov <ast@kernel.org>
+    bpf: do not allow root to mangle valid pointers
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Update selftests to reflect new error states
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Tighten speculative pointer arithmetic mask
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Move sanitize_val_alu out of op switch
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Refactor and streamline bounds check into helper
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Improve verifier error messages for users
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Rework ptr_limit into alu_limit and add common error path
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Ensure off_reg has no mixed signed bounds for all types
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Move off_reg into sanitize_ptr_alu
+
+Piotr Krysiuk <piotras@gmail.com>
+    bpf, selftests: Fix up some test_verifier cases for unprivileged
+
+Mina Almasry <almasrymina@google.com>
+    mm, hugetlb: fix simple resv_huge_pages underflow on UFFDIO_COPY
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: fixup error handling in fixup_inode_link_counts
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: fix error handling in btrfs_del_csums
+
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+    nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
+
+Junxiao Bi <junxiao.bi@oracle.com>
+    ocfs2: fix data corruption by fallocate
+
+Mark Rutland <mark.rutland@arm.com>
+    pid: take a reference when initializing `cad_pid`
+
+Ye Bin <yebin10@huawei.com>
+    ext4: fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: timer: Fix master timer notification
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: caif: fix memory leak in cfusbl_device_notify
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: caif: fix memory leak in caif_device_notify
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: caif: add proper error handling
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: caif: added cfserl_release function
+
+Lin Ma <linma@zju.edu.cn>
+    Bluetooth: use correct lock to prevent UAF of hdev object
+
+Lin Ma <linma@zju.edu.cn>
+    Bluetooth: fix the erroneous flush_work() order
+
+Wei Yongjun <weiyongjun1@huawei.com>
+    ieee802154: fix error return code in ieee802154_llsec_getparams()
+
+Zhen Lei <thunder.leizhen@huawei.com>
+    ieee802154: fix error return code in ieee802154_add_iface()
+
+Pablo Neira Ayuso <pablo@netfilter.org>
+    netfilter: nfnetlink_cthelper: hit EBUSY on updates if size mismatches
+
+Arnd Bergmann <arnd@arndb.de>
+    HID: i2c-hid: fix format string mismatch
+
+Zhen Lei <thunder.leizhen@huawei.com>
+    HID: pidff: fix error return code in hid_pidff_init()
+
+Julian Anastasov <ja@ssi.bg>
+    ipvs: ignore IP_VS_SVC_F_HASHED flag when adding service
+
+Max Gurtovoy <mgurtovoy@nvidia.com>
+    vfio/platform: fix module_put call in error flow
+
+Randy Dunlap <rdunlap@infradead.org>
+    vfio/pci: zap_vma_ptes() needs MMU
+
+Zhen Lei <thunder.leizhen@huawei.com>
+    vfio/pci: Fix error return code in vfio_ecap_init()
+
+Rasmus Villemoes <linux@rasmusvillemoes.dk>
+    efi: cper: fix snprintf() use in cper_dimm_err_location()
+
+Heiner Kallweit <hkallweit1@gmail.com>
+    efi: Allow EFI_MEMORY_XP and EFI_MEMORY_RO both to be cleared
+
+Grant Grundler <grundler@chromium.org>
+    net: usb: cdc_ncm: don't spew notifications
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                     |   4 +-
+ arch/x86/kvm/svm.c                           |   8 +-
+ drivers/firmware/efi/cper.c                  |   4 +-
+ drivers/firmware/efi/memattr.c               |   5 -
+ drivers/hid/i2c-hid/i2c-hid-core.c           |   4 +-
+ drivers/hid/usbhid/hid-pidff.c               |   1 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c    |   1 -
+ drivers/net/usb/cdc_ncm.c                    |  12 +-
+ drivers/vfio/pci/Kconfig                     |   1 +
+ drivers/vfio/pci/vfio_pci_config.c           |   2 +-
+ drivers/vfio/platform/vfio_platform_common.c |   2 +-
+ drivers/xen/xen-pciback/vpci.c               |  14 +-
+ fs/btrfs/file-item.c                         |  10 +-
+ fs/btrfs/tree-log.c                          |  13 +-
+ fs/ext4/extents.c                            |  43 ++--
+ fs/ocfs2/file.c                              |  55 +++-
+ include/linux/bpf_verifier.h                 |   5 +-
+ include/linux/usb/usbnet.h                   |   2 +
+ include/net/caif/caif_dev.h                  |   2 +-
+ include/net/caif/cfcnfg.h                    |   2 +-
+ include/net/caif/cfserl.h                    |   1 +
+ init/main.c                                  |   2 +-
+ kernel/bpf/verifier.c                        | 369 ++++++++++++++++-----------
+ kernel/sched/fair.c                          |   7 +-
+ mm/hugetlb.c                                 |  14 +-
+ net/bluetooth/hci_core.c                     |   7 +-
+ net/bluetooth/hci_sock.c                     |   4 +-
+ net/caif/caif_dev.c                          |  13 +-
+ net/caif/caif_usb.c                          |  14 +-
+ net/caif/cfcnfg.c                            |  16 +-
+ net/caif/cfserl.c                            |   5 +
+ net/ieee802154/nl-mac.c                      |   4 +-
+ net/ieee802154/nl-phy.c                      |   4 +-
+ net/netfilter/ipvs/ip_vs_ctl.c               |   2 +-
+ net/netfilter/nfnetlink_cthelper.c           |   8 +-
+ net/nfc/llcp_sock.c                          |   2 +
+ sound/core/timer.c                           |   3 +-
+ tools/testing/selftests/bpf/test_align.c     |  26 +-
+ tools/testing/selftests/bpf/test_verifier.c  | 114 +++++----
+ 39 files changed, 501 insertions(+), 304 deletions(-)
 
 
