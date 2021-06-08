@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91DDA3A0517
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F9F3A0519
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235031AbhFHUXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 16:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53410 "EHLO
+        id S235156AbhFHUXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 16:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234251AbhFHUXp (ORCPT
+        with ESMTP id S234763AbhFHUXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Jun 2021 16:23:45 -0400
-Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6771DC061787
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 13:21:52 -0700 (PDT)
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AF0C061789;
+        Tue,  8 Jun 2021 13:21:52 -0700 (PDT)
 Received: from localhost.localdomain (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 1FC3A3F3F8;
-        Tue,  8 Jun 2021 22:21:48 +0200 (CEST)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id DBF0E3F40D;
+        Tue,  8 Jun 2021 22:21:49 +0200 (CEST)
 From:   Konrad Dybcio <konrad.dybcio@somainline.org>
 To:     ~postmarketos/upstreaming@lists.sr.ht
 Cc:     martin.botka@somainline.org,
@@ -29,76 +29,100 @@ Cc:     martin.botka@somainline.org,
         Rob Herring <robh+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/4] arm64: dts: qcom: Add PMI8996 DTSI file
-Date:   Tue,  8 Jun 2021 22:21:39 +0200
-Message-Id: <20210608202143.247427-1-konrad.dybcio@somainline.org>
+Subject: [PATCH v4 2/4] arm64: dts: qcom: Add MSM8996v3.0 DTSI file
+Date:   Tue,  8 Jun 2021 22:21:40 +0200
+Message-Id: <20210608202143.247427-2-konrad.dybcio@somainline.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210608202143.247427-1-konrad.dybcio@somainline.org>
+References: <20210608202143.247427-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PMI8996 is *almost* the same hardware as PMI8994, say for some annoyances:
-
-- Boards equipped with PMI8996 now have to include pmic-id (which wasn't the
-case before)
-
-- Different qpnp-ibb-discharge-resistor value (will be addressed after LABIBB
-is introduced)
-
-- Different inhibit-derating-ua value (will be addressed after BCL is
-introduced)
-
-- Different ramp_up_step value (will be addressed after [if?] QPNP Flash LED
-is introduced)
-
-This DTSI is supposed to be included >>ON TOP OF<< pmi8994.dtsi, like this:
-
--- msm8996-nice-device.dts --
-\#include "pmi8994.dtsi"
-\#include "pmi8996.dtsi"
-
-or more likely like this:
-
--- msm8996-some-phone.dts --
-\#include "msm8996.dtsi"
-...
-\#include "pmi8994.dtsi"
-
--- msm8996-pmi8996-some-phone.dts --
-\#include "msm8996-some-phone.dts"
-\#include "pmi8996.dtsi"
-
-So that we only have to keep 2 DTs for devices that were shipped with both
-ones, instead of what would be three (device base + pmi8994 + pmi8996)
+Add an overlay for MSM8996v3.0, which is a pre-final revision
+of the said SoC. It has some stark differences with regards to
+GPU, or more specifically its power delivery path. Oh, and of
+course a different msm-id.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- arch/arm64/boot/dts/qcom/pmi8996.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/pmi8996.dtsi
+Changes since v3:
+- Remove yet another hidden space!
 
-diff --git a/arch/arm64/boot/dts/qcom/pmi8996.dtsi b/arch/arm64/boot/dts/qcom/pmi8996.dtsi
+ arch/arm64/boot/dts/qcom/msm8996-v3.0.dtsi | 63 ++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/msm8996-v3.0.dtsi
+
+diff --git a/arch/arm64/boot/dts/qcom/msm8996-v3.0.dtsi b/arch/arm64/boot/dts/qcom/msm8996-v3.0.dtsi
 new file mode 100644
-index 000000000000..31b47209e261
+index 000000000000..5728583af41e
 --- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/pmi8996.dtsi
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/arch/arm64/boot/dts/qcom/msm8996-v3.0.dtsi
+@@ -0,0 +1,63 @@
++// SPDX-License-Identifier: BSD-3-Clause
 +/*
 + * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
 + */
 +
-+ /*
-+  * PMI8996 is a slight modification of PMI8994 with
-+  * some notable changes, like being the first PMIC
-+  * whose the bootloader has to check to continue booting
-+  * and a change to a LABIBB parameter.
-+  */
++#include "msm8996.dtsi"
 +
 +/ {
-+	qcom,pmic-id = <0x20009 0x10013 0 0>;
++	qcom,msm-id = <246 0x30000>;
++};
++
++ /*
++  * This revision seems to have differ GPU CPR
++  * parameters, GPU frequencies and some differences
++  * when it comes to voltage delivery to.. once again
++  * the GPU. Funnily enough, it's simpler to make it an
++  * overlay on top of 3.1 (the final one) than vice versa.
++  * The differences will show here as more and more
++  * features get enabled upstream.
++  */
++
++gpu_opp_table_3_0: gpu-opp-table-30 {
++	compatible = "operating-points-v2";
++
++	opp-624000000 {
++		opp-hz = /bits/ 64 <624000000>;
++		opp-level = <7>;
++	};
++
++	opp-560000000 {
++		opp-hz = /bits/ 64 <560000000>;
++		opp-level = <6>;
++	};
++
++	opp-510000000 {
++		opp-hz = /bits/ 64 <510000000>;
++		opp-level = <5>;
++	};
++
++	opp-401800000 {
++		opp-hz = /bits/ 64 <401800000>;
++		opp-level = <4>;
++	};
++
++	opp-315000000 {
++		opp-hz = /bits/ 64 <315000000>;
++		opp-level = <3>;
++	};
++
++	opp-214000000 {
++		opp-hz = /bits/ 64 <214000000>;
++		opp-level = <3>;
++	};
++
++	opp-133000000 {
++		opp-hz = /bits/ 64 <133000000>;
++		opp-level = <3>;
++	};
++};
++
++&gpu {
++	operating-points-v2 = <&gpu_opp_table_3_0>;
 +};
 -- 
 2.31.1
