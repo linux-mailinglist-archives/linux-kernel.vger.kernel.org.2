@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE38939F6CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADE639F6D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232785AbhFHMfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:35:12 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:55843 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232772AbhFHMfL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:35:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623155599; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=rqM3fUXUMOHAbavoHfTY6h2xEOV5jKG4BPoa4nABeLE=;
- b=TXqjja5DRyYL7fDjg5ryhnwDk7iM77hOdceDNo4RldOOqZ22pceALIujZn7Swg18eOBojAGr
- zsogDLTHG0EGDgMW54nYknreK21tFQOhQTnTC81fjyJqX6Oe40HQlggFQhGHWWdkw0+cfHZF
- WrHcshv4fUZBpCC75xaz/xu3ziQ=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60bf6377e27c0cc77fa97adb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Jun 2021 12:32:55
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C886FC43460; Tue,  8 Jun 2021 12:32:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 37632C433F1;
-        Tue,  8 Jun 2021 12:32:54 +0000 (UTC)
+        id S232688AbhFHMgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:36:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232575AbhFHMgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 08:36:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F38C161360;
+        Tue,  8 Jun 2021 12:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623155653;
+        bh=xEcsZzr7bYNWUokPJaBJAWMmHii4XZV9sHm2zIUSaoY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wwmumYLiENOZy67Fbd/aV4O5pfVLdh3WOYkxZTEtdwcpUNF8emLP99SfC3bIBKgBc
+         vfvu1W56HjoBGZSDjzNWEwkwHZSVJ1CGJDnXEGwdD+ExTrCRE72Dn/q4k8VWehQh/R
+         nLmwoFKK/M7zE5tbzEjzzFYlLSB5QC1TPdIVZEUM=
+Date:   Tue, 8 Jun 2021 14:33:42 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andrey Semashev <andrey.semashev@gmail.com>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
+        acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
+        joel@joelfernandes.org, kernel@collabora.com,
+        krisman@collabora.com, libc-alpha@sourceware.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
+        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+Message-ID: <YL9jpvHQG2wsVTsn@kroah.com>
+References: <1622799088.hsuspipe84.astroid@bobo.none>
+ <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
+ <1622853816.mokf23xgnt.astroid@bobo.none>
+ <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
+ <1622980258.cfsuodze38.astroid@bobo.none>
+ <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
+ <1623114630.pc8fq7r5y9.astroid@bobo.none>
+ <b3488d1b-a4ff-8791-d960-a5f7ae2ea8b3@gmail.com>
+ <YL9Q2tKLZP6GKbHW@kroah.com>
+ <8fa8b7fd-58ae-9467-138d-4ff4f32f68f7@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 08 Jun 2021 18:02:54 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Rob Clark <robdclark@gmail.com>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCHv3 0/2] iommu/arm-smmu-qcom: Add SC7280 support
-In-Reply-To: <20210608120115.GA10174@willie-the-truck>
-References: <cover.1618898456.git.saiprakash.ranjan@codeaurora.org>
- <20210608120115.GA10174@willie-the-truck>
-Message-ID: <24b5ab1c287e86f195a34e6a780d5505@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8fa8b7fd-58ae-9467-138d-4ff4f32f68f7@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-08 17:31, Will Deacon wrote:
-> On Tue, Apr 20, 2021 at 11:34:55AM +0530, Sai Prakash Ranjan wrote:
->> Patch 1 adds the sc7280 smmu compatible.
->> Patch 2 moves the adreno smmu check before apss smmu to enable
->> adreno smmu specific implementation.
->> 
->> Note that dt-binding for sc7280 is already merged.
+On Tue, Jun 08, 2021 at 03:06:48PM +0300, Andrey Semashev wrote:
+> On 6/8/21 2:13 PM, Greg KH wrote:
+> > On Tue, Jun 08, 2021 at 02:03:50PM +0300, Andrey Semashev wrote:
+> > > On 6/8/21 4:25 AM, Nicholas Piggin wrote:
+> > > > 
+> > > > Are shared pthread mutexes using existing pthread APIs that are today
+> > > > implemented okay with futex1 system call a good reason to constrain
+> > > > futex2 I wonder? Or do we have an opportunity to make a bigger change
+> > > > to the API so it suffers less from non deterministic latency (for
+> > > > example)?
+> > > 
+> > > If futex2 is not able to cover futex1 use cases then it cannot be viewed as
+> > > a replacement. In the long term this means futex1 cannot be deprecated and
+> > > has to be maintained. My impression was that futex1 was basically
+> > > unmaintainable(*) and futex2 was an evolution of futex1 so that users of
+> > > futex1 could migrate relatively easily and futex1 eventually removed. Maybe
+> > > my impression was wrong, but I would like to see futex2 as a replacement and
+> > > extension of futex1, so the latter can be deprecated at some point.
+> > 
+> > You can never delete a kernel system call, so even if you "deprecate"
+> > it, it still needs to be supported for forever.
 > 
-> This conflicts with what I've already got queued at [1]. Please can you
-> send an updated version, as I wasn't sure about the initialisation 
-> order
-> you need here wrt to the ACPI parts.
-> 
-> Thanks,
-> 
-> Will
-> 
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=for-joerg/arm-smmu/updates
+> If I'm not mistaken, some syscalls were dropped from kernel in the past,
+> after it was established they are no longer used. So it is not impossible,
+> though might be more difficult specifically with futex.
 
-Sure, have rebased and sent the updated patch [1] after testing for the 
-order.
+Those syscalls were all "compatible with other obsolete operating
+system" syscalls from what I remember.  You can still run binaries
+built in 1995 just fine on your system today (I have a few around here
+somewhere...)
 
-Thanks,
-Sai
+Thinking that you can drop futex() in the next 10+ years is very wishful
+thinking given just how slow userspace applications are ever updated,
+sorry.
 
-[1] 
-https://lore.kernel.org/lkml/cover.1623155117.git.saiprakash.ranjan@codeaurora.org/
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+greg k-h
