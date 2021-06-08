@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6174739FF66
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F023A002E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234480AbhFHSc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:32:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56768 "EHLO mail.kernel.org"
+        id S234532AbhFHSko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:40:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233653AbhFHScA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:32:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B342B613AC;
-        Tue,  8 Jun 2021 18:29:50 +0000 (UTC)
+        id S234984AbhFHShp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:37:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF32A613BE;
+        Tue,  8 Jun 2021 18:33:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623176991;
-        bh=wtStW2NSvFCE9dbD5KI9A/NpOyQmvPopXx6VPXcXqUo=;
+        s=korg; t=1623177201;
+        bh=W0wYbZWIl+wTXvxvCPjl5Xb/14kUS+w5lbp2UmKecU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i7IxpWxFs6NyRtENQRD5674jE9I6oNzHSNJ7RyHenvrCk9dMON3nOag2Ofle50srp
-         bkZWsOpEMnXPPkwDocAYUapRuxw2UzGWJAejhiefagzbZ+nqeYKED9MhiCHysxQDdO
-         82BebJ7lkBPOrKk1u8XcU7tGID45LqQcpBfvDlcU=
+        b=KBeTy3ssJedpGKQkgJC+opUReE5ODj0IECQZmQIahtNeP5nbJ0LazGIjyB0AY9dH/
+         z834WLEBcfdxHlsqPecJLgqoPiHJL1uqxTqipj7u1BK7O6/f7fF+K8IS+DbI+Y85zj
+         tuRs2HzdPmyCVV2NJfygLGRw39gsmvv9bXWFlLvk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 10/29] netfilter: nfnetlink_cthelper: hit EBUSY on updates if size mismatches
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        syzbot+7ec324747ce876a29db6@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 23/58] net: caif: fix memory leak in caif_device_notify
 Date:   Tue,  8 Jun 2021 20:27:04 +0200
-Message-Id: <20210608175928.152758687@linuxfoundation.org>
+Message-Id: <20210608175933.056656541@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
-References: <20210608175927.821075974@linuxfoundation.org>
+In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
+References: <20210608175932.263480586@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 8971ee8b087750a23f3cd4dc55bff2d0303fd267 ]
+commit b53558a950a89824938e9811eddfc8efcd94e1bb upstream.
 
-The private helper data size cannot be updated. However, updates that
-contain NFCTH_PRIV_DATA_LEN might bogusly hit EBUSY even if the size is
-the same.
+In case of caif_enroll_dev() fail, allocated
+link_support won't be assigned to the corresponding
+structure. So simply free allocated pointer in case
+of error
 
-Fixes: 12f7a505331e ("netfilter: add user-space connection tracking helper infrastructure")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 7c18d2205ea7 ("caif: Restructure how link caif link layer enroll")
+Cc: stable@vger.kernel.org
+Reported-and-tested-by: syzbot+7ec324747ce876a29db6@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nfnetlink_cthelper.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ net/caif/caif_dev.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nfnetlink_cthelper.c b/net/netfilter/nfnetlink_cthelper.c
-index 8396dc8ee247..babe42ff3eec 100644
---- a/net/netfilter/nfnetlink_cthelper.c
-+++ b/net/netfilter/nfnetlink_cthelper.c
-@@ -355,10 +355,14 @@ static int
- nfnl_cthelper_update(const struct nlattr * const tb[],
- 		     struct nf_conntrack_helper *helper)
- {
-+	u32 size;
- 	int ret;
+--- a/net/caif/caif_dev.c
++++ b/net/caif/caif_dev.c
+@@ -365,6 +365,7 @@ static int caif_device_notify(struct not
+ 	struct cflayer *layer, *link_support;
+ 	int head_room = 0;
+ 	struct caif_device_entry_list *caifdevs;
++	int res;
  
--	if (tb[NFCTH_PRIV_DATA_LEN])
--		return -EBUSY;
-+	if (tb[NFCTH_PRIV_DATA_LEN]) {
-+		size = ntohl(nla_get_be32(tb[NFCTH_PRIV_DATA_LEN]));
-+		if (size != helper->data_len)
-+			return -EBUSY;
-+	}
+ 	cfg = get_cfcnfg(dev_net(dev));
+ 	caifdevs = caif_device_list(dev_net(dev));
+@@ -390,8 +391,10 @@ static int caif_device_notify(struct not
+ 				break;
+ 			}
+ 		}
+-		caif_enroll_dev(dev, caifdev, link_support, head_room,
++		res = caif_enroll_dev(dev, caifdev, link_support, head_room,
+ 				&layer, NULL);
++		if (res)
++			cfserl_release(link_support);
+ 		caifdev->flowctrl = dev_flowctrl;
+ 		break;
  
- 	if (tb[NFCTH_POLICY]) {
- 		ret = nfnl_cthelper_update_policy(helper, tb[NFCTH_POLICY]);
--- 
-2.30.2
-
 
 
