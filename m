@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A0839FFE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BE83A008B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234080AbhFHShX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:37:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56838 "EHLO mail.kernel.org"
+        id S235708AbhFHSot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:44:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234840AbhFHSfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:35:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D59A613DB;
-        Tue,  8 Jun 2021 18:32:13 +0000 (UTC)
+        id S234945AbhFHSky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:40:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B364613BC;
+        Tue,  8 Jun 2021 18:35:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177133;
-        bh=ptnoRxi+pMM2+Mfe6/YweMIwFlOIok+VokpGmOLXaLk=;
+        s=korg; t=1623177306;
+        bh=ySa+E50hx0t0wf7cdNP4vinnzBrxwEkjZqdIZ2QcoH8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jmV0tPZIDQm4W9fIh5IjO6t7v14uQLTcuajrt40YrcyVp1/N1upxWntv/x7pzMdwy
-         QRZqYkP5/lLVWd3FURRfaoxTjRHrbp9h/U4rusfI6/joYdLFv6g5E3clTxmdbew0Dw
-         zE4iz3wpQlwg9FfkiJDLXECwLKW/ch4Zu7niGqR8=
+        b=Q2r7lQB04fLa+7/pHqnKVQ+OZHcntnhnXYC7qvYUEHg2zt1dxziSS6Nt+QjEGxkJO
+         +Lb7cyZxd7c8PCGCtGWuinb9Ea1QhQMc9rVYM4QQUS7AhJQWNDqc/7GLCtQAFJ2DNY
+         Dr3MZD0jC6Lr/pWjtNSELL+xdaXil7+G0rjnhzy0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 4.14 44/47] bnxt_en: Remove the setting of dev_port.
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [PATCH 4.19 46/58] bpf: Apply F_NEEDS_EFFICIENT_UNALIGNED_ACCESS to more ACCEPT test cases.
 Date:   Tue,  8 Jun 2021 20:27:27 +0200
-Message-Id: <20210608175931.936056894@linuxfoundation.org>
+Message-Id: <20210608175933.791780772@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
-References: <20210608175930.477274100@linuxfoundation.org>
+In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
+References: <20210608175932.263480586@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +40,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: "David S. Miller" <davem@davemloft.net>
 
-commit 1d86859fdf31a0d50cc82b5d0d6bfb5fe98f6c00 upstream.
+commit 0a68632488aa0129ed530af9ae9e8573f5650812 upstream
 
-The dev_port is meant to distinguish the network ports belonging to
-the same PCI function.  Our devices only have one network port
-associated with each PCI function and so we should not set it for
-correctness.
+If a testcase has alignment problems but is expected to be ACCEPT,
+verify it using F_NEEDS_EFFICIENT_UNALIGNED_ACCESS too.
 
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Maybe in the future if we add some architecture specific code to elide
+the unaligned memory access warnings during the test, we can execute
+these as well.
+
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |    1 -
- 1 file changed, 1 deletion(-)
+ tools/testing/selftests/bpf/test_verifier.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -4791,7 +4791,6 @@ static int bnxt_hwrm_func_qcaps(struct b
- 
- 		pf->fw_fid = le16_to_cpu(resp->fid);
- 		pf->port_id = le16_to_cpu(resp->port_id);
--		bp->dev->dev_port = pf->port_id;
- 		memcpy(pf->mac_addr, resp->mac_address, ETH_ALEN);
- 		pf->max_rsscos_ctxs = le16_to_cpu(resp->max_rsscos_ctx);
- 		pf->max_cp_rings = le16_to_cpu(resp->max_cmpl_rings);
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -3787,6 +3787,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 		.result = ACCEPT,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"direct packet access: test21 (x += pkt_ptr, 2)",
+@@ -3812,6 +3813,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 		.result = ACCEPT,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"direct packet access: test22 (x += pkt_ptr, 3)",
+@@ -3842,6 +3844,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 		.result = ACCEPT,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"direct packet access: test23 (x += pkt_ptr, 4)",
+@@ -3894,6 +3897,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 		.result = ACCEPT,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"direct packet access: test25 (marking on <, good access)",
+@@ -6957,6 +6961,7 @@ static struct bpf_test tests[] = {
+ 		.result = ACCEPT,
+ 		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 		.retval = 0 /* csum_diff of 64-byte packet */,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"helper access to variable memory: size = 0 not allowed on NULL (!ARG_PTR_TO_MEM_OR_NULL)",
+@@ -8923,6 +8928,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.result = ACCEPT,
+ 		.prog_type = BPF_PROG_TYPE_XDP,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"XDP pkt read, pkt_data' > pkt_end, bad access 1",
+@@ -9094,6 +9100,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.result = ACCEPT,
+ 		.prog_type = BPF_PROG_TYPE_XDP,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"XDP pkt read, pkt_end < pkt_data', bad access 1",
+@@ -9206,6 +9213,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.result = ACCEPT,
+ 		.prog_type = BPF_PROG_TYPE_XDP,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"XDP pkt read, pkt_end >= pkt_data', bad access 1",
+@@ -9263,6 +9271,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.result = ACCEPT,
+ 		.prog_type = BPF_PROG_TYPE_XDP,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"XDP pkt read, pkt_data' <= pkt_end, bad access 1",
+@@ -9375,6 +9384,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.result = ACCEPT,
+ 		.prog_type = BPF_PROG_TYPE_XDP,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"XDP pkt read, pkt_meta' > pkt_data, bad access 1",
+@@ -9546,6 +9556,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.result = ACCEPT,
+ 		.prog_type = BPF_PROG_TYPE_XDP,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"XDP pkt read, pkt_data < pkt_meta', bad access 1",
+@@ -9658,6 +9669,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.result = ACCEPT,
+ 		.prog_type = BPF_PROG_TYPE_XDP,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"XDP pkt read, pkt_data >= pkt_meta', bad access 1",
+@@ -9715,6 +9727,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.result = ACCEPT,
+ 		.prog_type = BPF_PROG_TYPE_XDP,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"XDP pkt read, pkt_meta' <= pkt_data, bad access 1",
+@@ -11646,6 +11659,7 @@ static struct bpf_test tests[] = {
+ 		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 		.result = ACCEPT,
+ 		.retval = 1,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"calls: pkt_ptr spill into caller stack 4",
+@@ -11680,6 +11694,7 @@ static struct bpf_test tests[] = {
+ 		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 		.result = ACCEPT,
+ 		.retval = 1,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"calls: pkt_ptr spill into caller stack 5",
+@@ -11825,6 +11840,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 		.result = ACCEPT,
++		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	},
+ 	{
+ 		"calls: pkt_ptr spill into caller stack 9",
 
 
