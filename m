@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09C539FEC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F004539FECE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233695AbhFHSR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:17:26 -0400
-Received: from mga17.intel.com ([192.55.52.151]:5262 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232521AbhFHSRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:17:22 -0400
-IronPort-SDR: J6CVa4UU1ezEevKByj/k4h0d1DzESRzoqCL/lVPi780g8bXT+MO0EvV01tGXxa7Hi+3ckC0c+I
- r0aDKxQ23OSg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="185278595"
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="185278595"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 11:15:26 -0700
-IronPort-SDR: ggbw/1coGDq1tkQBJ0zHUZoR3r/iDHTweQ4qKJGKPXJgLh7pLu5/gq4Qox/wMpMjdftzG+6kXG
- +9QpbCj4coww==
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="637725608"
-Received: from ciball-mobl1.amr.corp.intel.com (HELO [10.252.140.48]) ([10.252.140.48])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 11:15:26 -0700
-Subject: Re: [RFC v2 08/32] x86/traps: Add #VE support for TDX guest
-To:     Andi Kleen <ak@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <8a1d6930f784cb57c957cf20cea870947db91e05.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <fe05830e-e82b-f338-2ba1-02651cb8087e@intel.com>
- <YL+tfGOMWEvDJTwc@google.com>
- <42f6b603-7c21-28fa-b6ec-e53268aa6ff7@intel.com>
- <3afaebee-77dc-83ff-c397-aa64991c52be@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <4635488d-b98b-330f-1485-fecfcf6e72ff@intel.com>
-Date:   Tue, 8 Jun 2021 11:15:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233944AbhFHSTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231652AbhFHSTV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:19:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CBEC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 11:17:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Co//ogi0KDTBikV6nydb3Go2X95ksXSe8+9miI8T9iQ=; b=XqG0jOqyMCpsVnKu6OAOf7cesn
+        E2JdDxB74rXo3x/fdJ0BvS0gKeX4k33xRx8wC9uGxxVTZVym9FQC5Y2MTpuJs70UmH2mLtDOrvx91
+        bKyb10iErePQdNSqez88N+ot10ovaWpWn9WhBjRo7GQBnjceqjtMwivxyVxr3Uagdff4QZ/QF9vgr
+        d8jwpb9jiib0/c2daiqQNzBN9sGxLDfmXC6PnNiTjs5YsbhXOUTc797gqQ/RcL+bS/90l5JutDeqk
+        u97O/WQvaOnEl3VYhGSaqiVr4f0SHJWNNjLZ/VK6d5IKL7HTX56PbO8F3k5lB7CYsF87cza87RzTr
+        QghaaP/g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lqgHq-004pSJ-40; Tue, 08 Jun 2021 18:17:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7418030018A;
+        Tue,  8 Jun 2021 20:17:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5FE37201D304F; Tue,  8 Jun 2021 20:17:20 +0200 (CEST)
+Date:   Tue, 8 Jun 2021 20:17:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
+        Guenter Roeck <groeck@google.com>,
+        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
+        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
+        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
+        upstream@semihalf.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
+Message-ID: <YL+0MO/1Ra1tnzhT@hirez.programming.kicks-ass.net>
+References: <20210604235046.w3hazgcpsg4oefex@google.com>
+ <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
+ <CAFP8O3+ggR8N-ffsaYSMPX7s2XgrzzTQQjOgCwUe9smyos-waA@mail.gmail.com>
+ <YL3RQCJGIw9835Y1@hirez.programming.kicks-ass.net>
+ <YL3lQ5QdNV2qwLR/@hirez.programming.kicks-ass.net>
+ <YL3q1qFO9QIRL/BA@hirez.programming.kicks-ass.net>
+ <CAKwvOdkuJBwZRigeqdZGevPF9WHyrC5pBAsz6_tWdXAc-wO+1A@mail.gmail.com>
+ <e351ac97-4038-61b5-b373-63698a787fc1@kernel.org>
+ <YL+nb235rIfEdye0@hirez.programming.kicks-ass.net>
+ <de1a21c0-f20a-cde5-016e-4b8ca92eafa9@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <3afaebee-77dc-83ff-c397-aa64991c52be@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de1a21c0-f20a-cde5-016e-4b8ca92eafa9@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 11:12 AM, Andi Kleen wrote:
-> I believe neither does mmio/msr normally (except maybe
-> ftrace+tp_printk, but that will likely work because it shouldn't
-> recurse more than once due to ftrace's reentry protection)
+On Tue, Jun 08, 2021 at 10:29:56AM -0700, Nathan Chancellor wrote:
+> On 6/8/2021 10:22 AM, Peter Zijlstra wrote:
 
-Can it do MMIO:
+> > Since it's a VM, can you use the gdb-stub to ask it where it's stuck?
+> > 
+> 
+> Unfortunately, this is the VM provided by the Windows Subsystem for Linux so
+> examining it is nigh-impossible :/ I am considering bisecting the transforms
+> that objtool does to try and figure out the one that causes the machine to
+> fail to boot or try to reproduce in a different hypervisor, unless you have
+> any other ideas.
 
-> +DEFINE_IDTENTRY(exc_virtualization_exception)
-> +{
-=======> HERE
-> +    ret = tdg_get_ve_info(&ve); 
+Does breaking Windows earn points similar to breaking the binary
+drivers? :-) :-)
 
-Recursion isn't the problem.  It would double-fault there, right?
+The below should kill this latest transform and would quickly confirm if
+the that is causing your problem. If that's not it, what was your last
+known working version?
+
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index e5947fbb9e7a..d0f231b9c5a1 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1857,10 +1857,10 @@ static int decode_sections(struct objtool_file *file)
+ 	 * Must be after add_special_section_alts(), since this will emit
+ 	 * alternatives. Must be after add_{jump,call}_destination(), since
+ 	 * those create the call insn lists.
+-	 */
+ 	ret = arch_rewrite_retpolines(file);
+ 	if (ret)
+ 		return ret;
++	 */
+ 
+ 	return 0;
+ }
