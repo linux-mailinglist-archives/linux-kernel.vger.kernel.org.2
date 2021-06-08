@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977E93A017C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1FB3A03F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234931AbhFHSwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:52:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44090 "EHLO mail.kernel.org"
+        id S238567AbhFHTYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:24:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235369AbhFHSqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:46:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E712A61459;
-        Tue,  8 Jun 2021 18:37:46 +0000 (UTC)
+        id S236629AbhFHTLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:11:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBF1461947;
+        Tue,  8 Jun 2021 18:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177467;
-        bh=VqxFuZpzm+BtdNoy7fehz+noqK2WuQlyyMKYKtQbR7k=;
+        s=korg; t=1623178144;
+        bh=k9qimZzS8pLMIf5jz271FfERmtM2ILCnjbYXe/DJ3QY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pd8xhrNSUsq5kJ8PUG5ng7ob5Ry80GsAF33i1gi89qOdTni4AUY5Cbg1yvDuwTqt2
-         nsdXGanjSgn+uxMK2XLnGYB4wxrYeyknhCZUURPvJ3KK8Yef9SSvt6hKBqc5XD0Q7X
-         PNV8lG3723Lp2w3p0Gv98hKs9wOKL07m1GKgu3YA=
+        b=qnZDfauHkO6iyeLqB2ySUxBO6qHdS0WGaHAIi0IqddsEJiQ3p3kUJdRfDvv50U6lf
+         nOBI7PEgwdcsb4XbWy2XxtZnYZQ9N4sxtcfn3BGHi9zQyN+UssOY8Wc9rRMqmLL6mO
+         GTsgvDLxb3lFfSGGZ5W7d+RyufZTfU+VjjkeyZ+c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Carl Philipp Klemm <philipp@uvos.xyz>,
-        Ivan Jelincic <parazyd@dyne.org>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Sebastian Reichel <sre@kernel.org>,
-        "Sicelo A. Mhlongo" <absicsz@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 35/78] bus: ti-sysc: Fix flakey idling of uarts and stop using swsup_sidle_act
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.12 094/161] wireguard: do not use -O3
 Date:   Tue,  8 Jun 2021 20:27:04 +0200
-Message-Id: <20210608175936.447943522@linuxfoundation.org>
+Message-Id: <20210608175948.623093629@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+References: <20210608175945.476074951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Jason A. Donenfeld <Jason@zx2c4.com>
 
-[ Upstream commit c8692ad416dcc420ce1b403596a425c8f4c2720b ]
+commit cc5060ca0285efe2728bced399a1955a7ce808b2 upstream.
 
-Looks like the swsup_sidle_act quirk handling is unreliable for serial
-ports. The serial ports just eventually stop idling until woken up and
-re-idled again. As the serial port not idling blocks any deeper SoC idle
-states, it's adds an annoying random flakeyness for power management.
+Apparently, various versions of gcc have O3-related miscompiles. Looking
+at the difference between -O2 and -O3 for gcc 11 doesn't indicate
+miscompiles, but the difference also doesn't seem so significant for
+performance that it's worth risking.
 
-Let's just switch to swsup_sidle quirk instead like we already do for
-omap3 uarts. This means we manually idle the port instead of trying to
-use the hardware autoidle features when not in use.
-
-For more details on why the serial ports have been using swsup_idle_act,
-see commit 66dde54e978a ("ARM: OMAP2+: hwmod-data: UART IP needs software
-control to manage sidle modes"). It seems that the swsup_idle_act quirk
-handling is not enough though, and for example the TI Android kernel
-changed to using swsup_sidle with commit 77c34c84e1e0 ("OMAP4: HWMOD:
-UART1: disable smart-idle.").
-
-Fixes: b4a9a7a38917 ("bus: ti-sysc: Handle swsup idle mode quirks")
-Cc: Carl Philipp Klemm <philipp@uvos.xyz>
-Cc: Ivan Jelincic <parazyd@dyne.org>
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Sebastian Reichel <sre@kernel.org>
-Cc: Sicelo A. Mhlongo <absicsz@gmail.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/lkml/CAHk-=wjuoGyxDhAF8SsrTkN0-YfCx7E6jUN3ikC_tn2AKWTTsA@mail.gmail.com/
+Link: https://lore.kernel.org/lkml/CAHmME9otB5Wwxp7H8bR_i2uH2esEMvoBMC8uEXBMH9p0q1s6Bw@mail.gmail.com/
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/bus/ti-sysc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireguard/Makefile |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-index d59e1ca9990b..90053c4a8290 100644
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -1376,9 +1376,9 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
- 	/* Uarts on omap4 and later */
- 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x50411e03, 0xffff00ff,
--		   SYSC_QUIRK_SWSUP_SIDLE_ACT | SYSC_QUIRK_LEGACY_IDLE),
-+		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
- 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x47422e03, 0xffffffff,
--		   SYSC_QUIRK_SWSUP_SIDLE_ACT | SYSC_QUIRK_LEGACY_IDLE),
-+		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
- 
- 	/* Quirks that need to be set based on the module address */
- 	SYSC_QUIRK("mcpdm", 0x40132000, 0, 0x10, -ENODEV, 0x50000800, 0xffffffff,
--- 
-2.30.2
-
+--- a/drivers/net/wireguard/Makefile
++++ b/drivers/net/wireguard/Makefile
+@@ -1,5 +1,4 @@
+-ccflags-y := -O3
+-ccflags-y += -D'pr_fmt(fmt)=KBUILD_MODNAME ": " fmt'
++ccflags-y := -D'pr_fmt(fmt)=KBUILD_MODNAME ": " fmt'
+ ccflags-$(CONFIG_WIREGUARD_DEBUG) += -DDEBUG
+ wireguard-y := main.o
+ wireguard-y += noise.o
 
 
