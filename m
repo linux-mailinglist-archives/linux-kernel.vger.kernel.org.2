@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E9339F4F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3391C39F4FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231987AbhFHLbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231959AbhFHLbB (ORCPT
+        id S232006AbhFHLcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:32:41 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3471 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231768AbhFHLcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:31:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68F8C061574;
-        Tue,  8 Jun 2021 04:29:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zD2ExAJSzKWT1fRzORsMdPpoWV1NnIEMM18+LgdwN5c=; b=t/0M9Yxf4QMDT5+XGU+7u6mdaF
-        u/0jpmk/FzUCYhvTW01w/pRduj49SPqBAduc022BsFFgTTa2pTyiZ+3HIA9RJbNycW3BGb0sQAM0V
-        sqxTTfXZ/lGjxGJDon0ruO8SgCn3jIbyBAH8r9XGbqPye0amChsyMG1f663dmzS1+JZBGqrHaKoXo
-        h/LL/Kr6vcZiWkmkKczq2MuL4TCwm809ZRo4kWWgcVjxmKnHXAws68ZT0cCc7H474kwxD7Lm4PhgC
-        4bbPQikbiUk7F76/OosiXm61I16j5tAuntUalj0xPYEartkuyYkYBHfTKDoexGPbEwEicv2ZLeUlR
-        UgBtV5QQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqZuR-00GsP0-Rk; Tue, 08 Jun 2021 11:28:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 79781300258;
-        Tue,  8 Jun 2021 13:28:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3A8CF20245F9F; Tue,  8 Jun 2021 13:28:39 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 13:28:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH] tools/perf: Do not set a variable unless it will be used
-Message-ID: <YL9UZzjqz8gHLbfo@hirez.programming.kicks-ass.net>
-References: <20210604092638.985694-1-ribalda@chromium.org>
- <YLn0D+1R2QHZYRVV@hirez.programming.kicks-ass.net>
- <CANiDSCu4Brz7FZX5oa57kNLG9h_1EASX=bdQij4+apg0ZwW8QA@mail.gmail.com>
+        Tue, 8 Jun 2021 07:32:39 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fznz20fLnz6tv8;
+        Tue,  8 Jun 2021 19:27:42 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 19:30:45 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 19:30:38 +0800
+Subject: Re: [PATCH -next] i2c: Fix missing pci_disable_device() on error in
+ ali1535_setup()
+To:     Jean Delvare <jdelvare@suse.de>
+CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1623036068-30668-1-git-send-email-zou_wei@huawei.com>
+ <20210608114636.65512e28@endymion>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <f88681e2-8156-5824-8d03-f5004dc489f3@huawei.com>
+Date:   Tue, 8 Jun 2021 19:30:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiDSCu4Brz7FZX5oa57kNLG9h_1EASX=bdQij4+apg0ZwW8QA@mail.gmail.com>
+In-Reply-To: <20210608114636.65512e28@endymion>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 09:24:23PM +0200, Ricardo Ribalda wrote:
-> Hi Peter
-> 
-> On Fri, 4 Jun 2021 at 11:36, Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Fri, Jun 04, 2021 at 11:26:38AM +0200, Ricardo Ribalda wrote:
-> > > clang-13 triggers the following warning:
-> > >
-> > > bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
-                                                                         clue here: ^^^^^^^^^^^^^
+Hi Jean,
 
-> > >         u64 len = 0;
-> > >
-> > > This patch sets the value to len only if it will be used afterwards.
-> >
-> > My vote would be to kill that warning, what absolute shite.
-> 
-> My knowledge of llvm codebase is close to NULL, so it is much easier
-> for me to "fix" the code.
+Thanks for your review and detailed explanation.
 
-That's what -Wno-unused-but-set-variable is for, which is trivial to add
-to the Makefile.
+On 2021/6/8 17:46, Jean Delvare wrote:
+> Hi Wei,
+> 
+> On Mon, 07 Jun 2021 11:21:08 +0800, Zou Wei wrote:
+>> Fix the missing pci_disable_device() before return
+>> from ali1535_setup() in the error handling case.
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+>> ---
+>>   drivers/i2c/busses/i2c-ali1535.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/i2c/busses/i2c-ali1535.c b/drivers/i2c/busses/i2c-ali1535.c
+>> index fb93152..bdbaf79 100644
+>> --- a/drivers/i2c/busses/i2c-ali1535.c
+>> +++ b/drivers/i2c/busses/i2c-ali1535.c
+>> @@ -206,6 +206,7 @@ static int ali1535_setup(struct pci_dev *dev)
+>>   exit_free:
+>>   	release_region(ali1535_smba, ALI1535_SMB_IOSIZE);
+>>   exit:
+>> +	pci_disable_device(dev);
+>>   	return retval;
+>>   }
+>>   
+> 
+> We don't actually want to disable the PCI device. Maybe it was already
+> enabled before the driver was loaded, and maybe the BIOS needs the
+> device when the system is being shut down. You'll notice that we do not
+> call pci_disable_device(dev) in ali1535_remove(), so there's no reason
+> to do it in the error path.
+> 
+> As a matter of fact the i2c-i801 driver, which is used on the same kind
+> of hardware, has the following note in its remove function:
+> 
+> 	/*
+> 	 * do not call pci_disable_device(dev) since it can cause hard hangs on
+> 	 * some systems during power-off (eg. Fujitsu-Siemens Lifebook E8010)
+> 	 */
+> 
+> So this is a nack from me, sorry.
+> 
