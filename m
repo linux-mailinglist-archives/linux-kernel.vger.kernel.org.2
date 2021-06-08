@@ -2,174 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCED39F6E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC3739F6F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhFHMj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:39:29 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:57079 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232299AbhFHMj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:39:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623155855; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=UBlZJh5rI7/1dUw1Yk4HhHruAdp5yem1UjzvehIHwFY=; b=GifkWsA7LfPiXQIUW2m8+x/7yE9GnJokMJAdKi2Jfitrf8Adovh+kUlzTrRTeYOS9arhgMA0
- MQ58o25NjxlfgQqS2wNNAB1GFU/NnRXHcev3bMIaL/8wGWHhkW1pTwPx9rrZ0QR7YH4Tj3xa
- nWITlfZK7R07nbMy2dZ7GanDSbk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60bf647b8491191eb35d96a1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Jun 2021 12:37:15
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9E53DC433D3; Tue,  8 Jun 2021 12:37:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D6AEFC433F1;
-        Tue,  8 Jun 2021 12:37:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D6AEFC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v3] ASoC: qcom: Add four speaker support on MI2S secondary
-Date:   Tue,  8 Jun 2021 18:06:44 +0530
-Message-Id: <20210608123644.31398-1-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        id S232658AbhFHMl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:41:26 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:50979 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232299AbhFHMlY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 08:41:24 -0400
+Received: by mail-pj1-f53.google.com with SMTP id g4so2367383pjk.0;
+        Tue, 08 Jun 2021 05:39:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IUd1RibEbr1RO189mP0vlG8rvokpv2jTYP6Mg5w05yE=;
+        b=CNj30DcfMTzBEBr4KJSDOjX/d56RDil/08XD+UwSnd2sBDrZiLghYvMjKEf6RuN4J4
+         UsPz5WUoxwLV3VtQMA8qLpIm2Y72zlmlwMnoHyT+3C+svNZ+aamDrrxvwjiFGt+Tm4B0
+         TSyhiyGnV/I6VSXj1kbjYqQmJByc1WN9grqCK9RrWTWrtbC/VXublTJwNqcOZl6YZEoZ
+         tysfh7ROWoc5pmHIC/czHYJzHCt/KR2J1iEoSGx5D2KchRm8pbZ4kXpgXMJ5vupWlA02
+         3FzuyqXkQwQ/LoUjaWVvXDR5Li4N/fQ/dO6XDU7k+qEs1uvXdOX4BaZW3UmySjYcEMdK
+         SkPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IUd1RibEbr1RO189mP0vlG8rvokpv2jTYP6Mg5w05yE=;
+        b=QTYjWCgvvAPiqta5/GxPjri4OSvWfvHltBVAOzB4lXylmcurxKSI6Jqd8tp2BWKXwu
+         CT3+dUXuYcJynsJ/gDiYSWb3ZdcZj9X+tlMtK7Wj/cIhsqg+/u3NDbUZEXu7qt//K4zs
+         lJy6NevTZ6yA1XzUZQXQMFLUPeTbUOpTWdoKQTZTkDuJ0bZz3esYYaZYMS95qNnu2puc
+         j11bHp3IYPIENq3l6o28n0s13nAYPFTGCQxe4AZjnR0aGagWurtkOFFfPEoo64H7zmt8
+         rYTE9nk/KKKr87AeJZvXrOd2lviLTrM5S8PDtaivzm2vjDxbMPm5v996EfLjSrhkjtXd
+         Y8kQ==
+X-Gm-Message-State: AOAM530pJfxZzghIMBtbgkORc171nm/HoFkHtr2cF22jfoSlOndC6OzW
+        ignEbUCWqyxRC8+AOwx//sWM5lAboRgBJpVme8cevmJDyqg=
+X-Google-Smtp-Source: ABdhPJwhSijydSHoyTNvnLyUWjc9x1RknZ3UIDRnGT16hzVQPS/Abx06TeX1mTIRvUTbH/3R9dJvLzBltB0zddzcG6M=
+X-Received: by 2002:a17:90a:80c5:: with SMTP id k5mr4741288pjw.129.1623155898187;
+ Tue, 08 Jun 2021 05:38:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20161202195416.58953-1-andriy.shevchenko@linux.intel.com>
+ <YLdEZoSWI41fcTB1@smile.fi.intel.com> <YLdG91qspr19heDS@smile.fi.intel.com>
+ <YLss6ZNPMIXleLLF@dhcp-128-65.nay.redhat.com> <YL5HvUqtsDXx5CzM@smile.fi.intel.com>
+ <YL5U/zSb50SnbLgW@smile.fi.intel.com> <YL9hxPdPj0dYMyaD@dhcp-128-65.nay.redhat.com>
+In-Reply-To: <YL9hxPdPj0dYMyaD@dhcp-128-65.nay.redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 8 Jun 2021 15:38:01 +0300
+Message-ID: <CAHp75VcPuf6BLGf7Y3RO2M-gHMFZMTeb4ftnj_tbGS4TxvThxA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] firmware: dmi_scan: Make it work in kexec'ed kernel
+To:     Dave Young <dyoung@redhat.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        =?UTF-8?Q?Javier_Ti=C3=A1?= <javier.tia@gmail.com>,
+        kexec@lists.infradead.org, Eric Biederman <ebiederm@xmission.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add four speaker support on MI2S secondary block
-by using I2S SD1 line on gpio52 pin, and add channel map
-control support in the lpass-cpu audio driver.
+On Tue, Jun 8, 2021 at 3:29 PM Dave Young <dyoung@redhat.com> wrote:
+> On 06/07/21 at 08:18pm, Andy Shevchenko wrote:
+> > On Mon, Jun 07, 2021 at 07:22:21PM +0300, Andy Shevchenko wrote:
+> > > On Sat, Jun 05, 2021 at 03:51:05PM +0800, Dave Young wrote:
+> > > > On 06/02/21 at 11:53am, Andy Shevchenko wrote:
+> > > > > On Wed, Jun 02, 2021 at 11:42:14AM +0300, Andy Shevchenko wrote:
+> > > > > > On Fri, Dec 02, 2016 at 09:54:14PM +0200, Andy Shevchenko wrote:
+> > > > > > > Until now DMI information is lost when kexec'ing. Fix this in the same way as
+> > > > > > > it has been done for ACPI RSDP.
+> > > > > > >
+> > > > > > > Series has been tested on Galileo Gen2 where DMI is used by drivers, in
+> > > > > > > particular the default I2C host speed is choosen based on DMI system
+> > > > > > > information and now gets it correct.
+> > > > > >
+> > > > > > Still nothing happens for a while and problem still exists.
+> > > > > > Can we do something about it, please?
+> > > >
+> > > > Seems I totally missed this thread. Old emails lost.
+> > >
+> > > You can always access to it via lore :-)
+> > > https://lore.kernel.org/linux-efi/20161217105721.GB6922@dhcp-128-65.nay.redhat.com/T/#u
+>
+> Thanks.  Hmm, this is for 32bit efi.  kexec efi boot support was only
+> added for 64bit. So if 32bit dmidecode does not work I'm not surprise.
+>
+> > >
+> > > (Okay, it's not full, but contains main parts anyway)
+> > >
+> > >
+> > > > The question Ard asked is to confirm if the firmware converted the
+> > > > SMBIOS3 addr to a virtual address after exit boot service. I do not
+> > > > remember some easy way to check it due to lost the context of the code.
+> > > > But you can try to check it via dmesg|grep SMBIOS both in normal boot
+> > > > and kexeced boot log.  And then compare if those addresses are
+> > > > identical.
+> > > >
+> > > > If the SMBIOS3 addr in kexec kernel is different then it should have
+> > > > been modified by firmware. Then we need patch kernel and kexec-tools to
+> > > > support it.
+> > > >
+> > > > You can try below patch to see if it works:
+> > >
+> > > So, AFAIU I have to apply patch to kexec tools for the fist kernel + userspace
+> > > and apply kernel patch for the second kernel? Or it's all for the first one?
+> > >
+> > > > apply a kexec-tools patch to kexec-tools if you do not use kexec -s
+> > > > (kexec_file_load):
+> > >
+> > > Here is how we are using it:
+> > > https://github.com/andy-shev/buildroot/blob/intel/board/intel/common/netboot/udhcpc-script.sh#L54
+> >
+> > Okay, thanks for the patches. I have applied them to both kernels, so the first
+> > one and second one are the same and kexec tools have a patch provided in the
+> > user space of the both kernels (only first one in use though).
+> >
+> > Before applying your patch, I have reverted my hacks (as per this series).
+> >
+> > Result is:
+> >
+> > # uname -a
+> > Linux buildroot 5.13.0-rc5+ #1 SMP Mon Jun 7 19:49:40 EEST 2021 i586 GNU/Linux
+> > # dmidecode
+> > # dmidecode 3.3
+> > Scanning /dev/mem for entry point.
+> > # No SMBIOS nor DMI entry point found, sorry.
+> >
+> > I.o.w. it does NOT fix the issue. My patches do (with a hint from user space).
+>
+> As I said, since it is 32bit efi, so your test results are expected,
+> also no need to check the kernel log about SMBIOS3 address changed or
+> not.
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-cpu.c    | 40 ++++++++++++++++++++++++++++++++++-
- sound/soc/qcom/lpass-sc7180.c |  1 +
- sound/soc/qcom/lpass.h        |  8 ++++++-
- 3 files changed, 47 insertions(+), 2 deletions(-)
+So, what shall I do? It's already 5 years passed without any progress
+while my patches definitely help here.
+Should I rebase and resubmit?
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index c62d2612e8f5..d03cc359983a 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -324,10 +324,43 @@ const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
- };
- EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_ops);
- 
-+int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
-+				struct snd_soc_dai *dai)
-+{
-+	int ret;
-+	struct snd_soc_dai_driver *drv = dai->driver;
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+
-+	ret =  snd_pcm_add_chmap_ctls(rtd->pcm, SNDRV_PCM_STREAM_PLAYBACK,
-+			snd_pcm_alt_chmaps, drv->playback.channels_max, 0,
-+			&drvdata->chmap_info);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(lpass_cpu_pcm_new);
-+
- int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai)
- {
- 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
--	int ret;
-+	struct snd_soc_dai_driver *drv = dai->driver;
-+	int ret, i;
-+
-+	drvdata->rx_chmap.channels = drv->playback.channels_max;
-+	drvdata->tx_chmap.channels = drv->playback.channels_max;
-+
-+	if (drv->playback.channels_max == 2)
-+		drvdata->chmap_idx = 1;
-+	else if (drv->playback.channels_max == 4)
-+		drvdata->chmap_idx = 2;
-+
-+	for (i = 0; i < drv->playback.channels_max; i++) {
-+		drvdata->tx_chmap.map[i] =
-+				snd_pcm_alt_chmaps[drvdata->chmap_idx].map[i];
-+		drvdata->rx_chmap.map[i] =
-+				snd_pcm_alt_chmaps[drvdata->chmap_idx].map[i];
-+	}
- 
- 	/* ensure audio hardware is disabled */
- 	ret = regmap_write(drvdata->lpaif_map,
-@@ -856,6 +889,11 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
- 			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
- 		}
-+		if (drvdata->mi2s_playback_sd_mode[dai_id] ==
-+			LPAIF_I2SCTL_MODE_QUAD01) {
-+			variant->dai_driver[dai_id].playback.channels_min = 4;
-+			variant->dai_driver[dai_id].playback.channels_max = 4;
-+		}
- 	}
- 
- 	/* Allocation for i2sctl regmap fields */
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index 8c168d3c589e..77a556b27cf0 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -58,6 +58,7 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
- 		},
- 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
- 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
-+		.pcm_new = lpass_cpu_pcm_new,
- 	}, {
- 		.id = LPASS_DP_RX,
- 		.name = "Hdmi",
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 83b2e08ade06..db239ea52946 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -110,6 +110,11 @@ struct lpass_data {
- 	struct lpass_hdmitx_dmactl *hdmi_tx_dmactl[LPASS_MAX_HDMI_DMA_CHANNELS];
- 	struct lpass_dp_metadata_ctl *meta_ctl;
- 	struct lpass_sstream_ctl *sstream_ctl;
-+	/* Channel map information */
-+	struct snd_pcm_chmap *chmap_info;
-+	struct snd_pcm_chmap_elem rx_chmap;
-+	struct snd_pcm_chmap_elem tx_chmap;
-+	int chmap_idx;
- };
- 
- /* Vairant data per each SOC */
-@@ -259,5 +264,6 @@ void asoc_qcom_lpass_cpu_platform_shutdown(struct platform_device *pdev);
- int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
- int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
- extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
--
-+int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
-+				struct snd_soc_dai *dai);
- #endif /* __LPASS_H__ */
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+With Best Regards,
+Andy Shevchenko
