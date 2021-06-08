@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C32E3A0674
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0583A0681
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234938AbhFHVwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 17:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234915AbhFHVwT (ORCPT
+        id S234862AbhFHWAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 18:00:23 -0400
+Received: from mail-ed1-f44.google.com ([209.85.208.44]:44840 "EHLO
+        mail-ed1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234725AbhFHWAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 17:52:19 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC941C061574;
-        Tue,  8 Jun 2021 14:50:10 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id h12so82530plf.4;
-        Tue, 08 Jun 2021 14:50:10 -0700 (PDT)
+        Tue, 8 Jun 2021 18:00:21 -0400
+Received: by mail-ed1-f44.google.com with SMTP id u24so26253556edy.11;
+        Tue, 08 Jun 2021 14:58:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=1PmZ9kz58nKHjfIBFsO+WAO9mwq+ME6l/h6YokFSMjw=;
-        b=paF71qvFbJ82VzJaJwbX5OnOp/m2MWuS0qVF5WcsfYH9E/3XtcV6uvSnMR1hJlIb7E
-         1qOu5c3dI1kMb/tHM+BfsRa8EjotdVb412Wpsp51fdXWLMym+71B7otdFG4Vd3/pDva7
-         3C1u4itQDeyYVj7jSmDNE8xgb5rgs1SWrgMFzUezZ+mHDtz/r3WoMqH72c9Tvh/u/A9U
-         ySiiuvfxszw00b09ERRhk4U7/N2owCI2paB72hwDP2r+o4IwX/ISWjBFEQFYXJiCNhzL
-         5bB3VvXf+tExgxkEbdkIUUyw80flCq5teum7bUD9wepfVw8tG/+L8kEotqFz/t/e2gcA
-         BrNg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1GgIM9q2yv+S/hbk8Q7E6JbvUMBu7C8HzNxlIoVCmk0=;
+        b=CdxDwO0i61xJE4WZR0yWRqXWpvbHZ4F57wswSDvCELatiFaKDsOayisBbkrUlXFzf/
+         kz7nvmQtqPorajhf50xRVcly9eLEo/4MTyXm5XkTmcZqqBPUHIHzJ/sBgWk9f9YDd/0f
+         2B+fSuSwfY87yghlqID+fTia/adY7ynIXWfErBqSApFLojNPqj5Wu451SUjmbJy0TEVP
+         FBub2eCuk7sQdn+c6x2KF26y90Q6ITjTKXZfZ1LmVQ8mFcLIgo83VLjS6JTiUdAtMlKV
+         SXYV9ccFtVeEYadzH7Hq6DrXMhJTNqFkJzESo60wRApYwFa5tY2uQMIBRxoTpgUGoY59
+         Mr2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=1PmZ9kz58nKHjfIBFsO+WAO9mwq+ME6l/h6YokFSMjw=;
-        b=OzidN+Q3oXnk63wck6gpCi7BxD8X596q8GagsWiGVqBqU84V8faCj1YN5JyEkqwxa/
-         ACM3pkAmEzc28rA66Ws+6RIGae9IkaCtAsQHRrVRK6REu5dODGagQu7NJHgD+Wb6FC8z
-         m65vxm1R/RACAvXedf5RuiNeJJN1si236vJcKr9ErgKughez4CMW/JzK+TZxNMvz4S3n
-         xzr+HAD9o5n52aXkawCZku6RCuKRn4zZBq1ebWCimz5hwjmprVnY16A2Nfwi+zSy8ZQF
-         B+TSqb8cZIcdLPSNCrxM/pP3posL0BJzxrhxgB/iBgLZs01O3vt2vOLc5D7n7Rn3FhNf
-         yWAg==
-X-Gm-Message-State: AOAM531NY6or5E92n3iKYteio8sM7sD6xkdWzCPRyofbf+xHwW7wZ1+e
-        39ZVE95SrxDi3DGcjj9k5jbwPj6HOxF6Vw==
-X-Google-Smtp-Source: ABdhPJz3vVrf5bzZXhMEvKhAbBLqVoo6j5WxNhEJxPxzZHuEjLBdv0kHNrPya/F/HsqmtF/a09QJlA==
-X-Received: by 2002:a17:902:c784:b029:104:9a21:262a with SMTP id w4-20020a170902c784b02901049a21262amr1808434pla.21.1623189010218;
-        Tue, 08 Jun 2021 14:50:10 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:6c1b:b1ca:5501:207d? ([2001:df0:0:200c:6c1b:b1ca:5501:207d])
-        by smtp.gmail.com with ESMTPSA id q23sm8861482pff.175.2021.06.08.14.50.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 14:50:09 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Use libata platform drivers to replace deprecated
- m68k IDE drivers
-To:     Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Finn Thain <fthain@linux-m68k.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1GgIM9q2yv+S/hbk8Q7E6JbvUMBu7C8HzNxlIoVCmk0=;
+        b=LXtRlzLJosTAW0TaUHPOtgOZEfCgPKofPlrNTIuh2FtUwgc8OMdYA7yssLqcZlgN23
+         ilEm+wKJDlRlj9ainq0xWr4OouT3kiEDEhuaysiIDXpiwVJPHnyTVd/VtKQ+nFHhFC5p
+         itVVWFjZQjdhGiUDKlJYVhdDXJ6NtmRaddjwlH3TPQ/66s7Xtxhel676DDtbsZdCN3vM
+         1ZLTrnJb4V7lqybkSzxqvl7Sib6tRrRZdcNXSCchAGZpK87eUi7KIZTEdPGxaXjd0bGM
+         bl6kK4rgvi26Rckzbv3efwnMV6a1zRPX4T/UX/+22ZG6CnSyM0taSnHZeD+VRO5T24Uq
+         076A==
+X-Gm-Message-State: AOAM531qYvfzVOhlp6PT7gm4QDYslhpd6Jlih7wIzjJPbZgBdAnRvxlX
+        mQUqwN8doHIU4ew4ic8+mP+XbfNzJQw=
+X-Google-Smtp-Source: ABdhPJz0I8y0Zosfr0ARoXE+tH2lDvOKJ+YV+0JSQaMjjok+0ByKOBo0RxuMdMcaYtMkYL4ZRQe30Q==
+X-Received: by 2002:a05:6402:51c9:: with SMTP id r9mr28249608edd.238.1623189433848;
+        Tue, 08 Jun 2021 14:57:13 -0700 (PDT)
+Received: from skbuf ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id v4sm325401ejh.86.2021.06.08.14.57.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 14:57:13 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 00:57:12 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, mnhagan88@gmail.com,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Joshua Thompson <funaho@jurai.org>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        Richard Zidlicky <rz@linux-m68k.org>
-References: <cover.1623131194.git.fthain@linux-m68k.org>
- <YL+AqIEPjMgG519L@infradead.org>
- <d3c70f7a-368a-ad9a-6575-8289234b0ce0@kernel.dk>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <36f7519d-698f-1284-551a-0dbd82e2a0d8@gmail.com>
-Date:   Wed, 9 Jun 2021 09:50:03 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2] net: dsa: b53: Do not force CPU to be always
+ tagged
+Message-ID: <20210608215712.3ae24qudzvbzknww@skbuf>
+References: <20210608212204.3978634-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <d3c70f7a-368a-ad9a-6575-8289234b0ce0@kernel.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608212204.3978634-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
+On Tue, Jun 08, 2021 at 02:22:04PM -0700, Florian Fainelli wrote:
+> Commit ca8931948344 ("net: dsa: b53: Keep CPU port as tagged in all
+> VLANs") forced the CPU port to be always tagged in any VLAN membership.
+> This was necessary back then because we did not support Broadcom tags
+> for all configurations so the only way to differentiate tagged and
+> untagged traffic while DSA_TAG_PROTO_NONE was used was to force the CPU
+> port into being always tagged.
+> 
+> With most configurations enabling Broadcom tags, especially after
+> 8fab459e69ab ("net: dsa: b53: Enable Broadcom tags for 531x5/539x
+> families") we do not need to apply this unconditional force tagging of
+> the CPU port in all VLANs.
+> 
+> A helper function is introduced to faciliate the encapsulation of the
+> specific condition requiring the CPU port to be tagged in all VLANs and
+> the dsa_switch_ops::untag_bridge_pvid boolean is moved to when
+> dsa_switch_ops::setup is called when we have already determined the
+> tagging protocol we will be using.
+> 
+> Reported-by: Matthew Hagan <mnhagan88@gmail.com>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
 
-please note that Finn's patch depends on one of mine currently under 
-review. Without that one, Q40 support may break in certain cases.
-
-Cheers,
-
-     Michael Schmitz
-
-On 9/06/21 9:04 am, Jens Axboe wrote:
-> On 6/8/21 8:37 AM, Christoph Hellwig wrote:
->> On Tue, Jun 08, 2021 at 03:46:34PM +1000, Finn Thain wrote:
->>> This patch series allows m68k platforms to switch from deprecated IDE
->>> drivers to libata drivers.
->> Thanks, this looks good to me:
->>
->> Reviewed-by: Christoph Hellwig <hch@lst.de>
->>
->> Jens, any chance you could pick this up quickly to prepare for the
->> legacy IDE removal series?
-> I can, but had assumed it'd go through the IDE tree. But not that
-> important I guess. I've queued it up for now.
->
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
