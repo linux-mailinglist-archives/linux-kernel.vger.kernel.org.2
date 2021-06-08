@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0505A39FFFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A18939FF54
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234501AbhFHSiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:38:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56100 "EHLO mail.kernel.org"
+        id S234399AbhFHScW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:32:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234886AbhFHSf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:35:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5375C613CE;
-        Tue,  8 Jun 2021 18:32:29 +0000 (UTC)
+        id S230330AbhFHSbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:31:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DDD461376;
+        Tue,  8 Jun 2021 18:29:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177149;
-        bh=u/YoHiPNvaOjM6DSUbtCv9cuDvMIjhzS/H0FsmXQYhk=;
+        s=korg; t=1623176984;
+        bh=dHPTvnook4xNYA5OGHAVgeU+E/PrCK4BuJtHzBDss4g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K82kFTy1a0dpPI5jik+gnDb6zVQ0CR8lkC6RQTgVans+YVmpItRc/mogGBQYviLxu
-         2qKMiTDZw9LqE0oVzT/JezZxlLMtz/pDYfY7JAYlrg3Dyqq03scvy6jzJpBnLFXtMs
-         J0vSk2Hlh9xbP7dy172foAo3aEnHn0TuLSAayw4U=
+        b=DFlu7piktLqjR4lACGDicCUOSeLhqwz61anhEykaLhKaybTyqE9cbHUUwVNoiMYWR
+         1YqEK0Q89bxw/5hqk/aIOmXXlTAMh9Tk1TUK86cc2cIs1bA38KkVm50Eg1hI4LDnDo
+         thWgY9xuo/IBIRe83twtOEnVWDvJUCgcsymkCsUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 18/47] net: caif: fix memory leak in cfusbl_device_notify
+        stable@vger.kernel.org, Julian Anastasov <ja@ssi.bg>,
+        Simon Horman <horms@verge.net.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+e562383183e4b1766930@syzkaller.appspotmail.com
+Subject: [PATCH 4.9 07/29] ipvs: ignore IP_VS_SVC_F_HASHED flag when adding service
 Date:   Tue,  8 Jun 2021 20:27:01 +0200
-Message-Id: <20210608175931.076573908@linuxfoundation.org>
+Message-Id: <20210608175928.056505553@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
-References: <20210608175930.477274100@linuxfoundation.org>
+In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
+References: <20210608175927.821075974@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,68 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Julian Anastasov <ja@ssi.bg>
 
-commit 7f5d86669fa4d485523ddb1d212e0a2d90bd62bb upstream.
+[ Upstream commit 56e4ee82e850026d71223262c07df7d6af3bd872 ]
 
-In case of caif_enroll_dev() fail, allocated
-link_support won't be assigned to the corresponding
-structure. So simply free allocated pointer in case
-of error.
+syzbot reported memory leak [1] when adding service with
+HASHED flag. We should ignore this flag both from sockopt
+and netlink provided data, otherwise the service is not
+hashed and not visible while releasing resources.
 
-Fixes: 7ad65bf68d70 ("caif: Add support for CAIF over CDC NCM USB interface")
-Cc: stable@vger.kernel.org
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[1]
+BUG: memory leak
+unreferenced object 0xffff888115227800 (size 512):
+  comm "syz-executor263", pid 8658, jiffies 4294951882 (age 12.560s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff83977188>] kmalloc include/linux/slab.h:556 [inline]
+    [<ffffffff83977188>] kzalloc include/linux/slab.h:686 [inline]
+    [<ffffffff83977188>] ip_vs_add_service+0x598/0x7c0 net/netfilter/ipvs/ip_vs_ctl.c:1343
+    [<ffffffff8397d770>] do_ip_vs_set_ctl+0x810/0xa40 net/netfilter/ipvs/ip_vs_ctl.c:2570
+    [<ffffffff838449a8>] nf_setsockopt+0x68/0xa0 net/netfilter/nf_sockopt.c:101
+    [<ffffffff839ae4e9>] ip_setsockopt+0x259/0x1ff0 net/ipv4/ip_sockglue.c:1435
+    [<ffffffff839fa03c>] raw_setsockopt+0x18c/0x1b0 net/ipv4/raw.c:857
+    [<ffffffff83691f20>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2117
+    [<ffffffff836920f2>] __do_sys_setsockopt net/socket.c:2128 [inline]
+    [<ffffffff836920f2>] __se_sys_setsockopt net/socket.c:2125 [inline]
+    [<ffffffff836920f2>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2125
+    [<ffffffff84350efa>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Reported-and-tested-by: syzbot+e562383183e4b1766930@syzkaller.appspotmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Julian Anastasov <ja@ssi.bg>
+Reviewed-by: Simon Horman <horms@verge.net.au>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/caif/caif_usb.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ net/netfilter/ipvs/ip_vs_ctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/caif/caif_usb.c
-+++ b/net/caif/caif_usb.c
-@@ -116,6 +116,11 @@ static struct cflayer *cfusbl_create(int
- 	return (struct cflayer *) this;
- }
- 
-+static void cfusbl_release(struct cflayer *layer)
-+{
-+	kfree(layer);
-+}
-+
- static struct packet_type caif_usb_type __read_mostly = {
- 	.type = cpu_to_be16(ETH_P_802_EX1),
- };
-@@ -128,6 +133,7 @@ static int cfusbl_device_notify(struct n
- 	struct cflayer *layer, *link_support;
- 	struct usbnet *usbnet;
- 	struct usb_device *usbdev;
-+	int res;
- 
- 	/* Check whether we have a NCM device, and find its VID/PID. */
- 	if (!(dev->dev.parent && dev->dev.parent->driver &&
-@@ -170,8 +176,11 @@ static int cfusbl_device_notify(struct n
- 	if (dev->num_tx_queues > 1)
- 		pr_warn("USB device uses more than one tx queue\n");
- 
--	caif_enroll_dev(dev, &common, link_support, CFUSB_MAX_HEADLEN,
-+	res = caif_enroll_dev(dev, &common, link_support, CFUSB_MAX_HEADLEN,
- 			&layer, &caif_usb_type.func);
-+	if (res)
-+		goto err;
-+
- 	if (!pack_added)
- 		dev_add_pack(&caif_usb_type);
- 	pack_added = true;
-@@ -181,6 +190,9 @@ static int cfusbl_device_notify(struct n
- 	layer->name[sizeof(layer->name) - 1] = 0;
- 
- 	return 0;
-+err:
-+	cfusbl_release(link_support);
-+	return res;
- }
- 
- static struct notifier_block caif_device_notifier = {
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index ba9e711f7e3d..4e08305a55c4 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -1256,7 +1256,7 @@ ip_vs_add_service(struct netns_ipvs *ipvs, struct ip_vs_service_user_kern *u,
+ 	ip_vs_addr_copy(svc->af, &svc->addr, &u->addr);
+ 	svc->port = u->port;
+ 	svc->fwmark = u->fwmark;
+-	svc->flags = u->flags;
++	svc->flags = u->flags & ~IP_VS_SVC_F_HASHED;
+ 	svc->timeout = u->timeout * HZ;
+ 	svc->netmask = u->netmask;
+ 	svc->ipvs = ipvs;
+-- 
+2.30.2
+
 
 
