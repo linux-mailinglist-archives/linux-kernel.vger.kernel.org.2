@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2E53A0216
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C8F3A0142
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237436AbhFHTAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:00:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49530 "EHLO mail.kernel.org"
+        id S235956AbhFHStf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:49:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236442AbhFHSyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:54:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 355B5613B9;
-        Tue,  8 Jun 2021 18:41:06 +0000 (UTC)
+        id S235536AbhFHSoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:44:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D56160FEA;
+        Tue,  8 Jun 2021 18:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177666;
-        bh=exxU2QBT0BIKzp7zsd9zIcFFVDZZN+mQA4L5TKN5tz4=;
+        s=korg; t=1623177396;
+        bh=tWjMsLeOtb/NYgMrbgElfA9i5rrsbAZrDJrx7GY7N70=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NTl7WbFAdt6hZfdi0GZngNQl52XvHch/5cyuLpX/aSR1F26lTcrpr2fqb8tHs2BeS
-         rNShSa7As4jPi4CnYE6htNUS1gA6Ns8v2lWJQOojEoMJ+iKjS8sqwQp3+Bme6IsD3Y
-         o15eyw16QSJQnOqT5uqNNRrJj3o+IOReq9okqEvc=
+        b=RCoPwJyvYbo7b9ce3U8VW6O30gxYwCAVYPynlLev7l3UHTW4DgU2VhIQw+IHfFCPO
+         09CSuNEW521FGIT56ulV0w0/+o0S87Iu08kJWxs3qDOqDeVwNvCshFdKBjfQZy7gOa
+         RWf8i5mr7tVfjuO38IUSinfeIP5qofFe6A12SaWY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Kiran Bhandare <kiranx.bhandare@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 056/137] ice: add correct exception tracing for XDP
+Subject: [PATCH 5.4 07/78] efi: Allow EFI_MEMORY_XP and EFI_MEMORY_RO both to be cleared
 Date:   Tue,  8 Jun 2021 20:26:36 +0200
-Message-Id: <20210608175944.282684697@linuxfoundation.org>
+Message-Id: <20210608175935.513740979@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,95 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit 89d65df024c59988291f643b4e45d1528c51aef9 ]
+[ Upstream commit 45add3cc99feaaf57d4b6f01d52d532c16a1caee ]
 
-Add missing exception tracing to XDP when a number of different
-errors can occur. The support was only partial. Several errors
-where not logged which would confuse the user quite a lot not
-knowing where and why the packets disappeared.
+UEFI spec 2.9, p.108, table 4-1 lists the scenario that both attributes
+are cleared with the description "No memory access protection is
+possible for Entry". So we can have valid entries where both attributes
+are cleared, so remove the check.
 
-Fixes: efc2214b6047 ("ice: Add support for XDP")
-Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
-Reported-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Tested-by: Kiran Bhandare <kiranx.bhandare@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Fixes: 10f0d2f577053 ("efi: Implement generic support for the Memory Attributes table")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_txrx.c | 12 +++++++++---
- drivers/net/ethernet/intel/ice/ice_xsk.c  |  8 ++++++--
- 2 files changed, 15 insertions(+), 5 deletions(-)
+ drivers/firmware/efi/memattr.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-index 5cc2854a5d48..442a9bcbf60a 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-@@ -538,7 +538,7 @@ ice_run_xdp(struct ice_ring *rx_ring, struct xdp_buff *xdp,
- 	    struct bpf_prog *xdp_prog)
- {
- 	struct ice_ring *xdp_ring;
--	int err;
-+	int err, result;
- 	u32 act;
- 
- 	act = bpf_prog_run_xdp(xdp_prog, xdp);
-@@ -547,14 +547,20 @@ ice_run_xdp(struct ice_ring *rx_ring, struct xdp_buff *xdp,
- 		return ICE_XDP_PASS;
- 	case XDP_TX:
- 		xdp_ring = rx_ring->vsi->xdp_rings[smp_processor_id()];
--		return ice_xmit_xdp_buff(xdp, xdp_ring);
-+		result = ice_xmit_xdp_buff(xdp, xdp_ring);
-+		if (result == ICE_XDP_CONSUMED)
-+			goto out_failure;
-+		return result;
- 	case XDP_REDIRECT:
- 		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
--		return !err ? ICE_XDP_REDIR : ICE_XDP_CONSUMED;
-+		if (err)
-+			goto out_failure;
-+		return ICE_XDP_REDIR;
- 	default:
- 		bpf_warn_invalid_xdp_action(act);
- 		fallthrough;
- 	case XDP_ABORTED:
-+out_failure:
- 		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_DROP:
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 952148eede30..9f36f8d7a985 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -527,9 +527,10 @@ ice_run_xdp_zc(struct ice_ring *rx_ring, struct xdp_buff *xdp)
- 
- 	if (likely(act == XDP_REDIRECT)) {
- 		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
--		result = !err ? ICE_XDP_REDIR : ICE_XDP_CONSUMED;
-+		if (err)
-+			goto out_failure;
- 		rcu_read_unlock();
--		return result;
-+		return ICE_XDP_REDIR;
+diff --git a/drivers/firmware/efi/memattr.c b/drivers/firmware/efi/memattr.c
+index 58452fde92cc..5d343dc8e535 100644
+--- a/drivers/firmware/efi/memattr.c
++++ b/drivers/firmware/efi/memattr.c
+@@ -66,11 +66,6 @@ static bool entry_is_valid(const efi_memory_desc_t *in, efi_memory_desc_t *out)
+ 		return false;
  	}
  
- 	switch (act) {
-@@ -538,11 +539,14 @@ ice_run_xdp_zc(struct ice_ring *rx_ring, struct xdp_buff *xdp)
- 	case XDP_TX:
- 		xdp_ring = rx_ring->vsi->xdp_rings[rx_ring->q_index];
- 		result = ice_xmit_xdp_buff(xdp, xdp_ring);
-+		if (result == ICE_XDP_CONSUMED)
-+			goto out_failure;
- 		break;
- 	default:
- 		bpf_warn_invalid_xdp_action(act);
- 		fallthrough;
- 	case XDP_ABORTED:
-+out_failure:
- 		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_DROP:
+-	if (!(in->attribute & (EFI_MEMORY_RO | EFI_MEMORY_XP))) {
+-		pr_warn("Entry attributes invalid: RO and XP bits both cleared\n");
+-		return false;
+-	}
+-
+ 	if (PAGE_SIZE > EFI_PAGE_SIZE &&
+ 	    (!PAGE_ALIGNED(in->phys_addr) ||
+ 	     !PAGE_ALIGNED(in->num_pages << EFI_PAGE_SHIFT))) {
 -- 
 2.30.2
 
