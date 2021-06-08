@@ -2,177 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE97E39F239
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0F439F240
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhFHJ0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:26:46 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:57863 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFHJ0o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:26:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1623144292; x=1654680292;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=4GZRJHVIFtSMABP8UBPCOQ8fkASHAEgbyI3U0o++cUo=;
-  b=jCd2O1SU1Og+YmdUimDmGpgwaPk4SWV3yRbdtI0d2XbH4MEZPSJ01cHu
-   konyL6YJ2crI7D92LVWTnQT6Pws3RNwdhPg521WasUihOmDyyvjNZu2+9
-   QQoskOJzj5806FQLT3SUVCh/2R7w8aQCV8FYah+S9jgdtM+ylgJfrH90T
-   fIEby/vx/DGYSFYF+ZCRLOXmM6taRmFyr77+pNa6AAROQR2lrkVexm5vC
-   CID+QPXmHuhmjeYHFVJElQlCw4lV0NAmlRSIcdoc2Yf8KEMTAMUvFHX0r
-   VKbtI1F0owayBGOwa/TP2CFGp7Okwup4kPgF2/elIqb+UW8zB3OyY/2W+
-   g==;
-IronPort-SDR: iDLBmDMo95+y4vEww1tRm53c/XaBH8pkm0X23LvpmXhjvUHTXQbyY8NLGU+aW7I4Ddzc6/qTvt
- ZbQ1anfGbdzNzUOGz46e88EyGh1ykX+itKaWJm01xuIDwty9S+S8gC7DBEJgikDnRdNIULGmq9
- HVlZOageaKxK4Sty55Xox5Q9LyxAzEzHOkH+riZDkZK+Pd30TZ6LlStQWjR9e5xY65DrGwTwDE
- 1UxYOCdMAZGQnuhSK8CsijyWWUN6HRfOFwRWlaBihRHEAmootV0+8X9ieE4tjvDb2Z36TJW0G4
- kRQ=
-X-IronPort-AV: E=Sophos;i="5.83,257,1616482800"; 
-   d="scan'208";a="58192265"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Jun 2021 02:24:51 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 02:24:51 -0700
-Received: from den-her-m31857h.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 8 Jun 2021 02:24:47 -0700
-Message-ID: <f9b254936d21ea1cc13f174525a97847378afef4.camel@microchip.com>
-Subject: Re: [PATCH net-next v3 03/10] net: sparx5: add hostmode with
- phylink support
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Simon Horman" <simon.horman@netronome.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>
-Date:   Tue, 8 Jun 2021 11:24:46 +0200
-In-Reply-To: <20210607153522.GG22278@shell.armlinux.org.uk>
-References: <20210604085600.3014532-1-steen.hegelund@microchip.com>
-         <20210604085600.3014532-4-steen.hegelund@microchip.com>
-         <20210607091536.GA30436@shell.armlinux.org.uk>
-         <9f4fad323e17c8ba6ebde728fcc99c87dd06fc75.camel@microchip.com>
-         <20210607130924.GE22278@shell.armlinux.org.uk>
-         <7abe6b779c1432d9dfd2fc791d70c9443caec066.camel@microchip.com>
-         <20210607153522.GG22278@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S230428AbhFHJ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 05:28:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:53752 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229507AbhFHJ2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 05:28:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1BAE1396;
+        Tue,  8 Jun 2021 02:26:08 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 708803F719;
+        Tue,  8 Jun 2021 02:26:07 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 10:26:05 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Beata Michalska <beata.michalska@arm.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: iowait boost is broken
+Message-ID: <20210608092605.bhp5yyqmzrojqxjm@e107158-lin.cambridge.arm.com>
+References: <CAEXW_YTcO=hbmdq3nOx2RJfT2yPyoFnQx5niB38R2Lzpsp38bA@mail.gmail.com>
+ <20210607191031.GA12489@e120325.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210607191031.GA12489@e120325.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
++CC  Dietmar, Rafael
 
-Thanks for your comments,
-
-On Mon, 2021-06-07 at 16:35 +0100, Russell King (Oracle) wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+On 06/07/21 20:10, Beata Michalska wrote:
+> Hi Joel,
 > 
-> On Mon, Jun 07, 2021 at 05:12:07PM +0200, Steen Hegelund wrote:
-> > Hi Russell,
-> > 
-> > Thanks for your comments,
-> > 
-> > On Mon, 2021-06-07 at 14:09 +0100, Russell King (Oracle) wrote:
-> > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > > 
-> > > On Mon, Jun 07, 2021 at 02:45:01PM +0200, Steen Hegelund wrote:
-> > > > Hi Russell,
-> > > > 
-> > > > Thanks for your comments.
-> > > > 
-> > > > On Mon, 2021-06-07 at 10:15 +0100, Russell King (Oracle) wrote:
-> > > > > 3) I really don't get what's going on with setting the port mode to
-> > > > >    2500base-X and 1000base-X here when state->interface is 10GBASER.
-> > > > 
-> > > > The high speed interfaces (> 2.5G) do not support any in-band signalling, so the only way
-> > > > that
-> > > > e.g a
-> > > > 10G interface running at 2.5G will be able to link up with its partner is if both ends
-> > > > configure
-> > > > the
-> > > > speed manually via ethtool.
-> > > 
-> > > We really should not have drivers hacking around in this way. If we want
-> > > to operate in 2500base-x or 1000base-x, then that is what phylink should
-> > > be telling the MAC driver. The MAC driver should not be making these
-> > > decisions in its mac_config() callback. Doing so makes a joke of kernel
-> > > programming.
-> > 
-> > I have this scenario where two Sparx5 Devices are connected via a 25G DAC cable.
-> > Sparx5 Device A has the cable connected to one of its 25G Serdes devices, but Sparx5 Device B
-> > has
-> > the cable connected to one of its 10G Serdes devices.
-> > 
-> > By default the Sparx5 A device will configure the link to use a speed of 25G, but the Sparx5
-> > device
-> > B will configure the link speed to 10G, so the link will remain down, as the two devices cannot
-> > communicate.
-> > 
-> > So to fix this the user will have to manually change the speed of the link on Device A to be 10G
-> > using ethtool.
-> > 
-> > I may have misunderstood the usage of the mac_config callback, but then where would the driver
-> > then
-> > use the speed information from the user to configure the Serdes?
+> Thanks for sending this out.
 > 
-> How is this any different to the situation that we have on SolidRun
-> Clearfog platforms and the Macchiatobin where we have a SFP port
-> capable of 2500base-X and 1000base-X. If we plug in a 4.3Gbps
-> fiberchannel SFP, the port is able to run at either of those speeds.
+> On Mon, Jun 07, 2021 at 12:19:01PM -0400, Joel Fernandes wrote:
+> > Hi all,
+> > Looks like iowait boost is completely broken upstream. Just
+> > documenting my findings of iowait boost issues:
+> > 
+> I wouldn't go as far to state that it is completely broken. Rather that
+> the current sugov implementation for iowait boosting is not meeting
+> the expectations and I believe this should be clarified first. More on those
+> expectations below.
+> > 1. If a CPU requests iowait boost in a cluster, another CPU can go
+> > ahead and reset very quickly it since it thinks there's no new request
+> > for the iowait boosting CPU
+> So the 'boosting' value is being tracked per CPU, so each core in a cluster
+> will have it's own variant of that. When calculating the shared freq for
+> the cluster, sugov will use max utilization reported on each core, including
+> I/O boost. Now, if there is no pending request for boosting on a given core
+> at the time of calling sugov_iowait_apply, the current 'boost' will be
+> reduced, but only this one and that will not affect boost values on remaining
+> CPUs. It means that there was no task waking up on that particular CPU after
+> waiting on I/O request. So I would say it's fine. Unless I am misunderstanding
+> your case ?
+> > 2. If the iowait is longer than a tick, then successive iowait boost
+> > doubling does not happen. So heavy I/O waiting code never gets a
+> > boost.
+> This might indeed be an issue. What's more: the fact that boosting is applied
+> per core, any migration will disregard the boosting applied so far, so
+> it might start increasing the freq on 'new' CPU from scratch.
+> Might, as sugov (and the I/O boosting) has no notion of the source of boosting
+> request so it might end up on a core that has already lifted I/O boost.
+> This also means, that having different small tasks, waking up from
+> I/O within the mentioned TICK_NSEC time window might drive the frequency to max
+> even though those would be sporadic wakeups. Things get slightly
+> cumbersome as increasing the boost does not necessarily result in the freq
+> change, so the above mentioned case would need proper timing but it is possible.
+> Also the boost value will not get doubled unless previous one has been applied.
+> This might result in misalignment between task wake-ups/placement and sugov's
+> freq changes.
+> > 3. update_load_avg() is triggered right after the the iowait boost
+> > request which makes another cpufreq update request, this request is a
+> > non-iowait boost one so it ends up resetting the iowait boost request
+> > (in the same path!).
+> Not necessarily - this is guarded by the TICK_NSEC you have mentioned:
+> in
+>     sugov_iowait_reset {
+>          ...
+>          if (delta_ns <= TICK_NSEC)
+>              return;
+>          ...
+>     }
+> So for the particular call sequence the boost should not get reset.
+> Another problem is when the non-I/O bound tasks triggers the update
+> after the TICK_NSEC has elapsed and before the frequency change is done.
+> (see sugov_should_update_freq )
+> > 4. Same as #3 but due the update_blocked_averages from new idle balance path.
+> > 
+> > Here is a patch that tries to address these problems and I see better
+> > cpufreq boosting happening, however it is just a test broken patch to
+> > highlight the issues:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/commit/?h=sched/5.4/iowait-boost-debug-1&id=3627d896d499d168fef9a388e5d6b3359acc3423
+> > 
+> > I think we ought to rewrite the whole mess instead of fixing it since
+> > a lot has changed in scheduler code over time it feels. Beata is
+> > working on rewriting the whole iowait boost infra, I am glad she has
+> > started the work on this and looking forward to helping with the
+> > patches.
+> > 
+> So back to the expectations.
+> The main problem, as I see it, is what do we actually want to achieve with
+> the I/O boosting? Is it supposed to compensate the time lost while waiting
+> for the I/O request to be completed or is is supposed to optimize the rate
+> at which I/O requests are being made. Do we want to boost I/O bound tasks by
+> default, no limits applied  or should we care about balancing performance
+> vs power ? And unless those expectations are clearly stated, we might not
+> get too far with any changes, really.
 > 
-> We can control this via ethtool, changing between the two modes by
-> either forcing the speed to either 1000 or 2500, or switching the
-> "advertisement" between 1000base-X or 2500base-X - we enforce that
-> only one of these can be advertised at any one time. The switching
-> between them happens in the ->validate callback, but that may change
-> in the future (especially as there has been a report that making
-> this decision in ->validate causes some issues in a particular usage
-> scenarios.) It seems we need to solve that basic issue first, and
-> then expand it to cater for the case you have.
+> Smth that I do agree with is what has been suggested few times by Quentin,
+> to make the I/O boosting being a per-task feature, not per-core, and that is
+> smth I have been experimenting with. This would help with maintaining the boost
+> level upon migration and could potentially improve task placement. It would also
+> eliminate sugov's misfires: currently the boost might be applied when the task
+> on behalf of which the boost has been triggered, has been migrated or is not
+> runnable at that point. Also sugov's boosting is completely unaware of
+> uclamp restrictions,and I guess it should be. This could also be fixed with
+> per-task boosting.
 > 
-> Phylink expects that the *_config and link_up callbacks are a "do
-> what I say" setup; they don't expect MAC or PCS drivers to start
-> making their own decisions at that point - because then the state
-> known to phylink and the actual hardware setup then differ.
-
-I will change the implementation to use the PCS operations, add the 25GBASER value and avoid making
-any phy_interface_t mode changes in the config function.
-
-But it looks like there is a general need for adjusting the phy_interface_t value (and the mode
-bits) based on ethtool input like speed (similar to what the phylink_helper_basex_speed function
-does), also for the nBASER case, so that would be a useful addition to phylink, to support some of
-the usecases we have.
-
-Should I add the phylink_helper_basex_speed call to the implementation now?
-
+> There are few tricky bits though:
+> - current implementation (sugov's) makes sure the boost will not get doubled
+> unless the current level of boosting has been applied -> there is no notion
+> for that when moving the boosting as a per-task feature (considered as an
+> optimization for too frequent freq changes)
+> - guarding ramping up the frequency with TICK_NSEC & freq_update_delay_ns
+> is also out of the equation (same as above)
 > 
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
-
-
--- 
-BR
-Steen
-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=
-steen.hegelund@microchip.com
-
-
+> The above two means we might be boosting faster that this is currently expected.
+> On the other hand we might lose the boosting as currently sugov does not care
+> whether that is a single or multiple tasks waking up from I/O.
+> 
+> I've been trying to come up with some heuristics that would help to decide
+> whether boosting makes sense or not (like don't boost too much if most of the
+> time the task is being blocked or when despite boosting the sleep time keeps
+> getting longer). But that seems slightly counter intuitive, to place that sort
+> of decision making in schedulers generic code (without having all the info at
+> hand) and I would expect this to be handled by other, more suited mechanisms.
+> On the other hand, boosting upon each wake-up (from I/O) seems slightly
+> excessive. But again: it all comes down to the expectations on the actually
+> desired behaviour. We could potentially add another PELT-like signal to track
+> the time spent waiting on I/O request alongside the task utilization, but that
+> means more messing with signals on the rq level and losing some performance
+> points due to needed calculations. Alternative of blindly increasing boost
+> for each relevant wake-up means that small tasks could drive the freq to its
+> max values - which I am not sure is so desired for power-aware scenarios.
+> So all in all - still in progress.
+> 
+> Any comments are more than welcomed.
+> 
+> ---
+> BR
+> B.
+> 
+> 
+> > thanks,
+> >  - Joel
