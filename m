@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AAD13A015F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23CC3A02C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235062AbhFHSvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:51:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43672 "EHLO mail.kernel.org"
+        id S234367AbhFHTI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:08:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235424AbhFHSqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:46:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78E22613C5;
-        Tue,  8 Jun 2021 18:37:27 +0000 (UTC)
+        id S237303AbhFHTAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:00:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9148613CE;
+        Tue,  8 Jun 2021 18:43:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177447;
-        bh=XP8RtZB5I8hcyEmuu0P6ZC+uh588io2AMGX5lGpuJJs=;
+        s=korg; t=1623177806;
+        bh=6Gabgy4UiKFla4967rw6B0OVHHOOlpCUIr2yB9sfypU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EJEDXWxfX0gSeX+MXUngSObe3bojVmOarFKwvME5zpVMtpADRUGmo7Y+0JBPiBEpa
-         kzsUjt6eQfjmzduBe2Drw6PSmYWeVnica/6ZX0X/NJso+zxNKs7VAEEJdYQtscBCMl
-         CUjFh3WCtMRh+k97+yaBrDXoxzkkJ/ehfj0T3SNI=
+        b=aiN4L0FVQbi/5hbhmaeDz6szC/BXQW1GV4+85psYaJxikIrdUkH+QGpIeoeDOGVV7
+         u9VytSWPQ0Q4KtO/Mwrmon4S7Wjvd7YTOZv5ZuUbxX1t2qQVOX89y03Fe192g2Z5y3
+         mfHW5vg7AwVWp84j+jp9UYS59eaD3roLNIiexNc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 55/78] nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
-Date:   Tue,  8 Jun 2021 20:27:24 +0200
-Message-Id: <20210608175937.138251732@linuxfoundation.org>
+        syzbot+aa12d6106ea4ca1b6aae@syzkaller.appspotmail.com,
+        Phillip Potter <phil@philpotter.co.uk>, stable@kernel.org,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.10 105/137] ext4: fix memory leak in ext4_mb_init_backend on error path.
+Date:   Tue,  8 Jun 2021 20:27:25 +0200
+Message-Id: <20210608175945.941826056@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-commit 4ac06a1e013cf5fdd963317ffd3b968560f33bba upstream.
+commit a8867f4e3809050571c98de7a2d465aff5e4daf5 upstream.
 
-It's possible to trigger NULL pointer dereference by local unprivileged
-user, when calling getsockname() after failed bind() (e.g. the bind
-fails because LLCP_SAP_MAX used as SAP):
+Fix a memory leak discovered by syzbot when a file system is corrupted
+with an illegally large s_log_groups_per_flex.
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000000
-  CPU: 1 PID: 426 Comm: llcp_sock_getna Not tainted 5.13.0-rc2-next-20210521+ #9
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-  Call Trace:
-   llcp_sock_getname+0xb1/0xe0
-   __sys_getpeername+0x95/0xc0
-   ? lockdep_hardirqs_on_prepare+0xd5/0x180
-   ? syscall_enter_from_user_mode+0x1c/0x40
-   __x64_sys_getpeername+0x11/0x20
-   do_syscall_64+0x36/0x70
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-This can be reproduced with Syzkaller C repro (bind followed by
-getpeername):
-https://syzkaller.appspot.com/x/repro.c?x=14def446e00000
-
-Cc: <stable@vger.kernel.org>
-Fixes: d646960f7986 ("NFC: Initial LLCP support")
-Reported-by: syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210531072138.5219-1-krzysztof.kozlowski@canonical.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: syzbot+aa12d6106ea4ca1b6aae@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Cc: stable@kernel.org
+Link: https://lore.kernel.org/r/20210412073837.1686-1-phil@philpotter.co.uk
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/llcp_sock.c |    2 ++
- 1 file changed, 2 insertions(+)
+ fs/ext4/mballoc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/nfc/llcp_sock.c
-+++ b/net/nfc/llcp_sock.c
-@@ -110,6 +110,7 @@ static int llcp_sock_bind(struct socket
- 	if (!llcp_sock->service_name) {
- 		nfc_llcp_local_put(llcp_sock->local);
- 		llcp_sock->local = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -ENOMEM;
- 		goto put_dev;
- 	}
-@@ -119,6 +120,7 @@ static int llcp_sock_bind(struct socket
- 		llcp_sock->local = NULL;
- 		kfree(llcp_sock->service_name);
- 		llcp_sock->service_name = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -EADDRINUSE;
- 		goto put_dev;
- 	}
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2738,7 +2738,7 @@ static int ext4_mb_init_backend(struct s
+ 		 */
+ 		if (sbi->s_es->s_log_groups_per_flex >= 32) {
+ 			ext4_msg(sb, KERN_ERR, "too many log groups per flexible block group");
+-			goto err_freesgi;
++			goto err_freebuddy;
+ 		}
+ 		sbi->s_mb_prefetch = min_t(uint, 1 << sbi->s_es->s_log_groups_per_flex,
+ 			BLK_MAX_SEGMENT_SIZE >> (sb->s_blocksize_bits - 9));
 
 
