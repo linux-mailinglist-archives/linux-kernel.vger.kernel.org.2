@@ -2,111 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B5939FA41
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A1639FA43
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhFHPXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231424AbhFHPXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:23:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:33388 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231338AbhFHPXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Jun 2021 11:23:34 -0400
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:40857 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbhFHPXd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:23:33 -0400
-Received: by mail-wm1-f49.google.com with SMTP id b145-20020a1c80970000b029019c8c824054so2222903wmd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 08:21:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9hSTH6iFfhk4YNZO/PD9dC5EfuAvuq3JWTMQoezRpa4=;
-        b=rVbGga0YMt9v4RX5dgluDTeRiWVagmxiI0r5XffEEGtnBUTGgfpdr8TilsetE54+aG
-         W+49JL8h9wKLOfe2XEo8MUlmzM5apk577/ud4NiVAdwH7A60G3aHuxZGXSoBUHf2D496
-         glgWg5l6oifVXTG1gPto4Qv820VWcm3Lzpb8VutkEgH3k31hrPNLcFzbkdaYh2JdgPtw
-         6s41/4/GuEVBDCpHCFDTk7MgZUXOyg1ldFA0euDOCnUtKrdGK/JbAZCssNpZ29sePJzm
-         t2X3aymp+IbTcoOYt7eJV/cXyLo24gbfnedJf01l5+H4fXemCe9VDCIlVEYmF5SmBo4H
-         O3gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9hSTH6iFfhk4YNZO/PD9dC5EfuAvuq3JWTMQoezRpa4=;
-        b=p2pOQzD9dbP5Nx8ZGBGAhpuBPML2sBFmzGdL9b/L++LIGAiRm2Zd54Tfzg7rodXbyE
-         CBFUvi7wwuJ1tNggwalQyOJCc84BS0cRoQLFgc7hI7QalXxcIoiKegn7VmCEoqMJcNX8
-         MANYy1LHNTTsFtuLzrOt/9pD8yqOlatZMYVMiVn3NKYx5vopENQvHZVc7IWCYmW7TFC1
-         +kYVNZRi+h5sTNFxjrg/2Iawy8421eADY5AUPTnQs9WcXuHZGEIy7Fr8WfZuaZyx/Srg
-         Eol/QY5Bm+V98c9APjPQMBDGMuWKKQ4W2KAhmnYhbulfRcEbTNJ6epnumfJVOspv1DYF
-         OZ/w==
-X-Gm-Message-State: AOAM5337xIqT3bzLg5G8Arft3GG/LCUh93EFly32tSYUgC21gWGw7QsX
-        zPPoW7tSTqPU0lleWsJIRMMZ+g==
-X-Google-Smtp-Source: ABdhPJyxapM48QVF45aLpo2H+FUZRplP63/n5liTflATtO1NCzwg7X8/1DrHPmn3DkqJrHfE7tmETA==
-X-Received: by 2002:a7b:c44f:: with SMTP id l15mr4870340wmi.151.1623165632463;
-        Tue, 08 Jun 2021 08:20:32 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id b26sm3123109wmj.25.2021.06.08.08.20.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Jun 2021 08:20:32 -0700 (PDT)
-Subject: Re: [PATCH v8 6/9] ASoC: codecs: wcd938x: add basic controls
-To:     Mark Brown <broonie@kernel.org>
-Cc:     robh@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com
-References: <20210601113158.16085-1-srinivas.kandagatla@linaro.org>
- <20210601113158.16085-7-srinivas.kandagatla@linaro.org>
- <20210608135933.GE4200@sirena.org.uk>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <e8ca16d9-f179-c6de-d683-21180ea4ed1b@linaro.org>
-Date:   Tue, 8 Jun 2021 16:20:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0BC266D;
+        Tue,  8 Jun 2021 08:21:41 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.5.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2C2983F73D;
+        Tue,  8 Jun 2021 08:21:40 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 16:21:37 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] arm64: perf: Report error if PMU fails to support
+ current CPU
+Message-ID: <20210608152137.GC16585@C02TD0UTHF1T.local>
+References: <20210608145228.36595-1-leo.yan@linaro.org>
+ <20210608145228.36595-2-leo.yan@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210608135933.GE4200@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608145228.36595-2-leo.yan@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Leo,
 
-
-On 08/06/2021 14:59, Mark Brown wrote:
-> On Tue, Jun 01, 2021 at 12:31:55PM +0100, Srinivas Kandagatla wrote:
+On Tue, Jun 08, 2021 at 10:52:28PM +0800, Leo Yan wrote:
+> When run perf command on the Arm big.LITTLE system (Juno-r2 board):
 > 
->> +static int wcd938x_rx_hph_mode_put(struct snd_kcontrol *kcontrol,
->> +				   struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
->> +	struct wcd938x_priv *wcd938x = snd_soc_component_get_drvdata(component);
->> +
->> +	wcd938x->hph_mode = ucontrol->value.enumerated.item[0];
->> +
->> +	return 0;
->> +}
+>   perf record -e cycles --per-thread program
 > 
-> _put() should return true if it made a change, the same bug is present
-> in a lot of other drivers too.
+> The command executes normally without any errors; but when report the
+> result with "perf report", it fails to parse the symbols.  This is
+> because the perf data file doesn't contain MMAP2 events, thus it cannot
+> find the correct object file for parsing symbols.
 > 
-Sure will fix this in next spin
-
->> +static const struct snd_kcontrol_new wcd9380_snd_controls[] = {
->> +	SOC_ENUM_EXT("RX HPH Mode", rx_hph_mode_mux_enum_wcd9380,
->> +		     wcd938x_rx_hph_mode_get, wcd938x_rx_hph_mode_put),
->> +	SOC_ENUM_EXT("TX0 MODE", tx_mode_mux_enum_wcd9380[0],
->> +		     wcd938x_tx_mode_get, wcd938x_tx_mode_put),
->> +	SOC_ENUM_EXT("TX1 MODE", tx_mode_mux_enum_wcd9380[1],
->> +		     wcd938x_tx_mode_get, wcd938x_tx_mode_put),
->> +	SOC_ENUM_EXT("TX2 MODE", tx_mode_mux_enum_wcd9380[2],
->> +		     wcd938x_tx_mode_get, wcd938x_tx_mode_put),
->> +	SOC_ENUM_EXT("TX3 MODE", tx_mode_mux_enum_wcd9380[3],
->> +		     wcd938x_tx_mode_get, wcd938x_tx_mode_put),
->> +};
+> On the big.LITTLE system, if the initialized PMU doesn't match with the
+> CPU the profiled task is scheduled on; for example, the initialized PMU
+> is on CPU0 in the LITTLE cluster, when invoke the function
+> perf_event_mmap_event() on CPU2 in the big cluster, the event is always
+> filtered out due to the CPU2 is not supported by the initialized PMU.
+> Finally, there have no any MMAP2 samples are generated for the
+> profiling.
 > 
-> Please don't use this pattern of indexing into arrays by absolute
-> number, it's error prone and hard to read.  Just declare static
-> variables for the enums and reference them individually.
+> This patch doesn't fix for this issue, alternatively, it simply reports
+> an error when detect the current CPU is not supported by PMU, so can
+> remind the user for the abnormal situation.
 
-I agree, will clean these instances in next version.
+This behaviour is by design, and is not a kernel error, so it isn't
+appropriate to use pr_err() here. NAK to adding the pr_err().
 
---srini
+I agree that the behaviour for PERF_TYPE_HARDWARE is confusing and not
+all that great, but as it's ABI it's not something that we can change.
+
+What really needs to happen here is for userspace to gain some awareness
+of big.LITTLE. For example, for the command:
+
+$ perf record -e cycles --per-thread program
+
+... what we should do is have userspace identify the set of CPU PMUs
+(based on the `cpus` attribute in sysfs), and open a per-thread event on
+each of those, which we can then summarize together.
+
+Either that, or print a warning that the system is big.LITTLE and an
+event will not count on all CPUs.
+
+Thanks,
+Mark.
+
+ 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  drivers/perf/arm_pmu.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
+> index aedea060ca8b..99ddc8bf6466 100644
+> --- a/drivers/perf/arm_pmu.c
+> +++ b/drivers/perf/arm_pmu.c
+> @@ -565,6 +565,9 @@ static int armpmu_filter_match(struct perf_event *event)
+>  	int ret;
+>  
+>  	ret = cpumask_test_cpu(cpu, &armpmu->supported_cpus);
+> +	if (!ret)
+> +		pr_err("PMU doesn't support current CPU %d\n", cpu);
+> +
+>  	if (ret && armpmu->filter_match)
+>  		return armpmu->filter_match(event);
+>  
+> -- 
+> 2.25.1
 > 
