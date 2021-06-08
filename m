@@ -2,141 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB51439EB27
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D002E39EB2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhFHBCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:02:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41105 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230209AbhFHBCV (ORCPT
+        id S230266AbhFHBFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:05:24 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:45716 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhFHBFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:02:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623114029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l9Hxnp9TzX1Qa0LPCbDI+r/Swgm1W5T0HqpzgDaMsIM=;
-        b=cJCSUgDFNaKbpGVyueCsW9AsPJ87rUUNJ2uMBjgxXT2QJvdiZBdYfxXHP3+/3p6nGYzEWg
-        tmD9Sw/ctpoL8CGN2Jao+RWPj6m+4UmOTw2ch+nQomfNLK+jYu4/ul7/uLSGdM5FMIH/GF
-        Uck9AV0RXzwXaKJm07iuCruZvckdEOY=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-229-ZtjKPfJSM66UnieZPUkJUg-1; Mon, 07 Jun 2021 21:00:28 -0400
-X-MC-Unique: ZtjKPfJSM66UnieZPUkJUg-1
-Received: by mail-pj1-f72.google.com with SMTP id 15-20020a17090a0f0fb029016ad0f32fd0so11810033pjy.6
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:00:27 -0700 (PDT)
+        Mon, 7 Jun 2021 21:05:23 -0400
+Received: by mail-lj1-f181.google.com with SMTP id u18so4503288lju.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5//JaUfOBX14+dgOWBv13EyWt9MqvlvNFYYREoGDBIk=;
+        b=MPc+PvrCmdlzhm+SAZu/oyMk07hbqpRZTLDa28l8bngJbe7aWhTF0XwYsdVl8Vm8pO
+         Z7dIWhZcuJz7uoK6p3KdtDgHy3khmfDGqUsZ65XDV1bh02D6PQBlC/t+t4kU07ERUAZr
+         0xpJLGOt0grVrVbyo19CzZLwswonoBoDCaYV+Y/ghc/ijTpEeyTTlzt96hh2PBzJXs/6
+         dkJiI+AzvBiEeY2WnehvcuLAMR9lk2hzRyScMf2uhZ2GXuctBCscoZTNDBcKD5eg/XjU
+         HCo6qJNLnF2xHfQLAojA3XWaqlqm2ze/b4sLyGRu2furjpXaT7ARRPuCasU2ZZSPQA/S
+         52bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=l9Hxnp9TzX1Qa0LPCbDI+r/Swgm1W5T0HqpzgDaMsIM=;
-        b=F1kuMFNQzelmtDQs9DAj1UVyrwMyKaS4XfeVWUIRMrK9BdnvBul4sPEawjrHK7PTS9
-         P//BqPU3D/10CdwY7vxCk97EPydBKbrYrPt/YQM/K90d/xaq7740QjxvanotRdlz8I4I
-         M5bPMwd2EQVSzYnRbuFR2H1UGvGNK6p3tIUrzRbDqx3WOiWxiERVB2NQkvjKZIFiedQk
-         OKCXglKpZgNbF0ViuADnSt4AqSHqHgKB4bb06PoljMPIE2fLfF0uOGZKJuwtXvfVQgpI
-         ZDZW0RmePnyuejSuSvCFWDOnsjuuQRY2NeFou2KeHxGYKTqJZheKw/t9tUGYEycTrtQv
-         L6Fw==
-X-Gm-Message-State: AOAM533FMmy4RZYsdbM5KwPAU2v6GVSkmCIiAwmS1LAidyN3DCU0GW4Y
-        Pdu/xbeHo5UPr5mUImMTFUGtQRMcUbQvu9p28L2z0mX9U2csqXHrPBxElKZijtzpmLag3RwmHt3
-        TjND8+xmeV5/R4P1Za5HRl1UW
-X-Received: by 2002:a17:90a:db0f:: with SMTP id g15mr1973146pjv.156.1623114026999;
-        Mon, 07 Jun 2021 18:00:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwYWbmdIHR4JeIkPyMKnrD47V0fE4/gLC34oE2C1BXzJ6Yk+6wQV2cQXaOEH+lTIww5tPr8Pg==
-X-Received: by 2002:a17:90a:db0f:: with SMTP id g15mr1973123pjv.156.1623114026742;
-        Mon, 07 Jun 2021 18:00:26 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id w142sm9258485pff.154.2021.06.07.18.00.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 18:00:26 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Gerd Hoffmann <kraxel@redhat.com>
-References: <20210602120111.5e5bcf93.alex.williamson@redhat.com>
- <20210602180925.GH1002214@nvidia.com>
- <20210602130053.615db578.alex.williamson@redhat.com>
- <20210602195404.GI1002214@nvidia.com>
- <20210602143734.72fb4fa4.alex.williamson@redhat.com>
- <6a9426d7-ed55-e006-9c4c-6b7c78142e39@redhat.com>
- <20210603130927.GZ1002214@nvidia.com>
- <65614634-1db4-7119-1a90-64ba5c6e9042@redhat.com>
- <20210604115805.GG1002214@nvidia.com>
- <895671cc-5ef8-bc1a-734c-e9e2fdf03652@redhat.com>
- <20210607141424.GF1002214@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <1cf9651a-b8ee-11f1-1f70-db3492a76400@redhat.com>
-Date:   Tue, 8 Jun 2021 09:00:15 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5//JaUfOBX14+dgOWBv13EyWt9MqvlvNFYYREoGDBIk=;
+        b=e1KaqOnw9mDPWyMhq9+yqACFKvkUQ1ct/Uh0kJL3ZDmNCUWUjMAWx0cJr1SaDVVvF+
+         MxHI64DQvw/4Pjk0Z9nDwE3AKUQJHSUufbT5HUjLnts1s4hU94QLeQn3W9w+JA3zwy40
+         LzExILH6XM8/G05M1gZXbAs16A+XXyZw7CnRNAwlt+WLmxYrtgWUUaX2AGUxA6LufLr8
+         n6OwxBJUCCPAQRIjGO5Jr6WHYec4Um8BnTgn+3AOVBfjZbF54ZsE9jyDaKwO87QN8xAq
+         pyzJ0Dlh/DvHfDRaXtzTRByYFJ8aeh3hBfq9U4lidcszzix4NwWV9OlpXI97ZePVWXlc
+         WHhA==
+X-Gm-Message-State: AOAM532/1UkgO/i/0f6UObTQYz28zRTKTm9vTLQN5uxZpgk3k17sKXOC
+        aKeOnqAolhcQqAndDdbTqqZKacR+thjG5qPAk8FM8g==
+X-Google-Smtp-Source: ABdhPJwtAnVFUfmlRsI5GZAF/YZeE0NxPIIDqWwmyw5vqjnlHPZ0IgJR4g0KPh7f/sZR67V8zlRsiN/ztcR8O/uLbbM=
+X-Received: by 2002:a2e:8ec2:: with SMTP id e2mr15688040ljl.446.1623114138007;
+ Mon, 07 Jun 2021 18:02:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210607141424.GF1002214@nvidia.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210605215215.171165-1-andrealmeid@collabora.com>
+In-Reply-To: <20210605215215.171165-1-andrealmeid@collabora.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Mon, 7 Jun 2021 18:02:05 -0700
+Message-ID: <CAGS_qxoMZXLQDeyqF2C3U5VMgJFwWejsQSg9s4s0S0-X7YTWyA@mail.gmail.com>
+Subject: Re: [PATCH] lib: Convert UUID runtime test to KUnit
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
+        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
+        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-ÔÚ 2021/6/7 ÏÂÎç10:14, Jason Gunthorpe Ð´µÀ:
-> On Mon, Jun 07, 2021 at 11:18:33AM +0800, Jason Wang wrote:
+On Sat, Jun 5, 2021 at 2:52 PM Andr=C3=A9 Almeida <andrealmeid@collabora.co=
+m> wrote:
 >
->> Note that no drivers call these things doesn't meant it was not
->> supported by the spec.
-> Of course it does. If the spec doesn't define exactly when the driver
-> should call the cache flushes for no-snoop transactions then the
-> protocol doesn't support no-soop.
-
-
-Just to make sure we are in the same page. What I meant is, if the DMA 
-behavior like (no-snoop) is device specific. There's no need to mandate 
-a virtio general attributes. We can describe it per device. The devices 
-implemented in the current spec does not use non-coherent DMA doesn't 
-mean any future devices won't do that. The driver could choose to use 
-transport (e.g PCI), platform (ACPI) or device specific (general virtio 
-command) way to detect and flush cache when necessary.
-
-
+> Remove custom functions for testing and use KUnit framework. Test cases
+> and test data remains the same.
 >
-> no-snoop is only used in very specific sequences of operations, like
-> certain GPU usages, because regaining coherence on x86 is incredibly
-> expensive.
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
+> ---
+>  lib/Kconfig.debug |  13 +++--
+>  lib/Makefile      |   2 +-
+>  lib/test_uuid.c   | 131 ++++++++++++++++++----------------------------
+>  3 files changed, 62 insertions(+), 84 deletions(-)
 >
-> ie I wouldn't ever expect a NIC to use no-snoop because NIC's expect
-> packets to be processed by the CPU.
-
-
-For NIC yes. But virtio is more that just NIC. We've already supported 
-GPU and crypto devices. In this case, no-snoop will be useful since the 
-data is not necessarily expected to be processed by CPU.
-
-And a lot of other type of devices are being proposed.
-
-Thanks
-
-
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 678c13967580..e8bd574d7a67 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2188,9 +2188,6 @@ config TEST_BITMAP
 >
-> "non-coherent DMA" is some general euphemism that evokes images of
-> embedded platforms that don't have coherent DMA at all and have low
-> cost ways to regain coherence. This is not at all what we are talking
-> about here at all.
->   
-> Jason
+>           If unsure, say N.
 >
+> -config TEST_UUID
+> -       tristate "Test functions located in the uuid module at runtime"
+> -
+>  config TEST_XARRAY
+>         tristate "Test the XArray code at runtime"
+>
+> @@ -2429,6 +2426,16 @@ config BITS_TEST
+>
+>           If unsure, say N.
+>
+> +config TEST_UUID
+> +       tristate "Unit test for UUID" if !KUNIT_ALL_TESTS
+> +       depends on KUNIT
+> +       default KUNIT_ALL_TESTS
+> +       help
+> +         This builds the UUID unit test.
+> +         Tests parsing functions for UUID/GUID strings.
+> +
+> +         If unsure, say N.
+> +
 
+Random question: this moves the config option down.
+Is the intent to keep all the KUnit-based tests together?
+
+I personally think it would be fine to leave it where it was, makes
+`git blame` a bit more useful.
+
+>  config TEST_UDELAY
+>         tristate "udelay test driver"
+>         help
+> diff --git a/lib/Makefile b/lib/Makefile
+> index 2cc359ec1fdd..6ef3c614409d 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -85,7 +85,6 @@ obj-$(CONFIG_TEST_STATIC_KEYS) +=3D test_static_key_bas=
+e.o
+>  obj-$(CONFIG_TEST_PRINTF) +=3D test_printf.o
+>  obj-$(CONFIG_TEST_BITMAP) +=3D test_bitmap.o
+>  obj-$(CONFIG_TEST_STRSCPY) +=3D test_strscpy.o
+> -obj-$(CONFIG_TEST_UUID) +=3D test_uuid.o
+>  obj-$(CONFIG_TEST_XARRAY) +=3D test_xarray.o
+>  obj-$(CONFIG_TEST_PARMAN) +=3D test_parman.o
+>  obj-$(CONFIG_TEST_KMOD) +=3D test_kmod.o
+> @@ -354,5 +353,6 @@ obj-$(CONFIG_LIST_KUNIT_TEST) +=3D list-test.o
+>  obj-$(CONFIG_LINEAR_RANGES_TEST) +=3D test_linear_ranges.o
+>  obj-$(CONFIG_BITS_TEST) +=3D test_bits.o
+>  obj-$(CONFIG_CMDLINE_KUNIT_TEST) +=3D cmdline_kunit.o
+> +obj-$(CONFIG_TEST_UUID) +=3D test_uuid.o
+>
+>  obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) +=3D devmem_is_allowed.o
+> diff --git a/lib/test_uuid.c b/lib/test_uuid.c
+> index cd819c397dc7..45c919b0d724 100644
+> --- a/lib/test_uuid.c
+> +++ b/lib/test_uuid.c
+> @@ -1,21 +1,20 @@
+> +// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
+>  /*
+> - * Test cases for lib/uuid.c module.
+> + * Unit tests for lib/uuid.c module.
+> + *
+> + * Copyright 2016 Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> + * Copyright 2021 Andr=C3=A9 Almeida <andrealmeid@riseup.net>
+>   */
+> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> -
+> -#include <linux/init.h>
+> -#include <linux/kernel.h>
+> -#include <linux/module.h>
+> -#include <linux/string.h>
+> +#include <kunit/test.h>
+>  #include <linux/uuid.h>
+>
+> -struct test_uuid_data {
+> +struct test_data {
+>         const char *uuid;
+>         guid_t le;
+>         uuid_t be;
+>  };
+>
+> -static const struct test_uuid_data test_uuid_test_data[] =3D {
+> +static const struct test_data correct_data[] =3D {
+>         {
+>                 .uuid =3D "c33f4995-3701-450e-9fbf-206a2e98e576",
+>                 .le =3D GUID_INIT(0xc33f4995, 0x3701, 0x450e, 0x9f, 0xbf,=
+ 0x20, 0x6a, 0x2e, 0x98, 0xe5, 0x76),
+> @@ -33,101 +32,73 @@ static const struct test_uuid_data test_uuid_test_da=
+ta[] =3D {
+>         },
+>  };
+>
+> -static const char * const test_uuid_wrong_data[] =3D {
+> +static const char * const wrong_data[] =3D {
+>         "c33f4995-3701-450e-9fbf206a2e98e576 ", /* no hyphen(s) */
+>         "64b4371c-77c1-48f9-8221-29f054XX023b", /* invalid character(s) *=
+/
+>         "0cb4ddff-a545-4401-9d06-688af53e",     /* not enough data */
+>  };
+>
+> -static unsigned total_tests __initdata;
+> -static unsigned failed_tests __initdata;
+> -
+> -static void __init test_uuid_failed(const char *prefix, bool wrong, bool=
+ be,
+> -                                   const char *data, const char *actual)
+> +static void uuid_correct_le(struct kunit *test)
+>  {
+> -       pr_err("%s test #%u %s %s data: '%s'\n",
+> -              prefix,
+> -              total_tests,
+> -              wrong ? "passed on wrong" : "failed on",
+> -              be ? "BE" : "LE",
+> -              data);
+> -       if (actual && *actual)
+> -               pr_err("%s test #%u actual data: '%s'\n",
+> -                      prefix,
+> -                      total_tests,
+> -                      actual);
+> -       failed_tests++;
+> +       guid_t le;
+> +       const struct test_data *data =3D (const struct test_data *)(test-=
+>param_value);
+> +
+> +       KUNIT_ASSERT_EQ(test, guid_parse(data->uuid, &le), 0);
+> +       KUNIT_EXPECT_TRUE(test, guid_equal(&data->le, &le));
+>  }
+>
+> -static void __init test_uuid_test(const struct test_uuid_data *data)
+> +static void uuid_correct_be(struct kunit *test)
+>  {
+> -       guid_t le;
+>         uuid_t be;
+> -       char buf[48];
+> -
+> -       /* LE */
+> -       total_tests++;
+> -       if (guid_parse(data->uuid, &le))
+> -               test_uuid_failed("conversion", false, false, data->uuid, =
+NULL);
+> -
+> -       total_tests++;
+> -       if (!guid_equal(&data->le, &le)) {
+> -               sprintf(buf, "%pUl", &le);
+> -               test_uuid_failed("cmp", false, false, data->uuid, buf);
+> -       }
+> -
+> -       /* BE */
+> -       total_tests++;
+> -       if (uuid_parse(data->uuid, &be))
+> -               test_uuid_failed("conversion", false, true, data->uuid, N=
+ULL);
+> -
+> -       total_tests++;
+> -       if (!uuid_equal(&data->be, &be)) {
+> -               sprintf(buf, "%pUb", &be);
+> -               test_uuid_failed("cmp", false, true, data->uuid, buf);
+> -       }
+> +       const struct test_data *data =3D (const struct test_data *)(test-=
+>param_value);
+> +
+
+> +       KUNIT_ASSERT_EQ(test, uuid_parse(data->uuid, &be), 0);
+> +       KUNIT_EXPECT_TRUE(test, uuid_equal(&data->be, &be));
+
+
+You could make use of the _MSG variants, fyi.
+See https://www.kernel.org/doc/html/latest/dev-tools/kunit/tips.html#custom=
+izing-error-messages
+
+I'd actually written up a version of this patch but never ended up
+sending it out.
+(I prefer how you've more properly split up the test cases and used
+parameterized testing.)
+
+Here's how I'd converted the test case using those _MSG variants:
+        /* LE */
+        KUNIT_EXPECT_FALSE_MSG(test, guid_parse(data->uuid, &le),
+                               "LE: failed to parse '%s'", data->uuid);
+
+        KUNIT_EXPECT_TRUE_MSG(test, guid_equal(&data->le, &le),
+                "LE: '%s' should be equal to %pUl", data->uuid, &le);
+
+        /* BE */
+        KUNIT_EXPECT_FALSE_MSG(test, uuid_parse(data->uuid, &be),
+                               "BE: failed to parse '%s'", data->uuid);
+
+        KUNIT_EXPECT_TRUE_MSG(test, uuid_equal(&data->be, &be),
+                "BE: '%s' should be equal to %pUl", data->uuid, &be);
+
+Example failure output:
+          # test_uuid: EXPECTATION FAILED at lib/test_uuid.c:77
+          Expected uuid_equal(&data->be, &be) to be true, but is false
+
+      BE: 'c33f4995-3701-450e-9fbf-206a2e98e576' should be equal to
+95493fc3-0137-0e45-9fbf-206a2e98e576
+          not ok 1 - test_uuid
+
+
+>  }
+>
+> -static void __init test_uuid_wrong(const char *data)
+> +static void uuid_wrong_le(struct kunit *test)
+>  {
+>         guid_t le;
+> -       uuid_t be;
+> -
+> -       /* LE */
+> -       total_tests++;
+> -       if (!guid_parse(data, &le))
+> -               test_uuid_failed("negative", true, false, data, NULL);
+> +       const char *data =3D (const char *)(test->param_value);
+>
+> -       /* BE */
+> -       total_tests++;
+> -       if (!uuid_parse(data, &be))
+> -               test_uuid_failed("negative", true, true, data, NULL);
+> +       KUNIT_ASSERT_NE(test, guid_parse(data, &le), 0);
+>  }
+>
+> -static int __init test_uuid_init(void)
+> +static void uuid_wrong_be(struct kunit *test)
+>  {
+> -       unsigned int i;
+> -
+> -       for (i =3D 0; i < ARRAY_SIZE(test_uuid_test_data); i++)
+> -               test_uuid_test(&test_uuid_test_data[i]);
+> -
+> -       for (i =3D 0; i < ARRAY_SIZE(test_uuid_wrong_data); i++)
+> -               test_uuid_wrong(test_uuid_wrong_data[i]);
+> +       uuid_t be;
+> +       const char *data =3D (const char *)(test->param_value);
+>
+> -       if (failed_tests =3D=3D 0)
+> -               pr_info("all %u tests passed\n", total_tests);
+> -       else
+> -               pr_err("failed %u out of %u tests\n", failed_tests, total=
+_tests);
+> +       KUNIT_ASSERT_NE(test, uuid_parse(data, &be), 0);
+> +}
+>
+> -       return failed_tests ? -EINVAL : 0;
+> +static void case_to_desc_correct(const struct test_data *t, char *desc)
+> +{
+> +       strcpy(desc, t->uuid);
+>  }
+> -module_init(test_uuid_init);
+>
+> -static void __exit test_uuid_exit(void)
+> +KUNIT_ARRAY_PARAM(correct, correct_data, case_to_desc_correct);
+> +
+> +static void case_to_desc_wrong(const char * const *s, char *desc)
+>  {
+> -       /* do nothing */
+> +       strcpy(desc, *s);
+>  }
+> -module_exit(test_uuid_exit);
+> +
+> +KUNIT_ARRAY_PARAM(wrong, wrong_data, case_to_desc_wrong);
+> +
+> +static struct kunit_case uuid_test_cases[] =3D {
+> +       KUNIT_CASE_PARAM(uuid_correct_be, correct_gen_params),
+> +       KUNIT_CASE_PARAM(uuid_correct_le, correct_gen_params),
+> +       KUNIT_CASE_PARAM(uuid_wrong_be, wrong_gen_params),
+> +       KUNIT_CASE_PARAM(uuid_wrong_le, wrong_gen_params),
+> +       {}
+> +};
+> +
+> +static struct kunit_suite uuid_test_suite =3D {
+> +       .name =3D "uuid-test",
+> +       .test_cases =3D uuid_test_cases,
+> +};
+> +kunit_test_suite(uuid_test_suite);
+>
+>  MODULE_AUTHOR("Andy Shevchenko <andriy.shevchenko@linux.intel.com>");
+>  MODULE_LICENSE("Dual BSD/GPL");
+> --
+> 2.31.1
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/kunit-dev/20210605215215.171165-1-andrealmeid%40collabora.com.
