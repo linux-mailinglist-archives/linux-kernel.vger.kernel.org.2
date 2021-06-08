@@ -2,112 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47CC39F3E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFEB39F3E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbhFHKqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:46:03 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:34329 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbhFHKqC (ORCPT
+        id S231312AbhFHKqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:46:06 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57594 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231172AbhFHKqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:46:02 -0400
-Received: from [192.168.1.155] ([77.7.0.189]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MnJdC-1l7e5D1hvo-00jJJM; Tue, 08 Jun 2021 12:43:43 +0200
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <bb6846bf-bd3c-3802-e0d7-226ec9b33384@metux.net>
- <20210602172424.GD1002214@nvidia.com>
- <bd0f485c-5f70-b087-2a5a-d2fe6e16817d@metux.net>
- <20210604123054.GL1002214@nvidia.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <329fcd72-605a-fc10-1a8d-c3f2ac3be9a1@metux.net>
-Date:   Tue, 8 Jun 2021 12:43:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 8 Jun 2021 06:46:03 -0400
+Received: from mail-oi1-f198.google.com ([209.85.167.198])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <koba.ko@canonical.com>)
+        id 1lqZDN-0005Er-TE
+        for linux-kernel@vger.kernel.org; Tue, 08 Jun 2021 10:44:09 +0000
+Received: by mail-oi1-f198.google.com with SMTP id p5-20020acabf050000b02901eed1481b82so8045214oif.20
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 03:44:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qCY5WNTu+UDTiFQqiIKFFkypfQ54bdSFH3ROo1PqtWY=;
+        b=Egg03UtmXuMhUfjUiuhP8xmvadnTasuBukIIvj5F5Sez9tbHgbESlJcofbRNPuq6mj
+         w9ZNvtqwUieNlDcl47/k1pB4bZJnq/Tr1wVu3LPRL9PzmgbV228h30Q0QhHehefBgUr9
+         dayuFbrNTeX105II14ENCEeApgDCO+HWSNWwteKopIYeN6i2X+tgCUTWKOGdPe24klrn
+         tt0KwRqJUifluIOkVk221DRJOWwdcmk6A+mcnGW8OTYD8ghEm7vGebsc5UnQKuJH8tph
+         wo7alvB8PWVzwueBQxap5H9JMlAorVM+EIZgTLKpiUDtIlTk+H4l03FAsKBw39MEcUzx
+         tcOA==
+X-Gm-Message-State: AOAM532LTx/5bjJmX9YkfXdACzo/q+Tv7QRge8sbS74oLC0GGSiU2KI1
+        LRL/41PzPnyX+DSuydxLq0AWZwv3Fs6tmMLbQa/enpuufJhULEfrWTHkxDQUadrCC0Wv5PNrBWE
+        9bYcZ/6TYQFPbiN6mcplShFW3N+5mjxEmX+k8Z8TFEZCi15RXt2hZsu17aw==
+X-Received: by 2002:a9d:6291:: with SMTP id x17mr17571290otk.326.1623149048768;
+        Tue, 08 Jun 2021 03:44:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzOX1PcXLsYQDy2BKePJwDT8Z337BIIIgYOi7paLnFxX1vuyhE2far3cvKk31GjQ74pISXBS2WgnunjUVT+58Q=
+X-Received: by 2002:a9d:6291:: with SMTP id x17mr17571272otk.326.1623149048432;
+ Tue, 08 Jun 2021 03:44:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210604123054.GL1002214@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:kQlbcYVyqh7Kv3mxj3JGjk3dxcaEReaRMO1wJlQyxPkwqc3rlNB
- ty1P4s3Q1U8YMBl+PAGTd/B9xN3luktYAJUvcIm8MxNrn5Ufw3QW/pOSLFBXCidANQm2vOL
- Kf0ipNSyGmyjvOYlXaOs+iavgR+8to7ozNqxLBThWjyjeMPtyrDyKl4eF6lXS34Ejofrm6p
- wfyAMKuEHX4+5ky7Fwr4A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nhyYPjt/oTs=:181063X6GaNOTval4U+P8Y
- cwsH0SmjAvrMHg8eLaYi+NgNCkjBaK49pcjziRRbc2+BTBWboMP1G/J6UGA1JZO4o0rkgiJRu
- js1Wg22BcB3fVTdJ8XE8KwKizdDPS/mUiTNloNqCDjgMVH0vBodTGeko3MzQ+1K2pbo4PxVqY
- pacCRkNxVyN4T88mjozcEpKiSYPcf4I29DPsjgKlvb+2dX1w01/bpnmZYZoApd7H9elPk1jYf
- FA/7iRSaojlhbDSqWViQX0cY6iufNvofS2ydC4paMpcH7mUXEPmNaKzxdw+io8RzhbL8pO+3K
- 4TRWLInFEwbidBxYATrioZTqZ0N4hpCp/SvYDIfcNHiZjug8V0s7MpVr/6AdAPnHjSUXxAwHU
- f3BBAibd9lz3HbL12eZR4kIAFZDAYovq6GU08s1DtCbTzhUJirHdNHyixNjMC0yr7JmjWVv4k
- EkfU+sMCbj+4vxIa7lW+wuha41v3jnKCkDRiUIah6CNkFHkFkHddfO1LO8xkBbrN0KGw7hQZb
- pc4pd+imbUHacOaBdIOXCQ=
+References: <20210608032207.2923574-1-koba.ko@canonical.com> <84eb168e-58ff-0350-74e2-c55249eb258c@gmail.com>
+In-Reply-To: <84eb168e-58ff-0350-74e2-c55249eb258c@gmail.com>
+From:   Koba Ko <koba.ko@canonical.com>
+Date:   Tue, 8 Jun 2021 18:43:57 +0800
+Message-ID: <CAJB-X+XFYa1cZgtJEL1KCNWviL3Y4X6EbN--rE8CD_9oD9EFyA@mail.gmail.com>
+Subject: Re: [PATCH] [v2] r8169: Use PHY_POLL when RTL8106E enable ASPM
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.06.21 14:30, Jason Gunthorpe wrote:
+On Tue, Jun 8, 2021 at 4:00 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>
+> On 08.06.2021 05:22, Koba Ko wrote:
+> > For RTL8106E, it's a Fast-ethernet chip.
+> > If ASPM is enabled, the link chang interrupt wouldn't be triggered
+> > immediately and must wait a very long time to get link change interrupt.
+> > Even the link change interrupt isn't triggered, the phy link is already
+> > established.
+> >
+> > Use PHY_POLL to watch the status of phy link and disable
+> > the link change interrupt when ASPM is enabled on RTL8106E.
+> >
+> > v2: Instead use PHY_POLL and identify 8106E by RTL_GIGA_MAC_VER_39.
+> >
+>
+> Still the issue description doesn't convince me that it's a hw bug
+> with the respective chip version. What has been stated so far:
+>
+> 1. (and most important) Issue doesn't occur in mainline because ASPM
+>    is disabled in mainline for r8169. Issue occurs only with a
+>    downstream kernel with ASPM enabled for r8169.
 
-Hi,
+mainline kernel and enable L1, the issue is also observed.
 
-> Containers already needed to do this today. Container orchestration is
-> hard.
+> 2. Issue occurs only with ASPM L1.1 not disabled, even though this chip
+>    version doesn't support L1 sub-states. Just L0s/L1 don't trigger
+>    the issue.
+>    The NIC doesn't announce L1.1 support, therefore PCI core won't
+>    enable L1 sub-states on the PCIe link between NIC and upstream
+>    PCI bridge.
 
-Yes, but I hate to see even more work upcoming here.
+More precisely, when L1 is enabled, the issue would be triggered.
+For RTL8106E,
+1. Only disable L0s, pcie_aspm_enabled return 1, issue is triggered.
+2. Only disable L1_1, pcie_aspm_enabled return 1, issue is triggered.
 
-> Yes, /dev/ioasid shouldn't do anything unless you have a device to
-> connect it with. In this way it is probably safe to stuff it into
-> every container.
+3. Only disable L1, pcie_aspm_enabled return 0, issue is not triggered.
 
-Okay, if we can guarantee that, I'm completely fine.
+>
+> 3. Issue occurs only with a GBit-capable link partner. 100MBit link
+>    partners are fine. Not clear whether issue occurs with a specific
+>    Gbit link partner only or with GBit-capable link partners in general.
+>
+> 4. Only link-up interrupt is affected. Not link-down and not interrupts
+>    triggered by other interrupt sources.
+>
+> 5. Realtek couldn't confirm that there's such a hw bug on RTL8106e.
+>
+> One thing that hasn't been asked yet:
+> Does issue occur always if you re-plug the cable? Or only on boot?
+> I'm asking because in the dmesg log you attached to the bugzilla issue
+> the following looks totally ok.
+>
+> [   61.651643] r8169 0000:01:00.0 enp1s0: Link is Down
+> [   63.720015] r8169 0000:01:00.0 enp1s0: Link is Up - 100Mbps/Full - flow control rx/tx
+> [   66.685499] r8169 0000:01:00.0 enp1s0: Link is Down
 
->>> Having FDs spawn other FDs is pretty ugly, it defeats the "everything
->>> is a file" model of UNIX.
->>
->> Unfortunately, this is already defeated in many other places :(
->> (I'd even claim that ioctls already break it :p)
-> 
-> I think you are reaching a bit :)
-> 
->> It seems your approach also breaks this, since we now need to open two
->> files in order to talk to one device.
-> 
-> It is two devices, thus two files.
+Once the link is up,
+1. If cable is unplug&plug immediately,  you wouldn't see the issue.
+2. Unplug cable and wait a long time (~1Mins), then plug the cable,
+the issue appears again.
 
-Two separate real (hardware) devices or just two logical device nodes ?
+>
+> > Signed-off-by: Koba Ko <koba.ko@canonical.com>
+> > ---
+> >  drivers/net/ethernet/realtek/r8169_main.c | 21 +++++++++++++++++++--
+> >  1 file changed, 19 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> > index 2c89cde7da1e..a59cbaef2839 100644
+> > --- a/drivers/net/ethernet/realtek/r8169_main.c
+> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> > @@ -4914,6 +4914,19 @@ static const struct dev_pm_ops rtl8169_pm_ops = {
+> >
+> >  #endif /* CONFIG_PM */
+> >
+> > +static int rtl_phy_poll_quirk(struct rtl8169_private *tp)
+> > +{
+> > +     struct pci_dev *pdev = tp->pci_dev;
+> > +
+> > +     if (!pcie_aspm_enabled(pdev))
+>
+> That's the wrong call. According to what you said earlier you want to
+> check for L1 sub-states, not for ASPM in general.
 
+As per described above, that's why use pcie_aspm_enabled here.
 
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+>
+> > +             return 0;
+> > +
+> > +     if (tp->mac_version == RTL_GIGA_MAC_VER_39)
+> > +             return 1;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static void rtl_wol_shutdown_quirk(struct rtl8169_private *tp)
+> >  {
+> >       /* WoL fails with 8168b when the receiver is disabled. */
+> > @@ -4991,7 +5004,10 @@ static const struct net_device_ops rtl_netdev_ops = {
+> >
+> >  static void rtl_set_irq_mask(struct rtl8169_private *tp)
+> >  {
+> > -     tp->irq_mask = RxOK | RxErr | TxOK | TxErr | LinkChg;
+> > +     tp->irq_mask = RxOK | RxErr | TxOK | TxErr;
+> > +
+> > +     if (!rtl_phy_poll_quirk(tp))
+> > +             tp->irq_mask |= LinkChg;
+> >
+> >       if (tp->mac_version <= RTL_GIGA_MAC_VER_06)
+> >               tp->irq_mask |= SYSErr | RxOverflow | RxFIFOOver;
+> > @@ -5085,7 +5101,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
+> >       new_bus->name = "r8169";
+> >       new_bus->priv = tp;
+> >       new_bus->parent = &pdev->dev;
+> > -     new_bus->irq[0] = PHY_MAC_INTERRUPT;
+> > +     new_bus->irq[0] =
+> > +             (rtl_phy_poll_quirk(tp) ? PHY_POLL : PHY_MAC_INTERRUPT);
+> >       snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
+> >
+> >       new_bus->read = r8169_mdio_read_reg;
+> >
+>
