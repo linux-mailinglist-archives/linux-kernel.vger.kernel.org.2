@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED813A03B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2ED63A026B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239255AbhFHTVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:21:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54970 "EHLO mail.kernel.org"
+        id S236490AbhFHTDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:03:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237399AbhFHTJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:09:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7CE561418;
-        Tue,  8 Jun 2021 18:48:13 +0000 (UTC)
+        id S236863AbhFHSz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:55:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D8D66108D;
+        Tue,  8 Jun 2021 18:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178094;
+        s=korg; t=1623177694;
         bh=alPiG3oO3ieF+/mwVevg6cMJgzPtbTOF1/swSLIfGMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OzMabDMElXz9Dv9r6iqHEj1sCfpeQzkxEAGEv8QnlEyExDppU5Ad+9iWGMRX+QetE
-         6a1ZHP6VIHDA96TRYlYgfWFeqlbLWnhjq0zcgsTVAVyb0p55LMAcr32cITNTQudA8c
-         q+uiIS5pZOH3byiI4GJMjDFlMk44xAUHDIX33m1U=
+        b=uS2Bwl1PJS0X24yno5d1fPVLLz9lB7Y8Rip3HsPJMhmNu/xuaiw7CdV7sEUzuc4H8
+         Jh7lKYeQBbQvw56Cke6cGkcvrS61/lZfuDm2gSxw8Q29i8GnAGR1sWfxtis3mJOUWw
+         4Dryc7KlvgIZ1ofq9GfyUFblclfbQH2lqN0O72i8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
         Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 074/161] ARM: dts: imx7d-meerkat96: Fix the tuning-step property
-Date:   Tue,  8 Jun 2021 20:26:44 +0200
-Message-Id: <20210608175947.948536368@linuxfoundation.org>
+Subject: [PATCH 5.10 065/137] ARM: dts: imx7d-meerkat96: Fix the tuning-step property
+Date:   Tue,  8 Jun 2021 20:26:45 +0200
+Message-Id: <20210608175944.574770885@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
