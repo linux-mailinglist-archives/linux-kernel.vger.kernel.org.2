@@ -2,87 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B483A07B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 01:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A6F3A07BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 01:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234989AbhFHXVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 19:21:41 -0400
-Received: from mga05.intel.com ([192.55.52.43]:13211 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234389AbhFHXVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 19:21:40 -0400
-IronPort-SDR: dsQbvRzjSlK+hSX3+2kcjPSY1uiOHMPy3qGRV/gzAhZqFXpo4fPkeB8k/gPl8mcz/aMDVvCL/2
- k8XbDsXbeqoQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="290592962"
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="290592962"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 16:19:46 -0700
-IronPort-SDR: i7Ms0x9+i4CvbocdhHNYInqqzjW97ltP0lsLX133WWPol3S1sefgoOTBDtq+C+YYl81ciUVYLs
- sbKtpJRImrPQ==
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="402240572"
-Received: from dabarred-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.185.80])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 16:19:45 -0700
-Subject: Re: [PATCH v6 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up
- support
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Rafael J Wysocki <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Len Brown <lenb@kernel.org>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-References: <20210601142103.6378-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAJZ5v0htnjWs1e4sSJNx2_S7-bbPtt8V-QiNmkU3UM7RbADGKQ@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <b50a5910-4a98-8fdd-fda5-83e9595a2977@linux.intel.com>
-Date:   Tue, 8 Jun 2021 16:19:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235463AbhFHXW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 19:22:58 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:34623 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235431AbhFHXW4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 19:22:56 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 1341D1BF204;
+        Tue,  8 Jun 2021 23:21:00 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 01:21:00 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Parshuram Raju Thombare <pthombar@cadence.com>
+Cc:     Nicolas Pitre <nico@fluxnic.net>,
+        "slongerbeam@gmail.com" <slongerbeam@gmail.com>,
+        "vitor.soares@synopsys.com" <vitor.soares@synopsys.com>,
+        "praneeth@ti.com" <praneeth@ti.com>,
+        Milind Parab <mparab@cadence.com>,
+        "linux-i3c@lists.infradead.org" <linux-i3c@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 2/7] i3c: master: use i3c_master_register only for
+ main master
+Message-ID: <YL/7XP1fs/2bRiTM@piout.net>
+References: <1606716983-3645-1-git-send-email-pthombar@cadence.com>
+ <1606717066-3785-1-git-send-email-pthombar@cadence.com>
+ <2s3n7419-1nr9-8885-882o-7qrsos6qq6q@syhkavp.arg>
+ <DM5PR07MB319618AFCB415501CD33741FC1CD0@DM5PR07MB3196.namprd07.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0htnjWs1e4sSJNx2_S7-bbPtt8V-QiNmkU3UM7RbADGKQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM5PR07MB319618AFCB415501CD33741FC1CD0@DM5PR07MB3196.namprd07.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/1/21 10:36 AM, Rafael J. Wysocki wrote:
->> As per ACPI specification r6.4, sec 5.2.12.19, a new sub
->> structure – multiprocessor wake-up structure - is added to the
->> ACPI Multiple APIC Description Table (MADT) to describe the
->> information of the mailbox. If a platform firmware produces the
->> multiprocessor wake-up structure, then OS may use this new
->> mailbox-based mechanism to wake up the APs.
->>
->> Add ACPI MADT wake table parsing support for x86 platform and if
->> MADT wake table is present, update apic->wakeup_secondary_cpu with
->> new API which uses MADT wake mailbox to wake-up CPU.
->>
->> Co-developed-by: Sean Christopherson<sean.j.christopherson@intel.com>
->> Signed-off-by: Sean Christopherson<sean.j.christopherson@intel.com>
->> Signed-off-by: Kuppuswamy Sathyanarayanan<sathyanarayanan.kuppuswamy@linux.intel.com>
->> Reviewed-by: Andi Kleen<ak@linux.intel.com>
-> All of my comments have been addressed, so
+On 08/12/2020 05:47:51+0000, Parshuram Raju Thombare wrote:
+> >This looks a bit confusing. Here you're rolling back detailss in
+> >i3c_primary_master_register() that were factored out in
+> >i3c_master_init(). If i3c_master_init() is successful, then you
+> >shouldn't be undoing its things openly in i3c_primary_master_register().
+> >Instead, there should be another function that does the reverse of
+> >i3c_master_init() here.
 > 
-> Reviewed-by: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
-
-Thomas/Peter Z,
-
-Gentle ping. Any comments?
-
+> Every function do its cleanup in case of failures.
+> And if any failure occur after successful i3c_master_init(), we have
+> function i3c_master_bus_cleanup() which does the major cleanup.
 > 
+
+The point from Nicolas here was that the workqueue is allocated in
+i3c_master_init so you should have a function to destroy it instead of
+having to do that separately in i3c_primary_master_register. The same is
+true for the put_device. Or you have to ensure i3c_masterdev_release
+is called when i3c_primary_master_register fails.
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
