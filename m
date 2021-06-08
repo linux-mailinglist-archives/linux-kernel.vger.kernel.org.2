@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033D839FFC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B913A004A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbhFHSgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:36:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56008 "EHLO mail.kernel.org"
+        id S235136AbhFHSlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:41:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234353AbhFHSea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:34:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B898261182;
-        Tue,  8 Jun 2021 18:31:44 +0000 (UTC)
+        id S235124AbhFHSjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:39:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 308C761027;
+        Tue,  8 Jun 2021 18:33:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177105;
-        bh=/rtF09KYzk3hJ3ZhvFHB4EJu1f0jq6dRH9Dr4QDexb0=;
+        s=korg; t=1623177237;
+        bh=4+1yte7jhTdz7NboCFWqBUsW1EGS/+n9JNpTFRzG1Zs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MuKlybXoa46at6QkUac7eJ2C1cs9Uvi1pwKyplerokJ7aLTC9k3zcRRzEmtnHGTf7
-         T3Y7A0oNbrcNpUv+279VWRuyuYE7Psglz4iGiqoQ2a1ggetPEBZ4E5Y3lkI0i/A6EV
-         f81zt9V3tAxH9SPxwe/GvM3GQKFUetfdctjtr7ac=
+        b=mMdf2+izO6XSIhLFitU1YDYQvU2XdY8fzSozikIWDALR0Q05Un96ADT+sT+OU5EyK
+         /1+dBERRYNzOLxX3eyfhsUHaiUoJ8aluaP2qspi3w/O3TqPSdDxRllsO9J/KGLbnSR
+         Vy9SPk1iXftdVn4MMRBBHsaeJcYrw2bW3KChgOEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Piotr Krysiuk <piotras@gmail.com>,
-        Benedict Schlueter <benedict.schlueter@rub.de>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Frank van der Linden <fllinden@amazon.com>
-Subject: [PATCH 4.14 34/47] bpf: Tighten speculative pointer arithmetic mask
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.19 36/58] btrfs: fix error handling in btrfs_del_csums
 Date:   Tue,  8 Jun 2021 20:27:17 +0200
-Message-Id: <20210608175931.597627369@linuxfoundation.org>
+Message-Id: <20210608175933.464050533@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
-References: <20210608175930.477274100@linuxfoundation.org>
+In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
+References: <20210608175932.263480586@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,195 +40,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 7fedb63a8307dda0ec3b8969a3b233a1dd7ea8e0 upstream.
+commit b86652be7c83f70bf406bed18ecf55adb9bfb91b upstream.
 
-This work tightens the offset mask we use for unprivileged pointer arithmetic
-in order to mitigate a corner case reported by Piotr and Benedict where in
-the speculative domain it is possible to advance, for example, the map value
-pointer by up to value_size-1 out-of-bounds in order to leak kernel memory
-via side-channel to user space.
+Error injection stress would sometimes fail with checksums on disk that
+did not have a corresponding extent.  This occurred because the pattern
+in btrfs_del_csums was
 
-Before this change, the computed ptr_limit for retrieve_ptr_limit() helper
-represents largest valid distance when moving pointer to the right or left
-which is then fed as aux->alu_limit to generate masking instructions against
-the offset register. After the change, the derived aux->alu_limit represents
-the largest potential value of the offset register which we mask against which
-is just a narrower subset of the former limit.
+	while (1) {
+		ret = btrfs_search_slot();
+		if (ret < 0)
+			break;
+	}
+	ret = 0;
+out:
+	btrfs_free_path(path);
+	return ret;
 
-For minimal complexity, we call sanitize_ptr_alu() from 2 observation points
-in adjust_ptr_min_max_vals(), that is, before and after the simulated alu
-operation. In the first step, we retieve the alu_state and alu_limit before
-the operation as well as we branch-off a verifier path and push it to the
-verification stack as we did before which checks the dst_reg under truncation,
-in other words, when the speculative domain would attempt to move the pointer
-out-of-bounds.
+If we got an error from btrfs_search_slot we'd clear the error because
+we were breaking instead of goto out.  Instead of using goto out, simply
+handle the cases where we may leave a random value in ret, and get rid
+of the
 
-In the second step, we retrieve the new alu_limit and calculate the absolute
-distance between both. Moreover, we commit the alu_state and final alu_limit
-via update_alu_sanitation_state() to the env's instruction aux data, and bail
-out from there if there is a mismatch due to coming from different verification
-paths with different states.
+	ret = 0;
+out:
 
-Reported-by: Piotr Krysiuk <piotras@gmail.com>
-Reported-by: Benedict Schlueter <benedict.schlueter@rub.de>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Tested-by: Benedict Schlueter <benedict.schlueter@rub.de>
-[fllinden@amazon.com: backported to 4.14]
-Signed-off-by: Frank van der Linden <fllinden@amazon.com>
+pattern and simply allow break to have the proper error reporting.  With
+this fix we properly abort the transaction and do not commit thinking we
+successfully deleted the csum.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/verifier.c |   70 +++++++++++++++++++++++++++++++-------------------
- 1 file changed, 44 insertions(+), 26 deletions(-)
+ fs/btrfs/file-item.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2039,7 +2039,7 @@ static int retrieve_ptr_limit(const stru
- 	bool off_is_neg = off_reg->smin_value < 0;
- 	bool mask_to_left = (opcode == BPF_ADD &&  off_is_neg) ||
- 			    (opcode == BPF_SUB && !off_is_neg);
--	u32 off, max = 0, ptr_limit = 0;
-+	u32 max = 0, ptr_limit = 0;
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -586,7 +586,7 @@ int btrfs_del_csums(struct btrfs_trans_h
+ 	u64 end_byte = bytenr + len;
+ 	u64 csum_end;
+ 	struct extent_buffer *leaf;
+-	int ret;
++	int ret = 0;
+ 	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
+ 	int blocksize_bits = fs_info->sb->s_blocksize_bits;
  
- 	if (!tnum_is_const(off_reg->var_off) &&
- 	    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
-@@ -2048,23 +2048,18 @@ static int retrieve_ptr_limit(const stru
- 	switch (ptr_reg->type) {
- 	case PTR_TO_STACK:
- 		/* Offset 0 is out-of-bounds, but acceptable start for the
--		 * left direction, see BPF_REG_FP.
-+		 * left direction, see BPF_REG_FP. Also, unknown scalar
-+		 * offset where we would need to deal with min/max bounds is
-+		 * currently prohibited for unprivileged.
- 		 */
- 		max = MAX_BPF_STACK + mask_to_left;
--		off = ptr_reg->off + ptr_reg->var_off.value;
--		if (mask_to_left)
--			ptr_limit = MAX_BPF_STACK + off;
--		else
--			ptr_limit = -off - 1;
-+		ptr_limit = -(ptr_reg->var_off.value + ptr_reg->off);
- 		break;
- 	case PTR_TO_MAP_VALUE:
- 		max = ptr_reg->map_ptr->value_size;
--		if (mask_to_left) {
--			ptr_limit = ptr_reg->umax_value + ptr_reg->off;
--		} else {
--			off = ptr_reg->smin_value + ptr_reg->off;
--			ptr_limit = ptr_reg->map_ptr->value_size - off - 1;
--		}
-+		ptr_limit = (mask_to_left ?
-+			     ptr_reg->smin_value :
-+			     ptr_reg->umax_value) + ptr_reg->off;
- 		break;
- 	default:
- 		return REASON_TYPE;
-@@ -2119,10 +2114,12 @@ static int sanitize_ptr_alu(struct bpf_v
- 			    struct bpf_insn *insn,
- 			    const struct bpf_reg_state *ptr_reg,
- 			    const struct bpf_reg_state *off_reg,
--			    struct bpf_reg_state *dst_reg)
-+			    struct bpf_reg_state *dst_reg,
-+			    struct bpf_insn_aux_data *tmp_aux,
-+			    const bool commit_window)
- {
-+	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : tmp_aux;
- 	struct bpf_verifier_state *vstate = env->cur_state;
--	struct bpf_insn_aux_data *aux = cur_aux(env);
- 	bool off_is_neg = off_reg->smin_value < 0;
- 	bool ptr_is_dst_reg = ptr_reg == dst_reg;
- 	u8 opcode = BPF_OP(insn->code);
-@@ -2141,18 +2138,33 @@ static int sanitize_ptr_alu(struct bpf_v
- 	if (vstate->speculative)
- 		goto do_sim;
+@@ -605,6 +605,7 @@ int btrfs_del_csums(struct btrfs_trans_h
+ 		path->leave_spinning = 1;
+ 		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+ 		if (ret > 0) {
++			ret = 0;
+ 			if (path->slots[0] == 0)
+ 				break;
+ 			path->slots[0]--;
+@@ -661,7 +662,7 @@ int btrfs_del_csums(struct btrfs_trans_h
+ 			ret = btrfs_del_items(trans, root, path,
+ 					      path->slots[0], del_nr);
+ 			if (ret)
+-				goto out;
++				break;
+ 			if (key.offset == bytenr)
+ 				break;
+ 		} else if (key.offset < bytenr && csum_end > end_byte) {
+@@ -705,8 +706,9 @@ int btrfs_del_csums(struct btrfs_trans_h
+ 			ret = btrfs_split_item(trans, root, path, &key, offset);
+ 			if (ret && ret != -EAGAIN) {
+ 				btrfs_abort_transaction(trans, ret);
+-				goto out;
++				break;
+ 			}
++			ret = 0;
  
--	alu_state  = off_is_neg ? BPF_ALU_NEG_VALUE : 0;
--	alu_state |= ptr_is_dst_reg ?
--		     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
--
- 	err = retrieve_ptr_limit(ptr_reg, off_reg, &alu_limit, opcode);
- 	if (err < 0)
- 		return err;
- 
-+	if (commit_window) {
-+		/* In commit phase we narrow the masking window based on
-+		 * the observed pointer move after the simulated operation.
-+		 */
-+		alu_state = tmp_aux->alu_state;
-+		alu_limit = abs(tmp_aux->alu_limit - alu_limit);
-+	} else {
-+		alu_state  = off_is_neg ? BPF_ALU_NEG_VALUE : 0;
-+		alu_state |= ptr_is_dst_reg ?
-+			     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
-+	}
-+
- 	err = update_alu_sanitation_state(aux, alu_state, alu_limit);
- 	if (err < 0)
- 		return err;
- do_sim:
-+	/* If we're in commit phase, we're done here given we already
-+	 * pushed the truncated dst_reg into the speculative verification
-+	 * stack.
-+	 */
-+	if (commit_window)
-+		return 0;
-+
- 	/* Simulate and find potential out-of-bounds access under
- 	 * speculative execution from truncation as a result of
- 	 * masking when off was not within expected range. If off
-@@ -2262,6 +2274,7 @@ static int adjust_ptr_min_max_vals(struc
- 	    smin_ptr = ptr_reg->smin_value, smax_ptr = ptr_reg->smax_value;
- 	u64 umin_val = off_reg->umin_value, umax_val = off_reg->umax_value,
- 	    umin_ptr = ptr_reg->umin_value, umax_ptr = ptr_reg->umax_value;
-+	struct bpf_insn_aux_data tmp_aux = {};
- 	u8 opcode = BPF_OP(insn->code);
- 	u32 dst = insn->dst_reg;
- 	int ret;
-@@ -2314,12 +2327,15 @@ static int adjust_ptr_min_max_vals(struc
- 	    !check_reg_sane_offset(env, ptr_reg, ptr_reg->type))
- 		return -EINVAL;
- 
--	switch (opcode) {
--	case BPF_ADD:
--		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg);
-+	if (sanitize_needed(opcode)) {
-+		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg,
-+				       &tmp_aux, false);
- 		if (ret < 0)
- 			return sanitize_err(env, insn, ret, off_reg, dst_reg);
-+	}
- 
-+	switch (opcode) {
-+	case BPF_ADD:
- 		/* We can take a fixed offset as long as it doesn't overflow
- 		 * the s32 'off' field
- 		 */
-@@ -2370,10 +2386,6 @@ static int adjust_ptr_min_max_vals(struc
+ 			key.offset = end_byte - 1;
+ 		} else {
+@@ -716,8 +718,6 @@ int btrfs_del_csums(struct btrfs_trans_h
  		}
- 		break;
- 	case BPF_SUB:
--		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg);
--		if (ret < 0)
--			return sanitize_err(env, insn, ret, off_reg, dst_reg);
--
- 		if (dst_reg == off_reg) {
- 			/* scalar -= pointer.  Creates an unknown scalar */
- 			if (!env->allow_ptr_leaks)
-@@ -2463,6 +2475,12 @@ static int adjust_ptr_min_max_vals(struc
- 
- 	if (sanitize_check_bounds(env, insn, dst_reg) < 0)
- 		return -EACCES;
-+	if (sanitize_needed(opcode)) {
-+		ret = sanitize_ptr_alu(env, insn, dst_reg, off_reg, dst_reg,
-+				       &tmp_aux, true);
-+		if (ret < 0)
-+			return sanitize_err(env, insn, ret, off_reg, dst_reg);
-+	}
- 
- 	return 0;
+ 		btrfs_release_path(path);
+ 	}
+-	ret = 0;
+-out:
+ 	btrfs_free_path(path);
+ 	return ret;
  }
 
 
