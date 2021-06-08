@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A063A02BA
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0623A02B9
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236451AbhFHTIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:08:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34178 "EHLO mail.kernel.org"
+        id S235814AbhFHTIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:08:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236364AbhFHS6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236435AbhFHS6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Jun 2021 14:58:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 558FB61441;
-        Tue,  8 Jun 2021 18:43:00 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2363613CD;
+        Tue,  8 Jun 2021 18:43:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177780;
-        bh=UJxCPsrIFylTfCwOd8W5nGWDbWrTnO+6FpPRoAQXl10=;
+        s=korg; t=1623177783;
+        bh=eA4nB1FTEd/cOScM/sJgwLjwxifG8bhytJE9dL/Tmqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MCIWqzd2KJwlIBjpXbCzQsKGbJhStvHO3tIFjH0c4ly90UGA7bix8WT7idqqasGc+
-         UZlqGqJaz5KQuueMUzPFlmfpmhDFupuWLv8ETKOKmLegtWOTGidDjtMBBZOndLEcA3
-         Huu8Y9zOgrBQyv5UJQ9MxDIOQzMb0QXNNUy6ArxQ=
+        b=LfBSgb3DImauLQAHGKdaIYTjX7/SVE4YlITTxI42Wx5zZUMTGxr/hsnWa0A/jlP3z
+         f1SdUtUZ0B6GgAdznSMEB2SF+pa4Fhyk1fYF5VWcWZSg7peM388hKNqJWO8/O9iBvm
+         xOTVWkbyDR+ST3JYqEdDjw7NEBMjd/DzMsFfO2t4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+d102fa5b35335a7e544e@syzkaller.appspotmail.com,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 097/137] ALSA: timer: Fix master timer notification
-Date:   Tue,  8 Jun 2021 20:27:17 +0200
-Message-Id: <20210608175945.661561885@linuxfoundation.org>
+        stable@vger.kernel.org, Carlos M <carlos.marr.pz@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 098/137] ALSA: hda: Fix for mute key LED for HP Pavilion 15-CK0xx
+Date:   Tue,  8 Jun 2021 20:27:18 +0200
+Message-Id: <20210608175945.700870315@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
 References: <20210608175942.377073879@linuxfoundation.org>
@@ -40,39 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Carlos M <carlos.marr.pz@gmail.com>
 
-commit 9c1fe96bded935369f8340c2ac2e9e189f697d5d upstream.
+commit 901be145a46eb79879367d853194346a549e623d upstream.
 
-snd_timer_notify1() calls the notification to each slave for a master
-event, but it passes a wrong event number.  It should be +10 offset,
-corresponding to SNDRV_TIMER_EVENT_MXXX, but it's incorrectly with
-+100 offset.  Casually this was spotted by UBSAN check via syzkaller.
+For the HP Pavilion 15-CK0xx, with audio subsystem ID 0x103c:0x841c,
+adding a line in patch_realtek.c to apply the ALC269_FIXUP_HP_MUTE_LED_MIC3
+fix activates the mute key LED.
 
-Reported-by: syzbot+d102fa5b35335a7e544e@syzkaller.appspotmail.com
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: Carlos M <carlos.marr.pz@gmail.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/000000000000e5560e05c3bd1d63@google.com
-Link: https://lore.kernel.org/r/20210602113823.23777-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/20210531202026.35427-1-carlos.marr.pz@gmail.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/timer.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -520,9 +520,10 @@ static void snd_timer_notify1(struct snd
- 		return;
- 	if (timer->hw.flags & SNDRV_TIMER_HW_SLAVE)
- 		return;
-+	event += 10; /* convert to SNDRV_TIMER_EVENT_MXXX */
- 	list_for_each_entry(ts, &ti->slave_active_head, active_list)
- 		if (ts->ccallback)
--			ts->ccallback(ts, event + 100, &tstamp, resolution);
-+			ts->ccallback(ts, event, &tstamp, resolution);
- }
- 
- /* start/continue a master timer */
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8289,6 +8289,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x82bf, "HP G3 mini", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x82c0, "HP G3 mini premium", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
++	SND_PCI_QUIRK(0x103c, 0x841c, "HP Pavilion 15-CK0xx", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
 
 
