@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B42939FA05
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7709939FA03
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233792AbhFHPJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:09:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233354AbhFHPJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:09:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72DAD60231;
-        Tue,  8 Jun 2021 15:07:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623164835;
-        bh=lajIHORbgJ+gWe5oTfc6aVhrXAeM6lou0+BZHByrUtU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=IPLsSo+lStgbkrGD95c1N+i4o+7icKQaErXt7eVH8HXyDaZXinWmoIm3jT4lcLunS
-         pUFVHW+VAfY2UfAba1pD9AO5lQAQhI+pn+PLdOj2a1H+iIf0uYf7Qb6SwIvSAAfhkx
-         hNky0noLcyfwBcCra0jFW7uyAQW5XC/vbEB4T//mxqmdddWdvHXkTc+sudcAKRhaMq
-         LHrusek43suRFhaSbD21Pz0x8TRSEjl1Uhq3o0crVH1xrXr/Gz7j7kNvBGlewioi9P
-         7CdAOV9XMSby4QsVxMME0OVFdSMb8R4gLCLcZoxMGGfK8TUHoVwlCURTVcfY3Heu/B
-         PDM1RrxCKmX/A==
-From:   matthias.bgg@kernel.org
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Sean Wang <sean.wang@kernel.org>
-Cc:     linux-gpio@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Matthias Brugger <mbrugger@suse.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Subject: [PATCH] pinctrl: mediatek: fix mode encoding
-Date:   Tue,  8 Jun 2021 17:06:56 +0200
-Message-Id: <20210608150656.29007-1-matthias.bgg@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S233813AbhFHPKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:10:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42574 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233740AbhFHPKe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 11:10:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623164921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5hU1CMqJ4P0JXH4l8c0cSd/V5cHxhvWTupYmzCD3I2c=;
+        b=eHKYetZzBvkRk5/U4/7DzBGz19n0at81HsLEzRpYZiePqQ4bQRKlCBrmKwwfGCu/Cf4KGa
+        +nFVQayPnVgamHujB/wkNM3QjgYeGJ0dGxnLZV884TZ8Mi+2L9SrOR3d6DSRinUbNxcyNW
+        Z9PoNKaeJCK1ZEUU1oD9h07pzbB44Eo=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-92-_-5FfqPxNSi6uE3fn6ONuQ-1; Tue, 08 Jun 2021 11:08:39 -0400
+X-MC-Unique: _-5FfqPxNSi6uE3fn6ONuQ-1
+Received: by mail-wr1-f71.google.com with SMTP id z4-20020adfe5440000b0290114f89c9931so9525202wrm.17
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 08:08:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=5hU1CMqJ4P0JXH4l8c0cSd/V5cHxhvWTupYmzCD3I2c=;
+        b=hgonS+prOKY0U+7StXGYFEWF5ZkUXHZs62WwE/AdoZuPrXZJfA3XEFwYudPnIujmIx
+         vqltf8HMwBKKghuy01UDFWBM/+u/R45x/WfC7X3zFpB1eRjY8HZeAgtplZ0vwSCmeEvH
+         ZblMD/4fQQ9r0KzVja8aqQV/crjf4Kw/VvFVczpxlzbpGIPCn0tKUmcpP4TIwHajtpXl
+         I7FqyOpwUbwAdWaXxX/VJN9uV31c2EnBA5chzZcYNplac93VYsUpVESb0PFEoev12DGL
+         z06Wly3JPcPHYFh/ZsgN3utQ+9UmzgvPfKLhcVbDIZ4tJVGdHvUC0DGf2ZXlU86mZ5Gl
+         zThA==
+X-Gm-Message-State: AOAM530LYKeBE/zA6qpEPZ5V5EDD6wEBTSB3u+zhylPY7tQ3iFcYBSSE
+        f/XO/nJMM+FtI0+5plStswFpG6eKuJwBIdQNflOe8Wq9xKrrU5QZd5V8u0HyD6oBlSSHJuzi+OE
+        isNUFBi0zLtFZmq+p/X83oTED
+X-Received: by 2002:a1c:7c13:: with SMTP id x19mr4818689wmc.96.1623164918480;
+        Tue, 08 Jun 2021 08:08:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJziiUeOeVRaBQHznAWmWWEt/KVEstO5XqQa3xElfZkGfdt3L++vaw8Vnidve53mT64ljzbqQA==
+X-Received: by 2002:a1c:7c13:: with SMTP id x19mr4818667wmc.96.1623164918286;
+        Tue, 08 Jun 2021 08:08:38 -0700 (PDT)
+Received: from dresden.str.redhat.com ([2a02:908:1e46:160:b272:8083:d5:bc7d])
+        by smtp.gmail.com with ESMTPSA id n1sm10560444wms.18.2021.06.08.08.08.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 08:08:37 -0700 (PDT)
+Subject: Re: [PATCH v2 2/7] fuse: Fix crash if superblock of submount gets
+ killed early
+To:     Greg Kurz <groug@kaod.org>, Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        virtio-fs@redhat.com, Vivek Goyal <vgoyal@redhat.com>
+References: <20210604161156.408496-1-groug@kaod.org>
+ <20210604161156.408496-3-groug@kaod.org>
+From:   Max Reitz <mreitz@redhat.com>
+Message-ID: <0daa30dc-ea49-dbe3-eac5-4b47dceb54eb@redhat.com>
+Date:   Tue, 8 Jun 2021 17:08:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210604161156.408496-3-groug@kaod.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Brugger <mbrugger@suse.com>
+On 04.06.21 18:11, Greg Kurz wrote:
+> As soon as fuse_dentry_automount() does up_write(&sb->s_umount), the
+> superblock can theoretically be killed. If this happens before the
+> submount was added to the &fc->mounts list, fuse_mount_remove() later
+> crashes in list_del_init() because it assumes the submount to be
+> already there.
+>
+> Add the submount before dropping sb->s_umount to fix the inconsistency.
+> It is okay to nest fc->killsb under sb->s_umount, we already do this
+> on the ->kill_sb() path.
+>
+> Signed-off-by: Greg Kurz <groug@kaod.org>
+> ---
+>   fs/fuse/dir.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
 
-Pin modes are encoded in the SoC data structure. Use that value to set
-IES SMT.
-
-Cc: Fabien Parent <fparent@baylibre.com>
-Cc: Sean Wang <sean.wang@kernel.org>
-Cc: Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Cc: linux-mediatek@lists.infradead.org
-Fixes: 696beef77521 ("pinctrl: mediatek: move bit assignment")
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
-
-Signed-off-by: Matthias Brugger <mbrugger@suse.com>
----
-
- drivers/pinctrl/mediatek/pinctrl-mtk-common.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
-index 525b1aa7f7a6..5f7c421ab6e7 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
-@@ -134,13 +134,13 @@ static int mtk_pconf_set_ies_smt(struct mtk_pinctrl *pctl, unsigned pin,
- 			pin, pctl->devdata->port_align, value, arg);
- 	}
- 
--	bit = BIT(pin & 0xf);
--
- 	if (arg == PIN_CONFIG_INPUT_ENABLE)
- 		offset = pctl->devdata->ies_offset;
- 	else
- 		offset = pctl->devdata->smt_offset;
- 
-+	bit = BIT(offset & pctl->devdata->mode_mask);
-+
- 	if (value)
- 		reg_addr = SET_ADDR(mtk_get_port(pctl, pin) + offset, pctl);
- 	else
--- 
-2.31.1
+Reviewed-by: Max Reitz <mreitz@redhat.com>
 
