@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6430039F7C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3B739F79A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233032AbhFHNZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:25:07 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3179 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233030AbhFHNY4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:24:56 -0400
-Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FzrKN52vhz6H76q;
-        Tue,  8 Jun 2021 21:13:44 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 15:23:02 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 14:22:59 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <joro@8bytes.org>, <will@kernel.org>, <dwmw2@infradead.org>,
-        <baolu.lu@linux.intel.com>, <robin.murphy@arm.com>
-CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
-        <chenxiang66@hisilicon.com>, <rdunlap@infradead.org>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH v11 3/3] iommu/amd: Add support for IOMMU default DMA mode build options
-Date:   Tue, 8 Jun 2021 21:18:28 +0800
-Message-ID: <1623158308-180604-4-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1623158308-180604-1-git-send-email-john.garry@huawei.com>
-References: <1623158308-180604-1-git-send-email-john.garry@huawei.com>
+        id S232921AbhFHNUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:20:41 -0400
+Received: from mga01.intel.com ([192.55.52.88]:2174 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232916AbhFHNU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 09:20:28 -0400
+IronPort-SDR: DVXPmKH8vMgx9UJjscyVFhcy2g0CUZYfhWXy34sZSFQX2X/Z1qFkxL/UXZ0pgA9DkxzClxkJer
+ 4dIpzitiAE6w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="226184001"
+X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
+   d="scan'208";a="226184001"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 06:18:35 -0700
+IronPort-SDR: 7JQRozo58WL6GPe4AKfKHK9YOjwgV53n0ap5P0UP42As1RqJ5qgkOx6JetDc0cRlv0EfMA9fY1
+ xqYUJZBEbBPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
+   d="scan'208";a="552275810"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 08 Jun 2021 06:18:33 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 08 Jun 2021 16:18:32 +0300
+Date:   Tue, 8 Jun 2021 16:18:32 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     Benjamin Berg <bberg@redhat.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/7] usb: typec: ucsi: Don't stop alt mode
+ registration on busy condition
+Message-ID: <YL9uKFiHm0fht67X@kuha.fi.intel.com>
+References: <20210607131442.20121-1-heikki.krogerus@linux.intel.com>
+ <20210607131442.20121-3-heikki.krogerus@linux.intel.com>
+ <2f4bf248-cd27-623d-5984-fafa931404fa@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f4bf248-cd27-623d-5984-fafa931404fa@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+On Tue, Jun 08, 2021 at 12:31:45PM +0300, Sergei Shtylyov wrote:
+> Hello!
+> 
+> On 07.06.2021 16:14, Heikki Krogerus wrote:
+> 
+> > If the PPM tells it's busy, we can now simply try again.
+> > 
+> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > ---
+> >   drivers/usb/typec/ucsi/ucsi.c | 5 ++++-
+> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+> > index 366c8a468bc18..a8e0e31dcddf5 100644
+> > --- a/drivers/usb/typec/ucsi/ucsi.c
+> > +++ b/drivers/usb/typec/ucsi/ucsi.c
+> > @@ -437,8 +437,11 @@ static int ucsi_register_altmodes(struct ucsi_connector *con, u8 recipient)
+> >   		command |= UCSI_GET_ALTMODE_CONNECTOR_NUMBER(con->num);
+> >   		command |= UCSI_GET_ALTMODE_OFFSET(i);
+> >   		len = ucsi_send_command(con->ucsi, command, alt, sizeof(alt));
+> 
+>    Could insert your check here, to reduce the indentation...
 
-The default DMA mode lazy, but allow this to be set to strict mode at
-build time. It may still be overridden by the relevant boot option.
+Sure thing.
 
-Also make IOMMU_DEFAULT_LAZY default for when AMD_IOMMU config is set.
+> > -		if (len <= 0)
+> > +		if (len <= 0) {
+> > +			if (len == -EBUSY)
+> > +				continue;
+> >   			return len;
+> > +		}
+> >   		/*
+> >   		 * This code is requesting one alt mode at a time, but some PPMs
 
-[jpg: Rebase for relocated file]
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- drivers/iommu/Kconfig    | 2 +-
- drivers/iommu/amd/init.c | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+thanks,
 
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index b68ec7ed23c0..6d99150050b9 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -95,7 +95,7 @@ choice
- 	depends on IOMMU_API
- 	depends on X86 || IA64 || X86_64 || ARM || ARM64
- 
--	default IOMMU_DEFAULT_LAZY if INTEL_IOMMU
-+	default IOMMU_DEFAULT_LAZY if (AMD_IOMMU || INTEL_IOMMU)
- 	default IOMMU_DEFAULT_STRICT
- 	help
- 	  This option allows an IOMMU DMA mode to be chosen at build time, to
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index d006724f4dc2..af662fc37cbe 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -160,7 +160,8 @@ u16 amd_iommu_last_bdf;			/* largest PCI device id we have
- 					   to handle */
- LIST_HEAD(amd_iommu_unity_map);		/* a list of required unity mappings
- 					   we find in ACPI */
--bool amd_iommu_unmap_flush;		/* if true, flush on every unmap */
-+/* if true, flush on every unmap */
-+bool amd_iommu_unmap_flush = IS_ENABLED(CONFIG_IOMMU_DEFAULT_STRICT);
- 
- LIST_HEAD(amd_iommu_list);		/* list of all AMD IOMMUs in the
- 					   system */
 -- 
-2.26.2
-
+heikki
