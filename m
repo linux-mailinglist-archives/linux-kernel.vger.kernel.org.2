@@ -2,258 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661A83A03C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DE13A0379
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbhFHTVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:21:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237510AbhFHTJx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:09:53 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BB6C0617A8
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:03:38 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id o27so21262817qkj.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 12:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=imb9TzntNYlcLYZpWKt9HGa1hmkynvSoOuHRDCAcWgQ=;
-        b=n9H5gnzqHVa9nx4HHhbkw8Cy/OEDElpOWG2K6MSgOaE46+ILbVjXByqwaaca0ldkW6
-         5R9EzHMYD+Wii7FC3jdhRQUMwAj1DDsvnj1mhz0r7jalK8F9JtSmWnbe/4fx/a6x870r
-         2fVtWZ/mO90dwE494arU7ppMQOY5Tuf6BQEt4XTZixKvEjo28uweWT5c381W0l0hMkUw
-         84bU4fCPT2HbvQVZ2IEA7ofnwqGeZE3KI7toACf6/L8FYzRJZsNVn9y9kC8U4YCAsLCO
-         Njt8swUXOc/F+pnStjUHkKm/YXtdnqrKDyNjyvS3W8XcpUsagGTNqc76CYtH43mpkdVX
-         nOLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=imb9TzntNYlcLYZpWKt9HGa1hmkynvSoOuHRDCAcWgQ=;
-        b=E4viiQpfzluQbSV8RbRfppqFPOdGHLHXMC9S5EC+aE4pbQRiu+dyezjyG6ooGTFOJj
-         7aVVqVLdtwAiqtD6/6w7Mo9g7pMY4JZIgcKL6s/xcnpdD9J32lh3i9K2S/ixfNwTvZZE
-         HOxsDCitDnGtO26L91glV2T6nSooQM+RAWBw8b6N34NT10p+jd1s0QrbiKjjhB8bjNuc
-         ozWBPB48w9t3R3EcsMv04+i57xJjuVUbu9XV4WgI2cnCWHEAHf0TREfpnNdUr8FEpA+0
-         KlCqMLZaWt/4dxrNP8FFX6TjC+QLIDNGtkdlfNMJh45IasOLw3v0roPnS70l1OCJ6zCC
-         /teg==
-X-Gm-Message-State: AOAM5338FEfC/o7i8hJvh6Af+mkktx9xzsTSvgTignDN3+z8zifnqXU1
-        YJ0PTjB59m4U9N2g85EHBABi+w==
-X-Google-Smtp-Source: ABdhPJwEKhA7PB19sjrSdAuf8tAfHdUNDs9xn8e4A4X39I51BZu6hMulwJ+1+B9xxMPWUfzdgV7q4A==
-X-Received: by 2002:a37:7405:: with SMTP id p5mr22948066qkc.272.1623179017801;
-        Tue, 08 Jun 2021 12:03:37 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id 104sm11413196qta.90.2021.06.08.12.03.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 12:03:37 -0700 (PDT)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Jared Pochtar <jpochtar@fb.com>, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH] psi: fix sampling artifact from pressure file read frequency
-Date:   Tue,  8 Jun 2021 15:03:36 -0400
-Message-Id: <20210608190336.77380-1-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.32.0
+        id S237372AbhFHTRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:17:36 -0400
+Received: from mail-mw2nam10on2042.outbound.protection.outlook.com ([40.107.94.42]:29665
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237879AbhFHTGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:06:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ki/the97YEjDhmRnD07J+e8DvDJLszW9GIxche50Ic4iwkYm/o1OB0q5wdqkQzzpOLFSoScOoT1C0/ibCBfjG7Jd95rcm+X1Sb93SEBZKHDLKmgZTQNK6S2uUumKbaf3IVebitUBUNr0gs4Q1g/BIhaTk9CzkxR41vYB130IjdoWw7bjpcGHJipIRtfZdDBQ3Tl90RYUse64nX50zcWcixYxh5XUIsKzyFSHoXe0LjHtSbiNicLHK3vAC5qzFUA0GefOd17Soh1NKpNWF4DU5NMjqR7iA9pUsSds+3pL4Fkrg+jxCFfrbooDBwXcPE1C3G7N8yXqw4a1EnVd9stlxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iaRJrejWbXp1V7Owx6wLj+WWWTWLRq2muZfFSIGBTsE=;
+ b=DceweHBhs3Cj2jEctIXROEV/gbx7nsjXN/LpVV6tYh6iHXrv8dgPuXu2XPrxoDcz4k3DVeVt167BiQOYMz2C9HPN5d5jhjae+iswVjkVHHS+VIJYGXeBsFUvhNdGL4ck2P9ar2XgO/b/HDxIsPCPYillZ5hLqQReKn7vdEQ0uwrj7iHYAuPq3jADB0H87l/1Xv0CDsbK02FpTNSjgPtzgRGk+5DnQ7PhKMMrB1a1qWaFA49ZXRTekQtmAlbS1iWq2QkkHDZ0VSj5rpNC8ogk4yC1OptzTSqGlF/+23NVQ/f+7Mio3yjt+Mob7qzxSjSm0mCraLwaj6pcdJjVacEMHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iaRJrejWbXp1V7Owx6wLj+WWWTWLRq2muZfFSIGBTsE=;
+ b=bXPB3U6kPVzU95ed1sWunPEbwUrt8Sm3yG3JyAtD1vtKaxVI5qvRJdqX01uL5LUc49LioWBQxr9jb8HBY0yppeQ4maZ9xFPJ5Yhxob96Ikeww9HfdP8c5LYc7iiHKVrgAfGwa+iT6wzVQBZDGs8rfMwf4OiAZiQv7Dal+QSsvJ42Clp7mqg3Fod3MfzPn2KCxTFGu1xwSTCoeva1tG7tP4nFrqw0fLXuRBKZ0zgSwIFNpLzEkZ9JxScCpXbuSk3TVjwlkC5Jwg9HB4fJhwp9v/YjEugQaX47DB/pWZae8i/iRs5jLTzHGONeeBkgDpBI4tELlhMkZfD9bHulgYNiIg==
+Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
+ header.d=none;gibson.dropbear.id.au; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5522.namprd12.prod.outlook.com (2603:10b6:208:17d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Tue, 8 Jun
+ 2021 19:04:08 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4219.021; Tue, 8 Jun 2021
+ 19:04:08 +0000
+Date:   Tue, 8 Jun 2021 16:04:06 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210608190406.GN1002214@nvidia.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210528173538.GA3816344@nvidia.com>
+ <YLcl+zaK6Y0gB54a@yekko>
+ <20210602161648.GY1002214@nvidia.com>
+ <YLhlCINGPGob4Nld@yekko>
+ <20210603115224.GQ1002214@nvidia.com>
+ <YL6/bjHyuHJTn4Rd@yekko>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YL6/bjHyuHJTn4Rd@yekko>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR20CA0056.namprd20.prod.outlook.com
+ (2603:10b6:208:235::25) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR20CA0056.namprd20.prod.outlook.com (2603:10b6:208:235::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.21 via Frontend Transport; Tue, 8 Jun 2021 19:04:07 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lqh1C-0048fX-Lv; Tue, 08 Jun 2021 16:04:06 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 704ecc31-7e5f-4f5e-1415-08d92ab03132
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5522:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB5522B51116DC002EAB61614EC2379@BL0PR12MB5522.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EcV0+XadaKWdpp//KiCs3ZXERq45FECPssCOt77biouvpoM0VRcdhRwbLDYxwt8m2MdCd3GLkuyruZs9nMzwRNRAvHP2eE75Q9OqZEGNxudSh9gkvNcZhFGyHdUingihy6L4Bwh+j6F8VpVHonxUc5VaXdhtza/lEDpmluPf0xlWk/VAx5I4i+aFV/WitKdXJDgxAgaPYfznTJ8MXw/pQOQuRHwcepzp2plvlkP5Pv+KEDSFoovsrhnDzpLQvYmeaqDX1EUulDiXUbYRlw7LHWR2YskcIh6b4imYFXilOrvNliWqXeWdyKGqjuqpz+Zvfbevzm3wReI9ZsU/I3+HVy8oNJ9fYCB235eCtC5x0OfQ61zWE6V/taFNLZ65N0jwS9LE4QYFkcGCQE0uGY2V2qwwGXT2g13UFFQpY+tzaYtR3N1JM07yQMD9u6Ea2HPwTTSNkOAMMDlegxc+7CVxl9NEnSYp7MKugMenbzNf+7RhlAHpX/hDn6m6j4bbqLixBuqxLqIu3Y7hHmXCFoer09EBvFM8cMryNRiBB1+PdJU4sgREHlOUYDHyC0/sOuy8Jx03SdRkWNgC1ackdWZ/5OpdxpqcGracVJD0wKXBTmY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39860400002)(396003)(376002)(8676002)(316002)(86362001)(2906002)(36756003)(38100700002)(33656002)(1076003)(8936002)(186003)(6916009)(54906003)(9746002)(9786002)(2616005)(478600001)(7416002)(426003)(66946007)(66476007)(5660300002)(26005)(66556008)(4326008)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2VVbYXngpJbBN3w0g/3DJ/8gZvaQJoU2Rrh0JS7qxmVxZztwPTi/I3siHBuV?=
+ =?us-ascii?Q?ySFNWryNrh5v2g4e/JGQNar5ulysZSLHILxBMmcAE0fP1ox0BbpHJwuwjK6L?=
+ =?us-ascii?Q?oNr28/ah1Z5Gj6jQwY495mlJYpa2vox0belg5/qvUmvBF7jjxghSdU3sys/Y?=
+ =?us-ascii?Q?MvUnXBjVPoQ0PbhWYn9Z09mt5eZl73C6g1EO66rlfbBihkOBWL19xW85Vqtv?=
+ =?us-ascii?Q?1qfZa2crOzafhv9cXlv631vbJHvTODApTAY4nqXliXoNJjj2t5ogT4tIa9rQ?=
+ =?us-ascii?Q?p2oB68RQCxbszpAEOW2RBLfnnEO8RSANyjVryIen0MEVlcYp7ZYntjakGjOY?=
+ =?us-ascii?Q?RE01DLj0BleNO9clNft23w/PzXOdZyefVhQfjmMYosIE2+2PVyb4Kkc3J8iK?=
+ =?us-ascii?Q?ZDxHZeqY7ODHXaZzEa59uQib85pzkxVM5+ApXg/DHJfhzGNMEdGa12Y9FC4j?=
+ =?us-ascii?Q?ou5OyknimuixgGJ5yqGgV5n8w5irnLofHXQabwzD/Fm9v4mZxD9nVTn3lfNu?=
+ =?us-ascii?Q?FcWElBxUtbGTAOVNk+GrYQirvye9BohikWdw7Kdv0K1l7ZquDcC/uEe5gzrR?=
+ =?us-ascii?Q?1hqblcQHxGDxBnmT3j0dtwwEKIigRCCphbUyZwQcnSb94Afa3BxWweicGKT1?=
+ =?us-ascii?Q?PoxbeXM3hXJaU2sGXERaaY8xUpZlQ4psNJmq4glV2y/6RFRsc1plKWgbaqMt?=
+ =?us-ascii?Q?agA+/KE/CO8mUkjhHgifx8fsG0Vq981Tl2G4sgfUSHeQIa8MF74VChvQa0tZ?=
+ =?us-ascii?Q?e942b/mS5fY8AoQnKF+hYiMzW01M/zcVmWEZZl8TMzCgkl/bqiw9YTi/pQwc?=
+ =?us-ascii?Q?UXyVq1L/AJXct8jRm1cps7eUmCyuSXFQfskD4yzpx1r7sWYm/9UJfAhFFMCw?=
+ =?us-ascii?Q?Fd7F5MJV6KghxE25UA8gYsPtm1OzcF5oRX1MZ9LjcRQf80yV4/IjhKfQMlQd?=
+ =?us-ascii?Q?cOZ4UTTZG9HSSKRe+49uRAQWhN8bD25+ct1Hu/5Rb+NlDqtBuCHUtRfkqewL?=
+ =?us-ascii?Q?grs5ZnX6jE2u0qtKIOgTPopYElpFVfcdL6DNvNR58cGP+jdekhESFVZTbjKs?=
+ =?us-ascii?Q?KCU+JSUJb8GHlNf+sJUzr1+c5FLOFHo1jfejKqT1HUYFG6fg1aHRErQgNmxE?=
+ =?us-ascii?Q?eS/OsQI+8/DdrCZz8ba3CfJSb8vExRjCSnVQZAgiVbLkQVcCfUomQ7CNa2WJ?=
+ =?us-ascii?Q?ih1meTCdOTMyUt1gpKeAwwd64uzuPCzWL+o55f7hhzLkzviQe8wV0NvtOisj?=
+ =?us-ascii?Q?wP2fUQv7Onv4oMHNk89AoH+TaF5IQW5Gsk8NxdQXcisSK2aliwzfeEuRsiiE?=
+ =?us-ascii?Q?+eZ4hrcLcQ3bZAJbkt5bQMLE?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 704ecc31-7e5f-4f5e-1415-08d92ab03132
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 19:04:07.9981
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ecwlEwl6mc5xvFGyYcZ0B0mVHqCS7BFWqeg4Yd1Tm3FZGnv0Ft1sfsoe4Ktdrq1q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5522
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, every time a psi pressure file is read, the per-cpu states
-are collected and aggregated according to the CPU's non-idle time
-weight. This dynamically changes the sampling period, which means read
-frequency can introduce variance into the observed results. This is
-somewhat unexpected for users and can be confusing, when e.g. two
-nested cgroups with the same workload report different pressure levels
-just because they have different consumers reading the pressure files.
+On Tue, Jun 08, 2021 at 10:53:02AM +1000, David Gibson wrote:
+> On Thu, Jun 03, 2021 at 08:52:24AM -0300, Jason Gunthorpe wrote:
+> > On Thu, Jun 03, 2021 at 03:13:44PM +1000, David Gibson wrote:
+> > 
+> > > > We can still consider it a single "address space" from the IOMMU
+> > > > perspective. What has happened is that the address table is not just a
+> > > > 64 bit IOVA, but an extended ~80 bit IOVA formed by "PASID, IOVA".
+> > > 
+> > > True.  This does complexify how we represent what IOVA ranges are
+> > > valid, though.  I'll bet you most implementations don't actually
+> > > implement a full 64-bit IOVA, which means we effectively have a large
+> > > number of windows from (0..max IOVA) for each valid pasid.  This adds
+> > > another reason I don't think my concept of IOVA windows is just a
+> > > power specific thing.
+> > 
+> > Yes
+> > 
+> > Things rapidly get into weird hardware specific stuff though, the
+> > request will be for things like:
+> >   "ARM PASID&IO page table format from SMMU IP block vXX"
+> 
+> So, I'm happy enough for picking a user-managed pagetable format to
+> imply the set of valid IOVA ranges (though a query might be nice).
 
-Consider the following two CPU timelines:
+I think a query is mandatory, and optionally asking for ranges seems
+generally useful as a HW property.
 
-	CPU0: [ STALL ] [ SLEEP ]
-	CPU1: [  RUN  ] [  RUN  ]
+The danger is things can get really tricky as the app can ask for
+ranges some HW needs but other HW can't provide. 
 
-If we sample and aggregate once for the whole period, we get the
-following total stall time for CPU0:
+I would encourage a flow where "generic" apps like DPDK can somehow
+just ignore this, or at least be very, very simplified "I want around
+XX GB of IOVA space"
 
-	CPU0 = stall(1) + nonidle(1) / nonidle_total(3) = 0.3
+dpdk type apps vs qemu apps are really quite different and we should
+be carefully that the needs of HW accelerated vIOMMU emulation do not
+trump the needs of simple universal control over a DMA map.
 
-But if we sample twice, the total for the period is higher:
-
-	CPU0 = stall(1) + nonidle(1) / nonidle_total(2) = 0.5
-	CPU0 = stall(0) + nonidle(0) / nonidle_total(1) = 0
-                                                          ---
-                                                          0.5
-
-Neither answer is inherently wrong: if the user asks for pressure
-after half the period, we can't know yet that the CPU will go to sleep
-right after and its weight would be lower over the combined period.
-
-We could normalize the weight averaging to a fixed window regardless
-of how often stall times themselves are sampled. But that would make
-reporting less adaptive to sudden changes when the user intentionally
-uses poll() with short intervals in order to get a higher resolution.
-
-For now, simply limit sampling of the pressure file contents to the
-fixed two-second period already used by the aggregation worker.
-
-psi_show() still needs to force a catch-up run in case the workload
-went idle and periodic aggregation shut off. Since that can race with
-periodic aggregation, worker and psi_show() need to fully serialize.
-And with sampling becoming exclusive, whoever wins the race must also
-requeue the worker if necessary. Move the locking, the aggregation
-work, and the worker scheduling logic into update_averages(); use that
-from the worker and psi_show().
-
-poll() continues to use the proportional weight sampling window.
-
-Reported-by: Jared Pochtar <jpochtar@fb.com>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- kernel/sched/psi.c | 83 ++++++++++++++++++++++++----------------------
- 1 file changed, 43 insertions(+), 40 deletions(-)
-
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index cc25a3cff41f..9d647d974f55 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -358,17 +358,36 @@ static void collect_percpu_times(struct psi_group *group,
- 		*pchanged_states = changed_states;
- }
- 
--static u64 update_averages(struct psi_group *group, u64 now)
-+static void update_averages(struct psi_group *group)
- {
- 	unsigned long missed_periods = 0;
--	u64 expires, period;
--	u64 avg_next_update;
-+	u64 now, expires, period;
-+	u32 changed_states;
- 	int s;
- 
- 	/* avgX= */
-+	mutex_lock(&group->avgs_lock);
-+
-+	now = sched_clock();
- 	expires = group->avg_next_update;
--	if (now - expires >= psi_period)
--		missed_periods = div_u64(now - expires, psi_period);
-+
-+	/*
-+	 * Periodic aggregation.
-+	 *
-+	 * When tasks in the group are active, we make sure to
-+	 * aggregate per-cpu samples and calculate the running
-+	 * averages at exactly once per PSI_FREQ period.
-+	 *
-+	 * When tasks go idle, there is no point in keeping the
-+	 * workers running, so we shut them down too. Once restarted,
-+	 * we backfill zeroes for the missed periods in calc_avgs().
-+	 *
-+	 * We can get here from inside the aggregation worker, but
-+	 * also from psi_show() as userspace may query pressure files
-+	 * of an idle group whose aggregation worker shut down.
-+	 */
-+	if (now < expires)
-+		goto unlock;
- 
- 	/*
- 	 * The periodic clock tick can get delayed for various
-@@ -377,10 +396,13 @@ static u64 update_averages(struct psi_group *group, u64 now)
- 	 * But the deltas we sample out of the per-cpu buckets above
- 	 * are based on the actual time elapsing between clock ticks.
- 	 */
--	avg_next_update = expires + ((1 + missed_periods) * psi_period);
-+	if (now - expires >= psi_period)
-+		missed_periods = div_u64(now - expires, psi_period);
- 	period = now - (group->avg_last_update + (missed_periods * psi_period));
- 	group->avg_last_update = now;
-+	group->avg_next_update = expires + ((1 + missed_periods) * psi_period);
- 
-+	collect_percpu_times(group, PSI_AVGS, &changed_states);
- 	for (s = 0; s < NR_PSI_STATES - 1; s++) {
- 		u32 sample;
- 
-@@ -408,42 +430,25 @@ static u64 update_averages(struct psi_group *group, u64 now)
- 		calc_avgs(group->avg[s], missed_periods, sample, period);
- 	}
- 
--	return avg_next_update;
-+	if (changed_states & (1 << PSI_NONIDLE)) {
-+		unsigned long delay;
-+
-+		delay = nsecs_to_jiffies(group->avg_next_update - now) + 1;
-+		schedule_delayed_work(&group->avgs_work, delay);
-+	}
-+unlock:
-+	mutex_unlock(&group->avgs_lock);
- }
- 
- static void psi_avgs_work(struct work_struct *work)
- {
- 	struct delayed_work *dwork;
- 	struct psi_group *group;
--	u32 changed_states;
--	bool nonidle;
--	u64 now;
- 
- 	dwork = to_delayed_work(work);
- 	group = container_of(dwork, struct psi_group, avgs_work);
- 
--	mutex_lock(&group->avgs_lock);
--
--	now = sched_clock();
--
--	collect_percpu_times(group, PSI_AVGS, &changed_states);
--	nonidle = changed_states & (1 << PSI_NONIDLE);
--	/*
--	 * If there is task activity, periodically fold the per-cpu
--	 * times and feed samples into the running averages. If things
--	 * are idle and there is no data to process, stop the clock.
--	 * Once restarted, we'll catch up the running averages in one
--	 * go - see calc_avgs() and missed_periods.
--	 */
--	if (now >= group->avg_next_update)
--		group->avg_next_update = update_averages(group, now);
--
--	if (nonidle) {
--		schedule_delayed_work(dwork, nsecs_to_jiffies(
--				group->avg_next_update - now) + 1);
--	}
--
--	mutex_unlock(&group->avgs_lock);
-+	update_averages(group);
- }
- 
- /* Trigger tracking window manipulations */
-@@ -1029,18 +1034,16 @@ void cgroup_move_task(struct task_struct *task, struct css_set *to)
- int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
- {
- 	int full;
--	u64 now;
- 
- 	if (static_branch_likely(&psi_disabled))
- 		return -EOPNOTSUPP;
- 
--	/* Update averages before reporting them */
--	mutex_lock(&group->avgs_lock);
--	now = sched_clock();
--	collect_percpu_times(group, PSI_AVGS, NULL);
--	if (now >= group->avg_next_update)
--		group->avg_next_update = update_averages(group, now);
--	mutex_unlock(&group->avgs_lock);
-+	/*
-+	 * Periodic aggregation should do all the sampling for us, but
-+	 * if the workload goes idle, the worker goes to sleep before
-+	 * old stalls may have averaged out. Backfill any idle zeroes.
-+	 */
-+	update_averages(group);
- 
- 	for (full = 0; full < 2; full++) {
- 		unsigned long avg[3];
--- 
-2.32.0
-
+Jason
