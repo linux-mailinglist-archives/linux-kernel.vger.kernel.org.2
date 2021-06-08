@@ -2,155 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7EF39FDDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A5139FDE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbhFHRje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44948 "EHLO
+        id S233082AbhFHRjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232644AbhFHRjc (ORCPT
+        with ESMTP id S232644AbhFHRjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:39:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB72C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 10:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gtYgNf1MMJu3408XeDLJzRxVXgNres0dscNvmSwjebA=; b=E/68k0xfCirgm0okM86kOWTy5n
-        koZf2UVhOUTgD0SnkOnbhncTMRa5FWzW9XLyVfCjB1bDN+Qeh+cmLZM8zYPFbrHjh+E+1W+bjQ7ht
-        QunrXmYGUyepZs0Z0U20eZOcUUeVOKQ0td6bp5ivBwX0VTU3yL+unMZv8TN9KvAQ+AlRATI03isY2
-        k+JH0MFpFSgr29GMAaflEY2T5fIbO2K8fKp/+ghOm7STw2xdHavvmTBI4If7AF6zswD1zSKO8Up4w
-        jef4ADh3v2xi/lmGByM99g0PSsDm3m0JUAhlqGvkVaX53aQY574hCWX5AUVTRdwM9sQUQsmroJsZ8
-        mD8D4RtA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqfeb-00HDKO-Eo; Tue, 08 Jun 2021 17:36:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8139430018A;
-        Tue,  8 Jun 2021 19:36:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 008B72D754400; Tue,  8 Jun 2021 19:36:36 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 19:36:36 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kajol Jain <kjain@linux.ibm.com>
-Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        rnsastry@linux.ibm.com
-Subject: Re: [PATCH 2/4] drivers/nvdimm: Add perf interface to expose nvdimm
- performance stats
-Message-ID: <YL+qpL/+ReGfqXce@hirez.programming.kicks-ass.net>
-References: <20210608115700.85933-1-kjain@linux.ibm.com>
- <20210608115700.85933-3-kjain@linux.ibm.com>
+        Tue, 8 Jun 2021 13:39:40 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CED4C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 10:37:47 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id k15so16264636pfp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:37:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VYVl7szFEBK6C42IK2EXBO8BhWc8zsrG6U+k/87a+5E=;
+        b=cgGYIpNaZ6iE0KhM2pK2533D8tirYFFO5sH+DLDp6h6o2j5kwQMDrH2fxKCr9QIy/O
+         FDmzdwqj2T/+o0YiqJ+YQZkFC6HZUV2R5BMpGuGGMhgu5P9tQtKSTQhhe2PjxrjQSuJI
+         ma2t2S0KURAMesD+aZMf8z20bDbvrVf6t6hEQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VYVl7szFEBK6C42IK2EXBO8BhWc8zsrG6U+k/87a+5E=;
+        b=qGXrMOJ1i0H19ouvckOoz6X+FURJfaSuFSsVOMRtngm19wiKm+o3KtVDJhPwIAVA+Q
+         G2wGJ4lUR/ndiG6vVqidODGIuI+XnHlQSB0BDSw3k/vyUj/5xza0jqXfBnEhDWQcoVUm
+         QevaUDkcHvxVZnm32AR+S44+MDXmPIESyEog99Xrm1/tdeOnGC92rs3yLm4FH7JpbKu7
+         ZnUFd5Ss6gc8wC8xtBB61//v34SarRYmPkaMXcz2lfk6yl8gdEFDWEeTNufEmlmirlrJ
+         Lw4VsyVHSVGQxC2V3DgRJmnRYgLREmLKH/0KjbtvUFCzqIBhRESxQjiswvBelPSmixUa
+         soTg==
+X-Gm-Message-State: AOAM531yrXoCLamdKXjg4Nz7ZmeJZQP5MfnH1uXXzNRNVV7bmzLYu+lm
+        alfbqsa4mydPSo7YrHaMs4g2vw==
+X-Google-Smtp-Source: ABdhPJyQ8uYoWu20PGLwrzt9tyJVMnFgrFO31FHFR6A9l/q0q9qRSLEOBallutB5qpBq34etUJ1Uwg==
+X-Received: by 2002:a05:6a00:9a:b029:2f1:6fd:aa51 with SMTP id c26-20020a056a00009ab02902f106fdaa51mr993390pfj.38.1623173866752;
+        Tue, 08 Jun 2021 10:37:46 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h18sm12025517pgl.87.2021.06.08.10.37.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 10:37:46 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 10:37:45 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] sysctl: remove trailing spaces and tabs
+Message-ID: <202106081037.7FBEA6D63E@keescook>
+References: <20210608075700.13173-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210608115700.85933-3-kjain@linux.ibm.com>
+In-Reply-To: <20210608075700.13173-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 05:26:58PM +0530, Kajol Jain wrote:
-> +static int nvdimm_pmu_cpu_offline(unsigned int cpu, struct hlist_node *node)
-> +{
-> +	struct nvdimm_pmu *nd_pmu;
-> +	u32 target;
-> +	int nodeid;
-> +	const struct cpumask *cpumask;
-> +
-> +	nd_pmu = hlist_entry_safe(node, struct nvdimm_pmu, node);
-> +
-> +	/* Clear it, incase given cpu is set in nd_pmu->arch_cpumask */
-> +	cpumask_test_and_clear_cpu(cpu, &nd_pmu->arch_cpumask);
-> +
-> +	/*
-> +	 * If given cpu is not same as current designated cpu for
-> +	 * counter access, just return.
-> +	 */
-> +	if (cpu != nd_pmu->cpu)
-> +		return 0;
-> +
-> +	/* Check for any active cpu in nd_pmu->arch_cpumask */
-> +	target = cpumask_any(&nd_pmu->arch_cpumask);
-> +	nd_pmu->cpu = target;
-> +
-> +	/*
-> +	 * Incase we don't have any active cpu in nd_pmu->arch_cpumask,
-> +	 * check in given cpu's numa node list.
-> +	 */
-> +	if (target >= nr_cpu_ids) {
-> +		nodeid = cpu_to_node(cpu);
-> +		cpumask = cpumask_of_node(nodeid);
-> +		target = cpumask_any_but(cpumask, cpu);
-> +		nd_pmu->cpu = target;
-> +
-> +		if (target >= nr_cpu_ids)
-> +			return -1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int nvdimm_pmu_cpu_online(unsigned int cpu, struct hlist_node *node)
-> +{
-> +	struct nvdimm_pmu *nd_pmu;
-> +
-> +	nd_pmu = hlist_entry_safe(node, struct nvdimm_pmu, node);
-> +
-> +	if (nd_pmu->cpu >= nr_cpu_ids)
-> +		nd_pmu->cpu = cpu;
-> +
-> +	return 0;
-> +}
+On Tue, Jun 08, 2021 at 03:57:00PM +0800, Zhen Lei wrote:
+> Run the following command to find and remove the trailing spaces and tabs:
+> 
+> sed -r -i 's/[ \t]+$//' kernel/sysctl*
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-> +static int nvdimm_pmu_cpu_hotplug_init(struct nvdimm_pmu *nd_pmu)
-> +{
-> +	int nodeid, rc;
-> +	const struct cpumask *cpumask;
-> +
-> +	/*
-> +	 * Incase cpu hotplug is not handled by arch specific code
-> +	 * they can still provide required cpumask which can be used
-> +	 * to get designatd cpu for counter access.
-> +	 * Check for any active cpu in nd_pmu->arch_cpumask.
-> +	 */
-> +	if (!cpumask_empty(&nd_pmu->arch_cpumask)) {
-> +		nd_pmu->cpu = cpumask_any(&nd_pmu->arch_cpumask);
-> +	} else {
-> +		/* pick active cpu from the cpumask of device numa node. */
-> +		nodeid = dev_to_node(nd_pmu->dev);
-> +		cpumask = cpumask_of_node(nodeid);
-> +		nd_pmu->cpu = cpumask_any(cpumask);
-> +	}
-> +
-> +	rc = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, "perf/nvdimm:online",
-> +				     nvdimm_pmu_cpu_online, nvdimm_pmu_cpu_offline);
-> +
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Did you actually test this hotplug stuff?
-
-That is, create a counter, unplug the CPU the counter was on, and
-continue counting? "perf stat -I" is a good option for this, concurrent
-with a hotplug.
-
-Because I don't think it's actually correct. The thing is perf core is
-strictly per-cpu, and it will place the event on a specific CPU context.
-If you then unplug that CPU, nothing will touch the events on that CPU
-anymore.
-
-What drivers that span CPUs need to do is call
-perf_pmu_migrate_context() whenever the CPU they were assigned to goes
-away. Please have a look at arch/x86/events/rapl.c or
-arch/x86/events/amd/power.c for relatively simple drivers that have this
-property.
-
-
+-- 
+Kees Cook
