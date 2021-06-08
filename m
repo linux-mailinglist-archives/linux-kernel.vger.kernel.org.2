@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8340239F2EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E7639F2F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhFHJzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhFHJzj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:55:39 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30337C061574;
-        Tue,  8 Jun 2021 02:53:47 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0bc9005757c3be7e9afbb5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:c900:5757:c3be:7e9a:fbb5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 60C0E1EC032C;
-        Tue,  8 Jun 2021 11:53:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623146023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=sIO4tp9D4s6y/uruWeTeez4givhSC32qFwkGfiSPVXo=;
-        b=sSmLg8fmO27pZQXB7ZKC0enN2/bCa4DO+wzxAckghPFrtWAKqDzpf7P6irMrq9MajHeUuG
-        M4rw9C8I0ri9Rr0WXgFtRfbLjcIwvkv4Mt7RbSdglTFwIOwxBEuDEIX3FQw3Nc/TcdGghr
-        C9TROKIfKsacQogdcANjD2el6ldIzjs=
-Date:   Tue, 8 Jun 2021 11:53:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     ChenXiaoSong <chenxiaosong2@huawei.com>
-Cc:     jlu@pengutronix.de, mchehab@kernel.org, tony.luck@intel.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com
-Subject: Re: [PATCH -next,resend] EDAC/armada_xp: Remove redundant dev_err
- call in axp_mc_probe() and aurora_l2_probe()
-Message-ID: <YL8+IvruIwjbQDfn@zn.tnic>
-References: <20210608084715.1046300-1-chenxiaosong2@huawei.com>
+        id S231321AbhFHJzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 05:55:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231181AbhFHJzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 05:55:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31B2E61008;
+        Tue,  8 Jun 2021 09:53:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623146038;
+        bh=VYaAViHh1Py6v8pf+R+jIxsvaqWuJjCa07F+MAIE8WU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HNp23tvGHNeTqJa2VK3DVBNpBXaUiicbZVCcHkUSmamieuUG41mrYpxYe5iNu+87L
+         Z8O+7vVHDMd8HJyskHqvprv4spkQz0MT6Y+ieeHTnAFDCbrHc8/XnFlL+ezljn081V
+         Z8LIGvrbt93hNub/Ee1UfGHPlpG3wIYnKU06KUOY=
+Date:   Tue, 8 Jun 2021 11:53:56 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?SmnFmcOt?= Prchal <jiri.prchal@aksignal.cz>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v7 4/5] nvmem: eeprom: at25: export FRAM serial num
+Message-ID: <YL8+NOdz+ue3MTGg@kroah.com>
+References: <20210607122640.143582-1-jiri.prchal@aksignal.cz>
+ <20210607122640.143582-5-jiri.prchal@aksignal.cz>
+ <YL4S2/hlfRwRM+Ug@kroah.com>
+ <56f088fe-8db2-54d4-bef3-72e5f893a414@aksignal.cz>
+ <YL8ybqOfgOqjlpoX@kroah.com>
+ <b1c0eab3-8d07-5c52-300e-45974f7fea9c@aksignal.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210608084715.1046300-1-chenxiaosong2@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b1c0eab3-8d07-5c52-300e-45974f7fea9c@aksignal.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 04:47:15PM +0800, ChenXiaoSong wrote:
-> There is a error message within devm_ioremap_resource
-> already, so remove the dev_err call to avoid redundant
-> error message.
+On Tue, Jun 08, 2021 at 11:45:56AM +0200, Jiří Prchal wrote:
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
-> ---
->  drivers/edac/armada_xp_edac.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/edac/armada_xp_edac.c b/drivers/edac/armada_xp_edac.c
-> index e3e757513d1b..9661c72e6554 100644
-> --- a/drivers/edac/armada_xp_edac.c
-> +++ b/drivers/edac/armada_xp_edac.c
-> @@ -297,10 +297,8 @@ static int axp_mc_probe(struct platform_device *pdev)
->  	}
->  
->  	base = devm_ioremap_resource(&pdev->dev, r);
-> -	if (IS_ERR(base)) {
-> -		dev_err(&pdev->dev, "Unable to map regs\n");
-> +	if (IS_ERR(base))
->  		return PTR_ERR(base);
-> -	}
->  
->  	config = readl(base + SDRAM_CONFIG_REG);
->  	if (!(config & SDRAM_CONFIG_ECC_MASK)) {
-> @@ -525,10 +523,8 @@ static int aurora_l2_probe(struct platform_device *pdev)
->  	}
->  
->  	base = devm_ioremap_resource(&pdev->dev, r);
-> -	if (IS_ERR(base)) {
-> -		dev_err(&pdev->dev, "Unable to map regs\n");
-> +	if (IS_ERR(base))
->  		return PTR_ERR(base);
-> -	}
->  
->  	l2x0_aux_ctrl = readl(base + L2X0_AUX_CTRL);
->  	if (!(l2x0_aux_ctrl & AURORA_ACR_PARITY_EN))
-> --
+> On 08. 06. 21 11:03, Greg Kroah-Hartman wrote:
+> > On Mon, Jun 07, 2021 at 04:47:44PM +0200, Jiří Prchal wrote:
+> > > 
+> > > 
+> > > On 07. 06. 21 14:36, Greg Kroah-Hartman wrote:
+> > > > On Mon, Jun 07, 2021 at 02:26:39PM +0200, Jiri Prchal wrote:
+> > > > > +	return sysfs_emit(buf, "%016llx\n", *(unsigned long long *)at25->sernum);
+> > > > 
+> > > > That's a horrid hack, why not use the %*phN modifier?
+> > > 
+> > > Prints as little endian, is that OK?
+> > 
+> > You tell me!  What tool is going to be reading this?  What do they
+> > expect it to look like?
+> 
+> sh, php in my usecase as unique id.
 
-https://lkml.kernel.org/r/YLT7JOR3fND5Y3K2@zn.tnic
+I am sorry, I do not understand.
 
--- 
-Regards/Gruss,
-    Boris.
+> So endianess does not matter to me too much. The question is what is usual
+> (like mac address, uuid...?).
 
-https://people.kernel.org/tglx/notes-about-netiquette
+What does the device export?  Why not just export it as:
+	0123456789ABCDEF
+if it is 8 bytes long?
+
+> > And it's a byte array, why would there be endian issues?
+> 
+> Now is printed as one big number. Not real issue. Just human readability?
+> Should I turn back it to space separated bytes?
+
+It's up to you, what do you want to do with it and what does a tool want
+it to look like?
+
+thanks,
+
+greg k-h
