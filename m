@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF2139EFE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB1539EFEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhFHHuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 03:50:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:51446 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230176AbhFHHuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 03:50:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E7F53ED1;
-        Tue,  8 Jun 2021 00:48:16 -0700 (PDT)
-Received: from [10.163.83.140] (unknown [10.163.83.140])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 500663F719;
-        Tue,  8 Jun 2021 00:48:08 -0700 (PDT)
-Subject: Re: [PATCH] mm/thp: Define default pmd_pgtable()
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chris Zankel <chris@zankel.net>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <1623130327-13325-1-git-send-email-anshuman.khandual@arm.com>
- <CAMuHMdWVrUgfXAud_3fpjfO-1yqXzf75Jtk6SNqqcR39-ZzQJA@mail.gmail.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <8f851179-586d-4491-e650-ed3e5ea7b002@arm.com>
-Date:   Tue, 8 Jun 2021 13:18:54 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230289AbhFHHwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 03:52:00 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3786 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhFHHvy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 03:51:54 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fzj2F0fLWzWpGM;
+        Tue,  8 Jun 2021 15:45:09 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 15:49:59 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 15:49:59 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] rcu: remove trailing spaces and tabs
+Date:   Tue, 8 Jun 2021 15:49:48 +0800
+Message-ID: <20210608074948.13014-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWVrUgfXAud_3fpjfO-1yqXzf75Jtk6SNqqcR39-ZzQJA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Run the following command to find and remove the trailing spaces and tabs:
+
+find kernel/rcu/ -type f | xargs sed -r -i 's/[ \t]+$//'
+
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 6140709f7249..3f38d5ac5bb0 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -259,7 +259,7 @@ static noinstr unsigned long rcu_dynticks_inc(int incby)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+ 	int seq;
+-	
++
+ 	seq = READ_ONCE(rdp->dynticks) + incby;
+ 	smp_store_release(&rdp->dynticks, seq);
+ 	smp_mb();  // Fundamental RCU ordering guarantee.
+-- 
+2.25.1
 
 
-On 6/8/21 12:28 PM, Geert Uytterhoeven wrote:
-> Hi Anshuman,
-> 
-> On Tue, Jun 8, 2021 at 7:31 AM Anshuman Khandual
-> <anshuman.khandual@arm.com> wrote:
->> Currently most platforms define pmd_pgtable() as pmd_page() duplicating the
->> same code all over. Instead just define a default value i.e pmd_page() for
->> pmd_pgtable() and let platforms override when required via <asm/pgtable.h>.
->> All the existing platform that override pmd_pgtable() have been moved into
->> their respective <asm/pgtable.h> header in order to precede before the new
->> generic definition. This makes it much cleaner with reduced code.
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> Thanks for your patch!
-> 
->> This patch has been built tested across multiple platforms. But the m68k
->> changes in particular might not be optimal, followed the existing switch
->> from (arch/m68k/include/asm/pgalloc.h).
-> Indeed.  Why not move them to the existing
-> arch/m68k/asm/{sun3,mcf,motorola}_pgtable.h>, instead of introducing
-> yet another #if/#elif/#else/#endif block?
-> 
-
-Yes, that works. Will change.
