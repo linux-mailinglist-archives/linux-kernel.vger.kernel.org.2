@@ -2,495 +2,1063 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6007A39EB87
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD06639EB89
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbhFHBgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:36:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54584 "EHLO mail.kernel.org"
+        id S230478AbhFHBif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:38:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230365AbhFHBgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:36:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10878610C7;
-        Tue,  8 Jun 2021 01:34:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623116048;
-        bh=tHSKDQDGK5zSDYUlC6xmYWPQ9dApWHXmpoT62PRNaME=;
-        h=Date:From:To:Subject:From;
-        b=uVZ3OMIHnmxnntsgmWyr1/Wjwk6hnJ1ff9/hRMJ1sy0RyVayHSWRLJfc7odu8OUPf
-         pCpoh3IdSxSN+YctyeBu3t7nLOzqF9O+fSx4TPWtY71k+3hbE5db36K8ASQa2dM5qt
-         sMo6Sj0cuFf9AwzWwN53d4dmpunf7lO2Ey/DXSEU=
-Date:   Mon, 07 Jun 2021 18:34:07 -0700
-From:   akpm@linux-foundation.org
-To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
-Subject:  mmotm 2021-06-07-18-33 uploaded
-Message-ID: <20210608013407.3D3udKQbe%akpm@linux-foundation.org>
-User-Agent: s-nail v14.8.16
+        id S230239AbhFHBie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 21:38:34 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D79960BBB;
+        Tue,  8 Jun 2021 01:36:41 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 21:36:39 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH V3 9/9] tracing: Add timerlat tracer
+Message-ID: <20210607213639.68aad064@gandalf.local.home>
+In-Reply-To: <b650672b9973887ef1420bc1e76b97940b6522d6.1621024265.git.bristot@redhat.com>
+References: <cover.1621024265.git.bristot@redhat.com>
+ <b650672b9973887ef1420bc1e76b97940b6522d6.1621024265.git.bristot@redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mm-of-the-moment snapshot 2021-06-07-18-33 has been uploaded to
+On Fri, 14 May 2021 22:51:18 +0200
+Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
 
-   https://www.ozlabs.org/~akpm/mmotm/
+> The timerlat tracer aims to help the preemptive kernel developers to
+> found souces of wakeup latencies of real-time threads. Like cyclictest,
+> the tracer sets a periodic timer that wakes up a thread. The thread then
+> computes a *wakeup latency* value as the difference between the *current
+> time* and the *absolute time* that the timer was set to expire. The main
+> goal of timerlat is tracing in such a way to help kernel developers.
+> 
 
-mmotm-readme.txt says
+Hmm, we should add a way to have wake up tracers only trace a specific
+task, where these osnoise trace events would also be useful. That is,
+run cyclictest with the wakeup tracer, that it does this for cyclictest
+directly. That shouldn't be too difficult to add.
 
-README for mm-of-the-moment:
+> Usage
+> 
+> Write the ASCII text "timerlat" into the current_tracer file of the
+> tracing system (generally mounted at /sys/kernel/tracing).
+> 
+> For example:
+> 
+>         [root@f32 ~]# cd /sys/kernel/tracing/
+>         [root@f32 tracing]# echo timerlat > current_tracer
+> 
+> It is possible to follow the trace by reading the trace trace file::
 
-https://www.ozlabs.org/~akpm/mmotm/
+Do not need rst markup in commit logs ;-)
 
-This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-more than once a week.
+> 
+>   [root@f32 tracing]# cat trace
+>   # tracer: timerlat
+>   #
+>   #                              _-----=> irqs-off
+>   #                             / _----=> need-resched
+>   #                            | / _---=> hardirq/softirq
+>   #                            || / _--=> preempt-depth
+>   #                            || /
+>   #                            ||||             ACTIVATION
+>   #         TASK-PID      CPU# ||||   TIMESTAMP    ID            CONTEXT                LATENCY
+>   #            | |         |   ||||      |         |                  |                       |
+>           <idle>-0       [000] d.h1    54.029328: #1     context    irq timer_latency       932 ns
+>            <...>-867     [000] ....    54.029339: #1     context thread timer_latency     11700 ns
+>           <idle>-0       [001] dNh1    54.029346: #1     context    irq timer_latency      2833 ns
+>            <...>-868     [001] ....    54.029353: #1     context thread timer_latency      9820 ns
+>           <idle>-0       [000] d.h1    54.030328: #2     context    irq timer_latency       769 ns
+>            <...>-867     [000] ....    54.030330: #2     context thread timer_latency      3070 ns
+>           <idle>-0       [001] d.h1    54.030344: #2     context    irq timer_latency       935 ns
+>            <...>-868     [001] ....    54.030347: #2     context thread timer_latency      4351 ns
+> 
+> The tracer creates a per-cpu kernel thread with real-time priority that
+> prints two lines at every activation. The first is the *timer latency*
+> observed at the *hardirq* context before the activation of the thread.
+> The second is the *timer latency* observed by the thread, which is the
+> same level that cyclictest reports. The ACTIVATION ID field
 
-You will need quilt to apply these patches to the latest Linus release (5.x
-or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-https://ozlabs.org/~akpm/mmotm/series
+The above is misleading. Below, I see that you state that the values are
+"net values" where the thread latency does not include the irq latency.
+This is not the same as cyclictest. (I had to update my ASCII art below
+after reading the below statement).
 
-The file broken-out.tar.gz contains two datestamp files: .DATE and
-.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-followed by the base kernel version against which this patch series is to
-be applied.
-
-This tree is partially included in linux-next.  To see which patches are
-included in linux-next, consult the `series' file.  Only the patches
-within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
-linux-next.
-
-
-A full copy of the full kernel tree with the linux-next and mmotm patches
-already applied is available through git within an hour of the mmotm
-release.  Individual mmotm releases are tagged.  The master branch always
-points to the latest release, so it's constantly rebasing.
-
-	https://github.com/hnaz/linux-mm
-
-The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
-contains daily snapshots of the -mm tree.  It is updated more frequently
-than mmotm, and is untested.
-
-A git copy of this tree is also available at
-
-	https://github.com/hnaz/linux-mm
+> serves to relate the *irq* execution to its respective *thread* execution.
+> 
+> The irq/thread splitting is important to clarify at which context
+> the unexpected high value is coming from. The *irq* context can be
+> delayed by hardware related actions, such as SMIs, NMIs, IRQs
+> or by a thread masking interrupts. Once the timer happens, the delay
+> can also be influenced by blocking caused by threads. For example, by
+> postponing the scheduler execution via preempt_disable(),  by the
+> scheduler execution, or by masking interrupts. Threads can
+> also be delayed by the interference from other threads and IRQs.
 
 
+I wonder if ASCII art would help clarify the above. At least for the
+document (not the change log here).
 
-This mmotm tree contains the following patches against 5.13-rc5:
-(patches marked "*" will be included in linux-next)
 
-* mmhwpoison-fix-race-with-hugetlb-page-allocation.patch
-* mm-swap-fix-pte_same_as_swp-not-removing-uffd-wp-bit-when-compare.patch
-* mm-hugetlb-expand-restore_reserve_on_error-functionality.patch
-* mm-sparse-fix-check_usemap_section_nr-warnings.patch
-* mm-memory-failure-make-sure-wait-for-page-writeback-in-memory_failure.patch
-* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
-* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
-* kthread-switch-to-new-kerneldoc-syntax-for-named-variable-macro-argument.patch
-* ia64-headers-drop-duplicated-words.patch
-* ia64-mca_drv-fix-incorrect-array-size-calculation.patch
-* streamline_configpl-make-spacing-consistent.patch
-* streamline_configpl-add-softtabstop=4-for-vim-users.patch
-* scripts-spellingtxt-add-more-spellings-to-spellingtxt.patch
-* squashfs-add-option-to-panic-on-errors.patch
-* ocfs2-remove-unnecessary-init_list_head.patch
-* ocfs2-fix-snprintf-checking.patch
-* ocfs2-remove-redundant-assignment-to-pointer-queue.patch
-* ocfs2-remove-repeated-uptodate-check-for-buffer.patch
-* ocfs2-replaced-simple_strtoull-with-kstrtoull.patch
-* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
-* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
-* kernel-watchdog-modify-the-explanation-related-to-watchdog-thread.patch
-* doc-watchdog-modify-the-explanation-related-to-watchdog-thread.patch
-* doc-watchdog-modify-the-doc-related-to-watchdog-%u.patch
-  mm.patch
-* kunit-make-test-lock-irq-safe.patch
-* mm-slub-kunit-add-a-kunit-test-for-slub-debugging-functionality.patch
-* mm-slub-kunit-add-a-kunit-test-for-slub-debugging-functionality-fix.patch
-* mm-slub-kunit-add-a-kunit-test-for-slub-debugging-functionality-fix-2.patch
-* slub-remove-resiliency_test-function.patch
-* mm-slub-change-run-time-assertion-in-kmalloc_index-to-compile-time.patch
-* mm-slub-change-run-time-assertion-in-kmalloc_index-to-compile-time-fix.patch
-* mm-slub-change-run-time-assertion-in-kmalloc_index-to-compile-time-fix-2.patch
-* slub-restore-slub_debug=-behavior.patch
-* slub-actually-use-message-in-restore_bytes.patch
-* slub-indicate-slab_fix-uses-printf-formats.patch
-* slub-force-on-no_hash_pointers-when-slub_debug-is-enabled.patch
-* slub-force-on-no_hash_pointers-when-slub_debug-is-enabled-fix.patch
-* slub-choose-the-right-freelist-pointer-location-when-creating-small-caches.patch
-* tools-vm-page_owner_sortc-fix-the-potential-stack-overflow-risk.patch
-* mm-debug_vm_pgtable-ensure-thp-availability-via-has_transparent_hugepage.patch
-* mm-mmap_lock-use-local-locks-instead-of-disabling-preemption.patch
-* mm-page-writeback-kill-get_writeback_state-comments.patch
-* mm-page-writeback-fix-performance-when-bdis-share-of-ratio-is-0.patch
-* mm-page-writeback-update-the-comment-of-dirty-position-control.patch
-* mm-page-writeback-use-__this_cpu_inc-in-account_page_dirtied.patch
-* mm-gup_benchmark-support-threading.patch
-* mm-gup-allow-foll_pin-to-scale-in-smp.patch
-* mm-gup-pack-has_pinned-in-mmf_has_pinned.patch
-* mm-gup-pack-has_pinned-in-mmf_has_pinned-checkpatch-fixes.patch
-* mm-gup-pack-has_pinned-in-mmf_has_pinned-fix.patch
-* mm-swapfile-use-percpu_ref-to-serialize-against-concurrent-swapoff.patch
-* swap-fix-do_swap_page-race-with-swapoff.patch
-* mm-swap-remove-confusing-checking-for-non_swap_entry-in-swap_ra_info.patch
-* mm-shmem-fix-shmem_swapin-race-with-swapoff.patch
-* mm-swapfile-move-get_swap_page_of_type-under-config_hibernation.patch
-* mm-swapfile-move-get_swap_page_of_type-under-config_hibernation-fix.patch
-* mm-swapfile-move-get_swap_page_of_type-under-config_hibernation-fix-2.patch
-* mm-swap-remove-unused-local-variable-nr_shadows.patch
-* mm-swap_slotsc-delete-meaningless-forward-declarations.patch
-* mm-swap-remove-unused-global-variable-nr_swapper_spaces.patch
-* mm-swap-remove-unnecessary-smp_rmb-in-swap_type_to_swap_info.patch
-* mm-free-idle-swap-cache-page-after-cow.patch
-* mm-memcg-move-mod_objcg_state-to-memcontrolc.patch
-* mm-memcg-cache-vmstat-data-in-percpu-memcg_stock_pcp.patch
-* mm-memcg-improve-refill_obj_stock-performance.patch
-* mm-memcg-optimize-user-context-object-stock-access.patch
-* mm-memcg-optimize-user-context-object-stock-access-checkpatch-fixes.patch
-* mm-memcg-optimize-user-context-object-stock-access-fix.patch
-* mm-memcg-slab-properly-set-up-gfp-flags-for-objcg-pointer-array.patch
-* mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches.patch
-* mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches-fix.patch
-* mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches-v5.patch
-* mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches-v5-fix.patch
-* mm-memcg-slab-disable-cache-merging-for-kmalloc_normal-caches.patch
-* mm-memcontrol-fix-root_mem_cgroup-charging.patch
-* mm-memcontrol-fix-page-charging-in-page-replacement.patch
-* mm-memcontrol-bail-out-early-when-mm-in-get_mem_cgroup_from_mm.patch
-* mm-memcontrol-remove-the-pgdata-parameter-of-mem_cgroup_page_lruvec.patch
-* mm-memcontrol-simplify-lruvec_holds_page_lru_lock.patch
-* mm-memcontrol-rename-lruvec_holds_page_lru_lock-to-page_matches_lruvec.patch
-* mm-memcontrol-simplify-the-logic-of-objcg-pinning-memcg.patch
-* mm-memcontrol-move-obj_cgroup_uncharge_pages-out-of-css_set_lock.patch
-* mm-vmscan-remove-noinline_for_stack.patch
-* memcontrol-use-flexible-array-member.patch
-* perf-map_executable-does-not-indicate-vm_mayexec.patch
-* binfmt-remove-in-tree-usage-of-map_executable.patch
-* binfmt-remove-in-tree-usage-of-map_executable-fix.patch
-* mm-ignore-map_executable-in-ksys_mmap_pgoff.patch
-* mm-mmapc-logic-of-find_vma_intersection-repeated-in-__do_munmap.patch
-* mm-mmap-introduce-unlock_range-for-code-cleanup.patch
-* mm-mmap-introduce-unlock_range-for-code-cleanup-fix.patch
-* mm-mmap-use-find_vma_intersection-in-do_mmap-for-overlap.patch
-* mm-memoryc-fix-comment-of-finish_mkwrite_fault.patch
-* mm-add-vma_lookup-update-find_vma_intersection-comments.patch
-* drm-i915-selftests-use-vma_lookup-in-__igt_mmap.patch
-* arch-arc-kernel-troubleshoot-use-vma_lookup-instead-of-find_vma.patch
-* arch-arm64-kvm-use-vma_lookup-instead-of-find_vma_intersection.patch
-* arch-powerpc-kvm-book3s_hv_uvmem-use-vma_lookup-instead-of-find_vma_intersection.patch
-* arch-powerpc-kvm-book3s-use-vma_lookup-in-kvmppc_hv_setup_htab_rma.patch
-* arch-mips-kernel-traps-use-vma_lookup-instead-of-find_vma.patch
-* arch-m68k-kernel-sys_m68k-use-vma_lookup-in-sys_cacheflush.patch
-* x86-sgx-use-vma_lookup-in-sgx_encl_find.patch
-* virt-kvm-use-vma_lookup-instead-of-find_vma_intersection.patch
-* vfio-use-vma_lookup-instead-of-find_vma_intersection.patch
-* net-ipv5-tcp-use-vma_lookup-in-tcp_zerocopy_receive.patch
-* drm-amdgpu-use-vma_lookup-in-amdgpu_ttm_tt_get_user_pages.patch
-* media-videobuf2-use-vma_lookup-in-get_vaddr_frames.patch
-* misc-sgi-gru-grufault-use-vma_lookup-in-gru_find_vma.patch
-* kernel-events-uprobes-use-vma_lookup-in-find_active_uprobe.patch
-* lib-test_hmm-use-vma_lookup-in-dmirror_migrate.patch
-* mm-ksm-use-vma_lookup-in-find_mergeable_vma.patch
-* mm-migrate-use-vma_lookup-in-do_pages_stat_array.patch
-* mm-mremap-use-vma_lookup-in-vma_to_resize.patch
-* mm-memoryc-use-vma_lookup-in-__access_remote_vm.patch
-* mm-mempolicy-use-vma_lookup-in-__access_remote_vm.patch
-* mm-remove-special-swap-entry-functions.patch
-* mm-swapops-rework-swap-entry-manipulation-code.patch
-* mm-rmap-split-try_to_munlock-from-try_to_unmap.patch
-* mm-rmap-split-migration-into-its-own-function.patch
-* mm-rename-migrate_pgmap_owner.patch
-* mm-memoryc-allow-different-return-codes-for-copy_nonpresent_pte.patch
-* mm-device-exclusive-memory-access.patch
-* mm-selftests-for-exclusive-device-memory.patch
-* mm-selftests-for-exclusive-device-memory-fix.patch
-* nouveau-svm-refactor-nouveau_range_fault.patch
-* nouveau-svm-implement-atomic-svm-access.patch
-* mm-update-legacy-flush_tlb_-to-use-vma.patch
-* lazy-tlb-introduce-lazy-mm-refcount-helper-functions.patch
-* lazy-tlb-allow-lazy-tlb-mm-refcounting-to-be-configurable.patch
-* lazy-tlb-allow-lazy-tlb-mm-refcounting-to-be-configurable-fix.patch
-* lazy-tlb-shoot-lazies-a-non-refcounting-lazy-tlb-option.patch
-* powerpc-64s-enable-mmu_lazy_tlb_shootdown.patch
-* mm-improve-mprotectrw-efficiency-on-pages-referenced-once.patch
-* mm-improve-mprotectrw-efficiency-on-pages-referenced-once-v5.patch
-* h8300-remove-unused-variable.patch
-* mm-dmapool-use-device_attr_ro-macro.patch
-* mm-tracing-unify-pfn-format-strings.patch
-* mm-page_alloc-add-an-alloc_pages_bulk_array_node-helper.patch
-* mm-vmalloc-switch-to-bulk-allocator-in-__vmalloc_area_node.patch
-* mm-vmalloc-print-a-warning-message-first-on-failure.patch
-* mm-vmalloc-remove-quoted-string-split-across-lines.patch
-* mm-vmalloc-fallback-to-a-single-page-allocator.patch
-* printk-introduce-dump_stack_lvl.patch
-* printk-introduce-dump_stack_lvl-fix.patch
-* kasan-use-dump_stack_lvlkern_err-to-print-stacks.patch
-* kasan-test-improve-failure-message-in-kunit_expect_kasan_fail.patch
-* mm-report-which-part-of-mem-is-being-freed-on-initmem-case.patch
-* mm-page_alloc-__alloc_pages_bulk-do-bounds-check-before-accessing-array.patch
-* mm-mmzoneh-simplify-is_highmem_idx.patch
-* mm-make-__dump_page-static.patch
-* mm-page_alloc-bail-out-on-fatal-signal-during-reclaim-compaction-retry-attempt.patch
-* mm-debug-factor-pagepoisoned-out-of-__dump_page.patch
-* mm-page_owner-constify-dump_page_owner.patch
-* mm-make-compound_head-const-preserving.patch
-* mm-constify-get_pfnblock_flags_mask-and-get_pfnblock_migratetype.patch
-* mm-constify-page_count-and-page_ref_count.patch
-* mm-optimise-nth_page-for-contiguous-memmap.patch
-* mm-page_alloc-switch-to-pr_debug.patch
-* kbuild-skip-per-cpu-btf-generation-for-pahole-v118-v121.patch
-* mm-page_alloc-split-per-cpu-page-lists-and-zone-stats.patch
-* mm-page_alloc-split-per-cpu-page-lists-and-zone-stats-fix.patch
-* mm-page_alloc-split-per-cpu-page-lists-and-zone-stats-fix-fix.patch
-* mm-page_alloc-convert-per-cpu-list-protection-to-local_lock.patch
-* mm-page_alloc-convert-per-cpu-list-protection-to-local_lock-fix.patch
-* mm-page_alloc-convert-per-cpu-list-protection-to-local_lock-fix-checkpatch-fixes.patch
-* mm-vmstat-convert-numa-statistics-to-basic-numa-counters.patch
-* mm-vmstat-inline-numa-event-counter-updates.patch
-* mm-page_alloc-batch-the-accounting-updates-in-the-bulk-allocator.patch
-* mm-page_alloc-reduce-duration-that-irqs-are-disabled-for-vm-counters.patch
-* mm-page_alloc-explicitly-acquire-the-zone-lock-in-__free_pages_ok.patch
-* mm-page_alloc-avoid-conflating-irqs-disabled-with-zone-lock.patch
-* mm-page_alloc-update-pgfree-outside-the-zone-lock-in-__free_pages_ok.patch
-* mm-page_alloc-dump-migrate-failed-pages-only-at-ebusy.patch
-* mm-page_alloc-delete-vmpercpu_pagelist_fraction.patch
-* mm-page_alloc-disassociate-the-pcp-high-from-pcp-batch.patch
-* mm-page_alloc-disassociate-the-pcp-high-from-pcp-batch-fix-2.patch
-* mm-page_alloc-adjust-pcp-high-after-cpu-hotplug-events.patch
-* mm-page_alloc-scale-the-number-of-pages-that-are-batch-freed.patch
-* mm-page_alloc-limit-the-number-of-pages-on-pcp-lists-when-reclaim-is-active.patch
-* mm-page_alloc-introduce-vmpercpu_pagelist_high_fraction.patch
-* mm-page_alloc-introduce-vmpercpu_pagelist_high_fraction-fix.patch
-* mm-drop-section_shift-in-code-comments.patch
-* mm-page_alloc-improve-memmap_pages-dbg-msg.patch
-* mm-page_alloc-fix-counting-of-managed_pages.patch
-* mm-page_alloc-move-free_the_page.patch
-* mm-page_alloc-allow-high-order-pages-to-be-stored-on-the-per-cpu-lists.patch
-* mm-memory-failure-use-a-mutex-to-avoid-memory_failure-races.patch
-* mm-memory-failure-use-a-mutex-to-avoid-memory_failure-races-fix.patch
-* mmhwpoison-return-ehwpoison-to-denote-that-the-page-has-already-been-poisoned.patch
-* mmhwpoison-send-sigbus-with-error-virutal-address.patch
-* mmhwpoison-send-sigbus-with-error-virutal-address-fix.patch
-* mmhwpoison-make-get_hwpoison_page-call-get_any_page.patch
-* mm-memory_hotplug-factor-out-bootmem-core-functions-to-bootmem_infoc.patch
-* mm-hugetlb-introduce-a-new-config-hugetlb_page_free_vmemmap.patch
-* mm-hugetlb-gather-discrete-indexes-of-tail-page.patch
-* mm-hugetlb-free-the-vmemmap-pages-associated-with-each-hugetlb-page.patch
-* mm-hugetlb-defer-freeing-of-hugetlb-pages.patch
-* mm-hugetlb-alloc-the-vmemmap-pages-associated-with-each-hugetlb-page.patch
-* mm-hugetlb-alloc-the-vmemmap-pages-associated-with-each-hugetlb-page-fix.patch
-* mm-hugetlb-add-a-kernel-parameter-hugetlb_free_vmemmap.patch
-* mm-memory_hotplug-disable-memmap_on_memory-when-hugetlb_free_vmemmap-enabled.patch
-* mm-memory_hotplug-disable-memmap_on_memory-when-hugetlb_free_vmemmap-enabled-fix.patch
-* mm-hugetlb-introduce-nr_free_vmemmap_pages-in-the-struct-hstate.patch
-* mm-debug_vm_pgtable-move-pmd-pud_huge_tests-out-of-config_transparent_hugepage.patch
-* mm-debug_vm_pgtable-remove-redundant-pfn_pmd-pte-and-fix-one-comment-mistake.patch
-* mm-huge_memoryc-remove-dedicated-macro-hpage_cache_index_mask.patch
-* mm-huge_memoryc-use-page-deferred_list.patch
-* mm-huge_memoryc-add-missing-read-only-thp-checking-in-transparent_hugepage_enabled.patch
-* mm-huge_memoryc-add-missing-read-only-thp-checking-in-transparent_hugepage_enabled-v4.patch
-* mm-huge_memoryc-remove-unnecessary-tlb_remove_page_size-for-huge-zero-pmd.patch
-* mm-huge_memoryc-dont-discard-hugepage-if-other-processes-are-mapping-it.patch
-* mm-hugetlb-change-parameters-of-arch_make_huge_pte.patch
-* mm-pgtable-add-stubs-for-pmd-pub_set-clear_huge.patch
-* mm-pgtable-add-stubs-for-pmd-pub_set-clear_huge-fix-2.patch
-* arm64-define-only-pud-pmd_set-clear_huge-when-usefull.patch
-* mm-vmalloc-enable-mapping-of-huge-pages-at-pte-level-in-vmap.patch
-* mm-vmalloc-enable-mapping-of-huge-pages-at-pte-level-in-vmalloc.patch
-* powerpc-8xx-add-support-for-huge-pages-on-vmap-and-vmalloc.patch
-* khugepaged-selftests-remove-debug_cow.patch
-* mm-hugetlb-fix-racy-resv_huge_pages-underflow-on-uffdio_copy.patch
-* mm-hugetlb-fix-racy-resv_huge_pages-underflow-on-uffdio_copy-fix.patch
-* mm-hugetlb-fix-racy-resv_huge_pages-underflow-on-uffdio_copy-fix-2.patch
-* userfaultfd-selftests-use-user-mode-only.patch
-* userfaultfd-selftests-remove-the-time-check-on-delayed-uffd.patch
-* userfaultfd-selftests-dropping-verify-check-in-locking_thread.patch
-* userfaultfd-selftests-only-dump-counts-if-mode-enabled.patch
-* userfaultfd-selftests-unify-error-handling.patch
-* mm-thp-simplify-copying-of-huge-zero-page-pmd-when-fork.patch
-* mm-userfaultfd-fix-uffd-wp-special-cases-for-fork.patch
-* mm-userfaultfd-fix-uffd-wp-special-cases-for-fork-fix.patch
-* mm-userfaultfd-fix-a-few-thp-pmd-missing-uffd-wp-bit.patch
-* mm-userfaultfd-fail-uffd-wp-registeration-if-not-supported.patch
-* mm-pagemap-export-uffd-wp-protection-information.patch
-* userfaultfd-selftests-add-pagemap-uffd-wp-test.patch
-* userfaultfd-shmem-combine-shmem_mcopy_atomicmfill_zeropage_pte.patch
-* userfaultfd-shmem-support-minor-fault-registration-for-shmem.patch
-* userfaultfd-shmem-support-uffdio_continue-for-shmem.patch
-* userfaultfd-shmem-advertise-shmem-minor-fault-support.patch
-* userfaultfd-shmem-modify-shmem_mfill_atomic_pte-to-use-install_pte.patch
-* userfaultfd-selftests-use-memfd_create-for-shmem-test-type.patch
-* userfaultfd-selftests-create-alias-mappings-in-the-shmem-test.patch
-* userfaultfd-selftests-reinitialize-test-context-in-each-test.patch
-* userfaultfd-selftests-reinitialize-test-context-in-each-test-fix.patch
-* userfaultfd-selftests-exercise-minor-fault-handling-shmem-support.patch
-* userfaultfd-fix-uffdio_continue-ioctl-request-definition.patch
-* mm-move-holes_in_zone-into-mm.patch
-* docs-procrst-meminfo-briefly-describe-gaps-in-memory-accounting.patch
-* fs-proc-kcore-drop-kcore_remap-and-kcore_other.patch
-* fs-proc-kcore-pfn_is_ram-check-only-applies-to-kcore_ram.patch
-* fs-proc-kcore-dont-read-offline-sections-logically-offline-pages-and-hwpoisoned-pages.patch
-* mm-introduce-page_offline_beginendfreezethaw-to-synchronize-setting-pageoffline.patch
-* virtio-mem-use-page_offline_startend-when-setting-pageoffline.patch
-* fs-proc-kcore-use-page_offline_freezethaw.patch
-* mm-compaction-use-device_attr_wo-macro.patch
-* mm-mempolicy-cleanup-nodemask-intersection-check-for-oom.patch
-* mm-mempolicy-dont-handle-mpol_local-like-a-fake-mpol_preferred-policy.patch
-* mm-mempolicy-dont-handle-mpol_local-like-a-fake-mpol_preferred-policy-v4.patch
-* mm-mempolicy-dont-handle-mpol_local-like-a-fake-mpol_preferred-policy-v4-fix.patch
-* mm-mempolicy-unify-the-parameter-sanity-check-for-mbind-and-set_mempolicy.patch
-* mm-mempolicy-unify-the-parameter-sanity-check-for-mbind-and-set_mempolicy-v4.patch
-* mm-mempolicy-dont-have-to-split-pmd-for-huge-zero-page.patch
-* include-linux-mmzoneh-add-documentation-for-pfn_valid.patch
-* memblock-update-initialization-of-reserved-pages.patch
-* arm64-decouple-check-whether-pfn-is-in-linear-map-from-pfn_valid.patch
-* arm64-drop-pfn_valid_within-and-simplify-pfn_valid.patch
-* mm-migrate-fix-missing-update-page_private-to-hugetlb_page_subpool.patch
-* mm-migrate-fix-missing-update-page_private-to-hugetlb_page_subpool-v2.patch
-* mm-thp-relax-the-vm_denywrite-constraint-on-file-backed-thps.patch
-* mm-memory-add-orig_pmd-to-struct-vm_fault.patch
-* mm-memory-make-numa_migrate_prep-non-static.patch
-* mm-thp-refactor-numa-fault-handling.patch
-* mm-thp-refactor-numa-fault-handling-fix.patch
-* mm-migrate-account-thp-numa-migration-counters-correctly.patch
-* mm-migrate-dont-split-thp-for-misplaced-numa-page.patch
-* mm-migrate-check-mapcount-for-thp-instead-of-refcount.patch
-* mm-thp-skip-make-pmd-prot_none-if-thp-migration-is-not-supported.patch
-* mm-thp-make-alloc_split_ptlocks-dependent-on-use_split_pte_ptlocks.patch
-* mm-thp-make-arch_enable_split_pmd_ptlock-dependent-on-pgtable_levels-2.patch
-* nommu-remove-__gfp_highmem-in-vmalloc-vzalloc.patch
-* nommu-remove-__gfp_highmem-in-vmalloc-vzalloc-checkpatch-fixes.patch
-* mm-nommu-unexport-do_munmap.patch
-* mm-generalize-zone_.patch
-* mm-make-variable-names-for-populate_vma_page_range-consistent.patch
-* mm-madvise-introduce-madv_populate_readwrite-to-prefault-page-tables.patch
-* mm-madvise-introduce-madv_populate_readwrite-to-prefault-page-tables-checkpatch-fixes.patch
-* maintainers-add-tools-testing-selftests-vm-to-memory-management.patch
-* selftests-vm-add-protection_keys_32-protection_keys_64-to-gitignore.patch
-* selftests-vm-add-test-for-madv_populate_readwrite.patch
-* mm-memory_hotplug-rate-limit-page-migration-warnings.patch
-* memory-hotplugrst-complete-admin-guide-overhaul.patch
-* mmmemory_hotplug-drop-unneeded-locking.patch
-* mmmemory_hotplug-drop-unneeded-locking-fix.patch
-* mm-zswapc-remove-unused-function-zswap_debugfs_exit.patch
-* mm-zswapc-avoid-unnecessary-copy-in-at-map-time.patch
-* mm-zswapc-fix-two-bugs-in-zswap_writeback_entry.patch
-* mm-highmem-remove-deprecated-kmap_atomic.patch
-* zram-move-backing_dev-under-macro-config_zram_writeback.patch
-* mm-fix-typos-and-grammar-error-in-comments.patch
-* mm-fix-comments-mentioning-i_mutex.patch
-* mm-define-default-value-for-first_user_address.patch
-* mm-clear-spelling-mistakes.patch
-* mm-vmscan-remove-kerneldoc-like-comment-from-isolate_lru_pages.patch
-* mm-vmalloc-include-header-for-prototype-of-set_iounmap_nonlazy.patch
-* mm-page_alloc-make-should_fail_alloc_page-a-static-function-should_fail_alloc_page-static.patch
-* mm-mapping_dirty_helpers-remove-double-note-in-kerneldoc.patch
-* mm-memcontrolc-fix-kerneldoc-comment-for-mem_cgroup_calculate_protection.patch
-* mm-memory_hotplug-fix-kerneldoc-comment-for-__try_online_node.patch
-* mm-memory_hotplug-fix-kerneldoc-comment-for-__remove_memory.patch
-* mm-zbud-add-kerneldoc-fields-for-zbud_pool.patch
-* mm-z3fold-add-kerneldoc-fields-for-z3fold_pool.patch
-* mm-swap-make-swap_address_space-an-inline-function.patch
-* mm-mmap_lock-remove-dead-code-for-config_tracing-configurations.patch
-* mm-mmap_lock-remove-dead-code-for-config_tracing-configurations-fix.patch
-* mm-page_alloc-move-prototype-for-find_suitable_fallback.patch
-* mm-swap-make-node_data-an-inline-function-on-config_flatmem.patch
-* kfence-unconditionally-use-unbound-work-queue.patch
-* info-task-hung-in-generic_file_write_iter.patch
-* info-task-hung-in-generic_file_write-fix.patch
-* kernel-hung_taskc-monitor-killed-tasks.patch
-* proc-avoid-mixing-integer-types-in-mem_rw.patch
-* fs-proc-kcorec-add-mmap-interface.patch
-* fs-proc-kcorec-add-mmap-interface-fix.patch
-* procfs-allow-reading-fdinfo-with-ptrace_mode_read.patch
-* procfs-dmabuf-add-inode-number-to-proc-fdinfo.patch
-* sysctl-remove-redundant-assignment-to-first.patch
-* proc-sysctl-make-protected_-world-readable.patch
-* kernelh-split-out-panic-and-oops-helpers.patch
-* kernelh-split-out-panic-and-oops-helpers-fix.patch
-* kernelh-split-out-panic-and-oops-helpers-fix-2.patch
-* lib-decompress_bunzip2-remove-an-unneeded-semicolon.patch
-* lib-string_helpers-switch-to-use-bit-macro.patch
-* lib-string_helpers-move-escape_np-check-inside-else-branch-in-a-loop.patch
-* lib-string_helpers-drop-indentation-level-in-string_escape_mem.patch
-* lib-string_helpers-introduce-escape_na-for-escaping-non-ascii.patch
-* lib-string_helpers-introduce-escape_nap-to-escape-non-ascii-and-non-printable.patch
-* lib-string_helpers-allow-to-append-additional-characters-to-be-escaped.patch
-* lib-test-string_helpers-print-flags-in-hexadecimal-format.patch
-* lib-test-string_helpers-get-rid-of-trailing-comma-in-terminators.patch
-* lib-test-string_helpers-add-test-cases-for-new-features.patch
-* maintainers-add-myself-as-designated-reviewer-for-generic-string-library.patch
-* seq_file-introduce-seq_escape_mem.patch
-* seq_file-add-seq_escape_str-as-replica-of-string_escape_str.patch
-* seq_file-convert-seq_escape-to-use-seq_escape_str.patch
-* nfsd-avoid-non-flexible-api-in-seq_quote_mem.patch
-* seq_file-drop-unused-_escape_mem_ascii.patch
-* lib-math-rationalc-fix-divide-by-zero.patch
-* lib-math-rational-add-kunit-test-cases.patch
-* lib-math-rational-add-kunit-test-cases-fix.patch
-* lib-math-rational-add-kunit-test-cases-fix-2.patch
-* lib-decompressors-fix-spelling-mistakes.patch
-* lib-mpi-fix-spelling-mistakes.patch
-* lib-memscan-fixlet.patch
-* lz4_decompress-declare-lz4_decompress_safe_withprefix64k-static.patch
-* lib-decompress_unlz4c-correctly-handle-zero-padding-around-initrds.patch
-* checkpatch-scripts-spdxcheckpy-now-requires-python3.patch
-* checkpatch-improve-the-indented-label-test.patch
-* init-print-out-unknown-kernel-parameters.patch
-* init-mainc-silence-some-wunused-parameter-warnings.patch
-* hfsplus-fix-out-of-bounds-warnings-in-__hfsplus_setxattr.patch
-* x86-signal-dont-do-sas_ss_reset-until-we-are-certain-that-sigframe-wont-be-abandoned.patch
-* exec-remove-checks-in-__register_bimfmt.patch
-* kcov-add-__no_sanitize_coverage-to-fix-noinstr-for-all-architectures.patch
-* kcov-add-__no_sanitize_coverage-to-fix-noinstr-for-all-architectures-v2.patch
-* kcov-add-__no_sanitize_coverage-to-fix-noinstr-for-all-architectures-v3.patch
-* lib-decompressors-remove-set-but-not-used-variabled-level.patch
-* lib-decompressors-remove-set-but-not-used-variabled-level-fix.patch
-* ipc-sem-use-kvmalloc-for-sem_undo-allocation.patch
-* ipc-use-kmalloc-for-msg_queue-and-shmid_kernel.patch
-* ipc-semc-use-read_once-write_once-for-use_global_lock.patch
-* ipc-utilc-use-binary-search-for-max_idx.patch
-* ipc-utilc-use-binary-search-for-max_idx-fix.patch
-* linux-next-pre.patch
-  linux-next.patch
-  linux-next-post.patch
-  linux-next-rejects.patch
-* lib-test-fix-spelling-mistakes.patch
-* lib-fix-spelling-mistakes.patch
-* mm-slub-use-stackdepot-to-save-stack-trace-in-objects.patch
-* mm-slub-use-stackdepot-to-save-stack-trace-in-objects-fix.patch
-* mm-slub-use-stackdepot-to-save-stack-trace-in-objects-fix-2.patch
-* mmap-make-mlock_future_check-global.patch
-* riscv-kconfig-make-direct-map-manipulation-options-depend-on-mmu.patch
-* set_memory-allow-querying-whether-set_direct_map_-is-actually-enabled.patch
-* mm-introduce-memfd_secret-system-call-to-create-secret-memory-areas.patch
-* mm-introduce-memfd_secret-system-call-to-create-secret-memory-areas-fix.patch
-* pm-hibernate-disable-when-there-are-active-secretmem-users.patch
-* arch-mm-wire-up-memfd_secret-system-call-where-relevant.patch
-* secretmem-test-add-basic-selftest-for-memfd_secret2.patch
-* mm-fix-spelling-mistakes-in-header-files.patch
-* buildid-only-consider-gnu-notes-for-build-id-parsing.patch
-* buildid-add-api-to-parse-build-id-out-of-buffer.patch
-* buildid-stash-away-kernels-build-id-on-init.patch
-* buildid-stash-away-kernels-build-id-on-init-fix.patch
-* dump_stack-add-vmlinux-build-id-to-stack-traces.patch
-* module-add-printk-formats-to-add-module-build-id-to-stacktraces.patch
-* module-add-printk-formats-to-add-module-build-id-to-stacktraces-fix.patch
-* module-add-printk-formats-to-add-module-build-id-to-stacktraces-fix-2.patch
-* module-add-printk-formats-to-add-module-build-id-to-stacktraces-fix-fix.patch
-* module-add-printk-formats-to-add-module-build-id-to-stacktraces-fix-fix-fix.patch
-* arm64-stacktrace-use-%psb-for-backtrace-printing.patch
-* x86-dumpstack-use-%psb-%pbb-for-backtrace-printing.patch
-* scripts-decode_stacktracesh-support-debuginfod.patch
-* scripts-decode_stacktracesh-silence-stderr-messages-from-addr2line-nm.patch
-* scripts-decode_stacktracesh-indicate-auto-can-be-used-for-base-path.patch
-* buildid-mark-some-arguments-const.patch
-* buildid-fix-kernel-doc-notation.patch
-* kdump-use-vmlinux_build_id-to-simplify.patch
-  make-sure-nobodys-leaking-resources.patch
-  releasing-resources-with-children.patch
-  mutex-subsystem-synchro-test-module.patch
-  kernel-forkc-export-kernel_thread-to-modules.patch
-  workaround-for-a-pci-restoring-bug.patch
+  time ==>
+            expected         actual      thread
+             wakeup          wakeup     scheduled
+                |              |          |
+                v              v          v
+      |---------|-------|------|----------|
+                        ^
+                        |
+                    interrupt 
+
+                |--------------|
+                   irq latency
+
+                               |-----------|
+                       thread latency
+
+
+> 
+> The timerlat can also take advantage of the osnoise: traceevents.
+> For example:
+> 
+>         [root@f32 ~]# cd /sys/kernel/tracing/
+>         [root@f32 tracing]# echo timerlat > current_tracer
+>         [root@f32 tracing]# echo osnoise > set_event
+>         [root@f32 tracing]# echo 25 > osnoise/stop_tracing_out_us
+>         [root@f32 tracing]# tail -10 trace
+>              cc1-87882   [005] d..h...   548.771078: #402268 context    irq timer_latency      1585 ns
+>              cc1-87882   [005] dNLh1..   548.771082: irq_noise: local_timer:236 start 548.771077442 duration 4597 ns
+>              cc1-87882   [005] dNLh2..   548.771083: irq_noise: reschedule:253 start 548.771083017 duration 56 ns
+>              cc1-87882   [005] dNLh2..   548.771086: irq_noise: call_function_single:251 start 548.771083811 duration 2048 ns
+>              cc1-87882   [005] dNLh2..   548.771088: irq_noise: call_function_single:251 start 548.771086814 duration 1495 ns
+>              cc1-87882   [005] dNLh2..   548.771091: irq_noise: call_function_single:251 start 548.771089194 duration 1558 ns
+>              cc1-87882   [005] dNLh2..   548.771094: irq_noise: call_function_single:251 start 548.771091719 duration 1932 ns
+>              cc1-87882   [005] dNLh2..   548.771096: irq_noise: call_function_single:251 start 548.771094696 duration 1050 ns
+>              cc1-87882   [005] d...3..   548.771101: thread_noise:      cc1:87882 start 548.771078243 duration 10909 ns
+>       timerlat/5-1035    [005] .......   548.771103: #402268 context thread timer_latency     25960 ns
+> 
+> For further information see: Documentation/trace/timerlat-tracer.rst
+> 
+
+
+> 
+> diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
+> index 608107b27cc0..3769b9b7aed8 100644
+> --- a/Documentation/trace/index.rst
+> +++ b/Documentation/trace/index.rst
+> @@ -24,6 +24,7 @@ Linux Tracing Technologies
+>     boottime-trace
+>     hwlat_detector
+>     osnoise-tracer
+> +   timerlat-tracer
+>     intel_th
+>     ring-buffer-design
+>     stm
+> diff --git a/Documentation/trace/timerlat-tracer.rst b/Documentation/trace/timerlat-tracer.rst
+> new file mode 100644
+> index 000000000000..902d2f9a489f
+> --- /dev/null
+> +++ b/Documentation/trace/timerlat-tracer.rst
+> @@ -0,0 +1,158 @@
+> +###############
+> +Timerlat tracer
+> +###############
+> +
+> +The timerlat tracer aims to help the preemptive kernel developers to
+> +found souces of wakeup latencies of real-time threads. Like cyclictest,
+
+  "to find sources"
+
+> +the tracer sets a periodic timer that wakes up a thread. The thread then
+> +computes a *wakeup latency* value as the difference between the *current
+> +time* and the *absolute time* that the timer was set to expire. The main
+> +goal of timerlat is tracing in such a way to help kernel developers.
+> +
+> +Usage
+> +-----
+> +
+> +Write the ASCII text "timerlat" into the current_tracer file of the
+> +tracing system (generally mounted at /sys/kernel/tracing).
+> +
+> +For example::
+> +
+> +        [root@f32 ~]# cd /sys/kernel/tracing/
+> +        [root@f32 tracing]# echo timerlat > current_tracer
+> +
+> +It is possible to follow the trace by reading the trace trace file::
+> +
+> +  [root@f32 tracing]# cat trace
+> +  # tracer: timerlat
+> +  #
+> +  #                              _-----=> irqs-off
+> +  #                             / _----=> need-resched
+> +  #                            | / _---=> hardirq/softirq
+> +  #                            || / _--=> preempt-depth
+> +  #                            || /
+> +  #                            ||||             ACTIVATION
+> +  #         TASK-PID      CPU# ||||   TIMESTAMP    ID            CONTEXT                LATENCY
+> +  #            | |         |   ||||      |         |                  |                       |
+> +          <idle>-0       [000] d.h1    54.029328: #1     context    irq timer_latency       932 ns
+> +           <...>-867     [000] ....    54.029339: #1     context thread timer_latency     11700 ns
+> +          <idle>-0       [001] dNh1    54.029346: #1     context    irq timer_latency      2833 ns
+> +           <...>-868     [001] ....    54.029353: #1     context thread timer_latency      9820 ns
+> +          <idle>-0       [000] d.h1    54.030328: #2     context    irq timer_latency       769 ns
+> +           <...>-867     [000] ....    54.030330: #2     context thread timer_latency      3070 ns
+> +          <idle>-0       [001] d.h1    54.030344: #2     context    irq timer_latency       935 ns
+> +           <...>-868     [001] ....    54.030347: #2     context thread timer_latency      4351 ns
+> +
+> +
+> +The tracer creates a per-cpu kernel thread with real-time priority that
+> +prints two lines at every activation. The first is the *timer latency*
+> +observed at the *hardirq* context before the activation of the thread.
+> +The second is the *timer latency* observed by the thread, which is the
+> +same level that cyclictest reports. The ACTIVATION ID field
+> +serves to relate the *irq* execution to its respective *thread* execution.
+> +
+> +The *irq*/*thread* splitting is important to clarify at which context
+> +the unexpected high value is coming from. The *irq* context can be
+> +delayed by hardware related actions, such as SMIs, NMIs, IRQs
+> +or by a thread masking interrupts. Once the timer happens, the delay
+> +can also be influenced by blocking caused by threads. For example, by
+> +postponing the scheduler execution via preempt_disable(),  by the
+> +scheduler execution, or by masking interrupts. Threads can
+> +also be delayed by the interference from other threads and IRQs.
+
+This is where I would add that ASCII art.
+
+> +
+> +Tracer options
+> +---------------------
+> +
+> +The timerlat tracer is built on top of osnoise tracer.
+> +So its configuration is also done in the osnoise/ config
+> +directory. The timerlat configs are:
+> +
+> + - cpus: CPUs at which a timerlat thread will execute.
+> + - timerlat_period_us: the period of the timerlat thread.
+> + - osnoise/stop_tracing_in_us: stop the system tracing if a
+> +   timer latency at the *irq* context higher than the configured
+> +   value happens. Writing 0 disables this option.
+> + - stop_tracing_out_us: stop the system tracing if a
+> +   timer latency at the *thread* context higher than the configured
+> +   value happens. Writing 0 disables this option.
+> + - print_stack: save the stack of the IRQ ocurrence, and print
+> +   it after the *thread* read the latency.
+
+"thread read the latency" doesn't make sense.
+
+ "and print it after the *thread context* event".  ?
+
+
+> +
+> +timerlat and osnoise
+> +----------------------------
+> +
+> +The timerlat can also take advantage of the osnoise: traceevents.
+> +For example::
+> +
+> +        [root@f32 ~]# cd /sys/kernel/tracing/
+> +        [root@f32 tracing]# echo timerlat > current_tracer
+> +        [root@f32 tracing]# echo osnoise > set_event
+
+Note, set_event should be deprecated. Use:
+
+	echo 1 > events/osnoise/enable
+
+instead.
+
+
+> +        [root@f32 tracing]# echo 25 > osnoise/stop_tracing_out_us
+> +        [root@f32 tracing]# tail -10 trace
+> +             cc1-87882   [005] d..h...   548.771078: #402268 context    irq timer_latency      1585 ns
+> +             cc1-87882   [005] dNLh1..   548.771082: irq_noise: local_timer:236 start 548.771077442 duration 4597 ns
+> +             cc1-87882   [005] dNLh2..   548.771083: irq_noise: reschedule:253 start 548.771083017 duration 56 ns
+> +             cc1-87882   [005] dNLh2..   548.771086: irq_noise: call_function_single:251 start 548.771083811 duration 2048 ns
+> +             cc1-87882   [005] dNLh2..   548.771088: irq_noise: call_function_single:251 start 548.771086814 duration 1495 ns
+> +             cc1-87882   [005] dNLh2..   548.771091: irq_noise: call_function_single:251 start 548.771089194 duration 1558 ns
+> +             cc1-87882   [005] dNLh2..   548.771094: irq_noise: call_function_single:251 start 548.771091719 duration 1932 ns
+> +             cc1-87882   [005] dNLh2..   548.771096: irq_noise: call_function_single:251 start 548.771094696 duration 1050 ns
+> +             cc1-87882   [005] d...3..   548.771101: thread_noise:      cc1:87882 start 548.771078243 duration 10909 ns
+> +      timerlat/5-1035    [005] .......   548.771103: #402268 context thread timer_latency     25960 ns
+> +
+> +In this case, the root cause of the timer latency does not point for a
+> +single, but to a series of call_function_single IPIs, followed by a 10
+
+"not point to a single"
+
+> +*us* delay from a cc1 thread noise, along with the regular timer
+> +activation. It is worth mentioning that the *duration* values reported
+> +by the osnoise events are *net* values. For example, the
+> +thread_noise does not include the duration of the overhead caused
+> +by the IRQ execution (which indeed accounted for 12736 ns).
+
+As stated above, I updated my view of the ASCII art after reading this. You
+should not compare what cyclictest reports as the thread latency. But what
+cyclictest reports is the sum of the two (irq latency plus thread latency).
+
+
+> +
+> +Such pieces of evidence are useful for the developer to use other
+> +tracing methods to figure out how to optimize the environment.
+> +
+> +IRQ stacktrace
+> +---------------------------
+> +
+> +The osnoise/print_stack option is helpful for the cases in which a thread
+> +noise causes the major factor for the timer latency, because of preempt or
+> +irq disabled. For example::
+> +
+> +        [root@f32 tracing]# echo 500 > osnoise/stop_tracing_out_us
+> +        [root@f32 tracing]# echo 500 > osnoise/print_stack
+> +        [root@f32 tracing]# echo timerlat > current_tracer
+> +        [root@f32 tracing]# tail -21 per_cpu/cpu7/trace
+> +          insmod-1026    [007] dN.h1..   200.201948: irq_noise: local_timer:236 start 200.201939376 duration 7872 ns
+> +          insmod-1026    [007] d..h1..   200.202587: #29800 context    irq timer_latency      1616 ns
+> +          insmod-1026    [007] dN.h2..   200.202598: irq_noise: local_timer:236 start 200.202586162 duration 11855 ns
+> +          insmod-1026    [007] dN.h3..   200.202947: irq_noise: local_timer:236 start 200.202939174 duration 7318 ns
+> +          insmod-1026    [007] d...3..   200.203444: thread_noise:   insmod:1026 start 200.202586933 duration 838681 ns
+> +      timerlat/7-1001    [007] .......   200.203445: #29800 context thread timer_latency    859978 ns
+> +      timerlat/7-1001    [007] ....1..   200.203446: <stack trace>
+> +  => timerlat_irq
+> +  => __hrtimer_run_queues
+> +  => hrtimer_interrupt
+> +  => __sysvec_apic_timer_interrupt
+> +  => asm_call_irq_on_stack
+> +  => sysvec_apic_timer_interrupt
+> +  => asm_sysvec_apic_timer_interrupt
+> +  => delay_tsc
+> +  => dummy_load_1ms_pd_init
+> +  => do_one_initcall
+> +  => do_init_module
+> +  => __do_sys_finit_module
+> +  => do_syscall_64
+> +  => entry_SYSCALL_64_after_hwframe
+> +
+> +In this case, it is possible to see that the thread added the highest
+> +contribution to the *timer latency* and the stack trace points to
+> +a function named dummy_load_1ms_pd_init, which had the following
+> +code (on purpose)::
+
+Should add here as well that the stack is saved at the time of interrupt,
+and not at the time it is reported.
+
+> +
+> +	static int __init dummy_load_1ms_pd_init(void)
+> +	{
+> +		preempt_disable();
+> +		mdelay(1);
+> +		preempt_enable();
+> +		return 0;
+> +
+> +	}
+> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> index 41582ae4682b..d567b1717c4c 100644
+> --- a/kernel/trace/Kconfig
+> +++ b/kernel/trace/Kconfig
+> @@ -390,6 +390,34 @@ config OSNOISE_TRACER
+>  	  To enable this tracer, echo in "osnoise" into the current_tracer
+>            file.
+>  
+> +config TIMERLAT_TRACER
+> +	bool "Timerlat tracer"
+> +	select OSNOISE_TRACER
+> +	select GENERIC_TRACER
+> +	help
+> +	  The timerlat tracer aims to help the preemptive kernel developers
+> +	  to find sources of wakeup latencies of real-time threads.
+> +
+> +	  The tracer creates a per-cpu kernel thread with real-time priority.
+> +	  The tracer thread sets a periodic timer to wakeup itself, and goes
+> +	  to sleep waiting for the timer to fire. At the wakeup, the thread
+> +	  then computes a wakeup latency value as the difference between
+> +	  the current time and the absolute time that the timer was set
+> +	  to expire.
+> +
+> +	  The tracer prints two lines at every activation. The first is the
+> +	  timer latency observed at the hardirq context before the
+> +	  activation of the thread. The second is the timer latency observed
+> +	  by the thread, which is the same level that cyclictest reports. The
+
+Again, change the reference to cyclictest here. As what cyclictest reports
+is the sum of the two. Saying the "same level that cyclictest reports" is
+misleading.
+
+> +	  ACTIVATION ID field serves to relate the irq execution to its
+> +	  respective thread execution.
+> +
+> +	  The tracer is build on top of osnoise tracer, and the osnoise:
+> +	  events can be used to trace the source of interference from NMI,
+> +	  IRQs and other threads. It also enables the capture of the
+> +	  stacktrace at the IRQ context, which helps to identify the code
+> +	  path that can cause thread delay.
+> +
+>  config MMIOTRACE
+>  	bool "Memory mapped IO tracing"
+>  	depends on HAVE_MMIOTRACE_SUPPORT && PCI
+> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> index 754dfe8987a2..889986242c40 100644
+> --- a/kernel/trace/trace.h
+> +++ b/kernel/trace/trace.h
+> @@ -45,6 +45,7 @@ enum trace_type {
+>  	TRACE_BPUTS,
+>  	TRACE_HWLAT,
+>  	TRACE_OSNOISE,
+> +	TRACE_TIMERLAT,
+>  	TRACE_RAW_DATA,
+>  	TRACE_FUNC_REPEATS,
+>  
+> @@ -448,6 +449,7 @@ extern void __ftrace_bad_type(void);
+>  		IF_ASSIGN(var, ent, struct bputs_entry, TRACE_BPUTS);	\
+>  		IF_ASSIGN(var, ent, struct hwlat_entry, TRACE_HWLAT);	\
+>  		IF_ASSIGN(var, ent, struct osnoise_entry, TRACE_OSNOISE);\
+> +		IF_ASSIGN(var, ent, struct timerlat_entry, TRACE_TIMERLAT);\
+>  		IF_ASSIGN(var, ent, struct raw_data_entry, TRACE_RAW_DATA);\
+>  		IF_ASSIGN(var, ent, struct trace_mmiotrace_rw,		\
+>  			  TRACE_MMIO_RW);				\
+> diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
+> index 158c0984b59b..cd41e863b51c 100644
+> --- a/kernel/trace/trace_entries.h
+> +++ b/kernel/trace/trace_entries.h
+> @@ -385,3 +385,19 @@ FTRACE_ENTRY(osnoise, osnoise_entry,
+>  		 __entry->softirq_count,
+>  		 __entry->thread_count)
+>  );
+> +
+> +FTRACE_ENTRY(timerlat, timerlat_entry,
+> +
+> +	TRACE_TIMERLAT,
+> +
+> +	F_STRUCT(
+> +		__field(	unsigned int,		seqnum		)
+> +		__field(	int,			context		)
+> +		__field(	u64,			timer_latency	)
+> +	),
+> +
+> +	F_printk("seq:%u\tcontext:%d\ttimer_latency:%llu\n",
+> +		 __entry->seqnum,
+> +		 __entry->context,
+> +		 __entry->timer_latency)
+> +);
+> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+> index 9bd40b514d84..3a8d70fbb57f 100644
+> --- a/kernel/trace/trace_osnoise.c
+> +++ b/kernel/trace/trace_osnoise.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+>   * OS Noise Tracer: computes the OS Noise suffered by a running thread.
+> + * Timerlat Tracer: measures the wakeup latency of a timer triggered IRQ and thread.
+>   *
+>   * Based on "hwlat_detector" tracer by:
+>   *   Copyright (C) 2008-2009 Jon Masters, Red Hat, Inc. <jcm@redhat.com>
+> @@ -21,6 +22,7 @@
+>  #include <linux/cpumask.h>
+>  #include <linux/delay.h>
+>  #include <linux/sched/clock.h>
+> +#include <uapi/linux/sched/types.h>
+>  #include <linux/sched.h>
+>  #include "trace.h"
+>  
+> @@ -45,6 +47,9 @@ static struct trace_array	*osnoise_trace;
+>  #define DEFAULT_SAMPLE_PERIOD	1000000			/* 1s */
+>  #define DEFAULT_SAMPLE_RUNTIME	1000000			/* 1s */
+>  
+> +#define DEFAULT_TIMERLAT_PERIOD	1000			/* 1ms */
+> +#define DEFAULT_TIMERLAT_PRIO	95			/* FIFO 95 */
+> +
+>  /*
+>   * NMI runtime info.
+>   */
+> @@ -62,6 +67,8 @@ struct irq {
+>  	u64 delta_start;
+>  };
+>  
+> +#define IRQ_CONTEXT	0
+> +#define THREAD_CONTEXT	1
+>  /*
+>   * SofIRQ runtime info.
+>   */
+> @@ -108,32 +115,76 @@ static inline struct osnoise_variables *this_cpu_osn_var(void)
+>  	return this_cpu_ptr(&per_cpu_osnoise_var);
+>  }
+>  
+> +#ifdef CONFIG_TIMERLAT_TRACER
+> +/*
+> + * Runtime information for the timer mode.
+> + */
+> +struct timerlat_variables {
+> +	struct task_struct *kthread;
+> +	struct hrtimer timer;
+> +	u64 rel_period;
+> +	u64 abs_period;
+> +	bool tracing_thread;
+> +	u64 count;
+> +};
+
+Like with the osnoise comment, put in tabs to make the fields stand out.
+
+> +
+> +DEFINE_PER_CPU(struct timerlat_variables, per_cpu_timerlat_var);
+> +
+>  /**
+> - * osn_var_reset - Reset the values of the given osnoise_variables
+> + * this_cpu_tmr_var - Return the per-cpu timerlat_variables on its relative CPU
+> + */
+> +static inline struct timerlat_variables *this_cpu_tmr_var(void)
+> +{
+> +	return this_cpu_ptr(&per_cpu_timerlat_var);
+> +}
+> +
+> +/**
+> + * tlat_var_reset - Reset the values of the given timerlat_variables
+>   */
+> -static inline void osn_var_reset(struct osnoise_variables *osn_var)
+> +static inline void tlat_var_reset(void)
+>  {
+> +	struct timerlat_variables *tlat_var;
+> +	int cpu;
+>  	/*
+>  	 * So far, all the values are initialized as 0, so
+>  	 * zeroing the structure is perfect.
+>  	 */
+> -	memset(osn_var, 0, sizeof(struct osnoise_variables));
+> +	for_each_cpu(cpu, cpu_online_mask) {
+> +		tlat_var = per_cpu_ptr(&per_cpu_timerlat_var, cpu);
+> +		memset(tlat_var, 0, sizeof(struct timerlat_variables));
+> +	}
+>  }
+> +#else /* CONFIG_TIMERLAT_TRACER */
+> +#define tlat_var_reset()	do {} while (0)
+> +#endif /* CONFIG_TIMERLAT_TRACER */
+>  
+>  /**
+> - * osn_var_reset_all - Reset the value of all per-cpu osnoise_variables
+> + * osn_var_reset - Reset the values of the given osnoise_variables
+>   */
+> -static inline void osn_var_reset_all(void)
+> +static inline void osn_var_reset(void)
+>  {
+>  	struct osnoise_variables *osn_var;
+>  	int cpu;
+>  
+> +	/*
+> +	 * So far, all the values are initialized as 0, so
+> +	 * zeroing the structure is perfect.
+> +	 */
+>  	for_each_cpu(cpu, cpu_online_mask) {
+>  		osn_var = per_cpu_ptr(&per_cpu_osnoise_var, cpu);
+> -		osn_var_reset(osn_var);
+> +		memset(osn_var, 0, sizeof(struct osnoise_variables));
+>  	}
+>  }
+>  
+> +/**
+> + * osn_var_reset_all - Reset the value of all per-cpu osnoise_variables
+> + */
+> +static inline void osn_var_reset_all(void)
+> +{
+> +	osn_var_reset();
+> +	tlat_var_reset();
+> +}
+> +
+>  /*
+>   * Tells NMIs to call back to the osnoise tracer to record timestamps.
+>   */
+> @@ -154,6 +205,18 @@ struct osnoise_sample {
+>  	int			thread_count;	/* # Threads during this sample */
+>  };
+>  
+> +#ifdef CONFIG_TIMERLAT_TRACER
+> +/*
+> + * timerlat sample structure definition. Used to store the statistics of
+> + * a sample run.
+> + */
+> +struct timerlat_sample {
+> +	u64			seqnum;		/* unique sequence */
+
+The seqnum in the event is unsigned int, whereas here it's u64.
+
+> +	u64			timer_latency;	/* timer_latency */
+> +	int			context;	/* timer context */
+> +};
+> +#endif
+> +
+>  /*
+>   * Protect the interface.
+>   */
+> @@ -165,13 +228,23 @@ struct mutex interface_lock;
+>  static struct osnoise_data {
+>  	u64	sample_period;		/* total sampling period */
+>  	u64	sample_runtime;		/* active sampling portion of period */
+> -	u64	stop_tracing_in;	/* stop trace in the inside operation (loop) */
+> -	u64	stop_tracing_out;	/* stop trace in the outside operation (report) */
+> +	u64	stop_tracing_in;	/* stop trace in the inside operation (loop/irq) */
+> +	u64	stop_tracing_out;	/* stop trace in the outside operation (report/thread) */
+> +#ifdef CONFIG_TIMERLAT_TRACER
+> +	u64	timerlat_period;	/* timerlat period */
+> +	u64	print_stack;		/* print IRQ stack if total > */
+> +	int	timerlat_tracer;	/* timerlat tracer */
+> +#endif
+>  } osnoise_data = {
+>  	.sample_period			= DEFAULT_SAMPLE_PERIOD,
+>  	.sample_runtime			= DEFAULT_SAMPLE_RUNTIME,
+>  	.stop_tracing_in		= 0,
+>  	.stop_tracing_out		= 0,
+> +#ifdef CONFIG_TIMERLAT_TRACER
+> +	.print_stack			= 0,
+> +	.timerlat_period		= DEFAULT_TIMERLAT_PERIOD,
+> +	.timerlat_tracer		= 0,
+> +#endif
+>  };
+>  
+>  /*
+> @@ -232,6 +305,125 @@ static void trace_osnoise_sample(struct osnoise_sample *sample)
+>  		trace_buffer_unlock_commit_nostack(buffer, event);
+>  }
+>  
+> +#ifdef CONFIG_TIMERLAT_TRACER
+> +/*
+> + * Print the timerlat header info.
+> + */
+> +static void print_timerlat_headers(struct seq_file *s)
+> +{
+> +	seq_puts(s, "#                                _-----=> irqs-off\n");
+> +	seq_puts(s, "#                               / _----=> need-resched\n");
+> +	seq_puts(s, "#                              | / _---=> hardirq/softirq\n");
+> +	seq_puts(s, "#                              || / _--=> preempt-depth\n");
+> +	seq_puts(s, "#                              || /\n");
+> +	seq_puts(s, "#                              ||||             ACTIVATION\n");
+> +	seq_puts(s, "#           TASK-PID      CPU# ||||   TIMESTAMP    ID     ");
+> +	seq_puts(s, "       CONTEXT                LATENCY\n");
+> +	seq_puts(s, "#              | |         |   ||||      |         |      ");
+> +	seq_puts(s, "            |                       |\n");
+> +}
+> +
+> +/*
+> + * Record an timerlat_sample into the tracer buffer.
+> + */
+> +static void trace_timerlat_sample(struct timerlat_sample *sample)
+> +{
+> +	struct trace_array *tr = osnoise_trace;
+> +	struct trace_event_call *call = &event_osnoise;
+> +	struct trace_buffer *buffer = tr->array_buffer.buffer;
+> +	struct ring_buffer_event *event;
+> +	struct timerlat_entry *entry;
+> +
+> +	event = trace_buffer_lock_reserve(buffer, TRACE_TIMERLAT, sizeof(*entry),
+> +					  tracing_gen_ctx());
+> +	if (!event)
+> +		return;
+> +	entry	= ring_buffer_event_data(event);
+> +	entry->seqnum			= sample->seqnum;
+> +	entry->context			= sample->context;
+> +	entry->timer_latency		= sample->timer_latency;
+> +
+> +	if (!call_filter_check_discard(call, entry, buffer, event))
+> +		trace_buffer_unlock_commit_nostack(buffer, event);
+> +}
+> +
+> +#ifdef CONFIG_STACKTRACE
+> +/*
+> + * Stack trace will take place only at IRQ level, so, no need
+> + * to control nesting here.
+> + */
+> +struct trace_stack {
+> +	int stack_size;
+> +	int nr_entries;
+> +	unsigned long           calls[PAGE_SIZE];
+
+That is rather big. It's 8 * PAGE_SIZE. I don't think that's what you really
+wanted.
+
+> +};
+> +
+> +static DEFINE_PER_CPU(struct trace_stack, trace_stack);
+> +
+> +/**
+
+Again, remove the KernelDoc notation of /**, or make it real kerneldoc
+notation.
+
+> + * timerlat_save_stack - save a stack trace without printing
+> + *
+> + * Save the current stack trace without printing. The
+> + * stack will be printed later, after the end of the measurement.
+> + */
+> +static void timerlat_save_stack(int skip)
+> +{
+> +	unsigned int size, nr_entries;
+> +	struct trace_stack *fstack;
+> +
+> +	fstack = this_cpu_ptr(&trace_stack);
+> +
+> +	size = ARRAY_SIZE(fstack->calls);
+> +
+> +	nr_entries = stack_trace_save(fstack->calls, size, skip);
+> +
+> +	fstack->stack_size = nr_entries * sizeof(unsigned long);
+> +	fstack->nr_entries = nr_entries;
+> +
+> +	return;
+> +
+> +}
+> +/**
+> + * timerlat_dump_stack - dump a stack trace previously saved
+> + *
+> + * Dump a saved stack trace into the trace buffer.
+> + */
+> +static void timerlat_dump_stack(void)
+> +{
+> +	struct trace_event_call *call = &event_osnoise;
+> +	struct trace_array *tr = osnoise_trace;
+> +	struct trace_buffer *buffer = tr->array_buffer.buffer;
+> +	struct ring_buffer_event *event;
+> +	struct trace_stack *fstack;
+> +	struct stack_entry *entry;
+> +	unsigned int size;
+> +
+> +	preempt_disable_notrace();
+> +	fstack = this_cpu_ptr(&trace_stack);
+> +	size = fstack->stack_size;
+> +
+> +	event = trace_buffer_lock_reserve(buffer, TRACE_STACK, sizeof(*entry) + size,
+> +					  tracing_gen_ctx());
+> +	if (!event)
+> +		goto out;
+> +
+> +	entry = ring_buffer_event_data(event);
+> +
+> +	memcpy(&entry->caller, fstack->calls, size);
+> +	entry->size = fstack->nr_entries;
+> +
+> +	if (!call_filter_check_discard(call, entry, buffer, event))
+> +		trace_buffer_unlock_commit_nostack(buffer, event);
+> +
+> +out:
+> +	preempt_enable_notrace();
+> +}
+> +#else
+> +#define timerlat_dump_stack() do {} while (0)
+> +#define timerlat_save_stack(a) do {} while (0)
+> +#endif /* CONFIG_STACKTRACE */
+> +#endif /* CONFIG_TIMERLAT_TRACER */
+> +
+>  /**
+>   * Macros to encapsulate the time capturing infrastructure.
+>   */
+> @@ -373,6 +565,30 @@ set_int_safe_time(struct osnoise_variables *osn_var, u64 *time)
+>  	return int_counter;
+>  }
+>  
+> +#ifdef CONFIG_TIMERLAT_TRACER
+> +/**
+> + * copy_int_safe_time - Copy *src into *desc aware of interference
+> + */
+> +static u64
+> +copy_int_safe_time(struct osnoise_variables *osn_var, u64 *dst, u64 *src)
+> +{
+> +	u64 int_counter;
+> +
+> +	do {
+> +		int_counter = local_read(&osn_var->int_counter);
+> +		/* synchronize with interrupts */
+> +		barrier();
+> +
+> +		*dst = *src;
+> +
+> +		/* synchronize with interrupts */
+> +		barrier();
+> +	} while (int_counter != local_read(&osn_var->int_counter));
+
+Note, that the loop is unnecessary on 64 bit machines.
+
+The compiler should not split loads, in such cases.
+
+> +
+> +	return int_counter;
+> +}
+> +#endif /* CONFIG_TIMERLAT_TRACER */
+> +
+>  /**
+>   * trace_osnoise_callback - NMI entry/exit callback
+>   *
+> @@ -801,6 +1017,22 @@ void trace_softirq_exit_callback(void *data, unsigned int vec_nr)
+>  	if (!osn_var->sampling)
+>  		return;
+>  
+> +#ifdef CONFIG_TIMERLAT_TRACER
+> +	/*
+> +	 * If the timerlat is enabled, but the irq handler did
+> +	 * not run yet enabling timerlat_tracer, do not trace.
+> +	 */
+> +	if (unlikely(osnoise_data.timerlat_tracer)) {
+> +		struct timerlat_variables *tlat_var;
+> +		tlat_var = this_cpu_tmr_var();
+> +		if (!tlat_var->tracing_thread) {
+
+What happens if the timer interrupt triggers here?
+
+> +			osn_var->softirq.arrival_time = 0;
+> +			osn_var->softirq.delta_start = 0;
+> +			return;
+> +		}
+> +	}
+> +#endif
+> +
+>  	duration = get_int_safe_duration(osn_var, &osn_var->softirq.delta_start);
+>  	trace_softirq_noise(vec_nr, osn_var->softirq.arrival_time, duration);
+>  	cond_move_thread_delta_start(osn_var, duration);
+> @@ -893,6 +1125,18 @@ thread_exit(struct osnoise_variables *osn_var, struct task_struct *t)
+>  	if (!osn_var->sampling)
+>  		return;
+>  
+> +#ifdef CONFIG_TIMERLAT_TRACER
+> +	if (osnoise_data.timerlat_tracer) {
+> +		struct timerlat_variables *tlat_var;
+> +		tlat_var = this_cpu_tmr_var();
+> +		if (!tlat_var->tracing_thread) {
+
+Or here?
+
+> +			osn_var->thread.delta_start = 0;
+> +			osn_var->thread.arrival_time = 0;
+> +			return;
+> +		}
+> +	}
+> +#endif
+> +
+>  	duration = get_int_safe_duration(osn_var, &osn_var->thread.delta_start);
+>  
+>  	trace_thread_noise(t, osn_var->thread.arrival_time, duration);
+> @@ -1182,6 +1426,197 @@ static int osnoise_main(void *data)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_TIMERLAT_TRACER
+> +/**
+> + * timerlat_irq - hrtimer handler for timerlat.
+> + */
+> +static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
+> +{
+> +	struct osnoise_variables *osn_var = this_cpu_osn_var();
+> +	struct trace_array *tr = osnoise_trace;
+> +	struct timerlat_variables *tlat;
+> +	struct timerlat_sample s;
+> +	u64 now;
+> +	u64 diff;
+> +
+> +	/*
+> +	 * I am not sure if the timer was armed for this CPU. So, get
+> +	 * the timerlat struct from the timer itself, not from this
+> +	 * CPU.
+> +	 */
+> +	tlat = container_of(timer, struct timerlat_variables, timer);
+> +
+> +	now = ktime_to_ns(hrtimer_cb_get_time(&tlat->timer));
+> +
+> +	/*
+> +	 * Enable the osnoise: events for thread an softirq.
+> +	 */
+> +	tlat->tracing_thread = true;
+> +
+> +	osn_var->thread.arrival_time = time_get();
+> +
+> +	/*
+> +	 * A hardirq is running: the timer IRQ. It is for sure preempting
+> +	 * a thread, and potentially preempting a softirq.
+> +	 *
+> +	 * At this point, it is not interesting to know the duration of the
+> +	 * preempted thread (and maybe softirq), but how much time they will
+> +	 * delay the beginning of the execution of the timer thread.
+> +	 *
+> +	 * To get the correct (net) delay added by the softirq, its delta_start
+> +	 * is set as the IRQ one. In this way, at the return of the IRQ, the delta
+> +	 * start of the sofitrq will be zeroed, accounting then only the time
+> +	 * after that.
+> +	 *
+> +	 * The thread follows the same principle. However, if a softirq is
+> +	 * running, the thread needs to receive the softirq delta_start. The
+> +	 * reason being is that the softirq will be the last to be unfolded,
+> +	 * resseting the thread delay to zero.
+> +	 */
+> +#ifndef CONFIG_PREEMPT_RT
+> +	if (osn_var->softirq.delta_start) {
+> +		copy_int_safe_time(osn_var, &osn_var->thread.delta_start,
+> +				   &osn_var->softirq.delta_start);
+
+Isn't softirq.delta_start going to be zero here? It doesn't look to get
+updated until you set tracing_thread to true, but that happens here, and as
+this is in a interrupt context, there will not be a softirq happening
+between the setting of that to true to this point.
+
+> +
+> +		copy_int_safe_time(osn_var, &osn_var->softirq.delta_start,
+> +				    &osn_var->irq.delta_start);
+> +	} else {
+> +		copy_int_safe_time(osn_var, &osn_var->thread.delta_start,
+> +				    &osn_var->irq.delta_start);
+> +	}
+> +#else /* CONFIG_PREEMPT_RT */
+> +	/*
+> +	 * The sofirqs run as threads on RT, so there is not need
+> +	 * to keep track of it.
+> +	 */
+> +	copy_int_safe_time(osn_var, &osn_var->thread.delta_start, &osn_var->irq.delta_start);
+> +#endif /* CONFIG_PREEMPT_RT */
+> +
+> +	/*
+> +	 * Compute the current time with the expected time.
+> +	 */
+> +	diff = now - tlat->abs_period;
+> +
+> +	tlat->count++;
+> +	s.seqnum = tlat->count;
+> +	s.timer_latency = diff;
+> +	s.context = IRQ_CONTEXT;
+> +
+> +	trace_timerlat_sample(&s);
+> +
+> +	/* Keep a running maximum ever recorded os noise "latency" */
+> +	if (diff > tr->max_latency) {
+> +		tr->max_latency = diff;
+> +		latency_fsnotify(tr);
+> +	}
+> +
+> +	if (osnoise_data.stop_tracing_in)
+> +		if (time_to_us(diff) >= osnoise_data.stop_tracing_in)
+> +			osnoise_stop_tracing();
+> +
+> +	wake_up_process(tlat->kthread);
+> +
+> +#ifdef CONFIG_STACKTRACE
+> +	if (osnoise_data.print_stack)
+> +		timerlat_save_stack(0);
+> +#endif
+
+No need for the #ifdef above. timerlat_save_stack() is defined as a nop
+when not enabled, and the compiler will just optimize this out.
+
+> +
+> +	return HRTIMER_NORESTART;
+> +}
+> +
+> +/**
+> + * wait_next_period - Wait for the next period for timerlat
+> + */
+> +static int wait_next_period(struct timerlat_variables *tlat)
+> +{
+> +	ktime_t next_abs_period, now;
+> +	u64 rel_period = osnoise_data.timerlat_period * 1000;
+> +
+> +	now = hrtimer_cb_get_time(&tlat->timer);
+> +	next_abs_period = ns_to_ktime(tlat->abs_period + rel_period);
+> +
+> +	/*
+> +	 * Save the next abs_period.
+> +	 */
+> +	tlat->abs_period = (u64) ktime_to_ns(next_abs_period);
+> +
+> +	/*
+> +	 * If the new abs_period is in the past, skip the activation.
+> +	 */
+> +	while (ktime_compare(now, next_abs_period) > 0) {
+> +		next_abs_period = ns_to_ktime(tlat->abs_period + rel_period);
+> +		tlat->abs_period = (u64) ktime_to_ns(next_abs_period);
+> +	}
+> +
+> +	set_current_state(TASK_INTERRUPTIBLE);
+> +
+> +	hrtimer_start(&tlat->timer, next_abs_period, HRTIMER_MODE_ABS_PINNED_HARD);
+> +	schedule();
+> +	return 1;
+> +}
+> +
+> +/**
+> + * timerlat_main- Timerlat main
+> + */
+> +static int timerlat_main(void *data)
+> +{
+> +	struct osnoise_variables *osn_var = this_cpu_osn_var();
+> +	struct timerlat_variables *tlat = this_cpu_tmr_var();
+> +	struct timerlat_sample s;
+> +	struct sched_param sp;
+> +	u64 now, diff;
+> +
+> +	/*
+> +	 * Make the thread RT, that is how cyclictest is usually used.
+> +	 */
+> +	sp.sched_priority = DEFAULT_TIMERLAT_PRIO;
+> +	sched_setscheduler_nocheck(current, SCHED_FIFO, &sp);
+
+Hmm, I thought Peter Zijlstra was removing all sched_setscheduler*() calls
+in the kernel :-/ Although, this one seems legit, and we are not running
+from within a module.
+
+-- Steve
+
+> +
+> +	tlat->count = 0;
+> +	tlat->tracing_thread = false;
+> +
+> +	hrtimer_init(&tlat->timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_PINNED_HARD);
+> +	tlat->timer.function = timerlat_irq;
+> +	tlat->kthread = current;
+> +	osn_var->pid = current->pid;
+> +	/*
+> +	 * Anotate the arrival time.
+> +	 */
+> +	tlat->abs_period = hrtimer_cb_get_time(&tlat->timer);
+> +
+> +	wait_next_period(tlat);
+> +
+> +	osn_var->sampling = 1;
+> +
+> +	while (!kthread_should_stop()) {
+> +		now = ktime_to_ns(hrtimer_cb_get_time(&tlat->timer));
+> +		diff = now - tlat->abs_period;
+> +
+> +		s.seqnum = tlat->count;
+> +		s.timer_latency = diff;
+> +		s.context = THREAD_CONTEXT;
+> +
+> +		trace_timerlat_sample(&s);
+> +
+> +#ifdef CONFIG_STACKTRACE
+> +	if (osnoise_data.print_stack)
+> +		if (osnoise_data.print_stack <= time_to_us(diff))
+> +			timerlat_dump_stack();
+> +#endif /* CONFIG_STACKTRACE */
+> +
+> +		tlat->tracing_thread = false;
+> +		if (osnoise_data.stop_tracing_out)
+> +			if (time_to_us(diff) >= osnoise_data.stop_tracing_out)
+> +				osnoise_stop_tracing();
+> +
+> +		wait_next_period(tlat);
+> +	}
+> +
+> +	hrtimer_cancel(&tlat->timer);
+> +	return 0;
+> +}
+> +#endif /* CONFIG_TIMERLAT_TRACER */
