@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C8339F6AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7337F39F620
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbhFHMcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:32:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232627AbhFHMcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:32:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E94760FDA;
-        Tue,  8 Jun 2021 12:30:53 +0000 (UTC)
-Date:   Tue, 8 Jun 2021 14:30:50 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     containers@lists.linux.dev,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: device namespaces
-Message-ID: <20210608123050.zde5lwmovjr4yhiy@wittgenstein>
-References: <ca7520c9-d260-6c87-43b9-f9be24ded50c@metux.net>
+        id S232237AbhFHMO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:14:28 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3472 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232211AbhFHMO0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 08:14:26 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzpvF40n7z6wLL;
+        Tue,  8 Jun 2021 20:09:29 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 20:12:28 +0800
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 20:12:28 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <dinguyen@kernel.org>, <bp@alien8.de>, <mchehab@kernel.org>,
+        <tony.luck@intel.com>, <james.morse@arm.com>, <rric@kernel.org>
+CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] EDAC/altera: Convert list_for_each to entry variant
+Date:   Tue, 8 Jun 2021 20:31:04 +0800
+Message-ID: <1623155464-61645-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ca7520c9-d260-6c87-43b9-f9be24ded50c@metux.net>
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 11:38:16AM +0200, Enrico Weigelt, metux IT consult wrote:
-> Hello folks,
-> 
-> 
-> I'm going to implement device namespaces, where containers can get an
-> entirely different view of the devices in the machine (usually just a
-> specific subset, but possibly additional virtual devices).
-> 
-> For start I'd like to add a simple mapping of dev maj/min (leaving aside
-> sysfs, udev, etc). An important requirement for me is that the parent ns
-> can choose to delegate devices from those it full access too (child
-> namespaces can do the same to their childs), and the assignment can
-> change (for simplicity ignoring the case of removing devices that are
-> already opened by some process - haven't decided yet whether they should
-> be forcefully closed or whether keeping them open is a valid use case).
-> 
-> The big question for me now is how exactly to do the table maintenance
-> from userland. We already have entries in /proc/<pid>/ns/*. I'm thinking
-> about using them as command channel, like this:
-> 
-> * new child namespaces are created with empty mapping
-> * mapping manipulation is done by just writing commands to the ns file
-> * access is only granted if the writing process itself is in the
->  parent's device ns and has CAP_SYS_ADMIN (or maybe their could be some
->  admin user for the ns ? or the 'root' of the corresponding user_ns ?)
-> * if the caller has some restrictions on some particular device, these
->  are automatically added (eg. if you're restricted to readonly, you
->  can't give rw to the child ns).
-> 
-> Is this a good way to go ? Or what would be a better one ?
+convert list_for_each() to list_for_each_entry() where
+applicable.
 
-Ccing Greg. Without adressing specific problems, I should warn you that
-this idea is not new and the plan is unlikely to go anywhere. Especially
-not without support from Greg.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/edac/altera_edac.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Also note that I have done work to make it possible to do sufficient
-device management in containers. There's a longer series associated with
-this but the gist is 692ec06d7c92 ("netns: send uevent messages") where
-you can forward uevents to containers. I spoke about this at Plumbers in
-2018 or so too. For example, LXD makes use of this. When you hotplug a
-device into a container LXD will forward the generated uevents to the
-container making it possible for the container to manage those devices.
-That's fully under control of userspace and means we don't need to
-burden the kernel with this.
+diff --git a/drivers/edac/altera_edac.c b/drivers/edac/altera_edac.c
+index 61c21bd..12cac99 100644
+--- a/drivers/edac/altera_edac.c
++++ b/drivers/edac/altera_edac.c
+@@ -2040,14 +2040,11 @@ static int s10_edac_dberr_handler(struct notifier_block *this,
+ 		    &dberror);
+ 	regmap_write(edac->ecc_mgr_map, S10_SYSMGR_UE_VAL_OFST, dberror);
+ 	if (dberror & S10_DBE_IRQ_MASK) {
+-		struct list_head *position;
+ 		struct altr_edac_device_dev *ed;
+ 		struct arm_smccc_res result;
+ 
+ 		/* Find the matching DBE in the list of devices */
+-		list_for_each(position, &edac->a10_ecc_devices) {
+-			ed = list_entry(position, struct altr_edac_device_dev,
+-					next);
++		list_for_each_entry(ed, &edac->a10_ecc_devices, next) {
+ 			if (!(BIT(ed->db_irq) & dberror))
+ 				continue;
+ 
+-- 
+2.6.2
+
