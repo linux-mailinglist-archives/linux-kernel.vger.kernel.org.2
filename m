@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AFD39FF8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C823A0045
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhFHSdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:33:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56838 "EHLO mail.kernel.org"
+        id S235077AbhFHSlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:41:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234269AbhFHScm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:32:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 553CD61376;
-        Tue,  8 Jun 2021 18:30:32 +0000 (UTC)
+        id S234922AbhFHSiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:38:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DA5E613AE;
+        Tue,  8 Jun 2021 18:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177032;
-        bh=dOmcRJm6Y37kvcI1vAX4/vWOo7WEzddVyjrsNS8JqB4=;
+        s=korg; t=1623177217;
+        bh=4v20Y3cW3crsKshZu1FlBZ5JvWMmOmocwgADLSqD2oE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D8RW81/DCRrZznPzEWaN16cSc2sfbz/gUd0ZomgsgvwTTbRc8lw91WbTAPsu9foS1
-         iOrryIJh1MAjjD/mok0B/g1yktR4XcqmSVaufuCSDGIPXCLeR0bz5M4E8AJ/sf+9DA
-         kWDleF8avRMjFZ76WGMp1AJU0x2QNvK9+qteEHY0=
+        b=CrrhHQchxMxsVSOjMCSQV4Lgry0GMP0tBehCfZpv+ei7laKHfrD+RzI6zusNlSHnV
+         KAE1CvZeDt6FAvjrqq3i8+r3XwLtSDK7Y2JBEBCHy//ulClQrRIHEkUrntHMXHfr+A
+         ieueanXqStV9gNpACJMAM0gKnfuXKauZltnCEVyM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 16/29] net: caif: add proper error handling
+        stable@vger.kernel.org, stable@kernel.org,
+        Ye Bin <yebin10@huawei.com>, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.19 29/58] ext4: fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
 Date:   Tue,  8 Jun 2021 20:27:10 +0200
-Message-Id: <20210608175928.347383299@linuxfoundation.org>
+Message-Id: <20210608175933.244562632@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
-References: <20210608175927.821075974@linuxfoundation.org>
+In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
+References: <20210608175932.263480586@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,152 +40,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Ye Bin <yebin10@huawei.com>
 
-commit a2805dca5107d5603f4bbc027e81e20d93476e96 upstream.
+commit 082cd4ec240b8734a82a89ffb890216ac98fec68 upstream.
 
-caif_enroll_dev() can fail in some cases. Ingnoring
-these cases can lead to memory leak due to not assigning
-link_support pointer to anywhere.
+We got follow bug_on when run fsstress with injecting IO fault:
+[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
+[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
+......
+[130747.334329] Call trace:
+[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
+[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
+[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
+[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
+[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
+[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
+[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
+[130747.337359]  generic_file_buffered_read+0x410/0xae8
+[130747.337767]  generic_file_read_iter+0x114/0x190
+[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
+[130747.338556]  __vfs_read+0x11c/0x188
+[130747.338851]  vfs_read+0x94/0x150
+[130747.339110]  ksys_read+0x74/0xf0
 
-Fixes: 7c18d2205ea7 ("caif: Restructure how link caif link layer enroll")
-Cc: stable@vger.kernel.org
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This patch's modification is according to Jan Kara's suggestion in:
+https://patchwork.ozlabs.org/project/linux-ext4/patch/20210428085158.3728201-1-yebin10@huawei.com/
+"I see. Now I understand your patch. Honestly, seeing how fragile is trying
+to fix extent tree after split has failed in the middle, I would probably
+go even further and make sure we fix the tree properly in case of ENOSPC
+and EDQUOT (those are easily user triggerable).  Anything else indicates a
+HW problem or fs corruption so I'd rather leave the extent tree as is and
+don't try to fix it (which also means we will not create overlapping
+extents)."
+
+Cc: stable@kernel.org
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20210506141042.3298679-1-yebin10@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/caif/caif_dev.h |    2 +-
- include/net/caif/cfcnfg.h   |    2 +-
- net/caif/caif_dev.c         |    8 +++++---
- net/caif/cfcnfg.c           |   16 +++++++++++-----
- 4 files changed, 18 insertions(+), 10 deletions(-)
+ fs/ext4/extents.c |   43 +++++++++++++++++++++++--------------------
+ 1 file changed, 23 insertions(+), 20 deletions(-)
 
---- a/include/net/caif/caif_dev.h
-+++ b/include/net/caif/caif_dev.h
-@@ -119,7 +119,7 @@ void caif_free_client(struct cflayer *ad
-  * The link_support layer is used to add any Link Layer specific
-  * framing.
-  */
--void caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
-+int caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
- 			struct cflayer *link_support, int head_room,
- 			struct cflayer **layer, int (**rcv_func)(
- 				struct sk_buff *, struct net_device *,
---- a/include/net/caif/cfcnfg.h
-+++ b/include/net/caif/cfcnfg.h
-@@ -62,7 +62,7 @@ void cfcnfg_remove(struct cfcnfg *cfg);
-  * @fcs:	Specify if checksum is used in CAIF Framing Layer.
-  * @head_room:	Head space needed by link specific protocol.
-  */
--void
-+int
- cfcnfg_add_phy_layer(struct cfcnfg *cnfg,
- 		     struct net_device *dev, struct cflayer *phy_layer,
- 		     enum cfcnfg_phy_preference pref,
---- a/net/caif/caif_dev.c
-+++ b/net/caif/caif_dev.c
-@@ -303,7 +303,7 @@ static void dev_flowctrl(struct net_devi
- 	caifd_put(caifd);
- }
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3263,7 +3263,10 @@ static int ext4_split_extent_at(handle_t
+ 		ext4_ext_mark_unwritten(ex2);
  
--void caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
-+int caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
- 		     struct cflayer *link_support, int head_room,
- 		     struct cflayer **layer,
- 		     int (**rcv_func)(struct sk_buff *, struct net_device *,
-@@ -314,11 +314,12 @@ void caif_enroll_dev(struct net_device *
- 	enum cfcnfg_phy_preference pref;
- 	struct cfcnfg *cfg = get_cfcnfg(dev_net(dev));
- 	struct caif_device_entry_list *caifdevs;
-+	int res;
+ 	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+-	if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
++	if (err != -ENOSPC && err != -EDQUOT)
++		goto out;
++
++	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
+ 		if (split_flag & (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
+ 			if (split_flag & EXT4_EXT_DATA_VALID1) {
+ 				err = ext4_ext_zeroout(inode, ex2);
+@@ -3289,30 +3292,30 @@ static int ext4_split_extent_at(handle_t
+ 					      ext4_ext_pblock(&orig_ex));
+ 		}
  
- 	caifdevs = caif_device_list(dev_net(dev));
- 	caifd = caif_device_alloc(dev);
- 	if (!caifd)
--		return;
-+		return -ENOMEM;
- 	*layer = &caifd->layer;
- 	spin_lock_init(&caifd->flow_lock);
- 
-@@ -340,7 +341,7 @@ void caif_enroll_dev(struct net_device *
- 		sizeof(caifd->layer.name) - 1);
- 	caifd->layer.name[sizeof(caifd->layer.name) - 1] = 0;
- 	caifd->layer.transmit = transmit;
--	cfcnfg_add_phy_layer(cfg,
-+	res = cfcnfg_add_phy_layer(cfg,
- 				dev,
- 				&caifd->layer,
- 				pref,
-@@ -350,6 +351,7 @@ void caif_enroll_dev(struct net_device *
- 	mutex_unlock(&caifdevs->lock);
- 	if (rcv_func)
- 		*rcv_func = receive;
-+	return res;
- }
- EXPORT_SYMBOL(caif_enroll_dev);
- 
---- a/net/caif/cfcnfg.c
-+++ b/net/caif/cfcnfg.c
-@@ -455,7 +455,7 @@ unlock:
- 	rcu_read_unlock();
- }
- 
--void
-+int
- cfcnfg_add_phy_layer(struct cfcnfg *cnfg,
- 		     struct net_device *dev, struct cflayer *phy_layer,
- 		     enum cfcnfg_phy_preference pref,
-@@ -464,7 +464,7 @@ cfcnfg_add_phy_layer(struct cfcnfg *cnfg
- {
- 	struct cflayer *frml;
- 	struct cfcnfg_phyinfo *phyinfo = NULL;
--	int i;
-+	int i, res = 0;
- 	u8 phyid;
- 
- 	mutex_lock(&cnfg->lock);
-@@ -478,12 +478,15 @@ cfcnfg_add_phy_layer(struct cfcnfg *cnfg
- 			goto got_phyid;
- 	}
- 	pr_warn("Too many CAIF Link Layers (max 6)\n");
-+	res = -EEXIST;
- 	goto out;
- 
- got_phyid:
- 	phyinfo = kzalloc(sizeof(struct cfcnfg_phyinfo), GFP_ATOMIC);
--	if (!phyinfo)
-+	if (!phyinfo) {
-+		res = -ENOMEM;
- 		goto out_err;
+-		if (err)
+-			goto fix_extent_len;
+-		/* update the extent length and mark as initialized */
+-		ex->ee_len = cpu_to_le16(ee_len);
+-		ext4_ext_try_to_merge(handle, inode, path, ex);
+-		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+-		if (err)
+-			goto fix_extent_len;
+-
+-		/* update extent status tree */
+-		err = ext4_zeroout_es(inode, &zero_ex);
+-
+-		goto out;
+-	} else if (err)
+-		goto fix_extent_len;
+-
+-out:
+-	ext4_ext_show_leaf(inode, path);
+-	return err;
++		if (!err) {
++			/* update the extent length and mark as initialized */
++			ex->ee_len = cpu_to_le16(ee_len);
++			ext4_ext_try_to_merge(handle, inode, path, ex);
++			err = ext4_ext_dirty(handle, inode, path + path->p_depth);
++			if (!err)
++				/* update extent status tree */
++				err = ext4_zeroout_es(inode, &zero_ex);
++			/* If we failed at this point, we don't know in which
++			 * state the extent tree exactly is so don't try to fix
++			 * length of the original extent as it may do even more
++			 * damage.
++			 */
++			goto out;
++		}
 +	}
  
- 	phy_layer->id = phyid;
- 	phyinfo->pref = pref;
-@@ -497,8 +500,10 @@ got_phyid:
- 
- 	frml = cffrml_create(phyid, fcs);
- 
--	if (!frml)
-+	if (!frml) {
-+		res = -ENOMEM;
- 		goto out_err;
-+	}
- 	phyinfo->frm_layer = frml;
- 	layer_set_up(frml, cnfg->mux);
- 
-@@ -516,11 +521,12 @@ got_phyid:
- 	list_add_rcu(&phyinfo->node, &cnfg->phys);
- out:
- 	mutex_unlock(&cnfg->lock);
--	return;
-+	return res;
- 
- out_err:
- 	kfree(phyinfo);
- 	mutex_unlock(&cnfg->lock);
-+	return res;
+ fix_extent_len:
+ 	ex->ee_len = orig_ex.ee_len;
+ 	ext4_ext_dirty(handle, inode, path + path->p_depth);
+ 	return err;
++out:
++	ext4_ext_show_leaf(inode, path);
++	return err;
  }
- EXPORT_SYMBOL(cfcnfg_add_phy_layer);
  
+ /*
 
 
