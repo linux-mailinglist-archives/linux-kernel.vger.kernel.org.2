@@ -2,110 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E363439F5F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15BC39F5EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbhFHMEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:04:38 -0400
-Received: from mail-qk1-f182.google.com ([209.85.222.182]:45776 "EHLO
-        mail-qk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232054AbhFHMEh (ORCPT
+        id S232455AbhFHMD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:03:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23537 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232345AbhFHMD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:04:37 -0400
-Received: by mail-qk1-f182.google.com with SMTP id d196so14711407qkg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 05:02:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7GrlCKInRHwinOrKZ1wqy6YkpdctxLsTgU+gfy4jB+o=;
-        b=CGoheWvkuPtRqaZ+7Tf129L50H3/R+jhpu7NCmpmE2SHWpJvx5RZPy1MhDH70Wa8bG
-         HiG9gBkZhiNGRbUgQMMb4D5SMZN/j5SkCQU81eJo7UefWL5gv5D2+oPcVZfJwXOLkXj9
-         AmD02ecSa9st3Am/8RQr/0KEDNSzLy9bL16x6YWmW2sCEOQRFeTgA8NUScQIwSD43xE8
-         MAMDAMS2iwQW4mIyyrH9IztufHeNYf5Vf1jzuN0g9VZ+1czLk9zF4tFlFZpexrjhoUHF
-         Wu70sN8NpAe7fO7LMTEv6GRaO7sowvV47wPVIK0VzR5/211Gqj+hJmAw7cciA0Kydam2
-         XXLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7GrlCKInRHwinOrKZ1wqy6YkpdctxLsTgU+gfy4jB+o=;
-        b=QixG2r45YQLFHHVdyJdx8f3aS7Nae1D+gmrkXLjB7uHaV/NGM0OULcU2S3TM6zgUBr
-         gmiaQno8OK86gmhK1mzDZu/kHEz9aoMCMjC2Qv+cjaP3MXeCCq6xgBfrNmaRSnN27UDK
-         rS8+Wl1Lq5cG8HmHww6BjaW7GQ1vJSPa8A4M8IqgUO+c/cQgW1GZFuq6Wg0g8KVuukcP
-         th3tqExfeLpRjJNWoFEWFQoJiAafbr8Ur/P5RPQ7VKaZDXuZDD0sBqeQ/v4hSmaL56Bd
-         LGgKYQHMB4XVzWSpvx5Um6rKiYrT9xOB6NRy8x6wJnWPX3P8ZTZfEMW5+Ri92PPPcJor
-         9bLg==
-X-Gm-Message-State: AOAM530Owkgunp0d+RgrXucuIXeNTunXtY6dn3wsc5sm3wZAYeN+5oi4
-        F6aUdrTKkgM04NJ0y/auPyAIRd+5d06+U/1+9ccx9g==
-X-Google-Smtp-Source: ABdhPJzvRW//gdtd/Udm84t39KhHzId6doN3FQoptO5rzUO537RabS36u7WFCQWo2VkmaiqOZJMqylfEKxiGQkJD60Q=
-X-Received: by 2002:a37:9d93:: with SMTP id g141mr21071495qke.350.1623153691261;
- Tue, 08 Jun 2021 05:01:31 -0700 (PDT)
+        Tue, 8 Jun 2021 08:03:26 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 158Bi5tD101563;
+        Tue, 8 Jun 2021 08:01:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
+ : message-id : date : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=SF8iQ8wY3M8EdUhAUJGyFS7jwJUI2uMR5Wzge09zd4c=;
+ b=Mi63TgWlXkbjdESlaRoeOGVd1h5BDfReYVWwG6CSBUiE+davR+U2uMKSvHjC9LAgdWn2
+ H+Pf0ADt6cZDUFQEejD5AXJDc+KFBqKWHJnDjyI664+0dmcpuDDYjXHmSvHLileHbEhH
+ PjCTay40mvMMSJ+dMFg1TziNmFq8H6fwEdBv1OpsloAULEV3U9OaB3zLDPvqRu9Bw1Jq
+ upcrsuacehEr22quYZbmnmddnhbQ+zn1oTFXPjF92K3NU060Rrnzr7VuSISaEnhzxUeB
+ WNT3NCcMrpp35Jo+TLCKqaOdhIf0WN1VaE2YkwoqBoU2y9gSjeBVjplpcQhqZ6r0o9mr TA== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3927xe0fuk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Jun 2021 08:01:32 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 158BvbVs019767;
+        Tue, 8 Jun 2021 12:01:30 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 3900w88u6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Jun 2021 12:01:30 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 158C1SZn24904086
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Jun 2021 12:01:28 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7BEA04C04A;
+        Tue,  8 Jun 2021 12:01:28 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 503D94C052;
+        Tue,  8 Jun 2021 12:01:28 +0000 (GMT)
+Received: from [9.145.39.189] (unknown [9.145.39.189])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  8 Jun 2021 12:01:28 +0000 (GMT)
+From:   Ingo Franzki <ifranzki@linux.ibm.com>
+Subject: loop_set_block_size: loop0 () has still dirty pages (nrpages=2)
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Juergen Christ <jchrist@linux.ibm.com>
+Message-ID: <8bed44f2-273c-856e-0018-69f127ea4258@linux.ibm.com>
+Date:   Tue, 8 Jun 2021 14:01:29 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: zSTJAGjN6nYFhubd1GAAxConFJIBp2oc
+X-Proofpoint-ORIG-GUID: zSTJAGjN6nYFhubd1GAAxConFJIBp2oc
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <0000000000000bdfa905c3f6720f@google.com> <b9cb6dc4-3dfe-de60-a933-1f423301b3ca@linux.alibaba.com>
-In-Reply-To: <b9cb6dc4-3dfe-de60-a933-1f423301b3ca@linux.alibaba.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 8 Jun 2021 14:01:19 +0200
-Message-ID: <CACT4Y+az0ZsTRyj+FjA08ZjpoesoxSde+1vxn-WQnTgXM1rPGQ@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in io_wqe_enqueue
-To:     Hao Xu <haoxu@linux.alibaba.com>
-Cc:     syzbot <syzbot+ea2f1484cffe5109dc10@syzkaller.appspotmail.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-08_09:2021-06-04,2021-06-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 adultscore=0 clxscore=1011 priorityscore=1501 mlxscore=0
+ suspectscore=0 impostorscore=0 phishscore=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106080077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 11:47 AM Hao Xu <haoxu@linux.alibaba.com> wrote:
->
-> =E5=9C=A8 2021/6/5 =E4=B8=8A=E5=8D=884:22, syzbot =E5=86=99=E9=81=93:
-> > syzbot has bisected this issue to:
-> >
-> > commit 24369c2e3bb06d8c4e71fd6ceaf4f8a01ae79b7c
-> > Author: Pavel Begunkov <asml.silence@gmail.com>
-> > Date:   Tue Jan 28 00:15:48 2020 +0000
-> >
-> >      io_uring: add io-wq workqueue sharing
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17934777=
-d00000
-> > start commit:   f88cd3fb Merge tag 'vfio-v5.13-rc5' of git://github.com=
-/aw..
-> > git tree:       upstream
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D14534777=
-d00000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D10534777d00=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D82d85e75046=
-e5e64
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dea2f1484cffe5=
-109dc10
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D16d5772fd=
-00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D10525947d00=
-000
-> >
-> > Reported-by: syzbot+ea2f1484cffe5109dc10@syzkaller.appspotmail.com
-> > Fixes: 24369c2e3bb0 ("io_uring: add io-wq workqueue sharing")
-> >
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bise=
-ction
-> >
-> This is not a bug, the repro program first set RLIMIT_NPROC to 0, then
-> submits an unbound work whcih raises a warning of
-> WARN_ON_ONCE(!acct->max_workers). Since unbound->max_workers is
-> task_rlimit(current, RLIMIT_NPROC), so it is expected.
+Hi all,
 
-Hi Hao,
+we occasionally encounter a problem when setting up a loop device in one of our automated testcases.
 
-Then this is a mis-use of WARN_ON. If this check is intended for end
-users, it needs to use pr_err (also print understandable message and
-no stack trace which is most likely not useful for end users):
-https://elixir.bootlin.com/linux/v5.13-rc5/source/include/asm-generic/bug.h=
-#L71
+We set up a loop device as follows:
+
+    # dd if=/dev/zero of=/var/tmp/loopbackfile1.img bs=1M count=2500 status=none
+    # losetup --sector-size 4096 -fP --show /var/tmp/loopbackfile1.img
+
+This works fine most of the times, but in the seldom case of the error, we get 'losetup: /var/tmp/loopbackfile1.img: failed to set up loop device: Resource temporarily unavailable'.
+
+I am sure that no other loop device is currently defined, so we don't run out of loop devices.
+
+We also see the following message in the syslog when the error occurs:
+
+     loop_set_block_size: loop0 () has still dirty pages (nrpages=2)
+
+The nrpages number varies from time to time. 
+
+"Resource temporarily unavailable" is EAGAIN, and function loop_set_block_size() in drivers/block/loop.c returns this after printing the syslog message via pr_warn:
+
+static int loop_set_block_size(struct loop_device *lo, unsigned long arg)
+{
+	int err = 0;
+
+	if (lo->lo_state != Lo_bound)
+		return -ENXIO;
+
+	err = loop_validate_block_size(arg);
+	if (err)
+		return err;
+
+	if (lo->lo_queue->limits.logical_block_size == arg)
+		return 0;
+
+	sync_blockdev(lo->lo_device);
+	invalidate_bdev(lo->lo_device);
+
+	blk_mq_freeze_queue(lo->lo_queue);
+
+	/* invalidate_bdev should have truncated all the pages */
+	if (lo->lo_device->bd_inode->i_mapping->nrpages) {
+		err = -EAGAIN;
+		pr_warn("%s: loop%d (%s) has still dirty pages (nrpages=%lu)\n",
+			__func__, lo->lo_number, lo->lo_file_name,
+			lo->lo_device->bd_inode->i_mapping->nrpages);
+		goto out_unfreeze;
+	}
+
+	blk_queue_logical_block_size(lo->lo_queue, arg);
+	blk_queue_physical_block_size(lo->lo_queue, arg);
+	blk_queue_io_min(lo->lo_queue, arg);
+	loop_update_dio(lo);
+out_unfreeze:
+	blk_mq_unfreeze_queue(lo->lo_queue);
+
+	return err;
+}
+
+So looks like invalidate_bdev() did actually not truncate all the pages under some circumstances....
+
+The problem only happens when '--sector-size 4096' is specified, with the default sector size is always works. It does not call loop_set_block_size() in the default case I guess.
+
+The loop0 device has certainly be used by other testcases before, most likely with the default block size. But at the time of this run, no loop device is currently active (losetup shows nothing). 
+
+Anyone have an idea what goes wrong here? 
+
+This happens on upstream kernels on the s390x platform, but I can't tell if is related to the platform or a specific kernel version. 
+The failing use case is not that old, so I can't tell if it would have happened on earlier kernels or not, or since when it happens. 
+
+Any help is appreciated!
+
+-- 
+Ingo Franzki
+ifranzki@linux.ibm.com  
+Linux on IBM Z Development, Schoenaicher Str. 220, 71032 Boeblingen, Germany
+
+IBM Deutschland Research & Development GmbH / Vorsitzender des Aufsichtsrats: Matthias Hartmann
+Geschäftsführung: Dirk Wittkopp
+Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+IBM DATA Privacy Statement: https://www.ibm.com/privacy/us/en/
