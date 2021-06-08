@@ -2,121 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFA939FD41
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF2439FD46
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbhFHRLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:11:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22736 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231588AbhFHRLN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:11:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623172160;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4aTv++9v+jHosRvyRVghjaKt2DPiDkrKt5JmZVhhooA=;
-        b=YaTjoCpb1dIqcJaCpQy8MKTD3/xGjf66VnnGSlxzJpCJse0Swd7NI3bSLCxwPp0TwfOlAG
-        cdpeukHgo1OPrHrayb7Q1OYnjN8LcTlbsMmMITtdw7RfPncnRZvLnbyrBDQ7FQbaKmkmBe
-        pHaMR1ItC648BSeu3T8Tle4XRtozlps=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254-ei9LaSj-MlurcijMWiYQBQ-1; Tue, 08 Jun 2021 13:09:19 -0400
-X-MC-Unique: ei9LaSj-MlurcijMWiYQBQ-1
-Received: by mail-wr1-f72.google.com with SMTP id k25-20020a5d52590000b0290114dee5b660so9716743wrc.16
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:09:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4aTv++9v+jHosRvyRVghjaKt2DPiDkrKt5JmZVhhooA=;
-        b=hcwq/ASyCBdFhRSHXxYIoxsTFCMG+ZnzxFZ2gnEjE9Ta60gDhXm4MCThLStUgymerP
-         kyGANgUWiKjO7bHPlSYi6Znxmumc3fY1Fo5vHM9YCoW1TWLg1/cIP+IH1+jhJ41wa4jl
-         HY4DEDVyczLYHORpgAQD/4ev3VzaplUd7h3CEpy4oLIiUuXVIzpuj8LtfiWYdhXX52Fp
-         qx6fCwrBojcy7w4aoqt/6P/YtgWlhYl/jR6+iP2k458UBqdlWDN7kjYtWlgRAY3t9wnx
-         YjbcVnz7JTiZZATIBmXLaLlT6DUZ3KT/8ZbWqTgkCzu+Ml7iaDdt1eS4OmRG9leuINup
-         orxQ==
-X-Gm-Message-State: AOAM531XXPo7HXT5dIpRy8ZbqSOwTt9uzo589w8G4Q17IWFN2d7wpSpE
-        AsRx3TzPAxbE9BZr8RNQpAVbfmKBX2rm9ECIwUORf3hf9SZnM4FZ7KY02UDETSE6z/T7SObtdw1
-        TTQLtVzTDWhOUqI94IrQDTtzZ
-X-Received: by 2002:adf:fc0e:: with SMTP id i14mr23914024wrr.71.1623172157756;
-        Tue, 08 Jun 2021 10:09:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzg3pijJDkOWV1K1StKFPv9eD9m5caNakqtBsOQvOJiqGjJiVCeQ1fY7daMvHMOukzBkfCpdA==
-X-Received: by 2002:adf:fc0e:: with SMTP id i14mr23914001wrr.71.1623172157576;
-        Tue, 08 Jun 2021 10:09:17 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u20sm13394042wmq.24.2021.06.08.10.09.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 10:09:16 -0700 (PDT)
-To:     Sean Christopherson <seanjc@google.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20201120095517.19211-1-jiangshanlai@gmail.com>
- <20210603052455.21023-1-jiangshanlai@gmail.com> <YLkYkcn+1MJhQYMf@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH V2] KVM: X86: MMU: Use the correct inherited permissions
- to get shadow page
-Message-ID: <cbbb803b-a16d-48f5-97d0-916d0eba6a04@redhat.com>
-Date:   Tue, 8 Jun 2021 19:09:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232541AbhFHRMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:12:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231577AbhFHRMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 13:12:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73CA26128E;
+        Tue,  8 Jun 2021 17:11:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623172260;
+        bh=fIFXMNOPncbehiYawZCqgwcpQLjYu42rGGv8QKpCbR8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HJZQMcj1c/sJ3AEiX+Tnds0qpkHAuPYiX7SUXq0bLuswZRw7gReLo9RjrwocVm0C6
+         ThJIEvjAxBQBxsOtplVMCzq9UpeVz7dFGQPCL5FVay+KSxFDKuk1IuBwJK7HBGcAV9
+         T+ePsDg+W1gKHMXQqMGO5Y9IcTFkdWCz/p96x3ghM3GdM3tcw36W17OmXVSMX529cf
+         UBS4hE0M5hZrVXxuaZHsR+4J9O1TTtiB5ytyGLjmoZAwLJ+znjvsQArMqeYOPJufIC
+         CZT/p5QZq5JecgxakbyNLF/LDQXuks3rIhZLlSlKruFEwGZC3A9VqZFoOaTJyc+12L
+         0dBWzcJWMj7BA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3BE3940B1A; Tue,  8 Jun 2021 14:10:58 -0300 (-03)
+Date:   Tue, 8 Jun 2021 14:10:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] perf annotate: Add itrace options support
+Message-ID: <YL+kovO5jK1zlR1j@kernel.org>
+References: <20210607025918.118603-1-yangjihong1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YLkYkcn+1MJhQYMf@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607025918.118603-1-yangjihong1@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/06/21 19:59, Sean Christopherson wrote:
-> Maybe drop the first two paragraphs and combine the info into something like this?
+Em Mon, Jun 07, 2021 at 10:59:18AM +0800, Yang Jihong escreveu:
+> The "auxtrace_info" and "auxtrace" functions are not set in "tool" member of
+> "annotate". As a result, perf annotate does not support parsing itrace data.
 > 
->    When computing the access permissions of a shadow page, use the effective
->    permissions of the walk up to that point, i.e. the logic AND of its parents'
->    permissions.  Two guest PxE entries that point at the same table gfn need to
->    be shadowed with different shadow pages if their parents' permissions are
->    different.  KVM currently uses the effective permissions of the last
->    non-leaf entry for all non-leaf entries, which can lead to incorrectly
->    reusing a shadow page if a lower-level entry has more restrictve permissions,
->    and eventually result in a missing guest protection page fault.
+> A simple example is as follows:
+> 
+>   # perf record -e arm_spe_0/branch_filter=1/ -a sleep 1
+>   [ perf record: Woken up 9 times to write data ]
+>   [ perf record: Captured and wrote 20.874 MB perf.data ]
+>   # perf annotate --stdio
+>   Error:
+>   The perf.data data has no samples!
 
-And also a rewritten description of the sequence leading to the bug:
+Can I get an Acked-by/Reviewed-by for this? I don't have a machine where
+I can test this.
 
-- First, the guest reads from ptr1 first and KVM prepares a shadow
-   page table with role.access=u--, from ptr1's pud1 and ptr1's pmd1.
-   "u--" comes from the effective permissions of pgd, pud1 and
-   pmd1, which are stored in pt->access.  "u--" is used also to get
-   the pagetable for pud1, instead of "uw-".
+- Arnaldo
+ 
+> Solution:
+> 1.Add itrace options in help,
+> 2.Set hook functions of "auxtrace_info" and "auxtrace" in perf_tool.
+> 
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> ---
+> 
+> Changes since v1:
+>  - Adjust spaces to maintain alignment in "tool".
+> 
+>  tools/perf/builtin-annotate.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+> index 49627a7bed7c..8f87658eff31 100644
+> --- a/tools/perf/builtin-annotate.c
+> +++ b/tools/perf/builtin-annotate.c
+> @@ -474,6 +474,8 @@ int cmd_annotate(int argc, const char **argv)
+>  			.attr	= perf_event__process_attr,
+>  			.build_id = perf_event__process_build_id,
+>  			.tracing_data   = perf_event__process_tracing_data,
+> +			.auxtrace_info	= perf_event__process_auxtrace_info,
+> +			.auxtrace	= perf_event__process_auxtrace,
+>  			.feature	= process_feature_event,
+>  			.ordered_events = true,
+>  			.ordering_requires_timestamps = true,
+> @@ -483,6 +485,9 @@ int cmd_annotate(int argc, const char **argv)
+>  	struct perf_data data = {
+>  		.mode  = PERF_DATA_MODE_READ,
+>  	};
+> +	struct itrace_synth_opts itrace_synth_opts = {
+> +		.set = 0,
+> +	};
+>  	struct option options[] = {
+>  	OPT_STRING('i', "input", &input_name, "file",
+>  		    "input file name"),
+> @@ -547,6 +552,9 @@ int cmd_annotate(int argc, const char **argv)
+>  	OPT_CALLBACK(0, "percent-type", &annotate.opts, "local-period",
+>  		     "Set percent type local/global-period/hits",
+>  		     annotate_parse_percent_type),
+> +	OPT_CALLBACK_OPTARG(0, "itrace", &itrace_synth_opts, NULL, "opts",
+> +			    "Instruction Tracing options\n" ITRACE_HELP,
+> +			    itrace_parse_synth_opts),
+>  
+>  	OPT_END()
+>  	};
+> @@ -591,6 +599,8 @@ int cmd_annotate(int argc, const char **argv)
+>  	if (IS_ERR(annotate.session))
+>  		return PTR_ERR(annotate.session);
+>  
+> +	annotate.session->itrace_synth_opts = &itrace_synth_opts;
+> +
+>  	annotate.has_br_stack = perf_header__has_feat(&annotate.session->header,
+>  						      HEADER_BRANCH_STACK);
+>  
+> -- 
+> 2.30.GIT
+> 
 
-- Then the guest writes to ptr2 and KVM reuses pud1 which is present.
-   The hypervisor set up a shadow page for ptr2 with pt->access is "uw-".
-   However the pud1 pmdthe pud1 pmd (because of the incorrect argument to
-   kvm_mmu_get_page in the previous step) has role.access="u--".
+-- 
 
-- Then the guest reads from ptr3.  The hypervisor reuses pud1's
-   shadow pmd for pud2, because both use "u--" for their permissions.
-   Thus, the shadow pmd already includes entries for both pmd1 and pmd2.
-
-- At last, the guest writes to ptr4.  This causes no vmexit or pagefault,
-   because pud1's shadow page structures included an "uw-" page even though
-   its role.access was "u--".
-
-Queued, thanks.
-
-Paolo
-
+- Arnaldo
