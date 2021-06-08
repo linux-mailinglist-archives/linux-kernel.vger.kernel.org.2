@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6DD39F124
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC6639F12B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhFHIoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:44:00 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5290 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFHIn6 (ORCPT
+        id S231192AbhFHIo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:44:57 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:4401 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230371AbhFHIo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:43:58 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FzkBL0hh7z1BK06;
-        Tue,  8 Jun 2021 16:37:14 +0800 (CST)
+        Tue, 8 Jun 2021 04:44:56 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FzkDb4mplz6vZS;
+        Tue,  8 Jun 2021 16:39:11 +0800 (CST)
 Received: from dggemi758-chm.china.huawei.com (10.1.198.144) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 16:42:04 +0800
+ 15.1.2176.2; Tue, 8 Jun 2021 16:42:53 +0800
 Received: from huawei.com (10.175.101.6) by dggemi758-chm.china.huawei.com
  (10.1.198.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
- 2021 16:42:03 +0800
+ 2021 16:42:53 +0800
 From:   ChenXiaoSong <chenxiaosong2@huawei.com>
-To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <will@kernel.org>, <mark.rutland@arm.com>
-CC:     <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>, <chenxiaosong2@huawei.com>
-Subject: [PATCH -next,resend] perf: qcom: Remove redundant dev_err call in qcom_l3_cache_pmu_probe()
-Date:   Tue, 8 Jun 2021 16:48:16 +0800
-Message-ID: <20210608084816.1046485-1-chenxiaosong2@huawei.com>
+To:     <jonnyc@amazon.com>, <lorenzo.pieralisi@arm.com>,
+        <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
+        <chenxiaosong2@huawei.com>
+Subject: [PATCH -next,resend] PCI: al: Remove redundant dev_err call in al_pcie_probe()
+Date:   Tue, 8 Jun 2021 16:49:13 +0800
+Message-ID: <20210608084913.1046606-1-chenxiaosong2@huawei.com>
 X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggemi758-chm.china.huawei.com (10.1.198.144)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -52,24 +51,25 @@ error message.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
 ---
- drivers/perf/qcom_l3_pmu.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/pci/controller/dwc/pcie-al.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/perf/qcom_l3_pmu.c b/drivers/perf/qcom_l3_pmu.c
-index 081273543c6b..c76f6f21d2a8 100644
---- a/drivers/perf/qcom_l3_pmu.c
-+++ b/drivers/perf/qcom_l3_pmu.c
-@@ -767,10 +767,8 @@ static int qcom_l3_cache_pmu_probe(struct platform_device *pdev)
- 
- 	memrc = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	l3pmu->regs = devm_ioremap_resource(&pdev->dev, memrc);
--	if (IS_ERR(l3pmu->regs)) {
--		dev_err(&pdev->dev, "Can't map PMU @%pa\n", &memrc->start);
-+	if (IS_ERR(l3pmu->regs))
- 		return PTR_ERR(l3pmu->regs);
+diff --git a/drivers/pci/controller/dwc/pcie-al.c b/drivers/pci/controller/dwc/pcie-al.c
+index e8afa50129a8..fb4d1eed07ce 100644
+--- a/drivers/pci/controller/dwc/pcie-al.c
++++ b/drivers/pci/controller/dwc/pcie-al.c
+@@ -346,11 +346,8 @@ static int al_pcie_probe(struct platform_device *pdev)
+ 	controller_res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+ 						      "controller");
+ 	al_pcie->controller_base = devm_ioremap_resource(dev, controller_res);
+-	if (IS_ERR(al_pcie->controller_base)) {
+-		dev_err(dev, "couldn't remap controller base %pR\n",
+-			controller_res);
++	if (IS_ERR(al_pcie->controller_base))
+ 		return PTR_ERR(al_pcie->controller_base);
 -	}
  
- 	qcom_l3_cache__init(l3pmu);
+ 	dev_dbg(dev, "From DT: controller_base: %pR\n", controller_res);
  
 -- 
 2.25.4
