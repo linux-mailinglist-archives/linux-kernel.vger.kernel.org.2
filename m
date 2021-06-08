@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96C739F0A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D5539F0A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbhFHIS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:18:27 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5286 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhFHIRq (ORCPT
+        id S231642AbhFHISc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:18:32 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3791 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230366AbhFHIRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Jun 2021 04:17:46 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fzjc6250lz1BK8m;
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fzjc61vlyzWsmg;
         Tue,  8 Jun 2021 16:11:02 +0800 (CST)
 Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
  15.1.2176.2; Tue, 8 Jun 2021 16:15:52 +0800
 Received: from localhost.localdomain (10.67.165.24) by
@@ -28,9 +28,9 @@ To:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
         <ms@dev.tdt.de>, <willemb@google.com>
 CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <lipeng321@huawei.com>, <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 14/16] net: farsync: fix the alignment issue
-Date:   Tue, 8 Jun 2021 16:12:40 +0800
-Message-ID: <1623139962-34847-15-git-send-email-huangguangbin2@huawei.com>
+Subject: [PATCH net-next 15/16] net: farsync: remove redundant return
+Date:   Tue, 8 Jun 2021 16:12:41 +0800
+Message-ID: <1623139962-34847-16-git-send-email-huangguangbin2@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1623139962-34847-1-git-send-email-huangguangbin2@huawei.com>
 References: <1623139962-34847-1-git-send-email-huangguangbin2@huawei.com>
@@ -46,27 +46,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peng Li <lipeng321@huawei.com>
 
-Alignment should match open parenthesis.
+Void function return statements are not generally useful.
 
 Signed-off-by: Peng Li <lipeng321@huawei.com>
 Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
 ---
- drivers/net/wan/farsync.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wan/farsync.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/net/wan/farsync.c b/drivers/net/wan/farsync.c
-index f6919cf..3aea3d3 100644
+index 3aea3d3..10208f0 100644
 --- a/drivers/net/wan/farsync.c
 +++ b/drivers/net/wan/farsync.c
-@@ -2293,7 +2293,7 @@ fst_init_card(struct fst_card_info *card)
- 		err = register_hdlc_device(card->ports[i].dev);
- 		if (err < 0) {
- 			pr_err("Cannot register HDLC device for port %d (errno %d)\n",
--				i, -err);
-+			       i, -err);
- 			while (i--)
- 				unregister_hdlc_device(card->ports[i].dev);
- 			return err;
+@@ -1156,7 +1156,6 @@ fst_recover_rx_error(struct fst_card_info *card, struct fst_port_info *port,
+ 		rxp = (rxp + 1) % NUM_RX_BUFFER;
+ 	}
+ 	port->rxpos = rxp;
+-	return;
+ }
+ 
+ /*      Rx complete interrupt
 -- 
 2.8.1
 
