@@ -2,246 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751073A04C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73D03A04BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235195AbhFHT5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:57:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37966 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234695AbhFHT5Q (ORCPT
+        id S235032AbhFHT5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:57:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234653AbhFHT5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:57:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623182123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PX4XZRO4KpflUQEEgbL1ALBIADgPV7/V/iBUfhH7FVc=;
-        b=Pv4Xt7SroJnz32APMAGIyGl89ObyPui3/nLVxm6uvDBWfoRh4FIkE0/F8NLVnMxAmab0hK
-        mmfTEwfHKEgwhfJsis0s343efv1RU2MVJebqFiX7N6ws1ZK8EK6lb2WGzpftLLe68+Whof
-        paMaV4IS0+qzFSJRZhyBEyiQOeVgDV8=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-28-kX2DZd0eM92bDaazvZ2HAw-1; Tue, 08 Jun 2021 15:55:22 -0400
-X-MC-Unique: kX2DZd0eM92bDaazvZ2HAw-1
-Received: by mail-oo1-f72.google.com with SMTP id n16-20020a0568200550b029020b438b2591so13957563ooj.19
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 12:55:22 -0700 (PDT)
+        Tue, 8 Jun 2021 15:57:14 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F4DC061787
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:55:20 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id s14so15661589pfd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 12:55:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hpBo4F5IMaB8LprhMFQpECB/Tsipa5HxZ3V5D/8s1RY=;
+        b=SM/rbyKXA5uvkVWdxAE6Uw8+XB1YuYpQA87f7imaB/Pa30PTaHSpAPkKqTllciNV22
+         PwKRJcjD5sTSzuv31Rv7ssQrJ98YemAWUPDAmY3iA/fsef2ro2Sy+eabRHPGBNSTsV0q
+         MSbLDaa0NamNGO9LkS/iku2vxVXiy+9JwGU7Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PX4XZRO4KpflUQEEgbL1ALBIADgPV7/V/iBUfhH7FVc=;
-        b=bIaUafJAXpuYXd9LKgHAVZXkmxRXe6RON622j9i4ER+6Tar/gHNHX5fRZkcbRRxDpo
-         paafgJDtYqTn73ISw7vQSnmSiRU+2vOQBBqNN269cbsO0frYjJ2fMwyRhnNw7oYHj3T5
-         tjtzhtYjtcISC6iCV66JEbcWrdOeelKE56V0TO3BpoAkvOx3ulBBwUs1YP+q/5EDoQhv
-         rnAL0lGoiPry7U4j5LH1ADggFM6eoEVLGmfbd3Zr05KpGc1T9aUJhpYUbp4HVXue0Uun
-         bCLbulZCL8E2yWgR34o32KacGkhwGFcb0wJjoCf0YjySeipgZHMCBXrzt3kNTxbOX+Bg
-         eDyw==
-X-Gm-Message-State: AOAM5303Fk6Ms/6UeZ1Oi0GpzjWXNShz3/LjnfPlAFw2pKX8fxTWiUS4
-        UhcuBGv33gyYvqX6T5HV24YYSCSsAaTohSJ61xlXeJbhEEWL/+TTIL6gYIJP/J+G38blft1ev6d
-        BLPCEpIDsyigXFZDlhE1rm5YF
-X-Received: by 2002:aca:af90:: with SMTP id y138mr3986010oie.92.1623182121633;
-        Tue, 08 Jun 2021 12:55:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz0UWwhNSy55xmGBEwarxMH51IQL5Vz8zCfespiQs2F3hecQ7wjI2E6o8F7F63GFd/GyJsx9g==
-X-Received: by 2002:aca:af90:: with SMTP id y138mr3986000oie.92.1623182121452;
-        Tue, 08 Jun 2021 12:55:21 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s17sm3024046oog.31.2021.06.08.12.55.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hpBo4F5IMaB8LprhMFQpECB/Tsipa5HxZ3V5D/8s1RY=;
+        b=TeA3DdrOclCGuYQFn+xK/bD5Qpxci675hKNTEwV01kzKyWRtkZuSuIQlq1Oml9zxuM
+         CmrYYoF4tjEAw1zEZKoA0lJRsv7DTXKkL8QF+rmJKD5L6yC+KTVAajNzEoweQyGxVu04
+         fNW/Ie+H1rHHBNtlsUyCIUaTZ5j1eWbBLIXUJZV0gb6cIws9/hU0zewJc1uVfddEGUoX
+         PA2uUxyjnHanyZa/J2fUEo79CYuN+Dk2qhmEUiXLwI7VeKEUo6Zy725W6rv1kLHRl4IX
+         aQsZSG0RKWeK1TEfzxm2iJo5BFviePLk1o6orqO25/Lv9FVR84q8seNTf9uV8lKGGypq
+         t+CA==
+X-Gm-Message-State: AOAM532lkB+3c3dFLH7efOGKijkQzdxUyyh2pn3GZ6x03U0DucsnDQsY
+        z/mGr3X9gPsDPFe0zZZO5qppgw==
+X-Google-Smtp-Source: ABdhPJyyigapQWlfSOy3grhL9AsA1fpTEuIDZBrnOdvzN/ROnn3aHq7p/NPByDRRtFPjSjbBqPezUA==
+X-Received: by 2002:a63:f248:: with SMTP id d8mr24212648pgk.219.1623182120335;
+        Tue, 08 Jun 2021 12:55:20 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:a3bd:e3bf:4835:f2fc])
+        by smtp.gmail.com with ESMTPSA id u125sm2590132pfu.95.2021.06.08.12.55.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 12:55:21 -0700 (PDT)
-From:   trix@redhat.com
-To:     hao.wu@intel.com, mdf@kernel.org, michal.simek@xilinx.com
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH v2 7/7] fpga-mgr: collect wrappers and change to inline
-Date:   Tue,  8 Jun 2021 12:55:06 -0700
-Message-Id: <20210608195506.3022550-9-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210608195506.3022550-1-trix@redhat.com>
-References: <20210608195506.3022550-1-trix@redhat.com>
+        Tue, 08 Jun 2021 12:55:19 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>
+Subject: [PATCH] drm/msm/dsi: Stash away calculated vco frequency on recalc
+Date:   Tue,  8 Jun 2021 12:55:19 -0700
+Message-Id: <20210608195519.125561-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+A problem was reported on CoachZ devices where the display wouldn't come
+up, or it would be distorted. It turns out that the PLL code here wasn't
+getting called once dsi_pll_10nm_vco_recalc_rate() started returning the
+same exact frequency, down to the Hz, that the bootloader was setting
+instead of 0 when the clk was registered with the clk framework.
 
-Anyone searching for the wrappers should find all of
-them together, so  move the wrappers.
+After commit 001d8dc33875 ("drm/msm/dsi: remove temp data from global
+pll structure") we use a hardcoded value for the parent clk frequency,
+i.e.  VCO_REF_CLK_RATE, and we also hardcode the value for FRAC_BITS,
+instead of getting it from the config structure. This combination of
+changes to the recalc function allows us to properly calculate the
+frequency of the PLL regardless of whether or not the PLL has been
+clk_prepare()d or clk_set_rate()d. That's a good improvement.
 
-Since they are all small functions, make them inline.
+Unfortunately, this means that now we won't call down into the PLL clk
+driver when we call clk_set_rate() because the frequency calculated in
+the framework matches the frequency that is set in hardware. If the rate
+is the same as what we want it should be OK to not call the set_rate PLL
+op. The real problem is that the prepare op in this driver uses a
+private struct member to stash away the vco frequency so that it can
+call the set_rate op directly during prepare. Once the set_rate op is
+never called because recalc_rate told us the rate is the same, we don't
+set this private struct member before the prepare op runs, so we try to
+call the set_rate function directly with a frequency of 0. This
+effectively kills the PLL and configures it for a rate that won't work.
+Calling set_rate from prepare is really quite bad and will confuse any
+downstream clks about what the rate actually is of their parent. Fixing
+that will be a rather large change though so we leave that to later.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
+For now, let's stash away the rate we calculate during recalc so that
+the prepare op knows what frequency to set, instead of 0. This way
+things keep working and the display can enable the PLL properly. In the
+future, we should remove that code from the prepare op so that it
+doesn't even try to call the set rate function.
+
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Abhinav Kumar <abhinavk@codeaurora.org>
+Fixes: 001d8dc33875 ("drm/msm/dsi: remove temp data from global pll structure")
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/fpga/fpga-mgr.c | 117 ++++++++++++++++++++--------------------
- 1 file changed, 59 insertions(+), 58 deletions(-)
 
-diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
-index 84808c7ca4406..198a44a620583 100644
---- a/drivers/fpga/fpga-mgr.c
-+++ b/drivers/fpga/fpga-mgr.c
-@@ -25,6 +25,65 @@ struct fpga_mgr_devres {
- 	struct fpga_manager *mgr;
- };
+I didn't update the 14nm file as the caching logic looks different. But
+between the 7nm and 10nm files it looks practically the same.
+
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c | 1 +
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c  | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c
+index 34bc93548fcf..657778889d35 100644
+--- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c
++++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c
+@@ -432,6 +432,7 @@ static unsigned long dsi_pll_10nm_vco_recalc_rate(struct clk_hw *hw,
+ 	pll_freq += div_u64(tmp64, multiplier);
  
-+/* mops wrappers */
-+static inline enum fpga_mgr_states fpga_mgr_state(struct fpga_manager *mgr)
-+{
-+	if (mgr->mops && mgr->mops->state)
-+		return  mgr->mops->state(mgr);
-+	return FPGA_MGR_STATE_UNKNOWN;
-+}
-+
-+static inline u64 fpga_mgr_status(struct fpga_manager *mgr)
-+{
-+	if (mgr->mops && mgr->mops->status)
-+		return mgr->mops->status(mgr);
-+	return 0;
-+}
-+
-+static inline int fpga_mgr_write_init(struct fpga_manager *mgr,
-+				      struct fpga_image_info *info,
-+				      const char *buf, size_t count)
-+{
-+	if (mgr->mops && mgr->mops->write_init)
-+		return  mgr->mops->write_init(mgr, info, buf, count);
-+	return 0;
-+}
-+
-+static inline int fpga_mgr_write(struct fpga_manager *mgr, const char *buf, size_t count)
-+{
-+	if (mgr->mops && mgr->mops->write)
-+		return  mgr->mops->write(mgr, buf, count);
-+	return -EOPNOTSUPP;
-+}
-+
-+/*
-+ * After all the FPGA image has been written, do the device specific steps to
-+ * finish and set the FPGA into operating mode.
-+ */
-+static inline int fpga_mgr_write_complete(struct fpga_manager *mgr,
-+					  struct fpga_image_info *info)
-+{
-+	int ret = 0;
-+
-+	mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE;
-+	if (mgr->mops && mgr->mops->write_complete)
-+		ret = mgr->mops->write_complete(mgr, info);
-+	if (ret) {
-+		dev_err(&mgr->dev, "Error after writing image data to FPGA\n");
-+		mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE_ERR;
-+		return ret;
-+	}
-+	mgr->state = FPGA_MGR_STATE_OPERATING;
-+
-+	return 0;
-+}
-+
-+static inline void fpga_mgr_fpga_remove(struct fpga_manager *mgr)
-+{
-+	if (mgr->mops && mgr->mops->fpga_remove)
-+		mgr->mops->fpga_remove(mgr);
-+}
-+
- /**
-  * fpga_image_info_alloc - Allocate a FPGA image info struct
-  * @dev: owning device
-@@ -69,14 +128,6 @@ void fpga_image_info_free(struct fpga_image_info *info)
- }
- EXPORT_SYMBOL_GPL(fpga_image_info_free);
+ 	vco_rate = pll_freq;
++	pll_10nm->vco_current_rate = vco_rate;
  
--static int fpga_mgr_write_init(struct fpga_manager *mgr,
--			       struct fpga_image_info *info,
--			       const char *buf, size_t count)
--{
--	if (mgr->mops && mgr->mops->write_init)
--		return  mgr->mops->write_init(mgr, info, buf, count);
--	return 0;
--}
- /*
-  * Call the low level driver's write_init function.  This will do the
-  * device-specific things to get the FPGA into the state where it is ready to
-@@ -145,35 +196,6 @@ static int fpga_mgr_write_init_sg(struct fpga_manager *mgr,
- 	return ret;
- }
+ 	DBG("DSI PLL%d returning vco rate = %lu, dec = %x, frac = %x",
+ 	    pll_10nm->phy->id, (unsigned long)vco_rate, dec, frac);
+diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+index e76ce40a12ab..6f96fbac8282 100644
+--- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
++++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+@@ -460,6 +460,7 @@ static unsigned long dsi_pll_7nm_vco_recalc_rate(struct clk_hw *hw,
+ 	pll_freq += div_u64(tmp64, multiplier);
  
--/*
-- * After all the FPGA image has been written, do the device specific steps to
-- * finish and set the FPGA into operating mode.
-- */
--static int fpga_mgr_write_complete(struct fpga_manager *mgr,
--				   struct fpga_image_info *info)
--{
--	int ret = 0;
--
--	mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE;
--	if (mgr->mops && mgr->mops->write_complete)
--		ret = mgr->mops->write_complete(mgr, info);
--	if (ret) {
--		dev_err(&mgr->dev, "Error after writing image data to FPGA\n");
--		mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE_ERR;
--		return ret;
--	}
--	mgr->state = FPGA_MGR_STATE_OPERATING;
--
--	return 0;
--}
--
--static int fpga_mgr_write(struct fpga_manager *mgr, const char *buf, size_t count)
--{
--	if (mgr->mops && mgr->mops->write)
--		return  mgr->mops->write(mgr, buf, count);
--	return -EOPNOTSUPP;
--}
--
- /**
-  * fpga_mgr_buf_load_sg - load fpga from image in buffer from a scatter list
-  * @mgr:	fpga manager
-@@ -426,14 +448,6 @@ static ssize_t state_show(struct device *dev,
- 	return sprintf(buf, "%s\n", state_str[mgr->state]);
- }
+ 	vco_rate = pll_freq;
++	pll_7nm->vco_current_rate = vco_rate;
  
--static u64 fpga_mgr_status(struct fpga_manager *mgr)
--{
--	if (mgr->mops && mgr->mops->status)
--		return mgr->mops->status(mgr);
--
--	return 0;
--}
--
- static ssize_t status_show(struct device *dev,
- 			   struct device_attribute *attr, char *buf)
- {
-@@ -692,13 +706,6 @@ struct fpga_manager *devm_fpga_mgr_create(struct device *dev, const char *name,
- }
- EXPORT_SYMBOL_GPL(devm_fpga_mgr_create);
- 
--static enum fpga_mgr_states fpga_mgr_state(struct fpga_manager *mgr)
--{
--	if (mgr->mops && mgr->mops->state)
--		return  mgr->mops->state(mgr);
--	return FPGA_MGR_STATE_UNKNOWN;
--}
--
- /**
-  * fpga_mgr_register - register a FPGA manager
-  * @mgr: fpga manager struct
-@@ -731,12 +738,6 @@ int fpga_mgr_register(struct fpga_manager *mgr)
- }
- EXPORT_SYMBOL_GPL(fpga_mgr_register);
- 
--static void fpga_mgr_fpga_remove(struct fpga_manager *mgr)
--{
--	if (mgr->mops && mgr->mops->fpga_remove)
--		mgr->mops->fpga_remove(mgr);
--}
--
- /**
-  * fpga_mgr_unregister - unregister a FPGA manager
-  * @mgr: fpga manager struct
+ 	DBG("DSI PLL%d returning vco rate = %lu, dec = %x, frac = %x",
+ 	    pll_7nm->phy->id, (unsigned long)vco_rate, dec, frac);
+
+base-commit: 8124c8a6b35386f73523d27eacb71b5364a68c4c
 -- 
-2.26.3
+https://chromeos.dev
 
