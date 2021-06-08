@@ -2,185 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E55639F906
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8A439F90E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbhFHO1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:27:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:60288 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233220AbhFHO1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:27:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E4036D;
-        Tue,  8 Jun 2021 07:25:59 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 013FD3F73D;
-        Tue,  8 Jun 2021 07:25:56 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 15:25:54 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     Quentin Perret <qperret@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Ryan Y <xuewyan@foxmail.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>, tj@kernel.org
-Subject: Re: [PATCH] sched/uclamp: Avoid setting cpu.uclamp.min bigger than
- cpu.uclamp.max
-Message-ID: <20210608142554.tbiu2s5qnwflmk27@e107158-lin.cambridge.arm.com>
-References: <20210602123803.15738-1-xuewen.yan94@gmail.com>
- <YLeF/556Wbvx1Ssc@google.com>
- <CAB8ipk9BqzEQ4Ta5s+vJeep=v1pmaXS-WsF2tq0u9G8Q2PGmsA@mail.gmail.com>
- <20210604160839.2op4ak75vle3gmt3@e107158-lin.cambridge.arm.com>
- <CAB8ipk9CgWvbGnJcvEtLcG=7v-pPmGJd25-R9jb2Am5zKngK3g@mail.gmail.com>
- <20210605114908.mqfsip5pskamls6k@e107158-lin.cambridge.arm.com>
- <CAB8ipk_a6VFNjiEnHRHkUMBKbA+qzPQvhtNjJ_YNzQhqV_o8Zw@mail.gmail.com>
- <20210607134902.nlgvqtzj35rhjg7x@e107158-lin.cambridge.arm.com>
- <CAB8ipk8FaovUYY8ncDgLHO7k_EoEHtsfm+1QYsFTMf4fb7ix_A@mail.gmail.com>
+        id S233373AbhFHO3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:29:14 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:38499 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233134AbhFHO3L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:29:11 -0400
+Received: by mail-io1-f54.google.com with SMTP id b25so22398786iot.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 07:27:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aFGcwQ3o2ZyrTCy4xvb08Po9MFGx7mRhjpeSf3SDVVM=;
+        b=k2cO8sFl6AawwfKDwjqC7Cwa8kx2f1Of64WDhB/DVwxiJ1rlKaFs+eM+RJvkfpOg3j
+         zO1VBpaq9q7wZy6zi9n5ICecHohLlqYxYi6tdhUwnSO+mMOnE5dUKWhUf/nGnCdyitq6
+         nDb/ec39txb5V5dV64U8UDFIfQLhBEGS68/GNxKoBskr5cxVfo7fS0INvfFvTKEjLTu9
+         A8M4GGzoQWaA74fiRzw6ZdY0rXKziGyRTaVypCM3Od1ST1EL4gReqZqpSQjVZLAxnWNy
+         A9hD24P48HoK42afcyIcwpou9e4Xux2L++niw7SqMvjiw4ZLtQoJQrOZdQJzAJ3+YV7R
+         jOGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aFGcwQ3o2ZyrTCy4xvb08Po9MFGx7mRhjpeSf3SDVVM=;
+        b=tl0KwA3JU+HTDEZbv4HJ79z4CWQm83/4t0QP1vF5M/Yp83AwDu9zAEdRVoYy4oYik8
+         cDFWV2mevbgyBZWfC5GAZj6MDiVp67S0AYuVF9ItZ/CKaqpVwaMict5X1eA8EUqmpMDB
+         1ptAa3R0eC+pKk4eAx67rher7oDjBLlIYRb58KUDBA77HIaDFP5wefuLlub449nzvyDs
+         4Pp4MGvrK8NgEBkxBI4A8kEWplMw6mLW1VQyGyrducAykumrmVXrQWYbhI4SbAqAfXqv
+         60zxUqpiTP8zh0UQcNhLJuxGohkASIIf2N5Gmb5yc2os7/5CaXRGaY7wRvWvnnlJMTLv
+         NUwg==
+X-Gm-Message-State: AOAM533nUJUTHC7j6mc6KBDk7hoh6x0zg6S5w+F4eLymWsbd7D0ZyRaW
+        rbDMdq+ZSSLfhGFehOxfay18UybdI4RqE+Wo4L5z8w==
+X-Google-Smtp-Source: ABdhPJxgnBqrzUUM4CgS/RA6oYYN9J2gy7q86i3Sr5vSb0wV/HtQgOPUlNfxKQ/Lnf3/EplJxZ6l4L++E7UQ5N87S94=
+X-Received: by 2002:a05:6638:2a1:: with SMTP id d1mr21325888jaq.52.1623162377079;
+ Tue, 08 Jun 2021 07:26:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAB8ipk8FaovUYY8ncDgLHO7k_EoEHtsfm+1QYsFTMf4fb7ix_A@mail.gmail.com>
+References: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
+In-Reply-To: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Tue, 8 Jun 2021 08:26:05 -0600
+Message-ID: <CANLsYkxAXiKTD=KB-45O+V7DAY4dbzd_Q3WdPoDrd=UdFqtw4w@mail.gmail.com>
+Subject: Re: [PATCH 0/4] rpmsg: char: introduce the rpmsg-raw channel
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Julien Massot <julien.massot@iot.bzh>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/21 19:45, Xuewen Yan wrote:
-> > Looking at this again now, I better understand what you were trying to say.
-> > I got confused that you were still arguing about cgroup inverted
-> > cpu.uclamp.min/max, but you're actually talking about something else.
-> 
-> Generally speaking, this kind of situation does not basically exist,
-> but I just consider all the situations that can occur when users use
-> it.
+Hi Arnaud,
 
-+1
+Between remoteproc/RPMSG and CoreSight, I have 6 patchsets to review
+(including some of your work) before getting to this one.  As such it
+will take a little while.
 
-> 
-> >
-> > It would be a lot easier to not cross talk threads and reply to my patch
-> > directly with this remark.
-> Sorry for the trouble because of my unfamiliar with the maillist, I
-> will pay attention next time :）
+Thanks,
+Mathieu
 
-Not really a problem, it was just a bit confusing to get the right context :)
-
-> > +       uc_min = task_group(p)->uclamp[UCLAMP_MIN].value;
-> > +       uc_max = task_group(p)->uclamp[UCLAMP_MAX].value;
-> > +       val = uc_req.value;
-> > +       uc_req.value = clamp(val, uc_min, uc_max);
-> 
-> This is not a good solution, because it just clamp the uc_req.value,
-> but the  uc_req.bucket_id is not changed.
-
-
-This is what I actually have now. I did move to using uclamp_se_set().
-I also needed to modify uclamp_update_active_tasks() so that both
-uclamp_min/max unconditionally.
-
-I still need to sleep on it to make sure I haven't missed something else, but
-it looks fine so far.
-
-Thanks!
-
---
-Qais Yousef
-
-
---->8---
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9e9a5be35cde..1d2d3e6648a6 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1403,38 +1403,28 @@ static void uclamp_sync_util_min_rt_default(void)
- static inline struct uclamp_se
- uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
- {
--       struct uclamp_se uc_req = p->uclamp_req[clamp_id];
-+       /* Copy by value as we could modify it */
-+       struct uclamp_se uc_eff = p->uclamp_req[clamp_id];
- #ifdef CONFIG_UCLAMP_TASK_GROUP
-+       unsigned long tg_min, tg_max, value;
-
-        /*
-         * Tasks in autogroups or root task group will be
-         * restricted by system defaults.
-         */
-        if (task_group_is_autogroup(task_group(p)))
--               return uc_req;
-+               return uc_eff;
-        if (task_group(p) == &root_task_group)
--               return uc_req;
-+               return uc_eff;
-
--       switch (clamp_id) {
--       case UCLAMP_MIN: {
--               struct uclamp_se uc_min = task_group(p)->uclamp[clamp_id];
--               if (uc_req.value < uc_min.value)
--                       return uc_min;
--               break;
--       }
--       case UCLAMP_MAX: {
--               struct uclamp_se uc_max = task_group(p)->uclamp[clamp_id];
--               if (uc_req.value > uc_max.value)
--                       return uc_max;
--               break;
--       }
--       default:
--               WARN_ON_ONCE(1);
--               break;
--       }
-+       tg_min = task_group(p)->uclamp[UCLAMP_MIN].value;
-+       tg_max = task_group(p)->uclamp[UCLAMP_MAX].value;
-+       value = uc_eff.value;
-+       value = clamp(value, tg_min, tg_max);
-+       uclamp_se_set(&uc_eff, value, false);
- #endif
-
--       return uc_req;
-+       return uc_eff;
- }
- 
- /*
-@@ -1661,8 +1651,7 @@ uclamp_update_active(struct task_struct *p, enum uclamp_id clamp_id)
- 
- #ifdef CONFIG_UCLAMP_TASK_GROUP
- static inline void
--uclamp_update_active_tasks(struct cgroup_subsys_state *css,
--                          unsigned int clamps)
-+uclamp_update_active_tasks(struct cgroup_subsys_state *css)
- {
-        enum uclamp_id clamp_id;
-        struct css_task_iter it;
-@@ -1670,10 +1659,8 @@ uclamp_update_active_tasks(struct cgroup_subsys_state *css,
- 
-        css_task_iter_start(css, 0, &it);
-        while ((p = css_task_iter_next(&it))) {
--               for_each_clamp_id(clamp_id) {
--                       if ((0x1 << clamp_id) & clamps)
--                               uclamp_update_active(p, clamp_id);
--               }
-+               for_each_clamp_id(clamp_id)
-+                       uclamp_update_active(p, clamp_id);
-        }
-        css_task_iter_end(&it);
- }
-@@ -9626,7 +9613,7 @@ static void cpu_util_update_eff(struct cgroup_subsys_state *css)
-                }
- 
-                /* Immediately update descendants RUNNABLE tasks */
--               uclamp_update_active_tasks(css, clamps);
-+               uclamp_update_active_tasks(css);
-        }
- }
+On Mon, 7 Jun 2021 at 11:30, Arnaud Pouliquen
+<arnaud.pouliquen@foss.st.com> wrote:
+>
+> Purpose:
+>   Allow the remote processor to instantiate a /dev/rpmsgX interface relying on the NS announcement
+>   of the "rpmsg-raw" service.
+>   This patchet is extracted from  the series [1] with rework to add rpmsg_create_default_ept helper.
+>
+>
+> Aim:
+>   There is no generic sysfs interface based on RPMsg that allows a user application to communicate
+>   with a remote processor in a simple way.
+>   The rpmsg_char dev solves a part of this problem by allowing an endpoint to be created on the
+>   local side. But it does not take advantage of the NS announcement mechanism implemented for some
+>   backends such as the virtio backend. So it is not possible to probe it from  a remote initiative.
+>   Extending the char rpmsg device to support NS announcement makes the rpmsg_char more generic.
+>   By announcing a "rpmg-raw" service, the firmware of a remote processor will be able to
+>   instantiate a /dev/rpmsgX interface providing to the user application a basic link to communicate
+>   with it without any knowledge of the rpmsg protocol.
+>
+> Implementation details:
+>   - Register a rpmsg driver for the rpmsg_char driver, associated to the "rpmsg-raw" channel service.
+>   - In case of rpmsg char device instantiated by the rpmsg bus (on NS announcement) manage the
+>     channel default endpoint to ensure a stable default endpoint address, for communication with
+>     the remote processor.
+>
+> How to test it:
+>   - This series can be applied on git/andersson/remoteproc.git for-next branch (dc0e14fa833b)
+>     + the "Restructure the rpmsg char to decorrelate the control part" series[2]
+>
+> [1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=475217
+> [2] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=483793
+>
+>
+>
+> Arnaud Pouliquen (4):
+>   rpmsg: Introduce rpmsg_create_default_ept function
+>   rpmsg: char: Add possibility to create and reuse default endpoint
+>   rpmsg: char: Introduce the "rpmsg-raw" channel
+>   rpmsg: char: Return error if user tries to destroy a default endpoint.
+>
+>  drivers/rpmsg/rpmsg_char.c | 92 +++++++++++++++++++++++++++++++++++---
+>  drivers/rpmsg/rpmsg_core.c | 51 +++++++++++++++++++++
+>  include/linux/rpmsg.h      | 14 ++++++
+>  3 files changed, 151 insertions(+), 6 deletions(-)
+>
+> --
+> 2.17.1
+>
