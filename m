@@ -2,149 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354FB39FED8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7627539FEE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234059AbhFHSUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:20:16 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:5827 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234036AbhFHSUO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:20:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1623176301; x=1654712301;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=rLX+AVicar3gomhKUqxg3SOvizTUcO/q93xOnkT6VOg=;
-  b=bRqXuJviPW92QorphSGcBU4V+NEcepm5EmXaURUlGjy+sUFPgzHr3EAf
-   QSNa0evRB4XTZZ06HGotcLFyxZ3V+EXFdP/FO6m9hmwDfN1yJZWJqPwek
-   mVa5rgtXNkkBHt81DeZayCEuH/nm0uoZ/2q0k8ohe1n4eVjVt4W6x2w17
-   HMk81gARICvoCDtnTq+VRGcUAg0ykhzuOOnjgeZOtFf8vUDxKu6+73K0m
-   qB3YWXaTuiovofdX6lSIFfu9TyE//OeuPmqQ8kAF+I2NzYhlsKtx9CcS6
-   6Yp2UvnWsy3vwcLNBgCXE7OdMkwBSNghaFk+lcTppUFPf/lb4f2HgTNBp
-   g==;
-IronPort-SDR: fn/NS5ty5hBQPitU3+ISghDbUEw7gtK1y1+W7nQuQRx4Lp23+aaPk9ALxlcFYx1RiG6C0iy+gv
- bVDRbeFl1kXOkfFqyNhJidc7oH6mQxSbIgpYtfprmzwErzIDuqDmE/OAR4lm3J/QbNG8r+h8yX
- Rg4aFZT1fkCbnu4WANhu7kpZ2AXzYaxIECDTZ6WDK3YIlv1xcrVhFQRh2Awg3Ncj1ocH3F5FVn
- wZCNjqeb03/hRmVJ5w4lVwaNGl/50m/i7d3bcb8oRqD0ll6rW0hvVs/V6UJZDNy8BlPx2AGGvd
- CGE=
-X-IronPort-AV: E=Sophos;i="5.83,259,1616428800"; 
-   d="scan'208";a="175946742"
-Received: from mail-bn7nam10lp2101.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.101])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Jun 2021 02:18:19 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eDACRRack/cznKeCrcchKGN6DEXxpPCGAC9PJT+DDz04LdSnltAuBCvsf5jDHBdY+gziwtadKdCDB4+9lGuQiJPBuGlEybPrkttZ6aDra1/uQJ8WnBeao6O1KbJzitiJwa5h5nlXG9irO4NzTLLrN+ttlT1+KikoB41Sd9Oh+J1GoVenrbWSoyPeiSQv17zk0kjBX5CNbdDogvwyz8ryxoVpGrwCZM3OcGzVFabAcfbAhqob3E/LHDjCZ346iNLzGzvE/7iFkr5XVSVJJZGEn62mF099GHVRis+n0hNBVbNYZkgbmsBXz2zQJWD86SRy/TE4rWWr0KmOF4DocCSA5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rLX+AVicar3gomhKUqxg3SOvizTUcO/q93xOnkT6VOg=;
- b=joGkAO7Uc8DRMV6sj3h1Ogd+Hi6454RjT2QIy7Au+mI39pZNm5w8TW4MtrcCQ1GgRDJhtOPZNF2Dlxd0thYBDwP53D3oPlhwvsV2c1hdiNtKiEiQqSJhKwRBLaNbdlDCziSvKc4ecKaOCjghVY1AKmYngkNUfp6S3i3kSn4j+bGZ5DCx20dWnEsYVXY4zGdBvmokeF8Rcf/5cOJ+YawJJXSTrtLw5pGR9EZpwzRFL18lFdNurRQN3hS0vIKOzMIddaEArPpRsoCJlSuN0Su232uSUmb1nL9+jMaHcuWaSw4KTO/rOYrxWoRpL09OfqyWFSfR6HTcOqgu+tLVeGf0Kg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rLX+AVicar3gomhKUqxg3SOvizTUcO/q93xOnkT6VOg=;
- b=umxLH0O1SGsuYHZnWDzxGWKGP4NNEo9UsrR4E0NhMl2k1OQB6gZjYGliUEEFG9dt4nfFP6laEdlqke46XhUb22UsAgk1E8nXUrfF3OmzGlq/SIUXKUEa5wpFMpxeA8IXPxcFRqX4PKZcOcCVbiEe5JT9FDYJYYwsS8ZBOCMcagk=
-Received: from DM6PR04MB4972.namprd04.prod.outlook.com (2603:10b6:5:fc::10) by
- DM6PR04MB6282.namprd04.prod.outlook.com (2603:10b6:5:1ec::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4219.20; Tue, 8 Jun 2021 18:18:18 +0000
-Received: from DM6PR04MB4972.namprd04.prod.outlook.com
- ([fe80::8dc6:ecf:9d83:615f]) by DM6PR04MB4972.namprd04.prod.outlook.com
- ([fe80::8dc6:ecf:9d83:615f%7]) with mapi id 15.20.4195.030; Tue, 8 Jun 2021
- 18:18:18 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     Jens Axboe <axboe@kernel.dk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geoff Levand <geoff@infradead.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Subject: Re: [PATCH 03/16] bvec: fix the include guards for bvec.h
-Thread-Topic: [PATCH 03/16] bvec: fix the include guards for bvec.h
-Thread-Index: AQHXXIBJ8gtMXRQ3RES8eG+ChZZnug==
-Date:   Tue, 8 Jun 2021 18:18:18 +0000
-Message-ID: <DM6PR04MB4972C71FEC48DECEAD05EA2B86379@DM6PR04MB4972.namprd04.prod.outlook.com>
-References: <20210608160603.1535935-1-hch@lst.de>
- <20210608160603.1535935-4-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e298a76d-c2d0-4bd1-5e1d-08d92aa9caa4
-x-ms-traffictypediagnostic: DM6PR04MB6282:
-x-microsoft-antispam-prvs: <DM6PR04MB62828E49D879FA2250E2143386379@DM6PR04MB6282.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1247;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IAnJPJSUxWZDGM3Nj57Xx/af6xOWYOl7YHd5N+3B94G3XUGzCJq4YH9Q8DRv+EoyhFn9As/EKFQF3U5/6rv4NNPkmawMbOYVhm+Tn9kaRMtVNmSxxjSeQ5HGtIXRhOyYSBlJJtWTIhItPlPJSP8LHqSt9mkqVS11iA0Oz4JCAQNQPOb2JUtwRZD2/bA4xmtElt8TgzJ8Mc67lZo57mGWIk+84K00FQ7ftV969Nw65N/qI1S95mPQMi9P1OovX95U+Xm0So7d0bJ9DaZORf8eFrKbWul/V1fjsg0Un99+WhsYrL8D82VWl3y/LiJgivG3PLhN0t/0E7WykEz2Z5D109ETOebjLQjVKPZjoCowaRia+lwHB8/YJMFA3dHooHON0m3Cky/zOloRmXVJ9qkZR0/oRP/wjttBnA+L4n3u2HZvLR67E5jb95yVzEStFj6aHplvAf/a7r8SSd4EBewes3z9OTviGBCc2NtqLEjWu2tuYYdRjhpNkeQRM2tMh1lNw4jPt42s9pL7H8blQAGlRMi3Zm6624OICZ33mwcA/GIUKH/o1saHCdFybFB7Xl5LT40YiEHTbgxEvupV/ygNUoTYk9Sp5PNRj1pIy1Yqfpk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB4972.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(136003)(346002)(376002)(66946007)(91956017)(76116006)(52536014)(7416002)(86362001)(558084003)(66556008)(33656002)(64756008)(54906003)(4326008)(66476007)(66446008)(6916009)(38100700002)(5660300002)(316002)(122000001)(6506007)(8936002)(9686003)(7696005)(55016002)(26005)(2906002)(478600001)(53546011)(8676002)(71200400001)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?pKMms5Ale3Jodzz5sRXw2PDZXdq6GWzgAyUhc5ceah/4E8nSzj5URA9GTUuu?=
- =?us-ascii?Q?aSS/mc2WHXOqvO6COEqgczBMM5eLJ/NmBJ+aS0qlcWcWVhzoDLbOe5X9/HLz?=
- =?us-ascii?Q?4l81kSYUuz6Q/rs7QhX8ZDZyEbOtfS8wAxfECiVcyKdyG9n4+rnvE7PpLIvs?=
- =?us-ascii?Q?MkAVKJdyl6uyZKPaEgGi0IvHeRjHaTbSUqg3H3pTTUihMKrz9jJGC03ctIOR?=
- =?us-ascii?Q?FCarexV1LI5aHHC1md302+O0O4ZbfQ2sEht1p2N/Agc2+NWRssb0gI4KOZaT?=
- =?us-ascii?Q?tfyy/sINlfP0GZG/Ee+xYnKJl5kZOElmJckwg66Ql+PErSdUhMrGojNjFeeN?=
- =?us-ascii?Q?egpcxfJRUcJ9Z97zN89SK0CbN+Pc6UyQKQHgC9q5AwVQJ5nTBvJARPEjV12h?=
- =?us-ascii?Q?WqoXRCRT66KKoIh9SH/mEC149gB/aBuIK0y8Q9clWL3SY5pNDXuZJl7J37ak?=
- =?us-ascii?Q?LrErkAbFFrtqPyw9PSL+/v6u0MW5FL++B6G6sKv0VYSgHnK5gafMVdUa/yD+?=
- =?us-ascii?Q?/OQZExMgdIijVGFlHAwz9zriULyELDsbLZksRNxYJ/pY/pY/WEzLGePZDFDM?=
- =?us-ascii?Q?f7pK9Gjcz+kWYVJq+f2c5V2qceecQSVoVnm31+diXJIli03D6sL8qSc32s+m?=
- =?us-ascii?Q?jPUDCFKgtk+AF4pV+ksD2R6EYzgWGyKI+N3LQl844Ysd4OecCSd5jx0zzxRF?=
- =?us-ascii?Q?IHQNK7Nl0MYiupFvFavTMKrCtQk1bTyzOxp7OHcywm71kCr/SyyjfpTODROV?=
- =?us-ascii?Q?sZ6aAYnEUaG2R+aKYjRa4MoW0yJ1SchvUKy3iGd1gTj+cEVj47Fozs05ZR31?=
- =?us-ascii?Q?prxoJoMtUX5sEK1lqwZNoslZersxAV7zCemMD0aWY8709VjeS4vzADnR36ep?=
- =?us-ascii?Q?ezaB3gmbGVOvQCVv8dQ6IjmlbHHD1eaiR1U/t6kY1mXGXxS3EfpChHPxW69j?=
- =?us-ascii?Q?rJiRd+Dilxq6VHLCpLkWnywqbPRxf8BgCuvVW86tZDhrqmB0dh6+7eI3Czo7?=
- =?us-ascii?Q?4aPxlHVwUi9zZ5KeOZZrJdTEcoxAydSWH8PFrJG9Kwr6iOQGMYDMp4dbfZ3I?=
- =?us-ascii?Q?AVRBLmhtc+2ZXsyTCEqXnBJ9jEkX1kWFMPIWJARuxa7k8n2PGF9ceJAK4MPU?=
- =?us-ascii?Q?SHhc4JtWI7Qzj5oZizLzzy64LKMWm6Z2B76/oIrsnKQAth6Rzfq1kteDTRiI?=
- =?us-ascii?Q?FcVbpHKa8pBYGJFBe4Hjg8g+o3qYeH1tDSFdnqMNvNcAxWgOuFZT+Mb5R9hx?=
- =?us-ascii?Q?Vemyw4Cfdz+RcXm2XfoXAMQkm+X3arZGd6MwRe5Hqze/1EzdBNzy4kQCzSzT?=
- =?us-ascii?Q?Ce0OCaSB+n7f1bYcGLTZBh4m?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234072AbhFHSU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:20:57 -0400
+Received: from todd.t-8ch.de ([159.69.126.157]:35705 "EHLO todd.t-8ch.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231652AbhFHSUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:20:54 -0400
+Date:   Tue, 8 Jun 2021 20:18:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1623176337;
+        bh=SC/iW8tEKG23KFNCOheedAfp54KKN/nyiLVof+f8O10=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=clilsAGWMCoQ2dLL4aqCX4sDgASMV05DVYEBhkh7N9uLURQEpHJ+yKoGww/AIRuwB
+         HYpKmDIldBvQlrOeETDPmgVP8Zx9RI4hz7JMmrD4/W4DcYBPiERzDLxlVJXwqLTKCR
+         +l0hNl0xa4YEIhjy3DWLLvGZdPaENrPbMh3Vaesk=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     linux-input@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] HID: input: Add support for Programmable Buttons
+Message-ID: <e3913541-cdc4-4d68-8c32-6f8d12f83c86@t-8ch.de>
+References: <20210520084805.685486-1-linux@weissschuh.net>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB4972.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e298a76d-c2d0-4bd1-5e1d-08d92aa9caa4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2021 18:18:18.6185
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /q1s6A0qhM8QT7bBYhktWUTeWl1HUxR+Rp1Mo1gscsWr3RSuxouLjVbK441E2WYetWyv5MYWJbhXWBChn3a8uZzSe/G3eS11HgVbhdlxynI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6282
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210520084805.685486-1-linux@weissschuh.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 09:06, Christoph Hellwig wrote:=0A=
-> Fix the include guards to match the file naming.=0A=
->=0A=
-> Signed-off-by: Christoph Hellwig <hch@lst.de>=0A=
-=0A=
-Looks good.=0A=
-=0A=
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
-=0A=
+Hi everybody,
+
+this is a ping requesting a review for my patch.
+I hope it is not to early send a ping.
+
+Link to patch in the archive:
+https://lore.kernel.org/linux-input/20210520084805.685486-1-linux@weissschuh.net/
+
+Regards,
+Thomas
+
+
+On Do, 2021-05-20T10:48+0200, Thomas Weißschuh wrote:
+> Date: Thu, 20 May 2021 10:48:05 +0200
+> From: Thomas Weißschuh <linux@weissschuh.net>
+> To: linux-input@vger.kernel.org, Jiri Kosina <jikos@kernel.org>, Benjamin
+>  Tissoires <benjamin.tissoires@redhat.com>, Hans de Goede
+>  <hdegoede@redhat.com>
+> Cc: Thomas Weißschuh <linux@weissschuh.net>, linux-kernel@vger.kernel.org
+> Subject: [PATCH v3] HID: input: Add support for Programmable Buttons
+> X-Mailer: git-send-email 2.31.1
+> 
+> Map them to KEY_MACRO# event codes.
+> 
+> These buttons are defined by HID as follows:
+> "The user defines the function of these buttons to control software applications or GUI objects."
+> 
+> This matches the semantics of the KEY_MACRO# input event codes that Linux supports.
+> 
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> ---
+> 
+> v1: https://lore.kernel.org/linux-input/20210519160349.609690-1-linux@weissschuh.net/
+> 
+> v1 -> v2: Only handle the 30 keys known
+> 
+> v2: https://lore.kernel.org/linux-input/20210519174345.614467-1-linux@weissschuh.net/
+> 
+> v2 -> v3:
+>  * Use hex constants for consistency
+>  * Validate that the button is part of a "Programmable Buttons" Named Array.
+>    Otherwise the condition would also apply to "Function Buttons".
+>  * Ignore non-"Programmable Buttons" buttons.
+> 
+>  drivers/hid/hid-debug.c | 11 +++++++++++
+>  drivers/hid/hid-input.c | 22 ++++++++++++++++++++++
+>  include/linux/hid.h     |  1 +
+>  3 files changed, 34 insertions(+)
+> 
+> diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
+> index 59f8d716d78f..0e76d9b4530a 100644
+> --- a/drivers/hid/hid-debug.c
+> +++ b/drivers/hid/hid-debug.c
+> @@ -122,6 +122,7 @@ static const struct hid_usage_entry hid_usage_table[] = {
+>    {  9, 0, "Button" },
+>    { 10, 0, "Ordinal" },
+>    { 12, 0, "Consumer" },
+> +      {0, 0x003, "ProgrammableButtons"},
+>        {0, 0x238, "HorizontalWheel"},
+>    { 13, 0, "Digitizers" },
+>      {0, 0x01, "Digitizer"},
+> @@ -939,6 +940,16 @@ static const char *keys[KEY_MAX + 1] = {
+>  	[KEY_KBDINPUTASSIST_NEXTGROUP] = "KbdInputAssistNextGroup",
+>  	[KEY_KBDINPUTASSIST_ACCEPT] = "KbdInputAssistAccept",
+>  	[KEY_KBDINPUTASSIST_CANCEL] = "KbdInputAssistCancel",
+> +	[KEY_MACRO1] = "Macro1", [KEY_MACRO2] = "Macro2", [KEY_MACRO3] = "Macro3",
+> +	[KEY_MACRO4] = "Macro4", [KEY_MACRO5] = "Macro5", [KEY_MACRO6] = "Macro6",
+> +	[KEY_MACRO7] = "Macro7", [KEY_MACRO8] = "Macro8", [KEY_MACRO9] = "Macro9",
+> +	[KEY_MACRO10] = "Macro10", [KEY_MACRO11] = "Macro11", [KEY_MACRO12] = "Macro12",
+> +	[KEY_MACRO13] = "Macro13", [KEY_MACRO14] = "Macro14", [KEY_MACRO15] = "Macro15",
+> +	[KEY_MACRO16] = "Macro16", [KEY_MACRO17] = "Macro17", [KEY_MACRO18] = "Macro18",
+> +	[KEY_MACRO19] = "Macro19", [KEY_MACRO20] = "Macro20", [KEY_MACRO21] = "Macro21",
+> +	[KEY_MACRO22] = "Macro22", [KEY_MACRO23] = "Macro23", [KEY_MACRO24] = "Macro24",
+> +	[KEY_MACRO25] = "Macro25", [KEY_MACRO26] = "Macro26", [KEY_MACRO27] = "Macro27",
+> +	[KEY_MACRO28] = "Macro28", [KEY_MACRO29] = "Macro29", [KEY_MACRO30] = "Macro30",
+>  };
+>  
+>  static const char *relatives[REL_MAX + 1] = {
+> diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+> index 18f5e28d475c..791a2baf9ccd 100644
+> --- a/drivers/hid/hid-input.c
+> +++ b/drivers/hid/hid-input.c
+> @@ -567,6 +567,16 @@ static void hidinput_update_battery(struct hid_device *dev, int value)
+>  }
+>  #endif	/* CONFIG_HID_BATTERY_STRENGTH */
+>  
+> +static bool hidinput_field_in_collection(struct hid_device *device, struct hid_field *field,
+> +					 unsigned int type, unsigned int usage)
+> +{
+> +	struct hid_collection *collection;
+> +
+> +	collection = &device->collection[field->usage->collection_index];
+> +
+> +	return collection->type == type && collection->usage == usage;
+> +}
+> +
+>  static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_field *field,
+>  				     struct hid_usage *usage)
+>  {
+> @@ -632,6 +642,18 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+>  				else
+>  					code += BTN_TRIGGER_HAPPY - 0x10;
+>  				break;
+> +		case HID_CP_CONSUMER_CONTROL:
+> +				if (hidinput_field_in_collection(device, field,
+> +								 HID_COLLECTION_NAMED_ARRAY,
+> +								 HID_CP_PROGRAMMABLEBUTTONS)) {
+> +					if (code <= 0x1d)
+> +						code += KEY_MACRO1;
+> +					else
+> +						code += BTN_TRIGGER_HAPPY - 0x1e;
+> +				} else {
+> +					goto ignore;
+> +				}
+> +				break;
+>  		default:
+>  			switch (field->physical) {
+>  			case HID_GD_MOUSE:
+> diff --git a/include/linux/hid.h b/include/linux/hid.h
+> index 271021e20a3f..fb0e4dde6175 100644
+> --- a/include/linux/hid.h
+> +++ b/include/linux/hid.h
+> @@ -102,6 +102,7 @@ struct hid_item {
+>  #define HID_COLLECTION_PHYSICAL		0
+>  #define HID_COLLECTION_APPLICATION	1
+>  #define HID_COLLECTION_LOGICAL		2
+> +#define HID_COLLECTION_NAMED_ARRAY	4
+>  
+>  /*
+>   * HID report descriptor global item tags
+> 
+> base-commit: efd8929b9eec1cde120abb36d76dd00ff6711023
+> -- 
+> 2.31.1
+> 
