@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC17B3A005E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7293A00C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235258AbhFHSmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:42:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37970 "EHLO mail.kernel.org"
+        id S234394AbhFHSqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:46:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234017AbhFHSjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:39:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0F5E6141E;
-        Tue,  8 Jun 2021 18:33:46 +0000 (UTC)
+        id S235154AbhFHSmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:42:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC24D6143D;
+        Tue,  8 Jun 2021 18:35:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177227;
-        bh=D6ZSY6smbZX3GDr0IjSyAhQmxNP2xvB9l8kosypADrQ=;
+        s=korg; t=1623177345;
+        bh=cDRWFGrKZm0fAudf32Vf/v0rwtFWN/Dhdz+A9IEsK9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KKSSlgIQX0Cb2ZZzTO5maMAXBXFtpB9be4a6gQM0OKjBRYpvkfAhutoYom51OwL5p
-         yE2nsfpc0A8LMxo5OaNp5aL0vQuIXHrwdH58y48YyLdGBkXLZP6dQSzxfEsrsVHj47
-         y5ni0/L9JKSj9jtK6aD6k0q0aBJjwT0azyYKzYD4=
+        b=Xu516bteEokzS+FRyT7VjmNdsHwUB+GuobCei8bkj6oNeGlcJsHhMFsnbz+V3OpCA
+         E5GuUinoZSrsL6DinE/cUShHDxQg+0FLUbZV4rssRSyJensFDv3hskoFw/V5Nxqmtc
+         IFkxuQHwreuBSVlpTC3/kPIY3efv+e7fgLqgJVbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 06/58] vfio/pci: Fix error return code in vfio_ecap_init()
-Date:   Tue,  8 Jun 2021 20:26:47 +0200
-Message-Id: <20210608175932.488126941@linuxfoundation.org>
+Subject: [PATCH 5.4 19/78] netfilter: nfnetlink_cthelper: hit EBUSY on updates if size mismatches
+Date:   Tue,  8 Jun 2021 20:26:48 +0200
+Message-Id: <20210608175935.915079075@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit d1ce2c79156d3baf0830990ab06d296477b93c26 ]
+[ Upstream commit 8971ee8b087750a23f3cd4dc55bff2d0303fd267 ]
 
-The error code returned from vfio_ext_cap_len() is stored in 'len', not
-in 'ret'.
+The private helper data size cannot be updated. However, updates that
+contain NFCTH_PRIV_DATA_LEN might bogusly hit EBUSY even if the size is
+the same.
 
-Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-Id: <20210515020458.6771-1-thunder.leizhen@huawei.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Fixes: 12f7a505331e ("netfilter: add user-space connection tracking helper infrastructure")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci_config.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nfnetlink_cthelper.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index a1a26465d224..86e917f1cc21 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -1579,7 +1579,7 @@ static int vfio_ecap_init(struct vfio_pci_device *vdev)
- 			if (len == 0xFF) {
- 				len = vfio_ext_cap_len(vdev, ecap, epos);
- 				if (len < 0)
--					return ret;
-+					return len;
- 			}
- 		}
+diff --git a/net/netfilter/nfnetlink_cthelper.c b/net/netfilter/nfnetlink_cthelper.c
+index 81406b93f126..3d5fc07b2530 100644
+--- a/net/netfilter/nfnetlink_cthelper.c
++++ b/net/netfilter/nfnetlink_cthelper.c
+@@ -380,10 +380,14 @@ static int
+ nfnl_cthelper_update(const struct nlattr * const tb[],
+ 		     struct nf_conntrack_helper *helper)
+ {
++	u32 size;
+ 	int ret;
  
+-	if (tb[NFCTH_PRIV_DATA_LEN])
+-		return -EBUSY;
++	if (tb[NFCTH_PRIV_DATA_LEN]) {
++		size = ntohl(nla_get_be32(tb[NFCTH_PRIV_DATA_LEN]));
++		if (size != helper->data_len)
++			return -EBUSY;
++	}
+ 
+ 	if (tb[NFCTH_POLICY]) {
+ 		ret = nfnl_cthelper_update_policy(helper, tb[NFCTH_POLICY]);
 -- 
 2.30.2
 
