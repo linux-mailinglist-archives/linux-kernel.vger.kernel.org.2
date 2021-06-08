@@ -2,128 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F6039F9A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1513039F9A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbhFHOzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36684 "EHLO
+        id S233604AbhFHO4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232833AbhFHOzq (ORCPT
+        with ESMTP id S233288AbhFHO4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:55:46 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA078C061787;
-        Tue,  8 Jun 2021 07:53:53 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id f11so11019880vst.0;
-        Tue, 08 Jun 2021 07:53:53 -0700 (PDT)
+        Tue, 8 Jun 2021 10:56:10 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021B0C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 07:54:18 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id t40so8767290oiw.8
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 07:54:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2AJ2s6Swi7DKePDYPTjpM9W7XfKGuXx2NmxnXLQgYSU=;
-        b=rU2pKJ75Y3/QHhh8al8WEHFkA1xcRM5SZMWEuWTFwhfJJj/V+31x/44DQ1/ocvOPg+
-         HHLB+cX2JzVE7e8VyhwDv4Qz2FVNR+zh+m0OixPYjyc4fzjuukhztIpMy0r4QCqs9ENM
-         rx2wn2LyftAjOv4hRMViR3COc1TqDPy9Jwcq9YGNqCboxfBQc5R+uHuQkEmoWcUMg/uD
-         GgTRTBH9LOsD2SMP7YGpIDk7kjlQlU6IpzX1idxEjiKF6VTF7R6q/SsI4HkaBei2kO/c
-         foGKHLzxbvnAfZr24OLQ0mXOUtMYfCqu0p3aPHXa31jtaApPg9eDz4MFF332lbCsxpOF
-         vhTQ==
+         :cc:content-transfer-encoding;
+        bh=YOoJEAvOVqbK4v61piMRQZKD7D+2Wxv5vNkMO12sWiQ=;
+        b=lp04WpJQ5cFn5howqG+MuDdJmNjwz8GlRj1bvoRTW/1I82dmb2yowy8E3iTj5P2fK1
+         mJCMvw2jkZq7wEuGTj2c9Gfryglr6XrC3y6ONNynB7tR+ixr4p8DGlTPJXNTcvINFB/b
+         RsvE8qxy/Hgu5wsPSlEDQbHSgI5Emy8/3GoZf0dMzrGi/d9nrOu5jqpa4xzzxyQVUlsp
+         l+dnGZF2k0aWDYhh3TZ3w7Lc8/TbQrHzIommbszYqPYXkgYtdjnMGBBO713Jijdy5C7R
+         2qOV0ci+YShmXDfSL9uhhkf3g7eEll6wpaP7r4OsGr9Bq5c+PUHJV9YIZSVQHDgA5MLm
+         HrYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2AJ2s6Swi7DKePDYPTjpM9W7XfKGuXx2NmxnXLQgYSU=;
-        b=D4riTu+GYWyLpk4htmmpUOp//a4v0AguE0Z0xrLAcTS4VYON/XHr2P917+FNf7oe/6
-         JstzC4vbnA9ocx6zWvuDO+iUwBNqMnQjhR1AGfYIU5Z14HNW2zWoAgLkvl9KJbmTKWV9
-         66Bluy+vYTZd5Q5bPgtLaIV9iBA6DwmuXBSvuNCVfDbPPDxhP+fj1l0kPG3OWU7nstXM
-         /jWm+2hFhu+safn732hzQR4ClEk55qByl0iPT7dfF/Ut40/PQkXng0LlXRxkyqYeFB+9
-         fBTfyRbGZm0Bx4tvgdFoE5zrXaHPQfryJc6ieTF5IPp2d5zABdTzQ6COvuDOfk7s8wnZ
-         /ofg==
-X-Gm-Message-State: AOAM530niIKkmnn81rPS+u1KlNCItTSihfYBSoqGD1/fzjisqJQRTV0n
-        95Jf382kH8y3U3dM5UvUlANZOD3Jr0NiVXHD+Bw=
-X-Google-Smtp-Source: ABdhPJyRLWrfWEbRY82WKzbAaqxe+Tz0Rq9l4OoSLSgaPe9ZQ71sH6V/8n9uYyj4peJXY7ySMuwi8lVHUHfIxXWhTlU=
-X-Received: by 2002:a67:ed5a:: with SMTP id m26mr149235vsp.59.1623164030307;
- Tue, 08 Jun 2021 07:53:50 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YOoJEAvOVqbK4v61piMRQZKD7D+2Wxv5vNkMO12sWiQ=;
+        b=OU2p72d5gRPy8WCctFzblYGamUDSKZzH3+pnHLX7rrBcKpcEPDuogveuOlKMm8G0Mu
+         7lsN7ZhzH8k8bSuf+b0kyrqUWLQCdiSlRYxJzrMLJTucCLmzulWIZjzObg0Od2j9wxUW
+         2EwtTGWGHK4y1yVgn1Fl78zbYM011fBvbJokX6rV33JA+8dK1HCOMSjLHj6hlCEKgsBj
+         xfXRkDDNMExzXZw7iaq5eLX3Y742GuahOcSMuzV5lkOOID2VHEGzp7qHdfRQflz1wtSM
+         pek+NEYrBkBSj51EJTWpCk9yJSA9LvnmZkbxcXTyLErrgRxxDV3EDoVJKKIqRC2HwFID
+         IjIw==
+X-Gm-Message-State: AOAM531Y6dGF5U582w38MdExtCYZ5JkiU7Qq86lDT6+2Tzh9CIFLOXoT
+        yNdpOiilQwRut6szZ62MP2lOzDqLgqFBH4MNCE8=
+X-Google-Smtp-Source: ABdhPJzvWbYI44VZl2fltwTHhC1u82++xVlMbWzDht7tkDoco05BKY+OWKvuT9uVpyvyGieu9ZnU0SGmONh+j5r/uic=
+X-Received: by 2002:a05:6808:249:: with SMTP id m9mr3105250oie.120.1623164056486;
+ Tue, 08 Jun 2021 07:54:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210608083418.137226-1-wangkefeng.wang@huawei.com> <20210608083418.137226-2-wangkefeng.wang@huawei.com>
-In-Reply-To: <20210608083418.137226-2-wangkefeng.wang@huawei.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Tue, 8 Jun 2021 20:23:38 +0530
-Message-ID: <CAFqt6zYmCQ=wxEjnOJ6fgJWYQyFajBuxWD=UT_D-WjWUS_4pcw@mail.gmail.com>
-Subject: Re: [PATCH v3 resend 01/15] mm: add setup_initial_init_mm() helper
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
-        X86 ML <x86@kernel.org>
+References: <1623068820-2479-1-git-send-email-yangtiezhu@loongson.cn>
+ <0d1b517f-797f-e87d-4edd-8474b16993ed@amd.com> <CADnq5_PvZRu0h60dn-=4v0aXBOaNy=s0KjmeuSndDzU3C8qFog@mail.gmail.com>
+ <31de1f2e-5030-3a01-782b-df659d0d2869@loongson.cn>
+In-Reply-To: <31de1f2e-5030-3a01-782b-df659d0d2869@loongson.cn>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 8 Jun 2021 10:54:05 -0400
+Message-ID: <CADnq5_PMrv7imajh2SNJQL3nOBj8OKwV5Ud=1LQnKn0kN4SoNw@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon: Always call radeon_suspend_kms() in radeon_pci_shutdown()
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jianmin Lv <lvjianmin@loongson.cn>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 1:56 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+On Mon, Jun 7, 2021 at 10:26 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 >
-> Add setup_initial_init_mm() helper to setup kernel text,
-> data and brk.
+> On 06/07/2021 09:42 PM, Alex Deucher wrote:
+> > On Mon, Jun 7, 2021 at 8:30 AM Christian K=C3=B6nig <christian.koenig@a=
+md.com> wrote:
+> >> Am 07.06.21 um 14:27 schrieb Tiezhu Yang:
+> >>> radeon_suspend_kms() puts the hw in the suspend state (all asics),
+> >>> it should always call radeon_suspend_kms() in radeon_pci_shutdown(),
+> >>> this is a normal cleanup process to avoid more operations on radeon,
+> >>> just remove #ifdef CONFIG_PPC64 and the related comments.
+> >> Well NAK.
+> >>
+> >> Alex knows more about the details but suspending should not be part of
+> >> the pci shotdown process at all.
+> >>
+> >> We just add that here to enforce a GPU reset on PPC64 boards for some
+> >> reason.
+> > Everything in the comment still applies.
+> >
+> > Alex
 >
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-csky@vger.kernel.org
-> Cc: uclinux-h8-devel@lists.sourceforge.jp
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: openrisc@lists.librecores.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: x86@kernel.org
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Hi Alex and Christian,
+>
+> Thanks for your quick reply. What do you think of the following changes?
+> If it is OK, I will send v2. If no, please ignore it.
+>
+> Any comments will be much appreciated.
+
+Looks fine.  Please send it out.
+
+Alex
+
+>
+> Thanks,
+> Tiezhu
+>
+>
+> Subject: [PATCH] drm/radeon: Call radeon_suspend_kms() in
+>   radeon_pci_shutdown() for Loongson64
+>
+> On the Loongson64 platform used with Radeon GPU, shutdown or reboot faile=
+d
+> when console=3Dtty is in the boot cmdline.
+>
+> radeon_suspend_kms() puts the hw in the suspend state, especially set fb
+> state as FBINFO_STATE_SUSPENDED:
+>
+>      if (fbcon) {
+>          console_lock();
+>          radeon_fbdev_set_suspend(rdev, 1);
+>          console_unlock();
+>      }
+>
+> Then avoid to do any more fb operations in the related functions:
+>
+>      if (p->state !=3D FBINFO_STATE_RUNNING)
+>          return;
+>
+> So call radeon_suspend_kms() in radeon_pci_shutdown() for Loongson64 to f=
+ix
+> this issue, it looks like some kind of workaround like powerpc.
+>
+> Co-developed-by: Jianmin Lv <lvjianmin@loongson.cn>
+> Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
->  include/linux/mm.h | 3 +++
->  mm/init-mm.c       | 9 +++++++++
->  2 files changed, 12 insertions(+)
+>   drivers/gpu/drm/radeon/radeon_drv.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
 >
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index c274f75efcf9..02aa057540b7 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -244,6 +244,9 @@ int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
+> diff --git a/drivers/gpu/drm/radeon/radeon_drv.c
+> b/drivers/gpu/drm/radeon/radeon_drv.c
+> index efeb115..daabbf5 100644
+> --- a/drivers/gpu/drm/radeon/radeon_drv.c
+> +++ b/drivers/gpu/drm/radeon/radeon_drv.c
+> @@ -386,13 +386,13 @@ radeon_pci_shutdown(struct pci_dev *pdev)
+>       if (radeon_device_is_virtual())
+>           radeon_pci_remove(pdev);
 >
->  #define lru_to_page(head) (list_entry((head)->prev, struct page, lru))
->
-> +void setup_initial_init_mm(void *start_code, void *end_code,
-> +                          void *end_data, void *brk);
-> +
-
-Gentle query -> is there any limitation to add inline functions in
-setup_arch() functions ?
-
->  /*
->   * Linux kernel virtual memory manager primitives.
->   * The idea being to have a "virtual" mm in the same way
-> diff --git a/mm/init-mm.c b/mm/init-mm.c
-> index 153162669f80..b4a6f38fb51d 100644
-> --- a/mm/init-mm.c
-> +++ b/mm/init-mm.c
-> @@ -40,3 +40,12 @@ struct mm_struct init_mm = {
->         .cpu_bitmap     = CPU_BITS_NONE,
->         INIT_MM_CONTEXT(init_mm)
->  };
-> +
-> +void setup_initial_init_mm(void *start_code, void *end_code,
-> +                          void *end_data, void *brk)
-> +{
-> +       init_mm.start_code = (unsigned long)start_code;
-> +       init_mm.end_code = (unsigned long)end_code;
-> +       init_mm.end_data = (unsigned long)end_data;
-> +       init_mm.brk = (unsigned long)brk;
-> +}
+> -#ifdef CONFIG_PPC64
+> +#if defined(CONFIG_PPC64) || defined(CONFIG_MACH_LOONGSON64)
+>       /*
+>        * Some adapters need to be suspended before a
+>        * shutdown occurs in order to prevent an error
+> -     * during kexec.
+> -     * Make this power specific becauase it breaks
+> -     * some non-power boards.
+> +     * during kexec, shutdown or reboot.
+> +     * Make this power and Loongson specific becauase
+> +     * it breaks some other boards.
+>        */
+>       radeon_suspend_kms(pci_get_drvdata(pdev), true, true, false);
+>   #endif
 > --
-> 2.26.2
->
+> 2.1.0
 >
