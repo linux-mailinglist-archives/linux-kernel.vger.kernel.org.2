@@ -2,187 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A394339EE38
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 07:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70F839EE44
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 07:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhFHFjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 01:39:45 -0400
-Received: from mail-bn1nam07on2055.outbound.protection.outlook.com ([40.107.212.55]:45735
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229512AbhFHFjn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 01:39:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KkRDtJRfQfJzWofZZ2oAFRULb0ogyMS2hkeyWMCRXe1BBNSt7UrO1GuaCUhfxQoZz0kWrSbFFN87P+KPI+oswHXx/DtVemXcVbSqW57jRPMG5i1khpBThFKsNMqYff8mCY9eSwZ7sLbpehAqc2jY9lXII6wrL8ThfIVvcdWF0VGERz4o7wfx7Af1pOBJBvCoYH8TGP1M9f9zHg/LKpzoAs1S2kfkrMnkyp7GBFXm1r8AkmNkPdIIYUbyMYG8CAyzYZ9HlhMKdD8mJ2Dmzp3O0GPU8U8JRxqO6WlD16okzwL948tOMTjpeOzd+0K2WlXiNh+9e/Es6AtcmUTUnuEY2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vTNAJUQR2SD9CghiugAauEXJNOjizMvw44Bl+waGFkc=;
- b=VTNHVWhdpeVi5OCLXPzy8O29i4pRZi6pC7PHmRGryqtWpcBO+RC1I/cGs4hrVHapGLMAEl1oddIyYXsIwnJzbC1aBDqAUh0H4n+P0HfDXMN4gBZ06f++lVilwGPo44UbLpz+InGtdUC6HTjXlOeiSz8P02hAmKpjTsGezzvwpuiKvEKA6rnxNmGXSZ3TWrwZKJuuVUasO+IhDhPOBxCgxnQLKZcYch7GPrf57Nbmk25uTsHVgCx7KsHRRK4Lcbn38Gu9yHm4wMZ3nlV14DuUTWD5nD3TMwxYRQgew+xbPFiww5lFTZ/rdwrh3QyJnqmw0GDwPIvhmJNDLLcsD4RbnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vTNAJUQR2SD9CghiugAauEXJNOjizMvw44Bl+waGFkc=;
- b=nBCOe5oiTdbDmkFv5af//u0WITTMU3lsUvR3MfdFXR5FEFEXV405ncz852WUeM6WJXknwkcafA2EHQrDr5MSrPPtca44dOrn0ISBoqXFI15y8kT5xCVVxDCyRO1g/FC/nm9V7NXAZV8linDL26qy5GUYHCS/K/SUrgAk7t0s200=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
- by BN9PR12MB5242.namprd12.prod.outlook.com (2603:10b6:408:11f::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20; Tue, 8 Jun
- 2021 05:37:48 +0000
-Received: from BN9PR12MB5129.namprd12.prod.outlook.com
- ([fe80::3c78:e58b:fba7:b8dd]) by BN9PR12MB5129.namprd12.prod.outlook.com
- ([fe80::3c78:e58b:fba7:b8dd%6]) with mapi id 15.20.4195.030; Tue, 8 Jun 2021
- 05:37:48 +0000
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210608125046.07c6deca@canb.auug.org.au>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Message-ID: <22010e38-3686-87ce-532d-4a53cae990b1@amd.com>
-Date:   Tue, 8 Jun 2021 01:37:45 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <20210608125046.07c6deca@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [142.116.203.225]
-X-ClientProxiedBy: YTXPR0101CA0058.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:1::35) To BN9PR12MB5129.namprd12.prod.outlook.com
- (2603:10b6:408:136::12)
+        id S229942AbhFHFps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 01:45:48 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:48914 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229526AbhFHFpr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 01:45:47 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuyu@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UbjJSIq_1623131032;
+Received: from xuyu-mbp15.local(mailfrom:xuyu@linux.alibaba.com fp:SMTPD_---0UbjJSIq_1623131032)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 08 Jun 2021 13:43:52 +0800
+Subject: Re: [PATCH] mm, thp: relax migration wait when failed to get tail
+ page
+To:     Hugh Dickins <hughd@google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, gavin.dg@linux.alibaba.com,
+        Greg Thelen <gthelen@google.com>, Wei Xu <weixugc@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <bc8567d7a2c08ab6fdbb8e94008157265d5d28a3.1622564942.git.xuyu@linux.alibaba.com>
+ <alpine.LSU.2.11.2106010947370.1090@eggly.anvils>
+ <b05ab98d-3a0d-ec23-96dd-5c970aa61580@linux.alibaba.com>
+ <alpine.LSU.2.11.2106020831590.6388@eggly.anvils>
+ <6c4e0df7-1f06-585f-d113-f38db6c819b5@linux.alibaba.com>
+ <b9db2528-e3fa-da5a-ba30-4fc5d217957a@google.com>
+From:   Yu Xu <xuyu@linux.alibaba.com>
+Message-ID: <49d5601c-6ea5-5973-bcbe-bee0c1d4f7de@linux.alibaba.com>
+Date:   Tue, 8 Jun 2021 13:43:52 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.100] (142.116.203.225) by YTXPR0101CA0058.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:1::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.27 via Frontend Transport; Tue, 8 Jun 2021 05:37:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1002deba-cd2c-4ce9-4e24-08d92a3f8c65
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5242:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN9PR12MB524296A6E87D5D7881C5CFA892379@BN9PR12MB5242.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: J31hjLAvssCYOzc+RAbW0K4uY39gHXcQY5l+2rrU3L7909qDC1ET9PccfL9OJbI83viBiWj2vu9/gBUJ2f74yrxxiVPFxp5Qwx34MRCQdGS9XT9cnuUE4gckDEv2YYbDjOUrWQw9kS8fJvGLeYAg37fY00bZSfzn5Tf14mHN0NrUpqlf4WhF4fopExAXBksZFcXWUcgorCZYxru+xWqXG7wTgH2R/lQ5Vd0xSmMEjfm64o73P6gl1pDiT48v1FgDnZgbNSu+naGf65ggHQ6wn57Qh403m/2Cb6QeJ5nTBlNpAR1N9E30P8URUVNzEpF06NVPzILywcT/GnHmiNfWwdlfU9huF4SHy3D5WNsOyrE6g6oBGIVVZmr8AwREIkKRf+6NdC4lDRC+eFI464ImLSzoRhiqaxA06I/m3A7YZDokgvQAbl0BvOiR2JZRFn0OycplJJ/qxGCwmLEWTJFZpa2zhdH1clls3RVeS1NlG9RV+5FgL3igjdJRInCcL3GUhWUxdm5/5jv5pPGvYtOt/fbRt0kwXCYsdNe/GQuxDWpyVYEa07jK4Lp3FCpuSsq1UJK1glqLVI6eL1pLa/p7EOZ8v3+RnguIxyMQlNoP7eRoXDFVZP+BFoChQ1SWo5u0eeiCzuxqTEQXA1iAE5aL6+kXP6vLwlHOgDKH+yGXmQAcKSRiD4m0GZrudm8DS6Oi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5129.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(136003)(376002)(39860400002)(478600001)(2906002)(6486002)(54906003)(8936002)(16526019)(110136005)(31696002)(16576012)(38100700002)(186003)(8676002)(66476007)(66556008)(66946007)(36756003)(53546011)(44832011)(86362001)(83380400001)(6636002)(31686004)(5660300002)(956004)(316002)(4326008)(2616005)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?WRjLjQzfFo8JRpmRvUPdp4fvPqFXZrk0kdFE0GE2INB0LsDp2j8WrdMF?=
- =?Windows-1252?Q?2e/0Qly53Ycliaxbz+Lq2+ckAVushn+cHZzAsNhVmt/f4mIebqYR/QtH?=
- =?Windows-1252?Q?0B5ItQSQ87y+Bl5op310w/uVP3HICCVCiegHgx5HrAOefPdTtxuVt9eG?=
- =?Windows-1252?Q?6MbrClTdr2klIAoQHr8CDTuYBYnkSeQ0yu+8fqbGW4tjauiDHdFrdiT5?=
- =?Windows-1252?Q?WU+uSoea6ZDzuGP65ZESHB63OBWwo7rZWwGeGHSiHwfkZemFnjtgZztH?=
- =?Windows-1252?Q?WthiNylENCg6K1B8kP8MGRSuKQX2SDIQx+gJCa8K/ES8FyKL2uyoWbYh?=
- =?Windows-1252?Q?S1DxMHJIKR9Cj7hkqIR/tlQPWqxDSpt1miSHOmOS0ovJbQSVuTT4WpIn?=
- =?Windows-1252?Q?ra+OT+iFhpNHxxD3RD8b8uBRHloRztZ7cAg/izqHkWwEFm4cm+KF2iHM?=
- =?Windows-1252?Q?7XLko6dQ+xkX7Sr3ZQUleQ+nyWeOubkHirvOq2BbCOaSWtMSdtZ6k32B?=
- =?Windows-1252?Q?KWnltA81hrtYpf79+HZf5oMXEwW4Pf4jRZ3pCGF9WCmhCcFaN2f6r2n3?=
- =?Windows-1252?Q?WdRkP83vMdGa2ro3C8udFCN5wLk6FGBMM+IbgNwaWf/Q4pcvM1nQ9LvU?=
- =?Windows-1252?Q?OKznTCLvtpavbDdFVdUM1WEz50anKH6KpxjIZN0jRS2m8DO9fiPVpq59?=
- =?Windows-1252?Q?Ai/b/ZOKEPx1tyZYDpr+UKsvGl68r1vT1ytYrZqch94eNiU4MGqwMokz?=
- =?Windows-1252?Q?rEtDYGh7Hg5oHNU9AflDQEzcmowaB2Zmn86fA2yRd0Af8jlwy9Q8mDKL?=
- =?Windows-1252?Q?DLmB0TqcCJkDi9XRXpvCVYYinCfDsBp1i4Jg+9S1xzDcNt6gxHToxJv7?=
- =?Windows-1252?Q?ulAP696Rdq/CMcbc5AWrTGnXaLk/KOAe8it0nEF2cHTRAD7HGNmIBOK8?=
- =?Windows-1252?Q?6xdt89imb7a6pPVfHeLRlD87VGkq87fea6hhVrkMwup0rOYd/M4hw7NT?=
- =?Windows-1252?Q?xR65E7FzScxikh3O3X28NOzrYeK2kVoVSKI6I6u2NslihDmNN0OCULbh?=
- =?Windows-1252?Q?azsaQVu9C6az8YL8gKtYvoYg6so3+hzIKeIUyNefj/H7mKHBQnoWJ5m9?=
- =?Windows-1252?Q?XpDVeIrsKsW1UF9/EkCkBQG9bZ/4Wm6rkXczji8ONLoGhTxXRfy/Ag/z?=
- =?Windows-1252?Q?Wz6+026vr4o/pWZBk0uzS0j2eTSrDDbXDuhuShsp6OaV2yaR63K4kEq6?=
- =?Windows-1252?Q?y6SHqXB2iHcOq1+eQqYtsG3G0Fx511XcLNro6LMlXEt+dBVThcWRUiJG?=
- =?Windows-1252?Q?mr/1K9nNUmo2WsOaMAOI2xDLN1U0JcSyoCsCNkwsXI4RKuKoBeCaSWSS?=
- =?Windows-1252?Q?fPkobdsqaEEW5miZKrZ5ezFWPJoLZ/n9CsqMjV3PY9nSSZiybv13oPdT?=
- =?Windows-1252?Q?nqPSULRGJpFSyxeOlnUE6w=3D=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1002deba-cd2c-4ce9-4e24-08d92a3f8c65
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5129.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 05:37:47.9209
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: g1hkYu3n0hRCbJgRftfO4Nhns/ppBBvS1v1Fe7kXSc/6zQj2JUuy9NlTGs/zH6xTu5dAdSAdymlEhflrEvhg/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5242
+In-Reply-To: <b9db2528-e3fa-da5a-ba30-4fc5d217957a@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+On 6/8/21 12:44 PM, Hugh Dickins wrote:
+> On Mon, 7 Jun 2021, Yu Xu wrote:
+>> On 6/2/21 11:57 PM, Hugh Dickins wrote:
+>>> On Wed, 2 Jun 2021, Yu Xu wrote:
+>>>> On 6/2/21 12:55 AM, Hugh Dickins wrote:
+>>>>> On Wed, 2 Jun 2021, Xu Yu wrote:
+>>>>>
+>>>>>> We notice that hung task happens in a conner but practical scenario when
+>>>>>> CONFIG_PREEMPT_NONE is enabled, as follows.
+>>>>>>
+>>>>>> Process 0                       Process 1                     Process
+>>>>>> 2..Inf
+>>>>>> split_huge_page_to_list
+>>>>>>        unmap_page
+>>>>>>            split_huge_pmd_address
+>>>>>>                                    __migration_entry_wait(head)
+>>>>>>                                                                  __migration_entry_wait(tail)
+>>>>>>        remap_page (roll back)
+>>>>>>            remove_migration_ptes
+>>>>>>                rmap_walk_anon
+>>>>>>                    cond_resched
+>>>>>>
+>>>>>> Where __migration_entry_wait(tail) is occurred in kernel space, e.g.,
+>>>>>> copy_to_user, which will immediately fault again without rescheduling,
+>>>>>> and thus occupy the cpu fully.
+>>>>>>
+>>>>>> When there are too many processes performing __migration_entry_wait on
+>>>>>> tail page, remap_page will never be done after cond_resched.
+>>>>>>
+>>>>>> This relaxes __migration_entry_wait on tail page, thus gives remap_page
+>>>>>> a chance to complete.
+>>>>>>
+>>>>>> Signed-off-by: Gang Deng <gavin.dg@linux.alibaba.com>
+>>>>>> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
+>>>>>
+>>>>> Well caught: you're absolutely right that there's a bug there.
+>>>>> But isn't cond_resched() just papering over the real bug, and
+>>>>> what it should do is a "page = compound_head(page);" before the
+>>>>> get_page_unless_zero()? How does that work out in your testing?
+>>>>
+>>>> compound_head works. The patched kernel is alive for hours under
+>>>> our reproducer, which usually makes the vanilla kernel hung after
+>>>> tens of minutes at most.
+>>>
+>>> Oh, that's good news, thanks.
+>>>
+>>> (It's still likely that a well-placed cond_resched() somewhere in
+>>> mm/gup.c would also be a good idea, but none of us have yet got
+>>> around to identifying where.)
+>>
+>> We neither. If really have to do it outside of __migration_entry_wait,
+>> return value of __migration_entry_wait is needed, and many related
+>> functions have to updated, which may be undesirable.
+> 
+> No, it would not be necessary to plumb through a return value from
+> __migration_entry_wait(): I didn't mean that this GUP cond_resched()
+> should be done only for the migration case, but (I guess) on any path
+> where handle_mm_fault() returns "success" for a retry, yet the retry
+> of follow_page_mask() fails.
+> 
+> But now that I look, I see there is already a cond_resched() there!
 
-I based amdgpu_preempt_mgr on amdgpu_gtt_mgr and now I'm looking at what
-changed there. Looks like I'll need to create a dummy node in
-amdgpu_preempt_mgr_new to satisfy TTM, and free it in
-amdgpu_preempt_mgr_del.
+Do you mean might_sleep in mmap_read_trylock within do_user_addr_fault?
 
+If so, our environment has CONFIG_PREEMPT_NONE is enabled, and the
+__migration_entry_wait happens in kernel when do something like
+copy_to_user (e.g., fstat).
+
+
+> 
+> So I'm puzzled as to how your cond_resched() in __migration_entry_wait()
+> appeared to help - well, you never actually said that it helped, but I
+> assume that it did, or you wouldn't have bothered to send that patch?
+> 
+> It's irrelevant, now that we've admitted there should be a
+> "page = compound_head(page)" in there, and you have said that helps,
+> and that's the patch we want to send now.  But it troubles me, to be
+> unable to explain it.  Two cond_resched()s are not twice as good as one.
+> 
+>>
+>>>
+>>>>
+>>>> If we use compound_head, the behavior of __migration_entry_wait(tail)
+>>>> changes from "retry fault" to "prevent THP from being split". Is that
+>>>> right?  Then which is preferred? If it were me, I would prefer "retry
+>>>> fault".
+>>>
+>>> As Matthew remarked, you are asking very good questions, and split
+>>> migration entries are difficult to think about.  But I believe you'll
+>>> find it works out okay.
+>>>
+>>> The point of *put_and_* wait_on_page_locked() is that it does drop
+>>> the page reference you acquired with get_page_unless_zero, as soon
+>>> as the page is on the wait queue, before actually waiting.
+>>>
+>>> So splitting the THP is only prevented for a brief interval.  Now,
+>>> it's true that if there are very many tasks faulting on portions
+>>> of the huge page, in that interval between inserting the migration
+>>> entries and freezing the huge page's refcount to 0, they can reduce
+>>> the chance of splitting considerably.  But that's not an excuse for
+>>> for doing get_page_unless_zero() on the wrong thing, as it was doing.
+>>
+>> We finally come to your solution, i.e., compound_head.
+>>
+>> In that case, who should resend the compound_head patch to this issue?
+>> shall we do with your s.o.b?
+> 
+> I was rather expecting you to send the patch: with your s.o.b, not mine.
+> You could say "Suggested-by: Hugh Dickins <hughd@google.com>" if you like.
+> 
+> And I suggest that you put that "page = compound_head(page);" line
+> immediately after the "page = migration_entry_to_page(entry);" line,
+> so as not to interfere with the comment above get_page_unless_zero().
+> 
+> (No need for a comment on the compound_head(): it's self-explanatory.)
+> 
+> I did meanwhile research other callers of migration_entry_to_page():
+> it had been on my mind, that others might need a compound_head() too,
+> and perhaps it should be done inside migration_entry_to_page() itself.
+> 
+> But so far as I can tell (I don't really know about the s390 one),
+> the others are okay, and it would just be unnecessary overhead
+> (in particular, the mm_counter() stuff looks correct on a tail).
+> 
+> I *think* the right Fixes tag would be
+> Fixes: ba98828088ad ("thp: add option to setup migration entries during PMD split")
+> though I'm not sure of that; it's probably good enough.
+> 
+> (With all this direction, I did wonder if it would be kinder just to
+> send a patch myself, but using some of your comments: but I didn't
+> understand "conner" in your description, so couldn't do that.)
+> 
+> Thanks!
+> Hugh
+> 
+
+-- 
 Thanks,
-  Felix
-
-
-Am 2021-06-07 um 10:50 p.m. schrieb Stephen Rothwell:
-> Hi all,
->
-> After merging the drm-misc tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->
-> drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c: In function 'amdgpu_preempt_mgr_new':
-> drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:75:5: error: 'struct ttm_resource' has no member named 'mm_node'
->    75 |  mem->mm_node = NULL;
->       |     ^~
-> drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c: At top level:
-> drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:129:11: error: initialization of 'int (*)(struct ttm_resource_manager *, struct ttm_buffer_object *, const struct ttm_place *, struct ttm_resource **)' from incompatible pointer type 'int (*)(struct ttm_resource_manager *, struct ttm_buffer_object *, const struct ttm_place *, struct ttm_resource *)' [-Werror=incompatible-pointer-types]
->   129 |  .alloc = amdgpu_preempt_mgr_new,
->       |           ^~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:129:11: note: (near initialization for 'amdgpu_preempt_mgr_func.alloc')
->
-> Caused by commit
->
->   cb1c81467af3 ("drm/ttm: flip the switch for driver allocated resources v2")
->
-> from the drm-misc tree interacting with commit
->
->   b453e42a6e8b ("drm/amdgpu: Add new placement for preemptible SG BOs")
->
-> from the drm tree.
->
-> I don't know how to fix this, so I added the following hack (a better
-> fix would be nice):
->
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 8 Jun 2021 12:41:16 +1000
-> Subject: [PATCH] hack fix up for needed amdgpu_preempt_mgr_new() fix up
->
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
-> index d607f314cc1b..e1a7b3e967b9 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
-> @@ -66,14 +66,16 @@ static DEVICE_ATTR_RO(mem_info_preempt_used);
->  static int amdgpu_preempt_mgr_new(struct ttm_resource_manager *man,
->  				  struct ttm_buffer_object *tbo,
->  				  const struct ttm_place *place,
-> -				  struct ttm_resource *mem)
-> +				  struct ttm_resource **res)
->  {
-> +#if 0
->  	struct amdgpu_preempt_mgr *mgr = to_preempt_mgr(man);
->  
->  	atomic64_add(mem->num_pages, &mgr->used);
->  
->  	mem->mm_node = NULL;
->  	mem->start = AMDGPU_BO_INVALID_OFFSET;
-> +#endif
->  	return 0;
->  }
->  
+Yu
