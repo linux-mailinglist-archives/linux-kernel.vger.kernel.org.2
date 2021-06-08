@@ -2,40 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF0239F7B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC9B39F7B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbhFHNXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:23:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57564 "EHLO mail.kernel.org"
+        id S232996AbhFHNYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:24:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232844AbhFHNXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:23:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8D0D61278;
-        Tue,  8 Jun 2021 13:21:59 +0000 (UTC)
+        id S232934AbhFHNX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 09:23:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01E986124B;
+        Tue,  8 Jun 2021 13:22:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623158522;
-        bh=1B0V9z2K8C4YqPZ9oRq6fJf5vTfU8V/BGjXcAyZ0Ipk=;
+        s=k20201202; t=1623158526;
+        bh=26tDlzaqRmpxPofcTFO2IiT4LsDm38K8gdTl72KaM3g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GxbVdLUn37Rx8oxDk6pnmaYJTu39tZWmSzLrUDzNiwFYa7f8N09j7D6RTqn5hsogy
-         OQ02qIGa++FBw0b1flzNTNSacmdHl+qIcg4KVxUcrE4NHI2urTyuVcNNiUTbqxbB1A
-         UeA19PXOCIVKPTDOtFLT3TDNcFAhTfJyHwdWfaeKt5BGzX5GPnEBmjoYPKU6TipVij
-         38i4Xre1AwTcHdMq5+AJ/ghfv5nRYFCx9fYR9dtkHDOqA8jf9ul5RcHtBvA/4PXCTd
-         oaE/hmnKtR4/DgnLSmmkfEfC2YE0s7E0aM+U1GDj0wydQA+QnrkInhUiEHtP51G9cp
-         g+MOneZjK6EmQ==
+        b=lyKsXvu9MbIV9BLRfCaGTCFEbW+1ah5q9kIPXSui1PlBDI6v5i2WhAUGGMHUgVq6J
+         8mPWn6F55uT4x1VF9iOzYelAgi0ZP4NGcrx4c+hBhFm2SKflqh/RCgreANi3Vzs4c7
+         GQPQxqfWQjVji0VPcmXwvyQItBFaln+IrQ/UQrbvWznzxiQOvGmdCHfTWH5S8g3ipn
+         AoVHqaYUEofmYohF6AYN3QT9iexXo+Fju6/ROT5zHu1LHDBmf6LZYOXvqsTO47dhUL
+         bXido5hBepcu8JK6KtiZiCkF4XqP+Nf2/w++gduwAP+dsChBl8d5RvTMJW2uFRsOKF
+         RkSN9qgHqfIPA==
 From:   Will Deacon <will@kernel.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        mark.rutland@arm.com, ChenXiaoSong <chenxiaosong2@huawei.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
 Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, yi.zhang@huawei.com,
-        linux-arm-kernel@lists.infradead.org, yukuai3@huawei.com
-Subject: Re: [PATCH -next,resend] perf: qcom: Remove redundant dev_err call in qcom_l3_cache_pmu_probe()
-Date:   Tue,  8 Jun 2021 14:21:51 +0100
-Message-Id: <162315291963.2245694.11680522659290211747.b4-ty@kernel.org>
+        Will Deacon <will@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-kbuild@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Elliot Berman <eberman@quicinc.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Makefile: fix GDB warning with CONFIG_RELR
+Date:   Tue,  8 Jun 2021 14:21:53 +0100
+Message-Id: <162315417458.2255276.14036371169273697927.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210608084816.1046485-1-chenxiaosong2@huawei.com>
-References: <20210608084816.1046485-1-chenxiaosong2@huawei.com>
+In-Reply-To: <20210522012626.2811297-1-ndesaulniers@google.com>
+References: <CAK7LNAS_LpZnweujqVwZ1kL0eDYR726k35U_yx1djqNE0bk6Rw@mail.gmail.com> <20210522012626.2811297-1-ndesaulniers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,15 +51,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 16:48:16 +0800, ChenXiaoSong wrote:
-> There is a error message within devm_ioremap_resource
-> already, so remove the dev_err call to avoid redundant
-> error message.
+On Fri, 21 May 2021 18:26:24 -0700, Nick Desaulniers wrote:
+> GDB produces the following warning when debugging kernels built with
+> CONFIG_RELR:
+> 
+> BFD: /android0/linux-next/vmlinux: unknown type [0x13] section `.relr.dyn'
+> 
+> when loading a kernel built with CONFIG_RELR into GDB. It can also
+> prevent debugging symbols using such relocations.
+> 
+> [...]
 
-Applied to will (for-next/perf), thanks!
+Applied to arm64 (for-next/build), thanks!
 
-[1/1] perf: qcom: Remove redundant dev_err call in qcom_l3_cache_pmu_probe()
-      https://git.kernel.org/will/c/5ca54404e68d
+[1/1] Makefile: fix GDB warning with CONFIG_RELR
+      https://git.kernel.org/arm64/c/27f2a4db76e8
 
 Cheers,
 -- 
