@@ -2,106 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F9739F271
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C0C39F280
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhFHJdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50002 "EHLO
+        id S230377AbhFHJfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 05:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhFHJdt (ORCPT
+        with ESMTP id S229548AbhFHJfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:33:49 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A51C061574;
-        Tue,  8 Jun 2021 02:31:56 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id r14so6955478ljd.10;
-        Tue, 08 Jun 2021 02:31:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0nP0gHTe3x9dAdv/JFwqsfNFClBUXlKdSohrAmZVKnU=;
-        b=eeCPim92wu2BCXwdt2pnN6t8X7cDLh9Pm1NYGYdr8AuLW1/HVnjqseyjbMFYujURRK
-         PEV0ckxktSm6QKfp/WZamYOH7IUGadjjRR1pivqp1lZrZEVM7JFaNeG7XqayN7hQSLDA
-         V4i/iJy2sQXe0FHzPdNhkzQ5hkgV7q4VyRlZJAsjOB/RaU/4AGNmNj/pCkkvU6RthoLb
-         33S952Du/X1HPAh6TO+cp8+IH7rHwcewnOc/976EZBznL5/xK17ekHC6aOw/mNUW0NxV
-         4WxgQWEmIImA2MdaNPD1ICd4Ob0F0uLG0hFOE9HYIU5c2USsJG0mPHeOk5YcQUOAIGNg
-         ar4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0nP0gHTe3x9dAdv/JFwqsfNFClBUXlKdSohrAmZVKnU=;
-        b=Mww55pp0zVO5dM3rXvFIFHKqTPn7AL5HcCDsUVW7bT+CzqJ9BPR/2xl2f2A0vP5/0N
-         v+C+s0vVgh89lDRiPG5cKvuwawPzW46rMNJvAy3fE3Jx6bMM2js1eFVXUZpI0HPZn1O6
-         nkUz53yLJamHDVkYvj/O2R4QM5hh9j/aGSc3P3uDW5jVT7QVZQW+90NRljxJFDO/Av3R
-         BdkRbxYJNpjTu2W7VdULyQDz3WdV6FvNtmZa92ek8lrKGSs3Sz5EUrhrBzWWMIjJ5Z0T
-         q7DG+ONi+RpDHvkpcdLUpkAlLsA/F33kyEzToFPFMVuyr77IxDib8/2ftFUIUjAntjce
-         yhOg==
-X-Gm-Message-State: AOAM532XZ2d4AJd7oOAE4nw9Wdjh743gRlLsAYbtbszTfPm2JZAT79AH
-        PjV0MTHmC4SXrgkbpPgU6b6LGeh8/5g=
-X-Google-Smtp-Source: ABdhPJyNZGwUNhTSVXWJ3tJgGiyLbGfqFYX4bpwnrtRReKqqpn491eLOT3L8gRGncb5l6wzL4ndDJQ==
-X-Received: by 2002:a2e:97c9:: with SMTP id m9mr11980520ljj.186.1623144714659;
-        Tue, 08 Jun 2021 02:31:54 -0700 (PDT)
-Received: from [192.168.1.100] ([31.173.86.68])
-        by smtp.gmail.com with ESMTPSA id p36sm1825153lfa.227.2021.06.08.02.31.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 02:31:54 -0700 (PDT)
-Subject: Re: [RFC PATCH 2/7] usb: typec: ucsi: Don't stop alt mode
- registration on busy condition
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Benjamin Berg <bberg@redhat.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210607131442.20121-1-heikki.krogerus@linux.intel.com>
- <20210607131442.20121-3-heikki.krogerus@linux.intel.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <2f4bf248-cd27-623d-5984-fafa931404fa@gmail.com>
-Date:   Tue, 8 Jun 2021 12:31:45 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 8 Jun 2021 05:35:44 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70051C061574;
+        Tue,  8 Jun 2021 02:33:51 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 562F73E6;
+        Tue,  8 Jun 2021 11:33:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623144829;
+        bh=OFltWdjgbl2i1zvXlb4e6VeZ33EjH6WYdsDnL6NUN0Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A2xCVhCp4hsB4y/r2Ch1xBKDyPLc0U9DeHLpx8CxUxrNxj8qqHE+MqnDpGvEKjnq7
+         Ip3CexhiOlo/1sCdXGrBt3TNcbuyjpP9kJ1n91fGPc4t3hNYnp4x+zsiINKrlYg+nn
+         WpO75bogCTLyYX9kkftBFKO/j/TDEVrws9cjKBcU=
+Date:   Tue, 8 Jun 2021 12:33:34 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v5 0/6] Introduce intel_skl_int3472 module
+Message-ID: <YL85bqGwuBXkoqy3@pendragon.ideasonboard.com>
+References: <20210603224007.120560-1-djrscally@gmail.com>
+ <4400512a-b788-7074-d3c6-0ec228b43d7e@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210607131442.20121-3-heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4400512a-b788-7074-d3c6-0ec228b43d7e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi Hans,
 
-On 07.06.2021 16:14, Heikki Krogerus wrote:
-
-> If the PPM tells it's busy, we can now simply try again.
+On Tue, Jun 08, 2021 at 11:00:24AM +0200, Hans de Goede wrote:
+> On 6/4/21 12:40 AM, Daniel Scally wrote:
+> > Hello all
+> > 
+> > Bit longer than hoped but here's v5.
+> > 
+> > v4:
+> > https://lore.kernel.org/lkml/20210520140928.3252671-1-djrscally@gmail.com/
+> > 
+> > v3
+> > https://lore.kernel.org/lkml/20210222130735.1313443-1-djrscally@gmail.com/
+> > 
+> > v2
+> > https://lore.kernel.org/platform-driver-x86/20210118003428.568892-1-djrscally@gmail.com/
+> > 
+> > v1
+> > https://lore.kernel.org/linux-media/20201130133129.1024662-1-djrscally@gmail.com/T/#m91934e12e3d033da2e768e952ea3b4a125ee3e67
+> > 
+> > The only changes are the dropped patches, renamed functions in 2/6 and most of
+> > Andy's suggestions on 5/6 - I didn't hit them all yet but didn't want to delay
+> > this any more.
+> > 
+> > Series level changelog:
+> > 
+> > 	- Dropped all but the essential patches to simplify merge plan - thanks
+> > 	Hans.
 > 
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> ---
->   drivers/usb/typec/ucsi/ucsi.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
+> Thank you. Andy has already sends me a pull-req for the gpiolib-acpi changes
+> and I expect Rafael to send me a pull-req (from an immutable branch) for the
+> ACPI bits soon-ish.
 > 
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> index 366c8a468bc18..a8e0e31dcddf5 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -437,8 +437,11 @@ static int ucsi_register_altmodes(struct ucsi_connector *con, u8 recipient)
->   		command |= UCSI_GET_ALTMODE_CONNECTOR_NUMBER(con->num);
->   		command |= UCSI_GET_ALTMODE_OFFSET(i);
->   		len = ucsi_send_command(con->ucsi, command, alt, sizeof(alt));
+> When I merge those both into pdx86 I should be able to pick-up 5/6.
+> 
+> Given the long time this has been in the making I'm tempted to do that
+> (pick up 5/6 as is) and then we can do further cleanups like looking into
+> using the existing fixed-regulator code later. My mean reason to do this
+> would be to get this code into the hands of users starting with the 5.14
+> kernel.
 
-    Could insert your check here, to reduce the indentation...
+That would be great !
 
-> -		if (len <= 0)
-> +		if (len <= 0) {
-> +			if (len == -EBUSY)
-> +				continue;
->   			return len;
-> +		}
->   
->   		/*
->   		 * This code is requesting one alt mode at a time, but some PPMs
+> So question, how usable is this (from the kernel pov, I know userspace
+> needs work too) once I merge 5/6. Is the kernel-side support for the cameras
+> on some Surface devices then complete or are more patches necessary in
+> other subsystems ?
 
-MBR, Sergei
+Camera sensor drivers are the other piece of the puzzle that is
+required. Daniel is working on an ov5693 driver which can be found at
+https://github.com/djrscally/media_tree/tree/ov5693-v2. It's nearing
+completion too.
+
+With those two pieces, we have support for the Microsoft Surface Go 2 in
+libcamera, as well as a few other devices whose exact model escapes me
+at this minute.
+
+> Note another advantage of just merging 5/6 as is and doing the fixed-regulator
+> bits on top, is that having those in a separate commit makes it easier to
+> see if these indeed result in a nice cleanup (vs sticking with the current code).
+> 
+> > Daniel Scally (6):
+> >   ACPI: scan: Extend acpi_walk_dep_device_list()
+> >   ACPI: scan: Add function to fetch dependent of acpi device
+> >   gpiolib: acpi: Export acpi_get_gpiod()
+> >   gpiolib: acpi: Add acpi_gpio_get_io_resource()
+> >   platform/x86: Add intel_skl_int3472 driver
+> >   mfd: tps68470: Remove tps68470 MFD driver
+> > 
+> >  MAINTAINERS                                   |   5 +
+> >  drivers/acpi/ec.c                             |   2 +-
+> >  drivers/acpi/pmic/Kconfig                     |   2 +-
+> >  drivers/acpi/pmic/intel_pmic_chtdc_ti.c       |   2 +-
+> >  drivers/acpi/scan.c                           | 104 ++++-
+> >  drivers/gpio/Kconfig                          |   2 +-
+> >  drivers/gpio/gpiolib-acpi.c                   |  61 ++-
+> >  drivers/i2c/i2c-core-acpi.c                   |   8 +-
+> >  drivers/mfd/Kconfig                           |  18 -
+> >  drivers/mfd/Makefile                          |   1 -
+> >  drivers/mfd/tps68470.c                        |  97 ----
+> >  drivers/platform/surface/aggregator/core.c    |   6 +-
+> >  drivers/platform/surface/surface3_power.c     |  22 +-
+> >  .../platform/surface/surface_acpi_notify.c    |   7 +-
+> >  drivers/platform/x86/Kconfig                  |   2 +
+> >  drivers/platform/x86/Makefile                 |   1 +
+> >  drivers/platform/x86/intel-int3472/Kconfig    |  30 ++
+> >  drivers/platform/x86/intel-int3472/Makefile   |   5 +
+> >  .../intel_skl_int3472_clk_and_regulator.c     | 196 ++++++++
+> >  .../intel-int3472/intel_skl_int3472_common.c  | 106 +++++
+> >  .../intel-int3472/intel_skl_int3472_common.h  | 118 +++++
+> >  .../intel_skl_int3472_discrete.c              | 417 ++++++++++++++++++
+> >  .../intel_skl_int3472_tps68470.c              | 137 ++++++
+> >  include/acpi/acpi_bus.h                       |   8 +
+> >  include/linux/acpi.h                          |  11 +-
+> >  include/linux/gpio/consumer.h                 |   2 +
+> >  26 files changed, 1205 insertions(+), 165 deletions(-)
+> >  delete mode 100644 drivers/mfd/tps68470.c
+> >  create mode 100644 drivers/platform/x86/intel-int3472/Kconfig
+> >  create mode 100644 drivers/platform/x86/intel-int3472/Makefile
+> >  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
+> >  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.c
+> >  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
+> >  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
+> >  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_tps68470.c
+
+-- 
+Regards,
+
+Laurent Pinchart
