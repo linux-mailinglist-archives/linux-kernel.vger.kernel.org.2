@@ -2,157 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A141539EF25
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7022439EF29
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhFHHBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 03:01:04 -0400
-Received: from mail-vs1-f44.google.com ([209.85.217.44]:34685 "EHLO
-        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhFHHBD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 03:01:03 -0400
-Received: by mail-vs1-f44.google.com with SMTP id q2so2934789vsr.1;
-        Mon, 07 Jun 2021 23:58:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+FZhDB5g+zrC7pU7NdoL3gO/mOIESA4Y/Utk2Yrzo0M=;
-        b=NvfXJUbbLSGU718P0YPLgPztu2uiWzB/vehF0IeReh1ZwCPgvc/09vYgqrrtvW18Gx
-         DJeGkwgkzi3X+4QikyL9tmp8YtI+X0CBa3sWX4IgUWPAQ2PKg2pRqCt8Hiwd3zEeUQJy
-         F2QxxtDFJ01qGT8arvLcaWFHWMXqCIavTOL2ZUURILQLUanlg6/eO3v9oohZIPJWbMp1
-         7SLpbO9dbHleDkstQImlfu7Zwq9/GeL85aXLjP1zc9GzMlVpqWqm1+kegYIg8sdfQ8EE
-         vgOw+Us+W8YjgY2n+aAKQDJo0rAPEovRNV53tDc99Nwx9xaqzqhxsB0+on8apOighcN7
-         NF2w==
-X-Gm-Message-State: AOAM5308i+KxuYn6Fwmy8aw+JVEnOdIbWcKPxT3/qv2jiMkmSYS2G8hJ
-        npaCk5I5U///use82aDjQBX4Kqu5OhykA4VnwgY=
-X-Google-Smtp-Source: ABdhPJz+kLqwZnPCS0BrIEbrML2xAox56vYXpHSSbBiyrAEZD83tbPAAws3L+b0gWUN+eb7OrpWA3ibw2diJNui3SYU=
-X-Received: by 2002:a05:6102:c4c:: with SMTP id y12mr7383918vss.18.1623135534863;
- Mon, 07 Jun 2021 23:58:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <1623130327-13325-1-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1623130327-13325-1-git-send-email-anshuman.khandual@arm.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 8 Jun 2021 08:58:43 +0200
-Message-ID: <CAMuHMdWVrUgfXAud_3fpjfO-1yqXzf75Jtk6SNqqcR39-ZzQJA@mail.gmail.com>
-Subject: Re: [PATCH] mm/thp: Define default pmd_pgtable()
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chris Zankel <chris@zankel.net>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S230394AbhFHHCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 03:02:30 -0400
+Received: from comms.puri.sm ([159.203.221.185]:46090 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229923AbhFHHC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 03:02:29 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 7B7C4DFE00;
+        Tue,  8 Jun 2021 00:00:35 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fZ9T855StqfQ; Tue,  8 Jun 2021 00:00:34 -0700 (PDT)
+Message-ID: <e9bfbc6421d2092b652dd2bb466aed54d72809b3.camel@puri.sm>
+Subject: Re: [PATCH v4 2/5] dt-bindings: media: document SK Hynix Hi-846
+ MIPI CSI-2 8M pixel sensor
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     krzysztof.kozlowski@canonical.com, mchehab@kernel.org,
+        paul.kocialkowski@bootlin.com, pavel@ucw.cz,
+        devicetree@vger.kernel.org, kernel@puri.sm,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        phone-devel@vger.kernel.org, robh@kernel.org, shawnx.tu@intel.com
+Date:   Tue, 08 Jun 2021 09:00:28 +0200
+In-Reply-To: <YL6MaFAt2PaJq+2E@pendragon.ideasonboard.com>
+References: <20210607105213.1211722-1-martin.kepplinger@puri.sm>
+         <20210607105213.1211722-3-martin.kepplinger@puri.sm>
+         <YL6MaFAt2PaJq+2E@pendragon.ideasonboard.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+Am Dienstag, dem 08.06.2021 um 00:15 +0300 schrieb Laurent Pinchart:
+> Hi Martin
+> 
+> Thank you for the patch.
+> 
+> On Mon, Jun 07, 2021 at 12:52:10PM +0200, Martin Kepplinger wrote:
+> > Document the bindings used for the SK Hynix Hi-846 CMOS camera
+> > driver.
+> > 
+> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> > ---
+> >  .../bindings/media/i2c/hynix,hi846.yaml       | 105
+> > ++++++++++++++++++
+> >  1 file changed, 105 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+> > 
+> > diff --git
+> > a/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+> > b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+> > new file mode 100644
+> > index 000000000000..19825392fb1f
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+> > @@ -0,0 +1,105 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/media/i2c/hynix,hi846.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: SK Hynix Hi-846 1/4" 8M Pixel MIPI CSI-2 sensor
+> > +
+> > +maintainers:
+> > +  - Martin Kepplinger <martin.kepplinger@puri.sm>
+> > +
+> > +description: |-
+> > +  The Hi-846 is a raw image sensor with an MIPI CSI-2 image data
+> > +  interface and CCI (I2C compatible) control bus. The output
+> > format
+> > +  is raw Bayer.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: hynix,hi846
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: Reference to the mclk clock.
+> > +
+> > +  reset-gpios:
+> > +    description: Reference to the GPIO connected to the RESETB
+> > pin. Active low.
+> > +    maxItems: 1
+> > +
+> > +  shutdown-gpios:
+> > +    description: Reference to the GPIO connected to the XSHUTDOWN
+> > pin. Active low.
+> > +    maxItems: 1
+> > +
+> > +  vddi-supply:
+> 
+> I think it's called vddio (seems to be a typo on page 8).
+> 
+> > +    description: Definition of the regulator used for the 1.8V or
+> > 2.8V I/O power supply.
+> 
+> You could just say "... for the VDDIO supply". Same below. Up to you.
+> 
+> With the name fixed and the description optionally updated,
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+> Please add my tag if you post a new version.
 
-On Tue, Jun 8, 2021 at 7:31 AM Anshuman Khandual
-<anshuman.khandual@arm.com> wrote:
-> Currently most platforms define pmd_pgtable() as pmd_page() duplicating the
-> same code all over. Instead just define a default value i.e pmd_page() for
-> pmd_pgtable() and let platforms override when required via <asm/pgtable.h>.
-> All the existing platform that override pmd_pgtable() have been moved into
-> their respective <asm/pgtable.h> header in order to precede before the new
-> generic definition. This makes it much cleaner with reduced code.
+I'll rename the binding and add the tag. I haven't added your previous
+tag because you found improvements based on the DS afterwards.
 
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+thanks again!
+                              martin
 
-Thanks for your patch!
-
-> This patch has been built tested across multiple platforms. But the m68k
-> changes in particular might not be optimal, followed the existing switch
-> from (arch/m68k/include/asm/pgalloc.h).
-
-Indeed.  Why not move them to the existing
-arch/m68k/asm/{sun3,mcf,motorola}_pgtable.h>, instead of introducing
-yet another #if/#elif/#else/#endif block?
-
-> --- a/arch/m68k/include/asm/mcf_pgalloc.h
-> +++ b/arch/m68k/include/asm/mcf_pgalloc.h
-> @@ -32,8 +32,6 @@ extern inline pmd_t *pmd_alloc_kernel(pgd_t *pgd, unsigned long address)
->
->  #define pmd_populate_kernel pmd_populate
->
-> -#define pmd_pgtable(pmd) pfn_to_virt(pmd_val(pmd) >> PAGE_SHIFT)
-> -
->  static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pgtable,
->                                   unsigned long address)
->  {
-> diff --git a/arch/m68k/include/asm/motorola_pgalloc.h b/arch/m68k/include/asm/motorola_pgalloc.h
-> index b4fc3b4f6bb3..74a817d9387f 100644
-> --- a/arch/m68k/include/asm/motorola_pgalloc.h
-> +++ b/arch/m68k/include/asm/motorola_pgalloc.h
-> @@ -88,7 +88,6 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd, pgtable_t page
->  {
->         pmd_set(pmd, page);
->  }
-> -#define pmd_pgtable(pmd) ((pgtable_t)pmd_page_vaddr(pmd))
->
->  static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
->  {
-> diff --git a/arch/m68k/include/asm/pgtable.h b/arch/m68k/include/asm/pgtable.h
-> index ad15d655a9bf..7be5e5e712b2 100644
-> --- a/arch/m68k/include/asm/pgtable.h
-> +++ b/arch/m68k/include/asm/pgtable.h
-> @@ -4,3 +4,12 @@
->  #else
->  #include <asm/pgtable_mm.h>
->  #endif
-> +
-> +
-> +#if defined(CONFIG_COLDFIRE)
-> +#define pmd_pgtable(pmd) pfn_to_virt(pmd_val(pmd) >> PAGE_SHIFT)
-> +#elif defined(CONFIG_SUN3)
-> +#define pmd_pgtable(pmd) pmd_page(pmd)
-> +#else
-> +#define pmd_pgtable(pmd) ((pgtable_t)pmd_page_vaddr(pmd))
-> +#endif
-> diff --git a/arch/m68k/include/asm/sun3_pgalloc.h b/arch/m68k/include/asm/sun3_pgalloc.h
-> index 000f64869b91..198036aff519 100644
-> --- a/arch/m68k/include/asm/sun3_pgalloc.h
-> +++ b/arch/m68k/include/asm/sun3_pgalloc.h
-> @@ -32,7 +32,6 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd, pgtable_t page
->  {
->         pmd_val(*pmd) = __pa((unsigned long)page_address(page));
->  }
-> -#define pmd_pgtable(pmd) pmd_page(pmd)
->
->  /*
->   * allocating and freeing a pmd is trivial: the 1-entry pmd is
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
