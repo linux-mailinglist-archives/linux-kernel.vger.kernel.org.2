@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567BD3A005B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4383139FFC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234494AbhFHSmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:42:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37964 "EHLO mail.kernel.org"
+        id S234698AbhFHSfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:35:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234772AbhFHSjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:39:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD0F361416;
-        Tue,  8 Jun 2021 18:33:43 +0000 (UTC)
+        id S234693AbhFHSd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:33:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EAA8610A2;
+        Tue,  8 Jun 2021 18:31:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177224;
-        bh=Ew1Knobs1H/oN+ChSOTUBmttnfCXX80iNLO3lfS1ChM=;
+        s=korg; t=1623177098;
+        bh=lovJ9qsAkOMqOiv2dIXZioanqUztSLwo8K6UliWUbyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WeN7XyaQFveSQqNYZlv0nGRGI/9vyuuar9PVmCfKm6pURz7tHN/s43+dmJxX0E0v1
-         HZLUTQmvYjUpK94O5eQZKePPTg9viPTb1w61mEXxYbgX/9BxdZR3wkm5rT0x7E/P2B
-         K3REUGbsF/XsTHjFoqMw+s2VcQZI9ViroeRYkiYM=
+        b=W+atR9gcXcb9K6KQFWNkJdaXi8gdlziD9Dko3NLD2TpBdH0YEfm2kY3y+6HqYQkXb
+         4ysJy5dP6RuqLnZjqhcstPD+kc3iAg7cnzPZ1sEWtELjW8wcBhNDwbVk3aSGYamTHG
+         oD0MNidPCwp+PCsQnBqA07W1kzHtouwpaY4kf/v4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Junxiao Bi <junxiao.bi@oracle.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Jan Kara <jack@suse.cz>, Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 32/58] ocfs2: fix data corruption by fallocate
-Date:   Tue,  8 Jun 2021 20:27:13 +0200
-Message-Id: <20210608175933.340671479@linuxfoundation.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Frank van der Linden <fllinden@amazon.com>
+Subject: [PATCH 4.14 31/47] bpf: Improve verifier error messages for users
+Date:   Tue,  8 Jun 2021 20:27:14 +0200
+Message-Id: <20210608175931.498244783@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
+References: <20210608175930.477274100@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,148 +41,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junxiao Bi <junxiao.bi@oracle.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit 6bba4471f0cc1296fe3c2089b9e52442d3074b2e upstream.
+commit a6aaece00a57fa6f22575364b3903dfbccf5345d upstream.
 
-When fallocate punches holes out of inode size, if original isize is in
-the middle of last cluster, then the part from isize to the end of the
-cluster will be zeroed with buffer write, at that time isize is not yet
-updated to match the new size, if writeback is kicked in, it will invoke
-ocfs2_writepage()->block_write_full_page() where the pages out of inode
-size will be dropped.  That will cause file corruption.  Fix this by
-zero out eof blocks when extending the inode size.
+Consolidate all error handling and provide more user-friendly error messages
+from sanitize_ptr_alu() and sanitize_val_alu().
 
-Running the following command with qemu-image 4.2.1 can get a corrupted
-coverted image file easily.
-
-    qemu-img convert -p -t none -T none -f qcow2 $qcow_image \
-             -O qcow2 -o compat=1.1 $qcow_image.conv
-
-The usage of fallocate in qemu is like this, it first punches holes out
-of inode size, then extend the inode size.
-
-    fallocate(11, FALLOC_FL_KEEP_SIZE|FALLOC_FL_PUNCH_HOLE, 2276196352, 65536) = 0
-    fallocate(11, 0, 2276196352, 65536) = 0
-
-v1: https://www.spinics.net/lists/linux-fsdevel/msg193999.html
-v2: https://lore.kernel.org/linux-fsdevel/20210525093034.GB4112@quack2.suse.cz/T/
-
-Link: https://lkml.kernel.org/r/20210528210648.9124-1-junxiao.bi@oracle.com
-Signed-off-by: Junxiao Bi <junxiao.bi@oracle.com>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+[fllinden@amazon.com: backport to 4.14]
+Signed-off-by: Frank van der Linden <fllinden@amazon.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ocfs2/file.c |   55 ++++++++++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 50 insertions(+), 5 deletions(-)
+ kernel/bpf/verifier.c |   84 ++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 62 insertions(+), 22 deletions(-)
 
---- a/fs/ocfs2/file.c
-+++ b/fs/ocfs2/file.c
-@@ -1864,6 +1864,45 @@ out:
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2024,6 +2024,14 @@ static struct bpf_insn_aux_data *cur_aux
+ 	return &env->insn_aux_data[env->insn_idx];
  }
  
- /*
-+ * zero out partial blocks of one cluster.
-+ *
-+ * start: file offset where zero starts, will be made upper block aligned.
-+ * len: it will be trimmed to the end of current cluster if "start + len"
-+ *      is bigger than it.
-+ */
-+static int ocfs2_zeroout_partial_cluster(struct inode *inode,
-+					u64 start, u64 len)
-+{
-+	int ret;
-+	u64 start_block, end_block, nr_blocks;
-+	u64 p_block, offset;
-+	u32 cluster, p_cluster, nr_clusters;
-+	struct super_block *sb = inode->i_sb;
-+	u64 end = ocfs2_align_bytes_to_clusters(sb, start);
++enum {
++	REASON_BOUNDS	= -1,
++	REASON_TYPE	= -2,
++	REASON_PATHS	= -3,
++	REASON_LIMIT	= -4,
++	REASON_STACK	= -5,
++};
 +
-+	if (start + len < end)
-+		end = start + len;
-+
-+	start_block = ocfs2_blocks_for_bytes(sb, start);
-+	end_block = ocfs2_blocks_for_bytes(sb, end);
-+	nr_blocks = end_block - start_block;
-+	if (!nr_blocks)
-+		return 0;
-+
-+	cluster = ocfs2_bytes_to_clusters(sb, start);
-+	ret = ocfs2_get_clusters(inode, cluster, &p_cluster,
-+				&nr_clusters, NULL);
-+	if (ret)
-+		return ret;
-+	if (!p_cluster)
-+		return 0;
-+
-+	offset = start_block - ocfs2_clusters_to_blocks(sb, cluster);
-+	p_block = ocfs2_clusters_to_blocks(sb, p_cluster) + offset;
-+	return sb_issue_zeroout(sb, p_block, nr_blocks, GFP_NOFS);
+ static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
+ 			      const struct bpf_reg_state *off_reg,
+ 			      u32 *alu_limit, u8 opcode)
+@@ -2035,7 +2043,7 @@ static int retrieve_ptr_limit(const stru
+ 
+ 	if (!tnum_is_const(off_reg->var_off) &&
+ 	    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
+-		return -EACCES;
++		return REASON_BOUNDS;
+ 
+ 	switch (ptr_reg->type) {
+ 	case PTR_TO_STACK:
+@@ -2059,11 +2067,11 @@ static int retrieve_ptr_limit(const stru
+ 		}
+ 		break;
+ 	default:
+-		return -EINVAL;
++		return REASON_TYPE;
+ 	}
+ 
+ 	if (ptr_limit >= max)
+-		return -ERANGE;
++		return REASON_LIMIT;
+ 	*alu_limit = ptr_limit;
+ 	return 0;
+ }
+@@ -2083,7 +2091,7 @@ static int update_alu_sanitation_state(s
+ 	if (aux->alu_state &&
+ 	    (aux->alu_state != alu_state ||
+ 	     aux->alu_limit != alu_limit))
+-		return -EACCES;
++		return REASON_PATHS;
+ 
+ 	/* Corresponding fixup done in fixup_bpf_calls(). */
+ 	aux->alu_state = alu_state;
+@@ -2156,7 +2164,46 @@ do_sim:
+ 	ret = push_stack(env, env->insn_idx + 1, env->insn_idx, true);
+ 	if (!ptr_is_dst_reg && ret)
+ 		*dst_reg = tmp;
+-	return !ret ? -EFAULT : 0;
++	return !ret ? REASON_STACK : 0;
 +}
 +
-+/*
-  * Parts of this function taken from xfs_change_file_space()
-  */
- static int __ocfs2_change_file_space(struct file *file, struct inode *inode,
-@@ -1873,7 +1912,7 @@ static int __ocfs2_change_file_space(str
- {
- 	int ret;
- 	s64 llen;
--	loff_t size;
-+	loff_t size, orig_isize;
- 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
- 	struct buffer_head *di_bh = NULL;
- 	handle_t *handle;
-@@ -1904,6 +1943,7 @@ static int __ocfs2_change_file_space(str
- 		goto out_inode_unlock;
- 	}
- 
-+	orig_isize = i_size_read(inode);
- 	switch (sr->l_whence) {
- 	case 0: /*SEEK_SET*/
- 		break;
-@@ -1911,7 +1951,7 @@ static int __ocfs2_change_file_space(str
- 		sr->l_start += f_pos;
- 		break;
- 	case 2: /*SEEK_END*/
--		sr->l_start += i_size_read(inode);
-+		sr->l_start += orig_isize;
- 		break;
- 	default:
- 		ret = -EINVAL;
-@@ -1965,6 +2005,14 @@ static int __ocfs2_change_file_space(str
- 	default:
- 		ret = -EINVAL;
- 	}
++static int sanitize_err(struct bpf_verifier_env *env,
++			const struct bpf_insn *insn, int reason,
++			const struct bpf_reg_state *off_reg,
++			const struct bpf_reg_state *dst_reg)
++{
++	static const char *err = "pointer arithmetic with it prohibited for !root";
++	const char *op = BPF_OP(insn->code) == BPF_ADD ? "add" : "sub";
++	u32 dst = insn->dst_reg, src = insn->src_reg;
 +
-+	/* zeroout eof blocks in the cluster. */
-+	if (!ret && change_size && orig_isize < size) {
-+		ret = ocfs2_zeroout_partial_cluster(inode, orig_isize,
-+					size - orig_isize);
-+		if (!ret)
-+			i_size_write(inode, size);
++	switch (reason) {
++	case REASON_BOUNDS:
++		verbose("R%d has unknown scalar with mixed signed bounds, %s\n",
++			off_reg == dst_reg ? dst : src, err);
++		break;
++	case REASON_TYPE:
++		verbose("R%d has pointer with unsupported alu operation, %s\n",
++			off_reg == dst_reg ? src : dst, err);
++		break;
++	case REASON_PATHS:
++		verbose("R%d tried to %s from different maps, paths or scalars, %s\n",
++			dst, op, err);
++		break;
++	case REASON_LIMIT:
++		verbose("R%d tried to %s beyond pointer bounds, %s\n",
++			dst, op, err);
++		break;
++	case REASON_STACK:
++		verbose("R%d could not be pushed for speculative verification, %s\n",
++			dst, err);
++		break;
++	default:
++		verbose("verifier internal error: unknown reason (%d)\n",
++			reason);
++		break;
 +	}
- 	up_write(&OCFS2_I(inode)->ip_alloc_sem);
- 	if (ret) {
- 		mlog_errno(ret);
-@@ -1981,9 +2029,6 @@ static int __ocfs2_change_file_space(str
- 		goto out_inode_unlock;
- 	}
++
++	return -EACCES;
+ }
  
--	if (change_size && i_size_read(inode) < size)
--		i_size_write(inode, size);
--
- 	inode->i_ctime = inode->i_mtime = current_time(inode);
- 	ret = ocfs2_mark_inode_dirty(handle, inode, di_bh);
- 	if (ret < 0)
+ /* Handles arithmetic on a pointer and a scalar: computes new min/max and var_off.
+@@ -2230,10 +2277,9 @@ static int adjust_ptr_min_max_vals(struc
+ 	switch (opcode) {
+ 	case BPF_ADD:
+ 		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg);
+-		if (ret < 0) {
+-			verbose("R%d tried to add from different maps, paths, or prohibited types\n", dst);
+-			return ret;
+-		}
++		if (ret < 0)
++			return sanitize_err(env, insn, ret, off_reg, dst_reg);
++
+ 		/* We can take a fixed offset as long as it doesn't overflow
+ 		 * the s32 'off' field
+ 		 */
+@@ -2285,10 +2331,9 @@ static int adjust_ptr_min_max_vals(struc
+ 		break;
+ 	case BPF_SUB:
+ 		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg);
+-		if (ret < 0) {
+-			verbose("R%d tried to sub from different maps, paths, or prohibited types\n", dst);
+-			return ret;
+-		}
++		if (ret < 0)
++			return sanitize_err(env, insn, ret, off_reg, dst_reg);
++
+ 		if (dst_reg == off_reg) {
+ 			/* scalar -= pointer.  Creates an unknown scalar */
+ 			if (!env->allow_ptr_leaks)
+@@ -2412,7 +2457,6 @@ static int adjust_scalar_min_max_vals(st
+ 	s64 smin_val, smax_val;
+ 	u64 umin_val, umax_val;
+ 	u64 insn_bitness = (BPF_CLASS(insn->code) == BPF_ALU64) ? 64 : 32;
+-	u32 dst = insn->dst_reg;
+ 	int ret;
+ 
+ 	if (insn_bitness == 32) {
+@@ -2449,10 +2493,8 @@ static int adjust_scalar_min_max_vals(st
+ 	switch (opcode) {
+ 	case BPF_ADD:
+ 		ret = sanitize_val_alu(env, insn);
+-		if (ret < 0) {
+-			verbose("R%d tried to add from different pointers or scalars\n", dst);
+-			return ret;
+-		}
++		if (ret < 0)
++			return sanitize_err(env, insn, ret, NULL, NULL);
+ 		if (signed_add_overflows(dst_reg->smin_value, smin_val) ||
+ 		    signed_add_overflows(dst_reg->smax_value, smax_val)) {
+ 			dst_reg->smin_value = S64_MIN;
+@@ -2473,10 +2515,8 @@ static int adjust_scalar_min_max_vals(st
+ 		break;
+ 	case BPF_SUB:
+ 		ret = sanitize_val_alu(env, insn);
+-		if (ret < 0) {
+-			verbose("R%d tried to sub from different pointers or scalars\n", dst);
+-			return ret;
+-		}
++		if (ret < 0)
++			return sanitize_err(env, insn, ret, NULL, NULL);
+ 		if (signed_sub_overflows(dst_reg->smin_value, smax_val) ||
+ 		    signed_sub_overflows(dst_reg->smax_value, smin_val)) {
+ 			/* Overflow possible, we know nothing */
 
 
