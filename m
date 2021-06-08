@@ -2,68 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EFA39F261
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D599939F26B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhFHJbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:31:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38050 "EHLO mail.kernel.org"
+        id S230414AbhFHJcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 05:32:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230222AbhFHJbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:31:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D2EB61278;
-        Tue,  8 Jun 2021 09:29:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623144560;
-        bh=DFQHA9AN0Bwqi+IGT+h997v/dvvg0EVj1Zuf554QF0Q=;
+        id S229536AbhFHJcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 05:32:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9446D61278;
+        Tue,  8 Jun 2021 09:30:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623144603;
+        bh=MhokyPxqdEzZc6RC+avxqxp0BKKYNFp7L+EMYDuA2a8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OMc2fpUYVysUoQldR/Lysq905drBSZN0I8fEucHDRKLyfJMvV2rQZfAQzc9q0TC0o
-         +dp/oboZGUcmjPNwP9zqz0DgrqNoyrpNuHe4+AcCbggcoImZx1SwXFe3jiSc/ujFPt
-         3v4BkLgjwje0l21Y+dNLdfrlX3kfCwHgdr1eGym0=
-Date:   Tue, 8 Jun 2021 11:29:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     yongw.pur@gmail.com
-Cc:     minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org,
-        axboe@kernel.dk, akpm@linux-foundation.org,
-        songmuchun@bytedance.com, david@redhat.com,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, willy@infradead.org, linux-api@vger.kernel.org,
-        lu.zhongjun@zte.com.cn, yang.yang29@zte.com.cn,
-        zhang.wenya1@zte.com.cn, wang.yong12@zte.com.cn
-Subject: Re: [RFC PATCH V3] zram:calculate available memory when zram is used
-Message-ID: <YL84boGKozWE+n23@kroah.com>
-References: <1623080354-21453-1-git-send-email-yongw.pur@gmail.com>
+        b=pnPVfHt9Tyl2Tb3E3ugOua/bzj+uG374ur35ZQ0HwbgRP+yx9Dz0uCaFhay5a9VoQ
+         RL/1sm0Jnd1wp0hZU6D+iIdsFeSFPGxDzqxR3qFY6N0EBbOkl3hBrqLgPu+NFAu3ys
+         Lk8/abZR2hXWtYG4qRJLS4BteETl12Lp1mO73vyuz3qbIY+uVRNp8dBUWZUbb43209
+         TWH+1WZdJZukihn6qloH4L5LdtsSEsgoIZvUi4Hlbf+xZdo+AFib1dmj1uVLzWMgZR
+         6zDqLCFCBOJp4vfxMiFFWZgjMk5HsXi+5n9Dzp0ZcDFHHQppk5Kep732yOLJXTcZz+
+         +tBL3vyJdzEIw==
+Date:   Tue, 8 Jun 2021 10:29:58 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/qcom: Cleanup resources in case of probe error path
+Message-ID: <20210608092958.GA8935@willie-the-truck>
+References: <20210421221030.70647-1-ameynarkhede03@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1623080354-21453-1-git-send-email-yongw.pur@gmail.com>
+In-Reply-To: <20210421221030.70647-1-ameynarkhede03@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 08:39:14AM -0700, yongw.pur@gmail.com wrote:
-> From: wangyong <wang.yong12@zte.com.cn>
+On Thu, Apr 22, 2021 at 03:40:30AM +0530, Amey Narkhede wrote:
+> If device registration fails, remove sysfs attribute
+> and if setting bus callbacks fails, unregister the device
+> and cleanup the sysfs attribute.
 > 
-> When zram is used, available+Swap free memory is obviously bigger than we
-> actually can use, because zram can compress memory by compression
-> algorithm and zram compressed data will occupy memory too.
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> ---
+>  drivers/iommu/arm/arm-smmu/qcom_iommu.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
 > 
-> So, we can count the compression ratio of zram in the kernel. The space
-> will be saved by zram and other swap device are calculated as follows:
-> zram[swapfree - swapfree * compress ratio] + swapdev[swapfree]
-> We can evaluate the available memory of the whole system as:
-> MemAvailable+zram[swapfree - swapfree * compress ratio]+swapdev[swapfree]
+> diff --git a/drivers/iommu/arm/arm-smmu/qcom_iommu.c b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+> index 4294abe389b2..5fa128a1f7f0 100644
+> --- a/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+> +++ b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+> @@ -850,10 +850,12 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
+>  	ret = iommu_device_register(&qcom_iommu->iommu, &qcom_iommu_ops, dev);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to register iommu\n");
+> -		return ret;
+> +		goto err_sysfs_remove;
+>  	}
+> 
+> -	bus_set_iommu(&platform_bus_type, &qcom_iommu_ops);
+> +	ret = bus_set_iommu(&platform_bus_type, &qcom_iommu_ops);
+> +	if (ret)
+> +		goto err_unregister_device;
+> 
+>  	if (qcom_iommu->local_base) {
+>  		pm_runtime_get_sync(dev);
+> @@ -862,6 +864,14 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
+>  	}
+> 
+>  	return 0;
+> +
+> +err_unregister_device:
+> +	iommu_device_unregister(&qcom_iommu->iommu);
+> +
+> +err_sysfs_remove:
+> +	iommu_device_sysfs_remove(&qcom_iommu->iommu);
+> +
+> +	return ret;
 
-Why is this needed to be exported by userspace?  Who is going to use
-this information and why can't they just calculate it from the exported
-information already?
+It looks like we're also missing this logic in arm-smmu/arm-smmu.c and
+arm-smmu-v3/arm-smmu-v3.c. Would you be able to fix those up too, please?
 
-What tool requires this new information and what is it going to be used
-for?
-
-And why add a block driver's information to a core proc file?  Shouldn't
-the information only be in the block driver's sysfs directory only?
-
-thanks,
-
-greg k-h
+Will
