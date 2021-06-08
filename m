@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562EF3A0088
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC10139FFBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235643AbhFHSon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:44:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234445AbhFHSkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:40:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A59B613D2;
-        Tue,  8 Jun 2021 18:34:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177290;
-        bh=iu8iH5BljOLDJvmRbikySsVS7kvTFPstiA2Va6sYKng=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pA5Z9jxT+FOxhY2g8iDTRQhLzgJ6UVi3r2AL5I4u3OpUnHv1Ywxe4o1Qhl0eDfbRP
-         POVaEVlehrlGFH4Z6za4xS5Lvmb1s2TcruqQVuOpTZmbX0F3j2miRUvgwIzChBCo3n
-         4yOrd4Jr60yWqp0wKeKPA0WalfmKg0lhTQcAfLq4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.19 58/58] xen-pciback: redo VF placement in the virtual topology
-Date:   Tue,  8 Jun 2021 20:27:39 +0200
-Message-Id: <20210608175934.188638088@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S234673AbhFHSfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:35:47 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:41686 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234682AbhFHSd4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:33:56 -0400
+Received: by mail-ot1-f50.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so21291713oth.8;
+        Tue, 08 Jun 2021 11:32:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Oh1ALOBdiSICov5E64J+w95vSj9YVwXhKnwHIm+LmsM=;
+        b=H2PPCtO+EexlXhQXuVkhrtgGp0ETqvRJAGFfjY+MHzML0GPplHXm9ygGlHaMCwtoL3
+         2nKgCNIsnpFft7xKOgrskjXQkhB9HhFo/jwscuc48c8EEiNwWnEpRZ1bQu9psR63DcU7
+         Rws+cJsCLojeioBmJPQ1oXhaiBtPLddO00lsR0xOd9mqnX5Pn1sAQ1HNjNqfrYRxMzyO
+         8ijuUD8wHBUvPLSiheDlsLi/HA7RupFwm30tz/ZpSyds4CD8rt/ZrfKwt2ikVWd8TP3D
+         sfDHXv13r/I9C2g8sUDmUsAz3Wtvu48wjMzka6RmbTawPZuG5Djl0a94SSt/R9PuiYFa
+         +Jcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Oh1ALOBdiSICov5E64J+w95vSj9YVwXhKnwHIm+LmsM=;
+        b=Js6RrP1LAYC4gI+4OQVFI8ayg5sPl/eAvDfMD+XUxVnAzmvXlmt+ZN3uYYJZQ38ojn
+         CbKtKoudZyO5mJArpXAuHg9voTJ1OLPfKvELkMcjGxUXBlgOi0/SxKA55WZ8dAVTa8uw
+         bHXmNI53G9ZxXdMEdxRLVsblGA1QLcEn+6YNEhmaoyKx+8o9jlmTVrAMNUwG5iUtG248
+         euHZygzNdHnmXZ1r1i/6O+SfVuXz8QM+/1uu5appLX7Z+Pn8e+PPVlck+l4PRcUORYIe
+         txNnKi4cJkrnPkVTwsKfYI3dDRJ47HmVMSljj4JJq33tAZP2UAyx25ZneW18jsgYoqE4
+         vkIQ==
+X-Gm-Message-State: AOAM532L8n5WzOcpMtuXvoUzAPR4dI7ftBvkbQP4bi/bsgfJxP3tWYC/
+        MyXL8oV9lt7mkQXjgfyFaXjZTRf4Sek=
+X-Google-Smtp-Source: ABdhPJwoimhZDFBmHPUi2kfeq6UIdwZ3u5xg8+fRuPOH08pN85Z9uGNRFc7ALrzSus0cjZ+0ctANAw==
+X-Received: by 2002:a9d:2904:: with SMTP id d4mr18847414otb.238.1623177063222;
+        Tue, 08 Jun 2021 11:31:03 -0700 (PDT)
+Received: from localhost.localdomain (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
+        by smtp.gmail.com with ESMTPSA id f63sm188594otb.36.2021.06.08.11.31.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 11:31:02 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Subject: Re: Strange problem with USB device
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        ierturk@ieee.org
+References: <cfc37ce0-823e-0d19-f5d7-fcd571a94943@lwfinger.net>
+ <YL+veAlZSCrniOyl@kroah.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Message-ID: <5299a951-7d58-24e7-80da-56e72f65430d@lwfinger.net>
+Date:   Tue, 8 Jun 2021 13:31:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YL+veAlZSCrniOyl@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+On 6/8/21 12:57 PM, Greg KH wrote:
+> 
+> Loads of things have changed since 5.3.18, that was a long time ago :)
+> 
+> Are you sure this device doesn't need a "magic" command sent to it in
+> order for it to show up as a USB device on the bus?  That sometimes
+> happens :(
 
-The commit referenced below was incomplete: It merely affected what
-would get written to the vdev-<N> xenstore node. The guest would still
-find the function at the original function number as long as
-__xen_pcibk_get_pci_dev() wouldn't be in sync. The same goes for AER wrt
-__xen_pcibk_get_pcifront_dev().
+I am having the person with the problem try an openSUSE Tumbleweed rescue system 
+to see if a 5.12 kernel can see the device.
 
-Undo overriding the function to zero and instead make sure that VFs at
-function zero remain alone in their slot. This has the added benefit of
-improving overall capacity, considering that there's only a total of 32
-slots available right now (PCI segment and bus can both only ever be
-zero at present).
+None of the other Realtek devices have hidden their USB ID behind some magic 
+command.
 
-This is upstream commit 4ba50e7c423c29639878c00573288869aa627068.
-
-Fixes: 8a5248fe10b1 ("xen PV passthru: assign SR-IOV virtual functions to 
-separate virtual slots")
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/8def783b-404c-3452-196d-3f3fd4d72c9e@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/xen/xen-pciback/vpci.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
---- a/drivers/xen/xen-pciback/vpci.c
-+++ b/drivers/xen/xen-pciback/vpci.c
-@@ -69,7 +69,7 @@ static int __xen_pcibk_add_pci_dev(struc
- 				   struct pci_dev *dev, int devid,
- 				   publish_pci_dev_cb publish_cb)
- {
--	int err = 0, slot, func = -1;
-+	int err = 0, slot, func = PCI_FUNC(dev->devfn);
- 	struct pci_dev_entry *t, *dev_entry;
- 	struct vpci_dev_data *vpci_dev = pdev->pci_dev_data;
- 
-@@ -94,23 +94,26 @@ static int __xen_pcibk_add_pci_dev(struc
- 
- 	/*
- 	 * Keep multi-function devices together on the virtual PCI bus, except
--	 * virtual functions.
-+	 * that we want to keep virtual functions at func 0 on their own. They
-+	 * aren't multi-function devices and hence their presence at func 0
-+	 * may cause guests to not scan the other functions.
- 	 */
--	if (!dev->is_virtfn) {
-+	if (!dev->is_virtfn || func) {
- 		for (slot = 0; slot < PCI_SLOT_MAX; slot++) {
- 			if (list_empty(&vpci_dev->dev_list[slot]))
- 				continue;
- 
- 			t = list_entry(list_first(&vpci_dev->dev_list[slot]),
- 				       struct pci_dev_entry, list);
-+			if (t->dev->is_virtfn && !PCI_FUNC(t->dev->devfn))
-+				continue;
- 
- 			if (match_slot(dev, t->dev)) {
- 				pr_info("vpci: %s: assign to virtual slot %d func %d\n",
- 					pci_name(dev), slot,
--					PCI_FUNC(dev->devfn));
-+					func);
- 				list_add_tail(&dev_entry->list,
- 					      &vpci_dev->dev_list[slot]);
--				func = PCI_FUNC(dev->devfn);
- 				goto unlock;
- 			}
- 		}
-@@ -123,7 +126,6 @@ static int __xen_pcibk_add_pci_dev(struc
- 				pci_name(dev), slot);
- 			list_add_tail(&dev_entry->list,
- 				      &vpci_dev->dev_list[slot]);
--			func = dev->is_virtfn ? 0 : PCI_FUNC(dev->devfn);
- 			goto unlock;
- 		}
- 	}
-
+Larry
 
