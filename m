@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D0F3A0462
+	by mail.lfdr.de (Postfix) with ESMTP id 789AE3A0461
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236244AbhFHTdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:33:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37984 "EHLO mail.kernel.org"
+        id S238721AbhFHTdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:33:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237394AbhFHTSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237855AbhFHTSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Jun 2021 15:18:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B56761977;
-        Tue,  8 Jun 2021 18:51:26 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D985B61978;
+        Tue,  8 Jun 2021 18:51:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178287;
-        bh=/zppk98WdwQocVwLh1eYbYTfhVTbwIBa2pMVSuX3L1U=;
+        s=korg; t=1623178290;
+        bh=n7pG4w/2rTfxpet/fCl9Stkv5gQqX6+XHsU/tbXwW+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FPi24uCrfwUBT0fYC8VZg4RC2NIajlvAwTM9q8chMhOMT3dU3aolOJD+/8erbc6AP
-         5OuIBhsHJ36z9bR4nAzl7G1fTL9ErlrYwnOxHzOhvAChg6EKA3gqU241TCu8otmmk7
-         8N++1N7ci59JjJSY+Srqs/tTeJixL+db5ZNcUVNI=
+        b=nFXTGbBhwZap9hVJeRrtjzb6nQkqas08XJ9dP5HsQQQxsNf9Pt9s0kS/LK60RYSfp
+         LhOune/hpUQppWUaMOiVEu8YMMR20OlVlr0o/nP9fHscOztKI34TmSgzem/IvSiQMW
+         vi5CTWtKBNptKEOH+HGcnO8cOK3BN3LQyRRWkdFU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.12 146/161] btrfs: abort in rename_exchange if we fail to insert the second ref
-Date:   Tue,  8 Jun 2021 20:27:56 +0200
-Message-Id: <20210608175950.383075102@linuxfoundation.org>
+Subject: [PATCH 5.12 147/161] btrfs: fix deadlock when cloning inline extents and low on available space
+Date:   Tue,  8 Jun 2021 20:27:57 +0200
+Message-Id: <20210608175950.415896811@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -39,56 +39,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit dc09ef3562726cd520c8338c1640872a60187af5 upstream.
+commit 76a6d5cd74479e7ec8a7f9a29bce63d5549b6b2e upstream.
 
-Error injection stress uncovered a problem where we'd leave a dangling
-inode ref if we failed during a rename_exchange.  This happens because
-we insert the inode ref for one side of the rename, and then for the
-other side.  If this second inode ref insert fails we'll leave the first
-one dangling and leave a corrupt file system behind.  Fix this by
-aborting if we did the insert for the first inode ref.
+There are a few cases where cloning an inline extent requires copying data
+into a page of the destination inode. For these cases we are allocating
+the required data and metadata space while holding a leaf locked. This can
+result in a deadlock when we are low on available space because allocating
+the space may flush delalloc and two deadlock scenarios can happen:
 
-CC: stable@vger.kernel.org # 4.9+
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
+1) When starting writeback for an inode with a very small dirty range that
+   fits in an inline extent, we deadlock during the writeback when trying
+   to insert the inline extent, at cow_file_range_inline(), if the extent
+   is going to be located in the leaf for which we are already holding a
+   read lock;
+
+2) After successfully starting writeback, for non-inline extent cases,
+   the async reclaim thread will hang waiting for an ordered extent to
+   complete if the ordered extent completion needs to modify the leaf
+   for which the clone task is holding a read lock (for adding or
+   replacing file extent items). So the cloning task will wait forever
+   on the async reclaim thread to make progress, which in turn is
+   waiting for the ordered extent completion which in turn is waiting
+   to acquire a write lock on the same leaf.
+
+So fix this by making sure we release the path (and therefore the leaf)
+every time we need to copy the inline extent's data into a page of the
+destination inode, as by that time we do not need to have the leaf locked.
+
+Fixes: 05a5a7621ce66c ("Btrfs: implement full reflink support for inline extents")
+CC: stable@vger.kernel.org # 5.10+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/inode.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ fs/btrfs/reflink.c |   38 ++++++++++++++++++++++----------------
+ 1 file changed, 22 insertions(+), 16 deletions(-)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9088,6 +9088,7 @@ static int btrfs_rename_exchange(struct
- 	int ret2;
- 	bool root_log_pinned = false;
- 	bool dest_log_pinned = false;
-+	bool need_abort = false;
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -207,10 +207,7 @@ static int clone_copy_inline_extent(stru
+ 			 * inline extent's data to the page.
+ 			 */
+ 			ASSERT(key.offset > 0);
+-			ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
+-						  inline_data, size, datal,
+-						  comp_type);
+-			goto out;
++			goto copy_to_page;
+ 		}
+ 	} else if (i_size_read(dst) <= datal) {
+ 		struct btrfs_file_extent_item *ei;
+@@ -226,13 +223,10 @@ static int clone_copy_inline_extent(stru
+ 		    BTRFS_FILE_EXTENT_INLINE)
+ 			goto copy_inline_extent;
  
- 	/* we only allow rename subvolume link between subvolumes */
- 	if (old_ino != BTRFS_FIRST_FREE_OBJECTID && root != dest)
-@@ -9144,6 +9145,7 @@ static int btrfs_rename_exchange(struct
- 					     old_idx);
- 		if (ret)
- 			goto out_fail;
-+		need_abort = true;
+-		ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
+-					  inline_data, size, datal, comp_type);
+-		goto out;
++		goto copy_to_page;
  	}
  
- 	/* And now for the dest. */
-@@ -9159,8 +9161,11 @@ static int btrfs_rename_exchange(struct
- 					     new_ino,
- 					     btrfs_ino(BTRFS_I(old_dir)),
- 					     new_idx);
--		if (ret)
-+		if (ret) {
-+			if (need_abort)
-+				btrfs_abort_transaction(trans, ret);
- 			goto out_fail;
-+		}
+ copy_inline_extent:
+-	ret = 0;
+ 	/*
+ 	 * We have no extent items, or we have an extent at offset 0 which may
+ 	 * or may not be inlined. All these cases are dealt the same way.
+@@ -244,11 +238,13 @@ copy_inline_extent:
+ 		 * clone. Deal with all these cases by copying the inline extent
+ 		 * data into the respective page at the destination inode.
+ 		 */
+-		ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
+-					  inline_data, size, datal, comp_type);
+-		goto out;
++		goto copy_to_page;
  	}
  
- 	/* Update inode version and ctime/mtime. */
++	/*
++	 * Release path before starting a new transaction so we don't hold locks
++	 * that would confuse lockdep.
++	 */
+ 	btrfs_release_path(path);
+ 	/*
+ 	 * If we end up here it means were copy the inline extent into a leaf
+@@ -286,11 +282,6 @@ copy_inline_extent:
+ out:
+ 	if (!ret && !trans) {
+ 		/*
+-		 * Release path before starting a new transaction so we don't
+-		 * hold locks that would confuse lockdep.
+-		 */
+-		btrfs_release_path(path);
+-		/*
+ 		 * No transaction here means we copied the inline extent into a
+ 		 * page of the destination inode.
+ 		 *
+@@ -310,6 +301,21 @@ out:
+ 		*trans_out = trans;
+ 
+ 	return ret;
++
++copy_to_page:
++	/*
++	 * Release our path because we don't need it anymore and also because
++	 * copy_inline_to_page() needs to reserve data and metadata, which may
++	 * need to flush delalloc when we are low on available space and
++	 * therefore cause a deadlock if writeback of an inline extent needs to
++	 * write to the same leaf or an ordered extent completion needs to write
++	 * to the same leaf.
++	 */
++	btrfs_release_path(path);
++
++	ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
++				  inline_data, size, datal, comp_type);
++	goto out;
+ }
+ 
+ /**
 
 
