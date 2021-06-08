@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B2A3A02FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C563A0185
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236700AbhFHTLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:11:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35478 "EHLO mail.kernel.org"
+        id S236360AbhFHSxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:53:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237649AbhFHTBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:01:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4349961919;
-        Tue,  8 Jun 2021 18:44:33 +0000 (UTC)
+        id S235615AbhFHSrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:47:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4177761406;
+        Tue,  8 Jun 2021 18:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177873;
-        bh=XP8RtZB5I8hcyEmuu0P6ZC+uh588io2AMGX5lGpuJJs=;
+        s=korg; t=1623177479;
+        bh=BtUMkyt4Ii44XjnnzVn2lkfQX5Yt3RcOKD83rvHMfwU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uHDgRDxoSXyZl2Bjb41CXUzyBo95nAbdIs3EEb8tvlpAHpV+6Hse3aAfJMD4hhZ/B
-         uhuxx3FZPxKs6nco3OPC4qWLsVpzhgcrk9gwqfVvp1N/T7tdxcK3qMIwvaU4tP/Q+c
-         Nid/1DukJAMr35W3uAO6s6wdilKAbes0rhJM8GIE=
+        b=uJ5V0M499dVw/fEoAIYOEqUD9x2ZJblacjDMKxS0f5CXm9Sh2XjpLmuwZCHf+fDpv
+         9uMwtUS3fJT8slXLBim87uDPX8fJNSydMqUnlTt5Hr5Gw3skCAHakK+/oS2mCvUnQS
+         sZw8v8xrcw6M6tf6EYrD3RDMaO8LFOXbxa1nFCNc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 114/137] nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Zi Yan <ziy@nvidia.com>, David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 65/78] mm: add thp_order
 Date:   Tue,  8 Jun 2021 20:27:34 +0200
-Message-Id: <20210608175946.239429284@linuxfoundation.org>
+Message-Id: <20210608175937.462236794@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-commit 4ac06a1e013cf5fdd963317ffd3b968560f33bba upstream.
+commit 6ffbb45826f5d9ae09aa60cd88594b7816c96190 upstream
 
-It's possible to trigger NULL pointer dereference by local unprivileged
-user, when calling getsockname() after failed bind() (e.g. the bind
-fails because LLCP_SAP_MAX used as SAP):
+This function returns the order of a transparent huge page.  It compiles
+to 0 if CONFIG_TRANSPARENT_HUGEPAGE is disabled.
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000000
-  CPU: 1 PID: 426 Comm: llcp_sock_getna Not tainted 5.13.0-rc2-next-20210521+ #9
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-  Call Trace:
-   llcp_sock_getname+0xb1/0xe0
-   __sys_getpeername+0x95/0xc0
-   ? lockdep_hardirqs_on_prepare+0xd5/0x180
-   ? syscall_enter_from_user_mode+0x1c/0x40
-   __x64_sys_getpeername+0x11/0x20
-   do_syscall_64+0x36/0x70
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-This can be reproduced with Syzkaller C repro (bind followed by
-getpeername):
-https://syzkaller.appspot.com/x/repro.c?x=14def446e00000
-
-Cc: <stable@vger.kernel.org>
-Fixes: d646960f7986 ("NFC: Initial LLCP support")
-Reported-by: syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210531072138.5219-1-krzysztof.kozlowski@canonical.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+Reviewed-by: Zi Yan <ziy@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Link: http://lkml.kernel.org/r/20200629151959.15779-4-willy@infradead.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/llcp_sock.c |    2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/huge_mm.h |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
---- a/net/nfc/llcp_sock.c
-+++ b/net/nfc/llcp_sock.c
-@@ -110,6 +110,7 @@ static int llcp_sock_bind(struct socket
- 	if (!llcp_sock->service_name) {
- 		nfc_llcp_local_put(llcp_sock->local);
- 		llcp_sock->local = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -ENOMEM;
- 		goto put_dev;
- 	}
-@@ -119,6 +120,7 @@ static int llcp_sock_bind(struct socket
- 		llcp_sock->local = NULL;
- 		kfree(llcp_sock->service_name);
- 		llcp_sock->service_name = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -EADDRINUSE;
- 		goto put_dev;
- 	}
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -231,6 +231,19 @@ static inline spinlock_t *pud_trans_huge
+ 	else
+ 		return NULL;
+ }
++
++/**
++ * thp_order - Order of a transparent huge page.
++ * @page: Head page of a transparent huge page.
++ */
++static inline unsigned int thp_order(struct page *page)
++{
++	VM_BUG_ON_PGFLAGS(PageTail(page), page);
++	if (PageHead(page))
++		return HPAGE_PMD_ORDER;
++	return 0;
++}
++
+ static inline int hpage_nr_pages(struct page *page)
+ {
+ 	if (unlikely(PageTransHuge(page)))
+@@ -290,6 +303,12 @@ static inline struct list_head *page_def
+ #define HPAGE_PUD_MASK ({ BUILD_BUG(); 0; })
+ #define HPAGE_PUD_SIZE ({ BUILD_BUG(); 0; })
+ 
++static inline unsigned int thp_order(struct page *page)
++{
++	VM_BUG_ON_PGFLAGS(PageTail(page), page);
++	return 0;
++}
++
+ #define hpage_nr_pages(x) 1
+ 
+ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
 
 
