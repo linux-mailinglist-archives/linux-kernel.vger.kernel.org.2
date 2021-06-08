@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C8F3A0142
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 975273A0215
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235956AbhFHStf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:49:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
+        id S237415AbhFHTAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:00:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235536AbhFHSoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:44:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D56160FEA;
-        Tue,  8 Jun 2021 18:36:35 +0000 (UTC)
+        id S236445AbhFHSyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:54:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DCD461435;
+        Tue,  8 Jun 2021 18:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177396;
-        bh=tWjMsLeOtb/NYgMrbgElfA9i5rrsbAZrDJrx7GY7N70=;
+        s=korg; t=1623177669;
+        bh=Xy7V8RpSkFJ/vI1m5rvzWUgGYbx7g9nPvDbYVd+oj9E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RCoPwJyvYbo7b9ce3U8VW6O30gxYwCAVYPynlLev7l3UHTW4DgU2VhIQw+IHfFCPO
-         09CSuNEW521FGIT56ulV0w0/+o0S87Iu08kJWxs3qDOqDeVwNvCshFdKBjfQZy7gOa
-         RWf8i5mr7tVfjuO38IUSinfeIP5qofFe6A12SaWY=
+        b=RTGSnJibD4IU1NOSIBXSh8ul0c/7YLxlLcvmOs0Pz+0/yEyxCjCCdLrXZaB906Imk
+         VAGlWXzmXk430niSe35nm54YnfYcrGko1FwQXJ5T5tb9XL4CRW/Rv7MpnAcv8MgpSk
+         zcVSMy5CyrR/6Xcg604bv8R2tFv8cq9HzWap8jUg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
+        stable@vger.kernel.org,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Vishakha Jambekar <vishakha.jambekar@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 07/78] efi: Allow EFI_MEMORY_XP and EFI_MEMORY_RO both to be cleared
-Date:   Tue,  8 Jun 2021 20:26:36 +0200
-Message-Id: <20210608175935.513740979@linuxfoundation.org>
+Subject: [PATCH 5.10 057/137] ixgbe: optimize for XDP_REDIRECT in xsk path
+Date:   Tue,  8 Jun 2021 20:26:37 +0200
+Message-Id: <20210608175944.315559266@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-[ Upstream commit 45add3cc99feaaf57d4b6f01d52d532c16a1caee ]
+[ Upstream commit 7d52fe2eaddfa3d7255d43c3e89ebf2748b7ea7a ]
 
-UEFI spec 2.9, p.108, table 4-1 lists the scenario that both attributes
-are cleared with the description "No memory access protection is
-possible for Entry". So we can have valid entries where both attributes
-are cleared, so remove the check.
+Optimize ixgbe_run_xdp_zc() for the XDP program verdict being
+XDP_REDIRECT in the xsk zero-copy path. This path is only used when
+having AF_XDP zero-copy on and in that case most packets will be
+directed to user space. This provides a little under 100k extra
+packets in throughput on my server when running l2fwd in xdpsock.
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Fixes: 10f0d2f577053 ("efi: Implement generic support for the Memory Attributes table")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Tested-by: Vishakha Jambekar <vishakha.jambekar@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/memattr.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/firmware/efi/memattr.c b/drivers/firmware/efi/memattr.c
-index 58452fde92cc..5d343dc8e535 100644
---- a/drivers/firmware/efi/memattr.c
-+++ b/drivers/firmware/efi/memattr.c
-@@ -66,11 +66,6 @@ static bool entry_is_valid(const efi_memory_desc_t *in, efi_memory_desc_t *out)
- 		return false;
- 	}
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+index 3771857cf887..91ad5b902673 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+@@ -104,6 +104,13 @@ static int ixgbe_run_xdp_zc(struct ixgbe_adapter *adapter,
+ 	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
+ 	act = bpf_prog_run_xdp(xdp_prog, xdp);
  
--	if (!(in->attribute & (EFI_MEMORY_RO | EFI_MEMORY_XP))) {
--		pr_warn("Entry attributes invalid: RO and XP bits both cleared\n");
--		return false;
--	}
--
- 	if (PAGE_SIZE > EFI_PAGE_SIZE &&
- 	    (!PAGE_ALIGNED(in->phys_addr) ||
- 	     !PAGE_ALIGNED(in->num_pages << EFI_PAGE_SHIFT))) {
++	if (likely(act == XDP_REDIRECT)) {
++		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
++		result = !err ? IXGBE_XDP_REDIR : IXGBE_XDP_CONSUMED;
++		rcu_read_unlock();
++		return result;
++	}
++
+ 	switch (act) {
+ 	case XDP_PASS:
+ 		break;
+@@ -115,10 +122,6 @@ static int ixgbe_run_xdp_zc(struct ixgbe_adapter *adapter,
+ 		}
+ 		result = ixgbe_xmit_xdp_ring(adapter, xdpf);
+ 		break;
+-	case XDP_REDIRECT:
+-		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
+-		result = !err ? IXGBE_XDP_REDIR : IXGBE_XDP_CONSUMED;
+-		break;
+ 	default:
+ 		bpf_warn_invalid_xdp_action(act);
+ 		fallthrough;
 -- 
 2.30.2
 
