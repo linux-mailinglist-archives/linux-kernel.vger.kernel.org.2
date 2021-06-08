@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452AA39FF81
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD0239FFD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234433AbhFHSdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:33:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57466 "EHLO mail.kernel.org"
+        id S234815AbhFHShM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:37:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234221AbhFHSc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:32:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7D66613D3;
-        Tue,  8 Jun 2021 18:30:19 +0000 (UTC)
+        id S234816AbhFHSfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:35:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84C91613FF;
+        Tue,  8 Jun 2021 18:32:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177020;
-        bh=xVMsWp26lw0ReF/0QrK6B1Ds64/IDcKJGNXPTJopo9E=;
+        s=korg; t=1623177126;
+        bh=1FgAsruzabu/OxP8X7lY9HM05qgsQsUoG4g9wC6mS5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QC4JxbQKs6pDyo5FvBS/IWFytvPvxR4LGW0qLc15+7qgbNzspN4AWsFTJcK9Musqv
-         fIou9m1qofLsAudNzGwjbc6cULQsSjCG+talNrtOaJrFn7uoY0qa0ZpNfyQkJEcZGV
-         z+ntY/dyiCEMQ0iQ81RQ/Y10uGjqXX9xBEewQ1kI=
+        b=c6SzbQssC5MuhlgV3S/g+Tgw2n7/itBQb7F7+TtNZZkMQIsEd0ZgLN++jrer7wIgm
+         NzFHCzycKDBP/2KB7kpG5ah4ixAcGeywWsVfl524029hb1mVRXdr9uCW4qeo4d1nUF
+         al37Hf78W8CHqjllRbSrpuT7uTcIslazswBpAybs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.9 29/29] xen-pciback: redo VF placement in the virtual topology
-Date:   Tue,  8 Jun 2021 20:27:23 +0200
-Message-Id: <20210608175928.763231955@linuxfoundation.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Piotr Krysiuk <piotras@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH 4.14 41/47] bpf: Wrap aux data inside bpf_sanitize_info container
+Date:   Tue,  8 Jun 2021 20:27:24 +0200
+Message-Id: <20210608175931.826626946@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
-References: <20210608175927.821075974@linuxfoundation.org>
+In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
+References: <20210608175930.477274100@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,82 +40,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-The commit referenced below was incomplete: It merely affected what
-would get written to the vdev-<N> xenstore node. The guest would still
-find the function at the original function number as long as
-__xen_pcibk_get_pci_dev() wouldn't be in sync. The same goes for AER wrt
-__xen_pcibk_get_pcifront_dev().
+commit 3d0220f6861d713213b015b582e9f21e5b28d2e0 upstream.
 
-Undo overriding the function to zero and instead make sure that VFs at
-function zero remain alone in their slot. This has the added benefit of
-improving overall capacity, considering that there's only a total of 32
-slots available right now (PCI segment and bus can both only ever be
-zero at present).
+Add a container structure struct bpf_sanitize_info which holds
+the current aux info, and update call-sites to sanitize_ptr_alu()
+to pass it in. This is needed for passing in additional state
+later on.
 
-This is upstream commit 4ba50e7c423c29639878c00573288869aa627068.
-
-Fixes: 8a5248fe10b1 ("xen PV passthru: assign SR-IOV virtual functions to 
-separate virtual slots")
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/8def783b-404c-3452-196d-3f3fd4d72c9e@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/xen/xen-pciback/vpci.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ kernel/bpf/verifier.c |   18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
---- a/drivers/xen/xen-pciback/vpci.c
-+++ b/drivers/xen/xen-pciback/vpci.c
-@@ -68,7 +68,7 @@ static int __xen_pcibk_add_pci_dev(struc
- 				   struct pci_dev *dev, int devid,
- 				   publish_pci_dev_cb publish_cb)
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2110,15 +2110,19 @@ static bool sanitize_needed(u8 opcode)
+ 	return opcode == BPF_ADD || opcode == BPF_SUB;
+ }
+ 
++struct bpf_sanitize_info {
++	struct bpf_insn_aux_data aux;
++};
++
+ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
+ 			    struct bpf_insn *insn,
+ 			    const struct bpf_reg_state *ptr_reg,
+ 			    const struct bpf_reg_state *off_reg,
+ 			    struct bpf_reg_state *dst_reg,
+-			    struct bpf_insn_aux_data *tmp_aux,
++			    struct bpf_sanitize_info *info,
+ 			    const bool commit_window)
  {
--	int err = 0, slot, func = -1;
-+	int err = 0, slot, func = PCI_FUNC(dev->devfn);
- 	struct pci_dev_entry *t, *dev_entry;
- 	struct vpci_dev_data *vpci_dev = pdev->pci_dev_data;
+-	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : tmp_aux;
++	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : &info->aux;
+ 	struct bpf_verifier_state *vstate = env->cur_state;
+ 	bool off_is_imm = tnum_is_const(off_reg->var_off);
+ 	bool off_is_neg = off_reg->smin_value < 0;
+@@ -2147,8 +2151,8 @@ static int sanitize_ptr_alu(struct bpf_v
+ 		/* In commit phase we narrow the masking window based on
+ 		 * the observed pointer move after the simulated operation.
+ 		 */
+-		alu_state = tmp_aux->alu_state;
+-		alu_limit = abs(tmp_aux->alu_limit - alu_limit);
++		alu_state = info->aux.alu_state;
++		alu_limit = abs(info->aux.alu_limit - alu_limit);
+ 	} else {
+ 		alu_state  = off_is_neg ? BPF_ALU_NEG_VALUE : 0;
+ 		alu_state |= off_is_imm ? BPF_ALU_IMMEDIATE : 0;
+@@ -2276,7 +2280,7 @@ static int adjust_ptr_min_max_vals(struc
+ 	    smin_ptr = ptr_reg->smin_value, smax_ptr = ptr_reg->smax_value;
+ 	u64 umin_val = off_reg->umin_value, umax_val = off_reg->umax_value,
+ 	    umin_ptr = ptr_reg->umin_value, umax_ptr = ptr_reg->umax_value;
+-	struct bpf_insn_aux_data tmp_aux = {};
++	struct bpf_sanitize_info info = {};
+ 	u8 opcode = BPF_OP(insn->code);
+ 	u32 dst = insn->dst_reg;
+ 	int ret;
+@@ -2327,7 +2331,7 @@ static int adjust_ptr_min_max_vals(struc
  
-@@ -93,23 +93,26 @@ static int __xen_pcibk_add_pci_dev(struc
- 
- 	/*
- 	 * Keep multi-function devices together on the virtual PCI bus, except
--	 * virtual functions.
-+	 * that we want to keep virtual functions at func 0 on their own. They
-+	 * aren't multi-function devices and hence their presence at func 0
-+	 * may cause guests to not scan the other functions.
- 	 */
--	if (!dev->is_virtfn) {
-+	if (!dev->is_virtfn || func) {
- 		for (slot = 0; slot < PCI_SLOT_MAX; slot++) {
- 			if (list_empty(&vpci_dev->dev_list[slot]))
- 				continue;
- 
- 			t = list_entry(list_first(&vpci_dev->dev_list[slot]),
- 				       struct pci_dev_entry, list);
-+			if (t->dev->is_virtfn && !PCI_FUNC(t->dev->devfn))
-+				continue;
- 
- 			if (match_slot(dev, t->dev)) {
- 				pr_info("vpci: %s: assign to virtual slot %d func %d\n",
- 					pci_name(dev), slot,
--					PCI_FUNC(dev->devfn));
-+					func);
- 				list_add_tail(&dev_entry->list,
- 					      &vpci_dev->dev_list[slot]);
--				func = PCI_FUNC(dev->devfn);
- 				goto unlock;
- 			}
- 		}
-@@ -122,7 +125,6 @@ static int __xen_pcibk_add_pci_dev(struc
- 				pci_name(dev), slot);
- 			list_add_tail(&dev_entry->list,
- 				      &vpci_dev->dev_list[slot]);
--			func = dev->is_virtfn ? 0 : PCI_FUNC(dev->devfn);
- 			goto unlock;
- 		}
+ 	if (sanitize_needed(opcode)) {
+ 		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg,
+-				       &tmp_aux, false);
++				       &info, false);
+ 		if (ret < 0)
+ 			return sanitize_err(env, insn, ret, off_reg, dst_reg);
+ 	}
+@@ -2468,7 +2472,7 @@ static int adjust_ptr_min_max_vals(struc
+ 		return -EACCES;
+ 	if (sanitize_needed(opcode)) {
+ 		ret = sanitize_ptr_alu(env, insn, dst_reg, off_reg, dst_reg,
+-				       &tmp_aux, true);
++				       &info, true);
+ 		if (ret < 0)
+ 			return sanitize_err(env, insn, ret, off_reg, dst_reg);
  	}
 
 
