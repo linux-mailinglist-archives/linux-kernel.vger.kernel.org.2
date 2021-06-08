@@ -2,105 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0EA3A00BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AEC3A00E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235026AbhFHSqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:46:49 -0400
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:35837 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234942AbhFHSmS (ORCPT
+        id S235697AbhFHSsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:48:51 -0400
+Received: from mail-ed1-f46.google.com ([209.85.208.46]:42515 "EHLO
+        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232603AbhFHSmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:42:18 -0400
-Received: by mail-lf1-f47.google.com with SMTP id i10so33684601lfj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 11:40:13 -0700 (PDT)
+        Tue, 8 Jun 2021 14:42:36 -0400
+Received: by mail-ed1-f46.google.com with SMTP id i13so25722537edb.9;
+        Tue, 08 Jun 2021 11:40:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RFVHIAFVezn4A//yU0olDz7nXpJepZN2+RpU9TzzyE8=;
-        b=pLX4yrmrJ0rUVnKzsKkQ81cTKwTGWP2ONwJS+KHNRS89xxBiyB9MgfAjB86RnAT/Hk
-         Tk9YXvOafQ9vrGquEY5afAb6ZJVNQfCN9PtLNt7UuAv+nOahJtWqQBqX3sZrGVpHs8Lf
-         EL4D1BDwIKGForCI1dRNmMgqAJY1yw7Y0syMyClHOIQ4j1dVbVW6qMXHzQKLzUt6wUV+
-         fubtP6LfDplz66FfEuMuQIwBCWAPHaJtlF5tZ/bPtAFUKFdfAJx/vbuveJ63671EtKeg
-         vNbwDbFy0UN+xu82/bT9McIXfWX4QTaZBqQFrHMk199Nwyr0Td4t9+GDLdAf2Lyn9LZM
-         i8Yg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=W/V7ksUiiZB58zMxMRkULUFDegQBYCL2IF/rhUEMXHc=;
+        b=IJbqV6FUUfi7qCArMillGRxl4VycBJhs5gYs1Lf0mMvJYu5kw345uaLWVcikHjOxiy
+         TFJQhy70+KtzUmpSPBAGITjsAaU9yHpuRah8PWUPx3giAgGmLDxqxAxGFPEvIjWZjadh
+         /XjD+XNLZrd1n4PDsyvZtPLrlI1pJCUtfwVXSCJ8CiAXMFZFYxladyIDH8tGjl30wMkf
+         vtr/ZiqQVcAVouktL/hMNvpZFd06DgNsv1ovNfmfLhFR4HIfRNfViVNesEUjSkCN7EZV
+         pNso+09KKYl9bWgGxOaRKlV2AfV7pPF7LZelGToKFJmpdo8SJ2CMdKHVVOa5ZFr1TDSi
+         +4Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RFVHIAFVezn4A//yU0olDz7nXpJepZN2+RpU9TzzyE8=;
-        b=uJzwI1jcA0tJstUnQ5A+1QGMQ/sj3AtnnALORaogL14vYFchAInGE8to90t7lcJIt4
-         dMeZA26f9xM7LzGi5vDK/45L1PZT8ed2sbz1KYK7Ii4scRwl9jGZuDQsb2yC6htSBlNw
-         gEhEDf1jGl/Wyu16izGP033Kqjrl9517xTNA6/I1iV1rxTeW5fuRUkT0ZSmeYj7McciU
-         +vEFOqGa26YcsNlpuUG3RPafaBAX79B7tVHVcICpkWpBk/qkLqtoHPFV4bs+ik1WLoXI
-         DfAxu6TCcYqcfL1CrJzvzOiiZeC+6PTAxlpAgyQwm1keKgMq/C9MYwsSW0+Nm/dkNXI2
-         iZsA==
-X-Gm-Message-State: AOAM531ZH+2anQqd4NbySwD2NOq9YuuOvU0GWuEokVne4RbpHKtXPYV7
-        wXwKiGEu1+VJuFljjYipbYzRaGOHCajZ/an3nmiiqw==
-X-Google-Smtp-Source: ABdhPJwSkum5TLbm5F7gzs0qrnq/SuixhE2KyLKYeHZQ7LcH11gymZk7UDXcOBrGLp4Svy45uPgtiw0LT083xIgQJuY=
-X-Received: by 2002:a19:4843:: with SMTP id v64mr6200836lfa.374.1623177552600;
- Tue, 08 Jun 2021 11:39:12 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=W/V7ksUiiZB58zMxMRkULUFDegQBYCL2IF/rhUEMXHc=;
+        b=GFGF6Xkp/7aqtHEYmokIbaHLRxFmlZFj70DLZsZXpQXaoI+aAWIrqyRNuTGruk1zs/
+         PQNm8YCD9hlS7+a5lPf4FgFIMS8YKaFUs6QXZGrg/T7MwONmmdAO+WfbHIzdlBYgOVTT
+         vcJjGrBuGZXddPv+q6hW1MD9yqRR0Caj7nzhRMVcscDB2P2cmPEtQS1daFJcE9G1MIqR
+         mdxpnOaDFHpONejmhTU+TE2ty4gCT5pgHHif0kmG4XtDXMv89tOjMmwy8Vpz22r2wlRO
+         OvA5RAgPrZlcMF0sUfsBoOHj3gf0XCeu7rIQ0B0XPwnLy2NogbDk+6GP5ZDT3WDbth1I
+         ds9w==
+X-Gm-Message-State: AOAM533uTpn2LR4Zk5tqDwN0soQrS/BUootlVlHP/f5cVoZ+knD5iAGo
+        EXeeKV3VzX3A3Jl8E7WyYDm76RNVs6VPCg==
+X-Google-Smtp-Source: ABdhPJxi/SXwX8f6NHTk5beJ5dr9fZw0669BTAJnkBXZ5K/oYpH7fAlpLbYQC+bUjrsGqeChFLoUQw==
+X-Received: by 2002:a50:8dc6:: with SMTP id s6mr27186109edh.50.1623177566310;
+        Tue, 08 Jun 2021 11:39:26 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id z7sm174358ejm.122.2021.06.08.11.39.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 11:39:25 -0700 (PDT)
+Subject: Re: [PATCH v6 5/8] arm: dts: rockchip: Add SFC to RK3036
+To:     Jon Lin <jon.lin@rock-chips.com>, linux-spi@vger.kernel.org
+Cc:     broonie@kernel.org, robh+dt@kernel.org, heiko@sntech.de,
+        hjc@rock-chips.com, yifeng.zhao@rock-chips.com,
+        sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org,
+        linux-mtd@lists.infradead.org, p.yadav@ti.com,
+        macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Chris Morgan <macromorgan@hotmail.com>
+References: <20210608022644.21074-1-jon.lin@rock-chips.com>
+ <20210608023305.25371-1-jon.lin@rock-chips.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <b5f29e1c-f4ec-7a08-a97c-8a516ba6649a@gmail.com>
+Date:   Tue, 8 Jun 2021 20:39:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <1623145562-111662-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1623145562-111662-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 8 Jun 2021 11:39:01 -0700
-Message-ID: <CAKwvOdmyXV09ZxcDqQ6x43f+Eze4h40W2AoKcCmUhGM2gUWsnQ@mail.gmail.com>
-Subject: Re: [PATCH] thermal: devfreq_cooling: Fix kernel-doc
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>, amitk@kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-pm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210608023305.25371-1-jon.lin@rock-chips.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 2:46 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> Fix function name in devfreq_cooling.c kernel-doc comment
-> to remove a warning found by clang(make W=1 LLVM=1).
->
-> drivers/thermal/devfreq_cooling.c:479: warning: expecting prototype for
-> devfreq_cooling_em_register_power(). Prototype was for
-> devfreq_cooling_em_register() instead.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-That compiler warning doesn't come from kernel-doc.  Your diff looks
-good (the comment was wrong), but the commit message is curious.
 
-Usually that warning is from when the function prototype does not
-exist for a function with extern linkage.  It looks like that's always
-provided though in include/linux/devfreq_cooling.h.  Can you share a
-link to the original report?
-
+On 6/8/21 4:33 AM, Jon Lin wrote:
+> From: Chris Morgan <macromorgan@hotmail.com>
+> 
+> Add a devicetree entry for the Rockchip SFC for the RK3036 SOC.
+> 
+> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
 > ---
->  drivers/thermal/devfreq_cooling.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-> index 3a788ac..5a86cff 100644
-> --- a/drivers/thermal/devfreq_cooling.c
-> +++ b/drivers/thermal/devfreq_cooling.c
-> @@ -458,7 +458,7 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
->  EXPORT_SYMBOL_GPL(devfreq_cooling_register);
->
->  /**
-> - * devfreq_cooling_em_register_power() - Register devfreq cooling device with
-> + * devfreq_cooling_em_register() - Register devfreq cooling device with
->   *             power information and automatically register Energy Model (EM)
->   * @df:                Pointer to devfreq device.
->   * @dfc_power: Pointer to devfreq_cooling_power.
-> --
-> 1.8.3.1
->
+> 
+> Changes in v6: None
+> Changes in v5: None
+> Changes in v4: None
+> Changes in v3: None
+> Changes in v2: None
+> Changes in v1: None
+> 
+>  arch/arm/boot/dts/rk3036.dtsi | 42 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/rk3036.dtsi b/arch/arm/boot/dts/rk3036.dtsi
+> index e24230d50a78..e7faf815ca74 100644
+> --- a/arch/arm/boot/dts/rk3036.dtsi
+> +++ b/arch/arm/boot/dts/rk3036.dtsi
+> @@ -206,6 +206,17 @@
+>  		status = "disabled";
+>  	};
+>  
+> +	sfc: spi@10208000 {
+> +		compatible = "rockchip,rk3036-sfc";
+> +		reg = <0x10208000 0x4000>;
+> +		interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&cru HCLK_SFC>, <&cru SCLK_SFC>;
+> +		clock-names = "hclk_sfc", "clk_sfc";
+> +		pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus4>;
+> +		pinctrl-names = "default";
+> +		status = "disabled";
+> +	};
+> +
+>  	sdmmc: mmc@10214000 {
+>  		compatible = "rockchip,rk3036-dw-mshc", "rockchip,rk3288-dw-mshc";
+>  		reg = <0x10214000 0x4000>;
+> @@ -684,6 +695,37 @@
+>  			};
+>  		};
+>  
 
+> +		serial_flash {
 
--- 
-Thanks,
-~Nick Desaulniers
+sfc {
+
+Nodes are sort alphabetically.
+Sort other patches with sfc nodes in this serie as well.
+Maybe rename nodename consistent with sfc label?
+Similar to nfc nodes?
+
+> +			sfc_bus4: sfc-bus4 {
+> +				rockchip,pins =
+
+> +					<1 RK_PD0 3 &pcfg_pull_none>,
+> +					<1 RK_PD1 3 &pcfg_pull_none>,
+> +					<1 RK_PD2 3 &pcfg_pull_none>,
+> +					<1 RK_PD3 3 &pcfg_pull_none>;
+
+Keep align with the rest in the pinctrl node.
+Check that in other sfc patches as well.
+
+> +			};
+> +
+> +			sfc_bus2: sfc-bus2 {
+> +				rockchip,pins =
+
+> +					<1 RK_PD0 3 &pcfg_pull_none>,
+> +					<1 RK_PD1 3 &pcfg_pull_none>;
+
+dito
+
+> +			};
+> +
+> +			sfc_cs0: sfc-cs0 {
+> +				rockchip,pins =
+
+> +					<2 RK_PA2 3 &pcfg_pull_none>;
+
+dito
+
+> +			};
+> +
+> +			sfc_cs1: sfc-cs1 {
+> +				rockchip,pins =
+
+> +					<2 RK_PA3 3 &pcfg_pull_none>;
+
+dito
+
+> +			};
+> +
+> +			sfc_clk: sfc-clk {
+> +				rockchip,pins =
+
+> +					<2 RK_PA4 3 &pcfg_pull_none>;
+
+dito
+
+> +			};
+> +		};
+> +
+>  		emac {
+>  			emac_xfer: emac-xfer {
+>  				rockchip,pins = <2 RK_PB2 1 &pcfg_pull_default>, /* crs_dvalid */
+> 
