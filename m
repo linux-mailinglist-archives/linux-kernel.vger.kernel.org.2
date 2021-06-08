@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4316F3A0413
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B483A0164
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234733AbhFHT0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:26:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58908 "EHLO mail.kernel.org"
+        id S235730AbhFHSvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:51:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237103AbhFHTOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:14:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CABC2610A2;
-        Tue,  8 Jun 2021 18:50:00 +0000 (UTC)
+        id S235550AbhFHSqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:46:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 811F5613D0;
+        Tue,  8 Jun 2021 18:37:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178201;
-        bh=AMWQ/w5E8AQa19L0RESJPij7OIgsmldXTH4+NicuEP0=;
+        s=korg; t=1623177445;
+        bh=xpoj0fyd6Ba+qXhkJrd3w89Pb8mWMc8DqB5qmlawlM8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MEKj/CAhwyouwJQaXmltpy9/P/5W6SI9P8ehfv0xZ84TsurfsYV7kyu6cJCAcrk+5
-         LAvNoFQFB3hHlLpQ2qH23ll+jmG7u1xfUO7uYzeP5DBqWuJv09f+MACGV6J8LG7Hk/
-         41y21aN6vDH0rP76hQd2Uf3LDzcvpQQhTc81YzNE=
+        b=rsRf+ehFBMoIdp1xg4GbMilT8aelMk9G2GeW3zikbtSSTS1bPK5JRFAUBdVWKfGZw
+         ervnpXj5481brEwQsqruZAKWHeUkmKTtIC0K211aCrlUXjxDlLWBK8EXao7VMqLrvu
+         sthCtroPMWNbNmKUz248+YCTPAohizNC+Ae5XjKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.12 113/161] ALSA: hda: update the power_state during the direct-complete
+        stable@vger.kernel.org, Junxiao Bi <junxiao.bi@oracle.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Jan Kara <jack@suse.cz>, Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
+        Jun Piao <piaojun@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 54/78] ocfs2: fix data corruption by fallocate
 Date:   Tue,  8 Jun 2021 20:27:23 +0200
-Message-Id: <20210608175949.280251795@linuxfoundation.org>
+Message-Id: <20210608175937.106368315@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,55 +45,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Junxiao Bi <junxiao.bi@oracle.com>
 
-commit b8b90c17602689eeaa5b219d104bbc215d1225cc upstream.
+commit 6bba4471f0cc1296fe3c2089b9e52442d3074b2e upstream.
 
-The patch_realtek.c needs to check if the power_state.event equals
-PM_EVENT_SUSPEND, after using the direct-complete, the suspend() and
-resume() will be skipped if the codec is already rt_suspended, in this
-case, the patch_realtek.c will always get PM_EVENT_ON even the system
-is really resumed from S3.
+When fallocate punches holes out of inode size, if original isize is in
+the middle of last cluster, then the part from isize to the end of the
+cluster will be zeroed with buffer write, at that time isize is not yet
+updated to match the new size, if writeback is kicked in, it will invoke
+ocfs2_writepage()->block_write_full_page() where the pages out of inode
+size will be dropped.  That will cause file corruption.  Fix this by
+zero out eof blocks when extending the inode size.
 
-We could set power_state to PMSG_SUSPEND in the prepare(), if other
-PM functions are called before complete(), those functions will
-override power_state; if no other PM functions are called before
-complete(), we could know the suspend() and resume() are skipped since
-only S3 pm functions could be skipped by direct-complete, in this case
-set power_state to PMSG_RESUME in the complete(). This could guarantee
-the first time of calling hda_codec_runtime_resume() after complete()
-has the correct power_state.
+Running the following command with qemu-image 4.2.1 can get a corrupted
+coverted image file easily.
 
-Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
+    qemu-img convert -p -t none -T none -f qcow2 $qcow_image \
+             -O qcow2 -o compat=1.1 $qcow_image.conv
+
+The usage of fallocate in qemu is like this, it first punches holes out
+of inode size, then extend the inode size.
+
+    fallocate(11, FALLOC_FL_KEEP_SIZE|FALLOC_FL_PUNCH_HOLE, 2276196352, 65536) = 0
+    fallocate(11, 0, 2276196352, 65536) = 0
+
+v1: https://www.spinics.net/lists/linux-fsdevel/msg193999.html
+v2: https://lore.kernel.org/linux-fsdevel/20210525093034.GB4112@quack2.suse.cz/T/
+
+Link: https://lkml.kernel.org/r/20210528210648.9124-1-junxiao.bi@oracle.com
+Signed-off-by: Junxiao Bi <junxiao.bi@oracle.com>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Gang He <ghe@suse.com>
+Cc: Jun Piao <piaojun@huawei.com>
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210602145424.3132-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/hda_codec.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ fs/ocfs2/file.c |   55 ++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 50 insertions(+), 5 deletions(-)
 
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2973,6 +2973,7 @@ static int hda_codec_runtime_resume(stru
- #ifdef CONFIG_PM_SLEEP
- static int hda_codec_pm_prepare(struct device *dev)
- {
-+	dev->power.power_state = PMSG_SUSPEND;
- 	return pm_runtime_suspended(dev);
+--- a/fs/ocfs2/file.c
++++ b/fs/ocfs2/file.c
+@@ -1856,6 +1856,45 @@ out:
  }
  
-@@ -2980,6 +2981,10 @@ static void hda_codec_pm_complete(struct
- {
- 	struct hda_codec *codec = dev_to_hda_codec(dev);
- 
-+	/* If no other pm-functions are called between prepare() and complete() */
-+	if (dev->power.power_state.event == PM_EVENT_SUSPEND)
-+		dev->power.power_state = PMSG_RESUME;
+ /*
++ * zero out partial blocks of one cluster.
++ *
++ * start: file offset where zero starts, will be made upper block aligned.
++ * len: it will be trimmed to the end of current cluster if "start + len"
++ *      is bigger than it.
++ */
++static int ocfs2_zeroout_partial_cluster(struct inode *inode,
++					u64 start, u64 len)
++{
++	int ret;
++	u64 start_block, end_block, nr_blocks;
++	u64 p_block, offset;
++	u32 cluster, p_cluster, nr_clusters;
++	struct super_block *sb = inode->i_sb;
++	u64 end = ocfs2_align_bytes_to_clusters(sb, start);
 +
- 	if (pm_runtime_suspended(dev) && (codec->jackpoll_interval ||
- 	    hda_codec_need_resume(codec) || codec->forced_resume))
- 		pm_request_resume(dev);
++	if (start + len < end)
++		end = start + len;
++
++	start_block = ocfs2_blocks_for_bytes(sb, start);
++	end_block = ocfs2_blocks_for_bytes(sb, end);
++	nr_blocks = end_block - start_block;
++	if (!nr_blocks)
++		return 0;
++
++	cluster = ocfs2_bytes_to_clusters(sb, start);
++	ret = ocfs2_get_clusters(inode, cluster, &p_cluster,
++				&nr_clusters, NULL);
++	if (ret)
++		return ret;
++	if (!p_cluster)
++		return 0;
++
++	offset = start_block - ocfs2_clusters_to_blocks(sb, cluster);
++	p_block = ocfs2_clusters_to_blocks(sb, p_cluster) + offset;
++	return sb_issue_zeroout(sb, p_block, nr_blocks, GFP_NOFS);
++}
++
++/*
+  * Parts of this function taken from xfs_change_file_space()
+  */
+ static int __ocfs2_change_file_space(struct file *file, struct inode *inode,
+@@ -1865,7 +1904,7 @@ static int __ocfs2_change_file_space(str
+ {
+ 	int ret;
+ 	s64 llen;
+-	loff_t size;
++	loff_t size, orig_isize;
+ 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
+ 	struct buffer_head *di_bh = NULL;
+ 	handle_t *handle;
+@@ -1896,6 +1935,7 @@ static int __ocfs2_change_file_space(str
+ 		goto out_inode_unlock;
+ 	}
+ 
++	orig_isize = i_size_read(inode);
+ 	switch (sr->l_whence) {
+ 	case 0: /*SEEK_SET*/
+ 		break;
+@@ -1903,7 +1943,7 @@ static int __ocfs2_change_file_space(str
+ 		sr->l_start += f_pos;
+ 		break;
+ 	case 2: /*SEEK_END*/
+-		sr->l_start += i_size_read(inode);
++		sr->l_start += orig_isize;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -1957,6 +1997,14 @@ static int __ocfs2_change_file_space(str
+ 	default:
+ 		ret = -EINVAL;
+ 	}
++
++	/* zeroout eof blocks in the cluster. */
++	if (!ret && change_size && orig_isize < size) {
++		ret = ocfs2_zeroout_partial_cluster(inode, orig_isize,
++					size - orig_isize);
++		if (!ret)
++			i_size_write(inode, size);
++	}
+ 	up_write(&OCFS2_I(inode)->ip_alloc_sem);
+ 	if (ret) {
+ 		mlog_errno(ret);
+@@ -1973,9 +2021,6 @@ static int __ocfs2_change_file_space(str
+ 		goto out_inode_unlock;
+ 	}
+ 
+-	if (change_size && i_size_read(inode) < size)
+-		i_size_write(inode, size);
+-
+ 	inode->i_ctime = inode->i_mtime = current_time(inode);
+ 	ret = ocfs2_mark_inode_dirty(handle, inode, di_bh);
+ 	if (ret < 0)
 
 
