@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2BB3A0101
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9F83A0074
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234877AbhFHSus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:50:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44696 "EHLO mail.kernel.org"
+        id S233673AbhFHSnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:43:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236003AbhFHSps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:45:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D4BA61352;
-        Tue,  8 Jun 2021 18:37:14 +0000 (UTC)
+        id S235362AbhFHSjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:39:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 118C161434;
+        Tue,  8 Jun 2021 18:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177434;
-        bh=Y3/bT0eXXMxXy8velYvf/Cz/KZ/3wAqzHR27H3RNpNA=;
+        s=korg; t=1623177263;
+        bh=YPG47taUkBXMmvO5CD6jXL0RfrS/D6hlBbzIUwi9O3Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C9pBMRSVio3ZGUx3f8+GLReowwqwSzqveIbgYiNvFg0hK6CNOPIkKolsJcNcT9Ofe
-         JPNnHPcOqmgsHY6hIXVsAyyRGqmYFFJFuLLcaPZ3ZXZSJckH6d08SKDEJxy1/ken4J
-         y2LxkBag0+kE3GC3ARfp+XfHO917HeQ7TXjm+/ag=
+        b=gBMJ8PI2mtUS19hASc0wbtAYW9DKq9xam4TMhGrmbiO5pPCZntwNtQ5YPtgTkL3x1
+         kUIg4pHat8yGv7IdQxlpHz3yAMcHlm+o08TWV3k8h61bI/2kLF6Wsv1RKrKT3Ek/jK
+         EO+5qYoNwl2Irzj9mLaEMoQoHghB4BmNR+Lii1AE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Ye Bin <yebin10@huawei.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.4 51/78] ext4: fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
-Date:   Tue,  8 Jun 2021 20:27:20 +0200
-Message-Id: <20210608175937.006341214@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [PATCH 4.19 40/58] bpf: fix test suite to enable all unpriv program types
+Date:   Tue,  8 Jun 2021 20:27:21 +0200
+Message-Id: <20210608175933.595508385@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
+References: <20210608175932.263480586@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,112 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit 082cd4ec240b8734a82a89ffb890216ac98fec68 upstream.
+commit 36641ad61db5ce9befd5eb0071abb36eaff16cfc upstream
 
-We got follow bug_on when run fsstress with injecting IO fault:
-[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
-[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
-......
-[130747.334329] Call trace:
-[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
-[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
-[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
-[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
-[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
-[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
-[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
-[130747.337359]  generic_file_buffered_read+0x410/0xae8
-[130747.337767]  generic_file_read_iter+0x114/0x190
-[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
-[130747.338556]  __vfs_read+0x11c/0x188
-[130747.338851]  vfs_read+0x94/0x150
-[130747.339110]  ksys_read+0x74/0xf0
+Given BPF_PROG_TYPE_CGROUP_SKB program types are also valid in an
+unprivileged setting, lets not omit these tests and potentially
+have issues fall through the cracks. Make this more obvious by
+adding a small test_as_unpriv() helper.
 
-This patch's modification is according to Jan Kara's suggestion in:
-https://patchwork.ozlabs.org/project/linux-ext4/patch/20210428085158.3728201-1-yebin10@huawei.com/
-"I see. Now I understand your patch. Honestly, seeing how fragile is trying
-to fix extent tree after split has failed in the middle, I would probably
-go even further and make sure we fix the tree properly in case of ENOSPC
-and EDQUOT (those are easily user triggerable).  Anything else indicates a
-HW problem or fs corruption so I'd rather leave the extent tree as is and
-don't try to fix it (which also means we will not create overlapping
-extents)."
-
-Cc: stable@kernel.org
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20210506141042.3298679-1-yebin10@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/extents.c |   43 +++++++++++++++++++++++--------------------
- 1 file changed, 23 insertions(+), 20 deletions(-)
+ tools/testing/selftests/bpf/test_verifier.c |   12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3378,7 +3378,10 @@ static int ext4_split_extent_at(handle_t
- 		ext4_ext_mark_unwritten(ex2);
- 
- 	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
--	if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
-+	if (err != -ENOSPC && err != -EDQUOT)
-+		goto out;
-+
-+	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
- 		if (split_flag & (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
- 			if (split_flag & EXT4_EXT_DATA_VALID1) {
- 				err = ext4_ext_zeroout(inode, ex2);
-@@ -3404,30 +3407,30 @@ static int ext4_split_extent_at(handle_t
- 					      ext4_ext_pblock(&orig_ex));
- 		}
- 
--		if (err)
--			goto fix_extent_len;
--		/* update the extent length and mark as initialized */
--		ex->ee_len = cpu_to_le16(ee_len);
--		ext4_ext_try_to_merge(handle, inode, path, ex);
--		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
--		if (err)
--			goto fix_extent_len;
--
--		/* update extent status tree */
--		err = ext4_zeroout_es(inode, &zero_ex);
--
--		goto out;
--	} else if (err)
--		goto fix_extent_len;
--
--out:
--	ext4_ext_show_leaf(inode, path);
--	return err;
-+		if (!err) {
-+			/* update the extent length and mark as initialized */
-+			ex->ee_len = cpu_to_le16(ee_len);
-+			ext4_ext_try_to_merge(handle, inode, path, ex);
-+			err = ext4_ext_dirty(handle, inode, path + path->p_depth);
-+			if (!err)
-+				/* update extent status tree */
-+				err = ext4_zeroout_es(inode, &zero_ex);
-+			/* If we failed at this point, we don't know in which
-+			 * state the extent tree exactly is so don't try to fix
-+			 * length of the original extent as it may do even more
-+			 * damage.
-+			 */
-+			goto out;
-+		}
-+	}
- 
- fix_extent_len:
- 	ex->ee_len = orig_ex.ee_len;
- 	ext4_ext_dirty(handle, inode, path + path->p_depth);
- 	return err;
-+out:
-+	ext4_ext_show_leaf(inode, path);
-+	return err;
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -4798,6 +4798,7 @@ static struct bpf_test tests[] = {
+ 		.fixup_cgroup_storage = { 1 },
+ 		.result = REJECT,
+ 		.errstr = "get_local_storage() doesn't support non-zero flags",
++		.errstr_unpriv = "R2 leaks addr into helper function",
+ 		.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+ 	},
+ 	{
+@@ -12963,6 +12964,13 @@ static void get_unpriv_disabled()
+ 	fclose(fd);
  }
  
- /*
++static bool test_as_unpriv(struct bpf_test *test)
++{
++	return !test->prog_type ||
++	       test->prog_type == BPF_PROG_TYPE_SOCKET_FILTER ||
++	       test->prog_type == BPF_PROG_TYPE_CGROUP_SKB;
++}
++
+ static int do_test(bool unpriv, unsigned int from, unsigned int to)
+ {
+ 	int i, passes = 0, errors = 0, skips = 0;
+@@ -12973,10 +12981,10 @@ static int do_test(bool unpriv, unsigned
+ 		/* Program types that are not supported by non-root we
+ 		 * skip right away.
+ 		 */
+-		if (!test->prog_type && unpriv_disabled) {
++		if (test_as_unpriv(test) && unpriv_disabled) {
+ 			printf("#%d/u %s SKIP\n", i, test->descr);
+ 			skips++;
+-		} else if (!test->prog_type) {
++		} else if (test_as_unpriv(test)) {
+ 			if (!unpriv)
+ 				set_admin(false);
+ 			printf("#%d/u %s ", i, test->descr);
 
 
