@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD26C39F313
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD6A39F315
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhFHJ6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhFHJ63 (ORCPT
+        id S231276AbhFHJ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 05:59:03 -0400
+Received: from router.aksignal.cz ([62.44.4.214]:59732 "EHLO
+        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhFHJ7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:58:29 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA1BC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 02:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Gk1XdireRy/T2iUr4Y00HpsLt0ofHn0B8vK6rBOdSJk=; b=c7aAQ6OdLjEM3WHatc/nq4T28C
-        zfoHT0bAnBeV+Xd/Fdke+8BM0OxtWins+LFpiycZyK9VMoxGYcKntNZGBukZL+pmjCBf4qEUbTyQV
-        O/RYRqdK3O3CubvD9aQTbHdtS0MUOzCxAq2IjCMA7M31JlIrCmR/cpSJcnDXDLttApxa0NsLxteHP
-        cv/joKK1rMNV5kx9cL/xjrRpsbjs3QMR+0AmrPDWaC+531EKv3b4od1AvCUiYIYkiJO0QmeU7dIvE
-        9u997dKDugHKk7LmqXQKrGvf/JqO3b0411wKG+BvGEmjcaxORsCB/ipTpCbhE/EcfWQcSJffg85IY
-        80MzdOCw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lqYT9-004iSP-MC; Tue, 08 Jun 2021 09:56:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 427983001E3;
-        Tue,  8 Jun 2021 11:56:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2A21B2BF0CB75; Tue,  8 Jun 2021 11:56:29 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 11:56:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
-        Guenter Roeck <groeck@google.com>,
-        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
-        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
-        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
-        upstream@semihalf.com,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
-Message-ID: <YL8+zeC9xjpzA81j@hirez.programming.kicks-ass.net>
-References: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
- <20210604205018.2238778-1-ndesaulniers@google.com>
- <CAKwvOdmhg2tj8cKe-XitoZXGKaoOhgTsCEdVXubt+LiY9+46rw@mail.gmail.com>
- <20210604235046.w3hazgcpsg4oefex@google.com>
- <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
- <CAFP8O3+ggR8N-ffsaYSMPX7s2XgrzzTQQjOgCwUe9smyos-waA@mail.gmail.com>
- <YL3RQCJGIw9835Y1@hirez.programming.kicks-ass.net>
- <YL3lQ5QdNV2qwLR/@hirez.programming.kicks-ass.net>
- <YL3q1qFO9QIRL/BA@hirez.programming.kicks-ass.net>
- <CAKwvOdkuJBwZRigeqdZGevPF9WHyrC5pBAsz6_tWdXAc-wO+1A@mail.gmail.com>
+        Tue, 8 Jun 2021 05:59:02 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by router.aksignal.cz (Postfix) with ESMTP id BE08640F98;
+        Tue,  8 Jun 2021 11:57:05 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
+Received: from router.aksignal.cz ([127.0.0.1])
+        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id aN8x4IOG1YVK; Tue,  8 Jun 2021 11:57:05 +0200 (CEST)
+Received: from [172.25.161.48] (unknown [83.240.30.185])
+        (Authenticated sender: jiri.prchal@aksignal.cz)
+        by router.aksignal.cz (Postfix) with ESMTPSA id 2FB0D40F93;
+        Tue,  8 Jun 2021 11:57:05 +0200 (CEST)
+Subject: Re: [PATCH v8 2/5] nvmem: eeprom: at25: add support for FRAM
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>
+References: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
+ <20210607161201.223697-3-jiri.prchal@aksignal.cz>
+ <YL8zZraFXTvGr3dE@kroah.com>
+From:   =?UTF-8?B?SmnFmcOtIFByY2hhbA==?= <jiri.prchal@aksignal.cz>
+Message-ID: <cc57eb8a-bfd6-f314-b408-0c4c8fe01a03@aksignal.cz>
+Date:   Tue, 8 Jun 2021 11:57:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdkuJBwZRigeqdZGevPF9WHyrC5pBAsz6_tWdXAc-wO+1A@mail.gmail.com>
+In-Reply-To: <YL8zZraFXTvGr3dE@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 01:54:37PM -0700, Nick Desaulniers wrote:
-> The only thing that's still different is that the `file` command still
-> prints "no section header."
+
+
+On 08. 06. 21 11:07, Greg Kroah-Hartman wrote:
+>> +	int has_sernum;
 > 
-> $ find . -name \*.lto.o | xargs file | rev | cut -d , -f 1 | rev |
-> sort | uniq -c
->       1  no section header
+> bool?
 
-That's not due to objtool, is it?
+OK.
+> 
+>> +	spi_message_init(&m);
+>> +	memset(t, 0, sizeof(t));
+> 
+> Are you allowed to send spi messages off of the stack?
 
-$ file amdgpu.lto.o.orig
-amdgpu.lto.o.orig: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), no section header
+I don't know, but it's functional. Copied from read function.
+> 
+> 
+>> -	dev_info(&spi->dev, "%d %s %s eeprom%s, pagesize %u\n",
+>> -		(chip.byte_len < 1024) ? chip.byte_len : (chip.byte_len / 1024),
+>> -		(chip.byte_len < 1024) ? "Byte" : "KByte",
+>> -		at25->chip.name,
+>> -		(chip.flags & EE_READONLY) ? " (readonly)" : "",
+>> -		at25->chip.page_size);
+>> +	dev_info(&spi->dev, "%d %s %s %s%s, pagesize %u\n",
+>> +		 (chip.byte_len < 1024) ? chip.byte_len : (chip.byte_len / 1024),
+>> +		 (chip.byte_len < 1024) ? "Byte" : "KByte",
+>> +		 at25->chip.name, is_fram ? "fram" : "eeprom",
+>> +		 (chip.flags & EE_READONLY) ? " (readonly)" : "",
+>> +		 at25->chip.page_size);
+> 
+> When drivers work properly, they should be quiet.  This whole dev_info()
+> should be removed in a later patch.
+
+OK, didn't know, originally there is such info output. And keeping 
+simplest smallest patch changes.
