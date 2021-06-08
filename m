@@ -2,100 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9F739EF5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFA039EF5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhFHHTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 03:19:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58240 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229518AbhFHHTb (ORCPT
+        id S230269AbhFHHUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 03:20:43 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4507 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229657AbhFHHUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 03:19:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623136659;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZTmXo+HPt2tUCA6PmOrzdthBV1Q2yugHfu32WlEqc8g=;
-        b=ZBnbltPpzO+fCM7aMaR882hFKhqcEVB5o7AyL6yLNjCKjgtt47GCsyrUPQyucaFZkS82E2
-        iSgOX897H4nyS1lBjT1Ja5O5yld0/vuk58WElC40t8gmxxRlFLxdjl6hNZ/i8g8EQcwQgI
-        Hh1kf+ygAReXhPQWA7kVjKm+jpAzx+I=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-260-rosfiV1gNmy_L3qRolNGfg-1; Tue, 08 Jun 2021 03:17:37 -0400
-X-MC-Unique: rosfiV1gNmy_L3qRolNGfg-1
-Received: by mail-wr1-f71.google.com with SMTP id g14-20020a5d698e0000b0290117735bd4d3so8915287wru.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 00:17:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZTmXo+HPt2tUCA6PmOrzdthBV1Q2yugHfu32WlEqc8g=;
-        b=fDNjObACbMmo6Vhs35QL+fl1tqCmOsdnaVxjSJoy3rRf+g1HZXywqSAE+ZprOrZISH
-         qIoQReTRQPUHD1HiKQTRawHw04R6shyZwluCznz7SzONkB7E4fmyeeGdPpepeYzDPNEl
-         Pod1GyYO1Jz+1SR4GH0WqlB/qrthWQUUQK+Fzah3ETijRvw6GGVfKbOAiZyqcHvea/UD
-         jFv0R2NbTz+PgunxzbLlJxgQq4wVQ+jrFGX7SFAky9zCoOsf5pUcVpXonKDTcNLIvxfZ
-         DvgVYwrEK3/cCU9XBNhtdafW+SOK85iiwqQ2WS0B1KUQhiY9tiW2XMe/XtPIc6t9X9yn
-         k4ow==
-X-Gm-Message-State: AOAM532iD6xnJgtIhEHjhRzC8aJ2u0URBFS3t5TnRvJnjxi3cuh317MH
-        milxA18PSq5EoVCxNY5riSiBH8fIzNpwGtjkOpLCftdEFl+GmidnyAkWSBoC9o5HOrIy2pIkVi4
-        DmEuJjmvoTGJY3KnKhhp+PBXU
-X-Received: by 2002:a5d:618a:: with SMTP id j10mr21266969wru.229.1623136656648;
-        Tue, 08 Jun 2021 00:17:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyhXC3AcN3eNaQCnjSjYVSzk82kFl4HOaJ53frXDMBrihWA3bT5OwhUcuB4wr5mTwwKe5bOgw==
-X-Received: by 2002:a5d:618a:: with SMTP id j10mr21266951wru.229.1623136656461;
-        Tue, 08 Jun 2021 00:17:36 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id h9sm1885572wmm.33.2021.06.08.00.17.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 00:17:35 -0700 (PDT)
-To:     Salvatore Bonaccorso <carnil@debian.org>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        stable@vger.kernel.org, Wanpeng Li <kernellwp@gmail.com>
-References: <20200417163843.71624-1-pbonzini@redhat.com>
- <20200417163843.71624-2-pbonzini@redhat.com> <YL70kh5/vLW8gmAY@eldamar.lan>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 1/2] KVM: SVM: avoid infinite loop on NPF from bad address
-Message-ID: <24b6a7e2-5059-1c5c-aed1-1ea713d78bf3@redhat.com>
-Date:   Tue, 8 Jun 2021 09:17:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 8 Jun 2021 03:20:42 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzhNZ4prZzZdsh;
+        Tue,  8 Jun 2021 15:15:58 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 15:18:44 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 15:18:44 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] mm: remove trailing spaces and tabs
+Date:   Tue, 8 Jun 2021 15:18:29 +0800
+Message-ID: <20210608071829.12740-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <YL70kh5/vLW8gmAY@eldamar.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/06/21 06:39, Salvatore Bonaccorso wrote:
-> 
-> Did this simply felt through the cracks here or is it not worth
-> backporting to older series? At least
-> https://bugzilla.redhat.com/show_bug.cgi?id=1947982#c3  seem to
-> indicate it might not be worth of if there is risk for regression if I
-> understand Wanpeng Li. Is this right?
+Run the following command to find and remove the trailing spaces and tabs:
 
-It's not particularly interesting, because the loop can be broken with 
-just Ctrl-C (or any signal for that matter) and the guest was 
-misbehaving anyway.  You can read from that bugzilla link my opinion on 
-this "vulnerability": if you run a VM for somebody and they want to 
-waste your CPU time, they can just run a while(1) loop.
+find mm/ -type f | xargs sed -r -i 's/[ \t]+$//'
 
-It's a bug and it is caught by the kvm-unit-tests, so I marked it for 
-stable at the time because it can be useful to run kvm-unit-tests on 
-stable kernels and hanging is a bit impolite (the test harness has a 
-timeout, but of course tests that hang have the risk missing other 
-regressions).
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ mm/memory-failure.c | 20 ++++++++++----------
+ mm/oom_kill.c       |  2 +-
+ mm/page_io.c        |  2 +-
+ mm/rmap.c           |  2 +-
+ mm/swap_state.c     | 10 +++++-----
+ 5 files changed, 18 insertions(+), 18 deletions(-)
 
-I will review gladly a backport, but if it is just because of that CVE 
-report, documenting that the vulnerability is bogus would be time spent 
-better that doing and testing the backport.
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 560d096a7513..46445bb2ea29 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -6,16 +6,16 @@
+  * High level machine check handler. Handles pages reported by the
+  * hardware as being corrupted usually due to a multi-bit ECC memory or cache
+  * failure.
+- * 
++ *
+  * In addition there is a "soft offline" entry point that allows stop using
+  * not-yet-corrupted-by-suspicious pages without killing anything.
+  *
+  * Handles page cache pages in various states.	The tricky part
+- * here is that we can access any page asynchronously in respect to 
+- * other VM users, because memory failures could happen anytime and 
+- * anywhere. This could violate some of their assumptions. This is why 
+- * this code has to be extremely careful. Generally it tries to use 
+- * normal locking rules, as in get the standard locks, even if that means 
++ * here is that we can access any page asynchronously in respect to
++ * other VM users, because memory failures could happen anytime and
++ * anywhere. This could violate some of their assumptions. This is why
++ * this code has to be extremely careful. Generally it tries to use
++ * normal locking rules, as in get the standard locks, even if that means
+  * the error handling takes potentially a long time.
+  *
+  * It can be very tempting to add handling for obscure cases here.
+@@ -25,12 +25,12 @@
+  *   https://git.kernel.org/cgit/utils/cpu/mce/mce-test.git/
+  * - The case actually shows up as a frequent (top 10) page state in
+  *   tools/vm/page-types when running a real workload.
+- * 
++ *
+  * There are several operations here with exponential complexity because
+- * of unsuitable VM data structures. For example the operation to map back 
+- * from RMAP chains to processes has to walk the complete process list and 
++ * of unsuitable VM data structures. For example the operation to map back
++ * from RMAP chains to processes has to walk the complete process list and
+  * has non linear complexity with the number. But since memory corruptions
+- * are rare we hope to get away with this. This avoids impacting the core 
++ * are rare we hope to get away with this. This avoids impacting the core
+  * VM.
+  */
+ #include <linux/kernel.h>
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index c729a4c4a1ac..2f8bce6c63ac 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+  *  linux/mm/oom_kill.c
+- * 
++ *
+  *  Copyright (C)  1998,2000  Rik van Riel
+  *	Thanks go out to Claus Fischer for some serious inspiration and
+  *	for goading me into coding this file...
+diff --git a/mm/page_io.c b/mm/page_io.c
+index c493ce9ebcf5..9e80be141a73 100644
+--- a/mm/page_io.c
++++ b/mm/page_io.c
+@@ -4,7 +4,7 @@
+  *
+  *  Copyright (C) 1991, 1992, 1993, 1994  Linus Torvalds
+  *
+- *  Swap reorganised 29.12.95, 
++ *  Swap reorganised 29.12.95,
+  *  Asynchronous swapping added 30.12.95. Stephen Tweedie
+  *  Removed race in async swapping. 14.4.1996. Bruno Haible
+  *  Add swap of shared pages through the page cache. 20.2.1998. Stephen Tweedie
+diff --git a/mm/rmap.c b/mm/rmap.c
+index b6cfc92f5475..4ca1a212f588 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1040,7 +1040,7 @@ void page_move_anon_rmap(struct page *page, struct vm_area_struct *vma)
+  * __page_set_anon_rmap - set up new anonymous rmap
+  * @page:	Page or Hugepage to add to rmap
+  * @vma:	VM area to add page to.
+- * @address:	User virtual address of the mapping	
++ * @address:	User virtual address of the mapping
+  * @exclusive:	the page is exclusively owned by the current process
+  */
+ static void __page_set_anon_rmap(struct page *page,
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index 95e391f46468..460828d1c10a 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -178,7 +178,7 @@ void __delete_from_swap_cache(struct page *page,
+  * @page: page we want to move to swap
+  *
+  * Allocate swap space for the page and add the page to the
+- * swap cache.  Caller needs to hold the page lock. 
++ * swap cache.  Caller needs to hold the page lock.
+  */
+ int add_to_swap(struct page *page)
+ {
+@@ -277,9 +277,9 @@ void clear_shadow_from_swap_cache(int type, unsigned long begin,
+ 	}
+ }
+ 
+-/* 
+- * If we are the only user, then try to free up the swap cache. 
+- * 
++/*
++ * If we are the only user, then try to free up the swap cache.
++ *
+  * Its ok to check for PageSwapCache without the page lock
+  * here because we are going to recheck again inside
+  * try_to_free_swap() _with_ the lock.
+@@ -293,7 +293,7 @@ void free_swap_cache(struct page *page)
+ 	}
+ }
+ 
+-/* 
++/*
+  * Perform a free_page(), also freeing any swap cache associated with
+  * this page if it is the last user of the page.
+  */
+-- 
+2.25.1
 
-Paolo
 
