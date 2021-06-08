@@ -2,106 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9773B39EE8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC1739EE8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhFHGMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 02:12:44 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:49130 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhFHGMn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 02:12:43 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15865ILv046020;
-        Tue, 8 Jun 2021 06:10:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=VoWhBhCzotbyXNC47dREQCZMawQAjdOiikROgwHHh2U=;
- b=gcgvYo4LGQeyA22gJep9M64lKK+RQeGoU8Da3HL+CIJ402CBtHhBgDSKOYGJUl6AWSlX
- s9B2MYFKQBjzEUdX1Jkl4RioGwg1EruRU/4i0ciVveCSKhwqI1BrxHXOOja1dy8c4qO3
- oW04rEvGQLfLaVqhTSFlp+7uQ8BevMBBlbn6kcSKI2J9Yv6Nm457Lg/k6LmETg1ZWtqL
- IVdsqc267uC0oG1VwSLXTti+Tu/0EZRd3KJy7jt7jHQDNf0PsKAGtMssB5POstuXD/Xk
- g0DsJd5WhnklRHOzjhlajmITFvEXkyCRkRMs1BF3qiVJp0G2GxNshad+AxWgEzCOWsiY zw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 3914qukdg1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Jun 2021 06:10:32 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15864pDp093786;
-        Tue, 8 Jun 2021 06:10:31 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 38yyaamgax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Jun 2021 06:10:31 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15866Hlq097531;
-        Tue, 8 Jun 2021 06:10:30 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 38yyaamgar-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Jun 2021 06:10:30 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1586AQEo017539;
-        Tue, 8 Jun 2021 06:10:28 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Jun 2021 23:10:25 -0700
-Date:   Tue, 8 Jun 2021 09:10:18 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] mtd: rawnand: ensure return variable is initialized
-Message-ID: <20210608061018.GY1955@kadam>
-References: <20210527145048.795954-1-colin.king@canonical.com>
- <20210527170309.4d99bc31@xps13>
- <20210601121401.GY1955@kadam>
- <20210607085711.65c64c58@xps13>
+        id S230306AbhFHGOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 02:14:06 -0400
+Received: from mga18.intel.com ([134.134.136.126]:45940 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhFHGOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 02:14:05 -0400
+IronPort-SDR: M0VNI7wZbry6xNRFBHdHPY0xQZ+ZPmjYJivMMg+4jmg+Gg9ehuRYltJ9DbhsHOGO7E5VsELhj/
+ dKt7g52ZjL6A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="192104874"
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
+   d="scan'208";a="192104874"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 23:12:12 -0700
+IronPort-SDR: whekhH+DUY/L22S5XiQsTkHvvJod+1Jj3xQiVW1tsjKQSjaC4sRJHyZGYR8ZUEaVAP8Sdj+7EQ
+ ig9yJmLawE3g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
+   d="scan'208";a="481822230"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga001.jf.intel.com with SMTP; 07 Jun 2021 23:12:07 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 08 Jun 2021 09:12:06 +0300
+Date:   Tue, 8 Jun 2021 09:12:06 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
+        intel-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
+        dri-devel@lists.freedesktop.org, joonas.lahtinen@linux.intel.com,
+        maarten.lankhorst@linux.intel.com, linux-kernel@vger.kernel.org,
+        mripard@kernel.org, airlied@linux.ie, jani.nikula@linux.intel.com,
+        daniel@ffwll.ch, rodrigo.vivi@intel.com, alexander.deucher@amd.com,
+        harry.wentland@amd.com, christian.koenig@amd.com
+Subject: Re: [PATCH 2/4] drm/uAPI: Add "active bpc" as feedback channel for
+ "max bpc" drm property
+Message-ID: <YL8KNshbrHt3FBFa@intel.com>
+References: <20210604171723.10276-1-wse@tuxedocomputers.com>
+ <20210604171723.10276-3-wse@tuxedocomputers.com>
+ <YLpiVFiBrgH29rki@intel.com>
+ <bef099db-f662-9005-6e36-ce056257f537@tuxedocomputers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210607085711.65c64c58@xps13>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: _rJQgIOyb3G8Q7kF3RSqPX5T5W3Mu3q7
-X-Proofpoint-GUID: _rJQgIOyb3G8Q7kF3RSqPX5T5W3Mu3q7
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10008 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
- spamscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0
- priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=904 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106080042
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bef099db-f662-9005-6e36-ce056257f537@tuxedocomputers.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 08:57:11AM +0200, Miquel Raynal wrote:
+On Mon, Jun 07, 2021 at 08:46:47AM +0200, Werner Sembach wrote:
 > 
-> In the ONFI specification, the sdr_timing_mode field is defined as
-> follow:
+> Am 04.06.21 um 19:26 schrieb Ville Syrjälä:
+> > On Fri, Jun 04, 2021 at 07:17:21PM +0200, Werner Sembach wrote:
+> >> Add a new general drm property "active bpc" which can be used by graphic drivers
+> >> to report the applied bit depth per pixel back to userspace.
+> >>
+> >> While "max bpc" can be used to change the color depth, there was no way to check
+> >> which one actually got used. While in theory the driver chooses the best/highest
+> >> color depth within the max bpc setting a user might not be fully aware what his
+> >> hardware is or isn't capable off. This is meant as a quick way to double check
+> >> the setup.
+> >>
+> >> In the future, automatic color calibration for screens might also depend on this
+> >> information available.
+> >>
+> >> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> >> ---
+> >>   drivers/gpu/drm/drm_atomic_uapi.c |  2 ++
+> >>   drivers/gpu/drm/drm_connector.c   | 40 +++++++++++++++++++++++++++++++
+> >>   include/drm/drm_connector.h       | 15 ++++++++++++
+> >>   3 files changed, 57 insertions(+)
+> >>
+> >> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+> >> index 268bb69c2e2f..7ae4e40936b5 100644
+> >> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+> >> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+> >> @@ -873,6 +873,8 @@ drm_atomic_connector_get_property(struct drm_connector *connector,
+> >>   		*val = 0;
+> >>   	} else if (property == connector->max_bpc_property) {
+> >>   		*val = state->max_requested_bpc;
+> >> +	} else if (property == connector->active_bpc_property) {
+> >> +		*val = state->active_bpc;
+> >>   	} else if (connector->funcs->atomic_get_property) {
+> >>   		return connector->funcs->atomic_get_property(connector,
+> >>   				state, property, val);
+> >> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+> >> index 7631f76e7f34..5f42a5be5822 100644
+> >> --- a/drivers/gpu/drm/drm_connector.c
+> >> +++ b/drivers/gpu/drm/drm_connector.c
+> >> @@ -1195,6 +1195,13 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
+> >>    *	drm_connector_attach_max_bpc_property() to create and attach the
+> >>    *	property to the connector during initialization.
+> >>    *
+> >> + * active bpc:
+> >> + *	This read-only range property is used by userspace check the bit depth
+> >> + *	actually applied by the GPU driver after evaluation all hardware
+> >> + *	capabilities and max bpc. Drivers to use the function
+> >> + *	drm_connector_attach_active_bpc_property() to create and attach the
+> >> + *	property to the connector during initialization.
+> >> + *
+> >>    * Connectors also have one standardized atomic property:
+> >>    *
+> >>    * CRTC_ID:
+> >> @@ -2150,6 +2157,39 @@ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+> >>   }
+> >>   EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
+> >>   
+> >> +/**
+> >> + * drm_connector_attach_active_bpc_property - attach "active bpc" property
+> >> + * @connector: connector to attach active bpc property on.
+> >> + * @min: The minimum bit depth supported by the connector.
+> >> + * @max: The maximum bit depth supported by the connector.
+> >> + *
+> >> + * This is used to check the applied bit depth on a connector.
+> >> + *
+> >> + * Returns:
+> >> + * Zero on success, negative errno on failure.
+> >> + */
+> >> +int drm_connector_attach_active_bpc_property(struct drm_connector *connector,
+> >> +					  int min, int max)
+> >> +{
+> >> +	struct drm_device *dev = connector->dev;
+> >> +	struct drm_property *prop;
+> >> +
+> >> +	prop = connector->active_bpc_property;
+> >> +	if (!prop) {
+> >> +		prop = drm_property_create_range(dev, 0, "active bpc", min, max);
+> > Should be immutable.
+> Yes. I didn't know if there is a way to do this (or just don't define a 
+> set-function), but I think I found the define for this.
+> >
+> > Also wondering what the semantics of this should be when eg. DSC
+> > is active?
+> I'm unfamiliar how the inner workings of DSC (I guess Display Stream 
+> Compression?) are. But doesn't it also have color depth?
+
+Some number of bits go into the compressor, smaller/equal number
+of bits come out. Not sure if the choice of the input bpc affects
+what the sink does when decompressing or not.
+
 > 
-> SDR timing mode support
-> BIT  VALUE MEANING
-> 6-15 N/A   Reserved (0)
-> 5    1     supports timing mode 5
-> 4    1     supports timing mode 4
-> 3    1     supports timing mode 3
-> 2    1     supports timing mode 2
-> 1    1     supports timing mode 1
-> 0    1     supports timing mode 0, shall be 1
+> The active bpc should be what the GPU tells the display to actually show 
+> the user when he looks at just one pixel.
 > 
-> IOW sdr_timing_modes *cannot* be 0, or it is a truly deep and crazily
-> impacting hardware bug (so far I am not aware of any chip not returning
-> the right timing mode 0 value). Hence my proposal to turn best_mode as
-> unsigned. I honestly don't know what is the best option here and am
-> fully open to other suggestions to silence the robot.
+> So dithering computed on the host should not be included (aka when the 
+> gpu sends a premade picture to the screen and tells it the lesser pbc), 
+> while FRC dithering computed in the display firmware should be included 
+> (since the GPU can't really tell the difference between FRC displays and 
+> True 10-Bit displays, can't it?)
 
-If the hardware is broken we should just return -EINVAL.
+Not sure. Haven't checked if there's something in some standard for
+that.
 
-regards,
-dan carpenter
-
+-- 
+Ville Syrjälä
+Intel
