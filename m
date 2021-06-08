@@ -2,120 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F8F39FF40
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBAE39FF85
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbhFHSbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:31:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56244 "EHLO mail.kernel.org"
+        id S234634AbhFHSdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:33:45 -0400
+Received: from gate.crashing.org ([63.228.1.57]:34119 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234052AbhFHSbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:31:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F37A613BE;
-        Tue,  8 Jun 2021 18:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623176964;
-        bh=xVMsWp26lw0ReF/0QrK6B1Ds64/IDcKJGNXPTJopo9E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uvWv+Bd6N2xTOhOw3xhrX2sAMnErmzLmGiDXnWzKQ73NGtJAwr51kMYsZG/izGqoA
-         vBlks+LtgDBBIetgsZCkJcLTaLP8KbOErYlR8vmCqoWtOk1E9epUBTlLgYikoQ4Rsy
-         VCWCPJJUFYLOZeJSalACBP3s3Qw5TpGtEz5Evkh8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.4 23/23] xen-pciback: redo VF placement in the virtual topology
-Date:   Tue,  8 Jun 2021 20:27:15 +0200
-Message-Id: <20210608175927.282744265@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175926.524658689@linuxfoundation.org>
-References: <20210608175926.524658689@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S234235AbhFHScd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:32:33 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 158IP33w028182;
+        Tue, 8 Jun 2021 13:25:03 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 158IP2I6028181;
+        Tue, 8 Jun 2021 13:25:02 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 8 Jun 2021 13:25:02 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/32: Remove __main()
+Message-ID: <20210608182502.GZ18427@gate.crashing.org>
+References: <d01028f8166b98584eec536b52f14c5e3f98ff6b.1623172922.git.christophe.leroy@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d01028f8166b98584eec536b52f14c5e3f98ff6b.1623172922.git.christophe.leroy@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+On Tue, Jun 08, 2021 at 05:22:51PM +0000, Christophe Leroy wrote:
+> Comment says that __main() is there to make GCC happy.
+> 
+> It's been there since the implementation of ppc arch in Linux 1.3.45.
+> 
+> ppc32 is the only architecture having that. Even ppc64 doesn't have it.
+> 
+> Seems like GCC is still happy without it.
+> 
+> Drop it for good.
 
-The commit referenced below was incomplete: It merely affected what
-would get written to the vdev-<N> xenstore node. The guest would still
-find the function at the original function number as long as
-__xen_pcibk_get_pci_dev() wouldn't be in sync. The same goes for AER wrt
-__xen_pcibk_get_pcifront_dev().
+If you used G++ to build the kernel there could be a call to __main
+inserted under some circumstances.   It is used in functions called
+"main" if there is no other way to do initialisations (this should not
+happen if you use -ffreestanding, and there should not be a function
+called "main" anyway, but who knows).
 
-Undo overriding the function to zero and instead make sure that VFs at
-function zero remain alone in their slot. This has the added benefit of
-improving overall capacity, considering that there's only a total of 32
-slots available right now (PCI segment and bus can both only ever be
-zero at present).
-
-This is upstream commit 4ba50e7c423c29639878c00573288869aa627068.
-
-Fixes: 8a5248fe10b1 ("xen PV passthru: assign SR-IOV virtual functions to 
-separate virtual slots")
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/8def783b-404c-3452-196d-3f3fd4d72c9e@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/xen/xen-pciback/vpci.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
---- a/drivers/xen/xen-pciback/vpci.c
-+++ b/drivers/xen/xen-pciback/vpci.c
-@@ -68,7 +68,7 @@ static int __xen_pcibk_add_pci_dev(struc
- 				   struct pci_dev *dev, int devid,
- 				   publish_pci_dev_cb publish_cb)
- {
--	int err = 0, slot, func = -1;
-+	int err = 0, slot, func = PCI_FUNC(dev->devfn);
- 	struct pci_dev_entry *t, *dev_entry;
- 	struct vpci_dev_data *vpci_dev = pdev->pci_dev_data;
- 
-@@ -93,23 +93,26 @@ static int __xen_pcibk_add_pci_dev(struc
- 
- 	/*
- 	 * Keep multi-function devices together on the virtual PCI bus, except
--	 * virtual functions.
-+	 * that we want to keep virtual functions at func 0 on their own. They
-+	 * aren't multi-function devices and hence their presence at func 0
-+	 * may cause guests to not scan the other functions.
- 	 */
--	if (!dev->is_virtfn) {
-+	if (!dev->is_virtfn || func) {
- 		for (slot = 0; slot < PCI_SLOT_MAX; slot++) {
- 			if (list_empty(&vpci_dev->dev_list[slot]))
- 				continue;
- 
- 			t = list_entry(list_first(&vpci_dev->dev_list[slot]),
- 				       struct pci_dev_entry, list);
-+			if (t->dev->is_virtfn && !PCI_FUNC(t->dev->devfn))
-+				continue;
- 
- 			if (match_slot(dev, t->dev)) {
- 				pr_info("vpci: %s: assign to virtual slot %d func %d\n",
- 					pci_name(dev), slot,
--					PCI_FUNC(dev->devfn));
-+					func);
- 				list_add_tail(&dev_entry->list,
- 					      &vpci_dev->dev_list[slot]);
--				func = PCI_FUNC(dev->devfn);
- 				goto unlock;
- 			}
- 		}
-@@ -122,7 +125,6 @@ static int __xen_pcibk_add_pci_dev(struc
- 				pci_name(dev), slot);
- 			list_add_tail(&dev_entry->list,
- 				      &vpci_dev->dev_list[slot]);
--			func = dev->is_virtfn ? 0 : PCI_FUNC(dev->devfn);
- 			goto unlock;
- 		}
- 	}
+Either way, yup, this is ancient history :-)
 
 
+Segher
