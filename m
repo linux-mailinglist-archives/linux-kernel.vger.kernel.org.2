@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A5139ED4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 06:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614B039ED5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 06:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhFHEFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 00:05:24 -0400
-Received: from m12-14.163.com ([220.181.12.14]:50336 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230364AbhFHEFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 00:05:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=DNLwM
-        zXXlvjlktYKcoSn4X8coBC5DxgHYYWPX96rHT0=; b=EEHEvwBBYleu7Mavthg4P
-        snP3WunlHyF2QSc1YDllrXCx+M+8dUo0efFp+Et0X0rLMMOw052xOLP82JlxZ2I7
-        zfnBoT1BgKhBxDQNH8vKyNRr79zyuHGTgv7HP7cfYg5MKYMlx406ClUZvGEiwH+w
-        hwEO8DsNQAB8xiVmzJIMmc=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp10 (Coremail) with SMTP id DsCowAB3wGQH7L5gZ0okNg--.59165S2;
-        Tue, 08 Jun 2021 12:03:20 +0800 (CST)
-From:   13145886936@163.com
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] net: appletalk: fix some mistakes in grammar
-Date:   Mon,  7 Jun 2021 21:03:12 -0700
-Message-Id: <20210608040312.2440-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S231237AbhFHEGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 00:06:15 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:60661 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231238AbhFHEGN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 00:06:13 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yaohuiwang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ubixn0M_1623125043;
+Received: from Dillions-MBP-16.local(mailfrom:yaohuiwang@linux.alibaba.com fp:SMTPD_---0Ubixn0M_1623125043)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 08 Jun 2021 12:04:19 +0800
+From:   Yaohui Wang <yaohuiwang@linux.alibaba.com>
+Subject: Re: [PATCH] mm: fix pfn calculation mistake in __ioremap_check_ram
+To:     Dave Hansen <dave.hansen@intel.com>, dave.hansen@linux.intel.com
+Cc:     luto@kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, yaohuiwang@linux.alibaba.com,
+        luoben@linux.alibaba.com
+References: <20210607091938.47960-1-yaohuiwang@linux.alibaba.com>
+ <b77d2374-56d5-4b97-1319-56e744b81303@intel.com>
+Message-ID: <0d1a308b-4d0e-d91a-52a7-6456ec6713f8@linux.alibaba.com>
+Date:   Tue, 8 Jun 2021 12:04:03 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowAB3wGQH7L5gZ0okNg--.59165S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJF1rGw1UZr18uw1DGFW5trb_yoW8Gr48pr
-        n5ur4jgan3GrnrKw1kWan2qrWUuF4DWay3uFy3Ar4Svr15Gr9xGF1DXrya9FW5KryrJayS
-        vr9rWFWIv3WUJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bbrcfUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiygirg1QHMUdy5AAAsZ
+In-Reply-To: <b77d2374-56d5-4b97-1319-56e744b81303@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
 
-Fix some mistakes in grammar.
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- net/appletalk/ddp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On 2021/6/7 21:55, Dave Hansen wrote:
+> On 6/7/21 2:19 AM, Yaohui Wang wrote:
+>> According to the source code in function
+>> arch/x86/mm/ioremap.c:__ioremap_caller, after __ioremap_check_mem, if the
+>> mem range is IORES_MAP_SYSTEM_RAM, then __ioremap_caller should fail. But
+>> because of the pfn calculation problem, __ioremap_caller can success
+>> on IORES_MAP_SYSTEM_RAM region when the @size parameter is less than
+>> PAGE_SIZE. This may cause misuse of the ioremap function and raise the
+>> risk of performance issues. For example, ioremap(phys, PAGE_SIZE-1) may
+>> cause the direct memory mapping of @phys to be uncached, and iounmap won't
+>> revert this change. This patch fixes this issue.
+>>
+>> In arch/x86/mm/ioremap.c:__ioremap_check_ram, start_pfn should wrap down
+>> the res->start address, and end_pfn should wrap up the res->end address.
+>> This makes the check more strict and should be more reasonable.
+> 
+> Was this found by inspection, or was there a real-world bug which this
+> patch addresses?
+>
 
-diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
-index ebda397fa95a..8ade5a4ceaf5 100644
---- a/net/appletalk/ddp.c
-+++ b/net/appletalk/ddp.c
-@@ -707,7 +707,7 @@ static int atif_ioctl(int cmd, void __user *arg)
- 
- 		/*
- 		 * Phase 1 is fine on LocalTalk but we don't do
--		 * EtherTalk phase 1. Anyone wanting to add it go ahead.
-+		 * EtherTalk phase 1. Anyone wanting to add it, go ahead.
- 		 */
- 		if (dev->type == ARPHRD_ETHER && nr->nr_phase != 2)
- 			return -EPROTONOSUPPORT;
-@@ -828,7 +828,7 @@ static int atif_ioctl(int cmd, void __user *arg)
- 		nr = (struct atalk_netrange *)&(atif->nets);
- 		/*
- 		 * Phase 1 is fine on Localtalk but we don't do
--		 * Ethertalk phase 1. Anyone wanting to add it go ahead.
-+		 * Ethertalk phase 1. Anyone wanting to add it, go ahead.
- 		 */
- 		if (dev->type == ARPHRD_ETHER && nr->nr_phase != 2)
- 			return -EPROTONOSUPPORT;
-@@ -2018,7 +2018,7 @@ module_init(atalk_init);
-  * by the network device layer.
-  *
-  * Ergo, before the AppleTalk module can be removed, all AppleTalk
-- * sockets be closed from user space.
-+ * sockets should be closed from user space.
-  */
- static void __exit atalk_exit(void)
- {
--- 
-2.25.1
+I did a performance test for linux kernel in many aspects. One of my 
+scripts is to test the performance influence of ioremap. I found that 
+applying ioremap on normal RAM may cause terrible performance issues.
 
+To avoid memory cache behavior aliasing, ioremap will call 
+memtype_kernel_map_sync to sync the cache attribute in the directing 
+mapping, which causes:
+
+1. If the phys addr is in a huge page in the directing mapping, then 
+ioremap will split the huge page into 4K pages.
+2. It will set the PCD bit in the directing mapping pte.
+
+Both the above behaviors will downgrade the performance of the machine, 
+especially when there is important code/data which is accessed 
+frequently. What's worse, iounmap won't clear the PCD bit in the 
+directing mapping pte, and I need to call ioremap_cache to clear the PCD 
+bit. All these should be avoided.
+
+Another thing also confuses me:
+
+ From __ioremap_caller, we can see that __ioremap_caller don't allow us 
+to remap normal RAM. In my understanding, direct mapping only maps 
+normal RAM. So if the remap behavior is not allowed on normal RAM, it 
+should be unnecessary to call memtype_kernel_map_sync. Is this right?
