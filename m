@@ -2,149 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D4239F33E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A2939F33F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhFHKMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:12:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:54702 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229923AbhFHKMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:12:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A9DFF1396;
-        Tue,  8 Jun 2021 03:10:56 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BAB743F719;
-        Tue,  8 Jun 2021 03:10:54 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 11:10:48 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-Subject: Re: [RFC PATCH 01/10] firmware: arm_scmi: Reset properly xfer SCMI
- status
-Message-ID: <20210608101048.GD40811@e120937-lin>
-References: <20210606221232.33768-1-cristian.marussi@arm.com>
- <20210606221232.33768-2-cristian.marussi@arm.com>
- <20210607173809.et6fzayvubsosvso@bogus>
- <20210607180137.GB40811@e120937-lin>
- <20210607182754.3wsmhc2t5mh36ycm@bogus>
+        id S230440AbhFHKNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:13:09 -0400
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:43876 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230190AbhFHKNI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 06:13:08 -0400
+Received: by mail-lf1-f46.google.com with SMTP id n12so24189477lft.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 03:11:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k2qekH5QTUHRb0WCkg2bw3O8D9nzGSmJhMHj73OkHtI=;
+        b=nkreThliFDDX89hzlW5RymM7iqUee6FIMDRnDTcRsOIARz+tEe1ZFk3AiNLsn+ZTHQ
+         D4MwwQcc5b53yNKnPYFbQPtQzVxJFYDcGXddq+wKYfSYSBRolypX+1I+L95Q9vOpQ+Vy
+         K1wmTfPq5p2AL18IS3OiUZfHRMyJMU0asmTvJchXB4hm6h5k9BrRdQWDlLwwNDaPZMwL
+         Gwmls2mqZJ4YQIi0BBFNCtRDRSN4QwchjPA36kxDvGHTAJSt9K2+ea0PCOQankJlPw1C
+         y01osXb05ZAZJd7JHRSYpm9DBkNhx6kZucZWuMHupBCP10tEIXxUwuvlzSWCx+Z0n4wl
+         Ligw==
+X-Gm-Message-State: AOAM533EUdvCTYAiR7J6RaejvScl+EaiipOkXOAHQDa8JSqUF4+STPFh
+        1vzBhx/FIEP4Mg+gUM99RZE=
+X-Google-Smtp-Source: ABdhPJxcfUBILHI+9NWE25zIcBvd9Bgz13XJbw76JMDot6+IA4VSJa0Mw0uP2jtS6iKZRbOP4BoUcw==
+X-Received: by 2002:a05:6512:3483:: with SMTP id v3mr15317442lfr.154.1623147059639;
+        Tue, 08 Jun 2021 03:10:59 -0700 (PDT)
+Received: from dc7vkhyh15000m40t6jht-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id v18sm1002591ljg.114.2021.06.08.03.10.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 03:10:59 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 13:10:53 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND v2 5/5] extcon: extcon-max8997: Simplify driver using
+ devm
+Message-ID: <61190cc280a63baeb05ec570282bb3677bee8e7b.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210607182754.3wsmhc2t5mh36ycm@bogus>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <cover.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sudeep,
 
-On Mon, Jun 07, 2021 at 07:27:54PM +0100, Sudeep Holla wrote:
-> On Mon, Jun 07, 2021 at 07:01:37PM +0100, Cristian Marussi wrote:
-> > On Mon, Jun 07, 2021 at 06:38:09PM +0100, Sudeep Holla wrote:
-> > > On Sun, Jun 06, 2021 at 11:12:23PM +0100, Cristian Marussi wrote:
-> > > > When an SCMI command transfer fails due to some protocol issue an SCMI
-> > > > error code is reported inside the SCMI message payload itself and it is
-> > > > then retrieved and transcribed by the specific transport layer into the
-> > > > xfer.hdr.status field by transport specific .fetch_response().
-> > > >
-> > > > The core SCMI transport layer never explicitly reset xfer.hdr.status,
-> > > > so when an xfer is reused, if a transport misbehaved in handling such
-> > > > status field, we risk to see an invalid ghost error code.
-> > > >
-> > > > Reset xfer.hdr.status to SCMI_SUCCESS right before each transfer is
-> > > > started.
-> > > >
-> > >
-> > > Any particular reason why it can't be part of xfer_get_init which has other
-> > > initialisations ? If none, please move it there.
-> > >
-> >
-> > Well it was there initially then I moved it here.
-> >
-> > The reason is mostly the same as the reason for the other patch in this
-> > series that adds a reinit_completion() in this same point: the core does
-> > not forbid to reuse an xfer multiple times, once obtained with xfer_get()
-> > or xfer_get_init(), and indeed some protocols do such a thing: they
-> > implements such do_xfer looping and bails out on error.
-> >
-> 
-> Makes sense. But it is okay to retain xfer->transfer_id for every transfer
-> in such a loop ?
-> 
-No you are right and indeed I saw that anomaly, but I have not addressed
-it since, even if wrong, it is harmless and transfer_id is really used
-only for debugging/profiling, while the missing reinit_completion is
-potentially broken.
+--opJtzjQTFsWo+cga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > In the way that it is implemented now in protocols poses no problem
-> > indeed because the do_xfer loop bails out on error and the xfer is put,
-> > but as soon as some protocol is implemented that violates this common
-> > practice and it just keeps on reuse an xfer after an error fo other
-> > do_xfers() this breaks...so it seemed more defensive to just reinit the
-> > completion and the status before each send.
-> 
-> Fair enough. But they use it to send same message I guess, may be if it
-> gave error or something ? I would like to really know such a sequence
-> instead of assisting that 😉. 
-> 
+Simplify driver by switching to use the resource managed IRQ
+requesting and resource managed work-queue initialization.
 
-So the current real 'looping do_xfer' behavior is safe and so this missing
-reinit is only potentially broken in the future, and we cannot really
-know now in advance about some future protocol needs, but it seems as of now
-wrong that you'll want to keep going on and reuse an xfer for the same command
-after an error in your loop.
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+---
+Changelog:
+ v2:
+  - IRQ freeing fix splitted in own patch
 
-On the other side we allow such behaviour, so I thought was good to
-provide a safe net if it is misused.
+Please note that the change is compile-tested only. All proper testing is
+highly appreciated.
+---
+ drivers/extcon/extcon-max8997.c | 47 +++++++++++----------------------
+ 1 file changed, 16 insertions(+), 31 deletions(-)
 
-But, beside this patches, that, as said, are more defensive that strictly
-needed as of now, I think now it's worth mentioning that this same 'issue'
-affects also, as an example, the new mechanism I introduced later in this
-same series to always use monotonically increasing sequence number for
-outgoing messages.
+diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max899=
+7.c
+index c15a612067af..bbc592823570 100644
+--- a/drivers/extcon/extcon-max8997.c
++++ b/drivers/extcon/extcon-max8997.c
+@@ -5,6 +5,7 @@
+ //  Copyright (C) 2012 Samsung Electronics
+ //  Donggeun Kim <dg77.kim@samsung.com>
+=20
++#include <linux/devm-helpers.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/i2c.h>
+@@ -650,27 +651,30 @@ static int max8997_muic_probe(struct platform_device =
+*pdev)
+ 	mutex_init(&info->mutex);
+=20
+ 	INIT_WORK(&info->irq_work, max8997_muic_irq_work);
++	ret =3D devm_work_autocancel(&pdev->dev, &info->irq_work,
++				   max8997_muic_irq_work);
++	if (ret)
++		return ret;
+=20
+ 	for (i =3D 0; i < ARRAY_SIZE(muic_irqs); i++) {
+ 		struct max8997_muic_irq *muic_irq =3D &muic_irqs[i];
+ 		unsigned int virq =3D 0;
+=20
+ 		virq =3D irq_create_mapping(max8997->irq_domain, muic_irq->irq);
+-		if (!virq) {
+-			ret =3D -EINVAL;
+-			goto err_irq;
+-		}
++		if (!virq)
++			return -EINVAL;
++
+ 		muic_irq->virq =3D virq;
+=20
+-		ret =3D request_threaded_irq(virq, NULL,
+-				max8997_muic_irq_handler,
+-				IRQF_NO_SUSPEND,
+-				muic_irq->name, info);
++		ret =3D devm_request_threaded_irq(&pdev->dev, virq, NULL,
++						max8997_muic_irq_handler,
++						IRQF_NO_SUSPEND,
++						muic_irq->name, info);
+ 		if (ret) {
+ 			dev_err(&pdev->dev,
+ 				"failed: irq request (IRQ: %d, error :%d)\n",
+ 				muic_irq->irq, ret);
+-			goto err_irq;
++			return ret;
+ 		}
+ 	}
+=20
+@@ -678,14 +682,13 @@ static int max8997_muic_probe(struct platform_device =
+*pdev)
+ 	info->edev =3D devm_extcon_dev_allocate(&pdev->dev, max8997_extcon_cable);
+ 	if (IS_ERR(info->edev)) {
+ 		dev_err(&pdev->dev, "failed to allocate memory for extcon\n");
+-		ret =3D PTR_ERR(info->edev);
+-		goto err_irq;
++		return PTR_ERR(info->edev);
+ 	}
+=20
+ 	ret =3D devm_extcon_dev_register(&pdev->dev, info->edev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to register extcon device\n");
+-		goto err_irq;
++		return ret;
+ 	}
+=20
+ 	if (pdata && pdata->muic_pdata) {
+@@ -733,7 +736,7 @@ static int max8997_muic_probe(struct platform_device *p=
+dev)
+ 				2, info->status);
+ 	if (ret) {
+ 		dev_err(info->dev, "failed to read MUIC register\n");
+-		goto err_irq;
++		return ret;
+ 	}
+ 	cable_type =3D max8997_muic_get_cable_type(info,
+ 					   MAX8997_CABLE_GROUP_ADC, &attached);
+@@ -756,23 +759,6 @@ static int max8997_muic_probe(struct platform_device *=
+pdev)
+ 			delay_jiffies);
+=20
+ 	return 0;
+-
+-err_irq:
+-	while (--i >=3D 0)
+-		free_irq(muic_irqs[i].virq, info);
+-	return ret;
+-}
+-
+-static int max8997_muic_remove(struct platform_device *pdev)
+-{
+-	struct max8997_muic_info *info =3D platform_get_drvdata(pdev);
+-	int i;
+-
+-	for (i =3D 0; i < ARRAY_SIZE(muic_irqs); i++)
+-		free_irq(muic_irqs[i].virq, info);
+-	cancel_work_sync(&info->irq_work);
+-
+-	return 0;
+ }
+=20
+ static struct platform_driver max8997_muic_driver =3D {
+@@ -780,7 +766,6 @@ static struct platform_driver max8997_muic_driver =3D {
+ 		.name	=3D DEV_NAME,
+ 	},
+ 	.probe		=3D max8997_muic_probe,
+-	.remove		=3D max8997_muic_remove,
+ };
+=20
+ module_platform_driver(max8997_muic_driver);
+--=20
+2.25.4
 
-In that case I stick to the current behavior and I assign such monotonically
-increasing sequence numbers to message during xfer_get, but the potential
-issue is the same: if a do_xfer loop is used you end up reusing the same
-seq_num for multiple do_xfers (so defeating really the mechanism itself
-that aims not to reuse immediately the most recently used seq_num).
 
-In that case I did this to keep it simple and to avoid placing more burden
-on tx path by picking and assigning a seq_num upon each transfer...but, again,
-also this behavior of picking a seq_num only at xfer_get is NOT really broken
-as of now even for do_xfer loops since we bail out on error and you won't
-really reuse that xfer.
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
-It's just that in this seq_num selection case seems to add a lot of burden
-and complexity if moved to the do_xfer phase, while status/reinit seemed
-to me cheaper to move it in the do_xfer so I tried to play defensive.
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
 
-At the end, in general I would say that all of these ops (status/reinit/
-seq_nums/transfer_id) DO really belong logically to the do_xfer phase more than
-to the xfer_get/xfer_get_init, but in reality we can cope with having them
-@xfer_get/get_init and this keeps things simple and reduce burden, especially
-in the monotonic seq_nums case: so I am not so sure anymore if it is fine to
-move reinit/status to the do_xfer, as proposed here, while keeping seq_nums
-(for good reasons) to the xfer_get phase, because we'd use 2 different strategies
-to address similar issues.
+--opJtzjQTFsWo+cga
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I would say: just keep reinit and status in the xfer_get phase instead and
-maybe warn somehow if a failed xfer is detected being reused. (but this
-would anyway need a check in every tx transaction to see if status != SUCCESS
-so is it worth ?)
+-----BEGIN PGP SIGNATURE-----
 
-Lot of overthinking for a one-liner :D ... sorry
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmC/Qi0ACgkQeFA3/03a
+ocWI9wf/ZW0SWoI8ANKOCJm+dxWQ7PaDLyL8ZDhpZD3l1yQjg4MzwM1WbsNQC67j
+ggY6LPDxyjrN8nYV/zKDJaf+7ECOwIvhuDkcqaug57BnN6wF/QzNewB3PyGXlIXr
+iZIUYLMh+zjzX9AWVmrtPC3lH9u7AcO3FtDrbSgH3mkboAD2NTqT3vtQ4pMnx6a0
+dMG7Kq3jGBEmR3hjlMZOZEv/67JIuL7mSaUdtndIXcj6/a2q/TU+cEwaIju3l+FW
+zmh1RHtZmvjju/xWbGw9A9WEVxAEPSArd33vQNaRY9rfotuFdR4EJ8rPKIhwA4fm
+A9vSEGlFQe5AE+vN7WeefgLiowxRDg==
+=MRTK
+-----END PGP SIGNATURE-----
 
-Thanks,
-Cristian
-
-
-> --
-> Regards,
-> Sudeep
+--opJtzjQTFsWo+cga--
