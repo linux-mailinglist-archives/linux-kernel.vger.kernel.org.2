@@ -2,169 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DE13A0379
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F268B3A0406
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237372AbhFHTRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:17:36 -0400
-Received: from mail-mw2nam10on2042.outbound.protection.outlook.com ([40.107.94.42]:29665
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237879AbhFHTGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:06:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ki/the97YEjDhmRnD07J+e8DvDJLszW9GIxche50Ic4iwkYm/o1OB0q5wdqkQzzpOLFSoScOoT1C0/ibCBfjG7Jd95rcm+X1Sb93SEBZKHDLKmgZTQNK6S2uUumKbaf3IVebitUBUNr0gs4Q1g/BIhaTk9CzkxR41vYB130IjdoWw7bjpcGHJipIRtfZdDBQ3Tl90RYUse64nX50zcWcixYxh5XUIsKzyFSHoXe0LjHtSbiNicLHK3vAC5qzFUA0GefOd17Soh1NKpNWF4DU5NMjqR7iA9pUsSds+3pL4Fkrg+jxCFfrbooDBwXcPE1C3G7N8yXqw4a1EnVd9stlxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iaRJrejWbXp1V7Owx6wLj+WWWTWLRq2muZfFSIGBTsE=;
- b=DceweHBhs3Cj2jEctIXROEV/gbx7nsjXN/LpVV6tYh6iHXrv8dgPuXu2XPrxoDcz4k3DVeVt167BiQOYMz2C9HPN5d5jhjae+iswVjkVHHS+VIJYGXeBsFUvhNdGL4ck2P9ar2XgO/b/HDxIsPCPYillZ5hLqQReKn7vdEQ0uwrj7iHYAuPq3jADB0H87l/1Xv0CDsbK02FpTNSjgPtzgRGk+5DnQ7PhKMMrB1a1qWaFA49ZXRTekQtmAlbS1iWq2QkkHDZ0VSj5rpNC8ogk4yC1OptzTSqGlF/+23NVQ/f+7Mio3yjt+Mob7qzxSjSm0mCraLwaj6pcdJjVacEMHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iaRJrejWbXp1V7Owx6wLj+WWWTWLRq2muZfFSIGBTsE=;
- b=bXPB3U6kPVzU95ed1sWunPEbwUrt8Sm3yG3JyAtD1vtKaxVI5qvRJdqX01uL5LUc49LioWBQxr9jb8HBY0yppeQ4maZ9xFPJ5Yhxob96Ikeww9HfdP8c5LYc7iiHKVrgAfGwa+iT6wzVQBZDGs8rfMwf4OiAZiQv7Dal+QSsvJ42Clp7mqg3Fod3MfzPn2KCxTFGu1xwSTCoeva1tG7tP4nFrqw0fLXuRBKZ0zgSwIFNpLzEkZ9JxScCpXbuSk3TVjwlkC5Jwg9HB4fJhwp9v/YjEugQaX47DB/pWZae8i/iRs5jLTzHGONeeBkgDpBI4tELlhMkZfD9bHulgYNiIg==
-Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
- header.d=none;gibson.dropbear.id.au; dmarc=none action=none
- header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5522.namprd12.prod.outlook.com (2603:10b6:208:17d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Tue, 8 Jun
- 2021 19:04:08 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4219.021; Tue, 8 Jun 2021
- 19:04:08 +0000
-Date:   Tue, 8 Jun 2021 16:04:06 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210608190406.GN1002214@nvidia.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210528173538.GA3816344@nvidia.com>
- <YLcl+zaK6Y0gB54a@yekko>
- <20210602161648.GY1002214@nvidia.com>
- <YLhlCINGPGob4Nld@yekko>
- <20210603115224.GQ1002214@nvidia.com>
- <YL6/bjHyuHJTn4Rd@yekko>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL6/bjHyuHJTn4Rd@yekko>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR20CA0056.namprd20.prod.outlook.com
- (2603:10b6:208:235::25) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S239645AbhFHTYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237309AbhFHTMa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:12:30 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3092C061280
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:04:54 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id c18so6204924qkc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 12:04:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2jPcj/C6TRMQWZ0en2y4QiL1/nmkGIzkAV8/GV2D66g=;
+        b=sA+MecloS58fnoElC0H+yTSvjBc41EROUjuFmWMYrN8etoMTh9udDwKLdcCqWwpf/L
+         wTvrDLojEaDXmT1tpHkrc86ag8wA3vZc5OEglsn3qH+3UoR9Pces6beT9F3YdIXWrxAo
+         L3BVpPQ3AdP9LfQqhRzfm1hH3Jbb/9hx8AKNHRRQm/thVgXGqWhGsTDgTogT29N2i6Tz
+         4ZwC8Jk+rHzvtncWeElBcmAjDWYOqCUaqvY/HCOQoB3haYWbcUw9+bjrfxiMvRW2+hCB
+         ccG9NMoYJ+JC2TGRZEJI3Fx7zRCfScetgWFtXsD5SpHG4LNWkBLsWOUoJIpWHKWBkBSN
+         9pSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2jPcj/C6TRMQWZ0en2y4QiL1/nmkGIzkAV8/GV2D66g=;
+        b=g1ERiP0AhankfADiv0oAcamGB822/IWWQ6rIiyLMTY1whincTcyRuxBRixLPQ4PHUP
+         ZWGyFfh2pyTBJ7V4kP1DdXEIAYfBl0fDJYSjgFtCT9uJ8pkTAoVVVdQ5BRCmAA/hmM+o
+         5//OTG8n6U6TMFvc5C64HMgk9oxhMHEV976K67YAEVW7MsT8H64Uq7FOahMJDM9HhNW8
+         aFPPfQozvGGNnoCmywuPY+O2wD4HFRT5i5YHv6cMwro33/1qqVz3PdoqC96oHCyDqRfu
+         ZOjbKJnLHPL3Sh6jqUVrZEAZHsTAOnM4Zo6voZxd+uXIUlXj3QE11/Fsm8icPD5PFBGC
+         zb3Q==
+X-Gm-Message-State: AOAM530UZgHvRW7Cx+r+4WwFaCDly3PopIlQsOPsXjx9IA8HtVAzcPmh
+        mIKZjGZbYCCIvXvXzV0cZ5K+nnnsWFvPAQ==
+X-Google-Smtp-Source: ABdhPJyzjXZFrbAERlLdgkoOpW6DC2YNv+L8A3+Ui8RxI9a0HNzM45aqkaw1M0LuvLfW+XBDoTBzsA==
+X-Received: by 2002:a05:620a:20d7:: with SMTP id f23mr22466830qka.484.1623179093952;
+        Tue, 08 Jun 2021 12:04:53 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id d24sm11792750qtm.70.2021.06.08.12.04.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 12:04:53 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] psi: clean up time collection functions
+Date:   Tue,  8 Jun 2021 15:04:52 -0400
+Message-Id: <20210608190452.77486-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR20CA0056.namprd20.prod.outlook.com (2603:10b6:208:235::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.21 via Frontend Transport; Tue, 8 Jun 2021 19:04:07 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lqh1C-0048fX-Lv; Tue, 08 Jun 2021 16:04:06 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 704ecc31-7e5f-4f5e-1415-08d92ab03132
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5522:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB5522B51116DC002EAB61614EC2379@BL0PR12MB5522.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EcV0+XadaKWdpp//KiCs3ZXERq45FECPssCOt77biouvpoM0VRcdhRwbLDYxwt8m2MdCd3GLkuyruZs9nMzwRNRAvHP2eE75Q9OqZEGNxudSh9gkvNcZhFGyHdUingihy6L4Bwh+j6F8VpVHonxUc5VaXdhtza/lEDpmluPf0xlWk/VAx5I4i+aFV/WitKdXJDgxAgaPYfznTJ8MXw/pQOQuRHwcepzp2plvlkP5Pv+KEDSFoovsrhnDzpLQvYmeaqDX1EUulDiXUbYRlw7LHWR2YskcIh6b4imYFXilOrvNliWqXeWdyKGqjuqpz+Zvfbevzm3wReI9ZsU/I3+HVy8oNJ9fYCB235eCtC5x0OfQ61zWE6V/taFNLZ65N0jwS9LE4QYFkcGCQE0uGY2V2qwwGXT2g13UFFQpY+tzaYtR3N1JM07yQMD9u6Ea2HPwTTSNkOAMMDlegxc+7CVxl9NEnSYp7MKugMenbzNf+7RhlAHpX/hDn6m6j4bbqLixBuqxLqIu3Y7hHmXCFoer09EBvFM8cMryNRiBB1+PdJU4sgREHlOUYDHyC0/sOuy8Jx03SdRkWNgC1ackdWZ/5OpdxpqcGracVJD0wKXBTmY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39860400002)(396003)(376002)(8676002)(316002)(86362001)(2906002)(36756003)(38100700002)(33656002)(1076003)(8936002)(186003)(6916009)(54906003)(9746002)(9786002)(2616005)(478600001)(7416002)(426003)(66946007)(66476007)(5660300002)(26005)(66556008)(4326008)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2VVbYXngpJbBN3w0g/3DJ/8gZvaQJoU2Rrh0JS7qxmVxZztwPTi/I3siHBuV?=
- =?us-ascii?Q?ySFNWryNrh5v2g4e/JGQNar5ulysZSLHILxBMmcAE0fP1ox0BbpHJwuwjK6L?=
- =?us-ascii?Q?oNr28/ah1Z5Gj6jQwY495mlJYpa2vox0belg5/qvUmvBF7jjxghSdU3sys/Y?=
- =?us-ascii?Q?MvUnXBjVPoQ0PbhWYn9Z09mt5eZl73C6g1EO66rlfbBihkOBWL19xW85Vqtv?=
- =?us-ascii?Q?1qfZa2crOzafhv9cXlv631vbJHvTODApTAY4nqXliXoNJjj2t5ogT4tIa9rQ?=
- =?us-ascii?Q?p2oB68RQCxbszpAEOW2RBLfnnEO8RSANyjVryIen0MEVlcYp7ZYntjakGjOY?=
- =?us-ascii?Q?RE01DLj0BleNO9clNft23w/PzXOdZyefVhQfjmMYosIE2+2PVyb4Kkc3J8iK?=
- =?us-ascii?Q?ZDxHZeqY7ODHXaZzEa59uQib85pzkxVM5+ApXg/DHJfhzGNMEdGa12Y9FC4j?=
- =?us-ascii?Q?ou5OyknimuixgGJ5yqGgV5n8w5irnLofHXQabwzD/Fm9v4mZxD9nVTn3lfNu?=
- =?us-ascii?Q?FcWElBxUtbGTAOVNk+GrYQirvye9BohikWdw7Kdv0K1l7ZquDcC/uEe5gzrR?=
- =?us-ascii?Q?1hqblcQHxGDxBnmT3j0dtwwEKIigRCCphbUyZwQcnSb94Afa3BxWweicGKT1?=
- =?us-ascii?Q?PoxbeXM3hXJaU2sGXERaaY8xUpZlQ4psNJmq4glV2y/6RFRsc1plKWgbaqMt?=
- =?us-ascii?Q?agA+/KE/CO8mUkjhHgifx8fsG0Vq981Tl2G4sgfUSHeQIa8MF74VChvQa0tZ?=
- =?us-ascii?Q?e942b/mS5fY8AoQnKF+hYiMzW01M/zcVmWEZZl8TMzCgkl/bqiw9YTi/pQwc?=
- =?us-ascii?Q?UXyVq1L/AJXct8jRm1cps7eUmCyuSXFQfskD4yzpx1r7sWYm/9UJfAhFFMCw?=
- =?us-ascii?Q?Fd7F5MJV6KghxE25UA8gYsPtm1OzcF5oRX1MZ9LjcRQf80yV4/IjhKfQMlQd?=
- =?us-ascii?Q?cOZ4UTTZG9HSSKRe+49uRAQWhN8bD25+ct1Hu/5Rb+NlDqtBuCHUtRfkqewL?=
- =?us-ascii?Q?grs5ZnX6jE2u0qtKIOgTPopYElpFVfcdL6DNvNR58cGP+jdekhESFVZTbjKs?=
- =?us-ascii?Q?KCU+JSUJb8GHlNf+sJUzr1+c5FLOFHo1jfejKqT1HUYFG6fg1aHRErQgNmxE?=
- =?us-ascii?Q?eS/OsQI+8/DdrCZz8ba3CfJSb8vExRjCSnVQZAgiVbLkQVcCfUomQ7CNa2WJ?=
- =?us-ascii?Q?ih1meTCdOTMyUt1gpKeAwwd64uzuPCzWL+o55f7hhzLkzviQe8wV0NvtOisj?=
- =?us-ascii?Q?wP2fUQv7Onv4oMHNk89AoH+TaF5IQW5Gsk8NxdQXcisSK2aliwzfeEuRsiiE?=
- =?us-ascii?Q?+eZ4hrcLcQ3bZAJbkt5bQMLE?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 704ecc31-7e5f-4f5e-1415-08d92ab03132
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 19:04:07.9981
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ecwlEwl6mc5xvFGyYcZ0B0mVHqCS7BFWqeg4Yd1Tm3FZGnv0Ft1sfsoe4Ktdrq1q
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5522
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 10:53:02AM +1000, David Gibson wrote:
-> On Thu, Jun 03, 2021 at 08:52:24AM -0300, Jason Gunthorpe wrote:
-> > On Thu, Jun 03, 2021 at 03:13:44PM +1000, David Gibson wrote:
-> > 
-> > > > We can still consider it a single "address space" from the IOMMU
-> > > > perspective. What has happened is that the address table is not just a
-> > > > 64 bit IOVA, but an extended ~80 bit IOVA formed by "PASID, IOVA".
-> > > 
-> > > True.  This does complexify how we represent what IOVA ranges are
-> > > valid, though.  I'll bet you most implementations don't actually
-> > > implement a full 64-bit IOVA, which means we effectively have a large
-> > > number of windows from (0..max IOVA) for each valid pasid.  This adds
-> > > another reason I don't think my concept of IOVA windows is just a
-> > > power specific thing.
-> > 
-> > Yes
-> > 
-> > Things rapidly get into weird hardware specific stuff though, the
-> > request will be for things like:
-> >   "ARM PASID&IO page table format from SMMU IP block vXX"
-> 
-> So, I'm happy enough for picking a user-managed pagetable format to
-> imply the set of valid IOVA ranges (though a query might be nice).
+The functions to read the per-cpu time buckets and aggregate them
+don't have the greatest names and an awkward calling convention. Clean
+this up to make things a bit more readable:
 
-I think a query is mandatory, and optionally asking for ranges seems
-generally useful as a HW property.
+- Rename get_recent_times() to read_cpu_states() to make it clearer
+  this is about extracting psi state from one cpu, and not just the
+  times, either. Remove the pchanged_states return parameter and make
+  it the function's return value; rename the local variable 'states',
+  as it doesn't reflect changed states, but currently active ones.
 
-The danger is things can get really tricky as the app can ask for
-ranges some HW needs but other HW can't provide. 
+- rename collect_percpu_times() to aggregate_cpus(), to indicate that
+  actual data processing happens there
 
-I would encourage a flow where "generic" apps like DPDK can somehow
-just ignore this, or at least be very, very simplified "I want around
-XX GB of IOVA space"
+- move calc_avgs() out of the way, closer to where it's being used.
 
-dpdk type apps vs qemu apps are really quite different and we should
-be carefully that the needs of HW accelerated vIOMMU emulation do not
-trump the needs of simple universal control over a DMA map.
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ kernel/sched/psi.c | 90 ++++++++++++++++++++++------------------------
+ 1 file changed, 42 insertions(+), 48 deletions(-)
 
-Jason
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 9d647d974f55..1faf383f6ec4 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -238,17 +238,15 @@ static bool test_state(unsigned int *tasks, enum psi_states state)
+ 	}
+ }
+ 
+-static void get_recent_times(struct psi_group *group, int cpu,
+-			     enum psi_aggregators aggregator, u32 *times,
+-			     u32 *pchanged_states)
++static u32 snapshot_cpu_states(struct psi_group *group, int cpu,
++			       enum psi_aggregators aggregator, u32 *times)
+ {
+ 	struct psi_group_cpu *groupc = per_cpu_ptr(group->pcpu, cpu);
+ 	u64 now, state_start;
+ 	enum psi_states s;
+ 	unsigned int seq;
+ 	u32 state_mask;
+-
+-	*pchanged_states = 0;
++	u32 states = 0;
+ 
+ 	/* Snapshot a coherent view of the CPU state */
+ 	do {
+@@ -279,37 +277,18 @@ static void get_recent_times(struct psi_group *group, int cpu,
+ 
+ 		times[s] = delta;
+ 		if (delta)
+-			*pchanged_states |= (1 << s);
++			states |= (1 << s);
+ 	}
+-}
+ 
+-static void calc_avgs(unsigned long avg[3], int missed_periods,
+-		      u64 time, u64 period)
+-{
+-	unsigned long pct;
+-
+-	/* Fill in zeroes for periods of no activity */
+-	if (missed_periods) {
+-		avg[0] = calc_load_n(avg[0], EXP_10s, 0, missed_periods);
+-		avg[1] = calc_load_n(avg[1], EXP_60s, 0, missed_periods);
+-		avg[2] = calc_load_n(avg[2], EXP_300s, 0, missed_periods);
+-	}
+-
+-	/* Sample the most recent active period */
+-	pct = div_u64(time * 100, period);
+-	pct *= FIXED_1;
+-	avg[0] = calc_load(avg[0], EXP_10s, pct);
+-	avg[1] = calc_load(avg[1], EXP_60s, pct);
+-	avg[2] = calc_load(avg[2], EXP_300s, pct);
++	return states;
+ }
+ 
+-static void collect_percpu_times(struct psi_group *group,
+-				 enum psi_aggregators aggregator,
+-				 u32 *pchanged_states)
++static u32 aggregate_cpus(struct psi_group *group,
++			  enum psi_aggregators aggregator)
+ {
+ 	u64 deltas[NR_PSI_STATES - 1] = { 0, };
+ 	unsigned long nonidle_total = 0;
+-	u32 changed_states = 0;
++	u32 states = 0;
+ 	int cpu;
+ 	int s;
+ 
+@@ -324,11 +303,8 @@ static void collect_percpu_times(struct psi_group *group,
+ 	for_each_possible_cpu(cpu) {
+ 		u32 times[NR_PSI_STATES];
+ 		u32 nonidle;
+-		u32 cpu_changed_states;
+ 
+-		get_recent_times(group, cpu, aggregator, times,
+-				&cpu_changed_states);
+-		changed_states |= cpu_changed_states;
++		states |= snapshot_cpu_states(group, cpu, aggregator, times);
+ 
+ 		nonidle = nsecs_to_jiffies(times[PSI_NONIDLE]);
+ 		nonidle_total += nonidle;
+@@ -354,15 +330,34 @@ static void collect_percpu_times(struct psi_group *group,
+ 		group->total[aggregator][s] +=
+ 				div_u64(deltas[s], max(nonidle_total, 1UL));
+ 
+-	if (pchanged_states)
+-		*pchanged_states = changed_states;
++	return states;
++}
++
++static void calc_avgs(unsigned long avg[3], int missed_periods,
++		      u64 time, u64 period)
++{
++	unsigned long pct;
++
++	/* Fill in zeroes for periods of no activity */
++	if (missed_periods) {
++		avg[0] = calc_load_n(avg[0], EXP_10s, 0, missed_periods);
++		avg[1] = calc_load_n(avg[1], EXP_60s, 0, missed_periods);
++		avg[2] = calc_load_n(avg[2], EXP_300s, 0, missed_periods);
++	}
++
++	/* Sample the most recent active period */
++	pct = div_u64(time * 100, period);
++	pct *= FIXED_1;
++	avg[0] = calc_load(avg[0], EXP_10s, pct);
++	avg[1] = calc_load(avg[1], EXP_60s, pct);
++	avg[2] = calc_load(avg[2], EXP_300s, pct);
+ }
+ 
+ static void update_averages(struct psi_group *group)
+ {
+ 	unsigned long missed_periods = 0;
+ 	u64 now, expires, period;
+-	u32 changed_states;
++	u32 states;
+ 	int s;
+ 
+ 	/* avgX= */
+@@ -402,7 +397,7 @@ static void update_averages(struct psi_group *group)
+ 	group->avg_last_update = now;
+ 	group->avg_next_update = expires + ((1 + missed_periods) * psi_period);
+ 
+-	collect_percpu_times(group, PSI_AVGS, &changed_states);
++	states = aggregate_cpus(group, PSI_AVGS);
+ 	for (s = 0; s < NR_PSI_STATES - 1; s++) {
+ 		u32 sample;
+ 
+@@ -430,7 +425,7 @@ static void update_averages(struct psi_group *group)
+ 		calc_avgs(group->avg[s], missed_periods, sample, period);
+ 	}
+ 
+-	if (changed_states & (1 << PSI_NONIDLE)) {
++	if (states & (1 << PSI_NONIDLE)) {
+ 		unsigned long delay;
+ 
+ 		delay = nsecs_to_jiffies(group->avg_next_update - now) + 1;
+@@ -585,24 +580,24 @@ static void psi_schedule_poll_work(struct psi_group *group, unsigned long delay)
+ 
+ static void psi_poll_work(struct psi_group *group)
+ {
+-	u32 changed_states;
++	unsigned long delay;
++	u32 states;
+ 	u64 now;
+ 
+ 	mutex_lock(&group->trigger_lock);
+ 
+ 	now = sched_clock();
++	states = aggregate_cpus(group, PSI_POLL);
+ 
+-	collect_percpu_times(group, PSI_POLL, &changed_states);
+-
+-	if (changed_states & group->poll_states) {
++	if (states & group->poll_states) {
+ 		/* Initialize trigger windows when entering polling mode */
+ 		if (now > group->polling_until)
+ 			init_triggers(group, now);
+ 
+ 		/*
+-		 * Keep the monitor active for at least the duration of the
+-		 * minimum tracking window as long as monitor states are
+-		 * changing.
++		 * Keep the monitor active for at least the duration
++		 * of the minimum tracking window after a polled state
++		 * has been observed.
+ 		 */
+ 		group->polling_until = now +
+ 			group->poll_min_period * UPDATES_PER_WINDOW;
+@@ -616,9 +611,8 @@ static void psi_poll_work(struct psi_group *group)
+ 	if (now >= group->polling_next_update)
+ 		group->polling_next_update = update_triggers(group, now);
+ 
+-	psi_schedule_poll_work(group,
+-		nsecs_to_jiffies(group->polling_next_update - now) + 1);
+-
++	delay = nsecs_to_jiffies(group->polling_next_update - now) + 1;
++	psi_schedule_poll_work(group, delay);
+ out:
+ 	mutex_unlock(&group->trigger_lock);
+ }
+-- 
+2.32.0
+
