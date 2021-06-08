@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC6639F12B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FB639F169
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhFHIo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:44:57 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:4401 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhFHIo4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:44:56 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FzkDb4mplz6vZS;
-        Tue,  8 Jun 2021 16:39:11 +0800 (CST)
-Received: from dggemi758-chm.china.huawei.com (10.1.198.144) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 16:42:53 +0800
-Received: from huawei.com (10.175.101.6) by dggemi758-chm.china.huawei.com
- (10.1.198.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
- 2021 16:42:53 +0800
-From:   ChenXiaoSong <chenxiaosong2@huawei.com>
-To:     <jonnyc@amazon.com>, <lorenzo.pieralisi@arm.com>,
-        <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
-        <chenxiaosong2@huawei.com>
-Subject: [PATCH -next,resend] PCI: al: Remove redundant dev_err call in al_pcie_probe()
-Date:   Tue, 8 Jun 2021 16:49:13 +0800
-Message-ID: <20210608084913.1046606-1-chenxiaosong2@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S230382AbhFHIyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229507AbhFHIyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 04:54:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78DDE6124B;
+        Tue,  8 Jun 2021 08:52:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623142370;
+        bh=ffcy4ITRe2eWn3D6+rBqkBtJ9q7jBgASKT2AeYL6tlo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AxBTUuuqJFLd+tUj+ExsdO3Tk7AOsBqAzJOl93L45BIJhTCmBl/emih/hJfbF6MhX
+         CLrDZ7U0W0JsVyIdy5X76QcoH0ViKA7WYOOALgv707aGn0yQZmVojVAffK/hI16SbJ
+         dCIFpJs2fa+g3lAPPuIWSYepi2zwkYL/G3syjefyyOAyZj/nVLn2IZbU3lkJvhq1cO
+         lpd0WFCUzg+iKH68CEV9cQA4H5UYJwtAFzSCcbIp5O9k7t8Lbn4LFrqK8rCnk+2cq8
+         CuS+LyOr8znLPaiximWsp0d3RsQY2d+pEAy8/Ix7MmaB/G0/FUAf26qF1v2eCcM9J1
+         CWfSkl5SmdV6A==
+Date:   Tue, 8 Jun 2021 09:52:46 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Qi Liu <liuqi115@huawei.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v3 8/9] drivers/perf: Simpilfy EVENT ATTR macro in
+ arm_dsu_pmu.c
+Message-ID: <20210608085245.GA8791@willie-the-truck>
+References: <1623123201-45634-1-git-send-email-liuqi115@huawei.com>
+ <1623123201-45634-9-git-send-email-liuqi115@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi758-chm.china.huawei.com (10.1.198.144)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623123201-45634-9-git-send-email-liuqi115@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+On Tue, Jun 08, 2021 at 11:33:20AM +0800, Qi Liu wrote:
+> Use common macro PMU_EVENT_ATTR_ID to simplify DSU_EVENT_ATTR.
+> 
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+> ---
+>  drivers/perf/arm_dsu_pmu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
+> index 196faea..bed8376 100644
+> --- a/drivers/perf/arm_dsu_pmu.c
+> +++ b/drivers/perf/arm_dsu_pmu.c
+> @@ -82,7 +82,7 @@
+>  	})[0].attr.attr)
+>  
+>  #define DSU_EVENT_ATTR(_name, _config)		\
+> -	DSU_EXT_ATTR(_name, dsu_pmu_sysfs_event_show, (unsigned long)_config)
+> +	PMU_EVENT_ATTR_ID(_name, dsu_pmu_sysfs_event_show, _config)
+>  
+>  #define DSU_FORMAT_ATTR(_name, _config)		\
+>  	DSU_EXT_ATTR(_name, dsu_pmu_sysfs_format_show, (char *)_config)
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
----
- drivers/pci/controller/dwc/pcie-al.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+I'm not convinced this is any simpler. We still have two users of the
+DSU_EXT_ATTR macro and the net effect is no change in line count.
 
-diff --git a/drivers/pci/controller/dwc/pcie-al.c b/drivers/pci/controller/dwc/pcie-al.c
-index e8afa50129a8..fb4d1eed07ce 100644
---- a/drivers/pci/controller/dwc/pcie-al.c
-+++ b/drivers/pci/controller/dwc/pcie-al.c
-@@ -346,11 +346,8 @@ static int al_pcie_probe(struct platform_device *pdev)
- 	controller_res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
- 						      "controller");
- 	al_pcie->controller_base = devm_ioremap_resource(dev, controller_res);
--	if (IS_ERR(al_pcie->controller_base)) {
--		dev_err(dev, "couldn't remap controller base %pR\n",
--			controller_res);
-+	if (IS_ERR(al_pcie->controller_base))
- 		return PTR_ERR(al_pcie->controller_base);
--	}
- 
- 	dev_dbg(dev, "From DT: controller_base: %pR\n", controller_res);
- 
--- 
-2.25.4
-
+Will
