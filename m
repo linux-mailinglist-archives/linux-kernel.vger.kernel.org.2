@@ -2,95 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18BE39F4AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFF939F4AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbhFHLMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:12:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46238 "EHLO mail.kernel.org"
+        id S231363AbhFHLN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:13:58 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:38343 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231266AbhFHLME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:12:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28A876134F;
-        Tue,  8 Jun 2021 11:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623150611;
-        bh=E/PY1UUD0KVjzvXwESFNHuR3PIRHP6Q6G/raiw7orh8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eMMSLasg1PmEGczdlpPNC/tnoIY1jN2TaOZq1u7kDB9K8fUTo1Op3BE4uLZMP1ctr
-         NUdcL7feiHhZexDss1zM937C/zcB92+4tA1wiLaIgOP192NFCrBWDmPlDJaLq8Jwi7
-         6mhw7sE1+rfG7LygR3YeFtiZ5mkSPbyX6cfHDpotOyLRqfbBJGLYHI1uEw+GKfGW0C
-         oGpK+eRsBsLO86Vk44p3QYp3meRwzP6NzhiXNIWaSAwoC2Q5OiIR/x4MrJ9Ya9m/sv
-         Q0Y+XI0KrtyPi7TE89vBnH96X/X3BkNlEfb347+3ELimyho0r44vZpjqbdA3vyiKQf
-         Y2eUoQhmUCXYQ==
-Date:   Tue, 8 Jun 2021 12:10:05 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        "moderated list:ARM SMMU DRIVERS" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH v4 1/6] iommu/arm-smmu: Add support for driver
- IOMMU fault handlers
-Message-ID: <20210608111005.GB9051@willie-the-truck>
-References: <20210602165313.553291-1-robdclark@gmail.com>
- <20210602165313.553291-2-robdclark@gmail.com>
+        id S230190AbhFHLN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 07:13:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fznct061wz9sW7;
+        Tue,  8 Jun 2021 21:11:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1623150723;
+        bh=h1pjcx14WED8GV61yyvX+o5nh/QO2vDigglGzaBUaPo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=qaYxKhntxn9domJfTp/b7vZheGgvSG04qAi3oPZszcrG9xJ8L8BtLeFBDdkNbhfRZ
+         X8AJHokX7Us9uk+OIikdyp8VwCVfcmpt0jHbXBsbfQ+HEwfgLRBxW3k7uXH4jT5QAg
+         8xQpuppzCCGEv/fkG3Q1MEqEdqwDa3GgrXCwBwQ3bGGeK2M1OuWRxuc0qtkEr1keBz
+         fDJQZ6qLeVUxjcpDY8AtdZZU3JvH1MC5Y3w/lLqHwiFCGx13AS18HU2Ir33OkNpg2k
+         8GyFRxa0K5NYJybxWne97z3ZMcKKDCCW4J0WeaoO69Q+XrReDs4uvXduZSTclQX4ku
+         hnEBus8PGkG1w==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Marek Kedzierski <mkedzier@redhat.com>,
+        Hui Zhu <teawater@gmail.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-acpi@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev
+Subject: Re: [PATCH v1 05/12] mm/memory_hotplug: remove nid parameter from
+ remove_memory() and friends
+In-Reply-To: <20210607195430.48228-6-david@redhat.com>
+References: <20210607195430.48228-1-david@redhat.com>
+ <20210607195430.48228-6-david@redhat.com>
+Date:   Tue, 08 Jun 2021 21:11:57 +1000
+Message-ID: <87y2bkehky.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602165313.553291-2-robdclark@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 09:52:44AM -0700, Rob Clark wrote:
-> From: Jordan Crouse <jcrouse@codeaurora.org>
-> 
-> Call report_iommu_fault() to allow upper-level drivers to register their
-> own fault handlers.
-> 
-> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+David Hildenbrand <david@redhat.com> writes:
+> There is only a single user remaining. We can simply try to offline all
+> online nodes - which is fast, because we usually span pages and can skip
+> such nodes right away.
+
+That makes me slightly nervous, because our big powerpc boxes tend to
+trip on these scaling issues before others.
+
+But the spanned pages check is just:
+
+void try_offline_node(int nid)
+{
+	pg_data_t *pgdat = NODE_DATA(nid);
+        ...
+	if (pgdat->node_spanned_pages)
+		return;
+
+So I guess that's pretty cheap, and it's only O(nodes), which should
+never get that big.
+
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> Cc: Len Brown <lenb@kernel.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Vishal Verma <vishal.l.verma@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Nathan Lynch <nathanl@linux.ibm.com>
+> Cc: Laurent Dufour <ldufour@linux.ibm.com>
+> Cc: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+> Cc: Scott Cheloha <cheloha@linux.ibm.com>
+> Cc: Anton Blanchard <anton@ozlabs.org>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-acpi@vger.kernel.org
+> Cc: nvdimm@lists.linux.dev
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
->  drivers/iommu/arm/arm-smmu/arm-smmu.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> index 6f72c4d208ca..b4b32d31fc06 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> @@ -408,6 +408,7 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
->  	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
->  	struct arm_smmu_device *smmu = smmu_domain->smmu;
->  	int idx = smmu_domain->cfg.cbndx;
-> +	int ret;
+>  .../platforms/pseries/hotplug-memory.c        |  9 ++++-----
+>  drivers/acpi/acpi_memhotplug.c                |  7 +------
+>  drivers/dax/kmem.c                            |  3 +--
+>  drivers/virtio/virtio_mem.c                   |  4 ++--
+>  include/linux/memory_hotplug.h                | 10 +++++-----
+>  mm/memory_hotplug.c                           | 20 +++++++++----------
+>  6 files changed, 23 insertions(+), 30 deletions(-)
+>
+> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c b/arch/powerpc/platforms/pseries/hotplug-memory.c
+> index 8377f1f7c78e..4a9232ddbefe 100644
+> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
+> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+> @@ -286,7 +286,7 @@ static int pseries_remove_memblock(unsigned long base, unsigned long memblock_si
+>  {
+>  	unsigned long block_sz, start_pfn;
+>  	int sections_per_block;
+> -	int i, nid;
+> +	int i;
 >  
->  	fsr = arm_smmu_cb_read(smmu, idx, ARM_SMMU_CB_FSR);
->  	if (!(fsr & ARM_SMMU_FSR_FAULT))
-> @@ -417,8 +418,12 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
->  	iova = arm_smmu_cb_readq(smmu, idx, ARM_SMMU_CB_FAR);
->  	cbfrsynra = arm_smmu_gr1_read(smmu, ARM_SMMU_GR1_CBFRSYNRA(idx));
+>  	start_pfn = base >> PAGE_SHIFT;
 >  
-> -	dev_err_ratelimited(smmu->dev,
-> -	"Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
-> +	ret = report_iommu_fault(domain, NULL, iova,
-> +		fsynr & ARM_SMMU_FSYNR0_WNR ? IOMMU_FAULT_WRITE : IOMMU_FAULT_READ);
-> +
-> +	if (ret == -ENOSYS)
-> +		dev_err_ratelimited(smmu->dev,
-> +		"Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
->  			    fsr, iova, fsynr, cbfrsynra, idx);
+> @@ -297,10 +297,9 @@ static int pseries_remove_memblock(unsigned long base, unsigned long memblock_si
+>  
+>  	block_sz = pseries_memory_block_size();
+>  	sections_per_block = block_sz / MIN_MEMORY_BLOCK_SIZE;
+> -	nid = memory_add_physaddr_to_nid(base);
+>  
+>  	for (i = 0; i < sections_per_block; i++) {
+> -		__remove_memory(nid, base, MIN_MEMORY_BLOCK_SIZE);
+> +		__remove_memory(base, MIN_MEMORY_BLOCK_SIZE);
+>  		base += MIN_MEMORY_BLOCK_SIZE;
+>  	}
+>  
+> @@ -386,7 +385,7 @@ static int dlpar_remove_lmb(struct drmem_lmb *lmb)
+>  
+>  	block_sz = pseries_memory_block_size();
+>  
+> -	__remove_memory(mem_block->nid, lmb->base_addr, block_sz);
+> +	__remove_memory(lmb->base_addr, block_sz);
+>  	put_device(&mem_block->dev);
+>  
+>  	/* Update memory regions for memory remove */
+> @@ -638,7 +637,7 @@ static int dlpar_add_lmb(struct drmem_lmb *lmb)
+>  
+>  	rc = dlpar_online_lmb(lmb);
+>  	if (rc) {
+> -		__remove_memory(nid, lmb->base_addr, block_sz);
+> +		__remove_memory(lmb->base_addr, block_sz);
+>  		invalidate_lmb_associativity_index(lmb);
+>  	} else {
+>  		lmb->flags |= DRCONF_MEM_ASSIGNED;
 
-Acked-by: Will Deacon <will@kernel.org>
 
-Will
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+
+cheers
