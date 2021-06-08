@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE23D39FF5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BB139FFF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234416AbhFHSc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:32:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55748 "EHLO mail.kernel.org"
+        id S234970AbhFHShj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:37:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234221AbhFHSbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:31:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F600613CB;
-        Tue,  8 Jun 2021 18:29:36 +0000 (UTC)
+        id S234340AbhFHSfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:35:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A2B261405;
+        Tue,  8 Jun 2021 18:32:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623176977;
-        bh=DtkpGIlSz7qqPuk4G/uy/HrLLxPvu5jhBLOU0tY58vo=;
+        s=korg; t=1623177141;
+        bh=rsED8s3r44/lFHHL2PzzG5LOJomieDVl4CR1CyvZD0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XIX4oTyD675gvMAF+fkF5pAoLk+LCfkzHnLDAFzQr3Xqw8bZWA5Xsj2W32D/cwJ1w
-         /vEqj2cAdEpQByCFL+AKAyOzgGu53ngvXD2/XzIlVcNqQXD4wmFch3iiwOYC0boqrh
-         g8UIf8xEzweeAPGCGJ0I3LMKZVhJtsADrVmd5VZY=
+        b=FRHSfsd8ZdHLx7XaDT8iIIeYTMorRDJXdMSS1iaRuMvM14IhdHfn9xkV7ZjYijIB0
+         sFLQQZRcZ14pLfeJ3U571Iq5WdSFrTJz60ksxgAXtZzbWOaoMdwADvIVRgwVfSZulA
+         CGx3gPUTRFLu8Fj+d4YeRBfhviWji4f97WUJ8HCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 04/29] vfio/pci: Fix error return code in vfio_ecap_init()
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 15/47] net: caif: added cfserl_release function
 Date:   Tue,  8 Jun 2021 20:26:58 +0200
-Message-Id: <20210608175927.963114322@linuxfoundation.org>
+Message-Id: <20210608175930.981842019@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
-References: <20210608175927.821075974@linuxfoundation.org>
+In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
+References: <20210608175930.477274100@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit d1ce2c79156d3baf0830990ab06d296477b93c26 ]
+commit bce130e7f392ddde8cfcb09927808ebd5f9c8669 upstream.
 
-The error code returned from vfio_ext_cap_len() is stored in 'len', not
-in 'ret'.
+Added cfserl_release() function.
 
-Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-Id: <20210515020458.6771-1-thunder.leizhen@huawei.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vfio/pci/vfio_pci_config.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/net/caif/cfserl.h |    1 +
+ net/caif/cfserl.c         |    5 +++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index f3c2de04b20d..5b0f09b211be 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -1576,7 +1576,7 @@ static int vfio_ecap_init(struct vfio_pci_device *vdev)
- 			if (len == 0xFF) {
- 				len = vfio_ext_cap_len(vdev, ecap, epos);
- 				if (len < 0)
--					return ret;
-+					return len;
- 			}
- 		}
+--- a/include/net/caif/cfserl.h
++++ b/include/net/caif/cfserl.h
+@@ -9,4 +9,5 @@
+ #include <net/caif/caif_layer.h>
  
--- 
-2.30.2
-
+ struct cflayer *cfserl_create(int instance, bool use_stx);
++void cfserl_release(struct cflayer *layer);
+ #endif
+--- a/net/caif/cfserl.c
++++ b/net/caif/cfserl.c
+@@ -31,6 +31,11 @@ static int cfserl_transmit(struct cflaye
+ static void cfserl_ctrlcmd(struct cflayer *layr, enum caif_ctrlcmd ctrl,
+ 			   int phyid);
+ 
++void cfserl_release(struct cflayer *layer)
++{
++	kfree(layer);
++}
++
+ struct cflayer *cfserl_create(int instance, bool use_stx)
+ {
+ 	struct cfserl *this = kzalloc(sizeof(struct cfserl), GFP_ATOMIC);
 
 
