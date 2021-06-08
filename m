@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C16139FFA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFFA39FF7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234602AbhFHSfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:35:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57916 "EHLO mail.kernel.org"
+        id S234618AbhFHSde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:33:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233141AbhFHSd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:33:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F105613C1;
-        Tue,  8 Jun 2021 18:31:15 +0000 (UTC)
+        id S234084AbhFHSc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:32:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CE37613D4;
+        Tue,  8 Jun 2021 18:30:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177075;
-        bh=lzdAXNyaTRliUv5aWfEYkqKJoKweSX7xsTRDbHanaig=;
+        s=korg; t=1623177023;
+        bh=/Kk5XFC71RKixZ0KeWmKO2J/s1lNjqmgXRxjBCww5eM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u0ZqpiUdvUINMOqkTYUguhuyi2aNY2TCw+Jls9LUudKZKBBKFa/5UIwVHT9XyWVBe
-         Kd8pZ8hAZpbJgzBQ6KinxuDOrzsoteOndNDJpYHp7FC/7qeNmEf0J8tHVdd0SpivXn
-         0C9GSvmBuLrFiivB4QvNGBB663rEk/6nDQWewWiA=
+        b=om/ftAHuErnsu2vXbXs7lbawbQbhl18uGTyKtVwMKN9RK9eSzPqIxAgZznbK7Rv0Y
+         18jyzPY1nD9pC9drPNHK9afSCVoqGYpcVrMh8/3xNEH6JDJflvJnZ8z9KMku0xwRlg
+         gmHKNqKf3L2okjeAI7dOoPoT4R1DuHDqaCP3UcIQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 23/47] nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 12/29] ieee802154: fix error return code in ieee802154_llsec_getparams()
 Date:   Tue,  8 Jun 2021 20:27:06 +0200
-Message-Id: <20210608175931.240993767@linuxfoundation.org>
+Message-Id: <20210608175928.217990188@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
-References: <20210608175930.477274100@linuxfoundation.org>
+In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
+References: <20210608175927.821075974@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-commit 4ac06a1e013cf5fdd963317ffd3b968560f33bba upstream.
+[ Upstream commit 373e864cf52403b0974c2f23ca8faf9104234555 ]
 
-It's possible to trigger NULL pointer dereference by local unprivileged
-user, when calling getsockname() after failed bind() (e.g. the bind
-fails because LLCP_SAP_MAX used as SAP):
+Fix to return negative error code -ENOBUFS from the error handling
+case instead of 0, as done elsewhere in this function.
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000000
-  CPU: 1 PID: 426 Comm: llcp_sock_getna Not tainted 5.13.0-rc2-next-20210521+ #9
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-  Call Trace:
-   llcp_sock_getname+0xb1/0xe0
-   __sys_getpeername+0x95/0xc0
-   ? lockdep_hardirqs_on_prepare+0xd5/0x180
-   ? syscall_enter_from_user_mode+0x1c/0x40
-   __x64_sys_getpeername+0x11/0x20
-   do_syscall_64+0x36/0x70
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-This can be reproduced with Syzkaller C repro (bind followed by
-getpeername):
-https://syzkaller.appspot.com/x/repro.c?x=14def446e00000
-
-Cc: <stable@vger.kernel.org>
-Fixes: d646960f7986 ("NFC: Initial LLCP support")
-Reported-by: syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210531072138.5219-1-krzysztof.kozlowski@canonical.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 3e9c156e2c21 ("ieee802154: add netlink interfaces for llsec")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Link: https://lore.kernel.org/r/20210519141614.3040055-1-weiyongjun1@huawei.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/llcp_sock.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/ieee802154/nl-mac.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/nfc/llcp_sock.c
-+++ b/net/nfc/llcp_sock.c
-@@ -122,6 +122,7 @@ static int llcp_sock_bind(struct socket
- 	if (!llcp_sock->service_name) {
- 		nfc_llcp_local_put(llcp_sock->local);
- 		llcp_sock->local = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -ENOMEM;
- 		goto put_dev;
- 	}
-@@ -131,6 +132,7 @@ static int llcp_sock_bind(struct socket
- 		llcp_sock->local = NULL;
- 		kfree(llcp_sock->service_name);
- 		llcp_sock->service_name = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -EADDRINUSE;
- 		goto put_dev;
- 	}
+diff --git a/net/ieee802154/nl-mac.c b/net/ieee802154/nl-mac.c
+index c0930b9fe848..7531cb1665d2 100644
+--- a/net/ieee802154/nl-mac.c
++++ b/net/ieee802154/nl-mac.c
+@@ -688,8 +688,10 @@ int ieee802154_llsec_getparams(struct sk_buff *skb, struct genl_info *info)
+ 	    nla_put_u8(msg, IEEE802154_ATTR_LLSEC_SECLEVEL, params.out_level) ||
+ 	    nla_put_u32(msg, IEEE802154_ATTR_LLSEC_FRAME_COUNTER,
+ 			be32_to_cpu(params.frame_counter)) ||
+-	    ieee802154_llsec_fill_key_id(msg, &params.out_key))
++	    ieee802154_llsec_fill_key_id(msg, &params.out_key)) {
++		rc = -ENOBUFS;
+ 		goto out_free;
++	}
+ 
+ 	dev_put(dev);
+ 
+-- 
+2.30.2
+
 
 
