@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916DB3A016F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF77D3A0412
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235209AbhFHSwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:52:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42126 "EHLO mail.kernel.org"
+        id S236711AbhFHT0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:26:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234299AbhFHSqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:46:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F4DC613DF;
-        Tue,  8 Jun 2021 18:37:35 +0000 (UTC)
+        id S238211AbhFHTOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:14:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F9B16142C;
+        Tue,  8 Jun 2021 18:50:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177456;
-        bh=Z0Ylnw1twkMI0qxV0Bqn1Kx1nfp/TRDGU60l/S4IpRI=;
+        s=korg; t=1623178212;
+        bh=68GdZ998arAE01h8FdAc62IQtcrv7/RKbR8ZMV5Q5nc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GovPtV4kPyltUt80rSCzW8IhAfGkhogplq/xHOe/oYsAq1xsoFfZLeF7bnnOLG57Z
-         9nLlZ9aah181fX2yPKO86Eq1S9ABfJOA47VzsKkVWDp4BCWGipcS2HjiwLXmECQabM
-         8p3dt2L+sdWc6reVeaSToBF77vp2Lmm+o8ESxRos=
+        b=AvOEpoMJmk1xtwW09XSl0FIzmDDUle7xYcRXGVIJEZLBen4xOdTsbJjepFx/rvW+p
+         qHmBPb4FqrCM6tlvHSc2y8zGNumuqTcmboq3f0UU2ranxAmjRWBgjPUYvCekjBVEui
+         0uKOHvkW0GNUHnUIpZAjVBMtmew3HYMAJgT5S8dY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Imran Khan <imran.f.khan@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.4 58/78] x86/apic: Mark _all_ legacy interrupts when IO/APIC is missing
+        stable@vger.kernel.org, stable@kernel.org,
+        Ye Bin <yebin10@huawei.com>, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.12 117/161] ext4: fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
 Date:   Tue,  8 Jun 2021 20:27:27 +0200
-Message-Id: <20210608175937.236151232@linuxfoundation.org>
+Message-Id: <20210608175949.411745907@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+References: <20210608175945.476074951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,95 +40,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Ye Bin <yebin10@huawei.com>
 
-commit 7d65f9e80646c595e8c853640a9d0768a33e204c upstream.
+commit 082cd4ec240b8734a82a89ffb890216ac98fec68 upstream.
 
-PIC interrupts do not support affinity setting and they can end up on
-any online CPU. Therefore, it's required to mark the associated vectors
-as system-wide reserved. Otherwise, the corresponding irq descriptors
-are copied to the secondary CPUs but the vectors are not marked as
-assigned or reserved. This works correctly for the IO/APIC case.
+We got follow bug_on when run fsstress with injecting IO fault:
+[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
+[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
+......
+[130747.334329] Call trace:
+[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
+[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
+[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
+[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
+[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
+[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
+[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
+[130747.337359]  generic_file_buffered_read+0x410/0xae8
+[130747.337767]  generic_file_read_iter+0x114/0x190
+[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
+[130747.338556]  __vfs_read+0x11c/0x188
+[130747.338851]  vfs_read+0x94/0x150
+[130747.339110]  ksys_read+0x74/0xf0
 
-When the IO/APIC is disabled via config, kernel command line or lack of
-enumeration then all legacy interrupts are routed through the PIC, but
-nothing marks them as system-wide reserved vectors.
+This patch's modification is according to Jan Kara's suggestion in:
+https://patchwork.ozlabs.org/project/linux-ext4/patch/20210428085158.3728201-1-yebin10@huawei.com/
+"I see. Now I understand your patch. Honestly, seeing how fragile is trying
+to fix extent tree after split has failed in the middle, I would probably
+go even further and make sure we fix the tree properly in case of ENOSPC
+and EDQUOT (those are easily user triggerable).  Anything else indicates a
+HW problem or fs corruption so I'd rather leave the extent tree as is and
+don't try to fix it (which also means we will not create overlapping
+extents)."
 
-As a consequence, a subsequent allocation on a secondary CPU can result in
-allocating one of these vectors, which triggers the BUG() in
-apic_update_vector() because the interrupt descriptor slot is not empty.
-
-Imran tried to work around that by marking those interrupts as allocated
-when a CPU comes online. But that's wrong in case that the IO/APIC is
-available and one of the legacy interrupts, e.g. IRQ0, has been switched to
-PIC mode because then marking them as allocated will fail as they are
-already marked as system vectors.
-
-Stay consistent and update the legacy vectors after attempting IO/APIC
-initialization and mark them as system vectors in case that no IO/APIC is
-available.
-
-Fixes: 69cde0004a4b ("x86/vector: Use matrix allocator for vector assignment")
-Reported-by: Imran Khan <imran.f.khan@oracle.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20210519233928.2157496-1-imran.f.khan@oracle.com
+Cc: stable@kernel.org
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20210506141042.3298679-1-yebin10@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/apic.h   |    1 +
- arch/x86/kernel/apic/apic.c   |    1 +
- arch/x86/kernel/apic/vector.c |   20 ++++++++++++++++++++
- 3 files changed, 22 insertions(+)
+ fs/ext4/extents.c |   43 +++++++++++++++++++++++--------------------
+ 1 file changed, 23 insertions(+), 20 deletions(-)
 
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -174,6 +174,7 @@ static inline int apic_is_clustered_box(
- extern int setup_APIC_eilvt(u8 lvt_off, u8 vector, u8 msg_type, u8 mask);
- extern void lapic_assign_system_vectors(void);
- extern void lapic_assign_legacy_vector(unsigned int isairq, bool replace);
-+extern void lapic_update_legacy_vectors(void);
- extern void lapic_online(void);
- extern void lapic_offline(void);
- extern bool apic_needs_pit(void);
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2579,6 +2579,7 @@ static void __init apic_bsp_setup(bool u
- 	end_local_APIC_setup();
- 	irq_remap_enable_fault_handling();
- 	setup_IO_APIC();
-+	lapic_update_legacy_vectors();
- }
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3206,7 +3206,10 @@ static int ext4_split_extent_at(handle_t
+ 		ext4_ext_mark_unwritten(ex2);
  
- #ifdef CONFIG_UP_LATE_INIT
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -680,6 +680,26 @@ void lapic_assign_legacy_vector(unsigned
- 	irq_matrix_assign_system(vector_matrix, ISA_IRQ_VECTOR(irq), replace);
- }
+ 	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+-	if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
++	if (err != -ENOSPC && err != -EDQUOT)
++		goto out;
++
++	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
+ 		if (split_flag & (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
+ 			if (split_flag & EXT4_EXT_DATA_VALID1) {
+ 				err = ext4_ext_zeroout(inode, ex2);
+@@ -3232,25 +3235,22 @@ static int ext4_split_extent_at(handle_t
+ 					      ext4_ext_pblock(&orig_ex));
+ 		}
  
-+void __init lapic_update_legacy_vectors(void)
-+{
-+	unsigned int i;
-+
-+	if (IS_ENABLED(CONFIG_X86_IO_APIC) && nr_ioapics > 0)
-+		return;
-+
-+	/*
-+	 * If the IO/APIC is disabled via config, kernel command line or
-+	 * lack of enumeration then all legacy interrupts are routed
-+	 * through the PIC. Make sure that they are marked as legacy
-+	 * vectors. PIC_CASCADE_IRQ has already been marked in
-+	 * lapic_assign_system_vectors().
-+	 */
-+	for (i = 0; i < nr_legacy_irqs(); i++) {
-+		if (i != PIC_CASCADE_IR)
-+			lapic_assign_legacy_vector(i, true);
+-		if (err)
+-			goto fix_extent_len;
+-		/* update the extent length and mark as initialized */
+-		ex->ee_len = cpu_to_le16(ee_len);
+-		ext4_ext_try_to_merge(handle, inode, path, ex);
+-		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+-		if (err)
+-			goto fix_extent_len;
+-
+-		/* update extent status tree */
+-		err = ext4_zeroout_es(inode, &zero_ex);
+-
+-		goto out;
+-	} else if (err)
+-		goto fix_extent_len;
+-
+-out:
+-	ext4_ext_show_leaf(inode, path);
+-	return err;
++		if (!err) {
++			/* update the extent length and mark as initialized */
++			ex->ee_len = cpu_to_le16(ee_len);
++			ext4_ext_try_to_merge(handle, inode, path, ex);
++			err = ext4_ext_dirty(handle, inode, path + path->p_depth);
++			if (!err)
++				/* update extent status tree */
++				err = ext4_zeroout_es(inode, &zero_ex);
++			/* If we failed at this point, we don't know in which
++			 * state the extent tree exactly is so don't try to fix
++			 * length of the original extent as it may do even more
++			 * damage.
++			 */
++			goto out;
++		}
 +	}
-+}
-+
- void __init lapic_assign_system_vectors(void)
- {
- 	unsigned int i, vector = 0;
+ 
+ fix_extent_len:
+ 	ex->ee_len = orig_ex.ee_len;
+@@ -3260,6 +3260,9 @@ fix_extent_len:
+ 	 */
+ 	ext4_ext_dirty(handle, inode, path + path->p_depth);
+ 	return err;
++out:
++	ext4_ext_show_leaf(inode, path);
++	return err;
+ }
+ 
+ /*
 
 
