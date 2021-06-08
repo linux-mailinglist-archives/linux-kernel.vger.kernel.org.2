@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5903A01A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB5E3A01A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236900AbhFHSzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:55:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48990 "EHLO mail.kernel.org"
+        id S235877AbhFHSze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:55:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235889AbhFHSt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:49:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10CFE61465;
-        Tue,  8 Jun 2021 18:38:55 +0000 (UTC)
+        id S235936AbhFHStd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:49:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9995D61429;
+        Tue,  8 Jun 2021 18:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177536;
-        bh=PK/gH9mxgzJ5E6JSk09mtqXMEqNscMTe5NAqxnRVaTI=;
+        s=korg; t=1623177539;
+        bh=B3n4h6NgeN7VeUPcjvOBpzMAo76woJPRbSTzH2oVBZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VBnv7IJf6dEXHIyfhiVjQsORZTHFhmV50Z/IKHVg8oPkCNrQUMDLvjNj61DlqEDvt
-         uLTkDKzUAXhl7pxnDsc37L8YygjZ2NSQDIggUDK59yESC+vQ21FX1qeo7AzwzrxyI0
-         3rezObfWLB/xMZPLFsCbQ81xSxUeVZszov6pz+eo=
+        b=PxhG6A/kRHuTznKu6t34NsnJZUbXeBJXAVwpVdjIiWBm3Y7XFVEA6ULXkSN8pdINb
+         C6V/bjiZPECNELEIA8NWk6U0FTQ4b6up6vZQiQIyVjy9YD8MSRwUYUeC3cZBzLJigq
+         iGDIdJ6IxHXV1gGwB4bayskpcEF3B79wGSbZ/FsY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Tuomas=20L=C3=A4hdekorpi?= <tuomas.lahdekorpi@gmail.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Grant Grundler <grundler@chromium.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 001/137] btrfs: tree-checker: do not error out if extent ref hash doesnt match
-Date:   Tue,  8 Jun 2021 20:25:41 +0200
-Message-Id: <20210608175942.429608302@linuxfoundation.org>
+Subject: [PATCH 5.10 002/137] net: usb: cdc_ncm: dont spew notifications
+Date:   Tue,  8 Jun 2021 20:25:42 +0200
+Message-Id: <20210608175942.463085446@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
 References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,91 +41,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Grant Grundler <grundler@chromium.org>
 
-commit 1119a72e223f3073a604f8fccb3a470ccd8a4416 upstream.
+[ Upstream commit de658a195ee23ca6aaffe197d1d2ea040beea0a2 ]
 
-The tree checker checks the extent ref hash at read and write time to
-make sure we do not corrupt the file system.  Generally extent
-references go inline, but if we have enough of them we need to make an
-item, which looks like
+RTL8156 sends notifications about every 32ms.
+Only display/log notifications when something changes.
 
-key.objectid	= <bytenr>
-key.type	= <BTRFS_EXTENT_DATA_REF_KEY|BTRFS_TREE_BLOCK_REF_KEY>
-key.offset	= hash(tree, owner, offset)
+This issue has been reported by others:
+	https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1832472
+	https://lkml.org/lkml/2020/8/27/1083
 
-However if key.offset collide with an unrelated extent reference we'll
-simply key.offset++ until we get something that doesn't collide.
-Obviously this doesn't match at tree checker time, and thus we error
-while writing out the transaction.  This is relatively easy to
-reproduce, simply do something like the following
+...
+[785962.779840] usb 1-1: new high-speed USB device number 5 using xhci_hcd
+[785962.929944] usb 1-1: New USB device found, idVendor=0bda, idProduct=8156, bcdDevice=30.00
+[785962.929949] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=6
+[785962.929952] usb 1-1: Product: USB 10/100/1G/2.5G LAN
+[785962.929954] usb 1-1: Manufacturer: Realtek
+[785962.929956] usb 1-1: SerialNumber: 000000001
+[785962.991755] usbcore: registered new interface driver cdc_ether
+[785963.017068] cdc_ncm 1-1:2.0: MAC-Address: 00:24:27:88:08:15
+[785963.017072] cdc_ncm 1-1:2.0: setting rx_max = 16384
+[785963.017169] cdc_ncm 1-1:2.0: setting tx_max = 16384
+[785963.017682] cdc_ncm 1-1:2.0 usb0: register 'cdc_ncm' at usb-0000:00:14.0-1, CDC NCM, 00:24:27:88:08:15
+[785963.019211] usbcore: registered new interface driver cdc_ncm
+[785963.023856] usbcore: registered new interface driver cdc_wdm
+[785963.025461] usbcore: registered new interface driver cdc_mbim
+[785963.038824] cdc_ncm 1-1:2.0 enx002427880815: renamed from usb0
+[785963.089586] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
+[785963.121673] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
+[785963.153682] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
+...
 
-  xfs_io -f -c "pwrite 0 1M" file
-  offset=2
+This is about 2KB per second and will overwrite all contents of a 1MB
+dmesg buffer in under 10 minutes rendering them useless for debugging
+many kernel problems.
 
-  for i in {0..10000}
-  do
-	  xfs_io -c "reflink file 0 ${offset}M 1M" file
-	  offset=$(( offset + 2 ))
-  done
+This is also an extra 180 MB/day in /var/logs (or 1GB per week) rendering
+the majority of those logs useless too.
 
-  xfs_io -c "reflink file 0 17999258914816 1M" file
-  xfs_io -c "reflink file 0 35998517829632 1M" file
-  xfs_io -c "reflink file 0 53752752058368 1M" file
+When the link is up (expected state), spew amount is >2x higher:
+...
+[786139.600992] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
+[786139.632997] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
+[786139.665097] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
+[786139.697100] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
+[786139.729094] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
+[786139.761108] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
+...
 
-  btrfs filesystem sync
+Chrome OS cannot support RTL8156 until this is fixed.
 
-And the sync will error out because we'll abort the transaction.  The
-magic values above are used because they generate hash collisions with
-the first file in the main subvol.
-
-The fix for this is to remove the hash value check from tree checker, as
-we have no idea which offset ours should belong to.
-
-Reported-by: Tuomas Lähdekorpi <tuomas.lahdekorpi@gmail.com>
-Fixes: 0785a9aacf9d ("btrfs: tree-checker: Add EXTENT_DATA_REF check")
-CC: stable@vger.kernel.org # 5.4+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-[ add comment]
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Grant Grundler <grundler@chromium.org>
+Reviewed-by: Hayes Wang <hayeswang@realtek.com>
+Link: https://lore.kernel.org/r/20210120011208.3768105-1-grundler@chromium.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tree-checker.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ drivers/net/usb/cdc_ncm.c  | 12 +++++++++++-
+ include/linux/usb/usbnet.h |  2 ++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 40845428b739..d4a3a56726aa 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -1440,22 +1440,14 @@ static int check_extent_data_ref(struct extent_buffer *leaf,
- 		return -EUCLEAN;
- 	}
- 	for (; ptr < end; ptr += sizeof(*dref)) {
--		u64 root_objectid;
--		u64 owner;
- 		u64 offset;
--		u64 hash;
+diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
+index 854c6624e685..1d3bf810f2ca 100644
+--- a/drivers/net/usb/cdc_ncm.c
++++ b/drivers/net/usb/cdc_ncm.c
+@@ -1827,6 +1827,15 @@ cdc_ncm_speed_change(struct usbnet *dev,
+ 	uint32_t rx_speed = le32_to_cpu(data->DLBitRRate);
+ 	uint32_t tx_speed = le32_to_cpu(data->ULBitRate);
  
-+		/*
-+		 * We cannot check the extent_data_ref hash due to possible
-+		 * overflow from the leaf due to hash collisions.
-+		 */
- 		dref = (struct btrfs_extent_data_ref *)ptr;
--		root_objectid = btrfs_extent_data_ref_root(leaf, dref);
--		owner = btrfs_extent_data_ref_objectid(leaf, dref);
- 		offset = btrfs_extent_data_ref_offset(leaf, dref);
--		hash = hash_extent_data_ref(root_objectid, owner, offset);
--		if (hash != key->offset) {
--			extent_err(leaf, slot,
--	"invalid extent data ref hash, item has 0x%016llx key has 0x%016llx",
--				   hash, key->offset);
--			return -EUCLEAN;
--		}
- 		if (!IS_ALIGNED(offset, leaf->fs_info->sectorsize)) {
- 			extent_err(leaf, slot,
- 	"invalid extent data backref offset, have %llu expect aligned to %u",
++	/* if the speed hasn't changed, don't report it.
++	 * RTL8156 shipped before 2021 sends notification about every 32ms.
++	 */
++	if (dev->rx_speed == rx_speed && dev->tx_speed == tx_speed)
++		return;
++
++	dev->rx_speed = rx_speed;
++	dev->tx_speed = tx_speed;
++
+ 	/*
+ 	 * Currently the USB-NET API does not support reporting the actual
+ 	 * device speed. Do print it instead.
+@@ -1867,7 +1876,8 @@ static void cdc_ncm_status(struct usbnet *dev, struct urb *urb)
+ 		 * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
+ 		 * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
+ 		 */
+-		usbnet_link_change(dev, !!event->wValue, 0);
++		if (netif_carrier_ok(dev->net) != !!event->wValue)
++			usbnet_link_change(dev, !!event->wValue, 0);
+ 		break;
+ 
+ 	case USB_CDC_NOTIFY_SPEED_CHANGE:
+diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h
+index 2e4f7721fc4e..8110c29fab42 100644
+--- a/include/linux/usb/usbnet.h
++++ b/include/linux/usb/usbnet.h
+@@ -83,6 +83,8 @@ struct usbnet {
+ #		define EVENT_LINK_CHANGE	11
+ #		define EVENT_SET_RX_MODE	12
+ #		define EVENT_NO_IP_ALIGN	13
++	u32			rx_speed;	/* in bps - NOT Mbps */
++	u32			tx_speed;	/* in bps - NOT Mbps */
+ };
+ 
+ static inline struct usb_driver *driver_of(struct usb_interface *intf)
 -- 
 2.30.2
 
