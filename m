@@ -2,82 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAD839EBA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C46239EBA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhFHBuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:50:00 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:4501 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhFHBt6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:49:58 -0400
-Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzY300zrmzZfpF;
-        Tue,  8 Jun 2021 09:45:16 +0800 (CST)
-Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
- dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 8 Jun 2021 09:48:05 +0800
-Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
- dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
- Tue, 8 Jun 2021 09:48:05 +0800
-From:   zhengyongjun <zhengyongjun3@huawei.com>
-To:     David Ahern <dsahern@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHBpbmc6IENoZWNrIHJldHVybiB2YWx1ZSBvZiBm?=
- =?utf-8?B?dW5jdGlvbiAncGluZ19xdWV1ZV9yY3Zfc2tiJw==?=
-Thread-Topic: [PATCH] ping: Check return value of function
- 'ping_queue_rcv_skb'
-Thread-Index: AQHXW3shcxGNUsKYH0+azDEUfRIiUqsINpmAgAEipRA=
-Date:   Tue, 8 Jun 2021 01:48:05 +0000
-Message-ID: <22a948a8b66244e796211eefbf95ac19@huawei.com>
-References: <20210607091058.2766648-1-zhengyongjun3@huawei.com>
- <1c31a9fa-6322-cebb-c78c-189c905eaf86@gmail.com>
-In-Reply-To: <1c31a9fa-6322-cebb-c78c-189c905eaf86@gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.64]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        id S231315AbhFHBuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:50:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230209AbhFHBuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 21:50:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8208860FE4;
+        Tue,  8 Jun 2021 01:48:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1623116886;
+        bh=Q+5SvaOmqmPqR5Wg8GMpvtupvlOuAHY76M4MzKRjOlg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=woVcnjT2gvMlMWupzbm2RW1aHD1OpFrxMPpGTUAlHEqwXyI+cqSEqpahSce9sUa23
+         PX7XyEWUPXze2G2Xc83G0Hs999jBFcv3Pkf8Fj6xeYUV1QWlNdJO3BDpVcAT4dcFoC
+         SQ8y+ueymlzsAPBdddPwS27YmwAOpFQ5DXJ/VzSQ=
+Date:   Mon, 7 Jun 2021 18:48:05 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, Andy Lutomirski <luto@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v4 1/4] lazy tlb: introduce lazy mm refcount helper
+ functions
+Message-Id: <20210607184805.eddf8eb26b80e8af85d5777e@linux-foundation.org>
+In-Reply-To: <1623116020.vyls9ehp49.astroid@bobo.none>
+References: <20210605014216.446867-1-npiggin@gmail.com>
+        <20210605014216.446867-2-npiggin@gmail.com>
+        <20210607164934.d453adcc42473e84beb25db3@linux-foundation.org>
+        <1623116020.vyls9ehp49.astroid@bobo.none>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmsgeW91IGZvciB5b3VyIHN1Z2dlc3Rpb24sIGl0IHdpbGwgbWFrZSB0aGUgY29kZSBsb29r
-IGNsZWFuZXIgOikgDQpJIHdpbGwgc2VuZCBwYXRjaCB2MiBzb29uLg0KDQotLS0tLemCruS7tuWO
-n+S7ti0tLS0tDQrlj5Hku7bkuro6IERhdmlkIEFoZXJuIFttYWlsdG86ZHNhaGVybkBnbWFpbC5j
-b21dIA0K5Y+R6YCB5pe26Ze0OiAyMDIx5bm0NuaciDjml6UgMDoyNg0K5pS25Lu25Lq6OiB6aGVu
-Z3lvbmdqdW4gPHpoZW5neW9uZ2p1bjNAaHVhd2VpLmNvbT47IGRhdmVtQGRhdmVtbG9mdC5uZXQ7
-IHlvc2hmdWppQGxpbnV4LWlwdjYub3JnOyBkc2FoZXJuQGtlcm5lbC5vcmc7IGt1YmFAa2VybmVs
-Lm9yZzsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
-Zw0K5Li76aKYOiBSZTogW1BBVENIXSBwaW5nOiBDaGVjayByZXR1cm4gdmFsdWUgb2YgZnVuY3Rp
-b24gJ3BpbmdfcXVldWVfcmN2X3NrYicNCg0KT24gNi83LzIxIDM6MTAgQU0sIFpoZW5nIFlvbmdq
-dW4gd3JvdGU6DQo+IEZ1bmN0aW9uICdwaW5nX3F1ZXVlX3Jjdl9za2InIG5vdCBhbHdheXMgcmV0
-dXJuIHN1Y2Nlc3MsIHdoaWNoIHdpbGwgDQo+IGFsc28gcmV0dXJuIGZhaWwuIElmIG5vdCBjaGVj
-ayB0aGUgd3JvbmcgcmV0dXJuIHZhbHVlIG9mIGl0LCBsZWFkIHRvIA0KPiBmdW5jdGlvbiBgcGlu
-Z19yY3ZgIHJldHVybiBzdWNjZXNzLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogWmhlbmcgWW9uZ2p1
-biA8emhlbmd5b25nanVuM0BodWF3ZWkuY29tPg0KPiAtLS0NCj4gIG5ldC9pcHY0L3BpbmcuYyB8
-IDcgKysrKy0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlv
-bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9uZXQvaXB2NC9waW5nLmMgYi9uZXQvaXB2NC9waW5n
-LmMgaW5kZXggDQo+IDFjOWY3MWEzNzI1OC4uOGU4NGNkZTk1MDExIDEwMDY0NA0KPiAtLS0gYS9u
-ZXQvaXB2NC9waW5nLmMNCj4gKysrIGIvbmV0L2lwdjQvcGluZy5jDQo+IEBAIC05NjgsMTAgKzk2
-OCwxMSBAQCBib29sIHBpbmdfcmN2KHN0cnVjdCBza19idWZmICpza2IpDQo+ICAJCXN0cnVjdCBz
-a19idWZmICpza2IyID0gc2tiX2Nsb25lKHNrYiwgR0ZQX0FUT01JQyk7DQo+ICANCj4gIAkJcHJf
-ZGVidWcoInJjdiBvbiBzb2NrZXQgJXBcbiIsIHNrKTsNCj4gLQkJaWYgKHNrYjIpDQo+IC0JCQlw
-aW5nX3F1ZXVlX3Jjdl9za2Ioc2ssIHNrYjIpOw0KPiArCQlpZiAoc2tiMiAmJiAhcGluZ19xdWV1
-ZV9yY3Zfc2tiKHNrLCBza2IyKSkgew0KPiArCQkJc29ja19wdXQoc2spOw0KPiArCQkJcmV0dXJu
-IHRydWU7DQo+ICsJCX0NCj4gIAkJc29ja19wdXQoc2spOw0KPiAtCQlyZXR1cm4gdHJ1ZTsNCj4g
-IAl9DQo+ICAJcHJfZGVidWcoIm5vIHNvY2tldCwgZHJvcHBpbmdcbiIpOw0KPiAgDQo+IA0KDQpk
-ZWNsYXJlIGEgZGVmYXVsdCByZXR1cm4gdmFyaWFibGU6DQoNCglib29sIHJjID0gZmFsc2U7DQoN
-CnNldCB0byB0byB0cnVlIGlmIHBpbmdfcXVldWVfcmN2X3NrYigpIGZhaWxzIGFuZCBoYXZlIG9u
-ZSBleGl0IHBhdGggd2l0aCBvbmUgc29ja19wdXQuDQo=
+On Tue, 08 Jun 2021 11:39:56 +1000 Nicholas Piggin <npiggin@gmail.com> wrote:
+
+> > Looks like a functional change.  What's happening here?
+> 
+> That's kthread_use_mm being clever about the lazy tlb mm. If it happened 
+> that the kthread had inherited a the lazy tlb mm that happens to be the 
+> one we want to use here, then we already have a refcount to it via the 
+> lazy tlb ref.
+> 
+> So then it doesn't have to touch the refcount, but rather just converts
+> it from the lazy tlb ref to the returned reference. If the lazy tlb mm
+> doesn't get a reference, we can't do that.
+
+Please cover this in the changelog and perhaps a code comment.
