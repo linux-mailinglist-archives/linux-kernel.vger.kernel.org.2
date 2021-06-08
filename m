@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05F039EDBF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 06:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D7A39EDC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 06:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhFHEf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 00:35:56 -0400
-Received: from mail-yb1-f202.google.com ([209.85.219.202]:43632 "EHLO
-        mail-yb1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhFHEfz (ORCPT
+        id S230223AbhFHElo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 00:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhFHElm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 00:35:55 -0400
-Received: by mail-yb1-f202.google.com with SMTP id q63-20020a25d9420000b0290532e824f77cso25374408ybg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 21:33:47 -0700 (PDT)
+        Tue, 8 Jun 2021 00:41:42 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06698C061574;
+        Mon,  7 Jun 2021 21:39:49 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id f5so17967608eds.0;
+        Mon, 07 Jun 2021 21:39:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=1CsAHJB1drzJFE9aMs2rQoto13RGg0fVp1ldOeOJhJM=;
-        b=AODPeS3Rxy2dCzZVvlT77V++MmhgHwq/LXwUy62+WDULLkPs3l7t2Y3YlSU2OjGQxR
-         wRSr6oKoRjTEq51NPDaNczweGae+Jm19rFf8p0D5OaFId+n1nPwvgzxFuLh4LXw1S3QA
-         MlDb9Z41YtIo7OVegofT3m75hTP5y4ZKA8kLLhHCTMA3VMmJxMvAugXCIMSbiEfuHiPX
-         l+2sM+hwGu4aP8yjEWplKd/vPOAJeenAlCNz4bOpqFQQmQe5Eiee/FvebF7i5MxXku5F
-         PHbrhdGGqnsemAsDaDo5A53MJ4cVUbzYoHZdk1btN6z0Gl0BwAEeWgU7kEOQooBIeWs0
-         GOLA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LQ327vLf2sAX9sBZj4rwUXDi/YVyuwzwG/5bRkeSlQ0=;
+        b=oIc3qYWdS/Aix0YmXu+hclQVy6hCkQOX88bQOG1+ihlh53aBNDvkk7iME9lD+yOowI
+         j6hhdzojIMNghYHMIcLNHYZGIa03in0uTUEFgrxloNgCj7CRBw5MVdqGD3caZidCiSix
+         STlpMCcMFcKFSyaIfRzlWjP8QiK0mofw8x4hHyNvKVhwmxHT1dPIc3OiDOGqV03IMvW8
+         ETGNw5aoQ8QCOp1Olei8Zj0roSXfcrdGAbBuRZkNl7P3WaFQMOiaw5wMBpef2w8iuMid
+         PvLpQvRGMcaO46yJcmwO1ksVumRfniQ2lSSIvv++cvHrg/DyOotNtTJMq0zJf8YYLA2s
+         iUew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=1CsAHJB1drzJFE9aMs2rQoto13RGg0fVp1ldOeOJhJM=;
-        b=DOKq+oemncsX5hMRqDSQMbSsuyZ2BAXfrSJH7YLhY67S1v0XGoRU6poionsx7sS0Lk
-         QPE46G6mRrdz/CjcRYIjN3J3pAUHK8u9EeSEAy2yGsbtAYYABkWfR9FW6omf11+Wajzv
-         v5DZiVPv3WYzLF5H0LWs5F9g5fxI0QVLyfJTAI7bsMfOxworl3NmP3BWV4frdoD4FKvq
-         rhWPnQkUj7eBIKbx3sRlUO1bL27ggJuiAbNC/+DbnzUl7RCi9RNpLEff43kHD8d+/48O
-         GGpYEOC9MuKoPDj7+1/gvqEEWdEzW1dxi9ujBK85KXNvjKro0lkQRgCLFCjgzllceJ+u
-         wp5g==
-X-Gm-Message-State: AOAM531vn/9g4VacX/nBkX1UzJFIO8cyzf1PbVAQH5uKuj0GFhu8dNAM
-        uI3pTqSRAb2HHe3Oh98Q0ROuBwZKnyVE
-X-Google-Smtp-Source: ABdhPJzGFYSJkGjEYy0wczei19iWM6Y/PFAcqGhaMiTDjHXzZj8TJzkLVLUqX7h6ji794vCiYrmvD3iMRwb6
-X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:7455:f4f3:5253:80b3])
- (user=amistry job=sendgmr) by 2002:a25:7a41:: with SMTP id
- v62mr28852515ybc.225.1623126766754; Mon, 07 Jun 2021 21:32:46 -0700 (PDT)
-Date:   Tue,  8 Jun 2021 14:32:38 +1000
-Message-Id: <20210608143159.1.I230026301243fbcee23d408c75aa468c1fec58f7@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-Subject: [PATCH] drm/amd/display: Fix error code on failure to set brightness
-From:   Anand K Mistry <amistry@google.com>
-To:     amd-gfx@lists.freedesktop.org
-Cc:     Anand K Mistry <amistry@google.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
-        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, Eryk Brol <eryk.brol@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Nikola Cornij <nikola.cornij@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Wayne Lin <Wayne.Lin@amd.com>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=LQ327vLf2sAX9sBZj4rwUXDi/YVyuwzwG/5bRkeSlQ0=;
+        b=b84MlDbrfVea0fVf3w62+Slnes16qgU+DkNxZPx1L7cyfB7ABVuiasOP6YNtAFfhK4
+         E4y9urWTW8lPd0Zw8wvhiWoV2eWbSXjOGVrvpA1qKNGD3DmjbVjAiBlgRPRmnRzTayV5
+         lI1HTenb0aFJYMokfCbfGQfWGEsoKFtY9djH8IJlA1kzHUVAFUr5fo1Iq+psJiaHeIPj
+         wk47f6u9rxbdM21OjXrc9cNcWyl40Yyn4ZPGg1Ird75IyW1kX3R7X/3en2ZM/s8jidh7
+         uM9wJJrVwE+lXxjhgFyGVJR/oQqHfd+D5aUnFlAk7xPmMEMWE4lCzPQ2jVQy9qRJJuGQ
+         fovg==
+X-Gm-Message-State: AOAM531YK3uoTby1+CrZclwnLzylUt891k6qrYfnPslql1B03SXZTRGX
+        koUvTMVAMYaYuqi4xs3szq4=
+X-Google-Smtp-Source: ABdhPJy4xt0G+/1aglGwDilU0Vo8L84hZxB28vs9FoD7yiBgTCbbBgQhXaz49hJ/mhjSdKNy4JO5Kg==
+X-Received: by 2002:aa7:d798:: with SMTP id s24mr19190983edq.243.1623127188453;
+        Mon, 07 Jun 2021 21:39:48 -0700 (PDT)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id g11sm915975eds.24.2021.06.07.21.39.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 21:39:47 -0700 (PDT)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Tue, 8 Jun 2021 06:39:46 +0200
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        stable@vger.kernel.org, Wanpeng Li <kernellwp@gmail.com>
+Subject: Re: [PATCH 1/2] KVM: SVM: avoid infinite loop on NPF from bad address
+Message-ID: <YL70kh5/vLW8gmAY@eldamar.lan>
+References: <20200417163843.71624-1-pbonzini@redhat.com>
+ <20200417163843.71624-2-pbonzini@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417163843.71624-2-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The backlight_ops.update_status function is required to return a
-negative error code on failure. Returning a positive code may be
-interpreted as a success. This is true for the 'brightness' sysfs file,
-which passes through a non-zero value as the return value of the write()
-syscall. This is interpreted in user-space as a successful write of 1
-character, which is obviously wrong.
+Hi Paolo,
 
-It's not clear exactly what error code to use, but EINVAL should be
-reasonable.
+On Fri, Apr 17, 2020 at 12:38:42PM -0400, Paolo Bonzini wrote:
+> When a nested page fault is taken from an address that does not have
+> a memslot associated to it, kvm_mmu_do_page_fault returns RET_PF_EMULATE
+> (via mmu_set_spte) and kvm_mmu_page_fault then invokes svm_need_emulation_on_page_fault.
+> 
+> The default answer there is to return false, but in this case this just
+> causes the page fault to be retried ad libitum.  Since this is not a
+> fast path, and the only other case where it is taken is an erratum,
+> just stick a kvm_vcpu_gfn_to_memslot check in there to detect the
+> common case where the erratum is not happening.
+> 
+> This fixes an infinite loop in the new set_memory_region_test.
+> 
+> Fixes: 05d5a4863525 ("KVM: SVM: Workaround errata#1096 (insn_len maybe zero on SMAP violation)")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/svm/svm.c | 7 +++++++
+>  virt/kvm/kvm_main.c    | 1 +
+>  2 files changed, 8 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index a91e397d6750..c86f7278509b 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3837,6 +3837,13 @@ static bool svm_need_emulation_on_page_fault(struct kvm_vcpu *vcpu)
+>  	bool smap = cr4 & X86_CR4_SMAP;
+>  	bool is_user = svm_get_cpl(vcpu) == 3;
+>  
+> +	/*
+> +	 * If RIP is invalid, go ahead with emulation which will cause an
+> +	 * internal error exit.
+> +	 */
+> +	if (!kvm_vcpu_gfn_to_memslot(vcpu, kvm_rip_read(vcpu) >> PAGE_SHIFT))
+> +		return true;
+> +
+>  	/*
+>  	 * Detect and workaround Errata 1096 Fam_17h_00_0Fh.
+>  	 *
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index e2f60e313c87..e7436d054305 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -1602,6 +1602,7 @@ struct kvm_memory_slot *kvm_vcpu_gfn_to_memslot(struct kvm_vcpu *vcpu, gfn_t gfn
+>  {
+>  	return __gfn_to_memslot(kvm_vcpu_memslots(vcpu), gfn);
+>  }
+> +EXPORT_SYMBOL_GPL(kvm_vcpu_gfn_to_memslot);
+>  
+>  bool kvm_is_visible_gfn(struct kvm *kvm, gfn_t gfn)
+>  {
+> -- 
+> 2.18.2
 
-Signed-off-by: Anand K Mistry <amistry@google.com>
----
+I noticed that this patch, whilst beeing CC'ed for stable, appers to
+not have been applied to stable branches back then. There was first a
+mail from Sasha's bot that patches do not apply and Wanpeng Li.
 
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Did this simply felt through the cracks here or is it not worth
+backporting to older series? At least
+https://bugzilla.redhat.com/show_bug.cgi?id=1947982#c3 seem to
+indicate it might not be worth of if there is risk for regression if I
+understand Wanpeng Li. Is this right?
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 652cc1a0e450..ad322613390d 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -3431,7 +3431,7 @@ static int amdgpu_dm_backlight_update_status(struct backlight_device *bd)
- 	else
- 		rc = dc_link_set_backlight_level(dm->backlight_link, brightness, 0);
- 
--	return rc ? 0 : 1;
-+	return rc ? 0 : -EINVAL;
- }
- 
- static int amdgpu_dm_backlight_get_brightness(struct backlight_device *bd)
--- 
-2.32.0.rc1.229.g3e70b5a671-goog
-
+Regards,
+Salvatore
