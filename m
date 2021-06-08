@@ -2,64 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFF339F2C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47F639F2D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhFHJtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:49:25 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:57977 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229536AbhFHJtX (ORCPT
+        id S230401AbhFHJwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 05:52:07 -0400
+Received: from router.aksignal.cz ([62.44.4.214]:59342 "EHLO
+        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFHJwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:49:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=haoxu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Ubkgp-5_1623145644;
-Received: from B-25KNML85-0107.local(mailfrom:haoxu@linux.alibaba.com fp:SMTPD_---0Ubkgp-5_1623145644)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 08 Jun 2021 17:47:25 +0800
-Subject: Re: [syzbot] WARNING in io_wqe_enqueue
-To:     syzbot <syzbot+ea2f1484cffe5109dc10@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <0000000000000bdfa905c3f6720f@google.com>
-From:   Hao Xu <haoxu@linux.alibaba.com>
-Message-ID: <b9cb6dc4-3dfe-de60-a933-1f423301b3ca@linux.alibaba.com>
-Date:   Tue, 8 Jun 2021 17:47:24 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Tue, 8 Jun 2021 05:52:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by router.aksignal.cz (Postfix) with ESMTP id 50832406FE;
+        Tue,  8 Jun 2021 11:50:08 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
+Received: from router.aksignal.cz ([127.0.0.1])
+        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id xsdHTSOUdbTu; Tue,  8 Jun 2021 11:50:03 +0200 (CEST)
+Received: from [172.25.161.48] (unknown [83.240.30.185])
+        (Authenticated sender: jiri.prchal@aksignal.cz)
+        by router.aksignal.cz (Postfix) with ESMTPSA id 429DF405B3;
+        Tue,  8 Jun 2021 11:50:03 +0200 (CEST)
+Subject: Re: [PATCH v8 5/5] nvmem: eeprom: add documentation of sysfs fram and
+ sernum file
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
+ <20210607161201.223697-6-jiri.prchal@aksignal.cz>
+ <YL8yveuSWTC9iEEz@kroah.com>
+From:   =?UTF-8?B?SmnFmcOtIFByY2hhbA==?= <jiri.prchal@aksignal.cz>
+Message-ID: <d0aa3003-0cb7-53c8-6d0e-f1c2dcd90479@aksignal.cz>
+Date:   Tue, 8 Jun 2021 11:50:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <0000000000000bdfa905c3f6720f@google.com>
+In-Reply-To: <YL8yveuSWTC9iEEz@kroah.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/6/5 上午4:22, syzbot 写道:
-> syzbot has bisected this issue to:
+
+
+On 08. 06. 21 11:05, Greg Kroah-Hartman wrote:
+> On Mon, Jun 07, 2021 at 06:12:01PM +0200, Jiri Prchal wrote:
+>> Added sysfs fram and sernum file documentation.
+>>
+>> Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
+>> ---
+>> v5: new
+>> v6: no change here
+>> v7: no change here
+>> v8: added fram file doc
+>> ---
+>>   Documentation/ABI/testing/sysfs-class-spi-eeprom | 13 +++++++++++++
+>>   1 file changed, 13 insertions(+)
+>>   create mode 100644 Documentation/ABI/testing/sysfs-class-spi-eeprom
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-class-spi-eeprom b/Documentation/ABI/testing/sysfs-class-spi-eeprom
+>> new file mode 100644
+>> index 000000000000..b41420fe1329
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/sysfs-class-spi-eeprom
+>> @@ -0,0 +1,13 @@
+>> +What:		/sys/class/spi_master/spi<bus>/spi<bus>.<dev>/sernum
+>> +Date:		May 2021
+>> +KernelVersion:	5.13
+>> +Contact:	Jiri Prchal <jiri.prchal@aksignal.cz>
+>> +Description:
+>> +		(RO) Exports serial number of Cypress FRAM (FM25VN). 8 bytes as is in chip in hex string.
 > 
-> commit 24369c2e3bb06d8c4e71fd6ceaf4f8a01ae79b7c
-> Author: Pavel Begunkov <asml.silence@gmail.com>
-> Date:   Tue Jan 28 00:15:48 2020 +0000
+> Please properly wrap your lines.
 > 
->      io_uring: add io-wq workqueue sharing
+> What is "(RO)" here?
+
+Read Only, as seen in another doc.
+
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17934777d00000
-> start commit:   f88cd3fb Merge tag 'vfio-v5.13-rc5' of git://github.com/aw..
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14534777d00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10534777d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=82d85e75046e5e64
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ea2f1484cffe5109dc10
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16d5772fd00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10525947d00000
+> And the grammer is a bit odd, what is the second sentence supposed to
+> mean?
 > 
-> Reported-by: syzbot+ea2f1484cffe5109dc10@syzkaller.appspotmail.com
-> Fixes: 24369c2e3bb0 ("io_uring: add io-wq workqueue sharing")
+>> +
+>> +What:		/sys/class/spi_master/spi<bus>/spi<bus>.<dev>/fram
+>> +Date:		June 2021
+>> +KernelVersion:	5.13
 > 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-This is not a bug, the repro program first set RLIMIT_NPROC to 0, then 
-submits an unbound work whcih raises a warning of
-WARN_ON_ONCE(!acct->max_workers). Since unbound->max_workers is
-task_rlimit(current, RLIMIT_NPROC), so it is expected.
+> Obviously it can not make 5.13, right?
+
+Sorry for missunderstanding, what number should be here?
+
