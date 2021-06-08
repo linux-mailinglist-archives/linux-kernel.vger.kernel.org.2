@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859163A03F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3543A014D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237179AbhFHTXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:23:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55034 "EHLO mail.kernel.org"
+        id S235275AbhFHSuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:50:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236339AbhFHTLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:11:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E31D61948;
-        Tue,  8 Jun 2021 18:49:01 +0000 (UTC)
+        id S236005AbhFHSps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:45:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C4B613C1;
+        Tue,  8 Jun 2021 18:37:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178141;
-        bh=XVLWnGSjwUwC0WPQtXj76FA2O+nSv/AEz1ZBoP5Wmn4=;
+        s=korg; t=1623177437;
+        bh=2051omGRCgbqyD5yjue/gMMoDodud1d4XeCDfFUHNZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X+2YWM3zzCwMseX3LUe8wS/MBvBmAQTr5QSmRK+osz8JzuCoh8O6Xdin1xrB72Vq7
-         MIHcInl9etQ5i9tB/np6MfalS6QtGCrZHH0dBiESGicqDWG/BQFxxpNDAdRPIJduJa
-         3oXm5EQ38OgpTkSyzGQzZ8LAHtU25LaKA5o/szkI=
+        b=g1zWhYJCEZfpT9B3Q72QIDrp5j3lylfOUlKDVuYaJBzSiafpNKQYSPdnxrZ73Yff5
+         1eGuOOCEmbQOriGXh/iIrQfCRMXB8L4RFEhqFcdGc7i1/paIxkCF8Im/X5QtMPpHje
+         oKnLm+cn7ZVRCu8nh7I911+AsO33SbWHylmntQ30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 5.12 093/161] Bluetooth: use correct lock to prevent UAF of hdev object
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 34/78] ARM: dts: imx: emcon-avari: Fix nxp,pca8574 #gpio-cells
 Date:   Tue,  8 Jun 2021 20:27:03 +0200
-Message-Id: <20210608175948.591572019@linuxfoundation.org>
+Message-Id: <20210608175936.417235845@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Ma <linma@zju.edu.cn>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit e305509e678b3a4af2b3cfd410f409f7cdaabb52 upstream.
+[ Upstream commit b73eb6b3b91ff7d76cff5f8c7ab92fe0c51e3829 ]
 
-The hci_sock_dev_event() function will cleanup the hdev object for
-sockets even if this object may still be in used within the
-hci_sock_bound_ioctl() function, result in UAF vulnerability.
+According to the DT bindings, #gpio-cells must be two.
 
-This patch replace the BH context lock to serialize these affairs
-and prevent the race condition.
-
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 63e71fedc07c4ece ("ARM: dts: Add support for emtrion emCON-MX6 series")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_sock.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/imx6qdl-emcon-avari.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/bluetooth/hci_sock.c
-+++ b/net/bluetooth/hci_sock.c
-@@ -762,7 +762,7 @@ void hci_sock_dev_event(struct hci_dev *
- 		/* Detach sockets from device */
- 		read_lock(&hci_sk_list.lock);
- 		sk_for_each(sk, &hci_sk_list.head) {
--			bh_lock_sock_nested(sk);
-+			lock_sock(sk);
- 			if (hci_pi(sk)->hdev == hdev) {
- 				hci_pi(sk)->hdev = NULL;
- 				sk->sk_err = EPIPE;
-@@ -771,7 +771,7 @@ void hci_sock_dev_event(struct hci_dev *
+diff --git a/arch/arm/boot/dts/imx6qdl-emcon-avari.dtsi b/arch/arm/boot/dts/imx6qdl-emcon-avari.dtsi
+index 828cf3e39784..c4e146f3341b 100644
+--- a/arch/arm/boot/dts/imx6qdl-emcon-avari.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-emcon-avari.dtsi
+@@ -126,7 +126,7 @@
+ 		compatible = "nxp,pca8574";
+ 		reg = <0x3a>;
+ 		gpio-controller;
+-		#gpio-cells = <1>;
++		#gpio-cells = <2>;
+ 	};
+ };
  
- 				hci_dev_put(hdev);
- 			}
--			bh_unlock_sock(sk);
-+			release_sock(sk);
- 		}
- 		read_unlock(&hci_sk_list.lock);
- 	}
+-- 
+2.30.2
+
 
 
