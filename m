@@ -2,89 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92DD39F326
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD7339F327
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhFHKHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:07:16 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:35905 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbhFHKHO (ORCPT
+        id S231282AbhFHKHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:07:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47995 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230369AbhFHKHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:07:14 -0400
-Received: from [192.168.1.155] ([77.7.0.189]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MGhi0-1lcrUf1vYQ-00DrOa; Tue, 08 Jun 2021 12:05:07 +0200
-Subject: Re: [PATCH v7 0/8] Expose and manage PCI device reset
-To:     Amey Narkhede <ameynarkhede03@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-References: <20210608054857.18963-1-ameynarkhede03@gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <abcbaf1b-6b5f-bddc-eba1-e1e8e3ecf40e@metux.net>
-Date:   Tue, 8 Jun 2021 12:05:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 8 Jun 2021 06:07:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623146757;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lmuQ7QEVYadIGf4KyYRGp1fW0heKfm9ulOpJ4lH1Hx8=;
+        b=FpElR7PhqnRev3DYmn8dKQaG0oFmLn/+4DlKi77PvtYd63NuQ/RJzJjFn+OBHMh9VpsMLZ
+        Szv7imTlV/+8wAPnELqEhN/gUqEJeQPuR6dNtBC55js6WSSduV4Lw74Z0gHT2u3dfGfX6x
+        YF6YbYmE/b+OeKv14mSVPQQDSNyPKSU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-Cc8bIA2cNGKKO5UZXk8DUw-1; Tue, 08 Jun 2021 06:05:53 -0400
+X-MC-Unique: Cc8bIA2cNGKKO5UZXk8DUw-1
+Received: by mail-wr1-f72.google.com with SMTP id f22-20020a5d58f60000b029011634e39889so9192723wrd.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 03:05:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lmuQ7QEVYadIGf4KyYRGp1fW0heKfm9ulOpJ4lH1Hx8=;
+        b=Pk4tslugs8do5nIIsxVJbKtzPflIJwblcma3uqBrK8mNnMJD66kTtLrgPNLPhR+U9t
+         cqqyEldTdUqlXIDuKSA8IlLCvCfwhrImX4Cx71u9bqR9k8oRYYL3zZ5AjKqLU3uyjybN
+         U6PLhAzYlLHxLoBdUZO15fyF9C+7cbI3lmG+gDoNaxc2rMfahnohO0zNtJTrxonVqjEI
+         68/yRrmmoBlMMmbfWdYYwxvDtbubDLl3+vTaEXREizF4Pllg4n6FVpGBbENjKYgZqe1Y
+         fUuW9UNA3S9G/OVYtVq54jiJryj5x5jLG9+SPm/ETUUpYViF7ZlL8s74EnKsQLYLIkkz
+         XZtA==
+X-Gm-Message-State: AOAM53292EsLr+3SbrFN8QJmZ8wNhYRt1Fi2dSxr1MQtnlwqYQo7oL1D
+        omtFioS1sHLWo6M2jBK6BffixS8c8bRXrFV29xR5AsL+2BrKeFkN+wni02I73HjYnwNFKEFnZbT
+        EDSZWkuUtjZQhFCv5JdqVWmkY
+X-Received: by 2002:a05:6000:1049:: with SMTP id c9mr15474576wrx.416.1623146752591;
+        Tue, 08 Jun 2021 03:05:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwiMobTb7rBS4J8StzgZuCTXMJt+Yk8Wo4iX5earTWFn4rG+eWnBLqJqFtJ6vXexuacQcwBZg==
+X-Received: by 2002:a05:6000:1049:: with SMTP id c9mr15474562wrx.416.1623146752410;
+        Tue, 08 Jun 2021 03:05:52 -0700 (PDT)
+Received: from vian.redhat.com ([2a0c:5a80:3d14:2800:933d:abfc:d8e4:637f])
+        by smtp.gmail.com with ESMTPSA id w18sm18720697wrt.55.2021.06.08.03.05.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 03:05:52 -0700 (PDT)
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [GIT PULL 1/1] bcm2835-dt-next-2021-06-08
+Date:   Tue,  8 Jun 2021 12:05:43 +0200
+Message-Id: <20210608100543.691185-1-nsaenzju@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210608054857.18963-1-ameynarkhede03@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:RGaOtZoJIxkoDyTURXqBMhsPOVpaQp6wbfZz3Q4JDHlJQ7lr7qr
- 2qXRe7Gb2Tq7dP0TWzswxs+ZWpp+kncTUhK4S068Tm67+w3HejHdTMIfSF2RZxrX2mCjG4/
- nabyAXczLtKuM6SHqt2XFCf3oxnlpIHCUBze78jueZ5EF7JsoibG3qKgOQ/5dakcbFJIhc2
- jkRCa2pB0KKyLLvhDqCXA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oRflVmLBle8=:kcMMOWT0PKcbm1aw0D/mNW
- +Gc+qYffe7XOw0UFh6dE2sKOZ/B+fAOok4O/HZwB+gSSN49P5huCcC4z2JczhAg3+veMD7lss
- nafitkcG6vXQE30Sz6vkKbjVAtlY+QS4FZP9Kgp+MuJfuX7gWR8ZK+yqu2WN1cezWC+uszk8M
- flI40De/BSsFrwgAXAiEEz7kunlrBjdLw0raW4cAbLrN/9ySnh/Zn2kCvqBoQEAfKLlSZ1tVD
- bmV3Uqg0ROmC2zl+tYOizw6FCptwHmga3J+jLBtOZwPseHW3Lyt3PHxFohGFedL6mUhQ8krOC
- g14GyDjZt1Qlj7GlroJ0NT5znX+utloTdE/svjtdGxWyBEYpJ0Occrzal/8XgWCaEzX8OebbT
- 431ZPlg5BBmeyff/QFGddLj+55H7RNglWHR5IjXSYg7LcNtJ3Zz9bfPZ6iRMN4eXsyNjeXxWL
- dDsgo6FJdBWLeZtBEutlVOwoGDsKkudgMOKHAcBZnAFOABUrmsmpuwfL0T2kpFq0liTb8sgSc
- ffupm2Q8zBIQOoh7AiU7B0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.06.21 07:48, Amey Narkhede wrote:
+Hi Florian,
 
-Hi,
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-> PCI and PCIe devices may support a number of possible reset mechanisms
-> for example Function Level Reset (FLR) provided via Advanced Feature or
-> PCIe capabilities, Power Management reset, bus reset, or device specific reset.
-> Currently the PCI subsystem creates a policy prioritizing these reset methods
-> which provides neither visibility nor control to userspace.
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-Since I've got a current use case for that - could you perhaps tell more
-about the whole pci device reset mechanisms ?
+are available in the Git repository at:
 
-In my case I've got a board that wires reset lines to the soc's gpios.
-Not sure how exactly to qualify this, but I guess it would count as a
-bus wide reset.
+  https://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git tags/bcm2835-dt-next-2021-06-08
 
-Now the big question for me is how to implement that in a board specific
-platform driver (which already does setup of gpios and other attached
-devices), so we can reset the card in slot X in a generic way.
+for you to fetch changes up to ca5909b7fa6af9c7b9a215a8708926e44345a220:
 
-Any help highly appreciated.
+  arm64: dts: broadcom: Add reference to RPi 400 (2021-06-08 10:44:36 +0200)
 
+----------------------------------------------------------------
 
---mtx
+- Fixup MMC node names
+- Fixup led node names
+- Introduce new devicetree file for Raspberry Pi 400
+- Fix issue with dwc2's FIFO's size
+- Add VEC compatible for bcm2711
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+----------------------------------------------------------------
+Mateusz Kwiatkowski (1):
+      ARM: boot: dts: bcm2711: Add BCM2711 VEC compatible
+
+Stefan Wahren (6):
+      Revert "ARM: dts: bcm283x: increase dwc2's RX FIFO size"
+      ARM: dts: bcm283x: Fix up MMC node names
+      ARM: dts: Move BCM2711 RPi specific into separate dtsi
+      ARM: dts: bcm283x: Fix up GPIO LED node names
+      ARM: dts: Add Raspberry Pi 400 support
+      arm64: dts: broadcom: Add reference to RPi 400
+
+ arch/arm/boot/dts/Makefile                        |  1 +
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts             | 85 ++++-------------------
+ arch/arm/boot/dts/bcm2711-rpi-400.dts             | 45 ++++++++++++
+ arch/arm/boot/dts/bcm2711-rpi.dtsi                | 74 ++++++++++++++++++++
+ arch/arm/boot/dts/bcm2711.dtsi                    |  3 +-
+ arch/arm/boot/dts/bcm2835-rpi-a-plus.dts          |  4 +-
+ arch/arm/boot/dts/bcm2835-rpi-a.dts               |  2 +-
+ arch/arm/boot/dts/bcm2835-rpi-b-plus.dts          |  4 +-
+ arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts          |  2 +-
+ arch/arm/boot/dts/bcm2835-rpi-b.dts               |  2 +-
+ arch/arm/boot/dts/bcm2835-rpi-cm1.dtsi            |  2 +-
+ arch/arm/boot/dts/bcm2835-rpi-zero-w.dts          |  2 +-
+ arch/arm/boot/dts/bcm2835-rpi-zero.dts            |  2 +-
+ arch/arm/boot/dts/bcm2835-rpi.dtsi                |  2 +-
+ arch/arm/boot/dts/bcm2836-rpi-2-b.dts             |  4 +-
+ arch/arm/boot/dts/bcm2837-rpi-3-a-plus.dts        |  4 +-
+ arch/arm/boot/dts/bcm2837-rpi-3-b-plus.dts        |  4 +-
+ arch/arm/boot/dts/bcm2837-rpi-3-b.dts             |  2 +-
+ arch/arm/boot/dts/bcm2837-rpi-cm3.dtsi            |  2 +-
+ arch/arm/boot/dts/bcm283x-rpi-usb-otg.dtsi        |  2 +-
+ arch/arm/boot/dts/bcm283x-rpi-usb-peripheral.dtsi |  2 +-
+ arch/arm/boot/dts/bcm283x.dtsi                    |  2 +-
+ arch/arm64/boot/dts/broadcom/Makefile             |  3 +-
+ arch/arm64/boot/dts/broadcom/bcm2711-rpi-400.dts  |  2 +
+ 24 files changed, 160 insertions(+), 97 deletions(-)
+ create mode 100644 arch/arm/boot/dts/bcm2711-rpi-400.dts
+ create mode 100644 arch/arm/boot/dts/bcm2711-rpi.dtsi
+ create mode 100644 arch/arm64/boot/dts/broadcom/bcm2711-rpi-400.dts
+
