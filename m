@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6019F39F98E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F14739F990
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbhFHOv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:51:29 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48434 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233605AbhFHOvY (ORCPT
+        id S233665AbhFHOvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:51:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233619AbhFHOv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:51:24 -0400
-Message-Id: <20210608144346.045616965@linutronix.de>
+        Tue, 8 Jun 2021 10:51:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0586C061789
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 07:49:32 -0700 (PDT)
+Message-Id: <20210608144346.140254130@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623163770;
+        s=2020; t=1623163771;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7O85/tFcthcFjZKj3FL4XnZphychvCI4giAeYfOTUQc=;
-        b=VILxw9/U1btBgQ8MDD92kKuNX9Ph8/HKVi5HOnskZR1b9dlWv3zC+nenaJpbmYRHWtLHfL
-        a7OodYgQcYjfZQbqv6x4LMk3ErnR8EOaBYErO/FlFKZWPL3H007pu9g7X3aE/uK63cw71N
-        9zgS2Y+FCe1W24UkFj9/8Vl8546/8boolnCIa2jCNYb0vKfNVZnpAR97mRpKWvdLZ+/XlB
-        fxNH4XjxI/Qs2ujMpjuDuo5nFQ3cKa1KoqT3j3HObHZ0DJrxlortwhagkSi1d+MYmhGkmX
-        /7BxH1Lktk617wVGnPOffvMCl+97zJWfAkRSzO2CXWqGgPyDgkuW1bPKaMi7rw==
+        bh=/dpFWpqc7GiTa/l9FUU4zdrT19DYvl6o13sS1WRz2bY=;
+        b=RJpYdIv/Z0y8jNaiG9SQnY1Zmw6fia98fqdu/XOlgrm7mcuaXAago5n9r47Tnqa+FArN0Z
+        uATZSNG6RS0okU8X5bmxZOgtbZfp3QfpLlfZdgX5yh91R2Mtk3D6KBraeYgxji8kEXijbx
+        fZiOQ/T4PNtf3QxjmZk6PS133W2BY9ThQQCzsc3LtVm66NwcvpR1JShOb4fujPYqkYFDfo
+        HHeP2aRcCa2a7tgFIKpWBuucpPsvSqL1SrPvpgJCxC+UQmWa06Hv9ya6SLK3k16FXtBurF
+        TyH2NibFUUVMZv2hUDCfmlss4KYZ88HH+I+VMuWOS90nz6IWhy+mMHpxBwFWLA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623163770;
+        s=2020e; t=1623163771;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7O85/tFcthcFjZKj3FL4XnZphychvCI4giAeYfOTUQc=;
-        b=dCzyUlNYB1YLaXOlACqKfnAiMD4WoYHsBmbDTAbW2Xe+eYjoSTZqBwA+CiyTa3pOdlN14t
-        lFG9oosCMC/+pzDQ==
-Date:   Tue, 08 Jun 2021 16:36:21 +0200
+        bh=/dpFWpqc7GiTa/l9FUU4zdrT19DYvl6o13sS1WRz2bY=;
+        b=1LL3+Djd27Jt/9jNWMV5Zdlma047UX5hFvnswYa54pP/IGzQEneRAouciUevk9twf463Qe
+        b8CEVhvIwK2qslDg==
+Date:   Tue, 08 Jun 2021 16:36:22 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
@@ -41,8 +44,9 @@ Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
         Tony Luck <tony.luck@intel.com>,
         Yu-cheng Yu <yu-cheng.yu@intel.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Rik van Riel <riel@surriel.com>, Borislav Petkov <bp@suse.de>
-Subject: [patch V3 4/6] x86/pkru: Make PKRU=0 actually work
+        syzbot+2067e764dbcd10721e2e@syzkaller.appspotmail.com,
+        Borislav Petkov <bp@suse.de>, Rik van Riel <riel@surriel.com>
+Subject: [patch V3 5/6] x86/fpu: Add address range checks to copy_user_to_xstate()
 References: <20210608143617.565868844@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,79 +55,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When user space brings PKRU into init state, then the kernel handling is
-broken:
+From: Andy Lutomirski <luto@kernel.org>
 
-  T1 user space
-     xsave(state)
-     state.header.xfeatures &= ~XFEATURE_MASK_PKRU;
-     xrstor(state)
+copy_user_to_xstate() uses __copy_from_user(), which provides a negligible
+speedup.  Fortunately, both call sites are at least almost correct.
+__fpu__restore_sig() checks access_ok() with a length of
+xstate_sigframe_size() and ptrace regset access uses fpu_user_xstate_size.
+These should be valid upper bounds on the length, so, at worst, this would
+cause spurious failures and not accesses to kernel memory.
 
-  T1 -> kernel
-     schedule()
-       XSAVE(S) -> T1->xsave.header.xfeatures[PKRU] == 0
-       T1->flags |= TIF_NEED_FPU_LOAD;
+Nonetheless, this is far more fragile than necessary and none of these
+callers are in a hotpath. 
 
-       wrpkru();
+Use copy_from_user() instead.
 
-     schedule()
-       ...
-       pk = get_xsave_addr(&T1->fpu->state.xsave, XFEATURE_PKRU);
-       if (pk)
-	 wrpkru(pk->pkru);
-       else
-	 wrpkru(DEFAULT_PKRU);
-
-Because the xfeatures bit is 0 and therefore the value in the xsave storage
-is not valid, get_xsave_addr() returns NULL and switch_to() writes the
-default PKRU. -> FAIL #1!
-
-So that wreckages any copy_to/from_user() on the way back to user space
-which hits memory which is protected by the default PKRU value.
-
-Assumed that this does not fail (pure luck) then T1 goes back to user
-space and because TIF_NEED_FPU_LOAD is set it ends up in
-
-switch_fpu_return()
-    __fpregs_load_activate()
-      if (!fpregs_state_valid()) {
-	 load_XSTATE_from_task();
-      }
-
-But if nothing touched the FPU between T1 scheduling out and in the
-fpregs_state is valid so switch_fpu_return() does nothing and just clears
-TIF_NEED_FPU_LOAD. Back to user space with DEFAULT_PKRU loaded. -> FAIL #2!
-
-The fix is simple: if get_xsave_addr() returns NULL then set the PKRU value
-to 0 instead of the restrictive default PKRU value.
-
-Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: stable@vger.kernel.org
 ---
- arch/x86/include/asm/fpu/internal.h |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ arch/x86/kernel/fpu/xstate.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -579,9 +579,16 @@ static inline void switch_fpu_finish(str
- 	 * return to userland e.g. for a copy_to_user() operation.
- 	 */
- 	if (!(current->flags & PF_KTHREAD)) {
-+		/*
-+		 * If the PKRU bit in xsave.header.xfeatures is not set,
-+		 * then the PKRU compoment was in init state, which means
-+		 * XRSTOR will set PKRU to 0. If the bit is not set then
-+		 * get_xsave_addr() will return NULL because the PKRU value
-+		 * in memory is not valid. This means pkru_val has to be
-+		 * set to 0 and not to init_pkru_value.
-+		 */
- 		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
--		if (pk)
--			pkru_val = pk->pkru;
-+		pkru_val = pk ? pk->pkru : 0;
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -1190,7 +1190,7 @@ int copy_user_to_xstate(struct xregs_sta
+ 	offset = offsetof(struct xregs_state, header);
+ 	size = sizeof(hdr);
+ 
+-	if (__copy_from_user(&hdr, ubuf + offset, size))
++	if (copy_from_user(&hdr, ubuf + offset, size))
+ 		return -EFAULT;
+ 
+ 	if (validate_user_xstate_header(&hdr))
+@@ -1205,7 +1205,7 @@ int copy_user_to_xstate(struct xregs_sta
+ 			offset = xstate_offsets[i];
+ 			size = xstate_sizes[i];
+ 
+-			if (__copy_from_user(dst, ubuf + offset, size))
++			if (copy_from_user(dst, ubuf + offset, size))
+ 				return -EFAULT;
+ 		}
  	}
- 	__write_pkru(pkru_val);
- }
+@@ -1213,7 +1213,7 @@ int copy_user_to_xstate(struct xregs_sta
+ 	if (xfeatures_mxcsr_quirk(hdr.xfeatures)) {
+ 		offset = offsetof(struct fxregs_state, mxcsr);
+ 		size = MXCSR_AND_FLAGS_SIZE;
+-		if (__copy_from_user(&xsave->i387.mxcsr, ubuf + offset, size))
++		if (copy_from_user(&xsave->i387.mxcsr, ubuf + offset, size))
+ 			return -EFAULT;
+ 	}
+ 
 
