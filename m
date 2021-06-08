@@ -2,189 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6B239F3F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FD739F3F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhFHKql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:46:41 -0400
-Received: from smtp.outgoing.loopia.se ([93.188.3.37]:37447 "EHLO
-        smtp.outgoing.loopia.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231712AbhFHKqd (ORCPT
+        id S231739AbhFHKqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231656AbhFHKqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:46:33 -0400
-Received: from s807.loopia.se (localhost [127.0.0.1])
-        by s807.loopia.se (Postfix) with ESMTP id D749410C6094
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:44:26 +0200 (CEST)
-Received: from s645.loopia.se (unknown [172.22.191.6])
-        by s807.loopia.se (Postfix) with ESMTP id C67A22E2C462;
-        Tue,  8 Jun 2021 12:44:26 +0200 (CEST)
-Received: from s475.loopia.se (unknown [172.22.191.6])
-        by s645.loopia.se (Postfix) with ESMTP id B7871157A051;
-        Tue,  8 Jun 2021 12:44:26 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at amavis.loopia.se
-X-Spam-Flag: NO
-X-Spam-Score: -1
-X-Spam-Level: 
-X-Spam-Status: No, score=-1 tagged_above=-999 required=6.2
-        tests=[ALL_TRUSTED=-1] autolearn=disabled
-Received: from s934.loopia.se ([172.22.191.6])
-        by s475.loopia.se (s475.loopia.se [172.22.190.15]) (amavisd-new, port 10024)
-        with LMTP id jf-nS95sGvU9; Tue,  8 Jun 2021 12:44:26 +0200 (CEST)
-X-Loopia-Auth: user
-X-Loopia-User: carl@hgsystem.se
-X-Loopia-Originating-IP: 155.4.133.180
-Received: from localhost.localdomain (h-155-4-133-180.NA.cust.bahnhof.se [155.4.133.180])
-        (Authenticated sender: carl@hgsystem.se)
-        by s934.loopia.se (Postfix) with ESMTPSA id 039B67CE99E;
-        Tue,  8 Jun 2021 12:44:25 +0200 (CEST)
-From:   Erik Rosen <erik.rosen@metormote.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, Dlinux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Erik Rosen <erik.rosen@metormote.com>
-Subject: [PATCH v5 5/5] hwmon: (pmbus/pim4328) Add documentation for the pim4328 PMBus driver
-Date:   Tue,  8 Jun 2021 12:44:16 +0200
-Message-Id: <20210608104416.6941-6-erik.rosen@metormote.com>
-X-Mailer: git-send-email 2.11.0 (Apple Git-81)
-In-Reply-To: <20210608104416.6941-1-erik.rosen@metormote.com>
-References: <20210608104416.6941-1-erik.rosen@metormote.com>
+        Tue, 8 Jun 2021 06:46:51 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC69FC061787;
+        Tue,  8 Jun 2021 03:44:47 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id i10so31349867lfj.2;
+        Tue, 08 Jun 2021 03:44:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=RQrvOOav2Bz07nagbQp4IaMsDtzS0SARmjf449xkKTE=;
+        b=H0g5dE5ct2vfn54LljqsH3PsAAf+N6ccwBzPSpf9DiIR4UoSSp0hq1lHHrqjgU8c20
+         gZqH5ZBnyvCui7JCt3M4Zidpva0ERHmoeinDerCeFS7q+KWNfNsaaKWcpXGME/Yh0b0s
+         2Cn8hyAJCWl3pS3VEGy49+QUo5n84EpNSv9TpUIFm4hvrDdKOrlMGJpkXcOqRt9gUFAJ
+         S5czwEhgTvZ11uvkOOK4dMxZprhF8QDZOklpZraQzfh5WIRwqmZhdSuzHGt7LTKGdpRw
+         S9pkNLgTbugWUESxO1ls8oUTyYVh6BVnzTWgfsao3v5IiWvJAa8AZYEiArbNr7GpV9IS
+         orgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=RQrvOOav2Bz07nagbQp4IaMsDtzS0SARmjf449xkKTE=;
+        b=VXkTiWJoikzN1ufCdi+LjQEje1UUdO9+rwU5jz8Xcc/NKEV28Nll7XtQ1UX36okGoF
+         G5+8NL5B4wCjt47lBL+i9/Dz2yuVPQVhMv4Yp9i3dXiR8QM0SaHndf33M7EKCY+U8ncv
+         AMTx6zYtHyraHEBJJqQqljeDWhR8VN3K3D1VSMvz6BEi0IamvhsmlCaVYLZ4Zs53bmkO
+         2c4JwtjgnXPpRW48neM0G/cLaJl+FcXsYyDqWbVccS06pyyK8opOaVTUfXzo5OSX/14+
+         BT7fRZbBafDVeeacoKYUT3AcSrNMlijwl1bL1nL4qtgAzLp9oeTCjoCBj02mYtocZcXn
+         XbWg==
+X-Gm-Message-State: AOAM531r74lb2YVytkY3bxc+7o4DgwLrcOvW3GTDGeWxwSuQ6LDe0niz
+        5CwOD4XTHDIbl/G4hFvn0Is=
+X-Google-Smtp-Source: ABdhPJy2HRmEgKYS9HCZg4uxWytp+lgVbuV9/1TOdiByYE73EUKYV/uLP2XoJsK1XlTYp7XieX0/QQ==
+X-Received: by 2002:ac2:5053:: with SMTP id a19mr5311715lfm.383.1623149086006;
+        Tue, 08 Jun 2021 03:44:46 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.224.40])
+        by smtp.gmail.com with ESMTPSA id e21sm652966ljl.26.2021.06.08.03.44.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 03:44:45 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 13:44:43 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     tiantao6@hisilicon.com, rdunlap@infradead.org,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] reiserfs: add check for invalid 1st journal block
+Message-ID: <20210608134443.022b3389@gmail.com>
+In-Reply-To: <20210517130818.GB25760@quack2.suse.cz>
+References: <20210517101523.GB31755@quack2.suse.cz>
+        <20210517121545.29645-1-paskripkin@gmail.com>
+        <20210517130818.GB25760@quack2.suse.cz>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation and index link for pim4328 PMBus driver.
+On Mon, 17 May 2021 15:08:18 +0200
+Jan Kara <jack@suse.cz> wrote:
 
-Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
----
- Documentation/hwmon/index.rst   |   1 +
- Documentation/hwmon/pim4328.rst | 105 ++++++++++++++++++++++++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 Documentation/hwmon/pim4328.rst
+> On Mon 17-05-21 15:15:45, Pavel Skripkin wrote:
+> > syzbot reported divide error in reiserfs.
+> > The problem was in incorrect journal 1st block.
+> > 
+> > Syzbot's reproducer manualy generated wrong superblock
+> > with incorrect 1st block. In journal_init() wasn't
+> > any checks about this particular case.
+> > 
+> > For example, if 1st journal block is before superblock
+> > 1st block, it can cause zeroing important superblock members
+> > in do_journal_end().
+> > 
+> > Reported-by: syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> 
+> Thanks! I've added the patch to my tree.
+> 
+> 								Honza
+> 
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 9ed60fa84cbe..719625f8f755 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -150,6 +150,7 @@ Hardware Monitoring Kernel Drivers
-    pc87360
-    pc87427
-    pcf8591
-+   pim4328
-    pm6764tr
-    pmbus
-    powr1220
-diff --git a/Documentation/hwmon/pim4328.rst b/Documentation/hwmon/pim4328.rst
-new file mode 100644
-index 000000000000..70c9e7a6882c
---- /dev/null
-+++ b/Documentation/hwmon/pim4328.rst
-@@ -0,0 +1,105 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Kernel driver pim4328
-+=====================
-+
-+Supported chips:
-+
-+  * Flex PIM4328
-+
-+    Prefix: 'pim4328', 'bmr455'
-+
-+    Addresses scanned: -
-+
-+    Datasheet:
-+
-+https://flexpowermodules.com/resources/fpm-techspec-pim4328
-+
-+  * Flex PIM4820
-+
-+    Prefixes: 'pim4820'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-pim4820
-+
-+  * Flex PIM4006, PIM4106, PIM4206, PIM4306, PIM4406
-+
-+    Prefixes: 'pim4006', 'pim4106', 'pim4206', 'pim4306', 'pim4406'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-pim4006
-+
-+Author: Erik Rosen <erik.rosen@metormote.com>
-+
-+
-+Description
-+-----------
-+
-+This driver supports hardware monitoring for Flex PIM4328 and
-+compatible digital power interface modules.
-+
-+The driver is a client driver to the core PMBus driver. Please see
-+Documentation/hwmon/pmbus.rst and Documentation.hwmon/pmbus-core for details
-+on PMBus client drivers.
-+
-+
-+Usage Notes
-+-----------
-+
-+This driver does not auto-detect devices. You will have to instantiate the
-+devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-+details.
-+
-+
-+Platform data support
-+---------------------
-+
-+The driver supports standard PMBus driver platform data.
-+
-+
-+Sysfs entries
-+-------------
-+
-+The following attributes are supported. All attributes are read-only.
-+
-+======================= ========================================================
-+in1_label		"vin"
-+in1_input		Measured input voltage.
-+in1_alarm		Input voltage alarm.
-+
-+in2_label		"vin.0"
-+in2_input		Measured input voltage on input A.
-+
-+			PIM4328 and PIM4X06
-+
-+in3_label		"vin.1"
-+in3_input		Measured input voltage on input B.
-+
-+			PIM4328 and PIM4X06
-+
-+in4_label		"vcap"
-+in4_input		Measured voltage on holdup capacitor.
-+
-+			PIM4328
-+
-+curr1_label		"iin.0"
-+curr1_input		Measured input current on input A.
-+
-+			PIM4X06
-+
-+curr2_label		"iin.1"
-+curr2_input		Measured input current on input B.
-+
-+			PIM4X06
-+
-+currX_label		"iout1"
-+currX_input		Measured output current.
-+currX_alarm		Output current alarm.
-+
-+			X is 1 for PIM4820, 3 otherwise.
-+
-+temp1_input		Measured temperature.
-+temp1_alarm		High temperature alarm.
-+======================= ========================================================
--- 
-2.20.1
+Hi, Jan!
 
+Is this patched got lost somehow? I did't find it in your tree here
+https://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git/.
+
+Sorry to bother you, maybe Im missing something :)
+
+
+
+With regards,
+Pavel Skripkin
