@@ -2,131 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5872E39FC49
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8A839FC4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbhFHQYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 12:24:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26179 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232134AbhFHQYN (ORCPT
+        id S231165AbhFHQYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 12:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231175AbhFHQYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:24:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623169340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ok+shLqzyv78HhrCPatk5ZH7xd0vr4GnUta6jGlDoJI=;
-        b=ZTBElWHdKFDeNvMqB/fFsjks5zChFYGuoEz1Ld18kr2UQVIzdG8N3MtswtYRd8Ex0tayb1
-        jRTCB7i5Loat0bn4T2z6y0X1qEKz++NhZUSwqJUIenLjlQZs+aJglYt0eoMugU4iqfeypS
-        sHE/tNG0fudLqD8NlHSje9HHsjICJNo=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-199-k3phGCl5P665SWebBaR3_A-1; Tue, 08 Jun 2021 12:22:18 -0400
-X-MC-Unique: k3phGCl5P665SWebBaR3_A-1
-Received: by mail-wm1-f70.google.com with SMTP id o14-20020a1c4d0e0000b029019a2085ba40so617140wmh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 09:22:18 -0700 (PDT)
+        Tue, 8 Jun 2021 12:24:39 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A38C061787
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 09:22:46 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id c13so10947486plz.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 09:22:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=5UGJKq2h6rMTD/ZfVc/W1XoPDEyEyEZ8LMuvSNqSSRA=;
+        b=LxfoINIfOKUATKTbCuxnljEj0xre2YLbpS4tDbHNJAzwi9reggzZ0M5n8hRQj2Rpmj
+         PDF0tsdx9lXOpq7TKK4/jk7iamRR7N+C87jgCxFnVJZgEEwmAiXw2IGTYVgUlzarnD9C
+         I6OM7qqJLbJL8Jf17DEhXT9byZNsLecyMsX/I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ok+shLqzyv78HhrCPatk5ZH7xd0vr4GnUta6jGlDoJI=;
-        b=ugwXKiK/PGWbavwiIk01IxdsnjP6zQvEdjkogBzbHDIaBOq/6HaXGE+dVVnEMj3Tc2
-         aajH9xWlSCJDWSz5f0OpQY3M/4731REtGZJL2uQkZ5p8z9ndTt3pp5TsaIqu0xAtPQyk
-         sreyYsTaZ8FUQ3mG9uHcxiK86EOt9ZV6Yie7WdnRebaBflG++9zGJwQLCo3VUqseorOL
-         xnzZlJo/y+WuzOdrwLWVIYeSb4LTM+M1AKjelMYjwF4GyjGHqoCH1ZpcVe664nwOZhRT
-         81KwLO+tt0bnU6Q7PGucg35/tlFVVZptW1vXxrWppbySepSPoqFF4ctyhP0fL5s8nIwq
-         xv4g==
-X-Gm-Message-State: AOAM533U6aST7x4YShXak+4RGOJ8aZYWqcvwzSFmtKLyIm8oDfjw1BQ9
-        wSJ41Oc9G9tYATUtVY6kYtIIXft3QfPVjDJ2FCI4X9VPnWBcY4z7VN4d9w2XtpwK6gGbAQhxba1
-        i+8FWMqiaF1MW9zE3at/3fbem
-X-Received: by 2002:a7b:c24e:: with SMTP id b14mr23234187wmj.6.1623169337671;
-        Tue, 08 Jun 2021 09:22:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyC+n56dPzuybrrNseY5pZzjjxr0lZ8vs61haw6SjQYimAX5KUEeUYyWF6ViTudX4GdbHx1ag==
-X-Received: by 2002:a7b:c24e:: with SMTP id b14mr23234160wmj.6.1623169337454;
-        Tue, 08 Jun 2021 09:22:17 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id y8sm2812916wmi.45.2021.06.08.09.22.15
+         :user-agent:mime-version:in-reply-to;
+        bh=5UGJKq2h6rMTD/ZfVc/W1XoPDEyEyEZ8LMuvSNqSSRA=;
+        b=L4brZsUT52gAhZ1EyJmOJKFxiw18Tszc35VpqPMyA7tIUt0YogFsIoVJPk8SF9ZpUn
+         9tzSKHn33Gmnb78XMFoFDM1mCgwX/5RzuZgcYjSS0goF9FKV8kbAankgOvK3kBFw54Zf
+         i8uffQJRqRSF+AWrRg+94wVFwv3Ot9BaFAooCYDk09ZLrZ86MwGDrGaB+aTPB6RJorZM
+         ANXKxUaxNxd2Up/aqxNInRLN+04hxucRYETE1Qex3/NH49GH2N71P05EfJk2dqUxj/14
+         kBhAXZXAz2jP1SjI1i5T09XYfUC4FKdqSu38G0/zSInExd6rnrxXIUvJmH5siCw1QDW1
+         w1aA==
+X-Gm-Message-State: AOAM530+eh1f9/DE0pAUc4A127sXH9buJX3L9CtExuDfWWH0uggCqZaI
+        +SNi9h2ywe0Grrl95AG61Hu5gHUbrMPzsQQWD3ufW4JRJJ43Kcnnn6GgVLaFKM00QLB4kpFvmjz
+        CR4yonVcMvEE2yX4=
+X-Google-Smtp-Source: ABdhPJwYsgsahnZ3pWQ0o6mgM81uy5t2QPvMXtHLNown2S36MKgo1Tqv0T3zuw1BiYsfSshZ0sumgA==
+X-Received: by 2002:a17:902:d48e:b029:108:cd42:f914 with SMTP id c14-20020a170902d48eb0290108cd42f914mr420258plg.7.1623169365609;
+        Tue, 08 Jun 2021 09:22:45 -0700 (PDT)
+Received: from [192.168.0.217] (ip98-167-23-218.lv.lv.cox.net. [98.167.23.218])
+        by smtp.gmail.com with ESMTPSA id o9sm12136791pfh.217.2021.06.08.09.22.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 09:22:16 -0700 (PDT)
-Subject: Re: [PATCH] KVM: SVM: Fix SEV SEND_START session length &
- SEND_UPDATE_DATA query length after commit 238eca821cee
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     seanjc@google.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, joro@8bytes.org,
-        Thomas.Lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srutherford@google.com,
-        brijesh.singh@amd.com
-References: <20210607061532.27459-1-Ashish.Kalra@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c579735c-31c3-eed5-576f-b07177231790@redhat.com>
-Date:   Tue, 8 Jun 2021 18:22:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 08 Jun 2021 09:22:44 -0700 (PDT)
+Subject: Re: [PATCH] scsi: lpfc: lpfc_mem: Removed unnecessary 'return'
+To:     lijian_8010a29@163.com, dick.kennedy@broadcom.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+References: <20210608060422.256554-1-lijian_8010a29@163.com>
+From:   James Smart <james.smart@broadcom.com>
+Message-ID: <022cff51-db32-1da4-1e42-ecae09e313f2@broadcom.com>
+Date:   Tue, 8 Jun 2021 09:22:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210607061532.27459-1-Ashish.Kalra@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210608060422.256554-1-lijian_8010a29@163.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000787a3b05c443916a"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/06/21 08:15, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> Commit 238eca821cee ("KVM: SVM: Allocate SEV command structures on local stack")
-> uses the local stack to allocate the structures used to communicate with the PSP,
-> which were earlier being kzalloced. This breaks SEV live migration for
-> computing the SEND_START session length and SEND_UPDATE_DATA query length as
-> session_len and trans_len and hdr_len fields are not zeroed respectively for
-> the above commands before issuing the SEV Firmware API call, hence the
-> firmware returns incorrect session length and update data header or trans length.
-> 
-> Also the SEV Firmware API returns SEV_RET_INVALID_LEN firmware error
-> for these length query API calls, and the return value and the
-> firmware error needs to be passed to the userspace as it is, so
-> need to remove the return check in the KVM code.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+--000000000000787a3b05c443916a
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+
+
+
+On 6/7/2021 11:04 PM, lijian_8010a29@163.com wrote:
+> From: lijian <lijian@yulong.com>
+>
+> Removed unnecessary 'return'.
+>
+> Signed-off-by: lijian <lijian@yulong.com>
 > ---
->   arch/x86/kvm/svm/sev.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 5bc887e9a986..e0ce5da97fc2 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1103,10 +1103,9 @@ __sev_send_start_query_session_length(struct kvm *kvm, struct kvm_sev_cmd *argp,
->   	struct sev_data_send_start data;
->   	int ret;
->   
-> +	memset(&data, 0, sizeof(data));
->   	data.handle = sev->handle;
->   	ret = sev_issue_cmd(kvm, SEV_CMD_SEND_START, &data, &argp->error);
-> -	if (ret < 0)
-> -		return ret;
->   
->   	params->session_len = data.session_len;
->   	if (copy_to_user((void __user *)(uintptr_t)argp->data, params,
-> @@ -1215,10 +1214,9 @@ __sev_send_update_data_query_lengths(struct kvm *kvm, struct kvm_sev_cmd *argp,
->   	struct sev_data_send_update_data data;
->   	int ret;
->   
-> +	memset(&data, 0, sizeof(data));
->   	data.handle = sev->handle;
->   	ret = sev_issue_cmd(kvm, SEV_CMD_SEND_UPDATE_DATA, &data, &argp->error);
-> -	if (ret < 0)
-> -		return ret;
->   
->   	params->hdr_len = data.hdr_len;
->   	params->trans_len = data.trans_len;
-> 
+>   drivers/scsi/lpfc/lpfc_mem.c | 7 -------
+>   1 file changed, 7 deletions(-)
+>
+>
 
-Queued, thanks.
+Looks good
 
-Paolo
+Reviewed-by: James Smart <jsmart2021@gmail.com>
 
+-- james
+
+
+-- 
+This electronic communication and the information and any files transmitted 
+with it, or attached to it, are confidential and are intended solely for 
+the use of the individual or entity to whom it is addressed and may contain 
+information that is confidential, legally privileged, protected by privacy 
+laws, or otherwise restricted from disclosure to anyone else. If you are 
+not the intended recipient or the person responsible for delivering the 
+e-mail to the intended recipient, you are hereby notified that any use, 
+copying, distributing, dissemination, forwarding, printing, or copying of 
+this e-mail is strictly prohibited. If you received this e-mail in error, 
+please return the e-mail to the sender, delete it from your computer, and 
+destroy any printed copy of it.
+
+--000000000000787a3b05c443916a
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+PXdbw8NJD55W/TyL5SqwLhkniLbboSA3j8lnH2Irpzm5VWjULsVCgV6+584AQ7cIYxFuSU2iy9oC
+VOMV1KZcfEMa2w69xAPeGaT4svn9q4PyT7nKiygbAgMBAAGjggHZMIIB1TAOBgNVHQ8BAf8EBAMC
+BaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJlLmdsb2JhbHNp
+Z24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYIKwYBBQUHMAGG
+NWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwME0G
+A1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxz
+aWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqGOGh0dHA6Ly9j
+cmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3JsMCMGA1UdEQQc
+MBqBGGphbWVzLnNtYXJ0QGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
+GDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU38f2heZreKHlV6siVOSG/emDAbMw
+DQYJKoZIhvcNAQELBQADggEBAFxOL7NTWX6Z3GGXKqmCIS7A9MeBSusGyxInLdVymGQsxEItQhHo
+JsU6Nck6c8X77/ebCikLmw87STnywRJNGxUVRhcN/1p7Qyf246oxhG31fcVeSx/fEWzAbSrNTkLf
+eAGDDdAlZdLD7C1DWW8Z4wYkkoAlQ/HX7/pShjmuT6UK3gkc7SxbWT0w3vpBYP0sbj0I+pdeNFBm
+9mc9+qMcR1bhq+sAyYmBebwsAuCKTT1oY7Pfq1981wGcENAbCE/M0QL+PJwLYcM4UONNVqIfX6VL
+rosksbNQhwjUlEcPdVzlzWQjhia2Gl3yjSb8HBLcnu4rh0oVjIP3NfBsRUkBYCYxggJtMIICaQIB
+ATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhH
+bG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwooxvJJXw5eyVAy38wDQYJ
+YIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILEY/r+17jxdq+FViqRFEiGUiLHHaP9oxpZz
+5qB50IXrMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDYwODE2
+MjI0NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFl
+AwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATAN
+BgkqhkiG9w0BAQEFAASCAQBGpK0wjzQQs5x0JqFNdiNPpXcm299V9XSRc6er1bxaqfvP3rxld0P4
+LX7qeZpba24uUtyb5QC1iz7ElFzdEo06Dbs432wbBPzCkn5Ty4PEgdv/o1npGerJWY4ZRVWmomNI
+ZjeSme9jA5xDGSX+WKefL8qJxDB/f7kr8e1aTZh1ejbcK0cfF/FRLI3RvHvR5IzJ46KC921pk21P
+qrBN3YI3gQAkxjaociESJaJJ6bbJtzShVrRxbK3mHJqn/IdGOnbhe0xfl5fbj6IcCVbp++ZfSl+K
+lJwDKVXTCy8rr/75cMSa5PkUD6GOLIeL8aeOFDD5quHfDeE9cfMFkRb491JD
+--000000000000787a3b05c443916a--
