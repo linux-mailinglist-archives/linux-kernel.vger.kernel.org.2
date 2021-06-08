@@ -2,198 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577BE39F7FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AA439F802
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232986AbhFHNnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:43:00 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:14508 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232797AbhFHNm7 (ORCPT
+        id S233028AbhFHNnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232403AbhFHNnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:42:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1623159651; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=G9VxwWb8bGsBl7+3DbYo6VDhjWTMxkaPtN3zBTrN8ujYpCcTiNIi/w67eGaj6/32jD
-    HT7Gwf7yANiLuhdj7nKlhzUIL5dMnskiErCBdNXschc2dL6Y3G3SW6Y+OFWRFVTtBWUy
-    gmV9tgHZohr6KD+AFWz78myUaMRMf4ufTlQRydNl3XIZPOggqNh7mBX+98XrRkwL4EPz
-    ASTL456+MVbJBRHSY9J7zEQsUp7JH8yVbvXimzruwvNG6ABSd4SvMSwwEYiewPwiL9Pt
-    vuMoRXurb0hVWHFqjN8KeHRncu8sNpbnEl7XuG6OUueICaZe4t/Xax3Djgxai3zyhOTu
-    7yGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1623159651;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Zx4/iLLgJx/rXn9XP5ob9EuxItyt6o86j/JyvYZbqtQ=;
-    b=sMSxqIAkHHi29JaRGJyC4jAKQPpEsPN8Ni5FJQrFoSy3vqy4WtoY5roTYy/7DA2ZNI
-    f8MF2IJM9V1XboYEmMSoADOuauB5q1Q95ZENte9AYJMieJBOP+LU5IxemnBgo2kCWnag
-    4Y50yTC+gFxhf1M1iWqYM8XXBsIrezHE/E1vO2iwr7o6a/LHVdR95R2YyuA8IoaDUp/3
-    l/s0cZ9oYiBXOWHAmNWoxHLHmmGYrB95zyg/xvgFLjykITndxduhpdi6O4264eVF7UND
-    ID6GCRUW3bDiulhiXdOpBLz+eAKpO90dmp5sQs8gcVCMnlyszhXshXi50iNofN3iFhQ3
-    jZPQ==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1623159651;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Zx4/iLLgJx/rXn9XP5ob9EuxItyt6o86j/JyvYZbqtQ=;
-    b=G++hwdH1QyInw8NRVfntDwK/aYsME0QJKekU3kAtVytpMgwhm3FSlxpqy0Pp0qa3wN
-    c03UAs+//fFdZDK4CYXbQ9iSilqo6pMZsZV1lglOurxFIqRs2bt7XvhwPRg3914zBHsf
-    FUvQbI1nHAUIUhJXtYfVMY4CxoJJ4IWLNS+vPKqBNlEjHy9vNJrrg/XbNMyJAKjRqtUf
-    kDebjKDht2DT1clmPiUhlJu1ZDIk8EKFfY+ngNfokuKi2Eo6wiOAshD3iHVJSe1IqKk6
-    5Q0y29LoqIoBRIUd1Io14SGW2JDfGCbjwhqAskDdu5Y730sn6MxQ6yscXnrdSJGCs+MF
-    CuFw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7IcbDBg=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.27.2 DYNA|AUTH)
-    with ESMTPSA id y01375x58DepdtY
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 8 Jun 2021 15:40:51 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 15:40:45 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        David Sterba <dsterba@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] arm: qcom: Add SMP support for MSM8226
-Message-ID: <YL9zXcyj4omVheNF@gerhold.net>
-References: <20210606201612.100752-1-bartosz.dudziak@snejp.pl>
- <20210606201612.100752-3-bartosz.dudziak@snejp.pl>
+        Tue, 8 Jun 2021 09:43:11 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4066AC061574;
+        Tue,  8 Jun 2021 06:41:11 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id r198so28819593lff.11;
+        Tue, 08 Jun 2021 06:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8CP8awcg95oWuVc3U+udiIOQfXQwkD1ELykPoeSDRf0=;
+        b=iJPUF2zRKrL8aPbnq6ruVV7uDa2MAPDQ71g9cFK6NodFwJHSxT0o3hecmaPpudVxod
+         r8galZFH0J98fnH+ymQDnhT3nnESaD7oxf6oLPHGC1N42ffQeogmS4PKE5oKcvZ77Not
+         OmBNYipVRrD2IZcWzBoEgHL+cATFntc0NFLtV5I7Boag5rW+tc0fnvAK5iuTu9miHIff
+         ieOVD/5njM7BzHWHQHXNFYwNoVFAOO5joQfIUFXOHvoVMxFwD2tFujpalxMwhd/42O2B
+         sFYKNfz1dniBt59rXk9hFauVvFLqlUg8kdoX9Q1hBYgBeHOQclht6iyXAPFgYtBVgD9p
+         3yFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8CP8awcg95oWuVc3U+udiIOQfXQwkD1ELykPoeSDRf0=;
+        b=Fz5Nh3C+X/wjOSca+eZgAtSiNvxEMChl0uBfgNieDK9KX+ztAHc24P/zGVLBFPBuVo
+         UdFqYLcNE0TLvj0Y4equj219XY8V/Eub6BCxQgXa77MtXP82SKxt8oNQnkJwUZKz913A
+         ZQV2EKtA8qYrNdvYDlRVf/45Le0+KAVz/AGURFcQw1tnI7hXo4lZquK5fb2AIcMVmef+
+         OPD8kTeB4kKkdpufeLmkgqMAIRGWG5E/XhE+ums6J4eJKqqorRB2ZPO5+DmFqbgU1lEp
+         HpcLvU6Pwh9zcoa3FGlGCvTe8gqf3We8YP8JtqpNlhpr/tCBm2xrDC+vnJsa0whsq7dM
+         n8fA==
+X-Gm-Message-State: AOAM533/FnvpalD4Yfqyf81d4AV5DUw5cgZ5i0PC0SA0mIZspfg6+Mgl
+        dB5xhiNcTQ4bvBdcLHzankM=
+X-Google-Smtp-Source: ABdhPJxyRgGCXscqZPEqdY3tizyXXZkHxIfRc0pL2h7PfHdsBirtbLZ3f0h4iLxhxFKq/sAN9wN8SQ==
+X-Received: by 2002:ac2:5084:: with SMTP id f4mr15801044lfm.466.1623159669392;
+        Tue, 08 Jun 2021 06:41:09 -0700 (PDT)
+Received: from [192.168.1.2] (broadband-5-228-51-184.ip.moscow.rt.ru. [5.228.51.184])
+        by smtp.gmail.com with ESMTPSA id h4sm494809ljk.4.2021.06.08.06.41.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 06:41:08 -0700 (PDT)
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
+        acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
+        joel@joelfernandes.org, kernel@collabora.com,
+        krisman@collabora.com, libc-alpha@sourceware.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
+        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
+References: <1622853816.mokf23xgnt.astroid@bobo.none>
+ <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
+ <1622980258.cfsuodze38.astroid@bobo.none>
+ <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
+ <1623114630.pc8fq7r5y9.astroid@bobo.none>
+ <b3488d1b-a4ff-8791-d960-a5f7ae2ea8b3@gmail.com> <YL9Q2tKLZP6GKbHW@kroah.com>
+ <8fa8b7fd-58ae-9467-138d-4ff4f32f68f7@gmail.com> <YL9kApyE6FbG/hru@kroah.com>
+ <3fca0afa-d9db-a176-aad1-ff7db21ba4a2@gmail.com> <YL9wROdz4y/pETA1@kroah.com>
+From:   Andrey Semashev <andrey.semashev@gmail.com>
+Message-ID: <edc30790-e29c-723c-50c8-61e258c6508b@gmail.com>
+Date:   Tue, 8 Jun 2021 16:41:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210606201612.100752-3-bartosz.dudziak@snejp.pl>
+In-Reply-To: <YL9wROdz4y/pETA1@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 10:16:12PM +0200, Bartosz Dudziak wrote:
-> Implement support for Cortex-A7 CPU release sequence in MSM8226 SoC.
+On 6/8/21 4:27 PM, Greg KH wrote:
+> On Tue, Jun 08, 2021 at 04:18:42PM +0300, Andrey Semashev wrote:
+>> On 6/8/21 3:35 PM, Greg KH wrote:
+>>> On Tue, Jun 08, 2021 at 03:06:48PM +0300, Andrey Semashev wrote:
+>>>> On 6/8/21 2:13 PM, Greg KH wrote:
+>>>
+>>>>> So what's keeping the futex2 code from doing all that futex1 does so
+>>>>> that the futex1 code can be deleted internally?
+>>>>
+>>>> I think, André will answer this, but my guess is, as stated above, this is a
+>>>> lot of work and time while the intermediate version is already useful.
+>>>
+>>> useful to who?  I still do not understand what users will be needing
+>>> this.  All I can tell is a single userspace program wants to use it, and
+>>> that is a fork from the real project it was based on and that the
+>>> maintainers have no plan to merge it back.
+>>>
+>>> So who does need/want this?
+>>
+>> I mentioned C++ std::atomic and Boost.Atomic before. Those need variable
+>> sized futexes.
 > 
-> Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-> ---
->  arch/arm/mach-qcom/platsmp.c | 71 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 71 insertions(+)
+> And has anyone converted them to use this new api to see if it works
+> well or not?
 > 
-> diff --git a/arch/arm/mach-qcom/platsmp.c b/arch/arm/mach-qcom/platsmp.c
-> index 630a038f45..60496554c6 100644
-> --- a/arch/arm/mach-qcom/platsmp.c
-> +++ b/arch/arm/mach-qcom/platsmp.c
-> @@ -29,6 +29,7 @@
->  #define COREPOR_RST		BIT(5)
->  #define CORE_RST		BIT(4)
->  #define L2DT_SLP		BIT(3)
-> +#define CORE_MEM_CLAMP		BIT(1)
->  #define CLAMP			BIT(0)
->  
->  #define APC_PWR_GATE_CTL	0x14
-> @@ -75,6 +76,62 @@ static int scss_release_secondary(unsigned int cpu)
->  	return 0;
->  }
->  
-> +static int cortex_a7_release_secondary(unsigned int cpu)
-> +{
-> +	int ret = 0;
-> +	void __iomem *reg;
-> +	struct device_node *cpu_node, *acc_node;
-> +	u32 reg_val;
-> +
-> +	cpu_node = of_get_cpu_node(cpu, NULL);
-> +	if (!cpu_node)
-> +		return -ENODEV;
-> +
-> +	acc_node = of_parse_phandle(cpu_node, "qcom,acc", 0);
-> +	if (!acc_node) {
-> +		ret = -ENODEV;
-> +		goto out_acc;
-> +	}
-> +
-> +	reg = of_iomap(acc_node, 0);
-> +	if (!reg) {
-> +		ret = -ENOMEM;
-> +		goto out_acc_map;
-> +	}
-> +
-> +	/* Put the CPU into reset. */
-> +	reg_val = CORE_RST | COREPOR_RST | CLAMP | CORE_MEM_CLAMP;
-> +	writel(reg_val, reg + APCS_CPU_PWR_CTL);
-> +
-> +	/* Turn on the BHS and set the BHS_CNT to 16 XO clock cycles */
-> +	writel(BHS_EN | (0x10 << BHS_CNT_SHIFT), reg + APC_PWR_GATE_CTL);
-> +	/* Wait for the BHS to settle */
-> +	udelay(2);
-> +
-> +	reg_val &= ~CORE_MEM_CLAMP;
-> +	writel(reg_val, reg + APCS_CPU_PWR_CTL);
-> +	reg_val |= L2DT_SLP;
-> +	writel(reg_val, reg + APCS_CPU_PWR_CTL);
-> +	udelay(2);
-> +
-> +	reg_val = (reg_val | BIT(17)) & ~CLAMP;
-> +	writel(reg_val, reg + APCS_CPU_PWR_CTL);
-> +	udelay(2);
-> +
-> +	/* Release CPU out of reset and bring it to life. */
-> +	reg_val &= ~(CORE_RST | COREPOR_RST);
-> +	writel(reg_val, reg + APCS_CPU_PWR_CTL);
-> +	reg_val |= CORE_PWRD_UP;
-> +	writel(reg_val, reg + APCS_CPU_PWR_CTL);
-> +
-> +	iounmap(reg);
-> +out_acc_map:
-> +	of_node_put(acc_node);
-> +out_acc:
-> +	of_node_put(cpu_node);
-> +	return ret;
-> +}
-> +
->  static int kpssv1_release_secondary(unsigned int cpu)
->  {
->  	int ret = 0;
-> @@ -281,6 +338,11 @@ static int msm8660_boot_secondary(unsigned int cpu, struct task_struct *idle)
->  	return qcom_boot_secondary(cpu, scss_release_secondary);
->  }
->  
-> +static int cortex_a7_boot_secondary(unsigned int cpu, struct task_struct *idle)
-> +{
-> +	return qcom_boot_secondary(cpu, cortex_a7_release_secondary);
-> +}
-> +
->  static int kpssv1_boot_secondary(unsigned int cpu, struct task_struct *idle)
->  {
->  	return qcom_boot_secondary(cpu, kpssv1_release_secondary);
-> @@ -315,6 +377,15 @@ static const struct smp_operations smp_msm8660_ops __initconst = {
->  };
->  CPU_METHOD_OF_DECLARE(qcom_smp, "qcom,gcc-msm8660", &smp_msm8660_ops);
->  
-> +static const struct smp_operations qcom_smp_cortex_a7_ops __initconst = {
-> +	.smp_prepare_cpus	= qcom_smp_prepare_cpus,
-> +	.smp_boot_secondary	= cortex_a7_boot_secondary,
-> +#ifdef CONFIG_HOTPLUG_CPU
-> +	.cpu_die		= qcom_cpu_die,
-> +#endif
-> +};
-> +CPU_METHOD_OF_DECLARE(qcom_smp_msm8226, "qcom,msm8226-smp", &qcom_smp_cortex_a7_ops);
-> +
+> As was pointed out to me numerous times when I tried to propose
+> readfile(), you need a real user that can show and prove it is needed
+> before we can take new syscalls, especially complex beasts like this
+> one.
 
-Looks good to me now. Actually this is also working well on
-MSM8916/Cortex-A53 on a rather unfortunate device where the firmware
-does not allow booting 64-bit kernels. I might upstream that now that
-it's mostly just adding a new compatible string with the same code.
+André has mentioned that he tested the patch set with patched Wine and 
+glibc.
 
-Assuming your change log is correct and you didn't change the
-initialization sequence in v1 -> v2 (didn't check it again):
-
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
-
-Thanks!
-Stephan
+I didn't patch Boost.Atomic or std::atomic, but it doesn't look to be 
+problematic. The only difference it would make there is to enable 
+futex2-based implementation for multiple atomic sizes and set up flags 
+to indicate the futex size, instead of only enabling futex-based 
+implementation for 32-bit atomics.
