@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A9E3A006F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C58839FF99
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234951AbhFHSnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:43:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36824 "EHLO mail.kernel.org"
+        id S234002AbhFHSeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:34:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235274AbhFHSjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:39:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E5186142C;
-        Tue,  8 Jun 2021 18:34:15 +0000 (UTC)
+        id S234528AbhFHSdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:33:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12902613BD;
+        Tue,  8 Jun 2021 18:30:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177256;
-        bh=lKpCVtXD3B8w7NgXNJYxyJ62U+u4UoNXBhi14EH6Lao=;
+        s=korg; t=1623177044;
+        bh=tQ9kHScR3ogbXaCbektO0+MM6Xy89oN+oaYgnQF3ox8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F6ZOoREq2gAYmUqy6BskpO7Hps2VnZYGq8+4VMwiEKij1B3g6hBtKKN98e8e7zU2x
-         C58ddZXQFoyOAg0zLMzyhB5I3pc4U/ARapWrtsGI1hOlRbGlftRnoccEQMnVH4ENq6
-         VLA8vE2y2qvSk8O8xxdFy4W5ih5MiYAwdOd05yJw=
+        b=JU9agzM6Fa97DrJ0VjdItiY8OyYL3uKarTNvyLi5dK1J+mMx9yNzXljDAHD4yyEla
+         CCiyPy3OF3HVB84Q0cIFcnaHFfW1bBVnK1Gmnci4P4AFrCH567OiVsZzcIoAl+3aP9
+         H2HDJJnEHiG+rsOsZbV+fk2UqsM9B/JYgjib0pKo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 11/58] HID: pidff: fix error return code in hid_pidff_init()
-Date:   Tue,  8 Jun 2021 20:26:52 +0200
-Message-Id: <20210608175932.653779039@linuxfoundation.org>
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 10/47] netfilter: nfnetlink_cthelper: hit EBUSY on updates if size mismatches
+Date:   Tue,  8 Jun 2021 20:26:53 +0200
+Message-Id: <20210608175930.816190281@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
+References: <20210608175930.477274100@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 3dd653c077efda8152f4dd395359617d577a54cd ]
+[ Upstream commit 8971ee8b087750a23f3cd4dc55bff2d0303fd267 ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+The private helper data size cannot be updated. However, updates that
+contain NFCTH_PRIV_DATA_LEN might bogusly hit EBUSY even if the size is
+the same.
 
-Fixes: 224ee88fe395 ("Input: add force feedback driver for PID devices")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: 12f7a505331e ("netfilter: add user-space connection tracking helper infrastructure")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/usbhid/hid-pidff.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/netfilter/nfnetlink_cthelper.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hid/usbhid/hid-pidff.c b/drivers/hid/usbhid/hid-pidff.c
-index 08174d341f4a..bc75f1efa0f4 100644
---- a/drivers/hid/usbhid/hid-pidff.c
-+++ b/drivers/hid/usbhid/hid-pidff.c
-@@ -1304,6 +1304,7 @@ int hid_pidff_init(struct hid_device *hid)
+diff --git a/net/netfilter/nfnetlink_cthelper.c b/net/netfilter/nfnetlink_cthelper.c
+index dfe4e6787219..2ebeb615db15 100644
+--- a/net/netfilter/nfnetlink_cthelper.c
++++ b/net/netfilter/nfnetlink_cthelper.c
+@@ -370,10 +370,14 @@ static int
+ nfnl_cthelper_update(const struct nlattr * const tb[],
+ 		     struct nf_conntrack_helper *helper)
+ {
++	u32 size;
+ 	int ret;
  
- 	if (pidff->pool[PID_DEVICE_MANAGED_POOL].value &&
- 	    pidff->pool[PID_DEVICE_MANAGED_POOL].value[0] == 0) {
-+		error = -EPERM;
- 		hid_notice(hid,
- 			   "device does not support device managed pool\n");
- 		goto fail;
+-	if (tb[NFCTH_PRIV_DATA_LEN])
+-		return -EBUSY;
++	if (tb[NFCTH_PRIV_DATA_LEN]) {
++		size = ntohl(nla_get_be32(tb[NFCTH_PRIV_DATA_LEN]));
++		if (size != helper->data_len)
++			return -EBUSY;
++	}
+ 
+ 	if (tb[NFCTH_POLICY]) {
+ 		ret = nfnl_cthelper_update_policy(helper, tb[NFCTH_POLICY]);
 -- 
 2.30.2
 
