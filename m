@@ -2,75 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE4039FE17
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81C039FE2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233898AbhFHRsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:48:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233583AbhFHRsw (ORCPT
+        id S233927AbhFHRvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:51:41 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:33739 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233082AbhFHRvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:48:52 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7043C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 10:46:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DYpoxF8V5padVKMwBrEXiIPopPnsff439+NPdx91qIw=; b=kCl98kyPH+JxVLSKJfvdpIWvAA
-        GSj+ov9Kkbcj/ByFCmB/vpzwUt4Ah1e3MdHRj5u90yFFmj8i91AjqxMqGbnqnvMdw0vqqGYUUkXxL
-        aygzPkEv6Muk4lW3ftlfgQkSm5M4tln2tJHZHR9FcW7j9pbwmo5eBixCtVV07+an6peYXrVUl0YG9
-        dW0f93RklivEdOE8qJYpA8z0K0Xip7T5fD5vjWP19Vi5DHB3WnEuBWnPqK0+10C7dhsK2g6HvXZxk
-        pcbPF4FSkeUxX23IMnoDf7cQbKtZSf6NYJw4QHncFTeIDZ94YSgsSH2PwG8rdbiQ2da0KJ7TCGXl7
-        nR6CllLA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lqfoN-004p8F-U9; Tue, 08 Jun 2021 17:46:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4217B3001E3;
-        Tue,  8 Jun 2021 19:46:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1A2EF201E7EE3; Tue,  8 Jun 2021 19:46:54 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 19:46:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: iowait boost is broken
-Message-ID: <YL+tDv/EL5ogf/0w@hirez.programming.kicks-ass.net>
-References: <CAEXW_YTcO=hbmdq3nOx2RJfT2yPyoFnQx5niB38R2Lzpsp38bA@mail.gmail.com>
- <20210607191031.GA12489@e120325.cambridge.arm.com>
+        Tue, 8 Jun 2021 13:51:38 -0400
+Received: by mail-wr1-f48.google.com with SMTP id a20so22575190wrc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:49:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8VUcUNHL3JuSqy+zkLCk7TZMD9OSteZxhISOtRNVDjQ=;
+        b=Rkv4RbY/1E+9cYKHD1E0VCGCJJ8FeA4zTISQEe7eaDnASxEiHmqhKpYX5ore5xvmKd
+         qBsqhYwcgBZuOaSUmcYb6o+iTCOoctKY3yLPFLrhzgdmC677GwT+2xpcuZ2AX5O8CbID
+         Y5P7LPwa9L91pKhqsZkACt7cyWinpUyu1bGFL9FzzXC614RQEmuKnXIVookASJs7cULS
+         S+jMjIljXL4R0vm/AFwuAplXCJfVclcAyqnWssZ/JNSZhqqDwqcTXOKMWM9t5UvsyUxG
+         nbqy7PGOt0CvMIsE3F0Gr2CHVRxXqW4NtHwW4Zf4fzby0tyM27MqfcYBtFFjU3Tj9l+P
+         NBHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8VUcUNHL3JuSqy+zkLCk7TZMD9OSteZxhISOtRNVDjQ=;
+        b=Vg2lXAqNdx/+Omd18pfGSee/ddn5voQBSWYq70JRkKD7xKsfFTVwSeJUlX1YRINO16
+         4hNTrzMx3yBRsfc9etDLnn2oO2M2Py/jiNs5x/MWauiwVRiGyIJ3iUj4L7fCkbb5Y0x7
+         Bx5MGHVM/+Thhqt+XlM1MxTyg9lVlbh8oH1+TIzcITVLecOKpaXzn8eEvP47I3oqMYxn
+         3903RXCWhigQsOCUHm8taSENHbGfr2tILmqg3b7NOgQtXO2cel9UdKWqrcGbRCHqk+RN
+         F6j/4KgJAkvJNbAPrs66Izb6fYrEmqdEKg9Pn2X16+KuNHp4Q3K4BHQ3jGxPYDZQ/x8A
+         AxoA==
+X-Gm-Message-State: AOAM533Pei8yYD9bpQOmsM6EcxiFsck00v93Sh8QHkUn6SQ+W6sq/Fux
+        iO/XZnkpT4XCarT2eg425K2AWNs4b0fvE6iHJb0XaA==
+X-Google-Smtp-Source: ABdhPJw3AXWRQHvemXMm9mHm72Hk/moNbFy9rPAbavS5t8/FbQE/HUYxi+rspRDnbpqKEpaBgYhgnMBG3s6lyQMDBxY=
+X-Received: by 2002:a5d:694b:: with SMTP id r11mr17324336wrw.168.1623174524512;
+ Tue, 08 Jun 2021 10:48:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607191031.GA12489@e120325.cambridge.arm.com>
+References: <20210521182104.18273-1-kuniyu@amazon.co.jp> <c423bd7b-03ab-91f2-60af-25c6dfa28b71@iogearbox.net>
+In-Reply-To: <c423bd7b-03ab-91f2-60af-25c6dfa28b71@iogearbox.net>
+From:   Yuchung Cheng <ycheng@google.com>
+Date:   Tue, 8 Jun 2021 10:48:06 -0700
+Message-ID: <CAK6E8=dtFmPYpK71XJc=HFDUL9mYO1i36Q8BemwSGcCq+3BEmw@mail.gmail.com>
+Subject: Re: [PATCH v7 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Neal Cardwell <ncardwell@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 08:10:32PM +0100, Beata Michalska wrote:
-> So back to the expectations.
-> The main problem, as I see it, is what do we actually want to achieve with
-> the I/O boosting? Is it supposed to compensate the time lost while waiting
-> for the I/O request to be completed or is is supposed to optimize the rate
-> at which I/O requests are being made. 
+On Tue, May 25, 2021 at 11:42 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
+> > The SO_REUSEPORT option allows sockets to listen on the same port and to
+> > accept connections evenly. However, there is a defect in the current
+> > implementation [1]. When a SYN packet is received, the connection is tied
+> > to a listening socket. Accordingly, when the listener is closed, in-flight
+> > requests during the three-way handshake and child sockets in the accept
+> > queue are dropped even if other listeners on the same port could accept
+> > such connections.
+> >
+> > This situation can happen when various server management tools restart
+> > server (such as nginx) processes. For instance, when we change nginx
+> > configurations and restart it, it spins up new workers that respect the new
+> > configuration and closes all listeners on the old workers, resulting in the
+> > in-flight ACK of 3WHS is responded by RST.
+> >
+> > To avoid such a situation, users have to know deeply how the kernel handles
+> > SYN packets and implement connection draining by eBPF [2]:
+> >
+> >    1. Stop routing SYN packets to the listener by eBPF.
+> >    2. Wait for all timers to expire to complete requests
+> >    3. Accept connections until EAGAIN, then close the listener.
+> >
+> >    or
+> >
+> >    1. Start counting SYN packets and accept syscalls using the eBPF map.
+> >    2. Stop routing SYN packets.
+> >    3. Accept connections up to the count, then close the listener.
+> >
+> > In either way, we cannot close a listener immediately. However, ideally,
+> > the application need not drain the not yet accepted sockets because 3WHS
+> > and tying a connection to a listener are just the kernel behaviour. The
+> > root cause is within the kernel, so the issue should be addressed in kernel
+> > space and should not be visible to user space. This patchset fixes it so
+> > that users need not take care of kernel implementation and connection
+> > draining. With this patchset, the kernel redistributes requests and
+> > connections from a listener to the others in the same reuseport group
+> > at/after close or shutdown syscalls.
+> >
+> > Although some software does connection draining, there are still merits in
+> > migration. For some security reasons, such as replacing TLS certificates,
+> > we may want to apply new settings as soon as possible and/or we may not be
+> > able to wait for connection draining. The sockets in the accept queue have
+> > not started application sessions yet. So, if we do not drain such sockets,
+> > they can be handled by the newer listeners and could have a longer
+> > lifetime. It is difficult to drain all connections in every case, but we
+> > can decrease such aborted connections by migration. In that sense,
+> > migration is always better than draining.
+> >
+> > Moreover, auto-migration simplifies user space logic and also works well in
+> > a case where we cannot modify and build a server program to implement the
+> > workaround.
+> >
+> > Note that the source and destination listeners MUST have the same settings
+> > at the socket API level; otherwise, applications may face inconsistency and
+> > cause errors. In such a case, we have to use the eBPF program to select a
+> > specific listener or to cancel migration.
+This looks to be a useful feature. What happens to migrating a
+passively fast-opened socket in the old listener but it has not yet
+been accepted (TFO is both a mini-socket and a full-socket)?
+It gets tricky when the old and new listener have different TFO key
 
-The latter, you want to increase the race of submission.
 
-> Do we want to boost I/O bound tasks by
-> default, no limits applied  or should we care about balancing performance
-> vs power ? And unless those expectations are clearly stated, we might not
-> get too far with any changes, really.
-
-You want to not increase power beyond what is needed to match the rate
-of processing I suppose.
+> >
+> > Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
+> > snippets along the way.
+> >
+> >
+> > Link:
+> >   [1] The SO_REUSEPORT socket option
+> >   https://lwn.net/Articles/542629/
+> >
+> >   [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
+> >   https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
+>
+> This series needs review/ACKs from TCP maintainers. Eric/Neal/Yuchung please take
+> a look again.
+>
+> Thanks,
+> Daniel
