@@ -2,92 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D9039EB43
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AB839EB4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhFHBRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:17:48 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:34301 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230209AbhFHBRr (ORCPT
+        id S231171AbhFHBWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:22:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36017 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230321AbhFHBWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:17:47 -0400
-X-UUID: 4623f96bb4ca4325b53853285eb3af65-20210608
-X-UUID: 4623f96bb4ca4325b53853285eb3af65-20210608
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1768396892; Tue, 08 Jun 2021 09:15:50 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 8 Jun 2021 09:15:48 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 8 Jun 2021 09:15:48 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <peterz@infradead.org>
-CC:     <ardb@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-toolchains@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
-        <matthias.bgg@gmail.com>, <mhelsley@vmware.com>,
-        <rostedt@goodmis.org>, <samitolvanen@google.com>,
-        <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
-Date:   Tue, 8 Jun 2021 09:15:48 +0800
-Message-ID: <20210608011548.5008-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <YL492/4WrWaNDL4p@hirez.programming.kicks-ass.net>
-References: <YL492/4WrWaNDL4p@hirez.programming.kicks-ass.net>
+        Mon, 7 Jun 2021 21:22:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623115242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TCwzQn65+dgzBoFvWj2wr+QLjXlAu9EeWSx0GqEzC4M=;
+        b=hj2ZlBF56qdE51oVdoOYR17j6mV4SpmuNhkGRKqNRM3m2j05SbCyN9DIw1y4WYcCakJkYR
+        m/a5IE+RZoKEQLnPtuZdIf0ORQs1fTJr/YCXFwRUYsKIJpsU6RppO34rhpqjWpe8BbzmHG
+        8EekV3O5u8f/b2ceS2Fayzp1LK3U2nM=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-120-Mfmna-xiPZq4-pPzzQP85Q-1; Mon, 07 Jun 2021 21:20:41 -0400
+X-MC-Unique: Mfmna-xiPZq4-pPzzQP85Q-1
+Received: by mail-pf1-f200.google.com with SMTP id 9-20020a6217090000b02902ed4caf9377so2652597pfx.19
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:20:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=TCwzQn65+dgzBoFvWj2wr+QLjXlAu9EeWSx0GqEzC4M=;
+        b=KSq6YeUIywPiXbyKLGRavgRnbGhNnVZ5+ZI/V/PBa9zniMXK76b1is3ODogLGSqOg+
+         Zy938JpnGXMHgCW9J1keID6n/fp/pJvHTi0fXLipURJS7H+T650VZb3n7mjtsx0fO0s2
+         crK+frfxQAavy6ZKKnf3ZACQK6GgLilf+fGacCNj4AKlc7qadCXQng7IxaTLiaLGutgU
+         eqkdf1RihXOBV+rqVoueFMqDGOimTLYb7eFa5yXMrQEmEAUOLTlaDPrQ1Jt29typwXny
+         CEkx4fDD1Fs11dfZMvzyfS/uQ0zG7Dhr8z5c8glvi5v0U7js9w3zFG6QfKVp1DBhxhcA
+         NR7A==
+X-Gm-Message-State: AOAM533NVgIiCZf6Px6qT1guq9biJ5UyDqQbRHjAPr/I7F7Z9ndrpNNr
+        J2ZoFr/So6Mw8OOj9SdEu9bgWx2cwzMQeYk9X1/xCsHkv6MvewLMwr8SlcTFpapxfTKWEYUUDoq
+        +Il++GpJKdur8Eey+ZPh8X/n+
+X-Received: by 2002:a17:90a:c20b:: with SMTP id e11mr2002402pjt.67.1623115240161;
+        Mon, 07 Jun 2021 18:20:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxPiYk/pvMKx+vaHmZlDroPiezFsE2XFpj2cfJDKpSRv32vxsQprEkdJWoAQEkbam2OXdw2Rw==
+X-Received: by 2002:a17:90a:c20b:: with SMTP id e11mr2002339pjt.67.1623115239324;
+        Mon, 07 Jun 2021 18:20:39 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id y5sm9342812pfb.19.2021.06.07.18.20.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 18:20:38 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>
+References: <20210604155016.GR1002214@nvidia.com>
+ <30e5c597-b31c-56de-c75e-950c91947d8f@redhat.com>
+ <20210604160336.GA414156@nvidia.com>
+ <2c62b5c7-582a-c710-0436-4ac5e8fd8b39@redhat.com>
+ <20210604172207.GT1002214@nvidia.com>
+ <20210604152918.57d0d369.alex.williamson@redhat.com>
+ <20210604230108.GB1002214@nvidia.com>
+ <20210607094148.7e2341fc.alex.williamson@redhat.com>
+ <20210607181858.GM1002214@nvidia.com>
+ <20210607125946.056aafa2.alex.williamson@redhat.com>
+ <20210607190802.GO1002214@nvidia.com>
+ <20210607134128.58c2ea31.alex.williamson@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <12631cf3-4ef8-7c38-73bb-649d57c0226b@redhat.com>
+Date:   Tue, 8 Jun 2021 09:20:29 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210607134128.58c2ea31.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Jun 07, 2021 at 01:44:21PM +0200, Peter Zijlstra wrote:
-> > One should only use st_shndx when >SHN_UDEF and <SHN_LORESERVE. When
-> > SHN_XINDEX, then use .symtab_shndx.
-> > 
-> > Apparently you've found a case where neither is true? In that case
-> > objtool seems to use shndx 0. A matching recordmcount patch would be
-> > something like this.
-> > 
-> 
-> Apparently I'm consistently bad at spelling SHM_UNDEF today..
 
-I test the below patch and it work for me.
-I only correct the UNDEF typo without any other modification.
+ÔÚ 2021/6/8 ÉÏÎç3:41, Alex Williamson Ð´µÀ:
+> On Mon, 7 Jun 2021 16:08:02 -0300
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+>> On Mon, Jun 07, 2021 at 12:59:46PM -0600, Alex Williamson wrote:
+>>
+>>>> It is up to qemu if it wants to proceed or not. There is no issue with
+>>>> allowing the use of no-snoop and blocking wbinvd, other than some
+>>>> drivers may malfunction. If the user is certain they don't have
+>>>> malfunctioning drivers then no issue to go ahead.
+>>> A driver that knows how to use the device in a coherent way can
+>>> certainly proceed, but I suspect that's not something we can ask of
+>>> QEMU.  QEMU has no visibility to the in-use driver and sketchy ability
+>>> to virtualize the no-snoop enable bit to prevent non-coherent DMA from
+>>> the device.  There might be an experimental ("x-" prefixed) QEMU device
+>>> option to allow user override, but QEMU should disallow the possibility
+>>> of malfunctioning drivers by default.  If we have devices that probe as
+>>> supporting no-snoop, but actually can't generate such traffic, we might
+>>> need a quirk list somewhere.
+>> Compatibility is important, but when I look in the kernel code I see
+>> very few places that call wbinvd(). Basically all DRM for something
+>> relavent to qemu.
+>>
+>> That tells me that the vast majority of PCI devices do not generate
+>> no-snoop traffic.
+> Unfortunately, even just looking at devices across a couple laptops
+> most devices do support and have NoSnoop+ set by default.  I don't
+> notice anything in the kernel that actually tries to set this enable (a
+> handful that actively disable), so I assume it's done by the firmware.
 
-Could I push this patch or you will push it?
-I guess I have to add your signed-off-by.
 
-> 
-> > diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-> > index f9b19524da11..d99cc0aed6fe 100644
-> > --- a/scripts/recordmcount.h
-> > +++ b/scripts/recordmcount.h
-> > @@ -194,13 +194,18 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
-> >  	unsigned long offset;
-> >  	int index;
-> >  
-> > -	if (sym->st_shndx != SHN_XINDEX)
-> > +	if (sym->st_shndx > SHN_UDEF &&
-> > +	    sym->st_shndx < SHN_LORESERVE)
-> >  		return w2(sym->st_shndx);
-> >  
-> > -	offset = (unsigned long)sym - (unsigned long)symtab;
-> > -	index = offset / sizeof(*sym);
-> > +	if (sym->st_shndx == SHN_XINDEX) {
-> > +		offset = (unsigned long)sym - (unsigned long)symtab;
-> > +		index = offset / sizeof(*sym);
-> >  
-> > -	return w(symtab_shndx[index]);
-> > +		return w(symtab_shndx[index]);
-> > +	}
-> > +
-> > +	return 0;
-> >  }
-> >  
-> >  static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
+I wonder whether or not it was done via ACPI:
+
+"
+
+6.2.17 _CCA (Cache Coherency Attribute) The _CCA object returns whether 
+or not a bus-master device supports hardware managed cache coherency. 
+Expected values are 0 to indicate it is not supported, and 1 to indicate 
+that it is supported. All other values are reserved.
+
+...
+
+On Intel platforms, if the _CCA object is not supplied, the OSPM will 
+assume the devices are hardware cache coherent.
+
+"
+
+Thanks
+
+
+> It's not safe for QEMU to make an assumption that only GPUs will
+> actually make use of it.
+>
+>>>> I think it makes the software design much simpler if the security
+>>>> check is very simple. Possessing a suitable device in an ioasid fd
+>>>> container is enough to flip on the feature and we don't need to track
+>>>> changes from that point on. We don't need to revoke wbinvd if the
+>>>> ioasid fd changes, for instance. Better to keep the kernel very simple
+>>>> in this regard.
+>>> You're suggesting that a user isn't forced to give up wbinvd emulation
+>>> if they lose access to their device?
+>> Sure, why do we need to be stricter? It is the same logic I gave
+>> earlier, once an attacker process has access to wbinvd an attacker can
+>> just keep its access indefinitely.
+>>
+>> The main use case for revokation assumes that qemu would be
+>> compromised after a device is hot-unplugged and you want to block off
+>> wbinvd. But I have a hard time seeing that as useful enough to justify
+>> all the complicated code to do it...
+> It's currently just a matter of the kvm-vfio device holding a reference
+> to the group so that it cannot be used elsewhere so long as it's being
+> used to elevate privileges on a given KVM instance.  If we conclude that
+> access to a device with the right capability is required to gain a
+> privilege, I don't really see how we can wave aside that the privilege
+> isn't lost with the device.
+>
+>> For KVM qemu can turn on/off on hot plug events as it requires to give
+>> VM security. It doesn't need to rely on the kernel to control this.
+> Yes, QEMU can reject a hot-unplug event, but then QEMU retains the
+> privilege that the device grants it.  Releasing the device and
+> retaining the privileged gained by it seems wrong.  Thanks,
+>
+> Alex
+>
+
