@@ -2,45 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446E139FB39
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C2C39FB57
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbhFHPzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:55:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230425AbhFHPzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:55:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF1B360FEA;
-        Tue,  8 Jun 2021 15:53:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623167623;
-        bh=Y0s5y8UvUQGn8A1rWcis5dg8fyss+/kqJGCt41rubgc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=CQbphQVsb7ZAoau4YKL8co69sN785zak6gqpK21Z6chsxG2PKYJJwXQci/icel3f0
-         q/KQpQ+N7AF06t+P/cVQX9+1ZrxfyRf6HtzvbH75kgS4foDHqxKb+x7zawHMyJUlWH
-         d2GXUc/0b9lu4vy9s0f4OIpQez7Cgy6iJvGpAKJq+lNAwMiekzHvA4jf4bg25MCLy7
-         i8ds5JQJjGEABxVd/sl8fYXeFdnWaNj1sx8uk6Zodag/cqP9ZEfIiwDYtm5/zHcJQR
-         0/gbtvG2Bi/aBVA2kkivd827cUAIiVcx4KBRodMJLvw2/UyQWkxXME9J2Zl6igFgjd
-         eB9C1dliVwwiA==
-Subject: Re: [kbuild-all] Re: kernel/rcu/tree.c:2073:23: warning: stack frame
- size of 2704 bytes in function 'rcu_gp_kthread'
-To:     paulmck@kernel.org, Rong Chen <rong.a.chen@intel.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-References: <202106061253.0X2QKyyI-lkp@intel.com>
- <20210606044926.GJ4397@paulmck-ThinkPad-P17-Gen-1>
- <4696fe3d-a7ad-acae-686e-6295ca327737@intel.com>
- <20210607151939.GP4397@paulmck-ThinkPad-P17-Gen-1>
- <e7bbb0e5-3063-031b-af6e-273e97f1d61f@intel.com>
- <20210608050134.GZ4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <f3cc5211-0c68-17c8-a222-4bc2c2525522@kernel.org>
-Date:   Tue, 8 Jun 2021 08:53:17 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232986AbhFHP6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231231AbhFHP6l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 11:58:41 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE42C061787
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 08:56:30 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id v6so6734476qta.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 08:56:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SvrvGcdTqd/A2IzqKVxAjzaPvjwWLLId9Ilxa/8ESFQ=;
+        b=TGN6mpHcaPFQwHVw/GHM7ip0el1hd+0GbdCjU7WFXQjIeCWukpCfBh8rMkDIHRdosp
+         Q/LfJzQq7YCqM7ulA9Kg9TU02S0vhVEVeohZ8FHyWFLQ8d7dKe9CMMYkVTfvKgQBUc1q
+         gpQWsG9Cx4HioXDP4E7cBUteCE5WUgXDnzHrmpn/qVQTEuEMNT41YRN+fUY/jUt+u1eM
+         AXtwi4Zd9ZuwfRHh0bOxl1UYTGZDg6GM6nB//CR9MshABAVf8HuWx3+MXKq4+i51En1C
+         Yj7hqYtCJc/4fgsc5rh1FlzLxQ7EEvICLUzEsSaDKeajNFR1fip2MmgC+oHi2l9VqD5l
+         wonA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SvrvGcdTqd/A2IzqKVxAjzaPvjwWLLId9Ilxa/8ESFQ=;
+        b=INIK0ZNZDuBppP5ZwbI4usZ7SDiKDYg+tJtqKh6N37aGdtjBWjmQbY2Tz/Uf+P5ZmY
+         0T85VDgUelSX2HSabrEhYxevEx1OPg/9Z0atk+F8IVOGijdxR3NYruKPrYHbH/nuwtyD
+         TBVLCRC5a9Nsz7nBxxPWvm2Y/XEKTJcoPQZwloB26yWjTJVvhKsRa6HCU402Q94P1swp
+         9WBbi2hBNuLUlojHs6MzEX+Vsc9ODrBkY6/TGRNcahKYaFJ3jwbJb0So/ZxojQLakPcB
+         yzTPRod1je4xZ/RM8jS5G9GFXFb+6uhUQXrIIDYiVpGrLYDv28MjZGVDfrjGZi3dLn3C
+         ERuQ==
+X-Gm-Message-State: AOAM532w4tFsN2mLkPJHJhQVd7K24J7elORrLk1fhmaHGLc2z3mfhm8m
+        1O8RNzTQMTR20i6Mekc0To4/H701MI6URsdqoBI=
+X-Google-Smtp-Source: ABdhPJy/UH8rRqmpAvUYWlHIcj680L6hW8fGJr7C6UkJboop+ydDiBFqBIFuB1C1L+iH8lasHCi7vw==
+X-Received: by 2002:a05:622a:587:: with SMTP id c7mr21989371qtb.315.1623167787791;
+        Tue, 08 Jun 2021 08:56:27 -0700 (PDT)
+Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id c68sm12078843qkd.112.2021.06.08.08.56.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 08:56:27 -0700 (PDT)
+Subject: Re: [PATCH v2 2/8] drm/msm/a6xx: use AOP-initialized PDC for a650
+To:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Eric Anholt <eric@anholt.net>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210513171431.18632-1-jonathan@marek.ca>
+ <20210513171431.18632-3-jonathan@marek.ca>
+ <bd5dc0e5-2c49-31fe-a290-0d8e75b45c94@codeaurora.org>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <b16de5ab-1485-a814-0885-c266a8706f0c@marek.ca>
+Date:   Tue, 8 Jun 2021 11:54:44 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20210608050134.GZ4397@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <bd5dc0e5-2c49-31fe-a290-0d8e75b45c94@codeaurora.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -48,122 +80,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/2021 10:01 PM, Paul E. McKenney wrote:
-> On Tue, Jun 08, 2021 at 11:14:40AM +0800, Rong Chen wrote:
+On 5/31/21 3:24 AM, Akhil P Oommen wrote:
+> On 5/13/2021 10:43 PM, Jonathan Marek wrote:
+>> SM8250 AOP firmware already sets up PDC registers for us, and it only 
+>> needs
+>> to be enabled. This path will be used for other newer GPUs.
 >>
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> ---
+>>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 21 ++++++++++++++++-----
+>>   1 file changed, 16 insertions(+), 5 deletions(-)
 >>
->> On 6/7/21 11:19 PM, Paul E. McKenney wrote:
->>> On Mon, Jun 07, 2021 at 05:18:21PM +0800, Rong Chen wrote:
->>>>
->>>> On 6/6/21 12:49 PM, Paul E. McKenney wrote:
->>>>> On Sun, Jun 06, 2021 at 12:19:57PM +0800, kernel test robot wrote:
->>>>>> Hi Paul,
->>>>>>
->>>>>> FYI, the error/warning still remains.
->>>>>>
->>>>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>>>>> head:   f5b6eb1e018203913dfefcf6fa988649ad11ad6e
->>>>>> commit: 7dffe01765d9309b8bd5505503933ec0ec53d192 rcu: Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node() macros
->>>>>> date:   5 months ago
->>>>>> config: powerpc-randconfig-r023-20210606 (attached as .config)
->>>>>> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 551a697c5cf33275b66add4fc467fcf59084cffb)
->>>>>> reproduce (this is a W=1 build):
->>>>>>            wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>>>>            chmod +x ~/bin/make.cross
->>>>>>            # install powerpc cross compiling tool for clang build
->>>>>>            # apt-get install binutils-powerpc-linux-gnu
->>>>>>            # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7dffe01765d9309b8bd5505503933ec0ec53d192
->>>>>>            git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>>>>            git fetch --no-tags linus master
->>>>>>            git checkout 7dffe01765d9309b8bd5505503933ec0ec53d192
->>>>>>            # save the attached .config to linux build tree
->>>>>>            COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc
->>>>>>
->>>>>> If you fix the issue, kindly add following tag as appropriate
->>>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>>>
->>>>>> All warnings (new ones prefixed by >>):
->>>>>>
->>>>>>       In file included from kernel/rcu/tree.c:21:
->>>>>>       In file included from include/linux/kernel.h:12:
->>>>>>       In file included from include/linux/bitops.h:29:
->>>>>>       In file included from arch/powerpc/include/asm/bitops.h:62:
->>>>>>       arch/powerpc/include/asm/barrier.h:49:9: warning: '__lwsync' macro redefined [-Wmacro-redefined]
->>>>>>       #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
->>>>>>               ^
->>>>>>       <built-in>:310:9: note: previous definition is here
->>>>>>       #define __lwsync __builtin_ppc_lwsync
->>>>>>               ^
->>>>>>>> kernel/rcu/tree.c:2073:23: warning: stack frame size of 2704 bytes in function 'rcu_gp_kthread' [-Wframe-larger-than=]
->>>>>>       static int __noreturn rcu_gp_kthread(void *unused)
->>>>> Does -rcu commit 2f20de99a63b ("rcu: Make rcu_gp_cleanup() be noinline
->>>>> for tracing") help?
->>>> Hi Paul,
->>>>
->>>> The stack frame size decreased to 2256 bytes:
->>>>
->>>>     kernel/rcu/tree.c:2129:23: warning: stack frame size of 2256 bytes in
->>>> function 'rcu_gp_kthread' [-Wframe-larger-than=]
->>> Very good, thank you!  Does the following patch (in addition to that
->>> commit) also help?
+>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c 
+>> b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>> index 3d55e153fa9c..c1ee02d6371d 100644
+>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>> @@ -512,19 +512,26 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu 
+>> *gmu)
+>>       struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
+>>       struct platform_device *pdev = to_platform_device(gmu->dev);
+>>       void __iomem *pdcptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc");
+>> -    void __iomem *seqptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc_seq");
+>> +    void __iomem *seqptr;
+>>       uint32_t pdc_address_offset;
+>> +    bool pdc_in_aop = false;
+>> -    if (!pdcptr || !seqptr)
+>> +    if (!pdcptr)
+>>           goto err;
+>> -    if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
+>> +    if (adreno_is_a650(adreno_gpu))
+>> +        pdc_in_aop = true;
+>> +    else if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
+>>           pdc_address_offset = 0x30090;
+>> -    else if (adreno_is_a650(adreno_gpu))
+>> -        pdc_address_offset = 0x300a0;
+>>       else
+>>           pdc_address_offset = 0x30080;
+>> +    if (!pdc_in_aop) {
+>> +        seqptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc_seq");
+>> +        if (!seqptr)
+>> +            goto err;
+>> +    }
+>> +
+>>       /* Disable SDE clock gating */
+>>       gmu_write_rscc(gmu, REG_A6XX_GPU_RSCC_RSC_STATUS0_DRV0, BIT(24));
+>> @@ -556,6 +563,9 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
+>>           gmu_write_rscc(gmu, REG_A6XX_RSCC_SEQ_MEM_0_DRV0 + 4, 
+>> 0x0020e8a8);
+>>       }
+>> +    if (pdc_in_aop)
+>> +        goto setup_pdc;
+>> +
+>>       /* Load PDC sequencer uCode for power up and power down sequence */
+>>       pdc_write(seqptr, REG_A6XX_PDC_GPU_SEQ_MEM_0, 0xfebea1e1);
+>>       pdc_write(seqptr, REG_A6XX_PDC_GPU_SEQ_MEM_0 + 1, 0xa5a4a3a2);
+>> @@ -596,6 +606,7 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
+>>       pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD0_DATA + 8, 0x3);
+>>       /* Setup GPU PDC */
+>> +setup_pdc:
+>>       pdc_write(pdcptr, REG_A6XX_PDC_GPU_SEQ_START_ADDR, 0);
+>>       pdc_write(pdcptr, REG_A6XX_PDC_GPU_ENABLE_PDC, 0x80000001);
 >>
->> Hi Paul,
->>
->> I applied the below patch on commit 2f20de99a63b and the warning is gone.
 > 
-> Very good, and thank you for your testing.  I have applied the requested
-> Reported-by and your Tested-by on the commit shown below.  Please let
-> me know if you would prefer some other Reported/Tested setup.
+> We can simply swap the order of PDC and rsc programming here and skip 
+> pdc sequence to jump to the rscc programming for a650. This is the order 
+> followed in the downstream driver anyway.
 > 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 336e92638287615d47c07af4ff6feb397cfe2084
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Mon Jun 7 21:57:02 2021 -0700
-> 
->      rcu: Make rcu_gp_init() and rcu_gp_fqs_loop noinline to conserve stack
->      
->      The kbuild test project found an oversized stack frame in rcu_gp_kthread()
->      for some kernel configurations.  This oversizing was due to a very large
->      amount of inlining, which is unnecessary due to the fact that this code
->      executes infrequently.  This commit therefore marks rcu_gp_init() and
->      rcu_gp_fqs_loop noinline to conserve stack space.
->      
->      Reported-by: kernel test robot <lkp@intel.com>
->      Tested-by: Rong Chen <rong.a.chen@intel.com>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 13bd8eee62bf..ef435aeac993 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1737,7 +1737,7 @@ static void rcu_strict_gp_boundary(void *unused)
->   /*
->    * Initialize a new grace period.  Return false if no grace period required.
->    */
-> -static bool rcu_gp_init(void)
-> +static noinline bool rcu_gp_init(void)
+> -Akhil.
 
-Small comment if it is not too late. noinline_for_stack expands to the 
-same thing but is self documenting :) that way people do not have to git 
-blame to see why these are marked as noinline (not that too many people 
-are probably touching this but still).
+The order is the same as the msm-4.19 kernel (msm-4.19 is what a650 
+hardware are using).
 
->   {
->   	unsigned long firstseq;
->   	unsigned long flags;
-> @@ -1931,7 +1931,7 @@ static void rcu_gp_fqs(bool first_time)
->   /*
->    * Loop doing repeated quiescent-state forcing until the grace period ends.
->    */
-> -static void rcu_gp_fqs_loop(void)
-> +static noinline void rcu_gp_fqs_loop(void)
->   {
->   	bool first_gp_fqs;
->   	int gf = 0;
-> 
-
-Cheers,
-Nathan
+Looks like the order was swapped for the msm-5.4 kernel, but if the 
+order isn't important, I think it is preferable to keep the current 
+order (to avoid a large diff mainly).
