@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F8B39F77C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3625339F790
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232845AbhFHNS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232854AbhFHNSy (ORCPT
+        id S232827AbhFHNUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:20:18 -0400
+Received: from mail-ua1-f42.google.com ([209.85.222.42]:37456 "EHLO
+        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232951AbhFHNT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:18:54 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4528C06178B
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 06:17:01 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id w28so11583441uae.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 06:17:01 -0700 (PDT)
+        Tue, 8 Jun 2021 09:19:57 -0400
+Received: by mail-ua1-f42.google.com with SMTP id w28so11583481uae.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 06:18:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tO3BohwnkUKnYIuONkUA0L73DP8nymMxh+DI7cdhd4w=;
-        b=jMly9y0B/5qY0PR8RSddHqssiLIzHRTUAldUlCQQXlTwxHzxbXAEg0kxUaWtHKX+CH
-         hUGuCTUIU5E8EXPZJefrrrEmI35XCFPNbkFZmuR8yJwC2hMXFfuq5XOk2bSbu40lRmi1
-         TmnLRH9FtGL6QDNz4dVrVOKcgjSu6B/Va4gQrKGuEM+VOeJqmjmL0PwfvCKIR3WOCoL/
-         hYn77PUX0xAfXLGrhlUj1DKOAJFUJlQPjuMAwqTj6DrgANK+k8TMWGWmiKCXehiiPDM3
-         z+5u9kzzS6pECCG9zAgo/dvij0jNBbOdpJBQE0lb78qDygAee15OUFirubMn/ufI22K+
-         Ugug==
+         :cc:content-transfer-encoding;
+        bh=AeJwkXf02FHfkTc2tBhjPcNKSoYfgCe3Kp4yq0sZmLQ=;
+        b=rf8YIY99EbZMH7/g12lKGP+/SS1HGQgyS+TwSAWEoUkshR9P9Ec3G/WR5fH6jYhGbN
+         bl5LprBy5xsyf0h/IPEzPCJlzOerq5GFGC8npSAHFpt0HgQiGeRy1h90ikX15ib8uCVe
+         BSMcQGvJRyTIHbKsWuB39rNXYMN2ogOqjqdhSwRBLpjleKKw5E36j8Jomg9WzHSygfpf
+         BB+ZHFK5AHq78zJlPPK1igG5DSdmy2PBnoK9uT6iAXAPuxUA783R5bDjZYH4z51UBrLE
+         +TCW7CIO8Osk8FlZeidbHZjQg8zN+3WG1XQtFr4OlHWO1S6v0CUG8s7RwpfirhwtiWWr
+         /kcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tO3BohwnkUKnYIuONkUA0L73DP8nymMxh+DI7cdhd4w=;
-        b=U8cvVfxDuUJgIqc95nAUP3zZTMrygcPryZgdbCHTTS/0q7kQ8GgyjgmAvx9joiqql7
-         4UJahNuwtvno+ZuDTyFJ6GjBwgCpk5WgTK/yZgvqOEx2Xj+sJhFwS0BQ0nuXzh8ACYuq
-         a/SGPzF0lApV41jgaRZobpzoTVBafO0ZnaIW1cqQofGSmEnTbR2HygK6HLHdpHBF/ohD
-         N64lRmJhJgpTMPLMPn6BZ983jgqz0rK0t3ay5/zZkwks2x/QSdIGWk+8txpCB6SRr0o+
-         jHTZyUWjcEN7Xb69kUx7/gme3HuFzGuKdn1OyVKocSmZIQT4EzOwj++LNiJ+CHfUqBRM
-         y64Q==
-X-Gm-Message-State: AOAM531/BjXKm1F1P7Rqu7SSs0oosct7e7EQqm9UoMiYgQsmyyAKPuz6
-        +ilHQE1Ad4kUjCAPvSfTuCN6+PJ7DGr0cJaf/2PuRA==
-X-Google-Smtp-Source: ABdhPJxpMbI86j1ktkn7vwGdS6ghdFwZJ7dwIbr0IxePCkJHK9etSF1AgQY3m9fL2SZjr5Ui6IAsBEGWj3JiPCPA17Q=
-X-Received: by 2002:ab0:7c5b:: with SMTP id d27mr12469684uaw.15.1623158221026;
- Tue, 08 Jun 2021 06:17:01 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AeJwkXf02FHfkTc2tBhjPcNKSoYfgCe3Kp4yq0sZmLQ=;
+        b=lXUfk7yp6m7M+aDdhAMil1S/l/lVr185M5dx4TRC27OJQOA2SoKLa2JmofY1J+tMCF
+         aP6T8+qxwujwDZ4m+kBKITeU7OBXSI6lS1lFcNfQDryyTbf2tkbZyDVAMaXrDHAm314W
+         ILQxs9DE0B+heQoP2NPSYJFwAX1S9/eLdyxzfwPdDFA24FFFPL8ySZgbaXEr5GIU47p+
+         E2UFZl4zNzF7GcQ1kXxDw/hLanR36j8sG78QhDz3E3x7IG9YFhhThP9s7vSIb1V4F5Jv
+         0uWcODncKIVGknajMI7Yta0FwniBDjEOdtEkKYnOC5CHIJt73juzdf0TjIf3VR4fBytA
+         FQJA==
+X-Gm-Message-State: AOAM532KK73EoPwWMh9qxialAKKTL7oDc6RbeiiMF7kTKZ+5VLX3jSiO
+        ZdsXistjcNmnWcr4lUsHl9/Ib5P7jzroZ2FgV1OJyw==
+X-Google-Smtp-Source: ABdhPJyNWit/KMWObghRKbmC6vtI+CqqBIJIhWt5YdpyC0OBpfA57D9EyglRt+y4bBMHLxwHJLZJWt4XwfmLKDDM/Aw=
+X-Received: by 2002:ab0:12a:: with SMTP id 39mr12675863uak.19.1623158223925;
+ Tue, 08 Jun 2021 06:17:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <ee8af5d631f5331139ffea714539030d97352e93.1622811525.git.geert+renesas@glider.be>
-In-Reply-To: <ee8af5d631f5331139ffea714539030d97352e93.1622811525.git.geert+renesas@glider.be>
+References: <1623002884-57244-1-git-send-email-zhouyanjie@wanyeetech.com> <1623002884-57244-2-git-send-email-zhouyanjie@wanyeetech.com>
+In-Reply-To: <1623002884-57244-2-git-send-email-zhouyanjie@wanyeetech.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 8 Jun 2021 15:16:23 +0200
-Message-ID: <CAPDyKFo8U0SAuocTTznASBNMEzxm3HHbjfdG6E3dkHWjOR9kqw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: renesas_sdhi: Fix HS400 on R-Car M3-W+
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Takeshi Saito <takeshi.saito.xv@renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+Date:   Tue, 8 Jun 2021 15:16:26 +0200
+Message-ID: <CAPDyKFrHuMZdHJ+KKBffCu+FiOJr14ynBnjYW_oGpNQN8+Hy8A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: mmc: JZ4740: Add bindings for JZ4775.
+To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        DTML <devicetree@vger.kernel.org>, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com, Paul Cercueil <paul@crapouillou.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Jun 2021 at 14:59, Geert Uytterhoeven <geert+renesas@glider.be> wrote:
+On Sun, 6 Jun 2021 at 20:08, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)
+<zhouyanjie@wanyeetech.com> wrote:
 >
-> R-Car M3-W ES3.0 is marketed as R-Car M3-W+ (R8A77961), and has its own
-> compatible value "renesas,r8a77961".
+> Add the MMC bindings for the JZ4775 SoC from Ingenic.
 >
-> Hence using soc_device_match() with soc_id = "r8a7796" and revision =
-> "ES3.*" does not actually match running on an R-Car M3-W+ SoC.
->
-> Fix this by matching with soc_id = "r8a77961" instead.
->
-> Fixes: a38c078fea0b1393 ("mmc: renesas_sdhi: Avoid bad TAP in HS400")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
+eetech.com>
 
-Applied for fixes and by adding a stable tag, thanks!
+Applied for next, thanks!
 
 Kind regards
 Uffe
 
 
 > ---
-> Boot-tested on Salvator-XS with R-Car M3-W+ ES3.0.
-> No difference seen in eMMC/SHHC detection:
+>  Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 >
->     mmc0: new HS400 MMC card at address 0001
->     mmcblk0: mmc0:0001 BGSD4R 29.1 GiB
->     mmcblk0boot0: mmc0:0001 BGSD4R 31.9 MiB
->     mmcblk0boot1: mmc0:0001 BGSD4R 31.9 MiB
->     mmcblk0rpmb: mmc0:0001 BGSD4R 4.00 MiB, chardev (247:0)
->      mmcblk0: p1
->     mmc1: new ultra high speed SDR104 SDHC card at address aaaa
->     mmcblk1: mmc1:aaaa SL16G 14.8 GiB
->      mmcblk1: p1
->     mmc2: new ultra high speed SDR104 SDHC card at address aaaa
->     mmcblk2: mmc2:aaaa SL32G 29.7 GiB
->      mmcblk2: p1
-> ---
->  drivers/mmc/host/renesas_sdhi_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/renesas_sdhi_core.c b/drivers/mmc/host/renesas_sdhi_core.c
-> index 635bf31a67359f10..b719eda6b8619453 100644
-> --- a/drivers/mmc/host/renesas_sdhi_core.c
-> +++ b/drivers/mmc/host/renesas_sdhi_core.c
-> @@ -939,7 +939,7 @@ static const struct soc_device_attribute sdhi_quirks_match[]  = {
->         { .soc_id = "r8a7795", .revision = "ES3.*", .data = &sdhi_quirks_bad_taps2367 },
->         { .soc_id = "r8a7796", .revision = "ES1.[012]", .data = &sdhi_quirks_4tap_nohs400 },
->         { .soc_id = "r8a7796", .revision = "ES1.*", .data = &sdhi_quirks_r8a7796_es13 },
-> -       { .soc_id = "r8a7796", .revision = "ES3.*", .data = &sdhi_quirks_bad_taps1357 },
-> +       { .soc_id = "r8a77961", .data = &sdhi_quirks_bad_taps1357 },
->         { .soc_id = "r8a77965", .data = &sdhi_quirks_r8a77965 },
->         { .soc_id = "r8a77980", .data = &sdhi_quirks_nohs400 },
->         { .soc_id = "r8a77990", .data = &sdhi_quirks_r8a77990 },
+> diff --git a/Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml b/Doc=
+umentation/devicetree/bindings/mmc/ingenic,mmc.yaml
+> index 04ba8b7..546480f 100644
+> --- a/Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml
+> @@ -19,6 +19,7 @@ properties:
+>            - ingenic,jz4740-mmc
+>            - ingenic,jz4725b-mmc
+>            - ingenic,jz4760-mmc
+> +          - ingenic,jz4775-mmc
+>            - ingenic,jz4780-mmc
+>            - ingenic,x1000-mmc
+>        - items:
 > --
-> 2.25.1
+> 2.7.4
 >
