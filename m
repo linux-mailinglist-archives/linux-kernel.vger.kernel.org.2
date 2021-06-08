@@ -2,71 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF8F39EE95
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5225D39EEB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhFHGSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 02:18:25 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5281 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFHGSW (ORCPT
+        id S230268AbhFHGbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 02:31:07 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:4393 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229797AbhFHGbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 02:18:22 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FzfyL0Jhdz1BK2j;
-        Tue,  8 Jun 2021 14:11:38 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 14:16:28 +0800
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+        Tue, 8 Jun 2021 02:31:06 -0400
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FzgG91mwVz6twd;
+        Tue,  8 Jun 2021 14:25:21 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 8 Jun 2021 14:16:27 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <linus.walleij@linaro.org>, <radim.pavlik@tbs-biometrics.com>
-CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next v2] pinctrl: mcp23s08: Fix missing unlock on error in mcp23s08_irq()
-Date:   Tue, 8 Jun 2021 14:34:08 +0800
-Message-ID: <1623134048-56051-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+ 15.1.2176.2; Tue, 8 Jun 2021 14:29:10 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <yoshfuji@linux-ipv6.org>,
+        <dsahern@kernel.org>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH v4] ping: Check return value of function 'ping_queue_rcv_skb'
+Date:   Tue, 8 Jun 2021 14:42:46 +0800
+Message-ID: <20210608064246.3153202-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme760-chm.china.huawei.com (10.3.19.106)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing unlock before return from function mcp23s08_irq()
-in the error handling case.
+Function 'ping_queue_rcv_skb' not always return success, which will
+also return fail. If not check the wrong return value of it, lead
+to function `ping_rcv` return success.
 
-v1-->v2:
-   remove the "return IRQ_HANDLED" line
-
-Fixes: 897120d41e7a ("pinctrl: mcp23s08: fix race condition in irq handler")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/pinctrl/pinctrl-mcp23s08.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2:
+- use rc as return value to make code look cleaner
+v3:
+- delete unnecessary braces {}
+v4:
+- put variable 'rc' declaration at the beginning of function
 
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
-index 799d596..d025957 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08.c
-@@ -353,7 +353,7 @@ static irqreturn_t mcp23s08_irq(int irq, void *data)
+ net/ipv4/ping.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
+index 1c9f71a37258..f01cde4fe08b 100644
+--- a/net/ipv4/ping.c
++++ b/net/ipv4/ping.c
+@@ -954,6 +954,7 @@ bool ping_rcv(struct sk_buff *skb)
+ 	struct sock *sk;
+ 	struct net *net = dev_net(skb->dev);
+ 	struct icmphdr *icmph = icmp_hdr(skb);
++	bool rc = false;
  
- 	if (intf == 0) {
- 		/* There is no interrupt pending */
--		return IRQ_HANDLED;
-+		goto unlock;
+ 	/* We assume the packet has already been checked by icmp_rcv */
+ 
+@@ -968,14 +969,13 @@ bool ping_rcv(struct sk_buff *skb)
+ 		struct sk_buff *skb2 = skb_clone(skb, GFP_ATOMIC);
+ 
+ 		pr_debug("rcv on socket %p\n", sk);
+-		if (skb2)
+-			ping_queue_rcv_skb(sk, skb2);
++		if (skb2 && !ping_queue_rcv_skb(sk, skb2))
++			rc = true;
+ 		sock_put(sk);
+-		return true;
  	}
+ 	pr_debug("no socket, dropping\n");
  
- 	if (mcp_read(mcp, MCP_INTCAP, &intcap))
+-	return false;
++	return rc;
+ }
+ EXPORT_SYMBOL_GPL(ping_rcv);
+ 
 -- 
-2.6.2
+2.25.1
 
