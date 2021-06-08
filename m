@@ -2,147 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2E839EBE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE1139EBE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbhFHC10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 22:27:26 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:55698 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230396AbhFHC1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 22:27:25 -0400
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx70D21L5gI8QMAA--.14079S3;
-        Tue, 08 Jun 2021 10:24:55 +0800 (CST)
-Subject: Re: [PATCH] drm/radeon: Always call radeon_suspend_kms() in
- radeon_pci_shutdown()
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-References: <1623068820-2479-1-git-send-email-yangtiezhu@loongson.cn>
- <0d1b517f-797f-e87d-4edd-8474b16993ed@amd.com>
- <CADnq5_PvZRu0h60dn-=4v0aXBOaNy=s0KjmeuSndDzU3C8qFog@mail.gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jianmin Lv <lvjianmin@loongson.cn>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <31de1f2e-5030-3a01-782b-df659d0d2869@loongson.cn>
-Date:   Tue, 8 Jun 2021 10:24:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S231424AbhFHC1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 22:27:12 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:49564 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230233AbhFHC1K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 22:27:10 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1582E8H7190923;
+        Tue, 8 Jun 2021 02:25:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=FfGogU0y2T+sUO6qBqvVpS+VQpNuZR638r5pz2ZKUN4=;
+ b=Mrjk+5L+FngmMxlnS6eAN/1o40ZHYuIg2PwURZkSU1h/pmodmRKQzjt8y0BERfVNlwjF
+ uQ79hEVMHOSqeHC7ETlyHUQclS4GxGQIXAN3zKK92ZUczdaz2gKwtT0Nhk076DX5lBNi
+ tVr1NneBUS/xqCil8Qp3gUyhzJCuOLkAvei8ZdSHHfFcwkRLA5t65Sq/QenqRCMZj3YD
+ c3bjZKY9EXHVkzUO+QHjB/l4Pe8iDagvryAthNLkXraifBo1WnqI1vcAtHsNSuuzrJl6
+ YG+62akvbAidSi+kE+4AFmXPPn65DbbRvoBI7S3wXVQaq4UMLoPjJPvPrMJuSYZMYwz0 pw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 3914quk29p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Jun 2021 02:25:03 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1582ESB3129833;
+        Tue, 8 Jun 2021 02:25:03 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2170.outbound.protection.outlook.com [104.47.55.170])
+        by aserp3020.oracle.com with ESMTP id 391ujwf565-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Jun 2021 02:25:03 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j8oIEyliB1+k/kvNNZlCCGHwZtotHUOFvCu+tT2CJHSOSSNM3Jlubk6+uZ3gfh3nxtLhkgYudCf+lOTNK0ur6rHk8218e8a22cILuSOJNnz+1wsOAOI5uzbCvT1t2zGf5po8dozLO6M0RRWegUAbDOctlWpzNvfKGrPklmdABY+OrFWoI13ynBiXwNOUpGJqHSLjfuRcPe/oZLYKWk/olh9u3yT4WUVAUGiuXNycRa5leMFym0FDIDWm6l2dKMkv+VP73I0ROpKKyt67W31om4Q6tkuWBRmC5Ymmhw5k58oOhctZcNExrSgOsamwxNRfiFKzl+tPVRxVJ39rbCnJqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FfGogU0y2T+sUO6qBqvVpS+VQpNuZR638r5pz2ZKUN4=;
+ b=oHAVi6QgnS++okNjsG4J2pXd4BVIXu8+Bs/rA3HrQtD/hog6W/JuzN2dgXtdLIgP3gQSmDKUAFhkHRwTtjLzsxW5lLF7OmlS/+HeUmUJN9P2OvWQX2lZOvw1Fya9FiQPmbFM02UlHcmXnIG54afv3AwzLIqOr1/WQCED65hiijcA/h7ZHLU5goruHhRaI3lKrhJxjDmST4BCkmNta8f8HQ0Oly+6o+jnUBGXctvl7bUNi2AS+7xm5j7121N5mw1i9+wNUjDHVV+cKKATSiVae+LIJFKRhg+Krylvv+xHciXh+WVuFRYuhCtOSWEkBGsW+XIim4wYGdogbZqSR/wmLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FfGogU0y2T+sUO6qBqvVpS+VQpNuZR638r5pz2ZKUN4=;
+ b=dssqR00mOdAkMLROuu5hL8U5IvMf2qE9EiJ3Mq1CXC4xHDNQzPPlS/hkAgpNGBj/sBFL24GTyKETSrPz/8LgiaAax4wPD7iqnppmiFPb3wBWlZVGgyoxg34PF+7P9g3MxCnPw6FW04zoXgfCRYSjwxivm0Iy3fB/S7JTPDd0wVY=
+Authentication-Results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4437.namprd10.prod.outlook.com (2603:10b6:510:3a::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Tue, 8 Jun
+ 2021 02:25:01 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4195.030; Tue, 8 Jun 2021
+ 02:25:00 +0000
+To:     Keoseong Park <keosung.park@samsung.com>
+Cc:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: ufs: Remove repeated word
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1k0n5jdos.fsf@ca-mkp.ca.oracle.com>
+References: <CGME20210604024038epcms2p2801b5b2e10e93ba4ecf5f6069bf862f1@epcms2p2>
+        <1891546521.01622777101796.JavaMail.epsvc@epcpadp3>
+Date:   Mon, 07 Jun 2021 22:24:57 -0400
+In-Reply-To: <1891546521.01622777101796.JavaMail.epsvc@epcpadp3> (Keoseong
+        Park's message of "Fri, 04 Jun 2021 11:40:38 +0900")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SA0PR11CA0172.namprd11.prod.outlook.com
+ (2603:10b6:806:1bb::27) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-In-Reply-To: <CADnq5_PvZRu0h60dn-=4v0aXBOaNy=s0KjmeuSndDzU3C8qFog@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dx70D21L5gI8QMAA--.14079S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxWFWrAr45Xr13Ww43WF47CFg_yoW5XF4kpr
-        ZxKwsrKwn3KrWYka47ArW7Xry5A34rGay8XryUKw4Du398Grs3ZFnIqFy5ArWv9rWSqF10
-        vF4kWwnxuF1rCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
-        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwI
-        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
-        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k2
-        6cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUomiiDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA0PR11CA0172.namprd11.prod.outlook.com (2603:10b6:806:1bb::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22 via Frontend Transport; Tue, 8 Jun 2021 02:25:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9441bc6e-70a2-478d-3976-08d92a249df7
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4437:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4437DE56D10503D8E4F537A08E379@PH0PR10MB4437.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o6vNNo/gHyXDFt8w7w4eMwgwSPa9VhJcqt6xObYo14qmPJygbMr0cormkNuaMGGEYAA06waE7bu0zr0tt0gCx+BDOBmdz1RQAq2FD3mXt0KJ29kpayhDQo5Wu/SbXvP5edntlWC3ZorDhkzZelnkXCjdzrTIWsFK8jS/FFTU88Us/Hcok2fCSqm2ntkwkbUhBpkODzu8Vi++RP1O2jPHj7mvgkRGBKAOqzXDL3qBrEiXJx+aYnM+TdDs6J+PoWBaYOWO4c7ciWJOsoXio9wWphBo2NiXYCRFtdiGbEsFXnAAZz2xD1DFTfFX8CDvHAoktxbWtaGX5lHg0jOlOY1WJru+pTGtpGvkMc34U5qQxgA+ynE/irbIHe23HfRn6TNcIcV7m/wmS3iGa/nqa/hEVwkI8uKUwekOF31CKGVjpv262fhI/wpYQnaTOPn4GX+XQ89nTpEon6pY/YdCV0FVGmfD7xp9riUu5lvDExAzRAhJZSD45FtUtyRS8wtGcZHXLU3LppI8wDgnATFFJfDid69cXA2Byx4aw5/aGhnkvN3TfbswDbfDs4l6aYkEKqyBZ6rNxWCnJmhDNVygV3GMPanj2X4SN+fk2C13wlKeo/GOGTv6giTXL7YSQXYRBkva/gBk1F22mLWs29CsHIvBLQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(376002)(136003)(366004)(396003)(55016002)(36916002)(66946007)(66476007)(66556008)(5660300002)(8676002)(7696005)(38100700002)(38350700002)(54906003)(6666004)(8936002)(52116002)(86362001)(7416002)(16526019)(26005)(6916009)(186003)(956004)(4326008)(2906002)(478600001)(558084003)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BCP+Js6AMnhGUv9q3CZHia4HOmg+/FvWkebLZLo/JL8xOR8gN2oIhePj09vo?=
+ =?us-ascii?Q?rTEh55c+Ha0QApuSstt15zp0JtsXpYdkViHBXBwjSaC6nWX9lzzVTowN5gJq?=
+ =?us-ascii?Q?SeluCGh+4ufx+Ojf/vCnsc0r2OiqPX33eW5B/YU60wUmQRmWF1g/CktzmTHN?=
+ =?us-ascii?Q?sVXGpAScLMnukXmbBbdhPHeV7aX+qxTsjI2iJKLrg7K2YxySwaZalsWAUDcv?=
+ =?us-ascii?Q?iEwJaes5kgyiimCGnqS6dnFP5eb2gFVKI8giMuvtu9H39SlyLjROTGtXNsVO?=
+ =?us-ascii?Q?6pxXVYtRrJwx0L2JIIXHKyleXwFfF+vGqP+A+LQB9vRAo1u+12mMazNj1D5k?=
+ =?us-ascii?Q?jNumbkswFdvBgjNfrTvwULrLLMrR2Ju15xWBLhTBPJuK1CyDorW74vSc4frL?=
+ =?us-ascii?Q?sBcDaknThpbhKEh1449FfR+mV+wARI1W81tHeB69safl4JJVzQosotO1wPRA?=
+ =?us-ascii?Q?kx4WPWscLO7AW2WaogfKPvlWtyq1LslghHAyMQL1YMEDoirE7nia6bbvWWaU?=
+ =?us-ascii?Q?pKiFtwYtXXNXQnxChAnNBz4X/RYbgy+4cWaZ8Fui08f3v8qig77uAj99ydMu?=
+ =?us-ascii?Q?M9/pnBms1+Cr+K/ebcgBsVsFf20PPcUlZiC4d56deC5evjQnnwa/7cfT/9UF?=
+ =?us-ascii?Q?ykLiG29JoxYlJhELFctI5FewYitH1yBO6CBoJFbag1x893K4e52etBHW5kQz?=
+ =?us-ascii?Q?0Zzm+9GfL9kiVpQf41373r17Fgl+OhVzMkbBT+3EQqLTUZN4oRxezSLhyam1?=
+ =?us-ascii?Q?u6Tc+da3lldG7Ix2MQsBdoHO57Ew7X6onpm2kJiUggIsvs8R/xI2o/tIOyQK?=
+ =?us-ascii?Q?J/3wRDktM8nFtc5w6vfNc8s1uk/4+Xdr7Ag34YKGBp2qXc9dQVkI3ulfWMRt?=
+ =?us-ascii?Q?s9NUENPawBfEX/r/miCUU1FNL9B7Rayly98E0eoEW9eOm2NheTVEubuHh9Ge?=
+ =?us-ascii?Q?RWv9yYqR9Qj+JD8+Adl1ZKNkyPUTMN+80KYrP3QKxklKonpUg5iiPN8YHON1?=
+ =?us-ascii?Q?NF6F7XdzoTEcoTjLuTWgkxhukGYnz4q2Zgof+RaCsZ0+yP5Atc8zUbEGy9D5?=
+ =?us-ascii?Q?voACY0/PDlij/p6uDNH77r1GSlgVmHC48pYkZn8X/pMANhN6b3HcT/bybbfx?=
+ =?us-ascii?Q?LXdz4lwatfO+HGij7pAOZckXxfYnU7ugVOUVny+z1+HwXE1DVUEwOaRJxNoW?=
+ =?us-ascii?Q?vT+Zvq8skneFPTjtRajVEOvAoykiwspslIwLRQrldgZfuy5HFGt997Wx0PBW?=
+ =?us-ascii?Q?hL80vJEPEr8ckUbEFUpd0zUpZSxNq1GCzviG4mZd4zCII9YIr4NlFg93M4oN?=
+ =?us-ascii?Q?I9gXbPio8NiXcprhHxe0p7ru?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9441bc6e-70a2-478d-3976-08d92a249df7
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 02:25:00.8095
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GOMQE5tW0jnQjj6litB8NUTEILKGO4fD8Q9Tcrx+uhBN732sR48WqmZFDVwvtGULz1/hAsHQH7Y2CQVMt5aqZh9/8pO092hLfw3mvw/I6KA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4437
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10008 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ phishscore=0 suspectscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106080013
+X-Proofpoint-ORIG-GUID: SGTDAG8wVLFhfHdxVZ5lPlHYqHubfRrU
+X-Proofpoint-GUID: SGTDAG8wVLFhfHdxVZ5lPlHYqHubfRrU
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10008 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
+ spamscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0
+ priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106080013
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/07/2021 09:42 PM, Alex Deucher wrote:
-> On Mon, Jun 7, 2021 at 8:30 AM Christian König <christian.koenig@amd.com> wrote:
->> Am 07.06.21 um 14:27 schrieb Tiezhu Yang:
->>> radeon_suspend_kms() puts the hw in the suspend state (all asics),
->>> it should always call radeon_suspend_kms() in radeon_pci_shutdown(),
->>> this is a normal cleanup process to avoid more operations on radeon,
->>> just remove #ifdef CONFIG_PPC64 and the related comments.
->> Well NAK.
->>
->> Alex knows more about the details but suspending should not be part of
->> the pci shotdown process at all.
->>
->> We just add that here to enforce a GPU reset on PPC64 boards for some
->> reason.
-> Everything in the comment still applies.
->
-> Alex
 
-Hi Alex and Christian,
+Keoseong,
 
-Thanks for your quick reply. What do you think of the following changes?
-If it is OK, I will send v2. If no, please ignore it.
+> Remove repeated word "for" in comments.
 
-Any comments will be much appreciated.
+Applied to 5.14/scsi-staging, thanks!
 
-Thanks,
-Tiezhu
-
-
-Subject: [PATCH] drm/radeon: Call radeon_suspend_kms() in
-  radeon_pci_shutdown() for Loongson64
-
-On the Loongson64 platform used with Radeon GPU, shutdown or reboot failed
-when console=tty is in the boot cmdline.
-
-radeon_suspend_kms() puts the hw in the suspend state, especially set fb
-state as FBINFO_STATE_SUSPENDED:
-
-     if (fbcon) {
-         console_lock();
-         radeon_fbdev_set_suspend(rdev, 1);
-         console_unlock();
-     }
-
-Then avoid to do any more fb operations in the related functions:
-
-     if (p->state != FBINFO_STATE_RUNNING)
-         return;
-
-So call radeon_suspend_kms() in radeon_pci_shutdown() for Loongson64 to fix
-this issue, it looks like some kind of workaround like powerpc.
-
-Co-developed-by: Jianmin Lv <lvjianmin@loongson.cn>
-Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
-  drivers/gpu/drm/radeon/radeon_drv.c | 8 ++++----
-  1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/radeon/radeon_drv.c 
-b/drivers/gpu/drm/radeon/radeon_drv.c
-index efeb115..daabbf5 100644
---- a/drivers/gpu/drm/radeon/radeon_drv.c
-+++ b/drivers/gpu/drm/radeon/radeon_drv.c
-@@ -386,13 +386,13 @@ radeon_pci_shutdown(struct pci_dev *pdev)
-      if (radeon_device_is_virtual())
-          radeon_pci_remove(pdev);
-
--#ifdef CONFIG_PPC64
-+#if defined(CONFIG_PPC64) || defined(CONFIG_MACH_LOONGSON64)
-      /*
-       * Some adapters need to be suspended before a
-       * shutdown occurs in order to prevent an error
--     * during kexec.
--     * Make this power specific becauase it breaks
--     * some non-power boards.
-+     * during kexec, shutdown or reboot.
-+     * Make this power and Loongson specific becauase
-+     * it breaks some other boards.
-       */
-      radeon_suspend_kms(pci_get_drvdata(pdev), true, true, false);
-  #endif
 -- 
-2.1.0
-
+Martin K. Petersen	Oracle Linux Engineering
