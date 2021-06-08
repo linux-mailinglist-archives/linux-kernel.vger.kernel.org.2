@@ -2,98 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B20939F1AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E216D39F1BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhFHJJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:09:56 -0400
-Received: from mail.iot.bzh ([51.75.236.24]:52801 "EHLO mail.iot.bzh"
+        id S230410AbhFHJPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 05:15:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229657AbhFHJJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:09:55 -0400
-Received: from localhost.localdomain (lfbn-ren-1-1868-231.w83-199.abo.wanadoo.fr [83.199.51.231])
-        by mail.iot.bzh (Postfix) with ESMTPSA id C5E0940081;
-        Tue,  8 Jun 2021 11:07:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iot.bzh; s=20180822;
-        t=1623143279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RstX5K6XZCEekqSBLBKXhSYsL5WzEMK2zaZ0jTY6khU=;
-        b=tm+rCUB9f9l4wf3L0Lbg9qS2pGscYdvzAd0HuZDfOxdD2JoXGWLw/UZoyuuEguV0MDUeVO
-        Vft2nqCLDB9zdC9Ybz5Zb6/gTEtxBHbjNdIyCjuxrTeNmMb5/fRA714qqiPDDK+u8lTUH4
-        b+EehnJwjj/pObY1pwShtya3ieU2Xhnqq6G00c67I4XYgyH04ZiyyOlDOdQXN0HsODQ+C5
-        O0z53YOl+zIkiy56OpCQZTj4TByAruiAsdCI2TsLnEI/pvkNQqVRskEhtK3HkEIka4Lp3F
-        2fjVpFZ0nfDNoUrZ3nlU74i4fGzxELhWKJBBbcvita9auk/lWOZWJuVarmAtbA==
-Subject: Re: [PATCH 0/4] rpmsg: char: introduce the rpmsg-raw channel
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
-From:   Julien Massot <julien.massot@iot.bzh>
-Message-ID: <6aedbe64-9c5d-b738-ad99-0a33733be82d@iot.bzh>
-Date:   Tue, 8 Jun 2021 11:08:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229507AbhFHJPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 05:15:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF16C61208;
+        Tue,  8 Jun 2021 09:13:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623143608;
+        bh=JiiuTjFCB/4PLSsHGFNFns29l9HBPjAxjVfH42hb+H4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BvBM91enChDqY6+VuhfUkSW1HXIS9ONW9olMjxmDaKa7XG0xFJ88O84JgyyOUqCn2
+         zUlrusQNc+hVn4BaQ/hZVyUb111Dx/0tXSwwa1nft23bMjs842ThUbJ97WIXp48iAN
+         r0g3L51e1nIYJ+KG+xqOOKm8wEM0xnzHCbU/F5o+L0LMd7cx2OoQcnKd39oshKQQ8X
+         1xoHEyi5Pr0JMt9c9KNVQ+agiuHE3xgktQcWzhfx+TwlsoVquZYtBqrqsWjBXsXwdc
+         kvWtnfkm9HI72rJ+KD+i20Cm8mWhZAuWSSvbBxlTAuV4H0sJOC9f3xiWuy2knlZ9v6
+         r+gmfpltnZIlA==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
+Subject: [PATCH v3 0/9] Remove DISCONTIGMEM memory model
+Date:   Tue,  8 Jun 2021 12:13:07 +0300
+Message-Id: <20210608091316.3622-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Mike Rapoport <rppt@linux.ibm.com>
+
 Hi,
 
-On 6/7/21 7:30 PM, Arnaud Pouliquen wrote:
-> Purpose:
->    Allow the remote processor to instantiate a /dev/rpmsgX interface relying on the NS announcement
->    of the "rpmsg-raw" service.
->    This patchet is extracted from  the series [1] with rework to add rpmsg_create_default_ept helper.
-> 
->    
-> Aim:
->    There is no generic sysfs interface based on RPMsg that allows a user application to communicate
->    with a remote processor in a simple way.
->    The rpmsg_char dev solves a part of this problem by allowing an endpoint to be created on the
->    local side. But it does not take advantage of the NS announcement mechanism implemented for some
->    backends such as the virtio backend. So it is not possible to probe it from  a remote initiative.
->    Extending the char rpmsg device to support NS announcement makes the rpmsg_char more generic.
->    By announcing a "rpmg-raw" service, the firmware of a remote processor will be able to
->    instantiate a /dev/rpmsgX interface providing to the user application a basic link to communicate
->    with it without any knowledge of the rpmsg protocol.
-> 
-> Implementation details:
->    - Register a rpmsg driver for the rpmsg_char driver, associated to the "rpmsg-raw" channel service.
->    - In case of rpmsg char device instantiated by the rpmsg bus (on NS announcement) manage the
->      channel default endpoint to ensure a stable default endpoint address, for communication with
->      the remote processor.
-> 
-> How to test it:
->    - This series can be applied on git/andersson/remoteproc.git for-next branch (dc0e14fa833b)
->      + the "Restructure the rpmsg char to decorrelate the control part" series[2]
-> 
-> [1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=475217
-> [2] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=483793
+SPARSEMEM memory model was supposed to entirely replace DISCONTIGMEM a
+(long) while ago. The last architectures that used DISCONTIGMEM were
+updated to use other memory models in v5.11 and it is about the time to
+entirely remove DISCONTIGMEM from the kernel.
 
-Just tested this whole series on remoteproc for-next branch + [2].
-Works for me, /dev/rpmsg0 is created on NS announcement, and removed when stopping the remote processor.
-I can do a repeated series of open /read/write/close, and got EBUSY if I try to open it more than once
-at a time.
+This set removes DISCONTIGMEM from alpha, arc and m68k, simplifies memory
+model selection in mm/Kconfig and replaces usage of redundant
+CONFIG_NEED_MULTIPLE_NODES and CONFIG_FLAT_NODE_MEM_MAP with CONFIG_NUMA
+and CONFIG_FLATMEM respectively. 
 
-Firmware used for testing is derived from:
-https://github.com/zephyrproject-rtos/zephyr/tree/main/samples/subsys/ipc/openamp_rsc_table
-with:
-#define RPMSG_CHAN_NAME "rpmsg-raw"
+I've also removed NUMA support on alpha that was BROKEN for more than 15
+years.
 
-Thanks Arnaud for your work.
+There were also minor updates all over arch/ to remove mentions of
+DISCONTIGMEM in comments and #ifdefs.
 
-Tested-by: Julien Massot <julien.massot@iot.bzh>
+v3:
+* Remove stale reference of CONFIG_NEED_MULTIPLE_NODES and stale
+  discontigmem comment, per Geert
+* Add Vineet Acks
+* Fix spelling in cover letter subject
 
+v2: Link: https://lore.kernel.org/lkml/20210604064916.26580-1-rppt@kernel.org
+* Fix build errors reported by kbuild bot
+* Add additional cleanups in m68k as suggested by Geert
+
+v1: Link: https://lore.kernel.org/lkml/20210602105348.13387-1-rppt@kernel.org
+
+Mike Rapoport (9):
+  alpha: remove DISCONTIGMEM and NUMA
+  arc: update comment about HIGHMEM implementation
+  arc: remove support for DISCONTIGMEM
+  m68k: remove support for DISCONTIGMEM
+  mm: remove CONFIG_DISCONTIGMEM
+  arch, mm: remove stale mentions of DISCONIGMEM
+  docs: remove description of DISCONTIGMEM
+  mm: replace CONFIG_NEED_MULTIPLE_NODES with CONFIG_NUMA
+  mm: replace CONFIG_FLAT_NODE_MEM_MAP with CONFIG_FLATMEM
+
+ Documentation/admin-guide/sysctl/vm.rst |  12 +-
+ Documentation/vm/memory-model.rst       |  45 +----
+ arch/alpha/Kconfig                      |  22 ---
+ arch/alpha/include/asm/machvec.h        |   6 -
+ arch/alpha/include/asm/mmzone.h         | 100 -----------
+ arch/alpha/include/asm/pgtable.h        |   4 -
+ arch/alpha/include/asm/topology.h       |  39 -----
+ arch/alpha/kernel/core_marvel.c         |  53 +-----
+ arch/alpha/kernel/core_wildfire.c       |  29 +--
+ arch/alpha/kernel/pci_iommu.c           |  29 ---
+ arch/alpha/kernel/proto.h               |   8 -
+ arch/alpha/kernel/setup.c               |  16 --
+ arch/alpha/kernel/sys_marvel.c          |   5 -
+ arch/alpha/kernel/sys_wildfire.c        |   5 -
+ arch/alpha/mm/Makefile                  |   2 -
+ arch/alpha/mm/init.c                    |   3 -
+ arch/alpha/mm/numa.c                    | 223 ------------------------
+ arch/arc/Kconfig                        |  13 --
+ arch/arc/include/asm/mmzone.h           |  40 -----
+ arch/arc/mm/init.c                      |  21 +--
+ arch/arm64/Kconfig                      |   2 +-
+ arch/ia64/Kconfig                       |   2 +-
+ arch/ia64/kernel/topology.c             |   5 +-
+ arch/ia64/mm/numa.c                     |   5 +-
+ arch/m68k/Kconfig.cpu                   |  10 --
+ arch/m68k/include/asm/mmzone.h          |  10 --
+ arch/m68k/include/asm/page.h            |   2 +-
+ arch/m68k/include/asm/page_mm.h         |  35 ----
+ arch/m68k/mm/init.c                     |  20 ---
+ arch/mips/Kconfig                       |   2 +-
+ arch/mips/include/asm/mmzone.h          |   8 +-
+ arch/mips/include/asm/page.h            |   2 +-
+ arch/mips/mm/init.c                     |   7 +-
+ arch/nds32/include/asm/memory.h         |   6 -
+ arch/powerpc/Kconfig                    |   2 +-
+ arch/powerpc/include/asm/mmzone.h       |   4 +-
+ arch/powerpc/kernel/setup_64.c          |   2 +-
+ arch/powerpc/kernel/smp.c               |   2 +-
+ arch/powerpc/kexec/core.c               |   4 +-
+ arch/powerpc/mm/Makefile                |   2 +-
+ arch/powerpc/mm/mem.c                   |   4 +-
+ arch/riscv/Kconfig                      |   2 +-
+ arch/s390/Kconfig                       |   2 +-
+ arch/sh/include/asm/mmzone.h            |   4 +-
+ arch/sh/kernel/topology.c               |   2 +-
+ arch/sh/mm/Kconfig                      |   2 +-
+ arch/sh/mm/init.c                       |   2 +-
+ arch/sparc/Kconfig                      |   2 +-
+ arch/sparc/include/asm/mmzone.h         |   4 +-
+ arch/sparc/kernel/smp_64.c              |   2 +-
+ arch/sparc/mm/init_64.c                 |  12 +-
+ arch/x86/Kconfig                        |   2 +-
+ arch/x86/kernel/setup_percpu.c          |   6 +-
+ arch/x86/mm/init_32.c                   |   4 +-
+ arch/xtensa/include/asm/page.h          |   4 -
+ include/asm-generic/memory_model.h      |  37 +---
+ include/asm-generic/topology.h          |   2 +-
+ include/linux/gfp.h                     |   4 +-
+ include/linux/memblock.h                |   6 +-
+ include/linux/mm.h                      |   4 +-
+ include/linux/mmzone.h                  |  20 ++-
+ kernel/crash_core.c                     |   4 +-
+ mm/Kconfig                              |  36 +---
+ mm/memblock.c                           |   8 +-
+ mm/memory.c                             |   3 +-
+ mm/page_alloc.c                         |  25 +--
+ mm/page_ext.c                           |   2 +-
+ 67 files changed, 101 insertions(+), 911 deletions(-)
+ delete mode 100644 arch/alpha/include/asm/mmzone.h
+ delete mode 100644 arch/alpha/mm/numa.c
+ delete mode 100644 arch/arc/include/asm/mmzone.h
+ delete mode 100644 arch/m68k/include/asm/mmzone.h
+
+
+base-commit: c4681547bcce777daf576925a966ffa824edd09d
 -- 
-Julien Massot [IoT.bzh]
+2.28.0
+
