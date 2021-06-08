@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B903A044C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1893A0452
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237804AbhFHT3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:29:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39614 "EHLO mail.kernel.org"
+        id S238658AbhFHT3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:29:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237413AbhFHTP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:15:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A35461961;
-        Tue,  8 Jun 2021 18:50:49 +0000 (UTC)
+        id S236062AbhFHTQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:16:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95CD161969;
+        Tue,  8 Jun 2021 18:50:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178250;
-        bh=4ddSBV52IP3ArNMigX3kU2VUXDvUeF9NBjityjzBDeU=;
+        s=korg; t=1623178253;
+        bh=XP8RtZB5I8hcyEmuu0P6ZC+uh588io2AMGX5lGpuJJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1yp1P40ys2WJqJAIRLgGhTab56gdB1mlkYzMr+7eqUIi/UNUEEnfGXqAWHFULgpS6
-         zNNdzD4klkDWhQimMl1DFIdWYVqsZk+MjkgvvdBa+qzRAjW54LAGByNnjHirrytqpd
-         oEVXEtDuII91ZASyP7CpHxZy6XaCxHPDAMD5Jhdk=
+        b=s513FVk3HQp7sLTYSjQl1CJpEl7f4Vad8NfutD2Au08l/ey0B7bqdVsjb60MymbjZ
+         pK4wZxqcVjZJcwhBz1MjQyeaCeUkFePyJIwPSzv8bC6waVdCxjnUfkTLu8BI67+4IE
+         RuLx5V73HgMK5+Bl+dTrWSkMQ8WkzUTwdIjwUY9A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Fabiano Rosas <farosas@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.12 133/161] KVM: PPC: Book3S HV: Save host FSCR in the P7/8 path
-Date:   Tue,  8 Jun 2021 20:27:43 +0200
-Message-Id: <20210608175949.943194998@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com,
+        butt3rflyh4ck <butterflyhuangxx@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.12 134/161] nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
+Date:   Tue,  8 Jun 2021 20:27:44 +0200
+Message-Id: <20210608175949.976605371@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -40,70 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-commit 1438709e6328925ef496dafd467dbd0353137434 upstream.
+commit 4ac06a1e013cf5fdd963317ffd3b968560f33bba upstream.
 
-Similar to commit 25edcc50d76c ("KVM: PPC: Book3S HV: Save and restore
-FSCR in the P9 path"), ensure the P7/8 path saves and restores the host
-FSCR. The logic explained in that patch actually applies there to the
-old path well: a context switch can be made before kvmppc_vcpu_run_hv
-restores the host FSCR and returns.
+It's possible to trigger NULL pointer dereference by local unprivileged
+user, when calling getsockname() after failed bind() (e.g. the bind
+fails because LLCP_SAP_MAX used as SAP):
 
-Now both the p9 and the p7/8 paths now save and restore their FSCR, it
-no longer needs to be restored at the end of kvmppc_vcpu_run_hv
+  BUG: kernel NULL pointer dereference, address: 0000000000000000
+  CPU: 1 PID: 426 Comm: llcp_sock_getna Not tainted 5.13.0-rc2-next-20210521+ #9
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
+  Call Trace:
+   llcp_sock_getname+0xb1/0xe0
+   __sys_getpeername+0x95/0xc0
+   ? lockdep_hardirqs_on_prepare+0xd5/0x180
+   ? syscall_enter_from_user_mode+0x1c/0x40
+   __x64_sys_getpeername+0x11/0x20
+   do_syscall_64+0x36/0x70
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Fixes: b005255e12a3 ("KVM: PPC: Book3S HV: Context-switch new POWER8 SPRs")
-Cc: stable@vger.kernel.org # v3.14+
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Reviewed-by: Fabiano Rosas <farosas@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210526125851.3436735-1-npiggin@gmail.com
+This can be reproduced with Syzkaller C repro (bind followed by
+getpeername):
+https://syzkaller.appspot.com/x/repro.c?x=14def446e00000
+
+Cc: <stable@vger.kernel.org>
+Fixes: d646960f7986 ("NFC: Initial LLCP support")
+Reported-by: syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com
+Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210531072138.5219-1-krzysztof.kozlowski@canonical.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kvm/book3s_hv.c            |    1 -
- arch/powerpc/kvm/book3s_hv_rmhandlers.S |    7 +++++++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ net/nfc/llcp_sock.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/powerpc/kvm/book3s_hv.c
-+++ b/arch/powerpc/kvm/book3s_hv.c
-@@ -4418,7 +4418,6 @@ static int kvmppc_vcpu_run_hv(struct kvm
- 		mtspr(SPRN_EBBRR, ebb_regs[1]);
- 		mtspr(SPRN_BESCR, ebb_regs[2]);
- 		mtspr(SPRN_TAR, user_tar);
--		mtspr(SPRN_FSCR, current->thread.fscr);
+--- a/net/nfc/llcp_sock.c
++++ b/net/nfc/llcp_sock.c
+@@ -110,6 +110,7 @@ static int llcp_sock_bind(struct socket
+ 	if (!llcp_sock->service_name) {
+ 		nfc_llcp_local_put(llcp_sock->local);
+ 		llcp_sock->local = NULL;
++		llcp_sock->dev = NULL;
+ 		ret = -ENOMEM;
+ 		goto put_dev;
  	}
- 	mtspr(SPRN_VRSAVE, user_vrsave);
- 
---- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-+++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-@@ -59,6 +59,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_ARCH_300)
- #define STACK_SLOT_UAMOR	(SFS-88)
- #define STACK_SLOT_DAWR1	(SFS-96)
- #define STACK_SLOT_DAWRX1	(SFS-104)
-+#define STACK_SLOT_FSCR		(SFS-112)
- /* the following is used by the P9 short path */
- #define STACK_SLOT_NVGPRS	(SFS-152)	/* 18 gprs */
- 
-@@ -686,6 +687,8 @@ BEGIN_FTR_SECTION
- 	std	r6, STACK_SLOT_DAWR0(r1)
- 	std	r7, STACK_SLOT_DAWRX0(r1)
- 	std	r8, STACK_SLOT_IAMR(r1)
-+	mfspr	r5, SPRN_FSCR
-+	std	r5, STACK_SLOT_FSCR(r1)
- END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
- BEGIN_FTR_SECTION
- 	mfspr	r6, SPRN_DAWR1
-@@ -1663,6 +1666,10 @@ FTR_SECTION_ELSE
- 	ld	r7, STACK_SLOT_HFSCR(r1)
- 	mtspr	SPRN_HFSCR, r7
- ALT_FTR_SECTION_END_IFCLR(CPU_FTR_ARCH_300)
-+BEGIN_FTR_SECTION
-+	ld	r5, STACK_SLOT_FSCR(r1)
-+	mtspr	SPRN_FSCR, r5
-+END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
- 	/*
- 	 * Restore various registers to 0, where non-zero values
- 	 * set by the guest could disrupt the host.
+@@ -119,6 +120,7 @@ static int llcp_sock_bind(struct socket
+ 		llcp_sock->local = NULL;
+ 		kfree(llcp_sock->service_name);
+ 		llcp_sock->service_name = NULL;
++		llcp_sock->dev = NULL;
+ 		ret = -EADDRINUSE;
+ 		goto put_dev;
+ 	}
 
 
