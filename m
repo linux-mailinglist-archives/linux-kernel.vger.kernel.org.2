@@ -2,267 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DB739ED3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B01A39ED2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhFHD6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 23:58:40 -0400
-Received: from mga04.intel.com ([192.55.52.120]:59065 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230508AbhFHD6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 23:58:37 -0400
-IronPort-SDR: R74IqX8XRhQC8Y4Ytt+1oKbEbVBZn/PDRS3DzXqlv8atIjArc3sZt+3VzL/2An5x5KTehhz0vQ
- ij+cOHlX6D0w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="202907311"
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="202907311"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 20:56:45 -0700
-IronPort-SDR: l1L7W+UP9YLs0yl6lWj/Cu7qt91b7puFRfPZDGoqmw4c1SzoWOBx/cu6pW/D6p6fDA3WEokzV5
- wMRBS31nsDDg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="440308787"
-Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
-  by orsmga007.jf.intel.com with ESMTP; 07 Jun 2021 20:56:40 -0700
-From:   Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-To:     Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        davem@davemloft.net, mcoquelin.stm32@gmail.com,
-        weifeng.voon@intel.com, boon.leong.ong@intel.com,
-        tee.min.tan@intel.com, vee.khee.wong@linux.intel.com,
-        vee.khee.wong@intel.com, michael.wei.hong.sit@intel.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        vladimir.oltean@nxp.com
-Subject: [PATCH net-next v6 3/3] net: stmmac: enable Intel mGbE 2.5Gbps link speed
-Date:   Tue,  8 Jun 2021 11:51:58 +0800
-Message-Id: <20210608035158.4869-4-michael.wei.hong.sit@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210608035158.4869-1-michael.wei.hong.sit@intel.com>
-References: <20210608035158.4869-1-michael.wei.hong.sit@intel.com>
+        id S230333AbhFHDzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 23:55:22 -0400
+Received: from m32-153.88.com ([43.250.32.153]:9664 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230261AbhFHDzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 23:55:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=From:To:Date; bh=NlWT4yL/LK+JimZ7Sa7wYhg6k/kls9whN7r2S
+        r3psFI=; b=WClRMC3WNJaep2GVNej3MbH0Mur8fDsHOFgpGD0jVeYU8BZZKsJVx
+        Po71KmbUfgfd6JV6+DLZrgA2F6m/tb2OgQle8szwDBIeDQXfA8vf1YNFtwp7QOj3
+        0ZfxOycCTfisNQ7Ypml0HhIyJtmHjk6NrkanQrsNIMlfkUXAWuUwpA=
+Received: from localhost.localdomain (unknown [113.251.8.115])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgD3zfyz6b5g0uMEAA--.17697S2;
+        Tue, 08 Jun 2021 11:53:24 +0800 (CST)
+From:   Hu Haowen <src.res@email.cn>
+To:     bobwxc@email.cn, alexs@kernel.org, corbet@lwn.net
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] docs/zh_CN: add a translation for index
+Date:   Tue,  8 Jun 2021 11:53:23 +0800
+Message-Id: <20210608035323.63728-1-src.res@email.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GiKnCgD3zfyz6b5g0uMEAA--.17697S2
+X-Coremail-Antispam: 1UD129KBjvJXoWrZFWUuw1xJw1xXw45tFW7XFb_yoW8JF1kpF
+        nrKryxK3Z5A3W3Cr92ga47WF4UJ3Z7Ca13GrW2qwnagrs8A39Fgrsxtr9Yqa4xXrWfAa98
+        JF4a9FWrGa4ayrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgE1xkIjI8I6I8E6xAIw20EY4v20xvaj40_JFC_Wr1l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l
+        84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
+        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkE
+        bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67
+        AK6r48MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC
+        6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWw
+        C2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_
+        JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJV
+        WUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIY
+        CTnIWIevJa73UjIFyTuYvjfUxIJPDUUUU
+X-Originating-IP: [113.251.8.115]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Voon Weifeng <weifeng.voon@intel.com>
+The original file has added a former intro in commit b51208d41c6a4e7fc2f0
+("docs: Tweak the top-level Sphinx page") and hence update the Chinese
+version for it.
 
-The Intel mGbE supports 2.5Gbps link speed by increasing the clock rate by
-2.5 times of the original rate. In this mode, the serdes/PHY operates at a
-serial baud rate of 3.125 Gbps and the PCS data path and GMII interface of
-the MAC operate at 312.5 MHz instead of 125 MHz.
-
-For Intel mGbE, the overclocking of 2.5 times clock rate to support 2.5G is
-only able to be configured in the BIOS during boot time. Kernel driver has
-no access to modify the clock rate for 1Gbps/2.5G mode. The way to
-determined the current 1G/2.5G mode is by reading a dedicated adhoc
-register through mdio bus. In short, after the system boot up, it is either
-in 1G mode or 2.5G mode which not able to be changed on the fly.
-
-Compared to 1G mode, the 2.5G mode selects the 2500BASEX as PHY interface and
-disables the xpcs_an_inband. This is to cater for some PHYs that only
-supports 2500BASEX PHY interface with no autonegotiation.
-
-v2: remove MAC supported link speed masking
-v3: Restructure  to introduce intel_speed_mode_2500() to read serdes registers
-    for max speed supported and select the appropritate configuration.
-    Use max_speed to determine the supported link speed mask.
-
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Hu Haowen <src.res@email.cn>
 ---
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 48 ++++++++++++++++++-
- .../net/ethernet/stmicro/stmmac/dwmac-intel.h | 13 +++++
- .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  1 +
- .../net/ethernet/stmicro/stmmac/stmmac_main.c |  7 +++
- include/linux/stmmac.h                        |  1 +
- 5 files changed, 69 insertions(+), 1 deletion(-)
+ Documentation/translations/zh_CN/index.rst | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 2ecf93c84b9d..6a9a19b0844c 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -102,6 +102,22 @@ static int intel_serdes_powerup(struct net_device *ndev, void *priv_data)
+diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
+index 1f953d3439a5..cb8595c0364c 100644
+--- a/Documentation/translations/zh_CN/index.rst
++++ b/Documentation/translations/zh_CN/index.rst
+@@ -17,6 +17,13 @@
+    **翻译计划:**
+    内核中文文档欢迎任何翻译投稿，特别是关于内核用户和管理员指南部分。
  
- 	serdes_phy_addr = intel_priv->mdio_adhoc_addr;
++这是中文内核文档树的顶级目录。内核文档，就像内核本身一样，在很大程度上是一
++项正在进行的工作；当我们努力将许多分散的文件整合成一个连贯的整体时尤其如此。
++另外，随时欢迎您对内核文档进行改进；如果您想提供帮助，请加入vger.kernel.org
++上的linux-doc邮件列表。
++
++.. include:: ./disclaimer-zh_CN.rst
++
+ 许可证文档
+ ----------
  
-+	/* Set the serdes rate and the PCLK rate */
-+	data = mdiobus_read(priv->mii, serdes_phy_addr,
-+			    SERDES_GCR0);
-+
-+	data &= ~SERDES_RATE_MASK;
-+	data &= ~SERDES_PCLK_MASK;
-+
-+	if (priv->plat->max_speed == 2500)
-+		data |= SERDES_RATE_PCIE_GEN2 << SERDES_RATE_PCIE_SHIFT |
-+			SERDES_PCLK_37p5MHZ << SERDES_PCLK_SHIFT;
-+	else
-+		data |= SERDES_RATE_PCIE_GEN1 << SERDES_RATE_PCIE_SHIFT |
-+			SERDES_PCLK_70MHZ << SERDES_PCLK_SHIFT;
-+
-+	mdiobus_write(priv->mii, serdes_phy_addr, SERDES_GCR0, data);
-+
- 	/* assert clk_req */
- 	data = mdiobus_read(priv->mii, serdes_phy_addr, SERDES_GCR0);
- 	data |= SERDES_PLL_CLK;
-@@ -230,6 +246,32 @@ static void intel_serdes_powerdown(struct net_device *ndev, void *intel_data)
- 	}
- }
- 
-+static void intel_speed_mode_2500(struct net_device *ndev, void *intel_data)
-+{
-+	struct intel_priv_data *intel_priv = intel_data;
-+	struct stmmac_priv *priv = netdev_priv(ndev);
-+	int serdes_phy_addr = 0;
-+	u32 data = 0;
-+
-+	serdes_phy_addr = intel_priv->mdio_adhoc_addr;
-+
-+	/* Determine the link speed mode: 2.5Gbps/1Gbps */
-+	data = mdiobus_read(priv->mii, serdes_phy_addr,
-+			    SERDES_GCR);
-+
-+	if (((data & SERDES_LINK_MODE_MASK) >> SERDES_LINK_MODE_SHIFT) ==
-+	    SERDES_LINK_MODE_2G5) {
-+		dev_info(priv->device, "Link Speed Mode: 2.5Gbps\n");
-+		priv->plat->max_speed = 2500;
-+		priv->plat->phy_interface = PHY_INTERFACE_MODE_2500BASEX;
-+		priv->plat->mdio_bus_data->xpcs_an_inband = false;
-+	} else {
-+		priv->plat->max_speed = 1000;
-+		priv->plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+		priv->plat->mdio_bus_data->xpcs_an_inband = true;
-+	}
-+}
-+
- /* Program PTP Clock Frequency for different variant of
-  * Intel mGBE that has slightly different GPO mapping
-  */
-@@ -586,7 +628,7 @@ static int ehl_sgmii_data(struct pci_dev *pdev,
- {
- 	plat->bus_id = 1;
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
--
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 
-@@ -639,6 +681,7 @@ static int ehl_pse0_sgmii1g_data(struct pci_dev *pdev,
- 				 struct plat_stmmacenet_data *plat)
- {
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return ehl_pse0_common_data(pdev, plat);
-@@ -677,6 +720,7 @@ static int ehl_pse1_sgmii1g_data(struct pci_dev *pdev,
- 				 struct plat_stmmacenet_data *plat)
- {
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return ehl_pse1_common_data(pdev, plat);
-@@ -711,6 +755,7 @@ static int tgl_sgmii_phy0_data(struct pci_dev *pdev,
- {
- 	plat->bus_id = 1;
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return tgl_common_data(pdev, plat);
-@@ -725,6 +770,7 @@ static int tgl_sgmii_phy1_data(struct pci_dev *pdev,
- {
- 	plat->bus_id = 2;
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return tgl_common_data(pdev, plat);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-index 542acb8ce467..20d14e588044 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-@@ -9,6 +9,7 @@
- #define POLL_DELAY_US 8
- 
- /* SERDES Register */
-+#define SERDES_GCR	0x0	/* Global Conguration */
- #define SERDES_GSR0	0x5	/* Global Status Reg0 */
- #define SERDES_GCR0	0xb	/* Global Configuration Reg0 */
- 
-@@ -17,8 +18,20 @@
- #define SERDES_PHY_RX_CLK	BIT(1)		/* PSE SGMII PHY rx clk */
- #define SERDES_RST		BIT(2)		/* Serdes Reset */
- #define SERDES_PWR_ST_MASK	GENMASK(6, 4)	/* Serdes Power state*/
-+#define SERDES_RATE_MASK	GENMASK(9, 8)
-+#define SERDES_PCLK_MASK	GENMASK(14, 12)	/* PCLK rate to PHY */
-+#define SERDES_LINK_MODE_MASK	GENMASK(2, 1)
-+#define SERDES_LINK_MODE_SHIFT	1
- #define SERDES_PWR_ST_SHIFT	4
- #define SERDES_PWR_ST_P0	0x0
- #define SERDES_PWR_ST_P3	0x3
-+#define SERDES_LINK_MODE_2G5	0x3
-+#define SERSED_LINK_MODE_1G	0x2
-+#define SERDES_PCLK_37p5MHZ	0x0
-+#define SERDES_PCLK_70MHZ	0x1
-+#define SERDES_RATE_PCIE_GEN1	0x0
-+#define SERDES_RATE_PCIE_GEN2	0x1
-+#define SERDES_RATE_PCIE_SHIFT	8
-+#define SERDES_PCLK_SHIFT	12
- 
- #endif /* __DWMAC_INTEL_H__ */
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-index f35c03c9f91e..67ba083eb90c 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-@@ -1358,6 +1358,7 @@ int dwmac4_setup(struct stmmac_priv *priv)
- 	mac->link.speed10 = GMAC_CONFIG_PS;
- 	mac->link.speed100 = GMAC_CONFIG_FES | GMAC_CONFIG_PS;
- 	mac->link.speed1000 = 0;
-+	mac->link.speed2500 = GMAC_CONFIG_FES;
- 	mac->link.speed_mask = GMAC_CONFIG_FES | GMAC_CONFIG_PS;
- 	mac->mii.addr = GMAC_MDIO_ADDR;
- 	mac->mii.data = GMAC_MDIO_DATA;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index af406ea3dd46..1b12a2f8bfb5 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -931,6 +931,10 @@ static void stmmac_validate(struct phylink_config *config,
- 	if ((max_speed > 0) && (max_speed < 1000)) {
- 		phylink_set(mask, 1000baseT_Full);
- 		phylink_set(mask, 1000baseX_Full);
-+	} else if (priv->plat->has_gmac4) {
-+		if (!max_speed || max_speed >= 2500)
-+			phylink_set(mac_supported, 2500baseT_Full);
-+			phylink_set(mac_supported, 2500baseX_Full);
- 	} else if (priv->plat->has_xgmac) {
- 		if (!max_speed || (max_speed >= 2500)) {
- 			phylink_set(mac_supported, 2500baseT_Full);
-@@ -6993,6 +6997,9 @@ int stmmac_dvr_probe(struct device *device,
- 		}
- 	}
- 
-+	if (priv->plat->speed_mode_2500)
-+		priv->plat->speed_mode_2500(ndev, priv->plat->bsp_priv);
-+
- 	if (priv->plat->mdio_bus_data) {
- 		if (priv->plat->mdio_bus_data->has_xpcs) {
- 			ret = stmmac_xpcs_setup(priv->mii);
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index e55a4807e3ea..b10be3385a30 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -223,6 +223,7 @@ struct plat_stmmacenet_data {
- 	void (*fix_mac_speed)(void *priv, unsigned int speed);
- 	int (*serdes_powerup)(struct net_device *ndev, void *priv);
- 	void (*serdes_powerdown)(struct net_device *ndev, void *priv);
-+	void (*speed_mode_2500)(struct net_device *ndev, void *priv);
- 	void (*ptp_clk_freq_config)(void *priv);
- 	int (*init)(struct platform_device *pdev, void *priv);
- 	void (*exit)(struct platform_device *pdev, void *priv);
 -- 
-2.17.1
+2.25.1
 
