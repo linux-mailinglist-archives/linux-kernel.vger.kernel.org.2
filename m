@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F6B3A0160
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F45B3A0410
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235440AbhFHSvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:51:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
+        id S237865AbhFHT0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:26:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236035AbhFHSqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:46:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00BD561449;
-        Tue,  8 Jun 2021 18:37:29 +0000 (UTC)
+        id S236555AbhFHTN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:13:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DD7761958;
+        Tue,  8 Jun 2021 18:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177450;
-        bh=s0YyBVXtSIcGth2gdcY+Bu3GJBOB093AGJ/x5nJAp+E=;
+        s=korg; t=1623178206;
+        bh=v1oMwKHnjxU73MpDkT5DofjoJu3gZY+tqku0jOHo47s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RK9t+NVcOh5Hhu8uLD+81y7ohiSgIELby9CAYwqBVPZxM1iWV4tpxZQM5V5cW81d5
-         WXWMSdBNc/T2qlTqR9bjmAeXcbRmqEhIrGblCqczGw1MV+lxw1+m4kiIewnt6l7rge
-         F4L2UbFGsI69NCNXOYMiZbknsAeCcgb0wyjlZxHo=
+        b=ckiRH/N0xDwWeUxYpE6Fw7heiI9TQxxx6Qs5SVc6YRBmz6I6voidrY/4GZ+72DDBr
+         I3sh3/suaUYMcd3mIKkTRD4Be1+qkZuzDUh3g2zIAHTX3f19RsA9fD/R/Fzuc06S0n
+         hzujJf5tHF6mFyTryji7cJY9EQbu7tH2+YUZDbw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 56/78] drm/amdgpu: Dont query CE and UE errors
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Ludwig Zenz <lzenz@dh-electronics.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.12 115/161] ARM: dts: imx6q-dhcom: Add PU,VDD1P1,VDD2P5 regulators
 Date:   Tue,  8 Jun 2021 20:27:25 +0200
-Message-Id: <20210608175937.169766702@linuxfoundation.org>
+Message-Id: <20210608175949.343341664@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+References: <20210608175945.476074951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,60 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luben Tuikov <luben.tuikov@amd.com>
+From: Marek Vasut <marex@denx.de>
 
-commit dce3d8e1d070900e0feeb06787a319ff9379212c upstream.
+commit 8967b27a6c1c19251989c7ab33c058d16e4a5f53 upstream.
 
-On QUERY2 IOCTL don't query counts of correctable
-and uncorrectable errors, since when RAS is
-enabled and supported on Vega20 server boards,
-this takes insurmountably long time, in O(n^3),
-which slows the system down to the point of it
-being unusable when we have GUI up.
+Per schematic, both PU and SOC regulator are supplied from LTC3676 SW1
+via VDDSOC_IN rail, add the PU input. Both VDD1P1, VDD2P5 are supplied
+from LTC3676 SW2 via VDDHIGH_IN rail, add both inputs.
 
-Fixes: ae363a212b14 ("drm/amdgpu: Add a new flag to AMDGPU_CTX_OP_QUERY_STATE2")
-Cc: Alexander Deucher <Alexander.Deucher@amd.com>
+While no instability or problems are currently observed, the regulators
+should be fully described in DT and that description should fully match
+the hardware, else this might lead to unforseen issues later. Fix this.
+
+Fixes: 52c7a088badd ("ARM: dts: imx6q: Add support for the DHCOM iMX6 SoM and PDK2")
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Ludwig Zenz <lzenz@dh-electronics.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
-Reviewed-by: Alexander Deucher <Alexander.Deucher@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c |   16 ----------------
- 1 file changed, 16 deletions(-)
+ arch/arm/boot/dts/imx6q-dhcom-som.dtsi |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
-@@ -351,7 +351,6 @@ static int amdgpu_ctx_query2(struct amdg
- {
- 	struct amdgpu_ctx *ctx;
- 	struct amdgpu_ctx_mgr *mgr;
--	unsigned long ras_counter;
+--- a/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
++++ b/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
+@@ -406,6 +406,18 @@
+ 	vin-supply = <&sw1_reg>;
+ };
  
- 	if (!fpriv)
- 		return -EINVAL;
-@@ -376,21 +375,6 @@ static int amdgpu_ctx_query2(struct amdg
- 	if (atomic_read(&ctx->guilty))
- 		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_GUILTY;
- 
--	/*query ue count*/
--	ras_counter = amdgpu_ras_query_error_count(adev, false);
--	/*ras counter is monotonic increasing*/
--	if (ras_counter != ctx->ras_counter_ue) {
--		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_RAS_UE;
--		ctx->ras_counter_ue = ras_counter;
--	}
--
--	/*query ce count*/
--	ras_counter = amdgpu_ras_query_error_count(adev, true);
--	if (ras_counter != ctx->ras_counter_ce) {
--		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_RAS_CE;
--		ctx->ras_counter_ce = ras_counter;
--	}
--
- 	mutex_unlock(&mgr->lock);
- 	return 0;
- }
++&reg_pu {
++	vin-supply = <&sw1_reg>;
++};
++
++&reg_vdd1p1 {
++	vin-supply = <&sw2_reg>;
++};
++
++&reg_vdd2p5 {
++	vin-supply = <&sw2_reg>;
++};
++
+ &uart1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart1>;
 
 
