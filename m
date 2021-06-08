@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4AA39FEB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA8339FEBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234074AbhFHSLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
+        id S233737AbhFHSNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234052AbhFHSLC (ORCPT
+        with ESMTP id S233603AbhFHSNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:11:02 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473B1C061787
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 11:08:53 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id w9so11278331qvi.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 11:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SzY5mAzb8iAAncNXCHh5zNAEVzbO39nRlIsEjy7/kj4=;
-        b=yP1M9TwVufAhZhzjKMz4aXj5vc2/bthnQJnbC+4WdSfV+iBjkqH4wKJpiecqQ/eP8g
-         hBDLDWr0z6h+d218Lmsm1mjnb8XAh/r5jZhaHZYTv447YW5yFi8n0fl/p8XWGpr4U6tb
-         ym/nrKyOaJQcyxf1gk8nwJBCsTm8hr4GauoWtyKAVkx/pJGSe1P1h966OMxnD+OJp1V0
-         7nG9F97aKotXZ+nrrp4yfZ6Trq/o0rJwmlZs+WtiRFHjDu3kxnLxw9A3XxG3/IKQc/xO
-         1ctEGT0Yjl99/hnPpVyeM3+yfa9oQMUgpW3Cb8elFblEIYuU7fw6dO9OQwr5dhYA+M3R
-         Hz8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SzY5mAzb8iAAncNXCHh5zNAEVzbO39nRlIsEjy7/kj4=;
-        b=mHVGigFhKU9U5TTcFLjtznBmF5bZ9BLo1EIpwQFcDK7UGXnH8I95aNXvNKyTdTxAmf
-         PTkeho7ZA8aGAi6o7Q+6gFYkyArMjzTjVHGt3IOmJoB68bXk02zdHSna3GQ57ISUGG7l
-         MC13yZAE+KZp8nmz0wZjK8EKPqOHFJAvNDDfKMj4jEEUKzYNTe7WLepMMHrvtDHYYRzb
-         prPy2hqfZ7OzBqKHP0JoYE87JdNrjJB3Mh0DMc9qehuBjy3G5CWv0IpDF5cxM7MvWJGX
-         X3eZwmnu8qbbnMsH39DICFeY+HENpCAQpkkf9P7TUBBA7GS4+2QoVSJXTCtNp3JWxA0Q
-         iYeg==
-X-Gm-Message-State: AOAM531EP1UA+wCOfI27pjopEt1uJu56q3JTW0lEjmZAmnJoUhMv1MGM
-        jN6ypWYb0YtZJdt7ISRMecvGlQ==
-X-Google-Smtp-Source: ABdhPJzq29VJTnN5Q6aeV8Pg0HAuE5CchMgl31X1oKLF8UNjqTft6fNXk8EmKW6Qk8X9KRpEuN1lFQ==
-X-Received: by 2002:a05:6214:d41:: with SMTP id 1mr1468950qvr.6.1623175732347;
-        Tue, 08 Jun 2021 11:08:52 -0700 (PDT)
-Received: from [192.168.1.4] ([177.194.59.218])
-        by smtp.gmail.com with ESMTPSA id h12sm11987725qkj.52.2021.06.08.11.08.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 11:08:52 -0700 (PDT)
-Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kselftest@vger.kernel.org, joel@joelfernandes.org,
-        Andrey Semashev <andrey.semashev@gmail.com>,
-        kernel@collabora.com, shuah@kernel.org,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Peter Oskolkov <posk@posk.io>, corbet@lwn.net,
-        krisman@collabora.com, malteskarupke@fastmail.fm,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>, acme@kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-api@vger.kernel.org,
-        z.figura12@gmail.com, Nicholas Piggin <npiggin@gmail.com>,
-        linux-kernel@vger.kernel.org, pgriffais@valvesoftware.com
-References: <20210603195924.361327-1-andrealmeid@collabora.com>
- <1622799088.hsuspipe84.astroid@bobo.none>
- <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
- <1622853816.mokf23xgnt.astroid@bobo.none>
- <22137ccd-c5e6-9fcc-a176-789558e9ab1e@collabora.com>
- <20210608122622.oxf662ruaawrtyrd@linutronix.de>
- <YL99cR0H+7xgU8L1@hirez.programming.kicks-ass.net>
-From:   Adhemerval Zanella <adhemerval.zanella@linaro.org>
-Message-ID: <74c7f1c1-ca15-1e86-a988-a4d349ad16ef@linaro.org>
-Date:   Tue, 8 Jun 2021 15:08:44 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 8 Jun 2021 14:13:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C89C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 11:11:37 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lqgCH-0000FC-QN; Tue, 08 Jun 2021 20:11:29 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lqgCH-000412-6e; Tue, 08 Jun 2021 20:11:29 +0200
+Date:   Tue, 8 Jun 2021 20:11:29 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2][next] net: usb: asix: ax88772: net: Fix less than
+ zero comparison of a u16
+Message-ID: <20210608181129.7mnuba6dcaemslul@pengutronix.de>
+References: <20210608152249.160333-1-colin.king@canonical.com>
+ <20210608152249.160333-2-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <YL99cR0H+7xgU8L1@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210608152249.160333-2-colin.king@canonical.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 20:00:59 up 188 days,  8:07, 50 users,  load average: 0.04, 0.03,
+ 0.00
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> All the attempts with API extensions didn't go well because glibc did
-> not want to change a bit. This starts with a mutex that has a static
-> initializer which has to work (I don't remember why the first
-> pthread_mutex_lock() could not fail with -ENOMEM but there was
-> something) and ends with glibc's struct mutex which is full and has no
-> room for additional data storage.
-
-Yes, we have binary compatibility constraints that prevents us to simply
-broken old binaries.  This is quite true for static initialization,
-which imposes even harder constraints, different than the pthread_mutex_t
-size where we can workaround with symbols versioning. But even then we hear
-from users that out pthread_mutex_t is still way larger, specially for
-fine grained locking so I am not sure if we do want to extend it.
-
-> That said; if we're going to do the whole futex-vector thing, we really
-> do need a new interface, because the futex multiplex monster is about to
-> crumble (see the fun wrt timeouts for example).
+On Tue, Jun 08, 2021 at 04:22:49PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> And if we're going to do a new interface, we ought to make one that can
-> solve all these problems. Now, ideally glibc will bring forth some
-> opinions, but if they don't want to play, we'll go back to the good old
-> days of non-standard locking libraries.. we're halfway there already due
-> to glibc not wanting to break with POSIX were we know POSIX was just
-> dead wrong broken.
+> The comparison of the u16 priv->phy_addr < 0 is always false because
+> phy_addr is unsigned. Fix this by assigning the return from the call
+> to function asix_read_phy_addr to int ret and using this for the
+> less than zero error check comparison.
 > 
-> See: https://github.com/dvhart/librtpi
+> Addresses-Coverity: ("Unsigned compared against 0")
+> Fixes: 7e88b11a862a ("net: usb: asix: refactor asix_read_phy_addr() and handle errors on return")
 
-You are right, we don't really want to break POSIX requirements in this
-regard because users constantly come with scenarios where they do expect
-our implementation to be conformant [1].  And even now, there are case we 
-don't get it fully right [2] and it is really hard to fix such issues.
+Here is wrong Fixes tag. This assignment was bogus before this patch.
 
-If I recall correctly from a recent plumber couple of years ago about 
-the librtpi, the presents stated their implement do not follow POSIX
-standard by design.  It suits then for their required work, but it is 
-not what we really aim for glibc.  We *might* try to provide as an 
-extension, but even then I am not if it would be fully possible due 
-API constraints.
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/net/usb/ax88172a.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/usb/ax88172a.c b/drivers/net/usb/ax88172a.c
+> index 2e2081346740..e24773bb9398 100644
+> --- a/drivers/net/usb/ax88172a.c
+> +++ b/drivers/net/usb/ax88172a.c
+> @@ -205,7 +205,8 @@ static int ax88172a_bind(struct usbnet *dev, struct usb_interface *intf)
+>  		goto free;
+>  	}
+>  
+> -	priv->phy_addr = asix_read_phy_addr(dev, priv->use_embdphy);
+> +	ret = asix_read_phy_addr(dev, priv->use_embdphy);
+> +	priv->phy_addr = ret;
 
-So, regarding the futex2 we might try to support it eventually; but if
-this newer interface is not a really a superset of futex1 we won't 
-put much effort. Supporting newer syscall requires an extra effort from
-glibc, we need to keep fallback for older ones in case the kernel is
-too old and it also imposes runtime costs.
+Ah.. it is same bug in different color :)
+You probably wonted to do:
+	if (ret < 0)
+		goto free;
 
-Also currently we don't have a specific usage.  The proposed patch to
-add the 'pthread_mutex_lock_any' and 'pthreada_timedlock_any' [3] 
-also did not gave much detail in realword usages or how it can be
-leveraged.
+	priv->phy_addr = ret;
 
-[1] https://sourceware.org/bugzilla/show_bug.cgi?id=13165
-[2] https://sourceware.org/bugzilla/show_bug.cgi?id=25847
-[3] https://sourceware.org/pipermail/libc-alpha/2019-July/105422.html
+>  	if (priv->phy_addr < 0) {
+>  		ret = priv->phy_addr;
+>  		goto free;
+> -- 
+> 2.31.1
+> 
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
