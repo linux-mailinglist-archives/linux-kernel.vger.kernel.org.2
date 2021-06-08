@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE963A0046
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C668739FFBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235114AbhFHSl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:41:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37678 "EHLO mail.kernel.org"
+        id S234344AbhFHSfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:35:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234938AbhFHSi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:38:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61D5461418;
-        Tue,  8 Jun 2021 18:33:41 +0000 (UTC)
+        id S234325AbhFHSd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:33:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67468613CC;
+        Tue,  8 Jun 2021 18:31:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177222;
-        bh=+/z6JGdvlZerLkioZXdjQcUzXhoG2/aels3UeropH3Q=;
+        s=korg; t=1623177091;
+        bh=p8yMx1k89PtuQYKI+/EhSCxcOlQ4VnLlIA7C4ZYk+0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rSc+k8oD2FpKAvFgnO1rMN5UFiHB57iYzxNqIZ2Ih/rHp7+Tso/ODibnTlGiESE50
-         ShPZ/HrngrYTJaiIt1preA3pz03r/pW+/r4yfv1BIgz7PaWXusgceWVEBWbK8AXSUQ
-         CA7oqve2tQdp0CDAq6qDEBaBDFD6+ezE+vbYobcI=
+        b=cdO7cavKuY1x4WoW7kAAy9t0Z5vXQhJTIK86wHR5sasOhkYaBdnuaON4VViY7nJ2y
+         wtCZao4WE5xLJ1+m2oPT4Y4wQ1KXlWq6BohhvsepiiTsqSiH9Sz8/e76ZCxen1AHW8
+         pqUajpkxWSf+KS/1Wwagm8HwgCUs4rqngTFu6SaE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Cedric Le Goater <clg@fr.ibm.com>,
-        Christian Brauner <christian@brauner.io>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 31/58] pid: take a reference when initializing `cad_pid`
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Frank van der Linden <fllinden@amazon.com>
+Subject: [PATCH 4.14 29/47] bpf: Ensure off_reg has no mixed signed bounds for all types
 Date:   Tue,  8 Jun 2021 20:27:12 +0200
-Message-Id: <20210608175933.307835270@linuxfoundation.org>
+Message-Id: <20210608175931.434363550@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
+References: <20210608175930.477274100@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,138 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit 0711f0d7050b9e07c44bc159bbc64ac0a1022c7f upstream.
+commit 24c109bb1537c12c02aeed2d51a347b4d6a9b76e upstream.
 
-During boot, kernel_init_freeable() initializes `cad_pid` to the init
-task's struct pid.  Later on, we may change `cad_pid` via a sysctl, and
-when this happens proc_do_cad_pid() will increment the refcount on the
-new pid via get_pid(), and will decrement the refcount on the old pid
-via put_pid().  As we never called get_pid() when we initialized
-`cad_pid`, we decrement a reference we never incremented, can therefore
-free the init task's struct pid early.  As there can be dangling
-references to the struct pid, we can later encounter a use-after-free
-(e.g.  when delivering signals).
+The mixed signed bounds check really belongs into retrieve_ptr_limit()
+instead of outside of it in adjust_ptr_min_max_vals(). The reason is
+that this check is not tied to PTR_TO_MAP_VALUE only, but to all pointer
+types that we handle in retrieve_ptr_limit() and given errors from the latter
+propagate back to adjust_ptr_min_max_vals() and lead to rejection of the
+program, it's a better place to reside to avoid anything slipping through
+for future types. The reason why we must reject such off_reg is that we
+otherwise would not be able to derive a mask, see details in 9d7eceede769
+("bpf: restrict unknown scalars of mixed signed bounds for unprivileged").
 
-This was spotted when fuzzing v5.13-rc3 with Syzkaller, but seems to
-have been around since the conversion of `cad_pid` to struct pid in
-commit 9ec52099e4b8 ("[PATCH] replace cad_pid by a struct pid") from the
-pre-KASAN stone age of v2.6.19.
-
-Fix this by getting a reference to the init task's struct pid when we
-assign it to `cad_pid`.
-
-Full KASAN splat below.
-
-   ==================================================================
-   BUG: KASAN: use-after-free in ns_of_pid include/linux/pid.h:153 [inline]
-   BUG: KASAN: use-after-free in task_active_pid_ns+0xc0/0xc8 kernel/pid.c:509
-   Read of size 4 at addr ffff23794dda0004 by task syz-executor.0/273
-
-   CPU: 1 PID: 273 Comm: syz-executor.0 Not tainted 5.12.0-00001-g9aef892b2d15 #1
-   Hardware name: linux,dummy-virt (DT)
-   Call trace:
-    ns_of_pid include/linux/pid.h:153 [inline]
-    task_active_pid_ns+0xc0/0xc8 kernel/pid.c:509
-    do_notify_parent+0x308/0xe60 kernel/signal.c:1950
-    exit_notify kernel/exit.c:682 [inline]
-    do_exit+0x2334/0x2bd0 kernel/exit.c:845
-    do_group_exit+0x108/0x2c8 kernel/exit.c:922
-    get_signal+0x4e4/0x2a88 kernel/signal.c:2781
-    do_signal arch/arm64/kernel/signal.c:882 [inline]
-    do_notify_resume+0x300/0x970 arch/arm64/kernel/signal.c:936
-    work_pending+0xc/0x2dc
-
-   Allocated by task 0:
-    slab_post_alloc_hook+0x50/0x5c0 mm/slab.h:516
-    slab_alloc_node mm/slub.c:2907 [inline]
-    slab_alloc mm/slub.c:2915 [inline]
-    kmem_cache_alloc+0x1f4/0x4c0 mm/slub.c:2920
-    alloc_pid+0xdc/0xc00 kernel/pid.c:180
-    copy_process+0x2794/0x5e18 kernel/fork.c:2129
-    kernel_clone+0x194/0x13c8 kernel/fork.c:2500
-    kernel_thread+0xd4/0x110 kernel/fork.c:2552
-    rest_init+0x44/0x4a0 init/main.c:687
-    arch_call_rest_init+0x1c/0x28
-    start_kernel+0x520/0x554 init/main.c:1064
-    0x0
-
-   Freed by task 270:
-    slab_free_hook mm/slub.c:1562 [inline]
-    slab_free_freelist_hook+0x98/0x260 mm/slub.c:1600
-    slab_free mm/slub.c:3161 [inline]
-    kmem_cache_free+0x224/0x8e0 mm/slub.c:3177
-    put_pid.part.4+0xe0/0x1a8 kernel/pid.c:114
-    put_pid+0x30/0x48 kernel/pid.c:109
-    proc_do_cad_pid+0x190/0x1b0 kernel/sysctl.c:1401
-    proc_sys_call_handler+0x338/0x4b0 fs/proc/proc_sysctl.c:591
-    proc_sys_write+0x34/0x48 fs/proc/proc_sysctl.c:617
-    call_write_iter include/linux/fs.h:1977 [inline]
-    new_sync_write+0x3ac/0x510 fs/read_write.c:518
-    vfs_write fs/read_write.c:605 [inline]
-    vfs_write+0x9c4/0x1018 fs/read_write.c:585
-    ksys_write+0x124/0x240 fs/read_write.c:658
-    __do_sys_write fs/read_write.c:670 [inline]
-    __se_sys_write fs/read_write.c:667 [inline]
-    __arm64_sys_write+0x78/0xb0 fs/read_write.c:667
-    __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
-    invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
-    el0_svc_common.constprop.1+0x16c/0x388 arch/arm64/kernel/syscall.c:129
-    do_el0_svc+0xf8/0x150 arch/arm64/kernel/syscall.c:168
-    el0_svc+0x28/0x38 arch/arm64/kernel/entry-common.c:416
-    el0_sync_handler+0x134/0x180 arch/arm64/kernel/entry-common.c:432
-    el0_sync+0x154/0x180 arch/arm64/kernel/entry.S:701
-
-   The buggy address belongs to the object at ffff23794dda0000
-    which belongs to the cache pid of size 224
-   The buggy address is located 4 bytes inside of
-    224-byte region [ffff23794dda0000, ffff23794dda00e0)
-   The buggy address belongs to the page:
-   page:(____ptrval____) refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4dda0
-   head:(____ptrval____) order:1 compound_mapcount:0
-   flags: 0x3fffc0000010200(slab|head)
-   raw: 03fffc0000010200 dead000000000100 dead000000000122 ffff23794d40d080
-   raw: 0000000000000000 0000000000190019 00000001ffffffff 0000000000000000
-   page dumped because: kasan: bad access detected
-
-   Memory state around the buggy address:
-    ffff23794dd9ff00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-    ffff23794dd9ff80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-   >ffff23794dda0000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                      ^
-    ffff23794dda0080: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
-    ffff23794dda0100: fc fc fc fc fc fc fc fc 00 00 00 00 00 00 00 00
-   ==================================================================
-
-Link: https://lkml.kernel.org/r/20210524172230.38715-1-mark.rutland@arm.com
-Fixes: 9ec52099e4b8678a ("[PATCH] replace cad_pid by a struct pid")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Cedric Le Goater <clg@fr.ibm.com>
-Cc: Christian Brauner <christian@brauner.io>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: Kees Cook <keescook@chromium.org
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+[fllinden@amazon.com: backport to 4.14]
+Signed-off-by: Frank van der Linden <fllinden@amazon.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- init/main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/bpf/verifier.c |   19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
---- a/init/main.c
-+++ b/init/main.c
-@@ -1124,7 +1124,7 @@ static noinline void __init kernel_init_
- 	 */
- 	set_mems_allowed(node_states[N_MEMORY]);
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2025,12 +2025,18 @@ static struct bpf_insn_aux_data *cur_aux
+ }
  
--	cad_pid = task_pid(current);
-+	cad_pid = get_pid(task_pid(current));
+ static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
+-			      u32 *ptr_limit, u8 opcode, bool off_is_neg)
++			      const struct bpf_reg_state *off_reg,
++			      u32 *ptr_limit, u8 opcode)
+ {
++	bool off_is_neg = off_reg->smin_value < 0;
+ 	bool mask_to_left = (opcode == BPF_ADD &&  off_is_neg) ||
+ 			    (opcode == BPF_SUB && !off_is_neg);
+ 	u32 off, max;
  
- 	smp_prepare_cpus(setup_max_cpus);
++	if (!tnum_is_const(off_reg->var_off) &&
++	    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
++		return -EACCES;
++
+ 	switch (ptr_reg->type) {
+ 	case PTR_TO_STACK:
+ 		/* Offset 0 is out-of-bounds, but acceptable start for the
+@@ -2121,7 +2127,7 @@ static int sanitize_ptr_alu(struct bpf_v
+ 	alu_state |= ptr_is_dst_reg ?
+ 		     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
  
+-	err = retrieve_ptr_limit(ptr_reg, &alu_limit, opcode, off_is_neg);
++	err = retrieve_ptr_limit(ptr_reg, off_reg, &alu_limit, opcode);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -2164,8 +2170,8 @@ static int adjust_ptr_min_max_vals(struc
+ 	    smin_ptr = ptr_reg->smin_value, smax_ptr = ptr_reg->smax_value;
+ 	u64 umin_val = off_reg->umin_value, umax_val = off_reg->umax_value,
+ 	    umin_ptr = ptr_reg->umin_value, umax_ptr = ptr_reg->umax_value;
+-	u32 dst = insn->dst_reg, src = insn->src_reg;
+ 	u8 opcode = BPF_OP(insn->code);
++	u32 dst = insn->dst_reg;
+ 	int ret;
+ 
+ 	dst_reg = &regs[dst];
+@@ -2205,13 +2211,6 @@ static int adjust_ptr_min_max_vals(struc
+ 				dst);
+ 		return -EACCES;
+ 	}
+-	if (ptr_reg->type == PTR_TO_MAP_VALUE) {
+-		if (!env->allow_ptr_leaks && !known && (smin_val < 0) != (smax_val < 0)) {
+-			verbose("R%d has unknown scalar with mixed signed bounds, pointer arithmetic with it prohibited for !root\n",
+-				off_reg == dst_reg ? dst : src);
+-			return -EACCES;
+-		}
+-	}
+ 
+ 	/* In case of 'scalar += pointer', dst_reg inherits pointer type and id.
+ 	 * The id may be overwritten later if we create a new variable offset.
 
 
