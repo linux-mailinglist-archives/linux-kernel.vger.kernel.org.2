@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6AC39FF2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4866839FF47
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234010AbhFHSa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:30:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55528 "EHLO mail.kernel.org"
+        id S234295AbhFHSb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233823AbhFHSat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:30:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFC2D613B9;
-        Tue,  8 Jun 2021 18:28:55 +0000 (UTC)
+        id S234131AbhFHSb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:31:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C4BD61352;
+        Tue,  8 Jun 2021 18:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623176936;
-        bh=BjwMVZV29dd47sjI8xClz0qNUCf6RXp1w1uXhyzZKOU=;
+        s=korg; t=1623176960;
+        bh=Dqzs51n09CBzyeBLLoDNn/q8ALuPLbQcOST6ertR6kQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UjK/iCUDPFQDLqStDVM8KencZGvDz+fUy/CyF0KT09PywTHX5dBRlNhD+wcba22l9
-         eHrCVonHxjkqnT+7iWGtqxt2LJb1ehPEtaq8JarMuSTesyS2c+nZJP/LBCDfMPYUyI
-         VBJF5NhpP5F/ZJk6MHJCQBeg1yVW3QyI1fSxWUTQ=
+        b=vT866J9fe9VqdtkBtyJGwliPQYKPUWbsf1FEUco/AsICDyr37wFT59UDrPOc+ihhc
+         eE0tgo5DVrRtOYUspPOluC5uoStHIg4E1tdYN8uogPWeAPF/YirCD+Va+lSBPgZJuo
+         3tQS1dOvAKPFaOH9peEnfXuk8SjvrJl3E/jiXYco=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 19/23] nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
-Date:   Tue,  8 Jun 2021 20:27:11 +0200
-Message-Id: <20210608175927.156677615@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.4 21/23] KVM: SVM: Truncate GPR value for DR and CR accesses in !64-bit mode
+Date:   Tue,  8 Jun 2021 20:27:13 +0200
+Message-Id: <20210608175927.219476997@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175926.524658689@linuxfoundation.org>
 References: <20210608175926.524658689@linuxfoundation.org>
@@ -42,59 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Sean Christopherson <seanjc@google.com>
 
-commit 4ac06a1e013cf5fdd963317ffd3b968560f33bba upstream.
+commit 0884335a2e653b8a045083aa1d57ce74269ac81d upstream.
 
-It's possible to trigger NULL pointer dereference by local unprivileged
-user, when calling getsockname() after failed bind() (e.g. the bind
-fails because LLCP_SAP_MAX used as SAP):
+Drop bits 63:32 on loads/stores to/from DRs and CRs when the vCPU is not
+in 64-bit mode.  The APM states bits 63:32 are dropped for both DRs and
+CRs:
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000000
-  CPU: 1 PID: 426 Comm: llcp_sock_getna Not tainted 5.13.0-rc2-next-20210521+ #9
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-  Call Trace:
-   llcp_sock_getname+0xb1/0xe0
-   __sys_getpeername+0x95/0xc0
-   ? lockdep_hardirqs_on_prepare+0xd5/0x180
-   ? syscall_enter_from_user_mode+0x1c/0x40
-   __x64_sys_getpeername+0x11/0x20
-   do_syscall_64+0x36/0x70
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+  In 64-bit mode, the operand size is fixed at 64 bits without the need
+  for a REX prefix. In non-64-bit mode, the operand size is fixed at 32
+  bits and the upper 32 bits of the destination are forced to 0.
 
-This can be reproduced with Syzkaller C repro (bind followed by
-getpeername):
-https://syzkaller.appspot.com/x/repro.c?x=14def446e00000
-
-Cc: <stable@vger.kernel.org>
-Fixes: d646960f7986 ("NFC: Initial LLCP support")
-Reported-by: syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210531072138.5219-1-krzysztof.kozlowski@canonical.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 7ff76d58a9dc ("KVM: SVM: enhance MOV CR intercept handler")
+Fixes: cae3797a4639 ("KVM: SVM: enhance mov DR intercept handler")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210422022128.3464144-4-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[sudip: manual backport to old file]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/llcp_sock.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kvm/svm.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/net/nfc/llcp_sock.c
-+++ b/net/nfc/llcp_sock.c
-@@ -121,6 +121,7 @@ static int llcp_sock_bind(struct socket
- 	if (!llcp_sock->service_name) {
- 		nfc_llcp_local_put(llcp_sock->local);
- 		llcp_sock->local = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -ENOMEM;
- 		goto put_dev;
+--- a/arch/x86/kvm/svm.c
++++ b/arch/x86/kvm/svm.c
+@@ -2927,7 +2927,7 @@ static int cr_interception(struct vcpu_s
+ 	err = 0;
+ 	if (cr >= 16) { /* mov to cr */
+ 		cr -= 16;
+-		val = kvm_register_read(&svm->vcpu, reg);
++		val = kvm_register_readl(&svm->vcpu, reg);
+ 		switch (cr) {
+ 		case 0:
+ 			if (!check_selective_cr0_intercepted(svm, val))
+@@ -2972,7 +2972,7 @@ static int cr_interception(struct vcpu_s
+ 			kvm_queue_exception(&svm->vcpu, UD_VECTOR);
+ 			return 1;
+ 		}
+-		kvm_register_write(&svm->vcpu, reg, val);
++		kvm_register_writel(&svm->vcpu, reg, val);
  	}
-@@ -130,6 +131,7 @@ static int llcp_sock_bind(struct socket
- 		llcp_sock->local = NULL;
- 		kfree(llcp_sock->service_name);
- 		llcp_sock->service_name = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -EADDRINUSE;
- 		goto put_dev;
+ 	kvm_complete_insn_gp(&svm->vcpu, err);
+ 
+@@ -3004,13 +3004,13 @@ static int dr_interception(struct vcpu_s
+ 	if (dr >= 16) { /* mov to DRn */
+ 		if (!kvm_require_dr(&svm->vcpu, dr - 16))
+ 			return 1;
+-		val = kvm_register_read(&svm->vcpu, reg);
++		val = kvm_register_readl(&svm->vcpu, reg);
+ 		kvm_set_dr(&svm->vcpu, dr - 16, val);
+ 	} else {
+ 		if (!kvm_require_dr(&svm->vcpu, dr))
+ 			return 1;
+ 		kvm_get_dr(&svm->vcpu, dr, &val);
+-		kvm_register_write(&svm->vcpu, reg, val);
++		kvm_register_writel(&svm->vcpu, reg, val);
  	}
+ 
+ 	skip_emulated_instruction(&svm->vcpu);
 
 
