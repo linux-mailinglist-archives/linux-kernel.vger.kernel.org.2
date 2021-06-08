@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0A439F68D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7FD39F698
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhFHM2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:28:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
+        id S232548AbhFHM3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232525AbhFHM2T (ORCPT
+        with ESMTP id S232202AbhFHM3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:28:19 -0400
+        Tue, 8 Jun 2021 08:29:48 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F012FC061574;
-        Tue,  8 Jun 2021 05:26:26 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 14:26:22 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E2BC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 05:27:56 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623155184;
+        s=2020; t=1623155274;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2C0ZxDmj4y+qo/KAldcLkbqVHh+XJhK9DBsclh/JeLg=;
-        b=G9HlKQgsvslffXm92n4hMUFjESQIUDawfWhCs0FOIJrzymxNDE84c2FE3rRmRGaj7tu7gH
-        aFUJFqddFMlSpPdU0gpAEeV/MVHPss7rBfi47o23RCOGu9TrlOghOmIwfqsp2jU4Zy3pNX
-        0zTXrRiPU7YuoMRkQ+f2IUht/NHdreF/fxYV3uVlDaczMf0yKPeyLGJiKkYrdZRGBIlPKA
-        tmJwoOjss2kVpnb480oAP/0drS9F16V5ApkILNVzFCDzHcC6/B5Yb6+FajhuXtJpk55CBp
-        R37rj1YwrosQaUjvsbMUMzT9I2uhXGhtM/quWNKhxAIS0DwmT77Z/kPDmbDiQg==
+        bh=eq6F/tWEhhc8tNxPOo5+3bUumPQJPuM6OUl1sPoB/Z4=;
+        b=VK7xdiBCtA8yJrNlaSRINjnxxTzDpE9p4I1GuMpLPW62URo5uoyjDIB1IEXrwrGfWqr600
+        E0u+bfoxHnWwR0GLjpnE4WNz2Vv9pWDRODvK5dCP97yVhBWhsdd2CMKiArhmXyYBffOaoH
+        Y/o/Ime2eZD392r62DEdQSuCUMoiISRqujvjkeDjgXsHbcnCWmIR/ysZuDLU66msDxWaDj
+        YdRf3qnq4dAaAhQyil6R44iFM6VEWOM46LFGvgt9RiphFw78zAPdF68hOTUM7teRbtheBj
+        vANAGQdGkG0ZA5NRZTgnsTRkPnrjq9mNQ/kDpxeiM3BKBkyYkPgqUpW+jXsF7Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623155184;
+        s=2020e; t=1623155274;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2C0ZxDmj4y+qo/KAldcLkbqVHh+XJhK9DBsclh/JeLg=;
-        b=mbWLkmH0sMwhmLYzk0rP81HAzRoiwiTTp/pMPft53Zrlyelf39tNRhFj7Gi4vkQrchR1Sm
-        oQEWq2gaiibPmzDA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>
-Cc:     Nicholas Piggin <npiggin@gmail.com>, acme@kernel.org,
-        Andrey Semashev <andrey.semashev@gmail.com>, corbet@lwn.net,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
-        joel@joelfernandes.org, kernel@collabora.com,
-        krisman@collabora.com, libc-alpha@sourceware.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
-        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
-Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
-Message-ID: <20210608122622.oxf662ruaawrtyrd@linutronix.de>
-References: <20210603195924.361327-1-andrealmeid@collabora.com>
- <1622799088.hsuspipe84.astroid@bobo.none>
- <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
- <1622853816.mokf23xgnt.astroid@bobo.none>
- <22137ccd-c5e6-9fcc-a176-789558e9ab1e@collabora.com>
+        bh=eq6F/tWEhhc8tNxPOo5+3bUumPQJPuM6OUl1sPoB/Z4=;
+        b=CaRr1jRjdXX71CKZI4RCs3je4oR/TGJqf2X7K6lamh1Cnnpkz0SQwNDbm9jUD2Qj5yfcFp
+        w8BsO8CkLin33HDg==
+To:     Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch V2 00/14] x86/fpu: Mop up XSAVES and related damage
+In-Reply-To: <878s3kzjtx.ffs@nanos.tec.linutronix.de>
+References: <20210605234742.712464974@linutronix.de> <87h7i9zv3r.ffs@nanos.tec.linutronix.de> <eca0add1-849e-6a1a-8ea6-f6b72650c9c8@intel.com> <87eeddzs0l.ffs@nanos.tec.linutronix.de> <37df631f-9d3d-3035-6eeb-85ef33e580d5@intel.com> <878s3kzjtx.ffs@nanos.tec.linutronix.de>
+Date:   Tue, 08 Jun 2021 14:27:54 +0200
+Message-ID: <875yyozgl1.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <22137ccd-c5e6-9fcc-a176-789558e9ab1e@collabora.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-07 12:40:54 [-0300], Andr=C3=A9 Almeida wrote:
->=20
-> When I first read Thomas proposal for per table process, I thought that
-> the main goal there was to solve NUMA locality issues, not RT latency,
-> but I think you are right. However, re-reading the thread at [0], it
-> seems that the RT problems where not completely solved in that
-> interface, maybe the people involved with that patchset can help to shed
-> some light on it.
->=20
-> Otherwise, this same proposal could be integrated in futex2, given that
-> we would only need to provide to userland some extra flags and add some
-> `if`s around the hash table code (in a very similar way the NUMA code
-> will be implemented in futex2).
+On Tue, Jun 08 2021 at 13:17, Thomas Gleixner wrote:
+> On Mon, Jun 07 2021 at 09:38, Dave Hansen wrote:
+>> On 6/7/21 7:08 AM, Thomas Gleixner wrote:
+>>>> By the way, are you talking specifically about the _error_ paths where
+>>>> the kernel is unable to XRSTOR the signal XSAVE buffer for some reason,
+>>>> and tries to apply either init_fpu or the hardware init state instead?
+>>> 
+>>> 1) Successful XRSTOR from user if the PKRU feature bit in the
+>>>    sigframe xsave.header.xfeatures is cleared. Both fast and slow path.
+>>
+>> It seems like the suggestion here is to inject 'init_pkru_value' in all
+>> cases where the kernel would be injecting the hardware init value.  I
+>> don't think we should go that far.
+>>
+>> If a signal handler sets xsave.header.xfeatures[PKRU]=0, I can't imagine
+>> any other intent than wanting the hardware init value.
+>
+> Fine. But PKRU=0 is broken today...
+>
+> T1 in user space
+>      wrpkru(0)
 
-There are slides at [0] describing some attempts and the kernel tree [1]
-=66rom that time.
-
-The process-table solves the problem to some degree that two random
-process don't collide on the same hash bucket. But as Peter Zijlstra
-pointed out back then two threads from the same task could collide on
-the same hash bucket (and with ASLR not always). So the collision is
-there but limited and this was not perfect.
-
-All the attempts with API extensions didn't go well because glibc did
-not want to change a bit. This starts with a mutex that has a static
-initializer which has to work (I don't remember why the first
-pthread_mutex_lock() could not fail with -ENOMEM but there was
-something) and ends with glibc's struct mutex which is full and has no
-room for additional data storage.
-
-The additional data in user's struct mutex + init would have the benefit
-that instead uaddr (which is hashed for the in-kernel lookup) a cookie
-could be used for the hash-less lookup (and NUMA pointer where memory
-should be stored).
-
-So. We couldn't change a thing back then so nothing did happen. We
-didn't want to create a new interface and a library implementing it plus
-all the functionality around it (like pthread_cond, phtread_barrier, =E2=80=
-=A6).
-Not to mention that if glibc continues to use the "old" locking
-internally then the application is still affected by the hash-collision
-locking (or the NUMA problem) should it block on the lock.
-
-[0] https://linutronix.de/PDF/2016_futex_Siewior.pdf
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/bigeasy/linux-futex.git/
-
-Sebastian
+It's actually not wrpkru(0), but a XRSTOR with the
+xsave.header.xfeatures[PKRU] bit cleared. But the rest is the same...
