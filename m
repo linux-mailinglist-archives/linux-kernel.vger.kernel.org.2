@@ -2,132 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0F739F3A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE6A39F3A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhFHKgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35544 "EHLO
+        id S231539AbhFHKgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbhFHKgQ (ORCPT
+        with ESMTP id S231224AbhFHKgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:36:16 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851C9C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 03:34:12 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id u14so7576167qvq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 03:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=J48k4WcLJ93C6a4z5qvH4NdBXcXofCtpkZgQyGSY/Bw=;
-        b=f9s3tlGdv+Y1LSpT+BfcUXtXM2IKhT7mXXeAXGNZVv9grY44lipLCrOVlyDsoNqFHY
-         bgRAtbzCs0cwsYch3IqjUkRg21qKS89A0AvC/4hjJpGDX8cSkRKtUGIzPDwgYi9y+T31
-         8TAJrWW5ruMltyaKoq0xV+xGYunqeX5PTvyvcT1gXDjiJ+SWx42GiARauzNeLu799E7w
-         lDoMh2hpfafy5xC8CoMGZ4dlEujFKrS0wSuarkwsCOAPKTSiLxeRJBlLEVts/CKlGdvE
-         mMCenIyU7M1vbyvJ3RVCjBI/ZXYJixFMzu/bSlpoKLuIDf0YZxDH93cd2ya4ma5A6ezs
-         dAuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=J48k4WcLJ93C6a4z5qvH4NdBXcXofCtpkZgQyGSY/Bw=;
-        b=mSniKYzeQUk7xLQAsLB9wcJpT7j+dzusH9gjdQ0JN+177BSIYuojf5p1k3JgiOIJVX
-         Wm+oZRVWLrpdR/uLyFgVgdCkvQTJOlc1AKPYCfr4auAz5+5lRvTMkLEAqDKo+5AE5++e
-         4V0NRdEiLk+Q1t/9Si60Zu4pK2fgymD13aLqB89ZRntqbhxLYTZy6MEDx8WlkVgo+hPg
-         3Ks8jSQ9nDaDSiF7ezcLySeSUmQpXgfzhieJqB3wS6SJ+pB0tteJMpUcNJ9+Cy7fKHN5
-         A4SiEd3w11WUKYHkYr4VFfPxoJ8GcoIWsutB7egSdTkRAsZofML+UhkVeYXBJ5aF3V6W
-         Un7w==
-X-Gm-Message-State: AOAM531KGJZINcI63Akv+nxUB0+wwSNo8IFOZBbx/4lxAOPcHM2E06j1
-        HtO10QxYS6ttZs/qfghKoA==
-X-Google-Smtp-Source: ABdhPJzwosaCGBBwjiwr3ftTAMod+g7XPn30t+/0BRzJxX9QrrUMaPQenkgIE6i5E4uZVVsWsh1sig==
-X-Received: by 2002:a0c:ed46:: with SMTP id v6mr22752280qvq.46.1623148451751;
-        Tue, 08 Jun 2021 03:34:11 -0700 (PDT)
-Received: from qualcomm-amberwing-rep-18.khw4.lab.eng.bos.redhat.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
-        by smtp.gmail.com with ESMTPSA id e3sm2260682qts.34.2021.06.08.03.34.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 03:34:11 -0700 (PDT)
-From:   Pingfan Liu <kernelfans@gmail.com>
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Kazuhito Hagio <k-hagio@ab.jp.nec.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Boris Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        James Morse <james.morse@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Dave Anderson <anderson@redhat.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] crash_core, vmcoreinfo: Append 'SECTION_SIZE_BITS' to vmcoreinfo
-Date:   Tue,  8 Jun 2021 06:33:59 -0400
-Message-Id: <20210608103359.84907-1-kernelfans@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 8 Jun 2021 06:36:47 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80115C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 03:34:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=baRv1enGH1vjlHZSg8Kx1HoJhoWAo7MKAZf4yMZtCZU=; b=Fm1BFhQWseZIYwXuTrSfXVLsNy
+        StzVy0MgUzti833I2saGJK+UfcJnNwDENtv9ELmKtQSleGP4vmdOxnVWLhSEPxkrbH6c7hpyQt1of
+        RoMw8vtFlNbUe2sIHgnL+ISBcsqbeSzlnKkuS6CNau8jOyMRhcm7GZDfNb6aXKQF9JonPmRglhRDs
+        MemvxHBrf149nyxqqBToDKepCB/5OP5w52eG7A1iAPT/wWXNMhOICVQ8iZoFcURXD7iv7xjr46GeD
+        9wW9tIKBye+JFXajXTGpp0AtlitSRkLl1x+gact2M+4oWEEtw78PXxJklRQrhlPWfJnhONwiTPQwM
+        w09JDtow==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lqZ4A-004j3E-Qp; Tue, 08 Jun 2021 10:34:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 047033001E3;
+        Tue,  8 Jun 2021 12:34:44 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BA2CD2011672D; Tue,  8 Jun 2021 12:34:44 +0200 (CEST)
+Date:   Tue, 8 Jun 2021 12:34:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, mark-pk.tsai@mediatek.com,
+        ardb@kernel.org
+Subject: [PATCH] recordmcount: Correct st_shndx handling
+Message-ID: <YL9HxEc/l0yrl5o8@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As mentioned in kernel commit 1d50e5d0c505 ("crash_core, vmcoreinfo:
-Append 'MAX_PHYSMEM_BITS' to vmcoreinfo"), SECTION_SIZE_BITS in the
-formula:
-    #define SECTIONS_SHIFT    (MAX_PHYSMEM_BITS - SECTION_SIZE_BITS)
 
-Besides SECTIONS_SHIFT, SECTION_SIZE_BITS is also used to calculate
-PAGES_PER_SECTION in makedumpfile just like kernel.
+One should only use st_shndx when >SHN_UNDEF and <SHN_LORESERVE. When
+SHN_XINDEX, then use .symtab_shndx. Otherwise use 0.
 
-Unfortunately, this arch-dependent macro SECTION_SIZE_BITS changes, e.g.
-recently in kernel commit f0b13ee23241 ("arm64/sparsemem: reduce
-SECTION_SIZE_BITS"). But user space wants a stable interface to get this
-info. Such info is impossible to be deduced from a crashdump vmcore.
-Hence append SECTION_SIZE_BITS to vmcoreinfo.
+This handles the case: st_shndx >= SHN_LORESERVE && st_shndx != SHN_XINDEX.
 
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Cc: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc: Kazuhito Hagio <k-hagio@ab.jp.nec.com>
-Cc: Dave Young <dyoung@redhat.com>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Boris Petkov <bp@alien8.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: James Morse <james.morse@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Dave Anderson <anderson@redhat.com>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org
-Cc: kexec@lists.infradead.org
-Cc: x86@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
+Reported-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
 ---
- kernel/crash_core.c | 1 +
- 1 file changed, 1 insertion(+)
+ scripts/recordmcount.h |   13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index 825284baaf46..684a6061a13a 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -464,6 +464,7 @@ static int __init crash_save_vmcoreinfo_init(void)
- 	VMCOREINFO_LENGTH(mem_section, NR_SECTION_ROOTS);
- 	VMCOREINFO_STRUCT_SIZE(mem_section);
- 	VMCOREINFO_OFFSET(mem_section, section_mem_map);
-+	VMCOREINFO_NUMBER(SECTION_SIZE_BITS);
- 	VMCOREINFO_NUMBER(MAX_PHYSMEM_BITS);
- #endif
- 	VMCOREINFO_STRUCT_SIZE(page);
--- 
-2.29.2
-
+--- a/scripts/recordmcount.h
++++ b/scripts/recordmcount.h
+@@ -194,13 +194,18 @@ static unsigned int get_symindex(Elf_Sym
+ 	unsigned long offset;
+ 	int index;
+ 
+-	if (sym->st_shndx != SHN_XINDEX)
++	if (sym->st_shndx > SHN_UNDEF &&
++	    sym->st_shndx < SHN_LORESERVE)
+ 		return w2(sym->st_shndx);
+ 
+-	offset = (unsigned long)sym - (unsigned long)symtab;
+-	index = offset / sizeof(*sym);
++	if (sym->st_shndx == SHN_XINDEX) {
++		offset = (unsigned long)sym - (unsigned long)symtab;
++		index = offset / sizeof(*sym);
+ 
+-	return w(symtab_shndx[index]);
++		return w(symtab_shndx[index]);
++	}
++
++	return 0;
+ }
+ 
+ static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
