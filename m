@@ -2,117 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DC63A052F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674063A0532
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235022AbhFHUhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 16:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234000AbhFHUhs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 16:37:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D79C061574;
-        Tue,  8 Jun 2021 13:35:54 -0700 (PDT)
-Date:   Tue, 08 Jun 2021 20:35:51 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623184552;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7sRlTCEMFiILDT/as65fHemqYYsAH0re9GJwoPd5mC0=;
-        b=N1Li5HSF5xJ0sPfLank/Ql1hLD3s0gWmRRWqF9Bn1uXSRH3j3+PptFFrLUpJjtC7zHJiM3
-        fZMfcQsIDCWNkq2fRJq5WTr5XypMOKeF7bOkBYDMbqAEntomFco9tpTTjcemUdhbwvIhqQ
-        k4tUhNXlzkHywqii2RbsZ4zA+hiz3JZsuwPUfdysqClCK/8bmuXzZWddHlKyMZ3wfDfZSk
-        OdHiFUNiDbrgQXepy3Vcbi6MILZ+cg0VgiMBqiOAYdZSfydLhWHL9+9aNLxF1s2YWMRCOL
-        /3ElcrA8d5yQKQCYjL+Qye02jJqLi91TROZa1xHLYC8g0F0BmOCy3e0OUVwYvQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623184552;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7sRlTCEMFiILDT/as65fHemqYYsAH0re9GJwoPd5mC0=;
-        b=fmKHycqt8iQuRuXnUg5X+jgR5K4Y0O07T7FfRWHetSurypwcYalInV2y5u0m7ax5ExGa04
-        upBJJ2swnm0oEnAQ==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/setup: Document that Windows reserves the first MiB
-Cc:     Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3CMWHPR21MB159330952629D36EEDE706B3D7379=40MWHPR21MB?=
- =?utf-8?q?1593=2Enamprd21=2Eprod=2Eoutlook=2Ecom=3E?=
-References: =?utf-8?q?=3CMWHPR21MB159330952629D36EEDE706B3D7379=40MWHPR21M?=
- =?utf-8?q?B1593=2Enamprd21=2Eprod=2Eoutlook=2Ecom=3E?=
+        id S234743AbhFHUk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 16:40:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234000AbhFHUk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 16:40:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41BA06127A;
+        Tue,  8 Jun 2021 20:38:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623184713;
+        bh=7QkX7aGJfBWOcOv4hu/tTv+UzURk46Al8Om+qNr0hhE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pCDFpGqEtkJeweZI7A9UqadRSZspUIBjpRXjC635xW11WGJb6ad60h+pVRQjWcB6+
+         3xckjs9vx4NAt9ihESEf2MUsZQz+wNk8C6e2OICMxSy2Af2XKzdnMIDKtemecSRV99
+         KQX9+NatBQmlkLouHlpbyiGnwANmf90y9gO+s1tY8dPN5oej77/mSLslvCaYrR9T39
+         Xkuyta/YjMjSWJx0JjHqoTLn3kEZiWANY2KbH+u3SsKxl8pmds6nxAemYrqp/X3EIA
+         ySGDvQBRS1XTSV+6PfFv90537CcVOwvw5j9XMsTDv9BAkcXmk1luDNrx9kWItai0Ve
+         GD5GN8I7CDLhg==
+Received: by pali.im (Postfix)
+        id CEF917CC; Tue,  8 Jun 2021 22:38:30 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] PCI: aardvark: Fix kernel panic during PIO transfer
+Date:   Tue,  8 Jun 2021 22:36:55 +0200
+Message-Id: <20210608203655.31228-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Message-ID: <162318455123.29796.8536472725477120608.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+Trying to start a new PIO transfer by writing value 0 in PIO_START register
+when previous transfer has not yet completed (which is indicated by value 1
+in PIO_START) causes an External Abort on CPU, which results in kernel
+panic:
 
-Commit-ID:     ec35d1d93bf8976f0668cb1026ea8c7d7bcad3c1
-Gitweb:        https://git.kernel.org/tip/ec35d1d93bf8976f0668cb1026ea8c7d7bcad3c1
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Tue, 08 Jun 2021 22:17:10 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 08 Jun 2021 22:26:43 +02:00
+    SError Interrupt on CPU0, code 0xbf000002 -- SError
+    Kernel panic - not syncing: Asynchronous SError Interrupt
 
-x86/setup: Document that Windows reserves the first MiB
+To prevent kernel panic, it is required to reject a new PIO transfer when
+previous one has not finished yet.
 
-It does so unconditionally too, on Intel and AMD machines, to work
-around BIOS bugs, as confirmed by Microsoft folks (see Link for full
-details).
+If previous PIO transfer is not finished yet, the kernel may issue a new
+PIO request only if the previous PIO transfer timed out.
 
-Reflow the paragraph, while at it.
+In the past the root cause of this issue was incorrectly identified (as it
+often happens during link retraining or after link down event) and special
+hack was implemented in Trusted Firmware to catch all SError events in EL3,
+to ignore errors with code 0xbf000002 and not forwarding any other errors
+to kernel and instead throw panic from EL3 Trusted Firmware handler.
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/MWHPR21MB159330952629D36EEDE706B3D7379@MWHPR21MB1593.namprd21.prod.outlook.com
+Links to discussion and patches about this issue:
+https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=3c7dcdac5c50
+https://lore.kernel.org/linux-pci/20190316161243.29517-1-repk@triplefau.lt/
+https://lore.kernel.org/linux-pci/971be151d24312cc533989a64bd454b4@www.loen.fr/
+https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/1541
+
+But the real cause was the fact that during link retraning or after link
+down event the PIO transfer may take longer time, up to the 1.44s until it
+times out. This increased probability that a new PIO transfer would be
+issued by kernel while previous one has not finished yet.
+
+After applying this change into the kernel, it is possible to revert the
+mentioned TF-A hack and SError events do not have to be caught in TF-A EL3.
+
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Reviewed-by: Marek Behún <kabel@kernel.org>
+Cc: stable@vger.kernel.org # 7fbcb5da811b ("PCI: aardvark: Don't rely on jiffies while holding spinlock")
 ---
- arch/x86/kernel/setup.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+I have sent this patch for review month ago [1] as part of "PCI: aardvark:
+Various driver fixes" series [2] and asked for reviewing it and merging it
+into 5.13 kernel as it fixed kernel panic. I have not received any
+reaction for this patch, so I'm resending it alone again. Could you
+please review it?
 
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 7638ac6..85acd22 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1060,17 +1060,18 @@ void __init setup_arch(char **cmdline_p)
- #endif
+[1] - https://lore.kernel.org/linux-pci/20210506153153.30454-2-pali@kernel.org/
+[2] - https://lore.kernel.org/linux-pci/20210506153153.30454-1-pali@kernel.org/
+---
+ drivers/pci/controller/pci-aardvark.c | 49 ++++++++++++++++++++++-----
+ 1 file changed, 40 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+index 051b48bd7985..e3f5e7ab7606 100644
+--- a/drivers/pci/controller/pci-aardvark.c
++++ b/drivers/pci/controller/pci-aardvark.c
+@@ -514,7 +514,7 @@ static int advk_pcie_wait_pio(struct advk_pcie *pcie)
+ 		udelay(PIO_RETRY_DELAY);
+ 	}
  
- 	/*
--	 * Find free memory for the real mode trampoline and place it
--	 * there.
--	 * If there is not enough free memory under 1M, on EFI-enabled
--	 * systems there will be additional attempt to reclaim the memory
--	 * for the real mode trampoline at efi_free_boot_services().
-+	 * Find free memory for the real mode trampoline and place it there. If
-+	 * there is not enough free memory under 1M, on EFI-enabled systems
-+	 * there will be additional attempt to reclaim the memory for the real
-+	 * mode trampoline at efi_free_boot_services().
- 	 *
--	 * Unconditionally reserve the entire first 1M of RAM because
--	 * BIOSes are know to corrupt low memory and several
--	 * hundred kilobytes are not worth complex detection what memory gets
--	 * clobbered. Moreover, on machines with SandyBridge graphics or in
--	 * setups that use crashkernel the entire 1M is reserved anyway.
-+	 * Unconditionally reserve the entire first 1M of RAM because BIOSes
-+	 * are known to corrupt low memory and several hundred kilobytes are not
-+	 * worth complex detection what memory gets clobbered. Windows does the
-+	 * same thing for very similar reasons.
+-	dev_err(dev, "config read/write timed out\n");
++	dev_err(dev, "PIO read/write transfer time out\n");
+ 	return -ETIMEDOUT;
+ }
+ 
+@@ -657,6 +657,35 @@ static bool advk_pcie_valid_device(struct advk_pcie *pcie, struct pci_bus *bus,
+ 	return true;
+ }
+ 
++static bool advk_pcie_pio_is_running(struct advk_pcie *pcie)
++{
++	struct device *dev = &pcie->pdev->dev;
++
++	/*
++	 * Trying to start a new PIO transfer when previous has not completed
++	 * cause External Abort on CPU which results in kernel panic:
 +	 *
-+	 * Moreover, on machines with SandyBridge graphics or in setups that use
-+	 * crashkernel the entire 1M is reserved anyway.
- 	 */
- 	reserve_real_mode();
++	 *     SError Interrupt on CPU0, code 0xbf000002 -- SError
++	 *     Kernel panic - not syncing: Asynchronous SError Interrupt
++	 *
++	 * Functions advk_pcie_rd_conf() and advk_pcie_wr_conf() are protected
++	 * by raw_spin_lock_irqsave() at pci_lock_config() level to prevent
++	 * concurrent calls at the same time. But because PIO transfer may take
++	 * about 1.5s when link is down or card is disconnected, it means that
++	 * advk_pcie_wait_pio() does not always have to wait for completion.
++	 *
++	 * Some versions of ARM Trusted Firmware handles this External Abort at
++	 * EL3 level and mask it to prevent kernel panic. Relevant TF-A commit:
++	 * https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=3c7dcdac5c50
++	 */
++	if (advk_readl(pcie, PIO_START)) {
++		dev_err(dev, "Previous PIO read/write transfer is still running\n");
++		return true;
++	}
++
++	return false;
++}
++
+ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+ 			     int where, int size, u32 *val)
+ {
+@@ -673,9 +702,10 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+ 		return pci_bridge_emul_conf_read(&pcie->bridge, where,
+ 						 size, val);
  
+-	/* Start PIO */
+-	advk_writel(pcie, 0, PIO_START);
+-	advk_writel(pcie, 1, PIO_ISR);
++	if (advk_pcie_pio_is_running(pcie)) {
++		*val = 0xffffffff;
++		return PCIBIOS_SET_FAILED;
++	}
+ 
+ 	/* Program the control register */
+ 	reg = advk_readl(pcie, PIO_CTRL);
+@@ -694,7 +724,8 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+ 	/* Program the data strobe */
+ 	advk_writel(pcie, 0xf, PIO_WR_DATA_STRB);
+ 
+-	/* Start the transfer */
++	/* Clear PIO DONE ISR and start the transfer */
++	advk_writel(pcie, 1, PIO_ISR);
+ 	advk_writel(pcie, 1, PIO_START);
+ 
+ 	ret = advk_pcie_wait_pio(pcie);
+@@ -734,9 +765,8 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
+ 	if (where % size)
+ 		return PCIBIOS_SET_FAILED;
+ 
+-	/* Start PIO */
+-	advk_writel(pcie, 0, PIO_START);
+-	advk_writel(pcie, 1, PIO_ISR);
++	if (advk_pcie_pio_is_running(pcie))
++		return PCIBIOS_SET_FAILED;
+ 
+ 	/* Program the control register */
+ 	reg = advk_readl(pcie, PIO_CTRL);
+@@ -763,7 +793,8 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
+ 	/* Program the data strobe */
+ 	advk_writel(pcie, data_strobe, PIO_WR_DATA_STRB);
+ 
+-	/* Start the transfer */
++	/* Clear PIO DONE ISR and start the transfer */
++	advk_writel(pcie, 1, PIO_ISR);
+ 	advk_writel(pcie, 1, PIO_START);
+ 
+ 	ret = advk_pcie_wait_pio(pcie);
+-- 
+2.20.1
+
