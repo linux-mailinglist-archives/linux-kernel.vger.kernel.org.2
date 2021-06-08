@@ -2,123 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB89739F16F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745DA39F176
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhFHIzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:55:44 -0400
-Received: from mail-bn8nam11on2054.outbound.protection.outlook.com ([40.107.236.54]:34401
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229507AbhFHIzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:55:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Itt5QGNqKfegTW+9ZtL/Eu511/ZgovwLQg8vMJqaXnaYVyzAIr2lT84u9CkuGMknnWhVG3zxclAhh40Qzg90YSPzb5n448ijKLEqo0/n4rOAWh3M4UVonnc5IZV9IMfsiA8jBcw5/iJUN2shzTwnaeGEsZOb/3+A4+Y2gNXFukHICpZGUV1ccBDRen/ET+d6zAvArz5zs6O8Hs4FEuanDvzApiaWx+bduH7o/9obBvuOXD2q/nCpT6KDg22oVtqmAZNOpG6syEd+xl6qNmM5UHzWLbg0SXBiR1s2avI5jDRmQekeV96kCEp7crBHv1UzIXKmj3rOmpS4B+IoubzliQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qt4gkILoypk2WG79sJwqeAWJ8suDLrOX329sokfeIgE=;
- b=Tf67oFo0rkEB0GZPwAOYExE5L6HU924SjbaFJJ5zXiedjaS67zQCW1XEA5Om7W72BFmtZj5PoXHpqo8OK3fi1IXOiw92l9I/rU7KErGGDq1WZQ3rcXPOqdb64bdhPpHG7I6JisyJRpN10cmYA0uABDg7rh+sA3uxJLm4duXn0I67w8NFq9sJezrlGacB+1oMvPqsVMylq2rjv6TnaE45BQbyyyxQEjywr3qd30HJWF9R+zgggmSvp8fqSSx+C443f9PbmYnwv7/0o2mb3Q9cWX+Kztg21a/9d+Dun/bBOFatSPcSFZ7x3E7o7ukjP6PGqkeMnLf2AVvPwv7+yd2zDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qt4gkILoypk2WG79sJwqeAWJ8suDLrOX329sokfeIgE=;
- b=Quem6LOKLCImj6wNVdZUGdkUNs0+yBtoWs2zxpD+c/JzCPeQqIP4Qa1FxOL3udP8Ub7ikB5RPE0NsSe3QL35n+9AWvDE0mV2VQk40Dowz1AY+C+uolYDMfk86zyNWXMdddfnjpxe7tq2AMdGHtWvrwy7iFUYkFv3qjyHCqBNBL1nSHWOUkrJLEBzgrpteDAwJvDbQgQJI3b4PwxDVTH653hrPEg8SCEYOyJbNrpPFYwiwlYc8arWnxAEpp6LMb7UZMtyY7iOxxSel+/Xqiz6Ul0aWqdeFJp9nV4iY8vCKCPRJNmidNQIT4DFoeEt3MRiH/aSo2o8dexk6Ad3GPITZw==
-Received: from BN0PR04CA0102.namprd04.prod.outlook.com (2603:10b6:408:ec::17)
- by CH0PR12MB5059.namprd12.prod.outlook.com (2603:10b6:610:e2::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Tue, 8 Jun
- 2021 08:53:50 +0000
-Received: from BN8NAM11FT052.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:ec:cafe::43) by BN0PR04CA0102.outlook.office365.com
- (2603:10b6:408:ec::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend
- Transport; Tue, 8 Jun 2021 08:53:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT052.mail.protection.outlook.com (10.13.177.210) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4195.22 via Frontend Transport; Tue, 8 Jun 2021 08:53:49 +0000
-Received: from yaviefel (172.20.187.5) by HQMAIL107.nvidia.com (172.20.187.13)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Jun 2021 08:53:47
- +0000
-References: <20210608085325.61c6056f@canb.auug.org.au>
- <YL8Mz573gNRktQTh@shredder>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Petr Machata <petrm@nvidia.com>
-To:     Ido Schimmel <idosch@nvidia.com>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Petr Machata <petrm@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the net tree
-In-Reply-To: <YL8Mz573gNRktQTh@shredder>
-Message-ID: <87sg1s20vb.fsf@nvidia.com>
-Date:   Tue, 8 Jun 2021 10:53:44 +0200
+        id S231205AbhFHI4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:56:53 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50910 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFHI4w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 04:56:52 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B06401FD2A;
+        Tue,  8 Jun 2021 08:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623142498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s57GF5EVrU8EkU6hVgTxTv92JSfKxB+kZ8XzRaWUnBM=;
+        b=dMUn34jq76iZfpe+e/UvfR64NqfiyE3bGkAnY7c5GBBn26baRgLDP3PSf/g+WNPP6nOAh3
+        wxNlk4Q/cxIYWdmJZh48684o9Ycgg0G8kmQFLnQFdkIYRoOluOboCH4yj01stu5xe6fkZw
+        n3WP11Zr8PmwFcRZ/QM2wsIbAoeJNFY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623142498;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s57GF5EVrU8EkU6hVgTxTv92JSfKxB+kZ8XzRaWUnBM=;
+        b=QB67RQ6oO8NzzFxSr5nVeyP4+sAxevwN2dFw2I9h2gNFohGorTS0PXXTrCglCxi/x2Cy7D
+        qc3kQ5g6XNatMDAQ==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id A7FFAA3B83;
+        Tue,  8 Jun 2021 08:54:58 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 5F9E21F2C94; Tue,  8 Jun 2021 10:54:58 +0200 (CEST)
+Date:   Tue, 8 Jun 2021 10:54:58 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dennis Zhou <dennis@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH v8 8/8] writeback, cgroup: release dying cgwbs by
+ switching attached inodes
+Message-ID: <20210608085458.GC5562@quack2.suse.cz>
+References: <20210608013123.1088882-1-guro@fb.com>
+ <20210608013123.1088882-9-guro@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 13d33455-89f6-4ba8-26f4-08d92a5aef1c
-X-MS-TrafficTypeDiagnostic: CH0PR12MB5059:
-X-Microsoft-Antispam-PRVS: <CH0PR12MB5059B78EC30D1DDCB49AF61FD6379@CH0PR12MB5059.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SOMA0qPRaLjUIPpKtSM2AVaFGlE75Pk65KoZuQvRHETKvwjFjnJfNGw9i/ZjHcXCeVC7kAve/adms/m/XCAFrVXziQeyTA6JNW4qHVGNT9mATT2qt1l8bRW2vidn9UqxxxPrHQyA+UTRBiHSTeWpF/7cQnfQVlIMR7qrF3PSTtM2UJ2l2vtlWyEl9eVbGlki3ctRNIn1oV8rdQzow0tD+1+bhwdWjZcwce0vvdOm4AKKZ3HKZw+wNO7mf/DUP165EnKz9f7zr862elP5SwWuccsszLNygy316BF7PPzrm1wCgZs2KxowEaOfZ9gX68eEtpC6nnAXKFOeW/ovUkc4+vEs48qDhsREx4tK/jrESa8RO9jN8iTNExF9waxJR+dlv9Syd/FmDeu3PAhn7FEAYGsjaYNGrO1HA6urH3bG7wITKpq9S8keYi6jZSro0ZaNN+EooFIwhER06Xi9YW4hZWG+Q8RY+SPbL3OKhUIZITqEpyVbYViM5VvRRen+3lh9MWLvTerG5EqzJt+WnvXKMThhxnPd/J+dGXA/EsLFgZQ+63Qt0r6RPetM17A57PD+sQCx6V0wAZAVWC7aic6DAlGa5L1prlN5OzlUHgpnWYppFXNlo7m9ptJaExPWSoWvbrAmi/HztDt+Vdh60Y5LgQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(46966006)(36840700001)(6862004)(6666004)(37006003)(82310400003)(5660300002)(54906003)(426003)(356005)(4326008)(16526019)(186003)(70206006)(82740400003)(47076005)(4744005)(336012)(8676002)(2616005)(70586007)(2906002)(36756003)(36860700001)(7636003)(316002)(26005)(6636002)(86362001)(478600001)(36906005)(8936002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 08:53:49.4909
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13d33455-89f6-4ba8-26f4-08d92a5aef1c
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT052.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5059
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608013123.1088882-9-guro@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 07-06-21 18:31:23, Roman Gushchin wrote:
+> Asynchronously try to release dying cgwbs by switching attached inodes
+> to the nearest living ancestor wb. It helps to get rid of per-cgroup
+> writeback structures themselves and of pinned memory and block cgroups,
+> which are significantly larger structures (mostly due to large per-cpu
+> statistics data). This prevents memory waste and helps to avoid
+> different scalability problems caused by large piles of dying cgroups.
+> 
+> Reuse the existing mechanism of inode switching used for foreign inode
+> detection. To speed things up batch up to 115 inode switching in a
+> single operation (the maximum number is selected so that the resulting
+> struct inode_switch_wbs_context can fit into 1024 bytes). Because
+> every switching consists of two steps divided by an RCU grace period,
+> it would be too slow without batching. Please note that the whole
+> batch counts as a single operation (when increasing/decreasing
+> isw_nr_in_flight). This allows to keep umounting working (flush the
+> switching queue), however prevents cleanups from consuming the whole
+> switching quota and effectively blocking the frn switching.
+> 
+> A cgwb cleanup operation can fail due to different reasons (e.g. not
+> enough memory, the cgwb has an in-flight/pending io, an attached inode
+> in a wrong state, etc). In this case the next scheduled cleanup will
+> make a new attempt. An attempt is made each time a new cgwb is offlined
+> (in other words a memcg and/or a blkcg is deleted by a user). In the
+> future an additional attempt scheduled by a timer can be implemented.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Acked-by: Tejun Heo <tj@kernel.org>
+> Acked-by: Dennis Zhou <dennis@kernel.org>
 
-Ido Schimmel <idosch@nvidia.com> writes:
+The patch looks good. Feel free to add:
 
-> On Tue, Jun 08, 2021 at 08:53:25AM +1000, Stephen Rothwell wrote:
->> Hi all,
->> 
->> In commit
->> 
->>   d566ed04e42b ("mlxsw: spectrum_qdisc: Pass handle, not band number to find_class()")
->> 
->> Fixes tag
->> 
->>   Fixes: 28052e618b04 ("mlxsw: spectrum_qdisc: Track children per qdisc")
->> 
->> has these problem(s):
->> 
->>   - Target SHA1 does not exist
->> 
->> Maybe you meant
->> 
->> Fixes: 51d52ed95550 ("mlxsw: spectrum_qdisc: Track children per qdisc")
->
-> Yes, correct. Sorry about that. The first was an internal tag. Will
-> double-check next time.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-My mistake. I must have been looking into the wrong checkout when I was
-hunting for the reference.
+Just one codingstyle nit below.
+
+> +		if (!wb_tryget(wb))
+> +			continue;
+> +
+> +		spin_unlock_irq(&cgwb_lock);
+> +		while ((cleanup_offline_cgwb(wb)))
+			^^ too many parentheses here...
+
+
+> +			cond_resched();
+> +		spin_lock_irq(&cgwb_lock);
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
