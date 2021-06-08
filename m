@@ -2,138 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D71339FE3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237D539FE3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233968AbhFHRzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:55:12 -0400
-Received: from mail-bn8nam12on2107.outbound.protection.outlook.com ([40.107.237.107]:2561
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233572AbhFHRzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:55:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D/ts1+ZCSkajB8eDztXT9YpxeYEuOdO1iFWU4okSCc207HO9PqjpfdvuxyNAQ4CGfs+rS6WiB5jDnNdzQED4mo+bp43Qx+fGjPFu+LBuJ11DtKpxAgvYziZWmtITpcEBagIWYSXFxbdIwkHR4RbAa5CaICJ42c9mKhb9x6506PSycEOQl4KW62lBajPF0/kCJ15+ONARYoiF5FpH5IAo7v6J42TlJItn9AAd+9Nqwv4hOYjxrlgDvj46uLQ2ZAXYYpqW/AIJUpUMLFwIM8yMxbjzpMNGrIA28atH1LCIeQCxQpGkid2/DYIlGEZ2AfCQE1STf3ndWGarIOA/xn98fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6XiWjKjEjQ9gJ5FUqeihs+Y0x54Gt5HR3NJCbGd+8FE=;
- b=gp6YBrQTK/q22GlFzXuNiPlHt9P1ceYG/vsalLahLuMFyOIzqxJoyvyQ9rNApM6Ytkgd7SqER1Kj0UeOl0Um8Y7opmgy+u1GSP/ZE5VkF1sZ6umZVVpKa+yaB3tDQk+l3E7r9PpCxGUyXbvzfgNngpHkb0VlIAQp9ZF8BnsriL2MNutKcWF+9lLAIzK4zhkBI0M87eAqvpJCTgCQ/5kyT3+Uj+SX5lD+vlY/O9kCPqY8kCcFZcgCVzZMhCsK4De9y39+3FlqxLUD6E+iH9z4zkIrc0CFqzBqb8uIRLkMWKVvG7m8uMF+wk2INg8QyklSp9rQlYvE1q+ButdSo3sX5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6XiWjKjEjQ9gJ5FUqeihs+Y0x54Gt5HR3NJCbGd+8FE=;
- b=PHckJaPsE7mG2iU4QpPuTXj8YA+roYuMGPiKXTCSeTiw3xIoyiY+pRTIyjj3rbKeeuPmpuZcbx/VW2QPMWHJh8GpKILLJVeHqH811GocylnWMG/FFrua81CrJQR/eRqYPcP011VE2UxsdJjeIaAAoYEefU2iGDIHj5SOlv7UrJQ=
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
- by MWHPR21MB0782.namprd21.prod.outlook.com (2603:10b6:300:77::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.4; Tue, 8 Jun
- 2021 17:53:15 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::8dbd:8360:af6:b8a2]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::8dbd:8360:af6:b8a2%9]) with mapi id 15.20.4242.007; Tue, 8 Jun 2021
- 17:53:15 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Borislav Petkov <bp@alien8.de>
-CC:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        James Morris <James.Morris@microsoft.com>
-Subject: RE: [GIT PULL] x86/urgent for v5.13-rc5
-Thread-Topic: [GIT PULL] x86/urgent for v5.13-rc5
-Thread-Index: AQHXWqlnAKc2uywMC0GvJuk61QX3pKsHYb0AgAAWV4CAAAbygIAADHgAgAAQEYCAAUoDAIABgUXA
-Date:   Tue, 8 Jun 2021 17:53:15 +0000
-Message-ID: <MWHPR21MB159330952629D36EEDE706B3D7379@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <YLx/iA8xeRzwhXJn@zn.tnic>
- <CAHk-=wjXKsJVk+LPiOSiBACchPJLne7O+U+jmvw8CaLBYn-3=Q@mail.gmail.com>
- <YL029aQZb09G3ShY@linux.ibm.com>
- <CAHk-=wg7+-Q-jvrwQmyZtQ3pirAUcAQmvUpiLu=0nJv8NObntg@mail.gmail.com>
- <YL1HLdmh55uGAIs/@zn.tnic> <YL1UucKH0GfXddZo@sashalap>
- <eaf8e14-12d6-6e3a-f5e5-8b504647eb48@namei.org>
-In-Reply-To: <eaf8e14-12d6-6e3a-f5e5-8b504647eb48@namei.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c9e8de73-bd8e-4ad4-9f35-f6a9f1a5f42a;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-06-08T17:45:34Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: namei.org; dkim=none (message not signed)
- header.d=none;namei.org; dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: beebfe4f-e212-40cd-1d25-08d92aa64aa4
-x-ms-traffictypediagnostic: MWHPR21MB0782:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR21MB0782B2C40F2BBB52D1196048D7379@MWHPR21MB0782.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ky6PJXTxQKvJBDEkpW4YzHJwD3Mz1u7sd4RalF457YcWqakXlCBUXiawuuioXK3WAuR3PH8z9u/5EPWwxqpY/Yz3LU4vXqzLs2Jr8Om3zU0V482ox0RgrVUfBLlIlwXOwp3IZVRgCAFSgeGvZGpAw4OOjp1e89UGNqy1WEk0EetDeeZ1Qs9I4JqR+rjiz5DnIA8jffkqKy69P5MFSmvNi2EyczxgE2sGMDNt1imAHkKqzkV5kzy+DAcIAtHSdz/l0cDafB+vFiP34M8Eso0RNOpGQ440KZj3ZDo/0aeOqdzfQMZaX59PqwNdf6SigqsmH5t6kHcdkBChUVQXPR0TNg5Ny+D4sbi8k5GlZBpepM+uuJN3h5A86WXvi57pQpgzjKCwjABZMD000b9FjOX41luOov1taog4ejU1kH3e9wz2Dho7Os5cktypKcyU700ZwgE2RoO5aZNkiZCgcZi8mBoIg4gFhfnAEN21stiXZtpJKnJKPWIq/y8ufqDM/rwcfj0GytSEpdUjmhsUJOnT7PtuYxyvH4GcFlFKPgrbg8L3JQ0BoGxgdcHAxbqbd3feWy1SL+nrGeR9Bm6xwsK9BuQLlq/RLqbFI/Kg3B0WBO/ugwerAwnQ6AZGgFVbHLdQF2CGXY+xY+4o2gFaektd1Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(122000001)(110136005)(52536014)(38100700002)(478600001)(186003)(66446008)(5660300002)(66946007)(26005)(10290500003)(8676002)(82950400001)(54906003)(316002)(33656002)(64756008)(8990500004)(86362001)(2906002)(6506007)(4744005)(7696005)(8936002)(66476007)(107886003)(82960400001)(66556008)(9686003)(76116006)(4326008)(55016002)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GomMRMf4bI6/j9FzUuJh5jm66u/eZF+lhayCgbVR2lzNA1aAZeh60W/xdSlP?=
- =?us-ascii?Q?9rZVt5l3R4wpweeJZSfsZ1GbjhhIOvt7l09jWvotYzU3H4sAe/t8t9/sY+WP?=
- =?us-ascii?Q?dYJE6MCYQp5ZNYr6EGPSNYYVZpZMd7X02O/avkOpvQM+UsR/IW7g7ASn9i6Y?=
- =?us-ascii?Q?NpJSPtbmYDDqe33ztVRpI9z7bl3WQrrcn6S4rhfodvBrzL2astk/IoGnrf0b?=
- =?us-ascii?Q?OuhSy3lWVwIzOEYTNnJFPFXmEZV/ykcMXvtqlrtv8EsiuRdCal5qUAL5mx2x?=
- =?us-ascii?Q?l47jPK/PMvvg1q2etB3gkTLt1/lTrXR5J+rciCcJvSroCUyu8Y7+ZRl2Cjjv?=
- =?us-ascii?Q?2FyOG8hor17/YlLrVLdpKUL0traZYz5bnwlwHpn076kXO4VTWspjTQep+KCJ?=
- =?us-ascii?Q?sArW3gcKhcL6xXWf2oQtGC+IC/nkdP5UkAcsCLL1aAnIrdffO7ff3GtMoeKB?=
- =?us-ascii?Q?ljINPGgVhbQA7mQfyiSYPtux1A3KgA2Vu7uvCvu7EgQ6R4BBZom9orZ4QE8O?=
- =?us-ascii?Q?OknRqbDctAgG+v/WgdOIBpIwRrprj0ca2ROUHxDE9Cwgk94XOkALTheYagLv?=
- =?us-ascii?Q?trzkfc2/guiRFhe/6ol2W5EP+HkoZf+BJXFXLRwMP8nA4buPUG9HdWRwU7hi?=
- =?us-ascii?Q?OkWIJwSUpxj+KC3jptgdBnVZqxjSuuuohAf9NSv0iVkiaT6MGchzdQdAP53F?=
- =?us-ascii?Q?y9/cFuHh5b5PpaQFgBCmWhSeUJ6pkBwd67gWBA3Ht1L3e4PrzxSo6CWWmxbT?=
- =?us-ascii?Q?ZSfJoVHpfpriYQFQzRmQUduQFULG1pLIcBupn5HwrDRyqItY2l1KGkYQZL6f?=
- =?us-ascii?Q?JBfBg0qTOgyfFo8lrI1b8PXWfWn6t+nT4/cUzt/j74IAa624umY1QnrXSq7G?=
- =?us-ascii?Q?xk5Apqn+gCmDsrayELIN8IxUvtTYZLriTI/MXH1Zn0XlhCntlSQ2B1Wa5x4y?=
- =?us-ascii?Q?RYdHfrLLNI1Mm/LB6I2T9OscJ06dRRbjEMkufqx1+TbJhGTiGACuoXCagU+h?=
- =?us-ascii?Q?tNxM6+K8tlc87YbSv2XeS/jbEIR3P/qjmKSvBvp3tBEgN5/4q4FCNjGHFmoe?=
- =?us-ascii?Q?WG16YW5xGqJHTryfhyWj/w8t5xY0Uj6fDi4+z9nFrapqA2LuDMYOkIUtTPrW?=
- =?us-ascii?Q?bvi/Dj558xGdVddWRHI3OYUk+M0HuU7RBH4BtZh5IQgM5XFNkVABRkIMvliZ?=
- =?us-ascii?Q?AW4Y5b2AN2nJR6XRKIbyXFt9YcKomfNrrTLHyHPwRGc8K8AixTEKxBSjNe0o?=
- =?us-ascii?Q?i3ShD8KYI+423SVaBRfODc6xfN8ix1B4FdafKlTwGgjXEtZQ7IB8brLxCv87?=
- =?us-ascii?Q?zslZU8J+xhW2qdJ4BmF/fXi8?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S233976AbhFHRzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:55:42 -0400
+Received: from mga01.intel.com ([192.55.52.88]:27341 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233870AbhFHRzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 13:55:40 -0400
+IronPort-SDR: pkiVKGJ1uOTvevCU1Dla2Txec7JyI5BYcbSXW1orYteeqKpgdSrKz5X1mEj5auytdRavoQFotB
+ 54G4akolHiVw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="226253591"
+X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
+   d="scan'208";a="226253591"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 10:53:47 -0700
+IronPort-SDR: mVyXRWAFrZrf+GpBCi3mRgr+6P4Ol+zuGZYKbCM8nM2Sr2ARLOygNXTDldNF+sDWMR+JWgmfBD
+ u+2XzNzfY8Lw==
+X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
+   d="scan'208";a="637719012"
+Received: from ciball-mobl1.amr.corp.intel.com (HELO [10.252.140.48]) ([10.252.140.48])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 10:53:46 -0700
+Subject: Re: [RFC v2 08/32] x86/traps: Add #VE support for TDX guest
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <8a1d6930f784cb57c957cf20cea870947db91e05.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <fe05830e-e82b-f338-2ba1-02651cb8087e@intel.com>
+ <YL+tfGOMWEvDJTwc@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <42f6b603-7c21-28fa-b6ec-e53268aa6ff7@intel.com>
+Date:   Tue, 8 Jun 2021 10:53:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: beebfe4f-e212-40cd-1d25-08d92aa64aa4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2021 17:53:15.3193
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eS5luHJu2WtcoVFuDs8eV69r/Mwn5zwQLll1/lFbEP0JUHF1O2Jc5f76U9O6aZqwbwLXw3ZTwqqJ23fu8UwodKJgSFqrP5k+1jNkXCsozZc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0782
+In-Reply-To: <YL+tfGOMWEvDJTwc@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Morris <jmorris@namei.org> Sent: Monday, June 7, 2021 11:47 AM
->=20
-> On Sun, 6 Jun 2021, Sasha Levin wrote:
->=20
-> > >
-> > >Let's see if Sasha can dig out something... CCed.
-> > >
-> > >@Sasha, can you figure out who we can talk to whether Windoze reserves
-> > >the first megabyte of memory unconditionally?
-> >
-> > That's a great question, but I can't help there anymore :)
-> >
-> > Adding James Morris...
->=20
-> Adding Michael Kelley.
->=20
+On 6/8/21 10:48 AM, Sean Christopherson wrote:
+> On Tue, Jun 08, 2021, Dave Hansen wrote:
+>> On 4/26/21 11:01 AM, Kuppuswamy Sathyanarayanan wrote:
+>>> +#ifdef CONFIG_INTEL_TDX_GUEST
+>>> +DEFINE_IDTENTRY(exc_virtualization_exception)
+>>> +{
+>>> +	struct ve_info ve;
+>>> +	int ret;
+>>> +
+>>> +	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
+>>> +
+>>> +	/*
+>>> +	 * Consume #VE info before re-enabling interrupts. It will be
+>>> +	 * re-enabled after executing the TDGETVEINFO TDCALL.
+>>> +	 */
+>>> +	ret = tdg_get_ve_info(&ve);
+>> Is it safe to have *anything* before the tdg_get_ve_info()?  For
+>> instance, say that RCU_LOCKDEP_WARN() triggers.  Will anything in there
+>> do MMIO?
+> I doubt it's safe, anything that's doing printing has the potential to trigger
+> #VE.  Even if we can prove it's safe for all possible paths, I can't think of a
+> reason to allow anything that's not absolutely necessary before retrieving the
+> #VE info.
 
-I checked with the Windows team.  Peter Anvin's statement from 11
-years ago is true.  On Intel and AMD processors, Windows unconditionally
-reserves the 1st megabyte of memory, minus one page used for real
-mode startup.   This is done to work around BIOS bugs.
-
-Michael
+What about tracing?  Can I plop a kprobe in here or turn on ftrace?
