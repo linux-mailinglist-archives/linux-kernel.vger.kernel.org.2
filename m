@@ -2,65 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F05E53A0582
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C693A0588
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233959AbhFHVIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 17:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34832 "EHLO
+        id S234150AbhFHVJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 17:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhFHVIG (ORCPT
+        with ESMTP id S229845AbhFHVJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 17:08:06 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69C9C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 14:05:57 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id n12so17532371pgs.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 14:05:57 -0700 (PDT)
+        Tue, 8 Jun 2021 17:09:01 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1C3C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 14:06:58 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id k15so16695210pfp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 14:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rTsMdC4BXmfgTF7pG31W014xkPHrZAxJCnEYouFG+gQ=;
-        b=oMzG0SfeYUnoGEuhJHQ7htz2XgVPAaGjqbJCsNrsjv0VT/wTC6by508zL98Ft+ChNL
-         YJ3flE4tYQf42oFERX+vkSK+a1A5e4FDwYQxuFNtDDwNBoSr0N2mvxKytkLtUpU7uzYP
-         cCJ7OGIf+41isZ2k+YShyaRwJv7hxwyaBHtqHPlKg5tCRB6TQBWf58QBiNkLGtLQdawx
-         mzMrlPKtVgQqgY+3J9TPxWERH/iVjIoJCKCCU5CTjjS+L967Mhu/k+frrX4pWsD0reVX
-         qZ1uRRRruSBovnL0kBpyCSxnp7Id1hloFaT2wzGWDYiWrFTykDalzKCkMJE8e3LIeJ3k
-         VDpg==
+        bh=MGLCdeBLiTe2f4V4JEmoMnndE97yDmCfVG4Iupoew3g=;
+        b=Lcy0tVg50qiIXFLitPVl7wFqCgojIT3/y16tRAlET+JCs6q4bYgceWNDzEdqV9KgW6
+         ZHGtAz329S9MYTMjBYenEev8FR6ivu6g2q/+Mqd6EOaJxN0IMlGd2TO+mbnEEX1iUnc1
+         eHAm5IMwQz+eh9WsZmj861E4mYsIO7Qhn5PrO3DRMKlcWxGPFzPujef+K1PMIPo9tRon
+         m6/k0euiSDYpDE210TP5gPBhLkAwr7sP/5b/LdhSVfPtJAdqo9fuQ3mSZANZaCijtFv5
+         aoPRinn5JroIRjhrHbACMdGltgN0yDdEKPEwpfLop3zLjKpIKb9X3eGdH6P5USCu7fOI
+         5V/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=rTsMdC4BXmfgTF7pG31W014xkPHrZAxJCnEYouFG+gQ=;
-        b=ahsrMhBSWuWHi0SPbgETh5nqxnHXv/rTFiEyQl7rHpvUV0ZDldrUz/sLnNd0ugTSi0
-         Mg79oG42aSihnHSS/UDKDk0GGy5ov7qh+S8YZxhAI6IBZGw7sdUWwErjyUU4viwQNIHO
-         MExc6maElvIwsBN+ZqNUDBRPypsvOHLJo0F7RxEz7iQsC0qawgpzT0HUAtJ97cz2hQZ9
-         RHkMfqTAcHqrTeVFc+TNFTqwWZxYH8d7dl15D2xBD887HMLe1wiLaJQvI46GlgZtT8Oj
-         a6LfEqct9yU7OIsUN/kq9+XyzW9699uTxJh9a8UFYUcb6OT8mTKvD83tTfPoOE/Pgqk3
-         cXBQ==
-X-Gm-Message-State: AOAM532ouusMsI59papgkgtU1jYWBaK+foUy8T8vhff0uP4XN+yc2G5j
-        GpQJjYLd4EAT1MAHMYAyKSrtPsj8UMVuAw==
-X-Google-Smtp-Source: ABdhPJxmIxuV54xftG6ihDeETBpL1x1bpTjcbMTDiFUjG1Hdy0sEIgM/suXMIB2EpZgu4yPgzkKiqQ==
-X-Received: by 2002:a63:1349:: with SMTP id 9mr130994pgt.235.1623186357366;
-        Tue, 08 Jun 2021 14:05:57 -0700 (PDT)
+        bh=MGLCdeBLiTe2f4V4JEmoMnndE97yDmCfVG4Iupoew3g=;
+        b=OGyU59O+hHnhdm7qLqByyLpBLqr+LHU/e5WX2c+zlAq1/B8WH/dahA+z6kDka0dju/
+         sztiRcMP+SMfeGHI1GjhGnFZt7QKWI6dlT641ehHdVXIu7/paNNjcuFoJRpMimfvgube
+         ka9ba9Ty0zY6gWC8L51uO2W4LgTD0AzlFRd6s5T8zOg4vBQVqQjbb/eVxeTgNktW+V/d
+         G8M8AVleRDR5rhZCZnbhesh+QekEyAfOUe3DvjB6mxr+yzk6V4P3voLDgDf8G9aVjbHw
+         RO5NtUQT4fBkJGTnwb3VovHJ/ei3NtRwJoLtbff+LjOJKj6MNdBG56/f4CHHkTpKVxFJ
+         9Q8g==
+X-Gm-Message-State: AOAM532cNtaS5vDO6Y96ve20XZr9i0ArcSMF8MxFth191tY7/L8nm4mE
+        tHZWwQkkk2CtzWWyL3g/0xyuBg==
+X-Google-Smtp-Source: ABdhPJyPUM9RmrARRoAMIYu+eAF/uIHsBtMmhfg9qdBeQ0TOpf+UNFscT7GvhJKO0ez+MF086oMoxQ==
+X-Received: by 2002:aa7:8119:0:b029:2b5:7e51:274b with SMTP id b25-20020aa781190000b02902b57e51274bmr1666573pfi.32.1623186417402;
+        Tue, 08 Jun 2021 14:06:57 -0700 (PDT)
 Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id a66sm9471059pfb.162.2021.06.08.14.05.56
+        by smtp.gmail.com with ESMTPSA id mi10sm2974329pjb.10.2021.06.08.14.06.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 14:05:56 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] bcache fixes for Linux v5.13-rc6
-To:     Coly Li <colyli@suse.de>
-Cc:     linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hch@lst.de
-References: <20210607125052.21277-1-colyli@suse.de>
+        Tue, 08 Jun 2021 14:06:56 -0700 (PDT)
+Subject: Re: [Patch v3] block: return the correct bvec when checking for gaps
+To:     longli@linuxonhyperv.com, linux-block@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <1623094445-22332-1-git-send-email-longli@linuxonhyperv.com>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <180599cb-7c2e-da35-96a5-225462c6cd71@kernel.dk>
-Date:   Tue, 8 Jun 2021 15:06:16 -0600
+Message-ID: <6691cb0d-d368-7115-87f2-ae5950699b7d@kernel.dk>
+Date:   Tue, 8 Jun 2021 15:07:15 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210607125052.21277-1-colyli@suse.de>
+In-Reply-To: <1623094445-22332-1-git-send-email-longli@linuxonhyperv.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,20 +73,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/21 6:50 AM, Coly Li wrote:
-> Hi Jens,
+On 6/7/21 1:34 PM, longli@linuxonhyperv.com wrote:
+> From: Long Li <longli@microsoft.com>
 > 
-> This series is important for recent reported bcache panic partially
-> triggered by recent bio changes since Linux v5.12.
+> After commit 07173c3ec276 ("block: enable multipage bvecs"), a bvec can
+> have multiple pages. But bio_will_gap() still assumes one page bvec while
+> checking for merging. If the pages in the bvec go across the
+> seg_boundary_mask, this check for merging can potentially succeed if only
+> the 1st page is tested, and can fail if all the pages are tested.
 > 
-> Current fix is 5th version since the first effort, it might not be
-> perfect yet, but it survives from different workloads from Rolf,
-> Thorsten and me for more than 1 week in total.
+> Later, when SCSI builds the SG list the same check for merging is done in
+> __blk_segment_map_sg_merge() with all the pages in the bvec tested. This
+> time the check may fail if the pages in bvec go across the
+> seg_boundary_mask (but tested okay in bio_will_gap() earlier, so those
+> BIOs were merged). If this check fails, we end up with a broken SG list
+> for drivers assuming the SG list not having offsets in intermediate pages.
+> This results in incorrect pages written to the disk.
 > 
-> Considering many people are waiting for a stable enough fix and it is
-> kind of such fix. Please take them for Linux v5.13-rc6.
-> 
-> Thank you in advance for taking care of them.
+> Fix this by returning the multi-page bvec when testing gaps for merging.
 
 Applied, thanks.
 
