@@ -2,142 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2653A0257
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057BD3A027C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236040AbhFHTDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:03:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6456 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236688AbhFHSzB (ORCPT
+        id S237820AbhFHTFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:05:36 -0400
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:36607 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235121AbhFHS4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:55:01 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 158IYZ7O170745;
-        Tue, 8 Jun 2021 14:53:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ja/oWp63gVjtoAxtl10waklaf29/OvvCU3PvYc+GAGg=;
- b=QjJtO2taJDAEDxKshngV7vNhFnIGyRU8WawoekYYfh2ve1CC9qOav+NRI5CYrJtmRNBe
- 07JctMIGMFlU95NzSr9GbYW6C600DCG4pxdUOG1CCtNU3FnRNtd8Tmc7d45fEAKR7o6+
- jfBJ9jm2gFE5lA7kBg73ptlbDx9lSgdgOe8FZ/N6MQaiauHfMP/Pa6dt0H2GNATe9WPh
- mTAunY6Du17A6k9EQJmAm7parIQvpSAR3MTk9Ga+/FeiDDwxiAHVaTLen8zBmHdGRAEm
- UI/7ISFD966X1kz4Hngi8kPQqCUpsxA8XEWLExvbK8ahPm/IqjOJ7FwVbH5gYzcmnr8N 0w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 392ctk2g03-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Jun 2021 14:53:00 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 158IYlsN171447;
-        Tue, 8 Jun 2021 14:53:00 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 392ctk2fyb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Jun 2021 14:52:59 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 158IqrC3002480;
-        Tue, 8 Jun 2021 18:52:57 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 392e798003-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Jun 2021 18:52:57 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 158Iq7Rm30933264
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Jun 2021 18:52:08 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2BBF1A4040;
-        Tue,  8 Jun 2021 18:52:54 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 80D21A4051;
-        Tue,  8 Jun 2021 18:52:53 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.36.114])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  8 Jun 2021 18:52:53 +0000 (GMT)
-Subject: Re: [PATCH v2 2/2] KVM: s390: fix for hugepage vmalloc
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        frankja@linux.ibm.com, cohuck@redhat.com, david@redhat.com,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>
-References: <20210608180618.477766-1-imbrenda@linux.ibm.com>
- <20210608180618.477766-3-imbrenda@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <58ff375c-bad4-e808-fa2f-fd21222ffc74@de.ibm.com>
-Date:   Tue, 8 Jun 2021 20:52:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 8 Jun 2021 14:56:23 -0400
+Received: by mail-lf1-f51.google.com with SMTP id v22so32405534lfa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 11:54:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XH/3SBzhXEZinQRmZMjAfIGu0JUbJo2MQXLpr1qwFmk=;
+        b=CbTtmukjRPYewEoWFqp1sRz6oSiH0zZb4mGBHEa4nRRWAU8+EcBzOal+ROP5WBXR5x
+         JrRd3XFOeNYJdFs7j4wwrN51j3iRzmFxuYz5Y1baQLAEhXVcCPWQX8Rh+QNU1CfWheAo
+         jkbZ93/skrcSmMajQAsvfoqbVACDfCPcQk525e/YOT9S5Dm+wlyEKqB1/TCSh1y8id4u
+         tqTKYJOT5FYnUJfvbq+NQ0qgjjIg6x8rATA+9dLGjJRXbyDKWLEobCF7i6okmarHEaWV
+         Y9PRz9VRzMiZPhldY+dBeeogHR4wuISY4reP4T++0Az0qZX/04658c1wUFIQ6+8wys8k
+         O1Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XH/3SBzhXEZinQRmZMjAfIGu0JUbJo2MQXLpr1qwFmk=;
+        b=osah0cc1COkL1rFmlOc0mmNIa9B7Azfcg2YHwxbtW8inMNk5nYAlB6hYy0Nci1RQ7b
+         xWzu3K9fkTNNWp/75dUsyAXHh2OWHwu6Bh30FZp8jcdsJw06ZThWhQTSUYojssvliF9g
+         nRpQm+6xWazm/EZfBI0fO95XwHyTVB97DqhJL7D38H3RTlJTFRdeFU8ouGjwKAyP4Vpf
+         4CRUFviwVKv8dNpA3TpSjwMA48pYy9a0v8TxGrAHshzUkDMiqczliplKOCqixvyunjrj
+         ZatcLNJvJktV6dhNT9jE7rslSi6V9/Lr8wUGVKQzj17a1WGnLKYvmTyIG/bOVvo1PZTm
+         +Fhw==
+X-Gm-Message-State: AOAM531lLs9T64JGz1hAMVmA1KABJex9n7dsIcsaLjHOA6f4WJspCezG
+        MN8iRZZ1NIGEfOZYruO31AE7wZJQQMOaJxPHilfGrg==
+X-Google-Smtp-Source: ABdhPJwWbRzEQbfxYswo9wdvvhXIaN36rmEXPktIvShQZ1REoqLGro/C4yPvO7BE/TlBKdYNXLz9J+72h5tMkyhMTF8=
+X-Received: by 2002:ac2:5cd6:: with SMTP id f22mr17251433lfq.73.1623178399858;
+ Tue, 08 Jun 2021 11:53:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210608180618.477766-3-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: M21To_wYAthKWxSUEu_dmq6eoR_qiQXV
-X-Proofpoint-GUID: QjMqZ56-sMhIVPeYrRmVxcRt6QpD54dq
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-08_14:2021-06-04,2021-06-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- bulkscore=0 clxscore=1011 impostorscore=0 mlxlogscore=953
- lowpriorityscore=0 phishscore=0 priorityscore=1501 mlxscore=0 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106080119
+References: <1623145562-111662-1-git-send-email-yang.lee@linux.alibaba.com>
+ <CAKwvOdmyXV09ZxcDqQ6x43f+Eze4h40W2AoKcCmUhGM2gUWsnQ@mail.gmail.com> <6335deba-9e94-61e0-89a1-8905be0e35a1@kernel.org>
+In-Reply-To: <6335deba-9e94-61e0-89a1-8905be0e35a1@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 8 Jun 2021 11:53:09 -0700
+Message-ID: <CAKwvOdmOOvOBzZ+fNaOxMSDVonkTETmowtD5-4FTFGniNjbObQ@mail.gmail.com>
+Subject: Re: [PATCH] thermal: devfreq_cooling: Fix kernel-doc
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Yang Li <yang.lee@linux.alibaba.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>, amitk@kernel.org,
+        linux-pm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 8, 2021 at 11:49 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On 6/8/2021 11:39 AM, Nick Desaulniers wrote:
+> > On Tue, Jun 8, 2021 at 2:46 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+> >>
+> >> Fix function name in devfreq_cooling.c kernel-doc comment
+> >> to remove a warning found by clang(make W=1 LLVM=1).
 
-On 08.06.21 20:06, Claudio Imbrenda wrote:
-> The Create Secure Configuration Ultravisor Call does not support using
-> large pages for the virtual memory area. This is a hardware limitation.
-> 
-> This patch replaces the vzalloc call with a longer but equivalent
-> __vmalloc_node_range call, also setting the VM_NO_HUGE_VMAP flag, to
-> guarantee that this allocation will not be performed with large pages.
-> 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
-> Fixes: 121e6f3258fe393e22c3 ("mm/vmalloc: hugepage vmalloc mappings")
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: David Rientjes <rientjes@google.com>
+Ah, good find. In that case I'd be happy to sign off on a V2 that
+replaced s/clang(make W=1 LLVM=1)/kernel-doc/.
 
-Would be good to have this in 5.13, as for everything else we want to have
-hugepages in vmalloc space on s390.
+> >>
+> >> drivers/thermal/devfreq_cooling.c:479: warning: expecting prototype for
+> >> devfreq_cooling_em_register_power(). Prototype was for
+> >> devfreq_cooling_em_register() instead.
+> >>
+> >> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> >> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> >
+> > That compiler warning doesn't come from kernel-doc.  Your diff looks
+> > good (the comment was wrong), but the commit message is curious.
+>
+> No, this is indeed kernel-doc complaining. Clang should not even be
+> mentioned in the commit message:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/kernel-doc?h=v5.13-rc5#n1228
+>
+> The warning could probably be improved to say "definition" instead of
+> "prototype" in certain cases but *shrugs*.
+>
+> This warning is similar to -Wmissing-prototypes from clang but refers to
+> the fact that the comment claims it is documenting one function but it
+> is really documenting another.
+>
+> Cheers,
+> Nathan
+>
+> > Usually that warning is from when the function prototype does not
+> > exist for a function with extern linkage.  It looks like that's always
+> > provided though in include/linux/devfreq_cooling.h.  Can you share a
+> > link to the original report?
+> >
+> >> ---
+> >>   drivers/thermal/devfreq_cooling.c | 2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+> >> index 3a788ac..5a86cff 100644
+> >> --- a/drivers/thermal/devfreq_cooling.c
+> >> +++ b/drivers/thermal/devfreq_cooling.c
+> >> @@ -458,7 +458,7 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
+> >>   EXPORT_SYMBOL_GPL(devfreq_cooling_register);
+> >>
+> >>   /**
+> >> - * devfreq_cooling_em_register_power() - Register devfreq cooling device with
+> >> + * devfreq_cooling_em_register() - Register devfreq cooling device with
+> >>    *             power information and automatically register Energy Model (EM)
+> >>    * @df:                Pointer to devfreq device.
+> >>    * @dfc_power: Pointer to devfreq_cooling_power.
+> >> --
+> >> 1.8.3.1
+> >>
+> >
+> >
 
-In case Andrew picks this up
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
-for the KVM/390 part.
 
-> ---
->   arch/s390/kvm/pv.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-> index 813b6e93dc83..6087fe7ae77c 100644
-> --- a/arch/s390/kvm/pv.c
-> +++ b/arch/s390/kvm/pv.c
-> @@ -140,7 +140,10 @@ static int kvm_s390_pv_alloc_vm(struct kvm *kvm)
->   	/* Allocate variable storage */
->   	vlen = ALIGN(virt * ((npages * PAGE_SIZE) / HPAGE_SIZE), PAGE_SIZE);
->   	vlen += uv_info.guest_virt_base_stor_len;
-> -	kvm->arch.pv.stor_var = vzalloc(vlen);
-> +	kvm->arch.pv.stor_var = __vmalloc_node_range(vlen, PAGE_SIZE, VMALLOC_START, VMALLOC_END,
-> +						     GFP_KERNEL | __GFP_ZERO, PAGE_KERNEL,
-> +						     VM_NO_HUGE_VMAP, NUMA_NO_NODE,
-> +						     __builtin_return_address(0));
->   	if (!kvm->arch.pv.stor_var)
->   		goto out_err;
->   	return 0;
-> 
+
+-- 
+Thanks,
+~Nick Desaulniers
