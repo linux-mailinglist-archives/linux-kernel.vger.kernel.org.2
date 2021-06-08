@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184CA39ED18
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F196639ED19
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhFHDc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 23:32:28 -0400
-Received: from smtprelay0224.hostedemail.com ([216.40.44.224]:56874 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230266AbhFHDcZ (ORCPT
+        id S230428AbhFHDfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 23:35:36 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3097 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230237AbhFHDff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 23:32:25 -0400
-Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 0049E18029120;
-        Tue,  8 Jun 2021 03:30:31 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id CA9A62EBFA6;
-        Tue,  8 Jun 2021 03:30:30 +0000 (UTC)
-Message-ID: <d639dd7c7738a14b5e9e8877eefd20fda9c37279.camel@perches.com>
-Subject: Re: [PATCH v2] net: appletalk: fix some mistakes in grammar
-From:   Joe Perches <joe@perches.com>
-To:     13145886936@163.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>
-Date:   Mon, 07 Jun 2021 20:30:29 -0700
-In-Reply-To: <20210608025602.8066-1-13145886936@163.com>
-References: <20210608025602.8066-1-13145886936@163.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 7 Jun 2021 23:35:35 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzbLW5TqWzWtRt;
+        Tue,  8 Jun 2021 11:28:51 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 11:33:41 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 11:33:40 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>
+Subject: [PATCH v3 0/9] drivers/perf: Use general macro to simplify event attributes
+Date:   Tue, 8 Jun 2021 11:33:12 +0800
+Message-ID: <1623123201-45634-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=4.10
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: CA9A62EBFA6
-X-Stat-Signature: 71rzp6ddw7njafawupsfei1qxagoo54o
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18LMHArzN7sZYSwrZwEdu1UCtcPgJYpBgU=
-X-HE-Tag: 1623123030-946920
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-07 at 19:56 -0700, 13145886936@163.com wrote:
-> From: gushengxian <gushengxian@yulong.com>
-> 
-> Fix some mistakes in grammar.
-> 
-> Signed-off-by: gushengxian <gushengxian@yulong.com>
-> ---
-> v2: This statement "Anyone wanting to add it goes ahead." 
-> is changed to "Anyone wanting to add it, go ahead.".
->  net/appletalk/ddp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
-> index bc76b2fa3dfb..8ade5a4ceaf5 100644
-> --- a/net/appletalk/ddp.c
-> +++ b/net/appletalk/ddp.c
-> @@ -707,7 +707,7 @@ static int atif_ioctl(int cmd, void __user *arg)
->  
-> 
->  		/*
->  		 * Phase 1 is fine on LocalTalk but we don't do
-> -		 * EtherTalk phase 1. Anyone wanting to add it goes ahead.
-> +		 * EtherTalk phase 1. Anyone wanting to add it, go ahead.
->  		 */
->  		if (dev->type == ARPHRD_ETHER && nr->nr_phase != 2)
->  			return -EPROTONOSUPPORT;
-> @@ -828,7 +828,7 @@ static int atif_ioctl(int cmd, void __user *arg)
->  		nr = (struct atalk_netrange *)&(atif->nets);
->  		/*
->  		 * Phase 1 is fine on Localtalk but we don't do
-> -		 * Ethertalk phase 1. Anyone wanting to add it goes ahead.
-> +		 * Ethertalk phase 1. Anyone wanting to add it, go ahead.
->  		 */
->  		if (dev->type == ARPHRD_ETHER && nr->nr_phase != 2)
->  			return -EPROTONOSUPPORT;
+This patchset applies a general EVENT_ATTR_ID to simplify event
+attributes in many PMU drivers.
 
+Qi Liu (9):
+  perf: Add EVENT_ATTR_ID to simplify event attributes
+  drivers/perf: hisi: Simplify EVENT ATTR macro in HiSilicon PMU driver
+  drivers/perf: Simplify EVENT ATTR macro in SMMU PMU driver
+  drivers/perf: Simplify EVENT ATTR macro in qcom_l2_pmu.c
+  drivers/perf: Simplify EVENT ATTR macro in qcom_l3_pmu.c
+  drivers/perf: Simplify EVENT ATTR macro in xgene_pmu.c
+  drivers/perf: Simplify EVENT ATTR macro in fsl_imx8_ddr_perf.c
+  drivers/perf: Simpilfy EVENT ATTR macro in arm_dsu_pmu.c
+  arm64: perf: Simplify EVENT ATTR macro in perf_event.c
+
+ arch/arm64/kernel/perf_event.c           |  5 +----
+ drivers/perf/arm_dsu_pmu.c               |  2 +-
+ drivers/perf/arm_smmuv3_pmu.c            |  7 ++-----
+ drivers/perf/fsl_imx8_ddr_perf.c         |  7 ++-----
+ drivers/perf/hisilicon/hisi_uncore_pmu.c |  7 +++----
+ drivers/perf/hisilicon/hisi_uncore_pmu.h |  2 +-
+ drivers/perf/qcom_l2_pmu.c               |  7 ++-----
+ drivers/perf/qcom_l3_pmu.c               |  5 +----
+ drivers/perf/xgene_pmu.c                 | 11 ++++-------
+ include/linux/perf_event.h               |  6 ++++++
+ 10 files changed, 23 insertions(+), 36 deletions(-)
+
+-- 
+2.7.4
 
