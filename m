@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007223A00FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59BF39FF6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236282AbhFHSuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:50:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44434 "EHLO mail.kernel.org"
+        id S234553AbhFHSdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:33:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235876AbhFHSpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:45:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6A4561450;
-        Tue,  8 Jun 2021 18:37:03 +0000 (UTC)
+        id S234032AbhFHScM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:32:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E111613B6;
+        Tue,  8 Jun 2021 18:30:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177424;
-        bh=2QiJxsg5maSu709tFu6uIJUCW/la+Evv/N/OLyJRUjg=;
+        s=korg; t=1623177002;
+        bh=BjwMVZV29dd47sjI8xClz0qNUCf6RXp1w1uXhyzZKOU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oTfrx03UY9Uz8LgeFICPClD1p2vbzebycTjJKICpjXqD3MsBXWrJ3x2ci+GZ8FP1S
-         0YA4r6PWGmdz/beGoxYTkCO0AiBaLzSXkEPnN3peEewb/k060ir16BBjRa5LjHQpvo
-         ml2tY6cK+MdEXfhhpeseTofOlgqQsVCKJvwJA7/w=
+        b=vPKnaeiR8IP2W8VYYTDP95FhJXrbUCAUMDMost4fyw2fqbSemyouZ87QgrCmXAIXg
+         Rn7nvaXK7MTef+TV8ZaEJ2BUOasYHedcWBjDIWIk58Rqkm9ef5uGMzaBD8TOpF6Uv8
+         Kz+kFHUXoafJcqWPIXeJkYuZCbxq4xpzk5c5NvRA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+d102fa5b35335a7e544e@syzkaller.appspotmail.com,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 47/78] ALSA: timer: Fix master timer notification
-Date:   Tue,  8 Jun 2021 20:27:16 +0200
-Message-Id: <20210608175936.865312515@linuxfoundation.org>
+        syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com,
+        butt3rflyh4ck <butterflyhuangxx@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 23/29] nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
+Date:   Tue,  8 Jun 2021 20:27:17 +0200
+Message-Id: <20210608175928.571940894@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
+References: <20210608175927.821075974@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-commit 9c1fe96bded935369f8340c2ac2e9e189f697d5d upstream.
+commit 4ac06a1e013cf5fdd963317ffd3b968560f33bba upstream.
 
-snd_timer_notify1() calls the notification to each slave for a master
-event, but it passes a wrong event number.  It should be +10 offset,
-corresponding to SNDRV_TIMER_EVENT_MXXX, but it's incorrectly with
-+100 offset.  Casually this was spotted by UBSAN check via syzkaller.
+It's possible to trigger NULL pointer dereference by local unprivileged
+user, when calling getsockname() after failed bind() (e.g. the bind
+fails because LLCP_SAP_MAX used as SAP):
 
-Reported-by: syzbot+d102fa5b35335a7e544e@syzkaller.appspotmail.com
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+  BUG: kernel NULL pointer dereference, address: 0000000000000000
+  CPU: 1 PID: 426 Comm: llcp_sock_getna Not tainted 5.13.0-rc2-next-20210521+ #9
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
+  Call Trace:
+   llcp_sock_getname+0xb1/0xe0
+   __sys_getpeername+0x95/0xc0
+   ? lockdep_hardirqs_on_prepare+0xd5/0x180
+   ? syscall_enter_from_user_mode+0x1c/0x40
+   __x64_sys_getpeername+0x11/0x20
+   do_syscall_64+0x36/0x70
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+This can be reproduced with Syzkaller C repro (bind followed by
+getpeername):
+https://syzkaller.appspot.com/x/repro.c?x=14def446e00000
+
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/000000000000e5560e05c3bd1d63@google.com
-Link: https://lore.kernel.org/r/20210602113823.23777-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: d646960f7986 ("NFC: Initial LLCP support")
+Reported-by: syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com
+Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210531072138.5219-1-krzysztof.kozlowski@canonical.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/timer.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/nfc/llcp_sock.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -491,9 +491,10 @@ static void snd_timer_notify1(struct snd
- 		return;
- 	if (timer->hw.flags & SNDRV_TIMER_HW_SLAVE)
- 		return;
-+	event += 10; /* convert to SNDRV_TIMER_EVENT_MXXX */
- 	list_for_each_entry(ts, &ti->slave_active_head, active_list)
- 		if (ts->ccallback)
--			ts->ccallback(ts, event + 100, &tstamp, resolution);
-+			ts->ccallback(ts, event, &tstamp, resolution);
- }
- 
- /* start/continue a master timer */
+--- a/net/nfc/llcp_sock.c
++++ b/net/nfc/llcp_sock.c
+@@ -121,6 +121,7 @@ static int llcp_sock_bind(struct socket
+ 	if (!llcp_sock->service_name) {
+ 		nfc_llcp_local_put(llcp_sock->local);
+ 		llcp_sock->local = NULL;
++		llcp_sock->dev = NULL;
+ 		ret = -ENOMEM;
+ 		goto put_dev;
+ 	}
+@@ -130,6 +131,7 @@ static int llcp_sock_bind(struct socket
+ 		llcp_sock->local = NULL;
+ 		kfree(llcp_sock->service_name);
+ 		llcp_sock->service_name = NULL;
++		llcp_sock->dev = NULL;
+ 		ret = -EADDRINUSE;
+ 		goto put_dev;
+ 	}
 
 
