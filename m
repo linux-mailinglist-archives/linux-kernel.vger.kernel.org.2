@@ -2,146 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30EE3A074D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA3D3A074E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234668AbhFHWzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 18:55:19 -0400
-Received: from mga07.intel.com ([134.134.136.100]:3029 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhFHWzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 18:55:17 -0400
-IronPort-SDR: 3QAdO1vLlFP4NPxce18oXmulctWcNBMWS7ZO5HjpPu3iVbVvyHCCvJWNyZ1K5A9tvVYz79Er3a
- JfK0vxUo+xnQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="268816258"
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="268816258"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 15:53:22 -0700
-IronPort-SDR: 5V9L+xxkNBtnpRNXWOkneUv3t/8dyNYPKx5Rj4ioNf2W4PCYuXoJgtdR26T1eso1PM091XUSvO
- gYuhT+XSW54A==
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="637812732"
-Received: from ciball-mobl1.amr.corp.intel.com (HELO [10.252.140.48]) ([10.252.140.48])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 15:53:19 -0700
-Subject: Re: [RFC v2-fix-v3 1/1] x86/tdx: Skip WBINVD instruction for TDX
- guest
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <CAPcyv4jQ=Fcga3jyUzthjPW9O962vhy3L5XUM6jqR5Z_Zq83LQ@mail.gmail.com>
- <20210608213527.739474-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <ec55256c-3a44-5265-fea8-018a229e92da@intel.com>
- <bc41d48e-b001-f870-e421-7c5cbc6ec1c4@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <d28a4ece-744e-1d43-90c8-e8c36def9be6@intel.com>
-Date:   Tue, 8 Jun 2021 15:53:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234937AbhFHW6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 18:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhFHW6E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 18:58:04 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C35C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 15:56:11 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id t40so10226027oiw.8
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:56:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BMR6ZsMu0DsLETDw+bR4c+k3NXc63hDcJu3C1mBGeig=;
+        b=po68QmPrwLQPdeWASh/uCRcM3A5us+ZPX7fX+qf88rjlsN//0fe2+T1vFAzNkPtH6h
+         2Gsl2Wfp3SlCt8DaaGDAmN6tZim8fxtkWE+MyCetGq+OJ+3QnXSdKWnZ/x3CR2Jwa2A+
+         436KSw3tINROsAZVe3TGTaSJQWdjAJt3H8LrGaIqi2smzQ4ORZchReX80km8gZeLM2KB
+         dnAaCwbRZLGP3GZVr7NXnicHEo/EACn5qxtWzx0jEUJtE3XQtYKpAkGWgiFbYZWJ4wZo
+         vJtANCGabveMWUHBVUNrJadG5xnmvis6m38TqUKkJWOvetfW3RHE3X8GXNZtI/D4jWhQ
+         h6xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=BMR6ZsMu0DsLETDw+bR4c+k3NXc63hDcJu3C1mBGeig=;
+        b=uHwZW8IFzWfkCZXkKXSJL1pZ3N8Zc840Qra2xUr2Ui3TU59uU95zLZJG8Q8ImZuQ//
+         vEwOksjR5TRzrbvSoe5UmsadOabYW5U3BPrX0UUdm/Z8iYeit5vTI7ZJO4Yjtc6/huY1
+         znEhPxELxS27FRRgLGoyrB3+CZFJq4jTOLpK5GcZSShh7T15WAkLk5FjNXI5Yq6Zv/Pk
+         b1UI9IrhjZRllCZuFgdMejfRR0DVxN9ZBKxDuZTDKng4jTRnZgUiFwyXJEbbDaqvWUp/
+         TShdZ7iKIkWRfyDiZ2ztIzkRVv1NBJ9pDvI+YAO+qDcdOhyJSTS+w25lxJRGD1VXLLQ2
+         yA1w==
+X-Gm-Message-State: AOAM530073Ul2tlsgSxCB7Z30DCS6WcoLb6BXY34Ii9JZqtssifgOOfs
+        UoonYp2rDuA8SBfhBd1A0Ayw52PFYqQ=
+X-Google-Smtp-Source: ABdhPJwL//nNXkoUzcYy6m2sK3nXMN89+1pNo/7vZauwBDKfg/qlPYB+3VuW0YMQqAQBzUKQc1ODtA==
+X-Received: by 2002:aca:3e89:: with SMTP id l131mr2143381oia.34.1623192970886;
+        Tue, 08 Jun 2021 15:56:10 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i4sm3341516oth.38.2021.06.08.15.56.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 15:56:10 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 8 Jun 2021 15:56:08 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.13-rc5
+Message-ID: <20210608225608.GA1244211@roeck-us.net>
+References: <CAHk-=wgxOqRbXUwQ73sMgxfOg9+B7BeTgZ6JP9oHR9BPhKGjOg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <bc41d48e-b001-f870-e421-7c5cbc6ec1c4@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgxOqRbXUwQ73sMgxfOg9+B7BeTgZ6JP9oHR9BPhKGjOg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 3:36 PM, Kuppuswamy, Sathyanarayanan wrote:
-> On 6/8/21 3:17 PM, Dave Hansen wrote:
->> On 6/8/21 2:35 PM, Kuppuswamy Sathyanarayanan wrote:
->>> Persistent memory is also currently not supported. Another code
->>> path that uses WBINVD is the MTRR driver, but EPT/virtualization
->>> always disables MTRRs so those are not needed. This all implies
->>> WBINVD is not needed with current TDX.
->>
->> It's one thing to declare something unsupported.  It's quite another to
->> declare it unsupported and then back it up with code to ensure that any
->> attempted use is thwarted.
+On Sun, Jun 06, 2021 at 04:06:50PM -0700, Linus Torvalds wrote:
+> Hmm. Things haven't really started to calm down very much yet, but rc5
+> seems to be fairly average in size. I'm hoping things will start
+> shrinking now.
 > 
-> Only audited and supported drivers will be allowed to enumerate after
-> device filter support patch is merged. Till we merge that patch, If
-> any of these unsupported features (with WBINVD usage) are enabled in TDX,
-> it will lead to sigfault (due to unhandled #VE).
+> Networking (both drivers and core networking code) is once again
+> responsible for a fairly big chunk of the fixes in rc5, but there's
+> certainly a fair number of fixes elsewhere to - architectures (arm64
+> has mostly devicetree updates, but we've got fixes to x86, mips,
+> powerpc in there too), other drivers (GPU driver fixes stand out, but
+> there's also sound, HID, scsi, nvme.. you name it).
+> 
+> And we have a scattering of fixes elsewhere too: filesystems (btrfs,
+> ext4, gfs2, ocfs, fanotify), soem core vm fixes, and some selftest and
+> perf tool updates.
+> 
+> Most of the discussion I've seen is already about future things, but
+> please do give this a whirl and make sure that 5.13 is stable and
+> good.
+> 
 
-A kernel driver using WBINVD will "sigfault"?  I'm not sure what that
-means.  How does the kernel "sigfault"?
+Nothing to report from my side:
 
-> In this patch we only create exception for ACPI sleep driver code. If
-> commit log is confusing, I can remove information about other unsupported
-> feature (with WBINVD usage).
+Build results:
+	total: 151 pass: 151 fail: 0
+Qemu test results:
+	total: 462 pass: 462 fail: 0
 
-Yes, the changelog is horribly confusing.  But simply removing this
-information is insufficient to rectify the deficiency.
-
-I've lost trust that due diligence will be performed on this series on
-its own.  I've seen too many broken promises and too many holes.
-
-Here's what I want to see: a list of all of the unique call sites for
-WBINVD in the kernel.  I want a written down methodology for how the
-list of call sites was generated.  I want to see an item-by-item list of
-why those call sites are unreachable with the TDX guest code.  It might
-be because they've been patched in this patch, or the driver has been
-disabled, or because the TDX architecture spec would somehow prohibit
-the situation where it might be needed.  But, there needs to be a list,
-and you have to show your work.  If you refer to code from this series
-as helping to prevent WBINVD, then it has to be earlier in this series,
-not in some other series and not later in this series.
-
-Just eyeballing it, there are ~50 places in the kernel that need auditing.
-
-Right now, we mostly have indiscriminate hand-waving about this not
-being a problem.  It's a hard NAK from me on this patch until this audit
-is in place.
+Guenter
