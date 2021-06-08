@@ -2,138 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32B839EBC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F365239EB7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhFHB6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:58:21 -0400
-Received: from mail-pf1-f182.google.com ([209.85.210.182]:35809 "EHLO
-        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbhFHB6U (ORCPT
+        id S231485AbhFHBdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:33:50 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37130 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231424AbhFHBdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:58:20 -0400
-Received: by mail-pf1-f182.google.com with SMTP id h12so11666565pfe.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:56:29 -0700 (PDT)
+        Mon, 7 Jun 2021 21:33:43 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1581UMZQ107409;
+        Tue, 8 Jun 2021 01:30:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=scEQjg7xFIGIZ9s8NfdBqCQ31NJLVL8cwVjuyvjlUvE=;
+ b=QyrJb8ncKQCAbJv2achBIkNzNl1O55D027iZYpNkaBSbB9yPJ0RzcFsk2u03jMHfzagL
+ COOmxaDdoqM5Nh/obnVb8f/RuPr3Mq4e5xODm+XR5+tTDafLmyoWu/evOCQ+Gy201Mav
+ RNbELX6rl98owaZ+23PlaS/7FgNbWq+3xCg2gcciT195IodJZ/JjYSi8vTUlY+N4jj/4
+ vaQR/jdHlWqb3CYr+oSb03QbZWVAqoB0AlObBGz6Hjttkmo95CUV2ucAqeBuI655ggIL
+ sGu92Y9JUvx9sj7cPdvUpaqL3l3LZd1JCfcd6G1tngYnb9pLBpXNohKUCrNvQQJSxBOC Pw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 3914qujyy9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Jun 2021 01:30:39 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1581UZJd123609;
+        Tue, 8 Jun 2021 01:30:38 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2172.outbound.protection.outlook.com [104.47.73.172])
+        by aserp3020.oracle.com with ESMTP id 391ujwcmjh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Jun 2021 01:30:38 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RAyY6ZDOj5FGpqbBx/I0XxiYGlyrHX1Adj5Tjg5Zgk3XIZcnSEN4rlw16E6b6bNe5dGUMqmYmKpf6JUm9BLxvgk5BBRUd9rbeNN7X7XcHerbB6YDDBPhqZloXFQtyRKj2wDN1Hizxpg0Rj+uoPbwhnC2m6StXfNVdHkraULKFY7raOdr36HCbbcquUdUO8ouMnK0ig6mkPMc/FzChO9nuDRtFH5nYsCJG9eI2wDlQeiOrzPVa1KQ/oDiu1T21725ye/anGlmMCzzhz9Hx4jHC7wIg+lx9Nt5O7aOl/ZMpBjZ0ciU34cAFiLDakZiQGX7z41hNNa7/ahEZa3XBqgowg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=scEQjg7xFIGIZ9s8NfdBqCQ31NJLVL8cwVjuyvjlUvE=;
+ b=YLv7VUAo3Cl/tII6arxRVGLQkL4w3HGGPIfzCq7nyxt7IztKPFqQvnqH6NT5z0ty85ttoBObJ4/VUTiEZQaxQ5i5u+SKlnNcsF/3NFq3yXdaPJdrvisWDaQ30O58aub+bNHU/SyVOOlxPrGgfsAGLlHdLoLvkNA84Zed2sFMWYPc0MrEESWlAntCCUDQEmcVJlqGodVqFuMSoRRLGwc0gbunsoWnev0cHOkcKKH+yVPawftgPMHOZ9fv+ec29WTW1IxVteLqos/fLU1at3TaxQpuV73lxBkTMkKbS0c+tdUPXq0Q9NtVWji5uUeS+HJLacaGPi/kq4Dm8Mp9NP9Vfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PYSa5dzZqlSBhiWVVfbL3z5005cJpSnxJob3wTcfuvM=;
-        b=Jd5F59np7OwVQO4iLQZZLy20cUm82OhVfYN3mJMZIrXP6qc9avY20mjm1C0Or+RVgB
-         D8jUAnDWyLgze5HS1B/75OyPE1K8d6EUmdEU4BOrxfUP8MxPGnp5PAZS7SaqHSYGUFAx
-         kefMT1zw88Y8HzyexdjUaGhbkOZMZjX7Z7gckJqNzLyalxgUrf8URyI/dI5nknCH1mKu
-         5jkM/9v7rkj6H45xZQqKt+YeQpa0m0Oe/YrOhkrFbruIyhUXgvMo7eoATEpd4XIb/ipD
-         NCkQVqkdMrjOwgDG6BMhswrXq4trgof6QRXTa9BXWunfeCMfOEvidJVA7yIP7UtHzPZU
-         FTXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PYSa5dzZqlSBhiWVVfbL3z5005cJpSnxJob3wTcfuvM=;
-        b=AA8t+YESQhcMUjbsNjYapfgH/eBa429ZF91YfGCw95AxA7fNJZ/niHzCT39l1xjK5P
-         6RVt12k1N7Cp/PnoOZHZ7ET+f2xrRcuqV1vdmjO9SqEQ1k9KQ1gnZOekk+r+zRl79Yin
-         Ig0TyL4WXcDX3ZIxLA/HzDOPANLyA+clzRR//IbP45Kny1biQPrUa5tjLqp8U67fehvV
-         aGSyENA5884r+pf/Vxyh0WJhDlYt+nkCel4aazEWJ/jZj//gAUmY5RraqbmJM7/Is+kG
-         7DPU56lMWHCH4n1csYNUn9u2t3kGaMAKQHfxUdc8fPQ0hb4qYjxKRAPcp64jYYq4+sMk
-         mJzw==
-X-Gm-Message-State: AOAM530g51O4RfbxEdxCUWu7YlE8fPQpM5+o+Ny2G7a137liwSvVjjpx
-        w2N3BA1qPxacLpcyd2kn5lw=
-X-Google-Smtp-Source: ABdhPJyQ8lkTxIxUP+pI7+xd1dEjyqRcbeEohR06teOYio4TrTHXUm0jN2/AKARGkcYGzSnUGJH6Ew==
-X-Received: by 2002:a05:6a00:1893:b029:2ec:a754:570e with SMTP id x19-20020a056a001893b02902eca754570emr13709535pfh.38.1623117328716;
-        Mon, 07 Jun 2021 18:55:28 -0700 (PDT)
-Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id s24sm9284767pfh.104.2021.06.07.18.55.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 18:55:28 -0700 (PDT)
-From:   Nadav Amit <nadav.amit@gmail.com>
-X-Google-Original-From: Nadav Amit
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Nadav Amit <namit@vmware.com>, Will Deacon <will@kernel.org>,
-        Jiajun Cao <caojiajun@vmware.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 6/6] iommu/amd: Sync once for scatter-gather operations
-Date:   Mon,  7 Jun 2021 11:25:41 -0700
-Message-Id: <20210607182541.119756-7-namit@vmware.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210607182541.119756-1-namit@vmware.com>
-References: <20210607182541.119756-1-namit@vmware.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=scEQjg7xFIGIZ9s8NfdBqCQ31NJLVL8cwVjuyvjlUvE=;
+ b=vkzB67tDkwELjMH2PMsE9fOFb+tAjDqPI+km5uw5eiyHCQRNBPUmVWTTwFniZu4F7Tq9uiaE19cROImme6Hwtw9kEql8oSuQZB2/LFY7k12FfGOxDoV4e/8ArqXB/98yJl9kXeVBLHxD/UZKYaqftJbFY33dNdGWdiU/l4VQJPM=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4631.namprd10.prod.outlook.com (2603:10b6:510:41::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Tue, 8 Jun
+ 2021 01:30:22 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4195.030; Tue, 8 Jun 2021
+ 01:30:22 +0000
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Joe Perches <joe@perches.com>, Hannes Reinecke <hare@suse.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-scsi@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] scsi: fcoe: Statically initialize flogi_maddr
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1im2pkusa.fsf@ca-mkp.ca.oracle.com>
+References: <20210602180000.3326448-1-keescook@chromium.org>
+Date:   Mon, 07 Jun 2021 21:30:19 -0400
+In-Reply-To: <20210602180000.3326448-1-keescook@chromium.org> (Kees Cook's
+        message of "Wed, 2 Jun 2021 11:00:00 -0700")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SA9PR13CA0039.namprd13.prod.outlook.com
+ (2603:10b6:806:22::14) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA9PR13CA0039.namprd13.prod.outlook.com (2603:10b6:806:22::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Tue, 8 Jun 2021 01:30:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 968d9cb5-0a6f-4959-01dc-08d92a1cfbd6
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4631:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB463187B52B8A8168828BB8DC8E379@PH0PR10MB4631.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pa5xU5UCl9ArOVyLUbmhYAowzxrdazTGCM55jpXJtMcsVgOBpw8tLzDe/UVd/EYd6TtKmK4aYJndlnv2h6ih7DslndNhGCIi0w3zRupmxvREeah1E0gbFcoLve+bJkj1v+jSHrHonPNFhKphVWj70HdJZDHDqCEcvUUL4L7YYuGMKrvW3kNElicaZxmeeLAGCA3AiHEaZkT/dsvIY5OmqeTKITEFYoYniXhLHFRyGVeByJMtyYWmPann7rOY1HlWvxKR4VXGGFFDjnIbs2ZD3Dwqcv0wE0U9Gywzuf8IIG3cdpDywPZ+LXzqiup7WIZM7Y40/4/CER+HTCQEoeFwLUGKTzuoxWQZ4vAURUqQdMNIoJacWEB7yN1W1M0jriKYPQepYVbo7bSrTY9Zek6E0zThsF+r5RwPM8DKLlNcVT2pDxNCiM6vXJtIVbZpB1UHmHUQ9+YziFqturTZNNmdfqDdKRsmLfE326Ss+TeiAKLj3LRJJ2Pcikk8RMYCM6yLIbHDFdHook2Fw41cgaiUtZff8AB5Gny3OH8P2OIInlLgSXeIIh9tJ1ufCeOmLIvW9hxX12TyvBehojOIl0IHXFzSYACCS81SqSbTQkhSpE6VJfvCZR0HlYMSHJecEi0qCXG522w/ZSSu47zvkcR+xA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(376002)(136003)(396003)(346002)(6916009)(16526019)(26005)(186003)(66476007)(36916002)(52116002)(7696005)(66556008)(478600001)(8676002)(956004)(55016002)(54906003)(5660300002)(2906002)(316002)(4744005)(38350700002)(4326008)(8936002)(86362001)(38100700002)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pzBLVWhF1LjeJMh5I3gqXb444EReviJ93i+t7eP+C4Eiwc2ywcvHsH5/R1RT?=
+ =?us-ascii?Q?ZxbsnUEIl4rfRnzj2eQVUQWqZT/hqM3DugonOze5lwV/+g8iCCi4Cwpc/VcI?=
+ =?us-ascii?Q?mw6pecDB/W46VVbKyK0oGHrv+FsMM5Y/BcRplV09MrDwSB2kFSbzlDobuL/i?=
+ =?us-ascii?Q?7iIFXzThyNXwM//nfBPw9BVwgFZCg3DUbmoAnEf44H4ntJ2uOgQRCE2Vup9+?=
+ =?us-ascii?Q?YHIou+9T1YejeXL3MBYQ4pvppVIYgKJO5lvipsVocmDmlFF55F8QktWoJVIB?=
+ =?us-ascii?Q?N/2sTqkadnKxJ9WaHabdqR30QVW875t5scZsx7MMzJLEFf9hfL2Iszg4+7Nr?=
+ =?us-ascii?Q?AqeiaGlUOdWFKj5240L4SaSdvl0ImbGkHCzWaGxTGm/VT4Xz8lgJjcQAN5Qf?=
+ =?us-ascii?Q?QHeCqhf2CHL9LI9jjbtmH3Uw021GwZ9iKwb9i3cR9xagUjlhNsO6DX0fTUEA?=
+ =?us-ascii?Q?Q3KCc+plqunI8dnVqPj55uceXLBkk2CQi+JEP5tXz22oC6u7Ew6peOape7oU?=
+ =?us-ascii?Q?vX8YwQMKDXbUHufqIohSQZoBWDCD5Cr9d2qUxN/Ndbyr9lt5c1Y+8M8Grfxy?=
+ =?us-ascii?Q?gbxETYPTgIq+Y+D7b1phQET3ojC2Y9zgvHGQtXzm95WezxDNa5UKy8Dfd8+5?=
+ =?us-ascii?Q?5Zg+5bKbyC1ODNt/ZG6vn6la50w4h4l5ARJw+2q4NqUwnFwAoL6OTJidOfVK?=
+ =?us-ascii?Q?NX9W7jmUC7un9pVSBKjmbC2cNoY6dq0wqRgU4RMo40ehgsyJS3jjhR5OShqK?=
+ =?us-ascii?Q?guxy6T34ajAnBv72/6IPpuypmO2dIJVqDvwvE9c+1DhFw0nCUfegHlJZ+Tdq?=
+ =?us-ascii?Q?e2SmPZykniCXAfCII7Q8M3laG9WkeCYDAebzynK16QfPHVZVng3wm4legY8g?=
+ =?us-ascii?Q?lcuFdeR+TjjzH0YtijIWvlDgKWDqwLKGY41bzlQQGbd/AAE9pSsgIhiR8niP?=
+ =?us-ascii?Q?7x6SWzKRxG3XWMzgrKey9FeVM7L2gXrh+MT1TBMfETbJ2CMT1KTFJUshhMTA?=
+ =?us-ascii?Q?khy5LtPv9tLVFSjEYGjDscTi36NpubbFZZmZK7FKUv03ux+SnEO4to/YzRLc?=
+ =?us-ascii?Q?lxV5aq8JzHmeKvF9vQH0Ju68jQpMeb08HoBpP52ApvLqc2e9i0OzcLuBJ/nQ?=
+ =?us-ascii?Q?0Nd97eJ8LGLyUTmXe+QMs3b1Z4iyTlZTiPuBp2VVtoenTzIWKr1X1ubnFIQY?=
+ =?us-ascii?Q?TXE6+w/gFH/Mt/tg4pdElRcyyUzhN2RefmeygSEmc7Iw0h15OWDIw4Jf8h+E?=
+ =?us-ascii?Q?oxfQ6S9zx5/lAaDmEcHsUV3+UzFenqLXH2zJqOQ739LP34zu1RJ/vDLSSwAR?=
+ =?us-ascii?Q?IIZj9ta4LsQmmKPSM0qjpYEJ?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 968d9cb5-0a6f-4959-01dc-08d92a1cfbd6
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 01:30:22.3437
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G0IDJ0DTKmEGrxYh/Fr9oiKo9NLZ9AApXZ+Zn9d+rjB/GhWWfJ83p/bzZAoWmc3oXZ0p29ABGYeFQ5ud9V3Vcit06V6ltHnT9U0YjYzzslE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4631
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10008 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ phishscore=0 suspectscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106080007
+X-Proofpoint-ORIG-GUID: WtBRkkXkcFJVTR5htFXfxnBzBUFV1fBz
+X-Proofpoint-GUID: WtBRkkXkcFJVTR5htFXfxnBzBUFV1fBz
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10008 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
+ spamscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0
+ priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106080007
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
 
-On virtual machines, software must flush the IOTLB after each page table
-entry update.
+Kees,
 
-The iommu_map_sg() code iterates through the given scatter-gather list
-and invokes iommu_map() for each element in the scatter-gather list,
-which calls into the vendor IOMMU driver through iommu_ops callback. As
-the result, a single sg mapping may lead to multiple IOTLB flushes.
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy() avoid using an inline const buffer
+> argument and instead just statically initialize the destination array
+> directly.
 
-Fix this by adding amd_iotlb_sync_map() callback and flushing at this
-point after all sg mappings we set.
+Applied to 5.14/scsi-staging, thanks!
 
-This commit is followed and inspired by commit 933fcd01e97e2
-("iommu/vt-d: Add iotlb_sync_map callback").
-
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Jiajun Cao <caojiajun@vmware.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: iommu@lists.linux-foundation.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Nadav Amit <namit@vmware.com>
----
- drivers/iommu/amd/iommu.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 128f2e889ced..dd23566f1db8 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -2027,6 +2027,16 @@ static int amd_iommu_attach_device(struct iommu_domain *dom,
- 	return ret;
- }
- 
-+static void amd_iommu_iotlb_sync_map(struct iommu_domain *dom,
-+				     unsigned long iova, size_t size)
-+{
-+	struct protection_domain *domain = to_pdomain(dom);
-+	struct io_pgtable_ops *ops = &domain->iop.iop.ops;
-+
-+	if (ops->map)
-+		domain_flush_np_cache(domain, iova, size);
-+}
-+
- static int amd_iommu_map(struct iommu_domain *dom, unsigned long iova,
- 			 phys_addr_t paddr, size_t page_size, int iommu_prot,
- 			 gfp_t gfp)
-@@ -2045,10 +2055,8 @@ static int amd_iommu_map(struct iommu_domain *dom, unsigned long iova,
- 	if (iommu_prot & IOMMU_WRITE)
- 		prot |= IOMMU_PROT_IW;
- 
--	if (ops->map) {
-+	if (ops->map)
- 		ret = ops->map(ops, iova, paddr, page_size, prot, gfp);
--		domain_flush_np_cache(domain, iova, page_size);
--	}
- 
- 	return ret;
- }
-@@ -2249,6 +2257,7 @@ const struct iommu_ops amd_iommu_ops = {
- 	.attach_dev = amd_iommu_attach_device,
- 	.detach_dev = amd_iommu_detach_device,
- 	.map = amd_iommu_map,
-+	.iotlb_sync_map	= amd_iommu_iotlb_sync_map,
- 	.unmap = amd_iommu_unmap,
- 	.iova_to_phys = amd_iommu_iova_to_phys,
- 	.probe_device = amd_iommu_probe_device,
 -- 
-2.25.1
-
+Martin K. Petersen	Oracle Linux Engineering
