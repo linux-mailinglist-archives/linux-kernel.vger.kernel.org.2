@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0840839EF71
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3311E39EF78
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhFHHXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 03:23:17 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5283 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFHHXO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 03:23:14 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FzhP91V7zz1BK4q;
-        Tue,  8 Jun 2021 15:16:29 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 15:21:19 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 15:21:19 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] mm: remove leading spaces before tabs
-Date:   Tue, 8 Jun 2021 15:21:15 +0800
-Message-ID: <20210608072115.12793-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S230293AbhFHHZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 03:25:05 -0400
+Received: from m12-17.163.com ([220.181.12.17]:46417 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhFHHZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 03:25:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=lXAG6
+        vCftIk6Ip/UkivpNpsxciXf87u+LUWOlsCSk0o=; b=CoaKPJGZm9VDPyPxwu3sy
+        brDVKLD7Cj2Q7lJhQEaGd2E75KDdIizN7sM7mAZprmXHhImKAJppgVTVfU5GA1Av
+        TM24JckQwcAQy3Xmm3zmLNYrE6XVZuluUQv723bM2tx77VNcTn2kZS+FDycONBhe
+        z+Q/dXqeiIIWyWeXkegTAA=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp13 (Coremail) with SMTP id EcCowADH5ZW5Gr9gr0h06A--.64881S2;
+        Tue, 08 Jun 2021 15:22:34 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Subject: [PATCH] scsi: lpfc: lpfc_nvmet: deleted the repeated word
+Date:   Tue,  8 Jun 2021 15:21:33 +0800
+Message-Id: <20210608072133.272091-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowADH5ZW5Gr9gr0h06A--.64881S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Ww1fWF4kWrWDZw4kCFyDZFb_yoW8JFW3pa
+        1rCF1IvrsYkF1IkFW3Zr48ur98t3WFqFWj9a1DK345uFWrtrW7JFyxGrWDXrWrXF48Jryj
+        vrsrKryjg3WDZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07b8wIgUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbi3xqrUGB0Gd-8rgAAs+
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1) Run the following command to find and remove the leading spaces before
-   tabs:
-   find mm/ -type f | xargs sed -r -i 's/^[ ]+\t/\t/'
-2) Manually check and correct if necessary
+From: lijian <lijian@yulong.com>
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+deleted the repeated word 'the' and 'received' in the comments.
+
+Signed-off-by: lijian <lijian@yulong.com>
 ---
- mm/vmscan.c | 2 +-
- mm/vmstat.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/lpfc/lpfc_nvmet.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index eb314525c889..f2e4377bcbfc 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -4302,7 +4302,7 @@ static int __init kswapd_init(void)
+diff --git a/drivers/scsi/lpfc/lpfc_nvmet.c b/drivers/scsi/lpfc/lpfc_nvmet.c
+index f2d9a3580887..bf35984e58e9 100644
+--- a/drivers/scsi/lpfc/lpfc_nvmet.c
++++ b/drivers/scsi/lpfc/lpfc_nvmet.c
+@@ -1469,7 +1469,7 @@ lpfc_nvmet_cleanup_io_context(struct lpfc_hba *phba)
+ 	if (!infop)
+ 		return;
  
- 	swap_setup();
- 	for_each_node_state(nid, N_MEMORY)
-- 		kswapd_run(nid);
-+		kswapd_run(nid);
- 	return 0;
- }
- 
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index b0534e068166..d7e94b4a95ee 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -200,7 +200,7 @@ int calculate_normal_threshold(struct zone *zone)
- 	 * The threshold scales with the number of processors and the amount
- 	 * of memory per zone. More memory means that we can defer updates for
- 	 * longer, more processors could lead to more contention.
-- 	 * fls() is used to have a cheap way of logarithmic scaling.
-+	 * fls() is used to have a cheap way of logarithmic scaling.
- 	 *
- 	 * Some sample thresholds:
- 	 *
+-	/* Cycle the the entire CPU context list for every MRQ */
++	/* Cycle the entire CPU context list for every MRQ */
+ 	for (i = 0; i < phba->cfg_nvmet_mrq; i++) {
+ 		for_each_present_cpu(j) {
+ 			infop = lpfc_get_ctx_list(phba, j, i);
+@@ -3562,7 +3562,7 @@ lpfc_nvmet_unsol_fcp_issue_abort(struct lpfc_hba *phba,
+  * lpfc_nvme_unsol_ls_issue_abort - issue ABTS on an exchange received
+  *        via async frame receive where the frame is not handled.
+  * @phba: pointer to adapter structure
+- * @ctxp: pointer to the asynchronously received received sequence
++ * @ctxp: pointer to the asynchronously received sequence
+  * @sid: address of the remote port to send the ABTS to
+  * @xri: oxid value to for the ABTS (other side's exchange id).
+  **/
 -- 
 2.25.1
 
