@@ -2,273 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BBA3A048C
+	by mail.lfdr.de (Postfix) with ESMTP id B8DE93A048E
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238483AbhFHThf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42572 "EHLO
+        id S238099AbhFHTho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238320AbhFHTfc (ORCPT
+        with ESMTP id S238529AbhFHTfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:35:32 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0070C0613A3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:23:04 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id z1so20926501ils.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 12:23:04 -0700 (PDT)
+        Tue, 8 Jun 2021 15:35:38 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0557C061280
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:23:09 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id x14so14177981ljp.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 12:23:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oo4r6NWe5hqiQe/8WtD+uPpZehlEoQKg56CwyOrMvuM=;
-        b=uNeIedaRhdUNY+s7YulaUeZ1/gMCtWYGeiJE/2oR4yY4aP94kkwKxnOEQlWAq6ZSAi
-         gfj/CYcl31klpfnJraTBSv0MBuZ7piXExYq18taa4VWqPon92cC3o9SL16Ln8fypG4//
-         Yx5WSWGVQ802FKB/CBlTNewr7InB9xfPM98yu3B+IjehxZ6QxgfVyZgFu7gSTlZ5D1yn
-         NrI4hfpzwUNPj0uafXOW2Zmyp8May33HY7JXJ1JpoNw/0dXrUY153hThJq14heh25x9a
-         o/aSz0Cj9M54Lo7HoOmzW3y7LOUCBqzIRafFTgghYkjBaH6ckcFd7APhIuwCD8p2AJVM
-         Cwbw==
+        bh=XNx3px6nlkS3axSHpAq2ksethvIjNf8tQ51A6uKqGH8=;
+        b=MmsGIRmp5+AW+Pu7wvdm2P41041Za82ArNc164IeRST/CukpxNHxNqGmarWeGn43ex
+         /h1Ic6Xf1m5ksR6gTLOX6PDQCzaDeruXEXULiN4mQPCP3T3dfgewer95vtV4IQ7h9DKL
+         re80+DFBHOpTCF8Iqmv2juKvvH8o6N24g82I8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oo4r6NWe5hqiQe/8WtD+uPpZehlEoQKg56CwyOrMvuM=;
-        b=aMEVNirZPVyyvsSm9Jv9es+5BCDDp+M+hV3nq3fscHPzLQy1MMysMocFtYLSHeJbyu
-         9M3DKZKCXX/G2vHSgj1uvPsnBg8gbJ+CW6Le7z+otDUkmtra2kHmaMgMWruL6bpTsb3m
-         uPjfLeAZHmwjgyCfOaSYpbC072IVXfXI+XrflHXNuqLYAYisMRZ2MNEx5skfsbMzu5Xh
-         KM9ukxfWSVbYewsq0S7+70tvqEho1Y6ZXjRuhZvbwdH6JKPgJB95pzDZUKjXzivuLf9s
-         qPpIRDVSWXkxZSRFVndy9Y7FDSnIgiRa9+s0ODPDYXOeqjw29FkdN0DTcA0w1mgVpslK
-         BrIw==
-X-Gm-Message-State: AOAM5326NIxp4oKzJ7+idIGBSFH18b3JIyYY01VreimRzNxI+32WxYBH
-        BqGrd5jLBIzQBPOUaFpRjWcwUwLfm4dJU20JOPhJbQ==
-X-Google-Smtp-Source: ABdhPJwn+2U6fsz5Q7lRqLvYVMgczVTZ51xlck+7QrqKrTVCokK+Y3/qInxgdAo365FgwWz0p+uRfNKjvtQ6t8aJxAI=
-X-Received: by 2002:a92:dc10:: with SMTP id t16mr19804907iln.75.1623180180558;
- Tue, 08 Jun 2021 12:23:00 -0700 (PDT)
+        bh=XNx3px6nlkS3axSHpAq2ksethvIjNf8tQ51A6uKqGH8=;
+        b=YpmXmbmoSl2AL07bXE2L1Z4Lh26dg4V8ernDmkyf2gV39DCcSAE5JZi6Ln3etOx+gu
+         iUaG+i6NXvuSb6Q4yvm4OeX3G+zXDh20gSpCT4vggOeJTjpZMyddhAm90e/UX45plfd8
+         njwsL/wjRMwrPovA8qzZtwPhhX+efmX7xzvHuVj3fQosESFQr87TR1sB2a1IkI3tdB7h
+         PVkgt4d7n0/O6Y7pw80r+OCdmU4nJN49SEPArQnynUfQzs3NLUGcjO+dByuh2qRjWwqu
+         1vJxo1iE3fWY4XZVz1fMw3m0QyDlL4MlAV1VSHj2UJUsEh4dgZ92QwIMVRuR+kvxGvBK
+         VSlg==
+X-Gm-Message-State: AOAM532DhmpgfjZJb2j+JUjx6n1/0PjSH/xMfBmEwl7mWGkrX6c90wac
+        N9O4tuBFsnKic9a6MkrQdDhH+L8xDmMCXwinqtI=
+X-Google-Smtp-Source: ABdhPJxxme2YOEQ/burhOS0RKk6y9HNJQ9aW6lHjvXytqc1LBfAqAUtzcstmPCS7j/rnZ8Uc+L2SBg==
+X-Received: by 2002:a2e:155e:: with SMTP id 30mr3428696ljv.316.1623180187898;
+        Tue, 08 Jun 2021 12:23:07 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id d2sm62360lfg.229.2021.06.08.12.23.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 12:23:07 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id i10so33879181lfj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 12:23:07 -0700 (PDT)
+X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr15915332lfs.377.1623180186850;
+ Tue, 08 Jun 2021 12:23:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210608084740.6282-1-glittao@gmail.com>
-In-Reply-To: <20210608084740.6282-1-glittao@gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Tue, 8 Jun 2021 12:22:49 -0700
-Message-ID: <CAGS_qxo-ddRcPbVW_iKJ6zuFUpRzx-coh1qq4xT9xK_gWr=qqg@mail.gmail.com>
-Subject: Re: [PATCH] docs: add documentation for SLUB cache kunit tests
-To:     glittao@gmail.com
-Cc:     brendanhiggins@google.com, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-mm@kvack.org, elver@google.com,
-        corbet@lwn.net, linux-doc@vger.kernel.org
+References: <YLx/iA8xeRzwhXJn@zn.tnic> <CAHk-=wjXKsJVk+LPiOSiBACchPJLne7O+U+jmvw8CaLBYn-3=Q@mail.gmail.com>
+ <YL029aQZb09G3ShY@linux.ibm.com> <CAHk-=wg7+-Q-jvrwQmyZtQ3pirAUcAQmvUpiLu=0nJv8NObntg@mail.gmail.com>
+ <YL1HLdmh55uGAIs/@zn.tnic> <YL1UucKH0GfXddZo@sashalap> <eaf8e14-12d6-6e3a-f5e5-8b504647eb48@namei.org>
+ <MWHPR21MB159330952629D36EEDE706B3D7379@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <YL+368+oKRORwUzx@zn.tnic>
+In-Reply-To: <YL+368+oKRORwUzx@zn.tnic>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 8 Jun 2021 12:22:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh1nz4=72vk3+q5TuPwBF2HMY4SnBOZr6WSLp=s4KExSA@mail.gmail.com>
+Message-ID: <CAHk-=wh1nz4=72vk3+q5TuPwBF2HMY4SnBOZr6WSLp=s4KExSA@mail.gmail.com>
+Subject: Re: [GIT PULL] x86/urgent for v5.13-rc5
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Michael Kelley <mikelley@microsoft.com>,
+        James Morris <jmorris@namei.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        James Morris <James.Morris@microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 1:47 AM <glittao@gmail.com> wrote:
+On Tue, Jun 8, 2021 at 11:33 AM Borislav Petkov <bp@alien8.de> wrote:
 >
-> From: Oliver Glitta <glittao@gmail.com>
->
-> Add documentation for a KUnit test for SLUB debugging functionality.
->
-> Signed-off-by: Oliver Glitta <glittao@gmail.com>
+> Linus, maybe we should at least give it a try and see whether someone
+> complains and revert, potentially...?
 
-I'm not in the intended audience for this documentation, so I've
-mainly just gone and pointed out some small spelling mistakes and some
-formatting suggestions.
+I already merged the change that did that.
 
-> ---
->  Documentation/vm/slub.rst | 104 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 104 insertions(+)
->
-> diff --git a/Documentation/vm/slub.rst b/Documentation/vm/slub.rst
-> index 03f294a638bd..ca82fc1649ee 100644
-> --- a/Documentation/vm/slub.rst
-> +++ b/Documentation/vm/slub.rst
-> @@ -384,5 +384,109 @@ c) Execute ``slabinfo-gnuplot.sh`` in '-t' mode, passing all of the
->        40,60`` range will plot only samples collected between 40th and
->        60th seconds).
->
-> +KUnit tests for SLUB debugging functionality
-> +============================================
-> +
-> +These KUnit tests are used to test some of the SLUB debugging
-> +functionalities.
-> +
-> +KUnit tests are used for unit testing in Linux kernel and easy to run,
-> +so it is probably the best choice for this type of tests.
+It might be worth adding a comment about the verified Windows behavior
+here, but I think otherwise we're all done.
 
-Note: if we think KUnit is worth explaining here, perhaps it's also
-worth linking to KUnit documentation?
+Unless somebody complains, as you say.
 
-Something like
-"KUnit (Documentation/dev-tools/kunit/index.rst) ..."
-
-should work, or "See KUnit documentation (...) for more details", etc.
-
-> +
-> +There are tests, which corrupt redzone, the free objects and the freelist.
-> +Tests are corrupting specific bytes in cache and checking if validation
-> +finds expected number of bugs. Bug reports are silenced.
-> +
-> +Config option
-> +
-> +In order to built and then run this tests you need to switch
-
-nit: "to build"
-nit: "run these tests"
-
-> +option SLUB_KUNIT_TEST on. It is tristate option so it can also
-
-minor nit: s/is tristate/is a tristate
-
-> +be built as a module. This option depends on SLUB_DEBUG and
-> +KUNIT options. By default it is on with all kunit tests.
-
-I assume this last sentence is about CONFIG_KUNIT_ALL_TESTS.
-I don't think we need to document that here.
-
-It could also mislead users as selecting CONFIG_KUNIT_ALL_TESTS=y will
-not be sufficient to make the test run on its own.
-
-> +
-> +Error counting
-> +
-> +To get number of errors discovered in slub is used test API kunit_resource.
-
-Nit: "To get the number"
-
-Nit: can we use ``kunit_resource`` to format code-related terms?
-
-Note: we can link to the API reference by including "test API
-(Documentation/dev-tools/kunit/api/test.rst)"
-
-Not sure if you saw, but this is that page:
-https://www.kernel.org/doc/html/latest/dev-tools/kunit/api/test.html
-Coincidentally enough, kunit_resource is the first thing shown for now :)
-
-Note: it'd be cool if we could link to a specific section, but I
-haven't checked if that's actually possible with automarkup.py, e.g.
-like https://www.kernel.org/doc/html/latest/dev-tools/kunit/api/test.html#c.kunit_resource
-
-
-> +In test_init the reference to the integer variable slab_errors is added
-> +to the resource of this tests.
-> +
-> +During slub cache checking always when bug should be reported or fixed function
-
-Nit: "when a bug"
-
-> +slab_add_kunit_errors() is called. This function find resource to kunit test
-> +and increment value of data in founded resource, which is slab_errors
-> +variable.
-> +
-> +Silence bug reports
-> +
-> +The function slab_add_kunit_errors() is returning bool, which is true if there is kunit test
-> +with correct kunit_resource running, to silence bug reports, so they are not printed.
-> +We do not want to correct errors we only want to know they occurred, so these reports
-> +are unnnecessary.
-
-nit: "unnecessary"
-
-> +
-> +KASAN option
-> +
-> +Only 2 out of 5 tests are runnig with KASAN option is on.
-
-nit: "running"
-
-> +The other three tests deliberately modifies non-allocated objects. And KASAN
-
-nit: "other three tests ... modify"
-
-> +does not detect some errors in the same way as SLUB_DEBUG. So, these tests
-> +does not run when KASAN option is on.
-> +
-> +TESTS
-
-I'm not the intended target for this doc, so feel free to ignore this
-comment entirely.
-
-Hmm, I'm not really a fan of the docs listing out each test case and
-what they do.
-I feel like this will get out of sync and you now are expected to read
-another file to understand what the tests do.
-I can see the benefit of a high-level explanation, especially if we
-started having more tests scattered across multiple files, but I think
-we should wait until that time comes.
-
-So I'd personally prefer it if we converted these sections into
-comments on the test cases themselves.
-
-> +
-> +1. test_clobber_zone
-> +
-> +   SLUB cache with SLUB_REDZONE flag can detects writings after object. This
-
-nit: is there a missing word after "after object.", perhaps "deallocation"?
-Perhaps then: "can detect writes after objection deallocation", or
-more simply "can detect write-after-free errors" ?
-
-> +   functionality is tested here on allocated memory.
-> +
-> +   First, there is allocated memory with SLAB_REDZONE and then the first byte
-> +   after allocated space is modified. Validation founds 2 errors, because of
-> +   the bug and the fix of the memory.
-> +
-> +
-> +2. test_next_pointer
-> +
-> +   SLUB have list of free objects and the address of the next free object
-> +   is always saved in free object at offset specified in variable offset
-> +   in struct kmem_cache. This test try to corrupt this freelist and
-> +   then correct it.
-> +
-> +   First, there is allocated and freed memory to get a pointer to free object.
-> +   After that, the pointer to next free object is corrupted. The first validation finds
-> +   3 errors. One for corrupted freechain, the second for the wrong count of objects
-> +   in use and the third for fixing the issue. This fix only set number of objects
-> +   in use to a number of all objects minus 1, because the first free object
-> +   was corrupted.
-> +
-> +   Then the free pointer is fixed to his previous value. The second validation finds
-> +   2 errors. One for the wrong count of objects in use and one for fixing this error.
-> +
-> +   Last validation is used to check if all errors were corrected so no error
-> +   is found.
-> +
-> +3. test_first_word
-> +
-> +   SLUB cache with SLAB_POISON flag can detect poisoning free objects. This
-> +   functionality is tested in this test. The test tries to corrupt
-> +   the first byte in freed memory.
-> +
-> +   First of all, memory is allocated and freed to get a pointer to a free object
-> +   and then the first byte is corrupted. After that, validation finds 2 errors,
-> +   one for the bug and the other one for the fix of the memory.
-> +
-> +4. test_clobber_50th_byte
-> +
-> +   In this test SLAB_POISON functionality is tested. The test tries to
-> +   corrupt the 50th byte in freed memory.
-> +
-> +   First, pointer to a free memory is acquired by allocating and freeing memory.
-> +   Then 50th byte is corrupted and validation finds 2 errors for the bug and
-> +   the fix of the memory.
-> +
-> +5. test_clobber_redzone_free
-> +
-> +   This test tests redzone functionality of SLUB cache on a freed object.
-> +
-> +   First, it gets pointer to the free object with allocating and freeing and
-> +   then corrupts the first byte after the freed object. Validation finds
-> +   2 errors for the bug and the fix of the memory.
-> +
->  Christoph Lameter, May 30, 2007
->  Sergey Senozhatsky, October 23, 2015
-> --
-> 2.31.1.272.g89b43f80a5
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20210608084740.6282-1-glittao%40gmail.com.
+            Linus
