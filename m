@@ -2,84 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3B739F79A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5777C39F7A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbhFHNUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:20:41 -0400
-Received: from mga01.intel.com ([192.55.52.88]:2174 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232916AbhFHNU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:20:28 -0400
-IronPort-SDR: DVXPmKH8vMgx9UJjscyVFhcy2g0CUZYfhWXy34sZSFQX2X/Z1qFkxL/UXZ0pgA9DkxzClxkJer
- 4dIpzitiAE6w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="226184001"
-X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="226184001"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 06:18:35 -0700
-IronPort-SDR: 7JQRozo58WL6GPe4AKfKHK9YOjwgV53n0ap5P0UP42As1RqJ5qgkOx6JetDc0cRlv0EfMA9fY1
- xqYUJZBEbBPA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="552275810"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 08 Jun 2021 06:18:33 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 08 Jun 2021 16:18:32 +0300
-Date:   Tue, 8 Jun 2021 16:18:32 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     Benjamin Berg <bberg@redhat.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/7] usb: typec: ucsi: Don't stop alt mode
- registration on busy condition
-Message-ID: <YL9uKFiHm0fht67X@kuha.fi.intel.com>
-References: <20210607131442.20121-1-heikki.krogerus@linux.intel.com>
- <20210607131442.20121-3-heikki.krogerus@linux.intel.com>
- <2f4bf248-cd27-623d-5984-fafa931404fa@gmail.com>
+        id S232944AbhFHNVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:21:45 -0400
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:40600 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232933AbhFHNVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 09:21:38 -0400
+Received: by mail-lf1-f44.google.com with SMTP id w33so32070137lfu.7;
+        Tue, 08 Jun 2021 06:19:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tZorGvclpOPbhfWPZaOjzmooZyvoUCWVkBUywkX8hVE=;
+        b=cLdowKF6nDP8aESrogQtYZIP99vozu+I/mrGv+bjQWoL4XeTfzPCyPxxfYcHFoLheU
+         ClGPeL2b1yOrtqC38+ICGLUYst1T2ZSjR62PHgjdWVVb6FP9WcJhRu5oZLRdpkrMzi5o
+         KzA94JoXvAc+PIk0j6f8R8lmkYZ0CcuRM5JxB4qZzCpgJOpYap39A/LKTnzG3basoQVC
+         5joO48T897mkCFrGx6SRJPgdVivp44ADgbApejeAJkKOz3edbc/J4Z52eAjbVgr/UUDq
+         TeCsrwSuperGlYQlGd2bxSaJ07NfbyNTOe0Ld/iigTDOLYVde09+NSrAYpJv7W9qAgen
+         ZQcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tZorGvclpOPbhfWPZaOjzmooZyvoUCWVkBUywkX8hVE=;
+        b=KkAURT8QxJ9e4pV2Z0OAqOoa2e22FppsS3EkA0XrCsKAeZkdYi1bIIZBT87ZUoA03F
+         6mk8B+7XimTqzCOBce2544D7Qwn73NjoCXX5Ej7RDwCm66w/EbhQHuAB/guyKgl1n0qT
+         kvLs8yiPLYIa5BfpzPoSgMscLtlazza5oTWl5iblunhlfWd0AQL6Svn6JWGnIqDfEp5s
+         Z5DYazDjsS4Va0V62jmYy5edcAh031wPn+aaS7Krq60o01TeqgjAVAJ+C41J0lAOKyRF
+         59kSi8vn31aIhGDwB2Oj0z8zZ0N2VNc1l0H78IGnhufyQvcj8Th3B9UC3MSzTjS16jTd
+         j8iA==
+X-Gm-Message-State: AOAM532l9pRREK1XukrAa9PGUmuKGPu+bMBDX3TbkdEAREL4CCJ2mmt2
+        X5ny6KrcGpbfxOZ5eIWaz8Y=
+X-Google-Smtp-Source: ABdhPJwrZLqSS8selXX297l/UST/YtonGUnayP2LjZk04lHR17IUaOnVAsD5CaOitjDBhBs2FLhF9Q==
+X-Received: by 2002:ac2:47f7:: with SMTP id b23mr15844488lfp.522.1623158324713;
+        Tue, 08 Jun 2021 06:18:44 -0700 (PDT)
+Received: from [192.168.1.2] (broadband-5-228-51-184.ip.moscow.rt.ru. [5.228.51.184])
+        by smtp.gmail.com with ESMTPSA id t12sm1160270ljk.116.2021.06.08.06.18.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 06:18:43 -0700 (PDT)
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
+        acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
+        joel@joelfernandes.org, kernel@collabora.com,
+        krisman@collabora.com, libc-alpha@sourceware.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
+        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
+References: <1622799088.hsuspipe84.astroid@bobo.none>
+ <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
+ <1622853816.mokf23xgnt.astroid@bobo.none>
+ <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
+ <1622980258.cfsuodze38.astroid@bobo.none>
+ <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
+ <1623114630.pc8fq7r5y9.astroid@bobo.none>
+ <b3488d1b-a4ff-8791-d960-a5f7ae2ea8b3@gmail.com> <YL9Q2tKLZP6GKbHW@kroah.com>
+ <8fa8b7fd-58ae-9467-138d-4ff4f32f68f7@gmail.com> <YL9kApyE6FbG/hru@kroah.com>
+From:   Andrey Semashev <andrey.semashev@gmail.com>
+Message-ID: <3fca0afa-d9db-a176-aad1-ff7db21ba4a2@gmail.com>
+Date:   Tue, 8 Jun 2021 16:18:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f4bf248-cd27-623d-5984-fafa931404fa@gmail.com>
+In-Reply-To: <YL9kApyE6FbG/hru@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 12:31:45PM +0300, Sergei Shtylyov wrote:
-> Hello!
+On 6/8/21 3:35 PM, Greg KH wrote:
+> On Tue, Jun 08, 2021 at 03:06:48PM +0300, Andrey Semashev wrote:
+>> On 6/8/21 2:13 PM, Greg KH wrote:
 > 
-> On 07.06.2021 16:14, Heikki Krogerus wrote:
+>>> So what's keeping the futex2 code from doing all that futex1 does so
+>>> that the futex1 code can be deleted internally?
+>>
+>> I think, André will answer this, but my guess is, as stated above, this is a
+>> lot of work and time while the intermediate version is already useful.
 > 
-> > If the PPM tells it's busy, we can now simply try again.
-> > 
-> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > ---
-> >   drivers/usb/typec/ucsi/ucsi.c | 5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> > index 366c8a468bc18..a8e0e31dcddf5 100644
-> > --- a/drivers/usb/typec/ucsi/ucsi.c
-> > +++ b/drivers/usb/typec/ucsi/ucsi.c
-> > @@ -437,8 +437,11 @@ static int ucsi_register_altmodes(struct ucsi_connector *con, u8 recipient)
-> >   		command |= UCSI_GET_ALTMODE_CONNECTOR_NUMBER(con->num);
-> >   		command |= UCSI_GET_ALTMODE_OFFSET(i);
-> >   		len = ucsi_send_command(con->ucsi, command, alt, sizeof(alt));
+> useful to who?  I still do not understand what users will be needing
+> this.  All I can tell is a single userspace program wants to use it, and
+> that is a fork from the real project it was based on and that the
+> maintainers have no plan to merge it back.
 > 
->    Could insert your check here, to reduce the indentation...
+> So who does need/want this?
 
-Sure thing.
+I mentioned C++ std::atomic and Boost.Atomic before. Those need variable 
+sized futexes.
 
-> > -		if (len <= 0)
-> > +		if (len <= 0) {
-> > +			if (len == -EBUSY)
-> > +				continue;
-> >   			return len;
-> > +		}
-> >   		/*
-> >   		 * This code is requesting one alt mode at a time, but some PPMs
+The project you mention is probably Wine and its derivatives. Those need 
+variable sized futexes and "wait for multiple" operation. I'm not sure 
+about the "no plan to merge it back" part, I probably missed it in an 
+earlier discussion. There are multiple different patches and versions 
+out there, and I don't know which one it refers to. But WaitOnAddress 
+and WaitForMultipleObjects APIs are very important and I would assume 
+Wine wants to emulate those with best efficiency.
 
-thanks,
+I have a media processing engine application that needs 64-bit futexes 
+would benefit from a "wait for multiple" function. Its source code is 
+not open currently, so I'm not sure if you can count it as a valid user.
 
--- 
-heikki
+There is a generic std::lock algorithm in C++ and an equivalent in 
+Boost.Thread that is supposed to lock multiple lockables (a mutex-like 
+object). Those could benefit from the "wait for multiple" function in 
+some cases, e.g. when the objects are actually futex-based mutexes, and 
+the function can access the internal futex. I'm not saying this will 
+definitely be implemented, it just looks like a possible optimization to me.
+
+I think someone mentioned databases earlier in the discussion, but I 
+don't know the details. I hope someone will be able to expand.
