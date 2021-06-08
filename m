@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789AE3A0461
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE953A0466
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238721AbhFHTdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:33:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39586 "EHLO mail.kernel.org"
+        id S237261AbhFHTdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:33:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237855AbhFHTSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:18:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D985B61978;
-        Tue,  8 Jun 2021 18:51:29 +0000 (UTC)
+        id S237736AbhFHTSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:18:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47EE36197C;
+        Tue,  8 Jun 2021 18:51:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178290;
-        bh=n7pG4w/2rTfxpet/fCl9Stkv5gQqX6+XHsU/tbXwW+w=;
+        s=korg; t=1623178292;
+        bh=62T1h9/DgOXL1Gp89VJjrv6Gn40zqKR+HQzaDQYWUMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nFXTGbBhwZap9hVJeRrtjzb6nQkqas08XJ9dP5HsQQQxsNf9Pt9s0kS/LK60RYSfp
-         LhOune/hpUQppWUaMOiVEu8YMMR20OlVlr0o/nP9fHscOztKI34TmSgzem/IvSiQMW
-         vi5CTWtKBNptKEOH+HGcnO8cOK3BN3LQyRRWkdFU=
+        b=yz1U+5EForoKpoDt5a7D3rDTaJbXDSLup+jZ4MXXGPF0ocREtMmhhvcOh6prZvrjJ
+         QwbsPW3sGezSuQyyAbI5OW0/bcUXs6YEGdXOB4zPzcUOdDrNWYOmMRHleBLe5JMNUx
+         WXJ+GZ8BVGu3aZp/HB26MfRawlPAwcPynCsao5pQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.12 147/161] btrfs: fix deadlock when cloning inline extents and low on available space
-Date:   Tue,  8 Jun 2021 20:27:57 +0200
-Message-Id: <20210608175950.415896811@linuxfoundation.org>
+        stable@vger.kernel.org, Mina Almasry <almasrymina@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 148/161] mm, hugetlb: fix simple resv_huge_pages underflow on UFFDIO_COPY
+Date:   Tue,  8 Jun 2021 20:27:58 +0200
+Message-Id: <20210608175950.445533458@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -39,123 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Mina Almasry <almasrymina@google.com>
 
-commit 76a6d5cd74479e7ec8a7f9a29bce63d5549b6b2e upstream.
+[ Upstream commit d84cf06e3dd8c5c5b547b5d8931015fc536678e5 ]
 
-There are a few cases where cloning an inline extent requires copying data
-into a page of the destination inode. For these cases we are allocating
-the required data and metadata space while holding a leaf locked. This can
-result in a deadlock when we are low on available space because allocating
-the space may flush delalloc and two deadlock scenarios can happen:
+The userfaultfd hugetlb tests cause a resv_huge_pages underflow.  This
+happens when hugetlb_mcopy_atomic_pte() is called with !is_continue on
+an index for which we already have a page in the cache.  When this
+happens, we allocate a second page, double consuming the reservation,
+and then fail to insert the page into the cache and return -EEXIST.
 
-1) When starting writeback for an inode with a very small dirty range that
-   fits in an inline extent, we deadlock during the writeback when trying
-   to insert the inline extent, at cow_file_range_inline(), if the extent
-   is going to be located in the leaf for which we are already holding a
-   read lock;
+To fix this, we first check if there is a page in the cache which
+already consumed the reservation, and return -EEXIST immediately if so.
 
-2) After successfully starting writeback, for non-inline extent cases,
-   the async reclaim thread will hang waiting for an ordered extent to
-   complete if the ordered extent completion needs to modify the leaf
-   for which the clone task is holding a read lock (for adding or
-   replacing file extent items). So the cloning task will wait forever
-   on the async reclaim thread to make progress, which in turn is
-   waiting for the ordered extent completion which in turn is waiting
-   to acquire a write lock on the same leaf.
+There is still a rare condition where we fail to copy the page contents
+AND race with a call for hugetlb_no_page() for this index and again we
+will underflow resv_huge_pages.  That is fixed in a more complicated
+patch not targeted for -stable.
 
-So fix this by making sure we release the path (and therefore the leaf)
-every time we need to copy the inline extent's data into a page of the
-destination inode, as by that time we do not need to have the leaf locked.
+Test:
 
-Fixes: 05a5a7621ce66c ("Btrfs: implement full reflink support for inline extents")
-CC: stable@vger.kernel.org # 5.10+
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  Hacked the code locally such that resv_huge_pages underflows produce a
+  warning, then:
+
+  ./tools/testing/selftests/vm/userfaultfd hugetlb_shared 10
+	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
+  ./tools/testing/selftests/vm/userfaultfd hugetlb 10
+	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
+
+Both tests succeed and produce no warnings.  After the test runs number
+of free/resv hugepages is correct.
+
+[mike.kravetz@oracle.com: changelog fixes]
+
+Link: https://lkml.kernel.org/r/20210528004649.85298-1-almasrymina@google.com
+Fixes: 8fb5debc5fcd ("userfaultfd: hugetlbfs: add hugetlb_mcopy_atomic_pte for userfaultfd support")
+Signed-off-by: Mina Almasry <almasrymina@google.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/reflink.c |   38 ++++++++++++++++++++++----------------
- 1 file changed, 22 insertions(+), 16 deletions(-)
+ mm/hugetlb.c |   14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -207,10 +207,7 @@ static int clone_copy_inline_extent(stru
- 			 * inline extent's data to the page.
- 			 */
- 			ASSERT(key.offset > 0);
--			ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
--						  inline_data, size, datal,
--						  comp_type);
--			goto out;
-+			goto copy_to_page;
- 		}
- 	} else if (i_size_read(dst) <= datal) {
- 		struct btrfs_file_extent_item *ei;
-@@ -226,13 +223,10 @@ static int clone_copy_inline_extent(stru
- 		    BTRFS_FILE_EXTENT_INLINE)
- 			goto copy_inline_extent;
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4705,10 +4705,20 @@ int hugetlb_mcopy_atomic_pte(struct mm_s
+ 	struct page *page;
  
--		ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
--					  inline_data, size, datal, comp_type);
--		goto out;
-+		goto copy_to_page;
- 	}
- 
- copy_inline_extent:
--	ret = 0;
- 	/*
- 	 * We have no extent items, or we have an extent at offset 0 which may
- 	 * or may not be inlined. All these cases are dealt the same way.
-@@ -244,11 +238,13 @@ copy_inline_extent:
- 		 * clone. Deal with all these cases by copying the inline extent
- 		 * data into the respective page at the destination inode.
- 		 */
--		ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
--					  inline_data, size, datal, comp_type);
--		goto out;
-+		goto copy_to_page;
- 	}
- 
-+	/*
-+	 * Release path before starting a new transaction so we don't hold locks
-+	 * that would confuse lockdep.
-+	 */
- 	btrfs_release_path(path);
- 	/*
- 	 * If we end up here it means were copy the inline extent into a leaf
-@@ -286,11 +282,6 @@ copy_inline_extent:
- out:
- 	if (!ret && !trans) {
- 		/*
--		 * Release path before starting a new transaction so we don't
--		 * hold locks that would confuse lockdep.
--		 */
--		btrfs_release_path(path);
--		/*
- 		 * No transaction here means we copied the inline extent into a
- 		 * page of the destination inode.
- 		 *
-@@ -310,6 +301,21 @@ out:
- 		*trans_out = trans;
- 
- 	return ret;
+ 	if (!*pagep) {
+-		ret = -ENOMEM;
++		/* If a page already exists, then it's UFFDIO_COPY for
++		 * a non-missing case. Return -EEXIST.
++		 */
++		if (vm_shared &&
++		    hugetlbfs_pagecache_present(h, dst_vma, dst_addr)) {
++			ret = -EEXIST;
++			goto out;
++		}
 +
-+copy_to_page:
-+	/*
-+	 * Release our path because we don't need it anymore and also because
-+	 * copy_inline_to_page() needs to reserve data and metadata, which may
-+	 * need to flush delalloc when we are low on available space and
-+	 * therefore cause a deadlock if writeback of an inline extent needs to
-+	 * write to the same leaf or an ordered extent completion needs to write
-+	 * to the same leaf.
-+	 */
-+	btrfs_release_path(path);
-+
-+	ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
-+				  inline_data, size, datal, comp_type);
-+	goto out;
- }
+ 		page = alloc_huge_page(dst_vma, dst_addr, 0);
+-		if (IS_ERR(page))
++		if (IS_ERR(page)) {
++			ret = -ENOMEM;
+ 			goto out;
++		}
  
- /**
+ 		ret = copy_huge_page_from_user(page,
+ 						(const void __user *) src_addr,
 
 
