@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A8D39ECDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5145239ECD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhFHDR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 23:17:56 -0400
-Received: from mail-eopbgr80084.outbound.protection.outlook.com ([40.107.8.84]:56339
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230323AbhFHDRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 23:17:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NN8JZ2Z7m4DbJjE6I0wdDBTWg9V+9FAyir11Y/SOWr2J/AHAgFbhEmwHtuN15ogRIWDl2sX+4VZU1JyUEbsja5+UkzF3XTVn/Ew2cB0G9dSHaSBP9u6Gndt4cuxvS7HzPVaOWM3p1bHzYwwV5pZpF0ai8MsXj/LVKrrrCvPkFEch7nDpyJdWUN7CVNWj+7TeGzIe5E1X1Jhfd4itmLgaVv6855THGUNAaHC1u3FbhtprxN1T6xTDjVBtZfFLxnKRuQqIjPvWI6Y0d7xRurHO2YwksXyTxLLVf/sHhZEemaSMjbqBVCHyr0Pq+v+O00abszdThdClNE1IUwYWCp5dBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q1/8i5KnhmL04zc36V54TTrLSt3yBuKYISsTZyDkmZE=;
- b=FdHRRpcKgRpjKBXCO2t99DjGImo2vUgG7ps4Pvxj3ac8ueEP+BQLemmN6N/ZUP4X2sQV0+rW82Y0NNCCR7cJehjcTn0mfYJRN7RVePbl3awqjKX3JT29CE1k7ny8nmpnBlt0mnx6iSKUeFaGcyVUHL98AP408aG8zIgKt8cgQxJH5bOph6eewV8TIrCMdwyEz5nxv6dei0dnHH4wDyAf1+oTwgQPZN0MRphRfP/5qHeWM42MYesi6S3MrHqNG4LrXx3yXbFe7AIgdXnnpH9pVZ3lnZbRTyk8eWhWV23AcqjWTHtnNqQJH/YLeo3xbgsXZvCGQQdFQwdmiiNg28BvqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q1/8i5KnhmL04zc36V54TTrLSt3yBuKYISsTZyDkmZE=;
- b=V4qewCbblsI0iMw5su5ehrfcizjayqwyGOA20KtyswC20PFWauQdGzKtoOpEwGzAgSA38xGrqiz8Bw/jfAfNXKlofFW/9rMfbyn/3w2nrU+E2l2jG3MZA0WV0VM7jrEUIWSPmqm0vBqFoC8fBMwYpaQ+4whxQApiA4eETkDmves=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DBBPR04MB6139.eurprd04.prod.outlook.com (2603:10a6:10:ca::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Tue, 8 Jun
- 2021 03:16:00 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3400:b139:f681:c8cf]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3400:b139:f681:c8cf%9]) with mapi id 15.20.4195.030; Tue, 8 Jun 2021
- 03:15:59 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        f.fainelli@gmail.com, Jisheng.Zhang@synaptics.com
-Cc:     linux-imx@nxp.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V3 net-next 0/4] net: phy: add dt property for realtek phy
-Date:   Tue,  8 Jun 2021 11:15:31 +0800
-Message-Id: <20210608031535.3651-1-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: SG2PR01CA0102.apcprd01.prod.exchangelabs.com
- (2603:1096:3:15::28) To DB8PR04MB6795.eurprd04.prod.outlook.com
- (2603:10a6:10:fa::15)
+        id S231183AbhFHDRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 23:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230323AbhFHDR3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 23:17:29 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEA8C061574;
+        Mon,  7 Jun 2021 20:15:37 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id k5so11068133pjj.1;
+        Mon, 07 Jun 2021 20:15:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=7QJgmeOZHxm1wlCHFZhavmAZLKz2FF5Hv428G3b4qiw=;
+        b=VTIEVOTLyXhOQe/MeRuSpN2ald0aymOH2UckQUkbGDMCnIWpLofhC3CcsWGO6G81jD
+         rWunxyEAy2ZhgLcYR00X4AbEZk1j5BC/8NcRbdVVuKOD8+KnUn4/TCpILr7C32XqRToY
+         sin0OyeSbpzbkoBpqneBi8GdLH2Z7/N18b3kF0Ps+Lk4MDwRPpFjSfRySdvw6C4c1DfX
+         Van3r+hqrc3s2QAHIpTEOn5FTzL+QTW3T7TGMuWjY6i4MKtL9dFITUqB5EOQSBq4DvSD
+         6h+x27wIC4NFr5GL5Id6MGuwBKIi02sjXx+buHb6JeURZXK6LtzNm0Ul+ax1Ar08t1bR
+         Sqmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=7QJgmeOZHxm1wlCHFZhavmAZLKz2FF5Hv428G3b4qiw=;
+        b=f1eyr7J9KzYKqLMiRvyC0+Jv9YIf3zDquGSMgcpwyG5zrpFF6VfBIDlQDj4n6C4lij
+         ObIbARIYhNXFQx2zimlzR7FhsntAI85GVoMiJU8TqcX/Q/xewOu9ZqfHyHsa1sNJls5T
+         rbHMgNdlCEWUCZRoaQPzSlUfDAwlKSxSKB2bf4VcR6q7g+k5Ckry8N8sazk28P74wEuj
+         0eruQk5rKAzDHYNPMjwA7TCTJMAGtX5AyNRs18eQ9x07bVUpLzmLssoXIg/LRc4Z1PgC
+         s8bRuaNWh6FIb/14oyatqNraPqjI3EgfTYBNwpVnlzqjGMIa/SARjYtCdxd+OeeuWV19
+         DpVg==
+X-Gm-Message-State: AOAM533/MnGl/BmikYZqdFDupC+4k9oTB/LkIc7bfefONe8FNtdP1+Mw
+        8r6vsvZBmYGptD0J3sXu/sU=
+X-Google-Smtp-Source: ABdhPJyEpZ9jHgeUSsOnRiilTupzYo+aah3Y5D06OH682oRgr8S6Jdcc4g/fCCW+4iV8GPHoxi4iMw==
+X-Received: by 2002:a17:90b:46c3:: with SMTP id jx3mr16570209pjb.206.1623122137531;
+        Mon, 07 Jun 2021 20:15:37 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id z17sm9264539pfq.218.2021.06.07.20.15.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 20:15:37 -0700 (PDT)
+Date:   Tue, 08 Jun 2021 13:15:32 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v4 3/4] lazy tlb: shoot lazies, a non-refcounting lazy tlb
+ option
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Anton Blanchard <anton@ozlabs.org>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, Andy Lutomirski <luto@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <20210605014216.446867-1-npiggin@gmail.com>
+        <20210605014216.446867-4-npiggin@gmail.com>
+In-Reply-To: <20210605014216.446867-4-npiggin@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0102.apcprd01.prod.exchangelabs.com (2603:1096:3:15::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24 via Frontend Transport; Tue, 8 Jun 2021 03:15:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: adef6f49-28eb-46bd-355b-08d92a2bbd25
-X-MS-TrafficTypeDiagnostic: DBBPR04MB6139:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DBBPR04MB6139AD8E53EB38D312684603E6379@DBBPR04MB6139.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:843;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VAxIldQGkuD7niAsn5DZkvHHsDW5rxHmTklA4CQ7lYA3hvZvD4lTozOxY789gZ41bQ0FhG2Gx7iIGSi9MllJW+/JT3xnOOxrS2qPnJaZlq7EcvhbtVdSM2S3Bp20o8bVEgG38+rqM/vGqrSf5ZDIl+duebsQ+M1786Lzph1Fb3Pzh6xeH8yPrd1g3eBy1vQV/yPO/t/1rFP2rwnu/L8nJQPAkBQrM1y0PBZK3lT1gaVA4u2nGVq0XiS9xskCkUif1kEipb+i/h98u0Z0rnVUU5JfX3gkMDNu/+8TfASgW5kIFs5vGkqyVloiI8RrQI4fovUZ+jBdntvuNLgz88tiHm+QCiTb/dGUv1AT5jB90CRG1XA/e3TsnTAjE7Aql2fklfc5YbsJcM7zSnTEjoTDtM7bqYulfvk+1TAYj3AGYrloIkGfrxY7OTcBCi/v+HSw6Tlfcan6SS4K3ly3Nw88Au5xjg1lulyWEgCJwX/+Z9Yr5hsSC6xsVnA3PxqpnNuQmzvLzGQ8Es3RypOR4vWhGiNsudXucPeUpcfIDfsd793YP2cww1xXEyQCUN7NJGtVV0VWzN1z9XBj994vJq5KtNWqYOXacQdg0byV9UWh+HNWG6WWFVaom7H5y8HKidMWdI7QBT2EDX62We0dRSk5KQvE3fSL8/uC/aDmfJ1wa8QUDWS0B53dvR45jcCdkPGM
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(396003)(136003)(366004)(66476007)(66556008)(8676002)(5660300002)(4744005)(66946007)(38100700002)(83380400001)(38350700002)(36756003)(6666004)(1076003)(8936002)(6506007)(6512007)(86362001)(52116002)(16526019)(6486002)(26005)(7416002)(186003)(956004)(4326008)(2906002)(478600001)(316002)(2616005)(69590400013);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?TVDnpa1k/QpUT7L4afDisvZ+Hj2saaLQN/PRovVyYpxRqXacSQQAx+uV1TcN?=
- =?us-ascii?Q?4y3vUvZqg2V3rMAGeaYNI8bHiZQTD+zvKOHZY41AYktQhYji+2y2n/4pfkhz?=
- =?us-ascii?Q?vjt9yCtSdIsad0bOllUUJLRn2e0YY6MJ8k8egg2xbQ5fVaS31knv0w1j2Oo/?=
- =?us-ascii?Q?8IPUjfSFxmO5yUeGVPzzo8EKnYriszFKo/3HdbSE+n303w0thK6fqMXmSGJD?=
- =?us-ascii?Q?7IQgdLRhO8AVdBL26+1n1tL61uXUG51MltwT98endLf6DLPzLN1CZAqAvoIJ?=
- =?us-ascii?Q?2xBY3omGKQkt9SjSBM0VgI2Y4zPiRTeGkk3aczK8qg8UI8ywhw3YCyYa99dJ?=
- =?us-ascii?Q?7s1W43eCee6yE4PVix2UpSflKcNaXONOiaqchbUtKIpun6298DGN/GAP4PLr?=
- =?us-ascii?Q?c2cVty8fLvEBQOOvJoYPUpzlE79I+WM12aHpIzfXgCNWOctcgq79YYZ0bgt+?=
- =?us-ascii?Q?wkCbrH0J8Kiu33xp4dWWEdxfNdGsUbD7McH4b9ry9feJOmmlSCCHBPfxNGNJ?=
- =?us-ascii?Q?qYxd4bJwREcWE3tu+hyo6l3/c+zVECw0gawcKPIQDqRiFgn8mbYxP17DEc0m?=
- =?us-ascii?Q?ebUPkFNCjCwxofP2iDz/NCLprOYXKEFgJJrw2kDFBLRw6KJgBvGPNpsZlMNq?=
- =?us-ascii?Q?QggcQDoh132hjLHuJnQ6krzT6TY2d4FsMutHgweN15Mb5WLBjhOvdoia0xyZ?=
- =?us-ascii?Q?kF9tXn/SID7tr5UbQkfpJmyPxQUblhT+xswmsZDkyeuAzIYxO5voL1sTTxFU?=
- =?us-ascii?Q?x24y0pgUb1ochxmZ3Lyg6e/CcOfeh3mQFMiDzxEt7D86HWBP1iAglB4NSnoX?=
- =?us-ascii?Q?J3KzH1p/YhiFLDwCbIZMVttySDsHcrk4KWsOOiCPozpyogVLEPIXKSKU074m?=
- =?us-ascii?Q?71SqrdRIaMGsL6enzKCGiGgVj9vBc+Xjscf7mgTaawslJ4ZOFM8xOqAm9F5e?=
- =?us-ascii?Q?sLQtKG9t9B1K9oj4luWrNAiSk+f2pE4pzoYFZbulH3KO9k0eP28pGlt1j0AD?=
- =?us-ascii?Q?0IzHDofhMeKcslY6cryfabdKhqa2mWJIq+VJyIT0v8pHxSKx1KNqPIZAFe4N?=
- =?us-ascii?Q?JUOkfMJ+KlSdFxfM/B1H6IHwAnKLEi+tcslRqc4mxotdVeJrDwtMgOqM1J5x?=
- =?us-ascii?Q?V/e2vDHKfUS/0WjWVXEdRmQwp+zGNku+ld4XGR/CCvf5c/2gbfXRPXwPkCVC?=
- =?us-ascii?Q?v/CXw5CCTEGE9hhhEPhdLp9j41qQON7i7pyG5Ya8oFJtFAJYXqbYsznYCiSp?=
- =?us-ascii?Q?N9r680vkeMxtO2uomQfGu985Top5HYs5Oo6jjmBfDLYeY21kvfGPGab+YvdV?=
- =?us-ascii?Q?y+iQ6YI1THjwMS/wX74u5itG?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: adef6f49-28eb-46bd-355b-08d92a2bbd25
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 03:15:59.7686
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hVwm6YTG7sDvHi0GUwPBmsurfJYldYEr/74J124puN3x/fOtFQqK3f5xb8WSdtesVmunPFBDwObdgpxilMcclg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB6139
+Message-Id: <1623121901.mszkmmum0n.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dt property for realtek phy.
+Excerpts from Nicholas Piggin's message of June 5, 2021 11:42 am:
+> On big systems, the mm refcount can become highly contented when doing
+> a lot of context switching with threaded applications (particularly
+> switching between the idle thread and an application thread).
+>=20
+> Abandoning lazy tlb slows switching down quite a bit in the important
+> user->idle->user cases, so instead implement a non-refcounted scheme
+> that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
+> any remaining lazy ones.
+>=20
+> Shootdown IPIs are some concern, but they have not been observed to be
+> a big problem with this scheme (the powerpc implementation generated
+> 314 additional interrupts on a 144 CPU system during a kernel compile).
+> There are a number of strategies that could be employed to reduce IPIs
+> if they turn out to be a problem for some workload.
+>=20
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
 
+Update the comment to be clearer, and account for the improvement
+to MMU_LAZY_TLB_REFCOUNT comment.
+
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 ---
-ChangeLogs:
-V1->V2:
-	* store the desired PHYCR1/2 register value in "priv" rather than
-	using "quirks", per Russell King suggestion, as well as can
-	cover the bootloader setting.
-	* change the behavior of ALDPS mode, default is disabled, add dt
-	property for users to enable it.
-	* fix dt binding yaml build issues.
-V2->V3:
-	* update the commit title
-	net: phy: realtek: add dt property to disable ALDPS mode ->
-	net: phy: realtek: add dt property to enable ALDPS mode
+ arch/Kconfig | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-Joakim Zhang (4):
-  dt-bindings: net: add dt binding for realtek rtl82xx phy
-  net: phy: realtek: add dt property to disable CLKOUT clock
-  net: phy: realtek: add dt property to disable ALDPS mode
-  net: phy: realtek: add delay to fix RXC generation issue
-
- .../bindings/net/realtek,rtl82xx.yaml         | 45 +++++++++++
- drivers/net/phy/realtek.c                     | 75 ++++++++++++++++++-
- 2 files changed, 116 insertions(+), 4 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/realtek,rtl82xx.yaml
-
--- 
-2.17.1
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 2ad1a505ca55..cf468c9777d8 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -433,15 +433,16 @@ config MMU_LAZY_TLB_REFCOUNT
+ 	def_bool y
+ 	depends on !MMU_LAZY_TLB_SHOOTDOWN
+=20
+-# Instead of refcounting the lazy mm struct for kernel thread references
+-# (which can cause contention with multi-threaded apps on large multiproce=
+ssor
+-# systems), this option causes __mmdrop to IPI all CPUs in the mm_cpumask =
+and
+-# switch to init_mm if they were using the to-be-freed mm as the lazy tlb.=
+ To
+-# implement this, architectures must use _lazy_tlb variants of mm refcount=
+ing
+-# when releasing kernel thread mm references, and mm_cpumask must include =
+at
+-# least all possible CPUs in which the mm might be lazy, at the time of th=
+e
+-# final mmdrop. mmgrab/mmdrop in arch/ code must be switched to _lazy_tlb
+-# postfix as necessary.
++# This option allows MMU_LAZY_TLB_REFCOUNT=3Dn. It ensures no CPUs are usi=
+ng an
++# mm as a lazy tlb beyond its last reference count, by shooting down these
++# users before the mm is deallocated. __mmdrop() first IPIs all CPUs that =
+may
++# be using the mm as a lazy tlb, so that they may switch themselves to usi=
+ng
++# init_mm for their active mm. mm_cpumask(mm) is used to determine which C=
+PUs
++# may be using mm as a lazy tlb mm.
++#
++# To implement this, an arch must ensure mm_cpumask(mm) contains at least =
+all
++# possible CPUs in which the mm is lazy, and it must meet the requirements=
+ for
++# MMU_LAZY_TLB_REFCOUNT=3Dn (see above).
+ config MMU_LAZY_TLB_SHOOTDOWN
+ 	bool
+=20
+--=20
+2.23.0
 
