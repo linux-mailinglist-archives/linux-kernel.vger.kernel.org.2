@@ -2,116 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A28639F6DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCED39F6E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhFHMhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:37:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41128 "EHLO mail.kernel.org"
+        id S232636AbhFHMj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:39:29 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:57079 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232299AbhFHMhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:37:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76D8661287;
-        Tue,  8 Jun 2021 12:35:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623155717;
-        bh=lwdEMXKgFqTlkSr7IAuLTjahUJnEjsEmeso5SigE+EU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1dpSB8VCDGZO6vMLNJ7gFQSL3ip0u5W0q98wZMDQF7NdV/tlYB3d5ELQ8S0r/HN1U
-         i84kLXEuntDYUcqGkMiWltpY2DQhLCXqYgMdXra4tlQ76fiB5NP9kI7XVhwhxn8Fhh
-         ESkoXYjWgz8r3PMAXonf4EWA5OLc3xH2hh4QAWRU=
-Date:   Tue, 8 Jun 2021 14:35:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andrey Semashev <andrey.semashev@gmail.com>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
-        acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
-        joel@joelfernandes.org, kernel@collabora.com,
-        krisman@collabora.com, libc-alpha@sourceware.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
-        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
-Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
-Message-ID: <YL9kApyE6FbG/hru@kroah.com>
-References: <1622799088.hsuspipe84.astroid@bobo.none>
- <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
- <1622853816.mokf23xgnt.astroid@bobo.none>
- <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
- <1622980258.cfsuodze38.astroid@bobo.none>
- <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
- <1623114630.pc8fq7r5y9.astroid@bobo.none>
- <b3488d1b-a4ff-8791-d960-a5f7ae2ea8b3@gmail.com>
- <YL9Q2tKLZP6GKbHW@kroah.com>
- <8fa8b7fd-58ae-9467-138d-4ff4f32f68f7@gmail.com>
+        id S232299AbhFHMj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 08:39:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623155855; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=UBlZJh5rI7/1dUw1Yk4HhHruAdp5yem1UjzvehIHwFY=; b=GifkWsA7LfPiXQIUW2m8+x/7yE9GnJokMJAdKi2Jfitrf8Adovh+kUlzTrRTeYOS9arhgMA0
+ MQ58o25NjxlfgQqS2wNNAB1GFU/NnRXHcev3bMIaL/8wGWHhkW1pTwPx9rrZ0QR7YH4Tj3xa
+ nWITlfZK7R07nbMy2dZ7GanDSbk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60bf647b8491191eb35d96a1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Jun 2021 12:37:15
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9E53DC433D3; Tue,  8 Jun 2021 12:37:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D6AEFC433F1;
+        Tue,  8 Jun 2021 12:37:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D6AEFC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v3] ASoC: qcom: Add four speaker support on MI2S secondary
+Date:   Tue,  8 Jun 2021 18:06:44 +0530
+Message-Id: <20210608123644.31398-1-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8fa8b7fd-58ae-9467-138d-4ff4f32f68f7@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 03:06:48PM +0300, Andrey Semashev wrote:
-> On 6/8/21 2:13 PM, Greg KH wrote:
-> > On Tue, Jun 08, 2021 at 02:03:50PM +0300, Andrey Semashev wrote:
-> > > On 6/8/21 4:25 AM, Nicholas Piggin wrote:
-> > > > 
-> > > > Are shared pthread mutexes using existing pthread APIs that are today
-> > > > implemented okay with futex1 system call a good reason to constrain
-> > > > futex2 I wonder? Or do we have an opportunity to make a bigger change
-> > > > to the API so it suffers less from non deterministic latency (for
-> > > > example)?
-> > > 
-> > > If futex2 is not able to cover futex1 use cases then it cannot be viewed as
-> > > a replacement. In the long term this means futex1 cannot be deprecated and
-> > > has to be maintained. My impression was that futex1 was basically
-> > > unmaintainable(*) and futex2 was an evolution of futex1 so that users of
-> > > futex1 could migrate relatively easily and futex1 eventually removed. Maybe
-> > > my impression was wrong, but I would like to see futex2 as a replacement and
-> > > extension of futex1, so the latter can be deprecated at some point.
-> > 
-> > You can never delete a kernel system call, so even if you "deprecate"
-> > it, it still needs to be supported for forever.
-> 
-> If I'm not mistaken, some syscalls were dropped from kernel in the past,
-> after it was established they are no longer used. So it is not impossible,
-> though might be more difficult specifically with futex.
-> 
-> > Best of all would be if internally your "futex2" code would replace the
-> > "futex1" code so that there is no two different code bases.  That would
-> > be the only sane way forward, having 2 code bases to work with is just
-> > insane.
-> 
-> Yes, implementing futex1 in terms of futex2 internally is a possible way
-> forward. Though I'm not sure it is reasonable to require that to be done in
-> the initial futex2 submission. This requires all of the futex1 functionality
-> to implemented in futex2 from the start, which I think is too much to ask.
-> Even with some futex1 features missing, futex2 would be already very much
-> useful to users, and it is easier to implement the missing bits
-> incrementally over time.
+Add four speaker support on MI2S secondary block
+by using I2S SD1 line on gpio52 pin, and add channel map
+control support in the lpass-cpu audio driver.
 
-Then do it the other way around, as Peter points out.
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+ sound/soc/qcom/lpass-cpu.c    | 40 ++++++++++++++++++++++++++++++++++-
+ sound/soc/qcom/lpass-sc7180.c |  1 +
+ sound/soc/qcom/lpass.h        |  8 ++++++-
+ 3 files changed, 47 insertions(+), 2 deletions(-)
 
-> > So what's keeping the futex2 code from doing all that futex1 does so
-> > that the futex1 code can be deleted internally?
-> 
-> I think, André will answer this, but my guess is, as stated above, this is a
-> lot of work and time while the intermediate version is already useful.
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index c62d2612e8f5..d03cc359983a 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -324,10 +324,43 @@ const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
+ };
+ EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_ops);
+ 
++int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
++				struct snd_soc_dai *dai)
++{
++	int ret;
++	struct snd_soc_dai_driver *drv = dai->driver;
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++
++	ret =  snd_pcm_add_chmap_ctls(rtd->pcm, SNDRV_PCM_STREAM_PLAYBACK,
++			snd_pcm_alt_chmaps, drv->playback.channels_max, 0,
++			&drvdata->chmap_info);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(lpass_cpu_pcm_new);
++
+ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+-	int ret;
++	struct snd_soc_dai_driver *drv = dai->driver;
++	int ret, i;
++
++	drvdata->rx_chmap.channels = drv->playback.channels_max;
++	drvdata->tx_chmap.channels = drv->playback.channels_max;
++
++	if (drv->playback.channels_max == 2)
++		drvdata->chmap_idx = 1;
++	else if (drv->playback.channels_max == 4)
++		drvdata->chmap_idx = 2;
++
++	for (i = 0; i < drv->playback.channels_max; i++) {
++		drvdata->tx_chmap.map[i] =
++				snd_pcm_alt_chmaps[drvdata->chmap_idx].map[i];
++		drvdata->rx_chmap.map[i] =
++				snd_pcm_alt_chmaps[drvdata->chmap_idx].map[i];
++	}
+ 
+ 	/* ensure audio hardware is disabled */
+ 	ret = regmap_write(drvdata->lpaif_map,
+@@ -856,6 +889,11 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+ 				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
+ 			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
+ 		}
++		if (drvdata->mi2s_playback_sd_mode[dai_id] ==
++			LPAIF_I2SCTL_MODE_QUAD01) {
++			variant->dai_driver[dai_id].playback.channels_min = 4;
++			variant->dai_driver[dai_id].playback.channels_max = 4;
++		}
+ 	}
+ 
+ 	/* Allocation for i2sctl regmap fields */
+diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+index 8c168d3c589e..77a556b27cf0 100644
+--- a/sound/soc/qcom/lpass-sc7180.c
++++ b/sound/soc/qcom/lpass-sc7180.c
+@@ -58,6 +58,7 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
+ 		},
+ 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
+ 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
++		.pcm_new = lpass_cpu_pcm_new,
+ 	}, {
+ 		.id = LPASS_DP_RX,
+ 		.name = "Hdmi",
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index 83b2e08ade06..db239ea52946 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -110,6 +110,11 @@ struct lpass_data {
+ 	struct lpass_hdmitx_dmactl *hdmi_tx_dmactl[LPASS_MAX_HDMI_DMA_CHANNELS];
+ 	struct lpass_dp_metadata_ctl *meta_ctl;
+ 	struct lpass_sstream_ctl *sstream_ctl;
++	/* Channel map information */
++	struct snd_pcm_chmap *chmap_info;
++	struct snd_pcm_chmap_elem rx_chmap;
++	struct snd_pcm_chmap_elem tx_chmap;
++	int chmap_idx;
+ };
+ 
+ /* Vairant data per each SOC */
+@@ -259,5 +264,6 @@ void asoc_qcom_lpass_cpu_platform_shutdown(struct platform_device *pdev);
+ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
+ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
+ extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
+-
++int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
++				struct snd_soc_dai *dai);
+ #endif /* __LPASS_H__ */
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-useful to who?  I still do not understand what users will be needing
-this.  All I can tell is a single userspace program wants to use it, and
-that is a fork from the real project it was based on and that the
-maintainers have no plan to merge it back.
-
-So who does need/want this?
-
-thanks,
-
-greg k-h
