@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D123A017E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5CB3A02D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235749AbhFHSw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:52:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42390 "EHLO mail.kernel.org"
+        id S237657AbhFHTKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:10:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235524AbhFHSrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:47:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04F726145A;
-        Tue,  8 Jun 2021 18:37:49 +0000 (UTC)
+        id S237355AbhFHTA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:00:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5732B616EC;
+        Tue,  8 Jun 2021 18:43:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177470;
-        bh=ZslwLgAJrBNARuZSGZ4T3vO5PKHkdKQu93YpIlOCH94=;
+        s=korg; t=1623177821;
+        bh=iM5ZmtoZdBCNsWVHnKOBVR/qRxBynWGEmhlaGLNsyLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G1xdUylCYZaguhCom71UHnmJFKIDdeVGk/yPE5B1LsUpKhzKwVowq0FeEFiD392Kp
-         q5bCPXqUZI2wBPDS3MTW6F3Kfcoz1iB0Yj09aqJSmIQ8/UnJkXZIhZqtznlOO8FsY2
-         KSGuw4AcHVxf80Gqo3q7PgOYc+Tk23aX52EjmE04=
+        b=QwsHljg2LbhdXJjKtkLf6cQIv2UQDgFWKXtNTDoHnkiZKdTroInHqQ8zwCv3pfj0b
+         END7y5+RriHEuqOoO9+koc0h0YjKoVFdOxkNgu1EgD+ppHh/bO8kGo51+pFAmSaQzg
+         k1AAqEIfo8YIl4665sA4s3Yp8Bl8Uh5tr2yA2560=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 62/78] btrfs: fixup error handling in fixup_inode_link_counts
+        stable@vger.kernel.org, Ding Hui <dinghui@sangfor.com.cn>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 111/137] mm/page_alloc: fix counting of free pages after take off from buddy
 Date:   Tue,  8 Jun 2021 20:27:31 +0200
-Message-Id: <20210608175937.368738145@linuxfoundation.org>
+Message-Id: <20210608175946.141394283@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,85 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Ding Hui <dinghui@sangfor.com.cn>
 
-commit 011b28acf940eb61c000059dd9e2cfcbf52ed96b upstream.
+commit bac9c6fa1f929213bbd0ac9cdf21e8e2f0916828 upstream.
 
-This function has the following pattern
+Recently we found that there is a lot MemFree left in /proc/meminfo
+after do a lot of pages soft offline, it's not quite correct.
 
-	while (1) {
-		ret = whatever();
-		if (ret)
-			goto out;
-	}
-	ret = 0
-out:
-	return ret;
+Before Oscar's rework of soft offline for free pages [1], if we soft
+offline free pages, these pages are left in buddy with HWPoison flag,
+and NR_FREE_PAGES is not updated immediately.  So the difference between
+NR_FREE_PAGES and real number of available free pages is also even big
+at the beginning.
 
-However several places in this while loop we simply break; when there's
-a problem, thus clearing the return value, and in one case we do a
-return -EIO, and leak the memory for the path.
+However, with the workload running, when we catch HWPoison page in any
+alloc functions subsequently, we will remove it from buddy, meanwhile
+update the NR_FREE_PAGES and try again, so the NR_FREE_PAGES will get
+more and more closer to the real number of available free pages.
+(regardless of unpoison_memory())
 
-Fix this by re-arranging the loop to deal with ret == 1 coming from
-btrfs_search_slot, and then simply delete the
+Now, for offline free pages, after a successful call
+take_page_off_buddy(), the page is no longer belong to buddy allocator,
+and will not be used any more, but we missed accounting NR_FREE_PAGES in
+this situation, and there is no chance to be updated later.
 
-	ret = 0;
-out:
+Do update in take_page_off_buddy() like rmqueue() does, but avoid double
+counting if some one already set_migratetype_isolate() on the page.
 
-bit so everybody can break if there is an error, which will allow for
-proper error handling to occur.
+[1]: commit 06be6ff3d2ec ("mm,hwpoison: rework soft offline for free pages")
 
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Link: https://lkml.kernel.org/r/20210526075247.11130-1-dinghui@sangfor.com.cn
+Fixes: 06be6ff3d2ec ("mm,hwpoison: rework soft offline for free pages")
+Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Acked-by: David Hildenbrand <david@redhat.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/tree-log.c |   13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ mm/page_alloc.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -1775,6 +1775,7 @@ static noinline int fixup_inode_link_cou
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8870,6 +8870,8 @@ bool take_page_off_buddy(struct page *pa
+ 			del_page_from_free_list(page_head, zone, page_order);
+ 			break_down_buddy_pages(zone, page_head, page, 0,
+ 						page_order, migratetype);
++			if (!is_migrate_isolate(migratetype))
++				__mod_zone_freepage_state(zone, -1, migratetype);
+ 			ret = true;
  			break;
- 
- 		if (ret == 1) {
-+			ret = 0;
- 			if (path->slots[0] == 0)
- 				break;
- 			path->slots[0]--;
-@@ -1787,17 +1788,19 @@ static noinline int fixup_inode_link_cou
- 
- 		ret = btrfs_del_item(trans, root, path);
- 		if (ret)
--			goto out;
-+			break;
- 
- 		btrfs_release_path(path);
- 		inode = read_one_inode(root, key.offset);
--		if (!inode)
--			return -EIO;
-+		if (!inode) {
-+			ret = -EIO;
-+			break;
-+		}
- 
- 		ret = fixup_inode_link_count(trans, root, inode);
- 		iput(inode);
- 		if (ret)
--			goto out;
-+			break;
- 
- 		/*
- 		 * fixup on a directory may create new entries,
-@@ -1806,8 +1809,6 @@ static noinline int fixup_inode_link_cou
- 		 */
- 		key.offset = (u64)-1;
- 	}
--	ret = 0;
--out:
- 	btrfs_release_path(path);
- 	return ret;
- }
+ 		}
 
 
