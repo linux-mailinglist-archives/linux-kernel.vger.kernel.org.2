@@ -2,117 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A7439FF0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CCA39FF12
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232747AbhFHS3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbhFHS27 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:28:59 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EB7C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 11:26:52 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id g6so16383394pfq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 11:26:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ndln2EuNlB+CP5mLiP3hdXT+nVwUYUAuTcfdG/dVXpU=;
-        b=JL0mYsIjZFqW0K0buK/ZoqO8gB6RoLQ1xk0cIT0uvFwpxp0HDL0jLR647mH4HWhXWK
-         7yGLyni/v6LOZwD66AOwZsqEf1AqrwLX+thpddZOS198keGEBHxxvv3ftPkMCrf+gHO+
-         v3Hid4jVRPXCkteont5eNR9OzdANVZqDTlqHU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ndln2EuNlB+CP5mLiP3hdXT+nVwUYUAuTcfdG/dVXpU=;
-        b=odFiwR/WcwZ9g+oMxLqWs+cIZ++VlrPo40WgfkjhnJBaqI4z6A3uYU4Lm+VF0PlZOf
-         nI+AEAD2XaKotpbE308pKs8lxgvMensMvpoBg82J81ZoV9gfzuKw94OD7wDhtG3VA6DZ
-         jQHylq3gTFRdpq7vfPyZ4xk8AXpQ2IKavg6zr+X6nezPVdmiZBfHlrG8M8J5I0DVt0yF
-         g2jsCZj3npSgHwUDyxIPjVwr9vj0Sy5qEjyZMu33DiiBjYHEu0jcJ90oFoY49oQp2zla
-         myinUHWfjF2spvmvhaN+9QZeAxEuXMXO7annjHTSr35FNXHv+hf2crNlXhL0oVlFL3B2
-         UyPw==
-X-Gm-Message-State: AOAM530IeHhfzDAgPD1bnJQL0E/Ei0FtKcmYmx2S+AQLOXl5c9toj4b7
-        SMKczArbgvtryISgDSB0PNqMBg==
-X-Google-Smtp-Source: ABdhPJwTV2ZRR+J0IP/czfDPzPV669yVdHAMzM/WGvcXMbGOKH9gqjfxZrHbaKtAgI6WYhPrnRrgBA==
-X-Received: by 2002:a63:ff22:: with SMTP id k34mr23730897pgi.336.1623176812105;
-        Tue, 08 Jun 2021 11:26:52 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y5sm11635762pfo.25.2021.06.08.11.26.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 11:26:51 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 11:26:50 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Lin, Zhenpeng" <zplin@psu.edu>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] slub: choose the right freelist pointer location when
- creating small caches
-Message-ID: <202106081125.E2DA4DE8@keescook>
-References: <6746FEEA-FD69-4792-8DDA-C78F5FE7DA02@psu.edu>
+        id S231652AbhFHSa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:30:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231830AbhFHSaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:30:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0717761376;
+        Tue,  8 Jun 2021 18:28:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623176911;
+        bh=B0X9hapwHINmwlTNtKZF+MfOGvTUI8vNFGBK/PJh1qE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NncaI0Dd4pyrfn7VZH5txhBpLl2bfBRI4cJEjcC+5wwb1qvh8r+vcdBpE9OtzgssH
+         FJAcf1Dm+IfeKg7XirvmxyDjvzaW5xSFxVWdrMDU+hJ1H1PfXzCTTjDM4Oouvdb2da
+         4G4yHxNpw9GRysOLsr+QWi88vyg47Yef8rPCtk1w=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.4 00/23] 4.4.272-rc1 review
+Date:   Tue,  8 Jun 2021 20:26:52 +0200
+Message-Id: <20210608175926.524658689@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6746FEEA-FD69-4792-8DDA-C78F5FE7DA02@psu.edu>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.272-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.272-rc1
+X-KernelTest-Deadline: 2021-06-10T17:59+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 01:58:13AM +0000, Lin, Zhenpeng wrote:
-> When enabling CONFIG_SLUB_DEBUG and booting with "slub_debug=Z", the
-> kernel crashes at creating caches if the object size is smaller
-> than 2*sizeof(void*). The problem is due to the wrong calculation
-> of freepointer_area. The freelist pointer can be stored in the
-> middle of object only if the object size is not smaller than
-> 2*sizeof(void*). Otherwise, the freelist pointer will be corrupted by
-> SLUB_RED_ZONE.
-> 
-> Fixes: 3202fa62fb43 ("slub: relocate freelist pointer to middle of object")
-> Fixes: 89b83f282d8b ("slub: avoid redzone when choosing freepointer location")
-> Signed-off-by: Zhenpeng Lin <zplin@psu.edu>
-> ---
-> mm/slub.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 3f96e099817a..cb23233ee683 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3704,7 +3704,7 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
-> 	 * can't use that portion for writing the freepointer, so
-> 	 * s->offset must be limited within this for the general case.
-> 	 */
-> -	freepointer_area = size;
-> +	freepointer_area = s->object_size;
-> 
-> #ifdef CONFIG_SLUB_DEBUG
-> 	/*
-> @@ -3751,7 +3751,7 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
-> 		 */
-> 		s->offset = size;
-> 		size += sizeof(void *);
-> -	} else if (freepointer_area > sizeof(void *)) {
-> +	} else if (freepointer_area >= 2 * sizeof(void *)) {
-> 		/*
-> 		 * Store freelist pointer near middle of object to keep
-> 		 * it away from the edges of the object to avoid small
-> --
-> 2.17.1
+This is the start of the stable review cycle for the 4.4.272 release.
+There are 23 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-NAK, I'd prefer this get cleaned up more completely, especially since
-there are no objects of that size in the kernel currently:
+Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
+Anything received after that time might be too late.
 
-https://lore.kernel.org/lkml/20201015033712.1491731-1-keescook@chromium.org/
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.272-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
 
--- 
-Kees Cook
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.4.272-rc1
+
+Jan Beulich <jbeulich@suse.com>
+    xen-pciback: redo VF placement in the virtual topology
+
+Michael Weiser <michael.weiser@gmx.de>
+    arm64: Remove unimplemented syscall log message
+
+Sean Christopherson <seanjc@google.com>
+    KVM: SVM: Truncate GPR value for DR and CR accesses in !64-bit mode
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: fixup error handling in fixup_inode_link_counts
+
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+    nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
+
+Junxiao Bi <junxiao.bi@oracle.com>
+    ocfs2: fix data corruption by fallocate
+
+Mark Rutland <mark.rutland@arm.com>
+    pid: take a reference when initializing `cad_pid`
+
+Ye Bin <yebin10@huawei.com>
+    ext4: fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: timer: Fix master timer notification
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: caif: fix memory leak in cfusbl_device_notify
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: caif: fix memory leak in caif_device_notify
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: caif: add proper error handling
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: caif: added cfserl_release function
+
+Lin Ma <linma@zju.edu.cn>
+    Bluetooth: use correct lock to prevent UAF of hdev object
+
+Lin Ma <linma@zju.edu.cn>
+    Bluetooth: fix the erroneous flush_work() order
+
+Wei Yongjun <weiyongjun1@huawei.com>
+    ieee802154: fix error return code in ieee802154_llsec_getparams()
+
+Zhen Lei <thunder.leizhen@huawei.com>
+    ieee802154: fix error return code in ieee802154_add_iface()
+
+Pablo Neira Ayuso <pablo@netfilter.org>
+    netfilter: nfnetlink_cthelper: hit EBUSY on updates if size mismatches
+
+Zhen Lei <thunder.leizhen@huawei.com>
+    HID: pidff: fix error return code in hid_pidff_init()
+
+Julian Anastasov <ja@ssi.bg>
+    ipvs: ignore IP_VS_SVC_F_HASHED flag when adding service
+
+Max Gurtovoy <mgurtovoy@nvidia.com>
+    vfio/platform: fix module_put call in error flow
+
+Zhen Lei <thunder.leizhen@huawei.com>
+    vfio/pci: Fix error return code in vfio_ecap_init()
+
+Rasmus Villemoes <linux@rasmusvillemoes.dk>
+    efi: cper: fix snprintf() use in cper_dimm_err_location()
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                     |  4 +-
+ arch/arm64/kernel/traps.c                    |  8 ----
+ arch/x86/kvm/svm.c                           |  8 ++--
+ drivers/firmware/efi/cper.c                  |  4 +-
+ drivers/hid/usbhid/hid-pidff.c               |  1 +
+ drivers/vfio/pci/vfio_pci_config.c           |  2 +-
+ drivers/vfio/platform/vfio_platform_common.c |  2 +-
+ drivers/xen/xen-pciback/vpci.c               | 14 ++++---
+ fs/btrfs/tree-log.c                          | 13 ++++---
+ fs/ext4/extents.c                            | 43 ++++++++++++----------
+ fs/ocfs2/file.c                              | 55 +++++++++++++++++++++++++---
+ include/net/caif/caif_dev.h                  |  2 +-
+ include/net/caif/cfcnfg.h                    |  2 +-
+ include/net/caif/cfserl.h                    |  1 +
+ init/main.c                                  |  2 +-
+ net/bluetooth/hci_core.c                     |  7 +++-
+ net/bluetooth/hci_sock.c                     |  4 +-
+ net/caif/caif_dev.c                          | 13 +++++--
+ net/caif/caif_usb.c                          | 14 ++++++-
+ net/caif/cfcnfg.c                            | 16 +++++---
+ net/caif/cfserl.c                            |  5 +++
+ net/ieee802154/nl-mac.c                      |  4 +-
+ net/ieee802154/nl-phy.c                      |  4 +-
+ net/netfilter/ipvs/ip_vs_ctl.c               |  2 +-
+ net/netfilter/nfnetlink_cthelper.c           |  8 +++-
+ net/nfc/llcp_sock.c                          |  2 +
+ sound/core/timer.c                           |  3 +-
+ 27 files changed, 165 insertions(+), 78 deletions(-)
+
+
