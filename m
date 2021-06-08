@@ -2,154 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A3A39F94D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308C939F95C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbhFHOjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
+        id S233478AbhFHOlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:41:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233288AbhFHOjC (ORCPT
+        with ESMTP id S233442AbhFHOlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:39:02 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D524C061574;
-        Tue,  8 Jun 2021 07:37:09 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id e11so11650292wrg.3;
-        Tue, 08 Jun 2021 07:37:09 -0700 (PDT)
+        Tue, 8 Jun 2021 10:41:47 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EC1C061787
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 07:39:42 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id z141so208343vkd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 07:39:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7Ue9KAC7qJaW16JeKkEn8iGR0sqX5WDTSVD1v13dL3I=;
-        b=Ukj+KDqPTO+UJF/BEvU3KpfMksSB2pQeL/ie4KKl0GFxijjAY4WcmnEWRNTrNrLOaR
-         2DHrxG3hpElAs9tZkRP0/ODEDEiC6gBkFv1fpWSr0VMyY7wW+JPwAEbQgknDjgG5FmEo
-         C2wvMPYo0K8Hdm4wtWOlJdLDWExLKL+oPLeJuNCXcgWheReYp+hJQ3Gk/cpnchtoXzMC
-         MSJWVzuoQc288K3blzLLEYrZvkWVx/tozHUzTKd1zNF1LEZVXU3AhdpyoECle1vQ9J4I
-         DDzvd9CzYYUTtfAgl0L3+b5AR0owWjNGEWOzjTWwVPHec8hl8BwT/qF2uxq6svFYXSI9
-         Z3Kw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u9JL6GQBrbia5ZUKjbw1dPoYLRps1kdBbTif5jsryJ0=;
+        b=jllCO/Oy8PYSQ3Asp/fe59Ithm6VaXNkW9IAlpj87+vwQTDPOXcKNWR2G8AJuRWxbv
+         vhU7lfM8EmkEV9Rp6q2dBxdPlqwJiN4HPhBLZNdVd3yBREfjRUKL1oLy7TS5CKXQ8AvJ
+         by4gLGiYR9XJAJ9DhhWTztfCCKlOaQriBO8zzaoQ79NM+ULaa2gA4f12ogsM9yNG+zsh
+         w6sUCuN05zJaRpEz08adFBUACHr5Gy1IPkW1fDshK6Vc49Q7fP/dxsJVKOqtJa95LAVN
+         EhXxkGd7ahI09xQfqRdKk5HmdLkfBlhCooSaqHlfk91R3c0vLBNiflx84oPtt/tqd6d9
+         mhsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7Ue9KAC7qJaW16JeKkEn8iGR0sqX5WDTSVD1v13dL3I=;
-        b=SFjFNZFiVrpqwenjvAKGX7UYwvnLExM7KirqKYJx0Ii45b0uuKrSiWAI4gfqOS9SQN
-         6nF5+iKy16kpqdKv3BJ8Uryd1A0de1YRFLF8BwC2xdWmfXyTONdR91ycHBi8WHde/77b
-         ZMvX8Okvy5PVlQ+10w/UkTYMTkJOOelFn0Ro34xwhBq5nl+0lJ5SS1vufB/f5eaGGTDB
-         kQV6YR20/a2Ka3ybeNJfYHcRaeNZww98VXe76Bs/Mp3LXTbY4wPL2NntasUlXcoUSCjw
-         TXSahPbIpI+LHUxo8RsRToprP+qyiwfJbdfxDwJOhYVFHLUt1EAG1AuqvQ1HyEwcQZer
-         FdDQ==
-X-Gm-Message-State: AOAM532jL7FGiFO9GWFjZwL7d3E+x7SAHdfZnylsWtKgHgYw9ooADppd
-        Ev1zMNiX97PpB8fs2LRogKE=
-X-Google-Smtp-Source: ABdhPJyNHULCu3Cz5QZT9AskYvCL9LY9HsQM39c8QCo5M9iEBotkmmSMw3983N23quI52NayDR2YUA==
-X-Received: by 2002:a5d:5987:: with SMTP id n7mr22858341wri.293.1623163027746;
-        Tue, 08 Jun 2021 07:37:07 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id p5sm21015798wrd.25.2021.06.08.07.37.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 07:37:06 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 16:38:48 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm@kernel.org, soc@kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        Dmitry Osipenko <digetx@gmail.com>
-Subject: Re: [GIT PULL] memory: Tegra memory controller for v5.14
-Message-ID: <YL+A+MPjjaa3nSwq@orome.fritz.box>
-References: <20210607084910.21024-1-krzysztof.kozlowski@canonical.com>
- <20210608120128.GB10174@willie-the-truck>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u9JL6GQBrbia5ZUKjbw1dPoYLRps1kdBbTif5jsryJ0=;
+        b=mdXQcai61XePgJHpWaVe/XsPKvqTCZ9XHB/PcSSvbRPrjzzm184a+dcOGhf5Efk0W1
+         EseKAWX0sWAoSnU8KcatyR+sEmaOev2b4AT0jLaLFTFpy72XAJXRPxGjiQKTUGrqNps/
+         mJ7ZgcLFv+VdcXcoi3cyp9JXTsitmvwLLlZwTXDhiMaerSoXlKmTzAvxi0S3abzbGNKr
+         ChyTFV82pZrh8q8AVOk8JWPZvsX3eoHZim2IdkDx7fsJyO/0lP/wEJ0S3odFBdV+ecbD
+         PSWD4gr5AAiUFndlK4I4cCh2uMWFaJD+GvV6MVUcQ1nGatTb1Be2HVBx0cfxPhJJBbSe
+         yauA==
+X-Gm-Message-State: AOAM531PDA/sKh6vrt5Vr2zvSIPs7UzZAL4a43d3fXABKzg5j3E04QOn
+        QQNddhdfldUjK4Eg30H4ZRloUkN5XAi4VEAAGlcBCg==
+X-Google-Smtp-Source: ABdhPJycWh+LxfYgKSTARsn0up26wJdWuTT+FZiXXVdYBc2xqimAfmf8I1zNbp3q2gT1Jy7SxgAa93VQC7VzP0ZOEg4=
+X-Received: by 2002:a1f:4ec1:: with SMTP id c184mr260560vkb.8.1623163180279;
+ Tue, 08 Jun 2021 07:39:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="f7Os7LJ667BkQ0FG"
-Content-Disposition: inline
-In-Reply-To: <20210608120128.GB10174@willie-the-truck>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+References: <20210603093438.138705-1-ulf.hansson@linaro.org>
+ <20210603093438.138705-5-ulf.hansson@linaro.org> <CAPDyKFp2dKFQpLMgazXumCxf=FHQ9bdadXUkGsjiAwniF8p2dw@mail.gmail.com>
+ <YL9oMVqox7GVASen@gerhold.net> <CAPDyKFrvrikCZLX1EvmLZumeCnfAxUUssO2OWc130TG8oey=qw@mail.gmail.com>
+ <20210608142019.GG4200@sirena.org.uk>
+In-Reply-To: <20210608142019.GG4200@sirena.org.uk>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 8 Jun 2021 16:39:03 +0200
+Message-ID: <CAPDyKFrhx6SKuwjG0w8_sW7+1YpL09onV1vVJY4f+6Y4Dwz3oQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] PM: domains: Drop/restore performance state votes
+ for devices at system PM
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Stephan Gerhold <stephan@gerhold.net>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 8 Jun 2021 at 16:20, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Jun 08, 2021 at 04:08:55PM +0200, Ulf Hansson wrote:
+>
+> > Honestly, I am not sure about what the regulator-fixed-domain intends
+> > to model, but I assume it's something that fits well to be modelled as
+> > a plain regulator, to start with.
+>
+> > Perhaps Mark can chime in and spread some light over this?
+>
+> IIRC it's for situations where there's a device that's normally built as
+> a separate chip that got built into a bigger SoC and wants to rear end
+> something onto a power domain, I guess especially if the power domain
+> doesn't cover the whole of a Linux device.
 
---f7Os7LJ667BkQ0FG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Alright, thanks for explaining!
 
-On Tue, Jun 08, 2021 at 01:01:29PM +0100, Will Deacon wrote:
-> Hi Krzysztof, Thierry,
->=20
-> On Mon, Jun 07, 2021 at 10:49:10AM +0200, Krzysztof Kozlowski wrote:
-> > Hi Thierry and Will,
-> >=20
-> > This is the pull for you to base further SMMU aptches (prevent early SM=
-MU
-> > faults).
->=20
-> This is a tonne of code for me to pull into the SMMU tree given that I on=
-ly
-> want one patch!
->=20
-> Thierry, if I just stick:
->=20
-> https://lore.kernel.org/r/20210603164632.1000458-4-thierry.reding@gmail.c=
-om
->=20
-> on its own branch, can you stitch together whatever you need?
+Certainly something that should not be mixed up with a regular power
+rail for shared resources (aka power-domain). Maybe it's worth trying
+to extend the description in the DT binding a bit, so it doesn't get
+abused?
 
-I'm not sure I understand what you're proposing. For reference, here's
-the set of patches that I sent out:
-
-  1. memory: tegra: Implement SID override programming
-  2. dt-bindings: arm-smmu: Add Tegra186 compatible string
-  3. iommu/arm-smmu: Implement ->probe_finalize()
-  4. iommu/arm-smmu: tegra: Detect number of instances at runtime
-  5. iommu/arm-smmu: tegra: Implement SID override programming
-  6. iommu/arm-smmu: Use Tegra implementation on Tegra186
-  7. arm64: tegra: Use correct compatible string for Tegra186 SMMU
-  8. arm64: tegra: Hook up memory controller to SMMU on Tegra186
-  9. arm64: tegra: Enable SMMU support on Tegra194
-
-Krzysztof already picked up patch 1 and I was assuming that you'd pick
-up 2-6 because they are to the ARM SMMU driver. However, if you're
-primarily interested in just patch 3, which is more "core" ARM SMMU than
-the rest, which are Tegra-specific, then I suppose what we could do is
-for you to give an Acked-by on the rest (2, 4-6) and then Krzysztof or I
-can pick them up and take them via ARM SoC, based on the stable branch
-=66rom your tree that only has patch 3.
-
-Patch 6 touches arm-smmu-impl.c, though it's a two-line change that
-touches only the Tegra-specific matching bit in arm_smmu_impl_init(), so
-the likelihood of that conflicting with anything else is fairly small.
-
-Is that what you were proposing?
-
-Thierry
-
---f7Os7LJ667BkQ0FG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC/gPUACgkQ3SOs138+
-s6Gn5Q//XR1WBSTbtSwOrKQWuPDV7tOFjf6dfJEWfhiXlkB+CMwEWcejemQGS1He
-S9BFx8JjoV2ILf/+qWqgdtP8M8+mMLoIfhPqrfoV0bHI1leo15FN3+NbbveW6lHo
-7T7ZN6GC7AYC5OyQcQ4tF3GecV4U/d8sNUk/LPgLsR8ZLZTFm3ffemOkSC+pYPn9
-PtsN2+mpA+Nz8vIhKdA7pnFWb8ctXMndexyeY+Us669c1uKPvAqsK2Y87hl2EU81
-HYYVh/5VDp7VGgSMZG2mMiMTFnAKD2pKGTa+W2SqM958xjy7H0I8Fo/nifKOxc89
-mWdC56GwCPMjtJgXFtleInwK1gv0Vu6YuhH63XTcT5pjClgDaiYsiYdDU9kkzmeL
-qq6QdC0BrzEzeOByhzL5loeRoRja1xQxjBDXcE2zHpSqaXU+pQfAKELDfu1uYCKV
-3AUTN6HrUk+btr/7sSPHstUZqsTX6/VuMggMhnJQy25rFejJb0MWoe+C8U1MCtFh
-Ab6Nrp6mbJvf2YgMKLrwn1WbmVXd4pUxI7pMwoPRnfjdWJc1C95d8/wIHCsgI+KH
-aWasonEd33phX1sPzS0CucADcNfY4PaIkpbW+aM0w3qHdTmS05avnaU/5w2aRpZe
-3C5wVdVJffpcBjokYeVnVDm33uORvTdnFZeE7WvcVEUynZl84A4=
-=dmMX
------END PGP SIGNATURE-----
-
---f7Os7LJ667BkQ0FG--
+Kind regards
+Uffe
