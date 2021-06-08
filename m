@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6633A0364
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BA03A01E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237483AbhFHTQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:16:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44698 "EHLO mail.kernel.org"
+        id S235664AbhFHS5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:57:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237788AbhFHTFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:05:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ABFF6140C;
-        Tue,  8 Jun 2021 18:46:25 +0000 (UTC)
+        id S235228AbhFHSux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:50:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F389A6146D;
+        Tue,  8 Jun 2021 18:39:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177986;
-        bh=QaLUAtuxmVFO9vJ0BgRvVSPB5wiO7/9HXh2m2uaxkZE=;
+        s=korg; t=1623177584;
+        bh=KqYhOBpB+gMb1Qp3SR1AofPIlmvlllvO1NK0L5JYB3Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o6UcdroIJq2Bj1k/xT/26jYkhSTdUBjYXC8M0cazaYok9C+EYwv4ASXgQgN/+4NZV
-         omRh+4iejcBKMFFN06ZAeyiUw+XFnyPi2oJ/a40D6qQvpa5AIp2J25KcZVzw5r0T0W
-         8u9W6c1pkqsaaRjj7TKm0BQWzRJPWthNR7e5a5wY=
+        b=f2oIB/9ZQN6LSCj/GF+Xv3SErmKwz7FQxaSwlgt6B0qrH/pjxdDnd0bsXONTgEFUS
+         sX/wnWAB6JufurBZznA8o54iGzXo5HGk58TX7GWDxSVkNjUZzM13G4lYPeDPFlbEGX
+         P9Cvazjl+zFBw+79Pmh0Ex/OE/FM+6Y+oVRodSf4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 034/161] net/mlx5e: Fix incompatible casting
-Date:   Tue,  8 Jun 2021 20:26:04 +0200
-Message-Id: <20210608175946.611181253@linuxfoundation.org>
+Subject: [PATCH 5.10 025/137] net: dsa: tag_8021q: fix the VLAN IDs used for encoding sub-VLANs
+Date:   Tue,  8 Jun 2021 20:26:05 +0200
+Message-Id: <20210608175943.267366973@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@nvidia.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit d8ec92005f806dfa7524e9171eca707c0bb1267e ]
+[ Upstream commit 4ef8d857b5f494e62bce9085031563fda35f9563 ]
 
-Device supports setting of a single fec mode at a time, enforce this
-by bitmap_weight == 1. Input from fec command is in u32, avoid cast to
-unsigned long and use bitmap_from_arr32 to populate bitmap safely.
+When using sub-VLANs in the range of 1-7, the resulting value from:
 
-Fixes: 4bd9d5070b92 ("net/mlx5e: Enforce setting of a single FEC mode")
-Signed-off-by: Aya Levin <ayal@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+	rx_vid = dsa_8021q_rx_vid_subvlan(ds, port, subvlan);
+
+is wrong according to the description from tag_8021q.c:
+
+ | 11  | 10  |  9  |  8  |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+ +-----------+-----+-----------------+-----------+-----------------------+
+ |    DIR    | SVL |    SWITCH_ID    |  SUBVLAN  |          PORT         |
+ +-----------+-----+-----------------+-----------+-----------------------+
+
+For example, when ds->index == 0, port == 3 and subvlan == 1,
+dsa_8021q_rx_vid_subvlan() returns 1027, same as it returns for
+subvlan == 0, but it should have returned 1043.
+
+This is because the low portion of the subvlan bits are not masked
+properly when writing into the 12-bit VLAN value. They are masked into
+bits 4:3, but they should be masked into bits 5:4.
+
+Fixes: 3eaae1d05f2b ("net: dsa: tag_8021q: support up to 8 VLANs per port using sub-VLANs")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ net/dsa/tag_8021q.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-index 53802e18af90..04b49cb3adb3 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-@@ -1632,12 +1632,13 @@ static int mlx5e_set_fecparam(struct net_device *netdev,
- {
- 	struct mlx5e_priv *priv = netdev_priv(netdev);
- 	struct mlx5_core_dev *mdev = priv->mdev;
-+	unsigned long fec_bitmap;
- 	u16 fec_policy = 0;
- 	int mode;
- 	int err;
- 
--	if (bitmap_weight((unsigned long *)&fecparam->fec,
--			  ETHTOOL_FEC_LLRS_BIT + 1) > 1)
-+	bitmap_from_arr32(&fec_bitmap, &fecparam->fec, sizeof(fecparam->fec) * BITS_PER_BYTE);
-+	if (bitmap_weight(&fec_bitmap, ETHTOOL_FEC_LLRS_BIT + 1) > 1)
- 		return -EOPNOTSUPP;
- 
- 	for (mode = 0; mode < ARRAY_SIZE(pplm_fec_2_ethtool); mode++) {
+diff --git a/net/dsa/tag_8021q.c b/net/dsa/tag_8021q.c
+index 8e3e8a5b8559..a00b513c22a1 100644
+--- a/net/dsa/tag_8021q.c
++++ b/net/dsa/tag_8021q.c
+@@ -64,7 +64,7 @@
+ #define DSA_8021Q_SUBVLAN_HI_SHIFT	9
+ #define DSA_8021Q_SUBVLAN_HI_MASK	GENMASK(9, 9)
+ #define DSA_8021Q_SUBVLAN_LO_SHIFT	4
+-#define DSA_8021Q_SUBVLAN_LO_MASK	GENMASK(4, 3)
++#define DSA_8021Q_SUBVLAN_LO_MASK	GENMASK(5, 4)
+ #define DSA_8021Q_SUBVLAN_HI(x)		(((x) & GENMASK(2, 2)) >> 2)
+ #define DSA_8021Q_SUBVLAN_LO(x)		((x) & GENMASK(1, 0))
+ #define DSA_8021Q_SUBVLAN(x)		\
 -- 
 2.30.2
 
