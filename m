@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40BF3A01F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A173A0378
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236541AbhFHS6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:58:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52366 "EHLO mail.kernel.org"
+        id S237362AbhFHTRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:17:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235312AbhFHSvw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:51:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49FF76142E;
-        Tue,  8 Jun 2021 18:39:57 +0000 (UTC)
+        id S237855AbhFHTFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:05:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE2A26192D;
+        Tue,  8 Jun 2021 18:46:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177597;
-        bh=Saa7yUtcScnOSYHA+UPX6fJ+T9gBQ6O+JceFWKHjKYM=;
+        s=korg; t=1623178008;
+        bh=a1DxeHdXLDzWLVlbWtPNEM0iSuxeAm+XNWswjX3EQGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bT9s80KeUdox4YyvPLTMJzGk1GwFr4ayordK8fLgsiyA4Q3ZD5i3Gcy1YbUsfyWIt
-         XnG59PKNWUnx1xEMSnVEaIakBIE4+2H+tdXMpWXWOflPGfYAaaWhwdGHDb5zgqtd7J
-         /k1H0qQJovsgcqO0378AntG2Bbg6uZSlvQ+PJVCY=
+        b=JZ1TagK0JCIQq/jYqDaHS1vzUqv+TyqOdbx2XB5W0Li+dvk/0jGVyCdkJlWR6VEyq
+         uBnhEAoBg4K/tMfZP77/k+g9PN1hb1K5A8D4J8Fw0OdWIHsxGwAhbKncflgezDnrVf
+         4HGR54meCu7rouhgVYRuRGPoruU9Kfs67d9SwaI8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 030/137] net/mlx5: Check firmware sync reset requested is set before trying to abort it
-Date:   Tue,  8 Jun 2021 20:26:10 +0200
-Message-Id: <20210608175943.436414833@linuxfoundation.org>
+Subject: [PATCH 5.12 041/161] netfilter: nfnetlink_cthelper: hit EBUSY on updates if size mismatches
+Date:   Tue,  8 Jun 2021 20:26:11 +0200
+Message-Id: <20210608175946.848534605@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+References: <20210608175945.476074951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moshe Shemesh <moshe@nvidia.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 5940e64281c09976ce2b560244217e610bf9d029 ]
+[ Upstream commit 8971ee8b087750a23f3cd4dc55bff2d0303fd267 ]
 
-In case driver sent NACK to firmware on sync reset request, it will get
-sync reset abort event while it didn't set sync reset requested mode.
-Thus, on abort sync reset event handler, driver should check reset
-requested is set before trying to stop sync reset poll.
+The private helper data size cannot be updated. However, updates that
+contain NFCTH_PRIV_DATA_LEN might bogusly hit EBUSY even if the size is
+the same.
 
-Fixes: 7dd6df329d4c ("net/mlx5: Handle sync reset abort event")
-Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: 12f7a505331e ("netfilter: add user-space connection tracking helper infrastructure")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/netfilter/nfnetlink_cthelper.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-index f9042e147c7f..ee710ce00795 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-@@ -354,6 +354,9 @@ static void mlx5_sync_reset_abort_event(struct work_struct *work)
- 						      reset_abort_work);
- 	struct mlx5_core_dev *dev = fw_reset->dev;
+diff --git a/net/netfilter/nfnetlink_cthelper.c b/net/netfilter/nfnetlink_cthelper.c
+index 0f94fce1d3ed..04a12a264cf7 100644
+--- a/net/netfilter/nfnetlink_cthelper.c
++++ b/net/netfilter/nfnetlink_cthelper.c
+@@ -380,10 +380,14 @@ static int
+ nfnl_cthelper_update(const struct nlattr * const tb[],
+ 		     struct nf_conntrack_helper *helper)
+ {
++	u32 size;
+ 	int ret;
  
-+	if (!test_bit(MLX5_FW_RESET_FLAGS_RESET_REQUESTED, &fw_reset->reset_flags))
-+		return;
-+
- 	mlx5_sync_reset_clear_reset_requested(dev, true);
- 	mlx5_core_warn(dev, "PCI Sync FW Update Reset Aborted.\n");
- }
+-	if (tb[NFCTH_PRIV_DATA_LEN])
+-		return -EBUSY;
++	if (tb[NFCTH_PRIV_DATA_LEN]) {
++		size = ntohl(nla_get_be32(tb[NFCTH_PRIV_DATA_LEN]));
++		if (size != helper->data_len)
++			return -EBUSY;
++	}
+ 
+ 	if (tb[NFCTH_POLICY]) {
+ 		ret = nfnl_cthelper_update_policy(helper, tb[NFCTH_POLICY]);
 -- 
 2.30.2
 
