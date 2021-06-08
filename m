@@ -2,147 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7181739F17D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D089439F180
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhFHI5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:57:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:53028 "EHLO foss.arm.com"
+        id S229923AbhFHI6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:58:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhFHI5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:57:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81184113E;
-        Tue,  8 Jun 2021 01:55:24 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CB4863F719;
-        Tue,  8 Jun 2021 01:55:22 -0700 (PDT)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, Emma Anholt <emma@anholt.net>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Will Deacon <will@kernel.org>, dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm/vc4: fix vc4_atomic_commit_tail() logic
-Date:   Tue,  8 Jun 2021 09:55:12 +0100
-Message-Id: <20210608085513.2069-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
+        id S229548AbhFHI6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 04:58:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 314A061153;
+        Tue,  8 Jun 2021 08:56:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623142570;
+        bh=ews02L1jG1jjqGhNiQBHVN06tOoeL+zxI87hCEUyTkY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nNfCk3uPL/u3KJrFtRoAGgFuNVs9IeZf6yMzuChgn0OzADTn+sFtyGdKGiogPvJ0l
+         4OaqjsubDE3q0EmA2eXEIOiljTEksdm31Ltf3rleRITNeV9a1f6z98jZ1pumXm9NXy
+         hpYgt0+3Pxbx8bJfKEPJYyZfpuZjfSJnAO/EIjPE=
+Date:   Tue, 8 Jun 2021 10:56:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        kbuild-all@lists.01.org, Michal Simek <monstr@monstr.eu>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        linux-usb@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 2/5] USB: misc: Add onboard_usb_hub driver
+Message-ID: <YL8wqCQZvim7iB02@kroah.com>
+References: <20210604144027.v11.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+ <202106050751.uNo0uAEm-lkp@intel.com>
+ <YL5cvT4NvMLIuH+C@google.com>
+ <YL5kL38o8JLDp8LK@kroah.com>
+ <YL5mP4lGoiHNjAYN@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YL5mP4lGoiHNjAYN@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In vc4_atomic_commit_tail() we iterate of the set of old CRTCs, and
-attempt to wait on any channels which are still in use. When we iterate
-over the CRTCs, we have:
+On Mon, Jun 07, 2021 at 11:32:31AM -0700, Matthias Kaehlcke wrote:
+> On Mon, Jun 07, 2021 at 08:23:43PM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Jun 07, 2021 at 10:51:57AM -0700, Matthias Kaehlcke wrote:
+> > > On Sat, Jun 05, 2021 at 07:18:38AM +0800, kernel test robot wrote:
+> > > > Hi Matthias,
+> > > > 
+> > > > I love your patch! Perhaps something to improve:
+> > > > 
+> > > > [auto build test WARNING on next-20210604]
+> > > > [also build test WARNING on v5.13-rc4]
+> > > > [cannot apply to usb/usb-testing robh/for-next char-misc/char-misc-testing driver-core/driver-core-testing linus/master v5.13-rc4 v5.13-rc3 v5.13-rc2]
+> > > > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > > > And when submitting patch, we suggest to use '--base' as documented in
+> > > > https://git-scm.com/docs/git-format-patch]
+> > > > 
+> > > > url:    https://github.com/0day-ci/linux/commits/Matthias-Kaehlcke/USB-misc-Add-onboard_usb_hub-driver/20210605-054213
+> > > > base:    ccc252d2e818f6a479441119ad453c3ce7c7c461
+> > > > config: arc-allyesconfig (attached as .config)
+> > > > compiler: arceb-elf-gcc (GCC) 9.3.0
+> > > > reproduce (this is a W=1 build):
+> > > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > > >         chmod +x ~/bin/make.cross
+> > > >         # https://github.com/0day-ci/linux/commit/7107f99a12058b7147342c6f763d026102bd6606
+> > > >         git remote add linux-review https://github.com/0day-ci/linux
+> > > >         git fetch --no-tags linux-review Matthias-Kaehlcke/USB-misc-Add-onboard_usb_hub-driver/20210605-054213
+> > > >         git checkout 7107f99a12058b7147342c6f763d026102bd6606
+> > > >         # save the attached .config to linux build tree
+> > > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc 
+> > > > 
+> > > > If you fix the issue, kindly add following tag as appropriate
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > 
+> > > > All warnings (new ones prefixed by >>):
+> > > > 
+> > > > >> drivers/usb/misc/onboard_usb_hub.c:400:6: warning: no previous prototype for 'onboard_hub_create_pdevs' [-Wmissing-prototypes]
+> > > >      400 | void onboard_hub_create_pdevs(struct usb_device *parent_hub, struct list_head *pdev_list)
+> > > >          |      ^~~~~~~~~~~~~~~~~~~~~~~~
+> > > > >> drivers/usb/misc/onboard_usb_hub.c:458:6: warning: no previous prototype for 'onboard_hub_destroy_pdevs' [-Wmissing-prototypes]
+> > > >      458 | void onboard_hub_destroy_pdevs(struct list_head *pdev_list)
+> > > >          |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > > 
+> > > Oh, I wasn't aware that prototypes are required for public functions.
+> > 
+> > How else can they be called?
+> 
+> Well, there are prototypes in include/linux/usb/onboard_hub.h, however this
+> header isn't included (anymore) by the driver itself to avoid conflicts
+> when COMPILE_TEST=y (see https://lkml.org/lkml/2021/5/25/975).
 
-* `i` - the index of the CRTC
-* `channel` - the channel a CRTC is using
+Then that needs to be resolved please.
 
-When we check the channel state, we consult:
+thanks,
 
-  old_hvs_state->fifo_state[channel].in_use
-
-... but when we wait for the channel, we erroneously wait on:
-
-  old_hvs_state->fifo_state[i].pending_commit
-
-... rather than:
-
-   old_hvs_state->fifo_state[channel].pending_commit
-
-... and this bogus access has been observed to result in boot-time hangs
-on some arm64 configurations, and can be detected using KASAN. FIx this
-by using the correct index.
-
-I've tested this on a Raspberry Pi 3 model B v1.2 with KASAN.
-
-Trimmed KASAN splat:
-
-| ==================================================================
-| BUG: KASAN: slab-out-of-bounds in vc4_atomic_commit_tail+0x1cc/0x910
-| Read of size 8 at addr ffff000007360440 by task kworker/u8:0/7
-| CPU: 2 PID: 7 Comm: kworker/u8:0 Not tainted 5.13.0-rc3-00009-g694c523e7267 #3
-|
-| Hardware name: Raspberry Pi 3 Model B (DT)
-| Workqueue: events_unbound deferred_probe_work_func
-| Call trace:
-|  dump_backtrace+0x0/0x2b4
-|  show_stack+0x1c/0x30
-|  dump_stack+0xfc/0x168
-|  print_address_description.constprop.0+0x2c/0x2c0
-|  kasan_report+0x1dc/0x240
-|  __asan_load8+0x98/0xd4
-|  vc4_atomic_commit_tail+0x1cc/0x910
-|  commit_tail+0x100/0x210
-| ...
-|
-| Allocated by task 7:
-|  kasan_save_stack+0x2c/0x60
-|  __kasan_kmalloc+0x90/0xb4
-|  vc4_hvs_channels_duplicate_state+0x60/0x1a0
-|  drm_atomic_get_private_obj_state+0x144/0x230
-|  vc4_atomic_check+0x40/0x73c
-|  drm_atomic_check_only+0x998/0xe60
-|  drm_atomic_commit+0x34/0x94
-|  drm_client_modeset_commit_atomic+0x2f4/0x3a0
-|  drm_client_modeset_commit_locked+0x8c/0x230
-|  drm_client_modeset_commit+0x38/0x60
-|  drm_fb_helper_set_par+0x104/0x17c
-|  fbcon_init+0x43c/0x970
-|  visual_init+0x14c/0x1e4
-| ...
-|
-| The buggy address belongs to the object at ffff000007360400
-|  which belongs to the cache kmalloc-128 of size 128
-| The buggy address is located 64 bytes inside of
-|  128-byte region [ffff000007360400, ffff000007360480)
-| The buggy address belongs to the page:
-| page:(____ptrval____) refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7360
-| flags: 0x3fffc0000000200(slab|node=0|zone=0|lastcpupid=0xffff)
-| raw: 03fffc0000000200 dead000000000100 dead000000000122 ffff000004c02300
-| raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-| page dumped because: kasan: bad access detected
-|
-| Memory state around the buggy address:
-|  ffff000007360300: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-|  ffff000007360380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-| >ffff000007360400: 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc
-|                                            ^
-|  ffff000007360480: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-|  ffff000007360500: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-| ==================================================================
-
-Link: https://lore.kernel.org/r/4d0c8318-bad8-2be7-e292-fc8f70c198de@samsung.com
-Link: https://lore.kernel.org/linux-arm-kernel/20210607151740.moncryl5zv3ahq4s@gilmour
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Emma Anholt <emma@anholt.net>
-Cc: Maxime Ripard <maxime@cerno.tech>
-Cc: Will Deacon <will@kernel.org>
-Cc: dri-devel@lists.freedesktop.org
----
- drivers/gpu/drm/vc4/vc4_kms.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
-index bb5529a7a9c2..948b3a58aad1 100644
---- a/drivers/gpu/drm/vc4/vc4_kms.c
-+++ b/drivers/gpu/drm/vc4/vc4_kms.c
-@@ -372,7 +372,7 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
- 		if (!old_hvs_state->fifo_state[channel].in_use)
- 			continue;
- 
--		ret = drm_crtc_commit_wait(old_hvs_state->fifo_state[i].pending_commit);
-+		ret = drm_crtc_commit_wait(old_hvs_state->fifo_state[channel].pending_commit);
- 		if (ret)
- 			drm_err(dev, "Timed out waiting for commit\n");
- 	}
--- 
-2.11.0
-
+greg k-h
