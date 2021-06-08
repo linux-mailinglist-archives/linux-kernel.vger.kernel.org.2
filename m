@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10A139FCBF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0299239FCC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbhFHQrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 12:47:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231278AbhFHQrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:47:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89E956127A;
-        Tue,  8 Jun 2021 16:45:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623170730;
-        bh=5+e3G0jIDFHNWhBPwTgnEov6WJW2KTJ2WUUQaajrIso=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DH9rM21HpBpLvs5vxfMMXLPAHpNVYPLJQ51jeCsuy5SbZBAn0ifA7hJzmjZzzo1Sm
-         AZ0NcnspjeDKTDLFvDskVzOmlnh1f5YqlaAkmMNRAHTHhr3qwCmAK2K08k2JiIKzq+
-         alHfp++TTOKox7Ry+W/Y2VA19uHVCMsTDyx/asfndcHbyBHb73e5R5CffKLquObpbp
-         zvIjbYomJarG0yrZpxhqqGX3wcxxmpbkeemBl+a+OysfUkK0EBlPRgxJZ/c6fBxRJA
-         afhPnzVKw90VIqq9TI9j+BGMoeaL8k27ZGj2jr46wMQbnWNC2vXwAANDkta9F7ofNu
-         GRZZnAI7M3jVw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D675440B1A; Tue,  8 Jun 2021 13:45:27 -0300 (-03)
-Date:   Tue, 8 Jun 2021 13:45:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Leo Yan <leo.yan@linaro.org>, Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 5/8] perf auxtrace: Change to use SMP memory barriers
-Message-ID: <YL+epwdGJ1/tx8MF@kernel.org>
-References: <20210602103007.184993-1-leo.yan@linaro.org>
- <20210602103007.184993-6-leo.yan@linaro.org>
- <YL47cyfNBx5OIRNB@hirez.programming.kicks-ass.net>
+        id S233204AbhFHQrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 12:47:45 -0400
+Received: from smtprelay0077.hostedemail.com ([216.40.44.77]:54426 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232807AbhFHQro (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 12:47:44 -0400
+Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 1C1E7181D3042;
+        Tue,  8 Jun 2021 16:45:51 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id 5128B20A299;
+        Tue,  8 Jun 2021 16:45:50 +0000 (UTC)
+Message-ID: <b77a3e7b0923344e8c5b9b17f4788d28f3ccfb4f.camel@perches.com>
+Subject: Re: [PATCH -next 2/2] staging: r8188eu: use eth_broadcast_addr() to
+ assign broadcast address
+From:   Joe Perches <joe@perches.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Tue, 08 Jun 2021 09:45:49 -0700
+In-Reply-To: <YL96vz4okNehxCBG@kroah.com>
+References: <20210608141620.525521-1-liushixin2@huawei.com>
+         <YL96vz4okNehxCBG@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL47cyfNBx5OIRNB@hirez.programming.kicks-ass.net>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.32
+X-Stat-Signature: p9wydgr8pharduzuarqe1ngfenzwejnj
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 5128B20A299
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/YiXAixKRd9sc3PQad8sltguXjxgVCQV8=
+X-HE-Tag: 1623170750-172711
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jun 07, 2021 at 05:29:55PM +0200, Peter Zijlstra escreveu:
-> On Wed, Jun 02, 2021 at 06:30:04PM +0800, Leo Yan wrote:
-> > The kernel and the userspace tool can access the AUX ring buffer head
-> > and tail from different CPUs, thus SMP class of barriers are required
-> > on SMP system.
-> > 
-> > This patch changes to use SMP barriers to replace mb() and rmb()
-> > barriers.
-> > 
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+On Tue, 2021-06-08 at 16:12 +0200, Greg Kroah-Hartman wrote:
+> On Tue, Jun 08, 2021 at 10:16:20PM +0800, Liu Shixin wrote:
+> > Use eth_broadcast_addr() to assign broadcast address.
 > 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> That says what you do, but not _why_ you are doing this?
+> 
+> Why make this change?  What benifit does it provide?
 
-Thanks, applied.
+The commit message is clear and concise as using available kernel
+mechanisms is better than homegrown or duplicative ones.
 
-- Arnaldo
+Are you asking merely becuse Liu Shixin hasn't had many staging
+commits?
+
+
 
