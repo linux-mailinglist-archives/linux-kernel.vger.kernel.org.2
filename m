@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D7F3A0409
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5DB3A02CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhFHTZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:25:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38008 "EHLO mail.kernel.org"
+        id S237592AbhFHTKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:10:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236102AbhFHTNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:13:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8471A61973;
-        Tue,  8 Jun 2021 18:49:49 +0000 (UTC)
+        id S236634AbhFHS72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:59:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D2946162D;
+        Tue,  8 Jun 2021 18:43:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178190;
-        bh=vAGZtliyhq6tXfRgZjN/CmPnhW4j1CneJYnU3iRYzB0=;
+        s=korg; t=1623177791;
+        bh=v1oMwKHnjxU73MpDkT5DofjoJu3gZY+tqku0jOHo47s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RbPI4jbzQ2OIcwGcQ1qKsDQOmWahj5YZOydxXnckUkS6w1ID8riDbsQLq7QBfj5cc
-         the2pU8YkZS/nLBOl13ZOms+nsIfxgS3Yqj2+EcfZKZKtODrP5Kh+fv+vIFpFRyn9Z
-         CloyIOPLisWWelfuoKY1IFZr27RS05O/4Tuof7gc=
+        b=POt6Rlf2DuNIxQKDjJJdgdlol/35HpLdopCbn+unj3Ae1Dzr2bq6Q6h0ucTrO4Kep
+         8zi9yaHKnyjqKvYiEaaOak3H5zf7v278FpdHo6iT97xUzhCmYG6oMK+YpbKWj1xaa1
+         /r9RIVprvGIluGHO7gr3aOv8Lz784unkkvSTbZrw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 5.12 110/161] gfs2: fix scheduling while atomic bug in glocks
-Date:   Tue,  8 Jun 2021 20:27:20 +0200
-Message-Id: <20210608175949.182484972@linuxfoundation.org>
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Ludwig Zenz <lzenz@dh-electronics.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.10 101/137] ARM: dts: imx6q-dhcom: Add PU,VDD1P1,VDD2P5 regulators
+Date:   Tue,  8 Jun 2021 20:27:21 +0200
+Message-Id: <20210608175945.800172384@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Marek Vasut <marex@denx.de>
 
-commit 20265d9a67e40eafd39a8884658ca2e36f05985d upstream.
+commit 8967b27a6c1c19251989c7ab33c058d16e4a5f53 upstream.
 
-Before this patch, in the unlikely event that gfs2_glock_dq encountered
-a withdraw, it would do a wait_on_bit to wait for its journal to be
-recovered, but it never released the glock's spin_lock, which caused a
-scheduling-while-atomic error.
+Per schematic, both PU and SOC regulator are supplied from LTC3676 SW1
+via VDDSOC_IN rail, add the PU input. Both VDD1P1, VDD2P5 are supplied
+from LTC3676 SW2 via VDDHIGH_IN rail, add both inputs.
 
-This patch unlocks the lockref spin_lock before waiting for recovery.
+While no instability or problems are currently observed, the regulators
+should be fully described in DT and that description should fully match
+the hardware, else this might lead to unforseen issues later. Fix this.
 
-Fixes: 601ef0d52e96 ("gfs2: Force withdraw to replay journals and wait for it to finish")
-Cc: stable@vger.kernel.org # v5.7+
-Reported-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Fixes: 52c7a088badd ("ARM: dts: imx6q: Add support for the DHCOM iMX6 SoM and PDK2")
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Ludwig Zenz <lzenz@dh-electronics.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: stable@vger.kernel.org
+Reviewed-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/gfs2/glock.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm/boot/dts/imx6q-dhcom-som.dtsi |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -1465,9 +1465,11 @@ void gfs2_glock_dq(struct gfs2_holder *g
- 	    glock_blocked_by_withdraw(gl) &&
- 	    gh->gh_gl != sdp->sd_jinode_gl) {
- 		sdp->sd_glock_dqs_held++;
-+		spin_unlock(&gl->gl_lockref.lock);
- 		might_sleep();
- 		wait_on_bit(&sdp->sd_flags, SDF_WITHDRAW_RECOVERY,
- 			    TASK_UNINTERRUPTIBLE);
-+		spin_lock(&gl->gl_lockref.lock);
- 	}
- 	if (gh->gh_flags & GL_NOCACHE)
- 		handle_callback(gl, LM_ST_UNLOCKED, 0, false);
+--- a/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
++++ b/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
+@@ -406,6 +406,18 @@
+ 	vin-supply = <&sw1_reg>;
+ };
+ 
++&reg_pu {
++	vin-supply = <&sw1_reg>;
++};
++
++&reg_vdd1p1 {
++	vin-supply = <&sw2_reg>;
++};
++
++&reg_vdd2p5 {
++	vin-supply = <&sw2_reg>;
++};
++
+ &uart1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart1>;
 
 
