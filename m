@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6126339FF1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400D339FF2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbhFHSar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:30:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55022 "EHLO mail.kernel.org"
+        id S234034AbhFHSa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:30:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233355AbhFHSal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:30:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F336261352;
-        Tue,  8 Jun 2021 18:28:33 +0000 (UTC)
+        id S233920AbhFHSav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:30:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ECB2613AE;
+        Tue,  8 Jun 2021 18:28:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623176914;
-        bh=Ue9lbIDJj0P2m0BfjmqXGYFaocepRpggYF4jKEqrpKY=;
+        s=korg; t=1623176938;
+        bh=GvBZEAFzs/JsSVxO5y+ZXjEC47o0qYUnu9msmDXAorQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kap+4WyI+Cco9tXD1Ni2MR9p3Pq1bV8jruJsEYeeO+w2MHXjShf27pyv4JeaJyigl
-         3KtW8LwvVy2ASyRHNo9DhMkI5Kx7QjXW8NvhnohvUKPI45s2oRUwWkLaBkwbySgeUw
-         66wNbOWRO1j0jCnVlnJWPsaLpSebIDLw+afgROdk=
+        b=iUNv3wrYFIrCQbDs1PkPaQHosRtCBjglk2wYNH60CI9NIFbDUB5nkoJD68oS5JIFp
+         AM5ajrKOw6KE5/BPvnIMJR1wYE7uxHdR46doFKNL1jCdYxkutZ92eQZxY3tuggYHhV
+         Jl7pH06ida3tXZWgtAx2Li7UrD3Vrhk1iwbaSIJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        stable@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
         Alex Williamson <alex.williamson@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 02/23] vfio/pci: Fix error return code in vfio_ecap_init()
-Date:   Tue,  8 Jun 2021 20:26:54 +0200
-Message-Id: <20210608175926.609575454@linuxfoundation.org>
+Subject: [PATCH 4.4 03/23] vfio/platform: fix module_put call in error flow
+Date:   Tue,  8 Jun 2021 20:26:55 +0200
+Message-Id: <20210608175926.649210183@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175926.524658689@linuxfoundation.org>
 References: <20210608175926.524658689@linuxfoundation.org>
@@ -42,36 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Max Gurtovoy <mgurtovoy@nvidia.com>
 
-[ Upstream commit d1ce2c79156d3baf0830990ab06d296477b93c26 ]
+[ Upstream commit dc51ff91cf2d1e9a2d941da483602f71d4a51472 ]
 
-The error code returned from vfio_ext_cap_len() is stored in 'len', not
-in 'ret'.
+The ->parent_module is the one that use in try_module_get. It should
+also be the one the we use in module_put during vfio_platform_open().
 
-Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-Id: <20210515020458.6771-1-thunder.leizhen@huawei.com>
+Fixes: 32a2d71c4e80 ("vfio: platform: introduce vfio-platform-base module")
+Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-Id: <20210518192133.59195-1-mgurtovoy@nvidia.com>
 Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci_config.c | 2 +-
+ drivers/vfio/platform/vfio_platform_common.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index 666b234acca0..9891001244ea 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -1488,7 +1488,7 @@ static int vfio_ecap_init(struct vfio_pci_device *vdev)
- 			if (len == 0xFF) {
- 				len = vfio_ext_cap_len(vdev, ecap, epos);
- 				if (len < 0)
--					return ret;
-+					return len;
- 			}
- 		}
+diff --git a/drivers/vfio/platform/vfio_platform_common.c b/drivers/vfio/platform/vfio_platform_common.c
+index e65b142d3422..9b170ce16011 100644
+--- a/drivers/vfio/platform/vfio_platform_common.c
++++ b/drivers/vfio/platform/vfio_platform_common.c
+@@ -192,7 +192,7 @@ err_irq:
+ 	vfio_platform_regions_cleanup(vdev);
+ err_reg:
+ 	mutex_unlock(&driver_lock);
+-	module_put(THIS_MODULE);
++	module_put(vdev->parent_module);
+ 	return ret;
+ }
  
 -- 
 2.30.2
