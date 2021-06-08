@@ -2,153 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA22F39ECCF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B166039ECD1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhFHDQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 23:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbhFHDQB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 23:16:01 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BBAC061574;
-        Mon,  7 Jun 2021 20:13:54 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id m21so13990437lfg.13;
-        Mon, 07 Jun 2021 20:13:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b71LtaSQOEalI7Wb6oIYULiHeLXln/VVhWK4vkhKUmc=;
-        b=fT/nwBiGE67zpjQxpY9UxGqZT9b+/lWmhFrMT2AqKDfY/qLlTS89yISQUnLyMASJeA
-         IZf4K0h0H9num9H0Z7yWthhJ/MlusWb8yOZDWpWkWM47jSRBnqbz+GWBM/SqP1Ii2g9I
-         XMr2k1CiodjH0GzVzh6+KdKoFIQXhvQBfijxkN6EIxgY3REQWUwDQxyouf4PBjGQSr20
-         CG49Iv2+EwypG3GRuvVPbb/ywzTCnu9pgJ/eqluqRA3h1Fd5LmJa/gLsUyltxv2o3MYt
-         bn0EexDXcWFanzbiIctSfpAXdj9jILw265jSGLtMPjusMvzuvOy6icxJxkRfu5hCuHef
-         8Tng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b71LtaSQOEalI7Wb6oIYULiHeLXln/VVhWK4vkhKUmc=;
-        b=V5rK63IQ0RCDNCtJx9BKXZC4hC+tip7ssUQisy4J8QUt4Nggthz9bGxRz6NIeO9e2e
-         He/9Ob/882+SykbbX7arJCFXsxPuxkQzjIEjG9ufterorav/TgX4qr6yFMPHfnS+cP0V
-         o+f5ufyBYUbwsqVe2x7FMOvQvSqyG3xQEHh5HtFhSjVgkAWCjpttogSZKrtjpqwI/0Gt
-         H+BCz5DGEHJFI2Bh/dPZd65ISeKMGUvhY/ugcvlHQJQOJb8ZrJ8PRePoUtDuVd4ZpEBS
-         dXeK7ngCW/nWa0KUOvSwdr97oiQmFgICVFrDGzB8xaagBplvZI2SK6fUr+jtaX+scZRQ
-         ecGQ==
-X-Gm-Message-State: AOAM530uzIvkdQ0aSIBjvtzDdp5iJGXioBVUDg74//GnX1mlRu5ZKO42
-        iiVwaChjI41hBHaGjNGps9tJgQP5R3i9WwdO9Hk=
-X-Google-Smtp-Source: ABdhPJxBFASWnHLu4/DydbhtQFlH0qnVY3yYAKNLdfEArnLeowEF3WxjaeKW25A/4KAob5s02n/n9XA9VwTJL8OpIOs=
-X-Received: by 2002:a05:6512:2010:: with SMTP id a16mr11344288lfb.38.1623122032820;
- Mon, 07 Jun 2021 20:13:52 -0700 (PDT)
+        id S230503AbhFHDQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 23:16:10 -0400
+Received: from m32-153.88.com ([43.250.32.153]:5824 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230237AbhFHDQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 23:16:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=fxzUMVV0EPeh/zmL3o0HanjEphz9QxxNjXiEy
+        gfeBMs=; b=VDKO3rIroIXL3Kqm+MFkHgygLTmAX0I1QReg8ga8296npuF6mW8WO
+        taXO26HhOVrp6hyAqHEL/eMsApFkzOTgQYn6A06yeXPv6fklrbye1QBbkkUTgYsD
+        QzWZr/do+XbLLTABl0C7FN4O6eKN60CiUUoBfhyOkh1MORO3Ky2y9Q=
+Received: from bobwxc.top (unknown [120.238.248.220])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgB3Tv1+4L5gENUEAA--.12609S2;
+        Tue, 08 Jun 2021 11:14:07 +0800 (CST)
+Date:   Tue, 8 Jun 2021 11:14:05 +0800
+From:   "Wu X.C." <bobwxc@email.cn>
+To:     Hu Haowen <src.res@email.cn>
+Cc:     alexs@kernel.org, corbet@lwn.net, bernard@vivo.com,
+        maskray@google.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] docs/zh_CN: create new translations for
+ zh_CN/dev-tools/testing-overview
+Message-ID: <20210608031405.GC3207@bobwxc.top>
+References: <20210605120504.40246-1-src.res@email.cn>
+ <20210608024439.GA3207@bobwxc.top>
+ <01cd7a95-8b91-ad2f-ad94-80b06c1fe5c0@email.cn>
 MIME-Version: 1.0
-References: <20210521182104.18273-1-kuniyu@amazon.co.jp> <c423bd7b-03ab-91f2-60af-25c6dfa28b71@iogearbox.net>
-In-Reply-To: <c423bd7b-03ab-91f2-60af-25c6dfa28b71@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 7 Jun 2021 20:13:41 -0700
-Message-ID: <CAADnVQJ5wwLoQXegWK6c2vCnLx-J32ZUFAHGouP2HwKNJkU8zg@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        neal Cardwell <ncardwell@google.com>,
-        Yuchung Cheng <ycheng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bKyqfOwhbdpXa4YI"
+Content-Disposition: inline
+In-Reply-To: <01cd7a95-8b91-ad2f-ad94-80b06c1fe5c0@email.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CM-TRANSID: GiKnCgB3Tv1+4L5gENUEAA--.12609S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar1xGr17uw4rJFy8JFWkJFb_yoW8Wr1xp3
+        yv93ZxJF4jgry2yrZak3W0qrnYkwnYqry8X3W3tFyUWrWvyFnIkry7trZFgwn09392yFyF
+        vF42gr9rC34rAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyl1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l
+        84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
+        ASzI0EjI02j7AqF2xKxwAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4U
+        Jr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I64
+        8v4I1lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1U
+        Jr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+        14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUxIJPDUUUU
+X-Originating-IP: [120.238.248.220]
+X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 11:42 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
-> > The SO_REUSEPORT option allows sockets to listen on the same port and to
-> > accept connections evenly. However, there is a defect in the current
-> > implementation [1]. When a SYN packet is received, the connection is tied
-> > to a listening socket. Accordingly, when the listener is closed, in-flight
-> > requests during the three-way handshake and child sockets in the accept
-> > queue are dropped even if other listeners on the same port could accept
-> > such connections.
-> >
-> > This situation can happen when various server management tools restart
-> > server (such as nginx) processes. For instance, when we change nginx
-> > configurations and restart it, it spins up new workers that respect the new
-> > configuration and closes all listeners on the old workers, resulting in the
-> > in-flight ACK of 3WHS is responded by RST.
-> >
-> > To avoid such a situation, users have to know deeply how the kernel handles
-> > SYN packets and implement connection draining by eBPF [2]:
-> >
-> >    1. Stop routing SYN packets to the listener by eBPF.
-> >    2. Wait for all timers to expire to complete requests
-> >    3. Accept connections until EAGAIN, then close the listener.
-> >
-> >    or
-> >
-> >    1. Start counting SYN packets and accept syscalls using the eBPF map.
-> >    2. Stop routing SYN packets.
-> >    3. Accept connections up to the count, then close the listener.
-> >
-> > In either way, we cannot close a listener immediately. However, ideally,
-> > the application need not drain the not yet accepted sockets because 3WHS
-> > and tying a connection to a listener are just the kernel behaviour. The
-> > root cause is within the kernel, so the issue should be addressed in kernel
-> > space and should not be visible to user space. This patchset fixes it so
-> > that users need not take care of kernel implementation and connection
-> > draining. With this patchset, the kernel redistributes requests and
-> > connections from a listener to the others in the same reuseport group
-> > at/after close or shutdown syscalls.
-> >
-> > Although some software does connection draining, there are still merits in
-> > migration. For some security reasons, such as replacing TLS certificates,
-> > we may want to apply new settings as soon as possible and/or we may not be
-> > able to wait for connection draining. The sockets in the accept queue have
-> > not started application sessions yet. So, if we do not drain such sockets,
-> > they can be handled by the newer listeners and could have a longer
-> > lifetime. It is difficult to drain all connections in every case, but we
-> > can decrease such aborted connections by migration. In that sense,
-> > migration is always better than draining.
-> >
-> > Moreover, auto-migration simplifies user space logic and also works well in
-> > a case where we cannot modify and build a server program to implement the
-> > workaround.
-> >
-> > Note that the source and destination listeners MUST have the same settings
-> > at the socket API level; otherwise, applications may face inconsistency and
-> > cause errors. In such a case, we have to use the eBPF program to select a
-> > specific listener or to cancel migration.
-> >
-> > Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
-> > snippets along the way.
-> >
-> >
-> > Link:
-> >   [1] The SO_REUSEPORT socket option
-> >   https://lwn.net/Articles/542629/
-> >
-> >   [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
-> >   https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
->
-> This series needs review/ACKs from TCP maintainers. Eric/Neal/Yuchung please take
-> a look again.
 
-Eric,
+--bKyqfOwhbdpXa4YI
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I've looked through bpf and tcp changes and they don't look scary at all.
-I think the feature is useful and a bit of extra complexity is worth it.
-So please review tcp bits to make sure we didn't miss anything.
+On Tue, Jun 08, 2021 at 10:53:20AM +0800, Hu Haowen wrote:
+>=20
+> =E5=9C=A8 2021/6/8 =E4=B8=8A=E5=8D=8810:44, Wu X.C. =E5=86=99=E9=81=93:
+> > On Sat, Jun 05, 2021 at 08:05:04PM +0800, Hu Haowen wrote:
+> > > Create new translations for dev-tools/testing-overview.rst and link it
+> > > to dev-tools/index.rst with TODOList modifications.
+> > >=20
+> > > Signed-off-by: Hu Haowen <src.res@email.cn>
+> > > ---
+> > >   .../translations/zh_CN/dev-tools/index.rst    |   5 +
+> > >   .../zh_CN/dev-tools/testing-overview.rst      | 110 +++++++++++++++=
++++
+> > [...]
+> > > +
+> > > +=E4=BB=A3=E7=A0=81=E8=A6=86=E7=9B=96=E7=8E=87=E5=B7=A5=E5=85=B7
+> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > +
+> > > +=E6=94=AF=E6=8C=81=E4=B8=A4=E7=A7=8D=E4=B8=8D=E5=90=8C=E4=BB=A3=E7=
+=A0=81=E4=B9=8B=E9=97=B4=E7=9A=84=E8=A6=86=E7=9B=96=E7=8E=87=E6=B5=8B=E9=87=
+=8F=E5=B7=A5=E5=85=B7=E3=80=82=E5=AE=83=E4=BB=AC=E5=8F=AF=E4=BB=A5=E7=94=A8=
+=E6=9D=A5=E9=AA=8C=E8=AF=81=E4=B8=80=E9=A1=B9=E6=B5=8B=E8=AF=95=E6=89=A7=E8=
+=A1=8C=E7=9A=84
+> > Linux=E5=86=85=E6=A0=B8=E6=94=AF=E6=8C=81=E4=B8=A4=E7=A7=8D=E4=B8=8D=E5=
+=90=8C=E7=9A=84=E4=BB=A3=E7=A0=81=E8=A6=86=E7=9B=96=E7=8E=87=E6=B5=8B=E8=AF=
+=95=E5=B7=A5=E5=85=B7=E3=80=82
+>=20
+>=20
+> But you mentioned that this sentence should be
+> "=E6=94=AF=E6=8C=81=E4=B8=A4=E7=A7=8D=E4=B8=8D=E5=90=8C=E4=BB=A3=E7=A0=81=
+=E4=B9=8B=E9=97=B4=E7=9A=84=E8=A6=86=E7=9B=96=E7=8E=87=E6=B5=8B=E9=87=8F=E5=
+=B7=A5=E5=85=B7" in
+> the previous email. Should I take this version or the previous version?
+>=20
 
-Thanks!
+Actually was "=E6=94=AF=E6=8C=81=E4=B8=A4=E7=A7=8D=E4=B8=8D=E5=90=8C=E7=9A=
+=84=E4=BB=A3=E7=A0=81=E8=A6=86=E7=9B=96=E7=8E=87=E6=B5=8B=E8=AF=95=E5=B7=A5=
+=E5=85=B7=E3=80=82"
+<https://lore.kernel.org/linux-doc/20210523140332.GA1097@bobwxc.top/>
+
+I forgot the head and you added something in the middle :)
+
+Please use the new version.
+
+Thanks,
+	Wu
+
+>=20
+> Thx,
+>=20
+> Hu Haowen
+>=20
+>=20
+> >=20
+> > > +=E7=A1=AE=E5=88=87=E5=87=BD=E6=95=B0=E6=88=96=E4=BB=A3=E7=A0=81=E8=
+=A1=8C=E3=80=82=E8=BF=99=E6=9C=89=E5=8A=A9=E4=BA=8E=E5=86=B3=E5=AE=9A=E5=86=
+=85=E6=A0=B8=E8=A2=AB=E6=B5=8B=E8=AF=95=E4=BA=86=E5=A4=9A=E5=B0=91=EF=BC=8C=
+=E6=88=96=E7=94=A8=E6=9D=A5=E6=9F=A5=E6=89=BE=E5=90=88=E9=80=82=E7=9A=84=E6=
+=B5=8B=E8=AF=95
+> > > +=E4=B8=AD=E6=B2=A1=E6=9C=89=E8=A6=86=E7=9B=96=E5=88=B0=E7=9A=84=E6=
+=9E=81=E7=AB=AF=E6=83=85=E5=86=B5=E3=80=82
+> > > +
+> > OK, good job!
+> >=20
+> > Just need to fix a small problem, after that
+> >=20
+> > Reviewed-by: Wu XiangCheng <bobwxc@email.cn>
+> > Thanks,
+> > 	Wu X.C.
+
+--bKyqfOwhbdpXa4YI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEERbo3U5kJpaCtFl1PtlsoEiKCsIUFAmC+4H0ACgkQtlsoEiKC
+sIV2Tgv9EnbkMJpnj4dK4miRataUqjBTt7FVUGlsCvpTcgxnAu/Oqe7wivNGBYnU
+aAm0lzzPN+gLNhRVUQCfcBPODwq7uyhKzbJpD4S4mJf/LE0KfUwiHYl6+fV4+V7R
+erjDxKeTW8dxy1ajFMzR57qrE7zYdc165UdQ7BmqyE49aLnUK0qnbGKFsbtxeCTQ
+g0eWt3Bma4ftXO62PkdDKyE/wcCVeVyL90V7cl+MjF9Wu6gwhg/2Td1djsTBZWYg
+xk9wctglnB94SKTMBwY1NEHsOY1Pup25X5g2LPoTHz6u0DMSQp9qiyw7rUEv1siy
+oFRhNjT7W+2BbDN3gSvyLYn2O03fWogWnca5ENYPXl6cNNFwfqDOY300Q3Aoe9WW
+0gbiPTWJMx3XxFUhjUg8Atdg2ZgjBI0KakZSo0/Iga9vilB8ne76Q+eEAK4lN9li
+2Ke/kcVdo3MfpwZ2Ynkjgx0QLagNXrVSL6K7IpSu5LAKN+KrUWz/f/6h3cSquRfx
+wuKxG8rA
+=fX3L
+-----END PGP SIGNATURE-----
+
+--bKyqfOwhbdpXa4YI--
+
