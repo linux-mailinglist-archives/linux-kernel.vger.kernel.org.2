@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D953A057C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05E53A0582
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhFHVGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 17:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
+        id S233959AbhFHVIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 17:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhFHVGq (ORCPT
+        with ESMTP id S229548AbhFHVIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 17:06:46 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995A2C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 14:04:37 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id d5-20020a17090ab305b02901675357c371so117387pjr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 14:04:37 -0700 (PDT)
+        Tue, 8 Jun 2021 17:08:06 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69C9C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 14:05:57 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id n12so17532371pgs.13
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 14:05:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PvyOvUvI785U/qpRDvpJIFwyWccIcKVL5z2hCAuLUNU=;
-        b=HvEwF4sNujlx8OzDpldXk+IQO+SNNpx+K4P2SIt/YqB1gd6kRQnk3LJvJCXVWQU4D0
-         onB+nJUGA9taNeiWJPqRUJ3AiBWE45Adzv58nsNaa4QTNOHPQCd3WH8fr6nw2KiOug7u
-         rKqWFkRphcEdjRBQquFrR9k6PJF8n6trBpV6UUN0mEB3SZixybprg4FIf4WkxmTwfzVk
-         4sA9ZbS+9Iatg6iDuTfBgIyyXcMx0+9FRimi8l1SKNp7wSEuWxSAwo0h9X+j5tBuvk4N
-         wFEqFXjkjlGdUL3iSGL/UkYSkIou4OhJUk+m4ior9qRi9vcMS6sw73xvAK2JuuRWpW5v
-         750Q==
+        bh=rTsMdC4BXmfgTF7pG31W014xkPHrZAxJCnEYouFG+gQ=;
+        b=oMzG0SfeYUnoGEuhJHQ7htz2XgVPAaGjqbJCsNrsjv0VT/wTC6by508zL98Ft+ChNL
+         YJ3flE4tYQf42oFERX+vkSK+a1A5e4FDwYQxuFNtDDwNBoSr0N2mvxKytkLtUpU7uzYP
+         cCJ7OGIf+41isZ2k+YShyaRwJv7hxwyaBHtqHPlKg5tCRB6TQBWf58QBiNkLGtLQdawx
+         mzMrlPKtVgQqgY+3J9TPxWERH/iVjIoJCKCCU5CTjjS+L967Mhu/k+frrX4pWsD0reVX
+         qZ1uRRRruSBovnL0kBpyCSxnp7Id1hloFaT2wzGWDYiWrFTykDalzKCkMJE8e3LIeJ3k
+         VDpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=PvyOvUvI785U/qpRDvpJIFwyWccIcKVL5z2hCAuLUNU=;
-        b=dxzkm5PLyWeEGjx7zNv0usR0g4DOGLddLOQd5vwKaPRhZjhpaOPGgABcYFZp6bZSHL
-         ydTxJJY8HteyIo+yj+yELtg8UChAWHbY7/VzoSikpzYvm2MU2kogqPuwLnPMyjsJMCmV
-         pNrnXsoIVJwvyq+LAKXNXa7Utd5voH9etc1rpl06CKMyq5qZ4rq2ffOovS9gY1uyLxBd
-         DfaQgMy9WiNTrPHKnEr/MOnFxw7areU1w5Pk6UyYtqbdIAukuSPTGUZ5O4/Ky1YsQTl9
-         gkO7tLXDJE3/J2r3Ov1WrLu6MlIwChK8aHhhn7A9ImD7J7AQLbcpoS2UGGd1y+A0LTwd
-         vubg==
-X-Gm-Message-State: AOAM533lY6/Cpz+SDH5j0w0DSRBwjaTPk9qWVbNXV8W/L9zjIvut1m7z
-        yUFi5mfrHDah0p9mC4pIwEFl3w==
-X-Google-Smtp-Source: ABdhPJyn7nt9+WHxI2BzrNERrluNVAP/em4T2g9rucG5fW7XQOQ0hi0aIT9IxlKo9nNzPFmV7tb9sg==
-X-Received: by 2002:a17:90a:8c14:: with SMTP id a20mr27714031pjo.167.1623186277024;
-        Tue, 08 Jun 2021 14:04:37 -0700 (PDT)
+        bh=rTsMdC4BXmfgTF7pG31W014xkPHrZAxJCnEYouFG+gQ=;
+        b=ahsrMhBSWuWHi0SPbgETh5nqxnHXv/rTFiEyQl7rHpvUV0ZDldrUz/sLnNd0ugTSi0
+         Mg79oG42aSihnHSS/UDKDk0GGy5ov7qh+S8YZxhAI6IBZGw7sdUWwErjyUU4viwQNIHO
+         MExc6maElvIwsBN+ZqNUDBRPypsvOHLJo0F7RxEz7iQsC0qawgpzT0HUAtJ97cz2hQZ9
+         RHkMfqTAcHqrTeVFc+TNFTqwWZxYH8d7dl15D2xBD887HMLe1wiLaJQvI46GlgZtT8Oj
+         a6LfEqct9yU7OIsUN/kq9+XyzW9699uTxJh9a8UFYUcb6OT8mTKvD83tTfPoOE/Pgqk3
+         cXBQ==
+X-Gm-Message-State: AOAM532ouusMsI59papgkgtU1jYWBaK+foUy8T8vhff0uP4XN+yc2G5j
+        GpQJjYLd4EAT1MAHMYAyKSrtPsj8UMVuAw==
+X-Google-Smtp-Source: ABdhPJxmIxuV54xftG6ihDeETBpL1x1bpTjcbMTDiFUjG1Hdy0sEIgM/suXMIB2EpZgu4yPgzkKiqQ==
+X-Received: by 2002:a63:1349:: with SMTP id 9mr130994pgt.235.1623186357366;
+        Tue, 08 Jun 2021 14:05:57 -0700 (PDT)
 Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id s13sm6734111pgi.36.2021.06.08.14.04.34
+        by smtp.gmail.com with ESMTPSA id a66sm9471059pfb.162.2021.06.08.14.05.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 14:04:36 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Use libata platform drivers to replace deprecated
- m68k IDE drivers
-To:     Christoph Hellwig <hch@infradead.org>,
-        Finn Thain <fthain@linux-m68k.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Joshua Thompson <funaho@jurai.org>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        Richard Zidlicky <rz@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>
-References: <cover.1623131194.git.fthain@linux-m68k.org>
- <YL+AqIEPjMgG519L@infradead.org>
+        Tue, 08 Jun 2021 14:05:56 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] bcache fixes for Linux v5.13-rc6
+To:     Coly Li <colyli@suse.de>
+Cc:     linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hch@lst.de
+References: <20210607125052.21277-1-colyli@suse.de>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d3c70f7a-368a-ad9a-6575-8289234b0ce0@kernel.dk>
-Date:   Tue, 8 Jun 2021 15:04:54 -0600
+Message-ID: <180599cb-7c2e-da35-96a5-225462c6cd71@kernel.dk>
+Date:   Tue, 8 Jun 2021 15:06:16 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YL+AqIEPjMgG519L@infradead.org>
+In-Reply-To: <20210607125052.21277-1-colyli@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -75,20 +68,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 8:37 AM, Christoph Hellwig wrote:
-> On Tue, Jun 08, 2021 at 03:46:34PM +1000, Finn Thain wrote:
->> This patch series allows m68k platforms to switch from deprecated IDE
->> drivers to libata drivers.
+On 6/7/21 6:50 AM, Coly Li wrote:
+> Hi Jens,
 > 
-> Thanks, this looks good to me:
+> This series is important for recent reported bcache panic partially
+> triggered by recent bio changes since Linux v5.12.
 > 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Current fix is 5th version since the first effort, it might not be
+> perfect yet, but it survives from different workloads from Rolf,
+> Thorsten and me for more than 1 week in total.
 > 
-> Jens, any chance you could pick this up quickly to prepare for the
-> legacy IDE removal series?
+> Considering many people are waiting for a stable enough fix and it is
+> kind of such fix. Please take them for Linux v5.13-rc6.
+> 
+> Thank you in advance for taking care of them.
 
-I can, but had assumed it'd go through the IDE tree. But not that
-important I guess. I've queued it up for now.
+Applied, thanks.
 
 -- 
 Jens Axboe
