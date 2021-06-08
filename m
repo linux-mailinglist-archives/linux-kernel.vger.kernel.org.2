@@ -2,395 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EB739EC59
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F7A39EC60
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhFHCwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 22:52:39 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:48509 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbhFHCwi (ORCPT
+        id S230519AbhFHCwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 22:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230329AbhFHCwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 22:52:38 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1582arTa067083;
-        Tue, 8 Jun 2021 10:36:53 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Jun
- 2021 10:50:41 +0800
-Date:   Tue, 8 Jun 2021 10:50:33 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH v4 4/7] gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
-Message-ID: <20210608025033.GB2948@aspeedtech.com>
-References: <20210607071514.11727-1-steven_lee@aspeedtech.com>
- <20210607071514.11727-5-steven_lee@aspeedtech.com>
- <f3805ca3-3d77-4482-b75f-3e869625e0bc@www.fastmail.com>
+        Mon, 7 Jun 2021 22:52:50 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879B8C061574;
+        Mon,  7 Jun 2021 19:50:53 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FzZVf0SyWz9sW6;
+        Tue,  8 Jun 2021 12:50:48 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623120651;
+        bh=DiTGmecdZYHMMtAdC/UcRL7S4kOx9dLsyL3eCfsThzw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EbZFANXYGN9AFjHGMwewWEcnIKn6Ghu3VXJEEsKDZEyLJPYPLsF/H2Sk1OXz9n13r
+         xTAlKxVOkd4OCn925RiW4qj2h5/i/AJ4gE3GiDMdVDUCUvAkB0CgzKzzTn+H5KxDel
+         JT61KpK/O62xU3xW1P4DpL+SW4iZZBrNZj40gzvHAe26MeuLWZtY1u2JD5GYjPBCSE
+         7aQk/+DXEkLe5A7sR4kBrq7xthQouzjAo4BPT4eGWPKieIBZtDdUxIs3VuafVfoNmL
+         kWvxr/IFaNdcmPcRDVvBgczfuZj+xDWczeG+0SV6rg1gC7tlQJLI+c1/o0QxneQv64
+         X0X6gfwjH/6nw==
+Date:   Tue, 8 Jun 2021 12:50:46 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20210608125046.07c6deca@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <f3805ca3-3d77-4482-b75f-3e869625e0bc@www.fastmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1582arTa067083
+Content-Type: multipart/signed; boundary="Sig_/HN8jrUNGDvei7eQWFTM0ikT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 06/08/2021 07:43, Andrew Jeffery wrote:
-> 
-> 
-> On Mon, 7 Jun 2021, at 16:45, Steven Lee wrote:
-> > AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
-> > with 80 pins.
-> > In the current driver, the maximum number of gpio pins of SoC is hardcoded
-> > as 80 and the gpio pin count mask for GPIO Configuration register is
-> > hardcode as GENMASK(9,6). In addition, some functions use the hardcoded
-> > value to calculate the gpio offset.
-> > The patch adds ast2600 compatibles and platform data that includes the
-> > max number of gpio pins supported by ast2600 and gpio pin count mask for
-> > GPIO Configuration register.
-> > The patch also modifies some functions to pass aspeed_sgpio struct for
-> > calculating gpio offset without using the hardcoded value.
-> > 
-> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> > ---
-> >  drivers/gpio/gpio-aspeed-sgpio.c | 110 +++++++++++++++++++++----------
-> >  1 file changed, 76 insertions(+), 34 deletions(-)
-> > 
-> > diff --git a/drivers/gpio/gpio-aspeed-sgpio.c b/drivers/gpio/gpio-aspeed-sgpio.c
-> > index 64e54f8c30d2..8b893356f0ca 100644
-> > --- a/drivers/gpio/gpio-aspeed-sgpio.c
-> > +++ b/drivers/gpio/gpio-aspeed-sgpio.c
-> > @@ -35,12 +35,18 @@
-> >  #define ASPEED_SGPIO_CLK_DIV_MASK	GENMASK(31, 16)
-> >  #define ASPEED_SGPIO_ENABLE		BIT(0)
-> >  
-> > +struct aspeed_sgpio_pdata {
-> > +	const u32 pin_mask;
-> > +	int max_ngpios;
-> > +};
-> > +
-> >  struct aspeed_sgpio {
-> >  	struct gpio_chip chip;
-> >  	struct clk *pclk;
-> >  	spinlock_t lock;
-> >  	void __iomem *base;
-> >  	int irq;
-> > +	int max_ngpios;
-> >  	int n_sgpio;
-> >  };
-> >  
-> > @@ -75,7 +81,13 @@ static const struct aspeed_sgpio_bank 
-> > aspeed_sgpio_banks[] = {
-> >  		.val_regs = 0x0038,
-> >  		.rdata_reg = 0x0078,
-> >  		.irq_regs = 0x003C,
-> > -		.names = { "I", "J" },
-> > +		.names = { "I", "J", "K", "L" },
-> > +	},
-> > +	{
-> > +		.val_regs = 0x0090,
-> > +		.rdata_reg = 0x007C,
-> > +		.irq_regs = 0x0094,
-> > +		.names = { "M", "N", "O", "P" },
-> >  	},
-> >  };
-> >  
-> > @@ -121,15 +133,15 @@ static void __iomem *bank_reg(struct aspeed_sgpio *gpio,
-> >  	}
-> >  }
-> >  
-> > -#define GPIO_BANK(x)    ((x % SGPIO_OUTPUT_OFFSET) >> 5)
-> > -#define GPIO_OFFSET(x)  ((x % SGPIO_OUTPUT_OFFSET) & 0x1f)
-> > -#define GPIO_BIT(x)     BIT(GPIO_OFFSET(x))
-> > +#define GPIO_BANK(x, gpio)    ((x % (gpio)->max_ngpios) >> 5)
-> 
-> I couldn't stop myself from commenting on this: The 'context' parameter should be first (by convention), so:
-> 
-> #define GPIO_BANK(gpio, x) ((x % (gpio)->max_ngpios) >> 5)
-> 
-> There's another fix necessary here too - the x needs to be parenthesised:
-> 
-> #define GPIO_BANK(gpio, x) (((x) % (gpio)->max_ngpios) >> 5)
-> 
-> > +#define GPIO_OFFSET(x)        ((x) & GENMASK(4, 0))
-> > +#define GPIO_BIT(x, gpio)     BIT(GPIO_OFFSET(x % (gpio)->max_ngpios))
-> 
-> Again, put the context parameter first. And again we should add the parentheses around x in the expression.
-> 
-> >  
-> > -static const struct aspeed_sgpio_bank *to_bank(unsigned int offset)
-> > +static const struct aspeed_sgpio_bank *to_bank(unsigned int offset, 
-> > const struct aspeed_sgpio *gpio)
-> >  {
-> >  	unsigned int bank;
-> >  
-> > -	bank = GPIO_BANK(offset);
-> > +	bank = GPIO_BANK(offset, gpio);
-> >  
-> >  	WARN_ON(bank >= ARRAY_SIZE(aspeed_sgpio_banks));
-> >  	return &aspeed_sgpio_banks[bank];
-> > @@ -139,18 +151,19 @@ static int aspeed_sgpio_init_valid_mask(struct 
-> > gpio_chip *gc,
-> >  		unsigned long *valid_mask, unsigned int ngpios)
-> >  {
-> >  	struct aspeed_sgpio *sgpio = gpiochip_get_data(gc);
-> > +	int max_ngpios = sgpio->max_ngpios;
-> >  	int n = sgpio->n_sgpio;
-> > -	int c = SGPIO_OUTPUT_OFFSET - n;
-> > +	int c = max_ngpios - n;
-> >  
-> > -	WARN_ON(ngpios < MAX_NR_HW_SGPIO * 2);
-> > +	WARN_ON(ngpios < max_ngpios * 2);
-> >  
-> >  	/* input GPIOs in the lower range */
-> >  	bitmap_set(valid_mask, 0, n);
-> >  	bitmap_clear(valid_mask, n, c);
-> >  
-> > -	/* output GPIOS above SGPIO_OUTPUT_OFFSET */
-> > -	bitmap_set(valid_mask, SGPIO_OUTPUT_OFFSET, n);
-> > -	bitmap_clear(valid_mask, SGPIO_OUTPUT_OFFSET + n, c);
-> > +	/* output GPIOS above max_ngpios */
-> > +	bitmap_set(valid_mask, max_ngpios, n);
-> > +	bitmap_clear(valid_mask, max_ngpios + n, c);
-> >  
-> >  	return 0;
-> >  }
-> > @@ -161,30 +174,30 @@ static void 
-> > aspeed_sgpio_irq_init_valid_mask(struct gpio_chip *gc,
-> >  	struct aspeed_sgpio *sgpio = gpiochip_get_data(gc);
-> >  	int n = sgpio->n_sgpio;
-> >  
-> > -	WARN_ON(ngpios < MAX_NR_HW_SGPIO * 2);
-> > +	WARN_ON(ngpios < sgpio->max_ngpios * 2);
-> >  
-> >  	/* input GPIOs in the lower range */
-> >  	bitmap_set(valid_mask, 0, n);
-> >  	bitmap_clear(valid_mask, n, ngpios - n);
-> >  }
-> >  
-> > -static bool aspeed_sgpio_is_input(unsigned int offset)
-> > +static bool aspeed_sgpio_is_input(unsigned int offset, const struct 
-> > aspeed_sgpio *gpio)
-> >  {
-> > -	return offset < SGPIO_OUTPUT_OFFSET;
-> > +	return offset < gpio->max_ngpios;
-> >  }
-> >  
-> >  static int aspeed_sgpio_get(struct gpio_chip *gc, unsigned int offset)
-> >  {
-> >  	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
-> > -	const struct aspeed_sgpio_bank *bank = to_bank(offset);
-> > +	const struct aspeed_sgpio_bank *bank = to_bank(offset, gpio);
-> >  	unsigned long flags;
-> >  	enum aspeed_sgpio_reg reg;
-> >  	int rc = 0;
-> >  
-> >  	spin_lock_irqsave(&gpio->lock, flags);
-> >  
-> > -	reg = aspeed_sgpio_is_input(offset) ? reg_val : reg_rdata;
-> > -	rc = !!(ioread32(bank_reg(gpio, bank, reg)) & GPIO_BIT(offset));
-> > +	reg = aspeed_sgpio_is_input(offset, gpio) ? reg_val : reg_rdata;
-> > +	rc = !!(ioread32(bank_reg(gpio, bank, reg)) & GPIO_BIT(offset, gpio));
-> >  
-> >  	spin_unlock_irqrestore(&gpio->lock, flags);
-> >  
-> > @@ -194,11 +207,11 @@ static int aspeed_sgpio_get(struct gpio_chip *gc, 
-> > unsigned int offset)
-> >  static int sgpio_set_value(struct gpio_chip *gc, unsigned int offset, 
-> > int val)
-> >  {
-> >  	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
-> > -	const struct aspeed_sgpio_bank *bank = to_bank(offset);
-> > +	const struct aspeed_sgpio_bank *bank = to_bank(offset, gpio);
-> >  	void __iomem *addr_r, *addr_w;
-> >  	u32 reg = 0;
-> >  
-> > -	if (aspeed_sgpio_is_input(offset))
-> > +	if (aspeed_sgpio_is_input(offset, gpio))
-> >  		return -EINVAL;
-> >  
-> >  	/* Since this is an output, read the cached value from rdata, then
-> > @@ -209,9 +222,9 @@ static int sgpio_set_value(struct gpio_chip *gc, 
-> > unsigned int offset, int val)
-> >  	reg = ioread32(addr_r);
-> >  
-> >  	if (val)
-> > -		reg |= GPIO_BIT(offset);
-> > +		reg |= GPIO_BIT(offset, gpio);
-> >  	else
-> > -		reg &= ~GPIO_BIT(offset);
-> > +		reg &= ~GPIO_BIT(offset, gpio);
-> >  
-> >  	iowrite32(reg, addr_w);
-> >  
-> > @@ -232,7 +245,9 @@ static void aspeed_sgpio_set(struct gpio_chip *gc, 
-> > unsigned int offset, int val)
-> >  
-> >  static int aspeed_sgpio_dir_in(struct gpio_chip *gc, unsigned int offset)
-> >  {
-> > -	return aspeed_sgpio_is_input(offset) ? 0 : -EINVAL;
-> > +	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
-> > +
-> > +	return aspeed_sgpio_is_input(offset, gpio) ? 0 : -EINVAL;
-> >  }
-> >  
-> >  static int aspeed_sgpio_dir_out(struct gpio_chip *gc, unsigned int 
-> > offset, int val)
-> > @@ -253,7 +268,9 @@ static int aspeed_sgpio_dir_out(struct gpio_chip 
-> > *gc, unsigned int offset, int v
-> >  
-> >  static int aspeed_sgpio_get_direction(struct gpio_chip *gc, unsigned 
-> > int offset)
-> >  {
-> > -	return !!aspeed_sgpio_is_input(offset);
-> > +	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
-> > +
-> > +	return !!aspeed_sgpio_is_input(offset, gpio);
-> >  }
-> >  
-> >  static void irqd_to_aspeed_sgpio_data(struct irq_data *d,
-> > @@ -268,8 +285,8 @@ static void irqd_to_aspeed_sgpio_data(struct irq_data *d,
-> >  	WARN_ON(!internal);
-> >  
-> >  	*gpio = internal;
-> > -	*bank = to_bank(*offset);
-> > -	*bit = GPIO_BIT(*offset);
-> > +	*bank = to_bank(*offset, internal);
-> > +	*bit = GPIO_BIT(*offset, internal);
-> >  }
-> >  
-> >  static void aspeed_sgpio_irq_ack(struct irq_data *d)
-> > @@ -466,9 +483,21 @@ static int aspeed_sgpio_setup_irqs(struct 
-> > aspeed_sgpio *gpio,
-> >  	return 0;
-> >  }
-> >  
-> > +static const struct aspeed_sgpio_pdata ast2600_sgpiom_128_pdata = {
-> > +	.max_ngpios = 128,
-> > +	.pin_mask = GENMASK(10, 6),
-> > +};
-> > +
-> > +static const struct aspeed_sgpio_pdata ast2600_sgpiom_80_pdata = {
-> > +	.max_ngpios = 80,
-> > +	.pin_mask = GENMASK(10, 6),
-> > +};
-> > +
-> >  static const struct of_device_id aspeed_sgpio_of_table[] = {
-> >  	{ .compatible = "aspeed,ast2400-sgpio" },
-> >  	{ .compatible = "aspeed,ast2500-sgpio" },
-> 
-> Add .data for these too.
-> 
+--Sig_/HN8jrUNGDvei7eQWFTM0ikT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I was wondering if I can define a platform data for both ast2400 and
-ast2500 as they have the same configurations.
+Hi all,
 
-For example:
+After merging the drm-misc tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-static const struct aspeed_sgpio_pdata ast2400_sgpio_pdata = {
-	.max_ngpios = 80,
-	.pin_mask = GENMASK(9, 6),
-};
+drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c: In function 'amdgpu_preemp=
+t_mgr_new':
+drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:75:5: error: 'struct ttm_re=
+source' has no member named 'mm_node'
+   75 |  mem->mm_node =3D NULL;
+      |     ^~
+drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c: At top level:
+drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:129:11: error: initializati=
+on of 'int (*)(struct ttm_resource_manager *, struct ttm_buffer_object *, c=
+onst struct ttm_place *, struct ttm_resource **)' from incompatible pointer=
+ type 'int (*)(struct ttm_resource_manager *, struct ttm_buffer_object *, c=
+onst struct ttm_place *, struct ttm_resource *)' [-Werror=3Dincompatible-po=
+inter-types]
+  129 |  .alloc =3D amdgpu_preempt_mgr_new,
+      |           ^~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:129:11: note: (near initial=
+ization for 'amdgpu_preempt_mgr_func.alloc')
 
-static const struct of_device_id aspeed_sgpio_of_table[] = {
-	{ .compatible = "aspeed,ast2400-sgpio", .data = ast2400_sgpio_pdata, },
-	{ .compatible = "aspeed,ast2500-sgpio", .data = ast2400_sgpio_pdata, },
+Caused by commit
 
-Thanks,
-Steven
+  cb1c81467af3 ("drm/ttm: flip the switch for driver allocated resources v2=
+")
 
-> > +	{ .compatible = "aspeed,ast2600-sgpiom-128", .data = 
-> > &ast2600_sgpiom_128_pdata, },
-> > +	{ .compatible = "aspeed,ast2600-sgpiom-80", .data = 
-> > &ast2600_sgpiom_80_pdata, },
-> >  	{}
-> >  };
-> >  
-> > @@ -476,10 +505,11 @@ MODULE_DEVICE_TABLE(of, aspeed_sgpio_of_table);
-> >  
-> >  static int __init aspeed_sgpio_probe(struct platform_device *pdev)
-> >  {
-> > +	u32 nr_gpios, sgpio_freq, sgpio_clk_div, gpio_cnt_regval, pin_mask;
-> > +	const struct aspeed_sgpio_pdata *pdata;
-> >  	struct aspeed_sgpio *gpio;
-> > -	u32 nr_gpios, sgpio_freq, sgpio_clk_div;
-> > -	int rc;
-> >  	unsigned long apb_freq;
-> > +	int rc;
-> >  
-> >  	gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
-> >  	if (!gpio)
-> > @@ -489,13 +519,26 @@ static int __init aspeed_sgpio_probe(struct 
-> > platform_device *pdev)
-> >  	if (IS_ERR(gpio->base))
-> >  		return PTR_ERR(gpio->base);
-> >  
-> > +	pdata = device_get_match_data(&pdev->dev);
-> > +	if (pdata) {
-> > +		gpio->max_ngpios = pdata->max_ngpios;
-> > +		pin_mask = pdata->pin_mask;
-> > +	} else {
-> > +		gpio->max_ngpios = MAX_NR_HW_SGPIO;
-> > +		pin_mask = ASPEED_SGPIO_PINS_MASK;
-> 
-> Given the refactor I think the MAX_NR_HW_SGPIO and ASPEED_SGPIO_PINS_MASK macros are confusing and should be dropped.
-> 
-> Further, I think it would be better to just define these 'default' values in .data for the 2400 and 2500 compatibles and drop this if/else entirely.
-> 
-> > +	}
-> > +
-> >  	rc = of_property_read_u32(pdev->dev.of_node, "ngpios", &nr_gpios);
-> >  	if (rc < 0) {
-> >  		dev_err(&pdev->dev, "Could not read ngpios property\n");
-> >  		return -EINVAL;
-> > -	} else if (nr_gpios > MAX_NR_HW_SGPIO) {
-> > +	} else if (nr_gpios % 8) {
-> > +		dev_err(&pdev->dev, "Number of GPIOs not multiple of 8: %d\n",
-> > +			nr_gpios);
-> > +		return -EINVAL;
-> > +	} else if (nr_gpios > gpio->max_ngpios) {
-> 
-> I'd prefer this in a separate patch.
-> 
-> >  		dev_err(&pdev->dev, "Number of GPIOs exceeds the maximum of %d: 
-> > %d\n",
-> > -			MAX_NR_HW_SGPIO, nr_gpios);
-> > +			gpio->max_ngpios, nr_gpios);
-> >  		return -EINVAL;
-> >  	}
-> >  	gpio->n_sgpio = nr_gpios;
-> > @@ -531,15 +574,14 @@ static int __init aspeed_sgpio_probe(struct 
-> > platform_device *pdev)
-> >  	if (sgpio_clk_div > (1 << 16) - 1)
-> >  		return -EINVAL;
-> >  
-> > -	iowrite32(FIELD_PREP(ASPEED_SGPIO_CLK_DIV_MASK, sgpio_clk_div) |
-> > -		  FIELD_PREP(ASPEED_SGPIO_PINS_MASK, (nr_gpios / 8)) |
-> > -		  ASPEED_SGPIO_ENABLE,
-> > -		  gpio->base + ASPEED_SGPIO_CTRL);
-> > +	gpio_cnt_regval = ((nr_gpios / 8) << 6) & pin_mask;
-> 
-> Add a #define for the field starting at bit 6.
-> 
-> Andrew
+from the drm-misc tree interacting with commit
+
+  b453e42a6e8b ("drm/amdgpu: Add new placement for preemptible SG BOs")
+
+from the drm tree.
+
+I don't know how to fix this, so I added the following hack (a better
+fix would be nice):
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 8 Jun 2021 12:41:16 +1000
+Subject: [PATCH] hack fix up for needed amdgpu_preempt_mgr_new() fix up
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c b/drivers/gpu/=
+drm/amd/amdgpu/amdgpu_preempt_mgr.c
+index d607f314cc1b..e1a7b3e967b9 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
+@@ -66,14 +66,16 @@ static DEVICE_ATTR_RO(mem_info_preempt_used);
+ static int amdgpu_preempt_mgr_new(struct ttm_resource_manager *man,
+ 				  struct ttm_buffer_object *tbo,
+ 				  const struct ttm_place *place,
+-				  struct ttm_resource *mem)
++				  struct ttm_resource **res)
+ {
++#if 0
+ 	struct amdgpu_preempt_mgr *mgr =3D to_preempt_mgr(man);
+=20
+ 	atomic64_add(mem->num_pages, &mgr->used);
+=20
+ 	mem->mm_node =3D NULL;
+ 	mem->start =3D AMDGPU_BO_INVALID_OFFSET;
++#endif
+ 	return 0;
+ }
+=20
+--=20
+2.30.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/HN8jrUNGDvei7eQWFTM0ikT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC+2wYACgkQAVBC80lX
+0GwewAf/YdnB2DjDpowhM9Z2I9YaWjY1BfFNOG7wQukpUA7AmIE/X31CbfnKoCO2
+0+dh43WnBMPN8oeacSSUlM3AnmR90KJOcuD6fTSolwcduGaHr3BzBaUa7C6/aZBz
+ie25b3tZNLlOTfmtz5NBRPehKoyhVNCCjsN/31d4saOQfBQOi6IJyafj1FT1UQdr
+L1N9SZayk7WThMlJtFdYznNAvWkceENP6tgtp6Dhfd1ZIlOqa2TrdAch9SDScn5Q
+U20aIjVuJNowdpm5KaKQZam+cZcjcvx+heWkeBRU7escFIoCzqDTkdPXHyYapmua
+C79HmqkJiW4ryYyOt3wQK7Bv30h1XQ==
+=12WW
+-----END PGP SIGNATURE-----
+
+--Sig_/HN8jrUNGDvei7eQWFTM0ikT--
