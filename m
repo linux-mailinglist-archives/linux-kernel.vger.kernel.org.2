@@ -2,58 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C46239EBA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B39C39EB8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhFHBuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:50:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230209AbhFHBuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:50:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8208860FE4;
-        Tue,  8 Jun 2021 01:48:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623116886;
-        bh=Q+5SvaOmqmPqR5Wg8GMpvtupvlOuAHY76M4MzKRjOlg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=woVcnjT2gvMlMWupzbm2RW1aHD1OpFrxMPpGTUAlHEqwXyI+cqSEqpahSce9sUa23
-         PX7XyEWUPXze2G2Xc83G0Hs999jBFcv3Pkf8Fj6xeYUV1QWlNdJO3BDpVcAT4dcFoC
-         SQ8y+ueymlzsAPBdddPwS27YmwAOpFQ5DXJ/VzSQ=
-Date:   Mon, 7 Jun 2021 18:48:05 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Anton Blanchard <anton@ozlabs.org>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linuxppc-dev@lists.ozlabs.org, Andy Lutomirski <luto@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v4 1/4] lazy tlb: introduce lazy mm refcount helper
- functions
-Message-Id: <20210607184805.eddf8eb26b80e8af85d5777e@linux-foundation.org>
-In-Reply-To: <1623116020.vyls9ehp49.astroid@bobo.none>
-References: <20210605014216.446867-1-npiggin@gmail.com>
-        <20210605014216.446867-2-npiggin@gmail.com>
-        <20210607164934.d453adcc42473e84beb25db3@linux-foundation.org>
-        <1623116020.vyls9ehp49.astroid@bobo.none>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231148AbhFHBlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:41:36 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3458 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhFHBlf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 21:41:35 -0400
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzXs15D0wz6wry;
+        Tue,  8 Jun 2021 09:36:37 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 09:39:39 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <yoshfuji@linux-ipv6.org>,
+        <dsahern@kernel.org>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH v2] net: ipv4: Remove unneed BUG() function
+Date:   Tue, 8 Jun 2021 09:53:15 +0800
+Message-ID: <20210608015315.3091149-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme760-chm.china.huawei.com (10.3.19.106)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Jun 2021 11:39:56 +1000 Nicholas Piggin <npiggin@gmail.com> wrote:
+When 'nla_parse_nested_deprecated' failed, it's no need to
+BUG() here, return -EINVAL is ok.
 
-> > Looks like a functional change.  What's happening here?
-> 
-> That's kthread_use_mm being clever about the lazy tlb mm. If it happened 
-> that the kthread had inherited a the lazy tlb mm that happens to be the 
-> one we want to use here, then we already have a refcount to it via the 
-> lazy tlb ref.
-> 
-> So then it doesn't have to touch the refcount, but rather just converts
-> it from the lazy tlb ref to the returned reference. If the lazy tlb mm
-> doesn't get a reference, we can't do that.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ net/ipv4/devinet.c  | 2 +-
+ net/ipv6/addrconf.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Please cover this in the changelog and perhaps a code comment.
+diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
+index 2e35f68da40a..1c6429c353a9 100644
+--- a/net/ipv4/devinet.c
++++ b/net/ipv4/devinet.c
+@@ -1989,7 +1989,7 @@ static int inet_set_link_af(struct net_device *dev, const struct nlattr *nla,
+ 		return -EAFNOSUPPORT;
+ 
+ 	if (nla_parse_nested_deprecated(tb, IFLA_INET_MAX, nla, NULL, NULL) < 0)
+-		BUG();
++		return -EINVAL;
+ 
+ 	if (tb[IFLA_INET_CONF]) {
+ 		nla_for_each_nested(a, tb[IFLA_INET_CONF], rem)
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index b0ef65eb9bd2..701eb82acd1c 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -5827,7 +5827,7 @@ static int inet6_set_link_af(struct net_device *dev, const struct nlattr *nla,
+ 		return -EAFNOSUPPORT;
+ 
+ 	if (nla_parse_nested_deprecated(tb, IFLA_INET6_MAX, nla, NULL, NULL) < 0)
+-		BUG();
++		return -EINVAL;
+ 
+ 	if (tb[IFLA_INET6_TOKEN]) {
+ 		err = inet6_set_iftoken(idev, nla_data(tb[IFLA_INET6_TOKEN]),
+-- 
+2.25.1
+
