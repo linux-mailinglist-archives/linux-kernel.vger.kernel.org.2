@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E7D3A00DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5680439FF5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235650AbhFHSsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:48:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40750 "EHLO mail.kernel.org"
+        id S234429AbhFHSca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:32:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235498AbhFHSn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:43:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3894F61444;
-        Tue,  8 Jun 2021 18:36:25 +0000 (UTC)
+        id S234226AbhFHSbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:31:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CA15613AE;
+        Tue,  8 Jun 2021 18:29:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177385;
-        bh=sphQtZmJ55ypiQBg7PymMgg2iqrVSJ3ENghBukVBfSk=;
+        s=korg; t=1623176981;
+        bh=PvTMYSM//QiSbcO7Cf3Y6Xndh6R5qxxdqFOK/OzrvbY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iGBOhLUEYPwHhTVO76IOgzwAeqNKuzxX58U0cZF4vS3H8wFlwS6NwxC1uDhN7Ba9q
-         kZQqD9DBlAhg7Aw/Gm0OBv44UJS0czaM1hRQ0nOtOFRIq+fRqJbYfzQhe0KRdfsuMi
-         qk0IzI51OxRNkIwaJCGcabQiNslGCb2ecr+RfOvE=
+        b=18kM63oXwWbE05T8mA5Oyr0JjmAivbMo7rMWZKzd9TEaywLN7RTqSntxzeFeKh0n9
+         ybqNd3H7nofXUpYCzspXlmpP/t3KBgqoGwixc59AnfFqdvhx7338D4ZcqDosaDzqjx
+         yV58bJR6Qc2/Qic4kBfNEmS2HvwTSrvkBgDe21Qk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 31/78] arm64: dts: zii-ultra: fix 12V_MAIN voltage
+Subject: [PATCH 4.9 06/29] vfio/platform: fix module_put call in error flow
 Date:   Tue,  8 Jun 2021 20:27:00 +0200
-Message-Id: <20210608175936.321873232@linuxfoundation.org>
+Message-Id: <20210608175928.024686925@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
+References: <20210608175927.821075974@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lucas Stach <l.stach@pengutronix.de>
+From: Max Gurtovoy <mgurtovoy@nvidia.com>
 
-[ Upstream commit ac0cbf9d13dccfd09bebc2f8f5697b6d3ffe27c4 ]
+[ Upstream commit dc51ff91cf2d1e9a2d941da483602f71d4a51472 ]
 
-As this is a fixed regulator on the board there was no harm in the wrong
-voltage being specified, apart from a confusing reporting to userspace.
+The ->parent_module is the one that use in try_module_get. It should
+also be the one the we use in module_put during vfio_platform_open().
 
-Fixes: 4a13b3bec3b4 ("arm64: dts: imx: add Zii Ultra board support")
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: 32a2d71c4e80 ("vfio: platform: introduce vfio-platform-base module")
+Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-Id: <20210518192133.59195-1-mgurtovoy@nvidia.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/vfio/platform/vfio_platform_common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
-index 32ce14936b01..f385b143b308 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
-@@ -45,8 +45,8 @@
- 	reg_12p0_main: regulator-12p0-main {
- 		compatible = "regulator-fixed";
- 		regulator-name = "12V_MAIN";
--		regulator-min-microvolt = <5000000>;
--		regulator-max-microvolt = <5000000>;
-+		regulator-min-microvolt = <12000000>;
-+		regulator-max-microvolt = <12000000>;
- 		regulator-always-on;
- 	};
+diff --git a/drivers/vfio/platform/vfio_platform_common.c b/drivers/vfio/platform/vfio_platform_common.c
+index d143d08c4f0f..9b1b6c1e218d 100644
+--- a/drivers/vfio/platform/vfio_platform_common.c
++++ b/drivers/vfio/platform/vfio_platform_common.c
+@@ -288,7 +288,7 @@ err_irq:
+ 	vfio_platform_regions_cleanup(vdev);
+ err_reg:
+ 	mutex_unlock(&driver_lock);
+-	module_put(THIS_MODULE);
++	module_put(vdev->parent_module);
+ 	return ret;
+ }
  
 -- 
 2.30.2
