@@ -2,114 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175023A018F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91373A01A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236095AbhFHSyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:54:08 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42228 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235377AbhFHSsC (ORCPT
+        id S236816AbhFHSzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:55:19 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:56130 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235451AbhFHSsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:48:02 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 32944219D8;
-        Tue,  8 Jun 2021 18:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623177968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sY1lNhT8zE/AvIyHCiemembHK2uoefGtSYoQxLprpo0=;
-        b=WJpCMzacaMbZSPcKkJSmKUQOuYFB+R+axjR2eu77aFtqDXuSl8mh8X7NV8ge4zny3v+84b
-        X7BumQxfoeAOW4G5rptqvX5dWb0V2hEn7+P9DzJ+MOKvGqCc3D8u6SQuM/1hM4TiVG4Hny
-        ENHusJJquABxOwqMlfLmQFonkEo5+Oo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623177968;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sY1lNhT8zE/AvIyHCiemembHK2uoefGtSYoQxLprpo0=;
-        b=qVoIvDLtc64ta6H3xXZa20TwkiE/+ffu+bvvIygUKdhUnAMNUa/QIDrGJD5FZFlY9XpIS7
-        jlYkyemgMEHsO+Dg==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 1E78C118DD;
-        Tue,  8 Jun 2021 18:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623177968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sY1lNhT8zE/AvIyHCiemembHK2uoefGtSYoQxLprpo0=;
-        b=WJpCMzacaMbZSPcKkJSmKUQOuYFB+R+axjR2eu77aFtqDXuSl8mh8X7NV8ge4zny3v+84b
-        X7BumQxfoeAOW4G5rptqvX5dWb0V2hEn7+P9DzJ+MOKvGqCc3D8u6SQuM/1hM4TiVG4Hny
-        ENHusJJquABxOwqMlfLmQFonkEo5+Oo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623177968;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sY1lNhT8zE/AvIyHCiemembHK2uoefGtSYoQxLprpo0=;
-        b=qVoIvDLtc64ta6H3xXZa20TwkiE/+ffu+bvvIygUKdhUnAMNUa/QIDrGJD5FZFlY9XpIS7
-        jlYkyemgMEHsO+Dg==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 2ViiB/C6v2BJGAAALh3uQQ
-        (envelope-from <bp@suse.de>); Tue, 08 Jun 2021 18:46:08 +0000
-Date:   Tue, 8 Jun 2021 20:46:02 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [tip:x86/cpu 4/4] Warning: Kernel ABI header at
- 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at
- 'arch/x86/include/asm/cpufeatures.h':  111< /* free                                    (
- 3*32+29) */
-Message-ID: <YL+66gKKW5CQjq5f@zn.tnic>
-References: <20210602094153.GH1271937@shao2-debian>
- <YLdTRopUV9OyulSq@zn.tnic>
- <YLelUPtti40D7DUl@kernel.org>
- <YLlIsS1brAdNyG4K@zn.tnic>
- <YL+j2CfGJS40sPKM@kernel.org>
- <YL+rEhU4A1tXNFYO@zn.tnic>
- <YL+xwYq8LNLY6ePU@kernel.org>
+        Tue, 8 Jun 2021 14:48:08 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1lqgjk-00076z-8l; Tue, 08 Jun 2021 14:46:04 -0400
+Message-ID: <d7906ed940b1d4f7fa31b5c41fd7b7a0649e06eb.camel@surriel.com>
+Subject: Re: [patch V3 0/6] x86/fpu: Mop up XSAVES and related damage
+From:   Rik van Riel <riel@surriel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>
+Date:   Tue, 08 Jun 2021 14:46:03 -0400
+In-Reply-To: <20210608143617.565868844@linutronix.de>
+References: <20210608143617.565868844@linutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-BLaqvrxE0ll5JsgTSji/"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YL+xwYq8LNLY6ePU@kernel.org>
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 03:06:57PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Or, if we start doing that then they don't have to do anything.
-> 
-> Who? Previously its me doing this work, i.e. keeping things in synch.
-> Actually it is expected that people doing the kernel work don't touch
-> tools/ wrt adding the copy,
 
-Ok, I think I'm totally confused. First you say that you're trying to
-keep the headers in sync and now you say that patches adding stuff to
-the kernel cpufeatures.h header should not touch the copy in tools/...
+--=-BLaqvrxE0ll5JsgTSji/
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In any case, I was thinking that we could document what people touching
-cpufeatures.h need to do and put it Documentation/x86/cpuinfo.rst.
+On Tue, 2021-06-08 at 16:36 +0200, Thomas Gleixner wrote:
 
-And then spread the load by asking everyone to do that test and fix the
-perf build accordingly.
+> The following series addresses the problem and fixes related issues
+> which were found while inspecting the related changes and testing
+> signal restore and PKRU.
 
-So that you don't have to do it all by yourself.
+Woah, you sure found some subtle stuff there.
 
--- 
-Regards/Gruss,
-    Boris.
+Acked-by: Rik van Riel <riel@surriel.com>
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+
+--=20
+All Rights Reversed.
+
+--=-BLaqvrxE0ll5JsgTSji/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmC/uusACgkQznnekoTE
+3oNf7QgAg4xWi2JNoZaR/lLswHQrX0LVAvzv5u6/5/Adz+VBYKiXB9P9taoehPkI
+ph0rA9UY4u8NdQx2qp8xJuh2iA80XTmi/3IeMcV/ZJJKUmPdtW13ikPXLGE43BZ9
+pyCn22iZWAAMEI5Bo9T0wa/2xhE/9EisfHSpbIqLZSz7A7dUhFPpf0eYmPfmpXPl
+6LWKUgKWglAQ8HMn+cvq/D4yS2Yaw3+ZOeJ0Sb6DlL+/tegrLPcLY+g9OA84Xk31
+yBBgwLsyg11d5F8xGb7c9c5rAifQEE3vMbZIARFMcO7mvHiwwCUBBamuFoKVeQWK
+KUum7fPD0J4StPSN2w/7eWWQ5J/3KQ==
+=0VoB
+-----END PGP SIGNATURE-----
+
+--=-BLaqvrxE0ll5JsgTSji/--
+
