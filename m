@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1893A0452
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F4A3A044D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238658AbhFHT3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:29:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39732 "EHLO mail.kernel.org"
+        id S237967AbhFHT3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:29:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236062AbhFHTQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:16:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95CD161969;
-        Tue,  8 Jun 2021 18:50:52 +0000 (UTC)
+        id S236098AbhFHTQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:16:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A08361964;
+        Tue,  8 Jun 2021 18:50:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178253;
-        bh=XP8RtZB5I8hcyEmuu0P6ZC+uh588io2AMGX5lGpuJJs=;
+        s=korg; t=1623178255;
+        bh=GtcUDaoux+cyQJqgTS8H+JezRHbXc+bM0XZNSnmBlnY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s513FVk3HQp7sLTYSjQl1CJpEl7f4Vad8NfutD2Au08l/ey0B7bqdVsjb60MymbjZ
-         pK4wZxqcVjZJcwhBz1MjQyeaCeUkFePyJIwPSzv8bC6waVdCxjnUfkTLu8BI67+4IE
-         RuLx5V73HgMK5+Bl+dTrWSkMQ8WkzUTwdIjwUY9A=
+        b=KUZNO1KDH2iZ0n2k5FzdBCnlGNZt8y1meDw3T/t7pqv52Y+5K0sdl+Vvu743iBuJ/
+         2tCA/K53SXOmosrlmlV+ZvtTeXfgvGwEACXMpMVo3QGs1GLexwdJ+mz3EvWmEANtsh
+         hi/ERQtWJw18uzpM66STEOBZZ8tYF9Qx36NMFsGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.12 134/161] nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
-Date:   Tue,  8 Jun 2021 20:27:44 +0200
-Message-Id: <20210608175949.976605371@linuxfoundation.org>
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.12 135/161] drm/amdgpu: Dont query CE and UE errors
+Date:   Tue,  8 Jun 2021 20:27:45 +0200
+Message-Id: <20210608175950.013630783@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -42,59 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Luben Tuikov <luben.tuikov@amd.com>
 
-commit 4ac06a1e013cf5fdd963317ffd3b968560f33bba upstream.
+commit dce3d8e1d070900e0feeb06787a319ff9379212c upstream.
 
-It's possible to trigger NULL pointer dereference by local unprivileged
-user, when calling getsockname() after failed bind() (e.g. the bind
-fails because LLCP_SAP_MAX used as SAP):
+On QUERY2 IOCTL don't query counts of correctable
+and uncorrectable errors, since when RAS is
+enabled and supported on Vega20 server boards,
+this takes insurmountably long time, in O(n^3),
+which slows the system down to the point of it
+being unusable when we have GUI up.
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000000
-  CPU: 1 PID: 426 Comm: llcp_sock_getna Not tainted 5.13.0-rc2-next-20210521+ #9
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-  Call Trace:
-   llcp_sock_getname+0xb1/0xe0
-   __sys_getpeername+0x95/0xc0
-   ? lockdep_hardirqs_on_prepare+0xd5/0x180
-   ? syscall_enter_from_user_mode+0x1c/0x40
-   __x64_sys_getpeername+0x11/0x20
-   do_syscall_64+0x36/0x70
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-This can be reproduced with Syzkaller C repro (bind followed by
-getpeername):
-https://syzkaller.appspot.com/x/repro.c?x=14def446e00000
-
-Cc: <stable@vger.kernel.org>
-Fixes: d646960f7986 ("NFC: Initial LLCP support")
-Reported-by: syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210531072138.5219-1-krzysztof.kozlowski@canonical.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: ae363a212b14 ("drm/amdgpu: Add a new flag to AMDGPU_CTX_OP_QUERY_STATE2")
+Cc: Alexander Deucher <Alexander.Deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
+Reviewed-by: Alexander Deucher <Alexander.Deucher@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/llcp_sock.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c |   16 ----------------
+ 1 file changed, 16 deletions(-)
 
---- a/net/nfc/llcp_sock.c
-+++ b/net/nfc/llcp_sock.c
-@@ -110,6 +110,7 @@ static int llcp_sock_bind(struct socket
- 	if (!llcp_sock->service_name) {
- 		nfc_llcp_local_put(llcp_sock->local);
- 		llcp_sock->local = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -ENOMEM;
- 		goto put_dev;
- 	}
-@@ -119,6 +120,7 @@ static int llcp_sock_bind(struct socket
- 		llcp_sock->local = NULL;
- 		kfree(llcp_sock->service_name);
- 		llcp_sock->service_name = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -EADDRINUSE;
- 		goto put_dev;
- 	}
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+@@ -337,7 +337,6 @@ static int amdgpu_ctx_query2(struct amdg
+ {
+ 	struct amdgpu_ctx *ctx;
+ 	struct amdgpu_ctx_mgr *mgr;
+-	unsigned long ras_counter;
+ 
+ 	if (!fpriv)
+ 		return -EINVAL;
+@@ -362,21 +361,6 @@ static int amdgpu_ctx_query2(struct amdg
+ 	if (atomic_read(&ctx->guilty))
+ 		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_GUILTY;
+ 
+-	/*query ue count*/
+-	ras_counter = amdgpu_ras_query_error_count(adev, false);
+-	/*ras counter is monotonic increasing*/
+-	if (ras_counter != ctx->ras_counter_ue) {
+-		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_RAS_UE;
+-		ctx->ras_counter_ue = ras_counter;
+-	}
+-
+-	/*query ce count*/
+-	ras_counter = amdgpu_ras_query_error_count(adev, true);
+-	if (ras_counter != ctx->ras_counter_ce) {
+-		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_RAS_CE;
+-		ctx->ras_counter_ce = ras_counter;
+-	}
+-
+ 	mutex_unlock(&mgr->lock);
+ 	return 0;
+ }
 
 
