@@ -2,175 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD02C39EB50
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0571439EB54
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhFHB0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56232 "EHLO
+        id S230523AbhFHB1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhFHB0x (ORCPT
+        with ESMTP id S230209AbhFHB1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:26:53 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F7FC061787
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 18:25:00 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id z206so9998085vsz.6
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:25:00 -0700 (PDT)
+        Mon, 7 Jun 2021 21:27:34 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C63C061574;
+        Mon,  7 Jun 2021 18:25:28 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id ei4so10914437pjb.3;
+        Mon, 07 Jun 2021 18:25:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=y763XzHC2KtVYY8WpGzotgg8OceQbCjZ0tVGUQhBJ28=;
-        b=sRrq9ET0FtypyPl7+UwR4e2TXdbQLyON0oQb4uwj/SrithueBRZPmdK0chncX6h5SS
-         uZyjdwhS8UaPL5Zz/JEJeegNkebWHHh/HQjNChsDKl87EsU8Qzdry1XWb8VUOyyevHgQ
-         n6pcN7uSTWUjxbUN8w8siKmB+h+fC1RHQMPrQ6AR95Dfd277ahOHLQkAGV5MuPMonUyC
-         E/8Ctt+W1qhUrfOxRXVQmbGdZ9NKILhxo0uM1hfjpsRITL9QUt9UIPu0SXQ3R1pYAY48
-         DdHEW5WOQ375SNjkfuznHLDM6lCuUCvKLg+fyuTLthBCLCdCQJZYBVu5J16DyCUIi54u
-         F+0Q==
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=9or9kWeQKVtCH1EkhikcuqwJeODMnwDBrNDPM5zN6nU=;
+        b=FU2f2964xr/SgPnmutRsW6uD26YSGVNtLh9+uxsZO/AfzPvIjiC8uJ9ZZoC+5Y8+GJ
+         lC0enHqvNWQ2iU+TWuzaMlWTEO2gpkdu6gqV7atUVyigpChnNs4b1iF64OYcY+VxWvPe
+         9R/wY7B5JXubweemSLcHlVUMiydHC/eXj6U13s65RJhLguObeVQXadeNmZp6kFB1aMw7
+         MiqCiYDuifvX6rhXvKJRKoJnM0QjvfdwwwEDcRYamiricKMzUdOkf4Kb4KSbP/pLVG6+
+         WQRZCJJUROcwcGGvAqyAGbrn/clMPck8rfXiWBDN4RJ2sANJYhCHtk+vxsXBS9og8VM1
+         x2cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=y763XzHC2KtVYY8WpGzotgg8OceQbCjZ0tVGUQhBJ28=;
-        b=f1cqLt7wjtijuKfBQH0eiv/majhyxuyjRSixpZRXi8A/sWjeurN6oSCkTQUauijn9S
-         t8Juz8b1pKd1j2Spf7Gv/Q41rKw4hbEYOAC3c9kin6kgtGexl+7M9i7z0/6rPk/2xqH9
-         xnkBLDJmKM5bQd4kckCdpEu9nyduzE56X3FBbJ8B/TbQO+UikPMD7M8KNcEr2wmh1cuT
-         EmR9ygyWjcrTCoVah7+wy0a0PUqghtfgQs7+6GDr9kaqEjlWyAXCXJ8YQ59hSInBZVLg
-         bZsKsEmNiGSikmz9Ydgs1evPrQaYsr2iHzqeVm1RLfzQP08sATenRFMId0aWaoAZqIvV
-         zlIw==
-X-Gm-Message-State: AOAM5323gAerrzqxIdPkekUUJ8NTVvCCUgwiPhWwhIZLFGAcQhL+lMsO
-        ackqi3JnURulPI02OQQabckQjIRAcCz6xL4Pbt5m
-X-Google-Smtp-Source: ABdhPJxb3kTwKtdXibpW7sZ5r84bDZeNX37S9VfH2XkWkHPXmkczUI8GcIcPcg7DJJd5KSYp1VlL83yX9St+0wCY4DY=
-X-Received: by 2002:a05:6102:c49:: with SMTP id y9mr11102041vss.24.1623115495802;
- Mon, 07 Jun 2021 18:24:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=9or9kWeQKVtCH1EkhikcuqwJeODMnwDBrNDPM5zN6nU=;
+        b=ZKNFLmJUUjpYWAyM4Z1fsC5GrDSlfaOC7jY0pOik1Zeeoc1iuIIk82EOW0Iv/eQicK
+         SETSlxUYSb0bVxSF3NlSkcreTLTEzXjuLwKk3S4FS4J77MR7xoqdTw6tEG9evFQYuNkZ
+         6o/o9m5/1b8y9uvzQFJHqMZa+lQrM2kX5qVQXyGj5+DpqK80fDnsn5F/C2AUmgelH7aQ
+         HKSPhNXhUoovSfleUVGlKwaHG0Ir/EYbf6P21JqNrYTZ+P4WESRdqI3IVQnxcu1j6ptK
+         1G5EV11QrdykHdmc7PCpJwkQYNihqNPwLsExOSp8QKDQN+fUHgq+cpmx3uMpmw0g/4L/
+         ld/g==
+X-Gm-Message-State: AOAM533pKn6Jw/joKduXJf3ROG4fEOtPv7NsJi4vUtpgcK0VhgKOImIJ
+        pRx0Bdqkbc986RHBEFjNVK4=
+X-Google-Smtp-Source: ABdhPJxQ3AWTk/Bqmrt5PUVUAJ7rGKI8NLaqvgU/Pd/kVL8WtarQF9ZlwxF3SWMyS1qxGLYZrKWOfg==
+X-Received: by 2002:a17:90a:3484:: with SMTP id p4mr23645127pjb.2.1623115528135;
+        Mon, 07 Jun 2021 18:25:28 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id 11sm9506927pge.57.2021.06.07.18.25.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 18:25:27 -0700 (PDT)
+Date:   Tue, 08 Jun 2021 11:25:22 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+To:     =?iso-8859-1?b?QW5kcuk=?= Almeida <andrealmeid@collabora.com>,
+        Andrey Semashev <andrey.semashev@gmail.com>
+Cc:     acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
+        joel@joelfernandes.org, kernel@collabora.com,
+        krisman@collabora.com, libc-alpha@sourceware.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
+        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
+References: <20210603195924.361327-1-andrealmeid@collabora.com>
+        <1622799088.hsuspipe84.astroid@bobo.none>
+        <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
+        <1622853816.mokf23xgnt.astroid@bobo.none>
+        <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
+        <1622980258.cfsuodze38.astroid@bobo.none>
+        <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
+In-Reply-To: <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
 MIME-Version: 1.0
-References: <1623087421-19722-1-git-send-email-martin.fuzzey@flowbird.group>
-In-Reply-To: <1623087421-19722-1-git-send-email-martin.fuzzey@flowbird.group>
-From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Date:   Tue, 8 Jun 2021 10:24:29 +0900
-Message-ID: <CABMQnVKde4LsNQT8jU4NkmjzkNOBMOd4vt2n8Eq_zKe_kBWTqw@mail.gmail.com>
-Subject: Re: [PATCH] rtc: stm32: Fix unbalanced clk_disable_unprepare() on
- probe error path
-To:     Martin Fuzzey <martin.fuzzey@flowbird.group>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        linux-rtc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1623114630.pc8fq7r5y9.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Excerpts from Andrey Semashev's message of June 6, 2021 11:15 pm:
+> On 6/6/21 2:57 PM, Nicholas Piggin wrote:
+>> Excerpts from Andrey Semashev's message of June 5, 2021 6:56 pm:
+>>> On 6/5/21 4:09 AM, Nicholas Piggin wrote:
+>>>> Excerpts from Andr=C3=A9 Almeida's message of June 5, 2021 6:01 am:
+>>>>> =C3=80s 08:36 de 04/06/21, Nicholas Piggin escreveu:
+>>>>
+>>>>>> I'll be burned at the stake for suggesting it but it would be great =
+if
+>>>>>> we could use file descriptors. At least for the shared futex, maybe
+>>>>>> private could use a per-process futex allocator. It solves all of th=
+e
+>>>>>> above, although I'm sure has many of its own problem. It may not pla=
+y
+>>>>>> so nicely with the pthread mutex API because of the whole static
+>>>>>> initialiser problem, but the first futex proposal did use fds. But i=
+t's
+>>>>>> an example of an alternate API.
+>>>>>>
+>>>>>
+>>>>> FDs and futex doesn't play well, because for futex_wait() you need to
+>>>>> tell the kernel the expected value in the futex address to avoid
+>>>>> sleeping in a free lock. FD operations (poll, select) don't have this
+>>>>> `value` argument, so they could sleep forever, but I'm not sure if yo=
+u
+>>>>> had taken this in consideration.
+>>>>
+>>>> I had. The futex wait API would take a fd additional. The only
+>>>> difference is the waitqueue that is used when a sleep or wake is
+>>>> required is derived from the fd, not from an address.
+>>>>
+>>>> I think the bigger sticking points would be if it's too heavyweight an
+>>>> object to use (which could be somewhat mitigated with a simpler ida
+>>>> allocator although that's difficult to do with shared), and whether li=
+bc
+>>>> could sanely use them due to the static initialiser problem of pthread
+>>>> mutexes.
+>>>
+>>> The static initialization feature is not the only benefit of the curren=
+t
+>>> futex design, and probably not the most important one. You can work
+>>> around the static initialization in userspace, e.g. by initializing fd
+>>> to an invalid value and creating a valid fd upon the first use. Althoug=
+h
+>>> that would still incur a performance penalty and add a new source of
+>>> failure.
+>>=20
+>> Sounds like a serious problem, but maybe it isn't. On the other hand,
+>> maybe we don't have to support pthread mutexes as they are anyway
+>> because futex already does that fairly well.
+>>=20
+>>> What is more important is that waiting on fd always requires a kernel
+>>> call. This will be terrible for performance of uncontended locks, which
+>>> is the majority of time.
+>>=20
+>> No. As I said just before, it would be the same except the waitqueue is
+>> derived from fd rather than address.
+>=20
+> Sorry, in that case I'm not sure I understand how that would work. You=20
+> do need to allocate a fd, do you?
 
-2021=E5=B9=B46=E6=9C=888=E6=97=A5(=E7=81=AB) 2:38 Martin Fuzzey <martin.fuz=
-zey@flowbird.group>:
->
-> The STM32MP1 RTC may have 2 clocks, the pclk and the rtc_ck.
->
-> If clk_prepare_enable() fails for the second clock (rtc_ck) we must only
-> call clk_disable_unprepare() for the first clock (pclk) but currently we
-> call it on both leading to a WARN:
->
-> [   15.629568] WARNING: CPU: 0 PID: 146 at drivers/clk/clk.c:958 clk_core=
-_disable+0xb0/0xc8
-> [   15.637620] ck_rtc already disabled
-> [   15.663322] CPU: 0 PID: 146 Comm: systemd-udevd Not tainted 5.4.77-pkn=
-bsp-svn5759-atag-v5.4.77-204-gea4235203137-dirty #2413
-> [   15.674510] Hardware name: STM32 (Device Tree Support)
-> [   15.679658] [<c0111148>] (unwind_backtrace) from [<c010c0b8>] (show_st=
-ack+0x10/0x14)
-> [   15.687371] [<c010c0b8>] (show_stack) from [<c0ab3d28>] (dump_stack+0x=
-c0/0xe0)
-> [   15.694574] [<c0ab3d28>] (dump_stack) from [<c012360c>] (__warn+0xc8/0=
-xf0)
-> [   15.701428] [<c012360c>] (__warn) from [<c0123694>] (warn_slowpath_fmt=
-+0x60/0x94)
-> [   15.708894] [<c0123694>] (warn_slowpath_fmt) from [<c053b518>] (clk_co=
-re_disable+0xb0/0xc8)
-> [   15.717230] [<c053b518>] (clk_core_disable) from [<c053c190>] (clk_cor=
-e_disable_lock+0x18/0x24)
-> [   15.725924] [<c053c190>] (clk_core_disable_lock) from [<bf0adc44>] (st=
-m32_rtc_probe+0x124/0x5e4 [rtc_stm32])
-> [   15.735739] [<bf0adc44>] (stm32_rtc_probe [rtc_stm32]) from [<c05f7d4c=
->] (platform_drv_probe+0x48/0x98)
-> [   15.745095] [<c05f7d4c>] (platform_drv_probe) from [<c05f5cec>] (reall=
-y_probe+0x1f0/0x458)
-> [   15.753338] [<c05f5cec>] (really_probe) from [<c05f61c4>] (driver_prob=
-e_device+0x70/0x1c4)
-> [   15.761584] [<c05f61c4>] (driver_probe_device) from [<c05f6580>] (devi=
-ce_driver_attach+0x58/0x60)
-> [   15.770439] [<c05f6580>] (device_driver_attach) from [<c05f6654>] (__d=
-river_attach+0xcc/0x170)
-> [   15.779032] [<c05f6654>] (__driver_attach) from [<c05f40d8>] (bus_for_=
-each_dev+0x58/0x7c)
-> [   15.787191] [<c05f40d8>] (bus_for_each_dev) from [<c05f4ffc>] (bus_add=
-_driver+0xdc/0x1f8)
-> [   15.795352] [<c05f4ffc>] (bus_add_driver) from [<c05f6ed8>] (driver_re=
-gister+0x7c/0x110)
-> [   15.803425] [<c05f6ed8>] (driver_register) from [<c01027bc>] (do_one_i=
-nitcall+0x70/0x1b8)
-> [   15.811588] [<c01027bc>] (do_one_initcall) from [<c01a1094>] (do_init_=
-module+0x58/0x1f8)
-> [   15.819660] [<c01a1094>] (do_init_module) from [<c01a0074>] (load_modu=
-le+0x1e58/0x23c8)
-> [   15.827646] [<c01a0074>] (load_module) from [<c01a0860>] (sys_finit_mo=
-dule+0xa0/0xd4)
-> [   15.835459] [<c01a0860>] (sys_finit_module) from [<c01011e0>] (__sys_t=
-race_return+0x0/0x20)
->
-> Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
-> Fixes: 4e64350f42e2 ("rtc: add STM32 RTC driver")
-> Cc: stable@vger.kernel.org
-> ---
->  drivers/rtc/rtc-stm32.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/rtc/rtc-stm32.c b/drivers/rtc/rtc-stm32.c
-> index 75a8924..ac9e228 100644
-> --- a/drivers/rtc/rtc-stm32.c
-> +++ b/drivers/rtc/rtc-stm32.c
-> @@ -754,7 +754,7 @@ static int stm32_rtc_probe(struct platform_device *pd=
-ev)
->
->         ret =3D clk_prepare_enable(rtc->rtc_ck);
->         if (ret)
-> -               goto err;
-> +               goto err_no_rtc_ck;
->
->         if (rtc->data->need_dbp)
->                 regmap_update_bits(rtc->dbp, rtc->dbp_reg,
-> @@ -830,10 +830,12 @@ static int stm32_rtc_probe(struct platform_device *=
-pdev)
->         }
->
->         return 0;
-> +
->  err:
-> +       clk_disable_unprepare(rtc->rtc_ck);
-> +err_no_rtc_ck:
->         if (rtc->data->has_pclk)
->                 clk_disable_unprepare(rtc->pclk);
-> -       clk_disable_unprepare(rtc->rtc_ck);
->
->         if (rtc->data->need_dbp)
->                 regmap_update_bits(rtc->dbp, rtc->dbp_reg, rtc->dbp_mask,=
- 0);
-> --
-> 1.9.1
->
-Looks good to me.
+Yes. As I said, imagine a futex_wait API that also takes a fd. The
+wait queue is derived from that fd rather than the hash table.
 
-Reviewed-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+>>> Another important point is that a futex that is not being waited on
+>>> consumes zero kernel resources while fd is a limited resource even when
+>>> not used. You can have millions futexes in userspace and you are
+>>> guaranteed not to exhaust any limit as long as you have memory. That is
+>>> an important feature, and the current userspace is relying on it by
+>>> assuming that creating mutexes and condition variables is cheap.
+>>=20
+>> Is it an important feture? Would 1 byte of kernel memory per uncontended
+>> futex be okay? 10? 100?
+>>=20
+>> I do see it's very nice the current design that requires no
+>> initialization for uncontended, I'm just asking questions to get an idea
+>> of what constraints we're working with. We have a pretty good API
+>> already which can support unlimited uncontended futexes, so I'm
+>> wondering do we really need another very very similar API that doesn't
+>> fix the really difficult problems of the existing one?
+>=20
+> It does provide the very much needed features that are missing in the=20
+> current futex. Namely, more futex sizes and wait for multiple. So the=20
+> argument of "why have two similar APIs" is not quite fair. It would be,=20
+> if there was feature parity with futex.
 
-Best regards,
-  Nobuhiro
---=20
-Nobuhiro Iwamatsu
-   iwamatsu at {nigauri.org / debian.org / kernel.org}
-   GPG ID: 40AD1FA6
+It does provide some extra features sure, with some straightforward=20
+extension of the existing API. The really interesting or tricky part of
+the API is left unchanged though.
+
+My line of thinking is that while we're changing the API anyway, we=20
+should see if it can be changed to help those other problems too.
+
+> I believe, the low cost of a futex is an important feature, and was one=20
+> of the reasons for its original design and introduction.
+
+It is of course. The first futex proposal did use fds, interestingly.
+I didn't look back further into the libc side of that thing, but maybe
+I should.
+
+> Otherwise we=20
+> would be using eventfds in mutexes.
+
+I don't think so, not even if eventfd came before the futex syscall.
+
+>=20
+> One other feature that I didn't mention earlier and which follows from=20
+> its "address in memory" design is the ability to use futexes in=20
+> process-shared memory. This is important for process-shared pthread=20
+> components, too, but has its own value even without this, if you use=20
+> futexes directly. With fds, you can't place the fd in a shared memory=20
+> since every process needs to have its own fd referring to the same=20
+> kernel object, and passing fds cannot be done without a UNIX socket.=20
+> This is incompatible with pthreads API design and would require=20
+> non-trivial design changes to the applications using futexes directly.
+>=20
+
+That may be true. file is a natural object to share such a resource, but=20
+the means to share the fd is not so easy. OTOH you could also use a=20
+syscall to open the same file and get a new fd.
+
+Are shared pthread mutexes using existing pthread APIs that are today
+implemented okay with futex1 system call a good reason to constrain=20
+futex2 I wonder? Or do we have an opportunity to make a bigger change
+to the API so it suffers less from non deterministic latency (for
+example)?
+
+I don't want to limit it to just files vs addresses, fds was an example=20
+of something that could solve some of the problems.
+
+Thanks,
+Nick
