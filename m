@@ -2,158 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196EE3A0482
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497033A0485
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237826AbhFHTf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:35:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236250AbhFHT0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:26:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB5AE61182;
-        Tue,  8 Jun 2021 19:24:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623180262;
-        bh=kLhaSghSgBwEu/dvnPHLV1+DrLdfAjIKHtB0UzKfxcA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cF7CEzvwv5dy8C72+Mtnvrc5fm4zVoihnZSpfmFv7p3fhPsKvPiv/N/NEyDtgPZ7F
-         VFtosUje3C8+fu4SXUESCIWz9cBVIW1U5uUX17aSeFNCtG2m2LJDGqwe+MCM/Fqc3P
-         f7iY96wvKMvW2+LH1KeFC03ZIl+7ntF3DBh5mL4NPg3sZoa1SOmPH93/uighkjz2Y1
-         L0x5YHEJAJds/cAN94VT9j7ORaS5Jvu5t5k+01cLhHvnC2sufAlHhtZloU/s7uTzgk
-         V25GWbdRFinVAUxJeHKGZvPnpFEyL7q/AhBxpYXfTEgSIEixcRPG478qVUeRlRzEp3
-         5hmdqxvCsvLBw==
-Date:   Tue, 8 Jun 2021 15:24:21 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Ilya Dryomov <idryomov@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Sage Weil <sage@redhat.com>
-Subject: Re: [PATCH 5.12 083/161] libceph: dont set global_id until we get an
- auth ticket
-Message-ID: <YL/D5ecAFFyPBXDF@sashalap>
-References: <20210608175945.476074951@linuxfoundation.org>
- <20210608175948.243493420@linuxfoundation.org>
- <CAOi1vP-B4A4bmd=ZbnwqEa14BizN-X8V4ktUMWGuEtXu8n2y-g@mail.gmail.com>
+        id S237747AbhFHTgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:36:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51947 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237560AbhFHT2T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:28:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623180384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LPDqsEBP/MDK1aKd0nqXwm2OMJM183ITXNbTcctz3N8=;
+        b=L4dGllb5cWYWby6qsKnCXbkFMxJFYQQ+pctsoRjdNoeOEVnoYb2Nf88t9k5G/E9X7o6eHL
+        pjNiMn0fHlXee4Py5txzwGEBwAbKGWphMeASpECYxRqU0coP39gurd+gb79tMMljT3VyD0
+        JQ8vr72NXeXfQq8bC0EPND8UZrusJ20=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-71-5-T2Gw-wOvKmizB1GzmYSg-1; Tue, 08 Jun 2021 15:26:23 -0400
+X-MC-Unique: 5-T2Gw-wOvKmizB1GzmYSg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C8872107ACCD;
+        Tue,  8 Jun 2021 19:26:21 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-35.rdu2.redhat.com [10.10.114.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5C5315D9E3;
+        Tue,  8 Jun 2021 19:26:18 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id E422222054F; Tue,  8 Jun 2021 15:26:17 -0400 (EDT)
+Date:   Tue, 8 Jun 2021 15:26:17 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     "Harry G. Coin" <hgcoin@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
+        linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Richard Weinberger <richard.weinberger@gmail.com>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        David Howells <dhowells@redhat.com>, viro@zeniv.linux.org.uk,
+        v9fs-developer@lists.sourceforge.net
+Subject: Re: [Virtio-fs] [PATCH] init/do_mounts.c: Add root="fstag:<tag>"
+ syntax for root device
+Message-ID: <20210608192617.GC504497@redhat.com>
+References: <20210608153524.GB504497@redhat.com>
+ <8929c252-3d99-8cdb-1c56-5fdb1fd29fc2@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAOi1vP-B4A4bmd=ZbnwqEa14BizN-X8V4ktUMWGuEtXu8n2y-g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8929c252-3d99-8cdb-1c56-5fdb1fd29fc2@gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 09:07:18PM +0200, Ilya Dryomov wrote:
->On Tue, Jun 8, 2021 at 8:48 PM Greg Kroah-Hartman
-><gregkh@linuxfoundation.org> wrote:
->>
->> From: Ilya Dryomov <idryomov@gmail.com>
->>
->> [ Upstream commit 61ca49a9105faefa003b37542cebad8722f8ae22 ]
->>
->> With the introduction of enforcing mode, setting global_id as soon
->> as we get it in the first MAuth reply will result in EACCES if the
->> connection is reset before we get the second MAuth reply containing
->> an auth ticket -- because on retry we would attempt to reclaim that
->> global_id with no auth ticket at hand.
->>
->> Neither ceph_auth_client nor ceph_mon_client depend on global_id
->> being set ealy, so just delay the setting until we get and process
->> the second MAuth reply.  While at it, complain if the monitor sends
->> a zero global_id or changes our global_id as the session is likely
->> to fail after that.
->>
->> Cc: stable@vger.kernel.org # needs backporting for < 5.11
->> Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
->> Reviewed-by: Sage Weil <sage@redhat.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  net/ceph/auth.c | 36 +++++++++++++++++++++++-------------
->>  1 file changed, 23 insertions(+), 13 deletions(-)
->>
->> diff --git a/net/ceph/auth.c b/net/ceph/auth.c
->> index eb261aa5fe18..de407e8feb97 100644
->> --- a/net/ceph/auth.c
->> +++ b/net/ceph/auth.c
->> @@ -36,6 +36,20 @@ static int init_protocol(struct ceph_auth_client *ac, int proto)
->>         }
->>  }
->>
->> +static void set_global_id(struct ceph_auth_client *ac, u64 global_id)
->> +{
->> +       dout("%s global_id %llu\n", __func__, global_id);
->> +
->> +       if (!global_id)
->> +               pr_err("got zero global_id\n");
->> +
->> +       if (ac->global_id && global_id != ac->global_id)
->> +               pr_err("global_id changed from %llu to %llu\n", ac->global_id,
->> +                      global_id);
->> +
->> +       ac->global_id = global_id;
->> +}
->> +
->>  /*
->>   * setup, teardown.
->>   */
->> @@ -222,11 +236,6 @@ int ceph_handle_auth_reply(struct ceph_auth_client *ac,
->>
->>         payload_end = payload + payload_len;
->>
->> -       if (global_id && ac->global_id != global_id) {
->> -               dout(" set global_id %lld -> %lld\n", ac->global_id, global_id);
->> -               ac->global_id = global_id;
->> -       }
->> -
->>         if (ac->negotiating) {
->>                 /* server does not support our protocols? */
->>                 if (!protocol && result < 0) {
->> @@ -253,11 +262,16 @@ int ceph_handle_auth_reply(struct ceph_auth_client *ac,
->>
->>         ret = ac->ops->handle_reply(ac, result, payload, payload_end,
->>                                     NULL, NULL, NULL, NULL);
->> -       if (ret == -EAGAIN)
->> +       if (ret == -EAGAIN) {
->>                 ret = build_request(ac, true, reply_buf, reply_len);
->> -       else if (ret)
->> +               goto out;
->> +       } else if (ret) {
->>                 pr_err("auth protocol '%s' mauth authentication failed: %d\n",
->>                        ceph_auth_proto_name(ac->protocol), result);
->> +               goto out;
->> +       }
->> +
->> +       set_global_id(ac, global_id);
->>
->>  out:
->>         mutex_unlock(&ac->mutex);
->> @@ -484,15 +498,11 @@ int ceph_auth_handle_reply_done(struct ceph_auth_client *ac,
->>         int ret;
->>
->>         mutex_lock(&ac->mutex);
->> -       if (global_id && ac->global_id != global_id) {
->> -               dout("%s global_id %llu -> %llu\n", __func__, ac->global_id,
->> -                    global_id);
->> -               ac->global_id = global_id;
->> -       }
->> -
->>         ret = ac->ops->handle_reply(ac, 0, reply, reply + reply_len,
->>                                     session_key, session_key_len,
->>                                     con_secret, con_secret_len);
->> +       if (!ret)
->> +               set_global_id(ac, global_id);
->>         mutex_unlock(&ac->mutex);
->>         return ret;
->>  }
->
->Hi Greg,
->
->I asked Sasha to drop this patch earlier today.
+On Tue, Jun 08, 2021 at 01:38:56PM -0500, Harry G. Coin wrote:
+> On 6/8/21 10:35 AM, Vivek Goyal wrote:
+> > We want to be able to mount virtiofs as rootfs and pass appropriate
+> > kernel command line. Right now there does not seem to be a good way
+> > to do that. If I specify "root=myfs rootfstype=virtiofs", system
+> > panics.
+> >
+> > virtio-fs: tag </dev/root> not found
+> > ..
+> > ..
+> > [ end Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0) ]
+> 
+> Whatever the best direction forward might be for kernel patches
+> regarding 'not block device as root', it would ease learning curves if
+> 'the patterns that set config issue X' were the same across root 'not
+> block device options' whether cephfs, nfs, 9p, virtiofs.
 
-I've dropped it now, but I think I'm missing your previous request. Was
-it as a reply to the added-to mail? I just want to make sure I'm not
-missing your mails.
+I think achieveing same pattern for all non-block options is pretty
+hard. There are too many varieits, mtd, ubifs, nfs, cifs, and you
+just mentioned cephfs.
 
--- 
-Thanks,
-Sasha
+It would be nice if somebody can achieve it. But that should not be
+a blocker for this patch. Goal of this patch is to take care of virtiofs
+and 9p. And any other filesystem which can work with this pattern.
+
+I think ubi and mtd should be able to work with "root=fstag:<tag>"
+as well. Something like "root=fstag:ubi:foo". And then ubi:foo
+will should be passed to ubifs. I think only thing missing is
+that current code assumes there is one filesystem passed in
+rootfstype. If we want to try mounting device with multiple
+filesystems then one can modify the code to call do_mount_root()
+in a loop from a filesystem list.
+
+Right now I did not need it, so I did not add it.
+
+> All of them
+> will have to handle the selinux xattr/issue, posix and flock issues,
+> caching etc.
+
+Filesystem specific flags will be passed by rootflags=.
+
+> While by definition virtiofs has to exist only in a vm
+> guest, the others could be baremetal or vm guest roots.  (How much 9p's
+> other-than-guest transports are used I don't know).
+> 
+> FYI (though patching the kernel may be the best option)  there is a case
+> that does not have those kernel panics for virtiofs-root and 9p root
+> using stock fc34.  As 9p, the virtiofs method uses the initrd creation
+> mechanisms provided by 'dracut' or 'initramfs' to provide the 'sysroot
+> pivot glue'.
+> 
+> On the fc34 guest a successful 'direct kernel boot' today looks like:
+> 
+> kernel path: /vmsystems/fedora_generic/boot/vmlinuz
+> 
+> initrd path: /vmsystems/fedora_generic/boot/initrd.img
+> 
+> Kernel args: root=virtiofs:myfs rd.shell rd.fstab
+
+Does it work with upstream dracut or you have modified dracut to
+parse "root=virtiofs:myfs" option.
+
+I think it probably is better that both kernel and dracut parse
+and understand same "root=" format string and I will try to
+avoid creating a "root=" option which dracut understands but
+not kernel. Or try creating two different wasy to mount 
+virtiofs using "root=" for kernel and dracut.
+
+That's why I am first trying to get this new syntax in the kernel
+and once it works, I want to follow up with dracut folks to
+parse "root=fstag:<tag>" and be able to mount virtiofs/9p/foo
+filesystem.
+
+Thanks
+Vivek
+
+> 
+> 
+> The xml to pass through virtio-fs is:
+> 
+> <filesystem type="mount" accessmode="passthrough">
+>   <driver type="virtiofs" queue="1024"/>
+>   <binary xattr="on">
+>     <lock posix="on" flock="on"/>
+>   </binary>
+>   <source dir="/vmsystems/fedora_generic"/>
+>   <target dir="myfs"/>
+> </filesystem>
+> 
+> The guest fstab is:
+> 
+> myfs / virtiofs defaults 0 0
+> 
+> HTH
+> 
+> Harry Coin
+> 
+> 
+> 
+
