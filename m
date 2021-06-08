@@ -2,45 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06913A0206
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC71E3A03E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236718AbhFHS73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:59:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49568 "EHLO mail.kernel.org"
+        id S237481AbhFHTWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:22:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234142AbhFHSwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:52:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B72B61480;
-        Tue,  8 Jun 2021 18:40:21 +0000 (UTC)
+        id S237560AbhFHTKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:10:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0212161943;
+        Tue,  8 Jun 2021 18:48:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177622;
-        bh=9JpGtovwzNkHApmzKfoy8UQOrGuR66+9TXZ6RLWn4l0=;
+        s=korg; t=1623178118;
+        bh=qH5xIdQ7LgjmBkJxxscQt//uOLHFDg2mglxvBmvwqK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GG9kbbRVCdBAPAYKdA7EQ2zNGBDfjQCgH+RI/FNLbslx+5P+Gb/abmFeMh+9dDd9P
-         EmdAnLx4AViLqGO9zwuMRch2jci+R9XdBwyGyrnUdxTHKNk6d7nTTtqwF3EEA/mqu6
-         f8mszgnouJKCDA5wvohY6yh8Nlmhsy8k3XL5Pogg=
+        b=uXQEVpSnYpY/FldUhLgF9PSr7qfGfZnXwTeeZUYCduXE3IwN0zGcz+9kdmdgjAUWY
+         JTrZLRrM56Tkm8/FaaIZh2DrDPSfWcZ3jodNyD3412mj7X9/eiwtuVbhxEY7HnNpUO
+         FNOy0yUuo6WwrDpZk4bR0aNLtN0mNs4zrpWuW6To=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
-        Jakub Hrozek <jhrozek@redhat.com>,
-        Serhei Makarov <smakarov@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Jerome Marchand <jmarchan@redhat.com>,
-        Frank Eigler <fche@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Kiran Bhandare <kiranx.bhandare@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 038/137] bpf, lockdown, audit: Fix buggy SELinux lockdown permission checks
-Date:   Tue,  8 Jun 2021 20:26:18 +0200
-Message-Id: <20210608175943.699540116@linuxfoundation.org>
+Subject: [PATCH 5.12 049/161] ice: track AF_XDP ZC enabled queues in bitmap
+Date:   Tue,  8 Jun 2021 20:26:19 +0200
+Message-Id: <20210608175947.130220534@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+References: <20210608175945.476074951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,276 +42,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-[ Upstream commit ff40e51043af63715ab413995ff46996ecf9583f ]
+[ Upstream commit e102db780e1c14f10c70dafa7684af22a745b51d ]
 
-Commit 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-added an implementation of the locked_down LSM hook to SELinux, with the aim
-to restrict which domains are allowed to perform operations that would breach
-lockdown. This is indirectly also getting audit subsystem involved to report
-events. The latter is problematic, as reported by Ondrej and Serhei, since it
-can bring down the whole system via audit:
+Commit c7a219048e45 ("ice: Remove xsk_buff_pool from VSI structure")
+silently introduced a regression and broke the Tx side of AF_XDP in copy
+mode. xsk_pool on ice_ring is set only based on the existence of the XDP
+prog on the VSI which in turn picks ice_clean_tx_irq_zc to be executed.
+That is not something that should happen for copy mode as it should use
+the regular data path ice_clean_tx_irq.
 
-  1) The audit events that are triggered due to calls to security_locked_down()
-     can OOM kill a machine, see below details [0].
+This results in a following splat when xdpsock is run in txonly or l2fwd
+scenarios in copy mode:
 
-  2) It also seems to be causing a deadlock via avc_has_perm()/slow_avc_audit()
-     when trying to wake up kauditd, for example, when using trace_sched_switch()
-     tracepoint, see details in [1]. Triggering this was not via some hypothetical
-     corner case, but with existing tools like runqlat & runqslower from bcc, for
-     example, which make use of this tracepoint. Rough call sequence goes like:
+<snip>
+[  106.050195] BUG: kernel NULL pointer dereference, address: 0000000000000030
+[  106.057269] #PF: supervisor read access in kernel mode
+[  106.062493] #PF: error_code(0x0000) - not-present page
+[  106.067709] PGD 0 P4D 0
+[  106.070293] Oops: 0000 [#1] PREEMPT SMP NOPTI
+[  106.074721] CPU: 61 PID: 0 Comm: swapper/61 Not tainted 5.12.0-rc2+ #45
+[  106.081436] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+[  106.092027] RIP: 0010:xp_raw_get_dma+0x36/0x50
+[  106.096551] Code: 74 14 48 b8 ff ff ff ff ff ff 00 00 48 21 f0 48 c1 ee 30 48 01 c6 48 8b 87 90 00 00 00 48 89 f2 81 e6 ff 0f 00 00 48 c1 ea 0c <48> 8b 04 d0 48 83 e0 fe 48 01 f0 c3 66 66 2e 0f 1f 84 00 00 00 00
+[  106.115588] RSP: 0018:ffffc9000d694e50 EFLAGS: 00010206
+[  106.120893] RAX: 0000000000000000 RBX: ffff88984b8c8a00 RCX: ffff889852581800
+[  106.128137] RDX: 0000000000000006 RSI: 0000000000000000 RDI: ffff88984cd8b800
+[  106.135383] RBP: ffff888123b50001 R08: ffff889896800000 R09: 0000000000000800
+[  106.142628] R10: 0000000000000000 R11: ffffffff826060c0 R12: 00000000000000ff
+[  106.149872] R13: 0000000000000000 R14: 0000000000000040 R15: ffff888123b50018
+[  106.157117] FS:  0000000000000000(0000) GS:ffff8897e0f40000(0000) knlGS:0000000000000000
+[  106.165332] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  106.171163] CR2: 0000000000000030 CR3: 000000000560a004 CR4: 00000000007706e0
+[  106.178408] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  106.185653] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  106.192898] PKRU: 55555554
+[  106.195653] Call Trace:
+[  106.198143]  <IRQ>
+[  106.200196]  ice_clean_tx_irq_zc+0x183/0x2a0 [ice]
+[  106.205087]  ice_napi_poll+0x3e/0x590 [ice]
+[  106.209356]  __napi_poll+0x2a/0x160
+[  106.212911]  net_rx_action+0xd6/0x200
+[  106.216634]  __do_softirq+0xbf/0x29b
+[  106.220274]  irq_exit_rcu+0x88/0xc0
+[  106.223819]  common_interrupt+0x7b/0xa0
+[  106.227719]  </IRQ>
+[  106.229857]  asm_common_interrupt+0x1e/0x40
+</snip>
 
-     rq_lock(rq) -> -------------------------+
-       trace_sched_switch() ->               |
-         bpf_prog_xyz() ->                   +-> deadlock
-           selinux_lockdown() ->             |
-             audit_log_end() ->              |
-               wake_up_interruptible() ->    |
-                 try_to_wake_up() ->         |
-                   rq_lock(rq) --------------+
+Fix this by introducing the bitmap of queues that are zero-copy enabled,
+where each bit, corresponding to a queue id that xsk pool is being
+configured on, will be set/cleared within ice_xsk_pool_{en,dis}able and
+checked within ice_xsk_pool(). The latter is a function used for
+deciding which napi poll routine is executed.
+Idea is being taken from our other drivers such as i40e and ixgbe.
 
-What's worse is that the intention of 59438b46471a to further restrict lockdown
-settings for specific applications in respect to the global lockdown policy is
-completely broken for BPF. The SELinux policy rule for the current lockdown check
-looks something like this:
-
-  allow <who> <who> : lockdown { <reason> };
-
-However, this doesn't match with the 'current' task where the security_locked_down()
-is executed, example: httpd does a syscall. There is a tracing program attached
-to the syscall which triggers a BPF program to run, which ends up doing a
-bpf_probe_read_kernel{,_str}() helper call. The selinux_lockdown() hook does
-the permission check against 'current', that is, httpd in this example. httpd
-has literally zero relation to this tracing program, and it would be nonsensical
-having to write an SELinux policy rule against httpd to let the tracing helper
-pass. The policy in this case needs to be against the entity that is installing
-the BPF program. For example, if bpftrace would generate a histogram of syscall
-counts by user space application:
-
-  bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @[comm] = count(); }'
-
-bpftrace would then go and generate a BPF program from this internally. One way
-of doing it [for the sake of the example] could be to call bpf_get_current_task()
-helper and then access current->comm via one of bpf_probe_read_kernel{,_str}()
-helpers. So the program itself has nothing to do with httpd or any other random
-app doing a syscall here. The BPF program _explicitly initiated_ the lockdown
-check. The allow/deny policy belongs in the context of bpftrace: meaning, you
-want to grant bpftrace access to use these helpers, but other tracers on the
-system like my_random_tracer _not_.
-
-Therefore fix all three issues at the same time by taking a completely different
-approach for the security_locked_down() hook, that is, move the check into the
-program verification phase where we actually retrieve the BPF func proto. This
-also reliably gets the task (current) that is trying to install the BPF tracing
-program, e.g. bpftrace/bcc/perf/systemtap/etc, and it also fixes the OOM since
-we're moving this out of the BPF helper's fast-path which can be called several
-millions of times per second.
-
-The check is then also in line with other security_locked_down() hooks in the
-system where the enforcement is performed at open/load time, for example,
-open_kcore() for /proc/kcore access or module_sig_check() for module signatures
-just to pick few random ones. What's out of scope in the fix as well as in
-other security_locked_down() hook locations /outside/ of BPF subsystem is that
-if the lockdown policy changes on the fly there is no retrospective action.
-This requires a different discussion, potentially complex infrastructure, and
-it's also not clear whether this can be solved generically. Either way, it is
-out of scope for a suitable stable fix which this one is targeting. Note that
-the breakage is specifically on 59438b46471a where it started to rely on 'current'
-as UAPI behavior, and _not_ earlier infrastructure such as 9d1f8be5cf42 ("bpf:
-Restrict bpf when kernel lockdown is in confidentiality mode").
-
-[0] https://bugzilla.redhat.com/show_bug.cgi?id=1955585, Jakub Hrozek says:
-
-  I starting seeing this with F-34. When I run a container that is traced with
-  BPF to record the syscalls it is doing, auditd is flooded with messages like:
-
-  type=AVC msg=audit(1619784520.593:282387): avc:  denied  { confidentiality }
-    for pid=476 comm="auditd" lockdown_reason="use of bpf to read kernel RAM"
-      scontext=system_u:system_r:auditd_t:s0 tcontext=system_u:system_r:auditd_t:s0
-        tclass=lockdown permissive=0
-
-  This seems to be leading to auditd running out of space in the backlog buffer
-  and eventually OOMs the machine.
-
-  [...]
-  auditd running at 99% CPU presumably processing all the messages, eventually I get:
-  Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
-  Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
-  Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152579 > audit_backlog_limit=64
-  Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152626 > audit_backlog_limit=64
-  Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152694 > audit_backlog_limit=64
-  Apr 30 12:20:42 fedora kernel: audit: audit_lost=6878426 audit_rate_limit=0 audit_backlog_limit=64
-  Apr 30 12:20:45 fedora kernel: oci-seccomp-bpf invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=-1000
-  Apr 30 12:20:45 fedora kernel: CPU: 0 PID: 13284 Comm: oci-seccomp-bpf Not tainted 5.11.12-300.fc34.x86_64 #1
-  Apr 30 12:20:45 fedora kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
-  [...]
-
-[1] https://lore.kernel.org/linux-audit/CANYvDQN7H5tVp47fbYcRasv4XF07eUbsDwT_eDCHXJUj43J7jQ@mail.gmail.com/,
-    Serhei Makarov says:
-
-  Upstream kernel 5.11.0-rc7 and later was found to deadlock during a
-  bpf_probe_read_compat() call within a sched_switch tracepoint. The problem
-  is reproducible with the reg_alloc3 testcase from SystemTap's BPF backend
-  testsuite on x86_64 as well as the runqlat, runqslower tools from bcc on
-  ppc64le. Example stack trace:
-
-  [...]
-  [  730.868702] stack backtrace:
-  [  730.869590] CPU: 1 PID: 701 Comm: in:imjournal Not tainted, 5.12.0-0.rc2.20210309git144c79ef3353.166.fc35.x86_64 #1
-  [  730.871605] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-  [  730.873278] Call Trace:
-  [  730.873770]  dump_stack+0x7f/0xa1
-  [  730.874433]  check_noncircular+0xdf/0x100
-  [  730.875232]  __lock_acquire+0x1202/0x1e10
-  [  730.876031]  ? __lock_acquire+0xfc0/0x1e10
-  [  730.876844]  lock_acquire+0xc2/0x3a0
-  [  730.877551]  ? __wake_up_common_lock+0x52/0x90
-  [  730.878434]  ? lock_acquire+0xc2/0x3a0
-  [  730.879186]  ? lock_is_held_type+0xa7/0x120
-  [  730.880044]  ? skb_queue_tail+0x1b/0x50
-  [  730.880800]  _raw_spin_lock_irqsave+0x4d/0x90
-  [  730.881656]  ? __wake_up_common_lock+0x52/0x90
-  [  730.882532]  __wake_up_common_lock+0x52/0x90
-  [  730.883375]  audit_log_end+0x5b/0x100
-  [  730.884104]  slow_avc_audit+0x69/0x90
-  [  730.884836]  avc_has_perm+0x8b/0xb0
-  [  730.885532]  selinux_lockdown+0xa5/0xd0
-  [  730.886297]  security_locked_down+0x20/0x40
-  [  730.887133]  bpf_probe_read_compat+0x66/0xd0
-  [  730.887983]  bpf_prog_250599c5469ac7b5+0x10f/0x820
-  [  730.888917]  trace_call_bpf+0xe9/0x240
-  [  730.889672]  perf_trace_run_bpf_submit+0x4d/0xc0
-  [  730.890579]  perf_trace_sched_switch+0x142/0x180
-  [  730.891485]  ? __schedule+0x6d8/0xb20
-  [  730.892209]  __schedule+0x6d8/0xb20
-  [  730.892899]  schedule+0x5b/0xc0
-  [  730.893522]  exit_to_user_mode_prepare+0x11d/0x240
-  [  730.894457]  syscall_exit_to_user_mode+0x27/0x70
-  [  730.895361]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-  [...]
-
-Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-Reported-by: Ondrej Mosnacek <omosnace@redhat.com>
-Reported-by: Jakub Hrozek <jhrozek@redhat.com>
-Reported-by: Serhei Makarov <smakarov@redhat.com>
-Reported-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Tested-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Paul Moore <paul@paul-moore.com>
-Cc: James Morris <jamorris@linux.microsoft.com>
-Cc: Jerome Marchand <jmarchan@redhat.com>
-Cc: Frank Eigler <fche@redhat.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/bpf/01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net
+Fixes: c7a219048e45 ("ice: Remove xsk_buff_pool from VSI structure")
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Tested-by: Kiran Bhandare <kiranx.bhandare@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/helpers.c     |  7 +++++--
- kernel/trace/bpf_trace.c | 32 ++++++++++++--------------------
- 2 files changed, 17 insertions(+), 22 deletions(-)
+ drivers/net/ethernet/intel/ice/ice.h     |  8 +++++---
+ drivers/net/ethernet/intel/ice/ice_lib.c | 10 ++++++++++
+ drivers/net/ethernet/intel/ice/ice_xsk.c |  3 +++
+ 3 files changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index d0fc091d2ab4..f7e99bb8c3b6 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -14,6 +14,7 @@
- #include <linux/jiffies.h>
- #include <linux/pid_namespace.h>
- #include <linux/proc_ns.h>
-+#include <linux/security.h>
+diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+index 17101c45cbcd..f668296ca677 100644
+--- a/drivers/net/ethernet/intel/ice/ice.h
++++ b/drivers/net/ethernet/intel/ice/ice.h
+@@ -325,6 +325,7 @@ struct ice_vsi {
+ 	struct ice_tc_cfg tc_cfg;
+ 	struct bpf_prog *xdp_prog;
+ 	struct ice_ring **xdp_rings;	 /* XDP ring array */
++	unsigned long *af_xdp_zc_qps;	 /* tracks AF_XDP ZC enabled qps */
+ 	u16 num_xdp_txq;		 /* Used XDP queues */
+ 	u8 xdp_mapping_mode;		 /* ICE_MAP_MODE_[CONTIG|SCATTER] */
  
- #include "../../lib/kstrtox.h"
- 
-@@ -728,11 +729,13 @@ bpf_base_func_proto(enum bpf_func_id func_id)
- 	case BPF_FUNC_probe_read_user:
- 		return &bpf_probe_read_user_proto;
- 	case BPF_FUNC_probe_read_kernel:
--		return &bpf_probe_read_kernel_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_proto;
- 	case BPF_FUNC_probe_read_user_str:
- 		return &bpf_probe_read_user_str_proto;
- 	case BPF_FUNC_probe_read_kernel_str:
--		return &bpf_probe_read_kernel_str_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_str_proto;
- 	case BPF_FUNC_snprintf_btf:
- 		return &bpf_snprintf_btf_proto;
- 	default:
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index fcbfc9564996..01710831fd02 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -212,16 +212,11 @@ const struct bpf_func_proto bpf_probe_read_user_str_proto = {
- static __always_inline int
- bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
+@@ -534,15 +535,16 @@ static inline void ice_set_ring_xdp(struct ice_ring *ring)
+  */
+ static inline struct xsk_buff_pool *ice_xsk_pool(struct ice_ring *ring)
  {
--	int ret = security_locked_down(LOCKDOWN_BPF_READ);
-+	int ret;
++	struct ice_vsi *vsi = ring->vsi;
+ 	u16 qid = ring->q_index;
  
--	if (unlikely(ret < 0))
--		goto fail;
- 	ret = copy_from_kernel_nofault(dst, unsafe_ptr, size);
- 	if (unlikely(ret < 0))
--		goto fail;
--	return ret;
--fail:
--	memset(dst, 0, size);
-+		memset(dst, 0, size);
- 	return ret;
+ 	if (ice_ring_is_xdp(ring))
+-		qid -= ring->vsi->num_xdp_txq;
++		qid -= vsi->num_xdp_txq;
+ 
+-	if (!ice_is_xdp_ena_vsi(ring->vsi))
++	if (!ice_is_xdp_ena_vsi(vsi) || !test_bit(qid, vsi->af_xdp_zc_qps))
+ 		return NULL;
+ 
+-	return xsk_get_pool_from_qid(ring->vsi->netdev, qid);
++	return xsk_get_pool_from_qid(vsi->netdev, qid);
  }
  
-@@ -243,10 +238,7 @@ const struct bpf_func_proto bpf_probe_read_kernel_proto = {
- static __always_inline int
- bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr)
- {
--	int ret = security_locked_down(LOCKDOWN_BPF_READ);
--
--	if (unlikely(ret < 0))
--		goto fail;
-+	int ret;
+ /**
+diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
+index 195d122c9cb2..9b38b2768884 100644
+--- a/drivers/net/ethernet/intel/ice/ice_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+@@ -105,8 +105,14 @@ static int ice_vsi_alloc_arrays(struct ice_vsi *vsi)
+ 	if (!vsi->q_vectors)
+ 		goto err_vectors;
  
- 	/*
- 	 * The strncpy_from_kernel_nofault() call will likely not fill the
-@@ -259,11 +251,7 @@ bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr)
- 	 */
- 	ret = strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
- 	if (unlikely(ret < 0))
--		goto fail;
--
--	return ret;
--fail:
--	memset(dst, 0, size);
-+		memset(dst, 0, size);
- 	return ret;
++	vsi->af_xdp_zc_qps = bitmap_zalloc(max_t(int, vsi->alloc_txq, vsi->alloc_rxq), GFP_KERNEL);
++	if (!vsi->af_xdp_zc_qps)
++		goto err_zc_qps;
++
+ 	return 0;
+ 
++err_zc_qps:
++	devm_kfree(dev, vsi->q_vectors);
+ err_vectors:
+ 	devm_kfree(dev, vsi->rxq_map);
+ err_rxq_map:
+@@ -286,6 +292,10 @@ static void ice_vsi_free_arrays(struct ice_vsi *vsi)
+ 
+ 	dev = ice_pf_to_dev(pf);
+ 
++	if (vsi->af_xdp_zc_qps) {
++		bitmap_free(vsi->af_xdp_zc_qps);
++		vsi->af_xdp_zc_qps = NULL;
++	}
+ 	/* free the ring and vector containers */
+ 	if (vsi->q_vectors) {
+ 		devm_kfree(dev, vsi->q_vectors);
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index 9f94d9159acd..47efc89a336f 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -273,6 +273,7 @@ static int ice_xsk_pool_disable(struct ice_vsi *vsi, u16 qid)
+ 	if (!pool)
+ 		return -EINVAL;
+ 
++	clear_bit(qid, vsi->af_xdp_zc_qps);
+ 	xsk_pool_dma_unmap(pool, ICE_RX_DMA_ATTR);
+ 
+ 	return 0;
+@@ -303,6 +304,8 @@ ice_xsk_pool_enable(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+ 	if (err)
+ 		return err;
+ 
++	set_bit(qid, vsi->af_xdp_zc_qps);
++
+ 	return 0;
  }
  
-@@ -1293,16 +1281,20 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_probe_read_user:
- 		return &bpf_probe_read_user_proto;
- 	case BPF_FUNC_probe_read_kernel:
--		return &bpf_probe_read_kernel_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_proto;
- 	case BPF_FUNC_probe_read_user_str:
- 		return &bpf_probe_read_user_str_proto;
- 	case BPF_FUNC_probe_read_kernel_str:
--		return &bpf_probe_read_kernel_str_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_str_proto;
- #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	case BPF_FUNC_probe_read:
--		return &bpf_probe_read_compat_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_compat_proto;
- 	case BPF_FUNC_probe_read_str:
--		return &bpf_probe_read_compat_str_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_compat_str_proto;
- #endif
- #ifdef CONFIG_CGROUPS
- 	case BPF_FUNC_get_current_cgroup_id:
 -- 
 2.30.2
 
