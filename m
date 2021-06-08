@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACB73A025D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C6F3A0254
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236703AbhFHTDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:03:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60728 "EHLO mail.kernel.org"
+        id S236345AbhFHTDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:03:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236697AbhFHSzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:55:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0302961436;
-        Tue,  8 Jun 2021 18:41:22 +0000 (UTC)
+        id S236651AbhFHSyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:54:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9E756144A;
+        Tue,  8 Jun 2021 18:41:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177683;
-        bh=//IrU6M+VLjlcXWURWYd6KoAxj8kvGQYriyz0Da2Xg4=;
+        s=korg; t=1623177686;
+        bh=rO3U3bL8yhdhgNm3jnOG4k7OWjg088jczsRJPl+DgIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lyP5r3IOArnNJbvghi3Qy6yxdLruYoMFM19tvmJawnnN2G5cbsymEAIf0qoqdLtLN
-         4eEnvEUNKpTlG9PZ1X/ZBmWhpXUrr7S4a02k+WEQhEv93gMv0M1DTaBkvwGfHm56r1
-         sSbdTLjn2Cqx2QFrEAdHGND9Otovblyyt2cqsZYM=
+        b=IRiOBkNETtWidOnULQb7lKXxbWnxiGxZVnZ42qlHb+vegWPZUb0PCzSxSapaB20gj
+         UBtGha/0aNNhua6/1cH1LL419JFQVjpiuM5uKUzzY5QrUWQrmiwJyRscSx0BASv5h/
+         2knV6Oc92ZZMxj1we0uJ0nDgvFGnwW6El5IFO1BI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Gerlach <d-gerlach@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 061/137] bus: ti-sysc: Fix am335x resume hang for usb otg module
-Date:   Tue,  8 Jun 2021 20:26:41 +0200
-Message-Id: <20210608175944.442527549@linuxfoundation.org>
+Subject: [PATCH 5.10 062/137] arm64: dts: ls1028a: fix memory node
+Date:   Tue,  8 Jun 2021 20:26:42 +0200
+Message-Id: <20210608175944.473514364@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
 References: <20210608175942.377073879@linuxfoundation.org>
@@ -40,150 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Michael Walle <michael@walle.cc>
 
-[ Upstream commit 4d7b324e231366ea772ab10df46be31273ca39af ]
+[ Upstream commit dabea675faf16e8682aa478ff3ce65dd775620bc ]
 
-On am335x, suspend and resume only works once, and the system hangs if
-suspend is attempted again. However, turns out suspend and resume works
-fine multiple times if the USB OTG driver for musb controller is loaded.
+While enabling EDAC support for the LS1028A it was discovered that the
+memory node has a wrong endianness setting as well as a wrong interrupt
+assignment. Fix both.
 
-The issue is caused my the interconnect target module losing context
-during suspend, and it needs a restore on resume to be reconfigure again
-as debugged earlier by Dave Gerlach <d-gerlach@ti.com>.
+This was tested on a sl28 board. To force ECC errors, you can use the
+error injection supported by the controller in hardware (with
+CONFIG_EDAC_DEBUG enabled):
 
-There are also other modules that need a restore on resume, like gpmc as
-noted by Dave. So let's add a common way to restore an interconnect
-target module based on a quirk flag. For now, let's enable the quirk for
-am335x otg only to fix the suspend and resume issue.
+ # enable error injection
+ $ echo 0x100 > /sys/devices/system/edac/mc/mc0/inject_ctrl
+ # flip lowest bit of the data
+ $ echo 0x1 > /sys/devices/system/edac/mc/mc0/inject_data_lo
 
-As gpmc is not causing hangs based on tests with BeagleBone, let's patch
-gpmc separately. For gpmc, we also need a hardware reset done before
-restore according to Dave.
-
-To reinit the modules, we decouple system suspend from PM runtime. We
-replace calls to pm_runtime_force_suspend() and pm_runtime_force_resume()
-with direct calls to internal functions and rely on the driver internal
-state. There no point trying to handle complex system suspend and resume
-quirks via PM runtime.
-
-This is issue should have already been noticed with commit 1819ef2e2d12
-("bus: ti-sysc: Use swsup quirks also for am335x musb") when quirk
-handling was added for am335x otg for swsup. But the issue went unnoticed
-as having musb driver loaded hides the issue, and suspend and resume works
-once without the driver loaded.
-
-Fixes: 1819ef2e2d12 ("bus: ti-sysc: Use swsup quirks also for am335x musb")
-Suggested-by: Dave Gerlach <d-gerlach@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Fixes: 8897f3255c9c ("arm64: dts: Add support for NXP LS1028A SoC")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/ti-sysc.c                 | 53 +++++++++++++++++++++++++--
- include/linux/platform_data/ti-sysc.h |  1 +
- 2 files changed, 51 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-index 9afbe4992a1d..b7f8c6074a15 100644
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -1330,6 +1330,34 @@ static int __maybe_unused sysc_runtime_resume(struct device *dev)
- 	return error;
- }
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+index 62f4dcb96e70..f3b58bb9b840 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -192,8 +192,8 @@
+ 		ddr: memory-controller@1080000 {
+ 			compatible = "fsl,qoriq-memory-controller";
+ 			reg = <0x0 0x1080000 0x0 0x1000>;
+-			interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>;
+-			big-endian;
++			interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
++			little-endian;
+ 		};
  
-+static int sysc_reinit_module(struct sysc *ddata, bool leave_enabled)
-+{
-+	struct device *dev = ddata->dev;
-+	int error;
-+
-+	/* Disable target module if it is enabled */
-+	if (ddata->enabled) {
-+		error = sysc_runtime_suspend(dev);
-+		if (error)
-+			dev_warn(dev, "reinit suspend failed: %i\n", error);
-+	}
-+
-+	/* Enable target module */
-+	error = sysc_runtime_resume(dev);
-+	if (error)
-+		dev_warn(dev, "reinit resume failed: %i\n", error);
-+
-+	if (leave_enabled)
-+		return error;
-+
-+	/* Disable target module if no leave_enabled was set */
-+	error = sysc_runtime_suspend(dev);
-+	if (error)
-+		dev_warn(dev, "reinit suspend failed: %i\n", error);
-+
-+	return error;
-+}
-+
- static int __maybe_unused sysc_noirq_suspend(struct device *dev)
- {
- 	struct sysc *ddata;
-@@ -1340,12 +1368,18 @@ static int __maybe_unused sysc_noirq_suspend(struct device *dev)
- 	    (SYSC_QUIRK_LEGACY_IDLE | SYSC_QUIRK_NO_IDLE))
- 		return 0;
- 
--	return pm_runtime_force_suspend(dev);
-+	if (!ddata->enabled)
-+		return 0;
-+
-+	ddata->needs_resume = 1;
-+
-+	return sysc_runtime_suspend(dev);
- }
- 
- static int __maybe_unused sysc_noirq_resume(struct device *dev)
- {
- 	struct sysc *ddata;
-+	int error = 0;
- 
- 	ddata = dev_get_drvdata(dev);
- 
-@@ -1353,7 +1387,19 @@ static int __maybe_unused sysc_noirq_resume(struct device *dev)
- 	    (SYSC_QUIRK_LEGACY_IDLE | SYSC_QUIRK_NO_IDLE))
- 		return 0;
- 
--	return pm_runtime_force_resume(dev);
-+	if (ddata->cfg.quirks & SYSC_QUIRK_REINIT_ON_RESUME) {
-+		error = sysc_reinit_module(ddata, ddata->needs_resume);
-+		if (error)
-+			dev_warn(dev, "noirq_resume failed: %i\n", error);
-+	} else if (ddata->needs_resume) {
-+		error = sysc_runtime_resume(dev);
-+		if (error)
-+			dev_warn(dev, "noirq_resume failed: %i\n", error);
-+	}
-+
-+	ddata->needs_resume = 0;
-+
-+	return error;
- }
- 
- static const struct dev_pm_ops sysc_pm_ops = {
-@@ -1462,7 +1508,8 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 	SYSC_QUIRK("usb_otg_hs", 0, 0x400, 0x404, 0x408, 0x00000050,
- 		   0xffffffff, SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
- 	SYSC_QUIRK("usb_otg_hs", 0, 0, 0x10, -ENODEV, 0x4ea2080d, 0xffffffff,
--		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
-+		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY |
-+		   SYSC_QUIRK_REINIT_ON_RESUME),
- 	SYSC_QUIRK("wdt", 0, 0, 0x10, 0x14, 0x502a0500, 0xfffff0f0,
- 		   SYSC_MODULE_QUIRK_WDT),
- 	/* PRUSS on am3, am4 and am5 */
-diff --git a/include/linux/platform_data/ti-sysc.h b/include/linux/platform_data/ti-sysc.h
-index fafc1beea504..9837fb011f2f 100644
---- a/include/linux/platform_data/ti-sysc.h
-+++ b/include/linux/platform_data/ti-sysc.h
-@@ -50,6 +50,7 @@ struct sysc_regbits {
- 	s8 emufree_shift;
- };
- 
-+#define SYSC_QUIRK_REINIT_ON_RESUME	BIT(27)
- #define SYSC_QUIRK_GPMC_DEBUG		BIT(26)
- #define SYSC_MODULE_QUIRK_ENA_RESETDONE	BIT(25)
- #define SYSC_MODULE_QUIRK_PRUSS		BIT(24)
+ 		dcfg: syscon@1e00000 {
 -- 
 2.30.2
 
