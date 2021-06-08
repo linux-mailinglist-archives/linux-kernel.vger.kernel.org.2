@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7B53A0210
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06AC3A040B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237287AbhFHTAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:00:12 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:44990 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235795AbhFHSvw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:51:52 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 158Inndx080929;
-        Tue, 8 Jun 2021 13:49:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623178189;
-        bh=XFmvnR4Sp9qLoZE86AyC7J5ZSl2Xb2RCdaI+k6DBZjY=;
-        h=From:To:CC:Subject:Date;
-        b=yaG/RTDBfzSBMwBK9EDSfdoN3rvAi5WCHslPVNGgmjGP4VXJpxqqcfizZTJRzEBQ1
-         tavaxMEMXeZQjkvePue012n1v5CtbjmN41lne3Zc+ukbdJAAXHO2SqqBUQ1e8TCsvP
-         bmCgOBk3wY4Cx7bDc6+DKNNgM9uaaYJKrF9x9WEY=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 158InnR9101654
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Jun 2021 13:49:49 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
- 2021 13:49:48 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 8 Jun 2021 13:49:48 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 158InlxD043167;
-        Tue, 8 Jun 2021 13:49:47 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Tero Kristo <kristo@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH] arm64: dts: ti: k3-am642-main: fix ports mac properties
-Date:   Tue, 8 Jun 2021 21:49:40 +0300
-Message-ID: <20210608184940.25934-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S235297AbhFHTZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:25:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236306AbhFHTNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:13:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3605C61963;
+        Tue,  8 Jun 2021 18:50:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623178204;
+        bh=clsRNf3nlQ+uJxihaVjSTQRYNqW8TxNPv0hEFPPXUuE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=oXvvuqSJa7jbEXay1Rz0XsEubbDftx1OEY/qMt1zIGOhVHRD2+6TIKOqZU/5kNIyH
+         x+sPg3Z9DvoHZpwoPoX7HXv6IvyVnlJGK1Y+WsFQgwQpeOXUaxL5YBEnhwWOr6ktgT
+         YDpfHz6S5Hsipxv5ry8dswNz/wrH5Lh0xk1lYEcyQkJuDUdvvOLsFE8uOLWph9YNx2
+         wORhYiLvXO7GU/opLRqA8m5M32AGnZGsJGS5LHYlC1hY09qBbIkLXZtqcG1N7FE7sp
+         hu0xbJs5TpoUAjODWHemRStShVrPudm4Ni23hvpMq42ss6QGTt2tsBREFRIdsgmfBD
+         Ht7SWbfLb9YXA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2CFE060A22;
+        Tue,  8 Jun 2021 18:50:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH V3 net-next 0/4] net: phy: add dt property for realtek phy
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162317820417.26494.14555476913857085620.git-patchwork-notify@kernel.org>
+Date:   Tue, 08 Jun 2021 18:50:04 +0000
+References: <20210608031535.3651-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20210608031535.3651-1-qiangqing.zhang@nxp.com>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        f.fainelli@gmail.com, Jisheng.Zhang@synaptics.com,
+        linux-imx@nxp.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current device tree CPSW3g node adds non-zero "mac-address" property to
-the ports, which prevents random MAC address assignment to network devices
-if bootloader failed to update DT. This may cause more then one host to
-have the same MAC in the network.
+Hello:
 
- mac-address = [00 00 de ad be ef];
- mac-address = [00 01 de ad be ef];
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-In addition, there is one MAC address available in eFuse registers which
-can be used for default port 1.
+On Tue,  8 Jun 2021 11:15:31 +0800 you wrote:
+> Add dt property for realtek phy.
+> 
+> ---
+> ChangeLogs:
+> V1->V2:
+> 	* store the desired PHYCR1/2 register value in "priv" rather than
+> 	using "quirks", per Russell King suggestion, as well as can
+> 	cover the bootloader setting.
+> 	* change the behavior of ALDPS mode, default is disabled, add dt
+> 	property for users to enable it.
+> 	* fix dt binding yaml build issues.
+> V2->V3:
+> 	* update the commit title
+> 	net: phy: realtek: add dt property to disable ALDPS mode ->
+> 	net: phy: realtek: add dt property to enable ALDPS mode
+> 
+> [...]
 
-Hence, fix ports MAC properties by:
-- resetting "mac-address" property to 0
-- adding ti,syscon-efuse = <&main_conf 0x200> to Port 1
+Here is the summary with links:
+  - [V3,net-next,1/4] dt-bindings: net: add dt binding for realtek rtl82xx phy
+    https://git.kernel.org/netdev/net-next/c/a9f15dc2b973
+  - [V3,net-next,2/4] net: phy: realtek: add dt property to disable CLKOUT clock
+    https://git.kernel.org/netdev/net-next/c/0a4355c2b7f8
+  - [V3,net-next,3/4] net: phy: realtek: add dt property to enable ALDPS mode
+    https://git.kernel.org/netdev/net-next/c/d90db36a9e74
+  - [V3,net-next,4/4] net: phy: realtek: add delay to fix RXC generation issue
+    https://git.kernel.org/netdev/net-next/c/6813cc8cfdaf
 
-Fixes: 3753b12877b6 ("arm64: dts: ti: k3-am64-main: Add CPSW DT node")
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index effb9d2e3c25..7f7178a7a055 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -514,7 +514,8 @@
- 				ti,mac-only;
- 				label = "port1";
- 				phys = <&phy_gmii_sel 1>;
--				mac-address = [00 00 de ad be ef];
-+				mac-address = [00 00 00 00 00 00];
-+				ti,syscon-efuse = <&main_conf 0x200>;
- 			};
- 
- 			cpsw_port2: port@2 {
-@@ -522,7 +523,7 @@
- 				ti,mac-only;
- 				label = "port2";
- 				phys = <&phy_gmii_sel 2>;
--				mac-address = [00 01 de ad be ef];
-+				mac-address = [00 00 00 00 00 00];
- 			};
- 		};
- 
--- 
-2.17.1
 
