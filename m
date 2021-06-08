@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F5D3A01EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FC83A0370
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235449AbhFHS6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:58:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48898 "EHLO mail.kernel.org"
+        id S231830AbhFHTQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:16:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235378AbhFHSvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:51:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D800161182;
-        Tue,  8 Jun 2021 18:39:51 +0000 (UTC)
+        id S237822AbhFHTFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:05:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72A716142D;
+        Tue,  8 Jun 2021 18:46:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177592;
-        bh=8oZPAijZAsbfSQit2WumGsAXQJCOB2TlwVnJstvGl8M=;
+        s=korg; t=1623178003;
+        bh=4cpJrC+qDZ4i+XOG+qq41pqPN2GzUACvaDFGJms1hMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z1A9HS80yB+ZPQDA3yh8HCZTIL9Qz8wxOgaUoJfNeYLoKSqPAiH9aSOCQ2PoaXC5V
-         NV4VnhxzBvhECtQkYDjAG5OymOTMJTpDrDAstyaaQWYMpblkQ+/pcqohEeszF0DNET
-         v+g3uh7oWCy9NLOr+ZWswLswCRAYc7aoKVafsdU4=
+        b=D9IU4Q8dodrahBBtbmghn1McdL4GeDarlS86A5bQLGabEj3AdTf+L64cQnQAqLDus
+         JXHYXYS9azslHUW+AuWWDI0hxz2GMA9VSnZdCV83LuL2J7eIpSOkkfxhRGY2G4yjwS
+         Bg1Js/VjzkJBNzu+kqVPYZ0uAHgZZ+XiKCymtdBg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 028/137] net/tls: Fix use-after-free after the TLS device goes down and up
-Date:   Tue,  8 Jun 2021 20:26:08 +0200
-Message-Id: <20210608175943.373857078@linuxfoundation.org>
+        stable@vger.kernel.org, Israel Rukshin <israelr@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 039/161] nvmet: fix freeing unallocated p2pmem
+Date:   Tue,  8 Jun 2021 20:26:09 +0200
+Message-Id: <20210608175946.783576152@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+References: <20210608175945.476074951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,205 +42,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Mikityanskiy <maximmi@nvidia.com>
+From: Max Gurtovoy <mgurtovoy@nvidia.com>
 
-[ Upstream commit c55dcdd435aa6c6ad6ccac0a4c636d010ee367a4 ]
+[ Upstream commit bcd9a0797d73eeff659582f23277e7ab6e5f18f3 ]
 
-When a netdev with active TLS offload goes down, tls_device_down is
-called to stop the offload and tear down the TLS context. However, the
-socket stays alive, and it still points to the TLS context, which is now
-deallocated. If a netdev goes up, while the connection is still active,
-and the data flow resumes after a number of TCP retransmissions, it will
-lead to a use-after-free of the TLS context.
+In case p2p device was found but the p2p pool is empty, the nvme target
+is still trying to free the sgl from the p2p pool instead of the
+regular sgl pool and causing a crash (BUG() is called). Instead, assign
+the p2p_dev for the request only if it was allocated from p2p pool.
 
-This commit addresses this bug by keeping the context alive until its
-normal destruction, and implements the necessary fallbacks, so that the
-connection can resume in software (non-offloaded) kTLS mode.
+This is the crash that was caused:
 
-On the TX side tls_sw_fallback is used to encrypt all packets. The RX
-side already has all the necessary fallbacks, because receiving
-non-decrypted packets is supported. The thing needed on the RX side is
-to block resync requests, which are normally produced after receiving
-non-decrypted packets.
+[Sun May 30 19:13:53 2021] ------------[ cut here ]------------
+[Sun May 30 19:13:53 2021] kernel BUG at lib/genalloc.c:518!
+[Sun May 30 19:13:53 2021] invalid opcode: 0000 [#1] SMP PTI
+...
+[Sun May 30 19:13:53 2021] kernel BUG at lib/genalloc.c:518!
+...
+[Sun May 30 19:13:53 2021] RIP: 0010:gen_pool_free_owner+0xa8/0xb0
+...
+[Sun May 30 19:13:53 2021] Call Trace:
+[Sun May 30 19:13:53 2021] ------------[ cut here ]------------
+[Sun May 30 19:13:53 2021]  pci_free_p2pmem+0x2b/0x70
+[Sun May 30 19:13:53 2021]  pci_p2pmem_free_sgl+0x4f/0x80
+[Sun May 30 19:13:53 2021]  nvmet_req_free_sgls+0x1e/0x80 [nvmet]
+[Sun May 30 19:13:53 2021] kernel BUG at lib/genalloc.c:518!
+[Sun May 30 19:13:53 2021]  nvmet_rdma_release_rsp+0x4e/0x1f0 [nvmet_rdma]
+[Sun May 30 19:13:53 2021]  nvmet_rdma_send_done+0x1c/0x60 [nvmet_rdma]
 
-The necessary synchronization is implemented for a graceful teardown:
-first the fallbacks are deployed, then the driver resources are released
-(it used to be possible to have a tls_dev_resync after tls_dev_del).
-
-A new flag called TLS_RX_DEV_DEGRADED is added to indicate the fallback
-mode. It's used to skip the RX resync logic completely, as it becomes
-useless, and some objects may be released (for example, resync_async,
-which is allocated and freed by the driver).
-
-Fixes: e8f69799810c ("net/tls: Add generic NIC offload infrastructure")
-Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: c6e3f1339812 ("nvmet: add metadata support for block devices")
+Reviewed-by: Israel Rukshin <israelr@nvidia.com>
+Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/tls.h             |  9 ++++++
- net/tls/tls_device.c          | 52 +++++++++++++++++++++++++++++++----
- net/tls/tls_device_fallback.c |  7 +++++
- net/tls/tls_main.c            |  1 +
- 4 files changed, 64 insertions(+), 5 deletions(-)
+ drivers/nvme/target/core.c | 33 ++++++++++++++++-----------------
+ 1 file changed, 16 insertions(+), 17 deletions(-)
 
-diff --git a/include/net/tls.h b/include/net/tls.h
-index d32a06705587..43891b28fc48 100644
---- a/include/net/tls.h
-+++ b/include/net/tls.h
-@@ -193,6 +193,11 @@ struct tls_offload_context_tx {
- 	(sizeof(struct tls_offload_context_tx) + TLS_DRIVER_STATE_SIZE_TX)
+diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
+index 348057fdc568..7d16cb4cd8ac 100644
+--- a/drivers/nvme/target/core.c
++++ b/drivers/nvme/target/core.c
+@@ -999,19 +999,23 @@ static unsigned int nvmet_data_transfer_len(struct nvmet_req *req)
+ 	return req->transfer_len - req->metadata_len;
+ }
  
- enum tls_context_flags {
-+	/* tls_device_down was called after the netdev went down, device state
-+	 * was released, and kTLS works in software, even though rx_conf is
-+	 * still TLS_HW (needed for transition).
-+	 */
-+	TLS_RX_DEV_DEGRADED = 0,
- 	/* Unlike RX where resync is driven entirely by the core in TX only
- 	 * the driver knows when things went out of sync, so we need the flag
- 	 * to be atomic.
-@@ -264,6 +269,7 @@ struct tls_context {
- 
- 	/* cache cold stuff */
- 	struct proto *sk_proto;
-+	struct sock *sk;
- 
- 	void (*sk_destruct)(struct sock *sk);
- 
-@@ -446,6 +452,9 @@ static inline u16 tls_user_config(struct tls_context *ctx, bool tx)
- struct sk_buff *
- tls_validate_xmit_skb(struct sock *sk, struct net_device *dev,
- 		      struct sk_buff *skb);
-+struct sk_buff *
-+tls_validate_xmit_skb_sw(struct sock *sk, struct net_device *dev,
-+			 struct sk_buff *skb);
- 
- static inline bool tls_is_sk_tx_device_offloaded(struct sock *sk)
+-static int nvmet_req_alloc_p2pmem_sgls(struct nvmet_req *req)
++static int nvmet_req_alloc_p2pmem_sgls(struct pci_dev *p2p_dev,
++		struct nvmet_req *req)
  {
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index abc04045577d..f718c7346088 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -50,6 +50,7 @@ static void tls_device_gc_task(struct work_struct *work);
- static DECLARE_WORK(tls_device_gc_work, tls_device_gc_task);
- static LIST_HEAD(tls_device_gc_list);
- static LIST_HEAD(tls_device_list);
-+static LIST_HEAD(tls_device_down_list);
- static DEFINE_SPINLOCK(tls_device_lock);
+-	req->sg = pci_p2pmem_alloc_sgl(req->p2p_dev, &req->sg_cnt,
++	req->sg = pci_p2pmem_alloc_sgl(p2p_dev, &req->sg_cnt,
+ 			nvmet_data_transfer_len(req));
+ 	if (!req->sg)
+ 		goto out_err;
  
- static void tls_device_free_ctx(struct tls_context *ctx)
-@@ -759,6 +760,8 @@ void tls_device_rx_resync_new_rec(struct sock *sk, u32 rcd_len, u32 seq)
- 
- 	if (tls_ctx->rx_conf != TLS_HW)
- 		return;
-+	if (unlikely(test_bit(TLS_RX_DEV_DEGRADED, &tls_ctx->flags)))
-+		return;
- 
- 	prot = &tls_ctx->prot_info;
- 	rx_ctx = tls_offload_ctx_rx(tls_ctx);
-@@ -961,6 +964,17 @@ int tls_device_decrypted(struct sock *sk, struct tls_context *tls_ctx,
- 
- 	ctx->sw.decrypted |= is_decrypted;
- 
-+	if (unlikely(test_bit(TLS_RX_DEV_DEGRADED, &tls_ctx->flags))) {
-+		if (likely(is_encrypted || is_decrypted))
-+			return 0;
-+
-+		/* After tls_device_down disables the offload, the next SKB will
-+		 * likely have initial fragments decrypted, and final ones not
-+		 * decrypted. We need to reencrypt that single SKB.
-+		 */
-+		return tls_device_reencrypt(sk, skb);
-+	}
-+
- 	/* Return immediately if the record is either entirely plaintext or
- 	 * entirely ciphertext. Otherwise handle reencrypt partially decrypted
- 	 * record.
-@@ -1288,6 +1302,26 @@ static int tls_device_down(struct net_device *netdev)
- 	spin_unlock_irqrestore(&tls_device_lock, flags);
- 
- 	list_for_each_entry_safe(ctx, tmp, &list, list)	{
-+		/* Stop offloaded TX and switch to the fallback.
-+		 * tls_is_sk_tx_device_offloaded will return false.
-+		 */
-+		WRITE_ONCE(ctx->sk->sk_validate_xmit_skb, tls_validate_xmit_skb_sw);
-+
-+		/* Stop the RX and TX resync.
-+		 * tls_dev_resync must not be called after tls_dev_del.
-+		 */
-+		WRITE_ONCE(ctx->netdev, NULL);
-+
-+		/* Start skipping the RX resync logic completely. */
-+		set_bit(TLS_RX_DEV_DEGRADED, &ctx->flags);
-+
-+		/* Sync with inflight packets. After this point:
-+		 * TX: no non-encrypted packets will be passed to the driver.
-+		 * RX: resync requests from the driver will be ignored.
-+		 */
-+		synchronize_net();
-+
-+		/* Release the offload context on the driver side. */
- 		if (ctx->tx_conf == TLS_HW)
- 			netdev->tlsdev_ops->tls_dev_del(netdev, ctx,
- 							TLS_OFFLOAD_CTX_DIR_TX);
-@@ -1295,13 +1329,21 @@ static int tls_device_down(struct net_device *netdev)
- 		    !test_bit(TLS_RX_DEV_CLOSED, &ctx->flags))
- 			netdev->tlsdev_ops->tls_dev_del(netdev, ctx,
- 							TLS_OFFLOAD_CTX_DIR_RX);
--		WRITE_ONCE(ctx->netdev, NULL);
--		synchronize_net();
-+
- 		dev_put(netdev);
--		list_del_init(&ctx->list);
- 
--		if (refcount_dec_and_test(&ctx->refcount))
--			tls_device_free_ctx(ctx);
-+		/* Move the context to a separate list for two reasons:
-+		 * 1. When the context is deallocated, list_del is called.
-+		 * 2. It's no longer an offloaded context, so we don't want to
-+		 *    run offload-specific code on this context.
-+		 */
-+		spin_lock_irqsave(&tls_device_lock, flags);
-+		list_move_tail(&ctx->list, &tls_device_down_list);
-+		spin_unlock_irqrestore(&tls_device_lock, flags);
-+
-+		/* Device contexts for RX and TX will be freed in on sk_destruct
-+		 * by tls_device_free_ctx. rx_conf and tx_conf stay in TLS_HW.
-+		 */
+ 	if (req->metadata_len) {
+-		req->metadata_sg = pci_p2pmem_alloc_sgl(req->p2p_dev,
++		req->metadata_sg = pci_p2pmem_alloc_sgl(p2p_dev,
+ 				&req->metadata_sg_cnt, req->metadata_len);
+ 		if (!req->metadata_sg)
+ 			goto out_free_sg;
  	}
- 
- 	up_write(&device_offload_lock);
-diff --git a/net/tls/tls_device_fallback.c b/net/tls/tls_device_fallback.c
-index 28895333701e..0d40016bf69e 100644
---- a/net/tls/tls_device_fallback.c
-+++ b/net/tls/tls_device_fallback.c
-@@ -430,6 +430,13 @@ struct sk_buff *tls_validate_xmit_skb(struct sock *sk,
- }
- EXPORT_SYMBOL_GPL(tls_validate_xmit_skb);
- 
-+struct sk_buff *tls_validate_xmit_skb_sw(struct sock *sk,
-+					 struct net_device *dev,
-+					 struct sk_buff *skb)
-+{
-+	return tls_sw_fallback(sk, skb);
-+}
 +
- struct sk_buff *tls_encrypt_skb(struct sk_buff *skb)
- {
- 	return tls_sw_fallback(skb->sk, skb);
-diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
-index 8d93cea99f2c..32a51b20509c 100644
---- a/net/tls/tls_main.c
-+++ b/net/tls/tls_main.c
-@@ -633,6 +633,7 @@ struct tls_context *tls_ctx_create(struct sock *sk)
- 	mutex_init(&ctx->tx_lock);
- 	rcu_assign_pointer(icsk->icsk_ulp_data, ctx);
- 	ctx->sk_proto = READ_ONCE(sk->sk_prot);
-+	ctx->sk = sk;
- 	return ctx;
++	req->p2p_dev = p2p_dev;
++
+ 	return 0;
+ out_free_sg:
+ 	pci_p2pmem_free_sgl(req->p2p_dev, req->sg);
+@@ -1019,25 +1023,19 @@ out_err:
+ 	return -ENOMEM;
  }
  
+-static bool nvmet_req_find_p2p_dev(struct nvmet_req *req)
++static struct pci_dev *nvmet_req_find_p2p_dev(struct nvmet_req *req)
+ {
+-	if (!IS_ENABLED(CONFIG_PCI_P2PDMA))
+-		return false;
+-
+-	if (req->sq->ctrl && req->sq->qid && req->ns) {
+-		req->p2p_dev = radix_tree_lookup(&req->sq->ctrl->p2p_ns_map,
+-						 req->ns->nsid);
+-		if (req->p2p_dev)
+-			return true;
+-	}
+-
+-	req->p2p_dev = NULL;
+-	return false;
++	if (!IS_ENABLED(CONFIG_PCI_P2PDMA) ||
++	    !req->sq->ctrl || !req->sq->qid || !req->ns)
++		return NULL;
++	return radix_tree_lookup(&req->sq->ctrl->p2p_ns_map, req->ns->nsid);
+ }
+ 
+ int nvmet_req_alloc_sgls(struct nvmet_req *req)
+ {
+-	if (nvmet_req_find_p2p_dev(req) && !nvmet_req_alloc_p2pmem_sgls(req))
++	struct pci_dev *p2p_dev = nvmet_req_find_p2p_dev(req);
++
++	if (p2p_dev && !nvmet_req_alloc_p2pmem_sgls(p2p_dev, req))
+ 		return 0;
+ 
+ 	req->sg = sgl_alloc(nvmet_data_transfer_len(req), GFP_KERNEL,
+@@ -1066,6 +1064,7 @@ void nvmet_req_free_sgls(struct nvmet_req *req)
+ 		pci_p2pmem_free_sgl(req->p2p_dev, req->sg);
+ 		if (req->metadata_sg)
+ 			pci_p2pmem_free_sgl(req->p2p_dev, req->metadata_sg);
++		req->p2p_dev = NULL;
+ 	} else {
+ 		sgl_free(req->sg);
+ 		if (req->metadata_sg)
 -- 
 2.30.2
 
