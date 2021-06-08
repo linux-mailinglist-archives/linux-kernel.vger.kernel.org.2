@@ -2,107 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0123A06CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D013A06E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234430AbhFHWbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 18:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
+        id S234788AbhFHWdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 18:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234262AbhFHWbd (ORCPT
+        with ESMTP id S234272AbhFHWdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 18:31:33 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5C4C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 15:29:28 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id a21so23199147oiw.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:29:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=22Ssm6bBidoI2OKdGgKr4Z380nMp59e0xlDapEUt3rU=;
-        b=WPz6kqlJJfs8tIkZz7PYSNVeHx0zT+YXabel5UgJo2BNRuHZjWdtewaiBIcyWuOWr8
-         Wqj51S0ykw9kcRp8mwWWuO3vqvOBm1PbNfgQdBEEeEBZs0RyBwGeWOV86TR9Tv8ckkH2
-         CKs7FUDayZghlqqy/rxwQh+r/GAEDkjkAWRIs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=22Ssm6bBidoI2OKdGgKr4Z380nMp59e0xlDapEUt3rU=;
-        b=Mmr5mCkCYogbhdtC1Pj7pBY5WdeRj/j3z1SxbPNgW5YpV9z9rzxbZB804My8LslciI
-         vRZ65qHVOxh6hbA5wY3XzL2t0Lv2VXRvvjBVdfqFbeqOvoGvyTYeSznuq6YKBxj7EloI
-         AOhwUbzHUMbKT0U+s0lWN/e+iHs+r0gjUGKRYpe5W3zW7RBCfPk69OOUIzdjgA88z7Ub
-         mz/2OeRCXyHVu0QzHqhMsFyc8o45a9mVcReF5RKTzsfAk9C7BNdLh5rWL9J2ACX+B34w
-         7j82K+TZnBDxqfbTQh7nQJNPDFxVY1x/Z8sH7ZTppeuNZoSlzPu8vpDxnt9oJreBmZAQ
-         A8CA==
-X-Gm-Message-State: AOAM533VqkRvC017OGDfZ3zjR1BHnVQbmFRmNV88PMfGN56mnaVstegn
-        rO6CePVCD8c1e1OXPeFm4x6nmV5bTjIXU53HW0fNzg==
-X-Google-Smtp-Source: ABdhPJzPevJ+f/UberY67NRwcENdBNcopJshXKUMZZDlcap5kw7JKZSRUy35YlubQZREJJ1G5PAO5O8h0e2PmmIh9jQ=
-X-Received: by 2002:a54:4501:: with SMTP id l1mr4450778oil.19.1623191367772;
- Tue, 08 Jun 2021 15:29:27 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 8 Jun 2021 15:29:27 -0700
+        Tue, 8 Jun 2021 18:33:36 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C7CC061574;
+        Tue,  8 Jun 2021 15:31:42 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G04j55m72z9sPf;
+        Wed,  9 Jun 2021 08:31:37 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623191498;
+        bh=uYSlC9D9KZmjm7OfUEE3EOaaIqPSS+22wol0DRycQ7E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JKwXolW2qEE5g8ara3D4okWvji9BVNhoZo/g0wf7pq4HNhUY0JkDxsWDMIF+kCSxX
+         AiJmI04IMvdkeiBCD16o37pP8SOJqmm+ZeXNrlWKligUDkRxKhnllFGGMHaLTq0wUj
+         2ZzR78ZSEIEjTD0oqefrNsvRouzKLSJTvuObABcWftvwMJrEEf/YpR1M01/+LbNT7G
+         Gk1+ytdXq59meZGUwQZnW1pb6+F5U2bPK89X6By/fiwz3+jIe/jUtYWhMLHdIFGGtp
+         MBkvqSDJeke9nb5tJeqHlTZQFBl0Ra3+IBlxTlxWFS2LRuiLTd6kLrnE5B8AZrWEkU
+         khlKUyww59xLg==
+Date:   Wed, 9 Jun 2021 08:31:36 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the block tree
+Message-ID: <20210609083136.25efee6e@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YL/uj+t+BFkII1Fh@yoga>
-References: <1622736555-15775-1-git-send-email-khsieh@codeaurora.org>
- <YLkI/6ItCz+SbbuJ@yoga> <ac326ec8689c0babb08b2311e19d52cc@codeaurora.org>
- <YLxX/YtegtbLmkri@builder.lan> <ef1879fa7ecfefaf0c70c7a4782240a9@codeaurora.org>
- <YL6sY/1E5wLzMiP/@yoga> <CAE-0n50-X03sMyJdsw7s=Ue0dWXBo=iHOc0HxDQm5yh2J-uS3A@mail.gmail.com>
- <YL/uj+t+BFkII1Fh@yoga>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 8 Jun 2021 15:29:27 -0700
-Message-ID: <CAE-0n50WP25kRQkWMVdDZGsZWBXwfbVSTFKyBLF7f8Mp3x2Wfg@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64/dts/qcom/sc7180: Add Display Port dt node
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     khsieh@codeaurora.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org, agross@kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/ZPd8wcmoeJJ0BE9.CYuJlMp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-06-08 15:26:23)
-> On Tue 08 Jun 17:15 CDT 2021, Stephen Boyd wrote:
->
-> > Quoting Bjorn Andersson (2021-06-07 16:31:47)
-> > > On Mon 07 Jun 12:48 CDT 2021, khsieh@codeaurora.org wrote:
-> > >
-> > > > Sorry about the confusion. What I meant is that even though DP controller is
-> > > > in the MDSS_GDSC
-> > > > power domain, DP PHY/PLL sources out of CX. The DP link clocks have a direct
-> > > > impact
-> > > > on the CX voltage corners. Therefore, we need to mention the CX power domain
-> > > > here. And, since
-> > > > we can associate only one OPP table with one device, we picked the DP link
-> > > > clock over other
-> > > > clocks.
-> > >
-> > > Thank you, that's a much more useful answer.
-> > >
-> > > Naturally I would think it would make more sense for the PHY/PLL driver
-> > > to ensure that CX is appropriately voted for then, but I think that
-> > > would result in it being the clock driver performing such vote and I'm
-> > > unsure how the opp table for that would look.
-> > >
-> > > @Stephen, what do you say?
-> > >
-> >
-> > Wouldn't the PHY be the one that sets some vote? So it wouldn't be the
-> > clk driver, and probably not from the clk ops, but instead come from the
-> > phy ops via phy_enable() and phy_configure().
-> >
->
-> If I understand the logic correctly *_configure_dp_phy() will both
-> configure the vco clock and "request" the clock framework to change the
-> rate.
->
-> So I presume what you're suggesting is that that would be the place to
-> cast the CX corner vote?
+--Sig_/ZPd8wcmoeJJ0BE9.CYuJlMp
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yes that would be a place to make the CX vote. The problem is then I
-don't know where to drop the vote. Is that when the phy is disabled?
+Hi all,
+
+Commit
+
+  f6e8bd59c4e8 ("nvmet: move ka_work initialization to nvmet_alloc_ctrl")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ZPd8wcmoeJJ0BE9.CYuJlMp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC/78gACgkQAVBC80lX
+0GxY2wf9FwS9OdbYlaiYASCKboDnzzyPo/1V6M7IZmez5BVCrUy6sDimBNXAIu0h
+fq/eS2y1c8IOgrdrdQimfUDI685qpQ+Hy5gD3eOVmIwIblYfi1eAdPmNppOXQMxO
+FU0qOJsCaBK6MSasqCrScLxHoRekVDE/YejTs78IKr3nA2Fz9JwDWTcUcZKO9usO
+SuIApisEyjBLlw2avOLIclz1KDWybo9wg1U9qyc4ipgkBFBjgxi8HlwpVW1VmsOg
+3IJDfSsLJhD3f/C0BMqsWzZzqqqVJyqJdnxqge6/tT0sM5r0YgctXNYGTy0CjXjF
+qwnPJdAeIq5+k32q901bz+Ws9CPuQA==
+=9/KY
+-----END PGP SIGNATURE-----
+
+--Sig_/ZPd8wcmoeJJ0BE9.CYuJlMp--
