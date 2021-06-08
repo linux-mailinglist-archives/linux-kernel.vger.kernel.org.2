@@ -2,141 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B9A39F9B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BB239F9BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbhFHO6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:58:55 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:38364 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233598AbhFHO6w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:58:52 -0400
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 684B520B83C5;
-        Tue,  8 Jun 2021 07:56:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 684B520B83C5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623164219;
-        bh=5adkBab5YgC4ua7cy6g3IJlMevjI3rkkXDpAoANH9ho=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BaXOma7rHPHFSCxmGUeLjFRe22Dav9/8UdX+EwMLhxCiIfkKRd9/FnXM4JLfKnnCz
-         143ihX/qoVP5IyJq6KydhH+lUN8bDRzB4bP2jupk6lQ6rDocZXtFtf1OmunaiwTTqg
-         3eyIEW7OcCiSKjGRMAJFitXJgFUZEYz6MXLPayZc=
-Received: by mail-pj1-f54.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so2449670pjq.3;
-        Tue, 08 Jun 2021 07:56:59 -0700 (PDT)
-X-Gm-Message-State: AOAM53358IoVhrT5nc/7gdIX+vqrNX+pAKQumyegiTwYUEmHvUjzdPQR
-        ELjn69Vs5fiJGA/YX0/Qxlh4OU0TP2RZbJLf+M0=
-X-Google-Smtp-Source: ABdhPJzNnGHBMRnqD7hcfQnkP4ftZvW9/ffkse696Bzy4x7VTQyeIyWA6fK1974zMmVl3AKfQy85iM5JjczuDF0rpu8=
-X-Received: by 2002:a17:90b:109:: with SMTP id p9mr5359058pjz.11.1623164218966;
- Tue, 08 Jun 2021 07:56:58 -0700 (PDT)
+        id S233700AbhFHO7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:59:37 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:26169 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233540AbhFHO7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:59:35 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4FztdJ6WHszBDj8;
+        Tue,  8 Jun 2021 16:57:40 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id rYF-J-sCzJxT; Tue,  8 Jun 2021 16:57:40 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FztdJ5XkGzBDj7;
+        Tue,  8 Jun 2021 16:57:40 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A9A608B7BF;
+        Tue,  8 Jun 2021 16:57:40 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Kq4BMwCmb5qz; Tue,  8 Jun 2021 16:57:40 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5B2B78B7C0;
+        Tue,  8 Jun 2021 16:57:39 +0200 (CEST)
+Subject: Re: [PATCH v3 resend 01/15] mm: add setup_initial_init_mm() helper
+To:     Souptick Joarder <jrdr.linux@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     uclinux-h8-devel@lists.sourceforge.jp, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, X86 ML <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>, linux-m68k@lists.linux-m68k.org,
+        openrisc@lists.librecores.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
+ <20210608083418.137226-2-wangkefeng.wang@huawei.com>
+ <CAFqt6zYmCQ=wxEjnOJ6fgJWYQyFajBuxWD=UT_D-WjWUS_4pcw@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <34f88fdc-1842-7954-bccc-0142a8d66eea@csgroup.eu>
+Date:   Tue, 8 Jun 2021 16:57:13 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210511214735.1836149-1-willy@infradead.org> <20210604030712.11b31259@linux.microsoft.com>
- <YLmMQJgld6ndNzqI@casper.infradead.org>
-In-Reply-To: <YLmMQJgld6ndNzqI@casper.infradead.org>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Tue, 8 Jun 2021 16:56:23 +0200
-X-Gmail-Original-Message-ID: <CAFnufp0=N-dyW4dwMLLdeg-AZE_uYBXMsNNh6FFpG869v0_aFw@mail.gmail.com>
-Message-ID: <CAFnufp0=N-dyW4dwMLLdeg-AZE_uYBXMsNNh6FFpG869v0_aFw@mail.gmail.com>
-Subject: Re: [PATCH v10 00/33] Memory folios
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFqt6zYmCQ=wxEjnOJ6fgJWYQyFajBuxWD=UT_D-WjWUS_4pcw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 4:13 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Fri, Jun 04, 2021 at 03:07:12AM +0200, Matteo Croce wrote:
-> > On Tue, 11 May 2021 22:47:02 +0100
-> > "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
-> >
-> > > We also waste a lot of instructions ensuring that we're not looking at
-> > > a tail page.  Almost every call to PageFoo() contains one or more
-> > > hidden calls to compound_head().  This also happens for get_page(),
-> > > put_page() and many more functions.  There does not appear to be a
-> > > way to tell gcc that it can cache the result of compound_head(), nor
-> > > is there a way to tell it that compound_head() is idempotent.
-> > >
-> >
-> > Maybe it's not effective in all situations but the following hint to
-> > the compiler seems to have an effect, at least according to bloat-o-meter:
->
-> It definitely has an effect ;-)
->
->      Note that a function that has pointer arguments and examines the
->      data pointed to must _not_ be declared 'const' if the pointed-to
->      data might change between successive invocations of the function.
->      In general, since a function cannot distinguish data that might
->      change from data that cannot, const functions should never take
->      pointer or, in C++, reference arguments.  Likewise, a function that
->      calls a non-const function usually must not be const itself.
->
-> So that's not going to work because a call to split_huge_page() won't
-> tell the compiler that it's changed.
->
-> Reading the documentation, we might be able to get away with marking the
-> function as pure:
->
->      The 'pure' attribute imposes similar but looser restrictions on a
->      function's definition than the 'const' attribute: 'pure' allows the
->      function to read any non-volatile memory, even if it changes in
->      between successive invocations of the function.
->
-> although that's going to miss opportunities, since taking a lock will
-> modify the contents of struct page, meaning the compiler won't cache
-> the results of compound_head().
->
-> > $ scripts/bloat-o-meter vmlinux.o.orig vmlinux.o
-> > add/remove: 3/13 grow/shrink: 65/689 up/down: 21080/-198089 (-177009)
->
-> I assume this is an allyesconfig kernel?    I think it's a good
-> indication of how much opportunity there is.
->
-
-Yes, it's an allyesconfig kernel.
-I did the same with pure:
-
-$ git diff
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 04a34c08e0a6..548b72b46eb1 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -179,7 +179,7 @@ enum pageflags {
-
-struct page;   /* forward declaration */
-
--static inline struct page *compound_head(struct page *page)
-+static inline __pure struct page *compound_head(struct page *page)
-{
-       unsigned long head = READ_ONCE(page->compound_head);
 
 
-$ scripts/bloat-o-meter vmlinux.o.orig vmlinux.o
-add/remove: 3/13 grow/shrink: 63/689 up/down: 20910/-192081 (-171171)
-Function                                     old     new   delta
-ntfs_mft_record_alloc                      14414   16627   +2213
-migrate_pages                               8891   10819   +1928
-ext2_get_page.isra                          1029    2343   +1314
-kfence_init                                  180    1331   +1151
-page_remove_rmap                             754    1893   +1139
-f2fs_fsync_node_pages                       4378    5406   +1028
-[...]
-migrate_page_states                         7088    4842   -2246
-ntfs_mft_record_format                      2940       -   -2940
-lru_deactivate_file_fn                      9220    6277   -2943
-shrink_page_list                           20653   15749   -4904
-page_memcg                                  5149     193   -4956
-Total: Before=388869713, After=388698542, chg -0.04%
+Le 08/06/2021 à 16:53, Souptick Joarder a écrit :
+> On Tue, Jun 8, 2021 at 1:56 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>>
+>> Add setup_initial_init_mm() helper to setup kernel text,
+>> data and brk.
+>>
+>> Cc: linux-snps-arc@lists.infradead.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-csky@vger.kernel.org
+>> Cc: uclinux-h8-devel@lists.sourceforge.jp
+>> Cc: linux-m68k@lists.linux-m68k.org
+>> Cc: openrisc@lists.librecores.org
+>> Cc: linuxppc-dev@lists.ozlabs.org
+>> Cc: linux-riscv@lists.infradead.org
+>> Cc: linux-sh@vger.kernel.org
+>> Cc: linux-s390@vger.kernel.org
+>> Cc: x86@kernel.org
+>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>> ---
+>>   include/linux/mm.h | 3 +++
+>>   mm/init-mm.c       | 9 +++++++++
+>>   2 files changed, 12 insertions(+)
+>>
+>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>> index c274f75efcf9..02aa057540b7 100644
+>> --- a/include/linux/mm.h
+>> +++ b/include/linux/mm.h
+>> @@ -244,6 +244,9 @@ int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
+>>
+>>   #define lru_to_page(head) (list_entry((head)->prev, struct page, lru))
+>>
+>> +void setup_initial_init_mm(void *start_code, void *end_code,
+>> +                          void *end_data, void *brk);
+>> +
+> 
+> Gentle query -> is there any limitation to add inline functions in
+> setup_arch() functions ?
 
-$ ls -l vmlinux.o.orig vmlinux.o
--rw-rw-r-- 1 mcroce mcroce 1295502680 Jun  8 16:47 vmlinux.o
--rw-rw-r-- 1 mcroce mcroce 1295934624 Jun  8 16:28 vmlinux.o.orig
+Kefeng just followed comment from Mike I guess, see 
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20210604070633.32363-2-wangkefeng.wang@huawei.com/#2696253
 
-vmlinux is ~420 kb smaller..
+Christophe
 
--- 
-per aspera ad upstream
