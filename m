@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BE43A0091
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FA139FFEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235837AbhFHSpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:45:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36728 "EHLO mail.kernel.org"
+        id S234961AbhFHShb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:37:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235043AbhFHSlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:41:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C072B61438;
-        Tue,  8 Jun 2021 18:35:08 +0000 (UTC)
+        id S234851AbhFHSfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:35:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D86F7613F4;
+        Tue,  8 Jun 2021 18:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177309;
-        bh=D3uiFNGSp8hXAmUSZZcMPtlbeCo4G5JIXuUd4UoHDBk=;
+        s=korg; t=1623177136;
+        bh=8NOjyvvQfL4HAU18FT1tzY1sJj2ikgSMgbfavif44Ac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jfwcagGpO3KLu+eBYAUDZ3C09TU724wQDkMZm2hQTX2u0IFUpzhy6DvhVFrKX0rbA
-         UCtXgM4Jh46mUUJzepuoGoFPFt7RfWzVtEZrR64cDEIxj55GiU4s9qkLbtc5Ok89ry
-         dBHOsRD81hsk5rJzeexyGUhxwrztS1am9yd2hvd4=
+        b=Y/FgJtspAC843d5nk+YRdORlTChBYkokDVgNShh2npZjU44w5QCaYn0YD9M4v2/59
+         /xz9Qzgfp6RKPCTBIWBUNfGzW7DFZ4OH0uyq+l5CwgB6oEu/a3Qr9Mh/pPVMCP/7b0
+         SZ8IRDRWUV/WmkxFXl12Il5nTG+Fc20Izt3xKgBo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH 4.19 47/58] selftests/bpf: add "any alignment" annotation for some tests
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.14 45/47] KVM: SVM: Truncate GPR value for DR and CR accesses in !64-bit mode
 Date:   Tue,  8 Jun 2021 20:27:28 +0200
-Message-Id: <20210608175933.826274506@linuxfoundation.org>
+Message-Id: <20210608175931.971396980@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
+References: <20210608175930.477274100@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@gmail.com>
+From: Sean Christopherson <seanjc@google.com>
 
-commit e2c6f50e48849298bed694de03cceb537d95cdc4 upstream
+commit 0884335a2e653b8a045083aa1d57ce74269ac81d upstream.
 
-RISC-V does, in-general, not have "efficient unaligned access". When
-testing the RISC-V BPF JIT, some selftests failed in the verification
-due to misaligned access. Annotate these tests with the
-F_NEEDS_EFFICIENT_UNALIGNED_ACCESS flag.
+Drop bits 63:32 on loads/stores to/from DRs and CRs when the vCPU is not
+in 64-bit mode.  The APM states bits 63:32 are dropped for both DRs and
+CRs:
 
-Signed-off-by: Björn Töpel <bjorn.topel@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+  In 64-bit mode, the operand size is fixed at 64 bits without the need
+  for a REX prefix. In non-64-bit mode, the operand size is fixed at 32
+  bits and the upper 32 bits of the destination are forced to 0.
+
+Fixes: 7ff76d58a9dc ("KVM: SVM: enhance MOV CR intercept handler")
+Fixes: cae3797a4639 ("KVM: SVM: enhance mov DR intercept handler")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210422022128.3464144-4-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[sudip: manual backport to old file]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/bpf/test_verifier.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/kvm/svm.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -963,6 +963,7 @@ static struct bpf_test tests[] = {
- 		.errstr_unpriv = "attempt to corrupt spilled",
- 		.errstr = "corrupted spill",
- 		.result = REJECT,
-+		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
- 	},
- 	{
- 		"invalid src register in STX",
-@@ -1777,6 +1778,7 @@ static struct bpf_test tests[] = {
- 		.errstr = "invalid bpf_context access",
- 		.result = REJECT,
- 		.prog_type = BPF_PROG_TYPE_SK_MSG,
-+		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
- 	},
- 	{
- 		"invalid read past end of SK_MSG",
-@@ -2176,6 +2178,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.errstr = "invalid bpf_context access",
- 		.result = REJECT,
-+		.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
- 	},
- 	{
- 		"check skb->hash half load not permitted, unaligned 3",
+--- a/arch/x86/kvm/svm.c
++++ b/arch/x86/kvm/svm.c
+@@ -3532,7 +3532,7 @@ static int cr_interception(struct vcpu_s
+ 	err = 0;
+ 	if (cr >= 16) { /* mov to cr */
+ 		cr -= 16;
+-		val = kvm_register_read(&svm->vcpu, reg);
++		val = kvm_register_readl(&svm->vcpu, reg);
+ 		switch (cr) {
+ 		case 0:
+ 			if (!check_selective_cr0_intercepted(svm, val))
+@@ -3577,7 +3577,7 @@ static int cr_interception(struct vcpu_s
+ 			kvm_queue_exception(&svm->vcpu, UD_VECTOR);
+ 			return 1;
+ 		}
+-		kvm_register_write(&svm->vcpu, reg, val);
++		kvm_register_writel(&svm->vcpu, reg, val);
+ 	}
+ 	return kvm_complete_insn_gp(&svm->vcpu, err);
+ }
+@@ -3607,13 +3607,13 @@ static int dr_interception(struct vcpu_s
+ 	if (dr >= 16) { /* mov to DRn */
+ 		if (!kvm_require_dr(&svm->vcpu, dr - 16))
+ 			return 1;
+-		val = kvm_register_read(&svm->vcpu, reg);
++		val = kvm_register_readl(&svm->vcpu, reg);
+ 		kvm_set_dr(&svm->vcpu, dr - 16, val);
+ 	} else {
+ 		if (!kvm_require_dr(&svm->vcpu, dr))
+ 			return 1;
+ 		kvm_get_dr(&svm->vcpu, dr, &val);
+-		kvm_register_write(&svm->vcpu, reg, val);
++		kvm_register_writel(&svm->vcpu, reg, val);
+ 	}
+ 
+ 	return kvm_skip_emulated_instruction(&svm->vcpu);
 
 
