@@ -2,148 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81C039FE2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F4A39FE2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbhFHRvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:51:41 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:33739 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbhFHRvi (ORCPT
+        id S233945AbhFHRvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:51:44 -0400
+Received: from mail-pj1-f48.google.com ([209.85.216.48]:56213 "EHLO
+        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233082AbhFHRvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:51:38 -0400
-Received: by mail-wr1-f48.google.com with SMTP id a20so22575190wrc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:49:45 -0700 (PDT)
+        Tue, 8 Jun 2021 13:51:41 -0400
+Received: by mail-pj1-f48.google.com with SMTP id k7so12356545pjf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:49:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8VUcUNHL3JuSqy+zkLCk7TZMD9OSteZxhISOtRNVDjQ=;
-        b=Rkv4RbY/1E+9cYKHD1E0VCGCJJ8FeA4zTISQEe7eaDnASxEiHmqhKpYX5ore5xvmKd
-         qBsqhYwcgBZuOaSUmcYb6o+iTCOoctKY3yLPFLrhzgdmC677GwT+2xpcuZ2AX5O8CbID
-         Y5P7LPwa9L91pKhqsZkACt7cyWinpUyu1bGFL9FzzXC614RQEmuKnXIVookASJs7cULS
-         S+jMjIljXL4R0vm/AFwuAplXCJfVclcAyqnWssZ/JNSZhqqDwqcTXOKMWM9t5UvsyUxG
-         nbqy7PGOt0CvMIsE3F0Gr2CHVRxXqW4NtHwW4Zf4fzby0tyM27MqfcYBtFFjU3Tj9l+P
-         NBHQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gdt4JghUB3/7yWBfA2YVguJPrCC6pOa4/tpNkl/xRaw=;
+        b=U1mWIsbVQwUvyUewrceBoWKWWMBrOcc5Obhhmq2UySkeBn67aN8GoM+KzPFENv9d93
+         AtqaX9qtmoxBnW9T0TflIGlf5xTnoslmvMgrHLWpOF/5DK1F0UGM0veB77SH5PJl1CIM
+         yTf/W0K/rwx/8HsvPUYjZbHQ3ajmkYCNZXt31U7GFkFmBjWLM9Ii45fz0nZH8SIqSuuI
+         5t1jUPptTKB40Jltzjhq4WjR+OwFkK7/YFW6HUdqUejLxeWg0TLt/xFeMaTdjxtpwWrb
+         M45GQtOm82NZjFZPsnjbGURDqv/GHOZNws+O+W08jqwDJLkyHoh68BfeUlNBluemMRH7
+         VpHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8VUcUNHL3JuSqy+zkLCk7TZMD9OSteZxhISOtRNVDjQ=;
-        b=Vg2lXAqNdx/+Omd18pfGSee/ddn5voQBSWYq70JRkKD7xKsfFTVwSeJUlX1YRINO16
-         4hNTrzMx3yBRsfc9etDLnn2oO2M2Py/jiNs5x/MWauiwVRiGyIJ3iUj4L7fCkbb5Y0x7
-         Bx5MGHVM/+Thhqt+XlM1MxTyg9lVlbh8oH1+TIzcITVLecOKpaXzn8eEvP47I3oqMYxn
-         3903RXCWhigQsOCUHm8taSENHbGfr2tILmqg3b7NOgQtXO2cel9UdKWqrcGbRCHqk+RN
-         F6j/4KgJAkvJNbAPrs66Izb6fYrEmqdEKg9Pn2X16+KuNHp4Q3K4BHQ3jGxPYDZQ/x8A
-         AxoA==
-X-Gm-Message-State: AOAM533Pei8yYD9bpQOmsM6EcxiFsck00v93Sh8QHkUn6SQ+W6sq/Fux
-        iO/XZnkpT4XCarT2eg425K2AWNs4b0fvE6iHJb0XaA==
-X-Google-Smtp-Source: ABdhPJw3AXWRQHvemXMm9mHm72Hk/moNbFy9rPAbavS5t8/FbQE/HUYxi+rspRDnbpqKEpaBgYhgnMBG3s6lyQMDBxY=
-X-Received: by 2002:a5d:694b:: with SMTP id r11mr17324336wrw.168.1623174524512;
- Tue, 08 Jun 2021 10:48:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gdt4JghUB3/7yWBfA2YVguJPrCC6pOa4/tpNkl/xRaw=;
+        b=OSg6z3y7qv4xCm2NstN+QxWNoii7E/07HhObctL9ywdps6ERMBOu+FLmetkorSNPn3
+         t4es97HwMHdemNM2ga/JWt65wStTzwYCHPVvJZboA8ffPuumHZkxp8nRZGW0sjGEfnDn
+         PLahGwdinZ8CdSE5zpG3i1EmKW5yWyvfkNEnOtlhRHnB8ujOQE9TubbnhjGPh7sd6Ckk
+         cxyD2sjwx1K3+JtrFhOwG24iIa9DZ1e6eWE05N5Xrq+NqYiDyo6+ujnnwgbJk7dt8JT1
+         LEOP/3z9K7DM+iPupjZLh/LqOVBcL4cGHgw8zDx1qIE6qz2DCxB+/yePFmxB7dMOi//g
+         Grow==
+X-Gm-Message-State: AOAM530r0TGyVSSfPrIyKEhG2xckOzyLIZVt7jxsGDa7+EdNZOAXCjnz
+        ml3eiEe6VEi/T2t+m5EmCyEfPg==
+X-Google-Smtp-Source: ABdhPJzotGA3OBLIY8mJnF8AbWwu3glAB6D8umkDLtk5ekcf3oKfz3gCLKFNcPqDx4dkrKo1fmg9Hg==
+X-Received: by 2002:a17:902:edcf:b029:10c:768:b657 with SMTP id q15-20020a170902edcfb029010c0768b657mr836025plk.56.1623174528484;
+        Tue, 08 Jun 2021 10:48:48 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id h186sm11187688pfe.4.2021.06.08.10.48.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 10:48:48 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 17:48:44 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2 08/32] x86/traps: Add #VE support for TDX guest
+Message-ID: <YL+tfGOMWEvDJTwc@google.com>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <8a1d6930f784cb57c957cf20cea870947db91e05.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <fe05830e-e82b-f338-2ba1-02651cb8087e@intel.com>
 MIME-Version: 1.0
-References: <20210521182104.18273-1-kuniyu@amazon.co.jp> <c423bd7b-03ab-91f2-60af-25c6dfa28b71@iogearbox.net>
-In-Reply-To: <c423bd7b-03ab-91f2-60af-25c6dfa28b71@iogearbox.net>
-From:   Yuchung Cheng <ycheng@google.com>
-Date:   Tue, 8 Jun 2021 10:48:06 -0700
-Message-ID: <CAK6E8=dtFmPYpK71XJc=HFDUL9mYO1i36Q8BemwSGcCq+3BEmw@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Neal Cardwell <ncardwell@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe05830e-e82b-f338-2ba1-02651cb8087e@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 11:42 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
-> > The SO_REUSEPORT option allows sockets to listen on the same port and to
-> > accept connections evenly. However, there is a defect in the current
-> > implementation [1]. When a SYN packet is received, the connection is tied
-> > to a listening socket. Accordingly, when the listener is closed, in-flight
-> > requests during the three-way handshake and child sockets in the accept
-> > queue are dropped even if other listeners on the same port could accept
-> > such connections.
-> >
-> > This situation can happen when various server management tools restart
-> > server (such as nginx) processes. For instance, when we change nginx
-> > configurations and restart it, it spins up new workers that respect the new
-> > configuration and closes all listeners on the old workers, resulting in the
-> > in-flight ACK of 3WHS is responded by RST.
-> >
-> > To avoid such a situation, users have to know deeply how the kernel handles
-> > SYN packets and implement connection draining by eBPF [2]:
-> >
-> >    1. Stop routing SYN packets to the listener by eBPF.
-> >    2. Wait for all timers to expire to complete requests
-> >    3. Accept connections until EAGAIN, then close the listener.
-> >
-> >    or
-> >
-> >    1. Start counting SYN packets and accept syscalls using the eBPF map.
-> >    2. Stop routing SYN packets.
-> >    3. Accept connections up to the count, then close the listener.
-> >
-> > In either way, we cannot close a listener immediately. However, ideally,
-> > the application need not drain the not yet accepted sockets because 3WHS
-> > and tying a connection to a listener are just the kernel behaviour. The
-> > root cause is within the kernel, so the issue should be addressed in kernel
-> > space and should not be visible to user space. This patchset fixes it so
-> > that users need not take care of kernel implementation and connection
-> > draining. With this patchset, the kernel redistributes requests and
-> > connections from a listener to the others in the same reuseport group
-> > at/after close or shutdown syscalls.
-> >
-> > Although some software does connection draining, there are still merits in
-> > migration. For some security reasons, such as replacing TLS certificates,
-> > we may want to apply new settings as soon as possible and/or we may not be
-> > able to wait for connection draining. The sockets in the accept queue have
-> > not started application sessions yet. So, if we do not drain such sockets,
-> > they can be handled by the newer listeners and could have a longer
-> > lifetime. It is difficult to drain all connections in every case, but we
-> > can decrease such aborted connections by migration. In that sense,
-> > migration is always better than draining.
-> >
-> > Moreover, auto-migration simplifies user space logic and also works well in
-> > a case where we cannot modify and build a server program to implement the
-> > workaround.
-> >
-> > Note that the source and destination listeners MUST have the same settings
-> > at the socket API level; otherwise, applications may face inconsistency and
-> > cause errors. In such a case, we have to use the eBPF program to select a
-> > specific listener or to cancel migration.
-This looks to be a useful feature. What happens to migrating a
-passively fast-opened socket in the old listener but it has not yet
-been accepted (TFO is both a mini-socket and a full-socket)?
-It gets tricky when the old and new listener have different TFO key
+On Tue, Jun 08, 2021, Dave Hansen wrote:
+> On 4/26/21 11:01 AM, Kuppuswamy Sathyanarayanan wrote:
+> > +#ifdef CONFIG_INTEL_TDX_GUEST
+> > +DEFINE_IDTENTRY(exc_virtualization_exception)
+> > +{
+> > +	struct ve_info ve;
+> > +	int ret;
+> > +
+> > +	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
+> > +
+> > +	/*
+> > +	 * Consume #VE info before re-enabling interrupts. It will be
+> > +	 * re-enabled after executing the TDGETVEINFO TDCALL.
+> > +	 */
+> > +	ret = tdg_get_ve_info(&ve);
+> 
+> Is it safe to have *anything* before the tdg_get_ve_info()?  For
+> instance, say that RCU_LOCKDEP_WARN() triggers.  Will anything in there
+> do MMIO?
 
-
-> >
-> > Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
-> > snippets along the way.
-> >
-> >
-> > Link:
-> >   [1] The SO_REUSEPORT socket option
-> >   https://lwn.net/Articles/542629/
-> >
-> >   [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
-> >   https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
->
-> This series needs review/ACKs from TCP maintainers. Eric/Neal/Yuchung please take
-> a look again.
->
-> Thanks,
-> Daniel
+I doubt it's safe, anything that's doing printing has the potential to trigger
+#VE.  Even if we can prove it's safe for all possible paths, I can't think of a
+reason to allow anything that's not absolutely necessary before retrieving the
+#VE info.
