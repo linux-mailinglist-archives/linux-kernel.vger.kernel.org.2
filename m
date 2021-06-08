@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536EC39F57B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA1339F57A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhFHLsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:48:02 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8089 "EHLO
+        id S232209AbhFHLsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:48:01 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8090 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbhFHLr7 (ORCPT
+        with ESMTP id S232100AbhFHLr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Jun 2021 07:47:59 -0400
 Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzpJz0XdTzYrjy;
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzpJz0p5SzYrl6;
         Tue,  8 Jun 2021 19:43:15 +0800 (CST)
 Received: from huawei.com (10.175.104.170) by dggeme703-chm.china.huawei.com
  (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
@@ -24,10 +24,12 @@ To:     <akpm@linux-foundation.org>, <sjenning@redhat.com>,
         <ddstreet@ieee.org>
 CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         <linmiaohe@huawei.com>
-Subject: [PATCH v2 0/2]  Cleanups for zbud
-Date:   Tue, 8 Jun 2021 19:45:13 +0800
-Message-ID: <20210608114515.206992-1-linmiaohe@huawei.com>
+Subject: [PATCH v2 1/2] mm/zbud: reuse unbuddied[0] as buddied in zbud_pool
+Date:   Tue, 8 Jun 2021 19:45:14 +0800
+Message-ID: <20210608114515.206992-2-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20210608114515.206992-1-linmiaohe@huawei.com>
+References: <20210608114515.206992-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -39,24 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-This series contains just cleanups to save some possible memory in
-zbud_pool and avoid exporting any unneeded zbud API. More details
-can be found in the respective changelogs. Thanks!
+Since commit 9d8c5b5284e4 ("mm: zbud: fix condition check on allocation
+size"), zbud_pool.unbuddied[0] is always unused. We can reuse it as buddied
+field to save some possible memory.
 
-v1->v2:
-  Use union and add comment per Andrew.
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ mm/zbud.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Miaohe Lin (2):
-  mm/zbud: reuse unbuddied[0] as buddied in zbud_pool
-  mm/zbud: don't export any zbud API
-
- MAINTAINERS          |   1 -
- include/linux/zbud.h |  23 -----
- mm/zbud.c            | 229 +++++++++++++++++++++++--------------------
- 3 files changed, 120 insertions(+), 133 deletions(-)
- delete mode 100644 include/linux/zbud.h
-
+diff --git a/mm/zbud.c b/mm/zbud.c
+index a200121da400..78e80ca58869 100644
+--- a/mm/zbud.c
++++ b/mm/zbud.c
+@@ -95,8 +95,14 @@
+  */
+ struct zbud_pool {
+ 	spinlock_t lock;
+-	struct list_head unbuddied[NCHUNKS];
+-	struct list_head buddied;
++	union {
++		/*
++		 * Reuse unbuddied[0] as buddied on the ground that
++		 * unbuddied[0] is unused.
++		 */
++		struct list_head buddied;
++		struct list_head unbuddied[NCHUNKS];
++	};
+ 	struct list_head lru;
+ 	u64 pages_nr;
+ 	const struct zbud_ops *ops;
 -- 
 2.23.0
 
