@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6848E39FFD5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452AA39FF81
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234258AbhFHShI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:37:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57488 "EHLO mail.kernel.org"
+        id S234433AbhFHSdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:33:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234805AbhFHSfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:35:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1343613BC;
-        Tue,  8 Jun 2021 18:32:00 +0000 (UTC)
+        id S234221AbhFHSc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:32:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7D66613D3;
+        Tue,  8 Jun 2021 18:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177121;
-        bh=cRI6SnDHoneLn0uItQPIhWLdGyl83pCeu+ppWiSLrlI=;
+        s=korg; t=1623177020;
+        bh=xVMsWp26lw0ReF/0QrK6B1Ds64/IDcKJGNXPTJopo9E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F3qBsxI0wprh2ZWwFHEWYp0zqPC9YHEhgWr9qknnuRp120/8nCC9GFX1eDitxkGiA
-         sAHnCi9OVHXabv8YlY5H4MoUz5xXOR6ZnWsVRLrjjRghbuRvniOaPI4dk2ktdgWpz/
-         cnnDQo1I6Y0QEn1Rtgx8x6rgXm1L0N9IaUfCF7G8=
+        b=QC4JxbQKs6pDyo5FvBS/IWFytvPvxR4LGW0qLc15+7qgbNzspN4AWsFTJcK9Musqv
+         fIou9m1qofLsAudNzGwjbc6cULQsSjCG+talNrtOaJrFn7uoY0qa0ZpNfyQkJEcZGV
+         z+ntY/dyiCEMQ0iQ81RQ/Y10uGjqXX9xBEewQ1kI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Piotr Krysiuk <piotras@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Frank van der Linden <fllinden@amazon.com>
-Subject: [PATCH 4.14 40/47] bpf: Fix leakage of uninitialized bpf stack under speculation
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.9 29/29] xen-pciback: redo VF placement in the virtual topology
 Date:   Tue,  8 Jun 2021 20:27:23 +0200
-Message-Id: <20210608175931.793308942@linuxfoundation.org>
+Message-Id: <20210608175928.763231955@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
-References: <20210608175930.477274100@linuxfoundation.org>
+In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
+References: <20210608175927.821075974@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,135 +40,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Jan Beulich <jbeulich@suse.com>
 
-commit 801c6058d14a82179a7ee17a4b532cac6fad067f upstream.
+The commit referenced below was incomplete: It merely affected what
+would get written to the vdev-<N> xenstore node. The guest would still
+find the function at the original function number as long as
+__xen_pcibk_get_pci_dev() wouldn't be in sync. The same goes for AER wrt
+__xen_pcibk_get_pcifront_dev().
 
-The current implemented mechanisms to mitigate data disclosure under
-speculation mainly address stack and map value oob access from the
-speculative domain. However, Piotr discovered that uninitialized BPF
-stack is not protected yet, and thus old data from the kernel stack,
-potentially including addresses of kernel structures, could still be
-extracted from that 512 bytes large window. The BPF stack is special
-compared to map values since it's not zero initialized for every
-program invocation, whereas map values /are/ zero initialized upon
-their initial allocation and thus cannot leak any prior data in either
-domain. In the non-speculative domain, the verifier ensures that every
-stack slot read must have a prior stack slot write by the BPF program
-to avoid such data leaking issue.
+Undo overriding the function to zero and instead make sure that VFs at
+function zero remain alone in their slot. This has the added benefit of
+improving overall capacity, considering that there's only a total of 32
+slots available right now (PCI segment and bus can both only ever be
+zero at present).
 
-However, this is not enough: for example, when the pointer arithmetic
-operation moves the stack pointer from the last valid stack offset to
-the first valid offset, the sanitation logic allows for any intermediate
-offsets during speculative execution, which could then be used to
-extract any restricted stack content via side-channel.
+This is upstream commit 4ba50e7c423c29639878c00573288869aa627068.
 
-Given for unprivileged stack pointer arithmetic the use of unknown
-but bounded scalars is generally forbidden, we can simply turn the
-register-based arithmetic operation into an immediate-based arithmetic
-operation without the need for masking. This also gives the benefit
-of reducing the needed instructions for the operation. Given after
-the work in 7fedb63a8307 ("bpf: Tighten speculative pointer arithmetic
-mask"), the aux->alu_limit already holds the final immediate value for
-the offset register with the known scalar. Thus, a simple mov of the
-immediate to AX register with using AX as the source for the original
-instruction is sufficient and possible now in this case.
-
-Reported-by: Piotr Krysiuk <piotras@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Piotr Krysiuk <piotras@gmail.com>
-Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-[fllinden@amazon.com: fixed minor 4.14 conflict because of renamed function]
-Signed-off-by: Frank van der Linden <fllinden@amazon.com>
+Fixes: 8a5248fe10b1 ("xen PV passthru: assign SR-IOV virtual functions to 
+separate virtual slots")
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/8def783b-404c-3452-196d-3f3fd4d72c9e@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/bpf_verifier.h |    5 +++--
- kernel/bpf/verifier.c        |   27 +++++++++++++++++----------
- 2 files changed, 20 insertions(+), 12 deletions(-)
+ drivers/xen/xen-pciback/vpci.c |   14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -114,10 +114,11 @@ struct bpf_verifier_state_list {
- };
- 
- /* Possible states for alu_state member. */
--#define BPF_ALU_SANITIZE_SRC		1U
--#define BPF_ALU_SANITIZE_DST		2U
-+#define BPF_ALU_SANITIZE_SRC		(1U << 0)
-+#define BPF_ALU_SANITIZE_DST		(1U << 1)
- #define BPF_ALU_NEG_VALUE		(1U << 2)
- #define BPF_ALU_NON_POINTER		(1U << 3)
-+#define BPF_ALU_IMMEDIATE		(1U << 4)
- #define BPF_ALU_SANITIZE		(BPF_ALU_SANITIZE_SRC | \
- 					 BPF_ALU_SANITIZE_DST)
- 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2120,6 +2120,7 @@ static int sanitize_ptr_alu(struct bpf_v
+--- a/drivers/xen/xen-pciback/vpci.c
++++ b/drivers/xen/xen-pciback/vpci.c
+@@ -68,7 +68,7 @@ static int __xen_pcibk_add_pci_dev(struc
+ 				   struct pci_dev *dev, int devid,
+ 				   publish_pci_dev_cb publish_cb)
  {
- 	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : tmp_aux;
- 	struct bpf_verifier_state *vstate = env->cur_state;
-+	bool off_is_imm = tnum_is_const(off_reg->var_off);
- 	bool off_is_neg = off_reg->smin_value < 0;
- 	bool ptr_is_dst_reg = ptr_reg == dst_reg;
- 	u8 opcode = BPF_OP(insn->code);
-@@ -2150,6 +2151,7 @@ static int sanitize_ptr_alu(struct bpf_v
- 		alu_limit = abs(tmp_aux->alu_limit - alu_limit);
- 	} else {
- 		alu_state  = off_is_neg ? BPF_ALU_NEG_VALUE : 0;
-+		alu_state |= off_is_imm ? BPF_ALU_IMMEDIATE : 0;
- 		alu_state |= ptr_is_dst_reg ?
- 			     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
+-	int err = 0, slot, func = -1;
++	int err = 0, slot, func = PCI_FUNC(dev->devfn);
+ 	struct pci_dev_entry *t, *dev_entry;
+ 	struct vpci_dev_data *vpci_dev = pdev->pci_dev_data;
+ 
+@@ -93,23 +93,26 @@ static int __xen_pcibk_add_pci_dev(struc
+ 
+ 	/*
+ 	 * Keep multi-function devices together on the virtual PCI bus, except
+-	 * virtual functions.
++	 * that we want to keep virtual functions at func 0 on their own. They
++	 * aren't multi-function devices and hence their presence at func 0
++	 * may cause guests to not scan the other functions.
+ 	 */
+-	if (!dev->is_virtfn) {
++	if (!dev->is_virtfn || func) {
+ 		for (slot = 0; slot < PCI_SLOT_MAX; slot++) {
+ 			if (list_empty(&vpci_dev->dev_list[slot]))
+ 				continue;
+ 
+ 			t = list_entry(list_first(&vpci_dev->dev_list[slot]),
+ 				       struct pci_dev_entry, list);
++			if (t->dev->is_virtfn && !PCI_FUNC(t->dev->devfn))
++				continue;
+ 
+ 			if (match_slot(dev, t->dev)) {
+ 				pr_info("vpci: %s: assign to virtual slot %d func %d\n",
+ 					pci_name(dev), slot,
+-					PCI_FUNC(dev->devfn));
++					func);
+ 				list_add_tail(&dev_entry->list,
+ 					      &vpci_dev->dev_list[slot]);
+-				func = PCI_FUNC(dev->devfn);
+ 				goto unlock;
+ 			}
+ 		}
+@@ -122,7 +125,6 @@ static int __xen_pcibk_add_pci_dev(struc
+ 				pci_name(dev), slot);
+ 			list_add_tail(&dev_entry->list,
+ 				      &vpci_dev->dev_list[slot]);
+-			func = dev->is_virtfn ? 0 : PCI_FUNC(dev->devfn);
+ 			goto unlock;
+ 		}
  	}
-@@ -4850,7 +4852,7 @@ static int fixup_bpf_calls(struct bpf_ve
- 			const u8 code_sub = BPF_ALU64 | BPF_SUB | BPF_X;
- 			struct bpf_insn insn_buf[16];
- 			struct bpf_insn *patch = &insn_buf[0];
--			bool issrc, isneg;
-+			bool issrc, isneg, isimm;
- 			u32 off_reg;
- 
- 			aux = &env->insn_aux_data[i + delta];
-@@ -4861,16 +4863,21 @@ static int fixup_bpf_calls(struct bpf_ve
- 			isneg = aux->alu_state & BPF_ALU_NEG_VALUE;
- 			issrc = (aux->alu_state & BPF_ALU_SANITIZE) ==
- 				BPF_ALU_SANITIZE_SRC;
-+			isimm = aux->alu_state & BPF_ALU_IMMEDIATE;
- 
- 			off_reg = issrc ? insn->src_reg : insn->dst_reg;
--			if (isneg)
--				*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
--			*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
--			*patch++ = BPF_ALU64_REG(BPF_SUB, BPF_REG_AX, off_reg);
--			*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
--			*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
--			*patch++ = BPF_ALU64_IMM(BPF_ARSH, BPF_REG_AX, 63);
--			*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX, off_reg);
-+			if (isimm) {
-+				*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
-+			} else {
-+				if (isneg)
-+					*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
-+				*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
-+				*patch++ = BPF_ALU64_REG(BPF_SUB, BPF_REG_AX, off_reg);
-+				*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
-+				*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
-+				*patch++ = BPF_ALU64_IMM(BPF_ARSH, BPF_REG_AX, 63);
-+				*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX, off_reg);
-+			}
- 			if (!issrc)
- 				*patch++ = BPF_MOV64_REG(insn->dst_reg, insn->src_reg);
- 			insn->src_reg = BPF_REG_AX;
-@@ -4878,7 +4885,7 @@ static int fixup_bpf_calls(struct bpf_ve
- 				insn->code = insn->code == code_add ?
- 					     code_sub : code_add;
- 			*patch++ = *insn;
--			if (issrc && isneg)
-+			if (issrc && isneg && !isimm)
- 				*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
- 			cnt = patch - insn_buf;
- 
 
 
