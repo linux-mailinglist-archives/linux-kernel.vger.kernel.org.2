@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3543A014D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977E93A017C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235275AbhFHSuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:50:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40750 "EHLO mail.kernel.org"
+        id S234931AbhFHSwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:52:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236005AbhFHSps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:45:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C4B613C1;
-        Tue,  8 Jun 2021 18:37:16 +0000 (UTC)
+        id S235369AbhFHSqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:46:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E712A61459;
+        Tue,  8 Jun 2021 18:37:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177437;
-        bh=2051omGRCgbqyD5yjue/gMMoDodud1d4XeCDfFUHNZ0=;
+        s=korg; t=1623177467;
+        bh=VqxFuZpzm+BtdNoy7fehz+noqK2WuQlyyMKYKtQbR7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g1zWhYJCEZfpT9B3Q72QIDrp5j3lylfOUlKDVuYaJBzSiafpNKQYSPdnxrZ73Yff5
-         1eGuOOCEmbQOriGXh/iIrQfCRMXB8L4RFEhqFcdGc7i1/paIxkCF8Im/X5QtMPpHje
-         oKnLm+cn7ZVRCu8nh7I911+AsO33SbWHylmntQ30=
+        b=pd8xhrNSUsq5kJ8PUG5ng7ob5Ry80GsAF33i1gi89qOdTni4AUY5Cbg1yvDuwTqt2
+         nsdXGanjSgn+uxMK2XLnGYB4wxrYeyknhCZUURPvJ3KK8Yef9SSvt6hKBqc5XD0Q7X
+         PNV8lG3723Lp2w3p0Gv98hKs9wOKL07m1GKgu3YA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Carl Philipp Klemm <philipp@uvos.xyz>,
+        Ivan Jelincic <parazyd@dyne.org>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Sicelo A. Mhlongo" <absicsz@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 34/78] ARM: dts: imx: emcon-avari: Fix nxp,pca8574 #gpio-cells
-Date:   Tue,  8 Jun 2021 20:27:03 +0200
-Message-Id: <20210608175936.417235845@linuxfoundation.org>
+Subject: [PATCH 5.4 35/78] bus: ti-sysc: Fix flakey idling of uarts and stop using swsup_sidle_act
+Date:   Tue,  8 Jun 2021 20:27:04 +0200
+Message-Id: <20210608175936.447943522@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
 References: <20210608175935.254388043@linuxfoundation.org>
@@ -42,34 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit b73eb6b3b91ff7d76cff5f8c7ab92fe0c51e3829 ]
+[ Upstream commit c8692ad416dcc420ce1b403596a425c8f4c2720b ]
 
-According to the DT bindings, #gpio-cells must be two.
+Looks like the swsup_sidle_act quirk handling is unreliable for serial
+ports. The serial ports just eventually stop idling until woken up and
+re-idled again. As the serial port not idling blocks any deeper SoC idle
+states, it's adds an annoying random flakeyness for power management.
 
-Fixes: 63e71fedc07c4ece ("ARM: dts: Add support for emtrion emCON-MX6 series")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Let's just switch to swsup_sidle quirk instead like we already do for
+omap3 uarts. This means we manually idle the port instead of trying to
+use the hardware autoidle features when not in use.
+
+For more details on why the serial ports have been using swsup_idle_act,
+see commit 66dde54e978a ("ARM: OMAP2+: hwmod-data: UART IP needs software
+control to manage sidle modes"). It seems that the swsup_idle_act quirk
+handling is not enough though, and for example the TI Android kernel
+changed to using swsup_sidle with commit 77c34c84e1e0 ("OMAP4: HWMOD:
+UART1: disable smart-idle.").
+
+Fixes: b4a9a7a38917 ("bus: ti-sysc: Handle swsup idle mode quirks")
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Cc: Ivan Jelincic <parazyd@dyne.org>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Sebastian Reichel <sre@kernel.org>
+Cc: Sicelo A. Mhlongo <absicsz@gmail.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6qdl-emcon-avari.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/bus/ti-sysc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-emcon-avari.dtsi b/arch/arm/boot/dts/imx6qdl-emcon-avari.dtsi
-index 828cf3e39784..c4e146f3341b 100644
---- a/arch/arm/boot/dts/imx6qdl-emcon-avari.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-emcon-avari.dtsi
-@@ -126,7 +126,7 @@
- 		compatible = "nxp,pca8574";
- 		reg = <0x3a>;
- 		gpio-controller;
--		#gpio-cells = <1>;
-+		#gpio-cells = <2>;
- 	};
- };
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index d59e1ca9990b..90053c4a8290 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -1376,9 +1376,9 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
+ 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
+ 	/* Uarts on omap4 and later */
+ 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x50411e03, 0xffff00ff,
+-		   SYSC_QUIRK_SWSUP_SIDLE_ACT | SYSC_QUIRK_LEGACY_IDLE),
++		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
+ 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x47422e03, 0xffffffff,
+-		   SYSC_QUIRK_SWSUP_SIDLE_ACT | SYSC_QUIRK_LEGACY_IDLE),
++		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
  
+ 	/* Quirks that need to be set based on the module address */
+ 	SYSC_QUIRK("mcpdm", 0x40132000, 0, 0x10, -ENODEV, 0x50000800, 0xffffffff,
 -- 
 2.30.2
 
