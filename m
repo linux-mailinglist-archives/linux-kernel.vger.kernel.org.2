@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA213A003C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C8F39FF6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234994AbhFHSk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36728 "EHLO mail.kernel.org"
+        id S234525AbhFHSdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:33:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234726AbhFHSiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:38:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D4DF613DD;
-        Tue,  8 Jun 2021 18:33:23 +0000 (UTC)
+        id S234342AbhFHScL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:32:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E82A613CA;
+        Tue,  8 Jun 2021 18:30:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177204;
-        bh=EXMA23QZWEOV5NaB+T7fc+X5T2OkczxbpzD6QoLcrCE=;
+        s=korg; t=1623177018;
+        bh=cq+BDAlz6yVWbPDX5SFSPBUVhukvOyz3I7Ra/jMwicA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q53b3Tvu6zFRTwwSWJedwlWC/Xa99Y8S/00Nq5dh1SVMTfBEVVPoQ7uxW9gG8Kj44
-         7vmHxwVvwgqVKHWggeUnYmHVBZ+K29OxljV//lHqAclZ3L8zcZ8j0wwF9Xf8MdciKe
-         aeoDrsndkY1hTulMWWxtrKwnBLRPUvmEhrOQLoZU=
+        b=i2rZuXdjrWZuWTGEUOZ12XpVvIyWodtZMpIo3WAIw3vKDE2yK41JygYkZTeTcoIFn
+         XlZWk1sF0GlXYomY1QvL8Yg4AE9Yq/naKswSB2kRgrQQikWl1cLN3LOn/LRk+Yf1x5
+         yLOsmQD/3yUn7KVdH1zQsbJzWQknPhcSGUx/jPMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 24/58] net: caif: fix memory leak in cfusbl_device_notify
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 11/29] ieee802154: fix error return code in ieee802154_add_iface()
 Date:   Tue,  8 Jun 2021 20:27:05 +0200
-Message-Id: <20210608175933.089753737@linuxfoundation.org>
+Message-Id: <20210608175928.184179568@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
+References: <20210608175927.821075974@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,68 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-commit 7f5d86669fa4d485523ddb1d212e0a2d90bd62bb upstream.
+[ Upstream commit 79c6b8ed30e54b401c873dbad2511f2a1c525fd5 ]
 
-In case of caif_enroll_dev() fail, allocated
-link_support won't be assigned to the corresponding
-structure. So simply free allocated pointer in case
-of error.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Fixes: 7ad65bf68d70 ("caif: Add support for CAIF over CDC NCM USB interface")
-Cc: stable@vger.kernel.org
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: be51da0f3e34 ("ieee802154: Stop using NLA_PUT*().")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210508062517.2574-1-thunder.leizhen@huawei.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/caif/caif_usb.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ net/ieee802154/nl-phy.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/caif/caif_usb.c
-+++ b/net/caif/caif_usb.c
-@@ -116,6 +116,11 @@ static struct cflayer *cfusbl_create(int
- 	return (struct cflayer *) this;
- }
+diff --git a/net/ieee802154/nl-phy.c b/net/ieee802154/nl-phy.c
+index 77d73014bde3..11f53dc0c1c0 100644
+--- a/net/ieee802154/nl-phy.c
++++ b/net/ieee802154/nl-phy.c
+@@ -249,8 +249,10 @@ int ieee802154_add_iface(struct sk_buff *skb, struct genl_info *info)
+ 	}
  
-+static void cfusbl_release(struct cflayer *layer)
-+{
-+	kfree(layer);
-+}
-+
- static struct packet_type caif_usb_type __read_mostly = {
- 	.type = cpu_to_be16(ETH_P_802_EX1),
- };
-@@ -128,6 +133,7 @@ static int cfusbl_device_notify(struct n
- 	struct cflayer *layer, *link_support;
- 	struct usbnet *usbnet;
- 	struct usb_device *usbdev;
-+	int res;
+ 	if (nla_put_string(msg, IEEE802154_ATTR_PHY_NAME, wpan_phy_name(phy)) ||
+-	    nla_put_string(msg, IEEE802154_ATTR_DEV_NAME, dev->name))
++	    nla_put_string(msg, IEEE802154_ATTR_DEV_NAME, dev->name)) {
++		rc = -EMSGSIZE;
+ 		goto nla_put_failure;
++	}
+ 	dev_put(dev);
  
- 	/* Check whether we have a NCM device, and find its VID/PID. */
- 	if (!(dev->dev.parent && dev->dev.parent->driver &&
-@@ -170,8 +176,11 @@ static int cfusbl_device_notify(struct n
- 	if (dev->num_tx_queues > 1)
- 		pr_warn("USB device uses more than one tx queue\n");
- 
--	caif_enroll_dev(dev, &common, link_support, CFUSB_MAX_HEADLEN,
-+	res = caif_enroll_dev(dev, &common, link_support, CFUSB_MAX_HEADLEN,
- 			&layer, &caif_usb_type.func);
-+	if (res)
-+		goto err;
-+
- 	if (!pack_added)
- 		dev_add_pack(&caif_usb_type);
- 	pack_added = true;
-@@ -179,6 +188,9 @@ static int cfusbl_device_notify(struct n
- 	strlcpy(layer->name, dev->name, sizeof(layer->name));
- 
- 	return 0;
-+err:
-+	cfusbl_release(link_support);
-+	return res;
- }
- 
- static struct notifier_block caif_device_notifier = {
+ 	wpan_phy_put(phy);
+-- 
+2.30.2
+
 
 
