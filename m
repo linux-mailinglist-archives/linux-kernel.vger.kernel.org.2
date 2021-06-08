@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183E339F049
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8626939F04B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhFHIAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:00:53 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53601 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231271AbhFHIAN (ORCPT
+        id S231545AbhFHIBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:01:06 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:49528 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231286AbhFHIAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:00:13 -0400
-X-UUID: 952e9afeb9b24aee9bbf1b0dfb01555d-20210608
-X-UUID: 952e9afeb9b24aee9bbf1b0dfb01555d-20210608
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        Tue, 8 Jun 2021 04:00:14 -0400
+X-UUID: 0ed1e004e9ca4d0e9f524ae7a8f9b04f-20210608
+X-UUID: 0ed1e004e9ca4d0e9f524ae7a8f9b04f-20210608
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 166798777; Tue, 08 Jun 2021 15:58:17 +0800
+        with ESMTP id 404231016; Tue, 08 Jun 2021 15:58:18 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 8 Jun 2021 15:58:16 +0800
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 8 Jun 2021 15:58:17 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 8 Jun 2021 15:58:15 +0800
+ Transport; Tue, 8 Jun 2021 15:58:16 +0800
 From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -36,9 +36,9 @@ CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, Yuwen Ng <yuwen.ng@mediatek.com>,
         Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH 22/23] usb: mtu3: support suspend/resume for dual-role mode
-Date:   Tue, 8 Jun 2021 15:57:48 +0800
-Message-ID: <1623139069-8173-23-git-send-email-chunfeng.yun@mediatek.com>
+Subject: [PATCH 23/23] usb: mtu3: use clock bulk to get clocks
+Date:   Tue, 8 Jun 2021 15:57:49 +0800
+Message-ID: <1623139069-8173-24-git-send-email-chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
 In-Reply-To: <1623139069-8173-1-git-send-email-chunfeng.yun@mediatek.com>
 References: <1623139069-8173-1-git-send-email-chunfeng.yun@mediatek.com>
@@ -49,292 +49,219 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support suspend/resume for dual-role mode including the single
-port and multi-ports supported by host controller, when the host
-supports mult-ports, only port0 (u2/u3) is used to support dual
-role mode.
+Use clock bulk helpers to get/enable/disable clocks, meanwhile
+make sys_ck optional, then will be easier to handle clocks.
 
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- drivers/usb/mtu3/mtu3_core.c | 32 +++++++-------
- drivers/usb/mtu3/mtu3_dr.c   |  2 +
- drivers/usb/mtu3/mtu3_dr.h   |  8 ++++
- drivers/usb/mtu3/mtu3_host.c | 10 +----
- drivers/usb/mtu3/mtu3_plat.c | 84 ++++++++++++++++++++++++++----------
- 5 files changed, 89 insertions(+), 47 deletions(-)
+ drivers/usb/mtu3/mtu3.h      | 12 ++---
+ drivers/usb/mtu3/mtu3_plat.c | 86 ++++++------------------------------
+ 2 files changed, 18 insertions(+), 80 deletions(-)
 
-diff --git a/drivers/usb/mtu3/mtu3_core.c b/drivers/usb/mtu3/mtu3_core.c
-index a800920d38b9..f90e5cdec614 100644
---- a/drivers/usb/mtu3/mtu3_core.c
-+++ b/drivers/usb/mtu3/mtu3_core.c
-@@ -9,7 +9,6 @@
+diff --git a/drivers/usb/mtu3/mtu3.h b/drivers/usb/mtu3/mtu3.h
+index ad063fec7f17..022bbdc54e68 100644
+--- a/drivers/usb/mtu3/mtu3.h
++++ b/drivers/usb/mtu3/mtu3.h
+@@ -10,6 +10,7 @@
+ #ifndef __MTU3_H__
+ #define __MTU3_H__
+ 
++#include <linux/clk.h>
+ #include <linux/device.h>
+ #include <linux/dmapool.h>
+ #include <linux/extcon.h>
+@@ -89,6 +90,8 @@ struct mtu3_request;
   */
+ #define EP0_RESPONSE_BUF  6
  
- #include <linux/dma-mapping.h>
--#include <linux/iopoll.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-@@ -1008,12 +1007,25 @@ void ssusb_gadget_exit(struct ssusb_mtk *ssusb)
- 	mtu3_hw_exit(mtu);
- }
- 
-+bool ssusb_gadget_ip_sleep_check(struct ssusb_mtk *ssusb)
-+{
-+	struct mtu3 *mtu = ssusb->u3d;
++#define BULK_CLKS_CNT	4
 +
-+	/* host only, should wait for ip sleep */
-+	if (!mtu)
-+		return true;
-+
-+	/* device is started and pullup D+, ip can sleep */
-+	if (mtu->is_active && mtu->softconnect)
-+		return true;
-+
-+	/* ip can't sleep if not pullup D+ when support device mode */
-+	return false;
-+}
-+
- int ssusb_gadget_suspend(struct ssusb_mtk *ssusb, pm_message_t msg)
- {
- 	struct mtu3 *mtu = ssusb->u3d;
--	void __iomem *ibase = mtu->ippc_base;
--	u32 value;
--	int ret = 0;
- 
- 	if (!mtu->gadget_driver)
- 		return 0;
-@@ -1024,17 +1036,7 @@ int ssusb_gadget_suspend(struct ssusb_mtk *ssusb, pm_message_t msg)
- 	mtu3_dev_suspend(mtu);
- 	synchronize_irq(mtu->irq);
- 
--	/* wait for ip to sleep */
--	if (mtu->is_active && mtu->softconnect) {
--		ret = readl_poll_timeout(ibase + U3D_SSUSB_IP_PW_STS1,
--				value, (value & SSUSB_IP_SLEEP_STS), 100, 100000);
--		if (ret) {
--			dev_err(mtu->dev, "ip sleep failed!!!\n");
--			ret = -EBUSY;
--		}
--	}
--
--	return ret;
-+	return 0;
- }
- 
- int ssusb_gadget_resume(struct ssusb_mtk *ssusb, pm_message_t msg)
-diff --git a/drivers/usb/mtu3/mtu3_dr.c b/drivers/usb/mtu3/mtu3_dr.c
-index 30e7e5fc0f88..a6b04831b20b 100644
---- a/drivers/usb/mtu3/mtu3_dr.c
-+++ b/drivers/usb/mtu3/mtu3_dr.c
-@@ -149,6 +149,7 @@ static void ssusb_mode_sw_work(struct work_struct *work)
- 
- 	dev_dbg(ssusb->dev, "set role : %s\n", usb_role_string(desired_role));
- 	mtu3_dbg_trace(ssusb->dev, "set role : %s", usb_role_string(desired_role));
-+	pm_runtime_get_sync(ssusb->dev);
- 
- 	switch (desired_role) {
- 	case USB_ROLE_HOST:
-@@ -169,6 +170,7 @@ static void ssusb_mode_sw_work(struct work_struct *work)
- 	default:
- 		dev_err(ssusb->dev, "invalid role\n");
- 	}
-+	pm_runtime_put(ssusb->dev);
- }
- 
- static void ssusb_set_mode(struct otg_switch_mtk *otg_sx, enum usb_role role)
-diff --git a/drivers/usb/mtu3/mtu3_dr.h b/drivers/usb/mtu3/mtu3_dr.h
-index 5286f9f5ee18..e325508bddf4 100644
---- a/drivers/usb/mtu3/mtu3_dr.h
-+++ b/drivers/usb/mtu3/mtu3_dr.h
-@@ -59,6 +59,8 @@ int ssusb_gadget_init(struct ssusb_mtk *ssusb);
- void ssusb_gadget_exit(struct ssusb_mtk *ssusb);
- int ssusb_gadget_suspend(struct ssusb_mtk *ssusb, pm_message_t msg);
- int ssusb_gadget_resume(struct ssusb_mtk *ssusb, pm_message_t msg);
-+bool ssusb_gadget_ip_sleep_check(struct ssusb_mtk *ssusb);
-+
- #else
- static inline int ssusb_gadget_init(struct ssusb_mtk *ssusb)
- {
-@@ -79,6 +81,12 @@ ssusb_gadget_resume(struct ssusb_mtk *ssusb, pm_message_t msg)
- {
- 	return 0;
- }
-+
-+static inline bool ssusb_gadget_ip_sleep_check(struct ssusb_mtk *ssusb)
-+{
-+	return true;
-+}
-+
- #endif
- 
- 
-diff --git a/drivers/usb/mtu3/mtu3_host.c b/drivers/usb/mtu3/mtu3_host.c
-index a0a6a181b752..7d528f3c2482 100644
---- a/drivers/usb/mtu3/mtu3_host.c
-+++ b/drivers/usb/mtu3/mtu3_host.c
-@@ -8,7 +8,6 @@
-  */
- 
- #include <linux/clk.h>
--#include <linux/iopoll.h>
- #include <linux/irq.h>
- #include <linux/kernel.h>
- #include <linux/mfd/syscon.h>
-@@ -254,7 +253,6 @@ int ssusb_host_suspend(struct ssusb_mtk *ssusb)
- 	int num_u3p = ssusb->u3_ports;
- 	int num_u2p = ssusb->u2_ports;
- 	u32 value;
--	int ret;
- 	int i;
- 
- 	/* power down u3 ports except skipped ones */
-@@ -280,13 +278,7 @@ int ssusb_host_suspend(struct ssusb_mtk *ssusb)
- 	/* power down host ip */
- 	mtu3_setbits(ibase, U3D_SSUSB_IP_PW_CTRL1, SSUSB_IP_HOST_PDN);
- 
--	/* wait for host ip to sleep */
--	ret = readl_poll_timeout(ibase + U3D_SSUSB_IP_PW_STS1, value,
--			  (value & SSUSB_IP_SLEEP_STS), 100, 100000);
--	if (ret)
--		dev_err(ssusb->dev, "ip sleep failed!!!\n");
--
--	return ret;
-+	return 0;
- }
- 
- static void ssusb_host_setup(struct ssusb_mtk *ssusb)
+ /* device operated link and speed got from DEVICE_CONF register */
+ enum mtu3_speed {
+ 	MTU3_SPEED_INACTIVE = 0,
+@@ -221,10 +224,6 @@ struct otg_switch_mtk {
+  * @mac_base: register base address of device MAC, exclude xHCI's
+  * @ippc_base: register base address of IP Power and Clock interface (IPPC)
+  * @vusb33: usb3.3V shared by device/host IP
+- * @sys_clk: system clock of mtu3, shared by device/host IP
+- * @ref_clk: reference clock
+- * @mcu_clk: mcu_bus_ck clock for AHB bus etc
+- * @dma_clk: dma_bus_ck clock for AXI bus etc
+  * @dr_mode: works in which mode:
+  *		host only, device only or dual-role mode
+  * @u2_ports: number of usb2.0 host ports
+@@ -250,10 +249,7 @@ struct ssusb_mtk {
+ 	int wakeup_irq;
+ 	/* common power & clock */
+ 	struct regulator *vusb33;
+-	struct clk *sys_clk;
+-	struct clk *ref_clk;
+-	struct clk *mcu_clk;
+-	struct clk *dma_clk;
++	struct clk_bulk_data clks[BULK_CLKS_CNT];
+ 	/* otg */
+ 	struct otg_switch_mtk otg_switch;
+ 	enum usb_dr_mode dr_mode;
 diff --git a/drivers/usb/mtu3/mtu3_plat.c b/drivers/usb/mtu3/mtu3_plat.c
-index 4c50b3663b66..0beae0c8e2d6 100644
+index 0beae0c8e2d6..57a71af8e151 100644
 --- a/drivers/usb/mtu3/mtu3_plat.c
 +++ b/drivers/usb/mtu3/mtu3_plat.c
-@@ -46,6 +46,29 @@ int ssusb_check_clocks(struct ssusb_mtk *ssusb, u32 ex_clks)
- 	return 0;
+@@ -5,7 +5,6 @@
+  * Author: Chunfeng Yun <chunfeng.yun@mediatek.com>
+  */
+ 
+-#include <linux/clk.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/iopoll.h>
+ #include <linux/kernel.h>
+@@ -125,54 +124,6 @@ static void ssusb_phy_power_off(struct ssusb_mtk *ssusb)
+ 		phy_power_off(ssusb->phys[i]);
  }
  
-+static int wait_for_ip_sleep(struct ssusb_mtk *ssusb)
-+{
-+	bool sleep_check = true;
-+	u32 value;
-+	int ret;
-+
-+	if (!ssusb->is_host)
-+		sleep_check = ssusb_gadget_ip_sleep_check(ssusb);
-+
-+	if (!sleep_check)
-+		return 0;
-+
-+	/* wait for ip enter sleep mode */
-+	ret = readl_poll_timeout(ssusb->ippc_base + U3D_SSUSB_IP_PW_STS1, value,
-+				 (value & SSUSB_IP_SLEEP_STS), 100, 100000);
-+	if (ret) {
-+		dev_err(ssusb->dev, "ip sleep failed!!!\n");
-+		ret = -EBUSY;
-+	}
-+
-+	return ret;
-+}
-+
- static int ssusb_phy_init(struct ssusb_mtk *ssusb)
- {
- 	int i;
-@@ -479,6 +502,28 @@ static int mtu3_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int resume_ip_and_ports(struct ssusb_mtk *ssusb, pm_message_t msg)
-+{
-+	switch (ssusb->dr_mode) {
-+	case USB_DR_MODE_PERIPHERAL:
-+		ssusb_gadget_resume(ssusb, msg);
-+		break;
-+	case USB_DR_MODE_HOST:
-+		ssusb_host_resume(ssusb, false);
-+		break;
-+	case USB_DR_MODE_OTG:
-+		ssusb_host_resume(ssusb, !ssusb->is_host);
-+		if (!ssusb->is_host)
-+			ssusb_gadget_resume(ssusb, msg);
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int mtu3_suspend_common(struct device *dev, pm_message_t msg)
- {
- 	struct ssusb_mtk *ssusb = dev_get_drvdata(dev);
-@@ -490,26 +535,36 @@ static int mtu3_suspend_common(struct device *dev, pm_message_t msg)
- 	case USB_DR_MODE_PERIPHERAL:
- 		ret = ssusb_gadget_suspend(ssusb, msg);
- 		if (ret)
--			return ret;
-+			goto err;
- 
- 		break;
- 	case USB_DR_MODE_HOST:
- 		ssusb_host_suspend(ssusb);
- 		break;
- 	case USB_DR_MODE_OTG:
--		if (!ssusb->is_host)
--			return 0;
+-static int ssusb_clks_enable(struct ssusb_mtk *ssusb)
+-{
+-	int ret;
 -
-+		if (!ssusb->is_host) {
-+			ret = ssusb_gadget_suspend(ssusb, msg);
-+			if (ret)
-+				goto err;
-+		}
- 		ssusb_host_suspend(ssusb);
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
-+
-+	ret = wait_for_ip_sleep(ssusb);
-+	if (ret)
-+		goto sleep_err;
-+
- 	ssusb_phy_power_off(ssusb);
- 	ssusb_clks_disable(ssusb);
- 	ssusb_wakeup_set(ssusb, true);
- 
--	return 0;
-+sleep_err:
-+	resume_ip_and_ports(ssusb, msg);
-+err:
-+	return ret;
- }
- 
- static int mtu3_resume_common(struct device *dev, pm_message_t msg)
-@@ -528,24 +583,7 @@ static int mtu3_resume_common(struct device *dev, pm_message_t msg)
- 	if (ret)
- 		goto phy_err;
- 
--	switch (ssusb->dr_mode) {
--	case USB_DR_MODE_PERIPHERAL:
--		ssusb_gadget_resume(ssusb, msg);
--		break;
--	case USB_DR_MODE_HOST:
--		ssusb_host_resume(ssusb, false);
--		break;
--	case USB_DR_MODE_OTG:
--		if (!ssusb->is_host)
--			return 0;
+-	ret = clk_prepare_enable(ssusb->sys_clk);
+-	if (ret) {
+-		dev_err(ssusb->dev, "failed to enable sys_clk\n");
+-		goto sys_clk_err;
+-	}
 -
--		ssusb_host_resume(ssusb, true);
--		break;
--	default:
--		return -EINVAL;
+-	ret = clk_prepare_enable(ssusb->ref_clk);
+-	if (ret) {
+-		dev_err(ssusb->dev, "failed to enable ref_clk\n");
+-		goto ref_clk_err;
+-	}
+-
+-	ret = clk_prepare_enable(ssusb->mcu_clk);
+-	if (ret) {
+-		dev_err(ssusb->dev, "failed to enable mcu_clk\n");
+-		goto mcu_clk_err;
+-	}
+-
+-	ret = clk_prepare_enable(ssusb->dma_clk);
+-	if (ret) {
+-		dev_err(ssusb->dev, "failed to enable dma_clk\n");
+-		goto dma_clk_err;
 -	}
 -
 -	return 0;
-+	return resume_ip_and_ports(ssusb, msg);
+-
+-dma_clk_err:
+-	clk_disable_unprepare(ssusb->mcu_clk);
+-mcu_clk_err:
+-	clk_disable_unprepare(ssusb->ref_clk);
+-ref_clk_err:
+-	clk_disable_unprepare(ssusb->sys_clk);
+-sys_clk_err:
+-	return ret;
+-}
+-
+-static void ssusb_clks_disable(struct ssusb_mtk *ssusb)
+-{
+-	clk_disable_unprepare(ssusb->dma_clk);
+-	clk_disable_unprepare(ssusb->mcu_clk);
+-	clk_disable_unprepare(ssusb->ref_clk);
+-	clk_disable_unprepare(ssusb->sys_clk);
+-}
+-
+ static int ssusb_rscs_init(struct ssusb_mtk *ssusb)
+ {
+ 	int ret = 0;
+@@ -183,7 +134,7 @@ static int ssusb_rscs_init(struct ssusb_mtk *ssusb)
+ 		goto vusb33_err;
+ 	}
+ 
+-	ret = ssusb_clks_enable(ssusb);
++	ret = clk_bulk_prepare_enable(BULK_CLKS_CNT, ssusb->clks);
+ 	if (ret)
+ 		goto clks_err;
+ 
+@@ -204,7 +155,7 @@ static int ssusb_rscs_init(struct ssusb_mtk *ssusb)
+ phy_err:
+ 	ssusb_phy_exit(ssusb);
+ phy_init_err:
+-	ssusb_clks_disable(ssusb);
++	clk_bulk_disable_unprepare(BULK_CLKS_CNT, ssusb->clks);
+ clks_err:
+ 	regulator_disable(ssusb->vusb33);
+ vusb33_err:
+@@ -213,7 +164,7 @@ static int ssusb_rscs_init(struct ssusb_mtk *ssusb)
+ 
+ static void ssusb_rscs_exit(struct ssusb_mtk *ssusb)
+ {
+-	ssusb_clks_disable(ssusb);
++	clk_bulk_disable_unprepare(BULK_CLKS_CNT, ssusb->clks);
+ 	regulator_disable(ssusb->vusb33);
+ 	ssusb_phy_power_off(ssusb);
+ 	ssusb_phy_exit(ssusb);
+@@ -239,6 +190,7 @@ static int get_ssusb_rscs(struct platform_device *pdev, struct ssusb_mtk *ssusb)
+ {
+ 	struct device_node *node = pdev->dev.of_node;
+ 	struct otg_switch_mtk *otg_sx = &ssusb->otg_switch;
++	struct clk_bulk_data *clks = ssusb->clks;
+ 	struct device *dev = &pdev->dev;
+ 	int i;
+ 	int ret;
+@@ -249,23 +201,13 @@ static int get_ssusb_rscs(struct platform_device *pdev, struct ssusb_mtk *ssusb)
+ 		return PTR_ERR(ssusb->vusb33);
+ 	}
+ 
+-	ssusb->sys_clk = devm_clk_get(dev, "sys_ck");
+-	if (IS_ERR(ssusb->sys_clk)) {
+-		dev_err(dev, "failed to get sys clock\n");
+-		return PTR_ERR(ssusb->sys_clk);
+-	}
+-
+-	ssusb->ref_clk = devm_clk_get_optional(dev, "ref_ck");
+-	if (IS_ERR(ssusb->ref_clk))
+-		return PTR_ERR(ssusb->ref_clk);
+-
+-	ssusb->mcu_clk = devm_clk_get_optional(dev, "mcu_ck");
+-	if (IS_ERR(ssusb->mcu_clk))
+-		return PTR_ERR(ssusb->mcu_clk);
+-
+-	ssusb->dma_clk = devm_clk_get_optional(dev, "dma_ck");
+-	if (IS_ERR(ssusb->dma_clk))
+-		return PTR_ERR(ssusb->dma_clk);
++	clks[0].id = "sys_ck";
++	clks[1].id = "ref_ck";
++	clks[2].id = "mcu_ck";
++	clks[3].id = "dma_ck";
++	ret = devm_clk_bulk_get_optional(dev, BULK_CLKS_CNT, clks);
++	if (ret)
++		return ret;
+ 
+ 	ssusb->num_phys = of_count_phandle_with_args(node,
+ 			"phys", "#phy-cells");
+@@ -558,7 +500,7 @@ static int mtu3_suspend_common(struct device *dev, pm_message_t msg)
+ 		goto sleep_err;
+ 
+ 	ssusb_phy_power_off(ssusb);
+-	ssusb_clks_disable(ssusb);
++	clk_bulk_disable_unprepare(BULK_CLKS_CNT, ssusb->clks);
+ 	ssusb_wakeup_set(ssusb, true);
+ 
+ sleep_err:
+@@ -575,7 +517,7 @@ static int mtu3_resume_common(struct device *dev, pm_message_t msg)
+ 	dev_dbg(dev, "%s\n", __func__);
+ 
+ 	ssusb_wakeup_set(ssusb, false);
+-	ret = ssusb_clks_enable(ssusb);
++	ret = clk_bulk_prepare_enable(BULK_CLKS_CNT, ssusb->clks);
+ 	if (ret)
+ 		goto clks_err;
+ 
+@@ -586,7 +528,7 @@ static int mtu3_resume_common(struct device *dev, pm_message_t msg)
+ 	return resume_ip_and_ports(ssusb, msg);
  
  phy_err:
- 	ssusb_clks_disable(ssusb);
+-	ssusb_clks_disable(ssusb);
++	clk_bulk_disable_unprepare(BULK_CLKS_CNT, ssusb->clks);
+ clks_err:
+ 	return ret;
+ }
 -- 
 2.18.0
 
