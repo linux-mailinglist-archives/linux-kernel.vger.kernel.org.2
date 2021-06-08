@@ -2,115 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F2C39EB04
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA1339EABE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhFHAxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 20:53:30 -0400
-Received: from mga17.intel.com ([192.55.52.151]:4251 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230266AbhFHAx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 20:53:29 -0400
-IronPort-SDR: IM+GdIuUmiP5UzzfFC/lTm1bG0NsJvblpZiZmKb8IjshWpKIjm8ixKp0NcFG2/blpGvcXVYNgz
- lV96i7EtTahA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="185119919"
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="185119919"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 17:51:37 -0700
-IronPort-SDR: q/wCTAnYL3WnH3KJ+Ba5oWsrAwn24eYI+tw3G+eSL6UfDKmrh4r0KqVT5225wkYVs28GIXcHNY
- DdBrIvXRwL9Q==
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="447695110"
-Received: from yhuang6-desk2.sh.intel.com ([10.239.159.119])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 17:51:33 -0700
-From:   Huang Ying <ying.huang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Ilya Dryomov <idryomov@gmail.com>
-Subject: [PATCH] swap: Check mapping_empty() for swap cache before being freed
-Date:   Tue,  8 Jun 2021 08:51:21 +0800
-Message-Id: <20210608005121.511140-1-ying.huang@intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S231214AbhFHAex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 20:34:53 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3456 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230266AbhFHAew (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 20:34:52 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzWN33QY3z6wSl;
+        Tue,  8 Jun 2021 08:29:55 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 08:32:57 +0800
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 08:32:56 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <james.smart@broadcom.com>, <dick.kennedy@broadcom.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] scsi: lpfc: Use list_move_tail instead of list_del/list_add_tail
+Date:   Tue, 8 Jun 2021 08:51:33 +0800
+Message-ID: <1623113493-49384-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To check whether all pages and shadow entries in swap cache has been
-removed before swap cache is freed.
+Using list_move_tail() instead of list_del() + list_add_tail().
 
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Ilya Dryomov <idryomov@gmail.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
+ drivers/scsi/lpfc/lpfc_sli.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-BTW: The patch reverts the following patch in -mm tree in effect.
-
-mm/swap: remove unused global variable nr_swapper_spaces
-
----
- mm/swap_state.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 95e391f46468..c56aa9ac050d 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -37,6 +37,7 @@ static const struct address_space_operations swap_aops = {
- };
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index e2cfb86..84a9101 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -20162,8 +20162,7 @@ lpfc_cleanup_pending_mbox(struct lpfc_vport *vport)
+ 			(mb->u.mb.mbxCommand != MBX_REG_VPI))
+ 			continue;
  
- struct address_space *swapper_spaces[MAX_SWAPFILES] __read_mostly;
-+static unsigned int nr_swapper_spaces[MAX_SWAPFILES] __read_mostly;
- static bool enable_vma_readahead __read_mostly = true;
- 
- #define SWAP_RA_WIN_SHIFT	(PAGE_SHIFT / 2)
-@@ -684,6 +685,7 @@ int init_swap_address_space(unsigned int type, unsigned long nr_pages)
- 		/* swap cache doesn't use writeback related tags */
- 		mapping_set_no_writeback_tags(space);
+-		list_del(&mb->list);
+-		list_add_tail(&mb->list, &mbox_cmd_list);
++		list_move_tail(&mb->list, &mbox_cmd_list);
  	}
-+	nr_swapper_spaces[type] = nr;
- 	swapper_spaces[type] = spaces;
- 
- 	return 0;
-@@ -691,7 +693,13 @@ int init_swap_address_space(unsigned int type, unsigned long nr_pages)
- 
- void exit_swap_address_space(unsigned int type)
- {
--	kvfree(swapper_spaces[type]);
-+	int i;
-+	struct address_space *spaces = swapper_spaces[type];
-+
-+	for (i = 0; i < nr_swapper_spaces[type]; i++)
-+		VM_WARN_ON_ONCE(!mapping_empty(&spaces[i]));
-+	kvfree(spaces);
-+	nr_swapper_spaces[type] = 0;
- 	swapper_spaces[type] = NULL;
- }
- 
+ 	/* Clean up active mailbox command with the vport */
+ 	mb = phba->sli.mbox_active;
 -- 
-2.30.2
+2.6.2
 
