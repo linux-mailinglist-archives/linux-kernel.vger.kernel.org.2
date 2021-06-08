@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F4A3A044D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0431A3A044E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237967AbhFHT3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:29:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35180 "EHLO mail.kernel.org"
+        id S238052AbhFHT31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:29:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236098AbhFHTQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:16:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A08361964;
-        Tue,  8 Jun 2021 18:50:55 +0000 (UTC)
+        id S236161AbhFHTQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:16:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDB0561965;
+        Tue,  8 Jun 2021 18:50:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178255;
-        bh=GtcUDaoux+cyQJqgTS8H+JezRHbXc+bM0XZNSnmBlnY=;
+        s=korg; t=1623178258;
+        bh=pqfPMXEdK6pB7+aNnGLJQshxp1gmNXlYrCRLSv3/iTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KUZNO1KDH2iZ0n2k5FzdBCnlGNZt8y1meDw3T/t7pqv52Y+5K0sdl+Vvu743iBuJ/
-         2tCA/K53SXOmosrlmlV+ZvtTeXfgvGwEACXMpMVo3QGs1GLexwdJ+mz3EvWmEANtsh
-         hi/ERQtWJw18uzpM66STEOBZZ8tYF9Qx36NMFsGA=
+        b=j03/WNPnurr64zdjjSECpF8YV/r6vrwQRFc125jM1N6Y6yjnmPiPbA63TTCrhvs8h
+         +RniaI49kvHEa9yonCKmWy7SzQg73EpUOG67qP6nMpRvSq+uIyPrGpssL6q4dvyJuK
+         1y+p18xw00UnwcsSxKNxAeFlWpuQl/JmYWoTCeFg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
+        stable@vger.kernel.org, Nirmoy Das <nirmoy.das@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.12 135/161] drm/amdgpu: Dont query CE and UE errors
-Date:   Tue,  8 Jun 2021 20:27:45 +0200
-Message-Id: <20210608175950.013630783@linuxfoundation.org>
+Subject: [PATCH 5.12 136/161] drm/amdgpu: make sure we unpin the UVD BO
+Date:   Tue,  8 Jun 2021 20:27:46 +0200
+Message-Id: <20210608175950.043654417@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -42,60 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luben Tuikov <luben.tuikov@amd.com>
+From: Nirmoy Das <nirmoy.das@amd.com>
 
-commit dce3d8e1d070900e0feeb06787a319ff9379212c upstream.
+commit 07438603a07e52f1c6aa731842bd298d2725b7be upstream.
 
-On QUERY2 IOCTL don't query counts of correctable
-and uncorrectable errors, since when RAS is
-enabled and supported on Vega20 server boards,
-this takes insurmountably long time, in O(n^3),
-which slows the system down to the point of it
-being unusable when we have GUI up.
+Releasing pinned BOs is illegal now. UVD 6 was missing from:
+commit 2f40801dc553 ("drm/amdgpu: make sure we unpin the UVD BO")
 
-Fixes: ae363a212b14 ("drm/amdgpu: Add a new flag to AMDGPU_CTX_OP_QUERY_STATE2")
-Cc: Alexander Deucher <Alexander.Deucher@amd.com>
+Fixes: 2f40801dc553 ("drm/amdgpu: make sure we unpin the UVD BO")
 Cc: stable@vger.kernel.org
-Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
-Reviewed-by: Alexander Deucher <Alexander.Deucher@amd.com>
+Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
 Reviewed-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c |   16 ----------------
- 1 file changed, 16 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
-@@ -337,7 +337,6 @@ static int amdgpu_ctx_query2(struct amdg
- {
- 	struct amdgpu_ctx *ctx;
- 	struct amdgpu_ctx_mgr *mgr;
--	unsigned long ras_counter;
+--- a/drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c
+@@ -357,6 +357,7 @@ static int uvd_v6_0_enc_ring_test_ib(str
  
- 	if (!fpriv)
- 		return -EINVAL;
-@@ -362,21 +361,6 @@ static int amdgpu_ctx_query2(struct amdg
- 	if (atomic_read(&ctx->guilty))
- 		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_GUILTY;
- 
--	/*query ue count*/
--	ras_counter = amdgpu_ras_query_error_count(adev, false);
--	/*ras counter is monotonic increasing*/
--	if (ras_counter != ctx->ras_counter_ue) {
--		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_RAS_UE;
--		ctx->ras_counter_ue = ras_counter;
--	}
--
--	/*query ce count*/
--	ras_counter = amdgpu_ras_query_error_count(adev, true);
--	if (ras_counter != ctx->ras_counter_ce) {
--		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_RAS_CE;
--		ctx->ras_counter_ce = ras_counter;
--	}
--
- 	mutex_unlock(&mgr->lock);
- 	return 0;
- }
+ error:
+ 	dma_fence_put(fence);
++	amdgpu_bo_unpin(bo);
+ 	amdgpu_bo_unreserve(bo);
+ 	amdgpu_bo_unref(&bo);
+ 	return r;
 
 
