@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FB039F571
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D1339F56C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhFHLr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51388 "EHLO
+        id S232049AbhFHLrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232080AbhFHLrX (ORCPT
+        with ESMTP id S230190AbhFHLrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:47:23 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB32AC061789;
-        Tue,  8 Jun 2021 04:45:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wnXuDaSzTGYZ5h0WV9tmuYOo7bwrW3p7q5WO8BPzujQ=; b=Ys2vp0Pk9YGzIFdmF6/EtYp9ed
-        Mpc9y6acdYj3N7S3SWQqOvs0pSlHbfao7WQAtu5/3aN6UFQy3Rbkw3zXHIE8yIuAnArBGtj0d0djU
-        9EnIuw/wdRfosmUxwdgo6P9M5ufMH5zo9ELO91ja08AZNYdLAYhAXaM1ZRwjLrsxXcG8rdm/SUcpo
-        fULa/yWmHHYq7mfntXLdLjg9cmMab8YOlWs751AIXE6X9nOCgMnWiX6ufj0gM67RZFd8lNCIg6sk9
-        rjaBRdd0qrwF1L9GlQ7jf83j+A3uFTAfBIf7IObg1HDb9WKqDlO9JIu6LIoBsXuyXNIBDvKcUMGes
-        oO0tdx3A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lqa9w-004jsb-CJ; Tue, 08 Jun 2021 11:44:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 03BF830018A;
-        Tue,  8 Jun 2021 13:44:44 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C2BF52011672D; Tue,  8 Jun 2021 13:44:44 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 13:44:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Andrey Semashev <andrey.semashev@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
-        acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
-        joel@joelfernandes.org, kernel@collabora.com,
-        krisman@collabora.com, libc-alpha@sourceware.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
-        Ingo Molnar <mingo@redhat.com>, pgriffais@valvesoftware.com,
-        Peter Oskolkov <posk@posk.io>,
-        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
-Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
-Message-ID: <YL9YLCY9/MkhOW7F@hirez.programming.kicks-ass.net>
-References: <20210603195924.361327-1-andrealmeid@collabora.com>
- <1622799088.hsuspipe84.astroid@bobo.none>
- <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
- <1622853816.mokf23xgnt.astroid@bobo.none>
- <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
- <1622980258.cfsuodze38.astroid@bobo.none>
- <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
- <1623114630.pc8fq7r5y9.astroid@bobo.none>
- <b3488d1b-a4ff-8791-d960-a5f7ae2ea8b3@gmail.com>
- <YL9Q2tKLZP6GKbHW@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL9Q2tKLZP6GKbHW@kroah.com>
+        Tue, 8 Jun 2021 07:47:17 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC147C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 04:45:24 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id h10-20020a5d688a0000b0290119c2ce2499so4393372wru.19
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 04:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=vVP6MnE5jtfCRNBSFEk8Tts1aw1n4jW8xd82TUR2TLU=;
+        b=bsninEwjms+mWvprSOPlfQ4X/AFVMRBlxagtmZ/Wb9PNB3vao021HDHSnPOnN1bbG8
+         c/k1nJyU8KGyKg1CHj50UHzW9860yE4GUoBteLsOMatA76Lnku3N9/7yQFSdd+cu5tux
+         1SOqFVEshQtQlXFDUf63YvlroPYZPvMZ1fAiSZhJwcR+rtqz4AEfZ7lL6lcqyYN9SeZk
+         o4cGRh/9uY15ziLA+Tvu3lz2eJUlm4PJC9zpyFs1VslISm3QD3Xsj0cgmyVUt8FAIg89
+         GoKfasGi/ePTYi1DRf5IbMaWAjvN7QRM4W2XfRJnlvP/FrdhyMmyOUrGuUXgV8WSVN8J
+         0AoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=vVP6MnE5jtfCRNBSFEk8Tts1aw1n4jW8xd82TUR2TLU=;
+        b=fi3wwczpEpiTce6KPDG5Bjqs3oISWT2bbsTa6O3yR+N4/QaQ8kQB3mTRHsi74yl1V5
+         1d4fGD95bmPlRYrfttwI/d/dEsSpoI/sjJPEhek2dIYyr84p90HZHuoCs6o0eOGeUbUM
+         CX+8gXVELrNhmPpXhJsxT8iBbE3cBaWpAeETMTfnYwbojEyDk0xEwVvzDHcLVNL9C99C
+         GNZ9VeslMSU32Sx4NAIfx7IOQFz8mbIdbS+IyTwq60BpzMmVAghBb3KU3+nsXSJDuJ1y
+         lAVTQNhC7cYjeL7xLz+alNH5CCdwBhwR1IqJDx8R2rVES+ZNGoIsTeJ2ER96DNedtHFt
+         /GvA==
+X-Gm-Message-State: AOAM531FWu3ib1a5Y2hzp9sx+bHVIJVh/GdJfI1enkdDLA12IFf/+SCi
+        nbs/RVEWGxYOV76RpGjDW5KebGqQib8E
+X-Google-Smtp-Source: ABdhPJxnQTZBsAgtPXFz17t2riToek8ZifdE5myRG5kTzUVYdJXzhpzMu8D3AEklq9Tq4ufpuZnb/AOKJ/Uu
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:a7b:c013:: with SMTP id
+ c19mr3738933wmb.158.1623152723285; Tue, 08 Jun 2021 04:45:23 -0700 (PDT)
+Date:   Tue,  8 Jun 2021 11:45:11 +0000
+Message-Id: <20210608114518.748712-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+Subject: [PATCH v3 0/7] KVM: arm64: Reduce hyp_vmemmap overhead
+From:   Quentin Perret <qperret@google.com>
+To:     maz@kernel.org, will@kernel.org, james.morse@arm.com,
+        alexandru.elisei@arm.com, catalin.marinas@arm.com,
+        suzuki.poulose@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 01:13:30PM +0200, Greg KH wrote:
-> On Tue, Jun 08, 2021 at 02:03:50PM +0300, Andrey Semashev wrote:
-> So what's keeping the futex2 code from doing all that futex1 does so
-> that the futex1 code can be deleted internally?
+Hi all,
 
-I'd much rather see it the other way around. Much of what futex2 does
-can already be done with the futex1 code-base. And then we can add
-features on top.
+This is a v3 of the patch series previously posted here:
 
-I've been moaning about this for the past many versions, even older
-versions actually implemented some of the new features in futex1,
-showing it can be done.
+  https://lore.kernel.org/r/20210602094347.3730846-1-qperret@google.com
 
-We just wanted a saner futex interface because the existing futex
-syscall is a monster and making it even worse seemed like a bad idea.
+Please refer to the cover letter of v1 for the context and motivation
+behind the series.
 
-So *again*: please add the new syscalls on top of futex1 and then
-extend.  Do not re-implement.
+Changes since v2:
+ - Rebased on kvmarm/next
+
+Thanks,
+Quentin
+
+Quentin Perret (7):
+  KVM: arm64: Move hyp_pool locking out of refcount helpers
+  KVM: arm64: Use refcount at hyp to check page availability
+  KVM: arm64: Remove list_head from hyp_page
+  KVM: arm64: Unify MMIO and mem host stage-2 pools
+  KVM: arm64: Remove hyp_pool pointer from struct hyp_page
+  KVM: arm64: Use less bits for hyp_page order
+  KVM: arm64: Use less bits for hyp_page refcount
+
+ arch/arm64/kvm/hyp/include/nvhe/gfp.h         |  45 +------
+ arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |   2 +-
+ arch/arm64/kvm/hyp/include/nvhe/memory.h      |   7 +-
+ arch/arm64/kvm/hyp/include/nvhe/mm.h          |  13 +-
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c         |  60 +++++-----
+ arch/arm64/kvm/hyp/nvhe/page_alloc.c          | 112 +++++++++++++-----
+ arch/arm64/kvm/hyp/nvhe/setup.c               |  30 +++--
+ arch/arm64/kvm/hyp/reserved_mem.c             |   3 +-
+ 8 files changed, 145 insertions(+), 127 deletions(-)
+
+-- 
+2.32.0.rc1.229.g3e70b5a671-goog
+
