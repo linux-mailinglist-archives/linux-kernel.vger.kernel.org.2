@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E9339F6FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C863B39F70D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbhFHMnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:43:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44212 "EHLO mail.kernel.org"
+        id S232788AbhFHMrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:47:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232570AbhFHMnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:43:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 860996023E;
-        Tue,  8 Jun 2021 12:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623156108;
-        bh=I/9UjWyXkJ418fvvcVmVgnBgL8SqzouPAlgJ5NltetU=;
+        id S232786AbhFHMrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 08:47:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9626860FF0;
+        Tue,  8 Jun 2021 12:45:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623156316;
+        bh=lpXjs35ijhxfI9tobNyQoPR7rS+pnNx3itV//vsGf7w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xMYpznH6b6aI8a+h4qyaS9D+TGDXsNNUFsLJK1gB3VxS5nuwJDG0z1xtz47tu+mpx
-         JIC4b1xAUbSvLD7R9of+EdElzeUwvgKKCsqSXhTjx3GWlBq3GBXC/kdHghiaafVlC+
-         Mdbfph8/sCTVveGu5QNce48Qy8Y3tMu3vQKxICDA=
-Date:   Tue, 8 Jun 2021 14:41:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        containers@lists.linux.dev,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: device namespaces
-Message-ID: <YL9liW99Ytf6uBlu@kroah.com>
-References: <ca7520c9-d260-6c87-43b9-f9be24ded50c@metux.net>
- <20210608123050.zde5lwmovjr4yhiy@wittgenstein>
+        b=hSowGWz0ETjd4pY9hwO/ojzV/pgpzoEjqktf6M/A9SBpXgu5/qQ5FbA+fUdSpGgaf
+         reVgKwMPj1o60b9lO/ZPJJispGtjDWAFZvd6RDCDpykpAT2o2ZleCS7skouavJWdSe
+         T6DnWkNBQmdJUvPZhYWNSNh07E/KNi+o+iRki5DfxMliTBe1EwHZ+fdBI9TTasTjYS
+         0x0awVTsAVuj6Jw9ric0VxQ035DxbM7wnwV7IrpGqCNuaqZqkiAMZtmBLIsGap40JY
+         n+rCWIEVfwTDcD2rF2vUGrw2raGE3e965Xl0i/4i6aBIzQ8UB+CR3LHIFat0Wl2pY0
+         XjxzUw8AtDWLA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D648540B1A; Tue,  8 Jun 2021 09:45:13 -0300 (-03)
+Date:   Tue, 8 Jun 2021 09:45:13 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] perf tools: Use list_move instead of
+ list_del/list_add
+Message-ID: <YL9mWZfQoc8AP49D@kernel.org>
+References: <1623113566-49455-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210608123050.zde5lwmovjr4yhiy@wittgenstein>
+In-Reply-To: <1623113566-49455-1-git-send-email-zou_wei@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 02:30:50PM +0200, Christian Brauner wrote:
-> On Tue, Jun 08, 2021 at 11:38:16AM +0200, Enrico Weigelt, metux IT consult wrote:
-> > Hello folks,
-> > 
-> > 
-> > I'm going to implement device namespaces, where containers can get an
-> > entirely different view of the devices in the machine (usually just a
-> > specific subset, but possibly additional virtual devices).
-> > 
-> > For start I'd like to add a simple mapping of dev maj/min (leaving aside
-> > sysfs, udev, etc). An important requirement for me is that the parent ns
-> > can choose to delegate devices from those it full access too (child
-> > namespaces can do the same to their childs), and the assignment can
-> > change (for simplicity ignoring the case of removing devices that are
-> > already opened by some process - haven't decided yet whether they should
-> > be forcefully closed or whether keeping them open is a valid use case).
-> > 
-> > The big question for me now is how exactly to do the table maintenance
-> > from userland. We already have entries in /proc/<pid>/ns/*. I'm thinking
-> > about using them as command channel, like this:
-> > 
-> > * new child namespaces are created with empty mapping
-> > * mapping manipulation is done by just writing commands to the ns file
-> > * access is only granted if the writing process itself is in the
-> >  parent's device ns and has CAP_SYS_ADMIN (or maybe their could be some
-> >  admin user for the ns ? or the 'root' of the corresponding user_ns ?)
-> > * if the caller has some restrictions on some particular device, these
-> >  are automatically added (eg. if you're restricted to readonly, you
-> >  can't give rw to the child ns).
-> > 
-> > Is this a good way to go ? Or what would be a better one ?
+Em Tue, Jun 08, 2021 at 08:52:46AM +0800, Zou Wei escreveu:
+> Using list_move() instead of list_del() + list_add().
+
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>  tools/perf/util/srccode.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> Ccing Greg. Without adressing specific problems, I should warn you that
-> this idea is not new and the plan is unlikely to go anywhere. Especially
-> not without support from Greg.
+> diff --git a/tools/perf/util/srccode.c b/tools/perf/util/srccode.c
+> index c29edaa..476e998 100644
+> --- a/tools/perf/util/srccode.c
+> +++ b/tools/perf/util/srccode.c
+> @@ -97,8 +97,7 @@ static struct srcfile *find_srcfile(char *fn)
+>  	hlist_for_each_entry (h, &srcfile_htab[hval], hash_nd) {
+>  		if (!strcmp(fn, h->fn)) {
+>  			/* Move to front */
+> -			list_del(&h->nd);
+> -			list_add(&h->nd, &srcfile_list);
+> +			list_move(&h->nd, &srcfile_list);
+>  			return h;
+>  		}
+>  	}
+> -- 
+> 2.6.2
+> 
 
-Hah, yeah, this is a non-starter.
+-- 
 
-Enrico, what real problem are you trying to solve by doing this?  And
-have you tried anything with this yet?  We almost never talk about
-"proposals" without seeing real code as it's pointless to discuss things
-when you haven't even proven that it can work.
-
-So let's see code before even talking about this...
-
-And as Christian points out, you can do this today without any kernel
-changes, so to think you need to modify the kernel means that you
-haven't even tried this at all?
-
-greg k-h
+- Arnaldo
