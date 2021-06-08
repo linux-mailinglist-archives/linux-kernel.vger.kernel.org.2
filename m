@@ -2,193 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFCF39F160
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6DD39F124
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhFHItt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbhFHIts (ORCPT
+        id S231173AbhFHIoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:44:00 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:5290 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFHIn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:49:48 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8337C061574;
-        Tue,  8 Jun 2021 01:47:44 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id r11so23559905edt.13;
-        Tue, 08 Jun 2021 01:47:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LP7nFbnq6qcvyOkQ/eqHCyZ+QiHn+JFAk2tG3rdzWY0=;
-        b=a5lhZhCl4AX7h6pLmBkkfx7R11USW00VKxiXbXALgVc5vkrtjTjeOVgj9jXZN6tcHb
-         fYBSh1O/SDjL6Td6zIMEshaMw4L8k/+HL/Tp4EFvFiL7gYyQYu77t304qKA/Jcxldmhp
-         ILBz+FtGwLdvaO4KcTfzo6cG3SFQeDCKO5zhthJLLG93Cvk56YMSo57jFcY5/Fci+NTH
-         uJtovpPUpYSdXp4HmL8MBG0bZmUBxFJwbwTTEkDGGTRFKCuoARidW3du+833tke49CmJ
-         8D6AYB6xjFt4th+6z0x3IJ/YQ34kr6HV4RHt6bmd3G3Ze7PEX2xrWKtCVLvA+e7qGWwA
-         8V5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LP7nFbnq6qcvyOkQ/eqHCyZ+QiHn+JFAk2tG3rdzWY0=;
-        b=V6k5nSJ5kN3n1tIRS0fDce8Ds3e7AOYVa5lsCcxFCZzRs4e34Iakn88rPPVnrYjgWe
-         o+ePjlyy2iRX+7niS4QMGwZQma+Byktgy5vNooKQgxjpZzYtXROZnR2y/rowXtX60yEK
-         ElsXWXeE5tUpbbfUadujBD8KKViU7cFc1OoDUMR8LpquD1nXtm1/1+ZWJXz1ASqWfCHF
-         hd67ZvdmlU6q7krLX3F+lK1LrdQfsrpXRyCS+i6xl7mOC8bKwX1uxQ2Jdt7ge4jDiIHi
-         TYHwJLaSShBEP40nYH8Sw2krDhYpZDTJYhYP9josP29VfDnhAEoAi3Wuk4vJgPdLDTbk
-         UEfA==
-X-Gm-Message-State: AOAM531dOFLYQOqH4rfjabS2fuUlJo9MPjFOjy+m5K42lfE8dyyPwvU4
-        4Hc6aNGtE+4CJBItLX9Lqxg=
-X-Google-Smtp-Source: ABdhPJxbozwNM8CusgeCC8jfXCJ0vbl4GQkbSksYzTs9VzuuME+SXmGvS3eOYxxG25rtPYTwZyDY9g==
-X-Received: by 2002:a05:6402:3082:: with SMTP id de2mr12038774edb.214.1623142062429;
-        Tue, 08 Jun 2021 01:47:42 -0700 (PDT)
-Received: from localhost.localdomain (ispc-static-34.84-47-111.telekom.sk. [84.47.111.34])
-        by smtp.gmail.com with ESMTPSA id p13sm8556583edq.67.2021.06.08.01.47.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 01:47:42 -0700 (PDT)
-From:   glittao@gmail.com
-To:     brendanhiggins@google.com, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-mm@kvack.org, elver@google.com,
-        dlatypov@google.com, corbet@lwn.net, linux-doc@vger.kernel.org,
-        Oliver Glitta <glittao@gmail.com>
-Subject: [PATCH] docs: add documentation for SLUB cache kunit tests
-Date:   Tue,  8 Jun 2021 10:47:40 +0200
-Message-Id: <20210608084740.6282-1-glittao@gmail.com>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a5
+        Tue, 8 Jun 2021 04:43:58 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FzkBL0hh7z1BK06;
+        Tue,  8 Jun 2021 16:37:14 +0800 (CST)
+Received: from dggemi758-chm.china.huawei.com (10.1.198.144) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 16:42:04 +0800
+Received: from huawei.com (10.175.101.6) by dggemi758-chm.china.huawei.com
+ (10.1.198.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
+ 2021 16:42:03 +0800
+From:   ChenXiaoSong <chenxiaosong2@huawei.com>
+To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+        <will@kernel.org>, <mark.rutland@arm.com>
+CC:     <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>, <chenxiaosong2@huawei.com>
+Subject: [PATCH -next,resend] perf: qcom: Remove redundant dev_err call in qcom_l3_cache_pmu_probe()
+Date:   Tue, 8 Jun 2021 16:48:16 +0800
+Message-ID: <20210608084816.1046485-1-chenxiaosong2@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggemi758-chm.china.huawei.com (10.1.198.144)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Glitta <glittao@gmail.com>
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
 
-Add documentation for a KUnit test for SLUB debugging functionality.
-
-Signed-off-by: Oliver Glitta <glittao@gmail.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
 ---
- Documentation/vm/slub.rst | 104 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 104 insertions(+)
+ drivers/perf/qcom_l3_pmu.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/Documentation/vm/slub.rst b/Documentation/vm/slub.rst
-index 03f294a638bd..ca82fc1649ee 100644
---- a/Documentation/vm/slub.rst
-+++ b/Documentation/vm/slub.rst
-@@ -384,5 +384,109 @@ c) Execute ``slabinfo-gnuplot.sh`` in '-t' mode, passing all of the
-       40,60`` range will plot only samples collected between 40th and
-       60th seconds).
-
-+KUnit tests for SLUB debugging functionality
-+============================================
-+
-+These KUnit tests are used to test some of the SLUB debugging
-+functionalities.
-+
-+KUnit tests are used for unit testing in Linux kernel and easy to run,
-+so it is probably the best choice for this type of tests.
-+
-+There are tests, which corrupt redzone, the free objects and the freelist.
-+Tests are corrupting specific bytes in cache and checking if validation
-+finds expected number of bugs. Bug reports are silenced.
-+
-+Config option
-+
-+In order to built and then run this tests you need to switch
-+option SLUB_KUNIT_TEST on. It is tristate option so it can also
-+be built as a module. This option depends on SLUB_DEBUG and
-+KUNIT options. By default it is on with all kunit tests.
-+
-+Error counting
-+
-+To get number of errors discovered in slub is used test API kunit_resource.
-+In test_init the reference to the integer variable slab_errors is added
-+to the resource of this tests.
-+
-+During slub cache checking always when bug should be reported or fixed function
-+slab_add_kunit_errors() is called. This function find resource to kunit test
-+and increment value of data in founded resource, which is slab_errors
-+variable.
-+
-+Silence bug reports
-+
-+The function slab_add_kunit_errors() is returning bool, which is true if there is kunit test
-+with correct kunit_resource running, to silence bug reports, so they are not printed.
-+We do not want to correct errors we only want to know they occurred, so these reports
-+are unnnecessary.
-+
-+KASAN option
-+
-+Only 2 out of 5 tests are runnig with KASAN option is on.
-+The other three tests deliberately modifies non-allocated objects. And KASAN
-+does not detect some errors in the same way as SLUB_DEBUG. So, these tests
-+does not run when KASAN option is on.
-+
-+TESTS
-+
-+1. test_clobber_zone
-+
-+   SLUB cache with SLUB_REDZONE flag can detects writings after object. This
-+   functionality is tested here on allocated memory.
-+
-+   First, there is allocated memory with SLAB_REDZONE and then the first byte
-+   after allocated space is modified. Validation founds 2 errors, because of
-+   the bug and the fix of the memory.
-+
-+
-+2. test_next_pointer
-+
-+   SLUB have list of free objects and the address of the next free object
-+   is always saved in free object at offset specified in variable offset
-+   in struct kmem_cache. This test try to corrupt this freelist and
-+   then correct it.
-+
-+   First, there is allocated and freed memory to get a pointer to free object.
-+   After that, the pointer to next free object is corrupted. The first validation finds
-+   3 errors. One for corrupted freechain, the second for the wrong count of objects
-+   in use and the third for fixing the issue. This fix only set number of objects
-+   in use to a number of all objects minus 1, because the first free object
-+   was corrupted.
-+
-+   Then the free pointer is fixed to his previous value. The second validation finds
-+   2 errors. One for the wrong count of objects in use and one for fixing this error.
-+
-+   Last validation is used to check if all errors were corrected so no error
-+   is found.
-+
-+3. test_first_word
-+
-+   SLUB cache with SLAB_POISON flag can detect poisoning free objects. This
-+   functionality is tested in this test. The test tries to corrupt
-+   the first byte in freed memory.
-+
-+   First of all, memory is allocated and freed to get a pointer to a free object
-+   and then the first byte is corrupted. After that, validation finds 2 errors,
-+   one for the bug and the other one for the fix of the memory.
-+
-+4. test_clobber_50th_byte
-+
-+   In this test SLAB_POISON functionality is tested. The test tries to
-+   corrupt the 50th byte in freed memory.
-+
-+   First, pointer to a free memory is acquired by allocating and freeing memory.
-+   Then 50th byte is corrupted and validation finds 2 errors for the bug and
-+   the fix of the memory.
-+
-+5. test_clobber_redzone_free
-+
-+   This test tests redzone functionality of SLUB cache on a freed object.
-+
-+   First, it gets pointer to the free object with allocating and freeing and
-+   then corrupts the first byte after the freed object. Validation finds
-+   2 errors for the bug and the fix of the memory.
-+
- Christoph Lameter, May 30, 2007
- Sergey Senozhatsky, October 23, 2015
---
-2.31.1.272.g89b43f80a5
+diff --git a/drivers/perf/qcom_l3_pmu.c b/drivers/perf/qcom_l3_pmu.c
+index 081273543c6b..c76f6f21d2a8 100644
+--- a/drivers/perf/qcom_l3_pmu.c
++++ b/drivers/perf/qcom_l3_pmu.c
+@@ -767,10 +767,8 @@ static int qcom_l3_cache_pmu_probe(struct platform_device *pdev)
+ 
+ 	memrc = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	l3pmu->regs = devm_ioremap_resource(&pdev->dev, memrc);
+-	if (IS_ERR(l3pmu->regs)) {
+-		dev_err(&pdev->dev, "Can't map PMU @%pa\n", &memrc->start);
++	if (IS_ERR(l3pmu->regs))
+ 		return PTR_ERR(l3pmu->regs);
+-	}
+ 
+ 	qcom_l3_cache__init(l3pmu);
+ 
+-- 
+2.25.4
 
