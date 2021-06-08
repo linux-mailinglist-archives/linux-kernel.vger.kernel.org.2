@@ -2,132 +2,512 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48ECB39EF98
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C788339EFA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhFHHbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 03:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbhFHHbm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 03:31:42 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525DAC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 00:29:34 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id c10so7539934qvo.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 00:29:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mjJ37PmArsSDJUKmBe6EYoic7gWOGcLryXC0FyHwl6U=;
-        b=n9p23/haum6EphyEVQ5DyGGD8//kQWp4SzqvdoDvzUhFGPlrT5NSasjGHw6U3Jl7fE
-         3aJqwmCFY371QrorKhtxeyP9kKqewth5iSyXZ6ADi0ycDZQJZEJTa1SONQGqrhDVmqi6
-         +bbfr957dW7r4axXOtm0XmDlLVDFFoNeU8cIUVjebPf4CM0j6N7JW2zazbPn9eIZ9Ojz
-         oIM1SfrmHw+Wtzx2cJGbFs9vYvnydfyxvDGts6Lgdx6EKEX9qslQ6t4jxOfNHKW2ihwC
-         rxVmKmqD084M1Q9DOySfpzUODh1emItF032y2TKOLdJRMUYzI+nP2Y27FAJKs4kC80Rt
-         iKIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mjJ37PmArsSDJUKmBe6EYoic7gWOGcLryXC0FyHwl6U=;
-        b=MYAjGjOl9rUQE800+NSKG5pHAIrsC9LhQuSwaWZaqoHhSEfL1kprY8YbaEH8uE2eJ8
-         /wUAVI53B4ZPLbgc8cuiEdOWp3JPTw2OA6xTD8+lTpJ6GiN5G/xTWsRGGmgaBaQRQRSa
-         zuLgdUl3DroEg2yL8Dm02pIJpbVIXDeyQWHDr1uaXXLluZp++u3bAB8MwKqlr6HbvaO9
-         5jCUX3bMnH7pr5IizspimO3+7rY/liBrHsljTASwq/snIi6DoX8JHwZWSzolgZmeDI5o
-         gPVjLuuZLXd2XBvTE3omYcRzqPZklP972sQuHXb3kh5c9kartgH5tLQOMa9KUXARbDe3
-         raSQ==
-X-Gm-Message-State: AOAM5318lxqVm+O/EUbwcCXwSKgWSreW2QWEGFfGhEPCAwmxcpvPfa1t
-        +kaTqtBsm0AorG4vLJxcu3lnTCX/FWht+GuiRUo=
-X-Google-Smtp-Source: ABdhPJyo+0l3/CHTOa1jT5ydMhO2jKP1hSlIOWWAclutR0PCYMx6AjJEfPZRKrxVAjcmGJv9ggOUNLF1g5gUGV+YTcc=
-X-Received: by 2002:a0c:d809:: with SMTP id h9mr14075712qvj.47.1623137373373;
- Tue, 08 Jun 2021 00:29:33 -0700 (PDT)
+        id S230269AbhFHHhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 03:37:48 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:63073 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229678AbhFHHhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 03:37:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623137755; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=eN5a3HgOF1c0QG//zsuao85dR6PEDXFQMoR002tk0PI=; b=lPAa0ptDcgjjakCSPnuav3HtZn4rVkoDKJzVtz7JXEtp5aujuEfUhjFx8T77s88z9lzkUUCr
+ lH3lxweXSZY3HeAHup1ME6aQsh9asDp7kRFzjkZ2H4HBJExOnygZOcrRWlJ0T47rjry4Zcz/
+ nfWaDcqyevISaVowJHk/d0D3q/c=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60bf1dc3ed59bf69ccac7260 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Jun 2021 07:35:31
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7217AC43217; Tue,  8 Jun 2021 07:35:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.105] (unknown [49.204.182.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E2A16C433D3;
+        Tue,  8 Jun 2021 07:35:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E2A16C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
+Subject: Re: [PATCH v11] mm: slub: move sysfs slab alloc/free interfaces to
+ debugfs
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, greg@kroah.com,
+        glittao@gmail.com, andy.shevchenko@gmail.com
+Cc:     vinmenon@codeaurora.org
+References: <1623115958-732-1-git-send-email-faiyazm@codeaurora.org>
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+Message-ID: <a639a2b3-0ad4-d299-95c3-bd695c532d1e@codeaurora.org>
+Date:   Tue, 8 Jun 2021 13:05:23 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210604092228.199588-1-heying24@huawei.com> <CAOSf1CELBh4F334LK6+zy+BPOXKcOm92QZw4g71hQ7oQNa68nw@mail.gmail.com>
- <9dc8b323-7846-0975-16f0-6e3e447383a4@huawei.com>
-In-Reply-To: <9dc8b323-7846-0975-16f0-6e3e447383a4@huawei.com>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Tue, 8 Jun 2021 17:29:21 +1000
-Message-ID: <CAOSf1CGXp=F2aqP6=c3vhd4e=L7+2_V5mMOpiseAQa7L1NsZ_w@mail.gmail.com>
-Subject: Re: [PATCH] powerpc: Fix kernel-jump address for ppc64 wrapper boot
-To:     He Ying <heying24@huawei.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1623115958-732-1-git-send-email-faiyazm@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 4:33 PM He Ying <heying24@huawei.com> wrote:
->
-> Hello,
->
-> =E5=9C=A8 2021/6/8 13:26, Oliver O'Halloran =E5=86=99=E9=81=93:
-> > On Fri, Jun 4, 2021 at 7:39 PM He Ying <heying24@huawei.com> wrote:
-> >>  From "64-bit PowerPC ELF Application Binary Interface Supplement 1.9"=
-,
-> >> we know that the value of a function pointer in a language like C is
-> >> the address of the function descriptor and the first doubleword
-> >> of the function descriptor contains the address of the entry point
-> >> of the function.
-> >>
-> >> So, when we want to jump to an address (e.g. addr) to execute for
-> >> PPC-elf64abi, we should assign the address of addr *NOT* addr itself
-> >> to the function pointer or system will jump to the wrong address.
-> > How have you tested this?
->
-> I tested ppc64-elf big-endian. I changed the Kconfig so that ppc64
-> big-endian
->
-> selects PPC64_WRAPPER_BOOT. I used qemu to run the cuImage and found
->
-> the problem. It made me confused. By applying this patch, I found it work=
-s.
->
-> I thought it works for ppc64le too. So I upstream this patch.
->
-> >
-> > IIRC the 64bit wrapper is only used for ppc64le builds. For that case
-> > the current code is work because the LE ABI (ABIv2) doesn't use
-> > function descriptors. I think even for a BE kernel we need the current
-> > behaviour because the vmlinux's entry point is screwed up (i.e.
-> > doesn't point a descriptor) and tools in the wild (probably kexec)
-> > expect it to be screwed up.
->
-> Yes, you're right. PPC64_WRAPPER_BOOT is only used for ppc64le builds
-> currently.
->
-> LE ABI (ABI v2) doesn't use function descriptors. Is that right? I don't
-> test that. If so,
->
-> this patch should be dropped. But why does ppc64 have different ABIs? So
-> strange.
 
-Yeah, it is strange. When LE support was added the toolchain team took
-the opportunity to revamp the ABI since BE and LE binaries were never
-going to be compatible. IIRC there is a slight performance advantage
-to using v2 since function descriptors added an extra load when
-performing a non-local function call. I think.
+On 6/8/2021 7:02 AM, Faiyaz Mohammed wrote:
+> alloc_calls and free_calls implementation in sysfs have two issues,
+> one is PAGE_SIZE limitation of sysfs and other is it does not adhere
+> to "one value per file" rule.
+> 
+> To overcome this issues, move the alloc_calls and free_calls
+> implementation to debugfs.
+> 
+> Debugfs cache will be created if SLAB_STORE_USER flag is set.
+> 
+> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
+> to be inline with what it does.
+> 
+> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+> ---
+> changes in v11:
+> 	- slab_debug_trace_release updated with seq_release_private. 
+> 
+> changes in v10:
+> 	- https://lore.kernel.org/linux-mm/1622996045-25826-1-git-send-email-faiyazm@codeaurora.org/
+> 
+> changes in v9:
+> 	- https://lore.kernel.org/linux-mm/1622556633-29785-1-git-send-email-faiyazm@codeaurora.org/
+> 
+> changes in v8:
+> 	- https://lore.kernel.org/linux-mm/1622542057-14632-1-git-send-email-faiyazm@codeaurora.org/
+> 
+> changes in V7:
+> 	- https://lore.kernel.org/linux-mm/1621928285-751-1-git-send-email-faiyazm@codeaurora.org/
+> 
+> changes in v6:
+> 	- https://lore.kernel.org/linux-mm/1621341949-26762-1-git-send-email-faiyazm@codeaurora.org/
+> 
+> changes in v5:
+> 	- https://lore.kernel.org/linux-mm/1620296523-21922-1-git-send-email-faiyazm@codeaurora.org/
+> 
+> changes in v4:
+> 	- https://lore.kernel.org/linux-mm/1618583239-18124-1-git-send-email-faiyazm@codeaurora.org/
+> 
+> changes in v3:
+> 	- https://lore.kernel.org/linux-mm/1617712064-12264-1-git-send-email-faiyazm@codeaurora.org/
+> 
+> changes in v2:
+> 	- https://lore.kernel.org/linux-mm/3ac1d3e6-6207-96ad-16a1-0f5139d8b2b5@codeaurora.org/
+> 
+> changes in v1
+> 	- https://lore.kernel.org/linux-mm/1610443287-23933-1-git-send-email-faiyazm@codeaurora.org/
+> 
+>  mm/slab.h        |   6 ++
+>  mm/slab_common.c |   2 +
+>  mm/slub.c        | 282 +++++++++++++++++++++++++++++++++++++------------------
+>  3 files changed, 197 insertions(+), 93 deletions(-)
+> 
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 18c1927..60d4f4b 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -630,6 +630,12 @@ static inline bool slab_want_init_on_free(struct kmem_cache *c)
+>  	return false;
+>  }
+>  
+> +#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
+> +void debugfs_slab_release(struct kmem_cache *);
+> +#else
+> +static inline void debugfs_slab_release(struct kmem_cache *s) { }
+> +#endif
+> +
+>  #ifdef CONFIG_PRINTK
+>  #define KS_ADDRS_COUNT 16
+>  struct kmem_obj_info {
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index a4a5714..ee5456f 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -449,6 +449,7 @@ static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work)
+>  	rcu_barrier();
+>  
+>  	list_for_each_entry_safe(s, s2, &to_destroy, list) {
+> +		debugfs_slab_release(s);
+>  		kfence_shutdown_cache(s);
+>  #ifdef SLAB_SUPPORTS_SYSFS
+>  		sysfs_slab_release(s);
+> @@ -476,6 +477,7 @@ static int shutdown_cache(struct kmem_cache *s)
+>  		schedule_work(&slab_caches_to_rcu_destroy_work);
+>  	} else {
+>  		kfence_shutdown_cache(s);
+> +		debugfs_slab_release(s);
+>  #ifdef SLAB_SUPPORTS_SYSFS
+>  		sysfs_slab_unlink(s);
+>  		sysfs_slab_release(s);
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 3f96e09..09f93ce 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -36,6 +36,7 @@
+>  #include <linux/memcontrol.h>
+>  #include <linux/random.h>
+>  
+> +#include <linux/debugfs.h>
+>  #include <trace/events/kmem.h>
+>  
+>  #include "internal.h"
+> @@ -225,6 +226,12 @@ static inline int sysfs_slab_alias(struct kmem_cache *s, const char *p)
+>  							{ return 0; }
+>  #endif
+>  
+> +#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
+> +static void debugfs_slab_add(struct kmem_cache *);
+> +#else
+> +static inline void debugfs_slab_add(struct kmem_cache *s) { }
+> +#endif
+> +
+>  static inline void stat(const struct kmem_cache *s, enum stat_item si)
+>  {
+>  #ifdef CONFIG_SLUB_STATS
+> @@ -4546,6 +4553,9 @@ int __kmem_cache_create(struct kmem_cache *s, slab_flags_t flags)
+>  	if (err)
+>  		__kmem_cache_release(s);
+>  
+> +	if (s->flags & SLAB_STORE_USER)
+> +		debugfs_slab_add(s);
+> +
+>  	return err;
+>  }
+>  
+> @@ -4686,6 +4696,8 @@ static long validate_slab_cache(struct kmem_cache *s)
+>  
+>  	return count;
+>  }
+> +
+> +#ifdef CONFIG_DEBUG_FS
+>  /*
+>   * Generate lists of code addresses where slabcache objects are allocated
+>   * and freed.
+> @@ -4709,6 +4721,8 @@ struct loc_track {
+>  	struct location *loc;
+>  };
+>  
+> +static struct dentry *slab_debugfs_root;
+> +
+>  static void free_loc_track(struct loc_track *t)
+>  {
+>  	if (t->max)
+> @@ -4825,82 +4839,7 @@ static void process_slab(struct loc_track *t, struct kmem_cache *s,
+>  			add_location(t, s, get_track(s, p, alloc));
+>  	put_map(map);
+>  }
+> -
+> -static int list_locations(struct kmem_cache *s, char *buf,
+> -			  enum track_item alloc)
+> -{
+> -	int len = 0;
+> -	unsigned long i;
+> -	struct loc_track t = { 0, 0, NULL };
+> -	int node;
+> -	struct kmem_cache_node *n;
+> -
+> -	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
+> -			     GFP_KERNEL)) {
+> -		return sysfs_emit(buf, "Out of memory\n");
+> -	}
+> -	/* Push back cpu slabs */
+> -	flush_all(s);
+> -
+> -	for_each_kmem_cache_node(s, node, n) {
+> -		unsigned long flags;
+> -		struct page *page;
+> -
+> -		if (!atomic_long_read(&n->nr_slabs))
+> -			continue;
+> -
+> -		spin_lock_irqsave(&n->list_lock, flags);
+> -		list_for_each_entry(page, &n->partial, slab_list)
+> -			process_slab(&t, s, page, alloc);
+> -		list_for_each_entry(page, &n->full, slab_list)
+> -			process_slab(&t, s, page, alloc);
+> -		spin_unlock_irqrestore(&n->list_lock, flags);
+> -	}
+> -
+> -	for (i = 0; i < t.count; i++) {
+> -		struct location *l = &t.loc[i];
+> -
+> -		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
+> -
+> -		if (l->addr)
+> -			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
+> -		else
+> -			len += sysfs_emit_at(buf, len, "<not-available>");
+> -
+> -		if (l->sum_time != l->min_time)
+> -			len += sysfs_emit_at(buf, len, " age=%ld/%ld/%ld",
+> -					     l->min_time,
+> -					     (long)div_u64(l->sum_time,
+> -							   l->count),
+> -					     l->max_time);
+> -		else
+> -			len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
+> -
+> -		if (l->min_pid != l->max_pid)
+> -			len += sysfs_emit_at(buf, len, " pid=%ld-%ld",
+> -					     l->min_pid, l->max_pid);
+> -		else
+> -			len += sysfs_emit_at(buf, len, " pid=%ld",
+> -					     l->min_pid);
+> -
+> -		if (num_online_cpus() > 1 &&
+> -		    !cpumask_empty(to_cpumask(l->cpus)))
+> -			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
+> -					     cpumask_pr_args(to_cpumask(l->cpus)));
+> -
+> -		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
+> -			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
+> -					     nodemask_pr_args(&l->nodes));
+> -
+> -		len += sysfs_emit_at(buf, len, "\n");
+> -	}
+> -
+> -	free_loc_track(&t);
+> -	if (!t.count)
+> -		len += sysfs_emit_at(buf, len, "No data\n");
+> -
+> -	return len;
+> -}
+> +#endif  /* CONFIG_DEBUG_FS   */
+>  #endif	/* CONFIG_SLUB_DEBUG */
+>  
+>  #ifdef SLUB_RESILIENCY_TEST
+> @@ -5350,21 +5289,6 @@ static ssize_t validate_store(struct kmem_cache *s,
+>  }
+>  SLAB_ATTR(validate);
+>  
+> -static ssize_t alloc_calls_show(struct kmem_cache *s, char *buf)
+> -{
+> -	if (!(s->flags & SLAB_STORE_USER))
+> -		return -ENOSYS;
+> -	return list_locations(s, buf, TRACK_ALLOC);
+> -}
+> -SLAB_ATTR_RO(alloc_calls);
+> -
+> -static ssize_t free_calls_show(struct kmem_cache *s, char *buf)
+> -{
+> -	if (!(s->flags & SLAB_STORE_USER))
+> -		return -ENOSYS;
+> -	return list_locations(s, buf, TRACK_FREE);
+> -}
+> -SLAB_ATTR_RO(free_calls);
+>  #endif /* CONFIG_SLUB_DEBUG */
+>  
+>  #ifdef CONFIG_FAILSLAB
+> @@ -5528,8 +5452,6 @@ static struct attribute *slab_attrs[] = {
+>  	&poison_attr.attr,
+>  	&store_user_attr.attr,
+>  	&validate_attr.attr,
+> -	&alloc_calls_attr.attr,
+> -	&free_calls_attr.attr,
+>  #endif
+>  #ifdef CONFIG_ZONE_DMA
+>  	&cache_dma_attr.attr,
+> @@ -5818,6 +5740,180 @@ static int __init slab_sysfs_init(void)
+>  __initcall(slab_sysfs_init);
+>  #endif /* CONFIG_SYSFS */
+>  
+> +#if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
+> +static int slab_debugfs_show(struct seq_file *seq, void *v)
+> +{
+> +
+> +	struct location *l;
+> +	unsigned int idx = *(unsigned int *)v;
+> +	struct loc_track *t = seq->private;
+> +
+> +	if (idx < t->count) {
+> +		l = &t->loc[idx];
+> +
+> +		seq_printf(seq, "%7ld ", l->count);
+> +
+> +		if (l->addr)
+> +			seq_printf(seq, "%pS", (void *)l->addr);
+> +		else
+> +			seq_puts(seq, "<not-available>");
+> +
+> +		if (l->sum_time != l->min_time) {
+> +			seq_printf(seq, " age=%ld/%llu/%ld",
+> +				l->min_time, div_u64(l->sum_time, l->count),
+> +				l->max_time);
+> +		} else
+> +			seq_printf(seq, " age=%ld", l->min_time);
+> +
+> +		if (l->min_pid != l->max_pid)
+> +			seq_printf(seq, " pid=%ld-%ld", l->min_pid, l->max_pid);
+> +		else
+> +			seq_printf(seq, " pid=%ld",
+> +				l->min_pid);
+> +
+> +		if (num_online_cpus() > 1 && !cpumask_empty(to_cpumask(l->cpus)))
+> +			seq_printf(seq, " cpus=%*pbl",
+> +				 cpumask_pr_args(to_cpumask(l->cpus)));
+> +
+> +		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
+> +			seq_printf(seq, " nodes=%*pbl",
+> +				 nodemask_pr_args(&l->nodes));
+> +
+> +		seq_puts(seq, "\n");
+> +	}
+> +
+> +	if (!idx && !t->count)
+> +		seq_puts(seq, "No data\n");
+> +
+> +	return 0;
+> +}
+> +
+> +static void slab_debugfs_stop(struct seq_file *seq, void *v)
+> +{
+> +	kfree(v);
+> +}
+> +
+> +static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
+> +{
+> +	loff_t *spos = v;
+> +	struct loc_track *t = seq->private;
+> +
+> +	if (*ppos < t->count) {
+> +		*ppos = ++*spos;
+> +		return spos;
+> +	}
+> +	*ppos = ++*spos;
+> +	return NULL;
+> +}
+> +
+> +static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
+> +{
+> +	loff_t *spos = kmalloc(sizeof(loff_t), GFP_KERNEL);
+> +
+> +	if (!spos)
+> +		return NULL;
+> +
+> +	*spos = *ppos;
+> +	return spos;
+> +}
+> +
+> +static const struct seq_operations slab_debugfs_sops = {
+> +	.start  = slab_debugfs_start,
+> +	.next   = slab_debugfs_next,
+> +	.stop   = slab_debugfs_stop,
+> +	.show   = slab_debugfs_show,
+> +};
+> +
+> +static int slab_debug_trace_open(struct inode *inode, struct file *filep)
+> +{
+> +
+> +	struct kmem_cache_node *n;
+> +	enum track_item alloc;
+> +	int node;
+> +	struct loc_track *t = __seq_open_private(filep, &slab_debugfs_sops,
+> +						sizeof(struct loc_track));
+> +	struct kmem_cache *s = file_inode(filep)->i_private;
+> +
+> +	if (strcmp(filep->f_path.dentry->d_name.name, "alloc_traces") == 0)
+> +		alloc = TRACK_ALLOC;
+> +	else
+> +		alloc = TRACK_FREE;
+> +
+> +	if (!alloc_loc_track(t, PAGE_SIZE / sizeof(struct location), GFP_KERNEL))
+> +		return -ENOMEM;
+> +
+> +	/* Push back cpu slabs */
+> +	flush_all(s);
+> +
+> +	for_each_kmem_cache_node(s, node, n) {
+> +		unsigned long flags;
+> +		struct page *page;
+> +
+> +		if (!atomic_long_read(&n->nr_slabs))
+> +			continue;
+> +
+> +		spin_lock_irqsave(&n->list_lock, flags);
+> +		list_for_each_entry(page, &n->partial, slab_list)
+> +			process_slab(t, s, page, alloc);
+> +		list_for_each_entry(page, &n->full, slab_list)
+> +			process_slab(t, s, page, alloc);
+> +		spin_unlock_irqrestore(&n->list_lock, flags);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int slab_debug_trace_release(struct inode *inode, struct file *file)
+> +{
+Please ignore this patch, while doing clean up I missed the "struct
+seq_file *seq = file->private_data;"
 
-> If the wrapper is built to ppc64be, my patch is tested right. The entry
-> point in the ELF
->
-> header is always right so you can assign the header->e_entry to the
-> function pointer
->
-> and then jump to the entry by calling the function. But in the ppc
-> wrapper, the address
->
-> is intialized to 0 or malloced to be an address later. In this
-> situation, I think my patch
->
-> should be right for ppc64be.
-
-Yeah maybe it's fine. I just have some memories of running into some
-bizzare edge case at some point. It might have been the entrypoint of
-the zImage rather than the vmlinux which had (has?) that problem.
+I will push the patch with same patch version.
+> +	struct loc_track *t = seq->private;> +
+> +	free_loc_track(t);
+> +	return seq_release_private(inode, file);
+> +}
+> +
+> +static const struct file_operations slab_debugfs_fops = {
+> +	.open    = slab_debug_trace_open,
+> +	.read    = seq_read,
+> +	.llseek  = seq_lseek,
+> +	.release = slab_debug_trace_release,
+> +};
+> +
+> +static void debugfs_slab_add(struct kmem_cache *s)
+> +{
+> +	struct dentry *slab_cache_dir;
+> +
+> +	if (unlikely(!slab_debugfs_root))
+> +		return;
+> +
+> +	slab_cache_dir = debugfs_create_dir(s->name, slab_debugfs_root);
+> +
+> +	debugfs_create_file("alloc_traces", 0400,
+> +		slab_cache_dir, s, &slab_debugfs_fops);
+> +
+> +	debugfs_create_file("free_traces", 0400,
+> +		slab_cache_dir, s, &slab_debugfs_fops);
+> +}
+> +
+> +void debugfs_slab_release(struct kmem_cache *s)
+> +{
+> +	debugfs_remove_recursive(debugfs_lookup(s->name, slab_debugfs_root));
+> +}
+> +
+> +static int __init slab_debugfs_init(void)
+> +{
+> +	struct kmem_cache *s;
+> +
+> +	slab_debugfs_root = debugfs_create_dir("slab", NULL);
+> +
+> +	list_for_each_entry(s, &slab_caches, list)
+> +		if (s->flags & SLAB_STORE_USER)
+> +			debugfs_slab_add(s);
+> +
+> +	return 0;
+> +
+> +}
+> +__initcall(slab_debugfs_init);
+> +#endif
+>  /*
+>   * The /proc/slabinfo ABI
+>   */
+> 
+Thanks and regards,
+Mohammed Faiyaz
