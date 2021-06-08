@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E407439F72E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C1F39F730
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232679AbhFHM73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:59:29 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:42744 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbhFHM72 (ORCPT
+        id S232674AbhFHNAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230009AbhFHNAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:59:28 -0400
-Received: by mail-ot1-f42.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so15780137oth.9;
-        Tue, 08 Jun 2021 05:57:35 -0700 (PDT)
+        Tue, 8 Jun 2021 09:00:32 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2F2C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 05:58:26 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id t7so24832567lff.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 05:58:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JldEYX/aYDCuRQlAA13qtQYS64HOrhQMpjyRp9pf0Co=;
+        b=FjLqjLPlIHLSem+vV5sKU8qW82neKJqhwE7+nwzEChHnPW20Eze/aJtEh88RXS9pcP
+         eOXHwToKwcGsgj85jPqu+c2DV+QfJuOQoZyxG9tO1fCdcbsqTgOYrb5+kRmDaeWSDFKB
+         DKjcLb5T+hiFQRnp8V4M5d/FNt1yRQyKfXBS9Cbe16ZEYJXp2BCtsKs3xxjRhS9w/qpt
+         S9EZAUNvblPfuIa/EI2G/jiSoAFJbQGB/KMYhqzNkvD1RXiMjwjC8jCSRZylnJt+/kXR
+         0PPyqtHJV6p8+/iYdviCsjX/VNyJO6R9cWACfhBiTFtF5MLf64/bdyBwvUdjNlddVHhn
+         +CfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X394gF0Q1rtuAaubxa1qPZX+2IqmrO2XOm9TEzBrts4=;
-        b=qPdNaU+TE5B93w2pe1L98FxuR+h8h2xz0q37+3Zkly8fM/bU9K/xzl/cabFCbx5UD/
-         uYOXPcQ0pxtfejkKOZe1Fb+R0BAHTwCp1FD5e2YllL/XEWz5Ebk6IuXfF+JBRo0Cqj5m
-         W2+6sqlDtiwII4vxwln0FmPMrB2eFAcTz3zVMjBgst16P+GSqTXi/R2NNTUr12d/D/zc
-         U4iq0OCss5KAmi1B2tTEwaeS6yHFIegFvxjxihZuy3Kl0RbtU0/WHfehfDxgK8VL/agX
-         thMDZQA8s8uWo6TaUnNOP31/+UZ6NckF7J78ZM7wYokadRshWH0Plp2rEJ87YfPrvkl0
-         CR1w==
-X-Gm-Message-State: AOAM533j+2/x5sABemnafHXhQ0ViBFAWSbVfhn7XjMEg/6XADshNFZqO
-        Zd9YCODk+v2SeHn6K2bJCtRKIhWFC2kZjMkFTjo=
-X-Google-Smtp-Source: ABdhPJzOznHAUArviI2grA9DfW+FoGtpQ5ySY+XM03gLwyZvSfPewpegRPwKNdNJrf434CGStLybyeocgV7CJEBEwq0=
-X-Received: by 2002:a9d:6c4d:: with SMTP id g13mr14872568otq.321.1623157054952;
- Tue, 08 Jun 2021 05:57:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JldEYX/aYDCuRQlAA13qtQYS64HOrhQMpjyRp9pf0Co=;
+        b=XBU+0xpoEWhnK/ku2mRGTcbX0buhDKXH3FxZjEdmPTs2HkvqSScXjNVpJ9vyxeYxLN
+         l0vtxBM+J3R9NJaJUCGT7chhCR78/b1b1QUHrdhLvQbaXGIa6xTvJm31YEzxZwjh+fHE
+         ULGjt+KWv03bWabL2iJlptP9kE8nyH3Xn/BimFLJQwREYlWksqQkP59O3KcFFoN24nuy
+         nMd4d8/V6MVyyR0l5wvKAKGPb9q8Vx04h+4JT4x/rF4iZfwYKyGM5aykcxqNrLR81AKx
+         JLLjNyfW0SorcerOGH99pdWtaJm+rw2LH3Ie33Ifx90yDnodNJ+lm/yNcxVVRb+2/VQk
+         HNoA==
+X-Gm-Message-State: AOAM530Y3/eeDxJKUDIdHp2gIUmIxf0fI9arcuacVHtJx//vtzAE9342
+        wiyU5eyll2Fq9TRCcq7Lm6dklg==
+X-Google-Smtp-Source: ABdhPJwiVHHdBJ2e3LGrPuYejYamakSP0GL5NIlStRaQlOKJEfCyp3m+7Ziws/FEP89lHi51O7ySVw==
+X-Received: by 2002:a05:6512:2397:: with SMTP id c23mr15324583lfv.114.1623157104947;
+        Tue, 08 Jun 2021 05:58:24 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id a14sm461743ljj.86.2021.06.08.05.58.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 05:58:24 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id F3930102815; Tue,  8 Jun 2021 15:58:38 +0300 (+03)
+Date:   Tue, 8 Jun 2021 15:58:38 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Xu Yu <xuyu@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, hughd@google.com,
+        akpm@linux-foundation.org, gavin.dg@linux.alibaba.com
+Subject: Re: [PATCH v2] mm, thp: use head page in __migration_entry_wait
+Message-ID: <20210608125838.6ixdlz3t334gjnp7@box.shutemov.name>
+References: <b9836c1dd522e903891760af9f0c86a2cce987eb.1623144009.git.xuyu@linux.alibaba.com>
+ <20210608120026.ugfh72ydjeba44bo@box.shutemov.name>
+ <YL9jVYgWYBydOYst@casper.infradead.org>
 MIME-Version: 1.0
-References: <20210512072515.3820032-1-yangyingliang@huawei.com>
-In-Reply-To: <20210512072515.3820032-1-yangyingliang@huawei.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 8 Jun 2021 14:57:23 +0200
-Message-ID: <CAJZ5v0jvzRTypqYK0O+-ajMZdaHb+4uJJOdK5pEtxCsD4yDdLA@mail.gmail.com>
-Subject: Re: [PATCH -next] PM: domains: fix some kernel-doc issues
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YL9jVYgWYBydOYst@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 9:22 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
->
-> Fix the following make W=1 kernel build warnings:
->
->   drivers/base/power/domain_governor.c:259: warning: Function parameter or member 'now' not described in '_default_power_down_ok'
->   drivers/base/power/domain.c:581: warning: Function parameter or member 'depth' not described in 'genpd_power_off'
->   drivers/base/power/domain.c:2520: warning: Function parameter or member 'np' not described in 'of_genpd_remove_last'
->   drivers/base/power/domain.c:2520: warning: Excess function parameter 'provider' description in 'of_genpd_remove_last'
->
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/base/power/domain.c          | 3 ++-
->  drivers/base/power/domain_governor.c | 1 +
->  2 files changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index b6a782c31613..5695a641efd3 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -572,6 +572,7 @@ static void genpd_queue_power_off_work(struct generic_pm_domain *genpd)
->   * RPM status of the releated device is in an intermediate state, not yet turned
->   * into RPM_SUSPENDED. This means genpd_power_off() must allow one device to not
->   * be RPM_SUSPENDED, while it tries to power off the PM domain.
-> + * @depth: nesting count for lockdep.
->   *
->   * If all of the @genpd's devices have been suspended and all of its subdomains
->   * have been powered down, remove power from @genpd.
-> @@ -2505,7 +2506,7 @@ EXPORT_SYMBOL_GPL(of_genpd_remove_subdomain);
->
->  /**
->   * of_genpd_remove_last - Remove the last PM domain registered for a provider
-> - * @provider: Pointer to device structure associated with provider
-> + * @np: Pointer to device node associated with provider
->   *
->   * Find the last PM domain that was added by a particular provider and
->   * remove this PM domain from the list of PM domains. The provider is
-> diff --git a/drivers/base/power/domain_governor.c b/drivers/base/power/domain_governor.c
-> index c6c218758f0b..cd08c5885190 100644
-> --- a/drivers/base/power/domain_governor.c
-> +++ b/drivers/base/power/domain_governor.c
-> @@ -252,6 +252,7 @@ static bool __default_power_down_ok(struct dev_pm_domain *pd,
->  /**
->   * _default_power_down_ok - Default generic PM domain power off governor routine.
->   * @pd: PM domain to check.
-> + * @now: current ktime.
->   *
->   * This routine must be executed under the PM domain's lock.
->   */
-> --
+On Tue, Jun 08, 2021 at 01:32:21PM +0100, Matthew Wilcox wrote:
+> On Tue, Jun 08, 2021 at 03:00:26PM +0300, Kirill A. Shutemov wrote:
+> > But there's one quirk: if split succeed we effectively wait on wrong
+> > page to be unlocked. And it may take indefinite time if split_huge_page()
+> > was called on the head page.
+> 
+> Hardly indefinite time ... callers of split_huge_page_to_list() usually
+> unlock the page soon after.  Actually, I can't find one that doesn't call
+> unlock_page() within a few lines of calling split_huge_page_to_list().
 
-Applied as 5.14 material, thanks!
+I didn't check all callers, but it's not guaranteed by the interface and
+it's not hard to imagine a future situation when a page got split on the
+way to IO and kept locked until IO is complete.
+
+The wake up shouldn't have much overhead as in most cases split going to
+be called on the head page.
+
+-- 
+ Kirill A. Shutemov
