@@ -2,69 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8663039F149
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CA239F14F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhFHIrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:47:51 -0400
-Received: from ni.piap.pl ([195.187.100.5]:35046 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231278AbhFHIrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:47:49 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ni.piap.pl (Postfix) with ESMTPSA id 736B344426B;
-        Tue,  8 Jun 2021 10:45:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 736B344426B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1623141955; bh=1ssAuGc37YgsCuK3ii+Tsnzzdd2ubaNvVoRXSIkosQE=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=fA/vwDBrraA2VFHZCDFTsKgMAs5rmrQAj4xWvyHcHrhuuaBcCc6rIDeRjFLwcSP1k
-         md5WfcXHCUx74MJ/vxyBA4W2v9Rj0RDn0joZ+Qi2s8DEQkgasHk9XRc3aw5QfXWbvU
-         rIBcBY0k7goXtXCrxEyJanPIQr1E8kWlAa/xnAaQ=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Tim Harvey <tharvey@gateworks.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] TDA1997x: enable EDID support
-References: <m3sg1uq6xu.fsf@t19.piap.pl>
-        <dbb99d7b-18eb-317c-911a-b982486848fa@xs4all.nl>
-        <m3eeddhora.fsf@t19.piap.pl>
-        <CAJ+vNU0E_0pB-1T+VpdmjJNVirAwCUNjKVbEV4wEbqHOzURj_A@mail.gmail.com>
-        <m3k0n57y72.fsf@t19.piap.pl>
-        <e9acc316-54c4-0387-eaaf-18dfb4dce34e@xs4all.nl>
-Sender: khalasa@piap.pl
-Date:   Tue, 08 Jun 2021 10:45:55 +0200
-In-Reply-To: <e9acc316-54c4-0387-eaaf-18dfb4dce34e@xs4all.nl> (Hans Verkuil's
-        message of "Tue, 8 Jun 2021 09:27:24 +0200")
-Message-ID: <m3czsw922k.fsf@t19.piap.pl>
+        id S230389AbhFHIsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:48:02 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:43025 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231337AbhFHIsA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 04:48:00 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 79FBF5804C1;
+        Tue,  8 Jun 2021 04:46:07 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 08 Jun 2021 04:46:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=O
+        cJGuks2BsIJ9Z1Uvy/YBynhz/rsZ2UduAezquC86NI=; b=Av6caqxi5rTeJuJHw
+        NWZllbrLTXvWa6MpjlijpjX11gb55Q9azwW9YidOA7pOaoaBZSbY9Er5dQF3lAwH
+        XRCYFjQQkWNjX09zfqB2bbyTZ2mYtyx2iNJu1VVlM/KfyAN6Tnjugvlkl6cKwKrF
+        v5Q4Stz39wCAJcxFC3HftStWE/BMDI9JOUeza2CR4jQFVcJlT+N3QezxzhJe2yIB
+        S3QXGkKjZ7jcy1uCy+7X53oQC0v2UeKU+K61lSBBZrBzNm4bUcg9wC8QCa5ErgDI
+        2c+8ZfMRSyHtP9PSb0qUczFUy5Fqcr7m9/I999kyu60xVMk94hj+0wYvV7Y1Yvfl
+        dSSWA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=OcJGuks2BsIJ9Z1Uvy/YBynhz/rsZ2UduAezquC86
+        NI=; b=LQ3VVl0vrlrnC1fH8a6CIwcGKSaKfX0uKUPPrFAxMAoczlzylddAm1zFD
+        rYqKAwYGUWA/3OAg2hMIW9NFlRfDq7MZTwuuEqBL226S/F/OSkbV31O/L3ZudGdN
+        xIv+0nG+5SjqmHYHjrZXqM6E72EZ8DcfQig6lt4AVp+Yan/a2FE3fusNCm0/TnYE
+        rEUdURyDrdJdZzWXpPKA7bHeyZoilks79sJa8CquafC8YfJHuVXf0ibgmvQLTr1i
+        XC3auMTnQ6ebbQDZd0RxdXliO92ysTZJ3e/teU8uNtYzNWOtwuCxWbJvchXXkuG/
+        bESeHmPi1hLl9C76I1WnQkySvf12Q==
+X-ME-Sender: <xms:TS6_YIUQMV85vYceE_lEfts11O3sw_pzt-ANcNmNvDlGmb4-zWcgpQ>
+    <xme:TS6_YMmiTXVRcc3dMiyofq3ut_wU-7FvwJ7wa7jYb8bZoSlbYoLjrMtumMsY2oU2Z
+    lmyh9f1u44CKw>
+X-ME-Received: <xmr:TS6_YMY9-whsuVEzWq1Bp1BSfff-rqAZsKkvlLrs-jk_6INBXZz8KoY_ZE7TZO3TWk_spwo0adZE16jkQr7Ag6vv3SjhsTPA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtledgtdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtudenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepvedtie
+    elueetgeeggfeufefhvefgtdetgfetgfdtvdegjeehieduvddtkeffheffnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:TS6_YHWd5HfNLAvh7lnUeqIL8D5jGoHawtStOpDi8ll8GN3zLPjDag>
+    <xmx:TS6_YCnt7Uu46jz_WR3dWUz52tJNSV5gJXuTALwt-yUAhUW-zsoxqg>
+    <xmx:TS6_YMdsE8gWbnV1WaLsXIEZv-twskMgkpCqAI_AQWZy05m4peZpYw>
+    <xmx:Ty6_YEXRGZbV09VfuUGJhNrBV6JF7eva0271Y_yYabrH33rJJ0R8ng>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Jun 2021 04:46:05 -0400 (EDT)
+Date:   Tue, 8 Jun 2021 10:46:04 +0200
+From:   Greg KH <greg@kroah.com>
+To:     SyzScope <syzscope@gmail.com>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        syzbot <syzbot+305a91e025a73e4fd6ce@syzkaller.appspotmail.com>,
+        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        kernel-hardening@lists.openwall.com
+Subject: Re: KASAN: use-after-free Read in hci_chan_del
+Message-ID: <YL8uTH9Ey3U38yPr@kroah.com>
+References: <000000000000adea7f05abeb19cf@google.com>
+ <2fb47714-551c-f44b-efe2-c6708749d03f@gmail.com>
+ <YL3zGGMRwmD7fNK+@zx2c4.com>
+ <YL4BAKHPZqH6iPdP@kroah.com>
+ <dd3094fa-9cb8-91c2-7631-a69c34eac387@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 4
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dd3094fa-9cb8-91c2-7631-a69c34eac387@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hans Verkuil <hverkuil@xs4all.nl> writes:
+On Mon, Jun 07, 2021 at 11:26:26AM -0700, SyzScope wrote:
+> Hi all,
+> We are really thankful for all the suggestions and concerns. We are
+> definitely interested in continuing this line of research.
+> 
+> Just to clarify:  SyzScope is an ongoing research project that is currently
+> under submission, which has an anonymity requirement.
 
-> OK, I think the history is clear. Can you post a v2 with a Fixes tag and
-> comment a bit on why this was not caught before?
+As documented, we can not accept anonymous contributions to the kernel,
+so perhaps just wait until your paper is accepted?  However, we take
+patches from researchers all the time under their real names while their
+papers are being reviewed, so this "requirement" seems odd to me, who is
+requiring this?
 
-Sure, will do. That "Fixes" tag... since it's from the beginning (the
-Gateworks' branch was never a part of the official tree), do I still
-need it? It would have to point to the initial submission of this
-driver.
---=20
-Krzysztof Ha=C5=82asa
+> Therefore we chose to
+> use a gmail address initially in the public channel. Since Greg asked, we
+> did reveal our university affiliation and email address, as well as
+> cross-referenced a private email (again using university address) to
+> security@kernel.org.
 
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+security@kernel.org is for fixing bugs reported to them that are not
+public, it is not for any sort of "notification of affiliation".  See
+the documentation for the details about what this alias is to be used
+for please.
+
+> We are sorry for the chaos of using several different
+> email addresses. In the future, we will try to use our university address
+> directly (we checked with other researchers and it seems to be okay).
+
+That would be best, as obviously, and again, as documented, we can not
+accept anonymous contributions to the kernel.
+
+greg k-h
