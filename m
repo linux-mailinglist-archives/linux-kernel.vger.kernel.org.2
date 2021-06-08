@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D8739FFF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E7D3A00DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234023AbhFHSht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:37:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57386 "EHLO mail.kernel.org"
+        id S235650AbhFHSsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:48:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234529AbhFHSfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:35:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B18A0613CD;
-        Tue,  8 Jun 2021 18:32:26 +0000 (UTC)
+        id S235498AbhFHSn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:43:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3894F61444;
+        Tue,  8 Jun 2021 18:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177147;
-        bh=3HOKnaVi71YUI+jEO9hylFIiLEbQbbKztLrOt1LrGG4=;
+        s=korg; t=1623177385;
+        bh=sphQtZmJ55ypiQBg7PymMgg2iqrVSJ3ENghBukVBfSk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qzhxN0KA/o1SJEAMfXbvytW1/wLx2cLpjTzcH0tBEQeggZlixL/dmBq1ISAxp09cT
-         rlM8p39ib2xZYtotRUsQtcjoFcUv6u7ryTaZyjlBHikOPpjlHIBHYm4G9Wrdp16qqf
-         LYZYHvsysgqoUvCgFwJswxwYawrrn3jVNV1tMvo4=
+        b=iGBOhLUEYPwHhTVO76IOgzwAeqNKuzxX58U0cZF4vS3H8wFlwS6NwxC1uDhN7Ba9q
+         kZQqD9DBlAhg7Aw/Gm0OBv44UJS0czaM1hRQ0nOtOFRIq+fRqJbYfzQhe0KRdfsuMi
+         qk0IzI51OxRNkIwaJCGcabQiNslGCb2ecr+RfOvE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        syzbot+7ec324747ce876a29db6@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 17/47] net: caif: fix memory leak in caif_device_notify
+        stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 31/78] arm64: dts: zii-ultra: fix 12V_MAIN voltage
 Date:   Tue,  8 Jun 2021 20:27:00 +0200
-Message-Id: <20210608175931.044693951@linuxfoundation.org>
+Message-Id: <20210608175936.321873232@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
-References: <20210608175930.477274100@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Lucas Stach <l.stach@pengutronix.de>
 
-commit b53558a950a89824938e9811eddfc8efcd94e1bb upstream.
+[ Upstream commit ac0cbf9d13dccfd09bebc2f8f5697b6d3ffe27c4 ]
 
-In case of caif_enroll_dev() fail, allocated
-link_support won't be assigned to the corresponding
-structure. So simply free allocated pointer in case
-of error
+As this is a fixed regulator on the board there was no harm in the wrong
+voltage being specified, apart from a confusing reporting to userspace.
 
-Fixes: 7c18d2205ea7 ("caif: Restructure how link caif link layer enroll")
-Cc: stable@vger.kernel.org
-Reported-and-tested-by: syzbot+7ec324747ce876a29db6@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4a13b3bec3b4 ("arm64: dts: imx: add Zii Ultra board support")
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/caif/caif_dev.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/caif/caif_dev.c
-+++ b/net/caif/caif_dev.c
-@@ -366,6 +366,7 @@ static int caif_device_notify(struct not
- 	struct cflayer *layer, *link_support;
- 	int head_room = 0;
- 	struct caif_device_entry_list *caifdevs;
-+	int res;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
+index 32ce14936b01..f385b143b308 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
+@@ -45,8 +45,8 @@
+ 	reg_12p0_main: regulator-12p0-main {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "12V_MAIN";
+-		regulator-min-microvolt = <5000000>;
+-		regulator-max-microvolt = <5000000>;
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
+ 		regulator-always-on;
+ 	};
  
- 	cfg = get_cfcnfg(dev_net(dev));
- 	caifdevs = caif_device_list(dev_net(dev));
-@@ -391,8 +392,10 @@ static int caif_device_notify(struct not
- 				break;
- 			}
- 		}
--		caif_enroll_dev(dev, caifdev, link_support, head_room,
-+		res = caif_enroll_dev(dev, caifdev, link_support, head_room,
- 				&layer, NULL);
-+		if (res)
-+			cfserl_release(link_support);
- 		caifdev->flowctrl = dev_flowctrl;
- 		break;
- 
+-- 
+2.30.2
+
 
 
