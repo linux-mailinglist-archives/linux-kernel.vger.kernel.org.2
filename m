@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC0E3A06AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BBF3A06AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhFHWSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 18:18:35 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:37742 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhFHWSe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 18:18:34 -0400
-Received: by mail-ot1-f49.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so21898274otp.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:16:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=1t7u9q3nwz2autO/xtf8MJUk6lpDM4DYMrf1MH8aW4Q=;
-        b=nnJv9OsQARR+ciGzlrE04XLGFV0Ux9hu6Ve/m90ADK/OJWfgUtFa5VXf9rre6PLWaN
-         LNJBnrT6y2ZueCu3zQ8Z3XEDG3zpgr+hsSnNo9wVaGY1PLXVOLR2eSRrW9umN/6gV4Me
-         NOnl93Y3lguNQy2J2fb3oDj4vwuOs3DRJawuY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=1t7u9q3nwz2autO/xtf8MJUk6lpDM4DYMrf1MH8aW4Q=;
-        b=K9a/yVjEma6yyttkcMOxYqkAJvARCiLBCMEQl+3G+bg82zgeEp64mK7Ef/HD6q+4aP
-         I0utmVmDnVCJMQ+q3P9oLhqPd1m3AlEeKo36rHHkAquhWr9pzE2LcrjcAaBM7FZ4BO9A
-         HOQjD1U190vXrRrvSYS1njzEdpSGN70S8yq55oTXgmtzXUjBVWc9g30rhA/IO9uAIlJt
-         kPPv3IVjhCDF0fKBa/LKsbBcO58dyFoteJahNpbDoOYKdUFT2eJ5Tlo3K+8UznVZH7wq
-         KpeaPzXOdy+AYbFgu4gPX4hQkm2QWkJcHKrRDatH4Hrv6SRZALw1Y5L0Nbe2Ad+TpYyT
-         ZKtA==
-X-Gm-Message-State: AOAM532OkbSIHMpQukrQ/wUHr+IHbGZDvhBpH7eHhkIiuDbf51zwBIvj
-        Z6UCoIjpaGY1W1+2rkx2apz/evrwrhnVQElLsMhSMg==
-X-Google-Smtp-Source: ABdhPJyhL13bl002GGKwoydit/q9hRO2Cy7ITNXY5T1OOJafiJ0zxdlM0bxacz6SkRb5QZJX9/NiCtc2lHaGS2mp8d8=
-X-Received: by 2002:a05:6830:190:: with SMTP id q16mr7251410ota.34.1623190529833;
- Tue, 08 Jun 2021 15:15:29 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 8 Jun 2021 15:15:29 -0700
-MIME-Version: 1.0
-In-Reply-To: <YL6sY/1E5wLzMiP/@yoga>
-References: <1622736555-15775-1-git-send-email-khsieh@codeaurora.org>
- <YLkI/6ItCz+SbbuJ@yoga> <ac326ec8689c0babb08b2311e19d52cc@codeaurora.org>
- <YLxX/YtegtbLmkri@builder.lan> <ef1879fa7ecfefaf0c70c7a4782240a9@codeaurora.org>
- <YL6sY/1E5wLzMiP/@yoga>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 8 Jun 2021 15:15:29 -0700
-Message-ID: <CAE-0n50-X03sMyJdsw7s=Ue0dWXBo=iHOc0HxDQm5yh2J-uS3A@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64/dts/qcom/sc7180: Add Display Port dt node
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>, khsieh@codeaurora.org
-Cc:     robdclark@gmail.com, sean@poorly.run, vkoul@kernel.org,
-        agross@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        id S234229AbhFHWTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 18:19:10 -0400
+Received: from mga03.intel.com ([134.134.136.65]:24422 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229548AbhFHWTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 18:19:09 -0400
+IronPort-SDR: Z4yt8EIa/yFWa1cOhRaX1nTioOAufQsHsaug0B1ykujHuciE2AGvZFUyoG0nkrjfJ0eX6QjlRF
+ vgCD6y+HTlcg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="204978864"
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="204978864"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 15:17:11 -0700
+IronPort-SDR: X4kV1572j00CEByy05DM9UFMaTbGMkrQqVydBvzePj8j45d2fEWWZyfsyafVRaMDMRqiclE58u
+ kH88GopTxC6A==
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="637801595"
+Received: from ciball-mobl1.amr.corp.intel.com (HELO [10.252.140.48]) ([10.252.140.48])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 15:17:10 -0700
+Subject: Re: [RFC v2-fix-v3 1/1] x86/tdx: Skip WBINVD instruction for TDX
+ guest
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+References: <CAPcyv4jQ=Fcga3jyUzthjPW9O962vhy3L5XUM6jqR5Z_Zq83LQ@mail.gmail.com>
+ <20210608213527.739474-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ec55256c-3a44-5265-fea8-018a229e92da@intel.com>
+Date:   Tue, 8 Jun 2021 15:17:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210608213527.739474-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-06-07 16:31:47)
-> On Mon 07 Jun 12:48 CDT 2021, khsieh@codeaurora.org wrote:
->
-> > On 2021-06-05 22:07, Bjorn Andersson wrote:
-> > > On Thu 03 Jun 16:56 CDT 2021, khsieh@codeaurora.org wrote:
-> > >
-> > > > On 2021-06-03 09:53, Bjorn Andersson wrote:
-> > > > > On Thu 03 Jun 11:09 CDT 2021, Kuogee Hsieh wrote:
-> > > [..]
-> > > > > > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> > > [..]
-> > > > > > +                             power-domains = <&rpmhpd SC7180_CX>;
-> > > > >
-> > > > > Just curious, but isn't the DP block in the MDSS_GDCS? Or do we need to
-> > > > > mention CX here in order for the opp framework to apply required-opps
-> > > > > of CX?
-> > > >
-> > > > yes,
-> > >
-> > > If you want me, or other maintainers, to spend any time reviewing or
-> > > applying your patches going forward then you need to actually bother
-> > > replying properly to the questions asked.
-> > >
-> > > Thanks,
-> > > Bjorn
-> >
-> > Sorry about the confusion. What I meant is that even though DP controller is
-> > in the MDSS_GDSC
-> > power domain, DP PHY/PLL sources out of CX. The DP link clocks have a direct
-> > impact
-> > on the CX voltage corners. Therefore, we need to mention the CX power domain
-> > here. And, since
-> > we can associate only one OPP table with one device, we picked the DP link
-> > clock over other
-> > clocks.
->
-> Thank you, that's a much more useful answer.
->
-> Naturally I would think it would make more sense for the PHY/PLL driver
-> to ensure that CX is appropriately voted for then, but I think that
-> would result in it being the clock driver performing such vote and I'm
-> unsure how the opp table for that would look.
->
-> @Stephen, what do you say?
->
+On 6/8/21 2:35 PM, Kuppuswamy Sathyanarayanan wrote:
+> Persistent memory is also currently not supported. Another code
+> path that uses WBINVD is the MTRR driver, but EPT/virtualization
+> always disables MTRRs so those are not needed. This all implies
+> WBINVD is not needed with current TDX.
 
-Wouldn't the PHY be the one that sets some vote? So it wouldn't be the
-clk driver, and probably not from the clk ops, but instead come from the
-phy ops via phy_enable() and phy_configure().
+It's one thing to declare something unsupported.  It's quite another to
+declare it unsupported and then back it up with code to ensure that any
+attempted use is thwarted.
 
-By the way, there's nothing wrong with a clk device doing power domain
-"stuff", except for that we haven't plumbed it into the clk framework
-properly and I'm fairly certain our usage of runtime PM in the clk
-framework today underneath the prepare_lock is getting us into trouble
-or will get us there soon.
+This patch certainly shows us half of the solution.  But, to be
+complete, we also need to see the other half: where is the patch or
+documentation for why it is not *possible* to encounter persistent
+memory in a TDX guest?
+
+BTW, "persistent memory" is much more than Intel Optane DCPMM.
