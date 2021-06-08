@@ -2,117 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B3639F90C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9D939F911
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbhFHO2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:28:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51268 "EHLO mail.kernel.org"
+        id S233390AbhFHO3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:29:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232911AbhFHO2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:28:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A585D60FDB;
-        Tue,  8 Jun 2021 14:26:59 +0000 (UTC)
+        id S233374AbhFHO3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:29:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07F3861003;
+        Tue,  8 Jun 2021 14:27:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623162420;
-        bh=Z8fEMmWlqWDlXYS/x++QWYE8lKr7Z6rduKmNo70yTo4=;
+        s=k20201202; t=1623162443;
+        bh=ibW8RuYchsJJpX+NrppqOg6mttInE95osEDBNg2jiQQ=;
         h=From:To:Cc:Subject:Date:From;
-        b=OpRx9OzQPBhiTolVc6TXdUJLuqsFVwupXDplSueETbJ5i2ty6AecnJE0hzFmnI9yk
-         h7+ejS+2+0OZ2Xu1CchqPZuw/DN+9lFsEmtqb9bvhphndiwAfwk0rE2HJam4HlBAEY
-         h2sSZk2mxPuF/e30Mu/0MUaXZ0MncXCI38VSKYTeACcNVllt2v9Ou/ZMetgjIrY8WF
-         NQD2D0BTf8Sb5rrwO4yum5AK+KRsB2FiIm2AQVRxRM7E1RunmVPQtay2fqWABVkOJf
-         PjRzWXlFg5FCCxXXsb8uV1uOgA8nRuTsns0do2EqrMk0vysk5BlIVb3RguDBBOVrsR
-         oC6V6rF57GAmg==
+        b=jNCx/f7qoBn7Me6VR6uYN/bs3xyIB5cTP9WIuCEAML3zqWWgqhtEpj3EpX40xf//t
+         +3nHscVSnJHqaJql6umvHdOd6JozF4l4om59tB6yVmPFGg/FQd7STE0DfsNFDstkXA
+         5vWHH5S4qXu5KQXFhD/pX6Cxbjpgc2yT7fRnN1vuqqZuxgOys3kEI9jc596rRi8gWB
+         NPEAB+UCpnkFJdwPUsqtAnmwbpdrON3mBWiDg6Bh91YVc/M7izpkyNv+1llsgtFCAf
+         sQqw+vsROyXprVAL9GXIEsprGcpRWAUBJOAzvx38Y4eLSRyM0XdymrSJOg2Fbtwqa2
+         m74KKxAoKzR/Q==
 From:   Mark Brown <broonie@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
         Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] regulator fixes for v5.13-rc4
-Date:   Tue, 08 Jun 2021 15:26:33 +0100
-Message-Id: <20210608142659.A585D60FDB@mail.kernel.org>
+Subject: [GIT PULL] SPI fixes for v5.13-rc4
+Date:   Tue, 08 Jun 2021 15:26:54 +0100
+Message-Id: <20210608142723.07F3861003@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit f80505fdff771c89c9350895e99140ffc824e564:
+The following changes since commit b4e46c9954ad55092502e1e8c44ceb9b6744bade:
 
-  regulator: Add binding for TCS4525 (2021-04-23 15:36:16 +0100)
+  spi: sc18is602: implement .max_{transfer,message}_size() for the controller (2021-05-21 13:13:33 +0100)
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.13-rc4
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.13-rc4
 
-for you to fetch changes up to cb2381cbecb81a8893b2d1e1af29bc2e5531df27:
+for you to fetch changes up to d38fa9a155b2829b7e2cfcf8a4171b6dd3672808:
 
-  regulator: rt4801: Fix NULL pointer dereference if priv->enable_gpios is NULL (2021-06-03 19:35:48 +0100)
-
-----------------------------------------------------------------
-regulator: Fixes for v5.14
-
-A collection of fixes for the regulator API that have come up since the
-merge window, including a big batch of fixes from Axel Lin's usual
-careful and detailed review.  The one stand out fix here is Dmitry
-Baryshkov's fix for an issue where we fail to power on the parents of
-always on regulators during system startup if they weren't already
-powered on.
+  spi: stm32-qspi: Always wait BUSY bit to be cleared in stm32_qspi_wait_cmd() (2021-06-03 13:55:36 +0100)
 
 ----------------------------------------------------------------
-Axel Lin (14):
-      regulator: cros-ec: Fix error code in dev_err message
-      regulator: da9121: Return REGULATOR_MODE_INVALID for invalid mode
-      regulator: fan53880: Fix missing n_voltages setting
-      regulator: Check ramp_delay_table for regulator_set_ramp_delay_regmap
-      regulator: fixed: Ensure enable_counter is correct if reg_domain_disable fails
-      regulator: scmi: Fix off-by-one for linear regulators .n_voltages setting
-      regulator: bd70528: Fix off-by-one for buck123 .n_voltages setting
-      regulator: bd71828: Fix .n_voltages settings
-      regulator: rtmv20: Fix .set_current_limit/.get_current_limit callbacks
-      regulator: rtmv20: Add Richtek to Kconfig text
-      regulator: mt6315: Fix function prototype for mt6315_map_mode
-      regulator: atc260x: Fix n_voltages and min_sel for pickable linear ranges
-      regulator: hi6421v600: Fix .vsel_mask setting
-      regulator: rt4801: Fix NULL pointer dereference if priv->enable_gpios is NULL
+spi: Fixes for v5.13
 
-ChiYuan Huang (1):
-      regulator: rtmv20: Fix to make regcache value first reading back from HW
+A small set of SPI fixes that have come up since the merge window, all
+fairly small fixes for rare cases.
 
-Dmitry Baryshkov (1):
-      regulator: core: resolve supply for boot-on/always-on regulators
+----------------------------------------------------------------
+Lukas Wunner (2):
+      spi: bcm2835: Fix out-of-bounds access with more than 4 slaves
+      spi: Cleanup on failure of initial setup
 
-Dmitry Osipenko (2):
-      regulator: max77620: Use device_set_of_node_from_dev()
-      regulator: max77620: Silence deferred probe error
+Patrice Chotard (1):
+      spi: stm32-qspi: Always wait BUSY bit to be cleared in stm32_qspi_wait_cmd()
 
-Hao Fang (1):
-      regulator: hisilicon: use the correct HiSilicon copyright
+zpershuai (1):
+      spi: spi-zynq-qspi: Fix some wrong goto jumps & missing error code
 
-Mark Brown (2):
-      Merge series "regulator: fan53555: tcs4525 fix and cleanup" from Peter Geis <pgwipeout@gmail.com>:
-      Merge series "Fix MAX77620 regulator driver regression" from Dmitry Osipenko <digetx@gmail.com>:
-
-Matti Vaittinen (1):
-      regulator: bd718x7: Fix the BUCK7 voltage setting on BD71837
-
-Peter Geis (1):
-      regulator: fan53555: fix TCS4525 voltage calulation
-
- drivers/regulator/Kconfig                       |  2 +-
- drivers/regulator/atc260x-regulator.c           | 19 ++++++-----
- drivers/regulator/bd718x7-regulator.c           |  2 +-
- drivers/regulator/core.c                        |  6 ++++
- drivers/regulator/cros-ec-regulator.c           |  3 +-
- drivers/regulator/da9121-regulator.c            | 10 ++++--
- drivers/regulator/fan53555.c                    |  3 +-
- drivers/regulator/fan53880.c                    |  3 ++
- drivers/regulator/fixed.c                       |  7 +++-
- drivers/regulator/helpers.c                     |  2 +-
- drivers/regulator/hi655x-regulator.c            |  2 +-
- drivers/regulator/max77620-regulator.c          | 17 ++++++----
- drivers/regulator/mt6315-regulator.c            |  2 +-
- drivers/regulator/rt4801-regulator.c            |  4 +--
- drivers/regulator/rtmv20-regulator.c            | 44 +++++++++++++++++++++++--
- drivers/regulator/scmi-regulator.c              |  2 +-
- drivers/staging/hikey9xx/hi6421v600-regulator.c |  4 +--
- include/linux/mfd/rohm-bd70528.h                |  4 +--
- include/linux/mfd/rohm-bd71828.h                | 10 +++---
- 19 files changed, 104 insertions(+), 42 deletions(-)
+ drivers/spi/spi-bcm2835.c     | 10 ++++++++--
+ drivers/spi/spi-bitbang.c     | 18 ++++++++++++++----
+ drivers/spi/spi-fsl-spi.c     |  4 ++++
+ drivers/spi/spi-omap-uwire.c  |  9 ++++++++-
+ drivers/spi/spi-omap2-mcspi.c | 33 ++++++++++++++++++++-------------
+ drivers/spi/spi-pxa2xx.c      |  9 ++++++++-
+ drivers/spi/spi-stm32-qspi.c  |  5 ++++-
+ drivers/spi/spi-zynq-qspi.c   |  7 ++++---
+ 8 files changed, 70 insertions(+), 25 deletions(-)
