@@ -2,121 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F6D39FB04
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB0939FB0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhFHPm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231237AbhFHPmV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:42:21 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E24C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 08:40:27 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f16b10061e36e09eea20757.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:b100:61e3:6e09:eea2:757])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8DAA91EC0501;
-        Tue,  8 Jun 2021 17:40:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623166825;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=82i8txEp3ospV0ft/E9iYm41kfODaP6cCj7DPKidEAE=;
-        b=Vc7dkd1n917Xr/SKeuCwQXYMxoShV+Nv9qgzeEVT90q4dUTMvQxAFfaBGYwxsbdyMODlKu
-        EBd56rePBkws3GgEo1L9IBXy57rxDLIbXZYIC1/j9wmSSXTpFgOBcMw0wK0N7flc3h7zC2
-        hgP2p2OI2AVk8bsUJAZHzIiEAEKdeQA=
-Date:   Tue, 8 Jun 2021 17:40:19 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        id S232214AbhFHPmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:42:43 -0400
+Received: from mga11.intel.com ([192.55.52.93]:7767 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231996AbhFHPme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 11:42:34 -0400
+IronPort-SDR: d3aRzP+3S6sFUd5uQDtuxTRPDKd45Qo7IAdy7Qfgvv5KlGNLiaDvfmlRYioVbc4q2GxrhmneaK
+ AUq+MzirG/iA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="201849037"
+X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
+   d="scan'208";a="201849037"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 08:40:30 -0700
+IronPort-SDR: YpOV4FO2hhJwyS1M3ho7/A8lj2Od4mrDRlaSd8geubsNCZjd9LS6TXZXsQbMDjnEqSKd/D3T3y
+ ynWY9o6OXWzw==
+X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
+   d="scan'208";a="552314839"
+Received: from ticela-az-103.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.36.77])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 08:40:29 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
         Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Rik van Riel <riel@surriel.com>
-Subject: Re: [patch V3 4/6] x86/pkru: Make PKRU=0 actually work
-Message-ID: <YL+PYz/cZPhSVmf2@zn.tnic>
-References: <20210608143617.565868844@linutronix.de>
- <20210608144346.045616965@linutronix.de>
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v2-fix-v2 0/3] x86/tdx: Handle port I/O
+Date:   Tue,  8 Jun 2021 08:40:20 -0700
+Message-Id: <cover.1623165571.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAPcyv4iOJJjghTPTLCkvT-Y_SJOhCbfm66m_NO5Ue+eVr_0NZA@mail.gmail.com>
+References: <CAPcyv4iOJJjghTPTLCkvT-Y_SJOhCbfm66m_NO5Ue+eVr_0NZA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210608144346.045616965@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just typos:
+This patchset addresses the review comments in the patch titled
+"[RFC v2 14/32] x86/tdx: Handle port I/O". Since it requires
+patch split, sending these together.
 
-On Tue, Jun 08, 2021 at 04:36:21PM +0200, Thomas Gleixner wrote:
-> So that wreckages any copy_to/from_user() on the way back to user space
+Changes since RFC v2-fix-v1:
+ * Splitted TDX decompression IO support into a seperate patch.
+ * Implemented tdg_handle_io() and tdx_early_io() in the similar
+   way as per review suggestion.
+ * Added VE_IS_IO_OUT() macro as per review suggestion.
+ * Added VE_IS_IO_STRING() to check the string I/O case in
+   tdx_early_io()
+ * Removed helper function tdg_in() and tdg_out() and directly
+   called IO hypercall to make the implementation uniform in
+   decompression code, early IO code and normal IO handler code.
 
-wrecks
+Changes since RFC v2:
+ * Removed assembly implementation of port IO emulation code
+   and modified __in/__out IO helpers to directly call C function
+   for in/out instruction emulation in decompression code.
+ * Added helper function tdx_get_iosize() to make it easier for
+   calling tdg_out/tdg_int() C functions from decompression code.
+ * Added support for early exception handler to support IO
+   instruction emulation in early boot kernel code.
+ * Removed alternative_ usage and made kernel only use #VE based
+   IO instruction emulation support outside the decompression module.
+ * Added support for protection_guest_has() API to generalize
+   AMD SEV/TDX specific initialization code in common drivers.
+ * Fixed commit log and comments as per review comments.
 
-> which hits memory which is protected by the default PKRU value.
-> 
-> Assumed that this does not fail (pure luck) then T1 goes back to user
-> space and because TIF_NEED_FPU_LOAD is set it ends up in
-> 
-> switch_fpu_return()
->     __fpregs_load_activate()
->       if (!fpregs_state_valid()) {
-> 	 load_XSTATE_from_task();
->       }
-> 
-> But if nothing touched the FPU between T1 scheduling out and in the
-							       ^^
 
-							s/in/if/ it seems.
+Andi Kleen (1):
+  x86/tdx: Handle early IO operations
 
-> fpregs_state is valid so switch_fpu_return() does nothing and just clears
-> TIF_NEED_FPU_LOAD. Back to user space with DEFAULT_PKRU loaded. -> FAIL #2!
-> 
-> The fix is simple: if get_xsave_addr() returns NULL then set the PKRU value
-> to 0 instead of the restrictive default PKRU value.
-> 
-> Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Rik van Riel <riel@surriel.com>
-> Cc: stable@vger.kernel.org
-> ---
->  arch/x86/include/asm/fpu/internal.h |   11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> --- a/arch/x86/include/asm/fpu/internal.h
-> +++ b/arch/x86/include/asm/fpu/internal.h
-> @@ -579,9 +579,16 @@ static inline void switch_fpu_finish(str
->  	 * return to userland e.g. for a copy_to_user() operation.
->  	 */
->  	if (!(current->flags & PF_KTHREAD)) {
-> +		/*
-> +		 * If the PKRU bit in xsave.header.xfeatures is not set,
-> +		 * then the PKRU compoment was in init state, which means
-                                 ^^^^^^^^^
+Kirill A. Shutemov (1):
+  x86/tdx: Handle port I/O
 
-component
+Kuppuswamy Sathyanarayanan (1):
+  x86/tdx: Handle port I/O in decompression code
 
-> +		 * XRSTOR will set PKRU to 0. If the bit is not set then
-> +		 * get_xsave_addr() will return NULL because the PKRU value
-> +		 * in memory is not valid. This means pkru_val has to be
-> +		 * set to 0 and not to init_pkru_value.
-> +		 */
->  		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
-> -		if (pk)
-> -			pkru_val = pk->pkru;
-> +		pkru_val = pk ? pk->pkru : 0;
->  	}
-
-Hohumm, let's see who cries out... :-\
+ arch/x86/boot/compressed/Makefile |  1 +
+ arch/x86/boot/compressed/tdcall.S |  3 ++
+ arch/x86/include/asm/io.h         | 15 +++---
+ arch/x86/include/asm/tdx.h        | 54 ++++++++++++++++++++
+ arch/x86/kernel/head64.c          |  3 ++
+ arch/x86/kernel/tdx.c             | 84 +++++++++++++++++++++++++++++++
+ 6 files changed, 154 insertions(+), 6 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/tdcall.S
 
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
