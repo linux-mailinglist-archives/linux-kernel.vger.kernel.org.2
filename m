@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75DC39FDBA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CDC39FDBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233662AbhFHRdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:33:03 -0400
-Received: from mail-qt1-f176.google.com ([209.85.160.176]:37585 "EHLO
-        mail-qt1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233622AbhFHRdA (ORCPT
+        id S233281AbhFHRdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:33:05 -0400
+Received: from mail-qk1-f170.google.com ([209.85.222.170]:33664 "EHLO
+        mail-qk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233673AbhFHRdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:33:00 -0400
-Received: by mail-qt1-f176.google.com with SMTP id z4so12867264qts.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:31:07 -0700 (PDT)
+        Tue, 8 Jun 2021 13:33:03 -0400
+Received: by mail-qk1-f170.google.com with SMTP id k4so21026344qkd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:31:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=44vYfbOIABvco8eG2D1gJ7pjRjWLhtG/LxGeHPBuoFg=;
-        b=WNcrPqJZFDhR+GppnUt/Ho4z1lo+ghVk453OcuFG5EQ3WnHh9c+La3faogb8M3azO4
-         nXtNGyofwd3/qykvUd59kHRlqyBkkndn9eycBzewLxOmTtwf5u+typeymWhqxXDSOVoe
-         ORiuJSpzNXZ8A9bmR1/oc28wh78BHn4O7WNyS5xa1rtiSb6xJBcA//ZRZjhTsoEt2Shi
-         g/dyG0dOD9JUBO17UAp1H2HQKhDLocuMPzPmfSq5461oZ9back2M7EvfDT0O35LzXGCY
-         NGm/YM1xDFwbKZPiULzPFNJQuTXUjXa8dJTfiA5F0C0R8Kv6QmZCPzGtCMuchHZ6bx2E
-         gd1Q==
+        bh=4A/Pcyw+QD8Ug/Nt2Xmd1/EAfukVYO4RIkYOrmyswQM=;
+        b=G1CaD5y6gwymINmHtsKEhWsaqJxxFVGj6787Wi/WaUi0ibM0X5gQeT7WW6yY0pEqS/
+         3StBiA+9Fs6AXgzwfa2bIyqtGJyEuBOHjnXzkH2/WxlBTj6rbZe5ZIlhpuzOtnBAb9Hq
+         4eGjLJiUi7c554WRkGjh/BGMvOUdNTc1IoeLLxHl7f6wbMkW1CHteyEy2tsjqsEpfZHY
+         o8CSRZut2bTqhw8QmfqUq5t2xEH+RKRosHMzemv8JJBUqm37s1A8j62TPn/CfHjCfydp
+         gzVypgdBjcGn7zKoB1akl6XvmI8kG3c7gzJWTb152tPbyu/BimAhaYfXB6I9OGVJTYyc
+         evJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=44vYfbOIABvco8eG2D1gJ7pjRjWLhtG/LxGeHPBuoFg=;
-        b=Kf4YStRu/rmyl/tYVWtQ4fUWYVYuc7vGdMep73nNrcSaeCuv9ciNYosV5dlhuSzQRD
-         6w9JPTBvAXwfQkhcw0ij6HRADWicMi0JUHStVrZxGwFuBV9GJKEDjA3fAeGVh3FjkTt2
-         sn3uh6ZFl2DhFJL60A8GGVz+vvqDmQY/g4KA+4v+2raIyFFB1qcCK5jhvG9oxWrfikWj
-         td7f50i3UnrLHKfmVgX2oAtEi1CPCUttl0Qq1ZVQ659ibspt70WuRYn4aWMa7JFWHKIE
-         oDr9S2c88DF7yeYdm4OIlWlQVWThNsH22lgYoBtHyYEs0jonggSJ+c6265+7B7+ilB0f
-         RwoA==
-X-Gm-Message-State: AOAM532QC6GHb7lcTfQvVhrCaQ4JKZFb3mrdXxXu/VW9qaGS70RvBZAy
-        LITslkn4c/x9ua3lvLgmTab+Qw==
-X-Google-Smtp-Source: ABdhPJzVrQjUH6buawo7b+mb3MemRseIkztNJFsIWxhwVUPVhBOzmMCnvGoQNBKu1a1p2MLKJVSdEg==
-X-Received: by 2002:a05:622a:1751:: with SMTP id l17mr8131811qtk.35.1623173407491;
-        Tue, 08 Jun 2021 10:30:07 -0700 (PDT)
+        bh=4A/Pcyw+QD8Ug/Nt2Xmd1/EAfukVYO4RIkYOrmyswQM=;
+        b=QHNaAPPihswBPuvo9TOGSKO2VvwbXxraclZauCAmKJxU59s5OA7uHqv1+EZrHGeoN7
+         1hXHyuxLKyYW6MQkB9r2qDjZGX4j+Ag9vQSMxNkDyaoN38Pmsre3/wXeKTt4l0SmT7eP
+         7b53Yqx64rPnMzNmFkIyuFD7h9GukC3O6PkPXUmUPOiKiuBKaethisxS5i26RzEutGq+
+         TSwNZdNpXnOdjSpAg98FXFePKwu2ACivmrp1no3HajjRFEKxDDzj+Mzdgk7fSo0A+nyj
+         ZuRMAuQ8REx9lO4cmvE0w4p5I9vjbqLYIkd2OpcIsfpCPLojlr8w4CNzDpvvb3dYurqd
+         PScg==
+X-Gm-Message-State: AOAM531bcjhyMOXGHR66Zhvx28sH3ysZ4p+ScPAznD0g0XHmDOF1TYpd
+        9FFiS4Sr3x27wNGs6+UUJXATjA==
+X-Google-Smtp-Source: ABdhPJzTo4VczO5D3fNE/OOCfEaOjp6b6rtTfwnhjqlgt3NXWkN04Lg7T/UGxCTR954ZwROyXIX2Cg==
+X-Received: by 2002:a37:71c5:: with SMTP id m188mr7310523qkc.97.1623173410212;
+        Tue, 08 Jun 2021 10:30:10 -0700 (PDT)
 Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id d10sm9482983qke.47.2021.06.08.10.30.06
+        by smtp.gmail.com with ESMTPSA id d10sm9482983qke.47.2021.06.08.10.30.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 10:30:07 -0700 (PDT)
+        Tue, 08 Jun 2021 10:30:09 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     freedreno@lists.freedesktop.org
 Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
@@ -52,14 +52,16 @@ Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
         Daniel Vetter <daniel@ffwll.ch>,
         Jordan Crouse <jordan@cosmicpenguin.net>,
         Akhil P Oommen <akhilpo@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
         Eric Anholt <eric@anholt.net>,
         Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
         linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
         dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
         GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 3/5] drm/msm/a6xx: add GMU_CX_GMU_CX_FALNEXT_INTF write for a650
-Date:   Tue,  8 Jun 2021 13:27:46 -0400
-Message-Id: <20210608172808.11803-4-jonathan@marek.ca>
+Subject: [PATCH v3 4/5] drm/msm/a6xx: add missing PC_DBG_ECO_CNTL bit for a640/a650
+Date:   Tue,  8 Jun 2021 13:27:47 -0400
+Message-Id: <20210608172808.11803-5-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20210608172808.11803-1-jonathan@marek.ca>
 References: <20210608172808.11803-1-jonathan@marek.ca>
@@ -69,43 +71,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-downstream msm-5.14 kernel added a write to this register, so match that.
+See downstream's "disable_tseskip" flag.
 
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c     | 4 +++-
- drivers/gpu/drm/msm/adreno/a6xx_gmu.xml.h | 2 ++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index c1ee02d6371d..0f3390eab55e 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -751,8 +751,10 @@ static int a6xx_gmu_fw_start(struct a6xx_gmu *gmu, unsigned int state)
- 	int ret;
- 	u32 chipid;
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 853be7651623..bbbf90d86828 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -844,13 +844,15 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
+ 	/* Setting the mem pool size */
+ 	gpu_write(gpu, REG_A6XX_CP_MEM_POOL_SIZE, 128);
  
--	if (adreno_is_a650(adreno_gpu))
-+	if (adreno_is_a650(adreno_gpu)) {
-+		gmu_write(gmu, REG_A6XX_GPU_GMU_CX_GMU_CX_FALNEXT_INTF, 1);
- 		gmu_write(gmu, REG_A6XX_GPU_GMU_CX_GMU_CX_FAL_INTF, 1);
-+	}
+-	/* Setting the primFifo thresholds default values */
++	/* Setting the primFifo thresholds default values,
++	 * and vccCacheSkipDis=1 bit (0x200) for A640 and newer
++	*/
+ 	if (adreno_is_a650(adreno_gpu))
+-		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00300000);
++		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00300200);
+ 	else if (adreno_is_a640(adreno_gpu))
+-		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00200000);
++		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00200200);
+ 	else
+-		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, (0x300 << 11));
++		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00180000);
  
- 	if (state == GMU_WARM_BOOT) {
- 		ret = a6xx_rpmh_start(gmu);
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.xml.h b/drivers/gpu/drm/msm/adreno/a6xx_gmu.xml.h
-index 5a43d3090b0c..eeef3d6d89b8 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.xml.h
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.xml.h
-@@ -292,6 +292,8 @@ static inline uint32_t A6XX_GMU_GPU_NAP_CTRL_SID(uint32_t val)
- 
- #define REG_A6XX_GPU_GMU_CX_GMU_CX_FAL_INTF			0x000050f0
- 
-+#define REF_A6XX_GPU_GMU_CX_GMU_CX_FALNEXT_INTF    		0x000050f1
-+
- #define REG_A6XX_GPU_GMU_CX_GMU_PWR_COL_CP_MSG			0x00005100
- 
- #define REG_A6XX_GPU_GMU_CX_GMU_PWR_COL_CP_RESP			0x00005101
+ 	/* Set the AHB default slave response to "ERROR" */
+ 	gpu_write(gpu, REG_A6XX_CP_AHB_CNTL, 0x1);
 -- 
 2.26.1
 
