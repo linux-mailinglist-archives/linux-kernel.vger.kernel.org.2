@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BFE3A02D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB9A3A02C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237680AbhFHTKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:10:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35576 "EHLO mail.kernel.org"
+        id S237390AbhFHTJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:09:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237356AbhFHTA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:00:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A968617C9;
-        Tue,  8 Jun 2021 18:43:43 +0000 (UTC)
+        id S237414AbhFHTAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:00:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7BAC616ED;
+        Tue,  8 Jun 2021 18:43:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177824;
-        bh=XVLWnGSjwUwC0WPQtXj76FA2O+nSv/AEz1ZBoP5Wmn4=;
+        s=korg; t=1623177827;
+        bh=k9qimZzS8pLMIf5jz271FfERmtM2ILCnjbYXe/DJ3QY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IQVfVAUZRPNSmdue80Aq4yYh2UzPBlVZPVP8eJl7bX5HIyw1Wym/k54l0NQ+eeiM9
-         FYX6ErlG02HE+bY217BAowczlzCg3QaCpsvfCWOT1/wAp+0xR1XqQDnvM0pBIGMpiT
-         zbXBab6uoSJPKac5cF8eCZejF8BaSq9mRZjFsxrs=
+        b=G+RKU2ChyFC0DSVIeHyHWIls/0Uyl9Lt81tBsi58j/YuMhKtLoaCNv6rykFrTiNVu
+         mahLCxokjXrAy/d9RnPdW5Q/1MQtmjkAJKnPGPTuIqBQafZQFChwL47mHioFuGWFwj
+         SmtDKPCboHvSV8sHOIl51ghcIF5c+k1KWVnFaf1s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 5.10 079/137] Bluetooth: use correct lock to prevent UAF of hdev object
-Date:   Tue,  8 Jun 2021 20:26:59 +0200
-Message-Id: <20210608175945.033252453@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 080/137] wireguard: do not use -O3
+Date:   Tue,  8 Jun 2021 20:27:00 +0200
+Message-Id: <20210608175945.063521105@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
 References: <20210608175942.377073879@linuxfoundation.org>
@@ -39,43 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Ma <linma@zju.edu.cn>
+From: Jason A. Donenfeld <Jason@zx2c4.com>
 
-commit e305509e678b3a4af2b3cfd410f409f7cdaabb52 upstream.
+commit cc5060ca0285efe2728bced399a1955a7ce808b2 upstream.
 
-The hci_sock_dev_event() function will cleanup the hdev object for
-sockets even if this object may still be in used within the
-hci_sock_bound_ioctl() function, result in UAF vulnerability.
+Apparently, various versions of gcc have O3-related miscompiles. Looking
+at the difference between -O2 and -O3 for gcc 11 doesn't indicate
+miscompiles, but the difference also doesn't seem so significant for
+performance that it's worth risking.
 
-This patch replace the BH context lock to serialize these affairs
-and prevent the race condition.
-
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Link: https://lore.kernel.org/lkml/CAHk-=wjuoGyxDhAF8SsrTkN0-YfCx7E6jUN3ikC_tn2AKWTTsA@mail.gmail.com/
+Link: https://lore.kernel.org/lkml/CAHmME9otB5Wwxp7H8bR_i2uH2esEMvoBMC8uEXBMH9p0q1s6Bw@mail.gmail.com/
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bluetooth/hci_sock.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireguard/Makefile |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/net/bluetooth/hci_sock.c
-+++ b/net/bluetooth/hci_sock.c
-@@ -762,7 +762,7 @@ void hci_sock_dev_event(struct hci_dev *
- 		/* Detach sockets from device */
- 		read_lock(&hci_sk_list.lock);
- 		sk_for_each(sk, &hci_sk_list.head) {
--			bh_lock_sock_nested(sk);
-+			lock_sock(sk);
- 			if (hci_pi(sk)->hdev == hdev) {
- 				hci_pi(sk)->hdev = NULL;
- 				sk->sk_err = EPIPE;
-@@ -771,7 +771,7 @@ void hci_sock_dev_event(struct hci_dev *
- 
- 				hci_dev_put(hdev);
- 			}
--			bh_unlock_sock(sk);
-+			release_sock(sk);
- 		}
- 		read_unlock(&hci_sk_list.lock);
- 	}
+--- a/drivers/net/wireguard/Makefile
++++ b/drivers/net/wireguard/Makefile
+@@ -1,5 +1,4 @@
+-ccflags-y := -O3
+-ccflags-y += -D'pr_fmt(fmt)=KBUILD_MODNAME ": " fmt'
++ccflags-y := -D'pr_fmt(fmt)=KBUILD_MODNAME ": " fmt'
+ ccflags-$(CONFIG_WIREGUARD_DEBUG) += -DDEBUG
+ wireguard-y := main.o
+ wireguard-y += noise.o
 
 
