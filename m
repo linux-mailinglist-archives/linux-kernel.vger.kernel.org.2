@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4FF39FC4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9308139FC53
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhFHQZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 12:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231175AbhFHQZo (ORCPT
+        id S232678AbhFHQZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 12:25:46 -0400
+Received: from mail-pg1-f177.google.com ([209.85.215.177]:41912 "EHLO
+        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232123AbhFHQZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:25:44 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF60DC061574;
-        Tue,  8 Jun 2021 09:23:50 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id r5so33080477lfr.5;
-        Tue, 08 Jun 2021 09:23:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xfFMl3am+sUPFNSf4fDjW2+vXmdiKfqC71c04UOJfps=;
-        b=d7EaHTFLXzr5TtKAV7jeDuItdyTVd7ODZsLltz0PyXKF7VPAHxwFt8uGV58MmnnR/x
-         rRzV6JJYLhrCUx/CNSgcsVpl6ec/doehFchqAkhwPjlEcXrajk1NbpgPUVi5HasAdLRM
-         7g2TH5gtRVvVIC12avqXuRJfsHHDq6zoHBbBsfOjqOBbTobAhqz4yqLS34ZZY46rzYms
-         YvUD6iWueIpbpS5eJoI965Wgl5J1RQ+VvjHN6kdUW6ov7BcY+AGi9jr5Lq/XKebSQvMt
-         ppJFwa43t6QdRwLhiZyiTxldnT3hUcXQEl51mRMh9h6VEi9Tn2wJLx0Qx/vkaFAiNHxb
-         tpIw==
+        Tue, 8 Jun 2021 12:25:45 -0400
+Received: by mail-pg1-f177.google.com with SMTP id l184so1393154pgd.8;
+        Tue, 08 Jun 2021 09:23:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=xfFMl3am+sUPFNSf4fDjW2+vXmdiKfqC71c04UOJfps=;
-        b=cQv85LxNgw4FAIPMtDlTGFt/j/cxhNE49xEfNHzUMGLlUsKf+Dsh5f/AvSOVtuFZVx
-         Fwy5uFzTDpue02P5vqExegBXSC7b1Ih2Hc2g1/pwSzwpjaGYOBQ4mTiStNCLOPgU0z3Q
-         VIY1RrfxtWcO9t/qYBvY4IUi5mrEubY3KRIjrbOOGxt0liMEYSCtQTSXgvqARSwYvSip
-         vV8diUnoGgxdyaFb6gTeLXhstIdatuIhCYHZJ+tT+21O5pTQ6RSQw2OzdKjnl2Z0TP1v
-         QytgHY0PcoVcIxY4pJDDfI08GDvLfEv6y7KgLwEX+RoZTlqqdLOv/WwBf+4oJwo1ELbI
-         lV0g==
-X-Gm-Message-State: AOAM530l68tp3+qZxDb4IUigya7AMu78IJx5yUH7edbR8+1iTXCoTGTw
-        i+64aXHEyVYotqQgJ3BXYd8=
-X-Google-Smtp-Source: ABdhPJxjT5X2T5QpFpMWB/5L1wgeYYbachqJPHrqKu3NHxDQuuZhLm5q9k1rzCCcOvmwAl3g5qyiLA==
-X-Received: by 2002:a19:651b:: with SMTP id z27mr15487172lfb.43.1623169429115;
-        Tue, 08 Jun 2021 09:23:49 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.224.40])
-        by smtp.gmail.com with ESMTPSA id x83sm15760lff.125.2021.06.08.09.23.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 09:23:48 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH] events: core: make perf_pmu_snapshot_aux static
-Date:   Tue,  8 Jun 2021 19:22:53 +0300
-Message-Id: <20210608162253.23351-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        bh=qCqEbRr/ZPdmz8AchOJtyzKCBs+O43d8wPQ5fZZFjhk=;
+        b=YNuXS3Okmlo1KkF/+e+wHVaYweLf8URsjuNIoLH2O90LshTx/p5cCBRBhxB/jBmPiB
+         ueAf+6qv6lE8gKxYDmkwr8RLS0crcjiW3612B18/9xPuEWSfBK53mAVdHpbpQ0YaYQmr
+         GjMg4vbL0XeP5XDVy3ISz74vXEriUP3Pjubcwz0d3f8X6Oem0HT4LN+a2tLeHKcrH8U6
+         i0s6MV2p+oVSEFuzcoG49ROXFjEaSX5048vVPRPEbsJwpu449UuMoTAL5uhOKfgFO3PJ
+         1cffb5/EDp/DZAWgtMhNxwNDMIaVHTN1+JgZgao/HPnVHCFF2KtbSO1JQ9wZZFkGs0gu
+         b7Cw==
+X-Gm-Message-State: AOAM531E/zD2fwUWJ6ujik/TbBv8DpUpxZzMVUj9BgDGgdV87rK/8n5Q
+        aCp+VWbKG6Z6YQRoLski7JBZs3RqI5o=
+X-Google-Smtp-Source: ABdhPJw4bmfvWGcz16m0nccIT5A1wyVoaTqb2ljpnWRWjedCwkO8zIDp8El5QdjOUdkYia3UO1TSlw==
+X-Received: by 2002:a65:5684:: with SMTP id v4mr22680238pgs.218.1623169415549;
+        Tue, 08 Jun 2021 09:23:35 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id p40sm4440358pfw.142.2021.06.08.09.23.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 09:23:34 -0700 (PDT)
+Subject: Re: [PATCH 02/16] MIPS: don't include <linux/genhd.h> in
+ <asm/mach-rc32434/rb.h>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geoff Levand <geoff@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        ceph-devel@vger.kernel.org
+References: <20210608160603.1535935-1-hch@lst.de>
+ <20210608160603.1535935-3-hch@lst.de>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <9a073f63-65f6-6f3d-600d-e3900707fd06@acm.org>
+Date:   Tue, 8 Jun 2021 09:23:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210608160603.1535935-3-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse says:
-  warning: symbol 'perf_pmu_snapshot_aux' was not declared. Should it be static?
+On 6/8/21 9:05 AM, Christoph Hellwig wrote:
+> There is no need to include genhd.h from a random arch header, and not
+> doing so prevents the possibility for nasty include loops.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/mips/include/asm/mach-rc32434/rb.h | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/mach-rc32434/rb.h b/arch/mips/include/asm/mach-rc32434/rb.h
+> index d502673a4f6c..34d179ca020b 100644
+> --- a/arch/mips/include/asm/mach-rc32434/rb.h
+> +++ b/arch/mips/include/asm/mach-rc32434/rb.h
+> @@ -7,8 +7,6 @@
+>  #ifndef __ASM_RC32434_RB_H
+>  #define __ASM_RC32434_RB_H
+>  
+> -#include <linux/genhd.h>
+> -
+>  #define REGBASE		0x18000000
+>  #define IDT434_REG_BASE ((volatile void *) KSEG1ADDR(REGBASE))
+>  #define UART0BASE	0x58000
 
-Since perf_pmu_snapshot_aux() is not used outside this file,
-it can be made static
-
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- kernel/events/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 6fee4a7e88d7..0d98d6a6f949 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6667,7 +6667,7 @@ static unsigned long perf_prepare_sample_aux(struct perf_event *event,
- 	return data->aux_size;
- }
- 
--long perf_pmu_snapshot_aux(struct perf_buffer *rb,
-+static long perf_pmu_snapshot_aux(struct perf_buffer *rb,
- 			   struct perf_event *event,
- 			   struct perf_output_handle *handle,
- 			   unsigned long size)
--- 
-2.31.1
-
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
