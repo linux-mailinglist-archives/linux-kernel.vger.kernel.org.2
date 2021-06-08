@@ -2,75 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A5139FDE0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C013C39FDE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233082AbhFHRjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232644AbhFHRjk (ORCPT
+        id S233772AbhFHRk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:40:27 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38952 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233600AbhFHRkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:39:40 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CED4C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 10:37:47 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id k15so16264636pfp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VYVl7szFEBK6C42IK2EXBO8BhWc8zsrG6U+k/87a+5E=;
-        b=cgGYIpNaZ6iE0KhM2pK2533D8tirYFFO5sH+DLDp6h6o2j5kwQMDrH2fxKCr9QIy/O
-         FDmzdwqj2T/+o0YiqJ+YQZkFC6HZUV2R5BMpGuGGMhgu5P9tQtKSTQhhe2PjxrjQSuJI
-         ma2t2S0KURAMesD+aZMf8z20bDbvrVf6t6hEQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VYVl7szFEBK6C42IK2EXBO8BhWc8zsrG6U+k/87a+5E=;
-        b=qGXrMOJ1i0H19ouvckOoz6X+FURJfaSuFSsVOMRtngm19wiKm+o3KtVDJhPwIAVA+Q
-         G2wGJ4lUR/ndiG6vVqidODGIuI+XnHlQSB0BDSw3k/vyUj/5xza0jqXfBnEhDWQcoVUm
-         QevaUDkcHvxVZnm32AR+S44+MDXmPIESyEog99Xrm1/tdeOnGC92rs3yLm4FH7JpbKu7
-         ZnUFd5Ss6gc8wC8xtBB61//v34SarRYmPkaMXcz2lfk6yl8gdEFDWEeTNufEmlmirlrJ
-         Lw4VsyVHSVGQxC2V3DgRJmnRYgLREmLKH/0KjbtvUFCzqIBhRESxQjiswvBelPSmixUa
-         soTg==
-X-Gm-Message-State: AOAM531yrXoCLamdKXjg4Nz7ZmeJZQP5MfnH1uXXzNRNVV7bmzLYu+lm
-        alfbqsa4mydPSo7YrHaMs4g2vw==
-X-Google-Smtp-Source: ABdhPJyQ8uYoWu20PGLwrzt9tyJVMnFgrFO31FHFR6A9l/q0q9qRSLEOBallutB5qpBq34etUJ1Uwg==
-X-Received: by 2002:a05:6a00:9a:b029:2f1:6fd:aa51 with SMTP id c26-20020a056a00009ab02902f106fdaa51mr993390pfj.38.1623173866752;
-        Tue, 08 Jun 2021 10:37:46 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h18sm12025517pgl.87.2021.06.08.10.37.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 10:37:46 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 10:37:45 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] sysctl: remove trailing spaces and tabs
-Message-ID: <202106081037.7FBEA6D63E@keescook>
-References: <20210608075700.13173-1-thunder.leizhen@huawei.com>
+        Tue, 8 Jun 2021 13:40:25 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 90D74219AD;
+        Tue,  8 Jun 2021 17:38:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623173911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ZYYnHSdL2Ejrdfcc93QIymDWZMhP6D0CegjSZ2K9MM=;
+        b=NG/U/GMWxUCZI24h4Tv85IxOxhtrxLMUbz/GgjaEnYkPh+0zysfskrc9gJSSvLvpKugKm/
+        R8N6idt5jGxmXWPUuX1HLFaR7GvMAHnlp5TSvGrwWDIux4bFxn/A2tghGH63VR5RlnawOP
+        wRVlsGO9vc68QudrU2XeKYuYTkCmq5w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623173911;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ZYYnHSdL2Ejrdfcc93QIymDWZMhP6D0CegjSZ2K9MM=;
+        b=DiToVhtkyX3maP9hA6sXcmIWCIfCGua1hSBwSebiDK1EHy1fgCbD2mn95Lq+tanFq5fEEi
+        eSY62BYyrxuiX3Ag==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 7E5AC118DD;
+        Tue,  8 Jun 2021 17:38:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623173911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ZYYnHSdL2Ejrdfcc93QIymDWZMhP6D0CegjSZ2K9MM=;
+        b=NG/U/GMWxUCZI24h4Tv85IxOxhtrxLMUbz/GgjaEnYkPh+0zysfskrc9gJSSvLvpKugKm/
+        R8N6idt5jGxmXWPUuX1HLFaR7GvMAHnlp5TSvGrwWDIux4bFxn/A2tghGH63VR5RlnawOP
+        wRVlsGO9vc68QudrU2XeKYuYTkCmq5w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623173911;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ZYYnHSdL2Ejrdfcc93QIymDWZMhP6D0CegjSZ2K9MM=;
+        b=DiToVhtkyX3maP9hA6sXcmIWCIfCGua1hSBwSebiDK1EHy1fgCbD2mn95Lq+tanFq5fEEi
+        eSY62BYyrxuiX3Ag==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id 85bRHRerv2AOdwAALh3uQQ
+        (envelope-from <bp@suse.de>); Tue, 08 Jun 2021 17:38:31 +0000
+Date:   Tue, 8 Jun 2021 19:38:26 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [tip:x86/cpu 4/4] Warning: Kernel ABI header at
+ 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at
+ 'arch/x86/include/asm/cpufeatures.h':  111< /* free                                    (
+ 3*32+29) */
+Message-ID: <YL+rEhU4A1tXNFYO@zn.tnic>
+References: <20210602094153.GH1271937@shao2-debian>
+ <YLdTRopUV9OyulSq@zn.tnic>
+ <YLelUPtti40D7DUl@kernel.org>
+ <YLlIsS1brAdNyG4K@zn.tnic>
+ <YL+j2CfGJS40sPKM@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210608075700.13173-1-thunder.leizhen@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YL+j2CfGJS40sPKM@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 03:57:00PM +0800, Zhen Lei wrote:
-> Run the following command to find and remove the trailing spaces and tabs:
-> 
-> sed -r -i 's/[ \t]+$//' kernel/sysctl*
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+On Tue, Jun 08, 2021 at 02:07:36PM -0300, Arnaldo Carvalho de Melo wrote:
+> Apply the patch, try to build it, it doesn't matter where you build it,
+> only that after applying the patch I want to know if it doersn't build,
+> so that I can look at it earlier than when it gets to my attention by
+> merging upstream, etc.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I believe if you give the 0day guys a step-by-step what to do, they'll
+probably add it to the lineup. :)
+
+> We're doing it already, Peter wants to help me with it, and I think this
+> has value.
+
+Or, if we start doing that then they don't have to do anything.
 
 -- 
-Kees Cook
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
