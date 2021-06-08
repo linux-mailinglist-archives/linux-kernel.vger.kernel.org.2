@@ -2,155 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35583A059E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2477E3A05A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232726AbhFHVWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 17:22:20 -0400
-Received: from mail-pg1-f171.google.com ([209.85.215.171]:46640 "EHLO
-        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhFHVWS (ORCPT
+        id S233634AbhFHVXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 17:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233473AbhFHVXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 17:22:18 -0400
-Received: by mail-pg1-f171.google.com with SMTP id n12so17559406pgs.13;
-        Tue, 08 Jun 2021 14:20:25 -0700 (PDT)
+        Tue, 8 Jun 2021 17:23:06 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FEAC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 14:21:12 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id s14so15827729pfd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 14:21:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GQwh626zfM0U1fcFtkvnbbFBBL2HeKYCTc8Ov3QqP4A=;
-        b=SS7DicXMMBMKZ7ie6EtJkLEw0evfTPyAuOuXZnrnG7Ptwpe0XEnIwfvSQSIKrcTwr7
-         FF3oEG28yFCs8gdj2qKbIUbAy6HtCEgocfWSMIN0KZb6IC6sDXpjWToBqRyZohl/0GjG
-         Gi28AxNyxKedpAzj7dz/xCRVOKGe+w9y6FTZcGgNnSRyORDaDV3LIj+eS+H1wKPuov/1
-         m/iCikpcC0m9Ny2PYgYt7Sm4+aEeKG/rhVy/Czgt992bBEPc73rRFLSMSrqv7OUoy0uv
-         sR2q/VhZa+z9sEdANtNC5Vw/vexju96qoEudw2NKwJ27IcNj6+2Fhw/Q1boF/NP0W+S6
-         3NfQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ChJ13ljAgJ7EfOQLhGTX+mefIlqGvrgq/460yvmHsUo=;
+        b=vbi5ZvwtNN7j7ucceP3obD1w/oR6xaF+NwRZquvQQQQ3Jh1W3ks3S9VPlFU0COwlpS
+         3whTXOCEkotNXuX/GD+Y2CH+dP/Uv9GYPidtKGblkm8sS8zhZ+9iEnV0YUUjzTKcZAAW
+         VaRJdsCayP233AOCgE4baSd1s9Zs3ZPWJHZcKU9FxdU7rXQkrW3aKutKWOt62N6i+tXC
+         1We4hn9bHJQHkI1CQaCAWA7EgVErD5dwi0zeXO5f2V7M90JUSZKZcpPY/d4Jgin37l+W
+         9f0uXxOiub7rUYv8NWLPP2W1++2mwR6e1R+p22nNlzHPRfstRN6DQujuchO5OlAjaNSh
+         2peg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GQwh626zfM0U1fcFtkvnbbFBBL2HeKYCTc8Ov3QqP4A=;
-        b=n5AYtwIVcnmlqZFBCUlSX1NLF32gelTSuSbpb7nOVRM0iFpAS08vLMYMFDX3gj1no0
-         g3TtmhsNRZmqrcCAurWmt3QoQOD1eiw/Y5KkyqlKbyfcWp6x1s7ZoiqVUStKWZP9D7xh
-         DyYPFaCGOoh0EwrGL34jXxns9B66dz3MnuhiWPELYu9mZnMZMmvhB0k0Rw0HmitRao2Y
-         yQSVVD/QjyaNoWysghA3wmRdt6AK91Mim5rdnfLk2+2nWSMxATMFAF+ZJIYgzKe6oxg2
-         8dTqGcVAijzEna04H8uodt7hy3vfvRHLe9MlXbaMiRhU6ZQezip/Y1cw3CRDr12EbyU0
-         rPNg==
-X-Gm-Message-State: AOAM5314r4/QnvQN82Fb1GPYgrON3jqcedyP3gndcr4uqFswm03lMfk8
-        TB3wGn7kh+C7VGcahVb89kdg6XE1p7w=
-X-Google-Smtp-Source: ABdhPJygWFsMb/NOsKZoaO9oP0XFGhfudCSBTF1S3GtJKoosdbqaixIbEv27pInfwAtVYPE7Kxax2w==
-X-Received: by 2002:a63:5756:: with SMTP id h22mr168526pgm.377.1623187164943;
-        Tue, 08 Jun 2021 14:19:24 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id r24sm3120205pjz.11.2021.06.08.14.19.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 14:19:24 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netev@vger.kernel.org
-Cc:     mnhagan88@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev@vger.kernel.org (open list:BROADCOM B53 ETHERNET SWITCH DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next v2] net: dsa: b53: Do not force CPU to be always tagged
-Date:   Tue,  8 Jun 2021 14:19:15 -0700
-Message-Id: <20210608211915.3978509-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ChJ13ljAgJ7EfOQLhGTX+mefIlqGvrgq/460yvmHsUo=;
+        b=WYIKVkyfuP967splPTaZUzxkCJ1xYjwWxk3XR78mjxctLwd7Jr5ZKmhh2DyvbfexU/
+         dL9IzjE8D/SgcVxxlcpcd5s5RPRe7CDyUVE3qgAchsvq7KubGnkKzHcTAJyASOxl8bar
+         iQ1VDY6FV8G1wyzwK8wzfNRA/5zLxcKBKXlBrI1+jZpA3Xv6FsmdaFBLSUWYgSSbmMnl
+         zofVPqVENMhfNjMKG0Puo9ZoLcSTUX5Nkl2zMY7uYpLQILpw9eD4J/kMq8PoNBHm3mgE
+         9vg/dV2YQbdTGmW6iM8oBlSSgIxt0KiDThN/r59t2uhQroNLXSIj2AhWUyw6u94y3EeD
+         q4eA==
+X-Gm-Message-State: AOAM530SIuThWMxKvTFIyUPVE02KD0D+SuFvjTLS/xxuT/+i3hULtvpM
+        qmOshwvq5mPGKKKQBJoDbYYMdFqiobbN3pBWOl923Q==
+X-Google-Smtp-Source: ABdhPJylDuSbv9eyffAheNsnE8iu3Ox3RijJ+OgB1Xwm6rdvtnlS1PUiuxRbpKznR38A/8NuQ/PCwWHtPURgN3HJfiU=
+X-Received: by 2002:a63:d0d:: with SMTP id c13mr213662pgl.384.1623187271280;
+ Tue, 08 Jun 2021 14:21:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210608064852.609327-1-davidgow@google.com> <20210608065052.610009-1-davidgow@google.com>
+In-Reply-To: <20210608065052.610009-1-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 8 Jun 2021 14:21:00 -0700
+Message-ID: <CAFd5g47iZTc2opF7umkFWN9Zczw_FUXec1oAgLwMS_GMfYNV=w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] kunit: tool: Support skipped tests in kunit_tool
+To:     David Gow <davidgow@google.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Marco Elver <elver@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ca8931948344 ("net: dsa: b53: Keep CPU port as tagged in all
-VLANs") forced the CPU port to be always tagged in any VLAN membership.
-This was necessary back then because we did not support Broadcom tags
-for all configurations so the only way to differentiate tagged and
-untagged traffic while DSA_TAG_PROTO_NONE was used was to force the CPU
-port into being always tagged.
+On Mon, Jun 7, 2021 at 11:50 PM David Gow <davidgow@google.com> wrote:
+>
+> Add support for the SKIP directive to kunit_tool's TAP parser.
+>
+> Skipped tests now show up as such in the printed summary. The number of
+> skipped tests is counted, and if all tests in a suite are skipped, the
+> suite is also marked as skipped. Otherwise, skipped tests do affect the
+> suite result.
+>
+> Example output:
+> [00:22:34] ======== [SKIPPED] example_skip ========
+> [00:22:34] [SKIPPED] example_skip_test # SKIP this test should be skipped
+> [00:22:34] [SKIPPED] example_mark_skipped_test # SKIP this test should be skipped
+> [00:22:34] ============================================================
+> [00:22:34] Testing complete. 2 tests run. 0 failed. 0 crashed. 2 skipped.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
+> Reviewed-by: Daniel Latypov <dlatypov@google.com>
 
-With most configurations enabling Broadcom tags, especially after
-8fab459e69ab ("net: dsa: b53: Enable Broadcom tags for 531x5/539x
-families") we do not need to apply this unconditional force tagging of
-the CPU port in all VLANs.
-
-A helper function is introduced to faciliate the encapsulation of the
-specific condition requiring the CPU port to be tagged in all VLANs and
-the dsa_switch_ops::untag_bridge_pvid boolean is moved to when
-dsa_switch_ops::setup is called when we have already determined the
-tagging protocol we will be using.
-
-Reported-by: Matthew Hagan <mnhagan88@gmail.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Changes in v2:
-
-- properly deal with DSA_TAG_PROTO_NONE so we continue to support
-  that mode on older chips like 5325 and 5365 until they gain Broadcom
-  tag support
-
- drivers/net/dsa/b53/b53_common.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index 3ca6b394dd5f..6e199454e41d 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -1084,6 +1084,11 @@ static int b53_setup(struct dsa_switch *ds)
- 	unsigned int port;
- 	int ret;
- 
-+	/* Request bridge PVID untagged when DSA_TAG_PROTO_NONE is set
-+	 * which forces the CPU port to be tagged in all VLANs.
-+	 */
-+	ds->untag_bridge_pvid = dev->tag_protocol == DSA_TAG_PROTO_NONE;
-+
- 	ret = b53_reset_switch(dev);
- 	if (ret) {
- 		dev_err(ds->dev, "failed to reset switch\n");
-@@ -1455,6 +1460,13 @@ static int b53_vlan_prepare(struct dsa_switch *ds, int port,
- 	return 0;
- }
- 
-+static bool b53_vlan_port_needs_forced_tagged(struct dsa_switch *ds, int port)
-+{
-+	struct b53_device *dev = ds->priv;
-+
-+	return dev->tag_protocol == DSA_TAG_PROTO_NONE && dsa_is_cpu_port(ds, port);
-+}
-+
- int b53_vlan_add(struct dsa_switch *ds, int port,
- 		 const struct switchdev_obj_port_vlan *vlan,
- 		 struct netlink_ext_ack *extack)
-@@ -1477,7 +1489,7 @@ int b53_vlan_add(struct dsa_switch *ds, int port,
- 		untagged = true;
- 
- 	vl->members |= BIT(port);
--	if (untagged && !dsa_is_cpu_port(ds, port))
-+	if (untagged && !b53_vlan_port_needs_forced_tagged(ds, port))
- 		vl->untag |= BIT(port);
- 	else
- 		vl->untag &= ~BIT(port);
-@@ -1514,7 +1526,7 @@ int b53_vlan_del(struct dsa_switch *ds, int port,
- 	if (pvid == vlan->vid)
- 		pvid = b53_default_pvid(dev);
- 
--	if (untagged && !dsa_is_cpu_port(ds, port))
-+	if (untagged && !b53_vlan_port_needs_forced_tagged(ds, port))
- 		vl->untag &= ~(BIT(port));
- 
- 	b53_set_vlan_entry(dev, vlan->vid, vl);
-@@ -2660,7 +2672,6 @@ struct b53_device *b53_switch_alloc(struct device *base,
- 	dev->priv = priv;
- 	dev->ops = ops;
- 	ds->ops = &b53_switch_ops;
--	ds->untag_bridge_pvid = true;
- 	dev->vlan_enabled = true;
- 	/* Let DSA handle the case were multiple bridges span the same switch
- 	 * device and different VLAN awareness settings are requested, which
--- 
-2.25.1
-
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
