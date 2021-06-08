@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D22539F639
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BF739F6B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbhFHMSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:18:53 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:4403 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232430AbhFHMSv (ORCPT
+        id S232697AbhFHMd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:33:56 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3168 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232531AbhFHMdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:18:51 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FzpzQ1Mtyz6tq1;
-        Tue,  8 Jun 2021 20:13:06 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 20:16:56 +0800
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 8 Jun 2021 20:16:56 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <rafael.j.wysocki@intel.com>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] PNP: pnpbios: convert list_for_each to entry variant
-Date:   Tue, 8 Jun 2021 20:35:32 +0800
-Message-ID: <1623155732-62028-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Tue, 8 Jun 2021 08:33:55 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fzq6Y1YHhz6G862;
+        Tue,  8 Jun 2021 20:19:17 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.62.217) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 14:32:00 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <sfr@canb.auug.org.au>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-next@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH 1/5] doc: Fix warning in Documentation/security/IMA-templates.rst
+Date:   Tue, 8 Jun 2021 14:31:20 +0200
+Message-ID: <20210608123124.335868-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.62.217]
+X-ClientProxiedBy: lhreml753-chm.china.huawei.com (10.201.108.203) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-convert list_for_each() to list_for_each_entry() where
-applicable.
+This patch fixes the warning:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Documentation/security/IMA-templates.rst:81: WARNING: Inline
+substitution_reference start-string without end-string.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- drivers/pnp/pnpbios/core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ Documentation/security/IMA-templates.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pnp/pnpbios/core.c b/drivers/pnp/pnpbios/core.c
-index 9b760e7..669ef47 100644
---- a/drivers/pnp/pnpbios/core.c
-+++ b/drivers/pnp/pnpbios/core.c
-@@ -298,14 +298,12 @@ struct pnp_protocol pnpbios_protocol = {
- 
- static int __init insert_device(struct pnp_bios_node *node)
- {
--	struct list_head *pos;
- 	struct pnp_dev *dev;
- 	char id[8];
- 	int error;
- 
- 	/* check if the device is already added */
--	list_for_each(pos, &pnpbios_protocol.devices) {
--		dev = list_entry(pos, struct pnp_dev, protocol_list);
-+	list_for_each_entry(dev, &pnpbios_protocol.devices, protocol_list) {
- 		if (dev->number == node->handle)
- 			return -EEXIST;
- 	}
+diff --git a/Documentation/security/IMA-templates.rst b/Documentation/security/IMA-templates.rst
+index 5adc22f99496..1a91d92950a7 100644
+--- a/Documentation/security/IMA-templates.rst
++++ b/Documentation/security/IMA-templates.rst
+@@ -78,7 +78,7 @@ descriptors by adding their identifier to the format string
+  - 'iuid': the inode UID;
+  - 'igid': the inode GID;
+  - 'imode': the inode mode;
+- - 'xattrnames': a list of xattr names (separated by |), only if the xattr is
++ - 'xattrnames': a list of xattr names (separated by ``|``), only if the xattr is
+     present;
+  - 'xattrlengths': a list of xattr lengths (u32), only if the xattr is present;
+  - 'xattrvalues': a list of xattr values;
 -- 
-2.6.2
+2.25.1
 
