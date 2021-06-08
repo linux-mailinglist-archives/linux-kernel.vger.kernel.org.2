@@ -2,83 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614B039ED5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 06:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC9539ED5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 06:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhFHEGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 00:06:15 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:60661 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231238AbhFHEGN (ORCPT
+        id S229556AbhFHEJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 00:09:35 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:45297 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229455AbhFHEJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 00:06:13 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yaohuiwang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ubixn0M_1623125043;
-Received: from Dillions-MBP-16.local(mailfrom:yaohuiwang@linux.alibaba.com fp:SMTPD_---0Ubixn0M_1623125043)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 08 Jun 2021 12:04:19 +0800
-From:   Yaohui Wang <yaohuiwang@linux.alibaba.com>
-Subject: Re: [PATCH] mm: fix pfn calculation mistake in __ioremap_check_ram
-To:     Dave Hansen <dave.hansen@intel.com>, dave.hansen@linux.intel.com
-Cc:     luto@kernel.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, yaohuiwang@linux.alibaba.com,
-        luoben@linux.alibaba.com
-References: <20210607091938.47960-1-yaohuiwang@linux.alibaba.com>
- <b77d2374-56d5-4b97-1319-56e744b81303@intel.com>
-Message-ID: <0d1a308b-4d0e-d91a-52a7-6456ec6713f8@linux.alibaba.com>
-Date:   Tue, 8 Jun 2021 12:04:03 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Tue, 8 Jun 2021 00:09:34 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4456B580622;
+        Tue,  8 Jun 2021 00:07:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 08 Jun 2021 00:07:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=ZXRH+YluM1mHCS1EWUiCY/Sg8O
+        LccfHe1oW5iAay6y8=; b=dLzuZ6dBYf7ZA8tWLOBFZYLi7ERsGe/4vnMXG+ovvb
+        dNBO0+SaFGwoqYSFrfq/TeyHfKyvxrA7+LCdopIuT4abpLHxtRwtRiafQcDYCPat
+        qJIqOZO+wCZC5S9Jc1OP7+t1FviGpgevqIMotci37P+RWc5u3AweMzFljZk90E8C
+        uorV6rXagD+OssJQzllRnAIK88+rOAC9ZyXv2gWxy4d1HSCwSWgzx2vnV9CNp918
+        YC/3tiHas9krbrPIaAsdBROr7Bvoe/ShRRzruKRuvZVgg5NN90vX+/5ZjI8u04GM
+        p2bWCbC62CP6wlcgDaz+c/Sgr5ITd2GPENJsHfqmLRBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ZXRH+YluM1mHCS1EW
+        UiCY/Sg8OLccfHe1oW5iAay6y8=; b=nSRGsW+CQ2Zx1RVpIUu8W/VD/k5P+32BW
+        5k2ltd+UhI3dfldBPzHrYiOP/IJqGkNW+V+rHASacW/vFygnaZoxNjRYKnOsu+26
+        wb2yK3jpl6lsNTg3N1Z4XJrYY2lf9H29DMFbhC67l0PTc050rcZk4XsKTLAlv14Q
+        VA4WREYSaX/4IN4O+ES4TMq0a/3gKZh6nvbbJXbsXfK0WlSHTGZtZmW3fyrqvbXa
+        t+R7L8vvqWvwls0pV+Sn8LeQqb7+A69w0UOnuznjkcA3sCc2YehcHbxcUEnMH+9N
+        bxOjmIDeg9/4X/829tUWUJiLhE5SFmQZ1P6oFtmbWoLrDz0ZJIVBw==
+X-ME-Sender: <xms:C-2-YD2uka4HsA6gcdsV2Ia7vebY4Yjp9E8q7KBMb54jnAzGL7-67Q>
+    <xme:C-2-YCEaxASy5VlcrvNO_jLFpMDGkFCRsuVNuZGEQsiRZygk8jPHWq7unPjeT6uYS
+    2pUP6PrTQ2rggjEIg>
+X-ME-Received: <xmr:C-2-YD4exeK49N_YZWWf2BWDhVyCbCY3wwvjTyDOFxeugx7Jg08pzMUToo9oJjrBpcVTaA3kbfk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgjeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflohhhnhcuvfhh
+    ohhmshhonhcuoehgihhtsehjohhhnhhthhhomhhsohhnrdhfrghsthhmrghilhdrtghomh
+    drrghuqeenucggtffrrghtthgvrhhnpefffeeihfdukedtuedufeetieeuudfhhefhkefh
+    tefgtdeuffekffelleetveduieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehgihhtsehjohhhnhhthhhomhhsohhnrdhfrghsthhmrghilhdr
+    tghomhdrrghu
+X-ME-Proxy: <xmx:C-2-YI0AJZGjcB3wIbI9BoC9X8VNl4i9A7cQnBkvwZ25czWJlkKCLw>
+    <xmx:C-2-YGGufw99T-O81-FeiSyEruv6_Pr0IHFhspQdxjv5k1VFTZ0lzQ>
+    <xmx:C-2-YJ8BW7DhSDSCEAPSJWrwh_hHP79qreTZtWh_kOUwSh1c0MMlAg>
+    <xmx:Du2-YJBeX2Fg9oFZVXGwEJ1ZrZnXHiAqNON8tbpzquYgcm2o_LM48g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Jun 2021 00:07:35 -0400 (EDT)
+From:   John Thomson <git@johnthomson.fastmail.com.au>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Pratyush Yadav <p.yadav@ti.com>, linux-mtd@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        John Thomson <git@johnthomson.fastmail.com.au>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] mtd: spi-nor: write support for minor aligned partitions
+Date:   Tue,  8 Jun 2021 14:07:19 +1000
+Message-Id: <20210608040719.14431-1-git@johnthomson.fastmail.com.au>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <b77d2374-56d5-4b97-1319-56e744b81303@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Do not prevent writing to mtd partitions where a partition boundary sits
+on a minor erasesize boundary.
+This addresses a FIXME that has been present since the start of the
+linux git history:
+/* Doesn't start on a boundary of major erase size */
+/* FIXME: Let it be writable if it is on a boundary of
+ * _minor_ erase size though */
 
+Allow a uniform erase region spi-nor device to be configured
+to use the non-uniform erase regions code path for an erase with:
+CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE=y
 
-On 2021/6/7 21:55, Dave Hansen wrote:
-> On 6/7/21 2:19 AM, Yaohui Wang wrote:
->> According to the source code in function
->> arch/x86/mm/ioremap.c:__ioremap_caller, after __ioremap_check_mem, if the
->> mem range is IORES_MAP_SYSTEM_RAM, then __ioremap_caller should fail. But
->> because of the pfn calculation problem, __ioremap_caller can success
->> on IORES_MAP_SYSTEM_RAM region when the @size parameter is less than
->> PAGE_SIZE. This may cause misuse of the ioremap function and raise the
->> risk of performance issues. For example, ioremap(phys, PAGE_SIZE-1) may
->> cause the direct memory mapping of @phys to be uncached, and iounmap won't
->> revert this change. This patch fixes this issue.
->>
->> In arch/x86/mm/ioremap.c:__ioremap_check_ram, start_pfn should wrap down
->> the res->start address, and end_pfn should wrap up the res->end address.
->> This makes the check more strict and should be more reasonable.
-> 
-> Was this found by inspection, or was there a real-world bug which this
-> patch addresses?
->
+On supporting hardware (SECT_4K: majority of current SPI-NOR device)
+provide the facility for an erase to use the least number
+of SPI-NOR operations, as well as access to 4K erase without
+requiring CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
 
-I did a performance test for linux kernel in many aspects. One of my 
-scripts is to test the performance influence of ioremap. I found that 
-applying ioremap on normal RAM may cause terrible performance issues.
+Introduce erasesize_minor to the mtd struct,
+the smallest erasesize supported by the device
 
-To avoid memory cache behavior aliasing, ioremap will call 
-memtype_kernel_map_sync to sync the cache attribute in the directing 
-mapping, which causes:
+On existing devices, this is useful where write support is wanted
+for data on a 4K partition, such as some u-boot-env partitions,
+or RouterBoot soft_config, while still netting the performance
+benefits of using 64K sectors
 
-1. If the phys addr is in a huge page in the directing mapping, then 
-ioremap will split the huge page into 4K pages.
-2. It will set the PCD bit in the directing mapping pte.
+Performance:
+time mtd erase firmware
+OpenWrt 5.10 ramips MT7621 w25q128jv 0xfc0000 partition length
 
-Both the above behaviors will downgrade the performance of the machine, 
-especially when there is important code/data which is accessed 
-frequently. What's worse, iounmap won't clear the PCD bit in the 
-directing mapping pte, and I need to call ioremap_cache to clear the PCD 
-bit. All these should be avoided.
+Without this patch
+MTD_SPI_NOR_USE_4K_SECTORS=y	|n
+real    2m 11.66s		|0m 50.86s
+user    0m 0.00s		|0m 0.00s
+sys     1m 56.20s		|0m 50.80s
 
-Another thing also confuses me:
+With this patch
+MTD_SPI_NOR_USE_VARIABLE_ERASE=n|y		|4K_SECTORS=y
+real    0m 51.68s		|0m 50.85s	|2m 12.89s
+user    0m 0.00s		|0m 0.00s	|0m 0.01s
+sys     0m 46.94s		|0m 50.38s	|2m 12.46s
 
- From __ioremap_caller, we can see that __ioremap_caller don't allow us 
-to remap normal RAM. In my understanding, direct mapping only maps 
-normal RAM. So if the remap behavior is not allowed on normal RAM, it 
-should be unnecessary to call memtype_kernel_map_sync. Is this right?
+Signed-off-by: John Thomson <git@johnthomson.fastmail.com.au>
+---
+Have not tested on variable erase regions device.
+
+checkpatch does not like the printk(KERN_WARNING
+these should be changed separately beforehand?
+
+Changes RFC -> v1:
+Fix uninitialized variable smatch warning
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/mtd/mtdpart.c       | 52 ++++++++++++++++++++++++++++---------
+ drivers/mtd/spi-nor/Kconfig | 10 +++++++
+ drivers/mtd/spi-nor/core.c  | 10 +++++--
+ include/linux/mtd/mtd.h     |  2 ++
+ 4 files changed, 60 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 665fd9020b76..fe7626b5020e 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -38,10 +38,11 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
+ 	struct mtd_info *master = mtd_get_master(parent);
+ 	int wr_alignment = (parent->flags & MTD_NO_ERASE) ?
+ 			   master->writesize : master->erasesize;
++	int wr_alignment_minor = 0;
+ 	u64 parent_size = mtd_is_partition(parent) ?
+ 			  parent->part.size : parent->size;
+ 	struct mtd_info *child;
+-	u32 remainder;
++	u32 remainder, remainder_minor;
+ 	char *name;
+ 	u64 tmp;
+ 
+@@ -143,6 +144,7 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
+ 		int i, max = parent->numeraseregions;
+ 		u64 end = child->part.offset + child->part.size;
+ 		struct mtd_erase_region_info *regions = parent->eraseregions;
++		uint32_t erasesize_minor = child->erasesize;
+ 
+ 		/* Find the first erase regions which is part of this
+ 		 * partition. */
+@@ -153,15 +155,24 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
+ 		if (i > 0)
+ 			i--;
+ 
+-		/* Pick biggest erasesize */
+ 		for (; i < max && regions[i].offset < end; i++) {
++			/* Pick biggest erasesize */
+ 			if (child->erasesize < regions[i].erasesize)
+ 				child->erasesize = regions[i].erasesize;
++			/* Pick smallest non-zero erasesize */
++			if ((erasesize_minor > regions[i].erasesize) && (regions[i].erasesize > 0))
++				erasesize_minor = regions[i].erasesize;
+ 		}
++
++		if (erasesize_minor < child->erasesize)
++			child->erasesize_minor = erasesize_minor;
++
+ 		BUG_ON(child->erasesize == 0);
+ 	} else {
+ 		/* Single erase size */
+ 		child->erasesize = master->erasesize;
++		if (master->erasesize_minor)
++			child->erasesize_minor = master->erasesize_minor;
+ 	}
+ 
+ 	/*
+@@ -169,26 +180,43 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
+ 	 * exposes several regions with different erasesize. Adjust
+ 	 * wr_alignment accordingly.
+ 	 */
+-	if (!(child->flags & MTD_NO_ERASE))
++	if (!(child->flags & MTD_NO_ERASE)) {
+ 		wr_alignment = child->erasesize;
++		if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE) && child->erasesize_minor)
++			wr_alignment_minor = child->erasesize_minor;
++	}
+ 
+ 	tmp = mtd_get_master_ofs(child, 0);
+ 	remainder = do_div(tmp, wr_alignment);
+ 	if ((child->flags & MTD_WRITEABLE) && remainder) {
+-		/* Doesn't start on a boundary of major erase size */
+-		/* FIXME: Let it be writable if it is on a boundary of
+-		 * _minor_ erase size though */
+-		child->flags &= ~MTD_WRITEABLE;
+-		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
+-			part->name);
++		if (wr_alignment_minor) {
++			tmp = mtd_get_master_ofs(child, 0);
++			remainder_minor = do_div(tmp, wr_alignment_minor);
++			if (remainder_minor == 0)
++				child->erasesize = child->erasesize_minor;
++		}
++
++		if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor != 0)) {
++			child->flags &= ~MTD_WRITEABLE;
++			printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
++				part->name);
++		}
+ 	}
+ 
+ 	tmp = mtd_get_master_ofs(child, 0) + child->part.size;
+ 	remainder = do_div(tmp, wr_alignment);
+ 	if ((child->flags & MTD_WRITEABLE) && remainder) {
+-		child->flags &= ~MTD_WRITEABLE;
+-		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
+-			part->name);
++		if (wr_alignment_minor) {
++			tmp = mtd_get_master_ofs(child, 0) + child->part.size;
++			remainder_minor = do_div(tmp, wr_alignment_minor);
++			if (remainder_minor == 0)
++				child->erasesize = child->erasesize_minor;
++		}
++		if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor != 0)) {
++			child->flags &= ~MTD_WRITEABLE;
++			printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
++				part->name);
++		}
+ 	}
+ 
+ 	child->size = child->part.size;
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 24cd25de2b8b..09df9f1a8127 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -10,6 +10,16 @@ menuconfig MTD_SPI_NOR
+ 
+ if MTD_SPI_NOR
+ 
++config MTD_SPI_NOR_USE_VARIABLE_ERASE
++	bool "Disable uniform_erase to allow use of all hardware supported erasesizes"
++	depends on !MTD_SPI_NOR_USE_4K_SECTORS
++	default n
++	help
++	  Allow mixed use of all hardware supported erasesizes,
++	  by forcing spi_nor to use the multiple eraseregions code path.
++	  For example: A 68K erase will use one 64K erase, and one 4K erase
++	  on supporting hardware.
++
+ config MTD_SPI_NOR_USE_4K_SECTORS
+ 	bool "Use small 4096 B erase sectors"
+ 	default y
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index bd2c7717eb10..43d9b54e7edd 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1262,6 +1262,8 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
+ 
+ static bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
+ {
++	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE))
++		return false;
+ 	return !!nor->params->erase_map.uniform_erase_type;
+ }
+ 
+@@ -2381,6 +2383,7 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+ {
+ 	struct spi_nor_erase_map *map = &nor->params->erase_map;
+ 	const struct spi_nor_erase_type *erase = NULL;
++	const struct spi_nor_erase_type *erase_minor = NULL;
+ 	struct mtd_info *mtd = &nor->mtd;
+ 	u32 wanted_size = nor->info->sector_size;
+ 	int i;
+@@ -2413,8 +2416,9 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+ 	 */
+ 	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
+ 		if (map->erase_type[i].size) {
+-			erase = &map->erase_type[i];
+-			break;
++			if (!erase)
++				erase = &map->erase_type[i];
++			erase_minor = &map->erase_type[i];
+ 		}
+ 	}
+ 
+@@ -2422,6 +2426,8 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+ 		return -EINVAL;
+ 
+ 	mtd->erasesize = erase->size;
++	if (erase_minor && erase_minor->size < erase->size)
++		mtd->erasesize_minor = erase_minor->size;
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index a89955f3cbc8..33eafa27da50 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -243,6 +243,8 @@ struct mtd_info {
+ 	 * information below if they desire
+ 	 */
+ 	uint32_t erasesize;
++	/* "Minor" (smallest) erase size supported by the whole device */
++	uint32_t erasesize_minor;
+ 	/* Minimal writable flash unit size. In case of NOR flash it is 1 (even
+ 	 * though individual bits can be cleared), in case of NAND flash it is
+ 	 * one NAND page (or half, or one-fourths of it), in case of ECC-ed NOR
+-- 
+2.31.1
+
