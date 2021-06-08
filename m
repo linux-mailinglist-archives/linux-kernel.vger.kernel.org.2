@@ -2,156 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262DC39F968
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9219D39F96E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbhFHOoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:44:15 -0400
-Received: from mga14.intel.com ([192.55.52.115]:53113 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233500AbhFHOoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:44:13 -0400
-IronPort-SDR: RLGUtuJ43C01br4aqc2u+pB8Z+/vUj9idKqFkLLfhD+A/fQgMo53Yse1+6zFPmKslN61ydKjJ9
- DV1mzrFiPGNg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204672094"
-X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="204672094"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 07:42:20 -0700
-IronPort-SDR: OB1R/q3WO+xGtAkr6tY+o/ofGSfScK7T9O6AecF2gsG14/sB5fdh07ugc+ucTyAdahZ50UKv3B
- J1z8zGDjRTRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="637653904"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 08 Jun 2021 07:42:17 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id E4F5A184; Tue,  8 Jun 2021 17:42:40 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: [PATCH v1 3/3] serial: 8250_exar: Add ->unregister_gpio() callback
-Date:   Tue,  8 Jun 2021 17:42:39 +0300
-Message-Id: <20210608144239.12697-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210608144239.12697-1-andriy.shevchenko@linux.intel.com>
-References: <20210608144239.12697-1-andriy.shevchenko@linux.intel.com>
+        id S233549AbhFHOp1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Jun 2021 10:45:27 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:41924 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233540AbhFHOpZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:45:25 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id uk-mta-8-KfK2vafPOQykcDa_LFRCgg-1;
+ Tue, 08 Jun 2021 15:43:29 +0100
+X-MC-Unique: KfK2vafPOQykcDa_LFRCgg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Tue, 8 Jun 2021 15:43:28 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Tue, 8 Jun 2021 15:43:28 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Al Viro' <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Subject: RE: [RFC][PATCHSET] iov_iter work
+Thread-Topic: [RFC][PATCHSET] iov_iter work
+Thread-Index: AQHXWwdMcZdaHAC1iEOMJ2ZGTqwEgasKLatg
+Date:   Tue, 8 Jun 2021 14:43:28 +0000
+Message-ID: <7591552a5ec5469d8a084c47f370ac03@AcuMS.aculab.com>
+References: <YL0dCEVEiVL+NwG6@zeniv-ca.linux.org.uk>
+In-Reply-To: <YL0dCEVEiVL+NwG6@zeniv-ca.linux.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the sake of reducing layering violation add ->unregister_gpio()
-callback and use it in the ->exit() one.
+My 'brain farts' :-)
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/serial/8250/8250_exar.c | 36 ++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+I've looked as at iterate_all_kinds() and my brain melted.
 
-diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
-index 3ffeedc29c83..d502240bbcf2 100644
---- a/drivers/tty/serial/8250/8250_exar.c
-+++ b/drivers/tty/serial/8250/8250_exar.c
-@@ -114,6 +114,7 @@ struct exar8250;
- struct exar8250_platform {
- 	int (*rs485_config)(struct uart_port *, struct serial_rs485 *);
- 	int (*register_gpio)(struct pci_dev *, struct uart_8250_port *);
-+	void (*unregister_gpio)(struct uart_8250_port *);
- };
- 
- /**
-@@ -352,9 +353,8 @@ static void setup_gpio(struct pci_dev *pcidev, u8 __iomem *p)
- 	writeb(0x00, p + UART_EXAR_MPIOOD_15_8);
- }
- 
--static void *
--__xr17v35x_register_gpio(struct pci_dev *pcidev,
--			 const struct software_node *node)
-+static struct platform_device *__xr17v35x_register_gpio(struct pci_dev *pcidev,
-+							const struct software_node *node)
- {
- 	struct platform_device *pdev;
- 
-@@ -374,6 +374,12 @@ __xr17v35x_register_gpio(struct pci_dev *pcidev,
- 	return pdev;
- }
- 
-+static void __xr17v35x_unregister_gpio(struct platform_device *pdev)
-+{
-+	device_remove_software_node(&pdev->dev);
-+	platform_device_unregister(pdev);
-+}
-+
- static const struct property_entry exar_gpio_properties[] = {
- 	PROPERTY_ENTRY_U32("exar,first-pin", 0),
- 	PROPERTY_ENTRY_U32("ngpios", 16),
-@@ -384,8 +390,7 @@ static const struct software_node exar_gpio_node = {
- 	.properties = exar_gpio_properties,
- };
- 
--static int xr17v35x_register_gpio(struct pci_dev *pcidev,
--				  struct uart_8250_port *port)
-+static int xr17v35x_register_gpio(struct pci_dev *pcidev, struct uart_8250_port *port)
- {
- 	if (pcidev->vendor == PCI_VENDOR_ID_EXAR)
- 		port->port.private_data =
-@@ -394,6 +399,15 @@ static int xr17v35x_register_gpio(struct pci_dev *pcidev,
- 	return 0;
- }
- 
-+static void xr17v35x_unregister_gpio(struct uart_8250_port *port)
-+{
-+	if (!port->port.private_data)
-+		return;
-+
-+	__xr17v35x_unregister_gpio(port->port.private_data);
-+	port->port.private_data = NULL;
-+}
-+
- static int generic_rs485_config(struct uart_port *port,
- 				struct serial_rs485 *rs485)
- {
-@@ -419,6 +433,7 @@ static int generic_rs485_config(struct uart_port *port,
- 
- static const struct exar8250_platform exar8250_default_platform = {
- 	.register_gpio = xr17v35x_register_gpio,
-+	.unregister_gpio = xr17v35x_unregister_gpio,
- 	.rs485_config = generic_rs485_config,
- };
- 
-@@ -484,6 +499,7 @@ static int iot2040_register_gpio(struct pci_dev *pcidev,
- static const struct exar8250_platform iot2040_platform = {
- 	.rs485_config = iot2040_rs485_config,
- 	.register_gpio = iot2040_register_gpio,
-+	.unregister_gpio = xr17v35x_unregister_gpio,
- };
- 
- /*
-@@ -555,17 +571,11 @@ pci_xr17v35x_setup(struct exar8250 *priv, struct pci_dev *pcidev,
- 
- static void pci_xr17v35x_exit(struct pci_dev *pcidev)
- {
-+	const struct exar8250_platform *platform = exar_get_platform();
- 	struct exar8250 *priv = pci_get_drvdata(pcidev);
- 	struct uart_8250_port *port = serial8250_get_port(priv->line[0]);
--	struct platform_device *pdev;
- 
--	pdev = port->port.private_data;
--	if (!pdev)
--		return;
+Certainly optimising for 'copy all the data' seems right.
+There are also hot code paths where a vector length of 1
+is very common (eg sendmsg).
+
+Do I remember the code incrementing iter->iov as it
+progresses down the list of buffers?
+That is probably rather more dangerous than keeping
+the buffer index.
+If the buffer index is kept then 'backing up' and
+setting a fixed offset become much safer - if slower
+in unusual cases.
+
+The short iov_cache[] used for iovec could be put inside
+the iov_iter structure (perhaps a special extended structure).
+I think everything allocates both (typically on stack)
+at exactly the same time.
+This definitely neatens up all the callers.
+(I've had a patch for it - except io-uring.)
+
+I wonder if long iovec could read the ptr:length
+from userspace as the copy progresses?
+(To save the malloc/free.)
+ISTR the total length is needed up front - so that
+would need to be a separate loop.
+This might be problematic for architectures that have
+directional and ranged user access enables.
+
+	David
+
 -
--	device_remove_software_node(&pdev->dev);
--	platform_device_unregister(pdev);
--	port->port.private_data = NULL;
-+	platform->unregister_gpio(port);
- }
- 
- static inline void exar_misc_clear(struct exar8250 *priv)
--- 
-2.30.2
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
