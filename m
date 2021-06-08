@@ -2,125 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BC039FE39
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E959A39FE34
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233964AbhFHRxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:53:43 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:35743 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233959AbhFHRxl (ORCPT
+        id S233954AbhFHRxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233699AbhFHRxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:53:41 -0400
-Received: by mail-oi1-f182.google.com with SMTP id v22so22387997oic.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=X9zro4Vc1E9NQWs0dfxD3ilnXRKka3meacOTat93e/Y=;
-        b=K9ygi+hSRK7UXZ19Xo44KiVUwDJnhFLTAs69hp1Z4ik3ftARsDB4JpRtUCZJIhkT0c
-         dPi7ZCrY+2SXu28N6UMSARt8QRwLApfh7yJrvjl+bLeRxxSz7r+ROAs+WhDTI8UGMDKi
-         Fy0u6FzbblQkcyMcdlScSLlRbX/XAp+dVdr3cFsHFSpY+gxACyQEzF68b4CTcRa4HXOX
-         c2L8knwj5f6wlmmr6kJdZWDP3BW/HZyApzEYc9PSH4VhmfW80EePozxYGBlNRAemS0BZ
-         V9EzWLY4F2V18rBWdRbdN7me4M+mWXNzJ3ZhSM+7kUVFYe8P7ox8VPf+gDcQU8wp4GxM
-         fruQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=X9zro4Vc1E9NQWs0dfxD3ilnXRKka3meacOTat93e/Y=;
-        b=a+uCIlCu1yGYjbfDXm5eKU12efGlfntcAHljR7W+Q+ttNfh/2Dfb7BgAHPAah0+sEY
-         1bSbwcXjpRwD+5a79sCfPqKzgYYVYBfhw0mYB6f5dcEW6cJYLITBbKVEJiYXc271ZeO1
-         fmHH/ViXnXXpaHfY/L7P44Iu0FQTrhdDOl/TL0fI7ncfIk8kFVykEwrrhvX8SLholJ2E
-         WGchlqbTqJEnc3khxiKiEd4ankABr58yNv5TMCLisrWy51Lvvk7cTjqwpblmoQybWgGg
-         elihPv41jjDCOunN9ntcx7sEsKpYutB5duv59JF44L9zPAWy5JLp55ZJLkJzdLvtD+K3
-         M6yA==
-X-Gm-Message-State: AOAM533KRiRZMA0v1DqlGNJb+Pjed8ctMJWQM++ZNZ0L5aiYYkyeXF9H
-        PlKKIXt/Y/fKtI+czAm+jmi4GQ==
-X-Google-Smtp-Source: ABdhPJzNckfpl5VR9Un+ieSDIHA9Iu5hEPnv+vkak/JRYxMrZDzCrTVIH3cFsi02xXFOCzELBdbEqQ==
-X-Received: by 2002:aca:340a:: with SMTP id b10mr3697818oia.95.1623174633383;
-        Tue, 08 Jun 2021 10:50:33 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c11sm1663960oot.25.2021.06.08.10.50.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 10:50:32 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] remoteproc: qcom: pas: Add SC8180X adsp, cdsp and mpss
-Date:   Tue,  8 Jun 2021 10:49:44 -0700
-Message-Id: <20210608174944.2045215-2-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210608174944.2045215-1-bjorn.andersson@linaro.org>
-References: <20210608174944.2045215-1-bjorn.andersson@linaro.org>
+        Tue, 8 Jun 2021 13:53:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C508C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 10:51:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=b3WsjQdgR3MSJTjU3lrqrbMQ+LQT0nybe5G1JEwCYNk=; b=wPbpuXpgSFM4faHH4KLtmHiMyd
+        4OQ2bRX+8TbH7QnWknOg5vlX55XClwOYMBKk1wXomhFP/XN0apMWnfmUuScLPMNK8tf9RUukCrQhI
+        WjbNFsUc6iKJrJqIMTdwicyGlk8v1KFNJuq+xr0fAyNCVAKH5bLG8+3Rz55yliFlkdRbAhWAUfYkm
+        Pk0M4BOTtaMyDiY9gruqiuhWp2NoKN0r7pe4zDvyNs016VVN1+EIwVOaYd5kNkpVth39xvlIAWD9c
+        t/wNKGD+CK6WeRUxmaKb2dOFs0IJ7refvDrgS4P9qrL0kaBBaQ5WIGxplainMEy2RyxiBY5+wIvzh
+        D498pu0g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lqfsV-00HEEL-Jg; Tue, 08 Jun 2021 17:51:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B24A73001E3;
+        Tue,  8 Jun 2021 19:51:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9B9E42D1D1298; Tue,  8 Jun 2021 19:51:02 +0200 (CEST)
+Date:   Tue, 8 Jun 2021 19:51:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     qiang.zhang@windriver.com
+Cc:     ryabinin.a.a@gmail.com, glider@google.com, dvyukov@google.com,
+        matthias.bgg@gmail.com, andreyknvl@google.com,
+        akpm@linux-foundation.org, oleg@redhat.com,
+        walter-zh.wu@mediatek.com, frederic@kernel.org,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] irq_work: record irq_work_queue() call stack
+Message-ID: <YL+uBq8LzXXZsYVf@hirez.programming.kicks-ass.net>
+References: <20210331063202.28770-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331063202.28770-1-qiang.zhang@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm SC8180X has the typical ADSP, CDSP and MPSS remote
-processors operated using the PAS interface, add support for these.
+On Wed, Mar 31, 2021 at 02:32:02PM +0800, qiang.zhang@windriver.com wrote:
 
-Attempts to configuring mss.lvl is failing, so a new adsp_data is
-provided that skips this resource, for now.
+> @@ -70,6 +70,9 @@ bool irq_work_queue(struct irq_work *work)
+>  	if (!irq_work_claim(work))
+>  		return false;
+>  
+> +	/*record irq_work call stack in order to print it in KASAN reports*/
+> +	kasan_record_aux_stack(work);
+> +
+>  	/* Queue the entry and raise the IPI if needed. */
+>  	preempt_disable();
+>  	__irq_work_queue_local(work);
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+Thanks for the Cc :/ Also NAK.
 
-Changes since v1:
-- None
-
- drivers/remoteproc/qcom_q6v5_pas.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index b921fc26cd04..a79bee901e9b 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -689,6 +689,25 @@ static const struct adsp_data mpss_resource_init = {
- 	.ssctl_id = 0x12,
- };
- 
-+static const struct adsp_data sc8180x_mpss_resource = {
-+	.crash_reason_smem = 421,
-+	.firmware_name = "modem.mdt",
-+	.pas_id = 4,
-+	.has_aggre2_clk = false,
-+	.auto_boot = false,
-+	.active_pd_names = (char*[]){
-+		"load_state",
-+		NULL
-+	},
-+	.proxy_pd_names = (char*[]){
-+		"cx",
-+		NULL
-+	},
-+	.ssr_name = "mpss",
-+	.sysmon_name = "modem",
-+	.ssctl_id = 0x12,
-+};
-+
- static const struct adsp_data slpi_resource_init = {
- 		.crash_reason_smem = 424,
- 		.firmware_name = "slpi.mdt",
-@@ -811,6 +830,9 @@ static const struct of_device_id adsp_of_match[] = {
- 	{ .compatible = "qcom,qcs404-cdsp-pas", .data = &cdsp_resource_init },
- 	{ .compatible = "qcom,qcs404-wcss-pas", .data = &wcss_resource_init },
- 	{ .compatible = "qcom,sc7180-mpss-pas", .data = &mpss_resource_init},
-+	{ .compatible = "qcom,sc8180x-adsp-pas", .data = &sm8150_adsp_resource},
-+	{ .compatible = "qcom,sc8180x-cdsp-pas", .data = &sm8150_cdsp_resource},
-+	{ .compatible = "qcom,sc8180x-mpss-pas", .data = &sc8180x_mpss_resource},
- 	{ .compatible = "qcom,sdm845-adsp-pas", .data = &adsp_resource_init},
- 	{ .compatible = "qcom,sdm845-cdsp-pas", .data = &cdsp_resource_init},
- 	{ .compatible = "qcom,sdx55-mpss-pas", .data = &sdx55_mpss_resource},
--- 
-2.29.2
-
+I shall go revert this instantly. KASAN is not NMI safe, while
+irq_work_queue() is very carefully crafted to be exactly that.
