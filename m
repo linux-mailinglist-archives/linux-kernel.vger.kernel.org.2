@@ -2,124 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7022439EF29
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A0C39EF38
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhFHHCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 03:02:30 -0400
-Received: from comms.puri.sm ([159.203.221.185]:46090 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229923AbhFHHC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 03:02:29 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 7B7C4DFE00;
-        Tue,  8 Jun 2021 00:00:35 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id fZ9T855StqfQ; Tue,  8 Jun 2021 00:00:34 -0700 (PDT)
-Message-ID: <e9bfbc6421d2092b652dd2bb466aed54d72809b3.camel@puri.sm>
-Subject: Re: [PATCH v4 2/5] dt-bindings: media: document SK Hynix Hi-846
- MIPI CSI-2 8M pixel sensor
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     krzysztof.kozlowski@canonical.com, mchehab@kernel.org,
-        paul.kocialkowski@bootlin.com, pavel@ucw.cz,
-        devicetree@vger.kernel.org, kernel@puri.sm,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        phone-devel@vger.kernel.org, robh@kernel.org, shawnx.tu@intel.com
-Date:   Tue, 08 Jun 2021 09:00:28 +0200
-In-Reply-To: <YL6MaFAt2PaJq+2E@pendragon.ideasonboard.com>
-References: <20210607105213.1211722-1-martin.kepplinger@puri.sm>
-         <20210607105213.1211722-3-martin.kepplinger@puri.sm>
-         <YL6MaFAt2PaJq+2E@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S230226AbhFHHIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 03:08:11 -0400
+Received: from mail-bn8nam11on2054.outbound.protection.outlook.com ([40.107.236.54]:60800
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229678AbhFHHIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 03:08:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CTrI+F9fzlGEf/vr8UViSfNFlBan148YciFG/B6qvXnHeqLucFF7JuaZg6KXTytwt3+mCMO2j6NJQm6TQv75STl03H8U7EgcUejj+IAy06ItaWr/L8v+0EfbsKXVuoTVWrd7WA5+zcm7JZN8/JBwn8gOz2ygB79/06v3FeVJsScgyRMqxDvQWkxoJufwXTRON1euJ8Eb4icATnVGBCiwLd0brpYkwn67a6JH+SUgK8SHjmJCObjpPTL6rf3sdsfOPEjG0Z9NZyueKz+AIAqrGSHHiVUj7z+Niz82WbXrvBvrn6B6l1XX9WHlkeNfq8GZivTMSeGp1AR5ekOToiIeXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+8b/sno6E+BmF/xJgUezDnlX8CtPjjo9DPRSVSGe0us=;
+ b=mM+M9SIcNt6qClqgGFp8Q/hBaBQvGbM3NDxF6vo0NBcDGfBL/KjCzEXp1/u6F8oLNv5lmPGs4aqDPkO2GAZvRk/SBDyuclmUyUL7u8hdBtWFd3we6O0H6Bnii0S+yKDSDc+8dldvVJrflOwFhBjqhULujc6FnbZ0WRnM/jKCtVXk3zfmHKqo7Vo3pG6Ksj+5mx4MPazE8Y2w8ceEfpRIjKf5KZFOj0cCVgWxZfKtSyV48Ww/Sc/9Oxsu/uGE/AL8M9uxM+za0dMoxb30atHppdVpZnQQ63omieTozOq3lkorozG2fCuIUgZU9F5D7XUJcbZuJBD56SwIhUurklMfFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+8b/sno6E+BmF/xJgUezDnlX8CtPjjo9DPRSVSGe0us=;
+ b=wH/CP+49aqSJl48gKiQbU9pWkmKl34oYZoFma2k7nLRu2qijdeG+X4Yc2X57NraTMSC34GUqmCXPHKoeOC7ZwtN8AcyHtTFyz9MM2XGXkSqJVEbIXpOgoZJbTfu+RXwkSKlRnybtoVfQdb5I+bWJmg92xDQI0V0aGhm0Md9HeG4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
+ by BN9PR12MB5339.namprd12.prod.outlook.com (2603:10b6:408:104::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Tue, 8 Jun
+ 2021 07:06:15 +0000
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::3c78:e58b:fba7:b8dd]) by BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::3c78:e58b:fba7:b8dd%6]) with mapi id 15.20.4195.030; Tue, 8 Jun 2021
+ 07:06:15 +0000
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210608125046.07c6deca@canb.auug.org.au>
+ <22010e38-3686-87ce-532d-4a53cae990b1@amd.com>
+ <7b825bc4-9f81-3010-6445-d6708e34a9bd@amd.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <6dc40376-77fc-2f43-693e-1bd2c52d9cbd@amd.com>
+Date:   Tue, 8 Jun 2021 03:06:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <7b825bc4-9f81-3010-6445-d6708e34a9bd@amd.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [142.116.203.225]
+X-ClientProxiedBy: YTOPR0101CA0034.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:15::47) To BN9PR12MB5129.namprd12.prod.outlook.com
+ (2603:10b6:408:136::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.100] (142.116.203.225) by YTOPR0101CA0034.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:15::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.27 via Frontend Transport; Tue, 8 Jun 2021 07:06:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8822cc33-b6ea-4abd-7f2b-08d92a4be7c0
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5339:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN9PR12MB53391B847D65C4AFCD16C78692379@BN9PR12MB5339.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LafSOeZjwTDYoPHsOQHeRlnZMjX/BPF6vlHo1s3tgrtH7Nk5YxH1cdSqWP4l1Nxit7F1l0Vu2Awrlujd3ZXCXxykHbttwTu/vEsPx+7d0KIAFdOcLm38ivAhyKd9U3EwVVSnzGwsLBo5nsLe6vYz2NpJZdZsAzLfoPVrsx3Bki6Elf1b5qAm6wnHiuDvChrlpGmJ6guZYarl90ycamUe7002jyYMGoCcXEeETKF9kcd9dxQ+OX9ajmGNcYoBr9gllgj3VlymUXCgOdPCEsiWTI3QdUUA6kjhHXPrS+BrCGialtc8Npc9IonSIc7nNOuQmyoKlKmHtqwTefPeU/FiACp5xF8djBDYXabnEQfP3hvWQ+kgYVRHHuN4O+n4J9TpCCJ1ZyV8werKbBkJLMlB+eya8oZvYNOLB9ngGOILovQU4UHBrL2o8AfduiRRIsunxjykFRgJqFrPRTjPLhWH+gu+Z//uRMPd3zhkX4X84DnZGBpkwQ0OEUvk1d14xc4G+FPMrkURnL8wKwMLgrDfqn5vfPXXElLsHE7pDrReGAzPN7n7HVn8t0OI/bdcZPcpA+jojYX28rbMSUvOCA9e/QFJvmmaBq7f8+54K6t4ffmBYxLt4sEhHOnBqh9Ya6rz8FeRLuNYK4qP8JfyAy+9HTvneOKrDeSOdlb5cwsHdfoK/b03bjx6jpeNnhP3UlHZ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5129.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(39860400002)(366004)(396003)(16526019)(186003)(316002)(16576012)(4326008)(31686004)(8676002)(83380400001)(8936002)(66574015)(26005)(54906003)(66946007)(44832011)(66476007)(66556008)(36756003)(86362001)(5660300002)(110136005)(6486002)(478600001)(956004)(38100700002)(2616005)(2906002)(53546011)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?odCUxphLzQ1wtOOpQFDFan8tAb1bd6fPlBkMVg/PKFzpSoIFxyQrXnHT?=
+ =?Windows-1252?Q?0K7Rju2bQs82+XjT9jpgkqTzvJtKvS1W8G7NjSEhDyfSpU/5hW8BwS7B?=
+ =?Windows-1252?Q?azSe8nzMnX3fvtdjbIbkrt5RzQCzyuAWsWbftkgEXHxvr+3cVBmGKBLa?=
+ =?Windows-1252?Q?WkZhBfFnQcvx9xTiFGz2jq84END6WpPNkfZm5EytA/sMzxHtBV4hGLjg?=
+ =?Windows-1252?Q?tt4FCGGIFUpzjGl6/Yz1RT/5ld1sUa/HXG8hmE+eII1SYSpis5fURUt/?=
+ =?Windows-1252?Q?IvjRvfZ3uz9a2QUXlpMss3NJvY8SXoerYxUA+OJys4Rdlz+2Lzgj/Rzs?=
+ =?Windows-1252?Q?b0nqzpOQb+vqU/AeKqZRS+AUZIirIbsUA7b66vM5HGK/Cleduc3wgEK9?=
+ =?Windows-1252?Q?amyLsmIDft+57cIW5bJUWyXZu1N0pFvzT1G02iHdiSRFx3wYgIeLCbya?=
+ =?Windows-1252?Q?mps5RiLgCDKSB57BGBfjRF9Z5xb8OIepwYJqrBixQ3cVuopGcmGqYsLR?=
+ =?Windows-1252?Q?b71R7I0CKJleEw433FyfgxSaQbf6R4/NpRgnSRvmwp5/l3QVGTXKVBew?=
+ =?Windows-1252?Q?+ieoPzo+UGY+iFlcgCVEfTRm4bmgU/GXEs1S7pBTzLynxgG+MF5vV030?=
+ =?Windows-1252?Q?4lmUxW/VNb+wI8u3Gbl9Lny7vJdg7uwVrgb3bZkaXQkndos7PKUa4aLl?=
+ =?Windows-1252?Q?78ALa/IRJRPLXpbUnlD3ncxwLgmLXo4ZnwROrR6lb1CWXs/v/HMqi/X3?=
+ =?Windows-1252?Q?8T7WQKuNtLAnfRbcGHK2n7VViyQnDXFIOJtP7HBwps/bTKjs6dWgcg5T?=
+ =?Windows-1252?Q?/TVUUnrAWlOXigJLxCevt+2Hrw81GpDsnzHTELqQ93EFWOf/2yzfh2nW?=
+ =?Windows-1252?Q?NkoVHigO/Y/J/z7tGMkqKr5U1dvg5uSVCPOHq4H5FPDgUTXhoQtMo3It?=
+ =?Windows-1252?Q?ILgjWHsBOUa3EFrLfS4qTg5ACmo0rRf6maHZotngkrZenBeZ9b/lMUn5?=
+ =?Windows-1252?Q?02Owl5iPYqN9pXp5C7rOuYdPnUkemqgejgSVqUFjAsr0d444rnNIxeoC?=
+ =?Windows-1252?Q?HNhht3HP3ZZya5k4NAMJcK3GStUS0ivjef/nIrSXW2ANL3wYflJtdpOR?=
+ =?Windows-1252?Q?la75rSJLLZDStoRJoLKhvjrkis88KB2YZkSg5ReM/T1wQy0FEn73BSmj?=
+ =?Windows-1252?Q?HLnpjDZNLOWJhJHNVgouyCd+aF+N6nTGmOFuQVO27HARZVq+mCQ3YIDt?=
+ =?Windows-1252?Q?kU4RuargvBuXY76GLZOGXBgqdYJ/dhMTmuCjPw6UMbwb4SEMaxDP2XVS?=
+ =?Windows-1252?Q?gXZeuIZej826Ifvs/RS/fy00pvOV+xliZBb2fBJFIgJus2G/mojkrCNk?=
+ =?Windows-1252?Q?QR8GFdJ4lCbIYdJHFnsY44GqqAX/w2cC8i17Q3w3TmIxJK1snddtHmD8?=
+ =?Windows-1252?Q?en32txheScaeuAj/bmZjAw=3D=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8822cc33-b6ea-4abd-7f2b-08d92a4be7c0
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5129.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 07:06:15.1400
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mKUrzANj5OvWP3o3K1z/VXd6c9PMz1vcLD13W+30znoqJdDfRREBpX4GZZOSptJstQDKlUURYgigx7qS4dFj2g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5339
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, dem 08.06.2021 um 00:15 +0300 schrieb Laurent Pinchart:
-> Hi Martin
-> 
-> Thank you for the patch.
-> 
-> On Mon, Jun 07, 2021 at 12:52:10PM +0200, Martin Kepplinger wrote:
-> > Document the bindings used for the SK Hynix Hi-846 CMOS camera
-> > driver.
-> > 
-> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > ---
-> > Â .../bindings/media/i2c/hynix,hi846.yamlÂ Â Â Â Â Â  | 105
-> > ++++++++++++++++++
-> > Â 1 file changed, 105 insertions(+)
-> > Â create mode 100644
-> > Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> > 
-> > diff --git
-> > a/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> > b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> > new file mode 100644
-> > index 000000000000..19825392fb1f
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> > @@ -0,0 +1,105 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/i2c/hynix,hi846.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: SK Hynix Hi-846 1/4" 8M Pixel MIPI CSI-2 sensor
-> > +
-> > +maintainers:
-> > +Â  - Martin Kepplinger <martin.kepplinger@puri.sm>
-> > +
-> > +description: |-
-> > +Â  The Hi-846 is a raw image sensor with an MIPI CSI-2 image data
-> > +Â  interface and CCI (I2C compatible) control bus. The output
-> > format
-> > +Â  is raw Bayer.
-> > +
-> > +properties:
-> > +Â  compatible:
-> > +Â Â Â  const: hynix,hi846
-> > +
-> > +Â  reg:
-> > +Â Â Â  maxItems: 1
-> > +
-> > +Â  clocks:
-> > +Â Â Â  items:
-> > +Â Â Â Â Â  - description: Reference to the mclk clock.
-> > +
-> > +Â  reset-gpios:
-> > +Â Â Â  description: Reference to the GPIO connected to the RESETB
-> > pin. Active low.
-> > +Â Â Â  maxItems: 1
-> > +
-> > +Â  shutdown-gpios:
-> > +Â Â Â  description: Reference to the GPIO connected to the XSHUTDOWN
-> > pin. Active low.
-> > +Â Â Â  maxItems: 1
-> > +
-> > +Â  vddi-supply:
-> 
-> I think it's called vddio (seems to be a typo on page 8).
-> 
-> > +Â Â Â  description: Definition of the regulator used for the 1.8V or
-> > 2.8V I/O power supply.
-> 
-> You could just say "... for the VDDIO supply". Same below. Up to you.
-> 
-> With the name fixed and the description optionally updated,
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> Please add my tag if you post a new version.
+Am 2021-06-08 um 2:55 a.m. schrieb Christian König:
+> Hi Felix,
+>
+> that should already be fixed in drm-tip as part of the merge of the
+> TTM changes.
 
-I'll rename the binding and add the tag. I haven't added your previous
-tag because you found improvements based on the DS afterwards.
+No, the preempt_mgr doesn't exist in drm-misc-next. It does exist in
+drm-next, but that doesn't seem to have the TTM changes yet.
 
-thanks again!
-                              martin
+Is there another DRM branch or repository that you're referring to with
+drm-tip?
 
+Regards,
+  Felix
+
+
+>
+> Regards,
+> Christian.
+>
+> Am 08.06.21 um 07:37 schrieb Felix Kuehling:
+>> Hi Christian,
+>>
+>> I based amdgpu_preempt_mgr on amdgpu_gtt_mgr and now I'm looking at what
+>> changed there. Looks like I'll need to create a dummy node in
+>> amdgpu_preempt_mgr_new to satisfy TTM, and free it in
+>> amdgpu_preempt_mgr_del.
+>>
+>> Thanks,
+>>    Felix
+>>
+>>
+>> Am 2021-06-07 um 10:50 p.m. schrieb Stephen Rothwell:
+>>> Hi all,
+>>>
+>>> After merging the drm-misc tree, today's linux-next build (x86_64
+>>> allmodconfig) failed like this:
+>>>
+>>> drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c: In function
+>>> 'amdgpu_preempt_mgr_new':
+>>> drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:75:5: error: 'struct
+>>> ttm_resource' has no member named 'mm_node'
+>>>     75 |  mem->mm_node = NULL;
+>>>        |     ^~
+>>> drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c: At top level:
+>>> drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:129:11: error:
+>>> initialization of 'int (*)(struct ttm_resource_manager *, struct
+>>> ttm_buffer_object *, const struct ttm_place *, struct ttm_resource
+>>> **)' from incompatible pointer type 'int (*)(struct
+>>> ttm_resource_manager *, struct ttm_buffer_object *, const struct
+>>> ttm_place *, struct ttm_resource *)'
+>>> [-Werror=incompatible-pointer-types]
+>>>    129 |  .alloc = amdgpu_preempt_mgr_new,
+>>>        |           ^~~~~~~~~~~~~~~~~~~~~~
+>>> drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:129:11: note: (near
+>>> initialization for 'amdgpu_preempt_mgr_func.alloc')
+>>>
+>>> Caused by commit
+>>>
+>>>    cb1c81467af3 ("drm/ttm: flip the switch for driver allocated
+>>> resources v2")
+>>>
+>>> from the drm-misc tree interacting with commit
+>>>
+>>>    b453e42a6e8b ("drm/amdgpu: Add new placement for preemptible SG
+>>> BOs")
+>>>
+>>> from the drm tree.
+>>>
+>>> I don't know how to fix this, so I added the following hack (a better
+>>> fix would be nice):
+>>>
+>>> From: Stephen Rothwell <sfr@canb.auug.org.au>
+>>> Date: Tue, 8 Jun 2021 12:41:16 +1000
+>>> Subject: [PATCH] hack fix up for needed amdgpu_preempt_mgr_new() fix up
+>>>
+>>> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+>>> ---
+>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c | 4 +++-
+>>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
+>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
+>>> index d607f314cc1b..e1a7b3e967b9 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
+>>> @@ -66,14 +66,16 @@ static DEVICE_ATTR_RO(mem_info_preempt_used);
+>>>   static int amdgpu_preempt_mgr_new(struct ttm_resource_manager *man,
+>>>                     struct ttm_buffer_object *tbo,
+>>>                     const struct ttm_place *place,
+>>> -                  struct ttm_resource *mem)
+>>> +                  struct ttm_resource **res)
+>>>   {
+>>> +#if 0
+>>>       struct amdgpu_preempt_mgr *mgr = to_preempt_mgr(man);
+>>>         atomic64_add(mem->num_pages, &mgr->used);
+>>>         mem->mm_node = NULL;
+>>>       mem->start = AMDGPU_BO_INVALID_OFFSET;
+>>> +#endif
+>>>       return 0;
+>>>   }
+>>>   
+>
