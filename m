@@ -2,65 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B98339F590
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B30139F59B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhFHLvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:51:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231751AbhFHLvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:51:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 392D96139A;
-        Tue,  8 Jun 2021 11:49:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623152988;
-        bh=SPVQkohvTqDM+QVrSw6JVqDCoe1Ro44Yw3kYDdtNkOk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZJRZwKeWk7K6mulYmlYZfbisD2v1YcBurfVmCCZaEUsW8tWz/xP8wfakgzJ4P1HYU
-         93CjtIahDb0Pg7KVPloqITw/4JC6Bi8BDeEM9QZsFHkvaRWlRwSonvIuoZSydlVC59
-         S1DHMgD2bfmtdp4sGvWMDq870m9AcwStIaP8hVOCHzYgRSAtAwtOHquQa+31dU/Vhw
-         D80dgyApn9p9q4ElCZ3tz9fjrFaCwE6hW2bKAVBZYJzHJvJzkj21YUYDUqgOgb19H7
-         xYZr2XF8vp6KHXHFmuFKhYvIevcs/a+1YK2q762kbNRcE3EuLEtjmnxdsLBBU9Mfkz
-         sNzzSndq16qEg==
-Date:   Tue, 8 Jun 2021 19:49:42 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v1 0/9] ARM: dts: fixes for Protonic boards
-Message-ID: <20210608114941.GA29138@dragon>
-References: <20210518082850.26048-1-o.rempel@pengutronix.de>
+        id S232161AbhFHLxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:53:47 -0400
+Received: from mail-pj1-f41.google.com ([209.85.216.41]:37380 "EHLO
+        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232012AbhFHLxq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 07:53:46 -0400
+Received: by mail-pj1-f41.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so13918143pjs.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 04:51:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=33qUIItaWV8iU0maz7SfEHZWO+xjznU3PiPkfVFxVEc=;
+        b=ucvtPg+HlYZ8tqnZs6JrapTooEnRGmebxESXuGhQj0/kLP5o2dXv5i72CxBrG1QyEB
+         Md1sjRo+ek617Y20+/qriDA/IO2hofnCiSY/mvwjhbwwsl92MwspA/HTQRQwJDscIc5q
+         rSb7M/hu3KcP4DSRUCwLk05XBuw7vz9Vvq9OuuR/hr1u/xttgW2Cc9G3X4J+nBNppUBY
+         +vMuL0ZsZtkfrOBsvYD8BZQ3/DgyMGZHdQlXMYVDnCJbZsnWpsvomtXVqOiq9ZGBeR6L
+         /LbLKtpIQdScEXK7C+T4AgBvEXsMjq5rs96Hp0IgVJcrcJEU2nFsyAvhbrZJ8xWsn2Ch
+         EDcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=33qUIItaWV8iU0maz7SfEHZWO+xjznU3PiPkfVFxVEc=;
+        b=Jre3JgM0TbP6Oqlpj/wm0jHZzWvT5osvBTsf0RuO1wPU6UCojHLDMeXXSiKq0Z1/vB
+         rOZsYadkj18AoQrUEpJ8kuWGMSoKou+YRmP0fD8aD16qd7RzQtRIqQyxjmYavniVwUdW
+         jkXp7Gb4tru07bfzYU1D8z+yQ72UDey1M3fV8pKcdEKz6hNgG57nGOfaMiSMKQXcRRHR
+         WJSskYdMne1oOQPY1X89L9obDNNbMwimk2AS60qug/dd4GSSRVFOwFGjstMIQMn59UfV
+         8LXv05Mg6rE/vtBkHeR/D6OXBmuyU1io5VyavHiaXkqfmliubJI9zasSdHEATLJje+/O
+         47Dw==
+X-Gm-Message-State: AOAM533XY5ohFC7vli9RrSulALorewsMudmGGBoplhMXmG1o1BzTQgcT
+        FMqCFO7AUTBhRWz8x09WygwwNUEPF0b+qXAUy/w=
+X-Google-Smtp-Source: ABdhPJyApDJyTdnWKyOyGV3tWF6munYZNdD0DZqolmNToOfXuZ3gCLfOJEleko0R/Gg+pwXt3JPv6ZY29jFoPT1x69U=
+X-Received: by 2002:a17:902:b190:b029:105:cb55:3a7a with SMTP id
+ s16-20020a170902b190b0290105cb553a7amr18934867plr.17.1623153039020; Tue, 08
+ Jun 2021 04:50:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518082850.26048-1-o.rempel@pengutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1623141934-7699-1-git-send-email-faiyazm@codeaurora.org>
+In-Reply-To: <1623141934-7699-1-git-send-email-faiyazm@codeaurora.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 8 Jun 2021 14:50:22 +0300
+Message-ID: <CAHp75VcwW6RGALAjzcK4W9xy_hDPyFti4cNY_pCwJnjUr+VYVQ@mail.gmail.com>
+Subject: Re: [PATCH v11] mm: slub: move sysfs slab alloc/free interfaces to debugfs
+To:     Faiyaz Mohammed <faiyazm@codeaurora.org>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg KH <greg@kroah.com>, glittao@gmail.com,
+        vinmenon@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 10:28:41AM +0200, Oleksij Rempel wrote:
-> This patch series provide different fixes for Protonic boards.
-> 
-> Oleksij Rempel (6):
->   ARM: dts: imx6dl-prtvt7: add TSC2046 touchscreen node
->   ARM: dts: imx6dl-prtvt7: Remove backlight enable gpio
->   ARM: dts: imx6dl-prtvt7: fix PWM cell count for the backlight node.
->   ARM: dts: imx6dl-plym2m: remove touchscreen-size-* properties
->   ARM: dts: imx6dl: enable touchscreen debounce filter on PLYM2M and
->     PRTVT7 boards
->   ARM: dts: imx6qdl-vicut1: add interrupt-counter nodes
-> 
-> Robin van der Gracht (3):
->   ARM: dts: imx6dl-prtvt7: Enable the VPU
->   ARM: dts: imx6dl-prtvt7: The sgtl5000 uses i2s not ac97
->   ARM: dts: imx6dl-prtvt7: Remove unused 'sound-dai-cells' from ssi1
->     node
+On Tue, Jun 8, 2021 at 11:45 AM Faiyaz Mohammed <faiyazm@codeaurora.org> wrote:
+>
+> alloc_calls and free_calls implementation in sysfs have two issues,
+> one is PAGE_SIZE limitation of sysfs and other is it does not adhere
+> to "one value per file" rule.
+>
+> To overcome this issues, move the alloc_calls and free_calls
+> implementation to debugfs.
+>
+> Debugfs cache will be created if SLAB_STORE_USER flag is set.
+>
+> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
+> to be inline with what it does.
+>
+> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+> ---
 
-Applied all, thanks.
+It seems you missed the version bump along with changelog.
+Note, some maintainers (actually quite many I think) are using tools
+to fetch up the patches and two patches with the same version is a
+problem. Hence I do not consider it a nit-pick.
+
+-- 
+With Best Regards,
+Andy Shevchenko
