@@ -2,171 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0F439F240
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6303339F24C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhFHJ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:28:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:53752 "EHLO foss.arm.com"
+        id S230465AbhFHJ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 05:29:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229507AbhFHJ2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:28:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1BAE1396;
-        Tue,  8 Jun 2021 02:26:08 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 708803F719;
-        Tue,  8 Jun 2021 02:26:07 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 10:26:05 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: iowait boost is broken
-Message-ID: <20210608092605.bhp5yyqmzrojqxjm@e107158-lin.cambridge.arm.com>
-References: <CAEXW_YTcO=hbmdq3nOx2RJfT2yPyoFnQx5niB38R2Lzpsp38bA@mail.gmail.com>
- <20210607191031.GA12489@e120325.cambridge.arm.com>
+        id S229507AbhFHJ34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 05:29:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72D166124C;
+        Tue,  8 Jun 2021 09:28:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623144484;
+        bh=u/yn7qdyg2jplF/gHxRTO0ZByTH2g4Z41ES/bS2ZEpE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vtlPXWHw03L/hDmiA5HUErLr5DckpuwpDtSY6cbWuMI9ey8p5BwoEf8QH0IFQ71FC
+         +BG2oHucIybGH7+JBhwG/k4l3j3bhUNsuh4yWD3cOEy//fBTyCi3JStstMsH8TRA0n
+         s2owd6UyymeLJCI3V1vEuD+gzCFu1R7uFRbjOTpo=
+Date:   Tue, 8 Jun 2021 11:28:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     yongw.pur@gmail.com
+Cc:     minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org,
+        axboe@kernel.dk, akpm@linux-foundation.org,
+        songmuchun@bytedance.com, david@redhat.com,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org, linux-api@vger.kernel.org,
+        lu.zhongjun@zte.com.cn, yang.yang29@zte.com.cn,
+        zhang.wenya1@zte.com.cn, wang.yong12@zte.com.cn
+Subject: Re: [RFC PATCH V3] zram:calculate available memory when zram is used
+Message-ID: <YL84IUIQ0XAvv16D@kroah.com>
+References: <1623080354-21453-1-git-send-email-yongw.pur@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210607191031.GA12489@e120325.cambridge.arm.com>
+In-Reply-To: <1623080354-21453-1-git-send-email-yongw.pur@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+CC  Dietmar, Rafael
+On Mon, Jun 07, 2021 at 08:39:14AM -0700, yongw.pur@gmail.com wrote:
+> From: wangyong <wang.yong12@zte.com.cn>
+> 
+> When zram is used, available+Swap free memory is obviously bigger than we
+> actually can use, because zram can compress memory by compression
+> algorithm and zram compressed data will occupy memory too.
+> 
+> So, we can count the compression ratio of zram in the kernel. The space
+> will be saved by zram and other swap device are calculated as follows:
+> zram[swapfree - swapfree * compress ratio] + swapdev[swapfree]
+> We can evaluate the available memory of the whole system as:
+> MemAvailable+zram[swapfree - swapfree * compress ratio]+swapdev[swapfree]
+> 
+> Add an entry to the /proc/meminfo file, returns swap will save space.
+> Which name is more appropriate is still under consideration.
+> There are several alternative names: SwapAvailable, SwapSaved,
+> SwapCompressible, Which is better?
+> 
+> Adding new entries has little effect on user program, since parsers
+> usually parse by keywords
+> 
+> Changes from v2:
+> *Add interface description document
+> *Other mistakes and problems fix
+> 
+> Changes from v1:
+> *Use a new interface to return memory savings when using swap devices
+> *Zram add min_compr_ratio attr
 
-On 06/07/21 20:10, Beata Michalska wrote:
-> Hi Joel,
+These "Changes" need to go below the --- line please.
+
 > 
-> Thanks for sending this out.
-> 
-> On Mon, Jun 07, 2021 at 12:19:01PM -0400, Joel Fernandes wrote:
-> > Hi all,
-> > Looks like iowait boost is completely broken upstream. Just
-> > documenting my findings of iowait boost issues:
-> > 
-> I wouldn't go as far to state that it is completely broken. Rather that
-> the current sugov implementation for iowait boosting is not meeting
-> the expectations and I believe this should be clarified first. More on those
-> expectations below.
-> > 1. If a CPU requests iowait boost in a cluster, another CPU can go
-> > ahead and reset very quickly it since it thinks there's no new request
-> > for the iowait boosting CPU
-> So the 'boosting' value is being tracked per CPU, so each core in a cluster
-> will have it's own variant of that. When calculating the shared freq for
-> the cluster, sugov will use max utilization reported on each core, including
-> I/O boost. Now, if there is no pending request for boosting on a given core
-> at the time of calling sugov_iowait_apply, the current 'boost' will be
-> reduced, but only this one and that will not affect boost values on remaining
-> CPUs. It means that there was no task waking up on that particular CPU after
-> waiting on I/O request. So I would say it's fine. Unless I am misunderstanding
-> your case ?
-> > 2. If the iowait is longer than a tick, then successive iowait boost
-> > doubling does not happen. So heavy I/O waiting code never gets a
-> > boost.
-> This might indeed be an issue. What's more: the fact that boosting is applied
-> per core, any migration will disregard the boosting applied so far, so
-> it might start increasing the freq on 'new' CPU from scratch.
-> Might, as sugov (and the I/O boosting) has no notion of the source of boosting
-> request so it might end up on a core that has already lifted I/O boost.
-> This also means, that having different small tasks, waking up from
-> I/O within the mentioned TICK_NSEC time window might drive the frequency to max
-> even though those would be sporadic wakeups. Things get slightly
-> cumbersome as increasing the boost does not necessarily result in the freq
-> change, so the above mentioned case would need proper timing but it is possible.
-> Also the boost value will not get doubled unless previous one has been applied.
-> This might result in misalignment between task wake-ups/placement and sugov's
-> freq changes.
-> > 3. update_load_avg() is triggered right after the the iowait boost
-> > request which makes another cpufreq update request, this request is a
-> > non-iowait boost one so it ends up resetting the iowait boost request
-> > (in the same path!).
-> Not necessarily - this is guarded by the TICK_NSEC you have mentioned:
-> in
->     sugov_iowait_reset {
->          ...
->          if (delta_ns <= TICK_NSEC)
->              return;
->          ...
->     }
-> So for the particular call sequence the boost should not get reset.
-> Another problem is when the non-I/O bound tasks triggers the update
-> after the TICK_NSEC has elapsed and before the frequency change is done.
-> (see sugov_should_update_freq )
-> > 4. Same as #3 but due the update_blocked_averages from new idle balance path.
-> > 
-> > Here is a patch that tries to address these problems and I see better
-> > cpufreq boosting happening, however it is just a test broken patch to
-> > highlight the issues:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/commit/?h=sched/5.4/iowait-boost-debug-1&id=3627d896d499d168fef9a388e5d6b3359acc3423
-> > 
-> > I think we ought to rewrite the whole mess instead of fixing it since
-> > a lot has changed in scheduler code over time it feels. Beata is
-> > working on rewriting the whole iowait boost infra, I am glad she has
-> > started the work on this and looking forward to helping with the
-> > patches.
-> > 
-> So back to the expectations.
-> The main problem, as I see it, is what do we actually want to achieve with
-> the I/O boosting? Is it supposed to compensate the time lost while waiting
-> for the I/O request to be completed or is is supposed to optimize the rate
-> at which I/O requests are being made. Do we want to boost I/O bound tasks by
-> default, no limits applied  or should we care about balancing performance
-> vs power ? And unless those expectations are clearly stated, we might not
-> get too far with any changes, really.
-> 
-> Smth that I do agree with is what has been suggested few times by Quentin,
-> to make the I/O boosting being a per-task feature, not per-core, and that is
-> smth I have been experimenting with. This would help with maintaining the boost
-> level upon migration and could potentially improve task placement. It would also
-> eliminate sugov's misfires: currently the boost might be applied when the task
-> on behalf of which the boost has been triggered, has been migrated or is not
-> runnable at that point. Also sugov's boosting is completely unaware of
-> uclamp restrictions,and I guess it should be. This could also be fixed with
-> per-task boosting.
-> 
-> There are few tricky bits though:
-> - current implementation (sugov's) makes sure the boost will not get doubled
-> unless the current level of boosting has been applied -> there is no notion
-> for that when moving the boosting as a per-task feature (considered as an
-> optimization for too frequent freq changes)
-> - guarding ramping up the frequency with TICK_NSEC & freq_update_delay_ns
-> is also out of the equation (same as above)
-> 
-> The above two means we might be boosting faster that this is currently expected.
-> On the other hand we might lose the boosting as currently sugov does not care
-> whether that is a single or multiple tasks waking up from I/O.
-> 
-> I've been trying to come up with some heuristics that would help to decide
-> whether boosting makes sense or not (like don't boost too much if most of the
-> time the task is being blocked or when despite boosting the sleep time keeps
-> getting longer). But that seems slightly counter intuitive, to place that sort
-> of decision making in schedulers generic code (without having all the info at
-> hand) and I would expect this to be handled by other, more suited mechanisms.
-> On the other hand, boosting upon each wake-up (from I/O) seems slightly
-> excessive. But again: it all comes down to the expectations on the actually
-> desired behaviour. We could potentially add another PELT-like signal to track
-> the time spent waiting on I/O request alongside the task utilization, but that
-> means more messing with signals on the rq level and losing some performance
-> points due to needed calculations. Alternative of blindly increasing boost
-> for each relevant wake-up means that small tasks could drive the freq to its
-> max values - which I am not sure is so desired for power-aware scenarios.
-> So all in all - still in progress.
-> 
-> Any comments are more than welcomed.
-> 
+> Signed-off-by: wangyong <wang.yong12@zte.com.cn>
 > ---
-> BR
-> B.
+>  Documentation/admin-guide/blockdev/zram.rst |  6 ++
+>  Documentation/filesystems/proc.rst          |  4 ++
+>  drivers/block/zram/zcomp.h                  |  8 +++
+>  drivers/block/zram/zram_drv.c               | 19 ++++++
+>  drivers/block/zram/zram_drv.h               |  1 +
+>  fs/proc/meminfo.c                           |  1 +
+>  include/linux/swap.h                        | 11 ++++
+>  mm/swapfile.c                               | 95 +++++++++++++++++++++++++++++
+>  mm/vmscan.c                                 |  1 +
+>  9 files changed, 146 insertions(+)
 > 
-> 
-> > thanks,
-> >  - Joel
+> diff --git a/Documentation/admin-guide/blockdev/zram.rst b/Documentation/admin-guide/blockdev/zram.rst
+> index 700329d..3b7c4c4 100644
+> --- a/Documentation/admin-guide/blockdev/zram.rst
+> +++ b/Documentation/admin-guide/blockdev/zram.rst
+> @@ -283,6 +283,12 @@ a single line of text and contains the following stats separated by whitespace:
+>  		Unit: 4K bytes
+>   ============== =============================================================
+>  
+> +File /sys/block/zram<id>/min_compr_ratio
+> +
+> +The min_compr_ratio file represents the min_compr_ratio during zram swapping out.The calculation formula is as follows:
+> +(orig_size * 100) / compr_data_size
+> +
+> +
+
+
+sysfs files need to be documented in Documentation/ABI/ files.  You can
+reference them in other documentation files, but they need to be in the
+ABI/ directory as well.
+
+Also please wrap your lines at the proper length and use a ' ' after a
+'.'
+
+
+
+
+>  9) Deactivate
+>  =============
+>  
+> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> index 042c418..15d35ae 100644
+> --- a/Documentation/filesystems/proc.rst
+> +++ b/Documentation/filesystems/proc.rst
+> @@ -961,6 +961,7 @@ You may not have all of these fields.
+>      LowFree:          4432 kB
+>      SwapTotal:           0 kB
+>      SwapFree:            0 kB
+> +    SwapAvailable:       0 kB
+>      Dirty:             968 kB
+>      Writeback:           0 kB
+>      AnonPages:      861800 kB
+> @@ -1032,6 +1033,9 @@ SwapTotal
+>  SwapFree
+>                Memory which has been evicted from RAM, and is temporarily
+>                on the disk
+> +SwapAvailable
+> +              The memory savings when use swap devices. it takes zram
+> +              compression ratio into considerations, when zram is used    
+
+Trailing whitespace?
+
+Did you run your patch through scripts/checkpatch.pl first before
+sending it out?
+
+
+>  Dirty
+>                Memory which is waiting to get written back to the disk
+>  Writeback
+> diff --git a/drivers/block/zram/zcomp.h b/drivers/block/zram/zcomp.h
+> index 40f6420..9c9cb96 100644
+> --- a/drivers/block/zram/zcomp.h
+> +++ b/drivers/block/zram/zcomp.h
+> @@ -40,4 +40,12 @@ int zcomp_decompress(struct zcomp_strm *zstrm,
+>  		const void *src, unsigned int src_len, void *dst);
+>  
+>  bool zcomp_set_max_streams(struct zcomp *comp, int num_strm);
+> +#ifdef CONFIG_ZRAM
+> +int get_zram_major(void);
+> +#else
+> +int get_zram_major(void)
+> +{
+> +	return -1;
+> +}
+> +#endif
+>  #endif /* _ZCOMP_H_ */
+> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> index fcaf275..8f527e0 100644
+> --- a/drivers/block/zram/zram_drv.c
+> +++ b/drivers/block/zram/zram_drv.c
+> @@ -59,6 +59,10 @@ static void zram_free_page(struct zram *zram, size_t index);
+>  static int zram_bvec_read(struct zram *zram, struct bio_vec *bvec,
+>  				u32 index, int offset, struct bio *bio);
+>  
+> +int get_zram_major(void)
+> +{
+> +	return zram_major;
+
+Why does anyone need the zram major number?
+
+
+> +}
+>  
+>  static int zram_slot_trylock(struct zram *zram, u32 index)
+>  {
+> @@ -1040,6 +1044,19 @@ static ssize_t compact_store(struct device *dev,
+>  	return len;
+>  }
+>  
+> +static ssize_t min_compr_ratio_show(struct device *dev,
+> +		struct device_attribute *attr, char *buf)
+> +{
+> +	struct zram *zram = dev_to_zram(dev);
+> +	ssize_t ret;
+> +
+> +	down_read(&zram->init_lock);
+> +	ret = scnprintf(buf, PAGE_SIZE, "%d\n", atomic_read(&zram->stats.min_compr_ratio));
+> +	up_read(&zram->init_lock);
+
+You are using an atomic variable _AND_ a read lock?  Are you sure that
+makes sense?
+
+And please use sysfs_emit() for sysfs files.
+
+
+> +
+> +	return ret;
+> +}
+> +
+>  static ssize_t io_stat_show(struct device *dev,
+>  		struct device_attribute *attr, char *buf)
+>  {
+> @@ -1132,6 +1149,7 @@ static ssize_t debug_stat_show(struct device *dev,
+>  	return ret;
+>  }
+>  
+> +static DEVICE_ATTR_RO(min_compr_ratio);
+>  static DEVICE_ATTR_RO(io_stat);
+>  static DEVICE_ATTR_RO(mm_stat);
+>  #ifdef CONFIG_ZRAM_WRITEBACK
+> @@ -1859,6 +1877,7 @@ static struct attribute *zram_disk_attrs[] = {
+>  	&dev_attr_idle.attr,
+>  	&dev_attr_max_comp_streams.attr,
+>  	&dev_attr_comp_algorithm.attr,
+> +	&dev_attr_min_compr_ratio.attr,
+>  #ifdef CONFIG_ZRAM_WRITEBACK
+>  	&dev_attr_backing_dev.attr,
+>  	&dev_attr_writeback.attr,
+> diff --git a/drivers/block/zram/zram_drv.h b/drivers/block/zram/zram_drv.h
+> index 80c3b43..5717e06 100644
+> --- a/drivers/block/zram/zram_drv.h
+> +++ b/drivers/block/zram/zram_drv.h
+> @@ -88,6 +88,7 @@ struct zram_stats {
+>  	atomic64_t bd_reads;		/* no. of reads from backing device */
+>  	atomic64_t bd_writes;		/* no. of writes from backing device */
+>  #endif
+> +	atomic_t min_compr_ratio;
+>  };
+>  
+>  struct zram {
+> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+> index 6fa761c..34a174b 100644
+> --- a/fs/proc/meminfo.c
+> +++ b/fs/proc/meminfo.c
+> @@ -86,6 +86,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+>  
+>  	show_val_kb(m, "SwapTotal:      ", i.totalswap);
+>  	show_val_kb(m, "SwapFree:       ", i.freeswap);
+> +	show_val_kb(m, "SwapAvailable:	", count_avail_swaps());
+>  	show_val_kb(m, "Dirty:          ",
+>  		    global_node_page_state(NR_FILE_DIRTY));
+>  	show_val_kb(m, "Writeback:      ",
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index bb48893..deed141 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -515,6 +515,8 @@ extern int init_swap_address_space(unsigned int type, unsigned long nr_pages);
+>  extern void exit_swap_address_space(unsigned int type);
+>  extern struct swap_info_struct *get_swap_device(swp_entry_t entry);
+>  sector_t swap_page_sector(struct page *page);
+> +extern void update_zram_zstats(void);
+> +extern u64 count_avail_swaps(void);
+>  
+>  static inline void put_swap_device(struct swap_info_struct *si)
+>  {
+> @@ -689,6 +691,15 @@ static inline swp_entry_t get_swap_page(struct page *page)
+>  	return entry;
+>  }
+>  
+> +void update_zram_zstats(void)
+> +{
+> +}
+> +
+> +u64 count_avail_swaps(void)
+> +{
+> +	return 0;
+> +}
+> +
+>  #endif /* CONFIG_SWAP */
+>  
+>  #ifdef CONFIG_THP_SWAP
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 1e07d1c..5ce5100 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -44,6 +44,7 @@
+>  #include <asm/tlbflush.h>
+>  #include <linux/swapops.h>
+>  #include <linux/swap_cgroup.h>
+> +#include "../drivers/block/zram/zram_drv.h"
+
+That's a big hint that this is not correct, please do not do this :(
+
+The core kernel should not depend on a random block driver's code.
+
+thanks,
+
+greg k-h
