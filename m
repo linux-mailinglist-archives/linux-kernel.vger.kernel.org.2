@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684213A07F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 01:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E95E3A07F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 01:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235758AbhFHXmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 19:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58714 "EHLO mail.kernel.org"
+        id S235787AbhFHXmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 19:42:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235564AbhFHXl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 19:41:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 20657613B1;
+        id S235579AbhFHXmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 19:42:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 351A6613BC;
         Tue,  8 Jun 2021 23:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623195606;
-        bh=q72ndriQuNhMctYxCvTjBCrXHEj/wsWqW4F77L8T5SU=;
+        bh=HPTe0Pt7xPO/bl7CBFMALBHy6E9DK2spYtNrVR7lD64=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lXOmg8ICwxh9fur1FIP/N+RsZqbJPD7mXlWwGYRUKa+Xv3mW5VWt5NaDdjpd+pqu+
-         18kLfhelV9rrvFMbVaM77FvWJmcQPtUZ5pdKgcOXBSgoMNqpdVx1AFfo0KyF5PuhnC
-         ptaykaMlpQlo1PO34FGOmtkGvIzdsrhBXmTUEkioDmnWU89qrzrkLyENPQcPS99pqG
-         EfrUJ1BKzrik2yhgAlH8zhJJbmaNwPXHcKy3ZEeJj72xB4hscUH4/VmsXrp3yCBp22
-         qKRBsHaOkp9eYyOSJcRfsLebx2AkUen7rc7Tc56YRenlz5j+TUN4hr3/rVzgZUFgtC
-         hQs09SdEB09AA==
+        b=NS4WQAh6pR7VIFBhxyScpAVgd1X7k5pXxV8I7sd4URMUOgshhq/Y3V6p+AIBLCwFs
+         SS8m0J3gmQJ9xQKVN34tKw6VNZotZN1b/77IxYUqBJNC8QFCMmT8NHQG4ftydryipi
+         apA8qfM7WBaaBMvm+VQ34oS+SfkeZ2D6q7/kTv75vYgnEq+wVrIdaW4DtZokEQL3bf
+         yMM2I5bc/j2Tgm9cX8v6AdnQ/PzcQ/Ya80znUa5j20maS+rMH9c7X8mNWKSlFZQPon
+         k09lB3WjXQjgabYMbvCe2YXuOqcGrBMLE2bRe3qaGHWi+faWOE7oLDFWZ2y56UHWyH
+         86wH1WsPe0KAQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 13C9C60CD8;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2A6C7609E3;
         Tue,  8 Jun 2021 23:40:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: qede: Use list_for_each_entry() to simplify
- code
+Subject: Re: [PATCH net-next] net: x25: Use list_for_each_entry() to simplify code
+ in x25_forward.c
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162319560607.24693.65968810690397697.git-patchwork-notify@kernel.org>
+Message-Id: <162319560616.24693.4749938341746092636.git-patchwork-notify@kernel.org>
 Date:   Tue, 08 Jun 2021 23:40:06 +0000
-References: <20210608075737.52085-1-wanghai38@huawei.com>
-In-Reply-To: <20210608075737.52085-1-wanghai38@huawei.com>
+References: <20210608133007.69476-1-wanghai38@huawei.com>
+In-Reply-To: <20210608133007.69476-1-wanghai38@huawei.com>
 To:     Wang Hai <wanghai38@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, aelior@marvell.com,
-        GR-everest-linux-l2@marvell.com, netdev@vger.kernel.org,
+Cc:     davem@davemloft.net, kuba@kernel.org, ms@dev.tdt.de,
+        linux-x25@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,19 +48,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue, 8 Jun 2021 07:57:37 +0000 you wrote:
+On Tue, 8 Jun 2021 13:30:07 +0000 you wrote:
 > Convert list_for_each() to list_for_each_entry() where
 > applicable. This simplifies the code.
 > 
 > Reported-by: Hulk Robot <hulkci@huawei.com>
 > Signed-off-by: Wang Hai <wanghai38@huawei.com>
 > ---
->  drivers/net/ethernet/qlogic/qede/qede_rdma.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+>  net/x25/x25_forward.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 
 Here is the summary with links:
-  - [net-next] net: qede: Use list_for_each_entry() to simplify code
-    https://git.kernel.org/netdev/net-next/c/36861d1f0408
+  - [net-next] net: x25: Use list_for_each_entry() to simplify code in x25_forward.c
+    https://git.kernel.org/netdev/net-next/c/96bffe70231c
 
 You are awesome, thank you!
 --
