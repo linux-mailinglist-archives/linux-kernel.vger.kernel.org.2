@@ -2,125 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D416239F484
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E1839F497
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbhFHLFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:05:01 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:4402 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbhFHLFA (ORCPT
+        id S231881AbhFHLFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231337AbhFHLFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:05:00 -0400
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FznL94nw5z6tlq;
-        Tue,  8 Jun 2021 18:59:13 +0800 (CST)
-Received: from [10.67.110.136] (10.67.110.136) by
- dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 8 Jun 2021 19:03:04 +0800
-Subject: Re: [PATCH] powerpc: Fix kernel-jump address for ppc64 wrapper boot
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
-        <paulus@samba.org>, <nathan@kernel.org>,
-        Oliver O'Halloran <oohall@gmail.com>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-References: <20210604092228.199588-1-heying24@huawei.com>
- <c80f69d0-44b0-24a6-ce4f-ed5a40514597@csgroup.eu>
-From:   He Ying <heying24@huawei.com>
-Message-ID: <c9495dc0-2a1f-8aed-1088-90e2d0baabe0@huawei.com>
-Date:   Tue, 8 Jun 2021 19:03:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        Tue, 8 Jun 2021 07:05:47 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53FBC061574;
+        Tue,  8 Jun 2021 04:03:54 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id a1so21687938lfr.12;
+        Tue, 08 Jun 2021 04:03:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pbvnIUDlmrsEz7h8hsEn+CaTGHHdDs7PDJp6JoerDy8=;
+        b=YVlYGp7EtT824NClgDG3hbnLiRHH4a8GrUF0qmRSNSqA5P7bo1VluGiSOyfx9lyzZ8
+         0qRUBMbXgS/EEDmZK1lvMVrQA4x1OdSvwQPrVv2wDizQwJIxlMDx15vrZSRWK4/H4NhA
+         izYjmFl79M4SiuGX4SxWSL0cKgc3OYrAaEy0WdnsicUjtq0ZMGPbNUcPEAW73xedwgog
+         EOltv+xwTvV/CBDqhQl5KzfeeRvAlVTr6zTxVPRQTuUclXXgsm/cIo5hTYGBRBzQBJbo
+         jcpn2EM2RCzETCjZHjtALTv6wSJtBpJGD3tqipHpeH9LkafEIwFlOlSi0PNshiQ3lLiy
+         V6YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pbvnIUDlmrsEz7h8hsEn+CaTGHHdDs7PDJp6JoerDy8=;
+        b=nnn1p8tmhjls7efkY4p0ziTCJWVN4EPIECS7dG88P1mucqXCENoojzHpworZyV/UnP
+         q7kIpVSnIUzrDilbXZoKOtrOdLPd8aWMOoMAWcqVpH4+cvx2njqF36G57bzOlR1iLqBi
+         LHi0eQ3K2OXu4yW1RE6BRV67ILxpGQOL2AD6iab0JQh+VgpzfYa3YKOn7uAa2vOOZ7yy
+         fhPxop4CqRpCSM3Mz56uvcIjlsFIc8+VTx8Ql+/1R883Z0epl9wb6rt22Go3SJe4+Chr
+         B2zKq6tF9F9aWmCZFocWZ4ZYVkTuSf6nIWgmlxNt+MSDPT1fR1Zwb4g1JPX+UU2U2/5i
+         5iuA==
+X-Gm-Message-State: AOAM533Sxyej8C8Fq8I3DKdVNz/6JNJ3PNw6/CgB2NcqSZjyEHrjABPc
+        Wq/Y7g5byu5mRX2hszOk1KQ=
+X-Google-Smtp-Source: ABdhPJxY4clPUf+kJEyTCGanb9QmdPfQfH9en2/Ins7WQwtCUTKyOZIBj5brYMql77/RoBELy+eFOw==
+X-Received: by 2002:ac2:43a3:: with SMTP id t3mr3746636lfl.183.1623150233042;
+        Tue, 08 Jun 2021 04:03:53 -0700 (PDT)
+Received: from [192.168.1.2] (broadband-5-228-51-184.ip.moscow.rt.ru. [5.228.51.184])
+        by smtp.gmail.com with ESMTPSA id x8sm1805778lfn.186.2021.06.08.04.03.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 04:03:52 -0700 (PDT)
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Cc:     acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
+        joel@joelfernandes.org, kernel@collabora.com,
+        krisman@collabora.com, libc-alpha@sourceware.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
+        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
+References: <20210603195924.361327-1-andrealmeid@collabora.com>
+ <1622799088.hsuspipe84.astroid@bobo.none>
+ <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
+ <1622853816.mokf23xgnt.astroid@bobo.none>
+ <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
+ <1622980258.cfsuodze38.astroid@bobo.none>
+ <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
+ <1623114630.pc8fq7r5y9.astroid@bobo.none>
+From:   Andrey Semashev <andrey.semashev@gmail.com>
+Message-ID: <b3488d1b-a4ff-8791-d960-a5f7ae2ea8b3@gmail.com>
+Date:   Tue, 8 Jun 2021 14:03:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <c80f69d0-44b0-24a6-ce4f-ed5a40514597@csgroup.eu>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.136]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme756-chm.china.huawei.com (10.3.19.102)
-X-CFilter-Loop: Reflected
+In-Reply-To: <1623114630.pc8fq7r5y9.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 6/8/21 4:25 AM, Nicholas Piggin wrote:
+> 
+> Are shared pthread mutexes using existing pthread APIs that are today
+> implemented okay with futex1 system call a good reason to constrain
+> futex2 I wonder? Or do we have an opportunity to make a bigger change
+> to the API so it suffers less from non deterministic latency (for
+> example)?
 
+If futex2 is not able to cover futex1 use cases then it cannot be viewed 
+as a replacement. In the long term this means futex1 cannot be 
+deprecated and has to be maintained. My impression was that futex1 was 
+basically unmaintainable(*) and futex2 was an evolution of futex1 so 
+that users of futex1 could migrate relatively easily and futex1 
+eventually removed. Maybe my impression was wrong, but I would like to 
+see futex2 as a replacement and extension of futex1, so the latter can 
+be deprecated at some point.
 
-在 2021/6/8 12:55, Christophe Leroy 写道:
->
->
-> Le 04/06/2021 à 11:22, He Ying a écrit :
->>  From "64-bit PowerPC ELF Application Binary Interface Supplement 1.9",
->> we know that the value of a function pointer in a language like C is
->> the address of the function descriptor and the first doubleword
->> of the function descriptor contains the address of the entry point
->> of the function.
->>
->> So, when we want to jump to an address (e.g. addr) to execute for
->> PPC-elf64abi, we should assign the address of addr *NOT* addr itself
->> to the function pointer or system will jump to the wrong address.
->>
->> Link: 
->> https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.html#FUNC-DES
->> Signed-off-by: He Ying <heying24@huawei.com>
->> ---
->>   arch/powerpc/boot/main.c | 9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/arch/powerpc/boot/main.c b/arch/powerpc/boot/main.c
->> index cae31a6e8f02..50fd7f11b642 100644
->> --- a/arch/powerpc/boot/main.c
->> +++ b/arch/powerpc/boot/main.c
->> @@ -268,7 +268,16 @@ void start(void)
->>       if (console_ops.close)
->>           console_ops.close();
->>   +#ifdef CONFIG_PPC64_BOOT_WRAPPER
->
-> This kind of need doesn't desserve a #ifdef, see 
-> https://www.kernel.org/doc/html/latest/process/coding-style.html#conditional-compilation
->
-> You can do:
->
->
->     kentry = (kernel_entry_t)(IS_ENABLED(CONFIG_PPC64_BOOT_WRAPPER) ? 
-> &vmlinux.addr : vmlinux.addr);
->
->
-> Or, if you prefer something less compact:
->
->
->     if (IS_ENABLED(CONFIG_PPC64_BOOT_WRAPPER))
->         kentry = (kernel_entry_t) &vmlinux.addr;
->     else
->         kentry = (kernel_entry_t) vmlinux.addr;
+In any case, creating a new API should consider requirements of its 
+potential users. If futex2 is intended to eventually replace futex1 then 
+all current futex1 users are potential users of futex2. If not, then the 
+futex2 submission should list its intended users, at least in general 
+terms, and their requirements that led to the proposed API design.
 
-Thanks for reviewing. But from Oliver's reply, this patch should be dropped.
-
-Because all ppc platforms will not build wrapper to ppc64be ELF currently.
-
-And ppc64le uses LE ABI (ABIv2) which doesn't use function descriptors.
-
-So this may not be a problem for now.
-
-
-Thanks again.
-
->
->
->> +    /*
->> +     * For PPC-elf64abi, the value of a function pointer is the address
->> +     * of the function descriptor. And the first doubleword of a 
->> function
->> +     * descriptor contains the address of the entry point of the 
->> function.
->> +     */
->> +    kentry = (kernel_entry_t) &vmlinux.addr;
->> +#else
->>       kentry = (kernel_entry_t) vmlinux.addr;
->> +#endif
->>       if (ft_addr) {
->>           if(platform_ops.kentry)
->>               platform_ops.kentry(ft_addr, vmlinux.addr);
->>
-> .
+(*) I use "unmaintainable" in a broad sense here. It exists and works in 
+newer kernel versions and may receive code changes that are necessary to 
+keep it working, but maintainers refuse any extensions or modifications 
+of the code, mostly because of its complexity.
