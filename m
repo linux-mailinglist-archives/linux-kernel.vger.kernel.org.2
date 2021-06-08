@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 124ED3A02B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2B63A0407
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236370AbhFHTHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:07:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60140 "EHLO mail.kernel.org"
+        id S239682AbhFHTZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:25:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236069AbhFHS6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:58:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 114646143F;
-        Tue,  8 Jun 2021 18:42:54 +0000 (UTC)
+        id S237716AbhFHTMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:12:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB7FF61465;
+        Tue,  8 Jun 2021 18:49:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177775;
-        bh=1NFF60RrzAFQWswXjOOAcJE7ziMW7DOkgkMshNJk4jY=;
+        s=korg; t=1623178179;
+        bh=Yl7IPL85YzCd2CUddMcgindgnXZi0j50a/KS615JKeo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AqNmlwu9f0AHUvPq53GooKyDIIw/0oN5DnYrFfxPq37cEX+USXzNw9AHSdEUCzhtk
-         V9Dmgaiyyq5SfJ4+ri+ACfk39fvqtq6C5qeZi7LCIgg2L0wZNBYcFJxdggp3DsVuAv
-         2cZaLJLH0Wcmyu9eiUDH+BkuAPXCJasD0E69IiUc=
+        b=0wEJzUSerth5+AyVWXZOwLdrkipxLG4fz88EwigV3wW0FVXFChy6w68NRmE16wV3d
+         AH5V18lGIe4yy9/0g02Zecum12+3VzBh015nc5WcJnZclTKggXLtDpC9I/JuYpUBtR
+         s6/5cXfqZMvmwjSOXce2RpzBSPAXsCb6HHMS8/+s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Ahelenia=20Ziemia=C5=84ska?= 
-        <nabijaczleweli@nabijaczleweli.xyz>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 5.10 095/137] HID: multitouch: require Finger field to mark Win8 reports as MT
-Date:   Tue,  8 Jun 2021 20:27:15 +0200
-Message-Id: <20210608175945.592622767@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.12 106/161] net: caif: fix memory leak in cfusbl_device_notify
+Date:   Tue,  8 Jun 2021 20:27:16 +0200
+Message-Id: <20210608175949.056066645@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+References: <20210608175945.476074951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,46 +39,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ahelenia Ziemiańska <nabijaczleweli@nabijaczleweli.xyz>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit a2353e3b26012ff43bcdf81d37a3eaddd7ecdbf3 upstream.
+commit 7f5d86669fa4d485523ddb1d212e0a2d90bd62bb upstream.
 
-This effectively changes collection_is_mt from
-  contact ID in report->field
-to
-  (device is Win8 => collection is finger) && contact ID in report->field
+In case of caif_enroll_dev() fail, allocated
+link_support won't be assigned to the corresponding
+structure. So simply free allocated pointer in case
+of error.
 
-Some devices erroneously report Pen for fingers, and Win8 stylus-on-touchscreen
-devices report contact ID, but mark the accompanying touchscreen device's
-collection correctly
-
+Fixes: 7ad65bf68d70 ("caif: Add support for CAIF over CDC NCM USB interface")
 Cc: stable@vger.kernel.org
-Signed-off-by: Ahelenia Ziemiańska <nabijaczleweli@nabijaczleweli.xyz>
-Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hid/hid-multitouch.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ net/caif/caif_usb.c |   14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
---- a/drivers/hid/hid-multitouch.c
-+++ b/drivers/hid/hid-multitouch.c
-@@ -604,9 +604,13 @@ static struct mt_report_data *mt_allocat
- 		if (!(HID_MAIN_ITEM_VARIABLE & field->flags))
- 			continue;
+--- a/net/caif/caif_usb.c
++++ b/net/caif/caif_usb.c
+@@ -115,6 +115,11 @@ static struct cflayer *cfusbl_create(int
+ 	return (struct cflayer *) this;
+ }
  
--		for (n = 0; n < field->report_count; n++) {
--			if (field->usage[n].hid == HID_DG_CONTACTID)
--				rdata->is_mt_collection = true;
-+		if (field->logical == HID_DG_FINGER || td->hdev->group != HID_GROUP_MULTITOUCH_WIN_8) {
-+			for (n = 0; n < field->report_count; n++) {
-+				if (field->usage[n].hid == HID_DG_CONTACTID) {
-+					rdata->is_mt_collection = true;
-+					break;
-+				}
-+			}
- 		}
- 	}
++static void cfusbl_release(struct cflayer *layer)
++{
++	kfree(layer);
++}
++
+ static struct packet_type caif_usb_type __read_mostly = {
+ 	.type = cpu_to_be16(ETH_P_802_EX1),
+ };
+@@ -127,6 +132,7 @@ static int cfusbl_device_notify(struct n
+ 	struct cflayer *layer, *link_support;
+ 	struct usbnet *usbnet;
+ 	struct usb_device *usbdev;
++	int res;
  
+ 	/* Check whether we have a NCM device, and find its VID/PID. */
+ 	if (!(dev->dev.parent && dev->dev.parent->driver &&
+@@ -169,8 +175,11 @@ static int cfusbl_device_notify(struct n
+ 	if (dev->num_tx_queues > 1)
+ 		pr_warn("USB device uses more than one tx queue\n");
+ 
+-	caif_enroll_dev(dev, &common, link_support, CFUSB_MAX_HEADLEN,
++	res = caif_enroll_dev(dev, &common, link_support, CFUSB_MAX_HEADLEN,
+ 			&layer, &caif_usb_type.func);
++	if (res)
++		goto err;
++
+ 	if (!pack_added)
+ 		dev_add_pack(&caif_usb_type);
+ 	pack_added = true;
+@@ -178,6 +187,9 @@ static int cfusbl_device_notify(struct n
+ 	strlcpy(layer->name, dev->name, sizeof(layer->name));
+ 
+ 	return 0;
++err:
++	cfusbl_release(link_support);
++	return res;
+ }
+ 
+ static struct notifier_block caif_device_notifier = {
 
 
