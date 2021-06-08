@@ -2,110 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9319F39EAFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D786E39EB01
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhFHAut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 20:50:49 -0400
-Received: from mail-pf1-f180.google.com ([209.85.210.180]:39845 "EHLO
-        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhFHAus (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 20:50:48 -0400
-Received: by mail-pf1-f180.google.com with SMTP id k15so14398493pfp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 17:48:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=agGQB3i2wfCKPG1s7G2zOWZ6mUf8+TRhatsi66V+CBQ=;
-        b=cXrHC+ShZrUlsuFPBylWLaI7HBuW6R8pOvn801TqKqpqtxAMgmjGCNylYbLODlXmQ4
-         RwjLjk8qd8pOUX9NLXwTjfliWitEWcFc7Jj+JoUlHQqinMqVR7CgCtj6wljr9MlV/GGZ
-         UIyX/2wHrPjNjmArcdL2QfZHRDGN3c7WWUSro=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=agGQB3i2wfCKPG1s7G2zOWZ6mUf8+TRhatsi66V+CBQ=;
-        b=R+E+sVYt8wU+UuP9CA8SCRDDcVq+adki51aIh7RhopmCsuN9GLMcnYQ61W7NY7K62y
-         3xMv+p7HUQAebJMRuRMgrj3/3q2DFJk+P/dT3Tb5sMsxJcRClsXet9+wJHzDRSWgZpDb
-         nBE5GqGQ8nMFDFCYb5XTFZ3DTtw1m6n9FC5HP1++iMKUSuTjO40412KTdFqoCQXrNer8
-         NVkULJOa0OpFQI61b+H42zfGWQ8Psbn+vj8I8E2qoAaqy4rDFRDUhuN/driKknyduG5P
-         Ye4b6gX/nw3f84k/XFwUDGUTf86PTuZle0Pnnysu6W469roH55Gp8yeVukdIdpk67VPq
-         saow==
-X-Gm-Message-State: AOAM532twviO+sMkQL89LM9OWnaChBd/ma2sgsvKgYoHCIytxzoD8VZC
-        OUJuN1IknJ7r5Dp25Wge4lP4gQ==
-X-Google-Smtp-Source: ABdhPJxmnqSrGpkO+1QtQfQcoGw7CTIUItcrqFBOC1yqrkZp0lVPxjzhWdIbY6e1faqu1jT4TucbkQ==
-X-Received: by 2002:a63:1d42:: with SMTP id d2mr20037516pgm.21.1623113276817;
-        Mon, 07 Jun 2021 17:47:56 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:1193:5ba8:74e4:8b6e])
-        by smtp.gmail.com with ESMTPSA id v22sm9056416pff.105.2021.06.07.17.47.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 17:47:56 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 09:47:51 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv3 2/2] kvm: x86: implement KVM PM-notifier
-Message-ID: <YL6+NysuqhORZEs1@google.com>
-References: <20210606021045.14159-1-senozhatsky@chromium.org>
- <20210606021045.14159-2-senozhatsky@chromium.org>
- <fe13fe734a01bb54f47fea06624c617beb062fdd.camel@redhat.com>
+        id S231220AbhFHAv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 20:51:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230266AbhFHAvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 20:51:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6C0BB6124B;
+        Tue,  8 Jun 2021 00:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623113403;
+        bh=5lQhCmnd0rMcXv2s8T06Jtf+pffwF6DFgGQ48nbOz7o=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=GMvtnp3B5aYSaed/iIZim6/KUYk89tosbX23HWGXTCvSZKDE2x1xCHPySad1T3xYp
+         9GBldXvbpz2OxjfO0a4KOhZ5ryW0XBpWIz5ziUwjjtrjmN3XmXgIyNDbFwK1iMMzCF
+         KTHnxRhg0kzMj8C0EwxYyj4w61fwnlFKHhpdlQcq1WO70ZOFnVjN0z6Yy7REK0/hUq
+         q98Q1HUvW6ZXy/LltwMJ0i7FNeMnjUh3YWorfaEGY6punOQ1BMkmAkz3YzFBiYrXmN
+         lVXKJ885G8bgEExQisWPl6bpyqjZDUSvkh1PjAjUiIrOAAj2ufQCVZA5LZ4yOqzkES
+         TkhqgY9N4tkGw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5B71E60A1B;
+        Tue,  8 Jun 2021 00:50:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe13fe734a01bb54f47fea06624c617beb062fdd.camel@redhat.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] libbpf: Fixes incorrect rx_ring_setup_done
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162311340336.30910.107622073412741714.git-patchwork-notify@kernel.org>
+Date:   Tue, 08 Jun 2021 00:50:03 +0000
+References: <YL4aU4f3Aaik7CN0@linux-dev>
+In-Reply-To: <YL4aU4f3Aaik7CN0@linux-dev>
+To:     Kev Jackson <foamdino@gmail.com>
+Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/06/07 15:54), Maxim Levitsky wrote:
-[..]
-> Also I would like to add my .02 cents on my observations on what happens when I suspend my system
-> with guests running, which I do once in a while.
-> I haven't dug deep into it yet as host suspend with VM running wasn't high on my priority list.
->  
-> First of all after a host suspend/resume cycle (and that is true on all 3 machines I own),
-> the host TSC is reset to 0 on all CPUs, thus while it is still synchronized, it jumps backward.
->  
-> Host kernel has no issues coping with this.
->  
-> Guests however complain about clocksource watchdog and mark the tsc clocksource as unstable,
-> at least when invtsc is used (regardless of this patch, I wasn't able to notice a difference
-> with and without it yet).
->  
->  
-> [  287.515864] clocksource: timekeeping watchdog on CPU0: Marking clocksource 'tsc' as unstable because the skew is too large:
-> [  287.516926] clocksource:                       'kvm-clock' wd_now: 4437767926 wd_last: 429c3c42f5 mask: ffffffffffffffff
-> [  287.527100] clocksource:                       'tsc' cs_now: c33f6ce157 cs_last: c1be2ad19f mask: ffffffffffffffff
-> [  287.528493] tsc: Marking TSC unstable due to clocksource watchdog
-> [  287.556640] clocksource: Switched to clocksource kvm-clock
->  
->  
-> This is from Intel system with stable TSC, but I have seen this on my AMD systems as well,
-> but these have other issues which might affect this (see below).
->  
-> AFAIK, we have code in kvm_arch_hardware_enable for this exact case but it might not work
-> correctly or be not enough to deal with this.
->  
-> Also I notice that this code sets kvm->arch.backwards_tsc_observed = true which 
-> in turn disables the master clock which is not good as well.
->  
-> I haven't yet allocated time to investigate this.
->  
->  
-> Another bit of information which I didn't start a discussion (but I think I should), 
-> which is relevant to AMD systems, is in 'unsynchronized_tsc' function.
-> 
-> On AMD guest it will mark the TSC as unstable in the guest as long as invtsc is not used.
-> I patched that code out for myself, that is why I am mentioning it.
+Hello:
 
-If you are going to fork this discussion the could you please Cc Suleiman
-and me? I believe we are having a bunch of problems with the guest clocks
-here on our side.
+This patch was applied to bpf/bpf.git (refs/heads/master):
+
+On Mon, 7 Jun 2021 14:08:35 +0100 you wrote:
+> When calling xsk_socket__create_shared(), the logic at line 1097 marks a
+> boolean flag true within the xsk_umem structure to track setup progress
+> in order to support multiple calls to the function.  However, instead of
+> marking umem->tx_ring_setup_done, the code incorrectly sets
+> umem->rx_ring_setup_done.  This leads to improper behaviour when
+> creating and destroying xsk and umem structures.
+> 
+> [...]
+
+Here is the summary with links:
+  - libbpf: Fixes incorrect rx_ring_setup_done
+    https://git.kernel.org/bpf/bpf/c/11fc79fc9f2e
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
