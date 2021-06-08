@@ -2,156 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D043A069F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8D63A06A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbhFHWNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 18:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233976AbhFHWNl (ORCPT
+        id S234110AbhFHWPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 18:15:41 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52114 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229753AbhFHWPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 18:13:41 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28DEC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 15:11:30 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id s23so702358oiw.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=bZu+LetIK/Ou2FsjTvcsb/kLMI/BFrEdJ0cjHy2JCV8=;
-        b=WugNAEnuACzJlxhsYmqoGNmcz374feWJhegI70dUbZN0lHbXLs3N7XS7hVJZWo2b21
-         7AIUBwfNNK/9OrVa9v7Nu0BxFw/zfFd/8tkUL4mvbMK/sO6I6MDgYr7/KOCImFnzE5C/
-         8xpYIMwngZwfRxquLyxkSwQLJKBL+WdwZ/qCI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=bZu+LetIK/Ou2FsjTvcsb/kLMI/BFrEdJ0cjHy2JCV8=;
-        b=G5cK0nPtwTiYQFnAruG3Kcvhw/iR457rb28wzJOYVGPEqMlNiWiXDbuZej/DK/KAJM
-         ETfWW82lU2HDMH7O/e7XK6HfdbHmdsCfCkD5ZdCWUrQ658scLXbGMlWGj4y3Tr9lYDkH
-         IXEbTdGNu3iGwEhAOxFvW6UoyUNg/smXWZFDjxkjiscTC7f95Pnhheg8+RO1h0gdpdqp
-         Vg2WzSNdJScCS4AbKIUmt8bDrenKMVKBXgVzVvqzEHhOMFb53B6bGXFk5JzRCxy4Z1gD
-         f/AOFOjkeU8tqFgtmpOsSnRuXHmajxf98XHkYK8z9AU0HBfPFCZ4qQW+EZ+3AWz1/+4C
-         2gLg==
-X-Gm-Message-State: AOAM532zMf+ouZCixm72sxxi632eOfZLqQXO5+w9w4syxQJjzZMSL8Cy
-        o7VDGWm2gRU3THNPdvs9A0jkH8H2dHCaAD1UIBhmvA==
-X-Google-Smtp-Source: ABdhPJyLYJDdbR65ulUT98CM3xPB2U9bboRcC6MSbcDFmAX4Le8b+UG/ndJJnToeztAoKQHEZXx0LG2EHK3taiGGXFA=
-X-Received: by 2002:a05:6808:144e:: with SMTP id x14mr4502727oiv.166.1623190290310;
- Tue, 08 Jun 2021 15:11:30 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 8 Jun 2021 15:11:29 -0700
+        Tue, 8 Jun 2021 18:15:39 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 158M2tGi061733;
+        Tue, 8 Jun 2021 18:13:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
+ in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=I8UeexVBftFIHcN4eHUtmb0QUMZ+zM2riYOS1N7AGhI=;
+ b=hE/3sN7PTY7eIEBqJnDlMY8IzgvVbxp4XBHj8fV4llYYBjbijNxjieIzg+D+mWURwV2u
+ Fde3Ac1TY0sg2vlkDfEacPj2SpPU3NwMJ7ARWEHHmE9Yc1xIElesqappzrB5No4CcWYy
+ gksXEusvSjvYkDDlYBQnGKstwIZHIcgUsajSe4NpnYAewIGFTJan8waSV+hz10zlhmn0
+ m5k7lFTlYqxEKikikXJmFDoOh0nv0SX3gLaH1iXgAQfIZCF1aZ5pinwNqQJe/kyVFBxF
+ CLsGjwoxSfHTH5OK1YRHdjZGH2BUjKznoFt8C+EWeQhtIedI19pJuTrYll6z/8j+4Xhr ag== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 392gees2np-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Jun 2021 18:13:16 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 158M40R3068180;
+        Tue, 8 Jun 2021 18:13:15 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 392gees2n7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Jun 2021 18:13:15 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 158MBcG0009786;
+        Tue, 8 Jun 2021 22:13:14 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma04dal.us.ibm.com with ESMTP id 3900w9heyn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Jun 2021 22:13:14 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 158MDD1X22217048
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Jun 2021 22:13:13 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4CAC578F8D;
+        Tue,  8 Jun 2021 22:13:13 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 96D1B78F93;
+        Tue,  8 Jun 2021 22:13:12 +0000 (GMT)
+Received: from localhost (unknown [9.211.119.158])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Tue,  8 Jun 2021 22:13:12 +0000 (GMT)
+From:   Fabiano Rosas <farosas@linux.ibm.com>
+To:     "Pratik R. Sampat" <psampat@linux.ibm.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, psampat@linux.ibm.com,
+        pratik.r.sampat@gmail.com
+Subject: Re: [RFC] powerpc/pseries: Interface to represent PAPR firmware
+ attributes
+In-Reply-To: <20210604163501.51511-1-psampat@linux.ibm.com>
+References: <20210604163501.51511-1-psampat@linux.ibm.com>
+Date:   Tue, 08 Jun 2021 19:13:10 -0300
+Message-ID: <87wnr4uhs9.fsf@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <a6356956-9d4a-6fe7-2acc-bbe968d3a936@linaro.org>
-References: <20210608195519.125561-1-swboyd@chromium.org> <a6356956-9d4a-6fe7-2acc-bbe968d3a936@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 8 Jun 2021 15:11:29 -0700
-Message-ID: <CAE-0n521fW2F9V6E_7ei2KMsEUMLKSOCtAbRrVX+xXyrS0K9XQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dsi: Stash away calculated vco frequency on recalc
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Abhinav Kumar <abhinavk@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: PDJPruRKnqmTKQaAyoaG53GaLdYzRp0y
+X-Proofpoint-ORIG-GUID: SjAwTyOBxJnaylpvTCuLhl3pO4NXFKZy
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-08_17:2021-06-04,2021-06-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ bulkscore=0 mlxlogscore=999 clxscore=1011 priorityscore=1501
+ impostorscore=0 mlxscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106080137
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dmitry Baryshkov (2021-06-08 14:41:21)
-> Hi Stephen,
+"Pratik R. Sampat" <psampat@linux.ibm.com> writes:
+
+Hi, I have some general comments and questions, mostly trying to
+understand design of the hcall and use cases of the sysfs data:
+
+> Adds a generic interface to represent the energy and frequency related
+> PAPR attributes on the system using the new H_CALL
+> "H_GET_ENERGY_SCALE_INFO".
 >
-> On 08/06/2021 22:55, Stephen Boyd wrote:
-> > A problem was reported on CoachZ devices where the display wouldn't come
-> > up, or it would be distorted. It turns out that the PLL code here wasn't
-> > getting called once dsi_pll_10nm_vco_recalc_rate() started returning the
-> > same exact frequency, down to the Hz, that the bootloader was setting
-> > instead of 0 when the clk was registered with the clk framework.
-> >
-> > After commit 001d8dc33875 ("drm/msm/dsi: remove temp data from global
-> > pll structure") we use a hardcoded value for the parent clk frequency,
-> > i.e.  VCO_REF_CLK_RATE, and we also hardcode the value for FRAC_BITS,
-> > instead of getting it from the config structure. This combination of
-> > changes to the recalc function allows us to properly calculate the
-> > frequency of the PLL regardless of whether or not the PLL has been
-> > clk_prepare()d or clk_set_rate()d. That's a good improvement.
-> >
-> > Unfortunately, this means that now we won't call down into the PLL clk
-> > driver when we call clk_set_rate() because the frequency calculated in
-> > the framework matches the frequency that is set in hardware. If the rate
-> > is the same as what we want it should be OK to not call the set_rate PLL
-> > op. The real problem is that the prepare op in this driver uses a
-> > private struct member to stash away the vco frequency so that it can
-> > call the set_rate op directly during prepare. Once the set_rate op is
-> > never called because recalc_rate told us the rate is the same, we don't
-> > set this private struct member before the prepare op runs, so we try to
-> > call the set_rate function directly with a frequency of 0. This
-> > effectively kills the PLL and configures it for a rate that won't work.
-> > Calling set_rate from prepare is really quite bad and will confuse any
-> > downstream clks about what the rate actually is of their parent. Fixing
-> > that will be a rather large change though so we leave that to later.
-> >
-> > For now, let's stash away the rate we calculate during recalc so that
-> > the prepare op knows what frequency to set, instead of 0. This way
-> > things keep working and the display can enable the PLL properly. In the
-> > future, we should remove that code from the prepare op so that it
-> > doesn't even try to call the set rate function.
-> >
-> > Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-> > Fixes: 001d8dc33875 ("drm/msm/dsi: remove temp data from global pll structure")
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> H_GET_EM_PARMS H_CALL was previously responsible for exporting this
+> information in the lparcfg, however the H_GET_EM_PARMS H_CALL
+> will be deprecated P10 onwards.
 >
-> Thank you for the lengthy explanation. May I suggest another solution:
->   - Apply
-> https://lore.kernel.org/linux-arm-msm/010101750064e17e-3db0087e-fc37-494d-aac9-2c2b9b0a7c5b-000000@us-west-2.amazonses.com/
+> The H_GET_ENERGY_SCALE_INFO H_CALL is of the following call format:
+> hcall(
+>   uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
+>   uint64 flags,           // Per the flag request
+>   uint64 firstAttributeId,// The attribute id
+>   uint64 bufferAddress,   // The logical address of the output buffer
+
+Instead of logical address, guest address or guest physical address
+would be more precise.
+
+>   uint64 bufferSize       // The size in bytes of the output buffer
+> );
 >
->   - And make save_state for 7nm and 10nm cache vco freq (like 14nm does).
+> This H_CALL can query either all the attributes at once with
+> firstAttributeId = 0, flags = 0 as well as query only one attribute
+> at a time with firstAttributeId = id
 >
-> What do you think?
+> The output buffer consists of the following
+> 1. number of attributes              - 8 bytes
+> 2. array offset to the data location - 8 bytes
+
+The offset is from the start of the buffer, isn't it? So not the array
+offset.
+
+> 3. version info                      - 1 byte
+> 4. A data array of size num attributes, which contains the following:
+>   a. attribute ID              - 8 bytes
+>   b. attribute value in number - 8 bytes
+>   c. attribute name in string  - 64 bytes
+>   d. attribute value in string - 64 bytes
+
+Is this new hypercall already present in the spec? These seem a bit
+underspecified to me.
+
 >
+> The new H_CALL exports information in direct string value format, hence
+> a new interface has been introduced in /sys/firmware/papr to export
 
-Maybe that can be done for the next merge window? I'd like to get the
-smallest possible patch in as a fix for this cycle given that the Fixes
-tag is a recent regression introduced during the most recent merge
-window.
+Hm.. Maybe this should be something less generic than "papr"?
 
-I honestly have no idea what's going on with the clk driver in these
-files but from the clk framework perspective there are bigger problems
-than caching the vco freq properly. As I stated in the commit text
-above, calling set_rate from prepare is plain bad. That should stop.
+> this information to userspace in an extensible pass-through format.
+> The H_CALL returns the name, numeric value and string value. As string
+> values are in human readable format, therefore if the string value
+> exists then that is given precedence over the numeric value.
 
-From my quick glance, the patch you mention looks like another
-workaround instead of a proper fix. Why would we need to save the
-registers at boot and then snap them back into place on enable? Maybe we
-shouldn't reset the phy after registering the clks? Instead register the
-clks after the phy is reset so recalc_rate can accurately calculate the
-frequency. I suppose that would break continuous splash screen though
-where you want the PLL to stay running the entire boot? But then
-issuing a reset would break that, wouldn't it? As you can see I'm pretty
-confused about how this is all supposed to work.
+So the hypervisor could simply not send the string representation? How
+will the userspace tell the difference since they are reading everything
+from a file?
 
-Note: my problem isn't about recovering what boot sets, it's mostly
-exposing incorrect usage of the clk framework in this driver because it
-relies on this chain of events:
+Overall I'd say we should give the data in a more structured way and let
+the user-facing tool do the formatting and presentation.
 
- 1) recalc rate calculates something different than what is
-    set via clk_set_rate()
+>
+> The format of exposing the sysfs information is as follows:
+> /sys/firmware/papr/
+>   |-- attr_0_name
+>   |-- attr_0_val
+>   |-- attr_1_name
+>   |-- attr_1_val
+> ...
 
- 2) clk_set_rate() is called with the different rate
+How do we keep a stable interface with userspace? Say the hypervisor
+decides to add or remove attributes, change their order, string
+representation, etc? It will inform us via the version field, but that
+is lost when we output this to sysfs.
 
- 3) clk_prepare() is called to actually enable the PLL and wait for it
-    to start
+I get that if the userspace just iterate over the contents of the
+directory then nothing breaks, but there is not much else it could do it
+seems.
 
-If clk_prepare() was called before clk_set_rate(), which is totally
-valid, then it should similarly fail and think the rate is 0 and the PLL
-won't lock. Does implementing save_state fix that? If so, it seems like
-we have two pieces of code working around each other, maybe for
-suspend/resume purposes.
-
-I admit this patch I'm proposing is another workaround, but at least it
-makes things work again without going off and adding a bunch of register
-save/restore logic.
+>
+> The energy information that is exported is useful for userspace tools
+> such as powerpc-utils. Currently these tools infer the
+> "power_mode_data" value in the lparcfg, which in turn is obtained from
+> the to be deprecated H_GET_EM_PARMS H_CALL.
+> On future platforms, such userspace utilities will have to look at the
+> data returned from the new H_CALL being populated in this new sysfs
+> interface and report this information directly without the need of
+> interpretation.
+>
+> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
