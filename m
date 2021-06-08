@@ -2,155 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B166039ECD1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E27239ECD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbhFHDQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 23:16:10 -0400
-Received: from m32-153.88.com ([43.250.32.153]:5824 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230237AbhFHDQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 23:16:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=Date:From:To; bh=fxzUMVV0EPeh/zmL3o0HanjEphz9QxxNjXiEy
-        gfeBMs=; b=VDKO3rIroIXL3Kqm+MFkHgygLTmAX0I1QReg8ga8296npuF6mW8WO
-        taXO26HhOVrp6hyAqHEL/eMsApFkzOTgQYn6A06yeXPv6fklrbye1QBbkkUTgYsD
-        QzWZr/do+XbLLTABl0C7FN4O6eKN60CiUUoBfhyOkh1MORO3Ky2y9Q=
-Received: from bobwxc.top (unknown [120.238.248.220])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgB3Tv1+4L5gENUEAA--.12609S2;
-        Tue, 08 Jun 2021 11:14:07 +0800 (CST)
-Date:   Tue, 8 Jun 2021 11:14:05 +0800
-From:   "Wu X.C." <bobwxc@email.cn>
-To:     Hu Haowen <src.res@email.cn>
-Cc:     alexs@kernel.org, corbet@lwn.net, bernard@vivo.com,
-        maskray@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] docs/zh_CN: create new translations for
- zh_CN/dev-tools/testing-overview
-Message-ID: <20210608031405.GC3207@bobwxc.top>
-References: <20210605120504.40246-1-src.res@email.cn>
- <20210608024439.GA3207@bobwxc.top>
- <01cd7a95-8b91-ad2f-ad94-80b06c1fe5c0@email.cn>
+        id S231124AbhFHDQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 23:16:54 -0400
+Received: from mga12.intel.com ([192.55.52.136]:44667 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230237AbhFHDQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 23:16:52 -0400
+IronPort-SDR: 7mP66wFXDQrJZ4l9HnXdizMuqkb14lGwlEIli7caZa7oWmuAS2kTKJ9YnkRj7DXQrAf8s4Z4d+
+ 6CGf7cVTRQIw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="184448059"
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
+   d="scan'208";a="184448059"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 20:15:00 -0700
+IronPort-SDR: xk21ECQQo6o3Z9GqXtWVsBcywzmVaMXEWDNYfMVx3BmaN6M4K8ZULP63q5kAAn/1c+yANhHy0I
+ DnSWJkwc5CVQ==
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
+   d="scan'208";a="447733233"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 20:14:57 -0700
+Subject: Re: [kbuild-all] Re: kernel/rcu/tree.c:2073:23: warning: stack frame
+ size of 2704 bytes in function 'rcu_gp_kthread'
+To:     paulmck@kernel.org
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+References: <202106061253.0X2QKyyI-lkp@intel.com>
+ <20210606044926.GJ4397@paulmck-ThinkPad-P17-Gen-1>
+ <4696fe3d-a7ad-acae-686e-6295ca327737@intel.com>
+ <20210607151939.GP4397@paulmck-ThinkPad-P17-Gen-1>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <e7bbb0e5-3063-031b-af6e-273e97f1d61f@intel.com>
+Date:   Tue, 8 Jun 2021 11:14:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bKyqfOwhbdpXa4YI"
-Content-Disposition: inline
-In-Reply-To: <01cd7a95-8b91-ad2f-ad94-80b06c1fe5c0@email.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CM-TRANSID: GiKnCgB3Tv1+4L5gENUEAA--.12609S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ar1xGr17uw4rJFy8JFWkJFb_yoW8Wr1xp3
-        yv93ZxJF4jgry2yrZak3W0qrnYkwnYqry8X3W3tFyUWrWvyFnIkry7trZFgwn09392yFyF
-        vF42gr9rC34rAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyl1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l
-        84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
-        ASzI0EjI02j7AqF2xKxwAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4U
-        Jr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I64
-        8v4I1lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1U
-        Jr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
-        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-        14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUxIJPDUUUU
-X-Originating-IP: [120.238.248.220]
-X-CM-SenderInfo: pere453f6hztlloou0/
+In-Reply-To: <20210607151939.GP4397@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---bKyqfOwhbdpXa4YI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 08, 2021 at 10:53:20AM +0800, Hu Haowen wrote:
->=20
-> =E5=9C=A8 2021/6/8 =E4=B8=8A=E5=8D=8810:44, Wu X.C. =E5=86=99=E9=81=93:
-> > On Sat, Jun 05, 2021 at 08:05:04PM +0800, Hu Haowen wrote:
-> > > Create new translations for dev-tools/testing-overview.rst and link it
-> > > to dev-tools/index.rst with TODOList modifications.
-> > >=20
-> > > Signed-off-by: Hu Haowen <src.res@email.cn>
-> > > ---
-> > >   .../translations/zh_CN/dev-tools/index.rst    |   5 +
-> > >   .../zh_CN/dev-tools/testing-overview.rst      | 110 +++++++++++++++=
-+++
-> > [...]
-> > > +
-> > > +=E4=BB=A3=E7=A0=81=E8=A6=86=E7=9B=96=E7=8E=87=E5=B7=A5=E5=85=B7
-> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > +
-> > > +=E6=94=AF=E6=8C=81=E4=B8=A4=E7=A7=8D=E4=B8=8D=E5=90=8C=E4=BB=A3=E7=
-=A0=81=E4=B9=8B=E9=97=B4=E7=9A=84=E8=A6=86=E7=9B=96=E7=8E=87=E6=B5=8B=E9=87=
-=8F=E5=B7=A5=E5=85=B7=E3=80=82=E5=AE=83=E4=BB=AC=E5=8F=AF=E4=BB=A5=E7=94=A8=
-=E6=9D=A5=E9=AA=8C=E8=AF=81=E4=B8=80=E9=A1=B9=E6=B5=8B=E8=AF=95=E6=89=A7=E8=
-=A1=8C=E7=9A=84
-> > Linux=E5=86=85=E6=A0=B8=E6=94=AF=E6=8C=81=E4=B8=A4=E7=A7=8D=E4=B8=8D=E5=
-=90=8C=E7=9A=84=E4=BB=A3=E7=A0=81=E8=A6=86=E7=9B=96=E7=8E=87=E6=B5=8B=E8=AF=
-=95=E5=B7=A5=E5=85=B7=E3=80=82
->=20
->=20
-> But you mentioned that this sentence should be
-> "=E6=94=AF=E6=8C=81=E4=B8=A4=E7=A7=8D=E4=B8=8D=E5=90=8C=E4=BB=A3=E7=A0=81=
-=E4=B9=8B=E9=97=B4=E7=9A=84=E8=A6=86=E7=9B=96=E7=8E=87=E6=B5=8B=E9=87=8F=E5=
-=B7=A5=E5=85=B7" in
-> the previous email. Should I take this version or the previous version?
->=20
+On 6/7/21 11:19 PM, Paul E. McKenney wrote:
+> On Mon, Jun 07, 2021 at 05:18:21PM +0800, Rong Chen wrote:
+>>
+>> On 6/6/21 12:49 PM, Paul E. McKenney wrote:
+>>> On Sun, Jun 06, 2021 at 12:19:57PM +0800, kernel test robot wrote:
+>>>> Hi Paul,
+>>>>
+>>>> FYI, the error/warning still remains.
+>>>>
+>>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>>> head:   f5b6eb1e018203913dfefcf6fa988649ad11ad6e
+>>>> commit: 7dffe01765d9309b8bd5505503933ec0ec53d192 rcu: Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node() macros
+>>>> date:   5 months ago
+>>>> config: powerpc-randconfig-r023-20210606 (attached as .config)
+>>>> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 551a697c5cf33275b66add4fc467fcf59084cffb)
+>>>> reproduce (this is a W=1 build):
+>>>>           wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>>>           chmod +x ~/bin/make.cross
+>>>>           # install powerpc cross compiling tool for clang build
+>>>>           # apt-get install binutils-powerpc-linux-gnu
+>>>>           # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7dffe01765d9309b8bd5505503933ec0ec53d192
+>>>>           git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>>           git fetch --no-tags linus master
+>>>>           git checkout 7dffe01765d9309b8bd5505503933ec0ec53d192
+>>>>           # save the attached .config to linux build tree
+>>>>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc
+>>>>
+>>>> If you fix the issue, kindly add following tag as appropriate
+>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>
+>>>> All warnings (new ones prefixed by >>):
+>>>>
+>>>>      In file included from kernel/rcu/tree.c:21:
+>>>>      In file included from include/linux/kernel.h:12:
+>>>>      In file included from include/linux/bitops.h:29:
+>>>>      In file included from arch/powerpc/include/asm/bitops.h:62:
+>>>>      arch/powerpc/include/asm/barrier.h:49:9: warning: '__lwsync' macro redefined [-Wmacro-redefined]
+>>>>      #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
+>>>>              ^
+>>>>      <built-in>:310:9: note: previous definition is here
+>>>>      #define __lwsync __builtin_ppc_lwsync
+>>>>              ^
+>>>>>> kernel/rcu/tree.c:2073:23: warning: stack frame size of 2704 bytes in function 'rcu_gp_kthread' [-Wframe-larger-than=]
+>>>>      static int __noreturn rcu_gp_kthread(void *unused)
+>>> Does -rcu commit 2f20de99a63b ("rcu: Make rcu_gp_cleanup() be noinline
+>>> for tracing") help?
+>> Hi Paul,
+>>
+>> The stack frame size decreased to 2256 bytes:
+>>
+>>    kernel/rcu/tree.c:2129:23: warning: stack frame size of 2256 bytes in
+>> function 'rcu_gp_kthread' [-Wframe-larger-than=]
+> Very good, thank you!  Does the following patch (in addition to that
+> commit) also help?
 
-Actually was "=E6=94=AF=E6=8C=81=E4=B8=A4=E7=A7=8D=E4=B8=8D=E5=90=8C=E7=9A=
-=84=E4=BB=A3=E7=A0=81=E8=A6=86=E7=9B=96=E7=8E=87=E6=B5=8B=E8=AF=95=E5=B7=A5=
-=E5=85=B7=E3=80=82"
-<https://lore.kernel.org/linux-doc/20210523140332.GA1097@bobwxc.top/>
+Hi Paul,
 
-I forgot the head and you added something in the middle :)
+I applied the below patch on commit 2f20de99a63b and the warning is gone.
 
-Please use the new version.
+Best Regards,
+Rong Chen
 
-Thanks,
-	Wu
-
->=20
-> Thx,
->=20
-> Hu Haowen
->=20
->=20
-> >=20
-> > > +=E7=A1=AE=E5=88=87=E5=87=BD=E6=95=B0=E6=88=96=E4=BB=A3=E7=A0=81=E8=
-=A1=8C=E3=80=82=E8=BF=99=E6=9C=89=E5=8A=A9=E4=BA=8E=E5=86=B3=E5=AE=9A=E5=86=
-=85=E6=A0=B8=E8=A2=AB=E6=B5=8B=E8=AF=95=E4=BA=86=E5=A4=9A=E5=B0=91=EF=BC=8C=
-=E6=88=96=E7=94=A8=E6=9D=A5=E6=9F=A5=E6=89=BE=E5=90=88=E9=80=82=E7=9A=84=E6=
-=B5=8B=E8=AF=95
-> > > +=E4=B8=AD=E6=B2=A1=E6=9C=89=E8=A6=86=E7=9B=96=E5=88=B0=E7=9A=84=E6=
-=9E=81=E7=AB=AF=E6=83=85=E5=86=B5=E3=80=82
-> > > +
-> > OK, good job!
-> >=20
-> > Just need to fix a small problem, after that
-> >=20
-> > Reviewed-by: Wu XiangCheng <bobwxc@email.cn>
-> > Thanks,
-> > 	Wu X.C.
-
---bKyqfOwhbdpXa4YI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEERbo3U5kJpaCtFl1PtlsoEiKCsIUFAmC+4H0ACgkQtlsoEiKC
-sIV2Tgv9EnbkMJpnj4dK4miRataUqjBTt7FVUGlsCvpTcgxnAu/Oqe7wivNGBYnU
-aAm0lzzPN+gLNhRVUQCfcBPODwq7uyhKzbJpD4S4mJf/LE0KfUwiHYl6+fV4+V7R
-erjDxKeTW8dxy1ajFMzR57qrE7zYdc165UdQ7BmqyE49aLnUK0qnbGKFsbtxeCTQ
-g0eWt3Bma4ftXO62PkdDKyE/wcCVeVyL90V7cl+MjF9Wu6gwhg/2Td1djsTBZWYg
-xk9wctglnB94SKTMBwY1NEHsOY1Pup25X5g2LPoTHz6u0DMSQp9qiyw7rUEv1siy
-oFRhNjT7W+2BbDN3gSvyLYn2O03fWogWnca5ENYPXl6cNNFwfqDOY300Q3Aoe9WW
-0gbiPTWJMx3XxFUhjUg8Atdg2ZgjBI0KakZSo0/Iga9vilB8ne76Q+eEAK4lN9li
-2Ke/kcVdo3MfpwZ2Ynkjgx0QLagNXrVSL6K7IpSu5LAKN+KrUWz/f/6h3cSquRfx
-wuKxG8rA
-=fX3L
------END PGP SIGNATURE-----
-
---bKyqfOwhbdpXa4YI--
+>
+> 							Thanx, Paul
+>
+> ------------------------------------------------------------------------
+>
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 13bd8eee62bf..ef435aeac993 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1737,7 +1737,7 @@ static void rcu_strict_gp_boundary(void *unused)
+>   /*
+>    * Initialize a new grace period.  Return false if no grace period required.
+>    */
+> -static bool rcu_gp_init(void)
+> +static noinline bool rcu_gp_init(void)
+>   {
+>   	unsigned long firstseq;
+>   	unsigned long flags;
+> @@ -1931,7 +1931,7 @@ static void rcu_gp_fqs(bool first_time)
+>   /*
+>    * Loop doing repeated quiescent-state forcing until the grace period ends.
+>    */
+> -static void rcu_gp_fqs_loop(void)
+> +static noinline void rcu_gp_fqs_loop(void)
+>   {
+>   	bool first_gp_fqs;
+>   	int gf = 0;
 
