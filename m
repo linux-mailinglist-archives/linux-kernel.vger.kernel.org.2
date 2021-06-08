@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A050239EB90
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D040039EB95
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhFHBly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:41:54 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3460 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbhFHBlx (ORCPT
+        id S231356AbhFHBnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:43:10 -0400
+Received: from mail-pg1-f179.google.com ([209.85.215.179]:38592 "EHLO
+        mail-pg1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231209AbhFHBnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:41:53 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzXsP2Fgkz6wv9;
-        Tue,  8 Jun 2021 09:36:57 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 09:39:55 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 09:39:54 +0800
-Subject: Re: [PATCH v2 15/15] x86: convert to setup_initial_init_mm()
+        Mon, 7 Jun 2021 21:43:09 -0400
+Received: by mail-pg1-f179.google.com with SMTP id 6so15251659pgk.5;
+        Mon, 07 Jun 2021 18:41:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=LmbJ2cp9d+faibVwJt5sXOKKJnAg7e+IPDELoo8ZgrE=;
+        b=e7ddUgQHWp77SiSJqo65Mn37u7qIgCnEabvtOd3R9qWfDVGI61SBgkXCjB2Ov6LMz8
+         ddQsE4VpbqP/wwrnUFb4cBfGE0TeCFOHqA7eeXrupmE33NXDtezdF4f+KL8fUPXvAuUZ
+         SWjqXeFIC27Iwu4vJDWdL51ccU8z3UefeSc9H3q78+dYrGc0WAvulbioViTVOFP/w43t
+         JCOVqKKQSD086R+DVdXo4G/wlMAPqXXUNVSBdfdhCTE5z3F+gHXef0rCm4/dJPlfzhiW
+         BSSIzbjkvr06zDHkSDjCKEUKW/+VTIerWbVfbBwRH4o5KfV2y8wRn4GACnH6bPZsrMPJ
+         fXaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=LmbJ2cp9d+faibVwJt5sXOKKJnAg7e+IPDELoo8ZgrE=;
+        b=rwh1y2QDkNjPMFdwGU0Uv0ROcqPtlXvZP371BqVxiaoyvWwrIf6sHGmWXEAfanIP4i
+         e3+YcvwpdKVvDfwgdEiafEjSxXMGigRA2FGLr6C6ci+GRUjATrRQko+FoT0WAcVVsOmJ
+         nfYavvxLLEu0pUG9Rk9cV546CiNuoTafbA7xylfvv7segx5DyuyEZIo0KR6jSIKJtB4x
+         mroxCux4jdc87t3kolo+ypZmG+NO2hGwPbRvMldBPCIvgGPiDPGjI0HqL1jAhQBKw3hy
+         71ztsq68cy+CtcJc6kFOqSPw9dRt4rHD3GKJIZXn9k1IQnozeOq3zpX5sHUoOfnC6C5U
+         2ZhQ==
+X-Gm-Message-State: AOAM533sxrMvCd5CYFETd0uo97v+SG1ik4GlWP7IlZiVJsbQ/HcnW685
+        B0EQIfJ24ZfEG2CAOYlEmjs=
+X-Google-Smtp-Source: ABdhPJzOfkIzeToLfJJOUxLbidAvCn+caiAWIe+szT2HeJWl8ScK6XZBhdd+ERrJwrp2bhftZQZfEw==
+X-Received: by 2002:a63:d08:: with SMTP id c8mr2962362pgl.248.1623116402237;
+        Mon, 07 Jun 2021 18:40:02 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id p11sm13524395pjo.19.2021.06.07.18.40.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 18:40:01 -0700 (PDT)
+Date:   Tue, 08 Jun 2021 11:39:56 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v4 1/4] lazy tlb: introduce lazy mm refcount helper
+ functions
 To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, <x86@kernel.org>
-References: <20210604070633.32363-1-wangkefeng.wang@huawei.com>
- <20210604070633.32363-16-wangkefeng.wang@huawei.com>
- <20210607172608.fda6ee76f9b195428ddb1d0d@linux-foundation.org>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <6dca29c0-bcb0-9af3-4d49-68b2b1c924e5@huawei.com>
-Date:   Tue, 8 Jun 2021 09:39:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+Cc:     Anton Blanchard <anton@ozlabs.org>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, Andy Lutomirski <luto@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <20210605014216.446867-1-npiggin@gmail.com>
+        <20210605014216.446867-2-npiggin@gmail.com>
+        <20210607164934.d453adcc42473e84beb25db3@linux-foundation.org>
+In-Reply-To: <20210607164934.d453adcc42473e84beb25db3@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210607172608.fda6ee76f9b195428ddb1d0d@linux-foundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Message-Id: <1623116020.vyls9ehp49.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/6/8 8:26, Andrew Morton wrote:
-> On Fri, 4 Jun 2021 15:06:33 +0800 Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
->> Use setup_initial_init_mm() helper to simplify code.
->>
+Excerpts from Andrew Morton's message of June 8, 2021 9:49 am:
+> On Sat,  5 Jun 2021 11:42:13 +1000 Nicholas Piggin <npiggin@gmail.com> wr=
+ote:
+>=20
+>> Add explicit _lazy_tlb annotated functions for lazy mm refcounting.
+>> This makes lazy mm references more obvious, and allows explicit
+>> refcounting to be removed if it is not used.
+>>=20
 >> ...
 >>
->> --- a/arch/x86/kernel/setup.c
->> +++ b/arch/x86/kernel/setup.c
->> @@ -868,10 +868,7 @@ void __init setup_arch(char **cmdline_p)
->>   
->>   	if (!boot_params.hdr.root_flags)
->>   		root_mountflags &= ~MS_RDONLY;
->> -	init_mm.start_code = (unsigned long) _text;
->> -	init_mm.end_code = (unsigned long) _etext;
->> -	init_mm.end_data = (unsigned long) _edata;
->> -	init_mm.brk = _brk_end;
->> +	setup_initial_init_mm(_text, _etext, _edata, _brk_end);
->>   
->>   	code_resource.start = __pa_symbol(_text);
->>   	code_resource.end = __pa_symbol(_etext)-1;
-> arch/x86/kernel/setup.c:873:47: warning: passing argument 4 of 'setup_initial_init_mm' makes pointer from integer without a cast [-Wint-conversion]
->    873 |  setup_initial_init_mm(_text, _etext, _edata, _brk_end);
->        |                                               ^~~~~~~~
->        |                                               |
->        |                                               long unsigned int
-> In file included from ./include/linux/pid_namespace.h:7,
->                   from ./include/linux/ptrace.h:10,
->                   from ./include/linux/elfcore.h:11,
->                   from ./include/linux/crash_core.h:6,
->                   from ./include/linux/kexec.h:18,
->                   from ./include/linux/crash_dump.h:5,
->                   from arch/x86/kernel/setup.c:9:
-> ./include/linux/mm.h:248:29: note: expected 'void *' but argument is of type 'long unsigned int'
->    248 |       void *end_data, void *brk);
->        |                       ~~~~~~^~~
->
->
-> afaict the other architectures will warn this way, not sure.
+>> --- a/kernel/kthread.c
+>> +++ b/kernel/kthread.c
+>> @@ -1314,14 +1314,14 @@ void kthread_use_mm(struct mm_struct *mm)
+>>  	WARN_ON_ONCE(!(tsk->flags & PF_KTHREAD));
+>>  	WARN_ON_ONCE(tsk->mm);
+>> =20
+>> +	mmgrab(mm);
+>> +
+>>  	task_lock(tsk);
+>>  	/* Hold off tlb flush IPIs while switching mm's */
+>>  	local_irq_disable();
+>>  	active_mm =3D tsk->active_mm;
+>> -	if (active_mm !=3D mm) {
+>> -		mmgrab(mm);
+>> +	if (active_mm !=3D mm)
+>>  		tsk->active_mm =3D mm;
+>> -	}
+>=20
+> Looks like a functional change.  What's happening here?
 
-I check all archs again, the x86/m68k/powerpc/h8300 has use some value 
-which is not pointer ,
+That's kthread_use_mm being clever about the lazy tlb mm. If it happened=20
+that the kthread had inherited a the lazy tlb mm that happens to be the=20
+one we want to use here, then we already have a refcount to it via the=20
+lazy tlb ref.
 
-other are changed, but forget this one.  I do compile, but I don't know 
-why I missed it, sorry about
+So then it doesn't have to touch the refcount, but rather just converts
+it from the lazy tlb ref to the returned reference. If the lazy tlb mm
+doesn't get a reference, we can't do that.
 
-this.
-
-
->
-> Please check all that, refresh ,retest and resend?
-> .
->
+Thanks,
+Nick
