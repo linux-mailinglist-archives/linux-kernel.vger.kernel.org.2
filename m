@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F80939F128
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE90D39F130
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhFHIoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:44:46 -0400
-Received: from mga14.intel.com ([192.55.52.115]:25207 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230371AbhFHIop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:44:45 -0400
-IronPort-SDR: 9uOc8NPw05lJdOGoH2omPZBHyWlGsnVcuagX7gchIy4G/QCS/B85MzzLFsttnU6M4iE/99rmRr
- Bf12OuNGkNIw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204616263"
-X-IronPort-AV: E=Sophos;i="5.83,257,1616482800"; 
-   d="scan'208";a="204616263"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 01:42:53 -0700
-IronPort-SDR: V0Ov13dmGK4COhb7BFnuyeEIcn4E/RTcO4o6wnoaTZm2qViByR++L9wZq7hJcci0VxCnImiEjA
- CjTtXNJQbn/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,257,1616482800"; 
-   d="scan'208";a="447821292"
-Received: from unknown (HELO [10.237.72.51]) ([10.237.72.51])
-  by orsmga008.jf.intel.com with ESMTP; 08 Jun 2021 01:42:47 -0700
-Subject: Re: [PATCH v2 1/3] units: Add SI metric prefix definitions
-To:     Joe Perches <joe@perches.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>, wsa@kernel.org
-References: <20210607152344.57458-1-andriy.shevchenko@linux.intel.com>
- <ae919bae6c21e23b0a1ed0c9327738e59dd90aa0.camel@perches.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <a6f0677c-70b0-2a51-a01b-f84bcacfc0bd@linux.intel.com>
-Date:   Tue, 8 Jun 2021 11:42:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231239AbhFHIpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:45:43 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50342 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230280AbhFHIpm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 04:45:42 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DCEF11FD2A;
+        Tue,  8 Jun 2021 08:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623141828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iISBLZW6vnOrxf1PW5nBJaiWFRRWjobdH4Xa3xTC/lU=;
+        b=njPEmPPpqnXg+tK+t2CDK3LGjIjtcmBh4GjeomQYXxUy4wdWJIv5Qfh3tYvVx3Ji5/9kO1
+        QyjjZEfBuDOcJoAU1stmecuDDIuh4TJjuDElafj2O8/cIeoJSYIjozJzVJ9hj7ekFDz1VO
+        EJ39+iqOxFuiRomisRKW5s6b6jEbKjY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623141828;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iISBLZW6vnOrxf1PW5nBJaiWFRRWjobdH4Xa3xTC/lU=;
+        b=WZxVu+knMuzzI4pcbDtECurFxUjtzwLXtn+LHGOZ/eE7TJvRoflemPzoPTgweVLDUQPNMX
+        Inv4z139hONYZOCQ==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id BC035A3B87;
+        Tue,  8 Jun 2021 08:43:48 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 83E781F2C94; Tue,  8 Jun 2021 10:43:48 +0200 (CEST)
+Date:   Tue, 8 Jun 2021 10:43:48 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dennis Zhou <dennis@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH v8 2/8] writeback, cgroup: add smp_mb() to
+ cgroup_writeback_umount()
+Message-ID: <20210608084348.GA5562@quack2.suse.cz>
+References: <20210608013123.1088882-1-guro@fb.com>
+ <20210608013123.1088882-3-guro@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <ae919bae6c21e23b0a1ed0c9327738e59dd90aa0.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608013123.1088882-3-guro@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/21 10:09 PM, Joe Perches wrote:
-> On Mon, 2021-06-07 at 18:23 +0300, Andy Shevchenko wrote:
->> +#define HECTO 100L
->> +#define DECA 10L
+On Mon 07-06-21 18:31:17, Roman Gushchin wrote:
+> A full memory barrier is required between clearing SB_ACTIVE flag
+> in generic_shutdown_super() and checking isw_nr_in_flight in
+> cgroup_writeback_umount(), otherwise a new switch operation might
+> be scheduled after atomic_read(&isw_nr_in_flight) returned 0.
+> This would result in a non-flushed isw_wq, and a potential crash.
 > 
-> Should it be DECA or DEKA or both?
+> The problem hasn't yet been seen in the real life and was discovered
+> by Jan Kara by looking into the code.
 > 
-> https://www.nist.gov/pml/weights-and-measures/metric-si-prefixes
-> deka Example: dekameter da 	10**1 	Ten
-> 
->> +#define DECI	10L
->> +#define CENTI	100L
->> +#define MILLI	1000L
->> +#define MICRO	1000000L
->> +#define NANO	1000000000L
->> +#define PICO	1000000000000LL
->> +#define FEMTO	1000000000000000LL
-> 
-> IMO: Might as well include all the prefixes up to 10**24
-> 
-> EXA ZETTA YOTTA, ATTA ZEPTO YOCTO
-> 
-> And how do people avoid using MILLI for KILO, MEGA for MICRO, etc...
-> The compiler won't care but usage could look odd.
-> I find this patch creates more confusion than solves a real problem 
-(typo where one zero is missing or one extra) and adds potentially 
-needless churn. For instance I don't assume much use for the HECTO now 
-or in the future.
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-How about if absolutely necessary just adding only KILO, MEGA and GIGA 
-and questionable defines only after when the real needs arises and can 
-see does "1/1000L" etc define cause any troubles to real calculations?
+Looks good. Feel free to add:
 
-Jarkko
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/fs-writeback.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index bd99890599e0..3564efcc4b78 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -1000,6 +1000,12 @@ int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr,
+>   */
+>  void cgroup_writeback_umount(void)
+>  {
+> +	/*
+> +	 * SB_ACTIVE should be reliably cleared before checking
+> +	 * isw_nr_in_flight, see generic_shutdown_super().
+> +	 */
+> +	smp_mb();
+> +
+>  	if (atomic_read(&isw_nr_in_flight)) {
+>  		/*
+>  		 * Use rcu_barrier() to wait for all pending callbacks to
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
