@@ -2,178 +2,403 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49ECA39F581
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CF939F57C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232257AbhFHLsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:48:43 -0400
-Received: from mail-qk1-f202.google.com ([209.85.222.202]:56962 "EHLO
-        mail-qk1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232243AbhFHLsk (ORCPT
+        id S232241AbhFHLsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:48:04 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8088 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232161AbhFHLr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:48:40 -0400
-Received: by mail-qk1-f202.google.com with SMTP id h4-20020a05620a2444b02903aacdbd70b7so2966254qkn.23
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 04:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=sWbrRz6YFSv51K0ZiaeJfgkblqcqVJvp4mAMJ4g6evQ=;
-        b=oMijNQKaRNBFiQ1m3Qen4ujOBqjvKBFOUAcRFp8lVBza1ZVmHJBg08yWChcmh4N3ZM
-         OGodg6TU7O/n8uagXshvezjlQtF2vboBz78E2pGnEzfJf46ws36OW4bI1/aj3MDGCs9e
-         Xfirtd13uPSSZLeEVxOgsYyY+418xQDc1+nXfhX45f/aIEHSgwagqS8YMo1NSiFFfY0c
-         ieFXm6t/oQ5DXdoraPM0zQT1nRFddABeIHqKydm2Xvwr/+8QtiaDN5+AZINlYTdU70RH
-         fSSMTVRLvAV+5ixRteovyozG1HBoKb7EkgINPdYQBbU5sNB1iJxJxaMi3xxL78dUJvgH
-         LNPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=sWbrRz6YFSv51K0ZiaeJfgkblqcqVJvp4mAMJ4g6evQ=;
-        b=NX4Mg4M3aqphD2e77JO+vhGFaC4DEXLJhiki7ndvLy/JdiC9T6HyCniw4lcQNYEUJg
-         hUaR6XXYXh1yEcAwsgjVbuFWihT9b8wGt2jszhBzeJqYI827xzRzBSwn6FcZl5hvObQw
-         +jHHq2AlsEDX2ZXR1jAVWLpb+rwkwSIEw5PmV0VFen+MK65hhxkaNcb9DGpb7JIJ4OTn
-         UB2UfFEYfvmMwQz8NkiwL9dq98SmIlYwzwbnRxOjYmpN+LFlFPxqltcC1kfAdFhS58S+
-         fEwwE0/0A+a+EHpcdfnNJ3qHoIJzPJ3qnMX+tDNoQUo+EEapX+jz0ywS0t4EAUjhl68q
-         1TDg==
-X-Gm-Message-State: AOAM5335cmvctL6pEjHItd8JYW5OHv0QOx4/wmEfjqr7O44VlCC6G0s+
-        zlUTrrEOYq+2A/k3BQZSxOzq18USJ3ph
-X-Google-Smtp-Source: ABdhPJwsxbCizlABk5SfV18s0TUyC2fSDZX+uNojDJncA7j/acMAyKtd4wzKVHkNbef2eVClKkhRAeeIxy79
-X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a0c:e8cd:: with SMTP id
- m13mr23073154qvo.52.1623152731419; Tue, 08 Jun 2021 04:45:31 -0700 (PDT)
-Date:   Tue,  8 Jun 2021 11:45:14 +0000
-In-Reply-To: <20210608114518.748712-1-qperret@google.com>
-Message-Id: <20210608114518.748712-4-qperret@google.com>
-Mime-Version: 1.0
-References: <20210608114518.748712-1-qperret@google.com>
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-Subject: [PATCH v3 3/7] KVM: arm64: Remove list_head from hyp_page
-From:   Quentin Perret <qperret@google.com>
-To:     maz@kernel.org, will@kernel.org, james.morse@arm.com,
-        alexandru.elisei@arm.com, catalin.marinas@arm.com,
-        suzuki.poulose@arm.com
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kernel-team@android.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 8 Jun 2021 07:47:59 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzpJz4SgwzYry1;
+        Tue,  8 Jun 2021 19:43:15 +0800 (CST)
+Received: from huawei.com (10.175.104.170) by dggeme703-chm.china.huawei.com
+ (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
+ 2021 19:46:04 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <sjenning@redhat.com>,
+        <ddstreet@ieee.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH v2 2/2] mm/zbud: don't export any zbud API
+Date:   Tue, 8 Jun 2021 19:45:15 +0800
+Message-ID: <20210608114515.206992-3-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20210608114515.206992-1-linmiaohe@huawei.com>
+References: <20210608114515.206992-1-linmiaohe@huawei.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.170]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The list_head member of struct hyp_page is only needed when the page is
-attached to a free-list, which by definition implies the page is free.
-As such, nothing prevents us from using the page itself to store the
-list_head, hence reducing the size of the vmemmap.
+The zbud doesn't need to export any API and it is meant to be used via
+zpool API since the commit 12d79d64bfd3 ("mm/zpool: update zswap to use
+zpool"). So we can remove the unneeded zbud.h and move down zpool API
+to avoid any forward declaration.
 
-Signed-off-by: Quentin Perret <qperret@google.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- arch/arm64/kvm/hyp/include/nvhe/memory.h |  1 -
- arch/arm64/kvm/hyp/nvhe/page_alloc.c     | 39 ++++++++++++++++++++----
- 2 files changed, 33 insertions(+), 7 deletions(-)
+ MAINTAINERS          |   1 -
+ include/linux/zbud.h |  23 -----
+ mm/zbud.c            | 219 ++++++++++++++++++++++---------------------
+ 3 files changed, 112 insertions(+), 131 deletions(-)
+ delete mode 100644 include/linux/zbud.h
 
-diff --git a/arch/arm64/kvm/hyp/include/nvhe/memory.h b/arch/arm64/kvm/hyp/include/nvhe/memory.h
-index fd78bde939ee..7691ab495eb4 100644
---- a/arch/arm64/kvm/hyp/include/nvhe/memory.h
-+++ b/arch/arm64/kvm/hyp/include/nvhe/memory.h
-@@ -12,7 +12,6 @@ struct hyp_page {
- 	unsigned int refcount;
- 	unsigned int order;
- 	struct hyp_pool *pool;
--	struct list_head node;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d8648ee43199..625d66d7aacc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -20264,7 +20264,6 @@ M:	Seth Jennings <sjenning@redhat.com>
+ M:	Dan Streetman <ddstreet@ieee.org>
+ L:	linux-mm@kvack.org
+ S:	Maintained
+-F:	include/linux/zbud.h
+ F:	mm/zbud.c
+ 
+ ZD1211RW WIRELESS DRIVER
+diff --git a/include/linux/zbud.h b/include/linux/zbud.h
+deleted file mode 100644
+index b1eaf6e31735..000000000000
+--- a/include/linux/zbud.h
++++ /dev/null
+@@ -1,23 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _ZBUD_H_
+-#define _ZBUD_H_
+-
+-#include <linux/types.h>
+-
+-struct zbud_pool;
+-
+-struct zbud_ops {
+-	int (*evict)(struct zbud_pool *pool, unsigned long handle);
+-};
+-
+-struct zbud_pool *zbud_create_pool(gfp_t gfp, const struct zbud_ops *ops);
+-void zbud_destroy_pool(struct zbud_pool *pool);
+-int zbud_alloc(struct zbud_pool *pool, size_t size, gfp_t gfp,
+-	unsigned long *handle);
+-void zbud_free(struct zbud_pool *pool, unsigned long handle);
+-int zbud_reclaim_page(struct zbud_pool *pool, unsigned int retries);
+-void *zbud_map(struct zbud_pool *pool, unsigned long handle);
+-void zbud_unmap(struct zbud_pool *pool, unsigned long handle);
+-u64 zbud_get_pool_size(struct zbud_pool *pool);
+-
+-#endif /* _ZBUD_H_ */
+diff --git a/mm/zbud.c b/mm/zbud.c
+index 78e80ca58869..3f61304405cb 100644
+--- a/mm/zbud.c
++++ b/mm/zbud.c
+@@ -51,7 +51,6 @@
+ #include <linux/preempt.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+-#include <linux/zbud.h>
+ #include <linux/zpool.h>
+ 
+ /*****************
+@@ -73,6 +72,12 @@
+ #define ZHDR_SIZE_ALIGNED CHUNK_SIZE
+ #define NCHUNKS		((PAGE_SIZE - ZHDR_SIZE_ALIGNED) >> CHUNK_SHIFT)
+ 
++struct zbud_pool;
++
++struct zbud_ops {
++	int (*evict)(struct zbud_pool *pool, unsigned long handle);
++};
++
+ /**
+  * struct zbud_pool - stores metadata for each zbud pool
+  * @lock:	protects all pool fields and first|last_chunk fields of any
+@@ -128,104 +133,6 @@ struct zbud_header {
+ 	bool under_reclaim;
  };
  
- extern u64 __hyp_vmemmap;
-diff --git a/arch/arm64/kvm/hyp/nvhe/page_alloc.c b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
-index 2602577daa00..34f0eb026dd2 100644
---- a/arch/arm64/kvm/hyp/nvhe/page_alloc.c
-+++ b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
-@@ -62,6 +62,34 @@ static struct hyp_page *__find_buddy_avail(struct hyp_pool *pool,
- 
+-/*****************
+- * zpool
+- ****************/
+-
+-#ifdef CONFIG_ZPOOL
+-
+-static int zbud_zpool_evict(struct zbud_pool *pool, unsigned long handle)
+-{
+-	if (pool->zpool && pool->zpool_ops && pool->zpool_ops->evict)
+-		return pool->zpool_ops->evict(pool->zpool, handle);
+-	else
+-		return -ENOENT;
+-}
+-
+-static const struct zbud_ops zbud_zpool_ops = {
+-	.evict =	zbud_zpool_evict
+-};
+-
+-static void *zbud_zpool_create(const char *name, gfp_t gfp,
+-			       const struct zpool_ops *zpool_ops,
+-			       struct zpool *zpool)
+-{
+-	struct zbud_pool *pool;
+-
+-	pool = zbud_create_pool(gfp, zpool_ops ? &zbud_zpool_ops : NULL);
+-	if (pool) {
+-		pool->zpool = zpool;
+-		pool->zpool_ops = zpool_ops;
+-	}
+-	return pool;
+-}
+-
+-static void zbud_zpool_destroy(void *pool)
+-{
+-	zbud_destroy_pool(pool);
+-}
+-
+-static int zbud_zpool_malloc(void *pool, size_t size, gfp_t gfp,
+-			unsigned long *handle)
+-{
+-	return zbud_alloc(pool, size, gfp, handle);
+-}
+-static void zbud_zpool_free(void *pool, unsigned long handle)
+-{
+-	zbud_free(pool, handle);
+-}
+-
+-static int zbud_zpool_shrink(void *pool, unsigned int pages,
+-			unsigned int *reclaimed)
+-{
+-	unsigned int total = 0;
+-	int ret = -EINVAL;
+-
+-	while (total < pages) {
+-		ret = zbud_reclaim_page(pool, 8);
+-		if (ret < 0)
+-			break;
+-		total++;
+-	}
+-
+-	if (reclaimed)
+-		*reclaimed = total;
+-
+-	return ret;
+-}
+-
+-static void *zbud_zpool_map(void *pool, unsigned long handle,
+-			enum zpool_mapmode mm)
+-{
+-	return zbud_map(pool, handle);
+-}
+-static void zbud_zpool_unmap(void *pool, unsigned long handle)
+-{
+-	zbud_unmap(pool, handle);
+-}
+-
+-static u64 zbud_zpool_total_size(void *pool)
+-{
+-	return zbud_get_pool_size(pool) * PAGE_SIZE;
+-}
+-
+-static struct zpool_driver zbud_zpool_driver = {
+-	.type =		"zbud",
+-	.sleep_mapped = true,
+-	.owner =	THIS_MODULE,
+-	.create =	zbud_zpool_create,
+-	.destroy =	zbud_zpool_destroy,
+-	.malloc =	zbud_zpool_malloc,
+-	.free =		zbud_zpool_free,
+-	.shrink =	zbud_zpool_shrink,
+-	.map =		zbud_zpool_map,
+-	.unmap =	zbud_zpool_unmap,
+-	.total_size =	zbud_zpool_total_size,
+-};
+-
+-MODULE_ALIAS("zpool-zbud");
+-#endif /* CONFIG_ZPOOL */
+-
+ /*****************
+  * Helpers
+ *****************/
+@@ -312,7 +219,7 @@ static int num_free_chunks(struct zbud_header *zhdr)
+  * Return: pointer to the new zbud pool or NULL if the metadata allocation
+  * failed.
+  */
+-struct zbud_pool *zbud_create_pool(gfp_t gfp, const struct zbud_ops *ops)
++static struct zbud_pool *zbud_create_pool(gfp_t gfp, const struct zbud_ops *ops)
+ {
+ 	struct zbud_pool *pool;
+ 	int i;
+@@ -336,7 +243,7 @@ struct zbud_pool *zbud_create_pool(gfp_t gfp, const struct zbud_ops *ops)
+  *
+  * The pool should be emptied before this function is called.
+  */
+-void zbud_destroy_pool(struct zbud_pool *pool)
++static void zbud_destroy_pool(struct zbud_pool *pool)
+ {
+ 	kfree(pool);
+ }
+@@ -360,7 +267,7 @@ void zbud_destroy_pool(struct zbud_pool *pool)
+  * gfp arguments are invalid or -ENOMEM if the pool was unable to allocate
+  * a new page.
+  */
+-int zbud_alloc(struct zbud_pool *pool, size_t size, gfp_t gfp,
++static int zbud_alloc(struct zbud_pool *pool, size_t size, gfp_t gfp,
+ 			unsigned long *handle)
+ {
+ 	int chunks, i, freechunks;
+@@ -435,7 +342,7 @@ int zbud_alloc(struct zbud_pool *pool, size_t size, gfp_t gfp,
+  * only sets the first|last_chunks to 0.  The page is actually freed
+  * once both buddies are evicted (see zbud_reclaim_page() below).
+  */
+-void zbud_free(struct zbud_pool *pool, unsigned long handle)
++static void zbud_free(struct zbud_pool *pool, unsigned long handle)
+ {
+ 	struct zbud_header *zhdr;
+ 	int freechunks;
+@@ -507,7 +414,7 @@ void zbud_free(struct zbud_pool *pool, unsigned long handle)
+  * no pages to evict or an eviction handler is not registered, -EAGAIN if
+  * the retry limit was hit.
+  */
+-int zbud_reclaim_page(struct zbud_pool *pool, unsigned int retries)
++static int zbud_reclaim_page(struct zbud_pool *pool, unsigned int retries)
+ {
+ 	int i, ret, freechunks;
+ 	struct zbud_header *zhdr;
+@@ -589,7 +496,7 @@ int zbud_reclaim_page(struct zbud_pool *pool, unsigned int retries)
+  *
+  * Returns: a pointer to the mapped allocation
+  */
+-void *zbud_map(struct zbud_pool *pool, unsigned long handle)
++static void *zbud_map(struct zbud_pool *pool, unsigned long handle)
+ {
+ 	return (void *)(handle);
+ }
+@@ -599,7 +506,7 @@ void *zbud_map(struct zbud_pool *pool, unsigned long handle)
+  * @pool:	pool in which the allocation resides
+  * @handle:	handle associated with the allocation to be unmapped
+  */
+-void zbud_unmap(struct zbud_pool *pool, unsigned long handle)
++static void zbud_unmap(struct zbud_pool *pool, unsigned long handle)
+ {
  }
  
-+/*
-+ * Pages that are available for allocation are tracked in free-lists, so we use
-+ * the pages themselves to store the list nodes to avoid wasting space. As the
-+ * allocator always returns zeroed pages (which are zeroed on the hyp_put_page()
-+ * path to optimize allocation speed), we also need to clean-up the list node in
-+ * each page when we take it out of the list.
-+ */
-+static inline void page_remove_from_list(struct hyp_page *p)
-+{
-+	struct list_head *node = hyp_page_to_virt(p);
-+
-+	__list_del_entry(node);
-+	memset(node, 0, sizeof(*node));
-+}
-+
-+static inline void page_add_to_list(struct hyp_page *p, struct list_head *head)
-+{
-+	struct list_head *node = hyp_page_to_virt(p);
-+
-+	INIT_LIST_HEAD(node);
-+	list_add_tail(node, head);
-+}
-+
-+static inline struct hyp_page *node_to_page(struct list_head *node)
-+{
-+	return hyp_virt_to_page(node);
-+}
-+
- static void __hyp_attach_page(struct hyp_pool *pool,
- 			      struct hyp_page *p)
+@@ -610,11 +517,109 @@ void zbud_unmap(struct zbud_pool *pool, unsigned long handle)
+  * Returns: size in pages of the given pool.  The pool lock need not be
+  * taken to access pages_nr.
+  */
+-u64 zbud_get_pool_size(struct zbud_pool *pool)
++static u64 zbud_get_pool_size(struct zbud_pool *pool)
  {
-@@ -83,14 +111,14 @@ static void __hyp_attach_page(struct hyp_pool *pool,
- 			break;
- 
- 		/* Take the buddy out of its list, and coallesce with @p */
--		list_del_init(&buddy->node);
-+		page_remove_from_list(buddy);
- 		buddy->order = HYP_NO_ORDER;
- 		p = min(p, buddy);
- 	}
- 
- 	/* Mark the new head, and insert it */
- 	p->order = order;
--	list_add_tail(&p->node, &pool->free_area[order]);
-+	page_add_to_list(p, &pool->free_area[order]);
+ 	return pool->pages_nr;
  }
  
- static struct hyp_page *__hyp_extract_page(struct hyp_pool *pool,
-@@ -99,7 +127,7 @@ static struct hyp_page *__hyp_extract_page(struct hyp_pool *pool,
++/*****************
++ * zpool
++ ****************/
++
++#ifdef CONFIG_ZPOOL
++
++static int zbud_zpool_evict(struct zbud_pool *pool, unsigned long handle)
++{
++	if (pool->zpool && pool->zpool_ops && pool->zpool_ops->evict)
++		return pool->zpool_ops->evict(pool->zpool, handle);
++	else
++		return -ENOENT;
++}
++
++static const struct zbud_ops zbud_zpool_ops = {
++	.evict =	zbud_zpool_evict
++};
++
++static void *zbud_zpool_create(const char *name, gfp_t gfp,
++			       const struct zpool_ops *zpool_ops,
++			       struct zpool *zpool)
++{
++	struct zbud_pool *pool;
++
++	pool = zbud_create_pool(gfp, zpool_ops ? &zbud_zpool_ops : NULL);
++	if (pool) {
++		pool->zpool = zpool;
++		pool->zpool_ops = zpool_ops;
++	}
++	return pool;
++}
++
++static void zbud_zpool_destroy(void *pool)
++{
++	zbud_destroy_pool(pool);
++}
++
++static int zbud_zpool_malloc(void *pool, size_t size, gfp_t gfp,
++			unsigned long *handle)
++{
++	return zbud_alloc(pool, size, gfp, handle);
++}
++static void zbud_zpool_free(void *pool, unsigned long handle)
++{
++	zbud_free(pool, handle);
++}
++
++static int zbud_zpool_shrink(void *pool, unsigned int pages,
++			unsigned int *reclaimed)
++{
++	unsigned int total = 0;
++	int ret = -EINVAL;
++
++	while (total < pages) {
++		ret = zbud_reclaim_page(pool, 8);
++		if (ret < 0)
++			break;
++		total++;
++	}
++
++	if (reclaimed)
++		*reclaimed = total;
++
++	return ret;
++}
++
++static void *zbud_zpool_map(void *pool, unsigned long handle,
++			enum zpool_mapmode mm)
++{
++	return zbud_map(pool, handle);
++}
++static void zbud_zpool_unmap(void *pool, unsigned long handle)
++{
++	zbud_unmap(pool, handle);
++}
++
++static u64 zbud_zpool_total_size(void *pool)
++{
++	return zbud_get_pool_size(pool) * PAGE_SIZE;
++}
++
++static struct zpool_driver zbud_zpool_driver = {
++	.type =		"zbud",
++	.sleep_mapped = true,
++	.owner =	THIS_MODULE,
++	.create =	zbud_zpool_create,
++	.destroy =	zbud_zpool_destroy,
++	.malloc =	zbud_zpool_malloc,
++	.free =		zbud_zpool_free,
++	.shrink =	zbud_zpool_shrink,
++	.map =		zbud_zpool_map,
++	.unmap =	zbud_zpool_unmap,
++	.total_size =	zbud_zpool_total_size,
++};
++
++MODULE_ALIAS("zpool-zbud");
++#endif /* CONFIG_ZPOOL */
++
+ static int __init init_zbud(void)
  {
- 	struct hyp_page *buddy;
- 
--	list_del_init(&p->node);
-+	page_remove_from_list(p);
- 	while (p->order > order) {
- 		/*
- 		 * The buddy of order n - 1 currently has HYP_NO_ORDER as it
-@@ -110,7 +138,7 @@ static struct hyp_page *__hyp_extract_page(struct hyp_pool *pool,
- 		p->order--;
- 		buddy = __find_buddy_nocheck(pool, p, p->order);
- 		buddy->order = p->order;
--		list_add_tail(&buddy->node, &pool->free_area[buddy->order]);
-+		page_add_to_list(buddy, &pool->free_area[buddy->order]);
- 	}
- 
- 	return p;
-@@ -182,7 +210,7 @@ void *hyp_alloc_pages(struct hyp_pool *pool, unsigned int order)
- 	}
- 
- 	/* Extract it from the tree at the right order */
--	p = list_first_entry(&pool->free_area[i], struct hyp_page, node);
-+	p = node_to_page(pool->free_area[i].next);
- 	p = __hyp_extract_page(pool, p, order);
- 
- 	hyp_set_page_refcounted(p);
-@@ -210,7 +238,6 @@ int hyp_pool_init(struct hyp_pool *pool, u64 pfn, unsigned int nr_pages,
- 	for (i = 0; i < nr_pages; i++) {
- 		p[i].pool = pool;
- 		p[i].order = 0;
--		INIT_LIST_HEAD(&p[i].node);
- 		hyp_set_page_refcounted(&p[i]);
- 	}
- 
+ 	/* Make sure the zbud header will fit in one chunk */
 -- 
-2.32.0.rc1.229.g3e70b5a671-goog
+2.23.0
 
