@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100803A01A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BB63A0311
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236881AbhFHSzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:55:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48898 "EHLO mail.kernel.org"
+        id S237584AbhFHTM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:12:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235878AbhFHStZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:49:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE21961421;
-        Tue,  8 Jun 2021 18:38:50 +0000 (UTC)
+        id S235272AbhFHTBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:01:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A37A6190A;
+        Tue,  8 Jun 2021 18:44:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177531;
-        bh=p+PHPQ6gKflyziuFLdEsRRGWi8Rdwr30naO7QUZpkd0=;
+        s=korg; t=1623177862;
+        bh=cLiyCEZHiyTq5IDtwBe4jGHJP/xgqrXhwZzYoTN8YTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xU8/qvzCZauZdrRiK09Hot4XOJqaWmSa5EHnhWxa66qAX+qAKMwkk3Tbu+8OpKTpN
-         gbH6+hzemTUQG4TiK4+QOVocRe51sE5eQL1IdzAs0/5dJahgBp2Akqbc6KfyrwrMc0
-         Mo+KaGGM6/OzC1z+UmFT2Qe4Xc5By1nuUBMQF8SY=
+        b=DTXSgM3TTCniixBBYWqHjCikr8Qi4JIEjxSch8MLXeghLuFR7ubW9t0E7FyUSvAIH
+         MhSXPP8F2Nh9NcVAtbXdOwbOhJLbTydqDe1V6RQTRuBLrJFXfC8WHzIlDWbMPGOoMM
+         woHzWA3uj7gHQp0+oTpxoDbXbu6o7igVP7KgnroE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kasper Dupont <kasperd@gjkwv.06.feb.2021.kasperd.net>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 78/78] neighbour: allow NUD_NOARP entries to be forced GCed
-Date:   Tue,  8 Jun 2021 20:27:47 +0200
-Message-Id: <20210608175937.900254955@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 5.10 128/137] KVM: SVM: Truncate GPR value for DR and CR accesses in !64-bit mode
+Date:   Tue,  8 Jun 2021 20:27:48 +0200
+Message-Id: <20210608175946.721835490@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Ahern <dsahern@kernel.org>
+From: Sean Christopherson <seanjc@google.com>
 
-commit 7a6b1ab7475fd6478eeaf5c9d1163e7a18125c8f upstream.
+commit 0884335a2e653b8a045083aa1d57ce74269ac81d upstream.
 
-IFF_POINTOPOINT interfaces use NUD_NOARP entries for IPv6. It's possible to
-fill up the neighbour table with enough entries that it will overflow for
-valid connections after that.
+Drop bits 63:32 on loads/stores to/from DRs and CRs when the vCPU is not
+in 64-bit mode.  The APM states bits 63:32 are dropped for both DRs and
+CRs:
 
-This behaviour is more prevalent after commit 58956317c8de ("neighbor:
-Improve garbage collection") is applied, as it prevents removal from
-entries that are not NUD_FAILED, unless they are more than 5s old.
+  In 64-bit mode, the operand size is fixed at 64 bits without the need
+  for a REX prefix. In non-64-bit mode, the operand size is fixed at 32
+  bits and the upper 32 bits of the destination are forced to 0.
 
-Fixes: 58956317c8de (neighbor: Improve garbage collection)
-Reported-by: Kasper Dupont <kasperd@gjkwv.06.feb.2021.kasperd.net>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Signed-off-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 7ff76d58a9dc ("KVM: SVM: enhance MOV CR intercept handler")
+Fixes: cae3797a4639 ("KVM: SVM: enhance mov DR intercept handler")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210422022128.3464144-4-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/neighbour.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kvm/svm/svm.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/net/core/neighbour.c
-+++ b/net/core/neighbour.c
-@@ -239,6 +239,7 @@ static int neigh_forced_gc(struct neigh_
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2362,7 +2362,7 @@ static int cr_interception(struct vcpu_s
+ 	err = 0;
+ 	if (cr >= 16) { /* mov to cr */
+ 		cr -= 16;
+-		val = kvm_register_read(&svm->vcpu, reg);
++		val = kvm_register_readl(&svm->vcpu, reg);
+ 		trace_kvm_cr_write(cr, val);
+ 		switch (cr) {
+ 		case 0:
+@@ -2408,7 +2408,7 @@ static int cr_interception(struct vcpu_s
+ 			kvm_queue_exception(&svm->vcpu, UD_VECTOR);
+ 			return 1;
+ 		}
+-		kvm_register_write(&svm->vcpu, reg, val);
++		kvm_register_writel(&svm->vcpu, reg, val);
+ 		trace_kvm_cr_read(cr, val);
+ 	}
+ 	return kvm_complete_insn_gp(&svm->vcpu, err);
+@@ -2439,13 +2439,13 @@ static int dr_interception(struct vcpu_s
+ 	if (dr >= 16) { /* mov to DRn */
+ 		if (!kvm_require_dr(&svm->vcpu, dr - 16))
+ 			return 1;
+-		val = kvm_register_read(&svm->vcpu, reg);
++		val = kvm_register_readl(&svm->vcpu, reg);
+ 		kvm_set_dr(&svm->vcpu, dr - 16, val);
+ 	} else {
+ 		if (!kvm_require_dr(&svm->vcpu, dr))
+ 			return 1;
+ 		kvm_get_dr(&svm->vcpu, dr, &val);
+-		kvm_register_write(&svm->vcpu, reg, val);
++		kvm_register_writel(&svm->vcpu, reg, val);
+ 	}
  
- 			write_lock(&n->lock);
- 			if ((n->nud_state == NUD_FAILED) ||
-+			    (n->nud_state == NUD_NOARP) ||
- 			    (tbl->is_multicast &&
- 			     tbl->is_multicast(n->primary_key)) ||
- 			    time_after(tref, n->updated))
+ 	return kvm_skip_emulated_instruction(&svm->vcpu);
 
 
