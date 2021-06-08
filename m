@@ -2,114 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA5C39F4C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF64139F4CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbhFHLTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:19:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:47354 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbhFHLTk (ORCPT
+        id S231876AbhFHLUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:20:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23796 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231609AbhFHLUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:19:40 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623151066;
+        Tue, 8 Jun 2021 07:20:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623151140;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5T+GMiDIBmF3KCptbG4LCBZPtno08qjjlXw+ihnp/3U=;
-        b=JAFMmN8ZsbfhOh9eH/fDvii4UPfJpAv/zlezyK2IK64AdfkGiq8W4VyUxtF7HIK2pbQR/y
-        Y3kn8g83ahP9p8xb0GQh0NBr9OzhdGCkO52GOg3y+tSfhpRIo9DXGVuwVHtY0U9c21kqMh
-        qWX24B7lpExr52tgzt1khiFrcY6RtiwlNWYaveOwryGMyOuNfJiat1fGK4zW0+ODl+TUIl
-        VNg0h3GLtDOUKkLcn0d90C4x8/5+TJYf2qOr6PNmBorGbHbs2Ss8G4PRGOCH/tPLJAgoJD
-        kmZ4RFaUo1XKnAXvpi+i2CwgkIklbwqbBaUY5bmhMWEH35PHahP2meBweUf9gA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623151066;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5T+GMiDIBmF3KCptbG4LCBZPtno08qjjlXw+ihnp/3U=;
-        b=CdLoEFPSKH3zNAFOGbH32Xi2iM5UlzLOWX/1UBVyBPQLt7KNoXnzp8UxApo+eMHTg7jpSa
-        dIFiGGKEdoOx7rCw==
-To:     Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        bh=CBLtrFhiRKeFc7Q7qn/8AZzS8tEb5Usg8INInZ6WYCs=;
+        b=NCgNublPpUc65Nv9VMJ1ZXh7G8ulTDOg+GeMHxs5AdLA5wdvFcVbC1riX+BPiVNsB1FrsM
+        bnC+0xwjq5QRyorxATrmLJeJ+9atPcJONYGUkeK4ty51NCsaD10GHwoNsQYLa0rZLMLaHb
+        stXbO8E4RkU/aCKdNnYhnSeQhE4W4a0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-432-u6Ex2_oLOwyXGw60vwaqLQ-1; Tue, 08 Jun 2021 07:18:58 -0400
+X-MC-Unique: u6Ex2_oLOwyXGw60vwaqLQ-1
+Received: by mail-wr1-f72.google.com with SMTP id z13-20020adfec8d0000b0290114cc6b21c4so9244175wrn.22
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 04:18:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=CBLtrFhiRKeFc7Q7qn/8AZzS8tEb5Usg8INInZ6WYCs=;
+        b=orQuQSJCbB/ub6KNdm/hH+TE3mPx1RBtce9/fDMoWye/vtl2vWGMaDSOqVAGxCpqcO
+         ZmxajrafoLfcrjKMaxKaq4r1o085+KNOKSUcxCh9gsOj7uQTH5dL/UVzQtY+vCWaFkkK
+         I6PEJwq6iNDS/Z5tFxuOMfdXOsBFHLtZU/urCBvfrKWNUTnFTdXvrkidqq5Bm7O4T945
+         6kF1/RTemH5sRNDmsqL0ACvCZCDbFfAfSGXlBtbF2feVX7H3IpgXmVDW0KA4KQ/2dYZw
+         5MMdkJ/bHb19M0ynoEcTNwRkyZyF7ipFjEpLlTzwOG1/ZRltcd9Bpk0MY3x0RD+EPdW2
+         wdHQ==
+X-Gm-Message-State: AOAM532kqFl5UU2vYALFyxPKBLGy16Yvs9D+Ie8J7GHAtv0McBWBKvov
+        /Vs6OSCSOyo0k8m9q6D6JBZ64x7Gz3dXn8sOqfA2/BkZwO0s7gn85n4Lpuopg3pBGsPvUy9mcZB
+        qdwZUCzATXz8+vzQKaE2ahtDU
+X-Received: by 2002:adf:df86:: with SMTP id z6mr22061245wrl.255.1623151137784;
+        Tue, 08 Jun 2021 04:18:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrB9z1bqXKLNgH1xZgLenFDxAm/18wrzcUUIce09tn+BporQC3UeSbXcvGrkz4TceLSHiMMw==
+X-Received: by 2002:adf:df86:: with SMTP id z6mr22061199wrl.255.1623151137577;
+        Tue, 08 Jun 2021 04:18:57 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c61cf.dip0.t-ipconnect.de. [91.12.97.207])
+        by smtp.gmail.com with ESMTPSA id u2sm19236473wrn.38.2021.06.08.04.18.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 04:18:57 -0700 (PDT)
+Subject: Re: [PATCH v1 05/12] mm/memory_hotplug: remove nid parameter from
+ remove_memory() and friends
+To:     Michael Ellerman <mpe@ellerman.id.au>, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Marek Kedzierski <mkedzier@redhat.com>,
+        Hui Zhu <teawater@gmail.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [patch V2 00/14] x86/fpu: Mop up XSAVES and related damage
-In-Reply-To: <37df631f-9d3d-3035-6eeb-85ef33e580d5@intel.com>
-References: <20210605234742.712464974@linutronix.de> <87h7i9zv3r.ffs@nanos.tec.linutronix.de> <eca0add1-849e-6a1a-8ea6-f6b72650c9c8@intel.com> <87eeddzs0l.ffs@nanos.tec.linutronix.de> <37df631f-9d3d-3035-6eeb-85ef33e580d5@intel.com>
-Date:   Tue, 08 Jun 2021 13:17:46 +0200
-Message-ID: <878s3kzjtx.ffs@nanos.tec.linutronix.de>
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-acpi@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev
+References: <20210607195430.48228-1-david@redhat.com>
+ <20210607195430.48228-6-david@redhat.com> <87y2bkehky.fsf@mpe.ellerman.id.au>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <7463b3ed-07d3-7157-629d-a85a3ff558d6@redhat.com>
+Date:   Tue, 8 Jun 2021 13:18:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <87y2bkehky.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07 2021 at 09:38, Dave Hansen wrote:
-> On 6/7/21 7:08 AM, Thomas Gleixner wrote:
->>> By the way, are you talking specifically about the _error_ paths where
->>> the kernel is unable to XRSTOR the signal XSAVE buffer for some reason,
->>> and tries to apply either init_fpu or the hardware init state instead?
->> 
->> 1) Successful XRSTOR from user if the PKRU feature bit in the
->>    sigframe xsave.header.xfeatures is cleared. Both fast and slow path.
->
-> It seems like the suggestion here is to inject 'init_pkru_value' in all
-> cases where the kernel would be injecting the hardware init value.  I
-> don't think we should go that far.
->
-> If a signal handler sets xsave.header.xfeatures[PKRU]=0, I can't imagine
-> any other intent than wanting the hardware init value.
+On 08.06.21 13:11, Michael Ellerman wrote:
+> David Hildenbrand <david@redhat.com> writes:
+>> There is only a single user remaining. We can simply try to offline all
+>> online nodes - which is fast, because we usually span pages and can skip
+>> such nodes right away.
+> 
+> That makes me slightly nervous, because our big powerpc boxes tend to
+> trip on these scaling issues before others.
+> 
+> But the spanned pages check is just:
+> 
+> void try_offline_node(int nid)
+> {
+> 	pg_data_t *pgdat = NODE_DATA(nid);
+>          ...
+> 	if (pgdat->node_spanned_pages)
+> 		return;
+> 
+> So I guess that's pretty cheap, and it's only O(nodes), which should
+> never get that big.
 
-Fine. But PKRU=0 is broken today...
+Exactly. And if it does turn out to be a problem, we can walk all memory 
+blocks before removing them, collecting the nid(s).
 
-T1 in user space
-     wrpkru(0)
-
-T1 -> kernel
-     schedule()
-       XSAVE(S) -> T1->xsave.header.xfeatures[PKRU] == 0
-       T1->flags |= TIF_NEED_FPU_LOAD;
-       
-       wrpkru();
-
-     schedule()
-       ...
-       pk = get_xsave_addr(&T1->fpu->state.xsave, XFEATURE_PKRU);
-       if (pk)
-         wrpkru(pk->pkru);
-       else
-         wrpkru(DEFAULT_PKRU);
-
-But because PKRU of T1 was 0, the xfeatures bit is 0 and therefore the
-value in the xsave storage is not valid. Which makes get_xsave_addr()
-return NULL and switch_to() writes the default PKRU.
-
-So that wreckages any copy_to/from_user() on the way back to user space
-which hits memory which is protected by the default PKRU value.
-
-Assumed that this does not fail (pure luck) then T1 goes back to user
-space and because TIF_NEED_FPU_LOAD is set it ends up in
-
-switch_fpu_return()
-    __fpregs_load_activate()
-      if (!fpregs_state_valid()) {
-         load_XSTATE_from_task();
-      }
-
-But because nothing touched the FPU between schedule out and schedule in
-of T1 the fpregs_state is valid so switch_fpu_return() does nothing and
-just clears TIF_NEED_FPU_LOAD. Back to user space with DEFAULT_PKRU
-loaded. FAIL!
-
-XSTATE sucks.
-
+-- 
 Thanks,
 
-        tglx
+David / dhildenb
+
