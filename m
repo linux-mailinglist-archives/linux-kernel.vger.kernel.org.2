@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE53D3A0446
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2B53A0471
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237495AbhFHT2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:28:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37338 "EHLO mail.kernel.org"
+        id S239099AbhFHTeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:34:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238603AbhFHTPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:15:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72EC861464;
-        Tue,  8 Jun 2021 18:50:31 +0000 (UTC)
+        id S236707AbhFHTS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:18:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DB426197B;
+        Tue,  8 Jun 2021 18:52:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178231;
-        bh=exdhTaneULnsGNI+Wd7hkZj6EXBXExdOBga7eQRSL98=;
+        s=korg; t=1623178329;
+        bh=mHKXomWRnMW3agROBotJ0I7obFnlXdq6Cl3swQQVP7Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mxkPI1vn/QtBcyoiD44E0UPRnqsEWw25/5sDkI/j0kc296tGbY9fSxxiAq3DZOEPJ
-         lVZoM8cL9WD8kj+bv/PhJttwRkc4ANLLf0buvZFzdiBukjoQorihJul8WxFLkmdUiB
-         6YZ0JCt5ww7xiVecSuDjqi75iahrfr4ObogyVY3o=
+        b=If8FYPG7itFBuwUnrHOUrNJLV/VzT8T5KDhvVBRez7OOAnVwz64G7bjtgeQVKHUKo
+         7fdYL7Bgjeja6qAN8CjJTC0GwYpVKkTOL2JRj8XF4WUnpP5uvBAMcXz1ck/di5ztVT
+         IxiV7fQisg3Ia5TVNLr2t/IXWKmCZRyELTaZ1sdM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Zhu <James.Zhu@amd.com>,
-        Leo Liu <leo.liu@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 091/161] drm/amdgpu/jpeg3: add cancel_delayed_work_sync before power gate
-Date:   Tue,  8 Jun 2021 20:27:01 +0200
-Message-Id: <20210608175948.508144109@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+aa12d6106ea4ca1b6aae@syzkaller.appspotmail.com,
+        Phillip Potter <phil@philpotter.co.uk>, stable@kernel.org,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.12 119/161] ext4: fix memory leak in ext4_mb_init_backend on error path.
+Date:   Tue,  8 Jun 2021 20:27:29 +0200
+Message-Id: <20210608175949.472421199@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -42,41 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Zhu <James.Zhu@amd.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-[ Upstream commit 20ebbfd22f8115a1e4f60d3d289f66be4d47f1ec ]
+commit a8867f4e3809050571c98de7a2d465aff5e4daf5 upstream.
 
-Add cancel_delayed_work_sync before set power gating state
-to avoid race condition issue when power gating.
+Fix a memory leak discovered by syzbot when a file system is corrupted
+with an illegally large s_log_groups_per_flex.
 
-Signed-off-by: James Zhu <James.Zhu@amd.com>
-Reviewed-by: Leo Liu <leo.liu@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+aa12d6106ea4ca1b6aae@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Cc: stable@kernel.org
+Link: https://lore.kernel.org/r/20210412073837.1686-1-phil@philpotter.co.uk
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/jpeg_v3_0.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ext4/mballoc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/jpeg_v3_0.c b/drivers/gpu/drm/amd/amdgpu/jpeg_v3_0.c
-index 1d354245678d..2ea68c84e6b4 100644
---- a/drivers/gpu/drm/amd/amdgpu/jpeg_v3_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/jpeg_v3_0.c
-@@ -159,9 +159,9 @@ static int jpeg_v3_0_hw_init(void *handle)
- static int jpeg_v3_0_hw_fini(void *handle)
- {
- 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
--	struct amdgpu_ring *ring;
- 
--	ring = &adev->jpeg.inst->ring_dec;
-+	cancel_delayed_work_sync(&adev->vcn.idle_work);
-+
- 	if (adev->jpeg.cur_state != AMD_PG_STATE_GATE &&
- 	      RREG32_SOC15(JPEG, 0, mmUVD_JRBC_STATUS))
- 		jpeg_v3_0_set_powergating_state(adev, AMD_PG_STATE_GATE);
--- 
-2.30.2
-
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2715,7 +2715,7 @@ static int ext4_mb_init_backend(struct s
+ 		 */
+ 		if (sbi->s_es->s_log_groups_per_flex >= 32) {
+ 			ext4_msg(sb, KERN_ERR, "too many log groups per flexible block group");
+-			goto err_freesgi;
++			goto err_freebuddy;
+ 		}
+ 		sbi->s_mb_prefetch = min_t(uint, 1 << sbi->s_es->s_log_groups_per_flex,
+ 			BLK_MAX_SEGMENT_SIZE >> (sb->s_blocksize_bits - 9));
 
 
