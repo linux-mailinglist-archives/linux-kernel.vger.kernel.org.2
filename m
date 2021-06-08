@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B3C3A017A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A803A02C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236167AbhFHSwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:52:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44028 "EHLO mail.kernel.org"
+        id S237119AbhFHTJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:09:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235366AbhFHSqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:46:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38A0D61458;
-        Tue,  8 Jun 2021 18:37:44 +0000 (UTC)
+        id S237340AbhFHTAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:00:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77AE661443;
+        Tue,  8 Jun 2021 18:43:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177464;
-        bh=okPnwSyk/eDFRpJneyrocSJ+HJF7uB8oW6Q2IjRwK9E=;
+        s=korg; t=1623177819;
+        bh=Fb9d/2feoqFWeaeXMZHa35j9HPjekHgnoNpjzgJTVos=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZIvPMNB6EvCYClznNYze63kHk0YNFA62/qpGopkUUGlzuWs5BybNpKT770Y/u2H98
-         p9mLIImRNEecYskeLEd2E/p8cV38gZqXxUpUQ647fkcxaLtgmHvsI+wozLwqwLDEUJ
-         GYUGFsNy4wb8JTyOIdP/irQLpg9G9UcTLcFuuGjM=
+        b=koCluqm8vhuyuBQxxW2ivChPaBOkBFzdZjz3tW0LMbrMEvz7zs31r5YiwXRZpGMG6
+         OlAbW3qSbDJym0m7llnRA87pl2vdlfhA01EvVWWJGeuiU099nmy/ddyx2w28nw04kN
+         NpgI15FGn/02zmKXzNg1ZvLSqQxakuPFh92gpi00=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 61/78] btrfs: return errors from btrfs_del_csums in cleanup_ref_head
+        stable@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 110/137] mm/debug_vm_pgtable: fix alignment for pmd/pud_advanced_tests()
 Date:   Tue,  8 Jun 2021 20:27:30 +0200
-Message-Id: <20210608175937.334295481@linuxfoundation.org>
+Message-Id: <20210608175946.103539340@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +45,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
 
-commit 856bd270dc4db209c779ce1e9555c7641ffbc88e upstream.
+commit 04f7ce3f07ce39b1a3ca03a56b238a53acc52cfd upstream.
 
-We are unconditionally returning 0 in cleanup_ref_head, despite the fact
-that btrfs_del_csums could fail.  We need to return the error so the
-transaction gets aborted properly, fix this by returning ret from
-btrfs_del_csums in cleanup_ref_head.
+In pmd/pud_advanced_tests(), the vaddr is aligned up to the next pmd/pud
+entry, and so it does not match the given pmdp/pudp and (aligned down)
+pfn any more.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-CC: stable@vger.kernel.org # 4.19+
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+For s390, this results in memory corruption, because the IDTE
+instruction used e.g.  in xxx_get_and_clear() will take the vaddr for
+some calculations, in combination with the given pmdp.  It will then end
+up with a wrong table origin, ending on ...ff8, and some of those
+wrongly set low-order bits will also select a wrong pagetable level for
+the index addition.  IDTE could therefore invalidate (or 0x20) something
+outside of the page tables, depending on the wrongly picked index, which
+in turn depends on the random vaddr.
+
+As result, we sometimes see "BUG task_struct (Not tainted): Padding
+overwritten" on s390, where one 0x5a padding value got overwritten with
+0x7a.
+
+Fix this by aligning down, similar to how the pmd/pud_aligned pfns are
+calculated.
+
+Link: https://lkml.kernel.org/r/20210525130043.186290-2-gerald.schaefer@linux.ibm.com
+Fixes: a5c3b9ffb0f40 ("mm/debug_vm_pgtable: add tests validating advanced arch page table helpers")
+Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: <stable@vger.kernel.org>	[5.9+]
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/extent-tree.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/debug_vm_pgtable.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1879,7 +1879,7 @@ static int cleanup_ref_head(struct btrfs
- 	trace_run_delayed_ref_head(fs_info, head, 0);
- 	btrfs_delayed_ref_unlock(head);
- 	btrfs_put_delayed_ref_head(head);
--	return 0;
-+	return ret;
- }
+--- a/mm/debug_vm_pgtable.c
++++ b/mm/debug_vm_pgtable.c
+@@ -163,7 +163,7 @@ static void __init pmd_advanced_tests(st
  
- static struct btrfs_delayed_ref_head *btrfs_obtain_ref_head(
+ 	pr_debug("Validating PMD advanced\n");
+ 	/* Align the address wrt HPAGE_PMD_SIZE */
+-	vaddr = (vaddr & HPAGE_PMD_MASK) + HPAGE_PMD_SIZE;
++	vaddr &= HPAGE_PMD_MASK;
+ 
+ 	pgtable_trans_huge_deposit(mm, pmdp, pgtable);
+ 
+@@ -285,7 +285,7 @@ static void __init pud_advanced_tests(st
+ 
+ 	pr_debug("Validating PUD advanced\n");
+ 	/* Align the address wrt HPAGE_PUD_SIZE */
+-	vaddr = (vaddr & HPAGE_PUD_MASK) + HPAGE_PUD_SIZE;
++	vaddr &= HPAGE_PUD_MASK;
+ 
+ 	set_pud_at(mm, vaddr, pudp, pud);
+ 	pudp_set_wrprotect(mm, vaddr, pudp);
 
 
