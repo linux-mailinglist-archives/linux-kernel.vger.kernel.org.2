@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511623A0468
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3788B3A046A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237292AbhFHTdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:33:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39606 "EHLO mail.kernel.org"
+        id S238901AbhFHTeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:34:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237954AbhFHTSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:18:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA1B861001;
-        Tue,  8 Jun 2021 18:51:34 +0000 (UTC)
+        id S237956AbhFHTSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:18:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2422B6140F;
+        Tue,  8 Jun 2021 18:51:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178295;
-        bh=9J1/dpukLuQWMaWW5TRWh50vVzgLt5AVietmdb8el2g=;
+        s=korg; t=1623178314;
+        bh=WBaDR/3bp+5KoI+MO9Nv5iU1JRrzhFLaNPv4RszXNUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WPeUv+hzfos06G3tDHDeneQSXnHtZjlRbHWzFRzDq7IBwdY0XtCb8Vbcx8zbzVc9B
-         dyEPqEuVYAvvE/JsRPmVQ87yGoCSxtSCYPuzpVJ4jRsRiNwaJTPtQtA2F6Z3Q53+yq
-         EEO99lvJaO8TEgtRDMv53PdSNznrLEcJrQ4FGs+A=
+        b=1GJy3x2cFrNgYsC8eYs6uW7asCLJSIJbUIACTqsztP3eRIW0bZnt2wDjIMzqBy+3m
+         YvaVpt88XJmahkY/7Fp8ABVSwqw2+cksqm98AGwzLn3Kjjj1kcRyZMZckuE8b9Bis0
+         daRW3RZN+A4VkWU98EgDDz5PM8HTce6MwJq1ffVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhou Yanjie <zhouyanjie@wanyeetech.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huang Pei <huangpei@loongson.cn>,
-        Nicholas Piggin <npiggin@gmail.com>,
+        stable@vger.kernel.org, Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hillf Danton <hdanton@sina.com>, Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.12 122/161] Revert "MIPS: make userspace mapping young by default"
-Date:   Tue,  8 Jun 2021 20:27:32 +0200
-Message-Id: <20210608175949.567896171@linuxfoundation.org>
+Subject: [PATCH 5.12 123/161] kfence: maximize allocation wait timeout duration
+Date:   Tue,  8 Jun 2021 20:27:33 +0200
+Message-Id: <20210608175949.600600450@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -43,124 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From: Marco Elver <elver@google.com>
 
-commit 50c25ee97cf6ab011542167ab590c17012cea4ed upstream.
+commit 37c9284f6932b915043717703d6496dfd59c85f5 upstream.
 
-This reverts commit f685a533a7fab35c5d069dcd663f59c8e4171a75.
+The allocation wait timeout was initially added because of warnings due to
+CONFIG_DETECT_HUNG_TASK=y [1].  While the 1 sec timeout is sufficient to
+resolve the warnings (given the hung task timeout must be 1 sec or larger)
+it may cause unnecessary wake-ups if the system is idle:
 
-The MIPS cache flush logic needs to know whether the mapping was already
-established to decide how to flush caches.  This is done by checking the
-valid bit in the PTE.  The commit above breaks this logic by setting the
-valid in the PTE in new mappings, which causes kernel crashes.
+  https://lkml.kernel.org/r/CADYN=9J0DQhizAGB0-jz4HOBBh+05kMBXb4c0cXMS7Qi5NAJiw@mail.gmail.com
 
-Link: https://lkml.kernel.org/r/20210526094335.92948-1-tsbogend@alpha.franken.de
-Fixes: f685a533a7f ("MIPS: make userspace mapping young by default")
-Reported-by: Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Huang Pei <huangpei@loongson.cn>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: <stable@vger.kernel.org>
+Fix it by computing the timeout duration in terms of the current
+sysctl_hung_task_timeout_secs value.
+
+Link: https://lkml.kernel.org/r/20210421105132.3965998-3-elver@google.com
+Signed-off-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Hillf Danton <hdanton@sina.com>
+Cc: Jann Horn <jannh@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/mm/cache.c    |   30 ++++++++++++++----------------
- include/linux/pgtable.h |    8 ++++++++
- mm/memory.c             |    4 ++++
- 3 files changed, 26 insertions(+), 16 deletions(-)
+ mm/kfence/core.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -157,31 +157,29 @@ unsigned long _page_cachable_default;
- EXPORT_SYMBOL(_page_cachable_default);
+--- a/mm/kfence/core.c
++++ b/mm/kfence/core.c
+@@ -20,6 +20,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/random.h>
+ #include <linux/rcupdate.h>
++#include <linux/sched/sysctl.h>
+ #include <linux/seq_file.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+@@ -620,7 +621,16 @@ static void toggle_allocation_gate(struc
+ 	/* Enable static key, and await allocation to happen. */
+ 	static_branch_enable(&kfence_allocation_key);
  
- #define PM(p)	__pgprot(_page_cachable_default | (p))
--#define PVA(p)	PM(_PAGE_VALID | _PAGE_ACCESSED | (p))
+-	wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate), HZ);
++	if (sysctl_hung_task_timeout_secs) {
++		/*
++		 * During low activity with no allocations we might wait a
++		 * while; let's avoid the hung task warning.
++		 */
++		wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate),
++				   sysctl_hung_task_timeout_secs * HZ / 2);
++	} else {
++		wait_event(allocation_wait, atomic_read(&kfence_allocation_gate));
++	}
  
- static inline void setup_protection_map(void)
- {
- 	protection_map[0]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--	protection_map[1]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
--	protection_map[2]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--	protection_map[3]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
--	protection_map[4]  = PVA(_PAGE_PRESENT);
--	protection_map[5]  = PVA(_PAGE_PRESENT);
--	protection_map[6]  = PVA(_PAGE_PRESENT);
--	protection_map[7]  = PVA(_PAGE_PRESENT);
-+	protection_map[1]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-+	protection_map[2]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
-+	protection_map[3]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-+	protection_map[4]  = PM(_PAGE_PRESENT);
-+	protection_map[5]  = PM(_PAGE_PRESENT);
-+	protection_map[6]  = PM(_PAGE_PRESENT);
-+	protection_map[7]  = PM(_PAGE_PRESENT);
- 
- 	protection_map[8]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--	protection_map[9]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
--	protection_map[10] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
-+	protection_map[9]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-+	protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
- 				_PAGE_NO_READ);
--	protection_map[11] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
--	protection_map[12] = PVA(_PAGE_PRESENT);
--	protection_map[13] = PVA(_PAGE_PRESENT);
--	protection_map[14] = PVA(_PAGE_PRESENT);
--	protection_map[15] = PVA(_PAGE_PRESENT);
-+	protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
-+	protection_map[12] = PM(_PAGE_PRESENT);
-+	protection_map[13] = PM(_PAGE_PRESENT);
-+	protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
-+	protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
- }
- 
--#undef _PVA
- #undef PM
- 
- void cpu_cache_init(void)
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -432,6 +432,14 @@ static inline void ptep_set_wrprotect(st
-  * To be differentiate with macro pte_mkyoung, this macro is used on platforms
-  * where software maintains page access bit.
-  */
-+#ifndef pte_sw_mkyoung
-+static inline pte_t pte_sw_mkyoung(pte_t pte)
-+{
-+	return pte;
-+}
-+#define pte_sw_mkyoung	pte_sw_mkyoung
-+#endif
-+
- #ifndef pte_savedwrite
- #define pte_savedwrite pte_write
- #endif
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2896,6 +2896,7 @@ static vm_fault_t wp_page_copy(struct vm
- 		}
- 		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
- 		entry = mk_pte(new_page, vma->vm_page_prot);
-+		entry = pte_sw_mkyoung(entry);
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 
- 		/*
-@@ -3561,6 +3562,7 @@ static vm_fault_t do_anonymous_page(stru
- 	__SetPageUptodate(page);
- 
- 	entry = mk_pte(page, vma->vm_page_prot);
-+	entry = pte_sw_mkyoung(entry);
- 	if (vma->vm_flags & VM_WRITE)
- 		entry = pte_mkwrite(pte_mkdirty(entry));
- 
-@@ -3745,6 +3747,8 @@ void do_set_pte(struct vm_fault *vmf, st
- 
- 	if (prefault && arch_wants_old_prefaulted_pte())
- 		entry = pte_mkold(entry);
-+	else
-+		entry = pte_sw_mkyoung(entry);
- 
- 	if (write)
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
+ 	/* Disable static key and reset timer. */
+ 	static_branch_disable(&kfence_allocation_key);
 
 
