@@ -2,181 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AB839EB4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD02C39EB50
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhFHBWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:22:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36017 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230321AbhFHBWf (ORCPT
+        id S230468AbhFHB0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhFHB0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:22:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623115242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TCwzQn65+dgzBoFvWj2wr+QLjXlAu9EeWSx0GqEzC4M=;
-        b=hj2ZlBF56qdE51oVdoOYR17j6mV4SpmuNhkGRKqNRM3m2j05SbCyN9DIw1y4WYcCakJkYR
-        m/a5IE+RZoKEQLnPtuZdIf0ORQs1fTJr/YCXFwRUYsKIJpsU6RppO34rhpqjWpe8BbzmHG
-        8EekV3O5u8f/b2ceS2Fayzp1LK3U2nM=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-120-Mfmna-xiPZq4-pPzzQP85Q-1; Mon, 07 Jun 2021 21:20:41 -0400
-X-MC-Unique: Mfmna-xiPZq4-pPzzQP85Q-1
-Received: by mail-pf1-f200.google.com with SMTP id 9-20020a6217090000b02902ed4caf9377so2652597pfx.19
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:20:41 -0700 (PDT)
+        Mon, 7 Jun 2021 21:26:53 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F7FC061787
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 18:25:00 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id z206so9998085vsz.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=y763XzHC2KtVYY8WpGzotgg8OceQbCjZ0tVGUQhBJ28=;
+        b=sRrq9ET0FtypyPl7+UwR4e2TXdbQLyON0oQb4uwj/SrithueBRZPmdK0chncX6h5SS
+         uZyjdwhS8UaPL5Zz/JEJeegNkebWHHh/HQjNChsDKl87EsU8Qzdry1XWb8VUOyyevHgQ
+         n6pcN7uSTWUjxbUN8w8siKmB+h+fC1RHQMPrQ6AR95Dfd277ahOHLQkAGV5MuPMonUyC
+         E/8Ctt+W1qhUrfOxRXVQmbGdZ9NKILhxo0uM1hfjpsRITL9QUt9UIPu0SXQ3R1pYAY48
+         DdHEW5WOQ375SNjkfuznHLDM6lCuUCvKLg+fyuTLthBCLCdCQJZYBVu5J16DyCUIi54u
+         F+0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=TCwzQn65+dgzBoFvWj2wr+QLjXlAu9EeWSx0GqEzC4M=;
-        b=KSq6YeUIywPiXbyKLGRavgRnbGhNnVZ5+ZI/V/PBa9zniMXK76b1is3ODogLGSqOg+
-         Zy938JpnGXMHgCW9J1keID6n/fp/pJvHTi0fXLipURJS7H+T650VZb3n7mjtsx0fO0s2
-         crK+frfxQAavy6ZKKnf3ZACQK6GgLilf+fGacCNj4AKlc7qadCXQng7IxaTLiaLGutgU
-         eqkdf1RihXOBV+rqVoueFMqDGOimTLYb7eFa5yXMrQEmEAUOLTlaDPrQ1Jt29typwXny
-         CEkx4fDD1Fs11dfZMvzyfS/uQ0zG7Dhr8z5c8glvi5v0U7js9w3zFG6QfKVp1DBhxhcA
-         NR7A==
-X-Gm-Message-State: AOAM533NVgIiCZf6Px6qT1guq9biJ5UyDqQbRHjAPr/I7F7Z9ndrpNNr
-        J2ZoFr/So6Mw8OOj9SdEu9bgWx2cwzMQeYk9X1/xCsHkv6MvewLMwr8SlcTFpapxfTKWEYUUDoq
-        +Il++GpJKdur8Eey+ZPh8X/n+
-X-Received: by 2002:a17:90a:c20b:: with SMTP id e11mr2002402pjt.67.1623115240161;
-        Mon, 07 Jun 2021 18:20:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxPiYk/pvMKx+vaHmZlDroPiezFsE2XFpj2cfJDKpSRv32vxsQprEkdJWoAQEkbam2OXdw2Rw==
-X-Received: by 2002:a17:90a:c20b:: with SMTP id e11mr2002339pjt.67.1623115239324;
-        Mon, 07 Jun 2021 18:20:39 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id y5sm9342812pfb.19.2021.06.07.18.20.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 18:20:38 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>
-References: <20210604155016.GR1002214@nvidia.com>
- <30e5c597-b31c-56de-c75e-950c91947d8f@redhat.com>
- <20210604160336.GA414156@nvidia.com>
- <2c62b5c7-582a-c710-0436-4ac5e8fd8b39@redhat.com>
- <20210604172207.GT1002214@nvidia.com>
- <20210604152918.57d0d369.alex.williamson@redhat.com>
- <20210604230108.GB1002214@nvidia.com>
- <20210607094148.7e2341fc.alex.williamson@redhat.com>
- <20210607181858.GM1002214@nvidia.com>
- <20210607125946.056aafa2.alex.williamson@redhat.com>
- <20210607190802.GO1002214@nvidia.com>
- <20210607134128.58c2ea31.alex.williamson@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <12631cf3-4ef8-7c38-73bb-649d57c0226b@redhat.com>
-Date:   Tue, 8 Jun 2021 09:20:29 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=y763XzHC2KtVYY8WpGzotgg8OceQbCjZ0tVGUQhBJ28=;
+        b=f1cqLt7wjtijuKfBQH0eiv/majhyxuyjRSixpZRXi8A/sWjeurN6oSCkTQUauijn9S
+         t8Juz8b1pKd1j2Spf7Gv/Q41rKw4hbEYOAC3c9kin6kgtGexl+7M9i7z0/6rPk/2xqH9
+         xnkBLDJmKM5bQd4kckCdpEu9nyduzE56X3FBbJ8B/TbQO+UikPMD7M8KNcEr2wmh1cuT
+         EmR9ygyWjcrTCoVah7+wy0a0PUqghtfgQs7+6GDr9kaqEjlWyAXCXJ8YQ59hSInBZVLg
+         bZsKsEmNiGSikmz9Ydgs1evPrQaYsr2iHzqeVm1RLfzQP08sATenRFMId0aWaoAZqIvV
+         zlIw==
+X-Gm-Message-State: AOAM5323gAerrzqxIdPkekUUJ8NTVvCCUgwiPhWwhIZLFGAcQhL+lMsO
+        ackqi3JnURulPI02OQQabckQjIRAcCz6xL4Pbt5m
+X-Google-Smtp-Source: ABdhPJxb3kTwKtdXibpW7sZ5r84bDZeNX37S9VfH2XkWkHPXmkczUI8GcIcPcg7DJJd5KSYp1VlL83yX9St+0wCY4DY=
+X-Received: by 2002:a05:6102:c49:: with SMTP id y9mr11102041vss.24.1623115495802;
+ Mon, 07 Jun 2021 18:24:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210607134128.58c2ea31.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <1623087421-19722-1-git-send-email-martin.fuzzey@flowbird.group>
+In-Reply-To: <1623087421-19722-1-git-send-email-martin.fuzzey@flowbird.group>
+From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Date:   Tue, 8 Jun 2021 10:24:29 +0900
+Message-ID: <CABMQnVKde4LsNQT8jU4NkmjzkNOBMOd4vt2n8Eq_zKe_kBWTqw@mail.gmail.com>
+Subject: Re: [PATCH] rtc: stm32: Fix unbalanced clk_disable_unprepare() on
+ probe error path
+To:     Martin Fuzzey <martin.fuzzey@flowbird.group>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        linux-rtc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-ÔÚ 2021/6/8 ÉÏÎç3:41, Alex Williamson Ð´µÀ:
-> On Mon, 7 Jun 2021 16:08:02 -0300
-> Jason Gunthorpe <jgg@nvidia.com> wrote:
+2021=E5=B9=B46=E6=9C=888=E6=97=A5(=E7=81=AB) 2:38 Martin Fuzzey <martin.fuz=
+zey@flowbird.group>:
 >
->> On Mon, Jun 07, 2021 at 12:59:46PM -0600, Alex Williamson wrote:
->>
->>>> It is up to qemu if it wants to proceed or not. There is no issue with
->>>> allowing the use of no-snoop and blocking wbinvd, other than some
->>>> drivers may malfunction. If the user is certain they don't have
->>>> malfunctioning drivers then no issue to go ahead.
->>> A driver that knows how to use the device in a coherent way can
->>> certainly proceed, but I suspect that's not something we can ask of
->>> QEMU.  QEMU has no visibility to the in-use driver and sketchy ability
->>> to virtualize the no-snoop enable bit to prevent non-coherent DMA from
->>> the device.  There might be an experimental ("x-" prefixed) QEMU device
->>> option to allow user override, but QEMU should disallow the possibility
->>> of malfunctioning drivers by default.  If we have devices that probe as
->>> supporting no-snoop, but actually can't generate such traffic, we might
->>> need a quirk list somewhere.
->> Compatibility is important, but when I look in the kernel code I see
->> very few places that call wbinvd(). Basically all DRM for something
->> relavent to qemu.
->>
->> That tells me that the vast majority of PCI devices do not generate
->> no-snoop traffic.
-> Unfortunately, even just looking at devices across a couple laptops
-> most devices do support and have NoSnoop+ set by default.  I don't
-> notice anything in the kernel that actually tries to set this enable (a
-> handful that actively disable), so I assume it's done by the firmware.
-
-
-I wonder whether or not it was done via ACPI:
-
-"
-
-6.2.17 _CCA (Cache Coherency Attribute) The _CCA object returns whether 
-or not a bus-master device supports hardware managed cache coherency. 
-Expected values are 0 to indicate it is not supported, and 1 to indicate 
-that it is supported. All other values are reserved.
-
-...
-
-On Intel platforms, if the _CCA object is not supplied, the OSPM will 
-assume the devices are hardware cache coherent.
-
-"
-
-Thanks
-
-
-> It's not safe for QEMU to make an assumption that only GPUs will
-> actually make use of it.
+> The STM32MP1 RTC may have 2 clocks, the pclk and the rtc_ck.
 >
->>>> I think it makes the software design much simpler if the security
->>>> check is very simple. Possessing a suitable device in an ioasid fd
->>>> container is enough to flip on the feature and we don't need to track
->>>> changes from that point on. We don't need to revoke wbinvd if the
->>>> ioasid fd changes, for instance. Better to keep the kernel very simple
->>>> in this regard.
->>> You're suggesting that a user isn't forced to give up wbinvd emulation
->>> if they lose access to their device?
->> Sure, why do we need to be stricter? It is the same logic I gave
->> earlier, once an attacker process has access to wbinvd an attacker can
->> just keep its access indefinitely.
->>
->> The main use case for revokation assumes that qemu would be
->> compromised after a device is hot-unplugged and you want to block off
->> wbinvd. But I have a hard time seeing that as useful enough to justify
->> all the complicated code to do it...
-> It's currently just a matter of the kvm-vfio device holding a reference
-> to the group so that it cannot be used elsewhere so long as it's being
-> used to elevate privileges on a given KVM instance.  If we conclude that
-> access to a device with the right capability is required to gain a
-> privilege, I don't really see how we can wave aside that the privilege
-> isn't lost with the device.
+> If clk_prepare_enable() fails for the second clock (rtc_ck) we must only
+> call clk_disable_unprepare() for the first clock (pclk) but currently we
+> call it on both leading to a WARN:
 >
->> For KVM qemu can turn on/off on hot plug events as it requires to give
->> VM security. It doesn't need to rely on the kernel to control this.
-> Yes, QEMU can reject a hot-unplug event, but then QEMU retains the
-> privilege that the device grants it.  Releasing the device and
-> retaining the privileged gained by it seems wrong.  Thanks,
+> [   15.629568] WARNING: CPU: 0 PID: 146 at drivers/clk/clk.c:958 clk_core=
+_disable+0xb0/0xc8
+> [   15.637620] ck_rtc already disabled
+> [   15.663322] CPU: 0 PID: 146 Comm: systemd-udevd Not tainted 5.4.77-pkn=
+bsp-svn5759-atag-v5.4.77-204-gea4235203137-dirty #2413
+> [   15.674510] Hardware name: STM32 (Device Tree Support)
+> [   15.679658] [<c0111148>] (unwind_backtrace) from [<c010c0b8>] (show_st=
+ack+0x10/0x14)
+> [   15.687371] [<c010c0b8>] (show_stack) from [<c0ab3d28>] (dump_stack+0x=
+c0/0xe0)
+> [   15.694574] [<c0ab3d28>] (dump_stack) from [<c012360c>] (__warn+0xc8/0=
+xf0)
+> [   15.701428] [<c012360c>] (__warn) from [<c0123694>] (warn_slowpath_fmt=
++0x60/0x94)
+> [   15.708894] [<c0123694>] (warn_slowpath_fmt) from [<c053b518>] (clk_co=
+re_disable+0xb0/0xc8)
+> [   15.717230] [<c053b518>] (clk_core_disable) from [<c053c190>] (clk_cor=
+e_disable_lock+0x18/0x24)
+> [   15.725924] [<c053c190>] (clk_core_disable_lock) from [<bf0adc44>] (st=
+m32_rtc_probe+0x124/0x5e4 [rtc_stm32])
+> [   15.735739] [<bf0adc44>] (stm32_rtc_probe [rtc_stm32]) from [<c05f7d4c=
+>] (platform_drv_probe+0x48/0x98)
+> [   15.745095] [<c05f7d4c>] (platform_drv_probe) from [<c05f5cec>] (reall=
+y_probe+0x1f0/0x458)
+> [   15.753338] [<c05f5cec>] (really_probe) from [<c05f61c4>] (driver_prob=
+e_device+0x70/0x1c4)
+> [   15.761584] [<c05f61c4>] (driver_probe_device) from [<c05f6580>] (devi=
+ce_driver_attach+0x58/0x60)
+> [   15.770439] [<c05f6580>] (device_driver_attach) from [<c05f6654>] (__d=
+river_attach+0xcc/0x170)
+> [   15.779032] [<c05f6654>] (__driver_attach) from [<c05f40d8>] (bus_for_=
+each_dev+0x58/0x7c)
+> [   15.787191] [<c05f40d8>] (bus_for_each_dev) from [<c05f4ffc>] (bus_add=
+_driver+0xdc/0x1f8)
+> [   15.795352] [<c05f4ffc>] (bus_add_driver) from [<c05f6ed8>] (driver_re=
+gister+0x7c/0x110)
+> [   15.803425] [<c05f6ed8>] (driver_register) from [<c01027bc>] (do_one_i=
+nitcall+0x70/0x1b8)
+> [   15.811588] [<c01027bc>] (do_one_initcall) from [<c01a1094>] (do_init_=
+module+0x58/0x1f8)
+> [   15.819660] [<c01a1094>] (do_init_module) from [<c01a0074>] (load_modu=
+le+0x1e58/0x23c8)
+> [   15.827646] [<c01a0074>] (load_module) from [<c01a0860>] (sys_finit_mo=
+dule+0xa0/0xd4)
+> [   15.835459] [<c01a0860>] (sys_finit_module) from [<c01011e0>] (__sys_t=
+race_return+0x0/0x20)
 >
-> Alex
+> Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+> Fixes: 4e64350f42e2 ("rtc: add STM32 RTC driver")
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/rtc/rtc-stm32.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 >
+> diff --git a/drivers/rtc/rtc-stm32.c b/drivers/rtc/rtc-stm32.c
+> index 75a8924..ac9e228 100644
+> --- a/drivers/rtc/rtc-stm32.c
+> +++ b/drivers/rtc/rtc-stm32.c
+> @@ -754,7 +754,7 @@ static int stm32_rtc_probe(struct platform_device *pd=
+ev)
+>
+>         ret =3D clk_prepare_enable(rtc->rtc_ck);
+>         if (ret)
+> -               goto err;
+> +               goto err_no_rtc_ck;
+>
+>         if (rtc->data->need_dbp)
+>                 regmap_update_bits(rtc->dbp, rtc->dbp_reg,
+> @@ -830,10 +830,12 @@ static int stm32_rtc_probe(struct platform_device *=
+pdev)
+>         }
+>
+>         return 0;
+> +
+>  err:
+> +       clk_disable_unprepare(rtc->rtc_ck);
+> +err_no_rtc_ck:
+>         if (rtc->data->has_pclk)
+>                 clk_disable_unprepare(rtc->pclk);
+> -       clk_disable_unprepare(rtc->rtc_ck);
+>
+>         if (rtc->data->need_dbp)
+>                 regmap_update_bits(rtc->dbp, rtc->dbp_reg, rtc->dbp_mask,=
+ 0);
+> --
+> 1.9.1
+>
+Looks good to me.
 
+Reviewed-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+
+Best regards,
+  Nobuhiro
+--=20
+Nobuhiro Iwamatsu
+   iwamatsu at {nigauri.org / debian.org / kernel.org}
+   GPG ID: 40AD1FA6
