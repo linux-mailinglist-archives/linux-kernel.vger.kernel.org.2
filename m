@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FE63A02B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D4D3A0400
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236213AbhFHTIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:08:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35908 "EHLO mail.kernel.org"
+        id S239733AbhFHTZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:25:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235617AbhFHS6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:58:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E487261405;
-        Tue,  8 Jun 2021 18:42:57 +0000 (UTC)
+        id S237868AbhFHTNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:13:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3176761966;
+        Tue,  8 Jun 2021 18:49:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177778;
-        bh=AyCAmFFdwNBACzlEWmHi1Hqqo5DCuwBpS3cSPsWgARY=;
+        s=korg; t=1623178181;
+        bh=NOZbMXeutHh7NJDxx1KE3YzW/s89xWBSFAQ3/YlD3XE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UCvM40aaaQI2oPfFaErMUSTNwjz9KVSBK/ZUyM/UfrqdXe0yoL6IiljsSp0LUEJlq
-         NuidqouKcI88FqlAbLRfaKCnP82Z0w8lSksqhM5Uw+pxiVGhCx5EYHbHcttJhfZaT7
-         c8iPcg88ygGa0o/Dw9GU5SFIvFOjE0L6IblRrfgo=
+        b=iO20nJIKf0Q+nCLVFwpzzkY6ZOQKnrTwHdRFb/F1LXAg++oFUiE5aCaqNn8htzgRa
+         FpzMareoAaFfT0ot4taZZy0FqYc7SICG6E8grwaK+hPSzbgsEluKb1xRRuGkJCwVlc
+         h//3khFCUwujHehzLZOTrON9AMGrRrfYPmzf/x9E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 5.10 096/137] gfs2: fix scheduling while atomic bug in glocks
-Date:   Tue,  8 Jun 2021 20:27:16 +0200
-Message-Id: <20210608175945.623752120@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Johnny Chuang <johnny.chuang.emc@gmail.com>,
+        Harry Cutts <hcutts@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: [PATCH 5.12 107/161] HID: i2c-hid: Skip ELAN power-on command after reset
+Date:   Tue,  8 Jun 2021 20:27:17 +0200
+Message-Id: <20210608175949.086712403@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+References: <20210608175945.476074951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Johnny Chuang <johnny.chuang.emc@gmail.com>
 
-commit 20265d9a67e40eafd39a8884658ca2e36f05985d upstream.
+commit ca66a6770bd9d6d99e469debd1c7363ac455daf9 upstream.
 
-Before this patch, in the unlikely event that gfs2_glock_dq encountered
-a withdraw, it would do a wait_on_bit to wait for its journal to be
-recovered, but it never released the glock's spin_lock, which caused a
-scheduling-while-atomic error.
+For ELAN touchscreen, we found our boot code of IC was not flexible enough
+to receive and handle this command.
+Once the FW main code of our controller is crashed for some reason,
+the controller could not be enumerated successfully to be recognized
+by the system host. therefore, it lost touch functionality.
 
-This patch unlocks the lockref spin_lock before waiting for recovery.
+Add quirk for skip send power-on command after reset.
+It will impact to ELAN touchscreen and touchpad on HID over I2C projects.
 
-Fixes: 601ef0d52e96 ("gfs2: Force withdraw to replay journals and wait for it to finish")
-Cc: stable@vger.kernel.org # v5.7+
-Reported-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Fixes: 43b7029f475e ("HID: i2c-hid: Send power-on command after reset").
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
+Reviewed-by: Harry Cutts <hcutts@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Tested-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/gfs2/glock.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hid/i2c-hid/i2c-hid-core.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -1457,9 +1457,11 @@ void gfs2_glock_dq(struct gfs2_holder *g
- 	    glock_blocked_by_withdraw(gl) &&
- 	    gh->gh_gl != sdp->sd_jinode_gl) {
- 		sdp->sd_glock_dqs_held++;
-+		spin_unlock(&gl->gl_lockref.lock);
- 		might_sleep();
- 		wait_on_bit(&sdp->sd_flags, SDF_WITHDRAW_RECOVERY,
- 			    TASK_UNINTERRUPTIBLE);
-+		spin_lock(&gl->gl_lockref.lock);
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -45,6 +45,7 @@
+ #define I2C_HID_QUIRK_BOGUS_IRQ			BIT(4)
+ #define I2C_HID_QUIRK_RESET_ON_RESUME		BIT(5)
+ #define I2C_HID_QUIRK_BAD_INPUT_SIZE		BIT(6)
++#define I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET	BIT(7)
+ 
+ 
+ /* flags */
+@@ -178,6 +179,11 @@ static const struct i2c_hid_quirks {
+ 		 I2C_HID_QUIRK_RESET_ON_RESUME },
+ 	{ USB_VENDOR_ID_ITE, I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720,
+ 		I2C_HID_QUIRK_BAD_INPUT_SIZE },
++	/*
++	 * Sending the wakeup after reset actually break ELAN touchscreen controller
++	 */
++	{ USB_VENDOR_ID_ELAN, HID_ANY_ID,
++		 I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET },
+ 	{ 0, 0 }
+ };
+ 
+@@ -461,7 +467,8 @@ static int i2c_hid_hwreset(struct i2c_cl
  	}
- 	if (gh->gh_flags & GL_NOCACHE)
- 		handle_callback(gl, LM_ST_UNLOCKED, 0, false);
+ 
+ 	/* At least some SIS devices need this after reset */
+-	ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
++	if (!(ihid->quirks & I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET))
++		ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
+ 
+ out_unlock:
+ 	mutex_unlock(&ihid->reset_lock);
 
 
