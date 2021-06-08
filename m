@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A311F39F9B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431FE39F9B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbhFHO45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:56:57 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47802 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232833AbhFHO4x (ORCPT
+        id S233684AbhFHO6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:58:12 -0400
+Received: from mail-pg1-f177.google.com ([209.85.215.177]:44810 "EHLO
+        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232833AbhFHO6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:56:53 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 610C0219D8;
-        Tue,  8 Jun 2021 14:54:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623164099; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kfFLel7kBMZ/tFEEsR35uK45odZ9fNmpHy5ylGrtTLY=;
-        b=fH24whE8gyop3DhwX7NGS5lrLCpwRV392lIttd50T/a3ZPKmH+BcB9JRNLShiqnZninF91
-        q4/sfeMw2ueVWfGkc40Uu9KynNfZo057pL4zHyllE5ygHh5fgrjNSSIuv094QhSUGyTJOW
-        rQEwx22TGHRY0KHEExHmKXU+T1jwvGc=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id A4788A3B84;
-        Tue,  8 Jun 2021 14:54:58 +0000 (UTC)
-Date:   Tue, 8 Jun 2021 16:54:58 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH next v2 1/2] dump_stack: move cpu lock to printk.c
-Message-ID: <YL+EwqLO8KsGqQVm@alley>
-References: <20210607200232.22211-1-john.ogness@linutronix.de>
- <20210607200232.22211-2-john.ogness@linutronix.de>
- <YL9XMBxeZ4fGRS79@alley>
- <878s3kihpk.fsf@jogness.linutronix.de>
+        Tue, 8 Jun 2021 10:58:10 -0400
+Received: by mail-pg1-f177.google.com with SMTP id y11so8565886pgp.11;
+        Tue, 08 Jun 2021 07:56:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BXIJhrJtCnUwRr3BS6zPrJx1Jt47CrNizQ5dotc5JuM=;
+        b=r9YQx1mjItYpJg8dKYY7v+z8vtEZRnEaBoGEki83EOyzIKmBac8w1hvvpwk4MhwWh1
+         mBrEmQV6jbXnHYAW85BnGXYKSq1KMOYZsBdRzlr9fGLdwg5BCy2jqB56q5IvJaOvHJMy
+         4tH04qu4LNbldjD4k6i0AL1GQ19OIBYG3QOkyY4eAL7AEQNqogQebUxqI66dDmLLIpq2
+         VIMJxLhWIfwwP+zfFpXtjMGYFJnCKoa9PL+iBiW/nw4uzdWS2KSCzpFK4kWiuo657rFn
+         tYxnyHQfK8pnT4Bp9BMJu3UXy6KIQtkVx4DZN+ueAwql2VR9ULeoYehQtkHTF34MsDFN
+         MBQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BXIJhrJtCnUwRr3BS6zPrJx1Jt47CrNizQ5dotc5JuM=;
+        b=NYGRkFP64DihVH7nONo0LV+DRZDXQrxgjyrkbaFgf03ldGz9EDVSl97dWO22IA6JyO
+         oXKgRMZWDW+XA5HuiUsbNq5uHF8u8BcFv4Q+r9TsuXTFUQh5h0HodqsmTXr6jWBH32SK
+         E6UhIB9x4mkQmVMq6OTcAh9q7pVuBFFwTfQyOqSob6kohUA1cA16KD2H1CqzzzYGP3cB
+         RgWqE/4lBaR958Br9wor1TkhdDrvVBzTzSDFBy8wXEP7u/jiERT0O+2Z+mQJfvxeQBrx
+         e2l7sAq8PbNC02gOX3jz1tlHemKuUs/qlVNpJhcTwo7BwysqJgKGPCg7eoufeM8GhUbf
+         AhiQ==
+X-Gm-Message-State: AOAM531HT5o3wYFR0WDTPR2edVqY7QtQd0fensqSj+wIvabOISpstGgO
+        BMjfrB7BDfurZEzvD4bjlps=
+X-Google-Smtp-Source: ABdhPJyKxi1AwxQYdbPLhPt/9PtnIXI+zxCtPTWSSFFYrmDMjiZTlo6M3Xy70SGobC4sSTE6fy/pYQ==
+X-Received: by 2002:aa7:8194:0:b029:2aa:db3a:4c1d with SMTP id g20-20020aa781940000b02902aadb3a4c1dmr308216pfi.58.1623164103922;
+        Tue, 08 Jun 2021 07:55:03 -0700 (PDT)
+Received: from localhost ([103.200.106.115])
+        by smtp.gmail.com with ESMTPSA id gg22sm2569437pjb.17.2021.06.08.07.55.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 07:55:03 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 20:25:00 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/qcom: Cleanup resources in case of probe error path
+Message-ID: <20210608145500.wxtes4wpp4rpw7si@archlinux>
+References: <20210421221030.70647-1-ameynarkhede03@gmail.com>
+ <20210608092958.GA8935@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <878s3kihpk.fsf@jogness.linutronix.de>
+In-Reply-To: <20210608092958.GA8935@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-06-08 15:55:35, John Ogness wrote:
-> On 2021-06-08, Petr Mladek <pmladek@suse.com> wrote:
-> > Reviewed-by: Petr Mladek <pmladek@suse.com>
+On 21/06/08 10:29AM, Will Deacon wrote:
+> On Thu, Apr 22, 2021 at 03:40:30AM +0530, Amey Narkhede wrote:
+> > If device registration fails, remove sysfs attribute
+> > and if setting bus callbacks fails, unregister the device
+> > and cleanup the sysfs attribute.
 > >
-> >> --- a/kernel/printk/printk.c
-> >> +++ b/kernel/printk/printk.c
-> >> @@ -3532,3 +3532,78 @@ void kmsg_dump_rewind(struct kmsg_dump_iter *iter)
-> >> +void printk_cpu_lock_irqsave(bool *lock_flag, unsigned long *irq_flags)
-> >> +{
-> >> +	int old;
-> >> +	int cpu;
-> >> +
-> >> +retry:
-> >> +	local_irq_save(*irq_flags);
-> >> +
-> >> +	cpu = smp_processor_id();
-> >> +
-> >> +	old = atomic_cmpxchg(&printk_cpulock_owner, -1, cpu);
-> >> +	if (old == -1) {
-> >> +		/* This CPU is now the owner. */
-> >> +
+> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > ---
+> >  drivers/iommu/arm/arm-smmu/qcom_iommu.c | 14 ++++++++++++--
+> >  1 file changed, 12 insertions(+), 2 deletions(-)
 > >
-> > Superfluous space?
-> 
-> I was concerned that people may associate the comment with the following
-> line of code. Especially in the next patch when many more lines are
-> added. The comment is for the whole conditional block.
-> 
-> >> +		*lock_flag = true;
+> > diff --git a/drivers/iommu/arm/arm-smmu/qcom_iommu.c b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+> > index 4294abe389b2..5fa128a1f7f0 100644
+> > --- a/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+> > +++ b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+> > @@ -850,10 +850,12 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
+> >  	ret = iommu_device_register(&qcom_iommu->iommu, &qcom_iommu_ops, dev);
+> >  	if (ret) {
+> >  		dev_err(dev, "Failed to register iommu\n");
+> > -		return ret;
+> > +		goto err_sysfs_remove;
+> >  	}
 > >
-> > The original name name "was_locked" was more descriptive. I agree that
-> > it was not good for an API. What about keeping the inverted logic and
-> > calling it "lock_nested" ?
+> > -	bus_set_iommu(&platform_bus_type, &qcom_iommu_ops);
+> > +	ret = bus_set_iommu(&platform_bus_type, &qcom_iommu_ops);
+> > +	if (ret)
+> > +		goto err_unregister_device;
 > >
-> > I do not resist on any change. The logic is trivial so...
-> 
-> I wanted it to be an opaque variable, which is why it is named so. But I
-> can rename it for v3. There is no need to debate naming here.
+> >  	if (qcom_iommu->local_base) {
+> >  		pm_runtime_get_sync(dev);
+> > @@ -862,6 +864,14 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
+> >  	}
+> >
+> >  	return 0;
+> > +
+> > +err_unregister_device:
+> > +	iommu_device_unregister(&qcom_iommu->iommu);
+> > +
+> > +err_sysfs_remove:
+> > +	iommu_device_sysfs_remove(&qcom_iommu->iommu);
+> > +
+> > +	return ret;
+>
+> It looks like we're also missing this logic in arm-smmu/arm-smmu.c and
+> arm-smmu-v3/arm-smmu-v3.c. Would you be able to fix those up too, please?
+>
+> Will
 
-Yup. I didn't want to block the patch because of this. I mentioned it
-just for case v3 was needed and you agreed. Feel free to keep your
-preferred names and spacing. I am not going to fight over it.
+Sure, I will send a v2 with this and new patches.
 
-Best Regards,
-Petr
+Thanks,
+Amey
