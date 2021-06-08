@@ -2,60 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333F239FD4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF07139FD52
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233689AbhFHRON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:14:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233114AbhFHROK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:14:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id F209461351;
-        Tue,  8 Jun 2021 17:12:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623172337;
-        bh=B4O7yQ0/4TBID+j1wZoztoIY4tyUDWiPpKQrwT9JCHU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=oO/S9gQGBovB8n5kTY49MgIEK+EtHVaYzq3E5xdTSxQQztrGenHniJP00S4kFU7pB
-         VPS90VctjCKPWJ4OvOlYIfnAJJrL6apR2gklKz3/HDB1tk9GaDNmQ602v2ZrHpWvIs
-         qZEljBt2SIBLdCtkEhaRY7AQhAs8CbWh5phgsq/u9qlFciOukBtB5f+qYHuXpsoI2m
-         7iRkowwomJv6wp1VKDIATni8Vu2V+rHBGN1eJAfh+mqAlSo8NgjVln/lQVKEHOWy7d
-         ITtVA1cx97o+SfqW+fH7y8RCmOvgZ7jF0S3s45XJtIYmuhRCy0A2ICiPTTAfKvJ+ph
-         WKW4+Zi4yg1xg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E5FF9609D2;
-        Tue,  8 Jun 2021 17:12:16 +0000 (UTC)
-Subject: Re: [GIT PULL] SPI fixes for v5.13-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210608142723.07F3861003@mail.kernel.org>
-References: <20210608142723.07F3861003@mail.kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210608142723.07F3861003@mail.kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.13-rc4
-X-PR-Tracked-Commit-Id: d38fa9a155b2829b7e2cfcf8a4171b6dd3672808
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4c8684fe555e95100030bd330d0a2780ac27952e
-Message-Id: <162317233693.10366.18435776241130124675.pr-tracker-bot@kernel.org>
-Date:   Tue, 08 Jun 2021 17:12:16 +0000
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
+        id S233365AbhFHRPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:15:30 -0400
+Received: from mail-pg1-f170.google.com ([209.85.215.170]:36571 "EHLO
+        mail-pg1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233026AbhFHRP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 13:15:28 -0400
+Received: by mail-pg1-f170.google.com with SMTP id 27so17051820pgy.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LsfQiWd97yOtmV8s3TncV+9PPnjyb/KIQiQemE+zye8=;
+        b=lAbyMhf7YpRAuqY4tAMv7/brwjdlwNtfr+Mcg/sxOfs++wRgjKLM9PCQLpHqBgS9U4
+         ZIsk57Lm32YYU0oOQk825Eka54WfUDgaX47FDF3XUrBrpsIBx7UWJqip/w4hJd/gEMMx
+         CCDDBYH/Ps/nE97zYBlwHigVdNudtcIblJFIU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LsfQiWd97yOtmV8s3TncV+9PPnjyb/KIQiQemE+zye8=;
+        b=t88DRh6eW9LAKnz1j8jcpDIfnEuK5sOSiN98GoDIPLznhRaPXAi93ABFTV+JGz5co9
+         t/FSS3irbQ5mK+SgCDqwzEVe5qRe8Df8VNzZ20yIqLga22FkOdUNG29/Lz4JvyrHlznW
+         IZSEEosWH2brL/7fZ+6u1bhawr9Eqa9fcecvBMTwhs3U5XGnlg3rzobG+z/7eKASUHzg
+         yVwf7ASKIA96nCvwNqYEdnVRKRfLtuPY5k5ne3tuEB5925AU+afjvtnpna9nssJHXCwg
+         RSIobNsEd2qSiqIodDqYBBn/rtHZWiZJh98pNZKa/5uSXJ7LLWsrT1iecSTKR4DTc1fp
+         7yoQ==
+X-Gm-Message-State: AOAM531fupszVyjOPYEhVFNCk/416bPZM9JDp/5MupSJ8u//O5j0M2sR
+        ycKVZ4AqV3JBxbQEtGe7wKG1GQ==
+X-Google-Smtp-Source: ABdhPJxBmc52fN5Fzl9HQxIOeIzImtBdpWptvHFr4JnebiLD20NAtCnwmZFY8u9PIU0XZhaLklEdPQ==
+X-Received: by 2002:a62:2e04:0:b029:2db:4c99:614f with SMTP id u4-20020a622e040000b02902db4c99614fmr862818pfu.47.1623172344700;
+        Tue, 08 Jun 2021 10:12:24 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c4sm1528336pfo.189.2021.06.08.10.12.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 10:12:24 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev
+Subject: [PATCH] proc: Track /proc/$pid/attr/ opener mm_struct
+Date:   Tue,  8 Jun 2021 10:12:21 -0700
+Message-Id: <20210608171221.276899-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+X-Patch-Hashes: v=1; h=sha256; g=cab007d90ab2594b4813f56a3d3ec12879c5f4be; i=jUA78oRN/AMcDxOpnurfp4e2tGWh+F5DhA4jKTmbuSU=; m=5IH87NogdOjq9S6JPLku9CCKrPsDQaaCiq+A4siNk0Q=; p=uhi3mxYNybAOwPzHDVCoMxXbfTOvQcgY/re3LiUOVx0=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmC/pPUACgkQiXL039xtwCb+shAAniU UwnXMZD1U1RjMQ/p2lXYkIH+p4j+rb7BmwMlvKzpTO/gzk55T7lk2EUIWwB4ymnNt5Sx51BoHRuJN 32HgVT24kYjM8xf7ZaSqzcktQr0hS+Bx+uHB9hW8VQ8sSrOFmTnuWOSGWpUt5GLJ6J3XTHWjZo1h3 wtDQXBv3945FDIECuMCIuQh0NTNtzFnmbVZmjQi8faPnbbkw9ATP9CWiELUDQBgWief97YzwEidov GaaQMe8a1Zv+/GP1BQz6q7ylAZSaGsy/1d7+GEo9xddGgFjN16uR5TUkKxLZ0bQ/gSGRVBqxc5Fwn FgASyURJXgtGf+nFRnhZtPB+tPb+/qxhYTlq8TTZAAayXjM4Ct5c6+KZLEhaY5FRC+A1xjjzh39GY Wxs57x1kESOBC7nF+U+ouKrL8B9rS9v6aFIovcgqDcZevWZv+FZb18b+cnpj+h7Ev83YIPnbh0xsq i1qzC11cogjCPBOD5oKTcy4pY6yru5dKIwLjoEdrjSEMnGiH2ieJwhCcxzrRYSslLr/oTMvrZP8NS Sg7wiv1hGQlvyvOPJtub/A60OWtNVIlX+9xoRSg38KW0BXVjIVBECkKA1MuIBj2V7OU4aCc9Yoc5W 3OwQ+mf8rPnhtvgLu2RII7KtUWZtbr2nWmF4Sm0018RfHscag1nR3wjdstQIos6w=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 08 Jun 2021 15:26:54 +0100:
+Commit bfb819ea20ce ("proc: Check /proc/$pid/attr/ writes against file opener")
+tried to make sure that there could not be a confusion between the opener of
+a /proc/$pid/attr/ file and the writer. It used struct cred to make sure
+the privileges didn't change. However, there were existing cases where a more
+privileged thread was passing the opened fd to a differently privileged thread
+(during container setup). Instead, use mm_struct to track whether the opener
+and writer are still the same process. (This is what several other proc files
+already do, though for different reasons.)
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.13-rc4
+Reported-by: Christian Brauner <christian.brauner@ubuntu.com>
+Reported-by: Andrea Righi <andrea.righi@canonical.com>
+Tested-by: Andrea Righi <andrea.righi@canonical.com>
+Fixes: bfb819ea20ce ("proc: Check /proc/$pid/attr/ writes against file opener")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ fs/proc/base.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4c8684fe555e95100030bd330d0a2780ac27952e
-
-Thank you!
-
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 58bbf334265b..7118ebe38fa6 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2674,6 +2674,11 @@ static int proc_pident_readdir(struct file *file, struct dir_context *ctx,
+ }
+ 
+ #ifdef CONFIG_SECURITY
++static int proc_pid_attr_open(struct inode *inode, struct file *file)
++{
++	return __mem_open(inode, file, PTRACE_MODE_READ_FSCREDS);
++}
++
+ static ssize_t proc_pid_attr_read(struct file * file, char __user * buf,
+ 				  size_t count, loff_t *ppos)
+ {
+@@ -2704,7 +2709,7 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
+ 	int rv;
+ 
+ 	/* A task may only write when it was the opener. */
+-	if (file->f_cred != current_real_cred())
++	if (file->private_data != current->mm)
+ 		return -EPERM;
+ 
+ 	rcu_read_lock();
+@@ -2754,9 +2759,11 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
+ }
+ 
+ static const struct file_operations proc_pid_attr_operations = {
++	.open		= proc_pid_attr_open,
+ 	.read		= proc_pid_attr_read,
+ 	.write		= proc_pid_attr_write,
+ 	.llseek		= generic_file_llseek,
++	.release	= mem_release,
+ };
+ 
+ #define LSM_DIR_OPS(LSM) \
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.25.1
+
