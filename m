@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D83D39F292
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639EF39F298
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhFHJkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:40:14 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:48001 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFHJkO (ORCPT
+        id S230330AbhFHJlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 05:41:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54829 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229507AbhFHJlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:40:14 -0400
-Received: from [192.168.1.155] ([77.7.0.189]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MjjGX-1l5cah3HQp-00lF5d; Tue, 08 Jun 2021 11:38:16 +0200
-To:     containers@lists.linux.dev,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Subject: device namespaces
-Message-ID: <ca7520c9-d260-6c87-43b9-f9be24ded50c@metux.net>
-Date:   Tue, 8 Jun 2021 11:38:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 8 Jun 2021 05:41:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623145193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9LlW99M3AUTZm+NlelDfggWF0/pPvt2/vMj5NeCrGTM=;
+        b=Nv9RQfFW0OlIE0okbxoYubPT6Rf7fyjNQ/MqcUyOJ0RztUAGWgjl4iFGQBA3BH7q8POIK4
+        PRF7ctvlrc7O7gGbAUf7u4QIs6q0d/r9yYddIASKoXgQYi19FmPtsP8XXA1BF/px3CCBFi
+        Lful9PJW2GBw25gzsBMYO5DTU0536F4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-374-KSeVcUuzNDy35M0-ILw-og-1; Tue, 08 Jun 2021 05:39:51 -0400
+X-MC-Unique: KSeVcUuzNDy35M0-ILw-og-1
+Received: by mail-wr1-f71.google.com with SMTP id e9-20020a5d6d090000b0290119e91be97dso951351wrq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 02:39:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9LlW99M3AUTZm+NlelDfggWF0/pPvt2/vMj5NeCrGTM=;
+        b=XO0YNjsFLAvP1heHP2fXCs/F60WPPN9AAMXtcxB6En1zrwECEXAvAjZ2BnD3vrfZgA
+         vOWppnXlAr0kHpOnc4xtFWipWVm9dSa9/clp18xnE1s3znDkzcf164pjj/dVlmwgCgNb
+         2pmgVjPYPNbyf32Cent1KEfB+cmB4qE+0rHZpsfpXA9FM2tEwSMOGJ23rp65LqJgBXxX
+         UpZdUtYksQSIiy/s4NjW0f6wuT7lNdU5+uZJdC9Oh9zFiHl2DeugErZ6Of0ww13rWr1r
+         vR+CebLDYGJH3eTLhIFJYvuGgc7UGxSBkOQ/malIj9xVipQAQKtJP24ZXJLtAnYmWuev
+         XOvQ==
+X-Gm-Message-State: AOAM532JJRb2avTgUtSaAdkasqGV0Bux1f/oB6dBlbH7tHTpPWRqUfL1
+        tTzYCyQU9epIPscqrgF/IUtoGFTWAqZ5xl35EfYMibMqJ4HLL/qt+CgnEGsyU5n738p3/2jiMX/
+        tPK0Q80/REhKA64DUPROorxg=
+X-Received: by 2002:a05:600c:354f:: with SMTP id i15mr1628693wmq.131.1623145190486;
+        Tue, 08 Jun 2021 02:39:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzngI3VjMKc7cvpd9cz6cCLbAhO3CLKRxkuY/0NW1czdH/+MMSM5D+Gpmg2fYjW6vD+Mjj0Fg==
+X-Received: by 2002:a05:600c:354f:: with SMTP id i15mr1628684wmq.131.1623145190355;
+        Tue, 08 Jun 2021 02:39:50 -0700 (PDT)
+Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
+        by smtp.gmail.com with ESMTPSA id q11sm18832988wrx.80.2021.06.08.02.39.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 02:39:49 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 10:39:49 +0100
+From:   Aaron Tomlin <atomlin@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Waiman Long <llong@redhat.com>, Shakeel Butt <shakeelb@google.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] mm/oom_kill: allow oom kill allocating task for
+ non-global case
+Message-ID: <20210608093949.szz3e6ucpf7mztxr@ava.usersys.com>
+X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
+X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
+References: <20210607163103.632681-1-atomlin@redhat.com>
+ <c16893a9-35e2-7625-d7f3-83488f874040@redhat.com>
+ <CALvZod4eUoquGTQ5AsWgbWTQyqtCNNwb-9+fRw_ZPavH-r9dbA@mail.gmail.com>
+ <dc7f54eb-933e-5bbb-7959-815dfbfcc836@redhat.com>
+ <YL5tqdw+iWLLavxV@dhcp22.suse.cz>
+ <6d23ce58-4c4b-116a-6d74-c2cf4947492b@redhat.com>
+ <YL51Tp/3jVHUrpuj@dhcp22.suse.cz>
+ <YL57rLFwAo7EpYeH@dhcp22.suse.cz>
+ <353d012f-e8d4-c54c-b33e-54737e1a0115@redhat.com>
+ <YL8MjSteKeO7w0il@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:wxk78eUumZYNeOehK+YAmlLZTGCSWO3ghgFrKwZ1SPOQdNhz1ZM
- GdYoMpQoe+BAap7LC+pC5TIylANATBgsGirjYKOLa2T3RHdVDVaQo5MDPRa4bfw6TZBZoYY
- RaixW3pVbW/E7B8yip7Ewf+iU/8E/mUHbK15MJ0Gj2lVToUdRy05Gz6JYrNLH3omwp8Wcd4
- FkmHUPW3SVrZn5lVIPzBg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Yp3wVbPV/tU=:pGuDUOoK8jP0HwtYX8i4be
- uUWOoaAGoKZ99Cv+ndQIbNm2sT7dXxR1/v3MqtYhONIki0ketzitptG77//X7N6vUI/bxiBEt
- lhiW59Y0By9FpnZCNgrQ3zDY5IB8z1RSFojKPUUAQ8KfsoKwwYcEgzvzBLex2vA1yAZBODBwl
- jJzJRhfAhAEs2TBs60PUC/Ivt/PDWIebjmAJQ2nIXzsHr0AXfg233ADLHnn3yc+/uqJUn+jWq
- acq8n+4V0OuQ8q4vtVQOqcXFyd2SnH9oKBTNFBoxLDZ9yUmcbVFYj3+C9dNGvTvJnXvgOIoJH
- jfX5zwD8vhHzt+NdtJKuCy2cWfrh041pAE3FNHVjIVpiZhx4iTvA9naR5D0jChfYyuNP79CxG
- QNIblvffwgNhKzlcOe84xR77hyzgkhwPWrjW2vJmYDULM8vV9UfenMzTClBvwsmrcKiMw5zua
- aCwS1QjC3J0q4HxqogmKE+zG59VjO8mQl12emcsWuNq0rPcsxx3vKenBnwLgL+9bsz3F/Xk5M
- Lza89StjjAenDPH11GF47I=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YL8MjSteKeO7w0il@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello folks,
+On Tue 2021-06-08 08:22 +0200, Michal Hocko wrote:
+> You are saying that there are other OOM kills going on.
+
+Yes.
+
+> Are they all for the same memcg?
+
+No.
+
+> Is it possible the only eligible task has been killed and oom reaped
+> already?
+
+Unfortunately, as mentioned by Waiman, no other task is suitable for
+"selection" due to the OOM score (i.e. OOM_SCORE_ADJ_MIN;) that said, I
+need access to the vmcore to check i.e. mm.flags - I'll get back to you as
+soon as I can.
 
 
-I'm going to implement device namespaces, where containers can get an
-entirely different view of the devices in the machine (usually just a
-specific subset, but possibly additional virtual devices).
-
-For start I'd like to add a simple mapping of dev maj/min (leaving aside
-sysfs, udev, etc). An important requirement for me is that the parent ns
-can choose to delegate devices from those it full access too (child
-namespaces can do the same to their childs), and the assignment can
-change (for simplicity ignoring the case of removing devices that are
-already opened by some process - haven't decided yet whether they should
-be forcefully closed or whether keeping them open is a valid use case).
-
-The big question for me now is how exactly to do the table maintenance
-from userland. We already have entries in /proc/<pid>/ns/*. I'm thinking
-about using them as command channel, like this:
-
-* new child namespaces are created with empty mapping
-* mapping manipulation is done by just writing commands to the ns file
-* access is only granted if the writing process itself is in the
-  parent's device ns and has CAP_SYS_ADMIN (or maybe their could be some
-  admin user for the ns ? or the 'root' of the corresponding user_ns ?)
-* if the caller has some restrictions on some particular device, these
-  are automatically added (eg. if you're restricted to readonly, you
-  can't give rw to the child ns).
-
-Is this a good way to go ? Or what would be a better one ?
-
-
---mtx
+Kind regards,
 
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Aaron Tomlin
+
