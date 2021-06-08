@@ -2,60 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302DD3A0497
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84573A049D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238216AbhFHTnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:43:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49332 "EHLO mail.kernel.org"
+        id S234086AbhFHTpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:45:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237902AbhFHTmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:42:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D3C261182;
-        Tue,  8 Jun 2021 19:40:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623181245;
-        bh=qfuqQmybyoljq64r0RNXg0MCacqzHKintngcUPoNU1A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rukof2lFlIsdSSLRDf4Yj8FgPS3MrVjads+/4I7R4vNh0NXly9Q7ysZp2K+c+6Hnj
-         KG+9IQlpJsntLINn+QZIfOiObQivVWFi7RaYRQNEEwbCuosAcPp9PJy13Ps+4JQEPR
-         3tzPehb9+Mm/EoPtn1jtVeKFPgTx0ooMJCLyZE7zGfCXjA8NVlWVdA2VAisTKRK+ZN
-         zDeycpNcLjpreu7E231pj1rMJPtHk1Bp4tVNTssqfhbAptLBkiWEe274ucwvQ6c/+s
-         2N3DQ9v0BmL5YMdmYGt08R2jnzceHyuUBXwqBEPVekYDczYzH8ioZ5Fyu8iOclJTOv
-         NrsGwGE9Hf6mA==
-Date:   Tue, 8 Jun 2021 12:40:42 -0700
-From:   Keith Busch <kbusch@kernel.org>
-To:     David Miller <davem@davemloft.net>
-Cc:     hch@lst.de, geert@linux-m68k.org, axboe@fb.com, sagi@grimberg.me,
-        okulkarni@marvell.com, hare@suse.de, dbalandin@marvell.com,
-        himanshu.madhani@oracle.com, smalin@marvell.com, pmladek@suse.com,
-        linux-nvme@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: please drop the nvme code from net-next
-Message-ID: <20210608194042.GA339628@dhcp-10-100-145-180.wdc.com>
-References: <20210608121925.GA24201@lst.de>
- <CAMuHMdWgLf8GJfOaRUyx=AvOTnuOs8FS-2=C+OCk02OLDCyrDg@mail.gmail.com>
- <20210608134303.GA30977@lst.de>
- <20210608.120839.259439633590059559.davem@davemloft.net>
+        id S238414AbhFHTod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:44:33 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CE70611BD;
+        Tue,  8 Jun 2021 19:42:39 +0000 (UTC)
+Date:   Tue, 8 Jun 2021 15:42:37 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH V3 8/9] tracing: Add osnoise tracer
+Message-ID: <20210608154237.4e78eca5@oasis.local.home>
+In-Reply-To: <0db868d6-2f16-d59e-0eb2-5c55709b4741@redhat.com>
+References: <cover.1621024265.git.bristot@redhat.com>
+        <bd09a2be9cd0cecee86374dbb49235dd2ef9d750.1621024265.git.bristot@redhat.com>
+        <20210604172803.527aa070@oasis.local.home>
+        <abf38ca3-3c14-c00a-ff74-f1a75e3ec2e5@redhat.com>
+        <20210608133946.52eb7859@oasis.local.home>
+        <0db868d6-2f16-d59e-0eb2-5c55709b4741@redhat.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608.120839.259439633590059559.davem@davemloft.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 12:08:39PM -0700, David Miller wrote:
-> From: Christoph Hellwig <hch@lst.de>
-> Date: Tue, 8 Jun 2021 15:43:03 +0200
-> 
-> > please drop the nvme-offload code from net-next.  Code for drivers/nvme/
-> > needs ACKs from us nvme maintainers and for something this significant
-> > also needs to go through the NVMe tree.  And this code is not ready yet.
-> 
-> Please send me a revert, and I will apply it, thank you.
-> 
-> It's tricky because at least one driver uses the new interfaces.
+On Tue, 8 Jun 2021 21:33:31 +0200
+Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
 
-Shouldn't whoever merged un-ACK'ed patches from a different subsystem
-get to own the tricky revert?
+> cool! I created a function osnoise_taint(char *msg) that prints the msg using
+> trace_array_printk_buf. I am using it instead of all pr_warn that could take
+> place inside osnoise regular operation.
+
+Make it a macro, so that _THIS_IP_ is meaningful.
+
+> 
+> I am still placing the note in the header, just in case we miss the message in
+> the log.
+
++1
+
+-- Steve
