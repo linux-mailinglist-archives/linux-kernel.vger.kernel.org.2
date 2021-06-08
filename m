@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447363A007C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A13F83A0080
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235486AbhFHSn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37678 "EHLO mail.kernel.org"
+        id S235222AbhFHSoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:44:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235428AbhFHSkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235434AbhFHSkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Jun 2021 14:40:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF9A1613D5;
-        Tue,  8 Jun 2021 18:34:33 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75A7F61182;
+        Tue,  8 Jun 2021 18:34:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177274;
-        bh=HB1lNmivXwhuP+zSIuHj6iToppIwfpg1Ly30iQGw96s=;
+        s=korg; t=1623177277;
+        bh=Lzbfoe41A73A475pfELLh+brZ2AIB9WonoTb/dX0WGc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZsW/Pzs/66psNUxJJ7Io3gZq/MRILCF/AksgUy56gUcMojrvw1Lz++TjduQFSAsY2
-         DLy90KnI9cLMRTHSAZVVM0CU93bBlNACkRxrdqQPbCsaK5FSx5I2J8BEOq08+7ZvII
-         DRk/lBW8/8E+MKUQJEyuyH7ZqdMDHLed2iWGsp68=
+        b=wy2hLNt+86xzGqtn9wkaC8/3dy/nUPi5+Jh0XHa0vksQmr9eC6+fKV8wq/gxyPcLE
+         K8dz24WKCZ4g3CVGXigHE/E/KdWn0Pph4XRQG6Fsy9kAoOrAKs3MMNSTWczQbrfe9r
+         LaVYfwn58mLARL8q4sHRK2mwYA0xhe0XxotnoSv0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Murphy <lists@colorremedies.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.19 52/58] btrfs: fix unmountable seed device after fstrim
-Date:   Tue,  8 Jun 2021 20:27:33 +0200
-Message-Id: <20210608175933.989380308@linuxfoundation.org>
+Subject: [PATCH 4.19 53/58] KVM: SVM: Truncate GPR value for DR and CR accesses in !64-bit mode
+Date:   Tue,  8 Jun 2021 20:27:34 +0200
+Message-Id: <20210608175934.022559383@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
 References: <20210608175932.263480586@linuxfoundation.org>
@@ -42,111 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+From: Sean Christopherson <seanjc@google.com>
 
-commit 5e753a817b2d5991dfe8a801b7b1e8e79a1c5a20 upstream.
+commit 0884335a2e653b8a045083aa1d57ce74269ac81d upstream.
 
-The following test case reproduces an issue of wrongly freeing in-use
-blocks on the readonly seed device when fstrim is called on the rw sprout
-device. As shown below.
+Drop bits 63:32 on loads/stores to/from DRs and CRs when the vCPU is not
+in 64-bit mode.  The APM states bits 63:32 are dropped for both DRs and
+CRs:
 
-Create a seed device and add a sprout device to it:
+  In 64-bit mode, the operand size is fixed at 64 bits without the need
+  for a REX prefix. In non-64-bit mode, the operand size is fixed at 32
+  bits and the upper 32 bits of the destination are forced to 0.
 
-  $ mkfs.btrfs -fq -dsingle -msingle /dev/loop0
-  $ btrfstune -S 1 /dev/loop0
-  $ mount /dev/loop0 /btrfs
-  $ btrfs dev add -f /dev/loop1 /btrfs
-  BTRFS info (device loop0): relocating block group 290455552 flags system
-  BTRFS info (device loop0): relocating block group 1048576 flags system
-  BTRFS info (device loop0): disk added /dev/loop1
-  $ umount /btrfs
-
-Mount the sprout device and run fstrim:
-
-  $ mount /dev/loop1 /btrfs
-  $ fstrim /btrfs
-  $ umount /btrfs
-
-Now try to mount the seed device, and it fails:
-
-  $ mount /dev/loop0 /btrfs
-  mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/loop0, missing codepage or helper program, or other error.
-
-Block 5292032 is missing on the readonly seed device:
-
- $ dmesg -kt | tail
- <snip>
- BTRFS error (device loop0): bad tree block start, want 5292032 have 0
- BTRFS warning (device loop0): couldn't read-tree root
- BTRFS error (device loop0): open_ctree failed
-
->From the dump-tree of the seed device (taken before the fstrim). Block
-5292032 belonged to the block group starting at 5242880:
-
-  $ btrfs inspect dump-tree -e /dev/loop0 | grep -A1 BLOCK_GROUP
-  <snip>
-  item 3 key (5242880 BLOCK_GROUP_ITEM 8388608) itemoff 16169 itemsize 24
-  	block group used 114688 chunk_objectid 256 flags METADATA
-  <snip>
-
->From the dump-tree of the sprout device (taken before the fstrim).
-fstrim used block-group 5242880 to find the related free space to free:
-
-  $ btrfs inspect dump-tree -e /dev/loop1 | grep -A1 BLOCK_GROUP
-  <snip>
-  item 1 key (5242880 BLOCK_GROUP_ITEM 8388608) itemoff 16226 itemsize 24
-  	block group used 32768 chunk_objectid 256 flags METADATA
-  <snip>
-
-BPF kernel tracing the fstrim command finds the missing block 5292032
-within the range of the discarded blocks as below:
-
-  kprobe:btrfs_discard_extent {
-  	printf("freeing start %llu end %llu num_bytes %llu:\n",
-  		arg1, arg1+arg2, arg2);
-  }
-
-  freeing start 5259264 end 5406720 num_bytes 147456
-  <snip>
-
-Fix this by avoiding the discard command to the readonly seed device.
-
-Reported-by: Chris Murphy <lists@colorremedies.com>
-CC: stable@vger.kernel.org # 4.4+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 7ff76d58a9dc ("KVM: SVM: enhance MOV CR intercept handler")
+Fixes: cae3797a4639 ("KVM: SVM: enhance mov DR intercept handler")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210422022128.3464144-4-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[sudip: manual backport to old file]
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/extent-tree.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/x86/kvm/svm.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1984,16 +1984,20 @@ int btrfs_discard_extent(struct btrfs_fs
- 		for (i = 0; i < bbio->num_stripes; i++, stripe++) {
- 			u64 bytes;
- 			struct request_queue *req_q;
-+			struct btrfs_device *device = stripe->dev;
+--- a/arch/x86/kvm/svm.c
++++ b/arch/x86/kvm/svm.c
+@@ -4033,7 +4033,7 @@ static int cr_interception(struct vcpu_s
+ 	err = 0;
+ 	if (cr >= 16) { /* mov to cr */
+ 		cr -= 16;
+-		val = kvm_register_read(&svm->vcpu, reg);
++		val = kvm_register_readl(&svm->vcpu, reg);
+ 		switch (cr) {
+ 		case 0:
+ 			if (!check_selective_cr0_intercepted(svm, val))
+@@ -4078,7 +4078,7 @@ static int cr_interception(struct vcpu_s
+ 			kvm_queue_exception(&svm->vcpu, UD_VECTOR);
+ 			return 1;
+ 		}
+-		kvm_register_write(&svm->vcpu, reg, val);
++		kvm_register_writel(&svm->vcpu, reg, val);
+ 	}
+ 	return kvm_complete_insn_gp(&svm->vcpu, err);
+ }
+@@ -4108,13 +4108,13 @@ static int dr_interception(struct vcpu_s
+ 	if (dr >= 16) { /* mov to DRn */
+ 		if (!kvm_require_dr(&svm->vcpu, dr - 16))
+ 			return 1;
+-		val = kvm_register_read(&svm->vcpu, reg);
++		val = kvm_register_readl(&svm->vcpu, reg);
+ 		kvm_set_dr(&svm->vcpu, dr - 16, val);
+ 	} else {
+ 		if (!kvm_require_dr(&svm->vcpu, dr))
+ 			return 1;
+ 		kvm_get_dr(&svm->vcpu, dr, &val);
+-		kvm_register_write(&svm->vcpu, reg, val);
++		kvm_register_writel(&svm->vcpu, reg, val);
+ 	}
  
--			if (!stripe->dev->bdev) {
-+			if (!device->bdev) {
- 				ASSERT(btrfs_test_opt(fs_info, DEGRADED));
- 				continue;
- 			}
--			req_q = bdev_get_queue(stripe->dev->bdev);
-+			req_q = bdev_get_queue(device->bdev);
- 			if (!blk_queue_discard(req_q))
- 				continue;
- 
--			ret = btrfs_issue_discard(stripe->dev->bdev,
-+			if (!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state))
-+				continue;
-+
-+			ret = btrfs_issue_discard(device->bdev,
- 						  stripe->physical,
- 						  stripe->length,
- 						  &bytes);
+ 	return kvm_skip_emulated_instruction(&svm->vcpu);
 
 
