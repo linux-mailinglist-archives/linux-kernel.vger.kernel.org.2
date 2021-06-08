@@ -2,142 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAFB3A06C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BB33A06C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234174AbhFHW3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 18:29:37 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:39661 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhFHW3f (ORCPT
+        id S234298AbhFHWbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 18:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234212AbhFHWbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 18:29:35 -0400
-Received: by mail-oi1-f172.google.com with SMTP id m137so19278995oig.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:27:27 -0700 (PDT)
+        Tue, 8 Jun 2021 18:31:32 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB1DC061789
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 15:29:28 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id l7so16562977qtk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:29:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zEVt4/c8lCCNqBGSoq0YIzdJWJUhrx9cSDWBmiuwl3Q=;
-        b=NH6AZogFTIQAehx/IPJIZOXHKcbR97a4hXmH6UkB/RAObPSx36Jr3192QR5zz0LElg
-         f2CIKAXSbtyBoOLzBhMxymkjtlX1xv7CdXR2AgWkLMnKsbKGOeKJqo+qy2fW7eDeSUZ+
-         nLly6tGwsNWtUB8HIjIcNqDOT6mkTyoR+vQu5zqDpnKOmfrmvwovSdrK5AUE7M/UwocU
-         UO5jq+xGroaF9jYF3IPq1uU8QDyxsMTJFzG9YH9TgOCpJtZdwzXpjUoZDILJr4/RQwi+
-         JEo4j79a8NqXyDatfB+zWaCMe6wVX6qMzibu7XI+H7KAg/TFN8sgiKphtClFLqbgLzMi
-         L2kw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tzGX9fCwBa/GCHza5uoWn4deXxt6OaL//ssg+qUDOEo=;
+        b=D7PNmOWjCmF8+3mFiGGTqNTIUWlfHeFkDtHsNekzwL+AYtd5b2C2igUsryUEAOK1uz
+         /JkNiwMvs0RT/HznC/08bGC4/0QWrjnzDZtaT1wceonkgDm25xnmPduKvzo9PMrqa1sA
+         tVt2H1hyEYltb+45GCQlcp7hWTOz3iunBd7RTBRUemLpLzsA4HmiNalUeBXkPtzZ4DsP
+         NQ43JWRhW1CPoLF79KpXhoYgKqevlKoBLYB1noUAyH16aeVs2QlLeL08Hcu/HIM8+q+W
+         ACtgWEfXJb97oOkVdO2SxfQTX8U1qBZ1/2XF6rzvUaohMLSXrD91LcALk8HgNnNPS4eD
+         Oz5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zEVt4/c8lCCNqBGSoq0YIzdJWJUhrx9cSDWBmiuwl3Q=;
-        b=OB080zEvcnpOx6I9sVQMzAus7qRSEbCyMQuSlYQihl/TPhZNJ0JpybCoQ+Pg8EMY+6
-         ZFoK8A/njLago416/0sTlOJTGryilsgyaevFsJcFC6++QI9qLsB0Wh2jNHTlhUfqjHQc
-         adXqD3oNFKGTP7pZvb0irLylVs3a7Mbdue7mmNBxoUnxfYPO/GGVPr46N4pAxsMmZN86
-         vsMEzcLeNK6CwKGuiGtTNN7N0b71+OXNd4hmnnHojfrbUCIA0BB90En+Tt/4Heojo3la
-         T8PitD8oE5op81rIDqSheuK0T7MdWcuQULdsPnvorsOTCariwLgCgg08AmKUJG5Q76zb
-         a5mg==
-X-Gm-Message-State: AOAM531+gshXFFbJAJqZ24zt+tU/TarwY9susa2TE9Q2mTZVqJvXW4o9
-        LprUWQ1xZKKoQJppP0LJ/hX/Tg==
-X-Google-Smtp-Source: ABdhPJwwPivLBLTPZZXHggklQbT8BkpioImdV/IT0T25YTOA/Wz8xXB2krv/o5SVJGfYlXTG8jaLQQ==
-X-Received: by 2002:a05:6808:195:: with SMTP id w21mr2463312oic.7.1623191186987;
-        Tue, 08 Jun 2021 15:26:26 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f25sm1043989oto.26.2021.06.08.15.26.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tzGX9fCwBa/GCHza5uoWn4deXxt6OaL//ssg+qUDOEo=;
+        b=HqrkGILe33UD6zrl1cNEQtDanHXWziYFa0zeBZGPsrwdc2HxVScNj7s0x4po5tc/GT
+         UIYrREvEAufJSxwiHrKesl3SLeHmrS/sV1y61Citq+aIhE+QkSywyBEohgkwN2U/D04u
+         7C8csXEN/RJVD0mjEB7SdAVbICkzx1JWIgrRnB5VeNKZk53r/T/a+VpJvfl0nirgKGBm
+         DykAeENvafw+LLXa5FrPBhbAN9SJfB4zxUPTCcrWYgP+p1PLf4Vk/MfZJ8LHhaKOwDG3
+         0QQnZAWNM5KwSY6zGCtr7pEPFCSXeuDMPj2wttDA6MQKFmiUlSv3o73I94NwqPjX7+Ex
+         QW+g==
+X-Gm-Message-State: AOAM532tT/xdFqL3Gl9l09jqmoEpsqb766F22lCNy7jEyUVWcrPQIdaq
+        y/+J+/5+M9m1y07qXW16ncinMA==
+X-Google-Smtp-Source: ABdhPJxbwnFt1DfjxCZC3qMn+TbSldnacV1TMWu10I0frpYsRYfLipKNMEXkMuMjDsR8xulCl6pjxg==
+X-Received: by 2002:ac8:1286:: with SMTP id y6mr4073535qti.58.1623191367897;
+        Tue, 08 Jun 2021 15:29:27 -0700 (PDT)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id h19sm10450736qtq.5.2021.06.08.15.29.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 15:26:26 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 17:26:23 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     khsieh@codeaurora.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org, agross@kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64/dts/qcom/sc7180: Add Display Port dt node
-Message-ID: <YL/uj+t+BFkII1Fh@yoga>
-References: <1622736555-15775-1-git-send-email-khsieh@codeaurora.org>
- <YLkI/6ItCz+SbbuJ@yoga>
- <ac326ec8689c0babb08b2311e19d52cc@codeaurora.org>
- <YLxX/YtegtbLmkri@builder.lan>
- <ef1879fa7ecfefaf0c70c7a4782240a9@codeaurora.org>
- <YL6sY/1E5wLzMiP/@yoga>
- <CAE-0n50-X03sMyJdsw7s=Ue0dWXBo=iHOc0HxDQm5yh2J-uS3A@mail.gmail.com>
+        Tue, 08 Jun 2021 15:29:27 -0700 (PDT)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        rjw@rjwysocki.net, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 0/5] Introduce LMh driver for Qualcomm SoCs
+Date:   Tue,  8 Jun 2021 18:29:21 -0400
+Message-Id: <20210608222926.2707768-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n50-X03sMyJdsw7s=Ue0dWXBo=iHOc0HxDQm5yh2J-uS3A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08 Jun 17:15 CDT 2021, Stephen Boyd wrote:
+Limits Management Hardware(LMh) is a hardware infrastructure on some
+Qualcomm SoCs that can enforce temperature and current limits as programmed
+by software for certain IPs like CPU. On many newer SoCs LMh is configured
+by firmware/TZ and no programming is needed from the kernel side. But on
+certain SoCs like sdm845 the firmware does not do a complete programming of
+the h/w block. On such SoCs kernel software has to explicitly set up the
+temperature limits and turn on various monitoring and enforcing algorithms
+on the hardware.
 
-> Quoting Bjorn Andersson (2021-06-07 16:31:47)
-> > On Mon 07 Jun 12:48 CDT 2021, khsieh@codeaurora.org wrote:
-> >
-> > > On 2021-06-05 22:07, Bjorn Andersson wrote:
-> > > > On Thu 03 Jun 16:56 CDT 2021, khsieh@codeaurora.org wrote:
-> > > >
-> > > > > On 2021-06-03 09:53, Bjorn Andersson wrote:
-> > > > > > On Thu 03 Jun 11:09 CDT 2021, Kuogee Hsieh wrote:
-> > > > [..]
-> > > > > > > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> > > > [..]
-> > > > > > > +                             power-domains = <&rpmhpd SC7180_CX>;
-> > > > > >
-> > > > > > Just curious, but isn't the DP block in the MDSS_GDCS? Or do we need to
-> > > > > > mention CX here in order for the opp framework to apply required-opps
-> > > > > > of CX?
-> > > > >
-> > > > > yes,
-> > > >
-> > > > If you want me, or other maintainers, to spend any time reviewing or
-> > > > applying your patches going forward then you need to actually bother
-> > > > replying properly to the questions asked.
-> > > >
-> > > > Thanks,
-> > > > Bjorn
-> > >
-> > > Sorry about the confusion. What I meant is that even though DP controller is
-> > > in the MDSS_GDSC
-> > > power domain, DP PHY/PLL sources out of CX. The DP link clocks have a direct
-> > > impact
-> > > on the CX voltage corners. Therefore, we need to mention the CX power domain
-> > > here. And, since
-> > > we can associate only one OPP table with one device, we picked the DP link
-> > > clock over other
-> > > clocks.
-> >
-> > Thank you, that's a much more useful answer.
-> >
-> > Naturally I would think it would make more sense for the PHY/PLL driver
-> > to ensure that CX is appropriately voted for then, but I think that
-> > would result in it being the clock driver performing such vote and I'm
-> > unsure how the opp table for that would look.
-> >
-> > @Stephen, what do you say?
-> >
-> 
-> Wouldn't the PHY be the one that sets some vote? So it wouldn't be the
-> clk driver, and probably not from the clk ops, but instead come from the
-> phy ops via phy_enable() and phy_configure().
-> 
+Introduce support for enabling and programming various limit settings and
+monitoring capabilities of Limits Management Hardware(LMh) associated with
+cpu clusters. Also introduce support in cpufreq hardware driver to monitor
+the interrupt associated with cpu frequency throttling so that this
+information can be conveyed to the schdeuler via thermal pressure
+interface.
 
-If I understand the logic correctly *_configure_dp_phy() will both
-configure the vco clock and "request" the clock framework to change the
-rate.
+With this patch series following cpu performance improvement(30-70%) is
+observed on sdm845. The reasoning here is that without LMh being programmed
+properly from the kernel, the default settings were enabling thermal
+mitigation for CPUs at too low a temperature (around 70-75 degree C).  This
+in turn meant that many a time CPUs were never actually allowed to hit the
+maximum possible/required frequencies.
 
-So I presume what you're suggesting is that that would be the place to
-cast the CX corner vote?
+UnixBench whets and dhry (./Run whets dhry)
+System Benchmarks Index Score
 
-> By the way, there's nothing wrong with a clk device doing power domain
-> "stuff", except for that we haven't plumbed it into the clk framework
-> properly and I'm fairly certain our usage of runtime PM in the clk
-> framework today underneath the prepare_lock is getting us into trouble
-> or will get us there soon.
+		Without LMh Support		With LMh Support
+1 copy test	1353.7				1773.2
 
-On the bright side, it's wonderful that we're at a point where this is
-not only a theoretical problem :)
+8 copy tests	4473.6				7402.3
 
-Regards,
-Bjorn
+Sysbench cpu 
+sysbench cpu --threads=8 --time=60 --cpu-max-prime=100000 run
+
+		Without LMh Support		With LMh Support
+Events per
+second			355				614
+
+Avg Latency(ms)		21.84				13.02
+
+Thara Gopinath (5):
+  firmware: qcom_scm: Introduce SCM calls to access LMh
+  thermal: qcom: Add support for LMh driver
+  cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support
+  arm64: boot: dts: sdm45: Add support for LMh node
+  arm64: boot: dts: qcom: sdm845: Remove passive trip points for thermal
+    zones 0-7
+
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 246 +++------------------------
+ drivers/cpufreq/qcom-cpufreq-hw.c    | 100 +++++++++++
+ drivers/firmware/qcom_scm.c          |  47 +++++
+ drivers/firmware/qcom_scm.h          |   4 +
+ drivers/thermal/qcom/Kconfig         |  10 ++
+ drivers/thermal/qcom/Makefile        |   1 +
+ drivers/thermal/qcom/lmh.c           | 244 ++++++++++++++++++++++++++
+ include/linux/qcom_scm.h             |  13 ++
+ 8 files changed, 440 insertions(+), 225 deletions(-)
+ create mode 100644 drivers/thermal/qcom/lmh.c
+
+-- 
+2.25.1
+
