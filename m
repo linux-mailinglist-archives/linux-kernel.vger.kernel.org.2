@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6B33A0444
+	by mail.lfdr.de (Postfix) with ESMTP id DE53D3A0446
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235461AbhFHT14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:27:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37120 "EHLO mail.kernel.org"
+        id S237495AbhFHT2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:28:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238421AbhFHTO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:14:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B56DD6145E;
-        Tue,  8 Jun 2021 18:50:28 +0000 (UTC)
+        id S238603AbhFHTPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:15:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72EC861464;
+        Tue,  8 Jun 2021 18:50:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178229;
-        bh=zrhf8ozr/DI3kvZDoVXzNxgzRAZ+YdpBuivAu2wEZf0=;
+        s=korg; t=1623178231;
+        bh=exdhTaneULnsGNI+Wd7hkZj6EXBXExdOBga7eQRSL98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GsIW8BSelW3g/3koznDLF5KRGC9aFtoJfPL6lKEVIF5Rw+pXY2nPy1LMHZmGQw1lv
-         2XyCYzLXxJTKkdDCNihk+EWV1JUxxdSpr9gq1ohbdGxevjsd4RIIWiwuu5hHnCAg3L
-         D6uvi23zCN2fhn8DnSSHNmyzuwjAR7pYDkg6yiyQ=
+        b=mxkPI1vn/QtBcyoiD44E0UPRnqsEWw25/5sDkI/j0kc296tGbY9fSxxiAq3DZOEPJ
+         lVZoM8cL9WD8kj+bv/PhJttwRkc4ANLLf0buvZFzdiBukjoQorihJul8WxFLkmdUiB
+         6YZ0JCt5ww7xiVecSuDjqi75iahrfr4ObogyVY3o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 090/161] drm/amdgpu/jpeg2.5: add cancel_delayed_work_sync before power gate
-Date:   Tue,  8 Jun 2021 20:27:00 +0200
-Message-Id: <20210608175948.476292412@linuxfoundation.org>
+Subject: [PATCH 5.12 091/161] drm/amdgpu/jpeg3: add cancel_delayed_work_sync before power gate
+Date:   Tue,  8 Jun 2021 20:27:01 +0200
+Message-Id: <20210608175948.508144109@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -44,7 +44,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: James Zhu <James.Zhu@amd.com>
 
-[ Upstream commit 23f10a571da5eaa63b7845d16e2f49837e841ab9 ]
+[ Upstream commit 20ebbfd22f8115a1e4f60d3d289f66be4d47f1ec ]
 
 Add cancel_delayed_work_sync before set power gating state
 to avoid race condition issue when power gating.
@@ -56,30 +56,25 @@ Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c | 4 ++--
+ drivers/gpu/drm/amd/amdgpu/jpeg_v3_0.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c b/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
-index dc947c8ffe21..e6c4a36eaf9a 100644
---- a/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
-+++ b/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
-@@ -187,14 +187,14 @@ static int jpeg_v2_5_hw_init(void *handle)
- static int jpeg_v2_5_hw_fini(void *handle)
+diff --git a/drivers/gpu/drm/amd/amdgpu/jpeg_v3_0.c b/drivers/gpu/drm/amd/amdgpu/jpeg_v3_0.c
+index 1d354245678d..2ea68c84e6b4 100644
+--- a/drivers/gpu/drm/amd/amdgpu/jpeg_v3_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/jpeg_v3_0.c
+@@ -159,9 +159,9 @@ static int jpeg_v3_0_hw_init(void *handle)
+ static int jpeg_v3_0_hw_fini(void *handle)
  {
  	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
 -	struct amdgpu_ring *ring;
- 	int i;
  
+-	ring = &adev->jpeg.inst->ring_dec;
 +	cancel_delayed_work_sync(&adev->vcn.idle_work);
 +
- 	for (i = 0; i < adev->jpeg.num_jpeg_inst; ++i) {
- 		if (adev->jpeg.harvest_config & (1 << i))
- 			continue;
- 
--		ring = &adev->jpeg.inst[i].ring_dec;
- 		if (adev->jpeg.cur_state != AMD_PG_STATE_GATE &&
- 		      RREG32_SOC15(JPEG, i, mmUVD_JRBC_STATUS))
- 			jpeg_v2_5_set_powergating_state(adev, AMD_PG_STATE_GATE);
+ 	if (adev->jpeg.cur_state != AMD_PG_STATE_GATE &&
+ 	      RREG32_SOC15(JPEG, 0, mmUVD_JRBC_STATUS))
+ 		jpeg_v3_0_set_powergating_state(adev, AMD_PG_STATE_GATE);
 -- 
 2.30.2
 
