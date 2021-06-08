@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E393A020C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62D53A033E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237162AbhFHS76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48898 "EHLO mail.kernel.org"
+        id S238283AbhFHTOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:14:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235536AbhFHSxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:53:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABA8E61483;
-        Tue,  8 Jun 2021 18:40:35 +0000 (UTC)
+        id S236986AbhFHTDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:03:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 643D0613C0;
+        Tue,  8 Jun 2021 18:45:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177636;
-        bh=jTaVlNLcB7p+1qeKRSry2AX+8F0Yy4SjR0IfEuAeplY=;
+        s=korg; t=1623177951;
+        bh=JiNZlSikyQwZnPoSF3ec5ikNZ5ygRYEjh3PqydSZK+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rey/q6aVSXom71SaTjZ0NMxeAB6MNPJscq53IV7RI8KMA9DaiwHYVgIJDrqDZ7y7c
-         l+4S07A0+86ls4R0ZZJBOlasNwCsboxUhbbwGbaZU4+hX697ThZT/UJs8mS+9+irtB
-         VRkeZ7ttvGoKFAwQibpdKEN5S6olk8sSYt3FTcS0=
+        b=xoQXTelzktkqv+DxXvu5hGXQXbNQle8KwO11BOzxKdhk2ZUDLCf2qiU+/Zckn0ct4
+         BwdmU7oee2u+bZDRly0JWUfOgU0Wv3F8kHe1sYuSfGlHw+OSz3iB5yvnjst05g3C+0
+         is8CdSLcbp6YURvIkHt8xqBFG9ybYoSQmDI6mc3Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Eric Auger <eric.auger@redhat.com>,
+        stable@vger.kernel.org, Oz Shlomo <ozsh@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Paul Blakey <paulb@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 011/137] vfio/pci: zap_vma_ptes() needs MMU
-Date:   Tue,  8 Jun 2021 20:25:51 +0200
-Message-Id: <20210608175942.764442650@linuxfoundation.org>
+Subject: [PATCH 5.12 022/161] net/sched: act_ct: Offload connections with commit action
+Date:   Tue,  8 Jun 2021 20:25:52 +0200
+Message-Id: <20210608175946.199786615@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+References: <20210608175945.476074951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Paul Blakey <paulb@nvidia.com>
 
-[ Upstream commit 2a55ca37350171d9b43d561528f23d4130097255 ]
+[ Upstream commit 0cc254e5aa37cf05f65bcdcdc0ac5c58010feb33 ]
 
-zap_vma_ptes() is only available when CONFIG_MMU is set/enabled.
-Without CONFIG_MMU, vfio_pci.o has build errors, so make
-VFIO_PCI depend on MMU.
+Currently established connections are not offloaded if the filter has a
+"ct commit" action. This behavior will not offload connections of the
+following scenario:
 
-riscv64-linux-ld: drivers/vfio/pci/vfio_pci.o: in function `vfio_pci_mmap_open':
-vfio_pci.c:(.text+0x1ec): undefined reference to `zap_vma_ptes'
-riscv64-linux-ld: drivers/vfio/pci/vfio_pci.o: in function `.L0 ':
-vfio_pci.c:(.text+0x165c): undefined reference to `zap_vma_ptes'
+$ tc_filter add dev $DEV ingress protocol ip prio 1 flower \
+  ct_state -trk \
+  action ct commit action goto chain 1
 
-Fixes: 11c4cd07ba11 ("vfio-pci: Fault mmaps to enable vma tracking")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Alex Williamson <alex.williamson@redhat.com>
-Cc: Cornelia Huck <cohuck@redhat.com>
-Cc: kvm@vger.kernel.org
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Eric Auger <eric.auger@redhat.com>
-Message-Id: <20210515190856.2130-1-rdunlap@infradead.org>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+$ tc_filter add dev $DEV ingress protocol ip chain 1 prio 1 flower \
+  action mirred egress redirect dev $DEV2
+
+$ tc_filter add dev $DEV2 ingress protocol ip prio 1 flower \
+  action ct commit action goto chain 1
+
+$ tc_filter add dev $DEV2 ingress protocol ip prio 1 chain 1 flower \
+  ct_state +trk+est \
+  action mirred egress redirect dev $DEV
+
+Offload established connections, regardless of the commit flag.
+
+Fixes: 46475bb20f4b ("net/sched: act_ct: Software offload of established flows")
+Reviewed-by: Oz Shlomo <ozsh@nvidia.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Paul Blakey <paulb@nvidia.com>
+Link: https://lore.kernel.org/r/1622029449-27060-1-git-send-email-paulb@nvidia.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ net/sched/act_ct.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/vfio/pci/Kconfig b/drivers/vfio/pci/Kconfig
-index 0f28bf99efeb..4e1107767e29 100644
---- a/drivers/vfio/pci/Kconfig
-+++ b/drivers/vfio/pci/Kconfig
-@@ -2,6 +2,7 @@
- config VFIO_PCI
- 	tristate "VFIO support for PCI devices"
- 	depends on VFIO && PCI && EVENTFD
-+	depends on MMU
- 	select VFIO_VIRQFD
- 	select IRQ_BYPASS_MANAGER
- 	help
+diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
+index 48fdf7293dea..371fd64638d2 100644
+--- a/net/sched/act_ct.c
++++ b/net/sched/act_ct.c
+@@ -984,7 +984,7 @@ static int tcf_ct_act(struct sk_buff *skb, const struct tc_action *a,
+ 	 */
+ 	cached = tcf_ct_skb_nfct_cached(net, skb, p->zone, force);
+ 	if (!cached) {
+-		if (!commit && tcf_ct_flow_table_lookup(p, skb, family)) {
++		if (tcf_ct_flow_table_lookup(p, skb, family)) {
+ 			skip_add = true;
+ 			goto do_nat;
+ 		}
+@@ -1024,10 +1024,11 @@ do_nat:
+ 		 * even if the connection is already confirmed.
+ 		 */
+ 		nf_conntrack_confirm(skb);
+-	} else if (!skip_add) {
+-		tcf_ct_flow_table_process_conn(p->ct_ft, ct, ctinfo);
+ 	}
+ 
++	if (!skip_add)
++		tcf_ct_flow_table_process_conn(p->ct_ft, ct, ctinfo);
++
+ out_push:
+ 	skb_push_rcsum(skb, nh_ofs);
+ 
 -- 
 2.30.2
 
