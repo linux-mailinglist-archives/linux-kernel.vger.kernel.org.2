@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B85C3A02DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98AE63A01A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhFHTKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:10:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39970 "EHLO mail.kernel.org"
+        id S236862AbhFHSz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:55:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237588AbhFHTA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:00:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA53261874;
-        Tue,  8 Jun 2021 18:44:05 +0000 (UTC)
+        id S235678AbhFHSst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:48:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CF0B61422;
+        Tue,  8 Jun 2021 18:38:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177846;
-        bh=sjLsm0m61TxduIh14j8qvimTjjhrJSGvg02VhThmiRg=;
+        s=korg; t=1623177517;
+        bh=KKSmZjpDI7LtApuy8fqZ8f4a2GjbXSNjayEcZICjsVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mt1TbwruA+CVuHOYkLaBH+euS7kic/jlqQ5NFOM/RXV5fKzg9Wj03OwJXECenBdjY
-         93JEXIio4F0iOsjMvybJyt1rxJMcWxnhB4l0lRFuEu1KG4c9POjjyMG9kvOKVgeLP8
-         ie/vuAnWKsJSoyAvrqNQnd2DVV9BGPllFLIuWWR8=
+        b=UrWnKmWgcX2FmhFYbn9IBw3WvILZHjMbQCfPXb3icmJgwRGcsWkW2+2i4f/hdnNVl
+         MEeRXYTkwfZDKFOUV86keusWyOv8gYAFEbMZSVbXZHP/LQgyKwthrsBzt3ROK9aGBI
+         7vCBoxj7O8ECqrGppURqLyo3kQ0s1eiAND+4hjRs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.10 122/137] btrfs: fixup error handling in fixup_inode_link_counts
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 5.4 73/78] x86/kvm: Disable kvmclock on all CPUs on shutdown
 Date:   Tue,  8 Jun 2021 20:27:42 +0200
-Message-Id: <20210608175946.504062873@linuxfoundation.org>
+Message-Id: <20210608175937.728926756@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,85 +41,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-commit 011b28acf940eb61c000059dd9e2cfcbf52ed96b upstream.
+commit c02027b5742b5aa804ef08a4a9db433295533046 upstream.
 
-This function has the following pattern
+Currenly, we disable kvmclock from machine_shutdown() hook and this
+only happens for boot CPU. We need to disable it for all CPUs to
+guard against memory corruption e.g. on restore from hibernate.
 
-	while (1) {
-		ret = whatever();
-		if (ret)
-			goto out;
-	}
-	ret = 0
-out:
-	return ret;
+Note, writing '0' to kvmclock MSR doesn't clear memory location, it
+just prevents hypervisor from updating the location so for the short
+while after write and while CPU is still alive, the clock remains usable
+and correct so we don't need to switch to some other clocksource.
 
-However several places in this while loop we simply break; when there's
-a problem, thus clearing the return value, and in one case we do a
-return -EIO, and leak the memory for the path.
-
-Fix this by re-arranging the loop to deal with ret == 1 coming from
-btrfs_search_slot, and then simply delete the
-
-	ret = 0;
-out:
-
-bit so everybody can break if there is an error, which will allow for
-proper error handling to occur.
-
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Message-Id: <20210414123544.1060604-4-vkuznets@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/tree-log.c |   13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/kvm_para.h |    4 ++--
+ arch/x86/kernel/kvm.c           |    1 +
+ arch/x86/kernel/kvmclock.c      |    5 +----
+ 3 files changed, 4 insertions(+), 6 deletions(-)
 
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -1752,6 +1752,7 @@ static noinline int fixup_inode_link_cou
- 			break;
+--- a/arch/x86/include/asm/kvm_para.h
++++ b/arch/x86/include/asm/kvm_para.h
+@@ -6,8 +6,6 @@
+ #include <asm/alternative.h>
+ #include <uapi/asm/kvm_para.h>
  
- 		if (ret == 1) {
-+			ret = 0;
- 			if (path->slots[0] == 0)
- 				break;
- 			path->slots[0]--;
-@@ -1764,17 +1765,19 @@ static noinline int fixup_inode_link_cou
- 
- 		ret = btrfs_del_item(trans, root, path);
- 		if (ret)
--			goto out;
-+			break;
- 
- 		btrfs_release_path(path);
- 		inode = read_one_inode(root, key.offset);
--		if (!inode)
--			return -EIO;
-+		if (!inode) {
-+			ret = -EIO;
-+			break;
-+		}
- 
- 		ret = fixup_inode_link_count(trans, root, inode);
- 		iput(inode);
- 		if (ret)
--			goto out;
-+			break;
- 
- 		/*
- 		 * fixup on a directory may create new entries,
-@@ -1783,8 +1786,6 @@ static noinline int fixup_inode_link_cou
- 		 */
- 		key.offset = (u64)-1;
- 	}
--	ret = 0;
--out:
- 	btrfs_release_path(path);
- 	return ret;
+-extern void kvmclock_init(void);
+-
+ #ifdef CONFIG_KVM_GUEST
+ bool kvm_check_and_clear_guest_paused(void);
+ #else
+@@ -85,6 +83,8 @@ static inline long kvm_hypercall4(unsign
  }
+ 
+ #ifdef CONFIG_KVM_GUEST
++void kvmclock_init(void);
++void kvmclock_disable(void);
+ bool kvm_para_available(void);
+ unsigned int kvm_arch_para_features(void);
+ unsigned int kvm_arch_para_hints(void);
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -436,6 +436,7 @@ static void kvm_guest_cpu_offline(void)
+ 		wrmsrl(MSR_KVM_PV_EOI_EN, 0);
+ 	kvm_pv_disable_apf();
+ 	apf_task_wake_all();
++	kvmclock_disable();
+ }
+ 
+ static int kvm_cpu_online(unsigned int cpu)
+--- a/arch/x86/kernel/kvmclock.c
++++ b/arch/x86/kernel/kvmclock.c
+@@ -214,11 +214,9 @@ static void kvm_crash_shutdown(struct pt
+ }
+ #endif
+ 
+-static void kvm_shutdown(void)
++void kvmclock_disable(void)
+ {
+ 	native_write_msr(msr_kvm_system_time, 0, 0);
+-	kvm_disable_steal_time();
+-	native_machine_shutdown();
+ }
+ 
+ static void __init kvmclock_init_mem(void)
+@@ -346,7 +344,6 @@ void __init kvmclock_init(void)
+ #endif
+ 	x86_platform.save_sched_clock_state = kvm_save_sched_clock_state;
+ 	x86_platform.restore_sched_clock_state = kvm_restore_sched_clock_state;
+-	machine_ops.shutdown  = kvm_shutdown;
+ #ifdef CONFIG_KEXEC_CORE
+ 	machine_ops.crash_shutdown  = kvm_crash_shutdown;
+ #endif
 
 
