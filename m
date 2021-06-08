@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34E339F089
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4988339F08D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhFHIRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:17:50 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:4515 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhFHIRo (ORCPT
+        id S231166AbhFHIRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:17:55 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8079 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229937AbhFHIRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:17:44 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzjfP6Q41zZdjg;
-        Tue,  8 Jun 2021 16:13:01 +0800 (CST)
+        Tue, 8 Jun 2021 04:17:45 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzjfQ0VNczYrMv;
+        Tue,  8 Jun 2021 16:13:02 +0800 (CST)
 Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 16:15:50 +0800
+ 15.1.2176.2; Tue, 8 Jun 2021 16:15:51 +0800
 Received: from localhost.localdomain (10.67.165.24) by
  dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
@@ -28,9 +28,9 @@ To:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
         <ms@dev.tdt.de>, <willemb@google.com>
 CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <lipeng321@huawei.com>, <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 02/16] net: farsync: add blank line after declarations
-Date:   Tue, 8 Jun 2021 16:12:28 +0800
-Message-ID: <1623139962-34847-3-git-send-email-huangguangbin2@huawei.com>
+Subject: [PATCH net-next 03/16] net: farsync: fix the code style issue about "foo* bar"
+Date:   Tue, 8 Jun 2021 16:12:29 +0800
+Message-ID: <1623139962-34847-4-git-send-email-huangguangbin2@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1623139962-34847-1-git-send-email-huangguangbin2@huawei.com>
 References: <1623139962-34847-1-git-send-email-huangguangbin2@huawei.com>
@@ -46,35 +46,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peng Li <lipeng321@huawei.com>
 
-This patch fixes the checkpatch error about missing a blank line
-after declarations.
+Fix the checkpatch error as "foo * bar" should be "foo *bar".
 
 Signed-off-by: Peng Li <lipeng321@huawei.com>
 Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
 ---
- drivers/net/wan/farsync.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wan/farsync.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/wan/farsync.c b/drivers/net/wan/farsync.c
-index 0081ec8..9a69aa7 100644
+index 9a69aa7..a5fe605 100644
 --- a/drivers/net/wan/farsync.c
 +++ b/drivers/net/wan/farsync.c
-@@ -2484,6 +2484,7 @@ fst_add_one(struct pci_dev *pdev, const struct pci_device_id *ent)
-         for ( i = 0 ; i < card->nports ; i++ ) {
- 		struct net_device *dev = alloc_hdlcdev(&card->ports[i]);
- 		hdlc_device *hdlc;
-+
- 		if (!dev) {
- 			while (i--)
- 				free_netdev(card->ports[i].dev);
-@@ -2608,6 +2609,7 @@ fst_remove_one(struct pci_dev *pdev)
+@@ -577,7 +577,7 @@ static u64 fst_work_txq;
+ static u64 fst_work_intq;
  
- 	for (i = 0; i < card->nports; i++) {
- 		struct net_device *dev = port_to_dev(&card->ports[i]);
-+
- 		unregister_hdlc_device(dev);
- 	}
- 
+ static void
+-fst_q_work_item(u64 * queue, int card_index)
++fst_q_work_item(u64 *queue, int card_index)
+ {
+ 	unsigned long flags;
+ 	u64 mask;
 -- 
 2.8.1
 
