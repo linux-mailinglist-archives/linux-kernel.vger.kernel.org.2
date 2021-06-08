@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562E139FB46
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47F739FB48
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232973AbhFHP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232712AbhFHP4H (ORCPT
+        id S233028AbhFHP44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:56:56 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:45650 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231231AbhFHP4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:56:07 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A27C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 08:54:02 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id v206-20020a1cded70000b02901a586d3fa23so2211150wmg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 08:54:01 -0700 (PDT)
+        Tue, 8 Jun 2021 11:56:55 -0400
+Received: by mail-wr1-f45.google.com with SMTP id z8so22095863wrp.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 08:55:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C1jCjSpZgNu1sKbBk9Z8ZrCdwYEpbza43XiihxyO/yE=;
-        b=YVCJA0HAF6zcoQljEQXQ/+8Srt82oR65IyobeNyeO5y/m18Qqi4RIsm9oHDlODF9lS
-         zu431MizjTDk9b2k3KaWWZoMvurqIXeQ0yR7fLtsexQHacAro307b4uZxXhKi/IArmsq
-         wTVrqQD/MbY5QxGYp0Fut2zcaGFZ7CSTo02UvhWH+/ycUqxdTXL5VV1Hu78y+peQagbJ
-         R5JulGFyoqhJYf09regXQGYwJev0/OSPbKIWBlJ3anSzPJ8SKdvGWB/qkgJeyXmF6LBt
-         iNWz/38JdJLNRutIJ+qJE6hcE6aTVlRun55KTHvLG8pyT1add9uAtshT44k/Yt635hEU
-         9q8Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BRXQuaY4B7tLzh+9+26u4SBQDqXVmvyu3lGkiJd9OsE=;
+        b=gr/gglQLIVxWHQCeK/ivVghBcHcoS3AZLiI+39Ob4NoNZW41wlCK9c24hTBSR5ke43
+         fHeHoYJh3ii5RmoLBw/CW8i9xLQHTkDwnUeagqqOvprPrSo33yOPMjD00O9qQx4variP
+         wAOxxaDwYJuP0L6+4hIE5QrRBHiMb4m7YKyyPoINsi+QANcEjGqYtUh+ociH3y4IBZ8V
+         jAZXSvRXgREbES9TgpI+AdGsYZyWh8glxmBUdFcBPeP71icony0OCulH2ORerU3vtXV8
+         0rLFCmm2YegiS3GyBPg6CHBjsxJyL2HITbLT27oJfFVg8ODdXSfIPyG0kVPmEW+C96zg
+         /8/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C1jCjSpZgNu1sKbBk9Z8ZrCdwYEpbza43XiihxyO/yE=;
-        b=tLIT1bRyYxCob2d4wwNaGvQtWbbNI5HVwplGG6sUuhdQ5ZKssR6MKxVzGVKozgV1Iq
-         KB5staiCXWJ9fM7aJgrwrkioGQmt2N8hRjC3Tjahq0+lERN8M3RkHqpRgZ493cdP8//C
-         o8VPUX9bMpN8qw5rbJUJkhwg+ANwWT9vNyfNyYvGGvrC8FioVwdSjgIcueNdKnB+r7UK
-         Xt5Nfbo5qIt11ejeZ2H7mxxQBulQ3ur0ctI23vHflF5gsnFPo8rkiz+tqAzH9Td6C14H
-         g7h5gH/0UzhiGE99rr4VVsVrgKgd0270eZpCw6MBlY03gG7qQp1S68gWTO8aebhwbbVF
-         +6Jg==
-X-Gm-Message-State: AOAM533s0uEXylVUcHg33paX3gvwtcyUmOEAwubfuOFpBi4oRJr1+v1s
-        IuX2tmHr1S7gwYbEGIQXvT37kA==
-X-Google-Smtp-Source: ABdhPJzTKoQW6pZDrNtOKklfr6CHm5YnfNTU7QG7RonorQflw6aGjQRnHqaXJN0uACO8uwvZsD+KAw==
-X-Received: by 2002:a1c:cc17:: with SMTP id h23mr22321567wmb.129.1623167640560;
-        Tue, 08 Jun 2021 08:54:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BRXQuaY4B7tLzh+9+26u4SBQDqXVmvyu3lGkiJd9OsE=;
+        b=TDYQlpDyfjx21HRoJ/2N0FZfvUAIQwHOBxsrNDsfhMngcJ93wnVi9Q2GP2jFPpZLUL
+         JRxnB/ceJTjklI9cYaDXV/2556phPH162flcNmppIO18IwAx8JNoseCEjmn1qcpHAU/e
+         Tqjq5+QUQyeS0/CQV62g5Wp75rSfWV0jZieZAO0hQOjOULiYlWeLvAoaCYwjxc8aCtlL
+         SyGdMIgQC07UsQ7JVX1KQVWhf2s1w7ayJcUZ+21xaL3flaNKdRaB4qYL3FAq0jenhbhw
+         ucctzkjqNhfoziPLZSRR3HcpkPSYT5fIu4rvhAu1ZetGdcbFCdffAsHC1O40ku+NpRHl
+         YxXg==
+X-Gm-Message-State: AOAM533YttPXqiLBgI3Pk8iEuaMvroJbSVCe2+3zaTHfpS6PXNczzv9n
+        N1etXNjVgXpIgqhXA9y8Yp4QGg==
+X-Google-Smtp-Source: ABdhPJykr6vORYCQFK0zdalZ1dmo1FvGrQrMtsX1IEM0HdNX3NO+P/oNrCPC+8IGF+lGOb5mFL1IQA==
+X-Received: by 2002:adf:eac3:: with SMTP id o3mr23276114wrn.157.1623167641696;
+        Tue, 08 Jun 2021 08:54:01 -0700 (PDT)
 Received: from localhost.localdomain (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
-        by smtp.gmail.com with ESMTPSA id l31sm3314180wms.16.2021.06.08.08.53.59
+        by smtp.gmail.com with ESMTPSA id l31sm3314180wms.16.2021.06.08.08.54.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 08:53:59 -0700 (PDT)
+        Tue, 08 Jun 2021 08:54:01 -0700 (PDT)
 From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
 To:     maz@kernel.org
 Cc:     kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
@@ -58,65 +55,208 @@ Cc:     kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
         lorenzo.pieralisi@arm.com, salil.mehta@huawei.com,
         shameerali.kolothum.thodi@huawei.com, jonathan.cameron@huawei.com,
         Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [RFC PATCH 0/5] KVM: arm64: Pass PSCI to userspace
-Date:   Tue,  8 Jun 2021 17:48:01 +0200
-Message-Id: <20210608154805.216869-1-jean-philippe@linaro.org>
+Subject: [RFC PATCH 1/5] KVM: arm64: Replace power_off with mp_state in struct kvm_vcpu_arch
+Date:   Tue,  8 Jun 2021 17:48:02 +0200
+Message-Id: <20210608154805.216869-2-jean-philippe@linaro.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210608154805.216869-1-jean-philippe@linaro.org>
+References: <20210608154805.216869-1-jean-philippe@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow userspace to request handling PSCI calls from guests. Our goal is
-to enable a vCPU hot-add solution for Arm where the VMM presents
-possible resources to the guest at boot, and controls which vCPUs can be
-brought up by allowing or denying PSCI CPU_ON calls. Passing HVC and
-PSCI to userspace has been discussed on the list in the context of vCPU
-hot-add [1,2] but it can also be useful for implementing other SMCCC and
-vendor hypercalls [3,4,5].
+In order to add a new "suspend" power state, replace power_off with
+mp_state in struct kvm_vcpu_arch. Factor the vcpu_off() function while
+we're here.
 
-Patches 1-3 allow userspace to request WFI to be executed in KVM. That
-way the VMM can easily implement the PSCI CPU_SUSPEND function, which is
-mandatory from PSCI v0.2 onwards (even if it doesn't have a more useful
-implementation than WFI, natively available to the guest).
+No functional change intended.
 
-Patch 4 lets userspace request any HVC that isn't handled by KVM, and
-patch 5 lets userspace request PSCI calls, disabling in-kernel PSCI
-handling.
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+---
+ arch/arm64/include/asm/kvm_host.h |  6 ++++--
+ arch/arm64/kvm/arm.c              | 29 +++++++++++++++--------------
+ arch/arm64/kvm/psci.c             | 19 ++++++-------------
+ 3 files changed, 25 insertions(+), 29 deletions(-)
 
-I'm focusing on the PSCI bits, but a complete prototype of vCPU hot-add
-for arm64 on Linux and QEMU, most of it from Salil and James, is
-available at [6].
-
-[1] https://lore.kernel.org/kvmarm/82879258-46a7-a6e9-ee54-fc3692c1cdc3@arm.com/
-[2] https://lore.kernel.org/linux-arm-kernel/20200625133757.22332-1-salil.mehta@huawei.com/
-    (Followed by KVM forum and Linaro Open discussions)
-[3] https://lore.kernel.org/linux-arm-kernel/f56cf420-affc-35f0-2355-801a924b8a35@arm.com/
-[4] https://lore.kernel.org/kvm/bf7e83f1-c58e-8d65-edd0-d08f27b8b766@arm.com/
-[5] https://lore.kernel.org/kvm/1569338454-26202-2-git-send-email-guoheyi@huawei.com/
-[6] https://jpbrucker.net/git/linux/log/?h=cpuhp/devel
-    https://jpbrucker.net/git/qemu/log/?h=cpuhp/devel    
-
-Jean-Philippe Brucker (5):
-  KVM: arm64: Replace power_off with mp_state in struct kvm_vcpu_arch
-  KVM: arm64: Move WFI execution to check_vcpu_requests()
-  KVM: arm64: Allow userspace to request WFI
-  KVM: arm64: Pass hypercalls to userspace
-  KVM: arm64: Pass PSCI calls to userspace
-
- Documentation/virt/kvm/api.rst      | 46 +++++++++++++++----
- Documentation/virt/kvm/arm/psci.rst |  1 +
- arch/arm64/include/asm/kvm_host.h   | 10 +++-
- include/kvm/arm_hypercalls.h        |  1 +
- include/kvm/arm_psci.h              |  4 ++
- include/uapi/linux/kvm.h            |  3 ++
- arch/arm64/kvm/arm.c                | 71 +++++++++++++++++++++--------
- arch/arm64/kvm/handle_exit.c        |  3 +-
- arch/arm64/kvm/hypercalls.c         | 28 +++++++++++-
- arch/arm64/kvm/psci.c               | 69 ++++++++++++++--------------
- 10 files changed, 170 insertions(+), 66 deletions(-)
-
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 7cd7d5c8c4bc..55a04f4d5919 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -340,8 +340,8 @@ struct kvm_vcpu_arch {
+ 		u32	mdscr_el1;
+ 	} guest_debug_preserved;
+ 
+-	/* vcpu power-off state */
+-	bool power_off;
++	/* vcpu power state (runnable, stopped, halted) */
++	u32 mp_state;
+ 
+ 	/* Don't run the guest (internal implementation need) */
+ 	bool pause;
+@@ -720,6 +720,8 @@ int kvm_arm_vcpu_arch_get_attr(struct kvm_vcpu *vcpu,
+ 			       struct kvm_device_attr *attr);
+ int kvm_arm_vcpu_arch_has_attr(struct kvm_vcpu *vcpu,
+ 			       struct kvm_device_attr *attr);
++void kvm_arm_vcpu_power_off(struct kvm_vcpu *vcpu);
++bool kvm_arm_vcpu_is_off(struct kvm_vcpu *vcpu);
+ 
+ /* Guest/host FPSIMD coordination helpers */
+ int kvm_arch_vcpu_run_map_fp(struct kvm_vcpu *vcpu);
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index e720148232a0..bcc24adb9c0a 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -435,21 +435,22 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+ 	vcpu->cpu = -1;
+ }
+ 
+-static void vcpu_power_off(struct kvm_vcpu *vcpu)
++void kvm_arm_vcpu_power_off(struct kvm_vcpu *vcpu)
+ {
+-	vcpu->arch.power_off = true;
++	vcpu->arch.mp_state = KVM_MP_STATE_STOPPED;
+ 	kvm_make_request(KVM_REQ_SLEEP, vcpu);
+ 	kvm_vcpu_kick(vcpu);
+ }
+ 
++bool kvm_arm_vcpu_is_off(struct kvm_vcpu *vcpu)
++{
++	return vcpu->arch.mp_state == KVM_MP_STATE_STOPPED;
++}
++
+ int kvm_arch_vcpu_ioctl_get_mpstate(struct kvm_vcpu *vcpu,
+ 				    struct kvm_mp_state *mp_state)
+ {
+-	if (vcpu->arch.power_off)
+-		mp_state->mp_state = KVM_MP_STATE_STOPPED;
+-	else
+-		mp_state->mp_state = KVM_MP_STATE_RUNNABLE;
+-
++	mp_state->mp_state = vcpu->arch.mp_state;
+ 	return 0;
+ }
+ 
+@@ -460,10 +461,10 @@ int kvm_arch_vcpu_ioctl_set_mpstate(struct kvm_vcpu *vcpu,
+ 
+ 	switch (mp_state->mp_state) {
+ 	case KVM_MP_STATE_RUNNABLE:
+-		vcpu->arch.power_off = false;
++		vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+ 		break;
+ 	case KVM_MP_STATE_STOPPED:
+-		vcpu_power_off(vcpu);
++		kvm_arm_vcpu_power_off(vcpu);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -483,7 +484,7 @@ int kvm_arch_vcpu_runnable(struct kvm_vcpu *v)
+ {
+ 	bool irq_lines = *vcpu_hcr(v) & (HCR_VI | HCR_VF);
+ 	return ((irq_lines || kvm_vgic_vcpu_pending_irq(v))
+-		&& !v->arch.power_off && !v->arch.pause);
++		&& !kvm_arm_vcpu_is_off(v) && !v->arch.pause);
+ }
+ 
+ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
+@@ -643,10 +644,10 @@ static void vcpu_req_sleep(struct kvm_vcpu *vcpu)
+ 	struct rcuwait *wait = kvm_arch_vcpu_get_wait(vcpu);
+ 
+ 	rcuwait_wait_event(wait,
+-			   (!vcpu->arch.power_off) &&(!vcpu->arch.pause),
++			   !kvm_arm_vcpu_is_off(vcpu) && !vcpu->arch.pause,
+ 			   TASK_INTERRUPTIBLE);
+ 
+-	if (vcpu->arch.power_off || vcpu->arch.pause) {
++	if (kvm_arm_vcpu_is_off(vcpu) || vcpu->arch.pause) {
+ 		/* Awaken to handle a signal, request we sleep again later. */
+ 		kvm_make_request(KVM_REQ_SLEEP, vcpu);
+ 	}
+@@ -1087,9 +1088,9 @@ static int kvm_arch_vcpu_ioctl_vcpu_init(struct kvm_vcpu *vcpu,
+ 	 * Handle the "start in power-off" case.
+ 	 */
+ 	if (test_bit(KVM_ARM_VCPU_POWER_OFF, vcpu->arch.features))
+-		vcpu_power_off(vcpu);
++		kvm_arm_vcpu_power_off(vcpu);
+ 	else
+-		vcpu->arch.power_off = false;
++		vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+ 
+ 	return 0;
+ }
+diff --git a/arch/arm64/kvm/psci.c b/arch/arm64/kvm/psci.c
+index db4056ecccfd..24b4a2265dbd 100644
+--- a/arch/arm64/kvm/psci.c
++++ b/arch/arm64/kvm/psci.c
+@@ -52,13 +52,6 @@ static unsigned long kvm_psci_vcpu_suspend(struct kvm_vcpu *vcpu)
+ 	return PSCI_RET_SUCCESS;
+ }
+ 
+-static void kvm_psci_vcpu_off(struct kvm_vcpu *vcpu)
+-{
+-	vcpu->arch.power_off = true;
+-	kvm_make_request(KVM_REQ_SLEEP, vcpu);
+-	kvm_vcpu_kick(vcpu);
+-}
+-
+ static unsigned long kvm_psci_vcpu_on(struct kvm_vcpu *source_vcpu)
+ {
+ 	struct vcpu_reset_state *reset_state;
+@@ -78,7 +71,7 @@ static unsigned long kvm_psci_vcpu_on(struct kvm_vcpu *source_vcpu)
+ 	 */
+ 	if (!vcpu)
+ 		return PSCI_RET_INVALID_PARAMS;
+-	if (!vcpu->arch.power_off) {
++	if (!kvm_arm_vcpu_is_off(vcpu)) {
+ 		if (kvm_psci_version(source_vcpu, kvm) != KVM_ARM_PSCI_0_1)
+ 			return PSCI_RET_ALREADY_ON;
+ 		else
+@@ -107,7 +100,7 @@ static unsigned long kvm_psci_vcpu_on(struct kvm_vcpu *source_vcpu)
+ 	 */
+ 	smp_wmb();
+ 
+-	vcpu->arch.power_off = false;
++	vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+ 	kvm_vcpu_wake_up(vcpu);
+ 
+ 	return PSCI_RET_SUCCESS;
+@@ -142,7 +135,7 @@ static unsigned long kvm_psci_vcpu_affinity_info(struct kvm_vcpu *vcpu)
+ 		mpidr = kvm_vcpu_get_mpidr_aff(tmp);
+ 		if ((mpidr & target_affinity_mask) == target_affinity) {
+ 			matching_cpus++;
+-			if (!tmp->arch.power_off)
++			if (!kvm_arm_vcpu_is_off(tmp))
+ 				return PSCI_0_2_AFFINITY_LEVEL_ON;
+ 		}
+ 	}
+@@ -168,7 +161,7 @@ static void kvm_prepare_system_event(struct kvm_vcpu *vcpu, u32 type)
+ 	 * re-initialized.
+ 	 */
+ 	kvm_for_each_vcpu(i, tmp, vcpu->kvm)
+-		tmp->arch.power_off = true;
++		tmp->arch.mp_state = KVM_MP_STATE_STOPPED;
+ 	kvm_make_all_cpus_request(vcpu->kvm, KVM_REQ_SLEEP);
+ 
+ 	memset(&vcpu->run->system_event, 0, sizeof(vcpu->run->system_event));
+@@ -237,7 +230,7 @@ static int kvm_psci_0_2_call(struct kvm_vcpu *vcpu)
+ 		val = kvm_psci_vcpu_suspend(vcpu);
+ 		break;
+ 	case PSCI_0_2_FN_CPU_OFF:
+-		kvm_psci_vcpu_off(vcpu);
++		kvm_arm_vcpu_power_off(vcpu);
+ 		val = PSCI_RET_SUCCESS;
+ 		break;
+ 	case PSCI_0_2_FN_CPU_ON:
+@@ -350,7 +343,7 @@ static int kvm_psci_0_1_call(struct kvm_vcpu *vcpu)
+ 
+ 	switch (psci_fn) {
+ 	case KVM_PSCI_FN_CPU_OFF:
+-		kvm_psci_vcpu_off(vcpu);
++		kvm_arm_vcpu_power_off(vcpu);
+ 		val = PSCI_RET_SUCCESS;
+ 		break;
+ 	case KVM_PSCI_FN_CPU_ON:
 -- 
 2.31.1
 
