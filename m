@@ -2,72 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A45C39F7CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB8439F7D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232973AbhFHN1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:27:48 -0400
-Received: from 8bytes.org ([81.169.241.247]:43072 "EHLO theia.8bytes.org"
+        id S233023AbhFHN3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:29:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231162AbhFHN1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:27:47 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 8A7F3386; Tue,  8 Jun 2021 15:25:53 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 15:25:51 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v3 4/7] x86/sev-es: Run #VC handler in plain IRQ state
-Message-ID: <YL9v38J0JC5FrZnM@8bytes.org>
-References: <20210608095439.12668-1-joro@8bytes.org>
- <20210608095439.12668-5-joro@8bytes.org>
- <YL9bd2hx/y9oD6x/@hirez.programming.kicks-ass.net>
+        id S233025AbhFHN3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 09:29:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBA3E61009;
+        Tue,  8 Jun 2021 13:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623158855;
+        bh=D+lp5Yp4s5pc/+bwbwvj8F8yRt2z7XluZm2R3r9rwME=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I4xnn7D6nO1wKo/fcg4fYE7aKLZskLjgMWj8e6jI0ieF+m3eIIHqCO5Ya2Nk0cGFj
+         JNGktwLoKyEit5X+ZPkfGlWItX7AMCktx4v45UkoNeMv63QETKcX/U3LLdKS9yOPbo
+         YzUVGGE/Ublh+2NN8Oh7QZJCXFTGsP/neYQXLBj0=
+Date:   Tue, 8 Jun 2021 15:27:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andrey Semashev <andrey.semashev@gmail.com>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
+        acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
+        joel@joelfernandes.org, kernel@collabora.com,
+        krisman@collabora.com, libc-alpha@sourceware.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
+        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+Message-ID: <YL9wROdz4y/pETA1@kroah.com>
+References: <1622853816.mokf23xgnt.astroid@bobo.none>
+ <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
+ <1622980258.cfsuodze38.astroid@bobo.none>
+ <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
+ <1623114630.pc8fq7r5y9.astroid@bobo.none>
+ <b3488d1b-a4ff-8791-d960-a5f7ae2ea8b3@gmail.com>
+ <YL9Q2tKLZP6GKbHW@kroah.com>
+ <8fa8b7fd-58ae-9467-138d-4ff4f32f68f7@gmail.com>
+ <YL9kApyE6FbG/hru@kroah.com>
+ <3fca0afa-d9db-a176-aad1-ff7db21ba4a2@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YL9bd2hx/y9oD6x/@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3fca0afa-d9db-a176-aad1-ff7db21ba4a2@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-On Tue, Jun 08, 2021 at 01:58:47PM +0200, Peter Zijlstra wrote:
-> So #VC cannot happen with IRQs disabled?
+On Tue, Jun 08, 2021 at 04:18:42PM +0300, Andrey Semashev wrote:
+> On 6/8/21 3:35 PM, Greg KH wrote:
+> > On Tue, Jun 08, 2021 at 03:06:48PM +0300, Andrey Semashev wrote:
+> > > On 6/8/21 2:13 PM, Greg KH wrote:
+> > 
+> > > > So what's keeping the futex2 code from doing all that futex1 does so
+> > > > that the futex1 code can be deleted internally?
+> > > 
+> > > I think, André will answer this, but my guess is, as stated above, this is a
+> > > lot of work and time while the intermediate version is already useful.
+> > 
+> > useful to who?  I still do not understand what users will be needing
+> > this.  All I can tell is a single userspace program wants to use it, and
+> > that is a fork from the real project it was based on and that the
+> > maintainers have no plan to merge it back.
+> > 
+> > So who does need/want this?
 > 
-> 	raw_spin_lock_irq(&my_lock);
-> 	<#VC>
-> 		raw_spin_lock_irqsave(&my_lock); // whoopsie
-> 
-> Every exception that can happen with IRQs disabled must be NMI like.
-> 
-> Again, what you seem to want is to split the handler in a from-user and
-> from-kernel way, just like we did with #DB and MCE. See how
-> exc_debug_user() is IRQ-like and can send signals, while
-> exc_debug_kernel() is NMI like and can not.
+> I mentioned C++ std::atomic and Boost.Atomic before. Those need variable
+> sized futexes.
 
-You are right, thanks for pointing this out. I replaced that patch by
-one implementing the split in a from-user and from-kernel part. Initial
-testing looks good, will send it out later this week.
+And has anyone converted them to use this new api to see if it works
+well or not?
 
-Thanks,
+As was pointed out to me numerous times when I tried to propose
+readfile(), you need a real user that can show and prove it is needed
+before we can take new syscalls, especially complex beasts like this
+one.
 
-	Joerg
+thanks,
 
+greg k-h
