@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A487B39EC65
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB15B39EC50
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhFHCzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 22:55:21 -0400
-Received: from m32-153.88.com ([43.250.32.153]:64721 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230254AbhFHCzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 22:55:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=To:From:Date; bh=pLj4SGsK8n/jI46LQXbW+LeIjOWzSml3VLIw9
-        mbSDtA=; b=QIalVcjGjJkkgfp3fULiqBo+7+K59FT8fSyJNSRWn5SaplEhxiP4g
-        M0zFOhk7CIjNv3IlKbfkUHO4izxMefDREWhL0vOMMfokUWVa3m/tteczYFaj0/Ra
-        tI0iW9HT46xon5feOpPpc4w/+pBPVXlfedwPkMaqnTuVtkzXceHlcU=
-Received: from [0.0.0.0] (unknown [113.251.8.115])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgCHXv2g275gJ80EAA--.14169S3;
-        Tue, 08 Jun 2021 10:53:21 +0800 (CST)
-Subject: Re: [PATCH v3] docs/zh_CN: create new translations for
- zh_CN/dev-tools/testing-overview
-To:     "Wu X.C." <bobwxc@email.cn>
-Cc:     alexs@kernel.org, corbet@lwn.net, bernard@vivo.com,
-        maskray@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210605120504.40246-1-src.res@email.cn>
- <20210608024439.GA3207@bobwxc.top>
-From:   Hu Haowen <src.res@email.cn>
-Message-ID: <01cd7a95-8b91-ad2f-ad94-80b06c1fe5c0@email.cn>
-Date:   Tue, 8 Jun 2021 10:53:20 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230443AbhFHCrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 22:47:11 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3092 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230314AbhFHCrK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 22:47:10 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzZGf4Z09zWtjm;
+        Tue,  8 Jun 2021 10:40:26 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 10:45:17 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 8 Jun 2021
+ 10:45:16 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <rjw@rjwysocki.net>, <pavel@ucw.cz>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>,
+        <hpa@zytor.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>
+Subject: [PATCH -next] x86/power: fix doc warnings in cpu.c
+Date:   Tue, 8 Jun 2021 10:54:27 +0800
+Message-ID: <20210608025427.2781445-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210608024439.GA3207@bobwxc.top>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: GiKnCgCHXv2g275gJ80EAA--.14169S3
-X-Coremail-Antispam: 1UD129KBjvJXoWrurW8Gr4kCw4rur1DZr4DXFb_yoW8Jr1xpr
-        Wkuwn3CF4qgry7ArZ3C3W0qrnYk3sYqry8ta1ftFyUXryDZFnakr9rtrZrtw15uayxAF9Y
-        ya17KFy7C348Aa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkj1xkIjI8I6I8E6xAIw20EY4v20xvaj40_JFC_Wr1l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l
-        84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkE
-        bVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07
-        AlzVAYIcxG8wCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv
-        8VWxJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
-        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
-        CF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JjaMKZUUUUU=
-X-Originating-IP: [113.251.8.115]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixes the following W=1 kernel build warning(s):
 
-在 2021/6/8 上午10:44, Wu X.C. 写道:
-> On Sat, Jun 05, 2021 at 08:05:04PM +0800, Hu Haowen wrote:
->> Create new translations for dev-tools/testing-overview.rst and link it
->> to dev-tools/index.rst with TODOList modifications.
->>
->> Signed-off-by: Hu Haowen <src.res@email.cn>
->> ---
->>   .../translations/zh_CN/dev-tools/index.rst    |   5 +
->>   .../zh_CN/dev-tools/testing-overview.rst      | 110 ++++++++++++++++++
-> [...]
->> +
->> +代码覆盖率工具
->> +==============
->> +
->> +支持两种不同代码之间的覆盖率测量工具。它们可以用来验证一项测试执行的
-> Linux内核支持两种不同的代码覆盖率测试工具。
+ arch/x86/power/cpu.c:76: warning: Function parameter or
+  member 'ctxt' not described in '__save_processor_state'
+ arch/x86/power/cpu.c:192: warning: Function parameter or
+  member 'ctxt' not described in '__restore_processor_state'
 
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ arch/x86/power/cpu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-But you mentioned that this sentence should be 
-"支持两种不同代码之间的覆盖率测量工具" in
-the previous email. Should I take this version or the previous version?
-
-
-Thx,
-
-Hu Haowen
-
-
->
->> +确切函数或代码行。这有助于决定内核被测试了多少，或用来查找合适的测试
->> +中没有覆盖到的极端情况。
->> +
-> OK, good job!
->
-> Just need to fix a small problem, after that
->
-> Reviewed-by: Wu XiangCheng <bobwxc@email.cn>
-> Thanks,
-> 	Wu X.C.
+diff --git a/arch/x86/power/cpu.c b/arch/x86/power/cpu.c
+index 3a070e7cdb8b..2640b9128479 100644
+--- a/arch/x86/power/cpu.c
++++ b/arch/x86/power/cpu.c
+@@ -60,7 +60,7 @@ static void msr_restore_context(struct saved_context *ctxt)
+ /**
+  *	__save_processor_state - save CPU registers before creating a
+  *		hibernation image and before restoring the memory state from it
+- *	@ctxt - structure to store the registers contents in
++ *	@ctxt: structure to store the registers contents in
+  *
+  *	NOTE: If there is a CPU register the modification of which by the
+  *	boot kernel (ie. the kernel used for loading the hibernation image)
+@@ -183,7 +183,7 @@ static void fix_processor_context(void)
+ /**
+  * __restore_processor_state - restore the contents of CPU registers saved
+  *                             by __save_processor_state()
+- * @ctxt - structure to load the registers contents from
++ * @ctxt: structure to load the registers contents from
+  *
+  * The asm code that gets us here will have restored a usable GDT, although
+  * it will be pointing to the wrong alias.
+-- 
+2.31.1
 
