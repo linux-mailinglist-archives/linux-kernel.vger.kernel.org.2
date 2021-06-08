@@ -2,86 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035F739F120
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3B239F15D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhFHImx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:42:53 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:4400 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFHImw (ORCPT
+        id S231419AbhFHItb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:49:31 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:52765 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231327AbhFHIta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:42:52 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FzkBC2YPfz6vbH;
-        Tue,  8 Jun 2021 16:37:07 +0800 (CST)
-Received: from dggemi758-chm.china.huawei.com (10.1.198.144) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 16:40:57 +0800
-Received: from huawei.com (10.175.101.6) by dggemi758-chm.china.huawei.com
- (10.1.198.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
- 2021 16:40:57 +0800
-From:   ChenXiaoSong <chenxiaosong2@huawei.com>
-To:     <jlu@pengutronix.de>, <bp@alien8.de>, <mchehab@kernel.org>,
-        <tony.luck@intel.com>
-CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
-        <chenxiaosong2@huawei.com>
-Subject: [PATCH -next,resend] EDAC/armada_xp: Remove redundant dev_err call in axp_mc_probe() and aurora_l2_probe()
-Date:   Tue, 8 Jun 2021 16:47:15 +0800
-Message-ID: <20210608084715.1046300-1-chenxiaosong2@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        Tue, 8 Jun 2021 04:49:30 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id qXOXlp79dhqltqXOalOCWE; Tue, 08 Jun 2021 10:47:36 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1623142056; bh=XyQjnjy143kbpHHhMEbIvQxLBPLF4NoZsIE56mz0JaE=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Ml8+uqesp4rdr9gFhdJugphyxM4N8TgqWM8FYW221L4RONAroaFKIhNCcYSHXhDz8
+         OXNnegJUr+03BQzWyEmh5nSfGFOrfo9HXLFn7KiOmufgGGiFKDOBnHHp+y0vkx4QMW
+         ROIf2m3F80SM31ZaOCCJAk0dtOhLQIDVDrvr/w6g57BcMgxmysAloxURb+gZNuKjhD
+         1eZWg+998ZJZk5JjeuW3iYjjFujzHVhiJOgLgLOXDM7farRttWlvDSGcrX2ZzzacKN
+         vgqxGj53wqQ+jJ1ONQIXtSpSkbJpcPxDAX70tWXnf5u1YWw3jpb88xyfwVZOobWqKU
+         b/kWT4oRRbWNQ==
+Subject: Re: [PATCH] TDA1997x: enable EDID support
+To:     =?UTF-8?Q?Krzysztof_Ha=c5=82asa?= <khalasa@piap.pl>
+Cc:     Tim Harvey <tharvey@gateworks.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+References: <m3sg1uq6xu.fsf@t19.piap.pl>
+ <dbb99d7b-18eb-317c-911a-b982486848fa@xs4all.nl> <m3eeddhora.fsf@t19.piap.pl>
+ <CAJ+vNU0E_0pB-1T+VpdmjJNVirAwCUNjKVbEV4wEbqHOzURj_A@mail.gmail.com>
+ <m3k0n57y72.fsf@t19.piap.pl> <e9acc316-54c4-0387-eaaf-18dfb4dce34e@xs4all.nl>
+ <m3czsw922k.fsf@t19.piap.pl>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <73734d99-5fdf-57f5-282c-94d4f38a8a9d@xs4all.nl>
+Date:   Tue, 8 Jun 2021 10:47:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi758-chm.china.huawei.com (10.1.198.144)
-X-CFilter-Loop: Reflected
+In-Reply-To: <m3czsw922k.fsf@t19.piap.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfLjFq23vzSMI75+oQRmTtz5MrmVO6YIINN/A/3gpZDzCOw0ORXmTBCXSBY/VhF1esM8cGZVWCh0Xi6WwGQuuxhtZtGnjDWjMVki9ADJzSAUsi+C8Ahpp
+ o/ItBtB3gO8T4otq4us9+lbvoddJX0jk/ev9frTEK3syocUtneRUi0bKopNYYcjKpoa3bL63I8BiV/+zGq9YNBACzcJUB0T1HmgqmUF8AGXQiyUN7Eyyw0Wu
+ sGn3x/mMD6S3CEecGH6CBXu7EnYlQR1j9MtIBDr9PeO1UcWY53bxmAPvIv3Pa4UJbBf8EM+1wmtfoJw29QxLiOuS4qUJE5Hu3wIntLzbhes=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+On 08/06/2021 10:45, Krzysztof Hałasa wrote:
+> Hans Verkuil <hverkuil@xs4all.nl> writes:
+> 
+>> OK, I think the history is clear. Can you post a v2 with a Fixes tag and
+>> comment a bit on why this was not caught before?
+> 
+> Sure, will do. That "Fixes" tag... since it's from the beginning (the
+> Gateworks' branch was never a part of the official tree), do I still
+> need it? It would have to point to the initial submission of this
+> driver.
+> 
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
----
- drivers/edac/armada_xp_edac.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+Yes, that's fine. It's been broken since the beginning, so the Fixes
+tag will indicate that.
 
-diff --git a/drivers/edac/armada_xp_edac.c b/drivers/edac/armada_xp_edac.c
-index e3e757513d1b..9661c72e6554 100644
---- a/drivers/edac/armada_xp_edac.c
-+++ b/drivers/edac/armada_xp_edac.c
-@@ -297,10 +297,8 @@ static int axp_mc_probe(struct platform_device *pdev)
- 	}
- 
- 	base = devm_ioremap_resource(&pdev->dev, r);
--	if (IS_ERR(base)) {
--		dev_err(&pdev->dev, "Unable to map regs\n");
-+	if (IS_ERR(base))
- 		return PTR_ERR(base);
--	}
- 
- 	config = readl(base + SDRAM_CONFIG_REG);
- 	if (!(config & SDRAM_CONFIG_ECC_MASK)) {
-@@ -525,10 +523,8 @@ static int aurora_l2_probe(struct platform_device *pdev)
- 	}
- 
- 	base = devm_ioremap_resource(&pdev->dev, r);
--	if (IS_ERR(base)) {
--		dev_err(&pdev->dev, "Unable to map regs\n");
-+	if (IS_ERR(base))
- 		return PTR_ERR(base);
--	}
- 
- 	l2x0_aux_ctrl = readl(base + L2X0_AUX_CTRL);
- 	if (!(l2x0_aux_ctrl & AURORA_ACR_PARITY_EN))
---
-2.25.4
+Regards,
 
+	Hans
