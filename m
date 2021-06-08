@@ -2,390 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242D139EB68
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A513B39EB80
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbhFHBdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:33:31 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:30326 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231181AbhFHBd1 (ORCPT
+        id S231520AbhFHBep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:34:45 -0400
+Received: from mail-pl1-f170.google.com ([209.85.214.170]:46684 "EHLO
+        mail-pl1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhFHBeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:33:27 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1581TGV1028574
-        for <linux-kernel@vger.kernel.org>; Mon, 7 Jun 2021 18:31:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=8vVsF4NhFYvxeA8c3rS941mvaZo23pY4FS9VEgZCS+M=;
- b=mkh4ShnRaGH2ygTMCp4gDPvGEbJ+cxHehTfONkNYVy4gbfmk0zjZW/8I9REGDtE1BrTN
- H7Q0yeqg7UEGuGXmrBYMmynE6BgFwUbY2UEi06X8uu4tbFUKcHf+tpjTDO/YtjbQae81
- l/ogFDuUc6UirLefFGXrEHNrVPVO9py6MCQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 390ryrsfq0-10
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:31:35 -0700
-Received: from intmgw002.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 18:31:33 -0700
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id B1A3C81D6D51; Mon,  7 Jun 2021 18:31:29 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH v8 8/8] writeback, cgroup: release dying cgwbs by switching attached inodes
-Date:   Mon, 7 Jun 2021 18:31:23 -0700
-Message-ID: <20210608013123.1088882-9-guro@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210608013123.1088882-1-guro@fb.com>
-References: <20210608013123.1088882-1-guro@fb.com>
+        Mon, 7 Jun 2021 21:34:44 -0400
+Received: by mail-pl1-f170.google.com with SMTP id e1so9721199pld.13;
+        Mon, 07 Jun 2021 18:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=+55IUd9faOKlON3AM50/e4sWS1IOtqct+NHUgj6zP5Y=;
+        b=I7bynfKgdnBBLvd44eWXaXAGwhr85IJOcgyVPQPxuwzs7bS01hJQT07cImT7sge5FL
+         4Yuzb5Jqjvnnt0YXkfj5f1r7wreeQLA33OcE9Z1kjnt6jCr43m35D87oAzIJEcaDcDA6
+         wEdukHDSDYIW8PbPkLDPnY5PVoIxA6NDBiF70iL6E06XzIlgwgB89AHt+LWixYqImZhI
+         DsMJth2vZ7iYoTCUFNRkn7GtYKgm1RT+OdoblchvleVlsUOxHWQU8FKoWYhZQ6+fFEgD
+         KxmpCODf0y2bUOu8LHdJTLyVhRjx6Df44WOnCiu6K71ggkwawRMSHH3PA8bnLL3hnkfP
+         m2jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=+55IUd9faOKlON3AM50/e4sWS1IOtqct+NHUgj6zP5Y=;
+        b=E0XrtCeHaBfrwFnbdc8PZwSh1ETJZaCkHm8e8wf/5TxvBptpMy19mhNcEvekWeWy0i
+         ZvbCqle5PzZpsejVnbREVeGJTvm2vtYakTIKKnVRqX7H5Ze75VgkwkqEQFK9fzQljDkS
+         AQ/aeZMPGO7qdhsJKrpCv0zujdAEHH6c6m2GZ+fpb8aaaDiVE77QpQ34HXdWZtpsX0q+
+         C2G77f7ogUxEBOnT8nW7TLTa5D2iDBCm7f/r9AI+WphfiWnChNg0VoJQCtPwmdHjkqDg
+         MW57JkUaA4NWwwYLn1VbN8yfQas+v/9+EZm64yge3de2hxFkVc9tO9kHQVfX6HB52YD0
+         Ubpw==
+X-Gm-Message-State: AOAM533zVShJmOmlz+NgOgvzOiZ7huVRDqB/PunifPcTQMO+k11zdRVJ
+        0T/T5j8An2RrkvF41DtC8/Q=
+X-Google-Smtp-Source: ABdhPJxzNenfqYzlLHZ5eirHgCFBB0+W/ItTE79oTbZKdGJR5F6Mvr6idXXOeD337msTBG0bKOxBqg==
+X-Received: by 2002:a17:90a:4298:: with SMTP id p24mr2064361pjg.144.1623115898512;
+        Mon, 07 Jun 2021 18:31:38 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id e17sm9043906pfi.131.2021.06.07.18.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 18:31:38 -0700 (PDT)
+Date:   Tue, 08 Jun 2021 11:31:32 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+To:     =?iso-8859-1?b?QW5kcuk=?= Almeida <andrealmeid@collabora.com>
+Cc:     acme@kernel.org, Andrey Semashev <andrey.semashev@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
+        joel@joelfernandes.org, kernel@collabora.com,
+        krisman@collabora.com, libc-alpha@sourceware.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
+        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
+References: <20210603195924.361327-1-andrealmeid@collabora.com>
+        <1622799088.hsuspipe84.astroid@bobo.none>
+        <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
+        <1622853816.mokf23xgnt.astroid@bobo.none>
+        <22137ccd-c5e6-9fcc-a176-789558e9ab1e@collabora.com>
+In-Reply-To: <22137ccd-c5e6-9fcc-a176-789558e9ab1e@collabora.com>
 MIME-Version: 1.0
+Message-Id: <1623115538.zsqgffieb0.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: zavaAZDGAVqyPM4o2JVjqommL33VPJ0p
-X-Proofpoint-GUID: zavaAZDGAVqyPM4o2JVjqommL33VPJ0p
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-08_01:2021-06-04,2021-06-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- phishscore=0 clxscore=1015 malwarescore=0 adultscore=0 bulkscore=0
- lowpriorityscore=0 impostorscore=0 mlxlogscore=384 priorityscore=1501
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106080007
-X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asynchronously try to release dying cgwbs by switching attached inodes
-to the nearest living ancestor wb. It helps to get rid of per-cgroup
-writeback structures themselves and of pinned memory and block cgroups,
-which are significantly larger structures (mostly due to large per-cpu
-statistics data). This prevents memory waste and helps to avoid
-different scalability problems caused by large piles of dying cgroups.
+Excerpts from Andr=C3=A9 Almeida's message of June 8, 2021 1:40 am:
+> =C3=80s 22:09 de 04/06/21, Nicholas Piggin escreveu:
+>> Excerpts from Andr=C3=A9 Almeida's message of June 5, 2021 6:01 am:
+>>> =C3=80s 08:36 de 04/06/21, Nicholas Piggin escreveu:
+>>>> Excerpts from Andr=C3=A9 Almeida's message of June 4, 2021 5:59 am:
+>>>> - Did you consider a wakev interface? An example is a read-write mutex=
+=20
+>>>> which has read-blocking futexes split (e.g., per-node) for scalability=
+=20
+>>>> then the writer may unlock and wake all readers with one call. We=20
+>>>> actually have some scalability challenges of this nature with certain=20
+>>>> large database programs.
+>>>>
+>>>
+>>> Not really, I haven't heard any use case for that until now. It should
+>>> be easy to implement it, though, and I think you have an interesting us=
+e
+>>> case here. Could you point me some of those database programs?
+>>=20
+>> Not source code unfortunately. I know that's not a very good answer, but=
+=20
+>> they are far ahead of what most open source apps are doing scalability=20
+>> wise today, and they end up rolling their own complex locking. Hopefully
+>> the example I give is simple enough to understand.
+>>=20
+>=20
+> I see, that's makes things a bit harder. I understood the use case and
+> the wakev can be implemented without affecting the rest of API, so I
+> think I'll get back to it later, for now.
 
-Reuse the existing mechanism of inode switching used for foreign inode
-detection. To speed things up batch up to 115 inode switching in a
-single operation (the maximum number is selected so that the resulting
-struct inode_switch_wbs_context can fit into 1024 bytes). Because
-every switching consists of two steps divided by an RCU grace period,
-it would be too slow without batching. Please note that the whole
-batch counts as a single operation (when increasing/decreasing
-isw_nr_in_flight). This allows to keep umounting working (flush the
-switching queue), however prevents cleanups from consuming the whole
-switching quota and effectively blocking the frn switching.
+Yeah that's fine.
 
-A cgwb cleanup operation can fail due to different reasons (e.g. not
-enough memory, the cgwb has an in-flight/pending io, an attached inode
-in a wrong state, etc). In this case the next scheduled cleanup will
-make a new attempt. An attempt is made each time a new cgwb is offlined
-(in other words a memcg and/or a blkcg is deleted by a user). In the
-future an additional attempt scheduled by a timer can be implemented.
-
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Acked-by: Dennis Zhou <dennis@kernel.org>
----
- fs/fs-writeback.c                | 102 ++++++++++++++++++++++++++++---
- include/linux/backing-dev-defs.h |   1 +
- include/linux/writeback.h        |   1 +
- mm/backing-dev.c                 |  67 +++++++++++++++++++-
- 4 files changed, 159 insertions(+), 12 deletions(-)
-
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 737ac27adb77..96eb6e6cdbc2 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -225,6 +225,12 @@ void wb_wait_for_completion(struct wb_completion *do=
-ne)
- 					/* one round can affect upto 5 slots */
- #define WB_FRN_MAX_IN_FLIGHT	1024	/* don't queue too many concurrently *=
-/
+>>>> - Are we really keen on squashing node ID into flags in this day and a=
+ge?
+>>>> I guess okay but seems like it would be nice to allow a bit more space
+>>>> in general for the operations. I don't want to turn it into a whole bi=
+g
+>>>> multiplexing nightmare again with lots of such flags, or propose
+>>>> complexity with no code behind it, but I think we need a bit of leeway
+>>>> for unforeseen locking innovations to be added carefully. The pthread
+>>>> locking today is still fairly primitive really, I don't think we know
+>>>> what will work best for the next 10 years.
+>>>
+>>> In the interface that I'd proposed, the node ID isn't part of the flags=
+.
+>>> You have a flag FUTEX_FLAG_NUMA, and when that is used, you pass in
+>>> `void *uaddr` a pointer to a `struct futex_numa { int value, int hint
+>>> }`, where hint should be the node ID you would like to work on, and
+>>> value is just the userspace futex. This is documented in more details i=
+n
+>>> patch 7 "docs: locking: futex2: Add documentation".
+>>>
+>>> If you have any feedback about how this NUMA interface looks like, I
+>>> would like to hear.
+>>>
+>>> Also, did something in my writing indicated that the node ID would be
+>>> part of the flags? I'll improve this it if so.
+>>=20
+>> Oh I did miss this, thank you. No it wasn't your writing, I think it was=
 =20
-+/*
-+ * Maximum inodes per isw.  A specific value has been chosen to make
-+ * struct inode_switch_wbs_context fit into 1024 bytes kmalloc.
-+ */
-+#define WB_MAX_INODES_PER_ISW	115
-+
- static atomic_t isw_nr_in_flight =3D ATOMIC_INIT(0);
- static struct workqueue_struct *isw_wq;
-=20
-@@ -503,6 +509,24 @@ static void inode_switch_wbs_work_fn(struct work_str=
-uct *work)
- 	atomic_dec(&isw_nr_in_flight);
- }
-=20
-+static bool inode_prepare_wbs_switch(struct inode *inode,
-+				     struct bdi_writeback *new_wb)
-+{
-+	/* while holding I_WB_SWITCH, no one else can update the association */
-+	spin_lock(&inode->i_lock);
-+	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
-+	    inode->i_state & (I_WB_SWITCH | I_FREEING | I_WILL_FREE) ||
-+	    inode_to_wb(inode) =3D=3D new_wb) {
-+		spin_unlock(&inode->i_lock);
-+		return false;
-+	}
-+	inode->i_state |=3D I_WB_SWITCH;
-+	__iget(inode);
-+	spin_unlock(&inode->i_lock);
-+
-+	return true;
-+}
-+
- /**
-  * inode_switch_wbs - change the wb association of an inode
-  * @inode: target inode
-@@ -540,17 +564,8 @@ static void inode_switch_wbs(struct inode *inode, in=
-t new_wb_id)
- 	if (!isw->new_wb)
- 		goto out_free;
-=20
--	/* while holding I_WB_SWITCH, no one else can update the association */
--	spin_lock(&inode->i_lock);
--	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
--	    inode->i_state & (I_WB_SWITCH | I_FREEING | I_WILL_FREE) ||
--	    inode_to_wb(inode) =3D=3D isw->new_wb) {
--		spin_unlock(&inode->i_lock);
-+	if (!inode_prepare_wbs_switch(inode, isw->new_wb))
- 		goto out_free;
--	}
--	inode->i_state |=3D I_WB_SWITCH;
--	__iget(inode);
--	spin_unlock(&inode->i_lock);
-=20
- 	isw->inodes[0] =3D inode;
-=20
-@@ -571,6 +586,73 @@ static void inode_switch_wbs(struct inode *inode, in=
-t new_wb_id)
- 	kfree(isw);
- }
-=20
-+/**
-+ * cleanup_offline_cgwb - detach associated inodes
-+ * @wb: target wb
-+ *
-+ * Switch all inodes attached to @wb to a nearest living ancestor's wb i=
-n order
-+ * to eventually release the dying @wb.  Returns %true if not all inodes=
- were
-+ * switched and the function has to be restarted.
-+ */
-+bool cleanup_offline_cgwb(struct bdi_writeback *wb)
-+{
-+	struct cgroup_subsys_state *memcg_css;
-+	struct inode_switch_wbs_context *isw;
-+	struct inode *inode;
-+	int nr;
-+	bool restart =3D false;
-+
-+	isw =3D kzalloc(sizeof(*isw) + WB_MAX_INODES_PER_ISW *
-+		      sizeof(struct inode *), GFP_KERNEL);
-+	if (!isw)
-+		return restart;
-+
-+	atomic_inc(&isw_nr_in_flight);
-+
-+	for (memcg_css =3D wb->memcg_css->parent; memcg_css;
-+	     memcg_css =3D memcg_css->parent) {
-+		isw->new_wb =3D wb_get_lookup(wb->bdi, memcg_css);
-+		if (isw->new_wb)
-+			break;
-+	}
-+	if (unlikely(!isw->new_wb))
-+		isw->new_wb =3D &wb->bdi->wb; /* wb_get() is noop for bdi's wb */
-+
-+	nr =3D 0;
-+	spin_lock(&wb->list_lock);
-+	list_for_each_entry(inode, &wb->b_attached, i_io_list) {
-+		if (!inode_prepare_wbs_switch(inode, isw->new_wb))
-+			continue;
-+
-+		isw->inodes[nr++] =3D inode;
-+
-+		if (nr >=3D WB_MAX_INODES_PER_ISW - 1) {
-+			restart =3D true;
-+			break;
-+		}
-+	}
-+	spin_unlock(&wb->list_lock);
-+
-+	/* no attached inodes? bail out */
-+	if (nr =3D=3D 0) {
-+		atomic_dec(&isw_nr_in_flight);
-+		wb_put(isw->new_wb);
-+		kfree(isw);
-+		return restart;
-+	}
-+
-+	/*
-+	 * In addition to synchronizing among switchers, I_WB_SWITCH tells
-+	 * the RCU protected stat update paths to grab the i_page
-+	 * lock so that stat transfer can synchronize against them.
-+	 * Let's continue after I_WB_SWITCH is guaranteed to be visible.
-+	 */
-+	INIT_RCU_WORK(&isw->work, inode_switch_wbs_work_fn);
-+	queue_rcu_work(isw_wq, &isw->work);
-+
-+	return restart;
-+}
-+
- /**
-  * wbc_attach_and_unlock_inode - associate wbc with target inode and unl=
-ock it
-  * @wbc: writeback_control of interest
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev=
--defs.h
-index 63f52ad2ce7a..1d7edad9914f 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -155,6 +155,7 @@ struct bdi_writeback {
- 	struct list_head memcg_node;	/* anchored at memcg->cgwb_list */
- 	struct list_head blkcg_node;	/* anchored at blkcg->cgwb_list */
- 	struct list_head b_attached;	/* attached inodes, protected by list_lock=
- */
-+	struct list_head offline_node;	/* anchored at offline_cgwbs */
-=20
- 	union {
- 		struct work_struct release_work;
-diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-index 8e5c5bb16e2d..95de51c10248 100644
---- a/include/linux/writeback.h
-+++ b/include/linux/writeback.h
-@@ -221,6 +221,7 @@ void wbc_account_cgroup_owner(struct writeback_contro=
-l *wbc, struct page *page,
- int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pa=
-ges,
- 			   enum wb_reason reason, struct wb_completion *done);
- void cgroup_writeback_umount(void);
-+bool cleanup_offline_cgwb(struct bdi_writeback *wb);
-=20
- /**
-  * inode_attach_wb - associate an inode with its wb
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 54c5dc4b8c24..faa45027c854 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -371,12 +371,16 @@ static void wb_exit(struct bdi_writeback *wb)
- #include <linux/memcontrol.h>
-=20
- /*
-- * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, and memcg->cgwb_=
-list.
-- * bdi->cgwb_tree is also RCU protected.
-+ * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, offline_cgwbs an=
-d
-+ * memcg->cgwb_list.  bdi->cgwb_tree is also RCU protected.
-  */
- static DEFINE_SPINLOCK(cgwb_lock);
- static struct workqueue_struct *cgwb_release_wq;
-=20
-+static LIST_HEAD(offline_cgwbs);
-+static void cleanup_offline_cgwbs_workfn(struct work_struct *work);
-+static DECLARE_WORK(cleanup_offline_cgwbs_work, cleanup_offline_cgwbs_wo=
-rkfn);
-+
- static void cgwb_release_workfn(struct work_struct *work)
- {
- 	struct bdi_writeback *wb =3D container_of(work, struct bdi_writeback,
-@@ -395,6 +399,11 @@ static void cgwb_release_workfn(struct work_struct *=
-work)
-=20
- 	fprop_local_destroy_percpu(&wb->memcg_completions);
- 	percpu_ref_exit(&wb->refcnt);
-+
-+	spin_lock_irq(&cgwb_lock);
-+	list_del(&wb->offline_node);
-+	spin_unlock_irq(&cgwb_lock);
-+
- 	wb_exit(wb);
- 	WARN_ON_ONCE(!list_empty(&wb->b_attached));
- 	kfree_rcu(wb, rcu);
-@@ -414,6 +423,7 @@ static void cgwb_kill(struct bdi_writeback *wb)
- 	WARN_ON(!radix_tree_delete(&wb->bdi->cgwb_tree, wb->memcg_css->id));
- 	list_del(&wb->memcg_node);
- 	list_del(&wb->blkcg_node);
-+	list_add(&wb->offline_node, &offline_cgwbs);
- 	percpu_ref_kill(&wb->refcnt);
- }
-=20
-@@ -635,6 +645,57 @@ static void cgwb_bdi_unregister(struct backing_dev_i=
-nfo *bdi)
- 	mutex_unlock(&bdi->cgwb_release_mutex);
- }
-=20
-+/**
-+ * cleanup_offline_cgwbs - try to release dying cgwbs
-+ *
-+ * Try to release dying cgwbs by switching attached inodes to the neares=
+>> me trying to read through a lot of messages and got confused with some
+>> earlier conversations.
+>>=20
+>> I'll look a bit more at the NUMA interface.
+>>=20
+>=20
+> Thanks!
+>=20
+>>>
+>>>>
+>>>> One scalability issue we are starting to hit and will only get worse i=
+s=20
+>>>> futex queue spinlock contention. Perhaps this is better addressed in=20
+>>>> userspace but the kernel could play a part so I like to leave some doo=
+rs
+>>>> open. One example is that the wait (or wake) side may like to depend n=
+ot
+>>>> just on the memory value, but on the success of a cmpxchg to avoid=20
+>>>> unqueueing and queueing spuriously, which increases lock contention bu=
 t
-+ * living ancestor's writeback. Processed wbs are placed at the end
-+ * of the list to guarantee the forward progress.
-+ *
-+ * Should be called with the acquired cgwb_lock lock, which might
-+ * be released and re-acquired in the process.
-+ */
-+static void cleanup_offline_cgwbs_workfn(struct work_struct *work)
-+{
-+	struct bdi_writeback *wb;
-+	LIST_HEAD(processed);
-+
-+	spin_lock_irq(&cgwb_lock);
-+
-+	while (!list_empty(&offline_cgwbs)) {
-+		wb =3D list_first_entry(&offline_cgwbs, struct bdi_writeback,
-+				      offline_node);
-+		list_move(&wb->offline_node, &processed);
-+
-+		/*
-+		 * If wb is dirty, cleaning up the writeback by switching
-+		 * attached inodes will result in an effective removal of any
-+		 * bandwidth restrictions, which isn't the goal.  Instead,
-+		 * it can be postponed until the next time, when all io
-+		 * will be likely completed.  If in the meantime some inodes
-+		 * will get re-dirtied, they should be eventually switched to
-+		 * a new cgwb.
-+		 */
-+		if (wb_has_dirty_io(wb))
-+			continue;
-+
-+		if (!wb_tryget(wb))
-+			continue;
-+
-+		spin_unlock_irq(&cgwb_lock);
-+		while ((cleanup_offline_cgwb(wb)))
-+			cond_resched();
-+		spin_lock_irq(&cgwb_lock);
-+
-+		wb_put(wb);
-+	}
-+
-+	if (!list_empty(&processed))
-+		list_splice_tail(&processed, &offline_cgwbs);
-+
-+	spin_unlock_irq(&cgwb_lock);
-+}
-+
- /**
-  * wb_memcg_offline - kill all wb's associated with a memcg being offlin=
-ed
-  * @memcg: memcg being offlined
-@@ -651,6 +712,8 @@ void wb_memcg_offline(struct mem_cgroup *memcg)
- 		cgwb_kill(wb);
- 	memcg_cgwb_list->next =3D NULL;	/* prevent new wb's */
- 	spin_unlock_irq(&cgwb_lock);
-+
-+	queue_work(system_unbound_wq, &cleanup_offline_cgwbs_work);
- }
-=20
- /**
---=20
-2.31.1
+>>>> also ends up putting the poor task on the back of the list -- yes RT
+>>>> priorities can help the realtime case, but non-RT cases can get bad
+>>>> outlier latencies if lock stealing is allowed (which can be very good
+>>>> for performance).
+>>>>
+>>>
+>>> Sorry, I'm not sure what do you mean here. Are you proposing to have a
+>>> cmpxchg in kernel side, so the lock would be taken by the kernel, and
+>>> not by the userspace like it's now?
+>>=20
+>> Yes. Only in slow paths, of course, to reduce starvation / erratic
+>> latencies and spurious wait queue manipulations.
+>=20
+> Right, so if we need to go into the kernel to do the cmpxchg, we can't
+> take a free lock without a syscall,
 
+Yes you can.
+
+> and this goes against the futex
+> semantics, the "strength" of this interface is to not require context
+> switch in uncontended cases.
+>=20
+> Is not a bad thing itself to go into the kernel to get a lock, other
+> operating systems do that and if the kernel has more knowledge about who
+> has the lock, it can even make some smart decisions. But this is not
+> futex, this probably belongs to another interface (that's probably
+> slower in the common case than futex).
+>=20
+>>=20
+>> Actually one other scalability thing while I remember it:
+>>=20
+>> futex_wait currently requires that the lock word is tested under the=20
+>> queue spin lock (to avoid consuming a wakeup). The problem with this is=20
+>> that the lock word can be a very hot cache line if you have a lot of
+>> concurrency, so accessing it under the queue lock can increase queue
+>> lock hold time.
+>>=20
+>> I would prefer if the new API was relaxed to avoid this restriction
+>> (e.g., any wait call may consume a wakeup so it's up to userspace to
+>> avoid that if it is a problem).
+>=20
+> Maybe I'm wrong, but AFAIK the goal of checking the lock word inside the
+> spin lock is to avoid sleeping forever (in other words, wrongly assuming
+> that the lock is taken and missing a wakeup call), not to avoid
+> consuming wakeups. Or at least this is my interpretation of this long
+> comment in futex.c:
+>=20
+> https://elixir.bootlin.com/linux/v5.12.9/source/kernel/futex.c#L51
+>=20
+> So removing this requirement of checking the futex word with the lock
+> taken could led to undesirable behavior.
+
+No, there are two requirements. Obviously you need to avoid the missed
+wakeup at minimum. You don't need to check under the lock unless you
+want to avoid consuming an extra wakeup though (it can possibly be done
+in more complex ways like you detect if you took a wakeup and if so then
+look at the queue and see if you can pass it on, or have some extra flag
+to signal you are ready for wake up, but those all seem more complex and
+fragile and possibly have weird corner cases, better to just set out=20
+that userspace should deal with it).
+
+>=20
+>>=20
+>>>> - The private global futex hash table sucks for various reasons, and
+>>>> having 128 waiters per thread makes it orders of magnitude easier for
+>>>> userspace to DoS stuff with hash collisions. NUMA doesn't fix that, th=
+e
+>>>> per process hashing that Thomas suggested does fix the DoS but the
+>>>> non-deterministic hash collisions still seem to be a problem for real
+>>>> time response, and at the other end of the scale some apps (certain=20
+>>>> databases, etc) can have ten thousand futex waiters at once so birthda=
+y
+>>>> paradox can also lead to guaranteed (low level) variable beahviour=20
+>>>> within a single process.
+>>>>
+>>>> I know the kernel in general is not very robust against this kind of=20
+>>>> DoS/nondeterminism, but it's a bit sad to introduce new APIs with the=20
+>>>> problem still there. Yes we could address it later, but I think it's=20
+>>>> better done first because the solution might influence what the best=20
+>>>> syscall API is.
+>>>>
+>>>> For example the idea of using the address as the handle for the wait=20
+>>>> queue _and_ the value is very convenient but hashing is annoying for
+>>>> all the above reasons and the shared wait queue case is pretty clunky.=
+=20
+>>>> It's also constraining in some corner cases to have the wait queue=20
+>>>> associated with the address 1:1. For example a type of NUMA mutex migh=
+t=20
+>>>> want to have per-node waitqueues associated with a lock word, and wake
+>>>> local node waiters 99% of the time. Not trivial to do with futexes and
+>>>> seems to at least require bouncing of more cache lines, possibly more
+>>>> atomics, etc.
+>>>>
+>>>> Could anything else be done?
+>>>
+>>> I wasn't aware that userspace doing DoS is something to be concerned
+>>> from the kernel point of view. Is this scenario considering a malicious
+>>> actor? If so, there are plenty of resources to be denied, so not sure
+>>> how futex could be protected of this. Or is this just a program that
+>>> uses tons of futexes?
+>>=20
+>> Both really. AFAIKS one of the efforts that prompted the futex=20
+>> modernisation work was the RT latency issues from Thomas in 2016 when=20
+>> the per process table was proposed.
+>>=20
+>=20
+> When I first read Thomas proposal for per table process, I thought that
+> the main goal there was to solve NUMA locality issues, not RT latency,
+> but I think you are right. However, re-reading the thread at [0], it
+> seems that the RT problems where not completely solved in that
+> interface, maybe the people involved with that patchset can help to shed
+> some light on it.
+>=20
+> Otherwise, this same proposal could be integrated in futex2, given that
+> we would only need to provide to userland some extra flags and add some
+> `if`s around the hash table code (in a very similar way the NUMA code
+> will be implemented in futex2).
+>=20
+> [0] https://lore.kernel.org/lkml/20160505204230.932454245@linutronix.de/
+
+Right. The accidental collisions within a process (or=20
+accidental/deliberate collisions with shared futex) problems remain.
+
+Thanks,
+Nick
