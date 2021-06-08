@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41ECF39F0CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5403F39F0E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbhFHI1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:27:52 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8084 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhFHI1s (ORCPT
+        id S231566AbhFHI2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:28:21 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4523 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231253AbhFHI17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:27:48 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fzjt15P11zYrmV;
-        Tue,  8 Jun 2021 16:23:05 +0800 (CST)
+        Tue, 8 Jun 2021 04:27:59 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fzjt972VmzZf0h;
+        Tue,  8 Jun 2021 16:23:13 +0800 (CST)
 Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 16:25:54 +0800
+ 15.1.2176.2; Tue, 8 Jun 2021 16:25:55 +0800
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -27,12 +27,12 @@ From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <linux-mm@kvack.org>, Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Russell King" <linux@armlinux.org.uk>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "Russell King" <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH v3 resend 03/15] arm: convert to setup_initial_init_mm()
-Date:   Tue, 8 Jun 2021 16:34:06 +0800
-Message-ID: <20210608083418.137226-4-wangkefeng.wang@huawei.com>
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v3 resend 04/15] arm64: convert to setup_initial_init_mm()
+Date:   Tue, 8 Jun 2021 16:34:07 +0800
+Message-ID: <20210608083418.137226-5-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
 References: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
@@ -49,30 +49,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Use setup_initial_init_mm() helper to simplify code.
 
-Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
 Cc: linux-arm-kernel@lists.infradead.org
-Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- arch/arm/kernel/setup.c | 5 +----
+ arch/arm64/kernel/setup.c | 5 +----
  1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
-index 1a5edf562e85..81de1bf07ba6 100644
---- a/arch/arm/kernel/setup.c
-+++ b/arch/arm/kernel/setup.c
-@@ -1114,10 +1114,7 @@ void __init setup_arch(char **cmdline_p)
- 	if (mdesc->reboot_mode != REBOOT_HARD)
- 		reboot_mode = mdesc->reboot_mode;
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index 61845c0821d9..bfc98f893a1b 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -298,10 +298,7 @@ u64 cpu_logical_map(unsigned int cpu)
  
--	init_mm.start_code = (unsigned long) _text;
+ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+ {
+-	init_mm.start_code = (unsigned long) _stext;
 -	init_mm.end_code   = (unsigned long) _etext;
 -	init_mm.end_data   = (unsigned long) _edata;
 -	init_mm.brk	   = (unsigned long) _end;
-+	setup_initial_init_mm(_text, _etext, _edata, _end);
++	setup_initial_init_mm(_stext, _etext, _edata, _end);
  
- 	/* populate cmd_line too for later use, preserving boot_command_line */
- 	strlcpy(cmd_line, boot_command_line, COMMAND_LINE_SIZE);
+ 	*cmdline_p = boot_command_line;
+ 
 -- 
 2.26.2
 
