@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C253A0056
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7073A00F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235206AbhFHSl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:41:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57600 "EHLO mail.kernel.org"
+        id S235848AbhFHStW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:49:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234839AbhFHSh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:37:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2562B613B6;
-        Tue,  8 Jun 2021 18:33:00 +0000 (UTC)
+        id S235215AbhFHSoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:44:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A18D61447;
+        Tue,  8 Jun 2021 18:36:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177181;
-        bh=6LemU6BYsH9LJeTWVhO0kd3bQoIg+JBM5jx/ePM8KsQ=;
+        s=korg; t=1623177378;
+        bh=DPrMbdnY8S/sgFP567lPc1guUDYA2NWfBDZ9Xd3km6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZwN5tbH6ysiBzY0AE9Fi7Lyr7zV+19ZpEONPrZ0FjlsnAZBZK/C70YGRlpwVMq/C5
-         slTFVm8FlvbqSIrVMc9OrxqeBEzTYzF7xndy6VDwqKanwSXGLik5IuRx9q3zfM3G9u
-         Uk020/2vljTRqFd+Kt90/MF5bTroCmj6Oo2T1XwE=
+        b=zeNOCVbUrtseuqv0AnoY4IsBLRJK5CkXtR83Tnr7jraHW8AOyTakUhgre86uWPSw+
+         Eo8rqY3U+GKsIUziCGpO3BJJybcHuYdVtawTGvnD+ow9K+ec0EH4VLYG8PoDqlSl/R
+         pDBsDBzgB2HUfu4yfc2oxoUZcVkbbRBs27A7OFcg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
-        Vishakha Jambekar <vishakha.jambekar@intel.com>,
+        Kiran Bhandare <kiranx.bhandare@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 16/58] ixgbevf: add correct exception tracing for XDP
-Date:   Tue,  8 Jun 2021 20:26:57 +0200
-Message-Id: <20210608175932.824809020@linuxfoundation.org>
+Subject: [PATCH 5.4 29/78] i40e: add correct exception tracing for XDP
+Date:   Tue,  8 Jun 2021 20:26:58 +0200
+Message-Id: <20210608175936.245694638@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +44,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-[ Upstream commit faae81420d162551b6ef2d804aafc00f4cd68e0e ]
+[ Upstream commit f6c10b48f8c8da44adaff730d8e700b6272add2b ]
 
-Add missing exception tracing to XDP when a number of different
-errors can occur. The support was only partial. Several errors
-where not logged which would confuse the user quite a lot not
-knowing where and why the packets disappeared.
+Add missing exception tracing to XDP when a number of different errors
+can occur. The support was only partial. Several errors where not
+logged which would confuse the user quite a lot not knowing where and
+why the packets disappeared.
 
-Fixes: 21092e9ce8b1 ("ixgbevf: Add support for XDP_TX action")
+Fixes: 74608d17fe29 ("i40e: add support for XDP_TX action")
+Fixes: 0a714186d3c0 ("i40e: add AF_XDP zero-copy Rx support")
 Reported-by: Jesper Dangaard Brouer <brouer@redhat.com>
 Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Tested-by: Vishakha Jambekar <vishakha.jambekar@intel.com>
+Tested-by: Kiran Bhandare <kiranx.bhandare@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c | 7 ++++++-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c  | 8 ++++++--
+ 2 files changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-index a10756f0b0d8..7f94b445595c 100644
---- a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-+++ b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-@@ -1071,11 +1071,14 @@ static struct sk_buff *ixgbevf_run_xdp(struct ixgbevf_adapter *adapter,
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+index 218aada8949d..68a2fcf4c0bf 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+@@ -2233,15 +2233,20 @@ static struct sk_buff *i40e_run_xdp(struct i40e_ring *rx_ring,
  	case XDP_TX:
- 		xdp_ring = adapter->xdp_ring[rx_ring->queue_index];
- 		result = ixgbevf_xmit_xdp_ring(xdp_ring, xdp);
-+		if (result == IXGBEVF_XDP_CONSUMED)
+ 		xdp_ring = rx_ring->vsi->xdp_rings[rx_ring->queue_index];
+ 		result = i40e_xmit_xdp_tx_ring(xdp, xdp_ring);
++		if (result == I40E_XDP_CONSUMED)
++			goto out_failure;
+ 		break;
+ 	case XDP_REDIRECT:
+ 		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
+-		result = !err ? I40E_XDP_REDIR : I40E_XDP_CONSUMED;
++		if (err)
++			goto out_failure;
++		result = I40E_XDP_REDIR;
+ 		break;
+ 	default:
+ 		bpf_warn_invalid_xdp_action(act);
+ 		/* fall through */
+ 	case XDP_ABORTED:
++out_failure:
+ 		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
+ 		/* fall through -- handle aborts by dropping packet */
+ 	case XDP_DROP:
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+index 17499c0d10bb..a9ad788c4913 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+@@ -214,9 +214,10 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
+ 
+ 	if (likely(act == XDP_REDIRECT)) {
+ 		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
+-		result = !err ? I40E_XDP_REDIR : I40E_XDP_CONSUMED;
++		if (err)
++			goto out_failure;
+ 		rcu_read_unlock();
+-		return result;
++		return I40E_XDP_REDIR;
+ 	}
+ 
+ 	switch (act) {
+@@ -225,11 +226,14 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
+ 	case XDP_TX:
+ 		xdp_ring = rx_ring->vsi->xdp_rings[rx_ring->queue_index];
+ 		result = i40e_xmit_xdp_tx_ring(xdp, xdp_ring);
++		if (result == I40E_XDP_CONSUMED)
 +			goto out_failure;
  		break;
  	default:
  		bpf_warn_invalid_xdp_action(act);
- 		/* fallthrough */
+ 		/* fall through */
  	case XDP_ABORTED:
 +out_failure:
  		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
