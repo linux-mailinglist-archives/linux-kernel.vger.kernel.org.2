@@ -2,81 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCCF39FE29
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E16C39FE2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233922AbhFHRvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:51:37 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39420 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbhFHRvh (ORCPT
+        id S233956AbhFHRw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233082AbhFHRw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:51:37 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id EAEE6219BB;
-        Tue,  8 Jun 2021 17:49:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623174582; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xQ0exyzvqmDVh1jljb/vutVtcq9WcTozqWGSBLWacEI=;
-        b=kFFb+FbwC60F6qZnPlFdh9NRZGvnBm8ACc2LvCxznN4VzDquiF6R4x/WGbnBSxRMEY/xBB
-        mWiw3Uh0daGhTdenBStjZlVLkxh7SeOWXq96qJstjjNDfPGNaJl98fePGbDuIJYU+SBy5Z
-        EASgZMnknC0g6TiyOXLa3M0e4OONWto=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 94C83A3B97;
-        Tue,  8 Jun 2021 17:49:42 +0000 (UTC)
-Date:   Tue, 8 Jun 2021 19:49:42 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Zi Yan <ziy@nvidia.com>, nao.horiguchi@gmail.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: mempolicy: don't have to split pmd for huge zero page
-Message-ID: <YL+ttjqJ9lEMndiA@dhcp22.suse.cz>
-References: <20210604203513.240709-1-shy828301@gmail.com>
- <YL265A86DQe5Rgon@dhcp22.suse.cz>
- <CAHbLzkowcskM=p==-q48Ca12D=h9SgqUuUB4NknRNR=64TyXCw@mail.gmail.com>
- <YL5rvdzh9dou+uAz@dhcp22.suse.cz>
- <CAHbLzkooYAi=Hb0=oJ+2b6G=h5Sx4jnyo5L0nPYjDcBqBHnfug@mail.gmail.com>
- <YL8RFneAmSSi2Z0I@dhcp22.suse.cz>
- <CAHbLzkquqKOL7pH8yBdfpafeHJCUZvccNKjQBucsP7C4k83f7g@mail.gmail.com>
+        Tue, 8 Jun 2021 13:52:26 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6090C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 10:50:32 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so20079053otu.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:50:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RfxJ0B3CrJj0aGpmXt38E2admgu06MumRoXg1smpcJI=;
+        b=PQasmvC6JpfO/qy8QSodizBlrcfnYV39OsA6aZToafmZpxEklj22rE7lZVClFPlQkX
+         tTstjMJco52Qs/PCJnOjKpfWIExgp3Vnl33aK4rq+8wMtuX7gQJX8dn8xSET8IYovrIF
+         0B3bXQuMB3C1/cTKvaPx5W41lQ3IFa9n8I4hiFBc85JLLanMP8D4aH/ixRqu52WvuU8Q
+         bj+9J22evK1y2ie5uD1UANthtmJa8bPIQhPftVad00g7BYbGpA1qE1g/HwEJosNpuWPK
+         n5kGT5bfBnIpLWuHEOsOcS/Nl3fga/TWzd3qCsxIa7QYTC8wyIariqTNZKrzblC99Zbv
+         MoSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RfxJ0B3CrJj0aGpmXt38E2admgu06MumRoXg1smpcJI=;
+        b=h9EqdxUPIR4ADE8EASNClJkDn5QZZM7BZ7QgEIz6DkQjRsOBuiFmHmLBZQCSECfgNs
+         enmR6qwSMirFOSXQTB4T2u9t1NDELC9E4c3nxN8EAjpXTiqNyk07GqnqBVOg0jxaJTiF
+         eox8Mh/mbiQuyrRvOdUT4yxocZGLRFvGr8TKphuBGxjQTfG6yFJahgvzf2M9A0IKfosd
+         8ETOTqH0tV4zxYUc3T+rENSw1kLE3/Oe4ZFknXNNpD2r+AXH+4R/jZQ3q3Vl84TbK2Sf
+         of52kWy8XH8Q8V22Dx+MAahfmc04+FjGHrjXZtE/WDA9aFHIyGx7oM7F+8nhMm3x13GU
+         go3g==
+X-Gm-Message-State: AOAM530ZiXDmPQMIyikJyuBPVIIxfRlbx7/5XoVDs1mnY3gWtVSgRcxc
+        Ftc21krZdpliximjmixZNy0XPg==
+X-Google-Smtp-Source: ABdhPJzG4ddwYAsy0X/jhztKCSD/hl2swMUjGyGJ9b2UzaOpSYfiOL8y8c8roF/XGXkDAwFK+kOLbw==
+X-Received: by 2002:a9d:741a:: with SMTP id n26mr18737302otk.223.1623174632318;
+        Tue, 08 Jun 2021 10:50:32 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c11sm1663960oot.25.2021.06.08.10.50.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 10:50:31 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] dt-bindings: remoteproc: qcom: pas: Add SC8180X adsp, cdsp and mpss
+Date:   Tue,  8 Jun 2021 10:49:43 -0700
+Message-Id: <20210608174944.2045215-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHbLzkquqKOL7pH8yBdfpafeHJCUZvccNKjQBucsP7C4k83f7g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08-06-21 10:15:36, Yang Shi wrote:
-[...]
-> I did some archeology, the findings are:
-> 
-> The zero page has PageReserved flag set, it was skipped by the
-> explicit PageReserved check in mempolicy.c since commit f4598c8b3678
-> ("[PATCH] migration: make sure there is no attempt to migrate reserved
-> pages."). The zero page was not used anymore by do_anonymous_page()
-> since 2.6.24 by commit 557ed1fa2620 ("remove ZERO_PAGE"), then
-> reinstated by commit a13ea5b759645 ("mm: reinstate ZERO_PAGE") and
-> this commit added zero page check in vm_normal_page(), so mempolicy
-> doesn't depend on PageReserved check to skip zero page anymore since
-> then.
-> 
-> So the zero page is skipped by mempolicy.c since 2.6.16.
+Add compatibles for the Audio DSP, Compute DSP and Modem subsystem found
+in the Qualcomm SC8180x to the Peripheral Authentication Service
+remoteproc binding.
 
-Thanks a lot! This is really useful. Can you just add it to the
-changelog so others do not have to go through the painful archeology.
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
-With that, feel free to add
-Acked-by: Michal Hocko <mhocko@suse.com>
+Changes since v1:
+- "Rebased" on yaml conversion
 
-Thanls!
+ .../devicetree/bindings/remoteproc/qcom,adsp.yaml     | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+index 6c11812385ca..21a541859c7e 100644
+--- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+@@ -25,6 +25,9 @@ properties:
+       - qcom,qcs404-cdsp-pas
+       - qcom,qcs404-wcss-pas
+       - qcom,sc7180-mpss-pas
++      - qcom,sc8180x-adsp-pas
++      - qcom,sc8180x-cdsp-pas
++      - qcom,sc8180x-mpss-pas
+       - qcom,sdm845-adsp-pas
+       - qcom,sdm845-cdsp-pas
+       - qcom,sdx55-mpss-pas
+@@ -143,6 +146,9 @@ allOf:
+               - qcom,msm8998-adsp-pas
+               - qcom,qcs404-adsp-pas
+               - qcom,qcs404-wcss-pas
++              - qcom,sc8180x-adsp-pas
++              - qcom,sc8180x-cdsp-pas
++              - qcom,sc8180x-mpss-pas
+               - qcom,sdm845-adsp-pas
+               - qcom,sdm845-cdsp-pas
+               - qcom,sm8150-adsp-pas
+@@ -249,6 +255,8 @@ allOf:
+               - qcom,qcs404-adsp-pas
+               - qcom,qcs404-cdsp-pas
+               - qcom,qcs404-wcss-pas
++              - qcom,sc8180x-adsp-pas
++              - qcom,sc8180x-cdsp-pas
+               - qcom,sdm845-adsp-pas
+               - qcom,sdm845-cdsp-pas
+               - qcom,sm8150-adsp-pas
+@@ -283,6 +291,7 @@ allOf:
+           contains:
+             enum:
+               - qcom,sc7180-mpss-pas
++              - qcom,sc8180x-mpss-pas
+               - qcom,sdx55-mpss-pas
+               - qcom,sm8150-mpss-pas
+               - qcom,sm8350-mpss-pas
+@@ -430,6 +439,8 @@ allOf:
+         compatible:
+           contains:
+             enum:
++              - qcom,sc8180x-adsp-pas
++              - qcom,sc8180x-cdsp-pas
+               - qcom,sm8150-slpi-pas
+               - qcom,sm8250-adsp-pas
+               - qcom,sm8250-slpi-pas
 -- 
-Michal Hocko
-SUSE Labs
+2.29.2
+
