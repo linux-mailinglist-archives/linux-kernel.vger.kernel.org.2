@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FDF39FF2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4BD39FF2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234063AbhFHSbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:31:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
+        id S234098AbhFHSbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:31:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233935AbhFHSay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:30:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FD4C61352;
-        Tue,  8 Jun 2021 18:29:00 +0000 (UTC)
+        id S233801AbhFHSa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:30:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C07BC613AC;
+        Tue,  8 Jun 2021 18:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623176941;
-        bh=paxo7YgeC40g60lJVnEgmyjUda1w8zrswA5EkUy2Um0=;
+        s=korg; t=1623176943;
+        bh=lKpCVtXD3B8w7NgXNJYxyJ62U+u4UoNXBhi14EH6Lao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v8P7wZcE5xwkhihikz8C9k1tw6SVtP+0S3om9DefIAjCPMID9v8F498Q+TVU/12rM
-         Jle+bGXbLE1bQhaLUBesfFCgPDaOInonwai7WAiR+293Pn6QgDesFCUGv+YedeQgOC
-         Ue2usgoGtNRMzDrEhkVl/oyxyU0szS3zB+/eeD6k=
+        b=C5gouUi8IevNdoJ5L3gsSrIxH2VQJpJMEeYflVoj3H9/eM+U5HshC/pKO+ojjZc1r
+         9x7h5c18UOBft6r6DdkuS8sgIO9AJkUfLzYlakwOPAPbsuTEe6A89AQQwt3wbY3xxf
+         K1sz13LFfG1G6NXL30zddy8zxgKD/qBqSZyJrdSc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Anastasov <ja@ssi.bg>,
-        Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+e562383183e4b1766930@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 04/23] ipvs: ignore IP_VS_SVC_F_HASHED flag when adding service
-Date:   Tue,  8 Jun 2021 20:26:56 +0200
-Message-Id: <20210608175926.688787741@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 05/23] HID: pidff: fix error return code in hid_pidff_init()
+Date:   Tue,  8 Jun 2021 20:26:57 +0200
+Message-Id: <20210608175926.720537449@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175926.524658689@linuxfoundation.org>
 References: <20210608175926.524658689@linuxfoundation.org>
@@ -42,60 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Anastasov <ja@ssi.bg>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 56e4ee82e850026d71223262c07df7d6af3bd872 ]
+[ Upstream commit 3dd653c077efda8152f4dd395359617d577a54cd ]
 
-syzbot reported memory leak [1] when adding service with
-HASHED flag. We should ignore this flag both from sockopt
-and netlink provided data, otherwise the service is not
-hashed and not visible while releasing resources.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-[1]
-BUG: memory leak
-unreferenced object 0xffff888115227800 (size 512):
-  comm "syz-executor263", pid 8658, jiffies 4294951882 (age 12.560s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff83977188>] kmalloc include/linux/slab.h:556 [inline]
-    [<ffffffff83977188>] kzalloc include/linux/slab.h:686 [inline]
-    [<ffffffff83977188>] ip_vs_add_service+0x598/0x7c0 net/netfilter/ipvs/ip_vs_ctl.c:1343
-    [<ffffffff8397d770>] do_ip_vs_set_ctl+0x810/0xa40 net/netfilter/ipvs/ip_vs_ctl.c:2570
-    [<ffffffff838449a8>] nf_setsockopt+0x68/0xa0 net/netfilter/nf_sockopt.c:101
-    [<ffffffff839ae4e9>] ip_setsockopt+0x259/0x1ff0 net/ipv4/ip_sockglue.c:1435
-    [<ffffffff839fa03c>] raw_setsockopt+0x18c/0x1b0 net/ipv4/raw.c:857
-    [<ffffffff83691f20>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2117
-    [<ffffffff836920f2>] __do_sys_setsockopt net/socket.c:2128 [inline]
-    [<ffffffff836920f2>] __se_sys_setsockopt net/socket.c:2125 [inline]
-    [<ffffffff836920f2>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2125
-    [<ffffffff84350efa>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Reported-and-tested-by: syzbot+e562383183e4b1766930@syzkaller.appspotmail.com
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
-Reviewed-by: Simon Horman <horms@verge.net.au>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 224ee88fe395 ("Input: add force feedback driver for PID devices")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/ipvs/ip_vs_ctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/usbhid/hid-pidff.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index c7ee962a547b..1adbcdda2158 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -1226,7 +1226,7 @@ ip_vs_add_service(struct netns_ipvs *ipvs, struct ip_vs_service_user_kern *u,
- 	ip_vs_addr_copy(svc->af, &svc->addr, &u->addr);
- 	svc->port = u->port;
- 	svc->fwmark = u->fwmark;
--	svc->flags = u->flags;
-+	svc->flags = u->flags & ~IP_VS_SVC_F_HASHED;
- 	svc->timeout = u->timeout * HZ;
- 	svc->netmask = u->netmask;
- 	svc->ipvs = ipvs;
+diff --git a/drivers/hid/usbhid/hid-pidff.c b/drivers/hid/usbhid/hid-pidff.c
+index 08174d341f4a..bc75f1efa0f4 100644
+--- a/drivers/hid/usbhid/hid-pidff.c
++++ b/drivers/hid/usbhid/hid-pidff.c
+@@ -1304,6 +1304,7 @@ int hid_pidff_init(struct hid_device *hid)
+ 
+ 	if (pidff->pool[PID_DEVICE_MANAGED_POOL].value &&
+ 	    pidff->pool[PID_DEVICE_MANAGED_POOL].value[0] == 0) {
++		error = -EPERM;
+ 		hid_notice(hid,
+ 			   "device does not support device managed pool\n");
+ 		goto fail;
 -- 
 2.30.2
 
