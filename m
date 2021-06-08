@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723BE39EC73
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F3739EC87
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhFHC7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 22:59:37 -0400
-Received: from mga05.intel.com ([192.55.52.43]:56453 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230319AbhFHC7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 22:59:36 -0400
-IronPort-SDR: tdFJY7Y2vcCwLnK2KLOM8HL6HjS9JeVxB3S1gguIzQ8V6z19V7ciLeLvdtF4ISoQp77POo+37e
- ImbJPCcLdIKA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="290390456"
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="290390456"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 19:57:44 -0700
-IronPort-SDR: wd5XJNjPUXoZ951IwOlPYQTMyoik1TIRWWiW8En2dyVZsUr2k9/snG9HoOcAJcyB/lZmIsS6ls
- Sprj8OQrxhyA==
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="481775066"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.158.33]) ([10.212.158.33])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 19:57:44 -0700
-Subject: Re: [RFC v2-fix-v1 3/3] x86/tdx: Handle port I/O
-To:     Dan Williams <dan.j.williams@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAPcyv4gBNqDFQEYjWqYTckPg-yy=LrvMw_FNY+tUuEwD35CfyA@mail.gmail.com>
- <20210527042356.3983284-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210527042356.3983284-4-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jRCZwoJoKGP4v3e8V6u4Y+1VZo_k=umQuh-rrAoMKg4Q@mail.gmail.com>
- <ca836226-46e1-389c-e5c8-c5f1c91130ea@linux.intel.com>
- <CAPcyv4gmokd5YTbL0X8w3KKV6EEO0xraaB-OEFJyncjaHQUUuw@mail.gmail.com>
- <2aba694b-ec36-d57f-06e0-a269f9953bb3@linux.intel.com>
- <CAPcyv4iOJJjghTPTLCkvT-Y_SJOhCbfm66m_NO5Ue+eVr_0NZA@mail.gmail.com>
- <cd4983e4-a3e8-7c33-3197-dd3f7e8f7538@linux.intel.com>
- <CAPcyv4hBiDNOQ-2b5zxaUUyHo9k2h5UOQvM_wGtw_XTok-BmAQ@mail.gmail.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <cca48fe7-2717-8eb0-a6c1-a548ff256572@linux.intel.com>
-Date:   Mon, 7 Jun 2021 19:57:43 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S231243AbhFHDCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 23:02:36 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3093 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230266AbhFHDCf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 23:02:35 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzZcR0JkgzWtVM;
+        Tue,  8 Jun 2021 10:55:51 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 11:00:40 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 8 Jun 2021
+ 11:00:39 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        "Michal Simek" <michal.simek@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Shravya Kumbham <shravya.kumbham@xilinx.com>,
+        Matthew Murrian <matthew.murrian@goctsi.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Allen Pais <allen.lkml@gmail.com>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>, <dmaengine@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] dmaengine: xilinx_dma: Use list_move_tail instead of list_del/list_add_tail
+Date:   Tue, 8 Jun 2021 11:09:05 +0800
+Message-ID: <20210608030905.2818831-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4hBiDNOQ-2b5zxaUUyHo9k2h5UOQvM_wGtw_XTok-BmAQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Using list_move_tail() instead of list_del() + list_add_tail().
 
-ps://elixir.bootlin.com/linux/latest/source/kernel/printk/printk_safe.c#L382
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ drivers/dma/xilinx/xilinx_dma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> That depends on printk_nmi_direct_enter() to set the context, wouldn't
-> an equivalent printk_ve_direct_enter() context flag be needed as well?
-
-Even without it the console semaphore is always trylocked. So recursion 
-is just not possible.
-
-What would be possible is a endless loop (printk adding more information 
-to the log buffer, which is then printed etc.), but that's true for 
-everywhere in the console/serial driver subsystem.
-
-
--Andi
+diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
+index 75c0b8e904e5..77022ef05ac5 100644
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -1411,8 +1411,7 @@ static void xilinx_vdma_start_transfer(struct xilinx_dma_chan *chan)
+ 
+ 	chan->desc_submitcount++;
+ 	chan->desc_pendingcount--;
+-	list_del(&desc->node);
+-	list_add_tail(&desc->node, &chan->active_list);
++	list_move_tail(&desc->node, &chan->active_list);
+ 	if (chan->desc_submitcount == chan->num_frms)
+ 		chan->desc_submitcount = 0;
+ 
 
