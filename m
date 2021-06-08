@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25113A0707
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A916B3A0700
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhFHWjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 18:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
+        id S234628AbhFHWjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 18:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234323AbhFHWju (ORCPT
+        with ESMTP id S235062AbhFHWjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 18:39:50 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F73C061787
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 15:37:44 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id i68so18328520qke.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:37:44 -0700 (PDT)
+        Tue, 8 Jun 2021 18:39:42 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B45C061789
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 15:37:48 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id e18so11748352qvm.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:37:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gf/gvBlQFNmF6oryMbQ5ty+xg+wHb4DfA+pnrBCpmI0=;
-        b=bgUpMFATARs0MGDJlV4pjkgb2I+9leyfC4Rh115OkfVq28I/PjhvyolCbunoiQenwf
-         Yuk1VkJgTe+3DOkwB61ds9ouMszSiXS/v5yFQTzap0yk2MUMyWtaWgpRHSme0uxhEXuN
-         zLVvOIxDc9nsSsfrY74rBaviDAjb+oCNgJe1JJWxHrb2pO3zseMhlHWiUPPvU9t/Je1r
-         rA4zfCs0qBMzYYsRYSGIYom8jBzRQb/9zHE1mEtOzYLw9UAxOmdHbbXHVHAhKyRLhB89
-         jRpX9rMHVjoXbKlAYYgi5tdJVvEhNTPXhB/JQHTx03pwqBDg4ENEIIi/wfznaAKjOLjD
-         ddWQ==
+        bh=6eqeLtF2wYve+NaCkqrhAPj7GJ7t1Uc8cbMldYDNzmc=;
+        b=Mv8h0zAZa85cNE9rseThVvwjyYB9knu4rn7uHCkg2DyvdR4N0DgMPfSC2MUZIYsKXq
+         cwsYs8ghRN5iRdKbbAZQmYUAiu3UXsL4BY3APai3695aXktzGG5oQfiBGIbf9hgRvrmW
+         8bnAlUTjlJXWUuvdx2cptBdIF5bbC1FqYf1xX3iHnONXVoqf8mZZjMtRt8eTQ941Duuu
+         mv42q6l9VQHPJqewCJrXtPwf9tzC2UotMDKdaWLxCLiFPRhMVaVfqKx04WucLHRZfDxP
+         TClns7nQ0HIREF6HZAqaRSkgPzzZZocB6Novk0/M+jD2A986HTM2cwjBlUax+mNw+4Ib
+         kPkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gf/gvBlQFNmF6oryMbQ5ty+xg+wHb4DfA+pnrBCpmI0=;
-        b=era8WXWVCaRM880OhYJpHAYItA/khWKdyEgNTz5GMJxPS/OBQbu+4vaj+PiDhe6m6y
-         nEZ94kE4lA4x80qdRlLK1YPYnDFCx5HWh5MTQaWgH6WSeezNxhABxqZ0YRIzzm0oZzM8
-         stJ9U2Bq7tvrRpXSVh5QpXxBXEpUT1LVWwg2WkifdvKCOzZfMPBnLN6z6Byy6Gb/9XEg
-         9NPoUDYDV1cuI0F4raC3NZ5KtsXKEZIcoMlh3cFNzMNuD1vH/Yu4aH5Vvmm/sDjXxzLr
-         jOV5cmfB84r1sU6BDxwCJbvLVHaZahGFJA4vVTR84j+yKFlje26k1cdJ6oLSP3RnSDb7
-         bJWw==
-X-Gm-Message-State: AOAM5313pHhNByVM8ZB6GvoRNI3HLY2FxvmvgfR9sWW/KfthnEzTzgZy
-        9G+HDvb8BUbWxcQ2QC2KbE9INg==
-X-Google-Smtp-Source: ABdhPJyC9ZSw2t5AZbmqjpUqqDY6xU9LVKgYYdzdX+EAhI0Az0u240Xf0vjJ1u8u4uhESNaUEW0L7g==
-X-Received: by 2002:a37:5646:: with SMTP id k67mr4860749qkb.333.1623191864144;
-        Tue, 08 Jun 2021 15:37:44 -0700 (PDT)
+        bh=6eqeLtF2wYve+NaCkqrhAPj7GJ7t1Uc8cbMldYDNzmc=;
+        b=INjGDHAVkdsg1ce/ih2xRM0QFuHlAGCC6JbJeSc1G2El+wKVy/y6tQFzq9Twjy7FcA
+         rtO8odJQNHMG3Iirkg6RupGOYejhWSbaqlzuevQOxqX+e6RsU2WF15iwLe39ntUdYeI5
+         SuVggbfGcXmlO1xGq82+M9lumOonlikmx0iLZ9nA5wQyngtmHZ7wu+4+ddb+IQJXQEI2
+         GVI+HHVRh9sVQ0fbfZH2AFAoSXa5klQpp2sW/CnJeGy8Hk29csgGRFJTdf7yqyb+XHXP
+         4B0B7cD76nEH7/UDBJNHlEbPkg/9hATPwIUdooi9t80Oa2qtUuzvYHC9vbvc775JXbOn
+         fw5A==
+X-Gm-Message-State: AOAM531UWCFHH4EZNsrWUo5RRIsyoMb15GY28dyXp5OV1hpZ6l+HzoGb
+        ud9wt5BNlJLXoB/Ufz4A1ZlxAw==
+X-Google-Smtp-Source: ABdhPJw1o4lhprHmGw2h3aqoKr10f1XTAfu6jpNt/PApK8tndgV3l+To+BXpyX2phwJl+Iz4K+IdJQ==
+X-Received: by 2002:a0c:c3d1:: with SMTP id p17mr2654124qvi.44.1623191867886;
+        Tue, 08 Jun 2021 15:37:47 -0700 (PDT)
 Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id m3sm2324266qkh.135.2021.06.08.15.37.43
+        by smtp.gmail.com with ESMTPSA id m3sm2324266qkh.135.2021.06.08.15.37.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 15:37:43 -0700 (PDT)
+        Tue, 08 Jun 2021 15:37:45 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     robert.foss@linaro.org, andrey.konovalov@linaro.org,
@@ -57,9 +57,9 @@ Cc:     robert.foss@linaro.org, andrey.konovalov@linaro.org,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org (open list:QUALCOMM CAMERA SUBSYSTEM DRIVER),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 01/17] media: camss: csiphy-3ph: don't print HW version as an error
-Date:   Tue,  8 Jun 2021 18:34:50 -0400
-Message-Id: <20210608223513.23193-2-jonathan@marek.ca>
+Subject: [PATCH 02/17] media: camss: csiphy-3ph: disable interrupts
+Date:   Tue,  8 Jun 2021 18:34:51 -0400
+Message-Id: <20210608223513.23193-3-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20210608223513.23193-1-jonathan@marek.ca>
 References: <20210608223513.23193-1-jonathan@marek.ca>
@@ -69,28 +69,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid unnecessary noise in normal usage (it prints every time CSIPHY is
-powered on).
+The driver does nothing with the interrupts, so set the irq mask registers
+to zero to avoid wasting CPU time for nothing.
 
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 Reviewed-by: Robert Foss <robert.foss@linaro.org>
 ---
- drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../qcom/camss/camss-csiphy-3ph-1-0.c         | 35 ++-----------------
+ 1 file changed, 3 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
-index e318c822ab04c..5948abdcd2206 100644
+index 5948abdcd2206..783b65295d20b 100644
 --- a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
 +++ b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
-@@ -163,7 +163,7 @@ static void csiphy_hw_version_read(struct csiphy_device *csiphy,
- 	hw_version |= readl_relaxed(csiphy->base +
- 				   CSIPHY_3PH_CMN_CSI_COMMON_STATUSn(15)) << 24;
+@@ -352,38 +352,9 @@ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+ 	else if (csiphy->camss->version == CAMSS_845)
+ 		csiphy_gen2_config_lanes(csiphy, settle_cnt);
  
--	dev_err(dev, "CSIPHY 3PH HW Version = 0x%08x\n", hw_version);
-+	dev_dbg(dev, "CSIPHY 3PH HW Version = 0x%08x\n", hw_version);
+-	val = 0xff;
+-	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(11));
+-
+-	val = 0xff;
+-	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(12));
+-
+-	val = 0xfb;
+-	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(13));
+-
+-	val = 0xff;
+-	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(14));
+-
+-	val = 0x7f;
+-	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(15));
+-
+-	val = 0xff;
+-	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(16));
+-
+-	val = 0xff;
+-	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(17));
+-
+-	val = 0xef;
+-	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(18));
+-
+-	val = 0xff;
+-	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(19));
+-
+-	val = 0xff;
+-	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(20));
+-
+-	val = 0xff;
+-	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(21));
++	/* IRQ_MASK registers - disable all interrupts */
++	for (i = 11; i < 22; i++)
++		writel_relaxed(0, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(i));
  }
  
- /*
+ static void csiphy_lanes_disable(struct csiphy_device *csiphy,
 -- 
 2.26.1
 
