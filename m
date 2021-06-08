@@ -2,203 +2,551 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86423A0486
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317693A0487
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238521AbhFHTgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40604 "EHLO
+        id S238917AbhFHTgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237639AbhFHT2m (ORCPT
+        with ESMTP id S238021AbhFHT3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:28:42 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA453C061148
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:16:48 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id l17so12000427qtq.12
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 12:16:48 -0700 (PDT)
+        Tue, 8 Jun 2021 15:29:25 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A668C06114E;
+        Tue,  8 Jun 2021 12:17:26 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id r16so9313528ljk.9;
+        Tue, 08 Jun 2021 12:17:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=uHTFoDD2O3XxUu2ApfYaRifJcD/a1u00RJeF5PwVfbg=;
-        b=oMS6y0+QT6JcTo3EG3x1H5kMSriSWn6ed6ob97ZYl3wfbHAMikabk+rnPCdbhEE2QS
-         EN/EzeK59Cm1I/+CHGwIZf8zaPBbvS6kNfksZg/O3Mvc/64UUqQQGkh41I7kMVe24Xs2
-         Eb4EpmX3MFNCsRZ5ShOHt38L1a6YtfRmfxxYc=
+        bh=cosITyDQl2L25+4lyg/BG4bp6XU6pX4jWaFVKHxz0aI=;
+        b=bmQdXKuLqJZc33OTfgDObSxISRstiWSe8iGno3AolJpZYwKz08U7c9qRpXDCOy5Gme
+         7CRNpCotHHFxBsJj58cwqLV4vAJo4H+tEkuW6PAW0TPJWwG6tXKTlygcMyoJCGLd6pP1
+         MiV6gvD+uvH8kcQuA/MaNDt8FWhlDJmiwB1rC3VRvKDjScvnuJ+crPgzebjX7JD/Pb4a
+         Jr223NNZqugxupTx44dsXm0RgCIBsCrzpXTqA4FBdzMPsaxM3iALTBYv6jgF3Pn+OFBj
+         q2PJjVtYOuJf4Z7TEyH7XCHq5Usb4IP8FuwPeYhNnbswaPKSTwNQYscCS0+mv+vUXUtY
+         faug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=uHTFoDD2O3XxUu2ApfYaRifJcD/a1u00RJeF5PwVfbg=;
-        b=fRpTt6c27C2n8DLaAL18ohKaRDVcPbgGTMHPijfP66cBH+aFRL2BXVeDS/6zogB2ll
-         YpMtGchOvSrCqOxtL7gVKvIHhGPZufgRrhLpIx48SrnutQwJCI8yYoaHRAhSOpoBuW6m
-         0OGrRtJZoGsP7iz8JcfYRJVI3WJPwIerJ3252RGY+9ThONbh3AC2/CX5njKWH/hR42Hf
-         vV/yQJ6wuVYVKXz3WepQnAhCbE0oO5kPSZM+0aSgFXPWZukCUgOofQgaYzQM0C+H5Uy6
-         IxzGYu9z/jx1ltwAUn5a5kL03jXVjc8/SYl7x8gmYUx2XYPiF0q8NnGMajTLiSsXH/GV
-         GkHg==
-X-Gm-Message-State: AOAM533u+Ed4ANFc69PnhENgVKRLJdSna2/DJpg7MJj26z9EYFQy5Ope
-        MvNFYYAEEv1f9moGgM+/OlRG+A==
-X-Google-Smtp-Source: ABdhPJwn5hXYB4alVXuSZL3TLzcwRvW2ym9D9JRLn90Sf5mVfDOUc9IFdcbp67/IgsMccSQt5m2euQ==
-X-Received: by 2002:ac8:7699:: with SMTP id g25mr16462363qtr.309.1623179805492;
-        Tue, 08 Jun 2021 12:16:45 -0700 (PDT)
-Received: from localhost ([2620:15c:6:411:e3b6:6e12:5019:bd58])
-        by smtp.gmail.com with ESMTPSA id a134sm10691083qkg.114.2021.06.08.12.16.44
+        bh=cosITyDQl2L25+4lyg/BG4bp6XU6pX4jWaFVKHxz0aI=;
+        b=XRh9XtOGbRJuhCT3i8cdyPwrLbSYH+EOJelNQ/s5GIWBZh5pyzvXaQfYXhiquZjI/G
+         LiSjeEvZQ8UD3WTZY2sFZ6j+pdgQZmNna6CTLepQRLMylDVEUYDmmSmw+7XHjV4vVNzp
+         Oto5AWGduiEKytY43CvjHVM3lY2hrurZxAv0n9WxQKmGFBbqfltZ7tVuX9rKt4Bx5aWJ
+         75igLcZFx/PclVJMpdxa+zYn3tJSO2YZpdCcmMcS8x89rS+nhKuFrYCbJTXjZWJzt8UB
+         BINOWHZJBUqGH4l/hgdNwIDYPfgrXrkTtCkfITbSGRcUfbicqMdY4qwOLO2zL5XpKVTl
+         HPGg==
+X-Gm-Message-State: AOAM533BEKqXvnpxx0At35S7m+rdfEOY5VLHnpxoW8ZJ5QFXqAgy78y2
+        gcwRofl0tuGvFnyJLmwFdG8=
+X-Google-Smtp-Source: ABdhPJywqNlBsmVgsAvbdkDdTrSf8CTQZIyMq57isjRipyczl9dZGXf7d0RQ4ln2sjkxm8IT//3DBg==
+X-Received: by 2002:a05:651c:210e:: with SMTP id a14mr20397039ljq.156.1623179844587;
+        Tue, 08 Jun 2021 12:17:24 -0700 (PDT)
+Received: from rikard (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
+        by smtp.gmail.com with ESMTPSA id f39sm66959lfv.290.2021.06.08.12.17.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 12:16:44 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 15:16:44 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>,
-        rostedt@goodmis.org, ccross@android.com,
-        linux-kernel@vger.kernel.org, Zhangjinhao <zhangjinhao2@huawei.com>
-Subject: Re: [BUG] I found a bug when try to enable record_ftrace
-Message-ID: <YL/CHEbw5L2Selfm@google.com>
-References: <01472d0f-55c1-15ea-9beb-5d64b322bb44@huawei.com>
- <202106021042.8527F3AB30@keescook>
+        Tue, 08 Jun 2021 12:17:23 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+X-Google-Original-From: Rikard Falkeborn <rikard.falkeborn>
+Date:   Tue, 8 Jun 2021 21:17:20 +0200
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexander Antonov <alexander.antonov@linux.intel.com>
+Subject: Re: [PATCH 1/4] perf/x86/intel/uncore: Constify intel_uncore_ops
+Message-ID: <YL/CQIA0vk1CiQcf@rikard>
+References: <20210605155653.21850-1-rikard.falkeborn@gmail.com>
+ <20210605155653.21850-2-rikard.falkeborn@gmail.com>
+ <77212f9f-1914-afd2-99c1-a5ced5b7c265@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202106021042.8527F3AB30@keescook>
+In-Reply-To: <77212f9f-1914-afd2-99c1-a5ced5b7c265@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 10:43:29AM -0700, Kees Cook wrote:
+On Mon, Jun 07, 2021 at 03:09:11PM -0400, Liang, Kan wrote:
 > 
-> On Wed, Jun 02, 2021 at 03:42:23PM +0800, Zhengyejian (Zetta) wrote:
-> > Hello,
-> > 
-> > There may be a deadlock caused by ftrace recursion when try to enable
-> > record_ftrace.
 > 
-> Hi,
+> On 6/5/2021 11:56 AM, Rikard Falkeborn wrote:
+> > These are not modified, so make them const to allow the compiler to put
+> > them in read-only memory.
 > 
-> Thanks for the report. Joel, is this something you can take a look at?
-
-Kees,
-
-Sorry for late reply. Right now I am dealing with a production-stop bug and
-would not likely get time. Plus I feel a bit less motivated, because the
-ftrace in pstore the way it stands now is unusable due to perf issues anyway
-(I wonder if anyone uses it at all now). I would rather someone who has time
-to work on this try to revive: https://lkml.org/lkml/2020/9/2/1075 . Should
-we just delete pstore function tracing till then?
-
--Joel
-
-
-> -Kees
+> For most of the cases, yes, but the ops are modified for the TGL/RKL. We may
+> want to create a read-only ops for the TGL/RKL as below, and make both
+> skl_uncore_msr_ops and rkl_uncore_msr_ops const as well.
 > 
-> > I'd like to known if the patchset
-> > (https://lore.kernel.org/lkml/20201106023235.367190737@goodmis.org/) is
-> > trying to fix it.
-> > 
-> > Procedure for reproducing the problem is:
-> >   1) this problem appears both in 5.13-rc4 and 5.10;
-> > 
-> >   2) my work environment is:
-> >     qemu-arm version 4.0.0
-> >     arm-linux-gnueabi-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
-> > 
-> >   3) then try to enable record_ftrace:
-> >     / # mount -t pstore pstore /sys/fs/pstore
-> >     / # echo 1 > /sys/kernel/debug/pstore/record_ftrace
-> > 
-> >   4) then system appears to be stuck, and use arm-linux-gnueabi-gdb dump the
-> > following call stack:
-> >     #0  arch_spin_lock (lock=0x811a0f98) at
-> > /home/zyj/Linux/linux-master/arch/arm/include/asm/spinlock.h:74
-> >     #1  do_raw_spin_lock_flags (flags=<synthetic pointer>, lock=0x811a0f98)
-> > at /home/zyj/Linux/linux-master/include/linux/spinlock.h:195
-> >     #2  __raw_spin_lock_irqsave (lock=0x811a0f98) at
-> > /home/zyj/Linux/linux-master/include/linux/spinlock_api_smp.h:119
-> >     #3  _raw_spin_lock_irqsave (lock=lock@entry=0x811a0f98) at
-> > /home/zyj/Linux/linux-master/kernel/locking/spinlock.c:159
-> >     #4  0x8046c6e0 in buffer_size_add (prz=prz@entry=0x811a0f80,
-> > a=a@entry=16) at /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:82
-> >     #5  0x8046cc20 in persistent_ram_write (prz=0x811a0f80, s=0x81137b80,
-> > count=16) at /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:327
-> >     #6  0x8046b438 in ramoops_pstore_write (record=0x81137b90) at
-> > /home/zyj/Linux/linux-master/fs/pstore/ram.c:331
-> >     #7  0x8046add8 in pstore_ftrace_call (ip=2156609456,
-> > parent_ip=2152122068, op=<optimized out>, fregs=<optimized out>)
-> >         at /home/zyj/Linux/linux-master/fs/pstore/ftrace.c:54
-> >     #8  0x801dd580 in __ftrace_ops_list_func (ignored=0x0, fregs=0x0,
-> > parent_ip=2152122068, ip=2156609456) at
-> > /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7003
-> >     #9  ftrace_ops_list_func (ip=2156609456, parent_ip=2152122068,
-> > op=<optimized out>, fregs=0x0) at
-> > /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7028
-> >     #10 0x801109f8 in ftrace_caller () at
-> > /home/zyj/Linux/linux-master/arch/arm/kernel/entry-ftrace.S:224
-> >     #11 0x808b3fb4 in _raw_spin_unlock_irqrestore
-> > (lock=lock@entry=0x811a0f98, flags=1610612883) at
-> > /home/zyj/Linux/linux-master/kernel/locking/spinlock.c:190
-> >     #12 0x8046c6d4 in buffer_size_add (prz=prz@entry=0x811a0f80,
-> > a=a@entry=16) at /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:95
-> >     #13 0x8046cc20 in persistent_ram_write (prz=0x811a0f80, s=0x81137cf8,
-> > count=16) at /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:327
-> >     #14 0x8046b438 in ramoops_pstore_write (record=0x81137d08) at
-> > /home/zyj/Linux/linux-master/fs/pstore/ram.c:331
-> >     #15 0x8046add8 in pstore_ftrace_call (ip=2148632188,
-> > parent_ip=2148601660, op=<optimized out>, fregs=<optimized out>)
-> >         at /home/zyj/Linux/linux-master/fs/pstore/ftrace.c:54
-> >     #16 0x801dd580 in __ftrace_ops_list_func (ignored=0x0, fregs=0x0,
-> > parent_ip=2148601660, ip=2148632188) at
-> > /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7003
-> >     #17 ftrace_ops_list_func (ip=2148632188, parent_ip=2148601660,
-> > op=<optimized out>, fregs=0x0) at
-> > /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7028
-> >     #18 0x801109f8 in ftrace_caller () at
-> > /home/zyj/Linux/linux-master/arch/arm/kernel/entry-ftrace.S:224
-> >     #19 0x80118680 in __set_fixmap (idx=idx@entry=FIX_TEXT_POKE0,
-> > phys=phys@entry=0, prot=prot@entry=0) at
-> > /home/zyj/Linux/linux-master/arch/arm/mm/mmu.c:385
-> >     #20 0x80110f3c in patch_unmap (flags=<synthetic pointer>, fixmap=129) at
-> > /home/zyj/Linux/linux-master/arch/arm/kernel/patch.c:45
-> >     #21 __patch_text_real (addr=addr@entry=0x808b3fb0
-> > <_raw_spin_unlock_irqrestore+16>, insn=insn@entry=3957420680,
-> > remap=remap@entry=true)
-> >         at /home/zyj/Linux/linux-master/arch/arm/kernel/patch.c:104
-> >     #22 0x80110b40 in __patch_text (insn=3957420680, addr=0x808b3fb0
-> > <_raw_spin_unlock_irqrestore+16>) at
-> > /home/zyj/Linux/linux-master/arch/arm/include/asm/patch.h:10
-> >     #23 ftrace_modify_code (pc=2156609456, old=3904716800, new=3957420680,
-> > validate=true) at /home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:95
-> >     #24 0x80110cf4 in ftrace_make_call (rec=rec@entry=0x81007ce0,
-> > addr=addr@entry=2148600280) at
-> > /home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:132
-> >     #25 0x801dda40 in __ftrace_replace_code (rec=rec@entry=0x81007ce0,
-> > enable=enable@entry=true) at
-> > /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2524
-> >     #26 0x801de17c in ftrace_replace_code (mod_flags=mod_flags@entry=1) at
-> > /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2554
-> >     #27 0x801de39c in ftrace_modify_all_code (command=5) at
-> > /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2698
-> >     #28 0x80110ad8 in __ftrace_modify_code (data=<optimized out>) at
-> > /home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:39
-> >     #29 0x801d4da4 in multi_cpu_stop (data=data@entry=0x81c69d84) at
-> > /home/zyj/Linux/linux-master/kernel/stop_machine.c:240
-> >     #30 0x801d4a14 in cpu_stopper_thread (cpu=<optimized out>) at
-> > /home/zyj/Linux/linux-master/kernel/stop_machine.c:511
-> >     #31 0x8014de3c in smpboot_thread_fn (data=0x810c1c80) at
-> > /home/zyj/Linux/linux-master/kernel/smpboot.c:165
-> >     #32 0x8014a0dc in kthread (_create=0x810c1d40) at
-> > /home/zyj/Linux/linux-master/kernel/kthread.c:313
-> >     #33 0x80100150 in ret_from_fork () at
-> > /home/zyj/Linux/linux-master/arch/arm/kernel/entry-common.S:158
-> >     Backtrace stopped: previous frame identical to this frame (corrupt
-> > stack?)
-> > 
-> > See above #7~#15, there is a recursion in function pstore_ftrace_call(), and
-> > a spin_lock(lock=0x811a0f98) is hold since unlock operation in above #11 not
-> > finished. Then in above #0, trying to acquire same lock cause a deadlock.
-> > 
-> > Enabling 'record_ftrace' seems a basic operation of pstore/ftrace, Does it
-> > mean this feature is not available for a while?
-> > 
-> > Best Regards,
-> > Zheng
+Thanks for the feedback.
+
+Yes, that was the odd one out, the commit message could have been
+clearer. What I meant above was "Constify all intel_uncore_ops that are
+not modified", which was all but skl_uncore_msr_ops. So the patch is
+correct, but in order to also constify skl_uncore_msr_ops, we could do
+as you suggested. Is it worth doing? And if so, in a V2 of this patch,
+or as a follow-up patch?
+
+Thanks,
+Rikard
 > 
-> -- 
-> Kees Cook
+> diff --git a/arch/x86/events/intel/uncore_snb.c
+> b/arch/x86/events/intel/uncore_snb.c
+> index 0f63706..e750514 100644
+> --- a/arch/x86/events/intel/uncore_snb.c
+> +++ b/arch/x86/events/intel/uncore_snb.c
+> @@ -435,14 +435,22 @@ static void rkl_uncore_msr_init_box(struct
+> intel_uncore_box *box)
+>  		wrmsrl(SKL_UNC_PERF_GLOBAL_CTL, SNB_UNC_GLOBAL_CTL_EN);
+>  }
+> 
+> +static struct intel_uncore_ops rkl_uncore_msr_ops = {
+> +	.init_box	= rkl_uncore_msr_init_box,
+> +	.enable_box	= skl_uncore_msr_enable_box,
+> +	.exit_box	= skl_uncore_msr_exit_box,
+> +	.disable_event	= snb_uncore_msr_disable_event,
+> +	.enable_event	= snb_uncore_msr_enable_event,
+> +	.read_counter	= uncore_msr_read_counter,
+> +};
+> +
+>  void tgl_uncore_cpu_init(void)
+>  {
+>  	uncore_msr_uncores = tgl_msr_uncores;
+>  	icl_uncore_cbox.num_boxes = icl_get_cbox_num();
+> -	icl_uncore_cbox.ops = &skl_uncore_msr_ops;
+> -	icl_uncore_clockbox.ops = &skl_uncore_msr_ops;
+> -	snb_uncore_arb.ops = &skl_uncore_msr_ops;
+> -	skl_uncore_msr_ops.init_box = rkl_uncore_msr_init_box;
+> +	icl_uncore_cbox.ops = &rkl_uncore_msr_ops;
+> +	icl_uncore_clockbox.ops = &rkl_uncore_msr_ops;
+> +	snb_uncore_arb.ops = &rkl_uncore_msr_ops;
+>  }
+> 
+>  static void adl_uncore_msr_init_box(struct intel_uncore_box *box)
+> 
+> Thanks,
+> Kan
+> 
+> 
+> > 
+> > Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> > ---
+> >   arch/x86/events/intel/uncore.h           |  2 +-
+> >   arch/x86/events/intel/uncore_discovery.c |  6 +--
+> >   arch/x86/events/intel/uncore_nhmex.c     | 10 ++--
+> >   arch/x86/events/intel/uncore_snb.c       | 12 ++---
+> >   arch/x86/events/intel/uncore_snbep.c     | 66 ++++++++++++------------
+> >   5 files changed, 48 insertions(+), 48 deletions(-)
+> > 
+> > diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
+> > index 187d7287039c..83b25a7b8c27 100644
+> > --- a/arch/x86/events/intel/uncore.h
+> > +++ b/arch/x86/events/intel/uncore.h
+> > @@ -77,7 +77,7 @@ struct intel_uncore_type {
+> >   	struct event_constraint unconstrainted;
+> >   	struct event_constraint *constraints;
+> >   	struct intel_uncore_pmu *pmus;
+> > -	struct intel_uncore_ops *ops;
+> > +	const struct intel_uncore_ops *ops;
+> >   	struct uncore_event_desc *event_descs;
+> >   	struct freerunning_counters *freerunning;
+> >   	const struct attribute_group *attr_groups[4];
+> > diff --git a/arch/x86/events/intel/uncore_discovery.c b/arch/x86/events/intel/uncore_discovery.c
+> > index aba9bff95413..2b8e9a1d793e 100644
+> > --- a/arch/x86/events/intel/uncore_discovery.c
+> > +++ b/arch/x86/events/intel/uncore_discovery.c
+> > @@ -368,7 +368,7 @@ static void intel_generic_uncore_msr_disable_event(struct intel_uncore_box *box,
+> >   	wrmsrl(hwc->config_base, 0);
+> >   }
+> > -static struct intel_uncore_ops generic_uncore_msr_ops = {
+> > +static const struct intel_uncore_ops generic_uncore_msr_ops = {
+> >   	.init_box		= intel_generic_uncore_msr_init_box,
+> >   	.disable_box		= intel_generic_uncore_msr_disable_box,
+> >   	.enable_box		= intel_generic_uncore_msr_enable_box,
+> > @@ -433,7 +433,7 @@ static u64 intel_generic_uncore_pci_read_counter(struct intel_uncore_box *box,
+> >   	return count;
+> >   }
+> > -static struct intel_uncore_ops generic_uncore_pci_ops = {
+> > +static const struct intel_uncore_ops generic_uncore_pci_ops = {
+> >   	.init_box	= intel_generic_uncore_pci_init_box,
+> >   	.disable_box	= intel_generic_uncore_pci_disable_box,
+> >   	.enable_box	= intel_generic_uncore_pci_enable_box,
+> > @@ -516,7 +516,7 @@ static void intel_generic_uncore_mmio_disable_event(struct intel_uncore_box *box
+> >   	writel(0, box->io_addr + hwc->config_base);
+> >   }
+> > -static struct intel_uncore_ops generic_uncore_mmio_ops = {
+> > +static const struct intel_uncore_ops generic_uncore_mmio_ops = {
+> >   	.init_box	= intel_generic_uncore_mmio_init_box,
+> >   	.exit_box	= uncore_mmio_exit_box,
+> >   	.disable_box	= intel_generic_uncore_mmio_disable_box,
+> > diff --git a/arch/x86/events/intel/uncore_nhmex.c b/arch/x86/events/intel/uncore_nhmex.c
+> > index 173e2674be6e..5f7c27d7f428 100644
+> > --- a/arch/x86/events/intel/uncore_nhmex.c
+> > +++ b/arch/x86/events/intel/uncore_nhmex.c
+> > @@ -262,7 +262,7 @@ static void nhmex_uncore_msr_enable_event(struct intel_uncore_box *box, struct p
+> >   	.disable_event	= nhmex_uncore_msr_disable_event,	\
+> >   	.read_counter	= uncore_msr_read_counter
+> > -static struct intel_uncore_ops nhmex_uncore_ops = {
+> > +static const struct intel_uncore_ops nhmex_uncore_ops = {
+> >   	NHMEX_UNCORE_OPS_COMMON_INIT(),
+> >   	.enable_event	= nhmex_uncore_msr_enable_event,
+> >   };
+> > @@ -413,7 +413,7 @@ static const struct attribute_group nhmex_uncore_bbox_format_group = {
+> >   	.attrs = nhmex_uncore_bbox_formats_attr,
+> >   };
+> > -static struct intel_uncore_ops nhmex_uncore_bbox_ops = {
+> > +static const struct intel_uncore_ops nhmex_uncore_bbox_ops = {
+> >   	NHMEX_UNCORE_OPS_COMMON_INIT(),
+> >   	.enable_event		= nhmex_bbox_msr_enable_event,
+> >   	.hw_config		= nhmex_bbox_hw_config,
+> > @@ -490,7 +490,7 @@ static const struct attribute_group nhmex_uncore_sbox_format_group = {
+> >   	.attrs			= nhmex_uncore_sbox_formats_attr,
+> >   };
+> > -static struct intel_uncore_ops nhmex_uncore_sbox_ops = {
+> > +static const struct intel_uncore_ops nhmex_uncore_sbox_ops = {
+> >   	NHMEX_UNCORE_OPS_COMMON_INIT(),
+> >   	.enable_event		= nhmex_sbox_msr_enable_event,
+> >   	.hw_config		= nhmex_sbox_hw_config,
+> > @@ -916,7 +916,7 @@ static struct uncore_event_desc wsmex_uncore_mbox_events[] = {
+> >   	{ /* end: all zeroes */ },
+> >   };
+> > -static struct intel_uncore_ops nhmex_uncore_mbox_ops = {
+> > +static const struct intel_uncore_ops nhmex_uncore_mbox_ops = {
+> >   	NHMEX_UNCORE_OPS_COMMON_INIT(),
+> >   	.enable_event	= nhmex_mbox_msr_enable_event,
+> >   	.hw_config	= nhmex_mbox_hw_config,
+> > @@ -1179,7 +1179,7 @@ static struct uncore_event_desc nhmex_uncore_rbox_events[] = {
+> >   	{ /* end: all zeroes */ },
+> >   };
+> > -static struct intel_uncore_ops nhmex_uncore_rbox_ops = {
+> > +static const struct intel_uncore_ops nhmex_uncore_rbox_ops = {
+> >   	NHMEX_UNCORE_OPS_COMMON_INIT(),
+> >   	.enable_event		= nhmex_rbox_msr_enable_event,
+> >   	.hw_config		= nhmex_rbox_hw_config,
+> > diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
+> > index 0f63706cdadf..5826cff568f4 100644
+> > --- a/arch/x86/events/intel/uncore_snb.c
+> > +++ b/arch/x86/events/intel/uncore_snb.c
+> > @@ -216,7 +216,7 @@ static const struct attribute_group snb_uncore_format_group = {
+> >   	.attrs		= snb_uncore_formats_attr,
+> >   };
+> > -static struct intel_uncore_ops snb_uncore_msr_ops = {
+> > +static const struct intel_uncore_ops snb_uncore_msr_ops = {
+> >   	.init_box	= snb_uncore_msr_init_box,
+> >   	.enable_box	= snb_uncore_msr_enable_box,
+> >   	.exit_box	= snb_uncore_msr_exit_box,
+> > @@ -341,7 +341,7 @@ void skl_uncore_cpu_init(void)
+> >   	snb_uncore_arb.ops = &skl_uncore_msr_ops;
+> >   }
+> > -static struct intel_uncore_ops icl_uncore_msr_ops = {
+> > +static const struct intel_uncore_ops icl_uncore_msr_ops = {
+> >   	.disable_event	= snb_uncore_msr_disable_event,
+> >   	.enable_event	= snb_uncore_msr_enable_event,
+> >   	.read_counter	= uncore_msr_read_counter,
+> > @@ -468,7 +468,7 @@ static void adl_uncore_msr_exit_box(struct intel_uncore_box *box)
+> >   		wrmsrl(ADL_UNC_PERF_GLOBAL_CTL, 0);
+> >   }
+> > -static struct intel_uncore_ops adl_uncore_msr_ops = {
+> > +static const struct intel_uncore_ops adl_uncore_msr_ops = {
+> >   	.init_box	= adl_uncore_msr_init_box,
+> >   	.enable_box	= adl_uncore_msr_enable_box,
+> >   	.disable_box	= adl_uncore_msr_disable_box,
+> > @@ -799,7 +799,7 @@ static struct pmu snb_uncore_imc_pmu = {
+> >   	.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
+> >   };
+> > -static struct intel_uncore_ops snb_uncore_imc_ops = {
+> > +static const struct intel_uncore_ops snb_uncore_imc_ops = {
+> >   	.init_box	= snb_uncore_imc_init_box,
+> >   	.exit_box	= uncore_mmio_exit_box,
+> >   	.enable_box	= snb_uncore_imc_enable_box,
+> > @@ -1267,7 +1267,7 @@ static struct uncore_event_desc nhm_uncore_events[] = {
+> >   	{ /* end: all zeroes */ },
+> >   };
+> > -static struct intel_uncore_ops nhm_uncore_msr_ops = {
+> > +static const struct intel_uncore_ops nhm_uncore_msr_ops = {
+> >   	.disable_box	= nhm_uncore_msr_disable_box,
+> >   	.enable_box	= nhm_uncore_msr_enable_box,
+> >   	.disable_event	= snb_uncore_msr_disable_event,
+> > @@ -1422,7 +1422,7 @@ static void tgl_uncore_imc_freerunning_init_box(struct intel_uncore_box *box)
+> >   		pr_warn("perf uncore: Failed to ioremap for %s.\n", type->name);
+> >   }
+> > -static struct intel_uncore_ops tgl_uncore_imc_freerunning_ops = {
+> > +static const struct intel_uncore_ops tgl_uncore_imc_freerunning_ops = {
+> >   	.init_box	= tgl_uncore_imc_freerunning_init_box,
+> >   	.exit_box	= uncore_mmio_exit_box,
+> >   	.read_counter	= uncore_mmio_read_counter,
+> > diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+> > index bb6eb1e5569c..43eabe8d37dc 100644
+> > --- a/arch/x86/events/intel/uncore_snbep.c
+> > +++ b/arch/x86/events/intel/uncore_snbep.c
+> > @@ -775,7 +775,7 @@ static const struct attribute_group snbep_uncore_qpi_format_group = {
+> >   	__SNBEP_UNCORE_MSR_OPS_COMMON_INIT(),			\
+> >   	.init_box	= snbep_uncore_msr_init_box		\
+> > -static struct intel_uncore_ops snbep_uncore_msr_ops = {
+> > +static const struct intel_uncore_ops snbep_uncore_msr_ops = {
+> >   	SNBEP_UNCORE_MSR_OPS_COMMON_INIT(),
+> >   };
+> > @@ -786,7 +786,7 @@ static struct intel_uncore_ops snbep_uncore_msr_ops = {
+> >   	.disable_event	= snbep_uncore_pci_disable_event,	\
+> >   	.read_counter	= snbep_uncore_pci_read_counter
+> > -static struct intel_uncore_ops snbep_uncore_pci_ops = {
+> > +static const struct intel_uncore_ops snbep_uncore_pci_ops = {
+> >   	SNBEP_UNCORE_PCI_OPS_COMMON_INIT(),
+> >   	.enable_event	= snbep_uncore_pci_enable_event,	\
+> >   };
+> > @@ -1017,7 +1017,7 @@ static int snbep_cbox_hw_config(struct intel_uncore_box *box, struct perf_event
+> >   	return 0;
+> >   }
+> > -static struct intel_uncore_ops snbep_uncore_cbox_ops = {
+> > +static const struct intel_uncore_ops snbep_uncore_cbox_ops = {
+> >   	SNBEP_UNCORE_MSR_OPS_COMMON_INIT(),
+> >   	.hw_config		= snbep_cbox_hw_config,
+> >   	.get_constraint		= snbep_cbox_get_constraint,
+> > @@ -1127,7 +1127,7 @@ static int snbep_pcu_hw_config(struct intel_uncore_box *box, struct perf_event *
+> >   	return 0;
+> >   }
+> > -static struct intel_uncore_ops snbep_uncore_pcu_ops = {
+> > +static const struct intel_uncore_ops snbep_uncore_pcu_ops = {
+> >   	SNBEP_UNCORE_MSR_OPS_COMMON_INIT(),
+> >   	.hw_config		= snbep_pcu_hw_config,
+> >   	.get_constraint		= snbep_pcu_get_constraint,
+> > @@ -1211,7 +1211,7 @@ static void snbep_qpi_enable_event(struct intel_uncore_box *box, struct perf_eve
+> >   	pci_write_config_dword(pdev, hwc->config_base, hwc->config | SNBEP_PMON_CTL_EN);
+> >   }
+> > -static struct intel_uncore_ops snbep_uncore_qpi_ops = {
+> > +static const struct intel_uncore_ops snbep_uncore_qpi_ops = {
+> >   	SNBEP_UNCORE_PCI_OPS_COMMON_INIT(),
+> >   	.enable_event		= snbep_qpi_enable_event,
+> >   	.hw_config		= snbep_qpi_hw_config,
+> > @@ -1517,11 +1517,11 @@ static void ivbep_uncore_pci_init_box(struct intel_uncore_box *box)
+> >   	.enable_event	= snbep_uncore_msr_enable_event,	\
+> >   	.read_counter	= uncore_msr_read_counter
+> > -static struct intel_uncore_ops ivbep_uncore_msr_ops = {
+> > +static const struct intel_uncore_ops ivbep_uncore_msr_ops = {
+> >   	IVBEP_UNCORE_MSR_OPS_COMMON_INIT(),
+> >   };
+> > -static struct intel_uncore_ops ivbep_uncore_pci_ops = {
+> > +static const struct intel_uncore_ops ivbep_uncore_pci_ops = {
+> >   	.init_box	= ivbep_uncore_pci_init_box,
+> >   	.disable_box	= snbep_uncore_pci_disable_box,
+> >   	.enable_box	= snbep_uncore_pci_enable_box,
+> > @@ -1757,7 +1757,7 @@ static void ivbep_cbox_enable_event(struct intel_uncore_box *box, struct perf_ev
+> >   	wrmsrl(hwc->config_base, hwc->config | SNBEP_PMON_CTL_EN);
+> >   }
+> > -static struct intel_uncore_ops ivbep_uncore_cbox_ops = {
+> > +static const struct intel_uncore_ops ivbep_uncore_cbox_ops = {
+> >   	.init_box		= ivbep_uncore_msr_init_box,
+> >   	.disable_box		= snbep_uncore_msr_disable_box,
+> >   	.enable_box		= snbep_uncore_msr_enable_box,
+> > @@ -1785,7 +1785,7 @@ static struct intel_uncore_type ivbep_uncore_cbox = {
+> >   	.format_group		= &ivbep_uncore_cbox_format_group,
+> >   };
+> > -static struct intel_uncore_ops ivbep_uncore_pcu_ops = {
+> > +static const struct intel_uncore_ops ivbep_uncore_pcu_ops = {
+> >   	IVBEP_UNCORE_MSR_OPS_COMMON_INIT(),
+> >   	.hw_config		= snbep_pcu_hw_config,
+> >   	.get_constraint		= snbep_pcu_get_constraint,
+> > @@ -1873,7 +1873,7 @@ static u64 ivbep_uncore_irp_read_counter(struct intel_uncore_box *box, struct pe
+> >   	return count;
+> >   }
+> > -static struct intel_uncore_ops ivbep_uncore_irp_ops = {
+> > +static const struct intel_uncore_ops ivbep_uncore_irp_ops = {
+> >   	.init_box	= ivbep_uncore_pci_init_box,
+> >   	.disable_box	= snbep_uncore_pci_disable_box,
+> >   	.enable_box	= snbep_uncore_pci_enable_box,
+> > @@ -1893,7 +1893,7 @@ static struct intel_uncore_type ivbep_uncore_irp = {
+> >   	.format_group		= &ivbep_uncore_format_group,
+> >   };
+> > -static struct intel_uncore_ops ivbep_uncore_qpi_ops = {
+> > +static const struct intel_uncore_ops ivbep_uncore_qpi_ops = {
+> >   	.init_box	= ivbep_uncore_pci_init_box,
+> >   	.disable_box	= snbep_uncore_pci_disable_box,
+> >   	.enable_box	= snbep_uncore_pci_enable_box,
+> > @@ -2178,7 +2178,7 @@ static int knl_cha_hw_config(struct intel_uncore_box *box,
+> >   static void hswep_cbox_enable_event(struct intel_uncore_box *box,
+> >   				    struct perf_event *event);
+> > -static struct intel_uncore_ops knl_uncore_cha_ops = {
+> > +static const struct intel_uncore_ops knl_uncore_cha_ops = {
+> >   	.init_box		= snbep_uncore_msr_init_box,
+> >   	.disable_box		= snbep_uncore_msr_disable_box,
+> >   	.enable_box		= snbep_uncore_msr_enable_box,
+> > @@ -2272,7 +2272,7 @@ static void knl_uncore_imc_enable_event(struct intel_uncore_box *box,
+> >   				       hwc->config | SNBEP_PMON_CTL_EN);
+> >   }
+> > -static struct intel_uncore_ops knl_uncore_imc_ops = {
+> > +static const struct intel_uncore_ops knl_uncore_imc_ops = {
+> >   	.init_box	= snbep_uncore_pci_init_box,
+> >   	.disable_box	= snbep_uncore_pci_disable_box,
+> >   	.enable_box	= knl_uncore_imc_enable_box,
+> > @@ -2581,7 +2581,7 @@ static int hswep_ubox_hw_config(struct intel_uncore_box *box, struct perf_event
+> >   	return 0;
+> >   }
+> > -static struct intel_uncore_ops hswep_uncore_ubox_ops = {
+> > +static const struct intel_uncore_ops hswep_uncore_ubox_ops = {
+> >   	SNBEP_UNCORE_MSR_OPS_COMMON_INIT(),
+> >   	.hw_config		= hswep_ubox_hw_config,
+> >   	.get_constraint		= uncore_get_constraint,
+> > @@ -2741,7 +2741,7 @@ static void hswep_cbox_enable_event(struct intel_uncore_box *box,
+> >   	wrmsrl(hwc->config_base, hwc->config | SNBEP_PMON_CTL_EN);
+> >   }
+> > -static struct intel_uncore_ops hswep_uncore_cbox_ops = {
+> > +static const struct intel_uncore_ops hswep_uncore_cbox_ops = {
+> >   	.init_box		= snbep_uncore_msr_init_box,
+> >   	.disable_box		= snbep_uncore_msr_disable_box,
+> >   	.enable_box		= snbep_uncore_msr_enable_box,
+> > @@ -2788,7 +2788,7 @@ static void hswep_uncore_sbox_msr_init_box(struct intel_uncore_box *box)
+> >   	}
+> >   }
+> > -static struct intel_uncore_ops hswep_uncore_sbox_msr_ops = {
+> > +static const struct intel_uncore_ops hswep_uncore_sbox_msr_ops = {
+> >   	__SNBEP_UNCORE_MSR_OPS_COMMON_INIT(),
+> >   	.init_box		= hswep_uncore_sbox_msr_init_box
+> >   };
+> > @@ -2836,7 +2836,7 @@ static int hswep_pcu_hw_config(struct intel_uncore_box *box, struct perf_event *
+> >   	return 0;
+> >   }
+> > -static struct intel_uncore_ops hswep_uncore_pcu_ops = {
+> > +static const struct intel_uncore_ops hswep_uncore_pcu_ops = {
+> >   	SNBEP_UNCORE_MSR_OPS_COMMON_INIT(),
+> >   	.hw_config		= hswep_pcu_hw_config,
+> >   	.get_constraint		= snbep_pcu_get_constraint,
+> > @@ -2941,7 +2941,7 @@ static u64 hswep_uncore_irp_read_counter(struct intel_uncore_box *box, struct pe
+> >   	return count;
+> >   }
+> > -static struct intel_uncore_ops hswep_uncore_irp_ops = {
+> > +static const struct intel_uncore_ops hswep_uncore_irp_ops = {
+> >   	.init_box	= snbep_uncore_pci_init_box,
+> >   	.disable_box	= snbep_uncore_pci_disable_box,
+> >   	.enable_box	= snbep_uncore_pci_enable_box,
+> > @@ -3611,7 +3611,7 @@ static int skx_cha_hw_config(struct intel_uncore_box *box, struct perf_event *ev
+> >   	return 0;
+> >   }
+> > -static struct intel_uncore_ops skx_uncore_chabox_ops = {
+> > +static const struct intel_uncore_ops skx_uncore_chabox_ops = {
+> >   	/* There is no frz_en for chabox ctl */
+> >   	.init_box		= ivbep_uncore_msr_init_box,
+> >   	.disable_box		= snbep_uncore_msr_disable_box,
+> > @@ -3673,7 +3673,7 @@ static void skx_iio_enable_event(struct intel_uncore_box *box,
+> >   	wrmsrl(hwc->config_base, hwc->config | SNBEP_PMON_CTL_EN);
+> >   }
+> > -static struct intel_uncore_ops skx_uncore_iio_ops = {
+> > +static const struct intel_uncore_ops skx_uncore_iio_ops = {
+> >   	.init_box		= ivbep_uncore_msr_init_box,
+> >   	.disable_box		= snbep_uncore_msr_disable_box,
+> >   	.enable_box		= snbep_uncore_msr_enable_box,
+> > @@ -3931,7 +3931,7 @@ static struct uncore_event_desc skx_uncore_iio_freerunning_events[] = {
+> >   	{ /* end: all zeroes */ },
+> >   };
+> > -static struct intel_uncore_ops skx_uncore_iio_freerunning_ops = {
+> > +static const struct intel_uncore_ops skx_uncore_iio_freerunning_ops = {
+> >   	.read_counter		= uncore_msr_read_counter,
+> >   	.hw_config		= uncore_freerunning_hw_config,
+> >   };
+> > @@ -4006,7 +4006,7 @@ static struct attribute_group skx_uncore_pcu_format_group = {
+> >   	.attrs = skx_uncore_pcu_formats_attr,
+> >   };
+> > -static struct intel_uncore_ops skx_uncore_pcu_ops = {
+> > +static const struct intel_uncore_ops skx_uncore_pcu_ops = {
+> >   	IVBEP_UNCORE_MSR_OPS_COMMON_INIT(),
+> >   	.hw_config		= hswep_pcu_hw_config,
+> >   	.get_constraint		= snbep_pcu_get_constraint,
+> > @@ -4105,7 +4105,7 @@ static void skx_upi_uncore_pci_init_box(struct intel_uncore_box *box)
+> >   	pci_write_config_dword(pdev, SKX_UPI_PCI_PMON_BOX_CTL, IVBEP_PMON_BOX_CTL_INT);
+> >   }
+> > -static struct intel_uncore_ops skx_upi_uncore_pci_ops = {
+> > +static const struct intel_uncore_ops skx_upi_uncore_pci_ops = {
+> >   	.init_box	= skx_upi_uncore_pci_init_box,
+> >   	.disable_box	= snbep_uncore_pci_disable_box,
+> >   	.enable_box	= snbep_uncore_pci_enable_box,
+> > @@ -4136,7 +4136,7 @@ static void skx_m2m_uncore_pci_init_box(struct intel_uncore_box *box)
+> >   	pci_write_config_dword(pdev, SKX_M2M_PCI_PMON_BOX_CTL, IVBEP_PMON_BOX_CTL_INT);
+> >   }
+> > -static struct intel_uncore_ops skx_m2m_uncore_pci_ops = {
+> > +static const struct intel_uncore_ops skx_m2m_uncore_pci_ops = {
+> >   	.init_box	= skx_m2m_uncore_pci_init_box,
+> >   	.disable_box	= snbep_uncore_pci_disable_box,
+> >   	.enable_box	= snbep_uncore_pci_enable_box,
+> > @@ -4373,7 +4373,7 @@ static void snr_cha_enable_event(struct intel_uncore_box *box,
+> >   	wrmsrl(hwc->config_base, hwc->config | SNBEP_PMON_CTL_EN);
+> >   }
+> > -static struct intel_uncore_ops snr_uncore_chabox_ops = {
+> > +static const struct intel_uncore_ops snr_uncore_chabox_ops = {
+> >   	.init_box		= ivbep_uncore_msr_init_box,
+> >   	.disable_box		= snbep_uncore_msr_disable_box,
+> >   	.enable_box		= snbep_uncore_msr_enable_box,
+> > @@ -4560,7 +4560,7 @@ static int snr_pcu_hw_config(struct intel_uncore_box *box, struct perf_event *ev
+> >   	return 0;
+> >   }
+> > -static struct intel_uncore_ops snr_uncore_pcu_ops = {
+> > +static const struct intel_uncore_ops snr_uncore_pcu_ops = {
+> >   	IVBEP_UNCORE_MSR_OPS_COMMON_INIT(),
+> >   	.hw_config		= snr_pcu_hw_config,
+> >   	.get_constraint		= snbep_pcu_get_constraint,
+> > @@ -4660,7 +4660,7 @@ static void snr_m2m_uncore_pci_init_box(struct intel_uncore_box *box)
+> >   	pci_write_config_dword(pdev, box_ctl, IVBEP_PMON_BOX_CTL_INT);
+> >   }
+> > -static struct intel_uncore_ops snr_m2m_uncore_pci_ops = {
+> > +static const struct intel_uncore_ops snr_m2m_uncore_pci_ops = {
+> >   	.init_box	= snr_m2m_uncore_pci_init_box,
+> >   	.disable_box	= snbep_uncore_pci_disable_box,
+> >   	.enable_box	= snbep_uncore_pci_enable_box,
+> > @@ -4706,7 +4706,7 @@ static void snr_uncore_pci_enable_event(struct intel_uncore_box *box, struct per
+> >   	pci_write_config_dword(pdev, hwc->config_base + 4, (u32)(hwc->config >> 32));
+> >   }
+> > -static struct intel_uncore_ops snr_pcie3_uncore_pci_ops = {
+> > +static const struct intel_uncore_ops snr_pcie3_uncore_pci_ops = {
+> >   	.init_box	= snr_m2m_uncore_pci_init_box,
+> >   	.disable_box	= snbep_uncore_pci_disable_box,
+> >   	.enable_box	= snbep_uncore_pci_enable_box,
+> > @@ -4884,7 +4884,7 @@ static void snr_uncore_mmio_disable_event(struct intel_uncore_box *box,
+> >   	writel(hwc->config, box->io_addr + hwc->config_base);
+> >   }
+> > -static struct intel_uncore_ops snr_uncore_mmio_ops = {
+> > +static const struct intel_uncore_ops snr_uncore_mmio_ops = {
+> >   	.init_box	= snr_uncore_mmio_init_box,
+> >   	.exit_box	= uncore_mmio_exit_box,
+> >   	.disable_box	= snr_uncore_mmio_disable_box,
+> > @@ -4948,7 +4948,7 @@ static struct uncore_event_desc snr_uncore_imc_freerunning_events[] = {
+> >   	{ /* end: all zeroes */ },
+> >   };
+> > -static struct intel_uncore_ops snr_uncore_imc_freerunning_ops = {
+> > +static const struct intel_uncore_ops snr_uncore_imc_freerunning_ops = {
+> >   	.init_box	= snr_uncore_mmio_init_box,
+> >   	.exit_box	= uncore_mmio_exit_box,
+> >   	.read_counter	= uncore_mmio_read_counter,
+> > @@ -5005,7 +5005,7 @@ static int icx_cha_hw_config(struct intel_uncore_box *box, struct perf_event *ev
+> >   	return 0;
+> >   }
+> > -static struct intel_uncore_ops icx_uncore_chabox_ops = {
+> > +static const struct intel_uncore_ops icx_uncore_chabox_ops = {
+> >   	.init_box		= ivbep_uncore_msr_init_box,
+> >   	.disable_box		= snbep_uncore_msr_disable_box,
+> >   	.enable_box		= snbep_uncore_msr_enable_box,
+> > @@ -5406,7 +5406,7 @@ static void icx_uncore_imc_init_box(struct intel_uncore_box *box)
+> >   	__snr_uncore_mmio_init_box(box, box_ctl, mem_offset);
+> >   }
+> > -static struct intel_uncore_ops icx_uncore_mmio_ops = {
+> > +static const struct intel_uncore_ops icx_uncore_mmio_ops = {
+> >   	.init_box	= icx_uncore_imc_init_box,
+> >   	.exit_box	= uncore_mmio_exit_box,
+> >   	.disable_box	= snr_uncore_mmio_disable_box,
+> > @@ -5476,7 +5476,7 @@ static void icx_uncore_imc_freerunning_init_box(struct intel_uncore_box *box)
+> >   	__snr_uncore_mmio_init_box(box, uncore_mmio_box_ctl(box), mem_offset);
+> >   }
+> > -static struct intel_uncore_ops icx_uncore_imc_freerunning_ops = {
+> > +static const struct intel_uncore_ops icx_uncore_imc_freerunning_ops = {
+> >   	.init_box	= icx_uncore_imc_freerunning_init_box,
+> >   	.exit_box	= uncore_mmio_exit_box,
+> >   	.read_counter	= uncore_mmio_read_counter,
+> > 
