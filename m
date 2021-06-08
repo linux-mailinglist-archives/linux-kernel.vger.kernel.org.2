@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D8439FDCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9E039FDCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbhFHRgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:36:17 -0400
-Received: from smtprelay0058.hostedemail.com ([216.40.44.58]:35934 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232628AbhFHRgQ (ORCPT
+        id S233365AbhFHRgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231416AbhFHRgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:36:16 -0400
-Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A84DD1802768D;
-        Tue,  8 Jun 2021 17:34:22 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id D63722EBFA9;
-        Tue,  8 Jun 2021 17:34:21 +0000 (UTC)
-Message-ID: <eb8d5431301686000746524882c06121a2d21189.camel@perches.com>
-Subject: Re: [PATCH -next 2/2] staging: r8188eu: use eth_broadcast_addr() to
- assign broadcast address
-From:   Joe Perches <joe@perches.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Liu Shixin <liushixin2@huawei.com>, linux-staging@lists.linux.dev,
+        Tue, 8 Jun 2021 13:36:35 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8B3C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 10:34:31 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id z26so16247521pfj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YLvKoBEvfY2Ptqya3hzaWF4xLVwI7EHKO0HHIAZbjlk=;
+        b=i0MmDl8Ps0IZQmWQ2ViKg1qX561L8Orz5iYseHhCKEYr93sUci8K/7wS9nivt46/z8
+         myDrRIqzCtf6XZHgB/yp7wRZxT3r6mBuocIx00CTkorpFU3db3YRdvOAXbfrnieGxlgx
+         LCLQNEC2KqG1w+FfuXKHUpQh2dflywFCwrjhI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YLvKoBEvfY2Ptqya3hzaWF4xLVwI7EHKO0HHIAZbjlk=;
+        b=DyZRVQ13pL1uOvhCFY+4E9m9VH/DYrKsSOmdWjspsdieig3HzQVMMm3etE8BMyUb45
+         2mOoe9t77viKOpriJjGQM6/UGkJHSxaQ1PKC310alluBFkblOIjBE8bOm6nWFeHVzp4x
+         s+nDfEuc2IZfCgWp0GfPVkEc9Hz3SFIrLXggbIUCR7G2pGv5QPe5kVPnCD3g1mCGgQiy
+         +6DLF2p7yyFl3YI/gp5MXWADgzwJH3uBBw+pXP+FZa0uBvgbMtucLL3HDuY0Ak1tCWGI
+         42H0tvX1XfM7g4Jfkf8tnlhwODLb2gviyBJe1LV+E6NHnWD+LnC5/EsyfTXJW62m9nkd
+         fsVg==
+X-Gm-Message-State: AOAM530NI8UTDi3UtvrxyNNrebJSLQcfyRJgCIciJKpEATNWcRjRBpvv
+        kVG0ow3uKXvNnQNyiwHkQUcq/A==
+X-Google-Smtp-Source: ABdhPJw9cte543iNlOqM4Zf8WDgZK8UQ3GrQhbOt80HpmTn122EUoVoTmcwVaheYzTeFl8F9id315w==
+X-Received: by 2002:aa7:8114:0:b029:2e9:ae2b:7ff with SMTP id b20-20020aa781140000b02902e9ae2b07ffmr1055597pfi.48.1623173670797;
+        Tue, 08 Jun 2021 10:34:30 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u19sm6420346pfi.127.2021.06.08.10.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 10:34:29 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 10:34:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     axboe@kernel.dk, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com, gmpy.liaowx@gmail.com,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Tue, 08 Jun 2021 10:34:20 -0700
-In-Reply-To: <YL+ib+tJwKckXagY@kroah.com>
-References: <20210608141620.525521-1-liushixin2@huawei.com>
-         <YL96vz4okNehxCBG@kroah.com>
-         <b77a3e7b0923344e8c5b9b17f4788d28f3ccfb4f.camel@perches.com>
-         <YL+ib+tJwKckXagY@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+Subject: Re: [PATCH] mark pstore-blk as broken
+Message-ID: <202106081033.F59D7A4@keescook>
+References: <20210608161327.1537919-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.90
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: D63722EBFA9
-X-Stat-Signature: rw44uyzpkapeqtxq56hmgrhf3nuoe1uq
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18c9oRogXoskGGUuR46UUayQp3MM5TsUb0=
-X-HE-Tag: 1623173661-547712
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608161327.1537919-1-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-06-08 at 19:01 +0200, Greg Kroah-Hartman wrote:
-> On Tue, Jun 08, 2021 at 09:45:49AM -0700, Joe Perches wrote:
-> > On Tue, 2021-06-08 at 16:12 +0200, Greg Kroah-Hartman wrote:
-> > > On Tue, Jun 08, 2021 at 10:16:20PM +0800, Liu Shixin wrote:
-> > > > Use eth_broadcast_addr() to assign broadcast address.
-> > > 
-> > > That says what you do, but not _why_ you are doing this?
-> > > 
-> > > Why make this change?  What benifit does it provide?
-> > 
-> > The commit message is clear and concise as using available kernel
-> > mechanisms is better than homegrown or duplicative ones.
-> > 
-> > Are you asking merely becuse Liu Shixin hasn't had many staging
-> > commits?
+On Tue, Jun 08, 2021 at 06:13:27PM +0200, Christoph Hellwig wrote:
+> pstore-blk just pokes directly into the pagecache for the block
+> device without going through the file operations for that by faking
+> up it's own file operations that do not match the block device ones.
 > 
-> I'm asking because this changelog text does not explain why this is
-> needed at all and needs to be changed to do so.
+> As this breaks the control of the block layer of it's page cache,
+> and even now just works by accident only the best thing is to just
+> disable this driver.
+> 
+> Fixes: 17639f67c1d6 ("pstore/blk: Introduce backend for block devices")
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/pstore/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
+> index 8adabde685f1..328da35da390 100644
+> --- a/fs/pstore/Kconfig
+> +++ b/fs/pstore/Kconfig
+> @@ -173,6 +173,7 @@ config PSTORE_BLK
+>  	tristate "Log panic/oops to a block device"
+>  	depends on PSTORE
+>  	depends on BLOCK
+> +	depends on BROKEN
+>  	select PSTORE_ZONE
+>  	default n
+>  	help
+> -- 
+> 2.30.2
+> 
 
-IYO.
+NAK, please answer my concerns about your patches instead:
+https://lore.kernel.org/lkml/202012011149.5650B9796@keescook/
 
-IMO it's obvious and fine as is and you are asking for overly
-fine-grained analyses in commit messages.
-
-The subject is clear though the commit message is merely duplicative.
-
-It _could_ show the reduction in object size for some versions of gcc.
-
-$ size drivers/staging/rtl8188eu/core/rtw_mlme_ext.o*
-   text	   data	    bss	    dec	    hex	filename
-  53259	    372	   2430	  56061	   dafd	drivers/staging/rtl8188eu/core/rtw_mlme_ext.o.gcc6.new
-  53355	    372	   2430	  56157	   db5d	drivers/staging/rtl8188eu/core/rtw_mlme_ext.o.gcc6.old
-  54673	    372	   2430	  57475	   e083	drivers/staging/rtl8188eu/core/rtw_mlme_ext.o.gcc10.new
-  54673	    372	   2430	  57475	   e083	drivers/staging/rtl8188eu/core/rtw_mlme_ext.o.gcc10.old
-
-It _could_ describe how the kernel mechanisms depend on a minimum
-alignment of __aligned(2) in the tested address and also show that
-the address is properly minimum aligned.
-
-struct ieee80211_hdr {
-	__le16 frame_control;
-	__le16 duration_id;
-	u8 addr1[ETH_ALEN];
-	u8 addr2[ETH_ALEN];
-	u8 addr3[ETH_ALEN];
-	__le16 seq_ctrl;
-	u8 addr4[ETH_ALEN];
-} __packed __aligned(2);
-[...]
-	struct ieee80211_hdr *pwlanhdr;
-[...]
--	ether_addr_copy(pwlanhdr->addr1, bc_addr);
-+	eth_broadcast_addr(pwlanhdr->addr1);
-
-It _could_ show that the commit has some effect on runtime.
-It _could_ show that it passes some (unavailable) regression test.
-
-IMO: None of those are really necessary here.
-
-
+-- 
+Kees Cook
