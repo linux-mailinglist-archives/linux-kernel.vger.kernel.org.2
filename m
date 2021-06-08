@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2861D3A0714
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92AE63A0726
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235190AbhFHWkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 18:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234874AbhFHWkH (ORCPT
+        id S235380AbhFHWlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 18:41:00 -0400
+Received: from mail-qk1-f180.google.com ([209.85.222.180]:41600 "EHLO
+        mail-qk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235258AbhFHWkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 18:40:07 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5207EC061795
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 15:37:57 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id z4so13537822qts.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:37:57 -0700 (PDT)
+        Tue, 8 Jun 2021 18:40:51 -0400
+Received: by mail-qk1-f180.google.com with SMTP id c124so21910427qkd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:38:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MLu63O/FGB3OwQJYCj3q5EMOUKS51/xFISH4Nn/2C/8=;
-        b=NNCx0Pc95kM1qAdnhBuhr8Qi71A0x+RgFhiiW99y4ByAqG7QJz+3TDkoj328ubWj+y
-         ugL5/mZV567+inWIlTXxCSKZnnjVsGzlxqRz9YggP8lwOQ4sEcYw88/+NcyfmhoPyFuL
-         LVZnmuAinEQj2DxOAO1AG2pbd9fLqHhrFHd858l03w94qRVZxgeBXfITet8wxfibqadb
-         nywBSrOMKgEhhDaZpl+FilYr8AZxdIyILYsYrDAjcXH8UlxT4EFXSWmQr9xCzGj6Dtq9
-         qTgBEsxIjXD8bJOTx74UatsFsB7jRoo+nR7MbLsU9eRL9sI4UyyxJp74G3+rlGRf+Km/
-         eSFw==
+        bh=ZIQt2jCiu8UQ3tm03+YZTLApMSATbTz4nD1zztWDgOQ=;
+        b=qFD9+dYXxnHJRQggT3QcQ/+nrZgr/vhVcXpz1xKDiACbl+FQ3UtSQPQNWA99ebE4cG
+         jvIG3k8cg1xNDk8Be7Gi010k7KRLfaj1RvY0D0R1UUI6K8t4nS6mzJp8oD6UlvGkGibi
+         KB3PdjvRlVaZlRBm1X+tUMRUH55JdW1h/0prncQOe6/oLUyZaQz2YOxAQFJ9RUcb7+KQ
+         AX68gwlxDBal0X9i1gu9NzMlRTYhJT+pbe5lgeAlVhUL/ZPd/MIJYiPnPBriFIMomMJU
+         sPCBR/reUkUUFP8p+znm1LQbJzsRaOVvMPYmaRL8C3VWEplfCdBLlbF8taUXUrtus1OQ
+         RXdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MLu63O/FGB3OwQJYCj3q5EMOUKS51/xFISH4Nn/2C/8=;
-        b=Vlwt4ozvsN9VONA19VCPJDgNhGR3FuuhddInq6slsW1ajW8q96ccVvRX2NM3NAKLoh
-         alS8IWZ7HE7Pb7BvR4W+Fi2EW+1iqwtY9/AAhTZUDonIIaDs/DGlHeJZm3hzCIsGvbQb
-         MJ8vQdcwuLc5QAuoKMerKBImtK136tLAnbVETdKHbj2sVr82Cscvbl8DCeFkmVzOBl1V
-         vzBe596/Vh4fXL+093e3fzZrWWpos/h/eAQato2+xwli5ef9rZ4N/RRCgJ7NjhQrpO2K
-         r+kXxczvAFIQjAhD6p0N6lBHKPKtDD4AdMII+VTxjBi5C2NR5WAffBRHKqu6Sypc1KYY
-         YAEg==
-X-Gm-Message-State: AOAM532npCh41G5mtxJzcJPoySweRhUYp/FX0Y5Y8wu1wmDbjohkZWDJ
-        aDkFEnQZ57WtYeIajnezWh5oig==
-X-Google-Smtp-Source: ABdhPJxqi6iboRcr63hnvz7UyaJR2v9uH5MlRCqu/2mTBGBMLzPY/mDRaMIk8k3lE8sifG4JsZy/TA==
-X-Received: by 2002:ac8:580b:: with SMTP id g11mr23488425qtg.244.1623191876554;
-        Tue, 08 Jun 2021 15:37:56 -0700 (PDT)
+        bh=ZIQt2jCiu8UQ3tm03+YZTLApMSATbTz4nD1zztWDgOQ=;
+        b=ChE/r/CfZLriDBumQX6VZxhTkxVx7c4kFzhnZwys41M4ykeOYrub1TwkXU/uy0TiM0
+         thDfgX0+NAidWdOcj2HnVyuakUSP3asB4tq0mKmaXWexUoLoDSdY6jBZOHMUrZUzQ02O
+         LzoisTPRxJQ/WkzNAIffJHERpNiDOOCTLRuBiMAZdXO/0yvfB/ESJ3dlZ2avptYlfRAq
+         f/e8lVzFa3B0tswSSTjKtuS2QSbosoMhC6pDKus6+oHnaxYckzt4KX3BbNgVDNhoa7BM
+         s9gFsbZLyxSA24LJfubiVvm6J5uGUIuDiaqO0++o9pLCemgSTXOje1Ow0U9rBww46/z7
+         anFg==
+X-Gm-Message-State: AOAM532USzkXu5/2Q5TZSFz/7Hqe7nyB73Prm0zPgVTmJODWIyILjEPU
+        E9Lozim8yRm+R3UsVzrmCaQIdA==
+X-Google-Smtp-Source: ABdhPJzxpS1UIUw7jyGvjpk0uHBt5n9wjOEIm712XMpbWA+7rKbWITYsJFp9O5jKv2MzZpu+3XH2GA==
+X-Received: by 2002:a37:8b47:: with SMTP id n68mr23337235qkd.209.1623191877747;
+        Tue, 08 Jun 2021 15:37:57 -0700 (PDT)
 Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id m3sm2324266qkh.135.2021.06.08.15.37.55
+        by smtp.gmail.com with ESMTPSA id m3sm2324266qkh.135.2021.06.08.15.37.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 15:37:56 -0700 (PDT)
+        Tue, 08 Jun 2021 15:37:57 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     robert.foss@linaro.org, andrey.konovalov@linaro.org,
@@ -57,9 +54,9 @@ Cc:     robert.foss@linaro.org, andrey.konovalov@linaro.org,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org (open list:QUALCOMM CAMERA SUBSYSTEM DRIVER),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 09/17] media: camss: csid: allow csid to work without a regulator
-Date:   Tue,  8 Jun 2021 18:34:58 -0400
-Message-Id: <20210608223513.23193-10-jonathan@marek.ca>
+Subject: [PATCH 10/17] media: camss: remove vdda-csiN from sdm845 resources
+Date:   Tue,  8 Jun 2021 18:34:59 -0400
+Message-Id: <20210608223513.23193-11-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20210608223513.23193-1-jonathan@marek.ca>
 References: <20210608223513.23193-1-jonathan@marek.ca>
@@ -69,77 +66,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At least for titan HW, CSID don't have an associated regulator. This change
-is necessary to be able to model this in the CSID resources.
+This isn't used and only works because devm_regulator_get() returns a dummy
+regulator.
 
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 Reviewed-by: Robert Foss <robert.foss@linaro.org>
 ---
- drivers/media/platform/qcom/camss/camss-csid.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/media/platform/qcom/camss/camss.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
-index cc11fbfdae132..528674dea06ca 100644
---- a/drivers/media/platform/qcom/camss/camss-csid.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid.c
-@@ -162,7 +162,7 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
- 			return ret;
- 		}
+diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+index ef100d5f77636..c08d6d6f6f90d 100644
+--- a/drivers/media/platform/qcom/camss/camss.c
++++ b/drivers/media/platform/qcom/camss/camss.c
+@@ -542,7 +542,7 @@ static const struct resources csiphy_res_845[] = {
+ static const struct resources csid_res_845[] = {
+ 	/* CSID0 */
+ 	{
+-		.regulator = { "vdda-csi0" },
++		.regulator = { NULL },
+ 		.clock = { "cpas_ahb", "cphy_rx_src", "slow_ahb_src",
+ 				"soc_ahb", "vfe0", "vfe0_src",
+ 				"vfe0_cphy_rx", "csi0",
+@@ -562,7 +562,7 @@ static const struct resources csid_res_845[] = {
  
--		ret = regulator_enable(csid->vdda);
-+		ret = csid->vdda ? regulator_enable(csid->vdda) : 0;
- 		if (ret < 0) {
- 			pm_runtime_put_sync(dev);
- 			return ret;
-@@ -170,14 +170,16 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
+ 	/* CSID1 */
+ 	{
+-		.regulator = { "vdda-csi1" },
++		.regulator = { NULL },
+ 		.clock = { "cpas_ahb", "cphy_rx_src", "slow_ahb_src",
+ 				"soc_ahb", "vfe1", "vfe1_src",
+ 				"vfe1_cphy_rx", "csi1",
+@@ -582,7 +582,7 @@ static const struct resources csid_res_845[] = {
  
- 		ret = csid_set_clock_rates(csid);
- 		if (ret < 0) {
--			regulator_disable(csid->vdda);
-+			if (csid->vdda)
-+				regulator_disable(csid->vdda);
- 			pm_runtime_put_sync(dev);
- 			return ret;
- 		}
- 
- 		ret = camss_enable_clocks(csid->nclocks, csid->clock, dev);
- 		if (ret < 0) {
--			regulator_disable(csid->vdda);
-+			if (csid->vdda)
-+				regulator_disable(csid->vdda);
- 			pm_runtime_put_sync(dev);
- 			return ret;
- 		}
-@@ -188,7 +190,8 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
- 		if (ret < 0) {
- 			disable_irq(csid->irq);
- 			camss_disable_clocks(csid->nclocks, csid->clock);
--			regulator_disable(csid->vdda);
-+			if (csid->vdda)
-+				regulator_disable(csid->vdda);
- 			pm_runtime_put_sync(dev);
- 			return ret;
- 		}
-@@ -197,7 +200,7 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
- 	} else {
- 		disable_irq(csid->irq);
- 		camss_disable_clocks(csid->nclocks, csid->clock);
--		ret = regulator_disable(csid->vdda);
-+		ret = csid->vdda ? regulator_disable(csid->vdda) : 0;
- 		pm_runtime_put_sync(dev);
- 	}
- 
-@@ -634,7 +637,9 @@ int msm_csid_subdev_init(struct camss *camss, struct csid_device *csid,
- 
- 	/* Regulator */
- 
--	csid->vdda = devm_regulator_get(dev, res->regulator[0]);
-+	csid->vdda = NULL;
-+	if (res->regulator[0])
-+		csid->vdda = devm_regulator_get(dev, res->regulator[0]);
- 	if (IS_ERR(csid->vdda)) {
- 		dev_err(dev, "could not get regulator\n");
- 		return PTR_ERR(csid->vdda);
+ 	/* CSID2 */
+ 	{
+-		.regulator = { "vdda-csi2" },
++		.regulator = { NULL },
+ 		.clock = { "cpas_ahb", "cphy_rx_src", "slow_ahb_src",
+ 				"soc_ahb", "vfe_lite", "vfe_lite_src",
+ 				"vfe_lite_cphy_rx", "csi2",
 -- 
 2.26.1
 
