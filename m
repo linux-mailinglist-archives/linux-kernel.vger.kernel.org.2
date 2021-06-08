@@ -2,133 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E3439FD9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BF239FDA9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233005AbhFHRbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:31:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59474 "EHLO mail.kernel.org"
+        id S233245AbhFHRbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:31:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231652AbhFHRbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:31:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE00061375;
-        Tue,  8 Jun 2021 17:29:45 +0000 (UTC)
+        id S231652AbhFHRbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 13:31:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EA3B61378;
+        Tue,  8 Jun 2021 17:29:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623173386;
-        bh=ItzIBqXzJpZDik1ri9ZEy8dxLAgX/jhstdp/QleUEsE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G9S49rKKT40nOKxSt69vJEFFnV8Nn1Avanob9mZSh5tccDrdgUcm+1K5/b7V+fiug
-         ANtP7zi+Ii87TBfezRzw2P4IZwtJwz9qqKmN56J3Wi4aYgipkd1QOyplk2bvJ4CTv8
-         LBTE3Uvs56lWYlAPTytWFKWIdGZAvJg2D43+Hzfo70M86F7v0xD0B714ccUm7R85UA
-         viojxo48doTrAaLZCKM3uplWuFy4bIiQWJQzpCp/nM1oD/ycfO+Sog0HxtpiF/OeNz
-         Sqi71l6fUlrR1ui3lVnBRj20+hTIIipY6JyZK/O407e+tCEozQom731MentiJ7UAcG
-         JdU+3CLk8wMJQ==
-Date:   Tue, 8 Jun 2021 10:29:45 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     moyufeng <moyufeng@huawei.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Parav Pandit <parav@mellanox.com>,
-        Or Gerlitz <gerlitz.or@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "lipeng (Y)" <lipeng321@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        <shenjian15@huawei.com>, "chenhao (DY)" <chenhao288@hisilicon.com>,
-        Jiaran Zhang <zhangjiaran@huawei.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
-Message-ID: <20210608102945.3edff79a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <530ff54c-3cee-0eb6-30b0-b607826f68cf@huawei.com>
-References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
-        <20190304174551.2300b7bc@cakuba.netronome.com>
-        <VI1PR0501MB22718228FC8198C068EFC455D1720@VI1PR0501MB2271.eurprd05.prod.outlook.com>
-        <76785913-b1bf-f126-a41e-14cd0f922100@huawei.com>
-        <20210531223711.19359b9a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
-        <20210601143451.4b042a94@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <cf961f69-c559-eaf0-e168-b014779a1519@huawei.com>
-        <20210602093440.15dc5713@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <857e7a19-1559-b929-fd15-05e8f38e9d45@huawei.com>
-        <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <c9afecb5-3c0e-6421-ea58-b041d8173636@huawei.com>
-        <20210604114109.3a7ada85@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <4e7a41ed-3f4d-d55d-8302-df3bc42dedd4@huawei.com>
-        <20210607124643.1bb1c6a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <530ff54c-3cee-0eb6-30b0-b607826f68cf@huawei.com>
+        s=k20201202; t=1623173398;
+        bh=ma/CkFfb8CYaaDcX25dR9NFonTv/wOGFyGfkm75Kj9Y=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VbARVNu/BDv7MOreXdH0h0CjHdMLUOauVp/AeplxCuwYNJfohMxtKJWhy8RaPPtQ0
+         dCplQ8K+KqbASS0q/VrnUAClykw8RFvI/nvJdSIOQ/o27JX68HdKEQkDqm18fze5lq
+         zk92iaQ7GwSSAueUAqMKpRfGSmGvPaD2ZajXpgn/LC3jDf5umXHUyLxyik0BN6QYFg
+         RqSji2MPY67nmh80t4F1wvVMpYSCJmlJVPV3ITkci84klRjfGBu+TnU+iHu9afBMm0
+         hffBmnxfZlrwmJMmIrglrEN3Es3tjtkpSDNjLAgKwern6vhY1nY0Rgiiy0VyygDxUX
+         s5Riljchq/j0Q==
+Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
+        Guenter Roeck <groeck@google.com>,
+        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
+        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
+        =?UTF-8?Q?Rados=c5=82aw_Biernacki?= <rad@semihalf.com>,
+        upstream@semihalf.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+References: <20210604205018.2238778-1-ndesaulniers@google.com>
+ <CAKwvOdmhg2tj8cKe-XitoZXGKaoOhgTsCEdVXubt+LiY9+46rw@mail.gmail.com>
+ <20210604235046.w3hazgcpsg4oefex@google.com>
+ <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
+ <CAFP8O3+ggR8N-ffsaYSMPX7s2XgrzzTQQjOgCwUe9smyos-waA@mail.gmail.com>
+ <YL3RQCJGIw9835Y1@hirez.programming.kicks-ass.net>
+ <YL3lQ5QdNV2qwLR/@hirez.programming.kicks-ass.net>
+ <YL3q1qFO9QIRL/BA@hirez.programming.kicks-ass.net>
+ <CAKwvOdkuJBwZRigeqdZGevPF9WHyrC5pBAsz6_tWdXAc-wO+1A@mail.gmail.com>
+ <e351ac97-4038-61b5-b373-63698a787fc1@kernel.org>
+ <YL+nb235rIfEdye0@hirez.programming.kicks-ass.net>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <de1a21c0-f20a-cde5-016e-4b8ca92eafa9@kernel.org>
+Date:   Tue, 8 Jun 2021 10:29:56 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YL+nb235rIfEdye0@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 20:10:37 +0800 Yunsheng Lin wrote:
-> >> I am not sure if controller concept already existed is reusable for
-> >> the devlink instance representing problem for multi-function which
-> >> shares common resource in the same ASIC. If not, we do need to pick
-> >> up other name.
-> >>
-> >> Another thing I am not really think throught is how is the VF represented
-> >> by the devlink instance when VF is passed through to a VM.
-> >> I was thinking about VF is represented as devlink port, just like PF(with
-> >> different port flavour), and VF devlink port only exist on the same host
-> >> as PF(which assumes PF is never passed through to a VM), so it may means
-> >> the PF is responsible for creating the devlink port for VF when VF is passed
-> >> through to a VM?
-> >>
-> >> Or do we need to create a devlink instance for VF in the VM too when the
-> >> VF is passed through to a VM? Or more specificly, does user need to query
-> >> or configure devlink info or configuration in a VM? If not, then devlink
-> >> instance in VM seems unnecessary?  
-> > 
-> > I believe the current best practice is to create a devlink instance for
-> > the VF with a devlink port of type "virtual". Such instance represents
-> > a "virtualized" view of the device.  
+On 6/8/2021 10:22 AM, Peter Zijlstra wrote:
+> On Tue, Jun 08, 2021 at 09:58:03AM -0700, Nathan Chancellor wrote:
+>> On 6/7/2021 1:54 PM, 'Nick Desaulniers' via Clang Built Linux wrote:
+>>> On Mon, Jun 7, 2021 at 2:46 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>>>>
+>>>
+>>> Thanks, the below diff resolves the linker error reported in
+>>> https://github.com/ClangBuiltLinux/linux/issues/1388
+>>>
+>>> Both readelf implementations seem happy with the results, too.
+>>>
+>>> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+>>>
+>>> Nathan,
+>>> Can you please test the below diff and see if that resolves your boot
+>>> issue reported in:
+>>> https://github.com/ClangBuiltLinux/linux/issues/1384
+>>
+>> Unfortunately, it does not appear to resolve that issue.
+>>
+>> $ git log -2 --decorate=no --oneline
+>> eea6a9d6d277 Peter's fix
+>> 614124bea77e Linux 5.13-rc5
+>>
+>> $ strings /mnt/c/Users/natec/Linux/kernel-investigation | grep microsoft
+>> 5.13.0-rc5-microsoft-standard-WSL2-00001-geea6a9d6d277
+>> (nathan@archlinux-ax161) #3 SMP Tue Jun 8 09:46:19 MST 2021
+>>
+>> My VM still never makes it to userspace.
 > 
-> Afer discussion with Parav in other thread, I undersood it was the current
-> practice, but I am not sure I understand why it is current *best* practice.
+> Since it's a VM, can you use the gdb-stub to ask it where it's stuck?
 > 
-> If we allow all PF of a ASCI to register to the same devlink instance, does
-> it not make sense that all VF under one PF also register to the same devlink
-> instance that it's PF is registering to when they are in the same host?
-> 
-> For eswitch legacy mode, whether VF and PF are the same host or not, the VF
-> can also provide the serial number of a ASIC to register to the devlink instance,
-> if that devlink instance does not exist yet, just create that devlink instance
-> according to the serial number, just like PF does.
-> 
-> For eswitch DEVLINK_ESWITCH_MODE_SWITCHDEV mode, the flavour type for devlink
-> port instance representing the netdev of VF function is FLAVOUR_VIRTUAL, the
-> flavour type for devlink port instance representing the representor netdev of
-> VF is FLAVOUR_PCI_VF, which are different type, so they can register to the same
-> devlink instance even when both of the devlink port instance is in the same host?
-> 
-> Is there any reason why VF use its own devlink instance?
 
-Primary use case for VFs is virtual environments where guest isn't
-trusted, so tying the VF to the main devlink instance, over which guest
-should have no control is counter productive.
+Unfortunately, this is the VM provided by the Windows Subsystem for 
+Linux so examining it is nigh-impossible :/ I am considering bisecting 
+the transforms that objtool does to try and figure out the one that 
+causes the machine to fail to boot or try to reproduce in a different 
+hypervisor, unless you have any other ideas.
 
-> >> I meant we could still allow the user to provide a more meaningful
-> >> name to indicate a devlink instance besides the id.  
-> > 
-> > To clarify/summarize my statement above serial number may be a useful
-> > addition but PCI device names should IMHO remain the primary
-> > identifiers, even if it means devlink instances with multiple names.  
-> 
-> I am not sure I understand what does it mean by "devlink instances with
-> multiple names"?
-> 
-> Does that mean whenever a devlink port instance is registered to a devlink
-> instance, that devlink instance get a new name according to the PCI device
-> which the just registered devlink port instance corresponds to?
-
-Not devlink port, new PCI device. Multiple ports may reside on the same
-PCI function, some ports don't have a function (e.g. Ethernet ports).
+Cheers,
+Nathan
