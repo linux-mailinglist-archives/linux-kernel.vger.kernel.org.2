@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC623A0453
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85ED73A045C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238717AbhFHT3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:29:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39936 "EHLO mail.kernel.org"
+        id S238570AbhFHTcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:32:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236281AbhFHTQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:16:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DC5A6195C;
-        Tue,  8 Jun 2021 18:51:03 +0000 (UTC)
+        id S237135AbhFHTQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:16:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BD2D61476;
+        Tue,  8 Jun 2021 18:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178263;
-        bh=gE52k/E7YkBeezIjTARd346XAL1t1SFknehX2+IJJTY=;
+        s=korg; t=1623178269;
+        bh=4FxsOxl0IxUm91bhDt+hrgMMQPhGIbt4bIOedGfT3gk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KTyzaB4U7DxP1AojoTUItYGtyCDmteHHn9g9lalf+wxPQ8r2D9LqMPeZhaOseaguj
-         RgmT/DqY5OYbdHDDPn81/0H5iwZVB/w4UJzw2yv84YNKw39xEN3comRvmSXIipjISK
-         /a5kQ5VwtF4bF9PL0IH3TkJtsYvMsTXLpwpcxGGg=
+        b=QI0yRamoFrcdq1u3t/sO1CmFAV4QwfVS+LFIpjTK1VFCIlh+1obPi0dzvUeUvymeg
+         GksqvorEYywHLik1LUF0H4/rB8YHfe0bcU/OdNzC6tcalxdAC5dPFNW9QwiYCc5P3J
+         7h2Fs0jPXeggKepsM+gdhrY8twf+3N/uhc1041fE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Feeney <james@nurealm.net>,
-        Borislav Petkov <bp@suse.de>, Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH 5.12 138/161] x86/thermal: Fix LVT thermal setup for SMI delivery mode
-Date:   Tue,  8 Jun 2021 20:27:48 +0200
-Message-Id: <20210608175950.109625741@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.12 139/161] powerpc/kprobes: Fix validation of prefixed instructions across page boundary
+Date:   Tue,  8 Jun 2021 20:27:49 +0200
+Message-Id: <20210608175950.145668740@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -40,161 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-commit 9a90ed065a155d13db0d0ffeaad5cc54e51c90c6 upstream.
+commit 82123a3d1d5a306fdf50c968a474cc60fe43a80f upstream.
 
-There are machines out there with added value crap^WBIOS which provide an
-SMI handler for the local APIC thermal sensor interrupt. Out of reset,
-the BSP on those machines has something like 0x200 in that APIC register
-(timestamps left in because this whole issue is timing sensitive):
+When checking if the probed instruction is the suffix of a prefixed
+instruction, we access the instruction at the previous word. If the
+probed instruction is the very first word of a module, we can end up
+trying to access an invalid page.
 
-  [    0.033858] read lvtthmr: 0x330, val: 0x200
+Fix this by skipping the check for all instructions at the beginning of
+a page. Prefixed instructions cannot cross a 64-byte boundary and as
+such, we don't expect to encounter a suffix as the very first word in a
+page for kernel text. Even if there are prefixed instructions crossing
+a page boundary (from a module, for instance), the instruction will be
+illegal, so preventing probing on the suffix of such prefix instructions
+isn't worthwhile.
 
-which means:
-
- - bit 16 - the interrupt mask bit is clear and thus that interrupt is enabled
- - bits [10:8] have 010b which means SMI delivery mode.
-
-Now, later during boot, when the kernel programs the local APIC, it
-soft-disables it temporarily through the spurious vector register:
-
-  setup_local_APIC:
-
-  	...
-
-	/*
-	 * If this comes from kexec/kcrash the APIC might be enabled in
-	 * SPIV. Soft disable it before doing further initialization.
-	 */
-	value = apic_read(APIC_SPIV);
-	value &= ~APIC_SPIV_APIC_ENABLED;
-	apic_write(APIC_SPIV, value);
-
-which means (from the SDM):
-
-"10.4.7.2 Local APIC State After It Has Been Software Disabled
-
-...
-
-* The mask bits for all the LVT entries are set. Attempts to reset these
-bits will be ignored."
-
-And this happens too:
-
-  [    0.124111] APIC: Switch to symmetric I/O mode setup
-  [    0.124117] lvtthmr 0x200 before write 0xf to APIC 0xf0
-  [    0.124118] lvtthmr 0x10200 after write 0xf to APIC 0xf0
-
-This results in CPU 0 soft lockups depending on the placement in time
-when the APIC soft-disable happens. Those soft lockups are not 100%
-reproducible and the reason for that can only be speculated as no one
-tells you what SMM does. Likely, it confuses the SMM code that the APIC
-is disabled and the thermal interrupt doesn't doesn't fire at all,
-leading to CPU 0 stuck in SMM forever...
-
-Now, before
-
-  4f432e8bb15b ("x86/mce: Get rid of mcheck_intel_therm_init()")
-
-due to how the APIC_LVTTHMR was read before APIC initialization in
-mcheck_intel_therm_init(), it would read the value with the mask bit 16
-clear and then intel_init_thermal() would replicate it onto the APs and
-all would be peachy - the thermal interrupt would remain enabled.
-
-But that commit moved that reading to a later moment in
-intel_init_thermal(), resulting in reading APIC_LVTTHMR on the BSP too
-late and with its interrupt mask bit set.
-
-Thus, revert back to the old behavior of reading the thermal LVT
-register before the APIC gets initialized.
-
-Fixes: 4f432e8bb15b ("x86/mce: Get rid of mcheck_intel_therm_init()")
-Reported-by: James Feeney <james@nurealm.net>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org>
-Cc: Zhang Rui <rui.zhang@intel.com>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Link: https://lkml.kernel.org/r/YKIqDdFNaXYd39wz@zn.tnic
+Fixes: b4657f7650ba ("powerpc/kprobes: Don't allow breakpoints on suffixes")
+Cc: stable@vger.kernel.org # v5.8+
+Reported-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/0df9a032a05576a2fa8e97d1b769af2ff0eafbd6.1621416666.git.naveen.n.rao@linux.vnet.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/thermal.h      |    4 +++-
- arch/x86/kernel/setup.c             |    9 +++++++++
- drivers/thermal/intel/therm_throt.c |   15 +++++++++++----
- 3 files changed, 23 insertions(+), 5 deletions(-)
+ arch/powerpc/kernel/kprobes.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/include/asm/thermal.h
-+++ b/arch/x86/include/asm/thermal.h
-@@ -3,11 +3,13 @@
- #define _ASM_X86_THERMAL_H
+--- a/arch/powerpc/kernel/kprobes.c
++++ b/arch/powerpc/kernel/kprobes.c
+@@ -108,7 +108,6 @@ int arch_prepare_kprobe(struct kprobe *p
+ 	int ret = 0;
+ 	struct kprobe *prev;
+ 	struct ppc_inst insn = ppc_inst_read((struct ppc_inst *)p->addr);
+-	struct ppc_inst prefix = ppc_inst_read((struct ppc_inst *)(p->addr - 1));
  
- #ifdef CONFIG_X86_THERMAL_VECTOR
-+void therm_lvt_init(void);
- void intel_init_thermal(struct cpuinfo_x86 *c);
- bool x86_thermal_enabled(void);
- void intel_thermal_interrupt(void);
- #else
--static inline void intel_init_thermal(struct cpuinfo_x86 *c) { }
-+static inline void therm_lvt_init(void)				{ }
-+static inline void intel_init_thermal(struct cpuinfo_x86 *c)	{ }
- #endif
- 
- #endif /* _ASM_X86_THERMAL_H */
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -44,6 +44,7 @@
- #include <asm/pci-direct.h>
- #include <asm/prom.h>
- #include <asm/proto.h>
-+#include <asm/thermal.h>
- #include <asm/unwind.h>
- #include <asm/vsyscall.h>
- #include <linux/vmalloc.h>
-@@ -1220,6 +1221,14 @@ void __init setup_arch(char **cmdline_p)
- 
- 	x86_init.timers.wallclock_init();
- 
-+	/*
-+	 * This needs to run before setup_local_APIC() which soft-disables the
-+	 * local APIC temporarily and that masks the thermal LVT interrupt,
-+	 * leading to softlockups on machines which have configured SMI
-+	 * interrupt delivery.
-+	 */
-+	therm_lvt_init();
-+
- 	mcheck_init();
- 
- 	register_refined_jiffies(CLOCK_TICK_RATE);
---- a/drivers/thermal/intel/therm_throt.c
-+++ b/drivers/thermal/intel/therm_throt.c
-@@ -621,6 +621,17 @@ bool x86_thermal_enabled(void)
- 	return atomic_read(&therm_throt_en);
- }
- 
-+void __init therm_lvt_init(void)
-+{
-+	/*
-+	 * This function is only called on boot CPU. Save the init thermal
-+	 * LVT value on BSP and use that value to restore APs' thermal LVT
-+	 * entry BIOS programmed later
-+	 */
-+	if (intel_thermal_supported(&boot_cpu_data))
-+		lvtthmr_init = apic_read(APIC_LVTTHMR);
-+}
-+
- void intel_init_thermal(struct cpuinfo_x86 *c)
- {
- 	unsigned int cpu = smp_processor_id();
-@@ -630,10 +641,6 @@ void intel_init_thermal(struct cpuinfo_x
- 	if (!intel_thermal_supported(c))
- 		return;
- 
--	/* On the BSP? */
--	if (c == &boot_cpu_data)
--		lvtthmr_init = apic_read(APIC_LVTTHMR);
--
- 	/*
- 	 * First check if its enabled already, in which case there might
- 	 * be some SMM goo which handles it, so we can't even put a handler
+ 	if ((unsigned long)p->addr & 0x03) {
+ 		printk("Attempt to register kprobe at an unaligned address\n");
+@@ -116,7 +115,8 @@ int arch_prepare_kprobe(struct kprobe *p
+ 	} else if (IS_MTMSRD(insn) || IS_RFID(insn) || IS_RFI(insn)) {
+ 		printk("Cannot register a kprobe on rfi/rfid or mtmsr[d]\n");
+ 		ret = -EINVAL;
+-	} else if (ppc_inst_prefixed(prefix)) {
++	} else if ((unsigned long)p->addr & ~PAGE_MASK &&
++		   ppc_inst_prefixed(ppc_inst_read((struct ppc_inst *)(p->addr - 1)))) {
+ 		printk("Cannot register a kprobe on the second word of prefixed instruction\n");
+ 		ret = -EINVAL;
+ 	}
 
 
