@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D633A02F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB9D3A0321
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236681AbhFHTLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:11:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39404 "EHLO mail.kernel.org"
+        id S236483AbhFHTNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:13:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237640AbhFHTBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:01:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1420A6191A;
-        Tue,  8 Jun 2021 18:44:24 +0000 (UTC)
+        id S236121AbhFHTBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:01:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0182461451;
+        Tue,  8 Jun 2021 18:44:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177865;
-        bh=Ocksm3Y5y5AKQoKWtY45GXWlqtPVzEnA46wVNVAMD4I=;
+        s=korg; t=1623177868;
+        bh=RnamPyzzLgDAjpmq5+G3y1v3oSxEB4jU6/3szJu2PRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qSJalbgwnKocNeIZIUBQJNi7kM6ADmF4Ed7g1lYFTWVKrtiDfa1V44Yaw5oGFpe/3
-         Se1noxwFQJxtecJ8WAuElIr88+U9FMUVZztd9sE+YysrfuBpt/IxIDZDXXPMWRbRjd
-         AkG1rX4/Nm2Z2LIwhLsFpdyXHNNRAcY8Nby2iZj8=
+        b=hdJXOHmFe/7hoO9FE5XgkQx/3FJx2e9j6ojtwI+d95826n+REzoDsAH8TcxgNVUQ4
+         HOMXlG2ZjvqPXdBiEvT4xEh4y5M45Mh5tXDzDAmTSXgmcuVwm9VsXTALwKajrz7o0l
+         tqjnucIl4SpM6vWG3cL3AuU+w4gAPCr+npKWKbnU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ricardo Koller <ricarkol@google.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.10 129/137] KVM: arm64: Fix debug register indexing
-Date:   Tue,  8 Jun 2021 20:27:49 +0200
-Message-Id: <20210608175946.752447869@linuxfoundation.org>
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 5.10 130/137] x86/kvm: Teardown PV features on boot CPU as well
+Date:   Tue,  8 Jun 2021 20:27:50 +0200
+Message-Id: <20210608175946.781960137@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
 References: <20210608175942.377073879@linuxfoundation.org>
@@ -39,208 +41,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-commit cb853ded1d25e5b026ce115dbcde69e3d7e2e831 upstream.
+commit 8b79feffeca28c5459458fe78676b081e87c93a4 upstream.
 
-Commit 03fdfb2690099 ("KVM: arm64: Don't write junk to sysregs on
-reset") flipped the register number to 0 for all the debug registers
-in the sysreg table, hereby indicating that these registers live
-in a separate shadow structure.
+Various PV features (Async PF, PV EOI, steal time) work through memory
+shared with hypervisor and when we restore from hibernation we must
+properly teardown all these features to make sure hypervisor doesn't
+write to stale locations after we jump to the previously hibernated kernel
+(which can try to place anything there). For secondary CPUs the job is
+already done by kvm_cpu_down_prepare(), register syscore ops to do
+the same for boot CPU.
 
-However, the author of this patch failed to realise that all the
-accessors are using that particular index instead of the register
-encoding, resulting in all the registers hitting index 0. Not quite
-a valid implementation of the architecture...
+Krzysztof:
+This fixes memory corruption visible after second resume from
+hibernation:
 
-Address the issue by fixing all the accessors to use the CRm field
-of the encoding, which contains the debug register index.
+  BUG: Bad page state in process dbus-daemon  pfn:18b01
+  page:ffffea000062c040 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 compound_mapcount: -30591
+  flags: 0xfffffc0078141(locked|error|workingset|writeback|head|mappedtodisk|reclaim)
+  raw: 000fffffc0078141 dead0000000002d0 dead000000000100 0000000000000000
+  raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+  page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag set
+  bad because of flags: 0x78141(locked|error|workingset|writeback|head|mappedtodisk|reclaim)
 
-Fixes: 03fdfb2690099 ("KVM: arm64: Don't write junk to sysregs on reset")
-Reported-by: Ricardo Koller <ricarkol@google.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Message-Id: <20210414123544.1060604-3-vkuznets@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+[krzysztof: Extend the commit message, adjust for v5.10 context]
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kvm/sys_regs.c |   42 +++++++++++++++++++++---------------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+ arch/x86/kernel/kvm.c |   57 +++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 41 insertions(+), 16 deletions(-)
 
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -464,14 +464,14 @@ static bool trap_bvr(struct kvm_vcpu *vc
- 		     struct sys_reg_params *p,
- 		     const struct sys_reg_desc *rd)
- {
--	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->reg];
-+	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->CRm];
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -26,6 +26,7 @@
+ #include <linux/kprobes.h>
+ #include <linux/nmi.h>
+ #include <linux/swait.h>
++#include <linux/syscore_ops.h>
+ #include <asm/timer.h>
+ #include <asm/cpu.h>
+ #include <asm/traps.h>
+@@ -460,6 +461,25 @@ static bool pv_tlb_flush_supported(void)
  
- 	if (p->is_write)
- 		reg_to_dbg(vcpu, p, dbg_reg);
- 	else
- 		dbg_to_reg(vcpu, p, dbg_reg);
+ static DEFINE_PER_CPU(cpumask_var_t, __pv_cpu_mask);
  
--	trace_trap_reg(__func__, rd->reg, p->is_write, *dbg_reg);
-+	trace_trap_reg(__func__, rd->CRm, p->is_write, *dbg_reg);
++static void kvm_guest_cpu_offline(void)
++{
++	kvm_disable_steal_time();
++	if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
++		wrmsrl(MSR_KVM_PV_EOI_EN, 0);
++	kvm_pv_disable_apf();
++	apf_task_wake_all();
++}
++
++static int kvm_cpu_online(unsigned int cpu)
++{
++	unsigned long flags;
++
++	local_irq_save(flags);
++	kvm_guest_cpu_init();
++	local_irq_restore(flags);
++	return 0;
++}
++
+ #ifdef CONFIG_SMP
  
- 	return true;
- }
-@@ -479,7 +479,7 @@ static bool trap_bvr(struct kvm_vcpu *vc
- static int set_bvr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 		const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->CRm];
- 
- 	if (copy_from_user(r, uaddr, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -489,7 +489,7 @@ static int set_bvr(struct kvm_vcpu *vcpu
- static int get_bvr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 	const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->CRm];
- 
- 	if (copy_to_user(uaddr, r, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -499,21 +499,21 @@ static int get_bvr(struct kvm_vcpu *vcpu
- static void reset_bvr(struct kvm_vcpu *vcpu,
- 		      const struct sys_reg_desc *rd)
- {
--	vcpu->arch.vcpu_debug_state.dbg_bvr[rd->reg] = rd->val;
-+	vcpu->arch.vcpu_debug_state.dbg_bvr[rd->CRm] = rd->val;
+ static bool pv_ipi_supported(void)
+@@ -587,31 +607,34 @@ static void __init kvm_smp_prepare_boot_
+ 	kvm_spinlock_init();
  }
  
- static bool trap_bcr(struct kvm_vcpu *vcpu,
- 		     struct sys_reg_params *p,
- 		     const struct sys_reg_desc *rd)
+-static void kvm_guest_cpu_offline(void)
++static int kvm_cpu_down_prepare(unsigned int cpu)
  {
--	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->reg];
-+	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->CRm];
+-	kvm_disable_steal_time();
+-	if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
+-		wrmsrl(MSR_KVM_PV_EOI_EN, 0);
+-	kvm_pv_disable_apf();
+-	apf_task_wake_all();
+-}
++	unsigned long flags;
  
- 	if (p->is_write)
- 		reg_to_dbg(vcpu, p, dbg_reg);
- 	else
- 		dbg_to_reg(vcpu, p, dbg_reg);
- 
--	trace_trap_reg(__func__, rd->reg, p->is_write, *dbg_reg);
-+	trace_trap_reg(__func__, rd->CRm, p->is_write, *dbg_reg);
- 
- 	return true;
- }
-@@ -521,7 +521,7 @@ static bool trap_bcr(struct kvm_vcpu *vc
- static int set_bcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 		const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->CRm];
- 
- 	if (copy_from_user(r, uaddr, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -532,7 +532,7 @@ static int set_bcr(struct kvm_vcpu *vcpu
- static int get_bcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 	const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->CRm];
- 
- 	if (copy_to_user(uaddr, r, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -542,22 +542,22 @@ static int get_bcr(struct kvm_vcpu *vcpu
- static void reset_bcr(struct kvm_vcpu *vcpu,
- 		      const struct sys_reg_desc *rd)
- {
--	vcpu->arch.vcpu_debug_state.dbg_bcr[rd->reg] = rd->val;
-+	vcpu->arch.vcpu_debug_state.dbg_bcr[rd->CRm] = rd->val;
+-static int kvm_cpu_online(unsigned int cpu)
+-{
+-	local_irq_disable();
+-	kvm_guest_cpu_init();
+-	local_irq_enable();
++	local_irq_save(flags);
++	kvm_guest_cpu_offline();
++	local_irq_restore(flags);
+ 	return 0;
  }
  
- static bool trap_wvr(struct kvm_vcpu *vcpu,
- 		     struct sys_reg_params *p,
- 		     const struct sys_reg_desc *rd)
+-static int kvm_cpu_down_prepare(unsigned int cpu)
++#endif
++
++static int kvm_suspend(void)
  {
--	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->reg];
-+	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->CRm];
- 
- 	if (p->is_write)
- 		reg_to_dbg(vcpu, p, dbg_reg);
- 	else
- 		dbg_to_reg(vcpu, p, dbg_reg);
- 
--	trace_trap_reg(__func__, rd->reg, p->is_write,
--		vcpu->arch.vcpu_debug_state.dbg_wvr[rd->reg]);
-+	trace_trap_reg(__func__, rd->CRm, p->is_write,
-+		vcpu->arch.vcpu_debug_state.dbg_wvr[rd->CRm]);
- 
- 	return true;
+-	local_irq_disable();
+ 	kvm_guest_cpu_offline();
+-	local_irq_enable();
++
+ 	return 0;
  }
-@@ -565,7 +565,7 @@ static bool trap_wvr(struct kvm_vcpu *vc
- static int set_wvr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 		const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->CRm];
+-#endif
++
++static void kvm_resume(void)
++{
++	kvm_cpu_online(raw_smp_processor_id());
++}
++
++static struct syscore_ops kvm_syscore_ops = {
++	.suspend	= kvm_suspend,
++	.resume		= kvm_resume,
++};
  
- 	if (copy_from_user(r, uaddr, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -575,7 +575,7 @@ static int set_wvr(struct kvm_vcpu *vcpu
- static int get_wvr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 	const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->CRm];
+ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
+ 			const struct flush_tlb_info *info)
+@@ -681,6 +704,8 @@ static void __init kvm_guest_init(void)
+ 	kvm_guest_cpu_init();
+ #endif
  
- 	if (copy_to_user(uaddr, r, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -585,21 +585,21 @@ static int get_wvr(struct kvm_vcpu *vcpu
- static void reset_wvr(struct kvm_vcpu *vcpu,
- 		      const struct sys_reg_desc *rd)
- {
--	vcpu->arch.vcpu_debug_state.dbg_wvr[rd->reg] = rd->val;
-+	vcpu->arch.vcpu_debug_state.dbg_wvr[rd->CRm] = rd->val;
- }
- 
- static bool trap_wcr(struct kvm_vcpu *vcpu,
- 		     struct sys_reg_params *p,
- 		     const struct sys_reg_desc *rd)
- {
--	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->reg];
-+	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->CRm];
- 
- 	if (p->is_write)
- 		reg_to_dbg(vcpu, p, dbg_reg);
- 	else
- 		dbg_to_reg(vcpu, p, dbg_reg);
- 
--	trace_trap_reg(__func__, rd->reg, p->is_write, *dbg_reg);
-+	trace_trap_reg(__func__, rd->CRm, p->is_write, *dbg_reg);
- 
- 	return true;
- }
-@@ -607,7 +607,7 @@ static bool trap_wcr(struct kvm_vcpu *vc
- static int set_wcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 		const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->CRm];
- 
- 	if (copy_from_user(r, uaddr, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -617,7 +617,7 @@ static int set_wcr(struct kvm_vcpu *vcpu
- static int get_wcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 	const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->CRm];
- 
- 	if (copy_to_user(uaddr, r, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -627,7 +627,7 @@ static int get_wcr(struct kvm_vcpu *vcpu
- static void reset_wcr(struct kvm_vcpu *vcpu,
- 		      const struct sys_reg_desc *rd)
- {
--	vcpu->arch.vcpu_debug_state.dbg_wcr[rd->reg] = rd->val;
-+	vcpu->arch.vcpu_debug_state.dbg_wcr[rd->CRm] = rd->val;
- }
- 
- static void reset_amair_el1(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r)
++	register_syscore_ops(&kvm_syscore_ops);
++
+ 	/*
+ 	 * Hard lockup detection is enabled by default. Disable it, as guests
+ 	 * can get false positives too easily, for example if the host is
 
 
