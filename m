@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 303EF3A0048
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA52A3A00F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233964AbhFHSlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:41:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38012 "EHLO mail.kernel.org"
+        id S236229AbhFHSuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:50:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235105AbhFHSjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:39:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E28A613EA;
-        Tue,  8 Jun 2021 18:33:49 +0000 (UTC)
+        id S235829AbhFHSpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:45:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18AA9613EF;
+        Tue,  8 Jun 2021 18:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177230;
-        bh=lzdAXNyaTRliUv5aWfEYkqKJoKweSX7xsTRDbHanaig=;
+        s=korg; t=1623177418;
+        bh=slXEvorXgnkERiCypSz2a2OJZYDxd1ky0BIT90n/41U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=melPhggGfo6SW9BuCr3X9xswdQ8i4W198gvbQzWq6KmwZfan3nMRq6Xc54QSQa/0Y
-         T7G5Olx9sA9FjA+HFJ+5G7rxHlyzV5hzFBBL3hMkOHJzeexbZ2mtE3tAl9O92cpJYc
-         fBkX7e2pmE1OQ04nexWIVRR9JQYckgYNks8Qx13o=
+        b=ruyni5EGDZmIyB/2YAB5YaGuKbfL5T4B+iZNHtJ6S7OMSEGomAAC/Gm+FYpxwYxLz
+         SPxuCE8kIVQsX+4p9EjrdGt5pBlLG9zWLjGaBeo5qy6nLxO2ubu57g5du5F5eFLeBs
+         p2+zY9NTQ/JeuvlH2sQMk7SomUzvPRRcVno0bSwk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 33/58] nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
+        syzbot+ee6f6e2e68886ca256a8@syzkaller.appspotmail.com,
+        Claudio Mettler <claudio@ponyfleisch.ch>,
+        Marek Wyborski <marek.wyborski@emwesoft.com>,
+        Sean OBrien <seobrien@chromium.org>,
+        Johan Hovold <johan@kernel.org>, Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 5.4 45/78] HID: magicmouse: fix NULL-deref on disconnect
 Date:   Tue,  8 Jun 2021 20:27:14 +0200
-Message-Id: <20210608175933.371462446@linuxfoundation.org>
+Message-Id: <20210608175936.788029092@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 4ac06a1e013cf5fdd963317ffd3b968560f33bba upstream.
+commit 4b4f6cecca446abcb686c6e6c451d4f1ec1a7497 upstream.
 
-It's possible to trigger NULL pointer dereference by local unprivileged
-user, when calling getsockname() after failed bind() (e.g. the bind
-fails because LLCP_SAP_MAX used as SAP):
+Commit 9d7b18668956 ("HID: magicmouse: add support for Apple Magic
+Trackpad 2") added a sanity check for an Apple trackpad but returned
+success instead of -ENODEV when the check failed. This means that the
+remove callback will dereference the never-initialised driver data
+pointer when the driver is later unbound (e.g. on USB disconnect).
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000000
-  CPU: 1 PID: 426 Comm: llcp_sock_getna Not tainted 5.13.0-rc2-next-20210521+ #9
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-  Call Trace:
-   llcp_sock_getname+0xb1/0xe0
-   __sys_getpeername+0x95/0xc0
-   ? lockdep_hardirqs_on_prepare+0xd5/0x180
-   ? syscall_enter_from_user_mode+0x1c/0x40
-   __x64_sys_getpeername+0x11/0x20
-   do_syscall_64+0x36/0x70
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-This can be reproduced with Syzkaller C repro (bind followed by
-getpeername):
-https://syzkaller.appspot.com/x/repro.c?x=14def446e00000
-
-Cc: <stable@vger.kernel.org>
-Fixes: d646960f7986 ("NFC: Initial LLCP support")
-Reported-by: syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210531072138.5219-1-krzysztof.kozlowski@canonical.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: syzbot+ee6f6e2e68886ca256a8@syzkaller.appspotmail.com
+Fixes: 9d7b18668956 ("HID: magicmouse: add support for Apple Magic Trackpad 2")
+Cc: stable@vger.kernel.org      # 4.20
+Cc: Claudio Mettler <claudio@ponyfleisch.ch>
+Cc: Marek Wyborski <marek.wyborski@emwesoft.com>
+Cc: Sean O'Brien <seobrien@chromium.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/llcp_sock.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hid/hid-magicmouse.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/nfc/llcp_sock.c
-+++ b/net/nfc/llcp_sock.c
-@@ -122,6 +122,7 @@ static int llcp_sock_bind(struct socket
- 	if (!llcp_sock->service_name) {
- 		nfc_llcp_local_put(llcp_sock->local);
- 		llcp_sock->local = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -ENOMEM;
- 		goto put_dev;
- 	}
-@@ -131,6 +132,7 @@ static int llcp_sock_bind(struct socket
- 		llcp_sock->local = NULL;
- 		kfree(llcp_sock->service_name);
- 		llcp_sock->service_name = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -EADDRINUSE;
- 		goto put_dev;
- 	}
+--- a/drivers/hid/hid-magicmouse.c
++++ b/drivers/hid/hid-magicmouse.c
+@@ -597,7 +597,7 @@ static int magicmouse_probe(struct hid_d
+ 	if (id->vendor == USB_VENDOR_ID_APPLE &&
+ 	    id->product == USB_DEVICE_ID_APPLE_MAGICTRACKPAD2 &&
+ 	    hdev->type != HID_TYPE_USBMOUSE)
+-		return 0;
++		return -ENODEV;
+ 
+ 	msc = devm_kzalloc(&hdev->dev, sizeof(*msc), GFP_KERNEL);
+ 	if (msc == NULL) {
 
 
