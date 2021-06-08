@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013E13A07EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 01:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FC33A07F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 01:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235534AbhFHXmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 19:42:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58666 "EHLO mail.kernel.org"
+        id S235728AbhFHXmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 19:42:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235536AbhFHXl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235550AbhFHXl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Jun 2021 19:41:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E679A61352;
-        Tue,  8 Jun 2021 23:40:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 075FD6139A;
+        Tue,  8 Jun 2021 23:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623195605;
-        bh=7smAwj36Y0do9tPeG4lDnw5wjf9WaWS6wNo+jMx9fAk=;
+        s=k20201202; t=1623195606;
+        bh=LnQ+lHGhnwQmcMtw0TxDMw1RWXsvIIVyy88FpuSuKjk=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=W9V82pPbs9BA1Iy+PCM9pT3hvKTvpxJxl7nbsLM/bQ20su1N3E6Ihr3Dz1MH1uncU
-         foJGJph/uLvPqbp+gMR1oifyyUvSx9PTrIy0Rx7u5yoNGXnmecixlfncK3i+jaB/Yh
-         k8mn66u75RE15po94zrha8aVGm4m4t1MLkFqFvBapSZVVGUHyYeO0SIkqDOG/F1nfS
-         3emxvnhH172bRCmpNAVfNzlxWk/GenGTEFQ9LFXCUKtm4yMdxK/sG9+kqhU1isu7Ne
-         /5Td7wsf5h7P+F5vZjfW2U2CaUcTHMjJwuiMb11OR9y3JwfG+IjZk4qTgcDc17CGG6
-         5PVxkME+oIKqg==
+        b=klkGH44vV5p7wrrlmAyNK9z7Nk42v5zghamhO7MM3No/sHq2OkxmbShHq70UHbaqT
+         EAoxyh5LlF9qjmOGj/N+FspZb9Y6W0WIA8rSEiYUB0Y0uJFue2GGrDTwdFApNy7wBw
+         uyb02R9zE8q1TQZPgqqChInOuM3+KauD4+ym8ABpcfnTlCgt3gw/LUrIjTP2r5WodD
+         GMTOPRKNTzGwxjvCxU0cjuf/+5hq0bDFkvrFHDzqQ7QZKNg+5Sooc1AqFGzhXd5IL1
+         iMMuDjLW+CFxgno4goC9XOQQpPsgBNnt1pf7ihcnPPJPHK84m9xEmkKJq0G0rpzD5P
+         2ksezcWNOAWfg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E07CC60CD1;
-        Tue,  8 Jun 2021 23:40:05 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 01E1C609D2;
+        Tue,  8 Jun 2021 23:40:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] ethernet/qlogic: Use list_for_each_entry() to
- simplify code in qlcnic_hw.c
+Subject: Re: [PATCH net-next] net: lapb: Use list_for_each_entry() to simplify
+ code in lapb_iface.c
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162319560591.24693.16780473741484256213.git-patchwork-notify@kernel.org>
-Date:   Tue, 08 Jun 2021 23:40:05 +0000
-References: <20210608132908.68891-1-wanghai38@huawei.com>
-In-Reply-To: <20210608132908.68891-1-wanghai38@huawei.com>
+Message-Id: <162319560600.24693.16569197587430448345.git-patchwork-notify@kernel.org>
+Date:   Tue, 08 Jun 2021 23:40:06 +0000
+References: <20210608081301.15264-1-wanghai38@huawei.com>
+In-Reply-To: <20210608081301.15264-1-wanghai38@huawei.com>
 To:     Wang Hai <wanghai38@huawei.com>
-Cc:     shshaikh@marvell.com, manishc@marvell.com, davem@davemloft.net,
-        kuba@kernel.org, GR-Linux-NIC-Dev@marvell.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     ms@dev.tdt.de, davem@davemloft.net, kuba@kernel.org,
+        linux-x25@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,19 +48,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue, 8 Jun 2021 13:29:08 +0000 you wrote:
+On Tue, 8 Jun 2021 08:13:01 +0000 you wrote:
 > Convert list_for_each() to list_for_each_entry() where
 > applicable. This simplifies the code.
 > 
 > Reported-by: Hulk Robot <hulkci@huawei.com>
 > Signed-off-by: Wang Hai <wanghai38@huawei.com>
 > ---
->  drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
+>  net/lapb/lapb_iface.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 
 Here is the summary with links:
-  - [net-next] ethernet/qlogic: Use list_for_each_entry() to simplify code in qlcnic_hw.c
-    https://git.kernel.org/netdev/net-next/c/78595dfcb29b
+  - [net-next] net: lapb: Use list_for_each_entry() to simplify code in lapb_iface.c
+    https://git.kernel.org/netdev/net-next/c/e83332842a46
 
 You are awesome, thank you!
 --
