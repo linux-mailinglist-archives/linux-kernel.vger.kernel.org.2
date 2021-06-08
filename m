@@ -2,60 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5A239F2C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB10639F2BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhFHJsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:48:36 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:55796 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229507AbhFHJsd (ORCPT
+        id S230514AbhFHJsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 05:48:32 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56790 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFHJsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:48:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UbkdQgs_1623145597;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UbkdQgs_1623145597)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 08 Jun 2021 17:46:39 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     rui.zhang@intel.com
-Cc:     daniel.lezcano@linaro.org, amitk@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] thermal: devfreq_cooling: Fix kernel-doc
-Date:   Tue,  8 Jun 2021 17:46:02 +0800
-Message-Id: <1623145562-111662-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 8 Jun 2021 05:48:31 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 247AC1FD4B;
+        Tue,  8 Jun 2021 09:46:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623145597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g9J+6hkjBnAtWIP22qYek1W/6Pim/qGNQFywvyR4atU=;
+        b=Bm7yiSW77lrruY58r+eFwBR5tUFiJQI4lpjW9CAawaJBScjzrnMZBCe6i4sTMG3xtKTQlO
+        KPlSm5C01RLaOhFK27G6522egTzF+z8RRO2E1vcVQ/YyJQJPEBuOPatvPI2qHilmYpKyCq
+        7Is2cHoW5FESr4mbehPV89TGrVjAsDY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623145597;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g9J+6hkjBnAtWIP22qYek1W/6Pim/qGNQFywvyR4atU=;
+        b=ig7kYgerxLTHJhE7eCz8mTw1My3J3pvWUZ+XfeRt8/gMblTEjYE8HrLC4QWNWHLv59d7me
+        0098P9rgDvYe31Aw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id DD034118DD;
+        Tue,  8 Jun 2021 09:46:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623145597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g9J+6hkjBnAtWIP22qYek1W/6Pim/qGNQFywvyR4atU=;
+        b=Bm7yiSW77lrruY58r+eFwBR5tUFiJQI4lpjW9CAawaJBScjzrnMZBCe6i4sTMG3xtKTQlO
+        KPlSm5C01RLaOhFK27G6522egTzF+z8RRO2E1vcVQ/YyJQJPEBuOPatvPI2qHilmYpKyCq
+        7Is2cHoW5FESr4mbehPV89TGrVjAsDY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623145597;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g9J+6hkjBnAtWIP22qYek1W/6Pim/qGNQFywvyR4atU=;
+        b=ig7kYgerxLTHJhE7eCz8mTw1My3J3pvWUZ+XfeRt8/gMblTEjYE8HrLC4QWNWHLv59d7me
+        0098P9rgDvYe31Aw==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id l890M3w8v2CKaAAALh3uQQ
+        (envelope-from <jdelvare@suse.de>); Tue, 08 Jun 2021 09:46:36 +0000
+Date:   Tue, 8 Jun 2021 11:46:36 +0200
+From:   Jean Delvare <jdelvare@suse.de>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] i2c: Fix missing pci_disable_device() on error in
+ ali1535_setup()
+Message-ID: <20210608114636.65512e28@endymion>
+In-Reply-To: <1623036068-30668-1-git-send-email-zou_wei@huawei.com>
+References: <1623036068-30668-1-git-send-email-zou_wei@huawei.com>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix function name in devfreq_cooling.c kernel-doc comment
-to remove a warning found by clang(make W=1 LLVM=1).
+Hi Wei,
 
-drivers/thermal/devfreq_cooling.c:479: warning: expecting prototype for
-devfreq_cooling_em_register_power(). Prototype was for
-devfreq_cooling_em_register() instead.
+On Mon, 07 Jun 2021 11:21:08 +0800, Zou Wei wrote:
+> Fix the missing pci_disable_device() before return
+> from ali1535_setup() in the error handling case.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>  drivers/i2c/busses/i2c-ali1535.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/i2c/busses/i2c-ali1535.c b/drivers/i2c/busses/i2c-ali1535.c
+> index fb93152..bdbaf79 100644
+> --- a/drivers/i2c/busses/i2c-ali1535.c
+> +++ b/drivers/i2c/busses/i2c-ali1535.c
+> @@ -206,6 +206,7 @@ static int ali1535_setup(struct pci_dev *dev)
+>  exit_free:
+>  	release_region(ali1535_smba, ALI1535_SMB_IOSIZE);
+>  exit:
+> +	pci_disable_device(dev);
+>  	return retval;
+>  }
+>  
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/thermal/devfreq_cooling.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We don't actually want to disable the PCI device. Maybe it was already
+enabled before the driver was loaded, and maybe the BIOS needs the
+device when the system is being shut down. You'll notice that we do not
+call pci_disable_device(dev) in ali1535_remove(), so there's no reason
+to do it in the error path.
 
-diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-index 3a788ac..5a86cff 100644
---- a/drivers/thermal/devfreq_cooling.c
-+++ b/drivers/thermal/devfreq_cooling.c
-@@ -458,7 +458,7 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
- EXPORT_SYMBOL_GPL(devfreq_cooling_register);
- 
- /**
-- * devfreq_cooling_em_register_power() - Register devfreq cooling device with
-+ * devfreq_cooling_em_register() - Register devfreq cooling device with
-  *		power information and automatically register Energy Model (EM)
-  * @df:		Pointer to devfreq device.
-  * @dfc_power:	Pointer to devfreq_cooling_power.
+As a matter of fact the i2c-i801 driver, which is used on the same kind
+of hardware, has the following note in its remove function:
+
+	/*
+	 * do not call pci_disable_device(dev) since it can cause hard hangs on
+	 * some systems during power-off (eg. Fujitsu-Siemens Lifebook E8010)
+	 */
+
+So this is a nack from me, sorry.
+
 -- 
-1.8.3.1
-
+Jean Delvare
+SUSE L3 Support
