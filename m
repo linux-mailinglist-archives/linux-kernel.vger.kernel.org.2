@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978D839EB41
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D9039EB43
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhFHBQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:16:16 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:4385 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhFHBQP (ORCPT
+        id S230440AbhFHBRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:17:48 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:34301 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230209AbhFHBRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:16:15 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FzXGv0mBMz6vLY;
-        Tue,  8 Jun 2021 09:10:31 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 09:14:21 +0800
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 09:14:20 +0800
-Subject: Re: [PATCH -next] capability: fix doc warnings in capability.c
-To:     "Serge E. Hallyn" <serge@hallyn.com>
-CC:     <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <weiyongjun1@huawei.com>,
-        <yuehaibing@huawei.com>, <yangjihong1@huawei.com>,
-        <yukuai3@huawei.com>, <libaokun1@huawei.com>
-References: <20210605062602.678602-1-libaokun1@huawei.com>
- <20210607230913.GA12581@mail.hallyn.com>
-From:   "libaokun (A)" <libaokun1@huawei.com>
-Message-ID: <83a6dfaa-80ef-62ba-313b-fff03efc6d9d@huawei.com>
-Date:   Tue, 8 Jun 2021 09:14:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 7 Jun 2021 21:17:47 -0400
+X-UUID: 4623f96bb4ca4325b53853285eb3af65-20210608
+X-UUID: 4623f96bb4ca4325b53853285eb3af65-20210608
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1768396892; Tue, 08 Jun 2021 09:15:50 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 8 Jun 2021 09:15:48 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 8 Jun 2021 09:15:48 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <peterz@infradead.org>
+CC:     <ardb@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-toolchains@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
+        <matthias.bgg@gmail.com>, <mhelsley@vmware.com>,
+        <rostedt@goodmis.org>, <samitolvanen@google.com>,
+        <yj.chiang@mediatek.com>
+Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
+Date:   Tue, 8 Jun 2021 09:15:48 +0800
+Message-ID: <20210608011548.5008-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <YL492/4WrWaNDL4p@hirez.programming.kicks-ass.net>
+References: <YL492/4WrWaNDL4p@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210607230913.GA12581@mail.hallyn.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your advice.
+> On Mon, Jun 07, 2021 at 01:44:21PM +0200, Peter Zijlstra wrote:
+> > One should only use st_shndx when >SHN_UDEF and <SHN_LORESERVE. When
+> > SHN_XINDEX, then use .symtab_shndx.
+> > 
+> > Apparently you've found a case where neither is true? In that case
+> > objtool seems to use shndx 0. A matching recordmcount patch would be
+> > something like this.
+> > 
+> 
+> Apparently I'm consistently bad at spelling SHM_UNDEF today..
 
-I didn't notice the order of the parameters.
+I test the below patch and it work for me.
+I only correct the UNDEF typo without any other modification.
 
-I'm about to send a patch v2 with the changes suggested by you.
+Could I push this patch or you will push it?
+I guess I have to add your signed-off-by.
 
-ÔÚ 2021/6/8 7:09, Serge E. Hallyn Ð´µÀ:
-> On Sat, Jun 05, 2021 at 02:26:02PM +0800, Baokun Li wrote:
->> Fixes the following W=1 kernel build warning(s):
->>
->> kernel/capability.c:490: warning: Function parameter or
->>   member 'mnt_userns' not described in 'privileged_wrt_inode_uidgid'
->> kernel/capability.c:506: warning: Function parameter or
->>   member 'mnt_userns' not described in 'capable_wrt_inode_uidgid'
->>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->>   kernel/capability.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/kernel/capability.c b/kernel/capability.c
->> index 46a361dde042..27a959aa897f 100644
->> --- a/kernel/capability.c
->> +++ b/kernel/capability.c
->> @@ -480,6 +480,7 @@ EXPORT_SYMBOL(file_ns_capable);
->>   /**
->>    * privileged_wrt_inode_uidgid - Do capabilities in the namespace work over the inode?
->>    * @ns: The user namespace in question
->> + * @mnt_userns: User namespace of the mount the inode was found from
->>    * @inode: The inode in question
->>    *
->>    * Return true if the inode uid and gid are within the namespace.
->> @@ -495,6 +496,7 @@ bool privileged_wrt_inode_uidgid(struct user_namespace *ns,
->>   /**
->>    * capable_wrt_inode_uidgid - Check nsown_capable and uid and gid mapped
->>    * @inode: The inode in question
->> + * @mnt_userns: User namespace of the mount the inode was found from
-> The mnt_userns comes before the inode in this fn.
->
->>    * @cap: The capability in question
->>    *
->>    * Return true if the current task has the given capability targeted at
->> -- 
->> 2.31.1
-> .
+> 
+> > diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+> > index f9b19524da11..d99cc0aed6fe 100644
+> > --- a/scripts/recordmcount.h
+> > +++ b/scripts/recordmcount.h
+> > @@ -194,13 +194,18 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
+> >  	unsigned long offset;
+> >  	int index;
+> >  
+> > -	if (sym->st_shndx != SHN_XINDEX)
+> > +	if (sym->st_shndx > SHN_UDEF &&
+> > +	    sym->st_shndx < SHN_LORESERVE)
+> >  		return w2(sym->st_shndx);
+> >  
+> > -	offset = (unsigned long)sym - (unsigned long)symtab;
+> > -	index = offset / sizeof(*sym);
+> > +	if (sym->st_shndx == SHN_XINDEX) {
+> > +		offset = (unsigned long)sym - (unsigned long)symtab;
+> > +		index = offset / sizeof(*sym);
+> >  
+> > -	return w(symtab_shndx[index]);
+> > +		return w(symtab_shndx[index]);
+> > +	}
+> > +
+> > +	return 0;
+> >  }
+> >  
+> >  static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
