@@ -2,121 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C859139EBB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F8839EBBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbhFHB5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:57:20 -0400
-Received: from mail-ed1-f43.google.com ([209.85.208.43]:42562 "EHLO
-        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbhFHB5Q (ORCPT
+        id S231512AbhFHB6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:58:07 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:52097 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230321AbhFHB6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:57:16 -0400
-Received: by mail-ed1-f43.google.com with SMTP id i13so22668893edb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=naMy3KseuYkM/xQcd2IbBYqGQlT32iktAcbk8eY3cyw=;
-        b=XGXf8FHk7CnXBPLV/Zpz42V/plnd4FEOwny2Mc8Y5vBZegfZCFkhoY7mZufrpTaQw0
-         75nzann6j8pz1oZ/q/pu4EPNa8S0leVS65fqftP1MZ1H5SmaTVKL6b3OiKCUdShRVFQV
-         XMiNe9GHBAlJtE5gMPCeWcPVtmFO8txtia6QFg2uqUtwKtqx2fsILnWofAcR959FQZs0
-         N41sigatk08/zA7nZedXnkeu9y6TryhDftCtuciVxFVVnmZky0LcBtAu+5aWZjHPjQlk
-         6juteQf7Dzse5h7v46gyS7+k6ehEzooO+DwVsC+CEV2MwTu4qcL2RKabPMk7ApbkscfO
-         I5Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=naMy3KseuYkM/xQcd2IbBYqGQlT32iktAcbk8eY3cyw=;
-        b=OQgHHYq3O3/l3TQBtQ+6rp5sUxa007ewMlDJkw4Tzk710HUWUxhQndP2P3P9JqHwtC
-         09jO3UoCllegs4c39k5qecMH+PzxDNC0YFVJYxxQG+eLlB7DEGooiyVed/fXKZvmdgTc
-         nb4d9/bJZy4WCvtKm3cDDtW6LgtjufTqfsk0phrTfjjR4mcIdG5BaTPc9U2zbvvfPkMn
-         9gi+rlQ44vdFjKMp3v+34YcedEp4jq+b77WutxGb7Ie42xdvGDfn50KP/9rutzNTQ9jb
-         bsG3Im8/a30nzA2MhLYaTb2S5uZC/M5/Uh5Ar1j2s/kgMpBpTa/taOpHgkgO2bADRv+7
-         QAFw==
-X-Gm-Message-State: AOAM531i/A/cJlQkx8H3iCa6VQtbB0++sjUnJxScvkt4ypFSm7TfpEKg
-        bvTEWMn5A5J5k4UVS3Rw5LRvMh/6vG1aw4twAZwJ
-X-Google-Smtp-Source: ABdhPJxapa6MMZ1cEp4xopqty3tK8ADP1xyRBHTBLG5KUyzd8alOMK7AJZXCveKxHiFiEwHA59QceNDZMh9mgmGTM9g=
-X-Received: by 2002:aa7:c7cd:: with SMTP id o13mr23049215eds.269.1623117246428;
- Mon, 07 Jun 2021 18:54:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210608015158.3848878-1-sunnanyong@huawei.com>
-In-Reply-To: <20210608015158.3848878-1-sunnanyong@huawei.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 7 Jun 2021 21:53:55 -0400
-Message-ID: <CAHC9VhTqDjN1VwakrYZznaMVTyqkEKcYLo=bPtHsOXugS_mexQ@mail.gmail.com>
-Subject: Re: [PATCH] net: ipv4: fix memory leak in netlbl_cipsov4_add_std
-To:     Nanyong Sun <sunnanyong@huawei.com>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+        Mon, 7 Jun 2021 21:58:04 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 750AC580362;
+        Mon,  7 Jun 2021 21:56:11 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 07 Jun 2021 21:56:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        d9H1flms8CAnmkfkTGXC7fqtRulSUIecdP1SarbhnhQ=; b=xojxKX2E8lqI+ts1
+        su1B0PH5K3eQgfxkrK8N/NVZaLs+ouU7rmwb23GLDipImoPEUtRzhKTTYUNtwANx
+        qfYz1subDb5XJEgbEer1t0wkmgu64ErOax6FdqF7VX7TKO3AesAY1Ksox70Wrx+U
+        uIzrmNx8b+jCMpnbX4BayJ39Td8jGAiKud+f4wn0WlSw785+kl/6Q5FerDylE9uY
+        yOe35ag2WrLJNQF05slYPrsxSnIaS+dnM1RKLP9Dt2ETh01pwnoQR9XmP8xZ9NFQ
+        9b/LEOHKxCCRD7ykZg/OO0u2nxtTGHkNqWdVW0pq7bwS2lcMaS1oqB8j9yUHLF+0
+        U+H+QQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=d9H1flms8CAnmkfkTGXC7fqtRulSUIecdP1Sarbhn
+        hQ=; b=Aw/FAvgfDcvDS1oNUjvX1/jZMmjSbWUESBqtCChZH9IxsCMS+hMsULbVY
+        PiFnhGy2NxnVTgYQ6q3/hxCo0BSxI9NTnk9TTfWI2Wrno3xqrxcKsRhLA/DrILau
+        P8u97K+S9rTA1/H7ShI/PDMlwbIP80iPTQ3ITRuiLPw2d0Xurj84TZsyt3RhM0Fi
+        UtkHtVCmyMoB+Q1AJwglt5fWIGUXRZMGr4woK5OcMOGzHYG55QU0t+0aCWrSqW3g
+        NsH/m0FdxIosEM/XgSnKK8jMqQpWq/uqn25IYcxG747muzpPgn0BznROKrOHNoL/
+        LC6yneveE33pJuj/B/b1JaFRAx1VA==
+X-ME-Sender: <xms:Os6-YEZLW2AeVqhbCrRd5RcquhmBC6amB6XpDhBm3aANb5OdVhJZzg>
+    <xme:Os6-YPYM_mwCj6YX16e8A-UP9krv25MgvDWN2Brbpc3A0pw_ZC2zwieVxoU1oO-w8
+    xQWND8zW2v5>
+X-ME-Received: <xmr:Os6-YO_g-OUQKr6nNzDWVL1Mc-9eXWrtsCpqjZqDNKQIlp7sHaprGLRM4q1DiYsZ5qdzhcOVpcH58PvRjUfkQrYERilLig>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedggeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:Os6-YOrrRWj0QiKJIKYcrZ7sccLDHya-ONPM0u7yLsAESgMHJZefsA>
+    <xmx:Os6-YPpytds8-iG84Jl-ZJYwj9org-8xXHYUutVrhMvnvwMP9CM4gg>
+    <xmx:Os6-YMQs7dyB-FR124JlBOj8xmXnkGSBVZWnFtHoE_acSRV6G_6b9w>
+    <xmx:O86-YIT49_mgovE_SNIQBRpRtpXGay3AsHWfdOMDJeydztN0c2TR2g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Jun 2021 21:56:05 -0400 (EDT)
+Message-ID: <5e34e74c7c6d6b58165702824b8b0ad914a6a5b9.camel@themaw.net>
+Subject: Re: [PATCH v5 3/6] kernfs: use VFS negative dentry caching
+From:   Ian Kent <raven@themaw.net>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 08 Jun 2021 09:56:01 +0800
+In-Reply-To: <87lf7lil7y.fsf@disp2133>
+References: <162306058093.69474.2367505736322611930.stgit@web.messagingengine.com>
+         <162306072498.69474.16160057168984328507.stgit@web.messagingengine.com>
+         <87lf7lil7y.fsf@disp2133>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 9:19 PM Nanyong Sun <sunnanyong@huawei.com> wrote:
->
-> Reported by syzkaller:
-> BUG: memory leak
-> unreferenced object 0xffff888105df7000 (size 64):
-> comm "syz-executor842", pid 360, jiffies 4294824824 (age 22.546s)
-> hex dump (first 32 bytes):
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-> backtrace:
-> [<00000000e67ed558>] kmalloc include/linux/slab.h:590 [inline]
-> [<00000000e67ed558>] kzalloc include/linux/slab.h:720 [inline]
-> [<00000000e67ed558>] netlbl_cipsov4_add_std net/netlabel/netlabel_cipso_v4.c:145 [inline]
-> [<00000000e67ed558>] netlbl_cipsov4_add+0x390/0x2340 net/netlabel/netlabel_cipso_v4.c:416
-> [<0000000006040154>] genl_family_rcv_msg_doit.isra.0+0x20e/0x320 net/netlink/genetlink.c:739
-> [<00000000204d7a1c>] genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
-> [<00000000204d7a1c>] genl_rcv_msg+0x2bf/0x4f0 net/netlink/genetlink.c:800
-> [<00000000c0d6a995>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
-> [<00000000d78b9d2c>] genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
-> [<000000009733081b>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-> [<000000009733081b>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
-> [<00000000d5fd43b8>] netlink_sendmsg+0x789/0xc70 net/netlink/af_netlink.c:1929
-> [<000000000a2d1e40>] sock_sendmsg_nosec net/socket.c:654 [inline]
-> [<000000000a2d1e40>] sock_sendmsg+0x139/0x170 net/socket.c:674
-> [<00000000321d1969>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
-> [<00000000964e16bc>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
-> [<000000001615e288>] __sys_sendmsg+0xd3/0x190 net/socket.c:2433
-> [<000000004ee8b6a5>] do_syscall_64+0x37/0x90 arch/x86/entry/common.c:47
-> [<00000000171c7cee>] entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> The memory of doi_def->map.std pointing is allocated in
-> netlbl_cipsov4_add_std, but no place has freed it. It should be
-> freed in cipso_v4_doi_free which frees the cipso DOI resource.
->
-> Fixes: 96cb8e3313c7a ("[NetLabel]: CIPSOv4 and Unlabeled packet integration")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
-> ---
->  net/ipv4/cipso_ipv4.c | 1 +
->  1 file changed, 1 insertion(+)
+On Mon, 2021-06-07 at 13:27 -0500, Eric W. Biederman wrote:
+> Ian Kent <raven@themaw.net> writes:
+> 
+> > If there are many lookups for non-existent paths these negative
+> > lookups
+> > can lead to a lot of overhead during path walks.
+> > 
+> > The VFS allows dentries to be created as negative and hashed, and
+> > caches
+> > them so they can be used to reduce the fairly high overhead
+> > alloc/free
+> > cycle that occurs during these lookups.
+> > 
+> > Use the kernfs node parent revision to identify if a change has
+> > been
+> > made to the containing directory so that the negative dentry can be
+> > discarded and the lookup redone.
+> > 
+> > Signed-off-by: Ian Kent <raven@themaw.net>
+> > ---
+> >  fs/kernfs/dir.c |   53 +++++++++++++++++++++++++++++++------------
+> > ----------
+> >  1 file changed, 31 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> > index b88432c48851f..5ae95e8d1aea1 100644
+> > --- a/fs/kernfs/dir.c
+> > +++ b/fs/kernfs/dir.c
+> > @@ -1039,13 +1039,32 @@ static int kernfs_dop_revalidate(struct
+> > dentry *dentry, unsigned int flags)
+> >         if (flags & LOOKUP_RCU)
+> >                 return -ECHILD;
+> >  
+> > -       /* Always perform fresh lookup for negatives */
+> > -       if (d_really_is_negative(dentry))
+> > -               goto out_bad_unlocked;
+> > -
+> >         kn = kernfs_dentry_node(dentry);
+> >         mutex_lock(&kernfs_mutex);
+> >  
+> > +       /* Negative hashed dentry? */
+> > +       if (!kn) {
+> > +               struct dentry *d_parent = dget_parent(dentry);
+> > +               struct kernfs_node *parent;
+> > +
+> > +               /* If the kernfs parent node has changed discard
+> > and
+> > +                * proceed to ->lookup.
+> > +                */
+> > +               parent = kernfs_dentry_node(d_parent);
+> > +               if (parent) {
+> > +                       if (kernfs_dir_changed(parent, dentry)) {
+> > +                               dput(d_parent);
+> > +                               goto out_bad;
+> > +                       }
+> > +               }
+> > +               dput(d_parent);
+> > +
+> > +               /* The kernfs node doesn't exist, leave the dentry
+> > +                * negative and return success.
+> > +                */
+> > +               goto out;
+> > +       }
+> 
+> What part of this new negative hashed dentry check needs the
+> kernfs_mutex?
+> 
+> I guess it is the reading of kn->dir.rev.
 
-Nice catch, thanks for fixing this.
+I have an irresistible urge to keep the rb tree stable when
+accessing it. It was probably not necessary most of the times
+I did it, IIUC even a rebalance will leave the node address
+unchanged so it should be just removals and moves to worry
+about.
+ 
+> 
+> Since all you are doing is comparing if two fields are equal it
+> really should not matter.  Maybe somewhere there needs to be a
+> sprinkling of primitives like READ_ONCE.
 
-Acked-by: Paul Moore <paul@paul-moore.com>
+There is one case that looks tricky, rename will call ->rename()
+and a bit later do the move. Thinking about it a READ_ONCE might
+be needed even now but taking the rwsem is probably enough.
 
-> diff --git a/net/ipv4/cipso_ipv4.c b/net/ipv4/cipso_ipv4.c
-> index d6e3a92841e3..099259fc826a 100644
-> --- a/net/ipv4/cipso_ipv4.c
-> +++ b/net/ipv4/cipso_ipv4.c
-> @@ -471,6 +471,7 @@ void cipso_v4_doi_free(struct cipso_v4_doi *doi_def)
->                 kfree(doi_def->map.std->lvl.local);
->                 kfree(doi_def->map.std->cat.cipso);
->                 kfree(doi_def->map.std->cat.local);
-> +               kfree(doi_def->map.std);
->                 break;
->         }
->         kfree(doi_def);
-> --
-> 2.18.0.huawei.25
+Not sure about that one?
 
--- 
-paul moore
-www.paul-moore.com
+Moving this out from under the rwsem would be good to do.
+
+Ian
+> 
+> It just seems like such a waste to put all of that under kernfs_mutex
+> on the off chance kn->dir.rev will change while it is being read.
+> 
+> Eric
+
+
