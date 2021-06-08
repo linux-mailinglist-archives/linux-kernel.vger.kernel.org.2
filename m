@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F303A0352
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3425D3A01EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237238AbhFHTPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:15:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48710 "EHLO mail.kernel.org"
+        id S235705AbhFHS5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:57:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237794AbhFHTFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:05:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C54061449;
-        Tue,  8 Jun 2021 18:46:28 +0000 (UTC)
+        id S235381AbhFHSvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:51:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91A9E61476;
+        Tue,  8 Jun 2021 18:39:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177988;
-        bh=Saa7yUtcScnOSYHA+UPX6fJ+T9gBQ6O+JceFWKHjKYM=;
+        s=korg; t=1623177587;
+        bh=Y9U2b2BkW9H+Tw7mu4opEI/j+Y7MRAYm8/+eKXlAj2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P2T6ikE/00WnSAtjnffd++Wuw/6BGiD2VBs/JjgAgVjiB6/EE4lw7EF7wytP9SoYH
-         uGd1ucH0uHbJoAcFFvW9SagaXXGBIlBi3ki/gxMTKyGTRNJPGzUpbDHGOpL79xRV7D
-         ngiEfm+uuv3tPGgZ8Dz+Ee0kjRIQOC/SAJbZ/B/w=
+        b=tnczJwvvqSbWajGbwQ6VDp/gDB4ru4kPrJdRdjvmky/pcbnl8UpM/d35zc18PMaiA
+         juWPgSg5rONlGuykiYYyrh8qVqan7impzZDakj5tBwA/6CtbPHDck/9CUmBP9KDWnZ
+         gZWgEh0bdHah4UTn6d4PE7bPGry5Rv4r+hitdwNA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Alexander Aring <aahringo@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 035/161] net/mlx5: Check firmware sync reset requested is set before trying to abort it
-Date:   Tue,  8 Jun 2021 20:26:05 +0200
-Message-Id: <20210608175946.642052789@linuxfoundation.org>
+Subject: [PATCH 5.10 026/137] net: sock: fix in-kernel mark setting
+Date:   Tue,  8 Jun 2021 20:26:06 +0200
+Message-Id: <20210608175943.301631370@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moshe Shemesh <moshe@nvidia.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit 5940e64281c09976ce2b560244217e610bf9d029 ]
+[ Upstream commit dd9082f4a9f94280fbbece641bf8fc0a25f71f7a ]
 
-In case driver sent NACK to firmware on sync reset request, it will get
-sync reset abort event while it didn't set sync reset requested mode.
-Thus, on abort sync reset event handler, driver should check reset
-requested is set before trying to stop sync reset poll.
+This patch fixes the in-kernel mark setting by doing an additional
+sk_dst_reset() which was introduced by commit 50254256f382 ("sock: Reset
+dst when changing sk_mark via setsockopt"). The code is now shared to
+avoid any further suprises when changing the socket mark value.
 
-Fixes: 7dd6df329d4c ("net/mlx5: Handle sync reset abort event")
-Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: 84d1c617402e ("net: sock: add sock_set_mark")
+Reported-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/core/sock.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-index f9042e147c7f..ee710ce00795 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-@@ -354,6 +354,9 @@ static void mlx5_sync_reset_abort_event(struct work_struct *work)
- 						      reset_abort_work);
- 	struct mlx5_core_dev *dev = fw_reset->dev;
- 
-+	if (!test_bit(MLX5_FW_RESET_FLAGS_RESET_REQUESTED, &fw_reset->reset_flags))
-+		return;
-+
- 	mlx5_sync_reset_clear_reset_requested(dev, true);
- 	mlx5_core_warn(dev, "PCI Sync FW Update Reset Aborted.\n");
+diff --git a/net/core/sock.c b/net/core/sock.c
+index dee29f41beaf..7de51ea15cdf 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -807,10 +807,18 @@ void sock_set_rcvbuf(struct sock *sk, int val)
  }
+ EXPORT_SYMBOL(sock_set_rcvbuf);
+ 
++static void __sock_set_mark(struct sock *sk, u32 val)
++{
++	if (val != sk->sk_mark) {
++		sk->sk_mark = val;
++		sk_dst_reset(sk);
++	}
++}
++
+ void sock_set_mark(struct sock *sk, u32 val)
+ {
+ 	lock_sock(sk);
+-	sk->sk_mark = val;
++	__sock_set_mark(sk, val);
+ 	release_sock(sk);
+ }
+ EXPORT_SYMBOL(sock_set_mark);
+@@ -1118,10 +1126,10 @@ set_sndbuf:
+ 	case SO_MARK:
+ 		if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN)) {
+ 			ret = -EPERM;
+-		} else if (val != sk->sk_mark) {
+-			sk->sk_mark = val;
+-			sk_dst_reset(sk);
++			break;
+ 		}
++
++		__sock_set_mark(sk, val);
+ 		break;
+ 
+ 	case SO_RXQ_OVFL:
 -- 
 2.30.2
 
