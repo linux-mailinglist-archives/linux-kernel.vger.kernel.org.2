@@ -2,47 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570B139F8A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A86B139F8BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbhFHOOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:14:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233230AbhFHOOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:14:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EB3760FE9;
-        Tue,  8 Jun 2021 14:12:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623161538;
-        bh=UU78FkBvBQ+bGhsuFu7iJ2jbXBPQNaYDh0/ReT/swaU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nlECTdcCEFg8WxBNBWEoa6V4TQGTwh8v5XDRZSW0dYn0HwCk3tDynaAxsS8fPAGfc
-         m9/LM9M/VMmepG/fc98rvp3VTg5ig7IMQVN42JLi85FtDPAhsyCbYQM9KnbKrMMR6u
-         ORUayTW1zbBHEEvjcERoUtDbF3tIWuqGNJeAfRF0=
-Date:   Tue, 8 Jun 2021 16:12:15 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next 2/2] staging: r8188eu: use eth_broadcast_addr() to
- assign broadcast address
-Message-ID: <YL96vz4okNehxCBG@kroah.com>
-References: <20210608141620.525521-1-liushixin2@huawei.com>
+        id S233281AbhFHORM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:17:12 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42012 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233158AbhFHORL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:17:11 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 44F64219C2;
+        Tue,  8 Jun 2021 14:15:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623161717;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fNneOMji3fVSsopTxsNXHqXefzeyBsUEJ1N5GuoNAqM=;
+        b=auC3N3CzUBQFpkVRU9Z6XAzFVcDscsX+w6TsY1udv1azVotpS2P0tZOTYTrDBnzrT6SU3g
+        VehIk/xzN0R1PiiTsKJ0rwxKD8gct627vtkYX103ilW6Y3+B56+tHiF1umHvZybeIwtWb+
+        cPDbNWaAbk3FlYqFZ9AT5q61uAzwrNU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623161717;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fNneOMji3fVSsopTxsNXHqXefzeyBsUEJ1N5GuoNAqM=;
+        b=mQqphZRbFphCbunAXvv4OgfmeTzjBk866aBGpJvufqLFVuJhNvM+PTTWV1sN1xCI0ztHtd
+        JcynkMQUzO+LihDQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 2082CA3B84;
+        Tue,  8 Jun 2021 14:15:17 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9744FDAF61; Tue,  8 Jun 2021 16:12:33 +0200 (CEST)
+Date:   Tue, 8 Jun 2021 16:12:33 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Baokun Li <libaokun1@huawei.com>, linux-kernel@vger.kernel.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com, yangjihong1@huawei.com, yukuai3@huawei.com,
+        linux-btrfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next] btrfs: send: use list_move_tail instead of
+ list_del/list_add_tail
+Message-ID: <20210608141233.GQ31483@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        Baokun Li <libaokun1@huawei.com>, linux-kernel@vger.kernel.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com, yangjihong1@huawei.com, yukuai3@huawei.com,
+        linux-btrfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+References: <20210608031220.2822257-1-libaokun1@huawei.com>
+ <e860684e-959b-d126-bb1d-3214878ab995@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210608141620.525521-1-liushixin2@huawei.com>
+In-Reply-To: <e860684e-959b-d126-bb1d-3214878ab995@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 10:16:20PM +0800, Liu Shixin wrote:
-> Use eth_broadcast_addr() to assign broadcast address.
+On Tue, Jun 08, 2021 at 01:16:21PM +0800, Anand Jain wrote:
+> On 8/6/21 11:12 am, Baokun Li wrote:
+> > Using list_move_tail() instead of list_del() + list_add_tail().
+> > 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> > ---
+> >   fs/btrfs/send.c | 3 +--
+> >   1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> > index bd69db72acc5..a0e51b2416a1 100644
+> > --- a/fs/btrfs/send.c
+> > +++ b/fs/btrfs/send.c
+> > @@ -2083,8 +2083,7 @@ static struct name_cache_entry *name_cache_search(struct send_ctx *sctx,
+> >    */
+> >   static void name_cache_used(struct send_ctx *sctx, struct name_cache_entry *nce)
+> >   {
+> > -	list_del(&nce->list);
+> > -	list_add_tail(&nce->list, &sctx->name_cache_list);
+> > +	list_move_tail(&nce->list, &sctx->name_cache_list);
+> >   }
+> 
+> 
+>   Looks good.
+>   You can consider open-code name_cache_used() as there is only one user.
 
-That says what you do, but not _why_ you are doing this?
-
-Why make this change?  What benifit does it provide?
-
-thanks,
-
-greg k-h
+Yeah sounds like a good idea, with part of the function comment next to
+the list_move_tail.
