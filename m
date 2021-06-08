@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CEB53A01E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF953A0375
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235196AbhFHS5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:57:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48738 "EHLO mail.kernel.org"
+        id S237445AbhFHTRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:17:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234718AbhFHSur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:50:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E5C86147D;
-        Tue,  8 Jun 2021 18:39:49 +0000 (UTC)
+        id S237836AbhFHTFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:05:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3641D60FF0;
+        Tue,  8 Jun 2021 18:46:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177589;
-        bh=r7kFm+/1sCU/lFkOKKSIZ0oEN/z1zyV9BSCWWJ5WPnc=;
+        s=korg; t=1623177997;
+        bh=4xZtuIkxkFj39vFb9hA5HLfSFea0VlgJ2Mq9LqhotcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tQD4r9z2wEMYZV2MvPisjaP2Ne75+Tv6C+KNB5BAH/lopMCCCYnwV5IFtiFixYEIS
-         L+RTKw+0p1udk6Lc0v9qGhN/yHtOGbuBDCivYXHLrbb123vbBl/aqXkoaxg6rTFTkA
-         s2LmR5LkWlXsPKrsRw+ffH5e3NI9rn0/ZVK7Ykc0=
+        b=EWR1K000qTHf7OPLT+KQbDgyKtpnkrAwxGnE9B70KOhhztqmNvLa0ArzsJyJnk+ap
+         eKmQwek+GPs+gFfKUgGJxs/PEWTE4Yual4QO39JbYDwlLWA4orNSC+sBZn7aUNGI9k
+         mogwOM02p9BFbpwqo9wbbbTlEpFMEwsJJt36nopI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        Alex Vesker <valex@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 027/137] net/tls: Replace TLS_RX_SYNC_RUNNING with RCU
-Date:   Tue,  8 Jun 2021 20:26:07 +0200
-Message-Id: <20210608175943.342828854@linuxfoundation.org>
+Subject: [PATCH 5.12 038/161] net/mlx5: DR, Create multi-destination flow table with level less than 64
+Date:   Tue,  8 Jun 2021 20:26:08 +0200
+Message-Id: <20210608175946.752059342@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+References: <20210608175945.476074951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Mikityanskiy <maximmi@nvidia.com>
+From: Yevgeny Kliteynik <kliteyn@nvidia.com>
 
-[ Upstream commit 05fc8b6cbd4f979a6f25759c4a17dd5f657f7ecd ]
+[ Upstream commit 216214c64a8c1cb9078c2c0aec7bb4a2f8e75397 ]
 
-RCU synchronization is guaranteed to finish in finite time, unlike a
-busy loop that polls a flag. This patch is a preparation for the bugfix
-in the next patch, where the same synchronize_net() call will also be
-used to sync with the TX datapath.
+Flow table that contains flow pointing to multiple flow tables or multiple
+TIRs must have a level lower than 64. In our case it applies to muli-
+destination flow table.
+Fix the level of the created table to comply with HW Spec definitions, and
+still make sure that its level lower than SW-owned tables, so that it
+would be possible to point from the multi-destination FW table to SW
+tables.
 
-Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 34583beea4b7 ("net/mlx5: DR, Create multi-destination table for SW-steering use")
+Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
+Reviewed-by: Alex Vesker <valex@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/tls.h    |  1 -
- net/tls/tls_device.c | 10 +++-------
- 2 files changed, 3 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/steering/dr_fw.c | 3 ++-
+ include/linux/mlx5/mlx5_ifc.h                            | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/tls.h b/include/net/tls.h
-index 2bdd802212fe..d32a06705587 100644
---- a/include/net/tls.h
-+++ b/include/net/tls.h
-@@ -193,7 +193,6 @@ struct tls_offload_context_tx {
- 	(sizeof(struct tls_offload_context_tx) + TLS_DRIVER_STATE_SIZE_TX)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_fw.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_fw.c
+index 1fbcd012bb85..7ccfd40586ce 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_fw.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_fw.c
+@@ -112,7 +112,8 @@ int mlx5dr_fw_create_md_tbl(struct mlx5dr_domain *dmn,
+ 	int ret;
  
- enum tls_context_flags {
--	TLS_RX_SYNC_RUNNING = 0,
- 	/* Unlike RX where resync is driven entirely by the core in TX only
- 	 * the driver knows when things went out of sync, so we need the flag
- 	 * to be atomic.
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index a3ab2d3d4e4e..abc04045577d 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -680,15 +680,13 @@ static void tls_device_resync_rx(struct tls_context *tls_ctx,
- 	struct tls_offload_context_rx *rx_ctx = tls_offload_ctx_rx(tls_ctx);
- 	struct net_device *netdev;
+ 	ft_attr.table_type = MLX5_FLOW_TABLE_TYPE_FDB;
+-	ft_attr.level = dmn->info.caps.max_ft_level - 2;
++	ft_attr.level = min_t(int, dmn->info.caps.max_ft_level - 2,
++			      MLX5_FT_MAX_MULTIPATH_LEVEL);
+ 	ft_attr.reformat_en = reformat_req;
+ 	ft_attr.decap_en = reformat_req;
  
--	if (WARN_ON(test_and_set_bit(TLS_RX_SYNC_RUNNING, &tls_ctx->flags)))
--		return;
--
- 	trace_tls_device_rx_resync_send(sk, seq, rcd_sn, rx_ctx->resync_type);
-+	rcu_read_lock();
- 	netdev = READ_ONCE(tls_ctx->netdev);
- 	if (netdev)
- 		netdev->tlsdev_ops->tls_dev_resync(netdev, sk, seq, rcd_sn,
- 						   TLS_OFFLOAD_CTX_DIR_RX);
--	clear_bit_unlock(TLS_RX_SYNC_RUNNING, &tls_ctx->flags);
-+	rcu_read_unlock();
- 	TLS_INC_STATS(sock_net(sk), LINUX_MIB_TLSRXDEVICERESYNC);
- }
+diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+index 9c68b2da14c6..e5a4c68093fc 100644
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -1260,6 +1260,8 @@ enum mlx5_fc_bulk_alloc_bitmask {
  
-@@ -1298,9 +1296,7 @@ static int tls_device_down(struct net_device *netdev)
- 			netdev->tlsdev_ops->tls_dev_del(netdev, ctx,
- 							TLS_OFFLOAD_CTX_DIR_RX);
- 		WRITE_ONCE(ctx->netdev, NULL);
--		smp_mb__before_atomic(); /* pairs with test_and_set_bit() */
--		while (test_bit(TLS_RX_SYNC_RUNNING, &ctx->flags))
--			usleep_range(10, 200);
-+		synchronize_net();
- 		dev_put(netdev);
- 		list_del_init(&ctx->list);
+ #define MLX5_FC_BULK_NUM_FCS(fc_enum) (MLX5_FC_BULK_SIZE_FACTOR * (fc_enum))
  
++#define MLX5_FT_MAX_MULTIPATH_LEVEL 63
++
+ enum {
+ 	MLX5_STEERING_FORMAT_CONNECTX_5   = 0,
+ 	MLX5_STEERING_FORMAT_CONNECTX_6DX = 1,
 -- 
 2.30.2
 
