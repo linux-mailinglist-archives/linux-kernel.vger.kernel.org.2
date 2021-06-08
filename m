@@ -2,128 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7344739F817
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A49B39F81B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhFHNuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:50:19 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38906 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhFHNuR (ORCPT
+        id S233057AbhFHNui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:50:38 -0400
+Received: from out28-170.mail.aliyun.com ([115.124.28.170]:34264 "EHLO
+        out28-170.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231162AbhFHNuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:50:17 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 56F4F219B0;
-        Tue,  8 Jun 2021 13:48:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623160103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hb0+q30Gnp7DrPWOKT7XlTLbXFkLxN7BDKSfDeblI9U=;
-        b=rSqDwP5fROQpQw3tt1jtvGahQY7+vrm4nVZD6ybGz0s6PYAx5CYSr9EdXAsJWgaRYubcxx
-        L8vYL1NQsJ83CREDRrBNgPjcQ1MmEmJRh/04lrFQyhWcrZjGY0UJ2fLkOGG6b5UC/VS6Jl
-        G842nrMxQVa1BGRbE+PAjgVONTvdR+0=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id EBA28A3B83;
-        Tue,  8 Jun 2021 13:48:22 +0000 (UTC)
-Date:   Tue, 8 Jun 2021 15:48:22 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     John Ogness <john.ogness@linutronix.de>, kbuild-all@lists.01.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>
-Subject: Re: [PATCH next v2 1/2] dump_stack: move cpu lock to printk.c
-Message-ID: <YL91JlCUiD6C05Q2@alley>
-References: <20210607200232.22211-2-john.ogness@linutronix.de>
- <202106081055.UgUlUS1Z-lkp@intel.com>
+        Tue, 8 Jun 2021 09:50:37 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07798912|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_news_journal|0.00689651-0.00422478-0.988879;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=21;RT=21;SR=0;TI=SMTPD_---.KPSTFJt_1623160119;
+Received: from 192.168.0.103(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KPSTFJt_1623160119)
+          by smtp.aliyun-inc.com(10.147.40.7);
+          Tue, 08 Jun 2021 21:48:40 +0800
+Subject: Re: [PATCH 2/2] net: stmmac: Add Ingenic SoCs MAC support.
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com, paul@crapouillou.net
+References: <1623086867-119039-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1623086867-119039-3-git-send-email-zhouyanjie@wanyeetech.com>
+ <YL6zYgGdqxqL9c0j@lunn.ch>
+ <6532a195-65db-afb3-37a2-f68bfed9d908@wanyeetech.com>
+ <YL9gr2QQ/YEXNUmP@lunn.ch>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <62ad605f-3689-cab3-e43e-9b6954da8df3@wanyeetech.com>
+Date:   Tue, 8 Jun 2021 21:48:38 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202106081055.UgUlUS1Z-lkp@intel.com>
+In-Reply-To: <YL9gr2QQ/YEXNUmP@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-06-08 10:43:46, kernel test robot wrote:
-> Hi John,
-> 
-> I love your patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on next-20210607]
-> 
-> url:    https://github.com/0day-ci/linux/commits/John-Ogness/introduce-printk-cpu-lock/20210608-040454
-> base:    7f09e895a7f3e0af63bf9ec6c7c22893ec7e6c8e
-> config: mips-randconfig-r036-20210607 (attached as .config)
-> compiler: mips-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/136bcc2980e636b2ae156ca63fbe95c713e44c1b
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review John-Ogness/introduce-printk-cpu-lock/20210608-040454
->         git checkout 136bcc2980e636b2ae156ca63fbe95c713e44c1b
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    lib/dump_stack.c: In function 'dump_stack_lvl':
-> >> lib/dump_stack.c:107:2: warning: 'lock_flag' is used uninitialized in this function [-Wuninitialized]
->      107 |  printk_cpu_unlock_irqrestore(lock_flag, irq_flags);
->          |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hello Andrew,
 
-Interesting. I am curious that it does not complain also about
-irq_flags. But it is possible the it reports only the first problem.
-
-Anyway, we will likely need to do some trickery via #define to tell
-the compiler that the value is set. I mean to do similar thing as:
-
-#define raw_local_irq_save(flags)			\
-	do {						\
-		typecheck(unsigned long, flags);	\
-		flags = arch_local_irq_save();		\
-	} while (0)
+On 2021/6/8 下午8:21, Andrew Lunn wrote:
+> Please wrap your text to around 75 characters per line.
 
 
-In our case, it might look like:
-
-#define printk_cpu_lock_irqsave(lock_nested, irq_flags)		\
-	do {							\
-		local_irq_save(irq_flags);			\
-		typecheck(bool, lock_nested);			\
-		lock_nested = __printk_cpu_lock(irq_flags);	\
-	} while (0)
+Sure.
 
 
-then we would need to do in __prink_cpu_lock(unsigned long irq_flags)
+>
+> I suspect you don't understand RGMII delays. As i said, normally, the
+> MAC does not add delays, the PHY does. Please take a closer look at
+> this.
 
 
-	} else {
-		local_irq_restore(irq_flags);
+According to the description of ethernet-controller.yaml, "rgmii" seems
 
-		/*
-		 * Wait for the lock to release before jumping to cmpxchg()
-		 * in order to mitigate the thundering herd problem.
-		 */
-		do {
-			cpu_relax();
-		} while (atomic_read(&printk_cpulock_owner) != -1);
+to allow MAC to add TX delay (the description in ethernet-controller.yaml
 
-		local_irq_save(irq_flags)
-		goto retry;
-	}
+is "RX and TX delays are added by the MAC when required"), while rgmii-id
 
-Best Regards,
-Petr
+and rgmii-txid do not allow MAC to add delay (the description in
+
+ethernet-controller.yaml is"RGMII with internal RX and TX delays provided
+
+by the PHY, the MAC should not add the RX or TX delays in this case" and
+
+"RGMII with internal TX delay provided by the PHY, the MAC should not add
+
+an TX delay in this case"), I will add support for the other three RGMII 
+modes
+
+in the next version (I forgot to reply to this in the previous email).
+
+
+Thanks and best regards!
+
