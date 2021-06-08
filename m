@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729733A02C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916DB3A016F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236379AbhFHTJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:09:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35352 "EHLO mail.kernel.org"
+        id S235209AbhFHSwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:52:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237351AbhFHTAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:00:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C80DB6162F;
-        Tue,  8 Jun 2021 18:43:30 +0000 (UTC)
+        id S234299AbhFHSqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:46:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F4DC613DF;
+        Tue,  8 Jun 2021 18:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177811;
-        bh=hWSw338vaib2nmKg/NfWfYy527GoRmuHGQh+8qKetFI=;
+        s=korg; t=1623177456;
+        bh=Z0Ylnw1twkMI0qxV0Bqn1Kx1nfp/TRDGU60l/S4IpRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z5+ym2PTYJzc037DxqXsgyfgC2xdzmjiCbP6t5zbI7IZzeAev7F3Gut7iOmReyGq/
-         QQ2p+4wg0xtHE/5IN08tcbwCVYnnnkpn4eI1HmrvqGT/nvj9NmH8DXmhkolbU6Y7Fo
-         yGvUf83Ri4KKnVoLRHvosQwg9VN9gPTy21pCdU6E=
+        b=GovPtV4kPyltUt80rSCzW8IhAfGkhogplq/xHOe/oYsAq1xsoFfZLeF7bnnOLG57Z
+         9nLlZ9aah181fX2yPKO86Eq1S9ABfJOA47VzsKkVWDp4BCWGipcS2HjiwLXmECQabM
+         8p3dt2L+sdWc6reVeaSToBF77vp2Lmm+o8ESxRos=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phil Elwell <phil@raspberrypi.com>
-Subject: [PATCH 5.10 107/137] usb: dwc2: Fix build in periphal-only mode
+        stable@vger.kernel.org, Imran Khan <imran.f.khan@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.4 58/78] x86/apic: Mark _all_ legacy interrupts when IO/APIC is missing
 Date:   Tue,  8 Jun 2021 20:27:27 +0200
-Message-Id: <20210608175946.004461939@linuxfoundation.org>
+Message-Id: <20210608175937.236151232@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,35 +40,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Elwell <phil@raspberrypi.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-In branches to which 24d209dba5a3 ("usb: dwc2: Fix hibernation between
-host and device modes.") has been back-ported, the bus_suspended member
-of struct dwc2_hsotg is only present in builds that support host-mode.
-To avoid having to pull in several more non-Fix commits in order to
-get it to compile, wrap the usage of the member in a macro conditional.
+commit 7d65f9e80646c595e8c853640a9d0768a33e204c upstream.
 
-Fixes: 24d209dba5a3 ("usb: dwc2: Fix hibernation between host and device modes.")
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+PIC interrupts do not support affinity setting and they can end up on
+any online CPU. Therefore, it's required to mark the associated vectors
+as system-wide reserved. Otherwise, the corresponding irq descriptors
+are copied to the secondary CPUs but the vectors are not marked as
+assigned or reserved. This works correctly for the IO/APIC case.
+
+When the IO/APIC is disabled via config, kernel command line or lack of
+enumeration then all legacy interrupts are routed through the PIC, but
+nothing marks them as system-wide reserved vectors.
+
+As a consequence, a subsequent allocation on a secondary CPU can result in
+allocating one of these vectors, which triggers the BUG() in
+apic_update_vector() because the interrupt descriptor slot is not empty.
+
+Imran tried to work around that by marking those interrupts as allocated
+when a CPU comes online. But that's wrong in case that the IO/APIC is
+available and one of the legacy interrupts, e.g. IRQ0, has been switched to
+PIC mode because then marking them as allocated will fail as they are
+already marked as system vectors.
+
+Stay consistent and update the legacy vectors after attempting IO/APIC
+initialization and mark them as system vectors in case that no IO/APIC is
+available.
+
+Fixes: 69cde0004a4b ("x86/vector: Use matrix allocator for vector assignment")
+Reported-by: Imran Khan <imran.f.khan@oracle.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20210519233928.2157496-1-imran.f.khan@oracle.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/dwc2/core_intr.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/include/asm/apic.h   |    1 +
+ arch/x86/kernel/apic/apic.c   |    1 +
+ arch/x86/kernel/apic/vector.c |   20 ++++++++++++++++++++
+ 3 files changed, 22 insertions(+)
 
---- a/drivers/usb/dwc2/core_intr.c
-+++ b/drivers/usb/dwc2/core_intr.c
-@@ -707,7 +707,11 @@ static inline void dwc_handle_gpwrdn_dis
- 	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -174,6 +174,7 @@ static inline int apic_is_clustered_box(
+ extern int setup_APIC_eilvt(u8 lvt_off, u8 vector, u8 msg_type, u8 mask);
+ extern void lapic_assign_system_vectors(void);
+ extern void lapic_assign_legacy_vector(unsigned int isairq, bool replace);
++extern void lapic_update_legacy_vectors(void);
+ extern void lapic_online(void);
+ extern void lapic_offline(void);
+ extern bool apic_needs_pit(void);
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2579,6 +2579,7 @@ static void __init apic_bsp_setup(bool u
+ 	end_local_APIC_setup();
+ 	irq_remap_enable_fault_handling();
+ 	setup_IO_APIC();
++	lapic_update_legacy_vectors();
+ }
  
- 	hsotg->hibernated = 0;
+ #ifdef CONFIG_UP_LATE_INIT
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -680,6 +680,26 @@ void lapic_assign_legacy_vector(unsigned
+ 	irq_matrix_assign_system(vector_matrix, ISA_IRQ_VECTOR(irq), replace);
+ }
+ 
++void __init lapic_update_legacy_vectors(void)
++{
++	unsigned int i;
 +
-+#if IS_ENABLED(CONFIG_USB_DWC2_HOST) ||	\
-+	IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
- 	hsotg->bus_suspended = 0;
-+#endif
- 
- 	if (gpwrdn & GPWRDN_IDSTS) {
- 		hsotg->op_state = OTG_STATE_B_PERIPHERAL;
++	if (IS_ENABLED(CONFIG_X86_IO_APIC) && nr_ioapics > 0)
++		return;
++
++	/*
++	 * If the IO/APIC is disabled via config, kernel command line or
++	 * lack of enumeration then all legacy interrupts are routed
++	 * through the PIC. Make sure that they are marked as legacy
++	 * vectors. PIC_CASCADE_IRQ has already been marked in
++	 * lapic_assign_system_vectors().
++	 */
++	for (i = 0; i < nr_legacy_irqs(); i++) {
++		if (i != PIC_CASCADE_IR)
++			lapic_assign_legacy_vector(i, true);
++	}
++}
++
+ void __init lapic_assign_system_vectors(void)
+ {
+ 	unsigned int i, vector = 0;
 
 
