@@ -2,186 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70F839EE44
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 07:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4CEA39EE53
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 07:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhFHFps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 01:45:48 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:48914 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229526AbhFHFpr (ORCPT
+        id S230321AbhFHFrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 01:47:21 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:40044 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFHFrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 01:45:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuyu@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UbjJSIq_1623131032;
-Received: from xuyu-mbp15.local(mailfrom:xuyu@linux.alibaba.com fp:SMTPD_---0UbjJSIq_1623131032)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 08 Jun 2021 13:43:52 +0800
-Subject: Re: [PATCH] mm, thp: relax migration wait when failed to get tail
- page
-To:     Hugh Dickins <hughd@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, gavin.dg@linux.alibaba.com,
-        Greg Thelen <gthelen@google.com>, Wei Xu <weixugc@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <bc8567d7a2c08ab6fdbb8e94008157265d5d28a3.1622564942.git.xuyu@linux.alibaba.com>
- <alpine.LSU.2.11.2106010947370.1090@eggly.anvils>
- <b05ab98d-3a0d-ec23-96dd-5c970aa61580@linux.alibaba.com>
- <alpine.LSU.2.11.2106020831590.6388@eggly.anvils>
- <6c4e0df7-1f06-585f-d113-f38db6c819b5@linux.alibaba.com>
- <b9db2528-e3fa-da5a-ba30-4fc5d217957a@google.com>
-From:   Yu Xu <xuyu@linux.alibaba.com>
-Message-ID: <49d5601c-6ea5-5973-bcbe-bee0c1d4f7de@linux.alibaba.com>
-Date:   Tue, 8 Jun 2021 13:43:52 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Tue, 8 Jun 2021 01:47:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623131124; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=FTH5irT6do2Mgww4obC31jDBjjRHc32WfJ8ytHIN7i0=; b=bdtkjdPMGxhjS057GoBEjREcmZRl4ARbLgakC05oRV08UaTd2DjX/PmgvStG/AzY7o/bvKpg
+ 5qTwmA2zRiqNfVVentwZV4pwDf1SIuA8GMSDLF9ZA1yxpEx5rVTPF2jtLHKxpnOrNRJTZ29M
+ qGQ6hbcynlC+E4zsOzmQ6a7NgtY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60bf03dbe570c05619336783 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Jun 2021 05:44:59
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2B98CC433D3; Tue,  8 Jun 2021 05:44:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.62.3] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 20E97C433D3;
+        Tue,  8 Jun 2021 05:44:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 20E97C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v9 0/5] Re-introduce TX FIFO resize for larger EP bursting
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        jackp@codeaurora.org, Thinh.Nguyen@synopsys.com
+References: <1621410561-32762-1-git-send-email-wcheng@codeaurora.org>
+ <YLoUiO8tpRpmvcyU@kroah.com> <87k0n9btnb.fsf@kernel.org>
+ <YLo6W5sKaXvy51eW@kroah.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <c2daab34-1b25-7ee3-e203-a414c1e486d5@codeaurora.org>
+Date:   Mon, 7 Jun 2021 22:44:56 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <b9db2528-e3fa-da5a-ba30-4fc5d217957a@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <YLo6W5sKaXvy51eW@kroah.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 12:44 PM, Hugh Dickins wrote:
-> On Mon, 7 Jun 2021, Yu Xu wrote:
->> On 6/2/21 11:57 PM, Hugh Dickins wrote:
->>> On Wed, 2 Jun 2021, Yu Xu wrote:
->>>> On 6/2/21 12:55 AM, Hugh Dickins wrote:
->>>>> On Wed, 2 Jun 2021, Xu Yu wrote:
->>>>>
->>>>>> We notice that hung task happens in a conner but practical scenario when
->>>>>> CONFIG_PREEMPT_NONE is enabled, as follows.
->>>>>>
->>>>>> Process 0                       Process 1                     Process
->>>>>> 2..Inf
->>>>>> split_huge_page_to_list
->>>>>>        unmap_page
->>>>>>            split_huge_pmd_address
->>>>>>                                    __migration_entry_wait(head)
->>>>>>                                                                  __migration_entry_wait(tail)
->>>>>>        remap_page (roll back)
->>>>>>            remove_migration_ptes
->>>>>>                rmap_walk_anon
->>>>>>                    cond_resched
->>>>>>
->>>>>> Where __migration_entry_wait(tail) is occurred in kernel space, e.g.,
->>>>>> copy_to_user, which will immediately fault again without rescheduling,
->>>>>> and thus occupy the cpu fully.
->>>>>>
->>>>>> When there are too many processes performing __migration_entry_wait on
->>>>>> tail page, remap_page will never be done after cond_resched.
->>>>>>
->>>>>> This relaxes __migration_entry_wait on tail page, thus gives remap_page
->>>>>> a chance to complete.
->>>>>>
->>>>>> Signed-off-by: Gang Deng <gavin.dg@linux.alibaba.com>
->>>>>> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
->>>>>
->>>>> Well caught: you're absolutely right that there's a bug there.
->>>>> But isn't cond_resched() just papering over the real bug, and
->>>>> what it should do is a "page = compound_head(page);" before the
->>>>> get_page_unless_zero()? How does that work out in your testing?
->>>>
->>>> compound_head works. The patched kernel is alive for hours under
->>>> our reproducer, which usually makes the vanilla kernel hung after
->>>> tens of minutes at most.
->>>
->>> Oh, that's good news, thanks.
->>>
->>> (It's still likely that a well-placed cond_resched() somewhere in
->>> mm/gup.c would also be a good idea, but none of us have yet got
->>> around to identifying where.)
->>
->> We neither. If really have to do it outside of __migration_entry_wait,
->> return value of __migration_entry_wait is needed, and many related
->> functions have to updated, which may be undesirable.
-> 
-> No, it would not be necessary to plumb through a return value from
-> __migration_entry_wait(): I didn't mean that this GUP cond_resched()
-> should be done only for the migration case, but (I guess) on any path
-> where handle_mm_fault() returns "success" for a retry, yet the retry
-> of follow_page_mask() fails.
-> 
-> But now that I look, I see there is already a cond_resched() there!
+Hi Greg/Felipe,
 
-Do you mean might_sleep in mmap_read_trylock within do_user_addr_fault?
-
-If so, our environment has CONFIG_PREEMPT_NONE is enabled, and the
-__migration_entry_wait happens in kernel when do something like
-copy_to_user (e.g., fstat).
-
-
-> 
-> So I'm puzzled as to how your cond_resched() in __migration_entry_wait()
-> appeared to help - well, you never actually said that it helped, but I
-> assume that it did, or you wouldn't have bothered to send that patch?
-> 
-> It's irrelevant, now that we've admitted there should be a
-> "page = compound_head(page)" in there, and you have said that helps,
-> and that's the patch we want to send now.  But it troubles me, to be
-> unable to explain it.  Two cond_resched()s are not twice as good as one.
-> 
+On 6/4/2021 7:36 AM, Greg KH wrote:
+> On Fri, Jun 04, 2021 at 05:18:16PM +0300, Felipe Balbi wrote:
 >>
->>>
->>>>
->>>> If we use compound_head, the behavior of __migration_entry_wait(tail)
->>>> changes from "retry fault" to "prevent THP from being split". Is that
->>>> right?  Then which is preferred? If it were me, I would prefer "retry
->>>> fault".
->>>
->>> As Matthew remarked, you are asking very good questions, and split
->>> migration entries are difficult to think about.  But I believe you'll
->>> find it works out okay.
->>>
->>> The point of *put_and_* wait_on_page_locked() is that it does drop
->>> the page reference you acquired with get_page_unless_zero, as soon
->>> as the page is on the wait queue, before actually waiting.
->>>
->>> So splitting the THP is only prevented for a brief interval.  Now,
->>> it's true that if there are very many tasks faulting on portions
->>> of the huge page, in that interval between inserting the migration
->>> entries and freezing the huge page's refcount to 0, they can reduce
->>> the chance of splitting considerably.  But that's not an excuse for
->>> for doing get_page_unless_zero() on the wrong thing, as it was doing.
+>> Hi,
 >>
->> We finally come to your solution, i.e., compound_head.
+>> Greg KH <gregkh@linuxfoundation.org> writes:
+>>> On Wed, May 19, 2021 at 12:49:16AM -0700, Wesley Cheng wrote:
+>>>> Changes in V9:
+>>>>  - Fixed incorrect patch in series.  Removed changes in DTSI, as dwc3-qcom will
+>>>>    add the property by default from the kernel.
+>>>
+>>> This patch series has one build failure and one warning added:
+>>>
+>>> drivers/usb/dwc3/gadget.c: In function ‘dwc3_gadget_calc_tx_fifo_size’:
+>>> drivers/usb/dwc3/gadget.c:653:45: warning: passing argument 1 of ‘dwc3_mdwidth’ makes pointer from integer without a cast [-Wint-conversion]
+>>>   653 |         mdwidth = dwc3_mdwidth(dwc->hwparams.hwparams0);
+>>>       |                                ~~~~~~~~~~~~~^~~~~~~~~~
+>>>       |                                             |
+>>>       |                                             u32 {aka unsigned int}
+>>> In file included from drivers/usb/dwc3/debug.h:14,
+>>>                  from drivers/usb/dwc3/gadget.c:25:
+>>> drivers/usb/dwc3/core.h:1493:45: note: expected ‘struct dwc3 *’ but argument is of type ‘u32’ {aka ‘unsigned int’}
+>>>  1493 | static inline u32 dwc3_mdwidth(struct dwc3 *dwc)
+>>>       |                                ~~~~~~~~~~~~~^~~
+>>>
+>>>
+>>> drivers/usb/dwc3/dwc3-qcom.c: In function ‘dwc3_qcom_of_register_core’:
+>>> drivers/usb/dwc3/dwc3-qcom.c:660:23: error: implicit declaration of function ‘of_add_property’; did you mean ‘of_get_property’? [-Werror=implicit-function-declaration]
+>>>   660 |                 ret = of_add_property(dwc3_np, prop);
+>>>       |                       ^~~~~~~~~~~~~~~
+>>>       |                       of_get_property
+>>>
+>>>
+>>> How did you test these?
+
+I ran these changes on our internal branches, which were probably
+missing some of the recent changes done to the DWC3 drivers.  Will fix
+the above compile errors and re-submit.
+
+In regards to how much these changes have been tested, we've been
+maintaining the TX FIFO resize logic downstream for a few years already,
+so its being used in end products.  We also verify this with our
+internal testing, which has certain benchmarks we need to meet.
+
 >>
->> In that case, who should resend the compound_head patch to this issue?
->> shall we do with your s.o.b?
+>> to be honest, I don't think these should go in (apart from the build
+>> failure) because it's likely to break instantiations of the core with
+>> differing FIFO sizes. Some instantiations even have some endpoints with
+>> dedicated functionality that requires the default FIFO size configured
+>> during coreConsultant instantiation. I know of at OMAP5 and some Intel
+>> implementations which have dedicated endpoints for processor tracing.
+>>
+>> With OMAP5, these endpoints are configured at the top of the available
+>> endpoints, which means that if a gadget driver gets loaded and takes
+>> over most of the FIFO space because of this resizing, processor tracing
+>> will have a hard time running. That being said, processor tracing isn't
+>> supported in upstream at this moment.
+>>
+
+I agree that the application of this logic may differ between vendors,
+hence why I wanted to keep this controllable by the DT property, so that
+for those which do not support this use case can leave it disabled.  The
+logic is there to ensure that for a given USB configuration, for each EP
+it would have at least 1 TX FIFO.  For USB configurations which don't
+utilize all available IN EPs, it would allow re-allocation of internal
+memory to EPs which will actually be in use.
+
+>> I still think this may cause other places to break down. The promise the
+>> databook makes is that increasing the FIFO size over 2x wMaxPacketSize
+>> should bring little to no benefit, if we're not maintaining that, I
+>> wonder if the problem is with some of the BUSCFG registers instead,
+>> where we configure interconnect bursting and the like.
 > 
-> I was rather expecting you to send the patch: with your s.o.b, not mine.
-> You could say "Suggested-by: Hugh Dickins <hughd@google.com>" if you like.
+
+I've been referring mainly to the DWC3 programming guide for
+recommendations on how to improve USB performance in:
+Section 3.3.5 System Bus Features to Improve USB Performance
+
+At least when I ran the initial profiling, adjusting the RX/TX
+thresholds brought little to no benefits.  Even in some of the examples,
+they have diagrams showing a TXFIFO size of 6 max packets (Figure 3-5).
+ I think its difficult to say that the TX fifo resizing won't help in
+systems with limited, or shared resources where the bus latencies would
+be somewhat larger.  By adjusting the TX FIFO size, the controller would
+be able to fetch more data from system memory into the memory within the
+controller, leading to less frequent end of bursts, etc... as data is
+readily available.
+
+In terms of adjusting the AXI/AHB bursting, I would think the bandwidth
+increase would eventually be constrained based on your system's design.
+ We don't touch the GSBUSCFG registers, and leave them as is based off
+the recommendations from the HW designers.
+
+> Good points.
 > 
-> And I suggest that you put that "page = compound_head(page);" line
-> immediately after the "page = migration_entry_to_page(entry);" line,
-> so as not to interfere with the comment above get_page_unless_zero().
+> Wesley, what kind of testing have you done on this on different devices?
 > 
-> (No need for a comment on the compound_head(): it's self-explanatory.)
-> 
-> I did meanwhile research other callers of migration_entry_to_page():
-> it had been on my mind, that others might need a compound_head() too,
-> and perhaps it should be done inside migration_entry_to_page() itself.
-> 
-> But so far as I can tell (I don't really know about the s390 one),
-> the others are okay, and it would just be unnecessary overhead
-> (in particular, the mm_counter() stuff looks correct on a tail).
-> 
-> I *think* the right Fixes tag would be
-> Fixes: ba98828088ad ("thp: add option to setup migration entries during PMD split")
-> though I'm not sure of that; it's probably good enough.
-> 
-> (With all this direction, I did wonder if it would be kinder just to
-> send a patch myself, but using some of your comments: but I didn't
-> understand "conner" in your description, so couldn't do that.)
-> 
-> Thanks!
-> Hugh
-> 
+
+As mentioned above, these changes are currently present on end user
+devices for the past few years, so its been through a lot of testing :).
+
+Thanks
+Wesley Cheng
+
 
 -- 
-Thanks,
-Yu
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
