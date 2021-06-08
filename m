@@ -2,119 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8A439F90E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B3639F90C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233373AbhFHO3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:29:14 -0400
-Received: from mail-io1-f54.google.com ([209.85.166.54]:38499 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233134AbhFHO3L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:29:11 -0400
-Received: by mail-io1-f54.google.com with SMTP id b25so22398786iot.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 07:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aFGcwQ3o2ZyrTCy4xvb08Po9MFGx7mRhjpeSf3SDVVM=;
-        b=k2cO8sFl6AawwfKDwjqC7Cwa8kx2f1Of64WDhB/DVwxiJ1rlKaFs+eM+RJvkfpOg3j
-         zO1VBpaq9q7wZy6zi9n5ICecHohLlqYxYi6tdhUwnSO+mMOnE5dUKWhUf/nGnCdyitq6
-         nDb/ec39txb5V5dV64U8UDFIfQLhBEGS68/GNxKoBskr5cxVfo7fS0INvfFvTKEjLTu9
-         A8M4GGzoQWaA74fiRzw6ZdY0rXKziGyRTaVypCM3Od1ST1EL4gReqZqpSQjVZLAxnWNy
-         A9hD24P48HoK42afcyIcwpou9e4Xux2L++niw7SqMvjiw4ZLtQoJQrOZdQJzAJ3+YV7R
-         jOGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aFGcwQ3o2ZyrTCy4xvb08Po9MFGx7mRhjpeSf3SDVVM=;
-        b=tl0KwA3JU+HTDEZbv4HJ79z4CWQm83/4t0QP1vF5M/Yp83AwDu9zAEdRVoYy4oYik8
-         cDFWV2mevbgyBZWfC5GAZj6MDiVp67S0AYuVF9ItZ/CKaqpVwaMict5X1eA8EUqmpMDB
-         1ptAa3R0eC+pKk4eAx67rher7oDjBLlIYRb58KUDBA77HIaDFP5wefuLlub449nzvyDs
-         4Pp4MGvrK8NgEBkxBI4A8kEWplMw6mLW1VQyGyrducAykumrmVXrQWYbhI4SbAqAfXqv
-         60zxUqpiTP8zh0UQcNhLJuxGohkASIIf2N5Gmb5yc2os7/5CaXRGaY7wRvWvnnlJMTLv
-         NUwg==
-X-Gm-Message-State: AOAM533nUJUTHC7j6mc6KBDk7hoh6x0zg6S5w+F4eLymWsbd7D0ZyRaW
-        rbDMdq+ZSSLfhGFehOxfay18UybdI4RqE+Wo4L5z8w==
-X-Google-Smtp-Source: ABdhPJxgnBqrzUUM4CgS/RA6oYYN9J2gy7q86i3Sr5vSb0wV/HtQgOPUlNfxKQ/Lnf3/EplJxZ6l4L++E7UQ5N87S94=
-X-Received: by 2002:a05:6638:2a1:: with SMTP id d1mr21325888jaq.52.1623162377079;
- Tue, 08 Jun 2021 07:26:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
-In-Reply-To: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Tue, 8 Jun 2021 08:26:05 -0600
-Message-ID: <CANLsYkxAXiKTD=KB-45O+V7DAY4dbzd_Q3WdPoDrd=UdFqtw4w@mail.gmail.com>
-Subject: Re: [PATCH 0/4] rpmsg: char: introduce the rpmsg-raw channel
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Julien Massot <julien.massot@iot.bzh>
-Content-Type: text/plain; charset="UTF-8"
+        id S233290AbhFHO2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:28:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232911AbhFHO2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:28:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A585D60FDB;
+        Tue,  8 Jun 2021 14:26:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623162420;
+        bh=Z8fEMmWlqWDlXYS/x++QWYE8lKr7Z6rduKmNo70yTo4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OpRx9OzQPBhiTolVc6TXdUJLuqsFVwupXDplSueETbJ5i2ty6AecnJE0hzFmnI9yk
+         h7+ejS+2+0OZ2Xu1CchqPZuw/DN+9lFsEmtqb9bvhphndiwAfwk0rE2HJam4HlBAEY
+         h2sSZk2mxPuF/e30Mu/0MUaXZ0MncXCI38VSKYTeACcNVllt2v9Ou/ZMetgjIrY8WF
+         NQD2D0BTf8Sb5rrwO4yum5AK+KRsB2FiIm2AQVRxRM7E1RunmVPQtay2fqWABVkOJf
+         PjRzWXlFg5FCCxXXsb8uV1uOgA8nRuTsns0do2EqrMk0vysk5BlIVb3RguDBBOVrsR
+         oC6V6rF57GAmg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regulator fixes for v5.13-rc4
+Date:   Tue, 08 Jun 2021 15:26:33 +0100
+Message-Id: <20210608142659.A585D60FDB@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaud,
+The following changes since commit f80505fdff771c89c9350895e99140ffc824e564:
 
-Between remoteproc/RPMSG and CoreSight, I have 6 patchsets to review
-(including some of your work) before getting to this one.  As such it
-will take a little while.
+  regulator: Add binding for TCS4525 (2021-04-23 15:36:16 +0100)
 
-Thanks,
-Mathieu
+are available in the Git repository at:
 
-On Mon, 7 Jun 2021 at 11:30, Arnaud Pouliquen
-<arnaud.pouliquen@foss.st.com> wrote:
->
-> Purpose:
->   Allow the remote processor to instantiate a /dev/rpmsgX interface relying on the NS announcement
->   of the "rpmsg-raw" service.
->   This patchet is extracted from  the series [1] with rework to add rpmsg_create_default_ept helper.
->
->
-> Aim:
->   There is no generic sysfs interface based on RPMsg that allows a user application to communicate
->   with a remote processor in a simple way.
->   The rpmsg_char dev solves a part of this problem by allowing an endpoint to be created on the
->   local side. But it does not take advantage of the NS announcement mechanism implemented for some
->   backends such as the virtio backend. So it is not possible to probe it from  a remote initiative.
->   Extending the char rpmsg device to support NS announcement makes the rpmsg_char more generic.
->   By announcing a "rpmg-raw" service, the firmware of a remote processor will be able to
->   instantiate a /dev/rpmsgX interface providing to the user application a basic link to communicate
->   with it without any knowledge of the rpmsg protocol.
->
-> Implementation details:
->   - Register a rpmsg driver for the rpmsg_char driver, associated to the "rpmsg-raw" channel service.
->   - In case of rpmsg char device instantiated by the rpmsg bus (on NS announcement) manage the
->     channel default endpoint to ensure a stable default endpoint address, for communication with
->     the remote processor.
->
-> How to test it:
->   - This series can be applied on git/andersson/remoteproc.git for-next branch (dc0e14fa833b)
->     + the "Restructure the rpmsg char to decorrelate the control part" series[2]
->
-> [1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=475217
-> [2] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=483793
->
->
->
-> Arnaud Pouliquen (4):
->   rpmsg: Introduce rpmsg_create_default_ept function
->   rpmsg: char: Add possibility to create and reuse default endpoint
->   rpmsg: char: Introduce the "rpmsg-raw" channel
->   rpmsg: char: Return error if user tries to destroy a default endpoint.
->
->  drivers/rpmsg/rpmsg_char.c | 92 +++++++++++++++++++++++++++++++++++---
->  drivers/rpmsg/rpmsg_core.c | 51 +++++++++++++++++++++
->  include/linux/rpmsg.h      | 14 ++++++
->  3 files changed, 151 insertions(+), 6 deletions(-)
->
-> --
-> 2.17.1
->
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.13-rc4
+
+for you to fetch changes up to cb2381cbecb81a8893b2d1e1af29bc2e5531df27:
+
+  regulator: rt4801: Fix NULL pointer dereference if priv->enable_gpios is NULL (2021-06-03 19:35:48 +0100)
+
+----------------------------------------------------------------
+regulator: Fixes for v5.14
+
+A collection of fixes for the regulator API that have come up since the
+merge window, including a big batch of fixes from Axel Lin's usual
+careful and detailed review.  The one stand out fix here is Dmitry
+Baryshkov's fix for an issue where we fail to power on the parents of
+always on regulators during system startup if they weren't already
+powered on.
+
+----------------------------------------------------------------
+Axel Lin (14):
+      regulator: cros-ec: Fix error code in dev_err message
+      regulator: da9121: Return REGULATOR_MODE_INVALID for invalid mode
+      regulator: fan53880: Fix missing n_voltages setting
+      regulator: Check ramp_delay_table for regulator_set_ramp_delay_regmap
+      regulator: fixed: Ensure enable_counter is correct if reg_domain_disable fails
+      regulator: scmi: Fix off-by-one for linear regulators .n_voltages setting
+      regulator: bd70528: Fix off-by-one for buck123 .n_voltages setting
+      regulator: bd71828: Fix .n_voltages settings
+      regulator: rtmv20: Fix .set_current_limit/.get_current_limit callbacks
+      regulator: rtmv20: Add Richtek to Kconfig text
+      regulator: mt6315: Fix function prototype for mt6315_map_mode
+      regulator: atc260x: Fix n_voltages and min_sel for pickable linear ranges
+      regulator: hi6421v600: Fix .vsel_mask setting
+      regulator: rt4801: Fix NULL pointer dereference if priv->enable_gpios is NULL
+
+ChiYuan Huang (1):
+      regulator: rtmv20: Fix to make regcache value first reading back from HW
+
+Dmitry Baryshkov (1):
+      regulator: core: resolve supply for boot-on/always-on regulators
+
+Dmitry Osipenko (2):
+      regulator: max77620: Use device_set_of_node_from_dev()
+      regulator: max77620: Silence deferred probe error
+
+Hao Fang (1):
+      regulator: hisilicon: use the correct HiSilicon copyright
+
+Mark Brown (2):
+      Merge series "regulator: fan53555: tcs4525 fix and cleanup" from Peter Geis <pgwipeout@gmail.com>:
+      Merge series "Fix MAX77620 regulator driver regression" from Dmitry Osipenko <digetx@gmail.com>:
+
+Matti Vaittinen (1):
+      regulator: bd718x7: Fix the BUCK7 voltage setting on BD71837
+
+Peter Geis (1):
+      regulator: fan53555: fix TCS4525 voltage calulation
+
+ drivers/regulator/Kconfig                       |  2 +-
+ drivers/regulator/atc260x-regulator.c           | 19 ++++++-----
+ drivers/regulator/bd718x7-regulator.c           |  2 +-
+ drivers/regulator/core.c                        |  6 ++++
+ drivers/regulator/cros-ec-regulator.c           |  3 +-
+ drivers/regulator/da9121-regulator.c            | 10 ++++--
+ drivers/regulator/fan53555.c                    |  3 +-
+ drivers/regulator/fan53880.c                    |  3 ++
+ drivers/regulator/fixed.c                       |  7 +++-
+ drivers/regulator/helpers.c                     |  2 +-
+ drivers/regulator/hi655x-regulator.c            |  2 +-
+ drivers/regulator/max77620-regulator.c          | 17 ++++++----
+ drivers/regulator/mt6315-regulator.c            |  2 +-
+ drivers/regulator/rt4801-regulator.c            |  4 +--
+ drivers/regulator/rtmv20-regulator.c            | 44 +++++++++++++++++++++++--
+ drivers/regulator/scmi-regulator.c              |  2 +-
+ drivers/staging/hikey9xx/hi6421v600-regulator.c |  4 +--
+ include/linux/mfd/rohm-bd70528.h                |  4 +--
+ include/linux/mfd/rohm-bd71828.h                | 10 +++---
+ 19 files changed, 104 insertions(+), 42 deletions(-)
