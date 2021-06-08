@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA1339EABE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B584639EB05
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbhFHAex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 20:34:53 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3456 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhFHAew (ORCPT
+        id S231222AbhFHAyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 20:54:08 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:40125 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230266AbhFHAyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 20:34:52 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzWN33QY3z6wSl;
-        Tue,  8 Jun 2021 08:29:55 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 08:32:57 +0800
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 8 Jun 2021 08:32:56 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <james.smart@broadcom.com>, <dick.kennedy@broadcom.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] scsi: lpfc: Use list_move_tail instead of list_del/list_add_tail
-Date:   Tue, 8 Jun 2021 08:51:33 +0800
-Message-ID: <1623113493-49384-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Mon, 7 Jun 2021 20:54:07 -0400
+X-UUID: e678619c509849a3b5f4eb398e329d59-20210608
+X-UUID: e678619c509849a3b5f4eb398e329d59-20210608
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 250362423; Tue, 08 Jun 2021 08:52:12 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 8 Jun 2021 08:52:04 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 8 Jun 2021 08:52:04 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <rostedt@goodmis.org>
+CC:     <catalin.marinas@arm.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <mark-pk.tsai@mediatek.com>,
+        <matthias.bgg@gmail.com>, <mingo@redhat.com>, <will@kernel.org>,
+        <yj.chiang@mediatek.com>
+Subject: Re: [PATCH] arm64: ftrace: don't dereference a probably invalid address
+Date:   Tue, 8 Jun 2021 08:52:04 +0800
+Message-ID: <20210608005205.4900-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210607145049.645b235f@oasis.local.home>
+References: <20210607145049.645b235f@oasis.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_move_tail() instead of list_del() + list_add_tail().
+> On Tue, 8 Jun 2021 02:14:03 +0800
+> Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
+> 
+> > Should I resend this patch as v2?
+> > Or you will upstream this fix?
+> 
+> I'll push it. I have some other fixes to add as well.
+> 
+> Thanks!
+> 
+> -- Steve
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/scsi/lpfc/lpfc_sli.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Thanks!
 
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index e2cfb86..84a9101 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -20162,8 +20162,7 @@ lpfc_cleanup_pending_mbox(struct lpfc_vport *vport)
- 			(mb->u.mb.mbxCommand != MBX_REG_VPI))
- 			continue;
- 
--		list_del(&mb->list);
--		list_add_tail(&mb->list, &mbox_cmd_list);
-+		list_move_tail(&mb->list, &mbox_cmd_list);
- 	}
- 	/* Clean up active mailbox command with the vport */
- 	mb = phba->sli.mbox_active;
--- 
-2.6.2
+Here is my reported and tested by.
+
+Reported-and-tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
 
