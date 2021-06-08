@@ -2,37 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400DD39FF88
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E6339FF8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234297AbhFHSdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:33:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57560 "EHLO mail.kernel.org"
+        id S234652AbhFHSdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:33:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234124AbhFHSce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:32:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D70DC613CD;
-        Tue,  8 Jun 2021 18:30:24 +0000 (UTC)
+        id S234309AbhFHSch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:32:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DE7D613B9;
+        Tue,  8 Jun 2021 18:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177025;
-        bh=jl8Z6ZgrA67B1nrcFs3fiCeBUftXiBdarqG5ygOvl9Q=;
+        s=korg; t=1623177027;
+        bh=EHZJLvG/aunoeWaZiHpji8erF1KoKgD/dmIWqn/lG2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pI/22bxZRt7qPlSGGd3+J+ZP0NDcqMYF7cx3B+0VLCqEvuNhSWkzY9LJBH43MmMwf
-         Ydr5Rt2Fg0aLOfKqblgMektOf3KynEv8j7my2dCN1KLo70xWVTZBnCBNBitQ73RLQB
-         T1p3GLb9GYca3pNF3dudTxtoBZMwfJ7HnhBVRD9Y=
+        b=bD6Wim8vEYWpYuqPxPiVenG0QrQJ9swPHMmMAjxhRspKGdXsbwcwyHStQO+cCb5eM
+         I1DAMLyBWE++fQjd5ucCM+lzUG0ODDiMGrHpSK90TaJPUe4Q0qhD04yeJ78mg1ghgx
+         jUF1RO6RDSr9h92x0pYPfnYi9KADKTsU3xywNphg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        Lin Ma <linma@zju.edu.cn>, Hao Xiong <mart1n@zju.edu.cn>
-Subject: [PATCH 4.9 13/29] Bluetooth: fix the erroneous flush_work() order
-Date:   Tue,  8 Jun 2021 20:27:07 +0200
-Message-Id: <20210608175928.248830114@linuxfoundation.org>
+        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 4.9 14/29] Bluetooth: use correct lock to prevent UAF of hdev object
+Date:   Tue,  8 Jun 2021 20:27:08 +0200
+Message-Id: <20210608175928.284131791@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
 References: <20210608175927.821075974@linuxfoundation.org>
@@ -46,51 +41,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lin Ma <linma@zju.edu.cn>
 
-commit 6a137caec23aeb9e036cdfd8a46dd8a366460e5d upstream.
+commit e305509e678b3a4af2b3cfd410f409f7cdaabb52 upstream.
 
-In the cleanup routine for failed initialization of HCI device,
-the flush_work(&hdev->rx_work) need to be finished before the
-flush_work(&hdev->cmd_work). Otherwise, the hci_rx_work() can
-possibly invoke new cmd_work and cause a bug, like double free,
-in late processings.
+The hci_sock_dev_event() function will cleanup the hdev object for
+sockets even if this object may still be in used within the
+hci_sock_bound_ioctl() function, result in UAF vulnerability.
 
-This was assigned CVE-2021-3564.
+This patch replace the BH context lock to serialize these affairs
+and prevent the race condition.
 
-This patch reorder the flush_work() to fix this bug.
-
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: Johan Hedberg <johan.hedberg@gmail.com>
-Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-bluetooth@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Signed-off-by: Hao Xiong <mart1n@zju.edu.cn>
-Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bluetooth/hci_core.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ net/bluetooth/hci_sock.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1422,8 +1422,13 @@ static int hci_dev_do_open(struct hci_de
- 	} else {
- 		/* Init failed, cleanup */
- 		flush_work(&hdev->tx_work);
--		flush_work(&hdev->cmd_work);
-+
-+		/* Since hci_rx_work() is possible to awake new cmd_work
-+		 * it should be flushed first to avoid unexpected call of
-+		 * hci_cmd_work()
-+		 */
- 		flush_work(&hdev->rx_work);
-+		flush_work(&hdev->cmd_work);
+--- a/net/bluetooth/hci_sock.c
++++ b/net/bluetooth/hci_sock.c
+@@ -750,7 +750,7 @@ void hci_sock_dev_event(struct hci_dev *
+ 		/* Detach sockets from device */
+ 		read_lock(&hci_sk_list.lock);
+ 		sk_for_each(sk, &hci_sk_list.head) {
+-			bh_lock_sock_nested(sk);
++			lock_sock(sk);
+ 			if (hci_pi(sk)->hdev == hdev) {
+ 				hci_pi(sk)->hdev = NULL;
+ 				sk->sk_err = EPIPE;
+@@ -759,7 +759,7 @@ void hci_sock_dev_event(struct hci_dev *
  
- 		skb_queue_purge(&hdev->cmd_q);
- 		skb_queue_purge(&hdev->rx_q);
+ 				hci_dev_put(hdev);
+ 			}
+-			bh_unlock_sock(sk);
++			release_sock(sk);
+ 		}
+ 		read_unlock(&hci_sk_list.lock);
+ 	}
 
 
