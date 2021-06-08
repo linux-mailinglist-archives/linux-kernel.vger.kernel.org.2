@@ -2,95 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5969539F500
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51B839F50C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbhFHLdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:33:38 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:29583 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231630AbhFHLdh (ORCPT
+        id S232034AbhFHLfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:35:39 -0400
+Received: from out28-194.mail.aliyun.com ([115.124.28.194]:40036 "EHLO
+        out28-194.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231630AbhFHLff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:33:37 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-237-4PJJ-y6jPCSvRvqvFJVMeA-1; Tue, 08 Jun 2021 12:31:41 +0100
-X-MC-Unique: 4PJJ-y6jPCSvRvqvFJVMeA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.18; Tue, 8 Jun 2021 12:31:40 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Tue, 8 Jun 2021 12:31:40 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Akira Tsukamoto' <akira.tsukamoto@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Gary Guo <gary@garyguo.net>,
-        Nick Hu <nickhu@andestech.com>,
-        Nylon Chen <nylon7@andestech.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "Linux kernel mailing list" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/1] riscv: prevent pipeline stall in
- __asm_to/copy_from_user
-Thread-Topic: [PATCH 1/1] riscv: prevent pipeline stall in
- __asm_to/copy_from_user
-Thread-Index: AQHXWSgp7oRD1A6yb0KBcJjcvPCgrasJ/Lbg
-Date:   Tue, 8 Jun 2021 11:31:40 +0000
-Message-ID: <67dab8dc517f4add8b0c29074a6b3f06@AcuMS.aculab.com>
-References: <CACuRN0NjftJDUAsF2pkXbx0jnJ=bba9+j-hJA8Mjj0r4RVicLA@mail.gmail.com>
- <CACuRN0Pd8VFTz55qzXvJeqOEt2ZGi--j1wDyqnAt=q_42ES++w@mail.gmail.com>
-In-Reply-To: <CACuRN0Pd8VFTz55qzXvJeqOEt2ZGi--j1wDyqnAt=q_42ES++w@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 8 Jun 2021 07:35:35 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07732842|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0809714-0.0100507-0.908978;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=21;RT=21;SR=0;TI=SMTPD_---.KPPW5GU_1623152014;
+Received: from 192.168.88.129(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KPPW5GU_1623152014)
+          by smtp.aliyun-inc.com(10.147.41.137);
+          Tue, 08 Jun 2021 19:33:36 +0800
+Subject: Re: [PATCH 2/2] net: stmmac: Add Ingenic SoCs MAC support.
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com, paul@crapouillou.net
+References: <1623086867-119039-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1623086867-119039-3-git-send-email-zhouyanjie@wanyeetech.com>
+ <YL6zYgGdqxqL9c0j@lunn.ch>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <6532a195-65db-afb3-37a2-f68bfed9d908@wanyeetech.com>
+Date:   Tue, 8 Jun 2021 19:33:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <YL6zYgGdqxqL9c0j@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQWtpcmEgVHN1a2Ftb3RvDQo+IFNlbnQ6IDA0IEp1bmUgMjAyMSAxMDo1Nw0KPiANCj4g
-UmVkdWNpbmcgcGlwZWxpbmUgc3RhbGwgb2YgcmVhZCBhZnRlciB3cml0ZSAoUkFXKS4NCj4gDQo+
-IFRoZXNlIGFyZSB0aGUgcmVzdWx0cyBmcm9tIGNvbWJpbmF0aW9uIG9mIHRoZSBzcGVlZHVwIHdp
-dGgNCj4gR2FyeSdzIG1pc2FsaWduIGZpeC4gU3BlZWRzIHVwIGZyb20gNjgwTWJwcyB0byA5MDBN
-YnBzLg0KPiANCj4gQmVmb3JlIGFwcGx5aW5nIHRoZXNlIHR3byBwYXRjaGVzLg0KDQpJIHRoaW5r
-IHRoZSBjaGFuZ2VzIHNob3VsZCBiZSBpbiBzZXBhcmF0ZSBwYXRjaGVzLg0KT3RoZXJ3aXNlIGl0
-IGlzIGRpZmZpY3VsdCB0byBzZWUgd2hhdCBpcyByZWxldmFudC4NCkl0IGFsc28gbG9va3MgYXMg
-aWYgdGhlcmUgaXMgYSByZWdpc3RlciByZW5hbWUuDQpNYXliZSB0aGF0IHNob3VsZCBiZSBhIHBy
-ZWN1cnNvciBwYXRjaD8NCi4uLg0KDQpJIHRoaW5rIHRoaXMgaXMgdGhlIG9sZCBtYWluIGNvcHkg
-bG9vcDoNCj4gIDE6DQo+IC0gICAgZml4dXAgUkVHX0wsIHQyLCAoYTEpLCAxMGYNCj4gLSAgICBm
-aXh1cCBSRUdfUywgdDIsIChhMCksIDEwZg0KPiAtICAgIGFkZGkgYTEsIGExLCBTWlJFRw0KPiAt
-ICAgIGFkZGkgYTAsIGEwLCBTWlJFRw0KPiAtICAgIGJsdHUgYTEsIHQxLCAxYg0KYW5kIHRoaXMg
-aXMgdGhlIG5ldyBvbmU6DQo+ICAzOg0KPiArICAgIGZpeHVwIFJFR19MIGE0LCAgICAgICAwKGEx
-KSwgMTBmDQo+ICsgICAgZml4dXAgUkVHX0wgYTUsICAgU1pSRUcoYTEpLCAxMGYNCj4gKyAgICBm
-aXh1cCBSRUdfTCBhNiwgMipTWlJFRyhhMSksIDEwZg0KPiArICAgIGZpeHVwIFJFR19MIGE3LCAz
-KlNaUkVHKGExKSwgMTBmDQo+ICsgICAgZml4dXAgUkVHX0wgdDAsIDQqU1pSRUcoYTEpLCAxMGYN
-Cj4gKyAgICBmaXh1cCBSRUdfTCB0MSwgNSpTWlJFRyhhMSksIDEwZg0KPiArICAgIGZpeHVwIFJF
-R19MIHQyLCA2KlNaUkVHKGExKSwgMTBmDQo+ICsgICAgZml4dXAgUkVHX0wgdDMsIDcqU1pSRUco
-YTEpLCAxMGYNCj4gKyAgICBmaXh1cCBSRUdfUyBhNCwgICAgICAgMCh0NSksIDEwZg0KPiArICAg
-IGZpeHVwIFJFR19TIGE1LCAgIFNaUkVHKHQ1KSwgMTBmDQo+ICsgICAgZml4dXAgUkVHX1MgYTYs
-IDIqU1pSRUcodDUpLCAxMGYNCj4gKyAgICBmaXh1cCBSRUdfUyBhNywgMypTWlJFRyh0NSksIDEw
-Zg0KPiArICAgIGZpeHVwIFJFR19TIHQwLCA0KlNaUkVHKHQ1KSwgMTBmDQo+ICsgICAgZml4dXAg
-UkVHX1MgdDEsIDUqU1pSRUcodDUpLCAxMGYNCj4gKyAgICBmaXh1cCBSRUdfUyB0MiwgNipTWlJF
-Ryh0NSksIDEwZg0KPiArICAgIGZpeHVwIFJFR19TIHQzLCA3KlNaUkVHKHQ1KSwgMTBmDQo+ICsg
-ICAgYWRkaSBhMSwgYTEsIDgqU1pSRUcNCj4gKyAgICBhZGRpIHQ1LCB0NSwgOCpTWlJFRw0KPiAr
-ICAgIGJsdHUgYTEsIGEzLCAzYg0KDQpJIGRvbid0IGtub3cgdGhlIGFyY2hpdGVjdHVyZSwgYnV0
-IHVubGVzcyB0aGVyZSBpcyBhIHN0dW5uaW5nDQpwaXBlbGluZSBkZWxheSBmb3IgbWVtb3J5IHJl
-YWRzIGEgc2ltcGxlIGludGVybGVhdmVkIGNvcHkNCm1heSBiZSBmYXN0IGVub3VnaC4NClNvIHNv
-bWV0aGluZyBsaWtlOg0KCWEgPSBzcmNbMF07DQoJZG8gew0KCQliID0gc3JjWzFdOw0KCQlzcmMg
-Kz0gMjsNCgkJZHN0WzBdID0gYTsNCgkJZHN0ICs9IDI7DQoJCWEgPSBzcmNbMF07DQoJCWRzdFst
-MV0gPSBiOw0KCX0gd2hpbGUgKHNyYyAhPSBzcmNfZW5kKTsNCglkc3RbMF0gPSBhOw0KDQpJdCBp
-cyBwcm9iYWJseSB3b3J0aCBkb2luZyBiZW5jaG1hcmtzIG9mIHRoZSBjb3B5IGxvb3ANCmluIHVz
-ZXJzcGFjZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJh
-bWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0
-cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Hi Andrew,
 
+On 2021/6/8 上午8:01, Andrew Lunn wrote:
+>>   config DWMAC_ROCKCHIP
+>>   	tristate "Rockchip dwmac support"
+>> -	default ARCH_ROCKCHIP
+>> +	default MACH_ROCKCHIP
+>>   	depends on OF && (ARCH_ROCKCHIP || COMPILE_TEST)
+>>   	select MFD_SYSCON
+>>   	help
+>> @@ -164,7 +176,7 @@ config DWMAC_STI
+>>   
+>>   config DWMAC_STM32
+>>   	tristate "STM32 DWMAC support"
+>> -	default ARCH_STM32
+>> +	default MACH_STM32
+> It would be good to explain in the commit message why you are changing
+> these two. It is not obvious.
+
+
+Apologize for my carelessness, this is left over accidentally when 
+cleaning up the code, I will remove them in the next version.
+
+
+>
+>> +static int jz4775_mac_set_mode(struct plat_stmmacenet_data *plat_dat)
+>> +{
+>> +	struct ingenic_mac *mac = plat_dat->bsp_priv;
+>> +	int val;
+>> +
+>> +	switch (plat_dat->interface) {
+>> +	case PHY_INTERFACE_MODE_MII:
+>> +		val = FIELD_PREP(MACPHYC_TXCLK_SEL_MASK, MACPHYC_TXCLK_SEL_INPUT) |
+>> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_MII);
+>> +		pr_debug("MAC PHY Control Register: PHY_INTERFACE_MODE_MII\n");
+>> +		break;
+>> +
+>> +	case PHY_INTERFACE_MODE_GMII:
+>> +		val = FIELD_PREP(MACPHYC_TXCLK_SEL_MASK, MACPHYC_TXCLK_SEL_INPUT) |
+>> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_GMII);
+>> +		pr_debug("MAC PHY Control Register: PHY_INTERFACE_MODE_GMII\n");
+>> +		break;
+>> +
+>> +	case PHY_INTERFACE_MODE_RMII:
+>> +		val = FIELD_PREP(MACPHYC_TXCLK_SEL_MASK, MACPHYC_TXCLK_SEL_INPUT) |
+>> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RMII);
+>> +		pr_debug("MAC PHY Control Register: PHY_INTERFACE_MODE_RMII\n");
+>> +		break;
+>> +
+>> +	case PHY_INTERFACE_MODE_RGMII:
+> What about the other three RGMII modes?
+>
+>> +	case PHY_INTERFACE_MODE_RGMII:
+>> +		val = FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_DELAY) |
+>> +			  FIELD_PREP(MACPHYC_TX_DELAY_MASK, MACPHYC_TX_DELAY_63_UNIT) |
+>> +			  FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_ORIGIN) |
+>> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII);
+> What exactly does MACPHYC_TX_DELAY_63_UNIT mean here? Ideally, the MAC
+> should not be adding any RGMII delays. It should however pass mode
+> through to the PHY, so it can add the delays, if the mode indicates it
+> should, e.g. PHY_INTERFACE_MODE_RGMII_ID. This is also why you should
+> be handling all 4 RGMII modes here, not just one.
+
+
+MACPHYC_TX_DELAY_63_UNIT means set MAC TX clk delay to 63 units (similar to the "tx-delay" in dwmac-rk.c). However, the manual does not clearly describe the time span of one unit, after consulting engineer of Ingenic, I learned that the value is recommended to be set to 63.
+I will change it to be similar to the way done in dwmac-rk.c.
+
+Thanks and best regards!
+
+
+>
+> 	 Andrew
