@@ -2,67 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E31C39F05C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B3839F07D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhFHIEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:04:53 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8078 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhFHIEw (ORCPT
+        id S230212AbhFHIPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:15:16 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4513 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFHIPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:04:52 -0400
-Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzjMX33YlzYqb4;
-        Tue,  8 Jun 2021 16:00:08 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by dggeme766-chm.china.huawei.com
- (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
- 2021 16:02:57 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <ms@dev.tdt.de>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <linux-x25@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] net: lapb: Use list_for_each_entry() to simplify code in lapb_iface.c
-Date:   Tue, 8 Jun 2021 08:13:01 +0000
-Message-ID: <20210608081301.15264-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 8 Jun 2021 04:15:15 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzjbW4wsszZdjT;
+        Tue,  8 Jun 2021 16:10:31 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 16:13:20 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 16:13:20 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-pm <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] PM: hibernate: remove leading spaces before tabs
+Date:   Tue, 8 Jun 2021 16:13:14 +0800
+Message-ID: <20210608081314.13435-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme766-chm.china.huawei.com (10.3.19.112)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert list_for_each() to list_for_each_entry() where
-applicable. This simplifies the code.
+1) Run the following command to find and remove the leading spaces before
+   tabs:
+   find kernel/power/ -type f | xargs sed -r -i 's/^[ ]+\t/\t/'
+2) Manually check and correct if necessary
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- net/lapb/lapb_iface.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/power/snapshot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/lapb/lapb_iface.c b/net/lapb/lapb_iface.c
-index 1078e14f1acf..0971ca48ba15 100644
---- a/net/lapb/lapb_iface.c
-+++ b/net/lapb/lapb_iface.c
-@@ -80,11 +80,9 @@ static void __lapb_insert_cb(struct lapb_cb *lapb)
- 
- static struct lapb_cb *__lapb_devtostruct(struct net_device *dev)
- {
--	struct list_head *entry;
- 	struct lapb_cb *lapb, *use = NULL;
- 
--	list_for_each(entry, &lapb_list) {
--		lapb = list_entry(entry, struct lapb_cb, node);
-+	list_for_each_entry(lapb, &lapb_list, node) {
- 		if (lapb->dev == dev) {
- 			use = lapb;
- 			break;
+diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+index af507c8c895b..f7a986078213 100644
+--- a/kernel/power/snapshot.c
++++ b/kernel/power/snapshot.c
+@@ -1146,7 +1146,7 @@ int create_basic_memory_bitmaps(void)
+  Free_second_object:
+ 	kfree(bm2);
+  Free_first_bitmap:
+- 	memory_bm_free(bm1, PG_UNSAFE_CLEAR);
++	memory_bm_free(bm1, PG_UNSAFE_CLEAR);
+  Free_first_object:
+ 	kfree(bm1);
+ 	return -ENOMEM;
 -- 
-2.17.1
+2.25.1
+
 
