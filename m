@@ -2,172 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC043A0501
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F2B3A0502
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbhFHUPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 16:15:23 -0400
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:35701 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232764AbhFHUPU (ORCPT
+        id S234834AbhFHUPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 16:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232764AbhFHUPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 16:15:20 -0400
-Received: by mail-wr1-f54.google.com with SMTP id m18so22927873wrv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 13:13:26 -0700 (PDT)
+        Tue, 8 Jun 2021 16:15:31 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A0AC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 13:13:37 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so20509555otu.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 13:13:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZP3aBzUi/5cQACwp3bX0PrMjlyKsunXb6wYJH3vRGbM=;
-        b=cVlV7YESKjEz/22UoQ7sPPpRmY0zwU9x4R2c45rMfrxVoRTilcZYD9/doU0lzJw7vl
-         zM1m22VE2zKpRyPWehEYCXKtNsYMwgI3rJ22ri1PUgHzshyeswF/8JFbBvnzPHo5oApx
-         bgcdDfWy/T9RapCwVfzKHf6vkc1fqwUE0ZdEFpw3h+Ycj8+qF7qiQV42Bkf08GqD2SnX
-         tRMzLQIsjCeTwIJhhaVKoDCFDltEpLaA2SH2dajL2qM2w/oo6DfvtYRkXoWMRmL/8wV4
-         rMGrlYdDF2d9neM0AQtybapX4ddEOG46Y+/pimE59hDb50Fv/NRhBjBdbCbBD7Kr375V
-         EACg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cIDkDsZIjAA97ZO/nbOAwvWi13JzPMgN0KfGcuD3QLU=;
+        b=UpyYnh4uH1rUTz3AIK/C6flyZWWHK5Ke1Y49QzrMb8Lm9CTXy8bmqfh5koDdW6wLqd
+         00qw/jfypbchHnYq9AyTJNpsEKJM8JoBUevt8Cp/UxRL6EuvTjj8dlbB7JvvZs+AD07c
+         K0OvGMdMBCi1OYPVzlenVocGhp39LXcTbff2A36oooliuJIzTnJGqPwbrSfgRTAxvfn6
+         5l7d2vDrm7E+YyNpthksHXu8X+GOk+CS3pdTZuDVezURsfVx6e2YQ5GzOa7a80AH/C6E
+         jPTMAkYsBf2hHI0PTan4fgLda1pVvfEPHZGHQ1uIr+O4by8jrsp/eGEjxgIetFy1NaNM
+         n83g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZP3aBzUi/5cQACwp3bX0PrMjlyKsunXb6wYJH3vRGbM=;
-        b=mR9nngyKKN4Eg/MMhLwqlBY9L7tgzZlp3FUt4K/x9S4131BmRRAduniKdmoFHZDtNs
-         DpFMsomDGKQu6UMcn404HkaQY4YYCapd1FVBRyPKdrjDj2vv5a0tlYdaEclyRhBZ0auB
-         p5Lvk4jaVmOhf+RlCBd8gl7IANmnLr3JW/wRJ6h0WHgDaA5OSPJOYwK4/qxD/WgSo9+1
-         LdTtsRSzH9vkLAKoBvffmXhxf9pf1SwQ0142r0pStJT+U5uHu68lI1uF95wRCOBe5NVp
-         xmyAJ0jDUhlXpIPHM+103c5VREabyveCgZf3kUO+hJrd3TW46BzhsIeOLh4GfoMHAX9h
-         BvVA==
-X-Gm-Message-State: AOAM532gKGVjuiF7LNGN6OC0hJ0hMOYwT5bRNA1AQzNMN7+P7OSRfd00
-        ju91dX/a5pobM+kV1hJ7MxM=
-X-Google-Smtp-Source: ABdhPJxhnK3pWqjpRD+CzHWOMYvCHvcGoUUvTjbPjVpJpbVfWkc5YZ1Nf5FPZogAkZ7DXAZnYqPSWg==
-X-Received: by 2002:a5d:64a4:: with SMTP id m4mr13760986wrp.185.1623183145959;
-        Tue, 08 Jun 2021 13:12:25 -0700 (PDT)
-Received: from linux.local (host-82-59-55-132.retail.telecomitalia.it. [82.59.55.132])
-        by smtp.gmail.com with ESMTPSA id a15sm25599756wrs.63.2021.06.08.13.12.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cIDkDsZIjAA97ZO/nbOAwvWi13JzPMgN0KfGcuD3QLU=;
+        b=qJMZyo2u1udg12zg0IqeqZFcu151R0lh+9VS6woVa2bXEMlV5nakSWlvE3TBPHgGrB
+         w+4Hqr2RRLSwV2NIsNRIa0gaOyZXpHaZyggQYo9xqsQpIXn1SQCamBpcJ919m4slHVlc
+         cZmzdH4EhgYVWKE/85cej6FE36y+ycEM6GSxfgAFLGvyCm6DVSVqmkMkwJyYPiDDsD1L
+         3gGKGonf+A6fXI/AjGuA6wCjgAyNyCgwdA7oFEjS4l7G2+C/CUvZVH5bk+qJy4Tyxzh+
+         txr8JZc4j+TB1JN4YHbRomkXU6VmVOHeCRDBdXYukhP6BHUrMUPbPc4qBcnAweFt2ubK
+         HZYw==
+X-Gm-Message-State: AOAM53167yra1OljIzus7DIYis+3001ivcIXPCkpbNFihbqr53ZrApF/
+        5zfeDD92vOZy4a1AIlublBHKiw==
+X-Google-Smtp-Source: ABdhPJyAtjgviT0tuU2CASzB5dNdB0sHk3AzzEgIl//zsC0IY+zZeXpALkZZ720jcESPdyBwGv107Q==
+X-Received: by 2002:a05:6830:1342:: with SMTP id r2mr11192529otq.136.1623183216901;
+        Tue, 08 Jun 2021 13:13:36 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 129sm3038330ooq.34.2021.06.08.13.13.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 13:12:25 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] x86: kernel: cpu: resctrl: Fix kernel-doc in pseudo_lock.c
-Date:   Tue, 08 Jun 2021 22:12:23 +0200
-Message-ID: <1711024.RBxhUqbo4a@linux.local>
-In-Reply-To: <017e9a77-d17e-effd-5639-72a06abc4fc3@intel.com>
-References: <20210602222326.7765-1-fmdefrancesco@gmail.com> <017e9a77-d17e-effd-5639-72a06abc4fc3@intel.com>
+        Tue, 08 Jun 2021 13:13:36 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 15:13:34 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     abhinavk@codeaurora.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Stephen Boyd <swboyd@chromium.org>, sbillaka@codeaurora.org,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Chandan Uddaraju <chandanu@codeaurora.org>
+Subject: Re: [Freedreno] [PATCH 1/4] drm/msm/dp: Simplify the mvid/nvid
+ calculation
+Message-ID: <YL/PbsggxgQCiCsM@builder.lan>
+References: <20210511042043.592802-1-bjorn.andersson@linaro.org>
+ <20210511042043.592802-2-bjorn.andersson@linaro.org>
+ <a761ca2648c290300442f4addb4a0ea2@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a761ca2648c290300442f4addb4a0ea2@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, June 8, 2021 1:30:34 AM CEST Reinette Chatre wrote:
-> Hi Fabio,
->
-Hi Reinette,
+On Fri 28 May 18:11 CDT 2021, abhinavk@codeaurora.org wrote:
+
+> Hi Bjorn
 > 
-> Thank you very much for catching these. I am curious what your goal is
-> because when I ran a kernel-doc check on the resctrl area there were
-> many more warnings than are not addressed in this patch. Also, while
-> this patch claims to fix the kernel-doc in pseudo_lock.c there seems to
-> be a few more that are not addressed.
->
-Actually this patch was just a preliminary test for checking if my 
-contributions to this subsystem would be taken into consideration or 
-completely ignored. That is the real reason why I just started with trying to 
-fix only a couple of kernel-doc issues in pseudo_lock.c.
+> On 2021-05-10 21:20, Bjorn Andersson wrote:
+> > In the search for causes to timing issues seen during implementation of
+> > eDP support for SC8180x a fair amount of time was spent concluding why
+> > the calculated mvid/nvid values where wrong.
+> > 
+> > The overall conclusion is that the ratio of MVID/NVID describes, and
+> > should match, the ratio between the pixel and link clock.
+> > 
+> > Downstream this calculation reads the M and N values off the pixel clock
+> > straight from DISP_CC and are then adjusted based on knowledge of how
+> > the link and vco_div (parent of the pixel clock) are derrived from the
+> > common VCO.
+> > 
+> > While upstreaming, and then extracting the PHY driver, the resulting
+> > function performs the following steps:
+> > 
+> > 1) Adjust the passed link rate based on the VCO divider used in the PHY
+> >    driver, and multiply this by 10 based on the link rate divider.
+> > 2) Pick reasonable choices of M and N, by calculating the ratio between
+> >    this new clock and the pixel clock.
+> > 3) Subtract M from N and flip the bits, to match the encoding of the N
+> >    register in DISP_CC.
+> > 4) Flip the bits of N and add M, to get the value of N back.
+> > 5) Multiply M with 5, per the documentation.
+> > 6) Scale the values such that N is close to 0x8000 (or larger)
+> > 7) Multply M with 2 or 3 depending on the link rate of HBR2 or HBR3.
+> > 
+> > Presumably step 3) was added to provide step 4) with expected input, so
+> > the two cancel each other out. The factor of 10 from step 1) goes into
+> > the denominator and is partially cancelled by the 5 in the numerator in
+> > step 5), resulting in step 7) simply cancelling out step 1).
+> > 
 > 
-> Are you planning to submit more
-> patches to do a cleanup of kernel-doc or are these the only ones
-> bothering you for some reason?
->
-I'd like to submit more cleanup patches of kernel-doc, because I always read 
-carefully the kernel-doc above the functions I want to understand. I have a 
-long term plan to study the Linux code and try to contribute the better I can. 
-I'm into Linux developing since about two months, so I'm a newcomer and I 
-still have a lot to learn.
+> Both the multiplication of M with 5 and N with 2 or 3 is coming because of
+> the
+> ratio between the vco clk and the link clk.
+> So we could have 2.7, 5.4 or 8.1 Gbps link clks and the factor of 2 or 3
+> gets added because hbr2 is 2 * hbr and hbr3 is 3 * hbr.
 > 
-> Could you please fixup the subject to conform to this area:
-> "x86/resctrl: Fix kernel-doc in pseudo_lock.c"
+
+Thanks for explaining the origin of these numbers, I had quite a
+difficult time figuring out where the "magic" came from.
+
+> Your summary is pretty much right otherwise. Let me add some more points
+> here:
 > 
-Sure. I was inadvertently using the drivers/staging convention I've used for 
-the patches I've submitted there.
->
-> For this subject to be accurate though it should fix all the kernel-doc
-> warnings found in pseudo_lock.c - or if not it would be helpful to
-> explain what the criteria for fixes are. I tested this by running:
-> $ scripts/kernel-doc -v -none arch/x86/kernel/cpu/resctrl/*
+> 1) Originally we removed reading the M_VID and N_VID from the DISPCC regs
+> because
+> of previous upstream comments that we can potentially just recalculate
+> whatever the clk driver is programming
+> by using rational_best_approximation
+> https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/clk/qcom/clk-rcg2.c#L1160
 > 
-I've just run the above script and I see that there are a lot more warnings 
-that I was expecting.
-
-I want to fix as much as I can. Unfortunately I'm pretty sure I won't be able 
-to fix them all, just because the inner working and the purpose of some 
-functions are a bit obscure to me (at least until I get more knowledge of x86 
-architecture - it may take a lot of time because I'm also studying other 
-subsystems at the same time).
-
-> On 6/2/2021 3:23 PM, Fabio M. De Francesco wrote:
-> > Fixed sparse warnings about the descriptions of some function
-> > parameters.
-> > 
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> > 
-> >   arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 4 +++-
-> >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> > b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c index 
-f6451abddb09..c3629db90570 100644
-> > --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> > +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> > @@ -520,7 +520,7 @@ static int pseudo_lock_fn(void *_rdtgrp)
-> > 
-> >   /**
-> >   
-> >    * rdtgroup_monitor_in_progress - Test if monitoring in progress
-> > 
-> > - * @r: resource group being queried
-> > + * @rdtgrp: resource group being queried
-> > 
-> >    *
-> >    * Return: 1 if monitor groups have been created for this resource
-> >    * group, 0 otherwise.
-> > 
-> > @@ -1140,6 +1140,8 @@ static int measure_l3_residency(void *_plr)
-> > 
-> >   /**
-> >   
-> >    * pseudo_lock_measure_cycles - Trigger latency measure to pseudo-locked 
-region
-> > 
-> > + * @rdtgrp: resource group to which the pseudo-locked region belongs
-> > + * @sel: cache level selector
+> Not having to read from DISPCC register is also useful because we dont have
+> to maintain the register offset
+> of the M_VID and N_VID which keeps changing across chipsets.
 > 
-> This is not correct. A more accurate description could be:
-> "select which measurement to perform on pseudo-locked region"
->
-Here it is an example of my lack of knowledge/experience. Obviously, I'll 
-rewrite it according to your review.
 
-To summarize: as soon as possible I'll submit a v2 patch with the kernel-doc 
-fixes that I think I can understand. I am pretty sure that some fixes will not 
-be to your standards and that for what regards some others I will not even be 
-able to attempt to fix them :(
+Right, so downstream we do all the math and then we scale the
+denominator by 2x or 3x to compensate for the fact that we didn't
+account for the division as the clock left the PLL.
 
-Thanks you very much for your kind reply,
+As this was reworked upstream for some reason this compensation was
+retained, so the denominator would always be 2x or 3x to large for HBR2
+and HBR3. So the way this was solved was to divide by 2x or 3x before
+calculating the ratio.
 
-Fabio
+> However we discussed this again after viewing this patch. So the clk driver
+> always operates on the vco clk
+> and calculates the pixel clk from it and sets the M_VID and N_VID based on
+> that.
+> In terms of accuracy, the best way is still to re-use the M_VID and N_VID
+> which the clk driver sets because
+> the pixel clock was generated based on that and that is the actual pixel
+> clock we are going to get.
 > 
-> >    *
-> >    * The measurement of latency to access a pseudo-locked region should be
-> >    * done from a cpu that is associated with that pseudo-locked region.
+> So even before this change we lost some accuracy because the pixel clock we
+> are giving here to recalculate
+> the M_VID and N_VID is a theoretical value. Although for most values of
+> pixel clk, theoretical and actual
+> should match. There could be corner cases of pixel clock where its a bit
+> different. Hence ideally, re-using the M_VID
+> and N_VID which the clk driver set would have been the best but not having
+> to hard-code M_VID and N_VID offsets
+> was a good enough reason to not go back to that again.
 > 
-> Reinette
+> Now, coming to this change. Here its trying to again re-calculate the M_VID
+> and N_VID by using the same
+> API which the clk driver uses but uses link clk and pixel clk as the
+> parameters Vs the clk driver uses
+> vco clk and actual pixel clock to calculate this.
+> 
+> So even though this cleanup eliminates the adjustments we need to make to
+> account for the VCO clk to link clk ratio,
+> it also could bring additional difference between what was actually set by
+> the clk driver and what we are calculating
+> here because clk driver used vco clk as the input vs here we use link clk
+> after this change.
+> There might be some pixel clock rates of some resolutions where this
+> difference could be risky.
+> 
+> Hence the overall conclusion here was to keep using vco clk as the input to
+> rational_best_approximation
+> and not make more changes to this.
+> 
+
+So what you're saying is that the reason for this obfuscation is to
+replicate any rounding errors happening in the path of the link clock
+generation?
+
+If that's the case then this needs a giant comment describing exactly
+what's happening and why this function needs to be impenetrable.
 
 
+That said, from my attempts to write this patch (and add widebus
+support) I saw a huge flexibility in getting this right, so can you
+please elaborate on the value of the precision of the ratio.
 
-
+Regards,
+Bjorn
