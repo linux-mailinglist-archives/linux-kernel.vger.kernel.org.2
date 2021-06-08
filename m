@@ -2,423 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54B439FA3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D36E239FA40
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhFHPXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:23:08 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:43564 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhFHPXH (ORCPT
+        id S231308AbhFHPXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:23:33 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:47020 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230483AbhFHPX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:23:07 -0400
-Received: by mail-ot1-f50.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso20617737otu.10
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 08:21:14 -0700 (PDT)
+        Tue, 8 Jun 2021 11:23:29 -0400
+Received: by mail-wr1-f45.google.com with SMTP id a11so20143343wrt.13
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 08:21:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cosmicpenguin-net.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L1b2ArJ9Z1B3pD6qPPXEgf7MYEDQ7cfIADCWdgpEOZ4=;
-        b=GOOMKizYGt0vG8Ehf7dsUGVlmQ2yxK7a/3vdJfzlm6eFPs8ETJpTucmZEzTpkuVAdv
-         THNHT8QZdPPnWHb4khDdSQ2jNlbBeUQL8WB5b8AIjMqIyq4EFi7vB7plG0PGDx/c1jPQ
-         /E8MqGjjTsJC0lQ8MSCqFMZdLUTwARXeuc940HMV0yOb8Mi4VDqdfqcRkpd95jY3VrME
-         mRCPwhOfguKPQ8NUrsIM54DAYdE3OGOP2g8t0yg0yRDCh3xPb2QyVhqwWbxHnU7rfbwF
-         ZWMw4ui3sIEFNsnpclqEBV7CYxmaW7HpHvGbXqDOJ/Bi8e58De3kLIPKeeH/QldirSvZ
-         J2vA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KMZoeM4tw0htYY4QWpAC+ev8zaiQVRwGUrBB7esHPik=;
+        b=PpTPauAERRjBh68cUEvmQNnKdOcUUlbri6ZAm2HwfiSjlYibi9w6TZ/rMb91W4oQ66
+         sHH9gOxASpdZfk/Y0nFhWUNZdaOuEkG/tPNmim7T89626VfyYp8dT9pf38atshqjtZDo
+         4jOTX8oQizbVYJoZUUBU9RTh5EQgVMoalzO5xWkTYR3Uxm01PO4seuVVfLmoDNuyO3mh
+         EHv+aBMKOsW3nGFdohprs4b3Xna1uKJq8oOFyhehTz2ax5proeuN5saE/04Yn0BvaJgY
+         MJGNlrw9YdYPctZmFvsYz5eXtE4/O4s/C3sezz9re7qbGTgryrp7oY8lXR80gCOoV+hZ
+         A6ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=L1b2ArJ9Z1B3pD6qPPXEgf7MYEDQ7cfIADCWdgpEOZ4=;
-        b=HzOP1MOqy819IBFi7vH3TH0ArjprQG+tgWbMHmhloSnNWmvtlpRrRQf12J2a5uQnZx
-         aQ0Le4kh6j23QAbknyBJPgJcwjm5ITIUK2Ovlf4p/+SnQwmnD/JVBlXvm5Sag2VrTxuH
-         FQYMS+qYwtrj8qTltJ+CalETO2MGWvVg+0VRowDadKOg6Xa849Kuxkf+LGk6cDC66aCB
-         BOlKvlUXv2DzLfAKGtTThFG1aMMPM6IKm5gYwAKiY0VSBqjR/jXIuPEf3RfK1rhyCw+P
-         hYBWWEZV7gOyfptbIyVbwnVVM1nkvxvVNQ7HdEQRuMrRw7fri2LpX53V8yUl8sLjFUet
-         T51w==
-X-Gm-Message-State: AOAM533B2iLz2nOUqODBIrZC70AJ6vVRKZIhcKecse6GQYsgoKFdBiwx
-        SS1gbi1BSfKNMgkHs8gDZwh/mw==
-X-Google-Smtp-Source: ABdhPJwc4YraQhY2MZB6zbRmUEWMpq+oM/bf9+xQwpYa0l/q37A6+hg4h7Byf7/xFJw9ZxNlQ9qjcg==
-X-Received: by 2002:a9d:7749:: with SMTP id t9mr17096otl.58.1623165613877;
-        Tue, 08 Jun 2021 08:20:13 -0700 (PDT)
-Received: from cosmicpenguin.net (c-71-237-100-236.hsd1.co.comcast.net. [71.237.100.236])
-        by smtp.gmail.com with ESMTPSA id g2sm2125050otk.40.2021.06.08.08.20.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 08:20:13 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 09:20:11 -0600
-From:   Jordan Crouse <jordan@cosmicpenguin.net>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 6/6] drm/msm: devcoredump iommu fault support
-Message-ID: <20210608152011.ekogby76tzrg7uon@cosmicpenguin.net>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210601224750.513996-1-robdclark@gmail.com>
- <20210601224750.513996-8-robdclark@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KMZoeM4tw0htYY4QWpAC+ev8zaiQVRwGUrBB7esHPik=;
+        b=YYPaJY2FRhg76KitWnVzLLM/nG/Q/joH2nJDvjJNbwG682E9nLFwOln8l3hecp5mb9
+         oEZki8FX6ieKgJt1Z3uYD9ExT0zkxgHjxFRwcXf5xF0gG4p4DmAoHDmhIK1uTaa8xIWM
+         eyPKIizQn1a4ZGROo3Gqxnmy/N5svb/FjmDE9T96x8WJMp9nMrKD8wkupvXGsL9Z6Vs5
+         qXYGrXvNnVdwKwyKHcOkIQgO7BUGDdYNRxLPAlZG/3geJTkd5Cy58F4Y/fzjoxZOnd65
+         Yetmg/ey8TIFsg2NSqHJw4nRhxBYjH0Z/wWOjRXMyaaur36yO1YTSjZzk6Vc46SVc2SV
+         3m+w==
+X-Gm-Message-State: AOAM532D9ellfz0Y23JivWz3e/K/4yEMFdVu8KiRIlU6ZGqsJgXYeobC
+        VYYqgq+yVgMcoVSqgGjHn4BiwA==
+X-Google-Smtp-Source: ABdhPJxC82LsQQVwkWI8GVVxhjHkvMS5AzTGBd/sGHtaEic4jOy4D4GSdfgNGucNLArxxfT8qrF8oQ==
+X-Received: by 2002:a5d:6acf:: with SMTP id u15mr23596492wrw.262.1623165627367;
+        Tue, 08 Jun 2021 08:20:27 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id i2sm17456251wmo.40.2021.06.08.08.20.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Jun 2021 08:20:26 -0700 (PDT)
+Subject: Re: [PATCH v8 3/9] ASoC: codecs: wcd938x: add basic driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     robh@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com
+References: <20210601113158.16085-1-srinivas.kandagatla@linaro.org>
+ <20210601113158.16085-4-srinivas.kandagatla@linaro.org>
+ <20210608141209.GF4200@sirena.org.uk>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <a6ce009c-0946-fab5-3452-9ef2e2b6c79d@linaro.org>
+Date:   Tue, 8 Jun 2021 16:20:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601224750.513996-8-robdclark@gmail.com>
+In-Reply-To: <20210608141209.GF4200@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 03:47:25PM -0700, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+
+
+On 08/06/2021 15:12, Mark Brown wrote:
+> On Tue, Jun 01, 2021 at 12:31:52PM +0100, Srinivas Kandagatla wrote:
+>> This patch adds basic SoundWire codec driver to support for
+>> WCD938X TX and RX devices.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   sound/soc/codecs/Kconfig   |    4 +
+>>   sound/soc/codecs/Makefile  |    2 +
 > 
-> Wire up support to stall the SMMU on iova fault, and collect a devcore-
-> dump snapshot for easier debugging of faults.
-> 
-> Currently this is a6xx-only, but mostly only because so far it is the
-> only one using adreno-smmu-priv.
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 29 +++++++++++++--
->  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 15 ++++++++
->  drivers/gpu/drm/msm/msm_gem.h           |  1 +
->  drivers/gpu/drm/msm/msm_gem_submit.c    |  1 +
->  drivers/gpu/drm/msm/msm_gpu.c           | 48 +++++++++++++++++++++++++
->  drivers/gpu/drm/msm/msm_gpu.h           | 17 +++++++++
->  drivers/gpu/drm/msm/msm_gpummu.c        |  5 +++
->  drivers/gpu/drm/msm/msm_iommu.c         | 11 ++++++
->  drivers/gpu/drm/msm/msm_mmu.h           |  1 +
->  9 files changed, 126 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index 094dc17fd20f..0dcde917e575 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -1008,6 +1008,16 @@ static int a6xx_fault_handler(void *arg, unsigned long iova, int flags, void *da
->  	struct msm_gpu *gpu = arg;
->  	struct adreno_smmu_fault_info *info = data;
->  	const char *type = "UNKNOWN";
-> +	const char *block;
-> +	bool do_devcoredump = info && !READ_ONCE(gpu->crashstate);
-> +
-> +	/*
-> +	 * If we aren't going to be resuming later from fault_worker, then do
-> +	 * it now.
-> +	 */
-> +	if (!do_devcoredump) {
-> +		gpu->aspace->mmu->funcs->resume_translation(gpu->aspace->mmu);
-> +	}
->  
->  	/*
->  	 * Print a default message if we couldn't get the data from the
-> @@ -1031,15 +1041,30 @@ static int a6xx_fault_handler(void *arg, unsigned long iova, int flags, void *da
->  	else if (info->fsr & ARM_SMMU_FSR_EF)
->  		type = "EXTERNAL";
->  
-> +	block = a6xx_fault_block(gpu, info->fsynr1 & 0xff);
-> +
->  	pr_warn_ratelimited("*** gpu fault: ttbr0=%.16llx iova=%.16lx dir=%s type=%s source=%s (%u,%u,%u,%u)\n",
->  			info->ttbr0, iova,
-> -			flags & IOMMU_FAULT_WRITE ? "WRITE" : "READ", type,
-> -			a6xx_fault_block(gpu, info->fsynr1 & 0xff),
-> +			flags & IOMMU_FAULT_WRITE ? "WRITE" : "READ",
-> +			type, block,
->  			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(4)),
->  			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(5)),
->  			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(6)),
->  			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(7)));
->  
-> +	if (do_devcoredump) {
-> +		/* Turn off the hangcheck timer to keep it from bothering us */
-> +		del_timer(&gpu->hangcheck_timer);
-> +
-> +		gpu->fault_info.ttbr0 = info->ttbr0;
-> +		gpu->fault_info.iova  = iova;
-> +		gpu->fault_info.flags = flags;
-> +		gpu->fault_info.type  = type;
-> +		gpu->fault_info.block = block;
-> +
-> +		kthread_queue_work(gpu->worker, &gpu->fault_work);
-> +	}
-> +
->  	return 0;
->  }
->  
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> index cf897297656f..4e88d4407667 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> @@ -684,6 +684,21 @@ void adreno_show(struct msm_gpu *gpu, struct msm_gpu_state *state,
->  			adreno_gpu->info->revn, adreno_gpu->rev.core,
->  			adreno_gpu->rev.major, adreno_gpu->rev.minor,
->  			adreno_gpu->rev.patchid);
-> +	/*
-> +	 * If this is state collected due to iova fault, so fault related info
-> +	 *
-> +	 * TTBR0 would not be zero, so this is a good way to distinguish
-> +	 */
-> +	if (state->fault_info.ttbr0) {
-> +		const struct msm_gpu_fault_info *info = &state->fault_info;
-> +
-> +		drm_puts(p, "fault-info:\n");
-> +		drm_printf(p, "  - ttbr0=%.16llx\n", info->ttbr0);
-> +		drm_printf(p, "  - iova=%.16lx\n", info->iova);
-> +		drm_printf(p, "  - dir=%s\n", info->flags & IOMMU_FAULT_WRITE ? "WRITE" : "READ");
-> +		drm_printf(p, "  - type=%s\n", info->type);
-> +		drm_printf(p, "  - source=%s\n", info->block);
-> +	}
->  
->  	drm_printf(p, "rbbm-status: 0x%08x\n", state->rbbm_status);
->  
-> diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
-> index 03e2cc2a2ce1..405f8411e395 100644
-> --- a/drivers/gpu/drm/msm/msm_gem.h
-> +++ b/drivers/gpu/drm/msm/msm_gem.h
-> @@ -328,6 +328,7 @@ struct msm_gem_submit {
->  	struct dma_fence *fence;
->  	struct msm_gpu_submitqueue *queue;
->  	struct pid *pid;    /* submitting process */
-> +	bool fault_dumped;  /* Limit devcoredump dumping to one per submit */
->  	bool valid;         /* true if no cmdstream patching needed */
->  	bool in_rb;         /* "sudo" mode, copy cmds into RB */
->  	struct msm_ringbuffer *ring;
-> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-> index 5480852bdeda..44f84bfd0c0e 100644
-> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> @@ -50,6 +50,7 @@ static struct msm_gem_submit *submit_create(struct drm_device *dev,
->  	submit->cmd = (void *)&submit->bos[nr_bos];
->  	submit->queue = queue;
->  	submit->ring = gpu->rb[queue->prio];
-> +	submit->fault_dumped = false;
->  
->  	/* initially, until copy_from_user() and bo lookup succeeds: */
->  	submit->nr_bos = 0;
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-> index 4d280bf446e6..4da2053c1ffb 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.c
-> +++ b/drivers/gpu/drm/msm/msm_gpu.c
-> @@ -401,6 +401,7 @@ static void msm_gpu_crashstate_capture(struct msm_gpu *gpu,
->  	/* Fill in the additional crash state information */
->  	state->comm = kstrdup(comm, GFP_KERNEL);
->  	state->cmd = kstrdup(cmd, GFP_KERNEL);
-> +	state->fault_info = gpu->fault_info;
->  
->  	if (submit) {
->  		int i, nr = 0;
-> @@ -573,6 +574,52 @@ static void recover_worker(struct kthread_work *work)
->  	msm_gpu_retire(gpu);
->  }
->  
-> +static void fault_worker(struct kthread_work *work)
-> +{
-> +	struct msm_gpu *gpu = container_of(work, struct msm_gpu, fault_work);
-> +	struct drm_device *dev = gpu->dev;
-> +	struct msm_gem_submit *submit;
-> +	struct msm_ringbuffer *cur_ring = gpu->funcs->active_ring(gpu);
-> +	char *comm = NULL, *cmd = NULL;
-> +
-> +	mutex_lock(&dev->struct_mutex);
-> +
-> +	submit = find_submit(cur_ring, cur_ring->memptrs->fence + 1);
-> +	if (submit && submit->fault_dumped)
-> +		goto resume_smmu;
-> +
-> +	if (submit) {
-> +		struct task_struct *task;
-> +
-> +		task = get_pid_task(submit->pid, PIDTYPE_PID);
-> +		if (task) {
-> +			comm = kstrdup(task->comm, GFP_KERNEL);
-> +			cmd = kstrdup_quotable_cmdline(task, GFP_KERNEL);
-> +			put_task_struct(task);
-> +		}
-> +
-> +		/*
-> +		 * When we get GPU iova faults, we can get 1000s of them,
-> +		 * but we really only want to log the first one.
-> +		 */
-> +		submit->fault_dumped = true;
-> +	}
-> +
-> +	/* Record the crash state */
-> +	pm_runtime_get_sync(&gpu->pdev->dev);
-> +	msm_gpu_crashstate_capture(gpu, submit, comm, cmd, true);
+> It would have been nicer to add the Kconfig and Makefile changes last
+> for the benefit of bisection.
 
-You are going to run the risk of a race here. Once the IOMMU stalls then the
-various bits of the GPU pipeline are going to stop and as soon one of them hits
-the hang cycles threshold its going to pus the big red HANG! button.
+I agree, will do that in next version.
 
-It is fine to keep this infrastructure in place, but at there needs to be an
-escape valve in the hang infrastructure to keep you from double dumping and
-also to keep from resetting the GPU if that isn't your intention.
-
-This can be as simple as adding a RBBM_STATUS3 check in the hang function and
-returning early or you could skip the capture state call here and rely on the
-hang to be the single entry point into the crashstate capture (with the
-appropriate protections to keep from accidentally recovering, of course).
-
-Jordan
-
-> +	pm_runtime_put_sync(&gpu->pdev->dev);
-> +
-> +	kfree(cmd);
-> +	kfree(comm);
-> +
-> +resume_smmu:
-> +	memset(&gpu->fault_info, 0, sizeof(gpu->fault_info));
-> +	gpu->aspace->mmu->funcs->resume_translation(gpu->aspace->mmu);
-> +
-> +	mutex_unlock(&dev->struct_mutex);
-> +}
-> +
->  static void hangcheck_timer_reset(struct msm_gpu *gpu)
->  {
->  	mod_timer(&gpu->hangcheck_timer,
-> @@ -949,6 +996,7 @@ int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->  	INIT_LIST_HEAD(&gpu->active_list);
->  	kthread_init_work(&gpu->retire_work, retire_worker);
->  	kthread_init_work(&gpu->recover_work, recover_worker);
-> +	kthread_init_work(&gpu->fault_work, fault_worker);
->  
->  	timer_setup(&gpu->hangcheck_timer, hangcheck_handler, 0);
->  
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-> index c15e5fd675d2..8dae601085ee 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.h
-> +++ b/drivers/gpu/drm/msm/msm_gpu.h
-> @@ -71,6 +71,15 @@ struct msm_gpu_funcs {
->  	uint32_t (*get_rptr)(struct msm_gpu *gpu, struct msm_ringbuffer *ring);
->  };
->  
-> +/* Additional state for iommu faults: */
-> +struct msm_gpu_fault_info {
-> +	u64 ttbr0;
-> +	unsigned long iova;
-> +	int flags;
-> +	const char *type;
-> +	const char *block;
-> +};
-> +
->  struct msm_gpu {
->  	const char *name;
->  	struct drm_device *dev;
-> @@ -135,6 +144,12 @@ struct msm_gpu {
->  #define DRM_MSM_HANGCHECK_JIFFIES msecs_to_jiffies(DRM_MSM_HANGCHECK_PERIOD)
->  	struct timer_list hangcheck_timer;
->  
-> +	/* Fault info for most recent iova fault: */
-> +	struct msm_gpu_fault_info fault_info;
-> +
-> +	/* work for handling GPU ioval faults: */
-> +	struct kthread_work fault_work;
-> +
->  	/* work for handling GPU recovery: */
->  	struct kthread_work recover_work;
->  
-> @@ -243,6 +258,8 @@ struct msm_gpu_state {
->  	char *comm;
->  	char *cmd;
->  
-> +	struct msm_gpu_fault_info fault_info;
-> +
->  	int nr_bos;
->  	struct msm_gpu_state_bo *bos;
->  };
-> diff --git a/drivers/gpu/drm/msm/msm_gpummu.c b/drivers/gpu/drm/msm/msm_gpummu.c
-> index 379496186c7f..f7d1945e0c9f 100644
-> --- a/drivers/gpu/drm/msm/msm_gpummu.c
-> +++ b/drivers/gpu/drm/msm/msm_gpummu.c
-> @@ -68,6 +68,10 @@ static int msm_gpummu_unmap(struct msm_mmu *mmu, uint64_t iova, size_t len)
->  	return 0;
->  }
->  
-> +static void msm_gpummu_resume_translation(struct msm_mmu *mmu)
-> +{
-> +}
-> +
->  static void msm_gpummu_destroy(struct msm_mmu *mmu)
->  {
->  	struct msm_gpummu *gpummu = to_msm_gpummu(mmu);
-> @@ -83,6 +87,7 @@ static const struct msm_mmu_funcs funcs = {
->  		.map = msm_gpummu_map,
->  		.unmap = msm_gpummu_unmap,
->  		.destroy = msm_gpummu_destroy,
-> +		.resume_translation = msm_gpummu_resume_translation,
->  };
->  
->  struct msm_mmu *msm_gpummu_new(struct device *dev, struct msm_gpu *gpu)
-> diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
-> index 6975b95c3c29..eed2a762e9dd 100644
-> --- a/drivers/gpu/drm/msm/msm_iommu.c
-> +++ b/drivers/gpu/drm/msm/msm_iommu.c
-> @@ -184,6 +184,9 @@ struct msm_mmu *msm_iommu_pagetable_create(struct msm_mmu *parent)
->  	 * the arm-smmu driver as a trigger to set up TTBR0
->  	 */
->  	if (atomic_inc_return(&iommu->pagetables) == 1) {
-> +		/* Enable stall on iommu fault: */
-> +		adreno_smmu->set_stall(adreno_smmu->cookie, true);
-> +
->  		ret = adreno_smmu->set_ttbr0_cfg(adreno_smmu->cookie, &ttbr0_cfg);
->  		if (ret) {
->  			free_io_pgtable_ops(pagetable->pgtbl_ops);
-> @@ -226,6 +229,13 @@ static int msm_fault_handler(struct iommu_domain *domain, struct device *dev,
->  	return 0;
->  }
->  
-> +static void msm_iommu_resume_translation(struct msm_mmu *mmu)
-> +{
-> +	struct adreno_smmu_priv *adreno_smmu = dev_get_drvdata(mmu->dev);
-> +
-> +	adreno_smmu->resume_translation(adreno_smmu->cookie, true);
-> +}
-> +
->  static void msm_iommu_detach(struct msm_mmu *mmu)
->  {
->  	struct msm_iommu *iommu = to_msm_iommu(mmu);
-> @@ -273,6 +283,7 @@ static const struct msm_mmu_funcs funcs = {
->  		.map = msm_iommu_map,
->  		.unmap = msm_iommu_unmap,
->  		.destroy = msm_iommu_destroy,
-> +		.resume_translation = msm_iommu_resume_translation,
->  };
->  
->  struct msm_mmu *msm_iommu_new(struct device *dev, struct iommu_domain *domain)
-> diff --git a/drivers/gpu/drm/msm/msm_mmu.h b/drivers/gpu/drm/msm/msm_mmu.h
-> index a88f44c3268d..de158e1bf765 100644
-> --- a/drivers/gpu/drm/msm/msm_mmu.h
-> +++ b/drivers/gpu/drm/msm/msm_mmu.h
-> @@ -15,6 +15,7 @@ struct msm_mmu_funcs {
->  			size_t len, int prot);
->  	int (*unmap)(struct msm_mmu *mmu, uint64_t iova, size_t len);
->  	void (*destroy)(struct msm_mmu *mmu);
-> +	void (*resume_translation)(struct msm_mmu *mmu);
->  };
->  
->  enum msm_mmu_type {
-> -- 
-> 2.31.1
+--srini
 > 
