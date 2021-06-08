@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDB13A0052
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5923A00CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235164AbhFHSlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:41:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36504 "EHLO mail.kernel.org"
+        id S234810AbhFHSre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:47:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235189AbhFHSjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:39:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF64E61429;
-        Tue,  8 Jun 2021 18:34:07 +0000 (UTC)
+        id S235311AbhFHSmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:42:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCAA16143F;
+        Tue,  8 Jun 2021 18:35:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177248;
-        bh=zeDmtx43EHaZKjN6Z6DXHvEEVRER+34Jt2Xu80Hy840=;
+        s=korg; t=1623177350;
+        bh=iq+OnzuHjjjIKLdJUOmHU1txjGZ6gPhhdHnQeA8Ec8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W0YsWIFv6oXB6rxe3rvXbLwcXVAiikQc/esmiu4R1U/7CrQOVnJZqaYxN8pBwSZM2
-         ljaKn6JY08phA+zZRLztOjyTl+u+xAftgctcGWQwCteZcwZGSXzs29H5mrZjsPh9EG
-         1UFItR1PmDNF8BUf8kPFqMaKwiQa616q1bdWMS1o=
+        b=O5KOhVEPCmyFbMKNXkCI+4+i3Mzjx5mxRZaQtElS1b5B8kQrLDlOTt69+NITw+Ks5
+         JMAOLcIYgil1fc21Wg/NkG3NfsTKaOZgEO++CWDMseNL4GPt/ZeQShzRDV1lwxHkhk
+         HZR6T4WOTm0YJ0ePY1VON6lIJXnX7+WOYYTq2yYc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 08/58] samples: vfio-mdev: fix error handing in mdpy_fb_probe()
+Subject: [PATCH 5.4 20/78] ieee802154: fix error return code in ieee802154_add_iface()
 Date:   Tue,  8 Jun 2021 20:26:49 +0200
-Message-Id: <20210608175932.557275566@linuxfoundation.org>
+Message-Id: <20210608175935.948250760@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 752774ce7793a1f8baa55aae31f3b4caac49cbe4 ]
+[ Upstream commit 79c6b8ed30e54b401c873dbad2511f2a1c525fd5 ]
 
-Fix to return a negative error code from the framebuffer_alloc() error
-handling case instead of 0, also release regions in some error handing
-cases.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Fixes: cacade1946a4 ("sample: vfio mdev display - guest driver")
+Fixes: be51da0f3e34 ("ieee802154: Stop using NLA_PUT*().")
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Message-Id: <20210520133641.1421378-1-weiyongjun1@huawei.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210508062517.2574-1-thunder.leizhen@huawei.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/vfio-mdev/mdpy-fb.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ net/ieee802154/nl-phy.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/samples/vfio-mdev/mdpy-fb.c b/samples/vfio-mdev/mdpy-fb.c
-index 2719bb259653..a760e130bd0d 100644
---- a/samples/vfio-mdev/mdpy-fb.c
-+++ b/samples/vfio-mdev/mdpy-fb.c
-@@ -117,22 +117,27 @@ static int mdpy_fb_probe(struct pci_dev *pdev,
- 	if (format != DRM_FORMAT_XRGB8888) {
- 		pci_err(pdev, "format mismatch (0x%x != 0x%x)\n",
- 			format, DRM_FORMAT_XRGB8888);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_release_regions;
+diff --git a/net/ieee802154/nl-phy.c b/net/ieee802154/nl-phy.c
+index 2cdc7e63fe17..88215b5c93aa 100644
+--- a/net/ieee802154/nl-phy.c
++++ b/net/ieee802154/nl-phy.c
+@@ -241,8 +241,10 @@ int ieee802154_add_iface(struct sk_buff *skb, struct genl_info *info)
  	}
- 	if (width < 100	 || width > 10000) {
- 		pci_err(pdev, "width (%d) out of range\n", width);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_release_regions;
- 	}
- 	if (height < 100 || height > 10000) {
- 		pci_err(pdev, "height (%d) out of range\n", height);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_release_regions;
- 	}
- 	pci_info(pdev, "mdpy found: %dx%d framebuffer\n",
- 		 width, height);
  
- 	info = framebuffer_alloc(sizeof(struct mdpy_fb_par), &pdev->dev);
--	if (!info)
-+	if (!info) {
-+		ret = -ENOMEM;
- 		goto err_release_regions;
+ 	if (nla_put_string(msg, IEEE802154_ATTR_PHY_NAME, wpan_phy_name(phy)) ||
+-	    nla_put_string(msg, IEEE802154_ATTR_DEV_NAME, dev->name))
++	    nla_put_string(msg, IEEE802154_ATTR_DEV_NAME, dev->name)) {
++		rc = -EMSGSIZE;
+ 		goto nla_put_failure;
 +	}
- 	pci_set_drvdata(pdev, info);
- 	par = info->par;
+ 	dev_put(dev);
  
+ 	wpan_phy_put(phy);
 -- 
 2.30.2
 
