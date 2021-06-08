@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F333A3A00F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C703E39FF55
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236080AbhFHStt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:49:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44020 "EHLO mail.kernel.org"
+        id S234406AbhFHScX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:32:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235746AbhFHSoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:44:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 201C0613C8;
-        Tue,  8 Jun 2021 18:36:46 +0000 (UTC)
+        id S234191AbhFHSbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:31:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA35613B9;
+        Tue,  8 Jun 2021 18:29:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177407;
-        bh=pTc7HixDW+/OLKjSTBMBvl79++CMzCaIwaxGDApCfzk=;
+        s=korg; t=1623176986;
+        bh=lKpCVtXD3B8w7NgXNJYxyJ62U+u4UoNXBhi14EH6Lao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cTdj6UOY3BoUV7MyY+68hhJRrfOKd7+NGWHAWjOSmEJ2KN+EJNKUhMJojfUDx0Zp1
-         FvmXC+HFMnk3rEZmb8Yf4zGl7dViRLladE3jN01idWraMVTKikNgo1qL6XG0VjADKk
-         GrLzJzSI8tCwnKQ9zwBPVDHblKAO0yEgJDFBa6rg=
+        b=W5IbkbhrpLp2syOJP3QXcn4CmZLiqVfoMJDlHOpMiWxXB3SXP7eP3jbDvuIHyTlwo
+         2IcZQum1hyD90U1ah2/kG+cljfkbWYWIenRXTw/GRHm9iSW9IB6N/4STI43vlNvCt8
+         FMHXGTxsmAgQxlsJ4Kx7luc0SeUKCaKiSEANm4dE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 33/78] ARM: dts: imx7d-pico: Fix the tuning-step property
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 08/29] HID: pidff: fix error return code in hid_pidff_init()
 Date:   Tue,  8 Jun 2021 20:27:02 +0200
-Message-Id: <20210608175936.384321857@linuxfoundation.org>
+Message-Id: <20210608175928.089643488@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
+References: <20210608175927.821075974@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@gmail.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 0e2fa4959c4f44815ce33e46e4054eeb0f346053 ]
+[ Upstream commit 3dd653c077efda8152f4dd395359617d577a54cd ]
 
-According to Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml, the
-correct name of the property is 'fsl,tuning-step'.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Fix it accordingly.
-
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Fixes: f13f571ac8a1 ("ARM: dts: imx7d-pico: Extend peripherals support")
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: 224ee88fe395 ("Input: add force feedback driver for PID devices")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx7d-pico.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/usbhid/hid-pidff.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/imx7d-pico.dtsi b/arch/arm/boot/dts/imx7d-pico.dtsi
-index 6f50ebf31a0a..8a8df54ff563 100644
---- a/arch/arm/boot/dts/imx7d-pico.dtsi
-+++ b/arch/arm/boot/dts/imx7d-pico.dtsi
-@@ -307,7 +307,7 @@
- 	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
- 	cd-gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
- 	bus-width = <4>;
--	tuning-step = <2>;
-+	fsl,tuning-step = <2>;
- 	vmmc-supply = <&reg_3p3v>;
- 	wakeup-source;
- 	no-1-8-v;
+diff --git a/drivers/hid/usbhid/hid-pidff.c b/drivers/hid/usbhid/hid-pidff.c
+index 08174d341f4a..bc75f1efa0f4 100644
+--- a/drivers/hid/usbhid/hid-pidff.c
++++ b/drivers/hid/usbhid/hid-pidff.c
+@@ -1304,6 +1304,7 @@ int hid_pidff_init(struct hid_device *hid)
+ 
+ 	if (pidff->pool[PID_DEVICE_MANAGED_POOL].value &&
+ 	    pidff->pool[PID_DEVICE_MANAGED_POOL].value[0] == 0) {
++		error = -EPERM;
+ 		hid_notice(hid,
+ 			   "device does not support device managed pool\n");
+ 		goto fail;
 -- 
 2.30.2
 
