@@ -2,163 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19B639F543
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D2439F563
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232153AbhFHLm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:42:28 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38340 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232023AbhFHLm1 (ORCPT
+        id S232206AbhFHLpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:45:36 -0400
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:39588 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232146AbhFHLpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:42:27 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 80EDE1FD33;
-        Tue,  8 Jun 2021 11:40:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623152433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9pqTdmb4ajlEiuOedwu42jHW2ZkkaCsnLspnZNVDMmM=;
-        b=tByp5qXLxRMV1e+qtQ1lqEnGgHeH//ZLoJaUINXon6RAy1kvEv0GQjwzqZOU8BEUDogSi7
-        DwXKptTST8y/nzhyvom9cD8wIaxcHZakYEBH0v7+LKUuuempGxH/AOLW45GlBtH7hRtaOx
-        KH4rpsZJArj4t1Wcz+dmoIDUjNvOdZU=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 03ECDA3B87;
-        Tue,  8 Jun 2021 11:40:32 +0000 (UTC)
-Date:   Tue, 8 Jun 2021 13:40:32 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH next v2 1/2] dump_stack: move cpu lock to printk.c
-Message-ID: <YL9XMBxeZ4fGRS79@alley>
-References: <20210607200232.22211-1-john.ogness@linutronix.de>
- <20210607200232.22211-2-john.ogness@linutronix.de>
+        Tue, 8 Jun 2021 07:45:34 -0400
+Received: by mail-ed1-f49.google.com with SMTP id dj8so24139859edb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 04:43:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=65A8swxG6F/ylZkbgWYzbxA0ZkKEGw9/dd1+oL9pTwE=;
+        b=kcgHRx7Fut0ZIyND9s9iBNEwwWtFn1Ujj0GtMhNPnfIFh8cO6bu+xyZs+dUeG35X0E
+         wAuK6peHjb/7oXjVSRtajwSpkNEWHcuT5E8XHfaW67jAwKQfbKLbqM38gUocQLotVLQ+
+         IrtM4g8eWVmSxfQintTUpcTFGLa2AyyVZGY6s5s7gb/J0Rv8UI5VkcPoXR+HDlaODv4X
+         qyI5HGyX+PNcH/vDex5ImOWEewbLkX5kh7MjudnX2pNu7FuFDcMqI+SdEIzIgoBzEsPH
+         Sahl6REdq9wzYfjWWvKQ7KD0MiIudWhRlhyvHAv0dckZ+Msq9Q3wNZY3zhOJc2V3ttIV
+         VovQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=65A8swxG6F/ylZkbgWYzbxA0ZkKEGw9/dd1+oL9pTwE=;
+        b=JMXbQrzHd3MJ268m+c5apcmQq8Grwd8tEuCN50grCH/Ie/T0J9aP1tWYCbEu9sCcOg
+         59TMqUIRX4HyIFOxQx7wcB3uoz1IMbZBfpThfcfhxBigLaI3aBdtUVOtNHjCnfXggs6O
+         i9VZNJbmcid9gJvqv+Uugv6I3L5OKX21kvuCvoksH5YODMs3wJPbbg3pEbE+nlSsr9H0
+         sYzYX5OmgQT3dDS1Dsp5oU/BnHWUds5QrT4smMFEf0Ehn3r+iKvviuRVqRaXswhIWoPg
+         O0VlG2IIlpcImzdW+aedV3Airn3I8jmVFat/iB9zU77TH1aG36t6cxGkv21n9QPAPfJg
+         URqA==
+X-Gm-Message-State: AOAM531KPRedRWVgkG4flqYXoADAboBUPALzWtWHEO2fj2IlPA9kcDua
+        TEb3HEZJQbJIViZlFpZPTH6W2g==
+X-Google-Smtp-Source: ABdhPJwGWZ8jOAdwtABw7tBzCTlHxQlQSIzH1R8MjGRJMsaIzJi7acSzOtAPhe6jqNDcBIf/ENMwYQ==
+X-Received: by 2002:aa7:db93:: with SMTP id u19mr24987185edt.227.1623152548257;
+        Tue, 08 Jun 2021 04:42:28 -0700 (PDT)
+Received: from localhost.localdomain (hst-221-104.medicom.bg. [84.238.221.104])
+        by smtp.gmail.com with ESMTPSA id x4sm8754740edq.23.2021.06.08.04.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 04:42:27 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vikash Garodia <vgarodia@codeaurora.org>,
+        Mansur Alisha Shaik <mansur@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v2 0/5] Venus fatal error handling
+Date:   Tue,  8 Jun 2021 14:41:51 +0300
+Message-Id: <20210608114156.87018-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607200232.22211-2-john.ogness@linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-06-07 22:02:31, John Ogness wrote:
-> dump_stack() implements its own cpu-reentrant spinning lock to
-> best-effort serialize stack traces in the printk log. However,
-> there are other functions (such as show_regs()) that can also
-> benefit from this serialization.
-> 
-> Move the cpu-reentrant spinning lock (cpu lock) into new helper
-> functions printk_cpu_lock_irqsave()/printk_cpu_unlock_irqrestore()
-> so that it is available for others as well. For !CONFIG_SMP the
-> cpu lock is a NOP.
-> 
-> Note that having multiple cpu locks in the system can easily
-> lead to deadlock. Code needing a cpu lock should use the
-> printk cpu lock, since the printk cpu lock could be acquired
-> from any code and any context.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Changes since v1:
+  * replace pm_runtime_get_sync with pm_runtime_resume_and_get in 1/5.
 
-There are some nits below but the patch looks fine to me as it.
+regards,
+Stan
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+Stanimir Varbanov (5):
+  venus: venc: Use pmruntime autosuspend
+  venus: Make sys_error flag an atomic bitops
+  venus: hfi: Check for sys error on session hfi functions
+  venus: helpers: Add helper to mark fatal vb2 error
+  venus: Handle fatal errors during encoding and decoding
 
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3532,3 +3532,78 @@ void kmsg_dump_rewind(struct kmsg_dump_iter *iter)
-> +void printk_cpu_lock_irqsave(bool *lock_flag, unsigned long *irq_flags)
-> +{
-> +	int old;
-> +	int cpu;
-> +
-> +retry:
-> +	local_irq_save(*irq_flags);
-> +
-> +	cpu = smp_processor_id();
-> +
-> +	old = atomic_cmpxchg(&printk_cpulock_owner, -1, cpu);
-> +	if (old == -1) {
-> +		/* This CPU is now the owner. */
-> +
+ drivers/media/platform/qcom/venus/core.c    |  13 ++-
+ drivers/media/platform/qcom/venus/core.h    |   6 +-
+ drivers/media/platform/qcom/venus/helpers.c |  16 ++-
+ drivers/media/platform/qcom/venus/helpers.h |   1 +
+ drivers/media/platform/qcom/venus/hfi.c     |  48 +++++++-
+ drivers/media/platform/qcom/venus/vdec.c    |  18 ++-
+ drivers/media/platform/qcom/venus/venc.c    | 116 ++++++++++++++++++--
+ 7 files changed, 201 insertions(+), 17 deletions(-)
 
-Superfluous space?
+-- 
+2.25.1
 
-> +		*lock_flag = true;
-
-The original name name "was_locked" was more descriptive. I agree that
-it was not good for an API. What about keeping the inverted logic and
-calling it "lock_nested" ?
-
-I do not resist on any change. The logic is trivial so...
-
-> +
-> +	} else if (old == cpu) {
-> +		/* This CPU is already the owner. */
-> +
-> +		*lock_flag = false;
-> +
-
-Even more superfluous spaces?
-
-> +	} else {
-> +		local_irq_restore(*irq_flags);
-> +
-> +		/*
-> +		 * Wait for the lock to release before jumping to cmpxchg()
-> +		 * in order to mitigate the thundering herd problem.
-> +		 */
-> +		do {
-> +			cpu_relax();
-> +		} while (atomic_read(&printk_cpulock_owner) != -1);
-> +
-> +		goto retry;
-> +	}
-> +}
-> +EXPORT_SYMBOL(printk_cpu_lock_irqsave);
-> +
-> +/*
-> + * printk_cpu_unlock_irqrestore: Release the printk cpu-reentrant spinning
-> + *                               lock and restore interrupts.
-> + * @lock_flag: The current lock state.
-> + * @irq_flags: The current irq state.
-
-"The current" is a bit misleading. Both values actually describe
-the state before the related printk_cpu_lock_irqsave().
-What about something like?
-
-  * @lock_nested: Lock state set when the lock was taken.
-  * @irq_flags: IRQ flags stored when the lock was taken.
-
-
-> + *
-> + * Release the lock. The calling processor must be the owner of the lock.
-> + *
-> + * It is safe to call this function from any context and state.
-> + */
-> +void printk_cpu_unlock_irqrestore(bool lock_flag, unsigned long irq_flags)
-> +{
-> +	if (lock_flag) {
-> +		atomic_set(&printk_cpulock_owner, -1);
-> +
-> +		local_irq_restore(irq_flags);
-> +	}
-> +}
-> +EXPORT_SYMBOL(printk_cpu_unlock_irqrestore);
-> +#endif /* CONFIG_SMP */
-
- Best Regards,
- Petr
- 
