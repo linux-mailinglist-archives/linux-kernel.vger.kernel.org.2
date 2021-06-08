@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F503A0017
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B741D39FFD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232672AbhFHSkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:40:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57970 "EHLO mail.kernel.org"
+        id S234575AbhFHSgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:36:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234507AbhFHShI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:37:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E3F361352;
-        Tue,  8 Jun 2021 18:32:58 +0000 (UTC)
+        id S234573AbhFHSex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:34:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8EBA613D2;
+        Tue,  8 Jun 2021 18:32:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177179;
-        bh=/Kk5XFC71RKixZ0KeWmKO2J/s1lNjqmgXRxjBCww5eM=;
+        s=korg; t=1623177123;
+        bh=EHZJLvG/aunoeWaZiHpji8erF1KoKgD/dmIWqn/lG2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IXpdJl4scheyFt0vA1iFYKSon7+kF6UxxuLub0QaI5AJB7LDsb0ek38PFFQ5fVzJM
-         dA2MQXJadfz8buvOJqp+MGRsCyvMEMH4csHpTELKbvYSWRkzWxCBJW/d436LovmawG
-         KXjc15/qKbdY7mPS6D13OAvBeRuUisqZEzNwdP4I=
+        b=SpXH2DyyAs5vPPo2aro3gtTyCx0+8PKqZKnr6DjWWjou2GtaA5Al5SnGo+B8hPusx
+         14BjwB+aLfiFH6GwBUgJ02rnKNXw+XKwssWzIfFNQtwG90Dl81UQ4Mum94U2a4OLSE
+         bbZ69uDYIC1YADNHM9HY0tpfmKwB+wohCce63bpI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 15/58] ieee802154: fix error return code in ieee802154_llsec_getparams()
-Date:   Tue,  8 Jun 2021 20:26:56 +0200
-Message-Id: <20210608175932.789923710@linuxfoundation.org>
+        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 4.14 14/47] Bluetooth: use correct lock to prevent UAF of hdev object
+Date:   Tue,  8 Jun 2021 20:26:57 +0200
+Message-Id: <20210608175930.951544948@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
+References: <20210608175930.477274100@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Lin Ma <linma@zju.edu.cn>
 
-[ Upstream commit 373e864cf52403b0974c2f23ca8faf9104234555 ]
+commit e305509e678b3a4af2b3cfd410f409f7cdaabb52 upstream.
 
-Fix to return negative error code -ENOBUFS from the error handling
-case instead of 0, as done elsewhere in this function.
+The hci_sock_dev_event() function will cleanup the hdev object for
+sockets even if this object may still be in used within the
+hci_sock_bound_ioctl() function, result in UAF vulnerability.
 
-Fixes: 3e9c156e2c21 ("ieee802154: add netlink interfaces for llsec")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Link: https://lore.kernel.org/r/20210519141614.3040055-1-weiyongjun1@huawei.com
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch replace the BH context lock to serialize these affairs
+and prevent the race condition.
+
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ieee802154/nl-mac.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/bluetooth/hci_sock.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/ieee802154/nl-mac.c b/net/ieee802154/nl-mac.c
-index c0930b9fe848..7531cb1665d2 100644
---- a/net/ieee802154/nl-mac.c
-+++ b/net/ieee802154/nl-mac.c
-@@ -688,8 +688,10 @@ int ieee802154_llsec_getparams(struct sk_buff *skb, struct genl_info *info)
- 	    nla_put_u8(msg, IEEE802154_ATTR_LLSEC_SECLEVEL, params.out_level) ||
- 	    nla_put_u32(msg, IEEE802154_ATTR_LLSEC_FRAME_COUNTER,
- 			be32_to_cpu(params.frame_counter)) ||
--	    ieee802154_llsec_fill_key_id(msg, &params.out_key))
-+	    ieee802154_llsec_fill_key_id(msg, &params.out_key)) {
-+		rc = -ENOBUFS;
- 		goto out_free;
-+	}
+--- a/net/bluetooth/hci_sock.c
++++ b/net/bluetooth/hci_sock.c
+@@ -750,7 +750,7 @@ void hci_sock_dev_event(struct hci_dev *
+ 		/* Detach sockets from device */
+ 		read_lock(&hci_sk_list.lock);
+ 		sk_for_each(sk, &hci_sk_list.head) {
+-			bh_lock_sock_nested(sk);
++			lock_sock(sk);
+ 			if (hci_pi(sk)->hdev == hdev) {
+ 				hci_pi(sk)->hdev = NULL;
+ 				sk->sk_err = EPIPE;
+@@ -759,7 +759,7 @@ void hci_sock_dev_event(struct hci_dev *
  
- 	dev_put(dev);
- 
--- 
-2.30.2
-
+ 				hci_dev_put(hdev);
+ 			}
+-			bh_unlock_sock(sk);
++			release_sock(sk);
+ 		}
+ 		read_unlock(&hci_sk_list.lock);
+ 	}
 
 
