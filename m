@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C843A03DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1171D3A03B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237183AbhFHTWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:22:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58760 "EHLO mail.kernel.org"
+        id S239396AbhFHTVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:21:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237375AbhFHTJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:09:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E8056193D;
-        Tue,  8 Jun 2021 18:48:02 +0000 (UTC)
+        id S237481AbhFHTJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:09:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B87B611BD;
+        Tue,  8 Jun 2021 18:48:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178083;
-        bh=cY6VT926SNEyst44QszIgpzwRY/AFAg5Fg+7tS4wOxw=;
+        s=korg; t=1623178085;
+        bh=t4tBaxTIFbQEaxziS77VohU3GsaRZ2nqKjm3A5gAIy8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lZ/vXDkV0IXCKMXO8NsaBQvMz1XLbFsHLwxl3MOUm8jV0cqcDlQJyzDPAGjzXgkpl
-         4dNmq4MWqAAIJOCDP/cbbphEp0cVxp01+W1tXV8Vd9oJU5yIMeLF8OK/94GJZbMMFJ
-         NQ1xetTDu4AfNKMl/loGQTBiiJW2VDMlJsuYzK1A=
+        b=YAwxSclIV8CLgGyso4CDXvJWCir4BKooLtAmsD/Ug6kCO1ESUAkDjOQ5eKiMJ+WLP
+         j/YNW19ARbWHPqjjEPy06FqLaAiwGSyBSMvbtf+XNztd9F856mqXpEU9H/dHVS0GX6
+         sJeSl+jeJdexdu0HdJJEjMy5eHyBG1TeRcr++OdQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
         Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 070/161] arm64: dts: zii-ultra: remove second GEN_3V3 regulator instance
-Date:   Tue,  8 Jun 2021 20:26:40 +0200
-Message-Id: <20210608175947.824388011@linuxfoundation.org>
+Subject: [PATCH 5.12 071/161] arm64: dts: zii-ultra: fix 12V_MAIN voltage
+Date:   Tue,  8 Jun 2021 20:26:41 +0200
+Message-Id: <20210608175947.853800240@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -42,78 +42,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lucas Stach <l.stach@pengutronix.de>
 
-[ Upstream commit e98d98028989e023e0cbff539dc616c4e5036839 ]
+[ Upstream commit ac0cbf9d13dccfd09bebc2f8f5697b6d3ffe27c4 ]
 
-When adding the sound support a second instance of the GEN_3V3 regulator was
-added by accident. Remove it and point the consumers to the first instance.
+As this is a fixed regulator on the board there was no harm in the wrong
+voltage being specified, apart from a confusing reporting to userspace.
 
-Fixes: 663a5b5efa51 ("arm64: dts: zii-ultra: add sound support")
+Fixes: 4a13b3bec3b4 ("arm64: dts: imx: add Zii Ultra board support")
 Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../dts/freescale/imx8mq-zii-ultra-rmb3.dts   | 10 +++++-----
- .../boot/dts/freescale/imx8mq-zii-ultra.dtsi  | 19 +++++--------------
- 2 files changed, 10 insertions(+), 19 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra-rmb3.dts b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra-rmb3.dts
-index 631e01c1b9fd..be1e7d6f0ecb 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra-rmb3.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra-rmb3.dts
-@@ -88,11 +88,11 @@
- 		pinctrl-0 = <&pinctrl_codec2>;
- 		reg = <0x18>;
- 		#sound-dai-cells = <0>;
--		HPVDD-supply = <&reg_3p3v>;
--		SPRVDD-supply = <&reg_3p3v>;
--		SPLVDD-supply = <&reg_3p3v>;
--		AVDD-supply = <&reg_3p3v>;
--		IOVDD-supply = <&reg_3p3v>;
-+		HPVDD-supply = <&reg_gen_3p3>;
-+		SPRVDD-supply = <&reg_gen_3p3>;
-+		SPLVDD-supply = <&reg_gen_3p3>;
-+		AVDD-supply = <&reg_gen_3p3>;
-+		IOVDD-supply = <&reg_gen_3p3>;
- 		DVDD-supply = <&vgen4_reg>;
- 		reset-gpios = <&gpio3 4 GPIO_ACTIVE_HIGH>;
- 	};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
-index 4dc8383478ee..1e5d34e81ab7 100644
+index 1e5d34e81ab7..a08a568c31d9 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
-@@ -77,15 +77,6 @@
+@@ -45,8 +45,8 @@
+ 	reg_12p0_main: regulator-12p0-main {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "12V_MAIN";
+-		regulator-min-microvolt = <5000000>;
+-		regulator-max-microvolt = <5000000>;
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
  		regulator-always-on;
  	};
  
--	reg_3p3v: regulator-3p3v {
--		compatible = "regulator-fixed";
--		vin-supply = <&reg_3p3_main>;
--		regulator-name = "GEN_3V3";
--		regulator-min-microvolt = <3300000>;
--		regulator-max-microvolt = <3300000>;
--		regulator-always-on;
--	};
--
- 	reg_usdhc2_vmmc: regulator-vsd-3v3 {
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pinctrl_reg_usdhc2>;
-@@ -415,11 +406,11 @@
- 		pinctrl-0 = <&pinctrl_codec1>;
- 		reg = <0x18>;
- 		#sound-dai-cells = <0>;
--		HPVDD-supply = <&reg_3p3v>;
--		SPRVDD-supply = <&reg_3p3v>;
--		SPLVDD-supply = <&reg_3p3v>;
--		AVDD-supply = <&reg_3p3v>;
--		IOVDD-supply = <&reg_3p3v>;
-+		HPVDD-supply = <&reg_gen_3p3>;
-+		SPRVDD-supply = <&reg_gen_3p3>;
-+		SPLVDD-supply = <&reg_gen_3p3>;
-+		AVDD-supply = <&reg_gen_3p3>;
-+		IOVDD-supply = <&reg_gen_3p3>;
- 		DVDD-supply = <&vgen4_reg>;
- 		reset-gpios = <&gpio3 3 GPIO_ACTIVE_LOW>;
- 	};
 -- 
 2.30.2
 
