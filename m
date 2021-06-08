@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E6339FF8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A153A0042
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234652AbhFHSdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:33:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57600 "EHLO mail.kernel.org"
+        id S235035AbhFHSlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:41:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234309AbhFHSch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:32:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DE7D613B9;
-        Tue,  8 Jun 2021 18:30:27 +0000 (UTC)
+        id S233989AbhFHSib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:38:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56C7C6141D;
+        Tue,  8 Jun 2021 18:33:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177027;
-        bh=EHZJLvG/aunoeWaZiHpji8erF1KoKgD/dmIWqn/lG2c=;
+        s=korg; t=1623177211;
+        bh=u9ijdiLZ58zRkFOYx05hbfmQ//5xB0RBK76wR/AeI+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bD6Wim8vEYWpYuqPxPiVenG0QrQJ9swPHMmMAjxhRspKGdXsbwcwyHStQO+cCb5eM
-         I1DAMLyBWE++fQjd5ucCM+lzUG0ODDiMGrHpSK90TaJPUe4Q0qhD04yeJ78mg1ghgx
-         jUF1RO6RDSr9h92x0pYPfnYi9KADKTsU3xywNphg=
+        b=WURAT0Am8y9dZLOKROmsuxXqTmT4r5DWXVjxN3hNVXvP3aLJNVotzNyE1TnYaYBEz
+         0KeQYTvptByujSxkVBVQDLeDLntFTfLax6cZP0nxXv/ovvcZyZYhsPUnQJ/6hIfLOu
+         uX41Q6y5FWCYAbF1mtwQD9dsN04zOmOPQn+gYhCM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 4.9 14/29] Bluetooth: use correct lock to prevent UAF of hdev object
+        stable@vger.kernel.org, Carlos M <carlos.marr.pz@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 27/58] ALSA: hda: Fix for mute key LED for HP Pavilion 15-CK0xx
 Date:   Tue,  8 Jun 2021 20:27:08 +0200
-Message-Id: <20210608175928.284131791@linuxfoundation.org>
+Message-Id: <20210608175933.182293746@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
-References: <20210608175927.821075974@linuxfoundation.org>
+In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
+References: <20210608175932.263480586@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Ma <linma@zju.edu.cn>
+From: Carlos M <carlos.marr.pz@gmail.com>
 
-commit e305509e678b3a4af2b3cfd410f409f7cdaabb52 upstream.
+commit 901be145a46eb79879367d853194346a549e623d upstream.
 
-The hci_sock_dev_event() function will cleanup the hdev object for
-sockets even if this object may still be in used within the
-hci_sock_bound_ioctl() function, result in UAF vulnerability.
+For the HP Pavilion 15-CK0xx, with audio subsystem ID 0x103c:0x841c,
+adding a line in patch_realtek.c to apply the ALC269_FIXUP_HP_MUTE_LED_MIC3
+fix activates the mute key LED.
 
-This patch replace the BH context lock to serialize these affairs
-and prevent the race condition.
-
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Carlos M <carlos.marr.pz@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210531202026.35427-1-carlos.marr.pz@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bluetooth/hci_sock.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/bluetooth/hci_sock.c
-+++ b/net/bluetooth/hci_sock.c
-@@ -750,7 +750,7 @@ void hci_sock_dev_event(struct hci_dev *
- 		/* Detach sockets from device */
- 		read_lock(&hci_sk_list.lock);
- 		sk_for_each(sk, &hci_sk_list.head) {
--			bh_lock_sock_nested(sk);
-+			lock_sock(sk);
- 			if (hci_pi(sk)->hdev == hdev) {
- 				hci_pi(sk)->hdev = NULL;
- 				sk->sk_err = EPIPE;
-@@ -759,7 +759,7 @@ void hci_sock_dev_event(struct hci_dev *
- 
- 				hci_dev_put(hdev);
- 			}
--			bh_unlock_sock(sk);
-+			release_sock(sk);
- 		}
- 		read_unlock(&hci_sk_list.lock);
- 	}
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7095,6 +7095,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x82bf, "HP G3 mini", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x82c0, "HP G3 mini premium", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
++	SND_PCI_QUIRK(0x103c, 0x841c, "HP Pavilion 15-CK0xx", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_LED),
 
 
