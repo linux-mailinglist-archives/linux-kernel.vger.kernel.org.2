@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DEB39FF79
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D648739FF53
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234251AbhFHSda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:33:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57858 "EHLO mail.kernel.org"
+        id S231517AbhFHScT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:32:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234126AbhFHSc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:32:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B0B0613AE;
-        Tue,  8 Jun 2021 18:30:34 +0000 (UTC)
+        id S234155AbhFHSbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:31:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5924613C5;
+        Tue,  8 Jun 2021 18:29:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177035;
-        bh=3HOKnaVi71YUI+jEO9hylFIiLEbQbbKztLrOt1LrGG4=;
+        s=korg; t=1623176967;
+        bh=uP5csr2qifp5imC+lku80earoP3BQ3lVsLP9LVzkjw8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e3jSw4uUQYjVQXwZRHHvFIv5CTV13AYmBlIvU14FSFiP1rIyInDlwUaUjeQ0ueB44
-         64SbUJb8vfeYCOL0g0o8lR2pVfSsdTbXBi7oIQHKGIgVyDM2iTTIUpoAEPWn2NbhCU
-         /8ymxhBcrSzKUUHPKZon5iv5tCtusojo4fazBAKs=
+        b=yQXrtd97Jvi/c5ClUA9qcEvbv0TzVx4SuV9ef1QPFZlL1a4SuBeXAiWwahQYN8Whl
+         1gAHuMaAun/Zk2w6RLmRbiXnIeMf2bO9MTgggDe2Otn+RJhZzsxkvcoX+6cBfr6pSn
+         ACVk52NafUWwTtv6MX3G5oxl/52Wdv5t+i/4z5u8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        syzbot+7ec324747ce876a29db6@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 17/29] net: caif: fix memory leak in caif_device_notify
-Date:   Tue,  8 Jun 2021 20:27:11 +0200
-Message-Id: <20210608175928.382528927@linuxfoundation.org>
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.4 20/23] btrfs: fixup error handling in fixup_inode_link_counts
+Date:   Tue,  8 Jun 2021 20:27:12 +0200
+Message-Id: <20210608175927.187390732@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
-References: <20210608175927.821075974@linuxfoundation.org>
+In-Reply-To: <20210608175926.524658689@linuxfoundation.org>
+References: <20210608175926.524658689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit b53558a950a89824938e9811eddfc8efcd94e1bb upstream.
+commit 011b28acf940eb61c000059dd9e2cfcbf52ed96b upstream.
 
-In case of caif_enroll_dev() fail, allocated
-link_support won't be assigned to the corresponding
-structure. So simply free allocated pointer in case
-of error
+This function has the following pattern
 
-Fixes: 7c18d2205ea7 ("caif: Restructure how link caif link layer enroll")
-Cc: stable@vger.kernel.org
-Reported-and-tested-by: syzbot+7ec324747ce876a29db6@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+	while (1) {
+		ret = whatever();
+		if (ret)
+			goto out;
+	}
+	ret = 0
+out:
+	return ret;
+
+However several places in this while loop we simply break; when there's
+a problem, thus clearing the return value, and in one case we do a
+return -EIO, and leak the memory for the path.
+
+Fix this by re-arranging the loop to deal with ret == 1 coming from
+btrfs_search_slot, and then simply delete the
+
+	ret = 0;
+out:
+
+bit so everybody can break if there is an error, which will allow for
+proper error handling to occur.
+
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/caif/caif_dev.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/btrfs/tree-log.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
---- a/net/caif/caif_dev.c
-+++ b/net/caif/caif_dev.c
-@@ -366,6 +366,7 @@ static int caif_device_notify(struct not
- 	struct cflayer *layer, *link_support;
- 	int head_room = 0;
- 	struct caif_device_entry_list *caifdevs;
-+	int res;
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -1511,6 +1511,7 @@ static noinline int fixup_inode_link_cou
+ 			break;
  
- 	cfg = get_cfcnfg(dev_net(dev));
- 	caifdevs = caif_device_list(dev_net(dev));
-@@ -391,8 +392,10 @@ static int caif_device_notify(struct not
+ 		if (ret == 1) {
++			ret = 0;
+ 			if (path->slots[0] == 0)
  				break;
- 			}
- 		}
--		caif_enroll_dev(dev, caifdev, link_support, head_room,
-+		res = caif_enroll_dev(dev, caifdev, link_support, head_room,
- 				&layer, NULL);
-+		if (res)
-+			cfserl_release(link_support);
- 		caifdev->flowctrl = dev_flowctrl;
- 		break;
+ 			path->slots[0]--;
+@@ -1523,17 +1524,19 @@ static noinline int fixup_inode_link_cou
  
+ 		ret = btrfs_del_item(trans, root, path);
+ 		if (ret)
+-			goto out;
++			break;
+ 
+ 		btrfs_release_path(path);
+ 		inode = read_one_inode(root, key.offset);
+-		if (!inode)
+-			return -EIO;
++		if (!inode) {
++			ret = -EIO;
++			break;
++		}
+ 
+ 		ret = fixup_inode_link_count(trans, root, inode);
+ 		iput(inode);
+ 		if (ret)
+-			goto out;
++			break;
+ 
+ 		/*
+ 		 * fixup on a directory may create new entries,
+@@ -1542,8 +1545,6 @@ static noinline int fixup_inode_link_cou
+ 		 */
+ 		key.offset = (u64)-1;
+ 	}
+-	ret = 0;
+-out:
+ 	btrfs_release_path(path);
+ 	return ret;
+ }
 
 
