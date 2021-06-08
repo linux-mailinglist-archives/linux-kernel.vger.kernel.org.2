@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E61983A033C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994723A020B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238236AbhFHTO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:14:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44800 "EHLO mail.kernel.org"
+        id S236995AbhFHS7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:59:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236939AbhFHTDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:03:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14A8261878;
-        Tue,  8 Jun 2021 18:45:41 +0000 (UTC)
+        id S235139AbhFHSxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:53:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC7761493;
+        Tue,  8 Jun 2021 18:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177942;
-        bh=34CGAzeAK4npol0yn+k/3p8HDOAEu1dZrpwIwDWrdAE=;
+        s=korg; t=1623177633;
+        bh=JpwGp5xVlNaThGQCPQZqU7d9ztVREPqcBFJxpsspVJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J2X/vIRRrFdAcK5tVVtywtMY3DDL03r+iMjzYPgsK1onwGM2x3gxL64xNcxEeqYsm
-         JsJziiBNSdBbCn7bOBa1TLYola/vlWvl/esXE5v6TDedHotK22gyxvF6voiulwJs3W
-         90gsh3lWXC1ymtD/ma9810v3S52I3HLFB5JC5kpg=
+        b=uiXpz3wAmEKZcHZLBEkO2UJf4829ddJ6nwOdsLm4A7UtqXbzsPVCP5ERF00rD0Wop
+         zayMICvh7g3yzdo//15Y1vIK5gN0VOg5i3N1oHVXdVtgPsIKaNFxEW7iHU9UVj9Po7
+         WkASMLF174g1HOISyzFm46IE6Z6bKkyA0oIjGct8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 019/161] HID: i2c-hid: fix format string mismatch
-Date:   Tue,  8 Jun 2021 20:25:49 +0200
-Message-Id: <20210608175946.110799035@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 010/137] vfio/pci: Fix error return code in vfio_ecap_init()
+Date:   Tue,  8 Jun 2021 20:25:50 +0200
+Message-Id: <20210608175942.731316533@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit dc5f9f55502e13ba05731d5046a14620aa2ff456 ]
+[ Upstream commit d1ce2c79156d3baf0830990ab06d296477b93c26 ]
 
-clang doesn't like printing a 32-bit integer using %hX format string:
+The error code returned from vfio_ext_cap_len() is stored in 'len', not
+in 'ret'.
 
-drivers/hid/i2c-hid/i2c-hid-core.c:994:18: error: format specifies type 'unsigned short' but the argument has type '__u32' (aka 'unsigned int') [-Werror,-Wformat]
-                 client->name, hid->vendor, hid->product);
-                               ^~~~~~~~~~~
-drivers/hid/i2c-hid/i2c-hid-core.c:994:31: error: format specifies type 'unsigned short' but the argument has type '__u32' (aka 'unsigned int') [-Werror,-Wformat]
-                 client->name, hid->vendor, hid->product);
-                                            ^~~~~~~~~~~~
-
-Use an explicit cast to truncate it to the low 16 bits instead.
-
-Fixes: 9ee3e06610fd ("HID: i2c-hid: override HID descriptors for certain devices")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-Id: <20210515020458.6771-1-thunder.leizhen@huawei.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/i2c-hid/i2c-hid-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/vfio/pci/vfio_pci_config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index 9993133989a5..f9d28ad17d9c 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -990,8 +990,8 @@ int i2c_hid_core_probe(struct i2c_client *client, struct i2chid_ops *ops,
- 	hid->vendor = le16_to_cpu(ihid->hdesc.wVendorID);
- 	hid->product = le16_to_cpu(ihid->hdesc.wProductID);
+diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
+index a402adee8a21..47f21a6ca7fe 100644
+--- a/drivers/vfio/pci/vfio_pci_config.c
++++ b/drivers/vfio/pci/vfio_pci_config.c
+@@ -1581,7 +1581,7 @@ static int vfio_ecap_init(struct vfio_pci_device *vdev)
+ 			if (len == 0xFF) {
+ 				len = vfio_ext_cap_len(vdev, ecap, epos);
+ 				if (len < 0)
+-					return ret;
++					return len;
+ 			}
+ 		}
  
--	snprintf(hid->name, sizeof(hid->name), "%s %04hX:%04hX",
--		 client->name, hid->vendor, hid->product);
-+	snprintf(hid->name, sizeof(hid->name), "%s %04X:%04X",
-+		 client->name, (u16)hid->vendor, (u16)hid->product);
- 	strlcpy(hid->phys, dev_name(&client->dev), sizeof(hid->phys));
- 
- 	ihid->quirks = i2c_hid_lookup_quirk(hid->vendor, hid->product);
 -- 
 2.30.2
 
