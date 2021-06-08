@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3A939EFFD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4221339EFC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhFHH47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 03:56:59 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5285 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhFHH4z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 03:56:55 -0400
-Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fzj824vlmz1BJZr;
-        Tue,  8 Jun 2021 15:50:10 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by dggeme766-chm.china.huawei.com
- (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
- 2021 15:55:00 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <ms@dev.tdt.de>
-CC:     <linux-x25@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] net: x25: Use list_for_each_entry() to simplify code in x25_link.c
-Date:   Tue, 8 Jun 2021 08:05:05 +0000
-Message-ID: <20210608080505.32466-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S230363AbhFHHjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 03:39:37 -0400
+Received: from mga17.intel.com ([192.55.52.151]:17005 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229507AbhFHHjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 03:39:33 -0400
+IronPort-SDR: hQSlXjflZj2dUQeyuOr78YcaRlyXtOXoTRliLJzocdKhD9uMdnnKozB2Gm3m1r0cOR6k51oeMB
+ eBccPOvIyShQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="185164399"
+X-IronPort-AV: E=Sophos;i="5.83,257,1616482800"; 
+   d="scan'208";a="185164399"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 00:37:24 -0700
+IronPort-SDR: a3AyfdB1wLTxnGAseGPB/oIrHubuVUcco3zHDuSJtJVc+lGBAhEuHqhvLNoPL3lCrgybyBOefg
+ n3eeuzYcZn9w==
+X-IronPort-AV: E=Sophos;i="5.83,257,1616482800"; 
+   d="scan'208";a="481846532"
+Received: from duan-client-optiplex-7080.bj.intel.com ([10.238.156.114])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 00:37:20 -0700
+From:   Zhenzhong Duan <zhenzhong.duan@intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
+        maciej.szmigiero@oracle.com, drjones@redhat.com,
+        pbonzini@redhat.com, shuah@kernel.org,
+        Zhenzhong Duan <zhenzhong.duan@intel.com>
+Subject: [PATCH 0/3] Restore extra_mem_pages and add slot0_mem_pages
+Date:   Wed,  9 Jun 2021 07:38:13 +0800
+Message-Id: <20210608233816.423958-1-zhenzhong.duan@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme766-chm.china.huawei.com (10.3.19.112)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert list_for_each() to list_for_each_entry() where
-applicable. This simplifies the code.
+(39fe2fc96694 "selftests: kvm: make allocation of extra memory take effect")
+changed the meaning of extra_mem_pages and treated it as slot0 memory size.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- net/x25/x25_link.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+In fact extra_mem_pages is used for non-slot0 memory size, there is no custom
+slot0 memory size support. See discuss in https://lkml.org/lkml/2021/6/3/551
+for more details.
 
-diff --git a/net/x25/x25_link.c b/net/x25/x25_link.c
-index 57a81100c5da..5460b9146dd8 100644
---- a/net/x25/x25_link.c
-+++ b/net/x25/x25_link.c
-@@ -332,12 +332,9 @@ void x25_link_device_down(struct net_device *dev)
- struct x25_neigh *x25_get_neigh(struct net_device *dev)
- {
- 	struct x25_neigh *nb, *use = NULL;
--	struct list_head *entry;
- 
- 	read_lock_bh(&x25_neigh_list_lock);
--	list_for_each(entry, &x25_neigh_list) {
--		nb = list_entry(entry, struct x25_neigh, node);
--
-+	list_for_each_entry(nb, &x25_neigh_list, node) {
- 		if (nb->dev == dev) {
- 			use = nb;
- 			break;
+This patchset restores extra_mem_pages's original meaning and adds support for
+custom slot0 memory with a new parameter slot0_mem_pages.
+
+Run below command, all 39 tests passed.
+# make -C tools/testing/selftests/ TARGETS=kvm run_tests
+
+Zhenzhong Duan (3):
+  Revert "selftests: kvm: make allocation of extra memory take effect"
+  Revert "selftests: kvm: fix overlapping addresses in
+    memslot_perf_test"
+  selftests: kvm: Add support for customized slot0 memory size
+
+ .../testing/selftests/kvm/include/kvm_util.h  |  7 +--
+ .../selftests/kvm/kvm_page_table_test.c       |  2 +-
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 47 +++++++++++++++----
+ .../selftests/kvm/lib/perf_test_util.c        |  2 +-
+ .../testing/selftests/kvm/memslot_perf_test.c |  2 +-
+ 5 files changed, 45 insertions(+), 15 deletions(-)
+
 -- 
-2.17.1
+2.25.1
 
