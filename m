@@ -2,165 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0C439ED29
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0694A39ED30
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhFHDwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 23:52:01 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:57650 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbhFHDv7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 23:51:59 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lqSke-009Bvp-EB; Mon, 07 Jun 2021 21:50:04 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lqSkc-00C0QU-OI; Mon, 07 Jun 2021 21:50:03 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Olivier Langlois <olivier@trillion01.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org
-In-Reply-To: <E1lqLo6-00ENqW-TB@mx03.mta.xmission.com> (Olivier Langlois's
-        message of "Sun, 30 May 2021 18:49:38 -0400")
-References: <E1lqLo6-00ENqW-TB@mx03.mta.xmission.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date:   Mon, 07 Jun 2021 22:49:55 -0500
-Message-ID: <8735ttggm4.fsf@disp2133>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lqSkc-00C0QU-OI;;;mid=<8735ttggm4.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+wrPfGBuLdsECYUiaY2GIbrnn7EZmPfsg=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Olivier Langlois <olivier@trillion01.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 540 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 12 (2.2%), b_tie_ro: 10 (1.9%), parse: 1.59
-        (0.3%), extract_message_metadata: 19 (3.5%), get_uri_detail_list: 3.1
-        (0.6%), tests_pri_-1000: 13 (2.4%), tests_pri_-950: 1.88 (0.3%),
-        tests_pri_-900: 1.52 (0.3%), tests_pri_-90: 75 (13.8%), check_bayes:
-        72 (13.4%), b_tokenize: 14 (2.6%), b_tok_get_all: 10 (1.9%),
-        b_comp_prob: 4.0 (0.7%), b_tok_touch_all: 40 (7.4%), b_finish: 1.07
-        (0.2%), tests_pri_0: 398 (73.8%), check_dkim_signature: 0.83 (0.2%),
-        check_dkim_adsp: 5 (1.0%), poll_dns_idle: 0.31 (0.1%), tests_pri_10:
-        2.2 (0.4%), tests_pri_500: 11 (2.1%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] signal: Set PF_SIGNALED flag for io workers during a group exit
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+        id S230389AbhFHD61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 23:58:27 -0400
+Received: from mga04.intel.com ([192.55.52.120]:59065 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230267AbhFHD6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 23:58:23 -0400
+IronPort-SDR: kHWE92+0cKnk6qSF+bZqqwiNOv54Uwdx8y4WBWzq4dpj+tq8T7P8teeORizfrlhGj9KbuXFk36
+ 4TJ++emEkC/g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="202907288"
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
+   d="scan'208";a="202907288"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 20:56:31 -0700
+IronPort-SDR: LkHDzyQxgNDZoKa960r1knAVOy2PIdkFjY8FPX5jbTnpbZazyHOkyZxq5SU5KMG32yzsbPJ2a2
+ FFMq5EeClSGw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
+   d="scan'208";a="440308736"
+Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
+  by orsmga007.jf.intel.com with ESMTP; 07 Jun 2021 20:56:26 -0700
+From:   Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+To:     Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        davem@davemloft.net, mcoquelin.stm32@gmail.com,
+        weifeng.voon@intel.com, boon.leong.ong@intel.com,
+        tee.min.tan@intel.com, vee.khee.wong@linux.intel.com,
+        vee.khee.wong@intel.com, michael.wei.hong.sit@intel.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        vladimir.oltean@nxp.com
+Subject: [PATCH net-next v6 0/3] Enable 2.5Gbps speed for stmmac
+Date:   Tue,  8 Jun 2021 11:51:55 +0800
+Message-Id: <20210608035158.4869-1-michael.wei.hong.sit@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Olivier Langlois <olivier@trillion01.com> writes:
+Intel mGbE supports 2.5Gbps link speed by overclocking the clock rate
+by 2.5 times to support 2.5Gbps link speed. In this mode, the serdes/PHY
+operates at a serial baud rate of 3.125 Gbps and the PCS data path and
+GMII interface of the MAC operate at 312.5 MHz instead of 125 MHz.
+This is configured in the BIOS during boot up. The kernel driver is not able
+access to modify the clock rate for 1Gbps/2.5G mode on the fly. The way to
+determine the current 1G/2.5G mode is by reading a dedicated adhoc
+register through mdio bus.
 
-> io worker threads are in most regards userspace threads except
-> that they never resume userspace. Therefore, they need to explicitly
-> handle signals.
->
-> On delivering a fatal signal generating a core dump to a thread of
-> a group having 1 or more io workers, it is possible for the io_workers
-> to exit with pending signals.
->
-> One example of this is the io_wqe_worker() function thread in fs/io-wq.c
-> This thread can exit the function with pending signals when its
-> IO_WQ_BIT_EXIT bit is set.
->
-> The consequence of exiting with pending signals is that PF_SIGNALED
-> will not be set. This flag is used in exit_mm() to engage into
-> the synchronization between do_coredump() and exit_mm().
->
-> The purpose of this synchronization is not well documented and all
-> that I have found is that it is used to avoid corruption in the core file
-> in the section "Deleting a Process Address Space", chapter 9 of the
-> Bovet & Cesati book.
+Changes:
+v5 -> v6
+ patch 1/3
+ - Check if mdio_bus_data is populated to prevent NULL pointer dereferencing
+   when accesing mdio_bus_data member
 
-We added the check just a little while ago.  I am surprised it shows up
-in any book.  What is the Bovett & Cesati book?
+v4 -> v5
+ patch 1/3
+ - Rebase to latest code changes after Vladimir's code is merged and fix
+   build warnings
 
-The flag PF_SIGNALED today is set in exactly one place, and that
-is in get_signal.  The meaning of PF_SIGNALED is that do_group_exit
-was called from get_signal.  AKA your task was killed by a signal.
+v3 -> v4
+ patch 1/3
+ - Rebase to latest code and Initialize 'found' to 0 to avoid build warning
 
-The check in exit_mm() that tests PF_SIGNALED is empirically testing
-to see if all of the necessary state is saved on the kernel stack.
-That state is the state accessed by fs/binfmt_elf.c:fill_note_info.
+ patch 2/3
+ - Fix indentation issue from v3
 
-The very good description from the original change can be found in
-the commit 123cbec460db ("signal: Remove the helper signal_group_exit").
+v2 -> v3
+ patch 1/3
+ -New patch added to restructure the code. enabling reading the dedicated
+  adhoc register to determine link speed mode.
 
-For alpha it is has the assembly function do_switch_stack been called
-before your code path was called in the kernel.
+ patch 2/3
+ -Restructure for 2.5G speed to use 2500BaseX configuration as the
+  PHY interface.
 
-Since io_uring does not have a userspace  I don't know if testing
-for PF_SIGNALED is at all meaningful to detect values saved on the
-stack.
+ patch 3/3
+ -Restructure to read serdes registers to set max_speed and configure to
+  use 2500BaseX in 2.5G speeds.
 
-I suspect io_uring is simply broken on architectures that need
-extra state saved on the stack, but I haven't looked yet.
+v1 -> v2
+ patch 1/2
+ -Remove MAC supported link speed masking
 
+ patch 2/2
+ -Add supported link speed masking in the PCS
 
-> So I am not sure if the synchronizatin MUST be applied to io_workers
-> or not but the proposed patch is making sure that it is applied in
-> all cases if it is needed.
+iperf3 and ping for 2.5Gbps and regression test on 10M/100M/1000Mbps
+is done to prevent regresson issues.
 
-That patch is definitely wrong.  If anything the check in exit_mm
-should be updated.
+2500Mbps
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.526 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.509 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.507 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.508 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.539 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.516 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.548 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.513 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.509 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.508 ms
 
-Can you share which code paths in io_uring exit with a
-fatal_signal_pending and don't bother to call get_signal?
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9222ms
+rtt min/avg/max/mdev = 0.507/0.518/0.548/0.013 ms
 
-I am currently looking to see if the wait for a coredump to read
-a threads data can be moved from exit_mm into get_signal.  Even
-with that io_uring might need a some additional fixes.
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 40092 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   205 MBytes  1.72 Gbits/sec    0    604 KBytes       
+[  5]   1.00-2.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   2.00-3.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   3.00-4.00   sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+[  5]   4.00-5.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   5.00-6.00   sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+[  5]   6.00-7.00   sec   204 MBytes  1.71 Gbits/sec    0    632 KBytes       
+[  5]   7.00-8.00   sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+[  5]   8.00-9.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   9.00-10.00  sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  2.00 GBytes  1.72 Gbits/sec    0             sender
+[  5]   0.00-10.00  sec  2.00 GBytes  1.72 Gbits/sec                  receiver
 
-Eric
+iperf Done.
 
-> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
-> ---
->  kernel/signal.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index f7c6ffcbd044..477bfe55fd3c 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -2925,6 +2925,15 @@ void exit_signals(struct task_struct *tsk)
->  
->  	if (thread_group_empty(tsk) || signal_group_exit(tsk->signal)) {
->  		tsk->flags |= PF_EXITING;
-> +		/*
-> +		 * It is possible for an io worker thread to reach this
-> +		 * function with a pending SIGKILL.
-> +		 * Set PF_SIGNALED for proper core dump generation
-> +		 * (See exit_mm())
-> +		 */
-> +		if (tsk->flags & PF_IO_WORKER &&
-> +		    signal_group_exit(tsk->signal))
-> +			tsk->flags |= PF_SIGNALED;
->  		cgroup_threadgroup_change_end(tsk);
->  		return;
->  	}
+10Mbps
+host@EHL$ ethtool -s enp0s30f4 duplex full speed 10
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=1.46 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.761 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.744 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.753 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.746 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.786 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.740 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.757 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.742 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.772 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9208ms
+rtt min/avg/max/mdev = 0.740/0.826/1.461/0.212 ms
+
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 35304 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  1.26 MBytes  10.6 Mbits/sec    0   29.7 KBytes       
+[  5]   1.00-2.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   2.00-3.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   3.00-4.00   sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes       
+[  5]   4.00-5.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   5.00-6.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   6.00-7.00   sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes       
+[  5]   7.00-8.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   8.00-9.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   9.00-10.00  sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  11.3 MBytes  9.47 Mbits/sec    0             sender
+[  5]   0.00-10.01  sec  11.1 MBytes  9.33 Mbits/sec                  receiver
+
+iperf Done.
+
+100Mbps
+host@EHL$ ethtool -s enp0s30f4 duplex full speed 100
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=1.05 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.535 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.522 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.529 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.523 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.543 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.553 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.542 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.517 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.515 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9233ms
+rtt min/avg/max/mdev = 0.515/0.582/1.048/0.155 ms
+
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 35308 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  11.8 MBytes  99.1 Mbits/sec    0    147 KBytes       
+[  5]   1.00-2.00   sec  10.9 MBytes  91.2 Mbits/sec    0    187 KBytes       
+[  5]   2.00-3.00   sec  11.4 MBytes  95.4 Mbits/sec    0    230 KBytes       
+[  5]   3.00-4.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   4.00-5.00   sec  10.4 MBytes  87.6 Mbits/sec    0    230 KBytes       
+[  5]   5.00-6.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   6.00-7.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   7.00-8.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   8.00-9.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   9.00-10.00  sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   110 MBytes  92.4 Mbits/sec    0             sender
+[  5]   0.00-10.01  sec   109 MBytes  91.5 Mbits/sec                  receiver
+
+iperf Done.
+
+1000Mbps
+host@EHL$ ethtool -s enp0s30f4 duplex full speed 1000
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=1.02 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.507 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.539 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.506 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.504 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.489 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.499 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.483 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.480 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.493 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9213ms
+rtt min/avg/max/mdev = 0.480/0.551/1.015/0.155 ms
+
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 35312 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   114 MBytes   960 Mbits/sec    0    437 KBytes       
+[  5]   1.00-2.00   sec   112 MBytes   940 Mbits/sec    0    437 KBytes       
+[  5]   2.00-3.00   sec   112 MBytes   937 Mbits/sec    0    437 KBytes       
+[  5]   3.00-4.00   sec   112 MBytes   941 Mbits/sec    0    437 KBytes       
+[  5]   4.00-5.00   sec   112 MBytes   939 Mbits/sec    0    457 KBytes       
+[  5]   5.00-6.00   sec   112 MBytes   941 Mbits/sec    0    457 KBytes       
+[  5]   6.00-7.00   sec   112 MBytes   944 Mbits/sec    0    457 KBytes       
+[  5]   7.00-8.00   sec   112 MBytes   937 Mbits/sec    0    457 KBytes       
+[  5]   8.00-9.00   sec   113 MBytes   946 Mbits/sec    0    457 KBytes       
+[  5]   9.00-10.00  sec   112 MBytes   937 Mbits/sec    0    457 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  1.10 GBytes   942 Mbits/sec    0             sender
+[  5]   0.00-10.00  sec  1.10 GBytes   941 Mbits/sec                  receiver
+
+iperf Done.
+
+Voon Weifeng (3):
+  net: stmmac: split xPCS setup from mdio register
+  net: pcs: add 2500BASEX support for Intel mGbE controller
+  net: stmmac: enable Intel mGbE 2.5Gbps link speed
+
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 48 +++++++++++++-
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.h | 13 ++++
+ .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  1 +
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  1 +
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 16 +++++
+ .../net/ethernet/stmicro/stmmac/stmmac_mdio.c | 64 ++++++++++---------
+ drivers/net/pcs/pcs-xpcs.c                    | 56 ++++++++++++++++
+ include/linux/pcs/pcs-xpcs.h                  |  1 +
+ include/linux/stmmac.h                        |  1 +
+ 9 files changed, 171 insertions(+), 30 deletions(-)
+
+-- 
+2.17.1
+
