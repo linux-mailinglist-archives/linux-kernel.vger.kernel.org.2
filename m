@@ -2,140 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F2139FDB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579C839FDC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233631AbhFHRdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 13:33:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38600 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233149AbhFHRc6 (ORCPT
+        id S231691AbhFHRfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 13:35:09 -0400
+Received: from mail-pg1-f174.google.com ([209.85.215.174]:44585 "EHLO
+        mail-pg1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231485AbhFHRfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 13:32:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623173464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TF/rgM77L/d/lAEQM9kap4CMSSjJDs34aSUsZ8Lqw00=;
-        b=Y6MgjcnvJKhmzKS1REHA3eCaviabn5Fpq4HQWBSjibvlirqrHWfIQhCrQqex26WNsmBPl/
-        ZrKTD7a/vxlrIl1jrKMvDn+Y5hqFU/HK5xsl0YLVWxGWADk2RzQoj06GYFVk6NSyL0sFiE
-        eJ7WqWflTStjzbvCe0PYrXquPuyHqHY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-Y80cIE2UORCFXghlQQJKHQ-1; Tue, 08 Jun 2021 13:31:02 -0400
-X-MC-Unique: Y80cIE2UORCFXghlQQJKHQ-1
-Received: by mail-wr1-f69.google.com with SMTP id h10-20020a5d688a0000b0290119c2ce2499so4782761wru.19
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:31:02 -0700 (PDT)
+        Tue, 8 Jun 2021 13:35:08 -0400
+Received: by mail-pg1-f174.google.com with SMTP id y11so8939194pgp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 10:33:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AHQbohLdOv212XWCgNAIki+QiBE294go+E+AnYbJF9M=;
+        b=biLwqIL1ECQDpYXkKAkiuZYqmbzWdb0jGyciw3wmlN1bVkaAqUDBkQKGemUGGKPL9U
+         Tuk/hQkeIOll0FNN/hDB8AaeP1VGf7Qh6LzsEwg0eZ8SWEGsKMvfxztXJlKPzFBPfqAq
+         9CB7AN3O47sSHxkKxthkxvZ0/1sBjuSWXLyAw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TF/rgM77L/d/lAEQM9kap4CMSSjJDs34aSUsZ8Lqw00=;
-        b=Q/bdn/KqkA1GOa/GDfwn82wcwNDw5SfgX4/DpJMbdo0t2ji1c3XNnPWhsI/lMk+1Ze
-         8ptSyPapqH/03xtP+1V4nzLHsMjS97WshlgTqGnEREj11wze4ubM3r5NkfQFcwfmgoPp
-         1V2OX8H3il1zNi8ALMO4XjGpb0kbKR8EyY/3T7AXEa7kewL1mxQAK9AC3tKP96RNVScH
-         pvp+sdhWoQCOj4LzuELWyZJljHZT+DREewB6p43tqQ6OiZ2WX7i7VKjx7K2m7JT4CXmU
-         EADqFDvSBHLJJJTSUSJrribnErTmMceRHJJ5fOhgQWZveN1vIEVzCWRN6tQT7+btytFy
-         w3/A==
-X-Gm-Message-State: AOAM532G9y38f3FaXhu3Dcln5kmjKvgU8HqmUoSbkAJhEVGICgar1WDf
-        kzgWMVgibM57i5AylkVSmXzmHZerIXeQKXCn02t8cVCtyGrpCAo7rKt7yXUkVRdkn3X0Z/MOWea
-        vgy3v43+QtyCMtmDctQEn0QyLr6o3OTKISDqS3FdmaIxRpb+azjer2Ro9CP3vGDlDGlCxtpC+wg
-        /E
-X-Received: by 2002:a5d:47a5:: with SMTP id 5mr11742385wrb.259.1623173460852;
-        Tue, 08 Jun 2021 10:31:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+hXpQkKsF/MtCk0rB04qnJ0G728xRvxcrbK0SQ7l7/wkfmJ3psnPl5j+OrSjI7gH0UMjC5A==
-X-Received: by 2002:a5d:47a5:: with SMTP id 5mr11742365wrb.259.1623173460657;
-        Tue, 08 Jun 2021 10:31:00 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id a4sm18989559wme.45.2021.06.08.10.30.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 10:31:00 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: Ensure liveliness of nested VM-Enter fail
- tracepoint message
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210607175748.674002-1-seanjc@google.com>
- <20210607144845.74a893d6@oasis.local.home>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <89ea681f-bbfc-422c-c654-d81b5e83a734@redhat.com>
-Date:   Tue, 8 Jun 2021 19:30:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AHQbohLdOv212XWCgNAIki+QiBE294go+E+AnYbJF9M=;
+        b=Ki/kfdnmwjFHTSFalH+uKcA9fe/83fTitD0poyaPCRENC2B1mKt7T/ubcANiBloNrg
+         9+xYzO7uO9ZCHAB7xV/ink+cI8YI8KOlIjUlBa64wWVNsScRGe5+eSKS52VrIbqq3+1v
+         y9o1yK9WdB2MMTuaZxGvccImDwmHMlXWGdW0dlYPu+cGrZySHjAAJk9zOuMUEoyA5zMy
+         wGK2n6QHJ12qAeaQpTdUYktHR6UGqV2Gp2RHOL4cayjFGyHuKh9OYM/9VT6V31dDuQfz
+         7K3FXF4X6nA83bupNXujsIuy9j1UBM7HFSD5srknwj7i+tMOoLSOWH1ildGAzL+AmYcP
+         Oi+w==
+X-Gm-Message-State: AOAM532bTDR8ywn7RE/RRYWUQRESJhiF1xKW3eQ4SEefrZfB8Pdz5+0C
+        NIim50Ha6Vp4a8vSov8QvwWzYQ==
+X-Google-Smtp-Source: ABdhPJzIuNZXhKV1ztPY/+fg/0E6Sqq1LW/i6wIG6EXJPGFBpvO72K9KL365GXBSM6yBmu+VJToBZA==
+X-Received: by 2002:a62:1481:0:b029:2c1:1e90:c54 with SMTP id 123-20020a6214810000b02902c11e900c54mr982446pfu.55.1623173520075;
+        Tue, 08 Jun 2021 10:32:00 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o7sm12557362pgs.45.2021.06.08.10.31.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 10:31:59 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 10:31:58 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Bhaskara Budiredla <bbudiredla@marvell.com>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>
+Subject: Re: [EXT] Re: [PATCH v5 1/2] mmc: Support kmsg dumper based on
+ pstore/blk
+Message-ID: <202106081024.09E42DA400@keescook>
+References: <20210120121047.2601-1-bbudiredla@marvell.com>
+ <20210120121047.2601-2-bbudiredla@marvell.com>
+ <CAPDyKFoF7jz-mbsY8kPUGca5civFKRRyPpHbRkj9P=xevRRfbA@mail.gmail.com>
+ <CY4PR1801MB2070F43EFCB9139D8168164FDE3A9@CY4PR1801MB2070.namprd18.prod.outlook.com>
+ <CAPDyKFrVQbALjSeFBckaZQgkgwcBVuwHy563pdBxHQNA7bxRnQ@mail.gmail.com>
+ <CY4PR1801MB2070B09D27404F8B7A84D446DE389@CY4PR1801MB2070.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210607144845.74a893d6@oasis.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CY4PR1801MB2070B09D27404F8B7A84D446DE389@CY4PR1801MB2070.namprd18.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/06/21 20:48, Steven Rostedt wrote:
-> On Mon,  7 Jun 2021 10:57:48 -0700
-> Sean Christopherson <seanjc@google.com> wrote:
+On Mon, Jun 07, 2021 at 12:37:07PM +0000, Bhaskara Budiredla wrote:
+> [...]
+> >What patches are you referring to?
 > 
->> Use the __string() machinery provided by the tracing subystem to make a
->> copy of the string literals consumed by the "nested VM-Enter failed"
->> tracepoint.  A complete copy is necessary to ensure that the tracepoint
->> can't outlive the data/memory it consumes and deference stale memory.
->>
->> Because the tracepoint itself is defined by kvm, if kvm-intel and/or
->> kvm-amd are built as modules, the memory holding the string literals
->> defined by the vendor modules will be freed when the module is unloaded,
->> whereas the tracepoint and its data in the ring buffer will live until
->> kvm is unloaded (or "indefinitely" if kvm is built-in).
->>
->> This bug has existed since the tracepoint was added, but was recently
->> exposed by a new check in tracing to detect exactly this type of bug.
->>
->>    fmt: '%s%s
->>    ' current_buffer: ' vmx_dirty_log_t-140127  [003] ....  kvm_nested_vmenter_failed: '
->>    WARNING: CPU: 3 PID: 140134 at kernel/trace/trace.c:3759 trace_check_vprintf+0x3be/0x3e0
->>    CPU: 3 PID: 140134 Comm: less Not tainted 5.13.0-rc1-ce2e73ce600a-req #184
->>    Hardware name: ASUS Q87M-E/Q87M-E, BIOS 1102 03/03/2014
->>    RIP: 0010:trace_check_vprintf+0x3be/0x3e0
->>    Code: <0f> 0b 44 8b 4c 24 1c e9 a9 fe ff ff c6 44 02 ff 00 49 8b 97 b0 20
->>    RSP: 0018:ffffa895cc37bcb0 EFLAGS: 00010282
->>    RAX: 0000000000000000 RBX: ffffa895cc37bd08 RCX: 0000000000000027
->>    RDX: 0000000000000027 RSI: 00000000ffffdfff RDI: ffff9766cfad74f8
->>    RBP: ffffffffc0a041d4 R08: ffff9766cfad74f0 R09: ffffa895cc37bad8
->>    R10: 0000000000000001 R11: 0000000000000001 R12: ffffffffc0a041d4
->>    R13: ffffffffc0f4dba8 R14: 0000000000000000 R15: ffff976409f2c000
->>    FS:  00007f92fa200740(0000) GS:ffff9766cfac0000(0000) knlGS:0000000000000000
->>    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>    CR2: 0000559bd11b0000 CR3: 000000019fbaa002 CR4: 00000000001726e0
->>    Call Trace:
->>     trace_event_printf+0x5e/0x80
->>     trace_raw_output_kvm_nested_vmenter_failed+0x3a/0x60 [kvm]
->>     print_trace_line+0x1dd/0x4e0
->>     s_show+0x45/0x150
->>     seq_read_iter+0x2d5/0x4c0
->>     seq_read+0x106/0x150
->>     vfs_read+0x98/0x180
->>     ksys_read+0x5f/0xe0
->>     do_syscall_64+0x40/0xb0
->>     entry_SYSCALL_64_after_hwframe+0x44/0xae
->>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Fixes: 380e0055bc7e ("KVM: nVMX: trace nested VM-Enter failures detected by H/W")
->> Signed-off-by: Sean Christopherson <seanjc@google.com>
->> ---
->>
-> 
-> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> 
-> -- Steve
-> 
+> I was referring to this patch.
+> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/pstore
 
-Queued, thanks.
+I applied the first three:
+https://lore.kernel.org/lkml/160685706687.2724892.9289969466453217944.b4-ty@chromium.org/
 
-Paolo
+and explained my aversion to the others. Christoph never replied to my
+notes on patch 8/9:
+https://lore.kernel.org/lkml/202012011149.5650B9796@keescook/
 
+-Kees
+
+-- 
+Kees Cook
