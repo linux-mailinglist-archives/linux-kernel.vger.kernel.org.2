@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E73539ED3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C03E39ED25
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 05:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhFHD6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 23:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbhFHD6g (ORCPT
+        id S230361AbhFHDry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 23:47:54 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:4392 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230254AbhFHDrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 23:58:36 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DDEC061574;
-        Mon,  7 Jun 2021 20:56:43 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fzbyd6LsZz9s5R;
-        Tue,  8 Jun 2021 13:56:41 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623124602;
-        bh=x5Ty/qnyFuqgqiao7YcBAwUn1L43IMnSjEoIVgkW1r8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=EMBGfcKnGq0/jCUGEsDdia/epRmbi7moodYhfX/QAdDBKmsfMU6z99eVvxXNtRoM/
-         3wAwYs1lq9KtzegfASy98TV6497LArY/h5Oho1LOgVd+sajYr781L33/r4Qlfedy1Q
-         ee3hFniU9syk3k5eEit/TG70G5bA0qiI4vZ1OOT8ugQk9eHrVKzU0048cX2lJlVkCq
-         bU3N+2vURngG+aIns2Rho7ze/zyNnBkz9mclZzXB6UuUoBb/aNy2PgwPk7na/rQZFl
-         qCUwl3ElpKIUkO9+ehzLHroAyU51CkB0zBzyrHlsInltLRvfe+/8jfSthq8ILRdfMX
-         DMyPJVTFuUVlQ==
-Date:   Tue, 8 Jun 2021 13:56:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the iommu tree
-Message-ID: <20210608135641.67e123e6@canb.auug.org.au>
+        Mon, 7 Jun 2021 23:47:53 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Fzbdr4sCPz6vFb;
+        Tue,  8 Jun 2021 11:42:08 +0800 (CST)
+Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 11:45:59 +0800
+Received: from huawei.com (10.175.124.27) by dggpeml500019.china.huawei.com
+ (7.185.36.137) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 8 Jun 2021
+ 11:45:58 +0800
+From:   Wu Bo <wubo40@huawei.com>
+To:     <kbusch@kernel.org>, <axboe@fb.com>, <hch@lst.de>,
+        <sagi@grimberg.me>, <linux-nvme@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linfeilong@huawei.com>, <wubo40@huawei.com>
+Subject: [PATCH] nvme-multipath: combine grpid and ANA state checks in nvme_parse_ana_log()
+Date:   Tue, 8 Jun 2021 12:13:36 +0800
+Message-ID: <1623125616-629270-1-git-send-email-wubo40@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8r/nd8oEgEItWvRc1J/yyXG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500019.china.huawei.com (7.185.36.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8r/nd8oEgEItWvRc1J/yyXG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+Combine grpid and ANA state checks in nvme_parse_ana_log() to
+reduce repetitive code and more intuitive meaning.
 
-After merging the iommu tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+Signed-off-by: Wu Bo <wubo40@huawei.com>
+---
+ drivers/nvme/host/multipath.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-WARNING: modpost: vmlinux.o(.text.unlikely+0xddf06): Section mismatch in re=
-ference from the function detect_ivrs() to the variable .init.data:amd_iomm=
-u_force_enable
-The function detect_ivrs() references
-the variable __initdata amd_iommu_force_enable.
-This is often because detect_ivrs lacks a __initdata=20
-annotation or the annotation of amd_iommu_force_enable is wrong.
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index f81871c..19fe16d 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -522,13 +522,11 @@ static int nvme_parse_ana_log(struct nvme_ctrl *ctrl, void *data,
+ 		nr_nsids = le32_to_cpu(desc->nnsids);
+ 		nsid_buf_size = nr_nsids * sizeof(__le32);
+ 
+-		if (WARN_ON_ONCE(desc->grpid == 0))
++		if (WARN_ON_ONCE(desc->grpid == 0 ||
++			le32_to_cpu(desc->grpid) > ctrl->anagrpmax))
+ 			return -EINVAL;
+-		if (WARN_ON_ONCE(le32_to_cpu(desc->grpid) > ctrl->anagrpmax))
+-			return -EINVAL;
+-		if (WARN_ON_ONCE(desc->state == 0))
+-			return -EINVAL;
+-		if (WARN_ON_ONCE(desc->state > NVME_ANA_CHANGE))
++		if (WARN_ON_ONCE(desc->state == 0 ||
++			desc->state > NVME_ANA_CHANGE))
+ 			return -EINVAL;
+ 
+ 		offset += sizeof(*desc);
+-- 
+2.30.2
 
-Introduced by commit
-
-  b1e650db2cc4 ("iommu/amd: Add amd_iommu=3Dforce_enable option")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/8r/nd8oEgEItWvRc1J/yyXG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC+6nkACgkQAVBC80lX
-0Gyq1gf/ZFzFWja7cobOoszb+vsMFVX61FwRs/5SYortrhfpbamVrQ4XptMfDqgz
-TSHZr1ufOdboVr+U4voSWkObDFjnRzXSbuc5VdqLnoGBdDdKwF8wzyFL1SPzXY1l
-sIOwnZmafleOJH+UDecmHcY3OTWZMLFVyt/OXgRlSTkn0lLrK141E3wOu+Sf+6m9
-HsrtdjLjngZLYjcazMG1mYxauq/cTws4kbQeWVo80LW9NejQHYd9ZsHvwc5zokgQ
-nk5uLfC71axAhikRudPegdfr3dxcffcwMGQtaMTzaSLAxuelwzkx8YYdHqAfOVlG
-aEy1Tim0/X2kBc3mdkz+grJR/VaBHQ==
-=AVZv
------END PGP SIGNATURE-----
-
---Sig_/8r/nd8oEgEItWvRc1J/yyXG--
