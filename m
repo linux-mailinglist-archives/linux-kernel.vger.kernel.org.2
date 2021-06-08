@@ -2,137 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C15639EF20
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2A839EF22
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhFHG7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 02:59:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230287AbhFHG7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 02:59:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE2C6124C;
-        Tue,  8 Jun 2021 06:57:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623135460;
-        bh=yjBYy7eUwamr31eq9brn5Jc1luf++jw7ukGEARTrWGI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oukDiFIKchJGBdt6dBeiF6ziHae7iRyltS8ZZB/426KE762+G5igWlnm8celxGigP
-         ZJKNBOJzzb4vdQo02cQlvw1jBZkvcMTUX9mao1KHr9ZJqUHo/AkFecdiqNJqNBc3of
-         YsAF8Wd0Gev42wO+zKbgIyioE6Tn0r5IwOIc3xf03hIDZXq9YYMaYkhdeoM0TjWtjh
-         afxLCUZrhL2VRrakc4ne7p+e1C8Zh0lCVsDFTC+b4/OpqyJMYMvcFdMGnj6MvSCGWP
-         GJhxjNPCpIxft6nrapcpdbPkUhZwlnG7B1fLPAqdaqBjw0Mkk1ju9E5zlaSov6ONb+
-         MiS6epNfXlVeA==
-Date:   Tue, 8 Jun 2021 09:57:36 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Gal Pressman <galpress@amazon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v1 14/15] RDMA/core: Allow port_groups to be
- used with namespaces
-Message-ID: <YL8U4JqzyHl24Rio@unreal>
-References: <cover.1623053078.git.leonro@nvidia.com>
- <a1a8a96629405ff3b2990f5f8dbd7b57a818571e.1623053078.git.leonro@nvidia.com>
- <PH0PR12MB5481C3DE73C097E938B4E5D1DC389@PH0PR12MB5481.namprd12.prod.outlook.com>
- <YL74KtkVOxVDT5u6@unreal>
- <PH0PR12MB548195F3EC7E96C1ED2789ABDC379@PH0PR12MB5481.namprd12.prod.outlook.com>
+        id S230382AbhFHG7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 02:59:41 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8073 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230323AbhFHG7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 02:59:38 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzgwH1DP6zYrm0;
+        Tue,  8 Jun 2021 14:54:55 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 14:57:44 +0800
+Received: from SWX921481.china.huawei.com (10.126.203.90) by
+ dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 14:57:39 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <akpm@linux-foundation.org>, <hpa@zytor.com>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hca@linux.ibm.com>,
+        <gor@linux.ibm.com>, <borntraeger@de.ibm.com>,
+        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+        <davem@davemloft.net>, <mhiramat@kernel.org>,
+        <linux-s390@vger.kernel.org>, <x86@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <liuqi115@huawei.com>,
+        <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>,
+        "Christoph Hellwig" <hch@infradead.org>
+Subject: [PATCH v3] kprobes: remove duplicated strong free_insn_page in x86 and s390
+Date:   Tue, 8 Jun 2021 18:57:36 +1200
+Message-ID: <20210608065736.32656-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR12MB548195F3EC7E96C1ED2789ABDC379@PH0PR12MB5481.namprd12.prod.outlook.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.203.90]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi761-chm.china.huawei.com (10.1.198.147)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 05:32:56AM +0000, Parav Pandit wrote:
-> 
-> 
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Tuesday, June 8, 2021 10:25 AM
-> > 
-> > On Mon, Jun 07, 2021 at 01:29:58PM +0000, Parav Pandit wrote:
-> > >
-> > >
-> > > > From: Leon Romanovsky <leon@kernel.org>
-> > > > Sent: Monday, June 7, 2021 1:48 PM
-> > > >
-> > > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > >
-> > > > Now that the port_groups data is being destroyed and managed by the
-> > > > core code this restriction is no longer needed. All the
-> > > > ib_port_attrs are compatible with the core's sysfs lifecycle.
-> > > >
-> > > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > ---
-> > > >  drivers/infiniband/core/device.c | 10 ++++------
-> > > > drivers/infiniband/core/sysfs.c  | 17 ++++++-----------
-> > > >  2 files changed, 10 insertions(+), 17 deletions(-)
-> > 
-> > <...>
-> > 
-> > > > diff --git a/drivers/infiniband/core/sysfs.c
-> > > > b/drivers/infiniband/core/sysfs.c index 09a2e1066df0..f42034fcf3d9
-> > > > 100644
-> > > > --- a/drivers/infiniband/core/sysfs.c
-> > > > +++ b/drivers/infiniband/core/sysfs.c
-> > > > @@ -1236,11 +1236,9 @@ static struct ib_port *setup_port(struct
-> > > > ib_core_device *coredev, int port_num,
-> > > >  	ret = sysfs_create_groups(&p->kobj, p->groups_list);
-> > > >  	if (ret)
-> > > >  		goto err_del;
-> > > > -	if (is_full_dev) {
-> > > > -		ret = sysfs_create_groups(&p->kobj, device-
-> > > > >ops.port_groups);
-> > > > -		if (ret)
-> > > > -			goto err_groups;
-> > > > -	}
-> > > > +	ret = sysfs_create_groups(&p->kobj, device->ops.port_groups);
-> > > > +	if (ret)
-> > > > +		goto err_groups;
-> > > >
-> > > This will expose counters in all net namespaces in shared mode (default
-> > case).
-> > > Application running in one net namespace will be able to monitor counters
-> > of other net namespace.
-> > > This should be avoided.
-> > 
-> > In shared mode, we are sharing sysfs anyway and have two options to deal
-> > with the port properties (counters):
-> > 1. Show them in all namespaces as being global to port which is shared
-> > anyway.
-> > 2. Show them in init_net namespace only and applications that were left in
-> > this namespace will see not their counters anyway.
-> > 
-> > Why should we avoid "item 1"?
-> Because it is incorrect to show port counters updated by application running in net ns 1, to show to application running in net ns 2.
-> Once/if there is per netns counters exist, than those counters can be shown using more modern rdma stats command.
+free_insn_page() in x86 and s390 is same with the common weak function
+in kernel/kprobes.c.
+Plus,  the comment "Recover page to RW mode before releasing it" in x86
+seems insensible to be there since resetting mapping is done by common
+code in vfree() of module_memfree().
+So drop these two duplicated strong functions and related comment, then
+mark the common one in kernel/kprobes.c strong.
 
-ok, I see your point and have no strong position about it.
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ -v3: mark free_insn_page as static according to Christoph's comment
 
-Thanks
+ arch/s390/kernel/kprobes.c     | 5 -----
+ arch/x86/kernel/kprobes/core.c | 6 ------
+ include/linux/kprobes.h        | 1 -
+ kernel/kprobes.c               | 2 +-
+ 4 files changed, 1 insertion(+), 13 deletions(-)
+
+diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
+index aae24dc75df6..60cfbd24229b 100644
+--- a/arch/s390/kernel/kprobes.c
++++ b/arch/s390/kernel/kprobes.c
+@@ -44,11 +44,6 @@ void *alloc_insn_page(void)
+ 	return page;
+ }
+ 
+-void free_insn_page(void *page)
+-{
+-	module_memfree(page);
+-}
+-
+ static void *alloc_s390_insn_page(void)
+ {
+ 	if (xchg(&insn_page_in_use, 1) == 1)
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index d3d65545cb8b..3bce67d3a03c 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -422,12 +422,6 @@ void *alloc_insn_page(void)
+ 	return page;
+ }
+ 
+-/* Recover page to RW mode before releasing it */
+-void free_insn_page(void *page)
+-{
+-	module_memfree(page);
+-}
+-
+ /* Kprobe x86 instruction emulation - only regs->ip or IF flag modifiers */
+ 
+ static void kprobe_emulate_ifmodifiers(struct kprobe *p, struct pt_regs *regs)
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 1883a4a9f16a..c98a35a75f40 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -407,7 +407,6 @@ int enable_kprobe(struct kprobe *kp);
+ void dump_kprobe(struct kprobe *kp);
+ 
+ void *alloc_insn_page(void);
+-void free_insn_page(void *page);
+ 
+ int kprobe_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
+ 		       char *sym);
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 745f08fdd7a6..e0c4c9d57299 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -106,7 +106,7 @@ void __weak *alloc_insn_page(void)
+ 	return module_alloc(PAGE_SIZE);
+ }
+ 
+-void __weak free_insn_page(void *page)
++static void free_insn_page(void *page)
+ {
+ 	module_memfree(page);
+ }
+-- 
+2.25.1
+
