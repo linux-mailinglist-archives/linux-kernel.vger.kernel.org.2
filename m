@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D45239EAF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9319F39EAFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhFHAsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 20:48:42 -0400
-Received: from mail-yb1-f175.google.com ([209.85.219.175]:46970 "EHLO
-        mail-yb1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhFHAsl (ORCPT
+        id S230463AbhFHAut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 20:50:49 -0400
+Received: from mail-pf1-f180.google.com ([209.85.210.180]:39845 "EHLO
+        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230266AbhFHAus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 20:48:41 -0400
-Received: by mail-yb1-f175.google.com with SMTP id y2so27585283ybq.13;
-        Mon, 07 Jun 2021 17:46:49 -0700 (PDT)
+        Mon, 7 Jun 2021 20:50:48 -0400
+Received: by mail-pf1-f180.google.com with SMTP id k15so14398493pfp.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 17:48:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wAeCfS9iaVJBSI175timC+YpcqrmesZy+/g5SRxMcsY=;
-        b=h5d9k7yOoW7S/0rpuC4f5HDaZZi0GJ20Abacpwz3DsUDrsrREp5r3i4jKGl0lTTDFk
-         Hr5lEJNNouzb6MDs00B4D+55LFplIKRgm9GhOEgY8xvvef9MwQJgeqVErxrrm4s8mJ9q
-         K9drRIVLe8eEmS5EhBe805OrvcYyvmfT2YGweKEKH5h2ppS01rT9n1Fi7hvsHUDiHGF0
-         EhgkSK1cXcffdviW7Rm02JfDK5fqz4KQHfXadM6i5OkMMazdzXugqf+VzzrcRLcFTbp7
-         5giPdI3UtlACU+Obc7meDZkB+bhwTONWMdKosJfDISLXqasHU+aZZi5WZl8TmmQFQrVS
-         Ro5w==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=agGQB3i2wfCKPG1s7G2zOWZ6mUf8+TRhatsi66V+CBQ=;
+        b=cXrHC+ShZrUlsuFPBylWLaI7HBuW6R8pOvn801TqKqpqtxAMgmjGCNylYbLODlXmQ4
+         RwjLjk8qd8pOUX9NLXwTjfliWitEWcFc7Jj+JoUlHQqinMqVR7CgCtj6wljr9MlV/GGZ
+         UIyX/2wHrPjNjmArcdL2QfZHRDGN3c7WWUSro=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wAeCfS9iaVJBSI175timC+YpcqrmesZy+/g5SRxMcsY=;
-        b=pFv+XvxCYahQqY4+H5gV081W0JY9DuQLfQjENipNOsE5IaX8Y+a8lJ90E75adqhfpS
-         DYi4gTHLbodEIFKy21PYLh04qUGcqhnfh0u1SlANlBsH0fIIYtKBKs8eyuc/zyE2vPCb
-         R2Xc0onkBkgnjNZ6yrVPgOUdPfhyCCpXDFuVBPnqNMr8FVpg7JSbVkMGrMixdlD259Cb
-         amc468qCOfVqHxYt4tS/2Lm+y4DtqSpFpFJCo/wmEi7DUZwIKagcC9xQsaapncrur3G7
-         oA/w48kcw9A4minzYmY8tjn6ieBVFw8Bh8aaxdlBqoG3YoYxWTUXINdL1OVMt/DhQqtq
-         7UFg==
-X-Gm-Message-State: AOAM532YVzW7fvbyrR+T6uRPG4XoSXi30PuVCOBb9yEKGK4xnk4GWYRY
-        fSGLdbkigyCsqtr0+tF/A8XHPEPUBFGbS17UJjg=
-X-Google-Smtp-Source: ABdhPJyNEb5N8zlSd1g5AAeN050SmMxCNWcf83WGtFzS4QxSx3LI00mEZGLTi8MpIzActpbng8TG/K8Ju9lXxgLGBnI=
-X-Received: by 2002:a25:4182:: with SMTP id o124mr27027899yba.27.1623113149079;
- Mon, 07 Jun 2021 17:45:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=agGQB3i2wfCKPG1s7G2zOWZ6mUf8+TRhatsi66V+CBQ=;
+        b=R+E+sVYt8wU+UuP9CA8SCRDDcVq+adki51aIh7RhopmCsuN9GLMcnYQ61W7NY7K62y
+         3xMv+p7HUQAebJMRuRMgrj3/3q2DFJk+P/dT3Tb5sMsxJcRClsXet9+wJHzDRSWgZpDb
+         nBE5GqGQ8nMFDFCYb5XTFZ3DTtw1m6n9FC5HP1++iMKUSuTjO40412KTdFqoCQXrNer8
+         NVkULJOa0OpFQI61b+H42zfGWQ8Psbn+vj8I8E2qoAaqy4rDFRDUhuN/driKknyduG5P
+         Ye4b6gX/nw3f84k/XFwUDGUTf86PTuZle0Pnnysu6W469roH55Gp8yeVukdIdpk67VPq
+         saow==
+X-Gm-Message-State: AOAM532twviO+sMkQL89LM9OWnaChBd/ma2sgsvKgYoHCIytxzoD8VZC
+        OUJuN1IknJ7r5Dp25Wge4lP4gQ==
+X-Google-Smtp-Source: ABdhPJxmnqSrGpkO+1QtQfQcoGw7CTIUItcrqFBOC1yqrkZp0lVPxjzhWdIbY6e1faqu1jT4TucbkQ==
+X-Received: by 2002:a63:1d42:: with SMTP id d2mr20037516pgm.21.1623113276817;
+        Mon, 07 Jun 2021 17:47:56 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:1193:5ba8:74e4:8b6e])
+        by smtp.gmail.com with ESMTPSA id v22sm9056416pff.105.2021.06.07.17.47.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 17:47:56 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 09:47:51 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv3 2/2] kvm: x86: implement KVM PM-notifier
+Message-ID: <YL6+NysuqhORZEs1@google.com>
+References: <20210606021045.14159-1-senozhatsky@chromium.org>
+ <20210606021045.14159-2-senozhatsky@chromium.org>
+ <fe13fe734a01bb54f47fea06624c617beb062fdd.camel@redhat.com>
 MIME-Version: 1.0
-References: <YL4aU4f3Aaik7CN0@linux-dev> <39e483bc-6aa5-7ee2-1aed-ad0844b30146@fb.com>
-In-Reply-To: <39e483bc-6aa5-7ee2-1aed-ad0844b30146@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Jun 2021 17:45:38 -0700
-Message-ID: <CAEf4BzYBYmBz6QR5=nkhUhT7oSGSs6LKYaJvC+_1DwC7KsD8Lg@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Fixes incorrect rx_ring_setup_done
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Kev Jackson <foamdino@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe13fe734a01bb54f47fea06624c617beb062fdd.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 8:04 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 6/7/21 6:08 AM, Kev Jackson wrote:
-> > When calling xsk_socket__create_shared(), the logic at line 1097 marks a
-> > boolean flag true within the xsk_umem structure to track setup progress
-> > in order to support multiple calls to the function.  However, instead of
-> > marking umem->tx_ring_setup_done, the code incorrectly sets
-> > umem->rx_ring_setup_done.  This leads to improper behaviour when
-> > creating and destroying xsk and umem structures.
-> >
-> > Multiple calls to this function is documented as supported.
-> >
-> > Signed-off-by: Kev Jackson <foamdino@gmail.com>
->
-> Acked-by: Yonghong Song <yhs@fb.com>
+On (21/06/07 15:54), Maxim Levitsky wrote:
+[..]
+> Also I would like to add my .02 cents on my observations on what happens when I suspend my system
+> with guests running, which I do once in a while.
+> I haven't dug deep into it yet as host suspend with VM running wasn't high on my priority list.
+>  
+> First of all after a host suspend/resume cycle (and that is true on all 3 machines I own),
+> the host TSC is reset to 0 on all CPUs, thus while it is still synchronized, it jumps backward.
+>  
+> Host kernel has no issues coping with this.
+>  
+> Guests however complain about clocksource watchdog and mark the tsc clocksource as unstable,
+> at least when invtsc is used (regardless of this patch, I wasn't able to notice a difference
+> with and without it yet).
+>  
+>  
+> [  287.515864] clocksource: timekeeping watchdog on CPU0: Marking clocksource 'tsc' as unstable because the skew is too large:
+> [  287.516926] clocksource:                       'kvm-clock' wd_now: 4437767926 wd_last: 429c3c42f5 mask: ffffffffffffffff
+> [  287.527100] clocksource:                       'tsc' cs_now: c33f6ce157 cs_last: c1be2ad19f mask: ffffffffffffffff
+> [  287.528493] tsc: Marking TSC unstable due to clocksource watchdog
+> [  287.556640] clocksource: Switched to clocksource kvm-clock
+>  
+>  
+> This is from Intel system with stable TSC, but I have seen this on my AMD systems as well,
+> but these have other issues which might affect this (see below).
+>  
+> AFAIK, we have code in kvm_arch_hardware_enable for this exact case but it might not work
+> correctly or be not enough to deal with this.
+>  
+> Also I notice that this code sets kvm->arch.backwards_tsc_observed = true which 
+> in turn disables the master clock which is not good as well.
+>  
+> I haven't yet allocated time to investigate this.
+>  
+>  
+> Another bit of information which I didn't start a discussion (but I think I should), 
+> which is relevant to AMD systems, is in 'unsynchronized_tsc' function.
+> 
+> On AMD guest it will mark the TSC as unstable in the guest as long as invtsc is not used.
+> I patched that code out for myself, that is why I am mentioning it.
 
-Applied to bpf tree, thanks. Also added
-
-Fixes: ca7a83e2487a ("libbpf: Only create rx and tx XDP rings when necessary")
-
-Please don't forget Fixes: tag in the future.
+If you are going to fork this discussion the could you please Cc Suleiman
+and me? I believe we are having a bunch of problems with the guest clocks
+here on our side.
