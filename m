@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD37A39F98C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4858039F98D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233622AbhFHOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233530AbhFHOvU (ORCPT
+        id S233634AbhFHOv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:51:28 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48434 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233606AbhFHOvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:51:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0A0C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 07:49:27 -0700 (PDT)
-Message-Id: <20210608144345.611833074@linutronix.de>
+        Tue, 8 Jun 2021 10:51:21 -0400
+Message-Id: <20210608144345.758116583@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623163766;
+        s=2020; t=1623163767;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=CBEz8EtGB1j5/hXrPA9GuF+DD9wd49Octi/TMCaU+ls=;
-        b=vJTAVmzXju4pvmwTvuEh3+39OuCk3w9KmAsR4T5QGg5Y1zt1TyinoxCOToa8IhfGs+Nevj
-        zfsLuCdm+AcQusVUyNTzzU7oI6FMNPouP3qs1vRa814wC/7r2sgQbyt0DF6JfRgBfoLdl0
-        4w5UYDxpXtQXzjbN/NkdzpE016pmpJ8oiS0hJb7gbyOY/HzdpAgyj75OcozXweVmBnBTPz
-        bkwCUnhJPqWReWZwPrwRbFuMWpsewsKt1vP1D0bqy1PjXqtEYEUnTpcFA15TjEjYtfF8GL
-        N0CSnhcAWc4ueb0BliyUO6UKWyRI7Mmp4D/J8Z6PbzeA1wkwEMcucwW35du8/w==
+        bh=hImjpb4qpunvlOerRhGYfsE9Wx1+k0vr4WQRlSr6QkY=;
+        b=pulNH0zE+3QRbLd0EoY9zBzK9eda6GJHKBxqEeKRrJ0kf38RuyISU4YBrHoIQ7SVYyr236
+        MToTzLPFR4QTJgdcitk4UJYtAcaGochUlwYpFER35nYgZhklxIq14lPXawR49nsssZw2Y0
+        WlxPh++wQ5mnLFgkHMcCcrNUKcNB04XyUbAi9MuFmtsi32qWpy89Xd1NnmDA2+brWmJMay
+        zDDdgBdzlvmx5jDVQ+R2bYoYeEkQc91b+0ss8Ke27EnDpf1p3AgVz7KW86Qrcrg4PgmgAs
+        k6ler4lbyTGeE/KxRXcPaM8E1bhc5C7/MBIKd1sCyDGFQXhH9RMydwud97yj+g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623163766;
+        s=2020e; t=1623163767;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=CBEz8EtGB1j5/hXrPA9GuF+DD9wd49Octi/TMCaU+ls=;
-        b=KFz6wEr5lpG8JdVbaeCqoXr2/xWDCdpJ3JTP5/hSJJQU59Ti601q5iRID8JVchB7m/I0mR
-        skDyfvBqPyydC+CA==
-Date:   Tue, 08 Jun 2021 16:36:18 +0200
+        bh=hImjpb4qpunvlOerRhGYfsE9Wx1+k0vr4WQRlSr6QkY=;
+        b=C5odH8kkd8CIE7l1pJki0ZlMXATDCITyPQo2BOTbVMvgiB9YaPsvWXFqiaBePtb9Nk5zwt
+        U7EuHmabOVvISzCQ==
+Date:   Tue, 08 Jun 2021 16:36:19 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
@@ -45,7 +42,8 @@ Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
         Yu-cheng Yu <yu-cheng.yu@intel.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Borislav Petkov <bp@suse.de>, Rik van Riel <riel@surriel.com>
-Subject: [patch V3 1/6] x86/fpu: Prevent state corruption in __fpu__restore_sig()
+Subject: [patch V3 2/6] x86/fpu: Invalidate FPU state after a failed XRSTOR
+ from a user buffer
 References: <20210608143617.565868844@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,58 +52,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Andy Lutomirski <luto@kernel.org>
 
-The non-compacted slowpath uses __copy_from_user() and copies the entire
-user buffer into the kernel buffer, verbatim.  This means that the kernel
-buffer may now contain entirely invalid state on which XRSTOR will #GP.
-validate_user_xstate_header() can detect some of that corruption, but that
-leaves the onus on callers to clear the buffer.
+Both Intel and AMD consider it to be architecturally valid for XRSTOR to
+fail with #PF but nonetheless change the register state.  The actual
+conditions under which this might occur are unclear [1], but it seems
+plausible that this might be triggered if one sibling thread unmaps a page
+and invalidates the shared TLB while another sibling thread is executing
+XRSTOR on the page in question.
 
-Prior to XSAVES support it was possible just to reinitialize the buffer,
-completely, but with supervisor states that is not longer possible as the
-buffer clearing code split got it backwards. Fixing that is possible, but
-not corrupting the state in the first place is more robust.
+__fpu__restore_sig() can execute XRSTOR while the hardware registers are
+preserved on behalf of a different victim task (using the
+fpu_fpregs_owner_ctx mechanism), and, in theory, XRSTOR could fail but
+modify the registers.  If this happens, then there is a window in which
+__fpu__restore_sig() could schedule out and the victim task could schedule
+back in without reloading its own FPU registers.  This would result in part
+of the FPU state that __fpu__restore_sig() was attempting to load leaking
+into the victim task's user-visible state.
 
-Avoid corruption of the kernel XSAVE buffer by using copy_user_to_xstate()
-which validates the XSAVE header contents before copying the actual states
-to the kernel. copy_user_to_xstate() was previously only called for
-compacted-format kernel buffers, but it works for both compacted and
-non-compacted forms.
+Invalidate preserved FPU registers on XRSTOR failure to prevent this
+situation from corrupting any state.
 
-Using it for the non-compacted form is slower because of multiple
-__copy_from_user() operations, but that cost is less important than robust
-code in an already slow path.
+[1] Frequent readers of the errata lists might imagine "complex
+    microarchitectural conditions"
 
-[ Changelog polished by Dave Hansen ]
-
-Fixes: b860eb8dce59 ("x86/fpu/xstate: Define new functions for clearing fpregs and xstates")
-Reported-by: syzbot+2067e764dbcd10721e2e@syzkaller.appspotmail.com
+Fixes: 1d731e731c4c ("x86/fpu: Add a fastpath to __fpu__restore_sig()")
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Borislav Petkov <bp@suse.de>
 Cc: stable@vger.kernel.org
 ---
-V2: Removed the make validate_user_xstate_header() static hunks (Borislav)
+V3: Rework comment - Borislav
+V2: Amend changelog - Borislav
 ---
- arch/x86/kernel/fpu/signal.c |    9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ arch/x86/kernel/fpu/signal.c |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
 --- a/arch/x86/kernel/fpu/signal.c
 +++ b/arch/x86/kernel/fpu/signal.c
-@@ -405,14 +405,7 @@ static int __fpu__restore_sig(void __use
- 	if (use_xsave() && !fx_only) {
- 		u64 init_bv = xfeatures_mask_user() & ~user_xfeatures;
- 
--		if (using_compacted_format()) {
--			ret = copy_user_to_xstate(&fpu->state.xsave, buf_fx);
--		} else {
--			ret = __copy_from_user(&fpu->state.xsave, buf_fx, state_size);
--
--			if (!ret && state_size > offsetof(struct xregs_state, header))
--				ret = validate_user_xstate_header(&fpu->state.xsave.header);
--		}
-+		ret = copy_user_to_xstate(&fpu->state.xsave, buf_fx);
- 		if (ret)
- 			goto err_out;
- 
+@@ -369,6 +369,25 @@ static int __fpu__restore_sig(void __use
+ 			fpregs_unlock();
+ 			return 0;
+ 		}
++
++		/*
++		 * The above did an FPU restore operation, restricted to
++		 * the user portion of the registers, and failed, but the
++		 * microcode might have modified the FPU registers
++		 * nevertheless.
++		 *
++		 * If the FPU registers do not belong to current, then
++		 * invalidate the FPU register state otherwise the task might
++		 * preempt current and return to user space with corrupted
++		 * FPU registers.
++		 *
++		 * In case current owns the FPU registers then no further
++		 * action is required. The fixup below will handle it
++		 * correctly.
++		 */
++		if (test_thread_flag(TIF_NEED_FPU_LOAD))
++			__cpu_invalidate_fpregs_state();
++
+ 		fpregs_unlock();
+ 	} else {
+ 		/*
 
