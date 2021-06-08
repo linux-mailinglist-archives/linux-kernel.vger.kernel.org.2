@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3853939F634
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D22539F639
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbhFHMSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:18:24 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8092 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbhFHMSX (ORCPT
+        id S232471AbhFHMSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:18:53 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:4403 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232430AbhFHMSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:18:23 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fzq040YsczYrwN;
-        Tue,  8 Jun 2021 20:13:40 +0800 (CST)
+        Tue, 8 Jun 2021 08:18:51 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FzpzQ1Mtyz6tq1;
+        Tue,  8 Jun 2021 20:13:06 +0800 (CST)
 Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 20:16:24 +0800
+ 15.1.2176.2; Tue, 8 Jun 2021 20:16:56 +0800
 Received: from linux-lmwb.huawei.com (10.175.103.112) by
  dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 8 Jun 2021 20:16:24 +0800
+ 15.1.2176.2; Tue, 8 Jun 2021 20:16:56 +0800
 From:   Zou Wei <zou_wei@huawei.com>
-To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+To:     <rafael.j.wysocki@intel.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] mtd: Convert list_for_each to entry variant
-Date:   Tue, 8 Jun 2021 20:34:59 +0800
-Message-ID: <1623155699-61935-1-git-send-email-zou_wei@huawei.com>
+Subject: [PATCH -next] PNP: pnpbios: convert list_for_each to entry variant
+Date:   Tue, 8 Jun 2021 20:35:32 +0800
+Message-ID: <1623155732-62028-1-git-send-email-zou_wei@huawei.com>
 X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggemi762-chm.china.huawei.com (10.1.198.148)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -47,29 +47,29 @@ applicable.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/mtd/chips/chipreg.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/pnp/pnpbios/core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/chips/chipreg.c b/drivers/mtd/chips/chipreg.c
-index ff86373..a05e103 100644
---- a/drivers/mtd/chips/chipreg.c
-+++ b/drivers/mtd/chips/chipreg.c
-@@ -31,14 +31,11 @@ void unregister_mtd_chip_driver(struct mtd_chip_driver *drv)
+diff --git a/drivers/pnp/pnpbios/core.c b/drivers/pnp/pnpbios/core.c
+index 9b760e7..669ef47 100644
+--- a/drivers/pnp/pnpbios/core.c
++++ b/drivers/pnp/pnpbios/core.c
+@@ -298,14 +298,12 @@ struct pnp_protocol pnpbios_protocol = {
  
- static struct mtd_chip_driver *get_mtd_chip_driver (const char *name)
+ static int __init insert_device(struct pnp_bios_node *node)
  {
 -	struct list_head *pos;
- 	struct mtd_chip_driver *ret = NULL, *this;
+ 	struct pnp_dev *dev;
+ 	char id[8];
+ 	int error;
  
- 	spin_lock(&chip_drvs_lock);
- 
--	list_for_each(pos, &chip_drvs_list) {
--		this = list_entry(pos, typeof(*this), list);
--
-+	list_for_each_entry(this, &chip_drvs_list, list) {
- 		if (!strcmp(this->name, name)) {
- 			ret = this;
- 			break;
+ 	/* check if the device is already added */
+-	list_for_each(pos, &pnpbios_protocol.devices) {
+-		dev = list_entry(pos, struct pnp_dev, protocol_list);
++	list_for_each_entry(dev, &pnpbios_protocol.devices, protocol_list) {
+ 		if (dev->number == node->handle)
+ 			return -EEXIST;
+ 	}
 -- 
 2.6.2
 
