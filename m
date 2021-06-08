@@ -2,144 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4666F39F9B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B9A39F9B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233683AbhFHO53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:57:29 -0400
-Received: from mga12.intel.com ([192.55.52.136]:51904 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232833AbhFHO51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:57:27 -0400
-IronPort-SDR: IWpoyYvkfk+QlPevPEyWF6Xpl6mwp+GhBhzRZm4bzKCOoOw1T7f8M1yigseo8AuJlffvcNT++v
- e2Qlko9SY7oA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="184547192"
-X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="184547192"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 07:55:34 -0700
-IronPort-SDR: m7/WdtT7NSKGss16xc6IEUHpJvyMFOxPdGKCcB4LUcLTRdh3kXG09p1lCtMo5HOWNHo+OAbqd1
- jw4PQi4+vWKA==
-X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="637658248"
-Received: from ciball-mobl1.amr.corp.intel.com (HELO [10.252.140.48]) ([10.252.140.48])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 07:55:33 -0700
-Subject: Re: arch_set_user_pkey_access only works on the current task_struct
-To:     liangjs <liangjs@pku.edu.cn>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-References: <b3762e3bc45d77869231271ffe0e259be118ad57.camel@pku.edu.cn>
- <a9d538c4-b4aa-9a5b-5f8e-1a7baf8424b8@intel.com>
- <774b6e6c8cb1be4923048bb1bb18753a6854758f.camel@pku.edu.cn>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <3b6f8899-2a11-31da-f67c-57e786661ef3@intel.com>
-Date:   Tue, 8 Jun 2021 07:55:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233694AbhFHO6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:58:55 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:38364 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233598AbhFHO6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:58:52 -0400
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 684B520B83C5;
+        Tue,  8 Jun 2021 07:56:59 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 684B520B83C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623164219;
+        bh=5adkBab5YgC4ua7cy6g3IJlMevjI3rkkXDpAoANH9ho=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BaXOma7rHPHFSCxmGUeLjFRe22Dav9/8UdX+EwMLhxCiIfkKRd9/FnXM4JLfKnnCz
+         143ihX/qoVP5IyJq6KydhH+lUN8bDRzB4bP2jupk6lQ6rDocZXtFtf1OmunaiwTTqg
+         3eyIEW7OcCiSKjGRMAJFitXJgFUZEYz6MXLPayZc=
+Received: by mail-pj1-f54.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so2449670pjq.3;
+        Tue, 08 Jun 2021 07:56:59 -0700 (PDT)
+X-Gm-Message-State: AOAM53358IoVhrT5nc/7gdIX+vqrNX+pAKQumyegiTwYUEmHvUjzdPQR
+        ELjn69Vs5fiJGA/YX0/Qxlh4OU0TP2RZbJLf+M0=
+X-Google-Smtp-Source: ABdhPJzNnGHBMRnqD7hcfQnkP4ftZvW9/ffkse696Bzy4x7VTQyeIyWA6fK1974zMmVl3AKfQy85iM5JjczuDF0rpu8=
+X-Received: by 2002:a17:90b:109:: with SMTP id p9mr5359058pjz.11.1623164218966;
+ Tue, 08 Jun 2021 07:56:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <774b6e6c8cb1be4923048bb1bb18753a6854758f.camel@pku.edu.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210511214735.1836149-1-willy@infradead.org> <20210604030712.11b31259@linux.microsoft.com>
+ <YLmMQJgld6ndNzqI@casper.infradead.org>
+In-Reply-To: <YLmMQJgld6ndNzqI@casper.infradead.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Tue, 8 Jun 2021 16:56:23 +0200
+X-Gmail-Original-Message-ID: <CAFnufp0=N-dyW4dwMLLdeg-AZE_uYBXMsNNh6FFpG869v0_aFw@mail.gmail.com>
+Message-ID: <CAFnufp0=N-dyW4dwMLLdeg-AZE_uYBXMsNNh6FFpG869v0_aFw@mail.gmail.com>
+Subject: Re: [PATCH v10 00/33] Memory folios
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/21 8:16 PM, liangjs wrote:
-> On Mon, 2021-06-07 at 10:52 -0700, Dave Hansen wrote:
->> On 6/5/21 6:10 AM, Jiashuo Liang wrote:
->>> I am learning the kernel implementation of the x86 PKU feature. I find the
->>> arch_set_user_pkey_access function in arch/x86/kernel/fpu/xstate.c does not
->>> use its first parameter. So it is perhaps a bug?
->> I wouldn't really call it a bug.  But, yes, it is something we should
->> clean up.
-> Should we remove the tsk parameter, or allow it to change the PKRU of tsk?
+On Fri, Jun 4, 2021 at 4:13 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Fri, Jun 04, 2021 at 03:07:12AM +0200, Matteo Croce wrote:
+> > On Tue, 11 May 2021 22:47:02 +0100
+> > "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
+> >
+> > > We also waste a lot of instructions ensuring that we're not looking at
+> > > a tail page.  Almost every call to PageFoo() contains one or more
+> > > hidden calls to compound_head().  This also happens for get_page(),
+> > > put_page() and many more functions.  There does not appear to be a
+> > > way to tell gcc that it can cache the result of compound_head(), nor
+> > > is there a way to tell it that compound_head() is idempotent.
+> > >
+> >
+> > Maybe it's not effective in all situations but the following hint to
+> > the compiler seems to have an effect, at least according to bloat-o-meter:
+>
+> It definitely has an effect ;-)
+>
+>      Note that a function that has pointer arguments and examines the
+>      data pointed to must _not_ be declared 'const' if the pointed-to
+>      data might change between successive invocations of the function.
+>      In general, since a function cannot distinguish data that might
+>      change from data that cannot, const functions should never take
+>      pointer or, in C++, reference arguments.  Likewise, a function that
+>      calls a non-const function usually must not be const itself.
+>
+> So that's not going to work because a call to split_huge_page() won't
+> tell the compiler that it's changed.
+>
+> Reading the documentation, we might be able to get away with marking the
+> function as pure:
+>
+>      The 'pure' attribute imposes similar but looser restrictions on a
+>      function's definition than the 'const' attribute: 'pure' allows the
+>      function to read any non-volatile memory, even if it changes in
+>      between successive invocations of the function.
+>
+> although that's going to miss opportunities, since taking a lock will
+> modify the contents of struct page, meaning the compiler won't cache
+> the results of compound_head().
+>
+> > $ scripts/bloat-o-meter vmlinux.o.orig vmlinux.o
+> > add/remove: 3/13 grow/shrink: 65/689 up/down: 21080/-198089 (-177009)
+>
+> I assume this is an allyesconfig kernel?    I think it's a good
+> indication of how much opportunity there is.
+>
 
-Probably just remove the parameter.
+Yes, it's an allyesconfig kernel.
+I did the same with pure:
 
-By the way, there's a big PKRU rework in progress.  It might be best to
-wait until the dust settles to poke at this.
+$ git diff
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 04a34c08e0a6..548b72b46eb1 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -179,7 +179,7 @@ enum pageflags {
 
-> By the way, we are calling write_pkru, which changes both the CPU's PKRU
-> and the xsave one. Why is this necessary?
+struct page;   /* forward declaration */
 
-PKRU affects kernel accesses to user memory.  That means that you can't
-run the *kernel* with an out-of-date PKRU, thus the write_pkru().
+-static inline struct page *compound_head(struct page *page)
++static inline __pure struct page *compound_head(struct page *page)
+{
+       unsigned long head = READ_ONCE(page->compound_head);
 
-Returning to userspace blindly restores the *WHOLE* XSAVE buffer to the
-regsisters.  If you don't update the XSAVE buffer, the write_pkru() will
-be overwritten before returning to userspace.
 
-> If I want to change PKRU of a task_struct other than current, do I still
-> need to call __write_pkru?
+$ scripts/bloat-o-meter vmlinux.o.orig vmlinux.o
+add/remove: 3/13 grow/shrink: 63/689 up/down: 20910/-192081 (-171171)
+Function                                     old     new   delta
+ntfs_mft_record_alloc                      14414   16627   +2213
+migrate_pages                               8891   10819   +1928
+ext2_get_page.isra                          1029    2343   +1314
+kfence_init                                  180    1331   +1151
+page_remove_rmap                             754    1893   +1139
+f2fs_fsync_node_pages                       4378    5406   +1028
+[...]
+migrate_page_states                         7088    4842   -2246
+ntfs_mft_record_format                      2940       -   -2940
+lru_deactivate_file_fn                      9220    6277   -2943
+shrink_page_list                           20653   15749   -4904
+page_memcg                                  5149     193   -4956
+Total: Before=388869713, After=388698542, chg -0.04%
 
-No.  You can't do that.  Seriously.
+$ ls -l vmlinux.o.orig vmlinux.o
+-rw-rw-r-- 1 mcroce mcroce 1295502680 Jun  8 16:47 vmlinux.o
+-rw-rw-r-- 1 mcroce mcroce 1295934624 Jun  8 16:28 vmlinux.o.orig
 
-The protection keys architecture really doesn't support off-thread
-manipulation of PKRU.  Imagine you want to mask a bit out of PKRU, you
-do the following to make key 2 memory accessible and writable:
+vmlinux is ~420 kb smaller..
 
-	reg = read_pkru();
-	reg &= 0x30;
-	write_pkru(reg);
-
-Now, imagine that you tried to interrupt this poor task in the middle of
-that operation.  Let's say you try to *set* the bits for key 4, effectively:
-
-	pkru |= 0x300;
-
-Now you try to do that key-4 business with an IPI.
-
-	reg = read_pkru(); // PKRU=0x30
-	reg &= 0x30;
-		-> IPI
-			ipireg = read_pkru(); // PKRU=0x0
-			ipireg |= 0x300;
-			write_pkru(ipireg);   // PKRU=0x300
-	write_pkru(reg); // PKRU=0x0
-
-You *LOST* the update from the IPI.
+-- 
+per aspera ad upstream
