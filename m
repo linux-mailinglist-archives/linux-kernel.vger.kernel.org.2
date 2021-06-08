@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC133A0044
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DEB39FF79
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbhFHSlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37652 "EHLO mail.kernel.org"
+        id S234251AbhFHSda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:33:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234560AbhFHSin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:38:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 220626140D;
-        Tue,  8 Jun 2021 18:33:38 +0000 (UTC)
+        id S234126AbhFHSc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:32:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B0B0613AE;
+        Tue,  8 Jun 2021 18:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177219;
-        bh=i4GpbH41L0fu/35fdChq22o58gDil0EKocmytkDwRZI=;
+        s=korg; t=1623177035;
+        bh=3HOKnaVi71YUI+jEO9hylFIiLEbQbbKztLrOt1LrGG4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fPUH4BuwsxxFo/BQsdQq9cHjepSE++Sm7ncF8xjALDZpoyoIBJ5ngOdAx8PTGXcqm
-         fThn7UDBzfUoKsCry7hcgYoNj+zeouwf0HmbVfFRQgjZ6w0fzvO+ECtn8ciRtz1gfL
-         yoY1mJS2QkG8pSyEFOjpNHth7IXO3gs3s9wA7mio=
+        b=e3jSw4uUQYjVQXwZRHHvFIv5CTV13AYmBlIvU14FSFiP1rIyInDlwUaUjeQ0ueB44
+         64SbUJb8vfeYCOL0g0o8lR2pVfSsdTbXBi7oIQHKGIgVyDM2iTTIUpoAEPWn2NbhCU
+         /8ymxhBcrSzKUUHPKZon5iv5tCtusojo4fazBAKs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phil Elwell <phil@raspberrypi.com>
-Subject: [PATCH 4.19 30/58] usb: dwc2: Fix build in periphal-only mode
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        syzbot+7ec324747ce876a29db6@syzkaller.appspotmail.com
+Subject: [PATCH 4.9 17/29] net: caif: fix memory leak in caif_device_notify
 Date:   Tue,  8 Jun 2021 20:27:11 +0200
-Message-Id: <20210608175933.277289582@linuxfoundation.org>
+Message-Id: <20210608175928.382528927@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
+References: <20210608175927.821075974@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,35 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Elwell <phil@raspberrypi.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-In branches to which 24d209dba5a3 ("usb: dwc2: Fix hibernation between
-host and device modes.") has been back-ported, the bus_suspended member
-of struct dwc2_hsotg is only present in builds that support host-mode.
-To avoid having to pull in several more non-Fix commits in order to
-get it to compile, wrap the usage of the member in a macro conditional.
+commit b53558a950a89824938e9811eddfc8efcd94e1bb upstream.
 
-Fixes: 24d209dba5a3 ("usb: dwc2: Fix hibernation between host and device modes.")
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+In case of caif_enroll_dev() fail, allocated
+link_support won't be assigned to the corresponding
+structure. So simply free allocated pointer in case
+of error
+
+Fixes: 7c18d2205ea7 ("caif: Restructure how link caif link layer enroll")
+Cc: stable@vger.kernel.org
+Reported-and-tested-by: syzbot+7ec324747ce876a29db6@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/dwc2/core_intr.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ net/caif/caif_dev.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/dwc2/core_intr.c
-+++ b/drivers/usb/dwc2/core_intr.c
-@@ -700,7 +700,11 @@ static inline void dwc_handle_gpwrdn_dis
- 	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
+--- a/net/caif/caif_dev.c
++++ b/net/caif/caif_dev.c
+@@ -366,6 +366,7 @@ static int caif_device_notify(struct not
+ 	struct cflayer *layer, *link_support;
+ 	int head_room = 0;
+ 	struct caif_device_entry_list *caifdevs;
++	int res;
  
- 	hsotg->hibernated = 0;
-+
-+#if IS_ENABLED(CONFIG_USB_DWC2_HOST) ||	\
-+	IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
- 	hsotg->bus_suspended = 0;
-+#endif
+ 	cfg = get_cfcnfg(dev_net(dev));
+ 	caifdevs = caif_device_list(dev_net(dev));
+@@ -391,8 +392,10 @@ static int caif_device_notify(struct not
+ 				break;
+ 			}
+ 		}
+-		caif_enroll_dev(dev, caifdev, link_support, head_room,
++		res = caif_enroll_dev(dev, caifdev, link_support, head_room,
+ 				&layer, NULL);
++		if (res)
++			cfserl_release(link_support);
+ 		caifdev->flowctrl = dev_flowctrl;
+ 		break;
  
- 	if (gpwrdn & GPWRDN_IDSTS) {
- 		hsotg->op_state = OTG_STATE_B_PERIPHERAL;
 
 
