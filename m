@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344E139F3CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4513539F3D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231577AbhFHKml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:42:41 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57390 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhFHKmk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:42:40 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 158Aec9H057922;
-        Tue, 8 Jun 2021 05:40:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623148838;
-        bh=2ZYkUmeiSOpEfONQLdfJT2cDK8XOXDxo6jo/QLfcX2Q=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=M37LXsb5L7dVPpEKewndJG0AX6PngaEfupZStvmSZ+5Uk7Vhh36A0ArYlTMDXo2gn
-         FFP3lZpWjST8HL18NtUXlR9Am9l1NWBk/rs8KWzfyN7BgT9ZUIfvIa22WFmUwqZOlg
-         xDzgthDEBGZ6W9GmmH+KDcKUP7igjMMqMVe9A9N0=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 158Aecg7098397
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Jun 2021 05:40:38 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
- 2021 05:40:38 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 8 Jun 2021 05:40:37 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 158AeZhJ080746;
-        Tue, 8 Jun 2021 05:40:35 -0500
-Subject: Re: [PATCH v4] ARM: dts: dra7: Fix duplicate USB4 target module node
-To:     Gowtham Tammana <g-tammana@ti.com>, Suman Anna <s-anna@ti.com>,
-        <tony@atomide.com>, <bcousson@baylibre.com>
-CC:     <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nisanth Menon <nm@ti.com>
-References: <20210602220458.9728-1-g-tammana@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <c140f39c-9fe1-f7e1-3da5-fc5fff604714@ti.com>
-Date:   Tue, 8 Jun 2021 13:40:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210602220458.9728-1-g-tammana@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S231611AbhFHKoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:44:30 -0400
+Received: from comms.puri.sm ([159.203.221.185]:55658 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231184AbhFHKoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 06:44:24 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 4AD31DF76C;
+        Tue,  8 Jun 2021 03:42:02 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pXdu_X8l6uZj; Tue,  8 Jun 2021 03:42:01 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     martin.kepplinger@puri.sm, festevam@gmail.com, krzk@kernel.org,
+        laurent.pinchart@ideasonboard.com
+Cc:     devicetree@vger.kernel.org, kernel@pengutronix.de, kernel@puri.sm,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mchehab@kernel.org,
+        phone-devel@vger.kernel.org, robh@kernel.org, shawnguo@kernel.org,
+        slongerbeam@gmail.com
+Subject: [PATCH v3 0/3] media: imx: add support for imx8mq MIPI RX
+Date:   Tue,  8 Jun 2021 12:41:25 +0200
+Message-Id: <20210608104128.1616028-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series adds a driver for the i.MX8MQ CSI MIPI receiver / controller.
+
+It includes the driver, the dt-bindings and the DT addition to the SoC dtsi.
+
+Thanks Laurent who helped a lot. I'm happy for any feedback,
+
+                           martin
+
+revision history
+----------------
+v3: (thank you, Rob and Laurent)
+among minor other things according to v2 review, changes include:
+* better describe the clocks
+* rename DT property "phy-reset" to "reset" and "phy-gpr" to "phy"
+
+v2: (thank you, Dan and Guido)
+among fixes according to v1 reviews, changes include:
+* remove status property from dt-bindings example
+* define a few bits in order to have less magic values
+* use "imx8mq_mipi_csi_" as local function prefix
+* read DT properties only during probe()
+* remove dead code (log_status)
+* add imx8mq_mipi_csi_release_icc()
+* fix imx8mq_mipi_csi_init_icc()
+https://lore.kernel.org/linux-media/20210531112326.90094-1-martin.kepplinger@puri.sm/
+
+v1:
+https://lore.kernel.org/linux-media/20210527075407.3180744-1-martin.kepplinger@puri.sm/T/#t
 
 
-On 03/06/2021 01:04, Gowtham Tammana wrote:
-> With [1] USB4 target-module node got defined in dra74x.dtsi file.
-> However, the earlier definition in [2] was not removed, and this
-> duplication of the target module is causing boot failure on dra74
-> variant boards - dra7-evm, dra76-evm.
-> 
-> USB4 is only present in DRA74x variants, so keeping the entry in
-> dra74x.dtsi and removing it from the top level interconnect hierarchy
-> dra7-l4.dtsi file. This change makes the USB4 target module no longer
-> visible to AM5718, DRA71x and DRA72x so removing references to it in
-> their respective dts files.
-> 
-> [1]: commit c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for
-> dra7 dwc3")
-> [2]: commit 549fce068a311 ("ARM: dts: dra7: Add l4 interconnect
-> hierarchy and ti-sysc data")
-> 
-> Fixes: c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for dra7 dwc3")
-> Signed-off-by: Gowtham Tammana <g-tammana@ti.com>
-> ---
-> v4:
->    - moved the node under l4_per3 instead of ocp as per Tony and
->      Grygorii suggestion
-> v3:
->    - https://lore.kernel.org/linux-arm-kernel/20210526213035.15448-1-g-tammana@ti.com/
->    - fixed error in references to the commits
->    - mentioned the boards that failed
-> v2:
->    - https://lore.kernel.org/linux-arm-kernel/20210526172038.17542-1-g-tammana@ti.com/
->    - changed reference to commit sha instead of line numbers
->    - added Fixes: tag
->    - moved the defintion to dra74.dtsi as per Suman and Tony review comments
-> v1:
->    - https://lore.kernel.org/linux-arm-kernel/20210521211851.14674-1-g-tammana@ti.com/
-> 
-> 
->   arch/arm/boot/dts/am5718.dtsi  |  6 +--
->   arch/arm/boot/dts/dra7-l4.dtsi | 22 --------
->   arch/arm/boot/dts/dra71x.dtsi  |  4 --
->   arch/arm/boot/dts/dra72x.dtsi  |  4 --
->   arch/arm/boot/dts/dra74x.dtsi  | 92 ++++++++++++++++++----------------
->   5 files changed, 50 insertions(+), 78 deletions(-)
-> 
+Martin Kepplinger (3):
+  dt-bindings: media: document the nxp,imx8mq-mipi-csi2 receiver phy and
+    controller
+  media: imx: add a driver for i.MX8MQ mipi csi rx phy and controller
+  arm64: dts: imx8mq: add mipi csi phy and csi bridge descriptions
 
-Thank you.
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+ .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 161 +++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 102 ++
+ drivers/staging/media/imx/Makefile            |   1 +
+ drivers/staging/media/imx/imx8mq-mipi-csi2.c  | 997 ++++++++++++++++++
+ 4 files changed, 1261 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+ create mode 100644 drivers/staging/media/imx/imx8mq-mipi-csi2.c
 
 -- 
-Best regards,
-grygorii
+2.30.2
+
