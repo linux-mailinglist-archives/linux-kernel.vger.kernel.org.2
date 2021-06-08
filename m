@@ -2,45 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9263F3A037E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EF73A0202
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236726AbhFHTRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:17:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41040 "EHLO mail.kernel.org"
+        id S235030AbhFHS7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:59:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234326AbhFHTGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:06:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14B8A61931;
-        Tue,  8 Jun 2021 18:46:53 +0000 (UTC)
+        id S236356AbhFHSwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:52:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3868C61432;
+        Tue,  8 Jun 2021 18:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178013;
-        bh=zjYl6VGIpFj4na9V7rreV38zUf/6npxLGjjdOrZxQFI=;
+        s=korg; t=1623177611;
+        bh=ZZ/7M4Jf4qTjZHlkvSCNJEhhJ75h516yewIVZPSvmx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iXOhU7VJU6GI5W9manWbK5tOPz1L0rrK7B1N1lvs8H6GrYXm+eXRFVC2zlXnL12dD
-         LoRvTAuoVJvsqZJ1DUYj5xgDgUsvBwm9lVhuz5wguV6YHC/Ye1Icp30qXki3Yt89ka
-         QilszMD/iI372jJ+K2Oh0t5EeyFiOBr9DEruhFAE=
+        b=BW964WVOKeedS/btfEnydTK6I9q4abyjVybCgNPxl6ycA7RembEQsWNCuGIUQ7ALL
+         hOSUFEt06Q2G07bSjEq8EHKCiQrzDC6im38wErvi1vkWQHTKYNK1J/QU46mr3X3eK+
+         DpXvu1CGYZy1FuXhbVOKtrb4foyAEg+vfuq/a84Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
-        Jakub Hrozek <jhrozek@redhat.com>,
-        Serhei Makarov <smakarov@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Jerome Marchand <jmarchan@redhat.com>,
-        Frank Eigler <fche@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 043/161] bpf, lockdown, audit: Fix buggy SELinux lockdown permission checks
-Date:   Tue,  8 Jun 2021 20:26:13 +0200
-Message-Id: <20210608175946.926326504@linuxfoundation.org>
+Subject: [PATCH 5.10 034/137] netfilter: nft_ct: skip expectations for confirmed conntrack
+Date:   Tue,  8 Jun 2021 20:26:14 +0200
+Message-Id: <20210608175943.562222816@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,276 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit ff40e51043af63715ab413995ff46996ecf9583f ]
+[ Upstream commit 1710eb913bdcda3917f44d383c32de6bdabfc836 ]
 
-Commit 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-added an implementation of the locked_down LSM hook to SELinux, with the aim
-to restrict which domains are allowed to perform operations that would breach
-lockdown. This is indirectly also getting audit subsystem involved to report
-events. The latter is problematic, as reported by Ondrej and Serhei, since it
-can bring down the whole system via audit:
+nft_ct_expect_obj_eval() calls nf_ct_ext_add() for a confirmed
+conntrack entry. However, nf_ct_ext_add() can only be called for
+!nf_ct_is_confirmed().
 
-  1) The audit events that are triggered due to calls to security_locked_down()
-     can OOM kill a machine, see below details [0].
+[ 1825.349056] WARNING: CPU: 0 PID: 1279 at net/netfilter/nf_conntrack_extend.c:48 nf_ct_xt_add+0x18e/0x1a0 [nf_conntrack]
+[ 1825.351391] RIP: 0010:nf_ct_ext_add+0x18e/0x1a0 [nf_conntrack]
+[ 1825.351493] Code: 41 5c 41 5d 41 5e 41 5f c3 41 bc 0a 00 00 00 e9 15 ff ff ff ba 09 00 00 00 31 f6 4c 89 ff e8 69 6c 3d e9 eb 96 45 31 ed eb cd <0f> 0b e9 b1 fe ff ff e8 86 79 14 e9 eb bf 0f 1f 40 00 0f 1f 44 00
+[ 1825.351721] RSP: 0018:ffffc90002e1f1e8 EFLAGS: 00010202
+[ 1825.351790] RAX: 000000000000000e RBX: ffff88814f5783c0 RCX: ffffffffc0e4f887
+[ 1825.351881] RDX: dffffc0000000000 RSI: 0000000000000008 RDI: ffff88814f578440
+[ 1825.351971] RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88814f578447
+[ 1825.352060] R10: ffffed1029eaf088 R11: 0000000000000001 R12: ffff88814f578440
+[ 1825.352150] R13: ffff8882053f3a00 R14: 0000000000000000 R15: 0000000000000a20
+[ 1825.352240] FS:  00007f992261c900(0000) GS:ffff889faec00000(0000) knlGS:0000000000000000
+[ 1825.352343] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1825.352417] CR2: 000056070a4d1158 CR3: 000000015efe0000 CR4: 0000000000350ee0
+[ 1825.352508] Call Trace:
+[ 1825.352544]  nf_ct_helper_ext_add+0x10/0x60 [nf_conntrack]
+[ 1825.352641]  nft_ct_expect_obj_eval+0x1b8/0x1e0 [nft_ct]
+[ 1825.352716]  nft_do_chain+0x232/0x850 [nf_tables]
 
-  2) It also seems to be causing a deadlock via avc_has_perm()/slow_avc_audit()
-     when trying to wake up kauditd, for example, when using trace_sched_switch()
-     tracepoint, see details in [1]. Triggering this was not via some hypothetical
-     corner case, but with existing tools like runqlat & runqslower from bcc, for
-     example, which make use of this tracepoint. Rough call sequence goes like:
+Add the ct helper extension only for unconfirmed conntrack. Skip rule
+evaluation if the ct helper extension does not exist. Thus, you can
+only create expectations from the first packet.
 
-     rq_lock(rq) -> -------------------------+
-       trace_sched_switch() ->               |
-         bpf_prog_xyz() ->                   +-> deadlock
-           selinux_lockdown() ->             |
-             audit_log_end() ->              |
-               wake_up_interruptible() ->    |
-                 try_to_wake_up() ->         |
-                   rq_lock(rq) --------------+
+It should be possible to remove this limitation by adding a new action
+to attach a generic ct helper to the first packet. Then, use this ct
+helper extension from follow up packets to create the ct expectation.
 
-What's worse is that the intention of 59438b46471a to further restrict lockdown
-settings for specific applications in respect to the global lockdown policy is
-completely broken for BPF. The SELinux policy rule for the current lockdown check
-looks something like this:
+While at it, add a missing check to skip the template conntrack too
+and remove check for IPCT_UNTRACK which is implicit to !ct.
 
-  allow <who> <who> : lockdown { <reason> };
-
-However, this doesn't match with the 'current' task where the security_locked_down()
-is executed, example: httpd does a syscall. There is a tracing program attached
-to the syscall which triggers a BPF program to run, which ends up doing a
-bpf_probe_read_kernel{,_str}() helper call. The selinux_lockdown() hook does
-the permission check against 'current', that is, httpd in this example. httpd
-has literally zero relation to this tracing program, and it would be nonsensical
-having to write an SELinux policy rule against httpd to let the tracing helper
-pass. The policy in this case needs to be against the entity that is installing
-the BPF program. For example, if bpftrace would generate a histogram of syscall
-counts by user space application:
-
-  bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @[comm] = count(); }'
-
-bpftrace would then go and generate a BPF program from this internally. One way
-of doing it [for the sake of the example] could be to call bpf_get_current_task()
-helper and then access current->comm via one of bpf_probe_read_kernel{,_str}()
-helpers. So the program itself has nothing to do with httpd or any other random
-app doing a syscall here. The BPF program _explicitly initiated_ the lockdown
-check. The allow/deny policy belongs in the context of bpftrace: meaning, you
-want to grant bpftrace access to use these helpers, but other tracers on the
-system like my_random_tracer _not_.
-
-Therefore fix all three issues at the same time by taking a completely different
-approach for the security_locked_down() hook, that is, move the check into the
-program verification phase where we actually retrieve the BPF func proto. This
-also reliably gets the task (current) that is trying to install the BPF tracing
-program, e.g. bpftrace/bcc/perf/systemtap/etc, and it also fixes the OOM since
-we're moving this out of the BPF helper's fast-path which can be called several
-millions of times per second.
-
-The check is then also in line with other security_locked_down() hooks in the
-system where the enforcement is performed at open/load time, for example,
-open_kcore() for /proc/kcore access or module_sig_check() for module signatures
-just to pick few random ones. What's out of scope in the fix as well as in
-other security_locked_down() hook locations /outside/ of BPF subsystem is that
-if the lockdown policy changes on the fly there is no retrospective action.
-This requires a different discussion, potentially complex infrastructure, and
-it's also not clear whether this can be solved generically. Either way, it is
-out of scope for a suitable stable fix which this one is targeting. Note that
-the breakage is specifically on 59438b46471a where it started to rely on 'current'
-as UAPI behavior, and _not_ earlier infrastructure such as 9d1f8be5cf42 ("bpf:
-Restrict bpf when kernel lockdown is in confidentiality mode").
-
-[0] https://bugzilla.redhat.com/show_bug.cgi?id=1955585, Jakub Hrozek says:
-
-  I starting seeing this with F-34. When I run a container that is traced with
-  BPF to record the syscalls it is doing, auditd is flooded with messages like:
-
-  type=AVC msg=audit(1619784520.593:282387): avc:  denied  { confidentiality }
-    for pid=476 comm="auditd" lockdown_reason="use of bpf to read kernel RAM"
-      scontext=system_u:system_r:auditd_t:s0 tcontext=system_u:system_r:auditd_t:s0
-        tclass=lockdown permissive=0
-
-  This seems to be leading to auditd running out of space in the backlog buffer
-  and eventually OOMs the machine.
-
-  [...]
-  auditd running at 99% CPU presumably processing all the messages, eventually I get:
-  Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
-  Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
-  Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152579 > audit_backlog_limit=64
-  Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152626 > audit_backlog_limit=64
-  Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152694 > audit_backlog_limit=64
-  Apr 30 12:20:42 fedora kernel: audit: audit_lost=6878426 audit_rate_limit=0 audit_backlog_limit=64
-  Apr 30 12:20:45 fedora kernel: oci-seccomp-bpf invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=-1000
-  Apr 30 12:20:45 fedora kernel: CPU: 0 PID: 13284 Comm: oci-seccomp-bpf Not tainted 5.11.12-300.fc34.x86_64 #1
-  Apr 30 12:20:45 fedora kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
-  [...]
-
-[1] https://lore.kernel.org/linux-audit/CANYvDQN7H5tVp47fbYcRasv4XF07eUbsDwT_eDCHXJUj43J7jQ@mail.gmail.com/,
-    Serhei Makarov says:
-
-  Upstream kernel 5.11.0-rc7 and later was found to deadlock during a
-  bpf_probe_read_compat() call within a sched_switch tracepoint. The problem
-  is reproducible with the reg_alloc3 testcase from SystemTap's BPF backend
-  testsuite on x86_64 as well as the runqlat, runqslower tools from bcc on
-  ppc64le. Example stack trace:
-
-  [...]
-  [  730.868702] stack backtrace:
-  [  730.869590] CPU: 1 PID: 701 Comm: in:imjournal Not tainted, 5.12.0-0.rc2.20210309git144c79ef3353.166.fc35.x86_64 #1
-  [  730.871605] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-  [  730.873278] Call Trace:
-  [  730.873770]  dump_stack+0x7f/0xa1
-  [  730.874433]  check_noncircular+0xdf/0x100
-  [  730.875232]  __lock_acquire+0x1202/0x1e10
-  [  730.876031]  ? __lock_acquire+0xfc0/0x1e10
-  [  730.876844]  lock_acquire+0xc2/0x3a0
-  [  730.877551]  ? __wake_up_common_lock+0x52/0x90
-  [  730.878434]  ? lock_acquire+0xc2/0x3a0
-  [  730.879186]  ? lock_is_held_type+0xa7/0x120
-  [  730.880044]  ? skb_queue_tail+0x1b/0x50
-  [  730.880800]  _raw_spin_lock_irqsave+0x4d/0x90
-  [  730.881656]  ? __wake_up_common_lock+0x52/0x90
-  [  730.882532]  __wake_up_common_lock+0x52/0x90
-  [  730.883375]  audit_log_end+0x5b/0x100
-  [  730.884104]  slow_avc_audit+0x69/0x90
-  [  730.884836]  avc_has_perm+0x8b/0xb0
-  [  730.885532]  selinux_lockdown+0xa5/0xd0
-  [  730.886297]  security_locked_down+0x20/0x40
-  [  730.887133]  bpf_probe_read_compat+0x66/0xd0
-  [  730.887983]  bpf_prog_250599c5469ac7b5+0x10f/0x820
-  [  730.888917]  trace_call_bpf+0xe9/0x240
-  [  730.889672]  perf_trace_run_bpf_submit+0x4d/0xc0
-  [  730.890579]  perf_trace_sched_switch+0x142/0x180
-  [  730.891485]  ? __schedule+0x6d8/0xb20
-  [  730.892209]  __schedule+0x6d8/0xb20
-  [  730.892899]  schedule+0x5b/0xc0
-  [  730.893522]  exit_to_user_mode_prepare+0x11d/0x240
-  [  730.894457]  syscall_exit_to_user_mode+0x27/0x70
-  [  730.895361]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-  [...]
-
-Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-Reported-by: Ondrej Mosnacek <omosnace@redhat.com>
-Reported-by: Jakub Hrozek <jhrozek@redhat.com>
-Reported-by: Serhei Makarov <smakarov@redhat.com>
-Reported-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Tested-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Paul Moore <paul@paul-moore.com>
-Cc: James Morris <jamorris@linux.microsoft.com>
-Cc: Jerome Marchand <jmarchan@redhat.com>
-Cc: Frank Eigler <fche@redhat.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/bpf/01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net
+Fixes: 857b46027d6f ("netfilter: nft_ct: add ct expectations support")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/helpers.c     |  7 +++++--
- kernel/trace/bpf_trace.c | 32 ++++++++++++--------------------
- 2 files changed, 17 insertions(+), 22 deletions(-)
+ net/netfilter/nft_ct.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 308427fe03a3..6140e91e9c89 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -14,6 +14,7 @@
- #include <linux/jiffies.h>
- #include <linux/pid_namespace.h>
- #include <linux/proc_ns.h>
-+#include <linux/security.h>
+diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
+index a1b0aac46e9e..70d46e0bbf06 100644
+--- a/net/netfilter/nft_ct.c
++++ b/net/netfilter/nft_ct.c
+@@ -1218,7 +1218,7 @@ static void nft_ct_expect_obj_eval(struct nft_object *obj,
+ 	struct nf_conn *ct;
  
- #include "../../lib/kstrtox.h"
- 
-@@ -741,11 +742,13 @@ bpf_base_func_proto(enum bpf_func_id func_id)
- 	case BPF_FUNC_probe_read_user:
- 		return &bpf_probe_read_user_proto;
- 	case BPF_FUNC_probe_read_kernel:
--		return &bpf_probe_read_kernel_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_proto;
- 	case BPF_FUNC_probe_read_user_str:
- 		return &bpf_probe_read_user_str_proto;
- 	case BPF_FUNC_probe_read_kernel_str:
--		return &bpf_probe_read_kernel_str_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_str_proto;
- 	case BPF_FUNC_snprintf_btf:
- 		return &bpf_snprintf_btf_proto;
- 	default:
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index b0c45d923f0f..9bb3d2823f44 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -215,16 +215,11 @@ const struct bpf_func_proto bpf_probe_read_user_str_proto = {
- static __always_inline int
- bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
- {
--	int ret = security_locked_down(LOCKDOWN_BPF_READ);
-+	int ret;
- 
--	if (unlikely(ret < 0))
--		goto fail;
- 	ret = copy_from_kernel_nofault(dst, unsafe_ptr, size);
- 	if (unlikely(ret < 0))
--		goto fail;
--	return ret;
--fail:
--	memset(dst, 0, size);
-+		memset(dst, 0, size);
- 	return ret;
- }
- 
-@@ -246,10 +241,7 @@ const struct bpf_func_proto bpf_probe_read_kernel_proto = {
- static __always_inline int
- bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr)
- {
--	int ret = security_locked_down(LOCKDOWN_BPF_READ);
--
--	if (unlikely(ret < 0))
--		goto fail;
-+	int ret;
- 
- 	/*
- 	 * The strncpy_from_kernel_nofault() call will likely not fill the
-@@ -262,11 +254,7 @@ bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr)
- 	 */
- 	ret = strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
- 	if (unlikely(ret < 0))
--		goto fail;
--
--	return ret;
--fail:
--	memset(dst, 0, size);
-+		memset(dst, 0, size);
- 	return ret;
- }
- 
-@@ -1322,16 +1310,20 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_probe_read_user:
- 		return &bpf_probe_read_user_proto;
- 	case BPF_FUNC_probe_read_kernel:
--		return &bpf_probe_read_kernel_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_proto;
- 	case BPF_FUNC_probe_read_user_str:
- 		return &bpf_probe_read_user_str_proto;
- 	case BPF_FUNC_probe_read_kernel_str:
--		return &bpf_probe_read_kernel_str_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_str_proto;
- #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	case BPF_FUNC_probe_read:
--		return &bpf_probe_read_compat_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_compat_proto;
- 	case BPF_FUNC_probe_read_str:
--		return &bpf_probe_read_compat_str_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_compat_str_proto;
- #endif
- #ifdef CONFIG_CGROUPS
- 	case BPF_FUNC_get_current_cgroup_id:
+ 	ct = nf_ct_get(pkt->skb, &ctinfo);
+-	if (!ct || ctinfo == IP_CT_UNTRACKED) {
++	if (!ct || nf_ct_is_confirmed(ct) || nf_ct_is_template(ct)) {
+ 		regs->verdict.code = NFT_BREAK;
+ 		return;
+ 	}
 -- 
 2.30.2
 
