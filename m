@@ -2,96 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4F73A0490
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415533A049E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236333AbhFHTkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:40:05 -0400
-Received: from mail-ej1-f54.google.com ([209.85.218.54]:40919 "EHLO
-        mail-ej1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237013AbhFHTjL (ORCPT
+        id S236571AbhFHTpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238715AbhFHToq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:39:11 -0400
-Received: by mail-ej1-f54.google.com with SMTP id my49so17802466ejc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 12:37:18 -0700 (PDT)
+        Tue, 8 Jun 2021 15:44:46 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847A7C061574;
+        Tue,  8 Jun 2021 12:39:19 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id b9so20969835ilr.2;
+        Tue, 08 Jun 2021 12:39:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=JKTPUiA9elPvGMQvcCJuNHjTNIa7sShKwEDWPPy8EEM=;
-        b=YJhPa5F64W5qsXB46vVhKbDqi5siZegf325mLIcJZloLiygLe2QcoCk01IJMSn1A5Y
-         l0XKyEEy81MvYt8ozVZv1tof/OjybSmlr6M3a3l/SYcT3xdsP6d0mlhlWeXukMsqLPlx
-         7RiIOhXwx8BUpt7XyA7Mm+eS2zARv05N5C7Vw9oUeMkTLZnl8QXHJfgA+TdGgIQAis8d
-         sOfu3HQ7pWUAhjYgbWI2xeWtboHtq1zSPo5E2wHJDlz7b4krRVlhyGSH+huv2jNBELRz
-         yqjJP07h54OxYiyUGieD5U3L2GV6gPzAS4KzHrDR82CU3cC3y+W3CY8rfphTBQOGT+PI
-         Hn6w==
+        bh=HJ8rnWqOEbeNiQiIKCMICozUoicUYyenJT1hlLOu16o=;
+        b=b69NKJPlTlavMBJWWeaGIAN3zvAy7MACAIF5OyJUifBFnHsqtyfYkbl4pIvaOh0+Kg
+         E/3RB1vlGyz3A2E7mt2JCJGe2oPA1lgIMT5svPoX57sSeFOIGcp0bp6MtsNrElTnBK29
+         z/8llJcLB0V21tn3WJVBQ24D2XwVF5d4QaI50noBRZQ0PEuS5TcqRJ8ZBK+GPH9WJvQV
+         2cBHH1u4etkWhDxMZbuhhpRwWtR+Tyd/p0VS/hgT/ZsdWWmaxTngVW5eMVuPtYUvBmUe
+         JEEw/Nzwk5QAWU+pC8ywVrC3TgA23XhkLtltD3eIMSmDMMbEk9NZOrLdAfzJw4jiB9Kp
+         9Qjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=JKTPUiA9elPvGMQvcCJuNHjTNIa7sShKwEDWPPy8EEM=;
-        b=QjRnmhJy6MmKIjzJY5SHTAc0uY/wFjAOLooprD20PZOLNa+Jk71vmtpB0nVYk6pF02
-         27CV0G9CjEpsbN5gwbJ9QyBE80wfOII7CQWxWsaHNpfnZFSzwK+oImOQfK4O50ubRn5r
-         /f2bh84A+eCnd4ILoiV2c57SNw38IGX7PrRFRJicMoa0J4IwXpj+t/F+CacR9WobyXHs
-         Hb5wI7rwIPOXJJgVefXpw9bHyM9wnUW/Ci78tkoUULOQx00Wm6wFGTnbDaxA69bvdwO/
-         cUMajfxA/zW2+Gfodq9nGkHHRsyqBw6Zc6g7ocA7eUKydUFpZjGRvpcIlHODubMTpN0h
-         UquA==
-X-Gm-Message-State: AOAM533lrIclazFSh+k2n5uuD1O6rogp/um/jUAI8g0w8s4Kk2tq4pTM
-        QaXV4+4hAYn8rGM+bv0c0gU2H9zQrlJEQqJcF9g=
-X-Google-Smtp-Source: ABdhPJzy5smI5eapf2uWMTdSduOVdqYwN94fU3XJCWeuFH21fThypuQKQ4eBn2/DZmf65LeRsf+9XZ74nOyvkjySw2c=
-X-Received: by 2002:a17:907:7b97:: with SMTP id ne23mr24957151ejc.499.1623180977706;
- Tue, 08 Jun 2021 12:36:17 -0700 (PDT)
+        bh=HJ8rnWqOEbeNiQiIKCMICozUoicUYyenJT1hlLOu16o=;
+        b=uFcetPp/pw53kBKhM4OMKkopvpS2jCcFRIpB75K52IBZ0vKm0kF/mGhamZL/DTKxtf
+         iMYkF9S1iUfZTNsDXchfm8dCeUKDDR0J2XAm3KOF3Fa6tx1T7pB64s/QPtgyhlwCGQI6
+         rZxHKXv4NpQW/LfZOl5CkKbAqIoXBImqisImF52QhVxikBDyPnKaobB1OQKXj11scWq1
+         HSc8mMjC0DTYFKMGUyCcBlUYPxMOBpTA42NNjC1DJtq6IHhNFr6WCwsGUXsh3Ls8jVRm
+         9Vgz6zDTV7gKMNMp/8xmUxdLBKs+MU3+rVLH2yPC4smtZw4s/NIoLChX7yAijTdDlkqx
+         LwMA==
+X-Gm-Message-State: AOAM5337UKM6zRsa90mU7EUZGlbbjeTpThxwx4JW5Gkpk07zsycBFd2B
+        A3bdQceZ+Hu+gFfAl9GhkzsUbVSYkRYwXpjblqWLYulztinq8w==
+X-Google-Smtp-Source: ABdhPJx/ZlF2j/TPT9ioskBU5uYfBA+Oum4w1kJBYw2i4wbX6xIhatZJbYM9t3lCQdzd4b+tE1tvOob2pa8xznJfx3U=
+X-Received: by 2002:a6b:287:: with SMTP id 129mr16340585ioc.182.1623181158977;
+ Tue, 08 Jun 2021 12:39:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210604203513.240709-1-shy828301@gmail.com> <YL265A86DQe5Rgon@dhcp22.suse.cz>
- <CAHbLzkowcskM=p==-q48Ca12D=h9SgqUuUB4NknRNR=64TyXCw@mail.gmail.com>
- <YL5rvdzh9dou+uAz@dhcp22.suse.cz> <CAHbLzkooYAi=Hb0=oJ+2b6G=h5Sx4jnyo5L0nPYjDcBqBHnfug@mail.gmail.com>
- <YL8RFneAmSSi2Z0I@dhcp22.suse.cz> <CAHbLzkquqKOL7pH8yBdfpafeHJCUZvccNKjQBucsP7C4k83f7g@mail.gmail.com>
- <YL+ttjqJ9lEMndiA@dhcp22.suse.cz>
-In-Reply-To: <YL+ttjqJ9lEMndiA@dhcp22.suse.cz>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 8 Jun 2021 12:36:05 -0700
-Message-ID: <CAHbLzkrQdt+gvq-SdQoH8sVVNiSxdMqreTGsrZC4AsVpYzysWQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: mempolicy: don't have to split pmd for huge zero page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Zi Yan <ziy@nvidia.com>, nao.horiguchi@gmail.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210608175945.476074951@linuxfoundation.org> <20210608175948.243493420@linuxfoundation.org>
+ <CAOi1vP-B4A4bmd=ZbnwqEa14BizN-X8V4ktUMWGuEtXu8n2y-g@mail.gmail.com> <YL/D5ecAFFyPBXDF@sashalap>
+In-Reply-To: <YL/D5ecAFFyPBXDF@sashalap>
+From:   Ilya Dryomov <idryomov@gmail.com>
+Date:   Tue, 8 Jun 2021 21:39:18 +0200
+Message-ID: <CAOi1vP9xOd+CfgjifZA6YecwkGT+E6H7TP=X9hsUtNW4_s7dGg@mail.gmail.com>
+Subject: Re: [PATCH 5.12 083/161] libceph: dont set global_id until we get an
+ auth ticket
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Sage Weil <sage@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 10:49 AM Michal Hocko <mhocko@suse.com> wrote:
+On Tue, Jun 8, 2021 at 9:24 PM Sasha Levin <sashal@kernel.org> wrote:
 >
-> On Tue 08-06-21 10:15:36, Yang Shi wrote:
-> [...]
-> > I did some archeology, the findings are:
+> On Tue, Jun 08, 2021 at 09:07:18PM +0200, Ilya Dryomov wrote:
+> >On Tue, Jun 8, 2021 at 8:48 PM Greg Kroah-Hartman
+> ><gregkh@linuxfoundation.org> wrote:
+> >>
+> >> From: Ilya Dryomov <idryomov@gmail.com>
+> >>
+> >> [ Upstream commit 61ca49a9105faefa003b37542cebad8722f8ae22 ]
+> >>
+> >> With the introduction of enforcing mode, setting global_id as soon
+> >> as we get it in the first MAuth reply will result in EACCES if the
+> >> connection is reset before we get the second MAuth reply containing
+> >> an auth ticket -- because on retry we would attempt to reclaim that
+> >> global_id with no auth ticket at hand.
+> >>
+> >> Neither ceph_auth_client nor ceph_mon_client depend on global_id
+> >> being set ealy, so just delay the setting until we get and process
+> >> the second MAuth reply.  While at it, complain if the monitor sends
+> >> a zero global_id or changes our global_id as the session is likely
+> >> to fail after that.
+> >>
+> >> Cc: stable@vger.kernel.org # needs backporting for < 5.11
+> >> Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+> >> Reviewed-by: Sage Weil <sage@redhat.com>
+> >> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> >> ---
+> >>  net/ceph/auth.c | 36 +++++++++++++++++++++++-------------
+> >>  1 file changed, 23 insertions(+), 13 deletions(-)
+> >>
+> >> diff --git a/net/ceph/auth.c b/net/ceph/auth.c
+> >> index eb261aa5fe18..de407e8feb97 100644
+> >> --- a/net/ceph/auth.c
+> >> +++ b/net/ceph/auth.c
+> >> @@ -36,6 +36,20 @@ static int init_protocol(struct ceph_auth_client *ac, int proto)
+> >>         }
+> >>  }
+> >>
+> >> +static void set_global_id(struct ceph_auth_client *ac, u64 global_id)
+> >> +{
+> >> +       dout("%s global_id %llu\n", __func__, global_id);
+> >> +
+> >> +       if (!global_id)
+> >> +               pr_err("got zero global_id\n");
+> >> +
+> >> +       if (ac->global_id && global_id != ac->global_id)
+> >> +               pr_err("global_id changed from %llu to %llu\n", ac->global_id,
+> >> +                      global_id);
+> >> +
+> >> +       ac->global_id = global_id;
+> >> +}
+> >> +
+> >>  /*
+> >>   * setup, teardown.
+> >>   */
+> >> @@ -222,11 +236,6 @@ int ceph_handle_auth_reply(struct ceph_auth_client *ac,
+> >>
+> >>         payload_end = payload + payload_len;
+> >>
+> >> -       if (global_id && ac->global_id != global_id) {
+> >> -               dout(" set global_id %lld -> %lld\n", ac->global_id, global_id);
+> >> -               ac->global_id = global_id;
+> >> -       }
+> >> -
+> >>         if (ac->negotiating) {
+> >>                 /* server does not support our protocols? */
+> >>                 if (!protocol && result < 0) {
+> >> @@ -253,11 +262,16 @@ int ceph_handle_auth_reply(struct ceph_auth_client *ac,
+> >>
+> >>         ret = ac->ops->handle_reply(ac, result, payload, payload_end,
+> >>                                     NULL, NULL, NULL, NULL);
+> >> -       if (ret == -EAGAIN)
+> >> +       if (ret == -EAGAIN) {
+> >>                 ret = build_request(ac, true, reply_buf, reply_len);
+> >> -       else if (ret)
+> >> +               goto out;
+> >> +       } else if (ret) {
+> >>                 pr_err("auth protocol '%s' mauth authentication failed: %d\n",
+> >>                        ceph_auth_proto_name(ac->protocol), result);
+> >> +               goto out;
+> >> +       }
+> >> +
+> >> +       set_global_id(ac, global_id);
+> >>
+> >>  out:
+> >>         mutex_unlock(&ac->mutex);
+> >> @@ -484,15 +498,11 @@ int ceph_auth_handle_reply_done(struct ceph_auth_client *ac,
+> >>         int ret;
+> >>
+> >>         mutex_lock(&ac->mutex);
+> >> -       if (global_id && ac->global_id != global_id) {
+> >> -               dout("%s global_id %llu -> %llu\n", __func__, ac->global_id,
+> >> -                    global_id);
+> >> -               ac->global_id = global_id;
+> >> -       }
+> >> -
+> >>         ret = ac->ops->handle_reply(ac, 0, reply, reply + reply_len,
+> >>                                     session_key, session_key_len,
+> >>                                     con_secret, con_secret_len);
+> >> +       if (!ret)
+> >> +               set_global_id(ac, global_id);
+> >>         mutex_unlock(&ac->mutex);
+> >>         return ret;
+> >>  }
 > >
-> > The zero page has PageReserved flag set, it was skipped by the
-> > explicit PageReserved check in mempolicy.c since commit f4598c8b3678
-> > ("[PATCH] migration: make sure there is no attempt to migrate reserved
-> > pages."). The zero page was not used anymore by do_anonymous_page()
-> > since 2.6.24 by commit 557ed1fa2620 ("remove ZERO_PAGE"), then
-> > reinstated by commit a13ea5b759645 ("mm: reinstate ZERO_PAGE") and
-> > this commit added zero page check in vm_normal_page(), so mempolicy
-> > doesn't depend on PageReserved check to skip zero page anymore since
-> > then.
+> >Hi Greg,
 > >
-> > So the zero page is skipped by mempolicy.c since 2.6.16.
+> >I asked Sasha to drop this patch earlier today.
 >
-> Thanks a lot! This is really useful. Can you just add it to the
-> changelog so others do not have to go through the painful archeology.
->
-> With that, feel free to add
-> Acked-by: Michal Hocko <mhocko@suse.com>
+> I've dropped it now, but I think I'm missing your previous request. Was
+> it as a reply to the added-to mail? I just want to make sure I'm not
+> missing your mails.
 
-Thanks. Will add that into v2.
+Yes, but it looks like it didn't make it to stable-commits mailing list
+either.  Weird...
 
->
-> Thanls!
-> --
-> Michal Hocko
-> SUSE Labs
+    MIME-Version: 1.0
+    Date: Tue, 8 Jun 2021 11:13:08 +0200
+    References: <20210608011339.51B0F6124C@mail.kernel.org>
+    In-Reply-To: <20210608011339.51B0F6124C@mail.kernel.org>
+    Message-ID:
+<CAOi1vP9Ubs1Cu6sW43H-=dVXSzkFZBycfR_Af4b3vJ9mihkAzA@mail.gmail.com>
+    Subject: Re: Patch "libceph: don't set global_id until we get an
+auth ticket" has been added to the 5.12-stable tree
+    From: Ilya Dryomov <idryomov@gmail.com>
+    To: Sasha Levin <sashal@kernel.org>
+    Cc: stable-commits@vger.kernel.org
+    Content-Type: text/plain; charset="UTF-8"
+
+Thanks,
+
+                Ilya
