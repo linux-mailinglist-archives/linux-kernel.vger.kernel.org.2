@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1702239FF4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2887239FF37
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbhFHScC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:32:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56452 "EHLO mail.kernel.org"
+        id S234156AbhFHSbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:31:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234130AbhFHSb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:31:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2107B613C1;
-        Tue,  8 Jun 2021 18:29:33 +0000 (UTC)
+        id S234153AbhFHSbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:31:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 049C9613B9;
+        Tue,  8 Jun 2021 18:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623176974;
-        bh=wd+BPha1Nb5yGMu5F8sdBCuibHKWsfyuWB9Y2bemk3Q=;
+        s=korg; t=1623176945;
+        bh=OkZwXrHpxEFAEoYWsY/fBqlUlzOVkf3DGeAuhfwiJ0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QJ05sO7wn36X+H2rWAmQbbR6Lm8TUMOHOJj64ZJ52nAEl2+vyt2BPXe6m1tV/VFtW
-         2NqQXOwa4Ov1ULgdxABA8OToO9e37wsGUT3RbHYRu/yF+JP/bxPj5mv4y1kFFPNusk
-         sKEf8DCTvt4QSfTft31Ky4ldn3v8Fg/W1LlSRe8g=
+        b=efZ41uaVB9PnsUZ6J+RtrHfAodXYmTe/FzHuhTf/3a/O+0hCUTyO8gKSsKeNasLpg
+         FoaipKNCNb9vRTXOwX5iB97etSjTJF1Bu/vJ8zN++5y59Z8RDieD6wzd4moZ2M5FMq
+         pYp1S+fU6wFYvzOagmsXKUjBZRYk3NrSLUTHcndY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ard Biesheuvel <ardb@kernel.org>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 03/29] efi: cper: fix snprintf() use in cper_dimm_err_location()
-Date:   Tue,  8 Jun 2021 20:26:57 +0200
-Message-Id: <20210608175927.932302866@linuxfoundation.org>
+Subject: [PATCH 4.4 06/23] netfilter: nfnetlink_cthelper: hit EBUSY on updates if size mismatches
+Date:   Tue,  8 Jun 2021 20:26:58 +0200
+Message-Id: <20210608175926.752384937@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
-References: <20210608175927.821075974@linuxfoundation.org>
+In-Reply-To: <20210608175926.524658689@linuxfoundation.org>
+References: <20210608175926.524658689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 942859d969de7f6f7f2659a79237a758b42782da ]
+[ Upstream commit 8971ee8b087750a23f3cd4dc55bff2d0303fd267 ]
 
-snprintf() should be given the full buffer size, not one less. And it
-guarantees nul-termination, so doing it manually afterwards is
-pointless.
+The private helper data size cannot be updated. However, updates that
+contain NFCTH_PRIV_DATA_LEN might bogusly hit EBUSY even if the size is
+the same.
 
-It's even potentially harmful (though probably not in practice because
-CPER_REC_LEN is 256), due to the "return how much would have been
-written had the buffer been big enough" semantics. I.e., if the bank
-and/or device strings are long enough that the "DIMM location ..."
-output gets truncated, writing to msg[n] is a buffer overflow.
-
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Fixes: 3760cd20402d4 ("CPER: Adjust code flow of some functions")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: 12f7a505331e ("netfilter: add user-space connection tracking helper infrastructure")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/cper.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ net/netfilter/nfnetlink_cthelper.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-index c0e54396f250..dc8d2603612e 100644
---- a/drivers/firmware/efi/cper.c
-+++ b/drivers/firmware/efi/cper.c
-@@ -257,8 +257,7 @@ static int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg)
- 	if (!msg || !(mem->validation_bits & CPER_MEM_VALID_MODULE_HANDLE))
- 		return 0;
+diff --git a/net/netfilter/nfnetlink_cthelper.c b/net/netfilter/nfnetlink_cthelper.c
+index 8c1733869343..63a9d5fd00c0 100644
+--- a/net/netfilter/nfnetlink_cthelper.c
++++ b/net/netfilter/nfnetlink_cthelper.c
+@@ -355,10 +355,14 @@ static int
+ nfnl_cthelper_update(const struct nlattr * const tb[],
+ 		     struct nf_conntrack_helper *helper)
+ {
++	u32 size;
+ 	int ret;
  
--	n = 0;
--	len = CPER_REC_LEN - 1;
-+	len = CPER_REC_LEN;
- 	dmi_memdev_name(mem->mem_dev_handle, &bank, &device);
- 	if (bank && device)
- 		n = snprintf(msg, len, "DIMM location: %s %s ", bank, device);
-@@ -267,7 +266,6 @@ static int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg)
- 			     "DIMM location: not present. DMI handle: 0x%.4x ",
- 			     mem->mem_dev_handle);
+-	if (tb[NFCTH_PRIV_DATA_LEN])
+-		return -EBUSY;
++	if (tb[NFCTH_PRIV_DATA_LEN]) {
++		size = ntohl(nla_get_be32(tb[NFCTH_PRIV_DATA_LEN]));
++		if (size != helper->data_len)
++			return -EBUSY;
++	}
  
--	msg[n] = '\0';
- 	return n;
- }
- 
+ 	if (tb[NFCTH_POLICY]) {
+ 		ret = nfnl_cthelper_update_policy(helper, tb[NFCTH_POLICY]);
 -- 
 2.30.2
 
