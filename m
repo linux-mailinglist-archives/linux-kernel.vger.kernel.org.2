@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A803A02C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D123A017E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237119AbhFHTJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:09:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33690 "EHLO mail.kernel.org"
+        id S235749AbhFHSw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:52:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237340AbhFHTAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:00:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77AE661443;
-        Tue,  8 Jun 2021 18:43:38 +0000 (UTC)
+        id S235524AbhFHSrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:47:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04F726145A;
+        Tue,  8 Jun 2021 18:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177819;
-        bh=Fb9d/2feoqFWeaeXMZHa35j9HPjekHgnoNpjzgJTVos=;
+        s=korg; t=1623177470;
+        bh=ZslwLgAJrBNARuZSGZ4T3vO5PKHkdKQu93YpIlOCH94=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=koCluqm8vhuyuBQxxW2ivChPaBOkBFzdZjz3tW0LMbrMEvz7zs31r5YiwXRZpGMG6
-         OlAbW3qSbDJym0m7llnRA87pl2vdlfhA01EvVWWJGeuiU099nmy/ddyx2w28nw04kN
-         NpgI15FGn/02zmKXzNg1ZvLSqQxakuPFh92gpi00=
+        b=G1xdUylCYZaguhCom71UHnmJFKIDdeVGk/yPE5B1LsUpKhzKwVowq0FeEFiD392Kp
+         q5bCPXqUZI2wBPDS3MTW6F3Kfcoz1iB0Yj09aqJSmIQ8/UnJkXZIhZqtznlOO8FsY2
+         KSGuw4AcHVxf80Gqo3q7PgOYc+Tk23aX52EjmE04=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 110/137] mm/debug_vm_pgtable: fix alignment for pmd/pud_advanced_tests()
-Date:   Tue,  8 Jun 2021 20:27:30 +0200
-Message-Id: <20210608175946.103539340@linuxfoundation.org>
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.4 62/78] btrfs: fixup error handling in fixup_inode_link_counts
+Date:   Tue,  8 Jun 2021 20:27:31 +0200
+Message-Id: <20210608175937.368738145@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,64 +39,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 04f7ce3f07ce39b1a3ca03a56b238a53acc52cfd upstream.
+commit 011b28acf940eb61c000059dd9e2cfcbf52ed96b upstream.
 
-In pmd/pud_advanced_tests(), the vaddr is aligned up to the next pmd/pud
-entry, and so it does not match the given pmdp/pudp and (aligned down)
-pfn any more.
+This function has the following pattern
 
-For s390, this results in memory corruption, because the IDTE
-instruction used e.g.  in xxx_get_and_clear() will take the vaddr for
-some calculations, in combination with the given pmdp.  It will then end
-up with a wrong table origin, ending on ...ff8, and some of those
-wrongly set low-order bits will also select a wrong pagetable level for
-the index addition.  IDTE could therefore invalidate (or 0x20) something
-outside of the page tables, depending on the wrongly picked index, which
-in turn depends on the random vaddr.
+	while (1) {
+		ret = whatever();
+		if (ret)
+			goto out;
+	}
+	ret = 0
+out:
+	return ret;
 
-As result, we sometimes see "BUG task_struct (Not tainted): Padding
-overwritten" on s390, where one 0x5a padding value got overwritten with
-0x7a.
+However several places in this while loop we simply break; when there's
+a problem, thus clearing the return value, and in one case we do a
+return -EIO, and leak the memory for the path.
 
-Fix this by aligning down, similar to how the pmd/pud_aligned pfns are
-calculated.
+Fix this by re-arranging the loop to deal with ret == 1 coming from
+btrfs_search_slot, and then simply delete the
 
-Link: https://lkml.kernel.org/r/20210525130043.186290-2-gerald.schaefer@linux.ibm.com
-Fixes: a5c3b9ffb0f40 ("mm/debug_vm_pgtable: add tests validating advanced arch page table helpers")
-Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: <stable@vger.kernel.org>	[5.9+]
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+	ret = 0;
+out:
+
+bit so everybody can break if there is an error, which will allow for
+proper error handling to occur.
+
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/debug_vm_pgtable.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/tree-log.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -163,7 +163,7 @@ static void __init pmd_advanced_tests(st
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -1775,6 +1775,7 @@ static noinline int fixup_inode_link_cou
+ 			break;
  
- 	pr_debug("Validating PMD advanced\n");
- 	/* Align the address wrt HPAGE_PMD_SIZE */
--	vaddr = (vaddr & HPAGE_PMD_MASK) + HPAGE_PMD_SIZE;
-+	vaddr &= HPAGE_PMD_MASK;
+ 		if (ret == 1) {
++			ret = 0;
+ 			if (path->slots[0] == 0)
+ 				break;
+ 			path->slots[0]--;
+@@ -1787,17 +1788,19 @@ static noinline int fixup_inode_link_cou
  
- 	pgtable_trans_huge_deposit(mm, pmdp, pgtable);
+ 		ret = btrfs_del_item(trans, root, path);
+ 		if (ret)
+-			goto out;
++			break;
  
-@@ -285,7 +285,7 @@ static void __init pud_advanced_tests(st
+ 		btrfs_release_path(path);
+ 		inode = read_one_inode(root, key.offset);
+-		if (!inode)
+-			return -EIO;
++		if (!inode) {
++			ret = -EIO;
++			break;
++		}
  
- 	pr_debug("Validating PUD advanced\n");
- 	/* Align the address wrt HPAGE_PUD_SIZE */
--	vaddr = (vaddr & HPAGE_PUD_MASK) + HPAGE_PUD_SIZE;
-+	vaddr &= HPAGE_PUD_MASK;
+ 		ret = fixup_inode_link_count(trans, root, inode);
+ 		iput(inode);
+ 		if (ret)
+-			goto out;
++			break;
  
- 	set_pud_at(mm, vaddr, pudp, pud);
- 	pudp_set_wrprotect(mm, vaddr, pudp);
+ 		/*
+ 		 * fixup on a directory may create new entries,
+@@ -1806,8 +1809,6 @@ static noinline int fixup_inode_link_cou
+ 		 */
+ 		key.offset = (u64)-1;
+ 	}
+-	ret = 0;
+-out:
+ 	btrfs_release_path(path);
+ 	return ret;
+ }
 
 
