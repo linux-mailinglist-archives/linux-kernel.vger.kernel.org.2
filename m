@@ -2,159 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F365239EB7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E6F39EB73
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbhFHBdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:33:50 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:37130 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231424AbhFHBdn (ORCPT
+        id S231343AbhFHBdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:33:39 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:56354 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231268AbhFHBdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:33:43 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1581UMZQ107409;
-        Tue, 8 Jun 2021 01:30:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=scEQjg7xFIGIZ9s8NfdBqCQ31NJLVL8cwVjuyvjlUvE=;
- b=QyrJb8ncKQCAbJv2achBIkNzNl1O55D027iZYpNkaBSbB9yPJ0RzcFsk2u03jMHfzagL
- COOmxaDdoqM5Nh/obnVb8f/RuPr3Mq4e5xODm+XR5+tTDafLmyoWu/evOCQ+Gy201Mav
- RNbELX6rl98owaZ+23PlaS/7FgNbWq+3xCg2gcciT195IodJZ/JjYSi8vTUlY+N4jj/4
- vaQR/jdHlWqb3CYr+oSb03QbZWVAqoB0AlObBGz6Hjttkmo95CUV2ucAqeBuI655ggIL
- sGu92Y9JUvx9sj7cPdvUpaqL3l3LZd1JCfcd6G1tngYnb9pLBpXNohKUCrNvQQJSxBOC Pw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 3914qujyy9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Jun 2021 01:30:39 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1581UZJd123609;
-        Tue, 8 Jun 2021 01:30:38 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2172.outbound.protection.outlook.com [104.47.73.172])
-        by aserp3020.oracle.com with ESMTP id 391ujwcmjh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Jun 2021 01:30:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RAyY6ZDOj5FGpqbBx/I0XxiYGlyrHX1Adj5Tjg5Zgk3XIZcnSEN4rlw16E6b6bNe5dGUMqmYmKpf6JUm9BLxvgk5BBRUd9rbeNN7X7XcHerbB6YDDBPhqZloXFQtyRKj2wDN1Hizxpg0Rj+uoPbwhnC2m6StXfNVdHkraULKFY7raOdr36HCbbcquUdUO8ouMnK0ig6mkPMc/FzChO9nuDRtFH5nYsCJG9eI2wDlQeiOrzPVa1KQ/oDiu1T21725ye/anGlmMCzzhz9Hx4jHC7wIg+lx9Nt5O7aOl/ZMpBjZ0ciU34cAFiLDakZiQGX7z41hNNa7/ahEZa3XBqgowg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=scEQjg7xFIGIZ9s8NfdBqCQ31NJLVL8cwVjuyvjlUvE=;
- b=YLv7VUAo3Cl/tII6arxRVGLQkL4w3HGGPIfzCq7nyxt7IztKPFqQvnqH6NT5z0ty85ttoBObJ4/VUTiEZQaxQ5i5u+SKlnNcsF/3NFq3yXdaPJdrvisWDaQ30O58aub+bNHU/SyVOOlxPrGgfsAGLlHdLoLvkNA84Zed2sFMWYPc0MrEESWlAntCCUDQEmcVJlqGodVqFuMSoRRLGwc0gbunsoWnev0cHOkcKKH+yVPawftgPMHOZ9fv+ec29WTW1IxVteLqos/fLU1at3TaxQpuV73lxBkTMkKbS0c+tdUPXq0Q9NtVWji5uUeS+HJLacaGPi/kq4Dm8Mp9NP9Vfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=scEQjg7xFIGIZ9s8NfdBqCQ31NJLVL8cwVjuyvjlUvE=;
- b=vkzB67tDkwELjMH2PMsE9fOFb+tAjDqPI+km5uw5eiyHCQRNBPUmVWTTwFniZu4F7Tq9uiaE19cROImme6Hwtw9kEql8oSuQZB2/LFY7k12FfGOxDoV4e/8ArqXB/98yJl9kXeVBLHxD/UZKYaqftJbFY33dNdGWdiU/l4VQJPM=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4631.namprd10.prod.outlook.com (2603:10b6:510:41::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Tue, 8 Jun
- 2021 01:30:22 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4195.030; Tue, 8 Jun 2021
- 01:30:22 +0000
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Joe Perches <joe@perches.com>, Hannes Reinecke <hare@suse.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-scsi@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] scsi: fcoe: Statically initialize flogi_maddr
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1im2pkusa.fsf@ca-mkp.ca.oracle.com>
-References: <20210602180000.3326448-1-keescook@chromium.org>
-Date:   Mon, 07 Jun 2021 21:30:19 -0400
-In-Reply-To: <20210602180000.3326448-1-keescook@chromium.org> (Kees Cook's
-        message of "Wed, 2 Jun 2021 11:00:00 -0700")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: SA9PR13CA0039.namprd13.prod.outlook.com
- (2603:10b6:806:22::14) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Mon, 7 Jun 2021 21:33:35 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1581SQDp008154
+        for <linux-kernel@vger.kernel.org>; Mon, 7 Jun 2021 18:31:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=JbC745/nCoOIrQ4+JlQ/s2K41dkqCbW9cAP/+uGDj5E=;
+ b=Htd5yLtPSPxG0bZ+mHT8kD2ZVBc3LLwhLSv+atuCp/wuLaSCNG15x4L5vxy6Udy/eZex
+ lLHKR2/StGsDHSL4fwsAgg+cbloxwvDf/IfuYP+pjE/CvJUE5bIXX0OzenjaI3d8cYfG
+ cCJt/aEXBzf0Jp0XX8hCi7G58/uKU/KRBaA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 391mx0ktjc-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:31:42 -0700
+Received: from intmgw001.05.prn6.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 18:31:41 -0700
+Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
+        id 88F2A81D6D41; Mon,  7 Jun 2021 18:31:29 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dennis Zhou <dennis@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH v8 0/8] cgroup, blkcg: prevent dirty inodes to pin dying memory cgroups
+Date:   Mon, 7 Jun 2021 18:31:15 -0700
+Message-ID: <20210608013123.1088882-1-guro@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA9PR13CA0039.namprd13.prod.outlook.com (2603:10b6:806:22::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Tue, 8 Jun 2021 01:30:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 968d9cb5-0a6f-4959-01dc-08d92a1cfbd6
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4631:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB463187B52B8A8168828BB8DC8E379@PH0PR10MB4631.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pa5xU5UCl9ArOVyLUbmhYAowzxrdazTGCM55jpXJtMcsVgOBpw8tLzDe/UVd/EYd6TtKmK4aYJndlnv2h6ih7DslndNhGCIi0w3zRupmxvREeah1E0gbFcoLve+bJkj1v+jSHrHonPNFhKphVWj70HdJZDHDqCEcvUUL4L7YYuGMKrvW3kNElicaZxmeeLAGCA3AiHEaZkT/dsvIY5OmqeTKITEFYoYniXhLHFRyGVeByJMtyYWmPann7rOY1HlWvxKR4VXGGFFDjnIbs2ZD3Dwqcv0wE0U9Gywzuf8IIG3cdpDywPZ+LXzqiup7WIZM7Y40/4/CER+HTCQEoeFwLUGKTzuoxWQZ4vAURUqQdMNIoJacWEB7yN1W1M0jriKYPQepYVbo7bSrTY9Zek6E0zThsF+r5RwPM8DKLlNcVT2pDxNCiM6vXJtIVbZpB1UHmHUQ9+YziFqturTZNNmdfqDdKRsmLfE326Ss+TeiAKLj3LRJJ2Pcikk8RMYCM6yLIbHDFdHook2Fw41cgaiUtZff8AB5Gny3OH8P2OIInlLgSXeIIh9tJ1ufCeOmLIvW9hxX12TyvBehojOIl0IHXFzSYACCS81SqSbTQkhSpE6VJfvCZR0HlYMSHJecEi0qCXG522w/ZSSu47zvkcR+xA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(376002)(136003)(396003)(346002)(6916009)(16526019)(26005)(186003)(66476007)(36916002)(52116002)(7696005)(66556008)(478600001)(8676002)(956004)(55016002)(54906003)(5660300002)(2906002)(316002)(4744005)(38350700002)(4326008)(8936002)(86362001)(38100700002)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pzBLVWhF1LjeJMh5I3gqXb444EReviJ93i+t7eP+C4Eiwc2ywcvHsH5/R1RT?=
- =?us-ascii?Q?ZxbsnUEIl4rfRnzj2eQVUQWqZT/hqM3DugonOze5lwV/+g8iCCi4Cwpc/VcI?=
- =?us-ascii?Q?mw6pecDB/W46VVbKyK0oGHrv+FsMM5Y/BcRplV09MrDwSB2kFSbzlDobuL/i?=
- =?us-ascii?Q?7iIFXzThyNXwM//nfBPw9BVwgFZCg3DUbmoAnEf44H4ntJ2uOgQRCE2Vup9+?=
- =?us-ascii?Q?YHIou+9T1YejeXL3MBYQ4pvppVIYgKJO5lvipsVocmDmlFF55F8QktWoJVIB?=
- =?us-ascii?Q?N/2sTqkadnKxJ9WaHabdqR30QVW875t5scZsx7MMzJLEFf9hfL2Iszg4+7Nr?=
- =?us-ascii?Q?AqeiaGlUOdWFKj5240L4SaSdvl0ImbGkHCzWaGxTGm/VT4Xz8lgJjcQAN5Qf?=
- =?us-ascii?Q?QHeCqhf2CHL9LI9jjbtmH3Uw021GwZ9iKwb9i3cR9xagUjlhNsO6DX0fTUEA?=
- =?us-ascii?Q?Q3KCc+plqunI8dnVqPj55uceXLBkk2CQi+JEP5tXz22oC6u7Ew6peOape7oU?=
- =?us-ascii?Q?vX8YwQMKDXbUHufqIohSQZoBWDCD5Cr9d2qUxN/Ndbyr9lt5c1Y+8M8Grfxy?=
- =?us-ascii?Q?gbxETYPTgIq+Y+D7b1phQET3ojC2Y9zgvHGQtXzm95WezxDNa5UKy8Dfd8+5?=
- =?us-ascii?Q?5Zg+5bKbyC1ODNt/ZG6vn6la50w4h4l5ARJw+2q4NqUwnFwAoL6OTJidOfVK?=
- =?us-ascii?Q?NX9W7jmUC7un9pVSBKjmbC2cNoY6dq0wqRgU4RMo40ehgsyJS3jjhR5OShqK?=
- =?us-ascii?Q?guxy6T34ajAnBv72/6IPpuypmO2dIJVqDvwvE9c+1DhFw0nCUfegHlJZ+Tdq?=
- =?us-ascii?Q?e2SmPZykniCXAfCII7Q8M3laG9WkeCYDAebzynK16QfPHVZVng3wm4legY8g?=
- =?us-ascii?Q?lcuFdeR+TjjzH0YtijIWvlDgKWDqwLKGY41bzlQQGbd/AAE9pSsgIhiR8niP?=
- =?us-ascii?Q?7x6SWzKRxG3XWMzgrKey9FeVM7L2gXrh+MT1TBMfETbJ2CMT1KTFJUshhMTA?=
- =?us-ascii?Q?khy5LtPv9tLVFSjEYGjDscTi36NpubbFZZmZK7FKUv03ux+SnEO4to/YzRLc?=
- =?us-ascii?Q?lxV5aq8JzHmeKvF9vQH0Ju68jQpMeb08HoBpP52ApvLqc2e9i0OzcLuBJ/nQ?=
- =?us-ascii?Q?0Nd97eJ8LGLyUTmXe+QMs3b1Z4iyTlZTiPuBp2VVtoenTzIWKr1X1ubnFIQY?=
- =?us-ascii?Q?TXE6+w/gFH/Mt/tg4pdElRcyyUzhN2RefmeygSEmc7Iw0h15OWDIw4Jf8h+E?=
- =?us-ascii?Q?oxfQ6S9zx5/lAaDmEcHsUV3+UzFenqLXH2zJqOQ739LP34zu1RJ/vDLSSwAR?=
- =?us-ascii?Q?IIZj9ta4LsQmmKPSM0qjpYEJ?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 968d9cb5-0a6f-4959-01dc-08d92a1cfbd6
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 01:30:22.3437
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G0IDJ0DTKmEGrxYh/Fr9oiKo9NLZ9AApXZ+Zn9d+rjB/GhWWfJ83p/bzZAoWmc3oXZ0p29ABGYeFQ5ud9V3Vcit06V6ltHnT9U0YjYzzslE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4631
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10008 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- phishscore=0 suspectscore=0 mlxscore=0 bulkscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106080007
-X-Proofpoint-ORIG-GUID: WtBRkkXkcFJVTR5htFXfxnBzBUFV1fBz
-X-Proofpoint-GUID: WtBRkkXkcFJVTR5htFXfxnBzBUFV1fBz
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10008 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
- spamscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0
- priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106080007
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: 9k-iQkMS3EXzU57jmA4eD-nJpqfB0F_0
+X-Proofpoint-ORIG-GUID: 9k-iQkMS3EXzU57jmA4eD-nJpqfB0F_0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-08_01:2021-06-04,2021-06-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=298 mlxscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106080007
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When an inode is getting dirty for the first time it's associated
+with a wb structure (see __inode_attach_wb()). It can later be
+switched to another wb (if e.g. some other cgroup is writing a lot of
+data to the same inode), but otherwise stays attached to the original
+wb until being reclaimed.
 
-Kees,
+The problem is that the wb structure holds a reference to the original
+memory and blkcg cgroups. So if an inode has been dirty once and later
+is actively used in read-only mode, it has a good chance to pin down
+the original memory and blkcg cgroups forewer. This is often the case wit=
+h
+services bringing data for other services, e.g. updating some rpm
+packages.
 
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memcpy() avoid using an inline const buffer
-> argument and instead just statically initialize the destination array
-> directly.
+In the real life it becomes a problem due to a large size of the memcg
+structure, which can easily be 1000x larger than an inode. Also a
+really large number of dying cgroups can raise different scalability
+issues, e.g. making the memory reclaim costly and less effective.
 
-Applied to 5.14/scsi-staging, thanks!
+To solve the problem inodes should be eventually detached from the
+corresponding writeback structure. It's inefficient to do it after
+every writeback completion. Instead it can be done whenever the
+original memory cgroup is offlined and writeback structure is getting
+killed. Scanning over a (potentially long) list of inodes and detach
+them from the writeback structure can take quite some time. To avoid
+scanning all inodes, attached inodes are kept on a new list (b_attached).
+To make it less noticeable to a user, the scanning and switching is perfo=
+rmed
+from a work context.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Big thanks to Jan Kara, Dennis Zhou, Hillf Danton and Tejun Heo for their=
+ ideas
+and contribution to this patchset.
+
+v8:
+  - switch inodes to a nearest living ancestor wb instead of root wb
+  - added two inodes switching fixes suggested by Jan Kara
+
+v7:
+  - shared locking for multiple inode switching
+  - introduced inode_prepare_wbs_switch() helper
+  - extended the pre-switch inode check for I_WILL_FREE
+  - added comments here and there
+
+v6:
+  - extended and reused wbs switching functionality to switch inodes
+    on cgwb cleanup
+  - fixed offline_list handling
+  - switched to the unbound_wq
+  - other minor fixes
+
+v5:
+  - switch inodes to bdi->wb instead of zeroing inode->i_wb
+  - split the single patch into two
+  - only cgwbs maintain lists of attached inodes
+  - added cond_resched()
+  - fixed !CONFIG_CGROUP_WRITEBACK handling
+  - extended list of prohibited inodes flag
+  - other small fixes
+
+
+Roman Gushchin (8):
+  writeback, cgroup: do not switch inodes with I_WILL_FREE flag
+  writeback, cgroup: add smp_mb() to cgroup_writeback_umount()
+  writeback, cgroup: increment isw_nr_in_flight before grabbing an inode
+  writeback, cgroup: switch to rcu_work API in inode_switch_wbs()
+  writeback, cgroup: keep list of inodes attached to bdi_writeback
+  writeback, cgroup: split out the functional part of
+    inode_switch_wbs_work_fn()
+  writeback, cgroup: support switching multiple inodes at once
+  writeback, cgroup: release dying cgwbs by switching attached inodes
+
+ fs/fs-writeback.c                | 323 +++++++++++++++++++++----------
+ include/linux/backing-dev-defs.h |  20 +-
+ include/linux/writeback.h        |   1 +
+ mm/backing-dev.c                 |  69 ++++++-
+ 4 files changed, 312 insertions(+), 101 deletions(-)
+
+--=20
+2.31.1
+
