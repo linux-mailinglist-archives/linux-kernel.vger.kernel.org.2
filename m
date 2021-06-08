@@ -2,106 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BB239F9BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E369F39F9C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhFHO7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:59:37 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:26169 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233540AbhFHO7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:59:35 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4FztdJ6WHszBDj8;
-        Tue,  8 Jun 2021 16:57:40 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id rYF-J-sCzJxT; Tue,  8 Jun 2021 16:57:40 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FztdJ5XkGzBDj7;
-        Tue,  8 Jun 2021 16:57:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A9A608B7BF;
-        Tue,  8 Jun 2021 16:57:40 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Kq4BMwCmb5qz; Tue,  8 Jun 2021 16:57:40 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5B2B78B7C0;
-        Tue,  8 Jun 2021 16:57:39 +0200 (CEST)
-Subject: Re: [PATCH v3 resend 01/15] mm: add setup_initial_init_mm() helper
-To:     Souptick Joarder <jrdr.linux@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     uclinux-h8-devel@lists.sourceforge.jp, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>, linux-m68k@lists.linux-m68k.org,
-        openrisc@lists.librecores.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
- <20210608083418.137226-2-wangkefeng.wang@huawei.com>
- <CAFqt6zYmCQ=wxEjnOJ6fgJWYQyFajBuxWD=UT_D-WjWUS_4pcw@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <34f88fdc-1842-7954-bccc-0142a8d66eea@csgroup.eu>
-Date:   Tue, 8 Jun 2021 16:57:13 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233709AbhFHO7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233540AbhFHO7v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:59:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB10C061574;
+        Tue,  8 Jun 2021 07:57:58 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 16:57:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623164277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ql/uLWG2lo9gEF4nTk83lBLHHLk6fJHDMYjvgA8J/vk=;
+        b=fQ3d4QOWLRsfZDlGVxrfxRBRd9mHeTn4TTW/ZANS6O/KFU2bl/Vn0QaBfWQPvNRo9TtxkC
+        Oriqf/aQRIgIh4GGSf5WNN0pSg77AOBCkI0snkotHNPkfc/iQXBdYpicEIjCHbB2oj8EE/
+        9hM3XijwSPhvjG+EhbuAS3wQlGXm/vVKOVLPm8isoSgI9UINLldQCozSg90HRXsKRk5xgB
+        yjVXQh+4+MF0aZAsxJrXuI9/hw9FHmo2PfnrnYRCuy9aJzrgEBGpsFkKCJXkE5PGSPNJTL
+        U6Nc1NZPjje/BeXMzaBkukOV825/dOqBbXn/5maDiXiJnQZAbpuH6Ge9iuhM+A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623164277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ql/uLWG2lo9gEF4nTk83lBLHHLk6fJHDMYjvgA8J/vk=;
+        b=VNLABMwUSUAtpxajK8YAQCkD+8Z3/1DdJdtzdvYOFLXDS8Tka6SQ9E3jrfhl2K2QcYg1b/
+        HUUoy/O9CfF8GEAQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
+        Nicholas Piggin <npiggin@gmail.com>, acme@kernel.org,
+        Andrey Semashev <andrey.semashev@gmail.com>, corbet@lwn.net,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
+        joel@joelfernandes.org, kernel@collabora.com,
+        krisman@collabora.com, libc-alpha@sourceware.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
+        Ingo Molnar <mingo@redhat.com>, pgriffais@valvesoftware.com,
+        Peter Oskolkov <posk@posk.io>,
+        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+Message-ID: <20210608145755.pwfhqrqdqft47nbw@linutronix.de>
+References: <20210603195924.361327-1-andrealmeid@collabora.com>
+ <1622799088.hsuspipe84.astroid@bobo.none>
+ <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
+ <1622853816.mokf23xgnt.astroid@bobo.none>
+ <22137ccd-c5e6-9fcc-a176-789558e9ab1e@collabora.com>
+ <20210608122622.oxf662ruaawrtyrd@linutronix.de>
+ <YL99cR0H+7xgU8L1@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <CAFqt6zYmCQ=wxEjnOJ6fgJWYQyFajBuxWD=UT_D-WjWUS_4pcw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YL99cR0H+7xgU8L1@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-06-08 16:23:45 [+0200], Peter Zijlstra wrote:
+> There's more futex users than glibc, and some of them are really hurting
+> because of the NUMA issue. Oracle used to (I've no idea what they do or
+> do not do these days) use sysvsem because the futex hash table was a
+> massive bottleneck for them.
+>=20
+> And as Nick said, other vendors are having the same problems.
 
+I just wanted to do a brief summary of last events. The implementation
+tglx did with the cookie resulting in a quick lookup did not have any
+downsides except that the user-API had to change glibc couldn't. So if
+we are back to square one why not start with that.
 
-Le 08/06/2021 à 16:53, Souptick Joarder a écrit :
-> On Tue, Jun 8, 2021 at 1:56 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->>
->> Add setup_initial_init_mm() helper to setup kernel text,
->> data and brk.
->>
->> Cc: linux-snps-arc@lists.infradead.org
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-csky@vger.kernel.org
->> Cc: uclinux-h8-devel@lists.sourceforge.jp
->> Cc: linux-m68k@lists.linux-m68k.org
->> Cc: openrisc@lists.librecores.org
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Cc: linux-riscv@lists.infradead.org
->> Cc: linux-sh@vger.kernel.org
->> Cc: linux-s390@vger.kernel.org
->> Cc: x86@kernel.org
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>   include/linux/mm.h | 3 +++
->>   mm/init-mm.c       | 9 +++++++++
->>   2 files changed, 12 insertions(+)
->>
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index c274f75efcf9..02aa057540b7 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -244,6 +244,9 @@ int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
->>
->>   #define lru_to_page(head) (list_entry((head)->prev, struct page, lru))
->>
->> +void setup_initial_init_mm(void *start_code, void *end_code,
->> +                          void *end_data, void *brk);
->> +
-> 
-> Gentle query -> is there any limitation to add inline functions in
-> setup_arch() functions ?
+> And if you don't extend the futex to store the nid you put the waiter in
+> (see all the problems above) you will have to do wakeups on all nodes,
+> which is both slower than it is today, and scales possibly even worse.
+>=20
+> The whole numa-aware qspinlock saga is in part because of futex.
 
-Kefeng just followed comment from Mike I guess, see 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20210604070633.32363-2-wangkefeng.wang@huawei.com/#2696253
+sure.
 
-Christophe
+> That said; if we're going to do the whole futex-vector thing, we really
+> do need a new interface, because the futex multiplex monster is about to
+> crumble (see the fun wrt timeouts for example).
 
+This might have been a series of unfortunate events leading to this. The
+sad part is that glibc has a comment that the kernel does not support
+this and nobody bother to change it (until recently).
+
+> And if we're going to do a new interface, we ought to make one that can
+> solve all these problems. Now, ideally glibc will bring forth some
+> opinions, but if they don't want to play, we'll go back to the good old
+> days of non-standard locking libraries.. we're halfway there already due
+> to glibc not wanting to break with POSIX were we know POSIX was just
+> dead wrong broken.
+>=20
+> See: https://github.com/dvhart/librtpi
+
+I'm aware of that, I hacked on it, too :) This was the unfortunate
+result of a ~8y old bug which was not fixed instead and part of the code
+was rewritten and a bit-spinlock was added in user-land. You may
+remember the discussion regarding spins in userland=E2=80=A6
+That said, REQUEUE_PI is no longer used by glibc.
+
+Sebastian
