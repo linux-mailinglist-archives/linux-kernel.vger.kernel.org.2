@@ -2,31 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C15C3A0309
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1022A3A0317
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237043AbhFHTL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:11:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34178 "EHLO mail.kernel.org"
+        id S236502AbhFHTMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:12:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237698AbhFHTBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:01:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 022566191F;
-        Tue,  8 Jun 2021 18:44:43 +0000 (UTC)
+        id S235888AbhFHTBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:01:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A24861924;
+        Tue,  8 Jun 2021 18:44:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177884;
-        bh=rLlInfPeeEe9cY3zBXq42wFZc4XI1ewRkI8Jpy+8Xr4=;
+        s=korg; t=1623177887;
+        bh=a1XFhjAURRn7MxXheEXwBt1QgSC+no1XbrUDlLmF2NA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZaEakzOEPA1htk47fXk9Dcl9NikB5/ojprQn6A4RuVzwIvu36N5TZOUgc+2e4kHL5
-         hpmvGO8ZcWuXqjTfnkDNlATB2HyE29E/lNx8AHQLGmPXj7hT8PonKfVucCfVRVM0ih
-         kLlIMmY/VDio0dNrFgbK9ucjSV9gs1fhXwUUuO9w=
+        b=VDKpYPTVnscSbEdeRVM682xAW4mzJ93JI4SiEHu2V1lL8ptx8JjmCGd68d2wS9j1p
+         4aVHyiDdqfV2wGb9BkLzKsjThzt4OmguRRK7eDHadEVOodwOaUdWAJ7tbmleRVcExQ
+         qrR9n6xK+a2hGOFrSeymLYjrcbMxmqATqNJimdN0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.10 135/137] netfilter: nf_tables: missing error reporting for not selected expressions
-Date:   Tue,  8 Jun 2021 20:27:55 +0200
-Message-Id: <20210608175946.943525991@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Jan Beulich <jbeulich@suse.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.10 136/137] xen-netback: take a reference to the RX task thread
+Date:   Tue,  8 Jun 2021 20:27:56 +0200
+Message-Id: <20210608175946.975084172@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
 References: <20210608175942.377073879@linuxfoundation.org>
@@ -38,46 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Roger Pau Monne <roger.pau@citrix.com>
 
-commit c781471d67a56d7d4c113669a11ede0463b5c719 upstream.
+commit 107866a8eb0b664675a260f1ba0655010fac1e08 upstream.
 
-Sometimes users forget to turn on nftables extensions from Kconfig that
-they need. In such case, the error reporting from userspace is
-misleading:
+Do this in order to prevent the task from being freed if the thread
+returns (which can be triggered by the frontend) before the call to
+kthread_stop done as part of the backend tear down. Not taking the
+reference will lead to a use-after-free in that scenario. Such
+reference was taken before but dropped as part of the rework done in
+2ac061ce97f4.
 
- $ sudo nft add rule x y counter
- Error: Could not process rule: No such file or directory
- add rule x y counter
- ^^^^^^^^^^^^^^^^^^^^
+Reintroduce the reference taking and add a comment this time
+explaining why it's needed.
 
-Add missing NL_SET_BAD_ATTR() to provide a hint:
+This is XSA-374 / CVE-2021-28691.
 
- $ nft add rule x y counter
- Error: Could not process rule: No such file or directory
- add rule x y counter
-              ^^^^^^^
-
-Fixes: 83d9dcba06c5 ("netfilter: nf_tables: extended netlink error reporting for expressions")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 2ac061ce97f4 ('xen/netback: cleanup init and deinit code')
+Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nf_tables_api.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/xen-netback/interface.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -3263,8 +3263,10 @@ static int nf_tables_newrule(struct net
- 			if (n == NFT_RULE_MAXEXPRS)
- 				goto err1;
- 			err = nf_tables_expr_parse(&ctx, tmp, &info[n]);
--			if (err < 0)
-+			if (err < 0) {
-+				NL_SET_BAD_ATTR(extack, tmp);
- 				goto err1;
-+			}
- 			size += info[n].ops->size;
- 			n++;
- 		}
+--- a/drivers/net/xen-netback/interface.c
++++ b/drivers/net/xen-netback/interface.c
+@@ -685,6 +685,7 @@ static void xenvif_disconnect_queue(stru
+ {
+ 	if (queue->task) {
+ 		kthread_stop(queue->task);
++		put_task_struct(queue->task);
+ 		queue->task = NULL;
+ 	}
+ 
+@@ -745,6 +746,11 @@ int xenvif_connect_data(struct xenvif_qu
+ 	if (IS_ERR(task))
+ 		goto kthread_err;
+ 	queue->task = task;
++	/*
++	 * Take a reference to the task in order to prevent it from being freed
++	 * if the thread function returns before kthread_stop is called.
++	 */
++	get_task_struct(task);
+ 
+ 	task = kthread_run(xenvif_dealloc_kthread, queue,
+ 			   "%s-dealloc", queue->name);
 
 
