@@ -2,125 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F2039FEC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3905539FEC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhFHSQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:16:15 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:28011 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232025AbhFHSQO (ORCPT
+        id S233603AbhFHSRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231517AbhFHSRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:16:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623176062; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=uWW165KYtF6OMErIoL2BZOio5ksvsQKwSkI21Cp3Uqo=; b=S4BCogiQeD2kTGGhHm7OMmW4EnVr4qfVU5HMwv5C/D3HO3/TLcPrbkKFX7SipdHK7Ci98X38
- /CneoWNR5e4zzdVisuAfdJ1kcNsxAu3mX97F8aCjHBd5TdIfvHTOSQgP/3TG3dzOlulW0+s6
- nOTcWMEo2wAU7gvkh9PMkrSQOyw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60bfb35651f29e6baeaba1bb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Jun 2021 18:13:42
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 99F36C43146; Tue,  8 Jun 2021 18:13:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.105] (unknown [49.204.182.221])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3680CC4338A;
-        Tue,  8 Jun 2021 18:13:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3680CC4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-Subject: Re: [PATCH v11] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg KH <greg@kroah.com>, glittao@gmail.com,
-        vinmenon@codeaurora.org
-References: <1623141934-7699-1-git-send-email-faiyazm@codeaurora.org>
- <CAHp75VcwW6RGALAjzcK4W9xy_hDPyFti4cNY_pCwJnjUr+VYVQ@mail.gmail.com>
- <b84892d5-06ed-fdbe-b5b3-0956140573ec@codeaurora.org>
- <78fc8848-bde8-769e-f8e9-6157d232a60f@suse.cz>
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-Message-ID: <47842d8d-2747-3d0f-8695-122dc23d90e6@codeaurora.org>
-Date:   Tue, 8 Jun 2021 23:43:34 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 8 Jun 2021 14:17:13 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED06C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 11:15:20 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id c138so8247229qkg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 11:15:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R4gyjae6wpuF0F3UPNTz9EYia+u4eGVeslD36G4A6A8=;
+        b=HmnS6I0zW+CjFx3gMqu3m7KhbMelD2JQ6LGN/L7/0vuXX2xs9lVt5ptH2SH149mDiT
+         G8ytD3/Fks1xdJldXlkTHNNH0sfqwcz0CuenxGBdJNgcLod8ZjGdzQlwylJOPsH8CIus
+         AtrD6ScfuJbn8mjE2P7BJyi5iF4Mts8dPqhwg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R4gyjae6wpuF0F3UPNTz9EYia+u4eGVeslD36G4A6A8=;
+        b=hBt0W8Hq8uaK688CW0ttmgtq1ZY0J2zaIE08YDBiESc20C1erfeqr04U+DpchNJ5QA
+         ySQIAaX1RMa5id52yuQ2ShpW+nQGKW+fEbb1EW53PRUHDp8sqMTz7opnPZsWD4b3bMnK
+         6qY3dcYo/zcxntyBTLHy+bDklerxoAG+ypMWSgZGwgMcrWHQVy7rTPUKyqWqe0PRyJRH
+         OJv5ZdAWcXx4giuVttO1jv5IUbrQwfj3HgWnQUOWi6LHVZFJrA96FXmnCBPL1ejNQBmZ
+         RfD5kX++l71m23paE8eIPZ9qslthOYcQbA3q+bbbdDf2p7w2c5NQB3u2bE/KX+CZxMVz
+         fgbA==
+X-Gm-Message-State: AOAM530eKOZzeDTBOyNsdkd4KNhdJvqoUGMMIsnybGnU4RT7Ws3rE9+J
+        ejqNDk+QWcDC5KKc1PLGwvqXRz9IfwA5iihrTEm0OA==
+X-Google-Smtp-Source: ABdhPJwHUXQYURDN6H8ACCGIceQ1nE2eu5xJXg0yi3cxAyh8k56PSob+alPdSoIXQthgxkRG9k5VZzDbJuqVkaF4f+U=
+X-Received: by 2002:a37:8747:: with SMTP id j68mr20304119qkd.165.1623176119215;
+ Tue, 08 Jun 2021 11:15:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <78fc8848-bde8-769e-f8e9-6157d232a60f@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAKrGhHJDas5WdrHWYrscAYijnybHtTNEPW6v_UMiOgnWFVVLxg@mail.gmail.com>
+In-Reply-To: <CAKrGhHJDas5WdrHWYrscAYijnybHtTNEPW6v_UMiOgnWFVVLxg@mail.gmail.com>
+From:   Michael Chan <michael.chan@broadcom.com>
+Date:   Tue, 8 Jun 2021 11:15:08 -0700
+Message-ID: <CACKFLinsTh1OimRj80qcP0Uai5uWsV5+vEPvXF+-kuKprgzC-A@mail.gmail.com>
+Subject: Re: bnxt_en NIC driver crashes IO_PAGE_FAULT
+To:     Roman Steinhart <roman@aternos.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000050e0a05c445243f"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--000000000000050e0a05c445243f
+Content-Type: text/plain; charset="UTF-8"
 
+On Tue, Jun 8, 2021 at 10:53 AM Roman Steinhart <roman@aternos.org> wrote:
+> We received a bunch of new servers with a Supermicro H12SSL-NT
+> mainboard that has an embedded Broadcom BCM57416 NIC.
+>
+> On all those servers we observe crashes of the NIC driver (bnxt_en) from
+> time to time. We're not able to manually reproduce this issue, it just occurs at
+> some point. Also our monitoring does not show any irregularities(high traffic
+> flow or sth. like this).
+>
 
-On 6/8/2021 11:05 PM, Vlastimil Babka wrote:
-> On 6/8/21 7:11 PM, Faiyaz Mohammed wrote:
->>
->>
->> On 6/8/2021 5:20 PM, Andy Shevchenko wrote:
->>> On Tue, Jun 8, 2021 at 11:45 AM Faiyaz Mohammed <faiyazm@codeaurora.org> wrote:
->>>>
->>>> alloc_calls and free_calls implementation in sysfs have two issues,
->>>> one is PAGE_SIZE limitation of sysfs and other is it does not adhere
->>>> to "one value per file" rule.
->>>>
->>>> To overcome this issues, move the alloc_calls and free_calls
->>>> implementation to debugfs.
->>>>
->>>> Debugfs cache will be created if SLAB_STORE_USER flag is set.
->>>>
->>>> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
->>>> to be inline with what it does.
->>>>
->>>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
->>>> ---
->>>
->>> It seems you missed the version bump along with changelog.
->>> Note, some maintainers (actually quite many I think) are using tools
->>> to fetch up the patches and two patches with the same version is a
->>> problem. Hence I do not consider it a nit-pick.
->>>
->> Hmmm, I think to avoid same version problem I have to push same patch
->> with new version number and thank you for your patience.
-> 
-> I *think* Andrew wouldn't have this issue, so maybe resend only if he says it's
-> needed.
-Sure, I will send if he ask.
-> On the other hand I did have troubles to apply the last version locally, patch
-> (tool) complained of patch (file) being malformed at the end. Did you add or
-> delete lines from it after generating the patch? I had to use the recountdiff
-Yes, I added one line manually, I think that causes the issue.
+These IOMMU faults are seen on AMD systems, right?  We have also seen
+similar issues on some AMD systems and have worked with AMD to debug
+the issues.  I'll likely have someone who's more familiar with these
+AMD IOMMU issues contact you.  Thanks.
 
-> tool to fix this. If you're going to resend, please make sure it's without the
-> same issue.
-> 
-Okay
+--000000000000050e0a05c445243f
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
->> Thanks and regards,
->> Mohammed Faiyaz
->>
-> 
+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
+xV4Em+0wQoEIR2kPG6yiZNtUK0tNCaZejYU/Mf/bzdKSwud3pLgHV8ls83y2OU/ha9xgJMLpRswv
+xucFCxMsPmk0yoVmpbr92kIpLm+TomNZsL++LcDRa2ECAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUz2bMvqtXpXM0u3vAvRkalz60
+CjswDQYJKoZIhvcNAQELBQADggEBAGUgeqqI/q2pkETeLr6oS7nnm1bkeNmtnJ2bnybNO/RdrbPj
+DHVSiDCCrWr6xrc+q6OiZDKm0Ieq6BN+Wfr8h5mCkZMUdJikI85WcQTRk6EEF2lzIiaULmFD7U15
+FSWQptLx+kiu63idTII4r3k/7+dJ5AhLRr4WCoXEme2GZkfSbYC3fEL46tb1w7w+25OEFCv1MtDZ
+1CHkODrS2JGwDQxXKmyF64MhJiOutWHmqoGmLJVz1jnDvClsYtgT4zcNtoqKtjpWDYAefncWDPIQ
+DauX1eWVM+KepL7zoSNzVbTipc65WuZFLR8ngOwkpknqvS9n/nKd885m23oIocC+GA4xggJtMIIC
+aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwQeU+Y6hbenPzRMJsw
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGQPSnsMb5434tSuuc0uHOWDCvqYDIp7
+d0V5qg9iJFq6MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDYw
+ODE4MTUxOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
+ATANBgkqhkiG9w0BAQEFAASCAQA12+AhqRLmeGsA/bw6O57f8m1h/6DGRk+mw+7+9Gd6Rcx8OdJK
+A+iBqSaCpPptZ86tl2bJwom/E3sAfUKe+R9Q5+JIg0FtghJO/timrLtqgKSsfZQGreweXQLvrhin
+tfHbkLYuTf3BnQ22jr4s7zNvsTJZQC06ZdZXUst7/BOtWzcrgl01E2kCF4gWN8vLwXmVq5kVOGWT
+vEE9VklRZCl3os44G40P29MLUxsTuM0ZdvVTFth+gGrnkGVTHXH1zu+j/8K4JymRe+p4MRVhKMA2
+mr30l4inYc+PU2uyRUiqecIJkpcXEvD1gBcVJLhMWqvPI0cV4Zp7UX1g4k7NT3TL
+--000000000000050e0a05c445243f--
