@@ -2,132 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6903A04EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6DD3A04F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbhFHUEF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Jun 2021 16:04:05 -0400
-Received: from hosting.gsystem.sk ([212.5.213.30]:49728 "EHLO
-        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234915AbhFHUDx (ORCPT
+        id S234618AbhFHUHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 16:07:09 -0400
+Received: from mail-lf1-f42.google.com ([209.85.167.42]:40858 "EHLO
+        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234309AbhFHUHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 16:03:53 -0400
-Received: from [192.168.0.2] (188-167-68-178.dynamic.chello.sk [188.167.68.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id DC5537A014A;
-        Tue,  8 Jun 2021 22:01:58 +0200 (CEST)
-From:   Ondrej Zary <linux@zary.sk>
-To:     Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: nouveau broken on Riva TNT2 in 5.13.0-rc4: NULL pointer dereference in nouveau_bo_sync_for_device
-Date:   Tue, 8 Jun 2021 22:01:56 +0200
-User-Agent: KMail/1.9.10
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Christian =?iso-8859-1?q?K=F6nig?= <christian.koenig@amd.com>
-References: <202106052143.52488.linux@zary.sk> <202106072258.43836.linux@zary.sk> <202106082047.42658.linux@zary.sk>
-In-Reply-To: <202106082047.42658.linux@zary.sk>
-X-KMail-QuotePrefix: > 
+        Tue, 8 Jun 2021 16:07:08 -0400
+Received: by mail-lf1-f42.google.com with SMTP id w33so34088505lfu.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 13:05:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6VA4/EeEWVYB2RZpfY/7MCPpZ1URpNBIwal6LqpDu9Y=;
+        b=TahCSIF/i0xA3DerBJu6GjSC/EJvAeBPSmikEGruKj6ogGxYDBBnNlGHOO89xqocNm
+         RZYLB5I/Fmrz5uCkAicoyf9Bae1fTxzL4HLzfCgqP+yn5rCBSvrxCQMkFH77z87c+uon
+         NsceUN//bSVQRzitifKc4UnB/aijHdb1If/UI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6VA4/EeEWVYB2RZpfY/7MCPpZ1URpNBIwal6LqpDu9Y=;
+        b=OWuF7IWmnZStQYsAOTgZGQOxm2mSTk5mHiShbLYzUkZNhK5Kw/zOY+5/4ZoNGh4zHH
+         IWRvJZrEXYV8wIiduNkAQCqd+4xZV9teSZuH/tQDskUg65DGWW84CA5lE+1s1nFsorRi
+         rv41bGkLCoIYplVLJV2Gr0qYmGDpH9wbKVbkW+RFf38eWgRFcaH+Lw43UffDOpjeBNP1
+         VqGZUUweIca2m9+oZZtx7WTvlSrXpNQLJoKSpPjkv/0zdcpeO10eJpqj0OBHiEOh9PmY
+         IkVQQ8NFsyHLN7N75VvB3g8WuYrqgRK79xpwDKbIep8SGuxfpTb9z+cntvJ4ovNWkmSD
+         BwZw==
+X-Gm-Message-State: AOAM5331M2tqFhuGU1TkZUwWGUTzvHMk+k1X0hl7U21urFCKgDw3tbsw
+        MKVJUjQwQeyi9vvkmZp46hre1fhJBr7fjSghtUc=
+X-Google-Smtp-Source: ABdhPJx4Y3I2/VwygcPtI7O6d8TksvBaXG4GbsnP1R/BMjedMIk9oFwkz1K2hSmkeF8LL1xhmZewgw==
+X-Received: by 2002:a05:6512:3482:: with SMTP id v2mr16216709lfr.417.1623182653785;
+        Tue, 08 Jun 2021 13:04:13 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id k3sm82590lfe.110.2021.06.08.13.04.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 13:04:13 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id r16so9480301ljk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 13:04:13 -0700 (PDT)
+X-Received: by 2002:a2e:c52:: with SMTP id o18mr19294016ljd.411.1623182653026;
+ Tue, 08 Jun 2021 13:04:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
-Message-Id: <202106082201.56781.linux@zary.sk>
+References: <YLx/iA8xeRzwhXJn@zn.tnic> <CAHk-=wjXKsJVk+LPiOSiBACchPJLne7O+U+jmvw8CaLBYn-3=Q@mail.gmail.com>
+ <YL029aQZb09G3ShY@linux.ibm.com> <CAHk-=wg7+-Q-jvrwQmyZtQ3pirAUcAQmvUpiLu=0nJv8NObntg@mail.gmail.com>
+ <YL1HLdmh55uGAIs/@zn.tnic> <YL1UucKH0GfXddZo@sashalap> <eaf8e14-12d6-6e3a-f5e5-8b504647eb48@namei.org>
+ <MWHPR21MB159330952629D36EEDE706B3D7379@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <YL+368+oKRORwUzx@zn.tnic> <CAHk-=wh1nz4=72vk3+q5TuPwBF2HMY4SnBOZr6WSLp=s4KExSA@mail.gmail.com>
+ <YL/MoOZFRwo261WG@zn.tnic>
+In-Reply-To: <YL/MoOZFRwo261WG@zn.tnic>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 8 Jun 2021 13:03:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh7BWwNR5+z7bn1xxa1Rc1Dzo-SDnahJ2cLePmRcG8uWw@mail.gmail.com>
+Message-ID: <CAHk-=wh7BWwNR5+z7bn1xxa1Rc1Dzo-SDnahJ2cLePmRcG8uWw@mail.gmail.com>
+Subject: Re: [GIT PULL] x86/urgent for v5.13-rc5
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Michael Kelley <mikelley@microsoft.com>,
+        James Morris <jmorris@namei.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        James Morris <James.Morris@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 08 June 2021 20:47:42 Ondrej Zary wrote:
-> On Monday 07 June 2021 22:58:43 Ondrej Zary wrote:
-> > On Sunday 06 June 2021 23:16:03 Ondrej Zary wrote:
-> > > On Saturday 05 June 2021 23:34:23 Ondrej Zary wrote:
-> > > > On Saturday 05 June 2021 21:43:52 Ondrej Zary wrote:
-> > > > > Hello,
-> > > > > I'm testing 5.13.0-rc4 and nouveau crashes with NULL pointer dereference in nouveau_bo_sync_for_device.
-> > > > > Found various reports like this but that was back in februaryso that should be fixed now.
-> > > > 
-> > > > So it is the same bug. Broken since 5.11. This revert fixes it in 5.11:
-> > > > https://lists.freedesktop.org/archives/dri-devel/2021-February/298531.html
-> > > > 
-> > > > Added some debug printks to nouveau_bo_sync_for_device:
-> > > > [   22.225048] ttm_dma=fc33b500
-> > > > [   22.225066] ttm_dma->num_pages=18
-> > > > [   22.225071] i=0 num_pages=16
-> > > > [   22.225077] ttm_dma->dma_address=00000000
-> > > > [   22.225094] BUG: kernel NULL pointer dereference, address: 00000000
-> > > > 
-> > > > So ttm->dma_address is NULL.
-> > > > 
-> > > 
-> > > Tested reverting f295c8cfec833c2707ff1512da10d65386dde7af again and it does not work...
-> > > Not sure what I did before.
-> > > 
-> > > Bisecting between 5.10 and 5.11 is impossible - I keep hitting neverending stream of bugs.
-> > > As always with nouveau...
-> > 
-> > e34b8feeaa4b65725b25f49c9b08a0f8707e8e86 seems to be the first bad commit
-> > Going back one commit makes it crash in a different way:
-> > 
-> > [   55.444208] BUG: kernel NULL pointer dereference, address: 000001b0
-> > [   55.444219] #PF: supervisor read access in kernel mode
-> > [   55.444222] #PF: error_code(0x0000) - not-present page
-> > [   55.444225] *pde = 00000000
-> > [   55.444231] Oops: 0000 [#1] SMP
-> > [   55.444237] CPU: 0 PID: 1740 Comm: Xorg Not tainted 5.9.0-rc5+ #361
-> > [   55.444240] Hardware name:  /848P-ICH5, BIOS 6.00 PG 02/03/2005
-> > [   55.444321] EIP: nouveau_bo_wr16+0x8/0x27 [nouveau]
-> > [   55.444326] Code: 85 ff 74 0d 80 7d f3 00 74 07 80 a6 f4 01 00 00 fe 89 f0 e8 0c ef ff ff 8d 65 f4 89 f8 5b 5e 5f 5d c3 55 01 d2 89 e5 53 89 c3 <03> 93 b0 01 00 00 0f b7 c1 f6 83 b8 01 00 00 80 74 07 e8 40 49 69
-> > [   55.444330] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
-> > [   55.444334] ESI: 00000020 EDI: e7a14400 EBP: e786fd98 ESP: e786fd94
-> > [   55.444338] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00210246
-> > [   55.444341] CR0: 80050033 CR2: 000001b0 CR3: 27896000 CR4: 00000690
-> > [   55.444344] Call Trace:
-> > [   55.444395]  nv04_crtc_cursor_set+0x148/0x1d8 [nouveau]
-> > [   55.444442]  ? ttm_bo_reserve.constprop.15+0x1c/0x1c [nouveau]
-> > [   55.444451]  drm_mode_cursor_common+0x13b/0x1ad
-> > [   55.444497]  ? ttm_bo_reserve.constprop.15+0x1c/0x1c [nouveau]
-> > [   55.444504]  drm_mode_cursor_ioctl+0x2e/0x36
-> > [   55.444509]  ? drm_mode_setplane+0x203/0x203
-> > [   55.444514]  drm_ioctl_kernel+0x66/0x99
-> > [   55.444518]  drm_ioctl+0x211/0x2d8
-> > [   55.444522]  ? drm_mode_setplane+0x203/0x203
-> > [   55.444529]  ? _cond_resched+0x1e/0x22
-> > [   55.444533]  ? mutex_lock+0xb/0x24
-> > [   55.444582]  ? nouveau_bo_add_io_reserve_lru+0x53/0x58 [nouveau]
-> > [   55.444589]  ? rpm_resume.part.13+0x72/0x365
-> > [   55.444594]  ? ktime_get_mono_fast_ns+0x5e/0xf2
-> > [   55.444598]  ? __pm_runtime_resume+0x5b/0x63
-> > [   55.444647]  nouveau_drm_ioctl+0x65/0x81 [nouveau]
-> > [   55.444696]  ? nouveau_cli_work+0xc3/0xc3 [nouveau]
-> > [   55.444702]  vfs_ioctl+0x1a/0x24
-> > [   55.444706]  __ia32_sys_ioctl+0x583/0x59d
-> > [   55.444711]  ? doublefault_shim+0x120/0x120
-> > [   55.444717]  ? exit_to_user_mode_prepare+0x71/0xba
-> > [   55.444721]  do_int80_syscall_32+0x2c/0x39
-> > [   55.444725]  entry_INT80_32+0xf0/0xf0
-> > [   55.444729] EIP: 0xb7fb2092
-> > [   55.444733] Code: 00 00 00 e9 90 ff ff ff ff a3 24 00 00 00 68 30 00 00 00 e9 80 ff ff ff ff a3 e8 ff ff ff 66 90 00 00 00 00 00 00 00 00 cd 80 <c3> 8d b4 26 00 00 00 00 8d b6 00 00 00 00 8b 1c 24 c3 8d b4 26 00
-> > [   55.444737] EAX: ffffffda EBX: 0000000e ECX: c01c64a3 EDX: bfe89750
-> > [   55.444741] ESI: 02580b40 EDI: c01c64a3 EBP: 0000000e ESP: bfe89704
-> > [   55.444744] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00200292
-> > [   55.444748] Modules linked in: i2c_dev nouveau serial_cs snd_intel8x0 snd_ac97_codec wmi hwmon ttm ac97_bus 8139cp snd_pcm pcmcia snd_timer snd sg soundcore psmouse yenta_socket serio_raw pcmcia_rsrc pcmcia_core intel_agp parport_pc parport
-> > [   55.444769] CR2: 00000000000001b0
-> > [   55.444774] ---[ end trace e2b0d4c3c2e4e488 ]---
-> > [   55.444827] EIP: nouveau_bo_wr16+0x8/0x27 [nouveau]
-> > [   55.444831] Code: 85 ff 74 0d 80 7d f3 00 74 07 80 a6 f4 01 00 00 fe 89 f0 e8 0c ef ff ff 8d 65 f4 89 f8 5b 5e 5f 5d c3 55 01 d2 89 e5 53 89 c3 <03> 93 b0 01 00 00 0f b7 c1 f6 83 b8 01 00 00 80 74 07 e8 40 49 69
-> > [   55.444835] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
-> > [   55.444838] ESI: 00000020 EDI: e7a14400 EBP: e786fd98 ESP: e786fd94
-> > [   55.444842] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00210246
-> > [   55.444845] CR0: 80050033 CR2: 000001b0 CR3: 27896000 CR4: 00000690
-> 
-> Bisected this crash:
-> # first bad commit: [141b15e59175aa174ca1f7596188bd15a7ca17ba] drm/nouveau: move io_reserve_lru handling into the driver v5
-> 
-> Adding Christian König to CC.
+On Tue, Jun 8, 2021 at 1:01 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> How's that (comment re-flowed):
 
-Tracked it down to an uninitialized variable bug.
-I see now that this was fixed by aea656b0d05ec5b8ed5beb2f94c4dd42ea834e9d.
+Ack, looks good. Additionally, please refer to this thread on
+lore.kernel.org in the commit message so that we can find that
+confirmation about Windows behavior, and I think we're all set.
 
--- 
-Ondrej Zary
+          Linus
