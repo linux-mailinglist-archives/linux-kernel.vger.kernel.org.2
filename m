@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6099F39FF4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E75639FF32
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234368AbhFHScP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:32:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56494 "EHLO mail.kernel.org"
+        id S233707AbhFHSbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:31:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234180AbhFHSbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:31:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8F05613CC;
-        Tue,  8 Jun 2021 18:29:38 +0000 (UTC)
+        id S234047AbhFHSbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:31:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D63961380;
+        Tue,  8 Jun 2021 18:29:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623176979;
-        bh=eaaYOqm4v2bgpowWPDk4ooz33NiH3VUpJWKI+0n3iLg=;
+        s=korg; t=1623176947;
+        bh=cq+BDAlz6yVWbPDX5SFSPBUVhukvOyz3I7Ra/jMwicA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=czdEhxAyjWV0ZK5EXqfTZdTx1BYl7lKxxOsqTDTMMhZhPDt+w15zMmYVRxWx6aZrc
-         BM9Co6mirxy461/aAK4xrXNDJUIN5p6wOKXwjwH0ge5hWwu7EaZ0OQnGPfoi9PzmBQ
-         BGIg5MYVw1sGO1+3Qm1ndFKIqg/dmecntzHCpMmU=
+        b=Vp7BR5ATi7ASXlvAm6lGReEU36zKnbGK/Gz+gQWdwIzBl4nGkBmisG/j9FoKnR4qh
+         S8JgT+DYVzzVBV8EohGkM5kNxeeSy1+ZWC27D/7twIQ1ok0r6irAr7bE8d6b2/BLQD
+         0+8LPlXSewAkn06nmcWhz0BWIgYzojtDQ9euRmP4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Eric Auger <eric.auger@redhat.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 05/29] vfio/pci: zap_vma_ptes() needs MMU
+Subject: [PATCH 4.4 07/23] ieee802154: fix error return code in ieee802154_add_iface()
 Date:   Tue,  8 Jun 2021 20:26:59 +0200
-Message-Id: <20210608175927.993080466@linuxfoundation.org>
+Message-Id: <20210608175926.783295651@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
-References: <20210608175927.821075974@linuxfoundation.org>
+In-Reply-To: <20210608175926.524658689@linuxfoundation.org>
+References: <20210608175926.524658689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 2a55ca37350171d9b43d561528f23d4130097255 ]
+[ Upstream commit 79c6b8ed30e54b401c873dbad2511f2a1c525fd5 ]
 
-zap_vma_ptes() is only available when CONFIG_MMU is set/enabled.
-Without CONFIG_MMU, vfio_pci.o has build errors, so make
-VFIO_PCI depend on MMU.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-riscv64-linux-ld: drivers/vfio/pci/vfio_pci.o: in function `vfio_pci_mmap_open':
-vfio_pci.c:(.text+0x1ec): undefined reference to `zap_vma_ptes'
-riscv64-linux-ld: drivers/vfio/pci/vfio_pci.o: in function `.L0 ':
-vfio_pci.c:(.text+0x165c): undefined reference to `zap_vma_ptes'
-
-Fixes: 11c4cd07ba11 ("vfio-pci: Fault mmaps to enable vma tracking")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Alex Williamson <alex.williamson@redhat.com>
-Cc: Cornelia Huck <cohuck@redhat.com>
-Cc: kvm@vger.kernel.org
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Eric Auger <eric.auger@redhat.com>
-Message-Id: <20210515190856.2130-1-rdunlap@infradead.org>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Fixes: be51da0f3e34 ("ieee802154: Stop using NLA_PUT*().")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210508062517.2574-1-thunder.leizhen@huawei.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ net/ieee802154/nl-phy.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/vfio/pci/Kconfig b/drivers/vfio/pci/Kconfig
-index 24ee2605b9f0..0da884bfc7a8 100644
---- a/drivers/vfio/pci/Kconfig
-+++ b/drivers/vfio/pci/Kconfig
-@@ -1,6 +1,7 @@
- config VFIO_PCI
- 	tristate "VFIO support for PCI devices"
- 	depends on VFIO && PCI && EVENTFD
-+	depends on MMU
- 	select VFIO_VIRQFD
- 	select IRQ_BYPASS_MANAGER
- 	help
+diff --git a/net/ieee802154/nl-phy.c b/net/ieee802154/nl-phy.c
+index 77d73014bde3..11f53dc0c1c0 100644
+--- a/net/ieee802154/nl-phy.c
++++ b/net/ieee802154/nl-phy.c
+@@ -249,8 +249,10 @@ int ieee802154_add_iface(struct sk_buff *skb, struct genl_info *info)
+ 	}
+ 
+ 	if (nla_put_string(msg, IEEE802154_ATTR_PHY_NAME, wpan_phy_name(phy)) ||
+-	    nla_put_string(msg, IEEE802154_ATTR_DEV_NAME, dev->name))
++	    nla_put_string(msg, IEEE802154_ATTR_DEV_NAME, dev->name)) {
++		rc = -EMSGSIZE;
+ 		goto nla_put_failure;
++	}
+ 	dev_put(dev);
+ 
+ 	wpan_phy_put(phy);
 -- 
 2.30.2
 
