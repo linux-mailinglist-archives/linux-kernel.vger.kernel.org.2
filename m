@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745DA39F176
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A3139F17A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhFHI4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:56:53 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50910 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFHI4w (ORCPT
+        id S231256AbhFHI5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:57:18 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:39141 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230306AbhFHI5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:56:52 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B06401FD2A;
-        Tue,  8 Jun 2021 08:54:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623142498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s57GF5EVrU8EkU6hVgTxTv92JSfKxB+kZ8XzRaWUnBM=;
-        b=dMUn34jq76iZfpe+e/UvfR64NqfiyE3bGkAnY7c5GBBn26baRgLDP3PSf/g+WNPP6nOAh3
-        wxNlk4Q/cxIYWdmJZh48684o9Ycgg0G8kmQFLnQFdkIYRoOluOboCH4yj01stu5xe6fkZw
-        n3WP11Zr8PmwFcRZ/QM2wsIbAoeJNFY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623142498;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s57GF5EVrU8EkU6hVgTxTv92JSfKxB+kZ8XzRaWUnBM=;
-        b=QB67RQ6oO8NzzFxSr5nVeyP4+sAxevwN2dFw2I9h2gNFohGorTS0PXXTrCglCxi/x2Cy7D
-        qc3kQ5g6XNatMDAQ==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id A7FFAA3B83;
-        Tue,  8 Jun 2021 08:54:58 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5F9E21F2C94; Tue,  8 Jun 2021 10:54:58 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 10:54:58 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v8 8/8] writeback, cgroup: release dying cgwbs by
- switching attached inodes
-Message-ID: <20210608085458.GC5562@quack2.suse.cz>
-References: <20210608013123.1088882-1-guro@fb.com>
- <20210608013123.1088882-9-guro@fb.com>
+        Tue, 8 Jun 2021 04:57:17 -0400
+Received: from [192.168.1.155] ([77.7.0.189]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MqJZl-1l3PJU3uj5-00nR3j; Tue, 08 Jun 2021 10:55:04 +0200
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Jason Wang <jasowang@redhat.com>, Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Gerd Hoffmann <kraxel@redhat.com>
+References: <20210602120111.5e5bcf93.alex.williamson@redhat.com>
+ <20210602180925.GH1002214@nvidia.com>
+ <20210602130053.615db578.alex.williamson@redhat.com>
+ <20210602195404.GI1002214@nvidia.com>
+ <20210602143734.72fb4fa4.alex.williamson@redhat.com>
+ <6a9426d7-ed55-e006-9c4c-6b7c78142e39@redhat.com>
+ <20210603130927.GZ1002214@nvidia.com>
+ <65614634-1db4-7119-1a90-64ba5c6e9042@redhat.com>
+ <20210604115805.GG1002214@nvidia.com>
+ <895671cc-5ef8-bc1a-734c-e9e2fdf03652@redhat.com>
+ <20210607141424.GF1002214@nvidia.com>
+ <1cf9651a-b8ee-11f1-1f70-db3492a76400@redhat.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <9a5b6675-e21a-cf62-6ea1-66c07e73e3ae@metux.net>
+Date:   Tue, 8 Jun 2021 10:54:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608013123.1088882-9-guro@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1cf9651a-b8ee-11f1-1f70-db3492a76400@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:8kyLIALPf2tB8V1k8OkKPO+t0JzfF1nw6+qQyhnu0hXMra8y0xE
+ 6jTMAZv9U2q49s04k9XDHsGY7Zz+zj1PbDtCUSaFUayZkcDZhg5noOdzNDTmj9H5JfgBRxU
+ tVmITHaGAVxeS/NootJaf9Wo7ND6rbtDzVmKjhhZZB0rh/Od2LmuGKGmpZUJBOU76UkahDH
+ qjbSLLC8JG6uwi9xeZH+A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NKHch6yJ0Zc=:rOP7klmWM3f3oIrFW9VpKr
+ BBvV9RaWe6aDGtA16XwYrQ1FvLMQJgy+7wg1T/6mpmISE3kI7YbMzFteDBiF6Bh+QSEWYoAg2
+ RhexYbCbDtd8B1PG7fUL8pxQhgWJUn3diCm5hVw1lAxrwI3UeyJPiFXCScCM70WacprM/ws+G
+ UY35oxJu1qeyt7h5tbpNj6uHw2utJco6lAKKYKK4nMPQcedVrLp73PbZQEKhdQGsMHmWRhpAs
+ ZFxgp3QPNWmGqa/0NazChPNcDsWJZ2tUuE4XMjSGHtDJfda8VdD6iQjPxZkZXA+3ouU7vRJhZ
+ BM75tNyPemu2xLiD5SKq3Smg4DaLPhQZZgIhbXGld3sHVs5pGtZfXDHPjIyIBsYdK5Q1/4g/j
+ szIm6tHXksp4KbolEcOf+SEjJ1dazkoNzXznRvFao7oxpSuwYV8bIJBsuTosFUdTpNck5omTL
+ 9B1TmZUX8SAc/S3jB4aJSDDHL72Ob833jj/WG8RWmKr2lh8A7eCyv0vwsRnKHelgu92Hu+jzR
+ upIGX+uczX+fYEzNP2pysc=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 07-06-21 18:31:23, Roman Gushchin wrote:
-> Asynchronously try to release dying cgwbs by switching attached inodes
-> to the nearest living ancestor wb. It helps to get rid of per-cgroup
-> writeback structures themselves and of pinned memory and block cgroups,
-> which are significantly larger structures (mostly due to large per-cpu
-> statistics data). This prevents memory waste and helps to avoid
-> different scalability problems caused by large piles of dying cgroups.
-> 
-> Reuse the existing mechanism of inode switching used for foreign inode
-> detection. To speed things up batch up to 115 inode switching in a
-> single operation (the maximum number is selected so that the resulting
-> struct inode_switch_wbs_context can fit into 1024 bytes). Because
-> every switching consists of two steps divided by an RCU grace period,
-> it would be too slow without batching. Please note that the whole
-> batch counts as a single operation (when increasing/decreasing
-> isw_nr_in_flight). This allows to keep umounting working (flush the
-> switching queue), however prevents cleanups from consuming the whole
-> switching quota and effectively blocking the frn switching.
-> 
-> A cgwb cleanup operation can fail due to different reasons (e.g. not
-> enough memory, the cgwb has an in-flight/pending io, an attached inode
-> in a wrong state, etc). In this case the next scheduled cleanup will
-> make a new attempt. An attempt is made each time a new cgwb is offlined
-> (in other words a memcg and/or a blkcg is deleted by a user). In the
-> future an additional attempt scheduled by a timer can be implemented.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Tejun Heo <tj@kernel.org>
-> Acked-by: Dennis Zhou <dennis@kernel.org>
+On 08.06.21 03:00, Jason Wang wrote:
 
-The patch looks good. Feel free to add:
+Hi folks,
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> Just to make sure we are in the same page. What I meant is, if the DMA 
+> behavior like (no-snoop) is device specific. There's no need to mandate 
+> a virtio general attributes. We can describe it per device. The devices 
+> implemented in the current spec does not use non-coherent DMA doesn't 
+> mean any future devices won't do that. The driver could choose to use 
+> transport (e.g PCI), platform (ACPI) or device specific (general virtio 
+> command) way to detect and flush cache when necessary.
 
-Just one codingstyle nit below.
+Maybe I've totally misunderstood the whole issue, but what I've learned
+to far:
 
-> +		if (!wb_tryget(wb))
-> +			continue;
-> +
-> +		spin_unlock_irq(&cgwb_lock);
-> +		while ((cleanup_offline_cgwb(wb)))
-			^^ too many parentheses here...
+* it's a performance improvement for certain scenarios
+* whether it can be used depends on the devices as well as the
+   underlying transport (combination of both)
+* whether it should be used (when possible) can only be decided by the
+   driver
+
+Correct ?
+
+I tend to believe that's something that virtio infrastructure should
+handle in a generic way.
+
+Maybe the device as well as the transport could announce their
+capability (which IMHO should go via the virtio protocol), and if both
+are capable, the (guest's) virtio subsys tells the driver whether it's
+usable for a specific device. Perhaps we should also have a mechanism
+to tell the device that it's actually used.
 
 
-> +			cond_resched();
-> +		spin_lock_irq(&cgwb_lock);
+Sorry, if i'm completely on the wrong page and just talking junk here :o
 
-								Honza
+
+--mtx
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
