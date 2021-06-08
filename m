@@ -2,105 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6061239F323
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92DD39F326
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhFHKGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:06:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229937AbhFHKGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:06:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78A6461029;
-        Tue,  8 Jun 2021 10:04:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623146665;
-        bh=EK4el4APpWCVjBrcLKlrQLh70FOtGjt4sfJI+r/oQbQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D4bKQmu6jUCjqPf81K8pwAh+t3QvnyhMzv723S1kIkRsTF/TJzXnYMevmDgfbwy1v
-         ZWo8ikCJP5rQVC+vCnxFO3S0Q6hrOKsannfUCZMx2K3kL0A+BYM66jKgHEmNJeyBKz
-         IrDuXU7eTs39I7bR1bLcocZbZmoyatU89XU1cGU0=
-Date:   Tue, 8 Jun 2021 12:04:22 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?SmnFmcOt?= Prchal <jiri.prchal@aksignal.cz>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v8 5/5] nvmem: eeprom: add documentation of sysfs fram
- and sernum file
-Message-ID: <YL9AptarCWwSwuvq@kroah.com>
-References: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
- <20210607161201.223697-6-jiri.prchal@aksignal.cz>
- <YL8yveuSWTC9iEEz@kroah.com>
- <d0aa3003-0cb7-53c8-6d0e-f1c2dcd90479@aksignal.cz>
+        id S231237AbhFHKHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:07:16 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:35905 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231171AbhFHKHO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 06:07:14 -0400
+Received: from [192.168.1.155] ([77.7.0.189]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MGhi0-1lcrUf1vYQ-00DrOa; Tue, 08 Jun 2021 12:05:07 +0200
+Subject: Re: [PATCH v7 0/8] Expose and manage PCI device reset
+To:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+References: <20210608054857.18963-1-ameynarkhede03@gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <abcbaf1b-6b5f-bddc-eba1-e1e8e3ecf40e@metux.net>
+Date:   Tue, 8 Jun 2021 12:05:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210608054857.18963-1-ameynarkhede03@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d0aa3003-0cb7-53c8-6d0e-f1c2dcd90479@aksignal.cz>
+X-Provags-ID: V03:K1:RGaOtZoJIxkoDyTURXqBMhsPOVpaQp6wbfZz3Q4JDHlJQ7lr7qr
+ 2qXRe7Gb2Tq7dP0TWzswxs+ZWpp+kncTUhK4S068Tm67+w3HejHdTMIfSF2RZxrX2mCjG4/
+ nabyAXczLtKuM6SHqt2XFCf3oxnlpIHCUBze78jueZ5EF7JsoibG3qKgOQ/5dakcbFJIhc2
+ jkRCa2pB0KKyLLvhDqCXA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oRflVmLBle8=:kcMMOWT0PKcbm1aw0D/mNW
+ +Gc+qYffe7XOw0UFh6dE2sKOZ/B+fAOok4O/HZwB+gSSN49P5huCcC4z2JczhAg3+veMD7lss
+ nafitkcG6vXQE30Sz6vkKbjVAtlY+QS4FZP9Kgp+MuJfuX7gWR8ZK+yqu2WN1cezWC+uszk8M
+ flI40De/BSsFrwgAXAiEEz7kunlrBjdLw0raW4cAbLrN/9ySnh/Zn2kCvqBoQEAfKLlSZ1tVD
+ bmV3Uqg0ROmC2zl+tYOizw6FCptwHmga3J+jLBtOZwPseHW3Lyt3PHxFohGFedL6mUhQ8krOC
+ g14GyDjZt1Qlj7GlroJ0NT5znX+utloTdE/svjtdGxWyBEYpJ0Occrzal/8XgWCaEzX8OebbT
+ 431ZPlg5BBmeyff/QFGddLj+55H7RNglWHR5IjXSYg7LcNtJ3Zz9bfPZ6iRMN4eXsyNjeXxWL
+ dDsgo6FJdBWLeZtBEutlVOwoGDsKkudgMOKHAcBZnAFOABUrmsmpuwfL0T2kpFq0liTb8sgSc
+ ffupm2Q8zBIQOoh7AiU7B0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 11:50:03AM +0200, Jiří Prchal wrote:
-> 
-> 
-> On 08. 06. 21 11:05, Greg Kroah-Hartman wrote:
-> > On Mon, Jun 07, 2021 at 06:12:01PM +0200, Jiri Prchal wrote:
-> > > Added sysfs fram and sernum file documentation.
-> > > 
-> > > Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
-> > > ---
-> > > v5: new
-> > > v6: no change here
-> > > v7: no change here
-> > > v8: added fram file doc
-> > > ---
-> > >   Documentation/ABI/testing/sysfs-class-spi-eeprom | 13 +++++++++++++
-> > >   1 file changed, 13 insertions(+)
-> > >   create mode 100644 Documentation/ABI/testing/sysfs-class-spi-eeprom
-> > > 
-> > > diff --git a/Documentation/ABI/testing/sysfs-class-spi-eeprom b/Documentation/ABI/testing/sysfs-class-spi-eeprom
-> > > new file mode 100644
-> > > index 000000000000..b41420fe1329
-> > > --- /dev/null
-> > > +++ b/Documentation/ABI/testing/sysfs-class-spi-eeprom
-> > > @@ -0,0 +1,13 @@
-> > > +What:		/sys/class/spi_master/spi<bus>/spi<bus>.<dev>/sernum
-> > > +Date:		May 2021
-> > > +KernelVersion:	5.13
-> > > +Contact:	Jiri Prchal <jiri.prchal@aksignal.cz>
-> > > +Description:
-> > > +		(RO) Exports serial number of Cypress FRAM (FM25VN). 8 bytes as is in chip in hex string.
-> > 
-> > Please properly wrap your lines.
-> > 
-> > What is "(RO)" here?
-> 
-> Read Only, as seen in another doc.
+On 08.06.21 07:48, Amey Narkhede wrote:
 
-Perhaps this should say something like:
-	Contains the serial number of the Cypress FRAM (FM25VN) if it is
-	present.  It will be displayed as a 8 byte hex string, as read
-	from the device.
+Hi,
 
-	This is a read-only attribute.
+> PCI and PCIe devices may support a number of possible reset mechanisms
+> for example Function Level Reset (FLR) provided via Advanced Feature or
+> PCIe capabilities, Power Management reset, bus reset, or device specific reset.
+> Currently the PCI subsystem creates a policy prioritizing these reset methods
+> which provides neither visibility nor control to userspace.
 
-> > And the grammer is a bit odd, what is the second sentence supposed to
-> > mean?
-> > 
-> > > +
-> > > +What:		/sys/class/spi_master/spi<bus>/spi<bus>.<dev>/fram
-> > > +Date:		June 2021
-> > > +KernelVersion:	5.13
-> > 
-> > Obviously it can not make 5.13, right?
-> 
-> Sorry for missunderstanding, what number should be here?
+Since I've got a current use case for that - could you perhaps tell more
+about the whole pci device reset mechanisms ?
 
-5.14 if all goes well, right?
+In my case I've got a board that wires reset lines to the soc's gpios.
+Not sure how exactly to qualify this, but I guess it would count as a
+bus wide reset.
 
-thanks,
+Now the big question for me is how to implement that in a board specific
+platform driver (which already does setup of gpios and other attached
+devices), so we can reset the card in slot X in a generic way.
 
-greg k-h
+Any help highly appreciated.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
