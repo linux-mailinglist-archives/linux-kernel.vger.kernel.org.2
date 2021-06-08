@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FC83A0370
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D213A01EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbhFHTQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:16:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40100 "EHLO mail.kernel.org"
+        id S235239AbhFHS6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:58:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237822AbhFHTFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:05:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72A716142D;
-        Tue,  8 Jun 2021 18:46:42 +0000 (UTC)
+        id S235595AbhFHSvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:51:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AFDD613D5;
+        Tue,  8 Jun 2021 18:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178003;
-        bh=4cpJrC+qDZ4i+XOG+qq41pqPN2GzUACvaDFGJms1hMQ=;
+        s=korg; t=1623177595;
+        bh=kjZ3YxOZJcyI0h9SmN2ZkFI3plBsGpkHyYBEM5cqhwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D9IU4Q8dodrahBBtbmghn1McdL4GeDarlS86A5bQLGabEj3AdTf+L64cQnQAqLDus
-         JXHYXYS9azslHUW+AuWWDI0hxz2GMA9VSnZdCV83LuL2J7eIpSOkkfxhRGY2G4yjwS
-         Bg1Js/VjzkJBNzu+kqVPYZ0uAHgZZ+XiKCymtdBg=
+        b=citQaWiWqNp6UQx81f4e+ji+xhus6FDLjeLn5XhXF7YB4zpKZ5XJ3rRqCOHo3a3+x
+         Ol2GaOrnmzWUSmx53tMPVF1gEIRINVq+mrGPxJ2sh2ksjW3zhX0CbkDfenY7NNOgNf
+         N8cXdis9HBBOPl88YhrWRVpLOypoQw/URsr4uAjM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Israel Rukshin <israelr@nvidia.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 039/161] nvmet: fix freeing unallocated p2pmem
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 029/137] net/mlx5e: Fix incompatible casting
 Date:   Tue,  8 Jun 2021 20:26:09 +0200
-Message-Id: <20210608175946.783576152@linuxfoundation.org>
+Message-Id: <20210608175943.403998130@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,118 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Gurtovoy <mgurtovoy@nvidia.com>
+From: Aya Levin <ayal@nvidia.com>
 
-[ Upstream commit bcd9a0797d73eeff659582f23277e7ab6e5f18f3 ]
+[ Upstream commit d8ec92005f806dfa7524e9171eca707c0bb1267e ]
 
-In case p2p device was found but the p2p pool is empty, the nvme target
-is still trying to free the sgl from the p2p pool instead of the
-regular sgl pool and causing a crash (BUG() is called). Instead, assign
-the p2p_dev for the request only if it was allocated from p2p pool.
+Device supports setting of a single fec mode at a time, enforce this
+by bitmap_weight == 1. Input from fec command is in u32, avoid cast to
+unsigned long and use bitmap_from_arr32 to populate bitmap safely.
 
-This is the crash that was caused:
-
-[Sun May 30 19:13:53 2021] ------------[ cut here ]------------
-[Sun May 30 19:13:53 2021] kernel BUG at lib/genalloc.c:518!
-[Sun May 30 19:13:53 2021] invalid opcode: 0000 [#1] SMP PTI
-...
-[Sun May 30 19:13:53 2021] kernel BUG at lib/genalloc.c:518!
-...
-[Sun May 30 19:13:53 2021] RIP: 0010:gen_pool_free_owner+0xa8/0xb0
-...
-[Sun May 30 19:13:53 2021] Call Trace:
-[Sun May 30 19:13:53 2021] ------------[ cut here ]------------
-[Sun May 30 19:13:53 2021]  pci_free_p2pmem+0x2b/0x70
-[Sun May 30 19:13:53 2021]  pci_p2pmem_free_sgl+0x4f/0x80
-[Sun May 30 19:13:53 2021]  nvmet_req_free_sgls+0x1e/0x80 [nvmet]
-[Sun May 30 19:13:53 2021] kernel BUG at lib/genalloc.c:518!
-[Sun May 30 19:13:53 2021]  nvmet_rdma_release_rsp+0x4e/0x1f0 [nvmet_rdma]
-[Sun May 30 19:13:53 2021]  nvmet_rdma_send_done+0x1c/0x60 [nvmet_rdma]
-
-Fixes: c6e3f1339812 ("nvmet: add metadata support for block devices")
-Reviewed-by: Israel Rukshin <israelr@nvidia.com>
-Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: 4bd9d5070b92 ("net/mlx5e: Enforce setting of a single FEC mode")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/core.c | 33 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
-index 348057fdc568..7d16cb4cd8ac 100644
---- a/drivers/nvme/target/core.c
-+++ b/drivers/nvme/target/core.c
-@@ -999,19 +999,23 @@ static unsigned int nvmet_data_transfer_len(struct nvmet_req *req)
- 	return req->transfer_len - req->metadata_len;
- }
- 
--static int nvmet_req_alloc_p2pmem_sgls(struct nvmet_req *req)
-+static int nvmet_req_alloc_p2pmem_sgls(struct pci_dev *p2p_dev,
-+		struct nvmet_req *req)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index 986f0d86e94d..bc7c1962f9e6 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -1618,12 +1618,13 @@ static int mlx5e_set_fecparam(struct net_device *netdev,
  {
--	req->sg = pci_p2pmem_alloc_sgl(req->p2p_dev, &req->sg_cnt,
-+	req->sg = pci_p2pmem_alloc_sgl(p2p_dev, &req->sg_cnt,
- 			nvmet_data_transfer_len(req));
- 	if (!req->sg)
- 		goto out_err;
+ 	struct mlx5e_priv *priv = netdev_priv(netdev);
+ 	struct mlx5_core_dev *mdev = priv->mdev;
++	unsigned long fec_bitmap;
+ 	u16 fec_policy = 0;
+ 	int mode;
+ 	int err;
  
- 	if (req->metadata_len) {
--		req->metadata_sg = pci_p2pmem_alloc_sgl(req->p2p_dev,
-+		req->metadata_sg = pci_p2pmem_alloc_sgl(p2p_dev,
- 				&req->metadata_sg_cnt, req->metadata_len);
- 		if (!req->metadata_sg)
- 			goto out_free_sg;
- 	}
-+
-+	req->p2p_dev = p2p_dev;
-+
- 	return 0;
- out_free_sg:
- 	pci_p2pmem_free_sgl(req->p2p_dev, req->sg);
-@@ -1019,25 +1023,19 @@ out_err:
- 	return -ENOMEM;
- }
+-	if (bitmap_weight((unsigned long *)&fecparam->fec,
+-			  ETHTOOL_FEC_LLRS_BIT + 1) > 1)
++	bitmap_from_arr32(&fec_bitmap, &fecparam->fec, sizeof(fecparam->fec) * BITS_PER_BYTE);
++	if (bitmap_weight(&fec_bitmap, ETHTOOL_FEC_LLRS_BIT + 1) > 1)
+ 		return -EOPNOTSUPP;
  
--static bool nvmet_req_find_p2p_dev(struct nvmet_req *req)
-+static struct pci_dev *nvmet_req_find_p2p_dev(struct nvmet_req *req)
- {
--	if (!IS_ENABLED(CONFIG_PCI_P2PDMA))
--		return false;
--
--	if (req->sq->ctrl && req->sq->qid && req->ns) {
--		req->p2p_dev = radix_tree_lookup(&req->sq->ctrl->p2p_ns_map,
--						 req->ns->nsid);
--		if (req->p2p_dev)
--			return true;
--	}
--
--	req->p2p_dev = NULL;
--	return false;
-+	if (!IS_ENABLED(CONFIG_PCI_P2PDMA) ||
-+	    !req->sq->ctrl || !req->sq->qid || !req->ns)
-+		return NULL;
-+	return radix_tree_lookup(&req->sq->ctrl->p2p_ns_map, req->ns->nsid);
- }
- 
- int nvmet_req_alloc_sgls(struct nvmet_req *req)
- {
--	if (nvmet_req_find_p2p_dev(req) && !nvmet_req_alloc_p2pmem_sgls(req))
-+	struct pci_dev *p2p_dev = nvmet_req_find_p2p_dev(req);
-+
-+	if (p2p_dev && !nvmet_req_alloc_p2pmem_sgls(p2p_dev, req))
- 		return 0;
- 
- 	req->sg = sgl_alloc(nvmet_data_transfer_len(req), GFP_KERNEL,
-@@ -1066,6 +1064,7 @@ void nvmet_req_free_sgls(struct nvmet_req *req)
- 		pci_p2pmem_free_sgl(req->p2p_dev, req->sg);
- 		if (req->metadata_sg)
- 			pci_p2pmem_free_sgl(req->p2p_dev, req->metadata_sg);
-+		req->p2p_dev = NULL;
- 	} else {
- 		sgl_free(req->sg);
- 		if (req->metadata_sg)
+ 	for (mode = 0; mode < ARRAY_SIZE(pplm_fec_2_ethtool); mode++) {
 -- 
 2.30.2
 
