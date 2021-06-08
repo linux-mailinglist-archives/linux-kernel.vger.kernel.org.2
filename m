@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D4D3A0400
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A43E3A0145
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239733AbhFHTZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:25:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58010 "EHLO mail.kernel.org"
+        id S236251AbhFHSuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:50:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237868AbhFHTNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:13:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3176761966;
-        Tue,  8 Jun 2021 18:49:41 +0000 (UTC)
+        id S235886AbhFHSpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:45:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8436761456;
+        Tue,  8 Jun 2021 18:37:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178181;
-        bh=NOZbMXeutHh7NJDxx1KE3YzW/s89xWBSFAQ3/YlD3XE=;
+        s=korg; t=1623177427;
+        bh=oeIJxlR7AXuh9WbZn39mU8IBBqnUBFUMA+oHPdoKIyg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iO20nJIKf0Q+nCLVFwpzzkY6ZOQKnrTwHdRFb/F1LXAg++oFUiE5aCaqNn8htzgRa
-         FpzMareoAaFfT0ot4taZZy0FqYc7SICG6E8grwaK+hPSzbgsEluKb1xRRuGkJCwVlc
-         h//3khFCUwujHehzLZOTrON9AMGrRrfYPmzf/x9E=
+        b=Wlk8s+qi1G9nDL86CNC4y5rBCaKcpVqWeTss/KFyYNRGPlpnrAxiZ4d0nth5t43Uo
+         592K16Bv3RONg+ZZ4gkMm2E7/HxU2wFy1cNd0Bu6vz2gVyW4UF7p7GGEM4tL+cyRIP
+         iNIE9GE36iTHVq/H6F8c8CK5jbdQKs4Hj49Z8+ZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johnny Chuang <johnny.chuang.emc@gmail.com>,
-        Harry Cutts <hcutts@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH 5.12 107/161] HID: i2c-hid: Skip ELAN power-on command after reset
+        stable@vger.kernel.org, Carlos M <carlos.marr.pz@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 48/78] ALSA: hda: Fix for mute key LED for HP Pavilion 15-CK0xx
 Date:   Tue,  8 Jun 2021 20:27:17 +0200
-Message-Id: <20210608175949.086712403@linuxfoundation.org>
+Message-Id: <20210608175936.896168181@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,63 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johnny Chuang <johnny.chuang.emc@gmail.com>
+From: Carlos M <carlos.marr.pz@gmail.com>
 
-commit ca66a6770bd9d6d99e469debd1c7363ac455daf9 upstream.
+commit 901be145a46eb79879367d853194346a549e623d upstream.
 
-For ELAN touchscreen, we found our boot code of IC was not flexible enough
-to receive and handle this command.
-Once the FW main code of our controller is crashed for some reason,
-the controller could not be enumerated successfully to be recognized
-by the system host. therefore, it lost touch functionality.
+For the HP Pavilion 15-CK0xx, with audio subsystem ID 0x103c:0x841c,
+adding a line in patch_realtek.c to apply the ALC269_FIXUP_HP_MUTE_LED_MIC3
+fix activates the mute key LED.
 
-Add quirk for skip send power-on command after reset.
-It will impact to ELAN touchscreen and touchpad on HID over I2C projects.
-
-Fixes: 43b7029f475e ("HID: i2c-hid: Send power-on command after reset").
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
-Reviewed-by: Harry Cutts <hcutts@chromium.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Tested-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Signed-off-by: Carlos M <carlos.marr.pz@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210531202026.35427-1-carlos.marr.pz@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hid/i2c-hid/i2c-hid-core.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -45,6 +45,7 @@
- #define I2C_HID_QUIRK_BOGUS_IRQ			BIT(4)
- #define I2C_HID_QUIRK_RESET_ON_RESUME		BIT(5)
- #define I2C_HID_QUIRK_BAD_INPUT_SIZE		BIT(6)
-+#define I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET	BIT(7)
- 
- 
- /* flags */
-@@ -178,6 +179,11 @@ static const struct i2c_hid_quirks {
- 		 I2C_HID_QUIRK_RESET_ON_RESUME },
- 	{ USB_VENDOR_ID_ITE, I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720,
- 		I2C_HID_QUIRK_BAD_INPUT_SIZE },
-+	/*
-+	 * Sending the wakeup after reset actually break ELAN touchscreen controller
-+	 */
-+	{ USB_VENDOR_ID_ELAN, HID_ANY_ID,
-+		 I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET },
- 	{ 0, 0 }
- };
- 
-@@ -461,7 +467,8 @@ static int i2c_hid_hwreset(struct i2c_cl
- 	}
- 
- 	/* At least some SIS devices need this after reset */
--	ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
-+	if (!(ihid->quirks & I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET))
-+		ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
- 
- out_unlock:
- 	mutex_unlock(&ihid->reset_lock);
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8062,6 +8062,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x82bf, "HP G3 mini", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x82c0, "HP G3 mini premium", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
++	SND_PCI_QUIRK(0x103c, 0x841c, "HP Pavilion 15-CK0xx", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
 
 
