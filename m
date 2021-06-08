@@ -2,163 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF23539F881
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE8A39F87D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233146AbhFHOMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:12:40 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:33422 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232341AbhFHOMh (ORCPT
+        id S233093AbhFHOME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:12:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40756 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232341AbhFHOMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:12:37 -0400
-Received: by mail-vs1-f48.google.com with SMTP id f11so10934001vst.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 07:10:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qp8WuOu/yqqzZGYlja6yQLelD5XFkPHgD8DhKXXS7ro=;
-        b=Ngez4LhsjD28ltuqAm67nRZDKVF0T8J9PHugigwnNrmTxUHfMqTDp7mdwQxshrZqs8
-         whMzQb8hIZzN+OzjXWH10zkPKDlsTf+I1ONzkoGm5abJtoU9OBojooe6bclXynCUydPU
-         +up+5mXXKfUBp7UnAvGp5h5Xfwt7mar+OYTkSQp5wi944GEh5z6dVros9yBcdHtegrOn
-         D9pav/S4qjO2w1DHioqQZLoO5SBUGZlDRkqswLf2Mc0aLXowisHzfO315npQq+yIH5eO
-         BOILkMHrMJnz9c1W9BgfAcrZiSZWrAyPYjtQ5+Uv9iTT3x39aaBek8aMSmM7Z5yfHm8L
-         O+tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qp8WuOu/yqqzZGYlja6yQLelD5XFkPHgD8DhKXXS7ro=;
-        b=DcUqnZJMKmn+LUfnNihu7nG+xgvc041h6LE5+Cjpw/bkDDODF9YA92JPvN0Mjm56fL
-         0KroYrjToQdYLNtTMaZZJow/sdguB1kKTefY9R3/tRPLlCmQbVNYRgbmNZ1UEEfLarTm
-         MIRwZRVtS38ctoYmBY36L3dpyi9Ojhoo/Gl6p/nAcczoZ8Q7YU7zggSBAchAKTp320zl
-         kUw6a1S7XSUWbMq8pTHANrVUZ50AlWuUnCnWyNZ/n367q0pdKypkhQF+4i6deIwtayIy
-         zNUvdP1DwHOPugaPqp5Cg/V/ScyFECaGa+fGJcgh6PBxQl9NR2BPUtZCZKQSLEKDu6hU
-         QQ8A==
-X-Gm-Message-State: AOAM5303oZdNxX0ja1VCvwh3g/SCetS5FCDs+9+k2bngRc/1xFTFg3Ap
-        BkmA/Q6fPF5bJM28NvJl1XurzqgCmNsJ11FCvs/lAw==
-X-Google-Smtp-Source: ABdhPJz+8aUtsghoOR4YkaB8PUCKU90IQgYbzEXPK69sfo2EEUdG6HSiOPmbxfCMbM/C+gjLqvF+otkfXEba8huQRaY=
-X-Received: by 2002:a05:6102:7c1:: with SMTP id y1mr232062vsg.34.1623161372065;
- Tue, 08 Jun 2021 07:09:32 -0700 (PDT)
+        Tue, 8 Jun 2021 10:12:02 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D2861219DB;
+        Tue,  8 Jun 2021 14:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623161408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VhPo8dfy0xqBD8sGYJWaEov9nrLg7JdQXq4991+PWPY=;
+        b=A1J+vmBYmj0iUx39XP3PGnz5p2LG5HxgC1OO/gbmfuIrGjUOS3hGDCR8Xl/N+6kA9nhLOO
+        uUj7/UsN21Sr0Yq7PNASXWpN/jcqLlQzRouA2+on2Bm4JWyj/ewmY9VAzGNUcMexFVVpr3
+        SapV78epvqreCwY/362Bvh3QCr+Wdm0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623161408;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VhPo8dfy0xqBD8sGYJWaEov9nrLg7JdQXq4991+PWPY=;
+        b=Sfb6DVpg99StlMgZN7IhLGwY9pBKyirc1uJjGgznWIY5OgCTBWz2HZLMscv6agVTP3QykH
+        TJf1rOLbuyan15AQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id BB4AA118DD;
+        Tue,  8 Jun 2021 14:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623161408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VhPo8dfy0xqBD8sGYJWaEov9nrLg7JdQXq4991+PWPY=;
+        b=A1J+vmBYmj0iUx39XP3PGnz5p2LG5HxgC1OO/gbmfuIrGjUOS3hGDCR8Xl/N+6kA9nhLOO
+        uUj7/UsN21Sr0Yq7PNASXWpN/jcqLlQzRouA2+on2Bm4JWyj/ewmY9VAzGNUcMexFVVpr3
+        SapV78epvqreCwY/362Bvh3QCr+Wdm0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623161408;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VhPo8dfy0xqBD8sGYJWaEov9nrLg7JdQXq4991+PWPY=;
+        b=Sfb6DVpg99StlMgZN7IhLGwY9pBKyirc1uJjGgznWIY5OgCTBWz2HZLMscv6agVTP3QykH
+        TJf1rOLbuyan15AQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id tf2TLUB6v2BZAgAALh3uQQ
+        (envelope-from <hare@suse.de>); Tue, 08 Jun 2021 14:10:08 +0000
+To:     gregkh@linuxfoundation.org
+Cc:     christian.brauner@ubuntu.com, containers@lists.linux.dev,
+        linux-kernel@vger.kernel.org, lkml@metux.net
+References: <YL9liW99Ytf6uBlu@kroah.com>
+From:   Hannes Reinecke <hare@suse.de>
+Subject: Re: device namespaces
+Message-ID: <9157affa-b27a-c0f4-f6ee-def4a991fd4e@suse.de>
+Date:   Tue, 8 Jun 2021 16:10:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <20210603093438.138705-1-ulf.hansson@linaro.org>
- <20210603093438.138705-5-ulf.hansson@linaro.org> <CAPDyKFp2dKFQpLMgazXumCxf=FHQ9bdadXUkGsjiAwniF8p2dw@mail.gmail.com>
- <YL9oMVqox7GVASen@gerhold.net>
-In-Reply-To: <YL9oMVqox7GVASen@gerhold.net>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 8 Jun 2021 16:08:55 +0200
-Message-ID: <CAPDyKFrvrikCZLX1EvmLZumeCnfAxUUssO2OWc130TG8oey=qw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] PM: domains: Drop/restore performance state votes
- for devices at system PM
-To:     Stephan Gerhold <stephan@gerhold.net>,
-        Mark Brown <broonie@kernel.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YL9liW99Ytf6uBlu@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 at 14:53, Stephan Gerhold <stephan@gerhold.net> wrote:
+On Tue, Jun 08, 2021 Greg-KH wrote:
+> On Tue, Jun 08, 2021 at 02:30:50PM +0200, Christian Brauner wrote:
+>> On Tue, Jun 08, 2021 at 11:38:16AM +0200, Enrico Weigelt,
+>> metux IT consult wrote:
+>>> Hello folks,
+>>>
+>>>
+>>> I'm going to implement device namespaces, where containers can get
+>>> an entirely different view of the devices in the machine (usually
+>>> just a specific subset, but possibly additional virtual devices).
+>>>
+[ .. ]
+>>> Is this a good way to go ? Or what would be a better one ?
+>>
+>> Ccing Greg. Without adressing specific problems, I should warn you
+>> that this idea is not new and the plan is unlikely to go anywhere.
+>> Especially not without support from Greg.
 >
-> Hi,
+> Hah, yeah, this is a non-starter.
 >
-> On Thu, Jun 03, 2021 at 12:20:57PM +0200, Ulf Hansson wrote:
-> > + Mark Brown, Dmitry Baryshkov
-> >
-> > On Thu, 3 Jun 2021 at 11:34, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > >
-> > > Recent changes in genpd drops and restore performance state votes for
-> > > devices during runtime PM.
-> > >
-> > > For the similar reasons, but to avoid the same kind of boilerplate code in
-> > > device PM callbacks for system sleep in subsystems/drivers, let's drop and
-> > > restore performance states votes in genpd for the attached devices during
-> > > system sleep.
-> > >
-> > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> >
-> > After a second thought, it looks like we maybe should defer to apply
-> > this final patch of the series. At least until we figured out how to
-> > address the below issue:
-> >
-> > So, I noticed that we have things like "regulator-fixed-domain", that
-> > uses "required-opps" to enable/disable a regulator through the
-> > dev_pm_set_performance_state() interface.
+> Enrico, what real problem are you trying to solve by doing this?  And
+> have you tried anything with this yet?  We almost never talk about
+> "proposals" without seeing real code as it's pointless to discuss
+> things when you haven't even proven that it can work.
 >
-> Not directly related to your concern, but related to another discussion
-> we had recently: To me, this looks mostly like another solution for
-> voting for performance states without doing full DVFS, also known as
-> assigned-performance-states [1] or required-opps on devices [2]. :)
+> So let's see code before even talking about this...
 >
-> It's just wrapped in a regulator interface here. Actually, if we
-> implement [2], the regulator-fixed-domain should mostly just become some
-> sort of simple wrapper around runtime PM for the regulator device, since
-> the required-opp might be applied automatically then.
-
-Honestly, I am not sure about what the regulator-fixed-domain intends
-to model, but I assume it's something that fits well to be modelled as
-a plain regulator, to start with.
-
-Perhaps Mark can chime in and spread some light over this?
-
+> And as Christian points out, you can do this today without any kernel
+> changes, so to think you need to modify the kernel means that you
+> haven't even tried this at all?
 >
-> [1]: https://lore.kernel.org/linux-arm-msm/1622095949-2014-1-git-send-email-rnayak@codeaurora.org/
-> [2]: https://lore.kernel.org/linux-arm-msm/YLYV3ov%2FiBffZMg4@gerhold.net/
->
-> > We likely don't want to drop the performance state internally in genpd
-> > when genpd_suspend_noirq() gets called, for the corresponding struct
-> > device for the regulator.
-> >
->
-> So your concern is that the performance state is dropped during suspend
-> even though the regulator core thinks the regulator stays enabled?
+Curious, I had been looking into this, too.
+And I have to side with Greg and Christian that your proposal should
+already be possible today (cf device groups, which curiously has a
+near-identical interface to what you proposed).
+Also, I think that a generic 'device namespace' is too broad a scope;
+some subsystems like net already inherited namespace support, and it
+turns out to be not exactly trivial to implement.
 
-Yes.
+What I'm looking at, though, is to implement 'block' namespaces, to
+restrict access to _new_ block devices to any give namespace.
+Case in point: if a container creates a ramdisk it's questionable
+whether other containers should even see it. iSCSI devices are a similar
+case; when starting iSCSI devices from containers their use should be
+restricted to that container.
+And that's not only the device node in /dev, but would also entail sysfs
+access, which from my understanding is not modified with the current code.
 
->
-> I played with regulator-fixed-domain a bit and I would say this is
-> already broken (unless you rely on one of the side effects I mentioned
-> in [3]). The power domain gets powered off entirely during system
-> suspend, and then the performance state won't have any effect either.
+uevent redirection would help here, but from what I've seen it's only
+for net devices; feels a bit awkward to have a network namespace to get
+uevents for block devices, but then I'll have to test.
+And, of course, that also doesn't change the sysfs layout.
 
-Right, I get your point.
+Cheers,
 
-Although, this isn't a problem, because the on/off and performance
-states are today considered as orthogonal in gendp. Well, at least
-currently until/if we decide to change this.
-
->
-> I guess we would need some way to say that this device should only be
-> managed through runtime PM and never automatically suspended during
-> system suspend?
-
-Yes!
-
-For the on/off state, genpd uses the system wakeup interface to
-understand whether the device is used in a wakeup path, see the call
-to device_wakeup_path() in genpd_finish_suspend().
-If that's the case the PM domain stays powered on during system suspend.
-
-Potentially we could use the same interface (or something similar) to
-support these kinds of cases.
-
->
-> Stephan
->
-> [3]: https://lore.kernel.org/linux-pm/YLkOAyydZMnxkEy+@gerhold.net/
-
-Kind regards
-Uffe
+Hannes
+-- 
+Dr. Hannes Reinecke		           Kernel Storage Architect
+hare@suse.de			                  +49 911 74053 688
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
