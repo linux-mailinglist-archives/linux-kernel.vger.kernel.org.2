@@ -2,146 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6873239F78B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3202E39F799
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232955AbhFHNT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:19:58 -0400
-Received: from mail-bn8nam12on2082.outbound.protection.outlook.com ([40.107.237.82]:50145
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        id S232942AbhFHNUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:20:39 -0400
+Received: from mail-dm3nam07on2061.outbound.protection.outlook.com ([40.107.95.61]:26144
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232903AbhFHNTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:19:52 -0400
+        id S232950AbhFHNU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 09:20:26 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CKrfJqhlVKj1D7kG4bZLLTOujDFmnpZsidlIjgZH8LD3kO7jqMuq88cFbggg99KrwfXhOTO4QMKinBRcsc+GxMSdS5xrJSJI9OuylXz7OJSOZkfon7QCtZZ/V25BelIfEBoUEbdHHGBI+vD6uGVSAbjTszXCUzTacfdBh1WiAjnWtBPWezF+s+GdYxOKC4DsNPr2GbSh4jkeVAJzv+O+SzcEV5gO9IpCDbrnIn1zLaChZyiEr+NyLc1y75bnj7l6AeaAYcUdN/0ZcTA7sebaK2PZkx+PdBmAUo1H+E8U4XEfN+JpsX1+II/ML0ex/x2Kin7tqZ3PMcFKD3z8Wizd5w==
+ b=XD5KWIIkijt5CeZFdlDbPNJctEH4VBlchOB1oPvqhFaF2mJfhn3duWO6BAyjIwwkDQJ274PnHXJZmNE8L1Nxz4H7A7CUWtxXn4wCwLU9ikS5kvcLW/IU07i//OFQOxAC8wWFjAXbfkff/4X9cDsPnIaYvkdiFL6OrS7bW5mDGsZ9bvRCcFDoljXzkWy9WQ2SQAOgV5KGcfRCRBiQ4vtbsVDQIDKEEBxghrUJqC0oJBkzSqekt5jwAw0TTtrnV6zcdmbphgWvW52PhTDi5tY0Wn9SQWbF4QN2M5pD+7kvHEZ9FvUAi0qh4MJMtiJUAXvSa6YsuRA0SW9iYwEjVf2Vug==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GVe7+KyKwR45WXtbPNuPh/FDsRA9IlHLQ7a8Cj7+WjE=;
- b=jp9wlrRTuIhwEwDUfN1z24WXIKgGLS739R5/A2qAJcfR3S/Ei2UYcctyfw/aN3ThWQIdYmUqN91M0JMvWAG/fo6nHf4LUzW0j/HTa/nPsrYV49n6X+W3W2hbK1CDOh8uKv4criKlNORjihznuKQHqrP/BiP+Y5rDIlJ6kN8vbd/gX7fyHcvcvXb2fVvTcQx9f95+F1nxpsGPkw81eZpkRFgVFZfbLmsLowfNBg73kHPfxpSnfGeDCA3Tz4wgzXsjU91CRwytZEvHVS8uZShqTeS4XN5CJuIBVBFistTsPkxtogMrqMUavl6MsEdfss8OVty/OIkVzqkJSCIa0/b5wA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
+ bh=XNOP/zINPd7lKP7sX4lv9iGIusBtcz4d8X6MnMEBnUg=;
+ b=E8nbqNkC6uUrdNksDb94zFcocrzk2wf2hHVjTdjwopnppKB7NwDPILv/HikPZAaRRUDPIBTHYybqgMDFENzfd9NU9tUAspZDuhrUZ3fevgIJ6pRewF8YF7jXwlYazQJftVPwMdIm3IhciUK6ueljhYvG2BffqbSpJO/Af7qm1TSQSZ+W82f4Cs5JIyEM6e/dtAE5kv8/vHwhpkomJtT+5vIHP0MdiQLHK1zuelut3obVFCLl2yT+EKs+WZ+TB3tqsPVCYrD4ofZxKsjlFI8/3/qDJ5Jk50yetfKMw8IcqeG0k06WNmjmZEdRUqAbU5a1Wf3eY2d1JRy2T9Tyboo3Ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GVe7+KyKwR45WXtbPNuPh/FDsRA9IlHLQ7a8Cj7+WjE=;
- b=rfrHP3nLoZqwrnixE5DFyNNjUBHHtDVFpTr2yU+8AK34ikwRPYc5ae4nDXXmCKkzTq8UAbybrODfsXo2OUsRxbMcOzUhIpGvQPazT1/4KTyM50vXyHOyE3n8Una+9HN98u/6yQgyUOuf47MMCzzGQNeipI1GL9PelJtpg8pLUMzr8EkWREVc9j9HymAsD0nruB3mVJ5BsgNMkI/fj9pt90nI03K5a74tZI5QiP7uD0Sjdl+9YWciSFwATTJKjk6F/TCZkXvTTvCr2szvPAgrmxngXiFQCjonv4c7u8BUhaEUcOk2s6vfkfiq28HjnXu114eDbzljNlPvh/2OaXOy+Q==
-Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
- header.d=none;gibson.dropbear.id.au; dmarc=none action=none
- header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5095.namprd12.prod.outlook.com (2603:10b6:208:31b::16) with
+ bh=XNOP/zINPd7lKP7sX4lv9iGIusBtcz4d8X6MnMEBnUg=;
+ b=UtVXFQr2oqdV1OQrEoJxjCvPngPK2tzqY+bnK2yt14tM8TeI+DF80TEG4MsjgNCWXK7feHWj3NUx2zjs40JW2ukMG5lyGb/XqaS91wLd5gXDgRr7ZkOx0hqvaKGN9V2BzJW4RZqXb1cg9QyDn5c1CtNH9Ipoe64e4XKpXJuzuk26ZCXMjdaPfovVRx3IZzASQY63iQtM6R1FBFEGJWIrGR2kf5xM3AOMD1YI1BAj7Cka9OpQPiz6T0NpDeNvmsrY1PSbUzaXaIumJc7IRKtv+/vY8ZWQusIKQt57Cl9wZ3mlusLBDqhXtP/b1N6l1tDM2M2wGnCdOhKlM2xOOO6CcQ==
+Received: from DS7PR03CA0083.namprd03.prod.outlook.com (2603:10b6:5:3bb::28)
+ by BN6PR12MB1281.namprd12.prod.outlook.com (2603:10b6:404:1b::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Tue, 8 Jun
- 2021 13:17:58 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4219.021; Tue, 8 Jun 2021
- 13:17:58 +0000
-Date:   Tue, 8 Jun 2021 10:17:56 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210608131756.GF1002214@nvidia.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210528200311.GP1002214@nvidia.com>
- <MWHPR11MB188685D57653827B566BF9B38C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210601162225.259923bc.alex.williamson@redhat.com>
- <YL7X0FKj+r6lIHQZ@yekko>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL7X0FKj+r6lIHQZ@yekko>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR22CA0017.namprd22.prod.outlook.com
- (2603:10b6:208:238::22) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.27; Tue, 8 Jun
+ 2021 13:18:32 +0000
+Received: from DM6NAM11FT023.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:3bb:cafe::ca) by DS7PR03CA0083.outlook.office365.com
+ (2603:10b6:5:3bb::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend
+ Transport; Tue, 8 Jun 2021 13:18:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT023.mail.protection.outlook.com (10.13.173.96) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4195.22 via Frontend Transport; Tue, 8 Jun 2021 13:18:32 +0000
+Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Jun
+ 2021 13:18:28 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Peter Xu <peterx@redhat.com>
+CC:     Hugh Dickins <hughd@google.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v3 04/27] mm/userfaultfd: Introduce special pte for unmapped file-backed mem
+Date:   Tue, 8 Jun 2021 23:18:25 +1000
+Message-ID: <3035789.C3dLqLxEWu@nvdebian>
+In-Reply-To: <YLpOdxWnRbWx9CL+@t490s>
+References: <20210527201927.29586-1-peterx@redhat.com> <2408831.NcqaVN92ti@nvdebian> <YLpOdxWnRbWx9CL+@t490s>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR22CA0017.namprd22.prod.outlook.com (2603:10b6:208:238::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend Transport; Tue, 8 Jun 2021 13:17:57 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lqbcC-003qa5-3y; Tue, 08 Jun 2021 10:17:56 -0300
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5c396d26-1071-4f7a-d451-08d92a7fd548
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5095:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB50959C0A121D0E2F6575CDBAC2379@BL1PR12MB5095.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: 52ff4874-7e42-4511-43a2-08d92a7fe9fc
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1281:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB12818B7C9454D538C97DA6C1DF379@BN6PR12MB1281.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SkQnFikeF8IDdKzCmB4Y9Z74lgfmteIAe+idFdsL2E2a7M03W6NwVR20mqWNrtRsFR4fed3Kuww91WDrx7UTWc2wgu3tG7x/eX/u6J/T8FAFZ9DcpovP7GcFCb6kyaFfG1pDs3i15u/CS3GsZgpa/B48GgZMirnP8LP/g5i5a6FETGHI7EMq2gKORg8/U6PE6sKRzEl52uVY3DyFjcAkyeNoyGwJyBF4cinJ3Omh/zkAyQr86haSYQPXxnohiHmtueKtaY15jIiuC3avfWZ+e0+tikN+yp7oOOzZbZ3yFdyEhel339eTHzx5YgRSjgdXa5enYCKdu1xxVGJKXcdCMelrC2VpVXg3EuKoIPEWsovq7X5tZVbuHOzzcXfYfZNGUU7rUlCr4WIjyd2ptlqcrmHr0dcyvSwoPPwBtLqBJ65cjtYVGtTtTl3Vua2qyAFwJM9EoKD4Ixdw0ewz34mrcCAVaMY8PprInEr9j0IN1CmHzTi9Rz/dsnWUtSlb2uhpcYApz1egM2URht2aaZeNuwsf0nAXxeEZ3bp4OOJ2kOVPeMu3Ujx1jEVZKEASqcDeJOU28Q7Zx9JY3KPdbam4dznfy1KpzxSlUBBbBOKmz38=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(376002)(136003)(366004)(54906003)(86362001)(2616005)(66556008)(9746002)(4744005)(36756003)(4326008)(2906002)(186003)(6916009)(478600001)(33656002)(426003)(9786002)(66476007)(8936002)(66946007)(26005)(8676002)(5660300002)(316002)(38100700002)(7416002)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LIq77WLTDKejBTSBM8JruOpDiTtL3x0iX+hmbDyxj5+vG4JTuKFpEXU9uuQ/?=
- =?us-ascii?Q?E5tLAmyXOFmSrujWhsNLLnG/c2JfKO/hiWfuWvjqGDuOZaT4gxsNiXgorNqo?=
- =?us-ascii?Q?n7tmJJJ93/dKWhmdJsNQwsfNVzgPz4t3KeV2cmqbjn/ZPGlawS+MPKH/Sx2O?=
- =?us-ascii?Q?esTLxsnqzeeOGaBLkFhdKAUSLM065dulPfcIF/z08zVpr1eWiKLdi+3Umg25?=
- =?us-ascii?Q?5krF+WhTYjQa0C2nC8k9ukQSsJm9LrTUBvzxsrMCsqRQ0n/qMDWN+4+pZTS6?=
- =?us-ascii?Q?00tHI8QVWRLUzuk2Uel6o7Dlaei14l/82UzjWTYibDmNhmYIkIxtP6a54Gtn?=
- =?us-ascii?Q?3Fqr6eeJzn7SwVr63EO1JVxDqnPPMuBDsGRn2Dui2Os/8fuUkEkMQ4pHNoWj?=
- =?us-ascii?Q?AO8OTfaTOv0rBuz7vC2OeXI7rMZyev2k5NZP9n7fjxA2hHMnun4lUFNh4/4e?=
- =?us-ascii?Q?+/1ycgVUBBO8oaOOYGYQ+6xw4s9leBlRlFygNPp01oxfZfcNc8Ni8sy0tJ3F?=
- =?us-ascii?Q?qqDCOkcT9qpPxH18TJRFNCpLY3/IhIgVxPSrCsQLJEHvE7fbg8I999ZVC6dX?=
- =?us-ascii?Q?5qD+nqWkOCIbridEnH8dknaJ6k+kVFRCaVPxugc0E8L/8Ddr/2m9rFqd8ozP?=
- =?us-ascii?Q?3Or+Q9FMq3aB1lsRciJQgRSo6ytBaFO5Jmcx7fE1+WvToiu78YmrKHIPDhze?=
- =?us-ascii?Q?ahvpEL/2ws5yJWIYJJbx1VH3jXk9GvAbaIxK5ywJ0H9G1tSHVJWNdMeHLp66?=
- =?us-ascii?Q?a6Asz3fIpEQMHIXPSYQMJtqb8zGzZou/LTYxYvET/SEYNsgbxFCQiVk5XZmG?=
- =?us-ascii?Q?xTdsZV07BNAwYfRPPoPvCya/NRp7TapXfnEv0gpbx0Flp1AFDS3TEUwdz/wz?=
- =?us-ascii?Q?i0QjbNapXz3iu6g5q5mee6gucp5ijYjM5vCw5C+qfoLZSfJ+F+OEUSLgBngV?=
- =?us-ascii?Q?N3qviL7JurA857rZDG12mT8ZL2f2gyCksAgxuxrs2jJopjMjoywqHgg/IXgx?=
- =?us-ascii?Q?W5goKNFKD/LHHdME+fiBZ/7z2FzvEpUcFVINJ1obO4iiojXT++QfE+0VLIMD?=
- =?us-ascii?Q?vxvz/7whOmu2oezXCqcP/gzs/6cn6HJ+qEjuBMMVpbK1glU3mSrNY+GfssyA?=
- =?us-ascii?Q?2/Jt5Tn4XhE3BZvdjfa83HwL3pTknJxdXwM9CLGbNL2/BQZSC+OubnmwoC6r?=
- =?us-ascii?Q?aqUQqrR4k398UYCfxZPeD7n7mucl8NFvP3sIZTlAlNPfs4RPwTZAQD5iU6o3?=
- =?us-ascii?Q?RfeGhOeN7rw3GaCcKUsELXNgcWXBhM0/iqYegdc73QxXKQGB8CrFudxiUPKD?=
- =?us-ascii?Q?b6CTKb0elMl2D/8kbP5akPCN?=
+X-Microsoft-Antispam-Message-Info: 0bNod8kNH1GXcUXpQS1oVi8djSWadSWHtGCzXhunNdYEXrymnGei5TXwqoZuF1ucCd2v/j13kGVR0JvyNxkM2N8SqYv3xC5vb8TQoY9Uc0iMDSB4VHbE2a+1P3Tam6ZEZW9HqIgPZJJDGw9+wdX98jDSAff+9PyjnOtmRSV6pe7mmXqHjaY6kcq2At+w7ODD6qSj0PegQgEovyAxw/FHYBUFGtHILSDmMTDLq4XDEESXQ202LtGtVRE9FLvOvKNS5vixKlY7v1wcAN7GGfPqIMYyttQxHAH8EMeYD6Fy2feqaG0FAlbf288z2JR3T02hhIxb9VThtrPiULeXI9VXc4bImRAKJNooPE1Y/rTyxBO426hg8cQkBXlUgnL7yppggEVGa9NgZbH3z24sCbMvPxWFmZ3MsMMdSEcvswevLcIinAaQtug2C63q2zOZ9awVrSfiOzgU/3k1aTiel9XqqK/lUddII261QKu5D0C3u1r1D9DaUwrJHpPEDaU8thEJQEAo0JyExa7BFBHCTNQtz4yLwwM35MOtEtl7aqrC30MYUZgp5LW2SmiAdtiwYBlpSlrNILQF70DtrRYRKGgG9DPKSHbSLyvp5z7slZelDhb5rJxqM3k5MC+fohGOfjW6Wz2jzsA/KzNu9yzmyzQlRysyghtbK/21b+oKc/MqY7NIblvlFbJbPicoQlCQC/Cf
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(39860400002)(346002)(46966006)(36840700001)(6916009)(82740400003)(8676002)(54906003)(356005)(7636003)(47076005)(7416002)(70206006)(4326008)(478600001)(70586007)(6666004)(33716001)(426003)(26005)(2906002)(16526019)(5660300002)(186003)(36906005)(82310400003)(86362001)(36860700001)(9576002)(8936002)(83380400001)(316002)(9686003)(336012)(39026012);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c396d26-1071-4f7a-d451-08d92a7fd548
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 13:17:57.9458
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 13:18:32.3469
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52ff4874-7e42-4511-43a2-08d92a7fe9fc
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jGWGcN+qbdR/zkI8yO6tauZ6vweERBIJyNeRoXXVVoP3SKZjfAnSj/lhLmnmCS46
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5095
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT023.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1281
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 12:37:04PM +1000, David Gibson wrote:
-
-> > The PPC/SPAPR support allows KVM to associate a vfio group to an IOMMU
-> > page table so that it can handle iotlb programming from pre-registered
-> > memory without trapping out to userspace.
+On Saturday, 5 June 2021 2:01:59 AM AEST Peter Xu wrote:
+> On Fri, Jun 04, 2021 at 04:16:30PM +1000, Alistair Popple wrote:
+> > > My understanding is that it does *not* use an additional arch-dependent
+> > > bit, but puts the _PAGE_UFFD_WP bit (already set aside by any architecture
+> > > implementing UFFD WP) to an additional use.  That's why I called this
+> > > design (from Andrea) more elegant than mine (swap type business).
+> >
+> > Oh my bad, I had somehow missed this was reusing an *existing* arch-dependent
+> > swap bit (_PAGE_SWP_UFFD_WP, although the same argument could apply) even
+> > though it's in the commit message. Obviously I should have read that more
+> > carefully, apologies for the noise but thanks for the clarification.
 > 
-> To clarify that's a guest side logical vIOMMU page table which is
-> partially managed by KVM.  This is an optimization - things can work
-> without it, but it means guest iomap/unmap becomes a hot path because
-> each map/unmap hypercall has to go
-> 	guest -> KVM -> qemu -> VFIO
+> Right, as Hugh mentioned what this series wanted to use is one explicit pte
+> that no one should ever be using, so ideally that should be the most saving way
+> per address-space pov.
 > 
-> So there are multiple context transitions.
+> Meanwhile I think that pte can actually be not related to _PAGE_UFFD_WP at all,
+> as long as it's a specific pte value then it will service the same goal (even
+> if to reuse a new swp type, I'll probably only use one pte for it and leave the
+> rest for other use; but who knows who will start to use the rest!).
+> 
+> I kept using it because that's suggested by Andrea (it actually has
+> type==off==0 as Hugh suggested too - so it keeps a suggestion of both!) and
+> it's a good idea to use it since (1) it's never used by anyone before, and (2)
+> it is _somehow_ related to uffd-wp itself already by having that specific bit
+> set in the special pte, while that's also the only bit set for the u64 field.
+> 
+> It looks very nice too when debug, because when I dump the ptes it reads 0x4 on
+> x86.. so the pte value is even easy to read as a number. :)
+> 
+> However I can see that it is less easy to follow than the swap type solution.
+> In all cases it's still something worth thinking about before using up the swap
+> types - it's not so rich there, and we keep shrinking MAX_SWAPFILES.. so let's
+> see whether uffd-wp could be the 1st one to open a new field for unused
+> "invalid/swap pte" address space.
 
-Isn't this overhead true of many of the vIOMMUs? Can the fast path be
-generalized?
+Agreed, that matches with what I was thinking as well. If we do end up having
+more swap types such as this which don't need to store much information in
+the swap pte itself we could define a special swap type (eg. this bit) for
+that.
 
-Jason
+> Meanwhile, I did have a look at ARM on supporting uffd-wp in general, starting
+> from anonymous pages.  I doubt whether it can be done for old arms (uffd-wp not
+> even supported on 32bit x86 after all), but for ARM64 I see it has:
+> 
+> For normal ptes:
+> 
+> /*
+>  * Level 3 descriptor (PTE).
+>  */
+> #define PTE_VALID               (_AT(pteval_t, 1) << 0)
+> #define PTE_TYPE_MASK           (_AT(pteval_t, 3) << 0)
+> #define PTE_TYPE_PAGE           (_AT(pteval_t, 3) << 0)
+> #define PTE_TABLE_BIT           (_AT(pteval_t, 1) << 1)
+> #define PTE_USER                (_AT(pteval_t, 1) << 6)         /* AP[1] */
+> #define PTE_RDONLY              (_AT(pteval_t, 1) << 7)         /* AP[2] */
+> #define PTE_SHARED              (_AT(pteval_t, 3) << 8)         /* SH[1:0], inner shareable */
+> #define PTE_AF                  (_AT(pteval_t, 1) << 10)        /* Access Flag */
+> #define PTE_NG                  (_AT(pteval_t, 1) << 11)        /* nG */
+> #define PTE_GP                  (_AT(pteval_t, 1) << 50)        /* BTI guarded */
+> #define PTE_DBM                 (_AT(pteval_t, 1) << 51)        /* Dirty Bit Management */
+> #define PTE_CONT                (_AT(pteval_t, 1) << 52)        /* Contiguous range */
+> #define PTE_PXN                 (_AT(pteval_t, 1) << 53)        /* Privileged XN */
+> #define PTE_UXN                 (_AT(pteval_t, 1) << 54)        /* User XN */
+> 
+> For swap ptes:
+> 
+> /*
+>  * Encode and decode a swap entry:
+>  *      bits 0-1:       present (must be zero)
+>  *      bits 2-7:       swap type
+>  *      bits 8-57:      swap offset
+>  *      bit  58:        PTE_PROT_NONE (must be zero)
+>  */
+> 
+> So I feel like we still have chance there at least for 64bit ARM? As both
+> normal/swap ptes have some bits free (bits 2-5,9 for normal ptes; bits 59-63
+> for swap ptes).  But as I know little on ARM64, I hope I looked at the right
+> things..
+
+I don't claim to be an expert there either. Given there's already a bit
+defined for x86 anyway (which is what I missed) I now think the special
+swap idea is ok, although I still need to look at the rest of the series.
+
+> Thanks,
+> 
+> --
+> Peter Xu
+> 
+
+
+
+
