@@ -2,92 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B316D39F11D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F80939F128
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhFHImU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:42:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54068 "EHLO mail.kernel.org"
+        id S231224AbhFHIoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:44:46 -0400
+Received: from mga14.intel.com ([192.55.52.115]:25207 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229507AbhFHImS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:42:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF0B16124B;
-        Tue,  8 Jun 2021 08:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623141615;
-        bh=zu0mD/DCPaOiV8rNB2RIkPmxKfuEWzRmByAErxuC04Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gOedb4xj4EXi+eFCQEhKg2uYtRujg5oUQbl4HadFbFatQ9UbjKWNMUnUju7ElzcJb
-         DhxmcZId8qNy4RSKsqe7BONqaQcqfVZ6js6Kl2NiUYbfUGS+Yd6OFAQzkqObXZu6Lg
-         cKZ5FhLB6OA2REykd3F4xRaXrhl8JG1KoMbtXZlU=
-Date:   Tue, 8 Jun 2021 10:40:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, SyzScope <syzscope@gmail.com>,
-        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: KASAN: use-after-free Read in hci_chan_del
-Message-ID: <YL8s7F1pPEw6Oc5s@kroah.com>
-References: <000000000000adea7f05abeb19cf@google.com>
- <c2004663-e54a-7fbc-ee19-b2749549e2dd@gmail.com>
- <YLn24sFxJqGDNBii@kroah.com>
- <0f489a64-f080-2f89-6e4a-d066aeaea519@gmail.com>
- <YLsrLz7otkQAkIN7@kroah.com>
- <20210606085004.12212-1-hdanton@sina.com>
- <20210607074828.3259-1-hdanton@sina.com>
- <20210607100201.3345-1-hdanton@sina.com>
- <20210608081800.3484-1-hdanton@sina.com>
+        id S230371AbhFHIop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 04:44:45 -0400
+IronPort-SDR: 9uOc8NPw05lJdOGoH2omPZBHyWlGsnVcuagX7gchIy4G/QCS/B85MzzLFsttnU6M4iE/99rmRr
+ Bf12OuNGkNIw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204616263"
+X-IronPort-AV: E=Sophos;i="5.83,257,1616482800"; 
+   d="scan'208";a="204616263"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 01:42:53 -0700
+IronPort-SDR: V0Ov13dmGK4COhb7BFnuyeEIcn4E/RTcO4o6wnoaTZm2qViByR++L9wZq7hJcci0VxCnImiEjA
+ CjTtXNJQbn/g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,257,1616482800"; 
+   d="scan'208";a="447821292"
+Received: from unknown (HELO [10.237.72.51]) ([10.237.72.51])
+  by orsmga008.jf.intel.com with ESMTP; 08 Jun 2021 01:42:47 -0700
+Subject: Re: [PATCH v2 1/3] units: Add SI metric prefix definitions
+To:     Joe Perches <joe@perches.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>, wsa@kernel.org
+References: <20210607152344.57458-1-andriy.shevchenko@linux.intel.com>
+ <ae919bae6c21e23b0a1ed0c9327738e59dd90aa0.camel@perches.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <a6f0677c-70b0-2a51-a01b-f84bcacfc0bd@linux.intel.com>
+Date:   Tue, 8 Jun 2021 11:42:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608081800.3484-1-hdanton@sina.com>
+In-Reply-To: <ae919bae6c21e23b0a1ed0c9327738e59dd90aa0.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 04:18:00PM +0800, Hillf Danton wrote:
-> On Mon, 7 Jun 2021 12:31:39 +0200 Greg KH wrote:
-> >On Mon, Jun 07, 2021 at 06:02:01PM +0800, Hillf Danton wrote:
-> >> After taking another look at the added user track, I realised that it serves
-> >> no more than a one-off state word that prevents channel from being released.
-> >> Then the race behind the uaf can be fixed by adding a state on top of the
-> >> dryrun introduced even without tracking users.
-> >> 
-> >> The state machine works as the following,
-> >> 1) it is initialised to be backoff that means channel cannot be released
-> >>    at the moment.
-> >> 2) it is changed to be dryrun on releasing to cut the race that survived
-> >>    backoff.
-> >> 3) it is finally set to zero for release after cutting the chance for race.
-> >
-> >Adding another state on top of this feels rough, does it really solve
-> >the race here?
+On 6/7/21 10:09 PM, Joe Perches wrote:
+> On Mon, 2021-06-07 at 18:23 +0300, Andy Shevchenko wrote:
+>> +#define HECTO 100L
+>> +#define DECA 10L
 > 
-> No, frankly, given the list_del_rcu() in hci_chan_del().
+> Should it be DECA or DEKA or both?
 > 
-> >Normally a reference count should be enough to properly
-> >tear things down when needed, rolling back from a "can I try this now"
-> >state still seems racy without the needed lock somewhere.
+> https://www.nist.gov/pml/weights-and-measures/metric-si-prefixes
+> deka Example: dekameter da 	10**1 	Ten
 > 
-> The rollback is added only for making sure that the channel released in
-> l2cap_conn_del() would not be freed in the other pathes. That exclusiveness
-> adds more barriers than thought to fixing the rare race with kref and spinlock
-> in the usual and simple manner.
+>> +#define DECI	10L
+>> +#define CENTI	100L
+>> +#define MILLI	1000L
+>> +#define MICRO	1000000L
+>> +#define NANO	1000000000L
+>> +#define PICO	1000000000000LL
+>> +#define FEMTO	1000000000000000LL
 > 
-> If OTOH channel is created with the exclusiveness taken into account by adding
-> the exclusive create and delete methods for l2cap, then the race can be fixed
-> by checking the exclusive mark in addition to aquiring the hdev lock at release
-> time.
+> IMO: Might as well include all the prefixes up to 10**24
+> 
+> EXA ZETTA YOTTA, ATTA ZEPTO YOCTO
+> 
+> And how do people avoid using MILLI for KILO, MEGA for MICRO, etc...
+> The compiler won't care but usage could look odd.
+> I find this patch creates more confusion than solves a real problem 
+(typo where one zero is missing or one extra) and adds potentially 
+needless churn. For instance I don't assume much use for the HECTO now 
+or in the future.
 
-One would think that the state machine for the channel would fix this
-whole mess, why do we need an "additional" state here in the first
-place?
+How about if absolutely necessary just adding only KILO, MEGA and GIGA 
+and questionable defines only after when the real needs arises and can 
+see does "1/1000L" etc define cause any troubles to real calculations?
 
-Would be nice if one of the bluetooth maintainers weighed in on this...
-
-thanks,
-
-greg k-h
+Jarkko
