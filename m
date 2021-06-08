@@ -2,103 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB96539F789
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2FA39F773
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhFHNTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:19:51 -0400
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:45855 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232889AbhFHNTs (ORCPT
+        id S232791AbhFHNSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231344AbhFHNSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:19:48 -0400
-Received: by mail-ua1-f53.google.com with SMTP id z13so6600046uai.12
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 06:17:46 -0700 (PDT)
+        Tue, 8 Jun 2021 09:18:36 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD39C061787;
+        Tue,  8 Jun 2021 06:16:28 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id r5so32092631lfr.5;
+        Tue, 08 Jun 2021 06:16:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=55gewmxEVl3ZVcwS6O9solrcdE7rmPK2jzo+kIX4FD0=;
-        b=neZDyHARxr5BeNCs1zq64t5POX25ZtuJhEptT293O/1LdcMw2/r7jM3W4KZ29UAvDe
-         3lOuwMyvZbLu+jLD5aJOeD/Ffh3UZnANgVPgJuSxNl3nqfi/UBIBneEougweUCAFb15s
-         Q3ZtswmAZXSRj9OvAPLVcobj6RJyCpKdc8s/DXQwCzVfQIAoo419SBDgeIIDLMCDdvRa
-         qBhyEgolrH0WTYWGZcUJMst65cdj5fTxYUiON1/pinvoQzQt1D02YO31Ds34NTh5cL+2
-         v1UEokE6axgWPhiaNeHzbDpEqa+yuBQss1TIqei9rVbMaSW71CAdP349r4bL9aPVZIUA
-         TDOQ==
+         :cc:content-transfer-encoding;
+        bh=/PdaUTb+rUg5ur++SpKYiw2joB3HKEA1rOqeSBAWksA=;
+        b=CE8iuxgCHuRWaZA4qwJXJzCuSannhhSj9aCTl1MMTNq6V/CdbrhWdgv+aK7qdsMxLg
+         YvMQbAvNAK1MJHg9qbdrmovmw+5Vi9tEq3xukBUIbbemu4lZMmMDqP4TLb1kKPON+rKW
+         OMajHBbl+yM1T43eQCVQicXeZi4ng+g/h158E9Je9UR1dqpp4KAWatAwh/GGXLLDPqNR
+         sH+L9H4RRu7m/yLcJtAYilX8MPxaC57aLx9xWoMg4nAkh7b64t+DmSDLfYohEjDV1fO/
+         zEnatM82enfeAQASf9t6Zt7L5B1llg60YmiFyf4IcQOoaSDmTfYheqyeGrNTI2gTE4/b
+         ejnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=55gewmxEVl3ZVcwS6O9solrcdE7rmPK2jzo+kIX4FD0=;
-        b=YYkemSfanPQkxcLUxAUrlMlt12dN+ts+a2RLXshiH0eaoaCAxfsUFAsuOooWyOyFd3
-         sumUMP0IGsKuRHV4H8Q73B9HIj/WeIMgZp3nxx2ZZ+gnyCwRLUwqCNMrO02dhR9m76ME
-         O2dNuFcyPvxjf836vZosx/BllssRxPOy1IXAlBZ1uqrZh7v5+2zveMO+cIfkonP6blKS
-         KzOHja9GnnLMuMncOrh3pJfKd+EZydg7G6A8vvKVlo1QIua5yosqSdGrJjWLQmD/Cb2Q
-         ZDM9lopVIkpxMwt7gkxcGlILSINGOML6foebNIazGVznC7Worx9bvsGlT4QQSlJgD1h8
-         /VkQ==
-X-Gm-Message-State: AOAM5328tO//513L6DGBciYpN8zt0ttrvnouOqsbR7V4dUS/IzQOIa/m
-        qxVatbX2NC9+wAf0992nHfT0Q1XhYTK+6EajcS6PPA==
-X-Google-Smtp-Source: ABdhPJy6odpm9e0WdZi5O6ao3QWO6eK4K6fn+yzP4auEjAWP5zDPJ0u6N2tJXgGh8Q6s/WG/tNXLav/XYUY+CJHagq8=
-X-Received: by 2002:ab0:12a:: with SMTP id 39mr12673740uak.19.1623158206210;
- Tue, 08 Jun 2021 06:16:46 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/PdaUTb+rUg5ur++SpKYiw2joB3HKEA1rOqeSBAWksA=;
+        b=oAWaaClMkdxTLUqcrUkbgZ97+pjG7lSsJ95pxJugHGQcUe4fqCOKcxzAQ8MPrcW590
+         /IsHvtgGbghdGexAktxlwNJs05xckzCgL+055cWNMxnL1gNaC8fz/bTa5Q5ouXOdu5SY
+         cj/uTUt/w74pXu7D5nUJvfF7JVA5SZVE/QoSNi6dXedI2h+oBLiLFOJ046MmNyDrGS17
+         IxMqVEE01y8+y0WgVEaare5SbJ+23LYfCV1umEDTvE+nK1TJ69XtJcAsf5crdSWN/Bbk
+         MKS/Oj9RhQJuxOlXeI7ocS0W5XBBNq53SRoGpSW6wcMs4J9ugXpeUxdL8rXbp0YsTvQO
+         /Vfw==
+X-Gm-Message-State: AOAM531WdwhcqFcP6EGvExmJKrhkfqaWsNl4ckzBLOk9kkNFqqisrQW5
+        j46UeKno9JW5EQSuQsv5zK3ZWXz9M4K6iLgKyyQ=
+X-Google-Smtp-Source: ABdhPJzs5yqBCi+TgT2UUYjGlHJMzPQdqh4UeFmvSO/k955CS4DBYYpx0sgXMyKI1rfLg6kS1kh578vwbydxab+llqI=
+X-Received: by 2002:a05:6512:3694:: with SMTP id d20mr7234682lfs.184.1623158185318;
+ Tue, 08 Jun 2021 06:16:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210601095403.236007-1-krzysztof.kozlowski@canonical.com> <20210601095403.236007-2-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210601095403.236007-2-krzysztof.kozlowski@canonical.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 8 Jun 2021 15:16:09 +0200
-Message-ID: <CAPDyKFoSsLxg-6cFXc+Lapbz5bGCJ0xzpE5H8VrLfFSMfrn8zw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: sdhci-sprd: use sdhci_sprd_writew
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+References: <20210608202748.06334136@canb.auug.org.au> <CANFS6baQi_PDM+4XHNn6MnFtmvbP3JUDJJgw7fvkGDYja4=ELg@mail.gmail.com>
+In-Reply-To: <CANFS6baQi_PDM+4XHNn6MnFtmvbP3JUDJJgw7fvkGDYja4=ELg@mail.gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 8 Jun 2021 08:16:14 -0500
+Message-ID: <CAH2r5mstMzq78NydjbkX4goJD1j0pzsvi1fAnLfTZbuNvuFvog@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the cifs tree
+To:     Hyunchul Lee <hyc.lee@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 at 11:54, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> The sdhci_sprd_writew() was defined by never used in sdhci_ops:
->
->     drivers/mmc/host/sdhci-sprd.c:134:20: warning: unused function 'sdhci_sprd_writew'
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+I will back out your patch to cifs.ko
 
-Applied for next, thanks!
-
-Kind regards
-Uffe
-
-
-> ---
->  drivers/mmc/host/sdhci-sprd.c | 1 +
->  1 file changed, 1 insertion(+)
+On Tue, Jun 8, 2021 at 5:53 AM Hyunchul Lee <hyc.lee@gmail.com> wrote:
 >
-> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
-> index 5dc36efff47f..11e375579cfb 100644
-> --- a/drivers/mmc/host/sdhci-sprd.c
-> +++ b/drivers/mmc/host/sdhci-sprd.c
-> @@ -393,6 +393,7 @@ static void sdhci_sprd_request_done(struct sdhci_host *host,
->  static struct sdhci_ops sdhci_sprd_ops = {
->         .read_l = sdhci_sprd_readl,
->         .write_l = sdhci_sprd_writel,
-> +       .write_w = sdhci_sprd_writew,
->         .write_b = sdhci_sprd_writeb,
->         .set_clock = sdhci_sprd_set_clock,
->         .get_max_clock = sdhci_sprd_get_max_clock,
-> --
-> 2.27.0
+> Hello,
 >
+> 2021=EB=85=84 6=EC=9B=94 8=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 7:27, =
+Stephen Rothwell <sfr@canb.auug.org.au>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
+=B1:
+> >
+> > Hi all,
+> >
+> > After merging the cifs tree, today's linux-next build (powerpc
+> > allyesconfig) failed like this:
+> >
+> > ld: fs/cifsd/spnego_negtokeninit.asn1.o:(.rodata.spnego_negtokeninit_de=
+coder+0x0): multiple definition of `spnego_negtokeninit_decoder'; fs/cifs/s=
+pnego_negtoken
+> > init.asn1.o:(.rodata.spnego_negtokeninit_decoder+0x0): first defined he=
+re
+> > ld: fs/cifsd/asn1.o:(.opd+0xa8): multiple definition of `gssapi_this_me=
+ch'; fs/cifs/asn1.o:(.opd+0x18): first defined here
+> > ld: fs/cifsd/asn1.o: in function `.gssapi_this_mech':
+> > asn1.c:(.text.gssapi_this_mech+0x0): multiple definition of `.gssapi_th=
+is_mech'; fs/cifs/asn1.o:asn1.c:(.text.gssapi_this_mech+0x0): first defined=
+ here
+> > ld: fs/cifsd/asn1.o:(.opd+0xc0): multiple definition of `neg_token_init=
+_mech_type'; fs/cifs/asn1.o:(.opd+0x30): first defined here
+> > ld: fs/cifsd/asn1.o: in function `.neg_token_init_mech_type':
+> > asn1.c:(.text.neg_token_init_mech_type+0x0): multiple definition of `.n=
+eg_token_init_mech_type'; fs/cifs/asn1.o:asn1.c:(.text.neg_token_init_mech_=
+type+0x0): first defined here
+> >
+> > Caused by commit
+> >
+> >   4a957ba6daf6 ("cifs: decoding negTokenInit with generic ASN1 decoder"=
+)
+>
+> I missed functions and structures generated from the ASN1 compiler
+> aren't static.
+>
+> Steve, and Namjae,
+> We need to rename *.asn1 files and decoder's callback functions. Is it be=
+tter
+> to change cifs's code?
+>
+> Thanks,
+> Hyunchul
+>
+> >
+> > interacting with commit
+> >
+> >   fad4161b5cd0 ("cifsd: decoding gss token using lib/asn1_decoder.c")
+> >
+> > from the cifsd tree.
+> >
+> > I have reverted that cifs tree commit for today.
+> >
+> > --
+> > Cheers,
+> > Stephen Rothwell
+
+
+
+--=20
+Thanks,
+
+Steve
