@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C34F3A0401
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7B53A0210
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239753AbhFHTZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:25:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237870AbhFHTNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:13:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D8F561429;
-        Tue,  8 Jun 2021 18:49:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623178181;
-        bh=mkZddtvemX7SZ3/W2EA5INNUZ5bKZfSFMWe9TGtl/Dk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=nVUytxhH47ZnJYyZxWjW+udYyN+3snizcWsgK3RLppHC1NGMs/g/dQXpEAvxHTPHF
-         Mnu4FUCpc8RQhOmdS6dM5d+fc5n8R4VZ2RaYzB3tq2X0ql3RKJNnRNWSHoZlvrLDd0
-         cejNlj5+sdoTgqVM8IkdLkQNWVCbWFo7cxiR/oE5WsOpaj/03JN53DD0lVF9gn6PFJ
-         wF2TDO5xy7+WsCPMyS/VEyFsSBaCazPvfuC9JQV+QGQyuvTW4DCf9gj7j8SJAb+mWp
-         QyuQaNLfNXwTDjYFNhP8zUx92b6hlN7Pwyxrpi35I/YJKRqxF5JpvUu4JStI/s3fl5
-         WFurUUblPTzUA==
-Subject: Re: [PATCH] thermal: devfreq_cooling: Fix kernel-doc
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>, amitk@kernel.org,
-        linux-pm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-References: <1623145562-111662-1-git-send-email-yang.lee@linux.alibaba.com>
- <CAKwvOdmyXV09ZxcDqQ6x43f+Eze4h40W2AoKcCmUhGM2gUWsnQ@mail.gmail.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <6335deba-9e94-61e0-89a1-8905be0e35a1@kernel.org>
-Date:   Tue, 8 Jun 2021 11:49:40 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237287AbhFHTAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:00:12 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44990 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235795AbhFHSvw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:51:52 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 158Inndx080929;
+        Tue, 8 Jun 2021 13:49:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623178189;
+        bh=XFmvnR4Sp9qLoZE86AyC7J5ZSl2Xb2RCdaI+k6DBZjY=;
+        h=From:To:CC:Subject:Date;
+        b=yaG/RTDBfzSBMwBK9EDSfdoN3rvAi5WCHslPVNGgmjGP4VXJpxqqcfizZTJRzEBQ1
+         tavaxMEMXeZQjkvePue012n1v5CtbjmN41lne3Zc+ukbdJAAXHO2SqqBUQ1e8TCsvP
+         bmCgOBk3wY4Cx7bDc6+DKNNgM9uaaYJKrF9x9WEY=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 158InnR9101654
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Jun 2021 13:49:49 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
+ 2021 13:49:48 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 8 Jun 2021 13:49:48 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 158InlxD043167;
+        Tue, 8 Jun 2021 13:49:47 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3-am642-main: fix ports mac properties
+Date:   Tue, 8 Jun 2021 21:49:40 +0300
+Message-ID: <20210608184940.25934-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdmyXV09ZxcDqQ6x43f+Eze4h40W2AoKcCmUhGM2gUWsnQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/2021 11:39 AM, Nick Desaulniers wrote:
-> On Tue, Jun 8, 2021 at 2:46 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->>
->> Fix function name in devfreq_cooling.c kernel-doc comment
->> to remove a warning found by clang(make W=1 LLVM=1).
->>
->> drivers/thermal/devfreq_cooling.c:479: warning: expecting prototype for
->> devfreq_cooling_em_register_power(). Prototype was for
->> devfreq_cooling_em_register() instead.
->>
->> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
->> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> 
-> That compiler warning doesn't come from kernel-doc.  Your diff looks
-> good (the comment was wrong), but the commit message is curious.
+The current device tree CPSW3g node adds non-zero "mac-address" property to
+the ports, which prevents random MAC address assignment to network devices
+if bootloader failed to update DT. This may cause more then one host to
+have the same MAC in the network.
 
-No, this is indeed kernel-doc complaining. Clang should not even be 
-mentioned in the commit message:
+ mac-address = [00 00 de ad be ef];
+ mac-address = [00 01 de ad be ef];
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/kernel-doc?h=v5.13-rc5#n1228
+In addition, there is one MAC address available in eFuse registers which
+can be used for default port 1.
 
-The warning could probably be improved to say "definition" instead of 
-"prototype" in certain cases but *shrugs*.
+Hence, fix ports MAC properties by:
+- resetting "mac-address" property to 0
+- adding ti,syscon-efuse = <&main_conf 0x200> to Port 1
 
-This warning is similar to -Wmissing-prototypes from clang but refers to 
-the fact that the comment claims it is documenting one function but it 
-is really documenting another.
+Fixes: 3753b12877b6 ("arm64: dts: ti: k3-am64-main: Add CPSW DT node")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Cheers,
-Nathan
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+index effb9d2e3c25..7f7178a7a055 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+@@ -514,7 +514,8 @@
+ 				ti,mac-only;
+ 				label = "port1";
+ 				phys = <&phy_gmii_sel 1>;
+-				mac-address = [00 00 de ad be ef];
++				mac-address = [00 00 00 00 00 00];
++				ti,syscon-efuse = <&main_conf 0x200>;
+ 			};
+ 
+ 			cpsw_port2: port@2 {
+@@ -522,7 +523,7 @@
+ 				ti,mac-only;
+ 				label = "port2";
+ 				phys = <&phy_gmii_sel 2>;
+-				mac-address = [00 01 de ad be ef];
++				mac-address = [00 00 00 00 00 00];
+ 			};
+ 		};
+ 
+-- 
+2.17.1
 
-> Usually that warning is from when the function prototype does not
-> exist for a function with extern linkage.  It looks like that's always
-> provided though in include/linux/devfreq_cooling.h.  Can you share a
-> link to the original report?
-> 
->> ---
->>   drivers/thermal/devfreq_cooling.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
->> index 3a788ac..5a86cff 100644
->> --- a/drivers/thermal/devfreq_cooling.c
->> +++ b/drivers/thermal/devfreq_cooling.c
->> @@ -458,7 +458,7 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
->>   EXPORT_SYMBOL_GPL(devfreq_cooling_register);
->>
->>   /**
->> - * devfreq_cooling_em_register_power() - Register devfreq cooling device with
->> + * devfreq_cooling_em_register() - Register devfreq cooling device with
->>    *             power information and automatically register Energy Model (EM)
->>    * @df:                Pointer to devfreq device.
->>    * @dfc_power: Pointer to devfreq_cooling_power.
->> --
->> 1.8.3.1
->>
-> 
-> 
