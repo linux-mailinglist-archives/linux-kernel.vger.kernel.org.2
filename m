@@ -2,125 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7378B39FA88
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86C839FA54
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbhFHP1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:27:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232377AbhFHP0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:26:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0515661375;
-        Tue,  8 Jun 2021 15:24:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623165868;
-        bh=4Os6CR4tEQ00n/+2ln1euX1FtJH9pwevnbQbOo/vINM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QBybnYoZUFQmFgdTBQZ1+Xj2jOEoeDuMQSl5ErbezuCF1LzuDqZO0PbEF/4M1rycD
-         BnXfKG3sGlXrEeKExw7ybE817h6Hch48h5wFmiMqXoJELfJggBxT4NPmVPLk8InU7F
-         giN8bYjg0tevnICTD3eS1EfquCEUNjOptagPmROl7e+q7SFWLZVvlRIFZH8M2hn2rD
-         6VqlatJ8u1sQkN0vJC6YOY8RwtSBSU8PZVAITEEhO7RTc0iwKErXCPiGx1XwpyTQod
-         nqG6aIx5azCAAZJcwXyPO2280eDax4ssABxH/rv9gxlMdT24bqokdBwq/61ftFNII+
-         JbuX3PK+NlwSQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-clk@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Dmitry Osipenko <digetx@gmail.com>,
-        Florian Fainelli <florian@openwrt.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Crispin <john@phrozen.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/7] clkdev: remove unused clkdev_alloc() interfaces
-Date:   Tue,  8 Jun 2021 17:22:14 +0200
-Message-Id: <20210608152214.1231666-8-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210608152214.1231666-1-arnd@kernel.org>
-References: <20210608152214.1231666-1-arnd@kernel.org>
+        id S231680AbhFHPY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:24:58 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38425 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231611AbhFHPYw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 11:24:52 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lqdZ8-0005ai-Sf; Tue, 08 Jun 2021 15:22:54 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2][next] net: usb: asix: Fix less than zero comparison of a u16
+Date:   Tue,  8 Jun 2021 16:22:48 +0100
+Message-Id: <20210608152249.160333-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Colin Ian King <colin.king@canonical.com>
 
-The last user of clkdev_alloc() and clkdev_hw_alloc() was
-removed last year, so everything now calls clkdev_create()
-and clkdev_hw_create() instead.
+The comparison of the u16 priv->phy_addr < 0 is always false because
+phy_addr is unsigned. Fix this by assigning the return from the call
+to function asix_read_phy_addr to int ret and using this for the
+less than zero error check comparison.
 
-Removing the unused functions lets the compiler optimize
-the remaining ones slightly better.
-
-Fixes: e5006671acc7 ("clk: versatile: Drop the legacy IM-PD1 clock code")
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Addresses-Coverity: ("Unsigned compared against 0")
+Fixes: e532a096be0e ("net: usb: asix: ax88772: add phylib support")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/clk/clkdev.c   | 28 ----------------------------
- include/linux/clkdev.h |  5 -----
- 2 files changed, 33 deletions(-)
+ drivers/net/usb/asix_devices.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
-index 0f2e3fcf0f19..67f601a41023 100644
---- a/drivers/clk/clkdev.c
-+++ b/drivers/clk/clkdev.c
-@@ -190,34 +190,6 @@ vclkdev_create(struct clk_hw *hw, const char *con_id, const char *dev_fmt,
- 	return cl;
- }
+diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
+index 57dafb3262d9..211c5a87eb15 100644
+--- a/drivers/net/usb/asix_devices.c
++++ b/drivers/net/usb/asix_devices.c
+@@ -704,9 +704,10 @@ static int ax88772_init_phy(struct usbnet *dev)
+ 	struct asix_common_private *priv = dev->driver_priv;
+ 	int ret;
  
--struct clk_lookup * __ref
--clkdev_alloc(struct clk *clk, const char *con_id, const char *dev_fmt, ...)
--{
--	struct clk_lookup *cl;
--	va_list ap;
--
--	va_start(ap, dev_fmt);
--	cl = vclkdev_alloc(__clk_get_hw(clk), con_id, dev_fmt, ap);
--	va_end(ap);
--
--	return cl;
--}
--EXPORT_SYMBOL(clkdev_alloc);
--
--struct clk_lookup *
--clkdev_hw_alloc(struct clk_hw *hw, const char *con_id, const char *dev_fmt, ...)
--{
--	struct clk_lookup *cl;
--	va_list ap;
--
--	va_start(ap, dev_fmt);
--	cl = vclkdev_alloc(hw, con_id, dev_fmt, ap);
--	va_end(ap);
--
--	return cl;
--}
--EXPORT_SYMBOL(clkdev_hw_alloc);
--
- /**
-  * clkdev_create - allocate and add a clkdev lookup structure
-  * @clk: struct clk to associate with all clk_lookups
-diff --git a/include/linux/clkdev.h b/include/linux/clkdev.h
-index fd06b2780a22..8a8423eb8e9a 100644
---- a/include/linux/clkdev.h
-+++ b/include/linux/clkdev.h
-@@ -30,11 +30,6 @@ struct clk_lookup {
- 		.clk = c,	\
- 	}
+-	priv->phy_addr = asix_read_phy_addr(dev, true);
+-	if (priv->phy_addr < 0)
++	ret = asix_read_phy_addr(dev, true);
++	if (ret < 0)
+ 		return priv->phy_addr;
++	priv->phy_addr = ret;
  
--struct clk_lookup *clkdev_alloc(struct clk *clk, const char *con_id,
--	const char *dev_fmt, ...) __printf(3, 4);
--struct clk_lookup *clkdev_hw_alloc(struct clk_hw *hw, const char *con_id,
--	const char *dev_fmt, ...) __printf(3, 4);
--
- void clkdev_add(struct clk_lookup *cl);
- void clkdev_drop(struct clk_lookup *cl);
- 
+ 	snprintf(priv->phy_name, sizeof(priv->phy_name), PHY_ID_FMT,
+ 		 priv->mdio->id, priv->phy_addr);
 -- 
-2.29.2
+2.31.1
 
