@@ -2,139 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E32C39F831
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3053F39F833
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233071AbhFHN5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:57:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48160 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232341AbhFHN5a (ORCPT
+        id S233101AbhFHN5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:57:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24646 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233073AbhFHN5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:57:30 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623160536;
+        Tue, 8 Jun 2021 09:57:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623160553;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GthawrUV0muimHEvK6zmrGcJCGq8jZiO7aULAQyY0Y4=;
-        b=KqB2XeLPb2pn31XBafOH88rFZJ0m1XFlCaBHWP51L91TN2FL8df9Qw4RpS2uAvUMOQ2Ylt
-        xEuiFsfj4/LkqYFGr9KcRPfFZIn9ERmWSfySq0RW6pSqiTp/VdjBux9l9nXUBsqrpcGDkb
-        iPwfnFHpb+RWUPb1vKPkV57HT451MqRlZkdChbjbtrPWPkeez1QVzHYTH1eV+nYAttliMg
-        5dGoxI+eXaxM2PcbKRHPKqZyu8jLZqD3cJCj2CYmIOHlROaBlFbBhtRoUxrl3FrOD6M17m
-        kGxXdqJ5LBuUFbBFsmGzoV0S8lQMh59HrJy2eVTpOrDjWSrIn2uSh5zNpcXnwQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623160536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GthawrUV0muimHEvK6zmrGcJCGq8jZiO7aULAQyY0Y4=;
-        b=EbpYJIH/ZsDWszGBdq5OQx13lCRmoeaq5h+qUNhz2qv34+MkW5vgKmX+0vm8ibRGXEhGOM
-        yL01FENDgggioiAA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH next v2 1/2] dump_stack: move cpu lock to printk.c
-In-Reply-To: <YL9XMBxeZ4fGRS79@alley>
-References: <20210607200232.22211-1-john.ogness@linutronix.de> <20210607200232.22211-2-john.ogness@linutronix.de> <YL9XMBxeZ4fGRS79@alley>
-Date:   Tue, 08 Jun 2021 15:55:35 +0200
-Message-ID: <878s3kihpk.fsf@jogness.linutronix.de>
+        bh=pqyA9BJti9sC0WTScn33LjmDjTwa9gvCflfpKLm9Avo=;
+        b=GFbv+AkrQqRh34yom1r9F4S0Ip3Ejp1NVtH3Ec1Wh+LjeNkXzsNQ2klSkhvXiOby2rEvsU
+        1NO2PUOMVewlcCZXlyKGZ+PWwhx6iazjuXGqFfVlKLHera/8/Ux1lQryp662SRiXogLsuF
+        fyIVJ3YdKLReBwmls1uyGmgyfh9mtrs=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-Y5NL9jBiPYKl-ikPpOT1mQ-1; Tue, 08 Jun 2021 09:55:50 -0400
+X-MC-Unique: Y5NL9jBiPYKl-ikPpOT1mQ-1
+Received: by mail-ot1-f72.google.com with SMTP id y2-20020a0568301082b02903b5696f0a64so14049199oto.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 06:55:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=pqyA9BJti9sC0WTScn33LjmDjTwa9gvCflfpKLm9Avo=;
+        b=kGhcQ1bNSln9euy8gDr4Mr6ry6TQf8lAzLX0x/8wt77+uHT9E1SGY9zwWkDtaBKaoD
+         DGKouKgSMDdBtbGyffm4D7Zvs3Lp5mlbeai85qrMkXWPCwFw982toKz9H1vHB1i3oRu1
+         xc+lQ+hq9VC45sh9Tnkatr4jgHMD1GO/TLvWF9UQdMN2UD7EwuaDkZAmlGHUZgQs9nkC
+         8tzgIqXgMy1y98INEs0BHtHzWmR+qkuyIv3bSgaNK4zQxcpEpAMEy8CGfwFU4BdCuRIV
+         uAPfXH66M0P22bs/h1lgvAJSptCkoiz6jeuqe8euXnVfn4kIpzR7iER7uVRkzr3yDoSu
+         6A6Q==
+X-Gm-Message-State: AOAM531cIcQIqZWzHO3Uf0V/DtW9A8rEi2g549IUnsb6CSW/WVZF+Kpi
+        H/XumGGaRqyESqCF9qANEtIiwMfT5KS1Jog+ns3eTSm9zWE8ZOSu8/OJnCWlTaArgNp2BwF/AYh
+        Rl/pJ6CH9KWFsbSROuZGixCTf
+X-Received: by 2002:a9d:2222:: with SMTP id o31mr3811715ota.75.1623160549903;
+        Tue, 08 Jun 2021 06:55:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzEAySIQOYInGX/sY8rboJULzWUyayMRQC0dxIkUMsMOch3zVDlIIZUzOmsskrELB/Z11eXdg==
+X-Received: by 2002:a9d:2222:: with SMTP id o31mr3811673ota.75.1623160549362;
+        Tue, 08 Jun 2021 06:55:49 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id q22sm3003373otl.11.2021.06.08.06.55.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 06:55:48 -0700 (PDT)
+Subject: Re: [PATCH 1/7] fpga: wrap the write_init() op
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     hao.wu@intel.com, michal.simek@xilinx.com,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210607172402.2938697-1-trix@redhat.com>
+ <20210607172402.2938697-2-trix@redhat.com> <YL6fUSD0KLP0l80g@epycbox.lan>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <17c1b4b5-0dfa-03f6-149d-eaa09da9089b@redhat.com>
+Date:   Tue, 8 Jun 2021 06:55:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YL6fUSD0KLP0l80g@epycbox.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-08, Petr Mladek <pmladek@suse.com> wrote:
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+On 6/7/21 3:36 PM, Moritz Fischer wrote:
+> On Mon, Jun 07, 2021 at 10:23:56AM -0700, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> The board should not be required to provide a
+> Nit: Can you turn these into for whole series:
+> A FPGA Manager should not be ...
+
+ok
+
 >
->> --- a/kernel/printk/printk.c
->> +++ b/kernel/printk/printk.c
->> @@ -3532,3 +3532,78 @@ void kmsg_dump_rewind(struct kmsg_dump_iter *iter)
->> +void printk_cpu_lock_irqsave(bool *lock_flag, unsigned long *irq_flags)
+>> write_init() op if there is nothing for it do.
+>> So add a wrapper and move the op checking.
+>> Default to success.
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>   drivers/fpga/fpga-mgr.c | 14 +++++++++++---
+>>   1 file changed, 11 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
+>> index b85bc47c91a9..24547e36a56d 100644
+>> --- a/drivers/fpga/fpga-mgr.c
+>> +++ b/drivers/fpga/fpga-mgr.c
+>> @@ -69,6 +69,14 @@ void fpga_image_info_free(struct fpga_image_info *info)
+>>   }
+>>   EXPORT_SYMBOL_GPL(fpga_image_info_free);
+>>   
+>> +static int fpga_mgr_write_init(struct fpga_manager *mgr,
+>> +			       struct fpga_image_info *info,
+>> +			       const char *buf, size_t count)
 >> +{
->> +	int old;
->> +	int cpu;
->> +
->> +retry:
->> +	local_irq_save(*irq_flags);
->> +
->> +	cpu = smp_processor_id();
->> +
->> +	old = atomic_cmpxchg(&printk_cpulock_owner, -1, cpu);
->> +	if (old == -1) {
->> +		/* This CPU is now the owner. */
->> +
->
-> Superfluous space?
-
-I was concerned that people may associate the comment with the following
-line of code. Especially in the next patch when many more lines are
-added. The comment is for the whole conditional block.
-
->> +		*lock_flag = true;
->
-> The original name name "was_locked" was more descriptive. I agree that
-> it was not good for an API. What about keeping the inverted logic and
-> calling it "lock_nested" ?
->
-> I do not resist on any change. The logic is trivial so...
-
-I wanted it to be an opaque variable, which is why it is named so. But I
-can rename it for v3. There is no need to debate naming here.
-
->> +
->> +	} else if (old == cpu) {
->> +		/* This CPU is already the owner. */
->> +
->> +		*lock_flag = false;
->> +
->
-> Even more superfluous spaces?
-
-This code is not trivial and it is absolutely critical when we introduce
-atomic consoles. My goal is clarity rather than compactness
-(particularly after proper memory barrier comments are added).
-
->> +	} else {
->> +		local_irq_restore(*irq_flags);
->> +
->> +		/*
->> +		 * Wait for the lock to release before jumping to cmpxchg()
->> +		 * in order to mitigate the thundering herd problem.
->> +		 */
->> +		do {
->> +			cpu_relax();
->> +		} while (atomic_read(&printk_cpulock_owner) != -1);
->> +
->> +		goto retry;
->> +	}
+>> +	if (mgr->mops && mgr->mops->write_init)
+>> +		return  mgr->mops->write_init(mgr, info, buf, count);
+>> +	return 0;
 >> +}
->> +EXPORT_SYMBOL(printk_cpu_lock_irqsave);
->> +
->> +/*
->> + * printk_cpu_unlock_irqrestore: Release the printk cpu-reentrant spinning
->> + *                               lock and restore interrupts.
->> + * @lock_flag: The current lock state.
->> + * @irq_flags: The current irq state.
->
-> "The current" is a bit misleading. Both values actually describe
-> the state before the related printk_cpu_lock_irqsave().
-> What about something like?
->
->   * @lock_nested: Lock state set when the lock was taken.
->   * @irq_flags: IRQ flags stored when the lock was taken.
+>>   /*
+>>    * Call the low level driver's write_init function.  This will do the
+>>    * device-specific things to get the FPGA into the state where it is ready to
+>> @@ -83,9 +91,9 @@ static int fpga_mgr_write_init_buf(struct fpga_manager *mgr,
+>>   
+>>   	mgr->state = FPGA_MGR_STATE_WRITE_INIT;
+>>   	if (!mgr->mops->initial_header_size)
+>> -		ret = mgr->mops->write_init(mgr, info, NULL, 0);
+>> +		ret = fpga_mgr_write_init(mgr, info, NULL, 0);
+>>   	else
+>> -		ret = mgr->mops->write_init(
+>> +		ret = fpga_mgr_write_init(
+>>   		    mgr, info, buf, min(mgr->mops->initial_header_size, count));
+>>   
+>>   	if (ret) {
+>> @@ -569,7 +577,7 @@ struct fpga_manager *fpga_mgr_create(struct device *dev, const char *name,
+>>   	int id, ret;
+>>   
+>>   	if (!mops || !mops->write_complete || !mops->state ||
+>> -	    !mops->write_init || (!mops->write && !mops->write_sg) ||
+>> +	    (!mops->write && !mops->write_sg) ||
+>>   	    (mops->write && mops->write_sg)) {
+>>   		dev_err(dev, "Attempt to register without fpga_manager_ops\n");
+>>   		return NULL;
+>> -- 
+>> 2.26.3
+>>
+> Can you change the subjects to "fpga: fpga-mgr: ..."
 
-OK. I will make this change for v3.
+ok
 
-John Ogness
+I know this varies widely, but..
+
+each 'bla:' is a subdir bla/
+
+In the next patchset to reorganize around a subdir structure, there are 
+a few infrastructure files that i think could go into a fpga/fpga-mgr/
+
+fpga-bridge.c  fpga-mgr.c  fpga-region.c  of-fpga-region.c
+
+These are the only unmoved files in the patchset.
+
+I was not sure about moving them so I left them alone.
+
+Tom
+
+>
+> Otherwise series looks good.
+>
+> - Moritz
+>
+
