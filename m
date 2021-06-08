@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B115A39EAAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B35439EAB4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhFHA2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 20:28:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230209AbhFHA2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 20:28:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4310A61108;
-        Tue,  8 Jun 2021 00:26:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623111969;
-        bh=snPAZuAOgkkqsG4GmRCwE8HGSlQHlrj0xdKmSFqf1Vs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Hvel4w0ED4cnDiJjzmuiFmSk4D0EmI/3vNYCKsPRXAUeS9vwnJ5kf6GGUqSoK2EBn
-         Lz+xbCQ4kVxBXEbKT7yh+gAiyjrNTVjN513vQws8Au51m76VK93nmsvG9C9r87xZuS
-         AZA5ikXn9aYPiH/elXlzpp+17+gsWkaQMAJdt26Q=
-Date:   Mon, 7 Jun 2021 17:26:08 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, <x86@kernel.org>
-Subject: Re: [PATCH v2 15/15] x86: convert to setup_initial_init_mm()
-Message-Id: <20210607172608.fda6ee76f9b195428ddb1d0d@linux-foundation.org>
-In-Reply-To: <20210604070633.32363-16-wangkefeng.wang@huawei.com>
-References: <20210604070633.32363-1-wangkefeng.wang@huawei.com>
-        <20210604070633.32363-16-wangkefeng.wang@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231158AbhFHAco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 20:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230266AbhFHAcn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 20:32:43 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C72BC061574;
+        Mon,  7 Jun 2021 17:30:40 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso18601779otu.10;
+        Mon, 07 Jun 2021 17:30:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xoUB7E0rhgyrtTh314wlLP8BH8N4shqndYrHMc1LScU=;
+        b=TodGq3kIFaqpAdnU4+17cEAcmbkUPEqr1PWEaFpZ4e5/weQugF0btp8HLBMHvH1U81
+         EU4/v8F6wcU6D2O9gMd4jK5julVDBQ8VMaUtobU0TegqfbwM9pt25nl2TCfUiXKYb39E
+         nCp67OGd1ic7vVxIyYPE4FTM6h2MZ5KNC18H+kWwQxUxRNdCOeFhj3MGL2xZHJ0nTPMo
+         QLTvs/9gMHq8ZFBIR39DEf/uWrWLphdy8nP4WLP69ijlCDxz6M77XuCkbmEnN7dVuDed
+         X9ndo+V6rjqsqyy410ItCSogRXearJHVDF1EHLbOR1PUPwC+v5nhswPxiloYpTV/aCNB
+         NVUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xoUB7E0rhgyrtTh314wlLP8BH8N4shqndYrHMc1LScU=;
+        b=C4hCsTIXbSd/UIwXT4ViriIC8kk0+6OsYeoAvn3UI9vUp65zHqC11cZdjvQvW10Qfg
+         7qcVJf4SPLIYcyqgQALWig+Qz3MLekBiQGI9dR8cOvYzrd5bGDqpfq/evPfKnsvz2yzj
+         a5mXd6cty3HFDfe7qUV+6wD4afwTLygJPeseN2UAD5b98i+3Jc0UhyKYctzb6nCpcKCC
+         7l4r27MGWwJrVmls2CI/F4QGUA/mbi0Luy0eyOzDXGtd8VLkUayjsrrgtO6c4L3j+KPx
+         sRNVhyHwl+KOdeBHTBz+hKTN7GSvNEvJUQ6q2NA2ZboeIdPCeW8DXotPHUNFp8j5ap2y
+         ZVmA==
+X-Gm-Message-State: AOAM533ngrH/o6ulT2yEml89Baq7H4FtRDlya9qLMdUNEtqgJc0yYUGC
+        ErQQ6NkmRG1mj4jQebBzZpxR29eqh/DHp7fvMNE=
+X-Google-Smtp-Source: ABdhPJz4YiQfYwm25QPzKlI8Xy6ZhDG9CiScXQ4LY3iZOx9/l0+5MibPrQICrOkR3K3anfhpHy0V6s7vObi7M7tgGh0=
+X-Received: by 2002:a9d:5786:: with SMTP id q6mr15748398oth.56.1623112239557;
+ Mon, 07 Jun 2021 17:30:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <1622710841-76604-1-git-send-email-wanpengli@tencent.com>
+ <YLjzJ59HPqGfhhvm@google.com> <CANRm+CxSAD9+050j-1e1_f3g1QEwrSaee6=2cB6qseBXfDkgPA@mail.gmail.com>
+ <YLpIni1VKYYfUE8D@google.com>
+In-Reply-To: <YLpIni1VKYYfUE8D@google.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Tue, 8 Jun 2021 08:30:27 +0800
+Message-ID: <CANRm+CzMNctK1nWfTf10ch2TDB-6Trh4JSOGqONm4zjnctoP-g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] KVM: LAPIC: write 0 to TMICT should also cancel
+ vmx-preemption timer
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Jun 2021 15:06:33 +0800 Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
-
-> Use setup_initial_init_mm() helper to simplify code.
-> 
-> ...
+On Fri, 4 Jun 2021 at 23:37, Sean Christopherson <seanjc@google.com> wrote:
 >
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -868,10 +868,7 @@ void __init setup_arch(char **cmdline_p)
->  
->  	if (!boot_params.hdr.root_flags)
->  		root_mountflags &= ~MS_RDONLY;
-> -	init_mm.start_code = (unsigned long) _text;
-> -	init_mm.end_code = (unsigned long) _etext;
-> -	init_mm.end_data = (unsigned long) _edata;
-> -	init_mm.brk = _brk_end;
-> +	setup_initial_init_mm(_text, _etext, _edata, _brk_end);
->  
->  	code_resource.start = __pa_symbol(_text);
->  	code_resource.end = __pa_symbol(_etext)-1;
+> On Fri, Jun 04, 2021, Wanpeng Li wrote:
+> > On Thu, 3 Jun 2021 at 23:20, Sean Christopherson <seanjc@google.com> wrote:
+> > >
+> > > On Thu, Jun 03, 2021, Wanpeng Li wrote:
+> > > > From: Wanpeng Li <wanpengli@tencent.com>
+> > > >
+> > > > According to the SDM 10.5.4.1:
+> > > >
+> > > >   A write of 0 to the initial-count register effectively stops the local
+> > > >   APIC timer, in both one-shot and periodic mode.
+> > > >
+> > > > The lapic timer oneshot/periodic mode which is emulated by vmx-preemption
+> > > > timer doesn't stop since vmx->hv_deadline_tsc is still set.
+> > >
+> > > But the VMX preemption timer is only used for deadline, never for oneshot or
+> > > periodic.  Am I missing something?
+> >
+> > Yes, it is upstream.
+>
+> Huh.  I always thought 'tscdeadline' alluded to the timer being in deadline mode
+> and never looked closely at the arming code.  Thanks!
+>
+> Maybe name the new helper cancel_apic_timer() to align with start_apic_timer()
+> and restart_apic_timer()?  With that:
+>
+> Reviewed-by: Sean Christopherson <seanjc@google.com>
 
-arch/x86/kernel/setup.c:873:47: warning: passing argument 4 of 'setup_initial_init_mm' makes pointer from integer without a cast [-Wint-conversion]
-  873 |  setup_initial_init_mm(_text, _etext, _edata, _brk_end);
-      |                                               ^~~~~~~~
-      |                                               |
-      |                                               long unsigned int
-In file included from ./include/linux/pid_namespace.h:7,
-                 from ./include/linux/ptrace.h:10,
-                 from ./include/linux/elfcore.h:11,
-                 from ./include/linux/crash_core.h:6,
-                 from ./include/linux/kexec.h:18,
-                 from ./include/linux/crash_dump.h:5,
-                 from arch/x86/kernel/setup.c:9:
-./include/linux/mm.h:248:29: note: expected 'void *' but argument is of type 'long unsigned int'
-  248 |       void *end_data, void *brk);
-      |                       ~~~~~~^~~
+Do it in v2, thanks.
 
-
-afaict the other architectures will warn this way, not sure.
-
-Please check all that, refresh ,retest and resend?
+    Wanpeng
