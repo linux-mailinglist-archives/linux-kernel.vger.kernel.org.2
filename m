@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7013A02A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D75E3A01A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236728AbhFHTHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:07:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35478 "EHLO mail.kernel.org"
+        id S236841AbhFHSzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:55:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236549AbhFHS6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:58:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17D9761627;
-        Tue,  8 Jun 2021 18:42:38 +0000 (UTC)
+        id S234515AbhFHSsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:48:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48B91613EA;
+        Tue,  8 Jun 2021 18:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177759;
-        bh=6QUSFfw18uY2Xgbyr2cZj/59BvGaYuy0lzJV0j/Z/xE=;
+        s=korg; t=1623177504;
+        bh=qtTnW+v7jY2Jj4qb9HwZrqDw+PKfDSH74KUJ0a4TFIs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qx1P9vjjn5RG5cuV2sj/xoYVLTBHj8xFdLvw+dW+L91+cYo/LehIsT6OtN8c0exeQ
-         ABY8oaMBFIGsYLXvswV3UdxFCPVBzacWAxQRVOTZLxkcCcwY996exSdjT/jCdofpe7
-         EIwIFz3zNycGU/FpBuKjzfjdDn853fePAPey5BlI=
+        b=k/9N2/gt0sE4fe2SAZwyvoPVIwNrgxQigfbBa2zRuHrgwVIMUHSq8n6lvE2K19BpM
+         ZnvuhG3DhmqME/AOyDcaLLPOZwAKo3D5Bcc4iMNzHFFQYMW7VZ6hQ5jIl8LkSRgW7Y
+         YW+mJ6Q/PL0K3nuWvb8XPqjprIYzCU6pLvtLvyF0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 090/137] net: caif: add proper error handling
+Subject: [PATCH 5.4 41/78] net: caif: add proper error handling
 Date:   Tue,  8 Jun 2021 20:27:10 +0200
-Message-Id: <20210608175945.423330890@linuxfoundation.org>
+Message-Id: <20210608175936.646526509@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -83,7 +83,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		     enum cfcnfg_phy_preference pref,
 --- a/net/caif/caif_dev.c
 +++ b/net/caif/caif_dev.c
-@@ -308,7 +308,7 @@ static void dev_flowctrl(struct net_devi
+@@ -307,7 +307,7 @@ static void dev_flowctrl(struct net_devi
  	caifd_put(caifd);
  }
  
@@ -92,7 +92,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		     struct cflayer *link_support, int head_room,
  		     struct cflayer **layer,
  		     int (**rcv_func)(struct sk_buff *, struct net_device *,
-@@ -319,11 +319,12 @@ void caif_enroll_dev(struct net_device *
+@@ -318,11 +318,12 @@ void caif_enroll_dev(struct net_device *
  	enum cfcnfg_phy_preference pref;
  	struct cfcnfg *cfg = get_cfcnfg(dev_net(dev));
  	struct caif_device_entry_list *caifdevs;
@@ -106,7 +106,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	*layer = &caifd->layer;
  	spin_lock_init(&caifd->flow_lock);
  
-@@ -344,7 +345,7 @@ void caif_enroll_dev(struct net_device *
+@@ -343,7 +344,7 @@ void caif_enroll_dev(struct net_device *
  	strlcpy(caifd->layer.name, dev->name,
  		sizeof(caifd->layer.name));
  	caifd->layer.transmit = transmit;
@@ -115,7 +115,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  				dev,
  				&caifd->layer,
  				pref,
-@@ -354,6 +355,7 @@ void caif_enroll_dev(struct net_device *
+@@ -353,6 +354,7 @@ void caif_enroll_dev(struct net_device *
  	mutex_unlock(&caifdevs->lock);
  	if (rcv_func)
  		*rcv_func = receive;
