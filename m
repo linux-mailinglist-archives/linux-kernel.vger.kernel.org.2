@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717943A044F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC623A0453
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238319AbhFHT3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:29:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35428 "EHLO mail.kernel.org"
+        id S238717AbhFHT3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:29:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234654AbhFHTQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:16:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FEF86147D;
-        Tue,  8 Jun 2021 18:51:00 +0000 (UTC)
+        id S236281AbhFHTQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:16:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DC5A6195C;
+        Tue,  8 Jun 2021 18:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178261;
-        bh=yKzWz/R93n/W8c2XN8ADQg4urha27y9n3kqVabXUgts=;
+        s=korg; t=1623178263;
+        bh=gE52k/E7YkBeezIjTARd346XAL1t1SFknehX2+IJJTY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pqrfxdi2lpbAwbTrsbR/nrc3o3xfCPrXfTTudL2OqczLQOz4xWfOjYjetrDR68tT3
-         tvDRo1mZV9+RmmimbOHHGDyencxzeqnETlr/s0OqXbbvq3Zd8Yjyso1pjeES4/oxeW
-         3qQFlzbeyArw0S1yR4QSHm62wbcD5ehCjNKzvTUw=
+        b=KTyzaB4U7DxP1AojoTUItYGtyCDmteHHn9g9lalf+wxPQ8r2D9LqMPeZhaOseaguj
+         RgmT/DqY5OYbdHDDPn81/0H5iwZVB/w4UJzw2yv84YNKw39xEN3comRvmSXIipjISK
+         /a5kQ5VwtF4bF9PL0IH3TkJtsYvMsTXLpwpcxGGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Imran Khan <imran.f.khan@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.12 137/161] x86/apic: Mark _all_ legacy interrupts when IO/APIC is missing
-Date:   Tue,  8 Jun 2021 20:27:47 +0200
-Message-Id: <20210608175950.077416297@linuxfoundation.org>
+        stable@vger.kernel.org, James Feeney <james@nurealm.net>,
+        Borislav Petkov <bp@suse.de>, Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH 5.12 138/161] x86/thermal: Fix LVT thermal setup for SMI delivery mode
+Date:   Tue,  8 Jun 2021 20:27:48 +0200
+Message-Id: <20210608175950.109625741@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -40,95 +40,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Borislav Petkov <bp@suse.de>
 
-commit 7d65f9e80646c595e8c853640a9d0768a33e204c upstream.
+commit 9a90ed065a155d13db0d0ffeaad5cc54e51c90c6 upstream.
 
-PIC interrupts do not support affinity setting and they can end up on
-any online CPU. Therefore, it's required to mark the associated vectors
-as system-wide reserved. Otherwise, the corresponding irq descriptors
-are copied to the secondary CPUs but the vectors are not marked as
-assigned or reserved. This works correctly for the IO/APIC case.
+There are machines out there with added value crap^WBIOS which provide an
+SMI handler for the local APIC thermal sensor interrupt. Out of reset,
+the BSP on those machines has something like 0x200 in that APIC register
+(timestamps left in because this whole issue is timing sensitive):
 
-When the IO/APIC is disabled via config, kernel command line or lack of
-enumeration then all legacy interrupts are routed through the PIC, but
-nothing marks them as system-wide reserved vectors.
+  [    0.033858] read lvtthmr: 0x330, val: 0x200
 
-As a consequence, a subsequent allocation on a secondary CPU can result in
-allocating one of these vectors, which triggers the BUG() in
-apic_update_vector() because the interrupt descriptor slot is not empty.
+which means:
 
-Imran tried to work around that by marking those interrupts as allocated
-when a CPU comes online. But that's wrong in case that the IO/APIC is
-available and one of the legacy interrupts, e.g. IRQ0, has been switched to
-PIC mode because then marking them as allocated will fail as they are
-already marked as system vectors.
+ - bit 16 - the interrupt mask bit is clear and thus that interrupt is enabled
+ - bits [10:8] have 010b which means SMI delivery mode.
 
-Stay consistent and update the legacy vectors after attempting IO/APIC
-initialization and mark them as system vectors in case that no IO/APIC is
-available.
+Now, later during boot, when the kernel programs the local APIC, it
+soft-disables it temporarily through the spurious vector register:
 
-Fixes: 69cde0004a4b ("x86/vector: Use matrix allocator for vector assignment")
-Reported-by: Imran Khan <imran.f.khan@oracle.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+  setup_local_APIC:
+
+  	...
+
+	/*
+	 * If this comes from kexec/kcrash the APIC might be enabled in
+	 * SPIV. Soft disable it before doing further initialization.
+	 */
+	value = apic_read(APIC_SPIV);
+	value &= ~APIC_SPIV_APIC_ENABLED;
+	apic_write(APIC_SPIV, value);
+
+which means (from the SDM):
+
+"10.4.7.2 Local APIC State After It Has Been Software Disabled
+
+...
+
+* The mask bits for all the LVT entries are set. Attempts to reset these
+bits will be ignored."
+
+And this happens too:
+
+  [    0.124111] APIC: Switch to symmetric I/O mode setup
+  [    0.124117] lvtthmr 0x200 before write 0xf to APIC 0xf0
+  [    0.124118] lvtthmr 0x10200 after write 0xf to APIC 0xf0
+
+This results in CPU 0 soft lockups depending on the placement in time
+when the APIC soft-disable happens. Those soft lockups are not 100%
+reproducible and the reason for that can only be speculated as no one
+tells you what SMM does. Likely, it confuses the SMM code that the APIC
+is disabled and the thermal interrupt doesn't doesn't fire at all,
+leading to CPU 0 stuck in SMM forever...
+
+Now, before
+
+  4f432e8bb15b ("x86/mce: Get rid of mcheck_intel_therm_init()")
+
+due to how the APIC_LVTTHMR was read before APIC initialization in
+mcheck_intel_therm_init(), it would read the value with the mask bit 16
+clear and then intel_init_thermal() would replicate it onto the APs and
+all would be peachy - the thermal interrupt would remain enabled.
+
+But that commit moved that reading to a later moment in
+intel_init_thermal(), resulting in reading APIC_LVTTHMR on the BSP too
+late and with its interrupt mask bit set.
+
+Thus, revert back to the old behavior of reading the thermal LVT
+register before the APIC gets initialized.
+
+Fixes: 4f432e8bb15b ("x86/mce: Get rid of mcheck_intel_therm_init()")
+Reported-by: James Feeney <james@nurealm.net>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20210519233928.2157496-1-imran.f.khan@oracle.com
+Cc: <stable@vger.kernel.org>
+Cc: Zhang Rui <rui.zhang@intel.com>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Link: https://lkml.kernel.org/r/YKIqDdFNaXYd39wz@zn.tnic
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/apic.h   |    1 +
- arch/x86/kernel/apic/apic.c   |    1 +
- arch/x86/kernel/apic/vector.c |   20 ++++++++++++++++++++
- 3 files changed, 22 insertions(+)
+ arch/x86/include/asm/thermal.h      |    4 +++-
+ arch/x86/kernel/setup.c             |    9 +++++++++
+ drivers/thermal/intel/therm_throt.c |   15 +++++++++++----
+ 3 files changed, 23 insertions(+), 5 deletions(-)
 
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -174,6 +174,7 @@ static inline int apic_is_clustered_box(
- extern int setup_APIC_eilvt(u8 lvt_off, u8 vector, u8 msg_type, u8 mask);
- extern void lapic_assign_system_vectors(void);
- extern void lapic_assign_legacy_vector(unsigned int isairq, bool replace);
-+extern void lapic_update_legacy_vectors(void);
- extern void lapic_online(void);
- extern void lapic_offline(void);
- extern bool apic_needs_pit(void);
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2604,6 +2604,7 @@ static void __init apic_bsp_setup(bool u
- 	end_local_APIC_setup();
- 	irq_remap_enable_fault_handling();
- 	setup_IO_APIC();
-+	lapic_update_legacy_vectors();
- }
+--- a/arch/x86/include/asm/thermal.h
++++ b/arch/x86/include/asm/thermal.h
+@@ -3,11 +3,13 @@
+ #define _ASM_X86_THERMAL_H
  
- #ifdef CONFIG_UP_LATE_INIT
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -730,6 +730,26 @@ void lapic_assign_legacy_vector(unsigned
- 	irq_matrix_assign_system(vector_matrix, ISA_IRQ_VECTOR(irq), replace);
- }
+ #ifdef CONFIG_X86_THERMAL_VECTOR
++void therm_lvt_init(void);
+ void intel_init_thermal(struct cpuinfo_x86 *c);
+ bool x86_thermal_enabled(void);
+ void intel_thermal_interrupt(void);
+ #else
+-static inline void intel_init_thermal(struct cpuinfo_x86 *c) { }
++static inline void therm_lvt_init(void)				{ }
++static inline void intel_init_thermal(struct cpuinfo_x86 *c)	{ }
+ #endif
  
-+void __init lapic_update_legacy_vectors(void)
-+{
-+	unsigned int i;
-+
-+	if (IS_ENABLED(CONFIG_X86_IO_APIC) && nr_ioapics > 0)
-+		return;
-+
+ #endif /* _ASM_X86_THERMAL_H */
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -44,6 +44,7 @@
+ #include <asm/pci-direct.h>
+ #include <asm/prom.h>
+ #include <asm/proto.h>
++#include <asm/thermal.h>
+ #include <asm/unwind.h>
+ #include <asm/vsyscall.h>
+ #include <linux/vmalloc.h>
+@@ -1220,6 +1221,14 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	x86_init.timers.wallclock_init();
+ 
 +	/*
-+	 * If the IO/APIC is disabled via config, kernel command line or
-+	 * lack of enumeration then all legacy interrupts are routed
-+	 * through the PIC. Make sure that they are marked as legacy
-+	 * vectors. PIC_CASCADE_IRQ has already been marked in
-+	 * lapic_assign_system_vectors().
++	 * This needs to run before setup_local_APIC() which soft-disables the
++	 * local APIC temporarily and that masks the thermal LVT interrupt,
++	 * leading to softlockups on machines which have configured SMI
++	 * interrupt delivery.
 +	 */
-+	for (i = 0; i < nr_legacy_irqs(); i++) {
-+		if (i != PIC_CASCADE_IR)
-+			lapic_assign_legacy_vector(i, true);
-+	}
++	therm_lvt_init();
++
+ 	mcheck_init();
+ 
+ 	register_refined_jiffies(CLOCK_TICK_RATE);
+--- a/drivers/thermal/intel/therm_throt.c
++++ b/drivers/thermal/intel/therm_throt.c
+@@ -621,6 +621,17 @@ bool x86_thermal_enabled(void)
+ 	return atomic_read(&therm_throt_en);
+ }
+ 
++void __init therm_lvt_init(void)
++{
++	/*
++	 * This function is only called on boot CPU. Save the init thermal
++	 * LVT value on BSP and use that value to restore APs' thermal LVT
++	 * entry BIOS programmed later
++	 */
++	if (intel_thermal_supported(&boot_cpu_data))
++		lvtthmr_init = apic_read(APIC_LVTTHMR);
 +}
 +
- void __init lapic_assign_system_vectors(void)
+ void intel_init_thermal(struct cpuinfo_x86 *c)
  {
- 	unsigned int i, vector = 0;
+ 	unsigned int cpu = smp_processor_id();
+@@ -630,10 +641,6 @@ void intel_init_thermal(struct cpuinfo_x
+ 	if (!intel_thermal_supported(c))
+ 		return;
+ 
+-	/* On the BSP? */
+-	if (c == &boot_cpu_data)
+-		lvtthmr_init = apic_read(APIC_LVTTHMR);
+-
+ 	/*
+ 	 * First check if its enabled already, in which case there might
+ 	 * be some SMM goo which handles it, so we can't even put a handler
 
 
