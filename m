@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DF73A0054
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227923A00CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235178AbhFHSlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:41:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36508 "EHLO mail.kernel.org"
+        id S235133AbhFHSrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:47:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235190AbhFHSjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:39:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 981A361421;
-        Tue,  8 Jun 2021 18:34:10 +0000 (UTC)
+        id S235312AbhFHSmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:42:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 695E0613D3;
+        Tue,  8 Jun 2021 18:35:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177251;
-        bh=2UlRm6zG1CjQuwWEpdFSnVppc7+vgNmgOp4sokZzRAA=;
+        s=korg; t=1623177353;
+        bh=oy1FAr+NNpZ5MJWeJjxdg+OMHrQSZwNpVeFG4CAO12c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x7yV44tvjpBz7jb9drsI+oHv5WGjDyIw0pUHmc5XupqWhL0uWff2X8coYFXrFlsBL
-         bXFThq95FhK8YZmdPNYCfmSzEQL9omwneGOex+UggmyIAiz2jxTM/bjF62HwPrdUBo
-         v1e0vXxUahLYEarvsdQeUUA5H8iZKUz6jZCZYOh0=
+        b=C+R6eG8r34DAnWIi+1mQx1Sxx9n32dicYIE+BHq+vzEbJJc1Lz0fLIZB0+7dAthmP
+         LC4Ua1KNgMvgcqOP68jsW4MqB7HR5wZpkZXUxuAoUTtHD8SuIMaCmhEJy2Ai3SIruC
+         qTt/avG5ZOSvbrn1n28T9ou7VhuHZgXBeUn5EHI4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 09/58] vfio/platform: fix module_put call in error flow
+Subject: [PATCH 5.4 21/78] ieee802154: fix error return code in ieee802154_llsec_getparams()
 Date:   Tue,  8 Jun 2021 20:26:50 +0200
-Message-Id: <20210608175932.589684048@linuxfoundation.org>
+Message-Id: <20210608175935.980593923@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
-References: <20210608175932.263480586@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Gurtovoy <mgurtovoy@nvidia.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-[ Upstream commit dc51ff91cf2d1e9a2d941da483602f71d4a51472 ]
+[ Upstream commit 373e864cf52403b0974c2f23ca8faf9104234555 ]
 
-The ->parent_module is the one that use in try_module_get. It should
-also be the one the we use in module_put during vfio_platform_open().
+Fix to return negative error code -ENOBUFS from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Fixes: 32a2d71c4e80 ("vfio: platform: introduce vfio-platform-base module")
-Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-Id: <20210518192133.59195-1-mgurtovoy@nvidia.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Fixes: 3e9c156e2c21 ("ieee802154: add netlink interfaces for llsec")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Link: https://lore.kernel.org/r/20210519141614.3040055-1-weiyongjun1@huawei.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/platform/vfio_platform_common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ieee802154/nl-mac.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/vfio/platform/vfio_platform_common.c b/drivers/vfio/platform/vfio_platform_common.c
-index 460760d0becf..c29fc6844f84 100644
---- a/drivers/vfio/platform/vfio_platform_common.c
-+++ b/drivers/vfio/platform/vfio_platform_common.c
-@@ -295,7 +295,7 @@ err_irq:
- 	vfio_platform_regions_cleanup(vdev);
- err_reg:
- 	mutex_unlock(&driver_lock);
--	module_put(THIS_MODULE);
-+	module_put(vdev->parent_module);
- 	return ret;
- }
+diff --git a/net/ieee802154/nl-mac.c b/net/ieee802154/nl-mac.c
+index d19c40c684e8..71be75112321 100644
+--- a/net/ieee802154/nl-mac.c
++++ b/net/ieee802154/nl-mac.c
+@@ -680,8 +680,10 @@ int ieee802154_llsec_getparams(struct sk_buff *skb, struct genl_info *info)
+ 	    nla_put_u8(msg, IEEE802154_ATTR_LLSEC_SECLEVEL, params.out_level) ||
+ 	    nla_put_u32(msg, IEEE802154_ATTR_LLSEC_FRAME_COUNTER,
+ 			be32_to_cpu(params.frame_counter)) ||
+-	    ieee802154_llsec_fill_key_id(msg, &params.out_key))
++	    ieee802154_llsec_fill_key_id(msg, &params.out_key)) {
++		rc = -ENOBUFS;
+ 		goto out_free;
++	}
+ 
+ 	dev_put(dev);
  
 -- 
 2.30.2
