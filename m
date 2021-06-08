@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3625339F790
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7055139F797
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbhFHNUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:20:18 -0400
-Received: from mail-ua1-f42.google.com ([209.85.222.42]:37456 "EHLO
-        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232951AbhFHNT5 (ORCPT
+        id S232971AbhFHNUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:20:30 -0400
+Received: from mail-vs1-f52.google.com ([209.85.217.52]:38642 "EHLO
+        mail-vs1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232867AbhFHNUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:19:57 -0400
-Received: by mail-ua1-f42.google.com with SMTP id w28so11583481uae.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 06:18:04 -0700 (PDT)
+        Tue, 8 Jun 2021 09:20:05 -0400
+Received: by mail-vs1-f52.google.com with SMTP id x8so10831451vso.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 06:18:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=AeJwkXf02FHfkTc2tBhjPcNKSoYfgCe3Kp4yq0sZmLQ=;
-        b=rf8YIY99EbZMH7/g12lKGP+/SS1HGQgyS+TwSAWEoUkshR9P9Ec3G/WR5fH6jYhGbN
-         bl5LprBy5xsyf0h/IPEzPCJlzOerq5GFGC8npSAHFpt0HgQiGeRy1h90ikX15ib8uCVe
-         BSMcQGvJRyTIHbKsWuB39rNXYMN2ogOqjqdhSwRBLpjleKKw5E36j8Jomg9WzHSygfpf
-         BB+ZHFK5AHq78zJlPPK1igG5DSdmy2PBnoK9uT6iAXAPuxUA783R5bDjZYH4z51UBrLE
-         +TCW7CIO8Osk8FlZeidbHZjQg8zN+3WG1XQtFr4OlHWO1S6v0CUG8s7RwpfirhwtiWWr
-         /kcA==
+        bh=IBlaigZjV5sq8STNj0id8/6Cg17DTXWl1Q3IQsLPB3A=;
+        b=v8xYVwI7sysXcu+xETCr1LbUTUYskjilN0Dg2uGSzOZodjApeA0q7FxdkOCkGMS0N3
+         ILr8bflMTzoCZUlQPLEclNbKHkn3uceD9K4vKih6eInxNapCN9NGHEP4n8r6Ah0zY43d
+         82nctpPmnvPljQQClDLAZ8f7c9U6IwEnrDZ4FbAAHQCq9oWdXwMZK46B8CA9etPJ+W3V
+         AaOz/Wzi5FjceFevb7GqFolzXDWwpOh9BV2QtiM3zFiLUz6hmozVELcNEJC64OQNsc7D
+         xBjfbYRlLzuygibOaMaCq6N7oEDk53x4R9i+fQwmndXKdMnrOFRwoZBxOjxR8A6KyrGg
+         usoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AeJwkXf02FHfkTc2tBhjPcNKSoYfgCe3Kp4yq0sZmLQ=;
-        b=lXUfk7yp6m7M+aDdhAMil1S/l/lVr185M5dx4TRC27OJQOA2SoKLa2JmofY1J+tMCF
-         aP6T8+qxwujwDZ4m+kBKITeU7OBXSI6lS1lFcNfQDryyTbf2tkbZyDVAMaXrDHAm314W
-         ILQxs9DE0B+heQoP2NPSYJFwAX1S9/eLdyxzfwPdDFA24FFFPL8ySZgbaXEr5GIU47p+
-         E2UFZl4zNzF7GcQ1kXxDw/hLanR36j8sG78QhDz3E3x7IG9YFhhThP9s7vSIb1V4F5Jv
-         0uWcODncKIVGknajMI7Yta0FwniBDjEOdtEkKYnOC5CHIJt73juzdf0TjIf3VR4fBytA
-         FQJA==
-X-Gm-Message-State: AOAM532KK73EoPwWMh9qxialAKKTL7oDc6RbeiiMF7kTKZ+5VLX3jSiO
-        ZdsXistjcNmnWcr4lUsHl9/Ib5P7jzroZ2FgV1OJyw==
-X-Google-Smtp-Source: ABdhPJyNWit/KMWObghRKbmC6vtI+CqqBIJIhWt5YdpyC0OBpfA57D9EyglRt+y4bBMHLxwHJLZJWt4XwfmLKDDM/Aw=
-X-Received: by 2002:ab0:12a:: with SMTP id 39mr12675863uak.19.1623158223925;
- Tue, 08 Jun 2021 06:17:03 -0700 (PDT)
+        bh=IBlaigZjV5sq8STNj0id8/6Cg17DTXWl1Q3IQsLPB3A=;
+        b=DpadzrqDaLscjTBNavMy+XYt6aACUlWAR8cuvb4DteE1BBPxvdbTxQwJK8bZMuNG9t
+         D312hMJ8zoJq29Ogqqoe78nTeRXPaBAN9yJo/Kc2eI0hdEx4ErU7SZKvISw3kH6zK2A3
+         cs72UcpcddXKV05wR1bswvdPN4N0gErbANseOKst+P0T7ilgPjVOVIeriO8QbH2xgtS8
+         eIl4kk/FA3O8VNWGCNVL6Feos0OxQyX+qjtdHfA/jnO2Mxlb6BaedkWYehtLEr1Moicp
+         n+AB2FN/F9XC3D1qOxShExpySKe2DGa+lGsr01wLbCznLPYI0vkscWwKmkVEWDHHj45h
+         6N9A==
+X-Gm-Message-State: AOAM530N84pk+wDc+nT/R5pUIPH9/iFPrIbca48TakqMcnTIVCRUz09/
+        Z7g1K168O037jw2LuWUJTr4rFAsm0C2G7pK4nJ+Ciw==
+X-Google-Smtp-Source: ABdhPJxay7JnvbyravvhaZyhK6CMPilmQ9CWkeUrB1ld1S7WrWJelrVoiHD/h4dAW2M4pQKzXjKANWYFeGYiPvyjMxI=
+X-Received: by 2002:a67:e359:: with SMTP id s25mr11902381vsm.55.1623158227317;
+ Tue, 08 Jun 2021 06:17:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <1623002884-57244-1-git-send-email-zhouyanjie@wanyeetech.com> <1623002884-57244-2-git-send-email-zhouyanjie@wanyeetech.com>
-In-Reply-To: <1623002884-57244-2-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1623002884-57244-1-git-send-email-zhouyanjie@wanyeetech.com> <1623002884-57244-3-git-send-email-zhouyanjie@wanyeetech.com>
+In-Reply-To: <1623002884-57244-3-git-send-email-zhouyanjie@wanyeetech.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 8 Jun 2021 15:16:26 +0200
-Message-ID: <CAPDyKFrHuMZdHJ+KKBffCu+FiOJr14ynBnjYW_oGpNQN8+Hy8A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: mmc: JZ4740: Add bindings for JZ4775.
+Date:   Tue, 8 Jun 2021 15:16:30 +0200
+Message-ID: <CAPDyKFpQcoyu1Fg46XgyCcgTxLaN1Ez29F1URRaEd4ZHZmuUhg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: JZ4740: Add support for JZ4775 and rename
+ unreasonable array name.
 To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
         <zhouyanjie@wanyeetech.com>
 Cc:     Rob Herring <robh+dt@kernel.org>,
@@ -67,34 +68,173 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Sun, 6 Jun 2021 at 20:08, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)
 <zhouyanjie@wanyeetech.com> wrote:
 >
-> Add the MMC bindings for the JZ4775 SoC from Ingenic.
+> 1.Add support for probing mmc driver on the JZ4775 SoC from Ingenic.
+> 2.When the support for JZ4775 SoC is added, there will be six compatible
+>   strings, so renaming "jz4740_mmc_of_match[]" to "jz4740_mmc_of_matches[=
+]"
+>   is more reasonable.
 >
 > Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
 eetech.com>
 
-Applied for next, thanks!
+Applied for next, with a minor change, see below, thanks!
 
 Kind regards
 Uffe
 
-
 > ---
->  Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/mmc/host/jz4740_mmc.c | 25 ++++++++++++++-----------
+>  1 file changed, 14 insertions(+), 11 deletions(-)
 >
-> diff --git a/Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml b/Doc=
-umentation/devicetree/bindings/mmc/ingenic,mmc.yaml
-> index 04ba8b7..546480f 100644
-> --- a/Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml
-> @@ -19,6 +19,7 @@ properties:
->            - ingenic,jz4740-mmc
->            - ingenic,jz4725b-mmc
->            - ingenic,jz4760-mmc
-> +          - ingenic,jz4775-mmc
->            - ingenic,jz4780-mmc
->            - ingenic,x1000-mmc
->        - items:
+> diff --git a/drivers/mmc/host/jz4740_mmc.c b/drivers/mmc/host/jz4740_mmc.=
+c
+> index b3c636e..ea8434f 100644
+> --- a/drivers/mmc/host/jz4740_mmc.c
+> +++ b/drivers/mmc/host/jz4740_mmc.c
+> @@ -2,6 +2,7 @@
+>  /*
+>   *  Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+>   *  Copyright (C) 2013, Imagination Technologies
+> + *  Copyright (C) 2021, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouy=
+anjie@wanyeetech.com>
+
+I am dropping this as it's pointless, because of your "Signed-off-by" tag.
+
+If you want more explanation, please have a look at
+Documentation/process/submitting-patches.rst. It should explain more
+about "Signed-off-by" tags.
+
+
+>   *
+>   *  JZ4740 SD/MMC controller driver
+>   */
+> @@ -114,6 +115,7 @@ enum jz4740_mmc_version {
+>         JZ_MMC_JZ4740,
+>         JZ_MMC_JZ4725B,
+>         JZ_MMC_JZ4760,
+> +       JZ_MMC_JZ4775,
+>         JZ_MMC_JZ4780,
+>         JZ_MMC_X1000,
+>  };
+> @@ -138,7 +140,7 @@ enum jz4740_mmc_state {
+>   * COOKIE_MAPPED: the request was mapped in the irq handler,
+>   * and should be unmapped before mmc_request_done is called..
+>   */
+> -enum jz4780_cookie {
+> +enum jz4775_cookie {
+>         COOKIE_UNMAPPED =3D 0,
+>         COOKIE_PREMAPPED,
+>         COOKIE_MAPPED,
+> @@ -194,7 +196,7 @@ static void jz4740_mmc_write_irq_mask(struct jz4740_m=
+mc_host *host,
+>  static void jz4740_mmc_write_irq_reg(struct jz4740_mmc_host *host,
+>                                      uint32_t val)
+>  {
+> -       if (host->version >=3D JZ_MMC_JZ4780)
+> +       if (host->version >=3D JZ_MMC_JZ4775)
+>                 writel(val, host->base + JZ_REG_MMC_IREG);
+>         else
+>                 writew(val, host->base + JZ_REG_MMC_IREG);
+> @@ -202,7 +204,7 @@ static void jz4740_mmc_write_irq_reg(struct jz4740_mm=
+c_host *host,
+>
+>  static uint32_t jz4740_mmc_read_irq_reg(struct jz4740_mmc_host *host)
+>  {
+> -       if (host->version >=3D JZ_MMC_JZ4780)
+> +       if (host->version >=3D JZ_MMC_JZ4775)
+>                 return readl(host->base + JZ_REG_MMC_IREG);
+>         else
+>                 return readw(host->base + JZ_REG_MMC_IREG);
+> @@ -674,7 +676,7 @@ static void jz4740_mmc_send_command(struct jz4740_mmc=
+_host *host,
+>                         cmdat |=3D JZ_MMC_CMDAT_WRITE;
+>                 if (host->use_dma) {
+>                         /*
+> -                        * The 4780's MMC controller has integrated DMA a=
+bility
+> +                        * The JZ4775's MMC controller has integrated DMA=
+ ability
+>                          * in addition to being able to use the external =
+DMA
+>                          * controller. It moves DMA control bits to a sep=
+arate
+>                          * register. The DMA_SEL bit chooses the external
+> @@ -682,13 +684,13 @@ static void jz4740_mmc_send_command(struct jz4740_m=
+mc_host *host,
+>                          * can only use the external controller, and have=
+ a
+>                          * single DMA enable bit in CMDAT.
+>                          */
+> -                       if (host->version >=3D JZ_MMC_JZ4780) {
+> +                       if (host->version >=3D JZ_MMC_JZ4775) {
+>                                 writel(JZ_MMC_DMAC_DMA_EN | JZ_MMC_DMAC_D=
+MA_SEL,
+>                                        host->base + JZ_REG_MMC_DMAC);
+>                         } else {
+>                                 cmdat |=3D JZ_MMC_CMDAT_DMA_EN;
+>                         }
+> -               } else if (host->version >=3D JZ_MMC_JZ4780) {
+> +               } else if (host->version >=3D JZ_MMC_JZ4775) {
+>                         writel(0, host->base + JZ_REG_MMC_DMAC);
+>                 }
+>
+> @@ -866,7 +868,7 @@ static int jz4740_mmc_set_clock_rate(struct jz4740_mm=
+c_host *host, int rate)
+>         writew(div, host->base + JZ_REG_MMC_CLKRT);
+>
+>         if (real_rate > 25000000) {
+> -               if (host->version >=3D JZ_MMC_X1000) {
+> +               if (host->version >=3D JZ_MMC_JZ4775) {
+>                         writel(JZ_MMC_LPM_DRV_RISING_QTR_PHASE_DLY |
+>                                    JZ_MMC_LPM_SMP_RISING_QTR_OR_HALF_PHAS=
+E_DLY |
+>                                    JZ_MMC_LPM_LOW_POWER_MODE_EN,
+> @@ -955,15 +957,16 @@ static const struct mmc_host_ops jz4740_mmc_ops =3D=
+ {
+>         .enable_sdio_irq =3D jz4740_mmc_enable_sdio_irq,
+>  };
+>
+> -static const struct of_device_id jz4740_mmc_of_match[] =3D {
+> +static const struct of_device_id jz4740_mmc_of_matches[] =3D {
+>         { .compatible =3D "ingenic,jz4740-mmc", .data =3D (void *) JZ_MMC=
+_JZ4740 },
+>         { .compatible =3D "ingenic,jz4725b-mmc", .data =3D (void *)JZ_MMC=
+_JZ4725B },
+>         { .compatible =3D "ingenic,jz4760-mmc", .data =3D (void *) JZ_MMC=
+_JZ4760 },
+> +       { .compatible =3D "ingenic,jz4775-mmc", .data =3D (void *) JZ_MMC=
+_JZ4775 },
+>         { .compatible =3D "ingenic,jz4780-mmc", .data =3D (void *) JZ_MMC=
+_JZ4780 },
+>         { .compatible =3D "ingenic,x1000-mmc", .data =3D (void *) JZ_MMC_=
+X1000 },
+>         {},
+>  };
+> -MODULE_DEVICE_TABLE(of, jz4740_mmc_of_match);
+> +MODULE_DEVICE_TABLE(of, jz4740_mmc_of_matches);
+>
+>  static int jz4740_mmc_probe(struct platform_device* pdev)
+>  {
+> @@ -980,7 +983,7 @@ static int jz4740_mmc_probe(struct platform_device* p=
+dev)
+>
+>         host =3D mmc_priv(mmc);
+>
+> -       match =3D of_match_device(jz4740_mmc_of_match, &pdev->dev);
+> +       match =3D of_match_device(jz4740_mmc_of_matches, &pdev->dev);
+>         if (match) {
+>                 host->version =3D (enum jz4740_mmc_version)match->data;
+>         } else {
+> @@ -1124,7 +1127,7 @@ static struct platform_driver jz4740_mmc_driver =3D=
+ {
+>         .driver =3D {
+>                 .name =3D "jz4740-mmc",
+>                 .probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
+> -               .of_match_table =3D of_match_ptr(jz4740_mmc_of_match),
+> +               .of_match_table =3D of_match_ptr(jz4740_mmc_of_matches),
+>                 .pm =3D pm_ptr(&jz4740_mmc_pm_ops),
+>         },
+>  };
 > --
 > 2.7.4
 >
