@@ -2,137 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47823A0089
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0EA3A00BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235663AbhFHSop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234187AbhFHSkz (ORCPT
+        id S235026AbhFHSqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:46:49 -0400
+Received: from mail-lf1-f47.google.com ([209.85.167.47]:35837 "EHLO
+        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234942AbhFHSmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:40:55 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895C0C06178B;
-        Tue,  8 Jun 2021 11:39:02 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id b5so20549710ilc.12;
-        Tue, 08 Jun 2021 11:39:02 -0700 (PDT)
+        Tue, 8 Jun 2021 14:42:18 -0400
+Received: by mail-lf1-f47.google.com with SMTP id i10so33684601lfj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 11:40:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Haq0YPA4rRTEboTMq/srqauEYHmbuV8PWUShNR4iohk=;
-        b=PVKsbw60mkC8RpXyNr0BZLkqvkHsBxGq8GBSWhSy+ExzMC+eOXN7KBfCUcSELnIyxo
-         bxhjS54o6cTRBHg+QJDLBFQA1rWktVKtbWGTtSoZ5DfMbblpggDcT1KqA8M1+j11D0iS
-         AGrTcueRm3xLrQrA1OXFKFnay53nSIVzda4PDjGhZcSSY9cLcWllfmF4u1abhdhaFUZQ
-         C9sUfuy8NA4YsZ2Dmi1XFJ7qCWiXimhiav7dTAj82/ebNM/VZc8C/sYLUjCwx1/cBx7x
-         3MNwPs/BMRSreLBPMQnbqYGxaBoeFNAC8nI2dt0KLZccr6FnU7kmuxWE0iDB4Y2S5DXt
-         dyxA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RFVHIAFVezn4A//yU0olDz7nXpJepZN2+RpU9TzzyE8=;
+        b=pLX4yrmrJ0rUVnKzsKkQ81cTKwTGWP2ONwJS+KHNRS89xxBiyB9MgfAjB86RnAT/Hk
+         Tk9YXvOafQ9vrGquEY5afAb6ZJVNQfCN9PtLNt7UuAv+nOahJtWqQBqX3sZrGVpHs8Lf
+         EL4D1BDwIKGForCI1dRNmMgqAJY1yw7Y0syMyClHOIQ4j1dVbVW6qMXHzQKLzUt6wUV+
+         fubtP6LfDplz66FfEuMuQIwBCWAPHaJtlF5tZ/bPtAFUKFdfAJx/vbuveJ63671EtKeg
+         vNbwDbFy0UN+xu82/bT9McIXfWX4QTaZBqQFrHMk199Nwyr0Td4t9+GDLdAf2Lyn9LZM
+         i8Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Haq0YPA4rRTEboTMq/srqauEYHmbuV8PWUShNR4iohk=;
-        b=ikn6gSrwWgN1O8OFENDIONEmu9l0ApnBIKp5oWVo7d0C2IUnfsccRArpgEwVXHtyky
-         ziie1ubE0JgG5y/22BeDjxFT2SXg7eW4QZyV6LHp3xWlEASyFrTauCh45EVa2qqzwOqc
-         AeOFBZUmmKMbCMp+QJWA/sFNh5zordSkOpMBDvMuXXanpmpa5BmqP1QEQvbcAEp2wM/A
-         bzOViPqAtOd+OaH3yBkly9NGE7cgumzC1gzUpZZcwreWglqHjjaqTTwl3i+IZ1T+upvW
-         BhNqTDSDiKC8wWgKC6GfiR6M5rdPzgmc6PZGAnrLc4CPRRSSi2bzKzk1QyRqacuF1uj/
-         kdbw==
-X-Gm-Message-State: AOAM530VR1xSCT2dNvgUOanlqR4jgH2D9j2pJViftQU10Y36btMJzrNa
-        CyGcXaylSTcW7yHDy3FfklOZQq6X51Q+IA==
-X-Google-Smtp-Source: ABdhPJy5OrUw7426A3b8pznWY7QtD+fdgLZ+j/BDm/DOlGqGSeEsxK/Hs5B55TnNbmUwVM6aTlBMPg==
-X-Received: by 2002:a92:c748:: with SMTP id y8mr244887ilp.41.1623177538914;
-        Tue, 08 Jun 2021 11:38:58 -0700 (PDT)
-Received: from ceo1homenx.1.quietfountain.com (173-29-47-53.client.mchsi.com. [173.29.47.53])
-        by smtp.gmail.com with ESMTPSA id e14sm241164ile.2.2021.06.08.11.38.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 11:38:58 -0700 (PDT)
-To:     Vivek Goyal <vgoyal@redhat.com>, linux-fsdevel@vger.kernel.org,
-        virtio-fs@redhat.com,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        David Howells <dhowells@redhat.com>, viro@zeniv.linux.org.uk,
-        v9fs-developer@lists.sourceforge.net
-References: <20210608153524.GB504497@redhat.com>
-From:   "Harry G. Coin" <hgcoin@gmail.com>
-Subject: Re: [Virtio-fs] [PATCH] init/do_mounts.c: Add root="fstag:<tag>"
- syntax for root device
-Message-ID: <8929c252-3d99-8cdb-1c56-5fdb1fd29fc2@gmail.com>
-Date:   Tue, 8 Jun 2021 13:38:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RFVHIAFVezn4A//yU0olDz7nXpJepZN2+RpU9TzzyE8=;
+        b=uJzwI1jcA0tJstUnQ5A+1QGMQ/sj3AtnnALORaogL14vYFchAInGE8to90t7lcJIt4
+         dMeZA26f9xM7LzGi5vDK/45L1PZT8ed2sbz1KYK7Ii4scRwl9jGZuDQsb2yC6htSBlNw
+         gEhEDf1jGl/Wyu16izGP033Kqjrl9517xTNA6/I1iV1rxTeW5fuRUkT0ZSmeYj7McciU
+         +vEFOqGa26YcsNlpuUG3RPafaBAX79B7tVHVcICpkWpBk/qkLqtoHPFV4bs+ik1WLoXI
+         DfAxu6TCcYqcfL1CrJzvzOiiZeC+6PTAxlpAgyQwm1keKgMq/C9MYwsSW0+Nm/dkNXI2
+         iZsA==
+X-Gm-Message-State: AOAM531ZH+2anQqd4NbySwD2NOq9YuuOvU0GWuEokVne4RbpHKtXPYV7
+        wXwKiGEu1+VJuFljjYipbYzRaGOHCajZ/an3nmiiqw==
+X-Google-Smtp-Source: ABdhPJwSkum5TLbm5F7gzs0qrnq/SuixhE2KyLKYeHZQ7LcH11gymZk7UDXcOBrGLp4Svy45uPgtiw0LT083xIgQJuY=
+X-Received: by 2002:a19:4843:: with SMTP id v64mr6200836lfa.374.1623177552600;
+ Tue, 08 Jun 2021 11:39:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210608153524.GB504497@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
+References: <1623145562-111662-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1623145562-111662-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 8 Jun 2021 11:39:01 -0700
+Message-ID: <CAKwvOdmyXV09ZxcDqQ6x43f+Eze4h40W2AoKcCmUhGM2gUWsnQ@mail.gmail.com>
+Subject: Re: [PATCH] thermal: devfreq_cooling: Fix kernel-doc
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>, amitk@kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-pm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 10:35 AM, Vivek Goyal wrote:
-> We want to be able to mount virtiofs as rootfs and pass appropriate
-> kernel command line. Right now there does not seem to be a good way
-> to do that. If I specify "root=3Dmyfs rootfstype=3Dvirtiofs", system
-> panics.
+On Tue, Jun 8, 2021 at 2:46 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
 >
-> virtio-fs: tag </dev/root> not found
-> ..
-> ..
-> [ end Kernel panic - not syncing: VFS: Unable to mount root fs on unkno=
-wn-block(0,0) ]
+> Fix function name in devfreq_cooling.c kernel-doc comment
+> to remove a warning found by clang(make W=1 LLVM=1).
+>
+> drivers/thermal/devfreq_cooling.c:479: warning: expecting prototype for
+> devfreq_cooling_em_register_power(). Prototype was for
+> devfreq_cooling_em_register() instead.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-Whatever the best direction forward might be for kernel patches
-regarding 'not block device as root', it would ease learning curves if
-'the patterns that set config issue X' were the same across root 'not
-block device options' whether cephfs, nfs, 9p, virtiofs.=C2=A0 All of the=
-m
-will have to handle the selinux xattr/issue, posix and flock issues,
-caching etc.=C2=A0 While by definition virtiofs has to exist only in a vm=
+That compiler warning doesn't come from kernel-doc.  Your diff looks
+good (the comment was wrong), but the commit message is curious.
 
-guest, the others could be baremetal or vm guest roots.=C2=A0 (How much 9=
-p's
-other-than-guest transports are used I don't know).
+Usually that warning is from when the function prototype does not
+exist for a function with extern linkage.  It looks like that's always
+provided though in include/linux/devfreq_cooling.h.  Can you share a
+link to the original report?
 
-FYI (though patching the kernel may be the best option)=C2=A0 there is a =
-case
-that does not have those kernel panics for virtiofs-root and 9p root
-using stock fc34.=C2=A0 As 9p, the virtiofs method uses the initrd creati=
-on
-mechanisms provided by 'dracut' or 'initramfs' to provide the 'sysroot
-pivot glue'.
-
-On the fc34 guest a successful 'direct kernel boot' today looks like:
-
-kernel path: /vmsystems/fedora_generic/boot/vmlinuz
-
-initrd path: /vmsystems/fedora_generic/boot/initrd.img
-
-Kernel args: root=3Dvirtiofs:myfs rd.shell rd.fstab
-
-
-The xml to pass through virtio-fs is:
-
-<filesystem type=3D"mount" accessmode=3D"passthrough">
-=C2=A0 <driver type=3D"virtiofs" queue=3D"1024"/>
-=C2=A0 <binary xattr=3D"on">
-=C2=A0=C2=A0=C2=A0 <lock posix=3D"on" flock=3D"on"/>
-=C2=A0 </binary>
-=C2=A0 <source dir=3D"/vmsystems/fedora_generic"/>
-=C2=A0 <target dir=3D"myfs"/>
-</filesystem>
-
-The guest fstab is:
-
-myfs / virtiofs defaults 0 0
-
-HTH
-
-Harry Coin
+> ---
+>  drivers/thermal/devfreq_cooling.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+> index 3a788ac..5a86cff 100644
+> --- a/drivers/thermal/devfreq_cooling.c
+> +++ b/drivers/thermal/devfreq_cooling.c
+> @@ -458,7 +458,7 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
+>  EXPORT_SYMBOL_GPL(devfreq_cooling_register);
+>
+>  /**
+> - * devfreq_cooling_em_register_power() - Register devfreq cooling device with
+> + * devfreq_cooling_em_register() - Register devfreq cooling device with
+>   *             power information and automatically register Energy Model (EM)
+>   * @df:                Pointer to devfreq device.
+>   * @dfc_power: Pointer to devfreq_cooling_power.
+> --
+> 1.8.3.1
+>
 
 
-
+-- 
+Thanks,
+~Nick Desaulniers
