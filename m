@@ -2,89 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD09D3A0455
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732C83A0475
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233949AbhFHTb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236965AbhFHTQn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:16:43 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ED0C061787;
-        Tue,  8 Jun 2021 12:09:04 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso2692036wmh.4;
-        Tue, 08 Jun 2021 12:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZrWe5m2ABiVQaXdjQCYInEiV6od69+L49fxMdPlzQAw=;
-        b=ReVX6hhnLKVm2K/lkxRibdfKZS95T5em8ujmOt0nek4RDCKKC/I3bkaG0pvR7gQ3Eh
-         QkNTEGIXhtPTEsSrboMGPpmsNMu6cQKCvRf/HgIt+qFm1LmtRLOfgeCq9olF86QtC6gO
-         272XyaIvz1q7zcEpxunpPnHGATceh6JWZAbV+0yaAnErvLw/THQJAoBnMs6TfzntaVrh
-         FuTom9JfwZmwjsZPpxoGEL53XZ+oadmGrXBCIauti7QRqfSkeeJweRSCaNBeqLiNCU6j
-         SPaCvY8VFHapOPZPELtKlj1HSOJUQ9ukDoMUv1jj7mGigALZdFOnREbxAgjo95/WT9Mr
-         bNEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZrWe5m2ABiVQaXdjQCYInEiV6od69+L49fxMdPlzQAw=;
-        b=gL/5HJs8Qn9rHtYrWcx5XpYoSSYHu4xUjgWq1FDy0jiP6e0+UQHR3++6E6PfJyG88Y
-         6O+BFwrSWB5RdwPfr/ui8/dUJitdZ/pADVb1wZ8jBqa577QyT4h4FdoWKI2yo+a6g7VA
-         18C3HeL2gF2chPMjfxnxBKaMYNgfA0TaIG5g/d+Dp8AgFaMZaxMtBWvckqCheonf/p8s
-         E3b+Q1GEmP4FXsPxTTBAbFckjHrV6zgpMZKDiKj4Cc1udon9a3eULarJOBFVpzTPbiic
-         AQRQIkuxmD2DJtmJN+ZfeGn+lRcnxiNM3/LJKE1KLknSu91D/JPN/FmRo/cRq+bpvGWh
-         h3gg==
-X-Gm-Message-State: AOAM533rqgDfvnLZA/7bzhYnKoTMDVcVOcDb6+QpiTAEeSs3LccIeXk7
-        QIdiNc9w9kKnQYOZY78ucAQ=
-X-Google-Smtp-Source: ABdhPJx86Y5UJnSwjc3iqHodwJIM1RsOWxuTmpZyMxXPzQ40hh24co4AWHXfss9s2yFEnuzTNbhI2w==
-X-Received: by 2002:a1c:770f:: with SMTP id t15mr23112887wmi.182.1623179343160;
-        Tue, 08 Jun 2021 12:09:03 -0700 (PDT)
-Received: from debian (host-2-98-62-17.as13285.net. [2.98.62.17])
-        by smtp.gmail.com with ESMTPSA id u15sm3673592wmq.48.2021.06.08.12.09.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 12:09:02 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 20:09:00 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        Ludwig Zenz <lzenz@dh-electronics.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 4.19 28/58] ARM: dts: imx6q-dhcom: Add PU,VDD1P1,VDD2P5
- regulators
-Message-ID: <YL/ATP6MBeYlclSx@debian>
-References: <20210608175932.263480586@linuxfoundation.org>
- <20210608175933.214613488@linuxfoundation.org>
+        id S239236AbhFHTfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:35:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238809AbhFHTUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:20:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 06BA561108;
+        Tue,  8 Jun 2021 19:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623179406;
+        bh=beXrWUmJ/DeDzNcwkMAHQNTc8EyAukeMvuIL3vxiiGk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DFtgD3Wq+gf0mRStPNaQxMy7rcX4vsrqPWvjnZ1O2jt/eap8l+LC9GNUxKvi3vfak
+         vmlFFrJ8tvnrfnfsPqUv5oF2l/0EoRI44woL19eSbIST6O8moBQ6r08W8Q9B+k5Nci
+         BsFdmeM1x6n+RG1rDXSkAP1CangZJK5Wm5zFRmZ7JnQAcTbhlb6tlysf802JDPbDsG
+         O5ngHnv2DQxMrSOKhFW3W0mqsxYxzbtELTkhiBhQUVnFdF/FB0TG53KaiCvPEutUJ5
+         4xWad7gJ5q/BhoNGKU4Oml4Tqs8b/8ECNj0GHtQh63ObfW+jkJ8rqA/OSjzhZCSASz
+         trO4T2CYXwG1Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EE223609E4;
+        Tue,  8 Jun 2021 19:10:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608175933.214613488@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] nvme: NVME_TCP_OFFLOAD should not default to m
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162317940597.2276.17237091802998795532.git-patchwork-notify@kernel.org>
+Date:   Tue, 08 Jun 2021 19:10:05 +0000
+References: <39b1a3684880e1d85ef76e34403886e8f1d22508.1623149635.git.geert+renesas@glider.be>
+In-Reply-To: <39b1a3684880e1d85ef76e34403886e8f1d22508.1623149635.git.geert+renesas@glider.be>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     davem@davemloft.net, kbusch@kernel.org, axboe@fb.com, hch@lst.de,
+        sagi@grimberg.me, okulkarni@marvell.com, hare@suse.de,
+        dbalandin@marvell.com, himanshu.madhani@oracle.com,
+        smalin@marvell.com, pmladek@suse.com,
+        linux-nvme@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hello:
 
-On Tue, Jun 08, 2021 at 08:27:09PM +0200, Greg Kroah-Hartman wrote:
-> From: Marek Vasut <marex@denx.de>
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Tue,  8 Jun 2021 12:56:09 +0200 you wrote:
+> The help text for the symbol controlling support for the NVM Express
+> over Fabrics TCP offload common layer suggests to not enable this
+> support when unsure.
 > 
-> commit 8967b27a6c1c19251989c7ab33c058d16e4a5f53 upstream.
+> Hence drop the "default m", which actually means "default y" if
+> CONFIG_MODULES is not enabled.
+> 
+> [...]
 
-This is causing build failure with error:
+Here is the summary with links:
+  - nvme: NVME_TCP_OFFLOAD should not default to m
+    https://git.kernel.org/netdev/net-next/c/762411542050
 
-Error: arch/arm/boot/dts/imx6q-dhcom-som.dtsi:414.1-12 Label or path reg_vdd1p1 not found
-Error: arch/arm/boot/dts/imx6q-dhcom-som.dtsi:418.1-12 Label or path reg_vdd2p5 not found
-FATAL ERROR: Syntax error parsing input tree
-
-
+You are awesome, thank you!
 --
-Regards
-Sudip
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
