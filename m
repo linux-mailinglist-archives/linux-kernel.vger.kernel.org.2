@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143FA39FBA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895C339FBB6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbhFHQFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 12:05:17 -0400
-Received: from smtprelay0185.hostedemail.com ([216.40.44.185]:36712 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233781AbhFHQFL (ORCPT
+        id S231626AbhFHQIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 12:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230523AbhFHQIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:05:11 -0400
-Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 814DF181D2FE9;
-        Tue,  8 Jun 2021 16:03:16 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 4D53B315D7D;
-        Tue,  8 Jun 2021 16:03:15 +0000 (UTC)
-Message-ID: <8a70d592e14f93822bf40832c7374d8e491c3afc.camel@perches.com>
-Subject: Re: [PATCH 1/1] lib: remove leading spaces before tabs
-From:   Joe Perches <joe@perches.com>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 08 Jun 2021 09:03:14 -0700
-In-Reply-To: <da4915c5-fa13-0cf2-f2d2-02779a64af1b@huawei.com>
-References: <20210608071430.12687-1-thunder.leizhen@huawei.com>
-         <CAHp75VfuMJ5kfRDB4tE2zr2Em79HiwrDJVROnw+kD3H+QNM4sg@mail.gmail.com>
-         <da4915c5-fa13-0cf2-f2d2-02779a64af1b@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 8 Jun 2021 12:08:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6A1C061574;
+        Tue,  8 Jun 2021 09:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=Rdgj+Ts6eEAHTRBjOLsHiLNSbIi9S90acEKIrhbynF0=; b=qzFtnNTFmjF8Bait7y64aPFZjN
+        CG2xrZHMA96jvX4qfRKYO5q71QNoW/BKkemB5jooCYQBcQqtahwoHyvnRng4gkQ4p0EjCDnxe+t9+
+        Lw573yQw6PEwJ74VCgSfbMxmrKoah4Fzox9v+HoEW/jDOqe2nHBWUHypRgDL5B/kogWv5Z4Dk97La
+        +Y9hvgpZuOxpkbmkF/VrP06Wn+CZNQ4jEbMhqUXmQj26SUv+5Uagwjfn2tabJrBmUVgS7jcH+mmT2
+        9DPQOluGnmWUso/06e7SWZ/eezBK/hWJ8lN3DjOKZPMmLH+jw9Or7ECR42QNO1i8OPZDLTNnr9+jC
+        R4oNA/TQ==;
+Received: from [2001:4bb8:192:ff5f:74ed:7c4f:a5ee:8dcb] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lqeEx-009RZp-AE; Tue, 08 Jun 2021 16:06:08 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geoff Levand <geoff@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        ceph-devel@vger.kernel.org
+Subject: switch the block layer to use kmap_local_page
+Date:   Tue,  8 Jun 2021 18:05:47 +0200
+Message-Id: <20210608160603.1535935-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4D53B315D7D
-X-Spam-Status: No, score=-1.40
-X-Stat-Signature: 5zstpcb6zhdgwrmininm7xscnfx68ebd
-X-Rspamd-Server: rspamout03
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX188P+J6BqCSfwqIJ5GsRv+a9oTpYG3oKeQ=
-X-HE-Tag: 1623168195-826292
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-06-08 at 17:00 +0800, Leizhen (ThunderTown) wrote:
-> On 2021/6/8 16:44, Andy Shevchenko wrote:
-> > On Tue, Jun 8, 2021 at 10:14 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> > > 
-> > > 1) Run the following command to find and remove the leading spaces before
-> > >    tabs:
-> > >    find lib/ -type f | xargs sed -r -i 's/^[ ]+\t/\t/'
-> > 
-> > Hint for the future, try to use what Git provides, for example `git
-> > ls-files -- lib/`.
-> 
-> Okay, thanks. I learned a new trick.
+Hi all,
 
-Perhaps another 'trick'.
+this series switches the core block layer code and all users of the
+existing bvec kmap helpers to use kmap_local_page.  Drivers that
+currently use open coded kmap_atomic calls will converted in a follow
+on series.
 
-checkpatch has SPACE_BEFORE_TAB which does this for any spaces before
-a tab, not just at the start of lines.  But as you've no doubt seen,
-many maintainers do not care for this sort of whitespace only change
-so it's best to do this sparingly or only in drivers/staging/ paths.
-
-For instance:
-
-$ git diff --stat lib
-$ git ls-files lib/ | \
-  xargs ./scripts/checkpatch.pl --types=SPACE_BEFORE_TAB --fix-inplace
-<checkpatch output>
-$ git diff --stat lib
- lib/atomic64_test.c             |   2 +-
- lib/bitmap.c                    |   4 +-
- lib/btree.c                     |   4 +-
- lib/decompress_bunzip2.c        |   6 +-
- lib/fonts/font_mini_4x6.c       | 512 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------------------------------------------------------------
- lib/locking-selftest.c          |  12 ++--
- lib/lockref.c                   |   2 +-
- lib/lru_cache.c                 |   2 +-
- lib/math/rational-test.c        |   2 +-
- lib/nlattr.c                    |   4 +-
- lib/raid6/neon.c                |   2 +-
- lib/raid6/sse2.c                |  12 ++--
- lib/reed_solomon/reed_solomon.c |   4 +-
- lib/scatterlist.c               |   4 +-
- lib/string.c                    |   4 +-
- lib/test_firmware.c             |   2 +-
- lib/test_kmod.c                 |   2 +-
- lib/test_overflow.c             |   2 +-
- lib/textsearch.c                |   2 +-
- lib/ts_bm.c                     |   2 +-
- lib/zlib_deflate/deflate.c      |   2 +-
- 21 files changed, 294 insertions(+), 294 deletions(-)
-
-
+Diffstat:
+ arch/mips/include/asm/mach-rc32434/rb.h |    2 -
+ block/bio-integrity.c                   |   14 ++++------
+ block/bio.c                             |   37 +++++++---------------------
+ block/blk-map.c                         |    2 -
+ block/bounce.c                          |   35 ++++++--------------------
+ block/t10-pi.c                          |   16 ++++--------
+ drivers/block/ps3disk.c                 |   19 ++------------
+ drivers/block/rbd.c                     |   15 +----------
+ drivers/md/dm-writecache.c              |    5 +--
+ include/linux/bio.h                     |   42 --------------------------------
+ include/linux/bvec.h                    |   27 ++++++++++++++++++--
+ include/linux/highmem.h                 |    4 +--
+ 12 files changed, 64 insertions(+), 154 deletions(-)
