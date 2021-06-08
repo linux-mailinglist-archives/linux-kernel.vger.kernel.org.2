@@ -2,103 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D139039F949
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573CF39F956
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbhFHOiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
+        id S233477AbhFHOkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233288AbhFHOiq (ORCPT
+        with ESMTP id S233316AbhFHOkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:38:46 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D50C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 07:36:41 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id z15so10962080vsn.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 07:36:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bpsV4sDHB2cyK5C6lyt/mnQ+XnkOkcY+7DRUUxVnjl8=;
-        b=p5f8j36w8Ntn49cmYv4MvwFWK/AOerSOIgCmJp4QT0LjyYd60aJ67szVOzuYOwVgIk
-         G0GlUXBYXTO41rP9p78c0LFY2Y8jlVAHEiBh6jNedWVhxqhFlv1qbuoSrtk+2gkY3gw4
-         tWGUrqD6WDLROS+x6cb77ZmfDPHPylL9+At/nsum5kM4RQjRvnlgyF0oQnAlMQ9HrKQg
-         X496YWYsLdr/tuV8yIFSepwpA6CxmDNZAHPGjuaMr87i+0KlzxN4zQoRt7Iw2tOfo4A4
-         LUHyvgqkg2q5duUjAWuRJOPNYpj4UZJMfY4AvCVDpgO3+EopHv4P+rxU5tgFWKc3ev3u
-         cmNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bpsV4sDHB2cyK5C6lyt/mnQ+XnkOkcY+7DRUUxVnjl8=;
-        b=n/pooTEtgdVsLIjn2wZYwkz1TePazncUspAXZr1v9a10qHvSF4+mFGPXjdCCEI/6s9
-         r0T4ofW0QLJ0xTZ446TW1ZVwPq5UvFKToiVwRZ52IL0BWv16xWgGnJII/ieNhwCfVVxz
-         SWTU/QZB8F7S3oL4HncYW/Yldqx8V6AWtJYEolfitPNgenG3dfEWdXj3JZKqjirkZF1k
-         Znt3F9hwgCX8jnPZiH2gb4rwzpRFv0HmzkRVBaExAutVmiEvIj3FyMA4nv//w3aNOIfA
-         Yyls4i5bin4cUQhexqnWHLLzlEMPpL1mG6Emaf4IG6XoPm2JcwCY7bYn9t//7CTm5Vlc
-         gOAQ==
-X-Gm-Message-State: AOAM530irDmGOIXSGwXDGqAf/+DY31tATWJT+6tJC1KrfXg3waThWk9u
-        cmUFbsoTqXhCihjhwf7/dJVPf54KvM8bFtyGPokbwYIrvxI=
-X-Google-Smtp-Source: ABdhPJxgu6VRQIYnVR8042ZEZftV+daJ9LRJsXp14S0KbDSYuzrMWkGkQVTh/DaRfcSvz067m+URDyywJKx8rt2iqQE=
-X-Received: by 2002:a67:7cc7:: with SMTP id x190mr433160vsc.30.1623163000809;
- Tue, 08 Jun 2021 07:36:40 -0700 (PDT)
+        Tue, 8 Jun 2021 10:40:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB69C06178B;
+        Tue,  8 Jun 2021 07:38:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sMEsStOb6mO9hXHdT3HWSmfrRuJ0Awq1YlH4iEA8L4Y=; b=KFplbzH/LlDm+AgUOf2U3e3d9H
+        GLn3zqEjGHW+Ei/TTsCFYfGLui341DfsWefMKpI6fnAW+l4q3H1pyXf1V4CGFoU88MBFCZ4sUeQqf
+        rr0mEh6nyOS4EVCF2ORhPFHrm6ycrBSTzuuGq5b8i8F6uStpFoB2yYVLdSo50hR7rNIgZ9X5dXmMY
+        wNZAJMxQHKrGwKIGZXO4r5fKNXfT3ZeRiJ7gq+grDL/03GEWEgAvCzEjdBlsP2YAoiWDh6+XMozmh
+        9QN0dZsccRRXkkii2OZ2xFYtR4jXqY4bVgq4LBqzFPQ7WXAYIo1axFCfeLy2YPZDhCXeF15pbaMUO
+        /fsTBHmQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lqcrA-00H1nj-W6; Tue, 08 Jun 2021 14:37:34 +0000
+Date:   Tue, 8 Jun 2021 15:37:28 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Joshua Thompson <funaho@jurai.org>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        Richard Zidlicky <rz@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH v2 0/2] Use libata platform drivers to replace deprecated
+ m68k IDE drivers
+Message-ID: <YL+AqIEPjMgG519L@infradead.org>
+References: <cover.1623131194.git.fthain@linux-m68k.org>
 MIME-Version: 1.0
-References: <20210608083418.137226-1-wangkefeng.wang@huawei.com> <20210608083418.137226-12-wangkefeng.wang@huawei.com>
-In-Reply-To: <20210608083418.137226-12-wangkefeng.wang@huawei.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Tue, 8 Jun 2021 20:06:28 +0530
-Message-ID: <CAFqt6zZWanzsy=F4LVUkovQE-wqKd0CNG-n=Sx7SBddord6Gcg@mail.gmail.com>
-Subject: Re: [PATCH v3 resend 11/15] powerpc: convert to setup_initial_init_mm()
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1623131194.git.fthain@linux-m68k.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 1:56 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
-> Use setup_initial_init_mm() helper to simplify code.
->
-> Note klimit is (unsigned long) _end, with new helper,
-> will use _end directly.
+On Tue, Jun 08, 2021 at 03:46:34PM +1000, Finn Thain wrote:
+> This patch series allows m68k platforms to switch from deprecated IDE
+> drivers to libata drivers.
 
-With this change klimit left with no user in this file and can be
-moved to some appropriate header.
-But in a separate series.
+Thanks, this looks good to me:
 
->
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->  arch/powerpc/kernel/setup-common.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-> index 74a98fff2c2f..96697c6e1e16 100644
-> --- a/arch/powerpc/kernel/setup-common.c
-> +++ b/arch/powerpc/kernel/setup-common.c
-> @@ -927,10 +927,7 @@ void __init setup_arch(char **cmdline_p)
->
->         klp_init_thread_info(&init_task);
->
-> -       init_mm.start_code = (unsigned long)_stext;
-> -       init_mm.end_code = (unsigned long) _etext;
-> -       init_mm.end_data = (unsigned long) _edata;
-> -       init_mm.brk = klimit;
-> +       setup_initial_init_mm(_stext, _etext, _edata, _end);
->
->         mm_iommu_init(&init_mm);
->         irqstack_early_init();
-> --
-> 2.26.2
->
->
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+
+Jens, any chance you could pick this up quickly to prepare for the
+legacy IDE removal series?
