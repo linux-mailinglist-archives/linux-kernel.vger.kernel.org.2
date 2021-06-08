@@ -2,142 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF2839F0AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5399839F0AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbhFHIS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:18:58 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:49489 "EHLO m43-7.mailgun.net"
+        id S230306AbhFHIUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:20:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231614AbhFHIS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:18:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623140196; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=AIe7j1nemSal6jC2enjasmYH8a67XUaj0NeBSMSPDdk=;
- b=vbqVE2NITfP9rV0hh2tD4Qpk3E7NLjNzquhvP14OKou30Vrgi+DOe89jNVcDGUCyQiBpV6vG
- FA3B/lHn2mbsSjN+XRlG/h4nXJTpsTCtKfYlKxdcZck0I60HPf0aaxynqR1ztIARe1UZqA9r
- cFHG0NRT2Aji5yTq0QlVj7OJ8ik=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60bf2764f726fa4188a5dc40 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Jun 2021 08:16:36
- GMT
-Sender: rojay=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EAE70C00456; Tue,  8 Jun 2021 08:16:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S229556AbhFHIUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 04:20:42 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: rojay)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 09E7BC43146;
-        Tue,  8 Jun 2021 08:16:32 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 08 Jun 2021 13:46:32 +0530
-From:   rojay@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com
-Subject: Re: [PATCH V3 2/3] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
-In-Reply-To: <YLxF4rGFDrFXQRDi@builder.lan>
-References: <20210604135439.19119-1-rojay@codeaurora.org>
- <20210604135439.19119-3-rojay@codeaurora.org> <YLxF4rGFDrFXQRDi@builder.lan>
-Message-ID: <d21d2a2f579824899b3219b2620b6d1d@codeaurora.org>
-X-Sender: rojay@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        by mail.kernel.org (Postfix) with ESMTPSA id E62476128B;
+        Tue,  8 Jun 2021 08:18:49 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lqWwh-0068ES-Sk; Tue, 08 Jun 2021 09:18:48 +0100
+Date:   Tue, 08 Jun 2021 09:18:46 +0100
+Message-ID: <87eedczs49.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     "Jain, Jinank" <jinankj@amazon.de>
+Cc:     "james.morse@arm.com" <james.morse@arm.com>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alexandru.elisei@arm.com" <alexandru.elisei@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "Graf (AWS), Alexander" <graf@amazon.de>
+Subject: Re: [PATCH] KVM: arm64: Properly restore PMU state during live-migration
+In-Reply-To: <b4392eae86311425a0c1f2b2072e41dbb437a4e2.camel@amazon.de>
+References: <20210603110554.13643-1-jinankj@amazon.de>
+        <87wnrbylxv.wl-maz@kernel.org>
+        <0a694ea93303bfa04530cd940f692244e1ccd1e7.camel@amazon.de>
+        <87lf7lzl8c.wl-maz@kernel.org>
+        <b4392eae86311425a0c1f2b2072e41dbb437a4e2.camel@amazon.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: jinankj@amazon.de, james.morse@arm.com, kvmarm@lists.cs.columbia.edu, suzuki.poulose@arm.com, linux-kernel@vger.kernel.org, alexandru.elisei@arm.com, linux-arm-kernel@lists.infradead.org, will@kernel.org, catalin.marinas@arm.com, graf@amazon.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-06 09:19, Bjorn Andersson wrote:
-> On Fri 04 Jun 08:54 CDT 2021, Roja Rani Yarubandi wrote:
+On Mon, 07 Jun 2021 19:34:08 +0100,
+"Jain, Jinank" <jinankj@amazon.de> wrote:
 > 
->> Add QUPv3 wrapper_0 DT nodes for SC7280 SoC.
->> 
->> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
->> ---
->> Changes in V3:
->>  - Broken the huge V2 patch into 3 smaller patches.
->>    1. QSPI DT nodes
->>    2. QUP wrapper_0 DT nodes
->>    3. QUP wrapper_1 DT nodes
->> 
->> Changes in V2:
->>  - As per Doug's comments removed pinmux/pinconf subnodes.
->>  - As per Doug's comments split of SPI, UART nodes has been done.
->>  - Moved QSPI node before aps_smmu as per the order.
->> 
->>  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  97 ++-
->>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 750 
->> +++++++++++++++++++++++-
->>  2 files changed, 835 insertions(+), 12 deletions(-)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
->> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> index d0edffc15736..f57458dbe763 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> @@ -292,6 +292,16 @@ &uart5 {
->>  	status = "okay";
->>  };
->> 
->> +&uart7 {
->> +	status = "okay";
->> +
->> +	/delete-property/interrupts;
->> +	interrupts-extended = <&intc GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>,
->> +				<&tlmm 31 IRQ_TYPE_EDGE_FALLING>;
->> +	pinctrl-names = "default", "sleep";
->> +	pinctrl-1 = <&qup_uart7_sleep_cts>, <&qup_uart7_sleep_rts>, 
->> <&qup_uart7_sleep_tx>, <&qup_uart7_sleep_rx>;
->> +};
->> +
->>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
->> 
->>  &qspi_cs0 {
->> @@ -307,16 +317,87 @@ &qspi_data01 {
->>  	bias-pull-up;
->>  };
->> 
->> -&qup_uart5_default {
->> -	tx {
->> -		pins = "gpio46";
+> Hi Marc.
 > 
-> Commit message says "add stuff", but somehow uart5 is no longer
-> gpio46/47 and these gpios are no longer specified.
+> On Mon, 2021-06-07 at 17:35 +0100, Marc Zyngier wrote:
+> > CAUTION: This email originated from outside of the organization. Do
+> > not click links or open attachments unless you can confirm the sender
+> > and know the content is safe.
+> > 
+> > 
+> > 
+> > On Mon, 07 Jun 2021 17:05:01 +0100,
+> > "Jain, Jinank" <jinankj@amazon.de> wrote:
+> > > On Thu, 2021-06-03 at 17:03 +0100, Marc Zyngier wrote:
+> > > > Hi Jinank,
+> > > > 
+> > > > On Thu, 03 Jun 2021 12:05:54 +0100,
+> > > > Jinank Jain <jinankj@amazon.de> wrote:
+> > > > > Currently if a guest is live-migrated while it is actively
+> > > > > using
+> > > > > perf
+> > > > > counters, then after live-migrate it will notice that all
+> > > > > counters
+> > > > > would
+> > > > > suddenly start reporting 0s. This is due to the fact we are not
+> > > > > re-creating the relevant perf events inside the kernel.
+> > > > > 
+> > > > > Usually on live-migration guest state is restored using
+> > > > > KVM_SET_ONE_REG
+> > > > > ioctl interface, which simply restores the value of PMU
+> > > > > registers
+> > > > > values but does not re-program the perf events so that the
+> > > > > guest
+> > > > > can seamlessly
+> > > > > use these counters even after live-migration like it was doing
+> > > > > before
+> > > > > live-migration.
+> > > > > 
+> > > > > Instead there are two completely different code path between
+> > > > > guest
+> > > > > accessing PMU registers and VMM restoring counters on
+> > > > > live-migration.
+> > > > > 
+> > > > > In case of KVM_SET_ONE_REG:
+> > > > > 
+> > > > > kvm_arm_set_reg()
+> > > > > ...... kvm_arm_sys_reg_set_reg()
+> > > > > ........... reg_from_user()
+> > > > > 
+> > > > > but in case when guest tries to access these counters:
+> > > > > 
+> > > > > handle_exit()
+> > > > > ..... kvm_handle_sys_reg()
+> > > > > ..........perform_access()
+> > > > > ...............access_pmu_evcntr()
+> > > > > ...................kvm_pmu_set_counter_value()
+> > > > > .......................kvm_pmu_create_perf_event()
+> > > > > 
+> > > > > The drawback of using the KVM_SET_ONE_REG interface is that the
+> > > > > host pmu
+> > > > > events which were registered for the source instance and not
+> > > > > present for
+> > > > > the destination instance.
+> > > > 
+> > > > I can't parse this sentence. Do you mean "are not present"?
+> > > > 
+> > > > > Thus passively restoring PMCR_EL0 using
+> > > > > KVM_SET_ONE_REG interface would not create the necessary host
+> > > > > pmu
+> > > > > events
+> > > > > which are crucial for seamless guest experience across live
+> > > > > migration.
+> > > > > 
+> > > > > In ordet to fix the situation, on first vcpu load we should
+> > > > > restore
+> > > > > PMCR_EL0 in the same exact way like the guest was trying to
+> > > > > access
+> > > > > these counters. And then we will also recreate the relevant
+> > > > > host
+> > > > > pmu
+> > > > > events.
+> > > > > 
+> > > > > Signed-off-by: Jinank Jain <jinankj@amazon.de>
+> > > > > Cc: Alexander Graf (AWS) <graf@amazon.de>
+> > > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > > Cc: James Morse <james.morse@arm.com>
+> > > > > Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+> > > > > Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > > > Cc: Will Deacon <will@kernel.org>
+> > > > > ---
+> > > > >  arch/arm64/include/asm/kvm_host.h |  1 +
+> > > > >  arch/arm64/kvm/arm.c              |  1 +
+> > > > >  arch/arm64/kvm/pmu-emul.c         | 10 ++++++++--
+> > > > >  arch/arm64/kvm/pmu.c              | 15 +++++++++++++++
+> > > > >  include/kvm/arm_pmu.h             |  3 +++
+> > > > >  5 files changed, 28 insertions(+), 2 deletions(-)
+> > > > > 
+> > > > > diff --git a/arch/arm64/include/asm/kvm_host.h
+> > > > > b/arch/arm64/include/asm/kvm_host.h
+> > > > > index 7cd7d5c8c4bc..2376ad3c2fc2 100644
+> > > > > --- a/arch/arm64/include/asm/kvm_host.h
+> > > > > +++ b/arch/arm64/include/asm/kvm_host.h
+> > > > > @@ -745,6 +745,7 @@ static inline int
+> > > > > kvm_arch_vcpu_run_pid_change(struct kvm_vcpu *vcpu)
+> > > > >  void kvm_set_pmu_events(u32 set, struct perf_event_attr
+> > > > > *attr);
+> > > > >  void kvm_clr_pmu_events(u32 clr);
+> > > > > 
+> > > > > +void kvm_vcpu_pmu_restore(struct kvm_vcpu *vcpu);
+> > > > >  void kvm_vcpu_pmu_restore_guest(struct kvm_vcpu *vcpu);
+> > > > >  void kvm_vcpu_pmu_restore_host(struct kvm_vcpu *vcpu);
+> > > > >  #else
+> > > > > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> > > > > index e720148232a0..c66f6d16ec06 100644
+> > > > > --- a/arch/arm64/kvm/arm.c
+> > > > > +++ b/arch/arm64/kvm/arm.c
+> > > > > @@ -408,6 +408,7 @@ void kvm_arch_vcpu_load(struct kvm_vcpu
+> > > > > *vcpu,
+> > > > > int cpu)
+> > > > >       if (has_vhe())
+> > > > >               kvm_vcpu_load_sysregs_vhe(vcpu);
+> > > > >       kvm_arch_vcpu_load_fp(vcpu);
+> > > > > +     kvm_vcpu_pmu_restore(vcpu);
+> > > > 
+> > > > If this only needs to be run once per vcpu, why not trigger it
+> > > > from
+> > > > kvm_arm_pmu_v3_enable(), which is also called once per vcpu?
+> > > > 
+> > > > This can done on the back of a request, saving most of the
+> > > > overhead
+> > > > and not requiring any extra field. Essentially, something like
+> > > > the
+> > > > (untested) patch below.
+> > > > 
+> > > > >       kvm_vcpu_pmu_restore_guest(vcpu);
+> > > > >       if (kvm_arm_is_pvtime_enabled(&vcpu->arch))
+> > > > >               kvm_make_request(KVM_REQ_RECORD_STEAL, vcpu);
+> > > > > diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-
+> > > > > emul.c
+> > > > > index fd167d4f4215..12a40f4b5f0d 100644
+> > > > > --- a/arch/arm64/kvm/pmu-emul.c
+> > > > > +++ b/arch/arm64/kvm/pmu-emul.c
+> > > > > @@ -574,10 +574,16 @@ void kvm_pmu_handle_pmcr(struct kvm_vcpu
+> > > > > *vcpu, u64 val)
+> > > > >               kvm_pmu_disable_counter_mask(vcpu, mask);
+> > > > >       }
+> > > > > 
+> > > > > -     if (val & ARMV8_PMU_PMCR_C)
+> > > > > +     /*
+> > > > > +      * Cycle counter needs to reset in case of first vcpu
+> > > > > load.
+> > > > > +      */
+> > > > > +     if (val & ARMV8_PMU_PMCR_C ||
+> > > > > !kvm_arm_pmu_v3_restored(vcpu))
+> > > > 
+> > > > Why? There is no architectural guarantee that a counter resets to
+> > > > 0
+> > > > without writing PMCR_EL0.C. And if you want the guest to continue
+> > > > counting where it left off, resetting the counter is at best
+> > > > counter-productive.
+> > > 
+> > > Without this we would not be resetting PMU which is required for
+> > > creating host perf events. With the patch that you suggested we are
+> > > restoring PMCR_EL0 properly but still missing recreation of host
+> > > perf
+> > > events.
+> > 
+> > How? The request that gets set on the first vcpu run will call
+> > kvm_pmu_handle_pmcr() -> kvm_pmu_enable_counter_mask() ->
+> > kvm_pmu_create_perf_event(). What are we missing?
+> > 
 > 
-> Can you roll this in a way where the giant patch actually _only_ adds
-> a whole bunch of stuff?
+> I found out what I was missing. I was working with an older kernel
+> which was missing this upstream patch:
 > 
->> -		drive-strength = <2>;
->> -		bias-disable;
->> +&qup_uart5_tx {
->> +	drive-strength = <2>;
->> +	bias-disable;
->> +};
->> +
-> 
-> Regards,
-> Bjorn
+> https://lore.kernel.org/lkml/20200124142535.29386-3-eric.auger@redhat.com/
 
+:-(
 
-Okay, so shall I split this 2/3rd patch into two with
-one patch modifying uart5 node and the other one with
-_only_ adds rest all nodes?
+Please test whatever you send with an upstream kernel. Actually,
+please *develop* on an upstream kernel. This will avoid this kind of
+discussion where we talk past each other, and make it plain that your
+production kernel is lacking all sorts of fixes.
 
-Thanks,
-Roja
+Now, can you please state whether or not this patch fixes it for you
+*on an upstream kernel*? I have no interest in results from a
+production kernel.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
