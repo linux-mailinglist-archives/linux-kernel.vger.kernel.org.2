@@ -2,116 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5B139F8A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1783A39F8A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbhFHOOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:14:24 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:39818 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233160AbhFHOOV (ORCPT
+        id S233187AbhFHOOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:14:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233248AbhFHOO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:14:21 -0400
-Received: by mail-wr1-f52.google.com with SMTP id l2so21780027wrw.6;
-        Tue, 08 Jun 2021 07:12:13 -0700 (PDT)
+        Tue, 8 Jun 2021 10:14:27 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12A4C061787
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 07:12:34 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id s22so10917983vsl.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 07:12:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QN+EdKzoWLP2CkjUZ6p50v7bzf6RSbEoChR/qB42S2M=;
-        b=Y0ElOsfMlfn3oQVhrjMka5+BB71sz0UqnqGojDryyCKaNV4tvyv5lXEUdW7+Ve0p0j
-         gyJ6YSW1nZ05z0+pdsY3GTSyHNaSSdN4/Ab1N+6+5P7P1NcT0Zh2VyIwxSxDybZRrs7x
-         +Nr/NCN4a5ekwZ9xtNRJm9PwJHQHSu3/xMZLPbZRU7KTGaocWIqOHRtA5Q2pmRx0Q5e1
-         MJE348wtJ/nYwf1z/OFORnPQcks3uvNX18SKP3cW87D5hAMWsK6Xp+3zgaU1a0cw09Xv
-         BThBW7Ufue7YQlpHodp/24H0cK6dEi1pnNFOfUt3Rgcbk4nAJtqGCrmq3RweXnsDM/r9
-         n/XQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BQOEKjTY50etBqL/GdvlL0AILfgXCYhEzsRjTzf/Eu4=;
+        b=n7UmIvKdr/LDSpcsPrIGi2XV+FxObGg6BghU6tY2dG5L4goDfOvNQcNjdXuyOZRXjg
+         hZYnefIxpUcyeJ1hLVSQ+Fsd4aOKCNhl0j9bc60q7cj0Tnumkf2WNPWo7gEDPW8Ei0wq
+         thglcNbYNb+8oY+3j4px54l90o3xPAF1bRCy/K6qbIfLtApg+3PsTRUZbS/iq+0SFtJI
+         wax81GkTOQDjGzvsIxEAE8FUmLqu0etv3PP6AJOU+kWhGT2qScAEcpYd09NXczNSTVsO
+         lVT2IIikfRXxA05OoYCfRYulUbbBKwgTKTtzNRTwnNNC5wJ8fhAoKzfBuLdsvn05wkus
+         jr1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QN+EdKzoWLP2CkjUZ6p50v7bzf6RSbEoChR/qB42S2M=;
-        b=ptSSSYfkRbR+Mx9UP2rRb+mQAVZHi8uO/7R36ItHmLmcTvAMIoFeF+ux4ZP4BlixtV
-         IN1f4j2n2CAPqx0rpm6HS7JyY349SRL9/zIHfMzcESmSGCzKRbS3mPiRLipYN/BEe4zX
-         CH8jUnRDcVNUNKsgC8MrkFl+96HwL/+59rY1zAYA2QQz/wkk4CmkMwIF2cdof/6KewfA
-         MTFUmpX1jL9+aG7L9+IkOW7aXIR/mOSdHtB6XrDf1QiQhzo5EslAIa8G89Gggg559dEx
-         cXKbOA0cvS82ndh9/0OwtOJZQ8zpzwvF011j8NRDOLMngbd+zeOP8GixMEN6AZQasbhS
-         ePsA==
-X-Gm-Message-State: AOAM532TpsDTXYsofJyZrz0yjTAg8bS4AyfZdib4vxZzhDrCew6bEcJj
-        g7LxXurA8JHNlkfG3RMCv+cw0a5lWWBmIw==
-X-Google-Smtp-Source: ABdhPJwqR8NMrIwZzkzg1wJTkhrSFvimCcaJhT2bLhkbvZckf6DyzC3fxY9/pwgERvcsc68jdjXVkQ==
-X-Received: by 2002:a05:6000:2a3:: with SMTP id l3mr23222967wry.395.1623161472462;
-        Tue, 08 Jun 2021 07:11:12 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id n9sm18534552wmc.20.2021.06.08.07.11.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 07:11:12 -0700 (PDT)
-Subject: Re: [PATCH v3] thermal: mediatek: add sensors-support
-To:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210420172308.134685-1-linux@fw-web.de>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <e164df94-ef34-8560-ab8f-f0519d632b22@gmail.com>
-Date:   Tue, 8 Jun 2021 16:11:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BQOEKjTY50etBqL/GdvlL0AILfgXCYhEzsRjTzf/Eu4=;
+        b=T8Kd2xIts4VFhXRbiXybhKNmCn6fgzv0uWlQkqw4kMX9JUM+HG9sGEqodNhEPkAa9a
+         Nhv8/tDn8BBRXHo0zx7a6AljaNHVctTw6M3NdCEw8Rnqq5d0/Dh8SxVHVe8vKvumddDj
+         i6Uk3tZ1dpZoijAMRzygFMJ0YC+s5Ky7g8wYrxK6tFqucCv1RFc+Gk+IN6LQ1j6G5XY2
+         nPD788jihddHSgXimseq1NYF1i6ltv2dd4ZsAJ06WNQC2a4Ia45nC5ijBpqATArD3Goq
+         /eSpWybNOyIwg2rkloelvm38iGcLxwdkYVrUpXHa6XFPNr2nIL06dMbCIQ3UJtMXlVvP
+         BW/A==
+X-Gm-Message-State: AOAM533WlGKb9gdRekalJbYdca+nKMaMfMRcNPv423hHdgqx+CgXNPGT
+        /0bVttQ9Ikq3S89tbxPeesReT8oAz5CBPSrk7Xjocw==
+X-Google-Smtp-Source: ABdhPJxcWfSBhsvkaxBDDNqN3ppn0seTNiQe5UQKTPzcvbgvQP0XgBuVtBLbitAX0rob4VzVIJm0KPc+Ycs6Gk31TS0=
+X-Received: by 2002:a05:6102:3023:: with SMTP id v3mr12048274vsa.19.1623161553832;
+ Tue, 08 Jun 2021 07:12:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210420172308.134685-1-linux@fw-web.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1623002884-57244-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1623002884-57244-3-git-send-email-zhouyanjie@wanyeetech.com> <B6YDUQ.LVNCFD4XPUIY1@opendingux.net>
+In-Reply-To: <B6YDUQ.LVNCFD4XPUIY1@opendingux.net>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 8 Jun 2021 16:11:56 +0200
+Message-ID: <CAPDyKFrPDtygFV+vsCsKJwmjWGo=JZOD03zHCSvPiK-tWMHUBQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: JZ4740: Add support for JZ4775 and rename
+ unreasonable array name.
+To:     Paul Cercueil <paul@opendingux.net>
+Cc:     =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com, Paul Cercueil <paul@crapouillou.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 8 Jun 2021 at 15:44, Paul Cercueil <paul@opendingux.net> wrote:
+>
+> Hi Zhou,
+>
+> Le lun., juin 7 2021 at 02:08:04 +0800, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou=
+ Yanjie)
+> <zhouyanjie@wanyeetech.com> a =C3=A9crit :
+> > 1.Add support for probing mmc driver on the JZ4775 SoC from Ingenic.
+> > 2.When the support for JZ4775 SoC is added, there will be six
+> > compatible
+> >   strings, so renaming "jz4740_mmc_of_match[]" to
+> > "jz4740_mmc_of_matches[]"
+> >   is more reasonable.
+>
+> Honestly, you can drop #2. We don't really care about the
+> variable/function names not being "perfect". For instance this driver
+> still use "jz4740_mmc*" functions everywhere even though it supports
+> many more SoCs. Besides, renames like that makes it harder to "git
+> blame" afterwards since it fills the git history with non-functional
+> changes.
 
+Paul, thanks for reviewing. I am dropping the $subject patch from my
+next branch until you have acked it.
 
-On 20/04/2021 19:23, Frank Wunderlich wrote:
-> From: Frank Wunderlich <frank-w@public-files.de>
-> 
-> add HWMON-support to mediateks thermal driver to allow lm-sensors
-> userspace tools read soc temperature
-> 
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> ---
-> v3: drop no_hwmon - now really, sorry
-> v2: drop ifdef and used devm_thermal_add_hwmon_sysfs
-> ---
->  drivers/thermal/mtk_thermal.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
-> index 149c6d7fd5a0..85964988684b 100644
-> --- a/drivers/thermal/mtk_thermal.c
-> +++ b/drivers/thermal/mtk_thermal.c
-> @@ -23,6 +23,8 @@
->  #include <linux/reset.h>
->  #include <linux/types.h>
->  
-> +#include "thermal_hwmon.h"
-> +
->  /* AUXADC Registers */
->  #define AUXADC_CON1_SET_V	0x008
->  #define AUXADC_CON1_CLR_V	0x00c
-> @@ -1087,6 +1089,10 @@ static int mtk_thermal_probe(struct platform_device *pdev)
->  		goto err_disable_clk_peri_therm;
->  	}
->  
-> +	ret = devm_thermal_add_hwmon_sysfs(tzdev);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "error in thermal_add_hwmon_sysfs");
+Kind regards
+Uffe
 
-I think dev_warn() is more appropriate here.
-
-Regards,
-Matthias
-
-> +
->  	return 0;
->  
->  err_disable_clk_peri_therm:
-> 
+>
+> >
+> > Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wa=
+nyeetech.com>
+> > ---
+> >  drivers/mmc/host/jz4740_mmc.c | 25 ++++++++++++++-----------
+> >  1 file changed, 14 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/mmc/host/jz4740_mmc.c
+> > b/drivers/mmc/host/jz4740_mmc.c
+> > index b3c636e..ea8434f 100644
+> > --- a/drivers/mmc/host/jz4740_mmc.c
+> > +++ b/drivers/mmc/host/jz4740_mmc.c
+> > @@ -2,6 +2,7 @@
+> >  /*
+> >   *  Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+> >   *  Copyright (C) 2013, Imagination Technologies
+> > + *  Copyright (C) 2021, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)
+> > <zhouyanjie@wanyeetech.com>
+> >   *
+> >   *  JZ4740 SD/MMC controller driver
+> >   */
+> > @@ -114,6 +115,7 @@ enum jz4740_mmc_version {
+> >       JZ_MMC_JZ4740,
+> >       JZ_MMC_JZ4725B,
+> >       JZ_MMC_JZ4760,
+> > +     JZ_MMC_JZ4775,
+> >       JZ_MMC_JZ4780,
+> >       JZ_MMC_X1000,
+> >  };
+> > @@ -138,7 +140,7 @@ enum jz4740_mmc_state {
+> >   * COOKIE_MAPPED: the request was mapped in the irq handler,
+> >   * and should be unmapped before mmc_request_done is called..
+> >   */
+> > -enum jz4780_cookie {
+> > +enum jz4775_cookie {
+> >       COOKIE_UNMAPPED =3D 0,
+> >       COOKIE_PREMAPPED,
+> >       COOKIE_MAPPED,
+> > @@ -194,7 +196,7 @@ static void jz4740_mmc_write_irq_mask(struct
+> > jz4740_mmc_host *host,
+> >  static void jz4740_mmc_write_irq_reg(struct jz4740_mmc_host *host,
+> >                                    uint32_t val)
+> >  {
+> > -     if (host->version >=3D JZ_MMC_JZ4780)
+> > +     if (host->version >=3D JZ_MMC_JZ4775)
+> >               writel(val, host->base + JZ_REG_MMC_IREG);
+> >       else
+> >               writew(val, host->base + JZ_REG_MMC_IREG);
+> > @@ -202,7 +204,7 @@ static void jz4740_mmc_write_irq_reg(struct
+> > jz4740_mmc_host *host,
+> >
+> >  static uint32_t jz4740_mmc_read_irq_reg(struct jz4740_mmc_host *host)
+> >  {
+> > -     if (host->version >=3D JZ_MMC_JZ4780)
+> > +     if (host->version >=3D JZ_MMC_JZ4775)
+> >               return readl(host->base + JZ_REG_MMC_IREG);
+> >       else
+> >               return readw(host->base + JZ_REG_MMC_IREG);
+> > @@ -674,7 +676,7 @@ static void jz4740_mmc_send_command(struct
+> > jz4740_mmc_host *host,
+> >                       cmdat |=3D JZ_MMC_CMDAT_WRITE;
+> >               if (host->use_dma) {
+> >                       /*
+> > -                      * The 4780's MMC controller has integrated DMA a=
+bility
+> > +                      * The JZ4775's MMC controller has integrated DMA=
+ ability
+> >                        * in addition to being able to use the external =
+DMA
+> >                        * controller. It moves DMA control bits to a sep=
+arate
+> >                        * register. The DMA_SEL bit chooses the external
+> > @@ -682,13 +684,13 @@ static void jz4740_mmc_send_command(struct
+> > jz4740_mmc_host *host,
+> >                        * can only use the external controller, and have=
+ a
+> >                        * single DMA enable bit in CMDAT.
+> >                        */
+> > -                     if (host->version >=3D JZ_MMC_JZ4780) {
+> > +                     if (host->version >=3D JZ_MMC_JZ4775) {
+> >                               writel(JZ_MMC_DMAC_DMA_EN | JZ_MMC_DMAC_D=
+MA_SEL,
+> >                                      host->base + JZ_REG_MMC_DMAC);
+> >                       } else {
+> >                               cmdat |=3D JZ_MMC_CMDAT_DMA_EN;
+> >                       }
+> > -             } else if (host->version >=3D JZ_MMC_JZ4780) {
+> > +             } else if (host->version >=3D JZ_MMC_JZ4775) {
+> >                       writel(0, host->base + JZ_REG_MMC_DMAC);
+> >               }
+> >
+> > @@ -866,7 +868,7 @@ static int jz4740_mmc_set_clock_rate(struct
+> > jz4740_mmc_host *host, int rate)
+> >       writew(div, host->base + JZ_REG_MMC_CLKRT);
+> >
+> >       if (real_rate > 25000000) {
+> > -             if (host->version >=3D JZ_MMC_X1000) {
+> > +             if (host->version >=3D JZ_MMC_JZ4775) {
+>
+> This changes the behaviour for the JZ4780.
+>
+> Even if it is correct, this belongs in its own commit (with a Fixes
+> tag), or at the very least a mention about it in the commit message.
+>
+> >                       writel(JZ_MMC_LPM_DRV_RISING_QTR_PHASE_DLY |
+> >                                  JZ_MMC_LPM_SMP_RISING_QTR_OR_HALF_PHAS=
+E_DLY |
+> >                                  JZ_MMC_LPM_LOW_POWER_MODE_EN,
+> > @@ -955,15 +957,16 @@ static const struct mmc_host_ops jz4740_mmc_ops
+> > =3D {
+> >       .enable_sdio_irq =3D jz4740_mmc_enable_sdio_irq,
+> >  };
+> >
+> > -static const struct of_device_id jz4740_mmc_of_match[] =3D {
+> > +static const struct of_device_id jz4740_mmc_of_matches[] =3D {
+> >       { .compatible =3D "ingenic,jz4740-mmc", .data =3D (void *)
+> > JZ_MMC_JZ4740 },
+> >       { .compatible =3D "ingenic,jz4725b-mmc", .data =3D (void
+> > *)JZ_MMC_JZ4725B },
+> >       { .compatible =3D "ingenic,jz4760-mmc", .data =3D (void *)
+> > JZ_MMC_JZ4760 },
+> > +     { .compatible =3D "ingenic,jz4775-mmc", .data =3D (void *)
+> > JZ_MMC_JZ4775 },
+> >       { .compatible =3D "ingenic,jz4780-mmc", .data =3D (void *)
+> > JZ_MMC_JZ4780 },
+>
+> Looks to me that the JZ4775 and JZ4780 have the exact same behaviour,
+> so this patch could have been a one-liner, adding "ingenic,jz4775-mmc"
+> with the JZ_MMC_JZ4780 ID.
+>
+> Cheers,
+> -Paul
+>
+> >       { .compatible =3D "ingenic,x1000-mmc", .data =3D (void *) JZ_MMC_=
+X1000
+> > },
+> >       {},
+> >  };
+> > -MODULE_DEVICE_TABLE(of, jz4740_mmc_of_match);
+> > +MODULE_DEVICE_TABLE(of, jz4740_mmc_of_matches);
+> >
+> >  static int jz4740_mmc_probe(struct platform_device* pdev)
+> >  {
+> > @@ -980,7 +983,7 @@ static int jz4740_mmc_probe(struct
+> > platform_device* pdev)
+> >
+> >       host =3D mmc_priv(mmc);
+> >
+> > -     match =3D of_match_device(jz4740_mmc_of_match, &pdev->dev);
+> > +     match =3D of_match_device(jz4740_mmc_of_matches, &pdev->dev);
+> >       if (match) {
+> >               host->version =3D (enum jz4740_mmc_version)match->data;
+> >       } else {
+> > @@ -1124,7 +1127,7 @@ static struct platform_driver jz4740_mmc_driver
+> > =3D {
+> >       .driver =3D {
+> >               .name =3D "jz4740-mmc",
+> >               .probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
+> > -             .of_match_table =3D of_match_ptr(jz4740_mmc_of_match),
+> > +             .of_match_table =3D of_match_ptr(jz4740_mmc_of_matches),
+> >               .pm =3D pm_ptr(&jz4740_mmc_pm_ops),
+> >       },
+> >  };
+> > --
+> > 2.7.4
+> >
+>
+>
