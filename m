@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30D03A045D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36CB3A045A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238632AbhFHTcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:32:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36460 "EHLO mail.kernel.org"
+        id S238187AbhFHTcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:32:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237461AbhFHTQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:16:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3699161970;
-        Tue,  8 Jun 2021 18:51:11 +0000 (UTC)
+        id S235513AbhFHTQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:16:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB4C561976;
+        Tue,  8 Jun 2021 18:51:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178271;
-        bh=/vS0BFpXf5eRM0ok6OPvRgxT8FL8iGC2B8FcFJtAcgI=;
+        s=korg; t=1623178274;
+        bh=twcGeTYzNJlBKwZxhVdTINqIPiMEIB8QqXYKoc+MPHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h+j43rP3M1JN0Oqex3LbG4yZrXrt485eBGl5BUdX2fAoIk33Lqi8oWmct827H8PnO
-         yC7jumU+SVbFTqJ1i7cXdhmWeNgHlsVTPfZyhWNYG7T3UOCBufK8/6QqrHnSe5KsE0
-         hMftQcgnhKVo/EnE85azHGfM3b/3iZk8r5yIb9U0=
+        b=Y3J5o1DzA7WLk8M4CFuDI0tOIYDrvvtLFTtBgZLvZAKvGfT5B6wPYEhCKXSLtrPrc
+         A5Ja30F9hAKdFH6RJZ3AliYmyiOD0mm7hhilvtGOaeG/yXMVR7Zo5HdI7qEOludclk
+         lHAgwN5UX09X2q5INRW2T23tuv+ga4bv8weXRp1g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.12 140/161] btrfs: mark ordered extent and inode with error if we fail to finish
-Date:   Tue,  8 Jun 2021 20:27:50 +0200
-Message-Id: <20210608175950.178027783@linuxfoundation.org>
+Subject: [PATCH 5.12 141/161] btrfs: fix error handling in btrfs_del_csums
+Date:   Tue,  8 Jun 2021 20:27:51 +0200
+Message-Id: <20210608175950.219304466@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -41,55 +42,91 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Josef Bacik <josef@toxicpanda.com>
 
-commit d61bec08b904cf171835db98168f82bc338e92e4 upstream.
+commit b86652be7c83f70bf406bed18ecf55adb9bfb91b upstream.
 
-While doing error injection testing I saw that sometimes we'd get an
-abort that wouldn't stop the current transaction commit from completing.
-This abort was coming from finish ordered IO, but at this point in the
-transaction commit we should have gotten an error and stopped.
+Error injection stress would sometimes fail with checksums on disk that
+did not have a corresponding extent.  This occurred because the pattern
+in btrfs_del_csums was
 
-It turns out the abort came from finish ordered io while trying to write
-out the free space cache.  It occurred to me that any failure inside of
-finish_ordered_io isn't actually raised to the person doing the writing,
-so we could have any number of failures in this path and think the
-ordered extent completed successfully and the inode was fine.
+	while (1) {
+		ret = btrfs_search_slot();
+		if (ret < 0)
+			break;
+	}
+	ret = 0;
+out:
+	btrfs_free_path(path);
+	return ret;
 
-Fix this by marking the ordered extent with BTRFS_ORDERED_IOERR, and
-marking the mapping of the inode with mapping_set_error, so any callers
-that simply call fdatawait will also get the error.
+If we got an error from btrfs_search_slot we'd clear the error because
+we were breaking instead of goto out.  Instead of using goto out, simply
+handle the cases where we may leave a random value in ret, and get rid
+of the
 
-With this we're seeing the IO error on the free space inode when we fail
-to do the finish_ordered_io.
+	ret = 0;
+out:
 
-CC: stable@vger.kernel.org # 4.19+
+pattern and simply allow break to have the proper error reporting.  With
+this fix we properly abort the transaction and do not commit thinking we
+successfully deleted the csum.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+CC: stable@vger.kernel.org # 4.4+
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/inode.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ fs/btrfs/file-item.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3011,6 +3011,18 @@ out:
- 	if (ret || truncated) {
- 		u64 unwritten_start = start;
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -787,7 +787,7 @@ int btrfs_del_csums(struct btrfs_trans_h
+ 	u64 end_byte = bytenr + len;
+ 	u64 csum_end;
+ 	struct extent_buffer *leaf;
+-	int ret;
++	int ret = 0;
+ 	const u32 csum_size = fs_info->csum_size;
+ 	u32 blocksize_bits = fs_info->sectorsize_bits;
  
-+		/*
-+		 * If we failed to finish this ordered extent for any reason we
-+		 * need to make sure BTRFS_ORDERED_IOERR is set on the ordered
-+		 * extent, and mark the inode with the error if it wasn't
-+		 * already set.  Any error during writeback would have already
-+		 * set the mapping error, so we need to set it if we're the ones
-+		 * marking this ordered extent as failed.
-+		 */
-+		if (ret && !test_and_set_bit(BTRFS_ORDERED_IOERR,
-+					     &ordered_extent->flags))
-+			mapping_set_error(ordered_extent->inode->i_mapping, -EIO);
-+
- 		if (truncated)
- 			unwritten_start += logical_len;
- 		clear_extent_uptodate(io_tree, unwritten_start, end, NULL);
+@@ -805,6 +805,7 @@ int btrfs_del_csums(struct btrfs_trans_h
+ 
+ 		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+ 		if (ret > 0) {
++			ret = 0;
+ 			if (path->slots[0] == 0)
+ 				break;
+ 			path->slots[0]--;
+@@ -861,7 +862,7 @@ int btrfs_del_csums(struct btrfs_trans_h
+ 			ret = btrfs_del_items(trans, root, path,
+ 					      path->slots[0], del_nr);
+ 			if (ret)
+-				goto out;
++				break;
+ 			if (key.offset == bytenr)
+ 				break;
+ 		} else if (key.offset < bytenr && csum_end > end_byte) {
+@@ -905,8 +906,9 @@ int btrfs_del_csums(struct btrfs_trans_h
+ 			ret = btrfs_split_item(trans, root, path, &key, offset);
+ 			if (ret && ret != -EAGAIN) {
+ 				btrfs_abort_transaction(trans, ret);
+-				goto out;
++				break;
+ 			}
++			ret = 0;
+ 
+ 			key.offset = end_byte - 1;
+ 		} else {
+@@ -916,8 +918,6 @@ int btrfs_del_csums(struct btrfs_trans_h
+ 		}
+ 		btrfs_release_path(path);
+ 	}
+-	ret = 0;
+-out:
+ 	btrfs_free_path(path);
+ 	return ret;
+ }
 
 
