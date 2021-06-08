@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A973A023A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C793A03A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235667AbhFHTCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:02:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52436 "EHLO mail.kernel.org"
+        id S238736AbhFHTT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:19:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236407AbhFHSyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:54:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A93C61580;
-        Tue,  8 Jun 2021 18:40:49 +0000 (UTC)
+        id S235505AbhFHTHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:07:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 850A561938;
+        Tue,  8 Jun 2021 18:47:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177649;
-        bh=/UqvOjwJkYb4xu5K5T61ZeRiWdtsLRXHeawx3lrCJGs=;
+        s=korg; t=1623178056;
+        bh=y2Bjb4hkLZEbWvMtdYt0ggw8gTEFOXc7oFRlzwuDxIs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2qzBbuT5QI7kWXfxgDfOrPStMWoXUx285COWhcn2W4vyLVLRoBUbSFSLJ1RqwZulv
-         wY3hYpiNfqfDHgh2M4Jo7YHhbXVkZ8lj3RYsZaWnnPwUN1YDp/Ins4WnddRpDcvPwF
-         a1BXr0vKs54yD5Jx+KrcA9FQ5TmHHD4sPKFH+8aI=
+        b=e/OPmNWrQ+MzOm7Xgik8b9eL4PHfKYAqt0Bkd+E+w+m3FG7rBRGT9crtW/FrMqk7V
+         VJmrF2EOgXCCFWxIKgZxHmCop7eGVhqZyyxOd6vSlRqWsYN68GpvUNw0xKUEHSjS1Y
+         YAUspir431eVYluSheTYCQ+bK8XrYevEkQgfFqyo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 050/137] i2c: qcom-geni: Add shutdown callback for i2c
-Date:   Tue,  8 Jun 2021 20:26:30 +0200
-Message-Id: <20210608175944.091911212@linuxfoundation.org>
+        stable@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Kiran Bhandare <kiranx.bhandare@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 061/161] i40e: add correct exception tracing for XDP
+Date:   Tue,  8 Jun 2021 20:26:31 +0200
+Message-Id: <20210608175947.527303708@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+References: <20210608175945.476074951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +42,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roja Rani Yarubandi <rojay@codeaurora.org>
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-[ Upstream commit 9f78c607600ce4f2a952560de26534715236f612 ]
+[ Upstream commit f6c10b48f8c8da44adaff730d8e700b6272add2b ]
 
-If the hardware is still accessing memory after SMMU translation
-is disabled (as part of smmu shutdown callback), then the
-IOVAs (I/O virtual address) which it was using will go on the bus
-as the physical addresses which will result in unknown crashes
-like NoC/interconnect errors.
+Add missing exception tracing to XDP when a number of different errors
+can occur. The support was only partial. Several errors where not
+logged which would confuse the user quite a lot not knowing where and
+why the packets disappeared.
 
-So, implement shutdown callback for i2c driver to suspend the bus
-during system "reboot" or "shutdown".
-
-Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
-Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: 74608d17fe29 ("i40e: add support for XDP_TX action")
+Fixes: 0a714186d3c0 ("i40e: add AF_XDP zero-copy Rx support")
+Reported-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Tested-by: Kiran Bhandare <kiranx.bhandare@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-qcom-geni.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c | 7 ++++++-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c  | 8 ++++++--
+ 2 files changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index 4a6dd05d6dbf..899ad2c7d67d 100644
---- a/drivers/i2c/busses/i2c-qcom-geni.c
-+++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -654,6 +654,14 @@ static int geni_i2c_remove(struct platform_device *pdev)
- 	return 0;
- }
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+index 70b515049540..c358d9049881 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+@@ -2313,15 +2313,20 @@ static int i40e_run_xdp(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
+ 	case XDP_TX:
+ 		xdp_ring = rx_ring->vsi->xdp_rings[rx_ring->queue_index];
+ 		result = i40e_xmit_xdp_tx_ring(xdp, xdp_ring);
++		if (result == I40E_XDP_CONSUMED)
++			goto out_failure;
+ 		break;
+ 	case XDP_REDIRECT:
+ 		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
+-		result = !err ? I40E_XDP_REDIR : I40E_XDP_CONSUMED;
++		if (err)
++			goto out_failure;
++		result = I40E_XDP_REDIR;
+ 		break;
+ 	default:
+ 		bpf_warn_invalid_xdp_action(act);
+ 		fallthrough;
+ 	case XDP_ABORTED:
++out_failure:
+ 		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
+ 		fallthrough; /* handle aborts by dropping packet */
+ 	case XDP_DROP:
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+index 3af72dc08539..5b39c457bd77 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+@@ -162,9 +162,10 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
  
-+static void geni_i2c_shutdown(struct platform_device *pdev)
-+{
-+	struct geni_i2c_dev *gi2c = platform_get_drvdata(pdev);
-+
-+	/* Make client i2c transfers start failing */
-+	i2c_mark_adapter_suspended(&gi2c->adap);
-+}
-+
- static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
- {
- 	int ret;
-@@ -718,6 +726,7 @@ MODULE_DEVICE_TABLE(of, geni_i2c_dt_match);
- static struct platform_driver geni_i2c_driver = {
- 	.probe  = geni_i2c_probe,
- 	.remove = geni_i2c_remove,
-+	.shutdown = geni_i2c_shutdown,
- 	.driver = {
- 		.name = "geni_i2c",
- 		.pm = &geni_i2c_pm_ops,
+ 	if (likely(act == XDP_REDIRECT)) {
+ 		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
+-		result = !err ? I40E_XDP_REDIR : I40E_XDP_CONSUMED;
++		if (err)
++			goto out_failure;
+ 		rcu_read_unlock();
+-		return result;
++		return I40E_XDP_REDIR;
+ 	}
+ 
+ 	switch (act) {
+@@ -173,11 +174,14 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
+ 	case XDP_TX:
+ 		xdp_ring = rx_ring->vsi->xdp_rings[rx_ring->queue_index];
+ 		result = i40e_xmit_xdp_tx_ring(xdp, xdp_ring);
++		if (result == I40E_XDP_CONSUMED)
++			goto out_failure;
+ 		break;
+ 	default:
+ 		bpf_warn_invalid_xdp_action(act);
+ 		fallthrough;
+ 	case XDP_ABORTED:
++out_failure:
+ 		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
+ 		fallthrough; /* handle aborts by dropping packet */
+ 	case XDP_DROP:
 -- 
 2.30.2
 
