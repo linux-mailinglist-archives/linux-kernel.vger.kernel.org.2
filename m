@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6F839EC0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65C139EBFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhFHC3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 22:29:36 -0400
-Received: from lucky1.263xmail.com ([211.157.147.134]:38844 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231282AbhFHC31 (ORCPT
+        id S231622AbhFHC2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 22:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231610AbhFHC2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 22:29:27 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 09948C858C;
-        Tue,  8 Jun 2021 10:27:02 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P31748T140095290545920S1623119206974105_;
-        Tue, 08 Jun 2021 10:26:57 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <bc9c7a660598dc056641b76abbcd7ee1>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-spi@vger.kernel.org
-X-RCPT-COUNT: 17
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     linux-spi@vger.kernel.org
-Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
-        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
-        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
-        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH v6 4/8] clk: rockchip: Add support for hclk_sfc on rk3036
-Date:   Tue,  8 Jun 2021 10:26:40 +0800
-Message-Id: <20210608022644.21074-5-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210608022644.21074-1-jon.lin@rock-chips.com>
-References: <20210608022644.21074-1-jon.lin@rock-chips.com>
+        Mon, 7 Jun 2021 22:28:43 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6914C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 19:26:50 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FzYyw4vchz9sRK;
+        Tue,  8 Jun 2021 12:26:47 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1623119209;
+        bh=1ZMCtGsRYb+WTlaPJy8Xif1EF1dRkTA6KPQq2Az4Xm0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=JjYtuWG8uPyxyAso3igoDZ43oYu5ua+FqU6qrpMCjU0Dt0AZfOoLd7StCE7rNLPEf
+         nZUomKPfvnoBsoCX+4wY+vqeQk64ug23pkSXC2EeZltWptR6FcnqltP72Bspg8KmG0
+         2jTIKYQ7J1PXlm4CPTFhOWQeFKF0Ls/zIuMCEPUvq5oFEqi3C0iWQLibVZf8B2+Cvs
+         v0MKQ27Rcxw3skIfW/vzawV4tJ3bQr0I2UJFyX0+YO+JQrUvHzKoJeuGaGZL+z7cmR
+         V6vsUdM2Rr6oJGYuFAOHz2sdme4qesbZuqrI9zs2okMFN7bzs97GDOxKzagwpI2185
+         l9QNnExi2iSmw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: Re: [PATCH] powerpc: Fix duplicate included _clear.h
+In-Reply-To: <1623061512-31651-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1623061512-31651-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Date:   Tue, 08 Jun 2021 12:26:43 +1000
+Message-ID: <874ke9f5wc.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Morgan <macromorgan@hotmail.com>
+Jiapeng Chong <jiapeng.chong@linux.alibaba.com> writes:
+> Clean up the following includecheck warning:
+>
+> ./arch/powerpc/perf/req-gen/perf.h: _clear.h is included more than once.
 
-Add support for the bus clock for the serial flash controller on the
-rk3036. Taken from the Rockchip BSP kernel but not tested on real
-hardware (as I lack a 3036 based SoC to test).
+That's by design.
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
+See the error reported by the kbuild robot.
 
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
+> No functional change.
 
- drivers/clk/rockchip/clk-rk3036.c      | 2 +-
- include/dt-bindings/clock/rk3036-cru.h | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+Not true.
 
-diff --git a/drivers/clk/rockchip/clk-rk3036.c b/drivers/clk/rockchip/clk-rk3036.c
-index 91d56ad45817..ebb628733f6d 100644
---- a/drivers/clk/rockchip/clk-rk3036.c
-+++ b/drivers/clk/rockchip/clk-rk3036.c
-@@ -403,7 +403,7 @@ static struct rockchip_clk_branch rk3036_clk_branches[] __initdata = {
- 	GATE(HCLK_OTG0, "hclk_otg0", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(5), 13, GFLAGS),
- 	GATE(HCLK_OTG1, "hclk_otg1", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(7), 3, GFLAGS),
- 	GATE(HCLK_I2S, "hclk_i2s", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 2, GFLAGS),
--	GATE(0, "hclk_sfc", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(3), 14, GFLAGS),
-+	GATE(HCLK_SFC, "hclk_sfc", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(3), 14, GFLAGS),
- 	GATE(HCLK_MAC, "hclk_mac", "hclk_peri", 0, RK2928_CLKGATE_CON(3), 5, GFLAGS),
- 
- 	/* pclk_peri gates */
-diff --git a/include/dt-bindings/clock/rk3036-cru.h b/include/dt-bindings/clock/rk3036-cru.h
-index 35a5a01f9697..a96a9870ad59 100644
---- a/include/dt-bindings/clock/rk3036-cru.h
-+++ b/include/dt-bindings/clock/rk3036-cru.h
-@@ -81,6 +81,7 @@
- #define HCLK_OTG0		449
- #define HCLK_OTG1		450
- #define HCLK_NANDC		453
-+#define HCLK_SFC		454
- #define HCLK_SDMMC		456
- #define HCLK_SDIO		457
- #define HCLK_EMMC		459
--- 
-2.17.1
+cheers
 
-
-
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  arch/powerpc/perf/req-gen/perf.h | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/powerpc/perf/req-gen/perf.h b/arch/powerpc/perf/req-gen/perf.h
+> index fa9bc80..59fa588 100644
+> --- a/arch/powerpc/perf/req-gen/perf.h
+> +++ b/arch/powerpc/perf/req-gen/perf.h
+> @@ -51,7 +51,6 @@ enum CAT2(NAME_LOWER, _requests) {
+>   *	r_fields
+>   * };
+>   */
+> -#include "_clear.h"
+>  #define STRUCT_NAME__(name_lower, r_name) name_lower ## _ ## r_name
+>  #define STRUCT_NAME_(name_lower, r_name) STRUCT_NAME__(name_lower, r_name)
+>  #define STRUCT_NAME(r_name) STRUCT_NAME_(NAME_LOWER, r_name)
+> -- 
+> 1.8.3.1
