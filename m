@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421843A031D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7880E3A0209
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236299AbhFHTM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:12:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34182 "EHLO mail.kernel.org"
+        id S236828AbhFHS7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:59:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236205AbhFHTB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:01:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90C3461354;
-        Tue,  8 Jun 2021 18:44:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177891;
-        bh=p+PHPQ6gKflyziuFLdEsRRGWi8Rdwr30naO7QUZpkd0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VSO4zBwAm8VlKEHeOgC4dSuwH+8YGVHLDXkInZQbdmX2/lDIAJxew0VVWBNVxzUV1
-         AAac99KGkZkBLRjCK1T+vHmO+jjNdsBUNIj1/ecTSeiJem2YffCBL7A6pA9qxN2tQh
-         ZpU/rd4tpFLSwMaaO3VkL1ZiYWgKh136bpQKpmBQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kasper Dupont <kasperd@gjkwv.06.feb.2021.kasperd.net>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 137/137] neighbour: allow NUD_NOARP entries to be forced GCed
-Date:   Tue,  8 Jun 2021 20:27:57 +0200
-Message-Id: <20210608175947.007513374@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S235383AbhFHSvw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:51:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 39BDD61490;
+        Tue,  8 Jun 2021 18:40:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623177604;
+        bh=kEKnY1HilTeW2SLhc2IcPjpt7/MpLI041RCVw4yeVNk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=XVvXVf84PdzMaFBTcCwDmoQqKL/hI2n/mVtPPTnXT0hX/BHhKuuy9Mdaq+bSKA6Px
+         FoQ5ABvJsiM+Swoc6sRm9HiBwpORIV8cHIZoS2EQg+mh4kCXWew9YXdGYnyBP7ToMs
+         9w/GN3UQ4D4X+AGU1C4rKBNN7KF0EblEgn5vE5oJDPwK5bjDmpza3fwF7Re51s0PVn
+         JE3NcOWX4r/hG2bTxTS4VHqzYpVj2Al1ucNpppxdHaE67Ne4qwDbBZeMYrxX3U7wGB
+         p2U+p+Lwail/tgKz75H/WW5s7teYlc8lqaBJoae9V9MKGptv+J+9jv1pxttZXQoaC6
+         gBFHiwLu0BmVA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2512C609E3;
+        Tue,  8 Jun 2021 18:40:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net: ipv4: Remove unneed BUG() function
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162317760414.20688.2496488740637270649.git-patchwork-notify@kernel.org>
+Date:   Tue, 08 Jun 2021 18:40:04 +0000
+References: <20210608015315.3091149-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210608015315.3091149-1-zhengyongjun3@huawei.com>
+To:     zhengyongjun <zhengyongjun3@huawei.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Ahern <dsahern@kernel.org>
+Hello:
 
-commit 7a6b1ab7475fd6478eeaf5c9d1163e7a18125c8f upstream.
+This patch was applied to netdev/net.git (refs/heads/master):
 
-IFF_POINTOPOINT interfaces use NUD_NOARP entries for IPv6. It's possible to
-fill up the neighbour table with enough entries that it will overflow for
-valid connections after that.
+On Tue, 8 Jun 2021 09:53:15 +0800 you wrote:
+> When 'nla_parse_nested_deprecated' failed, it's no need to
+> BUG() here, return -EINVAL is ok.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  net/ipv4/devinet.c  | 2 +-
+>  net/ipv6/addrconf.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-This behaviour is more prevalent after commit 58956317c8de ("neighbor:
-Improve garbage collection") is applied, as it prevents removal from
-entries that are not NUD_FAILED, unless they are more than 5s old.
+Here is the summary with links:
+  - [v2] net: ipv4: Remove unneed BUG() function
+    https://git.kernel.org/netdev/net/c/5ac6b198d7e3
 
-Fixes: 58956317c8de (neighbor: Improve garbage collection)
-Reported-by: Kasper Dupont <kasperd@gjkwv.06.feb.2021.kasperd.net>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Signed-off-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/core/neighbour.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/net/core/neighbour.c
-+++ b/net/core/neighbour.c
-@@ -239,6 +239,7 @@ static int neigh_forced_gc(struct neigh_
- 
- 			write_lock(&n->lock);
- 			if ((n->nud_state == NUD_FAILED) ||
-+			    (n->nud_state == NUD_NOARP) ||
- 			    (tbl->is_multicast &&
- 			     tbl->is_multicast(n->primary_key)) ||
- 			    time_after(tref, n->updated))
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
