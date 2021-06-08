@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6013A03BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5AA3A03B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239311AbhFHTVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:21:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58764 "EHLO mail.kernel.org"
+        id S239339AbhFHTVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:21:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237459AbhFHTJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237463AbhFHTJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Jun 2021 15:09:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3306361420;
-        Tue,  8 Jun 2021 18:48:07 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D741D6193E;
+        Tue,  8 Jun 2021 18:48:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178088;
-        bh=5zsrGqPiGGHX8N9zvnwKY4FLF7y4J3m1Ota+cUvpMks=;
+        s=korg; t=1623178091;
+        bh=8HFm7bWYWOAEn0HMbL3rn6sn0A0RkwHpBHdj88AOiSI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J+hQDc+/uS1vA3gxCsQ0kYuAcpdUOtpZ+WaiKlw3oRKCpD+ZXq1CBq9vFOPA4cJlN
-         z+Ot+7Wc0zrHWqYuyfUw5p/EOeRuBVtCbZ0gQwpYkDx2h0JnljyZClIA8Y8YObTvKh
-         6nJizQ0A2UXo8wu888E9mH6f1L87jm6zAZHOGpRY=
+        b=NaZuKFRN1aF8Y2ZV1AFwOL7DE20YX9Dhd0bMKcvy0R4tH9DKzGjU63sh8LnP0//zd
+         Yn6LYWmnqhgXUooTzldwgZO60/Dx3PnR/Tt9hrKLeWxqXI7C1WBFfvh91dzEfbHubF
+         9F9ZuxmyNNqY3NBt7eseJIRTuM5ks+MDu4THFudk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
         Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 072/161] arm64: dts: freescale: sl28: var4: fix RGMII clock and voltage
-Date:   Tue,  8 Jun 2021 20:26:42 +0200
-Message-Id: <20210608175947.886163872@linuxfoundation.org>
+Subject: [PATCH 5.12 073/161] arm64: dts: freescale: sl28: var1: fix RGMII clock and voltage
+Date:   Tue,  8 Jun 2021 20:26:43 +0200
+Message-Id: <20210608175947.918590624@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -42,7 +42,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Michael Walle <michael@walle.cc>
 
-[ Upstream commit 25201269c6ec3e9398426962ccdd55428261f7d0 ]
+[ Upstream commit 52387bb9a4a75b88887383cb91d3995ae6f4044a ]
 
 During hardware validation it was noticed that the clock isn't
 continuously enabled when there is no link. This is because the 125MHz
@@ -50,32 +50,28 @@ clock is derived from the internal PLL which seems to go into some kind
 of power-down mode every once in a while. The LS1028A expects a contiuous
 clock. Thus enable the PLL all the time.
 
-Also, the RGMII pad voltage is wrong. It was configured to 2.5V (that is
+Also, the RGMII pad voltage is wrong, it was configured to 2.5V (that is
 the VDDH regulator). The correct voltage is 1.8V, i.e. the VDDIO
 regulator.
 
-This fix is for the freescale/fsl-ls1028a-kontron-sl28-var4.dts.
+This fix is for the freescale/fsl-ls1028a-kontron-sl28-var1.dts.
 
-Fixes: 815364d0424e ("arm64: dts: freescale: add Kontron sl28 support")
+Fixes: 642856097c18 ("arm64: dts: freescale: sl28: add variant 1")
 Signed-off-by: Michael Walle <michael@walle.cc>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts     | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ .../arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts
-index df212ed5bb94..e65d1c477e2c 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts
-@@ -31,11 +31,10 @@
- 			reg = <0x4>;
- 			eee-broken-1000t;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
+index 6c309b97587d..e8d31279b7a3 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
+@@ -46,7 +46,8 @@
  			eee-broken-100tx;
--
  			qca,clk-out-frequency = <125000000>;
  			qca,clk-out-strength = <AR803X_STRENGTH_FULL>;
--
 -			vddio-supply = <&vddh>;
 +			qca,keep-pll-enabled;
 +			vddio-supply = <&vddio>;
