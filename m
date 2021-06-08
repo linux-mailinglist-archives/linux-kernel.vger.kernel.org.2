@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989B93A0075
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D146F3A0078
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235442AbhFHSnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:43:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37652 "EHLO mail.kernel.org"
+        id S235473AbhFHSnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:43:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235391AbhFHSj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:39:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F13E6142D;
-        Tue,  8 Jun 2021 18:34:28 +0000 (UTC)
+        id S235412AbhFHSj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:39:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E982A6142E;
+        Tue,  8 Jun 2021 18:34:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177269;
-        bh=W8PC+5cy/PBfmPbNY6yr9Y0XcPs97LVB5bTj8otjupU=;
+        s=korg; t=1623177271;
+        bh=S5Lvb9Jtz5bJk8DeDi8o5UOleN1TWdRYK/kxcb+dxtc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rf7P3Yyc1k1eFtuSB+ZZn8MF7JouBHr3NloJ43avI/lnSplzDjvQjIW0Sipx81EGB
-         2nXWRCOWQ0MII5v8EqwZpsTf7MvLMYPoMQpJCC+75S9GNLXGJr06y6mLHRQ5xYASLw
-         cfBg38+MOFcEo4hKcu7Wn71hbbgUmBLnFqjl9i40=
+        b=u+m3WsZ8IvmuYcR02n6cEzV0ye6Glvs/Yfl4qyOzh4N9/Zp1TaKkFAdY0sng5n1z3
+         a0LgzkgULs4gKsS6M8lE9kBj52AUl1vRsWSDo+mWCa/3zI4xoXf4+WfNxCF5KaQi8x
+         S41MRIvOqCk46FSWLOzZtBe5Qm3Bc9YsOJgKOCag=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
+        stable@vger.kernel.org, Song Liu <songliubraving@fb.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
+        kernel-team@fb.com, Arnaldo Carvalho de Melo <acme@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
+        Sasha Levin <sashal@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vince Weaver <vincent.weaver@maine.edu>,
         Ingo Molnar <mingo@kernel.org>,
         Wen Yang <wenyang@linux.alibaba.com>
-Subject: [PATCH 4.19 50/58] perf/cgroups: Dont rotate events for cgroups unnecessarily
-Date:   Tue,  8 Jun 2021 20:27:31 +0200
-Message-Id: <20210608175933.924635262@linuxfoundation.org>
+Subject: [PATCH 4.19 51/58] perf/core: Fix corner case in perf_rotate_context()
+Date:   Tue,  8 Jun 2021 20:27:32 +0200
+Message-Id: <20210608175933.959017327@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
 References: <20210608175932.263480586@linuxfoundation.org>
@@ -51,149 +45,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+From: Song Liu <songliubraving@fb.com>
 
-commit fd7d55172d1e2e501e6da0a5c1de25f06612dc2e upstream.
+commit 7fa343b7fdc4f351de4e3f28d5c285937dd1f42f upstream.
 
-Currently perf_rotate_context assumes that if the context's nr_events !=
-nr_active a rotation is necessary for perf event multiplexing. With
-cgroups, nr_events is the total count of events for all cgroups and
-nr_active will not include events in a cgroup other than the current
-task's. This makes rotation appear necessary for cgroups when it is not.
+In perf_rotate_context(), when the first cpu flexible event fail to
+schedule, cpu_rotate is 1, while cpu_event is NULL. Since cpu_event is
+NULL, perf_rotate_context will _NOT_ call cpu_ctx_sched_out(), thus
+cpuctx->ctx.is_active will have EVENT_FLEXIBLE set. Then, the next
+perf_event_sched_in() will skip all cpu flexible events because of the
+EVENT_FLEXIBLE bit.
 
-Add a perf_event_context flag that is set when rotation is necessary.
-Clear the flag during sched_out and set it when a flexible sched_in
-fails due to resources.
+In the next call of perf_rotate_context(), cpu_rotate stays 1, and
+cpu_event stays NULL, so this process repeats. The end result is, flexible
+events on this cpu will not be scheduled (until another event being added
+to the cpuctx).
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+Here is an easy repro of this issue. On Intel CPUs, where ref-cycles
+could only use one counter, run one pinned event for ref-cycles, one
+flexible event for ref-cycles, and one flexible event for cycles. The
+flexible ref-cycles is never scheduled, which is expected. However,
+because of this issue, the cycles event is never scheduled either.
+
+ $ perf stat -e ref-cycles:D,ref-cycles,cycles -C 5 -I 1000
+
+           time             counts unit events
+    1.000152973         15,412,480      ref-cycles:D
+    1.000152973      <not counted>      ref-cycles     (0.00%)
+    1.000152973      <not counted>      cycles         (0.00%)
+    2.000486957         18,263,120      ref-cycles:D
+    2.000486957      <not counted>      ref-cycles     (0.00%)
+    2.000486957      <not counted>      cycles         (0.00%)
+
+To fix this, when the flexible_active list is empty, try rotate the
+first event in the flexible_groups. Also, rename ctx_first_active() to
+ctx_event_to_rotate(), which is more accurate.
+
+Signed-off-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: <kernel-team@fb.com>
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
+Cc: Sasha Levin <sashal@kernel.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vince Weaver <vincent.weaver@maine.edu>
-Link: https://lkml.kernel.org/r/20190601082722.44543-1-irogers@google.com
+Fixes: 8d5bce0c37fa ("perf/core: Optimize perf_rotate_context() event scheduling")
+Link: https://lkml.kernel.org/r/20191008165949.920548-1-songliubraving@fb.com
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/perf_event.h |    5 +++++
- kernel/events/core.c       |   42 ++++++++++++++++++++++--------------------
- 2 files changed, 27 insertions(+), 20 deletions(-)
+ kernel/events/core.c |   22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -747,6 +747,11 @@ struct perf_event_context {
- 	int				nr_stat;
- 	int				nr_freq;
- 	int				rotate_disable;
-+	/*
-+	 * Set when nr_events != nr_active, except tolerant to events not
-+	 * necessary to be active due to scheduling constraints, such as cgroups.
-+	 */
-+	int				rotate_necessary;
- 	atomic_t			refcount;
- 	struct task_struct		*task;
- 
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -2952,6 +2952,12 @@ static void ctx_sched_out(struct perf_ev
- 	if (!ctx->nr_active || !(is_active & EVENT_ALL))
- 		return;
+@@ -3689,11 +3689,23 @@ static void rotate_ctx(struct perf_event
+ 	perf_event_groups_insert(&ctx->flexible_groups, event);
+ }
  
-+	/*
-+	 * If we had been multiplexing, no rotations are necessary, now no events
-+	 * are active.
-+	 */
-+	ctx->rotate_necessary = 0;
-+
- 	perf_pmu_disable(ctx->pmu);
- 	if (is_active & EVENT_PINNED) {
- 		list_for_each_entry_safe(event, tmp, &ctx->pinned_active, active_list)
-@@ -3319,10 +3325,13 @@ static int flexible_sched_in(struct perf
- 		return 0;
- 
- 	if (group_can_go_on(event, sid->cpuctx, sid->can_add_hw)) {
--		if (!group_sched_in(event, sid->cpuctx, sid->ctx))
--			list_add_tail(&event->active_list, &sid->ctx->flexible_active);
--		else
-+		int ret = group_sched_in(event, sid->cpuctx, sid->ctx);
-+		if (ret) {
- 			sid->can_add_hw = 0;
-+			sid->ctx->rotate_necessary = 1;
-+			return 0;
-+		}
-+		list_add_tail(&event->active_list, &sid->ctx->flexible_active);
- 	}
- 
- 	return 0;
-@@ -3690,24 +3699,17 @@ ctx_first_active(struct perf_event_conte
- static bool perf_rotate_context(struct perf_cpu_context *cpuctx)
++/* pick an event from the flexible_groups to rotate */
+ static inline struct perf_event *
+-ctx_first_active(struct perf_event_context *ctx)
++ctx_event_to_rotate(struct perf_event_context *ctx)
  {
- 	struct perf_event *cpu_event = NULL, *task_event = NULL;
--	bool cpu_rotate = false, task_rotate = false;
--	struct perf_event_context *ctx = NULL;
-+	struct perf_event_context *task_ctx = NULL;
-+	int cpu_rotate, task_rotate;
+-	return list_first_entry_or_null(&ctx->flexible_active,
+-					struct perf_event, active_list);
++	struct perf_event *event;
++
++	/* pick the first active flexible event */
++	event = list_first_entry_or_null(&ctx->flexible_active,
++					 struct perf_event, active_list);
++
++	/* if no active flexible event, pick the first event */
++	if (!event) {
++		event = rb_entry_safe(rb_first(&ctx->flexible_groups.tree),
++				      typeof(*event), group_node);
++	}
++
++	return event;
+ }
  
- 	/*
- 	 * Since we run this from IRQ context, nobody can install new
- 	 * events, thus the event count values are stable.
- 	 */
- 
--	if (cpuctx->ctx.nr_events) {
--		if (cpuctx->ctx.nr_events != cpuctx->ctx.nr_active)
--			cpu_rotate = true;
--	}
--
--	ctx = cpuctx->task_ctx;
--	if (ctx && ctx->nr_events) {
--		if (ctx->nr_events != ctx->nr_active)
--			task_rotate = true;
--	}
-+	cpu_rotate = cpuctx->ctx.rotate_necessary;
-+	task_ctx = cpuctx->task_ctx;
-+	task_rotate = task_ctx ? task_ctx->rotate_necessary : 0;
- 
- 	if (!(cpu_rotate || task_rotate))
- 		return false;
-@@ -3716,7 +3718,7 @@ static bool perf_rotate_context(struct p
+ static bool perf_rotate_context(struct perf_cpu_context *cpuctx)
+@@ -3718,9 +3730,9 @@ static bool perf_rotate_context(struct p
  	perf_pmu_disable(cpuctx->ctx.pmu);
  
  	if (task_rotate)
--		task_event = ctx_first_active(ctx);
-+		task_event = ctx_first_active(task_ctx);
+-		task_event = ctx_first_active(task_ctx);
++		task_event = ctx_event_to_rotate(task_ctx);
  	if (cpu_rotate)
- 		cpu_event = ctx_first_active(&cpuctx->ctx);
+-		cpu_event = ctx_first_active(&cpuctx->ctx);
++		cpu_event = ctx_event_to_rotate(&cpuctx->ctx);
  
-@@ -3724,17 +3726,17 @@ static bool perf_rotate_context(struct p
+ 	/*
  	 * As per the order given at ctx_resched() first 'pop' task flexible
- 	 * and then, if needed CPU flexible.
- 	 */
--	if (task_event || (ctx && cpu_event))
--		ctx_sched_out(ctx, cpuctx, EVENT_FLEXIBLE);
-+	if (task_event || (task_ctx && cpu_event))
-+		ctx_sched_out(task_ctx, cpuctx, EVENT_FLEXIBLE);
- 	if (cpu_event)
- 		cpu_ctx_sched_out(cpuctx, EVENT_FLEXIBLE);
- 
- 	if (task_event)
--		rotate_ctx(ctx, task_event);
-+		rotate_ctx(task_ctx, task_event);
- 	if (cpu_event)
- 		rotate_ctx(&cpuctx->ctx, cpu_event);
- 
--	perf_event_sched_in(cpuctx, ctx, current);
-+	perf_event_sched_in(cpuctx, task_ctx, current);
- 
- 	perf_pmu_enable(cpuctx->ctx.pmu);
- 	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
 
 
