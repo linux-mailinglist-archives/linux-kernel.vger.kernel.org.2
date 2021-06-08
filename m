@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C87939FB22
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDDD39FB7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbhFHPsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:48:09 -0400
-Received: from mail-pj1-f46.google.com ([209.85.216.46]:56281 "EHLO
-        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231165AbhFHPsH (ORCPT
+        id S233681AbhFHQCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 12:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233318AbhFHQB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:48:07 -0400
-Received: by mail-pj1-f46.google.com with SMTP id k7so12146927pjf.5;
-        Tue, 08 Jun 2021 08:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ifGZQu8Jq7dV7AdN0OST01e7WbED4WWmcsSQXXwwdJo=;
-        b=iCcjGp++KdStE/BfRHFT1cR1yFuAbMwr/okM2xIV7IkSlvuUNop57o1wd1b8O/dTPU
-         m9AN85xQG4bM3xQpLVo600ucXAvCTOZeToHRJ6yqFcAPZdgatcIZSicT6z5bZ4gFXX1r
-         5msaoNxLGGDp/KsGVYPH5TiYmGdlMFxP7OVIA/phbB6punWvhpEG+JiE753poBmN438g
-         hOvaEYj1IwDhnR2QgEFNjnUN8QdNmtLnC4IXaDzyW5bmlk0m/L+ksifrSxCujP97i0IH
-         QllQIGjrExf4bZebZBvvL0miOikkGPST71wKJx8PTJQ3eh5JD8LRQlZylzmM980u6oiN
-         yq3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ifGZQu8Jq7dV7AdN0OST01e7WbED4WWmcsSQXXwwdJo=;
-        b=LA7jgEmVgrJTnUG+0alRXgZqbUnky9h8mXO/+BdltpAwAKct692SOh0I2Y/GXsQBGb
-         1Ev7cI5qxrgC9auF8DvUrtQlt9APeAAf6SrEmNdNhnN5gL/IiKYETt1uGbZizMESk27Y
-         O/lw6VjoWHRJW5wg9JoDcC3hL8PNfNvm5RUj2gSXk9CRhCsWVjRJxo9TPjtVcutY2DD3
-         l9n29V7MoyCqp68gDFUGDzUOX75DVUsTtXIJWKCmkAvxuURoPeFw2q0DHmGfESSowB/N
-         jq2/YYPO9eMvPUVWzkIPey3jctpuxXHv7l8oeSJpuOT94BkHjX1DMJpgr1E+ld+lMhoM
-         D3Uw==
-X-Gm-Message-State: AOAM532doJxjerSDV/zVyZ8zHBmLbiIfDomSLYE7+tEhsSmis17VY0cq
-        fOg8Y9siMqjYlMkzu73IU/E=
-X-Google-Smtp-Source: ABdhPJyy+WOcoe5buu/VuBaY4Xly4VOcAVPszB8pBpdk2RQ9QkUcjNbGPQlbpn8bM7JyADfWbagZ6Q==
-X-Received: by 2002:a17:90a:588f:: with SMTP id j15mr5297515pji.112.1623167098105;
-        Tue, 08 Jun 2021 08:44:58 -0700 (PDT)
-Received: from localhost ([103.200.106.115])
-        by smtp.gmail.com with ESMTPSA id z134sm11179376pfc.209.2021.06.08.08.44.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 08:44:57 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 21:14:55 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v7 0/8] Expose and manage PCI device reset
-Message-ID: <20210608154455.ho44n6dnd52ogzxj@archlinux>
-References: <20210608054857.18963-1-ameynarkhede03@gmail.com>
- <abcbaf1b-6b5f-bddc-eba1-e1e8e3ecf40e@metux.net>
+        Tue, 8 Jun 2021 12:01:56 -0400
+X-Greylist: delayed 600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Jun 2021 09:00:03 PDT
+Received: from mxwww.masterlogin.de (mxwww.masterlogin.de [IPv6:2a03:2900:1:1::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4EEC061574;
+        Tue,  8 Jun 2021 09:00:03 -0700 (PDT)
+Received: from mxout4.routing.net (unknown [192.168.10.112])
+        by backup.mxwww.masterlogin.de (Postfix) with ESMTPS id 37DED2C52D;
+        Tue,  8 Jun 2021 15:45:55 +0000 (UTC)
+Received: from mxbox4.masterlogin.de (unknown [192.168.10.79])
+        by mxout4.routing.net (Postfix) with ESMTP id 619DA10081F;
+        Tue,  8 Jun 2021 15:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1623167148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=98Qit1hMtPHZc/TS5dL5TLvDSnXeL0iSq1KTlz2Fj4Y=;
+        b=Iuhw/LqB8uiWEGDmraAJxW1QmzpUpi9yQ86fUmAiLQUYrSGgN4y3cP6HCt6VbhsVuZriB4
+        JmcWW72XI53HVnl+QAB2sqy9KFdUuPMx5Whv0Mu+fyuAq3mVQQPjx+oKgHgcYmnQF6r7Dd
+        fuq4cYG7k3Z18G1o0qLI1U7pTEGpmEo=
+Received: from localhost.localdomain (fttx-pool-217.61.145.142.bambit.de [217.61.145.142])
+        by mxbox4.masterlogin.de (Postfix) with ESMTPSA id AA073804E7;
+        Tue,  8 Jun 2021 15:45:47 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] thermal: mediatek: add sensors-support
+Date:   Tue,  8 Jun 2021 17:45:30 +0200
+Message-Id: <20210608154530.70074-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <abcbaf1b-6b5f-bddc-eba1-e1e8e3ecf40e@metux.net>
+Content-Transfer-Encoding: 8bit
+X-Mail-ID: 8400b1d9-070e-406d-af5d-86a2ada1c8ff
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/06/08 12:05PM, Enrico Weigelt, metux IT consult wrote:
-> On 08.06.21 07:48, Amey Narkhede wrote:
->
-> Hi,
->
-> > PCI and PCIe devices may support a number of possible reset mechanisms
-> > for example Function Level Reset (FLR) provided via Advanced Feature or
-> > PCIe capabilities, Power Management reset, bus reset, or device specific reset.
-> > Currently the PCI subsystem creates a policy prioritizing these reset methods
-> > which provides neither visibility nor control to userspace.
->
-> Since I've got a current use case for that - could you perhaps tell more
-> about the whole pci device reset mechanisms ?
->
-> In my case I've got a board that wires reset lines to the soc's gpios.
-> Not sure how exactly to qualify this, but I guess it would count as a
-> bus wide reset.
->
-> Now the big question for me is how to implement that in a board specific
-> platform driver (which already does setup of gpios and other attached
-> devices), so we can reset the card in slot X in a generic way.
->
-> Any help highly appreciated.
->
->
-> --mtx
->
-In case of bus reset(pci_reset_secondary_bus()), it uses bridge control
-register to assert reset on bus so I think it should out of the box but
-not 100% sure about it.
+From: Frank Wunderlich <frank-w@public-files.de>
 
-Thanks,
-Amey
+add HWMON-support to mediateks thermal driver to allow lm-sensors
+userspace tools read soc temperature
+
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+---
+v4: change message to dev_warn as suggested by matthias
+v3: drop no_hwmon
+v2: drop ifdef and used devm_thermal_add_hwmon_sysfs
+---
+ drivers/thermal/mtk_thermal.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
+index 97e8678ccf0e..ede94eadddda 100644
+--- a/drivers/thermal/mtk_thermal.c
++++ b/drivers/thermal/mtk_thermal.c
+@@ -23,6 +23,8 @@
+ #include <linux/reset.h>
+ #include <linux/types.h>
+ 
++#include "thermal_hwmon.h"
++
+ /* AUXADC Registers */
+ #define AUXADC_CON1_SET_V	0x008
+ #define AUXADC_CON1_CLR_V	0x00c
+@@ -1087,6 +1089,10 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+ 		goto err_disable_clk_peri_therm;
+ 	}
+ 
++	ret = devm_thermal_add_hwmon_sysfs(tzdev);
++	if (ret)
++		dev_warn(&pdev->dev, "error in thermal_add_hwmon_sysfs");
++
+ 	return 0;
+ 
+ err_disable_clk_peri_therm:
+-- 
+2.25.1
+
