@@ -2,118 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5265439FE4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFA239FE50
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbhFHSA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:00:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:36724 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233983AbhFHSAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:00:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A908FD6E;
-        Tue,  8 Jun 2021 10:58:57 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B18A3F694;
-        Tue,  8 Jun 2021 10:58:56 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 18:58:47 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, sudeep.holla@arm.com
-Subject: Re: [RFC PATCH v2 00/10] irqchip/irq-gic: Optimize masking by
- leveraging EOImode=1
-Message-ID: <20210608175840.GA15997@lpieralisi>
-References: <20210525173255.620606-1-valentin.schneider@arm.com>
- <87zgwgs9x0.wl-maz@kernel.org>
- <87tumhg9vm.mognet@arm.com>
- <87a6o0z86t.wl-maz@kernel.org>
+        id S234011AbhFHSBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232850AbhFHSB3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:01:29 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FB2C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 10:59:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kEDBey//uODOhAAOZPxn7gDKkNRZBwUx1r7R/fxovBg=; b=K3hlsFJ/iecAA+uzItPMaCACYH
+        zK91L/90rEItXQuNGP9W+c8KX+NHl8hJ2vJSRZUaPBuCIYOV1fvt3Q7je/EjJxNWLZZgh1/41hn+p
+        cgt1CaIqiJFw65F9inz7XOWPz1Y3QQsAP8566wLOUt4nFMEnJ6kejF1+XhcIBSipP+zaAXnUYWiI6
+        7E2eGw5zosNNKxMEu+CWKVOzmv584foghP5o0/P5A8kz70NqJDnvebS6n8LWJWTWN25yOHvhRI/yE
+        ehQ5bN9bouTaGdyhzLeJLmb3Md11yMwH1McK7B3ojWm24Fg6ygTFIe7v6DWNhe91l0IQ5l+OCOkk2
+        7sI6/jLw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lqg0T-004pG6-Ad; Tue, 08 Jun 2021 17:59:24 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4AFF530018A;
+        Tue,  8 Jun 2021 19:59:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 32B3E201DEF0B; Tue,  8 Jun 2021 19:59:23 +0200 (CEST)
+Date:   Tue, 8 Jun 2021 19:59:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     qiang.zhang@windriver.com
+Cc:     ryabinin.a.a@gmail.com, glider@google.com, dvyukov@google.com,
+        matthias.bgg@gmail.com, andreyknvl@google.com,
+        akpm@linux-foundation.org, oleg@redhat.com,
+        walter-zh.wu@mediatek.com, frederic@kernel.org,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] irq_work: Make irq_work_queue() NMI-safe again
+Message-ID: <YL+v+yMA1dZegUN9@hirez.programming.kicks-ass.net>
+References: <20210331063202.28770-1-qiang.zhang@windriver.com>
+ <YL+uBq8LzXXZsYVf@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87a6o0z86t.wl-maz@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YL+uBq8LzXXZsYVf@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Sudeep]
-
-On Tue, Jun 08, 2021 at 04:29:14PM +0100, Marc Zyngier wrote:
-> [+Mark, since we discussed about this on IRC]
+On Tue, Jun 08, 2021 at 07:51:02PM +0200, Peter Zijlstra wrote:
+> On Wed, Mar 31, 2021 at 02:32:02PM +0800, qiang.zhang@windriver.com wrote:
 > 
-> Hi Valentin,
+> > @@ -70,6 +70,9 @@ bool irq_work_queue(struct irq_work *work)
+> >  	if (!irq_work_claim(work))
+> >  		return false;
+> >  
+> > +	/*record irq_work call stack in order to print it in KASAN reports*/
+> > +	kasan_record_aux_stack(work);
+> > +
+> >  	/* Queue the entry and raise the IPI if needed. */
+> >  	preempt_disable();
+> >  	__irq_work_queue_local(work);
 > 
-> On Tue, 01 Jun 2021 11:25:01 +0100,
-> Valentin Schneider <valentin.schneider@arm.com> wrote:
-> > 
-> > On 27/05/21 12:17, Marc Zyngier wrote:
-> > > On Tue, 25 May 2021 18:32:45 +0100,
-> > > Valentin Schneider <valentin.schneider@arm.com> wrote:
-> > >> I've tested this on my Ampere eMAG, which uncovered "fun" interactions with
-> > >> the MSI domains. Did the same trick as the Juno with the pl011.
-> > >>
-> > >> pNMIs cause said eMAG to freeze, but that's true even without my patches. I
-> > >> did try them out under QEMU+KVM and that looked fine, although that means I
-> > >> only got to test EOImode=0. I'll try to dig into this when I get some more
-> > >> cycles.
-> > >
-> > > That's interesting/worrying. As far as I remember, this machine uses
-> > > GIC500, which is a well known quantity. If pNMIs are causing issues,
-> > > that'd probably be a CPU interface problem. Can you elaborate on how
-> > > you tried to test that part? Just using the below benchmark?
-> > >
-> > 
-> > Not even that, it would hang somewhere at boot. Julien suggested offline
-> > that it might be a problem with the secondaries' PMR initial value, but I
-> > really never got to do dig into it.
+> Thanks for the Cc :/ Also NAK.
 > 
-> I just hit a similar problem on an Altra box, which seems to be
-> related to using PSCI for idle. PSCI has no idea about priority
-> masking, and enters CPU suspend with interrupt masked at the PMR
-> level. Good luck waking up from that.
+> I shall go revert this instantly. KASAN is not NMI safe, while
+> irq_work_queue() is very carefully crafted to be exactly that.
 
-Gah. If we can manage to understand which path in
-psci_cpu_suspend_enter() is causing this problem that'd
-be great too (it can be both, for different reasons):
+The below goes in tip/perf/urgent ASAP.
 
-if (!psci_power_state_loses_context(state))
-(1)	ret = psci_ops.cpu_suspend(state, 0);
-else
-(2)	ret = cpu_suspend(state, psci_suspend_finisher);
+---
+Subject: irq_work: Make irq_work_queue() NMI-safe again
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Tue Jun  8 19:54:15 CEST 2021
 
-I'd like to understand if the problem is on idle entry or
-exit (or both depending on the state we are entering).
+Someone carelessly put NMI unsafe code in irq_work_queue(), breaking
+just about every single user. Also, someone has a terrible comment
+style.
 
-On (1) we would return from the call with the CPU state
-retained on (2) with CPU context restored (but it rebooted
-from reset - so the PMR value is gone).
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/irq_work.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-I am asking about (2) because I am trying to understand what
-the power controller does wrt PMR and wake-up IRQs (ie and
-whether the PMR plays a role in that). Reworded: trying to
-understand how the PMR behaviour is playing with the power
-controller wake-up capabilities.
-
-Thoughts appreciated.
-
-I am sorry that you had to debug this, thank you for that.
-
-Lorenzo
-
-> I've pushed a test branch at [1]. It'd be really good if you could
-> have a quick look and let me know if that helps in your case (it
-> certainly does on the box I have access to).
-> 
-> Thanks,
-> 
-> 	M.
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=arm64/nmi-idle
-> 
-> -- 
-> Without deviation from the norm, progress is not possible.
+--- a/kernel/irq_work.c
++++ b/kernel/irq_work.c
+@@ -70,9 +70,6 @@ bool irq_work_queue(struct irq_work *wor
+ 	if (!irq_work_claim(work))
+ 		return false;
+ 
+-	/*record irq_work call stack in order to print it in KASAN reports*/
+-	kasan_record_aux_stack(work);
+-
+ 	/* Queue the entry and raise the IPI if needed. */
+ 	preempt_disable();
+ 	__irq_work_queue_local(work);
