@@ -2,165 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD9939F981
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD7839F985
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233489AbhFHOtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:49:46 -0400
-Received: from mga05.intel.com ([192.55.52.43]:34602 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233288AbhFHOtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:49:46 -0400
-IronPort-SDR: zW40cu/NiVtF04V0Og58Ua+2OfLanUHV+cUeEaTa8x0uFU+ckpgFJVkGqZhm0xpGlt/kHAKObD
- pxbZPh3Nfk2g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="290487698"
-X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="290487698"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 07:47:53 -0700
-IronPort-SDR: c5iW+XRYk6tdKb/CLbJVQhiL0xz4jYzmy9nkSVuqkZNkJ9WVC5ZQ2q7TDGBAM6Zb/RZydDCbFg
- CVFCuOFHPG+A==
-X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="637655818"
-Received: from ciball-mobl1.amr.corp.intel.com (HELO [10.252.140.48]) ([10.252.140.48])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 07:47:52 -0700
-Subject: Re: [patch V2 00/14] x86/fpu: Mop up XSAVES and related damage
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <20210605234742.712464974@linutronix.de>
- <87h7i9zv3r.ffs@nanos.tec.linutronix.de>
- <eca0add1-849e-6a1a-8ea6-f6b72650c9c8@intel.com>
- <87eeddzs0l.ffs@nanos.tec.linutronix.de>
- <37df631f-9d3d-3035-6eeb-85ef33e580d5@intel.com>
- <87bl8hz3sl.ffs@nanos.tec.linutronix.de>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <6ca1fbfe-8c7d-88ba-9066-cc30ffde1fa8@intel.com>
-Date:   Tue, 8 Jun 2021 07:47:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <87bl8hz3sl.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
+        id S233574AbhFHOuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:50:44 -0400
+Received: from mail-co1nam11on2139.outbound.protection.outlook.com ([40.107.220.139]:51681
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233560AbhFHOuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:50:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VI7JOlyjbECqXm7nZuuj1EjRzIePjcbPR1bTANxTxZQCK0OoG+k3sJ35OjS+VAhAeyizajtTnQzTLsdqM9wlVJUtI89LKSrVOj/V9qAT/Nz1CLcCB9Fg23AzaYbD467alcAYseUDy2wpekKlW8vTbb/dwSUcTPoxhGTABRaRBP5B0VzzgchSrOEhR4GFfNS4TUCnzYFX8mJwv+zKfvTJbC5XnqtLmFvSlEXZQu1sRZgGuyKYvaM6z+RXexQOpH7LaDxlllnKH5+g8JpX9BkxJ/ESyUILF6Va0ahSexSXIxIKTihNCSEdY3rQB7BRNsevS9MR46dMGucRbx+rFwET5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ujHDmpnRJ4/cY0bK3E5ScTYXf3wUx9kVDv4fxAL7qqw=;
+ b=FyXI6fdPhVKeup0yFyq3JBITINgEMbXSbSVXXpmX0ddBaABi3DoNjdySpOD3QH0iBO509DA/ru/6MA61/kDAW3nBcniyMIxGoaiJUSCZXUQbdRzirjpg0R3DRzxLs9ZyzhyR/M3ezurH29Dg9+j35Z7s+fhgTDZaGxO7yeiSxDRmU+M/n2vPoGOsutoBFRguw8f8bNnXncN53aD4qpm+HDwZl0Oc+A+CtvWracGFPEakVi03C/H996AMH/lEXd6i4pRub18TMFkk8GAFlixo4p8qoHGc/2Zl8wm5QaOcYXdc4xiPDHHf4vpn28aZUTrmkR0fmd0SPIHOl648fLy6Mg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ujHDmpnRJ4/cY0bK3E5ScTYXf3wUx9kVDv4fxAL7qqw=;
+ b=h8R2u2r6vg1q2FtWihfSdF+NWaoCu8hrgMh2UQ8wjnFsah34g2S5NyU7P4NnZ/wV8rsK++9eDTBDs1mHKi0qr6Nt6J6BjwJ6AIxYZrdgL4lyh7C+cGgGGv7gaMyj9kms74ikSskNAqnB8S8fcV/gcY7DLM60yTSUigL/hKLo8/s=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW2PR2101MB0940.namprd21.prod.outlook.com (2603:10b6:302:4::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.5; Tue, 8 Jun
+ 2021 14:48:44 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::8dbd:8360:af6:b8a2]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::8dbd:8360:af6:b8a2%9]) with mapi id 15.20.4242.007; Tue, 8 Jun 2021
+ 14:48:44 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Long Li <longli@microsoft.com>, KY Srinivasan <kys@microsoft.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+Subject: RE: [PATCH 3/3] scsi: storvsc: Correctly handle multiple flags in
+ srb_status
+Thread-Topic: [PATCH 3/3] scsi: storvsc: Correctly handle multiple flags in
+ srb_status
+Thread-Index: AQHXWWYJfm7T4x/P7ECmgJNN1E96wasJJSuAgAEQpHA=
+Date:   Tue, 8 Jun 2021 14:48:44 +0000
+Message-ID: <MWHPR21MB159382417618D56A90F70E5BD7379@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <1622827263-12516-1-git-send-email-mikelley@microsoft.com>
+ <1622827263-12516-3-git-send-email-mikelley@microsoft.com>
+ <BY5PR21MB1506CA56A8470892FA0952A9CE389@BY5PR21MB1506.namprd21.prod.outlook.com>
+In-Reply-To: <BY5PR21MB1506CA56A8470892FA0952A9CE389@BY5PR21MB1506.namprd21.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=4cc0d189-a83b-498e-88ab-ea7c01acc869;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-06-07T22:05:43Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: microsoft.com; dkim=none (message not signed)
+ header.d=none;microsoft.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 11b1fd26-7176-4eb5-fa0c-08d92a8c83ad
+x-ms-traffictypediagnostic: MW2PR2101MB0940:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR2101MB0940AFC1F278AAD5259BBDBAD7379@MW2PR2101MB0940.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4N26jeFbHOyBRPZ60afsr/s+/F7AQXzoyFUH5OaLmGsTKKerHI84S2HHqRtpku/DpU0EML3Ugr98aOntG7u6bWY+KDISrYY3bb974zxRipsI4fWxj3pwlYVcDJ1Ox3DBWeR+PzxdNDGOb1zfTgDjXGdk15G413FPMEy876e0Qr6Ps7CFNVuqIIR4RWstqb0h10emJL6vwB9iAm4AM0vZn+PWxf56Y7HYunuRaIvJjLnFVbgn8HxSB53VhQUPGyraLl1UyXVYq0a2oR0tqn9Zh+q7lb/szbgmMRR+yoveMD0xDqhH+zFP2mXzlaDi3xv4MZZMsgIeKizP90lNLv9YnbjishBHaZsoowhyoOa6zH6Mw0Cx1ThHfWF3nzq7e0pE2MHw4tu5Z+0t19oi6j3GrNIeYIrJdQ4l2dxx1dPJ5tcWyK5Fz/n7Rw1cJvuFWjx0m0YRyPXPJvOjioMDgLKx/kPSbEQv9lr6EbzKOzZ3MBCv+oLkNTIHemelQCdGAhrsxGGx/0af1i4B3AeVpw4e0lZRTU1gGxkhtMRjBvbG0DOMXFGJSQkwqOyrTzTwrEL4vxJ2p5InS2EUN8Ff0suJ5xNZmWb7bNirl37yy7SUys/yI2eyLYz+GJV5uDY5ZsBpdbWp+U7sIUOytLzi1OKiOQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(33656002)(10290500003)(186003)(8676002)(38100700002)(26005)(5660300002)(6506007)(76116006)(66446008)(122000001)(9686003)(64756008)(86362001)(66556008)(71200400001)(66946007)(52536014)(66476007)(55016002)(82950400001)(82960400001)(8990500004)(2906002)(83380400001)(110136005)(7696005)(498600001)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?m+n9dRDaNKFWb+AdSOVv/B4mdFIfywmiDSJy8XbmGAlC3uL23KE4SibKw7+T?=
+ =?us-ascii?Q?Dfa2bWRF94ht7fgBO0wVzdZPeOgCvpu8Adsf5b+F7l9yjBD3obiUQ1vg7+gD?=
+ =?us-ascii?Q?+EXIjkbQCDOb9HVgnc+ZTfhQiXRsBHNc8WdfEO4DBzhgiUwR0ZsGXZoHOH29?=
+ =?us-ascii?Q?xD74DKlhCAae4NF0PNt1dNLpOEpWLHUpvXs27TW5tItXQWzffVCCOCxssAso?=
+ =?us-ascii?Q?67ynnLsKRqtzjaHxiXSpxCviy8OBDZc4j3qMaongx5Lrvavz3C5G4W1oo6TF?=
+ =?us-ascii?Q?RjFmGBo6d8/ZJtIIkHvC75t7NfpRy3H24dgFf8+qiV/Q//dRtBWAOUL02PRJ?=
+ =?us-ascii?Q?WrifOqkwOsg2fKOPiV8xdK/K5Y7knqB1p9iUwbZQcrNlQ/OMDt3E9v1lFvm0?=
+ =?us-ascii?Q?y2RZHPOfZ8novuPdYB7pC3EBy2grGSuIjMkRrTQ97ic7A9D4BQ+Uc1bWzkbU?=
+ =?us-ascii?Q?eFANZ0gbnP4GsCKWz8zLBIP2ZmRAVdK0ALgnFI3BUKcJ79VO7tNZ3IIzeODd?=
+ =?us-ascii?Q?tRrHnb+JpPfWJ++spJjdMEc9mSfOkTgxpNbbtl0SNMI31y4J/CJ2kzyYWyiH?=
+ =?us-ascii?Q?k2Z9GZmUJwhdcsLPpIZ/qzW/Fvs9MPK3lNDYcErqlMmlnHQJNAq0/qruvZy1?=
+ =?us-ascii?Q?h3vwclwJ+/8dPqhlVb3YAFLQg0Eh6FRwOgxCcZcHmQWikBQsywIssD3nDtZf?=
+ =?us-ascii?Q?UE1n7wzdPY+cUuaCN5J6kcP/iXL0zXYIz1f9WLu/ZbA7TQNYKYvjy+LU6070?=
+ =?us-ascii?Q?hKCxR5ZJsIkOxNY+IVxjrWPOFnlnSFEkjbsXo7lgo74HC48xDtflukD0S2kR?=
+ =?us-ascii?Q?qbQCqeQ0wj5+KG/lEhLi7BBgHj5/7aUz7c+CeHL1zqIzRBwNTbq4OvhijmoI?=
+ =?us-ascii?Q?b0qSN129Ep8kgUJ5FpiYiXUq1rWIwB4Y8NtjtWTq4KZc6X+Bwgm8yvfZrq0R?=
+ =?us-ascii?Q?mmb9SEt1F7361ssiv/pkLtTRaCdo3dFptfPGVOXLKSHgGGuyZWXdTUi5UYY1?=
+ =?us-ascii?Q?ZOriE0MdDF2uyaRHtDXGt8SJHvNj9kf0d5jkGmdzvdBzBskr/2GZXDBKwDYN?=
+ =?us-ascii?Q?XsQYjCN0G1pOjtru12yG3cs8CgalTmnGZVtQxdKN5+vUUc3YH9mooe1JFIc1?=
+ =?us-ascii?Q?lpMflGdjtRcL5Qyby+CSksFjmMjl7gdsaIzCj5EVXitxgB3N9piBJspNtUCV?=
+ =?us-ascii?Q?JZQ3rBh90zn8d2tl754oZmsXvTm9wGVdCb/PZOOm6Y5qGwP1zLyd2VI27k0F?=
+ =?us-ascii?Q?x739vyCip4hqsfBj0FRnL/dn+8l85wjDe9osm2IAfXfQYEqkWWkJzmNHASS9?=
+ =?us-ascii?Q?jj2/m7mkRFjb58Vw0kg9D++p?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11b1fd26-7176-4eb5-fa0c-08d92a8c83ad
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2021 14:48:44.2021
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IdBk9eDmDwtSQINRs43ewz8LQtT2ham4Zl7UnNNPggSDSKGm7+QyU9oCklQr3Qj0xYPPzHS9Fbflr4nSuZe3zHZw+wsaeUbSE0Hii0FmvmI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0940
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/21 3:51 PM, Thomas Gleixner wrote:
-...
-> But it creates a few new problems:
-> 
->   1) Where to put the PKRU value in the sigframe?
-> 
->      For 64bit sigframes that's easy as there is padding space, for
->      32bit sigframes that's a problem because there is no space.
-> 
->   2) Backward compatibility
-> 
->      As much as we wish to have a time machine there is a rule not to
->      break existing user space.
-> 
-> Now fortunately there is a way out:
-> 
->   1) User space cannot rely on PKRU being XSTATE managed unless PKRU is
->      enabled in XCR0. XCR0 enablement is part of the UABI so any
->      complaint about missing XCR0 support is futile
+From: Long Li <longli@microsoft.com> Sent: Monday, June 7, 2021 3:25 PM
+> >
+> > Hyper-V is observed to sometimes set multiple flags in the srb_status, =
+such
+> > as ABORTED and ERROR. Current code in
+> > storvsc_handle_error() handles only a single flag being set, and does n=
+othing
+> > when multiple flags are set.  Fix this by changing the case statement i=
+nto a
+> > series of "if" statements testing individual flags. The functionality f=
+or handling
+> > each flag is unchanged.
+> >
+> > Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> > ---
+> >  drivers/scsi/storvsc_drv.c | 61 +++++++++++++++++++++++++-------------=
+---
+> > -----
+> >  1 file changed, 33 insertions(+), 28 deletions(-)
+> >
+> > diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c in=
+dex
+> > fff9441..e96d2aa 100644
+> > --- a/drivers/scsi/storvsc_drv.c
+> > +++ b/drivers/scsi/storvsc_drv.c
+> > @@ -1009,17 +1009,40 @@ static void storvsc_handle_error(struct
+> > vmscsi_request *vm_srb,
+> >  	struct storvsc_scan_work *wrk;
+> >  	void (*process_err_fn)(struct work_struct *work);
+> >  	struct hv_host_device *host_dev =3D shost_priv(host);
+> > -	bool do_work =3D false;
+> >
+> > -	switch (SRB_STATUS(vm_srb->srb_status)) {
+> > -	case SRB_STATUS_ERROR:
+> > +	/*
+> > +	 * In some situations, Hyper-V sets multiple bits in the
+> > +	 * srb_status, such as ABORTED and ERROR. So process them
+> > +	 * individually, with the most specific bits first.
+> > +	 */
+> > +
+> > +	if (vm_srb->srb_status & SRB_STATUS_INVALID_LUN) {
+> > +		set_host_byte(scmnd, DID_NO_CONNECT);
+> > +		process_err_fn =3D storvsc_remove_lun;
+> > +		goto do_work;
+> > +	}
+> > +
+> > +	if (vm_srb->srb_status & SRB_STATUS_ABORTED) {
+> > +		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID &&
+> > +		    /* Capacity data has changed */
+> > +		    (asc =3D=3D 0x2a) && (ascq =3D=3D 0x9)) {
+> > +			process_err_fn =3D storvsc_device_scan;
+> > +			/*
+> > +			 * Retry the I/O that triggered this.
+> > +			 */
+> > +			set_host_byte(scmnd, DID_REQUEUE);
+> > +			goto do_work;
+> > +		}
+> > +	}
+> > +
+> > +	if (vm_srb->srb_status & SRB_STATUS_ERROR) {
+>=20
+> I'm curious on SRB_STATUS_INVALID_LUN and SRB_STATUS_ABORTED, the actions=
+ on
+> those two codes are different.
+>=20
+> It doesn't look like we can get those two in the same status code.
 
-So...  One more gem from the manpages:
+Agreed.  I've only observed having ERROR and ABORTED in the same status cod=
+e.
+That happens when a bad PFN is passed on a I/O request, which can be easily
+tested.  With the old code, having ERROR and ABORTED together resulted in d=
+oing
+nothing.
 
-> It is recommended that
->        applications wanting to use protection keys should simply call
->        pkey_alloc(2) and test whether the call succeeds, instead of
->        attempting to detect support for the feature in any other way.
+The behavior of INVALID_LUN is unchanged by this patch.  But with this patc=
+h,
+if INVALID_LUN and ABORTED should ever occur together, we would process the
+INVALID_LUN error, and ignore ABORTED, which I think makes sense.=20
+INVALID_LUN is the most serious error, so we process it first.  Then ABORTE=
+D is
+next in priority for the specific case of "Capacity data has changed".  Fin=
+ally we
+handle ERROR.
 
-I kinda wrote that thinking that folks could avoid doing the
-CPUID/XGETBV dance and just use the syscall instead.  *If* they do what
-is suggested, they'll never notice the lack of PKRU in XCR0.
+Michael
 
-The pkey selftest, for instance, blindly assumes that pkeys is enabled
-in XCR0.  It would probably end up scribbling somewhere on the stack.
-Now the same person who wrote that also wrote the manpages, so those are
-not exactly two separate data points.
+>=20
+> >  		/*
+> >  		 * Let upper layer deal with error when
+> >  		 * sense message is present.
+> >  		 */
+> > -
+> >  		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID)
+> > -			break;
+> > +			return;
+> > +
+> >  		/*
+> >  		 * If there is an error; offline the device since all
+> >  		 * error recovery strategies would have already been @@ -
+> > 1032,37 +1055,19 @@ static void storvsc_handle_error(struct vmscsi_requ=
+est *vm_srb,
+> >  			set_host_byte(scmnd, DID_PASSTHROUGH);
+> >  			break;
+> >  		/*
+> > -		 * On Some Windows hosts TEST_UNIT_READY command can
+> > return
+> > -		 * SRB_STATUS_ERROR, let the upper level code deal with it
+> > -		 * based on the sense information.
+> > +		 * On some Hyper-V hosts TEST_UNIT_READY command can
+> > +		 * return SRB_STATUS_ERROR. Let the upper level code
+> > +		 * deal with it based on the sense information.
+> >  		 */
+> >  		case TEST_UNIT_READY:
+> >  			break;
+> >  		default:
+> >  			set_host_byte(scmnd, DID_ERROR);
+> >  		}
+> > -		break;
+> > -	case SRB_STATUS_INVALID_LUN:
+> > -		set_host_byte(scmnd, DID_NO_CONNECT);
+> > -		do_work =3D true;
+> > -		process_err_fn =3D storvsc_remove_lun;
+> > -		break;
+> > -	case SRB_STATUS_ABORTED:
+> > -		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID &&
+> > -		    (asc =3D=3D 0x2a) && (ascq =3D=3D 0x9)) {
+> > -			do_work =3D true;
+> > -			process_err_fn =3D storvsc_device_scan;
+> > -			/*
+> > -			 * Retry the I/O that triggered this.
+> > -			 */
+> > -			set_host_byte(scmnd, DID_REQUEUE);
+> > -		}
+> > -		break;
+> >  	}
+> > +	return;
+> >
+> > -	if (!do_work)
+> > -		return;
+> > -
+> > +do_work:
+> >  	/*
+> >  	 * We need to schedule work to process this error; schedule it.
+> >  	 */
+> > --
+> > 1.8.3.1
 
-...
-> So the proposed solution is to:
-> 
->    A) Exclude PKRU from XSTATE managed state, i.e. do not set the PKRU
->       bit in XCR0
-> 
->    B) Exclude 32bit applications on 64bit kernels from using PKEYS by
->       returning an error code from pkey_alloc(). That's fine because the
->       man page requires them to handle the fail which they need to do
->       anyway because 32bit kernel do not support PKEYS and never will.
-> 
->    C) Replace the current context switch mechanism which is partially
->       XSAVE based by a software managed one.
-> 
->    D) Store the PKRU value in one of the reserved slots of the 64bit
->       signal frame which is possible because of #B so that a signal
->       handler has the chance to override the interrupted task's PKRU
->       setting.
-> 
-> Thoughts?
-
-The thing that makes me most nervous is changing the signal stack ABI
-for PKRU.  Careful apps (not the selftest) will probably have more
-careful enumeration and might bug out due to the missing XCR0 bit.  Or,
-they might at least check xfeatures (aka. XSTATE_BV) in the signal stack
-XSAVE buffer.
-
-On the bright side, rudely masking PKRU out of XCR0:
-
-	xcr0 &= ~XFEATURE_MASK_PKRU;
-
-still results in a kernel that boots.
