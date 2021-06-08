@@ -2,392 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58AC3A07A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 01:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1A93A075F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 01:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235418AbhFHXQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 19:16:08 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48530 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233618AbhFHXQH (ORCPT
+        id S234857AbhFHXGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 19:06:05 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:52727 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhFHXGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 19:16:07 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 158NEAcl025258
-        for <linux-kernel@vger.kernel.org>; Tue, 8 Jun 2021 16:14:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=suAdtI0mUr0NgYHSsmrZzr/Gvyno3LP91rYdqG1JjOQ=;
- b=Zn0IZuQdhzep9I1eSaWtlIq0ULw0THUDIY/lG2PbbTv04LtIsWaDfhlqZjvdBbF5kAPq
- 2GlGA5zIZOSwO30RMWzdaNsKQVqeXjirGBD8N3aQmZ7rWQgX1Xp5KHPKOxVw66g5rcmK
- YsKnlqw73LYejdNDl+lzb5b37wK8dibCERY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 391mx0tf05-8
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 16:14:14 -0700
-Received: from intmgw001.05.prn6.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 16:14:04 -0700
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 5A99082542DD; Tue,  8 Jun 2021 16:02:28 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH v9 8/8] writeback, cgroup: release dying cgwbs by switching attached inodes
-Date:   Tue, 8 Jun 2021 16:02:25 -0700
-Message-ID: <20210608230225.2078447-9-guro@fb.com>
+        Tue, 8 Jun 2021 19:06:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1623193449; x=1654729449;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=SJ53jugNHBiYCQmrDRJq3GwEPY+tvvQA2foE3RigJbA=;
+  b=GcLMcsgHzRLb3cZ5JaNCsPVEMOuq/8VP8l8x26w6b1rQCc+7sw30Aj6B
+   NIcXEhjtg8uRjN5kqoHc4qU/+AkD7R2wZrvi4mCLmdsvls6mGknkfv/ny
+   6JTljDOySGIXvzpiFiuqz7W66bWvLvbUxerbltg8iYbAc/yDXGnhchMzp
+   w=;
+X-IronPort-AV: E=Sophos;i="5.83,259,1616457600"; 
+   d="scan'208";a="114579637"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 08 Jun 2021 23:04:07 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id A3F57A1E39;
+        Tue,  8 Jun 2021 23:04:06 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Tue, 8 Jun 2021 23:04:06 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.161.153) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Tue, 8 Jun 2021 23:04:01 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <ycheng@google.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
+        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <ncardwell@google.com>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH v7 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Wed, 9 Jun 2021 08:03:57 +0900
+Message-ID: <20210608230357.39528-1-kuniyu@amazon.co.jp>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210608230225.2078447-1-guro@fb.com>
-References: <20210608230225.2078447-1-guro@fb.com>
+In-Reply-To: <CAK6E8=dtFmPYpK71XJc=HFDUL9mYO1i36Q8BemwSGcCq+3BEmw@mail.gmail.com>
+References: <CAK6E8=dtFmPYpK71XJc=HFDUL9mYO1i36Q8BemwSGcCq+3BEmw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: zylZZoFtJ6At0t_j9ifcail7vKxfZk5z
-X-Proofpoint-ORIG-GUID: zylZZoFtJ6At0t_j9ifcail7vKxfZk5z
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-08_17:2021-06-04,2021-06-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=443 mlxscore=0
- malwarescore=0 spamscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106080147
-X-FB-Internal: deliver
+X-Originating-IP: [10.43.161.153]
+X-ClientProxiedBy: EX13P01UWB002.ant.amazon.com (10.43.161.191) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asynchronously try to release dying cgwbs by switching attached inodes
-to the nearest living ancestor wb. It helps to get rid of per-cgroup
-writeback structures themselves and of pinned memory and block cgroups,
-which are significantly larger structures (mostly due to large per-cpu
-statistics data). This prevents memory waste and helps to avoid
-different scalability problems caused by large piles of dying cgroups.
+From:   Yuchung Cheng <ycheng@google.com>
+Date:   Tue, 8 Jun 2021 10:48:06 -0700
+> On Tue, May 25, 2021 at 11:42 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >
+> > On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
+> > > The SO_REUSEPORT option allows sockets to listen on the same port and to
+> > > accept connections evenly. However, there is a defect in the current
+> > > implementation [1]. When a SYN packet is received, the connection is tied
+> > > to a listening socket. Accordingly, when the listener is closed, in-flight
+> > > requests during the three-way handshake and child sockets in the accept
+> > > queue are dropped even if other listeners on the same port could accept
+> > > such connections.
+> > >
+> > > This situation can happen when various server management tools restart
+> > > server (such as nginx) processes. For instance, when we change nginx
+> > > configurations and restart it, it spins up new workers that respect the new
+> > > configuration and closes all listeners on the old workers, resulting in the
+> > > in-flight ACK of 3WHS is responded by RST.
+> > >
+> > > To avoid such a situation, users have to know deeply how the kernel handles
+> > > SYN packets and implement connection draining by eBPF [2]:
+> > >
+> > >    1. Stop routing SYN packets to the listener by eBPF.
+> > >    2. Wait for all timers to expire to complete requests
+> > >    3. Accept connections until EAGAIN, then close the listener.
+> > >
+> > >    or
+> > >
+> > >    1. Start counting SYN packets and accept syscalls using the eBPF map.
+> > >    2. Stop routing SYN packets.
+> > >    3. Accept connections up to the count, then close the listener.
+> > >
+> > > In either way, we cannot close a listener immediately. However, ideally,
+> > > the application need not drain the not yet accepted sockets because 3WHS
+> > > and tying a connection to a listener are just the kernel behaviour. The
+> > > root cause is within the kernel, so the issue should be addressed in kernel
+> > > space and should not be visible to user space. This patchset fixes it so
+> > > that users need not take care of kernel implementation and connection
+> > > draining. With this patchset, the kernel redistributes requests and
+> > > connections from a listener to the others in the same reuseport group
+> > > at/after close or shutdown syscalls.
+> > >
+> > > Although some software does connection draining, there are still merits in
+> > > migration. For some security reasons, such as replacing TLS certificates,
+> > > we may want to apply new settings as soon as possible and/or we may not be
+> > > able to wait for connection draining. The sockets in the accept queue have
+> > > not started application sessions yet. So, if we do not drain such sockets,
+> > > they can be handled by the newer listeners and could have a longer
+> > > lifetime. It is difficult to drain all connections in every case, but we
+> > > can decrease such aborted connections by migration. In that sense,
+> > > migration is always better than draining.
+> > >
+> > > Moreover, auto-migration simplifies user space logic and also works well in
+> > > a case where we cannot modify and build a server program to implement the
+> > > workaround.
+> > >
+> > > Note that the source and destination listeners MUST have the same settings
+> > > at the socket API level; otherwise, applications may face inconsistency and
+> > > cause errors. In such a case, we have to use the eBPF program to select a
+> > > specific listener or to cancel migration.
+> This looks to be a useful feature. What happens to migrating a
+> passively fast-opened socket in the old listener but it has not yet
+> been accepted (TFO is both a mini-socket and a full-socket)?
+> It gets tricky when the old and new listener have different TFO key
 
-Reuse the existing mechanism of inode switching used for foreign inode
-detection. To speed things up batch up to 115 inode switching in a
-single operation (the maximum number is selected so that the resulting
-struct inode_switch_wbs_context can fit into 1024 bytes). Because
-every switching consists of two steps divided by an RCU grace period,
-it would be too slow without batching. Please note that the whole
-batch counts as a single operation (when increasing/decreasing
-isw_nr_in_flight). This allows to keep umounting working (flush the
-switching queue), however prevents cleanups from consuming the whole
-switching quota and effectively blocking the frn switching.
+The tricky situation can happen without this patch set. We can change
+the listener's TFO key when TCP_SYN_RECV sockets are still in the accept
+queue. The change is already handled properly, so it does not crash
+applications.
 
-A cgwb cleanup operation can fail due to different reasons (e.g. not
-enough memory, the cgwb has an in-flight/pending io, an attached inode
-in a wrong state, etc). In this case the next scheduled cleanup will
-make a new attempt. An attempt is made each time a new cgwb is offlined
-(in other words a memcg and/or a blkcg is deleted by a user). In the
-future an additional attempt scheduled by a timer can be implemented.
+In the normal 3WHS case, a full-socket is created after 3WHS. In the TFO
+case, a full-socket is created after validating the TFO cookie in the
+initial SYN packet.
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Acked-by: Dennis Zhou <dennis@kernel.org>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/fs-writeback.c                | 102 ++++++++++++++++++++++++++++---
- include/linux/backing-dev-defs.h |   1 +
- include/linux/writeback.h        |   1 +
- mm/backing-dev.c                 |  67 +++++++++++++++++++-
- 4 files changed, 159 insertions(+), 12 deletions(-)
-
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 2d7c5e1e32e7..49b33300b1b8 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -225,6 +225,12 @@ void wb_wait_for_completion(struct wb_completion *do=
-ne)
- 					/* one round can affect upto 5 slots */
- #define WB_FRN_MAX_IN_FLIGHT	1024	/* don't queue too many concurrently *=
-/
-=20
-+/*
-+ * Maximum inodes per isw.  A specific value has been chosen to make
-+ * struct inode_switch_wbs_context fit into 1024 bytes kmalloc.
-+ */
-+#define WB_MAX_INODES_PER_ISW	115
-+
- static atomic_t isw_nr_in_flight =3D ATOMIC_INIT(0);
- static struct workqueue_struct *isw_wq;
-=20
-@@ -503,6 +509,24 @@ static void inode_switch_wbs_work_fn(struct work_str=
-uct *work)
- 	atomic_dec(&isw_nr_in_flight);
- }
-=20
-+static bool inode_prepare_wbs_switch(struct inode *inode,
-+				     struct bdi_writeback *new_wb)
-+{
-+	/* while holding I_WB_SWITCH, no one else can update the association */
-+	spin_lock(&inode->i_lock);
-+	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
-+	    inode->i_state & (I_WB_SWITCH | I_FREEING | I_WILL_FREE) ||
-+	    inode_to_wb(inode) =3D=3D new_wb) {
-+		spin_unlock(&inode->i_lock);
-+		return false;
-+	}
-+	inode->i_state |=3D I_WB_SWITCH;
-+	__iget(inode);
-+	spin_unlock(&inode->i_lock);
-+
-+	return true;
-+}
-+
- /**
-  * inode_switch_wbs - change the wb association of an inode
-  * @inode: target inode
-@@ -540,17 +564,8 @@ static void inode_switch_wbs(struct inode *inode, in=
-t new_wb_id)
- 	if (!isw->new_wb)
- 		goto out_free;
-=20
--	/* while holding I_WB_SWITCH, no one else can update the association */
--	spin_lock(&inode->i_lock);
--	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
--	    inode->i_state & (I_WB_SWITCH | I_FREEING | I_WILL_FREE) ||
--	    inode_to_wb(inode) =3D=3D isw->new_wb) {
--		spin_unlock(&inode->i_lock);
-+	if (!inode_prepare_wbs_switch(inode, isw->new_wb))
- 		goto out_free;
--	}
--	inode->i_state |=3D I_WB_SWITCH;
--	__iget(inode);
--	spin_unlock(&inode->i_lock);
-=20
- 	isw->inodes[0] =3D inode;
-=20
-@@ -571,6 +586,73 @@ static void inode_switch_wbs(struct inode *inode, in=
-t new_wb_id)
- 	kfree(isw);
- }
-=20
-+/**
-+ * cleanup_offline_cgwb - detach associated inodes
-+ * @wb: target wb
-+ *
-+ * Switch all inodes attached to @wb to a nearest living ancestor's wb i=
-n order
-+ * to eventually release the dying @wb.  Returns %true if not all inodes=
- were
-+ * switched and the function has to be restarted.
-+ */
-+bool cleanup_offline_cgwb(struct bdi_writeback *wb)
-+{
-+	struct cgroup_subsys_state *memcg_css;
-+	struct inode_switch_wbs_context *isw;
-+	struct inode *inode;
-+	int nr;
-+	bool restart =3D false;
-+
-+	isw =3D kzalloc(sizeof(*isw) + WB_MAX_INODES_PER_ISW *
-+		      sizeof(struct inode *), GFP_KERNEL);
-+	if (!isw)
-+		return restart;
-+
-+	atomic_inc(&isw_nr_in_flight);
-+
-+	for (memcg_css =3D wb->memcg_css->parent; memcg_css;
-+	     memcg_css =3D memcg_css->parent) {
-+		isw->new_wb =3D wb_get_create(wb->bdi, memcg_css, GFP_KERNEL);
-+		if (isw->new_wb)
-+			break;
-+	}
-+	if (unlikely(!isw->new_wb))
-+		isw->new_wb =3D &wb->bdi->wb; /* wb_get() is noop for bdi's wb */
-+
-+	nr =3D 0;
-+	spin_lock(&wb->list_lock);
-+	list_for_each_entry(inode, &wb->b_attached, i_io_list) {
-+		if (!inode_prepare_wbs_switch(inode, isw->new_wb))
-+			continue;
-+
-+		isw->inodes[nr++] =3D inode;
-+
-+		if (nr >=3D WB_MAX_INODES_PER_ISW - 1) {
-+			restart =3D true;
-+			break;
-+		}
-+	}
-+	spin_unlock(&wb->list_lock);
-+
-+	/* no attached inodes? bail out */
-+	if (nr =3D=3D 0) {
-+		atomic_dec(&isw_nr_in_flight);
-+		wb_put(isw->new_wb);
-+		kfree(isw);
-+		return restart;
-+	}
-+
-+	/*
-+	 * In addition to synchronizing among switchers, I_WB_SWITCH tells
-+	 * the RCU protected stat update paths to grab the i_page
-+	 * lock so that stat transfer can synchronize against them.
-+	 * Let's continue after I_WB_SWITCH is guaranteed to be visible.
-+	 */
-+	INIT_RCU_WORK(&isw->work, inode_switch_wbs_work_fn);
-+	queue_rcu_work(isw_wq, &isw->work);
-+
-+	return restart;
-+}
-+
- /**
-  * wbc_attach_and_unlock_inode - associate wbc with target inode and unl=
-ock it
-  * @wbc: writeback_control of interest
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev=
--defs.h
-index 63f52ad2ce7a..1d7edad9914f 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -155,6 +155,7 @@ struct bdi_writeback {
- 	struct list_head memcg_node;	/* anchored at memcg->cgwb_list */
- 	struct list_head blkcg_node;	/* anchored at blkcg->cgwb_list */
- 	struct list_head b_attached;	/* attached inodes, protected by list_lock=
- */
-+	struct list_head offline_node;	/* anchored at offline_cgwbs */
-=20
- 	union {
- 		struct work_struct release_work;
-diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-index 9ef50176f3a1..667e86cfbdcf 100644
---- a/include/linux/writeback.h
-+++ b/include/linux/writeback.h
-@@ -221,6 +221,7 @@ void wbc_account_cgroup_owner(struct writeback_contro=
-l *wbc, struct page *page,
- int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pa=
-ges,
- 			   enum wb_reason reason, struct wb_completion *done);
- void cgroup_writeback_umount(void);
-+bool cleanup_offline_cgwb(struct bdi_writeback *wb);
-=20
- /**
-  * inode_attach_wb - associate an inode with its wb
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 54c5dc4b8c24..52eaeee40da3 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -371,12 +371,16 @@ static void wb_exit(struct bdi_writeback *wb)
- #include <linux/memcontrol.h>
-=20
- /*
-- * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, and memcg->cgwb_=
-list.
-- * bdi->cgwb_tree is also RCU protected.
-+ * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, offline_cgwbs an=
-d
-+ * memcg->cgwb_list.  bdi->cgwb_tree is also RCU protected.
-  */
- static DEFINE_SPINLOCK(cgwb_lock);
- static struct workqueue_struct *cgwb_release_wq;
-=20
-+static LIST_HEAD(offline_cgwbs);
-+static void cleanup_offline_cgwbs_workfn(struct work_struct *work);
-+static DECLARE_WORK(cleanup_offline_cgwbs_work, cleanup_offline_cgwbs_wo=
-rkfn);
-+
- static void cgwb_release_workfn(struct work_struct *work)
- {
- 	struct bdi_writeback *wb =3D container_of(work, struct bdi_writeback,
-@@ -395,6 +399,11 @@ static void cgwb_release_workfn(struct work_struct *=
-work)
-=20
- 	fprop_local_destroy_percpu(&wb->memcg_completions);
- 	percpu_ref_exit(&wb->refcnt);
-+
-+	spin_lock_irq(&cgwb_lock);
-+	list_del(&wb->offline_node);
-+	spin_unlock_irq(&cgwb_lock);
-+
- 	wb_exit(wb);
- 	WARN_ON_ONCE(!list_empty(&wb->b_attached));
- 	kfree_rcu(wb, rcu);
-@@ -414,6 +423,7 @@ static void cgwb_kill(struct bdi_writeback *wb)
- 	WARN_ON(!radix_tree_delete(&wb->bdi->cgwb_tree, wb->memcg_css->id));
- 	list_del(&wb->memcg_node);
- 	list_del(&wb->blkcg_node);
-+	list_add(&wb->offline_node, &offline_cgwbs);
- 	percpu_ref_kill(&wb->refcnt);
- }
-=20
-@@ -635,6 +645,57 @@ static void cgwb_bdi_unregister(struct backing_dev_i=
-nfo *bdi)
- 	mutex_unlock(&bdi->cgwb_release_mutex);
- }
-=20
-+/**
-+ * cleanup_offline_cgwbs - try to release dying cgwbs
-+ *
-+ * Try to release dying cgwbs by switching attached inodes to the neares=
-t
-+ * living ancestor's writeback. Processed wbs are placed at the end
-+ * of the list to guarantee the forward progress.
-+ *
-+ * Should be called with the acquired cgwb_lock lock, which might
-+ * be released and re-acquired in the process.
-+ */
-+static void cleanup_offline_cgwbs_workfn(struct work_struct *work)
-+{
-+	struct bdi_writeback *wb;
-+	LIST_HEAD(processed);
-+
-+	spin_lock_irq(&cgwb_lock);
-+
-+	while (!list_empty(&offline_cgwbs)) {
-+		wb =3D list_first_entry(&offline_cgwbs, struct bdi_writeback,
-+				      offline_node);
-+		list_move(&wb->offline_node, &processed);
-+
-+		/*
-+		 * If wb is dirty, cleaning up the writeback by switching
-+		 * attached inodes will result in an effective removal of any
-+		 * bandwidth restrictions, which isn't the goal.  Instead,
-+		 * it can be postponed until the next time, when all io
-+		 * will be likely completed.  If in the meantime some inodes
-+		 * will get re-dirtied, they should be eventually switched to
-+		 * a new cgwb.
-+		 */
-+		if (wb_has_dirty_io(wb))
-+			continue;
-+
-+		if (!wb_tryget(wb))
-+			continue;
-+
-+		spin_unlock_irq(&cgwb_lock);
-+		while (cleanup_offline_cgwb(wb))
-+			cond_resched();
-+		spin_lock_irq(&cgwb_lock);
-+
-+		wb_put(wb);
-+	}
-+
-+	if (!list_empty(&processed))
-+		list_splice_tail(&processed, &offline_cgwbs);
-+
-+	spin_unlock_irq(&cgwb_lock);
-+}
-+
- /**
-  * wb_memcg_offline - kill all wb's associated with a memcg being offlin=
-ed
-  * @memcg: memcg being offlined
-@@ -651,6 +712,8 @@ void wb_memcg_offline(struct mem_cgroup *memcg)
- 		cgwb_kill(wb);
- 	memcg_cgwb_list->next =3D NULL;	/* prevent new wb's */
- 	spin_unlock_irq(&cgwb_lock);
-+
-+	queue_work(system_unbound_wq, &cleanup_offline_cgwbs_work);
- }
-=20
- /**
---=20
-2.31.1
-
+After that, the connection is basically handled via the full-socket, except
+for accept() syscall. So in the both cases, the mini-socket is poped out of
+old listener's queue, cloned, and put into the new listner's queue. Then we
+can accept() its full-socket via the cloned mini-socket.
