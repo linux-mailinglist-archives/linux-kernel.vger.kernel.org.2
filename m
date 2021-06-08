@@ -2,123 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C26B39EBF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C97E39EBCD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbhFHC1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 22:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231514AbhFHC1s (ORCPT
+        id S230390AbhFHCQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 22:16:43 -0400
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:44921 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhFHCQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 22:27:48 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523A9C061789;
-        Mon,  7 Jun 2021 19:25:56 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4FzYxn01lXz9sWD; Tue,  8 Jun 2021 12:25:48 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1623119149;
-        bh=NE7+usqQ/norkxY9YOA2SirvU/XbC99t4zi6zDKs6fI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l5xQK55tG4fFOstusMEH5nVrLBK4ofIa7MChdPnoNlmO6puIFXbKBv4BQMnCh/qeL
-         1AA2jQ0i8sBitMvTHtP5x7lrBh/CWfRRAI6K2JRx5QtBKyXpTNSvgzMSmXnPl0s84G
-         EcXVcynJIkkcSXJXWbhlUwqaAJgDgZfBcSVU//N8=
-Date:   Tue, 8 Jun 2021 11:15:01 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <YL7Elf3KwRarNfLx@yekko>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <bb6846bf-bd3c-3802-e0d7-226ec9b33384@metux.net>
- <20210602172424.GD1002214@nvidia.com>
- <bd0f485c-5f70-b087-2a5a-d2fe6e16817d@metux.net>
- <20210604123054.GL1002214@nvidia.com>
+        Mon, 7 Jun 2021 22:16:42 -0400
+Received: by mail-pl1-f174.google.com with SMTP id b12so3805568plg.11;
+        Mon, 07 Jun 2021 19:14:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=GN9OGsGoM5q2Wj6TkWBVaSNZ3ULcmdL6q8p7m1JsxfU=;
+        b=KAKRqeqM/EnW/4UM54P+A9EJlb7HswqJaBECriEWn06A6AuPmgEhw53v2jNqs2UbU8
+         +ipemHkdCeJ7hZf8DGPXqrGtSQiaUtrrBKnBPdJgYjyVozFXY41ptb5hYLJGLFvhNTev
+         ewFaadk+5/gEhStXYpHg6FCtpMK8RgPstlt/1eAppeKlIpE6yPI9Bb4/UIxrHHPu8c2w
+         X5/UbsWQsJ4ttdYqBvk9F53mVXHLXCMepOcCypsou/dkksQrag3RLdK7s6a5G5G5JjOS
+         lXcVAZaZzBjqUyLDv8FhAI9Arq44OUf5eOICCTpZBJt15aYY9+zUAww9XM7MKW8Xp3eo
+         AhGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=GN9OGsGoM5q2Wj6TkWBVaSNZ3ULcmdL6q8p7m1JsxfU=;
+        b=tIXleNer3+m6lVYGFf7AkKKolqRztf3754SA//6ZpAMkjYvMAbSGREHrjRKUUDrS3J
+         NVHWOTG2yNYSSDFQmVaa5moFU32JCMTCoKzkSyxxOeOnIfGznl1eQmHMQmu1SjmmkMO8
+         GugBD7DAcgsfyLBU/lQ0kDzbIJX4heU+6rzvbikajp4y/l/YTDAJF7l3fqGC3nqSQei+
+         1+hlhDnrXOiRhFAodHW4XKtSSTvKrmP/Eu22/bhYRtlWvMrdeNqFN3FaC6q40x7vyJdT
+         cfhjQ/v8SclpuCvy6phCSou1KrS+/XfxD5SNJwGV3HCjlkgWiVRgicmzw4c2RZj+0CHd
+         dkhQ==
+X-Gm-Message-State: AOAM533RPLvtK7775Z/r5TnfByvpZfshiLtT03q4HIKX1A47530CGo48
+        HA35mgymA3niIM8xXRF4fnQ=
+X-Google-Smtp-Source: ABdhPJwZostydn6bgzgZ5hc0R5uUZONrVbm87sBVNdPt/3RpSMRkRRnU2eGY1TzJGbBSLvRxXRgFUA==
+X-Received: by 2002:a17:90a:ff12:: with SMTP id ce18mr23452289pjb.215.1623118430063;
+        Mon, 07 Jun 2021 19:13:50 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id r92sm637379pja.6.2021.06.07.19.13.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 19:13:49 -0700 (PDT)
+Date:   Tue, 08 Jun 2021 12:13:44 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v4 4/4] powerpc/64s: enable MMU_LAZY_TLB_SHOOTDOWN
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Anton Blanchard <anton@ozlabs.org>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, Andy Lutomirski <luto@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>
+References: <20210605014216.446867-1-npiggin@gmail.com>
+        <20210605014216.446867-5-npiggin@gmail.com>
+        <20210607165241.4dcd4cf63f96437c5650d179@linux-foundation.org>
+In-Reply-To: <20210607165241.4dcd4cf63f96437c5650d179@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="T4guhZ6fptkEnI3K"
-Content-Disposition: inline
-In-Reply-To: <20210604123054.GL1002214@nvidia.com>
+Message-Id: <1623116405.kj57caxq27.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---T4guhZ6fptkEnI3K
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jun 04, 2021 at 09:30:54AM -0300, Jason Gunthorpe wrote:
-> On Fri, Jun 04, 2021 at 12:44:28PM +0200, Enrico Weigelt, metux IT consul=
-t wrote:
-> > On 02.06.21 19:24, Jason Gunthorpe wrote:
-> >=20
-> > Hi,
-> >=20
-> > >> If I understand this correctly, /dev/ioasid is a kind of "common
-> > supplier"
-> > >> to other APIs / devices. Why can't the fd be acquired by the
-> > >> consumer APIs (eg. kvm, vfio, etc) ?
-> > >
-> > > /dev/ioasid would be similar to /dev/vfio, and everything already
-> > > deals with exposing /dev/vfio and /dev/vfio/N together
-> > >
-> > > I don't see it as a problem, just more work.
-> >=20
-> > One of the problems I'm seeing is in container environments: when
-> > passing in an vfio device, we now also need to pass in /dev/ioasid,
-> > thus increasing the complexity in container setup (or orchestration).
+Excerpts from Andrew Morton's message of June 8, 2021 9:52 am:
+> On Sat,  5 Jun 2021 11:42:16 +1000 Nicholas Piggin <npiggin@gmail.com> wr=
+ote:
 >=20
-> Containers already needed to do this today. Container orchestration is
-> hard.
+>> On a 16-socket 192-core POWER8 system, a context switching benchmark
+>> with as many software threads as CPUs (so each switch will go in and
+>> out of idle), upstream can achieve a rate of about 1 million context
+>> switches per second. After this patch it goes up to 118 million.
+>=20
+> Nice.  Do we have a feel for the benefit on any real-world workloads?
 
-Right to use VFIO a container already needs both /dev/vfio and one or
-more /dev/vfio/NNN group devices.
+Not really unfortunately. I think it's always been a "known" cacheline,
+it just showed up badly on will-it-scale tests recently when Anton was
+doing a sweep of low hanging scalability issues on big systems.
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+We have some very big systems running certain in-memory databases that=20
+get into very high contention conditions on mutexes that push context
+switch rates right up and with idle times pretty high, which would get
+a lot of parallel context switching between user and idle thread, we
+might be getting a bit of this contention there.
 
---T4guhZ6fptkEnI3K
-Content-Type: application/pgp-signature; name="signature.asc"
+It's not something at the top of profiles though. And on multi-threaded
+workloads like this, the normal refcounting of the user mm still has
+fundmaental contention. It's tricky to get the change tested on these
+workloads (machine time is very limited and I can't drive the software).
 
------BEGIN PGP SIGNATURE-----
+I suspect it could also show in things that do high net or disk IO rates
+(enough to need a lot of cores), and do some user processing steps along
+the way. You'd potentially get a lot of idle switching.
 
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmC+xJMACgkQbDjKyiDZ
-s5JQuhAAxlzUDoVWUS7ZAU8E4fL0Z6TVV8A1LN3veamxiqHFJ6IIVtiV5g7Dy0II
-T6GxA3x+7HaPcpMHbqv85GE3DBs7dm4P56B9rTtJU3OkDekISxcG2/IJtIiL0JtJ
-BPWgnN6obAOeGlzl1uIxB9GQucvS1pp71jfxhW9BTFidOSg9UFWSu2IN6Hn0ODr0
-siVRSG3V861K4yf3KH7GSR3mnrna6VUUclP2Bx8REmagVcPdMUqBNXU+4zg339+C
-dwzoc+10bpSYPjgOI77bBCi1fyf5rPixRx3DVEfrWbqgR7AmPT5mrKcd7sL8/ta3
-VmypRFa/+50D9qxBKYEFvqYWJHctQ56ZT1GMxIqd+aIY2Y4G1AeJs2lP0tHcfbV8
-gQ2m+rpEFaRcN1C5aMVKQ2rs8xBUcbEPDQqpoCz3r8UwcuBC3SRNPEV2irfzJgbX
-DaalbaoFGrb7O4Xl5yQ6suRBzr4w6sG9FCBJdzxj8sQgDhnIG2Vj1e+Ve7oqgf1S
-WLZVU2GXIdBC3xn6ek5+37aHhsGenq08WQyX15J1q++TzKxba0fphS3qiKJHYGvI
-8sTLwzIIRaFdhzXJ99gQyZMzRIwhjqFitlp36Ndc7CAoYtIDpt5iM5NY0RczQn2C
-KwVAG28Qz7FdDd2BOeWPFm9CAQJkaJTaVNcNOJhscFENzTVoE2k=
-=HWR1
------END PGP SIGNATURE-----
+>=20
+> Could any other architectures benefit from these changes?
+>=20
 
---T4guhZ6fptkEnI3K--
+The cacheline is going to bounce in the same situations on other archs,=20
+so I would say yes. Rik at one stage had some patches to try avoid it
+for x86 some years ago, I don't know what happened to those.
+
+The way powerpc has to maintain mm_cpumask for its TLB flushing makes it
+relatively easy to do this shootdown, and we decided the additional IPIs
+were less of a concern than the bouncing. Others have different concerns,
+but I tried to make it generic and add comments explaining what other
+archs can do, or possibly different ways it might be achieved.
+
+Thanks,
+Nick
