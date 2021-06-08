@@ -2,107 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F374039EA86
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 015C539EA8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhFHAD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 20:03:58 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50400 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230282AbhFHAD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 20:03:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=N3a+03kBTMfQSx5Hd/bgZB3TBPMGzTKqpBlMp1B0wk8=; b=nakdTipNHB98wcXQ2sRFnxmLlF
-        WoyocyN0jrUpK+Zcdvcu2GYF34gelZzc6rMgPNpe6zxlAVZE7cwYGNe+aAHNR9ozGYlAVFVT6HYBS
-        x1EBu7rwkrI8Yx2xyCDXKAF7Y0MixQIOsjKlaDfC4SRgb88JciIQq9gImH4SrflyzGC0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lqPBa-008GfJ-3G; Tue, 08 Jun 2021 02:01:38 +0200
-Date:   Tue, 8 Jun 2021 02:01:38 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com, paul@crapouillou.net
-Subject: Re: [PATCH 2/2] net: stmmac: Add Ingenic SoCs MAC support.
-Message-ID: <YL6zYgGdqxqL9c0j@lunn.ch>
-References: <1623086867-119039-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1623086867-119039-3-git-send-email-zhouyanjie@wanyeetech.com>
+        id S230432AbhFHAFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 20:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230333AbhFHAFx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 20:05:53 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8476AC061787
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 17:03:55 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id y12so3271365pgk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 17:03:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IVWQgeX8pxlPHrLZhyIQOUyk32oPka7/Ok9wquneuoc=;
+        b=Ol4qpEgDIRD1zOE2YUXoiJNlh5o+lnZA3J+y4ZiDMg9mBTlFekRKvftKjplB57vOGS
+         TIdiGy5yk+xcIXO8qHxDGW0is6yeWrFtQkdnfWAMv9MFPWt4p0KSLTrrhOjvFcXZb5d9
+         u5F3NwIQzF8ZQ8v7vjIknS+fJJM5v9lDdgo+Cd81XDftFEecY8XJ3zExAghbAX3AcIjr
+         NWNR0L98HMFI5qZ2C/AwdeWQwKOK4IVVjXVq4+10APp1FtKCIscpWzoige2P7jfGihjO
+         CE/1Uscrv5+z7Lz9+K8FDdx0iRNIje7PPDrMDVVb1HucAHuayhEJ9vLZrJyFgPC4WXzB
+         HjvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IVWQgeX8pxlPHrLZhyIQOUyk32oPka7/Ok9wquneuoc=;
+        b=YrfZrab4tFxM6bfgbl858J0RD71n3ak75ugS7V13QhHGwQO8VFlrMpTqUsobsOlH+U
+         uhel5HVBSmqQhEvywIadcLtt48l5THI866ubQsLfL6QOJ5mQjMTAT+//pMShDv1ifoov
+         GCTFBnwQ2eYJxJdwnd2hjx0TCE1l0kNoUbNN9LHRJyB6pW2JA9Pvbr9+DLh5+rJic8Zh
+         D+75l/n6dY425x/gTCxP5Rd9fd9Ws71wAU46tDJqXxe/kegkcXpysvprzp6FmY5nYNJM
+         tcdvcLBAePpQIrezCwwnOb75+aDy+VIeuxWcBY9pZOyT0LuiDZTIW9xbvyukzKztxr2Y
+         9l1w==
+X-Gm-Message-State: AOAM530aIzy4slkcYxQWaHUavD/eUVjHtdUJJtGNkdSeLG4F9h+Uc5Ll
+        V5hP0xr8rVyJf/xwEd6ZDXNx6Q==
+X-Google-Smtp-Source: ABdhPJxTozExjjLKbJyxYHs8dbaFsP+SQMKFxw4vr3iruvl1doGg6Q/XZTvNayb+HXuWk07p27LZcg==
+X-Received: by 2002:a62:ab16:0:b029:2ed:8599:7df8 with SMTP id p22-20020a62ab160000b02902ed85997df8mr11976528pff.31.1623110634641;
+        Mon, 07 Jun 2021 17:03:54 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id d14sm13067495pjc.56.2021.06.07.17.03.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 17:03:53 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 00:03:50 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH V2] KVM: X86: fix tlb_flush_guest()
+Message-ID: <YL6z5sv7cnsbZhvT@google.com>
+References: <4c3ef411ba68ca726531a379fb6c9d16178c8513.camel@redhat.com>
+ <20210531172256.2908-1-jiangshanlai@gmail.com>
+ <9d457b982c3fcd6e7413065350b9f860d45a6e47.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1623086867-119039-3-git-send-email-zhouyanjie@wanyeetech.com>
+In-Reply-To: <9d457b982c3fcd6e7413065350b9f860d45a6e47.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  config DWMAC_ROCKCHIP
->  	tristate "Rockchip dwmac support"
-> -	default ARCH_ROCKCHIP
-> +	default MACH_ROCKCHIP
->  	depends on OF && (ARCH_ROCKCHIP || COMPILE_TEST)
->  	select MFD_SYSCON
->  	help
-> @@ -164,7 +176,7 @@ config DWMAC_STI
+On Tue, Jun 08, 2021, Maxim Levitsky wrote:
+> So this patch *does* fix the windows boot without TDP!
+
+Woot!
+
+> Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+Lai,
+
+I have a reworded version of your patch sitting in a branch that leverages this
+path to fix similar bugs and do additional cleanup.  Any objection to me gathering
+Maxim's tags and posting the version below?  I'm more than happy to hold off if
+you'd prefer to send your own version, but I don't want to send my own series
+without this fix as doing so would introduce bugs.
+
+Thanks!
+
+Author: Lai Jiangshan <laijs@linux.alibaba.com>
+Date:   Tue Jun 1 01:22:56 2021 +0800
+
+    KVM: x86: Unload MMU on guest TLB flush if TDP disabled to force MMU sync
+    
+    When using shadow paging, unload the guest MMU when emulating a guest TLB
+    flush to all roots are synchronized.  From the guest's perspective,
+    flushing the TLB ensures any and all modifications to its PTEs will be
+    recognized by the CPU.
+    
+    Note, unloading the MMU is overkill, but is done to mirror KVM's existing
+    handling of INVPCID(all) and ensure the bug is squashed.  Future cleanup
+    can be done to more precisely synchronize roots when servicing a guest
+    TLB flush.
+    
+    If TDP is enabled, synchronizing the MMU is unnecessary even if nested
+    TDP is in play, as a "legacy" TLB flush from L1 does not invalidate L1's
+    TDP mappgins.  For EPT, an explicit INVEPT is required to invalidate
+    guest-physical mappings.  For NPT, guest mappings are always tagged with
+    an ASID and thus can only be invalidated via the VMCB's ASID control.
+    
+    This bug has existed since the introduction of KVM_VCPU_FLUSH_TLB, but
+    was only recently exposed after Linux guests stopped flushing the local
+    CPU's TLB prior to flushing remote TLBs (see commit 4ce94eabac16,
+    "x86/mm/tlb: Flush remote and local TLBs concurrently").
+    
+    Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
+    Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+    Fixes: f38a7b75267f ("KVM: X86: support paravirtualized help for TLB shootdowns")
+    Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+    [sean: massaged comment and changelog]
+    Signed-off-by: Sean Christopherson <seanjc@google.com>
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 1cd6d4685932..3b02528d5ee8 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3072,6 +3072,18 @@ static void kvm_vcpu_flush_tlb_all(struct kvm_vcpu *vcpu)
+ static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
+ {
+        ++vcpu->stat.tlb_flush;
++
++       if (!tdp_enabled) {
++               /*
++                * Unload the entire MMU to force a sync of the shadow page
++                * tables.  A TLB flush on behalf of the guest is equivalent
++                * to INVPCID(all), toggling CR4.PGE, etc...  Note, loading the
++                * MMU will also do an actual TLB flush.
++                */
++               kvm_mmu_unload(vcpu);
++               return;
++       }
++
+        static_call(kvm_x86_tlb_flush_guest)(vcpu);
+ }
+ 
+
+> More notes from the testing I just did:
 >  
->  config DWMAC_STM32
->  	tristate "STM32 DWMAC support"
-> -	default ARCH_STM32
-> +	default MACH_STM32
+> 1. On AMD with npt=0, the windows VM boots very slowly, and then in the task manager
+> I see that it booted with 1 CPU, although I configured it for 3-28 vCPUs (doesn't matter how many)
+> I tested this with several win10 VMs, same pattern repeats.
 
-It would be good to explain in the commit message why you are changing
-these two. It is not obvious.
+That's very odd.  Maybe it's so slow that the guest gives up on the AP and marks
+it as dead?  That seems unlikely though, I can't imagine waking APs would be
+_that_ slow.
 
-> +static int jz4775_mac_set_mode(struct plat_stmmacenet_data *plat_dat)
-> +{
-> +	struct ingenic_mac *mac = plat_dat->bsp_priv;
-> +	int val;
-> +
-> +	switch (plat_dat->interface) {
-> +	case PHY_INTERFACE_MODE_MII:
-> +		val = FIELD_PREP(MACPHYC_TXCLK_SEL_MASK, MACPHYC_TXCLK_SEL_INPUT) |
-> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_MII);
-> +		pr_debug("MAC PHY Control Register: PHY_INTERFACE_MODE_MII\n");
-> +		break;
-> +
-> +	case PHY_INTERFACE_MODE_GMII:
-> +		val = FIELD_PREP(MACPHYC_TXCLK_SEL_MASK, MACPHYC_TXCLK_SEL_INPUT) |
-> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_GMII);
-> +		pr_debug("MAC PHY Control Register: PHY_INTERFACE_MODE_GMII\n");
-> +		break;
-> +
-> +	case PHY_INTERFACE_MODE_RMII:
-> +		val = FIELD_PREP(MACPHYC_TXCLK_SEL_MASK, MACPHYC_TXCLK_SEL_INPUT) |
-> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RMII);
-> +		pr_debug("MAC PHY Control Register: PHY_INTERFACE_MODE_RMII\n");
-> +		break;
-> +
-> +	case PHY_INTERFACE_MODE_RGMII:
+> 2. The windows nag screen about "we beg you to open a microsoft account" makes the VM enter a live lock.
+> I see about half million at least VM exits per second due to page faults and it is stuck in 'please wait' screen
+> while with NPT=1 it shows up instantly. The VM has 12 GB of ram so I don't think RAM is an issue.
+>  
+> It's likely that those are just result of unoptimized code in regard to TLB flushes,
+> and timeouts in windows.
+> On my Intel laptop, the VM is way faster with EPT=0 and it boots with 3 vCPUs just fine
+> (the laptop has just dual core CPU, so I can't really give more that 3 vCPU to the VM)
 
-What about the other three RGMII modes?
-
-> +	case PHY_INTERFACE_MODE_RGMII:
-> +		val = FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_DELAY) |
-> +			  FIELD_PREP(MACPHYC_TX_DELAY_MASK, MACPHYC_TX_DELAY_63_UNIT) |
-> +			  FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_ORIGIN) |
-> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII);
-
-What exactly does MACPHYC_TX_DELAY_63_UNIT mean here? Ideally, the MAC
-should not be adding any RGMII delays. It should however pass mode
-through to the PHY, so it can add the delays, if the mode indicates it
-should, e.g. PHY_INTERFACE_MODE_RGMII_ID. This is also why you should
-be handling all 4 RGMII modes here, not just one.
-
-	 Andrew
+Any chance your Intel CPU has PCID?  Although the all-contexts INVPCID emulation
+nukes everything, the single-context INVPCID emulation in KVM is optimized to
+(a) sync the current MMU (if necessary) instead of unloading it and (b) free
+only roots with the matching PCID.  I believe all other forms of TLB flushing
+that are likely to be used by the guest will lead to KVM unloading the entire
+MMU and rebuilding it from scratch.
