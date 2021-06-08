@@ -2,117 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C47639F353
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D5C39F357
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230371AbhFHKUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:20:38 -0400
-Received: from mail-eopbgr60124.outbound.protection.outlook.com ([40.107.6.124]:7150
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229626AbhFHKUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:20:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kV/yGwVePKSyA/9J2vh5FN6SvuS9I8585YqBUhWL1nZNAO90Bw1CohLUQrt+FEDW8BCIKYNcfhFH8xdSnf7AWxPuGXFx4/DiwndVRp+7Q+C2nYn8kRYUvgmR6Lq/qdB8WdZ3VHvCE7ztAjoefEqNyDg9EtHaw+fMmuY8UPRPO1yw7Zy/VyLRvRBaAFXemBfLQemUE6o0PZMYH5MTPVOnEsQ38X1oocoOEsGDRbKgx8bc3TtPUxceEhmp/r2dHUxcZTs56b7Fw939C7SiU+spvuTeSCTqH7Ny8o26oqmbGHkpvyypZQZVgP7ZS5Ft6zzFNXYy0j5pqYBL6hN038rpxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ygcRjJLj9aMmwXw+stqm5K3xBigAvsTL14UVt5fuYI0=;
- b=YSNEKrNlfZWGv9ki1+EAqK6IzuzfcsyYgtPFon5Hw/0WimxCG5rZPrEZCbkzRXvpNs19wupCYj2O7AlOI1mxddwh6jkl0L3z1Ho7iylsI/x3J/U3jHv/0ezRf4VYmJC9VuDxZ22GPxD56SycusncXOglJ9fVkYPP60TVSw/rtz7zdZ+8owL/bvDPjCZX+yq6oiqRONAIXKe/PjgaxICiAoyP4hdh1DdboX/TxEQ7/Vm1zEqukLE5BzitxJCXwudR4nph2tb/rFvkEaqXn+wwVnRKj9xJTGzUwoBA7h3+yRVFWkZiy7YukY9NDAvZxuHpXEGceGLTLWonmVJz8Q6Img==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 131.228.2.8) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nokia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nokia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ygcRjJLj9aMmwXw+stqm5K3xBigAvsTL14UVt5fuYI0=;
- b=UOZapE/C05LZLe/hX9CBcm6+L/x0J3TdWX65AC2BrSjhxH30q7j9b8qtYvIrCVWTA+hsgX5UlBBwi7D6mEG5mysnXjMDlRHdkq9BCiX5LS1DsMBoqEhD2OU2x8dHSlvNYyXfUPDnIDO2imB/fYS3CKVwP+QdwtRtMoxsnQU/cdk=
-Received: from AM6PR0502CA0052.eurprd05.prod.outlook.com
- (2603:10a6:20b:56::29) by PR3PR07MB8114.eurprd07.prod.outlook.com
- (2603:10a6:102:171::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.9; Tue, 8 Jun
- 2021 10:18:42 +0000
-Received: from VE1EUR03FT009.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:20b:56:cafe::a) by AM6PR0502CA0052.outlook.office365.com
- (2603:10a6:20b:56::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22 via Frontend
- Transport; Tue, 8 Jun 2021 10:18:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.8)
- smtp.mailfrom=nokia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nokia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
- 131.228.2.8 as permitted sender) receiver=protection.outlook.com;
- client-ip=131.228.2.8; helo=fihe3nok0734.emea.nsn-net.net;
-Received: from fihe3nok0734.emea.nsn-net.net (131.228.2.8) by
- VE1EUR03FT009.mail.protection.outlook.com (10.152.18.92) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4195.21 via Frontend Transport; Tue, 8 Jun 2021 10:18:42 +0000
-Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net [10.151.74.146])
-        by fihe3nok0734.emea.nsn-net.net (GMO) with ESMTP id 158AIcLN019880;
-        Tue, 8 Jun 2021 10:18:39 GMT
-From:   Alexander A Sverdlin <alexander.sverdlin@nokia.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: ftrace: MODULE_PLT: Fix build problem without DYNAMIC_FTRACE
-Date:   Tue,  8 Jun 2021 12:18:32 +0200
-Message-Id: <20210608101832.6099-1-alexander.sverdlin@nokia.com>
-X-Mailer: git-send-email 2.10.2
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
+        id S231268AbhFHKV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:21:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42679 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229937AbhFHKVw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 06:21:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623147599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LXIgbsKcwmgL9PLadPLYMZ2Gr+lpa7CAtfsyCgK+hX8=;
+        b=HtK7dgyy8kT70un37ipB8JbHT28SxcIuaCOjRVlSMeX9xsZIY2Tc4DJ8+wMk1YPaDP+dIP
+        zYSAPj8v5HIBTOhioPcVJA7B76yh8wmfu+8qqvVZE6/LbShgHIEDEXMVHhsDVKm0zbFVTk
+        0ml49qTzY+d3/tWymQ7RnoTG8RhjIQs=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-85-aIuvd811PuuaQWJNmmBRkQ-1; Tue, 08 Jun 2021 06:19:57 -0400
+X-MC-Unique: aIuvd811PuuaQWJNmmBRkQ-1
+Received: by mail-ej1-f72.google.com with SMTP id e11-20020a170906080bb02903f9c27ad9f5so6539652ejd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 03:19:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LXIgbsKcwmgL9PLadPLYMZ2Gr+lpa7CAtfsyCgK+hX8=;
+        b=rMUHh4rLbSgtFtat6PiohXnp7FZXj+5eA/rLVApn1u2fUlGWdFAWBJ5Wwm936Ns83T
+         Oi10SlXfs6mihT3ek+u/ZLJIFfgp6YiJz3a8bcUlmYna9h8p7pM/gxfwehupImHyarPP
+         Io18xsfTkzizzUTzjl4/H1X2IHhjuAbyGs+5bbxi0iAiFeKYk6gWwHFM51GnenzJ6ZGp
+         uK7q233MBT9/hH3yep2DIaTjz1VMS8e+ILymYVjywJiYTlDuQitzEOa9PafZ88S2s63g
+         CyNlFzLVrYa3TnLFn8UGJiydpdHqZbnKl5EIdOI4aB5ghfln2doTWafTVOBHl076RBtc
+         P2aQ==
+X-Gm-Message-State: AOAM531s2m/VuvrmPSiIQehus/AH+D2GqUnHCwADHhbR981mYuD+QW6N
+        FScn2kxPUXiJ8GnkyAzzKEcw33/12XGwzDiDWXQJB5KGVvVnlgu4Bv26vQ7RtRakYRZCSIf18HO
+        lHbmAs5dUW0eaKQjH5pCIAbmD
+X-Received: by 2002:a17:906:95c8:: with SMTP id n8mr23089767ejy.357.1623147596543;
+        Tue, 08 Jun 2021 03:19:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz5wUbbDlIIvweICzCwTjiG7Tm9kIGjtWOLfZujQmHi0Zvn0GOo+Xu2PM623Z/LmpT6XzkaXg==
+X-Received: by 2002:a17:906:95c8:: with SMTP id n8mr23089743ejy.357.1623147596314;
+        Tue, 08 Jun 2021 03:19:56 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id f6sm7548251eja.108.2021.06.08.03.19.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 03:19:55 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 12:19:52 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [PATCH v10 11/18] virtio/vsock: dequeue callback for
+ SOCK_SEQPACKET
+Message-ID: <20210608101952.6meiasy7zqp474sf@steredhat>
+References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+ <20210520191801.1272027-1-arseny.krasnov@kaspersky.com>
+ <20210603144513.ryjzauq7abnjogu3@steredhat>
+ <6b833ccf-ea93-db6a-4743-463ac1cfe817@kaspersky.com>
+ <20210604150324.winiikx5h3p6gsyy@steredhat>
+ <a81ae3cb-439f-7621-4ae6-bccd2c25b7e4@kaspersky.com>
+ <20210607110421.wkx4dj7wipwsqztj@steredhat>
+ <8e2eb802-7c5d-70b0-82b5-ec8de4fdc046@kaspersky.com>
+ <20210608082320.vs2tzgpxgr2dhxye@steredhat>
+ <3c35f04a-8406-d26f-27d0-becbd3c43c1b@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: cd24f909-b846-4820-497f-08d92a66cab1
-X-MS-TrafficTypeDiagnostic: PR3PR07MB8114:
-X-Microsoft-Antispam-PRVS: <PR3PR07MB81141311BB2E7FD86AD74C4988379@PR3PR07MB8114.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ORjkKPhlr0Y5RXB134+7yZn1UJBUREDBOuj8wAGcHF+CrSG8Zj+Nl2Vy8l2GBfv4ALqH0woGQto+JwmMmlTls7sFP6TMY/CTbQXuyVldGPi2xwDjpbFpYPSmMngKX6ZOaP0nfAdN66L3E/rdm/SCpY1KlOXA2y1fRCkwiiE8h5C2c9lXeqOH5og8IXSRreuad3kEl2Yo62mdNc6HKKaZashyjDtzYiRGd0En67cL7FGT3ZLzk/2CnOrWSOUQ2bhj9BDlRfESIDEsasrwfPAjo42tucHD+AcHTtpm580Iq32Acb3L16xyogXbzp+trdeduCko5YSX3QatltyKIP28xN1+qbJ3RKctU8i3u66E1DPsxRe3kajQf3UY6W3Mdibxq0KNHaHEUZnwJ2px4Ny14udh2uxX6UDGU+xZ01FD3HKciSxeS7oR/63N9u8YFdQKfklAs1tnEI11gLV2QAlrOYffYMzv+sCPh8KgNf1vsDkcHe86eFMgdCWliwHK/dsYOuGlGIw/UwUWPaeSNySPNpVoURnnm524PxSGI2WU1S0l7N02v/jeNbJLPuUnUAkhZxtWkb9CG5u7YbeHRCEIj79a0ZsxfKhosp8H7M7YJLsXMvpvw3u59R5sz9+c2gOMq0zRaXoUc/gYlARKGi7KTh6qDKccS+iBaq/UVYOKIqUH/rnFBrJtnr8zvGmwExHE68cT9SB1ClM/WvFzxVVBUujWzhyLL6cYyrnWn7oTfmWCXVuV6Zx9Pk8pdJ9A/NUZ85Gi9m8r21+giCtjA3SBayEanKeaV3MwzprbV8SMHO6k7zSLDm9BNQGglyV8N1VU
-X-Forefront-Antispam-Report: CIP:131.228.2.8;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0734.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39860400002)(396003)(46966006)(36840700001)(26005)(966005)(2906002)(2616005)(70206006)(82740400003)(8936002)(70586007)(4326008)(336012)(83380400001)(81166007)(8676002)(1076003)(356005)(86362001)(47076005)(478600001)(316002)(36860700001)(82310400003)(4744005)(5660300002)(6666004)(36756003)(186003)(36900700001);DIR:OUT;SFP:1102;
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 10:18:42.4463
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd24f909-b846-4820-497f-08d92a66cab1
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.8];Helo=[fihe3nok0734.emea.nsn-net.net]
-X-MS-Exchange-CrossTenant-AuthSource: VE1EUR03FT009.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR07MB8114
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <3c35f04a-8406-d26f-27d0-becbd3c43c1b@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+On Tue, Jun 08, 2021 at 12:40:39PM +0300, Arseny Krasnov wrote:
+>
+>On 08.06.2021 11:23, Stefano Garzarella wrote:
+>> On Mon, Jun 07, 2021 at 04:18:38PM +0300, Arseny Krasnov wrote:
+>>> On 07.06.2021 14:04, Stefano Garzarella wrote:
+>>>> On Fri, Jun 04, 2021 at 09:03:26PM +0300, Arseny Krasnov wrote:
+>>>>> On 04.06.2021 18:03, Stefano Garzarella wrote:
+>>>>>> On Fri, Jun 04, 2021 at 04:12:23PM +0300, Arseny Krasnov wrote:
+>>>>>>> On 03.06.2021 17:45, Stefano Garzarella wrote:
+>>>>>>>> On Thu, May 20, 2021 at 10:17:58PM +0300, Arseny Krasnov wrote:
+>>>>>>>>> Callback fetches RW packets from rx queue of socket until whole record
+>>>>>>>>> is copied(if user's buffer is full, user is not woken up). This is done
+>>>>>>>>> to not stall sender, because if we wake up user and it leaves syscall,
+>>>>>>>>> nobody will send credit update for rest of record, and sender will wait
+>>>>>>>>> for next enter of read syscall at receiver's side. So if user buffer is
+>>>>>>>>> full, we just send credit update and drop data.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>>>>>>>>> ---
+>>>>>>>>> v9 -> v10:
+>>>>>>>>> 1) Number of dequeued bytes incremented even in case when
+>>>>>>>>>    user's buffer is full.
+>>>>>>>>> 2) Use 'msg_data_left()' instead of direct access to 'msg_hdr'.
+>>>>>>>>> 3) Rename variable 'err' to 'dequeued_len', in case of error
+>>>>>>>>>    it has negative value.
+>>>>>>>>>
+>>>>>>>>> include/linux/virtio_vsock.h            |  5 ++
+>>>>>>>>> net/vmw_vsock/virtio_transport_common.c | 65 +++++++++++++++++++++++++
+>>>>>>>>> 2 files changed, 70 insertions(+)
+>>>>>>>>>
+>>>>>>>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>>>>>>>>> index dc636b727179..02acf6e9ae04 100644
+>>>>>>>>> --- a/include/linux/virtio_vsock.h
+>>>>>>>>> +++ b/include/linux/virtio_vsock.h
+>>>>>>>>> @@ -80,6 +80,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+>>>>>>>>> 			       struct msghdr *msg,
+>>>>>>>>> 			       size_t len, int flags);
+>>>>>>>>>
+>>>>>>>>> +ssize_t
+>>>>>>>>> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+>>>>>>>>> +				   struct msghdr *msg,
+>>>>>>>>> +				   int flags,
+>>>>>>>>> +				   bool *msg_ready);
+>>>>>>>>> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+>>>>>>>>> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+>>>>>>>>>
+>>>>>>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>> index ad0d34d41444..61349b2ea7fe 100644
+>>>>>>>>> --- a/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>> @@ -393,6 +393,59 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>>>>>>>>> 	return err;
+>>>>>>>>> }
+>>>>>>>>>
+>>>>>>>>> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+>>>>>>>>> +						 struct msghdr *msg,
+>>>>>>>>> +						 int flags,
+>>>>>>>>> +						 bool *msg_ready)
+>>>>>>>>> +{
+>>>>>>>>> +	struct virtio_vsock_sock *vvs = vsk->trans;
+>>>>>>>>> +	struct virtio_vsock_pkt *pkt;
+>>>>>>>>> +	int dequeued_len = 0;
+>>>>>>>>> +	size_t user_buf_len = msg_data_left(msg);
+>>>>>>>>> +
+>>>>>>>>> +	*msg_ready = false;
+>>>>>>>>> +	spin_lock_bh(&vvs->rx_lock);
+>>>>>>>>> +
+>>>>>>>>> +	while (!*msg_ready && !list_empty(&vvs->rx_queue) && dequeued_len >= 0) {
+>>>>>>>> I'
+>>>>>>>>
+>>>>>>>>> +		size_t bytes_to_copy;
+>>>>>>>>> +		size_t pkt_len;
+>>>>>>>>> +
+>>>>>>>>> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
+>>>>>>>>> +		pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
+>>>>>>>>> +		bytes_to_copy = min(user_buf_len, pkt_len);
+>>>>>>>>> +
+>>>>>>>>> +		if (bytes_to_copy) {
+>>>>>>>>> +			/* sk_lock is held by caller so no one else can dequeue.
+>>>>>>>>> +			 * Unlock rx_lock since memcpy_to_msg() may sleep.
+>>>>>>>>> +			 */
+>>>>>>>>> +			spin_unlock_bh(&vvs->rx_lock);
+>>>>>>>>> +
+>>>>>>>>> +			if (memcpy_to_msg(msg, pkt->buf, bytes_to_copy))
+>>>>>>>>> +				dequeued_len = -EINVAL;
+>>>>>>>> I think here is better to return the error returned by memcpy_to_msg(),
+>>>>>>>> as we do in the other place where we use memcpy_to_msg().
+>>>>>>>>
+>>>>>>>> I mean something like this:
+>>>>>>>> 			err = memcpy_to_msgmsg, pkt->buf, bytes_to_copy);
+>>>>>>>> 			if (err)
+>>>>>>>> 				dequeued_len = err;
+>>>>>>> Ack
+>>>>>>>>> +			else
+>>>>>>>>> +				user_buf_len -= bytes_to_copy;
+>>>>>>>>> +
+>>>>>>>>> +			spin_lock_bh(&vvs->rx_lock);
+>>>>>>>>> +		}
+>>>>>>>>> +
+>>>>>>>> Maybe here we can simply break the cycle if we have an error:
+>>>>>>>> 		if (dequeued_len < 0)
+>>>>>>>> 			break;
+>>>>>>>>
+>>>>>>>> Or we can refactor a bit, simplifying the while() condition and also the
+>>>>>>>> code in this way (not tested):
+>>>>>>>>
+>>>>>>>> 	while (!*msg_ready && !list_empty(&vvs->rx_queue)) {
+>>>>>>>> 		...
+>>>>>>>>
+>>>>>>>> 		if (bytes_to_copy) {
+>>>>>>>> 			int err;
+>>>>>>>>
+>>>>>>>> 			/* ...
+>>>>>>>> 			*/
+>>>>>>>> 			spin_unlock_bh(&vvs->rx_lock);
+>>>>>>>> 			err = memcpy_to_msgmsg, pkt->buf, bytes_to_copy);
+>>>>>>>> 			if (err) {
+>>>>>>>> 				dequeued_len = err;
+>>>>>>>> 				goto out;
+>>>>>>>> 			}
+>>>>>>>> 			spin_lock_bh(&vvs->rx_lock);
+>>>>>>>>
+>>>>>>>> 			user_buf_len -= bytes_to_copy;
+>>>>>>>> 		}
+>>>>>>>>
+>>>>>>>> 		dequeued_len += pkt_len;
+>>>>>>>>
+>>>>>>>> 		if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR)
+>>>>>>>> 			*msg_ready = true;
+>>>>>>>>
+>>>>>>>> 		virtio_transport_dec_rx_pkt(vvs, pkt);
+>>>>>>>> 		list_del(&pkt->list);
+>>>>>>>> 		virtio_transport_free_pkt(pkt);
+>>>>>>>> 	}
+>>>>>>>>
+>>>>>>>> out:
+>>>>>>>> 	spin_unlock_bh(&vvs->rx_lock);
+>>>>>>>>
+>>>>>>>> 	virtio_transport_send_credit_update(vsk);
+>>>>>>>>
+>>>>>>>> 	return dequeued_len;
+>>>>>>>> }
+>>>>>>> I think we can't do 'goto out' or break, because in case of error,
+>>>>>>> we still need
+>>>>>>> to free packet.
+>>>>>> Didn't we have code that remove packets from a previous message?
+>>>>>> I don't see it anymore.
+>>>>>>
+>>>>>> For example if we have 10 packets queued for a message (the 10th
+>>>>>> packet
+>>>>>> has the EOR flag) and the memcpy_to_msg() fails on the 2nd packet, with
+>>>>>> you proposal we are freeing only the first 2 packets, the rest is there
+>>>>>> and should be freed when reading the next message, but I don't see that
+>>>>>> code.
+>>>>>>
+>>>>>> The same can happen if the recvmsg syscall is interrupted. In that case
+>>>>>> we report that nothing was copied, but we freed the first N packets, so
+>>>>>> they are lost but the other packets are still in the queue.
+>>>>>>
+>>>>>> Please check also the patch where we implemented
+>>>>>> __vsock_seqpacket_recvmsg().
+>>>>>>
+>>>>>> I thinks we should free packets only when we are sure we copied them to
+>>>>>> the user space.
+>>>>> Hm, yes, this is problem. To solve it i can restore previous approach
+>>>>> with seqbegin/seqend. In that case i can detect unfinished record and
+>>>>> drop it's packets. Seems seqbegin will be a bit like
+>>>>> VIRTIO_VSOCK_SEQ_EOR in flags
+>>>>> field of header(e.g. VIRTIO_VSOCK_SEQ_BEGIN). Message id and length are
+>>>>> unneeded,
+>>>>> as channel considedered lossless. What do You think?
+>>>>>
+>>>> I think VIRTIO_VSOCK_SEQ_BEGIN is redundant, using only EOR should be
+>>>> fine.
+>>>>
+>>>> When we receive EOR we know that this is the last packet on this message
+>>>> and the next packet will be the first of a new message.
+>>>>
+>>>> What we should do is check that we have all the fragments of a packet
+>>>> and return them all together, otherwise we have to say we have nothing.
+>>>>
+>>>> For example as we process packets from the vitqueue and queue them in
+>>>> the rx_queue we could use a counter of how many EORs are in the
+>>>> rx_queue, which we decrease in virtio_transport_seqpacket_do_dequeue()
+>>>> when we copied all the fragments.
+>>>>
+>>>> If the counter is 0, we don't remove anything from the queue and
+>>>> virtio_transport_seqpacket_do_dequeue() returns 0.
+>>>>
+>>>> So .seqpacket_dequeue should return 0 if there is not at least one
+>>>> complete message, or return the entire message. A partial message should
+>>>> never return.
+>>>>
+>>>> What do you think?
+>>> I like it, i've implemented this approach in some early pre v1 versions.
+>>>
+>>> But in this case, credit update logic will be changed - in current implementation
+>>>
+>>> (both seqpacket and stream) credit update reply is sent when data is copied
+>>>
+>>> to user's buffer(e.g. we copy data somewhere, free packet and ready to process
+>>>
+>>> new packet). But if we don't touch user's buffer and keeping incoming packet in rx queue
+>>>
+>>> until whole record is ready, when to send credit update?
+>> I think the best approach could be to send credit updates when we remove
+>> them from the rx_queue.
+>
+>In that case, it will be impossible to send message bigger than size of rx buffer
+>
+>(e.g. credit allowed size), because packet will be queued without credit update
+>
+>reply until credit allowed reach 0.
+>
 
-FTRACE_ADDR is only defined when CONFIG_DYNAMIC_FTRACE is defined, the
-latter is even stronger requirement than CONFIG_FUNCTION_TRACER (which is
-enough for MCOUNT_ADDR).
+Yep, but I think it is a reasonable limit for a datagram socket.
 
-Fixes: 1f12fb25c5c5d22f ("ARM: 9079/1: ftrace: Add MODULE_PLTS support")
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/ZUVCQBHDMFVR7CCB7JPESLJEWERZDJ3T/
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
----
- arch/arm/kernel/module-plts.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Maybe we can add a check on the TX side, since we know this value and 
+return an error to the user.
 
-diff --git a/arch/arm/kernel/module-plts.c b/arch/arm/kernel/module-plts.c
-index a0524ad..1fc309b 100644
---- a/arch/arm/kernel/module-plts.c
-+++ b/arch/arm/kernel/module-plts.c
-@@ -22,7 +22,7 @@
- #endif
- 
- static const u32 fixed_plts[] = {
--#ifdef CONFIG_FUNCTION_TRACER
-+#ifdef CONFIG_DYNAMIC_FTRACE
- 	FTRACE_ADDR,
- 	MCOUNT_ADDR,
- #endif
--- 
-2.10.2
+Thanks,
+Stefano
 
