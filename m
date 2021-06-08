@@ -2,144 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCD639F609
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF97E39F60F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232461AbhFHMKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:10:02 -0400
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:40879 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbhFHMJ7 (ORCPT
+        id S232116AbhFHMLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:11:25 -0400
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:36568 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231330AbhFHMLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:09:59 -0400
-Received: by mail-lf1-f50.google.com with SMTP id w33so31720006lfu.7;
-        Tue, 08 Jun 2021 05:07:50 -0700 (PDT)
+        Tue, 8 Jun 2021 08:11:23 -0400
+Received: by mail-wm1-f43.google.com with SMTP id h11-20020a05600c350bb02901b59c28e8b4so1292239wmq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 05:09:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VAfOBJoc1qJNCS5nTSrY8FxqwUZx35xYD+QCSQcyg/E=;
-        b=gn64nh7H881kvZgdilDwQQ/Jmn2UA8fEd1UbSbmD6vcVzDGXoWj+Nn5nSR0S6QoxPO
-         H3mNiulZtS3oKNI7sHVOzOyyPDx902fEFvTKHiJnC90feEVmxY2i0VseO2TpI1W0onKV
-         ZeuP9g9Hp1v0qDw1Bi22W0HgKnLJVfOdjJjtRn5XP6djlTCTIS1MopXnneN4kNsxqzrs
-         VLaxfwHk4CIILPxaDnGtRcLU8g7w3fq/dEOzbsvw32i5u5GAUZh3tAKXHV8IWJnbNIFJ
-         uMvqO0sXt6811JdoV8pJrpbFM4SBfgDG7ouobLuWvYnajcWYmLd8PVEhQv1Tr4ZX7/Bo
-         rwxA==
+        bh=DbVC8wJA9F4nF7dQEdTB61GzcQ3IOcOmMh55KiS4SzM=;
+        b=PA1QPgaHAJ0VQyDLb/FrPX2KdvLXPGSl5uM0PEB8h2jNjjwhDZM9599GvrKipFWL6N
+         Ou/rc6S+j/5sIyJ2TJjkmEIXqTlJvRjhUpFDLgGc2puSrIM7T8b0S4ufACfwzU0w9SD7
+         8O3KIuS+G07A0Gmjd4mAe6KBidcdQcneCLKvGS9cY3nYHD6Y/SAkxvAZ+POVg4EveYkr
+         q37OnNOVhjn2pLtAM6kzCoA2hQATjs6CiGceDm83dMiyS67ATyuonAaJj6bMDfzbIwz8
+         7MqI1EqkW0jbvIKwci8k0ftFkiVt2dkVasgCZGr3ZGaNAPFbcAewkt1aCSAfkSgmQDAl
+         qiLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=VAfOBJoc1qJNCS5nTSrY8FxqwUZx35xYD+QCSQcyg/E=;
-        b=pJ7rlXFHMwVPGRt+/T5HwZWCQmpfl9WlSkb2cwX4fg+jaVON7UHvxr1Q5Lx4NzUMLy
-         P5SQtzgXvFx8I2R84tp82VwqQm7lq9FMUPfGS/4bTRpFJ68PVlzUYhfDvEPE9sZuw8O2
-         m0VcDJ178rP6pcsClA2fmpjrvqOCGdSMWNdcexPeOBi1PKN5BMnQNH54UUlrGCPhQm1E
-         i+JT3wlkdzKnLQc8CxvAn4v78TPvg7PKaMzzyjPuwwjTkTrpFxIcqluPfDATzndBw9Ic
-         IVB2BWfg4VL9wxm2LpcaBXw4NrOAyd6mJqca60fshIZK6l6/nNGAcxCK6En+7yXq4C5+
-         7Uwg==
-X-Gm-Message-State: AOAM530boDnhNPz7T/IHUH1jY2H3f1tf2CNbayPK10RDjUdb8f80B/OU
-        rOfV7zYjfoXiPQpGUfiOGz0=
-X-Google-Smtp-Source: ABdhPJx03eSmJ9FhPW+rTuJviNDwxGGatMgrCUkFgc7SNHhcFzH+edpMyCXYZIBzNDbjsRSA+sGX9Q==
-X-Received: by 2002:a19:c211:: with SMTP id l17mr2198353lfc.500.1623154010243;
-        Tue, 08 Jun 2021 05:06:50 -0700 (PDT)
-Received: from [192.168.1.2] (broadband-5-228-51-184.ip.moscow.rt.ru. [5.228.51.184])
-        by smtp.gmail.com with ESMTPSA id q14sm584450ljc.31.2021.06.08.05.06.48
+        bh=DbVC8wJA9F4nF7dQEdTB61GzcQ3IOcOmMh55KiS4SzM=;
+        b=AzMyPZ5Mt6fZPS9cTIWnvGqxOzIa1npQzoULE+p34n0097EUKJALp/Vgisly0ViNLQ
+         0/kl+lLp49I+a4qYY+pbgwVduN2n/xhhaMu4GzV0yFv2tGd0h/DPmr7M39/+1E62lwUl
+         h6wDFdjHfsyfy0iJfrtfz1X9p8WGjLAfnpzm8f9nkCztKBu2zqx6TjNQXg0ubg89PJt/
+         T0SyZ6wx9mDv7t25d0IVsUUqva/9on6KfJHS3LuX6FDkKi979Tt7TZ66IeL6qo7ikXP5
+         EFLML8INYrkQuiRHFDRki/lOUawKYv7YmsGqTK8KD/NGJN/smAIGwidEFB0A7FEBrIwC
+         Q5fQ==
+X-Gm-Message-State: AOAM5325hzzTOMJe3vSv71vDlnmeRiDoNpECkHMjg5NVoanvB1RdCjec
+        uMXcZO6akwykK4s34CxSVQOUChCEbbxZcvfe
+X-Google-Smtp-Source: ABdhPJyDTOg+FvhgA+m0IpvBbmyX606kD79oGBeXw/FJohgM0gODYpRMNjJ+OYJWuRApaeAl+UJxvQ==
+X-Received: by 2002:a7b:cc87:: with SMTP id p7mr3975819wma.85.1623154109398;
+        Tue, 08 Jun 2021 05:08:29 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:f4ed:83e3:926a:9eb7? ([2a01:e34:ed2f:f020:f4ed:83e3:926a:9eb7])
+        by smtp.googlemail.com with ESMTPSA id p5sm20518776wrd.25.2021.06.08.05.08.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 05:06:49 -0700 (PDT)
-Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
-        acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
-        joel@joelfernandes.org, kernel@collabora.com,
-        krisman@collabora.com, libc-alpha@sourceware.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
-        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
-References: <20210603195924.361327-1-andrealmeid@collabora.com>
- <1622799088.hsuspipe84.astroid@bobo.none>
- <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
- <1622853816.mokf23xgnt.astroid@bobo.none>
- <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
- <1622980258.cfsuodze38.astroid@bobo.none>
- <c6d86db8-4f63-6c57-9a67-6268da266afe@gmail.com>
- <1623114630.pc8fq7r5y9.astroid@bobo.none>
- <b3488d1b-a4ff-8791-d960-a5f7ae2ea8b3@gmail.com> <YL9Q2tKLZP6GKbHW@kroah.com>
-From:   Andrey Semashev <andrey.semashev@gmail.com>
-Message-ID: <8fa8b7fd-58ae-9467-138d-4ff4f32f68f7@gmail.com>
-Date:   Tue, 8 Jun 2021 15:06:48 +0300
+        Tue, 08 Jun 2021 05:08:28 -0700 (PDT)
+Subject: =?UTF-8?B?UmU6IOetlOWkjTogW1BBVENIXSBjbG9ja3NvdXJjZS9kcml2ZXJzL3Nw?=
+ =?UTF-8?Q?rd=3a_Remove_the_dependency_between_sprd_timer_and_SPRD_arch?=
+To:     =?UTF-8?B?5p+P5bm056aPIChOaWFuZnUgQmFpKQ==?= 
+        <nianfu.bai@unisoc.com>, Nianfu Bai <bnf20061983@gmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?5byg55Ge5bOwIChSdWlmZW5nIFpoYW5nLzEwMDQwKQ==?= 
+        <Ruifeng.Zhang1@unisoc.com>
+References: <1620716925-4329-1-git-send-email-bnf20061983@gmail.com>
+ <aac6c6a3-6666-075a-6901-7e3c3b2ae01d@linaro.org>
+ <1623120924545.61863@unisoc.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <cde99078-c13d-4454-cdcb-990239571ecc@linaro.org>
+Date:   Tue, 8 Jun 2021 14:08:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YL9Q2tKLZP6GKbHW@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1623120924545.61863@unisoc.com>
+Content-Type: text/plain; charset=gbk
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 2:13 PM, Greg KH wrote:
-> On Tue, Jun 08, 2021 at 02:03:50PM +0300, Andrey Semashev wrote:
->> On 6/8/21 4:25 AM, Nicholas Piggin wrote:
->>>
->>> Are shared pthread mutexes using existing pthread APIs that are today
->>> implemented okay with futex1 system call a good reason to constrain
->>> futex2 I wonder? Or do we have an opportunity to make a bigger change
->>> to the API so it suffers less from non deterministic latency (for
->>> example)?
+
+Nianfu,
+
+On 08/06/2021 04:55, 柏年福 (Nianfu Bai) wrote:
+> On 11/05/2021 09:08, Nianfu Bai wrote:
+>> From: Nianfu Bai <nianfu.bai@unisoc.com>
 >>
->> If futex2 is not able to cover futex1 use cases then it cannot be viewed as
->> a replacement. In the long term this means futex1 cannot be deprecated and
->> has to be maintained. My impression was that futex1 was basically
->> unmaintainable(*) and futex2 was an evolution of futex1 so that users of
->> futex1 could migrate relatively easily and futex1 eventually removed. Maybe
->> my impression was wrong, but I would like to see futex2 as a replacement and
->> extension of futex1, so the latter can be deprecated at some point.
+>> Tick broadcast installed by insmod cannot switch to oneshot mode correctly
+>> caused by linux timer framework, need to build in kernel image.
 > 
-> You can never delete a kernel system call, so even if you "deprecate"
-> it, it still needs to be supported for forever.
-
-If I'm not mistaken, some syscalls were dropped from kernel in the past, 
-after it was established they are no longer used. So it is not 
-impossible, though might be more difficult specifically with futex.
-
-> Best of all would be if internally your "futex2" code would replace the
-> "futex1" code so that there is no two different code bases.  That would
-> be the only sane way forward, having 2 code bases to work with is just
-> insane.
-
-Yes, implementing futex1 in terms of futex2 internally is a possible way 
-forward. Though I'm not sure it is reasonable to require that to be done 
-in the initial futex2 submission. This requires all of the futex1 
-functionality to implemented in futex2 from the start, which I think is 
-too much to ask. Even with some futex1 features missing, futex2 would be 
-already very much useful to users, and it is easier to implement the 
-missing bits incrementally over time.
-
-Also, one other point I'd like to make is that not all futex1 features 
-might need to be reimplemented if futex2 provides a better alternative. 
-For example, as a user, I would like to see a different approach to 
-robust futexes that does not mandate a single user (libc) and allows to 
-use robust futexes directly.
-
->> (*) I use "unmaintainable" in a broad sense here. It exists and works in
->> newer kernel versions and may receive code changes that are necessary to
->> keep it working, but maintainers refuse any extensions or modifications of
->> the code, mostly because of its complexity.
+> What timer is compiled as a module?
+>> We want to compile sprd timer  as a module.
 > 
-> Adding additional complexity for no good reason is not a good idea,
-> especially if you are asking others to maintain and support that
-> complexity.  Would you want to have to do that work?
-> 
-> So what's keeping the futex2 code from doing all that futex1 does so
-> that the futex1 code can be deleted internally?
+> Why the timer framework does not allow to switch to it ?
+>> Pls refer to the patch description deblow:
+> https://lore.kernel.org/lkml/161860007587.29796.7100262021118685563.tip-bot2@tip-bot2/
 
-I think, Andr茅 will answer this, but my guess is, as stated above, this 
-is a lot of work and time while the intermediate version is already useful.
+Thanks for the pointer I understand the bug.
+
+However the description does not refer to this fix. It tells the timer
+is a module and then tells it depends on the sprd arch.
+
+What are the connection between all these points?
+
+On the other side, the email format is not text, replies are not
+correctly put inline, it is hard to follow the discussion.
+
+Please, take the time to read the documentation about submitting patches
+[1] and then provide a clear Changelog, no need to refer the timer is
+loaded after because it is a module, the Kconfig says the opposite.
+
+Thanks
+
+  -- Daniel
+
+[1] Documentation/process/*
+
+>> SPRD_TIMER
+>> has been selected by SPRD arch, we have to enable SPRD arch when we build
+>> sprd timer in kernel image, this action conflicts with general kernel image,
+> 
+> Why this is conflicting with general kernel image?
+> 
+>> so we need to remove the dependency between sprd timer and SPRD arch.
+> 
+> Can you rephrase the changelog, I'm not getting the point.
+> 
+>> Signed-off-by: Nianfu Bai <nianfu.bai@unisoc.com>
+>> Signed-off-by: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
+>> ---
+>>  drivers/clocksource/Kconfig | 4 +---
+>>  1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+>> index 39aa21d..04b333c 100644
+>> --- a/drivers/clocksource/Kconfig
+>> +++ b/drivers/clocksource/Kconfig
+>> @@ -447,10 +447,8 @@ config MTK_TIMER
+>>         Support for Mediatek timer driver.
+>>
+>>  config SPRD_TIMER
+>> -     bool "Spreadtrum timer driver" if EXPERT
+>> +     bool "Spreadtrum timer driver" if COMPILE_TEST
+>>       depends on HAS_IOMEM
+>> -     depends on (ARCH_SPRD || COMPILE_TEST)
+>> -     default ARCH_SPRD
+>>       select TIMER_OF
+>>       help
+>>         Enables support for the Spreadtrum timer driver.
+>>
+> 
+> 
+> --
+> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> 
+> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+> <http://twitter.com/#!/linaroorg> Twitter |
+> <http://www.linaro.org/linaro-blog/> Blog
+> ________________________________
+>  This email (including its attachments) is intended only for the person or entity to which it is addressed and may contain information that is privileged, confidential or otherwise protected from disclosure. Unauthorized use, dissemination, distribution or copying of this email or the information herein or taking any action in reliance on the contents of this email or the information herein, by anyone other than the intended recipient, or an employee or agent responsible for delivering the message to the intended recipient, is strictly prohibited. If you are not the intended recipient, please do not read, copy, use or disclose any part of this e-mail to others. Please notify the sender immediately and permanently delete this e-mail and any attachments if you received it in error. Internet communications cannot be guaranteed to be timely, secure, error-free or virus-free. The sender does not accept liability for any errors or omissions.
+> 本邮件及其附件具有保密性质，受法律保护不得泄露，仅发送给本邮件所指特定收件人。严禁非经授权使用、宣传、发布或复制本邮件或其内容。若非该特定收件人，请勿阅读、复制、 使用或披露本邮件的任何内容。若误收本邮件，请从系统中永久性删除本邮件及所有附件，并以回复邮件的方式即刻告知发件人。无法保证互联网通信及时、安全、无误或防毒。发件人对任何错漏均不承担责任。
+> 
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
