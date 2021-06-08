@@ -2,126 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C453A063A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C493A064E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234402AbhFHVmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 17:42:44 -0400
-Received: from mga01.intel.com ([192.55.52.88]:45443 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231208AbhFHVmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 17:42:42 -0400
-IronPort-SDR: FRTauGGX/Xfaz1/mbIJJf7nPV8vp1mSg/lsHzSO0agh66fcpImY3LPgCgE+G4HiodUSzB1+PGq
- O9RGYhC+5uUQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="226309338"
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="226309338"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 14:40:48 -0700
-IronPort-SDR: leT4Y8a8gI8Nv71g8CwoxhN1ApYrtQ/b0MbaB6VSPG5YDxZY7hyf/3dIjKsqyWT1BIdqrghlhk
- syl1eWKEniaQ==
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="448057500"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 14:40:48 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [RFC PATCH 4/4] x86/sgx: Add hook to error injection address validation
-Date:   Tue,  8 Jun 2021 14:40:38 -0700
-Message-Id: <20210608214038.1026259-5-tony.luck@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210608214038.1026259-1-tony.luck@intel.com>
-References: <20210608214038.1026259-1-tony.luck@intel.com>
+        id S234616AbhFHVnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 17:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234277AbhFHVnT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 17:43:19 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A16BC061787
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 14:41:26 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id a1so24709683lfr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 14:41:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=m2/Viwebc/2TFFYJCIrNgdNWp3SLfLGvPKMWPogNWF8=;
+        b=lvDsHb6v06OsDFfbD6jb/6R9l4aXWoI98dHR4wni++83bOnzWqcpgrDIHB4nolIatK
+         Ilz5ncN5fByEqtNk664hkwcd/R53BzkMj90wZx88FExCXMHhl1GuFUV6u4wcHMIPYRnf
+         9vG6F3AVAI2rCgg49hFzdiGp8zRA2omUXadbOxDw0JM4sohgka6EJhCVhuU9ss/lC3+N
+         EkYLgGg4uLmbV4TVBMxZzpWAe8/CJWsnRkvkE/OWeVybh5wZ970x+vYmhnwWXY5FdCgj
+         2juTZfXYxZ4Y9fhvj4/atu6w/B3d1CU74IBGJaNtnxyAF68UTb2Dy+ojl927NSslQ4Tf
+         FEUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=m2/Viwebc/2TFFYJCIrNgdNWp3SLfLGvPKMWPogNWF8=;
+        b=GqztRx5mRF3m4kJz81KPsDM6BE63Mr1aU8TC6R+rwxBWNLIiy6kvNCoCSwRpu5j1v2
+         Jr2OyU2p6LixC1nfTeOUbk7vOqR3TuiitERg7eMB9byIufrIsZfpsmaaFSEu/4ma+Mof
+         0AAsTa2zsSmRXR6Un1Do9xjDKAV5mTLle98XkZ7cBLeDKdrwN0Ttyoa9qv5ZSPzz6km9
+         KJ4fE77uTZ7xRMSLr3ornc3nveh5HiuoUpQcTtNdSvftI1pKFUy3DqTNzkyuKdqJKLVs
+         RU4HCKSSRKCuJFP9y+RNTAsBRhdwPpI3Ew7u1A8zsWuTR5nLDwh3b9e5nqJyG42sPUXB
+         fdZg==
+X-Gm-Message-State: AOAM533V+H7b6XR3MQ+vAoBJ2fZkYY0dCAYHIuuCiaxVQwfICpsp8lNu
+        LjFsjAP8pCfoxtRRLeD6SZv0ZA==
+X-Google-Smtp-Source: ABdhPJwmm2woy4Z9z+Av7c2XEY96pnzfeWiicQKHoJUqxhfyXisMrZ3kolFVbwfjasLOpJpkmxDung==
+X-Received: by 2002:ac2:4d50:: with SMTP id 16mr16622726lfp.600.1623188482396;
+        Tue, 08 Jun 2021 14:41:22 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id q3sm100155lfb.279.2021.06.08.14.41.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 14:41:21 -0700 (PDT)
+Subject: Re: [PATCH] drm/msm/dsi: Stash away calculated vco frequency on
+ recalc
+To:     Stephen Boyd <swboyd@chromium.org>, Rob Clark <robdclark@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Abhinav Kumar <abhinavk@codeaurora.org>
+References: <20210608195519.125561-1-swboyd@chromium.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <a6356956-9d4a-6fe7-2acc-bbe968d3a936@linaro.org>
+Date:   Wed, 9 Jun 2021 00:41:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210608195519.125561-1-swboyd@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGX reserved memory does not appear in the standard address maps.
+Hi Stephen,
 
-Add hook to call into the SGX code to check if an address is located
-in SGX memory.
+On 08/06/2021 22:55, Stephen Boyd wrote:
+> A problem was reported on CoachZ devices where the display wouldn't come
+> up, or it would be distorted. It turns out that the PLL code here wasn't
+> getting called once dsi_pll_10nm_vco_recalc_rate() started returning the
+> same exact frequency, down to the Hz, that the bootloader was setting
+> instead of 0 when the clk was registered with the clk framework.
+> 
+> After commit 001d8dc33875 ("drm/msm/dsi: remove temp data from global
+> pll structure") we use a hardcoded value for the parent clk frequency,
+> i.e.  VCO_REF_CLK_RATE, and we also hardcode the value for FRAC_BITS,
+> instead of getting it from the config structure. This combination of
+> changes to the recalc function allows us to properly calculate the
+> frequency of the PLL regardless of whether or not the PLL has been
+> clk_prepare()d or clk_set_rate()d. That's a good improvement.
+> 
+> Unfortunately, this means that now we won't call down into the PLL clk
+> driver when we call clk_set_rate() because the frequency calculated in
+> the framework matches the frequency that is set in hardware. If the rate
+> is the same as what we want it should be OK to not call the set_rate PLL
+> op. The real problem is that the prepare op in this driver uses a
+> private struct member to stash away the vco frequency so that it can
+> call the set_rate op directly during prepare. Once the set_rate op is
+> never called because recalc_rate told us the rate is the same, we don't
+> set this private struct member before the prepare op runs, so we try to
+> call the set_rate function directly with a frequency of 0. This
+> effectively kills the PLL and configures it for a rate that won't work.
+> Calling set_rate from prepare is really quite bad and will confuse any
+> downstream clks about what the rate actually is of their parent. Fixing
+> that will be a rather large change though so we leave that to later.
+> 
+> For now, let's stash away the rate we calculate during recalc so that
+> the prepare op knows what frequency to set, instead of 0. This way
+> things keep working and the display can enable the PLL properly. In the
+> future, we should remove that code from the prepare op so that it
+> doesn't even try to call the set rate function.
+> 
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
+> Fixes: 001d8dc33875 ("drm/msm/dsi: remove temp data from global pll structure")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 
-There are other challenges in injecting errors into SGX. Update the
-documentation with a sequence of operations to inject.
+Thank you for the lengthy explanation. May I suggest another solution:
+  - Apply 
+https://lore.kernel.org/linux-arm-msm/010101750064e17e-3db0087e-fc37-494d-aac9-2c2b9b0a7c5b-000000@us-west-2.amazonses.com/
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- .../firmware-guide/acpi/apei/einj.rst         | 19 +++++++++++++++++++
- drivers/acpi/apei/einj.c                      |  3 ++-
- include/linux/mm.h                            |  6 ++++++
- 3 files changed, 27 insertions(+), 1 deletion(-)
+  - And make save_state for 7nm and 10nm cache vco freq (like 14nm does).
 
-diff --git a/Documentation/firmware-guide/acpi/apei/einj.rst b/Documentation/firmware-guide/acpi/apei/einj.rst
-index c042176e1707..55e2331a6438 100644
---- a/Documentation/firmware-guide/acpi/apei/einj.rst
-+++ b/Documentation/firmware-guide/acpi/apei/einj.rst
-@@ -181,5 +181,24 @@ You should see something like this in dmesg::
-   [22715.834759] EDAC sbridge MC3: PROCESSOR 0:306e7 TIME 1422553404 SOCKET 0 APIC 0
-   [22716.616173] EDAC MC3: 1 CE memory read error on CPU_SrcID#0_Channel#0_DIMM#0 (channel:0 slot:0 page:0x12345 offset:0x0 grain:32 syndrome:0x0 -  area:DRAM err_code:0001:0090 socket:0 channel_mask:1 rank:0)
- 
-+Special notes for injection into SGX enclaves:
-+
-+There may be a separate BIOS setup option to enable SGX injection.
-+
-+The injection process consists of setting some special memory controller
-+trigger that will inject the error on the next write to the target
-+address. But the h/w prevents any software outside of an SGX enclave
-+from accessing enclave pages (even BIOS SMM mode).
-+
-+The following sequence can be used:
-+  1) Determine physical address of enclave page
-+  2) Use "notrigger=1" mode to inject (this will setup
-+     the injection address, but will not actually inject)
-+  3) Enter the enclave
-+  4) Store data to the virtual address matching physical address from step 1
-+  5) Execute CLFLUSH for that virtual address
-+  6) Spin delay for 250ms
-+  7) Read from the virtual address. This will trigger the error
-+
- For more information about EINJ, please refer to ACPI specification
- version 4.0, section 17.5 and ACPI 5.0, section 18.6.
-diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
-index 328e8aeece6c..fb634219e232 100644
---- a/drivers/acpi/apei/einj.c
-+++ b/drivers/acpi/apei/einj.c
-@@ -544,7 +544,8 @@ static int einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
- 	    ((region_intersects(base_addr, size, IORESOURCE_SYSTEM_RAM, IORES_DESC_NONE)
- 				!= REGION_INTERSECTS) &&
- 	     (region_intersects(base_addr, size, IORESOURCE_MEM, IORES_DESC_PERSISTENT_MEMORY)
--				!= REGION_INTERSECTS)))
-+				!= REGION_INTERSECTS) &&
-+	     !sgx_is_epc_page(base_addr)))
- 		return -EINVAL;
- 
- inject:
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 8ad4c513d4cc..d90523418b6c 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3250,11 +3250,17 @@ static inline int seal_check_future_write(int seals, struct vm_area_struct *vma)
- 
- #ifdef CONFIG_X86_SGX
- int sgx_memory_failure(unsigned long pfn, int flags);
-+bool sgx_is_epc_page(u64 paddr);
- #else
- static inline int sgx_memory_failure(unsigned long pfn, int flags)
- {
- 	return -ENXIO;
- }
-+
-+static inline bool sgx_is_epc_page(u64 paddr)
-+{
-+	return false;
-+}
- #endif
- 
- #endif /* __KERNEL__ */
+What do you think?
+
+
+> ---
+> 
+> I didn't update the 14nm file as the caching logic looks different. But
+> between the 7nm and 10nm files it looks practically the same.
+> 
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c | 1 +
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c  | 1 +
+>   2 files changed, 2 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c
+> index 34bc93548fcf..657778889d35 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c
+> @@ -432,6 +432,7 @@ static unsigned long dsi_pll_10nm_vco_recalc_rate(struct clk_hw *hw,
+>   	pll_freq += div_u64(tmp64, multiplier);
+>   
+>   	vco_rate = pll_freq;
+> +	pll_10nm->vco_current_rate = vco_rate;
+>   
+>   	DBG("DSI PLL%d returning vco rate = %lu, dec = %x, frac = %x",
+>   	    pll_10nm->phy->id, (unsigned long)vco_rate, dec, frac);
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> index e76ce40a12ab..6f96fbac8282 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> @@ -460,6 +460,7 @@ static unsigned long dsi_pll_7nm_vco_recalc_rate(struct clk_hw *hw,
+>   	pll_freq += div_u64(tmp64, multiplier);
+>   
+>   	vco_rate = pll_freq;
+> +	pll_7nm->vco_current_rate = vco_rate;
+>   
+>   	DBG("DSI PLL%d returning vco rate = %lu, dec = %x, frac = %x",
+>   	    pll_7nm->phy->id, (unsigned long)vco_rate, dec, frac);
+> 
+> base-commit: 8124c8a6b35386f73523d27eacb71b5364a68c4c
+> 
+
+
 -- 
-2.29.2
-
+With best wishes
+Dmitry
