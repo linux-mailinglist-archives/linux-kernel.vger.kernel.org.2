@@ -2,107 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B814539F943
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A2F39F947
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233393AbhFHOga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:36:30 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:51420 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232911AbhFHOg3 (ORCPT
+        id S233419AbhFHOhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:37:31 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:50319 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232911AbhFHOh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:36:29 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 158EYQbI015392;
-        Tue, 8 Jun 2021 09:34:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623162866;
-        bh=kLVOLQpzpEYWHMfnJk1j34dVERgJQyKRpIuMcUEPRMw=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=y45V/aU00ptfJpFX4yusnpqTXUNmwH/SvV9te9MRHsA4BbHD85VoK5rvugvJL/w+R
-         I2r7MvMr08SK/2EMqW51ILQtaTlBJX2YoqL1SM/mh2Eppi31tRohuzIphuNcNERwgb
-         MVAjcLUwvEnyTdXyeT0pNvFPUd7iqb5qvcjZx1Qg=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 158EYQiV055988
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Jun 2021 09:34:26 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 8 Jun
- 2021 09:34:26 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 8 Jun 2021 09:34:26 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 158EYQDR113576;
-        Tue, 8 Jun 2021 09:34:26 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>,
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] J721E: Use external clock in EVM for SERDES
-Date:   Tue, 8 Jun 2021 09:34:25 -0500
-Message-ID: <162316285077.9448.15907397272506220015.b4-ty@ti.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210603143427.28735-1-kishon@ti.com>
-References: <20210603143427.28735-1-kishon@ti.com>
+        Tue, 8 Jun 2021 10:37:27 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id AC4C81B4E;
+        Tue,  8 Jun 2021 10:35:32 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 08 Jun 2021 10:35:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=Z
+        BJEHdSWntFaR1di2cSYSVQKl/fJ/upIcuZ2McqMt3g=; b=Vs/gpuN0XDSjEVmTZ
+        s+k72E87oIbJdsjp5jXxFvTwf/5nl5azsb8mNBFhMrrAWoZjKiVa+FR0AqU66ENY
+        gQSOgkKCuUs5EKhHf8aqCp6cZx4tmz2x6/S352Xsf7ViQ0eQ+027IRA37tVx3U0x
+        dXa7SmczRo0jaUA2nb5nD9Da6fRantnSYPAmoovy5eYu+0keS29ASuVdNzH2C3Ne
+        g34IkgS8JGol3AS0xZdjQD8avM0ifiCt6bsygULVf6UhPLHm7+UUrHd92oeiYQOy
+        b2es+H+UrQ5HDHN0dBBgE2E36PaHSbq6uXptn5rVBQv0usc6s4lXzfIXR/ChGAtG
+        5CXyA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=ZBJEHdSWntFaR1di2cSYSVQKl/fJ/upIcuZ2McqMt
+        3g=; b=R9A8/zV2lR1tYxZVdW09dhtrB2QCcG0OeZz/0WO4MzgfZS5rYW4wvtVFk
+        ngOQ/KYVGSWfbNlsIdkPlqax6PIN6tXI5Wywxack9CpYOiEWSr9qvxjCGqSBFsmx
+        Q+D/qx0zXD/nHSYHeb+Wim8M7pqrVyjr+EPHMYUUL8p5ecOZvk4DdxD30p85Z6WK
+        CINy8KSL5SyrDW4v1jbJP1w2GJZK6f7Vx4TaVUY+PMIV1lH3v8rJ3l4ukO41OTi6
+        WGekZpjg9z55WPZwFZls/wb0iN07g1QIQ7DPVepJOGyBWr0dD4x8JaygvbG5UUWW
+        /0thip0HFtAFYEHO8onBOJ7ZmniuA==
+X-ME-Sender: <xms:NIC_YEX4TTGeJlFBXEuvjN6UL7Pm8a9oGcHYsLH3hbgS3p_A3mEFCg>
+    <xme:NIC_YInP0gizG2_pcQo03cRpUOGOje16rXstCIWnSe9Z7Nz2nQr9WkmaMCP3Suqr9
+    1hQIrWodnGHuw>
+X-ME-Received: <xmr:NIC_YIbL4z83uK_ODFzVnyvsgvQ1Z8GToxnWmGOFbEE0JY9M2YyCBMEV9WZcR-Iwns3Tb-1BG5dj1HKI0EZgNBZzkkessLZ2>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtledgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeeije
+    euvdffuedvffdtteefuefhkeehgfeuffejveettdelgfeuudffffetfedtnecuffhomhgr
+    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:NIC_YDV4Q_V_BW82WnQQk5JD2UFYtspmAyLtP10BjUGgz-MhNgveeQ>
+    <xmx:NIC_YOmQ2Q78PP7mIZHTngzP-EdwFFwmBDVC4R29DmxX8NgYvEYSpg>
+    <xmx:NIC_YIelhvD32bMx3XWTs-Wv3sH-ixdkSUbNUpioRQQKrif7zEmkOA>
+    <xmx:NIC_YMb4bSs_ip0kAqJDK6Q1RsfkaG4_iurF7Nl7ytP_TkoCEZNz1w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Jun 2021 10:35:31 -0400 (EDT)
+Date:   Tue, 8 Jun 2021 16:35:30 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Salvatore Bonaccorso <carnil@debian.org>
+Cc:     =?utf-8?Q?Lauren=C8=9Biu_P=C4=83ncescu?= <lpancescu@gmail.com>,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Backporting fix for #199981 to 4.19.y?
+Message-ID: <YL+AMiD7falsvZOf@kroah.com>
+References: <c75fcd12-e661-bc03-e077-077799ef1c44@gmail.com>
+ <YLiNrCFFGEmltssD@kroah.com>
+ <5399984e-0860-170e-377e-1f4bf3ccb3a0@gmail.com>
+ <YLiel5ZEcq+mlshL@kroah.com>
+ <addc193a-5b19-f7f3-5f26-cdce643cd436@gmail.com>
+ <YLpJyhTNF+MLPHCi@kroah.com>
+ <YLzAw27CQpdEshBl@eldamar.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <YLzAw27CQpdEshBl@eldamar.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 20:04:23 +0530, Kishon Vijay Abraham I wrote:
-> J721E EVM has clock generator that feeds both to the SERDES and to the
-> PCIe slot present in the EVM. In order to use common reference clock on
-> either side of the link, configure SERDES to use external reference
-> clock.
+On Sun, Jun 06, 2021 at 02:34:11PM +0200, Salvatore Bonaccorso wrote:
+> Hi Laurențiu, Greg,
 > 
-> Previously SERDES used internal reference clock and the attached device
-> used clock from clock generator in the EVM.
+> On Fri, Jun 04, 2021 at 05:42:02PM +0200, Greg KH wrote:
+> > On Fri, Jun 04, 2021 at 04:50:19PM +0200, Laurențiu Păncescu wrote:
+> > > Hi Greg,
+> > > 
+> > > On 6/3/21 11:19 AM, Greg KH wrote:
+> > > > That commit does not apply cleanly and I need a backported version.  Can
+> > > > you do that and test it to verify it works and then send it to us to be
+> > > > applied?
+> > > 
+> > > I now have a patch against linux-4.19.y, tested on my EeePC just now: the
+> > > battery status and discharge rate are shown correctly.
+> > > 
+> > > I've never submitted a patch before, should I put "commit <short-hash>
+> > > upstream." as the first line of my commit message, followed by another line
+> > > stating which branch I would like this to be merged to? Should I also
+> > > include the original commit message of the backported commit? And then use
+> > > git format-patch? I just read through [1] and [2], but they don't say
+> > > anything specific about commit messages for backported patches.
+> > 
+> > Yes, what you describe here should be great.  Look at the stable mailing
+> > list archives on lore.kernel.org for other examples of this happening,
+> > https://lore.kernel.org/r/20210603162852.1814513-1-zsm@chromium.org is
+> > one example.
 > 
-> [...]
+> Instead of doing a specific backport, maybe it is enough to pick
+> a46393c02c76 ("ACPI: probe ECDT before loading AML tables regardless
+> of module-level code flag") frst on 4.19.y and then the mentioned fix
+> b1c0330823fe ("ACPI: EC: Look for ECDT EC after calling
+> acpi_load_tables()").
 
-Hi Kishon Vijay Abraham I,
+I do not see a commit a46393c02c76 in Linus's tree :(
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+Are you sure these ids are correct?
 
-[1/4] arm64: dts: ti: k3-j721e-main: Fix external refclk input to SERDES
-      commit: 5c6d0b55b46aeb91355e6a9616decf50a3778c91
-[2/4] arm64: dts: ti: k3-j721e-main: Add #clock-cells property to serdes DT node
-      commit: 2427bfb335eb5f291a821e91c4c520351ce933df
-[3/4] arm64: dts: ti: k3-j721e-common-proc-board: Use external clock for SERDES
-      commit: f2a7657ad7a821de9cc77d071a5587b243144cd5
-[4/4] arm64: dts: ti: k3-j721e-common-proc-board: Re-name "link" name as "phy"
-      commit: 02b4d9186121d842a53e347f53a86ec7f2c6b0c7
+thanks,
 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+greg k-h
