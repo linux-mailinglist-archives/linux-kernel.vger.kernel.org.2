@@ -2,55 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542F839F21F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300CE39F217
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhFHJSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhFHJSX (ORCPT
+        id S230370AbhFHJRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 05:17:09 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8087 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231157AbhFHJRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:18:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88682C061574;
-        Tue,  8 Jun 2021 02:16:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=WORT4I/yJe9ZDsklsCesuSnYRZ
-        0+13XWjGXPE39wNgWQz0DTXs/43BtAEg0Cn3KSJuD2G5BUtfqPRvscIFv3cDzxFS/yb74VEKJSXn2
-        GAWnFmoR6wFqKu5Gu1zK3wX0i3tGL7eHrS6nkdvN4bmNrjcffhY8xdg8dqQmHmU3sucO3vhc+Mtov
-        d2z8KTNXSrPZ1NnEv5Fb5nAgKnd5depwIVeDpb01cPcUSmRs4VPbJOu8kXoDD9NzqplJJhdFIegmI
-        jFToyzzxoMeW37WFah2yRf1M28ZlpYTgNLmnV5r9hraeds0WBls8mGkjDZ1mJ4Ktm5wmuOHc9FJfD
-        JJSxezbQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqXoB-00GlBe-P0; Tue, 08 Jun 2021 09:14:25 +0000
-Date:   Tue, 8 Jun 2021 10:14:03 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     akpm@linux-foundation.org, hpa@zytor.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com,
-        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, mhiramat@kernel.org,
-        linux-s390@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, liuqi115@huawei.com,
-        linuxarm@huawei.com, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v3] kprobes: remove duplicated strong free_insn_page in
- x86 and s390
-Message-ID: <YL8025z/MCBiEpEZ@infradead.org>
-References: <20210608065736.32656-1-song.bao.hua@hisilicon.com>
+        Tue, 8 Jun 2021 05:17:03 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fzkyn11srzYrlr;
+        Tue,  8 Jun 2021 17:12:17 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 17:15:06 +0800
+Received: from [127.0.0.1] (10.40.192.162) by dggpemm500001.china.huawei.com
+ (7.185.36.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 8 Jun 2021
+ 17:15:05 +0800
+Subject: Re: [PATCH v5] ACPI / APEI: fix the regression of synchronous
+ external aborts occur in user-mode
+To:     James Morse <james.morse@arm.com>, <rafael@kernel.org>,
+        <rjw@rjwysocki.net>, <lenb@kernel.org>, <tony.luck@intel.com>,
+        <bp@alien8.de>, <akpm@linux-foundation.org>, <jroedel@suse.de>,
+        <peterz@infradead.org>
+References: <1607602177-1507-1-git-send-email-tanxiaofei@huawei.com>
+ <d57d786c-f9cb-46ba-78d0-3675666272f2@arm.com>
+ <5b444714-aa45-517f-9595-fd5889d3c342@huawei.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+Message-ID: <4e1416f4-7556-8885-6fa5-bdf8336ae9f6@huawei.com>
+Date:   Tue, 8 Jun 2021 17:15:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608065736.32656-1-song.bao.hua@hisilicon.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <5b444714-aa45-517f-9595-fd5889d3c342@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.192.162]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Hi James,
+
+On 2021/6/5 16:59, Xiaofei Tan wrote:
+> Hi James,
+>
+> On 2021/6/4 22:19, James Morse wrote:
+
+...
+
+>>> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+>>> index fce7ade..0893968 100644
+>>> --- a/drivers/acpi/apei/ghes.c
+>>> +++ b/drivers/acpi/apei/ghes.c
+>>
+>>> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
+>>> +{
+>>> +    struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+>>> +    struct cper_arm_err_info *err_info;
+>>> +    bool queued = false;
+>>> +    int sec_sev, i;
+>>> +
+>>> +    log_arm_hw_error(err);
+>>> +
+>>> +    sec_sev = ghes_severity(gdata->error_severity);
+>>> +    if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
+>>> +        return false;
+>>> +
+>>> +    err_info = (struct cper_arm_err_info *) (err + 1);
+>>> +    for (i = 0; i < err->err_info_num; i++, err_info++) {
+>>
+>> err_info has a version and a length, so its expected to be made bigger at some point.
+>
+>
+> Yes, but the table "ARM Processor Error Section" fixed the length of
+> processor error information structure to fixed 32 bytes. Then the
+> description of the UEFI spec need to update.
+>
+>> It would be better to use the length instead of 'err_info++', or at least to break out of
+>> the loop if a length > sizeof(*err_info) is seen.
+>>
+>
+> OK. Maybe check length != sizeof(*err_info) is better. I will add this.
+>
+>     if (err_info->length != sizeof(struct cper_arm_err_info)) {
+>         pr_warn_ratelimited(FW_WARN GHES_PFX
+>                     "Error info length %d is invalid\n",
+>                     err_info->length);
+>         break;
+>     }
+>
+
+I considered this more carefully. It should be better to use the length instead of 'err_info', than
+just break out. Because if we want to expand "ARM Processor Error Infomation Structure", the proper way
+is just add some new member at the end of the structure. Then we have a chance to work well for the situation
+of new firmware + old kernel.
+
+>> With that:
+>> Reviewed-by: James Morse <james.morse@arm.com>
+>>
+>>
+>> The following nits would make this easier to read:
+>>
+
+
+
+>>
+>
+> Right.
+>
+>>
+>> Thanks,
+>>
+>> James
+>>
+>> .
+>>
+>
+>
+> .
+>
+
