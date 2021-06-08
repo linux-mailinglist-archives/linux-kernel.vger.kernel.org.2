@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924403A034B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE41D3A01DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238573AbhFHTPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:15:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39988 "EHLO mail.kernel.org"
+        id S235260AbhFHS45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:56:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237590AbhFHTFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:05:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88337613BE;
-        Tue,  8 Jun 2021 18:46:06 +0000 (UTC)
+        id S236277AbhFHSuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:50:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51F4C61434;
+        Tue,  8 Jun 2021 18:39:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177967;
-        bh=6/dQ3e1N39nc6+g6u0y4oMaO1BVCa32BZXODgh/fbZg=;
+        s=korg; t=1623177564;
+        bh=zZAex3+iOCLqMsDHxUYFmab/TdhF2AokETnbGhnIJ7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OeOcP6g420/vdtGF/bvHwTxCK0rBk4cknS6/rBDZF0OgHpesp0QuBsqH6+Nm9rDCh
-         O+uzMSlslF+9aNZ5ovqRVTJ8GUvmF5LWo7+xFdvnbc5uefGhip0qXIDeaexKjEPo7F
-         4fyic6l43oONaSSqtr0sALK2bUdQymo/2nmt+WEw=
+        b=GaO6YN3517rNDLXVS/+wLKhRjUYEX/y98+uutTNhnE9nd/HSV9eNS2uRbzjB8OTnS
+         S+zoGnj73dHL1vZb+q9FbwDl1Diy6QVcOMqSVNZQ9maaNY4AkPEhTf2jq4YZnXQOtK
+         /xfBxXfclpU0e8OKMCcql7AFlVfCCPb/TnCTUDhY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Bob Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Oz Shlomo <ozsh@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Paul Blakey <paulb@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 028/161] ACPICA: Clean up context mutex during object deletion
-Date:   Tue,  8 Jun 2021 20:25:58 +0200
-Message-Id: <20210608175946.399982667@linuxfoundation.org>
+Subject: [PATCH 5.10 019/137] net/sched: act_ct: Offload connections with commit action
+Date:   Tue,  8 Jun 2021 20:25:59 +0200
+Message-Id: <20210608175943.058403110@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Erik Kaneda <erik.kaneda@intel.com>
+From: Paul Blakey <paulb@nvidia.com>
 
-[ Upstream commit e4dfe108371214500ee10c2cf19268f53acaa803 ]
+[ Upstream commit 0cc254e5aa37cf05f65bcdcdc0ac5c58010feb33 ]
 
-ACPICA commit bc43c878fd4ff27ba75b1d111b97ee90d4a82707
+Currently established connections are not offloaded if the filter has a
+"ct commit" action. This behavior will not offload connections of the
+following scenario:
 
-Fixes: c27f3d011b08 ("Fix race in GenericSerialBus (I2C) and GPIO OpRegion parameter handling")
-Link: https://github.com/acpica/acpica/commit/bc43c878
-Reported-by: John Garry <john.garry@huawei.com>
-Reported-by: Xiang Chen <chenxiang66@hisilicon.com>
-Tested-by: Xiang Chen <chenxiang66@hisilicon.com>
-Signed-off-by: Erik Kaneda <erik.kaneda@intel.com>
-Signed-off-by: Bob Moore <robert.moore@intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+$ tc_filter add dev $DEV ingress protocol ip prio 1 flower \
+  ct_state -trk \
+  action ct commit action goto chain 1
+
+$ tc_filter add dev $DEV ingress protocol ip chain 1 prio 1 flower \
+  action mirred egress redirect dev $DEV2
+
+$ tc_filter add dev $DEV2 ingress protocol ip prio 1 flower \
+  action ct commit action goto chain 1
+
+$ tc_filter add dev $DEV2 ingress protocol ip prio 1 chain 1 flower \
+  ct_state +trk+est \
+  action mirred egress redirect dev $DEV
+
+Offload established connections, regardless of the commit flag.
+
+Fixes: 46475bb20f4b ("net/sched: act_ct: Software offload of established flows")
+Reviewed-by: Oz Shlomo <ozsh@nvidia.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Paul Blakey <paulb@nvidia.com>
+Link: https://lore.kernel.org/r/1622029449-27060-1-git-send-email-paulb@nvidia.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpica/utdelete.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/sched/act_ct.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelete.c
-index 624a26794d55..e5ba9795ec69 100644
---- a/drivers/acpi/acpica/utdelete.c
-+++ b/drivers/acpi/acpica/utdelete.c
-@@ -285,6 +285,14 @@ static void acpi_ut_delete_internal_obj(union acpi_operand_object *object)
+diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
+index aba3cd85f284..6376b7b22325 100644
+--- a/net/sched/act_ct.c
++++ b/net/sched/act_ct.c
+@@ -979,7 +979,7 @@ static int tcf_ct_act(struct sk_buff *skb, const struct tc_action *a,
+ 	 */
+ 	cached = tcf_ct_skb_nfct_cached(net, skb, p->zone, force);
+ 	if (!cached) {
+-		if (!commit && tcf_ct_flow_table_lookup(p, skb, family)) {
++		if (tcf_ct_flow_table_lookup(p, skb, family)) {
+ 			skip_add = true;
+ 			goto do_nat;
  		}
- 		break;
+@@ -1019,10 +1019,11 @@ do_nat:
+ 		 * even if the connection is already confirmed.
+ 		 */
+ 		nf_conntrack_confirm(skb);
+-	} else if (!skip_add) {
+-		tcf_ct_flow_table_process_conn(p->ct_ft, ct, ctinfo);
+ 	}
  
-+	case ACPI_TYPE_LOCAL_ADDRESS_HANDLER:
++	if (!skip_add)
++		tcf_ct_flow_table_process_conn(p->ct_ft, ct, ctinfo);
 +
-+		ACPI_DEBUG_PRINT((ACPI_DB_ALLOCATIONS,
-+				  "***** Address handler %p\n", object));
-+
-+		acpi_os_delete_mutex(object->address_space.context_mutex);
-+		break;
-+
- 	default:
+ out_push:
+ 	skb_push_rcsum(skb, nh_ofs);
  
- 		break;
 -- 
 2.30.2
 
