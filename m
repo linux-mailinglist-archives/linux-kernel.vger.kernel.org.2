@@ -2,69 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F74E39F6C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFA139F6C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232726AbhFHMeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:34:04 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3170 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232698AbhFHMd5 (ORCPT
+        id S232763AbhFHMeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:34:14 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:5335 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232762AbhFHMeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:33:57 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FzqFb3Cpsz6G7Sm;
-        Tue,  8 Jun 2021 20:25:23 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.62.217) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+        Tue, 8 Jun 2021 08:34:12 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FzqK63sn7z6tsc;
+        Tue,  8 Jun 2021 20:28:26 +0800 (CST)
+Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 14:32:02 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <sfr@canb.auug.org.au>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-next@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH 5/5] ima: Pass NULL instead of 0 to ima_get_action() in ima_file_mprotect()
-Date:   Tue, 8 Jun 2021 14:31:24 +0200
-Message-ID: <20210608123124.335868-5-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210608123124.335868-1-roberto.sassu@huawei.com>
-References: <20210608123124.335868-1-roberto.sassu@huawei.com>
+ 15.1.2176.2; Tue, 8 Jun 2021 20:32:16 +0800
+Received: from [10.174.179.189] (10.174.179.189) by
+ dggpeml500019.china.huawei.com (7.185.36.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 20:32:16 +0800
+Subject: Re: [PATCH] nvme-multipath: combine grpid and ANA state checks in
+ nvme_parse_ana_log()
+To:     Christoph Hellwig <hch@lst.de>
+CC:     <kbusch@kernel.org>, <axboe@fb.com>, <sagi@grimberg.me>,
+        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linfeilong@huawei.com>
+References: <1623125616-629270-1-git-send-email-wubo40@huawei.com>
+ <20210608052320.GA13828@lst.de>
+From:   Wu Bo <wubo40@huawei.com>
+Message-ID: <0f672080-671b-c1b8-18d5-3ddad90f53c4@huawei.com>
+Date:   Tue, 8 Jun 2021 20:32:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.62.217]
-X-ClientProxiedBy: lhreml753-chm.china.huawei.com (10.201.108.203) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
+In-Reply-To: <20210608052320.GA13828@lst.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.189]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500019.china.huawei.com (7.185.36.137)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the sparse warning:
+On 2021/6/8 13:23, Christoph Hellwig wrote:
+> On Tue, Jun 08, 2021 at 12:13:36PM +0800, Wu Bo wrote:
+>> -		if (WARN_ON_ONCE(desc->grpid == 0))
+>> +		if (WARN_ON_ONCE(desc->grpid == 0 ||
+>> +			le32_to_cpu(desc->grpid) > ctrl->anagrpmax))
+>>   			return -EINVAL;
+>> -		if (WARN_ON_ONCE(le32_to_cpu(desc->grpid) > ctrl->anagrpmax))
+>> -			return -EINVAL;
+>> -		if (WARN_ON_ONCE(desc->state == 0))
+>> -			return -EINVAL;
+>> -		if (WARN_ON_ONCE(desc->state > NVME_ANA_CHANGE))
+>> +		if (WARN_ON_ONCE(desc->state == 0 ||
+>> +			desc->state > NVME_ANA_CHANGE))
+> 
+> So besides making the code impossibl to read due to the incorrect
+> indentation this also makes each WARN_ON_ONCE cover multiple conditions.
+> Not very useful for debugging.
+> .
+> 
 
-sparse: warning: Using plain integer as NULL pointer
+Indeed, not very useful for debugging, please ignore this patch.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- security/integrity/ima/ima_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 906c1d8e0b71..287b90509006 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -433,7 +433,7 @@ int ima_file_mprotect(struct vm_area_struct *vma, unsigned long prot)
- 	inode = file_inode(vma->vm_file);
- 	action = ima_get_action(file_mnt_user_ns(vma->vm_file), inode,
- 				current_cred(), secid, MAY_EXEC, MMAP_CHECK,
--				&pcr, &template, 0);
-+				&pcr, &template, NULL);
- 
- 	/* Is the mmap'ed file in policy? */
- 	if (!(action & (IMA_MEASURE | IMA_APPRAISE_SUBMASK)))
--- 
-2.25.1
+Thanks,
+Wu Bo
 
