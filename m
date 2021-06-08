@@ -2,120 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291F239EBE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A58B39EBF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 04:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhFHC1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 22:27:39 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:42210 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhFHC1i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 22:27:38 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1582BpMG065091;
-        Tue, 8 Jun 2021 10:11:51 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Jun
- 2021 10:25:40 +0800
-Date:   Tue, 8 Jun 2021 10:25:32 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH v4 3/7] ARM: dts: aspeed-g6: Add SGPIO node.
-Message-ID: <20210608022531.GA2948@aspeedtech.com>
-References: <20210607071514.11727-1-steven_lee@aspeedtech.com>
- <20210607071514.11727-4-steven_lee@aspeedtech.com>
- <5277db96-4eb8-4794-a1fa-6a5bc40bffb7@www.fastmail.com>
+        id S231611AbhFHC16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 22:27:58 -0400
+Received: from m12-14.163.com ([220.181.12.14]:59335 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231503AbhFHC1t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 22:27:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=yBMmM
+        54KDZIxVMl8qj7WE3ycDDyRNvRFccsKD+T2FHg=; b=U2UgxxqUVB1tAwUWm23ZV
+        tJ7tlJ0cwixItxYbqACKczylAr1xIpQvtCu4RH5oXVsJRHmVW53vMxrrJuxuCMyx
+        w/FRBAvBeyhv33U7v9Ng0fQIh7f1pjF+gfk3HrzgPmFmtm9dT2tFJbOL4wEQAaHb
+        utNXm2erP3QTN8NBST+Qjk=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp10 (Coremail) with SMTP id DsCowAD3UnAt1b5gOokXNg--.58682S2;
+        Tue, 08 Jun 2021 10:25:50 +0800 (CST)
+From:   13145886936@163.com
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] net: appletalk: fix some mistakes in grammar
+Date:   Mon,  7 Jun 2021 19:25:46 -0700
+Message-Id: <20210608022546.7587-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <5277db96-4eb8-4794-a1fa-6a5bc40bffb7@www.fastmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1582BpMG065091
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DsCowAD3UnAt1b5gOokXNg--.58682S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJF1rGw15ArykZr1xtFWxXrb_yoW8Gr4rpr
+        n5ur4Ygan5JrnrKwnrWan2qrW8uF4kWay3uFyayF4SvF15Gr93GF4DXrWavF45GryrJFWS
+        9rZrWFWIva4UJw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bUc_fUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/xtbBRxKrg1PAC-HN+gAAsj
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 06/08/2021 07:28, Andrew Jeffery wrote:
-> On Mon, 7 Jun 2021, at 16:45, Steven Lee wrote:
-> > AST2600 supports 2 SGPIO master interfaces one with 128 pins another one
-> > with 80 pins.
-> > 
-> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> > ---
-> >  arch/arm/boot/dts/aspeed-g6.dtsi | 30 ++++++++++++++++++++++++++++++
-> >  1 file changed, 30 insertions(+)
-> > 
-> > diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-> > index f96607b7b4e2..c09b24824b6d 100644
-> > --- a/arch/arm/boot/dts/aspeed-g6.dtsi
-> > +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-> > @@ -377,6 +377,36 @@
-> >  				#interrupt-cells = <2>;
-> >  			};
-> >  
-> > +			sgpiom0: sgpiom@1e780500 {
-> > +				#gpio-cells = <2>;
-> > +				gpio-controller;
-> > +				compatible = "aspeed,ast2600-sgpiom-128";
-> > +				reg = <0x1e780500 0x100>;
-> > +				interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
-> > +				ngpios = <128>;
-> 
-> Doesn't this affect the way the data is presented on the bus?
-> 
+From: gushengxian <gushengxian@yulong.com>
 
-I add ngpios in aspeed-g6.dtsi as it can be overridden by dts files and
-driver won't return error if users only add status = "okay" in
-dts files without adding ngpios property.
+Fix some mistakes in grammar.
 
-I will remove the property from aspeed-g6.dtsi if we don't need a
-default value for ngpios.
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ net/appletalk/ddp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> My understanding is this should be defined by each platform, not in the dtsi. Having said that, it appears it is specified in aspeed-g5.dtsi (as the value 8?).
-> 
+diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
+index ebda397fa95a..bc76b2fa3dfb 100644
+--- a/net/appletalk/ddp.c
++++ b/net/appletalk/ddp.c
+@@ -707,7 +707,7 @@ static int atif_ioctl(int cmd, void __user *arg)
+ 
+ 		/*
+ 		 * Phase 1 is fine on LocalTalk but we don't do
+-		 * EtherTalk phase 1. Anyone wanting to add it go ahead.
++		 * EtherTalk phase 1. Anyone wanting to add it goes ahead.
+ 		 */
+ 		if (dev->type == ARPHRD_ETHER && nr->nr_phase != 2)
+ 			return -EPROTONOSUPPORT;
+@@ -828,7 +828,7 @@ static int atif_ioctl(int cmd, void __user *arg)
+ 		nr = (struct atalk_netrange *)&(atif->nets);
+ 		/*
+ 		 * Phase 1 is fine on Localtalk but we don't do
+-		 * Ethertalk phase 1. Anyone wanting to add it go ahead.
++		 * Ethertalk phase 1. Anyone wanting to add it goes ahead.
+ 		 */
+ 		if (dev->type == ARPHRD_ETHER && nr->nr_phase != 2)
+ 			return -EPROTONOSUPPORT;
+@@ -2018,7 +2018,7 @@ module_init(atalk_init);
+  * by the network device layer.
+  *
+  * Ergo, before the AppleTalk module can be removed, all AppleTalk
+- * sockets be closed from user space.
++ * sockets should be closed from user space.
+  */
+ static void __exit atalk_exit(void)
+ {
+-- 
+2.25.1
 
-I will remove the property from aspeed-g5 in a separate patch.
-
-Thanks,
-Steven
-
-> > +				clocks = <&syscon ASPEED_CLK_APB2>;
-> > +				interrupt-controller;
-> > +				bus-frequency = <12000000>;
-> > +				pinctrl-names = "default";
-> > +				pinctrl-0 = <&pinctrl_sgpm1_default>;
-> > +				status = "disabled";
-> > +			};
-> > +
-> > +			sgpiom1: sgpiom@1e780600 {
-> > +				#gpio-cells = <2>;
-> > +				gpio-controller;
-> > +				compatible = "aspeed,ast2600-sgpiom-80";
-> > +				reg = <0x1e780600 0x100>;
-> > +				interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
-> > +				ngpios = <80>;
-> 
-> As above.
-> 
-> Andrew
