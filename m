@@ -2,97 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1B03A1D47
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08ADC3A1D63
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhFIS71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 14:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhFIS7Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 14:59:25 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFD8C061574;
-        Wed,  9 Jun 2021 11:57:17 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso2050020pjb.5;
-        Wed, 09 Jun 2021 11:57:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CvxEU/y35Z5QN5sL8S8hykpRPTn1Es2BsdTK3qOc3+I=;
-        b=fE0Ww7iNwkGqvdAWPbgomHkAdJbjGyU2V+FE1Q4UwsuOgdWc64qwFAyS5oEYhbQPUb
-         Je4WMohE3sqLsKgI2uIOvUuX6ZoOlrrbWutgNqBKK6yW0KuAeWflWjmMNMUxkRJwK6uH
-         s/mvtpvqDnTbc/ukvienMrXpGbMAEIXMPzZ5uwgFD8EzRpd2mroOYQsoo8iJGA2de1Xf
-         6pKATcR2ad4BBw475PhfQnxPgJbHu92n7SGqOCLXRSxUkyi0PVgG3PoJ7/EquMMris/o
-         ciD0/zkCYBkvbFaSBNTqvDQXS9zrKE1gNzTGywapAuLT4Ie/s0XuRGf4+ey2XZWtl+ZW
-         tAmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CvxEU/y35Z5QN5sL8S8hykpRPTn1Es2BsdTK3qOc3+I=;
-        b=eP61DnxYiPs2+lYtDOYbxO/PhzHpzzMMyy/KSfBJgiumU/wBJ3/vC+tjrXyvD0orqC
-         XTfK9fOS3JOvJ79EwvLtGIEVFX1z4npkyxRIRVGyvVBsbwQn4cJnw0T5OkuXI5jG3nP9
-         fdqN32JvSSM5hI0+OxAeEzk5t/lR/O8MNaQj8UUFehc6eewkKIScOB+kvvIsTOoGPpZl
-         6LjgPAzYRljg9p64FP5PMEgysNgTRquT5oDJuHyxo3phsdDSGFE/ssrVjbGBiaVQNPDL
-         AuVxIDqfv9KCnfjHjXL2r6KFTpxWUQf9WpB1k2Biiryt4v6QeZvuBenS7pAgsbdrwB0f
-         9b3A==
-X-Gm-Message-State: AOAM531/N9amgKkcQFHJcObVjM8p+a85Z5ZCDnrPcSEbDGzDsEQJ8tG/
-        jFR6KQt2D5nGZIdvVxEaUlnLyVatL9k=
-X-Google-Smtp-Source: ABdhPJyUfcNXUJdVNNXso7nr+i/I4ht//3UF6nRgO45MisFQct3BB6DP/w1UIX52/W2oaZIZ8741cg==
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr12223103pja.181.1623265035308;
-        Wed, 09 Jun 2021 11:57:15 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id i21sm263276pfd.219.2021.06.09.11.57.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 11:57:14 -0700 (PDT)
-Subject: Re: [PATCH 5.12 000/161] 5.12.10-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210608175945.476074951@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <c7f17da8-7099-9e7e-a71e-24ee5f578f7f@gmail.com>
-Date:   Wed, 9 Jun 2021 11:57:07 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        id S230230AbhFITBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 15:01:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229472AbhFITBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 15:01:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFFFF61364;
+        Wed,  9 Jun 2021 18:59:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623265160;
+        bh=nXoyJTJxIU3jLPEO7r7vkSzXDt/P6SnO6auwIHMlV/E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d5vtyGuXmMyksM3Z7Ybx3hLNe6SGBJvUCtgsPr7YTMlCz1h51l2fjMxlmix04G5Jz
+         4Z2liKHYdyYSlJehNHJA/hBC3qac9U9znTMz6xobrAoKKGGzi1Kgb2jeL3CIv5wY4G
+         dqmwEDO5mrmCfGJ+EJEznfWjXFcR9Auxqk3vIQII=
+Date:   Wed, 9 Jun 2021 20:59:17 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jack Pham <jackp@codeaurora.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felipe Balbi <balbi@kernel.org>,
+        Peter Chen <peter.chen@kernel.org>
+Subject: Re: [PATCH] USB: dwc3: remove debugfs root dentry storage
+Message-ID: <YMEPhay2knIEc3sZ@kroah.com>
+References: <20210609093924.3293230-1-gregkh@linuxfoundation.org>
+ <20210609184715.GA28957@jackp-linux.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609184715.GA28957@jackp-linux.qualcomm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 09, 2021 at 11:47:15AM -0700, Jack Pham wrote:
+> On Wed, Jun 09, 2021 at 11:39:24AM +0200, Greg Kroah-Hartman wrote:
+> > There is no need to keep around the debugfs "root" directory for the
+> > dwc3 device.  Instead, look it up anytime we need to find it.  This will
+> > help when callers get out-of-order and we had the potential to have a
+> > "stale" pointer around for the root dentry, as has happened in the past.
+> > 
+> > Cc: Felipe Balbi <balbi@kernel.org>
+> > Cc: Jack Pham <jackp@codeaurora.org>
+> > Cc: Peter Chen <peter.chen@kernel.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  drivers/usb/dwc3/core.h    | 2 --
+> >  drivers/usb/dwc3/debugfs.c | 8 ++++----
+> >  drivers/usb/dwc3/gadget.c  | 4 +++-
+> >  3 files changed, 7 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+> > index c5d5760cdf53..dccdf13b5f9e 100644
+> > --- a/drivers/usb/dwc3/core.h
+> > +++ b/drivers/usb/dwc3/core.h
+> > @@ -1013,7 +1013,6 @@ struct dwc3_scratchpad_array {
+> >   * @link_state: link state
+> >   * @speed: device speed (super, high, full, low)
+> >   * @hwparams: copy of hwparams registers
+> > - * @root: debugfs root folder pointer
+> >   * @regset: debugfs pointer to regdump file
+> >   * @dbg_lsp_select: current debug lsp mux register selection
+> >   * @test_mode: true when we're entering a USB test mode
+> > @@ -1222,7 +1221,6 @@ struct dwc3 {
+> >  	u8			num_eps;
+> >  
+> >  	struct dwc3_hwparams	hwparams;
+> > -	struct dentry		*root;
+> >  	struct debugfs_regset32	*regset;
+> >  
+> >  	u32			dbg_lsp_select;
+> > diff --git a/drivers/usb/dwc3/debugfs.c b/drivers/usb/dwc3/debugfs.c
+> > index 5dbbe53269d3..f2b7675c7f62 100644
+> > --- a/drivers/usb/dwc3/debugfs.c
+> > +++ b/drivers/usb/dwc3/debugfs.c
+> > @@ -889,8 +889,10 @@ static void dwc3_debugfs_create_endpoint_files(struct dwc3_ep *dep,
+> >  void dwc3_debugfs_create_endpoint_dir(struct dwc3_ep *dep)
+> >  {
+> >  	struct dentry		*dir;
+> > +	struct dentry		*root;
+> >  
+> > -	dir = debugfs_create_dir(dep->name, dep->dwc->root);
+> > +	root = debugfs_lookup(dev_name(dep->dwc->dev), usb_debug_root);
+> > +	dir = debugfs_create_dir(dep->name, root);
+> >  	dwc3_debugfs_create_endpoint_files(dep, dir);
+> >  }
+> >  
+> > @@ -909,8 +911,6 @@ void dwc3_debugfs_init(struct dwc3 *dwc)
+> >  	dwc->regset->base = dwc->regs - DWC3_GLOBALS_REGS_START;
+> >  
+> >  	root = debugfs_create_dir(dev_name(dwc->dev), usb_debug_root);
+> > -	dwc->root = root;
+> > -
+> >  	debugfs_create_regset32("regdump", 0444, root, dwc->regset);
+> >  	debugfs_create_file("lsp_dump", 0644, root, dwc, &dwc3_lsp_fops);
+> >  
+> > @@ -929,6 +929,6 @@ void dwc3_debugfs_init(struct dwc3 *dwc)
+> >  
+> >  void dwc3_debugfs_exit(struct dwc3 *dwc)
+> >  {
+> > -	debugfs_remove_recursive(dwc->root);
+> > +	debugfs_remove(debugfs_lookup(dev_name(dwc->dev), usb_debug_root));
+> >  	kfree(dwc->regset);
+> >  }
+> > diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+> > index 7cc99b6d0bfe..026a2ad0fc80 100644
+> > --- a/drivers/usb/dwc3/gadget.c
+> > +++ b/drivers/usb/dwc3/gadget.c
+> > @@ -2799,7 +2799,9 @@ static void dwc3_gadget_free_endpoints(struct dwc3 *dwc)
+> >  			list_del(&dep->endpoint.ep_list);
+> >  		}
+> >  
+> > -		debugfs_remove_recursive(debugfs_lookup(dep->name, dwc->root));
+> > +		debugfs_remove_recursive(debugfs_lookup(dep->name,
+> > +				debugfs_lookup(dev_name(dep->dwc->dev),
+> > +					       usb_debug_root)));
+> 
+> Nested calls to debugfs_lookup() :). But it does work, and similarly
+> avoids the out-of-order debugfs removal issue as well even without
+> Peter's fix.
 
+Yeah, it's funny, but it's safer than trying to store a pointer around :)
 
-On 6/8/2021 11:25 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.10 release.
-> There are 161 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.10-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+> Tested-by: Jack Pham <jackp@codeaurora.org>
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Many thanks for testing.
+
+greg k-h
