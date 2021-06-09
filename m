@@ -2,102 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905203A128A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9363A11FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239055AbhFILYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:24:01 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:41440 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239020AbhFILX7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:23:59 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1599FZOe126813;
-        Wed, 9 Jun 2021 09:28:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=YnBQKz3dqrUNxi9NhuYJmaFtMbuoNqMgRmHcuk+qdpI=;
- b=sRxE+MxijCFxqckZdPl516xZAoGyX4NeLSEsGHwHm/QVAm/0Bw+WjX4xTL2C/7NQVnZg
- zBk19bqzgQP7rN6UDxSba1m0HSyHL9gJYPemVVCczqu9MTVftCXXi5C9e9bG9t7Wdrfl
- 3VAeuZLBtXH4J0eDRmuesh1HKYwP7WW4Mq2MOAHSqcrbq8psLlsRhRqXjj6b8RgSYAuo
- PaxaribDfQN3wQbDt6Z8EhJ3SSIVkUOCsZuKbnV9hA3LYobBlUQ1j7xR9WKJtIGFfVQ1
- qOoYQ7FQtfIugBcr4VxqxBGw22rtYZKGyzUB4aUkjkIYED1mswvaVzd+PbOJKby/yNFF zg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 38yxscgnb8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:28:42 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1599QZRP051047;
-        Wed, 9 Jun 2021 09:28:42 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3922wuedkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:28:42 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1599SfGF066343;
-        Wed, 9 Jun 2021 09:28:41 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3922wuedjh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:28:41 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1599SeDQ031727;
-        Wed, 9 Jun 2021 09:28:40 GMT
-Received: from mwanda (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Jun 2021 09:28:39 +0000
-Date:   Wed, 9 Jun 2021 12:28:31 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Shai Malin <smalin@marvell.com>
-Cc:     Ariel Elior <aelior@marvell.com>, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] nvme-tcp-offload: Fix error code in
- nvme_tcp_ofld_create_ctrl()
-Message-ID: <YMCJv0sYKm+Gcwr7@mwanda>
+        id S236594AbhFILHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:07:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232165AbhFILHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 07:07:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A97C26136D;
+        Wed,  9 Jun 2021 11:05:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623236709;
+        bh=cYAlIYrOiggPuMzoh6tvhaibv5NV1lgP/RvjETO+QoE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mCe5T4dz6g9nybpJjowAMnqpb8edfNWB4L+Uk5I/fcZNtDEJBjglVId/0UkITYWCT
+         T2esUM/a0w3QuzI+dOEYR135Txs2GKPTQ+/Vt1PhEa6iz/fk2aSeM5kdsM9U9XH9GW
+         GYsqK44KxoOHhlE+WRNVwpUHUYoo3HgzaT2/blI3NrI4tK0BDfceG14drtefMP9u4I
+         34Miio6O6nAPBwxaIj/xlvaSkW2Exth+vPWHRwalYMGCj9yvcPpN9qihs4NrJV2zkv
+         aXMsROsY6jQKP3t0GS1AdDUgS4iHpYwIqGyBD/L1+oq/MLLhz3g2ElLsh5rdGucaWG
+         vyXHPK26x9zpA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Avihai Horon <avihaih@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Tom Talpey <tom@talpey.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Honggang LI <honli@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by default for kernel ULPs
+Date:   Wed,  9 Jun 2021 14:05:03 +0300
+Message-Id: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-ORIG-GUID: dwTMuy1y2bpTs-2e3Ko8WmdLFuDxgBH-
-X-Proofpoint-GUID: dwTMuy1y2bpTs-2e3Ko8WmdLFuDxgBH-
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10009 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
- phishscore=0 suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501
- mlxscore=0 malwarescore=0 mlxlogscore=999 clxscore=1011 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106090042
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return an error pointer if try_module_get() fails.  Currently it returns
-NULL.
+From: Avihai Horon <avihaih@nvidia.com>
 
-Fixes: 4b8178ec5794 ("nvme-tcp-offload: Add device scan implementation")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Relaxed Ordering is a capability that can only benefit users that support
+it. All kernel ULPs should support Relaxed Ordering, as they are designed
+to read data only after observing the CQE and use the DMA API correctly.
+
+Hence, implicitly enable Relaxed Ordering by default for kernel ULPs.
+
+Signed-off-by: Avihai Horon <avihaih@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/nvme/host/tcp-offload.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changelog:
+v2:
+ * Dropped IB/core patch and set RO implicitly in mlx5 exactly like in
+   eth side of mlx5 driver.
+v1: https://lore.kernel.org/lkml/cover.1621505111.git.leonro@nvidia.com
+ * Enabled by default RO in IB/core instead of changing all users
+v0: https://lore.kernel.org/lkml/20210405052404.213889-1-leon@kernel.org
+---
+ drivers/infiniband/hw/mlx5/mr.c | 10 ++++++----
+ drivers/infiniband/hw/mlx5/wr.c |  5 ++++-
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/nvme/host/tcp-offload.c b/drivers/nvme/host/tcp-offload.c
-index c76822e5ada7..c07f84a7e697 100644
---- a/drivers/nvme/host/tcp-offload.c
-+++ b/drivers/nvme/host/tcp-offload.c
-@@ -1215,7 +1215,7 @@ nvme_tcp_ofld_create_ctrl(struct device *ndev, struct nvmf_ctrl_options *opts)
- 	/* Increase driver refcnt */
- 	if (!try_module_get(dev->ops->module)) {
- 		pr_err("try_module_get failed\n");
--		dev = NULL;
-+		rc = -ENODEV;
- 		goto out_free_ctrl;
- 	}
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 3363cde85b14..2182e76ae734 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -69,6 +69,7 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+ 					  struct ib_pd *pd)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(pd->device);
++	bool ro_pci_enabled = pcie_relaxed_ordering_enabled(dev->mdev->pdev);
  
+ 	MLX5_SET(mkc, mkc, a, !!(acc & IB_ACCESS_REMOTE_ATOMIC));
+ 	MLX5_SET(mkc, mkc, rw, !!(acc & IB_ACCESS_REMOTE_WRITE));
+@@ -78,10 +79,10 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+ 
+ 	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
+ 		MLX5_SET(mkc, mkc, relaxed_ordering_write,
+-			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
++			 acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled);
+ 	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
+ 		MLX5_SET(mkc, mkc, relaxed_ordering_read,
+-			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
++			 acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled);
+ 
+ 	MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
+ 	MLX5_SET(mkc, mkc, qpn, 0xffffff);
+@@ -812,7 +813,8 @@ struct ib_mr *mlx5_ib_get_dma_mr(struct ib_pd *pd, int acc)
+ 
+ 	MLX5_SET(mkc, mkc, access_mode_1_0, MLX5_MKC_ACCESS_MODE_PA);
+ 	MLX5_SET(mkc, mkc, length64, 1);
+-	set_mkc_access_pd_addr_fields(mkc, acc, 0, pd);
++	set_mkc_access_pd_addr_fields(mkc, acc | IB_ACCESS_RELAXED_ORDERING, 0,
++				      pd);
+ 
+ 	err = mlx5_ib_create_mkey(dev, &mr->mmkey, in, inlen);
+ 	if (err)
+@@ -2022,7 +2024,7 @@ static void mlx5_set_umr_free_mkey(struct ib_pd *pd, u32 *in, int ndescs,
+ 	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
+ 
+ 	/* This is only used from the kernel, so setting the PD is OK. */
+-	set_mkc_access_pd_addr_fields(mkc, 0, 0, pd);
++	set_mkc_access_pd_addr_fields(mkc, IB_ACCESS_RELAXED_ORDERING, 0, pd);
+ 	MLX5_SET(mkc, mkc, free, 1);
+ 	MLX5_SET(mkc, mkc, translations_octword_size, ndescs);
+ 	MLX5_SET(mkc, mkc, access_mode_1_0, access_mode & 0x3);
+diff --git a/drivers/infiniband/hw/mlx5/wr.c b/drivers/infiniband/hw/mlx5/wr.c
+index 6880627c45be..8841620af82f 100644
+--- a/drivers/infiniband/hw/mlx5/wr.c
++++ b/drivers/infiniband/hw/mlx5/wr.c
+@@ -866,7 +866,10 @@ static int set_reg_wr(struct mlx5_ib_qp *qp,
+ 	bool atomic = wr->access & IB_ACCESS_REMOTE_ATOMIC;
+ 	u8 flags = 0;
+ 
+-	/* Matches access in mlx5_set_umr_free_mkey() */
++	/* Matches access in mlx5_set_umr_free_mkey().
++	 * Relaxed Ordering is set implicitly in mlx5_set_umr_free_mkey() and
++	 * kernel ULPs are not aware of it, so we don't set it here.
++	 */
+ 	if (!mlx5_ib_can_reconfig_with_umr(dev, 0, wr->access)) {
+ 		mlx5_ib_warn(
+ 			to_mdev(qp->ibqp.device),
 -- 
-2.30.2
+2.31.1
 
