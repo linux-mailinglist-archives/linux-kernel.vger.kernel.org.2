@@ -2,100 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEFA3A0A23
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CC33A0A3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbhFICnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 22:43:40 -0400
-Received: from mail-ed1-f49.google.com ([209.85.208.49]:44962 "EHLO
-        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbhFICnh (ORCPT
+        id S235934AbhFICt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 22:49:57 -0400
+Received: from regular1.263xmail.com ([211.150.70.196]:54620 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235876AbhFICt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 22:43:37 -0400
-Received: by mail-ed1-f49.google.com with SMTP id u24so26876366edy.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 19:41:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p+D0KtrR3ySKv9LEuftUeYWRIhXsDsdXtnrq6QYaDHk=;
-        b=syy+MK4mAE5Ta3E44ycW61wKy+jm9LP5Fc8EsQgZPGGAsTggdfkkW77kT5EhJwXDKl
-         I+XPhfw/dXEghiCZs+YwRrNu+QpDXlaSfO/oKAb3I25xjfc8AB1U4a1ug6DK5nq6fYyd
-         z9Ahfz+gjJW/7LpiY87jTM3q+tmyvsVG2oHfqF/LMJWBYmBstCFvwwO3/CP2by6a4IoJ
-         sYhO8Ck/O8z3eqgK6CIN/U8YILwblIfkNFy6M7Q/dd80PdTlxn/YDmRgNboQf0VetYHO
-         CGv/VWscu7/9Z3LqyQEyL2oBD8RrzzNvbEnOuZ+GEyqpWIc0GYBpGEuy4OTtiwh7w7tj
-         FGBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p+D0KtrR3ySKv9LEuftUeYWRIhXsDsdXtnrq6QYaDHk=;
-        b=tdTPpkkHdNSs+asalIMZ8LOTxG87w/NIjdCnxndd5DV/RA20irK3x29xzHrB9Q4TMO
-         W3JT4yCVSJOM6YVm85TEtlOXxdTCd7iCSequxrpVM7Djysdkt3sPqGVMkLN5AlmuyR8k
-         e7S+z/mb0e+O3vyWtnMBjMrVd/0MWfYlfWO/Iu7x/hrRlK1eM3Xc/r8Mnr0D1a2Gty8u
-         BoR00BhVKJaJ2XrZT07BhZFgMNZaOSYxA/cjnNVPF/auj4rF1D87dWcwxxxU1PyQuVZY
-         7eq2Xwtp3kwalivoLlSLI/8UBm2bn1vEvNr771iE2++p/t5ms+3UJHhAaa1EgHsv8nNx
-         6pIw==
-X-Gm-Message-State: AOAM533SKPN+hI7CJzV/yns7hjVJBeLriKrHQR7RW0FG1MnPkdH6MHFZ
-        eCqqxGphOaapIURjBtGPIXvSvMbNipTXXfK2qEBs
-X-Google-Smtp-Source: ABdhPJwft6pcgB0QhLBi7pt1iV0pHMufLyRKQEjEH8t6ci5z3HEcu7wmJlWNIAy6UnuWowq/YZCxYIxjO4ZEPjn7Lg0=
-X-Received: by 2002:a05:6402:348f:: with SMTP id v15mr16610509edc.135.1623206426948;
- Tue, 08 Jun 2021 19:40:26 -0700 (PDT)
+        Tue, 8 Jun 2021 22:49:56 -0400
+X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Jun 2021 22:49:55 EDT
+Received: from localhost (unknown [192.168.167.235])
+        by regular1.263xmail.com (Postfix) with ESMTP id 164081F5D;
+        Wed,  9 Jun 2021 10:40:41 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.120] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P31748T140095126476544S1623206439537590_;
+        Wed, 09 Jun 2021 10:40:40 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <109c2c5a014b780e9cd049b63178e813>
+X-RL-SENDER: kever.yang@rock-chips.com
+X-SENDER: yk@rock-chips.com
+X-LOGIN-NAME: kever.yang@rock-chips.com
+X-FST-TO: linux-arm-kernel@lists.infradead.org
+X-RCPT-COUNT: 10
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v4 1/6] dt-bindings: spi: spi-rockchip: add description
+ for rv1126 and rk3568
+To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        Jon Lin <jon.lin@rock-chips.com>, broonie@kernel.org,
+        Johan Jonker <jbx6244@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210607063448.29589-1-jon.lin@rock-chips.com>
+ <20210607063448.29589-2-jon.lin@rock-chips.com>
+ <ef90ae6d-40bb-8389-f4f8-536a7b610fb7@gmail.com> <3681106.bcXerOTE6V@diego>
+From:   Kever Yang <kever.yang@rock-chips.com>
+Message-ID: <f815ad6c-36c5-039e-0ae8-0ab523a75caa@rock-chips.com>
+Date:   Wed, 9 Jun 2021 10:40:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210517092006.803332-1-omosnace@redhat.com> <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
- <CAFqZXNsh9njbFUNBugidbdiNqD3QbKzsw=KgNKSmW5hv-fD6tA@mail.gmail.com>
- <CAHC9VhQj_FvBqSGE+eZtbzvDoRAEbbo-6t_2E6MVuyiGA9N8Hw@mail.gmail.com> <CAFqZXNsVFv2yh5cXwWYXscYTAuoCKk4H-JbPAYzDbwKUzSDP3A@mail.gmail.com>
-In-Reply-To: <CAFqZXNsVFv2yh5cXwWYXscYTAuoCKk4H-JbPAYzDbwKUzSDP3A@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 8 Jun 2021 22:40:15 -0400
-Message-ID: <CAHC9VhSNWK11f+u8v+MN0VHC3_4u+30jom80rwaat8OsJKo5fQ@mail.gmail.com>
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3681106.bcXerOTE6V@diego>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 7:02 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> On Thu, Jun 3, 2021 at 7:46 PM Paul Moore <paul@paul-moore.com> wrote:
+Hi Heiko, Johan,
 
-...
-
-> > It sounds an awful lot like the lockdown hook is in the wrong spot.
-> > It sounds like it would be a lot better to relocate the hook than
-> > remove it.
+On 2021/6/7 下午5:04, Heiko Stübner wrote:
+> Your comment in [PATCH v3 3/8]:
+>>>> Adding "rockchip,rv1126-spi" to rockchip_spi_dt_match[] is strictly not
+>>>> needed when using "rockchip,rk3066-spi" as fall back string.
+>>>> Could a maintainer advise?
+>>>>
+>>>> Maybe this bug of mine should revert too?? Or is it legacy?
+>>>> spi: rockchip: add compatible string for px30 rk3308 rk3328
+>>>> https://lore.kernel.org/r/20200309151004.7780-1-jbx6244@gmail.com
+>>> I agree with you. If the maintainer doesn't have any comments, I will use
+>>> "rockchip,spi" as compatible names for the subsequent rk platform.
+>> Compatibility strings are supposed to be SoC orientated.
+>> So generic ones like in the manufacturer tree can't be used here.
+> Johan ist right :-) .
 >
-> I don't see how you would solve this by moving the hook. Where do you
-> want to relocate it?
+> rockchip,spi won't work at all, especially as these controllers always change
+> over time. [0]
+>
+> Best example is the iommu. We started with "rockchip,iommu" thinking this
+> won't change over time, but with the rk3568 we get a new slightly different
+> iommu.
 
-Wherever it makes sense.  Based on your comments it really sounded
-like the hook was in a bad spot and since your approach in a lot of
-this had been to remove or disable hooks I wanted to make sure that
-relocating the hook was something you had considered.  Thankfully it
-sounds like you have considered moving the hook - that's good.
 
-> The main obstacle is that the message containing
-> the SA dump is sent to consumers via a simple netlink broadcast, which
-> doesn't provide a facility to redact the SA secret on a per-consumer
-> basis. I can't see any way to make the checks meaningful for SELinux
-> without a major overhaul of the broadcast logic.
+Rockchip SPI and SFC controller can use a generic compatible string, 
+because there is a version
 
-Fair enough.
+register inside the IP, and all the feature update will have a new IP 
+version, so the driver is
 
--- 
-paul moore
-www.paul-moore.com
+used for the SPI/SFC IP  in all SoCs, we don't need to care which SoC is 
+using this driver.
+
+If we have to use the compatible string "rockchip,rk3066-spi" and each 
+for a new soc, then we
+
+have to update the driver compatible id list and document for each soc 
+which is totally not need
+
+and not correct  to do it.
+
+The example "iommu" is different, because there is no version register 
+inside the IP and the IP
+
+can not identify itself, which need a software define "-vX".
+
+
+Thanks,
+
+- Kever
+
+> The vendor-kernel then introduces somewhat random "-vX" additions to
+> distinguish them, but often they do seem to be very software-centric.
+>
+> Meaning, hardware-designers moved stuff around and software-developers
+> then invented the versioning to differentiate between versions.
+>
+> The devicetree is supposed to describe the hardware though, so going with
+> the relevant soc-specific compatible gives us the necessary hardware-centric
+> differentiation.
+>
+> Also this allows to catch later issues with specific soc implementations ;-)
+> Like 6 monts down the road we discover some special behaviour on the
+> rk3568 and devicetree is supposed to be stable.
+>
+> So having the relevant compatibles in place allows us to just add driver
+> fixes and have those apply on the rk3568 if that is need at some point.
+>
+> Heiko
+>
+>
+>
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+>
+>
+
+
