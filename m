@@ -2,148 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78653A1586
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5273A1572
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236379AbhFINZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:25:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21585 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236287AbhFINZa (ORCPT
+        id S234010AbhFINZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:25:14 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:38450 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236038AbhFINZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:25:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623245015;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GMoGoh2HRdMM9sJwX6YN1+PVxLx5DD2e1fp3oIQPxak=;
-        b=gWcvEVuxQvyaftW9FAGXcYg6Fdt2bDSmV5SZu7roPkCcxilDAask2jjkGCHMkEXdaKY9O9
-        cIhBYbf8cJ9dkiQv4Q1uocFLtQmvsVYjiZAjnfJoxiJFd2POcN22tJs9ECSVdHR4usLPck
-        ns+FlQY9fPR2TDrz8BGBi5brUGRBKT8=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-fIzKNrHuMq2j3N2AqnqrAA-1; Wed, 09 Jun 2021 09:23:32 -0400
-X-MC-Unique: fIzKNrHuMq2j3N2AqnqrAA-1
-Received: by mail-oi1-f197.google.com with SMTP id w9-20020a0568080d49b02901f3febe5739so4117084oik.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 06:23:30 -0700 (PDT)
+        Wed, 9 Jun 2021 09:25:05 -0400
+Received: by mail-ot1-f41.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so10277276otk.5;
+        Wed, 09 Jun 2021 06:22:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GMoGoh2HRdMM9sJwX6YN1+PVxLx5DD2e1fp3oIQPxak=;
-        b=RnbLg2BN+k+8ih6ffzPlxXb1DP1HFWCYbUc/+wI9Sn+jB9YB0XZEuvGb+zjr9hpUGP
-         /0FV87tRlBK69aacDzL4gHqD4ynpjeA6ecJekTNgYhKY55MdkvjWh/Jnfm0Vbcg7w6SE
-         hPIoVGY7RmiQ823EW2zWzPJLIkoA5m2dhAc/75QYP35hDKUP3FUYWYHnTK49mXZ2VNhE
-         tK5WqKUlAQP7rPWXwdlDzapABu9FGB84gBDgiWOmMXKbXVdr2lf0mHdredN0vnHKLoG2
-         NOKElJujhYq3S1n8n6ecyxLOcUUAirrIBObXNoHXSeYEMd26TA4CoCEx7/Jz6BbND5RB
-         FayA==
-X-Gm-Message-State: AOAM533NSdp1Mpc+0+F+TTEoQgA2AhpZhhccNFQRzLfXI6vJHp2WnX1G
-        TR6cx76dNGZ2rkq3pSkn2A9jTbifeac+W7m7jNQNxDvdsTURNn7ZwqnkLE2Olb+X7q4vi7+J6nY
-        NHcUoF/KgvGmf+Ix2iN5qFrgA
-X-Received: by 2002:a9d:1d21:: with SMTP id m30mr23363354otm.145.1623245010292;
-        Wed, 09 Jun 2021 06:23:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJydARdiHq8phH1rVCd2rtPnu21b5nt/oM27/i7eYYIcqaQSBvNa5sJkdoPzOFhOlfjHs69E/w==
-X-Received: by 2002:a9d:1d21:: with SMTP id m30mr23363338otm.145.1623245010121;
-        Wed, 09 Jun 2021 06:23:30 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 21sm3165654otd.21.2021.06.09.06.23.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 06:23:29 -0700 (PDT)
-From:   trix@redhat.com
-To:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
-        michal.simek@xilinx.com
-Cc:     linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH 7/7] fpga: altera: remove altera- prefix on files
-Date:   Wed,  9 Jun 2021 06:21:51 -0700
-Message-Id: <20210609132151.3081379-9-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210609132151.3081379-1-trix@redhat.com>
-References: <20210609132151.3081379-1-trix@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5wNfcwQ4q6mSgQUiBQC9ZHhM+heDyjoYvZ01H+MstbQ=;
+        b=m8ISMGgx9vCD/lCKVoBBZ7V+ZfeJt5iWddrSKjpWdLRr0Ltj6Qo84gLl4yjHN80k4f
+         epLi7DhtVa8n1j8LfC9sxKDghA85NhQS6eXCyRyFnhRssucKAZAEwwDWDm/8oylOdvLZ
+         RB2dXxw+6L8cCSeSGeZ215i5r6yIDANvhelSTWFCuuOcpcoSSZyaAmwUil2PlIgi8aJA
+         c7i5cItODRsnGh7F55rMyi76HLap73NB3gkqGMUB6SFfilpVsOSKCJGiZotsOd0dqgov
+         i7aDaPan30dvngJd4Mmzb95Od5xy1nnAObd2Ie/eAA10rB7yfDvQkaf6hqhAkuKgrNU1
+         KY1Q==
+X-Gm-Message-State: AOAM531IeuI5SJkaMj0RWy/c1qjoKsK/bhaTqcxQpGbROm19w+tdE/lv
+        /HbhJxCLI62iTTONsWUAORatSpCUfsoFxZ/sQsw=
+X-Google-Smtp-Source: ABdhPJzYN6rt1ee7irlDPVN2uDJ0SsgiqxV4jKjoFBec8CtT94LjptYJtY5F0f0xN5tubPu1JK1jDYpxx1jaa5u5dgU=
+X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr4143410otb.206.1623244974564;
+ Wed, 09 Jun 2021 06:22:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1623218580-41912-1-git-send-email-tanxiaofei@huawei.com>
+In-Reply-To: <1623218580-41912-1-git-send-email-tanxiaofei@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 9 Jun 2021 15:22:43 +0200
+Message-ID: <CAJZ5v0ifxfuwdHd9HrWby6qdXwCq1YHbk6UapQL3g39TGynLHg@mail.gmail.com>
+Subject: Re: [PATCH v6] ACPI / APEI: fix the regression of synchronous
+ external aborts occur in user-mode
+To:     Xiaofei Tan <tanxiaofei@huawei.com>
+Cc:     James Morse <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxarm@openeuler.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Wed, Jun 9, 2021 at 8:06 AM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
+>
+> Before commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
+> synchronise with APEI's irq work"), do_sea() would unconditionally
+> signal the affected task from the arch code. Since that change,
+> the GHES driver sends the signals.
 
-It is not necessary to have an altera- prefix on a file
-when the file is in an altera/ subdir.
+Since this fixes a regression apparently introduced by the above
+commit, please add a Fixes tag pointing to that commit to it.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/fpga/altera/Makefile                         | 12 ++++++------
- drivers/fpga/altera/{altera-cvp.c => cvp.c}          |  0
- .../altera/{altera-fpga2sdram.c => fpga2sdram.c}     |  0
- .../{altera-freeze-bridge.c => freeze-bridge.c}      |  0
- .../fpga/altera/{altera-hps2fpga.c => hps2fpga.c}    |  0
- .../{altera-pr-ip-core-plat.c => pr-ip-core-plat.c}  |  0
- .../altera/{altera-pr-ip-core.c => pr-ip-core.c}     |  0
- drivers/fpga/altera/{altera-ps-spi.c => ps-spi.c}    |  0
- 8 files changed, 6 insertions(+), 6 deletions(-)
- rename drivers/fpga/altera/{altera-cvp.c => cvp.c} (100%)
- rename drivers/fpga/altera/{altera-fpga2sdram.c => fpga2sdram.c} (100%)
- rename drivers/fpga/altera/{altera-freeze-bridge.c => freeze-bridge.c} (100%)
- rename drivers/fpga/altera/{altera-hps2fpga.c => hps2fpga.c} (100%)
- rename drivers/fpga/altera/{altera-pr-ip-core-plat.c => pr-ip-core-plat.c} (100%)
- rename drivers/fpga/altera/{altera-pr-ip-core.c => pr-ip-core.c} (100%)
- rename drivers/fpga/altera/{altera-ps-spi.c => ps-spi.c} (100%)
+> This exposes a problem as errors the GHES driver doesn't understand
+> or doesn't handle effectively are silently ignored. It will cause
+> the errors get taken again, and circulate endlessly. User-space task
+> get stuck in this loop.
+>
+> Existing firmware on Kunpeng9xx systems reports cache errors with the
+> 'ARM Processor Error' CPER records.
+>
+> Do memory failure handling for ARM Processor Error Section just like
+> for Memory Error Section.
 
-diff --git a/drivers/fpga/altera/Makefile b/drivers/fpga/altera/Makefile
-index 4d725c72fcbef..c2d626cd1f540 100644
---- a/drivers/fpga/altera/Makefile
-+++ b/drivers/fpga/altera/Makefile
-@@ -1,12 +1,12 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--obj-$(CONFIG_ALTERA_FREEZE_BRIDGE) += altera-freeze-bridge.o
--obj-$(CONFIG_ALTERA_PR_IP_CORE) += altera-pr-ip-core.o
--obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT) += altera-pr-ip-core-plat.o
--obj-$(CONFIG_FPGA_MGR_ALTERA_CVP) += altera-cvp.o
--obj-$(CONFIG_FPGA_MGR_ALTERA_PS_SPI) += altera-ps-spi.o
-+obj-$(CONFIG_ALTERA_FREEZE_BRIDGE) += freeze-bridge.o
-+obj-$(CONFIG_ALTERA_PR_IP_CORE) += pr-ip-core.o
-+obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT) += pr-ip-core-plat.o
-+obj-$(CONFIG_FPGA_MGR_ALTERA_CVP) += cvp.o
-+obj-$(CONFIG_FPGA_MGR_ALTERA_PS_SPI) += ps-spi.o
- obj-$(CONFIG_FPGA_MGR_SOCFPGA) += socfpga.o
- obj-$(CONFIG_FPGA_MGR_SOCFPGA_A10) += socfpga-a10.o
- obj-$(CONFIG_FPGA_MGR_STRATIX10_SOC) += stratix10-soc.o
- obj-$(CONFIG_FPGA_MGR_TS73XX) += ts73xx-fpga.o
--obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE) += altera-hps2fpga.o altera-fpga2sdram.o
-+obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE) += hps2fpga.o fpga2sdram.o
-diff --git a/drivers/fpga/altera/altera-cvp.c b/drivers/fpga/altera/cvp.c
-similarity index 100%
-rename from drivers/fpga/altera/altera-cvp.c
-rename to drivers/fpga/altera/cvp.c
-diff --git a/drivers/fpga/altera/altera-fpga2sdram.c b/drivers/fpga/altera/fpga2sdram.c
-similarity index 100%
-rename from drivers/fpga/altera/altera-fpga2sdram.c
-rename to drivers/fpga/altera/fpga2sdram.c
-diff --git a/drivers/fpga/altera/altera-freeze-bridge.c b/drivers/fpga/altera/freeze-bridge.c
-similarity index 100%
-rename from drivers/fpga/altera/altera-freeze-bridge.c
-rename to drivers/fpga/altera/freeze-bridge.c
-diff --git a/drivers/fpga/altera/altera-hps2fpga.c b/drivers/fpga/altera/hps2fpga.c
-similarity index 100%
-rename from drivers/fpga/altera/altera-hps2fpga.c
-rename to drivers/fpga/altera/hps2fpga.c
-diff --git a/drivers/fpga/altera/altera-pr-ip-core-plat.c b/drivers/fpga/altera/pr-ip-core-plat.c
-similarity index 100%
-rename from drivers/fpga/altera/altera-pr-ip-core-plat.c
-rename to drivers/fpga/altera/pr-ip-core-plat.c
-diff --git a/drivers/fpga/altera/altera-pr-ip-core.c b/drivers/fpga/altera/pr-ip-core.c
-similarity index 100%
-rename from drivers/fpga/altera/altera-pr-ip-core.c
-rename to drivers/fpga/altera/pr-ip-core.c
-diff --git a/drivers/fpga/altera/altera-ps-spi.c b/drivers/fpga/altera/ps-spi.c
-similarity index 100%
-rename from drivers/fpga/altera/altera-ps-spi.c
-rename to drivers/fpga/altera/ps-spi.c
--- 
-2.26.3
+So why is this the right thing to do?
 
+I guess it doesn't address the problem entirely, but only in this
+particular case, so what if the firmware on some other platform
+reports errors with a new type unknown to the GHES driver?  Will the
+problem show up again?
+
+> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+> Reviewed-by: James Morse <james.morse@arm.com>
+>
+> ---
+> Changes since v5:
+> - Do some changes following James's suggestions: 1) optimize commit log
+> 2) use err_info->length instead of err_info++' 3) some coding style
+> advice.
+>
+> Changes since v4:
+> - 1. Change the patch name from " ACPI / APEI: do memory failure on the
+> physical address reported by ARM processor error section" to this
+> more proper one.
+> - 2. Add a comment in the code to tell why not filter out corrected
+> error in an uncorrected section.
+>
+> Changes since v3:
+> - Print unhandled error following James Morse's advice.
+>
+> Changes since v2:
+> - Updated commit log
+> ---
+>  drivers/acpi/apei/ghes.c | 81 ++++++++++++++++++++++++++++++++++++++----------
+>  1 file changed, 64 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index fce7ade..0c8330e 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+> @@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
+>         gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
+>  }
+>
+> -static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+> -                                      int sev)
+> +static bool ghes_do_memory_failure(u64 physical_addr, int flags)
+>  {
+>         unsigned long pfn;
+> -       int flags = -1;
+> -       int sec_sev = ghes_severity(gdata->error_severity);
+> -       struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+>
+>         if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
+>                 return false;
+>
+> -       if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+> -               return false;
+> -
+> -       pfn = mem_err->physical_addr >> PAGE_SHIFT;
+> +       pfn = PHYS_PFN(physical_addr);
+>         if (!pfn_valid(pfn)) {
+>                 pr_warn_ratelimited(FW_WARN GHES_PFX
+>                 "Invalid address in generic error data: %#llx\n",
+> -               mem_err->physical_addr);
+> +               physical_addr);
+>                 return false;
+>         }
+>
+> +       memory_failure_queue(pfn, flags);
+> +       return true;
+> +}
+> +
+> +static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+> +                                      int sev)
+> +{
+> +       int flags = -1;
+> +       int sec_sev = ghes_severity(gdata->error_severity);
+> +       struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+> +
+> +       if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+> +               return false;
+> +
+>         /* iff following two events can be handled properly by now */
+>         if (sec_sev == GHES_SEV_CORRECTED &&
+>             (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+> @@ -470,14 +477,56 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+>         if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
+>                 flags = 0;
+>
+> -       if (flags != -1) {
+> -               memory_failure_queue(pfn, flags);
+> -               return true;
+> -       }
+> +       if (flags != -1)
+> +               return ghes_do_memory_failure(mem_err->physical_addr, flags);
+>
+>         return false;
+>  }
+>
+> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
+> +{
+> +       struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+> +       bool queued = false;
+> +       int sec_sev, i;
+> +       char *p;
+> +
+> +       log_arm_hw_error(err);
+> +
+> +       sec_sev = ghes_severity(gdata->error_severity);
+> +       if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
+> +               return false;
+> +
+> +       p = (char *)(err + 1);
+> +       for (i = 0; i < err->err_info_num; i++) {
+> +               struct cper_arm_err_info *err_info = (struct cper_arm_err_info *)p;
+> +               bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
+> +               bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
+> +               const char *error_type = "unknown error";
+> +
+> +               /*
+> +                * The field (err_info->error_info & BIT(26)) is fixed to set to
+> +                * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
+> +                * firmware won't mix corrected errors in an uncorrected section,
+> +                * and don't filter out 'corrected' error here.
+> +                */
+> +               if (is_cache && has_pa) {
+> +                       queued = ghes_do_memory_failure(err_info->physical_fault_addr, 0);
+> +                       p += err_info->length;
+> +                       continue;
+> +               }
+> +
+> +               if (err_info->type < ARRAY_SIZE(cper_proc_error_type_strs))
+> +                       error_type = cper_proc_error_type_strs[err_info->type];
+> +
+> +               pr_warn_ratelimited(FW_WARN GHES_PFX
+> +                                   "Unhandled processor error type: %s\n",
+> +                                   error_type);
+> +               p += err_info->length;
+> +       }
+> +
+> +       return queued;
+> +}
+> +
+>  /*
+>   * PCIe AER errors need to be sent to the AER driver for reporting and
+>   * recovery. The GHES severities map to the following AER severities and
+> @@ -605,9 +654,7 @@ static bool ghes_do_proc(struct ghes *ghes,
+>                         ghes_handle_aer(gdata);
+>                 }
+>                 else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
+> -                       struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+> -
+> -                       log_arm_hw_error(err);
+> +                       queued = ghes_handle_arm_hw_error(gdata, sev);
+>                 } else {
+>                         void *err = acpi_hest_get_payload(gdata);
+>
+> --
+> 2.8.1
+>
