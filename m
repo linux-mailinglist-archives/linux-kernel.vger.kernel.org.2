@@ -2,179 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCAB3A1FBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B713A1FC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhFIWGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 18:06:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26557 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230155AbhFIWGD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 18:06:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623276246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j1+XTsbXIi8UuChDa/DLFwX5AWXjYwtgSyXqS9K71x0=;
-        b=JwW8mAm+dI9FoP2yORK73LfIscqBg4kiPaw4ji+QoCRg7nETTy061Y70X+5gHYMXjqQJzf
-        tZESdh8OwTFQ67ufBaqcvzW1IAuhj29QEwovOeR6x9yhCbYeUMgbsUqLTm/BY31lH4PkqC
-        eT4eniOGTimyWPmiIiMxEOLj+uODlAQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-ZTrXVOBeOMenxkr-2wgi_w-1; Wed, 09 Jun 2021 18:04:05 -0400
-X-MC-Unique: ZTrXVOBeOMenxkr-2wgi_w-1
-Received: by mail-wm1-f71.google.com with SMTP id l32-20020a05600c1d20b02901a82ed9095dso1105850wms.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 15:04:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=j1+XTsbXIi8UuChDa/DLFwX5AWXjYwtgSyXqS9K71x0=;
-        b=V3zG7fA7jWb9QGIbHcbCoFRKoleTnoqYEB+2ifvbu+yYtra9wNIr2eumfkP5E8GrR1
-         gomA0Aw+eLNe/DlQ5luoSeDGqVJU9G0DYu5wBIPhWqxPisMF9IG10esijeS7YJPFy9Ye
-         mYyOM4vaZPku5DvC2QC4723Jw6zrANO3Iwd6D5SVJlIRGocTrjCnkQMSnVHJ99scl3A7
-         LjCPLkCGsbgaVElq3Fh1D1A5WRR28xN3waMXM2L6EWmFnErwn5H6qwnHOWXpAmZG/tHN
-         BJDXOoEaeIs05U1W74x9o90Ify/WxIGVQeqLMc8VzLRoThDsKwNc0xKG60ODU558UPFU
-         0DGw==
-X-Gm-Message-State: AOAM5304i+hEFpv+LpRzxmP+T5oIQTa3YvLqELatgsmBg0ndsoo60dXq
-        dtAa7WAvukfOe5uc9m91b/VC7DeMFDH0rk/s0Bbb0niuSzID+QF+WZOsareXVea8uwhLOUZu26k
-        dYy3S8kM75TCxC+qxJ9d02SNc
-X-Received: by 2002:a5d:4dc4:: with SMTP id f4mr1900423wru.181.1623276244112;
-        Wed, 09 Jun 2021 15:04:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyK42aoT4mhmfnQnZDmX/DrUajp6FnM5dO8sLjvfv72GrDAnSKuoWe58PgmSU6TZ6TX/JJLgQ==
-X-Received: by 2002:a5d:4dc4:: with SMTP id f4mr1900412wru.181.1623276243908;
-        Wed, 09 Jun 2021 15:04:03 -0700 (PDT)
-Received: from redhat.com ([77.124.100.105])
-        by smtp.gmail.com with ESMTPSA id m23sm8920358wml.27.2021.06.09.15.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 15:04:03 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 18:03:59 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Wei Wang <weiwan@google.com>,
-        David Miller <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH v3 1/4] virtio_net: move tx vq operation under tx queue
- lock
-Message-ID: <20210609175825-mutt-send-email-mst@kernel.org>
-References: <20210526082423.47837-1-mst@redhat.com>
- <20210526082423.47837-2-mst@redhat.com>
- <476e9418-156d-dbc9-5105-11d2816b95f7@redhat.com>
- <CA+FuTSccMS4qEyexAuzjcuevS8KwaruJih5_0hgiOFz4BpDHzA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+FuTSccMS4qEyexAuzjcuevS8KwaruJih5_0hgiOFz4BpDHzA@mail.gmail.com>
+        id S230216AbhFIWHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 18:07:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229782AbhFIWHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 18:07:34 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29A13613E7;
+        Wed,  9 Jun 2021 22:05:39 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1lr6KP-002aSr-TA; Wed, 09 Jun 2021 18:05:37 -0400
+Message-ID: <20210609220457.220164154@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Wed, 09 Jun 2021 18:04:57 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH 0/2] tracing: Simplify and document the trace event filtering temp buffer code
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 06:25:11PM -0400, Willem de Bruijn wrote:
-> On Wed, May 26, 2021 at 11:41 PM Jason Wang <jasowang@redhat.com> wrote:
-> >
-> >
-> > 在 2021/5/26 下午4:24, Michael S. Tsirkin 写道:
-> > > It's unsafe to operate a vq from multiple threads.
-> > > Unfortunately this is exactly what we do when invoking
-> > > clean tx poll from rx napi.
-> > > Same happens with napi-tx even without the
-> > > opportunistic cleaning from the receive interrupt: that races
-> > > with processing the vq in start_xmit.
-> > >
-> > > As a fix move everything that deals with the vq to under tx lock.
-> 
-> This patch also disables callbacks during free_old_xmit_skbs
-> processing on tx interrupt. Should that be a separate commit, with its
-> own explanation?
-> > >
-> > > Fixes: b92f1e6751a6 ("virtio-net: transmit napi")
-> > > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > > ---
-> > >   drivers/net/virtio_net.c | 22 +++++++++++++++++++++-
-> > >   1 file changed, 21 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > index ac0c143f97b4..12512d1002ec 100644
-> > > --- a/drivers/net/virtio_net.c
-> > > +++ b/drivers/net/virtio_net.c
-> > > @@ -1508,6 +1508,8 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
-> > >       struct virtnet_info *vi = sq->vq->vdev->priv;
-> > >       unsigned int index = vq2txq(sq->vq);
-> > >       struct netdev_queue *txq;
-> > > +     int opaque;
-> > > +     bool done;
-> > >
-> > >       if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
-> > >               /* We don't need to enable cb for XDP */
-> > > @@ -1517,10 +1519,28 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
-> > >
-> > >       txq = netdev_get_tx_queue(vi->dev, index);
-> > >       __netif_tx_lock(txq, raw_smp_processor_id());
-> > > +     virtqueue_disable_cb(sq->vq);
-> > >       free_old_xmit_skbs(sq, true);
-> > > +
-> > > +     opaque = virtqueue_enable_cb_prepare(sq->vq);
-> > > +
-> > > +     done = napi_complete_done(napi, 0);
-> > > +
-> > > +     if (!done)
-> > > +             virtqueue_disable_cb(sq->vq);
-> > > +
-> > >       __netif_tx_unlock(txq);
-> > >
-> > > -     virtqueue_napi_complete(napi, sq->vq, 0);
-> > > +     if (done) {
-> > > +             if (unlikely(virtqueue_poll(sq->vq, opaque))) {
-> 
-> Should this also be inside the lock, as it operates on vq?
 
-No vq poll is ok outside of locks, it's atomic.
+When filtering trace events, a temp buffer is used because the extra copy
+from the temp buffer into the ring buffer is still faster than the direct
+write into the ring buffer followed by a discard if the filter does not
+match.
 
-> Is there anything that is not allowed to run with the lock held?
-> > > +                     if (napi_schedule_prep(napi)) {
-> > > +                             __netif_tx_lock(txq, raw_smp_processor_id());
-> > > +                             virtqueue_disable_cb(sq->vq);
-> > > +                             __netif_tx_unlock(txq);
-> > > +                             __napi_schedule(napi);
-> > > +                     }
-> > > +             }
-> > > +     }
-> >
-> >
-> > Interesting, this looks like somehwo a open-coded version of
-> > virtqueue_napi_complete(). I wonder if we can simply keep using
-> > virtqueue_napi_complete() by simply moving the __netif_tx_unlock() after
-> > that:
-> >
-> > netif_tx_lock(txq);
-> > free_old_xmit_skbs(sq, true);
-> > virtqueue_napi_complete(napi, sq->vq, 0);
-> > __netif_tx_unlock(txq);
-> 
-> Agreed. And subsequent block
-> 
->        if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
->                netif_tx_wake_queue(txq);
-> 
-> as well
+But the data that can be stored in the temp buffer is a PAGE_SIZE minus the
+ring buffer event header. The calculation of that header size is complex,
+but using the helper macro "struct_size()" can simplify it.
 
-Yes I thought I saw something here that can't be called with tx lock
-held but I no longer see it. Will do.
+Also, add more documentation about what is going on.
 
-> >
-> > Thanks
-> >
-> >
-> > >
-> > >       if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
-> > >               netif_tx_wake_queue(txq);
-> >
+Link: https://lore.kernel.org/stable/CAHk-=whKbJkuVmzb0hD3N6q7veprUrSpiBHRxVY=AffWZPtxmg@mail.gmail.com/
 
+Steven Rostedt (VMware) (2):
+      tracing: Simplify the max length test when using the filtering temp buffer
+      tracing: Add better comments for the filtering temp buffer use case
+
+----
+ kernel/trace/trace.c | 40 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 38 insertions(+), 2 deletions(-)
