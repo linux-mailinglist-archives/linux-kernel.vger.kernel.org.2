@@ -2,207 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC9F3A1162
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024223A1164
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236044AbhFIKrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:47:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40124 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232165AbhFIKq4 (ORCPT
+        id S238026AbhFIKsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232165AbhFIKsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:46:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623235498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wn61wvGsrZPr3Bs7lAZrFJOV9d4oeYutZi5DKf0Dx9U=;
-        b=IQ8fmdYqKb3AA4iMD0kaZNRuARMilMw2qYe1fn0IaGYOdF4+/2vHESkKlAFpqQAUVacXEw
-        krDYswvGfNlwtJ6VMap91xFoBr+PilOIn1GWdP+tntaMF9RnQv2P5FX1rP04E2yLe+auZw
-        DXo1ZBIXtHC+MswWvcGFvP++OyHQZ4A=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-AYMiKa5MOzSPRa62LOrWIg-1; Wed, 09 Jun 2021 06:44:57 -0400
-X-MC-Unique: AYMiKa5MOzSPRa62LOrWIg-1
-Received: by mail-wr1-f72.google.com with SMTP id e11-20020a056000178bb0290119c11bd29eso5727290wrg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:44:57 -0700 (PDT)
+        Wed, 9 Jun 2021 06:48:53 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE7BC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 03:46:59 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id b9so25002618ilr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:46:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k+5GzVyM+TFuTZLW/qFX3WiZRW9D495A3O6aGgKjLxs=;
+        b=icqvxZiYbmJBLHoQNod0FxFLxphOWacXqY4xuBdb5fqVvTYbUo37QfNhVZL+BVBc7v
+         vv3ricSDDsmBFXoggCz0oXH5e33zFyx6ZkePhITrR1kcFEGVWqJ1B7d+62BnZo77+GEy
+         n0fpiYQsT5Qk0tsjZc/uP4tlxLa24JdPBxt7I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Wn61wvGsrZPr3Bs7lAZrFJOV9d4oeYutZi5DKf0Dx9U=;
-        b=I0jRMAUDxWGD/KxDJoaI0dnkb//5uxFoJpSQs+ASKcySnnDc4YXS2HgLL4D807mhAv
-         v13d9gAk4PyEadRP3L+ru8RmKcOgGq7oiiqKN0k/jMVcdk7bqn+PUjB4BHHYEkgc/us5
-         +nbteFQKgoXDGUzKeXqx06RyOeVMVaYDmGRQA34NJZT+t2yiyavq5JFo7TGp1sDLi5Cz
-         Hwjmjrxdbfw0CEWJUdF/L4yaY6hABKCqFh+kVssziioo4wJVbwYRswApG8lEaY3FBvhR
-         TJPXkfFW8zgOSAw0Dt4RfPVFXT6Pl+5niK+xDxNKpk7RAno7mNYqgOlcXkT0u5lyFdsl
-         V0Ig==
-X-Gm-Message-State: AOAM5318RnSOenowAU1IogzTrgyjH5XoRNyRPX1jT5Dq1D7BZ0kl8dJd
-        U9NvzjDbmcOb8+kRGD7NIXs1g9Q/qOE8pNosMuz/BDm1ipYvnDONhcNI4E97CE6AwVpheXbQu9O
-        V32x0ikrw/2K4VgtpbKifYXEq
-X-Received: by 2002:a1c:770b:: with SMTP id t11mr9099943wmi.79.1623235496561;
-        Wed, 09 Jun 2021 03:44:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx7B8PRy8M6hppCE72ZIXVc5gaAVIQuKoTl7DV/+tdt0wcwyIUod9OORSca87u9VRDHyYd1Jg==
-X-Received: by 2002:a1c:770b:: with SMTP id t11mr9099928wmi.79.1623235496361;
-        Wed, 09 Jun 2021 03:44:56 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
-        by smtp.gmail.com with ESMTPSA id o17sm22066824wrp.47.2021.06.09.03.44.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 03:44:55 -0700 (PDT)
-Subject: Re: [PATCH v4] mm/compaction: let proactive compaction order
- configurable
-To:     chukaiping <chukaiping@baidu.com>, mcgrof@kernel.org,
-        keescook@chromium.org, yzaikin@google.com,
-        akpm@linux-foundation.org, vbabka@suse.cz, nigupta@nvidia.com,
-        bhe@redhat.com, khalid.aziz@oracle.com, iamjoonsoo.kim@lge.com,
-        mateusznosek0@gmail.com, sh_def@163.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <1619576901-9531-1-git-send-email-chukaiping@baidu.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <a3f6628a-8165-429f-0383-c522b4c49197@redhat.com>
-Date:   Wed, 9 Jun 2021 12:44:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k+5GzVyM+TFuTZLW/qFX3WiZRW9D495A3O6aGgKjLxs=;
+        b=CYD9GsOIXwc3xo0AlX7Nt0njNpA7N/QTF6B43W8gdeol5IvuySmunpPZphpHm2DwRG
+         yJMQCOSgybUL0UjolLjAYSmVvTYjpVlgU4/+gezyBrvJ6uA54oNScGHrhHbYCUcf8a+C
+         8l6/vRs6Sn18/xjkoctf7qW5FbjF0Fxs2JAdf/OgOgpH+F+u9YMGpCHcuzNtaZ+nkC7r
+         9ZxoDNRh+GZnH5M851nZKWhLHEXT2fVs+ZAiKxvuWaCymVQ9FRBoNZcO1Ge5gC0/9EEK
+         Xfp5FJ0iSMCReS1thhSdzma5KuBILHDtY4lJ8O1KMCoOsNepimAuIBGALOZP7iLzJDQP
+         py5g==
+X-Gm-Message-State: AOAM533+LAioubRh3rVxicZ6+Pnp6D/Cr35k7LQESdAe1E8T7gyrSEuB
+        LhLtConTTxfactfn6sO4r/1C7z5UWOA6rzQPGc9g3g==
+X-Google-Smtp-Source: ABdhPJwgBjwFhsmtC1XmbGiOcK7Z4pF0o5B7kd44vj0dZ9UzBo2ihwDg/0svNbMUYUf6PM+t2LazOCf1UIXVUByntUc=
+X-Received: by 2002:a05:6638:11:: with SMTP id z17mr24468108jao.102.1623235618594;
+ Wed, 09 Jun 2021 03:46:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1619576901-9531-1-git-send-email-chukaiping@baidu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210609044854.393452-1-hsinyi@chromium.org> <7a96166f-70d9-bc0e-72cc-53a8612741e8@gmail.com>
+In-Reply-To: <7a96166f-70d9-bc0e-72cc-53a8612741e8@gmail.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Wed, 9 Jun 2021 18:46:32 +0800
+Message-ID: <CAJMQK-gtQpHTJvjy240fN31G7=sz73w2jJQk6_zqdeAiYpXJsw@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: mt8183: add jpeg enc node for mt8183
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>, maoguang.meng@mediatek.com,
+        Yong Wu <yong.wu@mediatek.com>,
+        Tomasz Figa <tfiga@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.04.21 04:28, chukaiping wrote:
-> Currently the proactive compaction order is fixed to
-> COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
-> normal 4KB memory, but it's too high for the machines with small
-> normal memory, for example the machines with most memory configured
-> as 1GB hugetlbfs huge pages. In these machines the max order of
-> free pages is often below 9, and it's always below 9 even with hard
-> compaction. This will lead to proactive compaction be triggered very
-> frequently. In these machines we only care about order of 3 or 4.
-> This patch export the oder to proc and let it configurable
-> by user, and the default value is still COMPACTION_HPAGE_ORDER.
-> 
-> Signed-off-by: chukaiping <chukaiping@baidu.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
-> 
-> Changes in v4:
->      - change the sysctl file name to proactive_compation_order
-> 
-> Changes in v3:
->      - change the min value of compaction_order to 1 because the fragmentation
->        index of order 0 is always 0
->      - move the definition of max_buddy_zone into #ifdef CONFIG_COMPACTION
-> 
-> Changes in v2:
->      - fix the compile error in ia64 and powerpc, move the initialization
->        of sysctl_compaction_order to kcompactd_init because
->        COMPACTION_HPAGE_ORDER is a variable in these architectures
->      - change the hard coded max order number from 10 to MAX_ORDER - 1
-> 
->   include/linux/compaction.h |    1 +
->   kernel/sysctl.c            |   10 ++++++++++
->   mm/compaction.c            |   12 ++++++++----
->   3 files changed, 19 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-> index ed4070e..a0226b1 100644
-> --- a/include/linux/compaction.h
-> +++ b/include/linux/compaction.h
-> @@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
->   #ifdef CONFIG_COMPACTION
->   extern int sysctl_compact_memory;
->   extern unsigned int sysctl_compaction_proactiveness;
-> +extern unsigned int sysctl_proactive_compaction_order;
->   extern int sysctl_compaction_handler(struct ctl_table *table, int write,
->   			void *buffer, size_t *length, loff_t *ppos);
->   extern int sysctl_extfrag_threshold;
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 62fbd09..ed9012e 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -196,6 +196,7 @@ enum sysctl_writes_mode {
->   #endif /* CONFIG_SCHED_DEBUG */
->   
->   #ifdef CONFIG_COMPACTION
-> +static int max_buddy_zone = MAX_ORDER - 1;
->   static int min_extfrag_threshold;
->   static int max_extfrag_threshold = 1000;
->   #endif
-> @@ -2871,6 +2872,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
->   		.extra2		= &one_hundred,
->   	},
->   	{
-> +		.procname       = "proactive_compation_order",
-> +		.data           = &sysctl_proactive_compaction_order,
-> +		.maxlen         = sizeof(sysctl_proactive_compaction_order),
-> +		.mode           = 0644,
-> +		.proc_handler   = proc_dointvec_minmax,
-> +		.extra1         = SYSCTL_ONE,
-> +		.extra2         = &max_buddy_zone,
-> +	},
-> +	{
->   		.procname	= "extfrag_threshold",
->   		.data		= &sysctl_extfrag_threshold,
->   		.maxlen		= sizeof(int),
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index e04f447..171436e 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1925,17 +1925,18 @@ static bool kswapd_is_running(pg_data_t *pgdat)
->   
->   /*
->    * A zone's fragmentation score is the external fragmentation wrt to the
-> - * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
-> + * sysctl_proactive_compaction_order. It returns a value in the range
-> + * [0, 100].
->    */
->   static unsigned int fragmentation_score_zone(struct zone *zone)
->   {
-> -	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
-> +	return extfrag_for_order(zone, sysctl_proactive_compaction_order);
->   }
->   
->   /*
->    * A weighted zone's fragmentation score is the external fragmentation
-> - * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
-> - * returns a value in the range [0, 100].
-> + * wrt to the sysctl_proactive_compaction_order scaled by the zone's size.
-> + * It returns a value in the range [0, 100].
->    *
->    * The scaling factor ensures that proactive compaction focuses on larger
->    * zones like ZONE_NORMAL, rather than smaller, specialized zones like
-> @@ -2666,6 +2667,7 @@ static void compact_nodes(void)
->    * background. It takes values in the range [0, 100].
->    */
->   unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
-> +unsigned int __read_mostly sysctl_proactive_compaction_order;
->   
->   /*
->    * This is the entry point for compacting all nodes via
-> @@ -2958,6 +2960,8 @@ static int __init kcompactd_init(void)
->   	int nid;
->   	int ret;
->   
-> +	sysctl_proactive_compaction_order = COMPACTION_HPAGE_ORDER;
-> +
->   	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
->   					"mm/compaction:online",
->   					kcompactd_cpu_online, NULL);
-> 
+On Wed, Jun 9, 2021 at 3:46 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
+>
+>
+>
+> On 09/06/2021 06:48, Hsin-Yi Wang wrote:
+> > From: Maoguang Meng <maoguang.meng@mediatek.com>
+> >
+> > Add jpeg encoder device tree node.
+> >
+> > Signed-off-by: Maoguang Meng <maoguang.meng@mediatek.com>
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> > ---
+> > v2: rebase to latest
+> > v1: https://patchwork.kernel.org/project/linux-media/patch/20200914094012.5817-1-maoguang.meng@mediatek.com/
+> > ---
+> >  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 11 +++++++++++
+> >  1 file changed, 11 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > index c5e822b6b77a3..fffe0c52909ce 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > @@ -1329,6 +1329,17 @@ larb4: larb@17010000 {
+> >                       power-domains = <&spm MT8183_POWER_DOMAIN_VENC>;
+> >               };
+> >
+> > +             venc_jpg: venc_jpg@17030000 {
+> > +                     compatible = "mediatek,mt8183-jpgenc", "mediatek,mtk-jpgenc";
+>
+> We are missing "mediatek,mt8183-jpgenc" in mediatek-jpeg-encoder.txt. Would be
+> great if you could help to convert it to yaml before adding the new compatible.
+>
+mediatek-jpeg-en(de)coder.txt converted to yaml:
+https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210609104053.617751-1-hsinyi@chromium.org/
 
-Hm, do we actually want to put an upper limit to the order a user can 
-supply?
 
--- 
-Thanks,
-
-David / dhildenb
-
+> Thanks!
+> Matthias
+> > +                     reg = <0 0x17030000 0 0x1000>;
+> > +                     interrupts = <GIC_SPI 249 IRQ_TYPE_LEVEL_LOW>;
+> > +                     iommus = <&iommu M4U_PORT_JPGENC_RDMA>,
+> > +                              <&iommu M4U_PORT_JPGENC_BSDMA>;
+> > +                     power-domains = <&spm MT8183_POWER_DOMAIN_VENC>;
+> > +                     clocks = <&vencsys CLK_VENC_JPGENC>;
+> > +                     clock-names = "jpgenc";
+> > +             };
+> > +
+> >               ipu_conn: syscon@19000000 {
+> >                       compatible = "mediatek,mt8183-ipu_conn", "syscon";
+> >                       reg = <0 0x19000000 0 0x1000>;
+> >
