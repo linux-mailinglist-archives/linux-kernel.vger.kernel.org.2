@@ -2,175 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9EA3A0E70
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6043A0E77
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237459AbhFIIGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:06:19 -0400
-Received: from m12-13.163.com ([220.181.12.13]:48790 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237557AbhFIIFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:05:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=2QFsg
-        HWbDLHSyne75bV8q+tTk9wN+wBNwY/fBdd4/6Y=; b=P8zxRm5V9I/YwaIsg1BsR
-        sHVn3IJbzR/V+fPuMhAiIEAsJPT4PgXiHLwAL1xEU6n0OkiemC8tvmzz8zirKJtO
-        YgiBqUTayo0pdn1jUZ0jrAtI+Ws164BVpT1zi9kSy10nGuWQMoWDq1or3TVw32z6
-        z08XAnAJxn4NvPE1DJzYW4=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp9 (Coremail) with SMTP id DcCowABXjwOodcBgsgaOFQ--.3052S2;
-        Wed, 09 Jun 2021 16:02:49 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] scsi: lpfc: lpfc_sli: Removed unnecessary 'return'
-Date:   Wed,  9 Jun 2021 16:01:51 +0800
-Message-Id: <20210609080151.489666-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S237614AbhFIIHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237474AbhFIIGh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 04:06:37 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD2CC061574;
+        Wed,  9 Jun 2021 01:04:35 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id y7so19752812wrh.7;
+        Wed, 09 Jun 2021 01:04:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wT8jMSk2fM+J5ZgJXdeEUVeym5jcaNbFNA2ciIih7RE=;
+        b=A27j6cFCvfhUIj11imB2Akrk6OKq23vnyfFbaKwRxt7bQbCFXu3ONVex1OxuB48nS1
+         WAAxkXD+5Rib7zFJUcb6aPan0ger24D7KZj64lfeEUyq2kCGw+PGBmDiudUT89zvsMon
+         cQRNGqmRstXpQ3ZCP1UjljPNYjJmTmEBhhNpoE4wWp2plVWvaZYDs2ZIfcHh4G9r6kyp
+         rg2IgjrtjTOAs2Zkak59Y7JkHrnsE1jPgeOb9loXi1DPoAmhpwV0Ew4+ytUi2GWJX8hQ
+         CemkpkRArAcmfh1tZV4Jz+P6GmCDX8chxD3BWasEbZSlQDXurmfnk51EUheGnbo18VwX
+         meFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wT8jMSk2fM+J5ZgJXdeEUVeym5jcaNbFNA2ciIih7RE=;
+        b=mUNRcecFOYNaFW7qMaR77Rio+r20QPpQ/fBegdNxZN/gYGI4YouKElIghVPo4tR1nY
+         RyDqy66PRTXozLbPkMKx6BeaPJCPmfG+hSW0N+tGYugE0WtjDTyDkdwZw3Rz9JPswChS
+         No5cwJh4O5Dl1ErgLRSBTZgjfR33JivdZ821jpxi48s5OIBi6IXqHsgJJiWRsdYtTIH9
+         YMQhfxFlv1JT2swqbbcpAZbh6LckddzXhfEu+ByQAhPizRHn4gK7J9EDF6miVrcZiCYd
+         BsCQFGkqYwrvhXAd1Oa+OSA4MeLXrLAh2exiGsRRJ/cdFv1WydHFnEimj4u6GgsRVV2o
+         NbNg==
+X-Gm-Message-State: AOAM532zFn/RsTvyvcVY1cfka9Kx3Yh9jgMipBRH1bRVMf7tRWI9GC6G
+        l6auWalwntosYJD8wgQ8aXNzwRAFVnU=
+X-Google-Smtp-Source: ABdhPJxcdlRhjCnbcVbYr9xZ88zmOBBIJbICZY/xUibynL/tQ9TAgojkqsgCpCOSigZQ9JvuSnMpQQ==
+X-Received: by 2002:a05:6000:2c4:: with SMTP id o4mr26967217wry.267.1623225873633;
+        Wed, 09 Jun 2021 01:04:33 -0700 (PDT)
+Received: from ziggy.stardust (81.172.61.185.dyn.user.ono.com. [81.172.61.185])
+        by smtp.gmail.com with ESMTPSA id o3sm16695687wrc.0.2021.06.09.01.04.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 01:04:33 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: mt8183: add cbas node under cros_ec
+To:     Ikjoon Jang <ikjn@chromium.org>, linux-mediatek@lists.infradead.org
+Cc:     devicetree@vger.kernel.org, Guenter Roeck <groeck@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+References: <20210609032554.2443675-1-ikjn@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <6fa5d766-83ab-737a-f081-e21d989c14dd@gmail.com>
+Date:   Wed, 9 Jun 2021 10:04:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowABXjwOodcBgsgaOFQ--.3052S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAFW5CF1kJF4UtFW5Aw48Crg_yoW5WFWfpa
-        nrGay7ur4ktF17trW5AFs8uFsIy3y0v34jyan2g34Y9F4vyrWfKFW3JFy0qr45tFWq9rnY
-        yw42gFW5Ca1xJrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jZMa5UUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiLwmsUFUMY3+iFgAAsr
+In-Reply-To: <20210609032554.2443675-1-ikjn@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
-
-Removed unnecessary 'return'.
-
-Signed-off-by: lijian <lijian@yulong.com>
----
- drivers/scsi/lpfc/lpfc_sli.c | 17 -----------------
- 1 file changed, 17 deletions(-)
-
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index 368cbc10e0cf..14e1ddc5ac17 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -1544,7 +1544,6 @@ lpfc_sli_cancel_iocbs(struct lpfc_hba *phba, struct list_head *iocblist,
- 			lpfc_sli_release_iocbq(phba, piocb);
- 		}
- 	}
--	return;
- }
- 
- /**
-@@ -2054,8 +2053,6 @@ lpfc_sli_resume_iocb(struct lpfc_hba *phba, struct lpfc_sli_ring *pring)
- 		else
- 			lpfc_sli_update_full_ring(phba, pring);
- 	}
--
--	return;
- }
- 
- /**
-@@ -2566,7 +2563,6 @@ lpfc_sli_wake_mbox_wait(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmboxq)
- 	if (pmbox_done)
- 		complete(pmbox_done);
- 	spin_unlock_irqrestore(&phba->hbalock, drvr_flag);
--	return;
- }
- 
- static void
-@@ -3560,8 +3556,6 @@ lpfc_sli_rsp_pointers_error(struct lpfc_hba *phba, struct lpfc_sli_ring *pring)
- 	phba->work_hs = HS_FFER3;
- 
- 	lpfc_worker_wake_up(phba);
--
--	return;
- }
- 
- /**
-@@ -3608,7 +3602,6 @@ void lpfc_poll_eratt(struct timer_list *t)
- 		mod_timer(&phba->eratt_poll,
- 			  jiffies +
- 			  msecs_to_jiffies(1000 * phba->eratt_poll_interval));
--	return;
- }
- 
- 
-@@ -4135,7 +4128,6 @@ lpfc_sli_handle_slow_ring_event_s3(struct lpfc_hba *phba,
- 	}
- 
- 	spin_unlock_irqrestore(&phba->hbalock, iflag);
--	return;
- }
- 
- /**
-@@ -6439,8 +6431,6 @@ lpfc_set_features(struct lpfc_hba *phba, LPFC_MBOXQ_t *mbox,
- 		mbox->u.mqe.un.set_feature.param_len = 4;
- 		break;
- 	}
--
--	return;
- }
- 
- /**
-@@ -8162,7 +8152,6 @@ lpfc_mbox_timeout(struct timer_list *t)
- 
- 	if (!tmo_posted)
- 		lpfc_worker_wake_up(phba);
--	return;
- }
- 
- /**
-@@ -11572,7 +11561,6 @@ lpfc_sli_abort_els_cmpl(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
- 	}
- release_iocb:
- 	lpfc_sli_release_iocbq(phba, cmdiocb);
--	return;
- }
- 
- /**
-@@ -11939,7 +11927,6 @@ lpfc_sli_abort_fcp_cmpl(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
- 			cmdiocb->iotag, rspiocb->iocb.ulpStatus,
- 			rspiocb->iocb.un.ulpWord[4]);
- 	lpfc_sli_release_iocbq(phba, cmdiocb);
--	return;
- }
- 
- /**
-@@ -12219,7 +12206,6 @@ lpfc_sli_wake_iocb_wait(struct lpfc_hba *phba,
- 	if (pdone_q)
- 		wake_up(pdone_q);
- 	spin_unlock_irqrestore(&phba->hbalock, iflags);
--	return;
- }
- 
- /**
-@@ -15078,7 +15064,6 @@ lpfc_sli4_queue_free(struct lpfc_queue *queue)
- 		list_del(&queue->cpu_list);
- 
- 	kfree(queue);
--	return;
- }
- 
- /**
-@@ -15306,7 +15291,6 @@ lpfc_modify_hba_eq_delay(struct lpfc_hba *phba, uint32_t startq,
- 				shdr_status, shdr_add_status, rc);
- 	}
- 	mempool_free(mbox, phba->mbox_mem_pool);
--	return;
- }
- 
- /**
-@@ -19967,7 +19951,6 @@ lpfc_sli_read_link_ste(struct lpfc_hba *phba)
- 
- out:
- 	kfree(rgn23_data);
--	return;
- }
- 
- /**
--- 
-2.25.1
 
 
+On 09/06/2021 05:25, Ikjoon Jang wrote:
+> Add a 'cbas' device node for supporting tablet mode switch in
+> kukui devices.
+> 
+> Kukui platforms with detacheable base have an additional input
+> device under cros-ec, which reports SW_TABLET_MODE regarding
+> its base state (e.g. base flipped or detached).
+> 
+> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+
+Applied to v5.13-next/dts64
+
+Thanks!
+
+> 
+> ---
+> Resend this as a spin-off, other patches for dt-binding and
+> hid driver were applied.
+> 
+> Link: https://lore.kernel.org/r/20210514122051.266169-1-ikjn@chromium.org/
+> Link: https://lore.kernel.org/r/20210415032958.740233-1-ikjn@chromium.org/
+> 
+>  arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> index ff56bcfa3370..1512605a438e 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> @@ -816,6 +816,10 @@ usbc_extcon: extcon0 {
+>  			compatible = "google,extcon-usbc-cros-ec";
+>  			google,usb-port-id = <0>;
+>  		};
+> +
+> +		cbas {
+> +			compatible = "google,cros-cbas";
+> +		};
+>  	};
+>  };
+>  
+> 
