@@ -2,87 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20283A1684
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78B83A167C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237287AbhFIOGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:06:04 -0400
-Received: from mail-qk1-f180.google.com ([209.85.222.180]:34654 "EHLO
-        mail-qk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232292AbhFIOF6 (ORCPT
+        id S237346AbhFIOFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:05:04 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:47612 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237239AbhFIOFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:05:58 -0400
-Received: by mail-qk1-f180.google.com with SMTP id k11so22096383qkk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 07:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sVDNoaWoIPr7Gu4coKMJidA6UIIH0xz9k9qbnaUz7J8=;
-        b=iJlKlERUuUveDc52H/UBA4htInK4K98sw+1Ayz5oJXTmrF3qACSyduBsb0JjEwQMbW
-         ycrNqdQx56ME5dn/De9p3wL0Y5LDoCl0r1CzB1xal9bZjuZ2Lcycymm2p6t40CRI7EeY
-         NAIMSO4IkFVKArQiizkiU7Siv/hUHBEfOzSg1hw/VZ+dQl2xGtKZ0vd77slE0ppBEqet
-         VzHufD8GqHZumWetOrjl7FHXX1G5VB0iolsPxAna3f+3qdYYefzPLEY1frWC9Hi1WgJl
-         q7gfYQu/rwO3Cb5o5e82+AHRWYP3iex+sMZ1A4Cxu8pZ8O0+G8liV2wJaXQ8tnjE7wTh
-         SWFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sVDNoaWoIPr7Gu4coKMJidA6UIIH0xz9k9qbnaUz7J8=;
-        b=ErgNxTkpV0pBSyjLwYihDHOgW9GRCpAcklUfB8BXey33WMqTWifj9w36ZxrkxJTxh5
-         mrgnonl23FdqzrKLxQtSE3+TJJveP+1wMwnI/9fv+NaTKvC3YfIwAouS56Kqx+WjdeFn
-         ObSQGSmYhqAp9GXlll8lYpSS4pTsH8YOXeBxwbJTfFx8lH1f9E+Z6wloYvCi1DzgcovG
-         jArx52Q/nC/bLOIN0fdz64Z+7b7xb9SN02y+R/bVQ83/Or96P3Qqvrjb+p8sOmb84a/W
-         upLTNaL2/fiUO4ka1HaWET3dfso5L4dnVXBEdOvonHgX2Qiapiq4go2l3UE8/4zhMXoH
-         RQQg==
-X-Gm-Message-State: AOAM531R6OS9AAW+r0+l6Pv1Si87e0NZYxmL+fne2Bgk7JlyyE8o7PvW
-        GqTR5XDYeGCr7WxYcWyIg+TlxkbmCtnrbOotO4vC/g==
-X-Google-Smtp-Source: ABdhPJwlk2i2QGb5aCViuWJX+eoq6tbslIAd6c4NjfiqRzuaqx1Qhw3+Qm2upFCUr66Dek9NsQIgBkV2/OBf55wIx8I=
-X-Received: by 2002:a37:a1d5:: with SMTP id k204mr16597525qke.300.1623247370731;
- Wed, 09 Jun 2021 07:02:50 -0700 (PDT)
+        Wed, 9 Jun 2021 10:05:00 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5998420B83C2;
+        Wed,  9 Jun 2021 07:03:05 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5998420B83C2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623247386;
+        bh=IRts58tl+eYwjKkNGvvrg6lIfNUrj21VJzDxSCoORkE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AxS4OoK9mboxHZ5xicd4/Qun7iZD4pccHsdXfoPMd5KALbDOcn2QWC4kjIEPYLxLM
+         0Vqn2UWjdo2R1UhbbIUk6xI0p5633RrMb4t/F/0qEPXfsBjNUeLVB4EMT3KT8l2zGv
+         65VJP9lwfb2UtrPydcyPkY+9ptQkAOg+sFrf/zX0=
+Date:   Wed, 9 Jun 2021 09:03:03 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 1/7] tee: remove unused tee_shm_pool_alloc_res_mem()
+Message-ID: <20210609140303.GE4910@sequoia>
+References: <20210609102324.2222332-1-jens.wiklander@linaro.org>
+ <20210609102324.2222332-2-jens.wiklander@linaro.org>
 MIME-Version: 1.0
-References: <20210609134714.13715-1-mcroce@linux.microsoft.com>
-In-Reply-To: <20210609134714.13715-1-mcroce@linux.microsoft.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Wed, 9 Jun 2021 16:02:39 +0200
-Message-ID: <CAPv3WKdhyb=o=v0oj+gVWWH3yfqQ1EqBcR-1y4R39x_-Or72-w@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/2] mvpp2: prefetch data early
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609102324.2222332-2-jens.wiklander@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matteo,
+On 2021-06-09 12:23:18, Jens Wiklander wrote:
+> None of the drivers in the TEE subsystem uses
+> tee_shm_pool_alloc_res_mem() so remove the function.
+> 
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-=C5=9Br., 9 cze 2021 o 15:47 Matteo Croce <mcroce@linux.microsoft.com> napi=
-sa=C5=82(a):
->
-> From: Matteo Croce <mcroce@microsoft.com>
->
-> These two patches prefetch some data from RAM so to reduce stall
-> and speedup the packet processing.
->
-> Matteo Croce (2):
->   mvpp2: prefetch right address
->   mvpp2: prefetch page
->
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
->
+Tyler
 
-Thank you for the patches, they seem reasonable, however I'd like to
-stress it on the CN913x setup @10G - I should have some slot for that
-closer to EOW.
-
-Best regards,
-Marcin
+> ---
+>  drivers/tee/tee_shm_pool.c | 56 --------------------------------------
+>  include/linux/tee_drv.h    | 30 --------------------
+>  2 files changed, 86 deletions(-)
+> 
+> diff --git a/drivers/tee/tee_shm_pool.c b/drivers/tee/tee_shm_pool.c
+> index fcbb461fc59c..a9f9d50fd181 100644
+> --- a/drivers/tee/tee_shm_pool.c
+> +++ b/drivers/tee/tee_shm_pool.c
+> @@ -47,62 +47,6 @@ static const struct tee_shm_pool_mgr_ops pool_ops_generic = {
+>  	.destroy_poolmgr = pool_op_gen_destroy_poolmgr,
+>  };
+>  
+> -/**
+> - * tee_shm_pool_alloc_res_mem() - Create a shared memory pool from reserved
+> - * memory range
+> - * @priv_info:	Information for driver private shared memory pool
+> - * @dmabuf_info: Information for dma-buf shared memory pool
+> - *
+> - * Start and end of pools will must be page aligned.
+> - *
+> - * Allocation with the flag TEE_SHM_DMA_BUF set will use the range supplied
+> - * in @dmabuf, others will use the range provided by @priv.
+> - *
+> - * @returns pointer to a 'struct tee_shm_pool' or an ERR_PTR on failure.
+> - */
+> -struct tee_shm_pool *
+> -tee_shm_pool_alloc_res_mem(struct tee_shm_pool_mem_info *priv_info,
+> -			   struct tee_shm_pool_mem_info *dmabuf_info)
+> -{
+> -	struct tee_shm_pool_mgr *priv_mgr;
+> -	struct tee_shm_pool_mgr *dmabuf_mgr;
+> -	void *rc;
+> -
+> -	/*
+> -	 * Create the pool for driver private shared memory
+> -	 */
+> -	rc = tee_shm_pool_mgr_alloc_res_mem(priv_info->vaddr, priv_info->paddr,
+> -					    priv_info->size,
+> -					    3 /* 8 byte aligned */);
+> -	if (IS_ERR(rc))
+> -		return rc;
+> -	priv_mgr = rc;
+> -
+> -	/*
+> -	 * Create the pool for dma_buf shared memory
+> -	 */
+> -	rc = tee_shm_pool_mgr_alloc_res_mem(dmabuf_info->vaddr,
+> -					    dmabuf_info->paddr,
+> -					    dmabuf_info->size, PAGE_SHIFT);
+> -	if (IS_ERR(rc))
+> -		goto err_free_priv_mgr;
+> -	dmabuf_mgr = rc;
+> -
+> -	rc = tee_shm_pool_alloc(priv_mgr, dmabuf_mgr);
+> -	if (IS_ERR(rc))
+> -		goto err_free_dmabuf_mgr;
+> -
+> -	return rc;
+> -
+> -err_free_dmabuf_mgr:
+> -	tee_shm_pool_mgr_destroy(dmabuf_mgr);
+> -err_free_priv_mgr:
+> -	tee_shm_pool_mgr_destroy(priv_mgr);
+> -
+> -	return rc;
+> -}
+> -EXPORT_SYMBOL_GPL(tee_shm_pool_alloc_res_mem);
+> -
+>  struct tee_shm_pool_mgr *tee_shm_pool_mgr_alloc_res_mem(unsigned long vaddr,
+>  							phys_addr_t paddr,
+>  							size_t size,
+> diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+> index 54269e47ac9a..53b9b2a13a87 100644
+> --- a/include/linux/tee_drv.h
+> +++ b/include/linux/tee_drv.h
+> @@ -272,36 +272,6 @@ static inline void tee_shm_pool_mgr_destroy(struct tee_shm_pool_mgr *poolm)
+>  	poolm->ops->destroy_poolmgr(poolm);
+>  }
+>  
+> -/**
+> - * struct tee_shm_pool_mem_info - holds information needed to create a shared
+> - * memory pool
+> - * @vaddr:	Virtual address of start of pool
+> - * @paddr:	Physical address of start of pool
+> - * @size:	Size in bytes of the pool
+> - */
+> -struct tee_shm_pool_mem_info {
+> -	unsigned long vaddr;
+> -	phys_addr_t paddr;
+> -	size_t size;
+> -};
+> -
+> -/**
+> - * tee_shm_pool_alloc_res_mem() - Create a shared memory pool from reserved
+> - * memory range
+> - * @priv_info:	 Information for driver private shared memory pool
+> - * @dmabuf_info: Information for dma-buf shared memory pool
+> - *
+> - * Start and end of pools will must be page aligned.
+> - *
+> - * Allocation with the flag TEE_SHM_DMA_BUF set will use the range supplied
+> - * in @dmabuf, others will use the range provided by @priv.
+> - *
+> - * @returns pointer to a 'struct tee_shm_pool' or an ERR_PTR on failure.
+> - */
+> -struct tee_shm_pool *
+> -tee_shm_pool_alloc_res_mem(struct tee_shm_pool_mem_info *priv_info,
+> -			   struct tee_shm_pool_mem_info *dmabuf_info);
+> -
+>  /**
+>   * tee_shm_pool_free() - Free a shared memory pool
+>   * @pool:	The shared memory pool to free
+> -- 
+> 2.31.1
+> 
