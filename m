@@ -2,95 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EA33A1C93
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC173A1C96
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhFISQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 14:16:57 -0400
-Received: from mail-pl1-f176.google.com ([209.85.214.176]:33604 "EHLO
-        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhFISQ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 14:16:56 -0400
-Received: by mail-pl1-f176.google.com with SMTP id c13so13060176plz.0;
-        Wed, 09 Jun 2021 11:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wwfufyKvmvEMNzYlwDLpaW9ByvmiH5n3ydfZUfKPQ0o=;
-        b=UF+EyQxDzrgR2+h9n0XecWNi6AXcmwM+5Ntm0fefDtJYMPIcem5IlFCnKFacXPvTM+
-         jFkcGXUuLgMlIOu/dM1tW+IHSAtmF9mf11MREWHhDrNAyCgb6Z3FNErO58qmEnUxFe1y
-         WP2YjHseJJT3nWhtFrF+Ntl//OQTBg+yD9AyHYHY/gIc/L2hgEAmeicg/N8lVWeZFIPE
-         2OmkSeln4Qg3xY6otJMfOgJoirTCvzyj2JAgpbAXhPDlTHX/4iZYTAbDDL7rrtkBQa4r
-         z9LQye8gN//spW+Ghbgwp2PuBdtHS0CSZWg6IsuYM9OGn/Wghwk/bSex5t5YofH83+vC
-         Ky8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wwfufyKvmvEMNzYlwDLpaW9ByvmiH5n3ydfZUfKPQ0o=;
-        b=cFfmtmVq6rKJEc23nAff/v+fp6mYasvlOzxITJg3G7NugQPKyxpIfrgqMZcX8B5cFo
-         Po/o32AYQYqkxfVRzDIOrFQRmf8yySMnAoM4OzU+U/xpGgXokpL71yTwQNW58N/aFhG4
-         hkdO5pKAgbVpABadcCcj6qKK3dizjA0RKGJBen8OhtjwAGj9V6ONWz6U8QA6nUnqHro2
-         Xfzc8vG/lX8DJGTFpIqjFMuDElLVmomRLCLv9jcxj28gJiSA5jA1AwD4jx43Xuxko5fY
-         4zl8QulPfVvAhC9fVFpIguGc3eHphF15MUt4GSFa3ntDdJp/XsmvTFgH1bl/AS/sJexT
-         yCGQ==
-X-Gm-Message-State: AOAM530hxg4TqbYWw7A+C0j2m+s/xdXmGD5vTeA87i8g0YPU7PSTLiWG
-        5i3tlmKm7hNzLwJ+WjZUkh4hGdU4GOU=
-X-Google-Smtp-Source: ABdhPJxOuU3bBbjm5CmEh4pG6cx6MHMHT0WPG9bqTMucVge33E1J6Pcqg1w7J2s5n4qggz7KEgfNMg==
-X-Received: by 2002:a17:90b:19cb:: with SMTP id nm11mr831313pjb.1.1623262425574;
-        Wed, 09 Jun 2021 11:13:45 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 60sm317125pjz.42.2021.06.09.11.13.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 11:13:44 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/29] 4.9.272-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210608175927.821075974@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <2b7b3fd7-a5ce-b15b-b6db-91c6a886c0ff@gmail.com>
-Date:   Wed, 9 Jun 2021 11:13:42 -0700
+        id S230055AbhFISR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 14:17:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229472AbhFISRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 14:17:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15FC961359;
+        Wed,  9 Jun 2021 18:15:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623262530;
+        bh=cjLVaSchDMh+dthRkEOBI316hd6b15Ap00Z20Z6XFCg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=KJZi1AksjM1+zAgJ2itPFNOrcKJMIhk3mG6D/iX584O9TIpdnm00zCoqrA7nBc5v0
+         NtlDWmckG5itz83ShFqskfinr+SLwEbCOtHEg25vkTnahrFUMU1OGbDjk1tmZzegwU
+         rSqieQW2pY7mvD6uoaeeOfw+4ucvuUkXZNNZIFD9t3/lT9QIp/+4iQyLCsdzi1zK8k
+         53diODz1OhiVqDtskfJWtcjsKXbelaZDWnNDJlI99k7HJB9VMmcNPoBnKzhLmbWXLp
+         lCC5+Ebt/5wG4XTkeztFsNQdtpVkUUb9J6EKo52dXpaE8XDCo5sV2DFVgcQCagxT1q
+         E0o9GMTBvXlJw==
+Subject: Re: [PATCH v2] thermal: devfreq_cooling: Fix kernel-doc
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Yang Li <yang.lee@linux.alibaba.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>, amitk@kernel.org,
+        linux-pm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <1623223350-128104-1-git-send-email-yang.lee@linux.alibaba.com>
+ <CAKwvOdmBmsvmkm3LNXgvkaa=u1WYkJMvcALMAuhFFFNbfov3YA@mail.gmail.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <9c3519a8-f379-ccfa-7ff7-3710cb993e43@kernel.org>
+Date:   Wed, 9 Jun 2021 11:15:24 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAKwvOdmBmsvmkm3LNXgvkaa=u1WYkJMvcALMAuhFFFNbfov3YA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/8/2021 11:26 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.272 release.
-> There are 29 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 6/9/2021 11:02 AM, Nick Desaulniers wrote:
+> On Wed, Jun 9, 2021 at 12:22 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+>>
+>> Fix function name in devfreq_cooling.c comment to remove a
+>> warning found by kernel-doc.
+>>
+>> drivers/thermal/devfreq_cooling.c:479: warning: expecting prototype for
+>> devfreq_cooling_em_register_power(). Prototype was for
+>> devfreq_cooling_em_register() instead.
+>>
+>> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+>> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+>> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 > 
-> Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
-> Anything received after that time might be too late.
+> I'm ok with leaving my reviewed by on _this_ patch because it's so simple but...
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.272-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
+> In general, when sending a follow up version of a patch, it's _not_ ok
+> to add a reviewed by tag when a reviewer has not explicitly responded
+> with "Reviewed-by: ...".  That provides a false sense that a patch has
+> been thoroughly reviewed.  Responding to a patch does not constitute a
+> "Reviewed-by:" tag.
 > 
-> thanks,
+> And I might be fine with _this_ patch, but that says nothing about
+> Nathan, whom you've also falsely attributed a reviewed by tag here.
 > 
-> greg k-h
+> For such a trivial patch, it's not a big deal, but in the future
+> please do not do that again.  It's ok to send v2, v3, etc, but wait
+> for reviewers to explicitly state such reviewed by tag. The maintainer
+> will collect those responses (and can be done so in an automated
+> fashion via a tool like b4 (https://pypi.org/project/b4/)) when
+> applying patches.
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
++1 with all that was said above. Tags should be explicitly given, except 
+for maybe the "Reported-by" and "Suggested-by" tags if the report or 
+suggestion was done in the public forum but it is still polite to ask if 
+it is okay to add.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+For the record, my reviewed-by tag can stand:
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
+>> ---
+>>
+>> Change in v2:
+>> --replaced s/clang(make W=1 LLVM=1)/kernel-doc/ in commit.
+>> https://lore.kernel.org/patchwork/patch/1442639/
+>>
+>>   drivers/thermal/devfreq_cooling.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+>> index 3a788ac..5a86cff 100644
+>> --- a/drivers/thermal/devfreq_cooling.c
+>> +++ b/drivers/thermal/devfreq_cooling.c
+>> @@ -458,7 +458,7 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
+>>   EXPORT_SYMBOL_GPL(devfreq_cooling_register);
+>>
+>>   /**
+>> - * devfreq_cooling_em_register_power() - Register devfreq cooling device with
+>> + * devfreq_cooling_em_register() - Register devfreq cooling device with
+>>    *             power information and automatically register Energy Model (EM)
+>>    * @df:                Pointer to devfreq device.
+>>    * @dfc_power: Pointer to devfreq_cooling_power.
+>> --
+>> 1.8.3.1
+>>
+> 
+> 
