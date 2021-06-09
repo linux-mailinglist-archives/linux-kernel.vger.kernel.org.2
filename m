@@ -2,66 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B8F3A1504
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68193A1506
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbhFINCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:02:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhFINC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:02:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B15F2613AE;
-        Wed,  9 Jun 2021 13:00:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623243633;
-        bh=/vh+7RTWAaqD4dhw2jzi7Xiq/rA9MdpziXvQOyq82iA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FeGICY5IZLz5EmbXf8MJzGWye/xnTwtmAfSKOipJune5cZSx4JnDF1peiOPots1ch
-         Yvsoje7d/ahZUCded1d1R5j/jYz28b3XRI6Jxk8ZEvVd0ukpFoRNVZtKF2GxIy7rZo
-         bh+sOPSZMakYdsJew0NXlxag6QbyuMKCs+8FwAsrL04F0SvggBtockTpA3kwYPStN1
-         nfWoNUFp4Bo/DrFtNKYgwVQSJaLPpUOmmI0XgoGqlJwP3WICxA32ASX4CoEQ2OqnOX
-         1ubisZk2JMFhULVorFzP8npAhl/ELlCS26zM0WdI6yP+tB88LL1TeTAIPpBQLmHM5r
-         OA+k5wMM/WNvQ==
-Date:   Wed, 9 Jun 2021 16:00:30 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 1/4] selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
-Message-ID: <20210609130030.34jkpz5pq2iumzkj@kernel.org>
-References: <20210526124740.16783-1-jarkko@kernel.org>
- <dddeda6a-0f76-8e5a-6ca8-2ad67f6411ea@intel.com>
+        id S233587AbhFINCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:02:51 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:44815 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233028AbhFINCm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 09:02:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1623243647; x=1654779647;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BpqxinrRCUKxHtv0Qy6tpZJ1UbGKCSXrOA7Y3esQIFI=;
+  b=VzzIJsk3ygiy6i8bKMk5AH1+cX+1PGtHEzyu64BQsb20GDZrc9psp/3f
+   36Z3BOLnPqjE/05IEMimF1o4dgOmtnyiEpMQ+no8pC0m4bFx7XqDl2MAQ
+   gnejNwcDMsQMzTeWLzS0/9Ebi+m2dCu0o4eMsOIT/LIHKTyWTIz8Iz+g6
+   a7oZc8WE7UXzxvv2+f8iR7ayhLczrVZwD2T6Gd5AtWal+eKOyMboCbqO1
+   djLaL2My2qnf+eUk4fXdTi4hxmd4YLRsPRyV2DzKo7Lqkj/gnFBTiw0aK
+   uxXJwANLi/EAWckNCaWHjf8mIC9UzqnVIBRFVLXaSYJWk9Z5eC7EheKN5
+   Q==;
+IronPort-SDR: 8Jpmgq50PDtZkxIiug3oW4ArytJmqwG/a7/V07scvWkqzWVi43y8CzHJfopjUSoxeflBY74jiV
+ XW6HqlI1z0HARlWuyIrdCMC/3gQm72OOmYTfI3LA0vAOxLz2EBjCu+LNsw/ktU/muWDdw4LNWf
+ hLhuLiHzfZ2rsFZZ5LPFu0YTp97rGFlx2sBnuputlpTk8zdfXZSTAm1JzENmJ9RN2LGFcyNLr/
+ hvmxs72IzaBBLFfWcZXX2a7MkzXyIhZJfyphFw/iZiXlFlA80iBtx59Vw0S/IRv48NtALqvKus
+ ko8=
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="124643305"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Jun 2021 06:00:46 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 06:00:46 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 9 Jun 2021 06:00:45 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <linux-media@vger.kernel.org>, <hverkuil@xs4all.nl>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>
+Subject: [PATCH] media: atmel: atmel-sama5d2-isc: fix YUYV format
+Date:   Wed, 9 Jun 2021 16:00:28 +0300
+Message-ID: <20210609130028.394348-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dddeda6a-0f76-8e5a-6ca8-2ad67f6411ea@intel.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 09:28:56AM -0700, Reinette Chatre wrote:
-> Hi Jarkko,
-> 
-> On 5/26/2021 5:47 AM, Jarkko Sakkinen wrote:
-> > diff --git a/tools/testing/selftests/sgx/main.h b/tools/testing/selftests/sgx/main.h
-> > index 67211a708f04..68672fd86cf9 100644
-> > --- a/tools/testing/selftests/sgx/main.h
-> > +++ b/tools/testing/selftests/sgx/main.h
-> > @@ -35,7 +35,7 @@ bool encl_load(const char *path, struct encl *encl);
-> >   bool encl_measure(struct encl *encl);
-> >   bool encl_build(struct encl *encl);
-> > -int sgx_call_vdso(void *rdi, void *rsi, long rdx, u32 function, void *r8, void *r9,
-> > -		  struct sgx_enclave_run *run);
-> > +int sgx_enter_enclave(void *rdi, void *rsi, long rdx, u32 function, void *r8, void *r9,
-> > +		      struct sgx_enclave_run *run);
-> 
-> Is there a reason why all registers except rdx are "void *"?
+SAMA5D2 does not have the YCYC field for the RLP (rounding, limiting, packaging)
+module.
+The YCYC field is supposed to work with interleaved YUV formats like YUYV.
+In SAMA5D2, we have to use YYCC field, which is used for both planar formats
+like YUV420 and interleaved formats like YUYV.
+Fix the according rlp callback to replace the generic YCYC field (which makes
+more sense from a logical point of view) with the required YYCC field.
 
-Evolution? It's test code.
+Fixes: 0733a77ae78c ("media: atmel: atmel-isc-base: add support for more formats and additional pipeline modules")
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+---
+Hello Hans,
 
-There's neither reason to change this for no reason.
+This should go on top of my ISC series which you sent a PR for :
+https://lore.kernel.org/linux-media/57e15ed1-61c7-0240-5bf3-115de3bbec9c@xs4all.nl/
 
-/Jarkko
+I noticed this was introduced with one of the commits.
+It would be great if it can go as a fix for 5.14 , if not together with the
+initial series.
+
+Thanks !
+Eugen
+
+ .../media/platform/atmel/atmel-sama5d2-isc.c    | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/drivers/media/platform/atmel/atmel-sama5d2-isc.c b/drivers/media/platform/atmel/atmel-sama5d2-isc.c
+index cab2989103f9..34efd12fef55 100644
+--- a/drivers/media/platform/atmel/atmel-sama5d2-isc.c
++++ b/drivers/media/platform/atmel/atmel-sama5d2-isc.c
+@@ -255,6 +255,23 @@ void isc_sama5d2_config_rlp(struct isc_device *isc)
+ 	struct regmap *regmap = isc->regmap;
+ 	u32 rlp_mode = isc->config.rlp_cfg_mode;
+ 
++	/*
++	 * In sama5d2, the YUV planar modes and the YUYV modes are treated
++	 * in the same way in RLP register.
++	 * Normally, YYCC mode should be Luma(n) - Color B(n) - Color R (n)
++	 * and YCYC should be Luma(n + 1) - Color B (n) - Luma (n) - Color R (n)
++	 * but in sama5d2, the YCYC mode does not exist, and YYCC must be
++	 * selected for both planar and interleaved modes, as in fact
++	 * both modes are supported.
++	 *
++	 * Thus, if the YCYC mode is selected, replace it with the
++	 * sama5d2-compliant mode which is YYCC .
++	 */
++	if ((rlp_mode & ISC_RLP_CFG_MODE_YCYC) == ISC_RLP_CFG_MODE_YCYC) {
++		rlp_mode &= ~ISC_RLP_CFG_MODE_MASK;
++		rlp_mode |= ISC_RLP_CFG_MODE_YYCC;
++	}
++
+ 	regmap_update_bits(regmap, ISC_RLP_CFG + isc->offsets.rlp,
+ 			   ISC_RLP_CFG_MODE_MASK, rlp_mode);
+ }
+-- 
+2.25.1
+
