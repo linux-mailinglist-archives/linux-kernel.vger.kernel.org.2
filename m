@@ -2,274 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB903A0F8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BE73A0F8B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237924AbhFIJZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:25:08 -0400
-Received: from m12-18.163.com ([220.181.12.18]:45423 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231300AbhFIJZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:25:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=dJfON
-        +wMxyXuV02ySXfdF5/CsQ8W/WArJHCeAn+R+Zk=; b=Pj+l8EnTJQ4HUeZVLQpM8
-        m74O9EUzHhBF0IeMDc/60yotZyK9Cm7wAwcHBQz9/pT3TnQkRv9405ZC44niMwWW
-        4jepxDcmtltoicILPYoFyOuyd/zAXdhlv7KmQgpTtGT2lApXtje/m1wNGj1asBUq
-        +wSmleeHXj65sIU9Dw84Fk=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp14 (Coremail) with SMTP id EsCowAA3Oe9eiMBgxGqxoQ--.4788S2;
-        Wed, 09 Jun 2021 17:22:39 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] scsi: lpfc: lpfc_els: Removed unnecessary 'return'
-Date:   Wed,  9 Jun 2021 17:21:41 +0800
-Message-Id: <20210609092141.550597-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S237993AbhFIJZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231300AbhFIJZA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:25:00 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3F4C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 02:22:52 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id f21so10763689vsl.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g0YZpXNbvNe/aSIMfW/fwl9JTlg+qPtxAYhHQZpkJJ4=;
+        b=CyVtn6ZSLRs1oFQym5BtCew3deGCkiBozlrFzkPIiKz5Rb7UCB26M8AyNnmSisKHTr
+         F1/le1gMmi0RFt6NQF0eucGdqRZgkKDwvYbOOjVt8bCBLLIf3lTcakxEWcNDLAB89nKG
+         4IosI3wPfmZwZhHQSynroTq0O6TTShBe35D+FTlwBf+3t0N1a7XKJ8lXf9U7PYgbVrP7
+         Tb53lyrs2E+NfzJ/u1vOGHtJLC35qtzM1KkFafmPlmXLBKlKUVybXKgcVnniOCWnuMZX
+         J7CXv8iAEtf6FD4DSZOqz4p97tUD7Kj0xj5QL8CMLT6Wb8/FNP0Y5e8EGjMm/b1enD4B
+         GOuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g0YZpXNbvNe/aSIMfW/fwl9JTlg+qPtxAYhHQZpkJJ4=;
+        b=FSuWnGA9aKAWPCIfi0VAHjx46Xg6oGIo1BpIgCCx8hW0I8hAvZROYFeLL9HOLX2syh
+         n9/d9VpYTjtZabwYQmkxAnpnOqlffLW5X6e2rAnfUWFOZz9yfNbocK8uQba7EH0qYfEX
+         xvoKRYuLjVgpMlwWP+u2f/zPiPfeOkZV0zLp/7ZBhrLJ89kPhQssp1KdtFUUxwWBB31t
+         1Vkc1N8JNBQsOZxRvwSrUroedMhNXTb0B/RbL6+gzLWkSxyH4aqWsi7rQibvgC4KpMQ8
+         aGLIfxBebY3pcJsR/Yg0F7+ikaekupEbJqsS9pmKDJIEfJBcX/a2HiVTIbXUFsLyTn2H
+         U0ZA==
+X-Gm-Message-State: AOAM532t8jAKVcx4rVLSvEDD94m5/zCu2UD9KB3qLtMeRTf0ZSttOuxg
+        UCOFKZ+KUwtWv/nz565n5T/TEqw7pjCbyZ59ITc8ng==
+X-Google-Smtp-Source: ABdhPJwmQWO+A9c4qf5r1Sf38PiCEAqfFiT0xFdSmkConGycXQzCXk0CGXuaUZiTt7ZCa0L/YNo6OIhaj0pjcUYyCjg=
+X-Received: by 2002:a67:e359:: with SMTP id s25mr3243979vsm.55.1623230571541;
+ Wed, 09 Jun 2021 02:22:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAA3Oe9eiMBgxGqxoQ--.4788S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxKFWkKFWDCF1DJr4fKF4xtFb_yoW7Cr1rpa
-        nrGFy7Cw1ktF47Kry5JFs8ua1ayw10v3yDta10g340krsYyr9xKFyfury8Xr4YqFWj9rWa
-        yrsrKrW5G3WkJrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jpsj8UUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/xtbBERqsUFaEEqmhxAAAs7
+References: <20210602192758.38735-1-alcooperx@gmail.com> <20210602192758.38735-2-alcooperx@gmail.com>
+ <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com> <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com>
+In-Reply-To: <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 9 Jun 2021 11:22:15 +0200
+Message-ID: <CAPDyKFpEtvjS1mWC68gRBWD64dq2M1LO84UWE5uDLTzbGz1g8Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
+ controller on the BCM7211
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
+        Scott Branden <sbranden@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+On Wed, 9 Jun 2021 at 05:07, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+>
+>
+> On 6/8/2021 5:40 AM, Ulf Hansson wrote:
+> > On Wed, 2 Jun 2021 at 21:28, Al Cooper <alcooperx@gmail.com> wrote:
+> >>
+> >> Add support for the legacy Arasan sdhci controller on the BCM7211 and
+> >> related SoC's. This includes adding a .shutdown callback to increase
+> >> the power savings during S5.
+> >
+> > Please split this into two separate changes.
+> >
+> > May I also ask about the ->shutdown() callback and in relation to S5.
+> > What makes the ->shutdown callback only being invoked for S5?
+>
+> It is not only called for S5 (entered via poweroff on a prompt) but also
+> during kexec or reboot. The poweroff path is via:
+>
+> kernel_power_off() -> kernel_shutdown_prepare() -> device_shutdown() ->
+> .shutdown()
+>
+> For kexec or reboot we do not really care about power savings since we
+> are about to load a new image anyway, however for S5/poweroff we do care
+> about quiescing the eMMC controller in a way that its clocks and the
+> eMMC device can be put into low power mode since we will stay in that
+> mode for seconds/hours/days until someone presses a button on their
+> remote (or other wake-up sources).
 
-Removed unnecessary 'return'.
+Hmm, I am not sure I understand correctly. At shutdown we don't care
+about wake-up sources from the kernel point of view, instead we treat
+everything as if it will be powered off.
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- drivers/scsi/lpfc/lpfc_els.c | 32 --------------------------------
- 1 file changed, 32 deletions(-)
+We put devices into low power state at system suspend and potentially
+also during some of the hibernation phases.
 
-diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
-index f743bb338665..e11da144ac45 100644
---- a/drivers/scsi/lpfc/lpfc_els.c
-+++ b/drivers/scsi/lpfc/lpfc_els.c
-@@ -1564,8 +1564,6 @@ lpfc_more_plogi(struct lpfc_vport *vport)
- 	if (vport->fc_flag & FC_NLP_MORE)
- 		/* go thru NPR nodes and issue any remaining ELS PLOGIs */
- 		lpfc_els_disc_plogi(vport);
--
--	return;
- }
- 
- /**
-@@ -1893,7 +1891,6 @@ lpfc_cmpl_els_rrq(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
- 	lpfc_clr_rrq_active(phba, rrq->xritag, rrq);
- 	lpfc_els_free_iocb(phba, cmdiocb);
- 	lpfc_nlp_put(ndlp);
--	return;
- }
- /**
-  * lpfc_cmpl_els_plogi - Completion callback function for plogi
-@@ -2045,7 +2042,6 @@ lpfc_cmpl_els_plogi(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
- 
- 	lpfc_els_free_iocb(phba, cmdiocb);
- 	lpfc_nlp_put(free_ndlp);
--	return;
- }
- 
- /**
-@@ -2281,7 +2277,6 @@ lpfc_cmpl_els_prli(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
- out:
- 	lpfc_els_free_iocb(phba, cmdiocb);
- 	lpfc_nlp_put(ndlp);
--	return;
- }
- 
- /**
-@@ -2603,7 +2598,6 @@ lpfc_more_adisc(struct lpfc_vport *vport)
- 	}
- 	if (!vport->num_disc_nodes)
- 		lpfc_adisc_done(vport);
--	return;
- }
- 
- /**
-@@ -2710,7 +2704,6 @@ lpfc_cmpl_els_adisc(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
- out:
- 	lpfc_els_free_iocb(phba, cmdiocb);
- 	lpfc_nlp_put(ndlp);
--	return;
- }
- 
- /**
-@@ -3161,7 +3154,6 @@ lpfc_cmpl_els_disc_cmd(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
- 	lpfc_els_chk_latt(vport);
- 	lpfc_els_free_iocb(phba, cmdiocb);
- 	lpfc_nlp_put(ndlp);
--	return;
- }
- 
- /**
-@@ -3589,7 +3581,6 @@ lpfc_cancel_retry_delay_tmo(struct lpfc_vport *vport, struct lpfc_nodelist *nlp)
- 			}
- 		}
- 	}
--	return;
- }
- 
- /**
-@@ -3631,7 +3622,6 @@ lpfc_els_retry_delay(struct timer_list *t)
- 		lpfc_worker_wake_up(phba);
- 	}
- 	spin_unlock_irqrestore(&phba->hbalock, flags);
--	return;
- }
- 
- /**
-@@ -3703,7 +3693,6 @@ lpfc_els_retry_delay_handler(struct lpfc_nodelist *ndlp)
- 			lpfc_issue_els_fdisc(vport, ndlp, retry);
- 		break;
- 	}
--	return;
- }
- 
- /**
-@@ -4445,8 +4434,6 @@ lpfc_mbx_cmpl_dflt_rpi(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 		lpfc_nlp_put(ndlp);
- 		lpfc_nlp_not_used(ndlp);
- 	}
--
--	return;
- }
- 
- /**
-@@ -4590,7 +4577,6 @@ lpfc_cmpl_els_rsp(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
- 	/* Release the originating I/O reference. */
- 	lpfc_els_free_iocb(phba, cmdiocb);
- 	lpfc_nlp_put(ndlp);
--	return;
- }
- 
- /**
-@@ -5267,7 +5253,6 @@ lpfc_els_clear_rrq(struct lpfc_vport *vport,
- 	prrq = lpfc_get_active_rrq(vport, xri, ndlp->nlp_DID);
- 	if (prrq)
- 		lpfc_clr_rrq_active(phba, xri, prrq);
--	return;
- }
- 
- /**
-@@ -7345,7 +7330,6 @@ lpfc_els_rsp_rls_acc(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 		lpfc_els_free_iocb(phba, elsiocb);
- 		lpfc_nlp_put(ndlp);
- 	}
--	return;
- }
- 
- /**
-@@ -7945,7 +7929,6 @@ lpfc_els_timeout(struct timer_list *t)
- 
- 	if ((!tmo_posted) && (!(vport->load_flag & FC_UNLOADING)))
- 		lpfc_worker_wake_up(phba);
--	return;
- }
- 
- 
-@@ -8195,8 +8178,6 @@ lpfc_els_flush_cmd(struct lpfc_vport *vport)
- 	/* Cancel all the IOCBs from the completions list */
- 	lpfc_sli_cancel_iocbs(phba, &abort_list,
- 			      IOSTAT_LOCAL_REJECT, IOERR_SLI_ABORTED);
--
--	return;
- }
- 
- /**
-@@ -8225,8 +8206,6 @@ lpfc_els_flush_all_cmd(struct lpfc_hba  *phba)
- 	list_for_each_entry(vport, &phba->port_list, listentry)
- 		lpfc_els_flush_cmd(vport);
- 	spin_unlock_irq(&phba->port_list_lock);
--
--	return;
- }
- 
- /**
-@@ -8371,8 +8350,6 @@ lpfc_send_els_event(struct lpfc_vport *vport,
- 			LPFC_NL_VENDOR_ID);
- 		kfree(els_data);
- 	}
--
--	return;
- }
- 
- 
-@@ -9206,7 +9183,6 @@ lpfc_cmpl_reg_new_vport(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 	lpfc_nlp_put(ndlp);
- 
- 	mempool_free(pmb, phba->mbox_mem_pool);
--	return;
- }
- 
- /**
-@@ -9260,7 +9236,6 @@ lpfc_register_new_vport(struct lpfc_hba *phba, struct lpfc_vport *vport,
- 	spin_lock_irq(shost->host_lock);
- 	vport->fc_flag &= ~FC_VPORT_NEEDS_REG_VPI;
- 	spin_unlock_irq(shost->host_lock);
--	return;
- }
- 
- /**
-@@ -9322,7 +9297,6 @@ lpfc_retry_pport_discovery(struct lpfc_hba *phba)
- 	spin_unlock_irq(&ndlp->lock);
- 	ndlp->nlp_last_elscmd = ELS_CMD_FLOGI;
- 	phba->pport->port_state = LPFC_FLOGI;
--	return;
- }
- 
- /**
-@@ -9755,7 +9729,6 @@ lpfc_fabric_block_timeout(struct timer_list *t)
- 
- 	if (!tmo_posted)
- 		lpfc_worker_wake_up(phba);
--	return;
- }
- 
- /**
-@@ -9829,7 +9802,6 @@ lpfc_unblock_fabric_iocbs(struct lpfc_hba *phba)
- 	clear_bit(FABRIC_COMANDS_BLOCKED, &phba->bit_flags);
- 
- 	lpfc_resume_fabric_iocbs(phba);
--	return;
- }
- 
- /**
-@@ -9851,8 +9823,6 @@ lpfc_block_fabric_iocbs(struct lpfc_hba *phba)
- 	if (!blocked)
- 		mod_timer(&phba->fabric_block_timer,
- 			  jiffies + msecs_to_jiffies(100));
--
--	return;
- }
- 
- /**
-@@ -10097,7 +10067,6 @@ lpfc_sli4_vport_delete_els_xri_aborted(struct lpfc_vport *vport)
- 		}
- 	}
- 	spin_unlock_irqrestore(&phba->sli4_hba.sgl_list_lock, iflag);
--	return;
- }
- 
- /**
-@@ -10162,7 +10131,6 @@ lpfc_sli4_els_xri_aborted(struct lpfc_hba *phba,
- 	}
- 	sglq_entry->state = SGL_XRI_ABORTED;
- 	spin_unlock_irqrestore(&phba->hbalock, iflag);
--	return;
- }
- 
- /* lpfc_sli_abts_recover_port - Recover a port that failed a BLS_ABORT req.
--- 
-2.25.1
+Graceful shutdown of the eMMC is also managed by the mmc core.
 
-
+Kind regards
+Uffe
