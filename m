@@ -2,91 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5153E3A133B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFAA3A1369
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239443AbhFILsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:48:21 -0400
-Received: from polaris.svanheule.net ([84.16.241.116]:47178 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239395AbhFILsL (ORCPT
+        id S239517AbhFILut convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 07:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239690AbhFILtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:48:11 -0400
-Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eafb:ee01:a92e:8520:f692:3284])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 5CBEF20B132;
-        Wed,  9 Jun 2021 13:46:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1623239176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jr7WaxNfsViKRSi3e68KdJ1XtziTgHkqSKryqN7U7yc=;
-        b=uUgxD4BeFgf3XGrfiti7S6wJ5od8tRxH4l2IHzMWV6OEwqM9tbJm0iXYRO6Bk/AJQf5184
-        c+VeEr2Ok3O+JWkCHSoTQzDfulqjd549vwZZiRatInbVSY7rkwhl9go7x1/iNGBDt85iZd
-        KS+lB0mcOeNwNFSCxdfZ0gSAQCSiDp7DnvWWL5LhjNYX4lgI0RfHEzPSOqf9DE7nnpluPc
-        t8u5DAXWrg9AwELItNtKu/8qVQCD2FIyHaAIYMET53wEMnW5+nMrkuStrP2UMiv8BHHGQr
-        dwEu2EAjwys3LscYrdWluJcjqIn6Nu7oWIR0DoFKSMsSUx6dnYj8ziFnPlVCrg==
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Wed, 9 Jun 2021 07:49:21 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7BAC0613A3
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:47:08 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lqwfn-0004A1-KW; Wed, 09 Jun 2021 13:47:03 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lqwfm-0006Ua-Rk; Wed, 09 Jun 2021 13:47:02 +0200
+Message-ID: <3bf7b5a82072484362fae4af946381e1ae846917.camel@pengutronix.de>
+Subject: Re: [PATCH 2/2] reset: Add compile-test stubs
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Adrew Lunn <andrew@lunn.ch>,
-        Sander Vanheule <sander@svanheule.net>
-Subject: [PATCH 2/2] regmap: mdio: Reject invalid clause-22 addresses
-Date:   Wed,  9 Jun 2021 13:46:06 +0200
-Message-Id: <7e1fc137134699fd2daca0937c2223225afd9c3d.1623238313.git.sander@svanheule.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1623238313.git.sander@svanheule.net>
-References: <cover.1623238313.git.sander@svanheule.net>
+Date:   Wed, 09 Jun 2021 13:47:02 +0200
+In-Reply-To: <20210609112806.3565057-3-thierry.reding@gmail.com>
+References: <20210609112806.3565057-1-thierry.reding@gmail.com>
+         <20210609112806.3565057-3-thierry.reding@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When an invalid register offset is provided, the upper bits are silently
-discarded. Change this to return -ENXIO instead, to help catch potential
-bugs.
+Hi Thierry,
 
-Signed-off-by: Sander Vanheule <sander@svanheule.net>
----
- drivers/base/regmap/regmap-mdio.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+On Wed, 2021-06-09 at 13:28 +0200, Thierry Reding wrote:
+> From: Thierry Reding <treding@nvidia.com>
+> 
+> Add stubs for the reset controller registration functions to allow
+> building reset controller provider drivers with the COMPILE_TEST
+> Kconfig option enabled.
+> 
+> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Suggested-by: Dmitry Osipenko <digetx@gmail.com>
+> Signed-off-by: Thierry Reding <treding@nvidia.com>
 
-diff --git a/drivers/base/regmap/regmap-mdio.c b/drivers/base/regmap/regmap-mdio.c
-index aee34bf2400e..9adfb82be8f1 100644
---- a/drivers/base/regmap/regmap-mdio.c
-+++ b/drivers/base/regmap/regmap-mdio.c
-@@ -13,7 +13,10 @@ static int regmap_mdio_read(void *context, unsigned int reg, unsigned int *val)
- 	struct mdio_device *mdio_dev = context;
- 	int ret;
- 
--	ret = mdiobus_read(mdio_dev->bus, mdio_dev->addr, reg & REGNUM_C22_MASK);
-+	if (unlikely(reg & ~REGNUM_C22_MASK))
-+		return -ENXIO;
-+
-+	ret = mdiobus_read(mdio_dev->bus, mdio_dev->addr, reg);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -25,7 +28,10 @@ static int regmap_mdio_write(void *context, unsigned int reg, unsigned int val)
- {
- 	struct mdio_device *mdio_dev = context;
- 
--	return mdiobus_write(mdio_dev->bus, mdio_dev->addr, reg & REGNUM_C22_MASK, val);
-+	if (unlikely(reg & ~REGNUM_C22_MASK))
-+		return -ENXIO;
-+
-+	return mdiobus_write(mdio_dev->bus, mdio_dev->addr, reg, val);
- }
- 
- static const struct regmap_bus regmap_mdio_bus = {
--- 
-2.31.1
+Thank you, I've applied patch 2 to reset/next.
 
+regards
+Philipp
