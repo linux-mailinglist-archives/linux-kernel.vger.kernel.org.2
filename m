@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C877C3A1ED7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7468E3A1EFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhFIVWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:22:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhFIVWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:22:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5053F613F0;
-        Wed,  9 Jun 2021 21:20:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623273605;
-        bh=gVTZC47iNtqoaLuBpr2U2s5p2x8x2qRIA+DneDgU3cg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DjLhUDVeDS1qH15TJMlNtBjiLQWMPbZfZPCGWD0rWOzWQnDyrERVXxfZ7uZOjyxMJ
-         dG1G5O1gXd2rP7F9kZFyrLwVDJyihRJoQbrub3jgG/iVztY93CzlDEdyeFLM8MP13J
-         pLrYz/E04xxk2HYXbMK7cNpSI/jBuE1oqQ0JXrdOPWve2s/ji2/kzLrOThV32A+ISi
-         dPtxyiBxhi3kNtEEF1Yxq2zNUHq+naL88CrMsd3pUFitALBYsAgX3cAPk5+7DcURNc
-         irpDoBtBYfnpkaW4JbeeEcxvqqXmoBImG2ogfZWjnXT+LSBDLkYR4j/WjD2greFqQf
-         g6I8RDtsc+RcA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4622260A0E;
-        Wed,  9 Jun 2021 21:20:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229757AbhFIV2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:28:32 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:58252 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhFIV2a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:28:30 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:51956 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lr5iZ-0001et-BU; Wed, 09 Jun 2021 17:26:31 -0400
+Message-ID: <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
+Subject: Re: [RFC] coredump: Do not interrupt dump for TIF_NOTIFY_SIGNAL
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Pavel Begunkov>" <asml.silence@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Date:   Wed, 09 Jun 2021 17:26:30 -0400
+In-Reply-To: <87eeda7nqe.fsf@disp2133>
+References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
+         <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com>
+         <87h7i694ij.fsf_-_@disp2133>
+         <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
+         <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
+         <87eeda7nqe.fsf@disp2133>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/9] net: lapbether: clean up some code style issues
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162327360528.22106.14874729066720704786.git-patchwork-notify@kernel.org>
-Date:   Wed, 09 Jun 2021 21:20:05 +0000
-References: <1623231595-33851-1-git-send-email-huangguangbin2@huawei.com>
-In-Reply-To: <1623231595-33851-1-git-send-email-huangguangbin2@huawei.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, xie.he.0141@gmail.com,
-        ms@dev.tdt.de, willemb@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lipeng321@huawei.com
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Wed, 9 Jun 2021 17:39:46 +0800 you wrote:
-> From: Peng Li <lipeng321@huawei.com>
+On Wed, 2021-06-09 at 16:05 -0500, Eric W. Biederman wrote:
+> > 
+> > So the TIF_NOTIFY_SIGNAL does get set WHILE the core dump is
+> > written.
 > 
-> This patchset clean up some code style issues.
+> Did you mean?
 > 
-> Peng Li (9):
->   net: lapbether: remove redundant blank line
->   net: lapbether: add blank line after declarations
->   net: lapbether: move out assignment in if condition
->   net: lapbether: remove trailing whitespaces
->   net: lapbether: remove unnecessary out of memory message
->   net: lapbether: fix the comments style issue
->   net: lapbether: replace comparison to NULL with "lapbeth_get_x25_dev"
->   net: lapbether: fix the alignment issue
->   net: lapbether: fix the code style issue about line length
+> So the TIF_NOTIFY_SIGNAL does _not_ get set WHILE the core dump is
+> written.
 > 
-> [...]
+> 
+Absolutely not. I did really mean what I have said. Bear with me that,
+I am not qualifying myself as an expert kernel dev yet so feel free to
+correct me if I say some heresy...
 
-Here is the summary with links:
-  - [net-next,1/9] net: lapbether: remove redundant blank line
-    https://git.kernel.org/netdev/net-next/c/eff57ab52cc4
-  - [net-next,2/9] net: lapbether: add blank line after declarations
-    https://git.kernel.org/netdev/net-next/c/5bc5f5f27b89
-  - [net-next,3/9] net: lapbether: move out assignment in if condition
-    https://git.kernel.org/netdev/net-next/c/a61bebc774cb
-  - [net-next,4/9] net: lapbether: remove trailing whitespaces
-    https://git.kernel.org/netdev/net-next/c/2e350780ae4f
-  - [net-next,5/9] net: lapbether: remove unnecessary out of memory message
-    https://git.kernel.org/netdev/net-next/c/d5e686e8b66d
-  - [net-next,6/9] net: lapbether: fix the comments style issue
-    https://git.kernel.org/netdev/net-next/c/4f9893c762f8
-  - [net-next,7/9] net: lapbether: replace comparison to NULL with "lapbeth_get_x25_dev"
-    https://git.kernel.org/netdev/net-next/c/d49859601d72
-  - [net-next,8/9] net: lapbether: fix the alignment issue
-    https://git.kernel.org/netdev/net-next/c/c564c049a34f
-  - [net-next,9/9] net: lapbether: fix the code style issue about line length
-    https://git.kernel.org/netdev/net-next/c/63a2bb15fe59
+io_uring is placing my task in my TCP socket wait queue because it
+wants to read data from it.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+The task returns to user space and core dump with a SEGV.
+
+now my understanding is that the code that is waking up tasks, it is
+the NIC driver interrupt handler which can occur while the core dump is
+written.
+
+does that make sense?
+
+my testing is telling me that this is exactly what happens...
 
 
