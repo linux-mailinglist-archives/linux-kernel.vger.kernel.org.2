@@ -2,189 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5E23A1D36
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08D53A1D52
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229557AbhFISyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 14:54:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60624 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229504AbhFISys (ORCPT
+        id S230216AbhFIS7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 14:59:41 -0400
+Received: from mail-qt1-f201.google.com ([209.85.160.201]:45939 "EHLO
+        mail-qt1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230223AbhFIS7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 14:54:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623264771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UJv7aWmnObYZjIRak2zuvQQ+UDBG4ApcHE+EP2bUvao=;
-        b=GJr4rohL7ov7w2kyw7Px4y1AUjlHpwsVGMq9xIUad/6iNI91ADaucs9JDXNEjmFMIYDDD5
-        RCGYXuEruMiE6f9XkSOUgyy8FYTyPUzbUfDrpUa3Na/6HjSUPNux9dgWSZkhqZY2Nv8q7O
-        d+3d8nZ2TbrJs0uMWdlv/nEuYLHinSQ=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-448-ODdKX7FTNjKx_C_3B9Ouqw-1; Wed, 09 Jun 2021 14:52:50 -0400
-X-MC-Unique: ODdKX7FTNjKx_C_3B9Ouqw-1
-Received: by mail-oo1-f71.google.com with SMTP id v19-20020a4a31530000b029024944222912so11185459oog.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 11:52:50 -0700 (PDT)
+        Wed, 9 Jun 2021 14:59:39 -0400
+Received: by mail-qt1-f201.google.com with SMTP id c17-20020a05622a0591b0290249aef9a5d5so2104671qtb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 11:57:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=9Ta4e4/TJDLA01JqUO5pruLWLZ3Bol4XK6b4bxWUzqQ=;
+        b=YJnXxzDl4pi23RrNFK2eDoU54ZqtkFj1nQHZ+3Yt/ozWjyChgxPpctDzKNLgx5xkYT
+         O5NxBdDcdED+4Z8RhFH1OhdDg3h9Zl0mjFYjuxLjtj8oB0KZ6dKNDxU6OvjeXEHcM102
+         Yn3uwvIBnBQafroppL4HvSjeey+zHt5uXcJmWsRBLDQ8dnPM6Bw6VCMOHhsox3h6OJVc
+         ejQsaUtkx8xmPu1O/4Tx2Gl8olM+Qo57JlgWnEt6wFQuhYwbGP+2Cxa483L5b6AjSr1E
+         cvD0OBOF9cKVXwIPL+HkrLclje0/lzMCi/QZH+GyLdHALjy0ZC2DPwvwVynX/Sjkq+3H
+         TmIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=UJv7aWmnObYZjIRak2zuvQQ+UDBG4ApcHE+EP2bUvao=;
-        b=Mil2qY3eTNfpI9lBCwyG/gSkIsr8FvDjAldM+cQY4VQyIAOSK3zq3cpRI7x+4tWVcC
-         jAwItGhjg+RW3Kq1GnWHNZTAaeDP8o6CLPyMlY2oB6ixyVbHmWHNHieNn8MfBXhUvEj/
-         b3HsydZFmnqFlBPFMZhsN8bzeI0iIBcLUsV/fTlhZJFaHYmlWvRzR1K8DIOHasG8BNrr
-         D8V8tIMSo3my9jQIA2tjUy6PlDUMsfjwB55zXqlUYVeGKC4Z+iAL8REq/DGweQsoo9GC
-         yt5cNuuRTrCKpzGCRjGGfVVEKXkiHTXfUimiXeuH6/CHMEH7SQ817FPdSosF4w1PnigC
-         ptJA==
-X-Gm-Message-State: AOAM532fMCEucBiDUHiVxB93kYVRGeeLrJ7T2wCTyqWghfPtLxgTDAPr
-        6pi0fzAQzgCDfQR0ic8rbvuzkTiZPnqiFjGAU3o/RpKoR78GZGDXUY8OAVlkZ1hysYanR8WFPKK
-        NJaPEdR2cxUXkC+CPJ1p5bLWn
-X-Received: by 2002:a9d:1b41:: with SMTP id l59mr752432otl.8.1623264769456;
-        Wed, 09 Jun 2021 11:52:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzbksmEZVttdsFOTiUH5FxL4Xn997V4wIynWP3Ez8EQZC2AnipQtQmYRnCULF/30XC2+WXccw==
-X-Received: by 2002:a9d:1b41:: with SMTP id l59mr752409otl.8.1623264769221;
-        Wed, 09 Jun 2021 11:52:49 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id q26sm117297ood.7.2021.06.09.11.52.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 11:52:48 -0700 (PDT)
-Subject: Re: [PATCH v2 0/4] fpga: reorganize to subdirs
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com,
-        nava.manne@xilinx.com, dinguyen@kernel.org,
-        krzysztof.kozlowski@canonical.com, yilun.xu@intel.com,
-        arnd@arndb.de, fpacheco@redhat.com, richard.gong@intel.com,
-        luca@lucaceresoli.net, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20210609142208.3085451-1-trix@redhat.com>
- <YMDV7R52QUTFhpHH@kroah.com>
- <2738ee7a-448f-c327-c430-13fb44da45ec@redhat.com>
- <YMDueTEHGWuAcknP@kroah.com>
- <a35f5fda-a202-dc66-4445-b3ce333a55e6@redhat.com>
- <YMD2yxtsQN16MoPA@kroah.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <aba774cb-1135-26aa-6e20-3c00b4e269ac@redhat.com>
-Date:   Wed, 9 Jun 2021 11:52:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <YMD2yxtsQN16MoPA@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=9Ta4e4/TJDLA01JqUO5pruLWLZ3Bol4XK6b4bxWUzqQ=;
+        b=aSSr0QQJvhBbqlorNKDd8UBcgwDM5foDxZetA8Tf83gvWx8U38Qjvf4KZkUQyA6R7y
+         /5GGycyg/nk5oN//VVOAtSWGbfgTNSUY7lqCumWqgAGTKk+cSXH5pSQcKFPpxhahuEW1
+         G11lXkFQB3vegYahpua5a4Ww+iUSTA1fH1tf3QFbhkhkizI4lA0Cj2qWwUBlp5BzL4cP
+         M/Bxe8sPpp6E5cwKjTNNLqUKsxQakCYisJc0E0Jn+0+gcyj4T2ElN7rVzXoHENEfhhkg
+         /rVOBOYPg78d1zZgx1fxaVnoSSoT8RU/YlAYisJpa2tKyTGs1qkzgbnE9Pv7waozxAQY
+         h1Jw==
+X-Gm-Message-State: AOAM5318Bvw6oQky/5AnvQNTM+2Gqo5/5E4YRBVMtuM1bi1KpVlV89lH
+        KbPOrctfpXOZ1XLrtmFqG4qJqmYEvis=
+X-Google-Smtp-Source: ABdhPJxfKT6Yk/tHfkxjnayQeolfV3XXuHVJHH+RSplVVdHCEYHLC7BLx4Ro/AX/GHGvkaTy3pFm5GxD2KI=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:bfdc:c2e5:77b1:8ef3])
+ (user=seanjc job=sendgmr) by 2002:ad4:4e47:: with SMTP id eb7mr1527372qvb.40.1623264991162;
+ Wed, 09 Jun 2021 11:56:31 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed,  9 Jun 2021 11:56:10 -0700
+Message-Id: <20210609185619.992058-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+Subject: [PATCH 0/9] KVM: x86: Fix NULL pointer #GP due to RSM bug
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fb0b6a7e8713aeb0319c@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix a NULL pointer dereference in gfn_to_rmap() that occurs if RSM fails,
+reported by syzbot.
 
-On 6/9/21 10:13 AM, Greg KH wrote:
-> On Wed, Jun 09, 2021 at 09:50:39AM -0700, Tom Rix wrote:
->> On 6/9/21 9:38 AM, Greg KH wrote:
->>> On Wed, Jun 09, 2021 at 08:08:06AM -0700, Tom Rix wrote:
->>>> On 6/9/21 7:53 AM, Greg KH wrote:
->>>>> On Wed, Jun 09, 2021 at 07:22:03AM -0700, trix@redhat.com wrote:
->>>>>> From: Tom Rix <trix@redhat.com>
->>>>>>
->>>>>> The incoming xrt patchset has a toplevel subdir xrt/
->>>>>> The current fpga/ uses a single dir with filename prefixes to subdivide owners
->>>>>> For consistency, there should be only one way to organize the fpga/ dir.
->>>>>> Because the subdir model scales better, refactor to use it.
->>>>>> The discussion wrt xrt is here:
->>>>>> https://lore.kernel.org/linux-fpga/68e85a4f-4a10-1ff9-0443-aa565878c855@redhat.com/
->>>>>>
->>>>>> Follow drivers/net/ethernet/ which has control configs
->>>>>> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
->>>>>> Since fpgas do not have many vendors, drop the 'VENDOR' and use
->>>>>> FPGA_BLA.
->>>>>>
->>>>>> There are several new subdirs
->>>>>> altera/
->>>>>> dfl/
->>>>>> lattice/
->>>>>> xilinx/
->>>>>>
->>>>>> Each subdir has a Kconfig that has a new/reused
->>>>>>
->>>>>> if FPGA_BLA
->>>>>>      ... existing configs ...
->>>>>> endif FPGA_BLA
->>>>>>
->>>>>> Which is sourced into the main fpga/Kconfig
->>>>>>
->>>>>> Each subdir has a Makefile whose transversal is controlled in the
->>>>>> fpga/Makefile by
->>>>>>
->>>>>> obj-$(CONFIG_FPGA_BLA) += bla/
->>>>>>
->>>>>> Some cleanup to arrange thing alphabetically and make fpga/Makefile's
->>>>>> whitespace look more like net/'s
->>>>>>
->>>>>> Changes from
->>>>>> v1
->>>>>>      Drop renaming files
->>>>>>      Cleanup makefiles
->>>>> You can rename the files, you just can not rename the .ko objects
->>>>> without everyone knowing what you are doing and you trying to bury it in
->>>>> the middle of a differently described patch.
->>>>>
->>>>> If you want to do that, do you?  I don't really understand why you want
->>>>> to move things around right now other than "we have 40 files in one
->>>>> directory, ick!".
->>>> I am trying to resolve the layout inconsistency between what we have and
->>>> what the xrt patchset does.
->>> Why does it matter?  New stuff can be added to a new dir, why worry
->>> about old stuff?  What does it hurt?
->>>
->>>> The big issue is the files vs dirs.
->>>>
->>>> Over specified filenames is secondary, so I dropped them.
->>>>
->>>> 40 files in one dir is itself not a problem.
->>>>
->>>> having 40 files and an xrt/ is.
->>> Why is that a "problem"?
->>>
->>>> fpga/ layout should be consistent so the Makefile and Kconfig are easier to
->>>> maintain.
->>> Is it somehow hard to maintain today?  Seems pretty trivial to me...
->> This change was to help move xrt along.
->>
->> If you are fine with xrt/, I will drop this patchset.
-> Who has objected to xrt/ being the only new subdirectory?
+The immediate problem is that the MMU context's role gets out of sync
+because KVM clears the SMM flag in the vCPU at the start of RSM emulation,
+but only resets the MMU context if RSM succeeds.  The divergence in vCPU
+vs. MMU role with respect to the SMM flag causes explosions if the non-SMM
+memslots have gfn ranges that are not present in the SMM memslots, because
+the MMU expects that the memslot for a shadow page cannot magically
+disappear.
 
-Maybe just me, but it has been mostly me doing the review.
+The other obvious problem is that KVM doesn't emulate triple fault on RSM
+failure, e.g. it keeps running the vCPU in a frankenstate instead of
+exiting to userspace.  Fixing that would squash the syzbot repro, but
+would not fix the underlying issue because nothing prevents userspace from
+calling KVM_RUN on a vCPU that hit shutdown (yay lack of a shutdown state).
+But, it's easy to fix and definitely worth doing.
 
-all of my easy comments have been nearly resolved.
+Everything after the two bug fixes is cleanup.
 
-now I am looking at bigger issues like this, should subdev's move out of 
-fpga/ etc.
+Ben Gardon has an internal patch or two that guards against the NULL
+pointer dereference in gfn_to_rmap().  I'm planning on getting that
+functionality posted (needs a little massaging) so that these types of
+snafus don't crash the host (this isn't the first time I've introduced a
+bug that broke gfn_to_rmap(), though thankfully it's the first time such
+a bug has made it upstream, knock on wood).
 
->
-> My main complaints here are:
-> 	- these patches were not tested
-> 	- you renamed kernel modules "accidentally"
-> 	- you forgot SPDX lines
-> 	- lack of description of why these files being moved was
-> 	  necessary in the changelog where you moved the files
->
-> Remember, patch 0/X never shows up in changelogs...
+Amusingly, adding gfn_to_rmap() NULL memslot checks might even be a
+performance improvement.  Because gfn_to_rmap() doesn't check the memslot
+before using it, and because the compiler can see the search_memslots()
+returns NULL/0, gcc often/always generates dedicated (and hilarious) code
+for NULL, e.g. this #GP was caused by an explicit load from 0:
 
-I will respin and collapse the patches to a single patch with a better 
-commit log.
+  48 8b 14 25 00 00 00 00	mov    0x0,%rdx
 
-They aren't really useful except as a full change.
 
-Testing will be done for dfl.
+Sean Christopherson (9):
+  KVM: x86: Immediately reset the MMU context when the SMM flag is
+    cleared
+  KVM: x86: Emulate triple fault shutdown if RSM emulation fails
+  KVM: x86: Replace .set_hflags() with dedicated .exiting_smm() helper
+  KVM: x86: Invoke kvm_smm_changed() immediately after clearing SMM flag
+  KVM: x86: Move (most) SMM hflags modifications into kvm_smm_changed()
+  KVM: x86: Move "entering SMM" tracepoint into kvm_smm_changed()
+  KVM: x86: Rename SMM tracepoint to make it reflect reality
+  KVM: x86: Drop .post_leave_smm(), i.e. the manual post-RSM MMU reset
+  KVM: x86: Drop "pre_" from enter/leave_smm() helpers
 
-Tom
+ arch/x86/include/asm/kvm-x86-ops.h |  4 +--
+ arch/x86/include/asm/kvm_host.h    |  4 +--
+ arch/x86/kvm/emulate.c             | 31 ++++++++++-------
+ arch/x86/kvm/kvm_emulate.h         |  7 ++--
+ arch/x86/kvm/svm/svm.c             |  8 ++---
+ arch/x86/kvm/trace.h               |  2 +-
+ arch/x86/kvm/vmx/vmx.c             |  8 ++---
+ arch/x86/kvm/x86.c                 | 53 +++++++++++++++---------------
+ 8 files changed, 61 insertions(+), 56 deletions(-)
 
->
-> You can do better :)
->
-> greg k-h
->
+-- 
+2.32.0.rc1.229.g3e70b5a671-goog
 
