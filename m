@@ -2,117 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580453A0873
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894583A087B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbhFIAjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 20:39:06 -0400
-Received: from mail-il1-f170.google.com ([209.85.166.170]:35392 "EHLO
-        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232202AbhFIAjF (ORCPT
+        id S232677AbhFIAo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 20:44:57 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:49527 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232568AbhFIAo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 20:39:05 -0400
-Received: by mail-il1-f170.google.com with SMTP id b9so22395612ilr.2;
-        Tue, 08 Jun 2021 17:37:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z9xvYmw13b60K378g+x+OptBkyWgf9AfbCR5AXVFM5Q=;
-        b=Bdk2keqKmepkOviS2h7YcK3ugh5FZB9Pad8h3E6LaYpmIswBb28HN5cKX0dToXpVwG
-         pZ+65Yw8jpkkz1Ik2e5V4Hf1LjwQLRgLphvChq5zhRT6XwXyjd2bFfidVWR7DoAbdwhF
-         BQZVImIkVaTOZfy5hEdGiJxdXnyXR3+gQj5Ak4CW9Dee2O6wjeOFLaLmuS9N3xTpBrxx
-         s8YP0fBiRl/fDS15dUCBag2obukDgUKEMvSVyYz11SC7zt1AryQxnFNUj8s6lJadAwOf
-         pg6xk0giIPmjtMqmp4SvAgeYDzY9A0SQW3XsLS1nDoVlSX1UXgFYmtE6bHVQzm26Mgk6
-         1ZRw==
-X-Gm-Message-State: AOAM531wgX3iTj7LyfWu4/6JZpZWEQc+eJRzZX6ILrgfpm6qGFZPJT8j
-        gtAL7OTyq4rzCaGp+0dVcZ8=
-X-Google-Smtp-Source: ABdhPJya9bbFM8vdeKIdzDKdWIbr8Lb1teNvv6b2Ph//eGKubN2nQ8omGTaOwxmop/DoG9Rh33jelQ==
-X-Received: by 2002:a92:c704:: with SMTP id a4mr21787667ilp.157.1623199031629;
-        Tue, 08 Jun 2021 17:37:11 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id a18sm697476ilc.31.2021.06.08.17.37.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 17:37:11 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 00:37:10 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH v9 8/8] writeback, cgroup: release dying cgwbs by
- switching attached inodes
-Message-ID: <YMANNhixU0QUqZIJ@google.com>
-References: <20210608230225.2078447-1-guro@fb.com>
- <20210608230225.2078447-9-guro@fb.com>
- <20210608171237.be2f4223de89458841c10fd4@linux-foundation.org>
- <YMAKBgVgOhYHhB3N@carbon.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMAKBgVgOhYHhB3N@carbon.dhcp.thefacebook.com>
+        Tue, 8 Jun 2021 20:44:56 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 565095804F7;
+        Tue,  8 Jun 2021 20:42:58 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Tue, 08 Jun 2021 20:42:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=w3DCX2yd+9lMXdmKvG11WHVe5Bs0SHd
+        AIYy275ZguRM=; b=IDsjMEodHPa2wMYM7CMsUMgF6xDFVbZOLqxw5meGMciUnvg
+        h+jRh3nl2Kzg8EwXVFZFenFVXif+GRYCcz1JaTuto4BOeBFaFCr5w1fQsC1c+rkX
+        VQLleGkqdEjvq0E0CFZ9c9jXlcA5eNd9fenRuCIICfjfHeYD3qoYQz64IESTU0Dq
+        B2rh5TDfgEzXM/s1lCVfT+samRb+F797YdbUs+7voMDpfWa+scgsXwO8aSpBwvS/
+        lu7ev/Dhb241Zj1CeY9An6Ma/0sbfbcili5O7YofvfOH1L3eBgE7a0S6/kF7C6lq
+        yIAxOCnU4/zg/QFZZtv3phOKE6gMS/t7dHnZ/IA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=w3DCX2
+        yd+9lMXdmKvG11WHVe5Bs0SHdAIYy275ZguRM=; b=wNutnjepAfTBWCXOJb5j9m
+        T2AVlQTfoC1o1oCUt7bAeSuijkh32BdZn5O/xy4LyxHpDd7qqq8xAghiHPR9mA0a
+        JRLQypRC3uaw+zOgYaFzMbaVZ0EB9nim26QeIw5Le7A2yNcKqfP+xt/SQoYR4PsU
+        4x/WMVx12rD3KJi9IjA7cGFvAvFROxexpzBFgxlTw3HqRxnKY3IpolhqkOf6SANx
+        3stDrnbYS2KLZNVx4jTzFrS9J7MCcZ63ZSUryAjarl6UfgF5KYFlZQZNLCS2WAHK
+        7NKXmgK2Pcq7PIq4R/NqSncI8/ag5vkimnGSLripIYF22m2ko4zExcKQY95wXVLA
+        ==
+X-ME-Sender: <xms:jg7AYI3c7fgr3BglBoaPJhpk3ooHQEN3Z1ko8X6FuwiLltdxVBzRzw>
+    <xme:jg7AYDGyX5E2ClqDKHxC6BYGBbLuTk51vfgIIuNlt_V516fcZot3J4BFOVZG5kqGL
+    1gPDAXiJxicHih9bQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedutddgfedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefguedvfedvgffgudehjeegudefvedufefgveefudetffdvfeeigffg
+    jedvkeetnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhi
+    ugdrrghu
+X-ME-Proxy: <xmx:jg7AYA49Y5r06jf_m8ZNIoL-tP_3Erb_cG2CUoE60WcJorc1LAUi6Q>
+    <xmx:jg7AYB3_5pbZQIrKaWyEH77FStCwdK367V5_-08Y1HR4Pt7W_cK5FQ>
+    <xmx:jg7AYLFxjlpHk4GQlRmu3YFuV_An4k8e-tXTqcNNiEBE3USgw9ETOg>
+    <xmx:kg7AYD_SqI8BUDPm8IerBJWGhc6ilZ_VsKJQlDkAtEd5h2zEogRdQg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 95A87AC0062; Tue,  8 Jun 2021 20:42:54 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <1f34af33-0905-480e-8a55-e5e34d66216f@www.fastmail.com>
+In-Reply-To: <20210608102547.4880-2-steven_lee@aspeedtech.com>
+References: <20210608102547.4880-1-steven_lee@aspeedtech.com>
+ <20210608102547.4880-2-steven_lee@aspeedtech.com>
+Date:   Wed, 09 Jun 2021 10:12:33 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Billy Tsai" <billy_tsai@aspeedtech.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v5_01/10]_dt-bindings:_aspeed-sgpio:_Convert_txt_bi?=
+ =?UTF-8?Q?ndings_to_yaml.?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 05:23:34PM -0700, Roman Gushchin wrote:
-> On Tue, Jun 08, 2021 at 05:12:37PM -0700, Andrew Morton wrote:
-> > On Tue, 8 Jun 2021 16:02:25 -0700 Roman Gushchin <guro@fb.com> wrote:
-> > 
-> > > Asynchronously try to release dying cgwbs by switching attached inodes
-> > > to the nearest living ancestor wb. It helps to get rid of per-cgroup
-> > > writeback structures themselves and of pinned memory and block cgroups,
-> > > which are significantly larger structures (mostly due to large per-cpu
-> > > statistics data). This prevents memory waste and helps to avoid
-> > > different scalability problems caused by large piles of dying cgroups.
-> > > 
-> > > Reuse the existing mechanism of inode switching used for foreign inode
-> > > detection. To speed things up batch up to 115 inode switching in a
-> > > single operation (the maximum number is selected so that the resulting
-> > > struct inode_switch_wbs_context can fit into 1024 bytes). Because
-> > > every switching consists of two steps divided by an RCU grace period,
-> > > it would be too slow without batching. Please note that the whole
-> > > batch counts as a single operation (when increasing/decreasing
-> > > isw_nr_in_flight). This allows to keep umounting working (flush the
-> > > switching queue), however prevents cleanups from consuming the whole
-> > > switching quota and effectively blocking the frn switching.
-> > > 
-> > > A cgwb cleanup operation can fail due to different reasons (e.g. not
-> > > enough memory, the cgwb has an in-flight/pending io, an attached inode
-> > > in a wrong state, etc). In this case the next scheduled cleanup will
-> > > make a new attempt. An attempt is made each time a new cgwb is offlined
-> > > (in other words a memcg and/or a blkcg is deleted by a user). In the
-> > > future an additional attempt scheduled by a timer can be implemented.
-> > > 
-> > > ...
-> > >
-> > > +/*
-> > > + * Maximum inodes per isw.  A specific value has been chosen to make
-> > > + * struct inode_switch_wbs_context fit into 1024 bytes kmalloc.
-> > > + */
-> > > +#define WB_MAX_INODES_PER_ISW	115
-> > 
-> > Can't we do 1024/sizeof(struct inode_switch_wbs_context)?
+
+
+On Tue, 8 Jun 2021, at 19:55, Steven Lee wrote:
+> sgpio-aspeed bindings should be converted to yaml format.
 > 
-> It must be something like
-> DIV_ROUND_DOWN_ULL(1024 - sizeof(struct inode_switch_wbs_context), sizeof(struct inode *)) + 1
-
-Sorry to keep popping in for 1 offs but maybe this instead? I think the
-above would result in > 1024 kzalloc() call.
-
-DIV_ROUND_DOWN_ULL(max(1024 - sizeof(struct inode_switch_wbs_context), sizeof(struct inode *)),
-                   sizeof(struct inode *))
-
-might need max_t not sure.
-
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> ---
+>  .../bindings/gpio/aspeed,sgpio.yaml           | 75 +++++++++++++++++++
+>  .../devicetree/bindings/gpio/sgpio-aspeed.txt | 46 ------------
+>  2 files changed, 75 insertions(+), 46 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
 > 
-> But honestly 1024 came out of a thin air too, so I'm not sure it worth it.
-> I liked the number 128 but then made it fit into the closest kmalloc cache.
-> 
-> Btw, thank you for picking these patches up!
+> diff --git a/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml 
+> b/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+> new file mode 100644
+> index 000000000000..b2ae211411ff
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+> @@ -0,0 +1,75 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpio/aspeed,sgpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Aspeed SGPIO controller
+> +
+> +maintainers:
+> +  - Andrew Jeffery <andrew@aj.id.au>
+> +
+> +description:
+> +  This SGPIO controller is for ASPEED AST2500 SoC, it supports up to 
+> 80 full
+> +  featured Serial GPIOs. Each of the Serial GPIO pins can be 
+> programmed to
+> +  support the following options
+> +  - Support interrupt option for each input port and various interrupt
+> +    sensitivity option (level-high, level-low, edge-high, edge-low)
+> +  - Support reset tolerance option for each output port
+> +  - Directly connected to APB bus and its shift clock is from APB bus 
+> clock
+> +    divided by a programmable value.
+> +  - Co-work with external signal-chained TTL components 
+> (74LV165/74LV595)
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - aspeed,ast2400-sgpio
+> +      - aspeed,ast2500-sgpio
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    const: 2
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  ngpios: true
+> +
+> +  bus-frequency: true
 
-Thanks,
-Dennis
+I'm not familiar enough with dt-schema to know that this does what we need, so deferring to Rob.
+
+Looks good otherwise.
+
+Andrew
