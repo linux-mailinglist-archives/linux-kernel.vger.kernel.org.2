@@ -2,277 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402883A1551
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B75F3A1557
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbhFINTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:19:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29515 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235982AbhFINTX (ORCPT
+        id S233793AbhFINVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:21:11 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42766 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232952AbhFINVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:19:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623244648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XvFqgoXbMqYdld4DmESpGVSZB3RoZyxfbp1QAtbqos0=;
-        b=Pcma2KK6lNrZfSaDQ4SJn9ivnLM4i9krWJoefMkIgT6/jmHJnGA2/VFF4Wh+/P8i02KnTl
-        POjH8CXn83f9rAOSPNE4EPk5BrGWddfDJxOgyBA3fJFszAaasU9SmyjOcvrt/hRuoRRYH8
-        /He80hFB/U1UGcqwqTQW7vSQsF5sih0=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401--9z-J8fDO_aylrsD4APjeg-1; Wed, 09 Jun 2021 09:17:27 -0400
-X-MC-Unique: -9z-J8fDO_aylrsD4APjeg-1
-Received: by mail-oo1-f72.google.com with SMTP id f8-20020a4ab6480000b029023de979bd74so15537687ooo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 06:17:27 -0700 (PDT)
+        Wed, 9 Jun 2021 09:21:09 -0400
+Received: from mail-wr1-f71.google.com ([209.85.221.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lqy6z-0006Wj-I0
+        for linux-kernel@vger.kernel.org; Wed, 09 Jun 2021 13:19:13 +0000
+Received: by mail-wr1-f71.google.com with SMTP id t14-20020adfe44e0000b029011851efa802so10711238wrm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 06:19:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XvFqgoXbMqYdld4DmESpGVSZB3RoZyxfbp1QAtbqos0=;
-        b=PGLFpcMXDcc1WNhc9AjCiMmRZKlF09PtqF574MJgSi0Mz6AwsuEWz6LipD5Wzau6Q+
-         /Qc9vY/FVNqZpHsqTHzL+qNuwFegJu2XXm9mvh9QnQXNhVLJey7hVf2AdR0JPoEUHhME
-         4xcy2KsWaoAY+zJcImWGj4y3YG3pKD7fj3vgOSCNgiDIY5LFgecD2Tb1x7MfQMNXjfRA
-         sUAm+fEZr7g6aNovsL7maIz/U88zLe3MtORWeY5UOuLQerv3ym9OeKrGVgoXbNRfWKKk
-         ivszuPlFKfXpCOjwB1NHSUNeZwIExnko3x2ZrHzyXLMFNTZ6pB0Isv0DejQG5JKU61/R
-         0tcA==
-X-Gm-Message-State: AOAM533z78dclb49c3HCZXZRYGpSZR7nA0zIMKu+WdV/iChVbpIVjgj1
-        bKi3lDiULMncYdcr+jMyiTSPt7ZEspWa3gP3KTdZUXNiy38SPsAr+lBFs3f02AwO7whIYzNx52n
-        fK6j7O2kLJhJT1JwhSKTyvxcB
-X-Received: by 2002:a9d:7588:: with SMTP id s8mr23218878otk.123.1623244646087;
-        Wed, 09 Jun 2021 06:17:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2Cwl5ui7m+QfM1+JKwfMNSFN88TkGgQwpB00tNnLFXTUzczdWna9W+RWwxFz/Olc+twZPPw==
-X-Received: by 2002:a9d:7588:: with SMTP id s8mr23218851otk.123.1623244645885;
-        Wed, 09 Jun 2021 06:17:25 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 15sm3434329oij.26.2021.06.09.06.17.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 06:17:25 -0700 (PDT)
-From:   trix@redhat.com
-To:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
-        michal.simek@xilinx.com
-Cc:     linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH 2/7] fpga: xilinx: reorganize to subdir layout
-Date:   Wed,  9 Jun 2021 06:17:07 -0700
-Message-Id: <20210609131712.3080827-4-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210609131712.3080827-1-trix@redhat.com>
-References: <20210609131712.3080827-1-trix@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K7ukFOcIqlMyCwfcpS6HoUWpF/8CQogyFh7SodyrFVo=;
+        b=kDcrZo3vp1jIQcEKZYHfG1FTtpP0E+c0FqNBWn14y/XDWSO5zkKEHudCNUqDzRzwsS
+         jM/mSw9g+6QrxMedFNMJP9BJ22hl4bM0CdmWNajLmr2tPCUWTJ1CQbnf8sun5TTDKtnp
+         3aFpzCTmBJazIHe566POui0WIUhGMiPgns2h5BN5r2L8adesgkqlmmsw9iizvwLyNmJV
+         5w/U2CyhqKXtMqXpSoYbnEt3Y2DIy9pIDZ7ikkBKesrjSzw+CEDT/JtEkKVPcGjhF3qm
+         H4Oq8blM40n3f5FM1Db706ZnDgR1qn6HbhmkT/E8npe4BaOExOwj6Q10TlkydqHqgtmv
+         xIPg==
+X-Gm-Message-State: AOAM531Ho6KOVyeR6M9wWgTnTtXDN0SfsbJkePvDCM/96YKbZ7tfEjva
+        x64nBuqCmC3dYJcgWOOzTBiaxPpvViG3oFsEdKP5EW4rnPO3hpabKiZCN5ChDc8er3ORlvPE2ry
+        n4Vyvfi7uDC+QvqrW0N7RscKASEAJPpRq+N+683JOhQ==
+X-Received: by 2002:a5d:6382:: with SMTP id p2mr29405312wru.338.1623244753069;
+        Wed, 09 Jun 2021 06:19:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJkaKG91SyeYUwwhszmOE+6jjkQPDwARKcdf4a5gIWrDST/QYGzNQpTMcJFkRaPMUNnLuOFg==
+X-Received: by 2002:a5d:6382:: with SMTP id p2mr29405291wru.338.1623244752943;
+        Wed, 09 Jun 2021 06:19:12 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id h9sm20533941wmb.35.2021.06.09.06.19.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 06:19:12 -0700 (PDT)
+Subject: Re: [PATCH 1/2] memory: tegra: Add missing dependencies
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210609112806.3565057-1-thierry.reding@gmail.com>
+ <20210609112806.3565057-2-thierry.reding@gmail.com>
+ <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
+Date:   Wed, 9 Jun 2021 15:19:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On 09/06/2021 13:58, Dmitry Osipenko wrote:
+> 09.06.2021 14:28, Thierry Reding пишет:
+>> From: Thierry Reding <treding@nvidia.com>
+>>
+>> When enabling the COMPILE_TEST Kconfig option, the Tegra memory
+>> controller can be built without ARCH_TEGRA being selected. However, the
+>> driver implicitly depends on some symbols pulled in via ARCH_TEGRA,
+>> which causes the build to break.
+>>
+>> Add explicit dependencies for OF_EARLY_FLATTREE and OF_RESERVED_MEM to
+>> the Tegra MC Kconfig option to make sure they are selected even if
+>> ARCH_TEGRA is not.
+>>
+>> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> Signed-off-by: Thierry Reding <treding@nvidia.com>
+>> ---
+>>  drivers/memory/tegra/Kconfig | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconfig
+>> index f9bae36c03a3..ecfb071fc4f4 100644
+>> --- a/drivers/memory/tegra/Kconfig
+>> +++ b/drivers/memory/tegra/Kconfig
+>> @@ -48,6 +48,8 @@ config TEGRA124_EMC
+>>  config TEGRA210_EMC_TABLE
+>>  	bool
+>>  	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
+>> +	select OF_EARLY_FLATTREE
+>> +	select OF_RESERVED_MEM
+>>  
+>>  config TEGRA210_EMC
+>>  	tristate "NVIDIA Tegra210 External Memory Controller driver"
+>>
+> 
+> Will this work if CONFIG_OF is disabled?
 
-Create a xilinx/ subdir
-Move xilinx-* and zynq* files to it.
-Add a Kconfig and Makefile
+Yeah, good question. That's why I propose "depends on". No issues with
+unmet or circular dependencies.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/fpga/Kconfig                          | 40 +---------------
- drivers/fpga/Makefile                         |  5 +-
- drivers/fpga/xilinx/Kconfig                   | 48 +++++++++++++++++++
- drivers/fpga/xilinx/Makefile                  |  8 ++++
- .../fpga/{ => xilinx}/xilinx-pr-decoupler.c   |  0
- drivers/fpga/{ => xilinx}/xilinx-spi.c        |  0
- drivers/fpga/{ => xilinx}/zynq-fpga.c         |  0
- drivers/fpga/{ => xilinx}/zynqmp-fpga.c       |  0
- 8 files changed, 58 insertions(+), 43 deletions(-)
- create mode 100644 drivers/fpga/xilinx/Kconfig
- create mode 100644 drivers/fpga/xilinx/Makefile
- rename drivers/fpga/{ => xilinx}/xilinx-pr-decoupler.c (100%)
- rename drivers/fpga/{ => xilinx}/xilinx-spi.c (100%)
- rename drivers/fpga/{ => xilinx}/zynq-fpga.c (100%)
- rename drivers/fpga/{ => xilinx}/zynqmp-fpga.c (100%)
 
-diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-index c427b25cc6f7e..657703b41b06e 100644
---- a/drivers/fpga/Kconfig
-+++ b/drivers/fpga/Kconfig
-@@ -52,25 +52,12 @@ config FPGA_MGR_ALTERA_CVP
- 	  FPGA manager driver support for Arria-V, Cyclone-V, Stratix-V,
- 	  Arria 10 and Stratix10 Altera FPGAs using the CvP interface over PCIe.
- 
--config FPGA_MGR_ZYNQ_FPGA
--	tristate "Xilinx Zynq FPGA"
--	depends on ARCH_ZYNQ || COMPILE_TEST
--	help
--	  FPGA manager driver support for Xilinx Zynq FPGAs.
--
- config FPGA_MGR_STRATIX10_SOC
- 	tristate "Intel Stratix10 SoC FPGA Manager"
- 	depends on (ARCH_INTEL_SOCFPGA && INTEL_STRATIX10_SERVICE)
- 	help
- 	  FPGA manager driver support for the Intel Stratix10 SoC.
- 
--config FPGA_MGR_XILINX_SPI
--	tristate "Xilinx Configuration over Slave Serial (SPI)"
--	depends on SPI
--	help
--	  FPGA manager driver support for Xilinx FPGA configuration
--	  over slave serial interface.
--
- config FPGA_MGR_ICE40_SPI
- 	tristate "Lattice iCE40 SPI"
- 	depends on OF && SPI
-@@ -113,23 +100,6 @@ config ALTERA_FREEZE_BRIDGE
- 	  isolate one region of the FPGA from the busses while that
- 	  region is being reprogrammed.
- 
--config XILINX_PR_DECOUPLER
--	tristate "Xilinx LogiCORE PR Decoupler"
--	depends on FPGA_BRIDGE
--	depends on HAS_IOMEM
--	help
--	  Say Y to enable drivers for Xilinx LogiCORE PR Decoupler
--	  or Xilinx Dynamic Function eXchnage AIX Shutdown Manager.
--	  The PR Decoupler exists in the FPGA fabric to isolate one
--	  region of the FPGA from the busses while that region is
--	  being reprogrammed during partial reconfig.
--	  The Dynamic Function eXchange AXI shutdown manager prevents
--	  AXI traffic from passing through the bridge. The controller
--	  safely handles AXI4MM and AXI4-Lite interfaces on a
--	  Reconfigurable Partition when it is undergoing dynamic
--	  reconfiguration, preventing the system deadlock that can
--	  occur if AXI transactions are interrupted by DFX.
--
- config FPGA_REGION
- 	tristate "FPGA Region"
- 	depends on FPGA_BRIDGE
-@@ -146,14 +116,6 @@ config OF_FPGA_REGION
- 	  overlay.
- 
- source "drivers/fpga/dfl/Kconfig"
--
--config FPGA_MGR_ZYNQMP_FPGA
--	tristate "Xilinx ZynqMP FPGA"
--	depends on ZYNQMP_FIRMWARE || (!ZYNQMP_FIRMWARE && COMPILE_TEST)
--	help
--	  FPGA manager driver support for Xilinx ZynqMP FPGAs.
--	  This driver uses the processor configuration port(PCAP)
--	  to configure the programmable logic(PL) through PS
--	  on ZynqMP SoC.
-+source "drivers/fpga/xilinx/Kconfig"
- 
- endif # FPGA
-diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-index bda74e54ce390..0868c7c4264d8 100644
---- a/drivers/fpga/Makefile
-+++ b/drivers/fpga/Makefile
-@@ -15,9 +15,6 @@ obj-$(CONFIG_FPGA_MGR_SOCFPGA)		+= socfpga.o
- obj-$(CONFIG_FPGA_MGR_SOCFPGA_A10)	+= socfpga-a10.o
- obj-$(CONFIG_FPGA_MGR_STRATIX10_SOC)	+= stratix10-soc.o
- obj-$(CONFIG_FPGA_MGR_TS73XX)		+= ts73xx-fpga.o
--obj-$(CONFIG_FPGA_MGR_XILINX_SPI)	+= xilinx-spi.o
--obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA)	+= zynq-fpga.o
--obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+= zynqmp-fpga.o
- obj-$(CONFIG_ALTERA_PR_IP_CORE)         += altera-pr-ip-core.o
- obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
- 
-@@ -25,10 +22,10 @@ obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
- obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
- obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+= altera-hps2fpga.o altera-fpga2sdram.o
- obj-$(CONFIG_ALTERA_FREEZE_BRIDGE)	+= altera-freeze-bridge.o
--obj-$(CONFIG_XILINX_PR_DECOUPLER)	+= xilinx-pr-decoupler.o
- 
- # High Level Interfaces
- obj-$(CONFIG_FPGA_REGION)		+= fpga-region.o
- obj-$(CONFIG_OF_FPGA_REGION)		+= of-fpga-region.o
- 
- obj-$(CONFIG_FPGA_DFL) += dfl/
-+obj-$(CONFIG_FPGA_XILINX) += xilinx/
-diff --git a/drivers/fpga/xilinx/Kconfig b/drivers/fpga/xilinx/Kconfig
-new file mode 100644
-index 0000000000000..1ef0b6a34ae0c
---- /dev/null
-+++ b/drivers/fpga/xilinx/Kconfig
-@@ -0,0 +1,48 @@
-+config FPGA_XILINX
-+	bool "Xilinx Devices"
-+	default y
-+	help
-+	  If you have a xilinx fpga, say Y.
-+
-+if FPGA_XILINX
-+
-+config FPGA_MGR_ZYNQ_FPGA
-+	tristate "Xilinx Zynq FPGA"
-+	depends on ARCH_ZYNQ || COMPILE_TEST
-+	help
-+	  FPGA manager driver support for Xilinx Zynq FPGAs.
-+
-+config FPGA_MGR_ZYNQMP_FPGA
-+	tristate "Xilinx ZynqMP FPGA"
-+	depends on ZYNQMP_FIRMWARE || (!ZYNQMP_FIRMWARE && COMPILE_TEST)
-+	help
-+	  FPGA manager driver support for Xilinx ZynqMP FPGAs.
-+	  This driver uses the processor configuration port(PCAP)
-+	  to configure the programmable logic(PL) through PS
-+	  on ZynqMP SoC.
-+
-+config XILINX_PR_DECOUPLER
-+	tristate "Xilinx LogiCORE PR Decoupler"
-+	depends on FPGA_BRIDGE
-+	depends on HAS_IOMEM
-+	help
-+	  Say Y to enable drivers for Xilinx LogiCORE PR Decoupler
-+	  or Xilinx Dynamic Function eXchnage AIX Shutdown Manager.
-+	  The PR Decoupler exists in the FPGA fabric to isolate one
-+	  region of the FPGA from the busses while that region is
-+	  being reprogrammed during partial reconfig.
-+	  The Dynamic Function eXchange AXI shutdown manager prevents
-+	  AXI traffic from passing through the bridge. The controller
-+	  safely handles AXI4MM and AXI4-Lite interfaces on a
-+	  Reconfigurable Partition when it is undergoing dynamic
-+	  reconfiguration, preventing the system deadlock that can
-+	  occur if AXI transactions are interrupted by DFX.
-+
-+config FPGA_MGR_XILINX_SPI
-+	tristate "Xilinx Configuration over Slave Serial (SPI)"
-+	depends on SPI
-+	help
-+	  FPGA manager driver support for Xilinx FPGA configuration
-+	  over slave serial interface.
-+
-+endif #FPGA_XILINX
-diff --git a/drivers/fpga/xilinx/Makefile b/drivers/fpga/xilinx/Makefile
-new file mode 100644
-index 0000000000000..7bb7543412790
---- /dev/null
-+++ b/drivers/fpga/xilinx/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-$(CONFIG_XILINX_PR_DECOUPLER) += xilinx-pr-decoupler.o
-+obj-$(CONFIG_FPGA_MGR_XILINX_SPI) += xilinx-spi.o
-+obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA) += zynq-fpga.o
-+obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA) += zynqmp-fpga.o
-+
-+
-diff --git a/drivers/fpga/xilinx-pr-decoupler.c b/drivers/fpga/xilinx/xilinx-pr-decoupler.c
-similarity index 100%
-rename from drivers/fpga/xilinx-pr-decoupler.c
-rename to drivers/fpga/xilinx/xilinx-pr-decoupler.c
-diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx/xilinx-spi.c
-similarity index 100%
-rename from drivers/fpga/xilinx-spi.c
-rename to drivers/fpga/xilinx/xilinx-spi.c
-diff --git a/drivers/fpga/zynq-fpga.c b/drivers/fpga/xilinx/zynq-fpga.c
-similarity index 100%
-rename from drivers/fpga/zynq-fpga.c
-rename to drivers/fpga/xilinx/zynq-fpga.c
-diff --git a/drivers/fpga/zynqmp-fpga.c b/drivers/fpga/xilinx/zynqmp-fpga.c
-similarity index 100%
-rename from drivers/fpga/zynqmp-fpga.c
-rename to drivers/fpga/xilinx/zynqmp-fpga.c
--- 
-2.26.3
-
+Best regards,
+Krzysztof
