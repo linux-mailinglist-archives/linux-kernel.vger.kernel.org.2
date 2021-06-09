@@ -2,130 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0C13A1D26
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5E23A1D36
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhFISwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 14:52:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhFISwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 14:52:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80F1C61263;
-        Wed,  9 Jun 2021 18:50:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623264613;
-        bh=C+fQwxf4qGLB0wIX+D9ckXOCcaluaN1AhBUgphBnnq8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=KkKklqSEHfckLE6i/wuhhzzkZbHhyLILhl5HwBnlU9KGKYLNXpSyY3wixx46rXjha
-         aGMNvivLt3B2SRRmDmzwpJz5u0rQqIGazdIAvck9wBHAkFKzFiXms133kp5cPJReXV
-         /4RlGiSwLnOX3UGsNvSbapTUBAkxGp6MYZgrvN6m1fOEf69t6IOVlyyfTP0JAXuQHV
-         8v14c+Ro7FEblZNOxWzt9TxeMHNtju9aya6fmxJnR1CvpltFifJFer7osFHhzDhbv0
-         HDgv3l44ZNtnkmLvBtJng5E4sV6nspOk++gcuJWZ1Z2OJBmZ32haoydDaVMJ2xdJsE
-         JzBN+gUeiVBgQ==
-Date:   Wed, 9 Jun 2021 13:50:12 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Leonardo Bras <leobras.c@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH 1/1] of/pci: Add IORESOURCE_MEM_64 to resource flags for
- 64-bit memory addresses
-Message-ID: <20210609185012.GA2647526@bjorn-Precision-5520>
+        id S229557AbhFISyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 14:54:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60624 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229504AbhFISys (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 14:54:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623264771;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UJv7aWmnObYZjIRak2zuvQQ+UDBG4ApcHE+EP2bUvao=;
+        b=GJr4rohL7ov7w2kyw7Px4y1AUjlHpwsVGMq9xIUad/6iNI91ADaucs9JDXNEjmFMIYDDD5
+        RCGYXuEruMiE6f9XkSOUgyy8FYTyPUzbUfDrpUa3Na/6HjSUPNux9dgWSZkhqZY2Nv8q7O
+        d+3d8nZ2TbrJs0uMWdlv/nEuYLHinSQ=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-ODdKX7FTNjKx_C_3B9Ouqw-1; Wed, 09 Jun 2021 14:52:50 -0400
+X-MC-Unique: ODdKX7FTNjKx_C_3B9Ouqw-1
+Received: by mail-oo1-f71.google.com with SMTP id v19-20020a4a31530000b029024944222912so11185459oog.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 11:52:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=UJv7aWmnObYZjIRak2zuvQQ+UDBG4ApcHE+EP2bUvao=;
+        b=Mil2qY3eTNfpI9lBCwyG/gSkIsr8FvDjAldM+cQY4VQyIAOSK3zq3cpRI7x+4tWVcC
+         jAwItGhjg+RW3Kq1GnWHNZTAaeDP8o6CLPyMlY2oB6ixyVbHmWHNHieNn8MfBXhUvEj/
+         b3HsydZFmnqFlBPFMZhsN8bzeI0iIBcLUsV/fTlhZJFaHYmlWvRzR1K8DIOHasG8BNrr
+         D8V8tIMSo3my9jQIA2tjUy6PlDUMsfjwB55zXqlUYVeGKC4Z+iAL8REq/DGweQsoo9GC
+         yt5cNuuRTrCKpzGCRjGGfVVEKXkiHTXfUimiXeuH6/CHMEH7SQ817FPdSosF4w1PnigC
+         ptJA==
+X-Gm-Message-State: AOAM532fMCEucBiDUHiVxB93kYVRGeeLrJ7T2wCTyqWghfPtLxgTDAPr
+        6pi0fzAQzgCDfQR0ic8rbvuzkTiZPnqiFjGAU3o/RpKoR78GZGDXUY8OAVlkZ1hysYanR8WFPKK
+        NJaPEdR2cxUXkC+CPJ1p5bLWn
+X-Received: by 2002:a9d:1b41:: with SMTP id l59mr752432otl.8.1623264769456;
+        Wed, 09 Jun 2021 11:52:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbksmEZVttdsFOTiUH5FxL4Xn997V4wIynWP3Ez8EQZC2AnipQtQmYRnCULF/30XC2+WXccw==
+X-Received: by 2002:a9d:1b41:: with SMTP id l59mr752409otl.8.1623264769221;
+        Wed, 09 Jun 2021 11:52:49 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id q26sm117297ood.7.2021.06.09.11.52.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 11:52:48 -0700 (PDT)
+Subject: Re: [PATCH v2 0/4] fpga: reorganize to subdirs
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com,
+        nava.manne@xilinx.com, dinguyen@kernel.org,
+        krzysztof.kozlowski@canonical.com, yilun.xu@intel.com,
+        arnd@arndb.de, fpacheco@redhat.com, richard.gong@intel.com,
+        luca@lucaceresoli.net, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210609142208.3085451-1-trix@redhat.com>
+ <YMDV7R52QUTFhpHH@kroah.com>
+ <2738ee7a-448f-c327-c430-13fb44da45ec@redhat.com>
+ <YMDueTEHGWuAcknP@kroah.com>
+ <a35f5fda-a202-dc66-4445-b3ce333a55e6@redhat.com>
+ <YMD2yxtsQN16MoPA@kroah.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <aba774cb-1135-26aa-6e20-3c00b4e269ac@redhat.com>
+Date:   Wed, 9 Jun 2021 11:52:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+WwAeziGN4EfPAWfA0fieAjfcxfi29=StOx0GeKjAe_g@mail.gmail.com>
+In-Reply-To: <YMD2yxtsQN16MoPA@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 01:59:52PM -0500, Rob Herring wrote:
-> On Thu, Apr 15, 2021 at 1:01 PM Leonardo Bras <leobras.c@gmail.com> wrote:
-> >
-> > Many other resource flag parsers already add this flag when the input
-> > has bits 24 & 25 set, so update this one to do the same.
 
-[Adding this to the thread for archaeological purposes since it didn't
-make it to the commit log]
+On 6/9/21 10:13 AM, Greg KH wrote:
+> On Wed, Jun 09, 2021 at 09:50:39AM -0700, Tom Rix wrote:
+>> On 6/9/21 9:38 AM, Greg KH wrote:
+>>> On Wed, Jun 09, 2021 at 08:08:06AM -0700, Tom Rix wrote:
+>>>> On 6/9/21 7:53 AM, Greg KH wrote:
+>>>>> On Wed, Jun 09, 2021 at 07:22:03AM -0700, trix@redhat.com wrote:
+>>>>>> From: Tom Rix <trix@redhat.com>
+>>>>>>
+>>>>>> The incoming xrt patchset has a toplevel subdir xrt/
+>>>>>> The current fpga/ uses a single dir with filename prefixes to subdivide owners
+>>>>>> For consistency, there should be only one way to organize the fpga/ dir.
+>>>>>> Because the subdir model scales better, refactor to use it.
+>>>>>> The discussion wrt xrt is here:
+>>>>>> https://lore.kernel.org/linux-fpga/68e85a4f-4a10-1ff9-0443-aa565878c855@redhat.com/
+>>>>>>
+>>>>>> Follow drivers/net/ethernet/ which has control configs
+>>>>>> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+>>>>>> Since fpgas do not have many vendors, drop the 'VENDOR' and use
+>>>>>> FPGA_BLA.
+>>>>>>
+>>>>>> There are several new subdirs
+>>>>>> altera/
+>>>>>> dfl/
+>>>>>> lattice/
+>>>>>> xilinx/
+>>>>>>
+>>>>>> Each subdir has a Kconfig that has a new/reused
+>>>>>>
+>>>>>> if FPGA_BLA
+>>>>>>      ... existing configs ...
+>>>>>> endif FPGA_BLA
+>>>>>>
+>>>>>> Which is sourced into the main fpga/Kconfig
+>>>>>>
+>>>>>> Each subdir has a Makefile whose transversal is controlled in the
+>>>>>> fpga/Makefile by
+>>>>>>
+>>>>>> obj-$(CONFIG_FPGA_BLA) += bla/
+>>>>>>
+>>>>>> Some cleanup to arrange thing alphabetically and make fpga/Makefile's
+>>>>>> whitespace look more like net/'s
+>>>>>>
+>>>>>> Changes from
+>>>>>> v1
+>>>>>>      Drop renaming files
+>>>>>>      Cleanup makefiles
+>>>>> You can rename the files, you just can not rename the .ko objects
+>>>>> without everyone knowing what you are doing and you trying to bury it in
+>>>>> the middle of a differently described patch.
+>>>>>
+>>>>> If you want to do that, do you?  I don't really understand why you want
+>>>>> to move things around right now other than "we have 40 files in one
+>>>>> directory, ick!".
+>>>> I am trying to resolve the layout inconsistency between what we have and
+>>>> what the xrt patchset does.
+>>> Why does it matter?  New stuff can be added to a new dir, why worry
+>>> about old stuff?  What does it hurt?
+>>>
+>>>> The big issue is the files vs dirs.
+>>>>
+>>>> Over specified filenames is secondary, so I dropped them.
+>>>>
+>>>> 40 files in one dir is itself not a problem.
+>>>>
+>>>> having 40 files and an xrt/ is.
+>>> Why is that a "problem"?
+>>>
+>>>> fpga/ layout should be consistent so the Makefile and Kconfig are easier to
+>>>> maintain.
+>>> Is it somehow hard to maintain today?  Seems pretty trivial to me...
+>> This change was to help move xrt along.
+>>
+>> If you are fine with xrt/, I will drop this patchset.
+> Who has objected to xrt/ being the only new subdirectory?
 
-The other resource flag parsers appear to be:
+Maybe just me, but it has been mostly me doing the review.
 
-  pci_parse_of_flags(u32 addr0, ...)    # powerpc/kernel/pci_of_scan.c
-    unsigned int as = addr0 & OF_PCI_ADDR0_SPACE_MASK;
-    if (as == OF_PCI_ADDR0_SPACE_MMIO32 || as == OF_PCI_ADDR0_SPACE_MMIO64)
-      flags = IORESOURCE_MEM | PCI_BASE_ADDRESS_SPACE_MEMORY;
-      if (as == OF_PCI_ADDR0_SPACE_MMIO64)
-        flags |= PCI_BASE_ADDRESS_MEM_TYPE_64 | IORESOURCE_MEM_64;
+all of my easy comments have been nearly resolved.
 
-  pci_parse_of_flags(u32 addr0)         # sparc/kernel/pci.c
-    if (addr0 & 0x02000000) {
-      flags = IORESOURCE_MEM | PCI_BASE_ADDRESS_SPACE_MEMORY;
-      if (addr0 & 0x01000000)
-        flags |= IORESOURCE_MEM_64 | PCI_BASE_ADDRESS_MEM_TYPE_64;
+now I am looking at bigger issues like this, should subdev's move out of 
+fpga/ etc.
 
-  of_bus_pci_get_flags(... addr)        # drivers/of/address.c (this one)
-    u32 w = be32_to_cpup(addr);
-    switch((w >> 24) & 0x03) {
-    case 0x02: /* 32 bits */
-      flags |= IORESOURCE_MEM;
-      break;
-    case 0x03: /* 64 bits */
-      flags |= IORESOURCE_MEM | IORESOURCE_MEM_64;
-      break;
+>
+> My main complaints here are:
+> 	- these patches were not tested
+> 	- you renamed kernel modules "accidentally"
+> 	- you forgot SPDX lines
+> 	- lack of description of why these files being moved was
+> 	  necessary in the changelog where you moved the files
+>
+> Remember, patch 0/X never shows up in changelogs...
 
-It's super annoying to have three copies of essentially the same
-thing.  Even more annoying that they test the same things in three
-completely different ways.  But I remember looking at this several
-years ago, and it wasn't as simple to unify these as I had hoped.
+I will respin and collapse the patches to a single patch with a better 
+commit log.
 
-> Many others? Looks like sparc and powerpc to me. Those would be the
-> ones I worry about breaking. Sparc doesn't use of/address.c so it's
-> fine. Powerpc version of the flags code was only fixed in 2019, so I
-> don't think powerpc will care either.
+They aren't really useful except as a full change.
 
-I'm guessing you're referring to df5be5be8735 ("powerpc/pci/of: Fix OF
-flags parsing for 64bit BARs").
+Testing will be done for dfl.
 
-> I noticed both sparc and powerpc set PCI_BASE_ADDRESS_MEM_TYPE_64 in
-> the flags. AFAICT, that's not set anywhere outside of arch code. So
-> never for riscv, arm and arm64 at least. That leads me to
-> pci_std_update_resource() which is where the PCI code sets BARs and
-> just copies the flags in PCI_BASE_ADDRESS_MEM_MASK ignoring
-> IORESOURCE_* flags. So it seems like 64-bit is still not handled and
-> neither is prefetch.
-> 
-> > Some devices (like virtio-net) have more than one memory resource
-> > (like MMIO32 and MMIO64) and without this flag it would be needed to
-> > verify the address range to know which one is which.
-> >
-> > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> > ---
-> >  drivers/of/address.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/of/address.c b/drivers/of/address.c
-> > index 73ddf2540f3f..dc7147843783 100644
-> > --- a/drivers/of/address.c
-> > +++ b/drivers/of/address.c
-> > @@ -116,9 +116,12 @@ static unsigned int of_bus_pci_get_flags(const __be32 *addr)
-> >                 flags |= IORESOURCE_IO;
-> >                 break;
-> >         case 0x02: /* 32 bits */
-> > -       case 0x03: /* 64 bits */
-> >                 flags |= IORESOURCE_MEM;
-> >                 break;
-> > +
-> > +       case 0x03: /* 64 bits */
-> > +               flags |= IORESOURCE_MEM | IORESOURCE_MEM_64;
-> > +               break;
-> >         }
-> >         if (w & 0x40000000)
-> >                 flags |= IORESOURCE_PREFETCH;
-> > --
-> > 2.30.2
-> >
+Tom
+
+>
+> You can do better :)
+>
+> greg k-h
+>
+
