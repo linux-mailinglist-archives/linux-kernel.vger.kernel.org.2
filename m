@@ -2,76 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D3B3A1974
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87973A1998
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236185AbhFIP21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:28:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233681AbhFIP2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:28:25 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 618D060E0B;
-        Wed,  9 Jun 2021 15:26:26 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 16:28:19 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v11 13/33] counter: ftm-quaddec: Add const qualifier for
- actions_list array
-Message-ID: <20210609162819.3b466e32@jic23-huawei>
-In-Reply-To: <db1df2021efb1b98e6d1a50787be5a52a1896574.1623201081.git.vilhelm.gray@gmail.com>
-References: <cover.1623201081.git.vilhelm.gray@gmail.com>
-        <db1df2021efb1b98e6d1a50787be5a52a1896574.1623201081.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S236450AbhFIPcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:32:19 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:4608 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232656AbhFIPcO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:32:14 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 09 Jun 2021 08:30:20 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Jun 2021 08:30:17 -0700
+X-QCInternal: smtphost
+Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 09 Jun 2021 20:59:24 +0530
+Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
+        id A42384DDE; Wed,  9 Jun 2021 20:59:23 +0530 (IST)
+From:   Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org, robh+dt@kernel.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, sartgarg@codeaurora.org,
+        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        sibis@codeaurora.org, okukatla@codeaurora.org, djakov@kernel.org,
+        cang@codeaurora.org, pragalla@codeaurora.org,
+        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org,
+        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+Subject: [PATCH V1 2/2] dt-bindings: mmc: sdhci-msm: Add compatible string for sc7280
+Date:   Wed,  9 Jun 2021 20:59:09 +0530
+Message-Id: <1623252549-32687-1-git-send-email-sbhanu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  9 Jun 2021 10:31:16 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+Add sc7280 SoC specific compatible strings for qcom-sdhci controller.
 
-> The struct counter_synapse actions_list member expects a const enum
-> counter_synapse_action array. This patch adds the const qualifier to the
-> ftm_quaddec_synapse_actions to match actions_list.
-> 
-> Cc: Patrick Havelange <patrick.havelange@essensium.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Applied.
+Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+---
+ Documentation/devicetree/bindings/mmc/sdhci-msm.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/counter/ftm-quaddec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/counter/ftm-quaddec.c b/drivers/counter/ftm-quaddec.c
-> index c2b3fdfd8b77..9371532406ca 100644
-> --- a/drivers/counter/ftm-quaddec.c
-> +++ b/drivers/counter/ftm-quaddec.c
-> @@ -162,7 +162,7 @@ enum ftm_quaddec_synapse_action {
->  	FTM_QUADDEC_SYNAPSE_ACTION_BOTH_EDGES,
->  };
->  
-> -static enum counter_synapse_action ftm_quaddec_synapse_actions[] = {
-> +static const enum counter_synapse_action ftm_quaddec_synapse_actions[] = {
->  	[FTM_QUADDEC_SYNAPSE_ACTION_BOTH_EDGES] =
->  	COUNTER_SYNAPSE_ACTION_BOTH_EDGES
->  };
+diff --git a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
+index 4c7fa6a..365c3fc 100644
+--- a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
++++ b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
+@@ -19,6 +19,7 @@ Required properties:
+ 		"qcom,msm8996-sdhci", "qcom,sdhci-msm-v4"
+ 		"qcom,qcs404-sdhci", "qcom,sdhci-msm-v5"
+ 		"qcom,sc7180-sdhci", "qcom,sdhci-msm-v5";
++		"qcom,sc7280-sdhci", "qcom,sdhci-msm-v5";
+ 		"qcom,sdm845-sdhci", "qcom,sdhci-msm-v5"
+ 		"qcom,sdx55-sdhci", "qcom,sdhci-msm-v5";
+ 		"qcom,sm8250-sdhci", "qcom,sdhci-msm-v5"
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
