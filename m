@@ -2,60 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465483A202F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EC83A2037
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhFIWha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 18:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhFIWhQ (ORCPT
+        id S230416AbhFIWiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 18:38:12 -0400
+Received: from mail-il1-f171.google.com ([209.85.166.171]:35358 "EHLO
+        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230402AbhFIWiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 18:37:16 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8189C0617AD
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 15:35:12 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id t6so21035890iln.8
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 15:35:12 -0700 (PDT)
+        Wed, 9 Jun 2021 18:38:08 -0400
+Received: by mail-il1-f171.google.com with SMTP id b9so28207675ilr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 15:36:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LZrDcpMMlqQu3fRlEZdQrN5iR4OJZ5NusdCMN67AVgE=;
-        b=VbBBEnLk5xTZzb/Cb2h0QG052xVazdTaNFC9Ne4MPDWmHwZVI1eml2LfDSVsYrPYzQ
-         0Lwmhh8zfTil+/PVpu9d1BOEVunxHLuNarzy7Iu61t+0fKku3GUIpX4Rl00/iqyxm2my
-         yJ+lwHU61V8PmRCLijwoGkjbWG4X3OrQktTMo41JXZTvoVQDGAFpkQJTIa/x+lbWCt7k
-         gLk/3Qyu2F4/jh/6hHojgXRgHXt8/AwPXwGWKhh5hWDsfVUrec6yNXI0vRyPK4n0iErD
-         bCPNw+VgqJ1+D75PXzcjr60A4vpI3Gk0IPYrXTAyufM/i+SjmDtXKghUokm461nAXGFO
-         8YPg==
+        bh=TjKUrGqs9xe9MyXfICOgQmSpFyOBKRzcUd08/8kZ4/0=;
+        b=BnUXMMEmypsVhA5PMcOInwdRPeZB/JHXrKc/CVIMV370YrKXsS0uNs70Tsn+jfoLHx
+         OCtck0zI+9z4dFaQRvcAoQwVTfu3+Ci1CrQhjrz9L97ARkaUukE8WoEjhVGaZqY82ut3
+         2lQ5IKXGzE0LV/q/zkJ59rUclKmEz7FvQ503u4JWOFdP0SP4QKVYMC6+zrOVo6EucIfN
+         0MwgEpHfQFUITWJx12+2GBSccX6HU9vQWhDB4vP81sY5ICsVZrJHIqXr7n6joHFLcp9i
+         yFlktEZ0xOUtw5xbNn/IaAentdi18kJtMIIBOxMTjwqRJqQgQZug2KNRMez/SUVlGpb1
+         NqkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LZrDcpMMlqQu3fRlEZdQrN5iR4OJZ5NusdCMN67AVgE=;
-        b=YGPKDe+9Th/PxgoeNhgGN3wo4fqeQ1M7SGRc4kbk8iK9vm3YHSTVtbMoqdN4x5BoHB
-         lT5rzO7GQFhQ0l5CBwWBvlwMwjmdimARSPzOmyyNhiMt1LdwuVJklMF7CZJtlNgfDAEm
-         I0Y4/IEVz1YvYxRdR4obogZNUkST9eC5V/RwX7HMNy/P3lF7ZpWx850fiITGXjj4z9zN
-         +9sWCqPLZnOGzB8DfrYor15pKEVM47xCznU0CLQqXrAmFagXqzJXm+c8l7BfzQivlJfV
-         Gkr061pVpp8iDlQ8X3/FKwMUGKN5MRJTbE3ojPjCziokPmlBuMZjMqoKimjAaEDbKA04
-         ctDw==
-X-Gm-Message-State: AOAM533cVsp3Ds+E7AAiI+kGvPa/1VfZvBNZN3+nr1Jil9i7EsD+/YZA
-        uQm2QMHbw5O0dA8NFMODQI2vIQ==
-X-Google-Smtp-Source: ABdhPJwojNRR81zbsSbZ/Jyrq2irJoQxLzBQrqQbEYIrJZqjvlarKRQfq9Ipy0Y+MgW61CgekQY0pw==
-X-Received: by 2002:a92:c68c:: with SMTP id o12mr1473796ilg.6.1623278112288;
-        Wed, 09 Jun 2021 15:35:12 -0700 (PDT)
+        bh=TjKUrGqs9xe9MyXfICOgQmSpFyOBKRzcUd08/8kZ4/0=;
+        b=ZnZt7GyH6PUCqd/zKymHcQX/XSPuxcS1cRFFn8lNkAfoCsKPbHYeZdVJ1xYjTL7kNy
+         tzqDlL5/TcPGZpas3zGWUveipWpet6OKJ+41GX27klvPSKSjIk+B9xNBXo7qMGGczDLF
+         ef7BI9tr7l8CEnTbnvzFq0EcQ/3f8j7cXLe1eEvyJKSnKwulp/nuqv2xst2tKn5LHIsp
+         jpQZtAhez2J0KA3KRdzWFFIO2xwrHN+Blb6J2cSgQF1M53ySJpSRtofbrpAm0Gek7mHj
+         bQJ2t6gD/n8o3aekvNDIxJ285K6QKmuBnxvaLMdmNHsYxqazMpurSi24s0RDEmaXNYli
+         XINw==
+X-Gm-Message-State: AOAM530Y5Ter8UnadWn7Vz/mabYfudok4wincLC2KQkfN271ZYR6FqPq
+        fQSqso7JfBaUv3c0rFDxFwuBRw==
+X-Google-Smtp-Source: ABdhPJzfXoGHvosC+E+RmcwqI8f8J3+4P0RGfxyanv5HnLVqoqqt0vmDqKBJjt7POXsruvLjBt5bKw==
+X-Received: by 2002:a92:d902:: with SMTP id s2mr1404875iln.278.1623278113402;
+        Wed, 09 Jun 2021 15:35:13 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id c19sm750165ili.62.2021.06.09.15.35.11
+        by smtp.gmail.com with ESMTPSA id c19sm750165ili.62.2021.06.09.15.35.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 15:35:11 -0700 (PDT)
+        Wed, 09 Jun 2021 15:35:13 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 06/11] net: ipa: validate memory regions at init time
-Date:   Wed,  9 Jun 2021 17:34:58 -0500
-Message-Id: <20210609223503.2649114-7-elder@linaro.org>
+Subject: [PATCH net-next 07/11] net: ipa: pass memory configuration data to ipa_mem_valid()
+Date:   Wed,  9 Jun 2021 17:34:59 -0500
+Message-Id: <20210609223503.2649114-8-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210609223503.2649114-1-elder@linaro.org>
 References: <20210609223503.2649114-1-elder@linaro.org>
@@ -65,38 +62,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the memory region validation check so it happens earlier when
-initializing the driver, at init time rather than config time (i.e.,
-before access to hardware is required).
+Pass the memory configuration data array to ipa_mem_valid() for
+validation, and use that rather than assuming it's already been
+recorded in the IPA structure.  Move the memory data array size
+check into ipa_mem_valid().
+
+Call ipa_mem_valid() early in ipa_mem_init(), and only proceed with
+assigning the memory array pointer and size if it is found to be
+valid.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_mem.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ipa/ipa_mem.c | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
-index f245e1a60a44b..b2d149e7c5f0e 100644
+index b2d149e7c5f0e..cb70f063320c5 100644
 --- a/drivers/net/ipa/ipa_mem.c
 +++ b/drivers/net/ipa/ipa_mem.c
-@@ -215,10 +215,6 @@ int ipa_mem_config(struct ipa *ipa)
- 	ipa->zero_virt = virt;
- 	ipa->zero_size = IPA_MEM_MAX;
+@@ -124,13 +124,19 @@ static bool ipa_mem_valid_one(struct ipa *ipa, const struct ipa_mem *mem)
+ }
  
+ /* Verify each defined memory region is valid. */
+-static bool ipa_mem_valid(struct ipa *ipa)
++static bool ipa_mem_valid(struct ipa *ipa, const struct ipa_mem_data *mem_data)
+ {
+ 	struct device *dev = &ipa->pdev->dev;
+ 	enum ipa_mem_id mem_id;
+ 
+-	for (mem_id = 0; mem_id < ipa->mem_count; mem_id++) {
+-		const struct ipa_mem *mem = &ipa->mem[mem_id];
++	if (mem_data->local_count > IPA_MEM_COUNT) {
++		dev_err(dev, "too many memory regions (%u > %u)\n",
++			mem_data->local_count, IPA_MEM_COUNT);
++		return false;
++	}
++
++	for (mem_id = 0; mem_id < mem_data->local_count; mem_id++) {
++		const struct ipa_mem *mem = &mem_data->local[mem_id];
+ 
+ 		/* Defined regions have non-zero size and/or canary count */
+ 		if (mem->size || mem->canary_count) {
+@@ -491,11 +497,12 @@ int ipa_mem_init(struct ipa *ipa, const struct ipa_mem_data *mem_data)
+ 	struct resource *res;
+ 	int ret;
+ 
+-	if (mem_data->local_count > IPA_MEM_COUNT) {
+-		dev_err(dev, "to many memory regions (%u > %u)\n",
+-			mem_data->local_count, IPA_MEM_COUNT);
++	/* Make sure the set of defined memory regions is valid */
++	if (!ipa_mem_valid(ipa, mem_data))
+ 		return -EINVAL;
+-	}
++
++	ipa->mem_count = mem_data->local_count;
++	ipa->mem = mem_data->local;
+ 
+ 	ret = dma_set_mask_and_coherent(&ipa->pdev->dev, DMA_BIT_MASK(64));
+ 	if (ret) {
+@@ -520,14 +527,6 @@ int ipa_mem_init(struct ipa *ipa, const struct ipa_mem_data *mem_data)
+ 	ipa->mem_addr = res->start;
+ 	ipa->mem_size = resource_size(res);
+ 
+-	/* The ipa->mem[] array is indexed by enum ipa_mem_id values */
+-	ipa->mem_count = mem_data->local_count;
+-	ipa->mem = mem_data->local;
+-
 -	/* Make sure all defined memory regions are valid */
 -	if (!ipa_mem_valid(ipa))
--		goto err_dma_free;
+-		goto err_unmap;
 -
- 	/* For each region, write "canary" values in the space prior to
- 	 * the region's base address if indicated.
- 	 */
-@@ -528,6 +524,10 @@ int ipa_mem_init(struct ipa *ipa, const struct ipa_mem_data *mem_data)
- 	ipa->mem_count = mem_data->local_count;
- 	ipa->mem = mem_data->local;
- 
-+	/* Make sure all defined memory regions are valid */
-+	if (!ipa_mem_valid(ipa))
-+		goto err_unmap;
-+
  	ret = ipa_imem_init(ipa, mem_data->imem_addr, mem_data->imem_size);
  	if (ret)
  		goto err_unmap;
