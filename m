@@ -2,97 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EAB3A1E36
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B013A1E3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbhFIUnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 16:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFIUnl (ORCPT
+        id S229781AbhFIUrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:47:47 -0400
+Received: from relay08.th.seeweb.it ([5.144.164.169]:43557 "EHLO
+        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229792AbhFIUrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:43:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BE7C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 13:41:46 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lr51E-0004DH-In; Wed, 09 Jun 2021 22:41:44 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lr51E-0004QN-7a; Wed, 09 Jun 2021 22:41:44 +0200
-Date:   Wed, 9 Jun 2021 22:41:44 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Sven Van Asbroeck <TheSven73@gmail.com>,
-        Clemens Gruber <clemens.gruber@pqgruber.com>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 1/4] pwm: core: Support new usage_power setting in PWM
- state
-Message-ID: <20210609204144.nkksqjovs2yqfiyo@pengutronix.de>
-References: <20210507131845.37605-1-clemens.gruber@pqgruber.com>
- <20210507150317.bnluhqrqepde4xjm@pengutronix.de>
- <YJVhLrkeNXBp6M1p@workstation.tuxnet>
- <20210507231831.zmvyspcq7xhm25y4@pengutronix.de>
- <YLUK8GXHaBYyVe1R@workstation.tuxnet>
- <YLn3MZ+6HJM/UrRT@orome.fritz.box>
- <20210607060827.vxdihsfqtw3otyco@pengutronix.de>
- <YL4vzvznTzqih0pA@orome.fritz.box>
- <20210607185158.jweahkoa3cxwl2nh@pengutronix.de>
+        Wed, 9 Jun 2021 16:47:45 -0400
+Received: from [192.168.1.101] (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id BAA023EBC3;
+        Wed,  9 Jun 2021 22:45:44 +0200 (CEST)
+Subject: Re: [PATCH V3] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
+ card
+To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
+        adrian.hunter@intel.com, ulf.hansson@linaro.org, robh+dt@kernel.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, sartgarg@codeaurora.org,
+        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        sibis@codeaurora.org, okukatla@codeaurora.org, djakov@kernel.org,
+        cang@codeaurora.org, pragalla@codeaurora.org,
+        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org
+References: <1623252028-20467-1-git-send-email-sbhanu@codeaurora.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <793c9596-73f3-42b2-291e-1c728e279e28@somainline.org>
+Date:   Wed, 9 Jun 2021 22:45:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xtamggj425ztxndq"
-Content-Disposition: inline
-In-Reply-To: <20210607185158.jweahkoa3cxwl2nh@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <1623252028-20467-1-git-send-email-sbhanu@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---xtamggj425ztxndq
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello Thierry,
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> index 3900cfc..8b159d1 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> @@ -11,6 +11,7 @@
+>  #include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
+>  #include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
+>  #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
+> +#include <dt-bindings/gpio/gpio.h>
+>  #include "sc7280.dtsi"
+>  #include "pm7325.dtsi"
+>  #include "pmr735a.dtsi"
+> @@ -272,6 +273,36 @@
+>  	status = "okay";
+>  };
+>  
+> +&sdhc_1 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&sdc1_clk &sdc1_cmd &sdc1_data &sdc1_rclk>;
+> +	pinctrl-1 = <&sdc1_clk_sleep &sdc1_cmd_sleep &sdc1_data_sleep &sdc1_rclk_sleep>;
 
-On Mon, Jun 07, 2021 at 08:51:58PM +0200, Uwe Kleine-K=F6nig wrote:
-> My problem is not that in the end a solution is picked that wasn't my
-> favourite. My problem is that I have the impression my arguments were
-> not considered but simply ignored.
+Please condense these pins into a since sdc1_on_state/sdc1_off_state (check sdc1_state_on in [1])
 
-Another thing that annoys me is that there are currently ~20 open
-patches by me in patchwork, most of them are easy to understand cleanups
-and fixes, most of them are older than Clemens' series and most of them
-are uncommented by you. And in this situation you apply the only
-controversial series.
 
-Uwe
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+> +
+> +	non-removable;
+> +	no-sd;
+> +	no-sdio;
+> +
+> +	vmmc-supply = <&vreg_l7b_2p9>;
+> +	vqmmc-supply = <&vreg_l19b_1p8>;
+> +
+> +};
+> +
+> +&sdhc_2 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&sdc2_clk &sdc2_cmd &sdc2_data &sd_cd>;
+> +	pinctrl-1 = <&sdc2_clk_sleep &sdc2_cmd_sleep &sdc2_data_sleep>;
 
---xtamggj425ztxndq
-Content-Type: application/pgp-signature; name="signature.asc"
+Ditto
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDBJ34ACgkQwfwUeK3K
-7Ak+cAgAiYI/FArcq9sayMBtSkEOKbDV7Wf7gdj1mtlUlmJPXx+PmMjzP2eRS3WF
-dXyZ5Rpux2AsCyvBKAaYKSIFp4mdwH0hseSBeqwaQdB/g1KBa+3IRek8KLJSGjhb
-xKBuzXCCQSQaNwld0cOXEhjAj2YadbfaFf4VZVr02jGH5hw8e7mq40xx/wdvquUP
-OfmGSIEHo1Se0x5OgzWBRaeAB+KWQE3UjLdDZ4f2goQH6FVHvcS6aOJriDA3C5EE
-13D3CVl3fJP7ZnENaEeO527scoDTG9R86Z3OOeZdaeU/p9gOIqyFWfDkMifhUzsE
-joRsnyN0O24f+CdgIvmROpN86PIA3g==
-=xKGo
------END PGP SIGNATURE-----
 
---xtamggj425ztxndq--
+> +&tlmm {
+> +	sdc1_clk: sdc1-clk {
+> +		pins = "sdc1_clk";
+> +		bias-disable;
+> +		drive-strength = <16>;
+> +	};
+> +
+> +	sdc1_cmd: sdc1-cmd {
+> +		pins = "sdc1_cmd";
+> +		bias-pull-up;
+> +		drive-strength = <10>;
+> +	};
+> +
+> +	sdc1_data: sdc1-data {
+> +		pins = "sdc1_data";
+> +		bias-pull-up;
+> +		drive-strength = <10>;
+> +	};
+> +	sdc1_rclk: sdc1-rclk {
+> +		pins = "sdc1_rclk";
+> +		bias-pull-down;
+> +	};
+> +
+> +	sdc2_clk: sdc2-clk {
+> +		pins = "sdc2_clk";
+> +		bias-disable;
+> +		drive-strength = <16>;
+> +	};
+> +
+> +	sdc2_cmd: sdc2-cmd {
+> +		pins = "sdc2_cmd";
+> +		bias-pull-up;
+> +		drive-strength = <10>;
+> +	};
+> +
+> +	sdc2_data: sdc2-data {
+> +		pins = "sdc2_data";
+> +		bias-pull-up;
+> +		drive-strength = <10>;
+> +	};
+> +
+> +	sd_cd: sd-cd {
+
+Please make it sdc2 to keep things coherent.
+
+
+
+> +		pins = "gpio91";
+> +		bias-pull-up;
+> +	};
+> +
+> +};
+
+Why are you defining on_state pins in the device dt and sleep state in the SoC one?
+
+Most devices share a common config for these, often coming from MTP or QRD boards
+
+and it makes little to no sense to define these separately every time, because if you hit the
+
+rare case of needing to make a change against that, it's probably just drive-strength.
+
+
+
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 0b6f119..eab6f7b 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -24,6 +24,11 @@
+>  
+>  	chosen { };
+>  
+> +	aliases {
+> +		mmc1 = &sdhc_1;
+> +		mmc2 = &sdhc_2;
+> +	};
+
+This is board specific. Something might have a SDIO Wi-Fi card on it.
+
+
+
+> +			mmc-ddr-1_8v;
+> +			mmc-hs200-1_8v;
+> +			mmc-hs400-1_8v;
+> +			mmc-hs400-enhanced-strobe;
+
+These properties should probably be in the device DT, unless the SoC controller
+
+can only support these speeds and only at 1.8v
+
+
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git/commit/?h=for-next&id=35a4a8b6e9b133cf3a7d059ad4cf0e24cb4bd029
+
+
+Konrad
+
