@@ -2,96 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2F23A0BF7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5323A0C04
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbhFIFxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 01:53:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58140 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232671AbhFIFxx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 01:53:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623217919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zBlO5SUlBu4kEPbM4S2HV+BFWwYYvZMzotDUfmY4wqk=;
-        b=KJ4razBWiMTFqlx63bJlGM5k5phL2AowQxKHuVmtWWdhSPlBl6snipK/NvFWjLXnDRjJuH
-        0ha10vhvZ/DldI/ViIJcIps1a6TmU2Wpq1lJXgxJmovJ56NoU3ESk/DV5oCJanA8SB7IRb
-        V2yPX4QeK6Drd3h+aOntOLDSAV5aPgg=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-3G0MkxqsM9qMNkVPo_qWyg-1; Wed, 09 Jun 2021 01:51:57 -0400
-X-MC-Unique: 3G0MkxqsM9qMNkVPo_qWyg-1
-Received: by mail-wr1-f69.google.com with SMTP id r17-20020a5d52d10000b0290119976473fcso8090994wrv.15
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 22:51:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zBlO5SUlBu4kEPbM4S2HV+BFWwYYvZMzotDUfmY4wqk=;
-        b=Rl4T0aIDRfnwathwPqX13CM4AjtH98xT41UniIXSfZSLaMTgx4JZn8kSCn1FpfnFfP
-         CjR3+J2hSrtjjPnjtF1oGWF7/aHYeJwVcntwEzowLAmCXH3/Mhe2h+y3x1r7xmUqDcJj
-         52ckUdwGFjFcaw4afg76BKsUnVUuqkJ2C0CxukAqkJFQDVG21zxvb/K8rdYTKJryv05S
-         ptdSWimhOGdlWpruVzScOuyR3NrRD4lngynYvb29FMZ/jgrJ+b6hJYZdY43nnZqoTNsO
-         ks1LBZCQf/zpw/MKABSnz7iXv9uYJVZgS8gMniLcBciSMik83V9RJTMFQ+nnObOUHufz
-         xEnw==
-X-Gm-Message-State: AOAM531yc+lzLmU5R2DIskRch8uNnH11zndZNI6KGklE8kwVSQDv8L08
-        HFNJdHzmwQDJ3HnAygespNFCLxwDCK25TT7VoMH2eaAej7FByCfX372x/WRJjaAhYJnVoInIPRG
-        SzbtWRv8ohuy7gAf8FwsxLzpT
-X-Received: by 2002:a5d:568a:: with SMTP id f10mr3117916wrv.252.1623217916626;
-        Tue, 08 Jun 2021 22:51:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypZdy0ngsECXPmFiGY62B4hG9MP8f4LPp2rJ41kW29cDiE/x+WYEv9GMwZIqgrB1AiNqiaig==
-X-Received: by 2002:a5d:568a:: with SMTP id f10mr3117897wrv.252.1623217916423;
-        Tue, 08 Jun 2021 22:51:56 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id o20sm4700490wms.3.2021.06.08.22.51.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 22:51:55 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] KVM: LAPIC: Reset TMCCT during vCPU reset
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <1623050385-100988-1-git-send-email-wanpengli@tencent.com>
- <1623050385-100988-2-git-send-email-wanpengli@tencent.com>
- <0584d79d-9f2c-52dd-5dcc-beffd18f265b@redhat.com>
- <CANRm+Cx3LpnMwWHAvJoTErAdWoceO9DBPqY0UkbQHW-ZUHw5=g@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f8c80e8a-0749-eb5b-d5ab-162f504c9d33@redhat.com>
-Date:   Wed, 9 Jun 2021 07:51:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S234091AbhFIFyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 01:54:43 -0400
+Received: from mail-dm6nam12on2059.outbound.protection.outlook.com ([40.107.243.59]:17888
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233313AbhFIFyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 01:54:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SDFu8v0qBE3YjSvZwRdR0vg41Nckq5WvxHTKYzj0zacghCAGBjL/77b+6s3RipX3uF77ZTpcoPeHGKxXBH1ryb/h++6UUB7yULtTkUJVJhO+gxmHQ4fqSY8YwJnTXtWb+CkErV5djtx0WiFLhJvNOl40Puta08Ax5h/oQbNW82cfL7Ke+UTMIk6OKQmKpn5EgfbmdrzickU7YSuFUgFRU0yFFJKZZLbU3yY3KW5RAKFG06DJs8mHdTkei5/ey5DJsbSYR+VlxipemV5Z8/RcbmQdNCQkdoeePOv6g74N7leY8bKOdpY/h0Bx6JGQ7m/o8OSpnFDZIxxtHPVedWp5Kg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f+sWMca+HmpV1WeEqoGoIbpNpxRRL1tyfW+QA5t717U=;
+ b=en75qR8ZOgnU8o1Rh5gWzKvuCVeb7amGyaKeqBCYk0x4Gy40q96Xs8QF7Gx94pf/d+JonQ07JMyqvNb4fFIW666NEdMsHNn5rpR2i0WIfJVXnjOCw4rFDeRjV8T9NqTVR4C3O7yungxuTtqQehItIGalW4lawauMEbIHIGzEEpVWdK4u50S6luT0IWpyngksp1wNQTz6Jc1cFbQBkShpMLPmsI+7MuiePSZxKxn5oRb3+vCXnDTHbZc5A1KsAAeEJocHyCjt/35ymMsLTAxd46S4SlBft8nfPyGG5FMt93E78aWitRbFvC31kEErPSaJPjrXN8UuQJpXU9Ai12cjGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f+sWMca+HmpV1WeEqoGoIbpNpxRRL1tyfW+QA5t717U=;
+ b=rAIn1xzdDcl/xnqW387VUNoxZxQTnusjz5foaYKb+vrfwTw+lmdThIMvYNTn3cqFCDeE9H+qryWjPkjnUUUoHPHQmyTX1fiOhAw9ANAxtW3lM4lOAg+HcY3ScbH+ZGZVwb8VLUouq0Gv8/Y2uMbaWIhXB4uc7yboJHR0FR1owLI=
+Received: from BN1PR13CA0021.namprd13.prod.outlook.com (2603:10b6:408:e2::26)
+ by SJ0PR02MB7150.namprd02.prod.outlook.com (2603:10b6:a03:29a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20; Wed, 9 Jun
+ 2021 05:52:44 +0000
+Received: from BN1NAM02FT029.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:408:e2:cafe::61) by BN1PR13CA0021.outlook.office365.com
+ (2603:10b6:408:e2::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.12 via Frontend
+ Transport; Wed, 9 Jun 2021 05:52:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BN1NAM02FT029.mail.protection.outlook.com (10.13.2.143) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4195.18 via Frontend Transport; Wed, 9 Jun 2021 05:52:44 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 22:52:42 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 8 Jun 2021 22:52:42 -0700
+Envelope-to: git@xilinx.com,
+ robh+dt@kernel.org,
+ mdf@kernel.org,
+ trix@redhat.com,
+ arnd@arndb.de,
+ gregkh@linuxfoundation.org,
+ zou_wei@huawei.com,
+ iwamatsu@nigauri.org,
+ devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-fpga@vger.kernel.org,
+ chinnikishore369@gmail.com
+Received: from [10.140.6.60] (port=51918 helo=xhdnavam40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <nava.manne@xilinx.com>)
+        id 1lqr8r-0007H3-0d; Tue, 08 Jun 2021 22:52:41 -0700
+From:   Nava kishore Manne <nava.manne@xilinx.com>
+To:     <robh+dt@kernel.org>, <michal.simek@xilinx.com>, <mdf@kernel.org>,
+        <trix@redhat.com>, <nava.manne@xilinx.com>, <arnd@arndb.de>,
+        <rajan.vaja@xilinx.com>, <gregkh@linuxfoundation.org>,
+        <amit.sunil.dhamne@xilinx.com>, <tejas.patel@xilinx.com>,
+        <zou_wei@huawei.com>, <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        <ravi.patel@xilinx.com>, <iwamatsu@nigauri.org>,
+        <wendy.liang@xilinx.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fpga@vger.kernel.org>,
+        <git@xilinx.com>, <chinnikishore369@gmail.com>
+Subject: [RFC v2 0/4]Fpga: adds support to load the user-key encrypted FPGA Image loading
+Date:   Wed, 9 Jun 2021 11:22:28 +0530
+Message-ID: <20210609055232.4501-1-nava.manne@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CANRm+Cx3LpnMwWHAvJoTErAdWoceO9DBPqY0UkbQHW-ZUHw5=g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 156d7224-e98e-46c8-54d0-08d92b0acd3f
+X-MS-TrafficTypeDiagnostic: SJ0PR02MB7150:
+X-Microsoft-Antispam-PRVS: <SJ0PR02MB7150FE50C40FDC91B90B6D9EC2369@SJ0PR02MB7150.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: c6Ozvt1vTPHFAV5Oq/TKcVKgayUFqm3frl1e3a3atXJ9NRiV3o5Lx7fWcc85R9SSauQOMgTkUKZq5Bv/bQXLQFG3GJPboSmqrLeaomhtkyGWTwUKgeHyMk2vAVgvBt9VNGPN+Qbe0RG9vrAjVa5xo2m5YaG9QcrS/eYqWuhr/YvdlXHLXtdHya2Ve2GFmVGY8SvusjTQ3uIPZRx4wRERsIqS5zkKG+bveW2B2v0HAd41P7S5hBISx/ZpxvauSwrB//g2WmGONO7yd+CNLGCdDtJEkMHuqV8qQnakg0Id+hWENWqGw1QV1a2drA+rHSIFcZrSCP2oxLYq6+Tooum5TgjLGHh7fgKej3WFvPpxMRjRHRIdOGxDiE0iWZ0W6S/cQFPGzURiQnwct0bEO5ZOQg7xajS3AqvTCPCasMBbaObArULfO0jll29q4ccEt9/LgQ/FhZa3TORZB9Gdg4/xF8Pw8RzVlotVE8Cu2rvXDcgzvcAdSryIpayDWycM59fudc8HtTYblUgeGVLDMXkw9c/m+zgYN3gOF/frB7uumW0g3FMW7cYLpvRQXVJUjVYLN9ImiEV9G1vfrVjKFHmC3r+DPZwjN0uLo080VzIgKCncl/RLNp80N/PdTsp+YOpZh+CgnourHp9nonpozlZFSmZDm82HL2qp+pB/zDgWXhMPBKmKRJrT/82+XEM2e6mBn/DZpZhfmHUI3w5KY3z5YluyFJGs9IyDQZ2xfz9/r1GzE/FC7Vn9vtVGGbm4Xkb8
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(376002)(136003)(36840700001)(46966006)(2906002)(4744005)(478600001)(82740400003)(7636003)(36860700001)(186003)(921005)(110136005)(8936002)(356005)(70206006)(8676002)(6666004)(36756003)(70586007)(336012)(7696005)(426003)(1076003)(83380400001)(7416002)(82310400003)(5660300002)(316002)(36906005)(26005)(47076005)(2616005)(9786002)(102446001)(83996005)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 05:52:44.1313
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 156d7224-e98e-46c8-54d0-08d92b0acd3f
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT029.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7150
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06/21 04:15, Wanpeng Li wrote:
-> On Wed, 9 Jun 2021 at 00:27, Paolo Bonzini <pbonzini@redhat.com> wrote:
-> [...]
->> Perhaps instead set TMCCT to 0 in kvm_apic_set_state, instead of keeping
->> the value that was filled in by KVM_GET_LAPIC?
-> 
-> Keeping the value that was filled in by KVM_GET_LAPIC is introduced by
-> commit 24647e0a39b6 (KVM: x86: Return updated timer current count
-> register from KVM_GET_LAPIC), could you elaborate more? :)
+This patch series adds supports user-key encrypted FPGA Image loading using
+FPGA Manager framework.
 
-KVM_GET_LAPIC stores the current value of TMCCT and KVM_SET_LAPIC's 
-memcpy stores it in vcpu->arch.apic->regs.  KVM_SET_LAPIC perhaps could 
-store zero in vcpu->arch.apic->regs after it uses it, and then the 
-stored value would always be zero.
+Nava kishore Manne (4):
+  drivers: firmware: Add user encrypted key load API support
+  fpga: Add new property to support user-key encrypted bitstream loading
+  drivers: fpga: Add user-key encrypted FPGA Image loading support
+  fpga: zynqmp: Add user-key encrypted FPGA Image loading support
 
-Paolo
+ .../devicetree/bindings/fpga/fpga-region.txt  |  3 +++
+ drivers/firmware/xilinx/zynqmp.c              | 17 +++++++++++++
+ drivers/fpga/fpga-mgr.c                       | 15 ++++++++++++
+ drivers/fpga/of-fpga-region.c                 | 11 +++++++++
+ drivers/fpga/zynqmp-fpga.c                    | 24 +++++++++++++++++--
+ include/linux/firmware/xlnx-zynqmp.h          |  9 +++++++
+ include/linux/fpga/fpga-mgr.h                 |  7 ++++++
+ 7 files changed, 84 insertions(+), 2 deletions(-)
+
+-- 
+2.17.1
 
