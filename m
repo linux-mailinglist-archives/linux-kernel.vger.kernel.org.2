@@ -2,145 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F294D3A1DCC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 21:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CC03A1DCF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 21:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbhFITkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 15:40:35 -0400
-Received: from mail-mw2nam12on2113.outbound.protection.outlook.com ([40.107.244.113]:31968
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229472AbhFITkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 15:40:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BtvEZZzxreFrxLjtn+PU/9dZrthwG2G+VJoqZYji27n9Ckqfb22POTSsF9ctqyB3aS9ndbDcVtR28qJHJ0rXRL/gVNXt5AFyB/EVxZR+87Mz61pDwwEQ5RcjlCa3w7MIubh4+4AGlhW41cVzzQ6pfEVwg3Tc5pvxBTlsPhpmzI8m5sk3kIFnWFEI7ryqnlGVOwhpUGvE/yg4g2cPRvheC8kmkDvKaHGLMb3e4kQQO0oZIHOooIuvmcNWj1N9gb1pvSkK8xRkTdd/Ho/EJPKyHtupoqtaU54Hmtm6YGbEPLxwnqMmBnDmoDWrQgXtCR1u4AKaFtabYfMiKvDJOIs1FA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xc63O1d9EuIUiKmpTjLZ1vmfMurDC9RuOf7LNPNSHqM=;
- b=bxbP/Kkz2h9b6hHXFp5u6nMPiR3UFJy5lTxX5rPhU/r4KT6dIGCV0sWrx+Z+0mNQQ3wxRlBO3jObzBV/uiUPglo3jbDgDXleRG0+V/eTLhLfljvJMrPUtyOuBa9lVKUG8Q4KFwhORyt2kKecSMfbtx/U5iGC2oV6gxT6lMrNH1iodonzRSeQtruDZFzNvT6c4KU+EKqes8YmOo7RikpSPu3g8R1pjI532h9gcFqZVUUIHZ82MYem4pqNgFlweLfzBOzUHLsp430k5ORy2eolFJWIh9uOcH39T7GwA2NVZcIsHIz5ybSalUx6lkkNaRPWzI8AnA9anMRhEhKIvNca3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=licor.com; dmarc=pass action=none header.from=licor.com;
- dkim=pass header.d=licor.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=licor.onmicrosoft.com;
- s=selector2-licor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xc63O1d9EuIUiKmpTjLZ1vmfMurDC9RuOf7LNPNSHqM=;
- b=uwQ3YTEzTqt+qdPmNh36EX5uwmXnH6Pi4AiyWrL2OEMuIgExmtkdau+zzUrh0V3sgv42a1KZqWuxQLJ1BHql4wOKjyPB83PpsLEj6UO4luBeKVD5P8dM/U+DVZyqVizd5KGUOOT32TeIwuMP40y6/yjOigWHzxBYIAX9due/LvM=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=licor.com;
-Received: from SN2PR0801MB2223.namprd08.prod.outlook.com
- (2603:10b6:804:11::21) by SN6PR08MB4879.namprd08.prod.outlook.com
- (2603:10b6:805:76::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Wed, 9 Jun
- 2021 19:38:37 +0000
-Received: from SN2PR0801MB2223.namprd08.prod.outlook.com
- ([fe80::2429:8693:e618:f534]) by SN2PR0801MB2223.namprd08.prod.outlook.com
- ([fe80::2429:8693:e618:f534%6]) with mapi id 15.20.4219.022; Wed, 9 Jun 2021
- 19:38:37 +0000
-From:   Chris Lesiak <chris.lesiak@licor.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Lesiak <chris.lesiak@licor.com>
-Subject: [PATCH] iio: humidity: hdc100x: Add margin to the conversion time
-Date:   Wed,  9 Jun 2021 14:37:48 -0500
-Message-Id: <20210609193748.1709308-1-chris.lesiak@licor.com>
-X-Mailer: git-send-email 2.26.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [2607:da00:300:7::2]
-X-ClientProxiedBy: PR1PR01CA0005.eurprd01.prod.exchangelabs.com
- (2603:10a6:102::18) To SN2PR0801MB2223.namprd08.prod.outlook.com
- (2603:10b6:804:11::21)
+        id S229578AbhFITn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 15:43:57 -0400
+Received: from mga14.intel.com ([192.55.52.115]:38315 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229472AbhFITn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 15:43:56 -0400
+IronPort-SDR: cvsQ6yhWh2hFa5VCxAsqZ9Xj0jJUP8bJ7K7pcQgSg6Hknz5yeQr6/giPx/LtcKEB0ODK6vdbNY
+ 0Ciz1bbVN+4w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="204965788"
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="204965788"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 12:41:54 -0700
+IronPort-SDR: mfdNv60d7kmBHdKYpKnUS21Q2RACOAePDgr7tXj8L9S6RL1PV6s/8azAxUG3KEaFyObWJjl/jo
+ PLx7V4gftgkQ==
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="402550102"
+Received: from qwang4-mobl1.ccr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.35.228])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 12:41:49 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v2-fix-v4 1/1] x86: Introduce generic protected guest abstraction
+Date:   Wed,  9 Jun 2021 12:41:37 -0700
+Message-Id: <20210609194137.1949436-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YMDX3Ly91OQUxEge@zn.tnic>
+References: <YMDX3Ly91OQUxEge@zn.tnic>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from bee.local (2607:da00:300:7::2) by PR1PR01CA0005.eurprd01.prod.exchangelabs.com (2603:10a6:102::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend Transport; Wed, 9 Jun 2021 19:38:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e1d6984f-4767-44c4-a4ef-08d92b7e2d13
-X-MS-TrafficTypeDiagnostic: SN6PR08MB4879:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR08MB4879E3B5867A0F703078AB769A369@SN6PR08MB4879.namprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zW3mJLLzeAAP8umm0q5imnRXDBSME1LWH/UZPQSTq6peKyaE9oAPpg7jM3QVWyE5V0vpQ++KsfDCQ8Jm3lyZXKCC5U6cKiX22UX18hiJy7HeFz+yncFQWTy7jRiGzpPjtgyRapxysZcOfXXT0M+FCsB/gHdC2K8cgPzE4NsLD/fmBJG6r/e4nqqAHl3sMBXV+cWSEftPcohcdA8tN8pWpfViHnQk16kOimpIPikfNPPmfmS1jHIAHR6vt/TgrqEh+c1FZF+oVWRAeXvKidyyV/Kmnulobd++moQXdR1SuUbpvdQzlj/Wu7f/4d/KZ/NlrQTwcRhb9YZV5PW03ghHqdoa+ISW1Znq/2veK5BjVV1zHgd6VRclS3SQXqQveDM0f1jDTdWo1wccYs+dFYtgTeL6mAZmgKu39lpFyUPOc1r40txFcSO0CSk75roGsCf0syvls8+7r1eknNEkYtmsr5Z6P7RLDn592e1aTIxG8VA3izb41oDKYqLmNJ0ZU8VyjwIVYsxknSfz/uUQYj3oh8XMu1lRv5dMV0RfOLc4SPXhmoi+dOmwqL5PkvfG8cExrwCiVxFgTVDEOqAmWn5y/fFtdFmrcn7vnT18vII5Qeo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN2PR0801MB2223.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(39850400004)(366004)(346002)(6666004)(316002)(2906002)(6486002)(8676002)(6916009)(5660300002)(107886003)(52116002)(66946007)(66556008)(66476007)(38100700002)(83380400001)(1076003)(8936002)(478600001)(2616005)(36756003)(86362001)(4326008)(186003)(6512007)(6506007)(16526019)(44832011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9b/MXe8xLbXVjyixY2y2j05fJeL48JclqjKUnB7DYCZQra5P0NfSEwnjXauN?=
- =?us-ascii?Q?Tx36CGhn9xV57F6oT8qiIZifcIK15Y4S2+YnLtc5W6adcKdRaM999kj4mSsq?=
- =?us-ascii?Q?8QklEg6tPrLoNTtZ4xl7cbQIvjPjkl049MsAL1r6UmSRg2s8RD2JLE6cnOJX?=
- =?us-ascii?Q?w936/tr8zHf6bWmdBaN0V24H/XHXUqWht5kmPZdFazBFO4+lOGHqReuSuw/c?=
- =?us-ascii?Q?BbvyjRPawzqo9QODnIo++QDwQ4Ebm+UqYoRlFIwyLpEBlnXDwx15nNAAmn9N?=
- =?us-ascii?Q?WezHJ/0yprUeCCdEYKMpsVf/qnXpqoXZhqWdgPka1Zbsr2JG4sSWltzjHLWF?=
- =?us-ascii?Q?fjXP6tCqjk03cB5w9603k3w8eaZq8VsB6RIRWOUx/h/6H4b3JfzWerCQipLB?=
- =?us-ascii?Q?NjCB2pl8UiV55RVnVpNFBwzfEDltHMVKBFMrsuGX+yMsqqWH/P0x8IQPpWJf?=
- =?us-ascii?Q?5visuqFC4b4GwwXFpbAOrYll3oZ9lgWtaIpEFBZRLRhxBCtNzeB5QVIbBeUn?=
- =?us-ascii?Q?WAJiS3Z8J/KAhk/lXNty7KwG2kdziKExtaZ3McYzz4N/+WKzkBHqvzkBqSFl?=
- =?us-ascii?Q?uRzR8aRgivvJy7DWaFexmlExNGDzxeFtoec8ey9/z8gxqBntWBc2f/66s44S?=
- =?us-ascii?Q?X0jmlEIS40F6CF8N+n2/ZR3Du0iYLpp7m0sZzxCfB9MdsT8k9n+7X74UmRQ6?=
- =?us-ascii?Q?x2s4Cvqc6GV0pZwTq03LYqCyyqJGhEsdMbMK1nYRIlx3HXR7XJILu2k0N9Vp?=
- =?us-ascii?Q?RWRJWlJnndvi2Ey5Eb3odCYN383S8iCCmRVHfkLbdm1lXKmj+Pv34lUxBZbW?=
- =?us-ascii?Q?O4/CFjmFeUULUTwNhUvhhdVXEoU6O6wtRpFZ2VOIXMNblk4SFTV0mAb9ysIF?=
- =?us-ascii?Q?PAOzLob44yWHNHENm9V+PLCBPPNlj/j3zKHCvOTeddO0Lswu5tn0x0Tboe3y?=
- =?us-ascii?Q?/PvfjZ0RQthV8lSlhpLlLoJPqWNniqVAgjzQ8mWn6UTeq5N2PYlDEhCzAtDl?=
- =?us-ascii?Q?m90p/HBalowhhl49DBtLBq8YMkdN6a483M/yZ5X4+3c7Zc6L8je8GUM4rccJ?=
- =?us-ascii?Q?1A3lxTxLUzZWx95TiPSUwQOXI0+OZAoiOCVLOxoQAyrZxvYcU7cGeqTGquCY?=
- =?us-ascii?Q?dYGHOTzqCp/I1Mmkrb8A1UaM8jCrsEA/KBpxQMKRCQf9PEah61cZJDqPpKUB?=
- =?us-ascii?Q?ark6TcRwU0CIVPSKC5kIVwX/Si6vWPkTz3Un4RViKcbxHbm/goIAtaf1ZVKr?=
- =?us-ascii?Q?/uNhqbF9wyYG9iWXa3vMtCxKS/CjqImbFeql8/d1TgbHa7ZLsEILN6tgWvlE?=
- =?us-ascii?Q?h3sl4vW97y26+mDETQaqgb8VZUPRqbU8coZX8z7CyUmg+A=3D=3D?=
-X-OriginatorOrg: licor.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1d6984f-4767-44c4-a4ef-08d92b7e2d13
-X-MS-Exchange-CrossTenant-AuthSource: SN2PR0801MB2223.namprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 19:38:37.5410
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 48c70abd-da5a-4c6c-86cb-5e003ca01574
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +dJmRVGRFtaUAg6bdVVXKjIeREbzjf345mb0IXBJqxKoMTuzCtOs49LDqSAhiaVMi6nQ3oab4/PZ0wOXsYc5sw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR08MB4879
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The datasheets have the following note for the conversion time
-specification: "This parameter is specified by design and/or
-characterization and it is not tested in production."
+Add a generic way to check if we run with an encrypted guest,
+without requiring x86 specific ifdefs. This can then be used in
+non architecture specific code. 
 
-Parts have been seen that require more time to do 14-bit conversions for
-the relative humidity channel.  The result is ENXIO due to the address
-phase of a transfer not getting an ACK.
+prot_guest_has() is used to check for protected guest feature
+flags.
 
-Delay an additional 1 ms per conversion to allow for additional margin.
-
-Signed-off-by: Chris Lesiak <chris.lesiak@licor.com>
+Originally-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- drivers/iio/humidity/hdc100x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes since RFC v2-fix-v3:
+ * Introduced ARCH_HAS_PROTECTED_GUEST and moved arch specific checks to
+   asm/protected_guest.h
 
-diff --git a/drivers/iio/humidity/hdc100x.c b/drivers/iio/humidity/hdc100x.c
-index 2a957f19048e..91790aa8beeb 100644
---- a/drivers/iio/humidity/hdc100x.c
-+++ b/drivers/iio/humidity/hdc100x.c
-@@ -166,7 +166,7 @@ static int hdc100x_get_measurement(struct hdc100x_data *data,
- 				   struct iio_chan_spec const *chan)
+Changes since RFC v2-fix-v2:
+ * Renamed protected_guest_has() to prot_guest_has().
+ * Changed flag prefix from VM_ to PR_GUEST_
+ * Merged Borislav AMD implementation fix.
+
+ arch/Kconfig                           |  3 +++
+ arch/x86/Kconfig                       |  2 ++
+ arch/x86/include/asm/protected_guest.h | 20 ++++++++++++++++++++
+ arch/x86/include/asm/sev.h             |  3 +++
+ arch/x86/include/asm/tdx.h             |  7 +++++++
+ arch/x86/kernel/sev.c                  | 15 +++++++++++++++
+ arch/x86/kernel/tdx.c                  | 15 +++++++++++++++
+ arch/x86/mm/mem_encrypt.c              |  1 +
+ include/linux/protected_guest.h        | 24 ++++++++++++++++++++++++
+ 9 files changed, 90 insertions(+)
+ create mode 100644 arch/x86/include/asm/protected_guest.h
+ create mode 100644 include/linux/protected_guest.h
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index c45b770d3579..3c5bf55ee752 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1011,6 +1011,9 @@ config HAVE_ARCH_NVRAM_OPS
+ config ISA_BUS_API
+ 	def_bool ISA
+ 
++config ARCH_HAS_PROTECTED_GUEST
++	bool
++
+ #
+ # ABI hall of shame
+ #
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index a99adc683db9..fc51579e54ad 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -883,6 +883,7 @@ config INTEL_TDX_GUEST
+ 	select PARAVIRT_XL
+ 	select X86_X2APIC
+ 	select SECURITY_LOCKDOWN_LSM
++	select ARCH_HAS_PROTECTED_GUEST
+ 	help
+ 	  Provide support for running in a trusted domain on Intel processors
+ 	  equipped with Trusted Domain eXtenstions. TDX is a new Intel
+@@ -1544,6 +1545,7 @@ config AMD_MEM_ENCRYPT
+ 	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+ 	select INSTRUCTION_DECODER
+ 	select ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
++	select ARCH_HAS_PROTECTED_GUEST
+ 	help
+ 	  Say yes to enable support for the encryption of system memory.
+ 	  This requires an AMD processor that supports Secure Memory
+diff --git a/arch/x86/include/asm/protected_guest.h b/arch/x86/include/asm/protected_guest.h
+new file mode 100644
+index 000000000000..137976ef894a
+--- /dev/null
++++ b/arch/x86/include/asm/protected_guest.h
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/* Copyright (C) 2020 Intel Corporation */
++#ifndef _ASM_PROTECTED_GUEST_H
++#define _ASM_PROTECTED_GUEST_H 1
++
++#include <asm/processor.h>
++#include <asm/tdx.h>
++#include <asm/sev.h>
++
++static inline bool prot_guest_has(unsigned long flag)
++{
++	if (is_tdx_guest())
++		return tdx_protected_guest_has(flag);
++	else if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
++		return sev_protected_guest_has(flag);
++
++	return false;
++}
++
++#endif /* _ASM_PROTECTED_GUEST_H */
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index fa5cd05d3b5b..e9b0b93a3157 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -81,12 +81,15 @@ static __always_inline void sev_es_nmi_complete(void)
+ 		__sev_es_nmi_complete();
+ }
+ extern int __init sev_es_efi_map_ghcbs(pgd_t *pgd);
++bool sev_protected_guest_has(unsigned long flag);
++
+ #else
+ static inline void sev_es_ist_enter(struct pt_regs *regs) { }
+ static inline void sev_es_ist_exit(void) { }
+ static inline int sev_es_setup_ap_jump_table(struct real_mode_header *rmh) { return 0; }
+ static inline void sev_es_nmi_complete(void) { }
+ static inline int sev_es_efi_map_ghcbs(pgd_t *pgd) { return 0; }
++static inline bool sev_protected_guest_has(unsigned long flag) { return false; }
+ #endif
+ 
+ #endif
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index f0c1912837c8..cbfe7479f2a3 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -71,6 +71,8 @@ u64 __tdx_module_call(u64 fn, u64 rcx, u64 rdx, u64 r8, u64 r9,
+ u64 __tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15,
+ 		    struct tdx_hypercall_output *out);
+ 
++bool tdx_protected_guest_has(unsigned long flag);
++
+ #else // !CONFIG_INTEL_TDX_GUEST
+ 
+ static inline bool is_tdx_guest(void)
+@@ -80,6 +82,11 @@ static inline bool is_tdx_guest(void)
+ 
+ static inline void tdx_early_init(void) { };
+ 
++static inline bool tdx_protected_guest_has(unsigned long flag)
++{
++	return false;
++}
++
+ #endif /* CONFIG_INTEL_TDX_GUEST */
+ 
+ #ifdef CONFIG_INTEL_TDX_GUEST_KVM
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 651b81cd648e..16e5c5f25e6f 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -19,6 +19,7 @@
+ #include <linux/memblock.h>
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
++#include <linux/protected_guest.h>
+ 
+ #include <asm/cpu_entry_area.h>
+ #include <asm/stacktrace.h>
+@@ -1493,3 +1494,17 @@ bool __init handle_vc_boot_ghcb(struct pt_regs *regs)
+ 	while (true)
+ 		halt();
+ }
++
++bool sev_protected_guest_has(unsigned long flag)
++{
++	switch (flag) {
++	case PR_GUEST_MEM_ENCRYPT:
++	case PR_GUEST_MEM_ENCRYPT_ACTIVE:
++	case PR_GUEST_UNROLL_STRING_IO:
++	case PR_GUEST_HOST_MEM_ENCRYPT:
++		return true;
++	}
++
++	return false;
++}
++EXPORT_SYMBOL_GPL(sev_protected_guest_has);
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 17725646eb30..111f15c05e24 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -7,6 +7,7 @@
+ #include <asm/vmx.h>
+ 
+ #include <linux/cpu.h>
++#include <linux/protected_guest.h>
+ 
+ /* TDX Module call Leaf IDs */
+ #define TDINFO				1
+@@ -75,6 +76,20 @@ bool is_tdx_guest(void)
+ }
+ EXPORT_SYMBOL_GPL(is_tdx_guest);
+ 
++bool tdx_protected_guest_has(unsigned long flag)
++{
++	switch (flag) {
++	case PR_GUEST_MEM_ENCRYPT:
++	case PR_GUEST_MEM_ENCRYPT_ACTIVE:
++	case PR_GUEST_UNROLL_STRING_IO:
++	case PR_GUEST_SHARED_MAPPING_INIT:
++		return true;
++	}
++
++	return false;
++}
++EXPORT_SYMBOL_GPL(tdx_protected_guest_has);
++
+ static void tdg_get_info(void)
  {
- 	struct i2c_client *client = data->client;
--	int delay = data->adc_int_us[chan->address];
-+	int delay = data->adc_int_us[chan->address] + 1000;
- 	int ret;
- 	__be16 val;
+ 	u64 ret;
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index ff08dc463634..d0026bce47df 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -20,6 +20,7 @@
+ #include <linux/bitops.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/virtio_config.h>
++#include <linux/protected_guest.h>
  
-@@ -316,7 +316,7 @@ static irqreturn_t hdc100x_trigger_handler(int irq, void *p)
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct hdc100x_data *data = iio_priv(indio_dev);
- 	struct i2c_client *client = data->client;
--	int delay = data->adc_int_us[0] + data->adc_int_us[1];
-+	int delay = data->adc_int_us[0] + data->adc_int_us[1] + 2000;
- 	int ret;
- 
- 	/* dual read starts at temp register */
+ #include <asm/tlbflush.h>
+ #include <asm/fixmap.h>
+diff --git a/include/linux/protected_guest.h b/include/linux/protected_guest.h
+new file mode 100644
+index 000000000000..0facb8547217
+--- /dev/null
++++ b/include/linux/protected_guest.h
+@@ -0,0 +1,24 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _LINUX_PROTECTED_GUEST_H
++#define _LINUX_PROTECTED_GUEST_H 1
++
++/* Protected Guest Feature Flags (leave 0-0xff for arch specific flags) */
++
++/* Support for guest encryption */
++#define PR_GUEST_MEM_ENCRYPT			0x100
++/* Encryption support is active */
++#define PR_GUEST_MEM_ENCRYPT_ACTIVE		0x101
++/* Support for unrolled string IO */
++#define PR_GUEST_UNROLL_STRING_IO		0x102
++/* Support for host memory encryption */
++#define PR_GUEST_HOST_MEM_ENCRYPT		0x103
++/* Support for shared mapping initialization (after early init) */
++#define PR_GUEST_SHARED_MAPPING_INIT		0x104
++
++#ifdef CONFIG_ARCH_HAS_PROTECTED_GUEST
++#include <asm/protected_guest.h>
++#else
++static inline bool prot_guest_has(unsigned long flag) { return false; }
++#endif
++
++#endif /* _LINUX_PROTECTED_GUEST_H */
 -- 
-2.26.2
+2.25.1
 
