@@ -2,137 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0260D3A1B55
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49E73A1B4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhFIQ4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:56:40 -0400
-Received: from mail-dm6nam11on2057.outbound.protection.outlook.com ([40.107.223.57]:26401
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230215AbhFIQ4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:56:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A3umhmbAtCh1kRRu/SabYI2V+OMH0w8l/2tczQiJ/D2YL39s3llmrh1sEPPRu+B+dDpHduEhbvaY9ghWgw865PaHy6aVr7dlGp/q1yJ/JFV7WEBq3A0w5If7sf/yM2ajF0a2BLsgBegXa0abduVcqfnQImQlXJqU+NfEuSxdxxx9sHwsm/DkwlYzfYrp8pojEjYyfiShECPb9FUsnfdq0diPe6dXxMQMQ65ihMLEiJ/Es8Yp81LLD74CXItvhvmFsAp9NuEynQznGZ+44TwVuzqjWtZzzFm5gnIdUDgFDa9PPGFpXCPRMsSvaQH7n+slHndTQXwVPzbjs0BotvlJgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+zDfrTwl9SB/NWQLL+r6go8LJn22f2yFqIQcI2B+lS4=;
- b=S2dlujqY96uGyt7ZQWISCS9/opac2VS4WOAYI5jmzmHS9UG70/XJv9bO7eG/1wklb9NYEzKGf2SlTwc4plTznjmrBidJDEgcPzIqrXxR1+udRcZ4SoqTh+N4JHwrh3Wh3ghQJ/R8uqZsBOW1a0nbGr3kZ+l9Y2dL/CxYuA4ImY3PUT59XmyswjUZVo++UersUBPi6nJ+Exucb69iYCiOv2pcIWvrwlpknRPGE47nG4oprFhtzrNg/ANl2i07h3RlzHU0uoxTUxAX9iwsL4A9cL88AHf8hNt64DXgyCAS1AWReDx8q+zybpYYz5Rme2b5Nsgx0hMBThiVflpzkOTdpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+zDfrTwl9SB/NWQLL+r6go8LJn22f2yFqIQcI2B+lS4=;
- b=HNVdEs1/75h0ZbkIieIl1P5dil6qM0J00aQoJ96KxTzMsdTAJ0AukTNIUgaJQMC2dZYjAtJM5imgD+ljji1WWgFfY36p2hrCfOtvI5yaKSUURAJS4EdeyK0EriRPs+jn5N+SU+oj2NAZLOo79o0tHBPxg78YIHy0VgCQzslla9cwvL/1C2iC/76O+PSRJEesDFO8XwwKpLSdhtSH8AmVSqFjUnP1lF7r/Zcwu7nlonKOEbhtIz/o5ISgeeu3wWp1b1meecro9Anr/AFbXzIs7H3KFbwid+JZVc/BWCybt4/x/iO6rff5zhTC4mF5dNMgKs5jH/WM8psnqIN7by3iEg==
-Received: from DM6PR04CA0024.namprd04.prod.outlook.com (2603:10b6:5:334::29)
- by DM8PR12MB5431.namprd12.prod.outlook.com (2603:10b6:8:34::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4195.20; Wed, 9 Jun 2021 16:54:43 +0000
-Received: from DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:334:cafe::c7) by DM6PR04CA0024.outlook.office365.com
- (2603:10b6:5:334::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend
- Transport; Wed, 9 Jun 2021 16:54:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT066.mail.protection.outlook.com (10.13.173.179) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4219.21 via Frontend Transport; Wed, 9 Jun 2021 16:54:43 +0000
-Received: from [10.26.49.10] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 9 Jun
- 2021 16:54:40 +0000
-Subject: Re: Query regarding the use of pcie-designware-plat.c file
-To:     Bjorn Helgaas <helgaas@kernel.org>, Vidya Sagar <vidyas@nvidia.com>
-CC:     <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
-        <robh+dt@kernel.org>, <amurray@thegoodpenguin.co.uk>,
-        <gustavo.pimentel@synopsys.com>, <jingoohan1@gmail.com>,
-        <Joao.Pinto@synopsys.com>, Thierry Reding <treding@nvidia.com>,
-        Krishna Thota <kthota@nvidia.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210609163010.GA2643779@bjorn-Precision-5520>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <2970bdf2-bef2-bdcb-6ee3-ac1181d97b78@nvidia.com>
-Date:   Wed, 9 Jun 2021 17:54:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230334AbhFIQzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:55:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230230AbhFIQzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 12:55:12 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9602E613C0;
+        Wed,  9 Jun 2021 16:53:12 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 17:55:05 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com
+Subject: Re: [PATCH v11 23/33] counter: Update counter.h comments to reflect
+ sysfs internalization
+Message-ID: <20210609175505.5bca286d@jic23-huawei>
+In-Reply-To: <ae1707aec1f9d647f88a6c5159ed83009289fcc1.1623201082.git.vilhelm.gray@gmail.com>
+References: <cover.1623201081.git.vilhelm.gray@gmail.com>
+        <ae1707aec1f9d647f88a6c5159ed83009289fcc1.1623201082.git.vilhelm.gray@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210609163010.GA2643779@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 75542ed0-9c67-4aaf-047e-08d92b6747d6
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5431:
-X-Microsoft-Antispam-PRVS: <DM8PR12MB54311CC0A7B363AC0C9E69B4D9369@DM8PR12MB5431.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YIJWNszG2Rdh0Nam9myfZo0mGQDcMeh2Srih1oXiaEyT7trS4r0BkTQNpi3TN1/Y30AZGJ1EQg4bUdyph4qaSwRmfcMrWwl3eiq5ZdvhNRv2PVTfvXOzVt/xmXQHvrGS5h8EFwuDGIi6t5xSGwJHBSBBIwXepfMWKUIgDgXKd42jrEzqH7z9hQU6WrfHx8/7oodNrNB3wKNNPqV6DA2y6ikGr4HCF6sXQxcdqENf752YtX2yk4E6dlJInl5B1f9IVWA40dWLY7galc/GpNhV+WKoeC5gKa/emklm1bbG/JkSqI+pDj+qLWuQkkxBaeC4NeCSOBqhXEKn3iPR/5I0MgG41ksZFbnGrLV6kC0ac6XD5nW7HLF80kek7LqYFe95/AW69wGNumVrmrCALBrxwubXnkMB2BJ7b5g1r4CEBo6Tz5jXHG/RFd89vG3LMZ1dKxJSth9d5FxO+rA3gU4rw0EJ0T9SnpKYi1Iceu0+4/YknHVwOnH7F+qTSdxfC8B4Rc1cYeX2w6SqqDxNn4Lyi9YzbjVFtsOWp5230WWDOCtKm5dTxRTVoyrq5OnhL+ZWBxbB/BXS8sH/H1Kh/lFVbIrthujrRH36jojKfrpVAvO+INysv/kXaaZbsTI9AFbsJjh6swiThBjJNaizmGsQICv45Uxy7mI9co3ubayMpvdIhlW9QI7X/WJJvQft5FTR
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(376002)(39860400002)(46966006)(36840700001)(82310400003)(53546011)(356005)(8676002)(336012)(6636002)(8936002)(47076005)(478600001)(86362001)(31696002)(2906002)(26005)(31686004)(82740400003)(316002)(110136005)(70206006)(7416002)(4326008)(83380400001)(7636003)(16526019)(186003)(16576012)(70586007)(36906005)(36860700001)(426003)(2616005)(36756003)(54906003)(5660300002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 16:54:43.5390
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75542ed0-9c67-4aaf-047e-08d92b6747d6
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5431
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed,  9 Jun 2021 10:31:26 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-On 09/06/2021 17:30, Bjorn Helgaas wrote:
-> On Wed, Jun 09, 2021 at 12:52:37AM +0530, Vidya Sagar wrote:
->> Hi,
->> I would like to know what is the use of pcie-designware-plat.c file. This
->> looks like a skeleton file and can't really work with any specific hardware
->> as such.
->> Some context for this mail thread is, if the config CONFIG_PCIE_DW_PLAT is
->> enabled in a system where a Synopsys DesignWare IP based PCIe controller is
->> present and its configuration is enabled (Ex:- Tegra194 system with
->> CONFIG_PCIE_TEGRA194_HOST enabled), then, it can so happen that the probe of
->> pcie-designware-plat.c called first (because all DWC based PCIe controller
->> nodes have "snps,dw-pcie" compatibility string) and can crash the system.
+> The Counter subsystem architecture and driver implementations have
+> changed in order to handle Counter sysfs interactions in a more
+> consistent way. This patch updates the Generic Counter interface
+> header file comments to reflect the changes.
 > 
-> What's the crash?  If a device claims to be compatible with
-> "snps,dw-pcie" and pcie-designware-plat.c claims to know how to
-> operate "snps,dw-pcie" devices, it seems like something is wrong.
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+
+I'd rather see anything in here that isn't just tidy up moved back to the
+earlier patches.
+
+> ---
+>  drivers/counter/counter-core.c |  3 ++
+>  include/linux/counter.h        | 72 +++++++++++++++-------------------
+>  2 files changed, 35 insertions(+), 40 deletions(-)
 > 
-> "snps,dw-pcie" is a generic device type, so pcie-designware-plat.c
-> might not know how to operate device-specific details of some of those
-> devices, but basic functionality should work and it certainly
-> shouldn't crash.
+> diff --git a/drivers/counter/counter-core.c b/drivers/counter/counter-core.c
+> index e7dd6ea01c8a..407661c6feb0 100644
+> --- a/drivers/counter/counter-core.c
+> +++ b/drivers/counter/counter-core.c
+> @@ -41,6 +41,9 @@ static struct bus_type counter_bus_type = {
+>   * This function registers a Counter to the system. A sysfs "counter" directory
+>   * will be created and populated with sysfs attributes correlating with the
+>   * Counter Signals, Synapses, and Counts respectively.
+> + *
+> + * RETURNS:
+> + * 0 on success, negative error number on failure.
+>   */
+>  int counter_register(struct counter_device *const counter)
+>  {
+> diff --git a/include/linux/counter.h b/include/linux/counter.h
+> index 567471818ec3..e7fd6d81a929 100644
+> --- a/include/linux/counter.h
+> +++ b/include/linux/counter.h
+> @@ -188,12 +188,10 @@ struct counter_comp {
+>  
+>  /**
+>   * struct counter_signal - Counter Signal node
+> - * @id:		unique ID used to identify signal
+> - * @name:	device-specific Signal name; ideally, this should match the name
+> - *		as it appears in the datasheet documentation
+> - * @ext:	optional array of Counter Signal extensions
+> - * @num_ext:	number of Counter Signal extensions specified in @ext
+> - * @priv:	optional private data supplied by driver
+> + * @id:		unique ID used to identify the Signal
+> + * @name:	device-specific Signal name
+> + * @ext:	optional array of Signal extensions
+> + * @num_ext:	number of Signal extensions specified in @ext
 
-It is not really a crash but a hang when trying to access the hardware
-before it has been properly initialised.
+I'm not keen on having a stage between patches where there
+area things documented that don't exist. (e.g. priv)
 
-The scenario I saw was that if the Tegra194 PCIe driver was built as a
-module but the pcie-designware-plat.c was built into the kernel, then on
-boot we would attempt to probe the pcie-designware-plat.c driver because
-module was not available yet and this would hang. Hence, I removed the
-"snps,dw-pcie" compatible string for Tegra194 to avoid this and ONLY
-probe the Tegra194 PCIe driver.
+>   */
+>  struct counter_signal {
+>  	int id;
+> @@ -207,7 +205,7 @@ struct counter_signal {
+>   * struct counter_synapse - Counter Synapse node
+>   * @actions_list:	array of available action modes
+>   * @num_actions:	number of action modes specified in @actions_list
+> - * @signal:		pointer to associated signal
+> + * @signal:		pointer to the associated Signal
+>   */
+>  struct counter_synapse {
+>  	const enum counter_synapse_action *actions_list;
+> @@ -218,17 +216,14 @@ struct counter_synapse {
+>  
+>  /**
+>   * struct counter_count - Counter Count node
+> - * @id:			unique ID used to identify Count
+> - * @name:		device-specific Count name; ideally, this should match
+> - *			the name as it appears in the datasheet documentation
+> - * @function:		index of current function mode
+> - * @functions_list:	array available function modes
+> + * @id:			unique ID used to identify the Count
+> + * @name:		device-specific Count name
+> + * @functions_list:	array of available function modes
+>   * @num_functions:	number of function modes specified in @functions_list
+> - * @synapses:		array of synapses for initialization
+> - * @num_synapses:	number of synapses specified in @synapses
+> - * @ext:		optional array of Counter Count extensions
+> - * @num_ext:		number of Counter Count extensions specified in @ext
+> - * @priv:		optional private data supplied by driver
+> + * @synapses:		array of Synapses for initialization
+> + * @num_synapses:	number of Synapses specified in @synapses
+> + * @ext:		optional array of Count extensions
+> + * @num_ext:		number of Count extensions specified in @ext
+>   */
+>  struct counter_count {
+>  	int id;
+> @@ -246,29 +241,26 @@ struct counter_count {
+>  
+>  /**
+>   * struct counter_ops - Callbacks from driver
+> - * @signal_read:	optional read callback for Signal attribute. The read
+> - *			level of the respective Signal should be passed back via
+> - *			the level parameter.
+> - * @count_read:		optional read callback for Count attribute. The read
+> - *			value of the respective Count should be passed back via
+> - *			the val parameter.
+> - * @count_write:	optional write callback for Count attribute. The write
+> - *			value for the respective Count is passed in via the val
+> + * @signal_read:	read callback for Signals. The read level of the
+> + *			respective Signal should be passed back via the level
+> + *			parameter.
+> + * @count_read:		read callback for Counts. The read value of the
+> + *			respective Count should be passed back via the value
+>   *			parameter.
+> - * @function_get:	function to get the current count function mode. Returns
+> - *			0 on success and negative error code on error. The index
+> - *			of the respective Count's returned function mode should
+> - *			be passed back via the function parameter.
+> - * @function_set:	function to set the count function mode. function is the
+> - *			index of the requested function mode from the respective
+> - *			Count's functions_list array.
+> - * @action_get:		function to get the current action mode. Returns 0 on
+> - *			success and negative error code on error. The index of
+> - *			the respective Synapse's returned action mode should be
+> - *			passed back via the action parameter.
+> - * @action_set:		function to set the action mode. action is the index of
+> - *			the requested action mode from the respective Synapse's
+> - *			actions_list array.
+> + * @count_write:	write callback for Counts. The write value for the
+> + *			respective Count is passed in via the value parameter.
+> + * @function_read:	read callback the Count function modes. The read
+> + *			function mode of the respective Count should be passed
+> + *			back via the function parameter.
+> + * @function_write:	write callback for Count function modes. The function
+> + *			mode to write for the respective Count is passed in via
+> + *			the function parameter.
+> + * @action_read:	read callback the Synapse action modes. The read action
+> + *			mode of the respective Synapse should be passed back via
+> + *			the action parameter.
+> + * @action_write:	write callback for Synapse action modes. The action mode
+> + *			to write for the respective Synapse is passed in via the
+> + *			action parameter.
+>   */
+>  struct counter_ops {
+>  	int (*signal_read)(struct counter_device *counter,
+> @@ -296,7 +288,7 @@ struct counter_ops {
+>  
+>  /**
+>   * struct counter_device - Counter data structure
+> - * @name:		name of the device as it appears in the datasheet
+> + * @name:		name of the device
+>   * @parent:		optional parent device providing the counters
+>   * @ops:		callbacks from driver
+>   * @signals:		array of Signals
 
-Sagar is wondering why this hang is only seen/reported for Tegra and
-could this happen to other platforms? I think that is potentially could.
-
-Jon
-
--- 
-nvpublic
