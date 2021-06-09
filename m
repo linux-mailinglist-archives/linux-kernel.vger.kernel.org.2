@@ -2,87 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BCA3A14AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542193A14B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234089AbhFIMoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhFIMoE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:44:04 -0400
-Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A5AC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 05:42:09 -0700 (PDT)
-Received: from [IPv6:2a02:a03f:eafb:ee01:a92e:8520:f692:3284] (unknown [IPv6:2a02:a03f:eafb:ee01:a92e:8520:f692:3284])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id E5A9020B177;
-        Wed,  9 Jun 2021 14:42:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1623242528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h+vjUUCU4wSBBhM4Nks/zfyl16+i4xTmkh2sMIqyJqM=;
-        b=ABHe94Gg9L0fNIE6zDsITYpw8TbuXErA4Swnm+64BIfGAJTAfPWzCqz/J079eTsRcNCs9D
-        YcNi7L4WeQ5QEvcbKkBTeyqreZj8CAfHo/t8HdkTZgEhhW1aJ6Gi+wOFIB12FS91Pkeo+l
-        zT79Ab75KBfdP+MUzruoFOgLkoEJ7bEIhd20Y+nt8gHzrzWwCOGiQl1D24M4PLs9eimQay
-        /fBBlxs7gEGoq3nTj9T8SIEiranCj9+pidWq9JdKxFnVk0tAnaDcE9a2jhDv9d5XOg+OhJ
-        OnoGujyW8OcrElRK4G1xVvDW+B9Dr5SXCfjZ/JKvpzGa9sgQMFEDRp6clpzZcA==
-Message-ID: <ba7ef002d610ff5b5fc2c31411a1009587e2f068.camel@svanheule.net>
-Subject: Re: [PATCH 1/2] Revert "regmap: mdio: Add clause-45 support"
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Adrew Lunn <andrew@lunn.ch>
-Date:   Wed, 09 Jun 2021 14:42:06 +0200
-In-Reply-To: <20210609122401.GA20286@sirena.org.uk>
-References: <cover.1623238313.git.sander@svanheule.net>
-         <deed937f8fd63285e95acdfa8ca327638057811f.1623238313.git.sander@svanheule.net>
-         <20210609122401.GA20286@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S234176AbhFIMoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:44:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234092AbhFIMoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 08:44:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0588F6139A;
+        Wed,  9 Jun 2021 12:42:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623242543;
+        bh=vhthPvN4SbfeT6gkUtHzXTCMycYQGIxRI4dMcim0R44=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IHU1o3laSZ3HNiecimURPirmf5RQ1zOhnOdCtEcLJ9WRNOuheJ7R1qlD1BgV+AFp8
+         nTmkL8yhvJ5tTGPGx8Dmy1hlb/KqsdNy/DDusiPl2kAfo5O7oQpes9DW4V3zwiaiVo
+         Vo0pkv/uswOY51kzgVWIT5ifLunXgMZdgBDXzBlgVRIgFxAZ/NUDuJVtlwhIOV/FKl
+         lB/WupAHmjf4GIVSH8X+H6x+7LbY0vwK4lWHE/hZpYUf9Op+YswepV4kHFwgIC7qxH
+         7/V199dgfu2Rt84F5rUOt/XYLo/jIX3h4qxH/AXb/2amHOc5/faMMIQeHbBqvMJhcd
+         7sBRbBGXqBQ6Q==
+Date:   Wed, 9 Jun 2021 13:42:08 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCHv3 5/5] misc: gehc-achc: new driver
+Message-ID: <20210609124208.GA5052@sirena.org.uk>
+References: <20210528113346.37137-1-sebastian.reichel@collabora.com>
+ <20210528113346.37137-6-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
+Content-Disposition: inline
+In-Reply-To: <20210528113346.37137-6-sebastian.reichel@collabora.com>
+X-Cookie: Alex Haley was adopted!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-09 at 13:24 +0100, Mark Brown wrote:
-> On Wed, Jun 09, 2021 at 01:46:05PM +0200, Sander Vanheule wrote:
-> > This reverts commit f083be9db060fbac09123d80bdffb2c001ac0e2b.
-> 
-> Please submit patches using subject lines reflecting the style for the
-> subsystem, this makes it easier for people to identify relevant patches.
-> Look at what existing commits in the area you're changing are doing and
-> make sure your subject lines visually resemble what they're doing.
-> There's no need to resubmit to fix this alone.
 
-I had grepped the commit log for other reverting patches, which also appear to
-use this style, but I didn't check the regmap-specific ones.
+--yrj/dFKFPuw6o+aM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, May 28, 2021 at 01:33:47PM +0200, Sebastian Reichel wrote:
 
-> > There are currently no (planned) regmap users for C45 register access.
-> > Remove support for now, to reduce dead code.
-> 
-> This then creates a bootstrapping issue for anyone who does need it - I
-> can't see any way in which this causes problems or gets in the way?
+>  drivers/misc/Kconfig                     |  15 +
+>  drivers/misc/Makefile                    |   2 +
+>  drivers/misc/gehc-achc.c                 | 160 ++++++++
+>  drivers/misc/nxp-ezport.c                | 476 +++++++++++++++++++++++
+>  drivers/spi/spidev.c                     |   7 +-
+>  include/linux/platform_data/nxp-ezport.h |   9 +
+>  include/linux/spi/spi.h                  |   5 +
 
-If you would rather keep this, I should modify the other patch (regmap: mdio:
-Reject invalid clause-22 addresses) to also cover C45 addresses.
-Furthermore, there's an issue with a pointer const-ness in __regmap_init_mdio
-that needs to be fixed if this code is staying.
+This clearly seems to be something that should be split into separate
+patches, even without getting as far as the code it's hard to see how
+changes to spidev.c wouldn't be standalone changes that should be split
+out from what looks like adding two new drivers.
 
-I'll submit a v2 that fixes __regmap_init_mdio, and also applies the address
-checks to C45 access.
+> +static int gehc_achc_probe(struct spi_device *spi)
+> +{
 
-Best,
-Sander
+=2E..
 
+> +       ret =3D spidev_probe(spi);
+> +       if (ret)
+> +               return ret;
+
+This isn't integrated at all with the flashing code, userspace might be
+trying to do something with the device while flashing happens.  I would
+expect at a very minimum that we'd be hot unplugging the spidev while
+the flashing is in progress. =20
+
+> -static int spidev_probe(struct spi_device *spi)
+> +int spidev_probe(struct spi_device *spi)
+>  {
+>  	struct spidev_data	*spidev;
+>  	int			status;
+> @@ -789,8 +788,9 @@ static int spidev_probe(struct spi_device *spi)
+> =20
+>  	return status;
+>  }
+> +EXPORT_SYMBOL_GPL(spidev_probe);
+
+This really looks like a very, very bad idea in general - attempting to
+combine the unmediated userspace access that spidev offers with an in
+kernel driver seems like it's not going to go well, as with the flashing
+issue.  Really this looks like two marginally related devices that are
+getting glued together which is abot the best case for this being
+supportable and even then it'd need more work.  I'm not keen about
+providing the interface at all as it's the sort of thing people are
+going to get wrong a bunch.
+
+--yrj/dFKFPuw6o+aM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDAtx8ACgkQJNaLcl1U
+h9ADPAf9EZGtH51/7NaoU0frDOEWgaHmDK2sCIFNXeQnJ2qk5/aC19fI1piHKARl
+Zk+qyQmBi0wYcStGbDztvvNjw4H0JT8kh1jFtZlIYbPWTPLXoDyElP/WVYRazXsI
+yO+f37gmyTLl/u5h52dzk/wmLD0d2P4Lhv8ADb/Fx6hIclr41AKsjd7E2HYrn8Fk
+aafJgW0tiP7TFRzeBKFNdYjHt4CipbdTB2vid42NkOHsKi95g+gwku4jNrVBCZ31
+mmMKNWJTD+psrnwWtRvmW3gtxr9pkg5OrRDMshKfPUBoBYDSXwwheQa4xGJvgUN1
+NCy6YnQx3t7LXdAa1H03sg0byA1/jg==
+=uTrl
+-----END PGP SIGNATURE-----
+
+--yrj/dFKFPuw6o+aM--
