@@ -2,234 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9575D3A147C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906643A1481
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232381AbhFIMdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhFIMdn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:33:43 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D43C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 05:31:33 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id ce15so38208583ejb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 05:31:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6XTRjG8DA6//Vza5ToMO0nrVrP4kOHe2lAk8iv5fYAA=;
-        b=kxlcOz7ILufwDk7GIkyi4qcUD54tPcjtc+LCeRzh2CaaivCUjmV6+2elFYqnVR0l7q
-         VyMu6fcTqWoG/r88p8ntaRU4RpB0cIEyULsRHWVU1mYv0KELTs4DKANa5DEVkXMC9kke
-         8O3Vbqc4Qf5cLhkR3kpSMnN5/Uwk3m/UXcPKB2xuAQLPEMy8MozDDvjEaHcdNBZSniKr
-         EWl7WAhbuKJmgqUBiwmwRWjiOyu7Sw26p4fLKY9YR43Cm8fczxLY4Rio5htscQUccrVI
-         eX1WCxQZYA12CuOARtgpZOs2Tul6btRW/1NwDWCLEnbEzDx0HvD+Xa9524rtY8bkQ7Rn
-         FfDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6XTRjG8DA6//Vza5ToMO0nrVrP4kOHe2lAk8iv5fYAA=;
-        b=LSGur/P3/r0FruSw2LIQLR5ydR8/gdF6C8gSmRAo2oMYXMY1giSP0ehwQKcw1PLSOr
-         0d19cbyvkkyqueWp26pIl26XB8/SzJokqPL1EtNO4Q12H3r7hxv8I7ovEPpSuCOJw/Ce
-         K+DXkllZzQFDgF3mZTHBJFpWURLvC/5WzME7qHoxcM2j5bEeaqQ2tC6/BuHKui+G3BSa
-         lFK27eTaea5RLrdDUb1AI140giTc3ZPxP4Qc8hc7+D+1fN8sKQ31cFuks0xJfINr9nKQ
-         WDE/6JeyyBX+sUOZK6T5k/ammWTNqRbChLBqWkbLHpbD+dAc1/n3ckch4d26IBAlTwqB
-         K2ag==
-X-Gm-Message-State: AOAM530Ce/PeGyE5XQRegMQErQ/Yj2jmaxutW5xVdtggihhmBR6yL20+
-        LfA1SPaQz5/DbX850x02HUoxMgC2skn+0v0yaUvMcw==
-X-Google-Smtp-Source: ABdhPJzJbYf9A+vwKTyYAuw/aRGHwnTx5yKWeK96Vnztmii5iLbspIkOsm5bCuvHyiIisDIbWwt2iyBp3CYxBkRim0k=
-X-Received: by 2002:a17:906:25db:: with SMTP id n27mr27776459ejb.170.1623241892052;
- Wed, 09 Jun 2021 05:31:32 -0700 (PDT)
+        id S233134AbhFIMf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:35:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48560 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230377AbhFIMfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 08:35:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B213613B9;
+        Wed,  9 Jun 2021 12:33:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623242011;
+        bh=/gF/nMiVYi77wMD7BAky1aCWDTXgkdMSrbE1ZV3y7uM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aI4ts5hTJ5GIU7pNjI+KAZnGPBKg/M19RU0DyrnUtrv1ILRmYnGg2q5r+lpcDnZne
+         bGGyQdHt4j+zcp5LfJ0UFZYVkqzPAKfVju+TZffJmkS0x9pZ5idFluGSFRj6I4SZzL
+         wRxGo81ddgbjkFLv6ewaEIeWwAMclkKoMy3niI0oU7pPu4dLXKeofViRuyxlLotvqX
+         0TGDTx2PJoLRsHPNQ00GxB3sCQevpA2Tph8NXmkkhP7XDhXbQaYqaNxH7vt+aOGcco
+         TTeydzG2j+nLpGxcWSotgyJXHvckExq1+VPJS8ipFbnKAw+uywcGA/YjbIUDprtIvT
+         EHmyErMec9MNg==
+Received: by mail-lf1-f42.google.com with SMTP id n12so30754578lft.10;
+        Wed, 09 Jun 2021 05:33:31 -0700 (PDT)
+X-Gm-Message-State: AOAM53141tznF0BvznYCaWutGHN0lQ0OhoUgOQuDVvjyMv/j7LOC2ONN
+        dOJZBczgaSItdLZBFVKho7r8v6uXtlcsZeKihNY=
+X-Google-Smtp-Source: ABdhPJwY7ebyRdwNRhEME05N+z2lxITf6zyGNzyaVgGRhjICH5ZPnlN8ZciSAd5wBCoqmvxTWgDmCyrH+t9jXy71HK8=
+X-Received: by 2002:a05:6512:218d:: with SMTP id b13mr19125081lft.346.1623242009380;
+ Wed, 09 Jun 2021 05:33:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210609062858.532803536@linuxfoundation.org>
-In-Reply-To: <20210609062858.532803536@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 9 Jun 2021 18:01:20 +0530
-Message-ID: <CA+G9fYtxxYWyvCiv=uXv1VSaX=6VSSPzhd7tdmq_Jgzg2khwvQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/57] 4.19.194-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <20210609105019.3626677-1-punitagrawal@gmail.com> <20210609105019.3626677-5-punitagrawal@gmail.com>
+In-Reply-To: <20210609105019.3626677-5-punitagrawal@gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 9 Jun 2021 20:33:18 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTS_tmOYFNaLYQmJvbwZwksMctPPbE6GAGgUYTwvLLwE=w@mail.gmail.com>
+Message-ID: <CAJF2gTS_tmOYFNaLYQmJvbwZwksMctPPbE6GAGgUYTwvLLwE=w@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/5] csky: ftrace: Drop duplicate implementation of arch_check_ftrace_location()
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 at 13:24, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+csky using -mcount not -fpatchable-function-entry, so
+                /* Given address is not on the instruction boundary */
+                if ((unsigned long)p->addr != ftrace_addr)
+                        return -EILSEQ;
+all right?
+
+On Wed, Jun 9, 2021 at 6:51 PM Punit Agrawal <punitagrawal@gmail.com> wrote:
 >
-> This is the start of the stable review cycle for the 4.19.194 release.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> The csky specific arch_check_ftrace_location() shadows a weak
+> implementation of the function in core code that offers the same
+> functionality but with additional error checking.
 >
-> Responses should be made by Fri, 11 Jun 2021 06:28:32 +0000.
-> Anything received after that time might be too late.
+> Drop the architecture specific function as a step towards further
+> cleanup in core code.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.194-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
+> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> Cc: Guo Ren <guoren@linux.alibaba.com>
+> ---
+>  arch/csky/kernel/probes/ftrace.c | 7 -------
+>  1 file changed, 7 deletions(-)
 >
-> thanks,
+> diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+> index ef2bb9bd9605..b388228abbf2 100644
+> --- a/arch/csky/kernel/probes/ftrace.c
+> +++ b/arch/csky/kernel/probes/ftrace.c
+> @@ -2,13 +2,6 @@
 >
-> greg k-h
+>  #include <linux/kprobes.h>
+>
+> -int arch_check_ftrace_location(struct kprobe *p)
+> -{
+> -       if (ftrace_location((unsigned long)p->addr))
+> -               p->flags |= KPROBE_FLAG_FTRACE;
+> -       return 0;
+> -}
+> -
+>  /* Ftrace callback handler for kprobes -- called under preepmt disabled */
+>  void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>                            struct ftrace_ops *ops, struct ftrace_regs *fregs)
+> --
+> 2.30.2
+>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+-- 
+Best Regards
+ Guo Ren
 
-## Build
-* kernel: 4.19.194-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.19.y
-* git commit: 3a6c65ec05c006c635fbfbbbbb941bb397dd4086
-* git describe: v4.19.193-58-g3a6c65ec05c0
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.193-58-g3a6c65ec05c0
-
-## No regressions (compared to v4.19.193-60-ge0814e7f9827)
-
-## No fixes (compared to v4.19.193-60-ge0814e7f9827)
-
-## Test result summary
- total: 71558, pass: 55780, fail: 2296, skip: 12168, xfail: 1314,
-
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 25 total, 25 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 39 total, 38 passed, 1 failed
-* s390: 9 total, 9 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 15 total, 15 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-m[
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-[
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* timesync-off
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+ML: https://lore.kernel.org/linux-csky/
