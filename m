@@ -2,100 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DD83A147D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9575D3A147C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233103AbhFIMeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:34:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230377AbhFIMee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:34:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 959AF61183;
-        Wed,  9 Jun 2021 12:32:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623241960;
-        bh=wtbyrMKSuMZ+ubnpoHwvsXFSnwWGhrtAlMZjlqRbpbw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XMzNZoTpRgVbaEqerw4ctjcAhPzZml970IN96scfxBnkR8QXNdCWllsh7Oi/YpC1D
-         XIl10gTlw+etrclCoBADLqKTcZfhR0y8O349e8xZF1SP1kEd58bwUsSnW+q13yE9Ci
-         JuTGMa1vUE/xbvfnDEyrXzPLC2WZeqdYzSltyJfg=
-Date:   Wed, 9 Jun 2021 14:25:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Joe Perches <joe@perches.com>, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: rtl8723bs: os_dep: Remove conditions with no
- effects
-Message-ID: <YMCzQCYAlSafu88E@kroah.com>
-References: <20210606074216.26495-1-fmdefrancesco@gmail.com>
+        id S232381AbhFIMdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230377AbhFIMdn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 08:33:43 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D43C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 05:31:33 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id ce15so38208583ejb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 05:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6XTRjG8DA6//Vza5ToMO0nrVrP4kOHe2lAk8iv5fYAA=;
+        b=kxlcOz7ILufwDk7GIkyi4qcUD54tPcjtc+LCeRzh2CaaivCUjmV6+2elFYqnVR0l7q
+         VyMu6fcTqWoG/r88p8ntaRU4RpB0cIEyULsRHWVU1mYv0KELTs4DKANa5DEVkXMC9kke
+         8O3Vbqc4Qf5cLhkR3kpSMnN5/Uwk3m/UXcPKB2xuAQLPEMy8MozDDvjEaHcdNBZSniKr
+         EWl7WAhbuKJmgqUBiwmwRWjiOyu7Sw26p4fLKY9YR43Cm8fczxLY4Rio5htscQUccrVI
+         eX1WCxQZYA12CuOARtgpZOs2Tul6btRW/1NwDWCLEnbEzDx0HvD+Xa9524rtY8bkQ7Rn
+         FfDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6XTRjG8DA6//Vza5ToMO0nrVrP4kOHe2lAk8iv5fYAA=;
+        b=LSGur/P3/r0FruSw2LIQLR5ydR8/gdF6C8gSmRAo2oMYXMY1giSP0ehwQKcw1PLSOr
+         0d19cbyvkkyqueWp26pIl26XB8/SzJokqPL1EtNO4Q12H3r7hxv8I7ovEPpSuCOJw/Ce
+         K+DXkllZzQFDgF3mZTHBJFpWURLvC/5WzME7qHoxcM2j5bEeaqQ2tC6/BuHKui+G3BSa
+         lFK27eTaea5RLrdDUb1AI140giTc3ZPxP4Qc8hc7+D+1fN8sKQ31cFuks0xJfINr9nKQ
+         WDE/6JeyyBX+sUOZK6T5k/ammWTNqRbChLBqWkbLHpbD+dAc1/n3ckch4d26IBAlTwqB
+         K2ag==
+X-Gm-Message-State: AOAM530Ce/PeGyE5XQRegMQErQ/Yj2jmaxutW5xVdtggihhmBR6yL20+
+        LfA1SPaQz5/DbX850x02HUoxMgC2skn+0v0yaUvMcw==
+X-Google-Smtp-Source: ABdhPJzJbYf9A+vwKTyYAuw/aRGHwnTx5yKWeK96Vnztmii5iLbspIkOsm5bCuvHyiIisDIbWwt2iyBp3CYxBkRim0k=
+X-Received: by 2002:a17:906:25db:: with SMTP id n27mr27776459ejb.170.1623241892052;
+ Wed, 09 Jun 2021 05:31:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210606074216.26495-1-fmdefrancesco@gmail.com>
+References: <20210609062858.532803536@linuxfoundation.org>
+In-Reply-To: <20210609062858.532803536@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 9 Jun 2021 18:01:20 +0530
+Message-ID: <CA+G9fYtxxYWyvCiv=uXv1VSaX=6VSSPzhd7tdmq_Jgzg2khwvQ@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/57] 4.19.194-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 09:42:16AM +0200, Fabio M. De Francesco wrote:
-> Removed conditions with no effects. Detected by Coccinelle.
-> It seems that these conditions with no effects had been inadvertently
-> left while deleting code that had to be conditionally compiled by 
-> unused definition CONFIG_AP_WOWLAN (see commit dc365d2cc579).
-> 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
-> 
-> v1 -> v2: Rewrote the changelog according to suggestion by 
-> Joe Perches <joe@perches.com>
-> 
->  drivers/staging/rtl8723bs/os_dep/os_intfs.c | 11 ++---------
->  1 file changed, 2 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-> index 213ec5b4ce98..2035573ee5a0 100644
-> --- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-> +++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-> @@ -1187,10 +1187,7 @@ void rtw_suspend_common(struct adapter *padapter)
->  
->  	rtw_ps_deny_cancel(padapter, PS_DENY_SUSPEND);
->  
-> -	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE))
-> -		rtw_suspend_normal(padapter);
-> -	else
-> -		rtw_suspend_normal(padapter);
-> +	rtw_suspend_normal(padapter);
->  
->  	netdev_dbg(padapter->pnetdev, "rtw suspend success in %d ms\n",
->  		   jiffies_to_msecs(jiffies - start_time));
-> @@ -1268,11 +1265,7 @@ int rtw_resume_common(struct adapter *padapter)
->  
->  	netdev_dbg(padapter->pnetdev, "resume start\n");
->  
-> -	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE)) {
-> -		rtw_resume_process_normal(padapter);
-> -	} else {
-> -		rtw_resume_process_normal(padapter);
-> -	}
-> +	rtw_resume_process_normal(padapter);
->  
->  	hal_btcoex_SuspendNotify(padapter, 0);
->  
-> -- 
-> 2.31.1
+On Wed, 9 Jun 2021 at 13:24, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.194 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 11 Jun 2021 06:28:32 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.194-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-This patch adds a build warning:
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-drivers/staging/rtl8723bs/os_dep/os_intfs.c: In function ‘rtw_resume_common’:
-drivers/staging/rtl8723bs/os_dep/os_intfs.c:1264:27: warning: unused variable ‘pmlmepriv’ [-Wunused-variable]
- 1264 |         struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-      |                           ^~~~~~~~~
-  LD [M]  drivers/staging/rtl8723bs/r8723bs.o
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 4.19.194-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.19.y
+* git commit: 3a6c65ec05c006c635fbfbbbbb941bb397dd4086
+* git describe: v4.19.193-58-g3a6c65ec05c0
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+.193-58-g3a6c65ec05c0
 
-So I can not take it, please fix up and resend.
+## No regressions (compared to v4.19.193-60-ge0814e7f9827)
 
-thanks,
+## No fixes (compared to v4.19.193-60-ge0814e7f9827)
 
-greg k-h
+## Test result summary
+ total: 71558, pass: 55780, fail: 2296, skip: 12168, xfail: 1314,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 25 total, 25 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 39 total, 38 passed, 1 failed
+* s390: 9 total, 9 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 15 total, 15 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-m[
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-[
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* timesync-off
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
