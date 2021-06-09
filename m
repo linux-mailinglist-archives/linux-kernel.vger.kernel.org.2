@@ -2,60 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940063A13BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1054E3A13C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhFIMIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:08:15 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40751 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232515AbhFIMIN (ORCPT
+        id S234575AbhFIMKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:10:31 -0400
+Received: from mail-lf1-f53.google.com ([209.85.167.53]:41712 "EHLO
+        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231612AbhFIMK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:08:13 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lqwyP-0008AQ-W2; Wed, 09 Jun 2021 12:06:18 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: gdm724x: emove redundant initialization of variable hci_len
-Date:   Wed,  9 Jun 2021 13:06:17 +0100
-Message-Id: <20210609120617.185975-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 9 Jun 2021 08:10:28 -0400
+Received: by mail-lf1-f53.google.com with SMTP id j20so8330541lfe.8;
+        Wed, 09 Jun 2021 05:08:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=S8n0jQRFElQLEp8hvxDm0SO8rf3gl/kuZnGhnAjKgQU=;
+        b=KK2chBW66zdf8R49oD5I+CR26o91hvjM99NwaPRpvez8WF9WaEWG8q/LogToiilZlK
+         QYSKe90AXXs6oa43vYY5g2V49ZxVT5l3XGZPtIf0PJkwfOpyZjYvcEPygjyAUt6BX6sd
+         unXSkrb5QaJRkDo+nT00edrhAqNNzX5ZCNY8vRFbjat2lISZInmh+r+WdYU1KDnnM9ag
+         SuKSslVZrXWykIeqt/CxQf0GjFszT1DdLu1oMmc8mBaDPD4uJ3IlL+++Yhan8ycYDDpr
+         xqMzYDEBBfColLC/tRBn8HptdnoIPiaroBrsilIGm6qL4FjDHNBQV2sYdjU8nqI1UMnI
+         By6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S8n0jQRFElQLEp8hvxDm0SO8rf3gl/kuZnGhnAjKgQU=;
+        b=QGzQlPac8LbfGjDbz3a0R5cbXKOt6wqdYklLBMsdS2gXWcE3zKtCDeVAbU71c5lD3K
+         /4/0R0hTx60NPx4hW4vPMtLlPbamOY0Z7EhQxnJaYlEFcteCK1BN1yHwPErX7/chKZMz
+         f6FAPk30WEKkbo/xiTmEiRtQIIW73CrqGO4xWHaKRWHvY5pUD89s+pS6s15jNgat2dPZ
+         JiihzL2fZXypPFgfa6nDZyx6hovIh3BHULa67XGb58d5Nyb+ezttVMoEBCAMyewH1cJz
+         RihNF7HXM39AtsgjCbB0eDjeQYGLJanFeUJbpcLzHBt3GlcAuq/tC0t9nl+g6VAwHYee
+         2G+w==
+X-Gm-Message-State: AOAM530ycjicxUJZlLzpeW4qeX6hdBHSJH9qNMIe7FDRy83UArBJMqdv
+        6WVZK/ZG8rp56XrkJgBus9/yT+GfLZE=
+X-Google-Smtp-Source: ABdhPJxf6x+u2R513tmhJJ1RQsO2yFImXGuTHk2KF2irZ2hgTRjlSBSK4VWXKPUKlLhEUj3NMbbZ3g==
+X-Received: by 2002:a05:6512:507:: with SMTP id o7mr3112088lfb.453.1623240452794;
+        Wed, 09 Jun 2021 05:07:32 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-21-60.dynamic.spd-mgts.ru. [94.29.21.60])
+        by smtp.googlemail.com with ESMTPSA id l12sm375174lfk.10.2021.06.09.05.07.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 05:07:32 -0700 (PDT)
+Subject: Re: [PATCH v1] usb: chipidea: tegra: Delay PHY suspending
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Peter Chen <peter.chen@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210609120404.3991-1-digetx@gmail.com>
+Message-ID: <d476a149-1b97-9762-fbc7-5ba41f72523b@gmail.com>
+Date:   Wed, 9 Jun 2021 15:07:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210609120404.3991-1-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+09.06.2021 15:04, Dmitry Osipenko пишет:
+> The ChipIdea driver enters into suspend immediately after seeing a
+> VBUS disconnection. Some devices need an extra delay after losing
+> VBUS, otherwise VBUS may be floating, preventing the PHY's suspending
+> by the VBUS detection sensors. This problem was found on Tegra30 Asus
+> Transformer TF700T tablet device, where the USB PHY wakes up immediately
+> from suspend because VBUS sensor continues to detect VBUS as active after
+> disconnection. A minimum delay of 20ms is needed in order to fix this
+> issue, hence add 25ms delay before suspending the PHY.
+> 
+> Reported-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
+> Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/usb/chipidea/ci_hdrc_tegra.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/usb/chipidea/ci_hdrc_tegra.c b/drivers/usb/chipidea/ci_hdrc_tegra.c
+> index 60361141ac04..d1359b76a0e8 100644
+> --- a/drivers/usb/chipidea/ci_hdrc_tegra.c
+> +++ b/drivers/usb/chipidea/ci_hdrc_tegra.c
+> @@ -4,6 +4,7 @@
+>   */
+>  
+>  #include <linux/clk.h>
+> +#include <linux/delay.h>
+>  #include <linux/io.h>
+>  #include <linux/module.h>
+>  #include <linux/of_device.h>
+> @@ -255,6 +256,13 @@ static int tegra_ehci_hub_control(struct ci_hdrc *ci, u16 typeReq, u16 wValue,
+>  
+>  static void tegra_usb_enter_lpm(struct ci_hdrc *ci, bool enable)
+>  {
+> +	/*
+> +	 * Give hardware time to settle down after VBUS disconnection,
+> +	 * otherwise PHY may wake up from suspend immediately.
+> +	 */
+> +	if (enable)
+> +		msleep(25);
+> +
+>  	/*
+>  	 * Touching any register which belongs to AHB clock domain will
+>  	 * hang CPU if USB controller is put into low power mode because
+> 
 
-The variable hci_len is being initialized with a value that is never
-read and it is being updated later with a new value. The initialization
-is redundant and can be removed.
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/staging/gdm724x/gdm_lte.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/staging/gdm724x/gdm_lte.c b/drivers/staging/gdm724x/gdm_lte.c
-index 571f47d39484..ad9ed3df9fcf 100644
---- a/drivers/staging/gdm724x/gdm_lte.c
-+++ b/drivers/staging/gdm724x/gdm_lte.c
-@@ -684,7 +684,6 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
- 	u32 nic_type;
- 	int index;
- 
--	hci_len = gdm_dev16_to_cpu(endian, multi_sdu->len);
- 	num_packet = gdm_dev16_to_cpu(endian, multi_sdu->num_packet);
- 
- 	for (i = 0; i < num_packet; i++) {
--- 
-2.31.1
-
+I missed that Peter's email address changed. Making this reply to the
+new address for visibility.
