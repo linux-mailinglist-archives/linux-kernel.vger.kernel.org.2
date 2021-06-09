@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE023A1F05
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF313A1F17
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhFIVbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhFIVbi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:31:38 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05214C061574;
-        Wed,  9 Jun 2021 14:29:42 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id v11so4947452ply.6;
-        Wed, 09 Jun 2021 14:29:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZB+M+mDfzcdyIQ6TIpU0fAhnw5JTV6XLad+tNK8T4Zg=;
-        b=HddxGIU38H3lTgI79wizFkCySsHHe7UpgEOaYus8+5EJP6X7Ca0h2+yKdIzBXvp14V
-         PZNBaeLTQvhAxq44HPL7eGtY//7X24GcxvCflQqA5n92pD8E6jNi8hmz12Dqmp49ZKcQ
-         NqRyUU54pzmB6ynibihD3UsPkwy5XdSqrOYmFbGBThId3AxDlHEHMAhJrvWVF4tniCtm
-         gBI7pRT+4kEv1Ql3luRVviGpq2ccqHDu1tjiwt6CMGbVUbH7cPHXjnDSut/Dip1Hrh/E
-         Jsf/s6lH7kheWNea0Jmvqk70NCFGXHo+19r84vehLgkwIKWil28+yU2wvefBxgV25dD/
-         6AwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZB+M+mDfzcdyIQ6TIpU0fAhnw5JTV6XLad+tNK8T4Zg=;
-        b=Y/DbY3dcgU67Itbd2GuqKKa1xEQNKrnswvhM+OKQwWYmuZX1ZvtVBYDwALo1cZMnNJ
-         9OWmnhlonp94dRkar72jOscMwkLZCbnHrdd3qk7tNpGURFE1PLtaHKvkQMr8fRlZb0WA
-         aeRG2Xcbqpvs8zlIIVgJziBMW7AfTvrpb88XQAOABgEUdZNSamwZXlSS0Q5J6lb4n84S
-         bUY0I7ECRntqnh3gBwiNi7xg1MXkqLnCUdNgX102KzZDagylMdBAL8wFuC3ZnSphLi0C
-         vDmaZWxeIyxPiQo3OR2K43/CbgN4AUAVvnjy+pIgxGCfNal7yiTCHghFfOr7AL53Joh9
-         Bxng==
-X-Gm-Message-State: AOAM531lywUpyDTZUgNdU2vnirI4Hi2kAMbVb6zl2nzezzo4CnoGyvKd
-        0Vdk2ORaRfMwPyWYQ3cyMfM=
-X-Google-Smtp-Source: ABdhPJyE1fSnoXmaejRec48ZVmM8QrdfKpF+py96FFwCjb7KiJO4l5STpa39IYx/a6wedGcnA45xrQ==
-X-Received: by 2002:a17:90a:ad8e:: with SMTP id s14mr1626177pjq.198.1623274182403;
-        Wed, 09 Jun 2021 14:29:42 -0700 (PDT)
-Received: from [192.168.1.70] (122-61-176-117-fibre.sparkbb.co.nz. [122.61.176.117])
-        by smtp.gmail.com with ESMTPSA id l10sm2508577pjg.26.2021.06.09.14.29.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 14:29:41 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, linux-kernel@vger.kernel.org,
-        Pedro Principeza <pedro.principeza@canonical.com>
-Subject: Re: [PATCH] kernel_lockdown.7: Remove additional text alluding to
- lifting via SysRq
-To:     dann frazier <dann.frazier@canonical.com>,
-        linux-man@vger.kernel.org,
-        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
-References: <20210607221943.78414-1-dann.frazier@canonical.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <2aff4e76-a615-2bfe-33b9-bc2546420a17@gmail.com>
-Date:   Thu, 10 Jun 2021 09:29:37 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229678AbhFIVg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:36:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35562 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229536AbhFIVg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:36:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4614A613EE;
+        Wed,  9 Jun 2021 21:35:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623274503;
+        bh=AbkTqiqwokqEuxOjwzbARmRprGytNMuk0VTnsM6Erlg=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=MVVCCXdRxXe3/nyZ1ITqTYtVuurVv9RRQ20kVSUIMP4kvVnUvcl01gtH2b30cik+t
+         OVvr8hSLX2l+ySBmA13BFDU2cCSKCsiQhS8jJOeTZLPIdQIct5ohx9qdM91ziSUTjC
+         QY+JJGAaxAP/F6ppRtBCPWYhHtMn6vvjnPXGKq0Gp3EiVe216LH4qAjniWXEkyd/Pw
+         PsYAbFlLsb4fo48k/SUJoratBhcFFIN+X1IivPaXXr/4TpNYaQgg6ei96KYUGqhgz3
+         0mq0A3Gro53jrSZoumqrTlpCbHFn0WGB4uPI+nxoXsCaGuGPX4ZZ9494WuFpS3Y0W1
+         5TAuaokkrR4xw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210607221943.78414-1-dann.frazier@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210607110154.1291335-1-sean@geanix.com>
+References: <20210607110154.1291335-1-sean@geanix.com>
+Subject: Re: [RFC PATCH] clk: fix possible circular locking in clk_notifier_register()
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Sean Nyekjaer <sean@geanix.com>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Sean Nyekjaer <sean@geanix.com>
+Date:   Wed, 09 Jun 2021 14:35:02 -0700
+Message-ID: <162327450202.9598.6919065223406836263@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dann,
-
-On 6/8/21 10:19 AM, dann frazier wrote:
-> My previous patch intended to drop the docs for the lockdown lift SysRq,
-> but it missed this other section that refers to lifting it via a keyboard -
-> an allusion to that same SysRq.
-> 
-> Signed-off-by: dann frazier <dann.frazier@canonical.com>
-
-Thanks. Patch applied.
-
-Cheers,
-
-Michael
-
-
+Quoting Sean Nyekjaer (2021-06-07 04:01:54)
+> Allocating memory with prepare_lock mutex held makes lockdep unhappy
+> when memory pressure makes the system do fs_reclaim on eg. rawnand using
+> clk.
+>=20
+[...]
+> [  462.949628]  *** DEADLOCK ***
+> [  462.949628]
+> [  462.955563] 1 lock held by kswapd0/22:
+> [  462.959322]  #0: 11f3c233 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire=
++0x0/0x48
+>=20
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 > ---
->  man7/kernel_lockdown.7 | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/man7/kernel_lockdown.7 b/man7/kernel_lockdown.7
-> index b0442b3b6..0c0a9500d 100644
-> --- a/man7/kernel_lockdown.7
-> +++ b/man7/kernel_lockdown.7
-> @@ -19,9 +19,6 @@ modification of the kernel image and to prevent access to security and
->  cryptographic data located in kernel memory, whilst still permitting driver
->  modules to be loaded.
->  .PP
-> -Lockdown is typically enabled during boot and may be terminated, if configured,
-> -by typing a special key combination on a directly attached physical keyboard.
-> -.PP
->  If a prohibited or restricted feature is accessed or used, the kernel will emit
->  a message that looks like:
->  .PP
-> 
+>=20
+> Could have used GPF_NOWAIT, but it seems wrong during memory reclaim.
+>=20
+>  drivers/clk/clk.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> index 65508eb89ec9..eb2a547487d6 100644
+> --- a/drivers/clk/clk.c
+> +++ b/drivers/clk/clk.c
+> @@ -4348,7 +4348,7 @@ int clk_notifier_register(struct clk *clk, struct n=
+otifier_block *nb)
+>                         goto found;
+> =20
+>         /* if clk wasn't in the notifier list, allocate new clk_notifier =
+*/
+> -       cn =3D kzalloc(sizeof(*cn), GFP_KERNEL);
+> +       cn =3D kzalloc(sizeof(*cn), GFP_ATOMIC);
 
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+We could not allocate this here and instead allocate it before taking
+the lock with the assumption that we'll insert the notifier. That's
+probably the normal case. If we allocated it but didn't use it then we
+can free it on exit, outside the lock. Can you make that change and
+resend? Using GFP_ATOMIC is not the best solution here.
