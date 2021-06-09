@@ -2,117 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74353A1A70
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F55B3A1A75
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbhFIQGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:06:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32708 "EHLO
+        id S234582AbhFIQHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:07:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37780 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230358AbhFIQGt (ORCPT
+        by vger.kernel.org with ESMTP id S232027AbhFIQHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:06:49 -0400
+        Wed, 9 Jun 2021 12:07:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623254694;
+        s=mimecast20190719; t=1623254711;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jlsRXJEr6LiJo2+q8NkInylNQDLsfhpmGjGniaTEWmM=;
-        b=HZ2UOspKPR6J5AiYZDYMsCoqQvg2UdSAqVYatqbisAU2vCeyROAOYqSBwW37O/Y4E2FskR
-        szHVmA7MVAwm0ZzQxSu4D0KBNeRb0hvrGoAoKuz+0iQzNZ0ik3VpQyMhftMB1tPk7tjGUz
-        wnLdW+t/j3l2Y9H8E+drRVdJ+GHdZKM=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-177-39tzDrnsODa443d4pXOUgg-1; Wed, 09 Jun 2021 12:04:53 -0400
-X-MC-Unique: 39tzDrnsODa443d4pXOUgg-1
-Received: by mail-ej1-f72.google.com with SMTP id f1-20020a1709064941b02903f6b5ef17bfso8210135ejt.20
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:04:53 -0700 (PDT)
+        bh=F9+g1I6U91zrPqFexpjaxQ/1X4+oKkXG1hR1XzuO5AM=;
+        b=CB9rgzPgyeNpkc7pPfRNSb9eqREb+9xNVJyo05GumU6MVDcUFNKDo1+JanyChpI3CBbwrG
+        RTak/RSDJS+x0MhSl4mEWrnitV/e/gRF5DFlxo5XF5927GBfNlkEpN4jIviYPP/mF5xoVM
+        5FhN56AdyQM/L5tOOoE5JYA9uMXqH6Y=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-gdwpFyS-N2iUbSOhbqXJ_w-1; Wed, 09 Jun 2021 12:05:10 -0400
+X-MC-Unique: gdwpFyS-N2iUbSOhbqXJ_w-1
+Received: by mail-qv1-f69.google.com with SMTP id 2-20020a0562140d62b02902357adaa890so4856441qvs.20
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:05:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jlsRXJEr6LiJo2+q8NkInylNQDLsfhpmGjGniaTEWmM=;
-        b=UxZosxtDuEiNJmjo5lTw25HT+b73z5kuSwqZpRIXbaqbaOWBxE06ojTBSn3fglIMQS
-         yExqZPyT/FZ/rzNXARjLvQg/5gqGUFhdZZlUSpwrtRBSRgp9ibXIbe5yJg3JLm0lBcFX
-         aAshjIV97vrKq8Uojoegj1AoxTAnLstyYsrQKCkMHcEWRgDj8s4AlSMCUZ1WPGIxMXLk
-         a+zPL4b/IVZD0vSS+4XwQwp3N9brTyPBhg4lV+Ewpy6mOjdSTYExcI0hfX0HTiX4tJSE
-         ykmh60V7wwS9rHg0pb1bJOYcuhA+OjyNjynHfhcCNrzSW/LIJZ+CJEC0R14usi7/viax
-         +2DQ==
-X-Gm-Message-State: AOAM532s4eknYL/aR/PIihIv0RFm0qRJ8p2NgVWfIFDkb7T83hfe9RWz
-        odEoe1pmn8QmqgKldCnMlcj9pD6mfNz+wMPkz02OW51oHWoAi2RgGKG6LMla00cifg0xXSiZHd5
-        weiNHFrtcmmwS03keEQxx0EuiHEzR34Qz71Ts062mcVhMVlokD+MUheAA2PZwze6Vb5pLYx5iet
-        kt
-X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr597249ejc.494.1623254692176;
-        Wed, 09 Jun 2021 09:04:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxZ0Bs8BiBbljc4OGOpwfru3Q0ICUTvzCkmjEbSYRb1tmwl0z3LAjYZ4WMHg4pBmK/e2g+0g==
-X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr597220ejc.494.1623254691934;
-        Wed, 09 Jun 2021 09:04:51 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id d24sm69575edr.95.2021.06.09.09.04.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 09:04:51 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: dell-wmi-sysman: set fw_attr_class
- storage-class to static
-To:     trix@redhat.com, divya.bharathi@dell.com, prasanth.ksr@dell.com,
-        mgross@linux.intel.com
-Cc:     Dell.Client.Kernel@dell.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210609153445.3090046-1-trix@redhat.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <073c59e6-8d2c-2412-537b-2fd5f78538c8@redhat.com>
-Date:   Wed, 9 Jun 2021 18:04:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F9+g1I6U91zrPqFexpjaxQ/1X4+oKkXG1hR1XzuO5AM=;
+        b=uSzPr1W4SDtYyB7o5eqvyv4QZn1ctjdeYqLMZc8bqs1nxXcqVcOfXwR5R1HaFu0tMv
+         l2ZVXLO6WOXRv9uqahgnpRsc/9C9ccRmEhbij+cVd5fx8GW0hWgM/1ssBus+zgBQw8MR
+         9aSsG0A/RIN/74KtJssw7Weck8xfcr3c2IWIDkRxjt04FyHNsGWYvrg03cNWd1zpaF96
+         0omwwBRsNWsEgNDi30qgQbIrLXu+abfcTqkHwE0riwdOJe4NgPcoSpVSmy11pilVaLqz
+         1xnaKwGVRoTV4+y1EM5nsvOpgZgcEqOPXeRPEYPZH1fSOR2WSmdLSnsMVK2/w3NPgzr/
+         zoGQ==
+X-Gm-Message-State: AOAM530Cq2g7rYTO1qbf02oiDH+UJbiJNQesskmbsChKO754SWV0ZfN+
+        AKIdKLRzyu5O2EdW138HUpjBhNlSzeNoVeEGEOccQKPFd/yRG2KpW6F90EdRdscN6rMG/dyaAuX
+        mXewf6NYz7V28jmQPHRceSme6
+X-Received: by 2002:ac8:5c11:: with SMTP id i17mr686942qti.64.1623254709478;
+        Wed, 09 Jun 2021 09:05:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKHB25K0M5fq8PrZmQE3smgbxPoTbC7XrVv7VMXvD1wpUPX622YvjCP+XWN7ApOcy6PmFRxw==
+X-Received: by 2002:ac8:5c11:: with SMTP id i17mr686880qti.64.1623254708958;
+        Wed, 09 Jun 2021 09:05:08 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-88-174-93-75-200.dsl.bell.ca. [174.93.75.200])
+        by smtp.gmail.com with ESMTPSA id c68sm307689qkd.112.2021.06.09.09.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 09:05:08 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 12:05:06 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        rcampbell@nvidia.com, linux-doc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, hughd@google.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        hch@infradead.org, bskeggs@redhat.com, jgg@nvidia.com,
+        shakeelb@google.com, jhubbard@nvidia.com, willy@infradead.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v10 07/10] mm: Device exclusive memory access
+Message-ID: <YMDmsha6GDtUf3Vs@t490s>
+References: <20210607075855.5084-1-apopple@nvidia.com>
+ <20210607075855.5084-8-apopple@nvidia.com>
+ <YL+4ENiwbn9QAa2V@t490s>
+ <270551728.uXnuCZxQlr@nvdebian>
 MIME-Version: 1.0
-In-Reply-To: <20210609153445.3090046-1-trix@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <270551728.uXnuCZxQlr@nvdebian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
-
-On 6/9/21 5:34 PM, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On Wed, Jun 09, 2021 at 07:38:04PM +1000, Alistair Popple wrote:
+> On Wednesday, 9 June 2021 4:33:52 AM AEST Peter Xu wrote:
+> > On Mon, Jun 07, 2021 at 05:58:52PM +1000, Alistair Popple wrote:
+> > 
+> > [...]
+> > 
+> > > +static bool page_make_device_exclusive_one(struct page *page,
+> > > +             struct vm_area_struct *vma, unsigned long address, void *priv)
+> > > +{
+> > > +     struct mm_struct *mm = vma->vm_mm;
+> > > +     struct page_vma_mapped_walk pvmw = {
+> > > +             .page = page,
+> > > +             .vma = vma,
+> > > +             .address = address,
+> > > +     };
+> > > +     struct make_exclusive_args *args = priv;
+> > > +     pte_t pteval;
+> > > +     struct page *subpage;
+> > > +     bool ret = true;
+> > > +     struct mmu_notifier_range range;
+> > > +     swp_entry_t entry;
+> > > +     pte_t swp_pte;
+> > > +
+> > > +     mmu_notifier_range_init_owner(&range, MMU_NOTIFY_EXCLUSIVE, 0, vma,
+> > > +                                   vma->vm_mm, address, min(vma->vm_end,
+> > > +                                   address + page_size(page)), args->owner);
+> > > +     mmu_notifier_invalidate_range_start(&range);
+> > > +
+> > > +     while (page_vma_mapped_walk(&pvmw)) {
+> > > +             /* Unexpected PMD-mapped THP? */
+> > > +             VM_BUG_ON_PAGE(!pvmw.pte, page);
+> > 
+> > [1]
+> > 
+> > > +
+> > > +             if (!pte_present(*pvmw.pte)) {
+> > > +                     ret = false;
+> > > +                     page_vma_mapped_walk_done(&pvmw);
+> > > +                     break;
+> > > +             }
+> > > +
+> > > +             subpage = page - page_to_pfn(page) + pte_pfn(*pvmw.pte);
+> > > +             address = pvmw.address;
+> > 
+> > I raised a question here previously and didn't get an answer...
+> > 
+> > https://lore.kernel.org/linux-mm/YLDr%2FRyAdUR4q0kk@t490s/
 > 
-> An allyesconfig has this linking error
-> drivers/platform/x86/think-lmi.o:
->   multiple definition of `fw_attr_class'
-> drivers/platform/x86/dell/dell-wmi-sysman/sysman.o:
->   first defined here
+> Sorry, I had overlooked that. Will continue the discussion here.
+
+No problem.  I also didn't really express clearly last time, I'm happy we can
+discuss this more thoroughly, even if it may be a corner case only.
+
 > 
-> fw_attr_class is only used locally, so change to static
+> > I think I get your point now and it does look possible that the split page can
+> > still be mapped somewhere else as thp, then having some subpage maintainance
+> > looks necessary.  The confusing part is above [1] you've also got that
+> > VM_BUG_ON_PAGE() assuming it must not be a mapped pmd at all..
 > 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-
-Thank you for your 2 patches, I just merged another patch doing
-the same earlier today.
-
-Regards,
-
-Hans
-
-
-> ---
->  drivers/platform/x86/dell/dell-wmi-sysman/sysman.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Going back I thought your original question was whether subpage != page is
+> possible. My main point was it's possible if we get a thp head. In that case we
+> need to replace all pte's with exclusive entries because I haven't (yet)
+> defined a pmd version of device exclusive entries and also rmap_walk won't deal
+> with tail pages (see below).
 > 
-> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-> index 1378c18786582..636bdfa83284d 100644
-> --- a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-> @@ -25,7 +25,7 @@ struct wmi_sysman_priv wmi_priv = {
->  /* reset bios to defaults */
->  static const char * const reset_types[] = {"builtinsafe", "lastknowngood", "factory", "custom"};
->  static int reset_option = -1;
-> -struct class *fw_attr_class;
-> +static struct class *fw_attr_class;
->  
->  
->  /**
+> > Then I remembered these code majorly come from the try_to_unmap() so I looked
+> > there.  I _think_ what's missing here is something like:
+> > 
+> >         if (flags & TTU_SPLIT_HUGE_PMD)
+> >                 split_huge_pmd_address(vma, address, false, page);
+> > 
+> > at the entry of page_make_device_exclusive_one()?
+> >
+> > That !pte assertion in try_to_unmap() makes sense to me as long as it has split
+> > the thp page first always.  However seems not the case for FOLL_SPLIT_PMD as
+> > you previously mentioned.
 > 
+> At present this is limited to PageAnon pages which have had CoW broken, which I
+> think means there shouldn't be other mappings so I expect the PMD will always
+> have been split into small PTEs mapping subpages by GUP which is what that
+> assertion [1] is checking. I could call split_huge_pmd_address() unconditionally
+> as suggested but see the discussion below.
+
+Yes, I think calling that unconditionally should be enough.
+
+> 
+> > Meanwhile, I also started to wonder whether it's even right to call rmap_walk()
+> > with tail pages...  Please see below.
+> > 
+> > > +
+> > > +             /* Nuke the page table entry. */
+> > > +             flush_cache_page(vma, address, pte_pfn(*pvmw.pte));
+> > > +             pteval = ptep_clear_flush(vma, address, pvmw.pte);
+> > > +
+> > > +             /* Move the dirty bit to the page. Now the pte is gone. */
+> > > +             if (pte_dirty(pteval))
+> > > +                     set_page_dirty(page);
+> > > +
+> > > +             /*
+> > > +              * Check that our target page is still mapped at the expected
+> > > +              * address.
+> > > +              */
+> > > +             if (args->mm == mm && args->address == address &&
+> > > +                 pte_write(pteval))
+> > > +                     args->valid = true;
+> > > +
+> > > +             /*
+> > > +              * Store the pfn of the page in a special migration
+> > > +              * pte. do_swap_page() will wait until the migration
+> > > +              * pte is removed and then restart fault handling.
+> > > +              */
+> > > +             if (pte_write(pteval))
+> > > +                     entry = make_writable_device_exclusive_entry(
+> > > +                                                     page_to_pfn(subpage));
+> > > +             else
+> > > +                     entry = make_readable_device_exclusive_entry(
+> > > +                                                     page_to_pfn(subpage));
+> > > +             swp_pte = swp_entry_to_pte(entry);
+> > > +             if (pte_soft_dirty(pteval))
+> > > +                     swp_pte = pte_swp_mksoft_dirty(swp_pte);
+> > > +             if (pte_uffd_wp(pteval))
+> > > +                     swp_pte = pte_swp_mkuffd_wp(swp_pte);
+> > > +
+> > > +             set_pte_at(mm, address, pvmw.pte, swp_pte);
+> > > +
+> > > +             /*
+> > > +              * There is a reference on the page for the swap entry which has
+> > > +              * been removed, so shouldn't take another.
+> > > +              */
+> > > +             page_remove_rmap(subpage, false);
+> > > +     }
+> > > +
+> > > +     mmu_notifier_invalidate_range_end(&range);
+> > > +
+> > > +     return ret;
+> > > +}
+> > > +
+> > > +/**
+> > > + * page_make_device_exclusive - mark the page exclusively owned by a device
+> > > + * @page: the page to replace page table entries for
+> > > + * @mm: the mm_struct where the page is expected to be mapped
+> > > + * @address: address where the page is expected to be mapped
+> > > + * @owner: passed to MMU_NOTIFY_EXCLUSIVE range notifier callbacks
+> > > + *
+> > > + * Tries to remove all the page table entries which are mapping this page and
+> > > + * replace them with special device exclusive swap entries to grant a device
+> > > + * exclusive access to the page. Caller must hold the page lock.
+> > > + *
+> > > + * Returns false if the page is still mapped, or if it could not be unmapped
+> > > + * from the expected address. Otherwise returns true (success).
+> > > + */
+> > > +static bool page_make_device_exclusive(struct page *page, struct mm_struct *mm,
+> > > +                             unsigned long address, void *owner)
+> > > +{
+> > > +     struct make_exclusive_args args = {
+> > > +             .mm = mm,
+> > > +             .address = address,
+> > > +             .owner = owner,
+> > > +             .valid = false,
+> > > +     };
+> > > +     struct rmap_walk_control rwc = {
+> > > +             .rmap_one = page_make_device_exclusive_one,
+> > > +             .done = page_not_mapped,
+> > > +             .anon_lock = page_lock_anon_vma_read,
+> > > +             .arg = &args,
+> > > +     };
+> > > +
+> > > +     /*
+> > > +      * Restrict to anonymous pages for now to avoid potential writeback
+> > > +      * issues.
+> > > +      */
+> > > +     if (!PageAnon(page))
+> > > +             return false;
+> > > +
+> > > +     rmap_walk(page, &rwc);
+> > 
+> > Here we call rmap_walk() on each page we've got.  If it was thp then IIUC it'll
+> > become the tail pages to walk as the outcome of FOLL_SPLIT_PMD gup (please
+> > refer to the last reply of mine).  However now I'm uncertain whether we can do
+> > rmap_walk on tail page at all...  As rmap_walk_anon() has thp_nr_pages() which
+> > has:
+> > 
+> >         VM_BUG_ON_PGFLAGS(PageTail(page), page);
+> 
+> In either case (FOLL_SPLIT_PMD or not) my understanding is GUP will return a
+> sub/tail page (perhaps I mixed up some terminology in the last thread but I
+> think we're in agreement here).
+
+Aha, I totally missed this when I read last time (of follow_trans_huge_pmd)..
+
+	page += (addr & ~HPAGE_PMD_MASK) >> PAGE_SHIFT;
+
+Now I agree it'll always return subpage, even if thp mapped.  And do
+FOLL_SPLIT_PMD makes sense too to do early break on cow pages as you said
+before.
+
+> For thp this means we could end up passing
+> tail pages to rmap_walk(), however it doesn't actually walk them.
+> 
+> Based on the results of previous testing I had done I assumed rmap_walk()
+> filtered out tail pages. It does, and I didn't hit the BUG_ON above, but the
+> filtering was not as deliberate as assumed.
+> 
+> I've gone back and looked at what was happening in my earlier tests and the
+> tail pages get filtered because the VMA is not getting locked in
+> page_lock_anon_vma_read() due to failing this check:
+> 
+> 	anon_mapping = (unsigned long)READ_ONCE(page->mapping);
+> 	if ((anon_mapping & PAGE_MAPPING_FLAGS) != PAGE_MAPPING_ANON)
+> 		goto out;
+> 
+> And now I'm not sure it makes sense to read page->mapping of a tail page. So
+> it might be best if we explicitly ignore any tail pages returned from GUP, at
+> least for now (a future series will improve thp support such as adding a pmd
+> version for exclusive entries).
+
+I feel like it's illegal to access page->mapping of tail pages; I looked at
+what happens if we call page_anon_vma() on a tail page:
+
+struct anon_vma *page_anon_vma(struct page *page)
+{
+	unsigned long mapping;
+
+	page = compound_head(page);
+	mapping = (unsigned long)page->mapping;
+	if ((mapping & PAGE_MAPPING_FLAGS) != PAGE_MAPPING_ANON)
+		return NULL;
+	return __page_rmapping(page);
+}
+
+It'll just take the head's mapping instead.  It makes sense since the tail page
+shouldn't have a different value against the head page, afaiu.
+
+It would be great if thp experts could chim in.  Before that happens, I agree
+with you that a safer approach is to explicitly not walk a tail page for its
+rmap (and I think the rmap of a tail page will be the same of the head
+anyways.. since they seem to share the anon_vma as quoted).
+
+> 
+> > So... for thp mappings, wondering whether we should do normal GUP (without
+> > SPLIT), pass in always normal or head pages into rmap_walk(), but then
+> > unconditionally split_huge_pmd_address() in page_make_device_exclusive_one()?
+> 
+> That could work (although I think GUP will still return tail pages - see
+> follow_trans_huge_pmd() which is called from follow_pmd_mask() in gup).
+
+Agreed.
+
+> The main problem is split_huge_pmd_address() unconditionally calls a mmu
+> notifier so I would need to plumb in passing an owner everywhere which could
+> get messy.
+
+Could I ask why?  split_huge_pmd_address() will notify with CLEAR, so I'm a bit
+confused why we need to pass over the owner.
+
+I thought plumb it right before your EXCLUSIVE notifier init would work?
+
+---8<---
+diff --git a/mm/rmap.c b/mm/rmap.c
+index a94d9aed9d95..360ce86f3822 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -2042,6 +2042,12 @@ static bool page_make_device_exclusive_one(struct page *page,
+        swp_entry_t entry;
+        pte_t swp_pte;
+ 
++       /*
++        * Make sure thps split as device exclusive entries only support pte
++        * level for now.
++        */
++       split_huge_pmd_address(vma, address, false, page);
++
+        mmu_notifier_range_init_owner(&range, MMU_NOTIFY_EXCLUSIVE, 0, vma,
+                                      vma->vm_mm, address, min(vma->vm_end,
+                                      address + page_size(page)), args->owner);
+---8<---
+
+Thanks,
+
+-- 
+Peter Xu
 
