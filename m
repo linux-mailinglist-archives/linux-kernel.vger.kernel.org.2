@@ -2,83 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2724B3A20D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A583A20DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhFIXjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 19:39:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229507AbhFIXjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 19:39:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5471B61182;
-        Wed,  9 Jun 2021 23:37:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623281843;
-        bh=s4lj4jaG7j9skEZ0/i486amDJv+SO4e2EY7hKMmEHEk=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=R5yMbOkry1pAKFYQ3rE58shOJrKGwwFPv8B1hzzXeXNxGWEl2UnE3U0r8fOiX+L94
-         z81oRb2mqvYq/erMTYzgOFgNvaIrYfyrFPaDV4vuwE8PeM0VGGj7uTucwIBBUUj29V
-         tw5KwPMYwNUl6KW4zOGKf3lhGPB2yI0GFHARKkL+qjorXJhlHwjHoKRrzMWfYsdmS+
-         JTM9FUWXU95iK58tLqfwqwWQ0Xm85aViXLmAO+426INBFqobagSVdZ5F1zG98Mnmgo
-         ZqstscUX9S5VsoJQW/mb9PU2qTR1BRfYq2wLIN7Muur2/O1BOPg9Gfx+x3aDW2Pf9l
-         NRPuBu5jig9cQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 175BA5C08D8; Wed,  9 Jun 2021 16:37:23 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 16:37:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        luming.yu@intel.com
-Subject: [GIT PULL clocksource] Clocksource watchdog commits for v5.14
-Message-ID: <20210609233723.GA1717240@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        id S229979AbhFIXkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 19:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229797AbhFIXj4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 19:39:56 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DA5C061574;
+        Wed,  9 Jun 2021 16:38:00 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 3CF481F41031
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
+        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
+        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
+        David Gow <davidgow@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        tales.aparecida@gmail.com,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+Subject: [PATCH v2 0/1] lib: Convert UUID runtime test to KUnit
+Date:   Wed,  9 Jun 2021 20:37:29 -0300
+Message-Id: <20210609233730.164082-1-andrealmeid@collabora.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Thomas,
+Hi,
 
-This pull request contains changes to cause the clocksource watchdog to
-reject measurement noise caused by delays between clocksource reads.
-These have been posted a few times to LKML, most recently v15:
+This patch converts existing UUID runtime test to use KUnit framework.
 
-https://lore.kernel.org/lkml/20210527190042.GA438700@paulmck-ThinkPad-P17-Gen-1/
+Below, there's a comparison between the old output format and the new
+one. Keep in mind that even if KUnit seems very verbose, this is the
+corner case where _every_ test has failed.
 
-These have been acked by Feng Tang and reviewed by Luming Yu.  These have
-also been subjected to subjected to the kbuild test robot and -next
-testing, and are available in the git repository based on v5.13-rc1 at:
+* This is how the current output looks like in success:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git clocksource
+  test_uuid: all 18 tests passed
 
-for you to fetch changes up to 023766fbdde49c75c13acd268bf9af810d624c59:
+* And when it fails:
 
-  clocksource: Print deviation in nanoseconds for unstable case (2021-06-04 13:20:31 -0700)
+  test_uuid: conversion test #1 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #2 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #2 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: conversion test #3 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #4 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #4 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: conversion test #5 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #6 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #6 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: conversion test #7 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #8 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #8 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: conversion test #9 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #10 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #10 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: conversion test #11 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #12 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #12 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: negative test #13 passed on wrong LE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
+  test_uuid: negative test #14 passed on wrong BE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
+  test_uuid: negative test #15 passed on wrong LE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
+  test_uuid: negative test #16 passed on wrong BE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
+  test_uuid: negative test #17 passed on wrong LE data: '0cb4ddff-a545-4401-9d06-688af53e'
+  test_uuid: negative test #18 passed on wrong BE data: '0cb4ddff-a545-4401-9d06-688af53e'
+  test_uuid: failed 18 out of 18 tests
 
-----------------------------------------------------------------
-Feng Tang (1):
-      clocksource: Print deviation in nanoseconds for unstable case
 
-Paul E. McKenney (5):
-      clocksource: Retry clock read if long delays detected
-      clocksource: Check per-CPU clock synchronization when marked unstable
-      clocksource: Limit number of CPUs checked for clock synchronization
-      clocksource: Reduce clocksource-skew threshold for TSC
-      clocksource: Provide kernel module to test clocksource watchdog
+* Now, here's how it looks like with KUnit:
 
- Documentation/admin-guide/kernel-parameters.txt |  22 +++
- arch/x86/kernel/tsc.c                           |   4 +-
- include/linux/clocksource.h                     |   8 +-
- kernel/time/Makefile                            |   1 +
- kernel/time/clocksource-wdtest.c                | 202 +++++++++++++++++++++
- kernel/time/clocksource.c                       | 226 ++++++++++++++++++++++--
- kernel/time/jiffies.c                           |  15 +-
- lib/Kconfig.debug                               |  12 ++
- 8 files changed, 468 insertions(+), 22 deletions(-)
- create mode 100644 kernel/time/clocksource-wdtest.c
+  ======== [PASSED] uuid ========
+  [PASSED] uuid_correct_be
+  [PASSED] uuid_correct_le
+  [PASSED] uuid_wrong_be
+  [PASSED] uuid_wrong_le
+
+* And if every test fail with KUnit:
+
+  ======== [FAILED] uuid ========
+  [FAILED] uuid_correct_be
+      # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+      Expected uuid_parse(data->uuid, &be) == 1, but
+          uuid_parse(data->uuid, &be) == 0
+  
+  failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
+      # uuid_correct_be: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
+      # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+      Expected uuid_parse(data->uuid, &be) == 1, but
+          uuid_parse(data->uuid, &be) == 0
+  
+  failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
+      # uuid_correct_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
+      # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+      Expected uuid_parse(data->uuid, &be) == 1, but
+          uuid_parse(data->uuid, &be) == 0
+  
+  failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
+      # uuid_correct_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
+      not ok 1 - uuid_correct_be
+  
+  [FAILED] uuid_correct_le
+      # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+      Expected guid_parse(data->uuid, &le) == 1, but
+          guid_parse(data->uuid, &le) == 0
+  
+  failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
+      # uuid_correct_le: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
+      # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+      Expected guid_parse(data->uuid, &le) == 1, but
+          guid_parse(data->uuid, &le) == 0
+  
+  failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
+      # uuid_correct_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
+      # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+      Expected guid_parse(data->uuid, &le) == 1, but
+          guid_parse(data->uuid, &le) == 0
+  
+  failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
+      # uuid_correct_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
+      not ok 2 - uuid_correct_le
+  
+  [FAILED] uuid_wrong_be
+      # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+      Expected uuid_parse(*data, &be) == 0, but
+          uuid_parse(*data, &be) == -22
+  
+  parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
+      # uuid_wrong_be: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
+      # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+      Expected uuid_parse(*data, &be) == 0, but
+          uuid_parse(*data, &be) == -22
+  
+  parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
+      # uuid_wrong_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
+      # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+      Expected uuid_parse(*data, &be) == 0, but
+          uuid_parse(*data, &be) == -22
+  
+  parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
+      # uuid_wrong_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
+      not ok 3 - uuid_wrong_be
+  
+  [FAILED] uuid_wrong_le
+      # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+      Expected guid_parse(*data, &le) == 0, but
+          guid_parse(*data, &le) == -22
+  
+  parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
+      # uuid_wrong_le: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
+      # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+      Expected guid_parse(*data, &le) == 0, but
+          guid_parse(*data, &le) == -22
+  
+  parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
+      # uuid_wrong_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
+      # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+      Expected guid_parse(*data, &le) == 0, but
+          guid_parse(*data, &le) == -22
+  
+  parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
+      # uuid_wrong_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
+      not ok 4 - uuid_wrong_le
+
+Changes from v1:
+ - Test suite name: uuid_test -> uuid
+ - Config name: TEST_UUID -> UUID_KUNIT_TEST
+ - Config entry in the Kconfig file left where it is
+ - Converted tests to use _MSG variant
+
+André Almeida (1):
+  lib: Convert UUID runtime test to KUnit
+
+ lib/Kconfig.debug |  11 +++-
+ lib/Makefile      |   2 +-
+ lib/test_uuid.c   | 137 +++++++++++++++++++---------------------------
+ 3 files changed, 67 insertions(+), 83 deletions(-)
+
+-- 
+2.31.1
+
