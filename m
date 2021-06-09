@@ -2,185 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869C33A1B5E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C606C3A1B69
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhFIRAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43910 "EHLO
+        id S231270AbhFIRDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhFIRAS (ORCPT
+        with ESMTP id S230373AbhFIRDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:00:18 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9ADFC06175F;
-        Wed,  9 Jun 2021 09:58:21 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id t4-20020a1c77040000b029019d22d84ebdso4740481wmi.3;
-        Wed, 09 Jun 2021 09:58:21 -0700 (PDT)
+        Wed, 9 Jun 2021 13:03:51 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCCFC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 10:01:42 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id v16-20020ae9e3100000b02903aafadba721so3162487qkf.6
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 10:01:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LPZcUYkPSO1G9Scw6wuN7k1L83/gjShJz45DKE2h3Vw=;
-        b=fq1E5Yg6kO//k62W+a0n72IjuxqjxyWo0DKahVV/OY5GxnCjOkZa1RQ6DViBqQJ2w4
-         qoFaz+K1H/0zMidI+4MsQM4h1PltmefZAJIomoZL324PEdo40SSBfZVL2SOR5Y29skic
-         Fvr3NHKlbaCZm9p9REFbjR8bgy/eTtBdAnkdcC+Ue4meIeeEYyUdSP42BVyf0oHNHrlD
-         M8uemqAbSTJXkxTjatmw5MM9nkLvSVXPyHQ+LaCIpwwBfDXSuWecU7k8p92BlLpnQhjv
-         xEQ/5MIT2UhfwML2fKchY3lVa2v2lmZx4QkelCi9Js+4s3cb+77Yb7HQw0KLOQMvKh6g
-         VdfA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=gAbjQDa4mdyt9r3TiygW/Y5fvIkKdDZmSQ6iH3e9KQo=;
+        b=AR15xOpXijrZlC+c2iEcsAbXH10KEM6N2ueQ43N0MCtf8S/2A5QqZTa+l/BJDTUbaw
+         coIuCxrlmI2pF0jmyQyQyLBkDWQZujKVsAZokuMlHF1/mSIynI9GdRYKVG/jT4V6Y27w
+         CyIPAVshaLvozMCZbNUh/+nu0Cmt6bB4lUDZHulh90ZyONiZHOk4YVtxAwDjnnDsWqJi
+         m82VrvnKNB8xAFyp9L2td/ihf6GQ/gKPuCMElL/ISU0YPCtcZzZ1FAA8hOLirQtvd4b+
+         282d6FTcMbKnuty24zf2G4w1uZKI1cPyI8BC+IsneKRDLZgeuF04SBbPBuCIorBuaxC+
+         DG7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LPZcUYkPSO1G9Scw6wuN7k1L83/gjShJz45DKE2h3Vw=;
-        b=Dew1VC6VebYZVSk1zSSA0XwsMdEU3uC9yaM5PTehDoFNbnHs06d3DaTtHtufgbDanh
-         +JbXZACmpkcJsnRGoia6we6woXUYdrt5+x1sS4pF07G1P14wcCXfs4OjOj1IabnSD+9x
-         7sHXX5SYBozplFt4c33o/aI/4CRUFjaQU4BxGOW/mcBa1TrvvVOsoe2BttSgU8xMOwTN
-         K03uT/09CxYYG4NpS1Eg1xc3SnChenmvFFdhceCXcgoNDrVlzvDrHgzC3BmgR3xUeSlu
-         px80RzlA1aB4QxXxQi0HoYZaFqX+rpl0x/HZjx80ghkjG24PNnBXEn6HrUqEUfBhyxvB
-         OCwA==
-X-Gm-Message-State: AOAM532wy6/yIIb85xtm40WLQ76gOtdpW8uuwgAzBucjUrsfhsCqofmT
-        emOMiu/M42V3KluMY0IpeoI=
-X-Google-Smtp-Source: ABdhPJz4fXParEX2RlRjH8jPzx2kjKUPTrWE9TSE/A2MlXIRozdlBJF/0umNzW0FaATfo8kWiUkt8g==
-X-Received: by 2002:a05:600c:4ec8:: with SMTP id g8mr10698766wmq.62.1623257900500;
-        Wed, 09 Jun 2021 09:58:20 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id l16sm7083014wmj.47.2021.06.09.09.58.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 09:58:19 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 19:00:03 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] memory: tegra: Add missing dependencies
-Message-ID: <YMDzkyjaMhoJjMzL@orome.fritz.box>
-References: <20210609112806.3565057-1-thierry.reding@gmail.com>
- <20210609112806.3565057-2-thierry.reding@gmail.com>
- <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
- <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="L5qRBreJQ3rN4PcD"
-Content-Disposition: inline
-In-Reply-To: <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=gAbjQDa4mdyt9r3TiygW/Y5fvIkKdDZmSQ6iH3e9KQo=;
+        b=JnaX9bl1nkRIO6MLsdp8eR69cmzA1ZYa7/AyGw4dl8GLR1YnlfzC/hMV31juVrHAVI
+         cERhQZA240ZbFUVOinitxyZhvsyeEYXUOS1BK6r0LM3zhQ8wNb4cEhtt4StjkCZK0bjw
+         CeIR4IcVu4zieczcx6Sv8+k3U718FdI07XfffLuhimPgejFshaqa26s6PXJWFiIDtDua
+         uiex5gsB5GGD6xw1qpA+2yYztrk06K10Xw79/tVeyRgSmLofDBxpoiH5V8cLtzCsWx3U
+         WBVxzG4yE81Zn9H9uoVDcHhHyviqWi8MxfGllyysMwQ4WPc9zZU6Blhpk5P8weQFKIM3
+         SWYg==
+X-Gm-Message-State: AOAM531F5tyqhB8hEYxMFh8Y0Jp8Ql0mv7nO+dBNICoP/XuRQFyJGxCZ
+        UANi6mDVG8t+Du0pbceddOPV7CejNzZH
+X-Google-Smtp-Source: ABdhPJzhoDycsMjVdG7s77f+IZJc4KpyXjCfwpstT94w027uVkgUGgOCf3T+E5yumY9edeGN9kvqhxS6Zxqh
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:a0c:fa91:: with SMTP id
+ o17mr764372qvn.59.1623258101904; Wed, 09 Jun 2021 10:01:41 -0700 (PDT)
+Date:   Wed,  9 Jun 2021 17:01:32 +0000
+Message-Id: <20210609170132.1386495-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+Subject: [PATCH] sched: Skip priority checks with SCHED_FLAG_KEEP_PARAMS
+From:   Quentin Perret <qperret@google.com>
+To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, qais.yousef@arm.com, rickyiu@google.com,
+        wvw@google.com, patrick.bellasi@matbug.net
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Quentin Perret <qperret@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SCHED_FLAG_KEEP_PARAMS can be passed to sched_setattr to specify that
+the call must not touch scheduling parameters (nice or priority). This
+is particularly handy for uclamp when used in conjunction with
+SCHED_FLAG_KEEP_POLICY as that allows to issue a syscall that only
+impacts uclamp values.
 
---L5qRBreJQ3rN4PcD
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+However, sched_setattr always checks whether the priorities and nice
+values passed in sched_attr are valid first, even if those never get
+used down the line. This is useless at best since userspace can
+trivially bypass this check to set the uclamp values by specifying low
+priorities. However, it is cumbersome to do so as there is no single
+expression of this that skips both RT and CFS checks at once. As such,
+userspace needs to query the task policy first with e.g. sched_getattr
+and then set the clamp values accordingly, which is racy, and slower
+than a single call.
 
-On Wed, Jun 09, 2021 at 03:19:12PM +0200, Krzysztof Kozlowski wrote:
-> On 09/06/2021 13:58, Dmitry Osipenko wrote:
-> > 09.06.2021 14:28, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >> From: Thierry Reding <treding@nvidia.com>
-> >>
-> >> When enabling the COMPILE_TEST Kconfig option, the Tegra memory
-> >> controller can be built without ARCH_TEGRA being selected. However, the
-> >> driver implicitly depends on some symbols pulled in via ARCH_TEGRA,
-> >> which causes the build to break.
-> >>
-> >> Add explicit dependencies for OF_EARLY_FLATTREE and OF_RESERVED_MEM to
-> >> the Tegra MC Kconfig option to make sure they are selected even if
-> >> ARCH_TEGRA is not.
-> >>
-> >> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> >> Signed-off-by: Thierry Reding <treding@nvidia.com>
-> >> ---
-> >>  drivers/memory/tegra/Kconfig | 2 ++
-> >>  1 file changed, 2 insertions(+)
-> >>
-> >> diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconf=
-ig
-> >> index f9bae36c03a3..ecfb071fc4f4 100644
-> >> --- a/drivers/memory/tegra/Kconfig
-> >> +++ b/drivers/memory/tegra/Kconfig
-> >> @@ -48,6 +48,8 @@ config TEGRA124_EMC
-> >>  config TEGRA210_EMC_TABLE
-> >>  	bool
-> >>  	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
-> >> +	select OF_EARLY_FLATTREE
-> >> +	select OF_RESERVED_MEM
-> >> =20
-> >>  config TEGRA210_EMC
-> >>  	tristate "NVIDIA Tegra210 External Memory Controller driver"
-> >>
-> >=20
-> > Will this work if CONFIG_OF is disabled?
->=20
-> Yeah, good question. That's why I propose "depends on". No issues with
-> unmet or circular dependencies.
+As the priority and nice checks are useless when SCHED_FLAG_KEEP_PARAMS
+is specified, simply inherit them in this case to match the policy
+inheritance of SCHED_FLAG_KEEP_POLICY.
 
-I couldn't find a way to make this work with "depends on" because
-OF_RESERVED_MEM is not user-visible and the only way to get it enabled
-is if something also selects OF_EARLY_FLATTREE, which is only ever done
-at the architecture Kconfig level (and for OF unit testing).
+Reported-by: Wei Wang <wvw@google.com>
+Signed-off-by: Quentin Perret <qperret@google.com>
+---
+ kernel/sched/core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-So switching this to a "depends on" causes the TEGRA210_EMC never to get
-enabled.
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3b213402798e..1d4aedbbcf96 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6585,6 +6585,10 @@ SYSCALL_DEFINE3(sched_setattr, pid_t, pid, struct sched_attr __user *, uattr,
+ 	rcu_read_unlock();
+ 
+ 	if (likely(p)) {
++		if (attr.sched_flags & SCHED_FLAG_KEEP_PARAMS) {
++			attr.sched_priority = p->rt_priority;
++			attr.sched_nice = task_nice(p);
++		}
+ 		retval = sched_setattr(p, &attr);
+ 		put_task_struct(p);
+ 	}
+-- 
+2.32.0.272.g935e593368-goog
 
-However, with OF disabled, the above causes issues because it can lead
-to unmet direct dependencies. That, in turn, can be fixed by appending
-&& OF to the COMPILE_TEST branch, which seems like a good enough
-compromise.
-
-Here's what I have on top of the above patch and that seems to do the
-trick.
-
---- >8 ---
-diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconfig
-index ecfb071fc4f4..1c553895160c 100644
---- a/drivers/memory/tegra/Kconfig
-+++ b/drivers/memory/tegra/Kconfig
-@@ -47,13 +47,13 @@ config TEGRA124_EMC
-=20
- config TEGRA210_EMC_TABLE
- 	bool
--	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
-+	depends on ARCH_TEGRA_210_SOC || (COMPILE_TEST && OF)
- 	select OF_EARLY_FLATTREE
- 	select OF_RESERVED_MEM
-=20
- config TEGRA210_EMC
- 	tristate "NVIDIA Tegra210 External Memory Controller driver"
--	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
-+	depends on ARCH_TEGRA_210_SOC || (COMPILE_TEST && OF)
- 	select TEGRA210_EMC_TABLE
- 	help
- 	  This driver is for the External Memory Controller (EMC) found on
---- >8 ---
-
-So in a nutshell this will only get compile-tested if OF is enabled, but
-then it will select OF_RESERVED_MEM and OF_EARLY_FLATTREE to get the
-required symbols.
-
-Thierry
-
---L5qRBreJQ3rN4PcD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmDA85EACgkQ3SOs138+
-s6FXohAAvr/Os9xEEF1T2Sg8TGkz+SsYcoexhDi4owZ5aKwIz/reoQ4D2njF2vcp
-NQgReb2ktNChl2jU7fVtJQ6nf8XyRJBQq77G45LZ/QNNi8S7WLJzKM72M1x6Ph7b
-7wVDfsO2zHCRiDErSDAxNMgoP4GXnT6JInkLtnIKuvKSdj0jx6qopjtmWEqq+QNh
-YX7jtvbJK+04aCcalWZ4upBptHpfXZbntddNgvn/Z35ZzdKsSMxv4pHoV+nDWpa1
-wSyFuhy503wwzcnEYZTtffdxtJnb1oY4D89LCB7Q24nrm3Bz1EBx7iAn2IL+P+5f
-R2q8doh/YFbEiZ4IQ4RDUqzJKEja1TlhVycFcWyjKoYz0Kx9qBos8U8PYwtqWQpf
-SwUtQvWyPj9Jyb7Mu7REmvLoccoR7vV+uTwvV6KMlaN1II+NOeys8bdfXt1p2OmG
-wZ4Rr4dy/9Ybj1uRGb4QZGYAJxNQK9aeV8Ie/ANW01J5R4tCCzuDXXdBr6h2Ad8c
-i0FHJvaPnUtM5KzBnBP02RXthgYoxejxOEx5vA525VWcKBSTZ55l0K70aWizZUcF
-DtyVjxNkQmc6mpRNYDXw2GrghHMqq/TELoVlSjXnNr+GY8L2oNwJDG7LQ1Z2agJD
-J1szpCPXL9arb3hd4Nuxs/dN0UHWNeWMn5L7uAgy+lBGh6JrmCM=
-=dvBq
------END PGP SIGNATURE-----
-
---L5qRBreJQ3rN4PcD--
