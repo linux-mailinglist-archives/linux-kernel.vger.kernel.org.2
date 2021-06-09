@@ -2,126 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8CD3A0E13
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3523A0E17
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237045AbhFIHvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:51:23 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47848 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236113AbhFIHvT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:51:19 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2ADBA21991;
-        Wed,  9 Jun 2021 07:49:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623224964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YeaBs+NUty+CWDtESM2SEAwt7NkUS5xAGfH6h7/gPNE=;
-        b=ZMU+maSBKMFXoz89leeXeDQFfatxmjGJ89Pu80LIT6eNXMISKRnlgkrHAnKejhl4YqpDRq
-        R1McsyHVn5DmnBsFiF0ZDNNpFwPsOkBxOMlRJ8MjyfuskJpOQ7c17EkACiiX/+ouFLBJ6H
-        Qsu3uIAc3MHL8zfwP+m7ViBx0NbGfWI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623224964;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YeaBs+NUty+CWDtESM2SEAwt7NkUS5xAGfH6h7/gPNE=;
-        b=T+8c27WotrIv+tQbYS5jZhsmPDhkozhn1s1xwFSji3ue3AuxxmVYL8YaifAcQf5DkSju2Z
-        iNGi6fgk2Cl/7/DA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 3274D118DD;
-        Wed,  9 Jun 2021 07:49:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623224964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YeaBs+NUty+CWDtESM2SEAwt7NkUS5xAGfH6h7/gPNE=;
-        b=ZMU+maSBKMFXoz89leeXeDQFfatxmjGJ89Pu80LIT6eNXMISKRnlgkrHAnKejhl4YqpDRq
-        R1McsyHVn5DmnBsFiF0ZDNNpFwPsOkBxOMlRJ8MjyfuskJpOQ7c17EkACiiX/+ouFLBJ6H
-        Qsu3uIAc3MHL8zfwP+m7ViBx0NbGfWI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623224964;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YeaBs+NUty+CWDtESM2SEAwt7NkUS5xAGfH6h7/gPNE=;
-        b=T+8c27WotrIv+tQbYS5jZhsmPDhkozhn1s1xwFSji3ue3AuxxmVYL8YaifAcQf5DkSju2Z
-        iNGi6fgk2Cl/7/DA==
-Received: from director1.suse.de ([192.168.254.71])
-        by imap3-int with ESMTPSA
-        id rpcGCYNywGDBQQAALh3uQQ
-        (envelope-from <osalvador@suse.de>); Wed, 09 Jun 2021 07:49:23 +0000
-Date:   Wed, 9 Jun 2021 09:49:21 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] memory-hotplug.rst: complete admin-guide overhaul
-Message-ID: <YMBygcyCM6ruLlat@localhost.localdomain>
-References: <20210608133855.20397-1-david@redhat.com>
- <20210608133855.20397-3-david@redhat.com>
+        id S237337AbhFIHxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:53:47 -0400
+Received: from m12-16.163.com ([220.181.12.16]:33933 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234011AbhFIHxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 03:53:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=yzplG
+        75asoYc09xdxtMfLkUQduHZ1cBtf4qeYQErv/o=; b=BuYGyqpxTgBWPw1EmFiXy
+        pPQPu9NFaa8NhIhZhEsIDwxr0bGSzu8hqT6fWWMpIBO5MExQCWmX6FkdXETXwS0k
+        MPgGGPEZq5IpBfuPYYWlIHhCI/XYv9/epr7WRr6VMUXymhpvIAe6KQd0k1aOGnHy
+        zbMJhnFuOkrGdpnSM+h0O0=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp12 (Coremail) with SMTP id EMCowAB3hFD0csBgRMiYwA--.19314S2;
+        Wed, 09 Jun 2021 15:51:17 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Subject: [PATCH] scsi: lpfc: lpfc_init: Removed unnecessary 'return'
+Date:   Wed,  9 Jun 2021 15:50:18 +0800
+Message-Id: <20210609075018.474463-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608133855.20397-3-david@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowAB3hFD0csBgRMiYwA--.19314S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAFWrArykAr13Gr43Zr4DXFb_yoWrtFWrpa
+        13Ga47Gr4kKF17KFnxJr15C3Way3y8X34jya1kt348ursYyrW3KFy5JFy0qrW5tFWvkrnI
+        yrnFgFW5C3W7JFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jK0PhUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbi3xWsUGB0Ge18ogAAsI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 03:38:55PM +0200, David Hildenbrand wrote:
-> The memory hot(un)plug documentation is outdated and incomplete. Most of
-> the content dates back to 2007, so it's time for a major overhaul.
-> 
-> Let's rewrite, reorganize and update most parts of the documentation. In
-> addition to memory hot(un)plug, also add some details regarding
-> ZONE_MOVABLE, with memory hotunplug being one of its main consumers.
-> 
-> Drop the file history, that information can more reliably be had from
-> the git log.
-> 
-> The style of the document is also properly fixed that e.g., "restview"
-> renders it cleanly now.
-> 
-> In the future, we might add some more details about virt users like
-> virtio-mem, the XEN balloon, the Hyper-V balloon and ppc64 dlpar.
-> 
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Muchun Song <songmuchun@bytedance.com>
-> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: linux-doc@vger.kernel.org
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+From: lijian <lijian@yulong.com>
 
-I really like this:
+Removed unnecessary 'return'.
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Signed-off-by: lijian <lijian@yulong.com>
+---
+ drivers/scsi/lpfc/lpfc_init.c | 35 -----------------------------------
+ 1 file changed, 35 deletions(-)
 
-
+diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
+index f6c26342ad69..932c6bdb8c40 100644
+--- a/drivers/scsi/lpfc/lpfc_init.c
++++ b/drivers/scsi/lpfc/lpfc_init.c
+@@ -288,7 +288,6 @@ lpfc_config_async_cmpl(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmboxq)
+ 	else
+ 		phba->temp_sensor_support = 0;
+ 	mempool_free(pmboxq, phba->mbox_mem_pool);
+-	return;
+ }
+ 
+ /**
+@@ -332,7 +331,6 @@ lpfc_dump_wakeup_param_cmpl(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmboxq)
+ 			prg->ver, prg->rev, prg->lev,
+ 			dist, prg->num);
+ 	mempool_free(pmboxq, phba->mbox_mem_pool);
+-	return;
+ }
+ 
+ /**
+@@ -1149,7 +1147,6 @@ lpfc_hb_timeout(struct timer_list *t)
+ 	/* Tell the worker thread there is work to do */
+ 	if (!tmo_posted)
+ 		lpfc_worker_wake_up(phba);
+-	return;
+ }
+ 
+ /**
+@@ -1215,7 +1212,6 @@ lpfc_hb_mbox_cmpl(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmboxq)
+ 		mod_timer(&phba->hb_tmofunc,
+ 			  jiffies +
+ 			  msecs_to_jiffies(1000 * LPFC_HB_MBOX_INTERVAL));
+-	return;
+ }
+ 
+ /*
+@@ -1589,7 +1585,6 @@ lpfc_offline_eratt(struct lpfc_hba *phba)
+ 	lpfc_sli_brdready(phba, HS_MBRDY);
+ 	lpfc_unblock_mgmt_io(phba);
+ 	phba->link_state = LPFC_HBA_ERROR;
+-	return;
+ }
+ 
+ /**
+@@ -1831,7 +1826,6 @@ lpfc_handle_eratt_s3(struct lpfc_hba *phba)
+ 
+ 		lpfc_offline_eratt(phba);
+ 	}
+-	return;
+ }
+ 
+ /**
+@@ -2192,8 +2186,6 @@ lpfc_handle_latt(struct lpfc_hba *phba)
+ 
+ 	lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
+ 			"0300 LATT: Cannot issue READ_LA: Data:%d\n", rc);
+-
+-	return;
+ }
+ 
+ /**
+@@ -2958,7 +2950,6 @@ lpfc_stop_vport_timers(struct lpfc_vport *vport)
+ 	del_timer_sync(&vport->els_tmofunc);
+ 	del_timer_sync(&vport->delayed_disc_tmo);
+ 	lpfc_can_disctmo(vport);
+-	return;
+ }
+ 
+ /**
+@@ -3041,7 +3032,6 @@ lpfc_stop_hba_timers(struct lpfc_hba *phba)
+ 				phba->pci_dev_grp);
+ 		break;
+ 	}
+-	return;
+ }
+ 
+ /**
+@@ -4517,7 +4507,6 @@ destroy_port(struct lpfc_vport *vport)
+ 	spin_unlock_irq(&phba->port_list_lock);
+ 
+ 	lpfc_cleanup(vport);
+-	return;
+ }
+ 
+ /**
+@@ -6132,7 +6121,6 @@ static void lpfc_log_intr_mode(struct lpfc_hba *phba, uint32_t intr_mode)
+ 				"0482 Illegal interrupt mode.\n");
+ 		break;
+ 	}
+-	return;
+ }
+ 
+ /**
+@@ -6201,8 +6189,6 @@ lpfc_disable_pci_dev(struct lpfc_hba *phba)
+ 	/* Release PCI resource and disable PCI device */
+ 	pci_release_mem_regions(pdev);
+ 	pci_disable_device(pdev);
+-
+-	return;
+ }
+ 
+ /**
+@@ -6548,8 +6534,6 @@ lpfc_sli_driver_resource_unset(struct lpfc_hba *phba)
+ {
+ 	/* Free device driver memory allocated */
+ 	lpfc_mem_free_all(phba);
+-
+-	return;
+ }
+ 
+ /**
+@@ -7159,8 +7143,6 @@ lpfc_sli4_driver_resource_unset(struct lpfc_hba *phba)
+ 		list_del_init(&conn_entry->list);
+ 		kfree(conn_entry);
+ 	}
+-
+-	return;
+ }
+ 
+ /**
+@@ -7267,8 +7249,6 @@ lpfc_free_iocb_list(struct lpfc_hba *phba)
+ 		phba->total_iocbq_bufs--;
+ 	}
+ 	spin_unlock_irq(&phba->hbalock);
+-
+-	return;
+ }
+ 
+ /**
+@@ -7678,7 +7658,6 @@ lpfc_hba_free(struct lpfc_hba *phba)
+ 	phba->sli.sli3_ring = NULL;
+ 
+ 	kfree(phba);
+-	return;
+ }
+ 
+ /**
+@@ -7756,8 +7735,6 @@ lpfc_destroy_shost(struct lpfc_hba *phba)
+ 
+ 	/* Destroy physical port that associated with the SCSI host */
+ 	destroy_port(vport);
+-
+-	return;
+ }
+ 
+ /**
+@@ -7852,7 +7829,6 @@ lpfc_post_init_setup(struct lpfc_hba *phba)
+ 				  sizeof(adapter_event),
+ 				  (char *) &adapter_event,
+ 				  LPFC_NL_VENDOR_ID);
+-	return;
+ }
+ 
+ /**
+@@ -7990,8 +7966,6 @@ lpfc_sli_pci_mem_unset(struct lpfc_hba *phba)
+ 	/* I/O memory unmap */
+ 	iounmap(phba->ctrl_regs_memmap_p);
+ 	iounmap(phba->slim_memmap_p);
+-
+-	return;
+ }
+ 
+ /**
+@@ -11236,7 +11210,6 @@ lpfc_cpu_affinity_check(struct lpfc_hba *phba, int vectors)
+ 	/* The cpu_map array will be used later during initialization
+ 	 * when EQ / CQ / WQs are allocated and configured.
+ 	 */
+-	return;
+ }
+ 
+ /**
+@@ -11853,8 +11826,6 @@ lpfc_unset_hba(struct lpfc_hba *phba)
+ 	lpfc_sli_brdrestart(phba);
+ 
+ 	lpfc_sli_disable_intr(phba);
+-
+-	return;
+ }
+ 
+ /**
+@@ -13340,8 +13311,6 @@ lpfc_pci_remove_one_s4(struct pci_dev *pdev)
+ 
+ 	/* Finally, free the driver's device data structure */
+ 	lpfc_hba_free(phba);
+-
+-	return;
+ }
+ 
+ /**
+@@ -13725,7 +13694,6 @@ lpfc_pci_remove_one(struct pci_dev *pdev)
+ 				phba->pci_dev_grp);
+ 		break;
+ 	}
+-	return;
+ }
+ 
+ /**
+@@ -13904,7 +13872,6 @@ lpfc_io_resume(struct pci_dev *pdev)
+ 				phba->pci_dev_grp);
+ 		break;
+ 	}
+-	return;
+ }
+ 
+ /**
+@@ -13931,8 +13898,6 @@ lpfc_sli4_oas_verify(struct lpfc_hba *phba)
+ 		mempool_destroy(phba->device_data_mem_pool);
+ 		phba->device_data_mem_pool = NULL;
+ 	}
+-
+-	return;
+ }
+ 
+ /**
 -- 
-Oscar Salvador
-SUSE L3
+2.25.1
+
+
