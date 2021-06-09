@@ -2,87 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730DF3A1379
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBDE3A13A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239567AbhFILwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:52:37 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3813 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231704AbhFILwg (ORCPT
+        id S239674AbhFIMCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:02:48 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40651 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231928AbhFIMCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:52:36 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0QKQ6Y0fzWtQk;
-        Wed,  9 Jun 2021 19:45:46 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 19:50:39 +0800
-Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
- (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
- 2021 19:50:38 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <jolsa@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <nathan@kernel.org>, <ndesaulniers@google.com>
-CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>, <chengzhihao1@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [PATCH] perf llvm: Fix error return code in llvm__compile_bpf()
-Date:   Wed, 9 Jun 2021 19:59:45 +0800
-Message-ID: <20210609115945.2193194-1-chengzhihao1@huawei.com>
+        Wed, 9 Jun 2021 08:02:46 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lqwt9-0007jn-2h; Wed, 09 Jun 2021 12:00:51 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: v3020: remove redundant initialization of variable retval
+Date:   Wed,  9 Jun 2021 13:00:50 +0100
+Message-Id: <20210609120050.185746-1-colin.king@canonical.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+From: Colin Ian King <colin.king@canonical.com>
 
-Fixes: cb76371441d098 ("perf llvm: Allow passing options to llc ...")
-Fixes: 5eab5a7ee032ac ("perf llvm: Display eBPF compiling command ...")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+The variable retval is being initialized with a value that is never read,
+it is being updated later on. The assignment is redundant and can be
+removed.
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- tools/perf/util/llvm-utils.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/rtc/rtc-v3020.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/llvm-utils.c b/tools/perf/util/llvm-utils.c
-index 3ceaf7ef3301..2de02639fb67 100644
---- a/tools/perf/util/llvm-utils.c
-+++ b/tools/perf/util/llvm-utils.c
-@@ -504,8 +504,9 @@ int llvm__compile_bpf(const char *path, void **p_obj_buf,
- 			goto errout;
- 		}
+diff --git a/drivers/rtc/rtc-v3020.c b/drivers/rtc/rtc-v3020.c
+index d2da92187d56..4e8341c49f51 100644
+--- a/drivers/rtc/rtc-v3020.c
++++ b/drivers/rtc/rtc-v3020.c
+@@ -282,7 +282,7 @@ static int rtc_probe(struct platform_device *pdev)
+ {
+ 	struct v3020_platform_data *pdata = dev_get_platdata(&pdev->dev);
+ 	struct v3020 *chip;
+-	int retval = -EBUSY;
++	int retval;
+ 	int i;
  
--		if (asprintf(&pipe_template, "%s -emit-llvm | %s -march=bpf %s -filetype=obj -o -",
--			      template, llc_path, opts) < 0) {
-+		err = asprintf(&pipe_template, "%s -emit-llvm | %s -march=bpf %s -filetype=obj -o -",
-+			       template, llc_path, opts);
-+		if (err < 0) {
- 			pr_err("ERROR:\tnot enough memory to setup command line\n");
- 			goto errout;
- 		}
-@@ -524,7 +525,8 @@ int llvm__compile_bpf(const char *path, void **p_obj_buf,
- 
- 	pr_debug("llvm compiling command template: %s\n", template);
- 
--	if (asprintf(&command_echo, "echo -n \"%s\"", template) < 0)
-+	err = asprintf(&command_echo, "echo -n \"%s\"", template);
-+	if (err < 0)
- 		goto errout;
- 
- 	err = read_from_pipe(command_echo, (void **) &command_out, NULL);
+ 	chip = devm_kzalloc(&pdev->dev, sizeof(*chip), GFP_KERNEL);
 -- 
 2.31.1
 
