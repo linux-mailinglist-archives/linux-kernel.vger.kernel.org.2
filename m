@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F90A3A1716
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22553A1712
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237889AbhFIOZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237810AbhFIOYp (ORCPT
+        id S237898AbhFIOYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:24:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30041 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237954AbhFIOYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:24:45 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF17C06175F;
-        Wed,  9 Jun 2021 07:22:36 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id h12so15661350pfe.2;
-        Wed, 09 Jun 2021 07:22:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PDoBgeXGas8ONL+4xxWqdRXTO15tMUsAgoTQmxOnpK0=;
-        b=C0YmE5h9l9ASPpHuN75UQGqMrb/OkBhyKVSkSt9iH+5kg3uUX5e1Cw7X9VLWwEz4Tw
-         usB7I6HJCFWW5ZjNXbaUbFnpEdx4MKnGeGmOCWp0C2w+FLqJaQ4xN/JZFvfGBeT/1XzL
-         GWXXbwzkMJ6SrokwfkCGxR0XlvmXi2EX6h5d7IVJ2ZZZxmUHWl2tpY8cfHZomWhJNswm
-         DiEILbXiDyOLl3xH6zJDsongoirPnn3mlPbL6UfqDJDal5BRwubys/xzQkkF5lSnZw2X
-         XD9fDeLRaEAJdnRjkaX+8cGHl8wo4+BeqWO4wnVDaFP2v9sKHdh5td4WxWRwpz4BqM4T
-         fk8w==
+        Wed, 9 Jun 2021 10:24:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623248555;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g5ldgdL4oevbJpGhiyzWJtU/uw/xXI5crD+GIdVCm0s=;
+        b=OJ1I9cYMFyz2F7ZV7o/1oUMyy3ieURQ1hM8IN5AxkRNkF90eazNjRq6pKZiqb1bVe2/hA/
+        0MPz0Higt9Hr5lX7WdBwXo+Bk01iqKDVPSO1NlYXKrCCQiXWlfrc0WHStbqaE3TW/ipYF4
+        fV5e/zDd6T/lljpjHg/MBiMAibStcn4=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-2eltCnHxPpO2EDG-tjnMeQ-1; Wed, 09 Jun 2021 10:22:33 -0400
+X-MC-Unique: 2eltCnHxPpO2EDG-tjnMeQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a25-20020a1709064a59b0290411db435a1eso4191154ejv.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 07:22:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=PDoBgeXGas8ONL+4xxWqdRXTO15tMUsAgoTQmxOnpK0=;
-        b=CVgWkZFKNdniXcnJpvB5xX4XlHfmTvOmCoegTq2FRnwePuan8r1YedabHndAfrsvIu
-         bB42hbCYriin6xsPWuSEdMfIjDVul1DSpcZZn5me9t13XgE0Jd3HmhuC0yhwfXFrEJks
-         Shd5vMHSsh14cuU0dsB22KVKD+PfpvgV7zR1kLYRoEV9fEZd/0lBS4lZzPjYNxnjyRag
-         pGRU4P1KBRdboL9hUHmD964P+Fv2FygQ4ZCARJWZOtKs8mDN67cqxB0EKoUAAdVjmw2r
-         EFavKgNQ+17eeSkbI4N7tUjLlw66JLvpX4LwT22hQODkjO9yJwNIlP7fkYJt9KfKWeO8
-         tpaw==
-X-Gm-Message-State: AOAM5306tsKkGyLH5ihX8s5NhYu4UcHPRRhMks3pJyX9ZdDocfR0Y0X+
-        yxot/JsLDjJPPHysQ4D2YCbt37z0Yo9dkCOCK6uk1Q==
-X-Google-Smtp-Source: ABdhPJwNfGVfozXjFPOmgigW9OaAlLh16hECyaYSxbmVCUR8PMj+EhBdPpirjL3Ntb0QGiy9Tbu6UQ==
-X-Received: by 2002:a65:4608:: with SMTP id v8mr4088470pgq.435.1623248556065;
-        Wed, 09 Jun 2021 07:22:36 -0700 (PDT)
-Received: from localhost.members.linode.com ([2400:8902::f03c:92ff:fe55:8c1e])
-        by smtp.gmail.com with ESMTPSA id k21sm42920pgb.56.2021.06.09.07.22.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Jun 2021 07:22:35 -0700 (PDT)
-From:   zpershuai <zpershuai@gmail.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     zpershuai <zpershuai@gmail.com>
-Subject: [PATCH] =?UTF-8?q?Fix=20some=20wrong=20goto=20jumps=C2=A0for=20av?= =?UTF-8?q?oiding=20memory=20leak.?=
-Date:   Wed,  9 Jun 2021 22:22:18 +0800
-Message-Id: <1623248538-4352-1-git-send-email-zpershuai@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        bh=g5ldgdL4oevbJpGhiyzWJtU/uw/xXI5crD+GIdVCm0s=;
+        b=oQxWtAyaC1mYSu/tM09LyX0c0XJyd2phRYHiAxgTfgvX7YtJibHg+PXAJ1oiSYXPgi
+         hPMgQYtCykJ6At9iLi3MUttqqoDCDfzo2La81f2s9x2d4pRY5gti63gfX3LJuCpSyeWI
+         5XyiNecFGyOL/o5LnrbNJZTDVJLppQea3OVHflk4eH8q7MVaY0LT8u2Ep4YojTHCHKaL
+         G/mU4j2Ar75654fYNrHhrrf9gva6Ej1QkSf45i1oc9u8AV//a0zT8sHRkBKF75Tu7KNv
+         ipOAkz6MKfphMxKGZfOk3ELbbeCNp8nrjWD07qbmD7UHui+pJKlbF6M/evdzSQJ2eMA2
+         F0Mw==
+X-Gm-Message-State: AOAM530JTiKLWjkw6HxBccKHMXOq0QnDdRDhamy3bPjVaRR9CFOzmZFU
+        wqd7pxUZ8HE4MR2TRQvmNFEdGbWNxK2s48OeepQmedr0YdSaJ299gyVdSAUFgH8gywQP0uYvIMs
+        Bv78PTD18ovLxC15TPLxP2Flnz6RMUXDaBr/OjrwJjDZk+7vXNt+AqXm/LqAJ80r9aJO71zQvWx
+        D8
+X-Received: by 2002:a05:6402:b5a:: with SMTP id bx26mr18821829edb.81.1623248551918;
+        Wed, 09 Jun 2021 07:22:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx11VXiqLbrpgaiXY0p+/cIwMtuO441HX5rKo0DbOlN0/EysED/CirhOcdAkzYCw9skKMFqfw==
+X-Received: by 2002:a05:6402:b5a:: with SMTP id bx26mr18821799edb.81.1623248551706;
+        Wed, 09 Jun 2021 07:22:31 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id y15sm1203116edd.55.2021.06.09.07.22.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 07:22:31 -0700 (PDT)
+Subject: Re: [PATCH 0/2] platform/surface: aggregator: Fixes for user-space
+ interface extension series
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210604210907.25738-1-luzmaximilian@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <8c006308-4e0d-d6a8-fade-f6025bd28256@redhat.com>
+Date:   Wed, 9 Jun 2021 16:22:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210604210907.25738-1-luzmaximilian@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In meson_spifc_probe function, when  enable the device pclk clock is
-error, it should use clk_disable_unprepare to release the core clock.
+Hi,
 
-And when meson_spicc_clk_init returns failed,  it should goto the
-out_clk label.
+On 6/4/21 11:09 PM, Maximilian Luz wrote:
+> Small fixes for "platform/surface: aggregator: Extend user-space
+> interface for events".
+> 
+> Specifically, prevent use of an uniniitalized variable and drop an
+> unnecessary initialization.
+> 
+> Maximilian Luz (2):
+>   platform/surface: aggregator: Do not return uninitialized value
+>   platform/surface: aggregator: Drop unnecessary variable initialization
 
-Signed-off-by: zpershuai <zpershuai@gmail.com>
----
- drivers/spi/spi-meson-spicc.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
-index ecba6b4..b2c4621 100644
---- a/drivers/spi/spi-meson-spicc.c
-+++ b/drivers/spi/spi-meson-spicc.c
-@@ -725,7 +725,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
- 	ret = clk_prepare_enable(spicc->pclk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "pclk clock enable failed\n");
--		goto out_master;
-+		goto out_core_clk;
- 	}
- 
- 	device_reset_optional(&pdev->dev);
-@@ -752,7 +752,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
- 	ret = meson_spicc_clk_init(spicc);
- 	if (ret) {
- 		dev_err(&pdev->dev, "clock registration failed\n");
--		goto out_master;
-+		goto out_clk;
- 	}
- 
- 	ret = devm_spi_register_master(&pdev->dev, master);
-@@ -764,9 +764,11 @@ static int meson_spicc_probe(struct platform_device *pdev)
- 	return 0;
- 
- out_clk:
--	clk_disable_unprepare(spicc->core);
- 	clk_disable_unprepare(spicc->pclk);
- 
-+out_core_clk:
-+	clk_disable_unprepare(spicc->core);
-+
- out_master:
- 	spi_master_put(master);
- 
--- 
-2.7.4
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
 
