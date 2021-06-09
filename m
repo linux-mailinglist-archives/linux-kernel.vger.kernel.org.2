@@ -2,74 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882A63A1F25
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEF73A1F28
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhFIVoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:44:37 -0400
-Received: from mga11.intel.com ([192.55.52.93]:60077 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhFIVof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:44:35 -0400
-IronPort-SDR: ykykX7IhucxrJmkwCZ1qFC+TUKKZfEKh0QcIRPAUZuzjkzRX7voEGYc3MEDG/6AbhrIMmoWMeg
- hvsTgnCvkNCg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="202150765"
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="202150765"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:42:40 -0700
-IronPort-SDR: 8lJ90QieKXiF2nbXI6rgmJp7jaYGkh6iProettwo8D0QW/OZGUiG7AnZpqIEB4lekubnI6zmHn
- Vcvq3MyAXtyw==
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="402579860"
-Received: from davidhok-mobl3.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.9.9])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:42:39 -0700
-Subject: Re: [RFC v2-fix-v5 1/1] x86: Skip WBINVD instruction for VM guest
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <973add45-9fd2-7abc-3a97-96a26c263ea0@linux.intel.com>
- <20210609194926.1949859-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <7c06b567-9a65-8c7c-6046-3dcb32d4bb15@intel.com>
- <CAPcyv4ismoYra_8=Qj=XLLs9+18tRiv8Y48GJWOAHvpzi3BZiw@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <2184400d-856e-ed4c-b23d-77b7dfd72658@linux.intel.com>
-Date:   Wed, 9 Jun 2021 14:42:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229845AbhFIVqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhFIVqW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:46:22 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF5AC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 14:44:11 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id bp38so4818471lfb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 14:44:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aaXF2yQYlF3XaWxmnf9WH9rzEvbnGjon/80g8w4+GyI=;
+        b=I0Uv1/Obcy6RZhS3152uYEHuLVSidy2Itl/6Pz8iSIW5HjbdZiHIic91RTMHJu5nBU
+         W1zV/GRWkSf8fG3bTYSYA7A1IUfcQ7z+NLf6Pc+4PlIpLqHS3KhxsY5r4DnUxChi0o2U
+         JGC6Ia6Pgrb6fYuxAFQpZcxJZ7vJMdjMpMdbA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aaXF2yQYlF3XaWxmnf9WH9rzEvbnGjon/80g8w4+GyI=;
+        b=tL1zjupJuugMqt+V3YbrFx5HtvBVqwNn9/KiyP+pHxskSlyEgfpf4GHAXDd8WZWoZ5
+         7ZCCtjhhNfaQCJ1DOUkiw29YZ5C2r+oGBL5qZTzo1HdyFO5VxM0fknVC2rIqAZCgHbqM
+         gc00DcN8wdv4P2Mv/911w/o/1U/3KYnbHOznw9XvqPlSv9QLQOY49HNNmWpVMCbWE533
+         Z1M06M6G0AbKem71Edwh9FWIWlxSfstrNSs4gseh6ZkjfboHgIAl1J+BnvoiTZ1fsK/N
+         vJOKbs5mAgKKjzEWqOWVQqUsbJCxlUzVEy/dI1H29p2QK8pQfUOmggoIdA8RceWRMTi6
+         HCzA==
+X-Gm-Message-State: AOAM532zJuNmdgj8FCb0/aiIs4erQoT/aGUEreDCJzh3nAPig98ObSLy
+        AqF5kbcJ1Hxev2c/5uLGZ9vo54ipcLp07ejJum4=
+X-Google-Smtp-Source: ABdhPJw5895cNVjBkBLn2VrTJdR7Ccn6n+vH/qacy0pFG6L2Zw9vleGiIMSiwoJNQJRq2LTMJn9vTA==
+X-Received: by 2002:ac2:5e3b:: with SMTP id o27mr941323lfg.241.1623275050046;
+        Wed, 09 Jun 2021 14:44:10 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id g19sm100092lfu.274.2021.06.09.14.44.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 14:44:08 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id u18so1727441lju.12
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 14:44:07 -0700 (PDT)
+X-Received: by 2002:a2e:8587:: with SMTP id b7mr1307218lji.465.1623275047231;
+ Wed, 09 Jun 2021 14:44:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4ismoYra_8=Qj=XLLs9+18tRiv8Y48GJWOAHvpzi3BZiw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210607125734.1770447-1-liangyan.peng@linux.alibaba.com>
+ <71fa2e69-a60b-0795-5fef-31658f89591a@linux.alibaba.com> <CAHk-=whKbJkuVmzb0hD3N6q7veprUrSpiBHRxVY=AffWZPtxmg@mail.gmail.com>
+ <20210609165154.3eab1749@oasis.local.home>
+In-Reply-To: <20210609165154.3eab1749@oasis.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 9 Jun 2021 14:43:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiGWjxs7EVUpccZEi6esvjpHJdgHQ=vtUeJ5crL62hx9A@mail.gmail.com>
+Message-ID: <CAHk-=wiGWjxs7EVUpccZEi6esvjpHJdgHQ=vtUeJ5crL62hx9A@mail.gmail.com>
+Subject: Re: [PATCH] tracing: Correct the length check which causes memory corruption
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     James Wang <jnwang@linux.alibaba.com>,
+        Liangyan <liangyan.peng@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        yinbinbin@alibabacloud.com, wetp <wetp.zy@linux.alibaba.com>,
+        stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 9, 2021 at 1:52 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > That "sizeof(*entry)" is clearly wrong, because it doesn't take the
+> > unsized array into account.
+>
+> Correct. That's because I forgot that the structure has that empty array :-(
 
+Note that 'sparse' does have the option to warn about odd flexible
+array uses. Including 'sizeof()'.
 
-On 6/9/21 2:38 PM, Dan Williams wrote:
->> In TDX guests, these WBINVD operations cause #VE exceptions.  For debug,
->> it would be ideal for the #VE handler to be able to WARN() when an
->> unexpected WBINVD occurs. (<--- problem #2)
-> ...but it doesn't WARN() it triggers unhandled #VE, unless I missed
-> another patch that precedes this that turns it into a WARN()? If a
-> code path expects WBINVD for correct operation and the guest can't
-> execute that sounds fatal, not a WARN to me.
+You can do something like
 
-Yes. It is not WARN. It is a fatal unhandled exception.
+    CF='-Wflexible-array-sizeof' make C=2 kernel/trace/trace.o
 
-> 
+and you'll see
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+  kernel/trace/trace.c:1022:17: warning: using sizeof on a flexible structure
+  kernel/trace/trace.c:2645:17: warning: using sizeof on a flexible structure
+  kernel/trace/trace.c:2739:41: warning: using sizeof on a flexible structure
+  kernel/trace/trace.c:3290:16: warning: using sizeof on a flexible structure
+  kernel/trace/trace.c:3350:16: warning: using sizeof on a flexible structure
+  kernel/trace/trace.c:6989:16: warning: using sizeof on a flexible structure
+  kernel/trace/trace.c:7070:16: warning: using sizeof on a flexible structure
+
+and I suspect every single one of those should be using
+'struct_size()' instead for a sizeof() on the base structure plus some
+manual arithmetic (or, as in the case of this bug, _without_ the extra
+arithmetic).
+
+And yeah, it isn't just the tracing code that does this. We have it
+all over, so that sparse check isn't on by default. Sparse is pretty
+darn noisy even without it, but it can be worth using that
+CF='-Wflexible-array-sizeof' on individual files that you want to
+check.
+
+               Linus
