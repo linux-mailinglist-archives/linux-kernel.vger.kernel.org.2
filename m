@@ -2,284 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA263A0C41
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23073A0C44
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236682AbhFIGSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:18:46 -0400
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:51764 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232973AbhFIGSp (ORCPT
+        id S236708AbhFIGTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:19:54 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3912 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236699AbhFIGTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:18:45 -0400
-Received: by mail-wm1-f48.google.com with SMTP id l9so3259770wms.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 23:16:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+TUXdESrfWsLAB7ujMtiaWOI2wfBx49V15E9i1S/Dz4=;
-        b=Box34dRXLbv4PwyoR/kYUCsIQsPyADF7ThRntyYkuOlB/4vg0VOlFp1bhTa/GFU/QX
-         GmflTLqJDPbaEpoK7COWWuQaXadBmffOUud31umyLrC/6KNCdXw2B97d6gmCT3VG4PMf
-         WOnSmLDGYTwBgX9mH4GM4DlXqck2lQeqpdybR+CKHNuUDdGEZD7009zD0wm8+u68AS3f
-         21XtzESOb4M/Xcn/AfQzAq1x6NZaYzydbtgmUsh7b3B9Ibtz1LGPk3wWnFo8sMQqia72
-         9SHw0wSf1jcI12jUHIIY8ucWKmT5rlzkGAgYmNTKJ65/EY0BZctQcb/+ua8kl/SkVszX
-         I5cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+TUXdESrfWsLAB7ujMtiaWOI2wfBx49V15E9i1S/Dz4=;
-        b=b4iaooqJy0HekQSpXNTKp2T2aO4VLMzInxTmqJExwZn2d3zvSjVI5zhSfhdG0HfiMK
-         iNRoCFTm15gCMxTqixZv8erL4UH7/Rt+agLuEQvFor2xmVL7dcCQl+0xtOI07NtRQ4fE
-         uekq+r2pqiRkor6Hls6zemPZRcExGZE4+NjDc2JJN1MG1FmUgQCmKPWsZMzeQW3h0cLb
-         XqPMJvJjkaKgC1ycQtMbri4cqvBVVOkFkhjIDKPEQ5h2jXA28eL0cR0J7/0/J0UjoC3Z
-         7/lFbpZnwWjXMaadE3OMLDz+avRF+v0qvff1+D8Psb1ZORgHjLivPj5XuoV6T+X9Hh0w
-         Wucg==
-X-Gm-Message-State: AOAM532ELZuvRlTtikF1Bl3I53JgLfxDU8lIhCPMAWClWhjaYlzOZmKg
-        kBbo+AkegIW83KJaw0PhkD/G5l7nx3FmQ8oxg0MjBxyBpJ1qQG5Fv3mcvKNVd6wYPUFQyhx7uhK
-        LxVXcdJd78crv/rFPaXyv+9k/bdwz2vs=
-X-Google-Smtp-Source: ABdhPJzHu53sGzAywCiiReHaa7F7vmfkhLb+t3Zc+RonSZw5/gfmIIKP4SIyqob+6seSN3KBc1OwxSsl0UHk4ynY4OE=
-X-Received: by 2002:a1c:2015:: with SMTP id g21mr7984981wmg.87.1623219350466;
- Tue, 08 Jun 2021 23:15:50 -0700 (PDT)
+        Wed, 9 Jun 2021 02:19:53 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0Gzd5XMgz6wqy;
+        Wed,  9 Jun 2021 14:14:53 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 14:17:56 +0800
+Received: from [10.174.179.24] (10.174.179.24) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 14:17:55 +0800
+Subject: Re: [PATCH -next] riscv: Enable KFENCE for riscv64
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+References: <20210529080340.2987212-1-liushixin2@huawei.com>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <kasan-dev@googlegroups.com>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <0a3ee489-47db-47f5-6192-794457fc74f8@huawei.com>
+Date:   Wed, 9 Jun 2021 14:17:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-References: <ac8b10b5-820a-9542-51ab-3fcc51cb91ef@huawei.com>
-In-Reply-To: <ac8b10b5-820a-9542-51ab-3fcc51cb91ef@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 8 Jun 2021 23:15:38 -0700
-Message-ID: <CAP-5=fVERioMuK=JgKr1QWXKvU0Y31efQjxh7hX32ifL9V+_EA@mail.gmail.com>
-Subject: Re: perf tool: Issues with metricgroups
-To:     John Garry <john.garry@huawei.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-ccpol: medium
+In-Reply-To: <20210529080340.2987212-1-liushixin2@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.24]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 10:21 AM John Garry <john.garry@huawei.com> wrote:
->
-> Hi guys,
->
-> I am finding a couple of issues in metricgroup support. Firstly I have
-> found a segfault (which I caused with my "fix" in commit 9c880c24cb0d),
-> and a fix for that is at the bottom.
->
-> Another issue is that the ordering of the metrics we supply for stat
-> command causes an issue.
->
-> On my broadwell, this works ok:
->
-> sudo  ./perf stat -vv -M backend_bound,retiring sleep 1
-> Using CPUID GenuineIntel-6-3D-4
-> metric expr 1 - ( (idq_uops_not_delivered.core / (4 * cycles)) + ((
-> uops_issued.any - uops_retired.retire_slots + 4 *
-> int_misc.recovery_cycles ) / (4 * cycles)) + (uops_retired.retire_slots
-> / (4 * cycles)) ) for Backend_Bound
-> found event uops_issued.any
-> found event cycles
-> found event idq_uops_not_delivered.core
-> found event int_misc.recovery_cycles
-> found event uops_retired.retire_slots
-> metric expr uops_retired.retire_slots / (4 * cycles) for Retiring
-> found event cycles
-> found event uops_retired.retire_slots
-> adding
-> {uops_issued.any,cycles,idq_uops_not_delivered.core,int_misc.recovery_cycles,uops_retired.retire_slots}:W,{cycles,uops_retired.retire_slots}:W
-> uops_issued.any -> cpu/umask=0x1,(null)=0x1e8483,event=0xe/
-> idq_uops_not_delivered.core -> cpu/umask=0x1,(null)=0x1e8483,event=0x9c/
-> int_misc.recovery_cycles ->
-> cpu/umask=0x3,(null)=0x1e8483,cmask=0x1,event=0xd/
-> uops_retired.retire_slots -> cpu/umask=0x2,(null)=0x1e8483,event=0xc2/
-> uops_retired.retire_slots -> cpu/umask=0x2,(null)=0x1e8483,event=0xc2/
-> Control descriptor is not initialized
-> uops_issued.any: 1655376 547221 547221
-> cycles: 1665343 547221 547221
-> idq_uops_not_delivered.core: 1983394 547221 547221
-> int_misc.recovery_cycles: 69571 547221 547221
-> uops_retired.retire_slots: 1311124 547221 547221
->
->   Performance counter stats for 'sleep 1':
->
->           1,655,376      uops_issued.any           #     0.41
-> Backend_Bound
->           1,665,343      cycles
->
->                                                    #     0.20 Retiring
->
->           1,983,394      idq_uops_not_delivered.core
->
->              69,571      int_misc.recovery_cycles
->
->           1,311,124      uops_retired.retire_slots
->
->
->         1.000992470 seconds time elapsed
->
->         0.001031000 seconds user
->         0.000000000 seconds sys
-> ----/---
->
-> But when I reorder the metrics, it fails:
->
->   sudo  ./perf stat -v -M retiring,backend_bound sleep 1
-> Using CPUID GenuineIntel-6-3D-4
-> metric expr uops_retired.retire_slots / (4 * cycles) for Retiring
-> found event cycles
-> found event uops_retired.retire_slots
-> metric expr 1 - ( (idq_uops_not_delivered.core / (4 * cycles)) + ((
-> uops_issued.any - uops_retired.retire_slots + 4 *
-> int_misc.recovery_cycles ) / (4 * cycles)) + (uops_retired.retire_slots
-> / (4 * cycles)) ) for Backend_Bound
-> found event uops_issued.any
-> found event cycles
-> found event idq_uops_not_delivered.core
-> found event int_misc.recovery_cycles
-> found event uops_retired.retire_slots
-> adding
-> {cycles,uops_retired.retire_slots}:W,{uops_issued.any,cycles,idq_uops_not_delivered.core,int_misc.recovery_cycles,uops_retired.retire_slots}:W
-> uops_retired.retire_slots -> cpu/umask=0x2,(null)=0x1e8483,event=0xc2/
-> uops_issued.any -> cpu/umask=0x1,(null)=0x1e8483,event=0xe/
-> idq_uops_not_delivered.core -> cpu/umask=0x1,(null)=0x1e8483,event=0x9c/
-> int_misc.recovery_cycles ->
-> cpu/umask=0x3,(null)=0x1e8483,cmask=0x1,event=0xd/
-> uops_retired.retire_slots -> cpu/umask=0x2,(null)=0x1e8483,event=0xc2/
-> Control descriptor is not initialized
-> cycles: 1695223 563189 563189
-> uops_retired.retire_slots: 1343463 563189 563189
-> uops_issued.any: 0 563189 0
-> cycles: 0 563189 0
-> idq_uops_not_delivered.core: 0 563189 0
-> int_misc.recovery_cycles: 0 563189 0
-> uops_retired.retire_slots: 0 563189 0
->
->   Performance counter stats for 'sleep 1':
->
->           1,695,223      cycles
->
->                                                    #     0.20 Retiring
->
->           1,343,463      uops_retired.retire_slots
->
->       <not counted>      uops_issued.any
->                (0.00%)
->       <not counted>      cycles
->                (0.00%)
->       <not counted>      idq_uops_not_delivered.core
->                  (0.00%)
->       <not counted>      int_misc.recovery_cycles
->                (0.00%)
->       <not counted>      uops_retired.retire_slots
->                (0.00%)
->
->         1.000980001 seconds time elapsed
->
->         0.001028000 seconds user
->         0.000000000 seconds sys
->
-> ----/---
->
-> I think that it may be related to changes when introducing hashmap for
-> evsel (that's before I started fiddling with metricgroups).
-> Specifically, it looks to be in metricgroup__setup_events() ->
-> find_evsel_group(). We seem to be enabling wrong evsels.
->
-> I'll continue to look at this, but any help would be appreciated.
->
-> Thanks,
-> John
+Hi, everybody,
 
-Hi John,
-
-The fix to avoid uncore_ events being deduplicated against each other
-added complexity to the code and means that metric-no-group doesn't
-really work any more. I have it on my list of things to look at. It
-relates to what you are looking at as the deduplication afterward is
-tricky given the funny invariants on evsel names. I think it would be
-easier to deduplicate events before doing the event parse. It may also
-be good to change evsels so that they own the string for their name
-(this would mean uncore_imc events could have unique names and not get
-deduplicated against each other). The invariants around cycles in your
-change look weird, but I can see how it might workaround an issue. My
-attempts to reproduce the issue weren't successful on a SkylakeX.
-
-Thanks for reporting the issues. I planned to look at this logic to
-fix metric-no-group, it'd be nice to land:
-https://lore.kernel.org/lkml/20210112230434.2631593-1-irogers@google.com/
-just so that I'm not making patch sets that conflict with myself.
-
-Ian
+I perfected the patch based on the previous advice. How about this version?
 
 
-> perf metricgroup: Fix find_evsel_group()
+Thanks,
+
+
+On 2021/5/29 16:03, Liu Shixin wrote:
+> Add architecture specific implementation details for KFENCE and enable
+> KFENCE for the riscv64 architecture. In particular, this implements the
+> required interface in <asm/kfence.h>.
 >
-> The following command segfaults on my x86 broadwell:
+> KFENCE requires that attributes for pages from its memory pool can
+> individually be set. Therefore, force the kfence pool to be mapped at
+> page granularity.
 >
-> $ ./perf stat  -M frontend_bound,retiring,backend_bound,bad_speculation
-> sleep 1
->      WARNING: grouped events cpus do not match, disabling group:
->        anon group { raw 0x10e }
->        anon group { raw 0x10e }
-> perf: util/evsel.c:1596: get_group_fd: Assertion `!(!leader->core.fd)'
-> failed.
-> Aborted (core dumped)
+> Testing this patch using the testcases in kfence_test.c and all passed.
 >
-> The issue shows itself as a use-after-free in evlist__check_cpu_maps(),
-> whereby the leader of an event selector (evsel) has been deleted (yet we
-> still attempt to verify for an evsel).
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> ---
+> 1. Add helper function split_pmd_page() which is used to split a pmd to ptes. 
+> 2. Add the judgment on the result of pte_alloc_one_kernel().
 >
-> Fundamentally the problem comes from metricgroup__setup_events() ->
-> find_evsel_group(), and has developed from the previous fix attempt in
-> commit 9c880c24cb0d ("perf metricgroup: Fix for metrics containing
-> duration_time").
+>  arch/riscv/Kconfig              |  1 +
+>  arch/riscv/include/asm/kfence.h | 63 +++++++++++++++++++++++++++++++++
+>  arch/riscv/mm/fault.c           | 11 +++++-
+>  3 files changed, 74 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/riscv/include/asm/kfence.h
 >
-> The problem now is that the logic in checking if an evsel is in the same
-> group is subtly broken for "cycles" event. For "cycles" event, the
-> pmu_name is NULL; however the logic in find_evsel_group() may set an
-> event matched against "cycles" as used, when it should not be.
->
-> This leads to a condition where an evsel is set, yet its leader is not.
->
-> Fix the check for evsel pmu_name by not matching evsels when either has
-> a NULL pmu_name.
->
-> Fixes: 9c880c24cb0d ("perf metricgroup: Fix for metrics containing
-> duration_time")
-> Signed-off-by: John Garry <john.garry@huawei.com>
->
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 8336dd8e8098..c456fdeae06a 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -162,10 +162,10 @@ static bool contains_event(struct evsel
-> **metric_events, int num_events,
->          return false;
->   }
->
-> -static bool evsel_same_pmu(struct evsel *ev1, struct evsel *ev2)
-> +static bool evsel_same_pmu_or_none(struct evsel *ev1, struct evsel *ev2)
->   {
->          if (!ev1->pmu_name || !ev2->pmu_name)
-> -               return false;
-> +               return true;
->
->          return !strcmp(ev1->pmu_name, ev2->pmu_name);
->   }
-> @@ -288,7 +288,7 @@ static struct evsel *find_evsel_group(struct evlist
-> *perf_evlist,
->                           */
->                          if (!has_constraint &&
->                              ev->leader != metric_events[i]->leader &&
-> -                           evsel_same_pmu(ev->leader,
-> metric_events[i]->leader))
-> +                           evsel_same_pmu_or_none(ev->leader,
-> metric_events[i]->leader))
->                                  break;
->                          if (!strcmp(metric_events[i]->name, ev->name)) {
->                                  set_bit(ev->idx, evlist_used);
-> lines 25-63/63 (END)
->
->
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 4982130064ef..2f4903a7730f 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -65,6 +65,7 @@ config RISCV
+>  	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+>  	select HAVE_ARCH_KASAN if MMU && 64BIT
+>  	select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
+> +	select HAVE_ARCH_KFENCE if MMU && 64BIT
+>  	select HAVE_ARCH_KGDB
+>  	select HAVE_ARCH_KGDB_QXFER_PKT
+>  	select HAVE_ARCH_MMAP_RND_BITS if MMU
+> diff --git a/arch/riscv/include/asm/kfence.h b/arch/riscv/include/asm/kfence.h
+> new file mode 100644
+> index 000000000000..d887a54042aa
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/kfence.h
+> @@ -0,0 +1,63 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef _ASM_RISCV_KFENCE_H
+> +#define _ASM_RISCV_KFENCE_H
+> +
+> +#include <linux/kfence.h>
+> +#include <linux/pfn.h>
+> +#include <asm-generic/pgalloc.h>
+> +#include <asm/pgtable.h>
+> +
+> +static inline int split_pmd_page(unsigned long addr)
+> +{
+> +	int i;
+> +	unsigned long pfn = PFN_DOWN(__pa((addr & PMD_MASK)));
+> +	pmd_t *pmd = pmd_off_k(addr);
+> +	pte_t *pte = pte_alloc_one_kernel(&init_mm);
+> +
+> +	if (!pte)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < PTRS_PER_PTE; i++)
+> +		set_pte(pte + i, pfn_pte(pfn + i, PAGE_KERNEL));
+> +	set_pmd(pmd, pfn_pmd(PFN_DOWN(__pa(pte)), PAGE_TABLE));
+> +
+> +	flush_tlb_kernel_range(addr, addr + PMD_SIZE);
+> +	return 0;
+> +}
+> +
+> +static inline bool arch_kfence_init_pool(void)
+> +{
+> +	int ret;
+> +	unsigned long addr;
+> +	pmd_t *pmd;
+> +
+> +	for (addr = (unsigned long)__kfence_pool; is_kfence_address((void *)addr);
+> +	     addr += PAGE_SIZE) {
+> +		pmd = pmd_off_k(addr);
+> +
+> +		if (pmd_leaf(*pmd)) {
+> +			ret = split_pmd_page(addr);
+> +			if (ret)
+> +				return false;
+> +		}
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +static inline bool kfence_protect_page(unsigned long addr, bool protect)
+> +{
+> +	pte_t *pte = virt_to_kpte(addr);
+> +
+> +	if (protect)
+> +		set_pte(pte, __pte(pte_val(*pte) & ~_PAGE_PRESENT));
+> +	else
+> +		set_pte(pte, __pte(pte_val(*pte) | _PAGE_PRESENT));
+> +
+> +	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+> +
+> +	return true;
+> +}
+> +
+> +#endif /* _ASM_RISCV_KFENCE_H */
+> diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+> index 096463cc6fff..aa08dd2f8fae 100644
+> --- a/arch/riscv/mm/fault.c
+> +++ b/arch/riscv/mm/fault.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/signal.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/kprobes.h>
+> +#include <linux/kfence.h>
+>  
+>  #include <asm/ptrace.h>
+>  #include <asm/tlbflush.h>
+> @@ -45,7 +46,15 @@ static inline void no_context(struct pt_regs *regs, unsigned long addr)
+>  	 * Oops. The kernel tried to access some bad page. We'll have to
+>  	 * terminate things with extreme prejudice.
+>  	 */
+> -	msg = (addr < PAGE_SIZE) ? "NULL pointer dereference" : "paging request";
+> +	if (addr < PAGE_SIZE)
+> +		msg = "NULL pointer dereference";
+> +	else {
+> +		if (kfence_handle_page_fault(addr, regs->cause == EXC_STORE_PAGE_FAULT, regs))
+> +			return;
+> +
+> +		msg = "paging request";
+> +	}
+> +
+>  	die_kernel_fault(msg, addr, regs);
+>  }
+>  
+
