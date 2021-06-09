@@ -2,128 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DC33A17DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715023A17E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238251AbhFIOwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:52:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42626 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238229AbhFIOw0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:52:26 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7475D1FD5F;
-        Wed,  9 Jun 2021 14:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623250230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bfjFCPehMo1dyNPOnDLbyFFsGSL83cnl+X5eXtIrdMo=;
-        b=BmwR7ybJEQTIkO2dHxeC8RucevhwFNqF5glMJdWb8NS5t4xsTPaoMlrYtvQQQvLgiosSzU
-        vKY81XNPyQpFno1hE62xVlkHiGpCSmopP5c3wioB9niwn6i0djX/lZHy7+HWwBkld7I6DT
-        ZZoO5rVE/JZDsZe3zs8etR7QSDhQ1Yk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623250230;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bfjFCPehMo1dyNPOnDLbyFFsGSL83cnl+X5eXtIrdMo=;
-        b=DZbZ5Blb/fF29l+3M+5ErblsWt+rGhhgXR/PRrYnbG6Q5YGQCEXoNrOaBbyWA90Cas+Fs1
-        miO/AthFhYrHk1Aw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 34138118DD;
-        Wed,  9 Jun 2021 14:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623250230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bfjFCPehMo1dyNPOnDLbyFFsGSL83cnl+X5eXtIrdMo=;
-        b=BmwR7ybJEQTIkO2dHxeC8RucevhwFNqF5glMJdWb8NS5t4xsTPaoMlrYtvQQQvLgiosSzU
-        vKY81XNPyQpFno1hE62xVlkHiGpCSmopP5c3wioB9niwn6i0djX/lZHy7+HWwBkld7I6DT
-        ZZoO5rVE/JZDsZe3zs8etR7QSDhQ1Yk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623250230;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bfjFCPehMo1dyNPOnDLbyFFsGSL83cnl+X5eXtIrdMo=;
-        b=DZbZ5Blb/fF29l+3M+5ErblsWt+rGhhgXR/PRrYnbG6Q5YGQCEXoNrOaBbyWA90Cas+Fs1
-        miO/AthFhYrHk1Aw==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id yJIXCzbVwGBcXAAALh3uQQ
-        (envelope-from <jroedel@suse.de>); Wed, 09 Jun 2021 14:50:30 +0000
-Date:   Wed, 9 Jun 2021 16:50:28 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Varad Gautam <varadgautam@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Varad Gautam <varad.gautam@suse.com>,
-        kvm@vger.kernel.org, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH v3] x86: Add a test for AMD SEV-ES guest #VC handling
-Message-ID: <YMDVNHh9KHsha4a+@suse.de>
-References: <20210531125035.21105-1-varad.gautam@suse.com>
- <20210602141447.18629-1-varadgautam@gmail.com>
+        id S238294AbhFIOw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:52:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238257AbhFIOw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:52:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2163C6128A;
+        Wed,  9 Jun 2021 14:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623250261;
+        bh=svcXYr1x4uog0gl91R41ozY2Q0KNDzZmG4YRGTMMy2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YkHX/JVfHqUvpWvWXkgg3rdrkk7agHtEIKqaX0vfSpX504lTGaDjO7Qz7iARqzkGp
+         DWsHVY+tAbRsBUSVBkbhVjgZvGY6y/wRIXGMo+CgzooB/zqPomfgnsHX9y3mgTbMXc
+         xGiW+RangNEk+pKIT8UX8w6paGaFQZLDQ+McKqTpjqFKueMHIVGMXJpalfW0Fph76r
+         Lcm2WPwzewVnde/Vu5ujWTdQssxwNbFghUliAxp8Ku3YbSQHaHnLbkGz+awfGrnWGJ
+         yu4qANQoP9p9s4/vzkSPeJiYpDnHVlRdjW4xbBVW2tivL4go8M8laNS3QaNsdGKKc0
+         R1JEjjJpSG45g==
+Date:   Wed, 9 Jun 2021 17:50:50 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Subject: Re: [PATCH v2 0/9] Remove DISCINTIGMEM memory model
+Message-ID: <YMDVSu00xXGmdCtC@kernel.org>
+References: <20210604064916.26580-1-rppt@kernel.org>
+ <CAK8P3a2tZDJDqgr9-1vJrnbDhd_36eKq8LMEznDkU7rvuAnAag@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210602141447.18629-1-varadgautam@gmail.com>
+In-Reply-To: <CAK8P3a2tZDJDqgr9-1vJrnbDhd_36eKq8LMEznDkU7rvuAnAag@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 04:14:47PM +0200, Varad Gautam wrote:
-> From: Varad Gautam <varad.gautam@suse.com>
+Hi Arnd,
+
+On Wed, Jun 09, 2021 at 01:30:39PM +0200, Arnd Bergmann wrote:
+> On Fri, Jun 4, 2021 at 8:49 AM Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> >
+> > Hi,
+> >
+> > SPARSEMEM memory model was supposed to entirely replace DISCONTIGMEM a
+> > (long) while ago. The last architectures that used DISCONTIGMEM were
+> > updated to use other memory models in v5.11 and it is about the time to
+> > entirely remove DISCONTIGMEM from the kernel.
+> >
+> > This set removes DISCONTIGMEM from alpha, arc and m68k, simplifies memory
+> > model selection in mm/Kconfig and replaces usage of redundant
+> > CONFIG_NEED_MULTIPLE_NODES and CONFIG_FLAT_NODE_MEM_MAP with CONFIG_NUMA
+> > and CONFIG_FLATMEM respectively.
+> >
+> > I've also removed NUMA support on alpha that was BROKEN for more than 15
+> > years.
+> >
+> > There were also minor updates all over arch/ to remove mentions of
+> > DISCONTIGMEM in comments and #ifdefs.
 > 
-> Some vmexits on a SEV-ES guest need special handling within the guest
-> before exiting to the hypervisor. This must happen within the guest's
-> \#VC exception handler, triggered on every non automatic exit.
+> Hi Mike and Andrew,
 > 
-> Add a KUnit based test to validate Linux's VC handling. The test:
-> 1. installs a kretprobe on the #VC handler (sev_es_ghcb_hv_call, to
->    access GHCB before/after the resulting VMGEXIT).
-> 2. tiggers an NAE.
-> 3. checks that the kretprobe was hit with the right exit_code available
->    in GHCB.
-> 
-> Since relying on kprobes, the test does not cover NMI contexts.
-> 
-> Signed-off-by: Varad Gautam <varad.gautam@suse.com>
-> ---
->  arch/x86/Kconfig                 |   9 ++
->  arch/x86/kernel/Makefile         |   8 ++
->  arch/x86/kernel/sev-es-test-vc.c | 155 +++++++++++++++++++++++++++++++
+> It looks like everyone is happy with this version so far. How should we merge it
+> for linux-next? I'm happy to take it through the asm-generic tree, but linux-mm
+> would fit at least as well. In case we go for linux-mm, feel free to add
 
-This looks good to me except for the small comment below, thanks Varad.
-I ran it in an SEV-ES guest and I am seeing the test results in dmesg.
-Only thing I am missing is a 'rep movs' test for MMIO, but that can be
-added later, so
+Andrew already took to mmotm.
+ 
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-Tested-by: Joerg Roedel <jroedel@suse.de>
+Thanks!
 
-Btw, should we create a separate directory for such tests like
-/arch/x86/tests/ or something along those lines?
+> for the whole series.
 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 0045e1b441902..85b8ac450ba56 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1543,6 +1543,15 @@ config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
->  	  If set to N, then the encryption of system memory can be
->  	  activated with the mem_encrypt=on command line option.
->  
-> +config AMD_SEV_ES_TEST_VC
-> +	bool "Test for AMD SEV-ES VC exception handling."
-> +	depends on AMD_MEM_ENCRYPT
-> +	select FUNCTION_TRACER
-> +	select KPROBES
-> +	select KUNIT
-> +	help
-> +	  Enable KUnit-based testing for AMD SEV-ES #VC exception handling.
-> +
-
-I think this should be in arch/x86/Kconfig.debug.
-
+-- 
+Sincerely yours,
+Mike.
