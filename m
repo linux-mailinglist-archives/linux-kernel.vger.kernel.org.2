@@ -2,74 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745063A2054
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4D73A205A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbhFIWmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 18:42:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38460 "EHLO mail.kernel.org"
+        id S230215AbhFIWpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 18:45:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230134AbhFIWmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 18:42:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 62E1C613F2;
-        Wed,  9 Jun 2021 22:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623278425;
-        bh=KE7NfEJmLueislrgsxoRI/4LuNgtYIy5fAtTYzEQuo4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=s5ax1pNU2dYm9oBxWQVKX/qeu1bzURmcFS6hpnBdCzw6jj3S/hswWUk9G/biw2sMM
-         AHCmwriApEAsus6P6WAF+YUZh0H4wnWxYZmCReM3MxoqGMU4d9qEjUrFp0Gw/cad0F
-         AoWWIJ+czN5YlntHYU/WZucSZOiKombCxBalQ12pqBhg/ZR0Dm6Lw8fdh63TfKEQCY
-         bCMBA3W1hz06kJ+lkAw8g7y9QqSRDDpIk0eAE9zGNrT8ws8ngJI4EezvYf06CSpB98
-         +QSnlx/lev9mVqqvXi3IRpcjhr3GLxUk4t+Rf2MbtKj5jpzTo3XTKDsGziWh5r4vca
-         MMWPL44aKtmBg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5358060A53;
-        Wed,  9 Jun 2021 22:40:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] net: phy: realtek: net: Fix less than zero comparison
- of a u16
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162327842533.25473.14455359274708008016.git-patchwork-notify@kernel.org>
-Date:   Wed, 09 Jun 2021 22:40:25 +0000
-References: <20210609171748.298027-1-colin.king@canonical.com>
-In-Reply-To: <20210609171748.298027-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, qiangqing.zhang@nxp.com,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S229845AbhFIWpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 18:45:45 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66545613F0;
+        Wed,  9 Jun 2021 22:43:50 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1lr6vN-002afS-12; Wed, 09 Jun 2021 18:43:49 -0400
+Message-ID: <20210609224309.945509725@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Wed, 09 Jun 2021 18:43:09 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH 0/2 v2] tracing: Simplify and document the trace event filtering temp buffer code
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+When filtering trace events, a temp buffer is used because the extra copy
+from the temp buffer into the ring buffer is still faster than the direct
+write into the ring buffer followed by a discard if the filter does not
+match.
 
-On Wed,  9 Jun 2021 18:17:48 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The comparisons of the u16 values priv->phycr1 and priv->phycr2 to less
-> than zero always false because they are unsigned. Fix this by using an
-> int for the assignment and less than zero check.
-> 
-> Addresses-Coverity: ("Unsigned compared against 0")
-> Fixes: 0a4355c2b7f8 ("net: phy: realtek: add dt property to disable CLKOUT clock")
-> Fixes: d90db36a9e74 ("net: phy: realtek: add dt property to enable ALDPS mode")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> 
-> [...]
+But the data that can be stored in the temp buffer is a PAGE_SIZE minus the
+ring buffer event header. The calculation of that header size is complex,
+but using the helper macro "struct_size()" can simplify it.
 
-Here is the summary with links:
-  - [next] net: phy: realtek: net: Fix less than zero comparison of a u16
-    https://git.kernel.org/netdev/net-next/c/f25247d88708
+Also, add more documentation about what is going on.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Link: https://lore.kernel.org/stable/CAHk-=whKbJkuVmzb0hD3N6q7veprUrSpiBHRxVY=AffWZPtxmg@mail.gmail.com/
 
+Changes since v1:
+  Switch "unlikely" to "likely"
+  Test max_len <= instead of just <
 
+Steven Rostedt (VMware) (2):
+      tracing: Simplify the max length test when using the filtering temp buffer
+      tracing: Add better comments for the filtering temp buffer use case
+
+----
+ kernel/trace/trace.c | 40 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 38 insertions(+), 2 deletions(-)
