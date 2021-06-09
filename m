@@ -2,185 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447FE3A1E60
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F883A1E66
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhFIU6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 16:58:09 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:51924 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhFIU6E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:58:04 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lr5FA-00Dirf-K8; Wed, 09 Jun 2021 14:56:08 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lr5F9-00GeK9-9c; Wed, 09 Jun 2021 14:56:08 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     "Enrico Weigelt\, metux IT consult" <lkml@metux.net>,
-        Chris Down <chris@chrisdown.name>, legion@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michal Hocko <mhocko@kernel.org>
-References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
-        <YLi+JoBwfLtqVGiP@chrisdown.name>
-        <b8c86081-503c-3671-2ea3-dd3a0950ce25@metux.net>
-        <87k0n2am0n.fsf@disp2133> <YMElKcrVIhJg4GTT@cmpxchg.org>
-Date:   Wed, 09 Jun 2021 15:56:00 -0500
-In-Reply-To: <YMElKcrVIhJg4GTT@cmpxchg.org> (Johannes Weiner's message of
-        "Wed, 9 Jun 2021 16:31:37 -0400")
-Message-ID: <87lf7i7o67.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S229972AbhFIU6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:58:51 -0400
+Received: from mga02.intel.com ([134.134.136.20]:12142 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhFIU6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 16:58:50 -0400
+IronPort-SDR: HD3Zh19AtBXSCfafk4SypDMqumD5qWpFRTUMw60qd5qubDcrJbV7kjc4pmFiTdZKGsmgGV+t/i
+ tWUYotAi0Bzw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="192277612"
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="192277612"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 13:56:53 -0700
+IronPort-SDR: Ffi2XUDy+iYMJrIzCWv3mR7Pf88GSUoUxDTgwJTrUJkmVMt/EUQ0FtaD449IZzOl9dDAD77lpU
+ w003NYRufdsg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="477075884"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by FMSMGA003.fm.intel.com with ESMTP; 09 Jun 2021 13:56:52 -0700
+Date:   Wed, 9 Jun 2021 13:57:01 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH 0/4] TSX force abort
+Message-ID: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lr5F9-00GeK9-9c;;;mid=<87lf7i7o67.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18FkAbzTYIBn3ucwFU8qo4xXys9E2kN0X0=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_08,
-        T_XMDrugObfuBody_09 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-        *  1.0 T_XMDrugObfuBody_09 obfuscated drug references
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Johannes Weiner <hannes@cmpxchg.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 604 ms - load_scoreonly_sql: 0.11 (0.0%),
-        signal_user_changed: 13 (2.1%), b_tie_ro: 11 (1.8%), parse: 1.99
-        (0.3%), extract_message_metadata: 21 (3.5%), get_uri_detail_list: 3.8
-        (0.6%), tests_pri_-1000: 18 (3.0%), tests_pri_-950: 1.44 (0.2%),
-        tests_pri_-900: 1.14 (0.2%), tests_pri_-90: 70 (11.6%), check_bayes:
-        68 (11.3%), b_tokenize: 11 (1.8%), b_tok_get_all: 11 (1.8%),
-        b_comp_prob: 3.9 (0.6%), b_tok_touch_all: 39 (6.4%), b_finish: 0.97
-        (0.2%), tests_pri_0: 413 (68.4%), check_dkim_signature: 0.68 (0.1%),
-        check_dkim_adsp: 4.8 (0.8%), poll_dns_idle: 45 (7.4%), tests_pri_10:
-        2.1 (0.3%), tests_pri_500: 58 (9.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johannes Weiner <hannes@cmpxchg.org> writes:
+Introduction
+============
+On some Intel processors [1] a microcode update will always abort
+Transactional Synchronization Extensions (TSX) transactions by default. These
+CPUs were previously affected by the TSX memory ordering issue [2]. A
+workaround was earlier added to perf related to memory ordering which is no
+longer required(because TSX is defeatured on these systems). This series adds
+support for new bits added to TSX_FORCE_ABORT MSR and CPUID to enumerate new
+abort behavior and to bypass the workaround.
 
-> On Wed, Jun 09, 2021 at 02:14:16PM -0500, Eric W. Biederman wrote:
->> "Enrico Weigelt, metux IT consult" <lkml@metux.net> writes:
->> 
->> > On 03.06.21 13:33, Chris Down wrote:
->> >
->> > Hi folks,
->> >
->> >
->> >> Putting stuff in /proc to get around the problem of "some other metric I need
->> >> might not be exported to a container" is not a very compelling argument. If
->> >> they want it, then export it to the container...
->> >>
->> >> Ultimately, if they're going to have to add support for a new
->> >> /proc/self/meminfo file anyway, these use cases should just do it properly
->> >> through the already supported APIs.
->> >
->> > It's even a bit more complex ...
->> >
->> > /proc/meminfo always tells what the *machine* has available, not what a
->> > process can eat up. That has been this way even long before cgroups.
->> > (eg. ulimits).
->> >
->> > Even if you want a container look more like a VM - /proc/meminfo showing
->> > what the container (instead of the machine) has available - just looking
->> > at the calling task's cgroup is also wrong. Because there're cgroups
->> > outside containers (that really shouldn't be affected) and there're even
->> > other cgroups inside the container (that further restrict below the
->> > container's limits).
->> >
->> > BTW: applications trying to autotune themselves by looking at
->> > /proc/meminfo are broken-by-design anyways. This never has been a valid
->> > metric on how much memory invididual processes can or should eat.
->> 
->> Which brings us to the problem.
->> 
->> Using /proc/meminfo is not valid unless your application can know it has
->> the machine to itself.  Something that is becoming increasing less
->> common.
->> 
->> Unless something has changed in the last couple of years, reading values
->> out of the cgroup filesystem is both difficult (v1 and v2 have some
->> gratuitous differences) and is actively discouraged.
->> 
->> So what should applications do?
->> 
->> Alex has found applications that are trying to do something with
->> meminfo, and the fields that those applications care about.  I don't see
->> anyone making the case that specifically what the applications are
->> trying to do is buggy.
->> 
->> Alex's suggest is to have a /proc/self/meminfo that has the information
->> that applications want, which would be something that would be easy
->> to switch applications to.  The patch to userspace at that point is
->> as simple as 3 lines of code.  I can imagine people take that patch into
->> their userspace programs.
->
-> But is it actually what applications want?
->
-> Not all the information at the system level translates well to the
-> container level. Things like available memory require a hierarchical
-> assessment rather than just a look at the local level, since there
-> could be limits higher up the tree.
+Roadmap to this series
+======================
 
-That sounds like a bug in the implementation of /proc/self/meminfo.
+0001:	Define new CPUID and MSR bits that are added by the microcode update.
+	(The new CPUID.RTM_ALWAYS_ABORT is not shown in /proc/cpuinfo)
 
-It certainly is a legitimate question to ask what are the limits
-from my perspective.
+0002:	When new microcode is enumerated bypass perf counter workaround for [1].
+	Perf workaround is no longer required after the microcode update.
 
-> Not all items in meminfo have a container equivalent, either.
+0003:	Clear CPUID.RTM and CPUID.HLE when TSX is defeatured, so that software
+	does not enumerate and try to use TSX.
 
-Not all items in meminfo were implemented.
+0004:	Add tsx=fake cmdline option to not hide CPUID.RTM and CPUID.HLE. This
+	may be desirable when resuming saved guest image that require RTM and HLE
+	feature bits to be present.
 
-> The familiar format is likely a liability rather than an asset.
+Thanks,
+Pawan
 
-It could be.  At the same time that is the only format anyone has
-proposed so we good counter proposal would be appreciated if you don't
-like the code that has been written.
+[1] Intel® TSX Memory and Performance Monitoring Update for Intel® Processors
+    https://www.intel.com/content/www/us/en/support/articles/000059422/processors.html
 
->> The simple fact that people are using /proc/meminfo when it doesn't make
->> sense for anything except system monitoring tools is a pretty solid bug
->> report on the existing linux apis.
->
-> I agree that we likely need a better interface for applications to
-> query the memory state of their container. But I don't think we should
-> try to emulate a format that is a poor fit for this.
+[2] Performance Monitoring Impact of Intel® Transactional Synchronization Extension Memory
+    http://cdrdv2.intel.com/v1/dl/getContent/604224
 
-I don't think it is the container that we care about (except for maybe
-system managment tools).  I think the truly interesting case is
-applications asking what do I have available to me.
+Pawan Gupta (4):
+  x86/msr: Define new bits in TSX_FORCE_ABORT MSR
+  perf/x86/intel: Do not deploy workaround when TSX is deprecated
+  x86/tsx: Clear CPUID bits when TSX always force aborts
+  x86/tsx: Add cmdline tsx=fake to not clear CPUID bits RTM and HLE
 
-> We should also not speculate what users intended to do with the
-> meminfo data right now. There is a surprising amount of misconception
-> around what these values actually mean. I'd rather have users show up
-> on the mailing list directly and outline the broader usecase.
+ Documentation/admin-guide/kernel-parameters.txt |  3 +-
+ arch/x86/events/intel/core.c                    | 22 +++++++--
+ arch/x86/include/asm/cpufeatures.h              |  1 +-
+ arch/x86/include/asm/msr-index.h                |  4 ++-
+ arch/x86/kernel/cpu/bugs.c                      |  5 +-
+ arch/x86/kernel/cpu/cpu.h                       |  3 +-
+ arch/x86/kernel/cpu/intel.c                     |  4 +-
+ arch/x86/kernel/cpu/tsx.c                       | 44 ++++++++++++++++--
+ 8 files changed, 75 insertions(+), 11 deletions(-)
 
-We are kernel developers, we can read code.  We don't need to speculate.
-We can read the userspace code.  If things are not clear we can ask
-their developers.
-
-Eric
+base-commit: 614124bea77e452aa6df7a8714e8bc820b489922
+-- 
+git-series 0.9.1
 
