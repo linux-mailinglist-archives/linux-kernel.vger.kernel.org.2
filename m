@@ -2,295 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5679F3A1B36
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2BF3A1B4A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhFIQvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:51:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230103AbhFIQvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:51:19 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9797C613CB;
-        Wed,  9 Jun 2021 16:49:22 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 17:51:15 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Jonathan.Cameron@Huawei.com,
-        linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RESEND PATCH v11 22/33] counter: Internalize sysfs interface
- code
-Message-ID: <20210609175115.1692f5dc@jic23-huawei>
-In-Reply-To: <87dec6c889e40068ed27cbb3e66a6376856e2267.1623201082.git.vilhelm.gray@gmail.com>
-References: <cover.1623201081.git.vilhelm.gray@gmail.com>
-        <87dec6c889e40068ed27cbb3e66a6376856e2267.1623201082.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230311AbhFIQy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230230AbhFIQy0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 12:54:26 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960F7C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 09:52:31 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so1739541pjp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:52:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LD9HSxwVBYD4Eigmm4/eFaSooe5X81yBa6b9diyTxLk=;
+        b=N47Q7iKRccjNkYwWKqUHqFn73mIgkb6yUnEgVpfiCnpd7KGAo+RwkJGh7fCyhsJ5rJ
+         PHoctqrgLpYFlXiogoGImI85Yu3OsLM3sfJYRnwP4OzsOAGtIgoKDG+IYVT+VOE0fTE/
+         27PJSIvlhBf+evKmhRLXx/yOa0KOermG9co7o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LD9HSxwVBYD4Eigmm4/eFaSooe5X81yBa6b9diyTxLk=;
+        b=moxOxxIOVhoITDMjqrPKDifzPk06cKehFm0BjLYiB9e+wZTeCKz9o+ynBepQ5phc9x
+         n/NR2dXLhMS7088mZC8C35VYSy0gtGLohCfp05cFMCwXyGQ5gnaMIWeWe3S5nbIcTtAw
+         vmg8bK84S5a9NV/zaGKYVRVae08urdXdxMoh0zcNRTkffeh/dubXnp648DTGyhX28IyC
+         yJ+nkAJ4QWH+Pl1toN5wwmmrAfDHJcXIkIk8RMtxWgSHm78RjbIk35Z2sdMFogjFSgQi
+         BtqU3BMPRQQmK/cVLWal4mBXZuGifj09VW0to/s5FdcChs86wKX/gPcXRaDhrGLF77e8
+         izxw==
+X-Gm-Message-State: AOAM531nLa+UaY2pDLMuBO/augnwPUR4+VXk2rH9iTYd/WpK4JSzVFLA
+        nx0V0Gj1t1zwlwNyRhdTKCR6aQ==
+X-Google-Smtp-Source: ABdhPJzNXeQzlTinS1wmW8MEliQZalVLosypCXm6YUl9Lebh2/tT7cpsPFLagkE3mdC+ClBbYzFVAQ==
+X-Received: by 2002:a17:902:988f:b029:114:12d2:d548 with SMTP id s15-20020a170902988fb029011412d2d548mr479973plp.73.1623257550841;
+        Wed, 09 Jun 2021 09:52:30 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k30sm305187pgf.59.2021.06.09.09.52.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 09:52:30 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 09:52:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     John Wood <john.wood@gmx.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Arnd Bergmann <arnd@arndb.de>, valdis.kletnieks@vt.edu,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v8 0/8] Fork brute force attack mitigation
+Message-ID: <202106090951.8C1B5BAD@keescook>
+References: <20210605150405.6936-1-john.wood@gmx.com>
+ <202106081616.EC17DC1D0D@keescook>
+ <cbfd306b-6e37-a697-ebdb-4a5029d36583@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cbfd306b-6e37-a697-ebdb-4a5029d36583@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  9 Jun 2021 23:11:45 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-
-> This is a reimplementation of the Generic Counter driver interface.
-> There are no modifications to the Counter subsystem userspace interface,
-> so existing userspace applications should continue to run seamlessly.
+On Tue, Jun 08, 2021 at 04:38:15PM -0700, Andi Kleen wrote:
 > 
-> The purpose of this patch is to internalize the sysfs interface code
-> among the various counter drivers into a shared module. Counter drivers
-> pass and take data natively (i.e. u8, u64, etc.) and the shared counter
-> module handles the translation between the sysfs interface and the
-> device drivers. This guarantees a standard userspace interface for all
-> counter drivers, and helps generalize the Generic Counter driver ABI in
-> order to support the Generic Counter chrdev interface (introduced in a
-> subsequent patch) without significant changes to the existing counter
-> drivers.
+> On 6/8/2021 4:19 PM, Kees Cook wrote:
+> > On Sat, Jun 05, 2021 at 05:03:57PM +0200, John Wood wrote:
+> > > [...]
+> > > the kselftest to avoid the detection ;) ). So, in this version, to track
+> > > all the statistical data (info related with application crashes), the
+> > > extended attributes feature for the executable files are used. The xattr is
+> > > also used to mark the executables as "not allowed" when an attack is
+> > > detected. Then, the execve system call rely on this flag to avoid following
+> > > executions of this file.
+> > I have some concerns about this being actually usable and not creating
+> > DoS situations. For example, let's say an attacker had found a hard-to-hit
+> > bug in "sudo", and starts brute forcing it. When the brute LSM notices,
+> > it'll make "sudo" unusable for the entire system, yes?
+> > 
+> > And a reboot won't fix it, either, IIUC.
+> > 
+> The whole point of the mitigation is to trade potential attacks against DOS.
 > 
-> Note, Counter device registration is the same as before: drivers
-> populate a struct counter_device with components and callbacks, then
-> pass the structure to the devm_counter_register function. However,
-> what's different now is how the Counter subsystem code handles this
-> registration internally.
-> 
-> Whereas before callbacks would interact directly with sysfs data, this
-> interaction is now abstracted and instead callbacks interact with native
-> C data types. The counter_comp structure forms the basis for Counter
-> extensions.
-> 
-> The counter-sysfs.c file contains the code to parse through the
-> counter_device structure and register the requested components and
-> extensions. Attributes are created and populated based on type, with
-> respective translation functions to handle the mapping between sysfs and
-> the counter driver callbacks.
-> 
-> The translation performed for each attribute is straightforward: the
-> attribute type and data is parsed from the counter_attribute structure,
-> the respective counter driver read/write callback is called, and sysfs
-> I/O is handled before or after the driver read/write function is called.
-> 
-> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-> Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> Cc: Patrick Havelange <patrick.havelange@essensium.com>
-> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: Alexandre Torgue <alexandre.torgue@st.com>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> Reviewed-by: David Lechner <david@lechnology.com>
-> Tested-by: David Lechner <david@lechnology.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> If you're worried about DOS the whole thing is not for you.
 
-Given you will probably do a v12 anyway, a few comments inline.
+Right, but there's no need to make a system unusable for everyone else.
+There's nothing here that relaxes the defense (i.e. stop spawning apache
+for 10 minutes). Writing it to disk with nothing that undoes it seems a
+bit too much. :)
 
-Jonathan
-
-> ---
->  MAINTAINERS                             |    1 -
->  drivers/counter/104-quad-8.c            |  449 +++----
->  drivers/counter/Makefile                |    1 +
->  drivers/counter/counter-core.c          |  155 +++
->  drivers/counter/counter-sysfs.c         |  846 +++++++++++++
->  drivers/counter/counter-sysfs.h         |   13 +
->  drivers/counter/counter.c               | 1496 -----------------------
->  drivers/counter/ftm-quaddec.c           |   56 +-
->  drivers/counter/intel-qep.c             |  144 +--
->  drivers/counter/interrupt-cnt.c         |   62 +-
->  drivers/counter/microchip-tcb-capture.c |   93 +-
->  drivers/counter/stm32-lptimer-cnt.c     |  162 ++-
->  drivers/counter/stm32-timer-cnt.c       |  147 +--
->  drivers/counter/ti-eqep.c               |  180 +--
->  include/linux/counter.h                 |  629 +++++-----
->  include/linux/counter_enum.h            |   45 -
->  16 files changed, 1918 insertions(+), 2561 deletions(-)
->  create mode 100644 drivers/counter/counter-core.c
->  create mode 100644 drivers/counter/counter-sysfs.c
->  create mode 100644 drivers/counter/counter-sysfs.h
->  delete mode 100644 drivers/counter/counter.c
->  delete mode 100644 include/linux/counter_enum.h
-> 
-
-...
-
-> diff --git a/drivers/counter/counter-core.c b/drivers/counter/counter-core.c
-> new file mode 100644
-> index 000000000000..e7dd6ea01c8a
-> --- /dev/null
-> +++ b/drivers/counter/counter-core.c
-> @@ -0,0 +1,155 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Generic Counter interface
-> + * Copyright (C) 2020 William Breathitt Gray
-> + */
-> +#include <linux/counter.h>
-> +#include <linux/device.h>
-> +#include <linux/export.h>
-> +#include <linux/gfp.h>
-> +#include <linux/idr.h>
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +
-> +#include "counter-sysfs.h"
-> +
-> +/* Provides a unique ID for each counter device */
-> +static DEFINE_IDA(counter_ida);
-> +
-
-...
-> +int counter_register(struct counter_device *const counter)
-> +{
-> +	struct device *const dev = &counter->dev;
-> +	int id;
-> +	int err;
-> +
-> +	/* Acquire unique ID */
-> +	id = ida_alloc(&counter_ida, GFP_KERNEL);
-> +	if (id < 0)
-> +		return id;
-> +
-> +	/* Configure device structure for Counter */
-> +	dev->id = id;
-> +	dev->type = &counter_device_type;
-> +	dev->bus = &counter_bus_type;
-> +	if (counter->parent) {
-> +		dev->parent = counter->parent;
-> +		dev->of_node = counter->parent->of_node;
-> +	}
-> +	device_initialize(dev);
-> +	dev_set_drvdata(dev, counter);
-> +
-> +	/* Add Counter sysfs attributes */
-> +	err = counter_sysfs_add(counter);
-> +	if (err < 0)
-> +		goto err_free_id;
-> +
-> +	/* Add device to system */
-> +	err = device_add(dev);
-> +	if (err < 0)
-> +		goto err_free_id;
-> +
-> +	return 0;
-> +
-> +err_free_id:
-> +	put_device(dev);
-> +	return err;
-> +}
-> +EXPORT_SYMBOL_GPL(counter_register);
-> +
-> +/**
-> + * counter_unregister - unregister Counter from the system
-> + * @counter:	pointer to Counter to unregister
-> + *
-> + * The Counter is unregistered from the system; all allocated memory is freed.
-
-If we are being fussy. This isn't necessarily true. If the reference goes
-down to 0 it will be freed, but in theory that could happen later than
-this call.  I'm guessing we will have get_device() calls once the
-chrdev is in place.
-
-> + */
-> +void counter_unregister(struct counter_device *const counter)
-> +{
-> +	if (!counter)
-> +		return;
-> +
-> +	device_unregister(&counter->dev);
-> +}
-> +EXPORT_SYMBOL_GPL(counter_unregister);
-> +
-> +static void devm_counter_release(struct device *dev, void *res)
-> +{
-> +	counter_unregister(*(struct counter_device **)res);
-> +}
-> +
-> +/**
-> + * devm_counter_register - Resource-managed counter_register
-> + * @dev:	device to allocate counter_device for
-> + * @counter:	pointer to Counter to register
-> + *
-> + * Managed counter_register. The Counter registered with this function is
-> + * automatically unregistered on driver detach. This function calls
-> + * counter_register internally. Refer to that function for more information.
-> + *
-> + * RETURNS:
-> + * 0 on success, negative error number on failure.
-> + */
-> +int devm_counter_register(struct device *dev,
-> +			  struct counter_device *const counter)
-> +{
-> +	struct counter_device **ptr;
-> +	int err;
-> +
-> +	ptr = devres_alloc(devm_counter_release, sizeof(*ptr), GFP_KERNEL);
-> +	if (!ptr)
-> +		return -ENOMEM;
-
-If you look at how devm_iio_device_register() is now done in
-the togreg branch of iio.git, you'll see it now just uses
-devm_add_action_or_reset() internally.  I think you could do something similar
-here and reduce boilerplate a little.
-
-> +
-> +	err = counter_register(counter);
-> +	if (err < 0) {
-> +		devres_free(ptr);
-> +		return err;
-> +	}
-> +
-> +	*ptr = counter;
-> +	devres_add(dev, ptr);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_counter_register);
-> +
-> +static int __init counter_init(void)
-> +{
-> +	return bus_register(&counter_bus_type);
-> +}
-> +
-> +static void __exit counter_exit(void)
-> +{
-> +	bus_unregister(&counter_bus_type);
-> +}
-> +
-> +subsys_initcall(counter_init);
-> +module_exit(counter_exit);
-> +
-> +MODULE_AUTHOR("William Breathitt Gray <vilhelm.gray@gmail.com>");
-> +MODULE_DESCRIPTION("Generic Counter interface");
-> +MODULE_LICENSE("GPL v2");
-
-> diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sysfs.c
-> new file mode 100644
-> index 000000000000..07588130600a
-> --- /dev/null
-> +++ b/drivers/counter/counter-sysfs.c
-> @@ -0,0 +1,846 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Generic Counter sysfs interface
-> + * Copyright (C) 2020 William Breathitt Gray
-> + */
-> +#include <linux/counter.h>
-> +#include <linux/device.h>
-> +#include <linux/err.h>
-> +#include <linux/gfp.h>
-> +#include <linux/kernel.h>
-> +#include <linux/list.h>
-> +#include <linux/string.h>
-> +#include <linux/sysfs.h>
-> +#include <linux/types.h>
-> +
-> +#include "counter-sysfs.h"
-> +
-
-...
+-- 
+Kees Cook
