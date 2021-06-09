@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CF33A2014
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946E73A2016
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhFIWcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 18:32:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34398 "EHLO mail.kernel.org"
+        id S230356AbhFIWcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 18:32:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhFIWcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229925AbhFIWcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Jun 2021 18:32:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0A90661405;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 04FBE613FE;
         Wed,  9 Jun 2021 22:30:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623277806;
-        bh=zIL9opB5+Cnb+9ZiAUJj51E8H3ewM4qqlao7rIihN7U=;
+        bh=dfQpZkYjZy37ikwuEdjp+n+jzQDu+rP4gGrc2LDkG88=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=a7ACIOAalaEJWQCOvHdnf2CVwrZ4U1Gz9b4v2y0/mG4TyjNU3KTxXYxTdF9W1M02X
-         isAEJaRMPCuRG00M8JA7EF6MNYvKZx91Y5YxWtxK5m/T0a1RlECC/zXYhdEPJ9QBgB
-         neg4DugQ+YuO1kYZc4wrIpXRxK8pNKiitUHi3UF39eGAhYIMxkTQ207LjghtLjWv1X
-         wMl9S+o3kfCmJpF1OUx58njGkDYucSxXnwGYDQb4NFyUCs7JLF45QdOHlSh08mGXQs
-         zPX9lQin2NfVPtu6HDIP8xb2BIP/YA0Umpqk1bnVRyGALK+CRJoDgzwZqH0X0P4FJ/
-         6bT3zgNHKyGog==
+        b=MvAdaG1zP3/sXpAk+BM22qGC791lkvAZ6PDKj9Z0HJhWZVQiW/ZCtLEt9kqqa7X4C
+         yZ7vAUMt5PnmT9+A3yPzOTHnoZ6/jP+qyIkIOtJS7r7lXp8RAfga+6HlROZZFTfNrb
+         Gx0uL3NN0dHoQp2Wz6XEeUgLOh5Kqx4pusE6iQNXD9j8BdR1BUcUNnAA+Sb1eyyXOl
+         yx4t60AABsOhh7EObcul7ZJwX6AW7nRrGlx13tYKVd1yGE4kYx+L2vhk/l/SI/p3bL
+         DBTEmghL/KbyG0jSF1cMfpCkXwTd5CXZdRRhfHKU447kTYxf+/1y20b6+cO3kBHT1a
+         J2gbcjkgBjuIQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F390A60CD8;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E9973609E3;
         Wed,  9 Jun 2021 22:30:05 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 1/2][next][V2] net: usb: asix: Fix less than zero comparison
- of a u16
+Subject: Re: [PATCH net-next] net: sgi: ioc3-eth: check return value after calling
+ platform_get_resource()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162327780599.20375.14960133934732052088.git-patchwork-notify@kernel.org>
+Message-Id: <162327780595.20375.8102574349200301025.git-patchwork-notify@kernel.org>
 Date:   Wed, 09 Jun 2021 22:30:05 +0000
-References: <20210609102448.182798-1-colin.king@canonical.com>
-In-Reply-To: <20210609102448.182798-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux@rempel-privat.de,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210609132515.2701394-1-yangyingliang@huawei.com>
+In-Reply-To: <20210609132515.2701394-1-yangyingliang@huawei.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        ralf@linux-mips.org, davem@davemloft.net, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed,  9 Jun 2021 11:24:47 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Wed, 9 Jun 2021 21:25:15 +0800 you wrote:
+> It will cause null-ptr-deref if platform_get_resource() returns NULL,
+> we need check the return value.
 > 
-> The comparison of the u16 priv->phy_addr < 0 is always false because
-> phy_addr is unsigned. Fix this by assigning the return from the call
-> to function asix_read_phy_addr to int ret and using this for the
-> less than zero error check comparison.
-> 
-> [...]
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/net/ethernet/sgi/ioc3-eth.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
 Here is the summary with links:
-  - [1/2,next,V2] net: usb: asix: Fix less than zero comparison of a u16
-    https://git.kernel.org/netdev/net-next/c/e67665946599
-  - [2/2,next,V2] net: usb: asix: ax88772: Fix less than zero comparison of a u16
-    https://git.kernel.org/netdev/net-next/c/c6be5a22fde5
+  - [net-next] net: sgi: ioc3-eth: check return value after calling platform_get_resource()
+    https://git.kernel.org/netdev/net-next/c/db8f7be1e1d6
 
 You are awesome, thank you!
 --
