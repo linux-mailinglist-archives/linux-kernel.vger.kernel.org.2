@@ -2,141 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813213A1802
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB07C3A1800
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238377AbhFIOzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:55:43 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:29898 "EHLO m43-7.mailgun.net"
+        id S238357AbhFIOzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:55:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230239AbhFIOzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:55:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623250427; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=VGxI7DNKJ4SftViaONqW/6OR8ZWMMCYv9JR2M0yYWr4=; b=ka7hZtez0/LtIunrb2xZtQGNEtTUqXcJ8JaKu8EYZxSmG6cedO3luvBPBVRL0njleKdWT6PS
- S87bE8Ykwlt/3WKXN+0jx/wt/x/jvqh2fC6YdIUDsewBj0NmkWiXjoXz68sFMle5hh+mliz0
- bdWOrsBho2rEDWHGj2wJBL1O9r0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60c0d5e5b6ccaab7531d7238 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Jun 2021 14:53:25
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3FCC5C43145; Wed,  9 Jun 2021 14:53:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D312DC433F1;
-        Wed,  9 Jun 2021 14:53:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D312DC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH] iommu/io-pgtable-arm: Optimize partial walk flush for large scatter-gather list
-Date:   Wed,  9 Jun 2021 20:23:14 +0530
-Message-Id: <20210609145315.25750-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        id S230239AbhFIOza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:55:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71A8C611CC;
+        Wed,  9 Jun 2021 14:53:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623250416;
+        bh=uk70CsMhsrkc3F7Q+zfWu7qyyqHOpmGKxxcZXQstBIY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iNvpgC7wex4V8S8lgaahAbFhjyQQstKOynEpf05VLtuC9vJymllfrAUvyTVTi2chv
+         Gy0A3vdXRK9yHXCcmBeQ9Cd8b+/oisxZJ2Q+qOlXWOstIksiBQZz9mv2DDQm16H4sd
+         lPQ0xXxEfjIlh3drZ+zT7b1soLQQrnQG6AVzY/WA=
+Date:   Wed, 9 Jun 2021 16:53:33 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     trix@redhat.com
+Cc:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com,
+        nava.manne@xilinx.com, dinguyen@kernel.org,
+        krzysztof.kozlowski@canonical.com, yilun.xu@intel.com,
+        arnd@arndb.de, fpacheco@redhat.com, richard.gong@intel.com,
+        luca@lucaceresoli.net, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/4]  fpga: reorganize to subdirs
+Message-ID: <YMDV7R52QUTFhpHH@kroah.com>
+References: <20210609142208.3085451-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609142208.3085451-1-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently for iommu_unmap() of large scatter-gather list with page size
-elements, the majority of time is spent in flushing of partial walks in
-__arm_lpae_unmap() which is a VA based TLB invalidation (TLBIVA for
-arm-smmu).
+On Wed, Jun 09, 2021 at 07:22:03AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> The incoming xrt patchset has a toplevel subdir xrt/
+> The current fpga/ uses a single dir with filename prefixes to subdivide owners
+> For consistency, there should be only one way to organize the fpga/ dir.
+> Because the subdir model scales better, refactor to use it.
+> The discussion wrt xrt is here:
+> https://lore.kernel.org/linux-fpga/68e85a4f-4a10-1ff9-0443-aa565878c855@redhat.com/
+> 
+> Follow drivers/net/ethernet/ which has control configs
+> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+> Since fpgas do not have many vendors, drop the 'VENDOR' and use
+> FPGA_BLA.
+> 
+> There are several new subdirs
+> altera/
+> dfl/
+> lattice/
+> xilinx/
+> 
+> Each subdir has a Kconfig that has a new/reused
+> 
+> if FPGA_BLA
+>   ... existing configs ...
+> endif FPGA_BLA
+> 
+> Which is sourced into the main fpga/Kconfig
+> 
+> Each subdir has a Makefile whose transversal is controlled in the
+> fpga/Makefile by
+> 
+> obj-$(CONFIG_FPGA_BLA) += bla/
+> 
+> Some cleanup to arrange thing alphabetically and make fpga/Makefile's
+> whitespace look more like net/'s
+> 
+> Changes from
+> v1
+>   Drop renaming files
+>   Cleanup makefiles
 
-For example: to unmap a 32MB scatter-gather list with page size elements
-(8192 entries), there are 16->2MB buffer unmaps based on the pgsize (2MB
-for 4K granule) and each of 2MB will further result in 512 TLBIVAs (2MB/4K)
-resulting in a total of 8192 TLBIVAs (512*16) for 16->2MB causing a huge
-overhead.
+You can rename the files, you just can not rename the .ko objects
+without everyone knowing what you are doing and you trying to bury it in
+the middle of a differently described patch.
 
-So instead use io_pgtable_tlb_flush_all() to invalidate the entire context
-if size (pgsize) is greater than the granule size (4K, 16K, 64K). For this
-example of 32MB scatter-gather list unmap, this results in just 16 ASID
-based TLB invalidations or tlb_flush_all() callback (TLBIASID in case of
-arm-smmu) as opposed to 8192 TLBIVAs thereby increasing the performance of
-unmaps drastically.
+If you want to do that, do you?  I don't really understand why you want
+to move things around right now other than "we have 40 files in one
+directory, ick!".
 
-Condition (size > granule size) is chosen for io_pgtable_tlb_flush_all()
-because for any granule with supported pgsizes, we will have at least 512
-TLB invalidations for which tlb_flush_all() is already recommended. For
-example, take 4K granule with 2MB pgsize, this will result in 512 TLBIVA
-in partial walk flush.
-
-Test on QTI SM8150 SoC for 10 iterations of iommu_{map_sg}/unmap:
-(average over 10 iterations)
-
-Before this optimization:
-
-    size        iommu_map_sg      iommu_unmap
-      4K            2.067 us         1.854 us
-     64K            9.598 us         8.802 us
-      1M          148.890 us       130.718 us
-      2M          305.864 us        67.291 us
-     12M         1793.604 us       390.838 us
-     16M         2386.848 us       518.187 us
-     24M         3563.296 us       775.989 us
-     32M         4747.171 us      1033.364 us
-
-After this optimization:
-
-    size        iommu_map_sg      iommu_unmap
-      4K            1.723 us         1.765 us
-     64K            9.880 us         8.869 us
-      1M          155.364 us       135.223 us
-      2M          303.906 us         5.385 us
-     12M         1786.557 us        21.250 us
-     16M         2391.890 us        27.437 us
-     24M         3570.895 us        39.937 us
-     32M         4755.234 us        51.797 us
-
-This is further reduced once the map/unmap_pages() support gets in which
-will result in just 1 tlb_flush_all() as opposed to 16 tlb_flush_all().
-
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/iommu/io-pgtable-arm.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-index 87def58e79b5..c3cb9add3179 100644
---- a/drivers/iommu/io-pgtable-arm.c
-+++ b/drivers/iommu/io-pgtable-arm.c
-@@ -589,8 +589,11 @@ static size_t __arm_lpae_unmap(struct arm_lpae_io_pgtable *data,
- 
- 		if (!iopte_leaf(pte, lvl, iop->fmt)) {
- 			/* Also flush any partial walks */
--			io_pgtable_tlb_flush_walk(iop, iova, size,
--						  ARM_LPAE_GRANULE(data));
-+			if (size > ARM_LPAE_GRANULE(data))
-+				io_pgtable_tlb_flush_all(iop);
-+			else
-+				io_pgtable_tlb_flush_walk(iop, iova, size,
-+							  ARM_LPAE_GRANULE(data));
- 			ptep = iopte_deref(pte, data);
- 			__arm_lpae_free_pgtable(data, lvl + 1, ptep);
- 		} else if (iop->cfg.quirks & IO_PGTABLE_QUIRK_NON_STRICT) {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+greg k-h
