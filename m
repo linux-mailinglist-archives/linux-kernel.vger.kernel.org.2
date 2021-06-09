@@ -2,90 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80C33A1113
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2E23A1115
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235498AbhFIKas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:30:48 -0400
-Received: from mail-lf1-f49.google.com ([209.85.167.49]:36420 "EHLO
-        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234179AbhFIKap (ORCPT
+        id S236349AbhFIKbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:31:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54454 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235588AbhFIKbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:30:45 -0400
-Received: by mail-lf1-f49.google.com with SMTP id v22so35874490lfa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:28:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7nPZCXLPijOT5fF+FbZxX7XklvUO6QeqH4yp5xzaFwE=;
-        b=Gf01+i+rhrmHv9uNBDWDc4o/KNuydo5p1MgGdFh07Uoo+QVHZHlt6MLTMN/DbW7mCN
-         a6vTFWPnMtsCf4wTlZA2u3Gb8Xz+5GHAmSFv+9eLD2WDtbE71s7If/Uqqdzr8VNKy1SX
-         A0wsmHGiKewJw7KfcC20flRS3LszPAHip5ia4RJ7Za6GCxzOqTJO4BzKoThXHiCjfEUR
-         kRmpXjGugz/IpC3P1hv06est6m8bAPWn0hRaPEe0VCXpRVR6HzsH8Cv/vW8EhCRxt4Gi
-         sUdzYSad+GLPzNIZeBblLs0VftgEtBokyA+gFODBNZBOmmprVk9BeQvgD/eXURL1FZ0p
-         b0PQ==
+        Wed, 9 Jun 2021 06:31:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623234589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AJKYvOGfDayI4ypz9NAHeg8C4iNhTE3Xb47rb4M/evg=;
+        b=iIdlpVCchbbkxBRywuUDJlDowGg9GdpTNo5wrI33rKD4x1KEDb6POAqKcXdtuFz/4K0u3U
+        90c6XqWR3KAmunMB9x/3e9Z3/jleBKZCiJDpE4xPL+5NPWfzNplsPe0JKLrP5S20kh2E2Z
+        RdNW3lowlwm5h9iZ7Ht09rOh1yzcko0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-434-PmF0IuE-MV6PWkKVZkA2aw-1; Wed, 09 Jun 2021 06:29:47 -0400
+X-MC-Unique: PmF0IuE-MV6PWkKVZkA2aw-1
+Received: by mail-wr1-f70.google.com with SMTP id m27-20020a056000025bb0290114d19822edso10572309wrz.21
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:29:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7nPZCXLPijOT5fF+FbZxX7XklvUO6QeqH4yp5xzaFwE=;
-        b=VllpI1C4YAgrl8UrQF2SL3bvljIj9U0IssAGosLQtcf/2FQ0QommxEh4sKjjBjkT+/
-         a7Weus99RVU2g6f07b7EyDfIcQJ+AUWTvBTG5uld9mU4IF+7PICj9TKpfkG+esp6SY6a
-         Ootd7cNvl1jomMtzQEnYOSI5e/Jz7zaRoyNrxVSTrwj3Up4mlneTBk00+MVrzAlKTr1N
-         MnAibLe+9BU0OPB1T9LEeIbfqN/0tAJWt+wpo8ZvcpbvzXv49xhoVJT9dhcF+wJogi2y
-         14+4yVpF0vwoqHLjPWWMb0yEWzaKqsk0ztTfNXHpRCU7gygXslBVpjH1On98mj2C+r/2
-         SWxA==
-X-Gm-Message-State: AOAM531Kkph257G42OJSTjs+Dopc5/SVSWuVpFvZAgtyE+yxwGpSJh1O
-        sXQ9cw91Qv/miT+R1FltT0WFww==
-X-Google-Smtp-Source: ABdhPJwjfxmKWEB3+rmH59gf3PO/sBFiAJZlK0/2MqOWJs+l0Ao8B7SWqlQ+PgaSFfHF90dKNoc7hg==
-X-Received: by 2002:a05:6512:38ce:: with SMTP id p14mr19133331lft.197.1623234456361;
-        Wed, 09 Jun 2021 03:27:36 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id y22sm308374lfh.154.2021.06.09.03.27.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 03:27:35 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 3AE1A10265B; Wed,  9 Jun 2021 13:27:51 +0300 (+03)
-Date:   Wed, 9 Jun 2021 13:27:51 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 10/10] mm: hwpoison_user_mappings() try_to_unmap()
- with TTU_SYNC
-Message-ID: <20210609102751.kl4ywrx3bybyg46w@box.shutemov.name>
-References: <af88612-1473-2eaa-903-8d1a448b26@google.com>
- <329c28ed-95df-9a2c-8893-b444d8a6d340@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=AJKYvOGfDayI4ypz9NAHeg8C4iNhTE3Xb47rb4M/evg=;
+        b=tsxA7I5z8uW/qrWgulQzDrbKOcNl4YwNVALY4uXU0ckidZ67VeHJUsOpaaVcQNH6ke
+         PC29f6ZZSNibPS5JdANK6r0vSEGNEVmsLllyNcbYhWYaqKP6o0bFxMowICAmCwOs2Lgb
+         LLG2YVVBH9fZx9GwE1Y/gYNCMwziurKeKwUWfS851yL8M73tgG20hG172Lziv7KhuGYD
+         eUvIg67w5UK/X6SmcNOaEB5JFJ3ZT4Q9ao7PJ7OFi3kXRAG/lfLTeZbD9u7XGheicuoa
+         OmpeLYbSKueDyCUYtiGkPCM0s+g8jQs+1EbCq4TNor6Qa8Vl1ATWJD1WN378IxWniHnv
+         PIDA==
+X-Gm-Message-State: AOAM533/UrBebI0ICVNnj5QGl7K6rhFW+tTOQdhqOx3i4Y5AH7f8FmjZ
+        8xVSTNS0iOxJCTGnpH7wr0NxWBLPWDh/+3vNhLHZn+PEZAoXKgD0wOoIq6OTm0CS5K+i8ur22UO
+        vB9efXG1tAwNAyW6wAeN+XDKq/kXT6N9Ny2CZvyMvjcHNZ3v3IpjbxP/jIvZPp6N2znLejH9C
+X-Received: by 2002:a7b:c7cd:: with SMTP id z13mr26158573wmk.54.1623234586795;
+        Wed, 09 Jun 2021 03:29:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxCfBKsc2hGpGgzPI6TcBFUmWxmoZcYpHa6oSIzEs8X7cR/V+42wF1QK1U6zdDyobK3zOUdiQ==
+X-Received: by 2002:a7b:c7cd:: with SMTP id z13mr26158555wmk.54.1623234586577;
+        Wed, 09 Jun 2021 03:29:46 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
+        by smtp.gmail.com with ESMTPSA id y8sm5616010wmi.45.2021.06.09.03.29.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 03:29:46 -0700 (PDT)
+Subject: Re: [PATCH] mm/page_alloc: fix counting of managed_pages
+To:     Liu Shixin <liushixin2@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        yangerkun <yangerkun@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210527125707.3760259-1-liushixin2@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <24751c12-b43e-7860-015b-09d204e6e397@redhat.com>
+Date:   Wed, 9 Jun 2021 12:29:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <329c28ed-95df-9a2c-8893-b444d8a6d340@google.com>
+In-Reply-To: <20210527125707.3760259-1-liushixin2@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 09:30:00PM -0700, Hugh Dickins wrote:
-> TTU_SYNC prevents an unlikely race, when try_to_unmap() returns shortly
-> before the page is accounted as unmapped.  It is unlikely to coincide
-> with hwpoisoning, but now that we have the flag, hwpoison_user_mappings()
-> would do well to use it.
+On 27.05.21 14:57, Liu Shixin wrote:
+> The commit f63661566fad (mm/page_alloc.c: clear out zone->lowmem_reserve[]
+> if the zone is empty) clear out zone->lowmem_reserve[] if zone is empty.
+> But when zone is not empty and sysctl_lowmem_reserve_ratio[i] is set to zero,
+> zone_managed_pages(zone) is not counted in the managed_pages either. This is
+> inconsistent with the description of lowmen_reserve, so fix it.
 > 
-> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Fixes: f63661566fad ("mm/page_alloc.c: clear out zone->lowmem_reserve[] if the zone is empty")
+> Reported-by: yangerkun <yangerkun@huawei.com>
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> ---
+>   mm/page_alloc.c | 12 ++++++------
+>   1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index aaa1655cf682..49a2efce5a84 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -8061,14 +8061,14 @@ static void setup_per_zone_lowmem_reserve(void)
+>   			unsigned long managed_pages = 0;
+>   
+>   			for (j = i + 1; j < MAX_NR_ZONES; j++) {
+> -				if (clear) {
+> -					zone->lowmem_reserve[j] = 0;
+> -				} else {
+> -					struct zone *upper_zone = &pgdat->node_zones[j];
+> +				struct zone *upper_zone = &pgdat->node_zones[j];
+> +
+> +				managed_pages += zone_managed_pages(upper_zone);
+>   
+> -					managed_pages += zone_managed_pages(upper_zone);
+> +				if (clear)
+> +					zone->lowmem_reserve[j] = 0;
+> +				else
+>   					zone->lowmem_reserve[j] = managed_pages / ratio;
+> -				}
+>   			}
+>   		}
+>   	}
+> 
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
- Kirill A. Shutemov
+Thanks,
+
+David / dhildenb
+
