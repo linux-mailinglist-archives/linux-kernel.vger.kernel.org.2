@@ -2,208 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C157C3A13C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8563A13CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239718AbhFIMJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232563AbhFIMJq (ORCPT
+        id S234644AbhFIMMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:12:41 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:63417 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232515AbhFIMMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:09:46 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFAAC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 05:07:51 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id f5so23368864eds.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 05:07:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YyCHyjohVg8f5AvB8SjG/oYMqmkPHsYDsxIiqqZRuLY=;
-        b=p8+do0nGorr2Aj3kckGZh7NNbObeZ1FvaoPQ5M9acdigl3jGuadwnfEL0unXqd+Nmt
-         JnZBGj/JITn5pF0fYwmKB9AU3rDkksvlgps+kOAGMq9L8f+V/L+vUdQ4hicYTrhf6HL2
-         91eevuHu6/LI+koOnyIMdifE0R/LR6q24TzP9TlN2fGNNovAoQl9Mcw4KXpYxy658HOs
-         OxA3tz4fUfHVirmDqzEPnrFS6CFucnWkeryvHYkWpNAgbOCLy7vT/HtOyYbXTakVZmLv
-         pzogGS4BLLQwU4f9BeY3F9CWJDw09lylQF7pCUZK90EPGr70xdVSIqHpkpGBLaNdCgew
-         +9kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YyCHyjohVg8f5AvB8SjG/oYMqmkPHsYDsxIiqqZRuLY=;
-        b=Fc+BgXtoIAa9xE2BMuqSqSzB7xvKiNqT/CdeegvGyj/UVWmUPGj+C+AN/Dg+aKfV/N
-         VtN/vJZA9E2k3SI+FxY6v2Y5gTo+Bf1WFgTCiAipvgNNSMUrLHJFEhLLJ9+/cA0ZaL/M
-         aW5L1H6Q1aqzn0/3xVLl4/RgaE+RG5bjCBkrWwvPiFOwqnUrjboCqCuCpmvPabatlWl6
-         T50mrEHbib7QF5mnu5UX6PyCXg5avoqO5uCp0rrE1IqBxSSQeGka7dsSks3t0NICqxDV
-         gIEs//o6CRlrJXKv2W49xL2KP+UWk0X4EdTLphYIO3lksOHWTKmsBemUccz8zl0lAdB2
-         7rcA==
-X-Gm-Message-State: AOAM5301zfkBugMDhekIClXkocqsl2vgQke2fsY0ugvDF4DDlmiNf6YS
-        sXsMduPHBP0s5Q2GvXZZhdGcMZlYW+d7L04zqak2vg==
-X-Google-Smtp-Source: ABdhPJzSgsZpOyZqPE21klGMdPrjI1ErkEaKq0wlIExVhqIeGSuP87fxJUy5y07iYh5Z9d6yeAm1g3yvlDMAPNV6aOo=
-X-Received: by 2002:aa7:dc12:: with SMTP id b18mr30082329edu.52.1623240467726;
- Wed, 09 Jun 2021 05:07:47 -0700 (PDT)
+        Wed, 9 Jun 2021 08:12:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1623240643; x=1654776643;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9Xk1ujB2kl+qiFwhxmEUDgjYRlHoyizFUOvEaQMLa0Q=;
+  b=tXSUyw2cWH8jBLfG86cGT9FcEm253iJ7gc2pert7i7SM8n3gWc7zXVH/
+   pL6EEZbs4s6Ulbrk1xGfB5ZbSnL/o/dgQwwPhSnGlzZri0NHepZJMsTJg
+   Vx2jqIQIkOCOXmXm709g/LnuVuTYGKsu96VkiZ27rvIYqD5WOFe7YYNAU
+   9yKi1U3oNKgomfmY4sTPdpnb3OLpWexxQNZqP92C0uHepkC4HSwU5N8/S
+   jPwYQuGnakrBOYwOIl9HRwxJbXdPIy6zPiy2cCDRdTb5v7DF+E/ex4GBd
+   vSBENC1hOFn3kBBt2C3BZ7BhQH5Yx3dyCDO7Ef2vIrtI9iS8g2fgPNdYd
+   g==;
+IronPort-SDR: 3KzQrg30tx/nO9bPITuPmyiWWqx6Ljl9T7xHt4v9Qgo9Hqwn2eOA1iX/acZsDFbKKUkbD8MRoW
+ DZpuQ4UJCIVKPH7JK4ELc/XhBuS4yiyBdbqFv4c4DVY36sZu4NPlWxyx6m23Uy33zDwWvTg8v1
+ pdwbtllNctVMs0K1X6EQZvLmi4C7mMkzeZXfUhuAB/KCGOutsgBvVnKvWM9MunReDEZPMhVdOL
+ 2ofz/IFDXqKbZzsZS+R3rb9ypyqOrJvVgdqjF0Ty2LyxKttm1sbF0NdtDRd/ZREmBFzOFM90MA
+ xiE=
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="120688966"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Jun 2021 05:10:42 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 05:10:41 -0700
+Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 9 Jun 2021 05:10:33 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <stern@rowland.harvard.edu>, <gregkh@linuxfoundation.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <cristian.birsan@microchip.com>
+CC:     <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] usb: host: ohci-at91: suspend/resume ports after/before OHCI accesses
+Date:   Wed, 9 Jun 2021 15:10:27 +0300
+Message-ID: <20210609121027.70951-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210608175926.524658689@linuxfoundation.org>
-In-Reply-To: <20210608175926.524658689@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 9 Jun 2021 17:37:36 +0530
-Message-ID: <CA+G9fYvw-Ma6REZ1db2URqg8soWE-nCpNTwExgUtz-tYawks2Q@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/23] 4.4.272-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 at 23:58, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.272 release.
-> There are 23 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.272-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On SAMA7G5 suspending ports will cut the access to OHCI registers and
+any subsequent access to them will lead to CPU being blocked trying to
+access that memory. Same thing happens on resume: if OHCI memory is
+accessed before resuming ports the CPU will block on that access. The
+OCHI memory is accessed on suspend/resume though
+ohci_suspend()/ohci_resume().
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+The patch was tested on SAMA7G5, SAMA5D2 and SAM9X60.
 
-## Build
-* kernel: 4.4.272-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.4.y
-* git commit: 1aa9f2da300268ec8eddf371b698eb77dd21960f
-* git describe: v4.4.271-24-g1aa9f2da3002
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
-71-24-g1aa9f2da3002
+Thank you,
+Claudiu Beznea
 
-## No regressions (compared to v4.4.271)
+ drivers/usb/host/ohci-at91.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-## No fixes (compared to v4.4.271)
+diff --git a/drivers/usb/host/ohci-at91.c b/drivers/usb/host/ohci-at91.c
+index b3a6a497dcb1..7c6202b05ff4 100644
+--- a/drivers/usb/host/ohci-at91.c
++++ b/drivers/usb/host/ohci-at91.c
+@@ -666,8 +666,6 @@ ohci_hcd_at91_drv_suspend(struct device *dev)
+ 	if (ohci_at91->wakeup)
+ 		enable_irq_wake(hcd->irq);
+ 
+-	ohci_at91_port_suspend(ohci_at91, 1);
+-
+ 	ret = ohci_suspend(hcd, ohci_at91->wakeup);
+ 	if (ret) {
+ 		if (ohci_at91->wakeup)
+@@ -687,7 +685,10 @@ ohci_hcd_at91_drv_suspend(struct device *dev)
+ 		/* flush the writes */
+ 		(void) ohci_readl (ohci, &ohci->regs->control);
+ 		msleep(1);
++		ohci_at91_port_suspend(ohci_at91, 1);
+ 		at91_stop_clock(ohci_at91);
++	} else {
++		ohci_at91_port_suspend(ohci_at91, 1);
+ 	}
+ 
+ 	return ret;
+@@ -699,6 +700,8 @@ ohci_hcd_at91_drv_resume(struct device *dev)
+ 	struct usb_hcd	*hcd = dev_get_drvdata(dev);
+ 	struct ohci_at91_priv *ohci_at91 = hcd_to_ohci_at91_priv(hcd);
+ 
++	ohci_at91_port_suspend(ohci_at91, 0);
++
+ 	if (ohci_at91->wakeup)
+ 		disable_irq_wake(hcd->irq);
+ 	else
+@@ -706,8 +709,6 @@ ohci_hcd_at91_drv_resume(struct device *dev)
+ 
+ 	ohci_resume(hcd, false);
+ 
+-	ohci_at91_port_suspend(ohci_at91, 0);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
 
-## Test result summary
- total: 36399, pass: 29083, fail: 370, skip: 6218, xfail: 728,
-
-## Build Summary
-* arm: 96 total, 96 passed, 0 failed
-* arm64: 23 total, 23 passed, 0 failed
-* i386: 13 total, 13 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 13 total, 13 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
