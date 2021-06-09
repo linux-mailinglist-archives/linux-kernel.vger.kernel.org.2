@@ -2,144 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A8D3A16F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4913A16F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbhFIOV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:21:56 -0400
-Received: from regular1.263xmail.com ([211.150.70.201]:33604 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234221AbhFIOVv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:21:51 -0400
-Received: from localhost (unknown [192.168.167.32])
-        by regular1.263xmail.com (Postfix) with ESMTP id 3BF1BE31;
-        Wed,  9 Jun 2021 22:18:55 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.73] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P30810T139673931085568S1623248332896123_;
-        Wed, 09 Jun 2021 22:18:54 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <9bf565096dc6cc666549660df8d44332>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: macromorgan@hotmail.com
-X-RCPT-COUNT: 16
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Subject: Re: [PATCH v6 4/8] clk: rockchip: Add support for hclk_sfc on rk3036
-To:     Johan Jonker <jbx6244@gmail.com>, linux-spi@vger.kernel.org
-Cc:     broonie@kernel.org, robh+dt@kernel.org, heiko@sntech.de,
-        hjc@rock-chips.com, yifeng.zhao@rock-chips.com,
-        sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org,
-        linux-mtd@lists.infradead.org, p.yadav@ti.com,
-        macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Chris Morgan <macromorgan@hotmail.com>
-References: <20210608022644.21074-1-jon.lin@rock-chips.com>
- <20210608022644.21074-5-jon.lin@rock-chips.com>
- <4a4524f5-ee85-c7f6-aa95-1df84f2a8a99@gmail.com>
-From:   Jon Lin <jon.lin@rock-chips.com>
-Message-ID: <d5b4f452-1f76-e82c-42dd-bc6fdf27a59c@rock-chips.com>
-Date:   Wed, 9 Jun 2021 22:18:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <4a4524f5-ee85-c7f6-aa95-1df84f2a8a99@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S235515AbhFIOWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:22:32 -0400
+Received: from mga09.intel.com ([134.134.136.24]:10581 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233694AbhFIOWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:22:24 -0400
+IronPort-SDR: jZzltjBNUMgrcn15fUEK/KnBW64OjR8+7eSRXTpzzonm06HeYaGBlRhLLQXoolU7QuvbHIRWRm
+ XyejX2zYNWFQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="205044704"
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="205044704"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 07:20:29 -0700
+IronPort-SDR: WfLo4cc+UgV6SbfatsBivVOy/B2eTmHjgqMyvbWhvItxXB1u9xe8KCZWFXDBh3Jqx8zUp7IJu0
+ Sr+W/HbBNBjA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="482402661"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.79])
+  by orsmga001.jf.intel.com with ESMTP; 09 Jun 2021 07:20:25 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] perf intel-pt: Add PEBS-via-PT side-band
+Date:   Wed,  9 Jun 2021 17:20:52 +0300
+Message-Id: <20210609142055.32226-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi
 
-On 6/9/21 12:31 AM, Johan Jonker wrote:
-> Hi Jon,
->
-> For rk3036 we might need another fix added to this serie as well.
->
-> clk: rockchip: rk3036: fix up the sclk_sfc parent error
-> https://github.com/rockchip-linux/kernel/commit/100718ef0d44872db1672b6a88030374c0d1613b
->
-> ===
-> Add more people for clk driver changes:
->
-> M:	Michael Turquette <mturquette@baylibre.com>
-> M:	Stephen Boyd <sboyd@kernel.org>
-> L:	linux-clk@vger.kernel.org
->
-> ===
->
-> Johan
->
-> On 6/8/21 4:26 AM, Jon Lin wrote:
->
->> From: Chris Morgan <macromorgan@hotmail.com>
-> From: Randy Li <randy.li@rock-chips.com>
->
->> Add support for the bus clock for the serial flash controller on the
->> rk3036. Taken from the Rockchip BSP kernel but not tested on real
->> hardware (as I lack a 3036 based SoC to test).
->>
-> Signed-off-by: Randy Li <randy.li@rock-chips.com>
->
-> Maybe give credit to the original author?
-> clk: rockchip: rk3036: export the sfc clocks
-> https://github.com/rockchip-linux/kernel/commit/600925e8ef6edbdda0a4ac6b3c55b0199be1e03e
-something wrong when I add randy.li@rock-chips.com email, I will make a 
-confirmation with it with him.
->> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
->> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
->> ---
->>
->> Changes in v6: None
->> Changes in v5: None
->> Changes in v4: None
->> Changes in v3: None
->> Changes in v2: None
->> Changes in v1: None
->>
->>   drivers/clk/rockchip/clk-rk3036.c      | 2 +-
->>   include/dt-bindings/clock/rk3036-cru.h | 1 +
->>   2 files changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/clk/rockchip/clk-rk3036.c b/drivers/clk/rockchip/clk-rk3036.c
->> index 91d56ad45817..ebb628733f6d 100644
->> --- a/drivers/clk/rockchip/clk-rk3036.c
->> +++ b/drivers/clk/rockchip/clk-rk3036.c
->> @@ -403,7 +403,7 @@ static struct rockchip_clk_branch rk3036_clk_branches[] __initdata = {
->>   	GATE(HCLK_OTG0, "hclk_otg0", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(5), 13, GFLAGS),
->>   	GATE(HCLK_OTG1, "hclk_otg1", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(7), 3, GFLAGS),
->>   	GATE(HCLK_I2S, "hclk_i2s", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 2, GFLAGS),
->> -	GATE(0, "hclk_sfc", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(3), 14, GFLAGS),
->> +	GATE(HCLK_SFC, "hclk_sfc", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(3), 14, GFLAGS),
-> Maybe CLK_IGNORE_UNUSED should be changed to 0 ?
->
->>   	GATE(HCLK_MAC, "hclk_mac", "hclk_peri", 0, RK2928_CLKGATE_CON(3), 5, GFLAGS),
->>   
->>   	/* pclk_peri gates */
->> diff --git a/include/dt-bindings/clock/rk3036-cru.h b/include/dt-bindings/clock/rk3036-cru.h
->> index 35a5a01f9697..a96a9870ad59 100644
->> --- a/include/dt-bindings/clock/rk3036-cru.h
->> +++ b/include/dt-bindings/clock/rk3036-cru.h
->> @@ -81,6 +81,7 @@
->>   #define HCLK_OTG0		449
->>   #define HCLK_OTG1		450
->>   #define HCLK_NANDC		453
->> +#define HCLK_SFC		454
->>   #define HCLK_SDMMC		456
->>   #define HCLK_SDIO		457
->>   #define HCLK_EMMC		459
->>
->
->
+PEBS output to Intel Processor Trace was introduced with Atom
+processors based on Tremont.  Currently there is software support
+only for a single PEBS-via-PT event.
+
+Here is support for multiple PEBS-via-PT events.
+
+The first patch is the kernel change which adds a new event,
+namely PERF_RECORD_AUX_OUTPUT_HW_ID which contains the counter
+index.  That is output when the PEBS-via-PT event is enabled in hardware.
+There is an optimization, to report the index only when it changes
+for the event.  That will work only so long as all PEBS-via-PT
+events are scheduled together, which they are for a recording
+session because they are in a single group.
+
+Also no attribute bit is used to select the new event, so a new
+kernel is not compatible with older perf tools.  The assumption
+being that PEBS-via-PT is sufficiently esoteric that users will not
+be troubled by this.
+
+The second patch adds the usual boiler plate to perf tools for
+a new event.
+
+The third patch adds support for processing the new event by
+perf tool's Intel PT decoder.
 
 
+Adrian Hunter (3):
+      perf/x86: Add new event for AUX output counter index
+      perf tools: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
+      perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
+
+ arch/x86/events/core.c                     |  1 +
+ arch/x86/events/intel/ds.c                 | 16 ++++++
+ include/linux/perf_event.h                 |  2 +
+ include/uapi/linux/perf_event.h            | 15 ++++++
+ kernel/events/core.c                       | 30 +++++++++++
+ tools/include/uapi/linux/perf_event.h      | 15 ++++++
+ tools/lib/perf/include/perf/event.h        |  6 +++
+ tools/perf/Documentation/perf-intel-pt.txt |  7 ++-
+ tools/perf/builtin-inject.c                |  4 +-
+ tools/perf/builtin-record.c                |  2 +-
+ tools/perf/util/event.c                    | 18 +++++++
+ tools/perf/util/event.h                    |  5 ++
+ tools/perf/util/intel-pt.c                 | 85 ++++++++++++++++++++++++++++--
+ tools/perf/util/machine.c                  | 10 ++++
+ tools/perf/util/machine.h                  |  2 +
+ tools/perf/util/session.c                  |  5 ++
+ tools/perf/util/tool.h                     |  1 +
+ 17 files changed, 217 insertions(+), 7 deletions(-)
+
+
+Regards
+Adrian
