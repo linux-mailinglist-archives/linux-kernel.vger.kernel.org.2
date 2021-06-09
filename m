@@ -2,86 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844B73A0ADF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691083A0ADA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236628AbhFIDwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 23:52:36 -0400
-Received: from m12-11.163.com ([220.181.12.11]:50425 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236625AbhFIDwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 23:52:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=RJ4fd
-        jimFMvS3XV/vDOCbbbkesEyGJABjAOIjnI8IZI=; b=TEXyxLyZJ5i+KMxJsOzHc
-        n2JSn3L3isxgOc5JbxjZtTLsvKEE5t2U/7xXNE+yOF/M4fVL+admRXvB/9PRh5qk
-        TaR0PBX3VAHOpxI4bhSSWj7kdbS15VJMYRyWSndyiKwVGEF1EccdUzvbMtq1cdtW
-        kKGhPinRGqlofqpTcfP83I=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp7 (Coremail) with SMTP id C8CowAC3vWVpOsBgeNMZhA--.891S2;
-        Wed, 09 Jun 2021 11:50:02 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] scsi: lpfc: lpfc_debugfs: deleted these repeated words
-Date:   Wed,  9 Jun 2021 11:49:00 +0800
-Message-Id: <20210609034900.382363-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S236604AbhFIDwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 23:52:06 -0400
+Received: from smtprelay0055.hostedemail.com ([216.40.44.55]:54174 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232663AbhFIDwE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 23:52:04 -0400
+Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id E08E2100E7B42;
+        Wed,  9 Jun 2021 03:50:09 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 00DBE2448B8;
+        Wed,  9 Jun 2021 03:50:08 +0000 (UTC)
+Message-ID: <601ccbd8b792abd0177475dd09fdd2d6c6f4a6af.camel@perches.com>
+Subject: Re: [PATCH] drivers/media/usb/gspca: fix typo issues
+From:   Joe Perches <joe@perches.com>
+To:     Herman <herman.yim88@gmail.com>, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Herman <yanshuaijun@yulong.com>
+Date:   Tue, 08 Jun 2021 20:50:07 -0700
+In-Reply-To: <20210609033245.3410-1-yanshuaijun@yulong.com>
+References: <20210609033245.3410-1-yanshuaijun@yulong.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowAC3vWVpOsBgeNMZhA--.891S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7CF1Dtw1xKFy7WF17JFy8AFb_yoW8Ar13pa
-        93Ka4rJr1kCF1IyF13Cw4rAF9Yya93XF4UCFWjk34rAF4rGr1ftF95trWFqFWFkF1rZFnF
-        yrs09rW5Gr4DurJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bjPEfUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/xtbBEQusUFaEEqWA2wAAsY
+X-Spam-Status: No, score=0.75
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 00DBE2448B8
+X-Stat-Signature: hjs4d3sspc3pgzqpn4bui4ttzasi7mp4
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+kmaYY4IQks9Mb8gl3kaXbJLpjBL4RF8E=
+X-HE-Tag: 1623210608-368423
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+On Wed, 2021-06-09 at 11:32 +0800, Herman wrote:
+> spca501.c : remove redundant 'is'
+> zc3xx.c   : change 'outdoore' into 'outdoor'
+[]
+> diff --git a/drivers/media/usb/gspca/zc3xx.c b/drivers/media/usb/gspca/zc3xx.c
+[]
+> @@ -5806,7 +5806,7 @@ static void setquality(struct gspca_dev *gspca_dev)
+>   * Valid frequencies are:
+>   *	50Hz, for European and Asian lighting (default)
+>   *	60Hz, for American lighting
+> - *	0 = No Fliker (for outdoore usage)
+> + *	0 = No Fliker (for outdoor usage)
 
-deleted these repeated words 'while' and 'from' in the comments.
+Fliker/Flicker?
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- drivers/scsi/lpfc/lpfc_debugfs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/lpfc/lpfc_debugfs.c b/drivers/scsi/lpfc/lpfc_debugfs.c
-index 658a962832b3..c67e8a0e0b32 100644
---- a/drivers/scsi/lpfc/lpfc_debugfs.c
-+++ b/drivers/scsi/lpfc/lpfc_debugfs.c
-@@ -136,7 +136,7 @@ static struct lpfc_idiag idiag;
-  * gather from the beginning of the log and process until the current entry.
-  *
-  * Notes:
-- * Discovery logging will be disabled while while this routine dumps the log.
-+ * Discovery logging will be disabled while this routine dumps the log.
-  *
-  * Return Value:
-  * This routine returns the amount of bytes that were dumped into @buf and will
-@@ -202,7 +202,7 @@ lpfc_debugfs_disc_trc_data(struct lpfc_vport *vport, char *buf, int size)
-  * gather from the beginning of the log and process until the current entry.
-  *
-  * Notes:
-- * Slow ring logging will be disabled while while this routine dumps the log.
-+ * Slow ring logging will be disabled while this routine dumps the log.
-  *
-  * Return Value:
-  * This routine returns the amount of bytes that were dumped into @buf and will
-@@ -2541,7 +2541,7 @@ lpfc_debugfs_lseek(struct file *file, loff_t off, int whence)
-  * @ppos: The position in the file to start reading from.
-  *
-  * Description:
-- * This routine reads data from from the buffer indicated in the private_data
-+ * This routine reads data from the buffer indicated in the private_data
-  * field of @file. It will start reading at @ppos and copy up to @nbytes of
-  * data to @buf.
-  *
--- 
-2.25.1
+but there are a lot of those in this file...
 
