@@ -2,97 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41523A1F67
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371923A1F71
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhFIVxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:53:14 -0400
-Received: from mga04.intel.com ([192.55.52.120]:35337 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230113AbhFIVxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:53:06 -0400
-IronPort-SDR: 0K6JEMkyxJIm8QCao8Iq1tXz2jS1qAMMRNMfUdAnPw2Lkyd9b+J1e6qnnXsfs+i4N3Bd+49uKP
- GGjnqRm5tpUg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="203326907"
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="203326907"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:51:11 -0700
-IronPort-SDR: 76UfN3uDjvraRlsgIXYVAqXNWyLC2g80Jbwag83r2dAG9EW7+00wAWv3cNy1lfvx3sFvpWteOZ
- xEBBEcMfDxHQ==
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="482553415"
-Received: from qwang4-mobl1.ccr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.35.228])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:51:10 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S229935AbhFIVzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:55:50 -0400
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:37687 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhFIVzu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:55:50 -0400
+Received: by mail-lj1-f169.google.com with SMTP id e2so1795424ljk.4;
+        Wed, 09 Jun 2021 14:53:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Cn4WXgEYQDhzlifeR1OXF9mGSDchXFcqCqjUIDqHe4g=;
+        b=MxrfFHnDhk8BsnSl+CSUJ5TQ/FKIk9eJWhqIG4PjCgbD74vI5QTYVYnZgTVBhODFSS
+         KemU4XCCq7b9+RqpgpvvhJkaCp4zzwAkHZbssa1ulXZ4TE1/+LQcKY7VmhYBu91H3w06
+         wWv/dpeiPE6NN0MEgDyhJwaZKWU3IgHY2zhaEihIQVeuvEhXL4KW/cggV/MBzvRMNasD
+         XeblaxHtO1kqDWHYv9xRTX90SNWvDzoS0Wzd+kITRHh0POQrCt8Zi2FfE1jcOdlMUJyN
+         j/GFoYtQxFztcmE415JPYxuKpM6/snPeSrCLgTEC1RWRWqH1bCvT23fRABqrDp113pKe
+         3vnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Cn4WXgEYQDhzlifeR1OXF9mGSDchXFcqCqjUIDqHe4g=;
+        b=NdOiVbTOfK8hufwPerlskJ36Fwl8XgwUvl4c7jTSF41dKAAgjdOErq8PHuEvB9cpJ/
+         5XNng6rUCOYV4K2/i69P4owGn/cy/jHRVHwg943QFhI/AycfzA3MD3MrzlEK2OjTgeTb
+         YJ4RD2dF17KcLMylgwQQfK1Vf5sV30NrFqYVaGdrOKj+2YZ6gmOoDBCIccpeQ5/S4P3o
+         iLFPh0olQ77DDiwcmj2RUgSiwu3AMhZfduFv10EAO2ONq8f1y/9ZostOyOtbuF+liXAz
+         48kLTeDlsYUweqV8BA+0WxHXjq1JPysdUYQNU2lrp9yVBZwmmvs514u3eVmfCetiEEo3
+         RBJA==
+X-Gm-Message-State: AOAM531Kx4FvG/kpzNCSxM3weITK+/wzHpPYXiubTQdK7fmt0VCezVnn
+        KF6E6kEZ1BFSO7zvCpQN0RA=
+X-Google-Smtp-Source: ABdhPJz64BoFB/PL70CNB9/F3rN7GYI2J44vC6SuUkqrntR5Ju/aCcZrRTIPHTzYxb4X12E3zJ43ag==
+X-Received: by 2002:a2e:7d0f:: with SMTP id y15mr1379761ljc.388.1623275561355;
+        Wed, 09 Jun 2021 14:52:41 -0700 (PDT)
+Received: from localhost (public-gprs650102.centertel.pl. [5.184.82.183])
+        by smtp.gmail.com with ESMTPSA id m13sm101426lfh.297.2021.06.09.14.51.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 14:51:42 -0700 (PDT)
+From:   Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-acpi@vger.kernel.org
-Subject: [PATCH v1 5/5] x86: Skip WBINVD instruction for VM guest
-Date:   Wed,  9 Jun 2021 14:50:47 -0700
-Message-Id: <20210609215047.1955866-6-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210609215047.1955866-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210609215047.1955866-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH] doc: Remove references to IBM Calgary
+Date:   Wed,  9 Jun 2021 23:51:12 +0200
+Message-Id: <1bd2b57dd1db53df09e520b8170ff61418805de4.1623274832.git.hubert.jasudowicz@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VM guests that supports ACPI, use standard ACPI mechanisms to signal
-sleep state entry (including reboot) to the host. The ACPI
-specification mandates WBINVD on any sleep state entry with the
-expectation that the platform is only responsible for maintaining the
-state of memory over sleep states, not preserving dirty data in any
-CPU caches. ACPI cache flushing requirements pre-date the advent of
-virtualization. Given guest sleep state entry does not affect any
-host power rails it is not required to flush caches. The host is
-responsible for maintaining cache state over its own bare metal sleep
-state transitions that power-off the cache. A TDX guest, unlike a
-typical guest, will machine check if the CPU cache is powered off.
+Calgary IOMMU driver has been removed in 90dc392fc445.
+Clean up stale docs that refer to it.
 
-Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-Cc: linux-acpi@vger.kernel.org
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Signed-off-by: Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
 ---
- arch/x86/include/asm/acenv.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ Documentation/x86/x86_64/boot-options.rst | 31 +----------------------
+ 1 file changed, 1 insertion(+), 30 deletions(-)
 
-diff --git a/arch/x86/include/asm/acenv.h b/arch/x86/include/asm/acenv.h
-index 9aff97f0de7f..d4162e94bee8 100644
---- a/arch/x86/include/asm/acenv.h
-+++ b/arch/x86/include/asm/acenv.h
-@@ -10,10 +10,15 @@
- #define _ASM_X86_ACENV_H
+diff --git a/Documentation/x86/x86_64/boot-options.rst b/Documentation/x86/x86_64/boot-options.rst
+index 324cefff92e7..5f62b3b86357 100644
+--- a/Documentation/x86/x86_64/boot-options.rst
++++ b/Documentation/x86/x86_64/boot-options.rst
+@@ -247,16 +247,11 @@ Multiple x86-64 PCI-DMA mapping implementations exist, for example:
+       Kernel boot message: "PCI-DMA: Using software bounce buffering
+       for IO (SWIOTLB)"
  
- #include <asm/special_insns.h>
-+#include <asm/cpu.h>
+-   4. <arch/x86_64/pci-calgary.c> : IBM Calgary hardware IOMMU. Used in IBM
+-      pSeries and xSeries servers. This hardware IOMMU supports DMA address
+-      mapping with memory protection, etc.
+-      Kernel boot message: "PCI-DMA: Using Calgary IOMMU"
+-
+ ::
  
- /* Asm macros */
+   iommu=[<size>][,noagp][,off][,force][,noforce]
+   [,memaper[=<order>]][,merge][,fullflush][,nomerge]
+-  [,noaperture][,calgary]
++  [,noaperture]
  
--#define ACPI_FLUSH_CPU_CACHE()	wbinvd()
-+#define ACPI_FLUSH_CPU_CACHE()				\
-+do {							\
-+	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))	\
-+		wbinvd();				\
-+} while (0)
+ General iommu options:
  
- int __acpi_acquire_global_lock(unsigned int *lock);
- int __acpi_release_global_lock(unsigned int *lock);
+@@ -295,8 +290,6 @@ iommu options only relevant to the AMD GART hardware IOMMU:
+       Don't initialize the AGP driver and use full aperture.
+     panic
+       Always panic when IOMMU overflows.
+-    calgary
+-      Use the Calgary IOMMU if it is available
+ 
+ iommu options only relevant to the software bounce buffering (SWIOTLB) IOMMU
+ implementation:
+@@ -307,28 +300,6 @@ implementation:
+       force
+         Force all IO through the software TLB.
+ 
+-Settings for the IBM Calgary hardware IOMMU currently found in IBM
+-pSeries and xSeries machines
+-
+-    calgary=[64k,128k,256k,512k,1M,2M,4M,8M]
+-      Set the size of each PCI slot's translation table when using the
+-      Calgary IOMMU. This is the size of the translation table itself
+-      in main memory. The smallest table, 64k, covers an IO space of
+-      32MB; the largest, 8MB table, can cover an IO space of 4GB.
+-      Normally the kernel will make the right choice by itself.
+-    calgary=[translate_empty_slots]
+-      Enable translation even on slots that have no devices attached to
+-      them, in case a device will be hotplugged in the future.
+-    calgary=[disable=<PCI bus number>]
+-      Disable translation on a given PHB. For
+-      example, the built-in graphics adapter resides on the first bridge
+-      (PCI bus number 0); if translation (isolation) is enabled on this
+-      bridge, X servers that access the hardware directly from user
+-      space might stop working. Use this option if you have devices that
+-      are accessed from userspace directly on some PCI host bridge.
+-    panic
+-      Always panic when IOMMU overflows
+-
+ 
+ Miscellaneous
+ =============
 -- 
-2.25.1
+2.32.0
 
