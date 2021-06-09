@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCC83A16A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D54F3A16AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbhFIOLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:11:12 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33332 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232474AbhFIOLL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:11:11 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 159E9COZ013195;
-        Wed, 9 Jun 2021 09:09:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623247752;
-        bh=+hUmNy6lh00j1G/dAJ1wjYIi58XeS/+ysrAXq6S55UU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=fz9VhToeahDH2NuSCmGHwZb3/eD5QPqKEoIn5iV6xjl0GssQdBgCloJCcuUwbnpK6
-         BKawYpJ/NO63HeqWQ/0qRVR6BE4HdZpXa5aVsVCbP5em0Mtia9ZqNf5RBZiR96K1/H
-         2vEyXug+hASA2rodz3TPo2OspIaNc6FoBEaXxCoA=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 159E9CiV055770
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Jun 2021 09:09:12 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
- 2021 09:09:11 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 9 Jun 2021 09:09:11 -0500
-Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 159E96lQ073591;
-        Wed, 9 Jun 2021 09:09:08 -0500
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-am64-main: Update the location of
- ATF in SRAM and increase its max size
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>, Suman Anna <s-anna@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210607133806.18158-1-a-govindraju@ti.com>
-From:   Lokesh Vutla <lokeshvutla@ti.com>
-Message-ID: <ad34982c-0067-7b8b-f7e6-775e8cffe21c@ti.com>
-Date:   Wed, 9 Jun 2021 19:39:06 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233967AbhFIOMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:12:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232474AbhFIOMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:12:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A37D261285;
+        Wed,  9 Jun 2021 14:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623247810;
+        bh=XVSIs8gLCt9INCVjowedsNE35bHNbRG2HRz7YC4IGEA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X8cuFTUdMUT+9okGGDOIiJCiOdAc0FC8MUql48zi2Vdl7aeyAYG1bLOni2EhLTTzR
+         0uEXQS6LGkOINcBB8l9n0dI6BZmuflz38/XmUvjbVTS22G2s++0XD+rQuegn/ul5eV
+         guyjQCGc7wY+U4V6nqMEysAdOwM+XM5biJdRNPB/QPcenqaM9y3STSK261rgGQJ7Cy
+         h1nu1nwmiKwWwq1uxlbyIX5t7nYH+hx6ZY2SKIE8ukjC7aFfdk25oeVGX0I134wBYX
+         xiPIMw7TKbq20Nnl8/Z4/DdwYC01EZ4PasoKqhG1au5oUEqueHVMixaDYI8Leo4m5D
+         MIWg5e6UvVfvg==
+Date:   Wed, 9 Jun 2021 19:40:06 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sanjay R Mehta <Sanju.Mehta@amd.com>
+Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
+        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
+        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
+        mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v9 3/3] dmaengine: ptdma: Add debugfs entries for PTDMA
+Message-ID: <YMDLvnCyfo8+StpW@vkoul-mobl>
+References: <1622654551-9204-1-git-send-email-Sanju.Mehta@amd.com>
+ <1622654551-9204-4-git-send-email-Sanju.Mehta@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210607133806.18158-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622654551-9204-4-git-send-email-Sanju.Mehta@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02-06-21, 12:22, Sanjay R Mehta wrote:
 
+> +/* DebugFS helpers */
+> +#define	MAX_NAME_LEN	20
+> +#define	RI_VERSION_NUM	0x0000003F
+> +
+> +#define	RI_NUM_VQM	0x00078000
+> +#define	RI_NVQM_SHIFT	15
+> +
+> +static DEFINE_MUTEX(pt_debugfs_lock);
 
-On 07/06/21 7:08 pm, Aswath Govindraju wrote:
-> Due to a limitation for USB DFU boot mode, SPL load address has to be less
-> than  or equal to 0x70001000. So, load address of SPL and ATF have been
-> moved to 0x70000000 and 0x701a0000 respectively.
-> 
-> Also, the maximum size of ATF has been increased to 0x1c000 [1].
-> 
-> Therefore, update ATF's location and maximum size accordingly in the device
-> tree file.
-> 
-> [1] - https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=2fb5312f61a7de8b7a70e1639199c4f14a10b6f9
-> 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+unused?
 
-Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+> +
+> +static int pt_debugfs_info_show(struct seq_file *s, void *p)
+> +{
+> +	struct pt_device *pt = s->private;
+> +	unsigned int regval;
+> +
+> +	if (!pt)
+> +		return 0;
 
-I have already applied the corresponding U-Boot change into for-next branch.
+better return an error code?
 
-Thanks and regards,
-Lokesh
+> +
+> +	seq_printf(s, "Device name: %s\n", pt->name);
+> +	seq_printf(s, "   # Queues: %d\n", 1);
+> +	seq_printf(s, "     # Cmds: %d\n", pt->cmd_count);
+> +
+> +	regval = ioread32(pt->io_regs + CMD_PT_VERSION);
+
+how do you ensure your device is not sleeping or you can access iomem
+safely?
+
+> +void ptdma_debugfs_setup(struct pt_device *pt)
+> +{
+> +	struct pt_cmd_queue *cmd_q;
+> +	char name[MAX_NAME_LEN + 1];
+> +	struct dentry *debugfs_q_instance;
+> +
+> +	if (!debugfs_initialized())
+> +		return;
+> +
+> +	debugfs_create_file("info", 0400, pt->dma_dev.dbg_dev_root, pt,
+> +			    &pt_debugfs_info_fops);
+> +
+> +	debugfs_create_file("stats", 0600, pt->dma_dev.dbg_dev_root, pt,
+
+why 600 here?
+-- 
+~Vinod
