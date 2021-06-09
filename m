@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BE73A0F8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED5B3A0F9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237993AbhFIJZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhFIJZA (ORCPT
+        id S238007AbhFIJ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:28:18 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:40646 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237844AbhFIJ2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:25:00 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3F4C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 02:22:52 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id f21so10763689vsl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g0YZpXNbvNe/aSIMfW/fwl9JTlg+qPtxAYhHQZpkJJ4=;
-        b=CyVtn6ZSLRs1oFQym5BtCew3deGCkiBozlrFzkPIiKz5Rb7UCB26M8AyNnmSisKHTr
-         F1/le1gMmi0RFt6NQF0eucGdqRZgkKDwvYbOOjVt8bCBLLIf3lTcakxEWcNDLAB89nKG
-         4IosI3wPfmZwZhHQSynroTq0O6TTShBe35D+FTlwBf+3t0N1a7XKJ8lXf9U7PYgbVrP7
-         Tb53lyrs2E+NfzJ/u1vOGHtJLC35qtzM1KkFafmPlmXLBKlKUVybXKgcVnniOCWnuMZX
-         J7CXv8iAEtf6FD4DSZOqz4p97tUD7Kj0xj5QL8CMLT6Wb8/FNP0Y5e8EGjMm/b1enD4B
-         GOuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g0YZpXNbvNe/aSIMfW/fwl9JTlg+qPtxAYhHQZpkJJ4=;
-        b=FSuWnGA9aKAWPCIfi0VAHjx46Xg6oGIo1BpIgCCx8hW0I8hAvZROYFeLL9HOLX2syh
-         n9/d9VpYTjtZabwYQmkxAnpnOqlffLW5X6e2rAnfUWFOZz9yfNbocK8uQba7EH0qYfEX
-         xvoKRYuLjVgpMlwWP+u2f/zPiPfeOkZV0zLp/7ZBhrLJ89kPhQssp1KdtFUUxwWBB31t
-         1Vkc1N8JNBQsOZxRvwSrUroedMhNXTb0B/RbL6+gzLWkSxyH4aqWsi7rQibvgC4KpMQ8
-         aGLIfxBebY3pcJsR/Yg0F7+ikaekupEbJqsS9pmKDJIEfJBcX/a2HiVTIbXUFsLyTn2H
-         U0ZA==
-X-Gm-Message-State: AOAM532t8jAKVcx4rVLSvEDD94m5/zCu2UD9KB3qLtMeRTf0ZSttOuxg
-        UCOFKZ+KUwtWv/nz565n5T/TEqw7pjCbyZ59ITc8ng==
-X-Google-Smtp-Source: ABdhPJwmQWO+A9c4qf5r1Sf38PiCEAqfFiT0xFdSmkConGycXQzCXk0CGXuaUZiTt7ZCa0L/YNo6OIhaj0pjcUYyCjg=
-X-Received: by 2002:a67:e359:: with SMTP id s25mr3243979vsm.55.1623230571541;
- Wed, 09 Jun 2021 02:22:51 -0700 (PDT)
+        Wed, 9 Jun 2021 05:28:14 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1599FHD1193957;
+        Wed, 9 Jun 2021 09:26:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=6S6WmF1RHkA6lwvFt9GfzxcKo7EcUbACQoyh5cO86RU=;
+ b=hAc0xeaqrhz9SntQjWxIyQtEdB/7q8vMmeLDZlyakUA0c/FJTyFnec9bxxLXOXXth3Si
+ fPWfV3Ggcte8GfBfLZsHpw5aek6TIefbHtu5IhhbswRzq6OZEAkffO2TCzqrtb/iuiTw
+ CMug6RZE+QG3ccUkyqtDbZNX7Txq787FkC7Md/h2OzAN0uQ3Emti6F+zS8EcPrhfkSaJ
+ GWjrm+TFBVKlI7ltCFbJLnofrMjUhqXUriPHodKmrfQORuL9UIQ4cps788xoZ1c1zM88
+ qqHB3fq1DBmaKGgDEdh6IX/KRBOJYdwCpqy3WWcLTZnmZAqW7EW39qQWy5qqKvOrHQPS fA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 3900ps8kch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Jun 2021 09:26:13 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1599P48Z128246;
+        Wed, 9 Jun 2021 09:26:12 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 390k1rs72q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Jun 2021 09:26:12 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1599QCmb129998;
+        Wed, 9 Jun 2021 09:26:12 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 390k1rs72a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Jun 2021 09:26:12 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1599QAWG005757;
+        Wed, 9 Jun 2021 09:26:11 GMT
+Received: from mwanda (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Jun 2021 09:26:10 +0000
+Date:   Wed, 9 Jun 2021 12:26:02 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Tomas Henzl <thenzl@redhat.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH 1/2] scsi: mpi3mr: delete unnecessary NULL check
+Message-ID: <YMCJKgykDYtyvY44@mwanda>
 MIME-Version: 1.0
-References: <20210602192758.38735-1-alcooperx@gmail.com> <20210602192758.38735-2-alcooperx@gmail.com>
- <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com> <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com>
-In-Reply-To: <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 9 Jun 2021 11:22:15 +0200
-Message-ID: <CAPDyKFpEtvjS1mWC68gRBWD64dq2M1LO84UWE5uDLTzbGz1g8Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
- controller on the BCM7211
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
-        Scott Branden <sbranden@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-GUID: 6U61dNLuiHdyJTxWQ3MlWxuCzS5JlmF8
+X-Proofpoint-ORIG-GUID: 6U61dNLuiHdyJTxWQ3MlWxuCzS5JlmF8
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10009 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1011
+ bulkscore=0 spamscore=0 mlxscore=0 adultscore=0 malwarescore=0
+ phishscore=0 suspectscore=0 lowpriorityscore=0 mlxlogscore=999
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106090042
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 at 05:07, Florian Fainelli <f.fainelli@gmail.com> wrote:
->
->
->
-> On 6/8/2021 5:40 AM, Ulf Hansson wrote:
-> > On Wed, 2 Jun 2021 at 21:28, Al Cooper <alcooperx@gmail.com> wrote:
-> >>
-> >> Add support for the legacy Arasan sdhci controller on the BCM7211 and
-> >> related SoC's. This includes adding a .shutdown callback to increase
-> >> the power savings during S5.
-> >
-> > Please split this into two separate changes.
-> >
-> > May I also ask about the ->shutdown() callback and in relation to S5.
-> > What makes the ->shutdown callback only being invoked for S5?
->
-> It is not only called for S5 (entered via poweroff on a prompt) but also
-> during kexec or reboot. The poweroff path is via:
->
-> kernel_power_off() -> kernel_shutdown_prepare() -> device_shutdown() ->
-> .shutdown()
->
-> For kexec or reboot we do not really care about power savings since we
-> are about to load a new image anyway, however for S5/poweroff we do care
-> about quiescing the eMMC controller in a way that its clocks and the
-> eMMC device can be put into low power mode since we will stay in that
-> mode for seconds/hours/days until someone presses a button on their
-> remote (or other wake-up sources).
+The "mrioc->intr_info" pointer can't be NULL, but if it could then the
+second iteration through the loop would Oops.  Let's delete the
+confusing and impossible NULL check.
 
-Hmm, I am not sure I understand correctly. At shutdown we don't care
-about wake-up sources from the kernel point of view, instead we treat
-everything as if it will be powered off.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/scsi/mpi3mr/mpi3mr_fw.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-We put devices into low power state at system suspend and potentially
-also during some of the hibernation phases.
+diff --git a/drivers/scsi/mpi3mr/mpi3mr_fw.c b/drivers/scsi/mpi3mr/mpi3mr_fw.c
+index acb2be62080a..40696b75345d 100644
+--- a/drivers/scsi/mpi3mr/mpi3mr_fw.c
++++ b/drivers/scsi/mpi3mr/mpi3mr_fw.c
+@@ -3583,8 +3583,7 @@ static void mpi3mr_free_mem(struct mpi3mr_ioc *mrioc)
+ 
+ 	for (i = 0; i < mrioc->intr_info_count; i++) {
+ 		intr_info = mrioc->intr_info + i;
+-		if (intr_info)
+-			intr_info->op_reply_q = NULL;
++		intr_info->op_reply_q = NULL;
+ 	}
+ 
+ 	kfree(mrioc->req_qinfo);
+-- 
+2.30.2
 
-Graceful shutdown of the eMMC is also managed by the mmc core.
-
-Kind regards
-Uffe
