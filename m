@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52873A14AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BCA3A14AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbhFIMnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:43:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232663AbhFIMng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:43:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 325606128A;
-        Wed,  9 Jun 2021 12:41:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623242501;
-        bh=Xbsc3bY6YJ0pnoKPD9UgbsyV3ALnbDq7EDI/CjmvsZ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2sb+2we58p3qKSNv2yBAgyV29ezdYBJ09mOUVmW2U4W4CzbJo5ZcOGHRdJvz1enPp
-         8tT84Q6cwvzAxuwKADtTqFvM7LDk81N/QiXLzW0rKIeDvI6SS0C81ht/QWv6dX3W2X
-         o1sTgvIgp/Q6PjFYR0eL6AGaaEsQ0sezRr6ZEPd0=
-Date:   Wed, 9 Jun 2021 14:41:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH v1 2/3] serial: 8250_exar: Extract exar_get_platform()
- helper
-Message-ID: <YMC3AhYbxA0Nbp8q@kroah.com>
-References: <20210608144239.12697-1-andriy.shevchenko@linux.intel.com>
- <20210608144239.12697-2-andriy.shevchenko@linux.intel.com>
+        id S234089AbhFIMoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhFIMoE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 08:44:04 -0400
+Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A5AC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 05:42:09 -0700 (PDT)
+Received: from [IPv6:2a02:a03f:eafb:ee01:a92e:8520:f692:3284] (unknown [IPv6:2a02:a03f:eafb:ee01:a92e:8520:f692:3284])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id E5A9020B177;
+        Wed,  9 Jun 2021 14:42:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1623242528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h+vjUUCU4wSBBhM4Nks/zfyl16+i4xTmkh2sMIqyJqM=;
+        b=ABHe94Gg9L0fNIE6zDsITYpw8TbuXErA4Swnm+64BIfGAJTAfPWzCqz/J079eTsRcNCs9D
+        YcNi7L4WeQ5QEvcbKkBTeyqreZj8CAfHo/t8HdkTZgEhhW1aJ6Gi+wOFIB12FS91Pkeo+l
+        zT79Ab75KBfdP+MUzruoFOgLkoEJ7bEIhd20Y+nt8gHzrzWwCOGiQl1D24M4PLs9eimQay
+        /fBBlxs7gEGoq3nTj9T8SIEiranCj9+pidWq9JdKxFnVk0tAnaDcE9a2jhDv9d5XOg+OhJ
+        OnoGujyW8OcrElRK4G1xVvDW+B9Dr5SXCfjZ/JKvpzGa9sgQMFEDRp6clpzZcA==
+Message-ID: <ba7ef002d610ff5b5fc2c31411a1009587e2f068.camel@svanheule.net>
+Subject: Re: [PATCH 1/2] Revert "regmap: mdio: Add clause-45 support"
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Adrew Lunn <andrew@lunn.ch>
+Date:   Wed, 09 Jun 2021 14:42:06 +0200
+In-Reply-To: <20210609122401.GA20286@sirena.org.uk>
+References: <cover.1623238313.git.sander@svanheule.net>
+         <deed937f8fd63285e95acdfa8ca327638057811f.1623238313.git.sander@svanheule.net>
+         <20210609122401.GA20286@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608144239.12697-2-andriy.shevchenko@linux.intel.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 05:42:38PM +0300, Andy Shevchenko wrote:
-> We would like to use DMI matching in other functions as well.
-> Hence, extract it as exar_get_platform() helper function.
+On Wed, 2021-06-09 at 13:24 +0100, Mark Brown wrote:
+> On Wed, Jun 09, 2021 at 01:46:05PM +0200, Sander Vanheule wrote:
+> > This reverts commit f083be9db060fbac09123d80bdffb2c001ac0e2b.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/tty/serial/8250/8250_exar.c | 20 ++++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
+> Please submit patches using subject lines reflecting the style for the
+> subsystem, this makes it easier for people to identify relevant patches.
+> Look at what existing commits in the area you're changing are doing and
+> make sure your subject lines visually resemble what they're doing.
+> There's no need to resubmit to fix this alone.
+
+I had grepped the commit log for other reverting patches, which also appear to
+use this style, but I didn't check the regmap-specific ones.
+
+
+> > There are currently no (planned) regmap users for C45 register access.
+> > Remove support for now, to reduce dead code.
 > 
-> diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
-> index bd4e9f6ac29c..3ffeedc29c83 100644
-> --- a/drivers/tty/serial/8250/8250_exar.c
-> +++ b/drivers/tty/serial/8250/8250_exar.c
-> @@ -501,23 +501,27 @@ static const struct dmi_system_id exar_platforms[] = {
->  	{}
->  };
->  
-> +static const struct exar8250_platform *exar_get_platform(void)
-> +{
-> +	const struct dmi_system_id *dmi_match;
-> +
-> +	dmi_match = dmi_first_match(exar_platforms);
-> +	if (dmi_match)
-> +		return dmi_match->driver_data;
-> +
-> +	return &exar8250_default_platform;
-> +}
-> +
->  static int
->  pci_xr17v35x_setup(struct exar8250 *priv, struct pci_dev *pcidev,
->  		   struct uart_8250_port *port, int idx)
->  {
-> -	const struct exar8250_platform *platform;
-> -	const struct dmi_system_id *dmi_match;
-> +	const struct exar8250_platform *platform = exar_get_platform();
->  	unsigned int offset = idx * 0x400;
->  	unsigned int baud = 7812500;
->  	u8 __iomem *p;
->  	int ret;
->  
-> -	dmi_match = dmi_first_match(exar_platforms);
-> -	if (dmi_match)
-> -		platform = dmi_match->driver_data;
-> -	else
-> -		platform = &exar8250_default_platform;
-> -
->  	port->port.uartclk = baud * 16;
->  	port->port.rs485_config = platform->rs485_config;
->  
-> -- 
-> 2.30.2
-> 
+> This then creates a bootstrapping issue for anyone who does need it - I
+> can't see any way in which this causes problems or gets in the way?
 
-Do not mix "fixes with features" in a single series, as I now have to
-pick it apart and apply it to different branches by hand :(
+If you would rather keep this, I should modify the other patch (regmap: mdio:
+Reject invalid clause-22 addresses) to also cover C45 addresses.
+Furthermore, there's an issue with a pointer const-ness in __regmap_init_mdio
+that needs to be fixed if this code is staying.
 
-Please do different series for the two different things if at all
-possible.
+I'll submit a v2 that fixes __regmap_init_mdio, and also applies the address
+checks to C45 access.
 
-thanks,
+Best,
+Sander
 
-greg k-h
