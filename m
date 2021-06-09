@@ -2,94 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB363A1198
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837D73A11A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235210AbhFIKxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:53:53 -0400
-Received: from mga03.intel.com ([134.134.136.65]:12342 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238251AbhFIKxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:53:36 -0400
-IronPort-SDR: kc28D1G2DRmP40BbuRSaXDgmNYQle83KJ8nigvfTMIwbiHnANi6Fyo536/Kw4yKimZpIiwhH8k
- VOiThl4ED5Vg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="205075087"
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="205075087"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 03:51:42 -0700
-IronPort-SDR: /8/VzLqSeyG0K2ay/hlKGzNyBq+zfQwNVDwj4tDzhq0J/VXPYYWkZFchHSnW2hERpaFEVGznH0
- T25XRsFtkEIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="448241838"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga008.jf.intel.com with ESMTP; 09 Jun 2021 03:51:41 -0700
-Received: from abityuts-desk1.fi.intel.com (abityuts-desk1.fi.intel.com [10.237.68.32])
-        by linux.intel.com (Postfix) with ESMTP id 490AF5808BE;
-        Wed,  9 Jun 2021 03:51:40 -0700 (PDT)
-Message-ID: <29b8c8e6975dd9cda8cbe880fe727749f66ba1bf.camel@linux.intel.com>
-Subject: Re: [PATCH][v2] intel_idle: Adjust the SKX C6 latency and residency
- if PC6 is disabled
-From:   Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To:     Chen Yu <yu.c.chen@intel.com>, linux-pm@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org
-Date:   Wed, 09 Jun 2021 13:51:39 +0300
-In-Reply-To: <20210528032054.7572-1-yu.c.chen@intel.com>
-References: <20210528032054.7572-1-yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S236594AbhFIKy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:54:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34737 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238461AbhFIKyK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 06:54:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623235935;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VZPPxlVuFpma5nN0KBwsgNEj1D60a3U+wCT7M5MPOro=;
+        b=Km5r1M+sxIq4QxvZF6wtjHOv+NX0GD/tnBHzME3FShlP42FQZPxI28LSs2skwcRMKR6KJh
+        0XJz2rmTh/jJT0lX2DtPOYM/XEAPwKAOmVwutgOGYzNlj3DmYYtDvRxwcjs6H58IXcjOxC
+        UvVr5TV7PvMy2NUxlLSDVJZr9BvC36k=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-85-fUuC5ajmPkes6N6xmHySGA-1; Wed, 09 Jun 2021 06:52:14 -0400
+X-MC-Unique: fUuC5ajmPkes6N6xmHySGA-1
+Received: by mail-wm1-f70.google.com with SMTP id l32-20020a05600c1d20b02901a82ed9095dso803180wms.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:52:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=VZPPxlVuFpma5nN0KBwsgNEj1D60a3U+wCT7M5MPOro=;
+        b=Y1Y6EiGZhg6DuRctpIN8GsQ9s07mVdtzufXWiVlm/vQVK4rA1q5z269TwCOrXILEGx
+         d2v9oKAVplxzniA/sO8T6Q0UR7HhxZ28nvmEJBiqxRQBzwCfTe1pBv/ysaqwpi/fZ5Ii
+         7YPxDzUN0od4XpF0uAG+DyllT7eRp3z0wsAincYUxWNJ6WYak2ZwkZy4HM5dy0LHNpng
+         5lr9szOy66stsJpDIOAhXuj6Z9nw25UdMKKzZK0AZ+MPJYF5rvtdFUvS9YFI0xarxYdr
+         xfnRm37+BTJhtJJN0Amk/PoOL2Ul0g1AYRg6+0cBJNOs95Sb/359ncLC4chdCiDMkEEQ
+         aMBQ==
+X-Gm-Message-State: AOAM530EIBbc4rjWEWlvYFoCEYGvIBTDQIys/tU6Bd7sI6GZMUEzGo41
+        zbKx1BfF2T2Ekjkar3jq5ULCSTNGsMPcdhaSGt1xc22htvacbdS2qMWgtIeB4Ha34yrk4zrCcqN
+        gGZFGw/KJvOlMI5Ar+6WJExT2
+X-Received: by 2002:a05:600c:c9:: with SMTP id u9mr26528274wmm.156.1623235933557;
+        Wed, 09 Jun 2021 03:52:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwOhpm0kR/qb02GnRlZAdwrQqqdavzoWPuk2BGBrMztminfq9lmdrK+j2M/FH+Xh9QtwaeMHg==
+X-Received: by 2002:a05:600c:c9:: with SMTP id u9mr26528228wmm.156.1623235933268;
+        Wed, 09 Jun 2021 03:52:13 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
+        by smtp.gmail.com with ESMTPSA id 89sm25391165wrq.14.2021.06.09.03.52.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 03:52:13 -0700 (PDT)
+Subject: Re: [PATCH 2/9] arc: update comment about HIGHMEM implementation
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
+References: <20210602105348.13387-1-rppt@kernel.org>
+ <20210602105348.13387-3-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <2764dca8-f395-f76a-0939-215eccdfd82e@redhat.com>
+Date:   Wed, 9 Jun 2021 12:52:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210602105348.13387-3-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-05-28 at 11:20 +0800, Chen Yu wrote:
-> Currently cpuidle assumes worst-case C-state parameters, and so C6
-> is described with PC6 parameters, which is worst case for requesting
-> CC6. When PC6 is enabled, this is appropriate. But if PC6 is disabled
-> in BIOS, the exit latency and target_residency should be adjusted
-> accordingly.
+On 02.06.21 12:53, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> Exit latency:
-> Previously the C6 exit latency was measured when woken up from CC6/PC6.
-> With PC6 disabled, the C6 exit latency should be CC6/PC0.
+> Arc does not use DISCONTIGMEM to implement high memory, update the comment
+> describing how high memory works to reflect this.
 > 
-> Target residency:
-> With PC6 disabled, idle duration within [CC6, PC6) would make the
-> idle governor choose C1E over C6. This would cause low energy-efficiency.
-> We should lower the bar to request C6 when PC6 is disabled.
-> 
-> To fill this gap, check if PC6 is disabled in the BIOS in the
-> MSR_PKG_CST_CONFIG_CONTROL(0xe2). If so, use CC6/PC0 parameters as the
-> new exit latency. Meanwhile, update target_residency to 3 times of the new
-> exit latency. This is consistent with how intel_idle driver uses _CST to
-> calculate the target_residency. The consequence is that, the OS would
-> be more offen to choose C6 over C1E when PC6 is disabled. This is reasonable
-> because if the user is using C6, it implies that the user cares about energy,
-> so choosing C6 more frequently is in accordance with user requirement.
-> 
-> The new exit latency of CC6/PC0 92us was from wult[1] result on SKX, which was
-> measured via NIC wakeup from 99.99th latency. Besides SKX, the CLX and CPX
-> both have the same CPU model number. And since they have similar CC6 exit latency
-> to SKX, 96us and 89us respectively, reuse the value of SKX.
-> 
-> There is concern that if we should introduce a more generic solution
-> rather than optimizing on each platforms. However consider the
-> code complexity and different PC6 bit interpretation on different
-> platforms, tune the code per platform seems to be an acceptable trade-off.
-> 
-> [1] https://intel.github.io/wult/
-> 
-> Suggested-by: Len Brown <len.brown@intel.com>
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 > ---
-> v2: Simplify the commit log to not mention C3/PC3. (Artem)
->     Confirm the exit latency on CLX and CPX.(Artem)
+>   arch/arc/mm/init.c | 13 +++++--------
+>   1 file changed, 5 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
+> index e2ed355438c9..397a201adfe3 100644
+> --- a/arch/arc/mm/init.c
+> +++ b/arch/arc/mm/init.c
+> @@ -139,16 +139,13 @@ void __init setup_arch_memory(void)
+>   
+>   #ifdef CONFIG_HIGHMEM
+>   	/*
+> -	 * Populate a new node with highmem
+> -	 *
+>   	 * On ARC (w/o PAE) HIGHMEM addresses are actually smaller (0 based)
+> -	 * than addresses in normal ala low memory (0x8000_0000 based).
+> +	 * than addresses in normal aka low memory (0x8000_0000 based).
+>   	 * Even with PAE, the huge peripheral space hole would waste a lot of
+> -	 * mem with single mem_map[]. This warrants a mem_map per region design.
+> -	 * Thus HIGHMEM on ARC is imlemented with DISCONTIGMEM.
+> -	 *
+> -	 * DISCONTIGMEM in turns requires multiple nodes. node 0 above is
+> -	 * populated with normal memory zone while node 1 only has highmem
+> +	 * mem with single contiguous mem_map[].
+> +	 * Thus when HIGHMEM on ARC is enabled the memory map corresponding
+> +	 * to the hole is freed and ARC specific version of pfn_valid()
+> +	 * handles the hole in the memory map.
+>   	 */
+>   #ifdef CONFIG_DISCONTIGMEM
+>   	node_set_online(1);
+> 
 
-Reviewed-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
+-- 
+Thanks,
+
+David / dhildenb
 
