@@ -2,105 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8FB3A0A7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7F73A0A7F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236332AbhFIDKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 23:10:16 -0400
-Received: from mail-pg1-f171.google.com ([209.85.215.171]:41860 "EHLO
-        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233424AbhFIDKM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 23:10:12 -0400
-Received: by mail-pg1-f171.google.com with SMTP id l184so2692066pgd.8;
-        Tue, 08 Jun 2021 20:08:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lhOA0nGrbjhRPVswA/mywNHLTKJKSXnKV9s3KRuT9b0=;
-        b=eEmOANjFoGPTyGNLvXOsBxdb0fTnjiOwL3tROU9dOMmgDoC4VLjtO4w3cbWVHjP/hK
-         wahkSdOQe6292A4Zn72SHDGSDQaqSZvso7WyW9u34Vwqv2L5DHF5rRaf9WSCKL+42j6D
-         sTsko0XWv/xQ3arflI694ZIhCh54TuUiXuSReVeG4nsdfYAx1jK8QJf8lwJC1b0ugrvg
-         +RP1QuPDBGV1ZSp/zvIsyRKloDrOWI3p2hrm/8AVOXa2zEeXEX82q0sCAb2jGwMuXF4g
-         /2ReUEHOTSgMrDGy+jyIek6skxY2OZkHy6r6YEa3aAzhdybCiZjSqeTZNjJQ8d8nSY2S
-         ot4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lhOA0nGrbjhRPVswA/mywNHLTKJKSXnKV9s3KRuT9b0=;
-        b=bqt8TZL46XHlspCSjlpLQ1Al5XNLlGflPKlT1r08WJ/3pUdoKgz4wYawK9DiLGHsV1
-         9HxgAU7BfHW+WMGsBJLpUwuWY67jWELkxlhUTrfc/G0Jps4t6uB0l/myZeMQPG6PRQfG
-         JcpSBvLSshGvH1RHr8MaTqBDuY2SzqgQTY9lR3zva1hPhZtLA9Byfp1A3FMHSpqS5l05
-         ikBT0B0lWgsITjeY27eljw8hW74NVWz5efm1MrfwgKPzB5zM6HouGSOGPsCLCnkgH0FD
-         JKHDkEWYKa++c5wNwhJvQOyxeB/kA/0eOJHSDnyGCpuvMDpClXk5hyET7yCaiYhbAxPW
-         6C+Q==
-X-Gm-Message-State: AOAM531UNyqxfYRqVqG16ay5S+fzR9X93ImTIG4wPGyzYFh9z+csqyJ6
-        rlY8nFRMb2l3xJAHdTDxOG8=
-X-Google-Smtp-Source: ABdhPJwrg5MzG8QRD1JUtBgAuC+Cuk6MZaXdsiHLg5dbQBqrcdPsR4+dfoUF+OL919y4bNLZoHDv+A==
-X-Received: by 2002:a63:7e11:: with SMTP id z17mr1517467pgc.9.1623208028225;
-        Tue, 08 Jun 2021 20:07:08 -0700 (PDT)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id 78sm12733364pgg.73.2021.06.08.20.07.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 20:07:07 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
- controller on the BCM7211
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Al Cooper <alcooperx@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
-        Scott Branden <sbranden@broadcom.com>
-References: <20210602192758.38735-1-alcooperx@gmail.com>
- <20210602192758.38735-2-alcooperx@gmail.com>
- <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com>
-Date:   Tue, 8 Jun 2021 20:07:05 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        id S236339AbhFIDLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 23:11:17 -0400
+Received: from m12-18.163.com ([220.181.12.18]:40825 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233343AbhFIDLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 23:11:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=egJWT
+        JFWyhEMc8/aZJ337yvOourJR6vCzbSA2WETxL4=; b=Tks/k2xRjAVB6UfWKxipY
+        HMo4DnxzkRLwOM8OaN6VyyEIEb7Wog3bHphYxI95FW4lu03CSO3l7bGkEIg8ahkJ
+        3cDcqEigN5V+n+p8gsia0OG2F+RDfLMaK85i8yu+gF5PNVd+AG7w9j9z/dk1SJ/u
+        XbjWcF/zCeqZMGevUS8TfU=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp14 (Coremail) with SMTP id EsCowADH1Ai3MMBgKSKAoQ--.801S2;
+        Wed, 09 Jun 2021 11:08:39 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Subject: [PATCH] scsi: lpfc: lpfc_nportdisc: deleted the repeated word
+Date:   Wed,  9 Jun 2021 11:07:42 +0800
+Message-Id: <20210609030742.336713-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EsCowADH1Ai3MMBgKSKAoQ--.801S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruryDKw4rAr4rCr1ruF4kWFg_yoWfAFb_uF
+        WIvr13Xr47CFW8ua4xCr4xA3sFyr45Zwn2k3ZayFWfWr18WF1UXFWDZr12qrW8CrsrXa47
+        Xa1jqr9Ykw45XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5YksDUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/xtbBERisUFaEEqUCigAAsY
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: lijian <lijian@yulong.com>
 
+deleted the repeated word 'on' in the comments.
 
-On 6/8/2021 5:40 AM, Ulf Hansson wrote:
-> On Wed, 2 Jun 2021 at 21:28, Al Cooper <alcooperx@gmail.com> wrote:
->>
->> Add support for the legacy Arasan sdhci controller on the BCM7211 and
->> related SoC's. This includes adding a .shutdown callback to increase
->> the power savings during S5.
-> 
-> Please split this into two separate changes.
-> 
-> May I also ask about the ->shutdown() callback and in relation to S5.
-> What makes the ->shutdown callback only being invoked for S5?
+Signed-off-by: lijian <lijian@yulong.com>
+---
+ drivers/scsi/lpfc/lpfc_nportdisc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It is not only called for S5 (entered via poweroff on a prompt) but also
-during kexec or reboot. The poweroff path is via:
-
-kernel_power_off() -> kernel_shutdown_prepare() -> device_shutdown() ->
-.shutdown()
-
-For kexec or reboot we do not really care about power savings since we
-are about to load a new image anyway, however for S5/poweroff we do care
-about quiescing the eMMC controller in a way that its clocks and the
-eMMC device can be put into low power mode since we will stay in that
-mode for seconds/hours/days until someone presses a button on their
-remote (or other wake-up sources).
+diff --git a/drivers/scsi/lpfc/lpfc_nportdisc.c b/drivers/scsi/lpfc/lpfc_nportdisc.c
+index bb4e65a32ecc..a2251e5dda7c 100644
+--- a/drivers/scsi/lpfc/lpfc_nportdisc.c
++++ b/drivers/scsi/lpfc/lpfc_nportdisc.c
+@@ -235,7 +235,7 @@ lpfc_els_abort(struct lpfc_hba *phba, struct lpfc_nodelist *ndlp)
+ 	if (phba->sli_rev == LPFC_SLI_REV4)
+ 		spin_lock(&pring->ring_lock);
+ 	list_for_each_entry_safe(iocb, next_iocb, &pring->txcmplq, list) {
+-	/* Add to abort_list on on NDLP match. */
++	/* Add to abort_list on NDLP match. */
+ 		if (lpfc_check_sli_ndlp(phba, pring, iocb, ndlp))
+ 			list_add_tail(&iocb->dlist, &abort_list);
+ 	}
 -- 
-Florian
+2.25.1
+
+
