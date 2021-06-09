@@ -2,88 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B653A0DFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD273A0E00
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236809AbhFIHr4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 03:47:56 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:29199 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236375AbhFIHry (ORCPT
+        id S237007AbhFIHsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:48:00 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47648 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236397AbhFIHr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:47:54 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-8MgHxSRfNGK8NOd496-1zQ-1; Wed, 09 Jun 2021 03:45:55 -0400
-X-MC-Unique: 8MgHxSRfNGK8NOd496-1zQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 9 Jun 2021 03:47:59 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9FCD78049C5;
-        Wed,  9 Jun 2021 07:45:54 +0000 (UTC)
-Received: from bahia.lan (ovpn-112-166.ams2.redhat.com [10.36.112.166])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E51A55C1C2;
-        Wed,  9 Jun 2021 07:45:48 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 09:45:47 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Max Reitz <mreitz@redhat.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
-        Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH v2 6/7] fuse: Switch to fc_mount() for submounts
-Message-ID: <20210609094547.222fc420@bahia.lan>
-In-Reply-To: <0d3b4dfb-2474-2200-80d1-39dcbf8f626e@redhat.com>
-References: <20210604161156.408496-1-groug@kaod.org>
-        <20210604161156.408496-7-groug@kaod.org>
-        <0d3b4dfb-2474-2200-80d1-39dcbf8f626e@redhat.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 600DF219D8;
+        Wed,  9 Jun 2021 07:46:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623224764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LP9vhqNf02W1ie3L22qLXNLlv5cV5d6bR4sp9ooajx4=;
+        b=jcxJdd84jeE8eXctAjwHEhwSQfcaEwVDtDvysrLKD59q2HnBzxoOfTGjgjbAzErST3Ww4l
+        jj8Uqh1X636VluSJi9w5htnKmYVB5vZgxSKYvrPb1HJXQ9+KuNdAiy0cSVKW+eyE0VyHEs
+        GP32LuYOZ9S2YhPq7wKOIXSIpZnTwsA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623224764;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LP9vhqNf02W1ie3L22qLXNLlv5cV5d6bR4sp9ooajx4=;
+        b=O4893Cdruknp9FMbn84AqIUrM0Iba5YJTDK+9nSfJkdPQZRWvAJpuixuHTNE2T2CikFGhf
+        0XeNfrcjtcMiiRDA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 363EF118DD;
+        Wed,  9 Jun 2021 07:46:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623224764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LP9vhqNf02W1ie3L22qLXNLlv5cV5d6bR4sp9ooajx4=;
+        b=jcxJdd84jeE8eXctAjwHEhwSQfcaEwVDtDvysrLKD59q2HnBzxoOfTGjgjbAzErST3Ww4l
+        jj8Uqh1X636VluSJi9w5htnKmYVB5vZgxSKYvrPb1HJXQ9+KuNdAiy0cSVKW+eyE0VyHEs
+        GP32LuYOZ9S2YhPq7wKOIXSIpZnTwsA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623224764;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LP9vhqNf02W1ie3L22qLXNLlv5cV5d6bR4sp9ooajx4=;
+        b=O4893Cdruknp9FMbn84AqIUrM0Iba5YJTDK+9nSfJkdPQZRWvAJpuixuHTNE2T2CikFGhf
+        0XeNfrcjtcMiiRDA==
+Received: from director1.suse.de ([192.168.254.71])
+        by imap3-int with ESMTPSA
+        id 4KA2DLxxwGAwQAAALh3uQQ
+        (envelope-from <tzimmermann@suse.de>); Wed, 09 Jun 2021 07:46:04 +0000
+Subject: Re: [PATCH -next] drm/hyperv: Remove unused variable
+To:     Pu Lehui <pulehui@huawei.com>, drawat.floss@gmail.com,
+        airlied@linux.ie, daniel@ffwll.ch
+Cc:     zhangjinhao2@huawei.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20210609024940.34933-1-pulehui@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <078d9bb5-e7af-4961-f4c1-cd3ab415cff4@suse.de>
+Date:   Wed, 9 Jun 2021 09:46:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kaod.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210609024940.34933-1-pulehui@huawei.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="LXACDYnvELLwW2XTlk9lTZeL1bpAzQg1G"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 17:51:03 +0200
-Max Reitz <mreitz@redhat.com> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--LXACDYnvELLwW2XTlk9lTZeL1bpAzQg1G
+Content-Type: multipart/mixed; boundary="i7sjZ91sCO92Q9XiZIpu2oS9noraKeheY";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Pu Lehui <pulehui@huawei.com>, drawat.floss@gmail.com, airlied@linux.ie,
+ daniel@ffwll.ch
+Cc: zhangjinhao2@huawei.com, linux-hyperv@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Message-ID: <078d9bb5-e7af-4961-f4c1-cd3ab415cff4@suse.de>
+Subject: Re: [PATCH -next] drm/hyperv: Remove unused variable
+References: <20210609024940.34933-1-pulehui@huawei.com>
+In-Reply-To: <20210609024940.34933-1-pulehui@huawei.com>
 
-> On 04.06.21 18:11, Greg Kurz wrote:
-> > fc_mount() already handles the vfs_get_tree(), sb->s_umount
-> > unlocking and vfs_create_mount() sequence. Using it greatly
-> > simplifies fuse_dentry_automount().
-> >
-> > Signed-off-by: Greg Kurz <groug@kaod.org>
-> > ---
-> >   fs/fuse/dir.c | 26 +++++---------------------
-> >   1 file changed, 5 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-> > index b88e5785a3dd..fc9eddf7f9b2 100644
-> > --- a/fs/fuse/dir.c
-> > +++ b/fs/fuse/dir.c
-> > @@ -311,38 +311,22 @@ static struct vfsmount *fuse_dentry_automount(struct path *path)
-> >   	struct fs_context *fsc;
-> >   	struct vfsmount *mnt;
-> >   	struct fuse_inode *mp_fi = get_fuse_inode(d_inode(path->dentry));
-> > -	int err;
-> >   
-> >   	fsc = fs_context_for_submount(path->mnt->mnt_sb->s_type, path->dentry);
-> > -	if (IS_ERR(fsc)) {
-> > -		err = PTR_ERR(fsc);
-> > -		goto out;
-> > -	}
-> > +	if (IS_ERR(fsc))
-> > +		return (struct vfsmount *) fsc;
-> 
-> I think ERR_CAST(fsc) would be nicer.
-> 
+--i7sjZ91sCO92Q9XiZIpu2oS9noraKeheY
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Indeed. I'll fix that if I need to repost.
+Hi
 
-> Apart from that:
-> 
-> Reviewed-by: Max Reitz <mreitz@redhat.com>
-> 
+Am 09.06.21 um 04:49 schrieb Pu Lehui:
+> Fixes gcc '-Wunused-const-variable' warning:
+>    drivers/gpu/drm/hyperv/hyperv_drm_modeset.c:152:23: warning:
+>      'hyperv_modifiers' defined but not used [-Wunused-const-variable=3D=
+]
+>=20
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>   drivers/gpu/drm/hyperv/hyperv_drm_modeset.c | 5 -----
+>   1 file changed, 5 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c b/drivers/gpu/=
+drm/hyperv/hyperv_drm_modeset.c
+> index 02718e3e859e..3f83493909e6 100644
+> --- a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
+> +++ b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
+> @@ -149,11 +149,6 @@ static const uint32_t hyperv_formats[] =3D {
+>   	DRM_FORMAT_XRGB8888,
+>   };
+>  =20
+> -static const uint64_t hyperv_modifiers[] =3D {
+> -	DRM_FORMAT_MOD_LINEAR,
+> -	DRM_FORMAT_MOD_INVALID
+> -};
 
+This constant should rather be used in the call to=20
+drm_simple_display_pipe_init(). [1]
+
+Best regards
+Thomas
+
+[1]=20
+https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/hyperv/hyp=
+erv_drm_modeset.c#n161
+
+
+> -
+>   static inline int hyperv_pipe_init(struct hyperv_drm_device *hv)
+>   {
+>   	int ret;
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--i7sjZ91sCO92Q9XiZIpu2oS9noraKeheY--
+
+--LXACDYnvELLwW2XTlk9lTZeL1bpAzQg1G
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmDAcbsFAwAAAAAACgkQlh/E3EQov+Bd
+YQ//UpyXSQ4P1ggoY9BgZg0gDIuH2KfVdJ2uvYiB5J6zp8uLPkKUFePjO8HrlLM8zPQLHvBvpDA2
+qA6ubmTTYKFPvSQxLzUWHCzRJPmZIm4NoxPeKXGDjSEBfQUn8pHvgG84OXfvJpgseL5AzhJCn80c
+LyFd9YPnYiAYvJ+aQGlgN9TTAJuofP0Cb4UGGNGiG/L9TgrjzCg/g1fIUBuia4lZ5Ng7eQvLp3fw
+bPUn367AIjvVQDgZufTh01Eqe4Os9FuIK6zIIl66x5Lor6voWkn5svVi/Zgej+9BF6F3AvBphe8b
+Vka8ck0UY5iddGXzBlIWA1d6Kj7YlkEOtvmn5mJN0zS5G0VBb/eblgBZ9wpRUkI1FgHi12TpPOvN
+gcUZU/aVzyxxaJeCyEAX9c0cetHuof7NQj79/RVutGjmcK7ygYrqN2RUZgeKp1AR3E9Sbsb37EOQ
+Zplg9Z7UBEkkOsZRHDvz2elx1LwBkgleeApbhp7AWdYojkS0hGZmPGM1Z4enO/LkLKRpA/XetCp6
+rwaIuNBpz5ENR3urZZDofr0T2uvTp3XG3BGLM9vfZ7vBtZ7L7lnB3jTzPQKACdakU3+3gQ964Wpc
+3MMLhEhiRtE7A0nU1D5zD3WRCeYVtiwy8uURtDgouW3RiNTLC3JUAdA6x+T70A3aVzYNdDkMaWpk
+xng=
+=sxkL
+-----END PGP SIGNATURE-----
+
+--LXACDYnvELLwW2XTlk9lTZeL1bpAzQg1G--
