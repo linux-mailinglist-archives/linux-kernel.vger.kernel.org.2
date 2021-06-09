@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E95D3A0AB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D48A3A0AB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236507AbhFIDkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 23:40:10 -0400
-Received: from mail-pl1-f172.google.com ([209.85.214.172]:46891 "EHLO
-        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236493AbhFIDkI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 23:40:08 -0400
-Received: by mail-pl1-f172.google.com with SMTP id e1so11807179pld.13;
-        Tue, 08 Jun 2021 20:37:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k+n/pA6p3AzaSZEumNtpsPgnM1a8UgNMxk8Yo9VkS/0=;
-        b=ECa21rCsZv0K+oxyaQ0e9LtETPxuIH/smkpkOgMI0YEhKkyRC2nDCwk4ZBkeN4+uI5
-         aiiaTD+nh+ec7HkTXSemgnpCI99ff96FvONAAR31orVfeemrxkOAsdn6PackTgEr9Gyj
-         QyM/hjeiOp4hUyy8YRcpUhqIBOORnMC3SlN/NCddhSRkp79mKL6Rywa4TCRVqNbrR7sr
-         wNgQZgVtZ5gaDzdoV4nlYDH9Bn09Bhd/sAqkmcZdvNEaREK8OGlkNJfgtDYeia8cqBYw
-         z0jM3bnMIWhBUeXA0FQzWHtGBI+xPrBBroKqYY81sFWdAH9nO2HaLH9VjaXyRp3YOxI3
-         vu9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k+n/pA6p3AzaSZEumNtpsPgnM1a8UgNMxk8Yo9VkS/0=;
-        b=PYRv2gRaHRs7/V2rIKZZGXt1HvydP/7mLi5nTz9CX3YkLx7FvQQBclnm8q3OonfCXF
-         i8PS7ykzVpyTSx3o6PA2wFCxg6R+qjbxGxvKDiPcUVBjSPAoY0/rAV4bGlv4vimJ7UWf
-         Hj6K1O68xt6EQsMwHfK3LNiY963iGlIsQYzGbwKc/H0nhxxAjtwgF3fw0clFhR77K+w6
-         wNtraOotTQekQ/Vq2w8lngwOSrdtxoAwvUWgXMjem8ZAyfAfrxbRJGwByXq9zGlMZL4j
-         pz+5PUOVZCkFKWvnwf6NHkMw2wgwpEE7vXw4wHYY3GUNjw2Hm0kupunjSt4yhMjjkOX6
-         rmbg==
-X-Gm-Message-State: AOAM532LkQnmCzVPyZ+bmlzlHp+MwM6Cmma/Q+1d7O/WkG1Ouqn7KEuz
-        6ivV/t2zvg7iqpwut4E9fmQDLkM75jRofA==
-X-Google-Smtp-Source: ABdhPJwmJtdf+n0jjAMpN3ddngR2DsAl6EUB0Atlemu7ajAh0g6Y5YsiByNLJme2T7eZMFwhkq8msA==
-X-Received: by 2002:a17:90a:b94c:: with SMTP id f12mr29729708pjw.32.1623209819220;
-        Tue, 08 Jun 2021 20:36:59 -0700 (PDT)
-Received: from localhost.localdomain ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id b23sm11731099pfi.34.2021.06.08.20.36.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 20:36:58 -0700 (PDT)
-From:   Herman <herman.yim88@gmail.com>
-X-Google-Original-From: Herman <yanshuaijun@yulong.com>
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herman <yanshuaijun@yulong.com>
-Subject: [PATCH] drivers/media/usb/gspca: fix typo issues
-Date:   Wed,  9 Jun 2021 11:32:45 +0800
-Message-Id: <20210609033245.3410-1-yanshuaijun@yulong.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232916AbhFIDhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 23:37:36 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:33898 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232787AbhFIDhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 23:37:35 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx70LnNsBgGIANAA--.15141S2;
+        Wed, 09 Jun 2021 11:35:04 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alex Deucher <alexander.deucher@amd.com>, christian.koenig@amd.com,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Jianmin Lv <lvjianmin@loongson.cn>
+Subject: [PATCH v2] drm/radeon: Call radeon_suspend_kms() in radeon_pci_shutdown() for Loongson64
+Date:   Wed,  9 Jun 2021 11:35:01 +0800
+Message-Id: <1623209701-18311-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx70LnNsBgGIANAA--.15141S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1fCFWrGF1DtrWUAFykGrg_yoW8Ar4rpr
+        srG39rKwn3KFWYka47JFW7Xry5A348Xay8ZrWUKw4DW398Jr93Arnaqry3JryvgryxtF12
+        vF1kGw1ruan7CFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r48
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU-miiUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-spca501.c : remove redundant 'is'
-zc3xx.c   : change 'outdoore' into 'outdoor'
+On the Loongson64 platform used with Radeon GPU, shutdown or reboot failed
+when console=tty is in the boot cmdline.
 
-Signed-off-by: Herman <yanshuaijun@yulong.com>
+radeon_suspend_kms() puts the hw in the suspend state, especially set fb
+state as FBINFO_STATE_SUSPENDED:
+
+	if (fbcon) {
+		console_lock();
+		radeon_fbdev_set_suspend(rdev, 1);
+		console_unlock();
+	}
+
+Then avoid to do any more fb operations in the related functions:
+
+	if (p->state != FBINFO_STATE_RUNNING)
+		return;
+
+So call radeon_suspend_kms() in radeon_pci_shutdown() for Loongson64 to fix
+this issue, it looks like some kind of workaround like powerpc.
+
+Co-developed-by: Jianmin Lv <lvjianmin@loongson.cn>
+Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/media/usb/gspca/spca501.c | 2 +-
- drivers/media/usb/gspca/zc3xx.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/radeon/radeon_drv.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/usb/gspca/spca501.c b/drivers/media/usb/gspca/spca501.c
-index ecc97f807cfa..f7c75d7535c4 100644
---- a/drivers/media/usb/gspca/spca501.c
-+++ b/drivers/media/usb/gspca/spca501.c
-@@ -488,7 +488,7 @@ static const __u16 spca501_init_data[][3] = {
+diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
+index efeb115..daabbf5 100644
+--- a/drivers/gpu/drm/radeon/radeon_drv.c
++++ b/drivers/gpu/drm/radeon/radeon_drv.c
+@@ -386,13 +386,13 @@ radeon_pci_shutdown(struct pci_dev *pdev)
+ 	if (radeon_device_is_virtual())
+ 		radeon_pci_remove(pdev);
  
- /* Data for video camera init before capture.
-  * Capture and decoding by Colin Peart.
-- * This is is for the 3com HomeConnect Lite which is spca501a based.
-+ * This is for the 3com HomeConnect Lite which is spca501a based.
-  */
- static const __u16 spca501_3com_open_data[][3] = {
- 	/* bmRequest,value,index */
-diff --git a/drivers/media/usb/gspca/zc3xx.c b/drivers/media/usb/gspca/zc3xx.c
-index aa285d5d6c0d..1bbf8071dde0 100644
---- a/drivers/media/usb/gspca/zc3xx.c
-+++ b/drivers/media/usb/gspca/zc3xx.c
-@@ -5806,7 +5806,7 @@ static void setquality(struct gspca_dev *gspca_dev)
-  * Valid frequencies are:
-  *	50Hz, for European and Asian lighting (default)
-  *	60Hz, for American lighting
-- *	0 = No Fliker (for outdoore usage)
-+ *	0 = No Fliker (for outdoor usage)
-  */
- static void setlightfreq(struct gspca_dev *gspca_dev, s32 val)
- {
+-#ifdef CONFIG_PPC64
++#if defined(CONFIG_PPC64) || defined(CONFIG_MACH_LOONGSON64)
+ 	/*
+ 	 * Some adapters need to be suspended before a
+ 	 * shutdown occurs in order to prevent an error
+-	 * during kexec.
+-	 * Make this power specific becauase it breaks
+-	 * some non-power boards.
++	 * during kexec, shutdown or reboot.
++	 * Make this power and Loongson specific becauase
++	 * it breaks some other boards.
+ 	 */
+ 	radeon_suspend_kms(pci_get_drvdata(pdev), true, true, false);
+ #endif
 -- 
-2.25.1
+2.1.0
 
