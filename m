@@ -2,677 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372ED3A1D1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2EB3A1D1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhFISvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 14:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhFISv2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 14:51:28 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A38CC061574;
-        Wed,  9 Jun 2021 11:49:32 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id md2-20020a17090b23c2b029016de4440381so2028734pjb.1;
-        Wed, 09 Jun 2021 11:49:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xcGiQnWOweOgU6iH7Jv0d7uTQqSYtIdSw1UMpk0yJOA=;
-        b=aUmw8Xkj3hgwdSlhU4fuS4+cS7yDoUECOdkzp/ZFwoMjo93ahR6yK4B+wOXBYdW0Oc
-         i0KchFU1v2ObYTV+iMuptzT6PwW5t32tcit60I9zKDh42Zw/F9gNooYbDmwW8M6Dunjh
-         nG4KsWkkd2Xvo8aYAuAdzdhmXbJKHH7uwEQT4ZCBzLEVMqkRg0ntzlomP4EE4r7R7uWL
-         UQ9iSGn6I8Bveg0AomfJRmns5gN9TtdRP/sxJuF/PTYtonAT+Bb6p2gAzGi+cCFzHKml
-         QSn5pAg/So+hzZexoqZ3bNlUp4tiB7PqP5W7zZxqW22dd2yO04XkpQ6K26pjZlk0B2oT
-         Ke8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xcGiQnWOweOgU6iH7Jv0d7uTQqSYtIdSw1UMpk0yJOA=;
-        b=ZuRqpJzuyc2a1BNoVkB33X6BPdGOf8kxrog4pfmV86+Gxrt6DiOEAEpy3kcLsBylDh
-         UUGPXXSQGAZh87lgjOh+04NaWa7M9Gk8QNC9wLUwa/rglDFWdJa7GeBtdRegqeW/ywLz
-         nZSzfgEEN4eQezWuX6s+viwY7xLMBd31fVh5JmriJiP0bDLsdGuuL2DFNhNREGSZ1ILm
-         prPFhAdxY9lvs0cC0W5hjnUFuZ3LrVNF+boQIEgxxGaVhZDUlxDO6ng9Vs7xrvMBY49U
-         OADuOEfCMTTmKotctujxv47Usemu/pHIKGiqtDYyYC2PtYlYpzASTLTpvfWSmqQAKRsl
-         5Oew==
-X-Gm-Message-State: AOAM531wOhqEmrtBS0GjvGSkN2HGMPoGmFxkIMezs5R6iLZtrv0LTbuH
-        EfBCSEKH6+tyrW/3Yf4oDIDEFeulCaY=
-X-Google-Smtp-Source: ABdhPJxnvBUtk8PRLl7h4I+ay3Waacfvx4r5FDb8Kv1eAU4G80JU6t8hErzW0PS/qbYUef82fV/s/g==
-X-Received: by 2002:a17:90a:bb13:: with SMTP id u19mr12229006pjr.92.1623264571205;
-        Wed, 09 Jun 2021 11:49:31 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id cq24sm5742216pjb.18.2021.06.09.11.49.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 11:49:30 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/137] 5.10.43-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210608175942.377073879@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8d646c47-afae-df04-f25a-3eeeffcc760e@gmail.com>
-Date:   Wed, 9 Jun 2021 11:49:27 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        id S230190AbhFISvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 14:51:44 -0400
+Received: from mail-dm6nam11on2049.outbound.protection.outlook.com ([40.107.223.49]:41441
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230052AbhFISvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 14:51:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=odBMacuqoAA6Po/33bzZ1rLcaroWxWI6mOnKR/uQ0wrVPTi1nnDSjRNEdyxWxoiOu/L/sWHy/RL4amKK1iwq+UV5kf3kOmJmsE6xpkNNCRJC/HakR9gIHtPaKMcV+TBfUd/x+hBUEZZZWxCHfgJe1WDvfA3eH/XaBDNMaPJPOWKjcMiqedMnNRd/9aNTtusFpBiLFWNKXY6EY7LJ/PfspBvavvMkIuWrh5wBHc/AsRVzTjnjLnzohbiwsDRtz3rWsrWnixganB/V4L4zREVrUVjTjrtqSeZwBIkIua87CD3/iMS0kKKSDHJ6vu1B2CVf0laKT8G5fzG/9wRDvggGVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lDh0DBZneE5IR+M1bq8uPrLMkDN7zzcEJI+WaBwOGxU=;
+ b=YSwhv07HBkVBXAKXCl8UqaIxY/h/2TT9CoV/FPM4FMaDekVICvj23wvzX+AUHV6+vAkNp5kkrvZ++q26vMIW4893M8cNdyWPsBAnw7AiJxVZtx6umUEzGsiQuc/7ClEI40HwdvCyzzqdIX1GX3LrsPmHLoFbcjO2kQG8la+ReU0PtlQos92IfJv/DTLwK7a8oqWRwhdaic2bpdknyOpy97yBLmWnxUrG3zJA1gQA+JBaWt/is5TV8B2yizlEOZvka1t4yQdXTS3IQFxSK8aSAH7MMclabMpGwL9KXHjct6R0BnLHemTnECbuyjCs94FpXZSkyxqBIrRHE/Ee4VLysg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lDh0DBZneE5IR+M1bq8uPrLMkDN7zzcEJI+WaBwOGxU=;
+ b=AqcGheMc6akFNCYX6Kuwqp5u8kiOKPybjMwTI6zvvolfNrqYYAR3v2ALFDLr7aXS6HW0imYJURSQjwRLruUQwfbXbcrC/uwkiqvr7MQtK3Idbbl8OtNFVwb6hQeMNmTlWfJ/Cz/14RmjblcEunlj3Yib1dc2EZWNLQTg5s/CfcB2D8V2Q6OwIWcUe/p7heQVOTQD0+ZyVv3TRI5TCc4UPtPi01nWljhnxuD37hujH9nYH1un0DKaSMuxbf1VUIFd8xnnHpZ10zA6bQAIN7/jJxUK6heJ1ncH0I1v577HMMGqs+zFSkQ9dgZLw4e8v3/bK72ZACr1aQcMbxv+ZM5pXg==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5175.namprd12.prod.outlook.com (2603:10b6:208:318::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Wed, 9 Jun
+ 2021 18:49:41 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4219.021; Wed, 9 Jun 2021
+ 18:49:41 +0000
+Date:   Wed, 9 Jun 2021 15:49:40 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: Plan for /dev/ioasid RFC v2
+Message-ID: <20210609184940.GH1002214@nvidia.com>
+References: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <YMCy48Xnt/aphfh3@8bytes.org>
+ <20210609123919.GA1002214@nvidia.com>
+ <YMDC8tOMvw4FtSek@8bytes.org>
+ <20210609150009.GE1002214@nvidia.com>
+ <YMDjfmJKUDSrbZbo@8bytes.org>
+ <20210609101532.452851eb.alex.williamson@redhat.com>
+ <20210609102722.5abf62e1.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609102722.5abf62e1.alex.williamson@redhat.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR17CA0019.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::32) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR17CA0019.namprd17.prod.outlook.com (2603:10b6:208:15e::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Wed, 9 Jun 2021 18:49:41 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lr3Gm-004hkV-5V; Wed, 09 Jun 2021 15:49:40 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d2ef4d03-4c2a-4d75-4fa1-08d92b775725
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5175:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB51753F984746BE06B940A3D4C2369@BL1PR12MB5175.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +LYnDHMrgBds2oUVF18dF2JZ7mPTkjVhqqp2ng77pA4U+vaME/Ep32PX5Z4+5l/6k2fkZp1O03TKGmj++mnotuJbL+B6RfB4f/wLmE1tTYiZxoEmuId7WZ7IKWKxvzNcv0eHybaf2VaTQL8sb/GLCHaB+KiNFGdMVKJpTZivWnt/Iq2J3R/11sUUBwt8UB7mMiTIP2jtnUttOR8ygbkC464VilGC3GGxDDabE6RjPWc4SJk4E4mngGm1x8YZK69ytyitfvT2eINMrrQNSM/mH+cJk21KMNg+Wy4D0XvyxWiElfJxydRvSSZoz0TSeyK52OeI/kNSKDxO+CYKA/dykHpMmNg/n2ghGfBLwH51tgadjeMzLE8LaNrhV6vWD8GV0xxil5czSq9kCQEQKR4Bnq6IdCiygZ8PT5kknSSsR6cOdCZZhUch1XdugC1t6GhvxJxQnVUbU4L3gJc+MyvVajZvAPkhQ1n5e/stlQRzIkDrA4GeMn6nNetlVRv+x5J5zHC+N2M4YNe/nAhV9noMyABcmDDNRVQGdYgbG1X1sR66oRpPPk46HmwCxTvWA601NAZ+Ue/gecwo8Ccpi7ZsV8EKPWLjuSlKU1TtGfAaWtA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(366004)(396003)(376002)(2616005)(478600001)(426003)(6916009)(36756003)(186003)(1076003)(38100700002)(26005)(66556008)(9746002)(7416002)(9786002)(4326008)(33656002)(54906003)(86362001)(316002)(66476007)(66946007)(8936002)(83380400001)(5660300002)(2906002)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KIiCvvUIZGR4nhEb5urv9K440KUjJFpSULFzoNBHrmH6vkKGWgv9NLtxpXGE?=
+ =?us-ascii?Q?r2XCwnSaP1WmI+pPR0WMPZ6s0+WsB3MkEcjqodI3WsGQW4NrjQC4D7z2pR2r?=
+ =?us-ascii?Q?xd82cdkUAPXnAT1wlU7tuqGE0f1O1noufgLh3MieHaVaW3q/H/+NtkkAy31t?=
+ =?us-ascii?Q?DR/3HBt7gTU7AiNEZCSVLikfs+lRvKdpv6mLoM0Bw5GrQpl3RNa631U8kJd+?=
+ =?us-ascii?Q?jKLSa3hBlgqNVZyP/vKNm97ezmmPNmbmPyeL1whF6rfjhk9dYF3BE5SaKA1D?=
+ =?us-ascii?Q?/+BsJZwDmsUlGx9o/X75Xq40NG2/6Uv1XX2woukO5xufh+Mg0ZGZFv+Gp+Yx?=
+ =?us-ascii?Q?9IySwNwiFsmDN5fCMpVZMYSxAunx/U5OQ+E9IgUePVYv2vECavcPrBd5Ik/H?=
+ =?us-ascii?Q?tkXnZT9a9LUBKdorAVPI5AHYjsjjzsBHx3mb40lrKu10AQqGVXHZ50pGohJk?=
+ =?us-ascii?Q?uPqGHlwePtSf6qytrQrZztB3jzGO7Kva0ysAiKFYkYB5H8cTraPvs0yKuKV2?=
+ =?us-ascii?Q?PRdgMoaAEX/JnDl8HFGDoFj6LkR28qrzlxTEbij3/fvyVlJJlY4vvV6vxMQg?=
+ =?us-ascii?Q?nl1TylpGaQo45ozsPElDKwahZYE3PYm6C65DkcfqOX9EpGdjsmvml9XSGsbR?=
+ =?us-ascii?Q?kkEqr63acoZ7jDVcP1utI2Q6nbYYlcbQppn5EPNx+moiQjZDDKwi6VhUfdBd?=
+ =?us-ascii?Q?rxH+y99VCp9suexV+t4oy8LoweoytIcJvbWM9+eCoWXWT+W5DCaNupi2qBwv?=
+ =?us-ascii?Q?ToEHbAXLitfXYI1dA1a7evpba6DerdsE62i4hbwjxIbARUfU2q4IHl40IJ5C?=
+ =?us-ascii?Q?d0/rgnhHwVU++QxWNhNrgUldPQUu1+slDkon3WzRDB9OOITHXc5yoOW7rmPN?=
+ =?us-ascii?Q?Ug3Llo7fo0oab+RJk/lN3fN3UeD2ber5Gcd5GWPzNC943fx7lEaaUEsdPF+L?=
+ =?us-ascii?Q?qBlKNcxkNeMKplAu4YadZe5GORxm5Kp7pyjtQXbA2Dm4+jecNJ4JNxuKuSrX?=
+ =?us-ascii?Q?fcheAc0Ls8r1GMfuvDmXjAhO/wz7GhVjXxPLuHHEzqdGFM3QhkPEHYHs1/h7?=
+ =?us-ascii?Q?zmf2gffDZLjP5+6ZJDj8FReiFd0InePMWThBpIW2rGoXxKGL3uMzi79LxnCz?=
+ =?us-ascii?Q?f8RztfbxnhXRTJtF3IqvnUK1sJLA4b7tEFl97J0SL4Bpza5qcyWUJY/6lGZQ?=
+ =?us-ascii?Q?GZlQyQ9Cs++jCNKrDV4/LbNZc2WuVW84MI6kveQ7n8jbk7r5u163b/Q409Ab?=
+ =?us-ascii?Q?bsTeUDGwmGqdSWW7CxqfcUlJ22zluq9PXzsVHTO2u9lQAQY6PlbGeZVm8SAl?=
+ =?us-ascii?Q?kstDl8+W3Q1rgvTXA2Jq31Xa?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2ef4d03-4c2a-4d75-4fa1-08d92b775725
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 18:49:41.6614
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VxyjXhLUMGycJrmtDXQrhukAl45AqewrPeNs3xsZjbo+a3spWLz0AHXOfJWHxBGd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5175
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 09, 2021 at 10:27:22AM -0600, Alex Williamson wrote:
 
+> > > It is a kernel decision, because a fundamental task of the kernel is to
+> > > ensure isolation between user-space tasks as good as it can. And if a
+> > > device assigned to one task can interfer with a device of another task
+> > > (e.g. by sending P2P messages), then the promise of isolation is broken.  
+> > 
+> > AIUI, the IOASID model will still enforce IOMMU groups, but it's not an
+> > explicit part of the interface like it is for vfio.  For example the
+> > IOASID model allows attaching individual devices such that we have
+> > granularity to create per device IOASIDs, but all devices within an
+> > IOMMU group are required to be attached to an IOASID before they can be
+> > used.  
 
-On 6/8/2021 11:25 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.43 release.
-> There are 137 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.43-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Yes, thanks Alex
 
+> > It's not entirely clear to me yet how that last bit gets
+> > implemented though, ie. what barrier is in place to prevent device
+> > usage prior to reaching this viable state.
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+The major security checkpoint for the group is on the VFIO side.  We
+must require the group before userspace can be allowed access to any
+device registers. Obtaining the device_fd from the group_fd does this
+today as the group_fd is the security proof.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+Actually, thinking about this some more.. If the only way to get a
+working device_fd in the first place is to get it from the group_fd
+and thus pass a group-based security check, why do we need to do
+anything at the ioasid level?
 
-> 
-> -------------
-> Pseudo-Shortlog of commits:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 5.10.43-rc1
-> 
-> David Ahern <dsahern@kernel.org>
->     neighbour: allow NUD_NOARP entries to be forced GCed
-> 
-> Roger Pau Monne <roger.pau@citrix.com>
->     xen-netback: take a reference to the RX task thread
-> 
-> Pablo Neira Ayuso <pablo@netfilter.org>
->     netfilter: nf_tables: missing error reporting for not selected expressions
-> 
-> Roja Rani Yarubandi <rojay@codeaurora.org>
->     i2c: qcom-geni: Suspend and resume the bus during SYSTEM_SLEEP_PM ops
-> 
-> Gao Xiang <hsiangkao@redhat.com>
->     lib/lz4: explicitly support in-place decompression
-> 
-> Vitaly Kuznetsov <vkuznets@redhat.com>
->     x86/kvm: Disable all PV features on crash
-> 
-> Vitaly Kuznetsov <vkuznets@redhat.com>
->     x86/kvm: Disable kvmclock on all CPUs on shutdown
-> 
-> Vitaly Kuznetsov <vkuznets@redhat.com>
->     x86/kvm: Teardown PV features on boot CPU as well
-> 
-> Marc Zyngier <maz@kernel.org>
->     KVM: arm64: Fix debug register indexing
-> 
-> Sean Christopherson <seanjc@google.com>
->     KVM: SVM: Truncate GPR value for DR and CR accesses in !64-bit mode
-> 
-> Anand Jain <anand.jain@oracle.com>
->     btrfs: fix unmountable seed device after fstrim
-> 
-> Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->     drm/msm/dpu: always use mdp device to scale bandwidth
-> 
-> Mina Almasry <almasrymina@google.com>
->     mm, hugetlb: fix simple resv_huge_pages underflow on UFFDIO_COPY
-> 
-> Filipe Manana <fdmanana@suse.com>
->     btrfs: fix deadlock when cloning inline extents and low on available space
-> 
-> Josef Bacik <josef@toxicpanda.com>
->     btrfs: abort in rename_exchange if we fail to insert the second ref
-> 
-> Josef Bacik <josef@toxicpanda.com>
->     btrfs: fixup error handling in fixup_inode_link_counts
-> 
-> Josef Bacik <josef@toxicpanda.com>
->     btrfs: return errors from btrfs_del_csums in cleanup_ref_head
-> 
-> Josef Bacik <josef@toxicpanda.com>
->     btrfs: fix error handling in btrfs_del_csums
-> 
-> Josef Bacik <josef@toxicpanda.com>
->     btrfs: mark ordered extent and inode with error if we fail to finish
-> 
-> Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
->     powerpc/kprobes: Fix validation of prefixed instructions across page boundary
-> 
-> Thomas Gleixner <tglx@linutronix.de>
->     x86/apic: Mark _all_ legacy interrupts when IO/APIC is missing
-> 
-> Nirmoy Das <nirmoy.das@amd.com>
->     drm/amdgpu: make sure we unpin the UVD BO
-> 
-> Luben Tuikov <luben.tuikov@amd.com>
->     drm/amdgpu: Don't query CE and UE errors
-> 
-> Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->     nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
-> 
-> Pu Wen <puwen@hygon.cn>
->     x86/sev: Check SME/SEV support in CPUID first
-> 
-> Thomas Gleixner <tglx@linutronix.de>
->     x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and remove update_pasid()
-> 
-> Ding Hui <dinghui@sangfor.com.cn>
->     mm/page_alloc: fix counting of free pages after take off from buddy
-> 
-> Gerald Schaefer <gerald.schaefer@linux.ibm.com>
->     mm/debug_vm_pgtable: fix alignment for pmd/pud_advanced_tests()
-> 
-> Junxiao Bi <junxiao.bi@oracle.com>
->     ocfs2: fix data corruption by fallocate
-> 
-> Mark Rutland <mark.rutland@arm.com>
->     pid: take a reference when initializing `cad_pid`
-> 
-> Phil Elwell <phil@raspberrypi.com>
->     usb: dwc2: Fix build in periphal-only mode
-> 
-> Ritesh Harjani <riteshh@linux.ibm.com>
->     ext4: fix accessing uninit percpu counter variable with fast_commit
-> 
-> Phillip Potter <phil@philpotter.co.uk>
->     ext4: fix memory leak in ext4_mb_init_backend on error path.
-> 
-> Harshad Shirwadkar <harshadshirwadkar@gmail.com>
->     ext4: fix fast commit alignment issues
-> 
-> Ye Bin <yebin10@huawei.com>
->     ext4: fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
-> 
-> Alexey Makhalov <amakhalov@vmware.com>
->     ext4: fix memory leak in ext4_fill_super
-> 
-> Marek Vasut <marex@denx.de>
->     ARM: dts: imx6q-dhcom: Add PU,VDD1P1,VDD2P5 regulators
-> 
-> Michal Vokáč <michal.vokac@ysoft.com>
->     ARM: dts: imx6dl-yapp4: Fix RGMII connection to QCA8334 switch
-> 
-> Hui Wang <hui.wang@canonical.com>
->     ALSA: hda: update the power_state during the direct-complete
-> 
-> Carlos M <carlos.marr.pz@gmail.com>
->     ALSA: hda: Fix for mute key LED for HP Pavilion 15-CK0xx
-> 
-> Takashi Iwai <tiwai@suse.de>
->     ALSA: timer: Fix master timer notification
-> 
-> Bob Peterson <rpeterso@redhat.com>
->     gfs2: fix scheduling while atomic bug in glocks
-> 
-> Ahelenia Ziemiańska <nabijaczleweli@nabijaczleweli.xyz>
->     HID: multitouch: require Finger field to mark Win8 reports as MT
-> 
-> Johan Hovold <johan@kernel.org>
->     HID: magicmouse: fix NULL-deref on disconnect
-> 
-> Johnny Chuang <johnny.chuang.emc@gmail.com>
->     HID: i2c-hid: Skip ELAN power-on command after reset
-> 
-> Pavel Skripkin <paskripkin@gmail.com>
->     net: caif: fix memory leak in cfusbl_device_notify
-> 
-> Pavel Skripkin <paskripkin@gmail.com>
->     net: caif: fix memory leak in caif_device_notify
-> 
-> Pavel Skripkin <paskripkin@gmail.com>
->     net: caif: add proper error handling
-> 
-> Pavel Skripkin <paskripkin@gmail.com>
->     net: caif: added cfserl_release function
-> 
-> Jason A. Donenfeld <Jason@zx2c4.com>
->     wireguard: allowedips: free empty intermediate nodes when removing single node
-> 
-> Jason A. Donenfeld <Jason@zx2c4.com>
->     wireguard: allowedips: allocate nodes in kmem_cache
-> 
-> Jason A. Donenfeld <Jason@zx2c4.com>
->     wireguard: allowedips: remove nodes in O(1)
-> 
-> Jason A. Donenfeld <Jason@zx2c4.com>
->     wireguard: allowedips: initialize list head in selftest
-> 
-> Jason A. Donenfeld <Jason@zx2c4.com>
->     wireguard: selftests: make sure rp_filter is disabled on vethc
-> 
-> Jason A. Donenfeld <Jason@zx2c4.com>
->     wireguard: selftests: remove old conntrack kconfig value
-> 
-> Jason A. Donenfeld <Jason@zx2c4.com>
->     wireguard: use synchronize_net rather than synchronize_rcu
-> 
-> Jason A. Donenfeld <Jason@zx2c4.com>
->     wireguard: peer: allocate in kmem_cache
-> 
-> Jason A. Donenfeld <Jason@zx2c4.com>
->     wireguard: do not use -O3
-> 
-> Lin Ma <linma@zju.edu.cn>
->     Bluetooth: use correct lock to prevent UAF of hdev object
-> 
-> Lin Ma <linma@zju.edu.cn>
->     Bluetooth: fix the erroneous flush_work() order
-> 
-> James Zhu <James.Zhu@amd.com>
->     drm/amdgpu/jpeg3: add cancel_delayed_work_sync before power gate
-> 
-> James Zhu <James.Zhu@amd.com>
->     drm/amdgpu/jpeg2.5: add cancel_delayed_work_sync before power gate
-> 
-> James Zhu <James.Zhu@amd.com>
->     drm/amdgpu/vcn3: add cancel_delayed_work_sync before power gate
-> 
-> Pavel Begunkov <asml.silence@gmail.com>
->     io_uring: use better types for cflags
-> 
-> Pavel Begunkov <asml.silence@gmail.com>
->     io_uring: fix link timeout refs
-> 
-> Jisheng Zhang <jszhang@kernel.org>
->     riscv: vdso: fix and clean-up Makefile
-> 
-> Johan Hovold <johan@kernel.org>
->     serial: stm32: fix threaded interrupt handling
-> 
-> Hoang Le <hoang.h.le@dektech.com.au>
->     tipc: fix unique bearer names sanity check
-> 
-> Hoang Le <hoang.h.le@dektech.com.au>
->     tipc: add extack messages for bearer/media failure
-> 
-> Tony Lindgren <tony@atomide.com>
->     bus: ti-sysc: Fix flakey idling of uarts and stop using swsup_sidle_act
-> 
-> Geert Uytterhoeven <geert+renesas@glider.be>
->     ARM: dts: imx: emcon-avari: Fix nxp,pca8574 #gpio-cells
-> 
-> Fabio Estevam <festevam@gmail.com>
->     ARM: dts: imx7d-pico: Fix the 'tuning-step' property
-> 
-> Fabio Estevam <festevam@gmail.com>
->     ARM: dts: imx7d-meerkat96: Fix the 'tuning-step' property
-> 
-> Michael Walle <michael@walle.cc>
->     arm64: dts: freescale: sl28: var4: fix RGMII clock and voltage
-> 
-> Lucas Stach <l.stach@pengutronix.de>
->     arm64: dts: zii-ultra: fix 12V_MAIN voltage
-> 
-> Michael Walle <michael@walle.cc>
->     arm64: dts: ls1028a: fix memory node
-> 
-> Tony Lindgren <tony@atomide.com>
->     bus: ti-sysc: Fix am335x resume hang for usb otg module
-> 
-> Jens Wiklander <jens.wiklander@linaro.org>
->     optee: use export_uuid() to copy client UUID
-> 
-> Vignesh Raghavendra <vigneshr@ti.com>
->     arm64: dts: ti: j7200-main: Mark Main NAVSS as dma-coherent
-> 
-> Magnus Karlsson <magnus.karlsson@intel.com>
->     ixgbe: add correct exception tracing for XDP
-> 
-> Magnus Karlsson <magnus.karlsson@intel.com>
->     ixgbe: optimize for XDP_REDIRECT in xsk path
-> 
-> Magnus Karlsson <magnus.karlsson@intel.com>
->     ice: add correct exception tracing for XDP
-> 
-> Magnus Karlsson <magnus.karlsson@intel.com>
->     ice: optimize for XDP_REDIRECT in xsk path
-> 
-> Maciej Fijalkowski <maciej.fijalkowski@intel.com>
->     ice: simplify ice_run_xdp
-> 
-> Magnus Karlsson <magnus.karlsson@intel.com>
->     i40e: add correct exception tracing for XDP
-> 
-> Magnus Karlsson <magnus.karlsson@intel.com>
->     i40e: optimize for XDP_REDIRECT in xsk path
-> 
-> Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
->     cxgb4: avoid link re-train during TC-MQPRIO configuration
-> 
-> Roja Rani Yarubandi <rojay@codeaurora.org>
->     i2c: qcom-geni: Add shutdown callback for i2c
-> 
-> Dave Ertman <david.m.ertman@intel.com>
->     ice: Allow all LLDP packets from PF to Tx
-> 
-> Paul Greenwalt <paul.greenwalt@intel.com>
->     ice: report supported and advertised autoneg using PHY capabilities
-> 
-> Haiyue Wang <haiyue.wang@intel.com>
->     ice: handle the VF VSI rebuild failure
-> 
-> Brett Creeley <brett.creeley@intel.com>
->     ice: Fix VFR issues for AVF drivers that expect ATQLEN cleared
-> 
-> Brett Creeley <brett.creeley@intel.com>
->     ice: Fix allowing VF to request more/less queues via virtchnl
-> 
-> Coco Li <lixiaoyan@google.com>
->     ipv6: Fix KASAN: slab-out-of-bounds Read in fib6_nh_flush_exceptions
-> 
-> Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
->     cxgb4: fix regression with HASH tc prio value update
-> 
-> Magnus Karlsson <magnus.karlsson@intel.com>
->     ixgbevf: add correct exception tracing for XDP
-> 
-> Magnus Karlsson <magnus.karlsson@intel.com>
->     igb: add correct exception tracing for XDP
-> 
-> Wei Yongjun <weiyongjun1@huawei.com>
->     ieee802154: fix error return code in ieee802154_llsec_getparams()
-> 
-> Zhen Lei <thunder.leizhen@huawei.com>
->     ieee802154: fix error return code in ieee802154_add_iface()
-> 
-> Daniel Borkmann <daniel@iogearbox.net>
->     bpf, lockdown, audit: Fix buggy SELinux lockdown permission checks
-> 
-> Tobias Klauser <tklauser@distanz.ch>
->     bpf: Simplify cases in bpf_base_func_proto
-> 
-> Zhihao Cheng <chengzhihao1@huawei.com>
->     drm/i915/selftests: Fix return value check in live_breadcrumbs_smoketest()
-> 
-> Pablo Neira Ayuso <pablo@netfilter.org>
->     netfilter: nfnetlink_cthelper: hit EBUSY on updates if size mismatches
-> 
-> Pablo Neira Ayuso <pablo@netfilter.org>
->     netfilter: nft_ct: skip expectations for confirmed conntrack
-> 
-> Max Gurtovoy <mgurtovoy@nvidia.com>
->     nvmet: fix freeing unallocated p2pmem
-> 
-> Yevgeny Kliteynik <kliteyn@nvidia.com>
->     net/mlx5: DR, Create multi-destination flow table with level less than 64
-> 
-> Roi Dayan <roid@nvidia.com>
->     net/mlx5e: Check for needed capability for cvlan matching
-> 
-> Moshe Shemesh <moshe@nvidia.com>
->     net/mlx5: Check firmware sync reset requested is set before trying to abort it
-> 
-> Aya Levin <ayal@nvidia.com>
->     net/mlx5e: Fix incompatible casting
-> 
-> Maxim Mikityanskiy <maximmi@nvidia.com>
->     net/tls: Fix use-after-free after the TLS device goes down and up
-> 
-> Maxim Mikityanskiy <maximmi@nvidia.com>
->     net/tls: Replace TLS_RX_SYNC_RUNNING with RCU
-> 
-> Alexander Aring <aahringo@redhat.com>
->     net: sock: fix in-kernel mark setting
-> 
-> Vladimir Oltean <vladimir.oltean@nxp.com>
->     net: dsa: tag_8021q: fix the VLAN IDs used for encoding sub-VLANs
-> 
-> Li Huafei <lihuafei1@huawei.com>
->     perf probe: Fix NULL pointer dereference in convert_variable_location()
-> 
-> Erik Kaneda <erik.kaneda@intel.com>
->     ACPICA: Clean up context mutex during object deletion
-> 
-> Sagi Grimberg <sagi@grimberg.me>
->     nvme-rdma: fix in-casule data send for chained sgls
-> 
-> Paolo Abeni <pabeni@redhat.com>
->     mptcp: always parse mptcp options for MPC reqsk
-> 
-> Ariel Levkovich <lariel@nvidia.com>
->     net/sched: act_ct: Fix ct template allocation for zone 0
-> 
-> Paul Blakey <paulb@nvidia.com>
->     net/sched: act_ct: Offload connections with commit action
-> 
-> Parav Pandit <parav@nvidia.com>
->     devlink: Correct VIRTUAL port to not have phys_port attributes
-> 
-> Arnd Bergmann <arnd@arndb.de>
->     HID: i2c-hid: fix format string mismatch
-> 
-> Zhen Lei <thunder.leizhen@huawei.com>
->     HID: pidff: fix error return code in hid_pidff_init()
-> 
-> Tom Rix <trix@redhat.com>
->     HID: logitech-hidpp: initialize level variable
-> 
-> Julian Anastasov <ja@ssi.bg>
->     ipvs: ignore IP_VS_SVC_F_HASHED flag when adding service
-> 
-> Max Gurtovoy <mgurtovoy@nvidia.com>
->     vfio/platform: fix module_put call in error flow
-> 
-> Wei Yongjun <weiyongjun1@huawei.com>
->     samples: vfio-mdev: fix error handing in mdpy_fb_probe()
-> 
-> Randy Dunlap <rdunlap@infradead.org>
->     vfio/pci: zap_vma_ptes() needs MMU
-> 
-> Zhen Lei <thunder.leizhen@huawei.com>
->     vfio/pci: Fix error return code in vfio_ecap_init()
-> 
-> Rasmus Villemoes <linux@rasmusvillemoes.dk>
->     efi: cper: fix snprintf() use in cper_dimm_err_location()
-> 
-> Dan Carpenter <dan.carpenter@oracle.com>
->     efi/libstub: prevent read overflow in find_file_option()
-> 
-> Heiner Kallweit <hkallweit1@gmail.com>
->     efi: Allow EFI_MEMORY_XP and EFI_MEMORY_RO both to be cleared
-> 
-> Changbin Du <changbin.du@intel.com>
->     efi/fdt: fix panic when no valid fdt found
-> 
-> Florian Westphal <fw@strlen.de>
->     netfilter: conntrack: unregister ipv4 sockopts on error unwind
-> 
-> Grant Peltier <grantpeltier93@gmail.com>
->     hwmon: (pmbus/isl68137) remove READ_TEMPERATURE_3 for RAA228228
-> 
-> Armin Wolf <W_Armin@gmx.de>
->     hwmon: (dell-smm-hwmon) Fix index values
-> 
-> Grant Grundler <grundler@chromium.org>
->     net: usb: cdc_ncm: don't spew notifications
-> 
-> Josef Bacik <josef@toxicpanda.com>
->     btrfs: tree-checker: do not error out if extent ref hash doesn't match
-> 
-> 
-> -------------
-> 
-> Diffstat:
-> 
->  Makefile                                           |   4 +-
->  arch/arm/boot/dts/imx6dl-yapp4-common.dtsi         |   6 +-
->  arch/arm/boot/dts/imx6q-dhcom-som.dtsi             |  12 ++
->  arch/arm/boot/dts/imx6qdl-emcon-avari.dtsi         |   2 +-
->  arch/arm/boot/dts/imx7d-meerkat96.dts              |   2 +-
->  arch/arm/boot/dts/imx7d-pico.dtsi                  |   2 +-
->  .../freescale/fsl-ls1028a-kontron-sl28-var4.dts    |   5 +-
->  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi     |   4 +-
->  .../arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi |   4 +-
->  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi          |   2 +
->  arch/arm64/kvm/sys_regs.c                          |  42 ++---
->  arch/powerpc/kernel/kprobes.c                      |   4 +-
->  arch/riscv/kernel/vdso/Makefile                    |   4 +-
->  arch/x86/include/asm/apic.h                        |   1 +
->  arch/x86/include/asm/disabled-features.h           |   7 +-
->  arch/x86/include/asm/fpu/api.h                     |   6 +-
->  arch/x86/include/asm/fpu/internal.h                |   7 -
->  arch/x86/include/asm/kvm_para.h                    |  10 +-
->  arch/x86/kernel/apic/apic.c                        |   1 +
->  arch/x86/kernel/apic/vector.c                      |  20 +++
->  arch/x86/kernel/fpu/xstate.c                       |  57 -------
->  arch/x86/kernel/kvm.c                              |  92 +++++++---
->  arch/x86/kernel/kvmclock.c                         |  26 +--
->  arch/x86/kvm/svm/svm.c                             |   8 +-
->  arch/x86/mm/mem_encrypt_identity.c                 |  11 +-
->  drivers/acpi/acpica/utdelete.c                     |   8 +
->  drivers/bus/ti-sysc.c                              |  57 ++++++-
->  drivers/firmware/efi/cper.c                        |   4 +-
->  drivers/firmware/efi/fdtparams.c                   |   3 +
->  drivers/firmware/efi/libstub/file.c                |   2 +-
->  drivers/firmware/efi/memattr.c                     |   5 -
->  drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c            |  16 --
->  drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c             |   4 +-
->  drivers/gpu/drm/amd/amdgpu/jpeg_v3_0.c             |   4 +-
->  drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c              |   1 +
->  drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c              |   5 +-
->  drivers/gpu/drm/i915/selftests/i915_request.c      |   4 +-
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c            |   3 +-
->  drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c           |  51 +-----
->  drivers/hid/hid-logitech-hidpp.c                   |   1 +
->  drivers/hid/hid-magicmouse.c                       |   2 +-
->  drivers/hid/hid-multitouch.c                       |  10 +-
->  drivers/hid/i2c-hid/i2c-hid-core.c                 |  13 +-
->  drivers/hid/usbhid/hid-pidff.c                     |   1 +
->  drivers/hwmon/dell-smm-hwmon.c                     |   4 +-
->  drivers/hwmon/pmbus/isl68137.c                     |   4 +-
->  drivers/i2c/busses/i2c-qcom-geni.c                 |  21 ++-
->  drivers/net/ethernet/chelsio/cxgb4/cxgb4.h         |   2 -
->  drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c    |   4 +-
->  .../net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c   |  14 +-
->  .../net/ethernet/chelsio/cxgb4/cxgb4_tc_mqprio.c   |   9 +-
->  drivers/net/ethernet/chelsio/cxgb4/sge.c           |   6 +
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c        |   7 +-
->  drivers/net/ethernet/intel/i40e/i40e_xsk.c         |  15 +-
->  drivers/net/ethernet/intel/ice/ice_ethtool.c       |  51 +-----
->  drivers/net/ethernet/intel/ice/ice_hw_autogen.h    |   1 +
->  drivers/net/ethernet/intel/ice/ice_lib.c           |   2 +
->  drivers/net/ethernet/intel/ice/ice_txrx.c          |  24 +--
->  drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c   |  19 ++-
->  drivers/net/ethernet/intel/ice/ice_xsk.c           |  16 +-
->  drivers/net/ethernet/intel/igb/igb_main.c          |  10 +-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |  16 +-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |  21 ++-
->  drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c  |   3 +
->  .../net/ethernet/mellanox/mlx5/core/en_ethtool.c   |   5 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |   9 +
->  drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c |   3 +
->  .../ethernet/mellanox/mlx5/core/steering/dr_fw.c   |   3 +-
->  drivers/net/usb/cdc_ncm.c                          |  12 +-
->  drivers/net/wireguard/Makefile                     |   3 +-
->  drivers/net/wireguard/allowedips.c                 | 189 +++++++++++----------
->  drivers/net/wireguard/allowedips.h                 |  14 +-
->  drivers/net/wireguard/main.c                       |  17 +-
->  drivers/net/wireguard/peer.c                       |  27 ++-
->  drivers/net/wireguard/peer.h                       |   3 +
->  drivers/net/wireguard/selftest/allowedips.c        | 165 +++++++++---------
->  drivers/net/wireguard/socket.c                     |   2 +-
->  drivers/net/xen-netback/interface.c                |   6 +
->  drivers/nvme/host/rdma.c                           |   5 +-
->  drivers/nvme/target/core.c                         |  33 ++--
->  drivers/tee/optee/call.c                           |   6 +-
->  drivers/tee/optee/optee_msg.h                      |   6 +-
->  drivers/tty/serial/stm32-usart.c                   |  22 +--
->  drivers/usb/dwc2/core_intr.c                       |   4 +
->  drivers/vfio/pci/Kconfig                           |   1 +
->  drivers/vfio/pci/vfio_pci_config.c                 |   2 +-
->  drivers/vfio/platform/vfio_platform_common.c       |   2 +-
->  fs/btrfs/extent-tree.c                             |  12 +-
->  fs/btrfs/file-item.c                               |  10 +-
->  fs/btrfs/inode.c                                   |  19 ++-
->  fs/btrfs/reflink.c                                 |  38 +++--
->  fs/btrfs/tree-checker.c                            |  16 +-
->  fs/btrfs/tree-log.c                                |  13 +-
->  fs/ext4/extents.c                                  |  43 ++---
->  fs/ext4/fast_commit.c                              | 182 ++++++++++----------
->  fs/ext4/fast_commit.h                              |   7 -
->  fs/ext4/ialloc.c                                   |   6 +-
->  fs/ext4/mballoc.c                                  |   2 +-
->  fs/ext4/super.c                                    |  11 +-
->  fs/gfs2/glock.c                                    |   2 +
->  fs/io_uring.c                                      |   6 +-
->  fs/ocfs2/file.c                                    |  55 +++++-
->  include/linux/mlx5/mlx5_ifc.h                      |   2 +
->  include/linux/platform_data/ti-sysc.h              |   1 +
->  include/linux/usb/usbnet.h                         |   2 +
->  include/net/caif/caif_dev.h                        |   2 +-
->  include/net/caif/cfcnfg.h                          |   2 +-
->  include/net/caif/cfserl.h                          |   1 +
->  include/net/tls.h                                  |  10 +-
->  init/main.c                                        |   2 +-
->  kernel/bpf/helpers.c                               |  19 +--
->  kernel/trace/bpf_trace.c                           |  32 ++--
->  lib/lz4/lz4_decompress.c                           |   6 +-
->  lib/lz4/lz4defs.h                                  |   1 +
->  mm/debug_vm_pgtable.c                              |   4 +-
->  mm/hugetlb.c                                       |  14 +-
->  mm/page_alloc.c                                    |   2 +
->  net/bluetooth/hci_core.c                           |   7 +-
->  net/bluetooth/hci_sock.c                           |   4 +-
->  net/caif/caif_dev.c                                |  13 +-
->  net/caif/caif_usb.c                                |  14 +-
->  net/caif/cfcnfg.c                                  |  16 +-
->  net/caif/cfserl.c                                  |   5 +
->  net/core/devlink.c                                 |   4 +-
->  net/core/neighbour.c                               |   1 +
->  net/core/sock.c                                    |  16 +-
->  net/dsa/tag_8021q.c                                |   2 +-
->  net/ieee802154/nl-mac.c                            |   4 +-
->  net/ieee802154/nl-phy.c                            |   4 +-
->  net/ipv6/route.c                                   |   8 +-
->  net/mptcp/subflow.c                                |  17 +-
->  net/netfilter/ipvs/ip_vs_ctl.c                     |   2 +-
->  net/netfilter/nf_conntrack_proto.c                 |   2 +-
->  net/netfilter/nf_tables_api.c                      |   4 +-
->  net/netfilter/nfnetlink_cthelper.c                 |   8 +-
->  net/netfilter/nft_ct.c                             |   2 +-
->  net/nfc/llcp_sock.c                                |   2 +
->  net/sched/act_ct.c                                 |  10 +-
->  net/tipc/bearer.c                                  |  94 +++++++---
->  net/tls/tls_device.c                               |  60 +++++--
->  net/tls/tls_device_fallback.c                      |   7 +
->  net/tls/tls_main.c                                 |   1 +
->  samples/vfio-mdev/mdpy-fb.c                        |  13 +-
->  sound/core/timer.c                                 |   3 +-
->  sound/pci/hda/hda_codec.c                          |   5 +
->  sound/pci/hda/patch_realtek.c                      |   1 +
->  tools/perf/util/dwarf-aux.c                        |   8 +-
->  tools/perf/util/probe-finder.c                     |   3 +
->  tools/testing/selftests/wireguard/netns.sh         |   1 +
->  .../testing/selftests/wireguard/qemu/kernel.config |   1 -
->  150 files changed, 1260 insertions(+), 925 deletions(-)
-> 
-> 
+The security concept of isolation was satisfied as soon as userspace
+opened the group_fd. What do more checks in the kernel accomplish?
 
--- 
-Florian
+Yes, we have the issue where some groups require all devices to use
+the same IOASID, but once someone has the group_fd that is no longer a
+security issue. We can fail VFIO_DEVICE_ATTACH_IOASID callss that
+don't make sense.
+
+> > > > Groups should be primarily about isolation security, not about IOASID
+> > > > matching.    
+> > > 
+> > > That doesn't make any sense, what do you mean by 'IOASID matching'?  
+> > 
+> > One of the problems with the vfio interface use of groups is that we
+> > conflate the IOMMU group for both isolation and granularity.  I think
+> > what Jason is referring to here is that we still want groups to be the
+> > basis of isolation, but we don't want a uAPI that presumes all devices
+> > within the group must use the same IOASID.  
+
+Yes, thanks again Alex
+
+> > For example, if a user owns an IOMMU group consisting of
+> > non-isolated functions of a multi-function device, they should be
+> > able to create a vIOMMU VM where each of those functions has its
+> > own address space.  That can't be done today, the entire group
+> > would need to be attached to the VM under a PCIe-to-PCI bridge to
+> > reflect the address space limitation imposed by the vfio group
+> > uAPI model.  Thanks,
+> 
+> Hmm, likely discussed previously in these threads, but I can't come up
+> with the argument that prevents us from making the BIND interface
+> at the group level but the ATTACH interface at the device level?  For
+> example:
+> 
+>  - VFIO_GROUP_BIND_IOASID_FD
+>  - VFIO_DEVICE_ATTACH_IOASID
+> 
+> AFAICT that makes the group ownership more explicit but still allows
+> the device level IOASID granularity.  Logically this is just an
+> internal iommu_group_for_each_dev() in the BIND ioctl.  Thanks,
+
+At a high level it sounds OK.
+
+However I think your above question needs to be answered - what do we
+want to enforce on the iommu_fd and why?
+
+Also, this creates a problem with the device label idea, we still
+need to associate each device_fd with a label, so your above sequence
+is probably:
+
+  VFIO_GROUP_BIND_IOASID_FD(group fd)
+  VFIO_BIND_IOASID_FD(device fd 1, device_label)
+  VFIO_BIND_IOASID_FD(device fd 2, device_label)
+  VFIO_DEVICE_ATTACH_IOASID(..)
+
+And then I think we are back to where I had started, we can trigger
+whatever VFIO_GROUP_BIND_IOASID_FD does automatically as soon as all
+of the devices in the group have been bound.
+
+Jason
