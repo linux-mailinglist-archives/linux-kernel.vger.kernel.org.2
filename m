@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7FB3A1702
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6153A165F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237727AbhFIOWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:22:49 -0400
-Received: from flippie-beckerswealthsa.xyz ([62.173.138.170]:50208 "EHLO
-        host.flippie-beckerswealthsa.xyz" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237368AbhFIOWj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:22:39 -0400
-X-Greylist: delayed 7062 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Jun 2021 10:22:39 EDT
-Received: from flippie-beckerswealthsa.xyz (ec2-18-118-29-154.us-east-2.compute.amazonaws.com [18.118.29.154])
-        by host.flippie-beckerswealthsa.xyz (Postfix) with ESMTPA id 146EC30C3EAE
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 15:09:32 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippie-beckerswealthsa.xyz 146EC30C3EAE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=flippie-beckerswealthsa.xyz; s=default; t=1623240573;
-        bh=h0ivQLrZuUWuyEKz/TWb+FP9AASpHhVqOsJtRcwKQV4=;
-        h=Reply-To:From:To:Subject:Date:From;
-        b=bYFaDaR4RHycjY4FK8VVTH4hJM3ZJ0EpTSmHpz16M2l/C6L+5n+P4BH9RIzj/MnrS
-         VrB3gK+EyXmeRCHx7OHHQn6eIHiE0etYlibhA6g1Gwo+FdSgqJuE374dtP5FO+WK+r
-         AmguNZjwgAiTpq6Jpt320uUDuWxgifk+GjAQTAyQ=
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippie-beckerswealthsa.xyz 146EC30C3EAE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=flippie-beckerswealthsa.xyz; s=default; t=1623240573;
-        bh=h0ivQLrZuUWuyEKz/TWb+FP9AASpHhVqOsJtRcwKQV4=;
-        h=Reply-To:From:To:Subject:Date:From;
-        b=bYFaDaR4RHycjY4FK8VVTH4hJM3ZJ0EpTSmHpz16M2l/C6L+5n+P4BH9RIzj/MnrS
-         VrB3gK+EyXmeRCHx7OHHQn6eIHiE0etYlibhA6g1Gwo+FdSgqJuE374dtP5FO+WK+r
-         AmguNZjwgAiTpq6Jpt320uUDuWxgifk+GjAQTAyQ=
-Reply-To: jmasuku40@flippiebeckerwealthservices.com
-From:   Jotham Masuku <jmasuku40@flippie-beckerswealthsa.xyz>
-To:     linux-kernel@vger.kernel.org
-Subject: Projects
-Date:   09 Jun 2021 12:09:32 +0000
-Message-ID: <20210609120932.37C3E30373A522EF@flippie-beckerswealthsa.xyz>
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        id S237146AbhFIODM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:03:12 -0400
+Received: from mga12.intel.com ([192.55.52.136]:8950 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233544AbhFIODM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:03:12 -0400
+IronPort-SDR: PA/E2CPZ2H2n+MCJjPJVxySwpebn0NQ0Mdw7CKqtSWtqfrchjO1U70O1d4mVFmOOVMrPeXAKnM
+ E1j+6tVkHuAQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="184764552"
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="184764552"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 07:01:17 -0700
+IronPort-SDR: 7urlEGBKJViTW/EwOgU4kVm2CQSLxbgs7NQ0UxHwew0xQv9U2IG/gfWYHWIqLSKL9O4ZJP3isV
+ aHBSFX8VICLg==
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="402450855"
+Received: from davidhok-mobl3.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.9.9])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 07:01:15 -0700
+Subject: Re: [RFC v2-fix-v2 1/1] x86: Introduce generic protected guest
+ abstraction
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210527042356.3983284-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210601211417.2177598-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YLkcIuL2qvo0hviU@zn.tnic>
+ <82f9e5a9-682a-70be-e5ea-938bb742265f@linux.intel.com>
+ <YL5kvLvCpG37zWc/@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <9466ae0b-3a2a-5a43-a4c6-39e07ebe0fbc@linux.intel.com>
+Date:   Wed, 9 Jun 2021 07:01:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <YL5kvLvCpG37zWc/@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello there,
 
-I hope this message finds you in good spirits especially during=20
-this challenging time of coronavirus pandemic. I hope you and=20
-your family are well and keeping safe. Anyway, I am Jotham=20
-Masuku, a broker working with Flippiebecker Wealth. I got your=20
-contact (along with few other contacts) through an online=20
-business directory and I thought I should contact you to see if=20
-you are interested in this opportunity. I am contacting you=20
-because one of my high profile clients is interested in investing=20
-abroad and has asked me to look for individuals and companies=20
-with interesting business ideas and projects that he can invest=20
-in. He wants to invest a substantial amount of asset abroad.
 
-Please kindly respond back to this email if you are interested in=20
-this opportunity. Once I receive your response, I will give you=20
-more details and we can plan a strategy that will be beneficial=20
-to all parties.
+On 6/7/21 11:26 AM, Borislav Petkov wrote:
+>> This header only exists in x86 arch code. So it is better to protect
+>> it with x86 specific header file.
+> That doesn't sound like a special reason to me. And compilers are
+> usually very able at discarding unused symbols so I don't see a problem
+> with keeping all includes at the top, like it is usually done.
 
-Best regards
+I am still not clear. What happens when a driver which includes
+linux/protected-guest.h is compiled for non-x86 arch (s390 or arm64)?
 
-J Masuku
-Flippiebecker Wealth
+Since asm/sev.h and asm/tdx.h exists only in x86_64 arch, IMO, it
+should be placed under CONFIG_INTEL_TDX_GUEST or CONFIG_AMD_MEM_ENCRYPT
+
+did I miss anything?
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
