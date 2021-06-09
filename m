@@ -2,225 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325EF3A115F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC9F3A1162
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238225AbhFIKn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:43:58 -0400
-Received: from mail-pg1-f174.google.com ([209.85.215.174]:37527 "EHLO
-        mail-pg1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235213AbhFIKn5 (ORCPT
+        id S236044AbhFIKrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:47:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40124 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232165AbhFIKq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:43:57 -0400
-Received: by mail-pg1-f174.google.com with SMTP id t9so19099118pgn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:42:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=o3KSqDVs9YRSwE4rOwA0va7NCLHw84o+H5YF3VkLQdM=;
-        b=JtSlkmTPs+H1JCpMlMT4IMsfQa8AN05+Jwzr9y0eMBoFqPN3OLlDF/sSIU2wdbnafj
-         Bvwc8QVi2hybfJT8seIRU25PwWiVOUXoe3zAOyP1PsE0Jbs8WypZ6B02spebC97i8YPP
-         dCTZsIfDepmonyk02MH7akhX/22srZngJ2VAo=
+        Wed, 9 Jun 2021 06:46:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623235498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wn61wvGsrZPr3Bs7lAZrFJOV9d4oeYutZi5DKf0Dx9U=;
+        b=IQ8fmdYqKb3AA4iMD0kaZNRuARMilMw2qYe1fn0IaGYOdF4+/2vHESkKlAFpqQAUVacXEw
+        krDYswvGfNlwtJ6VMap91xFoBr+PilOIn1GWdP+tntaMF9RnQv2P5FX1rP04E2yLe+auZw
+        DXo1ZBIXtHC+MswWvcGFvP++OyHQZ4A=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-AYMiKa5MOzSPRa62LOrWIg-1; Wed, 09 Jun 2021 06:44:57 -0400
+X-MC-Unique: AYMiKa5MOzSPRa62LOrWIg-1
+Received: by mail-wr1-f72.google.com with SMTP id e11-20020a056000178bb0290119c11bd29eso5727290wrg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:44:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=o3KSqDVs9YRSwE4rOwA0va7NCLHw84o+H5YF3VkLQdM=;
-        b=GaFC6sUV+Hz1VIwUwRJ28NL3cE1Q85f1Es0f2rh9pbGSfpTcWt54HZXH+S3RdUFOp6
-         mwCqf4xA35N1ankb0IK+oWcaYbcVPCLACa+9qQz4Q1C2hI5mOTZ8yeodpEuWlf6cHVW5
-         r7wtpNMEjFcg9y5rHWjNqh5K/Z69kpqo6Kweaffef+DKlOTli646t2qD9WnQi/aeSlVF
-         Ph6fwSHuFroFun9I+0Q2Av/NiCp7UX9PYGCfmq6y5OMBHv6KIBUjO9A19EOCjh+2XH6U
-         rOyX+BRxehecKMe3qOkzNWDv2Drfn9EcBqQJ4RcgrhNj/WnpFy6cH8Q6CyASAIcD+plF
-         ZIaQ==
-X-Gm-Message-State: AOAM531jYoQ5DRrm0e6835OYM8HeVT3TtYi8A3k6Eiw4Iygzdbyq5zI/
-        Hy1hzd1nX47o2Bwe8mU7hk2hCg==
-X-Google-Smtp-Source: ABdhPJxeWSnFVRMewe1zjN1xVuTUbrFOPSw8XzwNwPRTj6Pvhj8lQCDm/w6gJDaJPdNL+Nt/nRAF9A==
-X-Received: by 2002:a63:f245:: with SMTP id d5mr3191835pgk.416.1623235262439;
-        Wed, 09 Jun 2021 03:41:02 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:83f0:56eb:3535:6bd5])
-        by smtp.gmail.com with ESMTPSA id k1sm13223904pfa.30.2021.06.09.03.41.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 03:41:01 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maoguang.meng@mediatek.com, yong.wu@mediatek.com
-Subject: [PATCH] dt-bindings: mediatek: convert mtk jpeg decoder/encoder to yaml
-Date:   Wed,  9 Jun 2021 18:40:54 +0800
-Message-Id: <20210609104053.617751-1-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Wn61wvGsrZPr3Bs7lAZrFJOV9d4oeYutZi5DKf0Dx9U=;
+        b=I0jRMAUDxWGD/KxDJoaI0dnkb//5uxFoJpSQs+ASKcySnnDc4YXS2HgLL4D807mhAv
+         v13d9gAk4PyEadRP3L+ru8RmKcOgGq7oiiqKN0k/jMVcdk7bqn+PUjB4BHHYEkgc/us5
+         +nbteFQKgoXDGUzKeXqx06RyOeVMVaYDmGRQA34NJZT+t2yiyavq5JFo7TGp1sDLi5Cz
+         Hwjmjrxdbfw0CEWJUdF/L4yaY6hABKCqFh+kVssziioo4wJVbwYRswApG8lEaY3FBvhR
+         TJPXkfFW8zgOSAw0Dt4RfPVFXT6Pl+5niK+xDxNKpk7RAno7mNYqgOlcXkT0u5lyFdsl
+         V0Ig==
+X-Gm-Message-State: AOAM5318RnSOenowAU1IogzTrgyjH5XoRNyRPX1jT5Dq1D7BZ0kl8dJd
+        U9NvzjDbmcOb8+kRGD7NIXs1g9Q/qOE8pNosMuz/BDm1ipYvnDONhcNI4E97CE6AwVpheXbQu9O
+        V32x0ikrw/2K4VgtpbKifYXEq
+X-Received: by 2002:a1c:770b:: with SMTP id t11mr9099943wmi.79.1623235496561;
+        Wed, 09 Jun 2021 03:44:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx7B8PRy8M6hppCE72ZIXVc5gaAVIQuKoTl7DV/+tdt0wcwyIUod9OORSca87u9VRDHyYd1Jg==
+X-Received: by 2002:a1c:770b:: with SMTP id t11mr9099928wmi.79.1623235496361;
+        Wed, 09 Jun 2021 03:44:56 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
+        by smtp.gmail.com with ESMTPSA id o17sm22066824wrp.47.2021.06.09.03.44.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 03:44:55 -0700 (PDT)
+Subject: Re: [PATCH v4] mm/compaction: let proactive compaction order
+ configurable
+To:     chukaiping <chukaiping@baidu.com>, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, nigupta@nvidia.com,
+        bhe@redhat.com, khalid.aziz@oracle.com, iamjoonsoo.kim@lge.com,
+        mateusznosek0@gmail.com, sh_def@163.com
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <1619576901-9531-1-git-send-email-chukaiping@baidu.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <a3f6628a-8165-429f-0383-c522b4c49197@redhat.com>
+Date:   Wed, 9 Jun 2021 12:44:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1619576901-9531-1-git-send-email-chukaiping@baidu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert mediatek jpeg decoder and encoder bindings to yaml.
+On 28.04.21 04:28, chukaiping wrote:
+> Currently the proactive compaction order is fixed to
+> COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
+> normal 4KB memory, but it's too high for the machines with small
+> normal memory, for example the machines with most memory configured
+> as 1GB hugetlbfs huge pages. In these machines the max order of
+> free pages is often below 9, and it's always below 9 even with hard
+> compaction. This will lead to proactive compaction be triggered very
+> frequently. In these machines we only care about order of 3 or 4.
+> This patch export the oder to proc and let it configurable
+> by user, and the default value is still COMPACTION_HPAGE_ORDER.
+> 
+> Signed-off-by: chukaiping <chukaiping@baidu.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+> 
+> Changes in v4:
+>      - change the sysctl file name to proactive_compation_order
+> 
+> Changes in v3:
+>      - change the min value of compaction_order to 1 because the fragmentation
+>        index of order 0 is always 0
+>      - move the definition of max_buddy_zone into #ifdef CONFIG_COMPACTION
+> 
+> Changes in v2:
+>      - fix the compile error in ia64 and powerpc, move the initialization
+>        of sysctl_compaction_order to kcompactd_init because
+>        COMPACTION_HPAGE_ORDER is a variable in these architectures
+>      - change the hard coded max order number from 10 to MAX_ORDER - 1
+> 
+>   include/linux/compaction.h |    1 +
+>   kernel/sysctl.c            |   10 ++++++++++
+>   mm/compaction.c            |   12 ++++++++----
+>   3 files changed, 19 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+> index ed4070e..a0226b1 100644
+> --- a/include/linux/compaction.h
+> +++ b/include/linux/compaction.h
+> @@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
+>   #ifdef CONFIG_COMPACTION
+>   extern int sysctl_compact_memory;
+>   extern unsigned int sysctl_compaction_proactiveness;
+> +extern unsigned int sysctl_proactive_compaction_order;
+>   extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+>   			void *buffer, size_t *length, loff_t *ppos);
+>   extern int sysctl_extfrag_threshold;
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 62fbd09..ed9012e 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -196,6 +196,7 @@ enum sysctl_writes_mode {
+>   #endif /* CONFIG_SCHED_DEBUG */
+>   
+>   #ifdef CONFIG_COMPACTION
+> +static int max_buddy_zone = MAX_ORDER - 1;
+>   static int min_extfrag_threshold;
+>   static int max_extfrag_threshold = 1000;
+>   #endif
+> @@ -2871,6 +2872,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
+>   		.extra2		= &one_hundred,
+>   	},
+>   	{
+> +		.procname       = "proactive_compation_order",
+> +		.data           = &sysctl_proactive_compaction_order,
+> +		.maxlen         = sizeof(sysctl_proactive_compaction_order),
+> +		.mode           = 0644,
+> +		.proc_handler   = proc_dointvec_minmax,
+> +		.extra1         = SYSCTL_ONE,
+> +		.extra2         = &max_buddy_zone,
+> +	},
+> +	{
+>   		.procname	= "extfrag_threshold",
+>   		.data		= &sysctl_extfrag_threshold,
+>   		.maxlen		= sizeof(int),
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index e04f447..171436e 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1925,17 +1925,18 @@ static bool kswapd_is_running(pg_data_t *pgdat)
+>   
+>   /*
+>    * A zone's fragmentation score is the external fragmentation wrt to the
+> - * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
+> + * sysctl_proactive_compaction_order. It returns a value in the range
+> + * [0, 100].
+>    */
+>   static unsigned int fragmentation_score_zone(struct zone *zone)
+>   {
+> -	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
+> +	return extfrag_for_order(zone, sysctl_proactive_compaction_order);
+>   }
+>   
+>   /*
+>    * A weighted zone's fragmentation score is the external fragmentation
+> - * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
+> - * returns a value in the range [0, 100].
+> + * wrt to the sysctl_proactive_compaction_order scaled by the zone's size.
+> + * It returns a value in the range [0, 100].
+>    *
+>    * The scaling factor ensures that proactive compaction focuses on larger
+>    * zones like ZONE_NORMAL, rather than smaller, specialized zones like
+> @@ -2666,6 +2667,7 @@ static void compact_nodes(void)
+>    * background. It takes values in the range [0, 100].
+>    */
+>   unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
+> +unsigned int __read_mostly sysctl_proactive_compaction_order;
+>   
+>   /*
+>    * This is the entry point for compacting all nodes via
+> @@ -2958,6 +2960,8 @@ static int __init kcompactd_init(void)
+>   	int nid;
+>   	int ret;
+>   
+> +	sysctl_proactive_compaction_order = COMPACTION_HPAGE_ORDER;
+> +
+>   	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+>   					"mm/compaction:online",
+>   					kcompactd_cpu_online, NULL);
+> 
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
-mediatek,larb in the original file will be removed after this series[1]
-[1] https://patchwork.kernel.org/project/linux-mediatek/patch/20210410091128.31823-2-yong.wu@mediatek.com/
----
- .../bindings/media/mediatek-jpeg-decoder.yaml | 73 +++++++++++++++++++
- .../bindings/media/mediatek-jpeg-encoder.yaml | 65 +++++++++++++++++
- 2 files changed, 138 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
- create mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
+Hm, do we actually want to put an upper limit to the order a user can 
+supply?
 
-diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
-new file mode 100644
-index 0000000000000..812f366163d8a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
-@@ -0,0 +1,73 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/mediatek-jpeg-decoder.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek JPEG Decoder Device Tree Bindings
-+
-+maintainers:
-+  - Xia Jiang <xia.jiang@mediatek.com>
-+
-+description: |-
-+  Mediatek JPEG Decoder is the JPEG decode hardware present in Mediatek SoCs
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+        - const: mediatek,mt8173-jpgdec
-+      - items:
-+        - const: mediatek,mt2701-jpgdec
-+      - items:
-+        - enum:
-+            - mediatek,mt7623-jpgdec
-+        - const: mediatek,mt2701-jpgdec
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 2
-+    minItems: 2
-+
-+  clock-names:
-+    items:
-+      - const: jpgdec-smi
-+      - const: jpgdec
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  iommus:
-+    minItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - power-domains
-+  - iommus
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    jpegdec: jpegdec@15004000 {
-+      compatible = "mediatek,mt2701-jpgdec";
-+      reg = <0 0x15004000 0 0x1000>;
-+      interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW>;
-+      clocks =  <&imgsys CLK_IMG_JPGDEC_SMI>,
-+                <&imgsys CLK_IMG_JPGDEC>;
-+      clock-names = "jpgdec-smi",
-+                    "jpgdec";
-+      power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
-+      iommus = <&iommu MT2701_M4U_PORT_JPGDEC_WDMA>,
-+               <&iommu MT2701_M4U_PORT_JPGDEC_BSDMA>;
-+    };
-+
-diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
-new file mode 100644
-index 0000000000000..8ffc17fe576d5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
-@@ -0,0 +1,65 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/mediatek-jpeg-encoder.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek JPEG Encoder Device Tree Bindings
-+
-+maintainers:
-+  - Xia Jiang <xia.jiang@mediatek.com>
-+
-+description: |-
-+  MediaTek JPEG Encoder is the JPEG encode hardware present in MediaTek SoCs
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - mediatek,mt2701-jpgenc
-+          - mediatek,mt8183-jpgenc
-+      - const: mediatek,mtk-jpgenc
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: jpgenc
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  iommus:
-+    minItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - power-domains
-+  - iommus
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    jpegenc: jpegenc@1500a000 {
-+      compatible = "mediatek,mt2701-jpgenc",
-+                   "mediatek,mtk-jpgenc";
-+      reg = <0 0x1500a000 0 0x1000>;
-+      interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_LOW>;
-+      clocks =  <&imgsys CLK_IMG_VENC>;
-+      clock-names = "jpgenc";
-+      power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
-+      iommus = <&iommu MT2701_M4U_PORT_JPGENC_RDMA>,
-+               <&iommu MT2701_M4U_PORT_JPGENC_BSDMA>;
-+    };
-+
 -- 
-2.32.0.rc1.229.g3e70b5a671-goog
+Thanks,
+
+David / dhildenb
 
