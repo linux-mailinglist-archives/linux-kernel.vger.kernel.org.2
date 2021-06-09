@@ -2,175 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7AF3A105C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFA53A1072
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238145AbhFIJnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:43:19 -0400
-Received: from m12-17.163.com ([220.181.12.17]:46814 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234720AbhFIJnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:43:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=emhq7
-        YqbrdFKqsiv9tuI2zOhFtJH8ztv1Gb7P5G7pvc=; b=LMr6SxP3+hj+OMAX4lO9X
-        O9VStuD663p+6kIMZ1LFUOuKiCGtn++J3SJgpGGPUDnLveoAJ21V8fZTzEhL0uJe
-        FWoFo3PAlNeJMX+ZQDPkivDwMoYuvUszESur7DCWqTos3dF2I5kH5W/4s/CS2ivB
-        n0fEsexUPN9REYOerJ15vE=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp13 (Coremail) with SMTP id EcCowABHa3+SjMBgX3tz6Q--.24882S2;
-        Wed, 09 Jun 2021 17:40:35 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] scsi: lpfc: lpfc_bsg: Removed unnecessary 'return'
-Date:   Wed,  9 Jun 2021 17:39:32 +0800
-Message-Id: <20210609093932.580991-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S238252AbhFIJp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:45:28 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5467 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234124AbhFIJp0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:45:26 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0MXn5RqmzZfWx;
+        Wed,  9 Jun 2021 17:40:25 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 17:43:03 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 17:43:03 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
+        <ms@dev.tdt.de>, <willemb@google.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>
+Subject: [PATCH net-next 0/9] net: lapbether: clean up some code style issues
+Date:   Wed, 9 Jun 2021 17:39:46 +0800
+Message-ID: <1623231595-33851-1-git-send-email-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowABHa3+SjMBgX3tz6Q--.24882S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAFW5Cw4rWw48Gr43tFykGrg_yoW5Cw4DpF
-        4rCFy8urn7JF17Kry5ta9IywnIyw4fJFyjyan8Kas3uFsavFW7GFWxJr18JFWrJFyvyF98
-        KrZrWay5G3W7XFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jpsj8UUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiShOsUFPAOodiEgAAs7
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+From: Peng Li <lipeng321@huawei.com>
 
-Removed unnecessary 'return'.
+This patchset clean up some code style issues.
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- drivers/scsi/lpfc/lpfc_bsg.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+Peng Li (9):
+  net: lapbether: remove redundant blank line
+  net: lapbether: add blank line after declarations
+  net: lapbether: move out assignment in if condition
+  net: lapbether: remove trailing whitespaces
+  net: lapbether: remove unnecessary out of memory message
+  net: lapbether: fix the comments style issue
+  net: lapbether: replace comparison to NULL with "lapbeth_get_x25_dev"
+  net: lapbether: fix the alignment issue
+  net: lapbether: fix the code style issue about line length
 
-diff --git a/drivers/scsi/lpfc/lpfc_bsg.c b/drivers/scsi/lpfc/lpfc_bsg.c
-index 08be16e7a60a..df6ab90523e6 100644
---- a/drivers/scsi/lpfc/lpfc_bsg.c
-+++ b/drivers/scsi/lpfc/lpfc_bsg.c
-@@ -150,7 +150,6 @@ lpfc_free_bsg_buffers(struct lpfc_hba *phba, struct lpfc_dmabuf *mlist)
- 		lpfc_mbuf_free(phba, mlist->virt, mlist->phys);
- 		kfree(mlist);
- 	}
--	return;
- }
- 
- static struct lpfc_dmabuf *
-@@ -377,7 +376,6 @@ lpfc_bsg_send_mgmt_cmd_cmp(struct lpfc_hba *phba,
- 		bsg_job_done(job, bsg_reply->result,
- 			       bsg_reply->reply_payload_rcv_len);
- 	}
--	return;
- }
- 
- /**
-@@ -647,7 +645,6 @@ lpfc_bsg_rport_els_cmp(struct lpfc_hba *phba,
- 		bsg_job_done(job, bsg_reply->result,
- 			       bsg_reply->reply_payload_rcv_len);
- 	}
--	return;
- }
- 
- /**
-@@ -1442,7 +1439,6 @@ lpfc_issue_ct_rsp_cmp(struct lpfc_hba *phba,
- 		bsg_job_done(job, bsg_reply->result,
- 			       bsg_reply->reply_payload_rcv_len);
- 	}
--	return;
- }
- 
- /**
-@@ -1755,7 +1751,6 @@ lpfc_bsg_diag_mode_exit(struct lpfc_hba *phba)
- 		shost = lpfc_shost_from_vport(phba->pport);
- 		scsi_unblock_requests(shost);
- 	}
--	return;
- }
- 
- /**
-@@ -2816,7 +2811,6 @@ lpfc_bsg_dma_page_free(struct lpfc_hba *phba, struct lpfc_dmabuf *dmabuf)
- 		dma_free_coherent(&pcidev->dev, BSG_MBOX_SIZE,
- 				  dmabuf->virt, dmabuf->phys);
- 	kfree(dmabuf);
--	return;
- }
- 
- /**
-@@ -2840,7 +2834,6 @@ lpfc_bsg_dma_page_list_free(struct lpfc_hba *phba,
- 		list_del_init(&dmabuf->list);
- 		lpfc_bsg_dma_page_free(phba, dmabuf);
- 	}
--	return;
- }
- 
- /**
-@@ -3485,7 +3478,6 @@ lpfc_bsg_issue_mbox_cmpl(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmboxq)
- 		bsg_job_done(job, bsg_reply->result,
- 			       bsg_reply->reply_payload_rcv_len);
- 	}
--	return;
- }
- 
- /**
-@@ -3602,8 +3594,6 @@ lpfc_bsg_mbox_ext_session_reset(struct lpfc_hba *phba)
- 	memset((char *)&phba->mbox_ext_buf_ctx, 0,
- 	       sizeof(struct lpfc_mbox_ext_buf_ctx));
- 	INIT_LIST_HEAD(&phba->mbox_ext_buf_ctx.ext_dmabuf_list);
--
--	return;
- }
- 
- /**
-@@ -3735,7 +3725,6 @@ lpfc_bsg_issue_read_mbox_ext_cmpl(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmboxq)
- 		bsg_job_done(job, bsg_reply->result,
- 			       bsg_reply->reply_payload_rcv_len);
- 	}
--	return;
- }
- 
- /**
-@@ -3773,8 +3762,6 @@ lpfc_bsg_issue_write_mbox_ext_cmpl(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmboxq)
- 		bsg_job_done(job, bsg_reply->result,
- 			       bsg_reply->reply_payload_rcv_len);
- 	}
--
--	return;
- }
- 
- static void
-@@ -3867,7 +3854,6 @@ lpfc_bsg_sli_cfg_dma_desc_setup(struct lpfc_hba *phba, enum nemb_type nemb_tp,
- 				hbd[index].pa_lo);
- 		}
- 	}
--	return;
- }
- 
- /**
-@@ -4375,7 +4361,6 @@ lpfc_bsg_mbox_ext_abort(struct lpfc_hba *phba)
- 		phba->mbox_ext_buf_ctx.state = LPFC_BSG_MBOX_ABTS;
- 	else
- 		lpfc_bsg_mbox_ext_session_reset(phba);
--	return;
- }
- 
- /**
-@@ -5146,8 +5131,6 @@ lpfc_bsg_menlo_cmd_cmp(struct lpfc_hba *phba,
- 		bsg_job_done(job, bsg_reply->result,
- 			       bsg_reply->reply_payload_rcv_len);
- 	}
--
--	return;
- }
- 
- /**
+ drivers/net/wan/lapbether.c | 65 +++++++++++++++++++++------------------------
+ 1 file changed, 30 insertions(+), 35 deletions(-)
+
 -- 
-2.25.1
-
+2.8.1
 
