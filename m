@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E842D3A1994
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C8E3A19EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236487AbhFIPcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:32:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55998 "EHLO mail.kernel.org"
+        id S234630AbhFIPji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:39:38 -0400
+Received: from gate.crashing.org ([63.228.1.57]:47811 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236420AbhFIPcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:32:07 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5011961351;
-        Wed,  9 Jun 2021 15:30:06 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 16:32:00 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Subject: Re: [PATCH v11 16/33] counter: stm32-lptimer-cnt: Add const
- qualifier for actions_list array
-Message-ID: <20210609163200.281673ac@jic23-huawei>
-In-Reply-To: <785e0daa3633923ede42394f423fcf94c4469154.1623201081.git.vilhelm.gray@gmail.com>
-References: <cover.1623201081.git.vilhelm.gray@gmail.com>
-        <785e0daa3633923ede42394f423fcf94c4469154.1623201081.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234049AbhFIPjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:39:05 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 159FVcVo029586;
+        Wed, 9 Jun 2021 10:31:38 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 159FVXoX029584;
+        Wed, 9 Jun 2021 10:31:33 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 9 Jun 2021 10:31:33 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210609153133.GF18427@gate.crashing.org>
+References: <alpine.LNX.2.20.13.2106070017070.7184@monopod.intra.ispras.ru> <CAHk-=wjwXs5+SOZGTaZ0bP9nsoA+PymAcGE4CBDVX3edGUcVRg@mail.gmail.com> <alpine.LNX.2.20.13.2106070956310.7184@monopod.intra.ispras.ru> <CANpmjNMwq6ENUtBunP-rw9ZSrJvZnQw18rQ47U3JuqPEQZsaXA@mail.gmail.com> <20210607152806.GS4397@paulmck-ThinkPad-P17-Gen-1> <YL5Risa6sFgnvvnG@elver.google.com> <CANpmjNNtDX+eBEpuP9-NgT6RAwHK5OgbQHT9b+8LZQJtwWpvPg@mail.gmail.com> <YL9TEqealhxBBhoS@hirez.programming.kicks-ass.net> <20210608152851.GX18427@gate.crashing.org> <CANpmjNPJaDT4vBqkTw8XaRfKgDuwh71qmrvNfq-vx-Zyp4ugNg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNPJaDT4vBqkTw8XaRfKgDuwh71qmrvNfq-vx-Zyp4ugNg@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  9 Jun 2021 10:31:19 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-
-> The struct counter_synapse actions_list member expects a const enum
-> counter_synapse_action array. This patch adds the const qualifier to the
-> stm32_lptim_cnt_synapse_actions to match actions_list.
+On Wed, Jun 09, 2021 at 02:44:08PM +0200, Marco Elver wrote:
+> On Tue, 8 Jun 2021 at 17:30, Segher Boessenkool
+> <segher@kernel.crashing.org> wrote:
+> > This needs some work.
 > 
-> Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Applied.
+> There is a valid concern that something at the level of the memory
+> model requires very precise specification in terms of language
+> semantics and not generated code.
 
-Thanks,
+Yup, exactly.  Especially because the meaning of generated code is hard
+to describe, and even much more so if you do not limit yourself to a
+single machine architecture.
 
-J
-> ---
->  drivers/counter/stm32-lptimer-cnt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/counter/stm32-lptimer-cnt.c b/drivers/counter/stm32-lptimer-cnt.c
-> index 0f7d3f1ec1b6..c19d998df5ba 100644
-> --- a/drivers/counter/stm32-lptimer-cnt.c
-> +++ b/drivers/counter/stm32-lptimer-cnt.c
-> @@ -146,7 +146,7 @@ enum stm32_lptim_synapse_action {
->  	STM32_LPTIM_SYNAPSE_ACTION_NONE,
->  };
->  
-> -static enum counter_synapse_action stm32_lptim_cnt_synapse_actions[] = {
-> +static const enum counter_synapse_action stm32_lptim_cnt_synapse_actions[] = {
->  	/* Index must match with stm32_lptim_cnt_polarity[] (priv->polarity) */
->  	[STM32_LPTIM_SYNAPSE_ACTION_RISING_EDGE] = COUNTER_SYNAPSE_ACTION_RISING_EDGE,
->  	[STM32_LPTIM_SYNAPSE_ACTION_FALLING_EDGE] = COUNTER_SYNAPSE_ACTION_FALLING_EDGE,
+> Otherwise it seems difficult to get
+> compiler folks onboard.
 
+It isn't just difficult to get us on board without it, we know it just
+is impossible to do anything sensible without it.
+
+> And coming up with such a specification may
+> take a while,
+
+Yes.
+
+> especially if we have to venture in the realm of the
+> C11/C++11 memory model while still trying to somehow make it work for
+> the LKMM. That seems like a very tricky maze we may want to avoid.
+
+Well, you only need to use the saner parts of the memory model (not the
+full thing), and extensions are fine as well of course.
+
+> An alternative design would be to use a statement attribute to only
+> enforce (C) ("__attribute__((mustcontrol))" ?).
+
+Statement attributes only exist for empty statements.  It is unclear how
+(and if!) we could support it for general statements.
+
+Some new builtin seems to fit the requirements better?  I haven't looked
+too closely though.
+
+
+Segher
