@@ -2,107 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78AD3A1B91
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843E13A1B93
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhFIRPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:15:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34802 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230152AbhFIRPR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:15:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623258802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0PU3D9xng4HWsSgSCmW5Y5xsfidNOi9bqS36Xaxp+Ao=;
-        b=FBTao43xAoB6XDtp99i1AYaqYLNaQ2faEnEczx/r+3EXcfhF5XRK8G0eN3dR2OiOgAW/7t
-        2NPHhXyJbDmrC93HhKfPb+8yu9Fj4ZB23uJKCHaFLVOKmef8M9Qg3BsEH4BTshKCRTxAmr
-        DXfYVFEsoUObF+An4zGXz5BaE1xzBdk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-221-RhFjz5RlNOGogXcS6nSMMQ-1; Wed, 09 Jun 2021 13:13:15 -0400
-X-MC-Unique: RhFjz5RlNOGogXcS6nSMMQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F178B10C1ADC;
-        Wed,  9 Jun 2021 17:13:13 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A16D15D9C6;
-        Wed,  9 Jun 2021 17:13:13 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL v2] KVM fixes for 5.13-rc6
-Date:   Wed,  9 Jun 2021 13:13:13 -0400
-Message-Id: <20210609171313.150207-1-pbonzini@redhat.com>
+        id S231335AbhFIRPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:15:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230152AbhFIRPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 13:15:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE50F613C8;
+        Wed,  9 Jun 2021 17:13:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623258829;
+        bh=mrltbATYx5NNXTNMp4PuZw7n1trAAIuzp8ITORE+/CY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cY7eMAwWJm/208m+Lz3ay4y3HYlxptutAfcsiHAlOpVTmwL4NIMV10xDYf2RMHSJ3
+         wQER/46JyYW3jc49MNldlS3coNujZCqLLlKFGhJvuPA3awOG2lV0QKuUj9L9fhJ1HI
+         8lhffABS9K/XCj+KNSI35PsWgGiYxJq7FMcgIQ70=
+Date:   Wed, 9 Jun 2021 19:13:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com,
+        nava.manne@xilinx.com, dinguyen@kernel.org,
+        krzysztof.kozlowski@canonical.com, yilun.xu@intel.com,
+        arnd@arndb.de, fpacheco@redhat.com, richard.gong@intel.com,
+        luca@lucaceresoli.net, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/4] fpga: reorganize to subdirs
+Message-ID: <YMD2yxtsQN16MoPA@kroah.com>
+References: <20210609142208.3085451-1-trix@redhat.com>
+ <YMDV7R52QUTFhpHH@kroah.com>
+ <2738ee7a-448f-c327-c430-13fb44da45ec@redhat.com>
+ <YMDueTEHGWuAcknP@kroah.com>
+ <a35f5fda-a202-dc66-4445-b3ce333a55e6@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a35f5fda-a202-dc66-4445-b3ce333a55e6@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Wed, Jun 09, 2021 at 09:50:39AM -0700, Tom Rix wrote:
+> 
+> On 6/9/21 9:38 AM, Greg KH wrote:
+> > On Wed, Jun 09, 2021 at 08:08:06AM -0700, Tom Rix wrote:
+> > > On 6/9/21 7:53 AM, Greg KH wrote:
+> > > > On Wed, Jun 09, 2021 at 07:22:03AM -0700, trix@redhat.com wrote:
+> > > > > From: Tom Rix <trix@redhat.com>
+> > > > > 
+> > > > > The incoming xrt patchset has a toplevel subdir xrt/
+> > > > > The current fpga/ uses a single dir with filename prefixes to subdivide owners
+> > > > > For consistency, there should be only one way to organize the fpga/ dir.
+> > > > > Because the subdir model scales better, refactor to use it.
+> > > > > The discussion wrt xrt is here:
+> > > > > https://lore.kernel.org/linux-fpga/68e85a4f-4a10-1ff9-0443-aa565878c855@redhat.com/
+> > > > > 
+> > > > > Follow drivers/net/ethernet/ which has control configs
+> > > > > NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+> > > > > Since fpgas do not have many vendors, drop the 'VENDOR' and use
+> > > > > FPGA_BLA.
+> > > > > 
+> > > > > There are several new subdirs
+> > > > > altera/
+> > > > > dfl/
+> > > > > lattice/
+> > > > > xilinx/
+> > > > > 
+> > > > > Each subdir has a Kconfig that has a new/reused
+> > > > > 
+> > > > > if FPGA_BLA
+> > > > >     ... existing configs ...
+> > > > > endif FPGA_BLA
+> > > > > 
+> > > > > Which is sourced into the main fpga/Kconfig
+> > > > > 
+> > > > > Each subdir has a Makefile whose transversal is controlled in the
+> > > > > fpga/Makefile by
+> > > > > 
+> > > > > obj-$(CONFIG_FPGA_BLA) += bla/
+> > > > > 
+> > > > > Some cleanup to arrange thing alphabetically and make fpga/Makefile's
+> > > > > whitespace look more like net/'s
+> > > > > 
+> > > > > Changes from
+> > > > > v1
+> > > > >     Drop renaming files
+> > > > >     Cleanup makefiles
+> > > > You can rename the files, you just can not rename the .ko objects
+> > > > without everyone knowing what you are doing and you trying to bury it in
+> > > > the middle of a differently described patch.
+> > > > 
+> > > > If you want to do that, do you?  I don't really understand why you want
+> > > > to move things around right now other than "we have 40 files in one
+> > > > directory, ick!".
+> > > I am trying to resolve the layout inconsistency between what we have and
+> > > what the xrt patchset does.
+> > Why does it matter?  New stuff can be added to a new dir, why worry
+> > about old stuff?  What does it hurt?
+> > 
+> > > The big issue is the files vs dirs.
+> > > 
+> > > Over specified filenames is secondary, so I dropped them.
+> > > 
+> > > 40 files in one dir is itself not a problem.
+> > > 
+> > > having 40 files and an xrt/ is.
+> > Why is that a "problem"?
+> > 
+> > > fpga/ layout should be consistent so the Makefile and Kconfig are easier to
+> > > maintain.
+> > Is it somehow hard to maintain today?  Seems pretty trivial to me...
+> 
+> This change was to help move xrt along.
+> 
+> If you are fine with xrt/, I will drop this patchset.
 
-The following changes since commit 000ac42953395a4f0a63d5db640c5e4c88a548c5:
+Who has objected to xrt/ being the only new subdirectory?
 
-  selftests: kvm: fix overlapping addresses in memslot_perf_test (2021-05-29 06:28:06 -0400)
+My main complaints here are:
+	- these patches were not tested
+	- you renamed kernel modules "accidentally"
+	- you forgot SPDX lines
+	- lack of description of why these files being moved was
+	  necessary in the changelog where you moved the files
 
-are available in the Git repository at:
+Remember, patch 0/X never shows up in changelogs...
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+You can do better :)
 
-for you to fetch changes up to 4422829e8053068e0225e4d0ef42dc41ea7c9ef5:
-
-  kvm: fix previous commit for 32-bit builds (2021-06-09 01:49:13 -0400)
-
-32-bit builds had a warning with v1 of the pull request.  I have added a
-patch that fixes it.
-
-----------------------------------------------------------------
-Bugfixes, including a TLB flush fix that affects processors
-without nested page tables.
-
-----------------------------------------------------------------
-Ashish Kalra (1):
-      KVM: SVM: Fix SEV SEND_START session length & SEND_UPDATE_DATA query length after commit 238eca821cee
-
-Christian Borntraeger (1):
-      KVM: selftests: introduce P47V64 for s390x
-
-Lai Jiangshan (3):
-      KVM: X86: MMU: Use the correct inherited permissions to get shadow page
-      KVM: x86: Ensure PV TLB flush tracepoint reflects KVM behavior
-      KVM: x86: Unload MMU on guest TLB flush if TDP disabled to force MMU sync
-
-Paolo Bonzini (2):
-      kvm: avoid speculation-based attacks from out-of-range memslot accesses
-      kvm: fix previous commit for 32-bit builds
-
-Sean Christopherson (1):
-      KVM: x86: Ensure liveliness of nested VM-Enter fail tracepoint message
-
-Wanpeng Li (1):
-      KVM: LAPIC: Write 0 to TMICT should also cancel vmx-preemption timer
-
-Zhenzhong Duan (1):
-      selftests: kvm: Add support for customized slot0 memory size
-
- Documentation/virt/kvm/mmu.rst                    |  4 +-
- arch/x86/kvm/lapic.c                              | 17 +++++---
- arch/x86/kvm/mmu/paging_tmpl.h                    | 14 +++---
- arch/x86/kvm/svm/sev.c                            |  6 +--
- arch/x86/kvm/trace.h                              |  6 +--
- arch/x86/kvm/x86.c                                | 19 ++++++++-
- include/linux/kvm_host.h                          | 10 ++++-
- tools/testing/selftests/kvm/include/kvm_util.h    | 10 +++--
- tools/testing/selftests/kvm/kvm_page_table_test.c |  2 +-
- tools/testing/selftests/kvm/lib/kvm_util.c        | 52 +++++++++++++++++++----
- tools/testing/selftests/kvm/lib/perf_test_util.c  |  2 +-
- tools/testing/selftests/kvm/memslot_perf_test.c   |  2 +-
- 12 files changed, 105 insertions(+), 39 deletions(-)
-
+greg k-h
