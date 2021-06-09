@@ -2,110 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87ABD3A12CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11AA3A12C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239127AbhFILed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:34:33 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:56329 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234695AbhFILea (ORCPT
+        id S238767AbhFILdj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 07:33:39 -0400
+Received: from de-smtp-delivery-105.mimecast.com ([194.104.111.105]:57574 "EHLO
+        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231162AbhFILdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:34:30 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MeTHG-1lIhYi06xY-00aXJb; Wed, 09 Jun 2021 13:32:32 +0200
-Received: by mail-wm1-f47.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso4037255wmh.4;
-        Wed, 09 Jun 2021 04:32:31 -0700 (PDT)
-X-Gm-Message-State: AOAM531MtLqkz6c784MFtQZns9lthn21/JNIrLLelOQnk1FoPQu8fEM0
-        GWOQGmM2juT/VRjRxeEztY/WzXmANm1nRMzNoGU=
-X-Google-Smtp-Source: ABdhPJzoAPnjJWGlDyxsxVrxhheEMZ1P753dKM++est77A1JSiUJC5TRRvOf+sTRALv47GHRkLWv+YzLbHb9Ukp7IwY=
-X-Received: by 2002:a1c:7d15:: with SMTP id y21mr9135927wmc.120.1623238351528;
- Wed, 09 Jun 2021 04:32:31 -0700 (PDT)
+        Wed, 9 Jun 2021 07:33:37 -0400
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com
+ (mail-lo2gbr01lp2053.outbound.protection.outlook.com [104.47.21.53]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-12-tCTfXPlNPPOsvIjlie_uXw-1; Wed, 09 Jun 2021 13:31:40 +0200
+X-MC-Unique: tCTfXPlNPPOsvIjlie_uXw-1
+Received: from LO2P265MB2688.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:143::6)
+ by LO2P265MB2576.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:13d::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Wed, 9 Jun
+ 2021 11:31:39 +0000
+Received: from LO2P265MB2688.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::4c99:397e:488f:4c60]) by LO2P265MB2688.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::4c99:397e:488f:4c60%7]) with mapi id 15.20.4195.030; Wed, 9 Jun 2021
+ 11:31:39 +0000
+From:   =?Windows-1252?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "shawn.lin@rock-chips.com" <shawn.lin@rock-chips.com>
+Subject: Re: [PATCH] mmc: block: ioctl: Poll for TRAN if possible
+Thread-Topic: [PATCH] mmc: block: ioctl: Poll for TRAN if possible
+Thread-Index: AQHXXSMDiXAg1fej0U+LBOvD9D6/9Q==
+Date:   Wed, 9 Jun 2021 11:31:39 +0000
+Message-ID: <LO2P265MB26880B222999818677722528C4369@LO2P265MB2688.GBRP265.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [185.80.168.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c7a4fc51-2b96-4015-a474-08d92b3a2636
+x-ms-traffictypediagnostic: LO2P265MB2576:
+x-microsoft-antispam-prvs: <LO2P265MB2576E323839B235D58569814C4369@LO2P265MB2576.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:10000
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: 3KtiNIlB99AvE4kMKPZfL2ACnBzKKDbce843UMHbtXZbb+Vqw+eGFlQcnuWWKsMaBiyYzUP1mnkC4w/n6kU3C49xKscuWprzYpyjGfJaRIZQtPqYSYlAOf9dyATTsd4gRFVQSgJpd0Ky8a3yRRBA51guaEMBmOZad9khhm12u/ITBC6W0mL3n04z2HwE+CIZmqEOwzZgmqhesaFLiIaWYf9ocAer++yUcwU1a2jGhcuI6OL1Ttx2/A58WlrPTiAZeuYYD+h9G6+v39KLu6sBZb3gKn+FCBd0kxqUFz3ibQP/oTMu+VSxZhlCFQZ2PG4xEQtMEey6+/fO/4lulkBlQ9PEduX6NfVkE9L/ahZOC/fO3GTWrRvzQa07wpnPhCZn+ArwxIsGxcAeOXnvmwOpID08eIRO7BEu1q+d4R0fIkTB8Wa6wXNsWSCSQLVvSsPauwydlbrDzduMolFEOajh2UoqM4K1JkLK5AyEtvRC9RAqeEUJXku9Fn+z4DBNLFM0tY0ct3tL2Eiad2YibSyldAUXANZoFFtr+anx97CTJw8vEnePc3JkseBMjPgBYzn7dRYnLB3NwDpQxoQa2LctW8ahw5hOhqv9X15uMKOCTLY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB2688.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(396003)(39840400004)(376002)(136003)(366004)(66946007)(478600001)(86362001)(76116006)(2906002)(7696005)(71200400001)(122000001)(186003)(66446008)(64756008)(91956017)(316002)(110136005)(5660300002)(26005)(33656002)(66476007)(9686003)(8936002)(8676002)(52536014)(38100700002)(66556008)(55016002)(6506007);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata: =?Windows-1252?Q?DhPZdkG0rEZhjzSYZLq7pZhQQJXPB0HjMVkLAxxuYF9LDBdA6ijq6/BQ?=
+ =?Windows-1252?Q?xSYeHp5VcAMXpGMzLjLwmRKLAB3L42gRk4d7xHhLEK+2vOPKVC7ZmAQQ?=
+ =?Windows-1252?Q?pnL64/XIGi/UnAahQ7W0Aw4TfbGcYNvI0bSu2jl1WDbcZNrvYzmAM22x?=
+ =?Windows-1252?Q?FczOMtI2Rle0liW4fdEnFqz56dYq1UtjrSx73SJ3A55BoiOLvJofYmKJ?=
+ =?Windows-1252?Q?rpM9CfTIKAuOxg+CJsvPgb1prkRrFEUwPfKrTRjj+3bBonylKzmfxme7?=
+ =?Windows-1252?Q?Ah3jKe4Mxhq+9Yp8lea7RRVkB/iqZPeXcMRQ8p/fNpUXg6bR+dO6iR2p?=
+ =?Windows-1252?Q?wy2nWMebf9j11A5FvYerYpBPYwFggmylgYLebwwBdlTTAMyzHB//JGJL?=
+ =?Windows-1252?Q?UZIbld7FnfcrnEgk8HXMCLIEl1j20KaaWkK1GYubawWxQcXt7pRViHCb?=
+ =?Windows-1252?Q?NOdibhquNlBcCNdFysZ7OiaxrVe+eWHkkEu1Cek+rxG77hFJwCzvUYtA?=
+ =?Windows-1252?Q?dQ4ch4dcvTplk7YAKXzD0mj3GsTfyEfKA2dNj61a3NVpGnPDA4d9+Tme?=
+ =?Windows-1252?Q?bQBdehOhUMnQJfoqaTytw/tpR3d5opNsLlxUG/NDweapHFd9A6nZ/TAr?=
+ =?Windows-1252?Q?LyiCSVF7qLYaTRXNqWBxwQRBNV4ZyJW7kTL6NdbjRW4Rl8mNi8wLv8R8?=
+ =?Windows-1252?Q?m55PWQmfEOjKHgapHyUbO0OgCCr/HXKPpHZhNMHqerCMI3hpA7QqBVOx?=
+ =?Windows-1252?Q?IEj1cdIRNokciuGNz6ayhbZ2kZOkqmOlVCYzjtxmFVAMajQKh5OPo/rZ?=
+ =?Windows-1252?Q?BUvvNWBWLXfXnCcK9iKM/PHxO8VypNZh6TvSyrXUMd/MP23BjuNllvc/?=
+ =?Windows-1252?Q?ZE3iLSQszpWUZDH2CPtrlk01s4lvfjpEl/UVb07NHPM/fGSnWtIcQrIE?=
+ =?Windows-1252?Q?JksEL6WLXRM01R3RBGiqRHC6V/zlhCC4SM5GCVQZEk1CqFLAKxvbUei6?=
+ =?Windows-1252?Q?RnsZCLTCCCd1NOUY0cGzDkefms4OJF7coUkydbt9xiuqfZKyVCxPLisA?=
+ =?Windows-1252?Q?UZb4/k4s6tlthP56v633/97gn/mRQ2G/nW1wxkgFYFpeBCWxRnbRK5Ex?=
+ =?Windows-1252?Q?+WlkqIaUIoXJ70USkS5EWZpZ0jXohNZ8BQIAgRdBSwx0wl+lPwZwIArK?=
+ =?Windows-1252?Q?KN18AyXV9x7uI9LiiuBDio8r+tsu/oixcFcoS9P8pVHvQGZM77yVtNjM?=
+ =?Windows-1252?Q?+Q9bTf+vk5Uk6PXfLXBt9eXAYzREgP1lUx4G4ANxIct2LRGa9LeayicV?=
+ =?Windows-1252?Q?PICZJiNQMKF83ou7ROQLLOVYXg0Fz7QtWjOqeC7ZwHUXzdfPSFrheLbh?=
+ =?Windows-1252?Q?xLtxI36LwouQrCx2paiGjrURlgOu//ywANg=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-References: <20210604064916.26580-1-rppt@kernel.org>
-In-Reply-To: <20210604064916.26580-1-rppt@kernel.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 9 Jun 2021 13:30:39 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2tZDJDqgr9-1vJrnbDhd_36eKq8LMEznDkU7rvuAnAag@mail.gmail.com>
-Message-ID: <CAK8P3a2tZDJDqgr9-1vJrnbDhd_36eKq8LMEznDkU7rvuAnAag@mail.gmail.com>
-Subject: Re: [PATCH v2 0/9] Remove DISCINTIGMEM memory model
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-ia64@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        sparclinux <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:H5v968KC2M79DkfYJyPJxj8yupcPqCQCJ1N4Z1HmTCSClKb4RJo
- ba0OO00j+bQ0/ZfbbpxKSiQVStQhbD856cKnMY+4A0fxTdaC6uxId9Y1ipxTmxRBkJuctyA
- Y1reZ/b/kYT1BSOx482r5mSswn4b7jlFqgsC78pIMEkGVNc1cjI0RWjJZWCt4GG6WoMXbNZ
- Ljxrl+h40xce8+eZXhgpw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5bmpDHZqtKc=:Snj2gFdCvD9hMNFA7myfNf
- S7TJYfwc92EMXo9TCc/9co0khSPe0xtvvBaf8aiHVsurZ3oP2AmcRX6BVUP7Xkj9BDw9JrZ8r
- Z2wILA9mD/T8ZjTMdp8kP7qRSEOVHhc7Au1DQbVYZorVj7P2leDN1uEjVAhYCl9pkDkOhflPK
- vR3qGESRcP/fRxk0ek/C5PAEwYFJjR5/IGZq2vJEr7WZdjAI+bQjrRwd+D7thELunwixQ+PpT
- WI8xpyv1ks8xUxKZI9AWGNw6UhNUsBufMWKZ85ybM1bhKHgP4NQsoHnWhobO8rOzd7mmp+jxB
- EQh62WMcePgVMwuNW5SPP4rcyv9jVb4grdp2JrCbcR8rqJzreIfWKIdLr156lCln5HUoPhyOz
- ntXk9hTPzQ2q7S3c/MqI0in2kpmJVNcVYFmVrGCmGA8tZ7xuH9IOakNeAFkCRFqBUgKX/IXpl
- UEQflHiNkQiWJe4xHAM7PtCA+SqMph+XVbJl6LVS/uvozw/5S4vyBWrztTOXrWo7TaJflWn5P
- kgirFMtxuf9q5XsoobMr8Ol4RQnTDMy8uXmfTDS58mC/9bsqrpXrOnVt7H9AxIUxbuWsocMKR
- GATG5+nWJuFn2SSP0/UPYKl4jJ1LD+cCBubY6cirUnIUoYxqSzBOh21rRTqGQSReM2zHPuCDc
- 5yks=
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB2688.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7a4fc51-2b96-4015-a474-08d92b3a2636
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jun 2021 11:31:39.7444
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: aSHQl+QK5kZEfVsmbDcvu6iMlTdjz9cWy6wTqP78MyGX7vDpZuGlLE2f7oCmODNPINOnOvkIdDoPOzUYwvmINA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO2P265MB2576
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
+X-Mimecast-Spam-Score: 1
+X-Mimecast-Originator: hyperstone.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 8:49 AM Mike Rapoport <rppt@kernel.org> wrote:
+>> +        */
+>> +       return !(cmd->opcode == MMC_SEND_CID
+>> +                       || cmd->opcode == MMC_ALL_SEND_CID
+>> +                       || cmd->opcode == MMC_SEND_CSD
+>> +                       || cmd->opcode == MMC_SEND_STATUS
+>> +                       || cmd->opcode == MMC_SELECT_CARD
+>> +                       || cmd->opcode == MMC_APP_CMD
+>> +                       || cmd->opcode == MMC_GO_INACTIVE_STATE
+>> +                       || cmd->opcode == MMC_GO_IDLE_STATE);
+>> +
+>Aren’t you only interested in cmds that move to tran state from other state?
+>According to the Device state transitions (table 61 in eMMC5.1) it only concern
+>cmd7 (stby->tran), cmd12 (data->tran), and cmd14 (btst->tran).
 >
-> From: Mike Rapoport <rppt@linux.ibm.com>
->
-> Hi,
->
-> SPARSEMEM memory model was supposed to entirely replace DISCONTIGMEM a
-> (long) while ago. The last architectures that used DISCONTIGMEM were
-> updated to use other memory models in v5.11 and it is about the time to
-> entirely remove DISCONTIGMEM from the kernel.
->
-> This set removes DISCONTIGMEM from alpha, arc and m68k, simplifies memory
-> model selection in mm/Kconfig and replaces usage of redundant
-> CONFIG_NEED_MULTIPLE_NODES and CONFIG_FLAT_NODE_MEM_MAP with CONFIG_NUMA
-> and CONFIG_FLATMEM respectively.
->
-> I've also removed NUMA support on alpha that was BROKEN for more than 15
-> years.
->
-> There were also minor updates all over arch/ to remove mentions of
-> DISCONTIGMEM in comments and #ifdefs.
+>Thanks,
+>Avri
 
-Hi Mike and Andrew,
+No, I'd poll for any command where this is possible, so I only exclude the
+ones not ending up in TRAN.
+The TRAN->RCV->PRG->TRAN commands are the ones that need polling
+to be race condition free.
+Technically CMD16, 23  and so on (TRAN->TRAN directly) don't need the
+CMD13 polling but it does not hurt either, especially because the cmd->opcode
+itself overlaps for general and sd commands.
+Tracking whether CMD55 was the last command would have been awkward and
+CMD13 polling wherever possible seems the more sane option.
+If adding a flag to disable any inter-CMD13 polling of none-R1b commands is
+desired, I can add that, but I did not see a good reason for that right now.
 
-It looks like everyone is happy with this version so far. How should we merge it
-for linux-next? I'm happy to take it through the asm-generic tree, but linux-mm
-would fit at least as well. In case we go for linux-mm, feel free to add
+Regards,
+Christian
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-
-for the whole series.
