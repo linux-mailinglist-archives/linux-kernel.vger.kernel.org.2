@@ -2,210 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37B53A11F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DBF3A11F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238648AbhFILAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:00:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49092 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238588AbhFILAJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:00:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623236295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2Gdg9+tpOx626Ezvggt1xE7D6QrGInTamndBpZke/4o=;
-        b=X/JH4frm23e51OvL+AzU/aGWN4rwxW2nutCDtOm9LyTOJ/rzwK4RgqtIqNDskkViAY0b6j
-        QsdxlegHTDekdhcER9oIYr8BV3Fi9hIVng/rQ/W7RX39u3ZqNYbFp3mtJVvbGCdRe5Vq6D
-        0dJzVXNeFzQMfVoJmLP17f8BVs/C8FM=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-WHaR0ceeMrWGMquZ3_zgxA-1; Wed, 09 Jun 2021 06:58:14 -0400
-X-MC-Unique: WHaR0ceeMrWGMquZ3_zgxA-1
-Received: by mail-wr1-f70.google.com with SMTP id v15-20020a5d4a4f0000b0290118dc518878so10650675wrs.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:58:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=2Gdg9+tpOx626Ezvggt1xE7D6QrGInTamndBpZke/4o=;
-        b=PRRAhJV7b6G8QTgNywyEk6OuNPSozCQpnO+WtYCGjnnajpCFjSxZj+nJxllrILHTT3
-         mZYLCt/UBVKs+arJJmT9KdRMa6Z0xAKYFPLy7veY4ads5Gfzh8M9jGVFsA0R999qEvo1
-         khgN5dH9czVPMP2PlQiz5QhdhItwPXtBUsFxMRBh0wSr3qF1Yad9gjO0Gx4L5PYUjSyR
-         LH13soxdl96ICCqKsa8Kfw4xOsiVPkxaQDIAYTC37yDSQgeLDYZgdeDFu3b6y2ZNC/hv
-         Yq6CYYKr+Qjhja4O7MzOFhD5kuLks2MGktZhqUb9Dby8IPPTwDhwZDwZVqF+NPo9IDFy
-         2qfA==
-X-Gm-Message-State: AOAM531OskZTKpkrVdkbkFk2czJ3IMVLUHYK4tnliFy/uGv84WtsSr0q
-        qgmON8fQuNzjoicLswJRZH6tUcBdoY1f9W7xnqa+kK93rXArre54rrmqIrTQnleG2DKSaDcXeOw
-        teLxygJWu0JdgeQEZUDCYUbMg
-X-Received: by 2002:a5d:6b81:: with SMTP id n1mr27256955wrx.144.1623236292819;
-        Wed, 09 Jun 2021 03:58:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxANfssiXPPwd5jXqSLFwZZmn/VQ6v6aq6x8NxYxZ6oulxycL5+UbfQGME/wwP7BrwnDfbhqg==
-X-Received: by 2002:a5d:6b81:: with SMTP id n1mr27256934wrx.144.1623236292583;
-        Wed, 09 Jun 2021 03:58:12 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
-        by smtp.gmail.com with ESMTPSA id o3sm24218939wrm.78.2021.06.09.03.58.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 03:58:12 -0700 (PDT)
-Subject: Re: [PATCH 9/9] mm: replace CONFIG_FLAT_NODE_MEM_MAP with
- CONFIG_FLATMEM
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
-References: <20210602105348.13387-1-rppt@kernel.org>
- <20210602105348.13387-10-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <5dc2c695-06c9-671f-a77d-24db56485041@redhat.com>
-Date:   Wed, 9 Jun 2021 12:58:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S238657AbhFILB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:01:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235843AbhFILBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 07:01:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1397B6136D;
+        Wed,  9 Jun 2021 10:59:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623236370;
+        bh=hawZVUXye10SHmSE8BbW1Adn+u8wdEz8D70FNM/p/ow=;
+        h=From:To:Cc:Subject:Date:From;
+        b=I5Zd+n0T3syBuzrroz7Udd5xRxBeLjphh31KHH3D2d+zCIO/BsRt3FzlzkGDd7055
+         SF/+Om8NIyh5i/n4fN/hZDGV27dSSw2fuBGyc0A8ZrD9LFOLz1mtdBfHc3+OiKfyJV
+         N8aQ5HtaP6fJdW32VBZnM19prlCW6zjgmRxcP/IULdZeMLmWzaSGDc4fTD2goCGVML
+         uebKrfvP/Omvh523OhEabwzigW6xHE47zTioBBaoY7ej/ueFxgaEcI2SK9MHLY4hfk
+         IDzMq63GRTYNnfuPdGqqp7yjXrFbJO7Sb4n5zD20FxHKJZSzbwZq6iruH1paiJUbhF
+         aMJkhPSG5kH0Q==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Mark Zhang <markzhang@nvidia.com>
+Subject: [PATCH rdma-next] IB/cm: Remove dgid from the cm_id_priv av
+Date:   Wed,  9 Jun 2021 13:59:25 +0300
+Message-Id: <2e7c87b6f662c90c642fc1838e363ad3e6ef14a4.1623236345.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210602105348.13387-10-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.06.21 12:53, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> After removal of the DISCONTIGMEM memory model the FLAT_NODE_MEM_MAP
-> configuration option is equivalent to FLATMEM.
-> 
-> Drop CONFIG_FLAT_NODE_MEM_MAP and use CONFIG_FLATMEM instead.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->   include/linux/mmzone.h | 4 ++--
->   kernel/crash_core.c    | 2 +-
->   mm/Kconfig             | 4 ----
->   mm/page_alloc.c        | 6 +++---
->   mm/page_ext.c          | 2 +-
->   5 files changed, 7 insertions(+), 11 deletions(-)
-> 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index ad42f440c704..2698cdbfbf75 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -775,7 +775,7 @@ typedef struct pglist_data {
->   	struct zonelist node_zonelists[MAX_ZONELISTS];
->   
->   	int nr_zones; /* number of populated zones in this node */
-> -#ifdef CONFIG_FLAT_NODE_MEM_MAP	/* means !SPARSEMEM */
-> +#ifdef CONFIG_FLATMEM	/* means !SPARSEMEM */
->   	struct page *node_mem_map;
->   #ifdef CONFIG_PAGE_EXTENSION
->   	struct page_ext *node_page_ext;
-> @@ -865,7 +865,7 @@ typedef struct pglist_data {
->   
->   #define node_present_pages(nid)	(NODE_DATA(nid)->node_present_pages)
->   #define node_spanned_pages(nid)	(NODE_DATA(nid)->node_spanned_pages)
-> -#ifdef CONFIG_FLAT_NODE_MEM_MAP
-> +#ifdef CONFIG_FLATMEM
->   #define pgdat_page_nr(pgdat, pagenr)	((pgdat)->node_mem_map + (pagenr))
->   #else
->   #define pgdat_page_nr(pgdat, pagenr)	pfn_to_page((pgdat)->node_start_pfn + (pagenr))
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index 53eb8bc6026d..2b8446ea7105 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -483,7 +483,7 @@ static int __init crash_save_vmcoreinfo_init(void)
->   	VMCOREINFO_OFFSET(page, compound_head);
->   	VMCOREINFO_OFFSET(pglist_data, node_zones);
->   	VMCOREINFO_OFFSET(pglist_data, nr_zones);
-> -#ifdef CONFIG_FLAT_NODE_MEM_MAP
-> +#ifdef CONFIG_FLATMEM
->   	VMCOREINFO_OFFSET(pglist_data, node_mem_map);
->   #endif
->   	VMCOREINFO_OFFSET(pglist_data, node_start_pfn);
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index bffe4bd859f3..ded98fb859ab 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -55,10 +55,6 @@ config FLATMEM
->   	def_bool y
->   	depends on !SPARSEMEM || FLATMEM_MANUAL
->   
-> -config FLAT_NODE_MEM_MAP
-> -	def_bool y
-> -	depends on !SPARSEMEM
-> -
->   #
->   # SPARSEMEM_EXTREME (which is the default) does some bootmem
->   # allocations when sparse_init() is called.  If this cannot
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 8f08135d3eb4..f039736541eb 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6444,7 +6444,7 @@ static void __meminit zone_init_free_lists(struct zone *zone)
->   	}
->   }
->   
-> -#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
-> +#if !defined(CONFIG_FLATMEM)
->   /*
->    * Only struct pages that correspond to ranges defined by memblock.memory
->    * are zeroed and initialized by going through __init_single_page() during
-> @@ -7241,7 +7241,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
->   	}
->   }
->   
-> -#ifdef CONFIG_FLAT_NODE_MEM_MAP
-> +#ifdef CONFIG_FLATMEM
->   static void __ref alloc_node_mem_map(struct pglist_data *pgdat)
->   {
->   	unsigned long __maybe_unused start = 0;
-> @@ -7289,7 +7289,7 @@ static void __ref alloc_node_mem_map(struct pglist_data *pgdat)
->   }
->   #else
->   static void __ref alloc_node_mem_map(struct pglist_data *pgdat) { }
-> -#endif /* CONFIG_FLAT_NODE_MEM_MAP */
-> +#endif /* CONFIG_FLATMEM */
->   
->   #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
->   static inline void pgdat_set_deferred_range(pg_data_t *pgdat)
-> diff --git a/mm/page_ext.c b/mm/page_ext.c
-> index df6f74aac8e1..293b2685fc48 100644
-> --- a/mm/page_ext.c
-> +++ b/mm/page_ext.c
-> @@ -191,7 +191,7 @@ void __init page_ext_init_flatmem(void)
->   	panic("Out of memory");
->   }
->   
-> -#else /* CONFIG_FLAT_NODE_MEM_MAP */
-> +#else /* CONFIG_FLATMEM */
->   
->   struct page_ext *lookup_page_ext(const struct page *page)
->   {
-> 
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-Acked-by: David Hildenbrand <david@redhat.com>
+It turns out this is only being used to store the LID for SIDR mode to
+search the RB tree for request de-duplication. Store the LID value
+directly and don't pretend it is a GID.
 
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Reviewed-by: Mark Zhang <markzhang@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/core/cm.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 1827118c41e3..4a92729068eb 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -174,7 +174,6 @@ struct cm_device {
+ 
+ struct cm_av {
+ 	struct cm_port *port;
+-	union ib_gid dgid;
+ 	struct rdma_ah_attr ah_attr;
+ 	u16 pkey_index;
+ 	u8 timeout;
+@@ -207,6 +206,7 @@ struct cm_id_private {
+ 
+ 	struct rb_node service_node;
+ 	struct rb_node sidr_id_node;
++	u32 sidr_slid;
+ 	spinlock_t lock;	/* Do not acquire inside cm.lock */
+ 	struct completion comp;
+ 	refcount_t refcount;
+@@ -785,7 +785,6 @@ cm_insert_remote_sidr(struct cm_id_private *cm_id_priv)
+ 	struct rb_node **link = &cm.remote_sidr_table.rb_node;
+ 	struct rb_node *parent = NULL;
+ 	struct cm_id_private *cur_cm_id_priv;
+-	union ib_gid *port_gid = &cm_id_priv->av.dgid;
+ 	__be32 remote_id = cm_id_priv->id.remote_id;
+ 
+ 	while (*link) {
+@@ -797,12 +796,9 @@ cm_insert_remote_sidr(struct cm_id_private *cm_id_priv)
+ 		else if (be32_gt(remote_id, cur_cm_id_priv->id.remote_id))
+ 			link = &(*link)->rb_right;
+ 		else {
+-			int cmp;
+-			cmp = memcmp(port_gid, &cur_cm_id_priv->av.dgid,
+-				     sizeof *port_gid);
+-			if (cmp < 0)
++			if (cur_cm_id_priv->sidr_slid < cm_id_priv->sidr_slid)
+ 				link = &(*link)->rb_left;
+-			else if (cmp > 0)
++			else if (cur_cm_id_priv->sidr_slid > cm_id_priv->sidr_slid)
+ 				link = &(*link)->rb_right;
+ 			else
+ 				return cur_cm_id_priv;
+@@ -3568,8 +3564,7 @@ static int cm_sidr_req_handler(struct cm_work *work)
+ 	cm_id_priv->tid = sidr_req_msg->hdr.tid;
+ 
+ 	wc = work->mad_recv_wc->wc;
+-	cm_id_priv->av.dgid.global.subnet_prefix = cpu_to_be64(wc->slid);
+-	cm_id_priv->av.dgid.global.interface_id = 0;
++	cm_id_priv->sidr_slid = wc->slid;
+ 	ret = cm_init_av_for_response(work->port, work->mad_recv_wc->wc,
+ 				      work->mad_recv_wc->recv_buf.grh,
+ 				      &cm_id_priv->av);
 -- 
-Thanks,
-
-David / dhildenb
+2.31.1
 
