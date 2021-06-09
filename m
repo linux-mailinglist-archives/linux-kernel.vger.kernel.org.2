@@ -2,219 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FA43A1604
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC8F3A160A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236678AbhFINuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234750AbhFINuS (ORCPT
+        id S236718AbhFINu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:50:56 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36682 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236555AbhFINuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:50:18 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83127C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 06:48:07 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id q5so25602966wrm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 06:48:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=WF+Uf0+6uR0qABWPQ66eqhfQdl7rZ4gMMiMR2FGvLq4=;
-        b=gz2EonoaoBSw2ST+sIey+GXUGkXRHdJ7428pnv0qX7c26MyUzA6e8zM60WtIKQfUDZ
-         07ulSvQoq370E+5uVXtEkwGKvZ5Lh6gDeaeVDIqgw3fQKHQoNcu5SsChl7IHfXH4Yuj9
-         U5Ut9590YeC6IcEsouEfVPVG48gH9dQlIcz2E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=WF+Uf0+6uR0qABWPQ66eqhfQdl7rZ4gMMiMR2FGvLq4=;
-        b=lZ8KlZNSaJ+Gom38I8mYMoTsTK15EZ+kU4YF0u4FGC+vlwYPu4SKjJKDWhLnCBQeDN
-         QZ1b1wq7jmyBj0luocr5gcvs6eNre5tp4MW4PegWPIFL0yumKjG8mVVPP/rUvCfx37by
-         0cy2L23uhlpZM0TTfaQgrQM8yc0NBRmP5OntUmwqu6jktnGvN3UIiAcEK46O80UqLn4n
-         1MyzxGZbHLMZo6y9sQvKo8MU3h6XRYbyN+FVJyvaiD5ETZtrkzx60yhXjtSyZvuDyjWC
-         sabK3QddfDLIFADdTfPmbsaLHd1oG3gQJyuS/Du6GNhAL6R5kAkDyIEdWWLCzNjzwB/a
-         /hQw==
-X-Gm-Message-State: AOAM533fYF+9Psev0CK20coRmoIfiQ2WLvAwL+h6T+bjKASsQkfZ0k/I
-        OdMaSwsK9zIQiAUerlQmQPzQqa/yzOU1zQ==
-X-Google-Smtp-Source: ABdhPJw8vzGv+KqVF/GkikUJ4ivo4GKJjxbjWP57SoIFORIov3TjYsS91udU2xEqWX1qvaxTOo30RA==
-X-Received: by 2002:adf:ea86:: with SMTP id s6mr28336030wrm.75.1623246486104;
-        Wed, 09 Jun 2021 06:48:06 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b15sm10811649wrr.27.2021.06.09.06.48.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 06:48:05 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 15:48:03 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Felix Kuehling <felix.kuehling@amd.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <YMDGkyhvVAufp68p@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Felix Kuehling <felix.kuehling@amd.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210608125046.07c6deca@canb.auug.org.au>
- <22010e38-3686-87ce-532d-4a53cae990b1@amd.com>
- <7b825bc4-9f81-3010-6445-d6708e34a9bd@amd.com>
- <6dc40376-77fc-2f43-693e-1bd2c52d9cbd@amd.com>
- <d06e7d13-f24d-40f9-64bd-2b6e45d74462@amd.com>
+        Wed, 9 Jun 2021 09:50:54 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 159DmrsV041042;
+        Wed, 9 Jun 2021 08:48:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623246533;
+        bh=eDuAtLYmqR7daxNV3cens825Hyy16ytC5ebXfF6P7Q0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=cTVlnqNIqReJHpbUGQiKog3Z34uoOWkt0SW4pdM/KRuB09d0XDCh4luoQLfR5vNzZ
+         fuAj40YLo5DhXKx17ASqWwSmar8hgUAOrB9CHlznh7D0Sy/5pH6jahu8mUFXql01Cn
+         /cfNrk/8ZTaEA5uU8o2IisiohvLkc2b0FLxEgw3Y=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 159Dmrb0107038
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Jun 2021 08:48:53 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
+ 2021 08:48:52 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 9 Jun 2021 08:48:52 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 159DmnbY009248;
+        Wed, 9 Jun 2021 08:48:50 -0500
+Subject: Re: [PATCH v2 1/2] arm64: dts: ti: am65: align ti,pindir-d0-out-d1-in
+ property with dt-shema
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210608051414.14873-1-a-govindraju@ti.com>
+ <20210608051414.14873-2-a-govindraju@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <793e8672-d337-21c5-3f75-d12684c678f1@ti.com>
+Date:   Wed, 9 Jun 2021 19:18:48 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d06e7d13-f24d-40f9-64bd-2b6e45d74462@amd.com>
-X-Operating-System: Linux phenom 5.10.32scarlett+ 
+In-Reply-To: <20210608051414.14873-2-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 09:11:57AM +0200, Christian König wrote:
-> Am 08.06.21 um 09:06 schrieb Felix Kuehling:
-> > Am 2021-06-08 um 2:55 a.m. schrieb Christian König:
-> > > Hi Felix,
-> > > 
-> > > that should already be fixed in drm-tip as part of the merge of the
-> > > TTM changes.
-> > No, the preempt_mgr doesn't exist in drm-misc-next. It does exist in
-> > drm-next, but that doesn't seem to have the TTM changes yet.
-> > 
-> > Is there another DRM branch or repository that you're referring to with
-> > drm-tip?
-> 
-> drm-tip is an integration branch for conflict resolution.
-> 
-> E.g. when we have changes in drm-misc-next which break when we merge with
-> drm-next I'm informed and need to provide a conflict resolution patch.
-> 
-> This is automatically applied when drm-next and drm-misc-next are merged
-> together again.
-> 
-> It just looks like that drm-next and drm-misc-next are merged manually into
-> linux-next and then the conflict resolution doesn't apply and everything
-> breaks into pieces.
-> 
-> Adding Daniel as well. How should that be handled? Should we merge
-> drm-misc-next into drm-next now?
 
-Yeah I'm expecting there will be a pull request this week. I've given Dave
-Airlie a headsup that the conflict is "interesting" and that maybe he
-needs to push out a test branch for you and Thomas Hellstrom to
-review/test first.
--Daniel
 
+On 6/8/21 10:44 AM, Aswath Govindraju wrote:
+> ti,pindir-d0-out-d1-in property is expected to be of type boolean.
+> Therefore, fix the property accordingly.
 > 
-> Thanks,
-> Christian.
+> Fixes: e180f76d0641 ("arm64: dts: ti: Add support for Siemens IOT2050 boards")
+> Fixes: 5da94b50475a ("arm64: dts: ti: k3-am654: Enable main domain McSPI0")
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi | 2 +-
+>  arch/arm64/boot/dts/ti/k3-am654-base-board.dts     | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> > 
-> > Regards,
-> >    Fel
-> > 
-> > > Regards,
-> > > Christian.
-> > > 
-> > > Am 08.06.21 um 07:37 schrieb Felix Kuehling:
-> > > > Hi Christian,
-> > > > 
-> > > > I based amdgpu_preempt_mgr on amdgpu_gtt_mgr and now I'm looking at what
-> > > > changed there. Looks like I'll need to create a dummy node in
-> > > > amdgpu_preempt_mgr_new to satisfy TTM, and free it in
-> > > > amdgpu_preempt_mgr_del.
-> > > > 
-> > > > Thanks,
-> > > >     Felix
-> > > > 
-> > > > 
-> > > > Am 2021-06-07 um 10:50 p.m. schrieb Stephen Rothwell:
-> > > > > Hi all,
-> > > > > 
-> > > > > After merging the drm-misc tree, today's linux-next build (x86_64
-> > > > > allmodconfig) failed like this:
-> > > > > 
-> > > > > drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c: In function
-> > > > > 'amdgpu_preempt_mgr_new':
-> > > > > drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:75:5: error: 'struct
-> > > > > ttm_resource' has no member named 'mm_node'
-> > > > >      75 |  mem->mm_node = NULL;
-> > > > >         |     ^~
-> > > > > drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c: At top level:
-> > > > > drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:129:11: error:
-> > > > > initialization of 'int (*)(struct ttm_resource_manager *, struct
-> > > > > ttm_buffer_object *, const struct ttm_place *, struct ttm_resource
-> > > > > **)' from incompatible pointer type 'int (*)(struct
-> > > > > ttm_resource_manager *, struct ttm_buffer_object *, const struct
-> > > > > ttm_place *, struct ttm_resource *)'
-> > > > > [-Werror=incompatible-pointer-types]
-> > > > >     129 |  .alloc = amdgpu_preempt_mgr_new,
-> > > > >         |           ^~~~~~~~~~~~~~~~~~~~~~
-> > > > > drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c:129:11: note: (near
-> > > > > initialization for 'amdgpu_preempt_mgr_func.alloc')
-> > > > > 
-> > > > > Caused by commit
-> > > > > 
-> > > > >     cb1c81467af3 ("drm/ttm: flip the switch for driver allocated
-> > > > > resources v2")
-> > > > > 
-> > > > > from the drm-misc tree interacting with commit
-> > > > > 
-> > > > >     b453e42a6e8b ("drm/amdgpu: Add new placement for preemptible SG
-> > > > > BOs")
-> > > > > 
-> > > > > from the drm tree.
-> > > > > 
-> > > > > I don't know how to fix this, so I added the following hack (a better
-> > > > > fix would be nice):
-> > > > > 
-> > > > > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > > Date: Tue, 8 Jun 2021 12:41:16 +1000
-> > > > > Subject: [PATCH] hack fix up for needed amdgpu_preempt_mgr_new() fix up
-> > > > > 
-> > > > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > > ---
-> > > > >    drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c | 4 +++-
-> > > > >    1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
-> > > > > b/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
-> > > > > index d607f314cc1b..e1a7b3e967b9 100644
-> > > > > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
-> > > > > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_preempt_mgr.c
-> > > > > @@ -66,14 +66,16 @@ static DEVICE_ATTR_RO(mem_info_preempt_used);
-> > > > >    static int amdgpu_preempt_mgr_new(struct ttm_resource_manager *man,
-> > > > >                      struct ttm_buffer_object *tbo,
-> > > > >                      const struct ttm_place *place,
-> > > > > -                  struct ttm_resource *mem)
-> > > > > +                  struct ttm_resource **res)
-> > > > >    {
-> > > > > +#if 0
-> > > > >        struct amdgpu_preempt_mgr *mgr = to_preempt_mgr(man);
-> > > > >          atomic64_add(mem->num_pages, &mgr->used);
-> > > > >          mem->mm_node = NULL;
-> > > > >        mem->start = AMDGPU_BO_INVALID_OFFSET;
-> > > > > +#endif
-> > > > >        return 0;
-> > > > >    }
-> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> index f4ec9ed52939..23d51b6a9cf2 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> @@ -575,7 +575,7 @@
+>  
+>  	#address-cells = <1>;
+>  	#size-cells= <0>;
+> -	ti,pindir-d0-out-d1-in = <1>;
+> +	ti,pindir-d0-out-d1-in;
+>  };
+>  
+>  &tscadc0 {
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> index eddb2ffb93ca..1b947e2c2e74 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> @@ -299,7 +299,7 @@
+>  	pinctrl-0 = <&main_spi0_pins_default>;
+>  	#address-cells = <1>;
+>  	#size-cells= <0>;
+> -	ti,pindir-d0-out-d1-in = <1>;
+> +	ti,pindir-d0-out-d1-in;
+>  
+>  	flash@0{
+>  		compatible = "jedec,spi-nor";
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+
+Regards
+Vignesh
