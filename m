@@ -2,94 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA1A3A186A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CB43A186C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238846AbhFIPDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:03:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:33900 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238784AbhFIPDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:03:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50636D6E;
-        Wed,  9 Jun 2021 08:01:16 -0700 (PDT)
-Received: from [10.57.6.115] (unknown [10.57.6.115])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C3DE3F73D;
-        Wed,  9 Jun 2021 08:01:14 -0700 (PDT)
-Subject: Re: [RFC] mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        ulf.hansson@linaro.org
-Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, linux-mmc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-References: <CGME20210608153357eucas1p24cbc7a2ddb00beada8cdd51ae2337c53@eucas1p2.samsung.com>
- <20210608153344.3813661-1-narmstrong@baylibre.com>
- <e9f057f6-324e-0637-b57a-cc2f87e0d108@samsung.com>
- <ebb1421c-e55c-eee3-ea42-09ae051659d4@baylibre.com>
- <92024ca5-c6fa-0e6a-b6ba-f35f92222e76@arm.com>
- <a59a4dd3-9a09-a9b4-71f2-7e37c92cf40e@baylibre.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <f1dbc6e2-e956-e582-4368-fcad95d596bf@arm.com>
-Date:   Wed, 9 Jun 2021 16:01:13 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S238718AbhFIPD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:03:56 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:40928 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232350AbhFIPDt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:03:49 -0400
+Received: by mail-ot1-f46.google.com with SMTP id l15-20020a05683016cfb02903fca0eacd15so309270otr.7;
+        Wed, 09 Jun 2021 08:01:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eSfVvyXRa8dUAx7XvmzO3Q5udvWlZkBfdASbmEb2RnY=;
+        b=QdkSV0l0tmQAxQ8vtWtJa7mTmi1DJeRuDfRGldT6C2AIw99HMhxDLiU/3qTu8+yl0y
+         wul2ZH+oxbzl5TLsinUONzBlUb2dUo4KQEr3Y+j7Eqhy3Bw9nUI1DKEWYmiwFDzM2PjW
+         ZKNPdw+BjUgiq40H91aupnmkd1VeCb8X5h/zMSbWeLQDw7Epylqcha5iWPfv/2Ipo+it
+         oVhBFzkZmPBqSauGP66u4q1SssszuMLkf7VMtFiyGd1gepUGf/7hqH9e24ElHsYHhCY+
+         VEhvY0FrvFEpGqsQq2k+BuiqG+x5pic+kn/a56X2zyDSryvYmpeMjmNY+Li1e0n36W6Y
+         5xmg==
+X-Gm-Message-State: AOAM533XPWCVxmWyYbWvlEd+ob0hOlYzHQZWgqd13VSd+B6873UaY+b+
+        XjMDRyUwgSoAhMru4n4z06bsOheJIWHU6lXMDLQ=
+X-Google-Smtp-Source: ABdhPJxNLoohY77wODoSnozvjbLIYdazf96SjlxIyJgh+1YaEGNVBawFtU1m8qhmdk+/iT1meEUBZQ2FkOMLAHz/Mcg=
+X-Received: by 2002:a9d:6c4d:: with SMTP id g13mr20141607otq.321.1623250913228;
+ Wed, 09 Jun 2021 08:01:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a59a4dd3-9a09-a9b4-71f2-7e37c92cf40e@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210604080954.13915-1-lukasz.luba@arm.com> <20210604080954.13915-3-lukasz.luba@arm.com>
+In-Reply-To: <20210604080954.13915-3-lukasz.luba@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 9 Jun 2021 17:01:42 +0200
+Message-ID: <CAJZ5v0ji=601eHQzHP1KuiA_TRUBaeEL6=sSLR_sW12MS_8QcA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] sched/cpufreq: Consider reduced CPU capacity in
+ energy calculation
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Quentin Perret <qperret@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        vincent.donnefort@arm.com, Beata.Michalska@arm.com,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-09 15:55, Neil Armstrong wrote:
-> Hi Robin,
-> 
-> On 09/06/2021 16:45, Robin Murphy wrote:
->> On 2021-06-09 14:07, Neil Armstrong wrote:
->>> Hi,
->>>
->>> On 08/06/2021 17:50, Marek Szyprowski wrote:
->>>> Hi
->>>>
->>>> On 08.06.2021 17:33, Neil Armstrong wrote:
->>>>> It has been reported that usage of memcpy() to/from an iomem mapping is invalid,
->>>>> and and recent arm64 memcpy update [1] triggers a memory abort when dram-access-quirk
->>>>> is used on the G12A/G12B platforms.
->>>>>
->>>>> This adds a local sg_copy_to_buffer which makes usage of io versions of memcpy
->>>>> when dram-access-quirk is enabled.
->>>>>
->>>>> Fixes: acdc8e71d9bb ("mmc: meson-gx: add dram-access-quirk")
->>>>> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
->>>>> Suggested-by: Mark Rutland <mark.rutland@arm.com>
->>>>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->>>>>
->>>>> [1] 285133040e6c ("arm64: Import latest memcpy()/memmove() implementation")
->>>>>
->>>>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->>>>> ---
->>>>> Hi Ulf, Marek, Mark,
->>>>>
->>>>> I haven't tested the patch yet, but should fix issue reported at [2].
->>>>
->>>> Works fine here and fixed the issue.
->>>>
->>>> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
->>>
->>> Thanks, I'll need to rework to pass an __iomem pointer to memcpy_to/fromio so sparse doesn't scream anymore.
->>
->> Hmm, might it be worth factoring out general sg_copy_{to,from}_iomem() helpers? From a quick grep I found at least mv_cesa_sg_copy() already doing essentially the same thing as meson_mmc_copy_buffer().
-> 
-> It's definitely worth it, but since we need a quick fix, we should have meson_mmc_copy_buffer() as a fix then we should definitely move to sg_copy_{to,from}_iomem() helpers
+On Fri, Jun 4, 2021 at 10:10 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> Energy Aware Scheduling (EAS) needs to predict the decisions made by
+> SchedUtil. The map_util_freq() exists to do that.
+>
+> There are corner cases where the max allowed frequency might be reduced
+> (due to thermal). SchedUtil as a CPUFreq governor, is aware of that
+> but EAS is not. This patch aims to address it.
+>
+> SchedUtil stores the maximum allowed frequency in
+> 'sugov_policy::next_freq' field. EAS has to predict that value, which is
+> the real used frequency. That value is made after a call to
+> cpufreq_driver_resolve_freq() which clamps to the CPUFreq policy limits.
+> In the existing code EAS is not able to predict that real frequency.
+> This leads to energy estimation errors.
+>
+> To avoid wrong energy estimation in EAS (due to frequency miss prediction)
+> make sure that the step which calculates Performance Domain frequency,
+> is also aware of the allowed CPU capacity.
+>
+> Furthermore, modify map_util_freq() to not extend the frequency value.
+> Instead, use map_util_perf() to extend the util value in both places:
+> SchedUtil and EAS, but for EAS clamp it to max allowed CPU capacity.
+> In the end, we achieve the same desirable behavior for both subsystems
+> and alignment in regards to the real CPU frequency.
+>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 
-Oh, that makes sense for sure - I was just doing some general thinking 
-out loud before I forget about the whole thing :)
+For the schedutil part
 
-Cheers,
-Robin.
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+> ---
+>  include/linux/energy_model.h     | 16 +++++++++++++---
+>  include/linux/sched/cpufreq.h    |  2 +-
+>  kernel/sched/cpufreq_schedutil.c |  1 +
+>  kernel/sched/fair.c              |  2 +-
+>  4 files changed, 16 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index 757fc60658fa..3f221dbf5f95 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -91,6 +91,8 @@ void em_dev_unregister_perf_domain(struct device *dev);
+>   * @pd         : performance domain for which energy has to be estimated
+>   * @max_util   : highest utilization among CPUs of the domain
+>   * @sum_util   : sum of the utilization of all CPUs in the domain
+> + * @allowed_cpu_cap    : maximum allowed CPU capacity for the @pd, which
+> +                         might reflect reduced frequency (due to thermal)
+>   *
+>   * This function must be used only for CPU devices. There is no validation,
+>   * i.e. if the EM is a CPU type and has cpumask allocated. It is called from
+> @@ -100,7 +102,8 @@ void em_dev_unregister_perf_domain(struct device *dev);
+>   * a capacity state satisfying the max utilization of the domain.
+>   */
+>  static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+> -                               unsigned long max_util, unsigned long sum_util)
+> +                               unsigned long max_util, unsigned long sum_util,
+> +                               unsigned long allowed_cpu_cap)
+>  {
+>         unsigned long freq, scale_cpu;
+>         struct em_perf_state *ps;
+> @@ -112,11 +115,17 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+>         /*
+>          * In order to predict the performance state, map the utilization of
+>          * the most utilized CPU of the performance domain to a requested
+> -        * frequency, like schedutil.
+> +        * frequency, like schedutil. Take also into account that the real
+> +        * frequency might be set lower (due to thermal capping). Thus, clamp
+> +        * max utilization to the allowed CPU capacity before calculating
+> +        * effective frequency.
+>          */
+>         cpu = cpumask_first(to_cpumask(pd->cpus));
+>         scale_cpu = arch_scale_cpu_capacity(cpu);
+>         ps = &pd->table[pd->nr_perf_states - 1];
+> +
+> +       max_util = map_util_perf(max_util);
+> +       max_util = min(max_util, allowed_cpu_cap);
+>         freq = map_util_freq(max_util, ps->frequency, scale_cpu);
+>
+>         /*
+> @@ -209,7 +218,8 @@ static inline struct em_perf_domain *em_pd_get(struct device *dev)
+>         return NULL;
+>  }
+>  static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+> -                       unsigned long max_util, unsigned long sum_util)
+> +                       unsigned long max_util, unsigned long sum_util,
+> +                       unsigned long allowed_cpu_cap)
+>  {
+>         return 0;
+>  }
+> diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
+> index 6205578ab6ee..bdd31ab93bc5 100644
+> --- a/include/linux/sched/cpufreq.h
+> +++ b/include/linux/sched/cpufreq.h
+> @@ -26,7 +26,7 @@ bool cpufreq_this_cpu_can_update(struct cpufreq_policy *policy);
+>  static inline unsigned long map_util_freq(unsigned long util,
+>                                         unsigned long freq, unsigned long cap)
+>  {
+> -       return (freq + (freq >> 2)) * util / cap;
+> +       return freq * util / cap;
+>  }
+>
+>  static inline unsigned long map_util_perf(unsigned long util)
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> index 4f09afd2f321..57124614363d 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -151,6 +151,7 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+>         unsigned int freq = arch_scale_freq_invariant() ?
+>                                 policy->cpuinfo.max_freq : policy->cur;
+>
+> +       util = map_util_perf(util);
+>         freq = map_util_freq(util, freq, max);
+>
+>         if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1aeddecabc20..9a79bbd9425b 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6590,7 +6590,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+>                 max_util = max(max_util, min(cpu_util, _cpu_cap));
+>         }
+>
+> -       return em_cpu_energy(pd->em_pd, max_util, sum_util);
+> +       return em_cpu_energy(pd->em_pd, max_util, sum_util, _cpu_cap);
+>  }
+>
+>  /*
+> --
+> 2.17.1
+>
