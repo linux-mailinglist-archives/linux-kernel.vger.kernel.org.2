@@ -2,205 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C392E3A18AF
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD013A18AD
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231730AbhFIPLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:11:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38862 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235924AbhFIPL3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:11:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623251369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=124tuo5AwHCewOI3xtuEketWUcJ7rdZivpkSkrifopc=;
-        b=fXqItI5cpz+oLvn0Z7hfY1tNBEAo7CZhNNVTNoNQKJTmvrhs8JZkGYJUx0n1RcpZrOpwOV
-        zVyVwwKEWfdIddSTuJM6e6AJllsTPoEPjQCtOycVsDfmSTqQE5LPpQAO3mEozu5YZWAxqD
-        cvzXxjxuJIZ1zvER6ackW/YrFJksIGY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-364-Ny_silFTNqK24--ImBdxnw-1; Wed, 09 Jun 2021 11:09:28 -0400
-X-MC-Unique: Ny_silFTNqK24--ImBdxnw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3782F8030A0;
-        Wed,  9 Jun 2021 15:09:27 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.194.97])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E3C6620DE;
-        Wed,  9 Jun 2021 15:09:25 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in use
-Date:   Wed,  9 Jun 2021 17:09:11 +0200
-Message-Id: <20210609150911.1471882-5-vkuznets@redhat.com>
-In-Reply-To: <20210609150911.1471882-1-vkuznets@redhat.com>
-References: <20210609150911.1471882-1-vkuznets@redhat.com>
+        id S231478AbhFIPLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:11:36 -0400
+Received: from mail-dm6nam12on2056.outbound.protection.outlook.com ([40.107.243.56]:59584
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235531AbhFIPLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:11:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aqy0+/VcJd6PSbyUvCwiGgikg71nYZsyE0OU5khLYEIWbJbl5wkCfnSLXje0Lfg7iL2KYzJ1zZhKePqQVrSSNl/FpWeyvLOhFcfOvcWCYUPabZezGv4nQ8xBLj4+9BM+WIGAfaz40TNd51n7KxoJ0+a4awA8ydAQoQcZ+IAJ6mnaZkaXTGTNRRXj+5gHPwTRNHgi/OJ80wbwcmxVITiezFlL7zhwnhb8QK+M00VPbTGekmJXukcZnYS04AIG40ua18YXRiiz0RCj+lJ+84QBlr5noy98CJ56K1LAfZzfA/R8ZxZU0F+ueDRgPo/KeDvDsiVApALFMzmItT4HJ4PS/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5o+qB/t8GKg4KQo/SNNk/vVFQL6md4FJeQcNHGZYAn8=;
+ b=kFQZyk+sVXQ3FwC+yaL7fHPMkzdOD1cV2RDPhPc88rD0DBc4L2YtZw3/vGaZHHGOhxcPKMlSRchScS36V0OySPpVBtAiwD0gYSn2D0MAQLweLnlacjwUUor3NnhqqZMHtu/obJfgdSGaEhLwQwW1Yg6Hizt4UxgPfBcfDgFLSVrSzRvvcGNWtVOZXOo2Uv79BQNxjhorfe4P5o+BlxbV2wvymFT2+A6RIq89jNXA0o/HFAFoR2DRrhx3jy8Cbv0fvHeUKPTeBDHKWFeQwAWOh9uI69198B5rqs6ZNPKzkGa+HL+8yCmA67Pm/ANN7lkxKrHpUbs+GWK035O7W0clWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5o+qB/t8GKg4KQo/SNNk/vVFQL6md4FJeQcNHGZYAn8=;
+ b=cjGr7s9Brhkro2vaSHO4+2KbLgZV6yF87K2if1OKrbLZBdME9fP5rPTQBeOkt0t9uoVtUsSBw4ctbhCSPOvwlJifkhjBEbLEUQIXRcY8TpjNB1hgmIknNe9Hb6qk1NgKi5HAt7WiJWlrCK6XUa4J4rh2QJqO2/nfVhbLQuMOJoft9ucOzs9L6ChnZD9eGtk/Wbgtt/8Va/vToPxuzP/XM4YYbcuX2SeGtKsQa+RiJC+ORZppALLmR+dlgxGl+nwWZPxqAP3pXsQeaUk82WyBvYY8dK7sxgUYoPFqiikioU25QMrws3vaLRWFnBrJTqglFclD4v0U3MkefAY9tZvcJw==
+Authentication-Results: ACULAB.COM; dkim=none (message not signed)
+ header.d=none;ACULAB.COM; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5380.namprd12.prod.outlook.com (2603:10b6:208:314::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Wed, 9 Jun
+ 2021 15:09:24 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4219.021; Wed, 9 Jun 2021
+ 15:09:23 +0000
+Date:   Wed, 9 Jun 2021 12:09:22 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Chuck Lever III' <chuck.lever@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Tom Talpey <tom@talpey.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Honggang LI <honli@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
+ default for kernel ULPs
+Message-ID: <20210609150922.GA1109697@nvidia.com>
+References: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
+ <20210609125241.GA1347@lst.de>
+ <6b370a8fde1e406192d37c748b79ad01@AcuMS.aculab.com>
+ <ACCBE9AD-9A59-4300-A872-69EDBB4D4203@oracle.com>
+ <25c32f2a147a4dff8b7d6577286d7954@AcuMS.aculab.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <25c32f2a147a4dff8b7d6577286d7954@AcuMS.aculab.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR01CA0056.prod.exchangelabs.com (2603:10b6:208:23f::25)
+ To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR01CA0056.prod.exchangelabs.com (2603:10b6:208:23f::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Wed, 9 Jun 2021 15:09:23 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lqzpa-004eif-LJ; Wed, 09 Jun 2021 12:09:22 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e86ad112-bcf5-4316-e98a-08d92b5890cc
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5380:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB538094DD0FADD3ACDAB7E5B3C2369@BL1PR12MB5380.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pObALKW4XoxldCn9lb9hg92Ai+ZdLmu042X5+L0GoSMeg6i/GzRIbS/v24nzonxmhErY99UvAf5JfRSPFArXFEx6DiRv2O2SnUyE7GihjiqtiL891SeFHAvgrdgC+XKnArfBKSCSc7A58tfllgfrFk5zDk5Cvd9gd9ZJ7enlK+F3w2CxYDuMdu7ZDIswnEuOr6S4OQtRM/xWWeHzXx8CTTSWRGFnh5zxv/fXME22TZAFMjkNfDuaSUc+jHPU7m3WQYIjYBauLPc6SOQEWmGBj/qnDqGqx8yFmM6p7A6hbM+uqL7o4aa9+f/EqdJTZbfD3LkLiu9iK68i3dZyVTNcxuFgYyEAEbAbtA1bgUvRr/QcStzqjMsZh7JzM1Y5FaSy6i7NFXo9+XWJiWyWvyUyTpnbiiicUt2rhIDdHGyfTF5jaUJAwUvxRDN1AbsQerKQQDyXObm/4sLcxrVxw+0iY4uMNOFQpUkGHeLhN9lrfu0n6qB+I6zE1RS4sveoN3WwK1YJ5nJi1rn/VEBEVXulMvmlzz4rF/3f7PW5gmlKR702I8XBsrntjdj5HtREFgeaz7Jx+DlNRfMEfese35e2YnxoiGB1MUJQ1pPY5Yivmoo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(39860400002)(366004)(9746002)(4744005)(2906002)(33656002)(6916009)(38100700002)(66476007)(66556008)(186003)(1076003)(86362001)(7416002)(54906003)(4326008)(8676002)(8936002)(5660300002)(2616005)(426003)(9786002)(66946007)(316002)(478600001)(26005)(83380400001)(107886003)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HljDmU9mh4hNFErqLyxMG6Yh6oqYLLr2ZeGLm2QnSLpKEHJPjpwpEwWHSSI5?=
+ =?us-ascii?Q?/FEOka6WlUOwO0RrvoA2JmAtsemc70OlmfdD74YHF+SjFexDbkaDTsgQkXhv?=
+ =?us-ascii?Q?C+9bRJJQHVPPwF8W4LrtxyhYxzv98UjQz3SUkn9Rc++AeJN3ND9oV3yIHYP8?=
+ =?us-ascii?Q?Ahwo7hi69S7P99luKNwJt8D+GX+wfWWIYbWPjkv/pv6fY1Sr5IDjD3oLxKuR?=
+ =?us-ascii?Q?jQxnazAkgUiKW+VPLVovC6lDb1vywyb7uMGaZHlGJFOtWfenWp2zcDtYJVOH?=
+ =?us-ascii?Q?RORFAIYN8DbOsk0E+EuYzkal39tlZCUtAxmqmUnv5ZNl9ZjlvjPUTrLRJqlc?=
+ =?us-ascii?Q?871N3BNNMqdRONk3ppnC8FvYBlU0VIP5Y03TAbHdB2TQhwLK8zH1jzHzeAM1?=
+ =?us-ascii?Q?xdV0N6Q4ZsHpx2X6QVJviMfiieFO8lXDmq/aARjVtzxS04P+63v0c32veOCQ?=
+ =?us-ascii?Q?T/yqZT7EMI3nRtXU4Z0VYq4T73aBkTyyz7EBSIPKMLj/+Irz1DvSTSqI9bRA?=
+ =?us-ascii?Q?twJ/dEjSiCkk+iqiFtQTOM+Wa7/VNFLBghh4IkPiNzX+jDZemqZfh1TM8Qpk?=
+ =?us-ascii?Q?B5soKZ82jG72drC2lEEjBjqQEyLVLpijZ37AmYdfxqyUXQfgwmRYyNs63mkY?=
+ =?us-ascii?Q?VS42YegYq0gH4oSB7phkfwJeYabqVyZLs0sXpGaZsdqODgWcaYswPNLG+5Yd?=
+ =?us-ascii?Q?DMKFtxXgG2JsM0iOF14cu5RBPFPUA4GDewT5tvuBRfYX2rZxyTA/m/i9+KMx?=
+ =?us-ascii?Q?Gxv+J1zWWwRCBpOry7CsXayknD24ZnzkFsBtXlr6/in2ai7tTRsgnRqRyWB0?=
+ =?us-ascii?Q?CHh8yQq+mErrveQb+Joy7f+wrbUVDHlNl5K8zNWLkjL1uzhqLnxGPgScgPpy?=
+ =?us-ascii?Q?y6m+cqaQckFjuBq1/PgGo5uraNTPlL7YLwCIgZJV4+OUSik3CZfeuP5EzX1v?=
+ =?us-ascii?Q?WbzXXyiIXj8aiSRpsB3RHlnTOwll4kwW8tcz+3eoIWRx3qgMe7KQ9N6A2eYB?=
+ =?us-ascii?Q?Bnmday+ST+d0g2rzQ9cje0ImMAtFULY+dRnZFZCDSB6r4qtzcvdJ7z7wLju1?=
+ =?us-ascii?Q?3LA5HVMWi8/DrUe35wo8vnqdeIw8QvHbkCa0v584ea5HjhaHDB+NxjzpyrOa?=
+ =?us-ascii?Q?vM66tNtlFX0QibuQFziGv5v9KSa3Go4/+szVB2fD5dBtpB/EjvmgVMKcVqdc?=
+ =?us-ascii?Q?UPkNklX/4eQAAVyGP2TmcCMHYtVYfAz3dM4e7A5wwiU5WSzB2AC9cbe7DQbX?=
+ =?us-ascii?Q?bygh7ArIwpzDZdYJLVpXtVzZm8d+v6QHCl1J5iknVPyfOcGnGXSD8+ATvv3j?=
+ =?us-ascii?Q?5fQlQMJr605nsqx5AAVxJ43R?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e86ad112-bcf5-4316-e98a-08d92b5890cc
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 15:09:23.7125
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YxtXqR6xNt+6+wv4ntblf2IXfI2aKQwLLrZKq1zCP4KXcbnMpnp8CM+PWlUhRGCZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5380
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
-SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
-however, possible to track whether the feature was actually used by the
-guest and only inhibit APICv/AVIC when needed.
+On Wed, Jun 09, 2021 at 03:05:52PM +0000, David Laight wrote:
 
-TLFS suggests a dedicated 'HV_DEPRECATING_AEOI_RECOMMENDED' flag to let
-Windows know that AutoEOI feature should be avoided. While it's up to
-KVM userspace to set the flag, KVM can help a bit by exposing global
-APICv/AVIC enablement: in case APICv/AVIC usage is impossible, AutoEOI
-is still preferred.
+> In principle some writel() could generate PCIe write TLP (going
+> to the target) that have the 'relaxed ordering' bit set.
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/include/asm/kvm_host.h |  7 +++++
- arch/x86/kvm/hyperv.c           | 51 +++++++++++++++++++++++++++++----
- 2 files changed, 52 insertions(+), 6 deletions(-)
+In Linux we call this writel_relaxed(), though I know of no
+implementation that sets the RO bit in the TLP based on this, it would
+be semantically correct to do so.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index ed4e2aae13d1..01ee8f29d6e3 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -91,6 +91,8 @@
- #define KVM_REQ_MSR_FILTER_CHANGED	KVM_ARCH_REQ(29)
- #define KVM_REQ_UPDATE_CPU_DIRTY_LOGGING \
- 	KVM_ARCH_REQ_FLAGS(30, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
-+#define KVM_REQ_APICV_INPROGRESS \
-+	KVM_ARCH_REQ_FLAGS(31, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
- 
- #define CR0_RESERVED_BITS                                               \
- 	(~(unsigned long)(X86_CR0_PE | X86_CR0_MP | X86_CR0_EM | X86_CR0_TS \
-@@ -936,8 +938,13 @@ struct kvm_hv {
- 	/* How many vCPUs have VP index != vCPU index */
- 	atomic_t num_mismatched_vp_indexes;
- 
-+	/* How many SynICs use 'AutoEOI' feature */
-+	atomic_t synic_auto_eoi_used;
-+
- 	struct hv_partition_assist_pg *hv_pa_pg;
- 	struct kvm_hv_syndbg hv_syndbg;
-+
-+	struct work_struct apic_update_work;
- };
- 
- struct msr_bitmap_range {
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index f00830e5202f..08cfc9ec1ef2 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -84,9 +84,32 @@ static bool synic_has_vector_auto_eoi(struct kvm_vcpu_hv_synic *synic,
- 	return false;
- }
- 
-+static void hv_apicv_update_work(struct work_struct *work)
-+{
-+	struct kvm_hv *hv = container_of(work, struct kvm_hv,
-+					 apic_update_work);
-+	struct kvm_arch *ka = container_of(hv, struct kvm_arch,
-+					   hyperv);
-+	struct kvm *kvm = container_of(ka, struct kvm, arch);
-+	struct kvm_vcpu *vcpu;
-+	int i;
-+
-+	mutex_lock(&kvm->lock);
-+	kvm_request_apicv_update(kvm, atomic_read(&hv->synic_auto_eoi_used) == 0,
-+				 APICV_INHIBIT_REASON_HYPERV);
-+	kvm_for_each_vcpu(i, vcpu, kvm)
-+		kvm_clear_request(KVM_REQ_APICV_INPROGRESS, vcpu);
-+	mutex_unlock(&kvm->lock);
-+}
-+
- static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
- 				int vector)
- {
-+	struct kvm_vcpu *vcpu = hv_synic_to_vcpu(synic);
-+	struct kvm_hv *hv = to_kvm_hv(vcpu->kvm);
-+	int auto_eoi_old, auto_eoi_new;
-+	bool apicv_update_needed = false;
-+
- 	if (vector < HV_SYNIC_FIRST_VALID_VECTOR)
- 		return;
- 
-@@ -95,10 +118,28 @@ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
- 	else
- 		__clear_bit(vector, synic->vec_bitmap);
- 
-+	auto_eoi_old = bitmap_weight(synic->auto_eoi_bitmap, 256);
-+
- 	if (synic_has_vector_auto_eoi(synic, vector))
- 		__set_bit(vector, synic->auto_eoi_bitmap);
- 	else
- 		__clear_bit(vector, synic->auto_eoi_bitmap);
-+
-+	auto_eoi_new = bitmap_weight(synic->auto_eoi_bitmap, 256);
-+
-+	/* Hyper-V SynIC auto EOI SINTs are not compatible with APICv */
-+	if (!auto_eoi_old && auto_eoi_new) {
-+		if (atomic_inc_return(&hv->synic_auto_eoi_used) == 1)
-+			apicv_update_needed = true;
-+	} else if (!auto_eoi_new && auto_eoi_old) {
-+		if (atomic_dec_return(&hv->synic_auto_eoi_used) == 0)
-+			apicv_update_needed = true;
-+	}
-+
-+	if (apicv_update_needed) {
-+		kvm_make_all_cpus_request(vcpu->kvm, KVM_REQ_APICV_INPROGRESS);
-+		schedule_work(&hv->apic_update_work);
-+	}
- }
- 
- static int synic_set_sint(struct kvm_vcpu_hv_synic *synic, int sint,
-@@ -931,12 +972,6 @@ int kvm_hv_activate_synic(struct kvm_vcpu *vcpu, bool dont_zero_synic_pages)
- 
- 	synic = to_hv_synic(vcpu);
- 
--	/*
--	 * Hyper-V SynIC auto EOI SINT's are
--	 * not compatible with APICV, so request
--	 * to deactivate APICV permanently.
--	 */
--	kvm_request_apicv_update(vcpu->kvm, false, APICV_INHIBIT_REASON_HYPERV);
- 	synic->active = true;
- 	synic->dont_zero_synic_pages = dont_zero_synic_pages;
- 	synic->control = HV_SYNIC_CONTROL_ENABLE;
-@@ -2041,6 +2076,7 @@ void kvm_hv_init_vm(struct kvm *kvm)
- 
- 	mutex_init(&hv->hv_lock);
- 	idr_init(&hv->conn_to_evt);
-+	INIT_WORK(&hv->apic_update_work, hv_apicv_update_work);
- }
- 
- void kvm_hv_destroy_vm(struct kvm *kvm)
-@@ -2052,6 +2088,7 @@ void kvm_hv_destroy_vm(struct kvm *kvm)
- 	idr_for_each_entry(&hv->conn_to_evt, eventfd, i)
- 		eventfd_ctx_put(eventfd);
- 	idr_destroy(&hv->conn_to_evt);
-+	cancel_work_sync(&hv->apic_update_work);
- }
- 
- static int kvm_hv_eventfd_assign(struct kvm *kvm, u32 conn_id, int fd)
-@@ -2206,6 +2243,8 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
- 				ent->eax |= HV_X64_ENLIGHTENED_VMCS_RECOMMENDED;
- 			if (!cpu_smt_possible())
- 				ent->eax |= HV_X64_NO_NONARCH_CORESHARING;
-+			if (enable_apicv)
-+				ent->eax |= HV_DEPRECATING_AEOI_RECOMMENDED;
- 			/*
- 			 * Default number of spinlock retry attempts, matches
- 			 * HyperV 2016.
--- 
-2.31.1
+writel() has strong order requirements and must not generate a RO TLP.
 
+Jason
