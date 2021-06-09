@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361983A0B50
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB863A0B54
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233568AbhFIEcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 00:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbhFIEcM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 00:32:12 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC95C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 21:30:04 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id w4so4720428qvr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 21:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=+ThT1ycF8YLamnlD2Lza4I95kCWi6MvYxYZGgNS2X9s=;
-        b=M4FcLOpy9iMQviGUShyo5Ubyn4BAdjZbD/36Spa6wZwN1yu5XkVBovKgUgOOm4MHYN
-         +9rbHmJQ/QlxN5lmNPNE3ZqD9ob3o4BQUbbZqH27OMI+hmD7E7dxL0cQtcs4kpFSoLoI
-         P7PiaxSFx4nK0py9c5yw5WAE/sM5FhuO2JorxLDfrkcnT5+c/jqm/mkAuZHeQkuoAD1X
-         L6J1LLhknct1mGv8LxU8JU1rzDXQxbTSoCSRb64AvCvf5inp1NLFrttpIrJGlASZGgMZ
-         OFZ9xGwdHrxIhM+v2MnAMcpfe1yTuJbdi09tFELDTC1bju9G9LfX0cO16l28YT3aqrnI
-         wZ9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=+ThT1ycF8YLamnlD2Lza4I95kCWi6MvYxYZGgNS2X9s=;
-        b=aYwpgtpw+PA86Jk8tV3O3lDle8kXNs9HJne5eAXYUpLXTf7vJ83V3OIzh3RD5TTmRR
-         NnRrouFYOWfnD68vKbZ9PTdSMyrGv2vLHU//QSXi/+UauqCb171BX3PbbZ3i9vFaQGI1
-         jedYa5WuR1RV3k2t2Ukdys5xHAB7/ZdTAvZ3+9Ow/2dwRJ4R/IEIA6uYVQT+7ZhlfQef
-         2ktyHa7ZmfiYC9hE7Mjoo3Dymz/DmGEpw+CZLvMhfbpnEKoJv3bMPA1Ds4lNlBouy/o0
-         7oa45kOcOrpNibjRatC7KwPkd5IMN4/WQZc/pfcqEJmv0P21XugkDy7q2wLBlDKmvyfw
-         A2kQ==
-X-Gm-Message-State: AOAM532KJ+5ECIwj8qSOVPaF161GHtGzvvs6O17meT8IXBrH4zY7Obsq
-        0Dbk/QDZtag+i7r0u5Z/Vf4+ww==
-X-Google-Smtp-Source: ABdhPJzQmPE98FZfl1GR4aklzUHZDiAU5rCGYrSbno/A3T1De47msweq94P8b3ysrWw+Si6IILLoOg==
-X-Received: by 2002:a0c:eda5:: with SMTP id h5mr3924907qvr.26.1623213003254;
-        Tue, 08 Jun 2021 21:30:03 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id k124sm13126699qkc.132.2021.06.08.21.30.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 21:30:02 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 21:30:00 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/10] mm: hwpoison_user_mappings() try_to_unmap() with
- TTU_SYNC
-In-Reply-To: <af88612-1473-2eaa-903-8d1a448b26@google.com>
-Message-ID: <329c28ed-95df-9a2c-8893-b444d8a6d340@google.com>
-References: <af88612-1473-2eaa-903-8d1a448b26@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S232674AbhFIEep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 00:34:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231335AbhFIEeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 00:34:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45B92601FC;
+        Wed,  9 Jun 2021 04:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623213170;
+        bh=3rKw8QxVud/J4p90Q24ac10Rx4sDcDuGfcCxqPfKYEs=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=Xk/WXvlkITidp31TMlOHd9tXMBNRTZ+7e1YvG26nYaL2TXu5QRPZkRkeyJyOaUTRT
+         aqln//sX1g9/1kweXY+B53fmBlUCVFcN/wNiydPIxri+QTkM+d0zDL9omPqNGW1zjq
+         X9khxHScmrH/q8SjwfCKtamBLnST8SyIu8mx4sSPsB4KzqfIKViSvWOQxOPDWnX01u
+         8iqwlhEFVudzbakGeE/9Mal5/96YNbFTGmgDezCfGgjuR+1tEYPjVB7sCsBJnxMiRD
+         icqWQIpfYydHvj9sZ8lMcPHvOVQSLpa4ZXdlE+0iO4vpuvm+GPBLxorZGtw/4MNn3Z
+         1RsO77kbYAbQA==
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 3F7D127C005A;
+        Wed,  9 Jun 2021 00:32:48 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute2.internal (MEProxy); Wed, 09 Jun 2021 00:32:48 -0400
+X-ME-Sender: <xms:b0TAYPv4SG84HwM684zeA8w1l782raHZTnmWzutfg7Ivcb2IqSeUHw>
+    <xme:b0TAYAehHWuoAYNs-vX-XSBGOXz1nWqXCRlR91ODShHY8m8uhjr9lUy1S5KSanLmY
+    VU23saS5kPHjZZWeK4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedutddgjeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpeegjefghfdtledvfeegfeelvedtgfevkeeugfekffdvveeffeetieeh
+    ueetveekfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
+    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
+    drlhhuthhordhush
+X-ME-Proxy: <xmx:b0TAYCwyHrYO5mXqMUl5cUbp9DQOudffzoVHOGm1SzqIti6tQp3lYA>
+    <xmx:b0TAYONQYlmkznquzzo__Uwb4b5pCr-1AamiFThP_h0drSfF-mzIJA>
+    <xmx:b0TAYP8mEAsoAubevCe3A0BkgRbxyEf_OcxU6oXizp_LxTucCAnioA>
+    <xmx:cETAYLT9re2wtAmvOP3JpDXUExduCLXEWgcTmy6C1dO8Hj3OE4dO9f_XFrXWNdkh>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 4512E51C0060; Wed,  9 Jun 2021 00:32:47 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <e9b2aab2-4a6f-4739-a939-c448414e6af2@www.fastmail.com>
+In-Reply-To: <4e5ac34f-28cb-def6-0b87-e560fa42e5e5@linux.intel.com>
+References: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
+ <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4gLeKPfYOx1kmg-mO1_mNd+XGqVO-CbqX+2d52GZ+DSFw@mail.gmail.com>
+ <23418f34-7c03-7477-6fbf-1b36b4718cb9@kernel.org>
+ <4e5ac34f-28cb-def6-0b87-e560fa42e5e5@linux.intel.com>
+Date:   Tue, 08 Jun 2021 21:32:26 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Andi Kleen" <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Sathyanarayanan Kuppuswamy" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Kirill Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kuppuswamy Sathyanarayanan" <knsathya@kernel.org>,
+        "Raj Ashok" <ashok.raj@intel.com>,
+        "Sean Christopherson" <seanjc@google.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?Q?Re:_[RFC_v2-fix-v4_1/1]_x86/tdx:_Skip_WBINVD_instruction_for_T?=
+ =?UTF-8?Q?DX_guest?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TTU_SYNC prevents an unlikely race, when try_to_unmap() returns shortly
-before the page is accounted as unmapped.  It is unlikely to coincide
-with hwpoisoning, but now that we have the flag, hwpoison_user_mappings()
-would do well to use it.
+On Tue, Jun 8, 2021, at 9:25 PM, Andi Kleen wrote:
+> 
+> > I like this description, but shouldn't the logic be:
+> >
+> > if (!CPUID has hypervisor bit set)
+> >    wbinvd();
+> >
+> > As far as I know, most hypervisors will turn WBINVD into a noop and,
+> > even if they don't, it seems to be that something must be really quite
+> > wrong for a guest to need to WBINVD for ACPI purposes.
+> 
+> KVM only turns it into a noop if there is no VT-d, because with VT-d you 
+> might need it to turn mappings into uncached and vice versa.
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
-Patch added since the v1 series was posted.
+Wow, I found the kvm_arch_register_noncoherent_dma() stuff.  That's horrifying.  What's it for?  Are there actually guests that use devices exposed by VFIO that expect WBINVD to work?  That's a giant DoS hole.
 
- mm/memory-failure.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> But yes the change would make sense for reboot. BTW I suspect for the 
+> reboot path it isn't really needed anywhere modern, so it might actually 
+> be ok to completely disable it. But that's some risk, so doing it only 
+> for hypervisor is reasonable.
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index b6806e446567..e16edefca523 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1060,7 +1060,7 @@ static int get_hwpoison_page(struct page *p, unsigned long flags,
- static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
- 				  int flags, struct page **hpagep)
- {
--	enum ttu_flags ttu = TTU_IGNORE_MLOCK;
-+	enum ttu_flags ttu = TTU_IGNORE_MLOCK | TTU_SYNC;
- 	struct address_space *mapping;
- 	LIST_HEAD(tokill);
- 	bool unmap_success;
--- 
-2.26.2
-
+I agree.
