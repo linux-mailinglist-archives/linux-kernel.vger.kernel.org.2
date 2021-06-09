@@ -2,123 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07E43A1434
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810D03A1436
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239794AbhFIMWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:22:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:58798 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235788AbhFIMWj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:22:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B31D150C;
-        Wed,  9 Jun 2021 05:20:44 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 511BE3F73D;
-        Wed,  9 Jun 2021 05:20:41 -0700 (PDT)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
-        catalin.marinas@arm.com, dvyukov@google.com, elver@google.com,
-        ink@jurassic.park.msu.ru, jonas@southpole.se,
-        juri.lelli@redhat.com, linux@armlinux.org.uk, luto@kernel.org,
-        mark.rutland@arm.com, mattst88@gmail.com, mingo@redhat.com,
-        monstr@monstr.eu, mpe@ellerman.id.au, paulmck@kernel.org,
-        paulus@samba.org, peterz@infradead.org, rth@twiddle.net,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tglx@linutronix.de, vincent.guittot@linaro.org, will@kernel.org
-Subject: [RFC PATCH 10/10] x86: snapshot thread flags
-Date:   Wed,  9 Jun 2021 13:20:01 +0100
-Message-Id: <20210609122001.18277-11-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210609122001.18277-1-mark.rutland@arm.com>
-References: <20210609122001.18277-1-mark.rutland@arm.com>
+        id S239839AbhFIMW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:22:57 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:39191 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239763AbhFIMWo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 08:22:44 -0400
+Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
+        by mail.holtmann.org (Postfix) with ESMTPSA id EE21BCECCD;
+        Wed,  9 Jun 2021 14:28:47 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH] NULL check value returned by alloc_skb
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210609091149.12557-1-find.dhiraj@gmail.com>
+Date:   Wed, 9 Jun 2021 14:20:48 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <55C683FF-DC9D-4D38-8BFF-D97685462E1C@holtmann.org>
+References: <20210609091149.12557-1-find.dhiraj@gmail.com>
+To:     Dhiraj Shah <find.dhiraj@gmail.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some thread flags can be set remotely, and so even when IRQs are
-disabled, the flags can change under our feet. Generally this is
-unlikely to cause a problem in practice, but it is somewhat unsound, and
-KCSAN will legitimately warn that there is a data race.
+Hi Dhiraj,
 
-To avoid such issues, we should snapshot the flags prior to using them.
-Let's use the new helpers to do so on x86.
+> Return error ENOMEM if alloc_skb() failed.
+> 
+> Signed-off-by: Dhiraj Shah <find.dhiraj@gmail.com>
+> ---
+> drivers/bluetooth/virtio_bt.c | 2 ++
+> 1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/bluetooth/virtio_bt.c b/drivers/bluetooth/virtio_bt.c
+> index c804db7e90f8..5f82574236c0 100644
+> --- a/drivers/bluetooth/virtio_bt.c
+> +++ b/drivers/bluetooth/virtio_bt.c
+> @@ -34,6 +34,8 @@ static int virtbt_add_inbuf(struct virtio_bluetooth *vbt)
+> 	int err;
+> 
+> 	skb = alloc_skb(1000, GFP_KERNEL);
+> +	if (!skb)
+> +		return -ENOMEM;
+> 	sg_init_one(sg, skb->data, 1000);
+> 
+> 	err = virtqueue_add_inbuf(vq, sg, 1, skb, GFP_KERNEL);
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/kernel/process.c | 8 ++++----
- arch/x86/kernel/process.h | 6 +++---
- arch/x86/mm/tlb.c         | 2 +-
- 3 files changed, 8 insertions(+), 8 deletions(-)
+a similar patch is already upstream in bluetooth-next.
 
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 5e1f38179f49..d1c4a93c6e26 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -332,7 +332,7 @@ void arch_setup_new_exec(void)
- 		clear_thread_flag(TIF_SSBD);
- 		task_clear_spec_ssb_disable(current);
- 		task_clear_spec_ssb_noexec(current);
--		speculation_ctrl_update(task_thread_info(current)->flags);
-+		speculation_ctrl_update(read_thread_flags());
- 	}
- }
- 
-@@ -584,7 +584,7 @@ static unsigned long speculation_ctrl_update_tif(struct task_struct *tsk)
- 			clear_tsk_thread_flag(tsk, TIF_SPEC_IB);
- 	}
- 	/* Return the updated threadinfo flags*/
--	return task_thread_info(tsk)->flags;
-+	return read_task_thread_flags(tsk);
- }
- 
- void speculation_ctrl_update(unsigned long tif)
-@@ -620,8 +620,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
- {
- 	unsigned long tifp, tifn;
- 
--	tifn = READ_ONCE(task_thread_info(next_p)->flags);
--	tifp = READ_ONCE(task_thread_info(prev_p)->flags);
-+	tifn = read_task_thread_flags(next_p);
-+	tifp = read_task_thread_flags(prev_p);
- 
- 	switch_to_bitmap(tifp);
- 
-diff --git a/arch/x86/kernel/process.h b/arch/x86/kernel/process.h
-index 1d0797b2338a..0b1be8685b49 100644
---- a/arch/x86/kernel/process.h
-+++ b/arch/x86/kernel/process.h
-@@ -13,9 +13,9 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p);
- static inline void switch_to_extra(struct task_struct *prev,
- 				   struct task_struct *next)
- {
--	unsigned long next_tif = task_thread_info(next)->flags;
--	unsigned long prev_tif = task_thread_info(prev)->flags;
--
-+	unsigned long next_tif = read_task_thread_flags(next);
-+	unsigned long prev_tif = read_task_thread_flags(prev);
-+	
- 	if (IS_ENABLED(CONFIG_SMP)) {
- 		/*
- 		 * Avoid __switch_to_xtra() invocation when conditional
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 78804680e923..fcc5e22050d4 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -318,7 +318,7 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 
- static unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
- {
--	unsigned long next_tif = task_thread_info(next)->flags;
-+	unsigned long next_tif = read_task_thread_flags(next);
- 	unsigned long ibpb = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_IBPB;
- 
- 	return (unsigned long)next->mm | ibpb;
--- 
-2.11.0
+Regards
+
+Marcel
 
