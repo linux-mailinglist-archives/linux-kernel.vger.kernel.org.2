@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3023A1F82
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D453A1F85
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFIV6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:58:34 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:44030 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhFIV6a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:58:30 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:51958 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lr6Bb-0002oY-I6; Wed, 09 Jun 2021 17:56:31 -0400
-Message-ID: <8880aac1e81ac38928f58da2d29057cb69139d8c.camel@trillion01.com>
-Subject: Re: [RFC] coredump: Do not interrupt dump for TIF_NOTIFY_SIGNAL
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Date:   Wed, 09 Jun 2021 17:56:30 -0400
-In-Reply-To: <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
-References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
-         <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com>
-         <87h7i694ij.fsf_-_@disp2133>
-         <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
-         <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
-         <87eeda7nqe.fsf@disp2133>
-         <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.2 
+        id S230160AbhFIV7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:59:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhFIV7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:59:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01D98613E1;
+        Wed,  9 Jun 2021 21:57:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623275833;
+        bh=Nva9dJOIzou9W6SY4+kOJ674m0AeGwwgJ3pNhVOrx7I=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=i4I51SNuWCD+R2TtKFIegvCs+kBz57AoLjDXnrWyiSWOmseunyJOYNVXiUa0M+WSq
+         hf0PQiuW1LBw8pbY7jGgv1XcTEZtBntCUIJS+Srje9Ug7QkFYR1GQoJFolWIzZ1T/V
+         Dy3hx8N0ADqdXsds7RFIbEKizEKLR8zPiSg6hVILOFLXjlOeiGrWypPWWiNmiRFi+v
+         aIeApiKjp1W+BX+6e8aydLEuO6TB+AtN2mOIIhhImMXwNm55ZeAk3tZ1bGAtW9hMyI
+         GX9pTezAXI9MnYcJdRqbjUOLqzsreq4g8RAAaZP9Ye+LhCJeXnrHG/iAIizoG/As3c
+         SYsu7hXYDfMWA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210602084259.1267768-1-yukuai3@huawei.com>
+References: <162262008540.4130789.916741380026683860@swboyd.mtv.corp.google.com> <20210602084259.1267768-1-yukuai3@huawei.com>
+Subject: Re: [PATCH V2] clk: socfpga: err out if of_clk_add_provider() failed in __socfpga_pll_init()
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com
+To:     Yu Kuai <yukuai3@huawei.com>, dinguyen@kernel.org,
+        mturquette@baylibre.com
+Date:   Wed, 09 Jun 2021 14:57:11 -0700
+Message-ID: <162327583172.9598.16259717139406297542@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-09 at 17:26 -0400, Olivier Langlois wrote:
-> On Wed, 2021-06-09 at 16:05 -0500, Eric W. Biederman wrote:
-> > > 
-> > > So the TIF_NOTIFY_SIGNAL does get set WHILE the core dump is
-> > > written.
-> > 
-> > Did you mean?
-> > 
-> > So the TIF_NOTIFY_SIGNAL does _not_ get set WHILE the core dump is
-> > written.
-> > 
-> > 
-> Absolutely not. I did really mean what I have said. Bear with me
-> that,
-> I am not qualifying myself as an expert kernel dev yet so feel free
-> to
-> correct me if I say some heresy...
-> 
-> io_uring is placing my task in my TCP socket wait queue because it
-> wants to read data from it.
-> 
-> The task returns to user space and core dump with a SEGV.
-> 
-> now my understanding is that the code that is waking up tasks, it is
-> the NIC driver interrupt handler which can occur while the core dump
-> is
-> written.
-> 
-> does that make sense?
-> 
-> my testing is telling me that this is exactly what happens...
-> 
-> 
-Another thing to know is that dump_interrupted() isn't only called from
-do_coredump().
+Quoting Yu Kuai (2021-06-02 01:42:59)
+> __socfpga_pll_init() should fail if of_clk_add_provider() failed.
+> remove 'rc' in the meantime to avoid gcc
+> '-Wunused-but-set-variable' warning.
+>=20
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
 
-At first, I did the mistake to think that if dump_interrupt() was
-returning false when called from do_coredump() all was good.
+Please don't send as in-reply-to previous patches. Makes it hard for me
+to find them on the list.
 
-It is not the case. dump_interrupted() is also called from dump_emit()
-which is called from several places by functions inside binfmt_elf.c
+> changes in V2:
+>  - remove 'rc' and use err' instead of 'rc'
+>  - err out if of_clk_add_provider() failed
+>=20
+>  drivers/clk/socfpga/clk-pll.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/clk/socfpga/clk-pll.c b/drivers/clk/socfpga/clk-pll.c
+> index dcb573d44034..5a9eec2eca80 100644
+> --- a/drivers/clk/socfpga/clk-pll.c
+> +++ b/drivers/clk/socfpga/clk-pll.c
+> @@ -80,7 +80,6 @@ static __init struct clk_hw *__socfpga_pll_init(struct =
+device_node *node,
+>         const char *parent_name[SOCFPGA_MAX_PARENTS];
+>         struct clk_init_data init;
+>         struct device_node *clkmgr_np;
+> -       int rc;
+>         int err;
+> =20
+>         of_property_read_u32(node, "reg", &reg);
+> @@ -110,12 +109,16 @@ static __init struct clk_hw *__socfpga_pll_init(str=
+uct device_node *node,
+>         hw_clk =3D &pll_clk->hw.hw;
+> =20
+>         err =3D clk_hw_register(NULL, hw_clk);
+> -       if (err) {
+> -               kfree(pll_clk);
+> -               return ERR_PTR(err);
+> -       }
+> -       rc =3D of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
+> +       if (err)
+> +               goto err_out;
+> +       err =3D of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
+> +       if (err)
 
-So dump_interrupted() is called several times during the coredump
-generation.
+Now we don't unregister the clk on failure? Can you use
+of_clk_add_hw_provider() as well? That would make this more modern. It
+can be done as a followup patch to this one.
 
-
+> +               goto err_out;
+>         return hw_clk;
+> +
+> +err_out:
+> +       kfree(pll_clk);
+> +       return ERR_PTR(err);
+>  }
