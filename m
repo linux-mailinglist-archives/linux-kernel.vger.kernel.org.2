@@ -2,82 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D6C3A150C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3373A1512
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhFINEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:04:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231206AbhFINED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:04:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D443C61108;
-        Wed,  9 Jun 2021 13:02:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623243729;
-        bh=HJUj0Zp7HP5Zllx4h5EYuzKlgKy4TSOLM0QRjmLM2rY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J12GHf3XzR6X0GIw7L++qzGrGor4N3jL6KIp4GQXurdsf+ylcLaP07KW5utk5LRJW
-         /M1ijmE2iw6tGQ+I2sU8hJb3SwDCGIMnDXmycAgp6cRUT2uHHJVIQMdBm10ARwLUak
-         aeoQVIbfpwM7I0uKMsXsdiwI5zLtWqreyExr5f9JgLttcvOFkr21EBcBgkDzT+zA6q
-         QD8UIxeXBNo3d8IOTld0FWT+8snqVaMZFtrl+szcYVU1xEwU6P1JCrkYH/k/J2dANh
-         4cC0TQGDRnxHZDMBP8GrHHkFdG39+m46pOmIjT9OuT3DYTYCM4a0sCmaBE8Nx0zh4c
-         GN7225lOiK9uA==
-Date:   Wed, 9 Jun 2021 16:02:06 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/4] selftests/sgx: Migrate to kselftest harness
-Message-ID: <20210609130206.ezv5flznlb2g6wm7@kernel.org>
-References: <20210526124740.16783-1-jarkko@kernel.org>
- <20210526124740.16783-2-jarkko@kernel.org>
- <da0c7ded-3fec-9b30-8955-7a2525dc1f22@intel.com>
+        id S233681AbhFINFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:05:08 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:56507 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230176AbhFINFA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 09:05:00 -0400
+Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id C3CE61C001D;
+        Wed,  9 Jun 2021 13:03:02 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 15:03:02 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 1/2] media: v4l2-subdev: Fix documentation of the
+ subdev_notifier member
+Message-ID: <YMC8BgVmcpAk3o3h@aptenodytes>
+References: <20210609115457.822085-1-paul.kocialkowski@bootlin.com>
+ <20210609123003.GF3@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8ict/VnrDmy6dFMo"
 Content-Disposition: inline
-In-Reply-To: <da0c7ded-3fec-9b30-8955-7a2525dc1f22@intel.com>
+In-Reply-To: <20210609123003.GF3@paasikivi.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 09:35:25AM -0700, Reinette Chatre wrote:
-> Hi Jarkko,
-> 
-> On 5/26/2021 5:47 AM, Jarkko Sakkinen wrote:
-> 
-> ...
-> 
-> > -	exit(KSFT_PASS);
-> > +static inline int encl_call(const void *in, void *out, struct sgx_enclave_run *run, bool clobbered)
-> > +{
-> > +	void *in2 = (void *)in;
-> > +	int ret;
-> > -err:
-> > -	encl_delete(&encl);
-> > -	exit(KSFT_FAIL);
-> > +	if (clobbered)
-> > +		ret = vdso_sgx_enter_enclave((unsigned long)in2, (unsigned long)out, 0,
-> > +					     EENTER, 0, 0, run);
-> > +	else
-> > +		ret = sgx_enter_enclave(in2, out, 0, EENTER, NULL, NULL, run);
-> > +
-> > +	return ret;
-> > +}
-> 
-> I find this change unnecessary because it is very specific to the current
-> test cases and limiting future test cases. From what I understand it
-> attempts to create a generic "call into the enclave" wrapper but in doing so
-> it constrains the call to use only two registers, assuming there will always
-> and only be just an "in" and "out" parameter needed.
-> 
-> Reinette
 
-Thank you, good catch, it should be a macro. I'll turn in such.
+--8ict/VnrDmy6dFMo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Other than that, it does not limit anything as we are talking neither API
-or ABI.
+Hi Sakari,
 
-/Jarkko
+On Wed 09 Jun 21, 15:30, Sakari Ailus wrote:
+> Hi Paul,
+>=20
+> On Wed, Jun 09, 2021 at 01:54:56PM +0200, Paul Kocialkowski wrote:
+> > Fix the name of the function that registers the subdev_notifier member
+> > of the v4l2_subdev structure.
+> >=20
+> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > ---
+> >  include/media/v4l2-subdev.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+> > index d0e9a5bdb08b..f3b657dfe304 100644
+> > --- a/include/media/v4l2-subdev.h
+> > +++ b/include/media/v4l2-subdev.h
+> > @@ -854,7 +854,7 @@ struct v4l2_subdev_platform_data {
+> >   * @asd: Pointer to respective &struct v4l2_async_subdev.
+> >   * @notifier: Pointer to the managing notifier.
+> >   * @subdev_notifier: A sub-device notifier implicitly registered for t=
+he sub-
+> > - *		     device using v4l2_device_register_sensor_subdev().
+> > + *		     device using v4l2_async_register_subdev_sensor_common().
+>=20
+> I agree in principle, but the function is nowadays called
+> v4l2_async_register_subdev_sensor().
+>=20
+> I can fix this while applying.
+
+Looks like I missed the rename when rebasing my patch on media/master!
+Of course, feel free to update with the new name.
+
+Thanks,
+
+Paul
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--8ict/VnrDmy6dFMo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmDAvAYACgkQ3cLmz3+f
+v9Fv6Qf9HId8bGavXs06BYDx3THrx29O6HEbuNvrhcARHyLprUcpNZd7aeySbd+I
+yPE4c6WLGt+l4w2C7W1PfVySyIR/fzDu5iSpo6q2cBePntxNRD3i2KjskTvG8R+r
+WCXnuaxzLFs0Y0yMp3Urn7jLUg3oFmoipxKnpa+WA/Fsx3yByd9+Vj+K2jvDSa4n
+oZRMxuL03TcPZI+gePjt7mY/pRrOqTEWf19wnvkZW8ZOQu2ukcXJ9Zw4UtQBXaxu
+/u1JDvm50C59tncroDr4K+Tmnre9TK7PFUwtssWinhHq9HsZtcb843uiTJ0Ero6M
+aqZpxv8yKTtQ1Ae3OjOY2phTCTez7g==
+=AyNo
+-----END PGP SIGNATURE-----
+
+--8ict/VnrDmy6dFMo--
