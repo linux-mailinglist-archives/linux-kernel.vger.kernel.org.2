@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA703A1646
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7FB3A1702
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233832AbhFIN7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:59:46 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:5360 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236210AbhFIN7o (ORCPT
+        id S237727AbhFIOWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:22:49 -0400
+Received: from flippie-beckerswealthsa.xyz ([62.173.138.170]:50208 "EHLO
+        host.flippie-beckerswealthsa.xyz" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237368AbhFIOWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:59:44 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G0T9C6Dynz6vr6;
-        Wed,  9 Jun 2021 21:53:51 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 21:57:43 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 21:57:43 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <grygorii.strashko@ti.com>
-Subject: [PATCH net-next] net: ethernet: ti: cpsw: Use devm_platform_get_and_ioremap_resource()
-Date:   Wed, 9 Jun 2021 22:01:52 +0800
-Message-ID: <20210609140152.3198309-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+        Wed, 9 Jun 2021 10:22:39 -0400
+X-Greylist: delayed 7062 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Jun 2021 10:22:39 EDT
+Received: from flippie-beckerswealthsa.xyz (ec2-18-118-29-154.us-east-2.compute.amazonaws.com [18.118.29.154])
+        by host.flippie-beckerswealthsa.xyz (Postfix) with ESMTPA id 146EC30C3EAE
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 15:09:32 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippie-beckerswealthsa.xyz 146EC30C3EAE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=flippie-beckerswealthsa.xyz; s=default; t=1623240573;
+        bh=h0ivQLrZuUWuyEKz/TWb+FP9AASpHhVqOsJtRcwKQV4=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=bYFaDaR4RHycjY4FK8VVTH4hJM3ZJ0EpTSmHpz16M2l/C6L+5n+P4BH9RIzj/MnrS
+         VrB3gK+EyXmeRCHx7OHHQn6eIHiE0etYlibhA6g1Gwo+FdSgqJuE374dtP5FO+WK+r
+         AmguNZjwgAiTpq6Jpt320uUDuWxgifk+GjAQTAyQ=
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippie-beckerswealthsa.xyz 146EC30C3EAE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=flippie-beckerswealthsa.xyz; s=default; t=1623240573;
+        bh=h0ivQLrZuUWuyEKz/TWb+FP9AASpHhVqOsJtRcwKQV4=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=bYFaDaR4RHycjY4FK8VVTH4hJM3ZJ0EpTSmHpz16M2l/C6L+5n+P4BH9RIzj/MnrS
+         VrB3gK+EyXmeRCHx7OHHQn6eIHiE0etYlibhA6g1Gwo+FdSgqJuE374dtP5FO+WK+r
+         AmguNZjwgAiTpq6Jpt320uUDuWxgifk+GjAQTAyQ=
+Reply-To: jmasuku40@flippiebeckerwealthservices.com
+From:   Jotham Masuku <jmasuku40@flippie-beckerswealthsa.xyz>
+To:     linux-kernel@vger.kernel.org
+Subject: Projects
+Date:   09 Jun 2021 12:09:32 +0000
+Message-ID: <20210609120932.37C3E30373A522EF@flippie-beckerswealthsa.xyz>
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_platform_get_and_ioremap_resource() to simplify
-code.
+Hello there,
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/net/ethernet/ti/cpsw.c     | 3 +--
- drivers/net/ethernet/ti/cpsw_new.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+I hope this message finds you in good spirits especially during=20
+this challenging time of coronavirus pandemic. I hope you and=20
+your family are well and keeping safe. Anyway, I am Jotham=20
+Masuku, a broker working with Flippiebecker Wealth. I got your=20
+contact (along with few other contacts) through an online=20
+business directory and I thought I should contact you to see if=20
+you are interested in this opportunity. I am contacting you=20
+because one of my high profile clients is interested in investing=20
+abroad and has asked me to look for individuals and companies=20
+with interesting business ideas and projects that he can invest=20
+in. He wants to invest a substantial amount of asset abroad.
 
-diff --git a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
-index c0cd7de88316..b1e80cc96f56 100644
---- a/drivers/net/ethernet/ti/cpsw.c
-+++ b/drivers/net/ethernet/ti/cpsw.c
-@@ -1532,8 +1532,7 @@ static int cpsw_probe(struct platform_device *pdev)
- 	}
- 	cpsw->bus_freq_mhz = clk_get_rate(clk) / 1000000;
- 
--	ss_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	ss_regs = devm_ioremap_resource(dev, ss_res);
-+	ss_regs = devm_platform_get_and_ioremap_resource(pdev, 0, &ss_res);
- 	if (IS_ERR(ss_regs))
- 		return PTR_ERR(ss_regs);
- 	cpsw->regs = ss_regs;
-diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
-index 69b7a4e0220a..8d4f3c53385d 100644
---- a/drivers/net/ethernet/ti/cpsw_new.c
-+++ b/drivers/net/ethernet/ti/cpsw_new.c
-@@ -1883,8 +1883,7 @@ static int cpsw_probe(struct platform_device *pdev)
- 	}
- 	cpsw->bus_freq_mhz = clk_get_rate(clk) / 1000000;
- 
--	ss_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	ss_regs = devm_ioremap_resource(dev, ss_res);
-+	ss_regs = devm_platform_get_and_ioremap_resource(pdev, 0, &ss_res);
- 	if (IS_ERR(ss_regs)) {
- 		ret = PTR_ERR(ss_regs);
- 		return ret;
--- 
-2.25.1
+Please kindly respond back to this email if you are interested in=20
+this opportunity. Once I receive your response, I will give you=20
+more details and we can plan a strategy that will be beneficial=20
+to all parties.
 
+Best regards
+
+J Masuku
+Flippiebecker Wealth
