@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7652F3A1101
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2663A10FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238775AbhFIK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:26:41 -0400
-Received: from mail-lj1-f170.google.com ([209.85.208.170]:36501 "EHLO
-        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238766AbhFIK0g (ORCPT
+        id S238745AbhFIKZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238732AbhFIKZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:26:36 -0400
-Received: by mail-lj1-f170.google.com with SMTP id 131so31006476ljj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:24:41 -0700 (PDT)
+        Wed, 9 Jun 2021 06:25:40 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2950C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 03:23:45 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id d2so26810096ljj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:23:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iBza1mKhlqsg6etHF8D7TfcQzqGCBqmRr7/AGAencgU=;
-        b=IABFa0bjwccpp/bNIj/Ur6wWmjvpwTQ4uvwHXETm960Yor7fI7C0+IUiKkqzhdMHYt
-         iIbNcwWw7mSP3CTqJM5WCz9e1fVOkqqyJ6IbJ7vb4F0AOABdAqzfgZynRLN+8RPYb3s4
-         i8P1Mbi9AiOyCUoNtiLGY1WaWlwAMtRFzd33qTh+ik4miJF8Nyfg1ll+Pyr+6KOk03+/
-         NxPSZaHEVcrddgn2hJqbpig76yiGdjbrffGibYYLE58P0dgOSFhz0/bgc7JeNwIYwxn1
-         ULxNvboBP4WgP5Ou48sQjvhcfGoKYsGZbxYJsszS0eBdqj3Y1FLFX8d/tR8aJ7iJCT1P
-         lXFg==
+        bh=rSIr/zgD0QKUjYJIhEJ6XI1VLo+32XT0J4ID1IoyWD4=;
+        b=fqAD6isZzOpdAF9uAsnzbY6yrKqxk+H25yKbeNb+ngubcNcT0kFOdS+WdP63PHHUxC
+         HmbNlTSi/IukvVImU0SQ0hRYfsU7yaQJLtUvzSHrwZ0Y76HCXjKyn5yYlU2/MUumCPF9
+         9yi1u57wsD0zu6bpxQ8wDnxKEWL44I8LVjqcf1pBBa9ABKrCbo7Qhopx41SgKr/WdwkX
+         gb/v8WSzmih9Gs954Py1V0YsjmVOH+nZR8Nc1tkBdN+y+JWwfsvBgCU6cWA/mBIrDt/p
+         emaGFZFxeNq9knd/y1BAHZfbpwU+TH6k35FucKISH2vnlRbwQrIy4SpUNkrrzEFUSDo1
+         0L/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iBza1mKhlqsg6etHF8D7TfcQzqGCBqmRr7/AGAencgU=;
-        b=CZUqeIHJG7OFba1ND0lmGYlefO2ThBvgkDxBEP649ADJkElXrpFUbbSJwrbQVF022u
-         9IqO7cmoS+UYxengPUdOMf5HYtzrxjCTT1jd7iXoOGbvgxHI/p/yd12KZnJrXfO6zk7+
-         iabTgwDE0kqhiSsotaCSCBB5plaQSpGL5Z2MUJ8rwk6jEaGlsgXk08zrv+KxGN9Ara/a
-         jyUrCBaRqtU/wKX4JJZpuOz3LzYDN0LItBAMBoSEOPH+PLqMYMHkjBCyPH5BKNm6xxay
-         ToEB5SanvncRuac00mub3D9BOYRqGviiKHutLel96f6EFsoLqwh/pNMS3SAxk4/jq6rm
-         ClKQ==
-X-Gm-Message-State: AOAM532D44FFz2MnHGOAdnPxh0XN7wtH8UkxK/HmVLo3bcUQt+orT0Zw
-        MBq4B832THn4De/n3SXtvj7FosDDEYvCXawv
-X-Google-Smtp-Source: ABdhPJxJ/g/8K2URkWfxiXdN18FhFhzSSYRq1MrmDLL0fZZa78RlccOZrwenL4lGTKNI4NcOB4D9Nw==
-X-Received: by 2002:a2e:914d:: with SMTP id q13mr6919196ljg.179.1623234220818;
-        Wed, 09 Jun 2021 03:23:40 -0700 (PDT)
+        bh=rSIr/zgD0QKUjYJIhEJ6XI1VLo+32XT0J4ID1IoyWD4=;
+        b=kmAzxFh2DFYQ77JPQd9dc2Ofvvktrj7XAn1ryOIUzKHL2ra/Bh8fpJhM8UY61d/JLk
+         Cnji+RVLzQCp1InI8HAjN4oHOIrusA4jswYWgVc9OOEuupJxvu2ydkS11WkYy56DeLIP
+         +uzZ5S0qNRdX4A4ZxrVE5dajLkUZPAPIBl+MwSU4WVyfUQyShQhZjFWf+ILne3fEc49U
+         aXAqiDCZNpebLE55P7fJAHlmx4oTCgJLC0x1yFDj8gukXelxvs2L9N+dzny9VwAMEEEr
+         +CjUlhmcYTPJQcIUXxlRnk9whgCABX6ZKYi9isXo7k9fvv5nR/di7sfFYGM4BDZ/Dfm4
+         64mg==
+X-Gm-Message-State: AOAM531hOnAbhO7abl2+ikGWQCERtFS7Fn4gonrWe3e3OfGYFiWGfSOL
+        UDZ/rH+/yYIobAy+wBkWFHvDiYpog5rTW7lw
+X-Google-Smtp-Source: ABdhPJxRpAglWaXtGp3R3fiw+lgOGV4wZw8PB/hRjO196/Gjs3ftPKT5ETRh0FArSEmyNuoX6BcBEg==
+X-Received: by 2002:a05:651c:1185:: with SMTP id w5mr21510897ljo.379.1623234221556;
+        Wed, 09 Jun 2021 03:23:41 -0700 (PDT)
 Received: from jade.urgonet (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
         by smtp.gmail.com with ESMTPSA id m4sm302966ljp.9.2021.06.09.03.23.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 03:23:40 -0700 (PDT)
+        Wed, 09 Jun 2021 03:23:41 -0700 (PDT)
 From:   Jens Wiklander <jens.wiklander@linaro.org>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         op-tee@lists.trustedfirmware.org
@@ -57,9 +60,9 @@ Cc:     Sumit Garg <sumit.garg@linaro.org>,
         "David S . Miller" <davem@davemloft.net>,
         Tyler Hicks <tyhicks@linux.microsoft.com>,
         Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH 4/7] hwrng: optee-rng: use tee_shm_alloc_kernel_buf()
-Date:   Wed,  9 Jun 2021 12:23:21 +0200
-Message-Id: <20210609102324.2222332-5-jens.wiklander@linaro.org>
+Subject: [PATCH 5/7] tpm_ftpm_tee: use tee_shm_alloc_kernel_buf()
+Date:   Wed,  9 Jun 2021 12:23:22 +0200
+Message-Id: <20210609102324.2222332-6-jens.wiklander@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210609102324.2222332-1-jens.wiklander@linaro.org>
 References: <20210609102324.2222332-1-jens.wiklander@linaro.org>
@@ -75,27 +78,29 @@ TEE_SHM-flags.
 
 Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 ---
- drivers/char/hw_random/optee-rng.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/char/tpm/tpm_ftpm_tee.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/hw_random/optee-rng.c b/drivers/char/hw_random/optee-rng.c
-index 135a82590923..a948c0727b2b 100644
---- a/drivers/char/hw_random/optee-rng.c
-+++ b/drivers/char/hw_random/optee-rng.c
-@@ -145,10 +145,10 @@ static int optee_rng_init(struct hwrng *rng)
- 	struct optee_rng_private *pvt_data = to_optee_rng_private(rng);
- 	struct tee_shm *entropy_shm_pool = NULL;
+diff --git a/drivers/char/tpm/tpm_ftpm_tee.c b/drivers/char/tpm/tpm_ftpm_tee.c
+index 2ccdf8ac6994..6e3235565a4d 100644
+--- a/drivers/char/tpm/tpm_ftpm_tee.c
++++ b/drivers/char/tpm/tpm_ftpm_tee.c
+@@ -254,11 +254,11 @@ static int ftpm_tee_probe(struct device *dev)
+ 	pvt_data->session = sess_arg.session;
  
--	entropy_shm_pool = tee_shm_alloc(pvt_data->ctx, MAX_ENTROPY_REQ_SZ,
--					 TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-+	entropy_shm_pool = tee_shm_alloc_kernel_buf(pvt_data->ctx,
-+						    MAX_ENTROPY_REQ_SZ);
- 	if (IS_ERR(entropy_shm_pool)) {
--		dev_err(pvt_data->dev, "tee_shm_alloc failed\n");
-+		dev_err(pvt_data->dev, "tee_shm_alloc_kernel_buf failed\n");
- 		return PTR_ERR(entropy_shm_pool);
+ 	/* Allocate dynamic shared memory with fTPM TA */
+-	pvt_data->shm = tee_shm_alloc(pvt_data->ctx,
+-				      MAX_COMMAND_SIZE + MAX_RESPONSE_SIZE,
+-				      TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
++	pvt_data->shm = tee_shm_alloc_kernel_buf(pvt_data->ctx,
++						 MAX_COMMAND_SIZE +
++						 MAX_RESPONSE_SIZE);
+ 	if (IS_ERR(pvt_data->shm)) {
+-		dev_err(dev, "%s: tee_shm_alloc failed\n", __func__);
++		dev_err(dev, "%s: tee_shm_alloc_kernel_buf failed\n", __func__);
+ 		rc = -ENOMEM;
+ 		goto out_shm_alloc;
  	}
- 
 -- 
 2.31.1
 
