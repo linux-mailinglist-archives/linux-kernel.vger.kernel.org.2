@@ -2,132 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065EE3A0ED8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 263113A0EE8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237710AbhFIIny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:43:54 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:49199 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbhFIInw (ORCPT
+        id S237459AbhFIIvb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 04:51:31 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:26751 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229740AbhFIIva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:43:52 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 9 Jun 2021 04:51:30 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-329-JBFnEtmXMAmnbWzYpR0ofw-1; Wed, 09 Jun 2021 04:49:34 -0400
+X-MC-Unique: JBFnEtmXMAmnbWzYpR0ofw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 47D6922173;
-        Wed,  9 Jun 2021 10:41:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1623228117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vIOggMOH/sTibwxER0iVx8Wsd+NnlmsfQG1YNVwFlk0=;
-        b=NJlJPCftDBjjCFjGBv5judzgch7SzBocWzptSmxUhu2LiKrjDq+VbRJ49EpFXhiAb6/HYF
-        SVmmeiwbGtjIjso8WmGI+saz87lo7D9qkdw/GD1nSyvGzFx0VjtYtUfYJnYZjJdqEZi+tq
-        zjgk/7XpdAWxOt7jmqJKUqyxUmr2xBw=
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E73919057A5;
+        Wed,  9 Jun 2021 08:49:32 +0000 (UTC)
+Received: from web.messagingengine.com (ovpn-116-20.sin2.redhat.com [10.67.116.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EAE45D9E3;
+        Wed,  9 Jun 2021 08:49:16 +0000 (UTC)
+Subject: [PATCH v6 0/7] kernfs: proposed locking and concurrency improvement
+From:   Ian Kent <raven@themaw.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Eric Sandeen <sandeen@sandeen.net>, Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Wed, 09 Jun 2021 16:49:14 +0800
+Message-ID: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 09 Jun 2021 10:41:55 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
-        allan.nielsen@microchip.com,
-        Claudiu Manoil <claudiu.manoil@nxp.com>, davem@davemloft.net,
-        idosch@mellanox.com, joergen.andreasen@microchip.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Po Liu <po.liu@nxp.com>, vinicius.gomes@intel.com
-Subject: Re: [EXT] Re: [net-next] net: dsa: felix: disable always guard band
- bit for TAS config
-In-Reply-To: <DB8PR04MB5785C5BDBDD51401362563D6F0369@DB8PR04MB5785.eurprd04.prod.outlook.com>
-References: <c7618025da6723418c56a54fe4683bd7@walle.cc>
- <20210504185040.ftkub3ropuacmyel@skbuf>
- <ccb40b7fd18b51ecfc3f849a47378c54@walle.cc>
- <20210504191739.73oejybqb6z7dlxr@skbuf>
- <d933eef300cb1e1db7d36ca2cb876ef6@walle.cc>
- <20210504213259.l5rbnyhxrrbkykyg@skbuf>
- <efe5ac03ceddc8ff472144b5fe9fd046@walle.cc>
- <DB8PR04MB5785A6A773FEA4F3E0E77698F0579@DB8PR04MB5785.eurprd04.prod.outlook.com>
- <2898c3ae1319756e13b95da2b74ccacc@walle.cc>
- <DB8PR04MB5785D01D2F9091FB9267D515F0579@DB8PR04MB5785.eurprd04.prod.outlook.com>
- <20210507121909.ojzlsiexficjjjun@skbuf>
- <07b1bc11eee83d724d4ddc4ee8378a12@walle.cc>
- <DB8PR04MB5785C5BDBDD51401362563D6F0369@DB8PR04MB5785.eurprd04.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <32f1854fdc0fda86627371bb82f2c873@walle.cc>
-X-Sender: michael@walle.cc
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=raven@themaw.net
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: themaw.net
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-06-09 10:06, schrieb Xiaoliang Yang:
-> On 2021-06-07 19:26, Michael Walle wrote:
->> 
->> Hi Vladimir, Hi Xiaoliang,
->> 
->> Am 2021-05-07 14:19, schrieb Vladimir Oltean:
->> > Devices like Felix need the per-queue max SDU from the user - if that
->> > isn's specified in the netlink message they'll have to default to the
->> > interface's MTU.
->> 
->> Btw. just to let you and Xiaoliang know:
->> 
->> It appears that PORT_MAX_SDU isn't working as expected. It is used as 
->> a
->> fallback if QMAXSDU_CFG_n isn't set for the guard band calculation. 
->> But it
->> appears to be _not_ used for discarding any frames. E.g. if you set
->> PORT_MAX_SDU to 500 the port will still happily send frames larger 
->> than 500
->> bytes. (Unless of course you hit the guard band of 500 bytes). OTOH
->> QMAXSDU_CFG_n works as expected, it will discard oversized frames - 
->> and
->> presumly will set the guard band accordingly, I haven't tested this 
->> explicitly.
->> 
->> Thus, I wonder what sense PORT_MAX_SDU makes at all. If you set the 
->> guard
->> band to a smaller value than the MTU, you'll also need to make sure, 
->> there will
->> be no larger frames scheduled on that port.
->> 
->> In any case, the workaround is to set QMAXSDU_CFG_n (for all
->> n=0..7) to the desired max_sdu value instead of using PORT_MAX_SDU.
->> 
->> It might also make sense to check with the IP supplier.
->> 
->> In the case anyone wants to implement that for (upstream) linux ;)
->> 
->> -michael
-> 
-> Yes, PORT_MAX_SDU is only used for guard band calculation. DEV_GMII:
-> MAC_MAXLEN_CFG
-> limited the frame length accepted by the MAC.
+There have been a few instances of contention on the kernfs_mutex during
+path walks, a case on very large IBM systems seen by myself, a report by
+Brice Goglin and followed up by Fox Chen, and I've since seen a couple
+of other reports by CoreOS users.
 
-But MAC_MAXLEN_CFG is for ingress handling while you want egress 
-handling,
-for example think two ingress ports sending to one egress port. The
-limitation is on the egress side. Or two queues with different guard
-bands/maxsdu settings.
+The common thread is a large number of kernfs path walks leading to
+slowness of path walks due to kernfs_mutex contention.
 
-> I am worried that
-> QMAXSDU is not a universal
-> setting, it may just be set on Felix, so there is no suitable place to
-> add this configuration.
+The problem being that changes to the VFS over some time have increased
+it's concurrency capabilities to an extent that kernfs's use of a mutex
+is no longer appropriate. There's also an issue of walks for non-existent
+paths causing contention if there are quite a few of them which is a less
+common problem.
 
-I can't follow you here. I'm talkling about felix and its quirks. Eg. 
-the
-static guard band handling there, the reason why we need the maxsdu
-setting in the first place.
+This patch series is relatively straight forward.
 
-Or do you think about how to communicate that setting from user space to
-the kernel? In this case, I'd say we'll need some kind of parameter for
-this kind of devices which doesn't have a dynamic guard band mechanism.
-Felix won't be the only one.
+All it does is add the ability to take advantage of VFS negative dentry
+caching to avoid needless dentry alloc/free cycles for lookups of paths
+that don't exit and change the kernfs_mutex to a read/write semaphore.
 
--michael
+The patch that tried to stay in VFS rcu-walk mode during path walks has
+been dropped for two reasons. First, it doesn't actually give very much
+improvement and, second, if there's a place where mistakes could go
+unnoticed it would be in that path. This makes the patch series simpler
+to review and reduces the likelihood of problems going unnoticed and
+popping up later.
+
+Changes since v5:
+- change kernfs_dir_changed() comparison.
+- move negative dentry out from under kernfs node lock in revalidate.
+- only set d_time for negative dentries.
+- add patch to move d_splice_alias() out from under kernfs node lock
+  in lookup.
+
+Changes since v4:
+- fixed kernfs_active() naming.
+- added back kernfs_node revision patch to use for negative dentry
+  validation.
+- minor updates to patch descriptions.
+
+Changes since v3:
+- remove unneeded indirection when referencing the super block.
+- check if inode attribute update is actually needed.
+
+Changes since v2:
+- actually fix the inode attribute update locking.
+- drop the patch that tried to stay in rcu-walk mode.
+- drop the use a revision to identify if a directory has changed patch.
+
+Changes since v1:
+- fix locking in .permission() and .gated() by re-factoring the
+  attribute handling code.
+---
+
+Ian Kent (7):
+      kernfs: move revalidate to be near lookup
+      kernfs: add a revision to identify directory node changes
+      kernfs: use VFS negative dentry caching
+      kernfs: switch kernfs to use an rwsem
+      kernfs: use i_lock to protect concurrent inode updates
+      kernfs: add kernfs_need_inode_refresh()
+      kernfs: dont call d_splice_alias() under kernfs node lock
+
+
+ fs/kernfs/dir.c             | 150 +++++++++++++++++++-----------------
+ fs/kernfs/file.c            |   4 +-
+ fs/kernfs/inode.c           |  45 +++++++++--
+ fs/kernfs/kernfs-internal.h |  28 ++++++-
+ fs/kernfs/mount.c           |  12 +--
+ fs/kernfs/symlink.c         |   4 +-
+ include/linux/kernfs.h      |   7 +-
+ 7 files changed, 160 insertions(+), 90 deletions(-)
+
+--
+Ian
+
