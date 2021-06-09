@@ -2,265 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8293A13F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4681B3A13ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239692AbhFIMPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:15:49 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:44395 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234669AbhFIMPn (ORCPT
+        id S234983AbhFIMPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:15:35 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5471 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231783AbhFIMPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:15:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1623240829; x=1654776829;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=s4va/Owvq7MQI8rUsD/e02RmaYfJNzYNcxlXspGRY7g=;
-  b=G5GD9eN+rv669E7jyRnRAt0jw83CxhIrSiDIjXuPmhWyMhKeQGD7ACRm
-   ii6o0zmOREhGihtwB6X/xpY/2ZvK+cxcHmJXa+Ykyn8QN+/YKFtg3svfj
-   eiTN7U/mEozCoGNd1wXu59RQj11Xz60DN/qEUlYFaL6SjukUgifFVgbvG
-   uUj8AM8+xf1jKHi3Q/6nVPpJX8uiW/NPFHrwI8hxUwYr9viQwxXvc7FNr
-   fR8bH2c/HiGacGYEHosgP0WT//d9Huqn4JNINvjidK4ZSJ74cXlr8KwMG
-   8snmfx4UjEWMhK1lCYalJEU7nxXFfih/6DMuFRorETpWQ+424BAKUJdDH
-   Q==;
-IronPort-SDR: pYhRsIZkhfmi45K4HfnZj39kxfUGpxs1e+q+Wh8kDE+ySh35HkJaaUcpP04mb7VeIVtPRx/h6Q
- imv6sn8fYo/V8ezHAq4jpd1QadqInKi1ubLnCE3Zy7GnhVBepoV6FbI14Y01V+5QIUwYdFNcGG
- RsxDOTQyU5AljH0Rc6WkrpdVf5jsrXXMddmlDdi6QsfKGy7MwQ/NYojNIqyLhRSgu5w2uTIE7X
- atSbjb8j2a+EJUY0WgYTGfNHKCdQLAhjcsWZgU7Iu0vSaBU6A7seCkqun24dvF/zYuzEj7wedD
- TvE=
-X-IronPort-AV: E=Sophos;i="5.83,260,1616428800"; 
-   d="scan'208";a="170575129"
-Received: from mail-dm6nam12lp2169.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.169])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Jun 2021 20:13:48 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hrlr4Qi66FmbQW45zI7QeA9nEYSvxO+tR++vUyFHxjRqnr6WtjKgHM8hPpp8oHXaK82U0+KQUc2+WjLbe8LihexXFQs5zRwBDwuArmkKt85cL3utD3OBzTkr4A9ZhRS5mzztnn9kvTFNplPjSydXPetJQIZ9WKmihJrdeaGQ+zQ//6TdDWVpLyBbqiBVUbUwlKQbpbbfHvzQCHYQbIiUcGn4vaSXYp2Xp1Z5yYVtrfDK+TemKG/8fKQoJjg/tdmDtQ97Cgw7nX6Oc9kdmoTIxFilMy4XjPciPcNOPdLmboGCt6+TMBeftLc1VFNnr7PwuxOogv4I7eJ/P9UaK57k5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ibi36Vj2s7bu56DZaU1uSl4xNA3OB2FHlI/rBKn+8xo=;
- b=CE3o+0GFLPMQuw0AK1IRf/vX00diXsjayn0MmpS7ntSVXgxXIAPT9aDtk7x0NovJBTk2LHI5Mtxvz6SwVnJzUqZmNsXUktEj5Iwdd8EPIIxgCOjugo/6WC0FqaFKNvJB4hQ0tjFxv+J5DexSJ8+mPx6Ucr4DwtUXrCWzOeXyF5YK68mU5FgttbyutW3CGsGkPgaPAdOxXOgJqyYu8X25unmzG12Jq2xC4oVKsbA+RfDiaMKm97q2Bhy+LcgJNS6/ktlFKSOVu1HQ0POYgba3mtldN3vg73wLbxrfsdoe4261aJpkM05GJFDzdTNp4t3rEGhNuLR1+8OmKfLlPeSU9w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ibi36Vj2s7bu56DZaU1uSl4xNA3OB2FHlI/rBKn+8xo=;
- b=Z76YsVxTHK6/ta19C5vwaBPYmtDa2GIM/ml4myQZfIaHFNzXPzZ+PFcYy/Xf1Ixd0GZHcuSZQYgs/SPHWATh+rOWBAislGv1zmSAG/g0tiDckB8WaCwh1e3qGW4ZmUTmAU7dxB0vn0pRSLTnc1hdCUZ73buM78qo9qwsQZv41d0=
-Authentication-Results: dabbelt.com; dkim=none (message not signed)
- header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
-Received: from CO6PR04MB7812.namprd04.prod.outlook.com (2603:10b6:303:138::6)
- by CO6PR04MB7794.namprd04.prod.outlook.com (2603:10b6:303:13f::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Wed, 9 Jun
- 2021 12:13:47 +0000
-Received: from CO6PR04MB7812.namprd04.prod.outlook.com
- ([fe80::a153:b7f8:c87f:89f8]) by CO6PR04MB7812.namprd04.prod.outlook.com
- ([fe80::a153:b7f8:c87f:89f8%9]) with mapi id 15.20.4219.021; Wed, 9 Jun 2021
- 12:13:47 +0000
-From:   Anup Patel <anup.patel@wdc.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anup Patel <anup.patel@wdc.com>
-Subject: [PATCH v7 1/1] RISC-V: Use SBI SRST extension when available
-Date:   Wed,  9 Jun 2021 17:43:22 +0530
-Message-Id: <20210609121322.3058-2-anup.patel@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210609121322.3058-1-anup.patel@wdc.com>
-References: <20210609121322.3058-1-anup.patel@wdc.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [122.172.176.125]
-X-ClientProxiedBy: MA1PR0101CA0036.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:22::22) To CO6PR04MB7812.namprd04.prod.outlook.com
- (2603:10b6:303:138::6)
+        Wed, 9 Jun 2021 08:15:34 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0QtG24LVzZdQj;
+        Wed,  9 Jun 2021 20:10:46 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 20:13:36 +0800
+Received: from [10.174.178.46] (10.174.178.46) by
+ dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 20:13:35 +0800
+Subject: Re: [PATCH] mailbox: bcm-flexrm-mailbox: Remove redundant dev_err
+ call in flexrm_mbox_probe()
+To:     <jaswinder.singh@linaro.org>, <eric@anholt.net>,
+        <jassisinghbrar@gmail.com>
+CC:     <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-rpi-kernel@lists.infradead.org>, <yukuai3@huawei.com>
+References: <20210601082834.129587-1-chengzhihao1@huawei.com>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <cfa3162b-32eb-487a-d01e-6d69293c9965@huawei.com>
+Date:   Wed, 9 Jun 2021 20:13:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from wdc.com (122.172.176.125) by MA1PR0101CA0036.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:22::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Wed, 9 Jun 2021 12:13:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 17406ef0-e8d7-4dc3-eee9-08d92b40085b
-X-MS-TrafficTypeDiagnostic: CO6PR04MB7794:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO6PR04MB77945CDDD1538EFCA060925B8D369@CO6PR04MB7794.namprd04.prod.outlook.com>
-WDCIPOUTBOUND: EOP-TRUE
-X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IxB9oKL9LkeXCQ7mZ1A5qIcKlICr/TPZ/8V0ErM5hbqnvfK6Mf0mQL0tqqlJAOvLpCEVIyX7FllGqSlWsNG3ik/WbbDYQb9wAFCuFSAlGAeGppnJjJf0zfDAmp4NONB7kshKqtUYfGltTHTkV4ni+VEwWf/Q3T4vA0k3Jkt34iZFi9tOsSHkSWxPTsQyviBdCp3/36ZCVhYs6bXkf8sh0sA4Ql/l8t2zpcEUwjAm14ie3hOUBEp1W9qOz6StmR4xyl+zy49U38byeHu5XDF/qFT8FI4WclwFwxbDeTm8cU7MMg4D0xeR0Ytm2wVrgAdiapgQYLmxPIjIG96TRTbCupyuaJXmYcI6/x27PtiQYFwcpbRUjXDKRVX2WW74WHm88OOlTexD/OsbGHD6PVnc+InniK38yNcx06U9fIkDGSYWrJqLysALlO0V5gfkc35Fhttum638ES0S2sldGkFufM372EZeooczK7jeLMpoOTAnaLtPdTCGsHnnEDDbOK7NiptQlrLMhrNQ/70harAMmB6Vvdl+jvJi34DsuX+57WeQU8Ya1cyVxzFkWX2DwvPRsAnp/VNHzeQLc5MAIUYpwQvkJBcqihYMKrLMNOT94HmxBYmY2bcW/K9fXrPQ/whyJ5HoQuxydeiy7+QKg6FWnhguTACaaTKGKKIDIlfYA5FXYlZOaQ2iJFtiZP1GbxQnDEwz4SfGgCgBdiwqFm1NfGG7wRhqQa/Kgp3jBTHwaysCwcWu/Xdz/yiCV4lfQD/PTiOr5hmtld29G7WVDy9m6Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR04MB7812.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(346002)(366004)(376002)(8676002)(316002)(55236004)(38100700002)(38350700002)(110136005)(86362001)(54906003)(4326008)(956004)(966005)(478600001)(26005)(186003)(55016002)(8936002)(2616005)(7696005)(52116002)(16526019)(5660300002)(8886007)(6666004)(1076003)(66476007)(66556008)(36756003)(66946007)(83380400001)(2906002)(44832011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2kfiFAcyFkAMcwkoCUqJGxdVnwsuTm5WWTXA4Pq0ZNAjWsfYI4MNugTA9f8C?=
- =?us-ascii?Q?WaQrYEizTkvIlgRDqeKVRS0vaMaeU9XaSzO6UAJMnd0jY3BzkJgKUU9xj1aU?=
- =?us-ascii?Q?vmwXKxCS+vZ2VKgLifaU1JCeemiJqV9aW+6AJEycq722bz9yXmcaJsaHWtX3?=
- =?us-ascii?Q?4sSoLeVPvfzwzDZEEoGsZZi1G7inY2imGEgY/r3m5/qYvavJQ3An4e4sjEqZ?=
- =?us-ascii?Q?Z4a4FAd/6c3X8cjmNwGvgWoAIM5WaJYFQe30MQ79alCUfZyiKB4tR0+5OGFd?=
- =?us-ascii?Q?P/rQ169Z644JNKKcEabikpL7qZZJ6OMPTS7XR9x/7GzWOJ7soV3/3I2tfCdi?=
- =?us-ascii?Q?xVsOK1DRF4y6gi5udvnb+Uu1U5wC1NlT0U/+TrnTSeY/IuLmMgFUysw+fQ+D?=
- =?us-ascii?Q?DIVN44TKrMoEZKx9SKcx4jYpUGYvaCH4sVOAx3zWQC0Oz1Nz3/a/isywpQW9?=
- =?us-ascii?Q?1I1kl/2N97K0EoWIPf6qPjyLVWXg1dOHfk6SjNW64JIIPUNnM3h7k2igDX3o?=
- =?us-ascii?Q?d7lWyFfzoWhNC7opS71uzta+ti8aHxo+xzvYvf2wLb+fdyEP9t+oQVrEQYIW?=
- =?us-ascii?Q?rAUKPqjEfAZOYBB28SaabfVt/QF6hFfV/0yJ/JV/Ie8ivC1t6iO+QZQscV7K?=
- =?us-ascii?Q?d4Pg+xVSE+m+LsgNwO36cTTe6hSLBPnWU1NMOW2cxTRKGm0Lwd2HyjyKTBMD?=
- =?us-ascii?Q?BcnKo9GXAVgOAGCG5cwEBN76q6sXxbWy0pjni3O2bLYBg4CIYCB/JNzOIfE0?=
- =?us-ascii?Q?Toz6Qwc4aw5NxRLqz9IygGT6ZunRVUWUsgJrIt5U20elX+lRmtX1cqrQNTON?=
- =?us-ascii?Q?ZHzuAI587pB0zK4EiS25hc9C8RtwjlY67heuMsYZDww5TU+NV3+0WN1/NrCX?=
- =?us-ascii?Q?3kB7O188tvm1sWVhCaC6hk9s19nKGRgMS5OHXTMxhmyw1Dn/zorMYff3r9ZE?=
- =?us-ascii?Q?sNiBI7fwru/Jsxt2/jNCpFaEYUa9JkrdSse76BXo/UxLALnxO3bzpym3Dq+T?=
- =?us-ascii?Q?s4uEA8UncKM0e+Mhp9hW1c3DR61Qjj8wb+LV3XB0qYK/1rHs8IDdJ97tw1fp?=
- =?us-ascii?Q?Ux9SlgS9YE2bEp6wxcX6TpA5DoYjqdlK50/4/DZ3YTXWlPTaQbt/j36TbEgZ?=
- =?us-ascii?Q?hhIV08WX7EDjBz1QrFRppEtBghOJikHLdvPo6GnZkHNQ9cxaa8Jrk0iypK4d?=
- =?us-ascii?Q?bMj47kiugWCGY+ZW2ioGV1GgH1aZEvAukQgTiAAiyGU83td11Q5Pv2N5ytvk?=
- =?us-ascii?Q?i+Ux/DUoeU4VyqYnb69asjdyKI5RzIxQPdQAQ7x/TBlyPp/Yj2/v31b6lCYT?=
- =?us-ascii?Q?b1iYdeIKK+6I6A+e/EUnPOKC?=
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17406ef0-e8d7-4dc3-eee9-08d92b40085b
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR04MB7812.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 12:13:47.1304
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rHld9c5jovIZF30ZL04ehEJ81O0isWetsUM3vlp/0cN1LoJ5z8guKzUTANDGVGM0Eua+2cZ1jQGTC49NwWH4hA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR04MB7794
+In-Reply-To: <20210601082834.129587-1-chengzhihao1@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SBI SRST extension provides a standard way to poweroff and
-reboot the system irrespective to whether Linux RISC-V S-mode
-is running natively (HS-mode) or inside Guest/VM (VS-mode).
+ÔÚ 2021/6/1 16:28, Zhihao Cheng Ð´µÀ:
+> There is a error message within devm_ioremap_resource
+> already, so remove the dev_err call to avoid redundant
+> error message.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> ---
+>   drivers/mailbox/bcm-flexrm-mailbox.c | 1 -
+>   1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/mailbox/bcm-flexrm-mailbox.c b/drivers/mailbox/bcm-flexrm-mailbox.c
+> index b4f33dc399a0..78073ad1f2f1 100644
+> --- a/drivers/mailbox/bcm-flexrm-mailbox.c
+> +++ b/drivers/mailbox/bcm-flexrm-mailbox.c
+> @@ -1523,7 +1523,6 @@ static int flexrm_mbox_probe(struct platform_device *pdev)
+>   	mbox->regs = devm_ioremap_resource(&pdev->dev, iomem);
+>   	if (IS_ERR(mbox->regs)) {
+>   		ret = PTR_ERR(mbox->regs);
+> -		dev_err(&pdev->dev, "Failed to remap mailbox regs: %d\n", ret);
+>   		goto fail;
+>   	}
+>   	regs_end = mbox->regs + resource_size(iomem);
 
-The SBI SRST extension is available in the SBI v0.3 specification.
-(Refer, https://github.com/riscv/riscv-sbi-doc/releases/tag/v0.3.0-rc1)
-
-This patch extends Linux RISC-V SBI implementation to detect
-and use SBI SRST extension.
-
-Signed-off-by: Anup Patel <anup.patel@wdc.com>
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
----
- arch/riscv/include/asm/sbi.h | 24 ++++++++++++++++++++++++
- arch/riscv/kernel/sbi.c      | 35 +++++++++++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+)
-
-diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index 0d42693cb65e..289621da4a2a 100644
---- a/arch/riscv/include/asm/sbi.h
-+++ b/arch/riscv/include/asm/sbi.h
-@@ -27,6 +27,7 @@ enum sbi_ext_id {
- 	SBI_EXT_IPI = 0x735049,
- 	SBI_EXT_RFENCE = 0x52464E43,
- 	SBI_EXT_HSM = 0x48534D,
-+	SBI_EXT_SRST = 0x53525354,
- };
- 
- enum sbi_ext_base_fid {
-@@ -70,6 +71,21 @@ enum sbi_hsm_hart_status {
- 	SBI_HSM_HART_STATUS_STOP_PENDING,
- };
- 
-+enum sbi_ext_srst_fid {
-+	SBI_EXT_SRST_RESET = 0,
-+};
-+
-+enum sbi_srst_reset_type {
-+	SBI_SRST_RESET_TYPE_SHUTDOWN = 0,
-+	SBI_SRST_RESET_TYPE_COLD_REBOOT,
-+	SBI_SRST_RESET_TYPE_WARM_REBOOT,
-+};
-+
-+enum sbi_srst_reset_reason {
-+	SBI_SRST_RESET_REASON_NONE = 0,
-+	SBI_SRST_RESET_REASON_SYS_FAILURE,
-+};
-+
- #define SBI_SPEC_VERSION_DEFAULT	0x1
- #define SBI_SPEC_VERSION_MAJOR_SHIFT	24
- #define SBI_SPEC_VERSION_MAJOR_MASK	0x7f
-@@ -148,6 +164,14 @@ static inline unsigned long sbi_minor_version(void)
- 	return sbi_spec_version & SBI_SPEC_VERSION_MINOR_MASK;
- }
- 
-+/* Make SBI version */
-+static inline unsigned long sbi_mk_version(unsigned long major,
-+					    unsigned long minor)
-+{
-+	return ((major & SBI_SPEC_VERSION_MAJOR_MASK) <<
-+		SBI_SPEC_VERSION_MAJOR_SHIFT) | minor;
-+}
-+
- int sbi_err_map_linux_errno(int err);
- #else /* CONFIG_RISCV_SBI */
- static inline int sbi_remote_fence_i(const unsigned long *hart_mask) { return -1; }
-diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-index 7402a417f38e..9a84f0cb5175 100644
---- a/arch/riscv/kernel/sbi.c
-+++ b/arch/riscv/kernel/sbi.c
-@@ -7,6 +7,7 @@
- 
- #include <linux/init.h>
- #include <linux/pm.h>
-+#include <linux/reboot.h>
- #include <asm/sbi.h>
- #include <asm/smp.h>
- 
-@@ -501,6 +502,32 @@ int sbi_remote_hfence_vvma_asid(const unsigned long *hart_mask,
- }
- EXPORT_SYMBOL(sbi_remote_hfence_vvma_asid);
- 
-+static void sbi_srst_reset(unsigned long type, unsigned long reason)
-+{
-+	sbi_ecall(SBI_EXT_SRST, SBI_EXT_SRST_RESET, type, reason,
-+		  0, 0, 0, 0);
-+	pr_warn("%s: type=0x%lx reason=0x%lx failed\n",
-+		__func__, type, reason);
-+}
-+
-+static int sbi_srst_reboot(struct notifier_block *this,
-+			   unsigned long mode, void *cmd)
-+{
-+	sbi_srst_reset((mode == REBOOT_WARM || mode == REBOOT_SOFT) ?
-+		       SBI_SRST_RESET_TYPE_WARM_REBOOT :
-+		       SBI_SRST_RESET_TYPE_COLD_REBOOT,
-+		       SBI_SRST_RESET_REASON_NONE);
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block sbi_srst_reboot_nb;
-+
-+static void sbi_srst_power_off(void)
-+{
-+	sbi_srst_reset(SBI_SRST_RESET_TYPE_SHUTDOWN,
-+		       SBI_SRST_RESET_REASON_NONE);
-+}
-+
- /**
-  * sbi_probe_extension() - Check if an SBI extension ID is supported or not.
-  * @extid: The extension ID to be probed.
-@@ -608,6 +635,14 @@ void __init sbi_init(void)
- 		} else {
- 			__sbi_rfence	= __sbi_rfence_v01;
- 		}
-+		if ((sbi_spec_version >= sbi_mk_version(0, 3)) &&
-+		    (sbi_probe_extension(SBI_EXT_SRST) > 0)) {
-+			pr_info("SBI SRST extension detected\n");
-+			pm_power_off = sbi_srst_power_off;
-+			sbi_srst_reboot_nb.notifier_call = sbi_srst_reboot;
-+			sbi_srst_reboot_nb.priority = 192;
-+			register_restart_handler(&sbi_srst_reboot_nb);
-+		}
- 	} else {
- 		__sbi_set_timer = __sbi_set_timer_v01;
- 		__sbi_send_ipi	= __sbi_send_ipi_v01;
--- 
-2.25.1
+friendly ping.
 
