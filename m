@@ -2,174 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78B83A167C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4356B3A167F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237346AbhFIOFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:05:04 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:47612 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237239AbhFIOFA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:05:00 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5998420B83C2;
-        Wed,  9 Jun 2021 07:03:05 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5998420B83C2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623247386;
-        bh=IRts58tl+eYwjKkNGvvrg6lIfNUrj21VJzDxSCoORkE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AxS4OoK9mboxHZ5xicd4/Qun7iZD4pccHsdXfoPMd5KALbDOcn2QWC4kjIEPYLxLM
-         0Vqn2UWjdo2R1UhbbIUk6xI0p5633RrMb4t/F/0qEPXfsBjNUeLVB4EMT3KT8l2zGv
-         65VJP9lwfb2UtrPydcyPkY+9ptQkAOg+sFrf/zX0=
-Date:   Wed, 9 Jun 2021 09:03:03 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 1/7] tee: remove unused tee_shm_pool_alloc_res_mem()
-Message-ID: <20210609140303.GE4910@sequoia>
-References: <20210609102324.2222332-1-jens.wiklander@linaro.org>
- <20210609102324.2222332-2-jens.wiklander@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609102324.2222332-2-jens.wiklander@linaro.org>
+        id S237374AbhFIOFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:05:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237357AbhFIOFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:05:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC87B61364;
+        Wed,  9 Jun 2021 14:03:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623247401;
+        bh=2N2MM8Q/I1AZhJk9l8eS0M2bQk0hz+u7pEqJVI7Ab2w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PhnCk9BTnCeW/6EbRgorOow6/fuJERuswsbrzHyFvfWsj3y1zxzuXc6MUiDJowm2B
+         j7Vc8TOw69B0lrdAEUdUNN2blYI+3FI/WIMuB3VwFb0mniXUzcye6mwZhUw816e1PD
+         vqaCH/IrmOqO5lSfpL5CaEo0FS9714VDOgZGZ+kqi24D3ax9cfMzSjSlfzTliGLwJS
+         gDE3u7vaibKVlQ3C/svq1eOoopaT/APsLXC6FSPkxci2tzq4piY7v/MjSxTCdBsxHW
+         YZdwUiH1Fb5FMNIhZaA/2UDHD/esv74GArUrFeRUbvkSHzkPbPnPf/9iW6JnITM363
+         jnvGCNN3MsTqQ==
+Date:   Wed, 9 Jun 2021 23:03:12 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     christian.brauner@ubuntu.com, viro@zeniv.linux.org.uk,
+        keescook@chromium.org, samitolvanen@google.com, johan@kernel.org,
+        ojeda@kernel.org, jeyu@kernel.org, masahiroy@kernel.org,
+        joe@perches.com, dong.menglong@zte.com.cn, jack@suse.cz,
+        hare@suse.de, axboe@kernel.dk, tj@kernel.org,
+        gregkh@linuxfoundation.org, song@kernel.org, neilb@suse.de,
+        akpm@linux-foundation.org, linux@rasmusvillemoes.dk,
+        brho@google.com, f.fainelli@gmail.com, palmerdabbelt@google.com,
+        wangkefeng.wang@huawei.com, mhiramat@kernel.org,
+        rostedt@goodmis.org, vbabka@suse.cz, glider@google.com,
+        pmladek@suse.com, johannes.berg@intel.com, ebiederm@xmission.com,
+        jojing64@gmail.com, terrelln@fb.com, geert@linux-m68k.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mcgrof@kernel.org, arnd@arndb.de, chris@chrisdown.name,
+        mingo@kernel.org, bhelgaas@google.com, josh@joshtriplett.org
+Subject: Re: [PATCH v6 0/2] init/initramfs.c: make initramfs support
+ pivot_root
+Message-Id: <20210609230312.54f3f0ba9bb2ce93b9f5c4a3@kernel.org>
+In-Reply-To: <20210605034447.92917-1-dong.menglong@zte.com.cn>
+References: <20210605034447.92917-1-dong.menglong@zte.com.cn>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-09 12:23:18, Jens Wiklander wrote:
-> None of the drivers in the TEE subsystem uses
-> tee_shm_pool_alloc_res_mem() so remove the function.
+On Sat,  5 Jun 2021 11:44:45 +0800
+menglong8.dong@gmail.com wrote:
+
+> From: Menglong Dong <dong.menglong@zte.com.cn>
 > 
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-
-Tyler
-
-> ---
->  drivers/tee/tee_shm_pool.c | 56 --------------------------------------
->  include/linux/tee_drv.h    | 30 --------------------
->  2 files changed, 86 deletions(-)
+> As Luis Chamberlain suggested, I split the patch:
+> [init/initramfs.c: make initramfs support pivot_root]
+> (https://lore.kernel.org/linux-fsdevel/20210520154244.20209-1-dong.menglong@zte.com.cn/)
+> into three.
 > 
-> diff --git a/drivers/tee/tee_shm_pool.c b/drivers/tee/tee_shm_pool.c
-> index fcbb461fc59c..a9f9d50fd181 100644
-> --- a/drivers/tee/tee_shm_pool.c
-> +++ b/drivers/tee/tee_shm_pool.c
-> @@ -47,62 +47,6 @@ static const struct tee_shm_pool_mgr_ops pool_ops_generic = {
->  	.destroy_poolmgr = pool_op_gen_destroy_poolmgr,
->  };
->  
-> -/**
-> - * tee_shm_pool_alloc_res_mem() - Create a shared memory pool from reserved
-> - * memory range
-> - * @priv_info:	Information for driver private shared memory pool
-> - * @dmabuf_info: Information for dma-buf shared memory pool
-> - *
-> - * Start and end of pools will must be page aligned.
-> - *
-> - * Allocation with the flag TEE_SHM_DMA_BUF set will use the range supplied
-> - * in @dmabuf, others will use the range provided by @priv.
-> - *
-> - * @returns pointer to a 'struct tee_shm_pool' or an ERR_PTR on failure.
-> - */
-> -struct tee_shm_pool *
-> -tee_shm_pool_alloc_res_mem(struct tee_shm_pool_mem_info *priv_info,
-> -			   struct tee_shm_pool_mem_info *dmabuf_info)
-> -{
-> -	struct tee_shm_pool_mgr *priv_mgr;
-> -	struct tee_shm_pool_mgr *dmabuf_mgr;
-> -	void *rc;
-> -
-> -	/*
-> -	 * Create the pool for driver private shared memory
-> -	 */
-> -	rc = tee_shm_pool_mgr_alloc_res_mem(priv_info->vaddr, priv_info->paddr,
-> -					    priv_info->size,
-> -					    3 /* 8 byte aligned */);
-> -	if (IS_ERR(rc))
-> -		return rc;
-> -	priv_mgr = rc;
-> -
-> -	/*
-> -	 * Create the pool for dma_buf shared memory
-> -	 */
-> -	rc = tee_shm_pool_mgr_alloc_res_mem(dmabuf_info->vaddr,
-> -					    dmabuf_info->paddr,
-> -					    dmabuf_info->size, PAGE_SHIFT);
-> -	if (IS_ERR(rc))
-> -		goto err_free_priv_mgr;
-> -	dmabuf_mgr = rc;
-> -
-> -	rc = tee_shm_pool_alloc(priv_mgr, dmabuf_mgr);
-> -	if (IS_ERR(rc))
-> -		goto err_free_dmabuf_mgr;
-> -
-> -	return rc;
-> -
-> -err_free_dmabuf_mgr:
-> -	tee_shm_pool_mgr_destroy(dmabuf_mgr);
-> -err_free_priv_mgr:
-> -	tee_shm_pool_mgr_destroy(priv_mgr);
-> -
-> -	return rc;
-> -}
-> -EXPORT_SYMBOL_GPL(tee_shm_pool_alloc_res_mem);
-> -
->  struct tee_shm_pool_mgr *tee_shm_pool_mgr_alloc_res_mem(unsigned long vaddr,
->  							phys_addr_t paddr,
->  							size_t size,
-> diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-> index 54269e47ac9a..53b9b2a13a87 100644
-> --- a/include/linux/tee_drv.h
-> +++ b/include/linux/tee_drv.h
-> @@ -272,36 +272,6 @@ static inline void tee_shm_pool_mgr_destroy(struct tee_shm_pool_mgr *poolm)
->  	poolm->ops->destroy_poolmgr(poolm);
->  }
->  
-> -/**
-> - * struct tee_shm_pool_mem_info - holds information needed to create a shared
-> - * memory pool
-> - * @vaddr:	Virtual address of start of pool
-> - * @paddr:	Physical address of start of pool
-> - * @size:	Size in bytes of the pool
-> - */
-> -struct tee_shm_pool_mem_info {
-> -	unsigned long vaddr;
-> -	phys_addr_t paddr;
-> -	size_t size;
-> -};
-> -
-> -/**
-> - * tee_shm_pool_alloc_res_mem() - Create a shared memory pool from reserved
-> - * memory range
-> - * @priv_info:	 Information for driver private shared memory pool
-> - * @dmabuf_info: Information for dma-buf shared memory pool
-> - *
-> - * Start and end of pools will must be page aligned.
-> - *
-> - * Allocation with the flag TEE_SHM_DMA_BUF set will use the range supplied
-> - * in @dmabuf, others will use the range provided by @priv.
-> - *
-> - * @returns pointer to a 'struct tee_shm_pool' or an ERR_PTR on failure.
-> - */
-> -struct tee_shm_pool *
-> -tee_shm_pool_alloc_res_mem(struct tee_shm_pool_mem_info *priv_info,
-> -			   struct tee_shm_pool_mem_info *dmabuf_info);
-> -
->  /**
->   * tee_shm_pool_free() - Free a shared memory pool
->   * @pool:	The shared memory pool to free
+> The goal of the series patches is to make pivot_root() support initramfs.
+> 
+> In the first patch, I introduce the function ramdisk_exec_exist(), which
+> is used to check the exist of 'ramdisk_execute_command' in LOOKUP_DOWN
+> lookup mode.
+> 
+> In the second patch, I create a second mount, which is called
+> 'user root', and make it become the root. Therefore, the root has a
+> parent mount, and it can be umounted or pivot_root.
+> 
+> In the third patch, I fix rootfs_fs_type with ramfs, as it is not used
+> directly any more, and it make no sense to switch it between ramfs and
+> tmpfs, just fix it with ramfs to simplify the code.
+
+Hi,
+
+I have tested this series on qemu with shell script container on initramfs.
+It works for me!
+
+Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> 
+> 
+> Changes since V5:
+> 
+> Remove the third patch and make it combined with the second one.
+> 
+> 
+> Changes since V4:                                                                                                                                                     
+>                                                                                                                                                                       
+> Do some more code cleanup for the second patch, include:                                                                                                              
+> - move 'ramdisk_exec_exist()' to 'init.h'                                                                                                                             
+> - remove unnecessary struct 'fs_rootfs_root'                                                                                                                          
+> - introduce 'revert_mount_rootfs()'                                                                                                                                   
+> - [...]                                                                                                                                                               
+> 
+> 
+> Changes since V3:
+> 
+> Do a code cleanup for the second patch, as Christian Brauner suggested:
+> - remove the concept 'user root', which seems not suitable.
+> - introduce inline function 'check_tmpfs_enabled()' to avoid duplicated
+>   code.
+> - rename function 'mount_user_root' to 'prepare_mount_rootfs'
+> - rename function 'end_mount_user_root' to 'finish_mount_rootfs'
+> - join 'init_user_rootfs()' with 'prepare_mount_rootfs()'
+> 
+> Changes since V2:
+> 
+> In the first patch, I use vfs_path_lookup() in init_eaccess() to make the
+> path lookup follow the mount on '/'. After this, the problem reported by
+> Masami Hiramatsu is solved. Thanks for your report :/
+> 
+> 
+> Changes since V1:
+> 
+> In the first patch, I add the flag LOOKUP_DOWN to init_eaccess(), to make
+> it support the check of filesystem mounted on '/'.
+> 
+> In the second patch, I control 'user root' with kconfig option
+> 'CONFIG_INITRAMFS_USER_ROOT', and add some comments, as Luis Chamberlain
+> suggested.
+> 
+> In the third patch, I make 'rootfs_fs_type' in control of
+> 'CONFIG_INITRAMFS_USER_ROOT'.
+> 
+> 
+> 
+> Menglong Dong (2):
+>   init/do_mounts.c: create second mount for initramfs
+>   init/do_mounts.c: fix rootfs_fs_type with ramfs
+> 
+>  include/linux/init.h |   4 ++
+>  init/do_mounts.c     | 101 ++++++++++++++++++++++++++++++++++++++++---
+>  init/do_mounts.h     |  16 ++++++-
+>  init/initramfs.c     |   8 ++++
+>  usr/Kconfig          |  10 +++++
+>  5 files changed, 131 insertions(+), 8 deletions(-)
+> 
 > -- 
-> 2.31.1
+> 2.32.0.rc0
 > 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
