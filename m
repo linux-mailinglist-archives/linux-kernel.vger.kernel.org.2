@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9F73A0C66
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5663A0C6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236167AbhFIG2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:28:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233590AbhFIG2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:28:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6305161108;
-        Wed,  9 Jun 2021 06:26:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623219962;
-        bh=PjgABphN7WPgY1HsgW1N2xB3TNAmcdqcdrqN6v6yXyo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R1jx/ve5DOhkeWu5vJVmMb87XgpCld+X0PqxZROnES9rhO6GzSoAugMcN01DxfXcb
-         4hIcZ+3NCBZmtR1k4m5lYP7PnSzx2/p6OA7dr5xWykt4cKfY+fwEcqEC3Obcheu6pq
-         c6WnYE7FdQSQD47QAKObWZh7Bf4pOC61LDX9kXg4=
-Date:   Wed, 9 Jun 2021 08:25:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Marek Vasut <marex@denx.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Fabio Estevam <festevam@gmail.com>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        Ludwig Zenz <lzenz@dh-electronics.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 4.19 00/58] 4.19.194-rc1 review
-Message-ID: <YMBe9/7mJ+dGiGJA@kroah.com>
-References: <20210608175932.263480586@linuxfoundation.org>
- <CA+G9fYu3URCR6_ZL+KPYFEOVL4f=8TjjyFncmvoLuYrR_YR3=A@mail.gmail.com>
- <20210608224155.GA31308@amd>
+        id S233173AbhFIG3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:29:16 -0400
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:41948 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232540AbhFIG3O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 02:29:14 -0400
+Received: by mail-ua1-f46.google.com with SMTP id g34so12483490uah.8;
+        Tue, 08 Jun 2021 23:27:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4fj15iHDE4EFRmdRKw+InwfdANDxyy1h2Pcw1pJ7br4=;
+        b=dhR7hrvEl626d/YKTal/evaxZoWoX6ItbhFB/BdrkKJY3hpgLyz6LO1/ze76iX0wgp
+         oEv2jR57AG+bcXkiCxt0PVF/HrZ5f36fuZZa+aCN/cAXHPh2Cpa6CMIxAA5b755aPwKm
+         Aior0Htc0ilOAtLVmyqCZtwnFBd8IlBZyFK81DY2WsIvb+IqD2xpsrPkbP4IVungfvQz
+         hpNSYWRAWD5g68dIFGwpoIIP3NsAJPPPymA6BWqfve0wCRLRUuoZl/L1ivhPZCRVdBli
+         j0R2sp213MwE3ZVF09j75fRzSNg1XEmYsO7NTfDUkfbKNBmTYu5xVCnP+QkuPtglnjA+
+         pSkA==
+X-Gm-Message-State: AOAM530HUOH1saFNYi88NeMgxaxSG9qiWNMnFzKPt8N+oyHNyUzfNyuL
+        RZfSWUMET5T3lY/fQEW3zI97MxTXaPc/Kw15NMMf5S8G91HOQw==
+X-Google-Smtp-Source: ABdhPJxOT1OQWZmJ0L718G4ODcg41DXYgKnREAhbxodoTZAVg+J1tMSfO4J0OJrSKInRNpUlS+s+kLY88BqtDrhoGjM=
+X-Received: by 2002:ab0:63d9:: with SMTP id i25mr14918511uap.106.1623220030058;
+ Tue, 08 Jun 2021 23:27:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608224155.GA31308@amd>
+References: <cover.1623131194.git.fthain@linux-m68k.org> <8ec3037e69f5ec9f7dbbafc642638f03eff29927.1623131194.git.fthain@linux-m68k.org>
+In-Reply-To: <8ec3037e69f5ec9f7dbbafc642638f03eff29927.1623131194.git.fthain@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 9 Jun 2021 08:26:58 +0200
+Message-ID: <CAMuHMdUXtnzMOBxR_c+i1OomxwV3xC6k9PGLHkQueFaxudQd_w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] m68k/mac: Replace macide driver with generic
+ platform drivers
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Joshua Thompson <funaho@jurai.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ide@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 12:41:55AM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > > This is the start of the stable review cycle for the 4.19.194 release.
-> > > There are 58 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> ...
-> > > Marek Vasut <marex@denx.de>
-> > >     ARM: dts: imx6q-dhcom: Add PU,VDD1P1,VDD2P5 regulators
-> > 
-> > make --silent --keep-going --jobs=8
-> > O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm
-> > CROSS_COMPILE=arm-linux-gnueabihf- 'CC=sccache
-> > arm-linux-gnueabihf-gcc' 'HOSTCC=sccache gcc'
-> > Error: /builds/linux/arch/arm/boot/dts/imx6q-dhcom-som.dtsi:414.1-12
-> > Label or path reg_vdd1p1 not found
-> > Error: /builds/linux/arch/arm/boot/dts/imx6q-dhcom-som.dtsi:418.1-12
-> > Label or path reg_vdd2p5 not found
-> > FATAL ERROR: Syntax error parsing input tree
-> > make[2]: *** [scripts/Makefile.lib:294:
-> > arch/arm/boot/dts/imx6q-dhcom-pdk2.dtb] Error 1
-> 
-> For the record, we see same build error in our testing:
-> 
-> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/1328869295
+On Tue, Jun 8, 2021 at 8:04 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> This allows m68k mac systems to switch from the deprecated IDE subsystem
+> to libata.
+>
+> This was tested on my Quadra 630. I haven't tested it on my PowerBook 150
+> because I don't have a RAM adapter board for it. It appears that the
+> hardware I tested doesn't need macide_clear_irq() or macide_test_irq().
+> If it did, the generic driver would not have worked. It's possible that
+> those routines are needed for the PowerBook 150 but we can cross that
+> bridge if and when we come to it.
+>
+> BTW, macide_clear_irq() appears to suffer from a race condition. The write
+> to the interrupt flags register could have unintended side effects as it
+> may alter other flag bits. Fortunately, all of the other bits are unused
+> by Linux. When tested on my Quadra 630, the assignment *ide_ifr &= ~0x20
+> was observed to have no effect on bit 5, so it may be redundant anyway.
+>
+> Cc: Michael Schmitz <schmitzmic@gmail.com>
+> Cc: Joshua Thompson <funaho@jurai.org>
+> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-Will fix this and push out a -rc2.
+Thanks for your patch!
 
-thanks,
+>  arch/m68k/configs/mac_defconfig   |   1 -
+>  arch/m68k/configs/multi_defconfig |   1 -
+>  arch/m68k/mac/config.c            |  24 +++--
+>  drivers/ide/Kconfig               |  14 ---
+>  drivers/ide/Makefile              |   1 -
+>  drivers/ide/macide.c              | 161 ------------------------------
+>  6 files changed, 14 insertions(+), 188 deletions(-)
+>  delete mode 100644 drivers/ide/macide.c
 
-greg k-h
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
