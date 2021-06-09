@@ -2,220 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14903A0C2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237583A0C2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236367AbhFIGKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:10:48 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:49099 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232209AbhFIGKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:10:47 -0400
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4G0Grh1tDCz9sRf; Wed,  9 Jun 2021 16:08:52 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1623218932;
-        bh=zMBN5dUHeVSexpTWTBruELzP24ku4FDDcQkso9GAa2Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yv4zdTTfZ4CMY+/g4dd3fFuZL2X05/zOYIdeBioEvckTFh5Cryrz+fBrQktzNyGs5
-         t0B0+ruWT/N08bU4MmCKYjCqB4uxhWxu4KHPeErhxeCF370Z3eRYryrQWCwvdhXAQP
-         hRpt6KJ/ByEBy+JFosg/b1/g8ftFRNvHl268kKKE=
-Date:   Wed, 9 Jun 2021 16:08:48 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] powerpc/mm/hash: Avoid multiple HPT resize-downs
- on memory hotunplug
-Message-ID: <YMBa8Ms9rL795OdS@yekko>
-References: <20210430143607.135005-1-leobras.c@gmail.com>
- <20210430143607.135005-4-leobras.c@gmail.com>
- <YL2sjKM7ByS0Xeko@yekko>
- <fa7a0e981a067445beb1ae01d53db932990717b7.camel@gmail.com>
+        id S236467AbhFIGLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232209AbhFIGLO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 02:11:14 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD58C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 23:09:20 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id r16so8754ljc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 23:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xpRw0xQJ4DmRjPc3XZOXCq8Yj+A2BA3B/GaickI4wN8=;
+        b=xVAfZE0A8Unf98HcFCXuX4RZeOIC8Q5dOG09zV2gGNevdLM0zMJq3dLuzH57zS8DoX
+         3g7to94dmRnjqwU072m/snpS5qSZ1uK+THO+4bYMUC4R6ZtG97z1753bAaxxLfTfnw5p
+         PsiE24KVo9JW2MWWQYmZloqVI3ItixT13V8B6o5VkETPAqsLnmdoGWthypSGqK8JsT9L
+         vaTWLj1shu0bx6Zb+qwzXryK8c1HAF7qFV+S60IM2Bs0+8k24SIRw6ZCJSQLUuCGrx3x
+         ektFdVrwjG+rdnfGMO3iRTeXqg/sKwwvfkoTQnmnYcLHfxYvbd269M2vh+Tgn3g1eUvy
+         T9TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xpRw0xQJ4DmRjPc3XZOXCq8Yj+A2BA3B/GaickI4wN8=;
+        b=CxsndGLk8TK8T1FHm4Qu3JRsGnSiN4UL44v3vnJHz1xesx1pGPjqHB6ha12SWblmmN
+         CXziDMktalWdr4wTqAZ5b/KW89l6gasY0ZIC9vlgOTiHMCPulCCvmFnwNjs8aRjkd9jF
+         i9/9WxPS3J1lDmA6yXqFXOb9Fk/bW29r07RfPAfJpWSkxrSy2GOw1D0CcawR59v0kV//
+         mzvPYOf6rtjsznQE3g1SYNe+irrLZ8AUE+xrhXfz520IK+Nbfy/CCzXqXcVi8q4orTnI
+         lCBdHGtwTnglUH6TUT55/rNU21k8fAACVqDkZEB8BGSD7fCQ69KscamIsCodJJxtmgEV
+         jp/A==
+X-Gm-Message-State: AOAM533q20SL3xvM28j7d5QIfUj3B3PpHeYIr3rzV4K42vz2zFceUyRR
+        3/xJBSwHwn2UifIcKWabMv9fxHSA4F3OQw==
+X-Google-Smtp-Source: ABdhPJyzlIexmGtILhLW7B9H59a3K8PmSTy1VOX2F2Hp6cFGPRPg1J0rmm+bT9kFOnkasmm0JfiFEg==
+X-Received: by 2002:a2e:9f47:: with SMTP id v7mr21932830ljk.333.1623218958271;
+        Tue, 08 Jun 2021 23:09:18 -0700 (PDT)
+Received: from jade.urgonet (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
+        by smtp.gmail.com with ESMTPSA id l26sm213735ljg.87.2021.06.08.23.09.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 23:09:18 -0700 (PDT)
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org
+Cc:     Jerome Forissier <jerome@forissier.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: [PATCH 0/4] Asynchronous notifications from secure world
+Date:   Wed,  9 Jun 2021 08:09:06 +0200
+Message-Id: <20210609060910.1500481-1-jens.wiklander@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GYNQ/kifoVnYIDex"
-Content-Disposition: inline
-In-Reply-To: <fa7a0e981a067445beb1ae01d53db932990717b7.camel@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
 
---GYNQ/kifoVnYIDex
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This adds support for asynchronous notifications from OP-TEE in secure
+world to the OP-TEE driver. This allows a design with a top half and bottom
+half type of driver where the top half runs in secure interrupt context and
+a notifications tells normal world to schedule a yielding call to do the
+bottom half processing.
 
-On Wed, Jun 09, 2021 at 02:30:36AM -0300, Leonardo Br=E1s wrote:
-> On Mon, 2021-06-07 at 15:20 +1000, David Gibson wrote:
-> > On Fri, Apr 30, 2021 at 11:36:10AM -0300, Leonardo Bras wrote:
-> > > During memory hotunplug, after each LMB is removed, the HPT may be
-> > > resized-down if it would map a max of 4 times the current amount of
-> > > memory.
-> > > (2 shifts, due to introduced histeresis)
-> > >=20
-> > > It usually is not an issue, but it can take a lot of time if HPT
-> > > resizing-down fails. This happens=A0 because resize-down failures
-> > > usually repeat at each LMB removal, until there are no more bolted
-> > > entries
-> > > conflict, which can take a while to happen.
-> > >=20
-> > > This can be solved by doing a single HPT resize at the end of
-> > > memory
-> > > hotunplug, after all requested entries are removed.
-> > >=20
-> > > To make this happen, it's necessary to temporarily disable all HPT
-> > > resize-downs before hotunplug, re-enable them after hotunplug ends,
-> > > and then resize-down HPT to the current memory size.
-> > >=20
-> > > As an example, hotunplugging 256GB from a 385GB guest took 621s
-> > > without
-> > > this patch, and 100s after applied.
-> > >=20
-> > > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> >=20
-> > Hrm.=A0 This looks correct, but it seems overly complicated.
-> >=20
-> > AFAICT, the resize calls that this adds should in practice be the
-> > *only* times we call resize, all the calls from the lower level code
-> > should be suppressed.=A0
->=20
-> That's correct.
->=20
-> >  In which case can't we just remove those calls
-> > entirely, and not deal with the clunky locking and exclusion here.
-> > That should also remove the need for the 'shrinking' parameter in
-> > 1/3.
->=20
->=20
-> If I get your suggestion correctly, you suggest something like:
-> 1 - Never calling resize_hpt_for_hotplug() in
-> hash__remove_section_mapping(), thus not needing the srinking
-> parameter.
-> 2 - Functions in hotplug-memory.c that call dlpar_remove_lmb() would in
-> fact call another function to do the batch resize_hpt_for_hotplug() for
-> them
+An SPI interrupt is used to notify the driver that there are asynchronous
+notifications pending.
 
-Basically, yes.
+Thanks,
+Jens
 
-> If so, that assumes that no other function that currently calls
-> resize_hpt_for_hotplug() under another path, or if they do, it does not
-> need to actually resize the HPT.
->=20
-> Is the above correct?
->=20
-> There are some examples of functions that currently call
-> resize_hpt_for_hotplug() by another path:
->=20
-> add_memory_driver_managed
-> 	virtio_mem_add_memory
-> 	dev_dax_kmem_probe
+Jens Wiklander (4):
+  tee: fix put order in teedev_close_context()
+  tee: add tee_dev_open_helper() primitive
+  optee: separate notification functions
+  optee: add asynchronous notifications
 
-Oh... virtio-mem.  I didn't think of that.
+ drivers/tee/optee/Makefile        |   1 +
+ drivers/tee/optee/call.c          |  27 ++++
+ drivers/tee/optee/core.c          | 104 ++++++++++----
+ drivers/tee/optee/notif.c         | 226 ++++++++++++++++++++++++++++++
+ drivers/tee/optee/optee_msg.h     |   9 ++
+ drivers/tee/optee/optee_private.h |  23 +--
+ drivers/tee/optee/optee_rpc_cmd.h |  31 ++--
+ drivers/tee/optee/optee_smc.h     |  79 ++++++++++-
+ drivers/tee/optee/rpc.c           |  73 ++--------
+ drivers/tee/tee_core.c            |  37 +++--
+ include/linux/tee_drv.h           |  27 ++++
+ 11 files changed, 512 insertions(+), 125 deletions(-)
+ create mode 100644 drivers/tee/optee/notif.c
 
+-- 
+2.31.1
 
-> reserve_additional_memory
-> 	balloon_process
-> 	add_ballooned_pages
-
-AFAICT this comes from drivers/xen, and Xen has never been a thing on
-POWER.
-
-> __add_memory
-> 	probe_store
-
-So this is a sysfs triggered memory add.  If the user is doing this
-manually, then I think it's reasonable for them to manually manage the
-HPT size as well, which they can do through debugfs.  I think it might
-also be used my drmgr under pHyp, but pHyp doesn't support HPT
-resizing.
-
-> __remove_memory
-> 	pseries_remove_memblock
-
-Huh, this one comes through OF_RECONFIG_DETACH_NODE.  I don't really
-know when those happen, but I strongly suspect it's only under pHyp
-again.
-
-> remove_memory
-> 	dev_dax_kmem_remove
-> 	virtio_mem_remove_memory
-
-virtio-mem again.
-
-> memunmap_pages
-> 	pci_p2pdma_add_resource
-> 	virtio_fs_setup_dax
-
-And virtio-fs in dax mode.  Didn't think of that either.
-
-
-Ugh, yeah, I'm used to the world where the platform provides the only
-way of hotplugging memory, but virtio-mem does indeed provide another
-one, and we could indeed need to manage the HPT size based on that.
-Drat, so moving all the HPT resizing handling up into
-pseries/hotplug-memory.c won't work.
-
-I still think we can simplify the communication between the stuff in
-the pseries hotplug code and the actual hash resizing.  In your draft
-there are kind of 3 ways the information is conveyed: the mutex
-suppresses HPT shrinks, pre-growing past what we need prevents HPT
-grows, and the 'shrinking' flag handles some edge cases.
-
-I suggest instead a single flag that will suppress all the current
-resizes.  Not sure it technically has to be an atomic mutex, but
-that's probably the obvious safe choice.  Then have a "resize up to
-target" and "resize down to target" that ignore that suppression and
-are no-ops if the target is in the other direction.
-Then you should be able to make the path for pseries hotplugs be:
-
-	suppress other resizes
-
-	resize up to target
-
-	do the actual adds or removes
-
-	resize down to target
-
-	unsuppress other resizes
-
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---GYNQ/kifoVnYIDex
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmDAWu4ACgkQbDjKyiDZ
-s5IZdRAAwOwgZ6dYIpOLXDclhHx4Gzd2DLYRzlmZq5nOmbSRXRMSD0zcQ/lZtErI
-Oq7WmfPqqYlRmeC54d8zJsjf8tserDB6en5ev04oeZmdmBE/OV9FNYaZLfE73Vfx
-oCCWEHKNm9aBza1essJh5/chU3sQXbY5FuboQLzsPBnN27HeTj6hK9p2qqHW+LBm
-CXn1bTiAuvg6ONKU8ZRhuqTvqM+OnLXCU8/Jllluc8Q2rdAYIDyGlyFxD28d0hgO
-uo6LmVINS0woliRhcMIFg5uAobOd1bqcb1xoWyIsXLsWVwMbxVsmK6idCptuozOM
-GAlVXP57yZl+aGDgsRJ081sJq7e1AxQv8hlA5v/SNUo53koJpKt7ZAXY7x8TCKVJ
-HsJrLfNmzOYvbZb/J4DecTJwCtSXRH1RM4VZEEji0MNxBc0u8GkBikRpqY3SgpDg
-dgjJrR0B810mBfPYfJc+jKqSwXGCFqsCDWJX5zjaqxsYKgyLip8zIHE1BjeoGrNu
-si3m5uFji3Po7OYP98Tu1AR4FmyU1dR5cGTX65g6/5GQGN209brbQRf9tYYDT9iA
-d2z9/rt/YhoOa9X6qJkEQM5t+BY+O/8PBLqtXkl9Z5kjSWylO8ln+aQ7ZbVlwNWc
-KgQkhdXKU5GXoC5sU8OYFYVrj65Ksc7Ic+2RjxHLEVHxnUGlNDc=
-=GVzq
------END PGP SIGNATURE-----
-
---GYNQ/kifoVnYIDex--
