@@ -2,102 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28E63A1762
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E02F3A176A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237820AbhFIOhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:37:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237622AbhFIOhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:37:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 867766139A;
-        Wed,  9 Jun 2021 14:35:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623249347;
-        bh=YzF2yEukArZPBNz+f4q5sfBw+esz/4m/ijdFg7xOkhI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lVFmT5nPfKGX7gDHV3MQ4XS0LhqO1ZaxRiCmqb/WdbIjSf2hVNK51oxznG1S38lnt
-         W+aAqZBD0GKbtn1dCPXA6GbpnddaFj/KrYVuZcLty700tRcNaAiCptPd4pT2XLpOuV
-         Kmkf4GF5k5jKLrW0hsruA0Wh7125N19chRnDOSmDp/MIECX36nxWhDaHLmqcnmSjjb
-         rICqEYU64zjGPHqgxiI67p8xGus/yTmQaJbcLttinLWyX1Zrj71Qt1T7iWMib0c/le
-         AEPrlzg/0UeOl9RKx0rYasIvpqubWCLFtQ3RCvTWwMZGKLN8aQZdvuzkGXmvQhXMNl
-         kpc0b/58km91A==
-Date:   Wed, 9 Jun 2021 23:35:43 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Punit Agrawal <punitagrawal@gmail.com>
-Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, linux-kernel@vger.kernel.org,
-        guoren@kernel.org, linux-csky@vger.kernel.org
-Subject: Re: [PATCH 1/5] kprobes: Do not use local variable when creating
- debugfs file
-Message-Id: <20210609233543.e846251ccaa227317de26b11@kernel.org>
-In-Reply-To: <20210609105019.3626677-2-punitagrawal@gmail.com>
-References: <20210609105019.3626677-1-punitagrawal@gmail.com>
-        <20210609105019.3626677-2-punitagrawal@gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S237327AbhFIOjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:39:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232850AbhFIOjR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:39:17 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A5FC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 07:37:08 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id o127so4160675wmo.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 07:37:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=loJFWwQdko7Drp/ynHnKOheU5fM56NACsA5Pe1BnpWo=;
+        b=IG2HMWTkVMLfN7vCdwm0Kp17gqWtmV7hdMNPCrCW+nW/O0TWHDq8JSUCcuLFvrX/TU
+         SUNRHFOUYS7+10hJx+2GffbNWtSjBE6QbJzdVlFj5hr1DTq3EQBhZfhVcW4jVVT7OJAK
+         47LvW0JKvwaIwjhRSxdPNzSebjad3bkrK36dIAWbxjPzqgsQWm3RRgMFwA6fqv0ORdFo
+         PCYBGbumKNZOS78hSrP5yKAZnpmwuRhv7XQ0uXEbW+rR7yiylqdZTVa0JhRoRzPtBkF4
+         Cknnmk+Bd7Kpuh0YivlYdbjhGSMRQ0kh58Oh0pLxfPc36zo+8D8ELl/K7K4H6uKlZob7
+         BEmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=loJFWwQdko7Drp/ynHnKOheU5fM56NACsA5Pe1BnpWo=;
+        b=t0tX4JN/taoE5e48JfpqFeaiG3UQx7olZ+mjp2x1zm7zg4AEj9xG25ZsO4sD7UqahR
+         ibVlaAEwJfB23pepetNhJvVm6B/M9uB/ULEx8yvZ1IAOPDM2o67rZScelL7WyM6O951s
+         FPys70lnCVgUdOb5m5Zcllj/AR/beT4xjODUcrI2xJp1Wvc3qn0+llIs0GVa0yAcsCFE
+         beE3bgpNiZDl//ZVd3ZU1SE0XgwNkWN2ZrP87tMKHuntbJ7JAGLbLlNQPW/t0vVCCN3o
+         WMTen9/rFYmbLdaRL96lrdmXCxL5PS9NLVXeamboj7U9HP0c/HAjJCJteDBuwPXkjU9H
+         5VdA==
+X-Gm-Message-State: AOAM533+d4eLPjtjz4G3/iYn+kjq2Yc8ncOP1D040jd7o4PpLORZ3wnj
+        ZUkoK8rdY8dfAeYp4eGVf1QLEQ==
+X-Google-Smtp-Source: ABdhPJwU91mPU8nKRvkIRK9eqo/o+X4Btj76FX6WzRu6CbDl33WtoVyIZolSeC4GXegYkIl/uCt+pw==
+X-Received: by 2002:a05:600c:19ce:: with SMTP id u14mr115955wmq.169.1623249427236;
+        Wed, 09 Jun 2021 07:37:07 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id q19sm6212826wmc.44.2021.06.09.07.37.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 07:37:06 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 14:37:04 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, qais.yousef@arm.com, rickyiu@google.com,
+        wvw@google.com, patrick.bellasi@matbug.net
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH] sched: Fix UCLAMP_FLAG_IDLE setting
+Message-ID: <YMDSEHB5+zlajb4x@google.com>
+References: <20210609143339.1194238-1-qperret@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609143339.1194238-1-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  9 Jun 2021 19:50:15 +0900
-Punit Agrawal <punitagrawal@gmail.com> wrote:
-
-> debugfs_create_file() takes a pointer argument that can be used during
-> file operation callbacks (accessible via i_private in the inode
-> structure). An obvious requirement is for the pointer to refer to
-> valid memory when used.
+On Wednesday 09 Jun 2021 at 14:33:39 (+0000), Quentin Perret wrote:
+> The UCLAMP_FLAG_IDLE flag is set on a runqueue when dequeueing the last
+> active task to maintain the last uclamp.max and prevent blocked util
+> from suddenly becoming visible.
 > 
-> When creating the debugfs file to dynamically enable / disable
-> kprobes, a pointer to local variable is passed to
-> debugfs_create_file(); which will go out of scope when the init
-> function returns. The reason this hasn't triggered random memory
-> corruption is because the pointer is not accessed during the debugfs
-> file callbacks.
+> However, there is an asymmetry in how the flag is set and cleared which
+> can lead to having the flag set whilst there are active task on the rq.
+> Specifically, the flag is set in the uclamp_rq_inc() path, which is
+> called at enqueue time, but cleared in the uclamp_rq_dec_id() which is
+> called both when dequeueing and task _and_ during cgroup migrations.
 > 
-> Fix the incorrect (and unnecessary) usage of local variable during
-> debugfs_file_create() by passing NULL instead.
+> Fix this by setting the flag in the uclamp_rq_inc_id() path to ensure
+> things remain symmetrical.
 > 
+> Reported-by: Rick Yiu <rickyiu@google.com>
+> Signed-off-by: Quentin Perret <qperret@google.com>
 
-Good catch! Since the enabled state is managed by the kprobes_all_disabled
-global variable, it is not needed.
+Argh, and I think this wants
 
-Fixes: bf8f6e5b3e51 ("Kprobes: The ON/OFF knob thru debugfs")
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
-> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-> ---
->  kernel/kprobes.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 745f08fdd7a6..fdb1ea2e963b 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -2816,13 +2816,12 @@ static const struct file_operations fops_kp = {
->  static int __init debugfs_kprobe_init(void)
->  {
->  	struct dentry *dir;
-> -	unsigned int value = 1;
->  
->  	dir = debugfs_create_dir("kprobes", NULL);
->  
->  	debugfs_create_file("list", 0400, dir, NULL, &kprobes_fops);
->  
-> -	debugfs_create_file("enabled", 0600, dir, &value, &fops_kp);
-> +	debugfs_create_file("enabled", 0600, dir, NULL, &fops_kp);
->  
->  	debugfs_create_file("blacklist", 0400, dir, NULL,
->  			    &kprobe_blacklist_fops);
-> -- 
-> 2.30.2
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Fixes: e496187da710 ("sched/uclamp: Enforce last task's UCLAMP_MAX")
