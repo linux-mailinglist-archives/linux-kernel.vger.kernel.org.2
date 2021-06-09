@@ -2,112 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FE83A0FA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FE93A105A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238033AbhFIJaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:30:17 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:50370 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237993AbhFIJaP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:30:15 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1599F4M9170872;
-        Wed, 9 Jun 2021 09:28:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=sFRB38PhM3Ekerd+v4R3UAA8bG0qfH1+I7ZpFgJhBJw=;
- b=COylQu9qMY6lp5Y7V+RoGiQH6T+Q1Zwx32s0RqipC41mcKiGvA0EyVuFoXEGjncXuPtd
- sKGT1iJ46xpi1QW/D58jnsiQfsdDGRAqdXicF8Ee0gocqtQY+toEx88hMG733mps7m+8
- F3JRqre9T4JZVMqNzgug7D4XdSvQHEFQ3qV/mSkEGxgjvEvg1VpO18MHYx1XvZxT1oQa
- +/qTkkS2PDnCFylblJR0uUvrFwZoMFhk2iG1NkS+rajooFNK0+OaGC9owkUuBEy88ZBE
- hIeSfO1J64sLnNti3DznK7veke7qqLPAym0kkTwIEVvEo0aqWLzOAoGVWruaZxQucntz +g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 3914quq3kf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:28:11 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1599P4D5128183;
-        Wed, 9 Jun 2021 09:28:11 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 390k1rs898-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:28:11 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1599SB0I138997;
-        Wed, 9 Jun 2021 09:28:11 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 390k1rs892-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:28:10 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1599S5E5031717;
-        Wed, 9 Jun 2021 09:28:05 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Jun 2021 02:28:04 -0700
-Date:   Wed, 9 Jun 2021 12:27:57 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2][next] net: usb: asix: Fix less than zero comparison
- of a u16
-Message-ID: <20210609092757.GF1955@kadam>
-References: <20210608152249.160333-1-colin.king@canonical.com>
+        id S238130AbhFIJms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:42:48 -0400
+Received: from mail-dm6nam12on2063.outbound.protection.outlook.com ([40.107.243.63]:38305
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234720AbhFIJmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:42:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DEiHvIr/YrH0bvWzfAYWh0JtFTd7y3LvWxElM+p8FKVBulb3PRui0GYslWIC0MgtRTrlMJ5IUCfhGbo0hKbfBpZwBvIp7kpCR9QJCJqmWw+Bdfa2rGT+4SiMJWuHTjBkaHH0brWCsTAcduDKPlShfeK3uZO8gv7mnXtHGXjZ6omqywX9kYVuPsqxO/200CgmNNyENTsNdn+FDX/Y3YE8oFxly3hcavPSpUcuHvqhNLrwODt5CsUFVpjGygdUE3iHziZYeS2nH4M+i/rhtzRo+kh0oZMCMjEPvQJ59dNpW+qp/OLomWjVLl8fC//so93WK4QTgepOOM3waKwKb4Aciw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SPYRxarNN4+n8zFERWtc/2PKvQJzx5hQf1yUUmaI/dY=;
+ b=Xq+x20Sb6qtTCoqPIt5CmVNaFWDfo8ube4xxX1TeKS7oOxGLLI29a719I2MllxwbM1hweZOtA3EfnxDy4jix9GPhjrnO4kpjd/vAH5aAdSGciix6iauwbKCKPbvJmlOACFFOeJWWV8pB3Nuiwh/pGYc5xL5FrANQUL59qNCYhW+M2I38Zg2T4mlsv9eSYZVgWPG1Unz285XioKeIlrINMFTwcy6Rl7VhYexJIYRS0bi4oZUkK6qpmklpAlYRtX1ZrZH9Bx08+MLZ3A9V1lGRofRNBjw7CJhyuoo2RV/n8bu82xYoZ2dLHB4KFGIkmqtqBtOiaNHSHVVwIhLr7c3sXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SPYRxarNN4+n8zFERWtc/2PKvQJzx5hQf1yUUmaI/dY=;
+ b=hCKhsjrZDcXiM7OQ8PyIXOKBYAUEBbJyxtwBLEG6/ambKOw+XJMB2RCM07Alm3kMOOmPUBDRj3hKe7fz3d8WRaEBp13wCI+YMFQOj6S2kPo1IfMFZK1KwgM5juyDA9t2Ip/tnpYrZMppow1v4dat21xTR/K9Oz7sEocYLPp/26yokqM/R69AcYRS17wp+OJDXTcgWAU4a+Q+0vza5rbwqygkqnK+97ZY+FkXXV7Doxxkps8BrjHmp7xtMtTM3i3uqjfJ0SOkSpUYQOPADm6gY7YqW3B1Gsuok4iuY0kcRyaP1RA1Mr/wnAs4H4UExArjNxKXCE8dK6zJtikVoKMeJw==
+Received: from DM6PR12CA0031.namprd12.prod.outlook.com (2603:10b6:5:1c0::44)
+ by SN1PR12MB2509.namprd12.prod.outlook.com (2603:10b6:802:29::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Wed, 9 Jun
+ 2021 09:29:36 +0000
+Received: from DM6NAM11FT057.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:1c0:cafe::9e) by DM6PR12CA0031.outlook.office365.com
+ (2603:10b6:5:1c0::44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend
+ Transport; Wed, 9 Jun 2021 09:29:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT057.mail.protection.outlook.com (10.13.172.252) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4219.21 via Frontend Transport; Wed, 9 Jun 2021 09:29:35 +0000
+Received: from [172.27.14.222] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 9 Jun
+ 2021 09:29:30 +0000
+Subject: Re: [PATCH 10/11] vfio-pci: introduce vfio_pci_core subsystem driver
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jgg@nvidia.com>,
+        <aviadye@nvidia.com>, <oren@nvidia.com>, <shahafs@nvidia.com>,
+        <parav@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
+        <ACurrid@nvidia.com>, <cjia@nvidia.com>, <yishaih@nvidia.com>,
+        <kevin.tian@intel.com>, <hch@infradead.org>, <targupta@nvidia.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <liulongfang@huawei.com>,
+        <yan.y.zhao@intel.com>
+References: <20210603160809.15845-1-mgurtovoy@nvidia.com>
+ <20210603160809.15845-11-mgurtovoy@nvidia.com>
+ <20210608152656.5aa4cfa3.alex.williamson@redhat.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <2da8a815-17a6-fe4b-fe5b-12ec497efee6@nvidia.com>
+Date:   Wed, 9 Jun 2021 12:29:27 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608152249.160333-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: QVXrQoM-CFcb2Tyn9bZFrzTPnJArQoeC
-X-Proofpoint-GUID: QVXrQoM-CFcb2Tyn9bZFrzTPnJArQoeC
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10009 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
- spamscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0
- priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106090042
+In-Reply-To: <20210608152656.5aa4cfa3.alex.williamson@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: aeca3b94-e86f-4a7f-43cf-08d92b2918c6
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2509:
+X-Microsoft-Antispam-PRVS: <SN1PR12MB2509601B48123B4238CB80A6DE369@SN1PR12MB2509.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YEztPKvVYXUMNqmw/M3OKbxSSKZShy8TmPsmu+1F6j/UQC9S3vKA048beuFfbuQw0zAt0l9pr9Ik/JLJKCVDA/z8/Uafr775rpnYKbvESh2nZ4BZXO9NSdsBtBa4LTxJWAzKkGjdqzvPot6rPRgBc8LL1SlPq+sLUSlh9cVHUo9dcq/odmYk6/HKyBgfqWRPs70PWiKPIvGXDCP4EZLfsA8BNUma6N4XiVsNq+xb+3XJ7St4+51naBFeJKD1CL8erR15sOOkEkZv1/g9MxapBVtpB1DtH59vTKwYJ3WpzzGy3UebUISrjL46FEAwdv48LG2evosI9BHtsX6Loh4XTzulndc020iDYipI2U8/FcCy9m6wmsdmtYGyoAiI99Lq7p+EhGltO9CjP3YbjwewTy1HnRC3EhEEw9YmtUU3Ei7EkDaXO32r0qTV46wPYcBcF0Yrz42pimk6w2hK5E9aH7xKq7a+TOgM8jYxVPGwSmHRcZOpztOckIUkV7fTsfuissImY/LmGKAIU8xWKlm2czpNaGNeHiIxFic8kaE/jgUZNGqX4YSu22pZ1RKNy2uCORZFII+m53NSKLU+RYAyo9ggXrvTKY7XwnumN3EitGvbp3cIawHswYe30sEpLUsrV+qEW9+GdcYjvWLnvj3loXZxEGJ+Xe+oVqlqjiD6udSWsdgeHaNr33PbTMOQ6Iut
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(36840700001)(46966006)(8936002)(8676002)(36860700001)(36906005)(2616005)(426003)(316002)(16576012)(478600001)(16526019)(336012)(82310400003)(47076005)(31686004)(36756003)(82740400003)(26005)(356005)(186003)(54906003)(7636003)(53546011)(70206006)(86362001)(70586007)(2906002)(31696002)(6666004)(5660300002)(4326008)(6916009)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 09:29:35.7926
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: aeca3b94-e86f-4a7f-43cf-08d92b2918c6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT057.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2509
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 04:22:48PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The comparison of the u16 priv->phy_addr < 0 is always false because
-> phy_addr is unsigned. Fix this by assigning the return from the call
-> to function asix_read_phy_addr to int ret and using this for the
-> less than zero error check comparison.
-> 
-> Addresses-Coverity: ("Unsigned compared against 0")
-> Fixes: e532a096be0e ("net: usb: asix: ax88772: add phylib support")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/usb/asix_devices.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
-> index 57dafb3262d9..211c5a87eb15 100644
-> --- a/drivers/net/usb/asix_devices.c
-> +++ b/drivers/net/usb/asix_devices.c
-> @@ -704,9 +704,10 @@ static int ax88772_init_phy(struct usbnet *dev)
->  	struct asix_common_private *priv = dev->driver_priv;
->  	int ret;
->  
-> -	priv->phy_addr = asix_read_phy_addr(dev, true);
-> -	if (priv->phy_addr < 0)
-> +	ret = asix_read_phy_addr(dev, true);
-> +	if (ret < 0)
->  		return priv->phy_addr;
 
-		return ret;
+On 6/9/2021 12:26 AM, Alex Williamson wrote:
+> On Thu, 3 Jun 2021 19:08:08 +0300
+> Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+>> diff --git a/drivers/vfio/pci/Kconfig b/drivers/vfio/pci/Kconfig
+>> index 5e2e1b9a9fd3..384d06661f30 100644
+>> --- a/drivers/vfio/pci/Kconfig
+>> +++ b/drivers/vfio/pci/Kconfig
+>> @@ -1,6 +1,6 @@
+>>   # SPDX-License-Identifier: GPL-2.0-only
+>> -config VFIO_PCI
+>> -	tristate "VFIO support for PCI devices"
+>> +config VFIO_PCI_CORE
+>> +	tristate "VFIO core support for PCI devices"
+>>   	depends on VFIO && PCI && EVENTFD
+>>   	depends on MMU
+>>   	select VFIO_VIRQFD
+>> @@ -11,9 +11,17 @@ config VFIO_PCI
+>>   
+>>   	  If you don't know what to do here, say N.
+>>   
+>> +config VFIO_PCI
+>> +	tristate "VFIO support for PCI devices"
+>> +	depends on VFIO_PCI_CORE
+>> +	help
+>> +	  This provides a generic PCI support using the VFIO framework.
+>> +
+>> +	  If you don't know what to do here, say N.
+>> +
+> I think it's going to generate a lot of user and distro frustration to
+> hide VFIO_PCI behind a new VFIO_PCI_CORE option.  The core should be a
+> dependency *selected* by the drivers, not a prerequisite for the
+> driver.  Thanks,
 
-regards,
-dan carpenter
+I'll fix that. Thanks.
 
+
+>
+> Alex
+>
