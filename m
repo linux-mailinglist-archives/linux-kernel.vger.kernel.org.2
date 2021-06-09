@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD833A174F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AB13A1759
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237146AbhFIOex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:34:53 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:41828 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234734AbhFIOes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:34:48 -0400
-Received: from zn.tnic (p200300ec2f0cf6002c8ea3a9506b9c3f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:f600:2c8e:a3a9:506b:9c3f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8EC981EC0516;
-        Wed,  9 Jun 2021 16:32:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623249172;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=oTvJUNqNPXJgrATOUO5AJ0EllSZ5xLN85/3fQaACIhM=;
-        b=ckclrrh8R2rjSCsIJOO3Gmdo5IV8CSqDWXGxCyOiLEGdOp8yE4bUSK2hliXNS5hrCdi1Xy
-        KAjGylpJid/k5gR66MMg90X8SOLKxELW44ANk8UQEiE0CpB7nVsCJ1hs+p36f/1TnNO2Bq
-        gPxBZguTtaQXHrH610B7eRQWEh+oDW4=
-Date:   Wed, 9 Jun 2021 16:32:46 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [RFC v2-fix-v2 1/1] x86: Introduce generic protected guest
- abstraction
-Message-ID: <YMDRDmO751Dc2igX@zn.tnic>
-References: <20210527042356.3983284-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210601211417.2177598-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YLkcIuL2qvo0hviU@zn.tnic>
- <82f9e5a9-682a-70be-e5ea-938bb742265f@linux.intel.com>
- <YL5kvLvCpG37zWc/@zn.tnic>
- <9466ae0b-3a2a-5a43-a4c6-39e07ebe0fbc@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9466ae0b-3a2a-5a43-a4c6-39e07ebe0fbc@linux.intel.com>
+        id S236549AbhFIOgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:36:43 -0400
+Received: from mail-qv1-f73.google.com ([209.85.219.73]:38821 "EHLO
+        mail-qv1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232165AbhFIOgm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:36:42 -0400
+Received: by mail-qv1-f73.google.com with SMTP id i6-20020a0cd8460000b029022689c68e72so11370264qvj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 07:34:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ujJ7V2lKU2Osdsi84sTaaJPDcMYpTcXqnHW0Nm4jQfs=;
+        b=sph+9QWdALbk3yu47eGVpi1/fvZe4Sedy3rrMZqi93njEFAlesgGBptGBKECL7kcSi
+         YO8Hw5xh8o0OCRayGVfKNno48LdfeX/gi3dCqbDROQ7weoro1kLyDMXnSTSS2LC+0gSe
+         MN/7D/8ZirGW4FmvA9kwbCTGFZ0Nj0mfnivpJSjTRDXkh0Z5Oscqq+KH6J+lx5fxVRq8
+         6fN8IbuSTJorJeinL1eoWPn4ouFT7cFTmkb/nFLlbL0V8mOvZyq8OfM3Mh6SsouBqsEY
+         0CpuKDHgUq8vtJh/rxibRv3h/RUjJXNVcakXVDXqVRgdujQDWZUgS1YsHFXla3qzDU/K
+         ZPrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ujJ7V2lKU2Osdsi84sTaaJPDcMYpTcXqnHW0Nm4jQfs=;
+        b=OU+8/LdkywAGe57f+j27fZJJ1zeMTUg0Ob4rveZPvPLaTeb+JLNJntg2qFk4SU/UNU
+         lgRWJm/KL4fO+Y/v8umlEtjhKiH8FB8KBDX+CuJE6ZHsvboYz6Xua0C2FCc7tQa2w1wg
+         1SzLY5qTYCJIkr+UXbSZJuAr6dOrJLifKoIH0GNJbRKniZy/KAFMB331oPeU+XqARgy/
+         EsepEeVWNHzqWqbuIvpdg97Vx4D9N2suyHfoOj560ZSfOoWFhE7NZQ0sbfmW8RfjBg9I
+         /Nm+43ZO4Izsq0O0D7bLfFA7NZ2uQyKrJlepY9v+oZrZ0gznPBa1EeXn+Wu+73eQMg6B
+         qTvQ==
+X-Gm-Message-State: AOAM532lMHfco7cveo3xMexESkj7UYZStuIiC7kbkt6amaeP0uhIPJxV
+        CIMAgtNzvaobMSilR6VKBgD+HX9yPQG9
+X-Google-Smtp-Source: ABdhPJxOJ0pHTcYhe0gIXSj7GPNB9Ea02/zFe3+FDrz+GqTcx4sztVdzrwjvtnm1Resx1H2L2Bclo5wR9lyd
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:ad4:5ba8:: with SMTP id
+ 8mr6045636qvq.25.1623249227196; Wed, 09 Jun 2021 07:33:47 -0700 (PDT)
+Date:   Wed,  9 Jun 2021 14:33:39 +0000
+Message-Id: <20210609143339.1194238-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+Subject: [PATCH] sched: Fix UCLAMP_FLAG_IDLE setting
+From:   Quentin Perret <qperret@google.com>
+To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, qais.yousef@arm.com, rickyiu@google.com,
+        wvw@google.com, patrick.bellasi@matbug.net
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Quentin Perret <qperret@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 07:01:13AM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> I am still not clear. What happens when a driver which includes
-> linux/protected-guest.h is compiled for non-x86 arch (s390 or arm64)?
+The UCLAMP_FLAG_IDLE flag is set on a runqueue when dequeueing the last
+active task to maintain the last uclamp.max and prevent blocked util
+from suddenly becoming visible.
 
-I was wondering what felt weird: why is prot{ected,}_guest_has() in a
-generic linux/ namespace header and not in an asm/ one?
+However, there is an asymmetry in how the flag is set and cleared which
+can lead to having the flag set whilst there are active task on the rq.
+Specifically, the flag is set in the uclamp_rq_inc() path, which is
+called at enqueue time, but cleared in the uclamp_rq_dec_id() which is
+called both when dequeueing and task _and_ during cgroup migrations.
 
-I think the proper way is for the other arches should be to provide
-their own prot_guest_has() implementation which generic code uses and
-the generic header would contain only the PR_GUEST_* defines.
+Fix this by setting the flag in the uclamp_rq_inc_id() path to ensure
+things remain symmetrical.
 
-Take ioremap() as an example:
+Reported-by: Rick Yiu <rickyiu@google.com>
+Signed-off-by: Quentin Perret <qperret@google.com>
+---
+ kernel/sched/core.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-arch/x86/include/asm/io.h
-arch/arm64/include/asm/io.h
-arch/s390/include/asm/io.h
-...
-
-and pretty much every arch has that arch-specific io.h header which
-defines ioremap() and generic code includes include/linux/io.h which
-includes the respective asm/io.h header so that users can call the
-respective ioremap() implementation.
-
-prot_guest_has() sounds just the same to me.
-
-Better?
-
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5226cc26a095..3b213402798e 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -980,6 +980,7 @@ static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
+ 	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+ 		return;
+ 
++	rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+ 	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
+ }
+ 
+@@ -1252,10 +1253,6 @@ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+ 
+ 	for_each_clamp_id(clamp_id)
+ 		uclamp_rq_inc_id(rq, p, clamp_id);
+-
+-	/* Reset clamp idle holding when there is one RUNNABLE task */
+-	if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+-		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+ }
+ 
+ static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
 -- 
-Regards/Gruss,
-    Boris.
+2.32.0.272.g935e593368-goog
 
-https://people.kernel.org/tglx/notes-about-netiquette
