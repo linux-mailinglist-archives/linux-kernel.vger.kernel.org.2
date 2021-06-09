@@ -2,239 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126693A103C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412033A10D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238061AbhFIJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238040AbhFIJhg (ORCPT
+        id S235843AbhFIKGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:06:46 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:38276 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232972AbhFIKGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:37:36 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91464C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 02:35:31 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id l1so37433712ejb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0u3BrvPxE9s9HtqXoZQg3VN+cykvyMWbYmKSqX4pbHg=;
-        b=s+64Z6Gpv7DQwEceBpkLHjHhWaPoYLquOI7iG5TYM5SY9xEur9PBEtxG0o98MKSgHS
-         KDTfaEbHBlibRaMmVjfbNIiT0o4WRz0/LST+2xC2LPoaWHwL3KmB1RqKpP+wlkiYIHFg
-         NUum1Dueq9RhJj0rNDzXFpzhUandKBzbhHBZj/eg4Xr6Bd1ANk7AonLQWv8YJv7rFQiO
-         QhNnSGASVPzEtn124nBPaued+yErK73mbd8BtWy0TOpkPYFsr3ElaEbo3kLkzCqvM9ln
-         cnHy6zioGmn1XqUMcCknqHCdVgp9pmc1wexl+2dof5m8ZToI8qDX8DbDA1JNHQ7vxaEv
-         2gRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0u3BrvPxE9s9HtqXoZQg3VN+cykvyMWbYmKSqX4pbHg=;
-        b=tW69HKRW3PkpxQju68FKNL9TVZLvSbSVnrvcYTbuqwiBXzfwZEhWjMQgIyd2dQvAkv
-         f5S+3YKLN5Mxz28XRA46U0EGbcgys2F7DgYffLTTm8crMrvnSgigrEBa9i7hq0Pg+/ys
-         sa3S9A0zpew5EzLoYUPiYp/SmOU6Mleq+ilT6km8kR5Jl6zhEJU0u3FDtUvZo6grV/wX
-         oAzu6cUZsCXV3S7CFVxN6eFB78CkbI+HX7oZtMf3Gq2Bq1nFw2X3owhw1oOg0uL81NTV
-         PF7Lw4Ps2gtWSJHxPicHtSDoISIsfJkZkXWwpikwRrNd+Cjj3li5ahkrxXEzVxJvFzfe
-         ZsCw==
-X-Gm-Message-State: AOAM530AYgknyMWKTi/Sx2F2HmFc2BLKl0Z1KuCAk4GKXOwJQL2yypmF
-        9bvaEadPh/v8k0USpPOjTyz5zDZaZMXJRY4gZZDi8A==
-X-Google-Smtp-Source: ABdhPJwcH3d9z/vd/7ZJawn3fwpFwXjmKvddp2MTRi1OIjgMqVJGRZ3Rw6JU8/3DB9wp6TQNM9k3GZRW5BiQtD2q/hI=
-X-Received: by 2002:a17:906:d0da:: with SMTP id bq26mr28634584ejb.287.1623231289580;
- Wed, 09 Jun 2021 02:34:49 -0700 (PDT)
+        Wed, 9 Jun 2021 06:06:45 -0400
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1599bP2c9007528, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1599bP2c9007528
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 9 Jun 2021 17:37:25 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 9 Jun 2021 17:37:24 +0800
+Received: from localhost.localdomain (172.21.177.191) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 9 Jun 2021 17:37:23 +0800
+From:   Edward Wu <edwardwu@realtek.com>
+To:     <netdev@vger.kernel.org>
+CC:     <nic_swsd@realtek.com>, Edward Wu <edwardwu@realtek.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-dev] net: Exposing more skb fields in netif_receive_skb trace event
+Date:   Wed, 9 Jun 2021 17:36:54 +0800
+Message-ID: <20210609093656.8984-1-edwardwu@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210608175942.377073879@linuxfoundation.org>
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 9 Jun 2021 15:04:38 +0530
-Message-ID: <CA+G9fYvWErw2G7ngP5gB3WReB9TjJj+SxHbeZyaTgb1=7CtiuQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/137] 5.10.43-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [172.21.177.191]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS03.realtek.com.tw (172.21.6.96)
+X-KSE-ServerInfo: RTEXMBS03.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: trusted connection
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/09/2021 09:22:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzYvOSCkV6TIIDA2OjAwOjAw?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/09/2021 09:24:29
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164206 [Jun 09 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: edwardwu@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/09/2021 09:27:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 at 00:09, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.43 release.
-> There are 137 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.43-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+This exposing helps to analyze network behavior.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+In performance tuning, we will check nr_frags to analyze
+GRO aggregation behavior. By this commit, we can
+enable netif_receive_skb trace event for dynamic debugging.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Signed-off-by: Edward Wu <edwardwu@realtek.com>
+---
+ include/trace/events/net.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-## Build
-* kernel: 5.10.43-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
-e-rc.git',
-'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-5.10.y
-* git commit: c108263eaf06733c15c23cb4fdf83d188c0e2881
-* git describe: v5.10.42-138-gc108263eaf06
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.42-138-gc108263eaf06
+diff --git a/include/trace/events/net.h b/include/trace/events/net.h
+index 2399073c3afc..48aa7168b68f 100644
+--- a/include/trace/events/net.h
++++ b/include/trace/events/net.h
+@@ -147,13 +147,6 @@ DEFINE_EVENT(net_dev_template, net_dev_queue,
+ 	TP_ARGS(skb)
+ );
+ 
+-DEFINE_EVENT(net_dev_template, netif_receive_skb,
+-
+-	TP_PROTO(struct sk_buff *skb),
+-
+-	TP_ARGS(skb)
+-);
+-
+ DEFINE_EVENT(net_dev_template, netif_rx,
+ 
+ 	TP_PROTO(struct sk_buff *skb),
+@@ -239,6 +232,13 @@ DEFINE_EVENT(net_dev_rx_verbose_template, napi_gro_receive_entry,
+ 	TP_ARGS(skb)
+ );
+ 
++DEFINE_EVENT(net_dev_rx_verbose_template, netif_receive_skb,
++
++	TP_PROTO(const struct sk_buff *skb),
++
++	TP_ARGS(skb)
++);
++
+ DEFINE_EVENT(net_dev_rx_verbose_template, netif_receive_skb_entry,
+ 
+ 	TP_PROTO(const struct sk_buff *skb),
+-- 
+2.17.1
 
-## No regressions (compared to v5.10.42)
-
-## No fixes (compared to v5.10.42)
-
-
-## Test result summary
- total: 79560, pass: 65027, fail: 2540, skip: 11224, xfail: 769,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 42 total, 42 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 18 total, 18 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
