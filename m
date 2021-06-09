@@ -2,237 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF82E3A0EE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539593A0ED4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237734AbhFIIr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:47:57 -0400
-Received: from forward1-smtp.messagingengine.com ([66.111.4.223]:50821 "EHLO
-        forward1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231917AbhFIIr4 (ORCPT
+        id S237680AbhFIIlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:41:15 -0400
+Received: from relay-us1.mymailcheap.com ([51.81.35.219]:48540 "EHLO
+        relay-us1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231626AbhFIIlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:47:56 -0400
-X-Greylist: delayed 447 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Jun 2021 04:47:56 EDT
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailforward.nyi.internal (Postfix) with ESMTP id 0B3BC1940C78;
-        Wed,  9 Jun 2021 04:38:35 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 09 Jun 2021 04:38:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=cf/f/6
-        o53yZFK0c2xysdNHLo69ogP+H0lETTTPrZ740=; b=EdqkiQZfh1eLVc36Dw4nBB
-        NTCZmIrf7x9ln/qRz/fbBhzTxeNtEn58C+23Q+NSlwVo8ooWVWU2Hhla3pgIDkV0
-        uA0SIg49+9LkaHIhSzO0opOe7PrOH7dcXm9ONeqPxlWmaR2yPx/q5t7kfwROXqsa
-        l5E8F65qopnxjNekYmOZpfuyG/e7PYlt0oJAkjK890tPBbJSKYF4d+76+b/rNGQm
-        4NsSGGytEsiA+Iq2ji+t2FeFNHkVVw7agmiVjk7RgBdOpHpSg2DFaknP/qqK/DJZ
-        JYrhtbQSAZj7Aybe1SXLnR159j9FOjcTQzQjdYC0yHXzfoTYxYc1QmV4LY7ANxwA
-        ==
-X-ME-Sender: <xms:CX7AYNf3F6PQNqia6vNmZ49Wt4dUzrVaRMz452EjH8oGNVjE_ddtBg>
-    <xme:CX7AYLPMCS6IUEWgUdu4_3NM3gxqzk0BCH0M2PnpdZUkVMakH4e_2ouTDeyaYtRrc
-    Pfu8fu_hAwVlg_8xUM>
-X-ME-Received: <xmr:CX7AYGhSeU6jOLATGR-9y_SsmvUZ9ScjSBmt_EfdxTETIQC-cloSguMa2ztUup8auw1SHTPls2-Ziuji0Cj0R4SNcPHsarEDEl1gp7Vo8kU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeduuddgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvffujghfhfffkfggtgesthdtredttddttdenucfhrhhomhepffgrvhhiugcu
-    gfgumhhonhgushhonhcuoegumhgvsegumhgvrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    fhkeeguedtvdegffffteehjedvjeeitefgfefgffdugeffffegudehgeetgeelkeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegumhgvsegumh
-    gvrdhorhhg
-X-ME-Proxy: <xmx:CX7AYG_ydNb130YPu_XZeJ45sxTJK6If-a5xSB2X35CUYgYp0UefXA>
-    <xmx:CX7AYJu3Ml5FOZ9Ch-QdB8LpO7luxBpPHXHs1l4KbBeyZnMLEc007w>
-    <xmx:CX7AYFELWNo2jD5jZ84QYFhL1P3EVUSIRFzWccON4NUe_iKrcxl8zQ>
-    <xmx:C37AYCFwlatc5Qq92Q6bjv37HhEciO5NGjFU0HLCeXsM17Ym162T5ey_Kz8>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 9 Jun 2021 04:38:32 -0400 (EDT)
-Received: from localhost (disaster-area.hh.sledj.net [local])
-        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 854acb37;
-        Wed, 9 Jun 2021 08:38:30 +0000 (UTC)
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        syzbot+2067e764dbcd10721e2e@syzkaller.appspotmail.com,
-        Borislav Petkov <bp@suse.de>, Rik van Riel <riel@surriel.com>
-Subject: Re: [patch V3 6/6] selftests/x86: Test signal frame XSTATE header
- corruption handling
-In-Reply-To: <20210608144346.234764986@linutronix.de>
-References: <20210608143617.565868844@linutronix.de>
- <20210608144346.234764986@linutronix.de>
-X-HGTTG: zarquon
-From:   David Edmondson <dme@dme.org>
-Date:   Wed, 09 Jun 2021 09:38:30 +0100
-Message-ID: <cunmtrz1lh5.fsf@dme.org>
+        Wed, 9 Jun 2021 04:41:13 -0400
+Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.241.64])
+        by relay-us1.mymailcheap.com (Postfix) with ESMTPS id 89BDF201A7;
+        Wed,  9 Jun 2021 08:39:18 +0000 (UTC)
+Received: from relay4.mymailcheap.com (relay4.mymailcheap.com [137.74.80.155])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 9DA13200FE;
+        Wed,  9 Jun 2021 08:39:15 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id 98D462000B;
+        Wed,  9 Jun 2021 08:39:12 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id D7B692A0D2;
+        Wed,  9 Jun 2021 04:39:11 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1623227951;
+        bh=rmytQxnOpk4vxyV/FzXpiVZ2jb/LlTJDTmb0VH8OGXY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BRidAcX7tQtSncIO+5ONUE2I7NZV3XsQ/DD0AijcGygfauFb+9xw/+9/4Z9zlxRn2
+         zgiXbfJQsAsfn5D7yVlYakSx2Mssx4qeCw/HNryNVSxxiK3AcXKtqYr4BJpfSW2jBP
+         4Hs53VtMs/CKw5tvzTw3T1FiLO5ZMsvvkIr+QhKI=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Ap29_pKn5cYR; Wed,  9 Jun 2021 04:39:11 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Wed,  9 Jun 2021 04:39:11 -0400 (EDT)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 8B48340CA4;
+        Wed,  9 Jun 2021 08:39:09 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="HFRQbTFC";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.163.75])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id ED7CC42655;
+        Wed,  9 Jun 2021 08:38:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1623227939; bh=rmytQxnOpk4vxyV/FzXpiVZ2jb/LlTJDTmb0VH8OGXY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HFRQbTFC6S0hSLpNIKwHFT/LlhlJcCp4hUqDL2fYbGl734BHB5Ibpz6fMZqXLmpoA
+         x+l6CFkOKxALmsuujoIuv+BGZS6yLpsH3jCzJs9yyCfceU5fUIsf3sI6vfJHHsFihi
+         QHSYfVLTw7urpF7q/ZviejElG09GuAC+wZLOm/tk=
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Icenowy Zheng <icenowy@aosc.io>
+Subject: [PATCH] arm64: dts: allwinner: a64-sopine-baseboard: change RGMII mode to TXID
+Date:   Wed,  9 Jun 2021 16:38:43 +0800
+Message-Id: <20210609083843.463750-1-icenowy@aosc.io>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spamd-Result: default: False [6.40 / 20.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         FREEMAIL_TO(0.00)[kernel.org,csie.org,gmail.com,gmx.de];
+         RCVD_NO_TLS_LAST(0.10)[];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.163.75:received];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         MID_CONTAINS_FROM(1.00)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Queue-Id: 8B48340CA4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, 2021-06-08 at 16:36:23 +02, Thomas Gleixner wrote:
+Although the schematics of Pine A64-LTS and SoPine Baseboard shows both
+the RX and TX internal delay are enabled, they're using the same broken
+RTL8211E chip batch with Pine A64+, so they should use TXID instead, not
+ID.
 
-> From: Andy Lutomirski <luto@kernel.org>
->
-> This is very heavily based on some code from Thomas Gleixner.  On a system
-> without XSAVES, it triggers the WARN_ON():
->
->     Bad FPU state detected at copy_kernel_to_fpregs+0x2f/0x40, reinitializing FPU registers.
->
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V2: main() -> main(void) - Borislav
-> ---
->  tools/testing/selftests/x86/Makefile                |    3 
->  tools/testing/selftests/x86/corrupt_xstate_header.c |  114 ++++++++++++++++++++
->  2 files changed, 116 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/x86/corrupt_xstate_header.c
->
-> --- a/tools/testing/selftests/x86/Makefile
-> +++ b/tools/testing/selftests/x86/Makefile
-> @@ -17,7 +17,8 @@ TARGETS_C_BOTHBITS := single_step_syscal
->  TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
->  			test_FCMOV test_FCOMI test_FISTTP \
->  			vdso_restorer
-> -TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering
-> +TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering \
-> +			corrupt_xstate_header
->  # Some selftests require 32bit support enabled also on 64bit systems
->  TARGETS_C_32BIT_NEEDED := ldt_gdt ptrace_syscall
->  
-> --- /dev/null
-> +++ b/tools/testing/selftests/x86/corrupt_xstate_header.c
-> @@ -0,0 +1,114 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Corrupt the XSTATE header in a signal frame
-> + *
-> + * Based on analysis and a test case from Thomas Gleixner.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include <sched.h>
-> +#include <signal.h>
-> +#include <err.h>
-> +#include <unistd.h>
-> +#include <stdint.h>
-> +#include <sys/wait.h>
-> +
-> +static inline void __cpuid(unsigned int *eax, unsigned int *ebx,
-> +			   unsigned int *ecx, unsigned int *edx)
-> +{
-> +	asm volatile(
-> +		"cpuid;"
-> +		: "=a" (*eax),
-> +		  "=b" (*ebx),
-> +		  "=c" (*ecx),
-> +		  "=d" (*edx)
-> +		: "0" (*eax), "2" (*ecx));
-> +}
-> +
-> +static inline int xsave_enabled(void)
-> +{
-> +	unsigned int eax, ebx, ecx, edx;
-> +
-> +	eax = 0x1;
-> +	ecx = 0x0;
-> +	__cpuid(&eax, &ebx, &ecx, &edx);
-> +
-> +	/* Is CR4.OSXSAVE enabled ? */
-> +	return ecx & (1U << 27);
-> +}
-> +
-> +static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
-> +		       int flags)
-> +{
-> +	struct sigaction sa;
-> +
-> +	memset(&sa, 0, sizeof(sa));
-> +	sa.sa_sigaction = handler;
-> +	sa.sa_flags = SA_SIGINFO | flags;
-> +	sigemptyset(&sa.sa_mask);
-> +	if (sigaction(sig, &sa, 0))
-> +		err(1, "sigaction");
-> +}
-> +
-> +static void sigusr1(int sig, siginfo_t *info, void *uc_void)
-> +{
-> +	ucontext_t *uc = uc_void;
-> +	uint8_t *fpstate = (uint8_t *)uc->uc_mcontext.fpregs;
-> +	uint64_t *xfeatures = (uint64_t *)(fpstate + 512);
-> +
-> +	printf("\tWreckage XSTATE header\n");
+In addition, by checking the real components soldered on both a SoPine
+Baseboard and a Pine A64-LTS, RX delay is not enabled (GR69 soldered and
+GR70 NC) despite the schematics says it's enabled. It's a common
+situation for Pine64 boards that the NC information on schematics is not
+the same with the board.
 
-"Wreckage" is an odd word to use here, as it usually refers to the
-objects that are the result of a wreck. Maybe "wreck" or (to match the
-test name) "corrupt"?
+So the RGMII delay mode should be TXID on these boards.
 
-> +	/* Wreckage the first reserved byte in the header */
-> +	*(xfeatures + 2) = 0xfffffff;
+Fixes: c2b111e59a7b ("arm64: dts: allwinner: A64 Sopine: phy-mode rgmii-id")
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This trashes more than a byte, which doesn't seem significant, but it
-would be good to have the comment and code match.
-
-> +}
-> +
-> +static void sigsegv(int sig, siginfo_t *info, void *uc_void)
-> +{
-> +	printf("\tGot SIGSEGV\n");
-> +}
-> +
-> +int main(void)
-> +{
-> +	cpu_set_t set;
-> +
-> +	sethandler(SIGUSR1, sigusr1, 0);
-> +	sethandler(SIGSEGV, sigsegv, 0);
-> +
-> +	if (!xsave_enabled()) {
-> +		printf("[SKIP] CR4.OSXSAVE disabled.\n");
-> +		return 0;
-> +	}
-> +
-> +	CPU_ZERO(&set);
-> +	CPU_SET(0, &set);
-> +
-> +	/*
-> +	 * Enforce that the child runs on the same CPU
-> +	 * which in turn forces a schedule.
-> +	 */
-> +	sched_setaffinity(getpid(), sizeof(set), &set);
-> +
-> +	printf("[RUN]\tSend ourselves a signal\n");
-> +	raise(SIGUSR1);
-> +
-> +	printf("[OK]\tBack from the signal.  Now schedule.\n");
-> +	pid_t child = fork();
-> +	if (child < 0)
-> +		err(1, "fork");
-> +	if (child == 0)
-> +		return 0;
-> +	if (child)
-> +		waitpid(child, NULL, 0);
-> +	printf("[OK]\tBack in the main thread.\n");
-> +
-> +	/*
-> +	 * We could try to confirm that extended state is still preserved
-> +	 * when we schedule.  For now, the only indication of failure is
-> +	 * a warning in the kernel logs.
-> +	 */
-> +
-> +	return 0;
-> +}
-
-dme.
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
+index e22b94c83647..5e66ce1a334f 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
+@@ -79,7 +79,7 @@ &ehci1 {
+ &emac {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&rgmii_pins>;
+-	phy-mode = "rgmii-id";
++	phy-mode = "rgmii-txid";
+ 	phy-handle = <&ext_rgmii_phy>;
+ 	phy-supply = <&reg_dc1sw>;
+ 	status = "okay";
 -- 
-It's alright, we told you what to dream.
+2.30.2
