@@ -2,155 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091BC3A20C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3FF3A20D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhFIXaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 19:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhFIXaF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 19:30:05 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE3DC0617A8
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 16:27:54 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id s14so31055pfd.9
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 16:27:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=XAzb3VkfUYxU1teKArHCgpj6NOb9ejMO6tAx0JjUIoQ=;
-        b=O88kABLyJToxtXQQFFjKPeMLrJ6YesZtMujpSNeGlQr4FiygAaEUmju5bI0djjtyMO
-         fmcAoWXx+PQjavZKTMLpBmCljJ1id5ISpmeoUMvTwVllZ38QED5U5oIuNgaW/8FJouyL
-         OiLP0c9ZxGG9OOuD6Jj5yFH8xh1WJo4xhhiJnI4Ewx6elUoDWibQFNeKjkHo6Q41BgVZ
-         6OhFZ6U33EpgC9MKiUFgd9OVoT0548QMf4OzuoRrZcGp5QgdYh/+iS6Pzfu0KaDlqjjv
-         FBKDBtgmajPmIt/ZcOzKSapooa1CDhL0tp2kafx6jHLIeKGMC1KlffQdYwljAhBcx5Rl
-         UFjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=XAzb3VkfUYxU1teKArHCgpj6NOb9ejMO6tAx0JjUIoQ=;
-        b=FUldhqKq0zBzcr3sqOBGL/paIOW4juyFqzXYtOsF1PtZZoBtvL6KuQWhxAmi/E1oqq
-         P93nw6SkE6XlzgQPaascjKnadEXvlGQaY17AW6JHLeJju1YaSo76GAQw1jdeuVbAAVex
-         UFBRcDXqymHisoQDynHDXN0cjSbPTq9UUX4joLFaN0C0afbmg3z9DgwlB3JyNejrLQ3q
-         m/69Kelh6oZPR3s6epsIfddtR7I+Pn/BzghuCEChyqtXADdi4kWbo3FRXNafglMGTB3l
-         W9akJ965X+WIj8b7DZl/FgR/hfwl8PLVKYY4U8TgRWSwCG47A1dPo4ftnTgB40B4TreU
-         bM7A==
-X-Gm-Message-State: AOAM5300UTmrOJzli6XSMB2zIv7EqS1R5+5M0AseSzkjZFIMfQ4NQ1qj
-        vIK5mOqlHPAdBq+JvQNOieNBoA==
-X-Google-Smtp-Source: ABdhPJxf83Qcv5sMhiGgL1PwI1FYFWMLIxV5hrXF/xSHNmKBquW4gmSwSNNe2aOfHo5UenCXytSasw==
-X-Received: by 2002:a63:de02:: with SMTP id f2mr2100758pgg.32.1623281273711;
-        Wed, 09 Jun 2021 16:27:53 -0700 (PDT)
-Received: from n124-121-013.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id k1sm526783pfa.30.2021.06.09.16.27.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Jun 2021 16:27:53 -0700 (PDT)
-From:   Jiang Wang <jiang.wang@bytedance.com>
-To:     sgarzare@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, stefanha@redhat.com,
-        mst@redhat.com, arseny.krasnov@kaspersky.com,
-        jhansen@vmware.comments, cong.wang@bytedance.com,
-        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
-        chaiwen.cc@bytedance.com, Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Lu Wei <luwei32@huawei.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC v1 6/6] virtio/vsock: add sysfs for rx buf len for dgram
-Date:   Wed,  9 Jun 2021 23:24:58 +0000
-Message-Id: <20210609232501.171257-7-jiang.wang@bytedance.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210609232501.171257-1-jiang.wang@bytedance.com>
-References: <20210609232501.171257-1-jiang.wang@bytedance.com>
+        id S230029AbhFIXbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 19:31:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38098 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230242AbhFIXbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 19:31:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A66E613EF;
+        Wed,  9 Jun 2021 23:29:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623281366;
+        bh=4MAfEjmi2NviFj/PknXz3HGeF0MD+bvfD7FKYdpHBcc=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=dPY8pUdoPx43msg3fUwjF3o3o/V11SUirp4yOzZfPF5fSSATXHFUH3637lXAX1V0C
+         MnD/3acY2efj3HQrLbJZg9kSoPKkBgmbCwSvS4++NM3TXGMh1diFJoDOoM0XcMn3G+
+         U2uTxpvpU0ww0AcJ8R/EXDgUIJ4Lbk8RmX91fembPv9CkaG3/T32lMP3T7OOGfjuYU
+         OMsQGRLP2ru1ffu6OzLswm69tzw+bawGYM7pHuZE077vzIc8qRuZvrwiXy/1thNNqp
+         4sbbliQIVkBns9Fgw0jR4jq3p/7q7Z4S5EfHDTlbbBsvoaOQRwQkF69xP4Zmz89GFd
+         FxonA/OIvJKmw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0F8315C08D8; Wed,  9 Jun 2021 16:29:26 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 16:29:26 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     mingo@kernel.org
+Cc:     eb@emlix.com, frederic@kernel.org, jbi.octave@gmail.com,
+        maninder1.s@samsung.com, qiang.zhang@windriver.com,
+        urezki@gmail.com, yury.norov@gmail.com, zhouzhouyi@gmail.com,
+        mark.rutland@arm.com, elver@google.com, bjorn.topel@intel.com,
+        akiyks@gmail.com, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, kasan-dev@googlegroups.com, tglx@linutronix.de
+Subject: [GIT PULL tip/core/rcu] RCU, LKMM, and KCSAN commits for v5.14
+Message-ID: <20210609232926.GA1715440@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make rx buf len configurable via sysfs
+Hello, Ingo!
 
-Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
----
- net/vmw_vsock/virtio_transport.c | 37 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 35 insertions(+), 2 deletions(-)
+This pull request contains changes for RCU, KCSAN, and LKMM.  You can
+pull the entire group using branch for-mingo.  Or, if you prefer, you
+can pull them separately, using for-mingo-rcu to pull the RCU changes,
+for-mingo-kcsan to pull the KCSAN changes, and for-mingo-lkmm to pull
+the LKMM changes.
 
-diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-index cf47aadb0c34..2e4dd9c48472 100644
---- a/net/vmw_vsock/virtio_transport.c
-+++ b/net/vmw_vsock/virtio_transport.c
-@@ -29,6 +29,14 @@ static struct virtio_vsock __rcu *the_virtio_vsock;
- static struct virtio_vsock *the_virtio_vsock_dgram;
- static DEFINE_MUTEX(the_virtio_vsock_mutex); /* protects the_virtio_vsock */
- 
-+static int rx_buf_len = VIRTIO_VSOCK_DEFAULT_RX_BUF_SIZE;
-+static struct kobject *kobj_ref;
-+static ssize_t  sysfs_show(struct kobject *kobj,
-+			struct kobj_attribute *attr, char *buf);
-+static ssize_t  sysfs_store(struct kobject *kobj,
-+			struct kobj_attribute *attr, const char *buf, size_t count);
-+static struct kobj_attribute rxbuf_attr = __ATTR(rx_buf_value, 0660, sysfs_show, sysfs_store);
-+
- struct virtio_vsock {
- 	struct virtio_device *vdev;
- 	struct virtqueue **vqs;
-@@ -360,7 +368,7 @@ virtio_transport_cancel_pkt(struct vsock_sock *vsk)
- 
- static void virtio_vsock_rx_fill(struct virtio_vsock *vsock, bool is_dgram)
- {
--	int buf_len = VIRTIO_VSOCK_DEFAULT_RX_BUF_SIZE;
-+	int buf_len = rx_buf_len;
- 	struct virtio_vsock_pkt *pkt;
- 	struct scatterlist hdr, buf, *sgs[2];
- 	struct virtqueue *vq;
-@@ -1003,6 +1011,22 @@ static struct virtio_driver virtio_vsock_driver = {
- 	.remove = virtio_vsock_remove,
- };
- 
-+static ssize_t sysfs_show(struct kobject *kobj,
-+		struct kobj_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%d", rx_buf_len);
-+}
-+
-+static ssize_t sysfs_store(struct kobject *kobj,
-+		struct kobj_attribute *attr, const char *buf, size_t count)
-+{
-+	if (kstrtou32(buf, 0, &rx_buf_len) < 0)
-+		return -EINVAL;
-+	if (rx_buf_len < 1024)
-+		rx_buf_len = 1024;
-+	return count;
-+}
-+
- static int __init virtio_vsock_init(void)
- {
- 	int ret;
-@@ -1020,8 +1044,17 @@ static int __init virtio_vsock_init(void)
- 	if (ret)
- 		goto out_vci;
- 
--	return 0;
-+	kobj_ref = kobject_create_and_add("vsock", kernel_kobj);
- 
-+	/*Creating sysfs file for etx_value*/
-+	ret = sysfs_create_file(kobj_ref, &rxbuf_attr.attr);
-+	if (ret)
-+		goto out_sysfs;
-+
-+	return 0;
-+out_sysfs:
-+	kobject_put(kobj_ref);
-+	sysfs_remove_file(kernel_kobj, &rxbuf_attr.attr);
- out_vci:
- 	vsock_core_unregister(&virtio_transport.transport);
- out_wq:
--- 
-2.11.0
+The changes are as follows:
 
+1.	RCU changes (for-mingo-rcu):
+
+	a.	Bitmap support for "all" as alias for all bits, and with
+		modifiers allowed, courtesy of Yury Norov.  This change
+		means that "rcu_nocbs=all:1/2" would offload all the
+		even-numbered CPUs regardless of the number of CPUs on
+		the system.
+		https://lore.kernel.org/lkml/20210511224115.GA2892092@paulmck-ThinkPad-P17-Gen-1
+
+	b.	Documentation updates.
+		https://lore.kernel.org/lkml/20210511224402.GA2892361@paulmck-ThinkPad-P17-Gen-1
+
+	c.	Miscellaneous fixes.
+		https://lore.kernel.org/lkml/20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1
+
+	d.	kvfree_rcu updates, courtesy of Uladzislau Rezki and Zhang Qiang.
+		https://lore.kernel.org/lkml/20210511225450.GA2893337@paulmck-ThinkPad-P17-Gen-1
+
+	e.	mm_dump_obj() updates, courtesy of Maninder Singh, acked
+		by Vlastimil Babka.
+		https://lore.kernel.org/lkml/20210511225744.GA2893615@paulmck-ThinkPad-P17-Gen-1
+
+	f.	RCU callback offloading updates, courtesy of Frederic
+		Weisbecker and Ingo Molnar.  ;-)
+		https://lore.kernel.org/lkml/20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1
+
+	g.	SRCU updates, courtesy of Frederic Weisbecker.
+		https://lore.kernel.org/lkml/20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1
+
+	h.	Tasks-RCU updates.
+		https://lore.kernel.org/lkml/20210511230924.GA2894768@paulmck-ThinkPad-P17-Gen-1
+
+	i.	Torture-test updates.
+		https://lore.kernel.org/lkml/20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1
+
+2.	Kernel concurrency sanitizer (KCSAN) updates from Marco Elver
+	and Mark Rutland (for-mingo-kcsan).
+	https://lore.kernel.org/lkml/20210511232324.GA2896130@paulmck-ThinkPad-P17-Gen-1
+
+3.	Linux-kernel memory model (LKMM) updates courtesy of Björn Töpel
+	(for-mingo-lkmm).
+	https://lore.kernel.org/lkml/20210305102823.415900-1-bjorn.topel@gmail.com
+
+All of the commits in this pull request have been subjected to subjected
+to the kbuild test robot and -next testing, and are available in the
+git repository based on v5.13-rc1 at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo
+
+for you to fetch changes up to 4b26c984195ecd203dd558226f2313b9582df851:
+
+  Merge branch 'lkmm.2021.05.10c' into HEAD (2021-05-18 10:59:54 -0700)
+
+----------------------------------------------------------------
+Akira Yokosawa (1):
+      kcsan: Use URL link for pointing access-marking.txt
+
+Arnd Bergmann (1):
+      kcsan: Fix debugfs initcall return type
+
+Björn Töpel (1):
+      tools/memory-model: Fix smp_mb__after_spinlock() spelling
+
+Frederic Weisbecker (17):
+      doc: Fix diagram references in memory-ordering document
+      rcu/nocb: Use the rcuog CPU's ->nocb_timer
+      timer: Revert "timer: Add timer_curr_running()"
+      srcu: Remove superfluous sdp->srcu_lock_count zero filling
+      srcu: Remove superfluous ssp initialization for early callbacks
+      srcu: Unconditionally embed struct lockdep_map
+      srcu: Initialize SRCU after timers
+      srcu: Fix broken node geometry after early ssp init
+      torture: Correctly fetch number of CPUs for non-English languages
+      rcu/nocb: Directly call __wake_nocb_gp() from bypass timer
+      rcu/nocb: Allow de-offloading rdp leader
+      rcu/nocb: Cancel nocb_timer upon nocb_gp wakeup
+      rcu/nocb: Delete bypass_timer upon nocb_gp wakeup
+      rcu/nocb: Only cancel nocb timer if not polling
+      rcu/nocb: Prepare for fine-grained deferred wakeup
+      rcu/nocb: Unify timers
+      srcu: Early test SRCU polling start
+
+Ingo Molnar (1):
+      rcu: Fix various typos in comments
+
+Jules Irenge (1):
+      rcu: Add missing __releases() annotation
+
+Maninder Singh (2):
+      mm/slub: Fix backtrace of objects to handle redzone adjustment
+      mm/slub: Add Support for free path information of an object
+
+Marco Elver (1):
+      kcsan: Document "value changed" line
+
+Mark Rutland (8):
+      kcsan: Simplify value change detection
+      kcsan: Distinguish kcsan_report() calls
+      kcsan: Refactor passing watchpoint/other_info
+      kcsan: Fold panic() call into print_report()
+      kcsan: Refactor access_info initialization
+      kcsan: Remove reporting indirection
+      kcsan: Remove kcsan_report_type
+      kcsan: Report observed value changes
+
+Paul E. McKenney (50):
+      doc: Fix statement of RCU's memory-ordering requirements
+      tools/rcu: Add drgn script to dump number of RCU callbacks
+      rcu-tasks: Add block comment laying out RCU Tasks design
+      rcu-tasks: Add block comment laying out RCU Rude design
+      torture: Fix remaining erroneous torture.sh instance of $*
+      torture: Add "scenarios" option to kvm.sh --dryrun parameter
+      torture: Make kvm-again.sh use "scenarios" rather than "batches" file
+      refscale: Allow CPU hotplug to be enabled
+      rcuscale: Allow CPU hotplug to be enabled
+      torture: Add kvm-remote.sh script for distributed rcutorture test runs
+      refscale: Add acqrel, lock, and lock-irq
+      rcutorture: Abstract read-lock-held checks
+      torture: Fix grace-period rate output
+      torture: Abstract end-of-run summary
+      torture: Make kvm.sh use abstracted kvm-end-run-stats.sh
+      torture:  Make the build machine control N in "make -jN"
+      torture: Make kvm-find-errors.sh account for kvm-remote.sh
+      rcutorture: Judge RCU priority boosting on grace periods, not callbacks
+      torture:  Set kvm.sh language to English
+      rcutorture: Delay-based false positives for RCU priority boosting tests
+      rcutorture: Consolidate rcu_torture_boost() timing and statistics
+      rcutorture: Make rcu_torture_boost_failed() check for GP end
+      rcutorture: Add BUSTED-BOOST to test RCU priority boosting tests
+      rcutorture: Forgive RCU boost failures when CPUs don't pass through QS
+      rcutorture: Don't count CPU-stalled time against priority boosting
+      torture: Make kvm-remote.sh account for network failure in pathname checks
+      torture: Don't cap remote runs by build-system number of CPUs
+      rcutorture: Move mem_dump_obj() tests into separate function
+      rcu: Remove the unused rcu_irq_exit_preempt() function
+      rcu: Invoke rcu_spawn_core_kthreads() from rcu_spawn_gp_kthread()
+      rcu: Add ->rt_priority and ->gp_start to show_rcu_gp_kthreads() output
+      rcu: Add ->gp_max to show_rcu_gp_kthreads() output
+      lockdep: Explicitly flag likely false-positive report
+      rcu: Reject RCU_LOCKDEP_WARN() false positives
+      rcu: Add quiescent states and boost states to show_rcu_gp_kthreads() output
+      rcu: Make RCU priority boosting work on single-CPU rcu_node structures
+      rcu: Make show_rcu_gp_kthreads() dump rcu_node structures blocking GP
+      rcu: Restrict RCU_STRICT_GRACE_PERIOD to at most four CPUs
+      rcu: Make rcu_gp_cleanup() be noinline for tracing
+      rcu: Point to documentation of ordering guarantees
+      rcu: Don't penalize priority boosting when there is nothing to boost
+      rcu: Create an unrcu_pointer() to remove __rcu from a pointer
+      rcu: Improve comments describing RCU read-side critical sections
+      rcu: Remove obsolete rcu_read_unlock() deadlock commentary
+      rcu-tasks: Make ksoftirqd provide RCU Tasks quiescent states
+      tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inline
+      Merge branches 'bitmaprange.2021.05.10c', 'doc.2021.05.10c', 'fixes.2021.05.13a', 'kvfree_rcu.2021.05.10c', 'mmdumpobj.2021.05.10c', 'nocb.2021.05.12a', 'srcu.2021.05.12a', 'tasks.2021.05.18a' and 'torture.2021.05.10c' into HEAD
+      kcsan: Add pointer to access-marking.txt to data_race() bullet
+      Merge branch 'kcsan.2021.05.18a' into HEAD
+      Merge branch 'lkmm.2021.05.10c' into HEAD
+
+Rolf Eike Beer (1):
+      rcu: Fix typo in comment: kthead -> kthread
+
+Uladzislau Rezki (Sony) (6):
+      kvfree_rcu: Use [READ/WRITE]_ONCE() macros to access to nr_bkv_objs
+      kvfree_rcu: Add a bulk-list check when a scheduler is run
+      kvfree_rcu: Update "monitor_todo" once a batch is started
+      kvfree_rcu: Use kfree_rcu_monitor() instead of open-coded variant
+      kvfree_rcu: Fix comments according to current code
+      kvfree_rcu: Refactor kfree_rcu_monitor()
+
+Yury Norov (2):
+      bitmap_parse: Support 'all' semantics
+      rcu/tree_plugin: Don't handle the case of 'all' CPU range
+
+Zhang Qiang (1):
+      kvfree_rcu: Release a page cache under memory pressure
+
+Zhouyi Zhou (1):
+      rcu: Improve tree.c comments and add code cleanups
+
+ .../Memory-Ordering/Tree-RCU-Memory-Ordering.rst   |   6 +-
+ Documentation/admin-guide/kernel-parameters.rst    |   5 +
+ Documentation/admin-guide/kernel-parameters.txt    |   5 +
+ Documentation/dev-tools/kcsan.rst                  |  93 +++---
+ include/linux/rcupdate.h                           |  84 +++---
+ include/linux/rcutiny.h                            |   1 -
+ include/linux/rcutree.h                            |   1 -
+ include/linux/srcu.h                               |   6 +
+ include/linux/srcutree.h                           |   2 -
+ include/linux/timer.h                              |   2 -
+ include/trace/events/rcu.h                         |   1 +
+ init/main.c                                        |   2 +
+ kernel/kcsan/core.c                                |  53 ++--
+ kernel/kcsan/debugfs.c                             |   3 +-
+ kernel/kcsan/kcsan.h                               |  39 ++-
+ kernel/kcsan/report.c                              | 169 +++++------
+ kernel/locking/lockdep.c                           |   6 +-
+ kernel/rcu/Kconfig.debug                           |   2 +-
+ kernel/rcu/rcu.h                                   |  14 +-
+ kernel/rcu/rcutorture.c                            | 315 +++++++++++----------
+ kernel/rcu/refscale.c                              | 109 ++++++-
+ kernel/rcu/srcutree.c                              |  28 +-
+ kernel/rcu/sync.c                                  |   4 +-
+ kernel/rcu/tasks.h                                 |  58 +++-
+ kernel/rcu/tiny.c                                  |   1 -
+ kernel/rcu/tree.c                                  | 313 +++++++++++---------
+ kernel/rcu/tree.h                                  |  14 +-
+ kernel/rcu/tree_plugin.h                           | 239 ++++++++--------
+ kernel/rcu/tree_stall.h                            |  84 +++++-
+ kernel/rcu/update.c                                |   8 +-
+ kernel/time/timer.c                                |  14 -
+ lib/bitmap.c                                       |   9 +
+ lib/test_bitmap.c                                  |   7 +
+ mm/oom_kill.c                                      |   2 +-
+ mm/slab.h                                          |   1 +
+ mm/slab_common.c                                   |  12 +-
+ mm/slub.c                                          |   8 +
+ mm/util.c                                          |   2 +-
+ tools/memory-model/Documentation/explanation.txt   |   2 +-
+ tools/rcu/rcu-cbs.py                               |  46 +++
+ .../testing/selftests/rcutorture/bin/kvm-again.sh  |  33 +--
+ .../testing/selftests/rcutorture/bin/kvm-build.sh  |   6 +-
+ .../selftests/rcutorture/bin/kvm-end-run-stats.sh  |  40 +++
+ .../selftests/rcutorture/bin/kvm-find-errors.sh    |   2 +-
+ .../selftests/rcutorture/bin/kvm-recheck-rcu.sh    |   2 +-
+ .../testing/selftests/rcutorture/bin/kvm-remote.sh | 249 ++++++++++++++++
+ tools/testing/selftests/rcutorture/bin/kvm.sh      |  61 ++--
+ tools/testing/selftests/rcutorture/bin/torture.sh  |   2 +-
+ .../selftests/rcutorture/configs/rcu/BUSTED-BOOST  |  17 ++
+ .../rcutorture/configs/rcu/BUSTED-BOOST.boot       |   8 +
+ .../selftests/rcutorture/configs/rcuscale/TREE     |   2 +-
+ .../selftests/rcutorture/configs/rcuscale/TREE54   |   2 +-
+ .../rcutorture/configs/refscale/NOPREEMPT          |   2 +-
+ .../selftests/rcutorture/configs/refscale/PREEMPT  |   2 +-
+ .../rcutorture/formal/srcu-cbmc/src/locks.h        |   2 +-
+ 55 files changed, 1434 insertions(+), 766 deletions(-)
+ create mode 100644 tools/rcu/rcu-cbs.py
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-remote.sh
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot
