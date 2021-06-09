@@ -2,116 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABA83A12B9
+	by mail.lfdr.de (Postfix) with ESMTP id 77A453A12BA
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239114AbhFIL3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:29:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23531 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238767AbhFIL3o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:29:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623238070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iF6jqZYlf/bv5JENXOK7CNcI0f9PC8RJLld/dQYmgdQ=;
-        b=MPSB8Pg9rBk5rHNwlG/35MMHhKWJHiwpKdoFpTT5MWZXMC9aIZoEsCXsyp9QWNKq6it53j
-        yF1MmlcXKBSvChlB481+VJGHasj0Kcq7I8P8k+zpByRMM3tTARm2LYFCEMYQ4vYbiWJwcM
-        6UpUYHDv2RxJrD8Rjd5jTr0t1KAxUcg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-266-VAXeNDIYOSKLe7jMaIY6SQ-1; Wed, 09 Jun 2021 07:27:48 -0400
-X-MC-Unique: VAXeNDIYOSKLe7jMaIY6SQ-1
-Received: by mail-wr1-f72.google.com with SMTP id x9-20020adfffc90000b02901178add5f60so10665865wrs.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:27:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=iF6jqZYlf/bv5JENXOK7CNcI0f9PC8RJLld/dQYmgdQ=;
-        b=dEsmQs3T8DSuCbgEcBXK5YasqvJHIGxoR/qUxotEeb21OtmaDJUG8dNkbrih7NP52i
-         gtAQUnkvUO13ftIrSx4azbBRPRJAAbPdSnK6v/QmMrCN5jZRyepD0ej5LjhT1zrhAwNh
-         lhifHwyxydNf0fapZqCqbWyCodlwCG2XVTskZZgwHM1STijOwPnLQ7wTDv6DMM7doAeg
-         /CSMDt8Jw+m/kneX1twDGwcMW1Wb7Se+Ehy7lJ+V3FEctxUbONwSRWeWQxNWwuYQq3lP
-         090w1h/pyNRbFCJBKDZJLdQqwdE20Av+3YOtWGW7Lj9AOZ/ETO15GKNnNLNA77xusgkP
-         V1iw==
-X-Gm-Message-State: AOAM533f9dvN59dr8d9CAP/78WuDAqSyW94ipt4u7UzeoNfZSSKU2r/T
-        3o+3cAo8TIlZrguyZJevHux19d44w4ApyiZ/0NWEhvUGTb5QQJbbCJxxhgbbAEk7Qh5DQjLL1i0
-        jSiWvDA5Z9GudiuE/aFjxZVXf
-X-Received: by 2002:a1c:bad6:: with SMTP id k205mr9512140wmf.171.1623238067800;
-        Wed, 09 Jun 2021 04:27:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyL7rALUqayOImlS1fyAzzBYx5tARF2xTQg0IXBsrMcuq9thrQ0YBslazZ4yV2ce3+8jWdrxA==
-X-Received: by 2002:a1c:bad6:: with SMTP id k205mr9512127wmf.171.1623238067600;
-        Wed, 09 Jun 2021 04:27:47 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
-        by smtp.gmail.com with ESMTPSA id n12sm8010868wrw.83.2021.06.09.04.27.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 04:27:47 -0700 (PDT)
-Subject: Re: [PATCH] mm: compaction: remove duplicate !list_empty(&sublist)
- check
-To:     Liu Xiang <liu.xiang@zlingsmart.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        liuxiang_1999@126.com
-References: <20210609095409.19920-1-liu.xiang@zlingsmart.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <bba6e865-ff2e-4c01-b95d-3b1a9e6dc0da@redhat.com>
-Date:   Wed, 9 Jun 2021 13:27:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S239122AbhFIL3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:29:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238767AbhFIL3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 07:29:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB89261364;
+        Wed,  9 Jun 2021 11:27:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623238073;
+        bh=4WJpXLFKQti9BHVRMa0Ik+rm/Abh/O7WH2yaXGpwWM4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oElFNQ7EJ3+JXsxOytsR4nnp+4ajArTXZ/mfOlg4QU1jR4PFm/4+K8MvATKR2+3Ne
+         TkwK+s1GyabjgV/uwihYD8eEYxCB9FEy+jPzDRXqg0UPfnzY8HUMko/O8opqe/z+Ru
+         aLmQ8W9vbytnyZ0uwjeMgri4zxLGM4h0Eh4ZEnvIBQnxA6LuMaSSRQ2IvRUYeziFW+
+         oX8Pp8Vtyw7Av8v5hGLlcd1A3IT0wZQ4CbDXiDe1hTltJMH3xNA4OEs7DAYO12XB3h
+         5l6t+hRdJPP3KloKCuVrhKIW1F4/GoKMt/DItgRMsAIRoz7hAMdC04BVaJZ9kD7A22
+         LgiapdfL4fRhw==
+Date:   Wed, 9 Jun 2021 13:27:50 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] sched: Add default dynamic preempt mode Kconfig
+Message-ID: <20210609112750.GC104634@lothringen>
+References: <20210608120442.93587-1-frederic@kernel.org>
+ <20210608120442.93587-2-frederic@kernel.org>
+ <YL92vbcw3ozRLycU@hirez.programming.kicks-ass.net>
+ <YL94/8cSr2R2wiTa@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210609095409.19920-1-liu.xiang@zlingsmart.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YL94/8cSr2R2wiTa@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.06.21 11:54, Liu Xiang wrote:
-> The list_splice_tail(&sublist, freelist) also do
-> !list_empty(&sublist) check, so remove the duplicate call.
+On Tue, Jun 08, 2021 at 04:04:47PM +0200, Peter Zijlstra wrote:
+> On Tue, Jun 08, 2021 at 03:55:09PM +0200, Peter Zijlstra wrote:
+> > Urgh, would something like this work?
+> > 
+> > ---
+> >  kernel/Kconfig.preempt | 64 ++++++++++++++++++++++++++++++++++++++++----------
+> >  1 file changed, 51 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
+> > index bd7c4147b9a8..43c68a806e4e 100644
+> > --- a/kernel/Kconfig.preempt
+> > +++ b/kernel/Kconfig.preempt
+> > @@ -1,11 +1,25 @@
+> >  # SPDX-License-Identifier: GPL-2.0-only
+> >  
+> > +config PREEMPT_COUNT
+> > +       bool
+> > +
+> > +config PREEMPTION
+> > +       bool
+> > +       select PREEMPT_COUNT
+> > +
+> > +config PREEMPT_DYNAMIC_OPTION
+> > +	bool
+> > +	help
+> > +	  Symbol that gates availablility of PREEMPT_DYNAMIC, selected
+> > +	  by preemption models that can be dynamically selected.
+> > +
+> >  choice
+> >  	prompt "Preemption Model"
+> > +	default PREEMPT_TYPE_NONE
+> >  
+> > +config PREEMPT_TYPE_NONE
+> >  	bool "No Forced Preemption (Server)"
+> > +	select PREEMPT_DYNAMIC_OPTION if HAVE_PREEMPT_DYNAMIC
+> >  	help
+> >  	  This is the traditional Linux preemption model, geared towards
+> >  	  throughput. It will still provide good latencies most of the
+> > @@ -17,9 +31,10 @@ config PREEMPT_NONE
+> >  	  raw processing power of the kernel, irrespective of scheduling
+> >  	  latencies.
+> >  
+> > +config PREEMPT_TYPE_VOLUNTARY
+> >  	bool "Voluntary Kernel Preemption (Desktop)"
+> >  	depends on !ARCH_NO_PREEMPT
+> > +	select PREEMPT_DYNAMIC_OPTION if HAVE_PREEMPT_DYNAMIC
+> >  	help
+> >  	  This option reduces the latency of the kernel by adding more
+> >  	  "explicit preemption points" to the kernel code. These new
+> > @@ -35,12 +50,10 @@ config PREEMPT_VOLUNTARY
+> >  
+> >  	  Select this if you are building a kernel for a desktop system.
+> >  
+> > -config PREEMPT
+> > +config PREEMPT_TYPE_FULL
+> >  	bool "Preemptible Kernel (Low-Latency Desktop)"
+> >  	depends on !ARCH_NO_PREEMPT
+> > +	select PREEMPT_DYNAMIC_OPTION if HAVE_PREEMPT_DYNAMIC
+> >  	help
+> >  	  This option reduces the latency of the kernel by making
+> >  	  all kernel code (that is not executing in a critical section)
+> > @@ -75,15 +88,24 @@ config PREEMPT_RT
+> >  
+> >  endchoice
+> >  
+> > +# default model for PREEMPT_DYNAMIC
+> >  
+> > +config PREEMPT_DYNAMIC_NONE
+> > +	bool
+> >  
+> > +config PREEMPT_DYNAMIC_VOLUNTARY
+> > +	bool
+> > +
+> > +config PREEMPT_DYNAMIC_FULL
+> >  	bool
+> > +
+> > +config PREEMPT_DYNAMIC
+> > +	bool "Dynamic Preemption Mode"
+> > +	depends on PREEMPT_DYNAMIC_OPTION
+> > +	select PREEMPT
+> > +	select PREEMPT_DYNAMIC_NONE if PREEMPT_TYPE_NONE
+> > +	select PREEMPT_DYNAMIC_VOLUNTARY if PREEMPT_TYPE_VOLUNTARY
+> > +	select PREEMPT_DYNAMIC_FULL if PREEMPT_TYPE_FULL
 > 
-> Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
-> ---
->   mm/compaction.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 84fde270a..5b1dc832f 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1297,8 +1297,7 @@ move_freelist_head(struct list_head *freelist, struct page *freepage)
->   
->   	if (!list_is_last(freelist, &freepage->lru)) {
->   		list_cut_before(&sublist, freelist, &freepage->lru);
-> -		if (!list_empty(&sublist))
-> -			list_splice_tail(&sublist, freelist);
-> +		list_splice_tail(&sublist, freelist);
->   	}
->   }
->   
-> @@ -1315,8 +1314,7 @@ move_freelist_tail(struct list_head *freelist, struct page *freepage)
->   
->   	if (!list_is_first(freelist, &freepage->lru)) {
->   		list_cut_position(&sublist, freelist, &freepage->lru);
-> -		if (!list_empty(&sublist))
-> -			list_splice_tail(&sublist, freelist);
-> +		list_splice_tail(&sublist, freelist);
->   	}
->   }
->   
-> 
+> Arguably PREEMPT_DYNAMIC_{NONE,VOLUNTARY,FULL} are superfluous and the
+> default selection can use PREEMPT_TYPE_*.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Right, I'll try that.
 
--- 
-Thanks,
-
-David / dhildenb
-
+Thanks.
