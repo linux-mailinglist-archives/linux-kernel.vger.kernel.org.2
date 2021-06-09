@@ -2,94 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D943A1241
+	by mail.lfdr.de (Postfix) with ESMTP id BEA433A1242
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238871AbhFILV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S238896AbhFILVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:21:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238881AbhFILV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Jun 2021 07:21:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41630 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238815AbhFILV0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:21:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623237572;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HXqVwTnASpC+nIzC1ZP9Vkwf/4P5Ctyk3R0WhAf1tMM=;
-        b=NQXcl1rs9zgP5a3IY+S/jiBkWk5hmI0VsaWcJRqkG4vp//lH+mKwq0GwRrWhH8ktQ1grZx
-        UwCqCWFR9BK5x76F+7i4y93x1HGHkFY3uSv222UuV/XQSskOJs9wpTJqiVemUxWlVd31ZO
-        PNGGzuNHy4YhiVid708/7wcCiDkTSD0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-517-6V9Xgfd6NWGZzNZhnSiq-Q-1; Wed, 09 Jun 2021 07:19:31 -0400
-X-MC-Unique: 6V9Xgfd6NWGZzNZhnSiq-Q-1
-Received: by mail-wr1-f72.google.com with SMTP id e11-20020a056000178bb0290119c11bd29eso5769344wrg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:19:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=HXqVwTnASpC+nIzC1ZP9Vkwf/4P5Ctyk3R0WhAf1tMM=;
-        b=K4+i9lAaYvzkujj9TO43vvTrhX11jGMhz/v7eW1moEZuSo46TfNLl1+09pcO+m5Vmt
-         6k0ZmtbqY2frr44JFlkLPgQMG69KPqeDNaFL1OY022YYPMFAW8L/0cWhi/tCP/HwRsqw
-         ENdLX6M2RNEYB/12TcS0oviYQo3ViWs+Q1M+CN32F1bVYxstI3JZn9X8oH1K3UQ7/twN
-         eW1iIOfaH3GCwrhym1dnKja/4USM2eDl+697TuuQGP6NrdYLcHIddeQkGODeB0wf0tkM
-         hv6lK5/YR7L5nOHnm7JXgF//bos4Jt3H0PYQYKBdM77qoO2GQ5NHnGvAkXtFiNDQipF6
-         FppQ==
-X-Gm-Message-State: AOAM532rvpPC3bqq35fCoVDgfW9QXNbHv94twtV9uQtMs2f50LJO/il3
-        1fVM0GZ10IPFLKaPaPhK1j9xiG/QSwMEHVkbwUYyOL/KkrpRgG6k/eFTURGw6tK58BLOTH5kGH9
-        nYo8MA9rsZ2f/T15SUbpsZg6L
-X-Received: by 2002:a7b:c4d0:: with SMTP id g16mr9269543wmk.147.1623237570011;
-        Wed, 09 Jun 2021 04:19:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxkQ4yaJtDvcqAOFQCE+NtOTgjEw4SoDiwEa4p8GZrxX++FSnSA2ZvZ0jnJ+v5Fcx7Ma1E2A==
-X-Received: by 2002:a7b:c4d0:: with SMTP id g16mr9269528wmk.147.1623237569795;
-        Wed, 09 Jun 2021 04:19:29 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
-        by smtp.gmail.com with ESMTPSA id h6sm14828393wrt.20.2021.06.09.04.19.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 04:19:29 -0700 (PDT)
-Subject: Re: how to return a chunk of kernel .data to free mem ?
-To:     jim.cromie@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Jason Baron <jbaron@akamai.com>
-References: <CAJfuBxxo5hQLK36J1yL2MV3Zkfdnk=OmGh6Fms1adjB0GWULqA@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <196e42a7-d50f-48e0-b4bd-e7f3701bfc6d@redhat.com>
-Date:   Wed, 9 Jun 2021 13:19:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <CAJfuBxxo5hQLK36J1yL2MV3Zkfdnk=OmGh6Fms1adjB0GWULqA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54E4361040;
+        Wed,  9 Jun 2021 11:19:34 +0000 (UTC)
+Received: from 82-132-234-177.dab.02.net ([82.132.234.177] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lqwFA-006T4w-5o; Wed, 09 Jun 2021 12:19:32 +0100
+Date:   Wed, 09 Jun 2021 12:19:31 +0100
+Message-ID: <874ke7z3ng.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v14 1/8] arm64: mte: Handle race when synchronising tags
+In-Reply-To: <e65943cb-9643-c973-9626-ebf56723ea14@arm.com>
+References: <20210607110816.25762-1-steven.price@arm.com>
+        <20210607110816.25762-2-steven.price@arm.com>
+        <875yynz5wp.wl-maz@kernel.org>
+        <e65943cb-9643-c973-9626-ebf56723ea14@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 82.132.234.177
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.06.21 16:50, jim.cromie@gmail.com wrote:
-> I have convinced DYNAMIC_DEBUG code to not need
-> about 15% of its __dyndbg section, about 30kb on my test kernel.
+On Wed, 09 Jun 2021 11:51:34 +0100,
+Steven Price <steven.price@arm.com> wrote:
 > 
-> This memory is not kmalloc'd, so krealloc wont work.
-> (I tried anyway, on a loaded module, it panicd)
+> On 09/06/2021 11:30, Marc Zyngier wrote:
+> > On Mon, 07 Jun 2021 12:08:09 +0100,
+> > Steven Price <steven.price@arm.com> wrote:
+> >>
+> >> mte_sync_tags() used test_and_set_bit() to set the PG_mte_tagged flag
+> >> before restoring/zeroing the MTE tags. However if another thread were to
+> >> race and attempt to sync the tags on the same page before the first
+> >> thread had completed restoring/zeroing then it would see the flag is
+> >> already set and continue without waiting. This would potentially expose
+> >> the previous contents of the tags to user space, and cause any updates
+> >> that user space makes before the restoring/zeroing has completed to
+> >> potentially be lost.
+> >>
+> >> Since this code is run from atomic contexts we can't just lock the page
+> >> during the process. Instead implement a new (global) spinlock to protect
+> >> the mte_sync_page_tags() function.
+> >>
+> >> Fixes: 34bfeea4a9e9 ("arm64: mte: Clear the tags when a page is mapped in user-space with PROT_MTE")
+> >> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> >> Signed-off-by: Steven Price <steven.price@arm.com>
+> >> ---
+> >>  arch/arm64/kernel/mte.c | 20 +++++++++++++++++---
+> >>  1 file changed, 17 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> >> index 125a10e413e9..a3583a7fd400 100644
+> >> --- a/arch/arm64/kernel/mte.c
+> >> +++ b/arch/arm64/kernel/mte.c
+> >> @@ -25,6 +25,7 @@
+> >>  u64 gcr_kernel_excl __ro_after_init;
+> >>  
+> >>  static bool report_fault_once = true;
+> >> +static DEFINE_SPINLOCK(tag_sync_lock);
+> >>  
+> >>  #ifdef CONFIG_KASAN_HW_TAGS
+> >>  /* Whether the MTE asynchronous mode is enabled. */
+> >> @@ -34,13 +35,22 @@ EXPORT_SYMBOL_GPL(mte_async_mode);
+> >>  
+> >>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+> >>  {
+> >> +	unsigned long flags;
+> >>  	pte_t old_pte = READ_ONCE(*ptep);
+> >>  
+> >> +	spin_lock_irqsave(&tag_sync_lock, flags);
+> > 
+> > having though a bit more about this after an offline discussion with
+> > Catalin: why can't this lock be made per mm? We can't really share
+> > tags across processes anyway, so this is limited to threads from the
+> > same process.
 > 
-> Is there a way to return a chunk of init .data memory to general use ?
-> 
-> heres the patchset;
-> https://lore.kernel.org/lkml/20210529200029.205306-1-jim.cromie@gmail.com/
-> 
+> Currently there's nothing stopping processes sharing tags (mmap(...,
+> PROT_MTE, MAP_SHARED)) - I agree making use of this is tricky and it
+> would have been nice if this had just been prevented from the
+> beginning.
 
-Hm, you could try free_reserved_page(). But obviously, only full pages 
-can be handed to the buddy.
+I don't think it should be prevented. I think it should be made clear
+that it is unreliable and that it will result in tag corruption.
+
+> Given the above, clearly the lock can't be per mm and robust.
+
+I don't think we need to make it robust. The architecture actively
+prevents sharing if the tags are also shared, just like we can't
+really expect the VMM to share tags with the guest.
+
+> > I'd also like it to be documented that page sharing can only reliably
+> > work with tagging if only one of the mappings is using tags.
+> 
+> I'm not entirely clear whether you mean "can only reliably work" to be
+> "is practically impossible to coordinate tag values", or whether you are
+> proposing to (purposefully) introduce the race with a per-mm lock? (and
+> document it).
+
+The latter. You can obviously communicate your tags to another task,
+but this should come with attached restrictions (mlock?).
+
+> I guess we could have a per-mm lock and handle the race if user space
+> screws up with the outcome being lost tags (double clear).
+> 
+> But it feels to me like it could come back to bite in the future since
+> VM_SHARED|VM_MTE will almost always work and I fear someone will start
+> using it since it's permitted by the kernel.
+
+I'm really worried that performance is going to suck even on a small
+system, and this global lock will be heavily contended, even without
+considering KVM.
+
+Catalin, any though?
+
+	M.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Without deviation from the norm, progress is not possible.
