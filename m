@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7123A0952
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767F33A0973
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236022AbhFIBf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 21:35:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235919AbhFIBfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 21:35:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 272CC61208;
-        Wed,  9 Jun 2021 01:33:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623202432;
-        bh=v156cAft9LyaIoQEz4RJ53s9TOtRVo94rIr9C4Gt/S0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ZDdVMHcebRQRJXL2EjGMYHZ+KFW0qzjqGMOna1/+HD1mMaDNlCXxKv2eCtwyHz0Fy
-         armkRNmqRMF965QVfNDxLj1VgopMvcgYL5Kcnk3mQVpYmRlj6c/DBCrymK3JbqNNTZ
-         dxwtJKnr1UTdQWt9uOVEYQkvr959w2QjF72iJ70GPDgceqjt5KqH2Khs0Z74/tPnYi
-         we+idD+gy8uEmrMekaSH5z7lYL6mRu6L6oeN+zE5Nqq+cP3xsoLgP+thIgXM79M3/F
-         3+sFQijB7hC08mSsDRXARm92O7/KzawF4fTcilL9JzO4j0bXWOGZRVMApCj9iiijno
-         rHxnVyyNUdErQ==
-Message-ID: <1190c96c38df650d7fdf3aa6d12674359ad16e51.camel@kernel.org>
-Subject: Re: [PATCH v2] net/mlx5e: Fix an error code in
- mlx5e_arfs_create_tables()
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     leon@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 08 Jun 2021 18:33:51 -0700
-In-Reply-To: <1622801307-34745-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1622801307-34745-1-git-send-email-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        id S235378AbhFIBhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 21:37:18 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8097 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236006AbhFIBhI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 21:37:08 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G08jh2H0szYsVg;
+        Wed,  9 Jun 2021 09:32:24 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 09:35:06 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 09:35:06 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v2 0/1] lib: Fix spelling mistakes in header files
+Date:   Wed, 9 Jun 2021 09:34:50 +0800
+Message-ID: <20210609013451.13706-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-06-04 at 18:08 +0800, Yang Li wrote:
-> When the code execute 'if (!priv->fs.arfs->wq)', the value of err is
-> 0.
-> So, we use -ENOMEM to indicate that the function
-> create_singlethread_workqueue() return NULL.
-> 
-> Clean up smatch warning:
-> drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c:373
-> mlx5e_arfs_create_tables() warn: missing error code 'err'.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Fixes: f6755b80d693 ("net/mlx5e: Dynamic alloc arfs table for netdev
-> when needed")
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
-> 
-> Changes in v2:
-> --According to Saeed's suggestion, we modify the format of Fixes tag,
-> --and initialize err to -ENOMEM.
-> https://lore.kernel.org/patchwork/patch/1440018/
-> 
+v1 --> v2:
+Add a new fix: stroed/stored, in include/linux/bootconfig.h
 
-applied to net-mlx5.
+v1:
+include/linux/nodemask.h		--> lib/nodemask.c
+include/linux/bootconfig.h		--> lib/bootconfig.c
+include/linux/percpu-refcount.h		--> lib/percpu-refcount.c
+include/linux/scatterlist.h		--> lib/scatterlist.c
+include/linux/debugobjects.h		--> lib/debugobjects.c
+include/linux/lru_cache.h		--> lib/lru_cache.c
+include/linux/cpumask.h			--> lib/cpumask.c
 
-thanks !
+Zhen Lei (1):
+  lib: Fix spelling mistakes in header files
+
+ include/linux/bootconfig.h      | 4 ++--
+ include/linux/cpumask.h         | 2 +-
+ include/linux/debugobjects.h    | 2 +-
+ include/linux/lru_cache.h       | 8 ++++----
+ include/linux/nodemask.h        | 6 +++---
+ include/linux/percpu-refcount.h | 2 +-
+ include/linux/scatterlist.h     | 2 +-
+ 7 files changed, 13 insertions(+), 13 deletions(-)
+
+-- 
+2.25.1
+
 
