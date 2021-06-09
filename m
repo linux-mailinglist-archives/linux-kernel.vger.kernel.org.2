@@ -2,50 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA7D3A0D96
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13EA53A0D9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237197AbhFIHUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:20:51 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5465 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235479AbhFIHUt (ORCPT
+        id S237243AbhFIHV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:21:29 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:5348 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235549AbhFIHV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:20:49 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0JLD0FbszZfb0;
-        Wed,  9 Jun 2021 15:16:04 +0800 (CST)
+        Wed, 9 Jun 2021 03:21:26 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G0JKk74MWz6ttj;
+        Wed,  9 Jun 2021 15:15:38 +0800 (CST)
 Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 15:18:53 +0800
+ 15.1.2176.2; Wed, 9 Jun 2021 15:19:30 +0800
 Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
  (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 15:18:53 +0800
+ 15:19:29 +0800
 From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
 CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
         <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, <dmaengine@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next v2] dmaengine: fsl-dpaa2-qdma: Use list_move_tail instead of list_del/list_add_tail
-Date:   Wed, 9 Jun 2021 15:28:02 +0800
-Message-ID: <20210609072802.1368785-1-libaokun1@huawei.com>
+        <libaokun1@huawei.com>, <linux-arm-msm@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-media@vger.kernel.org>,
+        <linaro-mm-sig@lists.linaro.org>,
+        <kernel-janitors@vger.kernel.org>, "Hulk Robot" <hulkci@huawei.com>
+Subject: [PATCH -next v2] drm/msm: Use list_move_tail instead of list_del/list_add_tail in msm_gem.c
+Date:   Wed, 9 Jun 2021 15:28:38 +0800
+Message-ID: <20210609072838.1369371-1-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Type:   text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpeml500020.china.huawei.com (7.185.36.88)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_move_tail() instead of list_del() + list_add_tail().
+Using list_move_tail() instead of list_del() + list_add_tail() in msm_gem.c.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
@@ -53,33 +59,21 @@ Signed-off-by: Baokun Li <libaokun1@huawei.com>
 V1->V2:
 	CC mailist
 
- drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/msm/msm_gem.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-index 4ae057922ef1..a0358f2c5cbb 100644
---- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-+++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-@@ -291,9 +291,8 @@ static void dpaa2_qdma_issue_pending(struct dma_chan *chan)
- 
- 		err = dpaa2_io_service_enqueue_fq(NULL, dpaa2_chan->fqid, fd);
- 		if (err) {
--			list_del(&dpaa2_comp->list);
--			list_add_tail(&dpaa2_comp->list,
--				      &dpaa2_chan->comp_free);
-+			list_move_tail(&dpaa2_comp->list,
-+				       &dpaa2_chan->comp_free);
- 		}
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index 1865919368f2..5b7d63d3750a 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -854,8 +854,7 @@ void msm_gem_active_get(struct drm_gem_object *obj, struct msm_gpu *gpu)
+ 		mutex_lock(&priv->mm_lock);
+ 		if (msm_obj->evictable)
+ 			mark_unevictable(msm_obj);
+-		list_del(&msm_obj->mm_list);
+-		list_add_tail(&msm_obj->mm_list, &gpu->active_list);
++		list_move_tail(&msm_obj->mm_list, &gpu->active_list);
+ 		mutex_unlock(&priv->mm_lock);
  	}
- err_enqueue:
-@@ -626,8 +625,7 @@ static void dpaa2_qdma_free_desc(struct virt_dma_desc *vdesc)
- 	dpaa2_comp = to_fsl_qdma_comp(vdesc);
- 	qchan = dpaa2_comp->qchan;
- 	spin_lock_irqsave(&qchan->queue_lock, flags);
--	list_del(&dpaa2_comp->list);
--	list_add_tail(&dpaa2_comp->list, &qchan->comp_free);
-+	list_move_tail(&dpaa2_comp->list, &qchan->comp_free);
- 	spin_unlock_irqrestore(&qchan->queue_lock, flags);
  }
- 
 
