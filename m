@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8833A1DE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 21:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F773A1DE7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhFIT7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 15:59:31 -0400
-Received: from mail-pf1-f173.google.com ([209.85.210.173]:43847 "EHLO
-        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbhFIT7b (ORCPT
+        id S229638AbhFIUCI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 16:02:08 -0400
+Received: from hosting.gsystem.sk ([212.5.213.30]:42590 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229504AbhFIUCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 15:59:31 -0400
-Received: by mail-pf1-f173.google.com with SMTP id m7so6426441pfa.10
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 12:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ed3c0CY6+ZiTf8IgpI3kXf3HcsCngM7z14+9/Ftg5SE=;
-        b=iAnBkfqu6IpZOHIQ9qwPj68RXJTgOIX/Pny9DDjzHNjHvSjw7+a5U/YiDcyskXJ5cV
-         MYvniHJ4OxJQ6VBZOLHnhlKb9pRLoaP6jO1VT+Uwn0xhuYYh3WaN1gtVKAh37kzqxXml
-         JLIRC/M4xWWeLXLfxEfnwV/7v+JkZXaro+2c5EI2smEroaRC2JEhYzzMAE//A5hKI8l6
-         /NGIGe83+SXoEiWUVmRLZlwpqgT14Q9aUw1ho737/uZA2BWQ971gd0p1wM2CuBVtJFSQ
-         ldaQt8UMlBRfHm73apH+Y30XBsf54t9J1HVRCNoIkUCSpr7XqyezcGzzlEmZhzZ+b4Rh
-         YQuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ed3c0CY6+ZiTf8IgpI3kXf3HcsCngM7z14+9/Ftg5SE=;
-        b=l3JhRLa4UjP260tOMtM5QbA5OWG9x2Iz98wPVyzLNX3qroaea3m4ORnqHqA3Zj6Ec6
-         3V+BwzcbGIh/+aDVrgV2o4EgMldIYQKQ0gEcm7S14FJNobRF+vtVVGkfdVgdF0enWQ2K
-         MMzhXrjWBU/DBSkfZlKCeUCnxtK13FU1E4sY4ssEutdz346Ug0uuedz/X2N/lRpzNK9R
-         hsG1YmjCuaUwNucw1YH5lTErIt63R/c/euxTZCmk60y45o102Ofzjo/7qPmgUKzscJYB
-         cOmRPcuFYFl/rkEsT0pX01UqMKwI/oj+b8Y91sa77HOfxqy3TZs3d20X+5LejmAHdPhS
-         H7Xg==
-X-Gm-Message-State: AOAM531VC4tScCVb+r7LFOj3q3fydt0yHPFI2Leca22IxminQTolX+tP
-        DDBbh+up7Lhuc058WCXiGDj5HAJo6UrUtDEqJHjRBA==
-X-Google-Smtp-Source: ABdhPJxDJ/e/nzDP4k49vLkESWIf4iyvke2cp/k6UU8JGvGgWmYdgvNJPiY51jIJT4i+Rr9VpLd2zSJ87fKD4mXGN8E=
-X-Received: by 2002:aa7:952b:0:b029:2e9:eef1:8e17 with SMTP id
- c11-20020aa7952b0000b02902e9eef18e17mr1408582pfp.70.1623268596069; Wed, 09
- Jun 2021 12:56:36 -0700 (PDT)
+        Wed, 9 Jun 2021 16:02:07 -0400
+Received: from [192.168.0.2] (188-167-68-178.dynamic.chello.sk [188.167.68.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id B87917A025C;
+        Wed,  9 Jun 2021 22:00:10 +0200 (CEST)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Christian =?utf-8?q?K=C3=B6nig?= <christian.koenig@amd.com>
+Subject: Re: nouveau broken on Riva TNT2 in 5.13.0-rc4: NULL pointer dereference in nouveau_bo_sync_for_device
+Date:   Wed, 9 Jun 2021 22:00:07 +0200
+User-Agent: KMail/1.9.10
+Cc:     Ben Skeggs <bskeggs@redhat.com>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <202106052143.52488.linux@zary.sk> <202106090910.51188.linux@zary.sk> <762c1044-6e3a-48fc-95e4-1730b6ef2a2e@amd.com>
+In-Reply-To: <762c1044-6e3a-48fc-95e4-1730b6ef2a2e@amd.com>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-References: <973add45-9fd2-7abc-3a97-96a26c263ea0@linux.intel.com> <20210609194926.1949859-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20210609194926.1949859-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 9 Jun 2021 12:56:25 -0700
-Message-ID: <CAPcyv4gQiSLdyXiBB+3zz7=eOX1C0Uuo47846sb675hSZ0GHiQ@mail.gmail.com>
-Subject: Re: [RFC v2-fix-v5 1/1] x86: Skip WBINVD instruction for VM guest
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
+Message-Id: <202106092200.08088.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ add back linux-acpi and Rafael ]
+On Wednesday 09 June 2021 11:21:05 Christian König wrote:
+> Am 09.06.21 um 09:10 schrieb Ondrej Zary:
+> > On Wednesday 09 June 2021, Christian König wrote:
+> >> Am 09.06.21 um 08:57 schrieb Ondrej Zary:
+> >>> [SNIP]
+> >>>> Thanks for the heads up. So the problem with my patch is already fixed,
+> >>>> isn't it?
+> >>> The NULL pointer dereference in nouveau_bo_wr16 introduced in
+> >>> 141b15e59175aa174ca1f7596188bd15a7ca17ba was fixed by
+> >>> aea656b0d05ec5b8ed5beb2f94c4dd42ea834e9d.
+> >>>
+> >>> That's the bug I hit when bisecting the original problem:
+> >>> NULL pointer dereference in nouveau_bo_sync_for_device
+> >>> It's caused by:
+> >>> # first bad commit: [e34b8feeaa4b65725b25f49c9b08a0f8707e8e86] drm/ttm: merge ttm_dma_tt back into ttm_tt
+> >> Good that I've asked :)
+> >>
+> >> Ok that's a bit strange. e34b8feeaa4b65725b25f49c9b08a0f8707e8e86 was
+> >> created mostly automated.
+> >>
+> >> Do you have the original backtrace of that NULL pointer deref once more?
+> > The original backtrace is here: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flkml.org%2Flkml%2F2021%2F6%2F5%2F350&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Ce905b6bd2aa842ace15508d92b15b96d%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637588195000729460%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=zFqheBbJcOHtYgqG%2Fs63AT1dwuk4REmUDJWHvzaLAlc%3D&amp;reserved=0
+> 
+> And the problem is that ttm_dma->dma_address is NULL, right? Mhm, I 
+> don't see how that can happen since nouveau is using ttm_sg_tt_init().
+> 
+> Apart from that what nouveau does here is rather questionable since you 
+> need a coherent architecture for most things anyway, but that's not what 
+> we are trying to fix here.
+> 
+> Can you try to narrow down if ttm_sg_tt_init is called before calling 
+> this function for the tt object in question?
+
+ttm_sg_tt_init is not called:
+[   12.150124] nouveau 0000:01:00.0: DRM: VRAM: 31 MiB
+[   12.150133] nouveau 0000:01:00.0: DRM: GART: 128 MiB
+[   12.150143] nouveau 0000:01:00.0: DRM: BMP version 5.6
+[   12.150151] nouveau 0000:01:00.0: DRM: No DCB data found in VBIOS
+[   12.151362] ttm_tt_init
+[   12.151370] ttm_tt_init_fields
+[   12.151374] ttm_tt_alloc_page_directory
+[   12.151615] BUG: kernel NULL pointer dereference, address: 00000000
 
 
-On Wed, Jun 9, 2021 at 12:49 PM Kuppuswamy Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
-> VM guests that supports ACPI, use standard ACPI mechanisms to
-> signal sleep state entry (including reboot) to the host. The
-> ACPI specification mandates WBINVD on any sleep state entry
-> with the expectation that the platform is only responsible for
-> maintaining the state of memory over sleep states, not
-> preserving dirty data in any CPU caches. ACPI cache flushing
-> requirements pre-date the advent of virtualization. Given guest
-> sleep state entry does not affect any host power rails it is not
-> required to flush caches. The host is responsible for maintaining
-> cache state over its own bare metal sleep state transitions that
-> power-off the cache. A TDX guest, unlike a typical guest, will
-> machine check if the CPU cache is powered off.
 
-Looks like you are wrapping at column 62 than 72, double check that
-for the final submission of this series. Other than that this looks
-good to me.
-
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+-- 
+Ondrej Zary
