@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AAD83A1F75
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA16A3A1F76
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbhFIV5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:57:43 -0400
+        id S229972AbhFIV5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:57:45 -0400
 Received: from mga03.intel.com ([134.134.136.65]:1779 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229542AbhFIV5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:57:42 -0400
-IronPort-SDR: puh5ZZ5fhmdtztwCwtWZWVHLw0UwONT2+4V6N9JDdPMOXBEghIzAQIk6xXld07gfkCgK6uITqB
- vHVpHJ5p96Ww==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="205208536"
+        id S229782AbhFIV5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:57:43 -0400
+IronPort-SDR: /ltOot0OMftvMiCQumT9G89phkfY5u0hMpW4tYhiasKiUJHasLz2+G3PcaZTB1bAkyRnxB7ert
+ xPOZWr4Rezug==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="205208539"
 X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="205208536"
+   d="scan'208";a="205208539"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:55:47 -0700
-IronPort-SDR: /+jQjvMFUSsS6g98hbXX4WwOVC66BIVbktcC2my5BuFvhvKm5GIIFoW47OsUlVn11Ie8XzQ4KL
- 1mgBHjPA+f/A==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:55:48 -0700
+IronPort-SDR: 0KXUcpfCJGGjPbrNTPJ7W9HmdSj0TfnAyYlgI57gQQSjm+9RNsYebfQgDm0Fyid9O9at9pgN7U
+ +UcItsrhZGqg==
 X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="482555055"
+   d="scan'208";a="482555063"
 Received: from qwang4-mobl1.ccr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.35.228])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:55:45 -0700
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:55:47 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -38,70 +38,190 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 0/7] Add TDX Guest Support (shared-mm support)
-Date:   Wed,  9 Jun 2021 14:55:30 -0700
-Message-Id: <20210609215537.1956150-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v1 1/7] x86/mm: Move force_dma_unencrypted() to common code
+Date:   Wed,  9 Jun 2021 14:55:31 -0700
+Message-Id: <20210609215537.1956150-2-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210609215537.1956150-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20210609215537.1956150-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
-hosts and some physical attacks. Since VMM is untrusted entity, it does
-not allow VMM to access guest private memory. Any memory that is required
-for communication with VMM must be shared explicitly. This series adds
-support to securely share guest memory with VMM when it is required by
-guest.
+Intel TDX doesn't allow VMM to access guest private memory.
+Any memory that is required for communication with VMM must
+be shared explicitly by setting the bit in page table entry.
+After setting the shared bit, the conversion must be completed
+with MapGPA hypercall. You can find details about MapGPA
+hypercall in [1], sec 3.2.
 
-This series is the continuation of the patch series titled "Add TDX Guest
-Support (Initial support)", "Add TDX Guest Support (#VE handler support)"
-and "Add TDX Guest Support (boot fixes)" which added initial support,
- #VE handler support and boot fixes for TDX guests. You  can find the
-related patchsets in the following links.
+The call informs VMM about the conversion between
+private/shared mappings. The shared memory is similar to
+unencrypted memory in AMD SME/SEV terminology but the
+underlying process of sharing/un-sharing the memory is
+different for Intel TDX guest platform.
 
-https://lore.kernel.org/patchwork/project/lkml/list/?series=502143
-https://lore.kernel.org/patchwork/project/lkml/list/?series=503701
-https://lore.kernel.org/patchwork/project/lkml/list/?series=503702
+SEV assumes that I/O devices can only do DMA to "decrypted"
+physical addresses without the C-bit set. In order for the CPU
+to interact with this memory, the CPU needs a decrypted mapping.
+To add this support, AMD SME code forces force_dma_unencrypted()
+to return true for platforms that support AMD SEV feature. It
+will be used for DMA memory allocation API to trigger
+set_memory_decrypted() for platforms that support AMD SEV
+feature.
 
-Also please note that this series alone is not necessarily fully
-functional. You need to apply all the above 3 patch series to get
-a fully functional TDX guest.
+TDX is similar. So, to communicate with I/O devices, related
+pages need to be marked as shared. As mentioned above, shared
+memory in TDX architecture is similar to decrypted memory in
+AMD SME/SEV. So similar to AMD SEV, force_dma_unencrypted() has
+to forced to return true. This support is added in other patches
+in this series.
 
-You can find TDX related documents in the following link.
+So move force_dma_unencrypted() out of AMD specific code and call
+AMD specific (amd_force_dma_unencrypted()) initialization function
+from it. force_dma_unencrypted() will be modified by later patches
+to include Intel TDX guest platform specific initialization.
 
-https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
+Also, introduce new config option X86_MEM_ENCRYPT_COMMON that has
+to be selected by all x86 memory encryption features. This will be
+selected by both AMD SEV and Intel TDX guest config options.
 
-Isaku Yamahata (1):
-  x86/tdx: ioapic: Add shared bit for IOAPIC base address
+This is preparation for TDX changes in DMA code and it has no
+functional change.
 
-Kirill A. Shutemov (6):
-  x86/mm: Move force_dma_unencrypted() to common code
-  x86/tdx: Exclude Shared bit from physical_mask
-  x86/tdx: Make pages shared in ioremap()
-  x86/tdx: Add helper to do MapGPA hypercall
-  x86/tdx: Make DMA pages shared
-  x86/kvm: Use bounce buffers for TD guest
+[1] - https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-guest-hypervisor-communication-interface.pdf
 
- arch/x86/Kconfig                          |  9 +++-
- arch/x86/include/asm/mem_encrypt_common.h | 20 ++++++++
- arch/x86/include/asm/pgtable.h            |  5 ++
- arch/x86/include/asm/tdx.h                | 23 +++++++++
- arch/x86/kernel/apic/io_apic.c            | 17 ++++++-
- arch/x86/kernel/tdx.c                     | 58 +++++++++++++++++++++++
- arch/x86/mm/Makefile                      |  2 +
- arch/x86/mm/ioremap.c                     |  9 ++--
- arch/x86/mm/mem_encrypt.c                 | 10 ++--
- arch/x86/mm/mem_encrypt_common.c          | 39 +++++++++++++++
- arch/x86/mm/pat/set_memory.c              | 46 +++++++++++++++---
- 11 files changed, 218 insertions(+), 20 deletions(-)
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
+ arch/x86/Kconfig                          |  8 ++++++--
+ arch/x86/include/asm/mem_encrypt_common.h | 18 ++++++++++++++++++
+ arch/x86/mm/Makefile                      |  2 ++
+ arch/x86/mm/mem_encrypt.c                 |  5 +++--
+ arch/x86/mm/mem_encrypt_common.c          | 20 ++++++++++++++++++++
+ 5 files changed, 49 insertions(+), 4 deletions(-)
  create mode 100644 arch/x86/include/asm/mem_encrypt_common.h
  create mode 100644 arch/x86/mm/mem_encrypt_common.c
 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index fc51579e54ad..2adc0df1838b 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1536,16 +1536,20 @@ config X86_CPA_STATISTICS
+ 	  helps to determine the effectiveness of preserving large and huge
+ 	  page mappings when mapping protections are changed.
+ 
++config X86_MEM_ENCRYPT_COMMON
++	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
++	select DYNAMIC_PHYSICAL_MASK
++	def_bool n
++
+ config AMD_MEM_ENCRYPT
+ 	bool "AMD Secure Memory Encryption (SME) support"
+ 	depends on X86_64 && CPU_SUP_AMD
+ 	select DMA_COHERENT_POOL
+-	select DYNAMIC_PHYSICAL_MASK
+ 	select ARCH_USE_MEMREMAP_PROT
+-	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+ 	select INSTRUCTION_DECODER
+ 	select ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
+ 	select ARCH_HAS_PROTECTED_GUEST
++	select X86_MEM_ENCRYPT_COMMON
+ 	help
+ 	  Say yes to enable support for the encryption of system memory.
+ 	  This requires an AMD processor that supports Secure Memory
+diff --git a/arch/x86/include/asm/mem_encrypt_common.h b/arch/x86/include/asm/mem_encrypt_common.h
+new file mode 100644
+index 000000000000..697bc40a4e3d
+--- /dev/null
++++ b/arch/x86/include/asm/mem_encrypt_common.h
+@@ -0,0 +1,18 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (C) 2020 Intel Corporation */
++#ifndef _ASM_X86_MEM_ENCRYPT_COMMON_H
++#define _ASM_X86_MEM_ENCRYPT_COMMON_H
++
++#include <linux/mem_encrypt.h>
++#include <linux/device.h>
++
++#ifdef CONFIG_AMD_MEM_ENCRYPT
++bool amd_force_dma_unencrypted(struct device *dev);
++#else /* CONFIG_AMD_MEM_ENCRYPT */
++static inline bool amd_force_dma_unencrypted(struct device *dev)
++{
++	return false;
++}
++#endif /* CONFIG_AMD_MEM_ENCRYPT */
++
++#endif
+diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
+index 5864219221ca..b31cb52bf1bd 100644
+--- a/arch/x86/mm/Makefile
++++ b/arch/x86/mm/Makefile
+@@ -52,6 +52,8 @@ obj-$(CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS)	+= pkeys.o
+ obj-$(CONFIG_RANDOMIZE_MEMORY)			+= kaslr.o
+ obj-$(CONFIG_PAGE_TABLE_ISOLATION)		+= pti.o
+ 
++obj-$(CONFIG_X86_MEM_ENCRYPT_COMMON)	+= mem_encrypt_common.o
++
+ obj-$(CONFIG_AMD_MEM_ENCRYPT)	+= mem_encrypt.o
+ obj-$(CONFIG_AMD_MEM_ENCRYPT)	+= mem_encrypt_identity.o
+ obj-$(CONFIG_AMD_MEM_ENCRYPT)	+= mem_encrypt_boot.o
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index d0026bce47df..9c55a3209c88 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -31,6 +31,7 @@
+ #include <asm/processor-flags.h>
+ #include <asm/msr.h>
+ #include <asm/cmdline.h>
++#include <asm/mem_encrypt_common.h>
+ 
+ #include "mm_internal.h"
+ 
+@@ -390,8 +391,8 @@ bool noinstr sev_es_active(void)
+ 	return sev_status & MSR_AMD64_SEV_ES_ENABLED;
+ }
+ 
+-/* Override for DMA direct allocation check - ARCH_HAS_FORCE_DMA_UNENCRYPTED */
+-bool force_dma_unencrypted(struct device *dev)
++/* Override for DMA direct allocation check - AMD specific initialization */
++bool amd_force_dma_unencrypted(struct device *dev)
+ {
+ 	/*
+ 	 * For SEV, all DMA must be to unencrypted addresses.
+diff --git a/arch/x86/mm/mem_encrypt_common.c b/arch/x86/mm/mem_encrypt_common.c
+new file mode 100644
+index 000000000000..4a9a4d5f36cd
+--- /dev/null
++++ b/arch/x86/mm/mem_encrypt_common.c
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Memory Encryption Support Common Code
++ *
++ * Copyright (C) 2021 Intel Corporation
++ *
++ * Author: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
++ */
++
++#include <asm/mem_encrypt_common.h>
++#include <linux/dma-mapping.h>
++
++/* Override for DMA direct allocation check - ARCH_HAS_FORCE_DMA_UNENCRYPTED */
++bool force_dma_unencrypted(struct device *dev)
++{
++	if (sev_active() || sme_active())
++		return amd_force_dma_unencrypted(dev);
++
++	return false;
++}
 -- 
 2.25.1
 
