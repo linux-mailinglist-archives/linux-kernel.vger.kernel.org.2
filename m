@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE843A1F66
+	by mail.lfdr.de (Postfix) with ESMTP id B41523A1F67
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhFIVxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:53:11 -0400
+        id S230075AbhFIVxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:53:14 -0400
 Received: from mga04.intel.com ([192.55.52.120]:35337 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhFIVxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:53:05 -0400
-IronPort-SDR: dNusdZ6c04xi2s5quiyfVunvkdVpITnpgazAdfBERzV9taCDm/uJ+4euR5mFmQFPrlvyNV3a/I
- 6Zjx09ceTpfg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="203326904"
+        id S230113AbhFIVxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:53:06 -0400
+IronPort-SDR: 0K6JEMkyxJIm8QCao8Iq1tXz2jS1qAMMRNMfUdAnPw2Lkyd9b+J1e6qnnXsfs+i4N3Bd+49uKP
+ GGjnqRm5tpUg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="203326907"
 X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="203326904"
+   d="scan'208";a="203326907"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:51:10 -0700
-IronPort-SDR: 22gmk3qhFbmUCbwM45BsVRHdOQtwa7MUuZn91/gk71IOPGg8ptdV9eFkDLAx4J5ndur1eEcB/P
- ZxAIVmU+Dl6A==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:51:11 -0700
+IronPort-SDR: 76UfN3uDjvraRlsgIXYVAqXNWyLC2g80Jbwag83r2dAG9EW7+00wAWv3cNy1lfvx3sFvpWteOZ
+ xEBBEcMfDxHQ==
 X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="482553409"
+   d="scan'208";a="482553415"
 Received: from qwang4-mobl1.ccr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.35.228])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:51:09 -0700
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:51:10 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -38,10 +38,11 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         x86@kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: [PATCH v1 4/5] x86/tdx: Forcefully disable legacy PIC for TDX guests
-Date:   Wed,  9 Jun 2021 14:50:46 -0700
-Message-Id: <20210609215047.1955866-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        linux-acpi@vger.kernel.org
+Subject: [PATCH v1 5/5] x86: Skip WBINVD instruction for VM guest
+Date:   Wed,  9 Jun 2021 14:50:47 -0700
+Message-Id: <20210609215047.1955866-6-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210609215047.1955866-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20210609215047.1955866-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -51,42 +52,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+VM guests that supports ACPI, use standard ACPI mechanisms to signal
+sleep state entry (including reboot) to the host. The ACPI
+specification mandates WBINVD on any sleep state entry with the
+expectation that the platform is only responsible for maintaining the
+state of memory over sleep states, not preserving dirty data in any
+CPU caches. ACPI cache flushing requirements pre-date the advent of
+virtualization. Given guest sleep state entry does not affect any
+host power rails it is not required to flush caches. The host is
+responsible for maintaining cache state over its own bare metal sleep
+state transitions that power-off the cache. A TDX guest, unlike a
+typical guest, will machine check if the CPU cache is powered off.
 
-Disable the legacy PIC (8259) for TDX guests as the PIC cannot be
-supported by the VMM. TDX Module does not allow direct IRQ injection,
-and using posted interrupt style delivery requires the guest to EOI
-the IRQ, which diverges from the legacy PIC behavior.
-
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
+Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+Cc: linux-acpi@vger.kernel.org
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- arch/x86/kernel/tdx.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/include/asm/acenv.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 153cc143a45a..06fcbca402cb 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -4,6 +4,7 @@
- #define pr_fmt(fmt) "TDX: " fmt
+diff --git a/arch/x86/include/asm/acenv.h b/arch/x86/include/asm/acenv.h
+index 9aff97f0de7f..d4162e94bee8 100644
+--- a/arch/x86/include/asm/acenv.h
++++ b/arch/x86/include/asm/acenv.h
+@@ -10,10 +10,15 @@
+ #define _ASM_X86_ACENV_H
  
- #include <asm/tdx.h>
-+#include <asm/i8259.h>
- #include <asm/vmx.h>
- #include <asm/insn.h>
- #include <asm/insn-eval.h>
-@@ -477,6 +478,8 @@ void __init tdx_early_init(void)
- 	pv_ops.irq.safe_halt = tdg_safe_halt;
- 	pv_ops.irq.halt = tdg_halt;
+ #include <asm/special_insns.h>
++#include <asm/cpu.h>
  
-+	legacy_pic = &null_legacy_pic;
-+
- 	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "tdg:cpu_hotplug",
- 			  NULL, tdg_cpu_offline_prepare);
+ /* Asm macros */
  
+-#define ACPI_FLUSH_CPU_CACHE()	wbinvd()
++#define ACPI_FLUSH_CPU_CACHE()				\
++do {							\
++	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))	\
++		wbinvd();				\
++} while (0)
+ 
+ int __acpi_acquire_global_lock(unsigned int *lock);
+ int __acpi_release_global_lock(unsigned int *lock);
 -- 
 2.25.1
 
