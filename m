@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC62E3A0F87
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1F23A0F89
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237961AbhFIJXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:23:46 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:58542 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231300AbhFIJXp (ORCPT
+        id S237992AbhFIJYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237985AbhFIJYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:23:45 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1599DNKL007209;
-        Wed, 9 Jun 2021 09:21:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=Jri6PWef05tc37+Wiamp7GQU5ME1z+y9zPz4Zt68mBQ=;
- b=RzRpmmXrvpqv/ch/6wiQwRWB2TjeigKdV+0K5Bv0Eu/wvKql1zi7FysMIASJkOOJ4Deh
- BN4dpaqELjrGN1H6unGAL1v7RYqY2WzOVEBTQIihPq0/9TxhCRS1JU3G30wiTWddNHz+
- Zz9QpRp6FHIrNYqiqlqK/0c0Y32KW44LDzDGmateJlo4tO6A/+GC39n9sNOv0a61dZGg
- 1OzBRikvHaugqQvoICPXOuUqXaWbc3GrL+JPnqPo1d/fqFt0qNARFsmRsxB68DQp7CYS
- pNvzn+RlCNRcWPswbg0ZOgojUMMbY2IeS2tnYMajN8rhBL/SQySaJdL5zybGtFFhsuLY YA== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 392ptc83fr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:21:22 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 1599HQwQ002264;
-        Wed, 9 Jun 2021 09:21:21 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3922wudxnd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:21:21 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1599H1ef196034;
-        Wed, 9 Jun 2021 09:21:20 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3922wudxky-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:21:20 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1599LEYD026453;
-        Wed, 9 Jun 2021 09:21:14 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Jun 2021 09:21:14 +0000
-Date:   Wed, 9 Jun 2021 12:21:06 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        straube.linux@gmail.com, kaixuxia@tencent.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8188eu: replace two ODM_RT_TRACE calls in
- hal/phy.c
-Message-ID: <20210609092106.GE1955@kadam>
-References: <20210608235609.6726-1-phil@philpotter.co.uk>
+        Wed, 9 Jun 2021 05:24:07 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C3CC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 02:22:00 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id o9so16109889pgd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:22:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1HdeYeZU8aBbB01u3EptGGzTktTYXaU7YZzov/SDA8I=;
+        b=b4EpkScIYTfhDr+1DMH9NGb/JEGCVMC9I0UEyR0v35fGLBQSlI8BS1JDdPwEi26sGQ
+         KPb2AUw2GDSNvGJGPErFOeww/av+JYG7UmLiOxZgOlAggtefR5FUeMsoRoDKnhoHtI8u
+         0E0v05ydQAErk3dBnyG43LsFRo9bYbJkhu+NdLUfvu+vjlDoM3ZknsyBXJ9NjBDzpAcr
+         HLBi/331j1metmaNnix8gGpxm82JMyR1mV18SJZWKZJpLxC2uTO8gup6tbgZ003q4Of5
+         MznuY50X/r972sJpUhon8MiAZUcUYmgfQTYatvtdKj6f1XI5znqAeyQ7060yHHdxWgGA
+         rSvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1HdeYeZU8aBbB01u3EptGGzTktTYXaU7YZzov/SDA8I=;
+        b=ZRiDyb0/jnHrLplZtwRWMuY5MzvdK29lfDFcTAnSe5kpOK1q96NyMLrG7nO1DI3BcC
+         v6tQTdBD9WSrI5SjWjVZR2t9McVeJiOx5S7vOd6O7OIqMjbTIwXlzhS+HGwn6eRbRFCk
+         clPE+efZcWi5ZZFt61ZtsUIXlREmKr27UTb1hLnAJySwd1YY5pTms+XhzEIRblD5mZ1a
+         2w58jRk0teppcNBnHyZO21I4HrX3+HRV9Bdcm3cF4Q6k2eF1dB2VnkHuVheIzUSQWuXW
+         hz3X5Cn64v8Fm3DHHBosQEVq6hEIxRw/iM4TP30RzjnxPaqKiY5Uw1VU1SZxtPReiR66
+         r1Mg==
+X-Gm-Message-State: AOAM530hU3uR0YhMk8vwnOuSZsKYocLdGtlfdg1GZR/wtEtMl1/gK4bO
+        Cp5scliStmKp809KmlsCjdM=
+X-Google-Smtp-Source: ABdhPJwJbjQpq27OslPPl05sK51n7VSNJg+Oy499gokZlzfdlXjo0kUTNl8b19jl4Y/n4hNDMlA3Ow==
+X-Received: by 2002:a65:4508:: with SMTP id n8mr2895991pgq.120.1623230520212;
+        Wed, 09 Jun 2021 02:22:00 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id z22sm13793464pfa.157.2021.06.09.02.21.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 02:21:59 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] drm: Lock pointer access in drm_master_release()
+Date:   Wed,  9 Jun 2021 17:21:19 +0800
+Message-Id: <20210609092119.173590-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608235609.6726-1-phil@philpotter.co.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: fcT4VuWVbIj0mp_NzNz5-I3ECA40S2qj
-X-Proofpoint-GUID: fcT4VuWVbIj0mp_NzNz5-I3ECA40S2qj
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 12:56:09AM +0100, Phillip Potter wrote:
-> Within rtl88eu_dm_txpower_track_adjust function, retrieve the struct
-> net_device pointer, and replace both calls to the ODM_RT_TRACE macro
-> with equivalent netdev_dbg calls, as well as modifying layout, wording
-> and spacing slightly. The purpose of this, and patches like it, is to
-> eventually remove the need for include/odm_debug.h, which is an overly
-> complex way of printing debug/tracing information about the driver.
-> 
+This patch eliminates the following smatch warning:
+drivers/gpu/drm/drm_auth.c:320 drm_master_release() warn: unlocked access 'master' (line 318) expected lock '&dev->master_mutex'
 
-In the original code DebugComponents is always zero so the ODM_RT_TRACE()
-stuff was dead code and could never be printed.  I would prefer we just
-delete it all instead of fixing it.
+The 'file_priv->master' field should be protected by the mutex lock to
+'&dev->master_mutex'. This is because other processes can concurrently
+modify this field and free the current 'file_priv->master'
+pointer. This could result in a use-after-free error when 'master' is
+dereferenced in subsequent function calls to
+'drm_legacy_lock_master_cleanup()' or to 'drm_lease_revoke()'.
 
-regards,
-dan carpenter
+An example of a scenario that would produce this error can be seen
+from a similar bug in 'drm_getunique()' that was reported by Syzbot:
+https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
+
+In the Syzbot report, another process concurrently acquired the
+device's master mutex in 'drm_setmaster_ioctl()', then overwrote
+'fpriv->master' in 'drm_new_set_master()'. The old value of
+'fpriv->master' was subsequently freed before the mutex was unlocked.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+---
+ drivers/gpu/drm/drm_auth.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
+index f00e5abdbbf4..b59b26a71ad5 100644
+--- a/drivers/gpu/drm/drm_auth.c
++++ b/drivers/gpu/drm/drm_auth.c
+@@ -315,9 +315,10 @@ int drm_master_open(struct drm_file *file_priv)
+ void drm_master_release(struct drm_file *file_priv)
+ {
+ 	struct drm_device *dev = file_priv->minor->dev;
+-	struct drm_master *master = file_priv->master;
++	struct drm_master *master;
+ 
+ 	mutex_lock(&dev->master_mutex);
++	master = file_priv->master;
+ 	if (file_priv->magic)
+ 		idr_remove(&file_priv->master->magic_map, file_priv->magic);
+ 
+-- 
+2.25.1
 
