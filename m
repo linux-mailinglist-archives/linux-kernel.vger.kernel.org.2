@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A873A1E78
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7003A1E7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhFIVCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:02:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47364 "EHLO mail.kernel.org"
+        id S229773AbhFIVEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:04:02 -0400
+Received: from mga04.intel.com ([192.55.52.120]:31842 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhFIVB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:01:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1ACAA613FF;
-        Wed,  9 Jun 2021 21:00:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623272404;
-        bh=KRaEHOeIFt3A2bYCD1PITT917hPEVETuksrXRWEf5Fo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uwx0eXL4F/k28a3XjoLdn4zFKry57GOl+m0c0peVUjL2z+OdK7EYqrthBnxWljoPC
-         IgGDEAD4JSLWjEAkp/ss4b8oHSa/nGcwkTC5w90wT1G5K3qzq3oM0lNgY138fJL0Qx
-         DfExudh2N6rjWD753osOsjk/Un6wJ4c/XfxcOv4SMq6UmOVdqu0VwNvVybwz7net00
-         ugBjsonChQmBZ5ozeu3nlPATSg+2EUkjE7Eycf79dnhtBaWl1s71VAFVUxe1+Cgy/z
-         xki/zRGYuimGlc4+Hm9t/OgJVvw6xgRhZWZ9A565WBU83fcfrCZ7Mb1vlovVmk6T1L
-         rwvSgZKk8irhg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1132E609E3;
-        Wed,  9 Jun 2021 21:00:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229527AbhFIVEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:04:01 -0400
+IronPort-SDR: yEL0uN0AFKMIk7vSjLiDQAonYoh9ocREkYIn8SaAgwl1BCo5qDWuMXp6EY7pcnr+w9zN2Ygyww
+ 5lUrN2z5NaDg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="203318086"
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="203318086"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:02:03 -0700
+IronPort-SDR: jHK67i9aVAMOUFtnOpvYzyujkhLXNudEvJVUQ2XksTgiVkFABi3gEh1Y8kAZDcstheXu0bKGPe
+ Uzb3PnyrXPnA==
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="448438389"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.209.9.119]) ([10.209.9.119])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:02:01 -0700
+Subject: Re: [PATCH v7 1/4] selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+References: <20210526124740.16783-1-jarkko@kernel.org>
+ <dddeda6a-0f76-8e5a-6ca8-2ad67f6411ea@intel.com>
+ <20210609130030.34jkpz5pq2iumzkj@kernel.org>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <845b4145-6990-c466-86e7-93011777556c@intel.com>
+Date:   Wed, 9 Jun 2021 14:02:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/x25: fix a mistake in grammar
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162327240406.12172.17093746293428659261.git-patchwork-notify@kernel.org>
-Date:   Wed, 09 Jun 2021 21:00:04 +0000
-References: <20210609030317.17687-1-13145886936@163.com>
-In-Reply-To: <20210609030317.17687-1-13145886936@163.com>
-To:     None <13145886936@163.com>
-Cc:     ms@dev.tdt.de, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian@yulong.com
+In-Reply-To: <20210609130030.34jkpz5pq2iumzkj@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Jarkko,
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Tue,  8 Jun 2021 20:03:17 -0700 you wrote:
-> From: gushengxian <gushengxian@yulong.com>
+On 6/9/2021 6:00 AM, Jarkko Sakkinen wrote:
+> On Mon, Jun 07, 2021 at 09:28:56AM -0700, Reinette Chatre wrote:
+>> Hi Jarkko,
+>>
+>> On 5/26/2021 5:47 AM, Jarkko Sakkinen wrote:
+>>> diff --git a/tools/testing/selftests/sgx/main.h b/tools/testing/selftests/sgx/main.h
+>>> index 67211a708f04..68672fd86cf9 100644
+>>> --- a/tools/testing/selftests/sgx/main.h
+>>> +++ b/tools/testing/selftests/sgx/main.h
+>>> @@ -35,7 +35,7 @@ bool encl_load(const char *path, struct encl *encl);
+>>>    bool encl_measure(struct encl *encl);
+>>>    bool encl_build(struct encl *encl);
+>>> -int sgx_call_vdso(void *rdi, void *rsi, long rdx, u32 function, void *r8, void *r9,
+>>> -		  struct sgx_enclave_run *run);
+>>> +int sgx_enter_enclave(void *rdi, void *rsi, long rdx, u32 function, void *r8, void *r9,
+>>> +		      struct sgx_enclave_run *run);
+>>
+>> Is there a reason why all registers except rdx are "void *"?
 > 
-> Fix a mistake in grammar.
+> Evolution? It's test code.
 > 
-> Signed-off-by: gushengxian <gushengxian@yulong.com>
-> ---
->  net/x25/af_x25.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> There's neither reason to change this for no reason.
+> 
 
-Here is the summary with links:
-  - net/x25: fix a mistake in grammar
-    https://git.kernel.org/netdev/net-next/c/db67f2493431
+One reason would be to make the code consistent. This would reduce 
+confusion.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Reinette
