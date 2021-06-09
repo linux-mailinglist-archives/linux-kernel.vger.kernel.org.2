@@ -2,183 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954BD3A165B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA703A1646
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237118AbhFIOB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:01:56 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3189 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237106AbhFIOBv (ORCPT
+        id S233832AbhFIN7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:59:46 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:5360 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236210AbhFIN7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:01:51 -0400
-Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G0T5R0L0fz6L69t;
-        Wed,  9 Jun 2021 21:50:35 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 9 Jun 2021 15:59:54 +0200
-Received: from localhost (10.52.124.126) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 9 Jun 2021 09:59:44 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G0T9C6Dynz6vr6;
+        Wed,  9 Jun 2021 21:53:51 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 21:57:43 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 14:59:54 +0100
-Date:   Wed, 9 Jun 2021 14:59:51 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-CC:     <jic23@kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
-        <kernel@pengutronix.de>, <a.fatoum@pengutronix.de>,
-        <kamel.bouhara@bootlin.com>, <gwendal@chromium.org>,
-        <alexandre.belloni@bootlin.com>, <david@lechnology.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <syednwaris@gmail.com>,
-        <patrick.havelange@essensium.com>, <fabrice.gasnier@st.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <o.rempel@pengutronix.de>, <jarkko.nikula@linux.intel.com>
-Subject: Re: [PATCH v11 00/33] Introduce the Counter character device
- interface
-Message-ID: <20210609145951.000005dd@Huawei.com>
-In-Reply-To: <cover.1623201081.git.vilhelm.gray@gmail.com>
-References: <cover.1623201081.git.vilhelm.gray@gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+ 21:57:43 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <grygorii.strashko@ti.com>
+Subject: [PATCH net-next] net: ethernet: ti: cpsw: Use devm_platform_get_and_ioremap_resource()
+Date:   Wed, 9 Jun 2021 22:01:52 +0800
+Message-ID: <20210609140152.3198309-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.124.126]
-X-ClientProxiedBy: lhreml716-chm.china.huawei.com (10.201.108.67) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  9 Jun 2021 10:31:03 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+Use devm_platform_get_and_ioremap_resource() to simplify
+code.
 
-> Changes in v11:
->  - Migrated Intel QEP to new interface
->  - Context adjustments made for documentation
-> 
-> I pulled out a lot of bits and pieces to their own patches; hopefully
-> that makes reviewing this patchset much simpler than before. This
-> patchset is also available on my personal public git repo for anyone who
-> wants a quick way to clone:
-> https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v11
-> 
-> The patches preceding "counter: Internalize sysfs interface code" are
-> primarily cleanup and fixes that can be picked up and applied now to the
-> IIO tree if so desired. The "counter: Internalize sysfs interface code"
-> patch as well may be considered for pickup because it is relatively safe
-> and makes no changes to the userspace interface.
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/net/ethernet/ti/cpsw.c     | 3 +--
+ drivers/net/ethernet/ti/cpsw_new.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-Let us aim to do that in the interests of cutting down on the volume for future
-versions!
-
-However, it is made tricky by the fact patch 22 hasn't made it to me or
-lore.kernel.org.  Could you send that one again.  Hopefully the in-reply-to
-will ensure it's correctly threaded.
-
-Jonathan
-
-
-> 
-> To summarize the main points of this patchset: there are no changes to
-> the existing Counter sysfs userspace interface; a Counter character
-> device interface is introduced that allows Counter events and associated
-> data to be read() by userspace; the events_configure() and
-> watch_validate() driver callbacks are introduced to support Counter
-> events; and IRQ support is added to the 104-QUAD-8 driver, serving as an
-> example of how to support the new Counter events functionality.
-> 
-> Something that should still be discussed: should the struct
-> counter_event "status" member be 8 bits or 32 bits wide? This member
-> will provide the return status (system error number) of an event
-> operation.
-
-> 
-> William Breathitt Gray (33):
->   docs: counter: Consolidate Counter sysfs attributes documentation
->   docs: counter: Fix spelling
->   counter: 104-quad-8: Remove pointless comment
->   counter: 104-quad-8: Return error when invalid mode during
->     ceiling_write
->   counter: 104-quad-8: Annotate hardware config module parameter
->   counter: 104-quad-8: Add const qualifiers for
->     quad8_preset_register_set
->   counter: 104-quad-8: Add const qualifier for functions_list array
->   counter: interrupt-cnt: Add const qualifier for functions_list array
->   counter: microchip-tcb-capture: Add const qualifier for functions_list
->     array
->   counter: stm32-lptimer-cnt: Add const qualifier for functions_list
->     array
->   counter: stm32-timer-cnt: Add const qualifier for functions_list array
->   counter: 104-quad-8: Add const qualifier for actions_list array
->   counter: ftm-quaddec: Add const qualifier for actions_list array
->   counter: interrupt-cnt: Add const qualifier for actions_list array
->   counter: microchip-tcb-capture: Add const qualifier for actions_list
->     array
->   counter: stm32-lptimer-cnt: Add const qualifier for actions_list array
->   counter: stm32-timer-cnt: Add const qualifier for actions_list array
->   counter: Return error code on invalid modes
->   counter: Standardize to ERANGE for limit exceeded errors
->   counter: Rename counter_signal_value to counter_signal_level
->   counter: Rename counter_count_function to counter_function
->   counter: Internalize sysfs interface code
->   counter: Update counter.h comments to reflect sysfs internalization
->   docs: counter: Update to reflect sysfs internalization
->   counter: Move counter enums to uapi header
->   counter: Add character device interface
->   docs: counter: Document character device interface
->   tools/counter: Create Counter tools
->   counter: Implement signalZ_action_component_id sysfs attribute
->   counter: Implement *_component_id sysfs attributes
->   counter: Implement events_queue_size sysfs attribute
->   counter: 104-quad-8: Replace mutex with spinlock
->   counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
-> 
->  Documentation/ABI/testing/sysfs-bus-counter   |  112 +-
->  .../ABI/testing/sysfs-bus-counter-104-quad-8  |   61 -
->  .../ABI/testing/sysfs-bus-counter-ftm-quaddec |   16 -
->  Documentation/driver-api/generic-counter.rst  |  368 +++-
->  .../userspace-api/ioctl/ioctl-number.rst      |    1 +
->  MAINTAINERS                                   |    7 +-
->  drivers/counter/104-quad-8.c                  |  739 ++++----
->  drivers/counter/Kconfig                       |    6 +-
->  drivers/counter/Makefile                      |    1 +
->  drivers/counter/counter-chrdev.c              |  486 ++++++
->  drivers/counter/counter-chrdev.h              |   14 +
->  drivers/counter/counter-core.c                |  192 +++
->  drivers/counter/counter-sysfs.c               |  953 +++++++++++
->  drivers/counter/counter-sysfs.h               |   13 +
->  drivers/counter/counter.c                     | 1496 -----------------
->  drivers/counter/ftm-quaddec.c                 |   61 +-
->  drivers/counter/intel-qep.c                   |  150 +-
->  drivers/counter/interrupt-cnt.c               |   75 +-
->  drivers/counter/microchip-tcb-capture.c       |  105 +-
->  drivers/counter/stm32-lptimer-cnt.c           |  176 +-
->  drivers/counter/stm32-timer-cnt.c             |  149 +-
->  drivers/counter/ti-eqep.c                     |  221 +--
->  include/linux/counter.h                       |  716 ++++----
->  include/linux/counter_enum.h                  |   45 -
->  include/uapi/linux/counter.h                  |  133 ++
->  tools/Makefile                                |   13 +-
->  tools/counter/Build                           |    1 +
->  tools/counter/Makefile                        |   53 +
->  tools/counter/counter_example.c               |   95 ++
->  29 files changed, 3586 insertions(+), 2872 deletions(-)
->  delete mode 100644 Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
->  delete mode 100644 Documentation/ABI/testing/sysfs-bus-counter-ftm-quaddec
->  create mode 100644 drivers/counter/counter-chrdev.c
->  create mode 100644 drivers/counter/counter-chrdev.h
->  create mode 100644 drivers/counter/counter-core.c
->  create mode 100644 drivers/counter/counter-sysfs.c
->  create mode 100644 drivers/counter/counter-sysfs.h
->  delete mode 100644 drivers/counter/counter.c
->  delete mode 100644 include/linux/counter_enum.h
->  create mode 100644 include/uapi/linux/counter.h
->  create mode 100644 tools/counter/Build
->  create mode 100644 tools/counter/Makefile
->  create mode 100644 tools/counter/counter_example.c
-> 
+diff --git a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
+index c0cd7de88316..b1e80cc96f56 100644
+--- a/drivers/net/ethernet/ti/cpsw.c
++++ b/drivers/net/ethernet/ti/cpsw.c
+@@ -1532,8 +1532,7 @@ static int cpsw_probe(struct platform_device *pdev)
+ 	}
+ 	cpsw->bus_freq_mhz = clk_get_rate(clk) / 1000000;
+ 
+-	ss_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	ss_regs = devm_ioremap_resource(dev, ss_res);
++	ss_regs = devm_platform_get_and_ioremap_resource(pdev, 0, &ss_res);
+ 	if (IS_ERR(ss_regs))
+ 		return PTR_ERR(ss_regs);
+ 	cpsw->regs = ss_regs;
+diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
+index 69b7a4e0220a..8d4f3c53385d 100644
+--- a/drivers/net/ethernet/ti/cpsw_new.c
++++ b/drivers/net/ethernet/ti/cpsw_new.c
+@@ -1883,8 +1883,7 @@ static int cpsw_probe(struct platform_device *pdev)
+ 	}
+ 	cpsw->bus_freq_mhz = clk_get_rate(clk) / 1000000;
+ 
+-	ss_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	ss_regs = devm_ioremap_resource(dev, ss_res);
++	ss_regs = devm_platform_get_and_ioremap_resource(pdev, 0, &ss_res);
+ 	if (IS_ERR(ss_regs)) {
+ 		ret = PTR_ERR(ss_regs);
+ 		return ret;
+-- 
+2.25.1
 
