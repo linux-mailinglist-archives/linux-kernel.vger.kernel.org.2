@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59EF3A1F78
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFD03A1F79
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhFIV5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:57:51 -0400
-Received: from mga03.intel.com ([134.134.136.65]:1782 "EHLO mga03.intel.com"
+        id S230118AbhFIV5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:57:54 -0400
+Received: from mga03.intel.com ([134.134.136.65]:1785 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhFIV5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:57:46 -0400
-IronPort-SDR: /HMcKGfJlxTNDgTXA2cyc/Wk0pV4URAQ77+LBYqaA6B4L7Ss7lVHyFRc29yWUchsmIbgvSlFBB
- MxdgPm06+K6w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="205208543"
+        id S230043AbhFIV5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:57:49 -0400
+IronPort-SDR: a0fFqKkGBi9XU5XubpkbRHdszykVbgj4Qy4YKCxjsPTZU2dPjcLTlIxPzrWRY7VhZsXTk7524o
+ DNlB/XbYts3w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="205208546"
 X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="205208543"
+   d="scan'208";a="205208546"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:55:51 -0700
-IronPort-SDR: bWB+G5SDtvdvfR7DCXmQhI2dTrDq/YhAmwS3gS0yndon3xf2Ls4z4lJD7WChzQA9cGVChuDXh8
- 013pOYui6SAQ==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:55:53 -0700
+IronPort-SDR: FQ0GNVlRiQh+UZXsC8BOiMvL0WdvrxEoQO51jcKNMmZlqAPH5/o9oZXzP0eBdJU6+ZCr9FW0Di
+ mxaXFczVD7+Q==
 X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="482555083"
+   d="scan'208";a="482555093"
 Received: from qwang4-mobl1.ccr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.35.228])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:55:50 -0700
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:55:51 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -38,9 +38,9 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/7] x86/tdx: Make pages shared in ioremap()
-Date:   Wed,  9 Jun 2021 14:55:33 -0700
-Message-Id: <20210609215537.1956150-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v1 4/7] x86/tdx: Add helper to do MapGPA hypercall
+Date:   Wed,  9 Jun 2021 14:55:34 -0700
+Message-Id: <20210609215537.1956150-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210609215537.1956150-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20210609215537.1956150-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -52,76 +52,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-All ioremap()ed pages that are not backed by normal memory (NONE or
-RESERVED) have to be mapped as shared.
+MapGPA hypercall is used by TDX guests to request VMM convert
+the existing mapping of given GPA address range between
+private/shared.
 
-Reuse the infrastructure we have for AMD SEV.
-
-Note that DMA code doesn't use ioremap() to convert memory to shared as
-DMA buffers backed by normal memory. DMA code make buffer shared with
-set_memory_decrypted().
+tdx_hcall_gpa_intent() is the wrapper used for making MapGPA
+hypercall.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- arch/x86/include/asm/pgtable.h | 4 ++++
- arch/x86/mm/ioremap.c          | 9 ++++++---
- 2 files changed, 10 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/tdx.h | 17 +++++++++++++++++
+ arch/x86/kernel/tdx.c      | 24 ++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index b1099f2d9800..5b77843dfa10 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -21,6 +21,10 @@
- #define pgprot_encrypted(prot)	__pgprot(__sme_set(pgprot_val(prot)))
- #define pgprot_decrypted(prot)	__pgprot(__sme_clr(pgprot_val(prot)))
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index 70e0931bbf52..f20b1f056cdd 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -5,6 +5,15 @@
  
-+/* Make the page accesable by VMM for protected guests */
-+#define pgprot_protected_guest(prot) __pgprot(pgprot_val(prot) |	\
-+					      tdg_shared_mask())
+ #define TDX_CPUID_LEAF_ID	0x21
+ 
++/*
++ * Page mapping type enum. This is software construct not
++ * part of any hardware or VMM ABI.
++ */
++enum tdx_map_type {
++	TDX_MAP_PRIVATE,
++	TDX_MAP_SHARED,
++};
 +
- #ifndef __ASSEMBLY__
- #include <asm/x86_init.h>
- #include <asm/fpu/xstate.h>
-diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
-index 12c686c65ea9..94718396e9e6 100644
---- a/arch/x86/mm/ioremap.c
-+++ b/arch/x86/mm/ioremap.c
-@@ -17,6 +17,7 @@
- #include <linux/mem_encrypt.h>
- #include <linux/efi.h>
- #include <linux/pgtable.h>
-+#include <linux/protected_guest.h>
+ #ifdef CONFIG_INTEL_TDX_GUEST
  
- #include <asm/set_memory.h>
- #include <asm/e820/api.h>
-@@ -87,12 +88,12 @@ static unsigned int __ioremap_check_ram(struct resource *res)
+ #include <asm/cpufeature.h>
+@@ -123,6 +132,8 @@ do {									\
+ #endif
+ 
+ extern phys_addr_t tdg_shared_mask(void);
++extern int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
++				enum tdx_map_type map_type);
+ 
+ #else // !CONFIG_INTEL_TDX_GUEST
+ 
+@@ -147,6 +158,12 @@ static inline phys_addr_t tdg_shared_mask(void)
+ {
+ 	return 0;
+ }
++
++static inline int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
++				       enum tdx_map_type map_type)
++{
++	return -ENODEV;
++}
+ #endif /* CONFIG_INTEL_TDX_GUEST */
+ 
+ #ifdef CONFIG_INTEL_TDX_GUEST_KVM
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 1cd572a35eea..591643abae88 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -17,6 +17,9 @@
+ #define TDINFO				1
+ #define TDGETVEINFO			3
+ 
++/* TDX hypercall Leaf IDs */
++#define TDVMCALL_MAP_GPA		0x10001
++
+ #define VE_IS_IO_OUT(exit_qual)		(((exit_qual) & 8) ? 0 : 1)
+ #define VE_GET_IO_SIZE(exit_qual)	(((exit_qual) & 7) + 1)
+ #define VE_GET_PORT_NUM(exit_qual)	((exit_qual) >> 16)
+@@ -121,6 +124,27 @@ static void tdg_get_info(void)
+ 	physical_mask &= ~tdg_shared_mask();
  }
  
- /*
-- * In a SEV guest, NONE and RESERVED should not be mapped encrypted because
-- * there the whole memory is already encrypted.
-+ * In a SEV or TDX guest, NONE and RESERVED should not be mapped encrypted (or
-+ * private in TDX case) because there the whole memory is already encrypted.
-  */
- static unsigned int __ioremap_check_encrypted(struct resource *res)
++/*
++ * Inform the VMM of the guest's intent for this physical page:
++ * shared with the VMM or private to the guest.  The VMM is
++ * expected to change its mapping of the page in response.
++ *
++ * Note: shared->private conversions require further guest
++ * action to accept the page.
++ */
++int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
++			 enum tdx_map_type map_type)
++{
++	u64 ret;
++
++	if (map_type == TDX_MAP_SHARED)
++		gpa |= tdg_shared_mask();
++
++	ret = tdx_hypercall(TDVMCALL_MAP_GPA, gpa, PAGE_SIZE * numpages, 0, 0);
++
++	return ret ? -EIO : 0;
++}
++
+ static __cpuidle void tdg_halt(void)
  {
--	if (!sev_active())
-+	if (!sev_active() && !prot_guest_has(PR_GUEST_MEM_ENCRYPT))
- 		return 0;
- 
- 	switch (res->desc) {
-@@ -244,6 +245,8 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
- 	prot = PAGE_KERNEL_IO;
- 	if ((io_desc.flags & IORES_MAP_ENCRYPTED) || encrypted)
- 		prot = pgprot_encrypted(prot);
-+	else if (prot_guest_has(PR_GUEST_SHARED_MAPPING_INIT))
-+		prot = pgprot_protected_guest(prot);
- 
- 	switch (pcm) {
- 	case _PAGE_CACHE_MODE_UC:
+ 	u64 ret;
 -- 
 2.25.1
 
