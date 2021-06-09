@@ -2,126 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967EB3A1AA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75123A1AA4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbhFIQQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:16:24 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:44571 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231251AbhFIQQX (ORCPT
+        id S234774AbhFIQRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:17:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25065 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231251AbhFIQRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:16:23 -0400
-Received: by mail-oi1-f180.google.com with SMTP id a26so4892407oie.11
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qRuQ1mrwTnCrlmtDiCJXdi4p2uv0t05mrbfotbHVxP4=;
-        b=Syg/ICcHnYjw6rdWoTK+LQM5/1dcgL/nGSedZh5kB+3YjgJxWkq9JQP8afOnaIG4mY
-         rNUW83tM0U4jC5IrHzv7MvIBggWBMHgxLtOtdKOnsLO/U9kjVrausUtZZE/sVa5KM+5b
-         bQu15bhQIwH+9Qmnp3Js6VFFqKGq+z7VgTMN9np8V+F0l0cEN2wBKd14N4KGIvHHy0dZ
-         kYg7VO73CBikoIS1gLq0oobv9HQErz/9+brZgcKISswLFhuj3U5z4SVqPZNDYVABtIFt
-         gHzl3YE6wqyEX1tHMwRZa9outDA2IBZ3dvqpHfvpRA0CzeQgZB1UHNGRKkn9No+9CK/Q
-         ZOIg==
+        Wed, 9 Jun 2021 12:17:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623255337;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZKvRJP1Qn2FuRIKKae+xpipPvYviXO+rudBhyvwgw04=;
+        b=D3Z8TIeJDtrdNYPocssvdItBYl2bCOHvD6pV6hgLwHnYjOmbpuUX0Tr9wCNN5JytEtkcFw
+        KZeLefoAoJF7Trr7RpUtktQqJj/1VxPmBiwWoi9mRfI+PqeKGJsiNqSVTd+aNGH1bHnPjD
+        nkDx+yA3sScgkjjJ5BPQiom9ZgmiQXc=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-NLee3tprN6KI74R1M1dUow-1; Wed, 09 Jun 2021 12:15:35 -0400
+X-MC-Unique: NLee3tprN6KI74R1M1dUow-1
+Received: by mail-ot1-f70.google.com with SMTP id 59-20020a9d0dc10000b02902a57e382ca1so16624250ots.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:15:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qRuQ1mrwTnCrlmtDiCJXdi4p2uv0t05mrbfotbHVxP4=;
-        b=gpJmq2fetrOcoVl82MfXk4/7izKfbQPfZzFkZCpTw5dNKU5TTPJ+4aKLLbGqrv/m+1
-         0Gt07UBcfCOTe2BtD7AvhWjHIMduZdvxnrDs+4pZwwFHMONeIcxYD64WGVnaOQ5g/T2H
-         bfNxSqHkErd+hzQT3mCq/O5tSbaO5VwBZmHrjWbMHdiObQcU4BTfyOSd8lD+9Hbxx5lu
-         RisVP6Hkjf6ie0s82dMNFQuBnfHpmUDkWPpGyg1uwRqN1pDjV723S7SfRGG4ATAAO1z+
-         r2z3AVIqmYWMhu78pI3TbbjkHa8On6dGu2H5/ZVUDkp9BhxKRXFTat8dHH8+mkna6a9S
-         hBZg==
-X-Gm-Message-State: AOAM532+m/TJvZv/+EEVAeDwS6N4i5i50TVPRb3IH1rRa0gmZTmF4xAt
-        5isKDWyQK3/74dcOR6BunS2nO/OpXmxvCME9XZeMxg==
-X-Google-Smtp-Source: ABdhPJy0aaRJDIEfrAc8IuS9AgejNj9IbDlp4XC+Now9FaX0E8vRG8TSCKUChNwRdFLPMQaGCjIcEfhKZiRDzMkBNeI=
-X-Received: by 2002:a05:6808:f94:: with SMTP id o20mr259047oiw.121.1623255193503;
- Wed, 09 Jun 2021 09:13:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=ZKvRJP1Qn2FuRIKKae+xpipPvYviXO+rudBhyvwgw04=;
+        b=pDEulQ5T10C2NN3d8EUx9o7Evrk5XBvwU2hid/d64iys8sf3rm3CB06NvqMGuMjHsk
+         KhKXUDLJFacQ84otDTTtvaoIrDUVqpE+IqNQ/J9lGGRqvOeo0XZkrbMBV2smRrwo8LGf
+         KAnQ1/49/jlSn/TaijErlpLJ8FRg2vF5qef0zqf1U1xwr76maaSJwZ33eRCTDu5ialpu
+         mEQk1ASp0AtV1LSj2DTR+novgq8V07f8o2gQzB70ZJhI2o2E64PjiOSmurRru7VHut1k
+         2gyLSWKCJ4T9aC36gdJWHzEz27qQKnAPI1xZDE7iRFGsNlEBhQxsAeJMsTqEvE53bTS6
+         sisQ==
+X-Gm-Message-State: AOAM533XZyZYCmzZFxpUQX7OrIDCQfiWMWRqCsmZwvGhnGADhxYGylpf
+        ZbYU9QsEAcwxk8Xcez20tWl53yqsbeyxcbSc+/f9I/Bhu8LvjiDM7ogWZwpEiqhKmqtSl2WkUm2
+        YMoZvtnzRgmmMPkgTQjd3IQtj
+X-Received: by 2002:a9d:6042:: with SMTP id v2mr179316otj.170.1623255335010;
+        Wed, 09 Jun 2021 09:15:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxYk1fCbBjXzJvcPumlKeytJWmAtK0sJebJhCUtHFNxQQubDFY1axQko6MBR1VcZ3NidsA9KA==
+X-Received: by 2002:a9d:6042:: with SMTP id v2mr179287otj.170.1623255334638;
+        Wed, 09 Jun 2021 09:15:34 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id x9sm76559oto.79.2021.06.09.09.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 09:15:34 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 10:15:32 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: Plan for /dev/ioasid RFC v2
+Message-ID: <20210609101532.452851eb.alex.williamson@redhat.com>
+In-Reply-To: <YMDjfmJKUDSrbZbo@8bytes.org>
+References: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <YMCy48Xnt/aphfh3@8bytes.org>
+        <20210609123919.GA1002214@nvidia.com>
+        <YMDC8tOMvw4FtSek@8bytes.org>
+        <20210609150009.GE1002214@nvidia.com>
+        <YMDjfmJKUDSrbZbo@8bytes.org>
+Organization: Red Hat
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <alpine.LNX.2.20.13.2106070017070.7184@monopod.intra.ispras.ru>
- <CAHk-=wjwXs5+SOZGTaZ0bP9nsoA+PymAcGE4CBDVX3edGUcVRg@mail.gmail.com>
- <alpine.LNX.2.20.13.2106070956310.7184@monopod.intra.ispras.ru>
- <CANpmjNMwq6ENUtBunP-rw9ZSrJvZnQw18rQ47U3JuqPEQZsaXA@mail.gmail.com>
- <20210607152806.GS4397@paulmck-ThinkPad-P17-Gen-1> <YL5Risa6sFgnvvnG@elver.google.com>
- <CANpmjNNtDX+eBEpuP9-NgT6RAwHK5OgbQHT9b+8LZQJtwWpvPg@mail.gmail.com>
- <YL9TEqealhxBBhoS@hirez.programming.kicks-ass.net> <20210608152851.GX18427@gate.crashing.org>
- <CANpmjNPJaDT4vBqkTw8XaRfKgDuwh71qmrvNfq-vx-Zyp4ugNg@mail.gmail.com> <20210609153133.GF18427@gate.crashing.org>
-In-Reply-To: <20210609153133.GF18427@gate.crashing.org>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 9 Jun 2021 18:13:00 +0200
-Message-ID: <CANpmjNPq3NBhi_pFpNd6TwXOVjw0LE2NuQ63dWZrYSfEet3ChQ@mail.gmail.com>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexander Monakov <amonakov@ispras.ru>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 at 17:33, Segher Boessenkool
-<segher@kernel.crashing.org> wrote:
-[...]
-> > An alternative design would be to use a statement attribute to only
-> > enforce (C) ("__attribute__((mustcontrol))" ?).
->
-> Statement attributes only exist for empty statements.  It is unclear how
-> (and if!) we could support it for general statements.
+On Wed, 9 Jun 2021 17:51:26 +0200
+Joerg Roedel <joro@8bytes.org> wrote:
 
-Statement attributes can apply to anything -- Clang has had them apply
-to non-empty statements for a while. I have
-[[clang::mustcontrol]]/__attribute__((mustcontrol)) working, but of
-course it's not final but helped me figure out how feasible it is
-without running in circles here -- proof here:
-https://reviews.llvm.org/D103958
+> On Wed, Jun 09, 2021 at 12:00:09PM -0300, Jason Gunthorpe wrote:
+> > Only *drivers* know what the actual device is going to do, devices do
+> > not. Since the group doesn't have drivers it is the wrong layer to be
+> > making choices about how to configure the IOMMU.  
+> 
+> Groups don't carry how to configure IOMMUs, that information is
+> mostly in the IOMMU domains. And those (or an abstraction of them) is
+> configured through /dev/ioasid. So not sure what you wanted to say with
+> the above.
+> 
+> All a group carries is information about which devices are not
+> sufficiently isolated from each other and thus need to always be in the
+> same domain.
+> 
+> > The device centric approach is my attempt at this, and it is pretty
+> > clean, I think.  
+> 
+> Clean, but still insecure.
+> 
+> > All ACS does is prevent P2P operations, if you assign all the group
+> > devices into the same /dev/iommu then you may not care about that
+> > security isolation property. At the very least it is policy for user
+> > to decide, not kernel.  
+> 
+> It is a kernel decision, because a fundamental task of the kernel is to
+> ensure isolation between user-space tasks as good as it can. And if a
+> device assigned to one task can interfer with a device of another task
+> (e.g. by sending P2P messages), then the promise of isolation is broken.
 
-If [1] is up-to-date, then yes, I can see that GCC currently only
-supports empty statement attributes, but Clang isn't limited to empty
-[2].
-[1] https://gcc.gnu.org/onlinedocs/gcc/Statement-Attributes.html
-[2] https://clang.llvm.org/docs/AttributeReference.html#statement-attributes
+AIUI, the IOASID model will still enforce IOMMU groups, but it's not an
+explicit part of the interface like it is for vfio.  For example the
+IOASID model allows attaching individual devices such that we have
+granularity to create per device IOASIDs, but all devices within an
+IOMMU group are required to be attached to an IOASID before they can be
+used.  It's not entirely clear to me yet how that last bit gets
+implemented though, ie. what barrier is in place to prevent device
+usage prior to reaching this viable state.
 
-In fact, since C++20 [3], GCC will have to support statement
-attributes on non-empty statements, so presumably the parsing logic
-should already be there.
-[3] https://en.cppreference.com/w/cpp/language/attributes/likely
+> > Groups should be primarily about isolation security, not about IOASID
+> > matching.  
+> 
+> That doesn't make any sense, what do you mean by 'IOASID matching'?
 
-> Some new builtin seems to fit the requirements better?  I haven't looked
-> too closely though.
+One of the problems with the vfio interface use of groups is that we
+conflate the IOMMU group for both isolation and granularity.  I think
+what Jason is referring to here is that we still want groups to be the
+basis of isolation, but we don't want a uAPI that presumes all devices
+within the group must use the same IOASID.  For example, if a user owns
+an IOMMU group consisting of non-isolated functions of a multi-function
+device, they should be able to create a vIOMMU VM where each of those
+functions has its own address space.  That can't be done today, the
+entire group would need to be attached to the VM under a PCIe-to-PCI
+bridge to reflect the address space limitation imposed by the vfio
+group uAPI model.  Thanks,
 
-I had a longer discussion with someone offline about it, and the
-problem with a builtin is similar to the "memory_order_consume
-implementation problem" -- you might have an expression that uses the
-builtin in some function without any control, and merely returns the
-result of the expression as a result. If that function is in another
-compilation unit, it then becomes difficult to propagate this
-information without somehow making it part of the type system.
-Therefore, by using a statement attribute on conditional control
-statements, we do not even have this problem. It seems cleaner
-syntactically than having a __builtin_() that is either approximate,
-or gives an error if used in the wrong context.
+Alex
 
-Hence the suggestion for a very simple attribute, which also
-side-steps this problem.
-
-Thanks,
--- Marco
