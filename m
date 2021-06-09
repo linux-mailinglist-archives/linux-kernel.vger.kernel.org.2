@@ -2,134 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7FF3A19D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B08A3A199F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239355AbhFIPfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:35:54 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:25977 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239068AbhFIPf3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:35:29 -0400
-X-IronPort-AV: E=Sophos;i="5.83,261,1616425200"; 
-   d="scan'208";a="83887011"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 10 Jun 2021 00:33:33 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id AB7AA4009422;
-        Thu, 10 Jun 2021 00:33:30 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v3 11/11] arm64: dts: renesas: Add initial device tree for RZ/G2L SMARC EVK
-Date:   Wed,  9 Jun 2021 16:32:30 +0100
-Message-Id: <20210609153230.6967-12-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210609153230.6967-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210609153230.6967-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S236519AbhFIPdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:33:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233384AbhFIPdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:33:09 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2579E61351;
+        Wed,  9 Jun 2021 15:31:07 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 16:33:00 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com,
+        Benjamin Gaignard <benjamin.gaignard@st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Subject: Re: [PATCH v11 17/33] counter: stm32-timer-cnt: Add const qualifier
+ for actions_list array
+Message-ID: <20210609163300.56fe913d@jic23-huawei>
+In-Reply-To: <9675edda958ee2ca371d271f46445d3e1934ba82.1623201081.git.vilhelm.gray@gmail.com>
+References: <cover.1623201081.git.vilhelm.gray@gmail.com>
+        <9675edda958ee2ca371d271f46445d3e1934ba82.1623201081.git.vilhelm.gray@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic support for RZ/G2L SMARC EVK (based on R9A07G044L2):
-- memory
-- External input clock
-- SCIF
+On Wed,  9 Jun 2021 10:31:20 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- arch/arm64/boot/dts/renesas/Makefile          |  2 ++
- .../boot/dts/renesas/r9a07g044l2-smarc.dts    | 21 +++++++++++++++
- arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi  | 27 +++++++++++++++++++
- 3 files changed, 50 insertions(+)
- create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044l2-smarc.dts
- create mode 100644 arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
+> The struct counter_synapse actions_list member expects a const enum
+> counter_synapse_action array. This patch adds the const qualifier to the
+> stm32_synapse_actions to match actions_list.
+> 
+> Cc: Benjamin Gaignard <benjamin.gaignard@st.com>
+> Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Applied.
 
-diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
-index f2de2fa0c8b8..68e30e26564b 100644
---- a/arch/arm64/boot/dts/renesas/Makefile
-+++ b/arch/arm64/boot/dts/renesas/Makefile
-@@ -62,3 +62,5 @@ dtb-$(CONFIG_ARCH_R8A77990) += r8a77990-ebisu.dtb
- dtb-$(CONFIG_ARCH_R8A77995) += r8a77995-draak.dtb
- 
- dtb-$(CONFIG_ARCH_R8A779A0) += r8a779a0-falcon.dtb
-+
-+dtb-$(CONFIG_ARCH_R9A07G044) += r9a07g044l2-smarc.dtb
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g044l2-smarc.dts b/arch/arm64/boot/dts/renesas/r9a07g044l2-smarc.dts
-new file mode 100644
-index 000000000000..d3f72ec62f03
---- /dev/null
-+++ b/arch/arm64/boot/dts/renesas/r9a07g044l2-smarc.dts
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+/*
-+ * Device Tree Source for the RZ/G2L SMARC EVK board
-+ *
-+ * Copyright (C) 2021 Renesas Electronics Corp.
-+ */
-+
-+/dts-v1/;
-+#include "r9a07g044l2.dtsi"
-+#include "rzg2l-smarc.dtsi"
-+
-+/ {
-+	model = "Renesas SMARC EVK based on r9a07g044l2";
-+	compatible = "renesas,smarc-evk", "renesas,r9a07g044l2", "renesas,r9a07g044";
-+
-+	memory@48000000 {
-+		device_type = "memory";
-+		/* first 128MB is reserved for secure area. */
-+		reg = <0x0 0x48000000 0x0 0x78000000>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi b/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
-new file mode 100644
-index 000000000000..adcd4f50519e
---- /dev/null
-+++ b/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
-@@ -0,0 +1,27 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+/*
-+ * Device Tree Source for the RZ/G2L SMARC EVK common parts
-+ *
-+ * Copyright (C) 2021 Renesas Electronics Corp.
-+ */
-+
-+#include <dt-bindings/gpio/gpio.h>
-+
-+/ {
-+	aliases {
-+		serial0 = &scif0;
-+	};
-+
-+	chosen {
-+		bootargs = "ignore_loglevel";
-+		stdout-path = "serial0:115200n8";
-+	};
-+};
-+
-+&extal_clk {
-+	clock-frequency = <24000000>;
-+};
-+
-+&scif0 {
-+	status = "okay";
-+};
--- 
-2.17.1
+> ---
+>  drivers/counter/stm32-timer-cnt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+> index 0c18573a7837..603b30ada839 100644
+> --- a/drivers/counter/stm32-timer-cnt.c
+> +++ b/drivers/counter/stm32-timer-cnt.c
+> @@ -267,7 +267,7 @@ enum stm32_synapse_action {
+>  	STM32_SYNAPSE_ACTION_BOTH_EDGES
+>  };
+>  
+> -static enum counter_synapse_action stm32_synapse_actions[] = {
+> +static const enum counter_synapse_action stm32_synapse_actions[] = {
+>  	[STM32_SYNAPSE_ACTION_NONE] = COUNTER_SYNAPSE_ACTION_NONE,
+>  	[STM32_SYNAPSE_ACTION_BOTH_EDGES] = COUNTER_SYNAPSE_ACTION_BOTH_EDGES
+>  };
 
