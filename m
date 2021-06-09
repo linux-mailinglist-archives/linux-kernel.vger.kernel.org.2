@@ -2,85 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC563A0A6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9A93A0A64
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236295AbhFIDEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 23:04:38 -0400
-Received: from mail-pf1-f179.google.com ([209.85.210.179]:34317 "EHLO
-        mail-pf1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbhFIDEg (ORCPT
+        id S233181AbhFIDDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 23:03:20 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:5340 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232894AbhFIDDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 23:04:36 -0400
-Received: by mail-pf1-f179.google.com with SMTP id g6so17306704pfq.1;
-        Tue, 08 Jun 2021 20:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ggPiWNjLnMl9vp+wrpys4LjL7SR3Vo8fg/uGEatzS3g=;
-        b=PiBQOtOin8f7gWkcQvhCm1Gx5DAwi0uUA2Q+eZeAlHWeoCH/1luLccKwoiEQDX4n5C
-         XBQSstfSfgMAxWutUY0tUc5sFe1fUqn0pxMr3gHtnLLE2Mc1SrqqNDCSQ78BU/7DfISs
-         9BllQdJkwURzVMmyMSxZWlYGBwWKJ4vfQtqIWomcdmnOikmkpO4kfZ5uwXXQXLo1ekST
-         1ZmSCx6n4dchr6P0qkqjMJ+b4tExUWwIkAyiP6Ir7GCUJMbMT2oLkhk/YBBihlpSFv2Q
-         hEoySn6qtMFnwPYzT4Akzx9661nhZv745y2TGrqj7N5EnD1xeOInlVjvIuvWRlwku+ze
-         XhCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ggPiWNjLnMl9vp+wrpys4LjL7SR3Vo8fg/uGEatzS3g=;
-        b=ARQCXaoDHHUdTso6jmvPHxYZ2qwlgJ20DDhlLIXRKK3kv3q6iSnKN0MkSkLGJaRYDE
-         RfmOWxhwZEzhqPUEkbPiatLg02uDcnNJssd8o+e1jOy9xWa9GJyX2RMfYBzEqFf6yr7/
-         fRXbk+hi6fx0I24Hv1ZTAyWexptJh2q4K2qbfuUz3vuqEH7h51kPbKkbDF3nI/sVL5AD
-         zyIaF75m1LM3dXxYQh313VjvaAvR0zHpPOxJ+A2Rynbuwr5tZN5OwrPXtnpUgq1mLDek
-         zOODNLYwKNETenBQc4obZcHjQzDHzVJ2h8d9w13RipsEuXfPDkVLF7tAAwYXAm1Pb4JZ
-         xXBg==
-X-Gm-Message-State: AOAM532YHNd9PUNAgpNDFki1B2gmtrwt6QuL1IGYvyjdxdDt2BzRV+te
-        D/b0In73JKSePN0SmvaJ1lc=
-X-Google-Smtp-Source: ABdhPJy4yOaQlOXn05qu80u3ApZ9J/yD4tS1sAozQkqup49kcMjUhOwWdl/Ts+jddLRxHibIjLiJyA==
-X-Received: by 2002:a63:1349:: with SMTP id 9mr1499736pgt.235.1623207689924;
-        Tue, 08 Jun 2021 20:01:29 -0700 (PDT)
-Received: from localhost.localdomain ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id f18sm5122910pfv.79.2021.06.08.20.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 20:01:29 -0700 (PDT)
-From:   Herman <herman.yim88@gmail.com>
-X-Google-Original-From: Herman <yanshuaijun@yulong.com>
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maintainers@bluecherrydvr.com, anton@corp.bluecherry.net,
-        andrey.utkin@corp.bluecherry.net, Herman <yanshuaijun@yulong.com>
-Subject: [PATCH] drivers/media/pci/tw5864/Tw5864-reg.h: fix typo issues
-Date:   Wed,  9 Jun 2021 11:00:31 +0800
-Message-Id: <20210609030031.1574-1-yanshuaijun@yulong.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 8 Jun 2021 23:03:16 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G0Bbr6pQ0z6vPw;
+        Wed,  9 Jun 2021 10:57:28 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 11:01:18 +0800
+Received: from [10.174.179.24] (10.174.179.24) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 11:01:18 +0800
+Subject: Re: [PATCH -next 2/2] staging: r8188eu: use eth_broadcast_addr() to
+ assign broadcast address
+To:     Joe Perches <joe@perches.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210608141620.525521-1-liushixin2@huawei.com>
+ <YL96vz4okNehxCBG@kroah.com>
+ <b77a3e7b0923344e8c5b9b17f4788d28f3ccfb4f.camel@perches.com>
+ <YL+ib+tJwKckXagY@kroah.com>
+ <eb8d5431301686000746524882c06121a2d21189.camel@perches.com>
+CC:     <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <4773dedc-dd39-ce1c-f7a6-58a93799fd92@huawei.com>
+Date:   Wed, 9 Jun 2021 11:01:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <eb8d5431301686000746524882c06121a2d21189.camel@perches.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.24]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-change 'syncrous' into 'synchronous'
+On 2021/6/9 1:34, Joe Perches wrote:
+> On Tue, 2021-06-08 at 19:01 +0200, Greg Kroah-Hartman wrote:
+>> On Tue, Jun 08, 2021 at 09:45:49AM -0700, Joe Perches wrote:
+>>> On Tue, 2021-06-08 at 16:12 +0200, Greg Kroah-Hartman wrote:
+>>>> On Tue, Jun 08, 2021 at 10:16:20PM +0800, Liu Shixin wrote:
+>>>>> Use eth_broadcast_addr() to assign broadcast address.
+>>>> That says what you do, but not _why_ you are doing this?
+>>>>
+>>>> Why make this change?  What benifit does it provide?
+>>> The commit message is clear and concise as using available kernel
+>>> mechanisms is better than homegrown or duplicative ones.
+>>>
+>>> Are you asking merely becuse Liu Shixin hasn't had many staging
+>>> commits?
+>> I'm asking because this changelog text does not explain why this is
+>> needed at all and needs to be changed to do so.
+> IYO.
+>
+> IMO it's obvious and fine as is and you are asking for overly
+> fine-grained analyses in commit messages.
+>
+> The subject is clear though the commit message is merely duplicative.
+>
+> It _could_ show the reduction in object size for some versions of gcc.
+>
+> $ size drivers/staging/rtl8188eu/core/rtw_mlme_ext.o*
+>    text	   data	    bss	    dec	    hex	filename
+>   53259	    372	   2430	  56061	   dafd	drivers/staging/rtl8188eu/core/rtw_mlme_ext.o.gcc6.new
+>   53355	    372	   2430	  56157	   db5d	drivers/staging/rtl8188eu/core/rtw_mlme_ext.o.gcc6.old
+>   54673	    372	   2430	  57475	   e083	drivers/staging/rtl8188eu/core/rtw_mlme_ext.o.gcc10.new
+>   54673	    372	   2430	  57475	   e083	drivers/staging/rtl8188eu/core/rtw_mlme_ext.o.gcc10.old
+>
+> It _could_ describe how the kernel mechanisms depend on a minimum
+> alignment of __aligned(2) in the tested address and also show that
+> the address is properly minimum aligned.
+>
+> struct ieee80211_hdr {
+> 	__le16 frame_control;
+> 	__le16 duration_id;
+> 	u8 addr1[ETH_ALEN];
+> 	u8 addr2[ETH_ALEN];
+> 	u8 addr3[ETH_ALEN];
+> 	__le16 seq_ctrl;
+> 	u8 addr4[ETH_ALEN];
+> } __packed __aligned(2);
+> [...]
+> 	struct ieee80211_hdr *pwlanhdr;
+> [...]
+> -	ether_addr_copy(pwlanhdr->addr1, bc_addr);
+> +	eth_broadcast_addr(pwlanhdr->addr1);
+>
+> It _could_ show that the commit has some effect on runtime.
+> It _could_ show that it passes some (unavailable) regression test.
+>
+> IMO: None of those are really necessary here.
+>
+>
+> .
+>
+The variable bc_addr is repeated many times in the code and looks like magic number. I want to simplify the code by remoing unnecessary bc_addr.
+And I think it's better using eth_broadcast_addr() directly rather than using ether_addr_copy() + bc_addr.
 
-Signed-off-by: Herman <yanshuaijun@yulong.com>
----
- drivers/media/pci/tw5864/tw5864-reg.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks to Joe for the data.
 
-diff --git a/drivers/media/pci/tw5864/tw5864-reg.h b/drivers/media/pci/tw5864/tw5864-reg.h
-index a74f30f2f78e..970e6fc01537 100644
---- a/drivers/media/pci/tw5864/tw5864-reg.h
-+++ b/drivers/media/pci/tw5864/tw5864-reg.h
-@@ -663,7 +663,7 @@
- #define TW5864_SYNC 0x8008
- /* Define controls in register TW5864_SYNC */
- /*
-- * 0 vlc stream to syncrous port
-+ * 0 vlc stream to synchronous port
-  * 1 vlc stream to ddr buffers
-  */
- #define TW5864_SYNC_CFG BIT(7)
--- 
-2.25.1
+Thanks,
+
 
