@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1891D3A18B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17F53A18BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhFIPME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235531AbhFIPL7 (ORCPT
+        id S238778AbhFIPNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:13:14 -0400
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:41529 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230519AbhFIPNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:11:59 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E36CC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 08:10:04 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id h1so5036374plt.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 08:10:04 -0700 (PDT)
+        Wed, 9 Jun 2021 11:13:12 -0400
+Received: by mail-pf1-f169.google.com with SMTP id x73so18611422pfc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 08:11:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M3LZsPwexpDP/kj/j+5Ik9WCBYi4pMWZXQW1ZE6DwlU=;
-        b=0C/XeUzxj/itIlpE3RuWPjtjfArIYgHt8XJGQJc9VYGYyWAwO1LBLJ+uQsD7BS7Ae3
-         4M+U4CKXdoVBjmxNmY/w+jtJlvubyL08tvVVw07zSuiNHmKE2dMQU5z+W5cLxKXxM0ir
-         +bKcQUg39FNZ0p9FgvIoVqPwdDluzGgB1/xtkw0jxmH/o/JNpTGU+7rX9vfOWABkox+l
-         COnuhjZASXoLp/en6hwKIKCHRC+Fp2GpawjqS87UwHWfK1Ke6wnuPhYVS3Wf8Kql5hme
-         lN2usqkHS04/zW/2TK2i2nI25H/l+mHlFj4TjGyDcHXtGoeSN0weUwG3TYGOYZgLOqSL
-         e4cg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IBXcSszBYphaifHgOC2J5NicZzuUQ/7ILUQKgpfvwwk=;
+        b=C2gl0t8sa0OyDrmf3CGQvVpN7nKMUYnmoNEFFTwsu1rvQew7e5y/VeHC/86fkQDjj4
+         kS0WkTlD8Ceci0rRgBKGIOxxqx5mmfAnsGvIW4D2hP0H2CT8FkfLRyfO4wnEn3CRImXQ
+         6hODDRY2KZ2bteVDwMEgv89PWnibSd6Icuq5M/TzFpQgWtOnTzVmHILLuywqqKJ8IWvN
+         /GmlpLSyFKiWDVC3wFptS7roPpZxXJqRptRC78LSgz5Q0HQe6Gdy7IRSYoP7kDF1ahzd
+         BhDgkaAtBM/PIMwxNDJcCpkOKifkUn+sZTr+VKvHFOtBW0z2aMry+BxYol6/GICuQnbX
+         Bomw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M3LZsPwexpDP/kj/j+5Ik9WCBYi4pMWZXQW1ZE6DwlU=;
-        b=StkQM8MVq9rD3fEXrrYMx4N77p0f1WIuwXL/+uN/9ccW3a9zTN/e2fHRRN8kAI4CZa
-         QMJo60OTgF+tplFTtEJK8p4N+i7U3jFdSQTn++IHbCNiCFzyUorPMR2D5lxxr8KsAeJz
-         u82nFPassqdNrfh2qYlO0xOCnNfDpP11lrf4srhmmC76dqttbV69oztVJ0WHEDlxbz/R
-         ZkWM04qBu6GYMz5oOTF5MrUtyNNdzT+dy6ggiDxTV88m76uoYICGLaEK8oqY2HfSNblY
-         swycYE4neh6rpGo+VeaN2oa3/t72f9nwJCZq/Gz3Z1Cpxy72cRwhluY1e7jvLbLdhmrI
-         M2EA==
-X-Gm-Message-State: AOAM5322rFTjOkmjQmd8WNrwMWUD83LiShaEhQeESWstep6TiA5yymhy
-        U+MX/sHUYgbtErV9KAeUw0f27gskdKG5Xi6Uea1YZw==
-X-Google-Smtp-Source: ABdhPJzs1y023JBtkSHe1ljP4uOLN3EhQ4rsB3NnheX2EvyFdAJZIEE0ZyczhHB9BZWY8EBCOfInHA8rDZSDn+9I3mI=
-X-Received: by 2002:a17:90a:ea8c:: with SMTP id h12mr9024341pjz.149.1623251403714;
- Wed, 09 Jun 2021 08:10:03 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IBXcSszBYphaifHgOC2J5NicZzuUQ/7ILUQKgpfvwwk=;
+        b=UUCTlMiTejlymvNAWuzlEbmuztwvxXrjoyLeMMYw7O2qnkfOehTJPlxs/5CVZs/K0u
+         ulSTIOWxz9qUMYKjKzThHchdfsvrlJhLXIzX47hOuLqf7tBOS+OaVnyjU+FUWUoMgoEj
+         DU+Cq+iLfqA+tINGVsZf7YPkyhHi3Yl7zPmQHrmmAJmSALBlFSrgTgPhVUUy1feUbc+U
+         /810srFQ7tWuW0idQ2NHHIb8l4UJ7d9e4Z4dADoXBnAFnlyD+Rm85D9Z8xgLfdN2f9rW
+         Vaz3nNVQl09NEu7IRUBX4KCVZ19/X1d7W4WIDJBwa+sJ+Np9KLL5I8WHOlyhUMOPsNve
+         FU1A==
+X-Gm-Message-State: AOAM532cGIHRqlF3X5rb45RIClZJdL8Xmxq/MYTiLBmiylYFnrOEZDBT
+        OEGO9NkBg92t6Way3shAxpPPH+7bzHxlDQ==
+X-Google-Smtp-Source: ABdhPJz/wOFlRsZKTXHwHzYsamAIgxhiZCMsps1pYK3Xqq2UY0/65dNFjGGQY7E5ydXHaeMf6n8wUw==
+X-Received: by 2002:a63:1114:: with SMTP id g20mr132875pgl.385.1623251401815;
+        Wed, 09 Jun 2021 08:10:01 -0700 (PDT)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id u14sm77968pjx.14.2021.06.09.08.10.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 08:10:00 -0700 (PDT)
+Subject: Re: [PATCH] libnvdimm/pmem: Fix pmem_pagemap_cleanup compile warning
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-block@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20210609135237.22bde319@canb.auug.org.au>
+ <162321342919.2151549.7438715629081965798.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <d3a32947-80b1-3d12-e96c-88f599d486a3@kernel.dk>
+Date:   Wed, 9 Jun 2021 09:10:02 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
- <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4gLeKPfYOx1kmg-mO1_mNd+XGqVO-CbqX+2d52GZ+DSFw@mail.gmail.com>
- <682f0239-8da0-3702-0f14-99b6244af499@linux.intel.com> <CAPcyv4jfFPGm2-cvPExeujZnaSKKky3AQRp69tzG1gcZ09dj8A@mail.gmail.com>
- <ffedf1d2-e5ec-e0e3-8e83-edd186231029@linux.intel.com>
-In-Reply-To: <ffedf1d2-e5ec-e0e3-8e83-edd186231029@linux.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 9 Jun 2021 08:09:52 -0700
-Message-ID: <CAPcyv4haWYhqk_xLD56QnB0ahK+fynOmqGdSD907UW-=7B176g@mail.gmail.com>
-Subject: Re: [RFC v2-fix-v4 1/1] x86/tdx: Skip WBINVD instruction for TDX guest
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <162321342919.2151549.7438715629081965798.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 9:27 PM Andi Kleen <ak@linux.intel.com> wrote:
->
->
-> here is no resume path.
->
-> > Host is free to go into S3 independent of any guest state.
->
-> Actually my understanding is that none of the systems which support TDX
-> support S3. S3 has been deprecated for a long time.
+On 6/8/21 10:37 PM, Dan Williams wrote:
+> The recent fix to pmem_pagemap_cleanup() to solve a NULL pointer
+> dereference with the queue_to_disk() helper neglected to remove the @q
+> variable when queue_to_disk() was replaced.
+> 
+> Drop the conversion of @pgmap to its containing 'struct request_queue'
+> since pgmap->owner supersedes the need to reference @q.
 
-Ok, I wanted to imply any power state that might power-off caches.
+I folded this in.
 
->
->
-> >   A hostile
-> > host is free to do just enough cache management so that it can resume
-> > from S3 while arranging for TDX guest dirty data to be lost. Does a
-> > TDX guest go fatal if the cache loses power?
->
-> That would be a machine check, and yes it would be fatal.
+-- 
+Jens Axboe
 
-Sounds good, so incorporating this and Andy's feedback:
-
-"TDX guests, like other typical guests, use standard ACPI mechanisms
-to signal sleep state entry (including reboot) to the host. The ACPI
-specification mandates WBINVD on any sleep state entry with the
-expectation that the platform is only responsible for maintaining the
-state of memory over sleep states, not preserving dirty data in any
-CPU caches. ACPI cache flushing requirements pre-date the advent of
-virtualization. Given guest sleep state entry does not affect any host
-power rails it is not required to flush caches. The host is
-responsible for maintaining cache state over its own bare metal sleep
-state transitions that power-off the cache. A TDX guest, unlike a
-typical guest, will machine check if the CPU cache is powered off."
-
-Andi, is that machine check behavior relative to power states
-mentioned in the docs?
