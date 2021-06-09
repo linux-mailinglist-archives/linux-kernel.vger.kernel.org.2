@@ -2,209 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251F03A115C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325EF3A115F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239010AbhFIKmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:42:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236503AbhFIKmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:42:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AD9161375;
-        Wed,  9 Jun 2021 10:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623235221;
-        bh=w4o78bpNaj+TFbKDPBfoFUCyuOVleQStwLCO9/OVcZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dbsX89OaYlfzdMUlPDHA5AiQcuiL0r2e7A9mFhzxcGYfY9M7m8bph8/yvXOesX6WE
-         SajUSPKk0BiAm1TSbwvTdM+Vn/+nrsOjZrCxk/zT/kCYUMiORVgqj0nZO4BLQZ/+AE
-         /Jlez0Tl9soEcuMwqilVZ2D6z/fAUVygKUkNmNeOqY4cogsJRkv/FvaQpPnwFb4ji8
-         7V93Ms7nnMB2ivNCpDJevfpg0Tk+5z5HNujm3WTDWRy87O99mcttYy55dCWatalqHC
-         sl5I5J0z95Pi0LMRzjVWEMGyM5oAJbPromYMBYwgGJvwQPqJAFp9dDuED4HE8avezx
-         GMQFP88KQY7sw==
-Date:   Wed, 9 Jun 2021 13:40:17 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Anand Khoje <anand.a.khoje@oracle.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        Haakon Bugge <haakon.bugge@oracle.com>
-Subject: Re: [PATCH v3 3/3] IB/core: Obtain subnet_prefix from cache in IB
- devices.
-Message-ID: <YMCakSCQLqUbcQ1H@unreal>
-References: <20210609055534.855-1-anand.a.khoje@oracle.com>
- <20210609055534.855-4-anand.a.khoje@oracle.com>
- <YMB9gxlKbDvdynUE@unreal>
- <MWHPR1001MB2096CA7F29DCF86DE921903EC5369@MWHPR1001MB2096.namprd10.prod.outlook.com>
+        id S238225AbhFIKn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:43:58 -0400
+Received: from mail-pg1-f174.google.com ([209.85.215.174]:37527 "EHLO
+        mail-pg1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235213AbhFIKn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 06:43:57 -0400
+Received: by mail-pg1-f174.google.com with SMTP id t9so19099118pgn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:42:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o3KSqDVs9YRSwE4rOwA0va7NCLHw84o+H5YF3VkLQdM=;
+        b=JtSlkmTPs+H1JCpMlMT4IMsfQa8AN05+Jwzr9y0eMBoFqPN3OLlDF/sSIU2wdbnafj
+         Bvwc8QVi2hybfJT8seIRU25PwWiVOUXoe3zAOyP1PsE0Jbs8WypZ6B02spebC97i8YPP
+         dCTZsIfDepmonyk02MH7akhX/22srZngJ2VAo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o3KSqDVs9YRSwE4rOwA0va7NCLHw84o+H5YF3VkLQdM=;
+        b=GaFC6sUV+Hz1VIwUwRJ28NL3cE1Q85f1Es0f2rh9pbGSfpTcWt54HZXH+S3RdUFOp6
+         mwCqf4xA35N1ankb0IK+oWcaYbcVPCLACa+9qQz4Q1C2hI5mOTZ8yeodpEuWlf6cHVW5
+         r7wtpNMEjFcg9y5rHWjNqh5K/Z69kpqo6Kweaffef+DKlOTli646t2qD9WnQi/aeSlVF
+         Ph6fwSHuFroFun9I+0Q2Av/NiCp7UX9PYGCfmq6y5OMBHv6KIBUjO9A19EOCjh+2XH6U
+         rOyX+BRxehecKMe3qOkzNWDv2Drfn9EcBqQJ4RcgrhNj/WnpFy6cH8Q6CyASAIcD+plF
+         ZIaQ==
+X-Gm-Message-State: AOAM531jYoQ5DRrm0e6835OYM8HeVT3TtYi8A3k6Eiw4Iygzdbyq5zI/
+        Hy1hzd1nX47o2Bwe8mU7hk2hCg==
+X-Google-Smtp-Source: ABdhPJxeWSnFVRMewe1zjN1xVuTUbrFOPSw8XzwNwPRTj6Pvhj8lQCDm/w6gJDaJPdNL+Nt/nRAF9A==
+X-Received: by 2002:a63:f245:: with SMTP id d5mr3191835pgk.416.1623235262439;
+        Wed, 09 Jun 2021 03:41:02 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:83f0:56eb:3535:6bd5])
+        by smtp.gmail.com with ESMTPSA id k1sm13223904pfa.30.2021.06.09.03.41.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 03:41:01 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        maoguang.meng@mediatek.com, yong.wu@mediatek.com
+Subject: [PATCH] dt-bindings: mediatek: convert mtk jpeg decoder/encoder to yaml
+Date:   Wed,  9 Jun 2021 18:40:54 +0800
+Message-Id: <20210609104053.617751-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR1001MB2096CA7F29DCF86DE921903EC5369@MWHPR1001MB2096.namprd10.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 09:26:03AM +0000, Anand Khoje wrote:
-> Hi Leon,
+Convert mediatek jpeg decoder and encoder bindings to yaml.
 
-Please don't do top-posting.
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+mediatek,larb in the original file will be removed after this series[1]
+[1] https://patchwork.kernel.org/project/linux-mediatek/patch/20210410091128.31823-2-yong.wu@mediatek.com/
+---
+ .../bindings/media/mediatek-jpeg-decoder.yaml | 73 +++++++++++++++++++
+ .../bindings/media/mediatek-jpeg-encoder.yaml | 65 +++++++++++++++++
+ 2 files changed, 138 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
 
+diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
+new file mode 100644
+index 0000000000000..812f366163d8a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
+@@ -0,0 +1,73 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/mediatek-jpeg-decoder.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MediaTek JPEG Decoder Device Tree Bindings
++
++maintainers:
++  - Xia Jiang <xia.jiang@mediatek.com>
++
++description: |-
++  Mediatek JPEG Decoder is the JPEG decode hardware present in Mediatek SoCs
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++        - const: mediatek,mt8173-jpgdec
++      - items:
++        - const: mediatek,mt2701-jpgdec
++      - items:
++        - enum:
++            - mediatek,mt7623-jpgdec
++        - const: mediatek,mt2701-jpgdec
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 2
++    minItems: 2
++
++  clock-names:
++    items:
++      - const: jpgdec-smi
++      - const: jpgdec
++
++  power-domains:
++    maxItems: 1
++
++  iommus:
++    minItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - power-domains
++  - iommus
++
++additionalProperties: false
++
++examples:
++  - |
++    jpegdec: jpegdec@15004000 {
++      compatible = "mediatek,mt2701-jpgdec";
++      reg = <0 0x15004000 0 0x1000>;
++      interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW>;
++      clocks =  <&imgsys CLK_IMG_JPGDEC_SMI>,
++                <&imgsys CLK_IMG_JPGDEC>;
++      clock-names = "jpgdec-smi",
++                    "jpgdec";
++      power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
++      iommus = <&iommu MT2701_M4U_PORT_JPGDEC_WDMA>,
++               <&iommu MT2701_M4U_PORT_JPGDEC_BSDMA>;
++    };
++
+diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
+new file mode 100644
+index 0000000000000..8ffc17fe576d5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
+@@ -0,0 +1,65 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/mediatek-jpeg-encoder.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MediaTek JPEG Encoder Device Tree Bindings
++
++maintainers:
++  - Xia Jiang <xia.jiang@mediatek.com>
++
++description: |-
++  MediaTek JPEG Encoder is the JPEG encode hardware present in MediaTek SoCs
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - mediatek,mt2701-jpgenc
++          - mediatek,mt8183-jpgenc
++      - const: mediatek,mtk-jpgenc
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: jpgenc
++
++  power-domains:
++    maxItems: 1
++
++  iommus:
++    minItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - power-domains
++  - iommus
++
++additionalProperties: false
++
++examples:
++  - |
++    jpegenc: jpegenc@1500a000 {
++      compatible = "mediatek,mt2701-jpgenc",
++                   "mediatek,mtk-jpgenc";
++      reg = <0 0x1500a000 0 0x1000>;
++      interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_LOW>;
++      clocks =  <&imgsys CLK_IMG_VENC>;
++      clock-names = "jpgenc";
++      power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
++      iommus = <&iommu MT2701_M4U_PORT_JPGENC_RDMA>,
++               <&iommu MT2701_M4U_PORT_JPGENC_BSDMA>;
++    };
++
+-- 
+2.32.0.rc1.229.g3e70b5a671-goog
 
-> 
-> The set_bit()/clear_bit() and enum ib_port_data_flags  has been added as a device that can be used for future enhancements. 
-> Also, usage of set_bit()/clear_bit() ensures the operations on this bit is atomic.
-
-The bitfield variables are better suit this use case.
-Let's don't overcomplicate code without the reason.
-
-Thanks
-
-> 
-> Thanks,
-> Anand
-> 
-> -----Original Message-----
-> From: Leon Romanovsky <leon@kernel.org> 
-> Sent: Wednesday, June 9, 2021 2:06 PM
-> To: Anand Khoje <anand.a.khoje@oracle.com>
-> Cc: linux-rdma@vger.kernel.org; linux-kernel@vger.kernel.org; dledford@redhat.com; jgg@ziepe.ca; Haakon Bugge <haakon.bugge@oracle.com>
-> Subject: Re: [PATCH v3 3/3] IB/core: Obtain subnet_prefix from cache in IB devices.
-> 
-> On Wed, Jun 09, 2021 at 11:25:34AM +0530, Anand Khoje wrote:
-> > ib_query_port() calls device->ops.query_port() to get the port 
-> > attributes. The method of querying is device driver specific.
-> > The same function calls device->ops.query_gid() to get the GID and 
-> > extract the subnet_prefix (gid_prefix).
-> > 
-> > The GID and subnet_prefix are stored in a cache. But they do not get 
-> > read from the cache if the device is an Infiniband device. The 
-> > following change takes advantage of the cached subnet_prefix.
-> > Testing with RDBMS has shown a significant improvement in performance 
-> > with this change.
-> > 
-> > The function ib_cache_is_initialised() is introduced because
-> > ib_query_port() gets called early in the stage when the cache is not 
-> > built while reading port immutable property.
-> > 
-> > In that case, the default GID still gets read from HCA for IB link- 
-> > layer devices.
-> > 
-> > Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
-> > Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
-> > Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
-> > 
-> > ---
-> > 
-> > v1 -> v2:
-> >     -	Split the v1 patch in 3 patches as per Leon's suggestion.
-> > 
-> > v2 -> v3:
-> >     -	Added changes as per Mark Zhang's suggestion of clearing
-> >     	flags in git_table_cleanup_one().
-> > 
-> > ---
-> >  drivers/infiniband/core/cache.c  | 7 ++++++-  
-> > drivers/infiniband/core/device.c | 9 +++++++++
-> >  include/rdma/ib_cache.h          | 6 ++++++
-> >  include/rdma/ib_verbs.h          | 6 ++++++
-> >  4 files changed, 27 insertions(+), 1 deletion(-)
-> 
-> Why did you use clear_bit/test_bit API? I would expect it for the bitmap, but for such simple thing, the simple "u8 is_cached_init : 1;"
-> will do the same trick.
-> 
-> Thanks
-> 
-> > 
-> > diff --git a/drivers/infiniband/core/cache.c 
-> > b/drivers/infiniband/core/cache.c index e957f0c915a3..94a8653a72c5 
-> > 100644
-> > --- a/drivers/infiniband/core/cache.c
-> > +++ b/drivers/infiniband/core/cache.c
-> > @@ -917,9 +917,12 @@ static void gid_table_cleanup_one(struct 
-> > ib_device *ib_dev)  {
-> >  	u32 p;
-> >  
-> > -	rdma_for_each_port (ib_dev, p)
-> > +	rdma_for_each_port (ib_dev, p) {
-> > +		clear_bit(IB_PORT_CACHE_INITIALIZED,
-> > +			&ib_dev->port_data[p].flags);
-> >  		cleanup_gid_table_port(ib_dev, p,
-> >  				       ib_dev->port_data[p].cache.gid);
-> > +	}
-> >  }
-> >  
-> >  static int gid_table_setup_one(struct ib_device *ib_dev) @@ -1623,6 
-> > +1626,8 @@ int ib_cache_setup_one(struct ib_device *device)
-> >  		err = ib_cache_update(device, p, true);
-> >  		if (err)
-> >  			return err;
-> > +		set_bit(IB_PORT_CACHE_INITIALIZED,
-> > +			&device->port_data[p].flags);
-> >  	}
-> >  
-> >  	return 0;
-> > diff --git a/drivers/infiniband/core/device.c 
-> > b/drivers/infiniband/core/device.c
-> > index 595128b26c34..e8e7b0a61411 100644
-> > --- a/drivers/infiniband/core/device.c
-> > +++ b/drivers/infiniband/core/device.c
-> > @@ -2059,6 +2059,15 @@ static int __ib_query_port(struct ib_device *device,
-> >  	    IB_LINK_LAYER_INFINIBAND)
-> >  		return 0;
-> >  
-> > +	if (!ib_cache_is_initialised(device, port_num))
-> > +		goto query_gid_from_device;
-> > +
-> > +	ib_get_cached_subnet_prefix(device, port_num,
-> > +				    &port_attr->subnet_prefix);
-> > +
-> > +	return 0;
-> > +
-> > +query_gid_from_device:
-> >  	err = device->ops.query_gid(device, port_num, 0, &gid);
-> >  	if (err)
-> >  		return err;
-> > diff --git a/include/rdma/ib_cache.h b/include/rdma/ib_cache.h index 
-> > 226ae3702d8a..1526fc6637eb 100644
-> > --- a/include/rdma/ib_cache.h
-> > +++ b/include/rdma/ib_cache.h
-> > @@ -114,4 +114,10 @@ ssize_t rdma_query_gid_table(struct ib_device *device,
-> >  			     struct ib_uverbs_gid_entry *entries,
-> >  			     size_t max_entries);
-> >  
-> > +static inline bool ib_cache_is_initialised(struct ib_device *device,
-> > +					  u8 port_num)
-> > +{
-> > +	return test_bit(IB_PORT_CACHE_INITIALIZED,
-> > +			&device->port_data[port_num].flags);
-> > +}
-> >  #endif /* _IB_CACHE_H */
-> > diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h index 
-> > 41cbec516424..ad2a55e3a2ee 100644
-> > --- a/include/rdma/ib_verbs.h
-> > +++ b/include/rdma/ib_verbs.h
-> > @@ -2169,6 +2169,10 @@ struct ib_port_immutable {
-> >  	u32                           max_mad_size;
-> >  };
-> >  
-> > +enum ib_port_data_flags {
-> > +	IB_PORT_CACHE_INITIALIZED = 1 << 0,
-> > +};
-> > +
-> >  struct ib_port_data {
-> >  	struct ib_device *ib_dev;
-> >  
-> > @@ -2178,6 +2182,8 @@ struct ib_port_data {
-> >  
-> >  	spinlock_t netdev_lock;
-> >  
-> > +	unsigned long flags;
-> > +
-> >  	struct list_head pkey_list;
-> >  
-> >  	struct ib_port_cache cache;
-> > --
-> > 2.27.0
-> > 
