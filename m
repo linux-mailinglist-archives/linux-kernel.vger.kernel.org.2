@@ -2,94 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C97E23A0C49
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009223A0C26
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236693AbhFIGU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232973AbhFIGU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:20:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29F6E6101A;
-        Wed,  9 Jun 2021 06:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623219542;
-        bh=ts8xmqJk/pwHSYmRZhFquxYo/UmYjLxgRf8jkeUmvFo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=juW1uIzphE/HLsxUx9qIJJvde/kBAY4i7huz33wahz0qL5OcEsvprb3hmJmze6Cjw
-         vJ1npLy5jxEIOX4HGwgkM68BRfnZThpJQ0xEi/jsMlWpPOJHfGQgiiFA3EYkV0k80H
-         aXkYrMGjYOXlpbx4qzFUAFhF1C30ABAhOR4XFSPI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Walker, Benjamin" <benjamin.walker@intel.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 022/137] nvme-rdma: fix in-casule data send for chained sgls
-Date:   Tue,  8 Jun 2021 20:26:02 +0200
-Message-Id: <20210608175943.167114424@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S236332AbhFIGIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:08:24 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3806 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232209AbhFIGIS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 02:08:18 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0GhB12k3zWtFx;
+        Wed,  9 Jun 2021 14:01:30 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 14:06:20 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 14:06:20 +0800
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+To:     <james.morse@arm.com>, <rafael@kernel.org>, <rjw@rjwysocki.net>,
+        <lenb@kernel.org>, <tony.luck@intel.com>, <bp@alien8.de>,
+        <akpm@linux-foundation.org>, <jroedel@suse.de>,
+        <peterz@infradead.org>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, Xiaofei Tan <tanxiaofei@huawei.com>
+Subject: [PATCH v6] ACPI / APEI: fix the regression of synchronous external aborts occur in user-mode
+Date:   Wed, 9 Jun 2021 14:03:00 +0800
+Message-ID: <1623218580-41912-1-git-send-email-tanxiaofei@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+Before commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
+synchronise with APEI's irq work"), do_sea() would unconditionally
+signal the affected task from the arch code. Since that change,
+the GHES driver sends the signals.
 
-[ Upstream commit 12b2aaadb6d5ef77434e8db21f469f46fe2d392e ]
+This exposes a problem as errors the GHES driver doesn't understand
+or doesn't handle effectively are silently ignored. It will cause
+the errors get taken again, and circulate endlessly. User-space task
+get stuck in this loop.
 
-We have only 2 inline sg entries and we allow 4 sg entries for the send
-wr sge. Larger sgls entries will be chained. However when we build
-in-capsule send wr sge, we iterate without taking into account that the
-sgl may be chained and still fit in-capsule (which can happen if the sgl
-is bigger than 2, but lower-equal to 4).
+Existing firmware on Kunpeng9xx systems reports cache errors with the
+'ARM Processor Error' CPER records.
 
-Fix in-capsule data mapping to correctly iterate chained sgls.
+Do memory failure handling for ARM Processor Error Section just like
+for Memory Error Section.
 
-Fixes: 38e1800275d3 ("nvme-rdma: Avoid preallocating big SGL for data")
-Reported-by: Walker, Benjamin <benjamin.walker@intel.com>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+Reviewed-by: James Morse <james.morse@arm.com>
+
 ---
- drivers/nvme/host/rdma.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Changes since v5:
+- Do some changes following James's suggestions: 1) optimize commit log
+2) use err_info->length instead of err_info++' 3) some coding style
+advice.
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 8b326508a480..e6d58402b829 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -1327,16 +1327,17 @@ static int nvme_rdma_map_sg_inline(struct nvme_rdma_queue *queue,
- 		int count)
- {
- 	struct nvme_sgl_desc *sg = &c->common.dptr.sgl;
--	struct scatterlist *sgl = req->data_sgl.sg_table.sgl;
- 	struct ib_sge *sge = &req->sge[1];
-+	struct scatterlist *sgl;
- 	u32 len = 0;
- 	int i;
+Changes since v4:
+- 1. Change the patch name from " ACPI / APEI: do memory failure on the
+physical address reported by ARM processor error section" to this
+more proper one.
+- 2. Add a comment in the code to tell why not filter out corrected
+error in an uncorrected section.
+
+Changes since v3:
+- Print unhandled error following James Morse's advice.
+
+Changes since v2:
+- Updated commit log
+---
+ drivers/acpi/apei/ghes.c | 81 ++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 64 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index fce7ade..0c8330e 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
+ 	gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
+ }
  
--	for (i = 0; i < count; i++, sgl++, sge++) {
-+	for_each_sg(req->data_sgl.sg_table.sgl, sgl, count, i) {
- 		sge->addr = sg_dma_address(sgl);
- 		sge->length = sg_dma_len(sgl);
- 		sge->lkey = queue->device->pd->local_dma_lkey;
- 		len += sge->length;
-+		sge++;
+-static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+-				       int sev)
++static bool ghes_do_memory_failure(u64 physical_addr, int flags)
+ {
+ 	unsigned long pfn;
+-	int flags = -1;
+-	int sec_sev = ghes_severity(gdata->error_severity);
+-	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+ 
+ 	if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
+ 		return false;
+ 
+-	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+-		return false;
+-
+-	pfn = mem_err->physical_addr >> PAGE_SHIFT;
++	pfn = PHYS_PFN(physical_addr);
+ 	if (!pfn_valid(pfn)) {
+ 		pr_warn_ratelimited(FW_WARN GHES_PFX
+ 		"Invalid address in generic error data: %#llx\n",
+-		mem_err->physical_addr);
++		physical_addr);
+ 		return false;
  	}
  
- 	sg->addr = cpu_to_le64(queue->ctrl->ctrl.icdoff);
++	memory_failure_queue(pfn, flags);
++	return true;
++}
++
++static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
++				       int sev)
++{
++	int flags = -1;
++	int sec_sev = ghes_severity(gdata->error_severity);
++	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
++
++	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
++		return false;
++
+ 	/* iff following two events can be handled properly by now */
+ 	if (sec_sev == GHES_SEV_CORRECTED &&
+ 	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+@@ -470,14 +477,56 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+ 	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
+ 		flags = 0;
+ 
+-	if (flags != -1) {
+-		memory_failure_queue(pfn, flags);
+-		return true;
+-	}
++	if (flags != -1)
++		return ghes_do_memory_failure(mem_err->physical_addr, flags);
+ 
+ 	return false;
+ }
+ 
++static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
++{
++	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
++	bool queued = false;
++	int sec_sev, i;
++	char *p;
++
++	log_arm_hw_error(err);
++
++	sec_sev = ghes_severity(gdata->error_severity);
++	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
++		return false;
++
++	p = (char *)(err + 1);
++	for (i = 0; i < err->err_info_num; i++) {
++		struct cper_arm_err_info *err_info = (struct cper_arm_err_info *)p;
++		bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
++		bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
++		const char *error_type = "unknown error";
++
++		/*
++		 * The field (err_info->error_info & BIT(26)) is fixed to set to
++		 * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
++		 * firmware won't mix corrected errors in an uncorrected section,
++		 * and don't filter out 'corrected' error here.
++		 */
++		if (is_cache && has_pa) {
++			queued = ghes_do_memory_failure(err_info->physical_fault_addr, 0);
++			p += err_info->length;
++			continue;
++		}
++
++		if (err_info->type < ARRAY_SIZE(cper_proc_error_type_strs))
++			error_type = cper_proc_error_type_strs[err_info->type];
++
++		pr_warn_ratelimited(FW_WARN GHES_PFX
++				    "Unhandled processor error type: %s\n",
++				    error_type);
++		p += err_info->length;
++	}
++
++	return queued;
++}
++
+ /*
+  * PCIe AER errors need to be sent to the AER driver for reporting and
+  * recovery. The GHES severities map to the following AER severities and
+@@ -605,9 +654,7 @@ static bool ghes_do_proc(struct ghes *ghes,
+ 			ghes_handle_aer(gdata);
+ 		}
+ 		else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
+-			struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+-
+-			log_arm_hw_error(err);
++			queued = ghes_handle_arm_hw_error(gdata, sev);
+ 		} else {
+ 			void *err = acpi_hest_get_payload(gdata);
+ 
 -- 
-2.30.2
-
-
+2.8.1
 
