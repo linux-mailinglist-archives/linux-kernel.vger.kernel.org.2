@@ -2,157 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5893A1E25
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EB93A1E2B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhFIUe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 16:34:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhFIUe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:34:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0407461354;
-        Wed,  9 Jun 2021 20:32:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623270751;
-        bh=cwN1ib5e//5k0TeRbpqXnirj82rEAs0iDe99zClbmEk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=sXbT756GWk7nw2Z7clgWCHP5IScIdjBj7/XNuW8X8bOUZlyBVpVoXGWiwBsm3+kB9
-         a0MJgT+5967prN4B+Y6A/X5h8qF7JQ673U5/LzUtSuNt6Y87OUiVLQim6Zm70E85tY
-         StanHUZofak7dTls8zGSPpA0zeuioWtQtqlJz8bCSg7Cb+mt68jwuWbl6jiR+ZiEVt
-         EneLoNcjwRNNah1+nOQBhDqEbYvb0ZaKkpj+TGQSuAmiPS/BtvBhdRk7Ss4vVLub8J
-         CctAF2jY9gmISQMvF9LXc1PufB/lv2nR0+kIJsiOretQ3GqzdV9OSmivk46mwbRI7L
-         YnZgvW/dfx3+Q==
-Date:   Wed, 9 Jun 2021 15:32:29 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, wim@linux-watchdog.org,
-        linux@roeck-us.net, linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 2/3] watchdog: iTCO_wdt: use dev_*() instead of pr_*()
- for logging
-Message-ID: <20210609203229.GA2664456@bjorn-Precision-5520>
+        id S229655AbhFIUgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhFIUgF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 16:36:05 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B9FC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 13:33:56 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id r14so1518512ljd.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:33:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HKOE8BadJeo+YL8tRU0iYJhaHWhLziwYQepJorZ98hY=;
+        b=UBP8J6oYchq2ROBkKb/OBl2yhXz9+41fIVP2jys4OwQsSgcG7GA3wC9CyITc1BANel
+         6pUPf1o7H/jAprU3hJI9Orap/rRnTmgpIpJfaXDu+lmLVs+eno55vuWfJKvk061XOrqM
+         lIKlhsHcRIejWytT4LUfn+BysOlyh7R4deQ6Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HKOE8BadJeo+YL8tRU0iYJhaHWhLziwYQepJorZ98hY=;
+        b=GR4ucuq0nvf/uOBsCOCIWGuCQy68DXnoKY2uP/JjNsWVRP56qUFxNLLXhirmWM5Pxz
+         xkn7zRxT1JolYpyJYtUjYdKmL19I8lpe3uK/vV0Xgnp44vs1ZU5dlUSwr5HDhZ9/pBAf
+         /ue4ZzlCdkLHiyjDx89Rha+OYfZSuaxSKF57jUXU+Sjigx8K+x14+iNF+/IWTtjP3hHW
+         bJsb/B8lZJ+i2Aj/7VZeHWW0iTzh9elDznm75l9/2VhiO2RQKun3JvYRRHqrVxEmaXsh
+         WfXERs036rNdy8xsmMM4/tbmTFd2VmRhjkRWcBODUM9S4Zc/s5J7csfVywwbXAFKUSj0
+         B+JA==
+X-Gm-Message-State: AOAM532VoqLtPpTjc0z9wBa4gq22qdCvv6m+oUU7/F0RHfLDwj9Kllcp
+        RVpGW0aI7+Jswo1MWypRIy+gGKAlJgnYjmgokgI=
+X-Google-Smtp-Source: ABdhPJzS6osxQJn+zFl9cwVbI+OqVVG50n6en+WyldiptSTjm9c0dLgoAhzE4nPY3Te3H70xm34Yig==
+X-Received: by 2002:a2e:9544:: with SMTP id t4mr1221957ljh.474.1623270835118;
+        Wed, 09 Jun 2021 13:33:55 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id i124sm86389lfd.62.2021.06.09.13.33.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 13:33:53 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id n17so1570708ljg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:33:52 -0700 (PDT)
+X-Received: by 2002:a2e:9644:: with SMTP id z4mr1178053ljh.507.1623270832349;
+ Wed, 09 Jun 2021 13:33:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117152214.32244-2-info@metux.net>
+References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
+ <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com> <87h7i694ij.fsf_-_@disp2133>
+In-Reply-To: <87h7i694ij.fsf_-_@disp2133>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 9 Jun 2021 13:33:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
+Message-ID: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
+Subject: Re: [RFC] coredump: Do not interrupt dump for TIF_NOTIFY_SIGNAL
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Olivier Langlois <olivier@trillion01.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Pavel Begunkov>" <asml.silence@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 04:22:13PM +0100, Enrico Weigelt, metux IT consult wrote:
-> For device log outputs, it's better to have device name / ID
-> prefixed in all messages, so use the proper dev_*() functions here.
-> 
-> Explicit message on module load/unload don't seem to be really helpful
-> (we have other means to check which modules have been loaded), instead
-> just add noise to the kernel log. So, removing them.
-> 
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+On Wed, Jun 9, 2021 at 1:17 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+> In short the coredump code deliberately supports being interrupted by
+> SIGKILL, and depends upon prepare_signal to filter out all other
+> signals.
 
-I like this patch a lot; thanks for doing it!  It's merged upstream as
-c21172b3a73e ("watchdog: iTCO_wdt: use dev_*() instead of pr_*() for
-logging").
+Hmm.
 
-It looks like there are a couple more pr_err() uses, so I wondered if
-they were missed or skipped intentionally:
+I have to say, that looks like the core reason for the bug: if you
+want to be interrupted by a fatal signal, you shouldn't use
+signal_pending(), you should use fatal_signal_pending().
 
-  if (p->smi_res) {
-          /* The TCO logic uses the TCO_EN bit in the SMI_EN register */
-          if (!devm_request_region(dev, p->smi_res->start,
-                                   resource_size(p->smi_res),
-                                   pdev->name)) {
-                  pr_err("I/O address 0x%04llx already in use, device disabled\n",
-                         (u64)SMI_EN(p));
-                  return -EBUSY;
-          }
-  } else if (iTCO_vendorsupport ||
-             turn_SMI_watchdog_clear_off >= p->iTCO_version) {
-          pr_err("SMI I/O resource is missing\n");
-          return -ENODEV;
-  }
+Now, the fact that we haven't cleared TIF_NOTIFY_SIGNAL for the first
+signal is clearly the immediate cause of this, but at the same time I
+really get the feeling that that coredump aborting code should always
+had used fatal_signal_pending().
 
-> ---
->  drivers/watchdog/iTCO_wdt.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
-> index f2ddc8fc71cd..edc588a06ae6 100644
-> --- a/drivers/watchdog/iTCO_wdt.c
-> +++ b/drivers/watchdog/iTCO_wdt.c
-> @@ -40,8 +40,6 @@
->   *	Includes, defines, variables, module parameters, ...
->   */
->  
-> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> -
->  /* Module and version information */
->  #define DRV_NAME	"iTCO_wdt"
->  #define DRV_VERSION	"1.11"
-> @@ -279,7 +277,7 @@ static int iTCO_wdt_start(struct watchdog_device *wd_dev)
->  	/* disable chipset's NO_REBOOT bit */
->  	if (p->update_no_reboot_bit(p->no_reboot_priv, false)) {
->  		spin_unlock(&p->io_lock);
-> -		pr_err("failed to reset NO_REBOOT flag, reboot disabled by hardware/BIOS\n");
-> +		dev_err(wd_dev->dev, "failed to reset NO_REBOOT flag, reboot disabled by hardware/BIOS\n");
->  		return -EIO;
->  	}
->  
-> @@ -510,7 +508,7 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
->  	/* Check chipset's NO_REBOOT bit */
->  	if (p->update_no_reboot_bit(p->no_reboot_priv, false) &&
->  	    iTCO_vendor_check_noreboot_on()) {
-> -		pr_info("unable to reset NO_REBOOT flag, device disabled by hardware/BIOS\n");
-> +		dev_info(dev, "unable to reset NO_REBOOT flag, device disabled by hardware/BIOS\n");
->  		return -ENODEV;	/* Cannot reset NO_REBOOT bit */
->  	}
->  
-> @@ -530,12 +528,12 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
->  	if (!devm_request_region(dev, p->tco_res->start,
->  				 resource_size(p->tco_res),
->  				 pdev->name)) {
-> -		pr_err("I/O address 0x%04llx already in use, device disabled\n",
-> +		dev_err(dev, "I/O address 0x%04llx already in use, device disabled\n",
->  		       (u64)TCOBASE(p));
->  		return -EBUSY;
->  	}
->  
-> -	pr_info("Found a %s TCO device (Version=%d, TCOBASE=0x%04llx)\n",
-> +	dev_info(dev, "Found a %s TCO device (Version=%d, TCOBASE=0x%04llx)\n",
->  		pdata->name, pdata->version, (u64)TCOBASE(p));
->  
->  	/* Clear out the (probably old) status */
-> @@ -558,7 +556,7 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
->  		break;
->  	}
->  
-> -	p->wddev.info =	&ident,
-> +	p->wddev.info = &ident,
->  	p->wddev.ops = &iTCO_wdt_ops,
->  	p->wddev.bootstatus = 0;
->  	p->wddev.timeout = WATCHDOG_TIMEOUT;
-> @@ -575,7 +573,7 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
->  	   if not reset to the default */
->  	if (iTCO_wdt_set_timeout(&p->wddev, heartbeat)) {
->  		iTCO_wdt_set_timeout(&p->wddev, WATCHDOG_TIMEOUT);
-> -		pr_info("timeout value out of range, using %d\n",
-> +		dev_info(dev, "timeout value out of range, using %d\n",
->  			WATCHDOG_TIMEOUT);
->  	}
->  
-> @@ -583,11 +581,11 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
->  	watchdog_stop_on_unregister(&p->wddev);
->  	ret = devm_watchdog_register_device(dev, &p->wddev);
->  	if (ret != 0) {
-> -		pr_err("cannot register watchdog device (err=%d)\n", ret);
-> +		dev_err(dev, "cannot register watchdog device (err=%d)\n", ret);
->  		return ret;
->  	}
->  
-> -	pr_info("initialized. heartbeat=%d sec (nowayout=%d)\n",
-> +	dev_info(dev, "initialized. heartbeat=%d sec (nowayout=%d)\n",
->  		heartbeat, nowayout);
->  
->  	return 0;
-> -- 
-> 2.11.0
-> 
+We do want to be able to abort core-dumps (stuck network filesystems
+is the traditional reason), but the fact that it used signal_pending()
+looks buggy.
+
+In fact, the very comment in that dump_interrupted() function seems to
+acknowledge that signal_pending() is all kinds of silly.
+
+So regardless of the fact that io_uring does seem to have messed up
+this part of signals, I think the fix is not to change
+signal_pending() to task_sigpending(), but to just do what the comment
+suggests we should do.
+
+But also:
+
+> With the io_uring code comes an extra test in signal_pending
+> for TIF_NOTIFY_SIGNAL (which is something about asking a task to run
+> task_work_run).
+
+Jens, is this still relevant? Maybe we can revert that whole series
+now, and make the confusing difference between signal_pending() and
+task_sigpending() go away again?
+
+               Linus
