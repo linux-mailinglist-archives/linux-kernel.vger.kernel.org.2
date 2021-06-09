@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3833A1304
+	by mail.lfdr.de (Postfix) with ESMTP id 314CE3A1303
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239410AbhFILnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:43:00 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54752 "EHLO
+        id S239397AbhFILmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:42:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54644 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239175AbhFILlc (ORCPT
+        with ESMTP id S239173AbhFILlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Jun 2021 07:41:32 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E5990219EA;
-        Wed,  9 Jun 2021 11:39:36 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 269E3219EB;
+        Wed,  9 Jun 2021 11:39:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623238776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623238777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YBcrguTXnI9hsctZTgQ7OZG0uV6yh0oH29eLHd7YhOM=;
-        b=S9aDCy8NqeSbElUMJ7WzqpduEvWVpEeZGxboXI4yXCxlIEu7fG1uKF0z9lJHnm7rpwddij
-        n+bVZPPSvlT349WpwhqNFVtX8b//dGxw4IcvqKw8avsziFGZSHgZ6f2LHEqpK7YFhw79LZ
-        Ybbq1xJcy2WHL07mz5xEhmKZbLmb+dc=
+        bh=i+kXFJUxiAt8nF/gFOeGLQ15QjX96rJgGO1xp0O5Hkw=;
+        b=EZ1sKebsm1bY5kIaC7UF9DQ1G7UTyLUSr9XMyF5zYN+EANnQpxhQm1tfdWkXRzv30znYUQ
+        e2SXselrS/jgk97AcPczw3+LhCZJhHsIaF93qGh7JBJZJviOst6a3gCaRPF+ca4dF6YusJ
+        Uuo9uoa4l0+l44z3JCV12cZIzfG1Rbk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623238776;
+        s=susede2_ed25519; t=1623238777;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YBcrguTXnI9hsctZTgQ7OZG0uV6yh0oH29eLHd7YhOM=;
-        b=rL6U8d/br+ltLXTLyZtABuUoy7FOyMm0b6uCrM6FmDpyc330LYQnO+vOXlpMJMsavg/6bQ
-        1wJyokoIUQFb+EDQ==
+        bh=i+kXFJUxiAt8nF/gFOeGLQ15QjX96rJgGO1xp0O5Hkw=;
+        b=43aWP7ErEcQ8m4WYdN2jnhMk19VRL9YgzR8Ujy/uFvzbExDd59EeIRYYvZPn/LjgCnkLnc
+        htaDRTjM5wTNlBDA==
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id B64C611A98;
+        by imap.suse.de (Postfix) with ESMTP id E6952118DD;
         Wed,  9 Jun 2021 11:39:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623238776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623238777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YBcrguTXnI9hsctZTgQ7OZG0uV6yh0oH29eLHd7YhOM=;
-        b=S9aDCy8NqeSbElUMJ7WzqpduEvWVpEeZGxboXI4yXCxlIEu7fG1uKF0z9lJHnm7rpwddij
-        n+bVZPPSvlT349WpwhqNFVtX8b//dGxw4IcvqKw8avsziFGZSHgZ6f2LHEqpK7YFhw79LZ
-        Ybbq1xJcy2WHL07mz5xEhmKZbLmb+dc=
+        bh=i+kXFJUxiAt8nF/gFOeGLQ15QjX96rJgGO1xp0O5Hkw=;
+        b=EZ1sKebsm1bY5kIaC7UF9DQ1G7UTyLUSr9XMyF5zYN+EANnQpxhQm1tfdWkXRzv30znYUQ
+        e2SXselrS/jgk97AcPczw3+LhCZJhHsIaF93qGh7JBJZJviOst6a3gCaRPF+ca4dF6YusJ
+        Uuo9uoa4l0+l44z3JCV12cZIzfG1Rbk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623238776;
+        s=susede2_ed25519; t=1623238777;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YBcrguTXnI9hsctZTgQ7OZG0uV6yh0oH29eLHd7YhOM=;
-        b=rL6U8d/br+ltLXTLyZtABuUoy7FOyMm0b6uCrM6FmDpyc330LYQnO+vOXlpMJMsavg/6bQ
-        1wJyokoIUQFb+EDQ==
+        bh=i+kXFJUxiAt8nF/gFOeGLQ15QjX96rJgGO1xp0O5Hkw=;
+        b=43aWP7ErEcQ8m4WYdN2jnhMk19VRL9YgzR8Ujy/uFvzbExDd59EeIRYYvZPn/LjgCnkLnc
+        htaDRTjM5wTNlBDA==
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id MKT/K3iowGD6XgAALh3uQQ
+        id 4CbVN3iowGD6XgAALh3uQQ
         (envelope-from <vbabka@suse.cz>); Wed, 09 Jun 2021 11:39:36 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
@@ -72,9 +72,9 @@ Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [RFC v2 27/34] mm, slub: don't disable irqs in slub_cpu_dead()
-Date:   Wed,  9 Jun 2021 13:38:56 +0200
-Message-Id: <20210609113903.1421-28-vbabka@suse.cz>
+Subject: [RFC v2 28/34] mm, slab: make flush_slab() possible to call with irqs enabled
+Date:   Wed,  9 Jun 2021 13:38:57 +0200
+Message-Id: <20210609113903.1421-29-vbabka@suse.cz>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210609113903.1421-1-vbabka@suse.cz>
 References: <20210609113903.1421-1-vbabka@suse.cz>
@@ -84,33 +84,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-slub_cpu_dead() cleans up for an offlined cpu from another cpu and calls only
-functions that are now irq safe, so we don't need to disable irqs anymore.
+Currently flush_slab() is always called with disabled IRQs if it's needed, but
+the following patches will change that, so add a parameter to control IRQ
+disabling within the function, which only protects the kmem_cache_cpu
+manipulation and not the call to deactivate_slab() which doesn't need it.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ mm/slub.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 5a81189608e6..12d35d6a6eaa 100644
+index 12d35d6a6eaa..5c70fc17e9be 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2498,14 +2498,10 @@ static void flush_all(struct kmem_cache *s)
- static int slub_cpu_dead(unsigned int cpu)
- {
- 	struct kmem_cache *s;
--	unsigned long flags;
+@@ -2438,16 +2438,28 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
+ #endif	/* CONFIG_SLUB_CPU_PARTIAL */
+ }
  
- 	mutex_lock(&slab_mutex);
--	list_for_each_entry(s, &slab_caches, list) {
--		local_irq_save(flags);
-+	list_for_each_entry(s, &slab_caches, list)
- 		__flush_cpu_slab(s, cpu);
--		local_irq_restore(flags);
--	}
- 	mutex_unlock(&slab_mutex);
- 	return 0;
+-static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c)
++static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c,
++			      bool lock)
+ {
+-	void *freelist = c->freelist;
+-	struct page *page = c->page;
++	unsigned long flags;
++	void *freelist;
++	struct page *page;
++
++	if (lock)
++		local_irq_save(flags);
++
++	freelist = c->freelist;
++	page = c->page;
+ 
+ 	c->page = NULL;
+ 	c->freelist = NULL;
+ 	c->tid = next_tid(c->tid);
+ 
+-	deactivate_slab(s, page, freelist);
++	if (lock)
++		local_irq_restore(flags);
++
++	if (page)
++		deactivate_slab(s, page, freelist);
+ 
+ 	stat(s, CPUSLAB_FLUSH);
+ }
+@@ -2457,7 +2469,7 @@ static inline void __flush_cpu_slab(struct kmem_cache *s, int cpu)
+ 	struct kmem_cache_cpu *c = per_cpu_ptr(s->cpu_slab, cpu);
+ 
+ 	if (c->page)
+-		flush_slab(s, c);
++		flush_slab(s, c, false);
+ 
+ 	unfreeze_partials_cpu(s, c);
+ }
+@@ -2473,7 +2485,7 @@ static void flush_cpu_slab(void *d)
+ 	struct kmem_cache_cpu *c = this_cpu_ptr(s->cpu_slab);
+ 
+ 	if (c->page)
+-		flush_slab(s, c);
++		flush_slab(s, c, false);
+ 
+ 	unfreeze_partials(s);
  }
 -- 
 2.31.1
