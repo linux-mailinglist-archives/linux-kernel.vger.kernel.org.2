@@ -2,133 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF0E3A16B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D923A16BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236611AbhFIOOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:14:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:32938 "EHLO foss.arm.com"
+        id S237486AbhFIOOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:14:43 -0400
+Received: from mga18.intel.com ([134.134.136.126]:46704 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237544AbhFIOON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:14:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1121D6E;
-        Wed,  9 Jun 2021 07:12:18 -0700 (PDT)
-Received: from [10.57.6.115] (unknown [10.57.6.115])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D19A03F73D;
-        Wed,  9 Jun 2021 07:12:16 -0700 (PDT)
-Subject: Re: [PATCH] iommu/arm-smmu: Fix arm_smmu_device refcount leak when
- arm_smmu_rpm_get fails
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>, Will Deacon <will@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>
-References: <1623245709-11123-1-git-send-email-xiyuyang19@fudan.edu.cn>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <e5b8d7f6-862e-bca4-a1e9-35e0de47440e@arm.com>
-Date:   Wed, 9 Jun 2021 15:12:11 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S234601AbhFIOOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:14:41 -0400
+IronPort-SDR: OTAlQFD/zhxbr+nwIDGYA9SZzALG+vxW/ZOzbJIUCncP2RyvrYAVcaTaaIFaQLf9Ps44muMh5f
+ 0ICHO6FgJclg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="192394313"
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="192394313"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 07:12:46 -0700
+IronPort-SDR: sAqzFnBRv/4y30ntscj2FSIhspuU1b7lMKEr7SPViE3xpfyl54+nwimQrgY1Ouxi3zGQMeCX6c
+ hzVvj62gR10w==
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="482400162"
+Received: from dspaldin-mobl.amr.corp.intel.com (HELO [10.212.158.45]) ([10.212.158.45])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 07:12:46 -0700
+Subject: Re: [RFC v2-fix-v4 1/1] x86/tdx: Skip WBINVD instruction for TDX
+ guest
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
+ <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ec761262-2e32-cee0-ea3b-184086e7a202@intel.com>
+Date:   Wed, 9 Jun 2021 07:12:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1623245709-11123-1-git-send-email-xiyuyang19@fudan.edu.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-09 14:35, Xiyu Yang wrote:
-> arm_smmu_rpm_get() invokes pm_runtime_get_sync(), which increases the
-> refcount of the "smmu" even though the return value is less than 0.
-> 
-> The reference counting issue happens in some error handling paths of
-> arm_smmu_rpm_get() in its caller functions. When arm_smmu_rpm_get()
-> fails, the caller functions forget to decrease the refcount of "smmu"
-> increased by arm_smmu_rpm_get(), causing a refcount leak.
-> 
-> Fix this issue by calling arm_smmu_rpm_put() or jumping to the "rpm_put"
-> label when arm_smmu_rpm_get() fails.
+On 6/8/21 6:10 PM, Kuppuswamy Sathyanarayanan wrote:
+> Since cache is always coherent in TDX guests, making wbinvd as
+> noop should not cause any issues in above mentioned code path.
+> The end-behavior is the same as KVM guest (treat as noops).
 
-If only there was some kind of helper function which could encapsulate 
-the correct expected behaviour in a single place...
+I don't see anything in the specs to back up such a broad statement.
 
-In fact with the new pm_runtime_resume_and_get() API I think these two 
-patches boil down to a one-line change.
+For Secure-EPT, I see in the TDX "EAS" that "Ignore PAT" is "Set to 1".
+ This, presumably along with the "TD VMCS Guest MSRs... IA32_PAT" being
+set to 0x0007040600070406 (I didn't decode it, I'm just guessing),
+ensures that guests using Secure-EPT have no architectural way of
+creating non-coherent mappings using the guest x86 page tables.
 
-Thanks,
-Robin.
+That covers one of the memory types to which guests have access.
 
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> ---
->   drivers/iommu/arm/arm-smmu/arm-smmu.c | 13 +++++++++----
->   1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> index 6f72c4d208ca..177ee54c5534 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> @@ -840,7 +840,7 @@ static void arm_smmu_destroy_domain_context(struct iommu_domain *domain)
->   
->   	ret = arm_smmu_rpm_get(smmu);
->   	if (ret < 0)
-> -		return;
-> +		goto rpm_put;
->   
->   	/*
->   	 * Disable the context bank and free the page tables before freeing
-> @@ -857,6 +857,7 @@ static void arm_smmu_destroy_domain_context(struct iommu_domain *domain)
->   	free_io_pgtable_ops(smmu_domain->pgtbl_ops);
->   	__arm_smmu_free_bitmap(smmu->context_map, cfg->cbndx);
->   
-> +rpm_put:
->   	arm_smmu_rpm_put(smmu);
->   }
->   
-> @@ -1153,7 +1154,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
->   
->   	ret = arm_smmu_rpm_get(smmu);
->   	if (ret < 0)
-> -		return ret;
-> +		goto rpm_put;
->   
->   	/* Ensure that the domain is finalised */
->   	ret = arm_smmu_init_domain_context(domain, smmu, dev);
-> @@ -1404,7 +1405,7 @@ static struct iommu_device *arm_smmu_probe_device(struct device *dev)
->   
->   	ret = arm_smmu_rpm_get(smmu);
->   	if (ret < 0)
-> -		goto out_cfg_free;
-> +		goto rpm_put;
->   
->   	ret = arm_smmu_master_alloc_smes(dev);
->   	arm_smmu_rpm_put(smmu);
-> @@ -1417,6 +1418,8 @@ static struct iommu_device *arm_smmu_probe_device(struct device *dev)
->   
->   	return &smmu->iommu;
->   
-> +rpm_put:
-> +	arm_smmu_rpm_put(smmu);
->   out_cfg_free:
->   	kfree(cfg);
->   out_free:
-> @@ -1438,8 +1441,10 @@ static void arm_smmu_release_device(struct device *dev)
->   	smmu = cfg->smmu;
->   
->   	ret = arm_smmu_rpm_get(smmu);
-> -	if (ret < 0)
-> +	if (ret < 0) {
-> +		arm_smmu_rpm_put(smmu);
->   		return;
-> +	}
->   
->   	arm_smmu_master_free_smes(cfg, fwspec);
->   
-> 
+Guests can also access TD-shared memory.  Those mappings are controlled
+by the VMM and not mapped by Secure-EPT.  This is the part that concerns
+me and is not consistent with the statement above.  Is it
+architecturally impossible for a VMM to create an non-coherent mapping
+and expose it to a guest?  If it is impossible, please include citations
+of the spec or the logic behind this so that a reader can understand,
+just as I did above.
+
+If it is possible to have non-coherent mappings in a guest, then please
+remove the above statement.
