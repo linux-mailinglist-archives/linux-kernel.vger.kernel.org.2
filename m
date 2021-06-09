@@ -2,122 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A901D3A081D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFF83A081F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbhFIAIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 20:08:18 -0400
-Received: from mail-pf1-f173.google.com ([209.85.210.173]:38875 "EHLO
-        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbhFIAIR (ORCPT
+        id S232090AbhFIAJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 20:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232101AbhFIAJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 20:08:17 -0400
-Received: by mail-pf1-f173.google.com with SMTP id z26so16988990pfj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 17:06:13 -0700 (PDT)
+        Tue, 8 Jun 2021 20:09:07 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26E2C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 17:07:13 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso304656pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 17:07:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=R/k0myT1X7Ewv76TA+iGRlCsIF04l49PA1ocz9s7kkU=;
-        b=XFN6hEgeyL7VQ+lHXBNI1EMYNmWB3f2IbRNINoLGZ172p543bg08XWPuy1GOY1A/V+
-         c4pd5fRkMfw3LXXTbefHrusAgpEyveNdHOpolFk1RMHTgyzrqqo87xnD6c9CxWUbh6kx
-         VrkT6+PrPmUxg22oc53mnOFbRullxEc4NWtvttdTnMM7ICsaeOMri+J5E5Lt1bc8d8Ys
-         4Ph1g40MhZ8zJMuSa0btSNQC8GlI40efsxBv3O76d5ywlhO/F29Zy2bPbuwtooNFw/oz
-         jk49UmYy/gLaFPkVC4xNNi29/pVffLZy9I2DTmZyUPDaTlwgWvn9iW/evP7pBU/EA/Xr
-         x7DA==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GV9nzlHjuf7NCFb6LdJq8dcslquY+0P8BRy8EWccMJQ=;
+        b=IvLhda9dAdPsWp2e1qg11jdD25V8E+CyAlL2atOWouCB3ilCZeJv4x3h00X4H3vcFL
+         4VDBMfvZkRAFh790xsI7hLTynbi5imIUzIdKJhLQI6q/l1JRVLAA0nbr3VC1JF9OOJVG
+         4I0ghW/qGrT4Mqx420+rS9UmNCWzr5f/+JKJ1v60DI6PkepbqBRQm4nKUKq/WVXWfVvz
+         rT/N5C/tytroucQPSqkMp9hfiVa61caGujH0EmZMTRkGA32WTtKNDOYXZBfeKWb4enCW
+         zV4WPQAAE2YVhiMYJIn4R3q2dAJNblcCJ8FprosYRdOxNLss0oUw6cgUTJojtDNNbQoj
+         DVzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=R/k0myT1X7Ewv76TA+iGRlCsIF04l49PA1ocz9s7kkU=;
-        b=CyybDDMymAQwCQPBJfI/tnGgupztSayPfZAqPua2ItPaouyHjIfq7wUIVR/Okav5D0
-         oaQsjLEkHv8T7lD5kiJ4SHMO0UzexS9iF6uRMdYNCUWggCvh8PiHOM7lhiWQUSbjXhv8
-         ekDKVVPd/krzQCZ9SSqunFT5U2VIsB0A70+jCPI/2kyEIi6xZOAg6UvYExqs9+QpoaRR
-         EiUps5oirGbKnsZCdcFehh9Apip7sonxpFTVnN5eIOjBftzJsdhIwHCDl65ahRjSq0sc
-         K74wtU8ChV30mF42Oow662Sz8hvzi4zRMRasDHcrCuaGUx0EQfnq48NMPHpn+Qo/ef7B
-         gkOA==
-X-Gm-Message-State: AOAM533d6xaxNITAv9zK9muLANGcZxIFhd7K5u4dEcNNOK0UvgS62a2W
-        RJPPbjyi9qSa0mex15j483QhUg==
-X-Google-Smtp-Source: ABdhPJye+W8VRhoqCXDkNa2Q2xQUuGVDU122+jgT3y0Vuv9BLAvkAVIfht2VcK8SrIzNgFC/bgc2Sg==
-X-Received: by 2002:a63:1542:: with SMTP id 2mr827496pgv.329.1623197113206;
-        Tue, 08 Jun 2021 17:05:13 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id w125sm11361134pfw.214.2021.06.08.17.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 17:05:12 -0700 (PDT)
-Date:   Tue, 08 Jun 2021 17:05:12 -0700 (PDT)
-X-Google-Original-Date: Tue, 08 Jun 2021 17:05:10 PDT (-0700)
-Subject:     Re: [PATCH -next v3] riscv: fix build error when CONFIG_SMP is disabled
-In-Reply-To: <20210529080657.18997-1-cuibixuan@huawei.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        vincent.chen@sifive.com, sunnanyong@huawei.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        cuibixuan@huawei.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     cuibixuan@huawei.com
-Message-ID: <mhng-ce62a50e-85c7-4fc2-9dc0-7b8a9105ab4b@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GV9nzlHjuf7NCFb6LdJq8dcslquY+0P8BRy8EWccMJQ=;
+        b=fJ/c8glVWIdMymSBD63Hm5Ib9AnbN2IjW9iR7FVBFctqZZMtg3OsF3mRbMhmkc9ga0
+         hTqiWF37m4ZqQH6vnfFNMPZl1HZ+cNf70z+uIZzLp+PKf5hmgDZB4SN64B/2yFtmhiJB
+         B2x74yix+CFXvF6+bZ3GpjvRRd5Vr7sULGsT0AgMq67tJ3wREYAZvwovZdTg0/lInmMP
+         jXYykR4+Wvh+fVF+DeNrfSMV8acFvDi7DwKb7TZ4QOFcrWA3baO843OTAfvHjK609nMn
+         wxZAi9ubHeQaYeepC1amFS9seAFGV+d5Su3ta7HiU48mE+1MMgTlzUCMB5nSXoDiQAAi
+         Evqg==
+X-Gm-Message-State: AOAM530gHqMAGMx3pB589oWZObUnEhFdrcLVfEFNIiB16r95N34qjtoB
+        ItRqeN3m7CUo0GvmpgFpYwL8+bALAb92jc9891FrEg==
+X-Google-Smtp-Source: ABdhPJwOwb7XuxqU5bkXCuzqJvxOAaOUMiuAxR4pVlLHyGgFzYHmtGhJx2qXkz+4gbtmvaw28Qehpx8wS6Xv0nYErpk=
+X-Received: by 2002:a17:902:ed0c:b029:104:fb4b:453c with SMTP id
+ b12-20020a170902ed0cb0290104fb4b453cmr2617099pld.27.1623197233127; Tue, 08
+ Jun 2021 17:07:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAPcyv4jQ=Fcga3jyUzthjPW9O962vhy3L5XUM6jqR5Z_Zq83LQ@mail.gmail.com>
+ <20210608213527.739474-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4hoxc2+50EOFuq8NOa_CBFKX_A549Vw4U24V5SG25ftxQ@mail.gmail.com> <9d88cb37-f594-534a-ae2a-5a51f97db2a8@intel.com>
+In-Reply-To: <9d88cb37-f594-534a-ae2a-5a51f97db2a8@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 8 Jun 2021 17:07:02 -0700
+Message-ID: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
+Subject: Re: [RFC v2-fix-v3 1/1] x86/tdx: Skip WBINVD instruction for TDX guest
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 May 2021 01:06:57 PDT (-0700), cuibixuan@huawei.com wrote:
-> Fix build error when disable CONFIG_SMP:
-> mm/pgtable-generic.o: In function `.L19':
-> pgtable-generic.c:(.text+0x42): undefined reference to `flush_pmd_tlb_range'
-> mm/pgtable-generic.o: In function `pmdp_huge_clear_flush':
-> pgtable-generic.c:(.text+0x6c): undefined reference to `flush_pmd_tlb_range'
-> mm/pgtable-generic.o: In function `pmdp_invalidate':
-> pgtable-generic.c:(.text+0x162): undefined reference to `flush_pmd_tlb_range'
+On Tue, Jun 8, 2021 at 4:38 PM Dave Hansen <dave.hansen@intel.com> wrote:
 >
-> Fixes: e88b333142e4 ("riscv: mm: add THP support on 64-bit")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-> Acked-by: Nanyong Sun <sunnanyong@huawei.com>
-> ---
-> Changes in v3:
-> Deleted the declaration of the flush_pmd_tlb_range() in the patch
+> On 6/8/21 4:32 PM, Dan Williams wrote:
+> >> Persistent memory is also currently not supported. Another code
+> >> path that uses WBINVD is the MTRR driver, but EPT/virtualization
+> >> always disables MTRRs so those are not needed. This all implies
+> >> WBINVD is not needed with current TDX.
+> > Let's drop the last three paragraphs and just say something like:
+> > "This is one of a series of patches to usages of wbinvd for protected
+> > guests. For now this just addresses the one known path that TDX
+> > executes, ACPI reboot. Its usage can be elided because FOO reason and
+> > all the other ACPI_FLUSH_CPU_CACHE usages can be elided because BAR
+> > reason"
 >
-> Changes in v2:
-> Move the declaration of flush_pmd_tlb_rang to tlbflush.h
+> A better effort at transparency can be made here:
 >
->  arch/riscv/include/asm/pgtable.h  | 5 -----
->  arch/riscv/include/asm/tlbflush.h | 5 +++++
->  2 files changed, 5 insertions(+), 5 deletions(-)
+>         This patches the one WBINVD instance which has been encountered
+>         in practice: ACPI reboot.  Assume no other instance will be
+>         encountered.
 >
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index 29e2c836848d..eda31002c4b1 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -622,11 +622,6 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
->  {
->  	return __pmd(atomic_long_xchg((atomic_long_t *)pmdp, pmd_val(pmd)));
->  }
-> -
-> -#define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
-> -void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
-> -			unsigned long end);
-> -
->  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->
->  /*
-> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-> index c84218ad7afc..801019381dea 100644
-> --- a/arch/riscv/include/asm/tlbflush.h
-> +++ b/arch/riscv/include/asm/tlbflush.h
-> @@ -33,6 +33,11 @@ void flush_tlb_mm(struct mm_struct *mm);
->  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
->  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->  		     unsigned long end);
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +#define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
-> +void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
-> +			unsigned long end);
-> +#endif
->  #else /* CONFIG_SMP && CONFIG_MMU */
->
->  #define flush_tlb_all() local_flush_tlb_all()
 
-Thanks, this is on for-next.
+That works too, but I assume if ACPI_FLUSH_CPU_CACHE() itself is going
+to be changed rather than sprinkling protected_guest_has() checks in a
+few places it will need to assert why changing all of those at once is
+correct. Otherwise I expect Rafael to ask why this global change of
+the ACPI_FLUSH_CPU_CACHE() policy is ok.
