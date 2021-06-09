@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA403A1221
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FDC3A1220
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238360AbhFILSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:18:14 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:14190 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234508AbhFILSM (ORCPT
+        id S237301AbhFILRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234508AbhFILRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:18:12 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 159BDvDV023649;
-        Wed, 9 Jun 2021 11:14:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=k2Q/TB9MGcJNchw06veGMKNS97ORNy5N58Oflu76ZNk=;
- b=Pco8jrH0ic37kyJEfzGTCQfXO41VEi4YBI0NKzWE8nwKPiBDAred15SC/J1TWBnHoUkr
- vO08+zhxzVQ/8LAnuKay2yzRAe8WIXi17QNX9ulxbAEoyXJGZJKAEXfdYCHHUMNCR7me
- b46+GymJgv1w4M+zIr6E8cQtpZCmy9QwAVa7I6jEF9kmgbXac5HOFDGfE5o2jFVhg/Ji
- roYQIaNTZtUlTdz6xCVxUaBes+UR3sDWNRUs6gmVzrxXoRiI9MdecEo9rWRLsYTLdJ8g
- XlBPhVhapq44rVpq3XQlbjPemTJPeve03ZoHwB9XIUIWJeyxQhdnyl8Wmsq11duBeGMi zQ== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 391g4g8xb2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 11:14:58 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 159BB0T0080401;
-        Wed, 9 Jun 2021 11:14:57 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3922wunr7k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 11:14:57 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 159BC9AI084922;
-        Wed, 9 Jun 2021 11:14:56 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 3922wunr6w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 11:14:56 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 159BEtRe003010;
-        Wed, 9 Jun 2021 11:14:55 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Jun 2021 04:14:55 -0700
-Date:   Wed, 9 Jun 2021 14:14:47 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] staging: rtl8723bs: use list_for_each_safe in loops
- deleting iterated items
-Message-ID: <20210609111447.GG1955@kadam>
-References: <20210607134618.11237-1-fabioaiuto83@gmail.com>
+        Wed, 9 Jun 2021 07:17:51 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40091C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:15:56 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id r14so11985726ljd.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:15:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=olC98MYXFE09NuYvJ2tPm+RNCwhGWVV3/05T5xhu3Uo=;
+        b=YH8vcYA/ZwssAN7fISdlBtvdYmubomn+aIrUeOrb6h5HR6KTFux/z5CZKE3EqoTuVJ
+         NhAh0PmPC4aCejHrQ+moJ8vtcppENaCRfexCkmn67q0PCyJ9wm2y+URdfyZJ9PoDLFpx
+         SrKJrPO8aRmQH2A9mAYoioo/tZCh3fpixvb2PBjaD6pUfA4cfjUiodtkDd+HiF3cGb+u
+         /N3JlijaZNUvf/1de0fFSKbv6mPwq9Sbhg0Aky1J1dcahiNTn5TlKPdcHbJugRHzJY6M
+         n6ThAuIQJiFlWUvLUKCbSQEkrNAKOwgA39ad2Lb8R4M0V/ZfspVI66apjpqR1TNU5H98
+         vouA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=olC98MYXFE09NuYvJ2tPm+RNCwhGWVV3/05T5xhu3Uo=;
+        b=mdcIA/TmVpy664U1Fo5VBab8FvfYO80uOO/mxZI9UzvUiM+Gx1BxsDJchUA99apaGh
+         Z0qCMDkQabFPfi2JaBYpYn7gkGb1LPlt3Zqi1XXCl4+/2qWcvGnokK/5YPJd8UhhmGb/
+         cckOuv6iWFhicY1TVVyBNpji9mN+vQWNeKbel5e+BCWLsOGHgekWrx7llZrubp/SVX20
+         d8Kg37zFdFfZU/tZG4WKV20H7HA6tKcEV4FfxkJYwsyPkrmtXJ2R87BcbB0Zvj/ST4dh
+         DjXE0HzvxfMYP2ZsIlglfEBCsrMvBmlE8plZ8iPIyZJCYKT2S4Bngr7Vge9N5eUnHfff
+         yEmg==
+X-Gm-Message-State: AOAM532ss60QivLkrNgtwceB1InG67zw0Vcye1aTDPhNz7et6TuVwcLg
+        nHLnn8kXfmfQ7l+1iarrSUY2TTflF+PWvnv9fzc9/g==
+X-Google-Smtp-Source: ABdhPJzZt2f4CMFKxy0STGsifmYNUzF59Rr0w0JqTC4qSDcJkvMUJKmzmZNc3fVhOB/7MclmzbsJLeJg0V/ddbUMUBc=
+X-Received: by 2002:a05:651c:1501:: with SMTP id e1mr22755386ljf.74.1623237354584;
+ Wed, 09 Jun 2021 04:15:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607134618.11237-1-fabioaiuto83@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: CK_0LLT_dRHv0wWLwkPcyIXldEIjbJNz
-X-Proofpoint-ORIG-GUID: CK_0LLT_dRHv0wWLwkPcyIXldEIjbJNz
+References: <20210608180702.2064253-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20210608180702.2064253-1-bjorn.andersson@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 9 Jun 2021 13:15:43 +0200
+Message-ID: <CACRpkdbSRWMPRANKNQcuQ8p2V_2BUeXkJ2F=PeLNbyYwTYiV0A@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: qcom: Make it possible to select SC8180x TLMM
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 03:46:18PM +0200, Fabio Aiuto wrote:
-> Fix some beautified loops over linked lists.
-> Use list_for_each_safe on loops which could delete
-> objects in the list.
-> 
-> Fixes: b3cd518c5abd ("staging: rtl8723bs: Use list iterators and helpers")
-> Suggested-by: Guenter Roeck <linux@roeck-us.net>
-> Tested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+On Tue, Jun 8, 2021 at 8:07 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
 
-Looks good.
+> It's currently not possible to select the SC8180x TLMM driver, due to it
+> selecting PINCTRL_MSM, rather than depending on the same. Fix this.
+>
+> Fixes: 97423113ec4b ("pinctrl: qcom: Add sc8180x TLMM driver")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Patch applied for fixes!
 
-regards,
-dan carpenter
-
+Yours,
+Linus Walleij
