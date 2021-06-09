@@ -2,155 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919B03A14B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C21913A14B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234608AbhFIMoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:44:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52132 "EHLO mail.kernel.org"
+        id S233670AbhFIMpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:45:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234686AbhFIMob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:44:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD2C46139A;
-        Wed,  9 Jun 2021 12:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623242557;
-        bh=8U3g3XJCMqY+IVlfpoB4fbqdxoomDSJLZ81ZiFhomKI=;
+        id S229517AbhFIMpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 08:45:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4B1761183;
+        Wed,  9 Jun 2021 12:43:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623242599;
+        bh=3LmDIUZ1wKlG81I+AFVUAzlVq2kCXIgwekcGWmo3BKs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YJAZVZS2yq0C9N+72aMnEcvWMxjokfENBM0AwzF7BGxerhXbqRTRxjk5hDIOdsITD
-         ZUSXdxm7ynJOA4N/BEG2YJsVz26Rr/DAnBVpfH4JUeXXjlKe/3k03DnkRJytOwkMiQ
-         sXspSLFlUjflHbOPDBprxS9eO0LBDhTnEVgggUPY=
-Date:   Wed, 9 Jun 2021 14:42:34 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH v1 3/3] serial: 8250_exar: Add ->unregister_gpio()
- callback
-Message-ID: <YMC3OknGE+Kzs6u2@kroah.com>
-References: <20210608144239.12697-1-andriy.shevchenko@linux.intel.com>
- <20210608144239.12697-3-andriy.shevchenko@linux.intel.com>
+        b=pTrySzzH01xRqI6y+qazicvHLm3iUahU9lnsc49IiCQ3YhpFE1MGZmItjImUulTSl
+         MTRFsckWs8M5r1tfrx9B1xss2tIBYo7mP9xDz9QvZyyHwxfPhKHCu0uD0+Vm2N03KG
+         efqwhhxFl9HaT+aduguKYCqVi7iEE9OxgKF6gM0OROhOMWh178CnByE4KEur/yTy9L
+         z/yAapPpoQtCE+lxO14rkrnEpAPHzKFYWUwtlKyoLCarKsKopozI0ezGJdI92mgpV9
+         fhAVh/cqpu7lxRpBJ3Y97QebzByy2Ff9nk+bjy8MuaBdEX6s5RC5QZRUtpeoBFkcRi
+         DlTmnMxs4axQQ==
+Date:   Wed, 9 Jun 2021 13:43:04 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Jaroslav Kysela <perex@perex.cz>, dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
+        Eric Anholt <eric@anholt.net>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-rpi-kernel@lists.infradead.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 04/12] ASoC: hdmi-codec: Add iec958 controls
+Message-ID: <20210609124304.GB5052@sirena.org.uk>
+References: <20210525132354.297468-1-maxime@cerno.tech>
+ <20210525132354.297468-5-maxime@cerno.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="oLBj+sq0vYjzfsbl"
 Content-Disposition: inline
-In-Reply-To: <20210608144239.12697-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210525132354.297468-5-maxime@cerno.tech>
+X-Cookie: Alex Haley was adopted!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 05:42:39PM +0300, Andy Shevchenko wrote:
-> For the sake of reducing layering violation add ->unregister_gpio()
-> callback and use it in the ->exit() one.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/tty/serial/8250/8250_exar.c | 36 ++++++++++++++++++-----------
->  1 file changed, 23 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
-> index 3ffeedc29c83..d502240bbcf2 100644
-> --- a/drivers/tty/serial/8250/8250_exar.c
-> +++ b/drivers/tty/serial/8250/8250_exar.c
-> @@ -114,6 +114,7 @@ struct exar8250;
->  struct exar8250_platform {
->  	int (*rs485_config)(struct uart_port *, struct serial_rs485 *);
->  	int (*register_gpio)(struct pci_dev *, struct uart_8250_port *);
-> +	void (*unregister_gpio)(struct uart_8250_port *);
->  };
->  
->  /**
-> @@ -352,9 +353,8 @@ static void setup_gpio(struct pci_dev *pcidev, u8 __iomem *p)
->  	writeb(0x00, p + UART_EXAR_MPIOOD_15_8);
->  }
->  
-> -static void *
-> -__xr17v35x_register_gpio(struct pci_dev *pcidev,
-> -			 const struct software_node *node)
-> +static struct platform_device *__xr17v35x_register_gpio(struct pci_dev *pcidev,
-> +							const struct software_node *node)
->  {
->  	struct platform_device *pdev;
->  
-> @@ -374,6 +374,12 @@ __xr17v35x_register_gpio(struct pci_dev *pcidev,
->  	return pdev;
->  }
->  
-> +static void __xr17v35x_unregister_gpio(struct platform_device *pdev)
-> +{
-> +	device_remove_software_node(&pdev->dev);
-> +	platform_device_unregister(pdev);
-> +}
-> +
->  static const struct property_entry exar_gpio_properties[] = {
->  	PROPERTY_ENTRY_U32("exar,first-pin", 0),
->  	PROPERTY_ENTRY_U32("ngpios", 16),
-> @@ -384,8 +390,7 @@ static const struct software_node exar_gpio_node = {
->  	.properties = exar_gpio_properties,
->  };
->  
-> -static int xr17v35x_register_gpio(struct pci_dev *pcidev,
-> -				  struct uart_8250_port *port)
-> +static int xr17v35x_register_gpio(struct pci_dev *pcidev, struct uart_8250_port *port)
->  {
->  	if (pcidev->vendor == PCI_VENDOR_ID_EXAR)
->  		port->port.private_data =
-> @@ -394,6 +399,15 @@ static int xr17v35x_register_gpio(struct pci_dev *pcidev,
->  	return 0;
->  }
->  
-> +static void xr17v35x_unregister_gpio(struct uart_8250_port *port)
-> +{
-> +	if (!port->port.private_data)
-> +		return;
-> +
-> +	__xr17v35x_unregister_gpio(port->port.private_data);
-> +	port->port.private_data = NULL;
-> +}
-> +
->  static int generic_rs485_config(struct uart_port *port,
->  				struct serial_rs485 *rs485)
->  {
-> @@ -419,6 +433,7 @@ static int generic_rs485_config(struct uart_port *port,
->  
->  static const struct exar8250_platform exar8250_default_platform = {
->  	.register_gpio = xr17v35x_register_gpio,
-> +	.unregister_gpio = xr17v35x_unregister_gpio,
->  	.rs485_config = generic_rs485_config,
->  };
->  
-> @@ -484,6 +499,7 @@ static int iot2040_register_gpio(struct pci_dev *pcidev,
->  static const struct exar8250_platform iot2040_platform = {
->  	.rs485_config = iot2040_rs485_config,
->  	.register_gpio = iot2040_register_gpio,
-> +	.unregister_gpio = xr17v35x_unregister_gpio,
->  };
->  
->  /*
-> @@ -555,17 +571,11 @@ pci_xr17v35x_setup(struct exar8250 *priv, struct pci_dev *pcidev,
->  
->  static void pci_xr17v35x_exit(struct pci_dev *pcidev)
->  {
-> +	const struct exar8250_platform *platform = exar_get_platform();
->  	struct exar8250 *priv = pci_get_drvdata(pcidev);
->  	struct uart_8250_port *port = serial8250_get_port(priv->line[0]);
-> -	struct platform_device *pdev;
->  
-> -	pdev = port->port.private_data;
-> -	if (!pdev)
-> -		return;
-> -
-> -	device_remove_software_node(&pdev->dev);
-> -	platform_device_unregister(pdev);
-> -	port->port.private_data = NULL;
-> +	platform->unregister_gpio(port);
->  }
->  
->  static inline void exar_misc_clear(struct exar8250 *priv)
-> -- 
-> 2.30.2
-> 
 
-This patch doesn't apply to my tty-next branch, so I've dropped it :(
+--oLBj+sq0vYjzfsbl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-greg k-h
+On Tue, May 25, 2021 at 03:23:46PM +0200, Maxime Ripard wrote:
+> The IEC958 status bits can be exposed and modified by the userspace
+> through dedicated ALSA controls.
+>=20
+> This patch implements those controls for the hdmi-codec driver. It
+> relies on a default value being setup at probe time that can later be
+> overridden by the control put.
+
+This breaks bisection:
+
+/mnt/kernel/sound/soc/codecs/hdmi-codec.c: In function 'hdmi_codec_hw_param=
+s':
+/mnt/kernel/sound/soc/codecs/hdmi-codec.c:504:50: error: invalid type argum=
+ent of '->' (have 'struct hdmi_codec_params')
+  memcpy(hp.iec.status, hcp->iec_status, sizeof(hp->iec_status));
+                                                  ^~
+
+--oLBj+sq0vYjzfsbl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDAt1cACgkQJNaLcl1U
+h9AuAwf6A2ho54/TuWajEspKMKa3Y8mJqdCmq/szJ3u4iWTqPzBREw/Xyol8SXcW
+adYBtoSaS/Q6yh0OoY9A33TJwzQKwX4ZYow8t0KEmz7s/snT7Jgz8TUZPDE4ZEZb
+hHB/oXRVboMFrY62HeW+SnN/4A3D0ooOalNMNrV3/Abzjm9isJqafRKkj2dr8ymG
+7iplj1Rip+CLrhpSUi1ZF8aFTzqO7mckdD2pt/UN6k+aZ2oac65WgHhxOWt2m0q7
+Zl0ZPA2J9rTqse01tGxJ2GfVommjEFXKkcZStuzvWN2vfM4En0fdyUsU0hlghy+o
+15yz8IgChSQ1PGgdfwwc5YpcBvx2pw==
+=Ztwb
+-----END PGP SIGNATURE-----
+
+--oLBj+sq0vYjzfsbl--
