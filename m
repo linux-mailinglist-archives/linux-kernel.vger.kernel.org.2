@@ -2,293 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C4C3A10B3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFBF3A10E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238397AbhFIJ55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:57:57 -0400
-Received: from m12-14.163.com ([220.181.12.14]:60437 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238367AbhFIJ5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:57:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=RQ9DQ
-        KpHgkyziF9WoACmrsjpsx+HFCbf6WDfWPqQp8E=; b=MSKuJN9gKq8gNugdOl3Qt
-        Q6zQEzH2nur93N5s5QXZAm2jGF7KJyYT0AmklLUxFqDvAER9gw8v++x7PKaQOvB3
-        TNm7Ypbym9fIA9SPsPT/ncCPVr2giHLAvjYMxITt23dnsojBEh/O5Hro0IkyByWX
-        wYNq/wqj2zO6ilXquieugg=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp10 (Coremail) with SMTP id DsCowADH0YQPkMBg7UAyNw--.22912S2;
-        Wed, 09 Jun 2021 17:55:27 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] scsi: lpfc: lpfc_hbadisc: Removed unnecessary 'return'
-Date:   Wed,  9 Jun 2021 17:54:30 +0800
-Message-Id: <20210609095430.611383-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowADH0YQPkMBg7UAyNw--.22912S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxKw18JF45Ar1fJFWUJr1rXrb_yoW7uw4kpa
-        nrCas7Wr4kGF13KrZxJF15A3Wayw40yryqya1DK34fursY9rZ3GFy7JFW0grs8tFW0kryY
-        yrnFgw45G3W8XFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jpsj8UUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiEQ+sUF7+3pa30AAAst
+        id S238680AbhFIKNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:13:41 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:11738 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236314AbhFIKNk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 06:13:40 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Ubr1ADd_1623232511;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ubr1ADd_1623232511)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 09 Jun 2021 17:55:14 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] selftests/x86/syscall: use ARRAY_SIZE for msbs
+Date:   Wed,  9 Jun 2021 17:55:06 +0800
+Message-Id: <1623232506-91641-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+Use ARRAY_SIZE instead of dividing sizeof array with sizeof an
+element.
 
-Removed unnecessary 'return'.
+Clean up the following coccicheck warning:
 
-Signed-off-by: lijian <lijian@yulong.com>
+./tools/testing/selftests/x86/syscall_numbering.c:316:35-36: WARNING:
+Use ARRAY_SIZE.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/scsi/lpfc/lpfc_hbadisc.c | 38 --------------------------------
- 1 file changed, 38 deletions(-)
+ tools/testing/selftests/x86/syscall_numbering.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_hbadisc.c b/drivers/scsi/lpfc/lpfc_hbadisc.c
-index 40a5a7f02fa2..8ade5a520897 100644
---- a/drivers/scsi/lpfc/lpfc_hbadisc.c
-+++ b/drivers/scsi/lpfc/lpfc_hbadisc.c
-@@ -232,8 +232,6 @@ lpfc_dev_loss_tmo_callbk(struct fc_rport *rport)
- 		lpfc_worker_wake_up(phba);
- 	}
- 	spin_unlock_irqrestore(&phba->hbalock, iflags);
--
--	return;
- }
- 
- /**
-@@ -510,7 +508,6 @@ lpfc_send_fastpath_evt(struct lpfc_hba *phba,
- 			LPFC_NL_VENDOR_ID);
- 
- 	lpfc_free_fast_evt(phba, fast_evt_data);
--	return;
- }
- 
- static void
-@@ -1141,8 +1138,6 @@ lpfc_mbx_cmpl_clear_la(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 	writel(control, phba->HCregaddr);
- 	readl(phba->HCregaddr); /* flush */
- 	spin_unlock_irq(&phba->hbalock);
--
--	return;
- }
- 
- void
-@@ -1232,7 +1227,6 @@ lpfc_mbx_cmpl_local_config_link(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 			 vport->port_state);
- 
- 	lpfc_issue_clear_la(phba, vport);
--	return;
- }
- 
- /**
-@@ -1567,8 +1561,6 @@ lpfc_register_fcf(struct lpfc_hba *phba)
- 		spin_unlock_irq(&phba->hbalock);
- 		mempool_free(fcf_mbxq, phba->mbox_mem_pool);
- 	}
--
--	return;
- }
- 
- /**
-@@ -2624,8 +2616,6 @@ lpfc_mbx_cmpl_fcf_scan_read_fcf_rec(struct lpfc_hba *phba, LPFC_MBOXQ_t *mboxq)
- out:
- 	lpfc_sli4_mbox_cmd_free(phba, mboxq);
- 	lpfc_register_fcf(phba);
--
--	return;
- }
- 
- /**
-@@ -2826,7 +2816,6 @@ lpfc_init_vfi_cmpl(struct lpfc_hba *phba, LPFC_MBOXQ_t *mboxq)
- 
- 	lpfc_initial_flogi(vport);
- 	mempool_free(mboxq, phba->mbox_mem_pool);
--	return;
- }
- 
- /**
-@@ -2908,7 +2897,6 @@ lpfc_init_vpi_cmpl(struct lpfc_hba *phba, LPFC_MBOXQ_t *mboxq)
- 				 "2606 No NPIV Fabric support\n");
- 	}
- 	mempool_free(mboxq, phba->mbox_mem_pool);
--	return;
- }
- 
- /**
-@@ -3090,7 +3078,6 @@ lpfc_mbx_cmpl_reg_vfi(struct lpfc_hba *phba, LPFC_MBOXQ_t *mboxq)
- 		lpfc_mbuf_free(phba, dmabuf->virt, dmabuf->phys);
- 		kfree(dmabuf);
- 	}
--	return;
- }
- 
- static void
-@@ -3154,7 +3141,6 @@ lpfc_mbx_cmpl_read_sparam(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 	kfree(mp);
- 	lpfc_issue_clear_la(phba, vport);
- 	mempool_free(pmb, phba->mbox_mem_pool);
--	return;
- }
- 
- static void
-@@ -3381,7 +3367,6 @@ lpfc_mbx_process_link_up(struct lpfc_hba *phba, struct lpfc_mbx_read_top *la)
- 			 "0263 Discovery Mailbox error: state: 0x%x : x%px x%px\n",
- 			 vport->port_state, sparam_mbox, cfglink_mbox);
- 	lpfc_issue_clear_la(phba, vport);
--	return;
- }
- 
- static void
-@@ -3569,7 +3554,6 @@ lpfc_mbx_cmpl_read_topology(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 	lpfc_mbuf_free(phba, mp->virt, mp->phys);
- 	kfree(mp);
- 	mempool_free(pmb, phba->mbox_mem_pool);
--	return;
- }
- 
- /*
-@@ -3629,8 +3613,6 @@ lpfc_mbx_cmpl_reg_login(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 	 * function.
+diff --git a/tools/testing/selftests/x86/syscall_numbering.c b/tools/testing/selftests/x86/syscall_numbering.c
+index 9915917..7d5e246 100644
+--- a/tools/testing/selftests/x86/syscall_numbering.c
++++ b/tools/testing/selftests/x86/syscall_numbering.c
+@@ -313,7 +313,7 @@ static void test_syscall_numbering(void)
+ 	 * The MSB is supposed to be ignored, so we loop over a few
+ 	 * to test that out.
  	 */
- 	lpfc_nlp_put(ndlp);
--
--	return;
- }
- 
- static void
-@@ -3745,7 +3727,6 @@ lpfc_mbx_cmpl_reg_vpi(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 
- out:
- 	mempool_free(pmb, phba->mbox_mem_pool);
--	return;
- }
- 
- /**
-@@ -3890,8 +3871,6 @@ lpfc_create_static_vport(struct lpfc_hba *phba)
- 		}
- 		mempool_free(pmb, phba->mbox_mem_pool);
- 	}
--
--	return;
- }
- 
- /*
-@@ -3970,7 +3949,6 @@ lpfc_mbx_cmpl_fabric_reg_login(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 	 * all the current reference to the ndlp have been done.
- 	 */
- 	lpfc_nlp_put(ndlp);
--	return;
- }
- 
-  /*
-@@ -4156,8 +4134,6 @@ lpfc_mbx_cmpl_ns_reg_login(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 	lpfc_mbuf_free(phba, mp->virt, mp->phys);
- 	kfree(mp);
- 	mempool_free(pmb, phba->mbox_mem_pool);
--
--	return;
- }
- 
- static void
-@@ -4242,8 +4218,6 @@ lpfc_register_remote_port(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp)
- 	    (rport->scsi_target_id < LPFC_MAX_TARGET)) {
- 		ndlp->nlp_sid = rport->scsi_target_id;
- 	}
--
--	return;
- }
- 
- static void
-@@ -4557,7 +4531,6 @@ lpfc_drop_node(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp)
- 	}
- 
- 	lpfc_nlp_put(ndlp);
--	return;
- }
- 
- /*
-@@ -4599,8 +4572,6 @@ lpfc_set_disctmo(struct lpfc_vport *vport)
- 			 vport->port_state, tmo,
- 			 (unsigned long)&vport->fc_disctmo, vport->fc_plogi_cnt,
- 			 vport->fc_adisc_cnt);
--
--	return;
- }
- 
- /*
-@@ -5414,7 +5385,6 @@ lpfc_disc_list_loopmap(struct lpfc_vport *vport)
- 			lpfc_setup_disc_node(vport, alpa);
- 		}
- 	}
--	return;
- }
- 
- /* SLI3 only */
-@@ -5566,7 +5536,6 @@ lpfc_disc_start(struct lpfc_vport *vport)
- 				lpfc_els_handle_rscn(vport);
- 		}
- 	}
--	return;
- }
- 
- /*
-@@ -5681,7 +5650,6 @@ lpfc_disc_timeout(struct timer_list *t)
- 
- 	if (!tmo_posted)
- 		lpfc_worker_wake_up(phba);
--	return;
- }
- 
- static void
-@@ -5916,7 +5884,6 @@ lpfc_disc_timeout_handler(struct lpfc_vport *vport)
- 		}
- 		vport->port_state = LPFC_VPORT_READY;
- 	}
--	return;
- }
- 
- /*
-@@ -5967,8 +5934,6 @@ lpfc_mbx_cmpl_fdmi_reg_login(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 	lpfc_mbuf_free(phba, mp->virt, mp->phys);
- 	kfree(mp);
- 	mempool_free(pmb, phba->mbox_mem_pool);
--
--	return;
- }
- 
- static int
-@@ -6347,7 +6312,6 @@ lpfc_unregister_vfi_cmpl(struct lpfc_hba *phba, LPFC_MBOXQ_t *mboxq)
- 	phba->pport->fc_flag &= ~FC_VFI_REGISTERED;
- 	spin_unlock_irq(shost->host_lock);
- 	mempool_free(mboxq, phba->mbox_mem_pool);
--	return;
- }
- 
- /**
-@@ -6369,7 +6333,6 @@ lpfc_unregister_fcfi_cmpl(struct lpfc_hba *phba, LPFC_MBOXQ_t *mboxq)
- 				mboxq->u.mb.mbxStatus, vport->port_state);
- 	}
- 	mempool_free(mboxq, phba->mbox_mem_pool);
--	return;
- }
- 
- /**
-@@ -6713,7 +6676,6 @@ lpfc_read_fcoe_param(struct lpfc_hba *phba,
- 	phba->fc_map[0] = fcoe_param->fc_map[0];
- 	phba->fc_map[1] = fcoe_param->fc_map[1];
- 	phba->fc_map[2] = fcoe_param->fc_map[2];
--	return;
- }
- 
- /**
+-	for (size_t i = 0; i < sizeof(msbs)/sizeof(msbs[0]); i++) {
++	for (size_t i = 0; i < ARRAY_SIZE(msbs); i++) {
+ 		int msb = msbs[i];
+ 		run("Checking system calls with msb = %d (0x%x)\n",
+ 		    msb, msb);
 -- 
-2.25.1
+1.8.3.1
 
