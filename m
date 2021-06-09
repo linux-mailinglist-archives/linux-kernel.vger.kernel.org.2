@@ -2,155 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75123A1AA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD093A1ABB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234774AbhFIQRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:17:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25065 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231251AbhFIQRc (ORCPT
+        id S237442AbhFIQS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:18:58 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:33583 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231842AbhFIQS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:17:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623255337;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZKvRJP1Qn2FuRIKKae+xpipPvYviXO+rudBhyvwgw04=;
-        b=D3Z8TIeJDtrdNYPocssvdItBYl2bCOHvD6pV6hgLwHnYjOmbpuUX0Tr9wCNN5JytEtkcFw
-        KZeLefoAoJF7Trr7RpUtktQqJj/1VxPmBiwWoi9mRfI+PqeKGJsiNqSVTd+aNGH1bHnPjD
-        nkDx+yA3sScgkjjJ5BPQiom9ZgmiQXc=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-209-NLee3tprN6KI74R1M1dUow-1; Wed, 09 Jun 2021 12:15:35 -0400
-X-MC-Unique: NLee3tprN6KI74R1M1dUow-1
-Received: by mail-ot1-f70.google.com with SMTP id 59-20020a9d0dc10000b02902a57e382ca1so16624250ots.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:15:35 -0700 (PDT)
+        Wed, 9 Jun 2021 12:18:56 -0400
+Received: by mail-ot1-f45.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so10740627otl.0;
+        Wed, 09 Jun 2021 09:16:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=ZKvRJP1Qn2FuRIKKae+xpipPvYviXO+rudBhyvwgw04=;
-        b=pDEulQ5T10C2NN3d8EUx9o7Evrk5XBvwU2hid/d64iys8sf3rm3CB06NvqMGuMjHsk
-         KhKXUDLJFacQ84otDTTtvaoIrDUVqpE+IqNQ/J9lGGRqvOeo0XZkrbMBV2smRrwo8LGf
-         KAnQ1/49/jlSn/TaijErlpLJ8FRg2vF5qef0zqf1U1xwr76maaSJwZ33eRCTDu5ialpu
-         mEQk1ASp0AtV1LSj2DTR+novgq8V07f8o2gQzB70ZJhI2o2E64PjiOSmurRru7VHut1k
-         2gyLSWKCJ4T9aC36gdJWHzEz27qQKnAPI1xZDE7iRFGsNlEBhQxsAeJMsTqEvE53bTS6
-         sisQ==
-X-Gm-Message-State: AOAM533XZyZYCmzZFxpUQX7OrIDCQfiWMWRqCsmZwvGhnGADhxYGylpf
-        ZbYU9QsEAcwxk8Xcez20tWl53yqsbeyxcbSc+/f9I/Bhu8LvjiDM7ogWZwpEiqhKmqtSl2WkUm2
-        YMoZvtnzRgmmMPkgTQjd3IQtj
-X-Received: by 2002:a9d:6042:: with SMTP id v2mr179316otj.170.1623255335010;
-        Wed, 09 Jun 2021 09:15:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxYk1fCbBjXzJvcPumlKeytJWmAtK0sJebJhCUtHFNxQQubDFY1axQko6MBR1VcZ3NidsA9KA==
-X-Received: by 2002:a9d:6042:: with SMTP id v2mr179287otj.170.1623255334638;
-        Wed, 09 Jun 2021 09:15:34 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id x9sm76559oto.79.2021.06.09.09.15.33
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=NYXHJI4Kx3eiwThUs5yqYYIde++NFf0oIszmROtqUoY=;
+        b=KUSj5COIJnbmA1o7eaZpfgIuW6OOrCixID66tw20dzvl4NB36Vi3+tG2f9Se2cry5b
+         Il6cM/N69bY4NbQB0FLscABz7MTPQZtSrVYz4IVfckefAgzrsKG4DMtcw2SlOUy00PRr
+         8dv4QbWwwJq9hw4EWnEgvAGDezDRjtEiux0mDKeQabbj56CiBTYw4+7wkgxS13xne0AE
+         /WMSzyM9FXoLrdLuiEgOFghx2tcY2RjuKNAkCsLT1nAjMR6ivyPG6J4mcWRzNxdBaSTy
+         nXGfkE/C5MUzMEsDIfvCP2Mf6mlFJJTJ5xNce0kSCERT8sAxN0msw0p8ImBVEoWuKfDJ
+         zqTw==
+X-Gm-Message-State: AOAM531/DDNSz4WsY9JVx4JcOaco+rsLQ0eDcreQxG1j5qTZ3PKJR+ux
+        6jOxKlRoqG9N2rgnoi/PoA==
+X-Google-Smtp-Source: ABdhPJyyFLCSgdauyi4+TKqtKVi+eaXOEEd+HR/EHYo0r6k5qWvlaRPdV1iCq+OxSaL1ccGDwnDQbQ==
+X-Received: by 2002:a9d:1b05:: with SMTP id l5mr141741otl.335.1623255406773;
+        Wed, 09 Jun 2021 09:16:46 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x31sm75149ota.24.2021.06.09.09.16.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 09:15:34 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 10:15:32 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <20210609101532.452851eb.alex.williamson@redhat.com>
-In-Reply-To: <YMDjfmJKUDSrbZbo@8bytes.org>
-References: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <YMCy48Xnt/aphfh3@8bytes.org>
-        <20210609123919.GA1002214@nvidia.com>
-        <YMDC8tOMvw4FtSek@8bytes.org>
-        <20210609150009.GE1002214@nvidia.com>
-        <YMDjfmJKUDSrbZbo@8bytes.org>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Wed, 09 Jun 2021 09:16:46 -0700 (PDT)
+Received: (nullmailer pid 3763298 invoked by uid 1000);
+        Wed, 09 Jun 2021 16:16:43 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Jon Lin <jon.lin@rock-chips.com>
+Cc:     yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        hjc@rock-chips.com, mturquette@baylibre.com, robh+dt@kernel.org,
+        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-mtd@lists.infradead.org,
+        Chris Morgan <macromorgan@hotmail.com>, macroalpha82@gmail.com,
+        p.yadav@ti.com, linux-spi@vger.kernel.org, jbx6244@gmail.com,
+        heiko@sntech.de, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, sboyd@kernel.org, broonie@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210609140412.16058-2-jon.lin@rock-chips.com>
+References: <20210609140412.16058-1-jon.lin@rock-chips.com> <20210609140412.16058-2-jon.lin@rock-chips.com>
+Subject: Re: [PATCH v7 1/9] dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash controller
+Date:   Wed, 09 Jun 2021 11:16:43 -0500
+Message-Id: <1623255403.626186.3763297.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 17:51:26 +0200
-Joerg Roedel <joro@8bytes.org> wrote:
+On Wed, 09 Jun 2021 22:04:04 +0800, Jon Lin wrote:
+> From: Chris Morgan <macromorgan@hotmail.com>
+> 
+> Add bindings for the Rockchip serial flash controller. New device
+> specific parameter of rockchip,sfc-no-dma included in documentation.
+> 
+> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+> ---
+> 
+> Changes in v7:
+> - Fix up the sclk_sfc parent error in rk3036
+> - Unify to "rockchip,sfc" compatible id because all the feature update
+>   will have a new IP version, so the driver is used for the SFC IP in
+>   all SoCs
+> - Change to use node "sfc" to name the SFC pinctrl group
+> - Add subnode reg property check
+> - Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+> - Limit max_iosize to 32KB
+> 
+> Changes in v6:
+> - Add support in device trees for rv1126(Declared in series 5 but not
+>   submitted)
+> - Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+>   affect interpretation and has been widely used
+> - Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+> - Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
+>   in series 5 but not submitted)
+> - Support SFC ver4 ver5(Declared in series 5 but not submitted)
+> - Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+> - Change to use devm_spi_alloc_master and spi_unregister_master
+> 
+> Changes in v5:
+> - Add support in device trees for rv1126
+> - Support sfc tx_dual, tx_quad
+> - Simplify the code, such as remove "rockchip_sfc_register_all"
+> - Support SFC ver4 ver5
+> 
+> Changes in v4:
+> - Changing patch back to an "RFC". An engineer from Rockchip
+>   reached out to me to let me know they are working on this patch for
+>   upstream, I am submitting this v4 for the community to see however
+>   I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+>   soon and these are the ones we should pursue for mainlining. Jon's
+>   patch series should include support for more hardware than this
+>   series.
+> - Clean up documentation more and ensure it is correct per
+>   make dt_binding_check.
+> - Add support in device trees for rk3036, rk3308, and rv1108.
+> - Add ahb clock (hclk_sfc) support for rk3036.
+> - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+> - Change IRQ code to only mark IRQ as handled if it handles the
+>   specific IRQ (DMA transfer finish) it is supposed to handle.
+> 
+> Changes in v3:
+> - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+> - Changed the compatible string from rockchip,sfc to
+>   rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+>   driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+>   RV1108 SoCs, and possibly more. However, I am currently only able
+>   to test this on a PX30 (an RK3326). The technical reference manuals
+>   appear to list the same registers for each device.
+> - Corrected devicetree documentation for formatting and to note these
+>   changes.
+> - Replaced the maintainer with Heiko Stuebner and myself, as we will
+>   take ownership of this going forward.
+> - Noted that the device (per the reference manual) supports 4 CS, but
+>   I am only able to test a single CS (CS 0).
+> - Reordered patches to comply with upstream rules.
+> 
+> Changes in v2:
+> - Reimplemented driver using spi-mem subsystem.
+> - Removed power management code as I couldn't get it working properly.
+> - Added device tree bindings for Odroid Go Advance.
+> 
+> Changes in v1:
+> hanges made in this new series versus the v8 of the old series:
+> - Added function to read spi-rx-bus-width from device tree, in the
+>   event that the SPI chip supports 4x mode but only has 2 pins
+>   wired (such as the Odroid Go Advance).
+> - Changed device tree documentation from txt to yaml format.
+> - Made "reset" message a dev_dbg from a dev_info.
+> - Changed read and write fifo functions to remove redundant checks.
+> - Changed the write and read from relaxed to non-relaxed when
+>   starting the DMA transfer or reading the DMA IRQ.
+> - Changed from dma_coerce_mask_and_coherent to just
+>   dma_set_mask_and_coherent.
+> - Changed name of get_if_type to rockchip_sfc_get_if_type.
+> 
+>  .../devicetree/bindings/spi/rockchip-sfc.yaml | 88 +++++++++++++++++++
+>  1 file changed, 88 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> 
 
-> On Wed, Jun 09, 2021 at 12:00:09PM -0300, Jason Gunthorpe wrote:
-> > Only *drivers* know what the actual device is going to do, devices do
-> > not. Since the group doesn't have drivers it is the wrong layer to be
-> > making choices about how to configure the IOMMU.  
-> 
-> Groups don't carry how to configure IOMMUs, that information is
-> mostly in the IOMMU domains. And those (or an abstraction of them) is
-> configured through /dev/ioasid. So not sure what you wanted to say with
-> the above.
-> 
-> All a group carries is information about which devices are not
-> sufficiently isolated from each other and thus need to always be in the
-> same domain.
-> 
-> > The device centric approach is my attempt at this, and it is pretty
-> > clean, I think.  
-> 
-> Clean, but still insecure.
-> 
-> > All ACS does is prevent P2P operations, if you assign all the group
-> > devices into the same /dev/iommu then you may not care about that
-> > security isolation property. At the very least it is policy for user
-> > to decide, not kernel.  
-> 
-> It is a kernel decision, because a fundamental task of the kernel is to
-> ensure isolation between user-space tasks as good as it can. And if a
-> device assigned to one task can interfer with a device of another task
-> (e.g. by sending P2P messages), then the promise of isolation is broken.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-AIUI, the IOASID model will still enforce IOMMU groups, but it's not an
-explicit part of the interface like it is for vfio.  For example the
-IOASID model allows attaching individual devices such that we have
-granularity to create per device IOASIDs, but all devices within an
-IOMMU group are required to be attached to an IOASID before they can be
-used.  It's not entirely clear to me yet how that last bit gets
-implemented though, ie. what barrier is in place to prevent device
-usage prior to reaching this viable state.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/spi/rockchip-sfc.yaml:45:5: [warning] wrong indentation: expected 2 but found 4 (indentation)
 
-> > Groups should be primarily about isolation security, not about IOASID
-> > matching.  
-> 
-> That doesn't make any sense, what do you mean by 'IOASID matching'?
+dtschema/dtc warnings/errors:
+\ndoc reference errors (make refcheckdocs):
 
-One of the problems with the vfio interface use of groups is that we
-conflate the IOMMU group for both isolation and granularity.  I think
-what Jason is referring to here is that we still want groups to be the
-basis of isolation, but we don't want a uAPI that presumes all devices
-within the group must use the same IOASID.  For example, if a user owns
-an IOMMU group consisting of non-isolated functions of a multi-function
-device, they should be able to create a vIOMMU VM where each of those
-functions has its own address space.  That can't be done today, the
-entire group would need to be attached to the VM under a PCIe-to-PCI
-bridge to reflect the address space limitation imposed by the vfio
-group uAPI model.  Thanks,
+See https://patchwork.ozlabs.org/patch/1489897
 
-Alex
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
