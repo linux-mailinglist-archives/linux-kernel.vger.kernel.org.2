@@ -2,147 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09043A0EFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2F43A0EFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237770AbhFIIyC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 04:54:02 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:46002 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231200AbhFIIyB (ORCPT
+        id S237797AbhFIIyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:54:17 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:44127 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237793AbhFIIyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:54:01 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-PTv6_32ZMuai4EYYRrW8Ww-1; Wed, 09 Jun 2021 04:52:01 -0400
-X-MC-Unique: PTv6_32ZMuai4EYYRrW8Ww-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0689C7400;
-        Wed,  9 Jun 2021 08:51:59 +0000 (UTC)
-Received: from web.messagingengine.com (ovpn-116-20.sin2.redhat.com [10.67.116.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F93A5D9DE;
-        Wed,  9 Jun 2021 08:51:40 +0000 (UTC)
-Subject: [PATCH v6 5/7] kernfs: use i_lock to protect concurrent inode updates
-From:   Ian Kent <raven@themaw.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Eric Sandeen <sandeen@sandeen.net>, Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 09 Jun 2021 16:51:22 +0800
-Message-ID: <162322868275.361452.17585267026652222121.stgit@web.messagingengine.com>
-In-Reply-To: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
-References: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
-User-Agent: StGit/0.23
+        Wed, 9 Jun 2021 04:54:16 -0400
+Received: from [192.168.1.155] ([77.9.120.3]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MaIGB-1lo04d0Q0D-00WDfS; Wed, 09 Jun 2021 10:51:54 +0200
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>
+References: <30e5c597-b31c-56de-c75e-950c91947d8f@redhat.com>
+ <20210604160336.GA414156@nvidia.com>
+ <2c62b5c7-582a-c710-0436-4ac5e8fd8b39@redhat.com>
+ <20210604172207.GT1002214@nvidia.com>
+ <2d1ad075-bec6-bfb9-ce71-ed873795e973@redhat.com>
+ <20210607175926.GJ1002214@nvidia.com>
+ <fdb2f38c-da1f-9c12-af44-22df039fcfea@redhat.com>
+ <20210608131547.GE1002214@nvidia.com>
+ <89d30977-119c-49f3-3bf6-d3f7104e07d8@redhat.com>
+ <20210608124700.7b9aa5a6.alex.williamson@redhat.com>
+ <20210608190022.GM1002214@nvidia.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <ec0b1ef9-ae2f-d6c7-99b7-4699ced146e4@metux.net>
+Date:   Wed, 9 Jun 2021 10:51:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=raven@themaw.net
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: themaw.net
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210608190022.GM1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:129gpDF0BUiljAKLG/lQM9gOvQsLJNYv6mn4lsTL3Y6scaycnu6
+ FPVYBAyrjnF1UY5uwjcf4oFw4beloQnySFsPKYbawZfN6tAapAsVHo2QgL4R4yFkhCoiQly
+ iyPTJnWT8Mwi7XapNxHe64Lv15irUjL5dqbROpopaoobxzsl59SG2wsiJeu+82nnrgqc/7a
+ JUvZonTmpEByKtCFMeFWw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:POLH6n9P4zc=:r5TZcQVPFRF4PjIFhtEtsc
+ dD3FDxLNBDMLgWG/MNRgaoxxjZoeGAnDFNrL5n572RnYavwM9FfniMfqfMegke/Kgg+e/KzJa
+ 9LT9KniwqqSJEplpR6p60i0ubJxhUj61aitZlsxUKoHu1+cYuoLonSFnlHgOXXC3zFb7sKL/l
+ 5+N8urVp3aD+42CMom3DQmR/OhngLKKh+hlZaij3jykJCSIz47lO9KJuXFI+YhvVENVR+ioig
+ WZT63ZCSIX6xP1GiD1irLtO7PWirac5YLkWT77v6fAqAq7TwBbrQ5aSJndaBXoRp894v5mq+A
+ hxHvxDh5Ac4N20dRUBxzHcjupjmrO/qFNOsUIZXrvj6wkMw2LhuGnb9V7NHPk8ut4K8TtSMzz
+ NftmcBDo+y4gl+xa7jJC9dAZA2MJKxdMtOURjbYeDGaoHWYoYYUAaW9hKpmQVqPUOVzVXdpKb
+ BnL/wbMl256p27IIfNXK9nADHPcn4funqrbusWTku0lTWHysNztTXM0dDN+uqFCyfGjMB/61y
+ SDR8IC7P1tGKRZkANhzhfE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The inode operations .permission() and .getattr() use the kernfs node
-write lock but all that's needed is to keep the rb tree stable while
-updating the inode attributes as well as protecting the update itself
-against concurrent changes.
+On 08.06.21 21:00, Jason Gunthorpe wrote:
 
-And .permission() is called frequently during path walks and can cause
-quite a bit of contention between kernfs node operations and path
-walks when the number of concurrent walks is high.
+> Eg I can do open() on a file and I get to keep that FD. I get to keep
+> that FD even if someone later does chmod() on that file so I can't
+> open it again.
+> 
+> There are lots of examples where a one time access control check
+> provides continuing access to a resource. I feel the ongoing proof is
+> the rarity in Unix.. 'revoke' is an uncommon concept in Unix..
 
-To change kernfs_iop_getattr() and kernfs_iop_permission() to take
-the rw sem read lock instead of the write lock an additional lock is
-needed to protect against multiple processes concurrently updating
-the inode attributes and link count in kernfs_refresh_inode().
+Yes, it's even possible that somebody w/ privileges opens an fd and
+hands it over to somebody unprivileged (eg. via unix socket). This is
+a very basic unix concept. If some (already opened) fd now suddenly
+behaves differently based on the current caller, that would be a break
+with traditional unix semantics.
 
-The inode i_lock seems like the sensible thing to use to protect these
-inode attribute updates so use it in kernfs_refresh_inode().
 
-The last hunk in the patch, applied to kernfs_fill_super(), is possibly
-not needed but taking the lock was present originally and I prefer to
-continue to take it so the rb tree is held stable during the call to
-kernfs_refresh_inode() made by kernfs_get_inode().
+--mtx
 
-Signed-off-by: Ian Kent <raven@themaw.net>
+-- 
 ---
- fs/kernfs/inode.c |   10 ++++++----
- fs/kernfs/mount.c |    4 ++--
- 2 files changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-index 3b01e9e61f14e..6728ecd81eb37 100644
---- a/fs/kernfs/inode.c
-+++ b/fs/kernfs/inode.c
-@@ -172,6 +172,7 @@ static void kernfs_refresh_inode(struct kernfs_node *kn, struct inode *inode)
- {
- 	struct kernfs_iattrs *attrs = kn->iattr;
- 
-+	spin_lock(&inode->i_lock);
- 	inode->i_mode = kn->mode;
- 	if (attrs)
- 		/*
-@@ -182,6 +183,7 @@ static void kernfs_refresh_inode(struct kernfs_node *kn, struct inode *inode)
- 
- 	if (kernfs_type(kn) == KERNFS_DIR)
- 		set_nlink(inode, kn->dir.subdirs + 2);
-+	spin_unlock(&inode->i_lock);
- }
- 
- int kernfs_iop_getattr(struct user_namespace *mnt_userns,
-@@ -191,9 +193,9 @@ int kernfs_iop_getattr(struct user_namespace *mnt_userns,
- 	struct inode *inode = d_inode(path->dentry);
- 	struct kernfs_node *kn = inode->i_private;
- 
--	down_write(&kernfs_rwsem);
-+	down_read(&kernfs_rwsem);
- 	kernfs_refresh_inode(kn, inode);
--	up_write(&kernfs_rwsem);
-+	up_read(&kernfs_rwsem);
- 
- 	generic_fillattr(&init_user_ns, inode, stat);
- 	return 0;
-@@ -284,9 +286,9 @@ int kernfs_iop_permission(struct user_namespace *mnt_userns,
- 
- 	kn = inode->i_private;
- 
--	down_write(&kernfs_rwsem);
-+	down_read(&kernfs_rwsem);
- 	kernfs_refresh_inode(kn, inode);
--	up_write(&kernfs_rwsem);
-+	up_read(&kernfs_rwsem);
- 
- 	return generic_permission(&init_user_ns, inode, mask);
- }
-diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
-index baa4155ba2edf..f2f909d09f522 100644
---- a/fs/kernfs/mount.c
-+++ b/fs/kernfs/mount.c
-@@ -255,9 +255,9 @@ static int kernfs_fill_super(struct super_block *sb, struct kernfs_fs_context *k
- 	sb->s_shrink.seeks = 0;
- 
- 	/* get root inode, initialize and unlock it */
--	down_write(&kernfs_rwsem);
-+	down_read(&kernfs_rwsem);
- 	inode = kernfs_get_inode(sb, info->root->kn);
--	up_write(&kernfs_rwsem);
-+	up_read(&kernfs_rwsem);
- 	if (!inode) {
- 		pr_debug("kernfs: could not get root inode\n");
- 		return -ENOMEM;
-
-
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
