@@ -2,107 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661843A0D97
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D0E3A0DA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237230AbhFIHUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237217AbhFIHUw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:20:52 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4BDC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 00:18:45 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id e11so30344803ljn.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 00:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S6S6WSbvDAoIJSjQSu5bdy/8b+fKOvHIFk4YfVLW+HA=;
-        b=HnZPZ+s+dU/dci5HNYB8E6pWlysvJhl+GZ6qiZe/VbSjT2OuxiGzdoGryfJ0uOeZT7
-         sSRpIA7VW8YLF5/veAupn2tAQ3P0ZfW3ZRGQxs1bTN2EMBxt3/q8i8wJUtRvADKmtw8Z
-         y+Ma4xiAeQjp+dLPf/NmIq5KxPGwr02ekUQL6AjCwWOO/sfceCu5qQcBs8mb3YCFrOsz
-         WOqxMCsB67ixHQneiO37V/8RaBx47YEvi+VzIaJorJzzE3cYjSCHE62z6VAGGEY416/H
-         cLSipYcNndWabH2Fn/PCDVDY1UKOv7jsYxrHsJZHdDi6IrG785ty8qGKPawcAjJ5mZrB
-         YMZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S6S6WSbvDAoIJSjQSu5bdy/8b+fKOvHIFk4YfVLW+HA=;
-        b=aUKEmEXj33s3g/bMWkKuNSwvacXxcSGIxvEVfDd2t3Ongn7M+BoVgksRSEFFL3ExWS
-         BTciDwMPWZXAQeq1KSgbcXzZ7by/g7Q0WgsnlLFJN2flfgIZkTrDfDaertdStilSG0eW
-         eZs6060cyj4U5B8/yNY2HPHiZMc7HbitpE6CGJJ9309me1fmL4JuNmdAmZLzmddZ+NKw
-         sJzBkUWxG1fF33K/uvAq5mcr2/fMrz5NtXu0Smxyq0TldJ7WxXpLulBWXUXMM6nMDzR5
-         rKT0/ETLm4sas1bQy3WeCxJikd9NJtWGxBapTSeU+c0E0wEJ+sWLQq3aX6Eeit9F0mYD
-         2DhA==
-X-Gm-Message-State: AOAM533HLCcaGRyj4jhSJxk/9thVuulj9Zp9hpAHTfB9fSdvOVcHF0Lr
-        taKFSPwrQpJ/sSIhaBi8iSFROtlvzL6V+pldEG22Ig==
-X-Google-Smtp-Source: ABdhPJwN7YJIUVMxZApkKAad9gmiyYbfJWBzLP6ls9LNwude42v+J9POiYEHh860CnHuGwDHTn2GfD63ADK4BflRmq8=
-X-Received: by 2002:a2e:9f4c:: with SMTP id v12mr20571859ljk.176.1623223123606;
- Wed, 09 Jun 2021 00:18:43 -0700 (PDT)
+        id S237259AbhFIHVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:21:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237250AbhFIHVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 03:21:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AA3561361;
+        Wed,  9 Jun 2021 07:19:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623223169;
+        bh=I55EZUDspXTzWZV8NDrfytGqVmsJsokg7NgjMjvlhfg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VWaCjlSvB8JIK6eTl5gbNGWb8maZ7qpPj6m8AT+AIf49hnaITX68OUSKCFSwyhZTm
+         b+RvPTWRrj+Ch8Io0mriXukncJfAgudgJzlULfS9bqvdCF/TYRui7uh5KX8D8iPqhB
+         YmCUT0LxKp1IXGICcS/AIYsmCwWpoXwbRkzrNK7o=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] spi: remove spi_set_cs_timing()
+Date:   Wed,  9 Jun 2021 09:19:18 +0200
+Message-Id: <20210609071918.2852069-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2106082138350.16734@hadrien> <YMBpxBR3EMyAUa3j@hirez.programming.kicks-ass.net>
-In-Reply-To: <YMBpxBR3EMyAUa3j@hirez.programming.kicks-ass.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 9 Jun 2021 09:18:32 +0200
-Message-ID: <CAKfTPtAbPg=4os6F0QKMhDnP4gYE+5hWCkA365xG79acRTYWyg@mail.gmail.com>
-Subject: Re: find_new_ilb
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3564; h=from:subject; bh=I55EZUDspXTzWZV8NDrfytGqVmsJsokg7NgjMjvlhfg=; b=owGbwMvMwCRo6H6F97bub03G02pJDAkHsvPve5YGlKj6/jrF8rg1yObo1rMMa/a6qtqzG7AmaO00 b37WEcvCIMjEICumyPJlG8/R/RWHFL0MbU/DzGFlAhnCwMUpABN5wcowP6Ipd9O/cM/d71SbN2ks01 K7fuZ4OsNcIfE0XtYvX75e3id+//o2gT6r+jlzAA==
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 at 09:12, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Jun 08, 2021 at 09:51:30PM +0200, Julia Lawall wrote:
-> > Starting from the following commit:
-> >
-> > commit 45da7a2b0af8fa29dff2e6ba8926322068350fce
-> > Author: Peter Zijlstra <peterz@infradead.org>
-> > Date:   Tue Aug 18 10:48:17 2020 +0200
-> >
-> >     sched/fair: Exclude the current CPU from find_new_ilb()
-> >
-> > up through Linux 5.12, I observed that often when most of the machine was
-> > idle, there could be many (thousands) of sched_wake_idle_without_ipi
-> > events, typically between cores 0 and 1.  I don't see this any more in
-> > Linux v5.13-rc1.  I looked through the patches to fair.c and core.c
-> > subsequent to v5.12, and I didn't see anything that explicitly addresses
-> > this issue.  Before I plunge into another set of rounds of bisecting, I
-> > wonder if anyone knows whether and how this problem was resolved?
->
-> Hurmph.. that patch was preparation for a later change that never seems
-> to have happened. If it is causing trouble for you, I think you can
-> savely revert it.
->
-> At the time I thought it was very strange that new_idle would select
-> itself as idle-balancer, doubly so, because the only way to get there
-> would be with NEED_RESCHED already set, so the IPI wouldn't in fact do
-> anything.
->
-> Looking again, the difference is ofcourse that previously we'd select
-> self and NO-OP, but now we'll potentially select another CPU and
-> actually do something.
->
-> This is arguably an improvement, because we did want to do something.
->
->  I can't quite remember what would've change here since, Vincent, can
->  you remember?
+No one seems to be using this global and exported function, so remove it
+as it is no longer needed.
 
-c6f886546cb8 ("sched/fair: Trigger the update of blocked load on newly
-idle cpu") could be the one which fixes it.
-We don't kick_ilb from newilde_balance() since this commit
+Cc: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/spi/spi.c       | 73 -----------------------------------------
+ include/linux/spi/spi.h |  5 ---
+ 2 files changed, 78 deletions(-)
 
->
-> Anyway, is this actually causing you trouble, or are you just going on
-> the increased number of events?
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index e353b7a9e54e..86965c1d7ad0 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -3453,79 +3453,6 @@ int spi_setup(struct spi_device *spi)
+ }
+ EXPORT_SYMBOL_GPL(spi_setup);
+ 
+-/**
+- * spi_set_cs_timing - configure CS setup, hold, and inactive delays
+- * @spi: the device that requires specific CS timing configuration
+- * @setup: CS setup time specified via @spi_delay
+- * @hold: CS hold time specified via @spi_delay
+- * @inactive: CS inactive delay between transfers specified via @spi_delay
+- *
+- * Return: zero on success, else a negative error code.
+- */
+-int spi_set_cs_timing(struct spi_device *spi, struct spi_delay *setup,
+-		      struct spi_delay *hold, struct spi_delay *inactive)
+-{
+-	struct device *parent = spi->controller->dev.parent;
+-	size_t len;
+-	int status;
+-
+-	if (spi->controller->set_cs_timing &&
+-	    !(spi->cs_gpiod || gpio_is_valid(spi->cs_gpio))) {
+-		mutex_lock(&spi->controller->io_mutex);
+-
+-		if (spi->controller->auto_runtime_pm) {
+-			status = pm_runtime_get_sync(parent);
+-			if (status < 0) {
+-				mutex_unlock(&spi->controller->io_mutex);
+-				pm_runtime_put_noidle(parent);
+-				dev_err(&spi->controller->dev, "Failed to power device: %d\n",
+-					status);
+-				return status;
+-			}
+-
+-			status = spi->controller->set_cs_timing(spi, setup,
+-								hold, inactive);
+-			pm_runtime_mark_last_busy(parent);
+-			pm_runtime_put_autosuspend(parent);
+-		} else {
+-			status = spi->controller->set_cs_timing(spi, setup, hold,
+-							      inactive);
+-		}
+-
+-		mutex_unlock(&spi->controller->io_mutex);
+-		return status;
+-	}
+-
+-	if ((setup && setup->unit == SPI_DELAY_UNIT_SCK) ||
+-	    (hold && hold->unit == SPI_DELAY_UNIT_SCK) ||
+-	    (inactive && inactive->unit == SPI_DELAY_UNIT_SCK)) {
+-		dev_err(&spi->dev,
+-			"Clock-cycle delays for CS not supported in SW mode\n");
+-		return -ENOTSUPP;
+-	}
+-
+-	len = sizeof(struct spi_delay);
+-
+-	/* copy delays to controller */
+-	if (setup)
+-		memcpy(&spi->controller->cs_setup, setup, len);
+-	else
+-		memset(&spi->controller->cs_setup, 0, len);
+-
+-	if (hold)
+-		memcpy(&spi->controller->cs_hold, hold, len);
+-	else
+-		memset(&spi->controller->cs_hold, 0, len);
+-
+-	if (inactive)
+-		memcpy(&spi->controller->cs_inactive, inactive, len);
+-	else
+-		memset(&spi->controller->cs_inactive, 0, len);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(spi_set_cs_timing);
+-
+ static int _spi_xfer_word_delay_update(struct spi_transfer *xfer,
+ 				       struct spi_device *spi)
+ {
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 74239d65c7fd..f924160e995f 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -1108,11 +1108,6 @@ static inline void spi_message_free(struct spi_message *m)
+ 	kfree(m);
+ }
+ 
+-extern int spi_set_cs_timing(struct spi_device *spi,
+-			     struct spi_delay *setup,
+-			     struct spi_delay *hold,
+-			     struct spi_delay *inactive);
+-
+ extern int spi_setup(struct spi_device *spi);
+ extern int spi_async(struct spi_device *spi, struct spi_message *message);
+ extern int spi_async_locked(struct spi_device *spi,
+-- 
+2.32.0
+
