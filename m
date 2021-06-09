@@ -2,96 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120303A19E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B973A19E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236678AbhFIPhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:37:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27866 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232474AbhFIPhe (ORCPT
+        id S234062AbhFIPi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232474AbhFIPi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:37:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623252939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=VxgDk7cTkJTNNC5ZMrS1yGyqdCe9V2Gyf+MzVfrw8ec=;
-        b=e7CgiIiIhjSq+vn+Qawe4fKFoJbm64cyLTEkgUlqRoRN7AGToM526z6yJ04nKb3YHNHk1U
-        1qCF299Hg0+FjwRUhhQ+FU5/YpGm9HthlmbFANcJhTRlT1/PY3Un48T2PT2YpTEIatQuP2
-        v43h8xJEWKmnhD8UYhuY1fEGF4Ig1rU=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-456-3m8YyaTPOYGckGW2Px6hnQ-1; Wed, 09 Jun 2021 11:35:37 -0400
-X-MC-Unique: 3m8YyaTPOYGckGW2Px6hnQ-1
-Received: by mail-oi1-f197.google.com with SMTP id j20-20020aca17140000b02901f3ef48ce7dso4757082oii.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 08:35:37 -0700 (PDT)
+        Wed, 9 Jun 2021 11:38:26 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEFF4C061574;
+        Wed,  9 Jun 2021 08:36:29 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id q25so18668359pfh.7;
+        Wed, 09 Jun 2021 08:36:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=neZ2e107rW6u5+BVpWqPAvfyZBtmzgP4djPpeqRyQ04=;
+        b=p3oEZTsxgUaXISabfNCfwlDjRW2XZRlWVv0TCVqelJkHJNM3/EWJSwsue6tjO4/hhn
+         /vfNCoDxpC6LKITX/NHS/uCxfh+V81P01S14Ux2ihYwvi4a1qnhCxbdaRZR0jv5VBvbi
+         hbUFaLZ/uic5TZYxY6VhezmmWDxp+UqJiwAD8WYYjHJw0KqJYn4RK4RvLppFNGu6LjAW
+         caaZ7rG/9S5XC2gNOEnbbDa8h79L/6/RGaWH0OezCFC/+2HVQ7I4gDWY1Oy0b2KM+Fhy
+         cND97zONfQd+t3dc0lti732r5qaX34Uf33Qtn2mMRUWrtTJl/us2WvKy2aPm6FXKTxzV
+         FzmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VxgDk7cTkJTNNC5ZMrS1yGyqdCe9V2Gyf+MzVfrw8ec=;
-        b=O0z9rIs11R20zwP9j00cOm84xHAOX1gmTOJjae6pgWKQT35WM3ZN+ishNZWwCkgF9v
-         xmCi67xAjl6zxX0pKjVgqw0OyGGrtV5qDfGpdQJ7kITMKNm866JL5/VvCjqCMbkw8ira
-         R1AuKa8RkQev5POc5oxDtbo8wqN84jy81G3KR2Vd4fItdja8gCY+BYLT4k9K//E6ouGk
-         1Uup6HyjTtEWSuUGuT0s2nUnYCZr1uz8r8wupjZ+XZvzVIsbT/BX7/hXRT7vL3xDUPMm
-         R/FY2mIaQ5uEWWBO1YqcsSorxWjCDE0h2CqrP1Qoy4hx2LnceEWzzpMg5MozO+PziXZI
-         nH/Q==
-X-Gm-Message-State: AOAM533AeDzaMMteG3A0CPy99T3PkWbCRRk/CXzWYdszzvjAU0wPS+Wf
-        bjcrS+8OdKxIjR902y8Aa4Dh7ifZ4xvLSThNh35ACnlqI/ClxQR7FF/2cJ/Uu98c0Drs/QFpy1B
-        8/9JX4PwX2TgVtHG3XQsU1o9X
-X-Received: by 2002:a9d:6f88:: with SMTP id h8mr10711otq.73.1623252936862;
-        Wed, 09 Jun 2021 08:35:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx7Daq8mDoBGGCaF1d0sj1xDGnnYrzi8QqE4yRaTjbZ2kHSKW8poNukRLJ4rCoORV1axGN9fw==
-X-Received: by 2002:a9d:6f88:: with SMTP id h8mr10682otq.73.1623252936325;
-        Wed, 09 Jun 2021 08:35:36 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l28sm52583otd.66.2021.06.09.08.35.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=neZ2e107rW6u5+BVpWqPAvfyZBtmzgP4djPpeqRyQ04=;
+        b=uBimOsYnj+cj4iqVwerh/EmfhsFygBcoPZsBGa1cuJacbg3gkMKgGYmdoK3QSZlOxc
+         qPuwyYW7uqSZgBDKX9SUoTsakKFLlrrn5Vzb4H+xFuZMLU2HyGt8Ukth3YMdmr/MjlFA
+         QDpk+cAHkiVzArbUd3Ah/dUn984NeYYYgzExutleITo8IalVdJ2zVOmgP8ZMTWeSvOOY
+         gyKkypJEwnVPvbhVCOyLUgtAjRyRTDOiWO9Rq1xpg1uqWRovxfUs2EwDkw6UI+Ja4Tnq
+         1ZhGFpzZyxwUukR7BbP7UXLL7by21WSV5QLBhb5xu323q3GCpTTlQtkrjhQ/HfkYQxar
+         j2Gw==
+X-Gm-Message-State: AOAM5330mz+dblCDmUSTictRsXtW8TlZ2fzOF1LKi30+vHPNXWcNsMR1
+        4KO+MAvqm622FStnzFsYyG4=
+X-Google-Smtp-Source: ABdhPJwyxxyPeyzTzDbknC8LuuZIDpubLWJAJOncQpZ+ccwe7qvp01K7EbRKkr59WznDo/R+ekfEDg==
+X-Received: by 2002:a63:ad0f:: with SMTP id g15mr248776pgf.415.1623252989343;
+        Wed, 09 Jun 2021 08:36:29 -0700 (PDT)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id u12sm50028pfm.2.2021.06.09.08.36.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 08:35:36 -0700 (PDT)
-From:   trix@redhat.com
-To:     markpearson@lenovo.com, hdegoede@redhat.com, mgross@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] platform/x86: thinkpad-lmi: set fw_attr_class storage-class to static
-Date:   Wed,  9 Jun 2021 08:35:32 -0700
-Message-Id: <20210609153532.3090201-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        Wed, 09 Jun 2021 08:36:28 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 00:36:22 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     o.rempel@pengutronix.de
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, Jonathan Cameron <jic23@kernel.org>,
+        jarkko.nikula@linux.intel.com
+Subject: Re: [PATCH v11 14/33] counter: interrupt-cnt: Add const qualifier
+ for actions_list array
+Message-ID: <YMDf9tDbPg/PxVxh@shinobu>
+References: <cover.1623201081.git.vilhelm.gray@gmail.com>
+ <a3bdffbe7c38eb95ea692ed30aeb50dbb65c9e6f.1623201081.git.vilhelm.gray@gmail.com>
+ <20210609162942.6bdc6d63@jic23-huawei>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bM5rh64AbDYaJ0MC"
+Content-Disposition: inline
+In-Reply-To: <20210609162942.6bdc6d63@jic23-huawei>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
 
-An allyesconfig has this linking error
-drivers/platform/x86/think-lmi.o:
-  multiple definition of `fw_attr_class'
-drivers/platform/x86/dell/dell-wmi-sysman/sysman.o:
-  first defined here
+--bM5rh64AbDYaJ0MC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-fw_attr_class is only used locally, so change to static
+On Wed, Jun 09, 2021 at 04:29:42PM +0100, Jonathan Cameron wrote:
+> On Wed,  9 Jun 2021 10:31:17 +0900
+> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+>=20
+> > The struct counter_synapse actions_list member expects a const enum
+> > counter_synapse_action array. This patch adds the const qualifier to the
+> > interrupt_cnt_synapse_actionss to match actions_list.
+> >=20
+> > Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> Naming looks unusual...
+>=20
+> > ---
+> >  drivers/counter/interrupt-cnt.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/counter/interrupt-cnt.c b/drivers/counter/interrup=
+t-cnt.c
+> > index 827d785e19b4..0e07607f2cd3 100644
+> > --- a/drivers/counter/interrupt-cnt.c
+> > +++ b/drivers/counter/interrupt-cnt.c
+> > @@ -77,7 +77,7 @@ static const struct counter_count_ext interrupt_cnt_e=
+xt[] =3D {
+> >  	},
+> >  };
+> > =20
+> > -static enum counter_synapse_action interrupt_cnt_synapse_actionss[] =
+=3D {
+> > +static const enum counter_synapse_action interrupt_cnt_synapse_actions=
+s[] =3D {
+>=20
+> actions?
+>=20
+> Perhaps good to fix that whilst we are here.
+>=20
+> >  	COUNTER_SYNAPSE_ACTION_RISING_EDGE,
+> >  };
+> > =20
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/platform/x86/think-lmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Oleksij,
 
-diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
-index 782d8e3fe7a1e..c6413b906e4a3 100644
---- a/drivers/platform/x86/think-lmi.c
-+++ b/drivers/platform/x86/think-lmi.c
-@@ -134,7 +134,7 @@ static const char * const encoding_options[] = {
- 	[TLMI_ENCODING_SCANCODE] = "scancode",
- };
- static struct think_lmi tlmi_priv;
--struct class *fw_attr_class;
-+static struct class *fw_attr_class;
- 
- /* ------ Utility functions ------------*/
- /* Convert BIOS WMI error string to suitable error code */
--- 
-2.26.3
+Would you take a look at this driver and let us know whether the two 's'
+at the end of this symbol is intentional?
 
+Thanks,
+
+William Breathitt Gray
+
+--bM5rh64AbDYaJ0MC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmDA3+UACgkQhvpINdm7
+VJJDog/7BWfRthJW0ybnlLsxDyqpvnBx92k2hiBaXR2DX8siYjVeWomh7OpLXzwf
+C84Ze4rdn8H6/Dpc3wA8vDiUUHX9VwIcACOpOh2KJ2IoF5AdrOzLjS9b+a+ZFusC
+mpbvfXz6/VxKgqjQY8JY+dgTFiROGNnJrllDaCV1sNPRPa/WwmGVSgh8b/+UMeBd
+e3QOQ5JG77FfWwzV0jjSw9Tq1e7fr+qbtg0v0Nvz74AGePCEsetIxQyA13HWyaEP
+qlMDIi0yrsbveBx+uUyhJ64hulLu9xRLuGFdtvdICP+b8WohDzykuVTPqHk4z9Ki
+hNTDtA7qZIZTDlBMVlC3XNGiEfd/B5CIktmatlQVmDmpOF/FaJmF/UyUFXJxG+IE
+ZH7AuxS8lNtxetA/AAM8ED82WJZ2BWLPW6OZc1HUt41r2eJNsqeCA/fCzrvdEeHg
+FcSnqxuAwWI9TZ4w1jiaiVTV6N4Z4aNsH9uoX4MSHp/y0obm1hQh2tBZc55DG1Nn
+0skswdQVV8k5mjJO4fTMZF8H9N+026UpRZ8bnoO7XkeIs39sPSSmVJo6r3ZDoxiL
+Rlsd3zp2ByCk5+DfeZLaBCpNWwwndrx2SSq/EN9pKDq3OnkwXs37T8Arql2zfP31
+xaeIQUCVKnZE3q7xJV+4EL38BTDw1n8QzrLylft6fViv6xNVAR8=
+=0g9k
+-----END PGP SIGNATURE-----
+
+--bM5rh64AbDYaJ0MC--
