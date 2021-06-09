@@ -2,306 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E29B3A1ECF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EC63A1EDB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhFIVTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:19:43 -0400
-Received: from mail-pg1-f177.google.com ([209.85.215.177]:35640 "EHLO
-        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhFIVTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:19:42 -0400
-Received: by mail-pg1-f177.google.com with SMTP id o9so17950391pgd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 14:17:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=yinLkjWxVR7ILDdKmp8rXWMJ/sTbnFi2wEZ8oqiGNWM=;
-        b=dndW2+WY+4MLNQEOe4kF1r40Wcz1LXgA15d2ybHNMnvT+Rv5gbmy2vEy+C4TLUCkFb
-         wkeq1ow/u8N7kj1SV81HVQvZt59EcY0GH44pL/EUEDH3jF/iMXP4TPmBURC1rJPhGfc8
-         l6qGpCyl2h5jp1KlDXpGcRaLrV/8F6LQBIbWJhxySOiyZ45UEJsrSJTYKV3lLaQp8qQK
-         Ucrdp4t8kIKG9s6XzXBAkfx+37a7NrVK2U90gbIOlx+vQnVai0TH3s4Vt7tiBMmZpdl6
-         74NCojtxTvJdtAMvZ3N3qvbcyamaC23CKtG2UF8oGlepZuqJ5If2ot+H370f92HifS7a
-         lqiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=yinLkjWxVR7ILDdKmp8rXWMJ/sTbnFi2wEZ8oqiGNWM=;
-        b=DvQsGc7l/C5UUU4+lD0Leo1F6LNsmoP8nxSW+ekwPnsNhSi3Zlz7YcwmRB/8kN43E3
-         GjbJTl8rBxs+H05EFX5juhcZ8Eql6MIHQ5300bswEj4lo3BBMb40FTJcwHi2KJphVj83
-         Pi08tv5Dti8g45csIbXJ4WdxnT5F9uOjLUTPYClt7vh5eLxNQg+cGTlRQs/7nGtgAnQh
-         lH4iiakzAGVvKuUZtRO5Ug5uQooMvmvt1niZdKdPJGPmYxRqPXCMGN/Hx8Gdz8UmeLFU
-         k8wKvFGjyKAHQDvcg25cPJ9QYIY2Ji8aNifTTrkWGEN6iiltO5KZUafyNQ98hrSktXhd
-         EQlg==
-X-Gm-Message-State: AOAM530kUOv+oBIhMiMaotWBLmMlJiq4xmtxKiXcWIg2K3krndwEwgRw
-        VLkuEnXsjSIQZsLhd0FTCO6MoQ==
-X-Google-Smtp-Source: ABdhPJzax9rABmjNo7ZAZOX9zRApHTRxDwOL8P6VHhDN26wCfttDdyStu8oPYCF/MrLslrOi8B584Q==
-X-Received: by 2002:a05:6a00:80a:b029:2f0:94d6:78c9 with SMTP id m10-20020a056a00080ab02902f094d678c9mr1665286pfk.25.1623273407281;
-        Wed, 09 Jun 2021 14:16:47 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id f12sm392983pfn.161.2021.06.09.14.16.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 14:16:46 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 14:16:45 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>, Yang Shi <shy828301@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 06/10] mm/thp: unmap_mapping_page() to fix THP
- truncate_cleanup_page()
-In-Reply-To: <50eb41a-e6f8-e566-20ef-22fb63b0a529@google.com>
-Message-ID: <a2a4a148-cdd8-942c-4ef8-51b77f643dbe@google.com>
-References: <af88612-1473-2eaa-903-8d1a448b26@google.com> <f1f68716-5a53-20ff-7ac0-d82fc3978d4e@google.com> <CAHbLzkqCJx11qCz0rNNz89C9O+Po8UoS5v_H_Qg3M8Q1eUp5pw@mail.gmail.com> <50eb41a-e6f8-e566-20ef-22fb63b0a529@google.com>
+        id S230058AbhFIVWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:22:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229689AbhFIVWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:22:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 68CC1613F9;
+        Wed,  9 Jun 2021 21:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623273605;
+        bh=UcYrvICvDlac5FlUB606gCPD6/q7sEx0CvVxyl8+p2M=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=PxO561wGZn/SruPj/8LV20hfrGw4JQEQTtBKSk0qzO5xmnzLgqTRCI7C7hLI0lYG6
+         7neJ6OTdXzhF2lI9e7q3Yu3UoaT9w55Nk59zgDZBIez7ON4whVCt06+SEAl1wnZ0yL
+         xdl0uCmJatAhGav8nJMjNtOnS90LpzPz9dPlvi8U60LdPeKHJJA890ZbiWi/EW8Xho
+         +93dEA5ef0VVLkcvpV3t1ulzFKjXdfEABxAD5zjsLKmM+hEmCA36pFO6dQp3QM/j/m
+         TvAwnORsbzSYqSVC4Xd+qk+DKuJryejuWR40GaonPshgvFKmRpQIiWvqgJgvg38bH1
+         5ffolbbrbEpsw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5BEC960A4D;
+        Wed,  9 Jun 2021 21:20:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] netdevsim: delete unnecessary debugfs checking
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162327360537.22106.14280192879737938519.git-patchwork-notify@kernel.org>
+Date:   Wed, 09 Jun 2021 21:20:05 +0000
+References: <YMCQXQx4kHdk7Whx@mwanda>
+In-Reply-To: <YMCQXQx4kHdk7Whx@mwanda>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kuba@kernel.org, vladbu@nvidia.com, dlinkin@nvidia.com,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        jiri@nvidia.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a race between THP unmapping and truncation, when truncate sees
-pmd_none() and skips the entry, after munmap's zap_huge_pmd() cleared it,
-but before its page_remove_rmap() gets to decrement compound_mapcount:
-generating false "BUG: Bad page cache" reports that the page is still
-mapped when deleted.  This commit fixes that, but not in the way I hoped.
+Hello:
 
-The first attempt used try_to_unmap(page, TTU_SYNC|TTU_IGNORE_MLOCK)
-instead of unmap_mapping_range() in truncate_cleanup_page(): it has often
-been an annoyance that we usually call unmap_mapping_range() with no pages
-locked, but there apply it to a single locked page.  try_to_unmap() looks
-more suitable for a single locked page.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-However, try_to_unmap_one() contains a VM_BUG_ON_PAGE(!pvmw.pte,page):
-it is used to insert THP migration entries, but not used to unmap THPs.
-Copy zap_huge_pmd() and add THP handling now?  Perhaps, but their TLB
-needs are different, I'm too ignorant of the DAX cases, and couldn't
-decide how far to go for anon+swap.  Set that aside.
+On Wed, 9 Jun 2021 12:56:45 +0300 you wrote:
+> In normal situations where the driver doesn't dereference
+> "nsim_node->ddir" or "nsim_node->rate_parent" itself then we are not
+> supposed to check the return from debugfs functions.  In the case of
+> debugfs_create_dir() the check was wrong as well because it doesn't
+> return NULL, it returns error pointers.
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> [...]
 
-The second attempt took a different tack: make no change in truncate.c,
-but modify zap_huge_pmd() to insert an invalidated huge pmd instead of
-clearing it initially, then pmd_clear() between page_remove_rmap() and
-unlocking at the end.  Nice.  But powerpc blows that approach out of the
-water, with its serialize_against_pte_lookup(), and interesting pgtable
-usage.  It would need serious help to get working on powerpc (with a
-minor optimization issue on s390 too).  Set that aside.
+Here is the summary with links:
+  - [net-next] netdevsim: delete unnecessary debugfs checking
+    https://git.kernel.org/netdev/net-next/c/4e744cb8126d
 
-Just add an "if (page_mapped(page)) synchronize_rcu();" or other such
-delay, after unmapping in truncate_cleanup_page()?  Perhaps, but though
-that's likely to reduce or eliminate the number of incidents, it would
-give less assurance of whether we had identified the problem correctly.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-This successful iteration introduces "unmap_mapping_page(page)" instead
-of try_to_unmap(), and goes the usual unmap_mapping_range_tree() route,
-with an addition to details.  Then zap_pmd_range() watches for this case,
-and does spin_unlock(pmd_lock) if so - just like page_vma_mapped_walk()
-now does in the PVMW_SYNC case.  Not pretty, but safe.
-
-Note that unmap_mapping_page() is doing a VM_BUG_ON(!PageLocked) to
-assert its interface; but currently that's only used to make sure that
-page->mapping is stable, and zap_pmd_range() doesn't care if the page is
-locked or not.  Along these lines, in invalidate_inode_pages2_range()
-move the initial unmap_mapping_range() out from under page lock, before
-then calling unmap_mapping_page() under page lock if still mapped.
-
-Fixes: fc127da085c2 ("truncate: handle file thp")
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: <stable@vger.kernel.org>
----
-v3: expanded spin_unlock(pmd_lock()) like in 03/10, per Yang Shi
-
- include/linux/mm.h |  3 +++
- mm/memory.c        | 41 +++++++++++++++++++++++++++++++++++++++++
- mm/truncate.c      | 43 +++++++++++++++++++------------------------
- 3 files changed, 63 insertions(+), 24 deletions(-)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index c274f75efcf9..8ae31622deef 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1719,6 +1719,7 @@ struct zap_details {
- 	struct address_space *check_mapping;	/* Check page->mapping if set */
- 	pgoff_t	first_index;			/* Lowest page->index to unmap */
- 	pgoff_t last_index;			/* Highest page->index to unmap */
-+	struct page *single_page;		/* Locked page to be unmapped */
- };
- 
- struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
-@@ -1766,6 +1767,7 @@ extern vm_fault_t handle_mm_fault(struct vm_area_struct *vma,
- extern int fixup_user_fault(struct mm_struct *mm,
- 			    unsigned long address, unsigned int fault_flags,
- 			    bool *unlocked);
-+void unmap_mapping_page(struct page *page);
- void unmap_mapping_pages(struct address_space *mapping,
- 		pgoff_t start, pgoff_t nr, bool even_cows);
- void unmap_mapping_range(struct address_space *mapping,
-@@ -1786,6 +1788,7 @@ static inline int fixup_user_fault(struct mm_struct *mm, unsigned long address,
- 	BUG();
- 	return -EFAULT;
- }
-+static inline void unmap_mapping_page(struct page *page) { }
- static inline void unmap_mapping_pages(struct address_space *mapping,
- 		pgoff_t start, pgoff_t nr, bool even_cows) { }
- static inline void unmap_mapping_range(struct address_space *mapping,
-diff --git a/mm/memory.c b/mm/memory.c
-index f3ffab9b9e39..486f4a2874e7 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1361,7 +1361,18 @@ static inline unsigned long zap_pmd_range(struct mmu_gather *tlb,
- 			else if (zap_huge_pmd(tlb, vma, pmd, addr))
- 				goto next;
- 			/* fall through */
-+		} else if (details && details->single_page &&
-+			   PageTransCompound(details->single_page) &&
-+			   next - addr == HPAGE_PMD_SIZE && pmd_none(*pmd)) {
-+			spinlock_t *ptl = pmd_lock(tlb->mm, pmd);
-+			/*
-+			 * Take and drop THP pmd lock so that we cannot return
-+			 * prematurely, while zap_huge_pmd() has cleared *pmd,
-+			 * but not yet decremented compound_mapcount().
-+			 */
-+			spin_unlock(ptl);
- 		}
-+
- 		/*
- 		 * Here there can be other concurrent MADV_DONTNEED or
- 		 * trans huge page faults running, and if the pmd is
-@@ -3236,6 +3247,36 @@ static inline void unmap_mapping_range_tree(struct rb_root_cached *root,
- 	}
- }
- 
-+/**
-+ * unmap_mapping_page() - Unmap single page from processes.
-+ * @page: The locked page to be unmapped.
-+ *
-+ * Unmap this page from any userspace process which still has it mmaped.
-+ * Typically, for efficiency, the range of nearby pages has already been
-+ * unmapped by unmap_mapping_pages() or unmap_mapping_range().  But once
-+ * truncation or invalidation holds the lock on a page, it may find that
-+ * the page has been remapped again: and then uses unmap_mapping_page()
-+ * to unmap it finally.
-+ */
-+void unmap_mapping_page(struct page *page)
-+{
-+	struct address_space *mapping = page->mapping;
-+	struct zap_details details = { };
-+
-+	VM_BUG_ON(!PageLocked(page));
-+	VM_BUG_ON(PageTail(page));
-+
-+	details.check_mapping = mapping;
-+	details.first_index = page->index;
-+	details.last_index = page->index + thp_nr_pages(page) - 1;
-+	details.single_page = page;
-+
-+	i_mmap_lock_write(mapping);
-+	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
-+		unmap_mapping_range_tree(&mapping->i_mmap, &details);
-+	i_mmap_unlock_write(mapping);
-+}
-+
- /**
-  * unmap_mapping_pages() - Unmap pages from processes.
-  * @mapping: The address space containing pages to be unmapped.
-diff --git a/mm/truncate.c b/mm/truncate.c
-index 95af244b112a..234ddd879caa 100644
---- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -167,13 +167,10 @@ void do_invalidatepage(struct page *page, unsigned int offset,
-  * its lock, b) when a concurrent invalidate_mapping_pages got there first and
-  * c) when tmpfs swizzles a page between a tmpfs inode and swapper_space.
-  */
--static void
--truncate_cleanup_page(struct address_space *mapping, struct page *page)
-+static void truncate_cleanup_page(struct page *page)
- {
--	if (page_mapped(page)) {
--		unsigned int nr = thp_nr_pages(page);
--		unmap_mapping_pages(mapping, page->index, nr, false);
--	}
-+	if (page_mapped(page))
-+		unmap_mapping_page(page);
- 
- 	if (page_has_private(page))
- 		do_invalidatepage(page, 0, thp_size(page));
-@@ -218,7 +215,7 @@ int truncate_inode_page(struct address_space *mapping, struct page *page)
- 	if (page->mapping != mapping)
- 		return -EIO;
- 
--	truncate_cleanup_page(mapping, page);
-+	truncate_cleanup_page(page);
- 	delete_from_page_cache(page);
- 	return 0;
- }
-@@ -325,7 +322,7 @@ void truncate_inode_pages_range(struct address_space *mapping,
- 		index = indices[pagevec_count(&pvec) - 1] + 1;
- 		truncate_exceptional_pvec_entries(mapping, &pvec, indices);
- 		for (i = 0; i < pagevec_count(&pvec); i++)
--			truncate_cleanup_page(mapping, pvec.pages[i]);
-+			truncate_cleanup_page(pvec.pages[i]);
- 		delete_from_page_cache_batch(mapping, &pvec);
- 		for (i = 0; i < pagevec_count(&pvec); i++)
- 			unlock_page(pvec.pages[i]);
-@@ -639,6 +636,16 @@ int invalidate_inode_pages2_range(struct address_space *mapping,
- 				continue;
- 			}
- 
-+			if (!did_range_unmap && page_mapped(page)) {
-+				/*
-+				 * If page is mapped, before taking its lock,
-+				 * zap the rest of the file in one hit.
-+				 */
-+				unmap_mapping_pages(mapping, index,
-+						(1 + end - index), false);
-+				did_range_unmap = 1;
-+			}
-+
- 			lock_page(page);
- 			WARN_ON(page_to_index(page) != index);
- 			if (page->mapping != mapping) {
-@@ -646,23 +653,11 @@ int invalidate_inode_pages2_range(struct address_space *mapping,
- 				continue;
- 			}
- 			wait_on_page_writeback(page);
--			if (page_mapped(page)) {
--				if (!did_range_unmap) {
--					/*
--					 * Zap the rest of the file in one hit.
--					 */
--					unmap_mapping_pages(mapping, index,
--						(1 + end - index), false);
--					did_range_unmap = 1;
--				} else {
--					/*
--					 * Just zap this page
--					 */
--					unmap_mapping_pages(mapping, index,
--								1, false);
--				}
--			}
-+
-+			if (page_mapped(page))
-+				unmap_mapping_page(page);
- 			BUG_ON(page_mapped(page));
-+
- 			ret2 = do_launder_page(mapping, page);
- 			if (ret2 == 0) {
- 				if (!invalidate_complete_page2(mapping, page))
--- 
-2.26.2
 
