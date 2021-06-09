@@ -2,134 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843E13A1B93
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2A93A1BA0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhFIRPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:15:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53780 "EHLO mail.kernel.org"
+        id S231454AbhFIRVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:21:43 -0400
+Received: from gate.crashing.org ([63.228.1.57]:44663 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230152AbhFIRPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:15:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE50F613C8;
-        Wed,  9 Jun 2021 17:13:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623258829;
-        bh=mrltbATYx5NNXTNMp4PuZw7n1trAAIuzp8ITORE+/CY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cY7eMAwWJm/208m+Lz3ay4y3HYlxptutAfcsiHAlOpVTmwL4NIMV10xDYf2RMHSJ3
-         wQER/46JyYW3jc49MNldlS3coNujZCqLLlKFGhJvuPA3awOG2lV0QKuUj9L9fhJ1HI
-         8lhffABS9K/XCj+KNSI35PsWgGiYxJq7FMcgIQ70=
-Date:   Wed, 9 Jun 2021 19:13:47 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com,
-        nava.manne@xilinx.com, dinguyen@kernel.org,
-        krzysztof.kozlowski@canonical.com, yilun.xu@intel.com,
-        arnd@arndb.de, fpacheco@redhat.com, richard.gong@intel.com,
-        luca@lucaceresoli.net, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/4] fpga: reorganize to subdirs
-Message-ID: <YMD2yxtsQN16MoPA@kroah.com>
-References: <20210609142208.3085451-1-trix@redhat.com>
- <YMDV7R52QUTFhpHH@kroah.com>
- <2738ee7a-448f-c327-c430-13fb44da45ec@redhat.com>
- <YMDueTEHGWuAcknP@kroah.com>
- <a35f5fda-a202-dc66-4445-b3ce333a55e6@redhat.com>
-MIME-Version: 1.0
+        id S231290AbhFIRVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 13:21:41 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 159HELK2003025;
+        Wed, 9 Jun 2021 12:14:21 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 159HEJl9003023;
+        Wed, 9 Jun 2021 12:14:19 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 9 Jun 2021 12:14:19 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210609171419.GI18427@gate.crashing.org>
+References: <alpine.LNX.2.20.13.2106070956310.7184@monopod.intra.ispras.ru> <CANpmjNMwq6ENUtBunP-rw9ZSrJvZnQw18rQ47U3JuqPEQZsaXA@mail.gmail.com> <20210607152806.GS4397@paulmck-ThinkPad-P17-Gen-1> <YL5Risa6sFgnvvnG@elver.google.com> <CANpmjNNtDX+eBEpuP9-NgT6RAwHK5OgbQHT9b+8LZQJtwWpvPg@mail.gmail.com> <YL9TEqealhxBBhoS@hirez.programming.kicks-ass.net> <20210608152851.GX18427@gate.crashing.org> <CANpmjNPJaDT4vBqkTw8XaRfKgDuwh71qmrvNfq-vx-Zyp4ugNg@mail.gmail.com> <20210609153133.GF18427@gate.crashing.org> <CANpmjNPq3NBhi_pFpNd6TwXOVjw0LE2NuQ63dWZrYSfEet3ChQ@mail.gmail.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a35f5fda-a202-dc66-4445-b3ce333a55e6@redhat.com>
+In-Reply-To: <CANpmjNPq3NBhi_pFpNd6TwXOVjw0LE2NuQ63dWZrYSfEet3ChQ@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 09:50:39AM -0700, Tom Rix wrote:
+On Wed, Jun 09, 2021 at 06:13:00PM +0200, Marco Elver wrote:
+> On Wed, 9 Jun 2021 at 17:33, Segher Boessenkool
+> <segher@kernel.crashing.org> wrote:
+> [...]
+> > > An alternative design would be to use a statement attribute to only
+> > > enforce (C) ("__attribute__((mustcontrol))" ?).
+> >
+> > Statement attributes only exist for empty statements.  It is unclear how
+> > (and if!) we could support it for general statements.
 > 
-> On 6/9/21 9:38 AM, Greg KH wrote:
-> > On Wed, Jun 09, 2021 at 08:08:06AM -0700, Tom Rix wrote:
-> > > On 6/9/21 7:53 AM, Greg KH wrote:
-> > > > On Wed, Jun 09, 2021 at 07:22:03AM -0700, trix@redhat.com wrote:
-> > > > > From: Tom Rix <trix@redhat.com>
-> > > > > 
-> > > > > The incoming xrt patchset has a toplevel subdir xrt/
-> > > > > The current fpga/ uses a single dir with filename prefixes to subdivide owners
-> > > > > For consistency, there should be only one way to organize the fpga/ dir.
-> > > > > Because the subdir model scales better, refactor to use it.
-> > > > > The discussion wrt xrt is here:
-> > > > > https://lore.kernel.org/linux-fpga/68e85a4f-4a10-1ff9-0443-aa565878c855@redhat.com/
-> > > > > 
-> > > > > Follow drivers/net/ethernet/ which has control configs
-> > > > > NET_VENDOR_BLA that map to drivers/net/ethernet/bla
-> > > > > Since fpgas do not have many vendors, drop the 'VENDOR' and use
-> > > > > FPGA_BLA.
-> > > > > 
-> > > > > There are several new subdirs
-> > > > > altera/
-> > > > > dfl/
-> > > > > lattice/
-> > > > > xilinx/
-> > > > > 
-> > > > > Each subdir has a Kconfig that has a new/reused
-> > > > > 
-> > > > > if FPGA_BLA
-> > > > >     ... existing configs ...
-> > > > > endif FPGA_BLA
-> > > > > 
-> > > > > Which is sourced into the main fpga/Kconfig
-> > > > > 
-> > > > > Each subdir has a Makefile whose transversal is controlled in the
-> > > > > fpga/Makefile by
-> > > > > 
-> > > > > obj-$(CONFIG_FPGA_BLA) += bla/
-> > > > > 
-> > > > > Some cleanup to arrange thing alphabetically and make fpga/Makefile's
-> > > > > whitespace look more like net/'s
-> > > > > 
-> > > > > Changes from
-> > > > > v1
-> > > > >     Drop renaming files
-> > > > >     Cleanup makefiles
-> > > > You can rename the files, you just can not rename the .ko objects
-> > > > without everyone knowing what you are doing and you trying to bury it in
-> > > > the middle of a differently described patch.
-> > > > 
-> > > > If you want to do that, do you?  I don't really understand why you want
-> > > > to move things around right now other than "we have 40 files in one
-> > > > directory, ick!".
-> > > I am trying to resolve the layout inconsistency between what we have and
-> > > what the xrt patchset does.
-> > Why does it matter?  New stuff can be added to a new dir, why worry
-> > about old stuff?  What does it hurt?
-> > 
-> > > The big issue is the files vs dirs.
-> > > 
-> > > Over specified filenames is secondary, so I dropped them.
-> > > 
-> > > 40 files in one dir is itself not a problem.
-> > > 
-> > > having 40 files and an xrt/ is.
-> > Why is that a "problem"?
-> > 
-> > > fpga/ layout should be consistent so the Makefile and Kconfig are easier to
-> > > maintain.
-> > Is it somehow hard to maintain today?  Seems pretty trivial to me...
+> Statement attributes can apply to anything -- Clang has had them apply
+> to non-empty statements for a while.
+
+First off, it is not GCC's problem if LLVM decides to use a GCC
+extension in some non-compatible way.
+
+It might be possible to extend statement attributes to arbitrary
+statement expressions, or some subset of statement expressions, but that
+then has to be written down as well; it isn't obvious at all what this
+woould do.
+
+> In fact, since C++20 [3], GCC will have to support statement
+> attributes on non-empty statements, so presumably the parsing logic
+> should already be there.
+> [3] https://en.cppreference.com/w/cpp/language/attributes/likely
+
+C++ attributes have different syntax *and semantics*.  With GCC
+attributes it isn't clear what statement something belongs to (a
+statement can contain a statement after all).
+
+C++ requires all unknown attributes to be ignored without error, so can
+this be useful at all here?
+
+> > Some new builtin seems to fit the requirements better?  I haven't looked
+> > too closely though.
 > 
-> This change was to help move xrt along.
-> 
-> If you are fine with xrt/, I will drop this patchset.
+> I had a longer discussion with someone offline about it, and the
+> problem with a builtin is similar to the "memory_order_consume
+> implementation problem" -- you might have an expression that uses the
+> builtin in some function without any control, and merely returns the
+> result of the expression as a result. If that function is in another
+> compilation unit, it then becomes difficult to propagate this
+> information without somehow making it part of the type system.
+> Therefore, by using a statement attribute on conditional control
+> statements, we do not even have this problem. It seems cleaner
+> syntactically than having a __builtin_() that is either approximate,
+> or gives an error if used in the wrong context.
 
-Who has objected to xrt/ being the only new subdirectory?
+You would use the builtin to mark exactly where you are making the
+control dependency.
 
-My main complaints here are:
-	- these patches were not tested
-	- you renamed kernel modules "accidentally"
-	- you forgot SPDX lines
-	- lack of description of why these files being moved was
-	  necessary in the changelog where you moved the files
+(And what is a "conditional control statement"?  Yes of course I can
+imagine things, but that is not good enough at all).
 
-Remember, patch 0/X never shows up in changelogs...
+> Hence the suggestion for a very simple attribute, which also
+> side-steps this problem.
 
-You can do better :)
+And introduces many more problems :-(
 
-greg k-h
+
+Segher
