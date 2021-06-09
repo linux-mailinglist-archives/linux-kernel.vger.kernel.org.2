@@ -2,115 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4797A3A0D80
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53E43A0DB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237146AbhFIHSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:18:37 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3916 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbhFIHSf (ORCPT
+        id S236853AbhFIH15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:27:57 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:12371 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234029AbhFIH1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:18:35 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0JHN0mXlz6tqB;
-        Wed,  9 Jun 2021 15:13:36 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 15:16:39 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 15:16:39 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, <linux-scsi@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next v2] scsi: bfa: Use list_move_tail instead of list_del/list_add_tail in bfa_svc.c
-Date:   Wed, 9 Jun 2021 15:25:48 +0800
-Message-ID: <20210609072548.1357835-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 9 Jun 2021 03:27:55 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Ak4Cj560mSeVZ5jLgBDZTrwqjBKckLtp133Aq?=
+ =?us-ascii?q?2lEZdPUzSKClfqGV88jzuiWVtN98YgBFpTniAse9qA3nhP1ICOAqVN/INmTbUQ?=
+ =?us-ascii?q?2TXeZfBODZsljd8kPFh4xgPN9bEpRDNA=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.83,260,1616454000"; 
+   d="scan'208";a="512502862"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 09:26:00 +0200
+Date:   Wed, 9 Jun 2021 09:26:00 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: find_new_ilb
+In-Reply-To: <YMBpxBR3EMyAUa3j@hirez.programming.kicks-ass.net>
+Message-ID: <alpine.DEB.2.22.394.2106090921200.5695@hadrien>
+References: <alpine.DEB.2.22.394.2106082138350.16734@hadrien> <YMBpxBR3EMyAUa3j@hirez.programming.kicks-ass.net>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_move_tail() instead of list_del() + list_add_tail() in bfa_svc.c.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	CC mailist
 
- drivers/scsi/bfa/bfa_svc.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+On Wed, 9 Jun 2021, Peter Zijlstra wrote:
 
-diff --git a/drivers/scsi/bfa/bfa_svc.c b/drivers/scsi/bfa/bfa_svc.c
-index 4e3cef02f10f..ae31a0605efe 100644
---- a/drivers/scsi/bfa/bfa_svc.c
-+++ b/drivers/scsi/bfa/bfa_svc.c
-@@ -1572,8 +1572,7 @@ bfa_lps_login_rsp(struct bfa_s *bfa, struct bfi_lps_login_rsp_s *rsp)
- 		break;
- 	}
- 
--	list_del(&lps->qe);
--	list_add_tail(&lps->qe, &mod->lps_active_q);
-+	list_move_tail(&lps->qe, &mod->lps_active_q);
- 	bfa_sm_send_event(lps, BFA_LPS_SM_FWRSP);
- }
- 
-@@ -1594,8 +1593,7 @@ bfa_lps_no_res(struct bfa_lps_s *first_lps, u8 count)
- 		lps = (struct bfa_lps_s *)qe;
- 		bfa_trc(bfa, lps->bfa_tag);
- 		lps->status = first_lps->status;
--		list_del(&lps->qe);
--		list_add_tail(&lps->qe, &mod->lps_active_q);
-+		list_move_tail(&lps->qe, &mod->lps_active_q);
- 		bfa_sm_send_event(lps, BFA_LPS_SM_FWRSP);
- 		qe = qe_next;
- 		count--;
-@@ -1651,8 +1649,7 @@ bfa_lps_free(struct bfa_lps_s *lps)
- 	struct bfa_lps_mod_s	*mod = BFA_LPS_MOD(lps->bfa);
- 
- 	lps->lp_pid = 0;
--	list_del(&lps->qe);
--	list_add_tail(&lps->qe, &mod->lps_free_q);
-+	list_move_tail(&lps->qe, &mod->lps_free_q);
- }
- 
- /*
-@@ -1679,8 +1676,7 @@ bfa_lps_send_login(struct bfa_lps_s *lps)
- 	m->auth_en	= lps->auth_en;
- 
- 	bfa_reqq_produce(lps->bfa, lps->reqq, m->mh);
--	list_del(&lps->qe);
--	list_add_tail(&lps->qe, &mod->lps_login_q);
-+	list_move_tail(&lps->qe, &mod->lps_login_q);
- }
- 
- /*
-@@ -4877,8 +4873,7 @@ bfa_rport_free(struct bfa_rport_s *rport)
- 	struct bfa_rport_mod_s *mod = BFA_RPORT_MOD(rport->bfa);
- 
- 	WARN_ON(!bfa_q_is_on_q(&mod->rp_active_q, rport));
--	list_del(&rport->qe);
--	list_add_tail(&rport->qe, &mod->rp_free_q);
-+	list_move_tail(&rport->qe, &mod->rp_free_q);
- }
- 
- static bfa_boolean_t
+> On Tue, Jun 08, 2021 at 09:51:30PM +0200, Julia Lawall wrote:
+> > Starting from the following commit:
+> >
+> > commit 45da7a2b0af8fa29dff2e6ba8926322068350fce
+> > Author: Peter Zijlstra <peterz@infradead.org>
+> > Date:   Tue Aug 18 10:48:17 2020 +0200
+> >
+> >     sched/fair: Exclude the current CPU from find_new_ilb()
+> >
+> > up through Linux 5.12, I observed that often when most of the machine was
+> > idle, there could be many (thousands) of sched_wake_idle_without_ipi
+> > events, typically between cores 0 and 1.  I don't see this any more in
+> > Linux v5.13-rc1.  I looked through the patches to fair.c and core.c
+> > subsequent to v5.12, and I didn't see anything that explicitly addresses
+> > this issue.  Before I plunge into another set of rounds of bisecting, I
+> > wonder if anyone knows whether and how this problem was resolved?
+>
+> Hurmph.. that patch was preparation for a later change that never seems
+> to have happened. If it is causing trouble for you, I think you can
+> savely revert it.
+>
+> At the time I thought it was very strange that new_idle would select
+> itself as idle-balancer, doubly so, because the only way to get there
+> would be with NEED_RESCHED already set, so the IPI wouldn't in fact do
+> anything.
+>
+> Looking again, the difference is ofcourse that previously we'd select
+> self and NO-OP, but now we'll potentially select another CPU and
+> actually do something.
+>
+> This is arguably an improvement, because we did want to do something.
+>
+>  I can't quite remember what would've change here since, Vincent, can
+>  you remember?
+>
+> Anyway, is this actually causing you trouble, or are you just going on
+> the increased number of events?
 
+Thanks for the feedback.  The scenarios I saw wouldn't have caused trouble
+for anyone, because the machine was highly idle (maybe a couple of cores
+in use).  And the problem seems to be gone as well in v5.13.
+
+julia
