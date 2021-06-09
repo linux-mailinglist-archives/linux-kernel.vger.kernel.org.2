@@ -2,157 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED393A0F35
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 396843A0F39
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233853AbhFIJDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:03:03 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:11292 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231919AbhFIJC7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:02:59 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1598tngo021330;
-        Wed, 9 Jun 2021 08:59:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=yxZ33z/ij2fUQhSTHogXfHEeZX6RxjggVDZ8OIpu7LI=;
- b=ZWVYoKxI73lvE2I6snU7+AToxrGwT/OKuq7+RNkbXJ0bzKokdLsW/mdbgGbOHsKmpeF8
- 6hUa0q08UdMDYm9zI3K24Cs3M9Ra/HzZofgzlxS1Gc9kvWaNF4E/6sJXKj/rPDl0wh9x
- 8islMhjpdhTDbqztkUsn70N8Rj1ZZ0T/0eAF4P8CfmJXAoj7Vwp2i/KW/2N9fxn8wsoX
- jnLUgzWwUkWBgB8zdiCEpo3FfFE/OqAwdv95ribMFa9iBWSwf12LnrdRoLYW7Lpmhzhj
- hbfhl1fY5eqByeg/jrtHVv6mQK8BIxMnp13lvGhBYJiRRhAxBn/51+hWoinj9aKDCKAk sw== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 391g4g8w2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 08:59:55 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 1598v8fs066583;
-        Wed, 9 Jun 2021 08:59:54 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 390k1rrkg4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 08:59:54 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1598xreW077970;
-        Wed, 9 Jun 2021 08:59:53 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 390k1rrkfu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 08:59:53 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1598xmAk001991;
-        Wed, 9 Jun 2021 08:59:48 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Jun 2021 08:59:47 +0000
-Date:   Wed, 9 Jun 2021 11:59:38 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     jic23@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        kernel@pengutronix.de, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, david@lechnology.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de, jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v11 26/33] counter: Add character device interface
-Message-ID: <20210609085938.GM10983@kadam>
-References: <cover.1623201081.git.vilhelm.gray@gmail.com>
- <2b9526ab7f2de91bb867cbd3b12552c77c00b655.1623201082.git.vilhelm.gray@gmail.com>
- <20210609080708.GL10983@kadam>
- <YMB7mq0LHqmyAAzb@shinobu>
+        id S237773AbhFIJDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:03:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231919AbhFIJDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:03:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26F6B6023B;
+        Wed,  9 Jun 2021 09:01:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623229313;
+        bh=Z+zI0RDuvSuYN6v7HJscpw3B4/5MAYapaANvzw9NBwc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WmiR2RPPVpg5P331nrK6XjeWdv7pCU0af80mG7uj4/EG2o1tb9LLtohiNLtk8mpOb
+         tkFIKDCEKcOcSiIcbIMGVJ/fN1JUvOts/U/6Yw1l97gZt0kPZUy4edDI5lNpXcnIHC
+         W5BeTbAVwtq/9WO1fN6mDJoad1oG+A8DlCM4IJCZshJ82bV4+vGfwQkfXHIYfjD0jV
+         bEtrvNChyxo6+7hO+YhBAUjFIuWHPM3pjUlKGjLtPl/N1r55hfu6xP0Jm22i9rYpGC
+         TnY9mjqjTBAMX7vHcjrSXqStZ8qiBPVsWNoI4f98t6nYhC5euToDZuG5VDhnF8mgAN
+         QyqLZFfoTPMdQ==
+Date:   Wed, 9 Jun 2021 12:01:49 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: Plan for /dev/ioasid RFC v2
+Message-ID: <YMCDfWLw6r80Wdu3@unreal>
+References: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMB7mq0LHqmyAAzb@shinobu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: 4I8RCZTTf-Fxzs_HCqW4XL5igtPktEGw
-X-Proofpoint-ORIG-GUID: 4I8RCZTTf-Fxzs_HCqW4XL5igtPktEGw
+In-Reply-To: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 05:28:10PM +0900, William Breathitt Gray wrote:
-> On Wed, Jun 09, 2021 at 11:07:08AM +0300, Dan Carpenter wrote:
-> > On Wed, Jun 09, 2021 at 10:31:29AM +0900, William Breathitt Gray wrote:
-> > > +static int counter_set_event_node(struct counter_device *const counter,
-> > > +				  struct counter_watch *const watch,
-> > > +				  const struct counter_comp_node *const cfg)
-> > > +{
-> > > +	struct counter_event_node *event_node;
-> > > +	struct counter_comp_node *comp_node;
-> > > +
-> > 
-> > The caller should be holding the counter->events_list_lock lock but it's
-> > not.
-> 
-> Hi Dan,
-> 
-> The counter_set_event_node() function doesn't access or modify
-> counter->events_list (it works on counter->next_events_list) so holding
-> the counter->events_list_lock here isn't necessary.
-> 
+On Mon, Jun 07, 2021 at 02:58:18AM +0000, Tian, Kevin wrote:
+> Hi, all,
 
-There needs to be some sort of locking or this function can race with
-itself.  (Two threads add the same event at exactly the same time).  It
-looks like it can also race with counter_disable_events() leading to a
-use after free.
+<...>
 
-> > > +	/* Search for event in the list */
-> > > +	list_for_each_entry(event_node, &counter->next_events_list, l)
-> > > +		if (event_node->event == watch->event &&
-> > > +		    event_node->channel == watch->channel)
-> > > +			break;
-> > > +
-> > > +	/* If event is not already in the list */
-> > > +	if (&event_node->l == &counter->next_events_list) {
-> > > +		/* Allocate new event node */
-> > > +		event_node = kmalloc(sizeof(*event_node), GFP_ATOMIC);
+> (Remaining opens in v1)
 
-Btw, say we decided that we can add/remove events locklessly, then these
-GFP_ATOMICs can be changed to GFP_KERNEL.
+<...>
 
-> > > +		if (!event_node)
-> > > +			return -ENOMEM;
-> > > +
-> > > +		/* Configure event node and add to the list */
-> > > +		event_node->event = watch->event;
-> > > +		event_node->channel = watch->channel;
-> > > +		INIT_LIST_HEAD(&event_node->comp_list);
-> > > +		list_add(&event_node->l, &counter->next_events_list);
-> > > +	}
-> > > +
-> > > +	/* Check if component watch has already been set before */
-> > > +	list_for_each_entry(comp_node, &event_node->comp_list, l)
-> > > +		if (comp_node->parent == cfg->parent &&
-> > > +		    comp_node->comp.count_u8_read == cfg->comp.count_u8_read)
-> > > +			return -EINVAL;
-> > > +
-> > > +	/* Allocate component node */
-> > > +	comp_node = kmalloc(sizeof(*comp_node), GFP_ATOMIC);
-                                                ^^^^^^^^^^
+> -   Device-centric (Jason) vs. group-centric (David) uAPI. David is not fully
+>     convinced yet. Based on discussion v2 will continue to have ioasid uAPI
+>     being device-centric (but it's fine for vfio to be group-centric). A new
+>     section will be added to elaborate this part;
 
-> > > +	if (!comp_node) {
-> > > +		/* Free event node if no one else is watching */
-> > > +		if (list_empty(&event_node->comp_list)) {
-> > > +			list_del(&event_node->l);
-> > > +			kfree(event_node);
-> > > +		}
-> > > +		return -ENOMEM;
-> > > +	}
-> > > +	*comp_node = *cfg;
-> > > +
-> > > +	/* Add component node to event node */
-> > > +	list_add_tail(&comp_node->l, &event_node->comp_list);
-> > > +
-> > > +	return 0;
-> > > +}
+<...>
 
-regards,
-dan carpenter
+> (Adopted suggestions)
 
+<...>
+
+> -   (Jason) Addition of device label allows per-device capability/format 
+>     check before IOASIDs are created. This leads to another major uAPI 
+>     change in v2 - specify format info when creating an IOASID (mapping 
+>     protocol, nesting, coherent, etc.). User is expected to check per-device 
+>     format and then set proper format for IOASID upon to-be-attached 
+>     device;
+
+Sorry for my naive question, I still didn't read all v1 thread and maybe
+the answer is already written, but will ask anyway.
+
+Doesn't this adopted suggestion to allow device-specific configuration
+actually means that uAPI should be device-centric?
+
+User already needs to be aware of device, configure it explicitly, maybe
+gracefully clean it later, it looks like not so much left to be group-centric.
+
+Thanks
