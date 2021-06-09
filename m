@@ -2,122 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC2F3A1EB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E863A1EB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhFIVRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:17:33 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:40653 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhFIVRd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:17:33 -0400
-Received: by mail-ot1-f41.google.com with SMTP id l15-20020a05683016cfb02903fca0eacd15so1478467otr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 14:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ufi2FMAuPcpe+FPh/mofpHrmjo2M1TXQM9bY6dxEWt0=;
-        b=kxU84jqqRnfGbMPVambFLhN+Wu6tjIjs7VxY9gOo+ZYD77GblJypR21ipnLcWaV5jn
-         hQisiL8uu5yGlo6wlvOy0q1ygVEshCpUx710mZsulABXsidQzxP4W2h5yvvxulZKPoAW
-         8XXW9j2z3wt3A0S2Z5AB+Gn6tHC9Q/e9qsp7y/zfYwj69dZx/wf2ZsDwpVFUd1uc5kkQ
-         qJW8d1fJjr46gDAYAqIjeNK+Y5aXYpthffUJ3Vjoe5wf8jQJXlkElJh8Wlfol6bh4TmZ
-         NMwyx+HP/UH+Kc1JETq/f09an6gA9USNzujPs5vQFi9XLQSjbwTeJ0vxQRvRVb4UFmeh
-         kgDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ufi2FMAuPcpe+FPh/mofpHrmjo2M1TXQM9bY6dxEWt0=;
-        b=f0ofW6j/JHsP7bIV4I8tqgl3sOQ9+6aotqE6xNMSu9A4z9F8VJiSZ47WEw/1G4ucz5
-         jz1Z2pm1s3RewpSJrn+HVVUsTGEMslwk1fdJtEISay5V+At+DwKyLbViVZ0LM1Tcu7mD
-         DgK4SMu8Ypb+5G1i6TtII7QMhlKFkVD8agvUTAJTxvgJj/wjhptq3AY6/I1sbxn+iHcP
-         gW7XliZJ4hi3I3JmL+BICSMDURzhqgo0fwUDEAkVBH2kbDBt/gKJ8ObLmhzJZDgedwFL
-         LjYhM//zbAVAPlY3jNuX+YLuB/vI++SQMpsGGb/EYy6xKvjwM6R5eNpoRqmFu3JygfzZ
-         cZvw==
-X-Gm-Message-State: AOAM530gD/YN4w+EzV9INIhWfyxO1NfMiRefpSmjlW8PU3svT7fvpJ5I
-        qtL/njCJlLsScIwGXlk3z5ccy3vkzaLyHA5ZjYM=
-X-Google-Smtp-Source: ABdhPJyJHvOi2PyHn0NN80TysiKqaKIq2lyM4e6v/SOEeznvp5dZTp1sgTC5Lb96c1uf5k4v9trihlsAS9LMSW5+lds=
-X-Received: by 2002:a9d:6548:: with SMTP id q8mr1155557otl.311.1623273261909;
- Wed, 09 Jun 2021 14:14:21 -0700 (PDT)
+        id S229797AbhFIVQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:16:41 -0400
+Received: from mga18.intel.com ([134.134.136.126]:18164 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229557AbhFIVQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:16:39 -0400
+IronPort-SDR: KNTH3tA3sG1BRZK4qTCz6AENS9qBl4DFppFyPfTVujIDb1qkt2nCsROKA3NoUOM5y915a4a0/m
+ TOmCkGtdpa1Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="192486163"
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="192486163"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:14:32 -0700
+IronPort-SDR: gmFssmlB2tZNL9dXdqT7llGbuE6WngKEc1A3weq4eg6wzWnWvfiFluDnNIn61swDt4V7g6dTFn
+ xRWhh2datkZg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="552808082"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Jun 2021 14:14:30 -0700
+Date:   Wed, 9 Jun 2021 14:14:39 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH 4/4] x86/tsx: Add cmdline tsx=fake to not clear CPUID bits
+ RTM and HLE
+Message-ID: <de6b97a567e273adff1f5268998692bad548aa10.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
 MIME-Version: 1.0
-References: <20210608030126.23206-1-wanjiabing@vivo.com> <20210609184326.wuyxpphkx3cor2je@outlook.office365.com>
-In-Reply-To: <20210609184326.wuyxpphkx3cor2je@outlook.office365.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 9 Jun 2021 17:14:10 -0400
-Message-ID: <CADnq5_Mri2JVWNKgKrk+M7n7+WctiE_e4UWOjkgDZLtpC+1LuQ@mail.gmail.com>
-Subject: Re: [PATCH] drm: display: Remove duplicate include in dce110
-To:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc:     Wan Jiabing <wanjiabing@vivo.com>,
-        Ashley Thomas <Ashley.Thomas2@amd.com>,
-        Jake Wang <haonan.wang2@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, Jun Lei <jun.lei@amd.com>,
-        Lee Jones <lee.jones@linaro.org>, Hugo Hu <hugo.hu@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Yao Wang1 <Yao.Wang1@amd.com>,
-        Michael Strauss <michael.strauss@amd.com>,
-        Alvin Lee <alvin.lee2@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>, Tony Cheng <Tony.Cheng@amd.com>,
-        Chris Park <Chris.Park@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On CPUs that deprecated TSX, clearing the enumeration bits CPUID.RTM and
+CPUID.HLE may not be desirable in some corner cases. Like a saved guest
+would refuse to resume if it was saved before the microcode update
+that deprecated TSX.
 
-On Wed, Jun 9, 2021 at 2:43 PM Rodrigo Siqueira
-<Rodrigo.Siqueira@amd.com> wrote:
->
-> On 06/08, Wan Jiabing wrote:
-> > Fix the following checkincludes.pl warning:
-> > ./drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
-> > 35      #include "dce110_hw_sequencer.h"
-> >     69  #include "dce110_hw_sequencer.h"
-> >
-> >
-> > Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> > ---
-> >  drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
-> > index a08cd52f6ba8..e20d4def3eb9 100644
-> > --- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
-> > +++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
-> > @@ -66,7 +66,6 @@
-> >
-> >  #include "atomfirmware.h"
-> >
-> > -#include "dce110_hw_sequencer.h"
-> >  #include "dcn10/dcn10_hw_sequencer.h"
-> >
-> >  #define GAMMA_HW_POINTS_NUM 256
-> > --
-> > 2.20.1
-> >
->
-> lgtm,
->
-> Thanks
->
-> Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
->
-> --
-> Rodrigo Siqueira
-> https://siqueira.tech
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+Add a cmdline option "tsx=fake" to not clear CPUID bits even when the
+hardware always aborts TSX transactions.
+
+Suggested-by: Tony Luck <tony.luck@intel.com>
+Suggested-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Tested-by: Neelima Krishnan <neelima.krishnan@intel.com>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 3 +++
+ arch/x86/kernel/cpu/bugs.c                      | 5 +++--
+ arch/x86/kernel/cpu/cpu.h                       | 1 +
+ arch/x86/kernel/cpu/tsx.c                       | 7 +++++--
+ 4 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index cb89dbdedc46..ced9e5596163 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5693,6 +5693,9 @@
+ 			auto	- Disable TSX if X86_BUG_TAA is present,
+ 				  otherwise enable TSX on the system.
+ 
++			fake	- Do not clear the CPUID bits RTM and HLE even
++				  when hardware always aborts TSX transactions.
++
+ 			Not specifying this option is equivalent to tsx=off.
+ 
+ 			See Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index d41b70fe4918..46fcc392a339 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -316,8 +316,9 @@ static void __init taa_select_mitigation(void)
+ 		return;
+ 	}
+ 
+-	/* TSX previously disabled by tsx=off */
+-	if (!boot_cpu_has(X86_FEATURE_RTM)) {
++	/* TSX previously disabled by tsx=off or by microcode */
++	if (!boot_cpu_has(X86_FEATURE_RTM) ||
++	     boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT)) {
+ 		taa_mitigation = TAA_MITIGATION_TSX_DISABLED;
+ 		goto out;
+ 	}
+diff --git a/arch/x86/kernel/cpu/cpu.h b/arch/x86/kernel/cpu/cpu.h
+index 95521302630d..84a479866c4b 100644
+--- a/arch/x86/kernel/cpu/cpu.h
++++ b/arch/x86/kernel/cpu/cpu.h
+@@ -49,6 +49,7 @@ enum tsx_ctrl_states {
+ 	TSX_CTRL_ENABLE,
+ 	TSX_CTRL_DISABLE,
+ 	TSX_CTRL_RTM_ALWAYS_ABORT,
++	TSX_CTRL_FAKE,
+ 	TSX_CTRL_NOT_SUPPORTED,
+ };
+ 
+diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
+index 5ed99811504c..2f8e50584297 100644
+--- a/arch/x86/kernel/cpu/tsx.c
++++ b/arch/x86/kernel/cpu/tsx.c
+@@ -113,6 +113,8 @@ void __init tsx_init(void)
+ 			tsx_ctrl_state = TSX_CTRL_DISABLE;
+ 		} else if (!strcmp(arg, "auto")) {
+ 			tsx_ctrl_state = x86_get_tsx_auto_mode();
++		} else if (!strcmp(arg, "fake")) {
++			tsx_ctrl_state = TSX_CTRL_FAKE;
+ 		} else {
+ 			tsx_ctrl_state = TSX_CTRL_DISABLE;
+ 			pr_err("invalid option, defaulting to off\n");
+@@ -131,9 +133,10 @@ void __init tsx_init(void)
+ 	 * Hardware will always abort a TSX transaction if both CPUID bits
+ 	 * RTM_ALWAYS_ABORT and TSX_FORCE_ABORT are enumerated.  In this case it
+ 	 * is better not to enumerate CPUID.RTM and CPUID.HLE bits. Clear them
+-	 * here.
++	 * here, except when user requested not to clear via cmdline tsx=fake.
+ 	 */
+-	if (boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT) &&
++	if (tsx_ctrl_state != TSX_CTRL_FAKE &&
++	    boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT) &&
+ 	    boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
+ 		tsx_ctrl_state = TSX_CTRL_RTM_ALWAYS_ABORT;
+ 		tsx_clear_cpuid();
+-- 
+git-series 0.9.1
+
