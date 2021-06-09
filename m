@@ -2,111 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDE13A0E09
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9983A0E0E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236418AbhFIHtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:49:49 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39436 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234871AbhFIHto (ORCPT
+        id S237231AbhFIHvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:51:15 -0400
+Received: from mail-ej1-f41.google.com ([209.85.218.41]:42498 "EHLO
+        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236073AbhFIHvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:49:44 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BC73B1FD3C;
-        Wed,  9 Jun 2021 07:47:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623224868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c9hsyRBYM4/TU8eycn2t9pZlFG6OjaXYgibXO5zHeBQ=;
-        b=F4+Wu/rbeO9YKSnnNNtwwgKeb6uMe9SIHmNgpej4HiGcEemmzXiN6sIPtGZw6p0CHkir+E
-        Nk6KcjKeK/vG+taq+dFmMqxvbfllb27PIQOforoQQrpimpW3uMB09IEs3hIoHgQOYEdnsm
-        pmHQymUUuOsgn+YYKFGwtam715Lgnd0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623224868;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c9hsyRBYM4/TU8eycn2t9pZlFG6OjaXYgibXO5zHeBQ=;
-        b=wzrpszX+oDLbcQHfh7oNANQFh9q3CRxoZz2OZ5xeFt0xvlQxFb6l4tVab31TUDCEpyCKdP
-        e1N3G2os2AkcYlCQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 43643118DD;
-        Wed,  9 Jun 2021 07:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623224868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c9hsyRBYM4/TU8eycn2t9pZlFG6OjaXYgibXO5zHeBQ=;
-        b=F4+Wu/rbeO9YKSnnNNtwwgKeb6uMe9SIHmNgpej4HiGcEemmzXiN6sIPtGZw6p0CHkir+E
-        Nk6KcjKeK/vG+taq+dFmMqxvbfllb27PIQOforoQQrpimpW3uMB09IEs3hIoHgQOYEdnsm
-        pmHQymUUuOsgn+YYKFGwtam715Lgnd0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623224868;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c9hsyRBYM4/TU8eycn2t9pZlFG6OjaXYgibXO5zHeBQ=;
-        b=wzrpszX+oDLbcQHfh7oNANQFh9q3CRxoZz2OZ5xeFt0xvlQxFb6l4tVab31TUDCEpyCKdP
-        e1N3G2os2AkcYlCQ==
-Received: from director1.suse.de ([192.168.254.71])
-        by imap3-int with ESMTPSA
-        id N+SADCNywGACQQAALh3uQQ
-        (envelope-from <osalvador@suse.de>); Wed, 09 Jun 2021 07:47:47 +0000
-Date:   Wed, 9 Jun 2021 09:47:45 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] memory-hotplug.rst: remove locking details from
- admin-guide
-Message-ID: <YMByIWZ9CleWrVbw@localhost.localdomain>
-References: <20210608133855.20397-1-david@redhat.com>
- <20210608133855.20397-2-david@redhat.com>
+        Wed, 9 Jun 2021 03:51:14 -0400
+Received: by mail-ej1-f41.google.com with SMTP id k25so31453367eja.9
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 00:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZaUhYQdmHuTDdFcVZfmGKuIBgkyJArjyQg7xZ0rZjR0=;
+        b=fB9ycC44mqSk3FiHu2I06fiq6qXf6SVQaSqz7QfhrYPqxhOaRROYWpEeXp0XU69Eqn
+         T+1qgJCxQ9Ro2XnKqQaLrv2dCydFNhJ23BfTNWyW/A/bVOQX0v9fjN/HxF2gwBSJ1A8r
+         O8426UMzUxm6OSrz9bKS5xsId+nNxdaLUi+FezDZAOelOaH089mJWNjwzt+VQmtj3FU1
+         FNDemF1YjP0ywuUjDeutHK6XlUsYNrH/YfOL4S8WbBld7Mm+aax3kgjgBPFJJBlmtbQy
+         BbujKR4bQcJ3wUnm1sgkE7bAKqiQpyPtbVDZsWRSXGktQ3lsWVrkKrJRd69SMDOyPRPb
+         VTRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZaUhYQdmHuTDdFcVZfmGKuIBgkyJArjyQg7xZ0rZjR0=;
+        b=Q5UsLBFnDG9HCOAaIgt7ZDxkI1RKzCKAd3X++qRhP/++Cm8kVisLUsk37LBy1sikWp
+         uhUn/59jsF2gykxu9V62Xg6BEfq79+uYT/VJms/C3YCyD9EBDTghaMMm66ySmMPdP6qs
+         dy3vX5b1i8Z3RgUEUsrjB2hwbdtgD+DOw0ZnbnCSyr+URBqwwQMzCZgyCEMRwOszd73g
+         xYaEsXO678L0DlOdXvFSrz8lKRBo0BTD2W68QUZSDaILaFBEeXjobBWkAZix5MFMuuCr
+         Usa1XwGRvKfR6e4zucZPLKY++99MKVmKKGxzqN9FvDdnOmUf0AGgzSeIwMgzF6kUX4Xm
+         rspQ==
+X-Gm-Message-State: AOAM532nIjHAquzZgKDEAkfkwsMMn+sdg7FaQrDfFPKceE8UBdBAcWIt
+        kiBvZ9avPTlpB0ztzBP43IHQU8nxWoYduRs1LWswMA==
+X-Google-Smtp-Source: ABdhPJwMCugsafbTBevGFnpMAd8HDSzVGWNXSsbMCG4QgbU73182JWiqTEbmJFg4Kycl2OorHwxLmx9Akb6/tN24cdA=
+X-Received: by 2002:a17:906:9d05:: with SMTP id fn5mr27082879ejc.133.1623224899013;
+ Wed, 09 Jun 2021 00:48:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608133855.20397-2-david@redhat.com>
+References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 9 Jun 2021 13:18:07 +0530
+Message-ID: <CA+G9fYtNRXXw1KrF2ByqPi5VoVqt_oZgd=tbm=xsgDV1BndwDw@mail.gmail.com>
+Subject: Re: [PATCH 5.12 000/161] 5.12.10-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 03:38:54PM +0200, David Hildenbrand wrote:
-> We have the same content at Documentation/core-api/memory-hotplug.rst
-> and it doesn't fit into the admin-guide. The documentation was
-> accidentially duplicated when merging.
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Muchun Song <songmuchun@bytedance.com>
-> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: linux-doc@vger.kernel.org
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+On Wed, 9 Jun 2021 at 00:15, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.12.10 release.
+> There are 161 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.12.10-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.12.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
--- 
-Oscar Salvador
-SUSE L3
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.12.10-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.12.y
+* git commit: 5a0a66f4d8172bcb8ac3bf155bc524dc467c0071
+* git describe: v5.12.9-162-g5a0a66f4d817
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
+.9-162-g5a0a66f4d817
+
+## No regressions (compared to v5.12.9)
+
+
+## No fixes (compared to v5.12.9)
+
+
+## Test result summary
+ total: 76414, pass: 64280, fail: 496, skip: 10934, xfail: 704,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* i386: 25 total, 25 passed, 0 failed
+* mips: 42 total, 42 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 18 total, 18 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* ks[
+* kselftest-android
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
