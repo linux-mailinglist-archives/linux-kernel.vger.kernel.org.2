@@ -2,179 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03813A1D71
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 21:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2DA3A1D73
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 21:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhFITGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 15:06:41 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:36605 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhFITGj (ORCPT
+        id S229925AbhFITHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 15:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229504AbhFITHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 15:06:39 -0400
-Received: by mail-ot1-f51.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so25008964otl.3;
-        Wed, 09 Jun 2021 12:04:44 -0700 (PDT)
+        Wed, 9 Jun 2021 15:07:31 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001DFC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 12:05:20 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id v11so4649326ply.6
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 12:05:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FXSEcfB5SUcNxZP0MOeA1wAez5HsP1pj0Jjf8UKVWHY=;
-        b=JCCgWqfs7qQn8jEgQYxvwda8trtx38SU/Nv9e8oZGbjF9CshLJNWWkX7e8jhtUWVsx
-         wlyWuQc3itRTi7ajWwNcPQ3ec0qjecp/m0gkM/TkdE7ATKrWAWy4tuajkqy7c0n9rpey
-         3e/en1fC9fzje22PazEAwM4H7jj1fJBf1ApgeFOKrAvJ/Kbg40snxE4DgnHoVy3vUF86
-         79EGtKL/yQvazbfknmt3VAMq1W/PyG10TU+tS7s3UPHjJn+YWpm5KmppWnl5xSD1JWrY
-         XU2ZJhrFL+20UgU6vy5S0aESQIQb+tVC9Xy03AdagZ8HKP42tYTuknEJwYSium9lU1Ce
-         8NLw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WyVHMM5ILT7w3D2NVrQcsqMfiyYFUWtDHAg3cnHrRv8=;
+        b=rMnvmR5VWnCtbpC9u52+Ur80I2YOxuFcfixZUzAGaKYRbsdkfYfHyL8pWnaOye0GhA
+         Dud79bLmF/kWXbh+J0g4j8gZt+Vxq6Bs8LEHbqkcQwx1M5xjBVSDkoUYbRg/dvyVGeY4
+         z9dNAI1834E/+93t9vt6qMSLqiMel26dZ1G7OXqJeXarIz1sou3RI/X1JVVbReGuZEMi
+         vgaONUwoEZyuAltoUOjdmkky2ZdLQGjPi4ocTiNftU57c2lInK2C/++R1WMzrWZjovQD
+         sYhZojl1F2R/PLQ6J0jAoSi8bxJCBiE5/kZXa5NVSlyQ93LwGybKjBT1Vl4hEZc83bSI
+         uPhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=FXSEcfB5SUcNxZP0MOeA1wAez5HsP1pj0Jjf8UKVWHY=;
-        b=b3yfViebt2dUYgmiVYWaUj28gsRwcatWm55ViFO4e+QvdqDIg/JunFg5I6L6sEcGGJ
-         Nkb3Fn8qLGMRZffkRm3UqbkgNf5Pniky6n33j5/LFvTTUEvExRUDVheIxWZYWv/mK/K9
-         tX+WI/YJOBQ9Z2lVEgJam8ZdmX/jS/PYB6oQlfFFsPlsheWY/m/rzmEkgHpOIAuVUynd
-         sYIAN06Zp4e6Wn3gyJtk+U2jN+Tpo511hL3U0uyJH+YARGdEt4sDn4FzlGSQco+PTgSs
-         30QJb2DSTv++2XsBviHbeOhd9vUJaJVvgX499cQbGwNjLDQRyVZ29G2Y0a7cptTYcuAg
-         m+zw==
-X-Gm-Message-State: AOAM532nIdX+mYquR9kyApcrdR7Y0lB+C5uS2a3xsykKdWP1/J6QQl+Y
-        YhfKs3vZs9/SG1vjg4+lod4=
-X-Google-Smtp-Source: ABdhPJxk/8Iv7ad/klVIULIgyrhCmOs1GL+ozOHGVP+tfW2KZ4GyqhuognVhqSkP1E7tO2JB894rZw==
-X-Received: by 2002:a9d:2f62:: with SMTP id h89mr712491otb.225.1623265423442;
-        Wed, 09 Jun 2021 12:03:43 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 3sm166016otu.52.2021.06.09.12.03.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 12:03:42 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 9 Jun 2021 12:03:41 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fu Wei <fu.wei@linaro.org>, linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: watchdog: Convert arm,sbsa-gwdt to DT schema
-Message-ID: <20210609190341.GB2534956@roeck-us.net>
-References: <20210607194022.3095736-1-robh@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WyVHMM5ILT7w3D2NVrQcsqMfiyYFUWtDHAg3cnHrRv8=;
+        b=DhJDO+3H66e2NyJIHJwaPjpiCcwmL05kePYS1GKR7aIc261SzAtUEJ3zGz3BDZ03Vj
+         RbKqOmEpqzc7IMsI/hdcVW6CGt/P7GjIcvwaYJxlG26P+alMBBSZ+7j/yVVAvUYbzOJy
+         FNqs4XZmAsCRIju5LpYCgKOMtrw/As05zNzCv+X8fsyKgao3FAjhCH1sRR/JNs5FhvSW
+         ex3pFLZwtGa+xREDPSP+g4KkKX7d3ws9L726zE9XzsgkNTu3elJFkVOezdRiWC1SiRfF
+         JtP9WD1lQz3iHnhphhB2/oL4yh9OXZ7VaoC2f2TZkqWIDJowhQJJHQRvgAtYYqsV1gqJ
+         doeQ==
+X-Gm-Message-State: AOAM5321j13/1o6IkxpmNEWeQ6ZLc6LaxDb1cn0JTj9nBe98bQSAMEe5
+        dlYdEKB3rDJUo1qLWyWGREc=
+X-Google-Smtp-Source: ABdhPJx3SWEvB+jTYKy/KnBFNg6qRQXQsvu8SdBm73QbDzBHBLLgISpmA9IAwYZcPJZ7JpSNFmNoDw==
+X-Received: by 2002:a17:90a:880c:: with SMTP id s12mr1083968pjn.66.1623265520433;
+        Wed, 09 Jun 2021 12:05:20 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id r9sm275169pfq.158.2021.06.09.12.05.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 12:05:19 -0700 (PDT)
+Subject: Re: [GIT PULL v2 1/1] bcm2835-dt-next-2021-06-08-v2
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210608211012.1386151-1-nsaenzju@redhat.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1d894fb1-16d2-b695-862f-3f30ab186f3a@gmail.com>
+Date:   Wed, 9 Jun 2021 12:05:12 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607194022.3095736-1-robh@kernel.org>
+In-Reply-To: <20210608211012.1386151-1-nsaenzju@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 02:40:22PM -0500, Rob Herring wrote:
-> Convert the arm,sbsa-gwdt binding to DT schema format.
-> 
-> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Fu Wei <fu.wei@linaro.org>
-> Cc: linux-watchdog@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-> ---
->  .../bindings/watchdog/arm,sbsa-gwdt.yaml      | 51 +++++++++++++++++++
->  .../bindings/watchdog/sbsa-gwdt.txt           | 31 -----------
->  2 files changed, 51 insertions(+), 31 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
->  delete mode 100644 Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt
+On 6/8/2021 2:10 PM, Nicolas Saenz Julienne wrote:
+> Hi Florian,
 > 
-> diff --git a/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml b/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
-> new file mode 100644
-> index 000000000000..6bfa46353c4e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/watchdog/arm,sbsa-gwdt.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SBSA (Server Base System Architecture) Generic Watchdog
-> +
-> +maintainers:
-> +  - Fu Wei <fu.wei@linaro.org>
-> +
-> +description: |
-> +  The SBSA Generic Watchdog Timer is used to force a reset of the system after
-> +  two stages of timeout have elapsed. A detailed definition of the watchdog
-> +  timer can be found in the ARM document: ARM-DEN-0029 - Server Base System
-> +  Architecture (SBSA)
-> +
-> +allOf:
-> +  - $ref: watchdog.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: arm,sbsa-gwdt
-> +
-> +  reg:
-> +    items:
-> +      - description: Watchdog control frame
-> +      - description: Refresh frame
-> +
-> +  interrupts:
-> +    description: The Watchdog Signal 0 (WS0) SPI (Shared Peripheral Interrupt)
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +
-> +    watchdog@2a440000 {
-> +        compatible = "arm,sbsa-gwdt";
-> +        reg = <0x2a440000 0x1000>,
-> +              <0x2a450000 0x1000>;
-> +        interrupts = <0 27 4>;
-> +        timeout-sec = <30>;
-> +    };
-> +...
-> diff --git a/Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt b/Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt
-> deleted file mode 100644
-> index 6f2d5f91964d..000000000000
-> --- a/Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt
-> +++ /dev/null
-> @@ -1,31 +0,0 @@
-> -* SBSA (Server Base System Architecture) Generic Watchdog
-> -
-> -The SBSA Generic Watchdog Timer is used to force a reset of the system
-> -after two stages of timeout have elapsed.  A detailed definition of the
-> -watchdog timer can be found in the ARM document: ARM-DEN-0029 - Server
-> -Base System Architecture (SBSA)
-> -
-> -Required properties:
-> -- compatible: Should at least contain "arm,sbsa-gwdt".
-> -
-> -- reg: Each entry specifies the base physical address of a register frame
-> -  and the length of that frame; currently, two frames must be defined,
-> -  in this order:
-> -  1: Watchdog control frame;
-> -  2: Refresh frame.
-> -
-> -- interrupts: Should contain the Watchdog Signal 0 (WS0) SPI (Shared
-> -  Peripheral Interrupt) number of SBSA Generic Watchdog.
-> -
-> -Optional properties
-> -- timeout-sec: Watchdog timeout values (in seconds).
-> -
-> -Example for FVP Foundation Model v8:
-> -
-> -watchdog@2a440000 {
-> -	compatible = "arm,sbsa-gwdt";
-> -	reg = <0x0 0x2a440000 0 0x1000>,
-> -	      <0x0 0x2a450000 0 0x1000>;
-> -	interrupts = <0 27 4>;
-> -	timeout-sec = <30>;
-> -};
-> -- 
-> 2.27.0
+> The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 > 
+>   Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git tags/bcm2835-dt-next-2021-06-08-v2
+> 
+> for you to fetch changes up to 21c6bf8304f0141af6460cfe404dbbdeb96bdd62:
+> 
+>   arm64: dts: broadcom: Add reference to RPi 400 (2021-06-08 23:06:34 +0200)
+> 
+> ----------------------------------------------------------------
+
+Merged into devicetree/next, thanks Nicolas!
+-- 
+Florian
