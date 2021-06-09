@@ -2,56 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCEE3A0C94
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5893A0C99
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236792AbhFIGlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:41:08 -0400
-Received: from smtprelay0019.hostedemail.com ([216.40.44.19]:40892 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230484AbhFIGlH (ORCPT
+        id S236834AbhFIGmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:42:38 -0400
+Received: from labrats.qualcomm.com ([199.106.110.90]:15277 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232644AbhFIGmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:41:07 -0400
-Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id E0DE7182CED28;
-        Wed,  9 Jun 2021 06:39:12 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 094A520D75C;
-        Wed,  9 Jun 2021 06:39:11 +0000 (UTC)
-Message-ID: <9ebb46d4cb9f66c2bb3e6d1987d8e79fa20323f9.camel@perches.com>
-Subject: Re: Re: [PATCH] drivers/media/usb/gspca: fix typo issues
-From:   Joe Perches <joe@perches.com>
-To:     herman yim <herman.yim88@gmail.com>,
-        "yanshuaijun@yulong.com" <yanshuaijun@yulong.com>
-Cc:     mchehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 08 Jun 2021 23:39:10 -0700
-In-Reply-To: <CAP6HEvL-wCAfBJLBoJ2gaUBN0G-CWFb95e2nd6nwPNdwF7VaJQ@mail.gmail.com>
-References: <20210609033245.3410-1-yanshuaijun@yulong.com>
-         <601ccbd8b792abd0177475dd09fdd2d6c6f4a6af.camel@perches.com>
-         <60c05921.1c69fb81.dbb59.4019SMTPIN_ADDED_BROKEN@mx.google.com>
-         <CAP6HEvL-wCAfBJLBoJ2gaUBN0G-CWFb95e2nd6nwPNdwF7VaJQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.60
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 094A520D75C
-X-Stat-Signature: 8s5kkpjp14sbpo9587ncxwj9wrczg6uo
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/lv6VH2VNvOHeZQWgaoCjS0n3Zjcgn6GU=
-X-HE-Tag: 1623220751-774289
+        Wed, 9 Jun 2021 02:42:37 -0400
+IronPort-SDR: xD2eZaohPZeG4KU0pQSvgHxwAEOLtyzjPOMOF3vdv/PoVtXqLgCs7AH8RukZUs42DQX72FXlMt
+ A7/nIBkIQvZa2Byr9zBggnawlJU1Pm587Vp3npX2+8wjuWIwXfdQGhXcZ6wqy9Cc+vrMT1xj24
+ Gm3MNqEJIiJzxc9c7rWFd46ATTM4xEg7fBEuR4x3LAxAn9fjAT/NLoTs4xEoB81WeRoCR8gsl5
+ tB0/xXzuRQ4cjk0xD2A5G4h/o77XsJkEJcZVoy0Mh0teg2p7euUFj83GxqOizdX0+p/YD58mXC
+ eV0=
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="29778252"
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by labrats.qualcomm.com with ESMTP; 08 Jun 2021 23:40:43 -0700
+X-QCInternal: smtphost
+Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
+  by ironmsg02-sd.qualcomm.com with ESMTP; 08 Jun 2021 23:40:42 -0700
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 687E321B1D; Tue,  8 Jun 2021 23:40:42 -0700 (PDT)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH v2 1/1] scsi: ufs: Fix a possible use before initialization case
+Date:   Tue,  8 Jun 2021 23:39:34 -0700
+Message-Id: <1623220779-22030-1-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-09 at 14:29 +0800, herman yim wrote:
-> hi Joe,
->  many flicker written into fliker in this file, relate to variable name and
-> function name.
->  change them together ? what is your suggestion ?
+In ufshcd_exec_dev_cmd(), if error happens before lrpb is initialized,
+then we should bail out instead of letting trace record the error.
 
-Leave it alone.  It's old and probably obsolete.
+Fixes: a45f937110fa6 ("scsi: ufs: Optimize host lock on transfer requests send/compl paths")
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+---
+Change since V1:
+- Use codeaurora mail in Signed-off-by tag.
 
+ drivers/scsi/ufs/ufshcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index fe1b5f4..0d54ab7 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -2972,7 +2972,7 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
+ 
+ 	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
+ 		err = -EBUSY;
+-		goto out;
++		goto out_put_tag;
+ 	}
+ 
+ 	init_completion(&wait);
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
