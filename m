@@ -2,105 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CC83A0D8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1193A0D45
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237160AbhFIHT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:19:59 -0400
-Received: from mail-vs1-f42.google.com ([209.85.217.42]:36737 "EHLO
-        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbhFIHT6 (ORCPT
+        id S237004AbhFIHLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:11:13 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:5303 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234009AbhFIHKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:19:58 -0400
-Received: by mail-vs1-f42.google.com with SMTP id z7so8511879vso.3;
-        Wed, 09 Jun 2021 00:18:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EfNbacrs3w2B5B/kFXC7saL7Nlfy6ekUiY3D2a1iDVc=;
-        b=iEhV9oJ9ChhNW4FJyQQsUDBFg+GewAJLIR1Q2fVLduE1kLqjTNOWHDSqKCG/dEnxZy
-         TLT8mBoJn3C+gZGAQvLjZfCIwyndl6NAUdB75H/ssw3NiqHx6b0inys6eSlTuY1lbXPN
-         mY0q4RbKuNnGc2HLzYeAUajfvwtIWKs/5oGVDAg2BVoxXlPvzSm0uArxTGbzV6FFSfBf
-         jAe/qOYzhjSw3cDiJB+YJCHYdjk00EyVa87+RqghJ3VoSMnNyDmnYO7GwAcPF48G2pwO
-         fCQkdUS0Tmko3WHFA3AznfVyvA5lVxdgRJFlZrLVAESWRXl+SGQHLYLko8u31tPX2xY5
-         4vOA==
-X-Gm-Message-State: AOAM533EhuURZdO9bzEMF2GvEXsKmFuSnMJK8giA4ghFu2r6kNhaZl42
-        t8imSipLVxUJKdhf8KI2L5jnYPwoBcEplXu8Pic=
-X-Google-Smtp-Source: ABdhPJwDkk1TPy2vkyw0dHczfWKzIKQ2BrAf1laTWS+DGt8CCNuVIm2hq/F2g+gkSQWG+3KsIbE+37DzXIjQXutlMu0=
-X-Received: by 2002:a05:6102:c4c:: with SMTP id y12mr3879717vss.18.1623223083719;
- Wed, 09 Jun 2021 00:18:03 -0700 (PDT)
+        Wed, 9 Jun 2021 03:10:50 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G0J4M2ccYz1BJhn;
+        Wed,  9 Jun 2021 15:04:03 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 15:08:55 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
+ 15:08:54 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>, <dri-devel@lists.freedesktop.org>,
+        <kernel-janitors@vger.kernel.org>, "Hulk Robot" <hulkci@huawei.com>
+Subject: [PATCH -next v2] drm/vmwgfx: Use list_move_tail instead of list_del/list_add_tail in vmwgfx_cmdbuf.c
+Date:   Wed, 9 Jun 2021 15:18:03 +0800
+Message-ID: <20210609071803.1347254-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210603221758.10305-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210603221758.10305-13-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210603221758.10305-13-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 9 Jun 2021 09:17:52 +0200
-Message-ID: <CAMuHMdXO1RyF9ZuXR2CGHqvPOh6jnf07_EEreTOmiwUzoEg5hQ@mail.gmail.com>
-Subject: Re: [PATCH v2 12/12] arm64: dts: renesas: Add initial device tree for
- RZ/G2L SMARC EVK
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+Using list_move_tail() instead of list_del() + list_add_tail() in vmwgfx_cmdbuf.c.
 
-On Fri, Jun 4, 2021 at 12:19 AM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add basic support for RZ/G2L SMARC EVK (based on R9A07G044L2):
-> - memory
-> - External input clock
-> - SCIF
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+V1->V2:
+	CC mailist
 
-Thanks for your patch!
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/renesas/r9a07g044l2-smarc.dts
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +/*
-> + * Device Tree Source for the RZ/G2L SMARC EVK board
-> + *
-> + * Copyright (C) 2021 Renesas Electronics Corp.
-> + */
-> +
-> +/dts-v1/;
-> +#include "r9a07g044.dtsi"
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c b/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
+index 6bb4961e64a5..58417d972b69 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
+@@ -358,8 +358,7 @@ static void vmw_cmdbuf_ctx_submit(struct vmw_cmdbuf_man *man,
+ 			break;
+ 		}
+ 
+-		list_del(&entry->list);
+-		list_add_tail(&entry->list, &ctx->hw_submitted);
++		list_move_tail(&entry->list, &ctx->hw_submitted);
+ 		ctx->num_hw_submitted++;
+ 	}
+ 
 
-So this should include r9a07g044l2.dtsi.
-
-The rest looks fine, so
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
