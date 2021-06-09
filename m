@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D48A3A0AB0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074AE3A0AB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232916AbhFIDhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 23:37:36 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:33898 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232787AbhFIDhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 23:37:35 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx70LnNsBgGIANAA--.15141S2;
-        Wed, 09 Jun 2021 11:35:04 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alex Deucher <alexander.deucher@amd.com>, christian.koenig@amd.com,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Jianmin Lv <lvjianmin@loongson.cn>
-Subject: [PATCH v2] drm/radeon: Call radeon_suspend_kms() in radeon_pci_shutdown() for Loongson64
-Date:   Wed,  9 Jun 2021 11:35:01 +0800
-Message-Id: <1623209701-18311-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx70LnNsBgGIANAA--.15141S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1fCFWrGF1DtrWUAFykGrg_yoW8Ar4rpr
-        srG39rKwn3KFWYka47JFW7Xry5A348Xay8ZrWUKw4DW398Jr93Arnaqry3JryvgryxtF12
-        vF1kGw1ruan7CFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r48
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU-miiUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S236467AbhFIDjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 23:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236449AbhFIDjG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 23:39:06 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D67C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 20:36:59 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id k15so17351778pfp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 20:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=oubMStFNGrtV4LE+3WOGbMFsCnKASljsoNpfRmbbGlw=;
+        b=I9gQ9HCmiAJcqC1oTV6XW+qgj+jecrM9jYzZbj0yvo2ONVzPHopjLXH02JeTChRr9+
+         QRQm/NaAfdEr42swK1wGhwrFiMnMLDIRlLp5vRe23stYEUf/USxsiF/GnkbjG2mg+3z2
+         aFtKXxR+nOzPD+K6YZe73dvECSex8wpSwf7Gt+/wqj13cQXdqff8Pay9+df3oYMlnI4x
+         Dhdsr6eazTZBMPk5wgYhWxw4OODLXnh4oZV3C+kc1CMCM4nztJOA0jq+hXpwhI8uRvc0
+         QUx+zRRIOnSi5UD6ys6HjCoVXy97tz/pt1RF+jIbY1VOLic51sqhUeK27WARM1PvYEv5
+         MHQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=oubMStFNGrtV4LE+3WOGbMFsCnKASljsoNpfRmbbGlw=;
+        b=BZlzs8l7uy1gzKbkjC/6Z75p9WYkASsCXLQDgPg1C9iHH6zgMcaJpduaoyHlZqtgqi
+         QrtAlXEwnMI9gLmILDt2YWtbAfkwiYQhO2Y9+LA7SPg+s6wuXzj7Ym6nkMEYbin0qtjp
+         xo43vpeHB5qtWuhd2w9JeSoyVwVzWesSM7XKKt5Etv2bDUz4LYyUr48V9xHfWFsQUTGO
+         oDNPcyeeGRk2CyAUevszlOpcZBEndgzWiY8nm2LUN2duYCivM5pxtV8ktHRMy3TxkA5F
+         gLldhrP1TLYZKW8JmU6NIXWaJpu5B0jXMxseIVh0EP2eaEdTFDTc9ew5E+CdYikrwBeU
+         7NWQ==
+X-Gm-Message-State: AOAM5319AFPEay6G+NZOgI5RRHITdqs5ykFvT1yFjgdAuY17GRoQFMtq
+        QV3Jo1e8bgCnmZq633i8Gobagw==
+X-Google-Smtp-Source: ABdhPJwR+7W6O5QClSyBgLz+We60zX4lg8j0nOjpURIHwLZDB0g3ckTMsGLQDoy7ABIUIsXTnp6uUg==
+X-Received: by 2002:a63:b043:: with SMTP id z3mr1636587pgo.89.1623209817652;
+        Tue, 08 Jun 2021 20:36:57 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.135])
+        by smtp.gmail.com with ESMTPSA id t24sm3473904pji.56.2021.06.08.20.36.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Jun 2021 20:36:56 -0700 (PDT)
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        jean-philippe <jean-philippe@linaro.org>,
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhangfei Gao <zhangfei.gao@linaro.org>
+Subject: [PATCH v4 0/3] PCI: Add a quirk to enable SVA for HiSilicon chip
+Date:   Wed,  9 Jun 2021 11:36:38 +0800
+Message-Id: <1623209801-1709-1-git-send-email-zhangfei.gao@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the Loongson64 platform used with Radeon GPU, shutdown or reboot failed
-when console=tty is in the boot cmdline.
+HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
+actually on the AMBA bus. These fake PCI devices have PASID capability
+though not supporting TLP.
 
-radeon_suspend_kms() puts the hw in the suspend state, especially set fb
-state as FBINFO_STATE_SUSPENDED:
+Add a quirk to set pasid_no_tlp and dma-can-stall for these devices.
 
-	if (fbcon) {
-		console_lock();
-		radeon_fbdev_set_suspend(rdev, 1);
-		console_unlock();
-	}
+Jean's dma-can-stall patchset has been accepted
+https://lore.kernel.org/linux-iommu/162314710744.3707892.6632600736379822229.b4-ty@kernel.org/
 
-Then avoid to do any more fb operations in the related functions:
+v4: 
+Applied to Linux 5.13-rc2, and build successfully with only these three patches.
 
-	if (p->state != FBINFO_STATE_RUNNING)
-		return;
+v3:
+https://lore.kernel.org/linux-pci/1615258837-12189-1-git-send-email-zhangfei.gao@linaro.org/
+Rebase to Linux 5.12-rc1
+Change commit msg adding:
+Property dma-can-stall depends on patchset
+https://lore.kernel.org/linux-iommu/20210302092644.2553014-1-jean-philippe@linaro.org/
 
-So call radeon_suspend_kms() in radeon_pci_shutdown() for Loongson64 to fix
-this issue, it looks like some kind of workaround like powerpc.
+By the way the patchset can directly applied on 5.12-rc1 and build successfully though
+without the dependent patchset.
 
-Co-developed-by: Jianmin Lv <lvjianmin@loongson.cn>
-Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- drivers/gpu/drm/radeon/radeon_drv.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+v2:
+Add a new pci_dev bit: pasid_no_tlp, suggested by Bjorn 
+"Apparently these devices have a PASID capability.  I think you should
+add a new pci_dev bit that is specific to this idea of "PASID works
+without TLP prefixes" and then change pci_enable_pasid() to look at
+that bit as well as eetlp_prefix_path."
+https://lore.kernel.org/linux-pci/20210112170230.GA1838341@bjorn-Precision-5520/
 
-diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
-index efeb115..daabbf5 100644
---- a/drivers/gpu/drm/radeon/radeon_drv.c
-+++ b/drivers/gpu/drm/radeon/radeon_drv.c
-@@ -386,13 +386,13 @@ radeon_pci_shutdown(struct pci_dev *pdev)
- 	if (radeon_device_is_virtual())
- 		radeon_pci_remove(pdev);
- 
--#ifdef CONFIG_PPC64
-+#if defined(CONFIG_PPC64) || defined(CONFIG_MACH_LOONGSON64)
- 	/*
- 	 * Some adapters need to be suspended before a
- 	 * shutdown occurs in order to prevent an error
--	 * during kexec.
--	 * Make this power specific becauase it breaks
--	 * some non-power boards.
-+	 * during kexec, shutdown or reboot.
-+	 * Make this power and Loongson specific becauase
-+	 * it breaks some other boards.
- 	 */
- 	radeon_suspend_kms(pci_get_drvdata(pdev), true, true, false);
- #endif
+Zhangfei Gao (3):
+  PCI: PASID can be enabled without TLP prefix
+  PCI: Add a quirk to set pasid_no_tlp for HiSilicon chips
+  PCI: Set dma-can-stall for HiSilicon chips
+
+ drivers/pci/ats.c    |  2 +-
+ drivers/pci/quirks.c | 27 +++++++++++++++++++++++++++
+ include/linux/pci.h  |  1 +
+ 3 files changed, 29 insertions(+), 1 deletion(-)
+
 -- 
-2.1.0
+2.7.4
 
