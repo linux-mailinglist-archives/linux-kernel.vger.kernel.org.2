@@ -2,189 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DD93A10D4
+	by mail.lfdr.de (Postfix) with ESMTP id 704F33A10D5
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238558AbhFIKHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:07:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25661 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235914AbhFIKHB (ORCPT
+        id S238566AbhFIKHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:07:43 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:4100 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235914AbhFIKHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:07:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623233106;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RHwERDV3Ik2w6kA7FU7L2RqGuM08Lzd2/FD6Wyr2HFk=;
-        b=JZURtaSroKXVbV9oEJA8odheSETiD/feGshvORh/TDtHTyw8jMe047+yeP7I6Yoph/WhUI
-        Oop9ox6VYzzKURis3iGLztgTSf19wraJErJeLqUUAe2qwKKEJ7O6LsLI5lpBvA4LUWx4ra
-        RTwpkcX0BR8AUm0a5CBuECDMG0WRNiQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-pBRbubnyPC-FcHbLHmcvDA-1; Wed, 09 Jun 2021 06:05:05 -0400
-X-MC-Unique: pBRbubnyPC-FcHbLHmcvDA-1
-Received: by mail-wr1-f72.google.com with SMTP id e11-20020a056000178bb0290119c11bd29eso5682138wrg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:05:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=RHwERDV3Ik2w6kA7FU7L2RqGuM08Lzd2/FD6Wyr2HFk=;
-        b=COze2/B080f40MNm5/NI4rVogcZuEpGOE4htjKqm9L4MMQ4o9KBz31oSYBSTeqlIsK
-         V90W1NkOPXkeBqmQs8ZAVyEVgUyjy/Q+ON7jS9A3zEgYAhrsLtSWETgnmHVDpFkfqKLy
-         zTm+gpR/cRMa8hY2UoVUlm787CNgByVCIWTj2s3NLVldIZnpCw/i7qLkbgeTjIZGijqw
-         +v5CVqpm6WC+GZ/6Y2y4JSQC1DRP6vHyRMcseeqSG2vxpiuIyH1/wxMAAh2TXYK9P47Q
-         DMfpaBqyyvICQzFoBaqiKw58ZZ9iHjt8bmDUkOdbZ4VRmkZ5MA57kAzETryDFXaB3scu
-         XDUA==
-X-Gm-Message-State: AOAM530CMB9rL9/66CGaAeOYJgzva89VOe56RApeJj/0bixiDIa6yCxF
-        L3r0PcFXMpy9i7TGdV2UJL4WgLZf6n76KLNdYlN3u86HMI0I8KmPPT2ReVjW031onLGRYOUVnkt
-        HlO03OlmAvySkXwZTEp1Iccvj
-X-Received: by 2002:adf:d4cc:: with SMTP id w12mr26997720wrk.216.1623233103831;
-        Wed, 09 Jun 2021 03:05:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxisdlmQ9hbEJc7XyIIogfmbAP40COfOWXq53QTDVV5O2yA236wwdWl7PrbHqWMhmbVzLyEcw==
-X-Received: by 2002:adf:d4cc:: with SMTP id w12mr26997662wrk.216.1623233103520;
-        Wed, 09 Jun 2021 03:05:03 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
-        by smtp.gmail.com with ESMTPSA id l31sm9209629wms.31.2021.06.09.03.05.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 03:05:03 -0700 (PDT)
-Subject: Re: [PATCH v1 05/12] mm/memory_hotplug: remove nid parameter from
- remove_memory() and friends
-From:   David Hildenbrand <david@redhat.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>, linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Marek Kedzierski <mkedzier@redhat.com>,
-        Hui Zhu <teawater@gmail.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-acpi@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev
-References: <20210607195430.48228-1-david@redhat.com>
- <20210607195430.48228-6-david@redhat.com> <87y2bkehky.fsf@mpe.ellerman.id.au>
- <7463b3ed-07d3-7157-629d-a85a3ff558d6@redhat.com>
-Organization: Red Hat
-Message-ID: <fe3e8d93-4e69-84c5-3dd3-ab4aca3317ab@redhat.com>
-Date:   Wed, 9 Jun 2021 12:05:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <7463b3ed-07d3-7157-629d-a85a3ff558d6@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 9 Jun 2021 06:07:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UbrAIWb_1623233128;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UbrAIWb_1623233128)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 09 Jun 2021 18:05:33 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     harry.wentland@amd.com
+Cc:     sunpeng.li@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@linux.ie,
+        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/amd/display: Fix duplicate included clk_mgr.h
+Date:   Wed,  9 Jun 2021 18:05:21 +0800
+Message-Id: <1623233121-97926-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.06.21 13:18, David Hildenbrand wrote:
-> On 08.06.21 13:11, Michael Ellerman wrote:
->> David Hildenbrand <david@redhat.com> writes:
->>> There is only a single user remaining. We can simply try to offline all
->>> online nodes - which is fast, because we usually span pages and can skip
->>> such nodes right away.
->>
->> That makes me slightly nervous, because our big powerpc boxes tend to
->> trip on these scaling issues before others.
->>
->> But the spanned pages check is just:
->>
->> void try_offline_node(int nid)
->> {
->> 	pg_data_t *pgdat = NODE_DATA(nid);
->>           ...
->> 	if (pgdat->node_spanned_pages)
->> 		return;
->>
->> So I guess that's pretty cheap, and it's only O(nodes), which should
->> never get that big.
-> 
-> Exactly. And if it does turn out to be a problem, we can walk all memory
-> blocks before removing them, collecting the nid(s).
-> 
+Clean up the following includecheck warning:
 
-I might just do the following on top:
+./drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c: clk_mgr.h is
+included more than once.
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 61bff8f3bfb1..bbc26fdac364 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -2176,7 +2176,9 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
-  static int check_memblock_offlined_cb(struct memory_block *mem, void *arg)
-  {
-         int ret = !is_memblock_offlined(mem);
-+       int *nid = arg;
-  
-+       *nid = mem->nid;
-         if (unlikely(ret)) {
-                 phys_addr_t beginpa, endpa;
-  
-@@ -2271,10 +2273,10 @@ EXPORT_SYMBOL(try_offline_node);
-  
-  static int __ref try_remove_memory(u64 start, u64 size)
-  {
--       int rc = 0, nid;
-         struct vmem_altmap mhp_altmap = {};
-         struct vmem_altmap *altmap = NULL;
-         unsigned long nr_vmemmap_pages;
-+       int rc = 0, nid = NUMA_NO_NODE;
-  
-         BUG_ON(check_hotplug_memory_range(start, size));
-  
-@@ -2282,8 +2284,12 @@ static int __ref try_remove_memory(u64 start, u64 size)
-          * All memory blocks must be offlined before removing memory.  Check
-          * whether all memory blocks in question are offline and return error
-          * if this is not the case.
-+        *
-+        * While at it, determine the nid. Note that if we'd have mixed nodes,
-+        * we'd only try to offline the last determined one -- which is good
-+        * enough for the cases we care about.
-          */
--       rc = walk_memory_blocks(start, size, NULL, check_memblock_offlined_cb);
-+       rc = walk_memory_blocks(start, size, &nid, check_memblock_offlined_cb);
-         if (rc)
-                 return rc;
-  
-@@ -2332,7 +2338,7 @@ static int __ref try_remove_memory(u64 start, u64 size)
-  
-         release_mem_region_adjustable(start, size);
-  
--       for_each_online_node(nid)
-+       if (nid != NUMA_NO_NODE)
-                 try_offline_node(nid);
-  
-         mem_hotplug_done();
+No functional change.
 
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
+index c0e544d..1007051 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
+@@ -33,7 +33,6 @@
+ #include "clk_mgr.h"
+ #include "reg_helper.h"
+ #include "abm.h"
+-#include "clk_mgr.h"
+ #include "hubp.h"
+ #include "dchubbub.h"
+ #include "timing_generator.h"
 -- 
-Thanks,
-
-David / dhildenb
+1.8.3.1
 
