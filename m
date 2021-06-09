@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A103A0BAD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D503A0BB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236428AbhFIEuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 00:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbhFIEux (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 00:50:53 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E37C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 21:49:00 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id k15so17469021pfp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 21:49:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iYok65sFwc6WEDcag9xh0Hf6j7gDgq0CQ1KsKHhgvjo=;
-        b=IiKc5ndp1M+CHWA+wdg+354lmwNXghTKdybF8tq0RZvCL5COD05uofXz0TjPvIqrWD
-         2Zd0UlSBCO8bso5l3lOkrxIqxpFUkoAtZW9Vodvtph2lfU6bzvov7tO/ZuOj6l+ULzzt
-         HjWDkmXNfdxxOHBFRr+e80s0Z+H6fkvwtboE4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iYok65sFwc6WEDcag9xh0Hf6j7gDgq0CQ1KsKHhgvjo=;
-        b=UIzTdD+2wKHWo7qjR47xmy3+2BRVWBoN/HEZHGhwOEXMlKU5mZCg4jKZ5NS0tTww15
-         i3i9YutXPBRGkdaIvK8csn3VOg0nC1z0q4CvG17vmq+b/m/yThloPt/s6CjRr9G/nEhs
-         UaYdWb3Ou0yV8qqtEl92LYiq0P6TLo0tdddYgD3CLah9iYxah5Hz0HuZBjWE4x+M4BSI
-         V0aKK0FMy/k/9etKYfYRrwN0u732YGCX2d8Xw8LzGy3YajANRPqq6GOBwHHLepim7rWb
-         ht6qyev/goeNiSoWsgf5cVO8ccq9fbhTdEZSLvwY4AF2v+e3tQPb5DH2Z5YHgs1gV7n/
-         dEiw==
-X-Gm-Message-State: AOAM532y6pBDMwUgEe3vVRT90mYFsS4fCkk32hqbrbR1aU7Ts4V1ctT8
-        /46xI4nBhI6mZlFrE0opPytsEw==
-X-Google-Smtp-Source: ABdhPJzu5e6c64mB7KD2PoLwdt2R2dL9vCR7lWw3zZp8Cn9JbjCwrAk24pXd1HLgFvQL4XbwwXG88A==
-X-Received: by 2002:a62:dd83:0:b029:2e8:e511:c32f with SMTP id w125-20020a62dd830000b02902e8e511c32fmr3335696pff.49.1623214139561;
-        Tue, 08 Jun 2021 21:48:59 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:83f0:56eb:3535:6bd5])
-        by smtp.gmail.com with ESMTPSA id h18sm12865110pgl.87.2021.06.08.21.48.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 21:48:58 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maoguang.meng@mediatek.com, yong.wu@mediatek.com,
-        tfiga@chromium.org
-Subject: [PATCH v2] arm64: dts: mt8183: add jpeg enc node for mt8183
-Date:   Wed,  9 Jun 2021 12:48:54 +0800
-Message-Id: <20210609044854.393452-1-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+        id S230154AbhFIE40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 00:56:26 -0400
+Received: from mga07.intel.com ([134.134.136.100]:55376 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229639AbhFIE4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 00:56:24 -0400
+IronPort-SDR: gBMjJfB3w7HqRntFRuekXA9EAYm8c3CXr9Z4EqcqqOAhtBg8PsdwbeR+d+XYACEkCht+H42/3P
+ luT0FBjSYjVA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="268858160"
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="268858160"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 21:54:30 -0700
+IronPort-SDR: yp6UxF6aTXDSGVA4DPfi/owkf5vf9OHVqY0BKZnY7xrkn53TRi3Z4NH2wuigV9P47xY6yJ4s8J
+ f5maYtJ7LDxA==
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="402317455"
+Received: from dabarred-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.185.80])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 21:54:29 -0700
+Subject: Re: [RFC v2-fix-v4 1/1] x86/tdx: Skip WBINVD instruction for TDX
+ guest
+To:     Andi Kleen <ak@linux.intel.com>, Andy Lutomirski <luto@kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
+ <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4gLeKPfYOx1kmg-mO1_mNd+XGqVO-CbqX+2d52GZ+DSFw@mail.gmail.com>
+ <23418f34-7c03-7477-6fbf-1b36b4718cb9@kernel.org>
+ <4e5ac34f-28cb-def6-0b87-e560fa42e5e5@linux.intel.com>
+ <e9b2aab2-4a6f-4739-a939-c448414e6af2@www.fastmail.com>
+ <390d6712-35b5-e52a-fb32-205844bad4ef@linux.intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <b1eb467e-1cb4-0e5e-c3e0-d99044f83ab6@linux.intel.com>
+Date:   Tue, 8 Jun 2021 21:54:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <390d6712-35b5-e52a-fb32-205844bad4ef@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maoguang Meng <maoguang.meng@mediatek.com>
 
-Add jpeg encoder device tree node.
 
-Signed-off-by: Maoguang Meng <maoguang.meng@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
-v2: rebase to latest
-v1: https://patchwork.kernel.org/project/linux-media/patch/20200914094012.5817-1-maoguang.meng@mediatek.com/
----
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+On 6/8/21 9:40 PM, Andi Kleen wrote:
+> 
+>>> KVM only turns it into a noop if there is no VT-d, because with VT-d you
+>>> might need it to turn mappings into uncached and vice versa.
+>> Wow, I found the kvm_arch_register_noncoherent_dma() stuff.  That's horrifying.  What's it for?  e
+> 
+> e.g. if you want to run a GPU it really needs some uncached memory. Same is true for other more 
+> complex devices.
+> 
+> Now modern Linux of course will be preferring CLFLUSH instead for the conversion, but there are old 
+> versions that preferred WBINVD.
+> 
+> I don't think it's a DoS, as long as you're not too picky about latencies on the host.
+> 
+> -Andi
+> 
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index c5e822b6b77a3..fffe0c52909ce 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -1329,6 +1329,17 @@ larb4: larb@17010000 {
- 			power-domains = <&spm MT8183_POWER_DOMAIN_VENC>;
- 		};
- 
-+		venc_jpg: venc_jpg@17030000 {
-+			compatible = "mediatek,mt8183-jpgenc", "mediatek,mtk-jpgenc";
-+			reg = <0 0x17030000 0 0x1000>;
-+			interrupts = <GIC_SPI 249 IRQ_TYPE_LEVEL_LOW>;
-+			iommus = <&iommu M4U_PORT_JPGENC_RDMA>,
-+				 <&iommu M4U_PORT_JPGENC_BSDMA>;
-+			power-domains = <&spm MT8183_POWER_DOMAIN_VENC>;
-+			clocks = <&vencsys CLK_VENC_JPGENC>;
-+			clock-names = "jpgenc";
-+		};
-+
- 		ipu_conn: syscon@19000000 {
- 			compatible = "mediatek,mt8183-ipu_conn", "syscon";
- 			reg = <0 0x19000000 0 0x1000>;
+Currently we use prot_guest_has(PR_GUEST_DISABLE_WBINVD)) check for disabling the wbinvd()
+usage (which can be selectively enabled for tested guests).
+
+Is it alright to generalize it with boot_cpu_has(X86_FEATURE_HYPERVISOR) without
+verify it?
+
+> 
+> 
+
 -- 
-2.32.0.rc1.229.g3e70b5a671-goog
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
