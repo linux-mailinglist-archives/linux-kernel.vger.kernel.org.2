@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E963A1B19
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA2E3A1B1B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232482AbhFIQjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:39:52 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:61208 "EHLO
+        id S234105AbhFIQjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:39:54 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:37427 "EHLO
         relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231934AbhFIQjs (ORCPT
+        by vger.kernel.org with ESMTP id S231991AbhFIQjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:39:48 -0400
+        Wed, 9 Jun 2021 12:39:49 -0400
 X-IronPort-AV: E=Sophos;i="5.83,261,1616425200"; 
-   d="scan'208";a="83736868"
+   d="scan'208";a="83736873"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 10 Jun 2021 01:37:51 +0900
+  by relmlie6.idc.renesas.com with ESMTP; 10 Jun 2021 01:37:53 +0900
 Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7998B40A2A52;
-        Thu, 10 Jun 2021 01:37:49 +0900 (JST)
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id B918C40A2B81;
+        Thu, 10 Jun 2021 01:37:51 +0900 (JST)
 From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To:     Geert Uytterhoeven <geert+renesas@glider.be>,
         Rob Herring <robh+dt@kernel.org>,
@@ -28,55 +28,99 @@ Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Prabhakar <prabhakar.csengg@gmail.com>,
         Biju Das <biju.das.jz@bp.renesas.com>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 0/3] SoC identification support for RZ/G2L
-Date:   Wed,  9 Jun 2021 17:37:14 +0100
-Message-Id: <20210609163717.3083-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2 1/3] dt-bindings: power: renesas,rzg2l-sysc: Add DT binding documentation for SYSC controller
+Date:   Wed,  9 Jun 2021 17:37:15 +0100
+Message-Id: <20210609163717.3083-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210609163717.3083-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20210609163717.3083-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Add DT binding documentation for SYSC controller found on
+RZ/G2{L,LC,UL} SoC's.
 
-This patch series adds support for RZ/G2{L,LC} SoC
-identification.
+SYSC block contains the LSI_DEVID register which is used to retrieve
+SoC product information.
 
-SoC identification register is part of SYSC block and
-currently no driver is added for SYSC block so just the
-basic properties are added in binding documentation (and will
-updated with the required properties once the driver is in
-place) and this node is used in renesas-soc.c for SoC
-identification.
-
-Patches are based on top of [1] master branch and is dependent on
-patch series [2].
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/
-[2] https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=497355
-
-Changes for v2:
-* Added description for multiple interrupts in SYSC binding doc
-* Added interrupt-names property in SYSC binding doc
-* Update dtsi to included interrupt-names property for SYSC node
-* Mapped entire SYSC block to read the device id
-* Included RB tag for patch 1, 3
-
-Cheers,
-Prabhakar
-
-Lad Prabhakar (3):
-  dt-bindings: power: renesas,rzg2l-sysc: Add DT binding documentation
-    for SYSC controller
-  soc: renesas: Add support to read LSI DEVID register of RZ/G2{L,LC}
-    SoC's
-  arm64: dts: renesas: r9a07g044: Add SYSC node to RZ/G2L SoC DTSI
-
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
  .../bindings/power/renesas,rzg2l-sysc.yaml    | 63 +++++++++++++++++++
- arch/arm64/boot/dts/renesas/r9a07g044.dtsi    | 12 ++++
- drivers/soc/renesas/renesas-soc.c             | 33 +++++++++-
- 3 files changed, 107 insertions(+), 1 deletion(-)
+ 1 file changed, 63 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/power/renesas,rzg2l-sysc.yaml
 
+diff --git a/Documentation/devicetree/bindings/power/renesas,rzg2l-sysc.yaml b/Documentation/devicetree/bindings/power/renesas,rzg2l-sysc.yaml
+new file mode 100644
+index 000000000000..49f95065a274
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/renesas,rzg2l-sysc.yaml
+@@ -0,0 +1,63 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/power/renesas,rzg2l-sysc.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Renesas RZ/G2L System Controller (SYSC)
++
++maintainers:
++  - Geert Uytterhoeven <geert+renesas@glider.be>
++
++description:
++  The RZ/G2L System Controller (SYSC) performs system control of the LSI and
++  supports following functions,
++  - External terminal state capture function
++  - 34-bit address space access function
++  - Low power consumption control
++  - WDT stop control
++
++properties:
++  compatible:
++    enum:
++      - renesas,r9a07g044-sysc # RZ/G2{L,LC}
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: CA55/CM33 Sleep/Software Standby Mode request interrupt
++      - description: CA55 Software Standby Mode release request interrupt
++      - description: CM33 Software Standby Mode release request interrupt
++      - description: CA55 ACE Asynchronous Bridge Master/Slave interface deny request interrupt
++
++  interrupt-names:
++    items:
++      - const: sys_lpm_int
++      - const: sys_ca55stbydone_int
++      - const: sys_cm33stbyr_int
++      - const: sys_ca55_deny
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    // System Controller node
++    sysc: system-controller@11020000 {
++            compatible = "renesas,r9a07g044-sysc";
++            reg = <0x11020000 0x10000>;
++            interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
++            interrupt-names = "sys_lpm_int", "sys_ca55stbydone_int",
++                              "sys_cm33stbyr_int", "sys_ca55_deny";
++    };
 -- 
 2.17.1
 
