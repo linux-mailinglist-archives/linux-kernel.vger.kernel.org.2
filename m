@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237583A0C2D
+	by mail.lfdr.de (Postfix) with ESMTP id 81BBF3A0C2E
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236467AbhFIGLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
+        id S236507AbhFIGLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232209AbhFIGLO (ORCPT
+        with ESMTP id S236423AbhFIGLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:11:14 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD58C061574
+        Wed, 9 Jun 2021 02:11:15 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99A0C06175F
         for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 23:09:20 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id r16so8754ljc.0
+Received: by mail-lf1-x12b.google.com with SMTP id w33so36168375lfu.7
         for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 23:09:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xpRw0xQJ4DmRjPc3XZOXCq8Yj+A2BA3B/GaickI4wN8=;
-        b=xVAfZE0A8Unf98HcFCXuX4RZeOIC8Q5dOG09zV2gGNevdLM0zMJq3dLuzH57zS8DoX
-         3g7to94dmRnjqwU072m/snpS5qSZ1uK+THO+4bYMUC4R6ZtG97z1753bAaxxLfTfnw5p
-         PsiE24KVo9JW2MWWQYmZloqVI3ItixT13V8B6o5VkETPAqsLnmdoGWthypSGqK8JsT9L
-         vaTWLj1shu0bx6Zb+qwzXryK8c1HAF7qFV+S60IM2Bs0+8k24SIRw6ZCJSQLUuCGrx3x
-         ektFdVrwjG+rdnfGMO3iRTeXqg/sKwwvfkoTQnmnYcLHfxYvbd269M2vh+Tgn3g1eUvy
-         T9TA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/f1rY0k6EQWoltoVI239rx9YFVi0YDoyX+ARCpEzBL8=;
+        b=Nr0mzq62bjXdj4oL45yRrqwFuW+HGvFzMbQMIzEFoUaSs+cxX+fpKa7AgBKhx3MiAm
+         1uJ3/jC+BKZioL6fZ/Oc0TWauJHtvthu868NYnqT4v8xEbOJOCOwBZzbbmfCa9Ou6EWT
+         IXXUbE5LNGnstLVBt/icT8AuhXmyT29B6OFf1MlIJWGQiS6YhMx3JvW4qv35/0m4U9nN
+         8+L4iJWz+nve2IXifP8QOrywJzFI75m0kZtoQWfC9mNi6RtjRV1aV7Ach5Aaumz7EftU
+         LECkiDxh1Wsa168PTiTCewCHwnbO6xERms9QkJkLjwWqcpO4vdPOr27fxeksBp0BFkN2
+         +ddA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xpRw0xQJ4DmRjPc3XZOXCq8Yj+A2BA3B/GaickI4wN8=;
-        b=CxsndGLk8TK8T1FHm4Qu3JRsGnSiN4UL44v3vnJHz1xesx1pGPjqHB6ha12SWblmmN
-         CXziDMktalWdr4wTqAZ5b/KW89l6gasY0ZIC9vlgOTiHMCPulCCvmFnwNjs8aRjkd9jF
-         i9/9WxPS3J1lDmA6yXqFXOb9Fk/bW29r07RfPAfJpWSkxrSy2GOw1D0CcawR59v0kV//
-         mzvPYOf6rtjsznQE3g1SYNe+irrLZ8AUE+xrhXfz520IK+Nbfy/CCzXqXcVi8q4orTnI
-         lCBdHGtwTnglUH6TUT55/rNU21k8fAACVqDkZEB8BGSD7fCQ69KscamIsCodJJxtmgEV
-         jp/A==
-X-Gm-Message-State: AOAM533q20SL3xvM28j7d5QIfUj3B3PpHeYIr3rzV4K42vz2zFceUyRR
-        3/xJBSwHwn2UifIcKWabMv9fxHSA4F3OQw==
-X-Google-Smtp-Source: ABdhPJyzlIexmGtILhLW7B9H59a3K8PmSTy1VOX2F2Hp6cFGPRPg1J0rmm+bT9kFOnkasmm0JfiFEg==
-X-Received: by 2002:a2e:9f47:: with SMTP id v7mr21932830ljk.333.1623218958271;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/f1rY0k6EQWoltoVI239rx9YFVi0YDoyX+ARCpEzBL8=;
+        b=OymQEuOEZGt6lj7qgRZFeoHZ7TDJfhlE/RjuNcvpsRRVJjzBTonlvAyQk9w6lZ2rU8
+         rDRrWz7rS+OUkXVjhNsa+5i4sUHFW2Mkpq6G8GkFivKFo7pSPciXDT/Bkll1YzzyMxE/
+         g3Uy/Y2T9zUsCfF291hWXtxb4/OQNjOCpIG1c8wBUN3hdn10mi70ENKTBWNK/m+WJOVt
+         ee9fLLHCZw4jlCFMAgfjS4+js3D3xEz2LhN/ct+PpDXTxlggYM149BzsR9NXdFDpJtOq
+         xigjiStwyh33sdgBzh2YaN0mg3p+KARQkXCL2vsGQysXqaypGe7UdWrOLX+13qQluhJN
+         awyw==
+X-Gm-Message-State: AOAM5312QK7m+ZrUBeijSjS04oyE28PelhZ/eLbW5sBp4EVlcXZhcB85
+        VjHqWoqr891sgTVJrM/jKH/sTp2jDxNU9w==
+X-Google-Smtp-Source: ABdhPJwot25EKkCKM4HEq641t4VhpqW7RwDZWfJJuawi81MP3DhszivYqKpP78Ecs8By3CaqdLjPVw==
+X-Received: by 2002:a05:6512:3baa:: with SMTP id g42mr18023216lfv.195.1623218958910;
         Tue, 08 Jun 2021 23:09:18 -0700 (PDT)
 Received: from jade.urgonet (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
-        by smtp.gmail.com with ESMTPSA id l26sm213735ljg.87.2021.06.08.23.09.17
+        by smtp.gmail.com with ESMTPSA id l26sm213735ljg.87.2021.06.08.23.09.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 08 Jun 2021 23:09:18 -0700 (PDT)
 From:   Jens Wiklander <jens.wiklander@linaro.org>
@@ -56,50 +56,45 @@ Cc:     Jerome Forissier <jerome@forissier.org>,
         Sumit Garg <sumit.garg@linaro.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH 0/4] Asynchronous notifications from secure world
-Date:   Wed,  9 Jun 2021 08:09:06 +0200
-Message-Id: <20210609060910.1500481-1-jens.wiklander@linaro.org>
+Subject: [PATCH 1/4] tee: fix put order in teedev_close_context()
+Date:   Wed,  9 Jun 2021 08:09:07 +0200
+Message-Id: <20210609060910.1500481-2-jens.wiklander@linaro.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210609060910.1500481-1-jens.wiklander@linaro.org>
+References: <20210609060910.1500481-1-jens.wiklander@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Prior to this patch was teedev_close_context() calling tee_device_put()
+before teedev_ctx_put() leading to teedev_ctx_release() accessing
+ctx->teedev just after the reference counter was decreased on the
+teedev. Fix this by calling teedev_ctx_put() before tee_device_put().
 
-This adds support for asynchronous notifications from OP-TEE in secure
-world to the OP-TEE driver. This allows a design with a top half and bottom
-half type of driver where the top half runs in secure interrupt context and
-a notifications tells normal world to schedule a yielding call to do the
-bottom half processing.
+Fixes: 217e0250cccb ("tee: use reference counting for tee_context")
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+---
+ drivers/tee/tee_core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-An SPI interrupt is used to notify the driver that there are asynchronous
-notifications pending.
-
-Thanks,
-Jens
-
-Jens Wiklander (4):
-  tee: fix put order in teedev_close_context()
-  tee: add tee_dev_open_helper() primitive
-  optee: separate notification functions
-  optee: add asynchronous notifications
-
- drivers/tee/optee/Makefile        |   1 +
- drivers/tee/optee/call.c          |  27 ++++
- drivers/tee/optee/core.c          | 104 ++++++++++----
- drivers/tee/optee/notif.c         | 226 ++++++++++++++++++++++++++++++
- drivers/tee/optee/optee_msg.h     |   9 ++
- drivers/tee/optee/optee_private.h |  23 +--
- drivers/tee/optee/optee_rpc_cmd.h |  31 ++--
- drivers/tee/optee/optee_smc.h     |  79 ++++++++++-
- drivers/tee/optee/rpc.c           |  73 ++--------
- drivers/tee/tee_core.c            |  37 +++--
- include/linux/tee_drv.h           |  27 ++++
- 11 files changed, 512 insertions(+), 125 deletions(-)
- create mode 100644 drivers/tee/optee/notif.c
-
+diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+index 480d294a23ab..f97d95b50773 100644
+--- a/drivers/tee/tee_core.c
++++ b/drivers/tee/tee_core.c
+@@ -98,8 +98,10 @@ void teedev_ctx_put(struct tee_context *ctx)
+ 
+ static void teedev_close_context(struct tee_context *ctx)
+ {
+-	tee_device_put(ctx->teedev);
++	struct tee_device *teedev = ctx->teedev;
++
+ 	teedev_ctx_put(ctx);
++	tee_device_put(teedev);
+ }
+ 
+ static int tee_open(struct inode *inode, struct file *filp)
 -- 
 2.31.1
 
