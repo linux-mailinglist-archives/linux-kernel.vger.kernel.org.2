@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CD33A1736
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1AF53A173F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236822AbhFIO26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:28:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43551 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236316AbhFIO24 (ORCPT
+        id S236549AbhFIOb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:31:29 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37488 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236283AbhFIObZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:28:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623248821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dWskz1tpoE2n45qyKiTGnaNgZEHi4b3U+rlmrEUOMgM=;
-        b=EN/KhWzN24Rpi3HTLzQio5Rg8yRyiXkGMtop0fS4lwHW82+AZq50XF7MEErP5h2ORqiVEG
-        3/ds74IjMqqJFQ0xhvr/OYfGujoUokt6LO7rRnQUXAuZf0I39kQouFh8dybHBUKE+Fli9s
-        j4vIh1wtN8yLLxWoZfC6H+uVVZiJb0Y=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-250-GkpUgjr_P6K26pRBhRGxLw-1; Wed, 09 Jun 2021 10:27:00 -0400
-X-MC-Unique: GkpUgjr_P6K26pRBhRGxLw-1
-Received: by mail-ej1-f72.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so8113182ejz.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 07:26:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dWskz1tpoE2n45qyKiTGnaNgZEHi4b3U+rlmrEUOMgM=;
-        b=AF3LQ86tvwtjF6UDp6+WG9w7m3FwVq/fYo741ljzh1f75KPcbhwwfJjZLvtphoeSsm
-         5TpoMSEunYqNsrqO3gH6C87qDV7YkVQK+EbYvXakNCrQRNiL6ePAwOFdHeQFXpppnz8B
-         e2OeXhJtkgjUj3R3RrIBvZMYGrFrx7vfsb+4Rfq26tffQUQeTrYbYz4CrQrP4/DQKF0T
-         0U9Ic2m2KiJzHp2s9zg7tSv5yiLnkgr7kmi96QzDiIfwOk1KBbNzA+i8zXZMCLNSjHC9
-         1RgUVyBxeG0Ccz4PimGv8sjrwpatR1NWc+4p9lFe03LGvls90tCZj+J69nqQ0Yl5XFya
-         jxGQ==
-X-Gm-Message-State: AOAM5333ak7p5xYsn652aftf2bdMV3dApStaGTzEtgC30CWhRx9Q4JmG
-        dbJsAfoUA9+Xh8GIFDv9/r085lLsb9NwmwpwmIWCMLSrxAIGnyCOsA1yYCNsvRb6uS9/2c4O/eA
-        cRv86Zhpl0ohDjgcvqWRQ6S6z
-X-Received: by 2002:a17:906:bc2:: with SMTP id y2mr102546ejg.489.1623248818893;
-        Wed, 09 Jun 2021 07:26:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy6Ifm3foifqY4kzazj+RDwjAzoIvaLRrU5gP8J1FL48CV04hAwHGui12uCt0VCCwkDpUd8+A==
-X-Received: by 2002:a17:906:bc2:: with SMTP id y2mr102534ejg.489.1623248818778;
-        Wed, 09 Jun 2021 07:26:58 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id l11sm1213511edb.3.2021.06.09.07.26.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 07:26:58 -0700 (PDT)
-Subject: Re: [PATCH 0/4] platform/x86: Constify static attribute_group structs
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Frank Seidel <frank@f-seidel.de>,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        Justin Ernst <justin.ernst@hpe.com>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Travis <mike.travis@hpe.com>
-References: <20210605203807.60547-1-rikard.falkeborn@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e6d3ecf9-c664-4fba-aa93-773fa054783e@redhat.com>
-Date:   Wed, 9 Jun 2021 16:26:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 9 Jun 2021 10:31:25 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 159ETPaB020794;
+        Wed, 9 Jun 2021 09:29:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623248966;
+        bh=zV3VZ4YOASefAdKhPByngIOqwleUDUA6BN4OYuClyYM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=bvWl3x8MVaXaXUNtYbKCjKDQwIEk6H1bZM3XrrcGxpXcYBIJpn4NPZ7C+UzYeBMra
+         gnVxdNb2BE3vQ8c8NFZSSQsU9lsJHLo2aOuA4bpQnICKQ4uCZkk5XCUneMylc0PwRT
+         RW40YRHR/NQblfwDoof8zzaFZFBVUatgwiIzPK+8=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 159ETPB0113075
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Jun 2021 09:29:25 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
+ 2021 09:29:22 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 9 Jun 2021 09:29:22 -0500
+Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 159ETFu2012709;
+        Wed, 9 Jun 2021 09:29:17 -0500
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-am64-main: Update the location of
+ ATF in SRAM and increase its max size
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>, Suman Anna <s-anna@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210607133806.18158-1-a-govindraju@ti.com>
+From:   Lokesh Vutla <lokeshvutla@ti.com>
+Message-ID: <e53458a9-e5f6-6507-f95c-2406b47b5576@ti.com>
+Date:   Wed, 9 Jun 2021 19:59:14 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210605203807.60547-1-rikard.falkeborn@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210607133806.18158-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 6/5/21 10:38 PM, Rikard Falkeborn wrote:
-> Constify a couple of static attribute_group structs which are never
-> modified to allow the compiler to put them in read-only memory.
+
+On 07/06/21 7:08 pm, Aswath Govindraju wrote:
+> Due to a limitation for USB DFU boot mode, SPL load address has to be less
+> than  or equal to 0x70001000. So, load address of SPL and ATF have been
+> moved to 0x70000000 and 0x701a0000 respectively.
 > 
-> Rikard Falkeborn (4):
->   platform/x86: hdaps: Constify static attribute_group struct
->   platform/x86: intel_pmt_crashlog: Constify static attribute_group
->     struct
->   platform/x86: tc1100-wmi: Constify static attribute_group struct
->   x86/platform/uv: Constify static attribute_group struct
+> Also, the maximum size of ATF has been increased to 0x1c000 [1].
+> 
+> Therefore, update ATF's location and maximum size accordingly in the device
+> tree file.
+> 
+> [1] - https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=2fb5312f61a7de8b7a70e1639199c4f14a10b6f9
+> 
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> index ca59d1f711f8..fcd12b6f10f6 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> @@ -13,8 +13,8 @@
+>  		#size-cells = <1>;
+>  		ranges = <0x0 0x00 0x70000000 0x200000>;
+>  
+> -		atf-sram@0 {
+> -			reg = <0x0 0x1a000>;
+> +		atf-sram@1a0000 {
+> +			reg = <0x1a0000 0x1c000>;
 
-Thank you for your patch-series, I've applied the series to my
-review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+After thinking a bot more, isn't size be 0x20000?
+ATF is allocated with 125KB no? no point keeping the ~3 as hole IMO.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+Thanks and regards,
+Lokesh
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
+>  		};
+>  	};
+>  
+> 
