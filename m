@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFADD3A1A50
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E101C3A1A4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237008AbhFIQBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:01:11 -0400
-Received: from mail-pf1-f175.google.com ([209.85.210.175]:36506 "EHLO
-        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232332AbhFIQBI (ORCPT
+        id S236669AbhFIQBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233575AbhFIQBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:01:08 -0400
-Received: by mail-pf1-f175.google.com with SMTP id c12so18742983pfl.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 08:59:14 -0700 (PDT)
+        Wed, 9 Jun 2021 12:01:00 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFF0C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 08:59:06 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id v12so12750509plo.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 08:59:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to;
-        bh=L6VHlIQYZGfc9Oymx2i9mexa/MTWbQdZjRg1J53X4k4=;
-        b=F16Pip1sEitsza5evjKZsSW4yqVV6vlOskVf2hsoR5zF39jUjM8yOpbQlyNMbnGuWN
-         pXhFXQBKMzNFfpisMPgq49dM+RryqRW/E6d/np1unQ8zv6tZy7cHqNWp6J1+gPmTd0ue
-         jGsY3BKrJL2VSvHOhqoD2/bTzRMx8wPBfzwaA=
+        bh=7A8Lzx3JNH8Knej0LOZp8Se8zAT8/K4eSFY+BUYCn+Y=;
+        b=XoqsOIZEl68LpLTfHhMfg6Kdu8VFMUUT8kjlmo1E5DmeORCfJL3+p/yhpzoRgoq9Py
+         Bkt4iIXQ8M3AEKJrV3LogcjfdwISrr2t7JcK3czokPfCQulLF8JGJsGPqmHbMiZzM9Wj
+         tKlR+fiYt8Pf1ob7ycblioULBT1erwj2It6MI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to;
-        bh=L6VHlIQYZGfc9Oymx2i9mexa/MTWbQdZjRg1J53X4k4=;
-        b=a4Q1PtBcsdD+Z3RcD4Q7anik8tKLbeNsDMok6+lZxVSaBGTjuYTI1a74GiUo5Ci85h
-         2HZCMnUE1ucBdms6ezaznqNyDwdB0j0DUgiK7iwqqS+lUdIm7kwmYiAKMLFkQM56dCo5
-         yVbEKpxdtzSF9DVBvEoufgJ3b2Ibuv052FA4HDBXLottUbEXhpiyKpwsDJH426wpmB5z
-         DRZff0Pqj9jxKI1gfECQLUz0Fzbeof8ti9+XzwpQJueH9e5JgJ411x49YXpTlDG2bE46
-         D/WXeLW9WQlDNPgKGtrVp7d4AxxkFof4lyb7ZooKCwfspZeTtGkm645/WiWR92oRDEgq
-         cC7g==
-X-Gm-Message-State: AOAM5303TYcvWOzVbQPADOLSeNJ7XClPLuSWE5nCwdIu0GKcczBgmRKi
-        zHjJnwmNS+ULIcXdX5ebkiyfoA==
-X-Google-Smtp-Source: ABdhPJzkp8D0DsmXbEMjNbEMt2EVjWpO4lXSpHpfBYA4Tdc/1SKA6K5NA6MrrB3wVvvHWPeC2tEmXQ==
-X-Received: by 2002:a65:4605:: with SMTP id v5mr356437pgq.237.1623254294096;
-        Wed, 09 Jun 2021 08:58:14 -0700 (PDT)
+        bh=7A8Lzx3JNH8Knej0LOZp8Se8zAT8/K4eSFY+BUYCn+Y=;
+        b=kRSOxKxm3fDahoAEopXmApjqIvU2szU24gtR0VWtgcUZ+TEzsdKL4uwdbiBPZQT/mn
+         CB8nbLqbWD1xNSYCAX6RyFrIYaFVd6hOeJ6aL7Diey/GEJMlyF+LIiV5vKp+/of5Raza
+         LbMUCmd+Yr+NcYJyOZEjD2h+MIuE26D0VV3LJqfJC/3BNWPdNoy/TvycX2TcoMLH2NdZ
+         GtX7Co1lts4XaVa9WQ40O54SF7D8e9gZew7gZ1kVO/gwrboNcUgrClVt6Cw9ZzVp2+yF
+         HgcTyCzWjuiqcfAf0ENGAYgmHUYknXABUkiNk14US3vW8p37m5/Hi2J5BDJVAEsTg1qs
+         JcDQ==
+X-Gm-Message-State: AOAM5313mfzN56IYL1twirCPHyonDpEYFkStBSJRAUAX4ZckfhRaCfDG
+        /gxn7sn1H+B5iBABXSApm2YSBw==
+X-Google-Smtp-Source: ABdhPJzgbHanDuqGtlTjMxu90yjNXcIc1pBSGIOBqNuizAKwcVHUEfpiEfaui+K35/Mp20tzw1uzLg==
+X-Received: by 2002:a17:902:b288:b029:111:4a4f:9916 with SMTP id u8-20020a170902b288b02901114a4f9916mr424778plr.24.1623254345393;
+        Wed, 09 Jun 2021 08:59:05 -0700 (PDT)
 Received: from lbrmn-lnxub113.ric.broadcom.net ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id f139sm79525pfa.38.2021.06.09.08.58.12
+        by smtp.gmail.com with ESMTPSA id q68sm5637631pjq.45.2021.06.09.08.59.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 08:58:13 -0700 (PDT)
-Subject: Re: [PATCH] mailbox: bcm2835: Remove redundant dev_err call in
- bcm2835_mbox_probe()
-To:     Zhihao Cheng <chengzhihao1@huawei.com>, jaswinder.singh@linaro.org,
-        eric@anholt.net, jassisinghbrar@gmail.com
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, yukuai3@huawei.com
-References: <20210601082454.127810-1-chengzhihao1@huawei.com>
- <226660de-e502-68b8-131d-27552ccccfd0@huawei.com>
+        Wed, 09 Jun 2021 08:59:04 -0700 (PDT)
+Subject: Re: [PATCH -next v2] misc: bcm-vk: use list_move_tail instead of
+ list_del/list_add_tail in bcm_vk_msg.c
+To:     Baokun Li <libaokun1@huawei.com>, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     weiyongjun1@huawei.com, yuehaibing@huawei.com,
+        yangjihong1@huawei.com, yukuai3@huawei.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        desmond.yan@broadcom.com
+References: <20210609071430.1337400-1-libaokun1@huawei.com>
 From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <ca893045-7325-d089-c4b2-5d089a0a0bd8@broadcom.com>
-Date:   Wed, 9 Jun 2021 08:58:11 -0700
+Message-ID: <c9fa4670-51d1-0629-8514-941defeb283e@broadcom.com>
+Date:   Wed, 9 Jun 2021 08:59:02 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <226660de-e502-68b8-131d-27552ccccfd0@huawei.com>
+In-Reply-To: <20210609071430.1337400-1-libaokun1@huawei.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000993b6005c457571f"
+        boundary="000000000000a9d85905c4575ad4"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000993b6005c457571f
-Content-Type: text/plain; charset=UTF-8
+--000000000000a9d85905c4575ad4
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 2021-06-09 5:13 a.m., Zhihao Cheng wrote:
-> 在 2021/6/1 16:24, Zhihao Cheng 写道:
->> There is a error message within devm_ioremap_resource
->> already, so remove the dev_err call to avoid redundant
->> error message.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+On 2021-06-09 12:14 a.m., Baokun Li wrote:
+> Using list_move_tail() instead of list_del() + list_add_tail() in bcm_vk_msg.c.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Acked-by: Scott Branden <scott.branden@broadcom.com>
->> ---
->>   drivers/mailbox/bcm2835-mailbox.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/drivers/mailbox/bcm2835-mailbox.c b/drivers/mailbox/bcm2835-mailbox.c
->> index 39761d190545..86b7ce3549c5 100644
->> --- a/drivers/mailbox/bcm2835-mailbox.c
->> +++ b/drivers/mailbox/bcm2835-mailbox.c
->> @@ -157,7 +157,6 @@ static int bcm2835_mbox_probe(struct platform_device *pdev)
->>       mbox->regs = devm_ioremap_resource(&pdev->dev, iomem);
->>       if (IS_ERR(mbox->regs)) {
->>           ret = PTR_ERR(mbox->regs);
->> -        dev_err(&pdev->dev, "Failed to remap mailbox regs: %d\n", ret);
->>           return ret;
->>       }
->>   
+> ---
+> V1->V2:
+> 	CC mailist
 > 
-> friendly ping.
+>  drivers/misc/bcm-vk/bcm_vk_msg.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
+> index 6efc52b49af6..066b9ef7fcd7 100644
+> --- a/drivers/misc/bcm-vk/bcm_vk_msg.c
+> +++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
+> @@ -354,8 +354,7 @@ static void bcm_vk_drain_all_pend(struct device *dev,
+>  	for (num = 0; num < chan->q_nr; num++) {
+>  		list_for_each_entry_safe(entry, tmp, &chan->pendq[num], node) {
+>  			if ((!ctx) || (entry->ctx->idx == ctx->idx)) {
+> -				list_del(&entry->node);
+> -				list_add_tail(&entry->node, &del_q);
+> +				list_move_tail(&entry->node, &del_q);
+>  			}
+>  		}
+>  	}
 > 
 
 
---000000000000993b6005c457571f
+--000000000000a9d85905c4575ad4
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -170,13 +175,13 @@ lLX9hl3iEj5SBgkQqCbbnoE+ZjjKfqt7ED166WhgyQWNrl39yLcvLj+JRUB3RuvXKZjH0NQEEBII
 wZBDSkyneykLt3CBNIhSCTxKM6OWxVp936ALSa5K9FNy00TeWSpokR6NmzaW8VD/EjTgvqAxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgx9oXSJpKniO4dS
-Gk8wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJwoPFmBeK5pGE8TRAIY5Mk05g4H
-YtJCv/h877sRn4KWMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDYwOTE1NTgxNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+Gk8wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIF/uiObFqrhfo+5FY56sE9GOaNrJ
+yoQyZuKGOhmGMfXpMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDYwOTE1NTkwNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBVFCSoiSrnnyj3izQV6Uq+iAOzuaCe4AP+QxfLHrXD8W5r
-y0fTox+bhArnIphKGfStncU5zAaogdtgzLdssFIrR8t2+RaM59ad69SMua1wpm927BAE6rq4N6aY
-3Vd3P9SdMvejovo8OCWzkqqcxMw3AWm+HnnbJ7pYz5uJhiIHyUy7Oywa1D6u96yJ73P30Re2G0NK
-WHeQT/y5RnXdFwEDCrUZRmcdvSOhzsOAgbeARLQL9GjHLcFy0lUJWCwXguU4Uzk6/5/DL90WNQVt
-98+rzYSo0Phlv0jVhssYXyV7IdrSuqQ4M0NISEDIv2RYogT6wv0YXGjni2oq1gotWcHq
---000000000000993b6005c457571f--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQAW/kWrOzYyZYprwWqfB7sVP+d8N8Ds00sALLdb81zv9kdI
+wvkzDpWGW1ixxIZWUpxD/19ubmJtuEMGA0GDtwo2olPwRBrxj46Q1HTbOFb0munOt5QKlyOLmR02
+AQenN4lwSu/8gwl4toYHCgeP70EJmx72gmINaG1CJAhNsl4gbj8Snp96mY4xU/wKTwRH8mfjgGYc
+vohwmcHdX9pnKJLcl7GbZbS1iFCXkC4p0NZ6rudwyiUayaVDPF7L46e42NJ5bZWxKumENI9oRJTO
+lCXRLuIrcyw4opy1bx5azSdLb1u7O3DvphOnIhvCuA8wc9AlhekgMlWGnMjiHRDtEi7U
+--000000000000a9d85905c4575ad4--
