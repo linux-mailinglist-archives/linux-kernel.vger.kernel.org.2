@@ -2,150 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BB93A08CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71623A08D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235318AbhFIA55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 20:57:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231765AbhFIA54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 20:57:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8FDF6124B;
-        Wed,  9 Jun 2021 00:56:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623200162;
-        bh=9VZZ3dYanjL4pxobsOVDXf3FlQOUGrTbEBeIxBUzJTQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HtP5BNNO1bd7ZPvsPWKIiMgc6B6yH+iG11ZCZDZ1vYm/Q26cd40/0aI/1UbmZ15Yl
-         A61XyLUv0CTFXdyCS9Qqz+lpET5muULfCS/ZYIl3obcMGNBvG2SfD46ZK9iFa/TAes
-         2v1tsgs3BHL2SmNZfEjgP1KVy0/RoIZJNCyq/DUCo4bbvB9p9N604zhJjO44ZTchAy
-         wYMi/OAxIPaZuRV0noEbhAvNKKtkOC+kCY/Ee7CoMbHIHkmjWjy7/K9+Sgwgw33Oot
-         aQxjqppjUO6oIVjAmYx6hu2pktc+zlHHdSaJ9eZQ2BbM5sSLjT4r8TMjJpX1SuFMgy
-         Nll1j/iq6ABCg==
-Received: by mail-qt1-f175.google.com with SMTP id r20so1446557qtp.3;
-        Tue, 08 Jun 2021 17:56:02 -0700 (PDT)
-X-Gm-Message-State: AOAM530Hgf4lidR9soIzaUcC26yep3W6IWY9PCmhXRSaAdzSIExGsQ67
-        t2jZWgHBxTBQoZGJ7rplGvoyGgNwNmbitbLCBQ==
-X-Google-Smtp-Source: ABdhPJysm9gRFl1Ia/PV0WqH78X/KYQI39DaJW4wUxJODVFqslxntRsKzyfSkVIMQAf0+Yem27Ky25KQdgLXYnkXk1s=
-X-Received: by 2002:aed:30cd:: with SMTP id 71mr23683635qtf.31.1623200162179;
- Tue, 08 Jun 2021 17:56:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210607193928.3092186-1-robh@kernel.org>
-In-Reply-To: <20210607193928.3092186-1-robh@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 8 Jun 2021 19:55:51 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKBYnLixhgVaMRACLAny_3_stqvgxyot2frhiiKP56KXA@mail.gmail.com>
-Message-ID: <CAL_JsqKBYnLixhgVaMRACLAny_3_stqvgxyot2frhiiKP56KXA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: virtio: Convert virtio-mmio to DT schema
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S235367AbhFIA61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 20:58:27 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:42415 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232076AbhFIA6Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 20:58:25 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 032DA580922;
+        Tue,  8 Jun 2021 20:56:32 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Tue, 08 Jun 2021 20:56:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=UEXUkaEiFQLjUvGmFiXJYNKYLn4GSKf
+        Tv6e4CZYJsGQ=; b=TCl987RPTWC88e5PPQSgE+1qbePmZ/8iS6PC3qlnAMVXwGb
+        ypLi0vQyfxhS4QW0Ya9NpzGB1C/UQ6JjgJCvfYnl0S157z+nPod0VRiYfF5ioeV9
+        n/FtqPmGqrlSwR/14hPpX86Ji2iCOt5Q7GvlsMW179xr4sPCfMjnTinvvdh4HY08
+        RClDdQck+TLWsNgYMcoPZFHJaamZBUVcuzjNV1FiftvY32vgmoMb5Tg+MBHY0M6q
+        ldJD3VCm7r0M7jeypdo4ZeuMb7614S/NHVrS216JTPj3Dh3V0xlW4CxAthe2pQuQ
+        U+1T4JTCfHfhyPXdoTCLYimwGvseovIAUfk/JVw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=UEXUka
+        EiFQLjUvGmFiXJYNKYLn4GSKfTv6e4CZYJsGQ=; b=LpY8IeH51vX0Ts4LZ5c7h0
+        TU2+6aHMRaxlx2pzZ2fIOivdgUbyPGcdO9SXrrEybJuL024+LKteiMrBUL4lhlzo
+        F+FOoQIkFeluyxqhVnau2Nv9TAeJv/eZ9YFi68DZnxZ1nl986EFaD1JpUvufSkAc
+        MBNxo6CpPPSO8Tt1tIjVodi4jye2WM1ZYKEc5ALQ6lvMvjxMfNxZiAk9auqquAfz
+        JNEEDdR7k8MZ8XUR0KoZ06ZfTwtO806w24Bee8ee1GDoWffNzP3RRfdj332EakGC
+        vZOFVBfPcRGJkwlQhfEeHtTtRwy+RTwRBIMao0f9do1+4WfiUeerNid9BTCDYkHQ
+        ==
+X-ME-Sender: <xms:vxHAYFhxctgAA3C4xcXS4ppQsJcn4-jv1El4ucwQfLjhFWlD2Zq66g>
+    <xme:vxHAYKBupQ_RU5g-KVQm4FKlBUWivq8vPR7pQyVOsm4gtj6laIt3F0HAMRelhH2VA
+    Cf_xVvxMmkyAP7EAQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedutddgfeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:vxHAYFEytP3CrsE9oyllP_AFL-UakUpXq0Y808ZD7b8Gshzx9zeCKg>
+    <xmx:vxHAYKSefdA0tah_-C2awatNP-9wfRJmtcWYAL1EsLTxI6Iys-0y4g>
+    <xmx:vxHAYCyod1UvLXhPm-9alWmlAEcO_IXxRs8gfGffvXMJTJ5tY3ZQ6Q>
+    <xmx:wBHAYHqdCOfNkdNosTpvUcQqEvibNwtSvfxmQESAUPaLLsvXieGWPg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D6CB9AC0062; Tue,  8 Jun 2021 20:56:31 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <311d0c03-06f3-4c68-aa5a-877a592b6975@www.fastmail.com>
+In-Reply-To: <20210608102547.4880-11-steven_lee@aspeedtech.com>
+References: <20210608102547.4880-1-steven_lee@aspeedtech.com>
+ <20210608102547.4880-11-steven_lee@aspeedtech.com>
+Date:   Wed, 09 Jun 2021 10:26:11 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Billy Tsai" <billy_tsai@aspeedtech.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v5_10/10]_gpio:_gpio-aspeed-sgpio:_Return_error_if_?=
+ =?UTF-8?Q?ngpios_is_not_multiple_of_8.?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 2:39 PM Rob Herring <robh@kernel.org> wrote:
->
-> Convert the virtio-mmio binding to DT schema format.
->
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Cc: virtualization@lists.linux-foundation.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> Jean-Philippe, hopefully you are okay with being listed as the
-> maintainer here. You're the only active person that's touched this
-> binding.
->
->  .../devicetree/bindings/virtio/mmio.txt       | 47 ---------------
->  .../devicetree/bindings/virtio/mmio.yaml      | 60 +++++++++++++++++++
->  2 files changed, 60 insertions(+), 47 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/virtio/mmio.txt
->  create mode 100644 Documentation/devicetree/bindings/virtio/mmio.yaml
->
-> diff --git a/Documentation/devicetree/bindings/virtio/mmio.txt b/Documentation/devicetree/bindings/virtio/mmio.txt
-> deleted file mode 100644
-> index 0a575f329f6e..000000000000
-> --- a/Documentation/devicetree/bindings/virtio/mmio.txt
-> +++ /dev/null
-> @@ -1,47 +0,0 @@
-> -* virtio memory mapped device
-> -
-> -See https://ozlabs.org/~rusty/virtio-spec/ for more details.
-> -
-> -Required properties:
-> -
-> -- compatible:  "virtio,mmio" compatibility string
-> -- reg:         control registers base address and size including configuration space
-> -- interrupts:  interrupt generated by the device
-> -
-> -Required properties for virtio-iommu:
-> -
-> -- #iommu-cells:        When the node corresponds to a virtio-iommu device, it is
-> -               linked to DMA masters using the "iommus" or "iommu-map"
-> -               properties [1][2]. #iommu-cells specifies the size of the
-> -               "iommus" property. For virtio-iommu #iommu-cells must be
-> -               1, each cell describing a single endpoint ID.
-> -
-> -Optional properties:
-> -
-> -- iommus:      If the device accesses memory through an IOMMU, it should
-> -               have an "iommus" property [1]. Since virtio-iommu itself
-> -               does not access memory through an IOMMU, the "virtio,mmio"
-> -               node cannot have both an "#iommu-cells" and an "iommus"
-> -               property.
-> -
-> -Example:
-> -
-> -       virtio_block@3000 {
-> -               compatible = "virtio,mmio";
-> -               reg = <0x3000 0x100>;
-> -               interrupts = <41>;
-> -
-> -               /* Device has endpoint ID 23 */
-> -               iommus = <&viommu 23>
-> -       }
-> -
-> -       viommu: iommu@3100 {
-> -               compatible = "virtio,mmio";
-> -               reg = <0x3100 0x100>;
-> -               interrupts = <42>;
-> -
-> -               #iommu-cells = <1>
-> -       }
-> -
-> -[1] Documentation/devicetree/bindings/iommu/iommu.txt
-> -[2] Documentation/devicetree/bindings/pci/pci-iommu.txt
-> diff --git a/Documentation/devicetree/bindings/virtio/mmio.yaml b/Documentation/devicetree/bindings/virtio/mmio.yaml
-> new file mode 100644
-> index 000000000000..444bfa24affc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/virtio/mmio.yaml
-> @@ -0,0 +1,60 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/virtio/mmio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: virtio memory mapped devices
-> +
-> +maintainers:
-> +  - Jean-Philippe Brucker <jean-philippe@linaro.org>
-> +
-> +description:
-> +  See https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio for
-> +  more details.
-> +
-> +properties:
-> +  compatible:
-> +    const: virtio-mmio
 
-This should be virtio,mmio.
+
+On Tue, 8 Jun 2021, at 19:55, Steven Lee wrote:
+> Add an else-if condition in the probe function to check whether ngpios is
+> multiple of 8.
+> Per AST datasheet, numbers of available serial GPIO pins in Serial GPIO
+> Configuration Register must be n bytes. For instance, if n = 1, it means
+> AST SoC supports 8 GPIO pins.
+> 
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
