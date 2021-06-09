@@ -2,109 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74FE3A0AF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C8F3A0AF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhFIEEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 00:04:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229499AbhFIEE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 00:04:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B5C3610A1;
-        Wed,  9 Jun 2021 04:02:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623211355;
-        bh=vG4MZxfZKKAdoDa8I1pKOegdBTS9SI6qjGNjRE+Y3xI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=YYstf3DnnS6f/0+GrLOXK4nzyU5W6nT6O3AszfAKV09kcpG09VXBbFTjrnGGF5vdO
-         oUMvMeiZRuSdzfMqE0r/Xtihm+J3EwbiszOmobbcMJ3C5YPrp3WKaWpQ1jhRGEJ4Hs
-         dRNc5HmYZG7Mdj5kKCFlj+2F0J2F6a8g/xzMy0u/XLo+V7daRmQSMNx2DR4rTdcNv5
-         9tm3Dde1P/+TgNdmtlhpvz95F/SqNuhPuL8XkTCc3UnnYRjqcvCs5KMRCSFEOgQqxf
-         PkEokeYpWsUwcNq89+IatiPEiyl4bDy0TU0zxR5SeRgpX6HjFbIgRbHwKGqLTTUKFb
-         1Adcc+mQa95Iw==
-Subject: Re: [RFC v2-fix-v4 1/1] x86/tdx: Skip WBINVD instruction for TDX
- guest
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
- <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4gLeKPfYOx1kmg-mO1_mNd+XGqVO-CbqX+2d52GZ+DSFw@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <23418f34-7c03-7477-6fbf-1b36b4718cb9@kernel.org>
-Date:   Tue, 8 Jun 2021 21:02:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229743AbhFIEGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 00:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhFIEGl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 00:06:41 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8A2C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 21:04:36 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so22657490otg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 21:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version;
+        bh=/lR22JItVYcAEN4FGPywBWFlZb0TSLLrPjU/wXDo3Sc=;
+        b=cLjfvOzsqwPnUo85ps38fW2QmjSJx3C3ai2plcCcR6PZly/cXSPR3xmQbovmx/q4rz
+         YCuxjjReconGotHIXIzTaW9r7b5j781u7S2mipjVC1uXtNgmCJ08kJ7hjaVOFTd0SPJW
+         Uo1k5x1kT6wAlDedXrur+kV99lEhCkmobKX/dXfNmxQeGfk6K3wObg+j6cQzw2uuT5Zw
+         AHrkLwd/WrCr3SlW4iISlnIbd6Uq8BVOkqVVu1nTEevMzsdHMyEmhVNRe+UnnTnxKp2g
+         YpqxVhcs0VcMLaa7aRSJkCc4TDtrjWQlQKCc1EmWiYpaxRmYBxiyctDPZD3OS0LXa6rc
+         J/5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version;
+        bh=/lR22JItVYcAEN4FGPywBWFlZb0TSLLrPjU/wXDo3Sc=;
+        b=bkkQolzlhzDjhmpEcveD7ZJkULCa6T8eB4rW8HsXuCwhOCbtoxworsVs5MigdHJoWM
+         gRmWmYmwDN6+vc9szrUP0C5eJ4HW3J3LDYvcVSbVDeho6Q/CUGV2ItAqR3cywuBn8xWN
+         HUZy2ebNYLmMXWyOu0XLBfP2eiyMcBptVvJfuTuVYQO2T+V+e9mYc1+rrT+cziT+hvmx
+         VbxmPW0WemjnFgxAi1R3jRQqWD6qgduj9SfHZtE0PhETDvwbQaArxkLUGYtdNG5Y5XQ5
+         5euZwQ7B5ucI7miEQ5hmvL+H65ZhuJVrPnGNnwobZ8sOAtnnmzHM7C9WT7RGsNPgEvl8
+         bgGQ==
+X-Gm-Message-State: AOAM532FTVIQPRXFX38ynDo7YRNRvOnTCybEJo4gZ920bYbV7H3tLlG0
+        8WXuqZJwJLtu5b/Lmi51xTHsKpZlYBFGBQ==
+X-Google-Smtp-Source: ABdhPJwXpCLJvZM3XclfhJyjulo0PNbvexlw2QhxVMK666BQq4urUt+/r2eruygRWKvJZyRUUkozVg==
+X-Received: by 2002:a05:6830:124d:: with SMTP id s13mr18901511otp.241.1623211475859;
+        Tue, 08 Jun 2021 21:04:35 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id d12sm3111548otf.65.2021.06.08.21.04.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 21:04:35 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 21:04:32 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/10] mm/thp: fix THP splitting unmap BUGs and related
+ (fwd)
+Message-ID: <be103db0-a351-3339-f2d0-139c7814e8b6@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4gLeKPfYOx1kmg-mO1_mNd+XGqVO-CbqX+2d52GZ+DSFw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 8:40 PM, Dan Williams wrote:
-> On Tue, Jun 8, 2021 at 6:10 PM Kuppuswamy Sathyanarayanan
-> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->>
->> Current TDX spec does not have support to emulate the WBINVD
->> instruction. If any feature that uses WBINVD is enabled/used
->> in TDX guest, it will lead to un-handled #VE exception, which
->> will be handled as #GP fault.
->>
->> ACPI drivers also uses WBINVD instruction for cache flushes in
->> reboot or shutdown code path. Since TDX guest has requirement
->> to support shutdown feature, skip WBINVD instruction usage
->> in ACPI drivers for TDX guest.
-> 
-> This sounds awkward...
-> 
->> Since cache is always coherent in TDX guests, making wbinvd as
-> 
-> This is incorrect, ACPI cache flushing is not about I/O or CPU coherency...
-> 
->> noop should not cause any issues in above mentioned code path.
-> 
-> ..."should" is a famous last word...
-> 
->> The end-behavior is the same as KVM guest (treat as noops).
-> 
-> ..."KVM gets away with it" is not a justification that TDX can stand
-> on otherwise we would not be here fixing up ACPICA properly.
-> 
-> How about:
-> 
-> "TDX guests use standard ACPI mechanisms to signal sleep state entry
-> (including reboot) to the host. The ACPI specification mandates WBINVD
-> on any sleep state entry with the expectation that the platform is
-> only responsible for maintaining the state of memory over sleep
-> states, not preserving dirty data in any CPU caches. ACPI cache
-> flushing requirements pre-date the advent of virtualization. Given TDX
-> guest sleep state entry does not affect any host power rails it is not
-> required to flush caches. The host is responsible for maintaining
-> cache state over its own bare metal sleep state transitions that
-> power-off the cache. If the host fails to manage caches over its sleep
-> state transitions the guest..."
-> 
 
-I like this description, but shouldn't the logic be:
 
-if (!CPUID has hypervisor bit set)
-  wbinvd();
+---------- Forwarded message ----------
+Date: Tue, 8 Jun 2021 20:57:34 -0700 (PDT)
+From: Hugh Dickins <hughd@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Hugh Dickins <hughd@google.com>,
+    Kirill A. Shutemov <kirill.shutemov@linux.intel.com>,
+    Yang Shi <shy828301@gmail.com>, Wang Yugui <wangyugui@e16-tech.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Naoya Horiguchi <naoya.horiguchi@nec.com>,
+    Alistair Popple <apopple@nvidia.com>, Ralph Campbell <rcampbell@nvidia.com>,
+    Zi Yan <ziy@nvidia.com>, Miaohe Lin <linmiaohe@huawei.com>,
+    Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
+    Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
+    Shakeel Butt <shakeelb@google.com>, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v2 00/10] mm/thp: fix THP splitting unmap BUGs and related
 
-As far as I know, most hypervisors will turn WBINVD into a noop and,
-even if they don't, it seems to be that something must be really quite
-wrong for a guest to need to WBINVD for ACPI purposes.
+Here is v2 batch of long-standing THP bug fixes that I had not got
+around to sending before, but prompted now by Wang Yugui's report
+https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
 
--Andy
+Wang Yugui has tested a rollup of these fixes applied to 5.10.39,
+and they have done no harm, but have *not* fixed that issue:
+something more is needed and I have no idea of what.
+
+But at least these clear up related issues, and should go to stable
+(except for the last three).  Some of these are fully reviewed and
+tags added, others have been waiting on this v2 respin.
+
+For now I've left out the bigger page_vma_mapped_walk() one (was 5/7):
+I'm still working on splitting that up for Kirill's review, better get
+the rest out before completing and posting that as a separate series.
+
+2/10 here replaces part of 1/7 before; 7/10 and 8/10 from Yang Shi
+inserted; 10/10 added to apply TTU_SYNC in mm/memory-failure.c.
+
+These are against 5.13-rc5: expect mmotm conflicts with a couple of
+Alistair Popple's "Add support for SVM atomics in Nouveau" series:
+mm-remove-special-swap-entry-functions.patch
+mm-rmap-split-try_to_munlock-from-try_to_unmap.patch
+
+Suggested adjustments to Alistair's sent June 3rd, but I've not
+rechecked (a couple of changes since v1 should reduce the damage
+slightly).
+
+01/10 mm/thp: fix __split_huge_pmd_locked() on shmem migration entry
+02/10 mm/thp: make is_huge_zero_pmd() safe and quicker
+03/10 mm/thp: try_to_unmap() use TTU_SYNC for safe splitting
+04/10 mm/thp: fix vma_address() if virtual address below file offset
+05/10 mm/thp: fix page_address_in_vma() on file THP tails
+06/10 mm/thp: unmap_mapping_page() to fix THP truncate_cleanup_page()
+07/10 mm: thp: replace DEBUG_VM BUG with VM_WARN when unmap fails for split
+08/10 mm: rmap: make try_to_unmap() void function
+09/10 mm/thp: remap_page() is only needed on anonymous THP
+10/10 mm: hwpoison_user_mappings() try_to_unmap() with TTU_SYNC
+
+ include/linux/huge_mm.h |    8 ++++-
+ include/linux/mm.h      |    3 ++
+ include/linux/rmap.h    |    3 +-
+ mm/huge_memory.c        |   61 +++++++++++++++++++++++-------------------
+ mm/internal.h           |   51 ++++++++++++++++++++++++++---------
+ mm/memory-failure.c     |   17 +++++------
+ mm/memory.c             |   40 +++++++++++++++++++++++++++
+ mm/page_vma_mapped.c    |   27 +++++++++++-------
+ mm/pgtable-generic.c    |    5 +--
+ mm/rmap.c               |   38 +++++++++++++++-----------
+ mm/truncate.c           |   43 +++++++++++++----------------
+ mm/vmscan.c             |    3 +-
+ 12 files changed, 195 insertions(+), 104 deletions(-)
+
+Hugh
