@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2E23A1115
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3754B3A1116
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236349AbhFIKbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:31:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54454 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235588AbhFIKbn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:31:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623234589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AJKYvOGfDayI4ypz9NAHeg8C4iNhTE3Xb47rb4M/evg=;
-        b=iIdlpVCchbbkxBRywuUDJlDowGg9GdpTNo5wrI33rKD4x1KEDb6POAqKcXdtuFz/4K0u3U
-        90c6XqWR3KAmunMB9x/3e9Z3/jleBKZCiJDpE4xPL+5NPWfzNplsPe0JKLrP5S20kh2E2Z
-        RdNW3lowlwm5h9iZ7Ht09rOh1yzcko0=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-PmF0IuE-MV6PWkKVZkA2aw-1; Wed, 09 Jun 2021 06:29:47 -0400
-X-MC-Unique: PmF0IuE-MV6PWkKVZkA2aw-1
-Received: by mail-wr1-f70.google.com with SMTP id m27-20020a056000025bb0290114d19822edso10572309wrz.21
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:29:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=AJKYvOGfDayI4ypz9NAHeg8C4iNhTE3Xb47rb4M/evg=;
-        b=tsxA7I5z8uW/qrWgulQzDrbKOcNl4YwNVALY4uXU0ckidZ67VeHJUsOpaaVcQNH6ke
-         PC29f6ZZSNibPS5JdANK6r0vSEGNEVmsLllyNcbYhWYaqKP6o0bFxMowICAmCwOs2Lgb
-         LLG2YVVBH9fZx9GwE1Y/gYNCMwziurKeKwUWfS851yL8M73tgG20hG172Lziv7KhuGYD
-         eUvIg67w5UK/X6SmcNOaEB5JFJ3ZT4Q9ao7PJ7OFi3kXRAG/lfLTeZbD9u7XGheicuoa
-         OmpeLYbSKueDyCUYtiGkPCM0s+g8jQs+1EbCq4TNor6Qa8Vl1ATWJD1WN378IxWniHnv
-         PIDA==
-X-Gm-Message-State: AOAM533/UrBebI0ICVNnj5QGl7K6rhFW+tTOQdhqOx3i4Y5AH7f8FmjZ
-        8xVSTNS0iOxJCTGnpH7wr0NxWBLPWDh/+3vNhLHZn+PEZAoXKgD0wOoIq6OTm0CS5K+i8ur22UO
-        vB9efXG1tAwNAyW6wAeN+XDKq/kXT6N9Ny2CZvyMvjcHNZ3v3IpjbxP/jIvZPp6N2znLejH9C
-X-Received: by 2002:a7b:c7cd:: with SMTP id z13mr26158573wmk.54.1623234586795;
-        Wed, 09 Jun 2021 03:29:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxCfBKsc2hGpGgzPI6TcBFUmWxmoZcYpHa6oSIzEs8X7cR/V+42wF1QK1U6zdDyobK3zOUdiQ==
-X-Received: by 2002:a7b:c7cd:: with SMTP id z13mr26158555wmk.54.1623234586577;
-        Wed, 09 Jun 2021 03:29:46 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
-        by smtp.gmail.com with ESMTPSA id y8sm5616010wmi.45.2021.06.09.03.29.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 03:29:46 -0700 (PDT)
-Subject: Re: [PATCH] mm/page_alloc: fix counting of managed_pages
-To:     Liu Shixin <liushixin2@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        yangerkun <yangerkun@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210527125707.3760259-1-liushixin2@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <24751c12-b43e-7860-015b-09d204e6e397@redhat.com>
-Date:   Wed, 9 Jun 2021 12:29:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20210527125707.3760259-1-liushixin2@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S236751AbhFIKcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40580 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236561AbhFIKcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 06:32:46 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81C06601FC;
+        Wed,  9 Jun 2021 10:30:52 +0000 (UTC)
+Received: from 82-132-234-177.dab.02.net ([82.132.234.177] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lqvU2-006SNj-7g; Wed, 09 Jun 2021 11:30:50 +0100
+Date:   Wed, 09 Jun 2021 11:30:46 +0100
+Message-ID: <875yynz5wp.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v14 1/8] arm64: mte: Handle race when synchronising tags
+In-Reply-To: <20210607110816.25762-2-steven.price@arm.com>
+References: <20210607110816.25762-1-steven.price@arm.com>
+        <20210607110816.25762-2-steven.price@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 82.132.234.177
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.05.21 14:57, Liu Shixin wrote:
-> The commit f63661566fad (mm/page_alloc.c: clear out zone->lowmem_reserve[]
-> if the zone is empty) clear out zone->lowmem_reserve[] if zone is empty.
-> But when zone is not empty and sysctl_lowmem_reserve_ratio[i] is set to zero,
-> zone_managed_pages(zone) is not counted in the managed_pages either. This is
-> inconsistent with the description of lowmen_reserve, so fix it.
+On Mon, 07 Jun 2021 12:08:09 +0100,
+Steven Price <steven.price@arm.com> wrote:
 > 
-> Fixes: f63661566fad ("mm/page_alloc.c: clear out zone->lowmem_reserve[] if the zone is empty")
-> Reported-by: yangerkun <yangerkun@huawei.com>
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> mte_sync_tags() used test_and_set_bit() to set the PG_mte_tagged flag
+> before restoring/zeroing the MTE tags. However if another thread were to
+> race and attempt to sync the tags on the same page before the first
+> thread had completed restoring/zeroing then it would see the flag is
+> already set and continue without waiting. This would potentially expose
+> the previous contents of the tags to user space, and cause any updates
+> that user space makes before the restoring/zeroing has completed to
+> potentially be lost.
+> 
+> Since this code is run from atomic contexts we can't just lock the page
+> during the process. Instead implement a new (global) spinlock to protect
+> the mte_sync_page_tags() function.
+> 
+> Fixes: 34bfeea4a9e9 ("arm64: mte: Clear the tags when a page is mapped in user-space with PROT_MTE")
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Steven Price <steven.price@arm.com>
 > ---
->   mm/page_alloc.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
+>  arch/arm64/kernel/mte.c | 20 +++++++++++++++++---
+>  1 file changed, 17 insertions(+), 3 deletions(-)
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index aaa1655cf682..49a2efce5a84 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8061,14 +8061,14 @@ static void setup_per_zone_lowmem_reserve(void)
->   			unsigned long managed_pages = 0;
->   
->   			for (j = i + 1; j < MAX_NR_ZONES; j++) {
-> -				if (clear) {
-> -					zone->lowmem_reserve[j] = 0;
-> -				} else {
-> -					struct zone *upper_zone = &pgdat->node_zones[j];
-> +				struct zone *upper_zone = &pgdat->node_zones[j];
-> +
-> +				managed_pages += zone_managed_pages(upper_zone);
->   
-> -					managed_pages += zone_managed_pages(upper_zone);
-> +				if (clear)
-> +					zone->lowmem_reserve[j] = 0;
-> +				else
->   					zone->lowmem_reserve[j] = managed_pages / ratio;
-> -				}
->   			}
->   		}
->   	}
-> 
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index 125a10e413e9..a3583a7fd400 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -25,6 +25,7 @@
+>  u64 gcr_kernel_excl __ro_after_init;
+>  
+>  static bool report_fault_once = true;
+> +static DEFINE_SPINLOCK(tag_sync_lock);
+>  
+>  #ifdef CONFIG_KASAN_HW_TAGS
+>  /* Whether the MTE asynchronous mode is enabled. */
+> @@ -34,13 +35,22 @@ EXPORT_SYMBOL_GPL(mte_async_mode);
+>  
+>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+>  {
+> +	unsigned long flags;
+>  	pte_t old_pte = READ_ONCE(*ptep);
+>  
+> +	spin_lock_irqsave(&tag_sync_lock, flags);
 
-Acked-by: David Hildenbrand <david@redhat.com>
+having though a bit more about this after an offline discussion with
+Catalin: why can't this lock be made per mm? We can't really share
+tags across processes anyway, so this is limited to threads from the
+same process.
 
--- 
+I'd also like it to be documented that page sharing can only reliably
+work with tagging if only one of the mappings is using tags.
+
 Thanks,
 
-David / dhildenb
+	M.
 
+-- 
+Without deviation from the norm, progress is not possible.
