@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6296C3A1A49
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFADD3A1A50
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235633AbhFIP7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbhFIP7x (ORCPT
+        id S237008AbhFIQBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:01:11 -0400
+Received: from mail-pf1-f175.google.com ([209.85.210.175]:36506 "EHLO
+        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232332AbhFIQBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:59:53 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82D3C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 08:57:58 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id go18-20020a17090b03d2b029016e4ae973f7so551314pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 08:57:58 -0700 (PDT)
+        Wed, 9 Jun 2021 12:01:08 -0400
+Received: by mail-pf1-f175.google.com with SMTP id c12so18742983pfl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 08:59:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to;
-        bh=Alth/BnqPabXAcOP6iiZgjPgxn9KJP9kpbgHCcNlEhU=;
-        b=NNIKipK4EZO9klGCVH7dDoprFVSWEl2BgyedhzlD/97IdKcP1GDciTfxp+beOlK7+v
-         nLCrFZaMaJmrz057XpVL4FdEeionaxA4Kw10ySs3DcGLpVHydgCFGp3qyQ0oY4ay9m5l
-         YVBahMa9KMcdnPgLc+vPSNvjphAwR/pJqqZB0=
+        bh=L6VHlIQYZGfc9Oymx2i9mexa/MTWbQdZjRg1J53X4k4=;
+        b=F16Pip1sEitsza5evjKZsSW4yqVV6vlOskVf2hsoR5zF39jUjM8yOpbQlyNMbnGuWN
+         pXhFXQBKMzNFfpisMPgq49dM+RryqRW/E6d/np1unQ8zv6tZy7cHqNWp6J1+gPmTd0ue
+         jGsY3BKrJL2VSvHOhqoD2/bTzRMx8wPBfzwaA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to;
-        bh=Alth/BnqPabXAcOP6iiZgjPgxn9KJP9kpbgHCcNlEhU=;
-        b=G6OIf4/8fG9AIkAWx6vtotoRDYhmGzskJVQTzIlbE1tNEPtDesNiyTcfvjJ9wZd0dy
-         RS2q3XlVeFNFj2wr/K3vocl9u+k237N4o9uIwLTLVoM6gT9mkVjFHBFH6Gnzg+DGExtc
-         hvu0MOfng17bqfkQRUdb/z04P9AL2z942N80NATlDPFRc7YuX7IYugOkke8TgUR6hs07
-         RkQnAkEiVhvQNvPITm/aP5trbtKs575IOdXIuCjtZ3YlXDX7CPQkoeJbfr6k5arifc+2
-         eSK5lhu/1eLr5q5SVG3lCqJodhPbY3LgTyWZ9C+Y3Z/cmz/PWZNvGu8nXfSDwo5Jj7v/
-         sjaw==
-X-Gm-Message-State: AOAM531VYwGHM9HfXKbJPq8R4EnQIZz694uFvsQpo9zjNQkhBV3yu7y7
-        zouwNWh004rtsVFYwNuWXn4kIA==
-X-Google-Smtp-Source: ABdhPJxnl69g7JoBINLEkXH28TrvJnWaIEEMzN3JyktJgQbT8QEyRlKGCoeeZQbdWeEEFWYGlCwA/g==
-X-Received: by 2002:a17:902:a50c:b029:fe:c053:4ec5 with SMTP id s12-20020a170902a50cb02900fec0534ec5mr394986plq.31.1623254278125;
-        Wed, 09 Jun 2021 08:57:58 -0700 (PDT)
+        bh=L6VHlIQYZGfc9Oymx2i9mexa/MTWbQdZjRg1J53X4k4=;
+        b=a4Q1PtBcsdD+Z3RcD4Q7anik8tKLbeNsDMok6+lZxVSaBGTjuYTI1a74GiUo5Ci85h
+         2HZCMnUE1ucBdms6ezaznqNyDwdB0j0DUgiK7iwqqS+lUdIm7kwmYiAKMLFkQM56dCo5
+         yVbEKpxdtzSF9DVBvEoufgJ3b2Ibuv052FA4HDBXLottUbEXhpiyKpwsDJH426wpmB5z
+         DRZff0Pqj9jxKI1gfECQLUz0Fzbeof8ti9+XzwpQJueH9e5JgJ411x49YXpTlDG2bE46
+         D/WXeLW9WQlDNPgKGtrVp7d4AxxkFof4lyb7ZooKCwfspZeTtGkm645/WiWR92oRDEgq
+         cC7g==
+X-Gm-Message-State: AOAM5303TYcvWOzVbQPADOLSeNJ7XClPLuSWE5nCwdIu0GKcczBgmRKi
+        zHjJnwmNS+ULIcXdX5ebkiyfoA==
+X-Google-Smtp-Source: ABdhPJzkp8D0DsmXbEMjNbEMt2EVjWpO4lXSpHpfBYA4Tdc/1SKA6K5NA6MrrB3wVvvHWPeC2tEmXQ==
+X-Received: by 2002:a65:4605:: with SMTP id v5mr356437pgq.237.1623254294096;
+        Wed, 09 Jun 2021 08:58:14 -0700 (PDT)
 Received: from lbrmn-lnxub113.ric.broadcom.net ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id h6sm144263pjs.15.2021.06.09.08.57.56
+        by smtp.gmail.com with ESMTPSA id f139sm79525pfa.38.2021.06.09.08.58.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 08:57:57 -0700 (PDT)
-Subject: Re: [PATCH] mailbox: bcm-flexrm-mailbox: Remove redundant dev_err
- call in flexrm_mbox_probe()
+        Wed, 09 Jun 2021 08:58:13 -0700 (PDT)
+Subject: Re: [PATCH] mailbox: bcm2835: Remove redundant dev_err call in
+ bcm2835_mbox_probe()
 To:     Zhihao Cheng <chengzhihao1@huawei.com>, jaswinder.singh@linaro.org,
         eric@anholt.net, jassisinghbrar@gmail.com
 Cc:     bcm-kernel-feedback-list@broadcom.com,
         linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        yukuai3@huawei.com
-References: <20210601082834.129587-1-chengzhihao1@huawei.com>
- <cfa3162b-32eb-487a-d01e-6d69293c9965@huawei.com>
+        linux-arm-kernel@lists.infradead.org, yukuai3@huawei.com
+References: <20210601082454.127810-1-chengzhihao1@huawei.com>
+ <226660de-e502-68b8-131d-27552ccccfd0@huawei.com>
 From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <e046f8fd-93ef-89da-3d60-96854c229d67@broadcom.com>
-Date:   Wed, 9 Jun 2021 08:57:44 -0700
+Message-ID: <ca893045-7325-d089-c4b2-5d089a0a0bd8@broadcom.com>
+Date:   Wed, 9 Jun 2021 08:58:11 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <cfa3162b-32eb-487a-d01e-6d69293c9965@huawei.com>
+In-Reply-To: <226660de-e502-68b8-131d-27552ccccfd0@huawei.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000a7a0fb05c4575619"
+        boundary="000000000000993b6005c457571f"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000a7a0fb05c4575619
+--000000000000993b6005c457571f
 Content-Type: text/plain; charset=UTF-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 
 On 2021-06-09 5:13 a.m., Zhihao Cheng wrote:
-> 在 2021/6/1 16:28, Zhihao Cheng 写道:
+> 在 2021/6/1 16:24, Zhihao Cheng 写道:
 >> There is a error message within devm_ioremap_resource
 >> already, so remove the dev_err call to avoid redundant
 >> error message.
@@ -82,27 +79,27 @@ On 2021-06-09 5:13 a.m., Zhihao Cheng wrote:
 >> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 Acked-by: Scott Branden <scott.branden@broadcom.com>
 >> ---
->>   drivers/mailbox/bcm-flexrm-mailbox.c | 1 -
+>>   drivers/mailbox/bcm2835-mailbox.c | 1 -
 >>   1 file changed, 1 deletion(-)
 >>
->> diff --git a/drivers/mailbox/bcm-flexrm-mailbox.c b/drivers/mailbox/bcm-flexrm-mailbox.c
->> index b4f33dc399a0..78073ad1f2f1 100644
->> --- a/drivers/mailbox/bcm-flexrm-mailbox.c
->> +++ b/drivers/mailbox/bcm-flexrm-mailbox.c
->> @@ -1523,7 +1523,6 @@ static int flexrm_mbox_probe(struct platform_device *pdev)
+>> diff --git a/drivers/mailbox/bcm2835-mailbox.c b/drivers/mailbox/bcm2835-mailbox.c
+>> index 39761d190545..86b7ce3549c5 100644
+>> --- a/drivers/mailbox/bcm2835-mailbox.c
+>> +++ b/drivers/mailbox/bcm2835-mailbox.c
+>> @@ -157,7 +157,6 @@ static int bcm2835_mbox_probe(struct platform_device *pdev)
 >>       mbox->regs = devm_ioremap_resource(&pdev->dev, iomem);
 >>       if (IS_ERR(mbox->regs)) {
 >>           ret = PTR_ERR(mbox->regs);
 >> -        dev_err(&pdev->dev, "Failed to remap mailbox regs: %d\n", ret);
->>           goto fail;
+>>           return ret;
 >>       }
->>       regs_end = mbox->regs + resource_size(iomem);
+>>   
 > 
 > friendly ping.
 > 
 
 
---000000000000a7a0fb05c4575619
+--000000000000993b6005c457571f
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -173,13 +170,13 @@ lLX9hl3iEj5SBgkQqCbbnoE+ZjjKfqt7ED166WhgyQWNrl39yLcvLj+JRUB3RuvXKZjH0NQEEBII
 wZBDSkyneykLt3CBNIhSCTxKM6OWxVp936ALSa5K9FNy00TeWSpokR6NmzaW8VD/EjTgvqAxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgx9oXSJpKniO4dS
-Gk8wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGEwBBhsAOZBNdN1zrIKL1PIeonO
-yU1hfAucqEkW6Fh9MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDYwOTE1NTc1OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+Gk8wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJwoPFmBeK5pGE8TRAIY5Mk05g4H
+YtJCv/h877sRn4KWMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDYwOTE1NTgxNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQAscUQVcKbce5palvA8/PP/P6MY2gntZbPiHmg51taqGaoj
-pqrF/IYceTqyumuWVQ6ngdiiqBQG/bb6xQGtv3OZxJyeamNGrZN1xXHHEbvLyYc3JjyPji5qpqge
-HUMXuUWS94xozRKaCzkZq+h28n0x6EpGwePksT28ZSDK5M1qC/M8Ru62rcNsShJidwHJwf53J90h
-I5t/CgAdnX71SHm7JyF3Ocn/mPyBMvvGxZEBXxEqNybk+oJhmIXH6Jq3tHrHQ/KagPnZDwjV+ucY
-ZPyfchDxemxNAiNd4eEckvThvOElvusfmIsf8oGfMwB3DUjuuUd+E9R7AMyzIev/QVc9
---000000000000a7a0fb05c4575619--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBVFCSoiSrnnyj3izQV6Uq+iAOzuaCe4AP+QxfLHrXD8W5r
+y0fTox+bhArnIphKGfStncU5zAaogdtgzLdssFIrR8t2+RaM59ad69SMua1wpm927BAE6rq4N6aY
+3Vd3P9SdMvejovo8OCWzkqqcxMw3AWm+HnnbJ7pYz5uJhiIHyUy7Oywa1D6u96yJ73P30Re2G0NK
+WHeQT/y5RnXdFwEDCrUZRmcdvSOhzsOAgbeARLQL9GjHLcFy0lUJWCwXguU4Uzk6/5/DL90WNQVt
+98+rzYSo0Phlv0jVhssYXyV7IdrSuqQ4M0NISEDIv2RYogT6wv0YXGjni2oq1gotWcHq
+--000000000000993b6005c457571f--
