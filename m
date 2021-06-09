@@ -2,65 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0BA3A10E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C42873A10EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235586AbhFIKNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:13:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53224 "EHLO mail.kernel.org"
+        id S238690AbhFIKOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:14:12 -0400
+Received: from mga14.intel.com ([192.55.52.115]:55300 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234217AbhFIKNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:13:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE6FE61029;
-        Wed,  9 Jun 2021 10:11:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623233479;
-        bh=VmFXhB0ZrpuqFDd1YXmA4y9nYU9ndBAjpIJbOp94CPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NtfwcnVlN4bHOcewFjusI7hQqsuJL8DKilDDdA8FEXpRKnPCKtMH5AVxzFdFXMZaF
-         FDlVjiqNNKiuSZ1WmC1W9BfMQkfaYx2tjXvsrA9TWmRQSD+FuJHWOMlyXH9L03aTMz
-         E8R15pEwmp++N/O6RLTl/jonX0uSK4oHiwMy+mCY=
-Date:   Wed, 9 Jun 2021 12:11:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8712: Remove unnecessary alias of printk()
-Message-ID: <YMCTxLcE/KF+8R5u@kroah.com>
-References: <20210606034038.9657-1-fmdefrancesco@gmail.com>
+        id S238713AbhFIKOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 06:14:09 -0400
+IronPort-SDR: 7lmB7JYsx9n790P0+gUANRiW4jwaQjKn+3e0mNs2dEEPjgJeVko3JOgYGdizNPz0Wh5PLJY1wp
+ 1XFrAyRYthFA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="204856276"
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="204856276"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 03:12:15 -0700
+IronPort-SDR: pey1hy4lWcbNXtApZ+gklHNM8u9X4ImYuAMexfsr9+hmL4C+xcRF/RKzUFwuoDxCB/0+SHwX12
+ u8u/HZp9hq1w==
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="402397538"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 03:12:12 -0700
+Received: by lahna (sSMTP sendmail emulation); Wed, 09 Jun 2021 13:12:10 +0300
+Date:   Wed, 9 Jun 2021 13:12:10 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] pinctrl: intel: fix NULL pointer deref
+Message-ID: <YMCT+izizEg0gPLD@lahna.fi.intel.com>
+References: <20210609062722.9132-1-henning.schild@siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210606034038.9657-1-fmdefrancesco@gmail.com>
+In-Reply-To: <20210609062722.9132-1-henning.schild@siemens.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 05:40:38AM +0200, Fabio M. De Francesco wrote:
-> This module defines four alias for printk(). Removed them
-> all, because they are not used anywhere else in the driver.
-> Converted the only exception to the explicit use of printk().
+Hi,
+
+On Wed, Jun 09, 2021 at 08:27:22AM +0200, Henning Schild wrote:
+> match could be NULL in which case we do not go ACPI after all
 > 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> Signed-off-by: Henning Schild <henning.schild@siemens.com>
 > ---
->  drivers/staging/rtl8712/rtl8712_cmd.c   |  2 +-
->  drivers/staging/rtl8712/rtl871x_debug.h | 23 -----------------------
->  2 files changed, 1 insertion(+), 24 deletions(-)
+>  drivers/pinctrl/intel/pinctrl-intel.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/staging/rtl8712/rtl8712_cmd.c b/drivers/staging/rtl8712/rtl8712_cmd.c
-> index ff3cb09c57a6..e94604cb71fd 100644
-> --- a/drivers/staging/rtl8712/rtl8712_cmd.c
-> +++ b/drivers/staging/rtl8712/rtl8712_cmd.c
-> @@ -55,7 +55,7 @@ static void check_hw_pbc(struct _adapter *padapter)
->  		/* Here we only set bPbcPressed to true
->  		 * After trigger PBC, the variable will be set to false
->  		 */
-> -		DBG_8712("CheckPbcGPIO - PBC is pressed !!!!\n");
-> +		printk(KERN_DEBUG "CheckPbcGPIO - PBC is pressed !!!!\n");
+> diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+> index 85750974d182..dca17bb76cac 100644
+> --- a/drivers/pinctrl/intel/pinctrl-intel.c
+> +++ b/drivers/pinctrl/intel/pinctrl-intel.c
+> @@ -1601,12 +1601,12 @@ const struct intel_pinctrl_soc_data *intel_pinctrl_get_soc_data(struct platform_
+>  	const struct intel_pinctrl_soc_data *data = NULL;
+>  	const struct intel_pinctrl_soc_data **table;
+>  	struct acpi_device *adev;
+> +	const void *match;
+>  	unsigned int i;
+>  
+>  	adev = ACPI_COMPANION(&pdev->dev);
+> -	if (adev) {
+> -		const void *match = device_get_match_data(&pdev->dev);
+> -
+> +	match = device_get_match_data(&pdev->dev);
 
-As an add-on patch, you should move this to netdev_dbg() or dev_dbg().
+Actually we don't even call intel_pinctrl_get_soc_data() if the ACPI ID
+is not listed in the corresponding driver's module table. So I don't
+think match can ever be NULL.
 
-thanks,
-
-greg k-h
+But feel free to prove me wrong ;-)
