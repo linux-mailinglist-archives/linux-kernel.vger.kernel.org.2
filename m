@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342D63A1BD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907983A1BD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbhFIRdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:33:10 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:38459 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhFIRdI (ORCPT
+        id S231249AbhFIRem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:34:42 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:42784 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhFIRek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:33:08 -0400
-Received: by mail-ot1-f50.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so11098106otk.5;
-        Wed, 09 Jun 2021 10:30:57 -0700 (PDT)
+        Wed, 9 Jun 2021 13:34:40 -0400
+Received: by mail-lj1-f175.google.com with SMTP id r16so856019ljk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 10:32:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0MqGGesoGQuVnrKk3vQolI1WP+Da/YReiXXu0+F/PoI=;
+        b=oqrytQIghczJbaoOnbzSWOJS9CfMcjLc6HQWxzBmqdZkwma71siufdGQgIdRW/JXvf
+         aQ3ZQl1ZJqsCjf2non1uW8mv9R3ZZakVZGUc6rnDKTP49pOI7yiMJkZ17lpteOR7W5Dk
+         0BwHWXG2hq4XKRcsmjqTqkbij0Db7HHOsbZyl/8CK3SKIsT4wLExXGcYUzFTrNOWQd2Z
+         ATAPBdQQ7QUiQgT1RPAmrira+fA/LePyUxU5OebV2djq5Akg1bCRIQu/FREs/CUxO6s4
+         /xqfs/mpZU90BtBFalot+yiDh2ptEj6Qlc3StsLT1Ydf33hnjNPBmgzf+blADrY/8kcC
+         x44A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TFcJ7rQXnzhGAm63jAT5SpqjhtSTOISSCQfC1ETOR3w=;
-        b=qvrqm6AokDjhT8iK0j9CVN7tRjmo+VJu7MCt8Y+EdCE6NO5JItI21qt0obvlhb516r
-         EEQgD/xtwXty3y6ZzGEEtX346NdsZPaIRlom0la80cSh1hDGVLDMSMEsD+VF5V1yVK1m
-         kkcPi2C4tlJGgpvu+NFN6KbGfyg64RAaMRAAlcxYq8MKJeLvXuXx0Ewc+SMCye4dPzDi
-         iRmQV8dH/yvHQN1zNP87WuK5GY3r389VxnsO4QkaZCxyMInRhiWJgEaZTlwev/h6U64E
-         +BMJBxypLjlUuMUGYjHmCXtManb5BQSxbSX03lEmHYs6rNhFLDQstjCrC+NHRj09UO8t
-         XQtQ==
-X-Gm-Message-State: AOAM5314rGuoOANOHmxIYafIPXhyIAZwd9KslwS3fp7v1GR+osVyhR7H
-        koMWavfPNqa0uFy8KfuyIvsM6x9rzaglwQT7R9qRuRtI
-X-Google-Smtp-Source: ABdhPJzQH4LkJfUDW3AILGfrSgUnDqTM6XhyjAUCmq3vRVPBEq7atuZi/f2UOt8kbQERruECPHLUlOKndmiROD2SwZ8=
-X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr458727otb.206.1623259857222;
- Wed, 09 Jun 2021 10:30:57 -0700 (PDT)
+        bh=0MqGGesoGQuVnrKk3vQolI1WP+Da/YReiXXu0+F/PoI=;
+        b=HCNE+314WEEVBxCTZOHPE/NiIb9keU/SGlGT+e+SpgHxLaEg+Dxi8aOvXfyglaDnDK
+         9EmdlzJDH/gp/+q+4Y6OdSjYgPGfNXh9hvpjTDWlg53o7IsqmSj5ON7H3Hu5HhsRWpG7
+         CaXO4o+t5AmqJSsY1zlHcmcSO3tom9xnmvzDbR+IVIKZZ6x/78sUqPW51Zl7rIzZrvYU
+         JIyMV/1jq0mMqC8/T7yp4Xg3Ba6OEd5gMgFAwN07xLbuU/4o+IUeFMjzcns++7vQnuxd
+         ZkNx2jnGvOcXIaD1Mli39CDOjXp2KMqH8JAcdqP839rjV0Q3noHAXxJcKOEVsvFn7CdN
+         nzyw==
+X-Gm-Message-State: AOAM530slCBZTEqqWHG7nf5B2hAUsCyUY7YM3QM7FIEHb8hV3qkSzZiC
+        HDjxUSaMmqroW/NrAHl3X3UDoIIMijrsttxxQfZV5A==
+X-Google-Smtp-Source: ABdhPJzZP34kpS/OBBYpUc74IfvBrOBaQi8ta6LeCvRlqhhJBcG+k+md04w3oN828TXL0lj9FHnQWanfCb8lNJHvRjk=
+X-Received: by 2002:a2e:3c06:: with SMTP id j6mr708333lja.495.1623259884911;
+ Wed, 09 Jun 2021 10:31:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210528081417.31474-1-puwen@hygon.cn>
-In-Reply-To: <20210528081417.31474-1-puwen@hygon.cn>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 9 Jun 2021 19:30:45 +0200
-Message-ID: <CAJZ5v0j-9zZvuSyKtRYePHE6aSr824SZz=E6VS_Ysv3cByGZyQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/cstate: Allow ACPI C1 FFH MWAIT use on Hygon systems
-To:     Pu Wen <puwen@hygon.cn>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
+References: <alpine.LNX.2.20.13.2106070956310.7184@monopod.intra.ispras.ru>
+ <CANpmjNMwq6ENUtBunP-rw9ZSrJvZnQw18rQ47U3JuqPEQZsaXA@mail.gmail.com>
+ <20210607152806.GS4397@paulmck-ThinkPad-P17-Gen-1> <YL5Risa6sFgnvvnG@elver.google.com>
+ <CANpmjNNtDX+eBEpuP9-NgT6RAwHK5OgbQHT9b+8LZQJtwWpvPg@mail.gmail.com>
+ <YL9TEqealhxBBhoS@hirez.programming.kicks-ass.net> <20210608152851.GX18427@gate.crashing.org>
+ <CANpmjNPJaDT4vBqkTw8XaRfKgDuwh71qmrvNfq-vx-Zyp4ugNg@mail.gmail.com>
+ <20210609153133.GF18427@gate.crashing.org> <CANpmjNPq3NBhi_pFpNd6TwXOVjw0LE2NuQ63dWZrYSfEet3ChQ@mail.gmail.com>
+ <20210609171419.GI18427@gate.crashing.org>
+In-Reply-To: <20210609171419.GI18427@gate.crashing.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 9 Jun 2021 10:31:13 -0700
+Message-ID: <CAKwvOdn0t-z9pa5csvqSEJ1LLnwef8HQwZzfJgdkddN6GVZpXA@mail.gmail.com>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Marco Elver <elver@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 10:44 AM Pu Wen <puwen@hygon.cn> wrote:
+On Wed, Jun 9, 2021 at 10:20 AM Segher Boessenkool
+<segher@kernel.crashing.org> wrote:
 >
-> Hygon systems support the Monitor/Mwait instructions and these can be used
-> for ACPI C1 in the same way as on AMD and Intel systems.
+> On Wed, Jun 09, 2021 at 06:13:00PM +0200, Marco Elver wrote:
+> > On Wed, 9 Jun 2021 at 17:33, Segher Boessenkool
+> > <segher@kernel.crashing.org> wrote:
+> > [...]
+> > > > An alternative design would be to use a statement attribute to only
+> > > > enforce (C) ("__attribute__((mustcontrol))" ?).
+> > >
+> > > Statement attributes only exist for empty statements.  It is unclear how
+> > > (and if!) we could support it for general statements.
+> >
+> > Statement attributes can apply to anything -- Clang has had them apply
+> > to non-empty statements for a while.
 >
-> The BIOS declares a C1 state in _CST to use FFH and CPUID_Fn00000005_EDX
-> is non-zero on Hygon systems.
->
-> Allow ffh_cstate_init() to succeed on Hygon systems to default using FFH
-> MWAIT instead of HALT for ACPI C1.
->
-> Tested successfully on Hygon Fam18h systems.
->
-> Signed-off-by: Pu Wen <puwen@hygon.cn>
-> ---
->  arch/x86/kernel/acpi/cstate.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
-> index 49ae4e1ac9cd..7de599eba7f0 100644
-> --- a/arch/x86/kernel/acpi/cstate.c
-> +++ b/arch/x86/kernel/acpi/cstate.c
-> @@ -197,7 +197,8 @@ static int __init ffh_cstate_init(void)
->         struct cpuinfo_x86 *c = &boot_cpu_data;
->
->         if (c->x86_vendor != X86_VENDOR_INTEL &&
-> -           c->x86_vendor != X86_VENDOR_AMD)
-> +           c->x86_vendor != X86_VENDOR_AMD &&
-> +           c->x86_vendor != X86_VENDOR_HYGON)
->                 return -1;
->
->         cpu_cstate_entry = alloc_percpu(struct cstate_entry);
-> --
+> First off, it is not GCC's problem if LLVM decides to use a GCC
+> extension in some non-compatible way.
 
-Applied as 5.14 material, thanks!
+Reminds me of
+https://lore.kernel.org/lkml/CAHk-=whu19Du_rZ-zBtGsXAB-Qo7NtoJjQjd-Sa9OB5u1Cq_Zw@mail.gmail.com/
+-- 
+Thanks,
+~Nick Desaulniers
