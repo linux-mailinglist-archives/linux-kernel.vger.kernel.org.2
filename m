@@ -2,112 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20F73A1A1D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB85F3A1A2A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236875AbhFIPud convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 11:50:33 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20052 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236081AbhFIPu0 (ORCPT
+        id S236732AbhFIPw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:52:57 -0400
+Received: from mail-yb1-f172.google.com ([209.85.219.172]:33690 "EHLO
+        mail-yb1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235827AbhFIPwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:50:26 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-226-GQipw093PZmHTRm0NPY0xg-1; Wed, 09 Jun 2021 16:48:28 +0100
-X-MC-Unique: GQipw093PZmHTRm0NPY0xg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.18; Wed, 9 Jun 2021 16:48:27 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Wed, 9 Jun 2021 16:48:27 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jason Gunthorpe' <jgg@nvidia.com>
-CC:     'Chuck Lever III' <chuck.lever@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Tom Talpey <tom@talpey.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Honggang LI <honli@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-Subject: RE: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
- default for kernel ULPs
-Thread-Topic: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
- default for kernel ULPs
-Thread-Index: AQHXXS5Xb0qnCJaKiUGWJCqTq1wvwKsLs9tw///62wCAABWUYP//83AAgAAWdEA=
-Date:   Wed, 9 Jun 2021 15:48:27 +0000
-Message-ID: <1a3512e2891642a193004ee4450a11dd@AcuMS.aculab.com>
-References: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
- <20210609125241.GA1347@lst.de>
- <6b370a8fde1e406192d37c748b79ad01@AcuMS.aculab.com>
- <ACCBE9AD-9A59-4300-A872-69EDBB4D4203@oracle.com>
- <25c32f2a147a4dff8b7d6577286d7954@AcuMS.aculab.com>
- <20210609150922.GA1109697@nvidia.com>
-In-Reply-To: <20210609150922.GA1109697@nvidia.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 9 Jun 2021 11:52:55 -0400
+Received: by mail-yb1-f172.google.com with SMTP id f84so36218583ybg.0;
+        Wed, 09 Jun 2021 08:51:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aBTN9nJMcjuczcYEKzyMHwRihscHxKS/kDo9+PJCmN4=;
+        b=ms5C9nDO22l6b82s4qeFr0cb0SJcO5eHC60T8kui+Dd57hCUfr0CDSqt24AliiLEpd
+         BeoldJeG+yuqBDfHZYSJ8BG5U3Bk29hd8XmdTZ0blOOYvBP6dJveoUfEMbbXATMY4Mx+
+         OdUjHYuLznMpzbiw+5g4mMdoomZbXTPSx86iVLEFjjwsPYUywMzbQWDsi/vO7u1bd9Vx
+         eGhkD25LkM1UIsaoef92MQlQLoqV4AlQ6UaTYqBxhpuD/TelmGCkQEZLpLTrQu9eczUt
+         Pmu5sFbdnYxiX14buLaBbfGgGF50zh8TKGW3jkB51X6KP7CiIaeulyNckyS5NhnGfsQH
+         cQiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aBTN9nJMcjuczcYEKzyMHwRihscHxKS/kDo9+PJCmN4=;
+        b=V2KfjvSnrdO44DQ/n+lIwVy5DDkxivtadqdizV56WwFlAWAlREso2pKOWnwUeKxy70
+         L5UIcn7+O+pELYAKGCCLobQJpT5NInNFkxGU6dGyzH1QT5Rt4wOVy6LymMeVQvVbWsgD
+         6hFfizpV3ntKpxhCc2tFbZcNBLZdsK5ebeXz2m4WifMT1pA6Q+2wCoI1R68ovonVYAeJ
+         +DWIqFORQIzA5XZVULtwaWu5/W7qseDoWZMcdq9dp6rzD0zDaJ6ZyCPm6OIqlvoKBUT8
+         NZ2/+g0wICV7dihIc++3QkWXimn8or/gzEOW7T6EVQ5MUyUFgqq5qQDnarQZ/muOGw5b
+         joCA==
+X-Gm-Message-State: AOAM531NJLNBXb8awZ4djujZwaRih0/1q43Da6AkTOZBPu7WhCbmgAxG
+        jSHNRlhxNu3ED9rDueT48vEj5oasrHIMfNeVp9GVjwxdzt0=
+X-Google-Smtp-Source: ABdhPJzdYIkJvQwfRiIEk/K+MGk13mZ6eCQ5fCyo7dydKfGS8Ok1LiDkYnwNrOGFbrpLtbz8UGHSY6SGZyf/firFwSg=
+X-Received: by 2002:a25:743:: with SMTP id 64mr905819ybh.426.1623253800926;
+ Wed, 09 Jun 2021 08:50:00 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210604180933.16754-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210604180933.16754-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVkKhD3kU-DtPzrGfNf4Sn5Ht09Z1N0scwx1XJoG-F6Mg@mail.gmail.com>
+In-Reply-To: <CAMuHMdVkKhD3kU-DtPzrGfNf4Sn5Ht09Z1N0scwx1XJoG-F6Mg@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Wed, 9 Jun 2021 16:49:34 +0100
+Message-ID: <CA+V-a8tOMtS59OoWVK-c=zy2iK_nv_16Xu+2DBcUQPTq7nCa1Q@mail.gmail.com>
+Subject: Re: [PATCH 2/3] soc: renesas: Add support to read LSI DEVID register
+ of RZ/G2{L,LC} SoC's
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe
-> Sent: 09 June 2021 16:09
-> 
-> On Wed, Jun 09, 2021 at 03:05:52PM +0000, David Laight wrote:
-> 
-> > In principle some writel() could generate PCIe write TLP (going
-> > to the target) that have the 'relaxed ordering' bit set.
-> 
-> In Linux we call this writel_relaxed(), though I know of no
-> implementation that sets the RO bit in the TLP based on this, it would
-> be semantically correct to do so.
-> 
-> writel() has strong order requirements and must not generate a RO TLP.
+Hi Geert,
 
-Somewhere I'd forgotten about that :-(
-It usually just allows the compiler and cpu hardware re-sequence
-the bus cycles.
+Thank you for the review.
 
-OTOH I doubt any/many PCIe targets have 'memory' areas that would
-benefit from RO write TLP.
-Especially since everything is organised to use target issued buffer
-copies.
+On Wed, Jun 9, 2021 at 8:27 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Fri, Jun 4, 2021 at 8:09 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add support for reading the LSI DEVID register which is present in
+> > SYSC block of RZ/G2{L,LC} SoC's.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+>
+> Thanks for your patch!
+>
+> > --- a/drivers/soc/renesas/renesas-soc.c
+> > +++ b/drivers/soc/renesas/renesas-soc.c
+> > @@ -56,6 +56,11 @@ static const struct renesas_family fam_rzg2 __initconst __maybe_unused = {
+> >         .reg    = 0xfff00044,           /* PRR (Product Register) */
+> >  };
+> >
+> > +static const struct renesas_family fam_rzg2l __initconst __maybe_unused = {
+> > +       .name   = "RZ/G2L",
+> > +       .reg    = 0x11020a04,
+>
+> Please don't add hardcoded register addresses for new SoCs (i.e. drop
+> ".reg").  The "renesas,r9a07g044-sysc" is always present.
+> And if it were missing, the hardcoded fallback would lead into the
+> classic CCCR/PRR scheme, which is not correct for RZ/G2L...
+>
+I wanted to avoid iomap for the entire sysc block for just a single register.
 
-I'm guessing that the benefits from RO are when the writes hit memory
-that is on a NUMA node or 'differently cached'.
-So writes to once cache line can proceed while earlier writes are
-still waiting for the cache-coherency protocol.
+> > @@ -348,6 +361,25 @@ static int __init renesas_soc_init(void)
+> >                 goto done;
+> >         }
+> >
+> > +       np = of_find_compatible_node(NULL, NULL, "renesas,r9a07g044-sysc");
+> > +       if (np) {
+> > +               of_node_put(np);
+> > +               chipid = ioremap(family->reg, 4);
+>
+> Just use of_iomap(np, 0)...
+>
+will do.
 
-From what I've seen writel() aren't too bad - they are async.
-The real problem is readl().
-The x86 cpu I have use a separate TLP id (I've forgotten the correct
-term) for each cpu core.
-So while multiple cpu can (and do) issue concurrent reads, reads from
-a single cpu happen one TLP at a time - even though it would be legitimate
-for the out-of-order execution unit to issue additional read TLP.
-There are times when you really do have to do PIO buffer reads :-(
+> > +
+> > +               if (chipid) {
+> > +                       product = readl(chipid);
+>
+> ... and add the DEVID offset within the SYSC block here.
+>
+will do.
 
-	David
+Cheers,
+Prabhakar
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+> > +                       iounmap(chipid);
+> > +
+> > +                       if (soc->id && (product & 0xfffffff) != soc->id) {
+> > +                               pr_warn("SoC mismatch (product = 0x%x)\n",
+> > +                                       product);
+> > +                               return -ENODEV;
+> > +                       }
+> > +               }
+> > +
+> > +               goto done;
+> > +       }
+> > +
+> >         /* Try PRR first, then hardcoded fallback */
+> >         np = of_find_compatible_node(NULL, NULL, "renesas,prr");
+> >         if (np) {
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
