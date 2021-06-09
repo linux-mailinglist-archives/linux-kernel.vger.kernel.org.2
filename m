@@ -2,161 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2440A3A0E86
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516AD3A0E83
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237067AbhFIILj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:11:39 -0400
-Received: from mail-wm1-f50.google.com ([209.85.128.50]:52036 "EHLO
-        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236372AbhFIILh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:11:37 -0400
-Received: by mail-wm1-f50.google.com with SMTP id l9so3436151wms.1;
-        Wed, 09 Jun 2021 01:09:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VgaMltfJo1z7GEQx4rEQbem+9M1sDH5NvdC/cDT43co=;
-        b=K38NCOYzmomRJ7HWWg92jzk6WciNFspksJN9K+aaghil/1BPZ56e2OEPgPC/KwR+xx
-         BYPEkKu1yoAHFE83Wm70y+wV7xZAPbxxxZahvpqZwqB2lnJQVbzj9AJhP0PHD6Rv/Lm6
-         5sTL+YZAvkA1npgMW2b8D19Ld7BcREAG4q8crlscPMHV1B2QTzR3nKUp3iUpsRhHOS1b
-         O82AfCmcAM8am9kqWuTwwMug3a4ujAfFw+5Lv/UHECP62uteXLHh5Dn9neuUQjqUVwf5
-         oHl5bLlt7/yKLmjeTioQn5/lOLL5D5aTTSWnUCbwrQ5NKEeJDbi7iJNT8MIx7y1x/WaS
-         zyXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VgaMltfJo1z7GEQx4rEQbem+9M1sDH5NvdC/cDT43co=;
-        b=Kj4csUW1eguLKMj5KXia/ElwEe7RGtmjvwG1zg5EOTsgS1ixdpiAg5AnLsZsVqzMmH
-         X1tq/7T4DW4fySDt+7+SZGAC2FdH2WKDa8XvDTY541Ugl7rYc0ytOv+dEQLAOWuylmR2
-         y5akKHOpp8Mv08Hx/aNAiJbFib43424FcXkLMqPaf8cMVKrjULzTCVxQ7cpxbwlkyD65
-         GVIlcHsRI6NELHS94z+zyboWkxAfnsCh5TTGBH+doVtGn275MtDe4xo7Qa+mB6DPaiVf
-         Ux8TcMdF1WaqWHmMV1Xoau9w52L5RqEzCzDoKAKQZVoqwFYy6PjppsXXH3wA/X8qSyE1
-         MPOw==
-X-Gm-Message-State: AOAM533oa7rTtg0R3bs9cD2sK0Llaio+fTrZSnuzf0E57Y7hgj1MjdHf
-        axIFC/gGRVsp/NJuO+YDRgDZO9FQsO8=
-X-Google-Smtp-Source: ABdhPJwP8qnw2dQb0Xb9SRf3aYteDR/JAE2GjpZniv4ftFR/DjNOBtVPcBQB441WfOAoZNSbCiKllg==
-X-Received: by 2002:a1c:4d09:: with SMTP id o9mr26874571wmh.149.1623226122425;
-        Wed, 09 Jun 2021 01:08:42 -0700 (PDT)
-Received: from ziggy.stardust (81.172.61.185.dyn.user.ono.com. [81.172.61.185])
-        by smtp.gmail.com with ESMTPSA id f14sm4257008wri.16.2021.06.09.01.08.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 01:08:41 -0700 (PDT)
-Subject: Re: [PATCH v9 18/22] clk: mediatek: Add MT8192 mmsys clock support
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Weiyi Lu <weiyi.lu@mediatek.com>
-References: <20210524122053.17155-1-chun-jie.chen@mediatek.com>
- <20210524122053.17155-19-chun-jie.chen@mediatek.com>
- <7520a10b-b362-03d4-e41b-e2098ae26621@gmail.com>
- <ef9441888d4ca82d79295106548dd3d463c9c8bc.camel@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <b7a1c230-3f09-d9be-1138-3a5fa87600e7@gmail.com>
-Date:   Wed, 9 Jun 2021 10:08:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S236997AbhFIILS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:11:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236372AbhFIILR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 04:11:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 257BE61361;
+        Wed,  9 Jun 2021 08:09:20 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 10:09:18 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        gregkh@linuxfoundation.org, containers@lists.linux.dev,
+        linux-kernel@vger.kernel.org, lkml@metux.net
+Subject: Re: device namespaces
+Message-ID: <20210609080918.ma2klvxkjad4pjrn@wittgenstein>
+References: <YL9liW99Ytf6uBlu@kroah.com>
+ <9157affa-b27a-c0f4-f6ee-def4a991fd4e@suse.de>
+ <20210608142911.ievp2rpuquxjuyus@wittgenstein>
+ <d956398e-7ee6-ba36-43cc-4cdcea34b5b9@suse.de>
+ <877dj4ff9g.fsf@disp2133>
+ <20210609063818.xnod4rzvti3ujkvn@wittgenstein>
+ <b9ea9116-7120-b0a7-b739-dd8513e12c5e@suse.de>
+ <20210609072108.ldhsxfnfql4pacqx@wittgenstein>
+ <85a0d777-dea6-9574-8946-9fc8f912c1af@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <ef9441888d4ca82d79295106548dd3d463c9c8bc.camel@mediatek.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <85a0d777-dea6-9574-8946-9fc8f912c1af@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chun-Jie,
-
-On 09/06/2021 00:38, Chun-Jie Chen wrote:
-> On Tue, 2021-06-08 at 16:44 +0200, Matthias Brugger wrote:
->>
->> On 24/05/2021 14:20, Chun-Jie Chen wrote:
->>> Add MT8192 mmsys clock provider
->>>
->>> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
->>> Signed-off-by: chun-jie.chen <chun-jie.chen@mediatek.com>
->>> ---
->>>  drivers/clk/mediatek/Kconfig         |   6 ++
->>>  drivers/clk/mediatek/Makefile        |   1 +
->>>  drivers/clk/mediatek/clk-mt8192-mm.c | 108
->>> +++++++++++++++++++++++++++
->>>  3 files changed, 115 insertions(+)
->>>  create mode 100644 drivers/clk/mediatek/clk-mt8192-mm.c
->>>
->>
->> [...]
->>> +
->>> +static int clk_mt8192_mm_probe(struct platform_device *pdev)
->>> +{
->>> +	struct device *dev = &pdev->dev;
->>> +	struct device_node *node = dev->parent->of_node;
->>> +	struct clk_onecell_data *clk_data;
->>> +	int r;
->>> +
->>> +	clk_data = mtk_alloc_clk_data(CLK_MM_NR_CLK);
->>> +	if (!clk_data)
->>> +		return -ENOMEM;
->>> +
->>> +	r = mtk_clk_register_gates(node, mm_clks, ARRAY_SIZE(mm_clks),
->>> clk_data);
->>> +	if (r)
->>> +		return r;
->>> +
->>> +	return of_clk_add_provider(node, of_clk_src_onecell_get,
->>> clk_data);
->>> +}
->>> +
->>> +static struct platform_driver clk_mt8192_mm_drv = {
->>> +	.probe = clk_mt8192_mm_probe,
->>> +	.driver = {
->>> +		.name = "clk-mt8192-mm",
->>> +	},
->>> +};
->>
->> Did you had a look at drivers/soc/mediatek/mtk-mmsys.c? How is the
->> MMSYS
->> different from all the other SoCs? I suppose it is not. Please don't
->> just
->> implement the clock drivers, but check in existing code how they play
->> together
->> with the HW they are for. MediaTek unfortunately has the design to
->> add the clock
->> registers in the address space of the IP block that needs this
->> registers. Which
->> makes it more complicated to implement clock driver in the first
->> place.
->>
->> Regards,
->> Matthias
+On Wed, Jun 09, 2021 at 09:54:05AM +0200, Hannes Reinecke wrote:
+> On 6/9/21 9:21 AM, Christian Brauner wrote:
+> > On Wed, Jun 09, 2021 at 09:02:36AM +0200, Hannes Reinecke wrote:
+> >> On 6/9/21 8:38 AM, Christian Brauner wrote:
+> >>> On Tue, Jun 08, 2021 at 12:16:43PM -0500, Eric W. Biederman wrote:
+> >>>> Hannes Reinecke <hare@suse.de> writes:
+> >>>>
+> >>>>> On 6/8/21 4:29 PM, Christian Brauner wrote:
+> >>>>>> On Tue, Jun 08, 2021 at 04:10:08PM +0200, Hannes Reinecke wrote:
+> >> [ .. ]
+> >>>>> Granted, modifying sysfs layout is not something for the faint-hearted,
+> >>>>> and one really has to look closely to ensure you end up with a
+> >>>>> consistent layout afterwards.
+> >>>>>
+> >>>>> But let's see how things go; might well be that it turns out to be too
+> >>>>> complex to consider. Can't tell yet.
+> >>>>
+> >>>> I would suggest aiming for something like devptsfs without the
+> >>>> complication of /dev/ptmx.
+> >>>>
+> >>>> That is a pseudo filesystem that has a control node and virtual block
+> >>>> devices that were created using that control node.
+> >>>
+> >>> Also see android/binder/binderfs.c
+> >>>
+> >> Ah. Will have a look.
+> > 
+> > I implemented this a few years back and I think it should've made it
+> > onto Android by default now. So that approach does indeed work well, it
+> > seems:
+> > https://chromium.googlesource.com/aosp/platform/system/core/+/master/rootdir/init.rc#257
+> > 
+> > This should be easier to follow than the devpts case because you don't
+> > need to wade through the {t,p}ty layer.
+> > 
+> >>
+> >>>>
+> >>>> That is the cleanest solution I know and is not strictly limited to use
+> >>>> with containers so it can also gain greater traction.  The interaction
+> >>>> with devtmpfs should be simply having devtmpfs create a mount point for
+> >>>> that filesystem.
+> >>>>
+> >>>> This could be a new cleaner api for things like loopback devices.
+> >>>
+> >>> I sent a patchset that implemented this last year.
+> >>>
+> >> Do you have a pointer/commit hash for this?
+> > 
+> > Yes, sure:
+> > https://lore.kernel.org/linux-block/20200424162052.441452-1-christian.brauner@ubuntu.com/
+> > 
+> > You can also just pull my branch. I think it's still based on v5.7 or sm:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=loopfs
+> > 
+> > I'm happy to collaborate on this too.
+> >
+> How _very_ curious. 'kernfs: handle multiple namespace tags' and 'loop:
+> preserve sysfs backwards compability' are essentially the same patches I
+> did for my block namespaces prototyp; I named it 'KOBJ_NS_TYPE_BLK', not
+> 'KOBJ_NS_TYPE_USER', though :-)
 > 
-> Did you means binding the mm clock driver by creating a platform device
-> in drivers/soc/mediatek/mtk-mmsys.c? There is 8192 mmsys compatible
-> data in patch [1] but lack of it in the latest patch [2], I will check
-> it.
-> Thanks for your kind reminder.
+> Guess we really should cooperate.
 > 
-
-Yes, the clock driver should be a platform driver. Binding should be done
-through the soc driver.
-
-
-Thanks a lot,
-Matthias
-
-> [1] 
-> https://patchwork.kernel.org/project/linux-mediatek/patch/1609815993-22744-11-git-send-email-yongqiang.niu@mediatek.com/
-> [2] 
-> https://patchwork.kernel.org/project/linux-mediatek/patch/1618236288-1617-5-git-send-email-yongqiang.niu@mediatek.com/
+> Speaking of which: why did you name it 'user' namespace?
+> There already is a generic 'user_namespace' in
+> include/linux/user_namespace.h, serving as a container for all
+> namespaces; as such it probably should include this 'user' namespace,
+> leading to quite some confusion.
 > 
-> Best Regards,
-> Chun-Jie
-> 
+> Or did I misunderstood something here?
+
+Ah yes, you misunderstand. The KOBJ_NS_TYPE_* tags are namespace tags.
+So KOBJ_NS_TYPE_NET is a network namespace tag. So KOBJ_NS_TYPE_USER is
+a user namespace tag not a completely new namespace. The idea very
+roughly being that devices such as loop devices are ultimately filtered
+by user namespace which is taken from the s_user_ns the loopfs instance
+is mounted in. We should compare notes.
+
+Christian
