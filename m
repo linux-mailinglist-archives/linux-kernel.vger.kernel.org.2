@@ -2,487 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C585D3A10A5
+	by mail.lfdr.de (Postfix) with ESMTP id 0459B3A10A3
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238472AbhFIJz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238448AbhFIJz4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:55:56 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5ABC061574;
-        Wed,  9 Jun 2021 02:54:02 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id o9so16174693pgd.2;
-        Wed, 09 Jun 2021 02:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tCtGWNF4TwG48MYkGWlbxA21RCyiuY4TVJKkx7SKrH4=;
-        b=Cc0Y68OMUYAQ6CdxhsXhAscmskNFGvWcLTMnpkSaAvj2XGZAhWY+2YShfrPFyvz+/n
-         tkZw9TLqgJjpUw+uBeVV0gS+hWYFxZGLXa0fjab7CminGHi1jsoVezmTdbMqYftPDFXK
-         eDl6OmYC72CVuQdfEITczlraL/sZMk4ERvILSaFDpARZkYK2QtBF1Ytcozlzldtymmct
-         DezgJRLck8OFiaAxacJgeoeCoRTNEWzDF3s0BmjHtpk5yg8FFiZBYKk/2TWWfqO1acy3
-         6Ap4PF12AYXfGNK+yNHB9jOzle2rYpSvdYnPzldeX8KbR7H+l7HzXYZXk3I/lTfGbWqj
-         ZYDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tCtGWNF4TwG48MYkGWlbxA21RCyiuY4TVJKkx7SKrH4=;
-        b=lWdgz0TskfgN5AJdAk17xartlOf1EB/+kQHD9iOK/BFaxq5a8mJ2e74W6D43sMxr10
-         NAp7eRd/e5QQolp7lWPimVttcKx0I/sXGRU5e5MWTC53BcHFxPVG3dEgJJIBGg7ugWBs
-         JS/2QbVVlIFL8aB4DBpq9LqQcTfN8c+6GvxuotgHW85rif5ETEN5j64PrfvjNmd+xV2J
-         vMUVTPF2RH5v7xwtZaIiopJqnaCrl4vHqo9G4uaYcj6E90+OigeWr6VrqfvbRwcURR7h
-         FesK56YnPBr9zAZpVszTy25I4Cixe3M/1H/j2Is1zSKb1bfit7yK0+rT/GxZkE/V0ciL
-         syPg==
-X-Gm-Message-State: AOAM530iAXQU/kqtBni39JM38tw+fg+uGe5+gadzaPlkJ++hWsDXUqa6
-        zPcAPAyQHzooC8YB3oYoBoM=
-X-Google-Smtp-Source: ABdhPJxGREgsghBNQmObupSY1hDr3PcqwUGALDTgKih9n7E/NmPqIbIHVgfnJAPKkZcXmFYIwsRccQ==
-X-Received: by 2002:a63:1022:: with SMTP id f34mr3046275pgl.334.1623232441805;
-        Wed, 09 Jun 2021 02:54:01 -0700 (PDT)
-Received: from localhost.localdomain ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id v11sm4785496pju.27.2021.06.09.02.53.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 02:54:00 -0700 (PDT)
-From:   Herman <herman.yim88@gmail.com>
-X-Google-Original-From: Herman <yanshuaijun@yulong.com>
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hverkuil@xs4all.nl, Herman <yanshuaijun@yulong.com>
-Subject: [PATCH v2] drivers/media/usb/gspca: fix typo Fliker -> Flicker
-Date:   Wed,  9 Jun 2021 17:53:22 +0800
-Message-Id: <20210609095322.10360-1-yanshuaijun@yulong.com>
-X-Mailer: git-send-email 2.25.1
+        id S238458AbhFIJzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:55:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238448AbhFIJzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:55:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9764361375;
+        Wed,  9 Jun 2021 09:53:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623232431;
+        bh=CVI19HxzerQeBdqOZMyU8l7Pa/R+AWrO+Xskvkm82ow=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0q0hDIW6DgWFP3COy3bpinX0qTjr+6iKVpsHISrNUxE7IIrUk4rXaqZah55x1pN08
+         9ZdCII9XR0QthdPaOc7TRDyDCZ8hnVr/VDTC5MvFQjtlpEh9p0fa6gzqs5EN7MM3+2
+         Fqc72US1TwbjDy/Mw5lj1r7q+dsSAIJH7nuj63jM=
+Date:   Wed, 9 Jun 2021 11:53:48 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daejun Park <daejun7.park@samsung.com>
+Cc:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+Subject: Re: [PATCH v36 0/4] scsi: ufs: Add Host Performance Booster Support
+Message-ID: <YMCPrE+Fq+ee+vBS@kroah.com>
+References: <CGME20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p2>
+ <20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change 'Fliker' into 'Flicker'.
+On Mon, Jun 07, 2021 at 01:16:50PM +0900, Daejun Park wrote:
+> Changelog:
+> 
+> v35 -> v36
+> 1. Changed ppn variable type from u64 to __be64.
+> 2. Added WARN_ON_ONCE() to check for HPB read IO size exceeded.
+> 
+> v34 -> v35
+> 1. Addressed Bart's comments (type casting)
+> 2. Rebase 5.14 scsi-queue
+> 
+> v33 -> v34
+> Fix warning about NULL check before some freeing functions is not needed.
+> 
+> v32 -> v33
+> 1. Fix wrong usage of scsi_command_normalize_sense.
+> 2. Addressed Bart's comments (func. name, type casting, parentheses)
+> 
+> v31 -> v32
+> Delete unused parameter of unmap API.
+> 
+> v30 -> v31
+> Delete unnecessary debug message.
+> 
+> v29 -> v30
+> 1. Add support to reuse bio of pre-request.
+> 2. Delete unreached code in the ufshpb_issue_map_req.
+> 
+> v28 -> v29
+> 1. Remove unused variable that reported by kernel test robot.
+> 
+> v27 -> v28
+> 1. Fix wrong return value of ufshpb_prep.
+> 
+> v26 -> v27
+> 1. Fix wrong refernce of sense buffer in pre_req complete function.
+> 2. Fix read_id error.
+> 3. Fix chunk size checking for HPB 1.0.
+> 4. Mute unnecessary messages before HPB initialization.
+> 
+> v25 -> v26
+> 1. Fix wrong chunk size checking for HPB 1.0.
+> 2. Fix wrong max data size for HPB single command.
+> 3. Fix typo error.
+> 
+> v24 -> v25
+> 1. Change write buffer API for unmap region.
+> 2. Add checking hpb_enable for avoiding unnecessary memory allocation.
+> 3. Change pr_info to dev_info.
+> 4. Change default requeue timeout value for HPB read.
+> 5. Fix wrong offset manipulation on ufshpb_prep_entry.
+> 
+> v23 -> v24
+> 1. Fix build error reported by kernel test robot.
+> 
+> v22 -> v23
+> 1. Add support compatibility of HPB 1.0.
+> 2. Fix read id for single HPB read command.
+> 3. Fix number of pre-allocated requests for write buffer.
+> 4. Add fast path for response UPIU that has same LUN in sense data.
+> 5. Remove WARN_ON for preventing kernel crash.
+> 7. Fix wrong argument for read buffer command.
+> 
+> v21 -> v22
+> 1. Add support processing response UPIU in suspend state.
+> 2. Add support HPB hint from other LU.
+> 3. Add sending write buffer with 0x03 after HPB init.
+> 
+> v20 -> v21
+> 1. Add bMAX_DATA_SIZE_FOR_HPB_SINGLE_CMD attr. and fHPBen flag support.
+> 
+> v19 -> v20
+> 1. Add documentation for sysfs entries of hpb->stat.
+> 2. Fix read buffer command for under-sized sub-region.
+> 3. Fix wrong condition checking for kick map work.
+> 4. Delete redundant response UPIU checking.
+> 5. Add LUN checking in response UPIU.
+> 6. Fix possible deadlock problem due to runtime PM.
+> 7. Add instant changing of sub-region state from response UPIU.
+> 8. Fix endian problem in prefetched PPN.
+> 9. Add JESD220-3A (HPB v2.0) support.
+> 
+> v18 -> 19
+> 1. Fix null pointer error when printing sysfs from non-HPB LU.
+> 2. Apply HPB read opcode in lrbp->cmd->cmnd (from Can Guo's review).
+> 3. Rebase the patch on 5.12/scsi-queue.
+> 
+> v17 -> v18
+> Fix build error which reported by kernel test robot.
+> 
+> v16 -> v17
+> 1. Rename hpb_state_lock to rgn_state_lock and move it to corresponding
+> patch.
+> 2. Remove redundant information messages.
+> 
+> v15 -> v16
+> 1. Add missed sysfs ABI documentation.
+> 
+> v14 -> v15
+> 1. Remove duplicated sysfs ABI entries in documentation.
+> 2. Add experiment result of HPB performance testing with iozone.
+> 
+> v13 -> v14
+> 1. Cleanup codes by commentted in Greg's review.
+> 2. Add documentation for sysfs entries (from Greg's review).
+> 3. Add experiment result of HPB performance testing.
+> 
+> v12 -> v13
+> 1. Cleanup codes by comments from Can Guo.
+> 2. Add HPB related descriptor/flag/attributes in sysfs.
+> 3. Change base commit from 5.10/scsi-queue to 5.11/scsi-queue.
+> 
+> v11 -> v12
+> 1. Fixed to return error value when HPB fails to initialize pinned active 
+> region.
+> 2. Fixed to disable HPB feature if HPB fails to allocate essential memory
+> and workqueue.
+> 3. Fixed to change proper sub-region state when region is already evicted.
+> 
+> v10 -> v11
+> Add a newline at end the last line on Kconfig file.
+> 
+> v9 -> v10
+> 1. Fixed 64-bit division error
+> 2. Fixed problems commentted in Bart's review.
+> 
+> v8 -> v9
+> 1. Change sysfs initialization.
+> 2. Change reading descriptor during HPB initialization
+> 3. Fixed problems commentted in Bart's review.
+> 4. Change base commit from 5.9/scsi-queue to 5.10/scsi-queue.
+> 
+> v7 -> v8
+> Remove wrongly added tags.
+> 
+> v6 -> v7
+> 1. Remove UFS feature layer.
+> 2. Cleanup for sparse error.
+> 
+> v5 -> v6
+> Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
+> 
+> v4 -> v5
+> Delete unused macro define.
+> 
+> v3 -> v4
+> 1. Cleanup.
+> 
+> v2 -> v3
+> 1. Add checking input module parameter value.
+> 2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
+> 3. Cleanup for unused variables and label.
+> 
+> v1 -> v2
+> 1. Change the full boilerplate text to SPDX style.
+> 2. Adopt dynamic allocation for sub-region data structure.
+> 3. Cleanup.
+> 
+> NAND flash memory-based storage devices use Flash Translation Layer (FTL)
+> to translate logical addresses of I/O requests to corresponding flash
+> memory addresses. Mobile storage devices typically have RAM with
+> constrained size, thus lack in memory to keep the whole mapping table.
+> Therefore, mapping tables are partially retrieved from NAND flash on
+> demand, causing random-read performance degradation.
+> 
+> To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
+> (Host Performance Booster) which uses host system memory as a cache for the
+> FTL mapping table. By using HPB, FTL data can be read from host memory
+> faster than from NAND flash memory. 
+> 
+> The current version only supports the DCM (device control mode).
+> This patch consists of 3 parts to support HPB feature.
+> 
+> 1) HPB probe and initialization process
+> 2) READ -> HPB READ using cached map information
+> 3) L2P (logical to physical) map management
+> 
+> In the HPB probe and init process, the device information of the UFS is
+> queried. After checking supported features, the data structure for the HPB
+> is initialized according to the device information.
+> 
+> A read I/O in the active sub-region where the map is cached is changed to
+> HPB READ by the HPB.
+> 
+> The HPB manages the L2P map using information received from the
+> device. For active sub-region, the HPB caches through ufshpb_map
+> request. For the in-active region, the HPB discards the L2P map.
+> When a write I/O occurs in an active sub-region area, associated dirty
+> bitmap checked as dirty for preventing stale read.
+> 
+> HPB is shown to have a performance improvement of 58 - 67% for random read
+> workload. [1]
+> 
+> [1]:
+> https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
+> 
+> Daejun Park (4):
+>   scsi: ufs: Introduce HPB feature
+>   scsi: ufs: L2P map management for HPB read
+>   scsi: ufs: Prepare HPB read for cached sub-region
+>   scsi: ufs: Add HPB 2.0 support
 
-Signed-off-by: Herman <yanshuaijun@yulong.com>
----
-
-v2 : drivers/media/usb/gspca/vc032x.c Fliker > Flicker
-v1 : drivers/media/usb/gspca/zc3xx.c  Fliker > Flicker
-
- drivers/media/usb/gspca/vc032x.c |   6 +-
- drivers/media/usb/gspca/zc3xx.c  | 134 +++++++++++++++----------------
- 2 files changed, 70 insertions(+), 70 deletions(-)
-
-diff --git a/drivers/media/usb/gspca/vc032x.c b/drivers/media/usb/gspca/vc032x.c
-index 4cb7c92ea132..e7a534be061d 100644
---- a/drivers/media/usb/gspca/vc032x.c
-+++ b/drivers/media/usb/gspca/vc032x.c
-@@ -1796,7 +1796,7 @@ static const u8 ov7660_60HZ[][4] = {
- 	{}
- };
- 
--static const u8 ov7660_NoFliker[][4] = {
-+static const u8 ov7660_NoFlicker[][4] = {
- 	{0x00, 0x13, 0x87, 0xaa},
- 	{}
- };
-@@ -3319,8 +3319,8 @@ static void sethvflip(struct gspca_dev *gspca_dev, bool hflip, bool vflip)
- static void setlightfreq(struct gspca_dev *gspca_dev, s32 val)
- {
- 	struct sd *sd = (struct sd *) gspca_dev;
--	static const u8 (*ov7660_freq_tb[3])[4] =
--		{ov7660_NoFliker, ov7660_50HZ, ov7660_60HZ};
-+	static const u8 (*ov7660_freq_tb[3])[4] = {
-+		ov7660_NoFlicker, ov7660_50HZ, ov7660_60HZ};
- 
- 	if (sd->sensor != SENSOR_OV7660)
- 		return;
-diff --git a/drivers/media/usb/gspca/zc3xx.c b/drivers/media/usb/gspca/zc3xx.c
-index aa285d5d6c0d..5bcbf0d40147 100644
---- a/drivers/media/usb/gspca/zc3xx.c
-+++ b/drivers/media/usb/gspca/zc3xx.c
-@@ -323,7 +323,7 @@ static const struct usb_action adcm2700_60HZ[] = {
- 	{0xaa, 0x28, 0x0002},				/* 00,28,02,aa */
- 	{}
- };
--static const struct usb_action adcm2700_NoFliker[] = {
-+static const struct usb_action adcm2700_NoFlicker[] = {
- 	{0xa0, 0x01, ZC3XX_R010_CMOSSENSORSELECT},	/* 00,10,01,cc */
- 	{0xaa, 0xfe, 0x0002},				/* 00,fe,02,aa */
- 	{0xa0, 0x0a, ZC3XX_R010_CMOSSENSORSELECT},	/* 00,10,0a,cc */
-@@ -525,7 +525,7 @@ static const struct usb_action cs2102_60HZ[] = {
- 	{0xa0, 0xff, ZC3XX_R020_HSYNC_3},
- 	{}
- };
--static const struct usb_action cs2102_NoFlikerScale[] = {
-+static const struct usb_action cs2102_NoFlickerScale[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
- 	{0xaa, 0x23, 0x0001},
- 	{0xaa, 0x24, 0x005f},
-@@ -547,7 +547,7 @@ static const struct usb_action cs2102_NoFlikerScale[] = {
- 	{0xa0, 0xff, ZC3XX_R020_HSYNC_3},
- 	{}
- };
--static const struct usb_action cs2102_NoFliker[] = {
-+static const struct usb_action cs2102_NoFlicker[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
- 	{0xaa, 0x23, 0x0000},
- 	{0xaa, 0x24, 0x00af},
-@@ -1385,7 +1385,7 @@ static const struct usb_action gc0305_60HZ[] = {
- 	{}
- };
- 
--static const struct usb_action gc0305_NoFliker[] = {
-+static const struct usb_action gc0305_NoFlicker[] = {
- 	{0xa0, 0x0c, ZC3XX_R100_OPERATIONMODE},	/* 01,00,0c,cc */
- 	{0xaa, 0x82, 0x0000},	/* 00,82,00,aa */
- 	{0xaa, 0x83, 0x0000},	/* 00,83,00,aa */
-@@ -1710,7 +1710,7 @@ static const struct usb_action hdcs2020_60HZ[] = {
- 	{0xa0, 0x2c, ZC3XX_R01F_HSYNC_2}, /* 00,1f,2c,cc */
- 	{}
- };
--static const struct usb_action hdcs2020_NoFliker[] = {
-+static const struct usb_action hdcs2020_NoFlicker[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS}, /* 00,19,00,cc */
- 	{0xaa, 0x13, 0x0010},			/* 00,13,10,aa */
- 	{0xaa, 0x14, 0x0001},			/* 00,14,01,aa */
-@@ -1925,7 +1925,7 @@ static const struct usb_action hv7131b_60HZScale[] = {	/* 320x240 */
- 	{0xa0, 0x40, ZC3XX_R020_HSYNC_3},	/* 00,20,40,cc */
- 	{}
- };
--static const struct usb_action hv7131b_NoFliker[] = {	/* 640x480*/
-+static const struct usb_action hv7131b_NoFlicker[] = {	/* 640x480*/
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},	/* 00,19,00,cc */
- 	{0xaa, 0x25, 0x0003},			/* 00,25,03,aa */
- 	{0xaa, 0x26, 0x0000},			/* 00,26,00,aa */
-@@ -1950,7 +1950,7 @@ static const struct usb_action hv7131b_NoFliker[] = {	/* 640x480*/
- 	{0xa0, 0x03, ZC3XX_R020_HSYNC_3},	/* 00,20,03,cc */
- 	{}
- };
--static const struct usb_action hv7131b_NoFlikerScale[] = { /* 320x240 */
-+static const struct usb_action hv7131b_NoFlickerScale[] = { /* 320x240 */
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},	/* 00,19,00,cc */
- 	{0xaa, 0x25, 0x0003},			/* 00,25,03,aa */
- 	{0xaa, 0x26, 0x0000},			/* 00,26,00,aa */
-@@ -2141,7 +2141,7 @@ static const struct usb_action hv7131r_60HZScale[] = {
- 	{0xa0, 0x08, ZC3XX_R020_HSYNC_3},
- 	{}
- };
--static const struct usb_action hv7131r_NoFliker[] = {
-+static const struct usb_action hv7131r_NoFlicker[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
- 	{0xa0, 0x2f, ZC3XX_R190_EXPOSURELIMITHIGH},
- 	{0xa0, 0xf8, ZC3XX_R191_EXPOSURELIMITMID},
-@@ -2159,7 +2159,7 @@ static const struct usb_action hv7131r_NoFliker[] = {
- 	{0xa0, 0x08, ZC3XX_R020_HSYNC_3},
- 	{}
- };
--static const struct usb_action hv7131r_NoFlikerScale[] = {
-+static const struct usb_action hv7131r_NoFlickerScale[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
- 	{0xa0, 0x2f, ZC3XX_R190_EXPOSURELIMITHIGH},
- 	{0xa0, 0xf8, ZC3XX_R191_EXPOSURELIMITMID},
-@@ -2662,7 +2662,7 @@ static const struct usb_action icm105a_60HZ[] = {
- 	{0xa0, 0xc0, ZC3XX_R1A8_DIGITALGAIN}, /* 01,a8,c0,cc */
- 	{}
- };
--static const struct usb_action icm105a_NoFlikerScale[] = {
-+static const struct usb_action icm105a_NoFlickerScale[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS}, /* 00,19,00,cc */
- 	{0xaa, 0x0d, 0x0003}, /* 00,0d,03,aa */
- 	{0xaa, 0x0c, 0x0004}, /* 00,0c,04,aa */
-@@ -2693,7 +2693,7 @@ static const struct usb_action icm105a_NoFlikerScale[] = {
- 	{0xa0, 0xff, ZC3XX_R020_HSYNC_3}, /* 00,20,ff,cc */
- 	{}
- };
--static const struct usb_action icm105a_NoFliker[] = {
-+static const struct usb_action icm105a_NoFlicker[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS}, /* 00,19,00,cc */
- 	{0xaa, 0x0d, 0x0003}, /* 00,0d,03,aa */
- 	{0xaa, 0x0c, 0x0004}, /* 00,0c,04,aa */
-@@ -3009,7 +3009,7 @@ static const struct usb_action mc501cb_60HZScale[] = {
- 	{}
- };
- 
--static const struct usb_action mc501cb_NoFliker[] = {
-+static const struct usb_action mc501cb_NoFlicker[] = {
- 	{0xaa, 0x03, 0x0003}, /* 00,03,03,aa */
- 	{0xaa, 0x10, 0x00fc}, /* 00,10,fc,aa */
- 	{0xaa, 0x36, 0x0018}, /* 00,36,18,aa */
-@@ -3021,7 +3021,7 @@ static const struct usb_action mc501cb_NoFliker[] = {
- 	{}
- };
- 
--static const struct usb_action mc501cb_NoFlikerScale[] = {
-+static const struct usb_action mc501cb_NoFlickerScale[] = {
- 	{0xaa, 0x03, 0x0003}, /* 00,03,03,aa */
- 	{0xaa, 0x10, 0x00fc}, /* 00,10,fc,aa */
- 	{0xaa, 0x36, 0x0030}, /* 00,36,30,aa */
-@@ -3211,7 +3211,7 @@ static const struct usb_action ov7620_60HZ[] = {
- 	{0xa1, 0x01, 0x0037},		*/
- 	{}
- };
--static const struct usb_action ov7620_NoFliker[] = {
-+static const struct usb_action ov7620_NoFlicker[] = {
- 	{0xdd, 0x00, 0x0100},			/* 00,01,00,dd */
- 	{0xaa, 0x2b, 0x0000},			/* 00,2b,00,aa */
- 	/* disable 1/120s & 1/100s exposures for banding filter */
-@@ -3827,7 +3827,7 @@ static const struct usb_action pas106b_60HZ[] = {
- 	{0xa0, 0x04, ZC3XX_R1A9_DIGITALLIMITDIFF}, /* 01,a9,04,cc */
- 	{}
- };
--static const struct usb_action pas106b_NoFliker[] = {
-+static const struct usb_action pas106b_NoFlicker[] = {
- 	{0xa0, 0x00, ZC3XX_R190_EXPOSURELIMITHIGH}, /* 01,90,00,cc */
- 	{0xa0, 0x06, ZC3XX_R191_EXPOSURELIMITMID}, /* 01,91,06,cc */
- 	{0xa0, 0x50, ZC3XX_R192_EXPOSURELIMITLOW}, /* 01,92,50,cc */
-@@ -4051,7 +4051,7 @@ static const struct usb_action pas202b_60HZScale[] = {
- 	{0xa0, 0x0e, ZC3XX_R088_EXPTIMELOW},		/* 00,88,0e,cc */
- 	{}
- };
--static const struct usb_action pas202b_NoFliker[] = {
-+static const struct usb_action pas202b_NoFlicker[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},		/* 00,19,00,cc */
- 	{0xa0, 0x20, ZC3XX_R087_EXPTIMEMID},		/* 00,87,20,cc */
- 	{0xa0, 0x21, ZC3XX_R088_EXPTIMELOW},		/* 00,88,21,cc */
-@@ -4080,7 +4080,7 @@ static const struct usb_action pas202b_NoFliker[] = {
- 	{0xa0, 0x0e, ZC3XX_R088_EXPTIMELOW},		/* 00,88,0e,cc */
- 	{}
- };
--static const struct usb_action pas202b_NoFlikerScale[] = {
-+static const struct usb_action pas202b_NoFlickerScale[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},		/* 00,19,00,cc */
- 	{0xa0, 0x20, ZC3XX_R087_EXPTIMEMID},		/* 00,87,20,cc */
- 	{0xa0, 0x21, ZC3XX_R088_EXPTIMELOW},		/* 00,88,21,cc */
-@@ -4309,7 +4309,7 @@ static const struct usb_action mt9v111_1_AE60HZScale[] = {
- 	{0xa0, 0x42, ZC3XX_R180_AUTOCORRECTENABLE},
- 	{}
- };
--static const struct usb_action mt9v111_1_AENoFliker[] = {
-+static const struct usb_action mt9v111_1_AENoFlicker[] = {
- 	{0xa0, 0x00, ZC3XX_R180_AUTOCORRECTENABLE},
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
- 	{0xbb, 0x00, 0x0509},
-@@ -4332,7 +4332,7 @@ static const struct usb_action mt9v111_1_AENoFliker[] = {
- 	{0xa0, 0x42, ZC3XX_R180_AUTOCORRECTENABLE},
- 	{}
- };
--static const struct usb_action mt9v111_1_AENoFlikerScale[] = {
-+static const struct usb_action mt9v111_1_AENoFlickerScale[] = {
- 	{0xa0, 0x00, ZC3XX_R180_AUTOCORRECTENABLE},
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
- 	{0xbb, 0x00, 0x0534},
-@@ -4554,7 +4554,7 @@ static const struct usb_action mt9v111_3_AE60HZScale[] = {
- 	{0xa0, 0x42, ZC3XX_R180_AUTOCORRECTENABLE},
- 	{}
- };
--static const struct usb_action mt9v111_3_AENoFliker[] = {
-+static const struct usb_action mt9v111_3_AENoFlicker[] = {
- 	{0xa0, 0x00, ZC3XX_R180_AUTOCORRECTENABLE},
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
- 	{0xaa, 0x05, 0x0034},
-@@ -4577,7 +4577,7 @@ static const struct usb_action mt9v111_3_AENoFliker[] = {
- 	{0xa0, 0x42, ZC3XX_R180_AUTOCORRECTENABLE},
- 	{}
- };
--static const struct usb_action mt9v111_3_AENoFlikerScale[] = {
-+static const struct usb_action mt9v111_3_AENoFlickerScale[] = {
- 	{0xa0, 0x00, ZC3XX_R180_AUTOCORRECTENABLE},
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
- 	{0xaa, 0x05, 0x0034},
-@@ -4787,7 +4787,7 @@ static const struct usb_action pb0330_60HZScale[] = {
- 	{0xa0, 0xd0, ZC3XX_R020_HSYNC_3},
- 	{}
- };
--static const struct usb_action pb0330_NoFliker[] = {
-+static const struct usb_action pb0330_NoFlicker[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
- 	{0xbb, 0x00, 0x0509},
- 	{0xbb, 0x02, 0x0940},
-@@ -4809,7 +4809,7 @@ static const struct usb_action pb0330_NoFliker[] = {
- 	{0xa0, 0xe0, ZC3XX_R020_HSYNC_3},
- 	{}
- };
--static const struct usb_action pb0330_NoFlikerScale[] = {
-+static const struct usb_action pb0330_NoFlickerScale[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
- 	{0xbb, 0x00, 0x0535},
- 	{0xbb, 0x01, 0x0980},
-@@ -5031,7 +5031,7 @@ static const struct usb_action po2030_60HZ[] = {
- 	{}
- };
- 
--static const struct usb_action po2030_NoFliker[] = {
-+static const struct usb_action po2030_NoFlicker[] = {
- 	{0xa0, 0x02, ZC3XX_R180_AUTOCORRECTENABLE}, /* 01,80,02,cc */
- 	{0xaa, 0x8d, 0x000d}, /* 00,8d,0d,aa */
- 	{0xaa, 0x1a, 0x0000}, /* 00,1a,00,aa */
-@@ -5215,7 +5215,7 @@ static const struct usb_action tas5130c_60HZScale[] = {
- 	{0xa0, 0x50, ZC3XX_R11D_GLOBALGAIN},
- 	{}
- };
--static const struct usb_action tas5130c_NoFliker[] = {
-+static const struct usb_action tas5130c_NoFlicker[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS}, /* 00,19,00,cc */
- 	{0xaa, 0xa3, 0x0001}, /* 00,a3,01,aa */
- 	{0xaa, 0xa4, 0x0040}, /* 00,a4,40,aa */
-@@ -5241,7 +5241,7 @@ static const struct usb_action tas5130c_NoFliker[] = {
- 	{}
- };
- 
--static const struct usb_action tas5130c_NoFlikerScale[] = {
-+static const struct usb_action tas5130c_NoFlickerScale[] = {
- 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS}, /* 00,19,00,cc */
- 	{0xaa, 0xa3, 0x0001}, /* 00,a3,01,aa */
- 	{0xaa, 0xa4, 0x0090}, /* 00,a4,90,aa */
-@@ -5482,7 +5482,7 @@ static const struct usb_action gc0303_60HZScale[] = {
- 	{}
- };
- 
--static const struct usb_action gc0303_NoFliker[] = {
-+static const struct usb_action gc0303_NoFlicker[] = {
- 	{0xa0, 0x0c, ZC3XX_R100_OPERATIONMODE},		/* 01,00,0c,cc, */
- 	{0xaa, 0x82, 0x0000},		/* 00,82,00,aa */
- 	{0xaa, 0x83, 0x0000},		/* 00,83,00,aa */
-@@ -5504,7 +5504,7 @@ static const struct usb_action gc0303_NoFliker[] = {
- 	{}
- };
- 
--static const struct usb_action gc0303_NoFlikerScale[] = {
-+static const struct usb_action gc0303_NoFlickerScale[] = {
- 	{0xa0, 0x0c, ZC3XX_R100_OPERATIONMODE},		/* 01,00,0c,cc, */
- 	{0xaa, 0x82, 0x0000},		/* 00,82,00,aa */
- 	{0xaa, 0x83, 0x0000},		/* 00,83,00,aa */
-@@ -5806,7 +5806,7 @@ static void setquality(struct gspca_dev *gspca_dev)
-  * Valid frequencies are:
-  *	50Hz, for European and Asian lighting (default)
-  *	60Hz, for American lighting
-- *	0 = No Fliker (for outdoore usage)
-+ *	0 = No Flicker (for outdoor usage)
-  */
- static void setlightfreq(struct gspca_dev *gspca_dev, s32 val)
- {
-@@ -5814,80 +5814,80 @@ static void setlightfreq(struct gspca_dev *gspca_dev, s32 val)
- 	int i, mode;
- 	const struct usb_action *zc3_freq;
- 	static const struct usb_action *freq_tb[SENSOR_MAX][6] = {
--	[SENSOR_ADCM2700] =
--		{adcm2700_NoFliker, adcm2700_NoFliker,
-+	[SENSOR_ADCM2700] = {
-+		 adcm2700_NoFlicker, adcm2700_NoFlicker,
- 		 adcm2700_50HZ, adcm2700_50HZ,
- 		 adcm2700_60HZ, adcm2700_60HZ},
--	[SENSOR_CS2102] =
--		{cs2102_NoFliker, cs2102_NoFlikerScale,
-+	[SENSOR_CS2102] = {
-+		 cs2102_NoFlicker, cs2102_NoFlickerScale,
- 		 cs2102_50HZ, cs2102_50HZScale,
- 		 cs2102_60HZ, cs2102_60HZScale},
--	[SENSOR_CS2102K] =
--		{cs2102_NoFliker, cs2102_NoFlikerScale,
-+	[SENSOR_CS2102K] = {
-+		 cs2102_NoFlicker, cs2102_NoFlickerScale,
- 		 NULL, NULL, /* currently disabled */
- 		 NULL, NULL},
--	[SENSOR_GC0303] =
--		{gc0303_NoFliker, gc0303_NoFlikerScale,
-+	[SENSOR_GC0303] = {
-+		 gc0303_NoFlicker, gc0303_NoFlickerScale,
- 		 gc0303_50HZ, gc0303_50HZScale,
- 		 gc0303_60HZ, gc0303_60HZScale},
--	[SENSOR_GC0305] =
--		{gc0305_NoFliker, gc0305_NoFliker,
-+	[SENSOR_GC0305] = {
-+		 gc0305_NoFlicker, gc0305_NoFlicker,
- 		 gc0305_50HZ, gc0305_50HZ,
- 		 gc0305_60HZ, gc0305_60HZ},
--	[SENSOR_HDCS2020] =
--		{hdcs2020_NoFliker, hdcs2020_NoFliker,
-+	[SENSOR_HDCS2020] = {
-+		 hdcs2020_NoFlicker, hdcs2020_NoFlicker,
- 		 hdcs2020_50HZ, hdcs2020_50HZ,
- 		 hdcs2020_60HZ, hdcs2020_60HZ},
--	[SENSOR_HV7131B] =
--		{hv7131b_NoFliker, hv7131b_NoFlikerScale,
-+	[SENSOR_HV7131B] = {
-+		 hv7131b_NoFlicker, hv7131b_NoFlickerScale,
- 		 hv7131b_50HZ, hv7131b_50HZScale,
- 		 hv7131b_60HZ, hv7131b_60HZScale},
--	[SENSOR_HV7131R] =
--		{hv7131r_NoFliker, hv7131r_NoFlikerScale,
-+	[SENSOR_HV7131R] = {
-+		 hv7131r_NoFlicker, hv7131r_NoFlickerScale,
- 		 hv7131r_50HZ, hv7131r_50HZScale,
- 		 hv7131r_60HZ, hv7131r_60HZScale},
--	[SENSOR_ICM105A] =
--		{icm105a_NoFliker, icm105a_NoFlikerScale,
-+	[SENSOR_ICM105A] = {
-+		 icm105a_NoFlicker, icm105a_NoFlickerScale,
- 		 icm105a_50HZ, icm105a_50HZScale,
- 		 icm105a_60HZ, icm105a_60HZScale},
--	[SENSOR_MC501CB] =
--		{mc501cb_NoFliker, mc501cb_NoFlikerScale,
-+	[SENSOR_MC501CB] = {
-+		 mc501cb_NoFlicker, mc501cb_NoFlickerScale,
- 		 mc501cb_50HZ, mc501cb_50HZScale,
- 		 mc501cb_60HZ, mc501cb_60HZScale},
--	[SENSOR_MT9V111_1] =
--		{mt9v111_1_AENoFliker, mt9v111_1_AENoFlikerScale,
-+	[SENSOR_MT9V111_1] = {
-+		 mt9v111_1_AENoFlicker, mt9v111_1_AENoFlickerScale,
- 		 mt9v111_1_AE50HZ, mt9v111_1_AE50HZScale,
- 		 mt9v111_1_AE60HZ, mt9v111_1_AE60HZScale},
--	[SENSOR_MT9V111_3] =
--		{mt9v111_3_AENoFliker, mt9v111_3_AENoFlikerScale,
-+	[SENSOR_MT9V111_3] = {
-+		 mt9v111_3_AENoFlicker, mt9v111_3_AENoFlickerScale,
- 		 mt9v111_3_AE50HZ, mt9v111_3_AE50HZScale,
- 		 mt9v111_3_AE60HZ, mt9v111_3_AE60HZScale},
--	[SENSOR_OV7620] =
--		{ov7620_NoFliker, ov7620_NoFliker,
-+	[SENSOR_OV7620] = {
-+		 ov7620_NoFlicker, ov7620_NoFlicker,
- 		 ov7620_50HZ, ov7620_50HZ,
- 		 ov7620_60HZ, ov7620_60HZ},
--	[SENSOR_OV7630C] =
--		{NULL, NULL,
-+	[SENSOR_OV7630C] = {
-+		 NULL, NULL,
- 		 NULL, NULL,
- 		 NULL, NULL},
--	[SENSOR_PAS106] =
--		{pas106b_NoFliker, pas106b_NoFliker,
-+	[SENSOR_PAS106] = {
-+		 pas106b_NoFlicker, pas106b_NoFlicker,
- 		 pas106b_50HZ, pas106b_50HZ,
- 		 pas106b_60HZ, pas106b_60HZ},
--	[SENSOR_PAS202B] =
--		{pas202b_NoFliker, pas202b_NoFlikerScale,
-+	[SENSOR_PAS202B] = {
-+		 pas202b_NoFlicker, pas202b_NoFlickerScale,
- 		 pas202b_50HZ, pas202b_50HZScale,
- 		 pas202b_60HZ, pas202b_60HZScale},
--	[SENSOR_PB0330] =
--		{pb0330_NoFliker, pb0330_NoFlikerScale,
-+	[SENSOR_PB0330] = {
-+		 pb0330_NoFlicker, pb0330_NoFlickerScale,
- 		 pb0330_50HZ, pb0330_50HZScale,
- 		 pb0330_60HZ, pb0330_60HZScale},
--	[SENSOR_PO2030] =
--		{po2030_NoFliker, po2030_NoFliker,
-+	[SENSOR_PO2030] = {
-+		 po2030_NoFlicker, po2030_NoFlicker,
- 		 po2030_50HZ, po2030_50HZ,
- 		 po2030_60HZ, po2030_60HZ},
--	[SENSOR_TAS5130C] =
--		{tas5130c_NoFliker, tas5130c_NoFlikerScale,
-+	[SENSOR_TAS5130C] = {
-+		 tas5130c_NoFlicker, tas5130c_NoFlickerScale,
- 		 tas5130c_50HZ, tas5130c_50HZScale,
- 		 tas5130c_60HZ, tas5130c_60HZScale},
- 	};
--- 
-2.25.1
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
