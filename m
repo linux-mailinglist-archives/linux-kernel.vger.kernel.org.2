@@ -2,146 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4895F3A1412
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C993B3A13F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbhFIMSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235102AbhFIMS3 (ORCPT
+        id S235242AbhFIMPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:15:46 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:44384 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239408AbhFIMPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:18:29 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D23C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 05:16:35 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id o9so16462318pgd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 05:16:35 -0700 (PDT)
+        Wed, 9 Jun 2021 08:15:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1623240827; x=1654776827;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=O+sQ9QR+Dwcw5f1E53g1MB1EKtsxCJ3TNQ9ukvl1M98=;
+  b=HRMW5RJFIO9R3WK+KBKhbyWsXFHsV06b0hZ9m0dzJDZDxLIUFpeubIvB
+   XdwU9z/L4xf7h75G/eH/BkXDQePzIiQTe0pu0EGGQ0QqAZCjvbfuGhPaO
+   HZ5u1o6FnZxDfHgKwBZjiw6JUJQUWj7RDBtkpiZCc3ZIJIWeipJulRWda
+   KfdEGZz1WjcfJknCXpTSGnEMcOVIvECGieC8WjK6I+DmQlYkNL+4mQolK
+   e6cmSb3YLWNiZKp9uyJQnjf9rwB0+QOHUy27m3S8UiPR98UFuppMw8evB
+   ec6C0UDu9gqYQfCOdgxU0fZUn/RzXYyX18lP2i9nsBm6Ou0/VTFw2U35i
+   g==;
+IronPort-SDR: qDvpY8r4QTYqknFQUsm5LVde0gcGQadDI8QQ13T3u1s4RP3dRUNPxDeqs64hFqc0qA8TU7BJxt
+ ltcHPfP8W94rcshYKTEykPEarfba/3iofDfxIjXiL7vXsnnmpntg+mnDimqMRokTQnKtG7OdUA
+ D2yil8Xk/UVgqbAoJj5QmCpJEGucIi5Nkgisd2zHSJSzDuKC+lUdck0Q5DyUbQJCojWtW77SeM
+ Kn8oySv4ppRlHi3UmWjDW27qYTCqUAev8jlQE9F31j4XUloD+rQuRrJ2Q+jf9e9wm7Mb1nCjYO
+ wP8=
+X-IronPort-AV: E=Sophos;i="5.83,260,1616428800"; 
+   d="scan'208";a="170575125"
+Received: from mail-dm6nam12lp2175.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.175])
+  by ob1.hgst.iphmx.com with ESMTP; 09 Jun 2021 20:13:45 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OTWmV4vC1zV0YqWn6fUCN1VvSVLt88FN2pY95Yxfrc92mpQeR8pGWNfYY73uXqp1bBXY1NwsC/39ND8ExJ4rU3TouZhF7y1iveP2k7x/NY6BgVx04BuGbFffLtkB1mCcyBPsUMDYQIovQCP98vKo5vyHqNqA8ve8/E3mWKB7CQ1sl0lD7T8IFx2mXLPOoePnpUuZj96CXnMz53lGm73aZ5MfyGq53g93HKpNLidAvhk7VCT8oqsqG7jIC0esny1ieEW9j4r8zNASOVD3ZhYBZoy8uPlnH54uEwrBlHOTQOUpX9MriPeMNXmLo0SepZOCE+7hz3luF51bixNpwPhKkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CtY3Tja3XPrKeKpN4/f54RHFt1//9h6CecA97NrsGQw=;
+ b=MObTs5WtM5MhZTZ7qtCdVB+awkG8y2Lx3CRJ8vRV+J8GfTix2v19AAWFT6Xs/Iyr5QRI1UnmKU6Sq70OxEpNGZs6DTHfnd4yQbAXUJ62bvuK3Z3K9mGP/dw897CMNvJIDvjJKbDAwQjTiAx0+du6YKrn8dB21PMALV3fdtLhODlQLrl39Qyt/4kcN73mn2Ocn2OuYbi29WC8x5r/Ifb/qmYEzMZGgwFyTHOg8/WsFudxJ8lOyanHR2N97hNLxq6tptxihM2bRyLmy7Bg+3sjepIl+AJnwteVswFmQ1WlHDQSyuElQTWh62czUpN7pMUdOj1Wdc9y8MWhWsvm2PyBkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tTl4UccQsOsZ7x/J6uEesGioaOGAN8DIKPZAiWCgVB8=;
-        b=pUrg+IUIYAa870AP/uTMqgxs/hNNa64H0IDqPvy2JmAIvWBKiuXjtOLMdyse81wG8D
-         WRbbR4uZgvPBXCGyhgzP/wqY9aYRqL+ZoV+55cQjs+c9cm60asG69y8qJ1wlODMfUnn2
-         34cg+mlhNukSqKfoHVyTp5z8MEwHPU9o8jOMNGCVGf8c/Df94k3QiCzFxJc1ognSj0pP
-         Mx0wzc+B1XWe4+wcrKEqEZ4LNxVCLVcerdQUHKwN+3ZNI7kFNrLlt1e7DzIMzfu3l9q5
-         v4/W69wvh74zLdx14G8oBO5H3e/RKBvMCJN23kDW77DCFhOgIubiri/Qdiq2aEIxu2yc
-         ADpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tTl4UccQsOsZ7x/J6uEesGioaOGAN8DIKPZAiWCgVB8=;
-        b=S8k52+qHPKnwL+MdbJj8WcsEnVb7qjbnLFcmxbfql5veTltWWhhT4Zg+tkIZh4HgVF
-         +kS2gBfDQQAfCrPmekaatXPnliNbV7oUdLakv889rhWPA+POqBi5JLgxUddgYq4R8IJz
-         aXD3Az232GwfyT+kMawIJqF257L5o53GQ/y7g9gN7all5vsKyRoXcEWxkGYWfT1icLkN
-         NsiSBd9jFQZjqQDLrDLZfEmzU+DMFS8cJpb8pc2uc+5m04bQCOMEhBhPubbJRPRvxxjR
-         KRiKIH8PcEugZZL/Lrjb77OfYHOjU/9HTOslxTvJZYfdOnzIGGXdD8edZgdEG0wjqfZN
-         X5tg==
-X-Gm-Message-State: AOAM532MF2H94Z9K5SYw3LBEcOCe1/h+NYkMW7uCi7IFZYba1BhKK2Tg
-        sCRzYXx0oiqecULfgWO8COWrXw==
-X-Google-Smtp-Source: ABdhPJy/g1DbQ4/wfWWkn6IXh4LI8nxts1Sh2nq2bT5Zi7Saxf7F7hs8/+84CR2ArxeYPuxbatrEpw==
-X-Received: by 2002:aa7:8588:0:b029:28e:dfa1:e31a with SMTP id w8-20020aa785880000b029028edfa1e31amr4821652pfn.77.1623240994717;
-        Wed, 09 Jun 2021 05:16:34 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.254])
-        by smtp.gmail.com with ESMTPSA id h16sm13689224pfk.119.2021.06.09.05.16.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Jun 2021 05:16:34 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, chenhuang5@huawei.com, bodeddub@amazon.com,
-        corbet@lwn.net
-Cc:     duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        zhengqi.arch@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 5/5] mm: hugetlb: introduce CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON
-Date:   Wed,  9 Jun 2021 20:13:10 +0800
-Message-Id: <20210609121310.62229-6-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210609121310.62229-1-songmuchun@bytedance.com>
-References: <20210609121310.62229-1-songmuchun@bytedance.com>
-MIME-Version: 1.0
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CtY3Tja3XPrKeKpN4/f54RHFt1//9h6CecA97NrsGQw=;
+ b=I38d7vPu03RDMyWP1hhnwuwySAXtQnyjg46mq4a7LhbVKs5i0Gf4C51GtupB8WKf7hGdaVEu+XGh0ap3FSCs5vY4ciuxcKMCHVlNpTIImE54xZA667i+86IEh4inY1gh3o8Xue8BanWwh+/B5gCZGyAWo5+doc8AzwyKEWVdEcE=
+Authentication-Results: dabbelt.com; dkim=none (message not signed)
+ header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
+Received: from CO6PR04MB7812.namprd04.prod.outlook.com (2603:10b6:303:138::6)
+ by CO6PR04MB7794.namprd04.prod.outlook.com (2603:10b6:303:13f::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Wed, 9 Jun
+ 2021 12:13:44 +0000
+Received: from CO6PR04MB7812.namprd04.prod.outlook.com
+ ([fe80::a153:b7f8:c87f:89f8]) by CO6PR04MB7812.namprd04.prod.outlook.com
+ ([fe80::a153:b7f8:c87f:89f8%9]) with mapi id 15.20.4219.021; Wed, 9 Jun 2021
+ 12:13:44 +0000
+From:   Anup Patel <anup.patel@wdc.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anup Patel <anup.patel@wdc.com>
+Subject: [PATCH v7 0/1] SBI SRST extension support
+Date:   Wed,  9 Jun 2021 17:43:21 +0530
+Message-Id: <20210609121322.3058-1-anup.patel@wdc.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [122.172.176.125]
+X-ClientProxiedBy: MA1PR0101CA0036.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:22::22) To CO6PR04MB7812.namprd04.prod.outlook.com
+ (2603:10b6:303:138::6)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from wdc.com (122.172.176.125) by MA1PR0101CA0036.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:22::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Wed, 9 Jun 2021 12:13:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b9d19a99-1d36-4765-7f9c-08d92b400662
+X-MS-TrafficTypeDiagnostic: CO6PR04MB7794:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO6PR04MB7794F6D454852C07D5959A068D369@CO6PR04MB7794.namprd04.prod.outlook.com>
+WDCIPOUTBOUND: EOP-TRUE
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gqzEuVUB7/PW7GT681bqZsdRYpThqZcfxTGaIFXnegFOgrZWzf8BsPP8+JtkF5QSS0dWPn5XP/S6bOhr7Dn/Gexlfx0grldiqie3YDg93vGsVKOdV1GwC4Kvydh0xw54Bu/yNOfbj0kIaHjokOqY3+uZfPDQqwuURTUGWK0JSN47xLFHtLg8UZglQe66CO0yXhbgzOBCvB3Jf0A92sshAYqQG4mTFpM7hRDEf4zeEiKVudhxg+S1FJIdoP0Y2iaOfoVTZmQDvzS85U/Bk4PH9SZU5CKuA6YsZP/3ct8o9Wft8h9YXF95vtKVPDeNF7axgDvu0ahXpVaJfO7Y7y2Cys4SNAbgGiLCY9PZlYQ2HzEmChj1z7NXE9VWpw727WfgN4BW57RcnYshPcXSIRnF5UILMxRUSoUXVPRztBj1K9GtauYB/QAIYUa1pJtbzfmIO9DIfSYf34NjyBI4TcD2rz81/a6T2l0oM0UUTYVkxdLOoeRQwfvIybq3gzYd74akkFPKpMawjgLJNl2+tAej62ckdzlrpELk3MKuYP6vE8ac865MsYxWE6OEUeZmSwRHzLQ2jKYoEigDRmfXFJ2MlRklAd+St/4R4T2CdRJNtsPUUx0S03yLNkh6pOXfnA0lUrlv0HHbPaBmNry1th3LozREwuh2tRMXXfAzJlrewLiAkYkaLWAVPUY9E7uq6bC3d+QwuNG9Oxcx9o/S0kJgDeFlN6gYWbyV+jTYs0XLmZAXxBQk+Obd7oQ8JvZmATr8Zbs6wQSRtEeScQhlnyO15Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR04MB7812.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(346002)(366004)(376002)(8676002)(316002)(55236004)(38100700002)(38350700002)(110136005)(86362001)(54906003)(4326008)(956004)(966005)(478600001)(26005)(186003)(55016002)(8936002)(2616005)(7696005)(52116002)(16526019)(5660300002)(8886007)(6666004)(1076003)(66476007)(66556008)(36756003)(66946007)(83380400001)(2906002)(44832011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?daBw3CZ8xtGSbZcxRxVuI1nbHEZHsoPOKauNXmNZjWnCwgcMZ6/bQctmNmFy?=
+ =?us-ascii?Q?Q34sDRuQXFx/bNFBYtYr7V7g+Zs0L5AUrAQnp5kxwDifRiH4/MZMTYbkPwum?=
+ =?us-ascii?Q?DSPD5JJUSwBdAyUlY0JP8Az05Eie5hNlozKwFDryGyYM11Y4UvsBLGgWleJB?=
+ =?us-ascii?Q?aEIMK4WO27WDgUqIj6GnyFrxTW+Rm/4YjpCjQtavDZNex6bRWj1Nvvt8I0ZA?=
+ =?us-ascii?Q?uQybcfr1OLuY8M/MkSmav6tinCqXpzd5n48LPEkXAqnyMM4edr3XuFrXXFIT?=
+ =?us-ascii?Q?RXJxNs54i5sr25BNqxuZuis5B/zO2oPT0QsEbPUyPNQmsBe1qWBkiJC/Ego4?=
+ =?us-ascii?Q?+tQyY4UbzDDP2c8GWbL7ijQoDlSImymQQMNNCvXQ8rdXRjfPRyh099JOZaCP?=
+ =?us-ascii?Q?rfVRnFDzkjDpFQf9ajCftdadutXhMiEIiles23ptIkMdd8vp10Ss1vABjwAf?=
+ =?us-ascii?Q?L5H3i29Vau/4IskH+ncBhswfoh0qW/E4A4/OOfWyQ2HU81utxC+CPUAdZH21?=
+ =?us-ascii?Q?S3nSBAljzGp1kYfC+66v1FISUSc2WqUgKpdMeq9H8CIM7YaKf7nXu7EXeYZw?=
+ =?us-ascii?Q?nmJzjB8dQord5Euv/utCTgynu4k0OBHeMQnyUeS485LGgvmhzKOXBZCtFCj0?=
+ =?us-ascii?Q?iddd5KzQCo9f4Q2QHAF132mkMOKJpZOAvU/5LLO0KHsnw1BTyEw2L+E+21K4?=
+ =?us-ascii?Q?idrsX9C3oDSYziq9DSTzxPzRqxhYVopj1lDMedig3F15o7kBJMEmqk8oH6cW?=
+ =?us-ascii?Q?Gm71ioag1iSGA1aEbdfx8r2FyKnewX5jo0cFT2DkorgP92chDILVZN+HfDg1?=
+ =?us-ascii?Q?xOS9Bp+KYdolPPn0PuC5gpRejdpWlZITQtNJonV0ocbI0N347xxPaEUmf02o?=
+ =?us-ascii?Q?rEz1th2S9yxi9Gf+9AG+Y7HiJOHdxr1/4eyhnhUTH0p/EViC0LLcFpCcx8Qq?=
+ =?us-ascii?Q?+zgVC2IMnXZVk9TWCNdTruNJkhGEgYTL7eRTpSsEfaVZh2F6mrcV72rrz2FR?=
+ =?us-ascii?Q?4W5+txE1V0b5VLDATVZZyQOwwHLAaoyl21l1QyOgwOi4/MIuu1gtvWDSpnMZ?=
+ =?us-ascii?Q?y5o4PGCcZD1Agsxnru0E1ndi4zZsY4p0kf+GrWOOIWpSJQlYEOhypAZRhfi8?=
+ =?us-ascii?Q?mnVz84tHw+9oIDoPYnB7JF7KrORPp2PGUG1futCoChqviiLxeBHUqM2CLPYm?=
+ =?us-ascii?Q?Fp/dt9vvaiDjHrQcDqczQMaph1G3NQHzfoEHwhcfp/czfFskqW4FPCddYPEZ?=
+ =?us-ascii?Q?3/Zndt4hFNsSbmr1WAjXy14gzlSwUzMAyGFxpxPVPyNeuEw1T3bSMrRxmxNf?=
+ =?us-ascii?Q?w9Fqef0ym8ovRxOdiIcqDMaJ?=
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b9d19a99-1d36-4765-7f9c-08d92b400662
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR04MB7812.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 12:13:43.9096
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nLvOJ18XdqpMQEPjNvU1UQ6Kezk1oLS2PXLl5fjxMXnkS2f/UPOzwy0iq21I+oyPSRgZXP2qoo1wYI+tTH0FRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR04MB7794
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using HUGETLB_PAGE_FREE_VMEMMAP, the freeing unused vmemmap pages
-associated with each HugeTLB page is default off. Now the vmemmap is PMD
-mapped. So there is no side effect when this feature is enabled with no
-HugeTLB pages in the system. Someone may want to enable this feature in
-the compiler time instead of using boot command line. So add a config to
-make it default on when someone do not want to enable it via command line.
+This series adds SBI SRST extension support to Linux RISC-V.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- Documentation/admin-guide/kernel-parameters.txt |  3 +++
- fs/Kconfig                                      | 10 ++++++++++
- mm/hugetlb_vmemmap.c                            |  6 ++++--
- 3 files changed, 17 insertions(+), 2 deletions(-)
+These patches can be found in riscv_sbi_srst_v7 branch at:
+https://github.com/avpatel/linux
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a01aadafee38..8eee439d943c 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1604,6 +1604,9 @@
- 			on:  enable the feature
- 			off: disable the feature
- 
-+			Built with CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON=y,
-+			the default is on.
-+
- 			This is not compatible with memory_hotplug.memmap_on_memory.
- 			If both parameters are enabled, hugetlb_free_vmemmap takes
- 			precedence over memory_hotplug.memmap_on_memory.
-diff --git a/fs/Kconfig b/fs/Kconfig
-index f40b5b98f7ba..e78bc5daf7b0 100644
---- a/fs/Kconfig
-+++ b/fs/Kconfig
-@@ -245,6 +245,16 @@ config HUGETLB_PAGE_FREE_VMEMMAP
- 	depends on X86_64
- 	depends on SPARSEMEM_VMEMMAP
- 
-+config HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON
-+	bool "Default freeing vmemmap pages of HugeTLB to on"
-+	default n
-+	depends on HUGETLB_PAGE_FREE_VMEMMAP
-+	help
-+	  When using HUGETLB_PAGE_FREE_VMEMMAP, the freeing unused vmemmap
-+	  pages associated with each HugeTLB page is default off. Say Y here
-+	  to enable freeing vmemmap pages of HugeTLB by default. It can then
-+	  be disabled on the command line via hugetlb_free_vmemmap=off.
-+
- config MEMFD_CREATE
- 	def_bool TMPFS || HUGETLBFS
- 
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index 01f3652fa359..b5f4f29e042a 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -186,7 +186,7 @@
- #define RESERVE_VMEMMAP_NR		2U
- #define RESERVE_VMEMMAP_SIZE		(RESERVE_VMEMMAP_NR << PAGE_SHIFT)
- 
--bool hugetlb_free_vmemmap_enabled;
-+bool hugetlb_free_vmemmap_enabled = IS_ENABLED(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON);
- 
- static int __init early_hugetlb_free_vmemmap_param(char *buf)
- {
-@@ -201,7 +201,9 @@ static int __init early_hugetlb_free_vmemmap_param(char *buf)
- 
- 	if (!strcmp(buf, "on"))
- 		hugetlb_free_vmemmap_enabled = true;
--	else if (strcmp(buf, "off"))
-+	else if (!strcmp(buf, "off"))
-+		hugetlb_free_vmemmap_enabled = false;
-+	else
- 		return -EINVAL;
- 
- 	return 0;
+Changes since v6:
+ - Dropped PATCH1 of v6 series because it's already merged
+ - Rebased on Linux-5.13-rc5
+
+Changes since v5:
+ - Factored-out pr_info() related change into separate patch
+ - Added cover letter
+
+Changes since v4:
+ - We should compare both major and minor number to ensure that
+   SBI spec version is 0.3 (or above) for detecting SRST extension.
+
+Changes since v3:
+ - Rebased on Linux-5.12-rc1
+ - Check SBI spec version when probing for SRST extension
+
+Changes since v2:
+ - Rebased on Linux-5.10-rc5
+ - Updated patch as-per SBI SRST extension available in the latest
+   SBI v0.3-draft specification
+
+Changes since v1:
+ - Updated patch as-per latest SBI SRST extension draft spec where
+   we have only one SBI call with "reset_type" parameter
+
+Anup Patel (1):
+  RISC-V: Use SBI SRST extension when available
+
+ arch/riscv/include/asm/sbi.h | 24 ++++++++++++++++++++++++
+ arch/riscv/kernel/sbi.c      | 35 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 59 insertions(+)
+
 -- 
-2.11.0
+2.25.1
 
