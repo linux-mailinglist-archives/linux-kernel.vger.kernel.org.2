@@ -2,309 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC0B3A0B0C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9C33A0B0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhFIEQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 00:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230492AbhFIEQf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 00:16:35 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8FCC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 21:14:28 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id p21so5288867qtw.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 21:14:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=1Gkk68Yxejem3jDpMBjjD+FSUwRvlNAzk5ZsMSk3bl4=;
-        b=SUk2w4ANTGja8rZm6+4s+f9cLvedGQIJ1TDwCVl7K54PNMaQLvEsBrnRh74k/N6Yao
-         3ySxMaxnwSpxVAcv9QpNIpaxEDji6dxCw1Wz0c/RXWgJNPVRAXzAvWBC8kU8W71fUZVH
-         SO6ECspRznhqvOCfwFfyTZHCN2bj+zOd6soYsoOM4MN/K03QqSvbR6cQC1nQbFRnZSE1
-         o/Twg6VOJJp0u/ZEn1rEcDF3TdgkjJMgw7LHBIoLO4UO3xI8cPx8i7qz7Ei305NbJhYl
-         JdgFEntRrJemB7mhU03dCHtTcP75XZiyWYX+3KGr8TmLiZpkHEn97YTRxXMvwm7HP/eZ
-         vrUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=1Gkk68Yxejem3jDpMBjjD+FSUwRvlNAzk5ZsMSk3bl4=;
-        b=AH/xS4UB7sYntQS+sMIHuz9/C3gRAEyf4XglEwv3dVg4kQVSOy5iMHiJFC9BXv+kzh
-         vhqw4TFaGKztQusSLD+StvzaOI8rW2nmOBBTClHD+H9aj/FFZ9vrwGi0UkfrFNyKoyoI
-         NnaRj93ck1MCXtNtHI1A0C5O/L1I4yzUP8JZXNAjeWMoEZYJlCPXO/4c5wXGNV1kmTqQ
-         GDHmjVs81TGeeHaeF2gXBHH/EzPSfL9bMAQxXfnHLfnAgRixNoaEi1MAE1kGbWX27uqz
-         Xpv03y3W4c1CLNs0FEzsypJXwHscgla54Z/hRGNp2j1CR3Gc7Rih57g7YyUzutCca89s
-         5Y6w==
-X-Gm-Message-State: AOAM532/j5myiXCHFtgU2AQQhOGKl4vktmqnbEv1SeeVd1HtoPACehyf
-        x93HZHwSeZka7QTCbeZJM/6Z5g==
-X-Google-Smtp-Source: ABdhPJxGgqmVmMkDl98m/O1+owdzkmD+beSmerlJdgmElyg9g3SjKMF4520vQEWZAHWRzwB08bp2KA==
-X-Received: by 2002:ac8:70d2:: with SMTP id g18mr5926577qtp.344.1623212067659;
-        Tue, 08 Jun 2021 21:14:27 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id h12sm3355847qtn.44.2021.06.08.21.14.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 21:14:27 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 21:14:24 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 04/10] mm/thp: fix vma_address() if virtual address below
- file offset
-In-Reply-To: <af88612-1473-2eaa-903-8d1a448b26@google.com>
-Message-ID: <caf1c1a3-7cfb-7f8f-1beb-ba816e932825@google.com>
-References: <af88612-1473-2eaa-903-8d1a448b26@google.com>
+        id S231168AbhFIEQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 00:16:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230492AbhFIEQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 00:16:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71F7A61249;
+        Wed,  9 Jun 2021 04:14:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623212072;
+        bh=lG9yoFm92vars8t5WlI242ptHsbT0FMXExAdBBnMNhA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=lmEBRVWgHGF6E9pR+N+UOHsHjBLa/GX1gbUeabkrbs+3+ZpsKupvFzdvn6a93HTxz
+         Hfm1gmtaJK/1tSWpEMKcd9Exu+k3zIdE2t1WR0Tk4gNZggO6YBFkWXsM1MGgygGDgQ
+         4lWWJ9Nq2WRTcJWLpezf6SX5asrYEcz22O6tETTgEzse1S1HkjC+EhjkpuFKjcLtjG
+         X38gLOkHf9Fl/4EtgHaA+1j4wq5xLZJWhmph9yfFiC0PKiNIcJr80wOH1H4iukWe/f
+         UYDNw21CwOkduIqNwBcGSdRrBlOSX3pcubSVhg3W/PBGXBOozexRCOdDf77+PiSgOz
+         PrA/b1afFbVpQ==
+Subject: Re: [kbuild-all] Re: kernel/rcu/tree.c:2073:23: warning: stack frame
+ size of 2704 bytes in function 'rcu_gp_kthread'
+To:     paulmck@kernel.org
+Cc:     Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+References: <202106061253.0X2QKyyI-lkp@intel.com>
+ <20210606044926.GJ4397@paulmck-ThinkPad-P17-Gen-1>
+ <4696fe3d-a7ad-acae-686e-6295ca327737@intel.com>
+ <20210607151939.GP4397@paulmck-ThinkPad-P17-Gen-1>
+ <e7bbb0e5-3063-031b-af6e-273e97f1d61f@intel.com>
+ <20210608050134.GZ4397@paulmck-ThinkPad-P17-Gen-1>
+ <f3cc5211-0c68-17c8-a222-4bc2c2525522@kernel.org>
+ <20210609035805.GA4397@paulmck-ThinkPad-P17-Gen-1>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <7f03e5bc-d8a3-74a4-273a-f8047b62ab02@kernel.org>
+Date:   Tue, 8 Jun 2021 21:14:29 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210609035805.GA4397@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running certain tests with a DEBUG_VM kernel would crash within hours,
-on the total_mapcount BUG() in split_huge_page_to_list(), while trying
-to free up some memory by punching a hole in a shmem huge page: split's
-try_to_unmap() was unable to find all the mappings of the page (which,
-on a !DEBUG_VM kernel, would then keep the huge page pinned in memory).
+On 6/8/2021 8:58 PM, Paul E. McKenney wrote:
+> On Tue, Jun 08, 2021 at 08:53:17AM -0700, Nathan Chancellor wrote:
+>> On 6/7/2021 10:01 PM, Paul E. McKenney wrote:
+>>> On Tue, Jun 08, 2021 at 11:14:40AM +0800, Rong Chen wrote:
+>>>>
+>>>>
+>>>> On 6/7/21 11:19 PM, Paul E. McKenney wrote:
+>>>>> On Mon, Jun 07, 2021 at 05:18:21PM +0800, Rong Chen wrote:
+>>>>>>
+>>>>>> On 6/6/21 12:49 PM, Paul E. McKenney wrote:
+>>>>>>> On Sun, Jun 06, 2021 at 12:19:57PM +0800, kernel test robot wrote:
+>>>>>>>> Hi Paul,
+>>>>>>>>
+>>>>>>>> FYI, the error/warning still remains.
+>>>>>>>>
+>>>>>>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>>>>>>> head:   f5b6eb1e018203913dfefcf6fa988649ad11ad6e
+>>>>>>>> commit: 7dffe01765d9309b8bd5505503933ec0ec53d192 rcu: Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node() macros
+>>>>>>>> date:   5 months ago
+>>>>>>>> config: powerpc-randconfig-r023-20210606 (attached as .config)
+>>>>>>>> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 551a697c5cf33275b66add4fc467fcf59084cffb)
+>>>>>>>> reproduce (this is a W=1 build):
+>>>>>>>>             wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>>>>>>>             chmod +x ~/bin/make.cross
+>>>>>>>>             # install powerpc cross compiling tool for clang build
+>>>>>>>>             # apt-get install binutils-powerpc-linux-gnu
+>>>>>>>>             # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7dffe01765d9309b8bd5505503933ec0ec53d192
+>>>>>>>>             git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>>>>>>             git fetch --no-tags linus master
+>>>>>>>>             git checkout 7dffe01765d9309b8bd5505503933ec0ec53d192
+>>>>>>>>             # save the attached .config to linux build tree
+>>>>>>>>             COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc
+>>>>>>>>
+>>>>>>>> If you fix the issue, kindly add following tag as appropriate
+>>>>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>>>>>
+>>>>>>>> All warnings (new ones prefixed by >>):
+>>>>>>>>
+>>>>>>>>        In file included from kernel/rcu/tree.c:21:
+>>>>>>>>        In file included from include/linux/kernel.h:12:
+>>>>>>>>        In file included from include/linux/bitops.h:29:
+>>>>>>>>        In file included from arch/powerpc/include/asm/bitops.h:62:
+>>>>>>>>        arch/powerpc/include/asm/barrier.h:49:9: warning: '__lwsync' macro redefined [-Wmacro-redefined]
+>>>>>>>>        #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
+>>>>>>>>                ^
+>>>>>>>>        <built-in>:310:9: note: previous definition is here
+>>>>>>>>        #define __lwsync __builtin_ppc_lwsync
+>>>>>>>>                ^
+>>>>>>>>>> kernel/rcu/tree.c:2073:23: warning: stack frame size of 2704 bytes in function 'rcu_gp_kthread' [-Wframe-larger-than=]
+>>>>>>>>        static int __noreturn rcu_gp_kthread(void *unused)
+>>>>>>> Does -rcu commit 2f20de99a63b ("rcu: Make rcu_gp_cleanup() be noinline
+>>>>>>> for tracing") help?
+>>>>>> Hi Paul,
+>>>>>>
+>>>>>> The stack frame size decreased to 2256 bytes:
+>>>>>>
+>>>>>>      kernel/rcu/tree.c:2129:23: warning: stack frame size of 2256 bytes in
+>>>>>> function 'rcu_gp_kthread' [-Wframe-larger-than=]
+>>>>> Very good, thank you!  Does the following patch (in addition to that
+>>>>> commit) also help?
+>>>>
+>>>> Hi Paul,
+>>>>
+>>>> I applied the below patch on commit 2f20de99a63b and the warning is gone.
+>>>
+>>> Very good, and thank you for your testing.  I have applied the requested
+>>> Reported-by and your Tested-by on the commit shown below.  Please let
+>>> me know if you would prefer some other Reported/Tested setup.
+>>>
+>>> 							Thanx, Paul
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> commit 336e92638287615d47c07af4ff6feb397cfe2084
+>>> Author: Paul E. McKenney <paulmck@kernel.org>
+>>> Date:   Mon Jun 7 21:57:02 2021 -0700
+>>>
+>>>       rcu: Make rcu_gp_init() and rcu_gp_fqs_loop noinline to conserve stack
+>>>       The kbuild test project found an oversized stack frame in rcu_gp_kthread()
+>>>       for some kernel configurations.  This oversizing was due to a very large
+>>>       amount of inlining, which is unnecessary due to the fact that this code
+>>>       executes infrequently.  This commit therefore marks rcu_gp_init() and
+>>>       rcu_gp_fqs_loop noinline to conserve stack space.
+>>>       Reported-by: kernel test robot <lkp@intel.com>
+>>>       Tested-by: Rong Chen <rong.a.chen@intel.com>
+>>>       Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>>
+>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>>> index 13bd8eee62bf..ef435aeac993 100644
+>>> --- a/kernel/rcu/tree.c
+>>> +++ b/kernel/rcu/tree.c
+>>> @@ -1737,7 +1737,7 @@ static void rcu_strict_gp_boundary(void *unused)
+>>>    /*
+>>>     * Initialize a new grace period.  Return false if no grace period required.
+>>>     */
+>>> -static bool rcu_gp_init(void)
+>>> +static noinline bool rcu_gp_init(void)
+>>
+>> Small comment if it is not too late. noinline_for_stack expands to the same
+>> thing but is self documenting :) that way people do not have to git blame to
+>> see why these are marked as noinline (not that too many people are probably
+>> touching this but still).
+> 
+> How about like the following?
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 8aa0ceef4264012abd7b98d29f0a968f0f0046cb
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Mon Jun 7 21:57:02 2021 -0700
+> 
+>      rcu: Make rcu_gp_init() and rcu_gp_fqs_loop noinline to conserve stack
+>      
+>      The kbuild test project found an oversized stack frame in rcu_gp_kthread()
+>      for some kernel configurations.  This oversizing was due to a very large
+>      amount of inlining, which is unnecessary due to the fact that this code
+>      executes infrequently.  This commit therefore marks rcu_gp_init() and
+>      rcu_gp_fqs_loop noinline_for_stack to conserve stack space.
+>      
+>      Reported-by: kernel test robot <lkp@intel.com>
+>      Tested-by: Rong Chen <rong.a.chen@intel.com>
+>      [ paulmck: noinline_for_stack per Nathan Chancellor. ]
+>      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-When that BUG() was changed to a WARN(), it would later crash on the
-VM_BUG_ON_VMA(end < vma->vm_start || start >= vma->vm_end, vma) in
-mm/internal.h:vma_address(), used by rmap_walk_file() for try_to_unmap().
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-vma_address() is usually correct, but there's a wraparound case when the
-vm_start address is unusually low, but vm_pgoff not so low: vma_address()
-chooses max(start, vma->vm_start), but that decides on the wrong address,
-because start has become almost ULONG_MAX.
+Thanks!
 
-Rewrite vma_address() to be more careful about vm_pgoff; move the
-VM_BUG_ON_VMA() out of it, returning -EFAULT for errors, so that it can
-be safely used from page_mapped_in_vma() and page_address_in_vma() too.
-
-Add vma_address_end() to apply similar care to end address calculation,
-in page_vma_mapped_walk() and page_mkclean_one() and try_to_unmap_one();
-though it raises a question of whether callers would do better to supply
-pvmw->end to page_vma_mapped_walk() - I chose not, for a smaller patch.
-
-An irritation is that their apparent generality breaks down on KSM pages,
-which cannot be located by the page->index that page_to_pgoff() uses: as
-4b0ece6fa016 ("mm: migrate: fix remove_migration_pte() for ksm pages")
-once discovered.  I dithered over the best thing to do about that, and
-have ended up with a VM_BUG_ON_PAGE(PageKsm) in both vma_address() and
-vma_address_end(); though the only place in danger of using it on them
-was try_to_unmap_one().
-
-Sidenote: vma_address() and vma_address_end() now use compound_nr() on
-a head page, instead of thp_size(): to make the right calculation on a
-hugetlbfs page, whether or not THPs are configured.  try_to_unmap() is
-used on hugetlbfs pages, but perhaps the wrong calculation never mattered.
-
-Fixes: a8fa41ad2f6f ("mm, rmap: check all VMAs that PTE-mapped THP can be part of")
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: <stable@vger.kernel.org>
----
-v2 series: adjust vma_address() to avoid 32-bit wrap, per Matthew
-v2: use compound_nr() as Matthew suggested
-
- mm/internal.h        | 53 ++++++++++++++++++++++++++++++++++------------
- mm/page_vma_mapped.c | 16 ++++++--------
- mm/rmap.c            | 16 +++++++-------
- 3 files changed, 53 insertions(+), 32 deletions(-)
-
-diff --git a/mm/internal.h b/mm/internal.h
-index 2f1182948aa6..e8fdb531f887 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -384,27 +384,52 @@ static inline void mlock_migrate_page(struct page *newpage, struct page *page)
- extern pmd_t maybe_pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma);
- 
- /*
-- * At what user virtual address is page expected in @vma?
-+ * At what user virtual address is page expected in vma?
-+ * Returns -EFAULT if all of the page is outside the range of vma.
-+ * If page is a compound head, the entire compound page is considered.
-  */
- static inline unsigned long
--__vma_address(struct page *page, struct vm_area_struct *vma)
-+vma_address(struct page *page, struct vm_area_struct *vma)
- {
--	pgoff_t pgoff = page_to_pgoff(page);
--	return vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-+	pgoff_t pgoff;
-+	unsigned long address;
-+
-+	VM_BUG_ON_PAGE(PageKsm(page), page);	/* KSM page->index unusable */
-+	pgoff = page_to_pgoff(page);
-+	if (pgoff >= vma->vm_pgoff) {
-+		address = vma->vm_start +
-+			((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-+		/* Check for address beyond vma (or wrapped through 0?) */
-+		if (address < vma->vm_start || address >= vma->vm_end)
-+			address = -EFAULT;
-+	} else if (PageHead(page) &&
-+		   pgoff + compound_nr(page) - 1 >= vma->vm_pgoff) {
-+		/* Test above avoids possibility of wrap to 0 on 32-bit */
-+		address = vma->vm_start;
-+	} else {
-+		address = -EFAULT;
-+	}
-+	return address;
- }
- 
-+/*
-+ * Then at what user virtual address will none of the page be found in vma?
-+ * Assumes that vma_address() already returned a good starting address.
-+ * If page is a compound head, the entire compound page is considered.
-+ */
- static inline unsigned long
--vma_address(struct page *page, struct vm_area_struct *vma)
-+vma_address_end(struct page *page, struct vm_area_struct *vma)
- {
--	unsigned long start, end;
--
--	start = __vma_address(page, vma);
--	end = start + thp_size(page) - PAGE_SIZE;
--
--	/* page should be within @vma mapping range */
--	VM_BUG_ON_VMA(end < vma->vm_start || start >= vma->vm_end, vma);
--
--	return max(start, vma->vm_start);
-+	pgoff_t pgoff;
-+	unsigned long address;
-+
-+	VM_BUG_ON_PAGE(PageKsm(page), page);	/* KSM page->index unusable */
-+	pgoff = page_to_pgoff(page) + compound_nr(page);
-+	address = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-+	/* Check for address beyond vma (or wrapped through 0?) */
-+	if (address < vma->vm_start || address > vma->vm_end)
-+		address = vma->vm_end;
-+	return address;
- }
- 
- static inline struct file *maybe_unlock_mmap_for_io(struct vm_fault *vmf,
-diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-index 5b559967410e..e37bd43904af 100644
---- a/mm/page_vma_mapped.c
-+++ b/mm/page_vma_mapped.c
-@@ -228,18 +228,18 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
- 	if (!map_pte(pvmw))
- 		goto next_pte;
- 	while (1) {
-+		unsigned long end;
-+
- 		if (check_pte(pvmw))
- 			return true;
- next_pte:
- 		/* Seek to next pte only makes sense for THP */
- 		if (!PageTransHuge(pvmw->page) || PageHuge(pvmw->page))
- 			return not_found(pvmw);
-+		end = vma_address_end(pvmw->page, pvmw->vma);
- 		do {
- 			pvmw->address += PAGE_SIZE;
--			if (pvmw->address >= pvmw->vma->vm_end ||
--			    pvmw->address >=
--					__vma_address(pvmw->page, pvmw->vma) +
--					thp_size(pvmw->page))
-+			if (pvmw->address >= end)
- 				return not_found(pvmw);
- 			/* Did we cross page table boundary? */
- 			if (pvmw->address % PMD_SIZE == 0) {
-@@ -277,14 +277,10 @@ int page_mapped_in_vma(struct page *page, struct vm_area_struct *vma)
- 		.vma = vma,
- 		.flags = PVMW_SYNC,
- 	};
--	unsigned long start, end;
--
--	start = __vma_address(page, vma);
--	end = start + thp_size(page) - PAGE_SIZE;
- 
--	if (unlikely(end < vma->vm_start || start >= vma->vm_end))
-+	pvmw.address = vma_address(page, vma);
-+	if (pvmw.address == -EFAULT)
- 		return 0;
--	pvmw.address = max(start, vma->vm_start);
- 	if (!page_vma_mapped_walk(&pvmw))
- 		return 0;
- 	page_vma_mapped_walk_done(&pvmw);
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 07811b4ae793..144de54efc1c 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -707,7 +707,6 @@ static bool should_defer_flush(struct mm_struct *mm, enum ttu_flags flags)
-  */
- unsigned long page_address_in_vma(struct page *page, struct vm_area_struct *vma)
- {
--	unsigned long address;
- 	if (PageAnon(page)) {
- 		struct anon_vma *page__anon_vma = page_anon_vma(page);
- 		/*
-@@ -722,10 +721,8 @@ unsigned long page_address_in_vma(struct page *page, struct vm_area_struct *vma)
- 			return -EFAULT;
- 	} else
- 		return -EFAULT;
--	address = __vma_address(page, vma);
--	if (unlikely(address < vma->vm_start || address >= vma->vm_end))
--		return -EFAULT;
--	return address;
-+
-+	return vma_address(page, vma);
- }
- 
- pmd_t *mm_find_pmd(struct mm_struct *mm, unsigned long address)
-@@ -919,7 +916,7 @@ static bool page_mkclean_one(struct page *page, struct vm_area_struct *vma,
- 	 */
- 	mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_PAGE,
- 				0, vma, vma->vm_mm, address,
--				min(vma->vm_end, address + page_size(page)));
-+				vma_address_end(page, vma));
- 	mmu_notifier_invalidate_range_start(&range);
- 
- 	while (page_vma_mapped_walk(&pvmw)) {
-@@ -1435,9 +1432,10 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 	 * Note that the page can not be free in this function as call of
- 	 * try_to_unmap() must hold a reference on the page.
- 	 */
-+	range.end = PageKsm(page) ?
-+			address + PAGE_SIZE : vma_address_end(page, vma);
- 	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, vma->vm_mm,
--				address,
--				min(vma->vm_end, address + page_size(page)));
-+				address, range.end);
- 	if (PageHuge(page)) {
- 		/*
- 		 * If sharing is possible, start and end will be adjusted
-@@ -1889,6 +1887,7 @@ static void rmap_walk_anon(struct page *page, struct rmap_walk_control *rwc,
- 		struct vm_area_struct *vma = avc->vma;
- 		unsigned long address = vma_address(page, vma);
- 
-+		VM_BUG_ON_VMA(address == -EFAULT, vma);
- 		cond_resched();
- 
- 		if (rwc->invalid_vma && rwc->invalid_vma(vma, rwc->arg))
-@@ -1943,6 +1942,7 @@ static void rmap_walk_file(struct page *page, struct rmap_walk_control *rwc,
- 			pgoff_start, pgoff_end) {
- 		unsigned long address = vma_address(page, vma);
- 
-+		VM_BUG_ON_VMA(address == -EFAULT, vma);
- 		cond_resched();
- 
- 		if (rwc->invalid_vma && rwc->invalid_vma(vma, rwc->arg))
--- 
-2.26.2
-
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 13bd8eee62bf..d8052adcdcb1 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1737,7 +1737,7 @@ static void rcu_strict_gp_boundary(void *unused)
+>   /*
+>    * Initialize a new grace period.  Return false if no grace period required.
+>    */
+> -static bool rcu_gp_init(void)
+> +static noinline_for_stack bool rcu_gp_init(void)
+>   {
+>   	unsigned long firstseq;
+>   	unsigned long flags;
+> @@ -1931,7 +1931,7 @@ static void rcu_gp_fqs(bool first_time)
+>   /*
+>    * Loop doing repeated quiescent-state forcing until the grace period ends.
+>    */
+> -static void rcu_gp_fqs_loop(void)
+> +static noinline_for_stack void rcu_gp_fqs_loop(void)
+>   {
+>   	bool first_gp_fqs;
+>   	int gf = 0;
+> 
