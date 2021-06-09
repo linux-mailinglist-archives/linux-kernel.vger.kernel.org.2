@@ -2,195 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B013A1E3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D7A3A1E41
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbhFIUrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 16:47:47 -0400
-Received: from relay08.th.seeweb.it ([5.144.164.169]:43557 "EHLO
-        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhFIUrp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:47:45 -0400
-Received: from [192.168.1.101] (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id BAA023EBC3;
-        Wed,  9 Jun 2021 22:45:44 +0200 (CEST)
-Subject: Re: [PATCH V3] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
- card
-To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
-        adrian.hunter@intel.com, ulf.hansson@linaro.org, robh+dt@kernel.org
-Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
-        vbadigan@codeaurora.org, rampraka@codeaurora.org,
-        sayalil@codeaurora.org, sartgarg@codeaurora.org,
-        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        sibis@codeaurora.org, okukatla@codeaurora.org, djakov@kernel.org,
-        cang@codeaurora.org, pragalla@codeaurora.org,
-        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org
-References: <1623252028-20467-1-git-send-email-sbhanu@codeaurora.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <793c9596-73f3-42b2-291e-1c728e279e28@somainline.org>
-Date:   Wed, 9 Jun 2021 22:45:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229865AbhFIUsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:48:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:42430 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229639AbhFIUsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 16:48:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B97B3ED1;
+        Wed,  9 Jun 2021 13:46:41 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 07FD63F719;
+        Wed,  9 Jun 2021 13:46:40 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH] firmware: arm_scmi: Add delayed response status check
+Date:   Wed,  9 Jun 2021 21:46:34 +0100
+Message-Id: <162327154478.2648287.13789567557699425300.b4-ty@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210608103056.3388-1-cristian.marussi@arm.com>
+References: <20210608103056.3388-1-cristian.marussi@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1623252028-20467-1-git-send-email-sbhanu@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 8 Jun 2021 11:30:56 +0100, Cristian Marussi wrote:
+> A successfully received delayed response could anyway report a failure at
+> the protocol layer in the message status field.
+> 
+> Add a check also for this error condition.
 
+Applied to sudeep.holla/linux (master), thanks!
 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> index 3900cfc..8b159d1 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> @@ -11,6 +11,7 @@
->  #include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
->  #include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
->  #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
-> +#include <dt-bindings/gpio/gpio.h>
->  #include "sc7280.dtsi"
->  #include "pm7325.dtsi"
->  #include "pmr735a.dtsi"
-> @@ -272,6 +273,36 @@
->  	status = "okay";
->  };
->  
-> +&sdhc_1 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&sdc1_clk &sdc1_cmd &sdc1_data &sdc1_rclk>;
-> +	pinctrl-1 = <&sdc1_clk_sleep &sdc1_cmd_sleep &sdc1_data_sleep &sdc1_rclk_sleep>;
+[1/1] firmware: arm_scmi: Add delayed response status check
+      https://git.kernel.org/sudeep.holla/c/f1748b1ee1
 
-Please condense these pins into a since sdc1_on_state/sdc1_off_state (check sdc1_state_on in [1])
-
-
-
-> +
-> +	non-removable;
-> +	no-sd;
-> +	no-sdio;
-> +
-> +	vmmc-supply = <&vreg_l7b_2p9>;
-> +	vqmmc-supply = <&vreg_l19b_1p8>;
-> +
-> +};
-> +
-> +&sdhc_2 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&sdc2_clk &sdc2_cmd &sdc2_data &sd_cd>;
-> +	pinctrl-1 = <&sdc2_clk_sleep &sdc2_cmd_sleep &sdc2_data_sleep>;
-
-Ditto
-
-
-
-> +&tlmm {
-> +	sdc1_clk: sdc1-clk {
-> +		pins = "sdc1_clk";
-> +		bias-disable;
-> +		drive-strength = <16>;
-> +	};
-> +
-> +	sdc1_cmd: sdc1-cmd {
-> +		pins = "sdc1_cmd";
-> +		bias-pull-up;
-> +		drive-strength = <10>;
-> +	};
-> +
-> +	sdc1_data: sdc1-data {
-> +		pins = "sdc1_data";
-> +		bias-pull-up;
-> +		drive-strength = <10>;
-> +	};
-> +	sdc1_rclk: sdc1-rclk {
-> +		pins = "sdc1_rclk";
-> +		bias-pull-down;
-> +	};
-> +
-> +	sdc2_clk: sdc2-clk {
-> +		pins = "sdc2_clk";
-> +		bias-disable;
-> +		drive-strength = <16>;
-> +	};
-> +
-> +	sdc2_cmd: sdc2-cmd {
-> +		pins = "sdc2_cmd";
-> +		bias-pull-up;
-> +		drive-strength = <10>;
-> +	};
-> +
-> +	sdc2_data: sdc2-data {
-> +		pins = "sdc2_data";
-> +		bias-pull-up;
-> +		drive-strength = <10>;
-> +	};
-> +
-> +	sd_cd: sd-cd {
-
-Please make it sdc2 to keep things coherent.
-
-
-
-> +		pins = "gpio91";
-> +		bias-pull-up;
-> +	};
-> +
-> +};
-
-Why are you defining on_state pins in the device dt and sleep state in the SoC one?
-
-Most devices share a common config for these, often coming from MTP or QRD boards
-
-and it makes little to no sense to define these separately every time, because if you hit the
-
-rare case of needing to make a change against that, it's probably just drive-strength.
-
-
-
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 0b6f119..eab6f7b 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -24,6 +24,11 @@
->  
->  	chosen { };
->  
-> +	aliases {
-> +		mmc1 = &sdhc_1;
-> +		mmc2 = &sdhc_2;
-> +	};
-
-This is board specific. Something might have a SDIO Wi-Fi card on it.
-
-
-
-> +			mmc-ddr-1_8v;
-> +			mmc-hs200-1_8v;
-> +			mmc-hs400-1_8v;
-> +			mmc-hs400-enhanced-strobe;
-
-These properties should probably be in the device DT, unless the SoC controller
-
-can only support these speeds and only at 1.8v
-
-
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git/commit/?h=for-next&id=35a4a8b6e9b133cf3a7d059ad4cf0e24cb4bd029
-
-
-Konrad
+--
+Regards,
+Sudeep
 
