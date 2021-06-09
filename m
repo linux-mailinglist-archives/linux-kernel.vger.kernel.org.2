@@ -2,85 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F773A1DE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DBC3A1DFA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbhFIUCI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 16:02:08 -0400
-Received: from hosting.gsystem.sk ([212.5.213.30]:42590 "EHLO
-        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhFIUCH (ORCPT
+        id S229782AbhFIUL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:11:57 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:38570 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhFIUL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:02:07 -0400
-Received: from [192.168.0.2] (188-167-68-178.dynamic.chello.sk [188.167.68.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id B87917A025C;
-        Wed,  9 Jun 2021 22:00:10 +0200 (CEST)
-From:   Ondrej Zary <linux@zary.sk>
-To:     Christian =?utf-8?q?K=C3=B6nig?= <christian.koenig@amd.com>
-Subject: Re: nouveau broken on Riva TNT2 in 5.13.0-rc4: NULL pointer dereference in nouveau_bo_sync_for_device
-Date:   Wed, 9 Jun 2021 22:00:07 +0200
-User-Agent: KMail/1.9.10
-Cc:     Ben Skeggs <bskeggs@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <202106052143.52488.linux@zary.sk> <202106090910.51188.linux@zary.sk> <762c1044-6e3a-48fc-95e4-1730b6ef2a2e@amd.com>
-In-Reply-To: <762c1044-6e3a-48fc-95e4-1730b6ef2a2e@amd.com>
-X-KMail-QuotePrefix: > 
+        Wed, 9 Jun 2021 16:11:56 -0400
+Received: by mail-lj1-f175.google.com with SMTP id s22so1462725ljg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lH+j2KiVN2G/yHhVjeQt6p3BwbyIHnyM+0CcxE7yrDU=;
+        b=AA02DUQuVWJT5MsI3unO8Y7QIOeiM7ojSOf+tqLac1WvD6nIyHkv7Pa0qjcMI+hTcR
+         0zNRwRgAg7m2VsUhZD7G21UqsG1aPq/XdzJPGqoO5RrowffR7FXb+T/ICZxJJuMRYvvw
+         NdivjzlAyufhdDOwqw5p5T7ogMbkumjfEy93w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lH+j2KiVN2G/yHhVjeQt6p3BwbyIHnyM+0CcxE7yrDU=;
+        b=A6ZdWQbAafNSd6PWdKdmr3z1zebcTpUUNNo58hKjCPjI587ZuM7bo4WlayWRXE5KqH
+         E8vD3Jd/PVLzCmtbQaaeMHxQF4BbRoZq8ZDQb+EH20g+OkY0Age8AbwdgxL8cVk9d9kr
+         AlFaNCbcWET+XsIEG/5zXdDzL6d7RHQiHQQKAEhMTQ6W/UqUjG+e0O9tYBUdlDShcID0
+         5dPUTFubB9geSQzyPZOUqssj6Pmpkm+TRjER5J9zVJnK6V0oEQJwCRIgzWgcj6WXP65o
+         VTwpCFhVZLij3jJeaCS3A7EOIqPOtKxZ8fskZMe7m9ZlK06gr7RzRlVmr2iLtCWnAph3
+         on3g==
+X-Gm-Message-State: AOAM533SQieog70mXGuvglwhNl2bXlMqcxzF/9gDMpT8K8hkaFchcAQ9
+        dTcQC9MDs2JP7yzIU/I8QlhMOcXKiaJ859b+uD0=
+X-Google-Smtp-Source: ABdhPJx4I1nOt3/mkO6mc8/5sNLUevfpGSUTbn/VwyJm9egHHbb5oXpPhYz4+0sVuX3JHLZzrRiftg==
+X-Received: by 2002:a05:651c:514:: with SMTP id o20mr1168291ljp.201.1623269331551;
+        Wed, 09 Jun 2021 13:08:51 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id a7sm80574lfj.42.2021.06.09.13.08.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 13:08:50 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id w33so40007234lfu.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:08:50 -0700 (PDT)
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr684978lfc.201.1623269330357;
+ Wed, 09 Jun 2021 13:08:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
-Message-Id: <202106092200.08088.linux@zary.sk>
+References: <20210607125734.1770447-1-liangyan.peng@linux.alibaba.com> <71fa2e69-a60b-0795-5fef-31658f89591a@linux.alibaba.com>
+In-Reply-To: <71fa2e69-a60b-0795-5fef-31658f89591a@linux.alibaba.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 9 Jun 2021 13:08:34 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whKbJkuVmzb0hD3N6q7veprUrSpiBHRxVY=AffWZPtxmg@mail.gmail.com>
+Message-ID: <CAHk-=whKbJkuVmzb0hD3N6q7veprUrSpiBHRxVY=AffWZPtxmg@mail.gmail.com>
+Subject: Re: [PATCH] tracing: Correct the length check which causes memory corruption
+To:     James Wang <jnwang@linux.alibaba.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Liangyan <liangyan.peng@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        yinbinbin@alibabacloud.com, wetp <wetp.zy@linux.alibaba.com>,
+        stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 09 June 2021 11:21:05 Christian König wrote:
-> Am 09.06.21 um 09:10 schrieb Ondrej Zary:
-> > On Wednesday 09 June 2021, Christian König wrote:
-> >> Am 09.06.21 um 08:57 schrieb Ondrej Zary:
-> >>> [SNIP]
-> >>>> Thanks for the heads up. So the problem with my patch is already fixed,
-> >>>> isn't it?
-> >>> The NULL pointer dereference in nouveau_bo_wr16 introduced in
-> >>> 141b15e59175aa174ca1f7596188bd15a7ca17ba was fixed by
-> >>> aea656b0d05ec5b8ed5beb2f94c4dd42ea834e9d.
-> >>>
-> >>> That's the bug I hit when bisecting the original problem:
-> >>> NULL pointer dereference in nouveau_bo_sync_for_device
-> >>> It's caused by:
-> >>> # first bad commit: [e34b8feeaa4b65725b25f49c9b08a0f8707e8e86] drm/ttm: merge ttm_dma_tt back into ttm_tt
-> >> Good that I've asked :)
-> >>
-> >> Ok that's a bit strange. e34b8feeaa4b65725b25f49c9b08a0f8707e8e86 was
-> >> created mostly automated.
-> >>
-> >> Do you have the original backtrace of that NULL pointer deref once more?
-> > The original backtrace is here: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flkml.org%2Flkml%2F2021%2F6%2F5%2F350&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Ce905b6bd2aa842ace15508d92b15b96d%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637588195000729460%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=zFqheBbJcOHtYgqG%2Fs63AT1dwuk4REmUDJWHvzaLAlc%3D&amp;reserved=0
-> 
-> And the problem is that ttm_dma->dma_address is NULL, right? Mhm, I 
-> don't see how that can happen since nouveau is using ttm_sg_tt_init().
-> 
-> Apart from that what nouveau does here is rather questionable since you 
-> need a coherent architecture for most things anyway, but that's not what 
-> we are trying to fix here.
-> 
-> Can you try to narrow down if ttm_sg_tt_init is called before calling 
-> this function for the tt object in question?
+Steven?
 
-ttm_sg_tt_init is not called:
-[   12.150124] nouveau 0000:01:00.0: DRM: VRAM: 31 MiB
-[   12.150133] nouveau 0000:01:00.0: DRM: GART: 128 MiB
-[   12.150143] nouveau 0000:01:00.0: DRM: BMP version 5.6
-[   12.150151] nouveau 0000:01:00.0: DRM: No DCB data found in VBIOS
-[   12.151362] ttm_tt_init
-[   12.151370] ttm_tt_init_fields
-[   12.151374] ttm_tt_alloc_page_directory
-[   12.151615] BUG: kernel NULL pointer dereference, address: 00000000
+On Mon, Jun 7, 2021 at 6:46 AM James Wang <jnwang@linux.alibaba.com> wrote:
+>
+> >
+> > James Wang has reproduced it stably on the latest 4.19 LTS.
+> > After some debugging, we finally proved that it's due to ftrace
+> > buffer out-of-bound access using a debug tool as follows:
+[..]
 
+Looks about right:
 
+> > diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> > index a21ef9cd2aae..9299057feb56 100644
+> > --- a/kernel/trace/trace.c
+> > +++ b/kernel/trace/trace.c
+> > @@ -2736,7 +2736,7 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
+> >           (entry = this_cpu_read(trace_buffered_event))) {
+> >               /* Try to use the per cpu buffer first */
+> >               val = this_cpu_inc_return(trace_buffered_event_cnt);
+> > -             if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
+> > +             if ((len < (PAGE_SIZE - sizeof(*entry) - sizeof(entry->array[0]))) && val == 1) {
+> >                       trace_event_setup(entry, type, trace_ctx);
+> >                       entry->array[0] = len;
+> >                       return entry;
 
--- 
-Ondrej Zary
+I have to say that I don't love that code. Not before, and not with the fix.
+
+That "sizeof(*entry)" is clearly wrong, because it doesn't take the
+unsized array into account.
+
+But adding the sizeof() for a single array entry doesn't make that
+already unreadable and buggy code much more readable.
+
+It would probably be better to use "struct_size(entry, buffer, 1)"
+instead, and I think it would be good to just split things up a bit to
+be more legibe:
+
+        unsigned long max_len = PAGE_SIZE - struct_size(entry, array, 1);
+
+        if (val == 1 && len < max_len && val == 1) {
+                trace_event_setup(entry, type, trace_ctx);
+                ..
+
+instead.
+
+However, I have a few questions:
+
+ - why "len < max_offset" rather than "<="?
+
+ - why don't we check the length before we even try to reserve that
+percpu buffer with the expensive atomic this_cpu_inc_return()?
+
+ - is the size of that array guaranteed to always be 1? If so, why is
+it unsized? Why is it an array at all?
+
+ - clearly the array{} size must not be guaranteed to be 1, but why a
+size of 1 then always sufficient here? Clearly a size of 1 is the
+minimum required since we do that
+
+        entry->array[0] = len;
+
+   and thus use one entry, but what is it that makes it ok that it
+really is just one entry?
+
+Steven, please excuse the above stupid questions of mine, but that
+code looks really odd.
+
+               Linus
