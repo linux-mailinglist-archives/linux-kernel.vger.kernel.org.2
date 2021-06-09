@@ -2,146 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23203A1B01
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E963A1B19
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234853AbhFIQel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234732AbhFIQei (ORCPT
+        id S232482AbhFIQjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:39:52 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:61208 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231934AbhFIQjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:34:38 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6593EC0617A6;
-        Wed,  9 Jun 2021 09:32:28 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id 5so23406635ioe.1;
-        Wed, 09 Jun 2021 09:32:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=15t7ZKTSX9WU503SVEKMIKymOsp0yb03DbikdqeGm38=;
-        b=IL895TA+hvrX3n0qdh9JJZDlsA+zMM40QHD9YuLGcFvWyFmOBbWr0lwsaAEA/sDP3K
-         iFVOzZzN8SgYt1T/Imb/+iyDliuKqHw3rq4mBWgspDpmiKr06PA6iLRSvIt3hJB4O1aY
-         toqIyYe8lCVdoENWwYcnZwWSV+xVpKpFiMnbwCmTqhaDKg6ynHNUHy+4iqZkdyC9pr61
-         IZ7qNz3LEV6Ip/F18DKU7VLSouVvRLCcd/xmj5hUBWpvkH8y9VvsFDhs2h0qpbpq4lVg
-         rwdBYEpcXvk37O5uAA6bRMrGKBTlcMygnp+qYboJC1W7sp1RKrUtXJsqhZU90Lw0YmG0
-         tipg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=15t7ZKTSX9WU503SVEKMIKymOsp0yb03DbikdqeGm38=;
-        b=f8t8VJg5cTanUpEYvbj8DXKrMRaMbCGkN2CK2MYA4cawdZgPwWLwV1twHtbqlHgSnM
-         MpI492vA/QZHjwUNXD3pPQciyHAweCHG/uQx9agDHYxocfAsgntZdr57V7RKXI5d7bFp
-         D1jHUOuIxTeaSYqn8xy+NmMHwgDxavHQJWeOfUI171qT1+CPcnI6UTOThBskyELHbMzU
-         ZV52cv0ZI3wfWVl/iggG90WCbaibKlHz8FV2TEKcachFC7JDqVNtUUqQVKcnMpFWn1tv
-         H7j9zwmrA0skC/I/ZWf/3eEU0JbPc7yHNlovgibRUxPO4f7Gf2RJL3KNwDQ00Y9X9SeX
-         dGuQ==
-X-Gm-Message-State: AOAM531hk9UvxN5oNU0L9BD2oRgOf1dyOkqPQnL2QIvKYeqVUpC8Smtb
-        oTrBpPdMWlAWKzcj80spFQQ=
-X-Google-Smtp-Source: ABdhPJyhgEqY3+4woUSGc66Hoo7NTM4a2l3JyXWUFWWECsf/CaRguxBXkWADIBSg3+gt9uwmlaziiQ==
-X-Received: by 2002:a05:6638:2725:: with SMTP id m37mr461409jav.121.1623256347937;
-        Wed, 09 Jun 2021 09:32:27 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id i7sm263328ilb.67.2021.06.09.09.32.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 09:32:27 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 7184D27C005C;
-        Wed,  9 Jun 2021 12:32:26 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 09 Jun 2021 12:32:26 -0400
-X-ME-Sender: <xms:Gu3AYK6oaCMbx1juskhuPjTdHiGFdoqpKgCgfe5ZRJmba2pRGL-0ww>
-    <xme:Gu3AYD5CesdHXVjyQZXgoTmWiKwmfG8RyN9hJkIXqY1AEpv4AtmsUo1q86qCNWRCA
-    WXdsQ_LOwrjtwrYTQ>
-X-ME-Received: <xmr:Gu3AYJdAGpPvZv-MIojkEuUFMDyzDweNOOhZDnI0R9KQz1Zc8HiKlwsPfe4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeduuddguddtvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehvdevteefgfeiudettdefvedvvdelkeejueffffelgeeuhffhjeetkeei
-    ueeuleenucevlhhushhtvghrufhiiigvpeefnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:Gu3AYHKWTPqi7mrx3YCfmM_X75NrEp410e5FYjlHB1fpPRzM5vVR6Q>
-    <xmx:Gu3AYOI-IituoHTHlBE2uRmaUSitVxJ2rKgRk6HjaPqgki2qLDd39A>
-    <xmx:Gu3AYIxuUpd10fkpr5VWkGVVTw3zzWfDrUlz9r0g_Bmojh5JUrR8Cw>
-    <xmx:Gu3AYD4pUO4ZPuaTls9rcZAk3_OmGiHqhJx77eOmS9HLlLxjrlRI7wB0u1c>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 9 Jun 2021 12:32:26 -0400 (EDT)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, Clint Sbisa <csbisa@amazon.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>
-Subject: [RFC v3 7/7] PCI: hv: Turn on the host bridge probing on ARM64
-Date:   Thu, 10 Jun 2021 00:32:11 +0800
-Message-Id: <20210609163211.3467449-8-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210609163211.3467449-1-boqun.feng@gmail.com>
-References: <20210609163211.3467449-1-boqun.feng@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 9 Jun 2021 12:39:48 -0400
+X-IronPort-AV: E=Sophos;i="5.83,261,1616425200"; 
+   d="scan'208";a="83736868"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie6.idc.renesas.com with ESMTP; 10 Jun 2021 01:37:51 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7998B40A2A52;
+        Thu, 10 Jun 2021 01:37:49 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2 0/3] SoC identification support for RZ/G2L
+Date:   Wed,  9 Jun 2021 17:37:14 +0100
+Message-Id: <20210609163717.3083-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now we have everything we need, just provide a proper sysdata type for
-the bus to use on ARM64 and everything else works.
+Hi All,
 
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- drivers/pci/controller/pci-hyperv.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+This patch series adds support for RZ/G2{L,LC} SoC
+identification.
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index 16a779ab9ed4..271d0b6d4796 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -40,6 +40,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/pci-ecam.h>
- #include <linux/delay.h>
- #include <linux/semaphore.h>
- #include <linux/irqdomain.h>
-@@ -449,7 +450,11 @@ enum hv_pcibus_state {
- };
- 
- struct hv_pcibus_device {
-+#ifdef CONFIG_X86
- 	struct pci_sysdata sysdata;
-+#elif defined(CONFIG_ARM64)
-+	struct pci_config_window sysdata;
-+#endif
- 	struct pci_host_bridge *bridge;
- 	struct fwnode_handle *fwnode;
- 	/* Protocol version negotiated with the host */
-@@ -3099,7 +3104,9 @@ static int hv_pci_probe(struct hv_device *hdev,
- 			 dom_req, dom);
- 
- 	hbus->bridge->domain_nr = dom;
-+#ifdef CONFIG_X86
- 	hbus->sysdata.domain = dom;
-+#endif
- 
- 	hbus->hdev = hdev;
- 	refcount_set(&hbus->remove_lock, 1);
+SoC identification register is part of SYSC block and
+currently no driver is added for SYSC block so just the
+basic properties are added in binding documentation (and will
+updated with the required properties once the driver is in
+place) and this node is used in renesas-soc.c for SoC
+identification.
+
+Patches are based on top of [1] master branch and is dependent on
+patch series [2].
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/
+[2] https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=497355
+
+Changes for v2:
+* Added description for multiple interrupts in SYSC binding doc
+* Added interrupt-names property in SYSC binding doc
+* Update dtsi to included interrupt-names property for SYSC node
+* Mapped entire SYSC block to read the device id
+* Included RB tag for patch 1, 3
+
+Cheers,
+Prabhakar
+
+Lad Prabhakar (3):
+  dt-bindings: power: renesas,rzg2l-sysc: Add DT binding documentation
+    for SYSC controller
+  soc: renesas: Add support to read LSI DEVID register of RZ/G2{L,LC}
+    SoC's
+  arm64: dts: renesas: r9a07g044: Add SYSC node to RZ/G2L SoC DTSI
+
+ .../bindings/power/renesas,rzg2l-sysc.yaml    | 63 +++++++++++++++++++
+ arch/arm64/boot/dts/renesas/r9a07g044.dtsi    | 12 ++++
+ drivers/soc/renesas/renesas-soc.c             | 33 +++++++++-
+ 3 files changed, 107 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/power/renesas,rzg2l-sysc.yaml
+
 -- 
-2.30.2
+2.17.1
 
