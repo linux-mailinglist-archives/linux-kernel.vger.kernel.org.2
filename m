@@ -2,184 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3965E3A08E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2F23A08E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234360AbhFIBNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 21:13:08 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:52030 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230303AbhFIBNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 21:13:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623201074; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=hOY4IY8I46gA8MMjH6W8hGdwOQJifP1exL50IuuC0xA=;
- b=qEpKcrvxBEB2dN9925WULspN09L4zp7tXEsaJDH2S76gzyHJTSvO7Zq2JCQz/8ZzXYR6nYFD
- 11MFsusCFxYNAd3HXpahJnZ9g66oFw1lFwTOckOE9M3m0GifDHWMyNTglaKa2RTdwbjTpM8e
- tA+GFa5XcGF0gInKoi80P89OYlQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60c0150fe570c0561986610b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Jun 2021 01:10:39
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7AF14C43460; Wed,  9 Jun 2021 01:10:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8831CC433F1;
-        Wed,  9 Jun 2021 01:10:38 +0000 (UTC)
+        id S234581AbhFIBNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 21:13:34 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4526 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230303AbhFIBNd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 21:13:33 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G08BR3gTPzZdsX;
+        Wed,  9 Jun 2021 09:08:47 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 09:11:36 +0800
+Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
+ 09:11:35 +0800
+Subject: Re: [PATCH 1/1] lib: Fix spelling mistakes in header files
+To:     Joe Perches <joe@perches.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+CC:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        "Christoph Lameter" <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210608021932.12581-1-thunder.leizhen@huawei.com>
+ <20210608021932.12581-2-thunder.leizhen@huawei.com>
+ <20210609091821.32b82ba464f6f9aecc3a7d59@kernel.org>
+ <2ab2fd8be606ad925bb19054b74d1f3ebd2da095.camel@perches.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <e351aa75-6764-6118-261a-873a10b070c4@huawei.com>
+Date:   Wed, 9 Jun 2021 09:11:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 09 Jun 2021 09:10:38 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: scsi: ufs: Optimize host lock on transfer requests send/compl
- paths (uninitialized pointer error)
-In-Reply-To: <fa66c94c-3df6-3813-dc2d-572cee16071b@canonical.com>
-References: <fa66c94c-3df6-3813-dc2d-572cee16071b@canonical.com>
-Message-ID: <c723f68d3bfd535ea0c749fc93d06f32@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <2ab2fd8be606ad925bb19054b74d1f3ebd2da095.camel@perches.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
 
-On 2021-06-08 23:44, Colin Ian King wrote:
-> Hi,
-> 
-> static analysis with Coverity on linux-next has found an issue in
-> drivers/scsi/ufs/ufshcd.c introduced by the following commit:
-> 
-> commit a45f937110fa6b0c2c06a5d3ef026963a5759050
-> Author: Can Guo <cang@codeaurora.org>
-> Date:   Mon May 24 01:36:57 2021 -0700
-> 
->     scsi: ufs: Optimize host lock on transfer requests send/compl paths
-> 
-> The analysis is as follows:
-> 
-> 
-> 2948 static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
-> 2949                enum dev_cmd_type cmd_type, int timeout)
-> 2950 {
-> 2951        struct request_queue *q = hba->cmd_queue;
-> 2952        struct request *req;
-> 
->     1. var_decl: Declaring variable lrbp without initializer.
-> 
-> 2953        struct ufshcd_lrb *lrbp;
-> 2954        int err;
-> 2955        int tag;
-> 2956        struct completion wait;
-> 2957
-> 2958        down_read(&hba->clk_scaling_lock);
-> 2959
-> 2960        /*
-> 2961         * Get free slot, sleep if slots are unavailable.
-> 2962         * Even though we use wait_event() which sleeps 
-> indefinitely,
-> 2963         * the maximum wait time is bounded by SCSI request 
-> timeout.
-> 2964         */
-> 2965        req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
-> 
->     2. Condition IS_ERR(req), taking false branch.
-> 
-> 2966        if (IS_ERR(req)) {
-> 2967                err = PTR_ERR(req);
-> 2968                goto out_unlock;
-> 2969        }
-> 2970        tag = req->tag;
-> 
->     3. Condition !!__ret_warn_on, taking false branch.
->     4. Condition !!__ret_warn_on, taking false branch.
-> 
-> 2971        WARN_ON_ONCE(!ufshcd_valid_tag(hba, tag));
-> 2972        /* Set the timeout such that the SCSI error handler is not
-> activated. */
-> 2973        req->timeout = msecs_to_jiffies(2 * timeout);
-> 2974        blk_mq_start_request(req);
-> 2975
-> 
->     5. Condition !!test_bit(tag, &hba->outstanding_reqs), taking true
-> branch.
-> 
-> 2976        if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
-> 2977                err = -EBUSY;
-> 
->     6. Jumping to label out.
-> 
-> 2978                goto out;
-> 2979        }
-> 2980
-> 2981        init_completion(&wait);
-> 2982        lrbp = &hba->lrb[tag];
-> 2983        WARN_ON(lrbp->cmd);
-> 2984        err = ufshcd_compose_dev_cmd(hba, lrbp, cmd_type, tag);
-> 2985        if (unlikely(err))
-> 2986                goto out_put_tag;
-> 2987
-> 2988        hba->dev_cmd.complete = &wait;
-> 2989
-> 2990        ufshcd_add_query_upiu_trace(hba, UFS_QUERY_SEND,
-> lrbp->ucd_req_ptr);
-> 2991        /* Make sure descriptors are ready before ringing the
-> doorbell */
-> 2992        wmb();
-> 2993
-> 2994        ufshcd_send_command(hba, tag);
-> 2995        err = ufshcd_wait_for_dev_cmd(hba, lrbp, timeout);
-> 2996 out:
-> 
->     7. Condition err, taking true branch.
-> 
->     Uninitialized pointer read (UNINIT)
->     8. uninit_use: Using uninitialized value lrbp.
-> 
-> 2997        ufshcd_add_query_upiu_trace(hba, err ? UFS_QUERY_ERR :
-> UFS_QUERY_COMP,
-> 2998                                    (struct utp_upiu_req
-> *)lrbp->ucd_rsp_ptr);
-> 2999
-> 3000 out_put_tag:
-> 3001        blk_put_request(req);
-> 3002 out_unlock:
-> 3003        up_read(&hba->clk_scaling_lock);
-> 3004        return err;
-> 3005 }
-> 
-> Pointer lrbp is being accessed on the error exit path on line 2989
-> because it is no longer being initialized early, the pointer assignment
-> was moved to a later point (line 2982) by the commit referenced in the
-> top of the email.
-> 
-> Colin
 
-I will fix it by changing "goto out;" -> "goto out_put_tag;" on line 
-#2978
-in a new patch.
+On 2021/6/9 8:28, Joe Perches wrote:
+> On Wed, 2021-06-09 at 09:18 +0900, Masami Hiramatsu wrote:
+>> On Tue, 8 Jun 2021 10:19:32 +0800
+>> Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>>
+>>> Fix some spelling mistakes in comments found by "codespell":
+> 
+> Another:
+> 
+>>> diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
+> []
+>>> @@ -165,7 +165,7 @@ static inline struct xbc_node * __init xbc_find_node(const char *key)
+>>>   * is stroed to @anode and @value. If the @node doesn't have @key node,
+> 
+> stroed/stored
 
-Thanks,
-Can Guo.
+Good eye, I will fix it in V2.
+
+> 
+>>>   * it does nothing.
+> 
+> 
+> 
+> .
+> 
+
