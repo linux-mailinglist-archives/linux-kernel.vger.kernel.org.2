@@ -2,150 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB85F3A1A2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97203A1A24
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236732AbhFIPw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:52:57 -0400
-Received: from mail-yb1-f172.google.com ([209.85.219.172]:33690 "EHLO
-        mail-yb1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235827AbhFIPwz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:52:55 -0400
-Received: by mail-yb1-f172.google.com with SMTP id f84so36218583ybg.0;
-        Wed, 09 Jun 2021 08:51:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aBTN9nJMcjuczcYEKzyMHwRihscHxKS/kDo9+PJCmN4=;
-        b=ms5C9nDO22l6b82s4qeFr0cb0SJcO5eHC60T8kui+Dd57hCUfr0CDSqt24AliiLEpd
-         BeoldJeG+yuqBDfHZYSJ8BG5U3Bk29hd8XmdTZ0blOOYvBP6dJveoUfEMbbXATMY4Mx+
-         OdUjHYuLznMpzbiw+5g4mMdoomZbXTPSx86iVLEFjjwsPYUywMzbQWDsi/vO7u1bd9Vx
-         eGhkD25LkM1UIsaoef92MQlQLoqV4AlQ6UaTYqBxhpuD/TelmGCkQEZLpLTrQu9eczUt
-         Pmu5sFbdnYxiX14buLaBbfGgGF50zh8TKGW3jkB51X6KP7CiIaeulyNckyS5NhnGfsQH
-         cQiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aBTN9nJMcjuczcYEKzyMHwRihscHxKS/kDo9+PJCmN4=;
-        b=V2KfjvSnrdO44DQ/n+lIwVy5DDkxivtadqdizV56WwFlAWAlREso2pKOWnwUeKxy70
-         L5UIcn7+O+pELYAKGCCLobQJpT5NInNFkxGU6dGyzH1QT5Rt4wOVy6LymMeVQvVbWsgD
-         6hFfizpV3ntKpxhCc2tFbZcNBLZdsK5ebeXz2m4WifMT1pA6Q+2wCoI1R68ovonVYAeJ
-         +DWIqFORQIzA5XZVULtwaWu5/W7qseDoWZMcdq9dp6rzD0zDaJ6ZyCPm6OIqlvoKBUT8
-         NZ2/+g0wICV7dihIc++3QkWXimn8or/gzEOW7T6EVQ5MUyUFgqq5qQDnarQZ/muOGw5b
-         joCA==
-X-Gm-Message-State: AOAM531NJLNBXb8awZ4djujZwaRih0/1q43Da6AkTOZBPu7WhCbmgAxG
-        jSHNRlhxNu3ED9rDueT48vEj5oasrHIMfNeVp9GVjwxdzt0=
-X-Google-Smtp-Source: ABdhPJzdYIkJvQwfRiIEk/K+MGk13mZ6eCQ5fCyo7dydKfGS8Ok1LiDkYnwNrOGFbrpLtbz8UGHSY6SGZyf/firFwSg=
-X-Received: by 2002:a25:743:: with SMTP id 64mr905819ybh.426.1623253800926;
- Wed, 09 Jun 2021 08:50:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210604180933.16754-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210604180933.16754-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVkKhD3kU-DtPzrGfNf4Sn5Ht09Z1N0scwx1XJoG-F6Mg@mail.gmail.com>
-In-Reply-To: <CAMuHMdVkKhD3kU-DtPzrGfNf4Sn5Ht09Z1N0scwx1XJoG-F6Mg@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 9 Jun 2021 16:49:34 +0100
-Message-ID: <CA+V-a8tOMtS59OoWVK-c=zy2iK_nv_16Xu+2DBcUQPTq7nCa1Q@mail.gmail.com>
-Subject: Re: [PATCH 2/3] soc: renesas: Add support to read LSI DEVID register
- of RZ/G2{L,LC} SoC's
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        id S236718AbhFIPvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:51:55 -0400
+Received: from tux.runtux.com ([176.9.82.136]:54726 "EHLO tux.runtux.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235827AbhFIPvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:51:54 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by tux.runtux.com (Postfix) with ESMTP id 3C31E6F02A;
+        Wed,  9 Jun 2021 17:49:57 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at tux.runtux.com
+Received: from tux.runtux.com ([127.0.0.1])
+        by localhost (tux2.runtux.com [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id CS2SSc287vVH; Wed,  9 Jun 2021 17:49:56 +0200 (CEST)
+Received: from bee.priv.zoo (62-99-217-90.static.upcbusiness.at [62.99.217.90])
+        (Authenticated sender: postmaster@runtux.com)
+        by tux.runtux.com (Postfix) with ESMTPSA id F1ED56EFBF;
+        Wed,  9 Jun 2021 17:49:55 +0200 (CEST)
+Received: by bee.priv.zoo (Postfix, from userid 1002)
+        id 7ACBD46E; Wed,  9 Jun 2021 17:49:55 +0200 (CEST)
+Date:   Wed, 9 Jun 2021 17:49:55 +0200
+From:   Ralf Schlatterbeck <rsc@runtux.com>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Rob Herring <robh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Willy Tarreau <w@1wt.eu>, Lars Poeschel <poeschel@lemonage.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 1/1] auxdisplay: Add I2C gpio expander example
+Message-ID: <20210609154955.hp4tuoiyrhpmtyok@runtux.com>
+References: <20210106113730.k5qveshjgcd57kgx@runtux.com>
+ <20210106113929.fizyg6fcsmsntkiy@runtux.com>
+ <CANiq72=Cfv=Qo2fs+HDjUc8pV37mL326SDS5JpGotUfHLwK_rQ@mail.gmail.com>
+ <CAMuHMdUW3U6DVkHp3xiHFzvRUDJ1FwTNCnBWp5LCuDGxhds9wg@mail.gmail.com>
+ <CANiq72mCFwYnbynQgwNGTt0mzo_rMrnQfpinz6DrPttFxUpyNQ@mail.gmail.com>
+ <20210517152035.GA2581887@robh.at.kernel.org>
+ <20210519090047.e63d2im5vgskqpcs@runtux.com>
+ <CAMuHMdV80XUo5ihXUkogCikGA4H71Ada9w=9W9d9d1zdgrw0uA@mail.gmail.com>
+ <20210519115450.qoqpy7d5dgnjtenx@runtux.com>
+ <CANiq72m+gqGWpUnA1tk0GX-wKdDnXF_1dKftjOLEAt4rjsnoaw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANiq72m+gqGWpUnA1tk0GX-wKdDnXF_1dKftjOLEAt4rjsnoaw@mail.gmail.com>
+X-ray:  beware
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-Thank you for the review.
-
-On Wed, Jun 9, 2021 at 8:27 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Fri, Jun 4, 2021 at 8:09 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add support for reading the LSI DEVID register which is present in
-> > SYSC block of RZ/G2{L,LC} SoC's.
+On Wed, Jun 09, 2021 at 03:55:10PM +0200, Miguel Ojeda wrote:
+> Hi Ralf, Rob,
+> 
+> On Wed, May 19, 2021 at 1:54 PM Ralf Schlatterbeck <rsc@runtux.com> wrote:
 > >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > --- a/drivers/soc/renesas/renesas-soc.c
-> > +++ b/drivers/soc/renesas/renesas-soc.c
-> > @@ -56,6 +56,11 @@ static const struct renesas_family fam_rzg2 __initconst __maybe_unused = {
-> >         .reg    = 0xfff00044,           /* PRR (Product Register) */
-> >  };
+> > The hd44780 displays are often used with pcf8574 based I/O expanders.
+> > Add example to documentation.
 > >
-> > +static const struct renesas_family fam_rzg2l __initconst __maybe_unused = {
-> > +       .name   = "RZ/G2L",
-> > +       .reg    = 0x11020a04,
->
-> Please don't add hardcoded register addresses for new SoCs (i.e. drop
-> ".reg").  The "renesas,r9a07g044-sysc" is always present.
-> And if it were missing, the hardcoded fallback would lead into the
-> classic CCCR/PRR scheme, which is not correct for RZ/G2L...
->
-I wanted to avoid iomap for the entire sysc block for just a single register.
+> > Signed-off-by: Ralf Schlatterbeck <rsc@runtux.com>
+> 
+> I have queued this one into -next, adding the `Suggested-by` tag.
 
-> > @@ -348,6 +361,25 @@ static int __init renesas_soc_init(void)
-> >                 goto done;
-> >         }
-> >
-> > +       np = of_find_compatible_node(NULL, NULL, "renesas,r9a07g044-sysc");
-> > +       if (np) {
-> > +               of_node_put(np);
-> > +               chipid = ioremap(family->reg, 4);
->
-> Just use of_iomap(np, 0)...
->
-will do.
+Thanks!
 
-> > +
-> > +               if (chipid) {
-> > +                       product = readl(chipid);
->
-> ... and add the DEVID offset within the SYSC block here.
->
-will do.
-
-Cheers,
-Prabhakar
-
-> > +                       iounmap(chipid);
-> > +
-> > +                       if (soc->id && (product & 0xfffffff) != soc->id) {
-> > +                               pr_warn("SoC mismatch (product = 0x%x)\n",
-> > +                                       product);
-> > +                               return -ENODEV;
-> > +                       }
-> > +               }
-> > +
-> > +               goto done;
-> > +       }
-> > +
-> >         /* Try PRR first, then hardcoded fallback */
-> >         np = of_find_compatible_node(NULL, NULL, "renesas,prr");
-> >         if (np) {
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Ralf
+-- 
+Dr. Ralf Schlatterbeck                  Tel:   +43/2243/26465-16
+Open Source Consulting                  www:   www.runtux.com
+Reichergasse 131, A-3411 Weidling       email: office@runtux.com
