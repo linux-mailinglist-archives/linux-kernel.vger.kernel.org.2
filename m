@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B20A73A0A65
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F853A0A6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236210AbhFIDEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 23:04:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54314 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhFIDEB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 23:04:01 -0400
-Received: from mail-ot1-f70.google.com ([209.85.210.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <chris.chiu@canonical.com>)
-        id 1lqoTm-0002bm-Bm
-        for linux-kernel@vger.kernel.org; Wed, 09 Jun 2021 03:02:06 +0000
-Received: by mail-ot1-f70.google.com with SMTP id 88-20020a9d06e10000b029030513a66c79so15313872otx.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 20:02:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=osdcSd2Q78FCh6r+gYatJ/VUJ3sKYNx//NpfCylf+fw=;
-        b=O5SrC8Kd1vGHXLmSqfIpkA+kRv8VelppxJ29JHaVPyY3xgHCKdATFui4AHY3uNdBXF
-         V2qP4Xn1+HMVidH/71trei4MZ/9KhfDHRKpgAOzBx5zaxw+M6lyOcCoY7gV7cnjy15Cj
-         oMUjdFeToCzx17fHKtxKqWuurkNC4DW1EpLCsoklD9TuVBg5qwusbnduPYVc58thKgQo
-         qiUT7SBxvDiTnP602Vfp7zLwNMEzgfqy0U733TevlOzDadyQp3sUmp7STh6vFqc050Ec
-         JDPkn8L8ZHsyzkIzzOBZ7hLXBdo+73VcwfbvkJFIx5W+Qs27KHsr/NzyyFBcLjH9JPpM
-         3LRA==
-X-Gm-Message-State: AOAM5335LLRrNGdSor35AJYqNAGTY3lo58yrATj260wYneysIvmoGebV
-        DYjkrd0qllF+T0dkyf1Dz8GI+1fKpUcndB4lZjptb9SffcwZmqxenaR5h6WMV2Olu+bjcI+SC4v
-        EO52HG7KgRCjM/TlB/CozXnGLurUyMk+RhFS88rsg4j+FeP2/NdJk3WHzFw==
-X-Received: by 2002:aca:b145:: with SMTP id a66mr4822394oif.177.1623207724755;
-        Tue, 08 Jun 2021 20:02:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyJp++dl7koAn2rc73UkETAsZNAzXDNAz4T0lAt/DBfYnwtVXKFUzzKMs0sLmZPKqJN2zfpXb4+gVDF2Vbnnfw=
-X-Received: by 2002:aca:b145:: with SMTP id a66mr4822360oif.177.1623207724445;
- Tue, 08 Jun 2021 20:02:04 -0700 (PDT)
+        id S236134AbhFIDFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 23:05:31 -0400
+Received: from m12-16.163.com ([220.181.12.16]:50675 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231438AbhFIDFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 23:05:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=gZKwd
+        3aNIP9rzeKxuDyxIhrIwFgUfqysdlRMC5Q9IXM=; b=TeZqfdWaRT4Eokcf2FXew
+        BeGuaCNYZT2riTXgxVhCHKYep3rKexUpiUneUL5rAd+ZIwhW6pGU/kIpObyT8YTR
+        7vHlBHLNIDEDGQplvTpRLFmAzmCOV2+A6OiMDCQ4221lwOpP4MAQ8mSzNXUVV35o
+        OqklUC2miLaAdTP+fTGnP4=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp12 (Coremail) with SMTP id EMCowACnszR3L8Bg01hwwA--.15351S2;
+        Wed, 09 Jun 2021 11:03:20 +0800 (CST)
+From:   13145886936@163.com
+To:     ms@dev.tdt.de, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] net/x25: fix a mistake in grammar
+Date:   Tue,  8 Jun 2021 20:03:17 -0700
+Message-Id: <20210609030317.17687-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210607101634.4948-1-ricky_wu@realtek.com> <CABTNMG1yoYPgs0gr1bHsrxCmpNM8fUB+3S5E+HS7c9pPGiFxrQ@mail.gmail.com>
- <YL8xYRwKfA5EtSqT@kroah.com> <CABTNMG2HZD52DmQ8iqC1jqLf6v4QpqCyxOXgjMjzD7rySgGa7A@mail.gmail.com>
- <YL9t/ZfRsIMSpXfm@kroah.com>
-In-Reply-To: <YL9t/ZfRsIMSpXfm@kroah.com>
-From:   Chris Chiu <chris.chiu@canonical.com>
-Date:   Wed, 9 Jun 2021 11:01:53 +0800
-Message-ID: <CABTNMG0PfX=eC0=hyUexoomH83NYzePwVkf4P0FLE05=wSyssQ@mail.gmail.com>
-Subject: Re: [PATCH v2] misc: rtsx: separate aspm mode into MODE_REG and MODE_CFG
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Ricky WU <ricky_wu@realtek.com>, arnd@arndb.de,
-        Bjorn Helgaas <bhelgaas@google.com>, ulf.hansson@linaro.org,
-        rui_feng@realsil.com.cn, vaibhavgupta40@gmail.com,
-        yang.lee@linux.alibaba.com,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowACnszR3L8Bg01hwwA--.15351S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JFyDurWkXr45uw1xCF43Awb_yoW3urg_WF
+        nrKF4UWrWDJr1I9ay7GF4Fqr4Sy34Uu3yfZayI9FZxJ348Zr45K3sIgw4rAF1S9r48Cr9I
+        g3yFg34Fkw17CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5Ub15UUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiQhWsg1aD-MOnSwABs-
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 9:17 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Jun 08, 2021 at 07:16:14PM +0800, Chris Chiu wrote:
-> > On Tue, Jun 8, 2021 at 4:59 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Tue, Jun 08, 2021 at 11:43:03AM +0800, Chris Chiu wrote:
-> > > > On Mon, Jun 7, 2021 at 6:16 PM <ricky_wu@realtek.com> wrote:
-> > > > >
-> > > > > From: Ricky Wu <ricky_wu@realtek.com>
-> > > > >
-> > > > > aspm (Active State Power Management)
-> > > > > rtsx_comm_set_aspm: this function is for driver to make sure
-> > > > > not enter power saving when processing of init and card_detcct
-> > > > > ASPM_MODE_CFG: 8411 5209 5227 5229 5249 5250
-> > > > > Change back to use original way to control aspm
-> > > > > ASPM_MODE_REG: 5227A 524A 5250A 5260 5261 5228
-> > > > > Keep the new way to control aspm
-> > > > >
-> > > > > Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
-> > > > > ---
-> > > > Reported-by: Chris Chiu <chris.chiu@canonical.com>
+From: gushengxian <gushengxian@yulong.com>
 
-Tested-by: Gordon Lack <gordon.lack@dsl.pipex.com>
-Fixes: 121e9c6b5c4c ("misc: rtsx: modify and fix init_hw function")
+Fix a mistake in grammar.
 
-> > >
-> > > Can you test this to verify it works?
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >
-> > It's verified and confirmed by the user at comment #17 of
-> > https://bugs.launchpad.net/bugs/1929444.
->
-> That's not useful to put in a changelog text.  Please respond with a
-> real tag that I can use.
->
-> thanks,
->
-> greg k-h
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ net/x25/af_x25.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
+index 1816899499ce..3583354a7d7f 100644
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -366,7 +366,7 @@ static void x25_destroy_timer(struct timer_list *t)
+ 
+ /*
+  *	This is called from user mode and the timers. Thus it protects itself
+- *	against interrupt users but doesn't worry about being called during
++ *	against interrupting users but doesn't worry about being called during
+  *	work. Once it is removed from the queue no interrupt or bottom half
+  *	will touch it and we are (fairly 8-) ) safe.
+  *	Not static as it's used by the timer
+-- 
+2.25.1
+
+
