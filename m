@@ -2,116 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4C23A1147
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251F03A115C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhFIKjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:39:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38950 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234039AbhFIKjf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:39:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623235060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GXhuyr8heOXQm5DhE+A2Fq3L85+vZLqOuEIP9E5CaCk=;
-        b=QpF7HR/7zOGh61YOtlY8dqcVkUj+yYVo4cmQJvAskdE/cJnbqHCDWYPV11ObBsIUrvcyT3
-        pysNVP/he+CVTa66STgetI7XHG5fjnSOw3u2IFroXl+sGkTRKqZVXKW6hm+MTP+b/Lghub
-        in61uffd3xSL54ub9vSD66/PiBsF31g=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-572-Wd6OhEHFPBKmvZHUx2OP8Q-1; Wed, 09 Jun 2021 06:37:39 -0400
-X-MC-Unique: Wd6OhEHFPBKmvZHUx2OP8Q-1
-Received: by mail-wr1-f71.google.com with SMTP id d5-20020a0560001865b0290119bba6e1c7so6614833wri.20
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:37:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=GXhuyr8heOXQm5DhE+A2Fq3L85+vZLqOuEIP9E5CaCk=;
-        b=ah3trc5pKCiisc4j1o1zfhjCVINxjL18ZUNUE4eRTHO5gvh2rw6vxx/0BaGqRuNmty
-         4lOT9cT65IHgZXa1VZnD9BNI1Qh5immY1QrFqmuDMLIhb6IijKjJ0HMNoe85csuiyRas
-         pumcKkgWmnr5zeOj9CwXieWJW/8l3a2totH0Hj5NKaEho22O3AzYCtTh/7O5d/D7yRfd
-         3C+kdAnH96wgYp/vUfmcD5ysOdBePwr+BgscTeq0Ry8LgP11jYZw2Dey7Lx4PT9m5iRC
-         X9rAlPLNzygfTzLNQdu6w6qCJ98HjBlmM8VZYnTJlhfYVEsocC7qwX4PmGjOEZn6XhZ1
-         lNKA==
-X-Gm-Message-State: AOAM53070JOsL50Iicjrha6xZhLsL55yK7XfO17GOZyzAPhKpanim5iB
-        0kZVQf6F+8Mz+Y7IL8he5kJHI8LzO9UTspM/Sr3vwIKPS68PkiXMTGktjfYRqS3afS0ZAUha5/R
-        1vEwsMK3MJfF2s94iT5yUuEI4
-X-Received: by 2002:a5d:4984:: with SMTP id r4mr27081036wrq.152.1623235058406;
-        Wed, 09 Jun 2021 03:37:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxx5QPJlJibMJq5KkrldmC0yuk9Qgb+mpFY3QEuhdJz4/D402+HjHMF51cTVSM1EXp++YpYXw==
-X-Received: by 2002:a5d:4984:: with SMTP id r4mr27081015wrq.152.1623235058237;
-        Wed, 09 Jun 2021 03:37:38 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
-        by smtp.gmail.com with ESMTPSA id l5sm5668999wmi.46.2021.06.09.03.37.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 03:37:37 -0700 (PDT)
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
-References: <YH2hs6EsPTpDAqXc@mit.edu>
- <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
- <YIx7R6tmcRRCl/az@mit.edu>
- <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
- <YK+esqGjKaPb+b/Q@kroah.com>
- <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-Message-ID: <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
-Date:   Wed, 9 Jun 2021 12:37:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S239010AbhFIKmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:42:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236503AbhFIKmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 06:42:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AD9161375;
+        Wed,  9 Jun 2021 10:40:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623235221;
+        bh=w4o78bpNaj+TFbKDPBfoFUCyuOVleQStwLCO9/OVcZA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dbsX89OaYlfzdMUlPDHA5AiQcuiL0r2e7A9mFhzxcGYfY9M7m8bph8/yvXOesX6WE
+         SajUSPKk0BiAm1TSbwvTdM+Vn/+nrsOjZrCxk/zT/kCYUMiORVgqj0nZO4BLQZ/+AE
+         /Jlez0Tl9soEcuMwqilVZ2D6z/fAUVygKUkNmNeOqY4cogsJRkv/FvaQpPnwFb4ji8
+         7V93Ms7nnMB2ivNCpDJevfpg0Tk+5z5HNujm3WTDWRy87O99mcttYy55dCWatalqHC
+         sl5I5J0z95Pi0LMRzjVWEMGyM5oAJbPromYMBYwgGJvwQPqJAFp9dDuED4HE8avezx
+         GMQFP88KQY7sw==
+Date:   Wed, 9 Jun 2021 13:40:17 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Anand Khoje <anand.a.khoje@oracle.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        Haakon Bugge <haakon.bugge@oracle.com>
+Subject: Re: [PATCH v3 3/3] IB/core: Obtain subnet_prefix from cache in IB
+ devices.
+Message-ID: <YMCakSCQLqUbcQ1H@unreal>
+References: <20210609055534.855-1-anand.a.khoje@oracle.com>
+ <20210609055534.855-4-anand.a.khoje@oracle.com>
+ <YMB9gxlKbDvdynUE@unreal>
+ <MWHPR1001MB2096CA7F29DCF86DE921903EC5369@MWHPR1001MB2096.namprd10.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR1001MB2096CA7F29DCF86DE921903EC5369@MWHPR1001MB2096.namprd10.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.05.21 16:58, James Bottomley wrote:
-> On Thu, 2021-05-27 at 15:29 +0200, Greg KH wrote:
->> On Thu, May 27, 2021 at 03:23:03PM +0200, Christoph Lameter wrote:
->>> On Fri, 30 Apr 2021, Theodore Ts'o wrote:
->>>
->>>> I know we're all really hungry for some in-person meetups and
->>>> discussions, but at least for LPC, Kernel Summit, and
->>>> Maintainer's Summit, we're going to have to wait for another
->>>> year,
->>>
->>> Well now that we are vaccinated: Can we still change it?
->>>
->>
->> Speak for yourself, remember that Europe and other parts of the world
->> are not as "flush" with vaccines as the US currently is :(
+On Wed, Jun 09, 2021 at 09:26:03AM +0000, Anand Khoje wrote:
+> Hi Leon,
+
+Please don't do top-posting.
+
+
 > 
-> The rollout is accelerating in Europe.  At least in Germany, I know
-> people younger than me are already vaccinated. 
+> The set_bit()/clear_bit() and enum ib_port_data_flags  has been added as a device that can be used for future enhancements. 
+> Also, usage of set_bit()/clear_bit() ensures the operations on this bit is atomic.
 
-And I know people younger than you in Germany personally ( ;) ) that are 
-not vaccinated yet and might not even get the first shot before 
-September, not even dreaming about a second one + waiting until the 
-vaccine is fully in effect.
+The bitfield variables are better suit this use case.
+Let's don't overcomplicate code without the reason.
 
-So yes, sure, nobody can stop people that think the pandemic is over 
-("we are vaccinated") from meeting in person. Just make sure to not 
-ignore the poor souls that really won't be traveling this year, because 
-"we are not vaccinated".
+Thanks
 
--- 
-Thanks,
-
-David / dhildenb
-
+> 
+> Thanks,
+> Anand
+> 
+> -----Original Message-----
+> From: Leon Romanovsky <leon@kernel.org> 
+> Sent: Wednesday, June 9, 2021 2:06 PM
+> To: Anand Khoje <anand.a.khoje@oracle.com>
+> Cc: linux-rdma@vger.kernel.org; linux-kernel@vger.kernel.org; dledford@redhat.com; jgg@ziepe.ca; Haakon Bugge <haakon.bugge@oracle.com>
+> Subject: Re: [PATCH v3 3/3] IB/core: Obtain subnet_prefix from cache in IB devices.
+> 
+> On Wed, Jun 09, 2021 at 11:25:34AM +0530, Anand Khoje wrote:
+> > ib_query_port() calls device->ops.query_port() to get the port 
+> > attributes. The method of querying is device driver specific.
+> > The same function calls device->ops.query_gid() to get the GID and 
+> > extract the subnet_prefix (gid_prefix).
+> > 
+> > The GID and subnet_prefix are stored in a cache. But they do not get 
+> > read from the cache if the device is an Infiniband device. The 
+> > following change takes advantage of the cached subnet_prefix.
+> > Testing with RDBMS has shown a significant improvement in performance 
+> > with this change.
+> > 
+> > The function ib_cache_is_initialised() is introduced because
+> > ib_query_port() gets called early in the stage when the cache is not 
+> > built while reading port immutable property.
+> > 
+> > In that case, the default GID still gets read from HCA for IB link- 
+> > layer devices.
+> > 
+> > Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
+> > Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
+> > Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
+> > 
+> > ---
+> > 
+> > v1 -> v2:
+> >     -	Split the v1 patch in 3 patches as per Leon's suggestion.
+> > 
+> > v2 -> v3:
+> >     -	Added changes as per Mark Zhang's suggestion of clearing
+> >     	flags in git_table_cleanup_one().
+> > 
+> > ---
+> >  drivers/infiniband/core/cache.c  | 7 ++++++-  
+> > drivers/infiniband/core/device.c | 9 +++++++++
+> >  include/rdma/ib_cache.h          | 6 ++++++
+> >  include/rdma/ib_verbs.h          | 6 ++++++
+> >  4 files changed, 27 insertions(+), 1 deletion(-)
+> 
+> Why did you use clear_bit/test_bit API? I would expect it for the bitmap, but for such simple thing, the simple "u8 is_cached_init : 1;"
+> will do the same trick.
+> 
+> Thanks
+> 
+> > 
+> > diff --git a/drivers/infiniband/core/cache.c 
+> > b/drivers/infiniband/core/cache.c index e957f0c915a3..94a8653a72c5 
+> > 100644
+> > --- a/drivers/infiniband/core/cache.c
+> > +++ b/drivers/infiniband/core/cache.c
+> > @@ -917,9 +917,12 @@ static void gid_table_cleanup_one(struct 
+> > ib_device *ib_dev)  {
+> >  	u32 p;
+> >  
+> > -	rdma_for_each_port (ib_dev, p)
+> > +	rdma_for_each_port (ib_dev, p) {
+> > +		clear_bit(IB_PORT_CACHE_INITIALIZED,
+> > +			&ib_dev->port_data[p].flags);
+> >  		cleanup_gid_table_port(ib_dev, p,
+> >  				       ib_dev->port_data[p].cache.gid);
+> > +	}
+> >  }
+> >  
+> >  static int gid_table_setup_one(struct ib_device *ib_dev) @@ -1623,6 
+> > +1626,8 @@ int ib_cache_setup_one(struct ib_device *device)
+> >  		err = ib_cache_update(device, p, true);
+> >  		if (err)
+> >  			return err;
+> > +		set_bit(IB_PORT_CACHE_INITIALIZED,
+> > +			&device->port_data[p].flags);
+> >  	}
+> >  
+> >  	return 0;
+> > diff --git a/drivers/infiniband/core/device.c 
+> > b/drivers/infiniband/core/device.c
+> > index 595128b26c34..e8e7b0a61411 100644
+> > --- a/drivers/infiniband/core/device.c
+> > +++ b/drivers/infiniband/core/device.c
+> > @@ -2059,6 +2059,15 @@ static int __ib_query_port(struct ib_device *device,
+> >  	    IB_LINK_LAYER_INFINIBAND)
+> >  		return 0;
+> >  
+> > +	if (!ib_cache_is_initialised(device, port_num))
+> > +		goto query_gid_from_device;
+> > +
+> > +	ib_get_cached_subnet_prefix(device, port_num,
+> > +				    &port_attr->subnet_prefix);
+> > +
+> > +	return 0;
+> > +
+> > +query_gid_from_device:
+> >  	err = device->ops.query_gid(device, port_num, 0, &gid);
+> >  	if (err)
+> >  		return err;
+> > diff --git a/include/rdma/ib_cache.h b/include/rdma/ib_cache.h index 
+> > 226ae3702d8a..1526fc6637eb 100644
+> > --- a/include/rdma/ib_cache.h
+> > +++ b/include/rdma/ib_cache.h
+> > @@ -114,4 +114,10 @@ ssize_t rdma_query_gid_table(struct ib_device *device,
+> >  			     struct ib_uverbs_gid_entry *entries,
+> >  			     size_t max_entries);
+> >  
+> > +static inline bool ib_cache_is_initialised(struct ib_device *device,
+> > +					  u8 port_num)
+> > +{
+> > +	return test_bit(IB_PORT_CACHE_INITIALIZED,
+> > +			&device->port_data[port_num].flags);
+> > +}
+> >  #endif /* _IB_CACHE_H */
+> > diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h index 
+> > 41cbec516424..ad2a55e3a2ee 100644
+> > --- a/include/rdma/ib_verbs.h
+> > +++ b/include/rdma/ib_verbs.h
+> > @@ -2169,6 +2169,10 @@ struct ib_port_immutable {
+> >  	u32                           max_mad_size;
+> >  };
+> >  
+> > +enum ib_port_data_flags {
+> > +	IB_PORT_CACHE_INITIALIZED = 1 << 0,
+> > +};
+> > +
+> >  struct ib_port_data {
+> >  	struct ib_device *ib_dev;
+> >  
+> > @@ -2178,6 +2182,8 @@ struct ib_port_data {
+> >  
+> >  	spinlock_t netdev_lock;
+> >  
+> > +	unsigned long flags;
+> > +
+> >  	struct list_head pkey_list;
+> >  
+> >  	struct ib_port_cache cache;
+> > --
+> > 2.27.0
+> > 
