@@ -2,125 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627873A104C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C053A1055
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238084AbhFIJjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
+        id S238044AbhFIJlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234748AbhFIJjm (ORCPT
+        with ESMTP id S234161AbhFIJlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:39:42 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA42C061574;
-        Wed,  9 Jun 2021 02:37:47 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id b5so24586358ilc.12;
-        Wed, 09 Jun 2021 02:37:47 -0700 (PDT)
+        Wed, 9 Jun 2021 05:41:05 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75065C061574;
+        Wed,  9 Jun 2021 02:39:10 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id v22so35672908lfa.3;
+        Wed, 09 Jun 2021 02:39:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=11paM/1lp22CavDEEN3A/olA+tOS+m0UgIjuNNPMc5c=;
-        b=AUn30ilbL3NzF5q2BCp0QVXHikpm8Vm6yUAM9SdAhos2m9u8xXGwxlhY7L/mh5ETkk
-         xMDLHdDCnvMj9u5VwkHn37GW+ujRpw2uJn/g/RTKxpbLL7paohPJB9BFTIoD6vBOz0FJ
-         wlEZkhAcmqWn9YlRTm67JdkNWHAiNqs9sQF7kLfjGLtZZjwbbdwYYhZL9eEqO6j8XGwT
-         WGtn6z7Ok1u7/f7AJWVfLsFL4AOnd9bBJ2NKdphWe6mO0Sya+xn+4ljLwykvBX8unsLj
-         qDtDo0A3iPuoyVDOa2dKVu/uzCQIFKij1E9QJ4Rpt6+OuJFeAbsxKLDuKg+JVf9eTdvV
-         qvfQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ax/9ZXRt8jPvIYR3WyaxKlwlCl8rJrmIFanUK71DGUE=;
+        b=X6rHqBGHl0neiW6X0oPLScDJgrPJJxoVNt0mQZQD/n6vzMsztpKtvFvXsvclDWQqhA
+         YX/+69Ug3H1YZPKEGSpGKWrWR3n5D1bLjxT3i0mxUORTTSRW0zfJxGb3N/78fOwD/T0W
+         w/7eC2RkDceNFHsXTK9T1ZWXulnXo0UVMMpJMO1xGJhwDCRJWGTmZaMSFWvi41kz4oIR
+         RhvtyJieIzlTYhiRhoPJEdY5+cDS+MM9YV00cXtxaYGeOfqLwLOPeEwQU2h+IAnENU8D
+         gMDjR+bHNBi3ebpboRhwwJepH/OcW7H7uId8b1X+pVhT2AOFFEzIKCyrdVUF5/dt9kDz
+         8PYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=11paM/1lp22CavDEEN3A/olA+tOS+m0UgIjuNNPMc5c=;
-        b=D+4f2a9eNChSRAA625nVypjPfxAKmgHzYO1PX48Zh64AITQquDEUcgJsuj5a5bt9Pe
-         hom6FP+cbzAgNCSYOESRIYnfS1uG1p5/dEH/Un0rgmryIYpZ+cF2Cfls+nXrjLjil0kX
-         ++Y2rVWNge8GsGQ0wAnyvp6krHA0qhkGyv90uI+kD8OwvMWE61w/X8KIruWRBaVcRbAd
-         8uurSPMiRqj4Glm73UCXY8RjzBGQwPZ7SYck9AWcu9PwzXFyPDGYrI12bS6b/OJp2rcp
-         E4Yanqjz3qv8QMw4JdZalSq7AHWEvkTHUbn32UKVfAaMj0Zid0ki4ydmZGazXirvIWhH
-         wM7A==
-X-Gm-Message-State: AOAM5313/mgOhvCJK8cXznROgr0ZWB9nDI6Rrd2UXhB+50CP7KG6CXx8
-        FkPmpgMQkFRnWwoBUe4/JP3QuYSc9LrmgZKthEs=
-X-Google-Smtp-Source: ABdhPJy5AROZdbsU+O1Vh/bwrnsq7wRpZEor176YD0iLaHDJhsh5Ad6i076nqZiL2In6oQ6aCiJFsx/mBME7wo4cSUc=
-X-Received: by 2002:a05:6638:267:: with SMTP id x7mr7028650jaq.51.1623231466755;
- Wed, 09 Jun 2021 02:37:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ax/9ZXRt8jPvIYR3WyaxKlwlCl8rJrmIFanUK71DGUE=;
+        b=oMreUJjd/0aMG5XrNfL1mOn7VxNBD7Tj8w8IPMK0kjG8NxW/o1ZeaBecGlDjJDtaKh
+         IroviAQIIp/J2ulbgZiUodaqfuoZioS/iuvnuzI5nFnP3eqSe/u5YV5H8D2x1Mhzrwgj
+         AdCvTSk2g5rzykH57RYl986to9h6aygE9N9HyWHjcruqW/xY9h34whonD2RWCZQCKk/c
+         G5Ma4PSgUQFEtfJc1GXocLyE+4mZ7c2bjEGzXiKPqdI6LdBawPlSMj95LcrmQmQ/nXeg
+         XXYcKLt/4v47owFthMEn6O8Zw6NFd1yjKL6EX6D7F4cw+qzcf1GoDtPSRFRHSCKNCDe8
+         qWEA==
+X-Gm-Message-State: AOAM531HoL2pv3+e0y6AWULMy82YN8IemKUMxy+aCpSSyWfdXp8HuINk
+        sY4vXh1+yFuiWNw+T94rCwY=
+X-Google-Smtp-Source: ABdhPJxq76q3wkPsRmgyVfPQxNxN8WB5efZ3bLiF94qOWFlaMDpzUuoQ9CrK37wkwNym1brR2WjvWA==
+X-Received: by 2002:ac2:5e64:: with SMTP id a4mr13295486lfr.657.1623231548744;
+        Wed, 09 Jun 2021 02:39:08 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.224.40])
+        by smtp.gmail.com with ESMTPSA id v19sm263341ljh.118.2021.06.09.02.39.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 02:39:08 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH v2] perf: events: make perf_pmu_snapshot_aux static
+Date:   Wed,  9 Jun 2021 12:37:50 +0300
+Message-Id: <20210609093750.19198-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <YL+mziX+UU4MHQyZ@hirez.programming.kicks-ass.net>
+References: <YL+mziX+UU4MHQyZ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210608160603.1535935-1-hch@lst.de> <20210608160603.1535935-8-hch@lst.de>
-In-Reply-To: <20210608160603.1535935-8-hch@lst.de>
-From:   Ilya Dryomov <idryomov@gmail.com>
-Date:   Wed, 9 Jun 2021 11:37:45 +0200
-Message-ID: <CAOi1vP-zSAnx5z7EbPNVLoCHWdK5iGjXU7KKrRL8YZF1QfMf3A@mail.gmail.com>
-Subject: Re: [PATCH 07/16] rbd: use memzero_bvec
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geoff Levand <geoff@infradead.org>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
-        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Ceph Development <ceph-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 6:06 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> Use memzero_bvec instead of reimplementing it.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/block/rbd.c | 15 ++-------------
->  1 file changed, 2 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
-> index bbb88eb009e0..eb243fc4d108 100644
-> --- a/drivers/block/rbd.c
-> +++ b/drivers/block/rbd.c
-> @@ -1219,24 +1219,13 @@ static void rbd_dev_mapping_clear(struct rbd_device *rbd_dev)
->         rbd_dev->mapping.size = 0;
->  }
->
-> -static void zero_bvec(struct bio_vec *bv)
-> -{
-> -       void *buf;
-> -       unsigned long flags;
-> -
-> -       buf = bvec_kmap_irq(bv, &flags);
-> -       memset(buf, 0, bv->bv_len);
-> -       flush_dcache_page(bv->bv_page);
-> -       bvec_kunmap_irq(buf, &flags);
-> -}
-> -
->  static void zero_bios(struct ceph_bio_iter *bio_pos, u32 off, u32 bytes)
->  {
->         struct ceph_bio_iter it = *bio_pos;
->
->         ceph_bio_iter_advance(&it, off);
->         ceph_bio_iter_advance_step(&it, bytes, ({
-> -               zero_bvec(&bv);
-> +               memzero_bvec(&bv);
->         }));
->  }
->
-> @@ -1246,7 +1235,7 @@ static void zero_bvecs(struct ceph_bvec_iter *bvec_pos, u32 off, u32 bytes)
->
->         ceph_bvec_iter_advance(&it, off);
->         ceph_bvec_iter_advance_step(&it, bytes, ({
-> -               zero_bvec(&bv);
-> +               memzero_bvec(&bv);
->         }));
->  }
->
+Sparse says:
+  warning: symbol 'perf_pmu_snapshot_aux' was not declared. Should it be static?
 
-Ira already brought up the fact that this conversion drops
-flush_dcache_page() calls throughout.  Other than that:
+Since perf_pmu_snapshot_aux() is not used outside this file,
+it can be made static
 
-Acked-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
 
-Thanks,
+Changes in v2:
+	Changed subject line
+	Fixed alignment of the arguments
 
-                Ilya
+---
+ kernel/events/core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 6fee4a7e88d7..9ad01ff5692b 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -6667,10 +6667,10 @@ static unsigned long perf_prepare_sample_aux(struct perf_event *event,
+ 	return data->aux_size;
+ }
+ 
+-long perf_pmu_snapshot_aux(struct perf_buffer *rb,
+-			   struct perf_event *event,
+-			   struct perf_output_handle *handle,
+-			   unsigned long size)
++static long perf_pmu_snapshot_aux(struct perf_buffer *rb,
++				  struct perf_event *event,
++				  struct perf_output_handle *handle,
++				  unsigned long size)
+ {
+ 	unsigned long flags;
+ 	long ret;
+-- 
+2.31.1
+
