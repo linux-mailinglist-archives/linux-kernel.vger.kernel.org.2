@@ -2,239 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08033A0999
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4F83A099E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhFIBuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 21:50:03 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53039 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhFIBuC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 21:50:02 -0400
-Received: from mail-oo1-f72.google.com ([209.85.161.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <koba.ko@canonical.com>)
-        id 1lqnKC-0004kX-0P
-        for linux-kernel@vger.kernel.org; Wed, 09 Jun 2021 01:48:08 +0000
-Received: by mail-oo1-f72.google.com with SMTP id j9-20020a4ad1890000b0290249480f62d9so9467877oor.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 18:48:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=futngJHh7CtFBTJR94UbQKkh6INPUohMLZeIfsqI8Mo=;
-        b=K+/mbMBYkg4Pr0SWpSChpJLrAhTzeaPMnqvAjSn/AtYk8NgdAUsI0R6T2/8oDeQrwd
-         UnB8D1p78w57XGI2MMx4I/wDvw0tInMx3hjpt368dGdilNQW8t3TDUUVEVPnED6ph/UD
-         /0nEqwtRP1ldZQmfyasg9TmrDH/CfJ1eHL+16u1bcWEEmhSop3YjNDSOcRV9WKwGoqZD
-         /OmM2+j8KWrzfzRVQ4HdWZ5xA4aAiLQINjOVHvgLt6clmx66OEVEYCxamUyeRE1Ny+Tu
-         ay8XZQ/tG7E5hKTAAECSdnN7G2OT9dgfLsQjCUefWk9gZaquzXe3EmJY/WSuPK2n5dYf
-         00Pw==
-X-Gm-Message-State: AOAM533W1YEYpKsscWfA2HF8tJD1/Qa3lYP63IO59QJLVpzHubQwekXp
-        4HspVj1jAsM0kwYxHRU2wglbrSVRhLwUQbyUm+cQqt5h+ITTUz2IlNYXnSysjPBiR7AUZq7xaXa
-        MY4FTTiJDXoi/rCBKytGEnHbw6qtRFYbpl/09VbksYr+mkFffeGbPIIOXew==
-X-Received: by 2002:a9d:4115:: with SMTP id o21mr4755702ote.3.1623203286862;
-        Tue, 08 Jun 2021 18:48:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyq8IemLP50bRdVvQ2g6xTP/bhi/Z2ANIRDsAl3kH28TKUYMprEFd/96lQbApprYK8FVp03giL/IOPidFnc1lc=
-X-Received: by 2002:a9d:4115:: with SMTP id o21mr4755685ote.3.1623203286481;
- Tue, 08 Jun 2021 18:48:06 -0700 (PDT)
+        id S233022AbhFIBuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 21:50:23 -0400
+Received: from mga05.intel.com ([192.55.52.43]:38052 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231438AbhFIBuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 21:50:20 -0400
+IronPort-SDR: ojc764/nv4txkxhexo1hpQcCS/Ug64IxXfzphmm5e3724pKz8R9h5KDOX+xO2SgqyFsN/PK2hQ
+ xa8XOtYQvJOw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="290612580"
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="290612580"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 18:48:24 -0700
+IronPort-SDR: SRFfjIkTZkgdiWUkfbuxO/DHCb0ZQrp7YLBvUKhmAbESyYDmfBnXBu/pgXAlW0d/t+PE9XTYIq
+ c7l/dYjK3T5A==
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="448117931"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 18:48:23 -0700
+Date:   Tue, 8 Jun 2021 18:48:22 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geoff Levand <geoff@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        ceph-devel@vger.kernel.org
+Subject: Re: [PATCH 09/16] ps3disk: use memcpy_{from,to}_bvec
+Message-ID: <20210609014822.GT3697498@iweiny-DESK2.sc.intel.com>
+References: <20210608160603.1535935-1-hch@lst.de>
+ <20210608160603.1535935-10-hch@lst.de>
 MIME-Version: 1.0
-References: <20210608032207.2923574-1-koba.ko@canonical.com>
- <84eb168e-58ff-0350-74e2-c55249eb258c@gmail.com> <CAJB-X+XFYa1cZgtJEL1KCNWviL3Y4X6EbN--rE8CD_9oD9EFyA@mail.gmail.com>
- <7a36c032-38fa-6aa6-fa0f-c3664850d8ea@gmail.com> <CAJB-X+V78kUM97AZQp9ZQbp=tzWwD9FQWEcFS6VnVRZnSHkb7g@mail.gmail.com>
- <4508fbcb-f8ec-3805-4aa3-eeea4975de31@gmail.com>
-In-Reply-To: <4508fbcb-f8ec-3805-4aa3-eeea4975de31@gmail.com>
-From:   Koba Ko <koba.ko@canonical.com>
-Date:   Wed, 9 Jun 2021 09:47:55 +0800
-Message-ID: <CAJB-X+WgTE4pENU24=AraQ7mzeL23j34nmNQ1Qyk_f9f5JpbEg@mail.gmail.com>
-Subject: Re: [PATCH] [v2] r8169: Use PHY_POLL when RTL8106E enable ASPM
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608160603.1535935-10-hch@lst.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 4:58 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->
-> On 08.06.2021 16:17, Koba Ko wrote:
-> > On Tue, Jun 8, 2021 at 9:45 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> >>
-> >> On 08.06.2021 12:43, Koba Ko wrote:
-> >>> On Tue, Jun 8, 2021 at 4:00 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> >>>>
-> >>>> On 08.06.2021 05:22, Koba Ko wrote:
-> >>>>> For RTL8106E, it's a Fast-ethernet chip.
-> >>>>> If ASPM is enabled, the link chang interrupt wouldn't be triggered
-> >>>>> immediately and must wait a very long time to get link change interrupt.
-> >>>>> Even the link change interrupt isn't triggered, the phy link is already
-> >>>>> established.
-> >>>>>
-> >>>>> Use PHY_POLL to watch the status of phy link and disable
-> >>>>> the link change interrupt when ASPM is enabled on RTL8106E.
-> >>>>>
-> >>>>> v2: Instead use PHY_POLL and identify 8106E by RTL_GIGA_MAC_VER_39.
-> >>>>>
-> >>>>
-> >>>> Still the issue description doesn't convince me that it's a hw bug
-> >>>> with the respective chip version. What has been stated so far:
-> >>>>
-> >>>> 1. (and most important) Issue doesn't occur in mainline because ASPM
-> >>>>    is disabled in mainline for r8169. Issue occurs only with a
-> >>>>    downstream kernel with ASPM enabled for r8169.
-> >>>
-> >>> mainline kernel and enable L1, the issue is also observed.
-> >>>
-> >> Yes, but enabling L1 via sysfs is at own risk.
-> >
-> > but we could have a workaround if hw have an aspm issue.
-> >
-> >>
-> >>>> 2. Issue occurs only with ASPM L1.1 not disabled, even though this chip
-> >>>>    version doesn't support L1 sub-states. Just L0s/L1 don't trigger
-> >>>>    the issue.
-> >>>>    The NIC doesn't announce L1.1 support, therefore PCI core won't
-> >>>>    enable L1 sub-states on the PCIe link between NIC and upstream
-> >>>>    PCI bridge.
-> >>>
-> >>> More precisely, when L1 is enabled, the issue would be triggered.
-> >>> For RTL8106E,
-> >>> 1. Only disable L0s, pcie_aspm_enabled return 1, issue is triggered.
-> >>> 2. Only disable L1_1, pcie_aspm_enabled return 1, issue is triggered.
-> >>>
-> >>> 3. Only disable L1, pcie_aspm_enabled return 0, issue is not triggered.
-> >>>
-> >>>>
-> >>>> 3. Issue occurs only with a GBit-capable link partner. 100MBit link
-> >>>>    partners are fine. Not clear whether issue occurs with a specific
-> >>>>    Gbit link partner only or with GBit-capable link partners in general.
-> >>>>
-> >>>> 4. Only link-up interrupt is affected. Not link-down and not interrupts
-> >>>>    triggered by other interrupt sources.
-> >>>>
-> >>>> 5. Realtek couldn't confirm that there's such a hw bug on RTL8106e.
-> >>>>
-> >>>> One thing that hasn't been asked yet:
-> >>>> Does issue occur always if you re-plug the cable? Or only on boot?
-> >>>> I'm asking because in the dmesg log you attached to the bugzilla issue
-> >>>> the following looks totally ok.
-> >>>>
-> >>>> [   61.651643] r8169 0000:01:00.0 enp1s0: Link is Down
-> >>>> [   63.720015] r8169 0000:01:00.0 enp1s0: Link is Up - 100Mbps/Full - flow control rx/tx
-> >>>> [   66.685499] r8169 0000:01:00.0 enp1s0: Link is Down
-> >>>
-> >>> Once the link is up,
-> >>> 1. If cable is unplug&plug immediately,  you wouldn't see the issue.
-> >>> 2. Unplug cable and wait a long time (~1Mins), then plug the cable,
-> >>> the issue appears again.
-> >>>
-> >> This sounds runtime-pm-related. After 10s the NIC runtime-suspends,
-> >> and once the cable is re-plugged a PME is triggered that lets the
-> >> PCI core return the PCIe link from D3hot to D0.
-> >> If you re-plug the cable after such a longer time, do you see the
-> >> PCIe PME immediately in /proc/interrupts?
-> >
-> > I don't know which irq number is for RTL8106e PME, but check all PME
-> > in /proc/interrupt,
-> >
-> > There's no interrupt increase on all PME entries and rtl8106e irq entry(irq 32).
-> >
-> >>
-> >> And if you set /sys/class/net/<if>/power/control to "on", does the
-> >> issue still occur?
-> >
-> > Yes, after echo "on" to /sys/class/net/<if>/power/control and
-> > replugging the cable, the issue is still caught.
-> >>
-> >>>>
-> >>>>> Signed-off-by: Koba Ko <koba.ko@canonical.com>
-> >>>>> ---
-> >>>>>  drivers/net/ethernet/realtek/r8169_main.c | 21 +++++++++++++++++++--
-> >>>>>  1 file changed, 19 insertions(+), 2 deletions(-)
-> >>>>>
-> >>>>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> >>>>> index 2c89cde7da1e..a59cbaef2839 100644
-> >>>>> --- a/drivers/net/ethernet/realtek/r8169_main.c
-> >>>>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> >>>>> @@ -4914,6 +4914,19 @@ static const struct dev_pm_ops rtl8169_pm_ops = {
-> >>>>>
-> >>>>>  #endif /* CONFIG_PM */
-> >>>>>
-> >>>>> +static int rtl_phy_poll_quirk(struct rtl8169_private *tp)
-> >>>>> +{
-> >>>>> +     struct pci_dev *pdev = tp->pci_dev;
-> >>>>> +
-> >>>>> +     if (!pcie_aspm_enabled(pdev))
-> >>>>
-> >>>> That's the wrong call. According to what you said earlier you want to
-> >>>> check for L1 sub-states, not for ASPM in general.
-> >>>
-> >>> As per described above, that's why use pcie_aspm_enabled here.
-> >>>
-> >>>>
-> >>>>> +             return 0;
-> >>>>> +
-> >>>>> +     if (tp->mac_version == RTL_GIGA_MAC_VER_39)
-> >>>>> +             return 1;
-> >>>>> +
-> >>>>> +     return 0;
-> >>>>> +}
-> >>>>> +
-> >>>>>  static void rtl_wol_shutdown_quirk(struct rtl8169_private *tp)
-> >>>>>  {
-> >>>>>       /* WoL fails with 8168b when the receiver is disabled. */
-> >>>>> @@ -4991,7 +5004,10 @@ static const struct net_device_ops rtl_netdev_ops = {
-> >>>>>
-> >>>>>  static void rtl_set_irq_mask(struct rtl8169_private *tp)
-> >>>>>  {
-> >>>>> -     tp->irq_mask = RxOK | RxErr | TxOK | TxErr | LinkChg;
-> >>>>> +     tp->irq_mask = RxOK | RxErr | TxOK | TxErr;
-> >>>>> +
-> >>>>> +     if (!rtl_phy_poll_quirk(tp))
-> >>>>> +             tp->irq_mask |= LinkChg;
-> >>>>>
-> >>>>>       if (tp->mac_version <= RTL_GIGA_MAC_VER_06)
-> >>>>>               tp->irq_mask |= SYSErr | RxOverflow | RxFIFOOver;
-> >>>>> @@ -5085,7 +5101,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
-> >>>>>       new_bus->name = "r8169";
-> >>>>>       new_bus->priv = tp;
-> >>>>>       new_bus->parent = &pdev->dev;
-> >>>>> -     new_bus->irq[0] = PHY_MAC_INTERRUPT;
-> >>>>> +     new_bus->irq[0] =
-> >>>>> +             (rtl_phy_poll_quirk(tp) ? PHY_POLL : PHY_MAC_INTERRUPT);
-> >>>>>       snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
-> >>>>>
-> >>>>>       new_bus->read = r8169_mdio_read_reg;
-> >>>>>
-> >>>>
-> >>
->
-> The r8101 vendor driver applies a special setting for RTL8106e if ASPM is enabled.
-> Not sure whether it's related but it's worth a try. Could you please check whether
-> the following makes a difference?
+On Tue, Jun 08, 2021 at 06:05:56PM +0200, Christoph Hellwig wrote:
+>  
+>  	rq_for_each_segment(bvec, req, iter) {
+> -		unsigned long flags;
+> -		dev_dbg(&dev->sbd.core, "%s:%u: bio %u: %u sectors from %llu\n",
+> -			__func__, __LINE__, i, bio_sectors(iter.bio),
+> -			iter.bio->bi_iter.bi_sector);
+> -
+> -		size = bvec.bv_len;
+> -		buf = bvec_kmap_irq(&bvec, &flags);
+>  		if (gather)
+> -			memcpy(dev->bounce_buf+offset, buf, size);
+> +			memcpy_from_bvec(dev->bounce_buf + offset, &bvec);
+>  		else
+> -			memcpy(buf, dev->bounce_buf+offset, size);
+> -		offset += size;
+> -		flush_kernel_dcache_page(bvec.bv_page);
 
-After applying this patch, it can't help relieve the issue.
-The 8101 vendor driver also use polling method to watch the link change event.
-Tried to disable polling method and enable LinkChg Irq, but it also
-can't get LinkChg interrupt.
+I'm still not 100% sure that these flushes are needed but the are not no-ops on
+every arch.  Would it be best to preserve them after the memcpy_to/from_bvec()?
 
->
-> diff --git a/drivers/net/ethernet/realtek/r8169_phy_config.c b/drivers/net/ethernet/realtek/r8169_phy_config.c
-> index 50f0f621b..60014b9c4 100644
-> --- a/drivers/net/ethernet/realtek/r8169_phy_config.c
-> +++ b/drivers/net/ethernet/realtek/r8169_phy_config.c
-> @@ -1153,6 +1153,7 @@ static void rtl8106e_hw_phy_config(struct rtl8169_private *tp,
->         r8169_apply_firmware(tp);
->
->         rtl_writephy_batch(phydev, phy_reg_init);
-> +       phy_write(phydev, 0x18, 0x8310);
->  }
->
->  static void rtl8125_legacy_force_mode(struct phy_device *phydev)
-> --
-> 2.32.0
->
->
+Same thing in patch 11 and 14.
+
+Ira
