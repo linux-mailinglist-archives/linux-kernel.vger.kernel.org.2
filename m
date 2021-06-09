@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CD63A1306
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5431C3A130F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239441AbhFILnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:43:04 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46968 "EHLO
+        id S239497AbhFILne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:43:34 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47170 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239170AbhFILlb (ORCPT
+        with ESMTP id S239191AbhFILld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:41:31 -0400
+        Wed, 9 Jun 2021 07:41:33 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 817DC1FD6E;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B42731FD6F;
         Wed,  9 Jun 2021 11:39:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1623238776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KdJtA4YoE6ORCzqq1AaRT5tX40ysKLrzxToE3yWrpNc=;
-        b=eBbXi4CkX7EMTUHOJqT8xqoB7XkTXBITgC8amj4Ft5A/zuTI+epj2MA2uNs/7r7BWwbr8Z
-        SlS9+EJ0riQXBr0gUf6QENf1TU0lv2w/UQc1fihTkGXAlQWqtpLPz9kUTGZeS96IQNstRK
-        TjPilB4ucJlLxv+7y6oDtv+Y4skJtXM=
+        bh=zyVMd6JuJll2CSwZVtypUoJOKYt0RuiadUow3LJITGI=;
+        b=K9O/gGfopsAbKUt5QoB/ur6B/XWNA+WamO+Tjd+gPPbho3pCYARNDp9aMd4AkxtiKpi5Ho
+        CoP6+KqI4DpOC6prRlGDaOx+ewgETUeIN4lv3ZYe2ZIqpPY2egb93A7YJ8lCnw0e2zyEtZ
+        Xgq9+5FFac3bkwvlt58AX11q59y1ni0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1623238776;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KdJtA4YoE6ORCzqq1AaRT5tX40ysKLrzxToE3yWrpNc=;
-        b=9Bh+xb3bwIRXHzIn2wniiILwcrIoB8irmjGvkKTb7yikdN5thh/m6p+drBo7EMwbtJWjHG
-        p5UrXNRUSFAvq8Bw==
+        bh=zyVMd6JuJll2CSwZVtypUoJOKYt0RuiadUow3LJITGI=;
+        b=sHNNiLfzjvpwDljIQ60meButSP0QmB0R/YE2ciWU7SwTf853LSAJMxDxQXgzVDIcjGgsML
+        8xgYX5GqnfTakBCA==
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 4D20311A98;
+        by imap.suse.de (Postfix) with ESMTP id 82B51118DD;
         Wed,  9 Jun 2021 11:39:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1623238776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KdJtA4YoE6ORCzqq1AaRT5tX40ysKLrzxToE3yWrpNc=;
-        b=eBbXi4CkX7EMTUHOJqT8xqoB7XkTXBITgC8amj4Ft5A/zuTI+epj2MA2uNs/7r7BWwbr8Z
-        SlS9+EJ0riQXBr0gUf6QENf1TU0lv2w/UQc1fihTkGXAlQWqtpLPz9kUTGZeS96IQNstRK
-        TjPilB4ucJlLxv+7y6oDtv+Y4skJtXM=
+        bh=zyVMd6JuJll2CSwZVtypUoJOKYt0RuiadUow3LJITGI=;
+        b=K9O/gGfopsAbKUt5QoB/ur6B/XWNA+WamO+Tjd+gPPbho3pCYARNDp9aMd4AkxtiKpi5Ho
+        CoP6+KqI4DpOC6prRlGDaOx+ewgETUeIN4lv3ZYe2ZIqpPY2egb93A7YJ8lCnw0e2zyEtZ
+        Xgq9+5FFac3bkwvlt58AX11q59y1ni0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1623238776;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KdJtA4YoE6ORCzqq1AaRT5tX40ysKLrzxToE3yWrpNc=;
-        b=9Bh+xb3bwIRXHzIn2wniiILwcrIoB8irmjGvkKTb7yikdN5thh/m6p+drBo7EMwbtJWjHG
-        p5UrXNRUSFAvq8Bw==
+        bh=zyVMd6JuJll2CSwZVtypUoJOKYt0RuiadUow3LJITGI=;
+        b=sHNNiLfzjvpwDljIQ60meButSP0QmB0R/YE2ciWU7SwTf853LSAJMxDxQXgzVDIcjGgsML
+        8xgYX5GqnfTakBCA==
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id 6EFaEniowGD6XgAALh3uQQ
+        id gI9xH3iowGD6XgAALh3uQQ
         (envelope-from <vbabka@suse.cz>); Wed, 09 Jun 2021 11:39:36 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
@@ -72,9 +72,9 @@ Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [RFC v2 25/34] mm, slub: detach percpu partial list in unfreeze_partials() using this_cpu_cmpxchg()
-Date:   Wed,  9 Jun 2021 13:38:54 +0200
-Message-Id: <20210609113903.1421-26-vbabka@suse.cz>
+Subject: [RFC v2 26/34] mm, slub: only disable irq with spin_lock in __unfreeze_partials()
+Date:   Wed,  9 Jun 2021 13:38:55 +0200
+Message-Id: <20210609113903.1421-27-vbabka@suse.cz>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210609113903.1421-1-vbabka@suse.cz>
 References: <20210609113903.1421-1-vbabka@suse.cz>
@@ -84,156 +84,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of relying on disabled irqs for atomicity when detaching the percpu
-partial list, we can use this_cpu_cmpxchg() and detach without irqs disabled.
-However, unfreeze_partials() can be also called from another cpu on behalf of
-a cpu that is being offlined, so we need to restructure the code accordingly:
-
-- __unfreeze_partials() is the bulk of unfreeze_partials() that processes the
-  detached percpu partial list
-- unfreeze_partials() uses this_cpu_cmpxchg() to detach list from current cpu
-- unfreeze_partials_cpu() is to be called for the offlined cpu so it needs no
-  protection, and is called from __flush_cpu_slab()
-- flush_cpu_slab() is for the local cpu thus it needs to call
-  unfreeze_partials(). So it can't simply call
-  __flush_cpu_slab(smp_processor_id()) anymore and we have to open-code it
+__unfreeze_partials() no longer needs to have irqs disabled, except for making
+the spin_lock operations irq-safe, so convert the spin_locks operations and
+remove the separate irq handling.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 77 +++++++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 55 insertions(+), 22 deletions(-)
+ mm/slub.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 3e0ec7211d55..0867801e3086 100644
+index 0867801e3086..5a81189608e6 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2287,25 +2287,15 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
- 	}
- }
- 
--/*
-- * Unfreeze all the cpu partial slabs.
-- *
-- * This function must be called with preemption or migration
-- * disabled with c local to the cpu.
-- */
--static void unfreeze_partials(struct kmem_cache *s,
--		struct kmem_cache_cpu *c)
--{
- #ifdef CONFIG_SLUB_CPU_PARTIAL
-+static void __unfreeze_partials(struct kmem_cache *s, struct page *partial_page)
-+{
+@@ -2292,9 +2292,7 @@ static void __unfreeze_partials(struct kmem_cache *s, struct page *partial_page)
+ {
  	struct kmem_cache_node *n = NULL, *n2 = NULL;
--	struct page *page, *partial_page, *discard_page = NULL;
-+	struct page *page, *discard_page = NULL;
- 	unsigned long flags;
- 
- 	local_irq_save(flags);
- 
--	partial_page = slub_percpu_partial(c);
--	c->partial = NULL;
+ 	struct page *page, *discard_page = NULL;
+-	unsigned long flags;
 -
+-	local_irq_save(flags);
++	unsigned long flags = 0;
+ 
  	while (partial_page) {
  		struct page new;
- 		struct page old;
-@@ -2360,10 +2350,49 @@ static void unfreeze_partials(struct kmem_cache *s,
- 		discard_slab(s, page);
- 		stat(s, FREE_SLAB);
+@@ -2306,10 +2304,10 @@ static void __unfreeze_partials(struct kmem_cache *s, struct page *partial_page)
+ 		n2 = get_node(s, page_to_nid(page));
+ 		if (n != n2) {
+ 			if (n)
+-				spin_unlock(&n->list_lock);
++				spin_unlock_irqrestore(&n->list_lock, flags);
+ 
+ 			n = n2;
+-			spin_lock(&n->list_lock);
++			spin_lock_irqsave(&n->list_lock, flags);
+ 		}
+ 
+ 		do {
+@@ -2338,9 +2336,7 @@ static void __unfreeze_partials(struct kmem_cache *s, struct page *partial_page)
  	}
-+}
  
--#endif	/* CONFIG_SLUB_CPU_PARTIAL */
-+/*
-+ * Unfreeze all the cpu partial slabs.
-+ *
-+ * This function must be called with preemption or migration
-+ * disabled.
-+ */
-+static void unfreeze_partials(struct kmem_cache *s)
-+{
-+	struct page *partial_page;
-+
-+	do {
-+		partial_page = this_cpu_read(s->cpu_slab->partial);
-+
-+	} while (partial_page &&
-+		 this_cpu_cmpxchg(s->cpu_slab->partial, partial_page, NULL)
-+				  != partial_page);
-+
-+	if (partial_page)
-+		__unfreeze_partials(s, partial_page);
- }
+ 	if (n)
+-		spin_unlock(&n->list_lock);
+-
+-	local_irq_restore(flags);
++		spin_unlock_irqrestore(&n->list_lock, flags);
  
-+static void unfreeze_partials_cpu(struct kmem_cache *s,
-+				  struct kmem_cache_cpu *c)
-+{
-+	struct page *partial_page;
-+
-+	partial_page = slub_percpu_partial(c);
-+	c->partial = NULL;
-+
-+	if (partial_page)
-+		__unfreeze_partials(s, partial_page);
-+}
-+
-+#else	/* CONFIG_SLUB_CPU_PARTIAL */
-+
-+static void unfreeze_partials(struct kmem_cache *s) { }
-+static void unfreeze_partials_cpu(struct kmem_cache *s,
-+				  struct kmem_cache_cpu *c) { }
-+
-+#endif	/* CONFIG_SLUB_CPU_PARTIAL */
-+
- /*
-  * Put a page that was just frozen (in __slab_free|get_partial_node) into a
-  * partial page slot if available.
-@@ -2392,7 +2421,7 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
- 				 * partial array is full. Move the existing
- 				 * set to the per node partial list.
- 				 */
--				unfreeze_partials(s, this_cpu_ptr(s->cpu_slab));
-+				unfreeze_partials(s);
- 				oldpage = NULL;
- 				pobjects = 0;
- 				pages = 0;
-@@ -2427,11 +2456,6 @@ static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c)
- 	stat(s, CPUSLAB_FLUSH);
- }
- 
--/*
-- * Flush cpu slab.
-- *
-- * Called from IPI handler with interrupts disabled.
-- */
- static inline void __flush_cpu_slab(struct kmem_cache *s, int cpu)
- {
- 	struct kmem_cache_cpu *c = per_cpu_ptr(s->cpu_slab, cpu);
-@@ -2439,14 +2463,23 @@ static inline void __flush_cpu_slab(struct kmem_cache *s, int cpu)
- 	if (c->page)
- 		flush_slab(s, c);
- 
--	unfreeze_partials(s, c);
-+	unfreeze_partials_cpu(s, c);
- }
- 
-+/*
-+ * Flush cpu slab.
-+ *
-+ * Called from IPI handler with interrupts disabled.
-+ */
- static void flush_cpu_slab(void *d)
- {
- 	struct kmem_cache *s = d;
-+	struct kmem_cache_cpu *c = this_cpu_ptr(s->cpu_slab);
- 
--	__flush_cpu_slab(s, smp_processor_id());
-+	if (c->page)
-+		flush_slab(s, c);
-+
-+	unfreeze_partials(s);
- }
- 
- static bool has_cpu_slab(int cpu, void *info)
+ 	while (discard_page) {
+ 		page = discard_page;
 -- 
 2.31.1
 
