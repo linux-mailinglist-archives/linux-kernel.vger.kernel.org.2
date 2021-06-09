@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F373A2110
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1493A210D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhFIX6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 19:58:00 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:44021 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFIX57 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 19:57:59 -0400
-Received: by mail-oi1-f172.google.com with SMTP id x196so101019oif.10;
-        Wed, 09 Jun 2021 16:55:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0BAkC6SDg+gNX9Eg6Cq1bSt7plTJAqywTZpNENH6AqA=;
-        b=aD/VDvZoO69WHrj0j5dkqQHbondnOBSIAfssxrd2/9ov+ZHMLRTXfcUJPJqaLKN5li
-         IK1ksJ4yG++gLs81C1pA42Y8ThRNjSxAjTc887SX1Y1hpurwlbgYw47k1e0owSpOwWRE
-         NbeIuPzJzD3bhbzrnaeIG281j9yAtj/yp0NjhifXLEwOKiP6zSE1XiSbUFtiRDHQv/IH
-         VWruU2JRmStOpoc2u3okt2lYVHvZ0KiwRZE/HdeD/PrkXINX0LGcCZS6cHKyQ1463CYo
-         sQ7sSm5/6oOFSTZR7ynGEfoIM90zl7IyEmHp8U6vhAHjeHSTqAoj98q4NsYS0tygzbmB
-         ucTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=0BAkC6SDg+gNX9Eg6Cq1bSt7plTJAqywTZpNENH6AqA=;
-        b=b4530TP4fp8xLMxKkPG6hk4/rG0i7GR4yLgAK8oBpf+PMejw7QkEhQEd0JiPgR3SVr
-         cFnJK7wDLRMj+TuZXOaBV3pbqRfQaZE2h1oCpRakCdIGKQrD4CoLjIfiH8Vklk3pVucX
-         Kby0kqDOSJS96p/eDMhemvPM4GrqSjua+O3PTFi2Wu1ZUlMZcgif36drIcJVdg2t7CIa
-         a1h2OuB2262mKE7+tZiky0UaU8tDdLreKnixn/d0chT/d+4Sp/8NL36a46h5q7+BjD+Y
-         MtRKpynZCZS4B6pKirQzAJiYuJtQ6N8hzNWPQwkAqOC3egxwY18LQ+QOIrskzo+V9192
-         E8Ag==
-X-Gm-Message-State: AOAM532vo5BWIHCiG2gYrzYvagfoeXapJeV2YnX47uwBrbK6ibBIeqWB
-        /+MxDAh9RVWOq9TfGE+sK6hmotg6PSE=
-X-Google-Smtp-Source: ABdhPJyenjUerRx6o7lhPtXOpcqaJZ+rgXnyiRndEJdjkdChPUvVuiJ9xwcfMDS9esCZquSRqW5srg==
-X-Received: by 2002:aca:c302:: with SMTP id t2mr7963850oif.67.1623282888572;
-        Wed, 09 Jun 2021 16:54:48 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 16sm257198oie.33.2021.06.09.16.54.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 16:54:48 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 9 Jun 2021 16:54:46 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org, wim@linux-watchdog.org,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 2/3] watchdog: iTCO_wdt: use dev_*() instead of pr_*()
- for logging
-Message-ID: <20210609235446.GA2542004@roeck-us.net>
-References: <20201117152214.32244-2-info@metux.net>
- <20210609203229.GA2664456@bjorn-Precision-5520>
+        id S229797AbhFIX5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 19:57:33 -0400
+Received: from mga05.intel.com ([192.55.52.43]:6472 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229507AbhFIX5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 19:57:32 -0400
+IronPort-SDR: 3c7LDz8qZccAM9oR0bN4w1zM32yK2Be9Lkn1qjQgX7I9LYmUoYWdiGFW/kNMVHUi58A3CqvVW7
+ OSrCFFKYkS7w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="290825124"
+X-IronPort-AV: E=Sophos;i="5.83,262,1616482800"; 
+   d="scan'208";a="290825124"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 16:55:36 -0700
+IronPort-SDR: KauKf6IsPc5n6KYQ0P6qvuqbJzjDfmwTwpjnLEF9LUs+zWCr8Ol+FJc8h97EtbfnrGS3Y2Tt9+
+ hHAU6EKOERqw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,262,1616482800"; 
+   d="scan'208";a="441006589"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP; 09 Jun 2021 16:55:36 -0700
+Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Wed, 9 Jun 2021 16:55:35 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ SHSMSX601.ccr.corp.intel.com (10.109.6.141) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 10 Jun 2021 07:55:32 +0800
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.008;
+ Wed, 9 Jun 2021 16:55:30 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Williams, Dan J" <dan.j.williams@intel.com>, lkp <lkp@intel.com>
+CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@suse.de>
+Subject: RE: arch/x86/lib/copy_mc.c:30:1: warning: no previous prototype for
+ 'copy_mc_fragile_handle_tail'
+Thread-Topic: arch/x86/lib/copy_mc.c:30:1: warning: no previous prototype for
+ 'copy_mc_fragile_handle_tail'
+Thread-Index: AQHXXYDpRWvCGEUFekCEZ2tmEUfop6sMzNGA//+M3QA=
+Date:   Wed, 9 Jun 2021 23:55:30 +0000
+Message-ID: <10c9fdc0ace04013b7d4999643aa8b21@intel.com>
+References: <202106100613.JQBEtsqj-lkp@intel.com>
+ <CAPcyv4jAkutNExqao0Q1HYL-pQxrSbAN3F5N9Uj=09KDa_uynw@mail.gmail.com>
+In-Reply-To: <CAPcyv4jAkutNExqao0Q1HYL-pQxrSbAN3F5N9Uj=09KDa_uynw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609203229.GA2664456@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 03:32:29PM -0500, Bjorn Helgaas wrote:
-> On Tue, Nov 17, 2020 at 04:22:13PM +0100, Enrico Weigelt, metux IT consult wrote:
-> > For device log outputs, it's better to have device name / ID
-> > prefixed in all messages, so use the proper dev_*() functions here.
-> > 
-> > Explicit message on module load/unload don't seem to be really helpful
-> > (we have other means to check which modules have been loaded), instead
-> > just add noise to the kernel log. So, removing them.
-> > 
-> > Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
-> 
-> I like this patch a lot; thanks for doing it!  It's merged upstream as
-> c21172b3a73e ("watchdog: iTCO_wdt: use dev_*() instead of pr_*() for
-> logging").
-> 
-> It looks like there are a couple more pr_err() uses, so I wondered if
-> they were missed or skipped intentionally:
-> 
->   if (p->smi_res) {
->           /* The TCO logic uses the TCO_EN bit in the SMI_EN register */
->           if (!devm_request_region(dev, p->smi_res->start,
->                                    resource_size(p->smi_res),
->                                    pdev->name)) {
->                   pr_err("I/O address 0x%04llx already in use, device disabled\n",
->                          (u64)SMI_EN(p));
->                   return -EBUSY;
->           }
->   } else if (iTCO_vendorsupport ||
->              turn_SMI_watchdog_clear_off >= p->iTCO_version) {
->           pr_err("SMI I/O resource is missing\n");
->           return -ENODEV;
->   }
-> 
-The above came in with a recent commit. I suspect they simply got lost,
-and they should be converted as well.
-
-Guenter
+PiBUaGlzIHJvdXRpbmUgaXMgb25seSBldmVyIGNhbGxlZCBmcm9tIEFTTSBjb2RlLCBzbyB0aGUg
+ZmFjdCB0aGF0IHRoZXJlDQo+IGlzIG5vIEMgZGVjbGFyYXRpb24gaXMgZXhwZWN0ZWQuDQoNCkRv
+ZXMgdGhlIGFzbSBjb2RlIHJlYWxseSBuZWVkIHRvIGNhbGwgYmFjayBpbnRvIEM/DQoNCkNvdWxk
+IHlvdSBqdXN0IGhhdmUgdGhlIGFzbSBjb2RlIGRvICJqbXAgLkxfcmVhZF90cmFpbGluZ19ieXRl
+cyIgKG1pZ2h0IG5lZWQgdG8gb25seSBkbyB0aGF0IGlmICVlY3ggaXMgbm9uLXplcm8pPw0KDQot
+VG9ueQ0K
