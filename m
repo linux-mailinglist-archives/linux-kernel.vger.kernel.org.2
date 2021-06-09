@@ -2,78 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4353A0D4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869443A0D0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236710AbhFIHNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:13:10 -0400
-Received: from m12-12.163.com ([220.181.12.12]:42063 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234969AbhFIHNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:13:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ZhXBU
-        Uhb8IEEd5BfnTokZalclItqpdzTrKmB683qQ6k=; b=oSVvRZmA5/8pTz33ZVDB+
-        vlpYKz2Sp4teJUgS2jGA4+dOlL8ayzisaM4tjHbHE9gGblgBFtuFTten52dTdPUA
-        IVw2EJaiELoyvOALvdWTDqHENyCVFHYoNLdPqz4gaRItkwiBhnk1QVaNAo9Pu4tq
-        5+39TJ8JFc4bDGlwhIZs7M=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowADnuCmsZcBgWI2WIw--.37107S2;
-        Wed, 09 Jun 2021 14:54:36 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] scsi: lpfc: lpfc_bsg: deleted these repeated words
-Date:   Wed,  9 Jun 2021 14:53:39 +0800
-Message-Id: <20210609065339.428697-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S234352AbhFIHEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:04:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236966AbhFIHEN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 03:04:13 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E249AC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 00:02:18 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4G0J2K13lPz9sRf; Wed,  9 Jun 2021 17:02:17 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1623222137;
+        bh=4m/RYQw+ykvKqTPlxfPVQz0sQ7S6mTcGNkg/VBAqJGM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WM1nVdSY3T7V6f+jcXmncKbJPHY80L9XED5LaFFHZy6QhHQy0RR1eSfaUasPCZrvK
+         pocd9do1+fQ/031/fgK4ZXrikndEpWM2atj2nokokAg6XZuUMk73nU8Y8sOFjC4JIO
+         LYlFT1xYzO+dRvRiEuUeEOq6H/mA65vGVyRf0f8U=
+Date:   Wed, 9 Jun 2021 16:59:49 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] powerpc/mm/hash: Avoid resizing-down HPT on first
+ memory hotplug
+Message-ID: <YMBm5ctf19lT4mj4@yekko>
+References: <20210430143607.135005-1-leobras.c@gmail.com>
+ <20210430143607.135005-2-leobras.c@gmail.com>
+ <YL2obsnp4rWbW6CV@yekko>
+ <648b382159009c5f4277d9b9c3f896142ea75d6c.camel@gmail.com>
+ <YMBGW3RQOzoQxBqy@yekko>
+ <a69f18159b90c5ede95e6d3769e224b883cc974f.camel@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowADnuCmsZcBgWI2WIw--.37107S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Ww1fWFy3uFW3XFWrWF48Zwb_yoW8XrWfpF
-        W8Cay7CrykXa1kKa4fA34UZ3s0va97JFy7CFs0v3s5ZFWUJrykXFWrtr1UXFWUWFWv9r9I
-        qrs3KrWDuF1qvrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bbZXrUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiSg2sUFPAOoUs4AAAsb
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Ub8InhVlSAu4bvbq"
+Content-Disposition: inline
+In-Reply-To: <a69f18159b90c5ede95e6d3769e224b883cc974f.camel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
 
-deleted these repeated words 'the' and 'is' in the comments.
+--Ub8InhVlSAu4bvbq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- drivers/scsi/lpfc/lpfc_bsg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Wed, Jun 09, 2021 at 02:51:49AM -0300, Leonardo Br=C3=A1s wrote:
+> On Wed, 2021-06-09 at 14:40 +1000, David Gibson wrote:
+> > On Tue, Jun 08, 2021 at 09:52:10PM -0300, Leonardo Br=C3=A1s wrote:
+> > > On Mon, 2021-06-07 at 15:02 +1000, David Gibson wrote:
+> > > > On Fri, Apr 30, 2021 at 11:36:06AM -0300, Leonardo Bras wrote:
+> > > > > Because hypervisors may need to create HPTs without knowing the
+> > > > > guest
+> > > > > page size, the smallest used page-size (4k) may be chosen,
+> > > > > resulting in
+> > > > > a HPT that is possibly bigger than needed.
+> > > > >=20
+> > > > > On a guest with bigger page-sizes, the amount of entries for
+> > > > > HTP
+> > > > > may be
+> > > > > too high, causing the guest to ask for a HPT resize-down on the
+> > > > > first
+> > > > > hotplug.
+> > > > >=20
+> > > > > This becomes a problem when HPT resize-down fails, and causes
+> > > > > the
+> > > > > HPT resize to be performed on every LMB added, until HPT size
+> > > > > is
+> > > > > compatible to guest memory size, causing a major slowdown.
+> > > > >=20
+> > > > > So, avoiding HPT resizing-down on hot-add significantly
+> > > > > improves
+> > > > > memory
+> > > > > hotplug times.
+> > > > >=20
+> > > > > As an example, hotplugging 256GB on a 129GB guest took 710s
+> > > > > without
+> > > > > this
+> > > > > patch, and 21s after applied.
+> > > > >=20
+> > > > > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> > > >=20
+> > > > Sorry it's taken me so long to look at these
+> > > >=20
+> > > > I don't love the extra statefulness that the 'shrinking'
+> > > > parameter
+> > > > adds, but I can't see an elegant way to avoid it, so:
+> > > >=20
+> > > > Reviewed-by: David Gibson <david@gibson.dropbear.id.au>
+> > >=20
+> > > np, thanks for reviewing!
+> >=20
+> > Actually... I take that back.=C2=A0 With the subsequent patches my
+> > discomfort with the complexity of implementing the batching grew.
+> >=20
+> > I think I can see a simpler way - although it wasn't as clear as I
+> > thought it might be, without some deep history on this feature.
+> >=20
+> > What's going on here is pretty hard to follow, because it starts in
+> > arch-specific code (arch/powerpc/platforms/pseries/hotplug-memory.c)
+> > where it processes the add/remove requests, then goes into generic
+> > code __add_memory() which eventually emerges back in arch specific
+> > code (hash__create_section_mapping()).
+> >=20
+> > The HPT resizing calls are in the "inner" arch specific section,
+> > whereas it's only the outer arch section that has the information to
+> > batch properly.=C2=A0 The mutex and 'shrinking' parameter in Leonardo's
+> > code are all about conveying information from the outer to inner
+> > section.
+> >=20
+> > Now, I think the reason I had the resize calls in the inner section
+> > was to accomodate the notion that a) pHyp might support resizing in
+> > future, and it could come in through a different path with its drmgr
+> > thingy and/or b) bare metal hash architectures might want to
+> > implement
+> > hash resizing, and this would make at least part of the path common.
+> >=20
+> > Given the decreasing relevance of hash MMUs, I think we can now
+> > safely
+> > say neither of these is ever going to happen.
+> >=20
+> > Therefore, we can simplify things by moving the HPT resize calls into
+> > the pseries LMB code, instead of create/remove_section_mapping.=C2=A0 T=
+hen
+> > to do batching without extra complications we just need this logic
+> > for
+> > all resizes (both add and remove):
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0let new_hpt_order =3D e=
+xpected HPT size for new mem size;
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (new_hpt_order > cur=
+rent_hpt_order)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0resize to new_hpt_order
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0add/remove memory
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (new_hpt_order < cur=
+rent_hpt_order - 1)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0resize to new_hpt_order
+> >=20
+> >=20
+>=20
+>=20
+> Ok, that really does seem to simplify a lot the batching.
+>=20
+> Question:
+> by LMB code, you mean dlpar_memory_{add,remove}_by_* ?
+> (dealing only with dlpar_{add,remove}_lmb() would not be enough to deal
+> with batching)
 
-diff --git a/drivers/scsi/lpfc/lpfc_bsg.c b/drivers/scsi/lpfc/lpfc_bsg.c
-index 38cfe1bc6a4d..08be16e7a60a 100644
---- a/drivers/scsi/lpfc/lpfc_bsg.c
-+++ b/drivers/scsi/lpfc/lpfc_bsg.c
-@@ -1766,7 +1766,7 @@ lpfc_bsg_diag_mode_exit(struct lpfc_hba *phba)
-  * This function is responsible for placing an sli3  port into diagnostic
-  * loopback mode in order to perform a diagnostic loopback test.
-  * All new scsi requests are blocked, a small delay is used to allow the
-- * scsi requests to complete then the link is brought down. If the link is
-+ * scsi requests to complete then the link is brought down. If the link
-  * is placed in loopback mode then scsi requests are again allowed
-  * so the scsi mid-layer doesn't give up on the port.
-  * All of this is done in-line.
-@@ -5883,7 +5883,7 @@ lpfc_bsg_timeout(struct bsg_job *job)
- 		return -EIO;
- 
- 	/* if job's driver data is NULL, the command completed or is in the
--	 * the process of completing.  In this case, return status to request
-+	 * process of completing.  In this case, return status to request
- 	 * so the timeout is retried.  This avoids double completion issues
- 	 * and the request will be pulled off the timer queue when the
- 	 * command's completion handler executes.  Otherwise, prevent the
--- 
-2.25.1
+I was thinking of a two stage process.  First moving the resizes to
+dlpar_{add,remote}_lmb() (not changing behaviour for the pseries dlpar
+path), then implementing the batching by moving to the {add,remove}_by
+functions.
 
+But..
 
+> In my 3/3 rep=C4=BAy I sent you some other examples of functions that
+> currently end up calling resize_hpt_for_hotplug() without comming from=C2=
+=A0
+> hotplug-memory.c. Is that ok that they do not call it anymore?
+
+=2E.as I replied there, I was wrong about it being safe to move the
+resizes all to the pseries dlpar code.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--Ub8InhVlSAu4bvbq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmDAZuUACgkQbDjKyiDZ
+s5KODw/+Nz8CHW3Qkmd6dC7LfZ5F7LrdVZBnSSveTKnswcwJSZjMAdHmseCGlN7t
+l9Sx8JPQapLGcqGbBFIZmFgc99IR3t3xlfibclMbUcNgQ9NMIdj29CvZQZphQHFr
+2MAGPykp8j86UT7WsLauH6FQb34Cn7hsfZg2e2WLAVA1Coc95XvnJd1ApRugjhAF
+m/aOW8wI1l7VsyQ2xmFv3AiKVS8gxVl80L9YLEz3aG5EwCowcz9HWPE55zY3KoOs
+68AxHjUO2JYPBGgtBBuhZAGZYNjBYyYwnCu533rn0NnoS1lhXLDtBMIQbUckb9f3
++fFEq5cpIpx+Wss4QsBxQtpPQgNaeOhqaFLl5C1DJ2Cnn9i00emH1d6dbUpgyC3R
+vkY/8xjzsYZTHs+a7XgkidfPpOIAQLMiQNA2RhJjDiLCDwSBjI90Gkst1/hG2+z1
+cJu3oOVlHi2DM67eWEw/3pc7vKLxZCG9JwMkUdQa5EdUidnakSxUcOVJ5TKzBeDr
+rblMh5uZ5+JGuFInN2f0rCgCA7dG4wegiMXQlNCC+mszK+bvRVOSZO01pWTfzvT+
+2chriHSLQ98JrEONtpwzWe3ATgOflIlRqjBgDGnxrD8CR7k1wvyLQFI60dnzYzCq
+i6j7rVGJzL3da2qY0fgenTERP6Ul31z5sijyeEuvsb/sf1siOPk=
+=mgBM
+-----END PGP SIGNATURE-----
+
+--Ub8InhVlSAu4bvbq--
