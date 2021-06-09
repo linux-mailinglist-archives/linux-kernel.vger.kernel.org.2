@@ -2,135 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5613A0F29
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA183A0F2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237738AbhFII75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233622AbhFII74 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:59:56 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A80FC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 01:57:49 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id ei4so957344pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 01:57:49 -0700 (PDT)
+        id S237813AbhFIJAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:00:25 -0400
+Received: from mail-bn8nam11on2132.outbound.protection.outlook.com ([40.107.236.132]:27488
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235888AbhFIJAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:00:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W8np+rp5rjc+pJKK3OMlO8bdtQsF1Ag/AR+KbSdjWtzOmf68tBWWUEGM2KTs5/hyy+DUB+U28F/GOZXnIjpvc1HIkwF6AOkIb1VlC2OOBWOSRUBVPfwqgyWRLINc1Q8g1F4e3SZaE5yChberP/XCHmN6b6Jtj/jwUxEbHBpztS32I/msDBxUbsiSjtFaW6NkeS9xwk3G95z73RgkbPHq4KZ5yNVEbZhWiObS5Nw+5oFfenQyH6VFLK1O7C+CPAND4TEvqzYFByz+8bL2ho2S7mdafMhoHFke6euqbQe3pMbVuWm5YqaA520uNA6HEOXRPqViKO210D83uFLIBTiSFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4fKvIIvZ2SOAqVTMvqIOOUvmNH5JsTLr2R+nBddEfXw=;
+ b=h7/qWMbSJW+XuHSy7ginEob7hNR+YtUMVL4bS+VjbuXt0G9G3u5UoEPNfhWPRt8TdsqP5vXiROG6nCAzRZt3cNo49cafWNY3sQHvSVsfmI3faKVlMgqC7ghR3VANMX7hHmyMGx1ij4y7fBu88k7CpHrnpDoBI1eEEHx2E92cJa5UB46MuUwjq07IW3tLBeilRu4JXaPv7Et8ELlEteHdZ1DgXofqa2dhW3gIZ5CXYS4qT9CbiRsKSGFCFaEsW++fDgXomt0Qvry45kaTqsUZliulF1qzHAVEuztOMh0PXzq3r6Zwr3SdIZiGJbDvM4gZqa0yE5GuQk4vPpwL/tB1VQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bVQYTBu0a1Kk4T/+mZeiDj1CUGFrrISY4m2gx4+3p0Y=;
-        b=zWLJH9Fpk2rU9on5mQyq6ez7pr8woPsp5xGdYeyxyqpKOW2MwbTx4zpipsZguP8C6e
-         kgFol/kYXEtXr4ttFEbd0C22l2C7sTjBwEd+8FLsdNT4nXo+SpkE287hmWSlSD6ftAjB
-         YcMEBtfMFEpbWUleniM808BgHP1nB+j4s6C/O8xVMHRurEliFkPO19Xnwq2DXDzg0bIt
-         gGy08AN7CX3X26DCPHsS1T168Jx76nSwuNQnxCx0o0xXzRryzrqZCIYBcGcFYqI9O8fZ
-         +66QZf6f1YX0qtOZOWP1LHUIT900FJGKwrzKf9O+oCJTeVhs65gvjcmw1IqWtEg5YGz4
-         YGDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bVQYTBu0a1Kk4T/+mZeiDj1CUGFrrISY4m2gx4+3p0Y=;
-        b=YUIy6WUhuiBp/HjooV2lORgofhX7vUqkNCvGFQ4PQAI0B10igFilkyNNiwBLIIxn8p
-         VkaTrb0MTMGno8n3qAL0F9TE3Ww//kPB5ai8mbCgr8DG6oiVQ/YyWZlR6j0/CG9B0+2j
-         RXU1DgAwhwTD/rUW9w88WjZkwe1D1MRfqYlCzqTQY3zLNpMbM2og0Q4wcHuA4RZu9Xtr
-         Dp6QCrjdXbfRXvwPfK/gpHW4GcAFUB2i2ILlei8DWMEreH3vsiMtaj2n8pgGapbNyu8V
-         FRzmxHJ27STVr6n7IC+H41LFRnPwcL+ejYAV0TqMKtOENd9ogCZitnkYCn2RpD/fj9O1
-         0ZBA==
-X-Gm-Message-State: AOAM533jcZfIf+tmpcwdFExYpsIOkVD5trVDm0wEST5c4Mrc09CyAX4N
-        uwrcni+PVaXwDyIL2cz6vXsWsg==
-X-Google-Smtp-Source: ABdhPJzPFkcMwOFYo5oqKyhE4y8nEnWIB/h6N4itRbJrqLCe+yXMoko7eVGUr2PWg4oJur4fbapZ3A==
-X-Received: by 2002:a17:90a:f304:: with SMTP id ca4mr32399766pjb.177.1623229068832;
-        Wed, 09 Jun 2021 01:57:48 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (ec2-18-167-84-74.ap-east-1.compute.amazonaws.com. [18.167.84.74])
-        by smtp.gmail.com with ESMTPSA id t1sm12394038pfe.61.2021.06.09.01.57.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 01:57:48 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 16:57:41 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 8/8] perf record: Directly bail out for compat case
-Message-ID: <20210609085741.GF4640@leoy-ThinkPad-X240s>
-References: <20210602103007.184993-1-leo.yan@linaro.org>
- <20210602103007.184993-9-leo.yan@linaro.org>
- <c321e998-6fd2-86e9-7876-7250a9b23c25@intel.com>
- <20210602123847.GE10272@leoy-ThinkPad-X240s>
- <96e5fac6-17a2-ea03-9b15-338b84321ecf@intel.com>
- <20210607150903.GC1071897@leoy-ThinkPad-X240s>
- <d87d8fd8-c6f1-9d9b-5c2e-629588123a9c@intel.com>
-MIME-Version: 1.0
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4fKvIIvZ2SOAqVTMvqIOOUvmNH5JsTLr2R+nBddEfXw=;
+ b=ec4jBJRIUk8wxndlOtif40N8AgV4HAI5k0MTtq5KQTCfktBpxyE67sEyXESULVl56+QVrNz3RRIz50/mqrAo0sZ1nMUVjXAvnP5GIA1AZliewFKbIzthjkJigEjr5C7RMVoVeJ4i6rdbYbIOTltrmu7wQaj4WuzCiyKTpwYBES0=
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by PH0PR13MB4923.namprd13.prod.outlook.com (2603:10b6:510:99::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.12; Wed, 9 Jun
+ 2021 08:58:24 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::4596:4181:eeee:7a8a]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::4596:4181:eeee:7a8a%7]) with mapi id 15.20.4242.009; Wed, 9 Jun 2021
+ 08:58:24 +0000
+Date:   Wed, 9 Jun 2021 10:58:17 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com, yangjihong1@huawei.com, yukuai3@huawei.com,
+        oss-drivers@corigine.com, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH net-next v2] nfp: use list_move instead of
+ list_del/list_add in nfp_cppcore.c
+Message-ID: <20210609085814.GB16547@corigine.com>
+References: <20210609070921.1330407-1-libaokun1@huawei.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d87d8fd8-c6f1-9d9b-5c2e-629588123a9c@intel.com>
+In-Reply-To: <20210609070921.1330407-1-libaokun1@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Originating-IP: [2001:982:756:703:d63d:7eff:fe99:ac9d]
+X-ClientProxiedBy: AM3PR05CA0099.eurprd05.prod.outlook.com
+ (2603:10a6:207:1::25) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from corigine.com (2001:982:756:703:d63d:7eff:fe99:ac9d) by AM3PR05CA0099.eurprd05.prod.outlook.com (2603:10a6:207:1::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Wed, 9 Jun 2021 08:58:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 19fed9ea-de82-4e23-bc0e-08d92b24bcf5
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4923:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR13MB4923645E910CF2408B38F9B3E8369@PH0PR13MB4923.namprd13.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ogF54ufeIRgnUNvKhSBWpf7Z63XJJSIO5XUWczSNrJP0AKqQlti/0MfzR85aOAewCM3ixiyaMGGomeHhYeBCmQi/p8wkyNtFYtYKBsahS1pxYNdbIU1lygFz07MaDKTP5WzOe8Gi5RwwjYxx1HvA7rNev6A4yI1PYvgqPvCDWW7VCs9sPeSWvb9hVQJbmxSw1DBPRYw+QdZcdKdoXXpHYtugDnvZvz9dnDBQKSsNDVk3urIMyJKZOmLhTf46WMvzAsoTvyL6RVMPnZZbEEBloBMX2xhkhhNQiHAJW7UgqtNJ4YhxHZVODB0IzAheqoIoFbAXJ72uwgknMwaRC+/GwhJCWPs3geXosIDhpMmKKAwsqZ9pq4hCfTaMvFdWRtnysiVtCycepjY0/8i/D0S4pkCys2+tu65lWBXbvrndHFZg7xfa9vnpU3JdVL6S/6tcFr/0nc+SKTETfQOADbECeavGckD53xfCYNIKenPyQuAjt2QODSpOzAJalAD3Tlw81zUPCaZWyzEOAVAAnqYqR/LHZtmfcqSJtEs1gHTmXxg4zqLAjfeVzhtb/786BRBj6mJ/AAQDE/H2ZnHNBFWq0ruIgN8nfpuIWZkTqe/idvw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(366004)(136003)(39830400003)(52116002)(2906002)(2616005)(478600001)(5660300002)(8676002)(7696005)(44832011)(186003)(558084003)(6666004)(86362001)(6916009)(316002)(54906003)(7416002)(8936002)(55016002)(1076003)(4326008)(66556008)(33656002)(66476007)(8886007)(16526019)(38100700002)(66946007)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HuSittwV/Et+Ckn91Y1a1/DGZ549NsuxV4FGfTlkRBpfFW9np3lem+Yc2+7x?=
+ =?us-ascii?Q?m72doDWMgy1rDjwEd6riLv/ntvk6wMaNeCfsVzU2MdVLAOUDtZinpqCFPwyd?=
+ =?us-ascii?Q?J6HpGVmIhyALeoHPgYGEtPZeuVWkhBJI/y3E7OrW6ACuMp6wPvrazWwkRr3j?=
+ =?us-ascii?Q?j21bwAgHFHuInL1+O13rFeojQOtbcE70JdnHfsKJb+UmGYvM7eLPSza9kKFx?=
+ =?us-ascii?Q?vLf5xzZDFGoPz3Yv+8O6MDsAGpjoR1BkjdhqekGO6l+5qDLWg5SX89RD5NlY?=
+ =?us-ascii?Q?xUMBSvEs+XDOvKz91hoY9MgohJn1koA3jsmz4bWIRnk1Zfue2jLj2w84nD2r?=
+ =?us-ascii?Q?r/SRNaZ37QcyYCNJ9wuDvuNiERcDwW6vXj0hJ2yowAHv7cGnmMr9qyT1pBKc?=
+ =?us-ascii?Q?KbVslLRCRdUUwSwt/BTlkaDNai1PCpQKiBN7SuemoBw6VHQIcEcRuQiJoaQ7?=
+ =?us-ascii?Q?ZqV3DmKv49xt4NaDmYpB2OvMbpjZW4tn2nJHOR2pIXWTp7J/A/iruamH/IcS?=
+ =?us-ascii?Q?+ecyv1l/aj3GKHVkSse2KoKzIMldsRzXZd8zBaGuafICm+pTcESJrBVQNEqs?=
+ =?us-ascii?Q?rXPdtFejbvhl++yj7r0GaD8AXgQtv+3cghz0kVMkpifQQfvre/A/eW57h5Cn?=
+ =?us-ascii?Q?JIHVi2CMBA12lzCLsKiGErwlxyEzTNHxoTHid9DGyqDwfyJj4mp6fDQwQyQ8?=
+ =?us-ascii?Q?ClYAKzBz2XBPyJjHK6JNsjccggOGK6QJmEVH52+fYPqSmpsmlS+dCYJGTNb7?=
+ =?us-ascii?Q?6GkMpbFXVtB9dWnYlZ9Jayt6v9fUlAgc1CrIMvw4X6As38qWKiaV2lRY/gE1?=
+ =?us-ascii?Q?7lssLExwAwzVf8r+YxZeWUgWMwmP/woniIIrmyeaCgg4Xd+AvXeA9e9hkBRW?=
+ =?us-ascii?Q?xzOKV2dcjYQUpArmTynN0dr0+R3eihHULS42eiAIBAEv8xTLPcqGi5kgyLde?=
+ =?us-ascii?Q?+ZE9mvhhBXsvw6PWsWQDopUEWGmSmvjrDGSGzeHTOfQDTjQ+azTF7qzQxzFu?=
+ =?us-ascii?Q?AAgszE4zR6rcCsr/dxLPGl8k/4HXoIcvasXFcwth6/JQSdr0BzZFK+PEwbaN?=
+ =?us-ascii?Q?yY7wT34tUy5ynmqnrB3EfjRV9InUiJVphEoQXwVyujJBCknAfvJCzYLUg6YG?=
+ =?us-ascii?Q?ZUb17PJvCyxgXBGjk7MX/IyzD5w8v1WsJkVQACk2bbGwJSK8uktsZ4f2rT+F?=
+ =?us-ascii?Q?ORgTwjDlN8hWf8nGiW5l9t/UwNe4SO0agUAy9Ho+e8bki/0afgij/CObReCX?=
+ =?us-ascii?Q?/zomPtHcoLlXqFWDWU5hkgtdwpmGooPYtElHvG84m7QyimxVH8KJlx9Sk0cW?=
+ =?us-ascii?Q?/2HxWo5jKt/zfy1k9KtChrugWnD73O6IiwqKvGw6TkYy6kc3PbJyqtEjGZnN?=
+ =?us-ascii?Q?/F5nfPyDQYBG6hVYTBLI9IfbL2ny?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19fed9ea-de82-4e23-bc0e-08d92b24bcf5
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 08:58:23.9928
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ObBgt8fQdwUrhJPc/zeYBtuyYcaV1brhkxsdSo9Fh1I+SsbKlieApyaCSM4zfCcXN0WJUWkg61yMpnk/kBMAScHm7IWOgCWHVp5qcmrkyls=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB4923
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
-
-On Wed, Jun 09, 2021 at 11:23:25AM +0300, Adrian Hunter wrote:
-
-[...]
-
-> >> I was thinking we would separate out the compat case:
-> >>
-> >> #if BITS_PER_LONG == 32
-> >> 	if (kernel_is_64_bit)
-> >> 		return compat_auxtrace_mmap__[read_head/write_tail]()
-> >> #endif
-> >>
-> >> So the non-compat cases would not be affected.
-> > 
-> > Because I don't want to introduce the complexity for read/write head
-> > and tail, and we also need to handle the same issue for the perf ring
-> > buffer.  So how about below change?
-> > 
-> > The main idea for below change is it allows the perf to run normally
-> > on the compat mode and exitly if detects the buffer head is close to
-> > the low 32-bit's overflow: when detect the low 32-bit value is bigger
-> > than 0xf0000000 (so we have 256MiB margin to the overflow), it reports
-> > error and exit.
-> > 
-> > diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-> > index 1b4091a3b508..2a9965bfeab4 100644
-> > --- a/tools/perf/util/auxtrace.c
-> > +++ b/tools/perf/util/auxtrace.c
-> > @@ -1693,6 +1693,14 @@ static int __auxtrace_mmap__read(struct mmap *map,
-> >  	pr_debug3("auxtrace idx %d old %#"PRIx64" head %#"PRIx64" diff %#"PRIx64"\n",
-> >  		  mm->idx, old, head, head - old);
-> >  
-> > +#ifdef BITS_PER_LONG == 32
-> > +	if (kernel_is_64bit() && head >= 0xf0000000) {
+On Wed, Jun 09, 2021 at 03:09:21PM +0800, Baokun Li wrote:
+> Using list_move() instead of list_del() + list_add() in nfp_cppcore.c.
 > 
-> You are assuming the head never increases by more than 256MiB which
-> means you should limit the buffer size to 256MiB maximum.
-> 
-> To me this seems a bit too far from an ideal solution.
-> 
-> I would have thought separating out the compat case makes things
-> simpler to understand.
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Agreed.  I will follow up the suggestions to add compat variants for
-accessing AUX head and tail, and will distinguish compat case with
-global env variable for 64-bit kernel.
-
-After get ready, will send out for review. Thanks a lot for suggestions!
-
-Leo
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
