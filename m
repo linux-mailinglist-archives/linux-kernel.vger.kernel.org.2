@@ -2,163 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B323A08C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C56E3A08C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhFIA5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 20:57:32 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:35823 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbhFIA5b (ORCPT
+        id S235036AbhFIA5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 20:57:36 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:44771 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231765AbhFIA5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 20:57:31 -0400
-Received: by mail-wr1-f42.google.com with SMTP id m18so23481213wrv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 17:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rbFgX3UJ1Q3Aj0ZiAl1bfNghzCpTB0DWkuD0W/YEdT8=;
-        b=VR/eoGkC3O9b1nQ5MDJAFN6aJbYfNHSrCLsMSAlfjdOjPiUqyR1soGfbfAd2qp1D6C
-         iewKBtrnzineqqyX3ZwA0vYnTkDITdkpyiSe090YISNB51hq1rzN67LDafE19mI+hp5X
-         ymtSnkijZ4NCrMZztbjAniiGm/Dj6pYM1Mt2FUOrMwbzllasYmR62g/mqepe/LLrmpwY
-         H/iuIVgmkDqKJr47mIx/1NrzQKBL6+29gDOFUSzOtdE1Qvl9DErcNG42rsQ4Ue1ymgI+
-         eCIpMqYShmZ2/QK8DuqpbUo1ZGvLxLDdJPRUkFhO138cZXnqhPa7gIWq7+Iz6ISEaxbN
-         lEEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rbFgX3UJ1Q3Aj0ZiAl1bfNghzCpTB0DWkuD0W/YEdT8=;
-        b=e0G4Y04o0/m2ajARhB1C1A1VeOkXuuC2C6eAJsjSNQM0KMIGkjsoV2VDHHnShf4fu7
-         6HdY0LfAackuFrIGiMUXjNkcJ60NdclvNoYrDSDdPE0ej/y2hxX57z9uDBIBg4ujzyZq
-         4Xf23MnFT66ZUU9FbcrCTMLj39Wzgi4e/0VINIvcc6NecSeLRoCzNPtcKxh21JdxY2Ko
-         yJwa9lWRhpTV6uXkRjaPSvbA7P7omxhSHZ5h0WUMDmtVYPFto6dEHKPDxwwoOx8rqfIK
-         2tDfXVbMqfUkitO7pIfpIv4Z1t0U10EMvTU0rHMFUD6aV2rSY7Of1dtcvttKyV9cZp8e
-         R8nA==
-X-Gm-Message-State: AOAM531/MrITVHVNBVBKKnaIjxS2uwF9zhQ3k6ZyPuGQVNv1dJgHONwN
-        JgMeAJbRBR5kODYGwntvKyw=
-X-Google-Smtp-Source: ABdhPJxT/j8xQwTxVv7KuCLrJrvrwgDodXO+EIkhuOaEcuc8Y4gSYd4HDzCpYO7npAbOXKYKKbvH5w==
-X-Received: by 2002:a05:6000:18ac:: with SMTP id b12mr3943662wri.219.1623200061052;
-        Tue, 08 Jun 2021 17:54:21 -0700 (PDT)
-Received: from linux.local (host-82-59-55-132.retail.telecomitalia.it. [82.59.55.132])
-        by smtp.gmail.com with ESMTPSA id t9sm15059830wmq.14.2021.06.08.17.54.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 17:54:20 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH] x86/resctrl: Fix kernel-doc in internal.h
-Date:   Wed,  9 Jun 2021 02:54:15 +0200
-Message-Id: <20210609005415.6993-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 8 Jun 2021 20:57:35 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 0EBE658090F;
+        Tue,  8 Jun 2021 20:55:41 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Tue, 08 Jun 2021 20:55:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=3Nt5JvyrsYxWZO5AoBJCPRdGxY3UPM3
+        x9iKRgVLmBwk=; b=afsQfp/NSm1WxsJ/I45w+huEp4GTjrjG5RwEBMvnGR/C8Me
+        HoS4PON7JvTOdMN97st2whfv82hgOTmIplhVkgiAXl0aGLAXVX7bcYCOltuGZ3PB
+        9Fwrh/i+uq8Bo+QaLJ/oQYo6/nB7ay846usSgDLxgyW/qNdLxFGsjd/LylhwxC7j
+        c6pD9JhjqutrniYQo0X5pI7/UePfkeyQtWdmsw/op1PndaOYZffG2FtJrs0u/FPG
+        wXHPJNrWUHY4cxZSZGe3Pgow9i/AfZxDdz2cCwXTVdbRgD0a06SLkzYs755pOa/3
+        nlcDKmuKXEbDeTY/q1tjcGwaPesfXKinkcd1n3g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=3Nt5Jv
+        yrsYxWZO5AoBJCPRdGxY3UPM3x9iKRgVLmBwk=; b=QRbV2p3fWsZ6GbTYxbm/bv
+        T1+hbuKApW2yeY3nOG34rkboMbDvjO2gD8c1AhCdK+BlM4CzDSTNxQReiQ38ooiQ
+        IDv+bT89kT5LzLzK3GesX/vhQarvdkZQq52utc5YliJ2R+THIjVkV9I6wPnWZKfd
+        e31C4qbqOqO0LCFnyWqgZ0yBU0bTFChX13Djc91Nw4NuSFUvocPPqONf/gZvloH6
+        PkHD2y+qq0+XjnG2WLJBm5PD7EQfIQeGlP69f1Gw6ApdwAk4U3v5JV0joKyHIQhA
+        NpoH2TB22h7AfTewip5XjYeRQ+oXfGr9mLQ/xkfsZ8gdDGpa18j6RS0EiHhQtgiw
+        ==
+X-ME-Sender: <xms:ixHAYD8BCTUtPorKFfl_hv-nNhoDQ8t2TgAc1XC0NEv9XkH5kLhEcg>
+    <xme:ixHAYPs9_rvaRbruLJcTv6YUm9qEXUNhpXUtg1r7BQQpZSoymptlETAYPrx1TWmvf
+    slBI0MFPhtkexzB6A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedutddgfeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:ixHAYBA-tDvS-Mq3RgdUNgb1qDHrw6Cxk5s17sPc0_b8ZS3S7-EMZA>
+    <xmx:ixHAYPc4JLfvHf8FDdNcVruy2eoOE_WW7H2uwR9DJpj8XVFi_QwXTA>
+    <xmx:ixHAYIPvkXfsdj9d2m6FR2YamFeqNEmNnMDbD_XFq3-cWlpxcKqF-w>
+    <xmx:jRHAYJFor7evvN5VT9oxUmWCf5siRI9P51tdY3ZECoUiKRuGYMQUIA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id AAD91AC0062; Tue,  8 Jun 2021 20:55:39 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <6f87ccf4-9b8f-4c67-84a1-e83a2ee5103b@www.fastmail.com>
+In-Reply-To: <20210608102547.4880-7-steven_lee@aspeedtech.com>
+References: <20210608102547.4880-1-steven_lee@aspeedtech.com>
+ <20210608102547.4880-7-steven_lee@aspeedtech.com>
+Date:   Wed, 09 Jun 2021 10:25:08 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Billy Tsai" <billy_tsai@aspeedtech.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v5_06/10]_gpio:_gpio-aspeed-sgpio:_Add_AST2400_and_?=
+ =?UTF-8?Q?AST2500_platform_data.?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added description of undocumented parameters. Fixed some minor
-kernel-doc grammar issues. Issues largely detected by
-scripts/kernel-doc.
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- arch/x86/kernel/cpu/resctrl/internal.h | 28 ++++++++++++++++----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index c4d320d02fd5..f360944a7ae1 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -68,8 +68,9 @@ DECLARE_STATIC_KEY_FALSE(rdt_mon_enable_key);
- 
- /**
-  * struct mon_evt - Entry in the event list of a resource
-- * @evtid:		event id
-- * @name:		name of the event
-+ * @evtid:		Event id
-+ * @name:		Name of the event
-+ * @list:		List head
-  */
- struct mon_evt {
- 	u32			evtid;
-@@ -78,10 +79,12 @@ struct mon_evt {
- };
- 
- /**
-- * struct mon_data_bits - Monitoring details for each event file
-- * @rid:               Resource id associated with the event file.
-+ * union mon_data_bits - Monitoring details for each event file
-+ * @priv:	       Private data for the union	
-+ * @rid:               Resource id associated with the event file
-  * @evtid:             Event id associated with the event file
-  * @domid:             The domain to which the event file belongs
-+ * @u:		       Name of the bit fields struct
-  */
- union mon_data_bits {
- 	void *priv;
-@@ -119,6 +122,7 @@ enum rdt_group_type {
-  * @RDT_MODE_PSEUDO_LOCKSETUP: Resource group will be used for Pseudo-Locking
-  * @RDT_MODE_PSEUDO_LOCKED: No sharing of this resource group's allocations
-  *                          allowed AND the allocations are Cache Pseudo-Locked
-+ * @RDT_NUM_MODES: Total number of modes
-  *
-  * The mode of a resource group enables control over the allowed overlap
-  * between allocations associated with different resource groups (classes
-@@ -142,7 +146,7 @@ enum rdtgrp_mode {
- 
- /**
-  * struct mongroup - store mon group's data in resctrl fs.
-- * @mon_data_kn		kernlfs node for the mon_data directory
-+ * @mon_data_kn:		kernlfs node for the mon_data directory
-  * @parent:			parent rdtgrp
-  * @crdtgrp_list:		child rdtgroup node list
-  * @rmid:			rmid for this rdtgroup
-@@ -282,11 +286,11 @@ struct rftype {
- /**
-  * struct mbm_state - status for each MBM counter in each domain
-  * @chunks:	Total data moved (multiply by rdt_group.mon_scale to get bytes)
-- * @prev_msr	Value of IA32_QM_CTR for this RMID last time we read it
-+ * @prev_msr:	Value of IA32_QM_CTR for this RMID last time we read it
-  * @prev_bw_msr:Value of previous IA32_QM_CTR for bandwidth counting
-- * @prev_bw	The most recent bandwidth in MBps
-- * @delta_bw	Difference between the current and previous bandwidth
-- * @delta_comp	Indicates whether to compute the delta_bw
-+ * @prev_bw:	The most recent bandwidth in MBps
-+ * @delta_bw:	Difference between the current and previous bandwidth
-+ * @delta_comp:	Indicates whether to compute the delta_bw
-  */
- struct mbm_state {
- 	u64	chunks;
-@@ -450,18 +454,20 @@ struct rdt_parse_data {
-  * @name:		Name to use in "schemata" file
-  * @num_closid:		Number of CLOSIDs available
-  * @cache_level:	Which cache level defines scope of this resource
-- * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
-+ * @default_ctrl:	Specifies default cache cbm or memory B/W percent
-  * @msr_base:		Base MSR address for CBMs
-  * @msr_update:		Function pointer to update QOS MSRs
-  * @data_width:		Character width of data when displaying
-  * @domains:		All domains for this resource
-  * @cache:		Cache allocation related data
-+ * @membw:		Memory bandwidth allocation related data
-  * @format_str:		Per resource format string to show domain value
-  * @parse_ctrlval:	Per resource function pointer to parse control values
-  * @evt_list:		List of monitoring events
-  * @num_rmid:		Number of RMIDs available
-  * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
-- * @fflags:		flags to choose base and info files
-+ * @mbm_width:		Width of memory bandwidth monitoring counter
-+ * @fflags:		Flags to choose base and info files
-  */
- struct rdt_resource {
- 	int			rid;
--- 
-2.31.1
+On Tue, 8 Jun 2021, at 19:55, Steven Lee wrote:
+> We use platform data to store GPIO pin mask and the max number of
+> available GPIO pins for AST2600.
+> Refactor driver to also add the platform data for AST2400/AST2500 and
+> remove unused MAX_NR_HW_SGPIO and ASPEED_SGPIO_PINS_MASK macros.
+> 
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> ---
+>  drivers/gpio/gpio-aspeed-sgpio.c | 34 +++++++++++---------------------
+>  1 file changed, 12 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-aspeed-sgpio.c b/drivers/gpio/gpio-aspeed-sgpio.c
+> index ea20a0127748..7d0a4f6fd9d1 100644
+> --- a/drivers/gpio/gpio-aspeed-sgpio.c
+> +++ b/drivers/gpio/gpio-aspeed-sgpio.c
+> @@ -17,21 +17,8 @@
+>  #include <linux/spinlock.h>
+>  #include <linux/string.h>
+>  
+> -/*
+> - * MAX_NR_HW_GPIO represents the number of actual hardware-supported GPIOs (ie,
+> - * slots within the clocked serial GPIO data). Since each HW GPIO is both an
+> - * input and an output, we provide MAX_NR_HW_GPIO * 2 lines on our gpiochip
+> - * device.
+> - *
+> - * We use SGPIO_OUTPUT_OFFSET to define the split between the inputs and
+> - * outputs; the inputs start at line 0, the outputs start at OUTPUT_OFFSET.
+> - */
+> -#define MAX_NR_HW_SGPIO			80
+> -#define SGPIO_OUTPUT_OFFSET		MAX_NR_HW_SGPIO
+> -
+>  #define ASPEED_SGPIO_CTRL		0x54
+>  
+> -#define ASPEED_SGPIO_PINS_MASK		GENMASK(9, 6)
+>  #define ASPEED_SGPIO_CLK_DIV_MASK	GENMASK(31, 16)
+>  #define ASPEED_SGPIO_ENABLE		BIT(0)
+>  #define ASPEED_SGPIO_PINS_SHIFT		6
+> @@ -484,6 +471,11 @@ static int aspeed_sgpio_setup_irqs(struct 
+> aspeed_sgpio *gpio,
+>  	return 0;
+>  }
+>  
+> +static const struct aspeed_sgpio_pdata ast2400_sgpio_pdata = {
+> +	.max_ngpios = 80,
+> +	.pin_mask = GENMASK(9, 6),
+> +};
+> +
+>  static const struct aspeed_sgpio_pdata ast2600_sgpiom_128_pdata = {
+>  	.max_ngpios = 128,
+>  	.pin_mask = GENMASK(10, 6),
+> @@ -495,8 +487,8 @@ static const struct aspeed_sgpio_pdata 
+> ast2600_sgpiom_80_pdata = {
+>  };
+>  
+>  static const struct of_device_id aspeed_sgpio_of_table[] = {
+> -	{ .compatible = "aspeed,ast2400-sgpio" },
+> -	{ .compatible = "aspeed,ast2500-sgpio" },
+> +	{ .compatible = "aspeed,ast2400-sgpio", .data = &ast2400_sgpio_pdata, 
+> },
+> +	{ .compatible = "aspeed,ast2500-sgpio", .data = &ast2400_sgpio_pdata, 
+> },
+>  	{ .compatible = "aspeed,ast2600-sgpiom-128", .data = 
+> &ast2600_sgpiom_128_pdata, },
+>  	{ .compatible = "aspeed,ast2600-sgpiom-80", .data = 
+> &ast2600_sgpiom_80_pdata, },
+>  	{}
+> @@ -521,13 +513,11 @@ static int __init aspeed_sgpio_probe(struct 
+> platform_device *pdev)
+>  		return PTR_ERR(gpio->base);
+>  
+>  	pdata = device_get_match_data(&pdev->dev);
+> -	if (pdata) {
+> -		gpio->max_ngpios = pdata->max_ngpios;
+> -		pin_mask = pdata->pin_mask;
+> -	} else {
+> -		gpio->max_ngpios = MAX_NR_HW_SGPIO;
+> -		pin_mask = ASPEED_SGPIO_PINS_MASK;
+> -	}
+> +	if (!pdata)
+> +		return -EINVAL;
+> +
+> +	gpio->max_ngpios = pdata->max_ngpios;
+> +	pin_mask = pdata->pin_mask;
 
+Hmm, okay, maybe just re-order the patches so this commit comes before the previous one. That way we don't immediately rip out this condition that we just introduced in the previous patch.
+
+I think I suggested squashing it into the previous patch, but with the removal of the comments and macros I think it's worth leaving it separate, just reordered.
+
+Andrew
