@@ -2,61 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FEA3A2018
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D4B3A2044
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhFIWc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 18:32:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230321AbhFIWcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 18:32:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 42EC8613C8;
-        Wed,  9 Jun 2021 22:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623277823;
-        bh=d4wl5oy5glkmCERcc9C0gNbaVsqxZJ8npPGIBx5vpMw=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZeifUONOMkZ/pDttPmBo7y8pSCZ61P9sKU34w+mfsvGnv0AN68SD5yq3gFp+ndHR0
-         //PvF8kj6Is22pDxhyBBZwUuz6dgXKyXPj2wqJ/jPuXuFM0L4Fa2XLSK1CXbzMD+cv
-         Hta0fl/GycmCRdvJkCBlZFeg36JF2WO/Ra+cHWmBgTrDntR3TH6WH9KzkHKTWiMPGC
-         6oQ+dpEMrQvB9nX81neWaq5z7NyUp5hVkaqSdytQeuJcGZswc90ceIsBj4YANKiCbZ
-         SCdnw1JZT5h9KFE79oojpUaC0rK6/njSBdQsponRKjXRUgG3yBWEzUcOSmHhal7D5r
-         oHNoZEJJTgIYQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3944B609E3;
-        Wed,  9 Jun 2021 22:30:23 +0000 (UTC)
-Subject: Re: [GIT PULL] platform-drivers-x86 for 5.13-3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <f389f824-2a3f-e0fb-2120-7bfa0baf7bb1@redhat.com>
-References: <f389f824-2a3f-e0fb-2120-7bfa0baf7bb1@redhat.com>
-X-PR-Tracked-List-Id: <platform-driver-x86.vger.kernel.org>
-X-PR-Tracked-Message-Id: <f389f824-2a3f-e0fb-2120-7bfa0baf7bb1@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.13-3
-X-PR-Tracked-Commit-Id: 701b54bcb7d0d72ee3f032afc900608708409be0
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cd1245d75ce93b8fd206f4b34eb58bcfe156d5e9
-Message-Id: <162327782322.21155.6326148661175011879.pr-tracker-bot@kernel.org>
-Date:   Wed, 09 Jun 2021 22:30:23 +0000
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org
+        id S229931AbhFIWlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 18:41:23 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:35633 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhFIWlV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 18:41:21 -0400
+Received: by mail-ot1-f54.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so25610069otg.2;
+        Wed, 09 Jun 2021 15:39:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NEWuD8KXuieZNHBEBcl8+ntcsvKKDdZFLRqcg/Uf4wc=;
+        b=LC7r8Vi5ior1sFSrmmZ6W06JrVOPSy1zZ9oo3gOqS5RwBMOo2g9UBRPSVi49zw0NNj
+         6E6bUVc5r7fY27aRN8vt+5nVcSEcoJvAg+CXS6uwzm4sB7HBcuEt7nr91rERIZmh985v
+         3ny9L6vOdHrlVa+U2T94zEDUTWX/q7B3NvgSq5CmrijQDvzRXgjkX13/O/oluT6RCeEw
+         IlCQPguE1v71Y5Vb4HJP9fC/MOjcHd2TBU/nys0mfQ/DuPjP1yKOcDyHqcBc7dcjVR2a
+         HARSayC0diheUyWwn6V/Dt+9Idc3dDeeRm2YFLQR4q8JZKH2Rq2CcOMeKJut1bGrx4jX
+         lO1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NEWuD8KXuieZNHBEBcl8+ntcsvKKDdZFLRqcg/Uf4wc=;
+        b=DNb2uNaQYOtpBe/C5C9miZHN/RnujQHGIaU6i5Ld7NUxwP76LXMWat+U8Oi/isnHrI
+         jyqW2Cc6ps+U6dJCt2tbyxIkIly2VNlSql9A9ZH/ZnopiEbTAUUlDaGE7sFk78h/qMkZ
+         VMCzC7UguN4pdwo1GUwl39Jjir8CnjK0Gh4WktrGMyLoDC2kYjUKejC8YqXna4mU1TAD
+         eR6jFg2M0SPRlGCiR78CVSE3tGuRgLTjrMH8thoLR4weV5gN1069wdeFw62DKzD7lS8w
+         7P42/NYvMAHo0BFAx0BDBYUs2DSKckA8bAJJayOn8dqmb+sxYzWI2R6bsyUeLzISGPdB
+         zzHw==
+X-Gm-Message-State: AOAM530zBQ7j6vyjGolveVUUPcQohq/DZwejdQTGvcEXnz2KYfaaUfDE
+        udtF4iKLYA+p5u8U+T66nRz9OmjGrpDSpSuPjCQ=
+X-Google-Smtp-Source: ABdhPJyrYomschLlY7NnQiYeA+IcoOJnYUDbrD9PXecbJXbM9PpdrvFT9tbv7POCa6Xtfnekz8x42ExeQTc74yt7uho=
+X-Received: by 2002:a05:6830:1d0:: with SMTP id r16mr1476662ota.116.1623278290263;
+ Wed, 09 Jun 2021 15:38:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210609173312.298414-1-colin.king@canonical.com>
+In-Reply-To: <20210609173312.298414-1-colin.king@canonical.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Date:   Wed, 9 Jun 2021 22:38:04 +0100
+Message-ID: <CAFLoDVE03-Eqmrji66P-b79ezgD0PayWqO5u3L7nyjMX1+LBtg@mail.gmail.com>
+Subject: Re: [PATCH][next] ACPI: scan: ensure ret is initialized to avoid
+ garbage being returned
+To:     Colin King <colin.king@canonical.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 9 Jun 2021 19:23:08 +0200:
+Hi Colin
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.13-3
+On Wed, Jun 9, 2021 at 6:33 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> In the unlikely event that there are no callback calls made then ret
+> will be returned as an uninitialized value. Clean up static analysis
+> warnings by ensuring ret is initialized.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cd1245d75ce93b8fd206f4b34eb58bcfe156d5e9
+Ah, thanks - good spot.
 
-Thank you!
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: a9e10e587304 ("ACPI: scan: Extend acpi_walk_dep_device_list()")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Reviewed-by: Daniel Scally <djrscally@gmail.com>
+
+I'm still bad at Git; will the commit hash here be right, since the
+patch that this fixes isn't upstream yet?
+
+(hope the gmail web client doesn't maul this too badly...)
+> ---
+>  drivers/acpi/scan.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index c3067e8bfc47..0945d952f0fc 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -2151,7 +2151,7 @@ int acpi_walk_dep_device_list(acpi_handle handle,
+>                               void *data)
+>  {
+>         struct acpi_dep_data *dep, *tmp;
+> -       int ret;
+> +       int ret = 0;
+>
+>         mutex_lock(&acpi_dep_list_lock);
+>         list_for_each_entry_safe(dep, tmp, &acpi_dep_list, node) {
+> --
+> 2.31.1
+>
