@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED47D3A1F7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB713A1F7F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhFIV6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:58:00 -0400
-Received: from mga03.intel.com ([134.134.136.65]:1785 "EHLO mga03.intel.com"
+        id S230216AbhFIV6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:58:05 -0400
+Received: from ozlabs.org ([203.11.71.1]:49127 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230117AbhFIV5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:57:52 -0400
-IronPort-SDR: I6vUEEguE45+dtganhvWiaZKoowq9hiegE5oO8aio3YRgrFx7/BtBG/9fXT9V6bT7FL+VWWaFm
- sPL+62akjwcQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="205208556"
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="205208556"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:55:57 -0700
-IronPort-SDR: ViFDCffI0mrQ+APe5GDGyNL44qnQ8RLZzPA4Re/cAeDC0Ak66hbdkGvxN6cvVLApnR+DJCZkvK
- iKtL4bWNip3w==
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="482555119"
-Received: from qwang4-mobl1.ccr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.35.228])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:55:56 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Isaku Yamahata <isaku.yamahata@intel.com>
-Subject: [PATCH v1 7/7] x86/tdx: ioapic: Add shared bit for IOAPIC base address
-Date:   Wed,  9 Jun 2021 14:55:37 -0700
-Message-Id: <20210609215537.1956150-8-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210609215537.1956150-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210609215537.1956150-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S230117AbhFIV6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:58:01 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G0gsb5QrJz9sW8;
+        Thu, 10 Jun 2021 07:56:03 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623275765;
+        bh=KtI+FrtnLjcslTw1sLwN057C10zoC4aGvN1cs+VX0Sg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aXwJbKjzD5bsFELyCbCCx3WRQxLKhiXvF2/mZ8C64zwxlAsmkmuNFKf8aGmFf0vti
+         nrDQcrAtXOVPMB9lvbkTPElMl4SN/XXi0XP4MgVeg/8tb5SayramBPzdE6hRNa8ZiO
+         SL+6Vxx0Nz3fa2KHFKZJw+3Sqx444FoFup+GiIWJBk//G5gFtCGpsAop0pJQVJGFkZ
+         yvyx0iBoXYCuM4ufCcbFBt/C+O0cVBF3DdRrCsnvpaEch+8tq9o9S3FUgmklDWjG+F
+         6ecQvjKfurg9UMhbYvKgTSZEzgsamChjPFF98+Cg43o14qOoL4IiwKIz3OA8eP1771
+         ZlMHmgSbxfEoQ==
+Date:   Thu, 10 Jun 2021 07:56:02 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tags need some work in the netfilter-next tree
+Message-ID: <20210610075602.3c5c7b2c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/_NqZtn/HkU1PF=XKAiUVtB=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+--Sig_/_NqZtn/HkU1PF=XKAiUVtB=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The kernel interacts with each bare-metal IOAPIC with a special
-MMIO page. When running under KVM, the guest's IOAPICs are
-emulated by KVM.
+Hi all,
 
-When running as a TDX guest, the guest needs to mark each IOAPIC
-mapping as "shared" with the host.  This ensures that TDX private
-protections are not applied to the page, which allows the TDX host
-emulation to work.
+In commit
 
-Earlier patches in this series modified ioremap() so that
-ioremap()-created mappings such as virtio will be marked as
-shared. However, the IOAPIC code does not use ioremap() and instead
-uses the fixmap mechanism.
+  c5c6accd7b7e ("netfilter: nf_tables: move base hook annotation to init he=
+lper")
 
-Introduce a special fixmap helper just for the IOAPIC code.  Ensure
-that it marks IOAPIC pages as "shared".  This replaces
-set_fixmap_nocache() with __set_fixmap() since __set_fixmap()
-allows custom 'prot' values.
+Fixes tag
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
- arch/x86/kernel/apic/io_apic.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+  Fixes: 65b8b7bfc5284f ("netfilter: annotate nf_tables base hook ops")
 
-diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index d5c691a3208b..95639072c986 100644
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -49,6 +49,7 @@
- #include <linux/slab.h>
- #include <linux/memblock.h>
- #include <linux/msi.h>
-+#include <linux/protected_guest.h>
- 
- #include <asm/irqdomain.h>
- #include <asm/io.h>
-@@ -2675,6 +2676,18 @@ static struct resource * __init ioapic_setup_resources(void)
- 	return res;
- }
- 
-+static void io_apic_set_fixmap_nocache(enum fixed_addresses idx,
-+				       phys_addr_t phys)
-+{
-+	pgprot_t flags = FIXMAP_PAGE_NOCACHE;
-+
-+	/* Set TDX guest shared bit in pgprot flags */
-+	if (prot_guest_has(PR_GUEST_SHARED_MAPPING_INIT))
-+		flags = pgprot_protected_guest(flags);
-+
-+	__set_fixmap(idx, phys, flags);
-+}
-+
- void __init io_apic_init_mappings(void)
- {
- 	unsigned long ioapic_phys, idx = FIX_IO_APIC_BASE_0;
-@@ -2707,7 +2720,7 @@ void __init io_apic_init_mappings(void)
- 				      __func__, PAGE_SIZE, PAGE_SIZE);
- 			ioapic_phys = __pa(ioapic_phys);
- 		}
--		set_fixmap_nocache(idx, ioapic_phys);
-+		io_apic_set_fixmap_nocache(idx, ioapic_phys);
- 		apic_printk(APIC_VERBOSE, "mapped IOAPIC to %08lx (%08lx)\n",
- 			__fix_to_virt(idx) + (ioapic_phys & ~PAGE_MASK),
- 			ioapic_phys);
-@@ -2836,7 +2849,7 @@ int mp_register_ioapic(int id, u32 address, u32 gsi_base,
- 	ioapics[idx].mp_config.flags = MPC_APIC_USABLE;
- 	ioapics[idx].mp_config.apicaddr = address;
- 
--	set_fixmap_nocache(FIX_IO_APIC_BASE_0 + idx, address);
-+	io_apic_set_fixmap_nocache(FIX_IO_APIC_BASE_0 + idx, address);
- 	if (bad_ioapic_register(idx)) {
- 		clear_fixmap(FIX_IO_APIC_BASE_0 + idx);
- 		return -ENODEV;
--- 
-2.25.1
+has these problem(s):
 
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 7b4b2fa37587 ("netfilter: annotate nf_tables base hook ops")
+
+In commit
+
+  d4fb1f954fc7 ("netfilter: nfnetlink_hook: add depends-on nftables")
+
+Fixes tag
+
+  Fixes: 252956528caa ("netfilter: add new hook nfnl subsystem")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: e2cf17d3774c ("netfilter: add new hook nfnl subsystem")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/_NqZtn/HkU1PF=XKAiUVtB=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDBOPIACgkQAVBC80lX
+0GzyJAf/QbBiLtA3ZNNgxTsfgI101t8h9iAyKsZXd4KGiKn2DMzVdHwXpaIffKrx
+08gDkUKv5mFHlQsysiY5NHoOyT1+FkVwcTkRLc7U+hGvYe0QarxV8qqoDfIfifxQ
+R+BvrCvOmdezi8+sW+uPYWaeYCrVlz2t3RnpatqaSbTBtJOF7ZD1lO1FudxsYdti
+XVwOU03yI5IP/f3KfrMZ/QS4iC70ZcZ9ncVRENZaKHvTw7MFpq6usIR3vXr+mFPp
+NInwgVWvi2/Tnz5GTU0SZFoZT5OpMWsmMjKoMvHNC2oQlinkAOQIBxOuP2w13upz
+M0hCM7auJ7B6o+wMn65MT0QtaM9Ygw==
+=eH+a
+-----END PGP SIGNATURE-----
+
+--Sig_/_NqZtn/HkU1PF=XKAiUVtB=--
