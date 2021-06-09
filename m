@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D523A1EA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB5E3A1EAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhFIVOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhFIVOK (ORCPT
+        id S229957AbhFIVO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:14:58 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:46709 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229638AbhFIVO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:14:10 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22CEC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 14:12:15 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id b12so7418490plg.11
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 14:12:15 -0700 (PDT)
+        Wed, 9 Jun 2021 17:14:56 -0400
+Received: by mail-ot1-f41.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso25327167otl.13
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 14:12:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=jaT4lo9T5SEpPCFBCBUJXwFG0QTH+RrodR1Rx/0Ww4g=;
-        b=WUOI/IfgB8YbMF1QA6HN2ZzWRCz2Qh3OP1C93nUDshtKUt2b1We2EeO9UjLmB+2+sD
-         uPzRgbZFtudq4z+PDpTzfk+P4zTxV0VcLUuT1dl5bi2PVJKXClIzFAPwNTNs8q11ex8q
-         epmpCf2wjz+QKdxmJJVTHbEb8Z5/l3cZ688SSHjpQ1kGshLK6cvXPdZTOYx8xaI8T+vA
-         m0qY2cXYjhgsaouLVpxL3XC0A0HFGhMyGIt60Vlh86gvLUwTQn8Af0KJmWfMQBD9qI7W
-         XR0K8uT0k9riwNeiZjVTDnmv/ylsgUJqDFkuPW4TIGB/GqxWqoQjmsY5ZxF0GtfSRP2z
-         8WSw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VH3rwwEOTBktsGW6P22ZTU/VUmL/IO3btE6cu1C80Ps=;
+        b=kkU8TwJT5Id3fmh2Sl2AH46PuradhB/XrIpeCemrg1wM3W3A/OtXodSG93fS3OjxLL
+         kWEu50ukBGLnA5jjapnwcylXCBaRiQ4hB3jrrRVi7FLrp9yq0SEIzKxZKcqtsuC6uc4t
+         jAvX2SJsPg5ZWvbkWPul+CguSHF2Jl9WVNdA1QoExuGRNT6me8n0T0xye3QdOyY+vMXI
+         OgZI+pLZCT4YhnUtrS8uyMDWBy6sv1RXLpLwPSvG2GXaEz+LYM16LT9K6yUi7AFe809Z
+         WoR/Wijb5vII9zLDf9Eqeu+QLCRA7uXv1kx5ewn46P5X1z5Dy4/OWLHujX1FrF7bfSif
+         rPRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=jaT4lo9T5SEpPCFBCBUJXwFG0QTH+RrodR1Rx/0Ww4g=;
-        b=D8vYOLgnWorai2QvN4SjWzfOMvfLOcqZ6JI3U43cbRjfFRW9iATUPe6MI2SKJN6nlg
-         N73feqwT+Bv2Dgk5KB6oeDNZ16fNOUc+NSbwYVB2eAZCmb9v/U7VHcNtMo6CBDm1RVVE
-         SwF2dYInAxZPlbtjXzs5ZYCF5jqYw4/NJJAUuWc35BIuplPYKXfzhnkZpsxOptJnc2z4
-         VYotcWqumtll62/cfSCdOaQmaXno1ZMPGy6dLYy2SEX2ot4EVbJ9z4tfD4J7RvHFek+z
-         MD7Lc1EqsCkKuN0FCDeWu6nitMZd6MjyLfLcvWFo6C5epxOwWA9WcaMAlQYeV8mY/7Dj
-         VmhA==
-X-Gm-Message-State: AOAM531xKA11EOysUVAoTlQX1GdATRbwWu7oXcwrTkNnngVqZ5L5CE5k
-        t8reN+DgMyFTkpaA2tiKgpetOw==
-X-Google-Smtp-Source: ABdhPJy41HmwNNZ9IdFCcQ1yjMnnUMuK/qO1FP/PNY+23ehuLdXZlBXfRYNqOUFfF7rNnn168y77Qw==
-X-Received: by 2002:a17:902:a981:b029:116:a139:6054 with SMTP id bh1-20020a170902a981b0290116a1396054mr1426866plb.60.1623273134253;
-        Wed, 09 Jun 2021 14:12:14 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id em15sm471056pjb.43.2021.06.09.14.12.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 14:12:13 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 14:11:19 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Yang Shi <shy828301@gmail.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 06/10] mm/thp: unmap_mapping_page() to fix THP
- truncate_cleanup_page()
-In-Reply-To: <CAHbLzkqCJx11qCz0rNNz89C9O+Po8UoS5v_H_Qg3M8Q1eUp5pw@mail.gmail.com>
-Message-ID: <50eb41a-e6f8-e566-20ef-22fb63b0a529@google.com>
-References: <af88612-1473-2eaa-903-8d1a448b26@google.com> <f1f68716-5a53-20ff-7ac0-d82fc3978d4e@google.com> <CAHbLzkqCJx11qCz0rNNz89C9O+Po8UoS5v_H_Qg3M8Q1eUp5pw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VH3rwwEOTBktsGW6P22ZTU/VUmL/IO3btE6cu1C80Ps=;
+        b=LtlUxWb/dHa7L5VIVhkOErJdu8IQ1Nw7TrAH/aOVBnMwB/Jm1u448z218MVSqgEeHn
+         P4xZKLfyfUsxGAZJEuAsxzER7ASHBu5AA+IxRtb/OxgBZ0hcVtHvR3s72lmyiAgYVJ3y
+         fdzVBth2G1v90TCy/9pxdAP+tLe4N1XksMeKWfGWayvLV0wPy2NtCF4sXRIuov9FXwGz
+         KI53YYgQdaoxEj7uuXAONmZARRFWlPKFf0ut7auOAQE8HRyD/oFuQ1xT7LZeZR9PBO7P
+         56v+Cw+1xK+/QKLCSsNW299SCB8V0lpgzFAwrOnNYkoDGZXB9M4b4Cw+EHLaO4B0Y1fu
+         FggQ==
+X-Gm-Message-State: AOAM532mpJOe7VuqFMEXLYzw9mWvkFgZaFH4a93mawwS2ouXEjLKnT3p
+        bY1bq2ZaAuzDFtP6ddYvozC6fz7/L4F4H3PdiDYPaVns
+X-Google-Smtp-Source: ABdhPJx4hEe6VVvmHzsO68zFInP3sXE1cld9nPHUn2tZYKdEegzAInUO59dC9UylbBKhZ5PheSO/1VpfZWGQJfhKTnc=
+X-Received: by 2002:a9d:6548:: with SMTP id q8mr1146711otl.311.1623273105948;
+ Wed, 09 Jun 2021 14:11:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <1623233121-97926-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1623233121-97926-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 9 Jun 2021 17:11:34 -0400
+Message-ID: <CADnq5_Pe0Vkr8geptXv-NW1h-q7UXGPsveZXudr9BX576-f0-A@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Fix duplicate included clk_mgr.h
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        xinhui pan <Xinhui.Pan@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021, Yang Shi wrote:
-> On Tue, Jun 8, 2021 at 9:19 PM Hugh Dickins <hughd@google.com> wrote:
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -1361,7 +1361,17 @@ static inline unsigned long zap_pmd_range(struct mmu_gather *tlb,
-> >                         else if (zap_huge_pmd(tlb, vma, pmd, addr))
-> >                                 goto next;
-> >                         /* fall through */
-> > +               } else if (details && details->single_page &&
-> > +                          PageTransCompound(details->single_page) &&
-> > +                          next - addr == HPAGE_PMD_SIZE && pmd_none(*pmd)) {
-> > +                       /*
-> > +                        * Take and drop THP pmd lock so that we cannot return
-> > +                        * prematurely, while zap_huge_pmd() has cleared *pmd,
-> > +                        * but not yet decremented compound_mapcount().
-> > +                        */
-> > +                       spin_unlock(pmd_lock(tlb->mm, pmd));
-> 
-> Just a nit, why not follow the style of patch #3 to have lock and
-> unlock with separate lines?
+Applied.  Thanks!
 
-Good point.  Doing it on one line is my own preferred style (particularly
-with the "take and drop lock" comment just above), carried forward from
-before.  I simply didn't think to change this one when I agreed to change
-the other.  You're right to question it: v3 of just this 06/10 follows.
-
-And thank you to Kirill and to you for these rapid further reviews (and
-for silently forgiving my screwup in omitting to Cc linux-mm and lkml
-on those early ones).
-
-Hugh
+On Wed, Jun 9, 2021 at 6:05 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> Clean up the following includecheck warning:
+>
+> ./drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c: clk_mgr.h is
+> included more than once.
+>
+> No functional change.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
+> index c0e544d..1007051 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
+> @@ -33,7 +33,6 @@
+>  #include "clk_mgr.h"
+>  #include "reg_helper.h"
+>  #include "abm.h"
+> -#include "clk_mgr.h"
+>  #include "hubp.h"
+>  #include "dchubbub.h"
+>  #include "timing_generator.h"
+> --
+> 1.8.3.1
+>
