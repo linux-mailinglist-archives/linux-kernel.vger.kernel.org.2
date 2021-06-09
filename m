@@ -2,158 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D193A13A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DF43A13AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239700AbhFIMCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:02:54 -0400
-Received: from mail-bn8nam12on2084.outbound.protection.outlook.com ([40.107.237.84]:1122
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239688AbhFIMCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:02:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f82ZnkdeOTUrR8ugdUxSQVmjWOAX544ko0WqKIl77Fm+C6Hs9jNGBeNdp0C5hs3aQWRVAets8bZfPEmB0ad47sPj4kEPBhvyCi4Yb4Z9RTCVWp4mc54Gw97YmAE6sLax3CNP9+4TJR1Egw6JNphgD+/u+yPD5ySI8hyIAvQtzTvoYNRaKGPl6Bzdp4/EX6SspwaGOzeTTn1hyBBQV/o7koe9j+sBbc6WVtRtwBOqax3Kb0LPKNlU4CfDfXbDqN5evEdtHD7VBAFjcnzpetrcO8T+LxsEbUrod9YDWkvCFRaFXa2k7wbj+FwKdGy8yOnf7DnEHHlazVRgJglEya/bMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5J+deXHYLy5tBmk/8UmkV4CevwcKJsuGQfuS/EyiXYc=;
- b=INsEVlp8cthURfI95Rb6Hm+JMkqz0iSxXUxGd3dAq5djKGQ4EGViER4UAw1USVOfD8amrhkYcxzPgxaNSQRxa6/rfd2LHpNvQzFigy+jIAXCP3Ib30YsGa4iqbi8mw3fGQTDp31Wg0OPVkLiD7RfvJlftXKKXjz3kwgkpq8CMtjx2AAVRgxGRRe3u5KIpwgcXYtecy3wWJOZ1cbLHegnUf/46niEck757lgJV1HDqkYZ8ZKjwdmGrsY77DuOKPq3ml494lTjFlgU63wanbGyRId9cww00muatGwPzl7xuB9bBjPWreV1EmaDQrSGcJ2y/njeLgmYqVp7EdzxfxH3pA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5J+deXHYLy5tBmk/8UmkV4CevwcKJsuGQfuS/EyiXYc=;
- b=tB4xFBYxJ8zwGuzhstGYVWV47CA+GnNxSIiypPEQoTgbo2LvGihWA3Vl5jy5h1kXbCJQegp+lCjEVp92EN6Umz7M04fmlHXHGawyrsFPRMpojvSa5p+eAVCIeNyoTvFoESidkAEjr5q5mr6lUmp/16u84RwL9ysXZbMlq1Sncp4KXa4/D/DcaYoLZuRyXDkG3z+DJ0LX9z+XkupZ0OV5dGq27VWKx76owPX60s+tUqNsUE8DlU28MrOzw/mxxBqemM+88oEZ52/0A8X9P1P+BTofMrPjJ0BaId+QxEgVnbfdPZ0eh0hRGVt8MYv9rWHf2JgJ/5slBOpc9grbsn5LTQ==
-Received: from DM8PR12MB5480.namprd12.prod.outlook.com (2603:10b6:8:24::17) by
- DM4PR12MB5309.namprd12.prod.outlook.com (2603:10b6:5:39d::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4219.22; Wed, 9 Jun 2021 12:00:54 +0000
-Received: from DM8PR12MB5480.namprd12.prod.outlook.com
- ([fe80::411c:4f77:c71f:35d4]) by DM8PR12MB5480.namprd12.prod.outlook.com
- ([fe80::411c:4f77:c71f:35d4%7]) with mapi id 15.20.4195.030; Wed, 9 Jun 2021
- 12:00:54 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     moyufeng <moyufeng@huawei.com>, Jiri Pirko <jiri@resnulli.us>,
-        Or Gerlitz <gerlitz.or@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "lipeng (Y)" <lipeng321@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        "shenjian15@huawei.com" <shenjian15@huawei.com>,
-        "chenhao (DY)" <chenhao288@hisilicon.com>,
-        Jiaran Zhang <zhangjiaran@huawei.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [RFC net-next 0/8] Introducing subdev bus and devlink extension
-Thread-Topic: [RFC net-next 0/8] Introducing subdev bus and devlink extension
-Thread-Index: AQHXVqgtOTo5DdccDUWHkWiFIp83jqr+w2yAgADrK4CAAFDXgIAA7Z8AgAC7xYCAAOyAgIAAfE0AgAEjb4CAA5i/AIABMJGAgAES5oCAAWhkoIAAGvCAgAAL8BA=
-Date:   Wed, 9 Jun 2021 12:00:54 +0000
-Message-ID: <DM8PR12MB54805046960CB7DA76E095EFDC369@DM8PR12MB5480.namprd12.prod.outlook.com>
-References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
- <76785913-b1bf-f126-a41e-14cd0f922100@huawei.com>
- <20210531223711.19359b9a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
- <20210601143451.4b042a94@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <cf961f69-c559-eaf0-e168-b014779a1519@huawei.com>
- <20210602093440.15dc5713@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <857e7a19-1559-b929-fd15-05e8f38e9d45@huawei.com>
- <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <c9afecb5-3c0e-6421-ea58-b041d8173636@huawei.com>
- <20210604114109.3a7ada85@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <4e7a41ed-3f4d-d55d-8302-df3bc42dedd4@huawei.com>
- <20210607124643.1bb1c6a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <530ff54c-3cee-0eb6-30b0-b607826f68cf@huawei.com>
- <DM8PR12MB54801D7B4FA3A44ECAD4DE2BDC369@DM8PR12MB5480.namprd12.prod.outlook.com>
- <14aed028-b555-bcd3-47fe-bda2da94510b@huawei.com>
-In-Reply-To: <14aed028-b555-bcd3-47fe-bda2da94510b@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [49.207.202.149]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f8e70e41-74d9-47f3-db27-08d92b3e3c44
-x-ms-traffictypediagnostic: DM4PR12MB5309:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM4PR12MB530930E3BBFAB127AF51CCC1DC369@DM4PR12MB5309.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: snLcke3ARexh5cFRp8gKSt6jK4Q2DtuM1s1Yc12n7WRbD9+rrO1U9yDw5bIqHOWiDRsLKwpehxG/qsuDL/LpUS8dkwH3zF60E3HZA9x6bxAbOq4S6jBhhOVBu0TgNzJWIDrtlQq2quYoxjB4Y5EqV7oZoddUhSttnCYkUuI2d1LGJcKkuQI+jHsS1RWBFEIo/X0wPrafAFq+geH/ZZWgUZJqPF5hu/LpZTWKpzAbawqJvSgVtQOrkGSfKwtZW4iPTrL4XD/a7+M1UP2s7p+m758kb9mJIGUKcwivEn76Gx652m0uK71+aZddnw5jw+lrNswt5tiryWekLD9v09ScMG19FfiWtM4j8KRitkyA+GtUHTPyx+acYQ0jW3/aaUSczPywS0z2KWpF2klHUyiYxM8bYAa/YkZX/kSDBUNcYgfmjs4WVKad+vmcbXx8qZLa1S2ZNToEtbPpfbrsotyOSMjOH8EN4MpYid7ejSlh1kXw6g4wY6dsQzHhE9uCkxBDUk5KXYMSQgM2yx8LogdcS2g19FVzkcxj37UPiZkk3Ts4vnMAnUb/pX1hlpviJgy/Hl6xh9N9YFaTkWMkv9a4mHCUfp5/5mC1Xr515e8L3nU=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR12MB5480.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(136003)(396003)(376002)(55236004)(76116006)(122000001)(8676002)(66556008)(316002)(66476007)(54906003)(110136005)(478600001)(26005)(4744005)(66946007)(38100700002)(6506007)(7696005)(83380400001)(2906002)(53546011)(33656002)(52536014)(4326008)(5660300002)(86362001)(7416002)(8936002)(55016002)(186003)(64756008)(9686003)(71200400001)(66446008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Sk1RVTUzaVJPd25TS2l2V3JSSkE1d1R4SUxVeU5FNXBFYkxNZ1Q3eG9EaTB3?=
- =?utf-8?B?S3NtSDZDN0RVd1ZzZEJwZWl6SzRWcVNidU8waFJwelgrK01GUkVKRkVRRnFt?=
- =?utf-8?B?NlZROHR4WXBWVFRkN2tBS25YZ09NSHRKN0VuOHZaVGpSc3JGbmR1eFExVXFi?=
- =?utf-8?B?WHA3UlBsU2Q0SDBPbTloQitqVmFCcVQ5UXZNWDNjWm5GeWRHN2tDeVhDY3Bx?=
- =?utf-8?B?L0ZwQW95UnBRSTVVaDMvNlBUeUJLcFdXMUNlcUpHZ3RzS3M5SU5jWXFEaytI?=
- =?utf-8?B?dHZTNE0yV0tPR05PR0NIczRKT0F0YnF2NlJRNmJjK1djRC9DMDh3dExCWHJV?=
- =?utf-8?B?OGdDckhBWVlqbTZsSTNUT0ova1hFTlp2NFZCdTJiMGVMRHdNcHFnY0JYN0I0?=
- =?utf-8?B?VkI2L1FacGNQOGwwb1MwRVhEVG5hZ0pTZUlkU3FWTERILzY1V01xaDR0dFdD?=
- =?utf-8?B?L1orZDJacG1ML0gyQ0NuaXVmeW1iOG5tL2NPMVRHWDJUV3hnZTNCREozNFBL?=
- =?utf-8?B?S09OMWtObUgvNUtzYmlGR1ZiQXdMRXZ5S1cvWG1mVHpmay9ROG1UbE1ubVY0?=
- =?utf-8?B?T2NJMXhjM293OGVUVDZoOWppZTIxZDJuSFlaRHI5Y1VwSnFud3dvUDdPK2xm?=
- =?utf-8?B?L2JmZ0RINTdhM2RCQkhKUHIyNWM3a20vRzFzNzJuQjVVQ29KL2VwUUdQb2RK?=
- =?utf-8?B?aG5DZGNpWlFlQVkwTytRS3poMzJsUkFpZE1lNU81RC9WbU1FVEMxbHluTXNR?=
- =?utf-8?B?ZXpVK2Y5ZXRZOXY3QzZhcXpXLzlMK3I0N3huVGVEV2lrTko2YkFjMGozRGRx?=
- =?utf-8?B?eU5wc3R3ZE5LZTB5OWhWVnFXMVZ2cUJIWG0yYk9oK2p2MDBxdnlEdDMycVJG?=
- =?utf-8?B?TUpZL2tOdW5SSFlvNS90NitnTUVYdjh1Yk83dnM2NHdIYWg2L3g3NEt4UDFv?=
- =?utf-8?B?YWsrcDQyOGVEaFZpeHBxdGFvbGNyeDRaUTJoNmZqR1kwUlZPQnpydU5sVzRu?=
- =?utf-8?B?S2NWbVhCa3dacURYVjc2WmhpTFlyb3RBMEhUb0h2bUhsUEdENXVpaFV1bVdW?=
- =?utf-8?B?RW4zVjhEYlRrVDlSc1BnMmZqVmN2R1ZwU2RKclZFUkptblpaZ2I4blJjVTQ5?=
- =?utf-8?B?QkpCYzVtd2VCbXJPVUZsQXphOTBJcEFURGc5VXo5YlVDbDJrREw0ejFQQzBE?=
- =?utf-8?B?TmxldllIcDUrRGZ2V24vVGFXQlpTNS9sNlp5Y3A5Q256UHlOakZKNlpKcWhJ?=
- =?utf-8?B?U2ovQnNQeGVrVUFUcE1keEZIK0dtYVBDeGZtaGZnUGNCVG1BcElZdzlkQ0pG?=
- =?utf-8?B?d0pDZnhzek9zY2lCQ3J6eHQ4di9XS2xhQ1pDQWs0bENDOXJ5djBKWUNZVkFv?=
- =?utf-8?B?dGtnak9qOVdqRmhZMUYzZ2k5SzZqZkpqT2FOUVNDSVpnRHpyMllHWmh4VGNw?=
- =?utf-8?B?dUZqd1pmY21teklZNXhvQVd0a2YvWGYrdzM4L2Q2cTFDcWlYb2VIQWwzNXVF?=
- =?utf-8?B?c00zbVl2K0FHMHd6aHhlUGh1ejVUeDRIRXp1Z1ZRd2VDUWxWQ3pRVDNpY01L?=
- =?utf-8?B?WXVqWEZJdzRzVG5JQlFUL05ZeURVVm9nL1ZMU1psV3lPLzg1Yk9ncGhVWXJm?=
- =?utf-8?B?M1N6WEtKRlg1b1VDd0N3dmFKSkt5eEd4eTVCcEtqZ2VpNjZKL3Q5cFg0YkNU?=
- =?utf-8?B?MVF3SThpZUZhelBvbS9KQUR5R1l2b1ZVeVUwMjZIeG4zNXlYa09KUm1xYXJv?=
- =?utf-8?Q?3fIK8lsvRpmU3ShZprxQtkOez4i3mcJZYit25Bk?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S239717AbhFIMDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:03:08 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40669 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239697AbhFIMDH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 08:03:07 -0400
+Received: from mail-wm1-f69.google.com ([209.85.128.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lqwtU-0007mj-1R
+        for linux-kernel@vger.kernel.org; Wed, 09 Jun 2021 12:01:12 +0000
+Received: by mail-wm1-f69.google.com with SMTP id j6-20020a05600c1906b029019e9c982271so2534147wmq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 05:01:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BnDNmk6xWB97FCQncGvxFKPZvRlOM5eWdMh+QD8JdRI=;
+        b=XiVMP3TegE6K2ONtmPulg/qKUqfmuNAQxQCAOrw5wwQ0V9HJZFZ1fgj0SW3F+zBtDv
+         +RqAzt5wjK5zVN5refMPXIiElc25eFXDiTLlAUpzzqhaLycspyNlhm2jQBQYqvAndMWX
+         sxpwzRLhBVNv0nwjp1Bcf/gGasMOI5VplpMOsVtl0kJZbSMyGfSCYHwOMA8JcSh1H4Ga
+         CD/7mkZC4xeUbbiz9L1m8iQXoZxZWpgBoav5n6K6FvSNSvvmmYxgbg6iSa8HttkZoGZ5
+         +bizUDWjt+Ckiu4nmlux1/DupFSlPs5/IeLDNPMbd4ym2ZyXe9jqA8I9hPfYLmcZaqPa
+         2N0g==
+X-Gm-Message-State: AOAM533CI5+C0Oi9pSQs2o70bat+s+EQcUxm4H+YKrnvU5vCZvnA8/Y7
+        FIDvFh666PHOPpN9iZ3N6DWrUyXKTQ54+cSWosxjyKTtp+eJZ31jLDiqgnETscy9OLtQPSlPf5B
+        2gJN3D2zo5Ba0rFlDua+dsW5zc1nzctc8/NbNxcwgIA==
+X-Received: by 2002:a05:6000:1365:: with SMTP id q5mr8321930wrz.53.1623240071308;
+        Wed, 09 Jun 2021 05:01:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx6QyzCjtadEKIFXtnlzXU2KdyF5rTVINfJlSQDUQHpJX/5LfLWsneFagASOptLJGfnUSn5Pg==
+X-Received: by 2002:a05:6000:1365:: with SMTP id q5mr8321906wrz.53.1623240071182;
+        Wed, 09 Jun 2021 05:01:11 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id m22sm5703554wmq.21.2021.06.09.05.01.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 05:01:10 -0700 (PDT)
+Subject: Re: [PATCH v22 17/18] dt-bindings: mtd: pl353-nand: Describe this
+ hardware controller
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Cc:     Michal Simek <monstr@monstr.eu>,
+        Naga Sureshkumar Relli <nagasure@xilinx.com>,
+        Amit Kumar Mahapatra <akumarma@xilinx.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
+        Siva Durga Prasad Paladugu <sivadur@xilinx.com>
+References: <20210609080112.1753221-1-miquel.raynal@bootlin.com>
+ <20210609080112.1753221-18-miquel.raynal@bootlin.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <57ef16cd-33e7-6c16-3a24-9634f47831b3@canonical.com>
+Date:   Wed, 9 Jun 2021 14:01:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR12MB5480.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8e70e41-74d9-47f3-db27-08d92b3e3c44
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jun 2021 12:00:54.7095
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XGWOW97/NiegPbyjkWdZ/yjFZbzmhsWd0vVHDb6TuyRZwh65HNsYimb8tXVZCMDsK7U6dy6aqv2z0PGuRE4NhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5309
+In-Reply-To: <20210609080112.1753221-18-miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gRnJvbTogWXVuc2hlbmcgTGluIDxsaW55dW5zaGVuZ0BodWF3ZWkuY29tPg0KPiBTZW50
-OiBXZWRuZXNkYXksIEp1bmUgOSwgMjAyMSA0OjQ3IFBNDQo+IA0KPiBPbiAyMDIxLzYvOSAxNzo1
-MiwgUGFyYXYgUGFuZGl0IHdyb3RlOg0KPiA+DQo+ID4+IEZyb206IFl1bnNoZW5nIExpbiA8bGlu
-eXVuc2hlbmdAaHVhd2VpLmNvbT4NCj4gPj4gU2VudDogVHVlc2RheSwgSnVuZSA4LCAyMDIxIDU6
-NDEgUE0NCj4gPg0KPiA+Pg0KPiA+PiBJcyB0aGVyZSBhbnkgcmVhc29uIHdoeSBWRiB1c2UgaXRz
-IG93biBkZXZsaW5rIGluc3RhbmNlPw0KPiA+IEJlY2F1c2UgZGV2bGluayBpbnN0YW5jZSBnaXZl
-cyB0aGUgYWJpbGl0eSBmb3IgdGhlIFZGIGFuZCBTRiB0byBjb250cm9sIGl0c2VsZi4NCj4gPiAo
-YSkgZGV2aWNlIHBhcmFtZXRlcnMgKGRldmxpbmsgZGV2IHBhcmFtIHNob3cpDQo+ID4gKGIpIHJl
-c291cmNlcyBvZiB0aGUgZGV2aWNlDQo+ID4gKGMpIGhlYWx0aCByZXBvcnRlcnMNCj4gPiAoZCkg
-cmVsb2FkIGluIG5ldCBucw0KPiA+DQo+ID4gVGhlcmUga25vYnMgKGEpIHRvIChjKSBldGMgYXJl
-IG5vdCBmb3IgdGhlIGh5cGVydmlzb3IgdG8gY29udHJvbC4gVGhlc2UgYXJlDQo+IG1haW5seSBm
-b3IgdGhlIFZGL1NGIHVzZXJzIHRvIG1hbmFnZSBpdHMgb3duIGRldmljZS4NCj4gDQo+IERvIHdl
-IG5lZWQgdG8gZGlzYWJsZSB1c2VyIGZyb20gY2hhbmdpbmcgdGhlIG5ldCBucyBpbiBhIGNvbnRh
-aW5lcj8NCkl0IGlzIG5vdCB0aGUgcm9sZSBvZiB0aGUgaHcvdmVuZG9yIGRyaXZlciB0byBkaXNh
-YmxlIGl0Lg0KUHJvY2VzcyBjYXBhYmlsaXRpZXMgc3VjaCBhcyBORVRfQURNSU4gZXRjIHRha2Ug
-Y2FyZSBvZiBpdC4NCg==
+On 09/06/2021 10:01, Miquel Raynal wrote:
+> Add a yaml description of this NAND controller which is described as a
+> subnode of the SMC bus.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  .../bindings/mtd/arm,pl353-nand-r2p1.yaml     | 57 +++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> new file mode 100644
+> index 000000000000..e72fa14b4385
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/arm,pl353-nand-r2p1.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: PL353 NAND Controller device tree bindings
+> +
+> +allOf:
+> +  - $ref: "nand-controller.yaml"
+> +
+> +maintainers:
+> +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> +  - Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+
+That's not an enum, but simple const without items.
+
+> +          - arm,pl353-nand-r2p1
+> +
+> +  reg:
+> +    items:
+> +      - items:
+> +          - description: CS with regard to the parent ranges property
+> +          - description: Offset of the memory region requested by the device
+> +          - description: Length of the memory region requested by the device
+
+Doesn't it depend on parent's address/size cells?
+
+> +
+> +  "#address-cells": true
+> +  "#size-cells": true
+
+These should come from nand-controller.yaml
+
+Best regards,
+Krzysztof
