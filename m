@@ -2,160 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C663A1169
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905223A1084
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238062AbhFIKul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:50:41 -0400
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:19361 "EHLO
-        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236658AbhFIKue (ORCPT
+        id S235670AbhFIJrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234017AbhFIJri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:50:34 -0400
-Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 1599j9lB050391
-        for <linux-kernel@vger.kernel.org>; Wed, 9 Jun 2021 12:45:09 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
-        q=dns/txt; i=@ics.forth.gr; t=1623231904; x=1625823904;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=yjGGcXj2vYqKeS5nQsMSbZLVyeA0Yb+og64ORh4pZoc=;
-        b=ZHIEsIIyg1A+E4IlEj4+7B+gOESDbGe3/DVcdBzG2InLyO5KOso+4rJ+Amgkpe7r
-        EfWQ81kDSjg5z5gHscQNF4ZcRI2EBPD3PkLetk2l4lV+vAbYol08wZgkhtMx9qae
-        TCep7BFW773GcnRJf8LZE8yLJT+MM0wqoy5aIrJT1G+X/6gF1/pW42ROoFYWCDlY
-        fQftNnsQvTTViH88ENDycxAAxCLJ33TlJzaxS9JdigaCffsZ2+Yy3LVBOBDxbVTM
-        JS5Y7r/BALQ9oIFMVvGfusmyPOi0/yzyl0YLlLaKyVZKD43uEb+7x2iMC1alIm91
-        4TTq1b0YLhXu5DwaJ23pUQ==;
-X-AuditID: 8b5b014d-962f1700000067b6-3c-60c08d9f9466
-Received: from enigma.ics.forth.gr (webmail.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id C8.43.26550.F9D80C06; Wed,  9 Jun 2021 12:45:03 +0300 (EEST)
-X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
+        Wed, 9 Jun 2021 05:47:38 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD3FC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 02:45:44 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id 68so187593vsu.6
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cDVcIBWGDWM1PdDfQAVglfmSkwPbg11fBeIYPrXJ/UE=;
+        b=FhEYZOKJhzxspT2d9TFZAKGjjqIfVENB2iSfH/Fwt0o+FXReR7ZOUSms9DEaWnu8rV
+         o5e7KPr5YKzzz7KJvHHf5CLRevXm63ElLQDxbJd34au9Bu7aOD9lSrqngzz4Hx1dWCbf
+         YNe25SFeIfKi6D/DBjDlm3WIa9Le0iwzjFLgmOw5XF3OUp+kkEE0+vHSn3F4OPTtY5+5
+         TlqgfrUEjQjegaHPx8FKW0NRVi+fIl23yxILbGiDjKJJ6y2H5rK055h6FhyR/AaTg88s
+         OmEZyXdPtB5DzQ5A1kFBxEl7le8MVMA7AJ7gLHhCsO/e1/B4AIOj3TfPc9141Inc8LrF
+         sGTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cDVcIBWGDWM1PdDfQAVglfmSkwPbg11fBeIYPrXJ/UE=;
+        b=kJaPtWN4nvWuAE5/sB/cE52DF5pDRVsJ6kc/nnP/mwrYaE+Q3a5hglqjSQB5paEU1i
+         dNlBfADgexzqz/nBm1wWqwLPiN0zpGGHLYfqlUmu0ENyDhxZz2OcU61dtkLUipHENGBp
+         tJ2U5IWrPvZFy/DXLfMNtNbgHAW5erah4bawlYAWtDF48oW46yEuRvnvRmHhNzg2aWLn
+         s1QAZuSLsTYp19j3O4VDhdNr6hfOYoBhBxP+6+Fd5hXGwkVzOdYijFYbSb1hbgPx5uOk
+         M5i7UBWDd+AfNDRSBnr42fYcwgKi38mCr9VemA1/3knCRGca0axO+Bl0XygjuQvNEVJA
+         H0Kw==
+X-Gm-Message-State: AOAM531D8cKQ998WuIT+ARQ6XNJ7rUqbsWeMIHcX5wXnCV2N+cppdim9
+        /8RcXbRpvOetAczTJ+y5s3JaO22NCN4Dnb/ARfugXg==
+X-Google-Smtp-Source: ABdhPJyG6uoIvr6Vzcz/k06+wX6BQNTTQd+f+J8E9FZbeuZhjBmXHmBVipMAQXUix9BZvEKgyotFjFETrSsQplAdAoA=
+X-Received: by 2002:a67:e359:: with SMTP id s25mr3271454vsm.55.1623231943491;
+ Wed, 09 Jun 2021 02:45:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 09 Jun 2021 12:45:01 +0300
-From:   Nick Kossifidis <mick@ics.forth.gr>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Nick Kossifidis <mick@ics.forth.gr>,
-        Christoph Hellwig <hch@lst.de>,
-        Drew Fustini <drew@beagleboard.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com,
-        =?UTF-8?Q?Wei_Wu_?= =?UTF-8?Q?=28=E5=90=B4=E4=BC=9F=29?= 
-        <lazyparser@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Benjamin Koch <snowball@c3pb.de>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Wei Fu <tekkamanninja@gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-Organization: FORTH
-In-Reply-To: <CAJF2gTQ5271AP8aw42yvfOg0LjtnmPD8j_Uza6NH2nHxVz_QgQ@mail.gmail.com>
-References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
- <20210519052048.GA24853@lst.de>
- <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
- <20210519064435.GA3076809@x1> <20210519065352.GA31590@lst.de>
- <CAJF2gTR4FXRbp7oky-ypdVJba6btFHpp-+dPyJStRaQX_-5rzg@mail.gmail.com>
- <29733b0931d9dd6a2f0b6919067c7efe@mailhost.ics.forth.gr>
- <CAJF2gTQ5271AP8aw42yvfOg0LjtnmPD8j_Uza6NH2nHxVz_QgQ@mail.gmail.com>
-Message-ID: <78f544f739120f5b541238a1d5f6e23b@mailhost.ics.forth.gr>
-X-Sender: mick@mailhost.ics.forth.gr
-User-Agent: Roundcube Webmail/1.3.16
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCIsWRmVeSWpSXmKPExsXSHT1dWXd+74EEg9cXrC2efJjIZnFvxTJ2
-        ixd7G1ksjj/axWKxcvVRJotLX66xWHTs+spicXnXHDaLbZ9b2Cym7NvFZnHx13xGi+Z359gt
-        tm5cx2jRNovfYtbi2+wW99edY7No2T+FxUHQ493vZYwe994+YfLYOesuu8eCTaUeDzddYvLY
-        tKqTzWPnQ0uPX9uPMnlsXlLv8WLzTEaP3Tcb2Dze77vK5nGp+Tq7x+dNch7tB7qZAvijuGxS
-        UnMyy1KL9O0SuDK+P53EXrBdumLzz07GBsYPol2MnBwSAiYSR/5MYO5i5OIQEjjGKLHt8CNG
-        iISpxOy9nWA2r4CgxMmZT1hAbGYBC4mpV/YzQtjyEs1bZzOD2CwCqhL9S2ayg9hsApoS8y8d
-        BKsXAar5fbSTFaL+M6tE/wNeEFtYwEbi0JX1YHF+AWGJT3cvgtmcAoESjzZ9YgKxhQQ2M0ss
-        +sYHcYOLxJ3FS1khblOR+PD7AdAuDg5RIHvzXKUJjIKzkFw6C8mls5BcuoCReRWjQGKZsV5m
-        crFeWn5RSYZeetEmRnDEMvruYLy9+a3eIUYmDsZDjBIczEoivGWG+xKEeFMSK6tSi/Lji0pz
-        UosPMUpzsCiJ8/LqTYgXEkhPLEnNTk0tSC2CyTJxcEo1MLUyLPXyVnqg5HHmyoRTkdfnnP3z
-        +ek5odpJUz/zvl9Qb3jVQHnudEmmO4/VHurXzD+6ausRf5vmeFl9rUKOZVHbZvQcj5lycOX3
-        2FOt7oZOS7wUHL/rfF/KIXO0fUPV5y83J372Oe0gW6XCniLQEqZu2vfU0vDbE8ZNB/7cDM+7
-        93D3w02HzJpF0n87v2d/cb91+VYNqSOqUje+e1lkRxnIzwjuvu7QdfWChZ+Uvexh4Tid5aJ5
-        /s4aL/pVNVLK1x4JDAlPP/rpnPfnqSl/GF+t36qfVOBccss6YEo1z+wdm/fZySzo4jedfOHF
-        laUvvl01vTJbTcay1tou98o/rUgG1svXRH2unrA7UfyM470SS3FGoqEWc1FxIgDm0E7aRwMA
-        AA==
+References: <20210608090250.85256-1-ulf.hansson@linaro.org>
+ <20210608090250.85256-4-ulf.hansson@linaro.org> <20210608142325.GC1804083@rowland.harvard.edu>
+ <CAPDyKFrwP+w4grUEHQb6B4gTBMoDPx+nEt8hJEnkM3prZuYfPQ@mail.gmail.com> <20210608144905.GE1804083@rowland.harvard.edu>
+In-Reply-To: <20210608144905.GE1804083@rowland.harvard.edu>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 9 Jun 2021 11:45:07 +0200
+Message-ID: <CAPDyKFrrwAgm+=X5ra_f+Ln9eX6phj=YPd5sFdEyyLR3JdV4vg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] PM: runtime: Clarify documentation when callbacks
+ are unassigned
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Στις 2021-06-09 06:28, Guo Ren έγραψε:
-> On Mon, Jun 7, 2021 at 2:14 AM Nick Kossifidis <mick@ics.forth.gr> 
-> wrote:
->> 
->> Στις 2021-05-20 04:45, Guo Ren έγραψε:
->> > On Wed, May 19, 2021 at 2:53 PM Christoph Hellwig <hch@lst.de> wrote:
->> >>
->> >> On Tue, May 18, 2021 at 11:44:35PM -0700, Drew Fustini wrote:
->> >> > This patch series looks like it might be useful for the StarFive JH7100
->> >> > [1] [2] too as it has peripherals on a non-coherent interconnect. GMAC,
->> >> > USB and SDIO require that the L2 cache must be manually flushed after
->> >> > DMA operations if the data is intended to be shared with U74 cores [2].
->> >>
->> >> Not too much, given that the SiFive lineage CPUs have an uncached
->> >> window, that is a totally different way to allocate uncached memory.
->> > It's a very big MIPS smell. What's the attribute of the uncached
->> > window? (uncached + strong-order/ uncached + weak, most vendors still
->> > use AXI interconnect, how to deal with a bufferable attribute?) In
->> > fact, customers' drivers use different ways to deal with DMA memory in
->> > non-coherent SOC. Most riscv SOC vendors are from ARM, so giving them
->> > the same way in DMA memory is a smart choice. So using PTE attributes
->> > is more suitable.
->> >
->> > See:
->> > https://github.com/riscv/virtual-memory/blob/main/specs/611-virtual-memory-diff.pdf
->> > 4.4.1
->> > The draft supports custom attribute bits in PTE.
->> >
->> 
->> Not only it doesn't support custom attributes on PTEs:
->> 
->> "Bits63–54 are reserved for future standard use and must be zeroed by
->> software for forward compatibility."
->> 
->> It also goes further to say that:
->> 
->> "if any of these bits are set, a page-fault exception is raised"
-> Agree, when our processor's mmu works in compatible mmu, we must keep
-> "Bits63–54 bit" zero in Linux.
-> So, I think this is the first version of the PTE format.
-> 
-> If the "PBMT" extension proposal is approved, it will cause the second
-> version of the PTE format.
-> 
-> Maybe in the future, we'll get more versions of the PTE formats.
-> 
-> So, seems Linux must support multi versions of PTE formats with one
-> Image, right?
-> 
-> Okay, we could stop arguing with the D1 PTE format. And talk about how
-> to let Linux support multi versions of PTE formats that come from the
-> future RISC-V privilege spec.
+On Tue, 8 Jun 2021 at 16:49, Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Tue, Jun 08, 2021 at 04:30:48PM +0200, Ulf Hansson wrote:
+> > On Tue, 8 Jun 2021 at 16:23, Alan Stern <stern@rowland.harvard.edu> wrote:
+> > >
+> > > On Tue, Jun 08, 2021 at 11:02:50AM +0200, Ulf Hansson wrote:
+> > > > Recent changes to the PM core allows ->runtime_suspend|resume callbacks to
+> > > > be unassigned.
+> > > >
+> > > > In the earlier behaviour the PM core would return -ENOSYS, when trying to
+> > > > runtime resume a device, for example. Let's update the documentation to
+> > > > clarify this.
+> > > >
+> > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > > ---
+> > > >
+> > > > Changes in v2:
+> > > >       - Added a new patch for the updating the docs, as pointed out by Alan.
+> > > >
+> > > > ---
+> > > >  Documentation/power/runtime_pm.rst | 8 ++++++++
+> > > >  1 file changed, 8 insertions(+)
+> > > >
+> > > > diff --git a/Documentation/power/runtime_pm.rst b/Documentation/power/runtime_pm.rst
+> > > > index 18ae21bf7f92..3d09c9fd450d 100644
+> > > > --- a/Documentation/power/runtime_pm.rst
+> > > > +++ b/Documentation/power/runtime_pm.rst
+> > > > @@ -827,6 +827,14 @@ or driver about runtime power changes.  Instead, the driver for the device's
+> > > >  parent must take responsibility for telling the device's driver when the
+> > > >  parent's power state changes.
+> > > >
+> > > > +Note that, in some cases it may not be desirable for subsystems/drivers to call
+>
+> More than 80 chars.
 
-The RISC-V ISA specs are meant to be backwards compatible, so newer PTE 
-versions should work on older devices (note that the spec says that 
-software must set those bits to zero for "forward compatibility" and are 
-"reserved for future use" so current implementations must ignore them). 
-Obviously the proposed "if any of these bits are set, a page-fault 
-exception is raised" will break backwards compatibility which is why we 
-need to ask for it to be removed from the draft.
+Perhaps it's the email client that messes up the patch in some way.
+This above line in the patch is 79 chars.
 
-As an example the PBMT proposal uses bits 62:61 that on older hw should 
-be ignored ("reserved for future use"), if Linux uses those bits we 
-won't need a different code path for supporting older hw/older PTE 
-versions, we'll just set them and older hw will ignore them. Because of 
-the guarantee that ISA specs maintain backwards compatibility, the 
-functionality of bits 62:61 is guaranteed to remain backwards 
-compatible.
+If you have a look at the patch in patchwork [1], you should see (I
+hope) that it respects the 80 chars per line!?
 
-In other words we don't need any special handling of multiple PTE 
-formats, we just need to support the latest Priv. Spec and the Spec 
-itself will guarantee backwards compatibility.
+>
+> > > > +pm_runtime_no_callbacks() for their devices. This could be because a subset of
+>
+> More than 80 chars.
+>
+> > > > +the runtime PM callbacks needs to be implemented, a platform dependent PM
+> > > > +domain could get attached to the device or that the device is power manged
+>
+> s/manged/managed/
+
+Thanks for spotting this, my spell checker accepted "manged". :-)
+
+>
+> > > > +through a supplier device link. For these reasons and to avoid boilerplate code
+>
+> More than 80 chars.
+>
+> > > > +in subsystems/drivers, the PM core allows runtime PM callbacks to be
+> > > > +unassigned.
+> > > > +
+> > >
+> > > You should also mention that if a callback pointer is NULL, the
+> > > runtime PM core will act as though there was a callback and it
+> > > returned 0.  That's an important consideration.
+> >
+> > Good point, let me add it.
+> >
+> > I send a new version of $subject patch, unless Rafael is happy to do
+> > the amending when/if applying?
+> >
+> > >
+> > > Also, notice that this file was carefully edited to make sure that
+> > > none of the lines exceed 80 characters.  Your new addition should
+> > > be the same.
+> >
+> > Absolutely, but it should be okay already, no?
+>
+> See above.
+>
+> Alan
+
+Kind regards
+Uffe
+
+[1]
+https://patchwork.kernel.org/project/linux-pm/patch/20210608090250.85256-4-ulf.hansson@linaro.org/
