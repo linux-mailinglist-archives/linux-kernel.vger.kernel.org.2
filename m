@@ -2,86 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7468E3A1EFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE023A1F05
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhFIV2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:28:32 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:58252 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhFIV2a (ORCPT
+        id S229792AbhFIVbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhFIVbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:28:30 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:51956 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lr5iZ-0001et-BU; Wed, 09 Jun 2021 17:26:31 -0400
-Message-ID: <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
-Subject: Re: [RFC] coredump: Do not interrupt dump for TIF_NOTIFY_SIGNAL
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Date:   Wed, 09 Jun 2021 17:26:30 -0400
-In-Reply-To: <87eeda7nqe.fsf@disp2133>
-References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
-         <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com>
-         <87h7i694ij.fsf_-_@disp2133>
-         <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
-         <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
-         <87eeda7nqe.fsf@disp2133>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.2 
+        Wed, 9 Jun 2021 17:31:38 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05214C061574;
+        Wed,  9 Jun 2021 14:29:42 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id v11so4947452ply.6;
+        Wed, 09 Jun 2021 14:29:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZB+M+mDfzcdyIQ6TIpU0fAhnw5JTV6XLad+tNK8T4Zg=;
+        b=HddxGIU38H3lTgI79wizFkCySsHHe7UpgEOaYus8+5EJP6X7Ca0h2+yKdIzBXvp14V
+         PZNBaeLTQvhAxq44HPL7eGtY//7X24GcxvCflQqA5n92pD8E6jNi8hmz12Dqmp49ZKcQ
+         NqRyUU54pzmB6ynibihD3UsPkwy5XdSqrOYmFbGBThId3AxDlHEHMAhJrvWVF4tniCtm
+         gBI7pRT+4kEv1Ql3luRVviGpq2ccqHDu1tjiwt6CMGbVUbH7cPHXjnDSut/Dip1Hrh/E
+         Jsf/s6lH7kheWNea0Jmvqk70NCFGXHo+19r84vehLgkwIKWil28+yU2wvefBxgV25dD/
+         6AwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZB+M+mDfzcdyIQ6TIpU0fAhnw5JTV6XLad+tNK8T4Zg=;
+        b=Y/DbY3dcgU67Itbd2GuqKKa1xEQNKrnswvhM+OKQwWYmuZX1ZvtVBYDwALo1cZMnNJ
+         9OWmnhlonp94dRkar72jOscMwkLZCbnHrdd3qk7tNpGURFE1PLtaHKvkQMr8fRlZb0WA
+         aeRG2Xcbqpvs8zlIIVgJziBMW7AfTvrpb88XQAOABgEUdZNSamwZXlSS0Q5J6lb4n84S
+         bUY0I7ECRntqnh3gBwiNi7xg1MXkqLnCUdNgX102KzZDagylMdBAL8wFuC3ZnSphLi0C
+         vDmaZWxeIyxPiQo3OR2K43/CbgN4AUAVvnjy+pIgxGCfNal7yiTCHghFfOr7AL53Joh9
+         Bxng==
+X-Gm-Message-State: AOAM531lywUpyDTZUgNdU2vnirI4Hi2kAMbVb6zl2nzezzo4CnoGyvKd
+        0Vdk2ORaRfMwPyWYQ3cyMfM=
+X-Google-Smtp-Source: ABdhPJyE1fSnoXmaejRec48ZVmM8QrdfKpF+py96FFwCjb7KiJO4l5STpa39IYx/a6wedGcnA45xrQ==
+X-Received: by 2002:a17:90a:ad8e:: with SMTP id s14mr1626177pjq.198.1623274182403;
+        Wed, 09 Jun 2021 14:29:42 -0700 (PDT)
+Received: from [192.168.1.70] (122-61-176-117-fibre.sparkbb.co.nz. [122.61.176.117])
+        by smtp.gmail.com with ESMTPSA id l10sm2508577pjg.26.2021.06.09.14.29.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 14:29:41 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, linux-kernel@vger.kernel.org,
+        Pedro Principeza <pedro.principeza@canonical.com>
+Subject: Re: [PATCH] kernel_lockdown.7: Remove additional text alluding to
+ lifting via SysRq
+To:     dann frazier <dann.frazier@canonical.com>,
+        linux-man@vger.kernel.org,
+        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+References: <20210607221943.78414-1-dann.frazier@canonical.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <2aff4e76-a615-2bfe-33b9-bc2546420a17@gmail.com>
+Date:   Thu, 10 Jun 2021 09:29:37 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210607221943.78414-1-dann.frazier@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-09 at 16:05 -0500, Eric W. Biederman wrote:
-> > 
-> > So the TIF_NOTIFY_SIGNAL does get set WHILE the core dump is
-> > written.
+Hello Dann,
+
+On 6/8/21 10:19 AM, dann frazier wrote:
+> My previous patch intended to drop the docs for the lockdown lift SysRq,
+> but it missed this other section that refers to lifting it via a keyboard -
+> an allusion to that same SysRq.
 > 
-> Did you mean?
+> Signed-off-by: dann frazier <dann.frazier@canonical.com>
+
+Thanks. Patch applied.
+
+Cheers,
+
+Michael
+
+
+> ---
+>  man7/kernel_lockdown.7 | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> So the TIF_NOTIFY_SIGNAL does _not_ get set WHILE the core dump is
-> written.
+> diff --git a/man7/kernel_lockdown.7 b/man7/kernel_lockdown.7
+> index b0442b3b6..0c0a9500d 100644
+> --- a/man7/kernel_lockdown.7
+> +++ b/man7/kernel_lockdown.7
+> @@ -19,9 +19,6 @@ modification of the kernel image and to prevent access to security and
+>  cryptographic data located in kernel memory, whilst still permitting driver
+>  modules to be loaded.
+>  .PP
+> -Lockdown is typically enabled during boot and may be terminated, if configured,
+> -by typing a special key combination on a directly attached physical keyboard.
+> -.PP
+>  If a prohibited or restricted feature is accessed or used, the kernel will emit
+>  a message that looks like:
+>  .PP
 > 
-> 
-Absolutely not. I did really mean what I have said. Bear with me that,
-I am not qualifying myself as an expert kernel dev yet so feel free to
-correct me if I say some heresy...
-
-io_uring is placing my task in my TCP socket wait queue because it
-wants to read data from it.
-
-The task returns to user space and core dump with a SEGV.
-
-now my understanding is that the code that is waking up tasks, it is
-the NIC driver interrupt handler which can occur while the core dump is
-written.
-
-does that make sense?
-
-my testing is telling me that this is exactly what happens...
 
 
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
