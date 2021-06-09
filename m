@@ -2,92 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A02D3A1213
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A73A3A1284
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236405AbhFILKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:10:37 -0400
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:46932 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233598AbhFILKf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:10:35 -0400
-Received: by mail-lj1-f179.google.com with SMTP id e11so31096412ljn.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:08:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hO3vEEVdO0DPz+vO9KJvLBSJTaoPQXnru30sw8j8V+k=;
-        b=tJ+IxUQX6y8nk471bg47+iouc2pnb5EzeCVGDMgfLNBUUydydIFqq6lhq/QTCdnxoi
-         ETRyEs14qkwYFBNvb/vRgeiQw8SxbBcHxjYav9X1GrSQ3qaKSPkupNdkqkY/jwC+RDY7
-         7A3o3Z4V/nSi5iyqhEr9hxnBtloNMkYSXpM+UjFwtN7Kz2HvnQ7P3YjmM5M0Q8/qTVHG
-         3yVusC9NM0uIaOxkCxGe3ccLUlb59nfqak4qCXCkPmnMrkt4HxL+ZVO/zYUPfdsmP94r
-         9cHO2x7EITXWT1XtHoIwzIklwSrrsHteBwexobdOewu31/N/V/hyIE6+7nbIgvvxrEUB
-         CfkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hO3vEEVdO0DPz+vO9KJvLBSJTaoPQXnru30sw8j8V+k=;
-        b=LAWN/AW0qQx0Q/0asedZsL2zdj1WLpxktULmQRsiOe0p4EWUslMVw4wuVS3iZi+Qda
-         59BiBTN8UJgi0rYp+fsfRbxoB4NWf81mH6H5yBrhVcbai26YjsTj095wsV+j/YidznUt
-         er/SkNxkYZXsB094rt2cb1AfiMBAZZg/UWS2Vs+OGzOEMexbEQGU+m8rHlYPbQOQJW+K
-         PJPoopIaz4XfAL5HHSV9LY3xPX7qadZELvnBQxYJv8j+A0TrEPWYK/jwv/9xb9QL4Y1e
-         lKZk1yyssB5skTIBldZ3kElT8MxAsDT5FI6Z0/JvrJ+WzR7KYMP3fdCBrzmv8w5E4vAW
-         4lOQ==
-X-Gm-Message-State: AOAM530vSTTJbnWHOn7zadmC1Iuz1iaiFFmMdZZj5g/S2i85SN5PfEnn
-        QLDE4QbMC0UVWSbK6wS83hqEDN8ij3xD7NcePKW1+Q==
-X-Google-Smtp-Source: ABdhPJxL1/o/55M4zUInEECGJ8JlN2FQ3cBr/0HO5voXevIvLQKWpjpiW9USKNXD1KKnOZdv1T7oDDPbAU6x4fmJssI=
-X-Received: by 2002:a2e:22c3:: with SMTP id i186mr22139779lji.273.1623236859907;
- Wed, 09 Jun 2021 04:07:39 -0700 (PDT)
+        id S239015AbhFILXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:23:07 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:35422 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239011AbhFILXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 07:23:06 -0400
+X-Greylist: delayed 540 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Jun 2021 07:23:05 EDT
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 159BBxIE010037
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Jun 2021 13:11:59 +0200
+Received: from md1za8fc.ad001.siemens.net ([139.22.32.109])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 159B8Hm0019317;
+        Wed, 9 Jun 2021 13:08:17 +0200
+Date:   Wed, 9 Jun 2021 13:08:16 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] pinctrl: intel: fix NULL pointer deref
+Message-ID: <20210609130816.3631f0aa@md1za8fc.ad001.siemens.net>
+In-Reply-To: <CAHp75Vcj9wmM7H908sqGmXs10BQN8ty1C4qfmk_nXpG_s=BjTQ@mail.gmail.com>
+References: <20210609062722.9132-1-henning.schild@siemens.com>
+        <YMCT+izizEg0gPLD@lahna.fi.intel.com>
+        <CAHp75Vcj9wmM7H908sqGmXs10BQN8ty1C4qfmk_nXpG_s=BjTQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210607170555.4006050-1-dianders@chromium.org> <20210607100234.v9.6.I18e60221f6d048d14d6c50a770b15f356fa75092@changeid>
-In-Reply-To: <20210607100234.v9.6.I18e60221f6d048d14d6c50a770b15f356fa75092@changeid>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 9 Jun 2021 13:07:29 +0200
-Message-ID: <CACRpkdaa=1LsyESZenDWv91mTX4H_AhwzGnSO2b9v8zXRMAvzw@mail.gmail.com>
-Subject: Re: [PATCH v9 06/11] drm/panel: panel-simple: Stash DP AUX bus; allow
- using it for DDC
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Lyude Paul <lyude@redhat.com>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 7:06 PM Douglas Anderson <dianders@chromium.org> wrote:
+Am Wed, 9 Jun 2021 13:33:34 +0300
+schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
 
-> If panel-simple is instantiated as a DP AUX bus endpoint then we have
-> access to the DP AUX bus. Let's stash it in the panel-simple
-> structure, leaving it NULL for the cases where the panel is
-> instantiated in other ways.
->
-> If we happen to have access to the DP AUX bus and we weren't provided
-> the ddc-i2c-bus in some other manner, let's use the DP AUX bus for it.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Lyude Paul <lyude@redhat.com>
+> On Wed, Jun 9, 2021 at 1:12 PM Mika Westerberg
+> <mika.westerberg@linux.intel.com> wrote:
+> > On Wed, Jun 09, 2021 at 08:27:22AM +0200, Henning Schild wrote:  
+> > > match could be NULL in which case we do not go ACPI after all  
+> 
+> ...
+> 
+> > >       adev = ACPI_COMPANION(&pdev->dev);
+> > > -     if (adev) {
+> > > -             const void *match =
+> > > device_get_match_data(&pdev->dev); -
+> > > +     match = device_get_match_data(&pdev->dev);  
+> >
+> > Actually we don't even call intel_pinctrl_get_soc_data() if the
+> > ACPI ID is not listed in the corresponding driver's module table.
+> > So I don't think match can ever be NULL.
+> >
+> > But feel free to prove me wrong ;-)  
+> 
+> It's possible to have bugs in this driver, but can we see the real
+> case here?
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Yes that is indeed only showing when using a kernel that has seen other
+patches. To be precise i applied "[rfc, PATCH v1 0/7] PCI: introduce
+p2sb helper" before running into the problem. Something in there must
+be calling the function without the ACPI ID.
 
-Yours,
-Linus Walleij
+I am still working on a series of device drivers for Siemens PCs,
+adding i.e. LEDs which are in fact GPIO. Those PCs have a hidden p2sb
+and no ACPI entries for the LEDs.
+
+In order to use GPIO from the drivers i need to make sure
+"broxton-pinctrl" comes up even if p2sb is hidden.
+
+Long story short, i thought the patch was simple enough to merge even
+taken out of my special context.
+
+Currently intel_pinctl only works if "ps2b is not hidden by BIOS" or
+"ACPI tables are correct", lifting the ban on the hidden p2sb seems
+like a useful thing in general (i.e. sysfs gpio interface). And i was
+hoping Andy would take the lead on that. It is something my Siemens
+drivers would depend on, but really a generic thing as far as i
+understand it.
+
+regards,
+Henning
