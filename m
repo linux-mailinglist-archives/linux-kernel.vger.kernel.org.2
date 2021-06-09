@@ -2,84 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46143A0F69
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35C03A0F65
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237957AbhFIJOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:14:04 -0400
-Received: from m12-13.163.com ([220.181.12.13]:47940 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232580AbhFIJOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:14:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=QYJvq
-        PoxNFu7owdPdoBlI490iQR4KoKc0CPfEqZejlw=; b=NeehZR5uNT+hf7R9JyQPZ
-        wKxVac2X+xeLrnUgTdjYdfdGlm8BhkeBwI2NGgyXufkb4Fn2La2ptczKLOzianRU
-        WxQQ1D88PTF5VMRpCB+Uj5/czYyDNT9khDB5+y2lOwXRlfKUzVrcQBoEBa43nzA+
-        sRjVw2K8GxE1BSODLZyWG0=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp9 (Coremail) with SMTP id DcCowAC3uravhcBgzsueFQ--.6593S2;
-        Wed, 09 Jun 2021 17:11:12 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] scsi: lpfc: lpfc_debugfs: Removed unnecessary 'return'
-Date:   Wed,  9 Jun 2021 17:10:11 +0800
-Message-Id: <20210609091011.535407-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S237943AbhFIJNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:13:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54999 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237915AbhFIJNR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:13:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623229883;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2ePZh2khRcBN5AJHEyhbtv31/bRFlPEJ4/4U8Xk0wMo=;
+        b=M64qtcSJImQzhtgTOmErCPSUCVfDA27WQrMDsZFqi8D0nAbtoGdzbaTxmU2rm/6IvUdur8
+        97wew9Q8uthhuJD3tN6uKK1eQumK/V2vxZ2P3dcpb+9mysRpkusFhUZ4m8MkTrcRWDmj4i
+        WSpc2d9NP+6z2ZkajbUKi+AkS6m/jUU=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-212-J4ffaF7ROjW3kSYrLgFNBQ-1; Wed, 09 Jun 2021 05:11:22 -0400
+X-MC-Unique: J4ffaF7ROjW3kSYrLgFNBQ-1
+Received: by mail-wr1-f69.google.com with SMTP id h104-20020adf90710000b029010de8455a3aso10494581wrh.12
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:11:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2ePZh2khRcBN5AJHEyhbtv31/bRFlPEJ4/4U8Xk0wMo=;
+        b=SgCss/LSXDIhGAyNcC2f6Ao9h+VgeP79OwWszb9GN2QV3bEfcRLWKfioKaK6wZZsRh
+         NXXfYEWLIqy4deRMEgPh8YItg6E880Tas63iJgQ6qSjaI2gsNBvJ/EC5+ORN6fjbLpAb
+         Ee7YoHAW5RdjQOChjhwMlFAKk2soLXiMZbbgyLeF0glcrkOU+cxwxLoNWA/3+9lmiNMX
+         vyDJ1SdYOjvm/uVAhYy40QXjDcdrlwJSRoa3rN3SuuItYPSrHPdBFizCsIJxQ0ZlxBz3
+         UXVOjeNc+m+B1vWzsO/77LcVymx6s3A0BFr82JLdXVPkWGtRSpKE/rMQDayOO7hVWszo
+         5R5Q==
+X-Gm-Message-State: AOAM531fOarEuI3GwPyXPPsjtaG+QTt+LEXcsLBF+MZN+/sYldPo6qOK
+        wIM5LrJKrRX+agSB0t+4PFu5G2xDvX/VeNi033J2tWzgdz2ZpE0RmLEk/Sem3+z2xDXtsLXV4Ey
+        kmJXPmt5sYYRaRaCiB8bIeBJR
+X-Received: by 2002:adf:e507:: with SMTP id j7mr26371298wrm.178.1623229880818;
+        Wed, 09 Jun 2021 02:11:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxBSu8Kim/TFLMDmfSnepx2bA9qkajHoLuNSdNG99iK42XOJ0rk/n+XjBkjpM8nPppmmP/+6g==
+X-Received: by 2002:adf:e507:: with SMTP id j7mr26371253wrm.178.1623229880319;
+        Wed, 09 Jun 2021 02:11:20 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id z3sm24335841wrl.13.2021.06.09.02.11.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 02:11:19 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>
+References: <30e5c597-b31c-56de-c75e-950c91947d8f@redhat.com>
+ <20210604160336.GA414156@nvidia.com>
+ <2c62b5c7-582a-c710-0436-4ac5e8fd8b39@redhat.com>
+ <20210604172207.GT1002214@nvidia.com>
+ <2d1ad075-bec6-bfb9-ce71-ed873795e973@redhat.com>
+ <20210607175926.GJ1002214@nvidia.com>
+ <fdb2f38c-da1f-9c12-af44-22df039fcfea@redhat.com>
+ <20210608131547.GE1002214@nvidia.com>
+ <89d30977-119c-49f3-3bf6-d3f7104e07d8@redhat.com>
+ <20210608124700.7b9aa5a6.alex.williamson@redhat.com>
+ <20210608190022.GM1002214@nvidia.com>
+ <ec0b1ef9-ae2f-d6c7-99b7-4699ced146e4@metux.net>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <671efe89-2430-04fa-5f31-f52589276f01@redhat.com>
+Date:   Wed, 9 Jun 2021 11:11:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowAC3uravhcBgzsueFQ--.6593S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtFWxGrWxGF4fGF18Aw13Jwb_yoWftrcEkw
-        s7Zr4fJwsrAry2vFyxGw17Aayq9a13XFn29FsYqryfCwsxWryUAw40grs0qrWrZr4DXF1D
-        G3Zagr92yr15CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnE387UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiShCsUFPAOocCTwAAsF
+In-Reply-To: <ec0b1ef9-ae2f-d6c7-99b7-4699ced146e4@metux.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+On 09/06/21 10:51, Enrico Weigelt, metux IT consult wrote:
+> On 08.06.21 21:00, Jason Gunthorpe wrote:
+> 
+>> Eg I can do open() on a file and I get to keep that FD. I get to keep
+>> that FD even if someone later does chmod() on that file so I can't
+>> open it again.
+>>
+>> There are lots of examples where a one time access control check
+>> provides continuing access to a resource. I feel the ongoing proof is
+>> the rarity in Unix.. 'revoke' is an uncommon concept in Unix..
+> 
+> Yes, it's even possible that somebody w/ privileges opens an fd and
+> hands it over to somebody unprivileged (eg. via unix socket). This is
+> a very basic unix concept. If some (already opened) fd now suddenly
+> behaves differently based on the current caller, that would be a break
+> with traditional unix semantics.
 
-Removed unnecessary 'return'.
+That's already more or less meaningless for both KVM and VFIO, since 
+they are tied to an mm.
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- drivers/scsi/lpfc/lpfc_debugfs.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/scsi/lpfc/lpfc_debugfs.c b/drivers/scsi/lpfc/lpfc_debugfs.c
-index c67e8a0e0b32..a353f6ed9b2f 100644
---- a/drivers/scsi/lpfc/lpfc_debugfs.c
-+++ b/drivers/scsi/lpfc/lpfc_debugfs.c
-@@ -1845,7 +1845,6 @@ lpfc_debugfs_disc_trc(struct lpfc_vport *vport, int mask, char *fmt,
- 	dtp->seq_cnt = atomic_inc_return(&lpfc_debugfs_seq_trc_cnt);
- 	dtp->jif = jiffies;
- #endif
--	return;
- }
- 
- /**
-@@ -1883,7 +1882,6 @@ lpfc_debugfs_slow_ring_trc(struct lpfc_hba *phba, char *fmt,
- 	dtp->seq_cnt = atomic_inc_return(&lpfc_debugfs_seq_trc_cnt);
- 	dtp->jif = jiffies;
- #endif
--	return;
- }
- 
- /**
-@@ -6444,7 +6442,6 @@ lpfc_debugfs_terminate(struct lpfc_vport *vport)
- 		}
- 	}
- #endif
--	return;
- }
- 
- /*
--- 
-2.25.1
-
+Paolo
 
