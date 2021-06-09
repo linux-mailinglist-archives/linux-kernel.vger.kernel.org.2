@@ -2,65 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810D03A1436
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAFB3A1408
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239839AbhFIMW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:22:57 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:39191 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239763AbhFIMWo (ORCPT
+        id S231872AbhFIMSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:18:12 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:5307 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234251AbhFIMSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:22:44 -0400
-Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
-        by mail.holtmann.org (Postfix) with ESMTPSA id EE21BCECCD;
-        Wed,  9 Jun 2021 14:28:47 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH] NULL check value returned by alloc_skb
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210609091149.12557-1-find.dhiraj@gmail.com>
-Date:   Wed, 9 Jun 2021 14:20:48 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <55C683FF-DC9D-4D38-8BFF-D97685462E1C@holtmann.org>
-References: <20210609091149.12557-1-find.dhiraj@gmail.com>
-To:     Dhiraj Shah <find.dhiraj@gmail.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Wed, 9 Jun 2021 08:18:08 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G0Qtn3X5gz19S62;
+        Wed,  9 Jun 2021 20:11:13 +0800 (CST)
+Received: from dggemi758-chm.china.huawei.com (10.1.198.144) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 20:16:05 +0800
+Received: from huawei.com (10.175.101.6) by dggemi758-chm.china.huawei.com
+ (10.1.198.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
+ 2021 20:15:59 +0800
+From:   ChenXiaoSong <chenxiaosong2@huawei.com>
+To:     <pbonzini@redhat.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <bp@alien8.de>, <x86@kernel.org>
+CC:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
+        <chenxiaosong2@huawei.com>
+Subject: [PATCH -next] KVM: SVM: fix doc warnings
+Date:   Wed, 9 Jun 2021 20:22:17 +0800
+Message-ID: <20210609122217.2967131-1-chenxiaosong2@huawei.com>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi758-chm.china.huawei.com (10.1.198.144)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dhiraj,
+Fix gcc W=1 warnings:
 
-> Return error ENOMEM if alloc_skb() failed.
-> 
-> Signed-off-by: Dhiraj Shah <find.dhiraj@gmail.com>
-> ---
-> drivers/bluetooth/virtio_bt.c | 2 ++
-> 1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/bluetooth/virtio_bt.c b/drivers/bluetooth/virtio_bt.c
-> index c804db7e90f8..5f82574236c0 100644
-> --- a/drivers/bluetooth/virtio_bt.c
-> +++ b/drivers/bluetooth/virtio_bt.c
-> @@ -34,6 +34,8 @@ static int virtbt_add_inbuf(struct virtio_bluetooth *vbt)
-> 	int err;
-> 
-> 	skb = alloc_skb(1000, GFP_KERNEL);
-> +	if (!skb)
-> +		return -ENOMEM;
-> 	sg_init_one(sg, skb->data, 1000);
-> 
-> 	err = virtqueue_add_inbuf(vq, sg, 1, skb, GFP_KERNEL);
+arch/x86/kvm/svm/avic.c:233: warning: Function parameter or member 'activate' not described in 'avic_update_access_page'
+arch/x86/kvm/svm/avic.c:233: warning: Function parameter or member 'kvm' not described in 'avic_update_access_page'
+arch/x86/kvm/svm/avic.c:781: warning: Function parameter or member 'e' not described in 'get_pi_vcpu_info'
+arch/x86/kvm/svm/avic.c:781: warning: Function parameter or member 'kvm' not described in 'get_pi_vcpu_info'
+arch/x86/kvm/svm/avic.c:781: warning: Function parameter or member 'svm' not described in 'get_pi_vcpu_info'
+arch/x86/kvm/svm/avic.c:781: warning: Function parameter or member 'vcpu_info' not described in 'get_pi_vcpu_info'
+arch/x86/kvm/svm/avic.c:1009: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
 
-a similar patch is already upstream in bluetooth-next.
+Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
+---
+ arch/x86/kvm/svm/avic.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Regards
-
-Marcel
+diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+index 0e62e6a2438c..5e7e920113f3 100644
+--- a/arch/x86/kvm/svm/avic.c
++++ b/arch/x86/kvm/svm/avic.c
+@@ -221,7 +221,7 @@ static u64 *avic_get_physical_id_entry(struct kvm_vcpu *vcpu,
+ 	return &avic_physical_id_table[index];
+ }
+ 
+-/**
++/*
+  * Note:
+  * AVIC hardware walks the nested page table to check permissions,
+  * but does not use the SPA address specified in the leaf page
+@@ -764,7 +764,7 @@ static int svm_ir_list_add(struct vcpu_svm *svm, struct amd_iommu_pi_data *pi)
+ 	return ret;
+ }
+ 
+-/**
++/*
+  * Note:
+  * The HW cannot support posting multicast/broadcast
+  * interrupts to a vCPU. So, we still use legacy interrupt
+@@ -1005,7 +1005,7 @@ void avic_vcpu_put(struct kvm_vcpu *vcpu)
+ 	WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
+ }
+ 
+-/**
++/*
+  * This function is called during VCPU halt/unhalt.
+  */
+ static void avic_set_running(struct kvm_vcpu *vcpu, bool is_run)
+-- 
+2.25.4
 
