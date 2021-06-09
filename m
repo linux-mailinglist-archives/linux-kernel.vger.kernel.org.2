@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830C53A0903
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC6A3A0907
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235424AbhFIB3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 21:29:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41303 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235074AbhFIB3N (ORCPT
+        id S234998AbhFIBbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 21:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhFIBbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 21:29:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623202039;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JGp/0RPvZPb+IOMbTE2NveByUxQDrcE60zp+PyvVOGM=;
-        b=I1GrLcRCUJYZ9LBowuAkCjpofXOgzHVFjrAG6kXDWDVSQ002aQeoeFR53S4sJqA5sHnVS+
-        Zqdg4tMM/nV5OvmhAcomsTjplI2pgZvm37H1qGeXsgK3kpHqdLkBZxA3OajGmnGaoAjHoJ
-        OCMzTiWxjZlv9kxaHK8E81mPl3hZC3k=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-2RdVNNHSP6Kc6eWu91Safg-1; Tue, 08 Jun 2021 21:27:17 -0400
-X-MC-Unique: 2RdVNNHSP6Kc6eWu91Safg-1
-Received: by mail-ot1-f72.google.com with SMTP id t13-20020a0568301e2db02903db6adef049so10495097otr.20
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 18:27:17 -0700 (PDT)
+        Tue, 8 Jun 2021 21:31:11 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4224EC061574;
+        Tue,  8 Jun 2021 18:29:02 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so431549pjs.2;
+        Tue, 08 Jun 2021 18:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KuNMncGZs3GHDbKWNjfQWlX3Vob302GR1aWzQRy79OM=;
+        b=CfvIC7jYnQjz5rAmKprStBaZhx/nr7tAy99U5m6LITpLwvUcuh/EkzRqqHrYgEhXn7
+         9LNNhdyneC9lMFwyWd429vLtXCQny/DIW96gbjDVyLoZWXQEaLVufMCph8HLrZ0mWy9i
+         TGnhjYBPBe7nfshN1ss9FRH9m++DgtXxrJePgPf7PruZBxhl9MAUNcS4QLVpqjH7AZUe
+         FkIaWSEa7REROSod+op5IYYviKnyfYuHE0QpWLS2+cL37FbNZTUBokZs1oAyFHBDEHrj
+         MLtu6MCdwT/VENHDJDM90l+fgSu7DxfrlifsAIgRPMzPfmBy/cjdeuUQw+01Z630h6BI
+         4J2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=JGp/0RPvZPb+IOMbTE2NveByUxQDrcE60zp+PyvVOGM=;
-        b=QKBDV4xGMEYV76ZK4JwgdMXUe+7/k/qwNIU6NCRKBDIRTcmFWRWt42Q+aOW/Yzmwg2
-         X/DaB7BHN4QWm7ri+BS9UONMU7SLF6QVseYLRXavN4nETr0fxCUXnRGmr9BGUrN4SxXt
-         miif999TmKh9VfNojNuvA4Yi97n/ZO7txJydbNk6nIIFcNeUqrV6+eWhNgHJASMn82kf
-         /tyXonsfpui47TIPisZ6c/3RPEJCXcnKbXC3n3zRC3Xudx9ngBXORlzWauBkg0LvhTyN
-         mS9RL3/E9Csj+xKwZLpDPdRPRYzRSPfkz7jDBbqRc9Abr1MqIHvpdVioOBtxP5NEJwqi
-         Sr+w==
-X-Gm-Message-State: AOAM533vMMJl6k4CdXr5mc2JlIHlYTBdmj9V+qgIaxsPgyUWy78eoMo3
-        xVL0taZ3LZJwYrDq5x0s+ZN/Csz2RWzh6VEYGJF/XjYaT46e1mMZgc1vKF1yzOKJLKExZU+Qq3M
-        1SnHV/IrGRkk6xEYhZtA/p5ZX
-X-Received: by 2002:a05:6808:65a:: with SMTP id z26mr2084849oih.85.1623202036847;
-        Tue, 08 Jun 2021 18:27:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwQjbYHx9vbf7buJfv0hZjocAAsik2BDyau0SyM9QI17Tm0zs7xe3LgZX3rYmnKU+ZOsJpHxQ==
-X-Received: by 2002:a05:6808:65a:: with SMTP id z26mr2084831oih.85.1623202036662;
-        Tue, 08 Jun 2021 18:27:16 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id t14sm3189692ooh.39.2021.06.08.18.27.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KuNMncGZs3GHDbKWNjfQWlX3Vob302GR1aWzQRy79OM=;
+        b=J6Z/iSyKUOSFN8U28P+ERmIfkAxna8S4A8OqU81RxQnCDEKpHokR5M/YFSTS+hqxYD
+         Fo+LE8JWDiIEKh027Wz6gFnULYxOr8IO3gfYO3AGyECEk1lOJLcMi3OWt9IoSk2+3n7i
+         XCWT9lBEKpfQkljJcOovyRuvoncYVARNfu9IXNi6yB6dDariLgTnrN/F6lTUEoZq42YW
+         xwVOlPBtycJn84LU+APpNS8D6SyVpPTcO037PdoQ5PN0nL5u/oGfyBH4g6fYJsyNCPw9
+         XuwEHA5kVIrAoi7zzs1UeCNsoTpknk1b3z+Lvp7E8b6FcyKNepOdysPer39vMQ5jPLCJ
+         ZVWw==
+X-Gm-Message-State: AOAM531Q5QMFtDzmR+wzcpMTh26P4aK11Pp4yjZyGd289zeaS9iPyU7P
+        1MtjAkeQbHrMO7EWPqOFoWsTXI7DaNEp+A==
+X-Google-Smtp-Source: ABdhPJxGKs7mSSbDSGwey9L30wPI4VVIdKFHnVrqDnTDrV0ZhWEMLVxaqFokG5rCTR5r+O3GvJxD7Q==
+X-Received: by 2002:a17:90a:fa95:: with SMTP id cu21mr8027656pjb.210.1623202141900;
+        Tue, 08 Jun 2021 18:29:01 -0700 (PDT)
+Received: from localhost.localdomain (199.19.111.227.16clouds.com. [199.19.111.227])
+        by smtp.gmail.com with ESMTPSA id d15sm11493714pfd.35.2021.06.08.18.28.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 18:27:16 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 19:27:11 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>, cohuck@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        aviadye@nvidia.com, oren@nvidia.com, shahafs@nvidia.com,
-        parav@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
-        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
-        kevin.tian@intel.com, hch@infradead.org, targupta@nvidia.com,
-        shameerali.kolothum.thodi@huawei.com, liulongfang@huawei.com,
-        yan.y.zhao@intel.com
-Subject: Re: [PATCH 09/11] PCI: add matching checks for driver_override
- binding
-Message-ID: <20210608192711.4956cda2.alex.williamson@redhat.com>
-In-Reply-To: <20210608224517.GQ1002214@nvidia.com>
-References: <20210603160809.15845-1-mgurtovoy@nvidia.com>
-        <20210603160809.15845-10-mgurtovoy@nvidia.com>
-        <20210608152643.2d3400c1.alex.williamson@redhat.com>
-        <20210608224517.GQ1002214@nvidia.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 08 Jun 2021 18:29:01 -0700 (PDT)
+From:   xieqinick@gmail.com
+To:     robh+dt@kernel.org, narmstrong@baylibre.com, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     nick@khadas.com, artem@khadas.com
+Subject: [PATCH] arm64: dts: meson: vim3: reduce cpu thermal fan trigger temperature
+Date:   Wed,  9 Jun 2021 09:28:49 +0800
+Message-Id: <20210609012849.797576-1-xieqinick@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 19:45:17 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+From: Nick Xie <nick@khadas.com>
 
-> On Tue, Jun 08, 2021 at 03:26:43PM -0600, Alex Williamson wrote:
-> > > drivers that specifically opt into this feature and the driver now has
-> > > the opportunity to provide a proper match table that indicates what HW
-> > > it can properly support. vfio-pci continues to support everything.  
-> > 
-> > In doing so, this also breaks the new_id method for vfio-pci.    
-> 
-> Does it? How? The driver_override flag is per match entry not for the
-> entire device so new_id added things will work the same as before as
-> their new match entry's flags will be zero.
+Reduce the MCU FAN trigger temperature from
+80 degree centigrade to 50 degree centigrade.
 
-Hmm, that might have been a testing issue; combining driverctl with
-manual new_id testing might have left a driver_override in place.
- 
-> > Sorry, with so many userspace regressions, crippling the
-> > driver_override interface with an assumption of such a narrow focus,
-> > creating a vfio specific match flag, I don't see where this can go.
-> > Thanks,  
-> 
-> On the other hand it overcomes all the objections from the last go
-> round: how userspace figures out which driver to use with
-> driver_override and integrating the universal driver into the scheme.
-> 
-> pci_stub could be delt with by marking it for driver_override like
-> vfio_pci.
+Signed-off-by: Nick Xie <nick@khadas.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-By marking it a "vfio driver override"? :-\
-
-> But driverctl as a general tool working with any module is not really
-> addressable.
-> 
-> Is the only issue the blocking of the arbitary binding? That is not a
-> critical peice of this, IIRC
-
-We can't break userspace, which means new_id and driver_override need
-to work as they do now.  There are scads of driver binding scripts in
-the wild, for vfio-pci and other drivers.  We can't assume such a
-narrow scope.  Thanks,
-
-Alex
+diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+index 66d67524b031..a9c34fee91f4 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+@@ -256,7 +256,7 @@ &cecb_AO {
+ &cpu_thermal {
+ 	trips {
+ 		cpu_active: cpu-active {
+-			temperature = <80000>; /* millicelsius */
++			temperature = <50000>; /* millicelsius */
+ 			hysteresis = <2000>; /* millicelsius */
+ 			type = "active";
+ 		};
+-- 
+2.25.1
 
