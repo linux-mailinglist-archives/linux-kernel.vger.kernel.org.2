@@ -2,161 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1E33A1510
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F52D3A152D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbhFINEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbhFINEP (ORCPT
+        id S236004AbhFINNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:13:35 -0400
+Received: from mslow1.mail.gandi.net ([217.70.178.240]:45569 "EHLO
+        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236010AbhFINNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:04:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA10C061574;
-        Wed,  9 Jun 2021 06:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hAerKgjIq4kS6ywfhPEqKwcMuutGzkYxDRK8aN/LbKc=; b=e6XPOybtBMWkskNlTkinyrzGq3
-        zK59VJwsz7R4qFITyiIJ+XekQShaB0xFryNoU4WJycnF6o4C+oCCKj9esgE07OGfjCR2cxs3HgEwY
-        rfqJITMByfLpH5WLnr4HZaxcYRNMI3K/Syn+gi5QrLPVaHT6MKkuR4eDhPbqkNhOqqiPneffmB0HL
-        gbhy5/1dxcXJaPGgUsDHwggAYXl+5mtIBzG7bFu3L99WaIVgVE8bfoG8JiTbYCkps4NnzxqOjnvas
-        RQGUgPsybamxniloaGAOkdYcyPVd/X5gpkwNC0GyO4JLFxcpm+J5TiyGa1tVLnSGWhl42qeijfouU
-        mqLFdPCg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqxpQ-000WJA-Gc; Wed, 09 Jun 2021 13:01:17 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0229E9867D0; Wed,  9 Jun 2021 15:01:03 +0200 (CEST)
-Date:   Wed, 9 Jun 2021 15:01:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Peter Oskolkov <posk@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@google.com>,
-        Jim Newsome <jnewsome@torproject.org>
-Subject: Re: [RFC PATCH v0.1 4/9] sched/umcg: implement core UMCG API
-Message-ID: <20210609130103.GB68187@worktop.programming.kicks-ass.net>
-References: <20210520183614.1227046-1-posk@google.com>
- <20210520183614.1227046-5-posk@google.com>
- <CAG48ez3Ur61rpOZduQRFabB9R=RbSin9Th+=0=z9FUpcZ21C=w@mail.gmail.com>
+        Wed, 9 Jun 2021 09:13:30 -0400
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 2B1C7C6E7F;
+        Wed,  9 Jun 2021 13:01:40 +0000 (UTC)
+Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id AD15FFF80F;
+        Wed,  9 Jun 2021 13:01:17 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 15:01:16 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 2/2] media: v4l2-async: Make subdev notifier cleanup
+ conditional
+Message-ID: <YMC7nNOpy9MX8/2W@aptenodytes>
+References: <20210609115457.822085-1-paul.kocialkowski@bootlin.com>
+ <20210609115457.822085-2-paul.kocialkowski@bootlin.com>
+ <20210609122735.GE3@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="AzBaB1s6CT6YEqV4"
 Content-Disposition: inline
-In-Reply-To: <CAG48ez3Ur61rpOZduQRFabB9R=RbSin9Th+=0=z9FUpcZ21C=w@mail.gmail.com>
+In-Reply-To: <20210609122735.GE3@paasikivi.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 11:33:14PM +0200, Jann Horn wrote:
-> >  SYSCALL_DEFINE2(umcg_wake, u32, flags, u32, next_tid)
-> >  {
-> > -       return -ENOSYS;
-> > +       struct umcg_task_data *next_utd;
-> > +       struct task_struct *next;
-> > +       int ret = -EINVAL;
-> > +
-> > +       if (!next_tid)
-> > +               return -EINVAL;
-> > +       if (flags)
-> > +               return -EINVAL;
-> > +
-> > +       next = find_get_task_by_vpid(next_tid);
-> > +       if (!next)
-> > +               return -ESRCH;
-> > +       rcu_read_lock();
-> 
-> Wouldn't it be more efficient to replace the last 4 lines with the following?
-> 
-> rcu_read_lock();
-> next = find_task_by_vpid(next_tid);
-> if (!next) {
->   err = -ESRCH;
->   goto out;
-> }
 
-This wakeup crud needs to modify the umcg->state, which is a user
-variable. That can't be done under RCU. Weirdly the proposed code
-doesn't actually do any of that for undocumented raisins :/
+--AzBaB1s6CT6YEqV4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Then you don't need to use refcounting here...
-> 
-> > +       next_utd = rcu_dereference(next->umcg_task_data);
-> > +       if (!next_utd)
-> > +               goto out;
-> > +
-> > +       if (!READ_ONCE(next_utd->in_wait)) {
-> > +               ret = -EAGAIN;
-> > +               goto out;
-> > +       }
-> > +
-> > +       ret = wake_up_process(next);
-> > +       put_task_struct(next);
-> 
-> ... and you'd be able to drop this put_task_struct(), too.
-> 
-> > +       if (ret)
-> > +               ret = 0;
-> > +       else
-> > +               ret = -EAGAIN;
-> > +
-> > +out:
-> > +       rcu_read_unlock();
-> > +       return ret;
-> >  }
-> >
-> >  /**
-> > @@ -139,5 +325,44 @@ SYSCALL_DEFINE2(umcg_wake, u32, flags, u32, next_tid)
-> >  SYSCALL_DEFINE4(umcg_swap, u32, wake_flags, u32, next_tid, u32, wait_flags,
-> >                 const struct __kernel_timespec __user *, timeout)
-> >  {
-> > -       return -ENOSYS;
-> > +       struct umcg_task_data *curr_utd;
-> > +       struct umcg_task_data *next_utd;
-> > +       struct task_struct *next;
-> > +       int ret = -EINVAL;
-> > +
-> > +       rcu_read_lock();
-> > +       curr_utd = rcu_dereference(current->umcg_task_data);
-> > +
-> > +       if (!next_tid || wake_flags || wait_flags || !curr_utd)
-> > +               goto out;
-> > +
-> > +       if (timeout) {
-> > +               ret = -EOPNOTSUPP;
-> > +               goto out;
-> > +       }
-> > +
-> > +       next = find_get_task_by_vpid(next_tid);
-> > +       if (!next) {
-> > +               ret = -ESRCH;
-> > +               goto out;
-> > +       }
-> 
-> There isn't any type of access check here, right? Any task can wake up
-> any other task? That feels a bit weird to me - and if you want to keep
-> it as-is, it should probably at least be documented that any task on
-> the system can send you spurious wakeups if you opt in to umcg.
+Hi Sakari,
 
-You can only send wakeups to other UMCG thingies, per the
-next->umcg_task_data check below. That said..
+On Wed 09 Jun 21, 15:27, Sakari Ailus wrote:
+> Hi Paul,
+>=20
+> On Wed, Jun 09, 2021 at 01:54:57PM +0200, Paul Kocialkowski wrote:
+> > A dedicated subdev notified is registered when using the helper
+> > dedicated to sensors (v4l2_async_register_subdev_sensor_common),
+> > but this is not the case when a driver uses v4l2_async_register_subdev
+> > directly.
+>=20
+> Is this a problem?
+>=20
+> The notifier unregistration and cleanup functions should be safe to call =
+on
+> a notifier that's not been initialised or registered. The same goes for
+> kfree with NULL argument.
 
-> In contrast, shared futexes can avoid this because they get their
-> access control implicitly from the VMA.
+I think you're right, the functions and kfree are indeed safe.
+I think I mixed things up with debugging an issue and assumed this was part
+of the fix I needed.
 
-Every task must expect spurious wakups at all times, always (for
-TASK_NORMAL wakeups that is). There's plenty ways to generate them.
+Sorry for the noise!
 
-> > +       next_utd = rcu_dereference(next->umcg_task_data);
-> > +       if (!next_utd) {
-> > +               ret = -EINVAL;
-> > +               goto out;
-> > +       }
+Paul
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--AzBaB1s6CT6YEqV4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmDAu5wACgkQ3cLmz3+f
+v9HF/Qf+OjR8sDbDhQXIYt4fJNAlq0oavVO+WgubhlHOIZ/BJNmmb8xbys7MvpZM
+pTbUgUs10Q+4PTt2kTM4Wg6TYP4stLvT15dhhwz/xMqjS28wZi+FtirgNJjs9xAl
+AyPTaFzESK5J0eHTnhkXJdsCnvmmt+GdGMJAay8JoSM5XoZaAUbMYZ21/czJ9Uf7
+by8kM23HgsoTUOQ15SYT4Bf6Q7a6mhC7RnDG/8dJVJPdyyKHEpblqHrpRvTthTEj
+zUgpyRrocg9aBdhujvRCSHpqwEGbiT6fdi24LmaPF+uapXoNZDbrhPv45sD/cORA
+JtfvBauxeBEMlUDsejlWWhVgxXizVA==
+=bfKH
+-----END PGP SIGNATURE-----
+
+--AzBaB1s6CT6YEqV4--
