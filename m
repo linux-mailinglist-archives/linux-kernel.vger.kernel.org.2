@@ -2,62 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B27F3A1868
+	by mail.lfdr.de (Postfix) with ESMTP id CAA1A3A186A
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238835AbhFIPDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238801AbhFIPDG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:03:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16638C061574;
-        Wed,  9 Jun 2021 08:01:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=ffjZdEaHfFJL2PlBT1Pi9QMrYzsEmrd1QXquQzBQ3MI=; b=agVhEldAJI80iEC/bn2apBj6dj
-        GShcrxSObtemYZVq7w0qS86pRLEuBNhoO6Lj0AIFSOBqjOP5Q++7p2bZOa2sYfhuYk4pqwcXP+30Y
-        hz/YOlzHP8iNOmzami6ODx0OZNVYgIWnBMkM0bOfOjqU9EOK234N6YvSufy4dSCSNEHNHAjG8eEre
-        ZgiRHunrZwOuijUfNJ6Bc0ljF7liAZsnmLAJq7da3ZYD4lPDEXrjFNxAxtNcWioFg1Y1NeTiVLYw7
-        uJpv3IMCtEuSgHzn1DCS3S1LLSL+jqHBYD8dEyZOENfT9QAJFxtJoBCLlH31VhB2ZpDgw+lq03XzA
-        ninwpdqg==;
-Received: from [2601:1c0:6280:3f0::bd57]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lqzhd-00ET7w-JV; Wed, 09 Jun 2021 15:01:09 +0000
-Subject: Re: [PATCH] nl80211: fix a mistake in grammar
-To:     Johannes Berg <johannes@sipsolutions.net>, 13145886936@163.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-References: <20210609081556.19641-1-13145886936@163.com>
- <d32bec575d204a17531f61c8d2f67443ffdaee6c.camel@sipsolutions.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c4ab41c7-7230-2548-f7ab-1a0aa8d16e36@infradead.org>
-Date:   Wed, 9 Jun 2021 08:01:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S238846AbhFIPDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:03:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:33900 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238784AbhFIPDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:03:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50636D6E;
+        Wed,  9 Jun 2021 08:01:16 -0700 (PDT)
+Received: from [10.57.6.115] (unknown [10.57.6.115])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C3DE3F73D;
+        Wed,  9 Jun 2021 08:01:14 -0700 (PDT)
+Subject: Re: [RFC] mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        ulf.hansson@linaro.org
+Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, linux-mmc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+References: <CGME20210608153357eucas1p24cbc7a2ddb00beada8cdd51ae2337c53@eucas1p2.samsung.com>
+ <20210608153344.3813661-1-narmstrong@baylibre.com>
+ <e9f057f6-324e-0637-b57a-cc2f87e0d108@samsung.com>
+ <ebb1421c-e55c-eee3-ea42-09ae051659d4@baylibre.com>
+ <92024ca5-c6fa-0e6a-b6ba-f35f92222e76@arm.com>
+ <a59a4dd3-9a09-a9b4-71f2-7e37c92cf40e@baylibre.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <f1dbc6e2-e956-e582-4368-fcad95d596bf@arm.com>
+Date:   Wed, 9 Jun 2021 16:01:13 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <d32bec575d204a17531f61c8d2f67443ffdaee6c.camel@sipsolutions.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <a59a4dd3-9a09-a9b4-71f2-7e37c92cf40e@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/9/21 1:55 AM, Johannes Berg wrote:
-> On Wed, 2021-06-09 at 01:15 -0700, 13145886936@163.com wrote:
->>
->> -	/* don't allow or configure an mcast address */
->> +	/* don't allow or configure a mcast address */
+On 2021-06-09 15:55, Neil Armstrong wrote:
+> Hi Robin,
 > 
-> Arguable? I'd say "an M-cast" address, and I guess that's why it's
-> written that way. Not sure how else you'd say it, unless you always
-> expand it to "multicast" when reading.
+> On 09/06/2021 16:45, Robin Murphy wrote:
+>> On 2021-06-09 14:07, Neil Armstrong wrote:
+>>> Hi,
+>>>
+>>> On 08/06/2021 17:50, Marek Szyprowski wrote:
+>>>> Hi
+>>>>
+>>>> On 08.06.2021 17:33, Neil Armstrong wrote:
+>>>>> It has been reported that usage of memcpy() to/from an iomem mapping is invalid,
+>>>>> and and recent arm64 memcpy update [1] triggers a memory abort when dram-access-quirk
+>>>>> is used on the G12A/G12B platforms.
+>>>>>
+>>>>> This adds a local sg_copy_to_buffer which makes usage of io versions of memcpy
+>>>>> when dram-access-quirk is enabled.
+>>>>>
+>>>>> Fixes: acdc8e71d9bb ("mmc: meson-gx: add dram-access-quirk")
+>>>>> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>>>>> Suggested-by: Mark Rutland <mark.rutland@arm.com>
+>>>>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>>>>>
+>>>>> [1] 285133040e6c ("arm64: Import latest memcpy()/memmove() implementation")
+>>>>>
+>>>>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>>>>> ---
+>>>>> Hi Ulf, Marek, Mark,
+>>>>>
+>>>>> I haven't tested the patch yet, but should fix issue reported at [2].
+>>>>
+>>>> Works fine here and fixed the issue.
+>>>>
+>>>> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>>>
+>>> Thanks, I'll need to rework to pass an __iomem pointer to memcpy_to/fromio so sparse doesn't scream anymore.
+>>
+>> Hmm, might it be worth factoring out general sg_copy_{to,from}_iomem() helpers? From a quick grep I found at least mv_cesa_sg_copy() already doing essentially the same thing as meson_mmc_copy_buffer().
+> 
+> It's definitely worth it, but since we need a quick fix, we should have meson_mmc_copy_buffer() as a fix then we should definitely move to sg_copy_{to,from}_iomem() helpers
 
-Agreed, it's ok as is.
+Oh, that makes sense for sure - I was just doing some general thinking 
+out loud before I forget about the whole thing :)
 
+Cheers,
+Robin.
