@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE543A167D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20283A1684
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237368AbhFIOFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:05:06 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]:37853 "EHLO
-        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237227AbhFIOFC (ORCPT
+        id S237287AbhFIOGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:06:04 -0400
+Received: from mail-qk1-f180.google.com ([209.85.222.180]:34654 "EHLO
+        mail-qk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232292AbhFIOF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:05:02 -0400
-Received: by mail-wr1-f41.google.com with SMTP id i94so20589360wri.4;
-        Wed, 09 Jun 2021 07:03:06 -0700 (PDT)
+        Wed, 9 Jun 2021 10:05:58 -0400
+Received: by mail-qk1-f180.google.com with SMTP id k11so22096383qkk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 07:03:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AYWDI6BG8IdRoFPaJz/bP9vC9WkcUEC9Y1+RTob9aXc=;
-        b=b5m4IM3yjBet0AWST2O9Jpwxqjd2kDUCn92XMVhC72ujjOfkDoVI4N41Z0NTFy5VpE
-         OglH+M9cHy9M3rUqXKcFYPNr3qBW51d5WebmAHdVIjFkUcfVn3F3Y8Q6Rxt5HpJl2DK7
-         PFdUjeD0uO+NFVCQJHsP2sUMqtC5aA3tbVEKs9gJNFHh3c4rkVAe7k8QLlKkoK5QxtkU
-         o3Gdi6kAVjOU2MnTvDPB5oFQT3IhDOoM/eJyQK9ABnYQvXqYBgT09bo29dStiR32Hakl
-         onIiJnMpNpr6WheKCJTWb8PyeY+SFdBNaflEzsojeh306rMxNJh+2ipkEMCRXTL6/bRb
-         6M1A==
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sVDNoaWoIPr7Gu4coKMJidA6UIIH0xz9k9qbnaUz7J8=;
+        b=iJlKlERUuUveDc52H/UBA4htInK4K98sw+1Ayz5oJXTmrF3qACSyduBsb0JjEwQMbW
+         ycrNqdQx56ME5dn/De9p3wL0Y5LDoCl0r1CzB1xal9bZjuZ2Lcycymm2p6t40CRI7EeY
+         NAIMSO4IkFVKArQiizkiU7Siv/hUHBEfOzSg1hw/VZ+dQl2xGtKZ0vd77slE0ppBEqet
+         VzHufD8GqHZumWetOrjl7FHXX1G5VB0iolsPxAna3f+3qdYYefzPLEY1frWC9Hi1WgJl
+         q7gfYQu/rwO3Cb5o5e82+AHRWYP3iex+sMZ1A4Cxu8pZ8O0+G8liV2wJaXQ8tnjE7wTh
+         SWFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AYWDI6BG8IdRoFPaJz/bP9vC9WkcUEC9Y1+RTob9aXc=;
-        b=NNd2FnlS2I6499ZEdHcrcmTKgqKQVHdfgGVu9BhGGHSlhhcl9AJqXKvcsL+Btg+I9T
-         cL4r76wJ+p0Tu4P6rO8Dznm3QU+Dj1gYW4cXwH4l6fSAfaxqpnKb3EYe6uLmSve4TDjF
-         UctlXA1yxJx55nrcQ0yIa4Bophc3KETzItYC3HeslngeZXmtEvsKpy6mMHAiCS7T5VWs
-         LRE0t47lMuQsNvI9Gr81tztaOqlluUjStwFocqv9y4M+q8kHbvVnyWlzrElDRNQTwaVk
-         4B+3oc4+3HhDeN+L8+/Dae3cOzdP3H76JLHjBXQaULGurvZK/aCApdcgs+f2nNQJAdzu
-         wJcg==
-X-Gm-Message-State: AOAM533hFj/LViusQeXAmhJz5w+ty5gZ6J5gmXbD23zrFtweMBTOIIfD
-        NmjX6x/yTRLCD6f8qw5jtbTBVDvj125Dfg==
-X-Google-Smtp-Source: ABdhPJyyaptNj1K8oWVB9T8IptJSFw4/2SNsjIpbwawKmVfW8s1K4w8ilEL0kkh4lazfgShnc3pfhQ==
-X-Received: by 2002:adf:e401:: with SMTP id g1mr27533771wrm.415.1623247325881;
-        Wed, 09 Jun 2021 07:02:05 -0700 (PDT)
-Received: from localhost.localdomain (103.red-81-47-144.staticip.rima-tde.net. [81.47.144.103])
-        by smtp.gmail.com with ESMTPSA id m23sm5673912wms.2.2021.06.09.07.02.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Jun 2021 07:02:05 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-pci@vger.kernel.org
-Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
-        devicetree@vger.kernel.org, matthias.bgg@gmail.com,
-        john@phrozen.org, bhelgaas@google.com, robh+dt@kernel.org,
-        linux-staging@lists.linux.dev, gregkh@linuxfoundation.org,
-        neil@brown.name, ilya.lipnitskiy@gmail.com,
-        linux-kernel@vger.kernel.org, pali@kernel.org
-Subject: [PATCH v2 3/3] MAINTAINERS: add myself as maintainer of the MT7621 PCI controller driver
-Date:   Wed,  9 Jun 2021 16:01:59 +0200
-Message-Id: <20210609140159.20476-4-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210609140159.20476-1-sergio.paracuellos@gmail.com>
-References: <20210609140159.20476-1-sergio.paracuellos@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sVDNoaWoIPr7Gu4coKMJidA6UIIH0xz9k9qbnaUz7J8=;
+        b=ErgNxTkpV0pBSyjLwYihDHOgW9GRCpAcklUfB8BXey33WMqTWifj9w36ZxrkxJTxh5
+         mrgnonl23FdqzrKLxQtSE3+TJJveP+1wMwnI/9fv+NaTKvC3YfIwAouS56Kqx+WjdeFn
+         ObSQGSmYhqAp9GXlll8lYpSS4pTsH8YOXeBxwbJTfFx8lH1f9E+Z6wloYvCi1DzgcovG
+         jArx52Q/nC/bLOIN0fdz64Z+7b7xb9SN02y+R/bVQ83/Or96P3Qqvrjb+p8sOmb84a/W
+         upLTNaL2/fiUO4ka1HaWET3dfso5L4dnVXBEdOvonHgX2Qiapiq4go2l3UE8/4zhMXoH
+         RQQg==
+X-Gm-Message-State: AOAM531R6OS9AAW+r0+l6Pv1Si87e0NZYxmL+fne2Bgk7JlyyE8o7PvW
+        GqTR5XDYeGCr7WxYcWyIg+TlxkbmCtnrbOotO4vC/g==
+X-Google-Smtp-Source: ABdhPJwlk2i2QGb5aCViuWJX+eoq6tbslIAd6c4NjfiqRzuaqx1Qhw3+Qm2upFCUr66Dek9NsQIgBkV2/OBf55wIx8I=
+X-Received: by 2002:a37:a1d5:: with SMTP id k204mr16597525qke.300.1623247370731;
+ Wed, 09 Jun 2021 07:02:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210609134714.13715-1-mcroce@linux.microsoft.com>
+In-Reply-To: <20210609134714.13715-1-mcroce@linux.microsoft.com>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Wed, 9 Jun 2021 16:02:39 +0200
+Message-ID: <CAPv3WKdhyb=o=v0oj+gVWWH3yfqQ1EqBcR-1y4R39x_-Or72-w@mail.gmail.com>
+Subject: Re: [PATCH net-next 0/2] mvpp2: prefetch data early
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as maintainer of the PCie Controlller driver for
-MT7621 SoCs.
+Hi Matteo,
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9c55fdcc1514..2e58fba01289 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11574,6 +11574,12 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/i2c/i2c-mt7621.txt
- F:	drivers/i2c/busses/i2c-mt7621.c
- 
-+MEDIATEK MT7621 PCI CONTROLLER DRIVER
-+M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
-+F:	drivers/pci/controller/pci-mt7621.c
-+
- MEDIATEK MT7621 PHY PCI DRIVER
- M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
- S:	Maintained
--- 
-2.25.1
+=C5=9Br., 9 cze 2021 o 15:47 Matteo Croce <mcroce@linux.microsoft.com> napi=
+sa=C5=82(a):
+>
+> From: Matteo Croce <mcroce@microsoft.com>
+>
+> These two patches prefetch some data from RAM so to reduce stall
+> and speedup the packet processing.
+>
+> Matteo Croce (2):
+>   mvpp2: prefetch right address
+>   mvpp2: prefetch page
+>
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+>
 
+Thank you for the patches, they seem reasonable, however I'd like to
+stress it on the CN913x setup @10G - I should have some slot for that
+closer to EOW.
+
+Best regards,
+Marcin
