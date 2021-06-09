@@ -2,80 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00773A137C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24F83A137F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239134AbhFILxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59788 "EHLO
+        id S239441AbhFILyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239066AbhFILxT (ORCPT
+        with ESMTP id S239629AbhFILyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:53:19 -0400
-Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96CBC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:51:22 -0700 (PDT)
-Received: from [IPv6:2a02:a03f:eafb:ee01:a92e:8520:f692:3284] (unknown [IPv6:2a02:a03f:eafb:ee01:a92e:8520:f692:3284])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 67DF020B13A;
-        Wed,  9 Jun 2021 13:51:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1623239480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vvIs7BSWDaUkVsbeyxXThQ2H+fkaFFZWCw9joFRm2U8=;
-        b=gFjEON8hUCLabCORedO1Kj2zALBP73NqXdjJaPJl2JceI1Yn3mrwVDJWHSPTXZwsPn5fm4
-        ufW4IYocNDcO/eaSkLN32v+EzikBZW+XHuOmA4chMUDfVKOkhEjoaOZRIgLugdpVvClBpL
-        rdJuaE1hKJKS1c1p2QuqVzwzNsBaDplr2NF+pkenHn6wGjiRj5qhZIRbfraH7E/D3I+vnU
-        npVioi5WSrM0ygi0LumM6JXDqXnaaT85CCOj6zn400/E57pL8dJi7luV8BKQl0LD3yUKiF
-        4JuGtsUOWHyIrrZhTgLR/LqDrSCgpNf4BGs+xJQNzzE5K9g1WqxM/n11Q+aB9Q==
-Message-ID: <3328306a4d5b4f8f58b3b8666eeccac714440da8.camel@svanheule.net>
-Subject: Re: [PATCH] regmap: mdio: Reject invalid clause-22 addresses
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Date:   Wed, 09 Jun 2021 13:51:18 +0200
-In-Reply-To: <20210607110355.GA5705@sirena.org.uk>
-References: <cover.1622743333.git.sander@svanheule.net>
-         <20210605083116.12786-1-sander@svanheule.net>
-         <20210607110355.GA5705@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Wed, 9 Jun 2021 07:54:05 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18580C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:52:11 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lqwke-0004za-3X; Wed, 09 Jun 2021 13:52:04 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lqwkc-0004MU-Oi; Wed, 09 Jun 2021 13:52:02 +0200
+Date:   Wed, 9 Jun 2021 13:52:02 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2][next] net: usb: asix: ax88772: net: Fix less than
+ zero comparison of a u16
+Message-ID: <20210609115202.ms32g2rwco56iygz@pengutronix.de>
+References: <20210608152249.160333-1-colin.king@canonical.com>
+ <20210608152249.160333-2-colin.king@canonical.com>
+ <20210608181129.7mnuba6dcaemslul@pengutronix.de>
+ <a289d8fa-3cfd-6b85-20ec-fe0f5b682383@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a289d8fa-3cfd-6b85-20ec-fe0f5b682383@canonical.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 13:50:21 up 189 days,  1:56, 46 users,  load average: 0.18, 0.07,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-On Mon, 2021-06-07 at 12:03 +0100, Mark Brown wrote:
-> On Sat, Jun 05, 2021 at 10:31:18AM +0200, Sander Vanheule wrote:
-> > Currently a regmap configuration for regmap-mdio must have a register
-> > address width of 5 bits (cf. clause-22 register access). This is not
-> > enforced on the provided register addresses, which would enable
-> > clause-45 MDIO bus access, if the right bit packing is used.
+On Wed, Jun 09, 2021 at 10:51:09AM +0100, Colin Ian King wrote:
+> On 08/06/2021 19:11, Oleksij Rempel wrote:
+> > On Tue, Jun 08, 2021 at 04:22:49PM +0100, Colin King wrote:
+> >> From: Colin Ian King <colin.king@canonical.com>
+> >>
+> >> The comparison of the u16 priv->phy_addr < 0 is always false because
+> >> phy_addr is unsigned. Fix this by assigning the return from the call
+> >> to function asix_read_phy_addr to int ret and using this for the
+> >> less than zero error check comparison.
+> >>
+> >> Addresses-Coverity: ("Unsigned compared against 0")
+> >> Fixes: 7e88b11a862a ("net: usb: asix: refactor asix_read_phy_addr() and handle errors on return")
+> > 
+> > Here is wrong Fixes tag. This assignment was bogus before this patch.
 > 
-> Please don't send new patches in reply to old patch serieses, it makes
-> it hard to follow what's going on and what the current state of things
-> is and makes it easy for things to get missed when threads get cleaned
-> out.
+> I'm not sure that's correct, that commit has the following change in it:
+> 
+> diff --git a/drivers/net/usb/ax88172a.c b/drivers/net/usb/ax88172a.c
+> index b404c9462dce..c8ca5187eece 100644
+> --- a/drivers/net/usb/ax88172a.c
+> +++ b/drivers/net/usb/ax88172a.c
+> @@ -220,6 +220,11 @@ static int ax88172a_bind(struct usbnet *dev, struct
+> usb_interface *intf)
+>         }
+> 
+>         priv->phy_addr = asix_read_phy_addr(dev, priv->use_embdphy);
+> +       if (priv->phy_addr < 0) {
+> +               ret = priv->phy_addr;
+> +               goto free;
+> +       }
+> +
+> 
 
-It appears that this has caused you to merge the RFC patches instead. I've
-posted two new patches, to bring the code in line with the discussion on the
-original RFC patches. See:
-https://lore.kernel.org/lkml/cover.1623238313.git.sander@svanheule.net/
+Even before my patch asix_read_phy_addr() was returning different
+error values. My patch just add check for the return value.
 
-My apologies for the extra work this has caused.
+> > 
+> >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> >> ---
+> >>  drivers/net/usb/ax88172a.c | 3 ++-
+> >>  1 file changed, 2 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/net/usb/ax88172a.c b/drivers/net/usb/ax88172a.c
+> >> index 2e2081346740..e24773bb9398 100644
+> >> --- a/drivers/net/usb/ax88172a.c
+> >> +++ b/drivers/net/usb/ax88172a.c
+> >> @@ -205,7 +205,8 @@ static int ax88172a_bind(struct usbnet *dev, struct usb_interface *intf)
+> >>  		goto free;
+> >>  	}
+> >>  
+> >> -	priv->phy_addr = asix_read_phy_addr(dev, priv->use_embdphy);
+> >> +	ret = asix_read_phy_addr(dev, priv->use_embdphy);
+> >> +	priv->phy_addr = ret;
+> > 
+> > Ah.. it is same bug in different color :)
+> > You probably wonted to do:
+> > 	if (ret < 0)
+> > 		goto free;
+> > 
+> > 	priv->phy_addr = ret;
+> 
+> Doh, brain failure of mine. I'll send a V2 later today.
+> 
+> > 
+> >>  	if (priv->phy_addr < 0) {
+> >>  		ret = priv->phy_addr;
+> >>  		goto free;
+> >> -- 
+> >> 2.31.1
+> >>
+> >>
+> > 
+> 
+> 
 
-Best,
-Sander
-
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
