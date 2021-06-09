@@ -2,139 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3D43A0756
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55ED93A0751
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235067AbhFHXB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 19:01:29 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:46283 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230250AbhFHXB2 (ORCPT
+        id S235013AbhFHW7y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Jun 2021 18:59:54 -0400
+Received: from namdelivery.e-purifier.com ([41.218.89.107]:62708 "EHLO
+        namdelivery.e-purifier.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230250AbhFHW7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 19:01:28 -0400
-X-UUID: 21a70051223b4f44a767e7a447cf0fec-20210609
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ZgVhymEJ5L4BrwipQZUOwi4OJWbvueZ20HB1FJkKDBM=;
-        b=mtESIbus3JwB9ymJUjjryP70c+fZs/nMHK6x2B+ZEYgiUG7KJ72RaiH9EHgltEtFaO4n8/4/z7kGtikUhA0uyGQSspl0rtz3b4wQexXx1VRwVF2BlBROZ+JRLaiuc1X/p4I8kIcwdbUjWSeNaHKF6kJ/tcuTOUXOtlCFf9uWXjk=;
-X-UUID: 21a70051223b4f44a767e7a447cf0fec-20210609
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1655942614; Wed, 09 Jun 2021 06:59:30 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 9 Jun 2021 06:59:23 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 9 Jun 2021 06:59:23 +0800
-Message-ID: <f7fd0d7038361c7efae54ba96924105baa3fb033.camel@mediatek.com>
-Subject: Re: [PATCH v5, 4/4] soc: mediatek: mmsys: Add mt8192 mmsys routing
- table
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        "Dennis YC Hsieh" <dennis-yc.hsieh@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Date:   Wed, 9 Jun 2021 06:59:23 +0800
-In-Reply-To: <1618236288-1617-5-git-send-email-yongqiang.niu@mediatek.com>
-References: <1618236288-1617-1-git-send-email-yongqiang.niu@mediatek.com>
-         <1618236288-1617-5-git-send-email-yongqiang.niu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Tue, 8 Jun 2021 18:59:52 -0400
+X-Greylist: delayed 425 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Jun 2021 18:59:52 EDT
+Received: from SEC-mNA-ag02 ([192.168.102.32]) by namdelivery.e-purifier.com with Microsoft SMTPSVC(7.5.7601.17514);
+         Wed, 9 Jun 2021 00:50:05 +0200
+Received: from sec-mna-spt04.e-purifier.com ([192.168.101.1]) by SEC-mNA-ag02.imcfnam.com.na with Microsoft SMTPSVC(7.5.7601.17514);
+         Wed, 9 Jun 2021 00:50:03 +0200
+Received: from localhost (localhost [127.0.0.1])
+        by sec-mna-spt04.e-purifier.com (Postfix) with ESMTP id BE02D1139722
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 00:50:45 +0200 (CAT)
+X-Virus-Scanned: by SpamTitan at e-purifier.com
+Received: from sec-mna-spt04.e-purifier.com (localhost [127.0.0.1])
+        by sec-mna-spt04.e-purifier.com (Postfix) with ESMTP id 8FD6C1138D44
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 00:43:49 +0200 (CAT)
+Authentication-Results: sec-mna-spt04.e-purifier.com;
+        x-trusted-ip=pass
+Received: from mail.windhoekcc.org.na (unknown [196.31.226.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sec-mna-spt04.e-purifier.com (Postfix) with ESMTPS id 85C601138D48
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 00:43:49 +0200 (CAT)
+Received: from mail.windhoekcc.org.na ([10.3.2.148])
+        by mail.windhoekcc.org.na  with ESMTP id 158MhgfO010853-158MhgfU010853;
+        Wed, 9 Jun 2021 00:43:43 +0200
+Received: from SRVEXCH01.CityofWindhoek.org (10.3.2.148) by
+ SRVEXCH01.CityofWindhoek.org (10.3.2.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 9 Jun 2021 00:47:43 +0200
+Received: from [146.0.78.93] (10.3.0.40) by SRVEXCH01.CityofWindhoek.org
+ (10.3.2.148) with Microsoft SMTP Server id 15.1.2106.2 via Frontend
+ Transport; Wed, 9 Jun 2021 00:47:22 +0200
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Re: Good News!!
+To:     Recipients <for@windhoekcc.org.na>
+From:   "David M. Eriksen" <for@windhoekcc.org.na>
+Date:   Tue, 8 Jun 2021 22:42:59 -0700
+Reply-To: <info@eccpmt.cloud>
+Message-ID: <5d4729a3-ab57-4c70-9803-480897035044@SRVEXCH01.CityofWindhoek.org>
+X-CrossPremisesHeadersFilteredBySendConnector: SRVEXCH01.CityofWindhoek.org
+X-OrganizationHeadersPreserved: SRVEXCH01.CityofWindhoek.org
+X-OriginalArrivalTime: 08 Jun 2021 22:50:04.0047 (UTC) FILETIME=[9EE821F0:01D75CB8]
+x-archived: yes
+x-dbused: RGF0YSBTb3VyY2U9MTkyLjE2OC4xMDEuMw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA0LTEyIGF0IDIyOjA0ICswODAwLCBZb25ncWlhbmcgTml1IHdyb3RlOg0K
-PiBtdDgxOTIgaGFzIGRpZmZlcmVudCByb3V0aW5nIHJlZ2lzdGVycyB0aGFuIG10ODE4Mw0KPiAN
-Cj4gU2lnbmVkLW9mZi1ieTogWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5j
-b20+DQo+IC0tLQ0KPiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXQ4MTkyLW1tc3lzLmggfCA2OA0K
-PiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICBkcml2ZXJzL3NvYy9t
-ZWRpYXRlay9tdGstbW1zeXMuYyAgICB8ICA3ICsrKysNCj4gIDIgZmlsZXMgY2hhbmdlZCwgNzUg
-aW5zZXJ0aW9ucygrKQ0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvc29jL21lZGlhdGVr
-L210ODE5Mi1tbXN5cy5oDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsv
-bXQ4MTkyLW1tc3lzLmgNCj4gYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdDgxOTItbW1zeXMuaA0K
-PiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiBpbmRleCAwMDAwMDAwLi4zMTc5MDI5DQo+IC0tLSAv
-ZGV2L251bGwNCj4gKysrIGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXQ4MTkyLW1tc3lzLmgNCj4g
-QEAgLTAsMCArMSw2OCBAQA0KPiArLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAt
-b25seSAqLw0KPiArDQo+ICsjaWZuZGVmIF9fU09DX01FRElBVEVLX01UODE5Ml9NTVNZU19IDQo+
-ICsjZGVmaW5lIF9fU09DX01FRElBVEVLX01UODE5Ml9NTVNZU19IDQo+ICsNCj4gKyNkZWZpbmUg
-TVQ4MTkyX01NU1lTX09WTF9NT1VUX0VOCQkweGYwNA0KPiArI2RlZmluZSBNVDgxOTJfRElTUF9P
-VkwxXzJMX01PVVRfRU4JCTB4ZjA4DQo+ICsjZGVmaW5lIE1UODE5Ml9ESVNQX09WTDBfMkxfTU9V
-VF9FTgkJMHhmMTgNCj4gKyNkZWZpbmUgTVQ4MTkyX0RJU1BfT1ZMMF9NT1VUX0VOCQkweGYxYw0K
-PiArI2RlZmluZSBNVDgxOTJfRElTUF9SRE1BMF9TRUxfSU4JCTB4ZjJjDQo+ICsjZGVmaW5lIE1U
-ODE5Ml9ESVNQX1JETUEwX1NPVVRfU0VMCQkweGYzMA0KPiArI2RlZmluZSBNVDgxOTJfRElTUF9D
-Q09SUjBfU09VVF9TRUwJCTB4ZjM0DQo+ICsjZGVmaW5lIE1UODE5Ml9ESVNQX0FBTDBfU0VMX0lO
-CQkJMHhmMzgNCj4gKyNkZWZpbmUgTVQ4MTkyX0RJU1BfRElUSEVSMF9NT1VUX0VOCQkweGYzYw0K
-PiArI2RlZmluZSBNVDgxOTJfRElTUF9EU0kwX1NFTF9JTgkJCTB4ZjQwDQo+ICsjZGVmaW5lIE1U
-ODE5Ml9ESVNQX09WTDJfMkxfTU9VVF9FTgkJMHhmNGMNCj4gKw0KPiArI2RlZmluZSBNVDgxOTJf
-RElTUF9PVkwwX0dPX0JMRU5ECQkJQklUKDApDQo+ICsjZGVmaW5lIE1UODE5Ml9ESVRIRVIwX01P
-VVRfSU5fRFNJMAkJCUJJVCgwKQ0KPiArI2RlZmluZSBNVDgxOTJfT1ZMMF9NT1VUX0VOX0RJU1Bf
-UkRNQTAJCQlCSVQoMCkNCj4gKyNkZWZpbmUgTVQ4MTkyX09WTDJfMkxfTU9VVF9FTl9SRE1BNAkJ
-CUJJVCgwKQ0KPiArI2RlZmluZSBNVDgxOTJfRElTUF9PVkwwX0dPX0JHCQkJCUJJVCgxKQ0KPiAr
-I2RlZmluZSBNVDgxOTJfRElTUF9PVkwwXzJMX0dPX0JMRU5ECQkJQklUKDIpDQo+ICsjZGVmaW5l
-IE1UODE5Ml9ESVNQX09WTDBfMkxfR09fQkcJCQlCSVQoMykNCj4gKyNkZWZpbmUgTVQ4MTkyX09W
-TDFfMkxfTU9VVF9FTl9SRE1BMQkJCUJJVCg0KQ0KPiArI2RlZmluZSBNVDgxOTJfT1ZMMF9NT1VU
-X0VOX09WTDBfMkwJCQlCSVQoNCkNCj4gKyNkZWZpbmUgTVQ4MTkyX1JETUEwX1NFTF9JTl9PVkww
-XzJMCQkJMHgzDQo+ICsjZGVmaW5lIE1UODE5Ml9SRE1BMF9TT1VUX0NPTE9SMAkJCTB4MQ0KPiAr
-I2RlZmluZSBNVDgxOTJfQ0NPUlIwX1NPVVRfQUFMMAkJCQkweDENCj4gKyNkZWZpbmUgTVQ4MTky
-X0FBTDBfU0VMX0lOX0NDT1JSMAkJCTB4MQ0KPiArI2RlZmluZSBNVDgxOTJfRFNJMF9TRUxfSU5f
-RElUSEVSMAkJCTB4MQ0KPiArDQo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG10a19tbXN5c19yb3V0
-ZXMgbW1zeXNfbXQ4MTkyX3JvdXRpbmdfdGFibGVbXSA9DQo+IHsNCj4gKwl7DQo+ICsJCUREUF9D
-T01QT05FTlRfT1ZMXzJMMCwgRERQX0NPTVBPTkVOVF9SRE1BMCwNCj4gKwkJTVQ4MTkyX0RJU1Bf
-T1ZMMF8yTF9NT1VUX0VOLA0KPiBNVDgxOTJfT1ZMMF9NT1VUX0VOX0RJU1BfUkRNQTAsDQo+ICsJ
-fSwgew0KPiArCQlERFBfQ09NUE9ORU5UX09WTF8yTDIsIEREUF9DT01QT05FTlRfUkRNQTQsDQo+
-ICsJCU1UODE5Ml9ESVNQX09WTDJfMkxfTU9VVF9FTiwNCj4gTVQ4MTkyX09WTDJfMkxfTU9VVF9F
-Tl9SRE1BNA0KPiArCX0sIHsNCj4gKwkJRERQX0NPTVBPTkVOVF9ESVRIRVIsIEREUF9DT01QT05F
-TlRfRFNJMCwNCj4gKwkJTVQ4MTkyX0RJU1BfRElUSEVSMF9NT1VUX0VOLA0KPiBNVDgxOTJfRElU
-SEVSMF9NT1VUX0lOX0RTSTANCj4gKwl9LCB7DQo+ICsJCUREUF9DT01QT05FTlRfT1ZMXzJMMCwg
-RERQX0NPTVBPTkVOVF9SRE1BMCwNCj4gKwkJTVQ4MTkyX0RJU1BfUkRNQTBfU0VMX0lOLCBNVDgx
-OTJfUkRNQTBfU0VMX0lOX09WTDBfMkwNCj4gKwl9LCB7DQo+ICsJCUREUF9DT01QT05FTlRfQ0NP
-UlIsIEREUF9DT01QT05FTlRfQUFMMCwNCj4gKwkJTVQ4MTkyX0RJU1BfQUFMMF9TRUxfSU4sIE1U
-ODE5Ml9BQUwwX1NFTF9JTl9DQ09SUjANCj4gKwl9LCB7DQo+ICsJCUREUF9DT01QT05FTlRfRElU
-SEVSLCBERFBfQ09NUE9ORU5UX0RTSTAsDQo+ICsJCU1UODE5Ml9ESVNQX0RTSTBfU0VMX0lOLCBN
-VDgxOTJfRFNJMF9TRUxfSU5fRElUSEVSMA0KPiArCX0sIHsNCj4gKwkJRERQX0NPTVBPTkVOVF9S
-RE1BMCwgRERQX0NPTVBPTkVOVF9DT0xPUjAsDQo+ICsJCU1UODE5Ml9ESVNQX1JETUEwX1NPVVRf
-U0VMLCBNVDgxOTJfUkRNQTBfU09VVF9DT0xPUjANCj4gKwl9LCB7DQo+ICsJCUREUF9DT01QT05F
-TlRfQ0NPUlIsIEREUF9DT01QT05FTlRfQUFMMCwNCj4gKwkJTVQ4MTkyX0RJU1BfQ0NPUlIwX1NP
-VVRfU0VMLCBNVDgxOTJfQ0NPUlIwX1NPVVRfQUFMMA0KPiArCX0sIHsNCj4gKwkJRERQX0NPTVBP
-TkVOVF9PVkwwLCBERFBfQ09NUE9ORU5UX09WTF8yTDAsDQo+ICsJCU1UODE5Ml9NTVNZU19PVkxf
-TU9VVF9FTiwgTVQ4MTkyX0RJU1BfT1ZMMF9HT19CRywNCj4gKwl9LCB7DQo+ICsJCUREUF9DT01Q
-T05FTlRfT1ZMXzJMMCwgRERQX0NPTVBPTkVOVF9SRE1BMCwNCj4gKwkJTVQ4MTkyX01NU1lTX09W
-TF9NT1VUX0VOLCBNVDgxOTJfRElTUF9PVkwwXzJMX0dPX0JMRU5ELA0KPiArCX0NCj4gK307DQo+
-ICsNCj4gKyNlbmRpZiAvKiBfX1NPQ19NRURJQVRFS19NVDgxOTJfTU1TWVNfSCAqLw0KPiArDQo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbW1zeXMuYw0KPiBiL2RyaXZl
-cnMvc29jL21lZGlhdGVrL210ay1tbXN5cy5jDQo+IGluZGV4IDc5ZTU1MTUuLmM3NTU2MTcgMTAw
-NjQ0DQo+IC0tLSBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1tbXN5cy5jDQo+ICsrKyBiL2Ry
-aXZlcnMvc29jL21lZGlhdGVrL210ay1tbXN5cy5jDQo+IEBAIC0xMiw2ICsxMiw3IEBADQo+ICAN
-Cj4gICNpbmNsdWRlICJtdGstbW1zeXMuaCINCj4gICNpbmNsdWRlICJtdDgxODMtbW1zeXMuaCIN
-Cj4gKyNpbmNsdWRlICJtdDgxOTItbW1zeXMuaCINCj4gIA0KPiAgc3RhdGljIGNvbnN0IHN0cnVj
-dCBtdGtfbW1zeXNfZHJpdmVyX2RhdGEgbXQyNzAxX21tc3lzX2RyaXZlcl9kYXRhID0NCj4gew0K
-PiAgCS5jbGtfZHJpdmVyID0gImNsay1tdDI3MDEtbW0iLA0KPiBAQCAtNDUsNiArNDYsMTIgQEAN
-Cj4gIAkubnVtX3JvdXRlcyA9IEFSUkFZX1NJWkUobW1zeXNfbXQ4MTgzX3JvdXRpbmdfdGFibGUp
-LA0KPiAgfTsNCj4gIA0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfbW1zeXNfZHJpdmVyX2Rh
-dGEgbXQ4MTkyX21tc3lzX2RyaXZlcl9kYXRhID0NCj4gew0KPiArCS5jbGtfZHJpdmVyID0gImNs
-ay1tdDgxOTItbW0iLA0KPiArCS5yb3V0ZXMgPSBtbXN5c19tdDgxOTJfcm91dGluZ190YWJsZSwN
-Cj4gKwkubnVtX3JvdXRlcyA9IEFSUkFZX1NJWkUobW1zeXNfbXQ4MTkyX3JvdXRpbmdfdGFibGUp
-LA0KPiArfTsNCj4gKw0KPiAgc3RydWN0IG10a19tbXN5cyB7DQo+ICAJdm9pZCBfX2lvbWVtICpy
-ZWdzOw0KPiAgCWNvbnN0IHN0cnVjdCBtdGtfbW1zeXNfZHJpdmVyX2RhdGEgKmRhdGE7DQoNCkhp
-IFlvbmdxaWFuZywNCg0KVGhlcmUgaXMgODE5MiBtbXN5cyBjb21wYXRpYmxlIGRhdGEgaW4gWzFd
-LCBidXQgc2VlbXMgdG8gbGFjayBvZiBpdCBpbg0KdGhpcyBwYXRjaCwgYmVjYXVzZSBtbSBjbG9j
-ayBkcml2ZXIgd2lsbCBiZSBib3VuZCB0byBwbGF0Zm9ybSBkZXZpY2UgDQppbiBtdGtfbW1zeXNf
-cHJvYmUuDQoNClsxXSANCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51
-eC1tZWRpYXRlay9wYXRjaC8xNjA5ODE1OTkzLTIyNzQ0LTExLWdpdC1zZW5kLWVtYWlsLXlvbmdx
-aWFuZy5uaXVAbWVkaWF0ZWsuY29tLw0KDQpCZXN0IFJlZ2FyZHMsDQpDaHVuLUppZQ0K
+Hello
+
+I am glad I found you.
+
+I have a project that I would like to execute with you, this is going to
+Favors two of us, kindly confirm your willingness to partner with me,
+So I can furnish you with full details of the project.
+
+I am waiting for your reply.
+
+Warm regards
+Mr. David M. Eriksen
+
 
