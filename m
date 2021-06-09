@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A195D3A0D12
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45043A0D19
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237003AbhFIHEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:04:49 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33108 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237053AbhFIHEc (ORCPT
+        id S236996AbhFIHGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234872AbhFIHF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:04:32 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4BD031FD2A;
-        Wed,  9 Jun 2021 07:02:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623222157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j1IFpW9CvQTGkBQ+dGh1DyKCH/+ZyB6uCzE7Cx/AEgE=;
-        b=cUrEtrPvbzbHyfUA0wj6Dgh89t7vw9GZ7TpKEb8JUKjg5oMU6tWU4uBhIGk4Mue/nOvcXq
-        t2t0hM7Eb3DXgHbnEjzU4IXWXo7UkwS1msdgUmhqZK0UrapnZMtDhQSxObpGdiuErdR2uC
-        N8hgulBwg9Mpxs88eM/D83qM7HMoHH4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623222157;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j1IFpW9CvQTGkBQ+dGh1DyKCH/+ZyB6uCzE7Cx/AEgE=;
-        b=8BJR5MiRZo+HVEzUaeWJbBNo+f/0KfQOsSTDtMXIsMMR8JeA115oJVAFyMRSeiloleRGmm
-        xaR1pB0/9INxEyBg==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 29D78118DD;
-        Wed,  9 Jun 2021 07:02:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623222157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j1IFpW9CvQTGkBQ+dGh1DyKCH/+ZyB6uCzE7Cx/AEgE=;
-        b=cUrEtrPvbzbHyfUA0wj6Dgh89t7vw9GZ7TpKEb8JUKjg5oMU6tWU4uBhIGk4Mue/nOvcXq
-        t2t0hM7Eb3DXgHbnEjzU4IXWXo7UkwS1msdgUmhqZK0UrapnZMtDhQSxObpGdiuErdR2uC
-        N8hgulBwg9Mpxs88eM/D83qM7HMoHH4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623222157;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j1IFpW9CvQTGkBQ+dGh1DyKCH/+ZyB6uCzE7Cx/AEgE=;
-        b=8BJR5MiRZo+HVEzUaeWJbBNo+f/0KfQOsSTDtMXIsMMR8JeA115oJVAFyMRSeiloleRGmm
-        xaR1pB0/9INxEyBg==
-Received: from director1.suse.de ([192.168.254.71])
-        by imap3-int with ESMTPSA
-        id +eyGCY1nwGAOKgAALh3uQQ
-        (envelope-from <hare@suse.de>); Wed, 09 Jun 2021 07:02:37 +0000
-Subject: Re: device namespaces
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     gregkh@linuxfoundation.org, containers@lists.linux.dev,
-        linux-kernel@vger.kernel.org, lkml@metux.net
-References: <YL9liW99Ytf6uBlu@kroah.com>
- <9157affa-b27a-c0f4-f6ee-def4a991fd4e@suse.de>
- <20210608142911.ievp2rpuquxjuyus@wittgenstein>
- <d956398e-7ee6-ba36-43cc-4cdcea34b5b9@suse.de> <877dj4ff9g.fsf@disp2133>
- <20210609063818.xnod4rzvti3ujkvn@wittgenstein>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <b9ea9116-7120-b0a7-b739-dd8513e12c5e@suse.de>
-Date:   Wed, 9 Jun 2021 09:02:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210609063818.xnod4rzvti3ujkvn@wittgenstein>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Wed, 9 Jun 2021 03:05:59 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05B4C061574;
+        Wed,  9 Jun 2021 00:03:51 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id g12so4886576qtb.2;
+        Wed, 09 Jun 2021 00:03:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to;
+        bh=QXV/x/+60YHq03EFxUIcFBCeTbgyh3RYCROJ7grisQo=;
+        b=T53vAhB/yYq1jxqN1Y/BNCqU9x1WkQGcVXffS+pl0MFq6xtCTuD88+lZckajKJ6aTR
+         vRmpZh80S6DS1bOhiiZc1e4Onu+ngjTmJufnhgl1ynFucfkQh3t0STcWHmi1rXytYJic
+         ckj8vimwqoUMP/NT7gMfzZGec321gIgJLHBVFbY+d9lje7mAakZPsaIi9mhM+lkdcr8J
+         kasSxaaQfd3nlRBnM8+ibIE95GG2k0Bi4wFsdVyAaYCC5xJrl4jKoNKTdit79sa0ZqJ/
+         YhRhpxuucidhId1lV5m7kgh3Yxg05cGchEQFxRRy39xE5pSLLnQ2MLkTa4wSBEb+lFva
+         CtKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
+        bh=QXV/x/+60YHq03EFxUIcFBCeTbgyh3RYCROJ7grisQo=;
+        b=JX/ORf6uqMQAkXfBgVcNYR1tA7Mntxs4MamUKimT4OjZKS4xwpFHYSicYIA1cLyXaH
+         gmIfdkwxkzdUzCOpPbK3hOrekZ2bOySjcO4F3VSvLLqCvzyfO7UkUT31HYhIblDXhHiV
+         4okNLlMxcjp+r5ECaykiJfEOyDwrR9ZI0YVvUWQp3jdLnziTBsYSo7eq9VJo4r48giJz
+         5LulHpxnHqTt0fGJOC2JN3+jSzEQbMoOQaKn56dWm/9zC8/HKw6XwdAOAoQNM2G5xflr
+         KwXbPQTrOgr+CWPvxGcmyuhh5dMCiAd2vB4jHuDwogXY1xlTFRt8YRC795eFWkRLOJ6L
+         CDQw==
+X-Gm-Message-State: AOAM5336Fida0GQfD+AoJ8i+hQ9+dvpEKV4VRuxk+MWrwiRZKs/w9ekT
+        Ru6qEocCvAnS4l+v2ic1xmI=
+X-Google-Smtp-Source: ABdhPJxXo1M9oQcQr7ODrb0ImCkWKJ2lF2aijATdthn8p2Kvnr5igRwRA+jac3xihFPxAAcZOhTyGg==
+X-Received: by 2002:a05:622a:130b:: with SMTP id v11mr9782307qtk.4.1623222231157;
+        Wed, 09 Jun 2021 00:03:51 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id s133sm10923995qke.97.2021.06.09.00.03.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 00:03:50 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
+To:     SeongJae Park <sj38.park@gmail.com>
+Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
+        Jonathan.Cameron@Huawei.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, amit@kernel.org,
+        benh@kernel.crashing.org, brendanhiggins@google.com,
+        corbet@lwn.net, david@redhat.com, dwmw@amazon.com,
+        elver@google.com, fan.du@intel.com, foersleo@amazon.de,
+        greg@kroah.com, gthelen@google.com, guoju.fgj@alibaba-inc.com,
+        mgorman@suse.de, minchan@kernel.org, mingo@redhat.com,
+        namhyung@kernel.org, peterz@infradead.org, riel@surriel.com,
+        rientjes@google.com, rostedt@goodmis.org, rppt@kernel.org,
+        shakeelb@google.com, shuah@kernel.org, snu@amazon.de,
+        vbabka@suse.cz, vdavydov.dev@gmail.com, zgf574564920@gmail.com,
+        linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v29 10/13] Documentation: Add documents for DAMON
+Date:   Wed,  9 Jun 2021 07:03:41 +0000
+Message-Id: <20210609070341.1421-1-sjpark@amazon.de>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210520075629.4332-11-sj38.park@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/9/21 8:38 AM, Christian Brauner wrote:
-> On Tue, Jun 08, 2021 at 12:16:43PM -0500, Eric W. Biederman wrote:
->> Hannes Reinecke <hare@suse.de> writes:
->>
->>> On 6/8/21 4:29 PM, Christian Brauner wrote:
->>>> On Tue, Jun 08, 2021 at 04:10:08PM +0200, Hannes Reinecke wrote:
-[ .. ]
->>> Granted, modifying sysfs layout is not something for the faint-hearted,
->>> and one really has to look closely to ensure you end up with a
->>> consistent layout afterwards.
->>>
->>> But let's see how things go; might well be that it turns out to be too
->>> complex to consider. Can't tell yet.
->>
->> I would suggest aiming for something like devptsfs without the
->> complication of /dev/ptmx.
->>
->> That is a pseudo filesystem that has a control node and virtual block
->> devices that were created using that control node.
-> 
-> Also see android/binder/binderfs.c
-> 
-Ah. Will have a look.
+From: SeongJae Park <sjpark@amazon.de>
 
->>
->> That is the cleanest solution I know and is not strictly limited to use
->> with containers so it can also gain greater traction.  The interaction
->> with devtmpfs should be simply having devtmpfs create a mount point for
->> that filesystem.
->>
->> This could be a new cleaner api for things like loopback devices.
-> 
-> I sent a patchset that implemented this last year.
-> 
-Do you have a pointer/commit hash for this?
+On Thu, 20 May 2021 07:56:26 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
 
-Cheers,
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> This commit adds documents for DAMON under
+> `Documentation/admin-guide/mm/damon/` and `Documentation/vm/damon/`.
+> 
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>  Documentation/admin-guide/mm/damon/guide.rst | 158 +++++++++++++
+>  Documentation/admin-guide/mm/damon/index.rst |  15 ++
+>  Documentation/admin-guide/mm/damon/plans.rst |  29 +++
+>  Documentation/admin-guide/mm/damon/start.rst | 114 +++++++++
+>  Documentation/admin-guide/mm/damon/usage.rst | 112 +++++++++
+>  Documentation/admin-guide/mm/index.rst       |   1 +
+>  Documentation/vm/damon/api.rst               |  20 ++
+>  Documentation/vm/damon/design.rst            | 166 +++++++++++++
+>  Documentation/vm/damon/eval.rst              | 232 +++++++++++++++++++
+>  Documentation/vm/damon/faq.rst               |  58 +++++
+>  Documentation/vm/damon/index.rst             |  31 +++
+>  Documentation/vm/index.rst                   |   1 +
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+I think 'guide.rst', 'plans.rst', and 'eval.rst' are not appropriate to be
+merged in mainline.  I will remove those from the next spin.  So, if you are
+reviewing this patch, please skip those.
+
+
+Thanks,
+SeongJae Park
+
+[...]
