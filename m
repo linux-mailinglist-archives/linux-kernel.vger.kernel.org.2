@@ -2,259 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDD53A1D43
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1B03A1D47
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhFIS6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 14:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
+        id S230040AbhFIS71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 14:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhFIS6r (ORCPT
+        with ESMTP id S229638AbhFIS7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 14:58:47 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577A0C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 11:56:51 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id w130-20020a25df880000b02905327e5d7f43so32475485ybg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 11:56:51 -0700 (PDT)
+        Wed, 9 Jun 2021 14:59:25 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFD8C061574;
+        Wed,  9 Jun 2021 11:57:17 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso2050020pjb.5;
+        Wed, 09 Jun 2021 11:57:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=eACkUeFfuUiPlaNvgW9UxqbJ/GQZvO8YT90FWGwtv9Y=;
-        b=BRh7I25eDc9/17l9JAfjS5kDUusX6T/ft5xtd1S5TOv0BpPXxAfn3kkS3vggUvg7QO
-         /LwS3HL0tNSSTRYOQU7cbyZcogiNmF0Lz8kmIgQA8Y2Qd4IKH5aEtElLG2zB1F+btohz
-         3lSPPYShgIpxGuxzw+ulMJiZdoGiXdUvMd2tpIP3O+wFXLKapqyCxuK5yQNA6R+rr5aq
-         TF9Nhgx4gmu16UC0vQ3sXnjqYX76h9FA+jfM7j6py7/PUjc8zhibrr9HAtXcNeE0Sgf5
-         0wwLsssWr7PgC4BvT99FcCgLYCHIBvCsgnrZmEnZpQY+Bh0fDAQNFEHV2hxyAaK2qMGB
-         4+MA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CvxEU/y35Z5QN5sL8S8hykpRPTn1Es2BsdTK3qOc3+I=;
+        b=fE0Ww7iNwkGqvdAWPbgomHkAdJbjGyU2V+FE1Q4UwsuOgdWc64qwFAyS5oEYhbQPUb
+         Je4WMohE3sqLsKgI2uIOvUuX6ZoOlrrbWutgNqBKK6yW0KuAeWflWjmMNMUxkRJwK6uH
+         s/mvtpvqDnTbc/ukvienMrXpGbMAEIXMPzZ5uwgFD8EzRpd2mroOYQsoo8iJGA2de1Xf
+         6pKATcR2ad4BBw475PhfQnxPgJbHu92n7SGqOCLXRSxUkyi0PVgG3PoJ7/EquMMris/o
+         ciD0/zkCYBkvbFaSBNTqvDQXS9zrKE1gNzTGywapAuLT4Ie/s0XuRGf4+ey2XZWtl+ZW
+         tAmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=eACkUeFfuUiPlaNvgW9UxqbJ/GQZvO8YT90FWGwtv9Y=;
-        b=K83xdMumzlaQDh+XNClgQfdZYLWrtSxfJLq/x70+YnK30mt9Rp0wAMS6G1kuDOBNig
-         361RduXHLN3Ga9sV0D5YVI1BeJoKlvicBAHRCYWwSoqwHtbcXXgk/dBesXKylPI3ue0o
-         vB9ij8AOw+DcMUd8t3gd32mICgG0BmfFYy2bXTNTgIfuLjreG5rI6kIgNhHUJfVlJhBv
-         ApDW1jzcjgzxo7SIaLUh9joeYjiV7sG/wF1aiODVnYSH0ttAuMGzjcp0kQLL/NhHP2x/
-         0TwIjRJmDE+GO2iJycP7HuXJCDVd5l1cG/ctjEY1Q7X8jjXWjeAIULGj/P4iNiO1YAjr
-         jXYg==
-X-Gm-Message-State: AOAM531crSOxYQBzzGmAjbswK01zFFdsmOf0Ujsz1VNDMMHIw5uIJu1/
-        eaPIw/3TxLo4puYnakzD/VgylyA6XH0=
-X-Google-Smtp-Source: ABdhPJyss4jj1Rs7sEaBXYb8PHmhAqS0JbST/Ve9yZfXRjVvFOOVJnNIrDCJxCgxCcejPvPTBI7ncUcHPZQ=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:bfdc:c2e5:77b1:8ef3])
- (user=seanjc job=sendgmr) by 2002:a25:488a:: with SMTP id v132mr1991471yba.467.1623265010531;
- Wed, 09 Jun 2021 11:56:50 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  9 Jun 2021 11:56:19 -0700
-In-Reply-To: <20210609185619.992058-1-seanjc@google.com>
-Message-Id: <20210609185619.992058-10-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210609185619.992058-1-seanjc@google.com>
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-Subject: [PATCH 9/9] KVM: x86: Drop "pre_" from enter/leave_smm() helpers
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+fb0b6a7e8713aeb0319c@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CvxEU/y35Z5QN5sL8S8hykpRPTn1Es2BsdTK3qOc3+I=;
+        b=eP61DnxYiPs2+lYtDOYbxO/PhzHpzzMMyy/KSfBJgiumU/wBJ3/vC+tjrXyvD0orqC
+         XTfK9fOS3JOvJ79EwvLtGIEVFX1z4npkyxRIRVGyvVBsbwQn4cJnw0T5OkuXI5jG3nP9
+         fdqN32JvSSM5hI0+OxAeEzk5t/lR/O8MNaQj8UUFehc6eewkKIScOB+kvvIsTOoGPpZl
+         6LjgPAzYRljg9p64FP5PMEgysNgTRquT5oDJuHyxo3phsdDSGFE/ssrVjbGBiaVQNPDL
+         AuVxIDqfv9KCnfjHjXL2r6KFTpxWUQf9WpB1k2Biiryt4v6QeZvuBenS7pAgsbdrwB0f
+         9b3A==
+X-Gm-Message-State: AOAM531/N9amgKkcQFHJcObVjM8p+a85Z5ZCDnrPcSEbDGzDsEQJ8tG/
+        jFR6KQt2D5nGZIdvVxEaUlnLyVatL9k=
+X-Google-Smtp-Source: ABdhPJyUfcNXUJdVNNXso7nr+i/I4ht//3UF6nRgO45MisFQct3BB6DP/w1UIX52/W2oaZIZ8741cg==
+X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr12223103pja.181.1623265035308;
+        Wed, 09 Jun 2021 11:57:15 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id i21sm263276pfd.219.2021.06.09.11.57.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 11:57:14 -0700 (PDT)
+Subject: Re: [PATCH 5.12 000/161] 5.12.10-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210608175945.476074951@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <c7f17da8-7099-9e7e-a71e-24ee5f578f7f@gmail.com>
+Date:   Wed, 9 Jun 2021 11:57:07 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
+MIME-Version: 1.0
+In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that .post_leave_smm() is gone, drop "pre_" from the remaining
-helpers.  The helpers aren't invoked purely before SMI/RSM processing,
-e.g. both helpers are invoked after state is snapshotted (from regs or
-SMRAM), and the RSM helper is invoked after some amount of register state
-has been stuffed.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/include/asm/kvm-x86-ops.h |  4 ++--
- arch/x86/include/asm/kvm_host.h    |  4 ++--
- arch/x86/kvm/emulate.c             |  6 +++---
- arch/x86/kvm/kvm_emulate.h         |  3 +--
- arch/x86/kvm/svm/svm.c             |  8 ++++----
- arch/x86/kvm/vmx/vmx.c             |  8 ++++----
- arch/x86/kvm/x86.c                 | 14 +++++++-------
- 7 files changed, 23 insertions(+), 24 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-index e7bef91cee04..99b0c80db311 100644
---- a/arch/x86/include/asm/kvm-x86-ops.h
-+++ b/arch/x86/include/asm/kvm-x86-ops.h
-@@ -106,8 +106,8 @@ KVM_X86_OP_NULL(set_hv_timer)
- KVM_X86_OP_NULL(cancel_hv_timer)
- KVM_X86_OP(setup_mce)
- KVM_X86_OP(smi_allowed)
--KVM_X86_OP(pre_enter_smm)
--KVM_X86_OP(pre_leave_smm)
-+KVM_X86_OP(enter_smm)
-+KVM_X86_OP(leave_smm)
- KVM_X86_OP(enable_smi_window)
- KVM_X86_OP_NULL(mem_enc_op)
- KVM_X86_OP_NULL(mem_enc_reg_region)
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 9c7ced0e3171..de43070afdb6 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1363,8 +1363,8 @@ struct kvm_x86_ops {
- 	void (*setup_mce)(struct kvm_vcpu *vcpu);
- 
- 	int (*smi_allowed)(struct kvm_vcpu *vcpu, bool for_injection);
--	int (*pre_enter_smm)(struct kvm_vcpu *vcpu, char *smstate);
--	int (*pre_leave_smm)(struct kvm_vcpu *vcpu, const char *smstate);
-+	int (*enter_smm)(struct kvm_vcpu *vcpu, char *smstate);
-+	int (*leave_smm)(struct kvm_vcpu *vcpu, const char *smstate);
- 	void (*enable_smi_window)(struct kvm_vcpu *vcpu);
- 
- 	int (*mem_enc_op)(struct kvm *kvm, void __user *argp);
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 34c9f785d715..cb57ad5961d0 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -2677,11 +2677,11 @@ static int em_rsm(struct x86_emulate_ctxt *ctxt)
- 	}
- 
- 	/*
--	 * Give pre_leave_smm() a chance to make ISA-specific changes to the
--	 * vCPU state (e.g. enter guest mode) before loading state from the SMM
-+	 * Give leave_smm() a chance to make ISA-specific changes to the vCPU
-+	 * state (e.g. enter guest mode) before loading state from the SMM
- 	 * state-save area.
- 	 */
--	if (ctxt->ops->pre_leave_smm(ctxt, buf))
-+	if (ctxt->ops->leave_smm(ctxt, buf))
- 		goto emulate_shutdown;
- 
- #ifdef CONFIG_X86_64
-diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
-index 31dc7ca4ff2b..3a2b6f5c7193 100644
---- a/arch/x86/kvm/kvm_emulate.h
-+++ b/arch/x86/kvm/kvm_emulate.h
-@@ -230,8 +230,7 @@ struct x86_emulate_ops {
- 
- 	unsigned (*get_hflags)(struct x86_emulate_ctxt *ctxt);
- 	void (*exiting_smm)(struct x86_emulate_ctxt *ctxt);
--	int (*pre_leave_smm)(struct x86_emulate_ctxt *ctxt,
--			     const char *smstate);
-+	int (*leave_smm)(struct x86_emulate_ctxt *ctxt, const char *smstate);
- 	void (*triple_fault)(struct x86_emulate_ctxt *ctxt);
- 	int (*set_xcr)(struct x86_emulate_ctxt *ctxt, u32 index, u64 xcr);
- };
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 8c3918a11826..322a0baa4b37 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -4249,7 +4249,7 @@ static int svm_smi_allowed(struct kvm_vcpu *vcpu, bool for_injection)
- 	return !svm_smi_blocked(vcpu);
- }
- 
--static int svm_pre_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
-+static int svm_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	int ret;
-@@ -4271,7 +4271,7 @@ static int svm_pre_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
- 	return 0;
- }
- 
--static int svm_pre_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
-+static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	struct kvm_host_map map;
-@@ -4544,8 +4544,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
- 	.setup_mce = svm_setup_mce,
- 
- 	.smi_allowed = svm_smi_allowed,
--	.pre_enter_smm = svm_pre_enter_smm,
--	.pre_leave_smm = svm_pre_leave_smm,
-+	.enter_smm = svm_enter_smm,
-+	.leave_smm = svm_leave_smm,
- 	.enable_smi_window = svm_enable_smi_window,
- 
- 	.mem_enc_op = svm_mem_enc_op,
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 50b42d7a8a11..06e084ab16de 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7541,7 +7541,7 @@ static int vmx_smi_allowed(struct kvm_vcpu *vcpu, bool for_injection)
- 	return !is_smm(vcpu);
- }
- 
--static int vmx_pre_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
-+static int vmx_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 
-@@ -7555,7 +7555,7 @@ static int vmx_pre_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
- 	return 0;
- }
- 
--static int vmx_pre_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
-+static int vmx_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	int ret;
-@@ -7730,8 +7730,8 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 	.setup_mce = vmx_setup_mce,
- 
- 	.smi_allowed = vmx_smi_allowed,
--	.pre_enter_smm = vmx_pre_enter_smm,
--	.pre_leave_smm = vmx_pre_leave_smm,
-+	.enter_smm = vmx_enter_smm,
-+	.leave_smm = vmx_leave_smm,
- 	.enable_smi_window = vmx_enable_smi_window,
- 
- 	.can_emulate_instruction = vmx_can_emulate_instruction,
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 347849caf1df..7710932cc12a 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -7106,10 +7106,10 @@ static void emulator_exiting_smm(struct x86_emulate_ctxt *ctxt)
- 	kvm_smm_changed(vcpu, false);
- }
- 
--static int emulator_pre_leave_smm(struct x86_emulate_ctxt *ctxt,
-+static int emulator_leave_smm(struct x86_emulate_ctxt *ctxt,
- 				  const char *smstate)
- {
--	return static_call(kvm_x86_pre_leave_smm)(emul_to_vcpu(ctxt), smstate);
-+	return static_call(kvm_x86_leave_smm)(emul_to_vcpu(ctxt), smstate);
- }
- 
- static void emulator_triple_fault(struct x86_emulate_ctxt *ctxt)
-@@ -7164,7 +7164,7 @@ static const struct x86_emulate_ops emulate_ops = {
- 	.set_nmi_mask        = emulator_set_nmi_mask,
- 	.get_hflags          = emulator_get_hflags,
- 	.exiting_smm         = emulator_exiting_smm,
--	.pre_leave_smm       = emulator_pre_leave_smm,
-+	.leave_smm           = emulator_leave_smm,
- 	.triple_fault        = emulator_triple_fault,
- 	.set_xcr             = emulator_set_xcr,
- };
-@@ -8896,11 +8896,11 @@ static void enter_smm(struct kvm_vcpu *vcpu)
- 		enter_smm_save_state_32(vcpu, buf);
- 
- 	/*
--	 * Give pre_enter_smm() a chance to make ISA-specific changes to the
--	 * vCPU state (e.g. leave guest mode) after we've saved the state into
--	 * the SMM state-save area.
-+	 * Give enter_smm() a chance to make ISA-specific changes to the vCPU
-+	 * state (e.g. leave guest mode) after we've saved the state into the
-+	 * SMM state-save area.
- 	 */
--	static_call(kvm_x86_pre_enter_smm)(vcpu, buf);
-+	static_call(kvm_x86_enter_smm)(vcpu, buf);
- 
- 	kvm_smm_changed(vcpu, true);
- 	kvm_vcpu_write_guest(vcpu, vcpu->arch.smbase + 0xfe00, buf, sizeof(buf));
+On 6/8/2021 11:25 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.10 release.
+> There are 161 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.10-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.32.0.rc1.229.g3e70b5a671-goog
-
+Florian
