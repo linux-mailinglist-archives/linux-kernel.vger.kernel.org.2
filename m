@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5883C3A1340
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C081C3A1361
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239505AbhFILsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239440AbhFILsV (ORCPT
+        id S239546AbhFILud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:50:33 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]:44820 "EHLO
+        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239582AbhFILtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:48:21 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7FBC0613A2
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:46:10 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id s70-20020a1ca9490000b02901a589651424so3074948wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:46:10 -0700 (PDT)
+        Wed, 9 Jun 2021 07:49:06 -0400
+Received: by mail-wm1-f44.google.com with SMTP id m41-20020a05600c3b29b02901b9e5d74f02so886219wms.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:47:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=faDJwJkZnio3K1+D2/qEPWG8piye6Bb4xmyIkwVtbsM=;
-        b=UmrttrlpGT6MTSmxtyJNOBUbmgFtWxEkrhN37QpZ+rjaocPopM9jfvdyufpxSLlm3G
-         DdiTLtUDRpfqttGSfpsIllmhbJ3yPScaZZRUaRyJBZnNXj6wCa8gAabrGfeTZI1gYv8B
-         iWLYVRax67K6VijlPRVRzhtdTgkuxDM8hXOCH+VVNa3OjM6deZP0eUuAGBbjkJ8vRiuL
-         zu+VMO8ydFC+lQDEtpVBfrbRwMRXOe6wuzYmvRUBNhn6EDgRRTgpL1qFdSVUAnXjwYtC
-         ZHZzvTOJNmF8AwrInbW5Kro32m3fh9DIeaXdNYkIyeLLcWbLrBPSgWUdKK3oT7IBb2N4
-         AdPg==
+        bh=GrRo1AeZoDDEDA6M/EqmswKct0DqVxPXdJgVJq+2YZA=;
+        b=GY1qLpbWuYmVm5FKBkxdLJUYsQPIfp10KhFKTtabDOkCaV1zDUJgQrtK7jqo2nLWP4
+         hjGtKmO3E4E/NVtw+e4F+ErynuqwTXZon7DW2gjWN37rp5VyopASRC8Y3wrOoYBtc2J2
+         PyyaP8z1hkHOMWn5i1DinqIzKkhM8R7fqVve3XhhaT7q2WNybF5TuSYQhw+Owa5Gs2VF
+         o2t/orxFwEw5whdS+to0NJU2fpgrE9SZrELgcawgdnoI6Ty+uEsyWGjSJV0Kj0yVnEXS
+         VR+QgEbLYa6ZlLaz3T9tqQG3hEyh8X8Cy2DADxtlEKdPKEjyhKo6DxYnXnFwv7A6KU7s
+         Z/YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=faDJwJkZnio3K1+D2/qEPWG8piye6Bb4xmyIkwVtbsM=;
-        b=kXRArugJhq3u+xa7gdi8ed4UNzGUkDxK5ocErIWoxl1L94RVWxJpAKsrg3QAqyngyD
-         1jZcwUpxfDGVe0ICgU6yrGxN2GTIKag/9nJRnIDL5e7LztOnccZyDvxpXFv7Qx1gVcr1
-         hfNSq0LmP3YwLFnlvw4Bwgz6xbi9+jEFvzoUo1mQaylx5BsyfDH1rl6yJr06rO/CeLCm
-         sI15+YSdBEWW57aiuYddoXYSrTl6HPB9kSfG9+VnOiwT/JiQTPFZare8dmKlvmyU/KVG
-         J/BtI3pL7YH4QwX0/axhkf4CNoFtcc31E9FZxoVPkSNqA2jijRd8qlAIkM7sXiF4iDMF
-         rIzg==
-X-Gm-Message-State: AOAM532G9iEBZidzloA0h73eJQEipE4eeFK37RZgOE2bWoSPHFA+GiHI
-        m9pfN3C3wq6AqG6z1Gjx0Rc9UqYvqPlAREXg
-X-Google-Smtp-Source: ABdhPJwyvaRJV27WEeZvyOtiMcZITiOPSb+nkAyiLSj8gjv4MqWxJI0U3RW05ioxpVts1hS0s+ciiw==
-X-Received: by 2002:a05:600c:4f8f:: with SMTP id n15mr11461111wmq.116.1623239169240;
-        Wed, 09 Jun 2021 04:46:09 -0700 (PDT)
+        bh=GrRo1AeZoDDEDA6M/EqmswKct0DqVxPXdJgVJq+2YZA=;
+        b=Apfx4M6lzOxvlspLvKW9/wvSYmfXvAmy+mMw3tLD/f451EkhIJxni9WuuDm6qDw7dD
+         U5VP666gbMRQzj+BVPpY26Ap75siGlF5LPbX4SVJrswgB07Y+8fHYR8eTBQjRNypixD3
+         p9+hxKmUFxx6eB75ZkFokM0d43W9K4WdYreWDaDnHh9FyWQ0+2oEeNey/zxAhqMK3xxK
+         dqQHtFovmTh9eveS06zzrdg5YB+1SOld2V1VVS4MIgLIx4HES66DYT7sOvbqF+imhlmm
+         Fys/OlwHT3b9Vn3NZCmPtRbkElSZUvlPGAk0hBcpfqvh3reD2HnvEUDRuHvx2aeCH2Rm
+         jn/g==
+X-Gm-Message-State: AOAM5316/FVf11MBoS6S6uAPcfQTEHqX/oIc4EKt905dbzJibo/DrGN/
+        6zOQ9L4IkzeAKy1eXcsBP0mnqhL87YSYfJ4P
+X-Google-Smtp-Source: ABdhPJzzRtdjN5kgvGMcASKTrOWnR3p3hRAf6VvL5a3Smakef4Dv1FTRQLIMC6Y3h8ZSd1Juy0kiow==
+X-Received: by 2002:a05:600c:ada:: with SMTP id c26mr8515903wmr.189.1623239170763;
+        Wed, 09 Jun 2021 04:46:10 -0700 (PDT)
 Received: from localhost ([2a02:768:2307:40d6::45a])
-        by smtp.gmail.com with ESMTPSA id x18sm2153689wrw.19.2021.06.09.04.46.08
+        by smtp.gmail.com with ESMTPSA id r2sm23913166wrv.39.2021.06.09.04.46.10
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Jun 2021 04:46:08 -0700 (PDT)
+        Wed, 09 Jun 2021 04:46:10 -0700 (PDT)
 Sender: Michal Simek <monstr@monstr.eu>
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
@@ -56,9 +53,9 @@ To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
 Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 28/31] arm64: zynqmp: Sync psgtr node location with zcu104-revA
-Date:   Wed,  9 Jun 2021 13:45:04 +0200
-Message-Id: <cd168b19c13fd46874e017a6735a744111f3b47a.1623239033.git.michal.simek@xilinx.com>
+Subject: [PATCH 29/31] arm64: zynqmp: Remove description for 8T49N287 and si5382 chips
+Date:   Wed,  9 Jun 2021 13:45:05 +0200
+Message-Id: <b63c4a6feee6e92b578efd94f98cb1eaeaf00874.1623239033.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1623239033.git.michal.simek@xilinx.com>
 References: <cover.1623239033.git.michal.simek@xilinx.com>
@@ -68,81 +65,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-zcu104-revA has node below pinctrl which is not the same on revC. Sync
-location for easier comparison.
-Also zc1751-dc1 is not using this position.
+Based on commit 73d677e9f379 ("arm64: dts: zynqmp: Remove si5328 device
+nodes") also remove description for clock chips which don't have Linux
+driver yet.
 
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
 
- .../boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts    | 14 +++++++-------
- arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts  | 14 +++++++-------
- 2 files changed, 14 insertions(+), 14 deletions(-)
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts | 4 +---
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts | 4 +---
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts | 4 +---
+ 3 files changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
-index 9f176307b62a..d78439e891b9 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
-@@ -58,13 +58,6 @@ clock_si5338_3: clk150 {
- 	};
- };
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
+index 048df043b45c..86fff3632c7d 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
+@@ -160,9 +160,7 @@ i2c@1 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			reg = <1>;
+-			clock_8t49n287: clock-generator@6c { /* 8T49N287 - u182 */
+-				reg = <0x6c>;
+-			};
++			/* 8T49N287 - u182 */
+ 		};
  
--&psgtr {
--	status = "okay";
--	/* dp, usb3, sata */
--	clocks = <&clock_si5338_0>, <&clock_si5338_2>, <&clock_si5338_3>;
--	clock-names = "ref1", "ref2", "ref3";
--};
--
- &fpd_dma_chan1 {
- 	status = "okay";
- };
-@@ -340,6 +333,13 @@ conf {
- 	};
- };
- 
-+&psgtr {
-+	status = "okay";
-+	/* dp, usb3, sata */
-+	clocks = <&clock_si5338_0>, <&clock_si5338_2>, <&clock_si5338_3>;
-+	clock-names = "ref1", "ref2", "ref3";
-+};
-+
- &qspi {
- 	status = "okay";
- 	flash@0 {
+ 		i2c@2 {
 diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
-index fb8d76b5c27f..c21d9612ce04 100644
+index c21d9612ce04..2a872d439804 100644
 --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
 +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
-@@ -429,6 +429,13 @@ conf-tx {
- 	};
- };
+@@ -184,9 +184,7 @@ i2c@1 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			reg = <1>;
+-			clock_8t49n287: clock-generator@6c { /* 8T49N287 - u182 */
+-				reg = <0x6c>;
+-			};
++			/* 8T49N287 - u182 */
+ 		};
  
-+&psgtr {
-+	status = "okay";
-+	/* nc, sata, usb3, dp */
-+	clocks = <&clock_8t49n287_5>, <&clock_8t49n287_2>, <&clock_8t49n287_3>;
-+	clock-names = "ref1", "ref2", "ref3";
-+};
-+
- &qspi {
- 	status = "okay";
- 	flash@0 {
-@@ -446,13 +453,6 @@ &rtc {
- 	status = "okay";
- };
- 
--&psgtr {
--	status = "okay";
--	/* nc, sata, usb3, dp */
--	clocks = <&clock_8t49n287_5>, <&clock_8t49n287_2>, <&clock_8t49n287_3>;
--	clock-names = "ref1", "ref2", "ref3";
--};
--
- &sata {
- 	status = "okay";
- 	/* SATA OOB timing settings */
+ 		i2c@2 {
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+index 4dc315ee91b7..dac5ba67a160 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+@@ -475,9 +475,7 @@ i2c@4 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			reg = <4>;
+-			si5382: clock-generator@69 { /* SI5382 - u48 */
+-				reg = <0x69>;
+-			};
++			/* SI5382 - u48 */
+ 		};
+ 		i2c@5 {
+ 			#address-cells = <1>;
 -- 
 2.31.1
 
