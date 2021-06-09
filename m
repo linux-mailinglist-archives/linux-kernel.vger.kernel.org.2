@@ -2,117 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15DF3A1097
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25583A10E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238337AbhFIJxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238326AbhFIJxm (ORCPT
+        id S238647AbhFIKKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:10:53 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:30412 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238612AbhFIKKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:53:42 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597A1C061574;
-        Wed,  9 Jun 2021 02:51:47 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id z22so14920310ljh.8;
-        Wed, 09 Jun 2021 02:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Mbbl8pt+ODA34KdyS+WloGNbfQNhCiN7M0uQW+cvUEM=;
-        b=bOujbOaFFtDatG1AG5ioV3VvdVj+AQRvnsBvIxVgo5hrZDXaBAwYfoDhzfHI3xBeNU
-         prB+b2ediJvU3L4Hqfpc0464PgxknQ4rKsjgkqEGXPiTpywv23UB57msoW95M9dw29gA
-         AWRWCSrZm6t1one+IiB5KWETM6pbo2HEpwk/OSo0uRt+RDmVwIMZATioNyhHxUmiXwXz
-         xnktxtFFFUcEz1EtfOMRfAz6KVqdhdJprfhFCkBorJbJCj9KsrUqw4e9mjdwhAhQBNZo
-         ogVyqF6A53f8+/9qK0AfmdpcdrB/09GIlbZ7HaJATAgTI4DvFlfjmddm+VoXD2v1ZY7l
-         l/Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Mbbl8pt+ODA34KdyS+WloGNbfQNhCiN7M0uQW+cvUEM=;
-        b=cvTTUTkW/Li45DekJUbLqokzR7gLeEr8RomZoweR6OqCMXaMH6CEhCZKtfhc4C5iMs
-         ZWXfskIif5KXCFoS5ZSNrsUOUkEq/eoqiaa1rhMWjxZBL0gtHF9q8K654+2fCKgNPCLU
-         T7pfkVryg0ucJTS72xn/O/xlv/Aom60Z2YQPbHxaM75bH/heGmo+MyzxSwvFSCp0A/L6
-         kw/IGMyYbIDNqffgM7/e5aJD1q78NkFTrB11CxnJ3fSQRzcqAqtls1vnQoJ+jfnY4SY4
-         PmxIFEDf2b2t6XfBEBXwZsC3RnGpFZp78EsjQjzI+IAs95GUKAuQiCAK4uhpCqV7YPan
-         Kp8A==
-X-Gm-Message-State: AOAM533NViAshVnSh7iF3Ll7yFal2VtmWBK7taDIYENtlCi813LQ2Jx6
-        1hCS/EibnSAGAac81IOIDbjI2kt4auo=
-X-Google-Smtp-Source: ABdhPJz5V2ESY/LehtRED5paOEjX4yIV+dIM6NbBr+JPM8jskGSdB4Wt8STMRXpCm9cNokIBwO9lIg==
-X-Received: by 2002:a2e:a593:: with SMTP id m19mr22031705ljp.103.1623232305523;
-        Wed, 09 Jun 2021 02:51:45 -0700 (PDT)
-Received: from [192.168.1.100] ([178.176.75.133])
-        by smtp.gmail.com with ESMTPSA id q3sm264804ljp.44.2021.06.09.02.51.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 02:51:45 -0700 (PDT)
-Subject: Re: [PATCH][next] net: usb: asix: ax88772: Fix less than zero
- comparison of a u16
-To:     Colin King <colin.king@canonical.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210608145823.159467-1-colin.king@canonical.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <5ac017f5-b8cc-6177-888a-318681b36da3@gmail.com>
-Date:   Wed, 9 Jun 2021 12:51:33 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210608145823.159467-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 9 Jun 2021 06:10:52 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R301e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UbqxsMV_1623232322;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UbqxsMV_1623232322)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 09 Jun 2021 17:52:08 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     valentina.manea.m@gmail.com
+Cc:     shuah@kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] usbip: tools: usbipd: use ARRAY_SIZE for sockfdlist
+Date:   Wed,  9 Jun 2021 17:51:56 +0800
+Message-Id: <1623232316-89719-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.06.2021 17:58, Colin King wrote:
+Use ARRAY_SIZE instead of dividing sizeof array with sizeof an
+element.
 
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The comparison of the u16 priv->phy_addr < 0 is always false because
-> phy_addr is unsigned. Fix this by assigning the return from the call
-> to function asix_read_phy_addr to int ret and using this for the
-> less than zero error check comparison.
-> 
-> Addresses-Coverity: ("Unsigned compared against 0")
-> Fixes: e532a096be0e ("net: usb: asix: ax88772: add phylib support")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   drivers/net/usb/asix_devices.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
-> index 57dafb3262d9..211c5a87eb15 100644
-> --- a/drivers/net/usb/asix_devices.c
-> +++ b/drivers/net/usb/asix_devices.c
-> @@ -704,9 +704,10 @@ static int ax88772_init_phy(struct usbnet *dev)
->   	struct asix_common_private *priv = dev->driver_priv;
->   	int ret;
->   
-> -	priv->phy_addr = asix_read_phy_addr(dev, true);
-> -	if (priv->phy_addr < 0)
-> +	ret = asix_read_phy_addr(dev, true);
-> +	if (ret < 0)
->   		return priv->phy_addr;
+Clean up the following coccicheck warning:
 
-    It's not yet assigned at this point, should be:
+./tools/usb/usbip/src/usbipd.c:536:19-20: WARNING: Use ARRAY_SIZE.
 
-		return ret;
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ tools/usb/usbip/src/usbipd.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> +	priv->phy_addr = ret;
+diff --git a/tools/usb/usbip/src/usbipd.c b/tools/usb/usbip/src/usbipd.c
+index 48398a7..4826d13 100644
+--- a/tools/usb/usbip/src/usbipd.c
++++ b/tools/usb/usbip/src/usbipd.c
+@@ -532,8 +532,7 @@ static int do_standalone_mode(int daemonize, int ipv4, int ipv6)
+ 		usbip_driver_close(driver);
+ 		return -1;
+ 	}
+-	nsockfd = listen_all_addrinfo(ai_head, sockfdlist,
+-		sizeof(sockfdlist) / sizeof(*sockfdlist));
++	nsockfd = listen_all_addrinfo(ai_head, sockfdlist, ARRAY_SIZE(sockfdlist));
+ 	freeaddrinfo(ai_head);
+ 	if (nsockfd <= 0) {
+ 		err("failed to open a listening socket");
+-- 
+1.8.3.1
 
-    Assigned only here. :-)
-
->   	snprintf(priv->phy_name, sizeof(priv->phy_name), PHY_ID_FMT,
->   		 priv->mdio->id, priv->phy_addr);
-
-MBR, Sergei
