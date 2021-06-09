@@ -2,118 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 516AD3A0E83
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E893A0E88
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236997AbhFIILS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:11:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236372AbhFIILR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:11:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 257BE61361;
-        Wed,  9 Jun 2021 08:09:20 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 10:09:18 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        gregkh@linuxfoundation.org, containers@lists.linux.dev,
-        linux-kernel@vger.kernel.org, lkml@metux.net
-Subject: Re: device namespaces
-Message-ID: <20210609080918.ma2klvxkjad4pjrn@wittgenstein>
-References: <YL9liW99Ytf6uBlu@kroah.com>
- <9157affa-b27a-c0f4-f6ee-def4a991fd4e@suse.de>
- <20210608142911.ievp2rpuquxjuyus@wittgenstein>
- <d956398e-7ee6-ba36-43cc-4cdcea34b5b9@suse.de>
- <877dj4ff9g.fsf@disp2133>
- <20210609063818.xnod4rzvti3ujkvn@wittgenstein>
- <b9ea9116-7120-b0a7-b739-dd8513e12c5e@suse.de>
- <20210609072108.ldhsxfnfql4pacqx@wittgenstein>
- <85a0d777-dea6-9574-8946-9fc8f912c1af@suse.de>
+        id S237206AbhFIILl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236372AbhFIILk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 04:11:40 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B979AC061574;
+        Wed,  9 Jun 2021 01:09:30 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id k5-20020a05600c1c85b02901affeec3ef8so3683309wms.0;
+        Wed, 09 Jun 2021 01:09:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZWS3MwmOtTgK8KzMw9axjq4+2CXYo4dUJ6kQFDobHa4=;
+        b=RP9SBzME6Yp5GvJvuPzsa8sUoTFFIj9qPw33zzygi8NFBPwNH1Raxtlk5O7KBPxD1S
+         b0ZpQEmFcCiAnywdlfGmTF3mSfJpsj2sJVbB7c00YPIDPqyFdNMmM/gwQdzlF10fOqWr
+         O6rxzH2fUpkOfkSglik3kbs2aenbxAfAcfHr5Ydcbt3neH16dciL4w3FPj2ZIzD4z7Ji
+         ZGG//irhoOjWPkLE95q4ZF3/kth7zhU+szCdFCT9E/br3rD4yrlj1XhYJgWTjYVlq+Bl
+         zAiRHXPrTgOQeMBaMA15DfMPRDwKR3jOhvTzOuSq/gPCc+4FawwxcWbUc9+Q84EngWnt
+         vv1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZWS3MwmOtTgK8KzMw9axjq4+2CXYo4dUJ6kQFDobHa4=;
+        b=gCZ3c4/TfIZobiqmEwjcvHxe4W3SlXVyHhE4lN8YBrjKsFm4hW8a+o0Bzhntegu3H2
+         N9Lhwal7bZN/bk+FcM5JELR7Oy0m75Hd9CeFsCHEVBPytXZwn/jmGUVv+82q+/ad1Mh8
+         Rysy55yEG7nZQ4x0XurMInXYLdshVeLVrWCNhWwQg/KdfAvlLQD8IMvJIauWFO7sjGJJ
+         Yg6YnpqTT/8j4rk5BLKx0IPdGMgPiKegqD7AHozRXjmpTdPwpvIrQeBrqkAY1qKW3TWj
+         GRERfkxtk9Kwj9x/evCwwIZOecnPDfGpnraYS1jXR8LumsHyhE8Ivf5L/j7nvnoB0BYk
+         ChAw==
+X-Gm-Message-State: AOAM530/CV4a2qAdFLCYW1sWCw+P00NLMkcUmjm6EhNzZrG6oE403f2+
+        iN89GfaCP8plK4YAk5LQ8HiQr1rnFd0=
+X-Google-Smtp-Source: ABdhPJxF19Evm7s4ElEWSnMEPIT+yKJD5u0Z2LH2a7HoLDsA4tr5Oe1LO+xtXd43URi0nrJ5s8BxWg==
+X-Received: by 2002:a05:600c:4a09:: with SMTP id c9mr8315517wmp.162.1623226169391;
+        Wed, 09 Jun 2021 01:09:29 -0700 (PDT)
+Received: from ziggy.stardust (81.172.61.185.dyn.user.ono.com. [81.172.61.185])
+        by smtp.gmail.com with ESMTPSA id v18sm24943781wrb.10.2021.06.09.01.09.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 01:09:29 -0700 (PDT)
+Subject: Re: [PATCH v4] thermal: mediatek: add sensors-support
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210608154530.70074-1-linux@fw-web.de>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <9eb45f06-1303-1438-7ba0-b9ccaa898b34@gmail.com>
+Date:   Wed, 9 Jun 2021 10:09:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <20210608154530.70074-1-linux@fw-web.de>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <85a0d777-dea6-9574-8946-9fc8f912c1af@suse.de>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 09:54:05AM +0200, Hannes Reinecke wrote:
-> On 6/9/21 9:21 AM, Christian Brauner wrote:
-> > On Wed, Jun 09, 2021 at 09:02:36AM +0200, Hannes Reinecke wrote:
-> >> On 6/9/21 8:38 AM, Christian Brauner wrote:
-> >>> On Tue, Jun 08, 2021 at 12:16:43PM -0500, Eric W. Biederman wrote:
-> >>>> Hannes Reinecke <hare@suse.de> writes:
-> >>>>
-> >>>>> On 6/8/21 4:29 PM, Christian Brauner wrote:
-> >>>>>> On Tue, Jun 08, 2021 at 04:10:08PM +0200, Hannes Reinecke wrote:
-> >> [ .. ]
-> >>>>> Granted, modifying sysfs layout is not something for the faint-hearted,
-> >>>>> and one really has to look closely to ensure you end up with a
-> >>>>> consistent layout afterwards.
-> >>>>>
-> >>>>> But let's see how things go; might well be that it turns out to be too
-> >>>>> complex to consider. Can't tell yet.
-> >>>>
-> >>>> I would suggest aiming for something like devptsfs without the
-> >>>> complication of /dev/ptmx.
-> >>>>
-> >>>> That is a pseudo filesystem that has a control node and virtual block
-> >>>> devices that were created using that control node.
-> >>>
-> >>> Also see android/binder/binderfs.c
-> >>>
-> >> Ah. Will have a look.
-> > 
-> > I implemented this a few years back and I think it should've made it
-> > onto Android by default now. So that approach does indeed work well, it
-> > seems:
-> > https://chromium.googlesource.com/aosp/platform/system/core/+/master/rootdir/init.rc#257
-> > 
-> > This should be easier to follow than the devpts case because you don't
-> > need to wade through the {t,p}ty layer.
-> > 
-> >>
-> >>>>
-> >>>> That is the cleanest solution I know and is not strictly limited to use
-> >>>> with containers so it can also gain greater traction.  The interaction
-> >>>> with devtmpfs should be simply having devtmpfs create a mount point for
-> >>>> that filesystem.
-> >>>>
-> >>>> This could be a new cleaner api for things like loopback devices.
-> >>>
-> >>> I sent a patchset that implemented this last year.
-> >>>
-> >> Do you have a pointer/commit hash for this?
-> > 
-> > Yes, sure:
-> > https://lore.kernel.org/linux-block/20200424162052.441452-1-christian.brauner@ubuntu.com/
-> > 
-> > You can also just pull my branch. I think it's still based on v5.7 or sm:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=loopfs
-> > 
-> > I'm happy to collaborate on this too.
-> >
-> How _very_ curious. 'kernfs: handle multiple namespace tags' and 'loop:
-> preserve sysfs backwards compability' are essentially the same patches I
-> did for my block namespaces prototyp; I named it 'KOBJ_NS_TYPE_BLK', not
-> 'KOBJ_NS_TYPE_USER', though :-)
-> 
-> Guess we really should cooperate.
-> 
-> Speaking of which: why did you name it 'user' namespace?
-> There already is a generic 'user_namespace' in
-> include/linux/user_namespace.h, serving as a container for all
-> namespaces; as such it probably should include this 'user' namespace,
-> leading to quite some confusion.
-> 
-> Or did I misunderstood something here?
 
-Ah yes, you misunderstand. The KOBJ_NS_TYPE_* tags are namespace tags.
-So KOBJ_NS_TYPE_NET is a network namespace tag. So KOBJ_NS_TYPE_USER is
-a user namespace tag not a completely new namespace. The idea very
-roughly being that devices such as loop devices are ultimately filtered
-by user namespace which is taken from the s_user_ns the loopfs instance
-is mounted in. We should compare notes.
 
-Christian
+On 08/06/2021 17:45, Frank Wunderlich wrote:
+> From: Frank Wunderlich <frank-w@public-files.de>
+> 
+> add HWMON-support to mediateks thermal driver to allow lm-sensors
+> userspace tools read soc temperature
+> 
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+> ---
+> v4: change message to dev_warn as suggested by matthias
+> v3: drop no_hwmon
+> v2: drop ifdef and used devm_thermal_add_hwmon_sysfs
+> ---
+>  drivers/thermal/mtk_thermal.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
+> index 97e8678ccf0e..ede94eadddda 100644
+> --- a/drivers/thermal/mtk_thermal.c
+> +++ b/drivers/thermal/mtk_thermal.c
+> @@ -23,6 +23,8 @@
+>  #include <linux/reset.h>
+>  #include <linux/types.h>
+>  
+> +#include "thermal_hwmon.h"
+> +
+>  /* AUXADC Registers */
+>  #define AUXADC_CON1_SET_V	0x008
+>  #define AUXADC_CON1_CLR_V	0x00c
+> @@ -1087,6 +1089,10 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+>  		goto err_disable_clk_peri_therm;
+>  	}
+>  
+> +	ret = devm_thermal_add_hwmon_sysfs(tzdev);
+> +	if (ret)
+> +		dev_warn(&pdev->dev, "error in thermal_add_hwmon_sysfs");
+> +
+>  	return 0;
+>  
+>  err_disable_clk_peri_therm:
+> 
