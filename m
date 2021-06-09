@@ -2,233 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E193A1701
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211563A170A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237737AbhFIOWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:22:45 -0400
-Received: from mga09.intel.com ([134.134.136.24]:10599 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234226AbhFIOWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:22:35 -0400
-IronPort-SDR: 7TI4RHqnbhF0JOZ23my5ZZSEODzfnTfzHoYEB9oPZ5dH21akxElsEr0V+dnQjlzXQo3DCpO1kh
- DFwvFDmzJ9Zw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="205044783"
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="205044783"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 07:20:39 -0700
-IronPort-SDR: 44ORfR3WOSBYwKlumy/aD52zaQD5jBPha1bvegeu/XAwLsG+7njisrM7gQHQ6bWVKjuWkB+xKT
- Bsm1KjEl3Lnw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="482402732"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.79])
-  by orsmga001.jf.intel.com with ESMTP; 09 Jun 2021 07:20:36 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
-Date:   Wed,  9 Jun 2021 17:20:55 +0300
-Message-Id: <20210609142055.32226-4-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210609142055.32226-1-adrian.hunter@intel.com>
-References: <20210609142055.32226-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S236453AbhFIOYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:24:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46875 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235826AbhFIOYO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:24:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623248539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pJmqxzT8uSof7JvXwU0e58Z2K6C1TfI+K5YVC+evFiE=;
+        b=D/mzUEavIITh10R2gCJcBw/XMOIzhFkXFcWsRBNMU7n/BX7c907Ut1jC3fPNuEVFqdmItT
+        k3M3993zdFIussuDudiC9UWbQ0W5njRNYXoEe/dbVr2GNNXsc7lB+DWOOBotZQA2PiyTMC
+        Yqy5pjJ/lxAUm8wpsbifC6LfqBIIk0U=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-596-MLDjYnGvOSuNZw3nFYu7WA-1; Wed, 09 Jun 2021 10:22:18 -0400
+X-MC-Unique: MLDjYnGvOSuNZw3nFYu7WA-1
+Received: by mail-oo1-f72.google.com with SMTP id o2-20020a4ad4820000b0290208a2516d36so15606237oos.16
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 07:22:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pJmqxzT8uSof7JvXwU0e58Z2K6C1TfI+K5YVC+evFiE=;
+        b=lFf/PgtZQPXgpkiZaJPAV5DsHRTxGF6f4NRFuXW9f5AWFQ9JryGHhwN14N1nkSwJbK
+         UuVaNhZ424iju4xS/X3TZhTtuTQcirb9raXd9lKrHATsmu/0LPqjYDaYPrphYKr/KdLo
+         C0TRYFne3n3oVBk/9jemwDfBmfURn5ialFAA/C3wi3wRI6Psredm54/smZWkTV26Hfnm
+         EbJCCzAiw0tzWPYEPheaIERSiixzWWI24F9f6v1lK9vfHmWAXZxFdft3ZV+axMZ0ftwu
+         1h3w6eE18eKbym36Ds/662Wt52uD0z7LZgtPk9SMWzYBzOSdccpoVfhVQDT1GRKQxyYP
+         vczQ==
+X-Gm-Message-State: AOAM532HHRDIb8o3HjdBGbs49Q/5G9dy/778ss8ARCN20sOxcS7DsO5q
+        3N3htTID8JuF2LYjZ6DfBJMs67J+NnInPXPvzxdrcxgqxD0Xk2xI5NK0XObfbfnAGUzbBxBPn70
+        gDfw/ig/FW/hJbJ7arWaeS/y7
+X-Received: by 2002:a54:4692:: with SMTP id k18mr6628945oic.118.1623248537330;
+        Wed, 09 Jun 2021 07:22:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxtTQNkYbadoKGH9x829Ut7eBbGhSJab/deluCz5u6zv1Bar6KI8Zg7PNZ+5UFKoVUqd1XH+g==
+X-Received: by 2002:a54:4692:: with SMTP id k18mr6628919oic.118.1623248537059;
+        Wed, 09 Jun 2021 07:22:17 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id o4sm3414432oon.15.2021.06.09.07.22.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 07:22:16 -0700 (PDT)
+From:   trix@redhat.com
+To:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com,
+        gregkh@linuxfoundation.org, nava.manne@xilinx.com,
+        dinguyen@kernel.org, krzysztof.kozlowski@canonical.com,
+        yilun.xu@intel.com, arnd@arndb.de, fpacheco@redhat.com,
+        richard.gong@intel.com, luca@lucaceresoli.net
+Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH v2 0/4]  fpga: reorganize to subdirs
+Date:   Wed,  9 Jun 2021 07:22:03 -0700
+Message-Id: <20210609142208.3085451-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Originally, software only supported redirecting at most one PEBS event to
-Intel PT (PEBS-via-PT) because it was not able to differentiate one event
-from another. To overcome that, add support for the
-PERF_RECORD_AUX_OUTPUT_HW_ID side-band event.
+From: Tom Rix <trix@redhat.com>
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
----
- tools/perf/Documentation/perf-intel-pt.txt |  7 +-
- tools/perf/util/intel-pt.c                 | 85 +++++++++++++++++++++-
- 2 files changed, 87 insertions(+), 5 deletions(-)
+The incoming xrt patchset has a toplevel subdir xrt/
+The current fpga/ uses a single dir with filename prefixes to subdivide owners
+For consistency, there should be only one way to organize the fpga/ dir.
+Because the subdir model scales better, refactor to use it.
+The discussion wrt xrt is here:
+https://lore.kernel.org/linux-fpga/68e85a4f-4a10-1ff9-0443-aa565878c855@redhat.com/
 
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index 184ba62420f0..19f792876085 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -1144,7 +1144,12 @@ Recording is selected by using the aux-output config term e.g.
- 
- 	perf record -c 10000 -e '{intel_pt/branch=0/,cycles/aux-output/ppp}' uname
- 
--Note that currently, software only supports redirecting at most one PEBS event.
-+Originally, software only supported redirecting at most one PEBS event because it
-+was not able to differentiate one event from another. To overcome that, more recent
-+kernels and perf tools add support for the PERF_RECORD_AUX_OUTPUT_HW_ID side-band event.
-+To check for the presence of that event in a PEBS-via-PT trace:
-+
-+	perf script -D --no-itrace | grep PERF_RECORD_AUX_OUTPUT_HW_ID
- 
- To display PEBS events from the Intel PT trace, use the itrace 'o' option e.g.
- 
-diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index 154a1077f22e..9e0539d3a79c 100644
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -111,6 +111,7 @@ struct intel_pt {
- 	u64 cbr_id;
- 	u64 psb_id;
- 
-+	bool single_pebs;
- 	bool sample_pebs;
- 	struct evsel *pebs_evsel;
- 
-@@ -147,6 +148,14 @@ enum switch_state {
- 	INTEL_PT_SS_EXPECTING_SWITCH_IP,
- };
- 
-+/* applicable_counters is 64-bits */
-+#define INTEL_PT_MAX_PEBS 64
-+
-+struct intel_pt_pebs_event {
-+	struct evsel *evsel;
-+	u64 id;
-+};
-+
- struct intel_pt_queue {
- 	struct intel_pt *pt;
- 	unsigned int queue_nr;
-@@ -188,6 +197,7 @@ struct intel_pt_queue {
- 	u64 last_br_cyc_cnt;
- 	unsigned int cbr_seen;
- 	char insn[INTEL_PT_INSN_BUF_SZ];
-+	struct intel_pt_pebs_event pebs[INTEL_PT_MAX_PEBS];
- };
- 
- static void intel_pt_dump(struct intel_pt *pt __maybe_unused,
-@@ -1976,15 +1986,13 @@ static void intel_pt_add_lbrs(struct branch_stack *br_stack,
- 	}
- }
- 
--static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
-+static int intel_pt_do_synth_pebs_sample(struct intel_pt_queue *ptq, struct evsel *evsel, u64 id)
- {
- 	const struct intel_pt_blk_items *items = &ptq->state->items;
- 	struct perf_sample sample = { .ip = 0, };
- 	union perf_event *event = ptq->event_buf;
- 	struct intel_pt *pt = ptq->pt;
--	struct evsel *evsel = pt->pebs_evsel;
- 	u64 sample_type = evsel->core.attr.sample_type;
--	u64 id = evsel->core.id[0];
- 	u8 cpumode;
- 	u64 regs[8 * sizeof(sample.intr_regs.mask)];
- 
-@@ -2110,6 +2118,45 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
- 	return intel_pt_deliver_synth_event(pt, event, &sample, sample_type);
- }
- 
-+static int intel_pt_synth_single_pebs_sample(struct intel_pt_queue *ptq)
-+{
-+	struct intel_pt *pt = ptq->pt;
-+	struct evsel *evsel = pt->pebs_evsel;
-+	u64 id = evsel->core.id[0];
-+
-+	return intel_pt_do_synth_pebs_sample(ptq, evsel, id);
-+}
-+
-+static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
-+{
-+	const struct intel_pt_blk_items *items = &ptq->state->items;
-+	struct intel_pt_pebs_event *pe;
-+	struct intel_pt *pt = ptq->pt;
-+	int err = -EINVAL;
-+	int hw_id;
-+
-+	if (!items->has_applicable_counters || !items->applicable_counters) {
-+		if (!pt->single_pebs)
-+			pr_err("PEBS-via-PT record with no applicable_counters\n");
-+		return intel_pt_synth_single_pebs_sample(ptq);
-+	}
-+
-+	for_each_set_bit(hw_id, &items->applicable_counters, INTEL_PT_MAX_PEBS) {
-+		pe = &ptq->pebs[hw_id];
-+		if (!pe->evsel) {
-+			if (!pt->single_pebs)
-+				pr_err("PEBS-via-PT record with no matching event, hw_id %d\n",
-+				       hw_id);
-+			return intel_pt_synth_single_pebs_sample(ptq);
-+		}
-+		err = intel_pt_do_synth_pebs_sample(ptq, pe->evsel, pe->id);
-+		if (err)
-+			return err;
-+	}
-+
-+	return err;
-+}
-+
- static int intel_pt_synth_error(struct intel_pt *pt, int code, int cpu,
- 				pid_t pid, pid_t tid, u64 ip, u64 timestamp)
- {
-@@ -2880,6 +2927,30 @@ static int intel_pt_process_itrace_start(struct intel_pt *pt,
- 					event->itrace_start.tid);
- }
- 
-+static int intel_pt_process_aux_output_hw_id(struct intel_pt *pt,
-+					     union perf_event *event,
-+					     struct perf_sample *sample)
-+{
-+	u64 hw_id = event->aux_output_hw_id.hw_id;
-+	struct auxtrace_queue *queue;
-+	struct intel_pt_queue *ptq;
-+	struct evsel *evsel;
-+
-+	queue = auxtrace_queues__sample_queue(&pt->queues, sample, pt->session);
-+	evsel = evlist__id2evsel_strict(pt->session->evlist, sample->id);
-+	if (!queue || !queue->priv || !evsel || hw_id > INTEL_PT_MAX_PEBS) {
-+		pr_err("Bad AUX output hardware ID\n");
-+		return -EINVAL;
-+	}
-+
-+	ptq = queue->priv;
-+
-+	ptq->pebs[hw_id].evsel = evsel;
-+	ptq->pebs[hw_id].id = sample->id;
-+
-+	return 0;
-+}
-+
- static int intel_pt_find_map(struct thread *thread, u8 cpumode, u64 addr,
- 			     struct addr_location *al)
- {
-@@ -3007,6 +3078,8 @@ static int intel_pt_process_event(struct perf_session *session,
- 		err = intel_pt_process_switch(pt, sample);
- 	else if (event->header.type == PERF_RECORD_ITRACE_START)
- 		err = intel_pt_process_itrace_start(pt, event, sample);
-+	else if (event->header.type == PERF_RECORD_AUX_OUTPUT_HW_ID)
-+		err = intel_pt_process_aux_output_hw_id(pt, event, sample);
- 	else if (event->header.type == PERF_RECORD_SWITCH ||
- 		 event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
- 		err = intel_pt_context_switch(pt, event, sample);
-@@ -3391,9 +3464,13 @@ static void intel_pt_setup_pebs_events(struct intel_pt *pt)
- 
- 	evlist__for_each_entry(pt->session->evlist, evsel) {
- 		if (evsel->core.attr.aux_output && evsel->core.id) {
-+			if (pt->single_pebs) {
-+				pt->single_pebs = false;
-+				return;
-+			}
-+			pt->single_pebs = true;
- 			pt->sample_pebs = true;
- 			pt->pebs_evsel = evsel;
--			return;
- 		}
- 	}
- }
+Follow drivers/net/ethernet/ which has control configs
+NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+Since fpgas do not have many vendors, drop the 'VENDOR' and use
+FPGA_BLA.
+
+There are several new subdirs
+altera/
+dfl/
+lattice/
+xilinx/
+
+Each subdir has a Kconfig that has a new/reused
+
+if FPGA_BLA
+  ... existing configs ...
+endif FPGA_BLA
+
+Which is sourced into the main fpga/Kconfig
+
+Each subdir has a Makefile whose transversal is controlled in the
+fpga/Makefile by
+
+obj-$(CONFIG_FPGA_BLA) += bla/
+
+Some cleanup to arrange thing alphabetically and make fpga/Makefile's
+whitespace look more like net/'s
+
+Changes from
+v1
+  Drop renaming files
+  Cleanup makefiles
+
+Tom Rix (4):
+  fpga: dfl: reorganize to subdir layout
+  fpga: xilinx: reorganize to subdir layout
+  fpga: altera: reorganize to subdir layout
+  fpga: lattice: reorganize to subdir layout
+
+ MAINTAINERS                                   |   2 +-
+ drivers/fpga/Kconfig                          | 204 +-----------------
+ drivers/fpga/Makefile                         |  47 +---
+ drivers/fpga/altera/Kconfig                   |  78 +++++++
+ drivers/fpga/altera/Makefile                  |  12 ++
+ drivers/fpga/{ => altera}/altera-cvp.c        |   0
+ drivers/fpga/{ => altera}/altera-fpga2sdram.c |   0
+ .../fpga/{ => altera}/altera-freeze-bridge.c  |   0
+ drivers/fpga/{ => altera}/altera-hps2fpga.c   |   0
+ .../{ => altera}/altera-pr-ip-core-plat.c     |   0
+ drivers/fpga/{ => altera}/altera-pr-ip-core.c |   0
+ drivers/fpga/{ => altera}/altera-ps-spi.c     |   0
+ drivers/fpga/{ => altera}/socfpga-a10.c       |   0
+ drivers/fpga/{ => altera}/socfpga.c           |   0
+ drivers/fpga/{ => altera}/stratix10-soc.c     |   0
+ drivers/fpga/{ => altera}/ts73xx-fpga.c       |   0
+ drivers/fpga/dfl/Kconfig                      |  81 +++++++
+ drivers/fpga/dfl/Makefile                     |  16 ++
+ drivers/fpga/{ => dfl}/dfl-afu-dma-region.c   |   0
+ drivers/fpga/{ => dfl}/dfl-afu-error.c        |   0
+ drivers/fpga/{ => dfl}/dfl-afu-main.c         |   0
+ drivers/fpga/{ => dfl}/dfl-afu-region.c       |   0
+ drivers/fpga/{ => dfl}/dfl-afu.h              |   0
+ drivers/fpga/{ => dfl}/dfl-fme-br.c           |   0
+ drivers/fpga/{ => dfl}/dfl-fme-error.c        |   0
+ drivers/fpga/{ => dfl}/dfl-fme-main.c         |   0
+ drivers/fpga/{ => dfl}/dfl-fme-mgr.c          |   0
+ drivers/fpga/{ => dfl}/dfl-fme-perf.c         |   0
+ drivers/fpga/{ => dfl}/dfl-fme-pr.c           |   0
+ drivers/fpga/{ => dfl}/dfl-fme-pr.h           |   0
+ drivers/fpga/{ => dfl}/dfl-fme-region.c       |   0
+ drivers/fpga/{ => dfl}/dfl-fme.h              |   0
+ drivers/fpga/{ => dfl}/dfl-n3000-nios.c       |   0
+ drivers/fpga/{ => dfl}/dfl-pci.c              |   0
+ drivers/fpga/{ => dfl}/dfl.c                  |   0
+ drivers/fpga/{ => dfl}/dfl.h                  |   0
+ drivers/fpga/lattice/Kconfig                  |  22 ++
+ drivers/fpga/lattice/Makefile                 |   4 +
+ drivers/fpga/{ => lattice}/ice40-spi.c        |   0
+ drivers/fpga/{ => lattice}/machxo2-spi.c      |   0
+ drivers/fpga/xilinx/Kconfig                   |  48 +++++
+ drivers/fpga/xilinx/Makefile                  |   6 +
+ .../fpga/{ => xilinx}/xilinx-pr-decoupler.c   |   0
+ drivers/fpga/{ => xilinx}/xilinx-spi.c        |   0
+ drivers/fpga/{ => xilinx}/zynq-fpga.c         |   0
+ drivers/fpga/{ => xilinx}/zynqmp-fpga.c       |   0
+ 46 files changed, 280 insertions(+), 240 deletions(-)
+ create mode 100644 drivers/fpga/altera/Kconfig
+ create mode 100644 drivers/fpga/altera/Makefile
+ rename drivers/fpga/{ => altera}/altera-cvp.c (100%)
+ rename drivers/fpga/{ => altera}/altera-fpga2sdram.c (100%)
+ rename drivers/fpga/{ => altera}/altera-freeze-bridge.c (100%)
+ rename drivers/fpga/{ => altera}/altera-hps2fpga.c (100%)
+ rename drivers/fpga/{ => altera}/altera-pr-ip-core-plat.c (100%)
+ rename drivers/fpga/{ => altera}/altera-pr-ip-core.c (100%)
+ rename drivers/fpga/{ => altera}/altera-ps-spi.c (100%)
+ rename drivers/fpga/{ => altera}/socfpga-a10.c (100%)
+ rename drivers/fpga/{ => altera}/socfpga.c (100%)
+ rename drivers/fpga/{ => altera}/stratix10-soc.c (100%)
+ rename drivers/fpga/{ => altera}/ts73xx-fpga.c (100%)
+ create mode 100644 drivers/fpga/dfl/Kconfig
+ create mode 100644 drivers/fpga/dfl/Makefile
+ rename drivers/fpga/{ => dfl}/dfl-afu-dma-region.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-afu-error.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-afu-main.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-afu-region.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-afu.h (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-br.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-error.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-main.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-mgr.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-perf.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-pr.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-pr.h (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-region.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme.h (100%)
+ rename drivers/fpga/{ => dfl}/dfl-n3000-nios.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-pci.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl.h (100%)
+ create mode 100644 drivers/fpga/lattice/Kconfig
+ create mode 100644 drivers/fpga/lattice/Makefile
+ rename drivers/fpga/{ => lattice}/ice40-spi.c (100%)
+ rename drivers/fpga/{ => lattice}/machxo2-spi.c (100%)
+ create mode 100644 drivers/fpga/xilinx/Kconfig
+ create mode 100644 drivers/fpga/xilinx/Makefile
+ rename drivers/fpga/{ => xilinx}/xilinx-pr-decoupler.c (100%)
+ rename drivers/fpga/{ => xilinx}/xilinx-spi.c (100%)
+ rename drivers/fpga/{ => xilinx}/zynq-fpga.c (100%)
+ rename drivers/fpga/{ => xilinx}/zynqmp-fpga.c (100%)
+
 -- 
-2.17.1
+2.26.3
 
