@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A691D3A1117
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667073A1132
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238895AbhFIKeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:34:21 -0400
-Received: from mail-pg1-f178.google.com ([209.85.215.178]:34722 "EHLO
-        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234179AbhFIKeT (ORCPT
+        id S238929AbhFIKfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:35:55 -0400
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:56130 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238868AbhFIKft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:34:19 -0400
-Received: by mail-pg1-f178.google.com with SMTP id l1so19094810pgm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:32:10 -0700 (PDT)
+        Wed, 9 Jun 2021 06:35:49 -0400
+Received: by mail-wm1-f43.google.com with SMTP id g204so3680140wmf.5;
+        Wed, 09 Jun 2021 03:33:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bRGeSLE39DpeGIJGMmlMEVZV7lqFHBN7X0hjsqYQjFs=;
-        b=AbrXfpUBAyIqW523w0ojdVtgqbAUg6k5d3bedeZ0zpeDcTYLnH35r0PAyj2igkoDxD
-         wl+GpFzxfupceCrZda++kt6KQBISWwyC2NHsi2UCkAaY/Te0eAfSAGnck0qtBcIYyHsU
-         xdZFQdayE++4+TYikThoCfYU0G3zH/4ruMJvP6S1WLqw7Qz0p0zOKM2YG9VIebfuFTRA
-         X7r7yKPk9pHszI5+8ZjLPcu3TMhuMjN4+OrLmUyDYmV1uu5p+0hK6QaRd2xMVNYwmnla
-         aPX9GMPyIPuE0ZTDHJX8rbebk3DUsZlsTnMzDxoEyTFXRlpT9/ik0Fy0nBueJYO9++O1
-         jLCA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=P4cgH8oFymIFjZTH3CHg2wo7SV8NvJbv1pufBgRVFXk=;
+        b=fJrCJoyOKHZjU+dTpb3gNSifhKoIxDOiat0mP189Biw6SHXXSHnkSbHA0/aafJSl59
+         9w5U0oafwcr+uR9MeWt7CiPuNdVYiH0I85nNmjWKlUiu64KDZ6PSfOEACtBR5r7XQoBN
+         nBmZH3sP6AbX8wMgehYY9ouM433woTDi/X3mdV4AaEHtB2fbg1h6KUDJbbd79Z4uw4oS
+         bu8h2khsp1Efg3G8nBk8OBv7+EnSyD16CgsQnzqENZDLFv/dY9ZcbxRi/ptpPWktuSu4
+         sVrISSUR4qtLtMXiNT1QqTrOqz+Iy29Kf/h7FNPToi/GUDxOP9B5Pn3ZDko6TeNr2WXT
+         ZYhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bRGeSLE39DpeGIJGMmlMEVZV7lqFHBN7X0hjsqYQjFs=;
-        b=lLu1Wfroh0kgLFEpoivHgvqW8qQ/5+OurCqP7c6a9bRmow4xvw8f3XmVlYUJ3Nbsrr
-         +7Rl5HnkgMNqiVsU3VKUK7ICfj2fVX5p1NeE71iAZVZM1iXQYTmJB46oJzXpuXr1fNeu
-         mqel69glR2WmRXPd8lF4zyi0rlu6sVaM5osxQL6tUHefXkoSXhjzwnMxj0+H4+dd8bYe
-         /9N3E6ksz29jO0r5zVgwiAmiTjRbsG77l2xlj8zjDXdHanF2F6dQ05/MlzwyogSypVAj
-         nlLoAaY8WKEnOemNgBApvfgWxLkm3qpzWJY+/8ctMtGtdh5j7pr7v0+Gc26C2LEVet6d
-         ZC/Q==
-X-Gm-Message-State: AOAM532GvuENdgBiFq5XbHyBBDUyuJdJq9rzWmYr14RFudFhdHBPj8Un
-        92nVT2mpx8cLNaqCPaufKQQdB9CINZd1R+P65KCy1px7nIJBuqUY
-X-Google-Smtp-Source: ABdhPJzF44RjQ7aiM8BqrQ3oatkh8KD92ZXldNDtJxttJNQKDISyJgCX8ViNYNymKmLNRaP3AVBP1aZTXFf2dQkIxHg=
-X-Received: by 2002:a63:79c3:: with SMTP id u186mr3154361pgc.203.1623234670105;
- Wed, 09 Jun 2021 03:31:10 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P4cgH8oFymIFjZTH3CHg2wo7SV8NvJbv1pufBgRVFXk=;
+        b=hoJ4tsrMVWyaVcAbjmMULjelf1jUIPpjc/BxP39IFDdYJ8GADKZiOF5Gd9RXPcnHrv
+         juvi8Mu5zOzU2+NJ22LRTXQoe1tPrTKC1YFnY+WBAIDNuWkkL3wsvs1GtTU5Zszq1as8
+         si656C1rHkh6iD8ALIkkIkatKPH3TERxO205mkGZ/fLYY5wPMtvxnS60p16OEeYePceY
+         1b6qCXHOG6bB60YLGEH8Drdmvn2aWhmQb5/oHOUb4G+ugG5eerJm80AvB9zZUyuitRto
+         pZ+ezfRGnkXBcmp+00Zf/hFtaaqUEzTt3NmH4VnN6+K8FEUoCHQT48ytq5Gug3teJbcr
+         PdLA==
+X-Gm-Message-State: AOAM530qRaD7iP82RGOi3cbwelSWOk3C1hsm4JETcSmP6/CfNZ6XIAdV
+        gOrs56/VPNcUvMKOnqZ5p7k=
+X-Google-Smtp-Source: ABdhPJzOGsdifqwK0g5kUKqGwEkkGQ19ZrnAjS9qtb3yoDxuCUA0eZInD75LQ43k8MwVMcPRw/d9Zw==
+X-Received: by 2002:a1c:9a84:: with SMTP id c126mr26723738wme.160.1623234761358;
+        Wed, 09 Jun 2021 03:32:41 -0700 (PDT)
+Received: from ziggy.stardust (81.172.61.185.dyn.user.ono.com. [81.172.61.185])
+        by smtp.gmail.com with ESMTPSA id e17sm26176307wre.79.2021.06.09.03.32.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 03:32:40 -0700 (PDT)
+Subject: Re: [PATCH v4 1/3] thermal: mediatek: Relocate driver to mediatek
+ folder
+To:     Ben Tseng <ben.tseng@mediatek.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com
+Cc:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, hsinyi@chromium.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Michael Kao <michael.kao@mediatek.com>
+References: <20210603081806.21154-1-ben.tseng@mediatek.com>
+ <20210603081806.21154-2-ben.tseng@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <1157f945-f0c8-5ac6-1512-71adc72b514d@gmail.com>
+Date:   Wed, 9 Jun 2021 12:32:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210608071430.12687-1-thunder.leizhen@huawei.com>
- <CAHp75VfuMJ5kfRDB4tE2zr2Em79HiwrDJVROnw+kD3H+QNM4sg@mail.gmail.com>
- <da4915c5-fa13-0cf2-f2d2-02779a64af1b@huawei.com> <8a70d592e14f93822bf40832c7374d8e491c3afc.camel@perches.com>
- <26ee1009-259d-07a6-495f-87557be9ed8a@huawei.com> <3211e76c-d2a0-1e26-940b-9710073ee7d4@huawei.com>
-In-Reply-To: <3211e76c-d2a0-1e26-940b-9710073ee7d4@huawei.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 9 Jun 2021 13:30:53 +0300
-Message-ID: <CAHp75VfQq=RkjyZQsc-PHLTLRCzXovm-D_Z+Pp3A6vWGA-GKug@mail.gmail.com>
-Subject: Re: [PATCH 1/1] lib: remove leading spaces before tabs
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Joe Perches <joe@perches.com>, Andy Shevchenko <andy@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210603081806.21154-2-ben.tseng@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 9:21 AM Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
-> On 2021/6/9 13:15, Leizhen (ThunderTown) wrote:
-> > On 2021/6/9 0:03, Joe Perches wrote:
-> >> On Tue, 2021-06-08 at 17:00 +0800, Leizhen (ThunderTown) wrote:
-> >>> On 2021/6/8 16:44, Andy Shevchenko wrote:
-> >>>> On Tue, Jun 8, 2021 at 10:14 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> >>>>>
-> >>>>> 1) Run the following command to find and remove the leading spaces before
-> >>>>>    tabs:
-> >>>>>    find lib/ -type f | xargs sed -r -i 's/^[ ]+\t/\t/'
-> >>>>
-> >>>> Hint for the future, try to use what Git provides, for example `git
-> >>>> ls-files -- lib/`.
-> >>>
-> >>> Okay, thanks. I learned a new trick.
-
-> >> For instance:
-> >>
-> >> $ git diff --stat lib
-> >> $ git ls-files lib/ | \
-> >>   xargs ./scripts/checkpatch.pl --types=SPACE_BEFORE_TAB --fix-inplace
->
-> I just tried it. It's too slow.
-
-If checkpath accepts infinite positional arguments, then proper way of
-use (that's how I do with simple perl regexps) is to
-
-scripts/checkpatch.pl --types=SPACE_BEFORE_TAB --fix-inplace -- $(git
-ls-files lib/)
-
-Seems like we have a shell lesson :-)
-
-> The command I used earlier, removing the line start match "^", can also do that.
->
-> git ls-files lib/ | xargs sed -r -i 's/[ ]+\t/\t/'
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+On 03/06/2021 10:18, Ben Tseng wrote:
+> From: Michael Kao <michael.kao@mediatek.com>
+> 
+> Add Mediatek proprietary folder to upstream more thermal zone and cooler
+> drivers. Relocate the original thermal controller driver to it and rename
+> as soc_temp.c to show its purpose more clearly.
+> 
+> Signed-off-by: Ben Tseng <ben.tseng@mediatek.com>
+> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+> ---
+>  drivers/thermal/Kconfig             |   14 +-
+>  drivers/thermal/Makefile            |    2 +-
+>  drivers/thermal/mediatek/Kconfig    |   23 +
+>  drivers/thermal/mediatek/Makefile   |    1 +
+>  drivers/thermal/mediatek/soc_temp.c | 1127 +++++++++++++++++++++++++++++++++++
+>  drivers/thermal/mtk_thermal.c       | 1127 -----------------------------------
+
+I suppose that there is no functional change. Then better put that in the commit
+message or use "git mv" to get a better readable diff.
+
+Regards,
+Matthias
