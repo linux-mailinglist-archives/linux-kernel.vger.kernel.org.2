@@ -2,175 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1FF3A1112
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5878D3A108E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236875AbhFIK2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:28:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38552 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234515AbhFIK2l (ORCPT
+        id S238301AbhFIJwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233188AbhFIJwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:28:41 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D7E45219AF;
-        Wed,  9 Jun 2021 09:50:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623232234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=SvW0mHPDOY2f5vF2VERxSgZ7iWKgInFYzb+o7n87p3Y=;
-        b=IwHRgY2gpyS8zg3lLb7hhAOoCeF335f24+a6gmGqKFAUrl93rdww0hcU4QNJwrPax8S3MW
-        6zXB5NNBi5h2kv+uhMTMBHGPIYdPXV59SewYrtGxKbnmiL79N9JLTCxNRgiVlfRfsvoCzR
-        5GAiIdWEB/1EchUuS3Td3mzTC79NQFY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623232234;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=SvW0mHPDOY2f5vF2VERxSgZ7iWKgInFYzb+o7n87p3Y=;
-        b=VmxFXjatL1IpMgt1H1mGLL6m4tJ53rwtrocntVoh7KVdBcf2xnuOHjH3xkpUO617hV8GUw
-        l3fzSjN1H7fYARBQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id BD5FE118DD;
-        Wed,  9 Jun 2021 09:50:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623232234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=SvW0mHPDOY2f5vF2VERxSgZ7iWKgInFYzb+o7n87p3Y=;
-        b=IwHRgY2gpyS8zg3lLb7hhAOoCeF335f24+a6gmGqKFAUrl93rdww0hcU4QNJwrPax8S3MW
-        6zXB5NNBi5h2kv+uhMTMBHGPIYdPXV59SewYrtGxKbnmiL79N9JLTCxNRgiVlfRfsvoCzR
-        5GAiIdWEB/1EchUuS3Td3mzTC79NQFY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623232234;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=SvW0mHPDOY2f5vF2VERxSgZ7iWKgInFYzb+o7n87p3Y=;
-        b=VmxFXjatL1IpMgt1H1mGLL6m4tJ53rwtrocntVoh7KVdBcf2xnuOHjH3xkpUO617hV8GUw
-        l3fzSjN1H7fYARBQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id PjKULuqOwGDUGAAALh3uQQ
-        (envelope-from <dwagner@suse.de>); Wed, 09 Jun 2021 09:50:34 +0000
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-scsi@vger.kernel.org, Nilesh Javali <njavali@marvell.com>
-Cc:     linux-kernel@vger.kernel.org,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Arun Easi <aeasi@marvell.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Benjamin Block <bblock@linux.ibm.com>,
-        Roman Bolshakov <r.bolshakov@yadro.com>,
-        James Smart <jsmart2021@gmail.com>,
-        Hannes Reinecke <hare@suse.de>, Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH] qla2xxx: synchronize rport dev_loss_tmo setting
-Date:   Wed,  9 Jun 2021 11:49:56 +0200
-Message-Id: <20210609094956.11286-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.31.1
+        Wed, 9 Jun 2021 05:52:00 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76853C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 02:50:05 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id m18so24766497wrv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mo2MpnwO+DP1xBqMB5A5oZXEQTDPzNqnBAMMCRHk0qU=;
+        b=aHVaB78QW2al8xftgLHHNIwy+SLjjHsFX1lzf7byM3S40NtD1wBBnlX8Voni3IMR/y
+         zdd8lKXSqZKsAzFY2Czkh5n3H6+6gP3pQXI5vOGMbza6QLQ0+/12SDv7PX0VGsrdYXl5
+         zsSkurW6FXjuYimj7xbJqW0GqnNPN0P9AcbslCbAaK3InPsHlgUHgmbQUdQAdu6xaX4F
+         5LDWAQFru4FkSUFXIr/5vgZxj1iZ350sAse9682bXTbg5WTiV6akRydgOstg546rjO9y
+         RVLO2H0A9YqiQGQGD2bbTZoGVQ50VY+N+D0cJShMHZA1N/jTwk1NiQ+oG0eZbn6AZAxx
+         zzHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mo2MpnwO+DP1xBqMB5A5oZXEQTDPzNqnBAMMCRHk0qU=;
+        b=KrySFDKQ8ULp/3Xrgr9SBynjJAmzP+bNAVqChroBJBcLvdRu7JaJPq3r8ZF0FgfI2w
+         SwAjGOJsmbNNbhGB9/ajjh7mFOUNKZ+FiFf+vLsDHG6qufU29GcyFJ815OmNpeACEByb
+         bIhyOg5KvnTHjhH+l/GJOq/PbvIhW1XlM6BeWZQF9QdpxLOiazLn+YwH1BnPnMjNKauU
+         7pxh50W2LY0pdemCGwPVCPn+nmBmTisRHbvIijNnSrU15sq57lfINMDthFXP3NMDUyhU
+         dT0COXxpR2qJaljdhDtSzT1h7RtorI6bjCes8suYKisaqo7jePoipOGShPgOPK3Ieatw
+         Cn1A==
+X-Gm-Message-State: AOAM530sdf6SrxVdYc5YTXnD9mmiE9VpSqYYRotvU1ixKNQfjYG1biRr
+        uusMdg2mmWInE1WFys4d1qFdNg==
+X-Google-Smtp-Source: ABdhPJz85kXGsLZgpb12ckUI7Ql2IonQUqQ9tKtKoMUDYQLhVaXEatKs4J4Qf0A5DM7WVUVS6D+ZNQ==
+X-Received: by 2002:a05:6000:1b8d:: with SMTP id r13mr27287328wru.207.1623232203913;
+        Wed, 09 Jun 2021 02:50:03 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id z12sm25372344wmc.5.2021.06.09.02.50.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 02:50:03 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 09:50:00 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Beata Michalska <beata.michalska@arm.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: iowait boost is broken
+Message-ID: <YMCOyL8eiu9UpnEz@google.com>
+References: <CAEXW_YTcO=hbmdq3nOx2RJfT2yPyoFnQx5niB38R2Lzpsp38bA@mail.gmail.com>
+ <20210607191031.GA12489@e120325.cambridge.arm.com>
+ <YL+tDv/EL5ogf/0w@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YL+tDv/EL5ogf/0w@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+On Tuesday 08 Jun 2021 at 19:46:54 (+0200), Peter Zijlstra wrote:
+> On Mon, Jun 07, 2021 at 08:10:32PM +0100, Beata Michalska wrote:
+> > So back to the expectations.
+> > The main problem, as I see it, is what do we actually want to achieve with
+> > the I/O boosting? Is it supposed to compensate the time lost while waiting
+> > for the I/O request to be completed or is is supposed to optimize the rate
+> > at which I/O requests are being made. 
+> 
+> The latter, you want to increase the race of submission.
+> 
+> > Do we want to boost I/O bound tasks by
+> > default, no limits applied  or should we care about balancing performance
+> > vs power ? And unless those expectations are clearly stated, we might not
+> > get too far with any changes, really.
+> 
+> You want to not increase power beyond what is needed to match the rate
+> of processing I suppose.
 
-Currently, the dev_loss_tmo setting is only ever used for SCSI
-devices. This patch reshuffles initialisation such that the SCSI
-remote ports are registered before the NVMe ones, allowing the
-dev_loss_tmo setting to be synchronized between SCSI and NVMe.
+Note that in some cases we also don't care about throughput, and would
+prefer to keep the frequency for some unimportant IO bound tasks (e.g.
+background logging deamons and such). Uclamp.max indicates this to some
+extent.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
-Hi,
-
-This is a followup on
-
-  https://lore.kernel.org/linux-scsi/20210419100014.47144-1-dwagner@suse.de/
-
-Hannes and I started to play with this patch. After a few iterations
-on getting the right dev_loss_tmo variables set, it works as
-hoped. With this change, it's possible to use the same udev rule for
-qla2xxx as we currently use for lpfc driver. And it survived serious
-testing sessions.
+Android for instance has a pretty good idea of the tasks it cares about,
+and it'd be good to have a way to enable IO wait boosting only for
+those.
 
 Thanks,
-Daniel
-
- drivers/scsi/qla2xxx/qla_attr.c |  6 ++++++
- drivers/scsi/qla2xxx/qla_init.c | 10 +++-------
- drivers/scsi/qla2xxx/qla_nvme.c |  5 ++++-
- 3 files changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
-index 3aa9869f6fae..c762c940970f 100644
---- a/drivers/scsi/qla2xxx/qla_attr.c
-+++ b/drivers/scsi/qla2xxx/qla_attr.c
-@@ -2648,7 +2648,13 @@ qla2x00_get_starget_port_id(struct scsi_target *starget)
- static inline void
- qla2x00_set_rport_loss_tmo(struct fc_rport *rport, uint32_t timeout)
- {
-+	fc_port_t *fcport = *(fc_port_t **)rport->dd_data;
-+
- 	rport->dev_loss_tmo = timeout ? timeout : 1;
-+
-+	if (fcport->nvme_remote_port)
-+		nvme_fc_set_remoteport_devloss(fcport->nvme_remote_port,
-+					       rport->dev_loss_tmo);
- }
- 
- static void
-diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
-index eb825318e3f5..7f5b64a5ec90 100644
---- a/drivers/scsi/qla2xxx/qla_init.c
-+++ b/drivers/scsi/qla2xxx/qla_init.c
-@@ -5629,13 +5629,6 @@ qla2x00_update_fcport(scsi_qla_host_t *vha, fc_port_t *fcport)
- 
- 	qla2x00_dfs_create_rport(vha, fcport);
- 
--	if (NVME_TARGET(vha->hw, fcport)) {
--		qla_nvme_register_remote(vha, fcport);
--		qla2x00_set_fcport_disc_state(fcport, DSC_LOGIN_COMPLETE);
--		qla2x00_set_fcport_state(fcport, FCS_ONLINE);
--		return;
--	}
--
- 	qla24xx_update_fcport_fcp_prio(vha, fcport);
- 
- 	switch (vha->host->active_mode) {
-@@ -5657,6 +5650,9 @@ qla2x00_update_fcport(scsi_qla_host_t *vha, fc_port_t *fcport)
- 		break;
- 	}
- 
-+	if (NVME_TARGET(vha->hw, fcport))
-+		qla_nvme_register_remote(vha, fcport);
-+
- 	qla2x00_set_fcport_state(fcport, FCS_ONLINE);
- 
- 	if (IS_IIDMA_CAPABLE(vha->hw) && vha->hw->flags.gpsc_supported) {
-diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
-index e119f8b24e33..5cc58957dbec 100644
---- a/drivers/scsi/qla2xxx/qla_nvme.c
-+++ b/drivers/scsi/qla2xxx/qla_nvme.c
-@@ -41,7 +41,7 @@ int qla_nvme_register_remote(struct scsi_qla_host *vha, struct fc_port *fcport)
- 	req.port_name = wwn_to_u64(fcport->port_name);
- 	req.node_name = wwn_to_u64(fcport->node_name);
- 	req.port_role = 0;
--	req.dev_loss_tmo = 0;
-+	req.dev_loss_tmo = fcport->dev_loss_tmo;
- 
- 	if (fcport->nvme_prli_service_param & NVME_PRLI_SP_INITIATOR)
- 		req.port_role = FC_PORT_ROLE_NVME_INITIATOR;
-@@ -68,6 +68,9 @@ int qla_nvme_register_remote(struct scsi_qla_host *vha, struct fc_port *fcport)
- 		return ret;
- 	}
- 
-+	nvme_fc_set_remoteport_devloss(fcport->nvme_remote_port,
-+				       fcport->dev_loss_tmo);
-+
- 	if (fcport->nvme_prli_service_param & NVME_PRLI_SP_SLER)
- 		ql_log(ql_log_info, vha, 0x212a,
- 		       "PortID:%06x Supports SLER\n", req.port_id);
--- 
-2.29.2
-
+Quentin
