@@ -2,176 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972C23A1B5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01823A1B5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhFIQ7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
+        id S231208AbhFIRAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhFIQ7r (ORCPT
+        with ESMTP id S229937AbhFIRAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:59:47 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A78EC061574;
-        Wed,  9 Jun 2021 09:57:37 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id c11so724691ljd.6;
-        Wed, 09 Jun 2021 09:57:37 -0700 (PDT)
+        Wed, 9 Jun 2021 13:00:20 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF41C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 09:58:11 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id l1so39478773ejb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:58:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rhOiM+M3O+xQ7gJUAO0buvm9+/qkjtxDLmSasWrNeIA=;
-        b=vbWQGKIgLlLNsu7TqvM1fa0bIzlDPM/OcMU1di/aQVML/yM79J1wMVCebUfAdy6z2X
-         WO3OrLJjxRyQ+PSp095q1DJ91171DJFAHxbWSk31k3jJzXKFUmImqrdT5nj5F9FWsgk2
-         FdyUy5JMRvmTSf4i3IOB9ohsGkHuxIpBlO1I4nm7Qvj7nSpzWQBhxHOM6qDNmKDo+5xP
-         X/0MxlUj5QGrpsz8nH4PQfS9fxwVPi0m4SGpW0rzm1JQrI2Vx9Y/7G7zsCSNZO8VGaNo
-         7wsGH2YVEFJ23K4sT66gW2vOCB4dnd6eHo2/gQyJvkNHqMNuKG3wDSN0ZzDXeUbtGvik
-         YF7g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/+Iz4z4AXZFpogc1y7XNcas3um0G9P+lqqs2vFYzvns=;
+        b=uQAe4Qp74C/urpx55A2OIKTx8CEqWICURBpH4nSsA/vq+J5va3cimSQjvi5o28+NAn
+         3g7haWHqYSN7QsIWZG7pMlZZEdFgGk1aOcPtWuGLejMomxsq/avJF/jzLJOyycnGHKZU
+         FJu9BKQ1K1xaoCKcRomuVREJQxas84bHZ5iODy8W0IA2/mOfRQ1Zvsz8v3CCWdbg9fBs
+         fSg2gjvj4llWzXlwT7SJdj9wioxTQkR2Znwd63DVHwEdGSpe5oYDNC4w/cPuyW2eai1W
+         FzpdAPU01XTk28NQaTO6CExYFPDABWh4CI5+667061HZuuS5SfPI6pL1v46Z/sryP+Tj
+         3uew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rhOiM+M3O+xQ7gJUAO0buvm9+/qkjtxDLmSasWrNeIA=;
-        b=Kk5iWYkS0u59y2Z98our9RlCBPBGk6m8trB63aQj6P51SBBjhdURqjTjM57XDhV3ro
-         G+b1cb1VaAMPgqf4dqs96AT34m4SU1OLtyK0IyDXYw/iNz2g85RUT+NfaGbG1U/9fMTI
-         XnOMya5u+Ds2gkz4LPNG3USBhGDASae3siDS0XVxkR5uYABADuTZAZVybQDwjuxyvSrj
-         fJwDwovshDJJHF7SwFZ43pBypv4R3p+UDPvcI43d/6p4fdGo/hAXs2Ej7AXkZLRmLB10
-         RiJOzqQywM0gWZgCIL+qtmX/6xrg+4EPl8pKuMeTxfcTA9NgERWM1+X8Clm/01u2h5T+
-         5MaA==
-X-Gm-Message-State: AOAM5310quvpQbFsLlTQsdl/T33AVLhEeyxj2rSMTkCURGjG833NeKv/
-        xNvhmHBYcXNtgQ7XXkDHxIZ6NbHakNQ=
-X-Google-Smtp-Source: ABdhPJys+RDo4Mo/fo3Pd9Vi+5a0dwi9/uP8gfbNx1Zzy/USczdnV0yb1ryAY89+66glxLsyT6WEIg==
-X-Received: by 2002:a2e:b5c1:: with SMTP id g1mr648831ljn.83.1623257855139;
-        Wed, 09 Jun 2021 09:57:35 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-21-60.dynamic.spd-mgts.ru. [94.29.21.60])
-        by smtp.googlemail.com with ESMTPSA id n5sm37239lfq.107.2021.06.09.09.57.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 09:57:34 -0700 (PDT)
-Subject: Re: [PATCH 1/2] memory: tegra: Add missing dependencies
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210609112806.3565057-1-thierry.reding@gmail.com>
- <20210609112806.3565057-2-thierry.reding@gmail.com>
- <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
- <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a3110fbd-c4af-0317-5a6d-1f780f1dac91@gmail.com>
-Date:   Wed, 9 Jun 2021 19:57:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/+Iz4z4AXZFpogc1y7XNcas3um0G9P+lqqs2vFYzvns=;
+        b=BVBCJlVujvc+9gGc93uPQkdPHRNacBepGiqZjPLDuwaRbAufE7pTFPuArhbNfhLCeB
+         gwKtF0g4KV2mnb37hkdsbWT4kKaInCiPQJDH1mDKy5WlnASVJAZpm9mYKZXmXRs58CVY
+         j5KaM0yK+sRJ/rrxF0EFVX0bycUtcBRaB8dp2kpr+jYHrAEGMu1aEtcUJDWof8tOZSS7
+         6FB4zTFRFHLvFVtJrg4wRUTNGXdbvHAtMIrrDvvqoEbJCnxlqPALXTJCIFhZy5jLCJgB
+         BDAMW02ryIYTUnjAggaKoQKSJRD6u9EfBt/jwV4kHaP1L3Nr3GrVO6DpGEb9MfhgJYZl
+         ghOA==
+X-Gm-Message-State: AOAM532KqXswEdKlOZ98AyqHfHxXI6D2J9JizHSDFiQYpqN+/7g+Mzxk
+        L8pP7ZtKXPebMibAK5lZCr0dIHnzoR5Bc1pnPVk=
+X-Google-Smtp-Source: ABdhPJw7NaYHNKcTjrCEXSSDQKq/WdTMR+eQzRAXm6v3HZoSFaW6MZ5nwGBDWkpwJjz3jiTZ/dnZCUsr7EF+Cn+leAQ=
+X-Received: by 2002:a17:906:3912:: with SMTP id f18mr783301eje.161.1623257890532;
+ Wed, 09 Jun 2021 09:58:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <6b2b6683-d9a7-b7d0-a3e5-425b96338d63@google.com>
+In-Reply-To: <6b2b6683-d9a7-b7d0-a3e5-425b96338d63@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 9 Jun 2021 09:57:58 -0700
+Message-ID: <CAHbLzkpCO-yN6dkM_JbCpK3FtBy_xu1Z4VCcVsSKqkV6nH5Mew@mail.gmail.com>
+Subject: Re: [PATCH v2 03/10] mm/thp: try_to_unmap() use TTU_SYNC for safe
+ splitting (fwd)
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-09.06.2021 16:19, Krzysztof Kozlowski пишет:
-> On 09/06/2021 13:58, Dmitry Osipenko wrote:
->> 09.06.2021 14:28, Thierry Reding пишет:
->>> From: Thierry Reding <treding@nvidia.com>
->>>
->>> When enabling the COMPILE_TEST Kconfig option, the Tegra memory
->>> controller can be built without ARCH_TEGRA being selected. However, the
->>> driver implicitly depends on some symbols pulled in via ARCH_TEGRA,
->>> which causes the build to break.
->>>
->>> Add explicit dependencies for OF_EARLY_FLATTREE and OF_RESERVED_MEM to
->>> the Tegra MC Kconfig option to make sure they are selected even if
->>> ARCH_TEGRA is not.
->>>
->>> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>> Signed-off-by: Thierry Reding <treding@nvidia.com>
->>> ---
->>>  drivers/memory/tegra/Kconfig | 2 ++
->>>  1 file changed, 2 insertions(+)
->>>
->>> diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconfig
->>> index f9bae36c03a3..ecfb071fc4f4 100644
->>> --- a/drivers/memory/tegra/Kconfig
->>> +++ b/drivers/memory/tegra/Kconfig
->>> @@ -48,6 +48,8 @@ config TEGRA124_EMC
->>>  config TEGRA210_EMC_TABLE
->>>  	bool
->>>  	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
->>> +	select OF_EARLY_FLATTREE
->>> +	select OF_RESERVED_MEM
->>>  
->>>  config TEGRA210_EMC
->>>  	tristate "NVIDIA Tegra210 External Memory Controller driver"
->>>
->>
->> Will this work if CONFIG_OF is disabled?
-> 
-> Yeah, good question. That's why I propose "depends on". No issues with
-> unmet or circular dependencies.
+On Tue, Jun 8, 2021 at 9:12 PM Hugh Dickins <hughd@google.com> wrote:
+>
+>
+>
+> ---------- Forwarded message ----------
+> Date: Tue, 8 Jun 2021 21:10:19 -0700 (PDT)
+> From: Hugh Dickins <hughd@google.com>
+> To: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Hugh Dickins <hughd@google.com>,
+>     Kirill A. Shutemov <kirill.shutemov@linux.intel.com>,
+>     Yang Shi <shy828301@gmail.com>, Wang Yugui <wangyugui@e16-tech.com>,
+>     Matthew Wilcox <willy@infradead.org>,
+>     Naoya Horiguchi <naoya.horiguchi@nec.com>,
+>     Alistair Popple <apopple@nvidia.com>, Ralph Campbell <rcampbell@nvidia.com>,
+>     Zi Yan <ziy@nvidia.com>, Miaohe Lin <linmiaohe@huawei.com>,
+>     Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
+>     Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
+>     Shakeel Butt <shakeelb@google.com>, Oscar Salvador <osalvador@suse.de>
+> Subject: [PATCH v2 03/10] mm/thp: try_to_unmap() use TTU_SYNC for safe splitting
+>
+> Stressing huge tmpfs often crashed on unmap_page()'s VM_BUG_ON_PAGE
+> (!unmap_success): with dump_page() showing mapcount:1, but then its
+> raw struct page output showing _mapcount ffffffff i.e. mapcount 0.
+>
+> And even if that particular VM_BUG_ON_PAGE(!unmap_success) is removed,
+> it is immediately followed by a VM_BUG_ON_PAGE(compound_mapcount(head)),
+> and further down an IS_ENABLED(CONFIG_DEBUG_VM) total_mapcount BUG():
+> all indicative of some mapcount difficulty in development here perhaps.
+> But the !CONFIG_DEBUG_VM path handles the failures correctly and silently.
+>
+> I believe the problem is that once a racing unmap has cleared pte or pmd,
+> try_to_unmap_one() may skip taking the page table lock, and emerge from
+> try_to_unmap() before the racing task has reached decrementing mapcount.
+>
+> Instead of abandoning the unsafe VM_BUG_ON_PAGE(), and the ones that
+> follow, use PVMW_SYNC in try_to_unmap_one() in this case: adding TTU_SYNC
+> to the options, and passing that from unmap_page().
+>
+> When CONFIG_DEBUG_VM, or for non-debug too?  Consensus is to do the same
+> for both: the slight overhead added should rarely matter, except perhaps
+> if splitting sparsely-populated multiply-mapped shmem.  Once confident
+> that bugs are fixed, TTU_SYNC here can be removed, and the race tolerated.
+>
+> Fixes: fec89c109f3a ("thp: rewrite freeze_page()/unfreeze_page() with generic rmap walkers")
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Cc: <stable@vger.kernel.org>
+> ---
+> v2: moved TTU_SYNC definition up, to avoid conflict with other patchset
+>     use TTU_SYNC even when non-debug, per Peter Xu and Yang Shi
+>     expanded PVMW_SYNC's spin_unlock(pmd_lock()), per Kirill and Peter
 
-What about to add stub for RESERVEDMEM_OF_DECLARE() + CONFIG_OF_RESERVED_MEM=n?
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 
-diff --git a/include/linux/of.h b/include/linux/of.h
-index d8db8d3592fd..9c2e71e202d1 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -1329,6 +1329,12 @@ static inline int of_get_available_child_count(const struct device_node *np)
- 	return num;
- }
- 
-+#define _OF_DECLARE_STUB(table, name, compat, fn, fn_type)		\
-+	static const struct of_device_id __of_table_##name		\
-+		__attribute__((unused))					\
-+		 = { .compatible = compat,				\
-+		     .data = (fn == (fn_type)NULL) ? fn : fn }
-+
- #if defined(CONFIG_OF) && !defined(MODULE)
- #define _OF_DECLARE(table, name, compat, fn, fn_type)			\
- 	static const struct of_device_id __of_table_##name		\
-@@ -1338,10 +1344,7 @@ static inline int of_get_available_child_count(const struct device_node *np)
- 		     .data = (fn == (fn_type)NULL) ? fn : fn  }
- #else
- #define _OF_DECLARE(table, name, compat, fn, fn_type)			\
--	static const struct of_device_id __of_table_##name		\
--		__attribute__((unused))					\
--		 = { .compatible = compat,				\
--		     .data = (fn == (fn_type)NULL) ? fn : fn }
-+	_OF_DECLARE_STUB(table, name, compat, fn, fn_type)
- #endif
- 
- typedef int (*of_init_fn_2)(struct device_node *, struct device_node *);
-diff --git a/include/linux/of_reserved_mem.h b/include/linux/of_reserved_mem.h
-index 76e4a0fffba4..4de2a24cadc9 100644
---- a/include/linux/of_reserved_mem.h
-+++ b/include/linux/of_reserved_mem.h
-@@ -27,11 +27,11 @@ struct reserved_mem_ops {
- 
- typedef int (*reservedmem_of_init_fn)(struct reserved_mem *rmem);
- 
-+#ifdef CONFIG_OF_RESERVED_MEM
-+
- #define RESERVEDMEM_OF_DECLARE(name, compat, init)			\
- 	_OF_DECLARE(reservedmem, name, compat, init, reservedmem_of_init_fn)
- 
--#ifdef CONFIG_OF_RESERVED_MEM
--
- int of_reserved_mem_device_init_by_idx(struct device *dev,
- 				       struct device_node *np, int idx);
- int of_reserved_mem_device_init_by_name(struct device *dev,
-@@ -41,6 +41,10 @@ void of_reserved_mem_device_release(struct device *dev);
- 
- struct reserved_mem *of_reserved_mem_lookup(struct device_node *np);
- #else
-+
-+#define RESERVEDMEM_OF_DECLARE(name, compat, init)			\
-+	_OF_DECLARE_STUB(reservedmem, name, compat, init, reservedmem_of_init_fn)
-+
- static inline int of_reserved_mem_device_init_by_idx(struct device *dev,
- 					struct device_node *np, int idx)
- {
-
-
+>
+>  include/linux/rmap.h |  1 +
+>  mm/huge_memory.c     |  2 +-
+>  mm/page_vma_mapped.c | 11 +++++++++++
+>  mm/rmap.c            | 17 ++++++++++++++++-
+>  4 files changed, 29 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+> index def5c62c93b3..8d04e7deedc6 100644
+> --- a/include/linux/rmap.h
+> +++ b/include/linux/rmap.h
+> @@ -91,6 +91,7 @@ enum ttu_flags {
+>
+>         TTU_SPLIT_HUGE_PMD      = 0x4,  /* split huge PMD if any */
+>         TTU_IGNORE_MLOCK        = 0x8,  /* ignore mlock */
+> +       TTU_SYNC                = 0x10, /* avoid racy checks with PVMW_SYNC */
+>         TTU_IGNORE_HWPOISON     = 0x20, /* corrupted page is recoverable */
+>         TTU_BATCH_FLUSH         = 0x40, /* Batch TLB flushes where possible
+>                                          * and caller guarantees they will
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 5885c5f5836f..84ab735139dc 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2350,7 +2350,7 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
+>
+>  static void unmap_page(struct page *page)
+>  {
+> -       enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK |
+> +       enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK | TTU_SYNC |
+>                 TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
+>         bool unmap_success;
+>
+> diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+> index 2cf01d933f13..5b559967410e 100644
+> --- a/mm/page_vma_mapped.c
+> +++ b/mm/page_vma_mapped.c
+> @@ -212,6 +212,17 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+>                         pvmw->ptl = NULL;
+>                 }
+>         } else if (!pmd_present(pmde)) {
+> +               /*
+> +                * If PVMW_SYNC, take and drop THP pmd lock so that we
+> +                * cannot return prematurely, while zap_huge_pmd() has
+> +                * cleared *pmd but not decremented compound_mapcount().
+> +                */
+> +               if ((pvmw->flags & PVMW_SYNC) &&
+> +                   PageTransCompound(pvmw->page)) {
+> +                       spinlock_t *ptl = pmd_lock(mm, pvmw->pmd);
+> +
+> +                       spin_unlock(ptl);
+> +               }
+>                 return false;
+>         }
+>         if (!map_pte(pvmw))
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index 693a610e181d..07811b4ae793 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1405,6 +1405,15 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
+>         struct mmu_notifier_range range;
+>         enum ttu_flags flags = (enum ttu_flags)(long)arg;
+>
+> +       /*
+> +        * When racing against e.g. zap_pte_range() on another cpu,
+> +        * in between its ptep_get_and_clear_full() and page_remove_rmap(),
+> +        * try_to_unmap() may return false when it is about to become true,
+> +        * if page table locking is skipped: use TTU_SYNC to wait for that.
+> +        */
+> +       if (flags & TTU_SYNC)
+> +               pvmw.flags = PVMW_SYNC;
+> +
+>         /* munlock has nothing to gain from examining un-locked vmas */
+>         if ((flags & TTU_MUNLOCK) && !(vma->vm_flags & VM_LOCKED))
+>                 return true;
+> @@ -1777,7 +1786,13 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
+>         else
+>                 rmap_walk(page, &rwc);
+>
+> -       return !page_mapcount(page) ? true : false;
+> +       /*
+> +        * When racing against e.g. zap_pte_range() on another cpu,
+> +        * in between its ptep_get_and_clear_full() and page_remove_rmap(),
+> +        * try_to_unmap() may return false when it is about to become true,
+> +        * if page table locking is skipped: use TTU_SYNC to wait for that.
+> +        */
+> +       return !page_mapcount(page);
+>  }
+>
+>  /**
+> --
+> 2.26.2
+>
+>
