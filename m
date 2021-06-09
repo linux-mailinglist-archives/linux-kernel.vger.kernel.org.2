@@ -2,98 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C623A0AEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547443A0AEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233493AbhFID6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 23:58:38 -0400
-Received: from mga02.intel.com ([134.134.136.20]:39375 "EHLO mga02.intel.com"
+        id S233727AbhFIEAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 00:00:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233410AbhFID6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 23:58:36 -0400
-IronPort-SDR: FhLlkfVlCuI1wXzfbXdCYVXcsUGya9JK/1q/kG2cf8KwaiCzcQMhe8+pLMEXEFZzqJBq3u3uRs
- Yjrnw8BfJdCw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="192106095"
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="192106095"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 20:56:29 -0700
-IronPort-SDR: Cd9eow8wzx6HxWE1eLyLNLGaIVsFrH6TLHLwvmmEx4RY6oglqGQyRV0NeYU/zrui9KIp5lJ1XR
- 9qJwBrISgSnA==
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="402305187"
-Received: from dabarred-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.185.80])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 20:56:28 -0700
-Subject: Re: [RFC v2-fix-v4 1/1] x86/tdx: Skip WBINVD instruction for TDX
- guest
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
- <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4gLeKPfYOx1kmg-mO1_mNd+XGqVO-CbqX+2d52GZ+DSFw@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <682f0239-8da0-3702-0f14-99b6244af499@linux.intel.com>
-Date:   Tue, 8 Jun 2021 20:56:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232911AbhFID77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 23:59:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87B9061040;
+        Wed,  9 Jun 2021 03:58:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623211085;
+        bh=Z2ahlKHah+wUTvWwNlGOhzPxNJeM11+53rWXNWgvNr8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lOOlj3afdpzeIHG6ATyA6V+n3G0ozXOugru6kboiyvlWFT31OhyWzRCIPIQdjDji7
+         ISzm1GBoRhJJ67HKz2hvMAP43uqgYCBv8BKle2U+0Me1kxHPeBHmJHKEtBYoTe/lJV
+         YUkUikQNX+LgevcQKbBcNZSmPRNM/r+28o9EP/958KAwSNC1asdGOrPIwc02ADVhep
+         0xePOO2HT/JAR/SEh8LLg3fYJWdpOueaxGUDy6otSOQHGSksDV+0qfOWAj2FaJ6Mmq
+         oG7BGfV3fHgEbY9y0J20DOPaV9HiaaX+8PJOFxvsn0BoeLOufiPyRHp7rk4ViYMaSa
+         M/RBVSVXCDlKA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 50D6E5C0AD1; Tue,  8 Jun 2021 20:58:05 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 20:58:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [kbuild-all] Re: kernel/rcu/tree.c:2073:23: warning: stack frame
+ size of 2704 bytes in function 'rcu_gp_kthread'
+Message-ID: <20210609035805.GA4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <202106061253.0X2QKyyI-lkp@intel.com>
+ <20210606044926.GJ4397@paulmck-ThinkPad-P17-Gen-1>
+ <4696fe3d-a7ad-acae-686e-6295ca327737@intel.com>
+ <20210607151939.GP4397@paulmck-ThinkPad-P17-Gen-1>
+ <e7bbb0e5-3063-031b-af6e-273e97f1d61f@intel.com>
+ <20210608050134.GZ4397@paulmck-ThinkPad-P17-Gen-1>
+ <f3cc5211-0c68-17c8-a222-4bc2c2525522@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4gLeKPfYOx1kmg-mO1_mNd+XGqVO-CbqX+2d52GZ+DSFw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f3cc5211-0c68-17c8-a222-4bc2c2525522@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/8/21 8:40 PM, Dan Williams wrote:
-> ..."KVM gets away with it" is not a justification that TDX can stand
-> on otherwise we would not be here fixing up ACPICA properly.
+On Tue, Jun 08, 2021 at 08:53:17AM -0700, Nathan Chancellor wrote:
+> On 6/7/2021 10:01 PM, Paul E. McKenney wrote:
+> > On Tue, Jun 08, 2021 at 11:14:40AM +0800, Rong Chen wrote:
+> > > 
+> > > 
+> > > On 6/7/21 11:19 PM, Paul E. McKenney wrote:
+> > > > On Mon, Jun 07, 2021 at 05:18:21PM +0800, Rong Chen wrote:
+> > > > > 
+> > > > > On 6/6/21 12:49 PM, Paul E. McKenney wrote:
+> > > > > > On Sun, Jun 06, 2021 at 12:19:57PM +0800, kernel test robot wrote:
+> > > > > > > Hi Paul,
+> > > > > > > 
+> > > > > > > FYI, the error/warning still remains.
+> > > > > > > 
+> > > > > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > > > > > > head:   f5b6eb1e018203913dfefcf6fa988649ad11ad6e
+> > > > > > > commit: 7dffe01765d9309b8bd5505503933ec0ec53d192 rcu: Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node() macros
+> > > > > > > date:   5 months ago
+> > > > > > > config: powerpc-randconfig-r023-20210606 (attached as .config)
+> > > > > > > compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 551a697c5cf33275b66add4fc467fcf59084cffb)
+> > > > > > > reproduce (this is a W=1 build):
+> > > > > > >            wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > > > > > >            chmod +x ~/bin/make.cross
+> > > > > > >            # install powerpc cross compiling tool for clang build
+> > > > > > >            # apt-get install binutils-powerpc-linux-gnu
+> > > > > > >            # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7dffe01765d9309b8bd5505503933ec0ec53d192
+> > > > > > >            git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> > > > > > >            git fetch --no-tags linus master
+> > > > > > >            git checkout 7dffe01765d9309b8bd5505503933ec0ec53d192
+> > > > > > >            # save the attached .config to linux build tree
+> > > > > > >            COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc
+> > > > > > > 
+> > > > > > > If you fix the issue, kindly add following tag as appropriate
+> > > > > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > > > > 
+> > > > > > > All warnings (new ones prefixed by >>):
+> > > > > > > 
+> > > > > > >       In file included from kernel/rcu/tree.c:21:
+> > > > > > >       In file included from include/linux/kernel.h:12:
+> > > > > > >       In file included from include/linux/bitops.h:29:
+> > > > > > >       In file included from arch/powerpc/include/asm/bitops.h:62:
+> > > > > > >       arch/powerpc/include/asm/barrier.h:49:9: warning: '__lwsync' macro redefined [-Wmacro-redefined]
+> > > > > > >       #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
+> > > > > > >               ^
+> > > > > > >       <built-in>:310:9: note: previous definition is here
+> > > > > > >       #define __lwsync __builtin_ppc_lwsync
+> > > > > > >               ^
+> > > > > > > > > kernel/rcu/tree.c:2073:23: warning: stack frame size of 2704 bytes in function 'rcu_gp_kthread' [-Wframe-larger-than=]
+> > > > > > >       static int __noreturn rcu_gp_kthread(void *unused)
+> > > > > > Does -rcu commit 2f20de99a63b ("rcu: Make rcu_gp_cleanup() be noinline
+> > > > > > for tracing") help?
+> > > > > Hi Paul,
+> > > > > 
+> > > > > The stack frame size decreased to 2256 bytes:
+> > > > > 
+> > > > >     kernel/rcu/tree.c:2129:23: warning: stack frame size of 2256 bytes in
+> > > > > function 'rcu_gp_kthread' [-Wframe-larger-than=]
+> > > > Very good, thank you!  Does the following patch (in addition to that
+> > > > commit) also help?
+> > > 
+> > > Hi Paul,
+> > > 
+> > > I applied the below patch on commit 2f20de99a63b and the warning is gone.
+> > 
+> > Very good, and thank you for your testing.  I have applied the requested
+> > Reported-by and your Tested-by on the commit shown below.  Please let
+> > me know if you would prefer some other Reported/Tested setup.
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > commit 336e92638287615d47c07af4ff6feb397cfe2084
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Mon Jun 7 21:57:02 2021 -0700
+> > 
+> >      rcu: Make rcu_gp_init() and rcu_gp_fqs_loop noinline to conserve stack
+> >      The kbuild test project found an oversized stack frame in rcu_gp_kthread()
+> >      for some kernel configurations.  This oversizing was due to a very large
+> >      amount of inlining, which is unnecessary due to the fact that this code
+> >      executes infrequently.  This commit therefore marks rcu_gp_init() and
+> >      rcu_gp_fqs_loop noinline to conserve stack space.
+> >      Reported-by: kernel test robot <lkp@intel.com>
+> >      Tested-by: Rong Chen <rong.a.chen@intel.com>
+> >      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 13bd8eee62bf..ef435aeac993 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1737,7 +1737,7 @@ static void rcu_strict_gp_boundary(void *unused)
+> >   /*
+> >    * Initialize a new grace period.  Return false if no grace period required.
+> >    */
+> > -static bool rcu_gp_init(void)
+> > +static noinline bool rcu_gp_init(void)
 > 
-> How about:
-> 
-> "TDX guests use standard ACPI mechanisms to signal sleep state entry
-> (including reboot) to the host. The ACPI specification mandates WBINVD
-> on any sleep state entry with the expectation that the platform is
-> only responsible for maintaining the state of memory over sleep
-> states, not preserving dirty data in any CPU caches. ACPI cache
-> flushing requirements pre-date the advent of virtualization. Given TDX
-> guest sleep state entry does not affect any host power rails it is not
-> required to flush caches. The host is responsible for maintaining
-> cache state over its own bare metal sleep state transitions that
-> power-off the cache. If the host fails to manage caches over its sleep
-> state transitions the guest..."
+> Small comment if it is not too late. noinline_for_stack expands to the same
+> thing but is self documenting :) that way people do not have to git blame to
+> see why these are marked as noinline (not that too many people are probably
+> touching this but still).
 
-> 
-> I don't know how to finish the last sentence. What does TDX do if it
-> is resumed after host suspend and the host somehow arranged for dirty
-> TDX lines to be lost.
+How about like the following?
 
-TDX guest does not support S3. It will be disabled in ACPI tables. It
-is a TDX firmware spec requirement. Please check the following spec,
-sec 2.1
+							Thanx, Paul
 
-https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-virtual-firmware-design-guide-rev-1.pdf
+------------------------------------------------------------------------
 
-In TDX guest, we encounter cache flushes only in shutdown and reboot path.
-So there is no resume path.
+commit 8aa0ceef4264012abd7b98d29f0a968f0f0046cb
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Mon Jun 7 21:57:02 2021 -0700
 
+    rcu: Make rcu_gp_init() and rcu_gp_fqs_loop noinline to conserve stack
+    
+    The kbuild test project found an oversized stack frame in rcu_gp_kthread()
+    for some kernel configurations.  This oversizing was due to a very large
+    amount of inlining, which is unnecessary due to the fact that this code
+    executes infrequently.  This commit therefore marks rcu_gp_init() and
+    rcu_gp_fqs_loop noinline_for_stack to conserve stack space.
+    
+    Reported-by: kernel test robot <lkp@intel.com>
+    Tested-by: Rong Chen <rong.a.chen@intel.com>
+    [ paulmck: noinline_for_stack per Nathan Chancellor. ]
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-  Will that be noticed by TDX integrity
-> mechanisms? I did not immediately find an answer to this with a brief
-> look at the specs.
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 13bd8eee62bf..d8052adcdcb1 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1737,7 +1737,7 @@ static void rcu_strict_gp_boundary(void *unused)
+ /*
+  * Initialize a new grace period.  Return false if no grace period required.
+  */
+-static bool rcu_gp_init(void)
++static noinline_for_stack bool rcu_gp_init(void)
+ {
+ 	unsigned long firstseq;
+ 	unsigned long flags;
+@@ -1931,7 +1931,7 @@ static void rcu_gp_fqs(bool first_time)
+ /*
+  * Loop doing repeated quiescent-state forcing until the grace period ends.
+  */
+-static void rcu_gp_fqs_loop(void)
++static noinline_for_stack void rcu_gp_fqs_loop(void)
+ {
+ 	bool first_gp_fqs;
+ 	int gf = 0;
