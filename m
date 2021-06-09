@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073CB3A0895
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C393A088B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235037AbhFIArp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 20:47:45 -0400
-Received: from mail-qv1-f45.google.com ([209.85.219.45]:41522 "EHLO
-        mail-qv1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234982AbhFIArl (ORCPT
+        id S234450AbhFIAqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 20:46:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233682AbhFIAqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 20:47:41 -0400
-Received: by mail-qv1-f45.google.com with SMTP id x2so11258746qvo.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 17:45:40 -0700 (PDT)
+        Tue, 8 Jun 2021 20:46:52 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC73C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 17:44:42 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id v6so7824238qta.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 17:44:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=vcjYajrJXv/lTpIFROIc3rQPTqnw03xFW9e2NsWvMmk=;
-        b=SgxuxwSh4m1h9hRbLSuPfBWqYm1As0EuKsoebPFcfd02FoFxpOL3mT49jSoUnPLaoY
-         xXYMG+tTO3C+N7O2Oa8tDi6s3ZDHgA3UT3Zd6sJ4IAddJ8riUwdeXtuSRY8OeoY6B9bN
-         Qvg/1asVoH690WnwI+WVu/qNQPr848I0tiZ0Cyc8bOt5OyMCHQO+FBh4aacOcfQj6fDb
-         ImY6AVSlcszk63W/OPJ/U1o/2NdSKg0m/IOcyH415Qun96VY7uwVn4/mZTzN4O/gXnVz
-         aus3TnuWpj+obaFwUe1jmETnpKTJh9r58mmHR1KQwsYmxORiX/pUvrT1lCDV6ddrY1uo
-         LOzA==
+        bh=dD+TD8PMfklj/Tm2LUNfDWuVRT2HSdSCWIOTmpPI7yw=;
+        b=O+Ohn+hKzZXmnA/HVMExoBkeGSArjSolNHHV6X/vsjYGljOGAoFHyyvRDFaJ1DzgS4
+         8e8OBeZprYopNPRUeT+Bfr1O+raND6QEAo4AEaCR8Gno0GqMSYcxPtHKelB8fjRPHhtS
+         3L7U5JO+ulsYXlO+7H/ajE0iH92A4aHuQeoGyR3lemsxcLfVPzxsO1f9ysCQEG3hK4T8
+         kn7Tp8P+u8BcIGknsAkyqVaCKwsBskqTAldMeML+LwCDonzqBGulDV6mCx3ZKapWTPKd
+         aH1f4Xq9eLhBCe/0ICwW/IpaG6wdeHjOskxrCj/mfAxIdvewjNsfVjhcSXGO3PsCdLIX
+         x4bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vcjYajrJXv/lTpIFROIc3rQPTqnw03xFW9e2NsWvMmk=;
-        b=iNK4Ngp+tMxLY5Z4OylcFP3z/RW93AAmceiMFs/B+DMlsadSeXlJtztohOpGQdv48s
-         KTySYR8YTzUfd5bBY4oc8jbUDTg5I6qTFMom9w+1fTvw7eGpuYCWW1fdPFWc/Ut0pnam
-         apyQmOq01sd9FsSNsD/FbGHHqFyN9OhCgMpMcaRcpb+BOLaM/PFrPCbSrjas/SLxNsuq
-         xcUZt7rR1EyL4xYptvZrNMAxl09msrpN9H9WWD7ZXRWiWk4vXzSW6j+DTf6KNtDCaw1m
-         ZSgU1EQkox2MmMK7I5ywANM+I5J1WHRxujKemZ/oxy2vqYPhrJ//tgi7nfd3p0ZxOkWb
-         1+vA==
-X-Gm-Message-State: AOAM530N4LldCvIM2hgUfXLgmodvTXCAwqLdN5kcK/rA+wcyysc7t+hC
-        joxllSGD2nqvBp6ccQE2MQFxmw==
-X-Google-Smtp-Source: ABdhPJwHZbV81EmFC6ZnIEtukl3+Va3nM0ikxHKwWsJt6Ayst+Mc2MnTDU4ZHzbTNSVXncCD8AXVhw==
-X-Received: by 2002:a05:6214:21c8:: with SMTP id d8mr3294306qvh.35.1623199480026;
-        Tue, 08 Jun 2021 17:44:40 -0700 (PDT)
+        bh=dD+TD8PMfklj/Tm2LUNfDWuVRT2HSdSCWIOTmpPI7yw=;
+        b=qm2PmgEIrUN3oJt2Lj9M9/pPbYTE4zYrFazi6A2fN7nQj6viH8gvxrjemW285JEOY8
+         S4l1+zFxx0mEfnFwWYMrsYAfbT2XvH8ijL9jSS2+akH+XNDLvEj+pTyNhndidKmyIGJI
+         JnKDPb02NDfCvpClCH6rp01aCbst2KF3i51iIMOZ0j3+4sRSYeuW4ibwoxCA/bPY2i/q
+         WaOVmXyJd6mEVG1L5Ok1IsfVfjcdrFz469VejdNbzMeOtDrIZMRh5V89m2/NIs5Q/f2t
+         1ZhgTXdwxfmCNSAZ9lR0UXERfot01Qw75BPzl44TOK81sKIGz1u/t0SyE9DdcDYhJoOy
+         9H9A==
+X-Gm-Message-State: AOAM5322D/OMZ91qLM6LOPJ8iNumNWYi62a5JEv/Lr5w2qbf5Rlr0yLs
+        OAj+x92hvdUrpC/E/HwcDGL2kA==
+X-Google-Smtp-Source: ABdhPJwYtcKFj/+EEy4UoJHm9+fpf+9phFDeQ7OyT+OER+lXujNZukaA4hrJWqqp0WZ3jMZ2lqx4CA==
+X-Received: by 2002:ac8:6998:: with SMTP id o24mr20140603qtq.113.1623199481339;
+        Tue, 08 Jun 2021 17:44:41 -0700 (PDT)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id n194sm12869011qka.66.2021.06.08.17.44.38
+        by smtp.gmail.com with ESMTPSA id n194sm12869011qka.66.2021.06.08.17.44.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 17:44:39 -0700 (PDT)
+        Tue, 08 Jun 2021 17:44:40 -0700 (PDT)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         ebiederm@xmission.com, kexec@lists.infradead.org,
@@ -57,9 +60,9 @@ To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         selindag@gmail.com, tyhicks@linux.microsoft.com,
         kernelfans@gmail.com, akpm@linux-foundation.org,
         madvenka@linux.microsoft.com
-Subject: [PATCH v15 13/15] arm64: kexec: remove the pre-kexec PoC maintenance
-Date:   Tue,  8 Jun 2021 20:44:17 -0400
-Message-Id: <20210609004419.936873-14-pasha.tatashin@soleen.com>
+Subject: [PATCH v15 14/15] arm64: kexec: remove cpu-reset.h
+Date:   Tue,  8 Jun 2021 20:44:18 -0400
+Message-Id: <20210609004419.936873-15-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210609004419.936873-1-pasha.tatashin@soleen.com>
 References: <20210609004419.936873-1-pasha.tatashin@soleen.com>
@@ -69,73 +72,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that kexec does its relocations with the MMU enabled, we no longer
-need to clean the relocation data to the PoC.
+This header contains only cpu_soft_restart() which is never used directly
+anymore. So, remove this header, and rename the helper to be
+cpu_soft_restart().
 
 Suggested-by: James Morse <james.morse@arm.com>
 Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
 ---
- arch/arm64/kernel/machine_kexec.c | 40 -------------------------------
- 1 file changed, 40 deletions(-)
+ arch/arm64/include/asm/kexec.h    |  6 ++++++
+ arch/arm64/kernel/cpu-reset.S     |  7 +++----
+ arch/arm64/kernel/cpu-reset.h     | 30 ------------------------------
+ arch/arm64/kernel/machine_kexec.c |  6 ++----
+ 4 files changed, 11 insertions(+), 38 deletions(-)
+ delete mode 100644 arch/arm64/kernel/cpu-reset.h
 
-diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
-index a2163ea24fc1..8f8962f53ba2 100644
---- a/arch/arm64/kernel/machine_kexec.c
-+++ b/arch/arm64/kernel/machine_kexec.c
-@@ -76,45 +76,6 @@ int machine_kexec_prepare(struct kimage *kimage)
- 	return 0;
- }
+diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
+index dca6dedc3b25..9839bfc163d7 100644
+--- a/arch/arm64/include/asm/kexec.h
++++ b/arch/arm64/include/asm/kexec.h
+@@ -90,6 +90,12 @@ static inline void crash_prepare_suspend(void) {}
+ static inline void crash_post_resume(void) {}
+ #endif
  
--/**
-- * kexec_list_flush - Helper to flush the kimage list and source pages to PoC.
++#if defined(CONFIG_KEXEC_CORE)
++void cpu_soft_restart(unsigned long el2_switch, unsigned long entry,
++		      unsigned long arg0, unsigned long arg1,
++		      unsigned long arg2);
++#endif
++
+ #define ARCH_HAS_KIMAGE_ARCH
+ 
+ struct kimage_arch {
+diff --git a/arch/arm64/kernel/cpu-reset.S b/arch/arm64/kernel/cpu-reset.S
+index d47ff63a5b66..48a8af97faa9 100644
+--- a/arch/arm64/kernel/cpu-reset.S
++++ b/arch/arm64/kernel/cpu-reset.S
+@@ -16,8 +16,7 @@
+ .pushsection    .idmap.text, "awx"
+ 
+ /*
+- * __cpu_soft_restart(el2_switch, entry, arg0, arg1, arg2) - Helper for
+- * cpu_soft_restart.
++ * cpu_soft_restart(el2_switch, entry, arg0, arg1, arg2)
+  *
+  * @el2_switch: Flag to indicate a switch to EL2 is needed.
+  * @entry: Location to jump to for soft reset.
+@@ -29,7 +28,7 @@
+  * branch to what would be the reset vector. It must be executed with the
+  * flat identity mapping.
+  */
+-SYM_CODE_START(__cpu_soft_restart)
++SYM_CODE_START(cpu_soft_restart)
+ 	mov_q	x12, INIT_SCTLR_EL1_MMU_OFF
+ 	pre_disable_mmu_workaround
+ 	/*
+@@ -48,6 +47,6 @@ SYM_CODE_START(__cpu_soft_restart)
+ 	mov	x1, x3				// arg1
+ 	mov	x2, x4				// arg2
+ 	br	x8
+-SYM_CODE_END(__cpu_soft_restart)
++SYM_CODE_END(cpu_soft_restart)
+ 
+ .popsection
+diff --git a/arch/arm64/kernel/cpu-reset.h b/arch/arm64/kernel/cpu-reset.h
+deleted file mode 100644
+index 296abbac7192..000000000000
+--- a/arch/arm64/kernel/cpu-reset.h
++++ /dev/null
+@@ -1,30 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * CPU reset routines
+- *
+- * Copyright (C) 2015 Huawei Futurewei Technologies.
 - */
--static void kexec_list_flush(struct kimage *kimage)
+-
+-#ifndef _ARM64_CPU_RESET_H
+-#define _ARM64_CPU_RESET_H
+-
+-#include <asm/virt.h>
+-
+-void __cpu_soft_restart(unsigned long el2_switch, unsigned long entry,
+-	unsigned long arg0, unsigned long arg1, unsigned long arg2);
+-
+-static inline void __noreturn __nocfi cpu_soft_restart(unsigned long entry,
+-						       unsigned long arg0,
+-						       unsigned long arg1,
+-						       unsigned long arg2)
 -{
--	kimage_entry_t *entry;
+-	typeof(__cpu_soft_restart) *restart;
 -
--	__flush_dcache_area(kimage, sizeof(*kimage));
+-	restart = (void *)__pa_symbol(function_nocfi(__cpu_soft_restart));
 -
--	for (entry = &kimage->head; ; entry++) {
--		unsigned int flag;
--		void *addr;
--
--		/* flush the list entries. */
--		__flush_dcache_area(entry, sizeof(kimage_entry_t));
--
--		flag = *entry & IND_FLAGS;
--		if (flag == IND_DONE)
--			break;
--
--		addr = phys_to_virt(*entry & PAGE_MASK);
--
--		switch (flag) {
--		case IND_INDIRECTION:
--			/* Set entry point just before the new list page. */
--			entry = (kimage_entry_t *)addr - 1;
--			break;
--		case IND_SOURCE:
--			/* flush the source pages. */
--			__flush_dcache_area(addr, PAGE_SIZE);
--			break;
--		case IND_DESTINATION:
--			break;
--		default:
--			BUG();
--		}
--	}
+-	cpu_install_idmap();
+-	restart(0, entry, arg0, arg1, arg2);
+-	unreachable();
 -}
 -
- /**
-  * kexec_segment_flush - Helper to flush the kimage segments to PoC.
-  */
-@@ -200,7 +161,6 @@ int machine_kexec_post_load(struct kimage *kimage)
- 	__flush_dcache_area(reloc_code, reloc_size);
- 	flush_icache_range((uintptr_t)reloc_code, (uintptr_t)reloc_code +
- 			   reloc_size);
--	kexec_list_flush(kimage);
- 	kexec_image_info(kimage);
+-#endif
+diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+index 8f8962f53ba2..a1d98f42b741 100644
+--- a/arch/arm64/kernel/machine_kexec.c
++++ b/arch/arm64/kernel/machine_kexec.c
+@@ -23,8 +23,6 @@
+ #include <asm/sections.h>
+ #include <asm/trans_pgd.h>
  
- 	return 0;
+-#include "cpu-reset.h"
+-
+ /**
+  * kexec_image_info - For debugging output.
+  */
+@@ -197,10 +195,10 @@ void machine_kexec(struct kimage *kimage)
+ 	 * In kexec_file case, the kernel starts directly without purgatory.
+ 	 */
+ 	if (kimage->head & IND_DONE) {
+-		typeof(__cpu_soft_restart) *restart;
++		typeof(cpu_soft_restart) *restart;
+ 
+ 		cpu_install_idmap();
+-		restart = (void *)__pa_symbol(function_nocfi(__cpu_soft_restart));
++		restart = (void *)__pa_symbol(function_nocfi(cpu_soft_restart));
+ 		restart(is_hyp_nvhe(), kimage->start, kimage->arch.dtb_mem,
+ 			0, 0);
+ 	} else {
 -- 
 2.25.1
 
