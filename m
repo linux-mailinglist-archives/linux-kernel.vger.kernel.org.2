@@ -2,151 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6603A10B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD1D3A10AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238385AbhFIJ5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:57:53 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:4354 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235105AbhFIJ5v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:57:51 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1599pb9X004155;
-        Wed, 9 Jun 2021 09:55:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=L//vh03jvVMqGgHOzHK1+tPjaco74jX8OD89zhumWiM=;
- b=cEHv606LBOZ6Bw7CgVdmm+YTujjX05DSu1owPGO//SbBCOzyujWPh72NGF+FaQFnogMs
- yYfLSqMveZtvOxRysRqKMr4T1ng/y76XaEqinSsmLkZQNb5QIqsLEP7/8hmNJUb6PZFI
- goMxyhZXZO3uHAc2oD5z+Bdp0RzWi/cpjWFAhBaVmAyw/GJ9VYtBH+Gl7TiW5d/KOFwT
- qbximvVzKRY9Eq8nAhuaS1H2zY2KZucPh/yiorVNovMYGaPP48qSButy99PpDIJkgw4m
- nsQFZQ5nXUxt6reX0AMJtJr7i2FgsKWh+OYPXplLi69Ec0SYQMF4E3H+X3HL9zxDPyOh Rg== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 392jmw06hp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:55:40 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 1599ptcp007593;
-        Wed, 9 Jun 2021 09:55:40 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3922wug9s6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:55:40 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1599tdSN028423;
-        Wed, 9 Jun 2021 09:55:39 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 3922wug9qn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Jun 2021 09:55:39 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1599tZ2Z017238;
-        Wed, 9 Jun 2021 09:55:36 GMT
-Received: from mwanda (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Jun 2021 02:55:34 -0700
-Date:   Wed, 9 Jun 2021 12:55:25 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Joseph Lo <josephl@nvidia.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] memory: tegra: Delete dead debugfs checking code
-Message-ID: <YMCQDTSyG8UuQoh0@mwanda>
+        id S238372AbhFIJ5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:57:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235515AbhFIJ51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:57:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB66C61375;
+        Wed,  9 Jun 2021 09:55:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623232532;
+        bh=AC6NyNg2hyJCVW5IBQpa7LmxppI5gryhhJfVgsyhhXo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PMWV3N6dDwpao4AUOl4DcC1TlBSB2VPg+FEse277SA1Tp6H7dQtc7I4OdCkn3XSey
+         euJ3J0IqAa7ByQch9TlCEyz0fCbZ/C6Jwy5h+pcPd9v2+cabQnjTi809hEcL9yiikI
+         j8wAAUDQbcGnu5B0wEFyXeAXsL//jAe5FT0/C+lc=
+Date:   Wed, 9 Jun 2021 11:55:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Nava kishore Manne <nava.manne@xilinx.com>
+Cc:     robh+dt@kernel.org, michal.simek@xilinx.com, mdf@kernel.org,
+        trix@redhat.com, arnd@arndb.de, rajan.vaja@xilinx.com,
+        amit.sunil.dhamne@xilinx.com, tejas.patel@xilinx.com,
+        zou_wei@huawei.com, lakshmi.sai.krishna.potthuri@xilinx.com,
+        ravi.patel@xilinx.com, iwamatsu@nigauri.org,
+        wendy.liang@xilinx.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org, git@xilinx.com,
+        chinnikishore369@gmail.com
+Subject: Re: [RFC v2 0/4]Fpga: adds support to load the user-key encrypted
+ FPGA Image loading
+Message-ID: <YMCQESaESBSKCTrv@kroah.com>
+References: <20210609055232.4501-1-nava.manne@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: NPQdwU7L2BzZOVsbblldW1BSodma4iMi
-X-Proofpoint-ORIG-GUID: NPQdwU7L2BzZOVsbblldW1BSodma4iMi
+In-Reply-To: <20210609055232.4501-1-nava.manne@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The debugfs_create_dir() function does not return NULL, it returns error
-pointers.  But in normal situations like this where the caller is not
-dereferencing "emc->debugfs.root" then we are not supposed to check the
-return.  So instead of fixing these checks, we should delete them.
+On Wed, Jun 09, 2021 at 11:22:28AM +0530, Nava kishore Manne wrote:
+> This patch series adds supports user-key encrypted FPGA Image loading using
+> FPGA Manager framework.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/memory/tegra/tegra124-emc.c      | 4 ----
- drivers/memory/tegra/tegra20-emc.c       | 4 ----
- drivers/memory/tegra/tegra210-emc-core.c | 4 ----
- drivers/memory/tegra/tegra30-emc.c       | 4 ----
- 4 files changed, 16 deletions(-)
+Why is this series "RFC"?  Do you not think it is good enough to be
+merged?
 
-diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
-index a21ca8e0841a..908f8d5392b2 100644
---- a/drivers/memory/tegra/tegra124-emc.c
-+++ b/drivers/memory/tegra/tegra124-emc.c
-@@ -1269,10 +1269,6 @@ static void emc_debugfs_init(struct device *dev, struct tegra_emc *emc)
- 	}
- 
- 	emc->debugfs.root = debugfs_create_dir("emc", NULL);
--	if (!emc->debugfs.root) {
--		dev_err(dev, "failed to create debugfs directory\n");
--		return;
--	}
- 
- 	debugfs_create_file("available_rates", 0444, emc->debugfs.root, emc,
- 			    &tegra_emc_debug_available_rates_fops);
-diff --git a/drivers/memory/tegra/tegra20-emc.c b/drivers/memory/tegra/tegra20-emc.c
-index a534197a5fb2..c3462dbc8c22 100644
---- a/drivers/memory/tegra/tegra20-emc.c
-+++ b/drivers/memory/tegra/tegra20-emc.c
-@@ -776,10 +776,6 @@ static void tegra_emc_debugfs_init(struct tegra_emc *emc)
- 	}
- 
- 	emc->debugfs.root = debugfs_create_dir("emc", NULL);
--	if (!emc->debugfs.root) {
--		dev_err(emc->dev, "failed to create debugfs directory\n");
--		return;
--	}
- 
- 	debugfs_create_file("available_rates", 0444, emc->debugfs.root,
- 			    emc, &tegra_emc_debug_available_rates_fops);
-diff --git a/drivers/memory/tegra/tegra210-emc-core.c b/drivers/memory/tegra/tegra210-emc-core.c
-index 5f224796e32e..06c0f17fa429 100644
---- a/drivers/memory/tegra/tegra210-emc-core.c
-+++ b/drivers/memory/tegra/tegra210-emc-core.c
-@@ -1759,10 +1759,6 @@ static void tegra210_emc_debugfs_init(struct tegra210_emc *emc)
- 	}
- 
- 	emc->debugfs.root = debugfs_create_dir("emc", NULL);
--	if (!emc->debugfs.root) {
--		dev_err(dev, "failed to create debugfs directory\n");
--		return;
--	}
- 
- 	debugfs_create_file("available_rates", 0444, emc->debugfs.root, emc,
- 			    &tegra210_emc_debug_available_rates_fops);
-diff --git a/drivers/memory/tegra/tegra30-emc.c b/drivers/memory/tegra/tegra30-emc.c
-index 63e1983f8a0d..7e21a852f2e1 100644
---- a/drivers/memory/tegra/tegra30-emc.c
-+++ b/drivers/memory/tegra/tegra30-emc.c
-@@ -1354,10 +1354,6 @@ static void tegra_emc_debugfs_init(struct tegra_emc *emc)
- 	}
- 
- 	emc->debugfs.root = debugfs_create_dir("emc", NULL);
--	if (!emc->debugfs.root) {
--		dev_err(emc->dev, "failed to create debugfs directory\n");
--		return;
--	}
- 
- 	debugfs_create_file("available_rates", 0444, emc->debugfs.root,
- 			    emc, &tegra_emc_debug_available_rates_fops);
--- 
-2.30.2
+thanks,
 
+greg k-h
