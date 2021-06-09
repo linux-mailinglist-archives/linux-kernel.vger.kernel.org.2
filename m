@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071CD3A132A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371923A1320
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238631AbhFILrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58374 "EHLO
+        id S234587AbhFILrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235021AbhFILro (ORCPT
+        with ESMTP id S234472AbhFILrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:47:44 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89927C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:45:36 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id a11so23259892wrt.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:45:36 -0700 (PDT)
+        Wed, 9 Jun 2021 07:47:33 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEAEC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:45:38 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id o3so6752797wri.8
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:45:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0qKaD7pcb5H9dx5KCUiqNVK5FGDD0UzlMgn+aThmPRQ=;
-        b=LwLmDRa7HlVj5TeRIpJRW31k1q2q0LlumVmgD3rCRkL/qSlQOVL+r4huHkECdp2mbF
-         HdBA57KgpDnUjbp2HP7pKTAXOr+h+qpBcIcDdcjoFIvsyK7Ln6GzYLuB6akf75Y0GA5J
-         kS29z5bcGJT7RmfeSZVOyHi0HAR/EL6D0/v+fQmN+GCPThEbtduA4E9F4w40Tz1r17Q/
-         Nzq76MpTE+uI70pDb2xJsAoWvTMAJrQ4OHk1qY1wBTbPqVcI9BMBk0MohsRMVs/nNu1q
-         WXwSWYzGkIPejvUlQWWWNEGiqy6lvJwMXshXvw6sLfML9fEOKDvtDUqRQI2OZHtP6QU5
-         ofug==
+        bh=+ztWISkfbHLRcrutYYOCwKbEn/sj5GOKylRbehxkcT8=;
+        b=awyLTVcmnOLAAf+R6/GMoRbVqRSlP/YS6JgB+6D1F1gvM9MMSc4cD/WdXulgTM7//1
+         G/e75TR9l4inBFCFcSrKeuOl4iETp2u4elTB4L7k8+7c0+W80zbwbhPDzwbeHpUrSYQ+
+         6D8AZE45lTf8GHZTTIubBa5dArAh+hCyqhan3GPvEcwzZ2LiObWDz21m5CCE2q3YKPgL
+         lky/z26B/fLzY2TPB1dOpXhoziQKAe7sxx0OKaODFJ8/z5M+XUv3CH+AQJotEFiVBByx
+         mOTHqYHeY31T1pTwsNiBKUUe2Wxr7j+cNNd5f4trFAEbi00TVhjy8hywvVWA+x9RzFQQ
+         HhIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=0qKaD7pcb5H9dx5KCUiqNVK5FGDD0UzlMgn+aThmPRQ=;
-        b=PxtTbpPnnkLh1S0KTCQgFFUXJZvg65T1MNWl2DYEklrXSXXoLIoCK7EV06rDJ+iwpo
-         ATA5FA3g/vkJMndiy43ptT9++cxq04Y+UbWvcXGzhUrw1zl/ssYr+vhb1wxdaZlVa4TS
-         TiSpY+0VJlsV9KYr/md54tPPmQUn1cmE6sXzLJAi6NqXHPfFiZHUkVpSsfF0xvbe+9RQ
-         SOVIMVkDtLA0ueoWRlgM2qhdsaqxWhRKec2jbsZrWiFDVBdIBP7i/iDMyUP22VeCnjSQ
-         G4/pcB7F8EUOfPrz4UmMp5YgV84yQ4tigFMkpeNHMIo4XMIj4CXFvybjjAy0sLxd4ieu
-         8hqA==
-X-Gm-Message-State: AOAM5333a8fk0TtfCODkGK40jjFsBns7QgeJFUGITMs1HSBbg9flWUJF
-        o7zETHYFkSNOG5Df+OUFC+xnlwkpQIOBgpm0
-X-Google-Smtp-Source: ABdhPJzYholqo05PJOkGyVewkjTdKbLoCbFtuO511CPRSN8GIDXNlAS3YvCL76RCDzWo0v7BLIhDEA==
-X-Received: by 2002:adf:f211:: with SMTP id p17mr27593378wro.173.1623239135005;
-        Wed, 09 Jun 2021 04:45:35 -0700 (PDT)
+        bh=+ztWISkfbHLRcrutYYOCwKbEn/sj5GOKylRbehxkcT8=;
+        b=RInjs7wkPq+BgbnaBSd9djkfyjyUibBtCC3xxq5zV9R+1TdMVlB0Zpj3WwPdEOqR+E
+         CudNUp4NgJrLsL0BKx01rKLvGzBlUoAvkeRUqBTuzHAKNU6dPUZRKDdz7a1hfX6M3l5G
+         DIIskSROdBe9mf/LdKXvRnLYN7xVJZMOkHliXfQjL6Y1VGgscue7YZttr4WQqdW8EqEo
+         biBJqan8AArX3An/Vq0MGZWiVs1iM9SbiHYPtuabuG6B/Y6dRMQ0HCz135g0bWkoRh/N
+         6hgz3Db9whLqXMlB+aCDplRUq3eAGZM1otO9OpJeG/DJ8LKAYMn2kLpu+/zqdau5o7xI
+         lW7g==
+X-Gm-Message-State: AOAM532Osnf12lZM+Q7RjK2LXtmKqtKlHHvTisPL7pYTsd9f8fKTmdX4
+        nGUdBCuhVdZRXGEwk0xYbZCELz8KqNCdRHOX
+X-Google-Smtp-Source: ABdhPJzSC6EPdrOgWUgBxVgTNII5hR2mUzGO+0Gi9Q+F6XFTR4y9ZdgY1EbvuMzXNVdFwqj4XzD6/A==
+X-Received: by 2002:adf:9c93:: with SMTP id d19mr27643593wre.17.1623239136750;
+        Wed, 09 Jun 2021 04:45:36 -0700 (PDT)
 Received: from localhost ([2a02:768:2307:40d6::45a])
-        by smtp.gmail.com with ESMTPSA id v15sm1836422wrw.24.2021.06.09.04.45.34
+        by smtp.gmail.com with ESMTPSA id u20sm15670188wmq.24.2021.06.09.04.45.36
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Jun 2021 04:45:34 -0700 (PDT)
+        Wed, 09 Jun 2021 04:45:36 -0700 (PDT)
 Sender: Michal Simek <monstr@monstr.eu>
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
@@ -55,11 +55,12 @@ To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         Viresh Kumar <viresh.kumar@linaro.org>
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 08/31] arm64: zynqmp: Correct psgtr description for zcu100-revC
-Date:   Wed,  9 Jun 2021 13:44:44 +0200
-Message-Id: <bd35fdaac08208578b2bb5059ba2c59bb4e66dac.1623239033.git.michal.simek@xilinx.com>
+Subject: [PATCH 09/31] arm64: zynqmp: Add phy description for usb3.0
+Date:   Wed,  9 Jun 2021 13:44:45 +0200
+Message-Id: <cd856e5f87bc967373691d04e79de3d0022ef424.1623239033.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1623239033.git.michal.simek@xilinx.com>
 References: <cover.1623239033.git.michal.simek@xilinx.com>
@@ -69,47 +70,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable psgtr node and also fix clock names to be aligned with other zynqmp
-boards.
+usb3.0 requires serdes setting that's why also wire it up.
 
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
 
- arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts | 6 ++++++
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts | 3 +++
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts | 3 +++
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts | 3 +++
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts | 3 +++
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts | 3 +++
+ 6 files changed, 21 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-index 9c40c6552c32..4622e173d262 100644
+index 4622e173d262..80415e202814 100644
 --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
 +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-@@ -111,13 +111,13 @@ ina226 {
- 		io-channels = <&u35 0>, <&u35 1>, <&u35 2>, <&u35 3>;
- 	};
- 
--	si5335a_0: clk26 {
-+	si5335_0: si5335_0 { /* clk0_usb - u23 */
- 		compatible = "fixed-clock";
- 		#clock-cells = <0>;
- 		clock-frequency = <26000000>;
- 	};
- 
--	si5335a_1: clk27 {
-+	si5335_1: si5335_1 { /* clk1_dp - u23 */
- 		compatible = "fixed-clock";
- 		#clock-cells = <0>;
- 		clock-frequency = <27000000>;
-@@ -459,8 +459,9 @@ conf-tx {
+@@ -538,6 +538,9 @@ &usb0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usb0_default>;
+ 	dr_mode = "peripheral";
++	phy-names = "usb3-phy";
++	phys = <&psgtr 2 PHY_TYPE_USB3 0 0>;
++	maximum-speed = "super-speed";
  };
  
- &psgtr {
--	/* usb3, dps */
--	clocks = <&si5335a_0>, <&si5335a_1>;
-+	status = "okay";
-+	/* usb3, dp */
-+	clocks = <&si5335_0>, <&si5335_1>;
- 	clock-names = "ref0", "ref1";
+ /* ULPI SMSC USB3320 */
+@@ -546,6 +549,9 @@ &usb1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usb1_default>;
+ 	dr_mode = "host";
++	phy-names = "usb3-phy";
++	phys = <&psgtr 3 PHY_TYPE_USB3 1 0>;
++	maximum-speed = "super-speed";
  };
  
+ &watchdog0 {
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+index b37aee2d85b9..719a9e5e1b01 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+@@ -979,6 +979,9 @@ &usb0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usb0_default>;
+ 	dr_mode = "host";
++	phy-names = "usb3-phy";
++	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
++	maximum-speed = "super-speed";
+ };
+ 
+ &watchdog0 {
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
+index 7e1b024f71e1..d7ecfcadd08b 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
+@@ -469,6 +469,9 @@ &usb0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usb0_default>;
+ 	dr_mode = "host";
++	phy-names = "usb3-phy";
++	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
++	maximum-speed = "super-speed";
+ };
+ 
+ &watchdog0 {
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
+index b140fd2c86aa..403a8ea6a36f 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
+@@ -491,6 +491,9 @@ &usb0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usb0_default>;
+ 	dr_mode = "host";
++	phy-names = "usb3-phy";
++	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
++	maximum-speed = "super-speed";
+ };
+ 
+ &watchdog0 {
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
+index 4919cdec835b..186d2e00d4a0 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
+@@ -985,6 +985,9 @@ &usb0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usb0_default>;
+ 	dr_mode = "host";
++	phy-names = "usb3-phy";
++	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
++	maximum-speed = "super-speed";
+ };
+ 
+ &watchdog0 {
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+index b0c2eae1b4b3..0bf29ff9c714 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+@@ -811,6 +811,9 @@ &usb0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usb0_default>;
+ 	dr_mode = "host";
++	phy-names = "usb3-phy";
++	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
++	maximum-speed = "super-speed";
+ };
+ 
+ &zynqmp_dpdma {
 -- 
 2.31.1
 
