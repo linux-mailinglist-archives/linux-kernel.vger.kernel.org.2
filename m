@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFBF3A10E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CEA3A10AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238680AbhFIKNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:13:41 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:11738 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236314AbhFIKNk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:13:40 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Ubr1ADd_1623232511;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ubr1ADd_1623232511)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 09 Jun 2021 17:55:14 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] selftests/x86/syscall: use ARRAY_SIZE for msbs
-Date:   Wed,  9 Jun 2021 17:55:06 +0800
-Message-Id: <1623232506-91641-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S238488AbhFIJ5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:57:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234582AbhFIJ5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:57:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BA3461042;
+        Wed,  9 Jun 2021 09:55:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623232514;
+        bh=JrqycFn4TkpeNt54gU7cj38GFkWwPD/eocl+1ViKwdY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=v4GVOZz7LUNMpiL/jfSpVpx8PplMlVpZDbzqJ3xpuBmuUNoKEUfFrUTQBxqajo2vI
+         Gl3DZckysR2NIvdDJN6kvQ9iwqU9r+DaOacvxFVqWmC0qHVPCghK4g+hXJcEhOtCX0
+         gXPsxBm2lJUMSfeQquMVhqGKG25G55ZM2n7rzt9M=
+Date:   Wed, 9 Jun 2021 11:55:11 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Nava kishore Manne <nava.manne@xilinx.com>
+Cc:     robh+dt@kernel.org, michal.simek@xilinx.com, mdf@kernel.org,
+        trix@redhat.com, arnd@arndb.de, rajan.vaja@xilinx.com,
+        amit.sunil.dhamne@xilinx.com, tejas.patel@xilinx.com,
+        zou_wei@huawei.com, lakshmi.sai.krishna.potthuri@xilinx.com,
+        ravi.patel@xilinx.com, iwamatsu@nigauri.org,
+        wendy.liang@xilinx.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org, git@xilinx.com,
+        chinnikishore369@gmail.com
+Subject: Re: [RFC v2 1/4] drivers: firmware: Add user encrypted key load API
+ support
+Message-ID: <YMCP/+uYMun478Z9@kroah.com>
+References: <20210609055232.4501-1-nava.manne@xilinx.com>
+ <20210609055232.4501-2-nava.manne@xilinx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609055232.4501-2-nava.manne@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use ARRAY_SIZE instead of dividing sizeof array with sizeof an
-element.
+On Wed, Jun 09, 2021 at 11:22:29AM +0530, Nava kishore Manne wrote:
+> This patch adds user encrypted key load API to support
+> User key encrypted images loading use cases from Linux.
 
-Clean up the following coccicheck warning:
+What is "user key encrypted images"?  Do we need more documentation here
+for what this is and how to use it?
 
-./tools/testing/selftests/x86/syscall_numbering.c:316:35-36: WARNING:
-Use ARRAY_SIZE.
+And why is "User" capitalized?
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- tools/testing/selftests/x86/syscall_numbering.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+thanks,
 
-diff --git a/tools/testing/selftests/x86/syscall_numbering.c b/tools/testing/selftests/x86/syscall_numbering.c
-index 9915917..7d5e246 100644
---- a/tools/testing/selftests/x86/syscall_numbering.c
-+++ b/tools/testing/selftests/x86/syscall_numbering.c
-@@ -313,7 +313,7 @@ static void test_syscall_numbering(void)
- 	 * The MSB is supposed to be ignored, so we loop over a few
- 	 * to test that out.
- 	 */
--	for (size_t i = 0; i < sizeof(msbs)/sizeof(msbs[0]); i++) {
-+	for (size_t i = 0; i < ARRAY_SIZE(msbs); i++) {
- 		int msb = msbs[i];
- 		run("Checking system calls with msb = %d (0x%x)\n",
- 		    msb, msb);
--- 
-1.8.3.1
-
+greg k-h
