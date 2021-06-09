@@ -2,54 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30DB3A17EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 429233A17F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238321AbhFIOxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:53:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238255AbhFIOx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:53:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6ADE6108E;
-        Wed,  9 Jun 2021 14:51:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623250295;
-        bh=RpHoluI8pTJmYD96yxbSmwNRfpnI7sPzIq66BPEzHic=;
+        id S238344AbhFIOx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:53:56 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:54086 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238328AbhFIOxu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:53:50 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 36F1720B7188;
+        Wed,  9 Jun 2021 07:51:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 36F1720B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623250315;
+        bh=/HOmnjissLx+lpthetr985W/qYtb76YNAtpL9Q+TgUo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N6XvBkwRHOL+xT8BqLULeDZK2oVML/jSFl+yvvua7d18wx0ai1R8VhT5TqxPmAZyY
-         dZmrYHoOgNYKJyqZ6tU3sNaQagd8YmUsuAx+I2Ub08xxMIPfjTLsxdpbUMyNF7bPyF
-         A6nWssPIMC1cYGY2xzJVHVewqp/c/Sy93eAqkgtc=
-Date:   Wed, 9 Jun 2021 16:51:32 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     trix@redhat.com
-Cc:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com,
-        nava.manne@xilinx.com, dinguyen@kernel.org,
-        krzysztof.kozlowski@canonical.com, yilun.xu@intel.com,
-        arnd@arndb.de, fpacheco@redhat.com, richard.gong@intel.com,
-        luca@lucaceresoli.net, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/4]  fpga: reorganize to subdirs
-Message-ID: <YMDVdGwo+3zaxEAv@kroah.com>
-References: <20210609142208.3085451-1-trix@redhat.com>
+        b=c80DgLo+RZ7PeCM+jUdVjeYBRw/W44I+zJd6qzZdHN9r7ORuQQ6AGzFitDP+/AVLR
+         JLqhPwpsBqvYed6u1ExXDP2dxSO+TkFg+aHZOAMCQwO11kq6EKDMweBAINbQYrfvAS
+         Ymdij+JezbRgdwPbVaGZvQYQQ2nDt5LNqgJSnrw8=
+Date:   Wed, 9 Jun 2021 09:51:53 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 4/7] hwrng: optee-rng: use tee_shm_alloc_kernel_buf()
+Message-ID: <20210609145153.GH4910@sequoia>
+References: <20210609102324.2222332-1-jens.wiklander@linaro.org>
+ <20210609102324.2222332-5-jens.wiklander@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210609142208.3085451-1-trix@redhat.com>
+In-Reply-To: <20210609102324.2222332-5-jens.wiklander@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 07:22:03AM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On 2021-06-09 12:23:21, Jens Wiklander wrote:
+> Uses the new simplified tee_shm_alloc_kernel_buf() function instead of
+> the old deprecated tee_shm_alloc() function which required specific
+> TEE_SHM-flags.
 > 
-> The incoming xrt patchset has a toplevel subdir xrt/
-> The current fpga/ uses a single dir with filename prefixes to subdivide owners
-> For consistency, there should be only one way to organize the fpga/ dir.
-> Because the subdir model scales better, refactor to use it.
-> The discussion wrt xrt is here:
-> https://lore.kernel.org/linux-fpga/68e85a4f-4a10-1ff9-0443-aa565878c855@redhat.com/
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 
-Why am I getting 2 copies of 0/4?
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-Please fix your email client...
+Tyler
+
+> ---
+>  drivers/char/hw_random/optee-rng.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/char/hw_random/optee-rng.c b/drivers/char/hw_random/optee-rng.c
+> index 135a82590923..a948c0727b2b 100644
+> --- a/drivers/char/hw_random/optee-rng.c
+> +++ b/drivers/char/hw_random/optee-rng.c
+> @@ -145,10 +145,10 @@ static int optee_rng_init(struct hwrng *rng)
+>  	struct optee_rng_private *pvt_data = to_optee_rng_private(rng);
+>  	struct tee_shm *entropy_shm_pool = NULL;
+>  
+> -	entropy_shm_pool = tee_shm_alloc(pvt_data->ctx, MAX_ENTROPY_REQ_SZ,
+> -					 TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
+> +	entropy_shm_pool = tee_shm_alloc_kernel_buf(pvt_data->ctx,
+> +						    MAX_ENTROPY_REQ_SZ);
+>  	if (IS_ERR(entropy_shm_pool)) {
+> -		dev_err(pvt_data->dev, "tee_shm_alloc failed\n");
+> +		dev_err(pvt_data->dev, "tee_shm_alloc_kernel_buf failed\n");
+>  		return PTR_ERR(entropy_shm_pool);
+>  	}
+>  
+> -- 
+> 2.31.1
+> 
