@@ -2,74 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6F43A0D00
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829443A0D49
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234473AbhFIHD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:03:28 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3808 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236833AbhFIHD1 (ORCPT
+        id S234967AbhFIHMu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 03:12:50 -0400
+Received: from hosting.gsystem.sk ([212.5.213.30]:56808 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233692AbhFIHMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:03:27 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0Hvq6GZLzWtLl;
-        Wed,  9 Jun 2021 14:56:39 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 15:01:31 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 15:01:31 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Lyude Paul <lyude@redhat.com>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, <dri-devel@lists.freedesktop.org>,
-        <nouveau@lists.freedesktop.org>, <kernel-janitors@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next v2] drm/nouveau/sw: use list_move instead of list_del/list_add in base.c
-Date:   Wed, 9 Jun 2021 15:10:40 +0800
-Message-ID: <20210609071040.1331339-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 9 Jun 2021 03:12:49 -0400
+Received: from [192.168.1.3] (ns.gsystem.sk [62.176.172.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id 8496D7A025C;
+        Wed,  9 Jun 2021 09:10:54 +0200 (CEST)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Christian =?utf-8?q?K=C3=B6nig?= <christian.koenig@amd.com>
+Subject: Re: nouveau broken on Riva TNT2 in 5.13.0-rc4: NULL pointer dereference in nouveau_bo_sync_for_device
+Date:   Wed, 9 Jun 2021 09:10:51 +0200
+User-Agent: KMail/1.9.10
+Cc:     Ben Skeggs <bskeggs@redhat.com>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <202106052143.52488.linux@zary.sk> <202106090857.42133.linux@zary.sk> <1c4a7360-57e3-c75a-c729-1432db5b90b9@amd.com>
+In-Reply-To: <1c4a7360-57e3-c75a-c729-1432db5b90b9@amd.com>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
+Message-Id: <202106090910.51188.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_move() instead of list_del() + list_add() in base.c.
+On Wednesday 09 June 2021, Christian König wrote:
+> Am 09.06.21 um 08:57 schrieb Ondrej Zary:
+> > [SNIP]
+> >> Thanks for the heads up. So the problem with my patch is already fixed,
+> >> isn't it?
+> > The NULL pointer dereference in nouveau_bo_wr16 introduced in
+> > 141b15e59175aa174ca1f7596188bd15a7ca17ba was fixed by
+> > aea656b0d05ec5b8ed5beb2f94c4dd42ea834e9d.
+> >
+> > That's the bug I hit when bisecting the original problem:
+> > NULL pointer dereference in nouveau_bo_sync_for_device
+> > It's caused by:
+> > # first bad commit: [e34b8feeaa4b65725b25f49c9b08a0f8707e8e86] drm/ttm: merge ttm_dma_tt back into ttm_tt
+> 
+> Good that I've asked :)
+> 
+> Ok that's a bit strange. e34b8feeaa4b65725b25f49c9b08a0f8707e8e86 was 
+> created mostly automated.
+> 
+> Do you have the original backtrace of that NULL pointer deref once more?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	CC mailist
+The original backtrace is here: https://lkml.org/lkml/2021/6/5/350
 
- drivers/gpu/drm/nouveau/nvkm/engine/sw/base.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/sw/base.c b/drivers/gpu/drm/nouveau/nvkm/engine/sw/base.c
-index 14871d0bd746..d8c55ea9aa6b 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/sw/base.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/sw/base.c
-@@ -37,8 +37,7 @@ nvkm_sw_mthd(struct nvkm_sw *sw, int chid, int subc, u32 mthd, u32 data)
- 	list_for_each_entry(chan, &sw->chan, head) {
- 		if (chan->fifo->chid == chid) {
- 			handled = nvkm_sw_chan_mthd(chan, subc, mthd, data);
--			list_del(&chan->head);
--			list_add(&chan->head, &sw->chan);
-+			list_move(&chan->head, &sw->chan);
- 			break;
- 		}
- 	}
-
+-- 
+Ondrej Zary
