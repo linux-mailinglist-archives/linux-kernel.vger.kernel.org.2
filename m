@@ -2,86 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0210F3A10E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B703A10E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238678AbhFIKLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:11:35 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3920 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238660AbhFIKLd (ORCPT
+        id S238668AbhFIKLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:11:32 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:32103 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238660AbhFIKLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:11:33 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0N6f2jcQz6wWB;
-        Wed,  9 Jun 2021 18:06:18 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 18:09:22 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 18:09:21 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <gregkh@linuxfoundation.org>,
-        <linux-accelerators@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <zhangfei.gao@linaro.org>, <wangzhou1@hisilicon.com>,
-        <yekai13@huawei.com>
-Subject: [PATCH v2] uacce: add print information if not enable sva
-Date:   Wed, 9 Jun 2021 18:09:05 +0800
-Message-ID: <1623233345-8765-1-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+        Wed, 9 Jun 2021 06:11:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UbrkGH0_1623233371;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UbrkGH0_1623233371)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 09 Jun 2021 18:09:34 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     harry.wentland@amd.com
+Cc:     sunpeng.li@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@linux.ie,
+        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/amd/display: use ARRAY_SIZE for base60_refresh_rates
+Date:   Wed,  9 Jun 2021 18:09:26 +0800
+Message-Id: <1623233366-100202-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add print information necessary if user not enable sva.
+Use ARRAY_SIZE instead of dividing sizeof array with sizeof an
+element.
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
+Clean up the following coccicheck warning:
 
-changes v1->v2:
-	use %pe, ERR_PTR(ret) to descriptive error output
+./drivers/gpu/drm/amd/display/dc/core/dc_resource.c:448:47-48: WARNING:
+Use ARRAY_SIZE.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/misc/uacce/uacce.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-index bae18ef0..488eeb2 100644
---- a/drivers/misc/uacce/uacce.c
-+++ b/drivers/misc/uacce/uacce.c
-@@ -387,15 +387,22 @@ static void uacce_release(struct device *dev)
- 
- static unsigned int uacce_enable_sva(struct device *parent, unsigned int flags)
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+index 57afe71..3f00989 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+@@ -445,7 +445,7 @@ bool resource_are_vblanks_synchronizable(
  {
-+	int ret;
-+
- 	if (!(flags & UACCE_DEV_SVA))
- 		return flags;
+ 	uint32_t base60_refresh_rates[] = {10, 20, 5};
+ 	uint8_t i;
+-	uint8_t rr_count = sizeof(base60_refresh_rates)/sizeof(base60_refresh_rates[0]);
++	uint8_t rr_count = ARRAY_SIZE(base60_refresh_rates);
+ 	uint64_t frame_time_diff;
  
- 	flags &= ~UACCE_DEV_SVA;
- 
--	if (iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_IOPF))
-+	ret = iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_IOPF);
-+	if (ret) {
-+		dev_err(parent, "failed to enable IOPF feature! ret = %pe\n", ERR_PTR(ret));
- 		return flags;
-+	}
- 
--	if (iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_SVA)) {
-+	ret = iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_SVA);
-+	if (ret) {
-+		dev_err(parent, "failed to enable SVA feature! ret = %pe\n", ERR_PTR(ret));
- 		iommu_dev_disable_feature(parent, IOMMU_DEV_FEAT_IOPF);
- 		return flags;
- 	}
+ 	if (stream1->ctx->dc->config.vblank_alignment_dto_params &&
 -- 
-2.7.4
+1.8.3.1
 
