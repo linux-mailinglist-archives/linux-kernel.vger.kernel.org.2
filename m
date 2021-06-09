@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FA13A1AC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8C53A1AD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237542AbhFIQTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:19:03 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:46812 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237477AbhFIQS7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:18:59 -0400
-Received: by mail-ot1-f47.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso24405513otl.13;
-        Wed, 09 Jun 2021 09:16:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=pGGy0QJiGHO1VqANFEeP8eQnM2OGRel1gTBvXXS9M6M=;
-        b=F4pC2j1+8nk11vArjlRzMOKHXpbTptScH8fuR1EM+n2/SL6RUTNf8NArckvNXRvP+R
-         lUHm5VhvFWRHzWiu1wy4/+RBbTEB6+cwG/O0b5UWmswGXuV3spuvLmmaFGgXlYdKbqmK
-         jgBKLUNAW/yVdbnvZq2Lq+3mRRW7zqDr+2r/0JhTSFGaUz+0+uPOau5+P9/XVpu2ex1X
-         FSCQWaxdpKqyMtVc6k2i+TcLzL6l15eRHZCtDXKUa+biuwXuRb1+cxRZGaYukyLwvXxB
-         lskEJQ5lATCm66LJMkDAQs0bTHQxwWNK1uwFI1V8n/P5+wtwnoGhZvWARuujaShRX+UN
-         Y9lg==
-X-Gm-Message-State: AOAM532nB9mFNylyiMUUXCGkSEx8R4D2lkK96Kh0P7ced0SgMisNiZNr
-        VsABep2S3nW+zVLAmapc7w==
-X-Google-Smtp-Source: ABdhPJz9lb6nQLNfKFtmUMYZW5PMOiiZPprVnIwJWUBq/29WErexzGXTF+CbUeDZFUDAGFLzY7eHew==
-X-Received: by 2002:a05:6830:14c:: with SMTP id j12mr196670otp.0.1623255408424;
-        Wed, 09 Jun 2021 09:16:48 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v203sm49302oie.52.2021.06.09.09.16.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 09:16:47 -0700 (PDT)
-Received: (nullmailer pid 3763302 invoked by uid 1000);
-        Wed, 09 Jun 2021 16:16:43 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        devicetree@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rob Clark <robdclark@gmail.com>
-In-Reply-To: <20210608195342.18269-2-jonathan@marek.ca>
-References: <20210608195342.18269-1-jonathan@marek.ca> <20210608195342.18269-2-jonathan@marek.ca>
-Subject: Re: [PATCH v3 1/3] dt-bindings: msm: dsi: add missing 7nm bindings
-Date:   Wed, 09 Jun 2021 11:16:43 -0500
-Message-Id: <1623255403.647740.3763301.nullmailer@robh.at.kernel.org>
+        id S232285AbhFIQWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:22:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229472AbhFIQWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 12:22:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BF2611AE;
+        Wed,  9 Jun 2021 16:20:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623255623;
+        bh=X7M0xs0eGOmGuyMA4YS5bDY1/R9cG9+jlCsQLk+6Bk8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=f9wWN/fooTuhyCp0R8Jp2CjqYeL3J0UBFkIffvtnJYsNs3ToYGhvYKqEn5KHZDRXS
+         bx/TPjiJWwkpgdpMPu08fRjiiZgYuAEBnVentnCTUZ/SwI0672IoGErniHzwjOi8s2
+         hSCD7whhOlz4fmTnDVg5Tg9pWdpuvB/1ZDBlkV553NotAMfXHpP4FnZD3j1hRPbvYX
+         1YJ3Kc/MNLLaKtORDj+KXiFUZOJwfDIssdnzwkDyJ4QpH0UUmmoFQHu+Yc1PmMU2S5
+         HUg7iCGgHi7Vj+PTnWZZgsh4udEep36w4UJFLg2SEcLjkMGxgP779G5TYteDa0wSlr
+         UHdHP8jCEoMdg==
+Date:   Wed, 9 Jun 2021 09:20:16 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>, <cong.wang@bytedance.com>,
+        <xiyou.wangcong@gmail.com>, <john.fastabend@gmail.com>,
+        <mkubecek@suse.cz>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, <davem@davemloft.net>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andriin@fb.com>,
+        <edumazet@google.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <jiri@resnulli.us>, <andrii@kernel.org>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <bjorn@kernel.org>, <alobakin@pm.me>
+Subject: Re: [PATCH net-next v2 0/3] Some optimization for lockless qdisc
+Message-ID: <20210609092016.4c43192f@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
+References: <1622684880-39895-1-git-send-email-linyunsheng@huawei.com>
+        <20210603113548.2d71b4d3@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20210608125349.7azp7zeae3oq3izc@skbuf>
+        <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Jun 2021 15:53:27 -0400, Jonathan Marek wrote:
-> These got lost when going from .txt to .yaml bindings, add them back.
+On Wed, 9 Jun 2021 09:31:39 +0800 Yunsheng Lin wrote:
+> On 2021/6/8 20:53, Vladimir Oltean wrote:
+> > On Thu, Jun 03, 2021 at 11:35:48AM -0700, Jakub Kicinski wrote:  
+> >> On Thu, 3 Jun 2021 09:47:57 +0800 Yunsheng Lin wrote:  
+> >>> Patch 1: remove unnecessary seqcount operation.
+> >>> Patch 2: implement TCQ_F_CAN_BYPASS.
+> >>> Patch 3: remove qdisc->empty.
+> >>>
+> >>> Performance data for pktgen in queue_xmit mode + dummy netdev
+> >>> with pfifo_fast:
+> >>>
+> >>>  threads    unpatched           patched             delta
+> >>>     1       2.60Mpps            3.21Mpps             +23%
+> >>>     2       3.84Mpps            5.56Mpps             +44%
+> >>>     4       5.52Mpps            5.58Mpps             +1%
+> >>>     8       2.77Mpps            2.76Mpps             -0.3%
+> >>>    16       2.24Mpps            2.23Mpps             +0.4%
+> >>>
+> >>> Performance for IP forward testing: 1.05Mpps increases to
+> >>> 1.16Mpps, about 10% improvement.  
+> >>
+> >> Acked-by: Jakub Kicinski <kuba@kernel.org>  
+> > 
+> > Any idea why these patches are deferred in patchwork?
+> > https://patchwork.kernel.org/project/netdevbpf/cover/1622684880-39895-1-git-send-email-linyunsheng@huawei.com/  
 > 
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  .../bindings/display/msm/dsi-phy-7nm.yaml     | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.yaml
-> 
+> I suppose it is a controversial change, which need more time
+> hanging to be reviewed and tested.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/display/msm/dsi-phy-common.yaml'
-xargs: dt-doc-validate: exited with status 255; aborting
-Error: Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.example.dts:26.38-39 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1416: dt_binding_check] Error 2
-\ndoc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1489620
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+That'd be my guess also. A review from area experts would be great,
+perhaps from Cong, John, Michal..  If the review doesn't come by
+Friday - I'd repost.
