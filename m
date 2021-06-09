@@ -2,186 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9343A0BBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8FA3A0BC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232416AbhFIFJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 01:09:25 -0400
-Received: from mga11.intel.com ([192.55.52.93]:11924 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229792AbhFIFJX (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 01:09:23 -0400
-IronPort-SDR: aeJRs9fD9LqCj0QgKaWhmqTZEtHsnNgvJqKkH+1CntwitAKuB57ykFw9jUp5gcC+F2le9dTF/s
- lL4GA95r3JwQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="201981035"
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="201981035"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 22:07:28 -0700
-IronPort-SDR: 9b3Tz4AFBpCJq48F/lFucv7cUg0hdGPiiyEYBF8DVh5bwW4KRm5CNKGQrKOp1uIoDoCZQnoiUF
- Kyq0bnVJJFdg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="637882584"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga005.fm.intel.com with ESMTP; 08 Jun 2021 22:07:25 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2] perf stat: Disable NMI watchdog message on hybrid
-Date:   Wed,  9 Jun 2021 13:06:00 +0800
-Message-Id: <20210609050600.7308-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S233396AbhFIFOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 01:14:50 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:50522 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232153AbhFIFOt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 01:14:49 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1595CmVQ063309;
+        Wed, 9 Jun 2021 00:12:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623215568;
+        bh=8nU8dx0W7UHA7c2WDGiyi7oL2CaDsAqar1u6ZM2n30Q=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=IHlXFtRyDtg9r55tenCp+Tf+UKwB2jNb+FPTaIBC1O5uExwWt9dKleJ8baHi07+Uf
+         yLWnM7m1w1huCr+aRRejiCghpNFib4ScawsSSVmXSTv3aDDHoeWZGDGybOWwjWv0aX
+         JqPx2D8xFkRjjEiXtjTX1hEtazl5kfcwjKlufU3g=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1595Cm93054084
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Jun 2021 00:12:48 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
+ 2021 00:12:48 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 9 Jun 2021 00:12:48 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1595CjRq124940;
+        Wed, 9 Jun 2021 00:12:46 -0500
+Subject: Re: [PATCH] arm64: dts: ti: k3-am642-main: fix ports mac properties
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210608184940.25934-1-grygorii.strashko@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <abe15d92-83a7-d60f-c4b4-81e8b9ac415a@ti.com>
+Date:   Wed, 9 Jun 2021 10:42:44 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210608184940.25934-1-grygorii.strashko@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we run a single workload that only runs on big core, there is always a
-ugly message about disabling the NMI watchdog because the atom is not
-counted.
 
-Before:
 
-  # ./perf stat true
+On 6/9/21 12:19 AM, Grygorii Strashko wrote:
+> The current device tree CPSW3g node adds non-zero "mac-address" property to
+> the ports, which prevents random MAC address assignment to network devices
+> if bootloader failed to update DT. This may cause more then one host to
+> have the same MAC in the network.
+> 
+>  mac-address = [00 00 de ad be ef];
+>  mac-address = [00 01 de ad be ef];
+> 
+> In addition, there is one MAC address available in eFuse registers which
+> can be used for default port 1.
+> 
+> Hence, fix ports MAC properties by:
+> - resetting "mac-address" property to 0
+> - adding ti,syscon-efuse = <&main_conf 0x200> to Port 1
+> 
+> Fixes: 3753b12877b6 ("arm64: dts: ti: k3-am64-main: Add CPSW DT node")
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> ---
 
-   Performance counter stats for 'true':
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
 
-                0.43 msec task-clock                #    0.396 CPUs utilized
-                   0      context-switches          #    0.000 /sec
-                   0      cpu-migrations            #    0.000 /sec
-                  45      page-faults               #  103.918 K/sec
-             639,634      cpu_core/cycles/          #    1.477 G/sec
-       <not counted>      cpu_atom/cycles/                                              (0.00%)
-             643,498      cpu_core/instructions/    #    1.486 G/sec
-       <not counted>      cpu_atom/instructions/                                        (0.00%)
-             123,715      cpu_core/branches/        #  285.694 M/sec
-       <not counted>      cpu_atom/branches/                                            (0.00%)
-               4,094      cpu_core/branch-misses/   #    9.454 M/sec
-       <not counted>      cpu_atom/branch-misses/                                       (0.00%)
-
-         0.001092407 seconds time elapsed
-
-         0.001144000 seconds user
-         0.000000000 seconds sys
-
-  Some events weren't counted. Try disabling the NMI watchdog:
-          echo 0 > /proc/sys/kernel/nmi_watchdog
-          perf stat ...
-          echo 1 > /proc/sys/kernel/nmi_watchdog
-
-  # ./perf stat -e '{cpu_atom/cycles/,msr/tsc/}' true
-
-   Performance counter stats for 'true':
-
-       <not counted>      cpu_atom/cycles/                                              (0.00%)
-       <not counted>      msr/tsc/                                                      (0.00%)
-
-         0.001904106 seconds time elapsed
-
-         0.001947000 seconds user
-         0.000000000 seconds sys
-
-  Some events weren't counted. Try disabling the NMI watchdog:
-          echo 0 > /proc/sys/kernel/nmi_watchdog
-          perf stat ...
-          echo 1 > /proc/sys/kernel/nmi_watchdog
-  The events in group usually have to be from the same PMU. Try reorganizing the group.
-
-Now we disable the NMI watchdog message on hybrid, otherwise there
-are too many false positives.
-
-After:
-
-  # ./perf stat true
-
-   Performance counter stats for 'true':
-
-                0.79 msec task-clock                #    0.419 CPUs utilized
-                   0      context-switches          #    0.000 /sec
-                   0      cpu-migrations            #    0.000 /sec
-                  48      page-faults               #   60.889 K/sec
-             777,692      cpu_core/cycles/          #  986.519 M/sec
-       <not counted>      cpu_atom/cycles/                                              (0.00%)
-             669,147      cpu_core/instructions/    #  848.828 M/sec
-       <not counted>      cpu_atom/instructions/                                        (0.00%)
-             128,635      cpu_core/branches/        #  163.176 M/sec
-       <not counted>      cpu_atom/branches/                                            (0.00%)
-               4,089      cpu_core/branch-misses/   #    5.187 M/sec
-       <not counted>      cpu_atom/branch-misses/                                       (0.00%)
-
-         0.001880649 seconds time elapsed
-
-         0.001935000 seconds user
-         0.000000000 seconds sys
-
-  # ./perf stat -e '{cpu_atom/cycles/,msr/tsc/}' true
-
-   Performance counter stats for 'true':
-
-       <not counted>      cpu_atom/cycles/                                              (0.00%)
-       <not counted>      msr/tsc/                                                      (0.00%)
-
-         0.000963319 seconds time elapsed
-
-         0.000999000 seconds user
-         0.000000000 seconds sys
-
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
-v2:
- - If the group was mixed with hybrid event and non-hybrid event,
-   the NMI watchdog message was still reported. V2 adds checking
-   for hybrid event mixed group.
-
-v1:
- - Get ACK from Jiri.
-
- tools/perf/util/stat-display.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
-
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index b759dfd633b4..c1314f13bc9a 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -404,6 +404,19 @@ static bool is_mixed_hw_group(struct evsel *counter)
- 	return false;
- }
- 
-+static bool is_mixed_hybrid_group(struct evsel *counter)
-+{
-+	struct evlist *evlist = counter->evlist;
-+	struct evsel *pos;
-+
-+	evlist__for_each_entry(evlist, pos) {
-+		if (perf_pmu__is_hybrid(pos->pmu_name))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- static void printout(struct perf_stat_config *config, struct aggr_cpu_id id, int nr,
- 		     struct evsel *counter, double uval,
- 		     char *prefix, u64 run, u64 ena, double noise,
-@@ -465,9 +478,12 @@ static void printout(struct perf_stat_config *config, struct aggr_cpu_id id, int
- 			config->csv_sep);
- 
- 		if (counter->supported) {
--			config->print_free_counters_hint = 1;
--			if (is_mixed_hw_group(counter))
--				config->print_mixed_hw_group_error = 1;
-+			if (!is_mixed_hybrid_group(counter)) {
-+				if (!perf_pmu__is_hybrid(counter->pmu_name))
-+					config->print_free_counters_hint = 1;
-+				if (is_mixed_hw_group(counter))
-+					config->print_mixed_hw_group_error = 1;
-+			}
- 		}
- 
- 		fprintf(config->output, "%-*s%s",
--- 
-2.17.1
-
+>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> index effb9d2e3c25..7f7178a7a055 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> @@ -514,7 +514,8 @@
+>  				ti,mac-only;
+>  				label = "port1";
+>  				phys = <&phy_gmii_sel 1>;
+> -				mac-address = [00 00 de ad be ef];
+> +				mac-address = [00 00 00 00 00 00];
+> +				ti,syscon-efuse = <&main_conf 0x200>;
+>  			};
+>  
+>  			cpsw_port2: port@2 {
+> @@ -522,7 +523,7 @@
+>  				ti,mac-only;
+>  				label = "port2";
+>  				phys = <&phy_gmii_sel 2>;
+> -				mac-address = [00 01 de ad be ef];
+> +				mac-address = [00 00 00 00 00 00];
+>  			};
+>  		};
+>  
+> 
