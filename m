@@ -2,100 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F523A159E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F753A15A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234730AbhFINdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:33:09 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5310 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233299AbhFINdI (ORCPT
+        id S235082AbhFINdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:33:11 -0400
+Received: from relay02.th.seeweb.it ([5.144.164.163]:53915 "EHLO
+        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233302AbhFINdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:33:08 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G0SYP4sRZz1BJYF;
-        Wed,  9 Jun 2021 21:26:17 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 21:31:09 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 21:31:09 +0800
-Subject: Re: [PATCH 1/1] lib: remove leading spaces before tabs
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Joe Perches <joe@perches.com>, Andy Shevchenko <andy@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210608071430.12687-1-thunder.leizhen@huawei.com>
- <CAHp75VfuMJ5kfRDB4tE2zr2Em79HiwrDJVROnw+kD3H+QNM4sg@mail.gmail.com>
- <da4915c5-fa13-0cf2-f2d2-02779a64af1b@huawei.com>
- <8a70d592e14f93822bf40832c7374d8e491c3afc.camel@perches.com>
- <26ee1009-259d-07a6-495f-87557be9ed8a@huawei.com>
- <3211e76c-d2a0-1e26-940b-9710073ee7d4@huawei.com>
- <CAHp75VfQq=RkjyZQsc-PHLTLRCzXovm-D_Z+Pp3A6vWGA-GKug@mail.gmail.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <012cca24-44bd-4135-4082-91225df0ec00@huawei.com>
-Date:   Wed, 9 Jun 2021 21:31:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 9 Jun 2021 09:33:09 -0400
+Received: from [192.168.1.101] (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id CD186200EB;
+        Wed,  9 Jun 2021 15:31:11 +0200 (CEST)
+Subject: Re: [PATCH RFC 1/2] thermal: qcom: tsens-v1: Add support for MSM8994
+ TSENS
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, Amit Kucheria <amitk@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210209195346.457803-1-konrad.dybcio@somainline.org>
+ <a4b76d12-a659-da87-7d97-9b34e3cf7edf@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <ce5cac52-473c-a30a-104d-0a175e8848db@somainline.org>
+Date:   Wed, 9 Jun 2021 15:31:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfQq=RkjyZQsc-PHLTLRCzXovm-D_Z+Pp3A6vWGA-GKug@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <a4b76d12-a659-da87-7d97-9b34e3cf7edf@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
 
-On 2021/6/9 18:30, Andy Shevchenko wrote:
-> On Wed, Jun 9, 2021 at 9:21 AM Leizhen (ThunderTown)
-> <thunder.leizhen@huawei.com> wrote:
->> On 2021/6/9 13:15, Leizhen (ThunderTown) wrote:
->>> On 2021/6/9 0:03, Joe Perches wrote:
->>>> On Tue, 2021-06-08 at 17:00 +0800, Leizhen (ThunderTown) wrote:
->>>>> On 2021/6/8 16:44, Andy Shevchenko wrote:
->>>>>> On Tue, Jun 8, 2021 at 10:14 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->>>>>>>
->>>>>>> 1) Run the following command to find and remove the leading spaces before
->>>>>>>    tabs:
->>>>>>>    find lib/ -type f | xargs sed -r -i 's/^[ ]+\t/\t/'
->>>>>>
->>>>>> Hint for the future, try to use what Git provides, for example `git
->>>>>> ls-files -- lib/`.
->>>>>
->>>>> Okay, thanks. I learned a new trick.
-> 
->>>> For instance:
->>>>
->>>> $ git diff --stat lib
->>>> $ git ls-files lib/ | \
->>>>   xargs ./scripts/checkpatch.pl --types=SPACE_BEFORE_TAB --fix-inplace
->>
->> I just tried it. It's too slow.
-> 
-> If checkpath accepts infinite positional arguments, then proper way of
-> use (that's how I do with simple perl regexps) is to
-> 
-> scripts/checkpatch.pl --types=SPACE_BEFORE_TAB --fix-inplace -- $(git
-> ls-files lib/)
+> Please split binding and code into two separate patches.
 
-Nice. It's a little more concise.
+It's a oneliner, but I might as well.
 
-> 
-> Seems like we have a shell lesson :-)
-> 
->> The command I used earlier, removing the line start match "^", can also do that.
->>
->> git ls-files lib/ | xargs sed -r -i 's/[ ]+\t/\t/'
-> 
-> 
+ 
 
+> That deserves a cartdrige with a good explanation of why this function
+> is doing all this. Without enough details, it is hard to review the code.
+
+I don't really know *why* it's doing all of this. Qualcomm doesn't share any documentation.
+
+It' just based on the freely-available msm-3.10 kernel driver. Probably just a HW specific.
+
+
+
+>> +static void compute_intercept_slope_8994(struct tsens_priv *priv,
+>> +			      u32 *base0, u32 *base1, u32 *p, u32 mode)
+>> +{
+>> +	int adc_code_of_tempx, i, num, den;
+>> +
+>> +	for (i = 0; i < priv->num_sensors; i++) {
+>> +		dev_dbg(priv->dev,
+>> +			"%s: sensor%d - data_point1:%#x data_point2:%#x\n",
+>> +			__func__, i, base0[i], base1[i]);
+>> +
+>> +		priv->sensor[i].slope = SLOPE_DEFAULT;
+>> +		if (mode == TWO_PT_CALIB) {
+>> +			/*
+>> +			 * slope (m) = adc_code2 - adc_code1 (y2 - y1)/
+>> +			 *	temp_120_degc - temp_30_degc (x2 - x1)
+>> +			 */
+>> +			num = base1[i] - base0[i];
+> As the caller of the function is copying the value of base[0] to the
+> entire array, whatever 'i', base[i] == base[0], so the parameters can be
+> replaced by a single int.
+>
+> Then the code becomes:
+>
+> 	num = base1 - base0;
+> 	num *= SLOPE_FACTOR;
+> 	den = CAL_DEGC_PT2 - CAL_DEGC_PT1;
+> 	slope = num / den;
+>
+> There is no change in the values, so 'slope' can be precomputed before
+> the loop. We end up with:
+>
+> 	int adc_code_of_tempx, i, num, den;
+> 	int slope;
+>
+> 	/*
+> 	 * slope (m) = adc_code2 - adc_code1 (y2 - y1)/
+> 	 *	temp_120_degc - temp_30_degc (x2 - x1)
+> 	 */
+> 	num = base1 - base0;
+> 	num *= SLOPE_FACTOR;
+> 	den = CAL_DEGC_PT2 - CAL_DEGC_PT1;
+> 	slope = num / den;
+>
+> 	for (i = 0; i < priv->num_sensors; i++) {
+>
+> 		priv->sensor[i].slope = mode == TWO_PT_CALIB ? slope :
+> 			SLOPE_DEFAULT;
+
+That's sounds very good. I did not think of this approach, but I will incorporate it
+
+into the next revision.
+
+
+
+>> +		adc_code_of_tempx = base0[i] + p[i];
+>> +
+>> +		priv->sensor[i].offset = (adc_code_of_tempx * SLOPE_FACTOR) -
+>> +				(CAL_DEGC_PT1 *	priv->sensor[i].slope);
+>> +		dev_dbg(priv->dev, "%s: offset:%d\n", __func__,
+>> +			priv->sensor[i].offset);
+>> +	}
+>> +}
+>> +
+>>  static int calibrate_v1(struct tsens_priv *priv)
+>>  {
+>>  	u32 base0 = 0, base1 = 0;
+>> @@ -297,14 +421,143 @@ static int calibrate_8976(struct tsens_priv *priv)
+>>  	return 0;
+>>  }
+> Same comment as above. The more the details, the easier for the people
+> to review the code.
+
+Sorry, I am not sure what you're referring to, the calibrate_8976 function?
+
+
+
+>> -/* v1.x: msm8956,8976,qcs404,405 */
+>> +static int calibrate_8994(struct tsens_priv *priv)
+>> +{
+>> +	int base0[16] = { 0 }, base1[16] = { 0 }, i;
+>> +	u32 p[16];
+> p stands for ?
+
+No idea, but judging by the line:
+
+" adc_code_of_tempx = base0[i] + p[i]; "
+
+it's probably some hw-specific offset value.
+
+
+
+>> +	int mode = 0;
+>> +	u32 *calib0, *calib1, *calib2, *calib_mode, *calib_rsel;
+>> +	u32 calib_redun_sel;
+>> +
+>> +	/* 0x40d0-0x40dc */
+>> +	calib0 = (u32 *)qfprom_read(priv->dev, "calib");
+> Fix qfprom_read, by returning an int and using nvmem_cell_read_u32
+> (separate series).
+>
+> It seems like all call sites are expecting an int.
+
+Weird. I did not get slope calculation issues even with this, but perhaps
+
+I was just lucky.
+
+
+
+>> +			p[9] = (calib2[0] & MSM8994_S9_REDUN_MASK) >> MSM8994_S9_REDUN_SHIFT;
+>> +			p[10] = (calib2[0] & MSM8994_S10_REDUN_MASK) >> MSM8994_S10_REDUN_SHIFT;
+>> +			p[11] = (calib2[0] & MSM8994_S11_REDUN_MASK) >> MSM8994_S11_REDUN_SHIFT;
+>> +			p[12] = (calib2[0] & MSM8994_S12_REDUN_MASK) >> MSM8994_S12_REDUN_SHIFT;
+>> +			p[13] = (calib2[0] & MSM8994_S13_REDUN_MASK) >> MSM8994_S13_REDUN_SHIFT;
+>> +			p[14] = (calib2[0] & MSM8994_S14_REDUN_MASK) >> MSM8994_S14_REDUN_SHIFT;
+>> +			p[15] = (calib2[0] & MSM8994_S15_REDUN_MASK) >> MSM8994_S15_REDUN_SHIFT;
+> IMO, it is possible to do something simpler (probably bits.h could have
+> interesting helpers).
+
+All TSENS consumers had this style, probably to make it easier to compare with the
+
+downstream driver should there arise any human errors.
+
+
+
+>> +		} else {
+>> +			dev_dbg(priv->dev, "%s: REDUN NON-TWO_PT mode, mode = %i",
+>> +			__func__, mode);
+>> +			for (i = 0; i < 16; i++)
+>> +				p[i] = 532;
+> No litterals, macros please
+
+Does MSM8994_NON_TWOPT_DEFAULT_VALUE sound good? It doesn't exactly
+
+roll of the tongue but I don't have many better ideas..
+
+
+
+> And it would be simpler to iniatialize the array with the value.
+>
+> u32 p[16] = { [ 0 ... 15 ] = MY_532_MACRO };
+
+> So no need to use this loop and the other one beliw.
+
+Thanks, didn't know about this.
+
+
+
+> What about replacing 16 by TSENS_SENSOR_MAX ?
+
+If you mean this 8994-specific function exactly, then it'd probably cause
+
+more confusion than help as we might find out that some SoC using TSENSv1
+
+has even more sensors.
+
+
+
+>>  static struct tsens_features tsens_v1_feat = {
+>>  	.ver_major	= VER_1_X,
+>>  	.crit_int	= 0,
+>>  	.adc		= 1,
+>>  	.srot_split	= 1,
+>> -	.max_sensors	= 11,
+>> +	.max_sensors	= 16,
+
+Here TSENS_SENSOR_MAX does make sense.
+
+
+
+>> +
+>> +struct tsens_plat_data data_8994 = {
+>> +	.num_sensors	= 16,
+>> +	.ops		= &ops_8994,
+>> +	.hw_ids		= (unsigned int []){ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
+> If you have time, in another series, replace this by a single int used
+> as a bitmask and fix the hw_id loop in tsens.c.
+
+I will add this to my to-do list, but no promises on this landing anytime soon :/
+
+
+
+Thanks for the thorough review,
+
+Konrad
