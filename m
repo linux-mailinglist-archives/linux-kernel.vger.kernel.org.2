@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161C43A109E
+	by mail.lfdr.de (Postfix) with ESMTP id 833A13A109F
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbhFIJyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:54:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238428AbhFIJya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:54:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D206761375;
-        Wed,  9 Jun 2021 09:52:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623232356;
-        bh=9O8DXLaMQM9wVBMqS6re6m7iWtxcq4OkN60k7/72jNE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rz5e9QJyYBUIFX4wbQiLyfbCr2ONPnv5qZ/sXNbA9h6nEWncd+rc5hcnpU2TD4nyT
-         ACJoUjv/x3+cwkrkkd1ZkWHbvlDn9YME8rOTKS55xu0fFWCD9Cmk0Gyogs19ecbGo9
-         HvfxvTAvubbRjOMLWKiZ7G4PyIs8geVKrKQ4ELn8=
-Date:   Wed, 9 Jun 2021 11:52:34 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "yekai(A)" <yekai13@huawei.com>
-Cc:     linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, zhangfei.gao@linaro.org,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH] uacce: add print information if not enable sva
-Message-ID: <YMCPYmjHnn8S8soC@kroah.com>
-References: <1622792769-28017-1-git-send-email-yekai13@huawei.com>
- <YLnbgcJmQZChx1WV@kroah.com>
- <3f1590c4-b9f1-18f5-370a-57d9707f38a0@huawei.com>
+        id S238442AbhFIJy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235515AbhFIJyy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:54:54 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19408C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 02:53:00 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id a11so36801113ejf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zx6PrfCijrtGUc8/DwaoquyaqEufQLJYW8mSyr0lIOE=;
+        b=cmRCbkDPmJ27zoPJ/uRNxYOi08R7ZAQ5lQScjo4cVoz9q6vUn96wNbitYM4QRxz1SD
+         Gp6A70U9k2y0Yd5xOof0VO7Fr/sooy5gIup6LUFzHDc+ugl+qbBW5GK71eN8z7fuXLrp
+         XH1Zy3Tu+plb/ZnDdXh7iHpftHyOTrvkHiCeGkcvBj6YRUFUwQfUYDMejw7JEZijeT1H
+         kBnugMNqq0jAg9zv2uhax2qNPuXg+kOLWmIVcc9QI46JJBjWpr37RVaj85IRhkatSImB
+         Yt6qLj5qMgWeJVcycxn3ocBxu04jSjAk/OMkz6A5iiTxUz34xPBZz8pCenWcgGdLIlWC
+         8iyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zx6PrfCijrtGUc8/DwaoquyaqEufQLJYW8mSyr0lIOE=;
+        b=HaFdJtxYrPER3vvc95UYh8/YSCXRSdfm/TTRaoGA03lQZYNo/uDuwgg2+TgGUtLgAf
+         oC7/GQ2N1FBaz+dLv68DLaAyYyPfzR4ZSLOlzQ9sC2wiifFJOsGTMFHq7OLJJc/v0gCM
+         RJY3pKfKtzXQHfcCdMNnTOpWnCZlO2vVnCYt2d2sNd8w9XrcP9qIqn+9s+9/XSgRKNd/
+         ghyH2KEcjCqBe/o61zVLytO8PZSq9uRK5vsSq1+jzNydQmWDkPVXQim5p0uYmBNLWyn8
+         +0/9IuYlZrhJBXgGDbNNd7eiOgfqgvHfbf+na1DVG94N0SAwHH5m4x7YEd2fvZ4AqiDf
+         agcA==
+X-Gm-Message-State: AOAM531K2G1ZgZ2R99UzvzK6vzhP3TWhtLvb3jLRPNMc1mGvhQwjbB6Q
+        2T8BawV9GKYprLV0qMN8/D7Srj8vp6dRGjKYC78=
+X-Google-Smtp-Source: ABdhPJxyaF2Ve1/4r/AKBUqHa17WHbIilJJz6QJa2Tbn1u/wuIDN1ZAKL7rKYhXReaibTyilw7A5DlUSw0ye3OaBTEw=
+X-Received: by 2002:a17:906:f6d7:: with SMTP id jo23mr28156560ejb.302.1623232378298;
+ Wed, 09 Jun 2021 02:52:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f1590c4-b9f1-18f5-370a-57d9707f38a0@huawei.com>
+Received: by 2002:a17:906:212:0:0:0:0 with HTTP; Wed, 9 Jun 2021 02:52:56
+ -0700 (PDT)
+Reply-To: elizabethelizabethedward@gmail.com
+From:   Elizabeth Edward <hon.victor.kabore@gmail.com>
+Date:   Wed, 9 Jun 2021 11:52:56 +0200
+Message-ID: <CAOEYS_dSxAZjMd=eo484KE_3w93aWgL_15aPNFNssqocKbGA0g@mail.gmail.com>
+Subject: I NEED YOUR URGENT ASSISTANCE.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 09:39:52AM +0800, yekai(A) wrote:
-> 
-> 
-> On 2021/6/4 15:51, Greg KH wrote:
-> > On Fri, Jun 04, 2021 at 03:46:09PM +0800, Kai Ye wrote:
-> > > Add print information necessary if user not enable sva.
-> > > 
-> > > Signed-off-by: Kai Ye <yekai13@huawei.com>
-> > > ---
-> > >  drivers/misc/uacce/uacce.c | 11 +++++++++--
-> > >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-> > > index bae18ef0..fe38af8 100644
-> > > --- a/drivers/misc/uacce/uacce.c
-> > > +++ b/drivers/misc/uacce/uacce.c
-> > > @@ -387,15 +387,22 @@ static void uacce_release(struct device *dev)
-> > > 
-> > >  static unsigned int uacce_enable_sva(struct device *parent, unsigned int flags)
-> > >  {
-> > > +	int ret;
-> > > +
-> > >  	if (!(flags & UACCE_DEV_SVA))
-> > >  		return flags;
-> > > 
-> > >  	flags &= ~UACCE_DEV_SVA;
-> > > 
-> > > -	if (iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_IOPF))
-> > > +	ret = iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_IOPF);
-> > > +	if (ret) {
-> > > +		dev_err(parent, "failed to enable IOPF feature! ret = %d\n", ret);
-> > 
-> > Why is this needed?  Has this ever happened in real life such that the
-> > log message is now required?
-> > 
-> > 
-> > 
-> > >  		return flags;
-> > > +	}
-> > > 
-> > > -	if (iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_SVA)) {
-> > > +	ret = iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_SVA);
-> > > +	if (ret) {
-> > > +		dev_err(parent, "failed to enable SVA feature! ret = %d\n", ret);
-> > 
-> > Same here, does this happen in real systems?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > .
-> > 
-> In a other debug version, the SVA feature failed to be enabled, and no
-> related information was printed. we don't know the cause of the problem.
-> Finally, Although, it's not the problem here. but we find that the sva
-> enable function doesn't have debug information. Therefore, it is
-> inconvenient to locate the fault.
-> so i think the log message is required.
+My Dear Friend,
+Please forgive me for stressing you with my predicaments and am sorry
+to approach you through this media, it is because it serves the
+fastest means of communication. I came across your E-mail from my
+personal search and I decided to contact you believing you will be
+honest to fulfill my final wish before I die.
 
-Ok, can you resend with the changes that Joe suggested to make this even
-easier to use?
+I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
+am suffering from a pro-long critical cancer, my doctors confirmed I
+may not live beyond two months from now as my ill health has defiled
+all forms of medical treatment.
 
-thanks,
+Since my days are numbered, I=E2=80=99ve decided, willingly to fulfill my
+long-time promise to donate you the sum ($5.000.000.00) million
+dollars I inherited from my late husband Mr. Edward Herbart, foreign
+bank account over years. I need a very honest person who can assist in
+transfer of this money to his or her account and use the funds for
+charities work of God while you use 50% for yourself. I want you to
+know there is no risk involved; it is 100% hitch free & safe. If you
+will be interesting to assist in getting this fund into your account
+for charity project to fulfill my promise before I die please let me
+know immediately. I will appreciate your utmost confidentiality as I
+wait for your reply.
 
-greg k-h
+Best Regards
+
+Mrs. Elizabeth Edward.
