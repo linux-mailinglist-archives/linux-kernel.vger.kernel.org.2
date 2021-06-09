@@ -2,153 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A6C3A0BD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0953E3A0BDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbhFIF2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 01:28:52 -0400
-Received: from mail-bn8nam12on2088.outbound.protection.outlook.com ([40.107.237.88]:18077
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231443AbhFIF2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 01:28:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MM7Y8CTGudCw+/TkK4RIcceqdpaUoIqCvej3emoBGPf0xEa3qcma2aRUEJlQEny7re/gqtARDHELrSKD3gcDXshq5x1kH/N6F/kahEuD1N2+CByUYuLY2D7y0cVWUKaFvOXC1OUWzStvo7QEw2XB/UR+yxd7f17C5DS0mIRM5W5HRH9HLtPAPGyoaqhoTfujhhajq4oNrLDR4wGLd7wUZjIJW/wq9VZIQO8nlFmGMveMzufN+7K2/Bolfo/uhK6ZzWaEZ68ipFIgV2rQcTa0HnpG7q32e3guMxQS0HYk65ksz2i4YPbebznXDXCQ+OF3mDjdwBh3YwN6Hn/+Qd2tFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AaFH3bs1ws0RD1+tG34yLMQGyFHeH9J0Bjv9Mlo8NVk=;
- b=RhkM+U3EbiHk2BwdHVZV/qaxGQPXarysQxWmhcfyOSMLt+udiHQJYh4A8/IXBZ+dgoH7JC+k0f1ZoqQJq1MRKJEpRWuXnzUftEe6YVTbKEUxky7IswsqbC0UXdHjJeOmFwaGNsDr8KwZJSKAa2UR9jEGgFFh6ZDX24yq9DoV+YjUF+w1G5b11ThHUptBw3JczIshOUc9aHJqj+dOXZOSoh2gliww+ZSI4xUvVFxy0nlK3INW9IX1yPybatLrrjuKMIOLU5SO5MNjUQQiv3hAwpjFkWsMkFnWUJBEib0X0wBpKS6OrkWhsmgcwWqhrqOjiyUUUDuvuOfzc1osLKeqGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AaFH3bs1ws0RD1+tG34yLMQGyFHeH9J0Bjv9Mlo8NVk=;
- b=n3E1WE7AeFYWEtSC3r0zrfMba3FQCE1mWNpldAXH8CWc5nhPpOT3gvQKHRmMCseEXBwACmieMhdoghVjNtqPCeVic8LsWj7ZCVtJSTZMpQ5M8FPNYqyvDN7c3lO+aLiUWsG0tbq6o1zjI5g4/k1kLn2O2kceKl1gsJpHzKqBSE5GR/rJYGMAo0sJe3kv0ezIvHzhhD8gSL7NWITX2bHDcxzqd6RTYD/QFynyYGtF1RcitfHP/w3ExQM8yc/9AMSfdDGhQAWUzd2JGcIk1XiRZkwq7AxtbwBwzYojSI/zySnseld7TG24XI2wOMCuR0w8Kvw6Gt5n5pfwp9JN2IYE5Q==
-Received: from MW4PR03CA0177.namprd03.prod.outlook.com (2603:10b6:303:8d::32)
- by DM6PR12MB3964.namprd12.prod.outlook.com (2603:10b6:5:1c5::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Wed, 9 Jun
- 2021 05:26:54 +0000
-Received: from CO1NAM11FT046.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:8d:cafe::c0) by MW4PR03CA0177.outlook.office365.com
- (2603:10b6:303:8d::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend
- Transport; Wed, 9 Jun 2021 05:26:54 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT046.mail.protection.outlook.com (10.13.174.203) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4195.22 via Frontend Transport; Wed, 9 Jun 2021 05:26:54 +0000
-Received: from [10.25.75.134] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 9 Jun
- 2021 05:26:51 +0000
-Subject: Re: Query regarding the use of pcie-designware-plat.c file
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
-        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
-        Joao Pinto <Joao.Pinto@synopsys.com>
-CC:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Krishna Thota <kthota@nvidia.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <34650ed1-6567-3c8f-fe29-8816f0fd74f2@nvidia.com>
- <DM5PR12MB18351813A8F94B0D18E6B505DA379@DM5PR12MB1835.namprd12.prod.outlook.com>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <d142b6be-f006-1edf-8780-da72ff4f20e3@nvidia.com>
-Date:   Wed, 9 Jun 2021 10:56:48 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S236150AbhFIFcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 01:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231443AbhFIFcQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 01:32:16 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5440AC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 22:30:06 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id v6so8204940qta.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 22:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=NN7xmTnHOJkFIgJqmIQHYCemTkBXultHJB0UVCrZGJU=;
+        b=lKzfwxvZYmXMio6DxcohP6UZ0VciCjemrQxWd/Wo4qqmgYF2Kw0+5kLAN7z/fwkDKy
+         CMV4dTuWzd4b7yedIkBvfi16W4eG3HU0wDjNVmQrry+FtDpDJmpUKhCjwKWvVedGPIwf
+         +j+c2DPRMfYzvW+kZM4dce49dDqa17muJgH0Vwi+d3ThcjVZ2y25P9KM7fGgM1OQnGwK
+         1Tpmx6W77SsIcd07ri9QThEVp208q+R33tneycV7Vy4ljxuYwzj0yNAT/7aYbShIon47
+         v2hSeJu/41txZYKiOjqJDfeAuO6rIEJvsMK2IZT5hkdmRIdg+GQ16XfW/F4gzxPrMyI9
+         9bcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=NN7xmTnHOJkFIgJqmIQHYCemTkBXultHJB0UVCrZGJU=;
+        b=s6s+xD0NTDgLw/K3wFAdwOaGzhxmGZFmlT7j9QYrOM/a2OWQQsOzywxLQ3enilIaQ1
+         8uuquYm4s26WkXgfqUh1ucvzvIVrbhYEXIv/PVHm43ucbm+ad7p0wAdWDNpZo3+tM25u
+         UOHul5uNMy8fsKVVJvye2uPLixx6OF3X9gzSyFCle72hXb+w+1BCjc3RQ6G8yrQxHxZw
+         byx8X/SC67iJYzZvQ9W4uPj2mvmm9Rk2IqPxP5J4c+I/quoXUXnciY7En1GvtLmnd3R7
+         8J+3FG5aFS6sIDgW7sxNvDRUdJs1D+NH/JQA1eAjM8qhev4Ogp+kPBXSyFbSakIS2oZE
+         Zh/A==
+X-Gm-Message-State: AOAM533EVE7KmBCGnVxxdaUWCCzptP1kJ1Fe9hRKbJUZWjJHOl4VU7EE
+        eI9LF6tasWfpwGVjFLtShd8=
+X-Google-Smtp-Source: ABdhPJyNarADNIgx5i6021RzYgKXFMSTP9Xz/qNJbnqV2oKGzxx1S0Sz/8dqbhP4KEJgsnRW5BQVUA==
+X-Received: by 2002:ac8:5202:: with SMTP id r2mr19484392qtn.86.1623216605538;
+        Tue, 08 Jun 2021 22:30:05 -0700 (PDT)
+Received: from ?IPv6:2804:14c:482:87bb::1000? ([2804:14c:482:87bb::1000])
+        by smtp.gmail.com with ESMTPSA id y20sm12122386qtv.64.2021.06.08.22.30.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 22:30:05 -0700 (PDT)
+Message-ID: <fa7a0e981a067445beb1ae01d53db932990717b7.camel@gmail.com>
+Subject: Re: [PATCH v2 3/3] powerpc/mm/hash: Avoid multiple HPT resize-downs
+ on memory hotunplug
+From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Wed, 09 Jun 2021 02:30:36 -0300
+In-Reply-To: <YL2sjKM7ByS0Xeko@yekko>
+References: <20210430143607.135005-1-leobras.c@gmail.com>
+         <20210430143607.135005-4-leobras.c@gmail.com> <YL2sjKM7ByS0Xeko@yekko>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-In-Reply-To: <DM5PR12MB18351813A8F94B0D18E6B505DA379@DM5PR12MB1835.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fc6f78ba-5d24-47fb-d24a-08d92b07314a
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3964:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3964B2BE8233CF00B3108683B8369@DM6PR12MB3964.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HfUdEGTDyK7SjP9PAgr6fSqnGFS5WfN/s1IONOASvi5cCLAcnzcgREBcfpBBrhdr8Xj5Bjs3BHhcquHhiyte3mSNNSwgR4EoTSqcGeJlQYmJjFfIsfEQq4qrir16SQAPfXyo34fZBrNDfhQjF7i4jmyNeeA1SzNIuEiko0Gr1nb3xlV1T7JSKfI6dCo6SQ6z8JXHBspugkeTf9FBG5yvZq9WRDzlYx46HcI1pgiBmLQyrvk51OY3TSg4BH55HQSIHPdDxH58AIcLQu8+FXy6w65nlTqsb+ERwPFdemIybLLQe6vuOrlrIrhINngWrnGNA4NIEBvUbzVzI06Wz/4qAW7lSqIp+meUN1NnFDGhRaS7HmYNJ5ZEQJaEAjMOTg3TUiF2PFEyX6MirD1h1HfaVmFLo6O8A2vLwJOTEx4k+t2koA3Ko8GxX42Ae5nXXlzdcP+CJxR7nvMJvgORWcGw0gDSC5BWC6u1RdrUQqJi/C4yBH4RRA/B7UIqOcZh7gHyWYdCIkcEqDISD/VAj36oPCkmGPM/8Ia2i9zrGKJ45Fb022Jh58Fyzxm4/84ad+qchL8ClEyB4Qc7WujrslDM/aw3LtPKEYrRWUka2aCpTUuk4Q3DE+8vZ0PLcf/57XdKDAZGOYjesXzeKdZ4+KhzjlFWE7PBEattig8m/jsyNrXqMqafJYEdk3+MjYNy4cr1
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(136003)(39860400002)(46966006)(36840700001)(36860700001)(8676002)(2906002)(186003)(426003)(26005)(86362001)(7636003)(53546011)(70586007)(478600001)(8936002)(2616005)(70206006)(36756003)(336012)(16526019)(82740400003)(16576012)(54906003)(5660300002)(4326008)(316002)(36906005)(47076005)(356005)(31696002)(31686004)(110136005)(82310400003)(6666004)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 05:26:54.0298
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc6f78ba-5d24-47fb-d24a-08d92b07314a
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT046.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3964
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2021-06-07 at 15:20 +1000, David Gibson wrote:
+> On Fri, Apr 30, 2021 at 11:36:10AM -0300, Leonardo Bras wrote:
+> > During memory hotunplug, after each LMB is removed, the HPT may be
+> > resized-down if it would map a max of 4 times the current amount of
+> > memory.
+> > (2 shifts, due to introduced histeresis)
+> > 
+> > It usually is not an issue, but it can take a lot of time if HPT
+> > resizing-down fails. This happens  because resize-down failures
+> > usually repeat at each LMB removal, until there are no more bolted
+> > entries
+> > conflict, which can take a while to happen.
+> > 
+> > This can be solved by doing a single HPT resize at the end of
+> > memory
+> > hotunplug, after all requested entries are removed.
+> > 
+> > To make this happen, it's necessary to temporarily disable all HPT
+> > resize-downs before hotunplug, re-enable them after hotunplug ends,
+> > and then resize-down HPT to the current memory size.
+> > 
+> > As an example, hotunplugging 256GB from a 385GB guest took 621s
+> > without
+> > this patch, and 100s after applied.
+> > 
+> > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> 
+> Hrm.  This looks correct, but it seems overly complicated.
+> 
+> AFAICT, the resize calls that this adds should in practice be the
+> *only* times we call resize, all the calls from the lower level code
+> should be suppressed. 
+
+That's correct.
+
+>  In which case can't we just remove those calls
+> entirely, and not deal with the clunky locking and exclusion here.
+> That should also remove the need for the 'shrinking' parameter in
+> 1/3.
 
 
-On 6/9/2021 2:47 AM, Gustavo Pimentel wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> Hi Vidya,
-> 
-> The pcie-designware-plat.c is the driver for the Synopsys PCIe RC IP
-> prototype.
-Thanks for the info Gustavo.
-But, I don't see any DT file having only "snps,dw-pcie" compatibility 
-string. All the DT files that have "snps,dw-pci" compatibility string 
-also have their platform specific compatibility string and their 
-respective host controller drivers. Also, it is the platform specific 
-compatibility string that is used for binding purpose with their 
-respective drivers and not the "snps,dw-pcie". So, wondering when will 
-pcie-designware-plat.c be used as there is not DT file which has only 
-"snps,dw-pcie" as the compatibility string.
+If I get your suggestion correctly, you suggest something like:
+1 - Never calling resize_hpt_for_hotplug() in
+hash__remove_section_mapping(), thus not needing the srinking
+parameter.
+2 - Functions in hotplug-memory.c that call dlpar_remove_lmb() would in
+fact call another function to do the batch resize_hpt_for_hotplug() for
+them
 
-- Vidya Sagar
-> 
-> -Gustavo
-> 
-> On Tue, Jun 8, 2021 at 20:22:37, Vidya Sagar <vidyas@nvidia.com> wrote:
-> 
->> Hi,
->> I would like to know what is the use of pcie-designware-plat.c file.
->> This looks like a skeleton file and can't really work with any specific
->> hardware as such.
->> Some context for this mail thread is, if the config CONFIG_PCIE_DW_PLAT
->> is enabled in a system where a Synopsys DesignWare IP based PCIe
->> controller is present and its configuration is enabled (Ex:- Tegra194
->> system with CONFIG_PCIE_TEGRA194_HOST enabled), then, it can so happen
->> that the probe of pcie-designware-plat.c called first (because all DWC
->> based PCIe controller nodes have "snps,dw-pcie" compatibility string)
->> and can crash the system.
->> One solution to this issue is to remove the "snps,dw-pcie" from the
->> compatibility string (as was done through the commit f9f711efd441
->> ("arm64: tegra: Fix Tegra194 PCIe compatible string") but it seems like
->> a localized fix for Tegra194 where the issue potentially is global, as
->> in, the crash can happen on any platform.
->> So, wondering if the config option CONFIG_PCIE_DW_PLAT can be removed
->> altogether for pcie-designware-plat.c?
->>
->> Thanks,
->> Vidya Sagar
-> 
-> 
+If so, that assumes that no other function that currently calls
+resize_hpt_for_hotplug() under another path, or if they do, it does not
+need to actually resize the HPT.
+
+Is the above correct?
+
+There are some examples of functions that currently call
+resize_hpt_for_hotplug() by another path:
+
+add_memory_driver_managed
+	virtio_mem_add_memory
+	dev_dax_kmem_probe
+
+reserve_additional_memory
+	balloon_process
+	add_ballooned_pages
+
+__add_memory
+	probe_store
+
+__remove_memory
+	pseries_remove_memblock
+
+remove_memory
+	dev_dax_kmem_remove
+	virtio_mem_remove_memory
+
+memunmap_pages
+	pci_p2pdma_add_resource
+	virtio_fs_setup_dax
+
+
+Best regards,
+Leonardo Bras
+
