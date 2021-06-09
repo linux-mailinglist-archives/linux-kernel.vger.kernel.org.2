@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F111A3A0D90
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA7D3A0D96
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237193AbhFIHUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:20:09 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8111 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbhFIHUH (ORCPT
+        id S237197AbhFIHUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:20:51 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5465 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235479AbhFIHUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:20:07 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0JKQ1GX9zYsXy;
-        Wed,  9 Jun 2021 15:15:22 +0800 (CST)
+        Wed, 9 Jun 2021 03:20:49 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0JLD0FbszZfb0;
+        Wed,  9 Jun 2021 15:16:04 +0800 (CST)
 Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 15:18:11 +0800
+ 15.1.2176.2; Wed, 9 Jun 2021 15:18:53 +0800
 Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
  (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 15:18:11 +0800
+ 15:18:53 +0800
 From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, Peter Chen <peter.chen@kernel.org>,
-        "Pawel Laszczak" <pawell@cadence.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     <linux-kernel@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>
 CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
         <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, <linux-usb@vger.kernel.org>,
+        <libaokun1@huawei.com>, <dmaengine@vger.kernel.org>,
         <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next v2] usb: cdns3: cdns3-gadget: Use list_move_tail instead of list_del/list_add_tail
-Date:   Wed, 9 Jun 2021 15:27:20 +0800
-Message-ID: <20210609072720.1358527-1-libaokun1@huawei.com>
+Subject: [PATCH -next v2] dmaengine: fsl-dpaa2-qdma: Use list_move_tail instead of list_del/list_add_tail
+Date:   Wed, 9 Jun 2021 15:28:02 +0800
+Message-ID: <20210609072802.1368785-1-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Type:   text/plain; charset=US-ASCII
@@ -54,22 +53,33 @@ Signed-off-by: Baokun Li <libaokun1@huawei.com>
 V1->V2:
 	CC mailist
 
- drivers/usb/cdns3/cdns3-gadget.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-index 57adcdbfab5f..5d8c982019af 100644
---- a/drivers/usb/cdns3/cdns3-gadget.c
-+++ b/drivers/usb/cdns3/cdns3-gadget.c
-@@ -430,9 +430,7 @@ static int cdns3_start_all_request(struct cdns3_device *priv_dev,
- 		if (ret)
- 			return ret;
+diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
+index 4ae057922ef1..a0358f2c5cbb 100644
+--- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
++++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
+@@ -291,9 +291,8 @@ static void dpaa2_qdma_issue_pending(struct dma_chan *chan)
  
--		list_del(&request->list);
--		list_add_tail(&request->list,
--			      &priv_ep->pending_req_list);
-+		list_move_tail(&request->list, &priv_ep->pending_req_list);
- 		if (request->stream_id != 0 || (priv_ep->flags & EP_TDLCHK_EN))
- 			break;
+ 		err = dpaa2_io_service_enqueue_fq(NULL, dpaa2_chan->fqid, fd);
+ 		if (err) {
+-			list_del(&dpaa2_comp->list);
+-			list_add_tail(&dpaa2_comp->list,
+-				      &dpaa2_chan->comp_free);
++			list_move_tail(&dpaa2_comp->list,
++				       &dpaa2_chan->comp_free);
+ 		}
  	}
+ err_enqueue:
+@@ -626,8 +625,7 @@ static void dpaa2_qdma_free_desc(struct virt_dma_desc *vdesc)
+ 	dpaa2_comp = to_fsl_qdma_comp(vdesc);
+ 	qchan = dpaa2_comp->qchan;
+ 	spin_lock_irqsave(&qchan->queue_lock, flags);
+-	list_del(&dpaa2_comp->list);
+-	list_add_tail(&dpaa2_comp->list, &qchan->comp_free);
++	list_move_tail(&dpaa2_comp->list, &qchan->comp_free);
+ 	spin_unlock_irqrestore(&qchan->queue_lock, flags);
+ }
+ 
 
