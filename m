@@ -2,96 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C323A1CFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B8B3A1CFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhFISqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 14:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhFISqP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 14:46:15 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02D3C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 11:44:05 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id m18so26605051wrv.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 11:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=/OeoAGy1A3IEy3Gj7xVoOV+pgm3ejfFP6M33G2/qTsw=;
-        b=pkyiwUcWdl2NTbfay2RmnndJmbGNmeF/TpRKXQlrM09uMItjvBrIuMW/yqfZXL6Zfj
-         mWuImxuPnqlTYVHPBD5Zy6AAT/yXeXsJ3b/roRx448bStXeICJnt6cywkf/QblOyUwls
-         tuLyNqScuMyfa+jJOHqL49vjyZ8UMTLs8a2nZu2G42tA5sQOsIr018nRTrTIJ88oyjRt
-         wmLwn1OFIyLeJJKsiM/NGTkIjA7fmuh3e7ZleCZLQwtYF6JxYXOTWZiMR08kRvbja9UZ
-         uCSQT1W16VwadtXZuZtPckPedy3bX3MgHMxglkSuHtDIlGl9Gn4blMIpe4I5fOGm9XAq
-         RRQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=/OeoAGy1A3IEy3Gj7xVoOV+pgm3ejfFP6M33G2/qTsw=;
-        b=cBEpIXzX1DkoaCMi67FmC4x38lkr1LZJahv5RD8yxv5ermutxzjCuvY7FRNNl/fJSF
-         NsJEciR+TyrIoGb4l2eaTXLOGH2CurXWG5bVFydSEvDLTEJx+FYoe24UfYsGhWtIBzPp
-         eCLbSEdK0vyeDPgvXi+B/RRi7Pax3w0993MFzkZTjvpQHwinULz8tjnOPdAWmXw8vUXV
-         Ap2Xb0MTw+AOKIyCMqV/y93LbDs3pKbHe1a22GVctzYUQTz0TTPJC6saXznflEAYbcFL
-         7t8I9ZmFmq+rbHpPkoprXooxX2sum2ZyZ238FGO/g0PZ93CWelgJ1fnPM6f9/a0mDQyw
-         Fhjw==
-X-Gm-Message-State: AOAM532B03ThCNmXbOIasC0mxHndIPX62rdJjf5zNVKWD4AokOR5TZGA
-        5L/Uy0OwNFiBNozKbnND3/4vPkCjm0c=
-X-Google-Smtp-Source: ABdhPJyqUYDNMxAjgCCKsq5G3Vq3A3JYH+56SAGroHWV29UQhmfk99mYGfD+gkI2OWijT1G7x88U/Q==
-X-Received: by 2002:adf:9b9d:: with SMTP id d29mr1224843wrc.226.1623264244284;
-        Wed, 09 Jun 2021 11:44:04 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f29:3800:a9b1:fb24:eb4f:c8ac? (p200300ea8f293800a9b1fb24eb4fc8ac.dip0.t-ipconnect.de. [2003:ea:8f29:3800:a9b1:fb24:eb4f:c8ac])
-        by smtp.googlemail.com with ESMTPSA id x18sm794930wrw.19.2021.06.09.11.44.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 11:44:03 -0700 (PDT)
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: linux-next: NVME using PCI legacy interrupts only
-Message-ID: <52371274-20bc-a150-a3ed-ba3e1305ad3e@gmail.com>
-Date:   Wed, 9 Jun 2021 20:43:57 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230203AbhFISq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 14:46:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:40034 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229941AbhFISq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 14:46:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF378D6E;
+        Wed,  9 Jun 2021 11:44:30 -0700 (PDT)
+Received: from [10.57.6.115] (unknown [10.57.6.115])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D466C3F719;
+        Wed,  9 Jun 2021 11:44:29 -0700 (PDT)
+Subject: Re: [PATCH] iommu/io-pgtable-arm: Optimize partial walk flush for
+ large scatter-gather list
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20210609145315.25750-1-saiprakash.ranjan@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <dbcd394a-4d85-316c-5dd0-033546a66132@arm.com>
+Date:   Wed, 9 Jun 2021 19:44:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210609145315.25750-1-saiprakash.ranjan@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I found that on linux-next from June 8th my nvme disk is using legacy
-interrupts only. Some debugging lead me to irq_find_mapping() in
-msi_domain_alloc() returning -EEXIST.
+On 2021-06-09 15:53, Sai Prakash Ranjan wrote:
+> Currently for iommu_unmap() of large scatter-gather list with page size
+> elements, the majority of time is spent in flushing of partial walks in
+> __arm_lpae_unmap() which is a VA based TLB invalidation (TLBIVA for
+> arm-smmu).
+> 
+> For example: to unmap a 32MB scatter-gather list with page size elements
+> (8192 entries), there are 16->2MB buffer unmaps based on the pgsize (2MB
+> for 4K granule) and each of 2MB will further result in 512 TLBIVAs (2MB/4K)
+> resulting in a total of 8192 TLBIVAs (512*16) for 16->2MB causing a huge
+> overhead.
+> 
+> So instead use io_pgtable_tlb_flush_all() to invalidate the entire context
+> if size (pgsize) is greater than the granule size (4K, 16K, 64K). For this
+> example of 32MB scatter-gather list unmap, this results in just 16 ASID
+> based TLB invalidations or tlb_flush_all() callback (TLBIASID in case of
+> arm-smmu) as opposed to 8192 TLBIVAs thereby increasing the performance of
+> unmaps drastically.
+> 
+> Condition (size > granule size) is chosen for io_pgtable_tlb_flush_all()
+> because for any granule with supported pgsizes, we will have at least 512
+> TLB invalidations for which tlb_flush_all() is already recommended. For
+> example, take 4K granule with 2MB pgsize, this will result in 512 TLBIVA
+> in partial walk flush.
+> 
+> Test on QTI SM8150 SoC for 10 iterations of iommu_{map_sg}/unmap:
+> (average over 10 iterations)
+> 
+> Before this optimization:
+> 
+>      size        iommu_map_sg      iommu_unmap
+>        4K            2.067 us         1.854 us
+>       64K            9.598 us         8.802 us
+>        1M          148.890 us       130.718 us
+>        2M          305.864 us        67.291 us
+>       12M         1793.604 us       390.838 us
+>       16M         2386.848 us       518.187 us
+>       24M         3563.296 us       775.989 us
+>       32M         4747.171 us      1033.364 us
+> 
+> After this optimization:
+> 
+>      size        iommu_map_sg      iommu_unmap
+>        4K            1.723 us         1.765 us
+>       64K            9.880 us         8.869 us
+>        1M          155.364 us       135.223 us
+>        2M          303.906 us         5.385 us
+>       12M         1786.557 us        21.250 us
+>       16M         2391.890 us        27.437 us
+>       24M         3570.895 us        39.937 us
+>       32M         4755.234 us        51.797 us
+> 
+> This is further reduced once the map/unmap_pages() support gets in which
+> will result in just 1 tlb_flush_all() as opposed to 16 tlb_flush_all().
+> 
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>   drivers/iommu/io-pgtable-arm.c | 7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> index 87def58e79b5..c3cb9add3179 100644
+> --- a/drivers/iommu/io-pgtable-arm.c
+> +++ b/drivers/iommu/io-pgtable-arm.c
+> @@ -589,8 +589,11 @@ static size_t __arm_lpae_unmap(struct arm_lpae_io_pgtable *data,
+>   
+>   		if (!iopte_leaf(pte, lvl, iop->fmt)) {
+>   			/* Also flush any partial walks */
+> -			io_pgtable_tlb_flush_walk(iop, iova, size,
+> -						  ARM_LPAE_GRANULE(data));
+> +			if (size > ARM_LPAE_GRANULE(data))
+> +				io_pgtable_tlb_flush_all(iop);
+> +			else
 
-The nvme core first allocates a MSI-X interrupt for setup purposes
-and later frees it and allocates the final number of MSI-X interrupts.
+Erm, when will the above condition ever not be true? ;)
 
-The following experimental change brought back the MSI-X interrupts.
-This makes me think that somehow freeing a MSI-X interrupt doesn't
-free it completely. I didn't see this behavior a few days ago,
-therefore I think it's related to the recent changes to
-irqdomain/genirq.
+Taking a step back, though, what about the impact to drivers other than 
+SMMUv2? In particular I'm thinking of SMMUv3.2 where the whole range can 
+be invalidated by VA in a single command anyway, so the additional 
+penalties of TLBIALL are undesirable.
 
-Didn't do a bisect yet, maybe you have an idea already.
+Robin.
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index a29b17070..8cc600819 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2381,7 +2381,7 @@ static int nvme_pci_enable(struct nvme_dev *dev)
-         * interrupts. Pre-enable a single MSIX or MSI vec for setup. We'll
-         * adjust this later.
-         */
--       result = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
-+       result = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_LEGACY);
-        if (result < 0)
-                return result;
-
-
+> +				io_pgtable_tlb_flush_walk(iop, iova, size,
+> +							  ARM_LPAE_GRANULE(data));
+>   			ptep = iopte_deref(pte, data);
+>   			__arm_lpae_free_pgtable(data, lvl + 1, ptep);
+>   		} else if (iop->cfg.quirks & IO_PGTABLE_QUIRK_NON_STRICT) {
+> 
