@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C2A3A1A57
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8AE63A1A77
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237163AbhFIQBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232332AbhFIQBo (ORCPT
+        id S234837AbhFIQH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:07:29 -0400
+Received: from m15113.mail.126.com ([220.181.15.113]:58718 "EHLO
+        m15113.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234707AbhFIQH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:01:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C44FC061574;
-        Wed,  9 Jun 2021 08:59:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QFACyy0y7HrUHjJ9cPsUOZAld6dTw9TIGvy3FNUUEgI=; b=ez+gR39/yIG6DsvQX0y7KALGqu
-        OMULMPUpfNufKUvUdlEHN9s2LEkIYgMxMfPfQeyQyt1wGMKGeUjcrWNkr7BLGGvaSSV7rC4R0cTtA
-        byA46TmoajpBqD9QCw0smhbVGAyfuECZ9PZXPoFgfdwS4ZDlew+syrpxouv9W9pOhFcEi2ZVOfCpM
-        Zvg1XsScqRW6Vnr1UcQMDERu1VKEejBJYgg0tsaBFC8rNIbU/TJIQvAxrAXuro5+TzC2mFXbiLv0X
-        89qLCoy/65c33llcaRR67OL30Tz3FXndfAlaBhPMJkPK+YIF5ltu0md10TfhTvsXYyvRXKKutc8Mq
-        +/s34mJA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lr0bt-000fa4-Ku; Wed, 09 Jun 2021 15:59:26 +0000
-Date:   Wed, 9 Jun 2021 16:59:17 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, cohuck@redhat.com, david@redhat.com,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH v2 1/2] mm/vmalloc: export __vmalloc_node_range
-Message-ID: <YMDlVdB8m62AhbB7@infradead.org>
-References: <20210608180618.477766-1-imbrenda@linux.ibm.com>
- <20210608180618.477766-2-imbrenda@linux.ibm.com>
+        Wed, 9 Jun 2021 12:07:27 -0400
+X-Greylist: delayed 1886 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Jun 2021 12:07:16 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ptM90
+        HSZ6sdnNK05Wih+YIg7PGWvyECjSDOjnxjxsP4=; b=i4H77GIXQ1zy1AmWxkG3k
+        2+MTCFUqRKWA78nBZaaRrJqQFCEW8+xpy6qOnREOWVT/0yjwO1kAzxzkuxwD/puk
+        V+PQvXQk+JnA3o4YZeYtRk8sAmfohwFzPsl8kkr7ub7GfsyO0/W4XeosRHCNvOOt
+        O5ZaGGGNSaZvjTDT9FhgY4=
+Received: from localhost.localdomain (unknown [120.244.62.156])
+        by smtp3 (Coremail) with SMTP id DcmowADnQcBc38BgOy+vSA--.40666S2;
+        Wed, 09 Jun 2021 23:33:48 +0800 (CST)
+From:   Jiwei Sun <jiweisun126@126.com>
+To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     jiwei.sun.bj@qq.com, Jiwei Sun <jiweisun126@126.com>
+Subject: [PATCH] namei: correct obsolete function name in the comment of follow_automount()
+Date:   Wed,  9 Jun 2021 23:33:14 +0800
+Message-Id: <20210609153314.181344-1-jiweisun126@126.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608180618.477766-2-imbrenda@linux.ibm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DcmowADnQcBc38BgOy+vSA--.40666S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruF4xWFy8XrWUXF47Zw47Arb_yoW3tFb_Wr
+        47WFs7Ww4kXr97AFy7C3y7tryUW3Wjyr1UAr1rKFy7uwn5WFZYyr1qkr4kJas0qrWrXFWY
+        kryxGrW5Aw1agjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU06T5PUUUUU==
+X-Originating-IP: [120.244.62.156]
+X-CM-SenderInfo: 5mlzvxpvxqijaw6rjloofrz/1tbimxysjVx5dbKedAAAsu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 08:06:17PM +0200, Claudio Imbrenda wrote:
-> The recent patches to add support for hugepage vmalloc mappings added a
-> flag for __vmalloc_node_range to allow to request small pages.
-> This flag is not accessible when calling vmalloc, the only option is to
-> call directly __vmalloc_node_range, which is not exported.
-> 
-> This means that a module can't vmalloc memory with small pages.
-> 
-> Case in point: KVM on s390x needs to vmalloc a large area, and it needs
-> to be mapped with small pages, because of a hardware limitation.
-> 
-> This patch exports __vmalloc_node_range so it can be used in modules
-> too.
+The function follow_managed() has been renamed to __traverse_mounts() since
+commit 9deed3ebca24 ("new helper: traverse_mounts()"). So modify the obsolete
+function in the comment.
 
-No.  I spent a lot of effort to mak sure such a low-level API is
-not exported.
+Signed-off-by: Jiwei Sun <jiweisun126@126.com>
+---
+ fs/namei.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/namei.c b/fs/namei.c
+index 216f16e74351..e362c274eac6 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -1251,7 +1251,7 @@ static bool choose_mountpoint(struct mount *m, const struct path *root,
+ 
+ /*
+  * Perform an automount
+- * - return -EISDIR to tell follow_managed() to stop and return the path we
++ * - return -EISDIR to tell __traverse_mounts() to stop and return the path we
+  *   were called with.
+  */
+ static int follow_automount(struct path *path, int *count, unsigned lookup_flags)
+-- 
+2.25.1
+
