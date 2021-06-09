@@ -2,119 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76053A1C9B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066693A1CA3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhFISTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 14:19:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhFISTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 14:19:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0F6C613D0;
-        Wed,  9 Jun 2021 18:17:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623262671;
-        bh=M+chnIa2xloH92XI9Nx/nAijFq/W9ipsvhogMe7juYA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=cXPFs22Kf+1RxJyNulN5Fbkpwa+gP8Lcli0VNpLCNDzfVQ/7bkKKy0N+qR1swxagV
-         s5zIXu/zNtf0yGq0nnhI9fHG1n7jK/+RpdvGZiz6Z6KuhZIanto0jN813RujUk3wy/
-         fxoa8lzKDUmpIlsktrmp4Q5r9So/bqO6CZtLZerFQPXvKGgXgzT+MfzALZewi+0KlN
-         pFnFkyTPRGBzyuJsX9Hr5dbCDUm9Oi0+KAfWXEyKJsQ581XRFvdeR+Iw1xIhTmAFmT
-         Oi8/uRf+Acc7sFTfLqUgUI0wzGoGFpqi/rGnsntNd7uABOwrKQXE+lGuZumeu5NC5C
-         7tVYCQiOM/Fhg==
-Subject: Re: [PATCH v2] dmaengine: xilinx: dpdma: fix kernel-doc
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Yang Li <yang.lee@linux.alibaba.com>
-Cc:     hyun.kwon@xilinx.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        dmaengine@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <1623222893-123227-1-git-send-email-yang.lee@linux.alibaba.com>
- <CAKwvOdn0WP53-qNLH8ce7R5meudaXbnvxyAn58p_NOzZhxMGCQ@mail.gmail.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <012b541c-7519-3389-7998-5185df7963ee@kernel.org>
-Date:   Wed, 9 Jun 2021 11:17:50 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229705AbhFISXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 14:23:32 -0400
+Received: from mail-pf1-f180.google.com ([209.85.210.180]:41652 "EHLO
+        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhFISXa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 14:23:30 -0400
+Received: by mail-pf1-f180.google.com with SMTP id x73so19093544pfc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 11:21:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pMNtPdB4yeaOaJg4oKXM0D8sPt6m955IeGjoIXPrk70=;
+        b=PazdJpi79UQEsNsJQD2CIaSYmwpf00Mw0MCZeW5GC2zdnsa0IB92sYjdiUDujBLmOv
+         3yiW/7qHaVhsPjbZomfBsLbYDeD+/ig/7taYFSIjA7Cs35U9xgJInZA2nA7XIhz+eX/f
+         YAYlYYJX5H3ZqKlrBYtQLFY0ybk6rdc7RljwY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pMNtPdB4yeaOaJg4oKXM0D8sPt6m955IeGjoIXPrk70=;
+        b=c4DJ3eYdCmGg1PM9pkz76BkAWHTT2jtuxzwobf7Ayf5c/JIrjoEZI8lzzbpjqaRGYO
+         xlSikKSFIkp42G7V/Dsa3TKEx8HaE3XeBQlEWUMnL5GhPzovJzpxgIyc33QyD+ASgRrG
+         gU68t90C7/KVJYvZ+fWI8gbXZOiXdwG9cj0SWGWsG6KhxE5elMz4TJm1sHDF53P5h8UV
+         sbfMeqVuKHcYV/596WlU5gv/SVM3ae/9zUTzxhP4NIOUd5Biz6iYY0M0Ln/eWCvm9sBp
+         aAZDolCh1pb7D1ianYXBz3Y20sZ0vn8/wJwN81FKQsKIzi8SOqqC8iGsA4Zeh7F6dc45
+         42mQ==
+X-Gm-Message-State: AOAM533TmsLYmwva9YloZ/DBVWbcg++LuSynk93ZLyfTJw8bzxTXVRho
+        2KxJzQszX2dUYSr2zTZnHNSqEA==
+X-Google-Smtp-Source: ABdhPJwLivfhU+7xTPT8sWB9xanESizvLeRBJblRt/PXXDrCMVDmnpcAtkIZk9u/qQeEhmYEwcu4IA==
+X-Received: by 2002:a62:3444:0:b029:2ec:9658:a755 with SMTP id b65-20020a6234440000b02902ec9658a755mr1010418pfa.71.1623262835683;
+        Wed, 09 Jun 2021 11:20:35 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p14sm445214pgk.6.2021.06.09.11.20.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 11:20:34 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 11:20:33 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
+        Kurt Manucredo <fuzzybritches0@gmail.com>,
+        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        nathan@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: [PATCH v4] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+Message-ID: <202106091119.84A88B6FE7@keescook>
+References: <000000000000c2987605be907e41@google.com>
+ <20210602212726.7-1-fuzzybritches0@gmail.com>
+ <YLhd8BL3HGItbXmx@kroah.com>
+ <87609-531187-curtm@phaethon>
+ <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com>
+ <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
+ <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdn0WP53-qNLH8ce7R5meudaXbnvxyAn58p_NOzZhxMGCQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/9/2021 11:03 AM, Nick Desaulniers wrote:
-> On Wed, Jun 9, 2021 at 12:15 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->>
->> Fix function name in xilinx/xilinx_dpdma.c comment to remove
->> a warning found by kernel-doc.
->>
->> drivers/dma/xilinx/xilinx_dpdma.c:935: warning: expecting prototype for
->> xilinx_dpdma_chan_no_ostand(). Prototype was for
->> xilinx_dpdma_chan_notify_no_ostand() instead.
->>
->> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
->> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
->> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
->> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+On Mon, Jun 07, 2021 at 09:38:43AM +0200, 'Dmitry Vyukov' via Clang Built Linux wrote:
+> On Sat, Jun 5, 2021 at 9:10 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> > On Sat, Jun 5, 2021 at 10:55 AM Yonghong Song <yhs@fb.com> wrote:
+> > > On 6/5/21 8:01 AM, Kurt Manucredo wrote:
+> > > > Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
+> > > > kernel/bpf/core.c:1414:2.
+> > >
+> > > This is not enough. We need more information on why this happens
+> > > so we can judge whether the patch indeed fixed the issue.
+> > >
+> > > >
+> > > > I propose: In adjust_scalar_min_max_vals() move boundary check up to avoid
+> > > > missing them and return with error when detected.
+> > > >
+> > > > Reported-and-tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
+> > > > Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
+> > > > ---
+> > > >
+> > > > https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
+> > > >
+> > > > Changelog:
+> > > > ----------
+> > > > v4 - Fix shift-out-of-bounds in adjust_scalar_min_max_vals.
+> > > >       Fix commit message.
+> > > > v3 - Make it clearer what the fix is for.
+> > > > v2 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
+> > > >       check in check_alu_op() in verifier.c.
+> > > > v1 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
+> > > >       check in ___bpf_prog_run().
+> > > >
+> > > > thanks
+> > > >
+> > > > kind regards
+> > > >
+> > > > Kurt
+> > > >
+> > > >   kernel/bpf/verifier.c | 30 +++++++++---------------------
+> > > >   1 file changed, 9 insertions(+), 21 deletions(-)
+> > > >
+> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > > index 94ba5163d4c5..ed0eecf20de5 100644
+> > > > --- a/kernel/bpf/verifier.c
+> > > > +++ b/kernel/bpf/verifier.c
+> > > > @@ -7510,6 +7510,15 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+> > > >       u32_min_val = src_reg.u32_min_value;
+> > > >       u32_max_val = src_reg.u32_max_value;
+> > > >
+> > > > +     if ((opcode == BPF_LSH || opcode == BPF_RSH || opcode == BPF_ARSH) &&
+> > > > +                     umax_val >= insn_bitness) {
+> > > > +             /* Shifts greater than 31 or 63 are undefined.
+> > > > +              * This includes shifts by a negative number.
+> > > > +              */
+> > > > +             verbose(env, "invalid shift %lld\n", umax_val);
+> > > > +             return -EINVAL;
+> > > > +     }
+> > >
+> > > I think your fix is good. I would like to move after
+> >
+> > I suspect such change will break valid programs that do shift by register.
+> >
+> > > the following code though:
+> > >
+> > >          if (!src_known &&
+> > >              opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND) {
+> > >                  __mark_reg_unknown(env, dst_reg);
+> > >                  return 0;
+> > >          }
+> > >
+> > > > +
+> > > >       if (alu32) {
+> > > >               src_known = tnum_subreg_is_const(src_reg.var_off);
+> > > >               if ((src_known &&
+> > > > @@ -7592,39 +7601,18 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+> > > >               scalar_min_max_xor(dst_reg, &src_reg);
+> > > >               break;
+> > > >       case BPF_LSH:
+> > > > -             if (umax_val >= insn_bitness) {
+> > > > -                     /* Shifts greater than 31 or 63 are undefined.
+> > > > -                      * This includes shifts by a negative number.
+> > > > -                      */
+> > > > -                     mark_reg_unknown(env, regs, insn->dst_reg);
+> > > > -                     break;
+> > > > -             }
+> > >
+> > > I think this is what happens. For the above case, we simply
+> > > marks the dst reg as unknown and didn't fail verification.
+> > > So later on at runtime, the shift optimization will have wrong
+> > > shift value (> 31/64). Please correct me if this is not right
+> > > analysis. As I mentioned in the early please write detailed
+> > > analysis in commit log.
+> >
+> > The large shift is not wrong. It's just undefined.
+> > syzbot has to ignore such cases.
 > 
-> I'm ok with leaving my reviewed by on _this_ patch because it's so simple but...
+> Hi Alexei,
 > 
-> In general, when sending a follow up version of a patch, it's _not_ ok
-> to add a reviewed by tag when a reviewer has not explicitly responded
-> with "Reviewed-by: ...".  That provides a false sense that a patch has
-> been thoroughly reviewed.  Responding to a patch does not constitute a
-> "Reviewed-by:" tag.
-> 
-> And I might be fine with _this_ patch, but that says nothing about
-> Nathan, whom you've also falsely attributed a reviewed by tag here.
-> 
-> For such a trivial patch, it's not a big deal, but in the future
-> please do not do that again.  It's ok to send v2, v3, etc, but wait
-> for reviewers to explicitly state such reviewed by tag. The maintainer
-> will collect those responses (and can be done so in an automated
-> fashion via a tool like b4 (https://pypi.org/project/b4/)) when
-> applying patches.
+> The report is produced by KUBSAN. I thought there was an agreement on
+> cleaning up KUBSAN reports from the kernel (the subset enabled on
+> syzbot at least).
+> What exactly cases should KUBSAN ignore?
+> +linux-hardening/kasan-dev for KUBSAN false positive
 
-+1 with all that was said above. Tags should be explicitly given, except 
-for maybe the "Reported-by" and "Suggested-by" tags if the report or 
-suggestion was done in the public forum but it is still polite to ask if 
-it is okay to add.
+Can check_shl_overflow() be used at all? Best to just make things
+readable and compiler-happy, whatever the implementation. :)
 
-For the record, my tag can remain:
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
->> ---
->>
->> Change in v2:
->> --replaced s/clang(make W=1 LLVM=1)/kernel-doc/ in commit.
->> https://lore.kernel.org/patchwork/patch/1442639/
->>
->>   drivers/dma/xilinx/xilinx_dpdma.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
->> index 70b29bd..0c8739a 100644
->> --- a/drivers/dma/xilinx/xilinx_dpdma.c
->> +++ b/drivers/dma/xilinx/xilinx_dpdma.c
->> @@ -915,7 +915,7 @@ static u32 xilinx_dpdma_chan_ostand(struct xilinx_dpdma_chan *chan)
->>   }
->>
->>   /**
->> - * xilinx_dpdma_chan_no_ostand - Notify no outstanding transaction event
->> + * xilinx_dpdma_chan_notify_no_ostand - Notify no outstanding transaction event
->>    * @chan: DPDMA channel
->>    *
->>    * Notify waiters for no outstanding event, so waiters can stop the channel
->> --
->> 1.8.3.1
->>
-> 
-> 
+-- 
+Kees Cook
