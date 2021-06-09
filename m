@@ -2,144 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CC33A0A3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7373C3A0A27
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235934AbhFICt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 22:49:57 -0400
-Received: from regular1.263xmail.com ([211.150.70.196]:54620 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235876AbhFICt4 (ORCPT
+        id S235367AbhFICpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 22:45:50 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:28621 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231668AbhFICpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 22:49:56 -0400
-X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Jun 2021 22:49:55 EDT
-Received: from localhost (unknown [192.168.167.235])
-        by regular1.263xmail.com (Postfix) with ESMTP id 164081F5D;
-        Wed,  9 Jun 2021 10:40:41 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.120] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P31748T140095126476544S1623206439537590_;
-        Wed, 09 Jun 2021 10:40:40 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <109c2c5a014b780e9cd049b63178e813>
-X-RL-SENDER: kever.yang@rock-chips.com
-X-SENDER: yk@rock-chips.com
-X-LOGIN-NAME: kever.yang@rock-chips.com
-X-FST-TO: linux-arm-kernel@lists.infradead.org
-X-RCPT-COUNT: 10
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Subject: Re: [PATCH v4 1/6] dt-bindings: spi: spi-rockchip: add description
- for rv1126 and rk3568
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        Jon Lin <jon.lin@rock-chips.com>, broonie@kernel.org,
-        Johan Jonker <jbx6244@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <20210607063448.29589-1-jon.lin@rock-chips.com>
- <20210607063448.29589-2-jon.lin@rock-chips.com>
- <ef90ae6d-40bb-8389-f4f8-536a7b610fb7@gmail.com> <3681106.bcXerOTE6V@diego>
-From:   Kever Yang <kever.yang@rock-chips.com>
-Message-ID: <f815ad6c-36c5-039e-0ae8-0ab523a75caa@rock-chips.com>
-Date:   Wed, 9 Jun 2021 10:40:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 8 Jun 2021 22:45:49 -0400
+X-UUID: f59f9558455346669f8bd0657494bac2-20210609
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=YlJZ3DSxIMXeeLudsnal26OpngdTHTMDMazjVteE63M=;
+        b=oXlRf4LYUNlbjKZsBgREzBjofsq6ZhYSeR7vwnYuiSt1XPWB2G2wPhUPLK8gKZHrXcN7wVEDg/+SVuC7pFLOwJRDzZ1W9R/jhrl8RKv9CPcBBFhs9FU/MECdWMVivq4ToyQg6fy48n+NlelLjPc/DCDV5zX4G6o+b22kHxCJNew=;
+X-UUID: f59f9558455346669f8bd0657494bac2-20210609
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <kewei.xu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1086761753; Wed, 09 Jun 2021 10:43:49 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 9 Jun
+ 2021 10:43:47 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 9 Jun 2021 10:43:44 +0800
+Message-ID: <1623206624.14050.10.camel@mhfsdcap03>
+Subject: Re: [PATCH 2/3] i2c: mediatek: Dump i2c/dma register when a timeout
+ occurs
+From:   Kewei Xu <kewei.xu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <wsa@the-dreams.de>, <robh+dt@kernel.org>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>, <qiangming.xia@mediatek.com>,
+        <liguo.zhang@mediatek.com>
+Date:   Wed, 9 Jun 2021 10:43:44 +0800
+In-Reply-To: <54301510-e0d5-0762-1979-b194b8fd5eb8@gmail.com>
+References: <1623122200-1896-1-git-send-email-kewei.xu@mediatek.com>
+         <1623122200-1896-3-git-send-email-kewei.xu@mediatek.com>
+         <54301510-e0d5-0762-1979-b194b8fd5eb8@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <3681106.bcXerOTE6V@diego>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-TM-SNTS-SMTP: 978AC84873E67237AE466C5D838E8CDB2EB7D777515206BE778ADE526AA155F82000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko, Johan,
-
-On 2021/6/7 下午5:04, Heiko Stübner wrote:
-> Your comment in [PATCH v3 3/8]:
->>>> Adding "rockchip,rv1126-spi" to rockchip_spi_dt_match[] is strictly not
->>>> needed when using "rockchip,rk3066-spi" as fall back string.
->>>> Could a maintainer advise?
->>>>
->>>> Maybe this bug of mine should revert too?? Or is it legacy?
->>>> spi: rockchip: add compatible string for px30 rk3308 rk3328
->>>> https://lore.kernel.org/r/20200309151004.7780-1-jbx6244@gmail.com
->>> I agree with you. If the maintainer doesn't have any comments, I will use
->>> "rockchip,spi" as compatible names for the subsequent rk platform.
->> Compatibility strings are supposed to be SoC orientated.
->> So generic ones like in the manufacturer tree can't be used here.
-> Johan ist right :-) .
->
-> rockchip,spi won't work at all, especially as these controllers always change
-> over time. [0]
->
-> Best example is the iommu. We started with "rockchip,iommu" thinking this
-> won't change over time, but with the rk3568 we get a new slightly different
-> iommu.
-
-
-Rockchip SPI and SFC controller can use a generic compatible string, 
-because there is a version
-
-register inside the IP, and all the feature update will have a new IP 
-version, so the driver is
-
-used for the SPI/SFC IP  in all SoCs, we don't need to care which SoC is 
-using this driver.
-
-If we have to use the compatible string "rockchip,rk3066-spi" and each 
-for a new soc, then we
-
-have to update the driver compatible id list and document for each soc 
-which is totally not need
-
-and not correct  to do it.
-
-The example "iommu" is different, because there is no version register 
-inside the IP and the IP
-
-can not identify itself, which need a software define "-vX".
-
-
-Thanks,
-
-- Kever
-
-> The vendor-kernel then introduces somewhat random "-vX" additions to
-> distinguish them, but often they do seem to be very software-centric.
->
-> Meaning, hardware-designers moved stuff around and software-developers
-> then invented the versioning to differentiate between versions.
->
-> The devicetree is supposed to describe the hardware though, so going with
-> the relevant soc-specific compatible gives us the necessary hardware-centric
-> differentiation.
->
-> Also this allows to catch later issues with specific soc implementations ;-)
-> Like 6 monts down the road we discover some special behaviour on the
-> rk3568 and devicetree is supposed to be stable.
->
-> So having the relevant compatibles in place allows us to just add driver
-> fixes and have those apply on the rk3568 if that is need at some point.
->
-> Heiko
->
->
->
->
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
->
->
-
+T24gVHVlLCAyMDIxLTA2LTA4IGF0IDE2OjAxICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMDgvMDYvMjAyMSAwNToxNiwgS2V3ZWkgWHUgd3JvdGU6DQo+ID4gRnJvbTog
+Iktld2VpLlh1IiA8a2V3ZWkueHVAbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IFdoZW4gYSB0aW1l
+b3V0IGVycm9yIG9jY3VycyBpbiBpMmMgdHJhbnN0ZXIsIGl0IGlzIHVzdWFsbHkgcmVsYXRlZA0K
+PiA+IHRvIHRoZSBpMmMvZG1hIElQIGhhcmR3YXJlIGNvbmZpZ3VyYXRpb24uIFRoZXJlZm9yZSwg
+dGhlIHB1cnBvc2Ugb2YNCj4gPiB0aGlzIHBhdGNoIGlzIHRvIGR1bXAgdGhlIGtleSByZWdpc3Rl
+ciB2YWx1ZXMgb2YgaTJjL2RtYSB3aGVuIGENCj4gPiB0aW1lb3V0IG9jY3VycyBpbiBpMmMgZm9y
+IGRlYnVnZ2luZy4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBLZXdlaS5YdSA8a2V3ZWkueHVA
+bWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4
+eC5jIHwgOTcgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0NCj4gPiAg
+MSBmaWxlIGNoYW5nZWQsIDk1IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4gDQo+
+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMgYi9kcml2ZXJz
+L2kyYy9idXNzZXMvaTJjLW10NjV4eC5jDQo+ID4gaW5kZXggNWRkZmE0ZS4uZTY1YTQxZSAxMDA2
+NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jDQo+ID4gKysrIGIv
+ZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KPiA+IEBAIC0xMjUsNiArMTI1LDcgQEAg
+ZW51bSBJMkNfUkVHU19PRkZTRVQgew0KPiA+ICAJT0ZGU0VUX0hTLA0KPiA+ICAJT0ZGU0VUX1NP
+RlRSRVNFVCwNCj4gPiAgCU9GRlNFVF9EQ01fRU4sDQo+ID4gKwlPRkZTRVRfTVVMVElfRE1BLA0K
+PiA+ICAJT0ZGU0VUX1BBVEhfRElSLA0KPiA+ICAJT0ZGU0VUX0RFQlVHU1RBVCwNCj4gPiAgCU9G
+RlNFVF9ERUJVR0NUUkwsDQo+ID4gQEAgLTE5Miw4ICsxOTMsOSBAQCBlbnVtIEkyQ19SRUdTX09G
+RlNFVCB7DQo+ID4gIAlbT0ZGU0VUX1RSQU5TRkVSX0xFTl9BVVhdID0gMHg0NCwNCj4gPiAgCVtP
+RkZTRVRfQ0xPQ0tfRElWXSA9IDB4NDgsDQo+ID4gIAlbT0ZGU0VUX1NPRlRSRVNFVF0gPSAweDUw
+LA0KPiA+ICsJW09GRlNFVF9NVUxUSV9ETUFdID0gMHg4NCwNCj4gPiAgCVtPRkZTRVRfU0NMX01J
+U19DT01QX1BPSU5UXSA9IDB4OTAsDQo+ID4gLQlbT0ZGU0VUX0RFQlVHU1RBVF0gPSAweGUwLA0K
+PiA+ICsJW09GRlNFVF9ERUJVR1NUQVRdID0gMHhlNCwNCj4gDQo+IElzIHRoaXMgb2Zmc2V0IG9u
+bHkgZm9yIG10ODE5MiBvciBhbHNvIGZvciBtdDgxODM/DQo+IEluIGFueSBjYXNlIHRoYXQgc2hv
+dWxkIGdvIGluIGFzIGFub3RoZXIgcGF0Y2guIEVpdGhlciBhIGZpeCBvciBhIG5ldw0KPiBtdF9p
+MmNfcmVnc192M1tdDQo+IA0KPiBSZWdhcmRzLA0KICBNYXR0aGlhcw0KDQpIaSBNYXR0aGlhcywN
+Cg0KVGhpcyBvZmZzZXQgdmFsdWUgaXMgc3VpdGFibGUgZm9yIHRoZSBJQyBvZiBtdF9pMmNfcmVn
+c192MiBoYXJkd2FyZQ0KZGVzaWduIHNpbWlsYXIgdG8gbXQ4MTkyLzgxOTUsIG5vdCBmb3IgODE4
+My4NCg0KVGhlIHJlYXNvbiBmb3IgdGhlIG1vZGlmaWNhdGlvbiBoZXJlIGlzIHRoYXQgdGhlIHBy
+ZXZpb3VzDQpvZmZzZXQgaW5mb3JtYXRpb24gaXMgaW5jb3JyZWN0LCBPRkZTRVRfREVCVUdTVEFU
+ID0gMFhFNCBpcw0KdGhlIGNvcnJlY3QgdmFsdWUuDQoNClJlZ2FyZHMsDQpLZXdlaQ0KDQoNCg==
 
