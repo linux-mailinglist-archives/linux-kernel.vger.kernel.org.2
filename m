@@ -2,125 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA2C3A1BC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35DE3A1BCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhFIRaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:30:19 -0400
-Received: from mga12.intel.com ([192.55.52.136]:28063 "EHLO mga12.intel.com"
+        id S230075AbhFIRcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:32:19 -0400
+Received: from mga14.intel.com ([192.55.52.115]:27500 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229823AbhFIRaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:30:14 -0400
-IronPort-SDR: iX8pSg86aPuGvfg89vW4U7a1r+J9G0Jym9Y6q3amMU/gVRh7h5zRQ0ghcwayPmngZWRuYScC93
- ei1qmNtBqcsA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="184812035"
+        id S229961AbhFIRcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 13:32:18 -0400
+IronPort-SDR: 1ZjXi/olLDN+krB6eCcakL8J/TKg/EGWe3+eUstKHHxMHGxEV+KdrKbK1p9GrLDYZ5vPFvDI28
+ BSsoIJWpc6zw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="204937086"
 X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="184812035"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 10:28:18 -0700
-IronPort-SDR: u8sSWI2koZL75xdfN/Jh7FIYJLdh/eT6OLrO65DKm19TP6+x3fbu87ixuIQ7BH3g4q6ZCJtWtv
- MlKvvwo9yBRw==
+   d="scan'208";a="204937086"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 10:30:23 -0700
+IronPort-SDR: JYaEUtInlXRxvx9R42ABSyWPD5FldFMAlV9OB3wYCFEChl8YEcR+1ketRibhSBtVS6vUS1whrj
+ 1Fct8FFaLa5Q==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="402513924"
-Received: from davidhok-mobl3.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.9.9])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 10:28:16 -0700
-Subject: Re: [RFC v2-fix-v4 1/1] x86/tdx: Skip WBINVD instruction for TDX
- guest
-To:     Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
- <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4gLeKPfYOx1kmg-mO1_mNd+XGqVO-CbqX+2d52GZ+DSFw@mail.gmail.com>
- <682f0239-8da0-3702-0f14-99b6244af499@linux.intel.com>
- <CAPcyv4jfFPGm2-cvPExeujZnaSKKky3AQRp69tzG1gcZ09dj8A@mail.gmail.com>
- <ffedf1d2-e5ec-e0e3-8e83-edd186231029@linux.intel.com>
- <CAPcyv4haWYhqk_xLD56QnB0ahK+fynOmqGdSD907UW-=7B176g@mail.gmail.com>
- <c2f4254d-3d28-544a-efd2-e65dd40d99f1@kernel.org>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <59484871-8ef1-b7c3-fb29-b143bd53f074@linux.intel.com>
-Date:   Wed, 9 Jun 2021 10:28:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+   d="scan'208";a="552051340"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 09 Jun 2021 10:30:21 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 9A2DAE7; Wed,  9 Jun 2021 20:30:45 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Hans de Goede <hdegoede@redhat.com>, wsa@kernel.org
+Subject: [PATCH v2 1/1] i2c: cht-wc: Replace of_node by NULL
+Date:   Wed,  9 Jun 2021 20:30:35 +0300
+Message-Id: <20210609173035.83777-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <c2f4254d-3d28-544a-efd2-e65dd40d99f1@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The driver is run on the platforms where OF node is always NULL.
+The confusion comes from IRQ domain APIs that take either OF or
+firmware node as input parameter. Since fwnode is not used here
+either, replace of_node by NULL.
 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: rewrote in order to pass NULL instead of of_node (Hans)
+ drivers/i2c/busses/i2c-cht-wc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-On 6/9/21 9:12 AM, Andy Lutomirski wrote:
-> On 6/9/21 8:09 AM, Dan Williams wrote:
->> On Tue, Jun 8, 2021 at 9:27 PM Andi Kleen <ak@linux.intel.com> wrote:
->>>
->>>
->>> here is no resume path.
->>>
->>>> Host is free to go into S3 independent of any guest state.
->>>
->>> Actually my understanding is that none of the systems which support TDX
->>> support S3. S3 has been deprecated for a long time.
->>
->> Ok, I wanted to imply any power state that might power-off caches.
->>
->>>
->>>
->>>>    A hostile
->>>> host is free to do just enough cache management so that it can resume
->>>> from S3 while arranging for TDX guest dirty data to be lost. Does a
->>>> TDX guest go fatal if the cache loses power?
->>>
->>> That would be a machine check, and yes it would be fatal.
->>
->> Sounds good, so incorporating this and Andy's feedback:
->>
->> "TDX guests, like other typical guests, use standard ACPI mechanisms
->> to signal sleep state entry (including reboot) to the host. The ACPI
->> specification mandates WBINVD on any sleep state entry with the
->> expectation that the platform is only responsible for maintaining the
->> state of memory over sleep states, not preserving dirty data in any
->> CPU caches. ACPI cache flushing requirements pre-date the advent of
->> virtualization. Given guest sleep state entry does not affect any host
->> power rails it is not required to flush caches. The host is
->> responsible for maintaining cache state over its own bare metal sleep
->> state transitions that power-off the cache. A TDX guest, unlike a
->> typical guest, will machine check if the CPU cache is powered off."
->>
->> Andi, is that machine check behavior relative to power states
->> mentioned in the docs?
-> 
-> I don't think there's anything about power states.  There is a general
-> documented mechanism to integrity-check TD guest memory, but it is *not*
-> replay-resistant.  So, if the guest dirties a cache line, and the cache
-> line is lost, it seems entirely plausible that the guest would get
-> silently corrupted.
-> 
-> I would argue that, if this happens, it's a host, TD module, or
-> architecture bug, and it's not the guest's fault.
-
-If you want to apply this fix for all hypervisors (using boot_cpu_has
-(X86_FEATURE_HYPERVISOR) check), then we don't need any TDX specific
-reference in commit log right? It can be generalized for all VM guests.
-
-agree?
-
-> 
-> --Andy
-> 
-
+diff --git a/drivers/i2c/busses/i2c-cht-wc.c b/drivers/i2c/busses/i2c-cht-wc.c
+index 08f491ea21ac..1cf68f85b2e1 100644
+--- a/drivers/i2c/busses/i2c-cht-wc.c
++++ b/drivers/i2c/busses/i2c-cht-wc.c
+@@ -354,8 +354,7 @@ static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
+ 		return ret;
+ 
+ 	/* Alloc and register client IRQ */
+-	adap->irq_domain = irq_domain_add_linear(pdev->dev.of_node, 1,
+-						 &irq_domain_simple_ops, NULL);
++	adap->irq_domain = irq_domain_add_linear(NULL, 1, &irq_domain_simple_ops, NULL);
+ 	if (!adap->irq_domain)
+ 		return -ENOMEM;
+ 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.30.2
+
