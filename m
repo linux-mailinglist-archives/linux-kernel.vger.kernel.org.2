@@ -2,76 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42873A10EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 294B93A10ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238690AbhFIKOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:14:12 -0400
-Received: from mga14.intel.com ([192.55.52.115]:55300 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238713AbhFIKOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:14:09 -0400
-IronPort-SDR: 7lmB7JYsx9n790P0+gUANRiW4jwaQjKn+3e0mNs2dEEPjgJeVko3JOgYGdizNPz0Wh5PLJY1wp
- 1XFrAyRYthFA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="204856276"
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="204856276"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 03:12:15 -0700
-IronPort-SDR: pey1hy4lWcbNXtApZ+gklHNM8u9X4ImYuAMexfsr9+hmL4C+xcRF/RKzUFwuoDxCB/0+SHwX12
- u8u/HZp9hq1w==
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="402397538"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 03:12:12 -0700
-Received: by lahna (sSMTP sendmail emulation); Wed, 09 Jun 2021 13:12:10 +0300
-Date:   Wed, 9 Jun 2021 13:12:10 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] pinctrl: intel: fix NULL pointer deref
-Message-ID: <YMCT+izizEg0gPLD@lahna.fi.intel.com>
-References: <20210609062722.9132-1-henning.schild@siemens.com>
+        id S238682AbhFIKQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:16:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32346 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234217AbhFIKQs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 06:16:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623233694;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UGhpFhVlOYIC5kowMMVAYHo7k0EKPg3F6ebOQuwUO2Q=;
+        b=Hr7h2vMJP5MFiqu8dsvSwpBzdSIUviOr/30iuUvRzBPNfToCP+OgqBE9lEbuY1NbvqtVCp
+        lTRfDIf+CJxl0c0CbgEXmREhxnlp93ptDgVnaisTczuQGA2H3dKsZkBvgrP4axb/yhHJui
+        xWLNo5EvRhsYKgTC8JyfCaQ3gcZkOK0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-aIDHPVOWPO-QHAfEwGk4dw-1; Wed, 09 Jun 2021 06:14:52 -0400
+X-MC-Unique: aIDHPVOWPO-QHAfEwGk4dw-1
+Received: by mail-wm1-f70.google.com with SMTP id m33-20020a05600c3b21b02901a44b1d2d87so1756703wms.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:14:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=UGhpFhVlOYIC5kowMMVAYHo7k0EKPg3F6ebOQuwUO2Q=;
+        b=ptxGx1HR0RjrphGps8F5HiHg0y2M0lpTt7P0f/JULBNiOuoeYwlzPJax6wzGpzsH6x
+         2gRGEGaARIQAxzGxVTNeppoaPEaOxm91wPvDTSBYuXKjnNz3IJklVG7F1PRHw2/PDC1r
+         8/kUUPRpwLRDTs2Ktnt/RNHUjSwCjr/F4ywQVmALCUntCFDLWvQWo7K4Zr4AeVzaVna9
+         itN89HIcPlSZQ9LPguvMSi2jsPbMcYhSN6Cu6qK4tWS3n/qN83mVc5+MmfnT9GKFHmvK
+         i6lfRiLSdEr8N5d8IsThsiv8SlREK5dxDOrx3aM0mP+eRMRKNS0k+vq+EQ65ZWZCk3jq
+         WcCg==
+X-Gm-Message-State: AOAM530fBL1iLXbcyGX/+LJ18vdZgY0jvM4gkpBSCW0vVwrYcaGSvgsW
+        tInNf4fEt4MqNBYT6fjuuv2JBV8VK9blVy42jcVIcG4FTie9Is+gao1TVADkWLTMtrotMQlU0SO
+        E6EnLtmhGkPKwRWslU8r3HMxX
+X-Received: by 2002:a05:600c:1d1b:: with SMTP id l27mr15988802wms.62.1623233691355;
+        Wed, 09 Jun 2021 03:14:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwPzb12xOqzJBjs300yp5Am4sprlPGLIaJs+P2xzrS5KjO/tgbq9Rys/XuEfnxApGxtTlyRzQ==
+X-Received: by 2002:a05:600c:1d1b:: with SMTP id l27mr15988778wms.62.1623233691155;
+        Wed, 09 Jun 2021 03:14:51 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id r3sm4058615wmq.8.2021.06.09.03.14.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 03:14:50 -0700 (PDT)
+Reply-To: eric.auger@redhat.com
+Subject: Re: Plan for /dev/ioasid RFC v2
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+References: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <b1bb72b5-cb98-7739-8788-01e36ec415a8@redhat.com>
+ <MWHPR11MB1886FEFB5C8358EB65DBEA1A8C369@MWHPR11MB1886.namprd11.prod.outlook.com>
+From:   Eric Auger <eric.auger@redhat.com>
+Message-ID: <8a3f2bc6-79b7-5dfb-492a-21c0af7b9c2c@redhat.com>
+Date:   Wed, 9 Jun 2021 12:14:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609062722.9132-1-henning.schild@siemens.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <MWHPR11MB1886FEFB5C8358EB65DBEA1A8C369@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Kevin,
 
-On Wed, Jun 09, 2021 at 08:27:22AM +0200, Henning Schild wrote:
-> match could be NULL in which case we do not go ACPI after all
-> 
-> Signed-off-by: Henning Schild <henning.schild@siemens.com>
-> ---
->  drivers/pinctrl/intel/pinctrl-intel.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-> index 85750974d182..dca17bb76cac 100644
-> --- a/drivers/pinctrl/intel/pinctrl-intel.c
-> +++ b/drivers/pinctrl/intel/pinctrl-intel.c
-> @@ -1601,12 +1601,12 @@ const struct intel_pinctrl_soc_data *intel_pinctrl_get_soc_data(struct platform_
->  	const struct intel_pinctrl_soc_data *data = NULL;
->  	const struct intel_pinctrl_soc_data **table;
->  	struct acpi_device *adev;
-> +	const void *match;
->  	unsigned int i;
->  
->  	adev = ACPI_COMPANION(&pdev->dev);
-> -	if (adev) {
-> -		const void *match = device_get_match_data(&pdev->dev);
-> -
-> +	match = device_get_match_data(&pdev->dev);
+On 6/9/21 11:37 AM, Tian, Kevin wrote:
+>> From: Eric Auger <eric.auger@redhat.com>
+>> Sent: Wednesday, June 9, 2021 4:15 PM
+>>
+>> Hi Kevin,
+>>
+>> On 6/7/21 4:58 AM, Tian, Kevin wrote:
+>>> Hi, all,
+>>>
+>>> We plan to work on v2 now, given many good comments already received
+>>> and substantial changes envisioned. This is a very complex topic with
+>>> many sub-threads being discussed. To ensure that I didn't miss valuable
+>>> suggestions (and also keep everyone on the same page), here I'd like to
+>>> provide a list of planned changes in my mind. Please let me know if
+>>> anything important is lost.  :)
+>>>
+>>> --
+>>>
+>>> (Remaining opens in v1)
+>>>
+>>> -   Protocol between kvm/vfio/ioasid for wbinvd/no-snoop. I'll see how
+>>>     much can be refined based on discussion progress when v2 is out;
+>>>
+>>> -   Device-centric (Jason) vs. group-centric (David) uAPI. David is not fully
+>>>     convinced yet. Based on discussion v2 will continue to have ioasid uAPI
+>>>     being device-centric (but it's fine for vfio to be group-centric). A new
+>>>     section will be added to elaborate this part;
+>>>
+>>> -   PASID virtualization (section 4) has not been thoroughly discussed yet.
+>>>     Jason gave some suggestion on how to categorize intended usages.
+>>>     I will rephrase this section and hope more discussions can be held for
+>>>     it in v2;
+>>>
+>>> (Adopted suggestions)
+>>>
+>>> -   (Jason) Rename /dev/ioasid to /dev/iommu (so does uAPI e.g. IOASID
+>>>     _XXX to IOMMU_XXX). One suggestion (Jason) was to also rename
+>>>     RID+PASID to SID+SSID. But given the familiarity of the former, I will
+>>>     still use RID+PASID in v2 to ease the discussoin;
+>>>
+>>> -   (Jason) v1 prevents one device from binding to multiple ioasid_fd's. This
+>>>     will be fixed in v2;
+>>>
+>>> -   (Jean/Jason) No need to track guest I/O page tables on ARM/AMD.
+>> When
+>>>     a pasid table is bound, it becomes a container for all guest I/O page
+>> tables;
+>> while I am totally in line with that change, I guess we need to revisit
+>> the invalidate ioctl
+>> to support PASID table invalidation.
+> Yes, this is planned when doing this change.
+OK
+>
+>>> -   (Jean/Jason) Accordingly a device label is required so iotlb invalidation
+>>>     and fault handling can both support per-device operation. Per Jean's
+>>>     suggestion, this label will come from userspace (when VFIO_BIND_
+>>>     IOASID_FD);
+>> what is not totally clear to me is the correspondance between this label
+>> and the SID/SSID tuple.
+>> My understanding is it rather maps to the SID because you can attach
+>> several ioasids to the device.
+>> So it is not clear to me how you reconstruct the SSID info
+>>
+> Yes, device handle maps to SID. The fault data reported to userspace
+> will include {device_label, ioasid, vendor_fault_data}. In your case
+> I believe SSID will be included in vendor_fault_data thus no reconstruct
+> required. For Intel the user could figure out vPASID according to device_
+> label and ioasid, i.e. no need to include PASID info in vendor_fault_data.
+OK that works.
 
-Actually we don't even call intel_pinctrl_get_soc_data() if the ACPI ID
-is not listed in the corresponding driver's module table. So I don't
-think match can ever be NULL.
+Thanks
 
-But feel free to prove me wrong ;-)
+Eric
+>
+> Thanks
+> Kevin
+
