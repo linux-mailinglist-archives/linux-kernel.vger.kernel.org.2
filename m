@@ -2,243 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6B23A0BA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C8D3A0BA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236362AbhFIEsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 00:48:54 -0400
-Received: from mga14.intel.com ([192.55.52.115]:33988 "EHLO mga14.intel.com"
+        id S236324AbhFIEsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 00:48:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232633AbhFIEsx (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 00:48:53 -0400
-IronPort-SDR: p1guVw37IAH5SbyRPQ2PJtZZb3td4b5V4PojnbI4YCFhy83p5uLGgKr78+ivuROUOv1hOvRB+Y
- 6R9U01jq2Zaw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="204814739"
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="204814739"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 21:46:59 -0700
-IronPort-SDR: 7uZpCMYl8IQT2nywyYfX4NGgLbw8kTIbpeZcqQYERDTsuCChWSPH8Y3/KvZkVLs/VVLxUCqs6d
- FN13Q5SZ7Qcw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="476841761"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Jun 2021 21:46:53 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2] perf evsel: Adjust hybrid event and global event mixed group
-Date:   Wed,  9 Jun 2021 12:45:55 +0800
-Message-Id: <20210609044555.27180-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S232633AbhFIEsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 00:48:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 808B861351;
+        Wed,  9 Jun 2021 04:46:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623213971;
+        bh=AfXFtUXK4/KXMlXeRvkr2cFlV9MsCNjQaBiM0vboF/8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cv23PnqznimKI6sizyWVJ4XmjlQ9gA0vMRo06je2fuszB/lBLWJP8rbTrhwQZ6wPw
+         lo62WmqyjC6w/3TJbM69vdzT3AZcjKj6NeOFx8PLqE9fxZRGH5p/Uy1ZZf4iwLjo6z
+         7jI7fq5OF3A6zdniOXb2mFcalFhbTZlv25d2zSVwzEloKEH9YX8OLd/voRiLj/uwI3
+         dtByq/xhdYf2KXJOAfg+m9vNycpwNTXKsYyhbmMh8/mdpCeyGLBEZTYBNhKN7FdKWq
+         a8FHvhL4A6U66mtt12nKTJCMlPVPDj4on5eaxEJmFaMRWLpC4oHvidghlaYKtrWyHp
+         CVEG6k+Fn6wow==
+Date:   Wed, 9 Jun 2021 10:16:07 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        hui.wang@canonical.com, Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        sanyog.r.kale@intel.com,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+Subject: Re: [PATCH v4] soundwire: intel: move to auxiliary bus
+Message-ID: <YMBHj6PBzeHexXJb@vkoul-mobl>
+References: <20210511052132.28150-1-yung-chuan.liao@linux.intel.com>
+ <21002781-0b78-3b36-952f-683482a925d7@linux.intel.com>
+ <YLS4N2KgzfsMBD1c@vkoul-mobl.Dlink>
+ <b316763b-d219-6ea3-401e-3eb9718aabf3@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b316763b-d219-6ea3-401e-3eb9718aabf3@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A group mixed with hybrid event and global event is allowed. For example,
-group leader is 'intel_pt//' and the group member is 'cpu_atom/cycles/'.
+Hi Pierre,
 
-e.g.
-perf record --aux-sample -e '{intel_pt//,cpu_atom/cycles/}:u'
+You might want to check your setting, this and some other mail (not all
+though) sent by you seem to have landed up in my spam folder, dont know
+why gmail is doing that...
 
-The challenge is their available cpus are not fully matched. For example,
-'intel_pt//' is available on CPU0-CPU23, but 'cpu_atom/cycles/' is
-available on CPU16-CPU23.
+On 01-06-21, 08:56, Pierre-Louis Bossart wrote:
+> 
+> > > b) Vinod commented:
+> > > 
+> > > "What I would like to see the end result is that sdw driver for Intel
+> > > controller here is a simple auxdev device and no additional custom setup
+> > > layer required... which implies that this handling should be moved into
+> > > auxdev or Intel code setting up auxdev..."
+> > > 
+> > > I was unable to figure out what this comment hinted at: the auxbus is
+> > > already handled in the intel_init.c and intel.c files and the auxbus is used
+> > > to model a set of links/managers below the PCI device, not the controller
+> > > itself. There is also no such thing as a simple auxdev device used in the
+> > > kernel today, the base layer is meant to be extended with domain-specific
+> > > structures. There is really no point in creating a simple auxbus device
+> > > without extensions.
+> > 
+> > <back from vacations>
+> 
+> same here :-)
+> 
+> > I would like to see that the init_init.c removed completely, that is my
+> > ask here
+> > 
+> > This layer was created by me to aid in creating the platform devices.
+> > Also the mistake was not to use platform resources and instead pass a
+> > custom structure for resources (device iomem address, irq etc)
+> 
+> We are 100% aligned on the ask to remove intel_init.c, this layer is
+> unnecessary and adds more work for developers/maintainers. We will move all
+> this in the SOF driver.
+> 
+> > I would like to see is the PCI/SOF parent driver create the sdw aux
+> > device and that should be all needed to be done. The aux device would be
+> > probed by sdw driver. No custom resource structs for resources please.
+> I was following the previous paragraph but got stuck on the last sentence
+> 'no custom structs for resources', see below.
+> 
+> > If that is not possible, I would like to understand technical details of
+> > why that would be that case. If required necessary changes should be
+> > made to aux bus to handle and not have sequencing issue which you had
+> > trouble with platform approach.
+> 
+> I don't know what you are referring to with the 'sequencing issue which you
+> had trouble with platform approach'. We never had any technical issues with
+> platform devices, the solution works and has been productized. We are only
+> doing this iso-functionality transition because GregKH asked us to do only
+> use platform devices IF there is a real platform device (controlled by
+> DT/ACPI).
+> 
+> I think we are also having language/specification issues here. I don't
+> understand what you describe as a 'resource' - there is no interaction with
+> firmware - nor how we can avoid being domain-specific for something that is
+> Intel-specific.
+> 
+> Let's go back to the code to help the discussion: the auxiliary driver which
+> manages a SoundWire link needs to be provided with a 'custom' structure that
+> describes basic information provided by the PCI parent (link masks, quirks,
+> IO register bases) and contains internal fields needed for the link
+> management (mutex, ops, list, etc). This is the structure we use:
+> 
+> struct sdw_intel_link_res {
+> 	void __iomem *mmio_base; /* not strictly needed, useful for debug */
+> 	void __iomem *registers;
+> 	void __iomem *shim;
+> 	void __iomem *alh;
 
-When getting the group id for group member, we must be very careful.
-Because the cpu for 'intel_pt//' is not equal to the cpu for
-'cpu_atom/cycles/'. Actually the cpu here is the index of evsel->core.cpus,
-not the real CPU ID.
+These are resources and any auxiliary_device should add this. That way
+while creating you can set up. Hint look at how platform_device sets up
+resources
 
-e.g. cpu0 for 'intel_pt//' is CPU0, but cpu0 for 'cpu_atom/cycles/' is CPU16.
+> 	int irq;
 
-Before:
+irq is a generic field and should be again moved into auxiliary_device
 
-  # perf record --aux-sample -e '{intel_pt//,cpu_atom/cycles/}:u' -vv uname
-  ...
-  ------------------------------------------------------------
-  perf_event_attr:
-    type                             10
-    size                             128
-    config                           0xe601
-    { sample_period, sample_freq }   1
-    sample_type                      IP|TID|TIME|CPU|IDENTIFIER
-    read_format                      ID
-    disabled                         1
-    inherit                          1
-    exclude_kernel                   1
-    exclude_hv                       1
-    enable_on_exec                   1
-    sample_id_all                    1
-    exclude_guest                    1
-  ------------------------------------------------------------
-  sys_perf_event_open: pid 4084  cpu 0  group_fd -1  flags 0x8 = 5
-  sys_perf_event_open: pid 4084  cpu 1  group_fd -1  flags 0x8 = 6
-  sys_perf_event_open: pid 4084  cpu 2  group_fd -1  flags 0x8 = 7
-  sys_perf_event_open: pid 4084  cpu 3  group_fd -1  flags 0x8 = 9
-  sys_perf_event_open: pid 4084  cpu 4  group_fd -1  flags 0x8 = 10
-  sys_perf_event_open: pid 4084  cpu 5  group_fd -1  flags 0x8 = 11
-  sys_perf_event_open: pid 4084  cpu 6  group_fd -1  flags 0x8 = 12
-  sys_perf_event_open: pid 4084  cpu 7  group_fd -1  flags 0x8 = 13
-  sys_perf_event_open: pid 4084  cpu 8  group_fd -1  flags 0x8 = 14
-  sys_perf_event_open: pid 4084  cpu 9  group_fd -1  flags 0x8 = 15
-  sys_perf_event_open: pid 4084  cpu 10  group_fd -1  flags 0x8 = 16
-  sys_perf_event_open: pid 4084  cpu 11  group_fd -1  flags 0x8 = 17
-  sys_perf_event_open: pid 4084  cpu 12  group_fd -1  flags 0x8 = 18
-  sys_perf_event_open: pid 4084  cpu 13  group_fd -1  flags 0x8 = 19
-  sys_perf_event_open: pid 4084  cpu 14  group_fd -1  flags 0x8 = 20
-  sys_perf_event_open: pid 4084  cpu 15  group_fd -1  flags 0x8 = 21
-  sys_perf_event_open: pid 4084  cpu 16  group_fd -1  flags 0x8 = 22
-  sys_perf_event_open: pid 4084  cpu 17  group_fd -1  flags 0x8 = 23
-  sys_perf_event_open: pid 4084  cpu 18  group_fd -1  flags 0x8 = 24
-  sys_perf_event_open: pid 4084  cpu 19  group_fd -1  flags 0x8 = 25
-  sys_perf_event_open: pid 4084  cpu 20  group_fd -1  flags 0x8 = 26
-  sys_perf_event_open: pid 4084  cpu 21  group_fd -1  flags 0x8 = 27
-  sys_perf_event_open: pid 4084  cpu 22  group_fd -1  flags 0x8 = 28
-  sys_perf_event_open: pid 4084  cpu 23  group_fd -1  flags 0x8 = 29
-  ------------------------------------------------------------
-  perf_event_attr:
-    size                             128
-    config                           0x800000000
-    { sample_period, sample_freq }   4000
-    sample_type                      IP|TID|TIME|PERIOD|IDENTIFIER|AUX
-    read_format                      ID
-    inherit                          1
-    exclude_kernel                   1
-    exclude_hv                       1
-    freq                             1
-    sample_id_all                    1
-    exclude_guest                    1
-    aux_sample_size                  4096
-  ------------------------------------------------------------
-  sys_perf_event_open: pid 4084  cpu 16  group_fd 5  flags 0x8
-  sys_perf_event_open failed, error -22
+> 	const struct sdw_intel_ops *ops;
 
-The group_fd 5 is not correct. It should be 22 (the fd of
-'intel_pt' on CPU16).
+This is for callbacks right? Why cant the sdw aux driver call APIs
+exported by SOF driver?
 
-After:
+> 	struct device *dev;
 
-  # perf record --aux-sample -e '{intel_pt//,cpu_atom/cycles/}:u' -vv uname
-  ...
-  ------------------------------------------------------------
-  perf_event_attr:
-    type                             10
-    size                             128
-    config                           0xe601
-    { sample_period, sample_freq }   1
-    sample_type                      IP|TID|TIME|CPU|IDENTIFIER
-    read_format                      ID
-    disabled                         1
-    inherit                          1
-    exclude_kernel                   1
-    exclude_hv                       1
-    enable_on_exec                   1
-    sample_id_all                    1
-    exclude_guest                    1
-  ------------------------------------------------------------
-  sys_perf_event_open: pid 5162  cpu 0  group_fd -1  flags 0x8 = 5
-  sys_perf_event_open: pid 5162  cpu 1  group_fd -1  flags 0x8 = 6
-  sys_perf_event_open: pid 5162  cpu 2  group_fd -1  flags 0x8 = 7
-  sys_perf_event_open: pid 5162  cpu 3  group_fd -1  flags 0x8 = 9
-  sys_perf_event_open: pid 5162  cpu 4  group_fd -1  flags 0x8 = 10
-  sys_perf_event_open: pid 5162  cpu 5  group_fd -1  flags 0x8 = 11
-  sys_perf_event_open: pid 5162  cpu 6  group_fd -1  flags 0x8 = 12
-  sys_perf_event_open: pid 5162  cpu 7  group_fd -1  flags 0x8 = 13
-  sys_perf_event_open: pid 5162  cpu 8  group_fd -1  flags 0x8 = 14
-  sys_perf_event_open: pid 5162  cpu 9  group_fd -1  flags 0x8 = 15
-  sys_perf_event_open: pid 5162  cpu 10  group_fd -1  flags 0x8 = 16
-  sys_perf_event_open: pid 5162  cpu 11  group_fd -1  flags 0x8 = 17
-  sys_perf_event_open: pid 5162  cpu 12  group_fd -1  flags 0x8 = 18
-  sys_perf_event_open: pid 5162  cpu 13  group_fd -1  flags 0x8 = 19
-  sys_perf_event_open: pid 5162  cpu 14  group_fd -1  flags 0x8 = 20
-  sys_perf_event_open: pid 5162  cpu 15  group_fd -1  flags 0x8 = 21
-  sys_perf_event_open: pid 5162  cpu 16  group_fd -1  flags 0x8 = 22
-  sys_perf_event_open: pid 5162  cpu 17  group_fd -1  flags 0x8 = 23
-  sys_perf_event_open: pid 5162  cpu 18  group_fd -1  flags 0x8 = 24
-  sys_perf_event_open: pid 5162  cpu 19  group_fd -1  flags 0x8 = 25
-  sys_perf_event_open: pid 5162  cpu 20  group_fd -1  flags 0x8 = 26
-  sys_perf_event_open: pid 5162  cpu 21  group_fd -1  flags 0x8 = 27
-  sys_perf_event_open: pid 5162  cpu 22  group_fd -1  flags 0x8 = 28
-  sys_perf_event_open: pid 5162  cpu 23  group_fd -1  flags 0x8 = 29
-  ------------------------------------------------------------
-  perf_event_attr:
-    size                             128
-    config                           0x800000000
-    { sample_period, sample_freq }   4000
-    sample_type                      IP|TID|TIME|PERIOD|IDENTIFIER|AUX
-    read_format                      ID
-    inherit                          1
-    exclude_kernel                   1
-    exclude_hv                       1
-    freq                             1
-    sample_id_all                    1
-    exclude_guest                    1
-    aux_sample_size                  4096
-  ------------------------------------------------------------
-  sys_perf_event_open: pid 5162  cpu 16  group_fd 22  flags 0x8 = 30
-  sys_perf_event_open: pid 5162  cpu 17  group_fd 23  flags 0x8 = 31
-  sys_perf_event_open: pid 5162  cpu 18  group_fd 24  flags 0x8 = 32
-  sys_perf_event_open: pid 5162  cpu 19  group_fd 25  flags 0x8 = 33
-  sys_perf_event_open: pid 5162  cpu 20  group_fd 26  flags 0x8 = 34
-  sys_perf_event_open: pid 5162  cpu 21  group_fd 27  flags 0x8 = 35
-  sys_perf_event_open: pid 5162  cpu 22  group_fd 28  flags 0x8 = 36
-  sys_perf_event_open: pid 5162  cpu 23  group_fd 29  flags 0x8 = 37
-  ------------------------------------------------------------
-  ...
+Why do you need a dev pointer here? Is this parent or something else?
 
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/util/evsel.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+> 	struct mutex *shim_lock; /* protect shared registers */
 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 4a3cd1b5bb33..f81ac6962aec 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1581,6 +1581,27 @@ int __evsel__read_on_cpu(struct evsel *evsel, int cpu, int thread, bool scale)
- 	return 0;
- }
- 
-+static int evsel__match_other_cpu(struct evsel *evsel, struct evsel *other,
-+				  int cpu)
-+{
-+	int cpuid;
-+
-+	cpuid = perf_cpu_map__cpu(evsel->core.cpus, cpu);
-+	return perf_cpu_map__idx(other->core.cpus, cpuid);
-+}
-+
-+static int evsel__hybrid_group_cpu(struct evsel *evsel, int cpu)
-+{
-+	struct evsel *leader = evsel->leader;
-+
-+	if ((evsel__is_hybrid(evsel) && !evsel__is_hybrid(leader)) ||
-+	    (!evsel__is_hybrid(evsel) && evsel__is_hybrid(leader))) {
-+		return evsel__match_other_cpu(evsel, leader, cpu);
-+	}
-+
-+	return cpu;
-+}
-+
- static int get_group_fd(struct evsel *evsel, int cpu, int thread)
- {
- 	struct evsel *leader = evsel->leader;
-@@ -1595,6 +1616,10 @@ static int get_group_fd(struct evsel *evsel, int cpu, int thread)
- 	 */
- 	BUG_ON(!leader->core.fd);
- 
-+	cpu = evsel__hybrid_group_cpu(evsel, cpu);
-+	if (cpu == -1)
-+		return -1;
-+
- 	fd = FD(leader, cpu, thread);
- 	BUG_ON(fd == -1);
- 
+Okay so you serialize the access to shim across sdw and sof right?
+export an api from sof driver and get rid of lock here
+
+> 	u32 *shim_mask;
+> 	u32 clock_stop_quirks;
+> 	u32 link_mask;
+> 	struct sdw_cdns *cdns;
+> 	struct list_head list;
+
+
+these sound as internal data to sdw instance, move into intel
+driver instances
+
+
+> };
+> 
+> We could if it was desired for architectural clarity split this structure in
+> what is provided by the parent and what is used inside of the auxiliary
+> driver as an internal context that the parent doesn't touch, but these
+> definitions are again Intel-specific.
+
+So rather than think Intel specfic, I would suggest you think in generic
+terms. You have a child auxiliary_device (think like PCI etc), add
+the generic resources like iomem regions, irq etc and call into SOF
+driver. That would make sdw driver look neat and help you get rid of
+this bits
+
+> 
+> Then both types of information are included in the 'link_dev' extension of
+> the auxiliary device.
+> 
+> struct sdw_intel_link_dev {
+> 	struct auxiliary_device auxdev;
+> 	struct sdw_intel_link_res link_res;
+> };
+> 
+> That's the basic design of the auxiliary bus, domain-specific data
+> structures are not added inside of the auxiliary_device but are part of an
+> extension accessed with container_of(). That's what everyone using the
+> auxiliary bus is doing.
+
+I would say resources (as illustrated above) are not domain-specific
+data but a generic stuff which any type of device object should contain
+
+> Vinod, if you can elaborate on what 'resources' refer to in your reply that
+> would help. We've been using the same approach as others relying on the
+> auxiliary bus and I am struggling to see what is wrong with the solution we
+> suggested, or what changes to the auxiliary bus core would be needed. I
+> don't mind doing something different but I just don't understand what the
+> suggestion is.
+
+I think auxiliary_device needs to look more like a real device rather
+than a simple wrapper as it is now and put heavy onus on implementers.
+
+Device drivers should be simple and boring. The details should be
+handled in bus
+
+Thanks
 -- 
-2.17.1
-
+~Vinod
