@@ -2,115 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E283A1F2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419443A1F4A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhFIVqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:46:55 -0400
-Received: from smtprelay0081.hostedemail.com ([216.40.44.81]:36104 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229517AbhFIVqy (ORCPT
+        id S230220AbhFIVsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:48:15 -0400
+Received: from mail-pf1-f175.google.com ([209.85.210.175]:40527 "EHLO
+        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230317AbhFIVsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:46:54 -0400
-Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 433A6181D330D;
-        Wed,  9 Jun 2021 21:44:57 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id 36D6727DD18;
-        Wed,  9 Jun 2021 21:44:56 +0000 (UTC)
-Message-ID: <7e0f67a63b7093f4d20e0c0ccb076d9244e26a9a.camel@perches.com>
-Subject: Re: [PATCH 1/1] lib: remove leading spaces before tabs
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Wed, 09 Jun 2021 14:44:54 -0700
-In-Reply-To: <CAHp75VfQq=RkjyZQsc-PHLTLRCzXovm-D_Z+Pp3A6vWGA-GKug@mail.gmail.com>
-References: <20210608071430.12687-1-thunder.leizhen@huawei.com>
-         <CAHp75VfuMJ5kfRDB4tE2zr2Em79HiwrDJVROnw+kD3H+QNM4sg@mail.gmail.com>
-         <da4915c5-fa13-0cf2-f2d2-02779a64af1b@huawei.com>
-         <8a70d592e14f93822bf40832c7374d8e491c3afc.camel@perches.com>
-         <26ee1009-259d-07a6-495f-87557be9ed8a@huawei.com>
-         <3211e76c-d2a0-1e26-940b-9710073ee7d4@huawei.com>
-         <CAHp75VfQq=RkjyZQsc-PHLTLRCzXovm-D_Z+Pp3A6vWGA-GKug@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 9 Jun 2021 17:48:04 -0400
+Received: by mail-pf1-f175.google.com with SMTP id q25so19676926pfh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 14:46:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0XYECOmxsaMaLxHoLYjfZFxvSSA4dD3DlKRpuLiD3Rc=;
+        b=FLW/EUXTlbxIh5ve0hPEM3cR8gRMru632OvcVzVD3vVjnoBoUyK6+CN5uWDX/GomMJ
+         vsOcjyZDLFoiIBS20uZ/kXm1v3WUlnkbX8GstRxE63WRtisYJIOPktqwR3fELZpKtzaT
+         zqz6nUoNgy36/DM/jmzG/ZTFhUeIgXTKVWC7U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0XYECOmxsaMaLxHoLYjfZFxvSSA4dD3DlKRpuLiD3Rc=;
+        b=Iv/4pKif86s1oLTojAjExzWQeMfslUY2d3w2RTFvRVSNaN5GxOFW7K1YlppMU94pJN
+         1PjnOk10je0vzN7RQ0YmjE5PCrUEvIwZAX4Urn2TaVQXT5xcAoHJD2we/mOlac1njSrA
+         LpJzePOJvbhnEk+0vXcOPvxzN16MbEKwBS83zP6ItREpQDeSfYoaHvzZKhoeXFzlLn+B
+         yXc1KehH5U5MChr98Cg5J8gWLra7BCqc+YiaDw488dEhpShY+cP54welir6dHnPQewQf
+         +16T5XLU0a5MGEHm4Eg71Xx5xyW7pGrrqpCrpKUV76z7tpB7y7PSXWqkGAJ9yrnFHpEw
+         4BlA==
+X-Gm-Message-State: AOAM530lQ/tr5zOjKqqy41thsLgxd5ql7Yi9iSDv1cigLK2bldooaJqy
+        PwnhXaXTpyoMqVUgJ6rw/M+K6g==
+X-Google-Smtp-Source: ABdhPJxe8pzlj9Q+9OJdkrUg+zpE0g3dvGmj9lZQktflzXAZ/16KG8tQMYC7EHu9xnz9XJw/u4n4Ew==
+X-Received: by 2002:a63:3fc6:: with SMTP id m189mr1680188pga.239.1623275109063;
+        Wed, 09 Jun 2021 14:45:09 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f17sm611807pgm.37.2021.06.09.14.45.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 14:45:08 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 14:45:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Keller, Jacob E" <jacob.e.keller@intel.com>
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: Re: [Intel-wired-lan] [PATCH][next] virtchnl: Replace one-element
+ array in struct virtchnl_vsi_queue_config_info
+Message-ID: <202106091424.37E833794@keescook>
+References: <20210525231658.GA176466@embeddedor>
+ <f3674339c0390ced22b365101f2d3e3a2bf26845.camel@intel.com>
+ <85e62583-5db9-ac5c-fdf9-8e3f6a50f3fa@embeddedor.com>
+ <7273a541a4864fcfb1a7ba2e105885d3@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.40
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: 36D6727DD18
-X-Stat-Signature: 8om4onecwcrz4sz96w7c9hd1yoh5wn8g
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/Tn48oXe7M/4mr8JvXoKiU8OIur1UVSA0=
-X-HE-Tag: 1623275096-518481
+In-Reply-To: <7273a541a4864fcfb1a7ba2e105885d3@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-09 at 13:30 +0300, Andy Shevchenko wrote:
-> On Wed, Jun 9, 2021 at 9:21 AM Leizhen (ThunderTown)
-> <thunder.leizhen@huawei.com> wrote:
-> > On 2021/6/9 13:15, Leizhen (ThunderTown) wrote:
-> > > On 2021/6/9 0:03, Joe Perches wrote:
-> > > > On Tue, 2021-06-08 at 17:00 +0800, Leizhen (ThunderTown) wrote:
-> > > > > On 2021/6/8 16:44, Andy Shevchenko wrote:
-> > > > > > On Tue, Jun 8, 2021 at 10:14 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> > > > > > > 
-> > > > > > > 1) Run the following command to find and remove the leading spaces before
-> > > > > > >    tabs:
-> > > > > > >    find lib/ -type f | xargs sed -r -i 's/^[ ]+\t/\t/'
-> > > > > > 
-> > > > > > Hint for the future, try to use what Git provides, for example `git
-> > > > > > ls-files -- lib/`.
-> > > > > 
-> > > > > Okay, thanks. I learned a new trick.
+On Sat, May 29, 2021 at 12:19:48AM +0000, Keller, Jacob E wrote:
 > 
-> > > > For instance:
-> > > > 
-> > > > $ git diff --stat lib
-> > > > $ git ls-files lib/ | \
-> > > >   xargs ./scripts/checkpatch.pl --types=SPACE_BEFORE_TAB --fix-inplace
+> 
+> > -----Original Message-----
+> > From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+> > Gustavo A. R. Silva
+> > Sent: Friday, May 28, 2021 4:05 PM
+> > To: Nguyen, Anthony L <anthony.l.nguyen@intel.com>; Brandeburg, Jesse
+> > <jesse.brandeburg@intel.com>; gustavoars@kernel.org
+> > Cc: intel-wired-lan@lists.osuosl.org; linux-kernel@vger.kernel.org; linux-
+> > hardening@vger.kernel.org
+> > Subject: Re: [Intel-wired-lan] [PATCH][next] virtchnl: Replace one-element array
+> > in struct virtchnl_vsi_queue_config_info
 > > 
-> > I just tried it. It's too slow.
+> > 
+> > 
+> > On 5/28/21 16:56, Nguyen, Anthony L wrote:
+> > > On Tue, 2021-05-25 at 18:16 -0500, Gustavo A. R. Silva wrote:
+> > >> There is a regular need in the kernel to provide a way to declare
+> > >> having a
+> > >> dynamically sized set of trailing elements in a structure. Kernel
+> > >> code
+> > >> should always use â€œflexible array membersâ€[1] for these cases. The
+> > >> older
+> > >> style of one-element or zero-length arrays should no longer be
+> > >> used[2].
+> > >>
+> > >> Refactor the code according to the use of a flexible-array member in
+> > >> struct
+> > >> virtchnl_vsi_queue_config_info instead of one-element array, and use
+> > >> the
+> > >> flex_array_size() helper.
+> > >>
+> > >> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> > >> [2]
+> > >> https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-
+> > length-and-one-element-arrays
+> > >>
+> > >> Link: https://github.com/KSPP/linux/issues/79
+> > >> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > >> ---
+> > >>  include/linux/avf/virtchnl.h | 9 ++++-----
+> > >>  1 file changed, 4 insertions(+), 5 deletions(-)
+> > >>
+> > >> diff --git a/include/linux/avf/virtchnl.h
+> > >> b/include/linux/avf/virtchnl.h
+> > >> index b554913804bd..ed9c4998f8ac 100644
+> > >> --- a/include/linux/avf/virtchnl.h
+> > >> +++ b/include/linux/avf/virtchnl.h
+> > >> @@ -338,10 +338,10 @@ struct virtchnl_vsi_queue_config_info {
+> > >>  	u16 vsi_id;
+> > >>  	u16 num_queue_pairs;
+> > >>  	u32 pad;
+> > >> -	struct virtchnl_queue_pair_info qpair[1];
+> > >> +	struct virtchnl_queue_pair_info qpair[];
+> > >>  };
+> > >>
+> > >> -VIRTCHNL_CHECK_STRUCT_LEN(72, virtchnl_vsi_queue_config_info);
+> > >> +VIRTCHNL_CHECK_STRUCT_LEN(8, virtchnl_vsi_queue_config_info);
+> > >>
+> > >>  /* VIRTCHNL_OP_REQUEST_QUEUES
+> > >>   * VF sends this message to request the PF to allocate additional
+> > >> queues to
+> > >> @@ -997,9 +997,8 @@ virtchnl_vc_validate_vf_msg(struct
+> > >> virtchnl_version_info *ver, u32 v_opcode,
+> > >>  		if (msglen >= valid_len) {
+> > >>  			struct virtchnl_vsi_queue_config_info *vqc =
+> > >>  			    (struct virtchnl_vsi_queue_config_info
+> > >> *)msg;
+> > >> -			valid_len += (vqc->num_queue_pairs *
+> > >> -				      sizeof(struct
+> > >> -					     virtchnl_queue_pair_info))
+> > >> ;
+> > >> +			valid_len += flex_array_size(vqc, qpair,
+> > >> +						     vqc-
+> > >>> num_queue_pairs);
+> > >
+> > > The virtchnl file acts as a binary interface between physical and
+> > > virtual functions. There's no guaruntee that the PF and VF will both
+> > > have the newest version. Thus changing this will break compatibility.
+> > > Specifically, the way the size was validated for this op code
+> > > incorrectly expects an extra queue pair structure. Some other
+> > > structures have similar length calculation flaws. We agree that fixing
+> > > this is important, but the fix needs to account that old drivers will
+> > > send an off by 1 size.
+> > >
+> > > To properly handle compatibility we need to introduce a feature flag to
+> > > indicate the new behavior. If the feature flag is not set, we acccept
+> > > messages with the old format (with the extra size). If both the PF and
+> > > VF support the feature flag, we'll use the correct size calculations.
+> > > We're looking to add this and would like to do all the virtchnl
+> > > structure fixes in one series.
+> > >
+> > 
+> > Oh OK, I see. In this case, I think something like this might work just
+> > fine:
+> > 
+> > https://git.kernel.org/linus/c0a744dcaa29e9537e8607ae9c965ad936124a4d
+> > 
+> > What do you think?
+> > 
 > 
-> If checkpath accepts infinite positional arguments, then proper way of
-> use (that's how I do with simple perl regexps) is to
+> About half our virtchnl structures correctly validate the length (i.e. enforcing that the number of members including the implicit one are correct). There are maybe 3-4 which don't do that and accidentally allow sizes that are off by 1 member.
 > 
-> scripts/checkpatch.pl --types=SPACE_BEFORE_TAB --fix-inplace -- $(git ls-files lib/)
+> We believe the correct fix is to fix the structure definitions to use [] and then introduce a VALIDATE_MSG_V2 feature flag which is negotiated by the VF indicating whether it supports this behavior, and the PF replying to VF if it supports.
+> 
+> In the case where the VF doesn't support this, the PF will notice this and modify its length calculations for the handful of currently broken checks to include one extra member. In the case where the VF supports this but the PF does not, the VF must allocate extra memory and ensure it passes the larger message length. In the case where both PF and VF support the new "feature" we'll correctly switch to using 0 length flexible arrays.
+> 
+> It's actually even slightly more convoluted because another 3-4 ops only mis-validate the size when the length of the flexible array is 0. In that case, they require the full size of the structure, but in the case where it's 1 or more, they require the size to match as you would expect with a 0-sized array.
+> 
+> I'm not sure the union approach is suitable for that? We believe the use of a new capability bit is the best mechanism: we can fix the code to use flexible array definitions everywhere and simply ensure that when communicating with old PF or VF, we add additional padding as necessary to the message.
 
-That won't always work:
+It seems like this can all be solved easily without versioning nor
+unions. Currently, VIRTCHNL_OP_CONFIG_VSI_QUEUES requires that "msglen"
+must be the header (struct virtchnl_vsi_queue_config_info) and at least
+1 trailing qpair (struct virtchnl_queue_pair_info). There's no reason to
+change this requirement.
 
-$ git ls-files | xargs | wc -c
-2716737
-
-Nothing accepts infinite positional arguments.
-You are always limited by the maximum length of a command line
-
-$ getconf ARG_MAX
-2097152
-
-xargs has:
-
-$ xargs --show-limits
-Your environment variables take up 3517 bytes
-POSIX upper limit on argument length (this system): 2091587
-POSIX smallest allowable upper limit on argument length (all systems): 4096
-Maximum length of command we could actually use: 2088070
-Size of command buffer we are actually using: 131072
-Maximum parallelism (--max-procs must be no greater): 2147483647
-
-> Seems like we have a shell lesson :-)
-
-Maybe so.
-
-Using xargs allows use of -P to invoke parallelism.
-Or you could just use gnu parallel instead of xargs.
-
-Using './scripts/checkpatch.pl -- $(git ls-files <path>)' will only
-allow a single process to be invoked for the files to be scanned.
+We can leave the "over allocation" that is present in
+drivers/net/ethernet/intel/iavf/iavf_virtchnl.c too:
 
 
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c b/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
+index 0eab3c43bdc5..66c3d1442ced 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
+@@ -256,7 +256,7 @@ void iavf_configure_queues(struct iavf_adapter *adapter)
+ 		return;
+ 	}
+ 	adapter->current_op = VIRTCHNL_OP_CONFIG_VSI_QUEUES;
+-	len = struct_size(vqci, qpair, pairs);
++	len = struct_size(vqci, qpair, pairs + 1);
+ 	vqci = kzalloc(len, GFP_KERNEL);
+ 	if (!vqci)
+ 		return;
+diff --git a/include/linux/avf/virtchnl.h b/include/linux/avf/virtchnl.h
+index 8612f8fc86c1..d8d30dc98cd1 100644
+--- a/include/linux/avf/virtchnl.h
++++ b/include/linux/avf/virtchnl.h
+@@ -338,10 +338,10 @@ struct virtchnl_vsi_queue_config_info {
+ 	u16 vsi_id;
+ 	u16 num_queue_pairs;
+ 	u32 pad;
+-	struct virtchnl_queue_pair_info qpair[1];
++	struct virtchnl_queue_pair_info qpair[0];
+ };
+ 
+-VIRTCHNL_CHECK_STRUCT_LEN(72, virtchnl_vsi_queue_config_info);
++VIRTCHNL_CHECK_STRUCT_LEN(8, virtchnl_vsi_queue_config_info);
+ 
+ /* VIRTCHNL_OP_REQUEST_QUEUES
+  * VF sends this message to request the PF to allocate additional queues to
+@@ -993,18 +993,19 @@ virtchnl_vc_validate_vf_msg(struct virtchnl_version_info *ver, u32 v_opcode,
+ 	case VIRTCHNL_OP_CONFIG_RX_QUEUE:
+ 		valid_len = sizeof(struct virtchnl_rxq_info);
+ 		break;
+-	case VIRTCHNL_OP_CONFIG_VSI_QUEUES:
+-		valid_len = sizeof(struct virtchnl_vsi_queue_config_info);
++	case VIRTCHNL_OP_CONFIG_VSI_QUEUES: {
++		struct virtchnl_vsi_queue_config_info *vqc =
++		    (struct virtchnl_vsi_queue_config_info *)msg;
++
++		valid_len = struct_size(vqc, qpair, 1);
+ 		if (msglen >= valid_len) {
+-			struct virtchnl_vsi_queue_config_info *vqc =
+-			    (struct virtchnl_vsi_queue_config_info *)msg;
+-			valid_len += (vqc->num_queue_pairs *
+-				      sizeof(struct
+-					     virtchnl_queue_pair_info));
++			valid_len += flex_array_size(vqc, qpair,
++						     vqc->num_queue_pairs);
+ 			if (vqc->num_queue_pairs == 0)
+ 				err_msg_format = true;
+ 		}
+ 		break;
++	}
+ 	case VIRTCHNL_OP_CONFIG_IRQ_MAP:
+ 		valid_len = sizeof(struct virtchnl_irq_map_info);
+ 		if (msglen >= valid_len) {
 
+
+
+The above is a no-op change, and switches to flex arrays.
+
+Additionally, these should be fixed as well:
+
+struct virtchnl_vf_resource
+struct virtchnl_irq_map_info
+struct virtchnl_ether_addr_list
+struct virtchnl_vlan_filter_list
+struct virtchnl_rss_key
+struct virtchnl_rss_lut
+struct virtchnl_tc_info
+struct virtchnl_iwarp_qvlist_info
+
+
+-- 
+Kees Cook
