@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E553A1EB0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3A93A1EAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhFIVPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:15:40 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:36632 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhFIVPj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:15:39 -0400
-Received: by mail-ot1-f44.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so25387662otl.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 14:13:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X+vTwOmzwLF/GmiUHSZdVNz6KHeSQoupkzPT9DlPZJE=;
-        b=UXdMRlhsFFSxm/2Mk/c3mHNqpjn4ns2S31aVCngPlEAlxhlPqMJeo2LAHOKakytmzB
-         Wm0FplBGGEnaeJ4svs6nd4fp65TxM2SKVMcrS6Ywn8NaPXs7xSLOvmhCmmcTiL5FTCM3
-         /qgxdqIBTYAVRqjOKiZfbDKgCEpUjd0KkgmeDWsDGN2XtaoiaZ/RYfkdyVhhdpkM3GIn
-         SnGoxWlPdVfOq9P81ZMRiAiy+b+OCkA82+RFmAIPMFy85yi6PGuXzSwFkZd8GYW188MT
-         93bZSz8GyuYPMbEjwxAq8hn9ky0h5jxM/9hshAEqQEITHGp0z/1x4sXsl5MNrqNRp5IW
-         Ro3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X+vTwOmzwLF/GmiUHSZdVNz6KHeSQoupkzPT9DlPZJE=;
-        b=eSX213EIfj1o1xxYj8PmTTzWVqKyOY0+QpwFETWK7Hr/ymJL6ij4LDkjIY1i6DhVDd
-         KJQT26w++O7I6TRyr5BHK9BcR1OjeIqocqrzvGD5DUkNpQxHQkLwv7cIygAjPeZUxPav
-         cDtXLpWCCphlD7IxnnMsTrIwklDmmjXJOfJv/a9f2BjovekO0aHICsk/GC3dte84yYso
-         eJmTbIeqbW0sPnrZLLiA9rR9zWcvoFppkIwfWiz56RJeTV2yRyhXfIVe5AaT/qOPak1o
-         LCidAv2Qx2OktkWZ9nLYERJYMc4hFmwwTCL/3Tfq0TKYT920PIXp2Lg0Ere7qfKZYHkn
-         HYfQ==
-X-Gm-Message-State: AOAM531JDf4x8nY+oDd6MdTRIO9pprZ4YAqYat+UeTTS8E8OCX0Jfoxn
-        NjLxObH6Bk88sgLQDJCisUkff2YyWx0JWviFjuI=
-X-Google-Smtp-Source: ABdhPJy5gjHIlujtByvS9IHsso8aiM/8W+YZHouRkqXFR2/zW0it21pwmOAG+IooOSApA2+nBXEpbk7ROb81/QPfn6w=
-X-Received: by 2002:a9d:6287:: with SMTP id x7mr1212482otk.132.1623273148945;
- Wed, 09 Jun 2021 14:12:28 -0700 (PDT)
+        id S229943AbhFIVO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:14:26 -0400
+Received: from mga18.intel.com ([134.134.136.126]:18022 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229548AbhFIVOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:14:25 -0400
+IronPort-SDR: jylLqfOjak87JGI0G6Tgx0beHymWh+Ewjvyg99FWYe8MRtl78/vqztJ2OwtrZF82lGQOgAVWq/
+ zzUTAG/qhUxg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="192485920"
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="192485920"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:12:29 -0700
+IronPort-SDR: cjLUL8EoPePaY+f8THIdsxm7jG++GLJDyeFxYJEWij/IVSbLHi+TvkJe8sSS6kW+elSFK7cMPl
+ dV477ODI9TSQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="419416308"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by orsmga002.jf.intel.com with ESMTP; 09 Jun 2021 14:12:29 -0700
+Date:   Wed, 9 Jun 2021 14:12:38 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH 2/4] perf/x86/intel: Do not deploy workaround when TSX is
+ deprecated
+Message-ID: <4926973a8b0b2ed78217add01b5c459a92f0d511.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
 MIME-Version: 1.0
-References: <1623233366-100202-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1623233366-100202-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 9 Jun 2021 17:12:18 -0400
-Message-ID: <CADnq5_Ms6Hv=PpSWXEabE1C0oQ=B37Mz1HYfxjn+vF9e8kK9SA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: use ARRAY_SIZE for base60_refresh_rates
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
-        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
-        xinhui pan <Xinhui.Pan@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Earlier workaround added by commit 400816f60c54 ("perf/x86/intel:
+Implement support for TSX Force Abort") for perf counter interactions
+[1] are not required on some client systems which received a microcode
+update that deprecates TSX.
 
-On Wed, Jun 9, 2021 at 6:09 AM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> Use ARRAY_SIZE instead of dividing sizeof array with sizeof an
-> element.
->
-> Clean up the following coccicheck warning:
->
-> ./drivers/gpu/drm/amd/display/dc/core/dc_resource.c:448:47-48: WARNING:
-> Use ARRAY_SIZE.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-> index 57afe71..3f00989 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-> @@ -445,7 +445,7 @@ bool resource_are_vblanks_synchronizable(
->  {
->         uint32_t base60_refresh_rates[] = {10, 20, 5};
->         uint8_t i;
-> -       uint8_t rr_count = sizeof(base60_refresh_rates)/sizeof(base60_refresh_rates[0]);
-> +       uint8_t rr_count = ARRAY_SIZE(base60_refresh_rates);
->         uint64_t frame_time_diff;
->
->         if (stream1->ctx->dc->config.vblank_alignment_dto_params &&
-> --
-> 1.8.3.1
->
+Bypass the perf workaround when such microcode is enumerated.
+
+[1] Performance Monitoring Impact of Intel® Transactional Synchronization Extension Memory
+    http://cdrdv2.intel.com/v1/dl/getContent/604224
+
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Tested-by: Neelima Krishnan <neelima.krishnan@intel.com>
+---
+ arch/x86/events/intel/core.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index e28892270c58..b5953e1e59a2 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -6016,10 +6016,24 @@ __init int intel_pmu_init(void)
+ 		intel_pmu_pebs_data_source_skl(pmem);
+ 
+ 		if (boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
+-			x86_pmu.flags |= PMU_FL_TFA;
+-			x86_pmu.get_event_constraints = tfa_get_event_constraints;
+-			x86_pmu.enable_all = intel_tfa_pmu_enable_all;
+-			x86_pmu.commit_scheduling = intel_tfa_commit_scheduling;
++			u64 msr;
++
++			rdmsrl(MSR_TSX_FORCE_ABORT, msr);
++			/* Systems that enumerate CPUID.RTM_ALWAYS_ABORT or
++			 * support MSR_TSX_FORCE_ABORT[SDV_ENABLE_RTM] bit have
++			 * TSX deprecated by default. TSX force abort hooks are
++			 * not required on these systems.
++			 *
++			 * Only deploy the workaround when older microcode is
++			 * detected.
++			 */
++			if (!boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT) &&
++			    !(msr & MSR_TFA_SDV_ENABLE_RTM)) {
++				x86_pmu.flags |= PMU_FL_TFA;
++				x86_pmu.get_event_constraints = tfa_get_event_constraints;
++				x86_pmu.enable_all = intel_tfa_pmu_enable_all;
++				x86_pmu.commit_scheduling = intel_tfa_commit_scheduling;
++			}
+ 		}
+ 
+ 		pr_cont("Skylake events, ");
+-- 
+git-series 0.9.1
+
