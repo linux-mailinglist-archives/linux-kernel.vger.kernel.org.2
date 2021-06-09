@@ -2,126 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A363A1203
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2A23A1206
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238318AbhFILHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:07:25 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3921 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232165AbhFILHX (ORCPT
+        id S238676AbhFILHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238414AbhFILH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:07:23 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0PMK3jjTz6wr6;
-        Wed,  9 Jun 2021 19:02:21 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 19:05:25 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 19:05:24 +0800
-Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
-To:     Parav Pandit <parav@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
-CC:     moyufeng <moyufeng@huawei.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Or Gerlitz <gerlitz.or@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "lipeng (Y)" <lipeng321@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        "shenjian15@huawei.com" <shenjian15@huawei.com>,
-        "chenhao (DY)" <chenhao288@hisilicon.com>,
-        Jiaran Zhang <zhangjiaran@huawei.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
- <20210531223711.19359b9a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
- <20210601143451.4b042a94@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <cf961f69-c559-eaf0-e168-b014779a1519@huawei.com>
- <20210602093440.15dc5713@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <857e7a19-1559-b929-fd15-05e8f38e9d45@huawei.com>
- <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <c9afecb5-3c0e-6421-ea58-b041d8173636@huawei.com>
- <20210604114109.3a7ada85@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <4e7a41ed-3f4d-d55d-8302-df3bc42dedd4@huawei.com>
- <20210607124643.1bb1c6a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <530ff54c-3cee-0eb6-30b0-b607826f68cf@huawei.com>
- <20210608102945.3edff79a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <2acd8373-b3dc-4920-1cbe-2b5ae29acb5b@huawei.com>
- <DM8PR12MB54802CA9A47F1585DC3347A5DC369@DM8PR12MB5480.namprd12.prod.outlook.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <d54ae715-8634-c983-1602-8cd8dea2a5e2@huawei.com>
-Date:   Wed, 9 Jun 2021 19:05:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Wed, 9 Jun 2021 07:07:29 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34465C061789;
+        Wed,  9 Jun 2021 04:05:34 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so23532443otl.3;
+        Wed, 09 Jun 2021 04:05:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=36CQRkOY7QyghBxxf7GCQwquMv/Oiou6SopAZ61gqIk=;
+        b=JOKKhNNrQp8FF3pWrjWT/rfnM1fUI/2DrXw/eHx8Wdydzv359k1GCQgMbKrFwGvzAG
+         T8cEE0QnJr71W34jVwdTUjDduMxhS8NAbzrL6h9clHb+U2da3tHu9mULvpowpeCosJzn
+         atq/nQQA/dEuvSn+sqVGXvPaA1W6P2C5u8q7LIzCqkdNME0/hdD/Yp47uznUapGpQWjx
+         BX7PGlXNqxVklSFP11vAY/Uk0pHvRCwnJgCqILyLwJn8ktmDlgTGTDMEc6PEeb0ZQQrQ
+         9zpgti5F3vW7uZRPL6x9IOIP080S3v+MbA5FIRMzjeEYMsqUkK44NbgInmp9lGsfVgn/
+         Xl5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=36CQRkOY7QyghBxxf7GCQwquMv/Oiou6SopAZ61gqIk=;
+        b=GqRebFJK8y1FQXyIgcC1hwHgPbkhHK4gv4tk5yotpUq5ObOBrPn024DZuYtUoWkC0g
+         OPUrn3g0P7I29/qHhPWMwWbA5DTtGxY14xH6wyYX7yAkYaVZjqMgGJvJn9tKf1ctOP7+
+         wP5itNur10GfEPWrzm/dRkXN8d6oPMkeGN6+XzLPG4XStvhrID8Eyc5pFu5PuXLNXrp6
+         pkFhERH1/4SFEWghz22ZFy0HtgGhdjIw4mUYHG9n7ryUhWuVeGFG5E85AvPA78hRt5NQ
+         vsLm7Zg3T7HgfkmGdsNFUEGAxe03DQe8uzHK5hfb0sg9SHAaShGwPv+96gS9z0AGsloP
+         hqXA==
+X-Gm-Message-State: AOAM530wdH0aXC8yJgdpXJr3QQwmjvJdAnrAHiDp4QZKjjPjrBgAuTml
+        GdrL+bMEJVG7BGnaIlVOGmOpqgIszs0=
+X-Google-Smtp-Source: ABdhPJyKi5DmKghplNOitTDkrAZM+inOHwPYnbD2iakRM8Q9AIcesbNAOe7mZcuQInvcEw7wYXZcAw==
+X-Received: by 2002:a9d:6f93:: with SMTP id h19mr11715637otq.100.1623236733441;
+        Wed, 09 Jun 2021 04:05:33 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z22sm1282396ooj.6.2021.06.09.04.05.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 04:05:32 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 9 Jun 2021 04:05:31 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mikhail Petrov <Mikhail.Petrov@mir.dev>,
+        linux-kernel@vger.kernel.org, mfaltesek@google.com
+Subject: Re: [PATCH] kallsyms: fix nonconverging kallsyms table with lld
+Message-ID: <20210609110531.GA1528247@roeck-us.net>
+References: <20210204152957.1288448-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <DM8PR12MB54802CA9A47F1585DC3347A5DC369@DM8PR12MB5480.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204152957.1288448-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/9 17:38, Parav Pandit wrote:
-> 
->> From: Yunsheng Lin <linyunsheng@huawei.com>
->> Sent: Wednesday, June 9, 2021 2:46 PM
->>
-> [..]
-> 
->>>> Is there any reason why VF use its own devlink instance?
->>>
->>> Primary use case for VFs is virtual environments where guest isn't
->>> trusted, so tying the VF to the main devlink instance, over which
->>> guest should have no control is counter productive.
->>
->> The security is mainly about VF using in container case, right?
->> Because VF using in VM, it is different host, it means a different devlink
->> instance for VF, so there is no security issue for VF using in VM case?
->> But it might not be the case for VF using in container?
-> Devlink instance has net namespace attached to it controlled using devlink reload command.
-> So a VF devlink instance can be assigned to a container/process running in a specific net namespace.
-> 
-> $ ip netns add n1
-> $ devlink dev reload pci/0000:06:00.4 netns n1
->                                      ^^^^^^^^^^^^^
->                                      PCI VF/PF/SF.
+Hi Arnd,
 
-Could we create another devlink instance when the net namespace of
-devlink port instance is changed? It may seems we need to change the
-net namespace based on devlink port instance instead of devlink instance.
-This way container case seems be similiar to the VM case?
-
+On Thu, Feb 04, 2021 at 04:29:47PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
->> Also, there is a "switch_id" concept from jiri's example, which seems to be
->> not implemented yet?
+> ARM randconfig builds with lld sometimes show a build failure
+> from kallsyms:
 > 
-> switch_id is present for switch ports in [1] and documented in [2].
+>   Inconsistent kallsyms data
+>   Try make KALLSYMS_EXTRA_PASS=1 as a workaround
 > 
-> [1] /sys/class/net/representor_netdev/phys_switch_id.
-> [2] https://www.kernel.org/doc/Documentation/networking/switchdev.txt " Switch ID"
-
-Thanks for info.
-I suppose we could use "switch_id" to indentify a eswitch since
-"switch_id is present for switch ports"?
-Where does the "switch_id" of switch port come from? Is it from FW?
-Or the driver generated it?
-
-Is there any rule for "switch_id"? Or is it vendor specific?
-
+> The problem is the veneers/thunks getting added by the linker extend
+> the symbol table, which in turn leads to more veneers being needed,
+> so it may take a few extra iterations to converge.
+> 
+> This bug has been fixed multiple times before, but comes back every time
+> a new symbol name is used. lld uses a different set of idenitifiers from
+> ld.bfd, so the additional ones need to be added as well.
+> 
+> I looked through the sources and found that arm64 and mips define similar
+> prefixes, so I'm adding those as well, aside from the ones I observed. I'm
+> not sure about powerpc64, which seems to already be handled through a
+> section match, but if it comes back, the "__long_branch_" and "__plt_"
+> prefixes would have to get added as well.
 > 
 
+This is such a whack-a-mole. The problem is hitting us yet again. I suspect
+it may be due to a new version of lld using new symbols, but I didn't really
+try to track it down. Is there an easy way to search for missed symbols ?
+
+In this context .. is there a chance to apply [1] after all ? This is getting
+really time consuming and annoying, and I really dislike having to fix the same
+problem over and over again.
+
+Thanks,
+Guenter
+
+---
+[1] https://patchwork.kernel.org/project/linux-kbuild/patch/20200910153204.156871-1-linux@roeck-us.net/
