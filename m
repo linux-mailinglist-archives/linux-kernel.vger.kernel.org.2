@@ -2,147 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C50D3A179C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA483A179F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238135AbhFIOoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:44:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237065AbhFIOoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:44:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E181E60C41;
-        Wed,  9 Jun 2021 14:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623249763;
-        bh=Lp60OTlEpA4K5hhgaDeUeuOpwZLJTceSMA4AcexQtDY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=i1N60SBwy3hhUI46/fN+kdehhpeImnmtscq8b13N5KLlfhHalhL19DyhtSNBX8S9Z
-         9CDaDA17auI1RHJuJhRandVrmoAUs9Ph/YqROiIXoT93L0j0Cj+uQX8RwvA2axRHbk
-         sRDx1WA1oBUErIq/+qinZXUbEAu+M3PyM8+47TIzPp7/yz1lpM9YdW7FRSfc05H+pJ
-         u6fRahWU12idNUlBHvjO4ayKFNkaVp8eZfmu8N3H3PIw5HRNWvyQh3ajAtV/ztZ3Fq
-         fBM1KRCuEtzYnd3P+8L8iu1D5NBLfIOLZuczMlCdSriyWae17OK0ve/Ld0uMweQbPQ
-         yDYLChHfcaeUg==
-Date:   Wed, 9 Jun 2021 23:42:39 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Punit Agrawal <punitagrawal@gmail.com>
-Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, linux-kernel@vger.kernel.org,
-        guoren@kernel.org, linux-csky@vger.kernel.org
-Subject: Re: [RFC PATCH 3/5] kprobe: Simplify prepare_kprobe() by dropping
- redundant version
-Message-Id: <20210609234239.8b61d29b7f12fb1307048e6c@kernel.org>
-In-Reply-To: <20210609105019.3626677-4-punitagrawal@gmail.com>
-References: <20210609105019.3626677-1-punitagrawal@gmail.com>
-        <20210609105019.3626677-4-punitagrawal@gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S237944AbhFIOpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:45:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37436 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233970AbhFIOph (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:45:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623249822;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hrjd0vAHqmk1gDJJdLOYF6cPc1MLvKQtTt47CRg14Ds=;
+        b=FS7AjBO4TGxZEIJuu7vpXL7NyU4qstLTsqEAC+buKsJSnc6jPQ76roNxur33IYJ9J5nnIY
+        +EfmRNtFLhPPrwFR9XNvgd89ga4v4cx++Hp2+PQLTv1pvKkDsOTIEyznynwdAsmfI5Iduj
+        kN6Ru+Prig3zfVvdRofNJnOGHCIpj8g=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-374-ifqYG2V5PJaWvZ1zumSIJQ-1; Wed, 09 Jun 2021 10:43:41 -0400
+X-MC-Unique: ifqYG2V5PJaWvZ1zumSIJQ-1
+Received: by mail-qk1-f200.google.com with SMTP id q207-20020a3743d80000b02903ab34f7ef76so577462qka.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 07:43:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hrjd0vAHqmk1gDJJdLOYF6cPc1MLvKQtTt47CRg14Ds=;
+        b=baLnQGEGT9zhn/86JKWcMnSfR7S90g6i5C9DjqiSbfsJGG1JwvuhOOjJ6XZpzvJWgF
+         rc9QqXpiskRZNoGS83seK+/zVJ2OLhQyuNiv5XhP41Iv6mn2omLAM+/xFSg/5teNeQGP
+         esxwDfqtIIMCVqDty7tsZlVhvd27K2Zo7iJZzjE+00+aG/+kO9ObT+Qj9TaI+qQpC0TZ
+         EoraMN8k0c5/zsWfcAqgLKHpjHsGkXkFDmtnrjVxjz6GEBgva6dfvdcHoaQ20A/dUBoV
+         CHTZzCS3W7j/HltXqyXKTEzUrZymRX8gXYYWifbuf/2c/dx/IKRextxL441jU37zlA/a
+         PNOg==
+X-Gm-Message-State: AOAM530e9flx/xTEVPWPBgvOVvJlUeCyxi0eM5h1TzMq+PI7WJxaefhI
+        GGIanHzTLbTZnnE54BUT2aVg+aoIFEGtvd4IKXPapx5ZhtAHXKSHiciT5KOlSKIgvJrPN+sQA9R
+        at+MR6ptgYQ6QQjCmrm5yOFtG
+X-Received: by 2002:a05:620a:1272:: with SMTP id b18mr15787591qkl.82.1623249819669;
+        Wed, 09 Jun 2021 07:43:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyvfpN1NcM9Fj56PO+RMrhMow2+zD6jj3I+p6YzQj0glPLbzqgroksliu2gRQR8EH4SKk/e4g==
+X-Received: by 2002:a05:620a:1272:: with SMTP id b18mr15787570qkl.82.1623249819431;
+        Wed, 09 Jun 2021 07:43:39 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-88-174-93-75-200.dsl.bell.ca. [174.93.75.200])
+        by smtp.gmail.com with ESMTPSA id b123sm184851qke.87.2021.06.09.07.43.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 07:43:38 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 10:43:37 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v3 04/27] mm/userfaultfd: Introduce special pte for
+ unmapped file-backed mem
+Message-ID: <YMDTmd/XVITpJgCd@t490s>
+References: <20210527201927.29586-1-peterx@redhat.com>
+ <20210527201927.29586-5-peterx@redhat.com>
+ <2227669.OCfziWJ48r@nvdebian>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2227669.OCfziWJ48r@nvdebian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  9 Jun 2021 19:50:17 +0900
-Punit Agrawal <punitagrawal@gmail.com> wrote:
-
-> The function prepare_kprobe() is called during kprobe registration and
-> is responsible for ensuring any architecture related preparation for
-> the kprobe is done before returning.
+On Wed, Jun 09, 2021 at 11:06:32PM +1000, Alistair Popple wrote:
+> On Friday, 28 May 2021 6:19:04 AM AEST Peter Xu wrote:
 > 
-> One of two versions of prepare_kprobe() is chosen depending on the
-> availability of KPROBE_ON_FTRACE in the kernel configuration.
+> [...]
 > 
-> Simplify the code by dropping the version when KPROBE_ON_FTRACE is not
-> selected - instead relying on kprobe_ftrace() to return false when
-> KPROBE_ON_FTRACE is not set.
+> > diff --git a/include/asm-generic/pgtable_uffd.h b/include/asm-generic/pgtable_uffd.h
+> > index 828966d4c281..95e9811ce9d1 100644
+> > --- a/include/asm-generic/pgtable_uffd.h
+> > +++ b/include/asm-generic/pgtable_uffd.h
+> > @@ -2,6 +2,9 @@
+> >  #define _ASM_GENERIC_PGTABLE_UFFD_H
+> >  
+> >  #ifndef CONFIG_HAVE_ARCH_USERFAULTFD_WP
+> > +
+> > +#define  UFFD_WP_SWP_PTE_SPECIAL  __pte(0)
+> > +
+> >  static __always_inline int pte_uffd_wp(pte_t pte)
+> >  {
+> >  	return 0;
+> > diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
+> > index 331d2ccf0bcc..93f932b53a71 100644
+> > --- a/include/linux/userfaultfd_k.h
+> > +++ b/include/linux/userfaultfd_k.h
+> > @@ -145,6 +145,17 @@ extern int userfaultfd_unmap_prep(struct vm_area_struct *vma,
+> >  extern void userfaultfd_unmap_complete(struct mm_struct *mm,
+> >  				       struct list_head *uf);
+> >  
+> > +static inline pte_t pte_swp_mkuffd_wp_special(struct vm_area_struct *vma)
+> > +{
+> > +	WARN_ON_ONCE(vma_is_anonymous(vma));
+> > +	return UFFD_WP_SWP_PTE_SPECIAL;
+> > +}
+> > +
+> > +static inline bool pte_swp_uffd_wp_special(pte_t pte)
+> > +{
+> > +	return pte_same(pte, UFFD_WP_SWP_PTE_SPECIAL);
+> > +}
+> > +
 > 
+> Sorry, only just noticed this but do we need to define a different version of
+> this helper that returns false for CONFIG_HAVE_ARCH_USERFAULTFD_WP=n to avoid
+> spurious matches with __pte(0) on architectures supporting userfaultfd but not
+> userfaultfd-wp?
 
-OK, since kprobe_ftrace() just checks a flag is set or not,
-it is always usable in kprobes.c.
-Looks good to me :)
+Good point.. Yes we definitely don't want the empty pte to be recognized as the
+special pte..  I'll squash below into the same patch:
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+----8<----
+diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
+index 489fb375e66c..23ca449240d1 100644
+--- a/include/linux/userfaultfd_k.h
++++ b/include/linux/userfaultfd_k.h
+@@ -177,7 +177,11 @@ static inline pte_t pte_swp_mkuffd_wp_special(struct vm_area_struct *vma)
+ 
+ static inline bool pte_swp_uffd_wp_special(pte_t pte)
+ {
++#ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
+        return pte_same(pte, UFFD_WP_SWP_PTE_SPECIAL);
++#else
++       return false;
++#fi
+ }
+ 
+ #else /* CONFIG_USERFAULTFD */
+----8<----
 
-Thank you!
+I'll see whether I can give some dry run without HAVE_ARCH_USERFAULTFD_WP but
+with USERFAULTFD.
 
-
-> No functional change.
-> 
-> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-> ---
->  include/linux/kprobes.h |  5 +++++
->  kernel/kprobes.c        | 23 +++++++++--------------
->  2 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-> index 1883a4a9f16a..771013bab18a 100644
-> --- a/include/linux/kprobes.h
-> +++ b/include/linux/kprobes.h
-> @@ -362,6 +362,11 @@ static inline void wait_for_kprobe_optimizer(void) { }
->  extern void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  				  struct ftrace_ops *ops, struct ftrace_regs *fregs);
->  extern int arch_prepare_kprobe_ftrace(struct kprobe *p);
-> +#else
-> +static inline int arch_prepare_kprobe_ftrace(struct kprobe *p)
-> +{
-> +	return -EINVAL;
-> +}
->  #endif
->  
->  int arch_check_ftrace_location(struct kprobe *p);
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 1a11d3c411bf..54d37d4ab897 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1022,15 +1022,6 @@ static struct ftrace_ops kprobe_ipmodify_ops __read_mostly = {
->  static int kprobe_ipmodify_enabled;
->  static int kprobe_ftrace_enabled;
->  
-> -/* Must ensure p->addr is really on ftrace */
-> -static int prepare_kprobe(struct kprobe *p)
-> -{
-> -	if (!kprobe_ftrace(p))
-> -		return arch_prepare_kprobe(p);
-> -
-> -	return arch_prepare_kprobe_ftrace(p);
-> -}
-> -
->  /* Caller must lock kprobe_mutex */
->  static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
->  			       int *cnt)
-> @@ -1102,11 +1093,6 @@ static int disarm_kprobe_ftrace(struct kprobe *p)
->  		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
->  }
->  #else	/* !CONFIG_KPROBES_ON_FTRACE */
-> -static inline int prepare_kprobe(struct kprobe *p)
-> -{
-> -	return arch_prepare_kprobe(p);
-> -}
-> -
->  static inline int arm_kprobe_ftrace(struct kprobe *p)
->  {
->  	return -ENODEV;
-> @@ -1118,6 +1104,15 @@ static inline int disarm_kprobe_ftrace(struct kprobe *p)
->  }
->  #endif
->  
-> +static int prepare_kprobe(struct kprobe *p)
-> +{
-> +	/* Must ensure p->addr is really on ftrace */
-> +	if (kprobe_ftrace(p))
-> +		return arch_prepare_kprobe_ftrace(p);
-> +
-> +	return arch_prepare_kprobe(p);
-> +}
-> +
->  /* Arm a kprobe with text_mutex */
->  static int arm_kprobe(struct kprobe *kp)
->  {
-> -- 
-> 2.30.2
-> 
-
+Thanks for spotting that!
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Peter Xu
+
