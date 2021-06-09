@@ -2,99 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396843A0F39
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B5C3A0F40
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237773AbhFIJDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:03:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49978 "EHLO mail.kernel.org"
+        id S237845AbhFIJF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:05:59 -0400
+Received: from m12-16.163.com ([220.181.12.16]:57177 "EHLO m12-16.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231919AbhFIJDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:03:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26F6B6023B;
-        Wed,  9 Jun 2021 09:01:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623229313;
-        bh=Z+zI0RDuvSuYN6v7HJscpw3B4/5MAYapaANvzw9NBwc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WmiR2RPPVpg5P331nrK6XjeWdv7pCU0af80mG7uj4/EG2o1tb9LLtohiNLtk8mpOb
-         tkFIKDCEKcOcSiIcbIMGVJ/fN1JUvOts/U/6Yw1l97gZt0kPZUy4edDI5lNpXcnIHC
-         W5BeTbAVwtq/9WO1fN6mDJoad1oG+A8DlCM4IJCZshJ82bV4+vGfwQkfXHIYfjD0jV
-         bEtrvNChyxo6+7hO+YhBAUjFIuWHPM3pjUlKGjLtPl/N1r55hfu6xP0Jm22i9rYpGC
-         TnY9mjqjTBAMX7vHcjrSXqStZ8qiBPVsWNoI4f98t6nYhC5euToDZuG5VDhnF8mgAN
-         QyqLZFfoTPMdQ==
-Date:   Wed, 9 Jun 2021 12:01:49 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <YMCDfWLw6r80Wdu3@unreal>
-References: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
+        id S234403AbhFIJF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:05:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=AY98O
+        Z6x2nUpuigB8VZeCNN9sVDE93mhA08248Jnwhc=; b=mL9nnl//2hrbaa7r6Ge6P
+        yRv/coc6JGt5kwlvB0WdyXFRU3yxOz5ZfZevpQMVU6lVXEEESKhw068YjbvZKJtJ
+        W2h4CTILC3Vz9pgxvHbFpCtto7Gu7AKFfZo4n1TNsf0lLVaFmsgz7hbJmlDB1EdD
+        07TEsIKU+QQeuFaTSLfQRg=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp12 (Coremail) with SMTP id EMCowAB3zGHJg8Bg_fChwA--.14250S2;
+        Wed, 09 Jun 2021 17:03:06 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Subject: [PATCH] scsi: lpfc: lpfc_mbox: Removed unnecessary 'return'
+Date:   Wed,  9 Jun 2021 17:02:07 +0800
+Message-Id: <20210609090207.520218-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowAB3zGHJg8Bg_fChwA--.14250S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAFW7GFyfJr1DKr1UGF1fXrb_yoWrZr47pa
+        nxAasrur4qkFy7KrW3Jrn8AF4ay3y8tr10yanFg34fuF4vyrWakFyxJFyI9ayFqF10krya
+        yr4Igw15W3W7XF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jpNtsUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/xtbBLBisUF++MI0whgAAsi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 02:58:18AM +0000, Tian, Kevin wrote:
-> Hi, all,
+From: lijian <lijian@yulong.com>
 
-<...>
+Removed unnecessary 'return'.
 
-> (Remaining opens in v1)
+Signed-off-by: lijian <lijian@yulong.com>
+---
+ drivers/scsi/lpfc/lpfc_mbox.c | 24 ------------------------
+ 1 file changed, 24 deletions(-)
 
-<...>
+diff --git a/drivers/scsi/lpfc/lpfc_mbox.c b/drivers/scsi/lpfc/lpfc_mbox.c
+index a232e8dfbda8..b6174a02fff3 100644
+--- a/drivers/scsi/lpfc/lpfc_mbox.c
++++ b/drivers/scsi/lpfc/lpfc_mbox.c
+@@ -153,7 +153,6 @@ lpfc_dump_mem(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb, uint16_t offset,
+ 	mb->un.varDmp.resp_offset = 0;
+ 	pmb->ctx_buf = ctx;
+ 	mb->mbxOwner = OWN_HOST;
+-	return;
+ }
+ 
+ /**
+@@ -187,7 +186,6 @@ lpfc_dump_wakeup_param(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
+ 	mb->un.varDmp.co = 0;
+ 	mb->un.varDmp.resp_offset = 0;
+ 	pmb->ctx_buf = ctx;
+-	return;
+ }
+ 
+ /**
+@@ -210,7 +208,6 @@ lpfc_read_nv(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmb)
+ 	memset(pmb, 0, sizeof (LPFC_MBOXQ_t));
+ 	mb->mbxCommand = MBX_READ_NV;
+ 	mb->mbxOwner = OWN_HOST;
+-	return;
+ }
+ 
+ /**
+@@ -237,7 +234,6 @@ lpfc_config_async(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmb,
+ 	mb->mbxCommand = MBX_ASYNCEVT_ENABLE;
+ 	mb->un.varCfgAsyncEvent.ring = ring;
+ 	mb->mbxOwner = OWN_HOST;
+-	return;
+ }
+ 
+ /**
+@@ -262,7 +258,6 @@ lpfc_heart_beat(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmb)
+ 	memset(pmb, 0, sizeof (LPFC_MBOXQ_t));
+ 	mb->mbxCommand = MBX_HEARTBEAT;
+ 	mb->mbxOwner = OWN_HOST;
+-	return;
+ }
+ 
+ /**
+@@ -335,7 +330,6 @@ lpfc_clear_la(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmb)
+ 	mb->un.varClearLA.eventTag = phba->fc_eventTag;
+ 	mb->mbxCommand = MBX_CLEAR_LA;
+ 	mb->mbxOwner = OWN_HOST;
+-	return;
+ }
+ 
+ /**
+@@ -388,7 +382,6 @@ lpfc_config_link(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmb)
+ 
+ 	mb->mbxCommand = MBX_CONFIG_LINK;
+ 	mb->mbxOwner = OWN_HOST;
+-	return;
+ }
+ 
+ /**
+@@ -575,7 +568,6 @@ lpfc_init_link(struct lpfc_hba * phba,
+ 	mb->mbxCommand = (volatile uint8_t)MBX_INIT_LINK;
+ 	mb->mbxOwner = OWN_HOST;
+ 	mb->un.varInitLnk.fabric_AL_PA = phba->fc_pref_ALPA;
+-	return;
+ }
+ 
+ /**
+@@ -669,7 +661,6 @@ lpfc_unreg_did(struct lpfc_hba * phba, uint16_t vpi, uint32_t did,
+ 
+ 	mb->mbxCommand = MBX_UNREG_D_ID;
+ 	mb->mbxOwner = OWN_HOST;
+-	return;
+ }
+ 
+ /**
+@@ -695,7 +686,6 @@ lpfc_read_config(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmb)
+ 
+ 	mb->mbxCommand = MBX_READ_CONFIG;
+ 	mb->mbxOwner = OWN_HOST;
+-	return;
+ }
+ 
+ /**
+@@ -720,7 +710,6 @@ lpfc_read_lnk_stat(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmb)
+ 
+ 	mb->mbxCommand = MBX_READ_LNK_STAT;
+ 	mb->mbxOwner = OWN_HOST;
+-	return;
+ }
+ 
+ /**
+@@ -827,8 +816,6 @@ lpfc_unreg_login(struct lpfc_hba *phba, uint16_t vpi, uint32_t rpi,
+ 
+ 	mb->mbxCommand = MBX_UNREG_LOGIN;
+ 	mb->mbxOwner = OWN_HOST;
+-
+-	return;
+ }
+ 
+ /**
+@@ -1033,7 +1020,6 @@ lpfc_read_rev(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmb)
+ 	mb->un.varRdRev.v3req = 1; /* Request SLI3 info */
+ 	mb->mbxCommand = MBX_READ_REV;
+ 	mb->mbxOwner = OWN_HOST;
+-	return;
+ }
+ 
+ void
+@@ -1053,7 +1039,6 @@ lpfc_sli4_swap_str(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
+ 	default:
+ 		break;
+ 	}
+-	return;
+ }
+ 
+ /**
+@@ -1190,8 +1175,6 @@ lpfc_config_hbq(struct lpfc_hba *phba, uint32_t id,
+ 		hbqmb->hbqMasks[i].rctlmatch = hbq_desc->hbqMasks[i].rctlmatch;
+ 		hbqmb->hbqMasks[i].rctlmask  = hbq_desc->hbqMasks[i].rctlmask;
+ 	}
+-
+-	return;
+ }
+ 
+ /**
+@@ -1248,8 +1231,6 @@ lpfc_config_ring(struct lpfc_hba * phba, int ring, LPFC_MBOXQ_t * pmb)
+ 		mb->un.varCfgRing.rrRegs[i].tval = pring->prt[i].type;
+ 		mb->un.varCfgRing.rrRegs[i].tmask = 0xff;
+ 	}
+-
+-	return;
+ }
+ 
+ /**
+@@ -1462,7 +1443,6 @@ lpfc_kill_board(struct lpfc_hba * phba, LPFC_MBOXQ_t * pmb)
+ 	memset(pmb, 0, sizeof(LPFC_MBOXQ_t));
+ 	mb->mbxCommand = MBX_KILL_BOARD;
+ 	mb->mbxOwner = OWN_HOST;
+-	return;
+ }
+ 
+ /**
+@@ -1485,8 +1465,6 @@ lpfc_mbox_put(struct lpfc_hba * phba, LPFC_MBOXQ_t * mbq)
+ 	list_add_tail(&mbq->list, &psli->mboxq);
+ 
+ 	psli->mboxq_cnt++;
+-
+-	return;
+ }
+ 
+ /**
+@@ -1551,7 +1529,6 @@ lpfc_mbox_cmpl_put(struct lpfc_hba *phba, LPFC_MBOXQ_t *mbq)
+ 	spin_lock_irqsave(&phba->hbalock, iflag);
+ 	__lpfc_mbox_cmpl_put(phba, mbq);
+ 	spin_unlock_irqrestore(&phba->hbalock, iflag);
+-	return;
+ }
+ 
+ /**
+@@ -2100,7 +2077,6 @@ lpfc_request_features(struct lpfc_hba *phba, struct lpfcMboxq *mboxq)
+ 		bf_set(lpfc_mbx_rq_ftr_rq_iaab, &mboxq->u.mqe.un.req_ftrs, 0);
+ 		bf_set(lpfc_mbx_rq_ftr_rq_iaar, &mboxq->u.mqe.un.req_ftrs, 0);
+ 	}
+-	return;
+ }
+ 
+ /**
+-- 
+2.25.1
 
-> -   Device-centric (Jason) vs. group-centric (David) uAPI. David is not fully
->     convinced yet. Based on discussion v2 will continue to have ioasid uAPI
->     being device-centric (but it's fine for vfio to be group-centric). A new
->     section will be added to elaborate this part;
 
-<...>
-
-> (Adopted suggestions)
-
-<...>
-
-> -   (Jason) Addition of device label allows per-device capability/format 
->     check before IOASIDs are created. This leads to another major uAPI 
->     change in v2 - specify format info when creating an IOASID (mapping 
->     protocol, nesting, coherent, etc.). User is expected to check per-device 
->     format and then set proper format for IOASID upon to-be-attached 
->     device;
-
-Sorry for my naive question, I still didn't read all v1 thread and maybe
-the answer is already written, but will ask anyway.
-
-Doesn't this adopted suggestion to allow device-specific configuration
-actually means that uAPI should be device-centric?
-
-User already needs to be aware of device, configure it explicitly, maybe
-gracefully clean it later, it looks like not so much left to be group-centric.
-
-Thanks
