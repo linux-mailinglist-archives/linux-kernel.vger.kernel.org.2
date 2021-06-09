@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2A93A1BA0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2D43A1B99
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbhFIRVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:21:43 -0400
-Received: from gate.crashing.org ([63.228.1.57]:44663 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231290AbhFIRVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:21:41 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 159HELK2003025;
-        Wed, 9 Jun 2021 12:14:21 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 159HEJl9003023;
-        Wed, 9 Jun 2021 12:14:19 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Wed, 9 Jun 2021 12:14:19 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexander Monakov <amonakov@ispras.ru>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210609171419.GI18427@gate.crashing.org>
-References: <alpine.LNX.2.20.13.2106070956310.7184@monopod.intra.ispras.ru> <CANpmjNMwq6ENUtBunP-rw9ZSrJvZnQw18rQ47U3JuqPEQZsaXA@mail.gmail.com> <20210607152806.GS4397@paulmck-ThinkPad-P17-Gen-1> <YL5Risa6sFgnvvnG@elver.google.com> <CANpmjNNtDX+eBEpuP9-NgT6RAwHK5OgbQHT9b+8LZQJtwWpvPg@mail.gmail.com> <YL9TEqealhxBBhoS@hirez.programming.kicks-ass.net> <20210608152851.GX18427@gate.crashing.org> <CANpmjNPJaDT4vBqkTw8XaRfKgDuwh71qmrvNfq-vx-Zyp4ugNg@mail.gmail.com> <20210609153133.GF18427@gate.crashing.org> <CANpmjNPq3NBhi_pFpNd6TwXOVjw0LE2NuQ63dWZrYSfEet3ChQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNPq3NBhi_pFpNd6TwXOVjw0LE2NuQ63dWZrYSfEet3ChQ@mail.gmail.com>
-User-Agent: Mutt/1.4.2.3i
+        id S231382AbhFIRTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:19:48 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49868 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230152AbhFIRTr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 13:19:47 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lr1ps-00006c-7i; Wed, 09 Jun 2021 17:17:48 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net: phy: realtek: net: Fix less than zero comparison of a u16
+Date:   Wed,  9 Jun 2021 18:17:48 +0100
+Message-Id: <20210609171748.298027-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 06:13:00PM +0200, Marco Elver wrote:
-> On Wed, 9 Jun 2021 at 17:33, Segher Boessenkool
-> <segher@kernel.crashing.org> wrote:
-> [...]
-> > > An alternative design would be to use a statement attribute to only
-> > > enforce (C) ("__attribute__((mustcontrol))" ?).
-> >
-> > Statement attributes only exist for empty statements.  It is unclear how
-> > (and if!) we could support it for general statements.
-> 
-> Statement attributes can apply to anything -- Clang has had them apply
-> to non-empty statements for a while.
+From: Colin Ian King <colin.king@canonical.com>
 
-First off, it is not GCC's problem if LLVM decides to use a GCC
-extension in some non-compatible way.
+The comparisons of the u16 values priv->phycr1 and priv->phycr2 to less
+than zero always false because they are unsigned. Fix this by using an
+int for the assignment and less than zero check.
 
-It might be possible to extend statement attributes to arbitrary
-statement expressions, or some subset of statement expressions, but that
-then has to be written down as well; it isn't obvious at all what this
-woould do.
+Addresses-Coverity: ("Unsigned compared against 0")
+Fixes: 0a4355c2b7f8 ("net: phy: realtek: add dt property to disable CLKOUT clock")
+Fixes: d90db36a9e74 ("net: phy: realtek: add dt property to enable ALDPS mode")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/phy/realtek.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-> In fact, since C++20 [3], GCC will have to support statement
-> attributes on non-empty statements, so presumably the parsing logic
-> should already be there.
-> [3] https://en.cppreference.com/w/cpp/language/attributes/likely
+diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
+index 1b844a06fe72..11be60333fa8 100644
+--- a/drivers/net/phy/realtek.c
++++ b/drivers/net/phy/realtek.c
+@@ -94,24 +94,25 @@ static int rtl821x_probe(struct phy_device *phydev)
+ {
+ 	struct device *dev = &phydev->mdio.dev;
+ 	struct rtl821x_priv *priv;
++	int ret;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	priv->phycr1 = phy_read_paged(phydev, 0xa43, RTL8211F_PHYCR1);
+-	if (priv->phycr1 < 0)
+-		return priv->phycr1;
++	ret = phy_read_paged(phydev, 0xa43, RTL8211F_PHYCR1);
++	if (ret < 0)
++		return ret;
+ 
+-	priv->phycr1 &= (RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_XTAL_OFF);
++	priv->phycr1 = ret & (RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_XTAL_OFF);
+ 	if (of_property_read_bool(dev->of_node, "realtek,aldps-enable"))
+ 		priv->phycr1 |= RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_XTAL_OFF;
+ 
+-	priv->phycr2 = phy_read_paged(phydev, 0xa43, RTL8211F_PHYCR2);
+-	if (priv->phycr2 < 0)
+-		return priv->phycr2;
++	ret = phy_read_paged(phydev, 0xa43, RTL8211F_PHYCR2);
++	if (ret < 0)
++		return ret;
+ 
+-	priv->phycr2 &= RTL8211F_CLKOUT_EN;
++	priv->phycr2 = ret & RTL8211F_CLKOUT_EN;
+ 	if (of_property_read_bool(dev->of_node, "realtek,clkout-disable"))
+ 		priv->phycr2 &= ~RTL8211F_CLKOUT_EN;
+ 
+-- 
+2.31.1
 
-C++ attributes have different syntax *and semantics*.  With GCC
-attributes it isn't clear what statement something belongs to (a
-statement can contain a statement after all).
-
-C++ requires all unknown attributes to be ignored without error, so can
-this be useful at all here?
-
-> > Some new builtin seems to fit the requirements better?  I haven't looked
-> > too closely though.
-> 
-> I had a longer discussion with someone offline about it, and the
-> problem with a builtin is similar to the "memory_order_consume
-> implementation problem" -- you might have an expression that uses the
-> builtin in some function without any control, and merely returns the
-> result of the expression as a result. If that function is in another
-> compilation unit, it then becomes difficult to propagate this
-> information without somehow making it part of the type system.
-> Therefore, by using a statement attribute on conditional control
-> statements, we do not even have this problem. It seems cleaner
-> syntactically than having a __builtin_() that is either approximate,
-> or gives an error if used in the wrong context.
-
-You would use the builtin to mark exactly where you are making the
-control dependency.
-
-(And what is a "conditional control statement"?  Yes of course I can
-imagine things, but that is not good enough at all).
-
-> Hence the suggestion for a very simple attribute, which also
-> side-steps this problem.
-
-And introduces many more problems :-(
-
-
-Segher
