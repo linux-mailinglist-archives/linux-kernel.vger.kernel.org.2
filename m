@@ -2,98 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3749F3A1DB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 21:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4981E3A1DAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 21:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhFIT3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 15:29:50 -0400
-Received: from mail-pj1-f51.google.com ([209.85.216.51]:52823 "EHLO
-        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhFIT3t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 15:29:49 -0400
-Received: by mail-pj1-f51.google.com with SMTP id h16so2077309pjv.2;
-        Wed, 09 Jun 2021 12:27:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=gIB70I/Qv1t3ok3fK1L/yr9HuQT1wjAnBShvqfBtD/c=;
-        b=nJxAAfk6cS48UhD59VHVmQ+Mw9o1nQnI+jrsQFbPACq4d/9ih7LiH1pjdIn1VPePVu
-         CNBjITuwsGI7BxCv/Lx/u7z6EPfudl+qxG1/sBmHuF+EOHU46ic/0GVMRf0EdEv4pYMS
-         PBZdCi3L1+XbJe2N3rOo83yxhqqlcdi1q7GMBOpGIs2mFnYmOIKmph7vpZO65sZhBYUl
-         y/2h+EyyJ4bEr/+fC3VcyEqW7ChjZNHad+uG0cDum/7bQ/4aeGmsJcqzLCah/LBetCG2
-         /yMHam5uxrcdk3yt/wsSDRE9D2OkTEdj+U28msAMyFCsZF1/W2ExLtXvmlObWpYydka6
-         69IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=gIB70I/Qv1t3ok3fK1L/yr9HuQT1wjAnBShvqfBtD/c=;
-        b=GhiZxWl0+VIPvXEgLFY0uflb6OwI0mckQLbEdESULu0+dMzNIqjMu6HfeFJrKgxA+f
-         729irWf8wpa63k8OLLvn2Jy1zQpvV8G1/5p81M578QXdmd86m+OylGd1l5swPyCifosx
-         hT3eChq9dIe7mXT/gtH1Rr3KBs4Thl6byeAsAOgZ6lpoXSoX5AFsCmyvWb7twFpWH1TG
-         SojiprOV3RKxY90cRVGaafWLvANo7Pi5Pj4L1zRDCArm1eErydJtrz6PFD3YoZy/2c1B
-         2VFjgd6yUYZKC4cDiIXFEtSR/kre8Ju81Nu0gL3U65lWVwMt1a9H6Ak2j+vj0rvpXRAX
-         lcNQ==
-X-Gm-Message-State: AOAM531v94HhR755WzYY9+ui44QpnmG79gTos6+eSNuuIyb+rCgVyS/Q
-        OoKiHk49nYrmgLMHrXuBu+k=
-X-Google-Smtp-Source: ABdhPJyvEtegHBtUWmfBRnD/EDr9PdBnqqyw9XKy5k6kt7m9m0Xj3YbyccLmNoiKHOWTCDjTgHT9qg==
-X-Received: by 2002:a17:902:265:b029:fa:9420:d2fd with SMTP id 92-20020a1709020265b02900fa9420d2fdmr1223767plc.39.1623266798486;
-        Wed, 09 Jun 2021 12:26:38 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:459f:1243:2a64:9384? ([2001:df0:0:200c:459f:1243:2a64:9384])
-        by smtp.gmail.com with ESMTPSA id ge13sm5719812pjb.2.2021.06.09.12.26.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 12:26:37 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Use libata platform drivers to replace deprecated
- m68k IDE drivers
-To:     Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Finn Thain <fthain@linux-m68k.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Joshua Thompson <funaho@jurai.org>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        Richard Zidlicky <rz@linux-m68k.org>
-References: <cover.1623131194.git.fthain@linux-m68k.org>
- <YL+AqIEPjMgG519L@infradead.org>
- <d3c70f7a-368a-ad9a-6575-8289234b0ce0@kernel.dk>
- <36f7519d-698f-1284-551a-0dbd82e2a0d8@gmail.com>
- <aca5ed6b-f54d-1a3e-b905-920be85d51d8@kernel.dk>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <aeaa343c-a656-6d72-9806-3e2a4a070b5b@gmail.com>
-Date:   Thu, 10 Jun 2021 07:26:30 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229705AbhFIT2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 15:28:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229535AbhFIT2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 15:28:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E746361403;
+        Wed,  9 Jun 2021 19:26:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623266813;
+        bh=96jmhnDdYUYzWGwtTwwo8iS1dyMXAQKNuE9fkGS8Jp8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QEeuED2qUENZ5eKaeFZq3umwdELglPNxR3cRotVCa4Oo5IP/ZaglO7x6AD14MdWNU
+         8P+AYdzyEBcvxcaHeIvg/rM0p4CZYGk+XjjYgkfaDGm9Q64vn0dI5/qoGoZPWj3sFo
+         UpaKQZNB1EXW8aRdLzNc99VG1fKuOyjVLpznxdXOG3Cb4wdW+veNCumvP7KFB7CAzL
+         ancWjMbJ8bDn92OnLrBC915Ctc8fDuC8IDnv0YDTBFxBat3821kieMJBgWQmh3qizb
+         uP5GNw2QKtQvWtLKsQCvAPizgfhDcFOZLRRbB0kBM2YQ8yXfUN144FEm+NBbgSh3ZX
+         GveVNpCQUHIpA==
+Received: by mail-qk1-f177.google.com with SMTP id i67so24848139qkc.4;
+        Wed, 09 Jun 2021 12:26:53 -0700 (PDT)
+X-Gm-Message-State: AOAM530tSjQ5CL2CKM1N49ZhUuwK+OBZJRZrDc35FdEAkXZ9Nmz8G2ig
+        KABHwpVOzfcn7w5EpWmkVaUw0NdzdUy9AL6WoQ==
+X-Google-Smtp-Source: ABdhPJwIF2VAc3W3tDLHATbFdB2v0fwn3EwAFw2Dy6hysy99DIc0dA4ocPbE/DdU1zN+5F7yffjXWx/yn9jFgvfWsnM=
+X-Received: by 2002:a37:947:: with SMTP id 68mr1188220qkj.364.1623266812990;
+ Wed, 09 Jun 2021 12:26:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <aca5ed6b-f54d-1a3e-b905-920be85d51d8@kernel.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210609080112.1753221-1-miquel.raynal@bootlin.com>
+ <20210609080112.1753221-10-miquel.raynal@bootlin.com> <e431d594-05cd-27b8-fcbe-11c310b99cd3@canonical.com>
+ <20210609153410.53eadf8e@xps13> <77db74d3-c44a-6aa3-1b61-f6bed565fa04@canonical.com>
+ <20210609161128.16cdf5ec@xps13> <32c7adf2-6f4e-ef2d-a137-a9674f9e6baa@canonical.com>
+In-Reply-To: <32c7adf2-6f4e-ef2d-a137-a9674f9e6baa@canonical.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 9 Jun 2021 14:26:41 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJW6Nt5h_gpfd5OgaTjSQGnrH2mCdwDeWvsnq1y_3uV=A@mail.gmail.com>
+Message-ID: <CAL_JsqJW6Nt5h_gpfd5OgaTjSQGnrH2mCdwDeWvsnq1y_3uV=A@mail.gmail.com>
+Subject: Re: [PATCH v22 09/18] dt-binding: memory: pl353-smc: Convert to yaml
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        devicetree@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Naga Sureshkumar Relli <nagasure@xilinx.com>,
+        Amit Kumar Mahapatra <akumarma@xilinx.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Srinivas Goud <sgoud@xilinx.com>,
+        Siva Durga Prasad Paladugu <sivadur@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
-
-it's this one:
-
-https://lore.kernel.org/linux-m68k/1623223322-4242-1-git-send-email-schmitzmic@gmail.com/
-
-But see my reply to Finn's mail - my patch is entirely orthogonal to 
-his, and simply fixes a long standing issue that has recently surfaced 
-with Finn's efforts to unify Atari and Q40 IDE drivers.
-
-Cheers,
-
-     Michael
-
-On 10/06/21 3:23 am, Jens Axboe wrote:
-> On 6/8/21 3:50 PM, Michael Schmitz wrote:
->> Hi Jens,
->>
->> please note that Finn's patch depends on one of mine currently under
->> review. Without that one, Q40 support may break in certain cases.
-> Can you point me at it?
+On Wed, Jun 9, 2021 at 10:26 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 >
+> On 09/06/2021 16:11, Miquel Raynal wrote:
+> > Hi Krzysztof, Rob,
+> >
+> > Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote on Wed, 9
+> > Jun 2021 15:54:19 +0200:
+> >
+> >> On 09/06/2021 15:34, Miquel Raynal wrote:
+> >>> Hi Krzysztof,
+> >>>
+> >>> Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote on Wed, 9
+> >>> Jun 2021 14:12:40 +0200:
+> >>>
+> >>>> On 09/06/2021 10:01, Miquel Raynal wrote:
+> >>>>> Convert this binding file to yaml schema.
+> >>>>>
+> >>>>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> >>>>> ---
+> >>>>>  .../memory-controllers/arm,pl353-smc.yaml     | 133 ++++++++++++++++++
+> >>>>>  .../bindings/memory-controllers/pl353-smc.txt |  45 ------
+> >>>>>  2 files changed, 133 insertions(+), 45 deletions(-)
+> >>>>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
+> >>>>>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+> >>>>>
+> >>>>> diff --git a/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml b/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
+> >>>>> new file mode 100644
+> >>>>> index 000000000000..1de6f87d4986
+> >>>>> --- /dev/null
+> >>>>> +++ b/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
+> >>>>> @@ -0,0 +1,133 @@
+> >>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >>>>> +%YAML 1.2
+> >>>>> +---
+> >>>>> +$id: http://devicetree.org/schemas/memory-controllers/arm,pl353-smc.yaml#
+> >>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >>>>> +
+> >>>>> +title: ARM PL353 Static Memory Controller (SMC) device-tree bindings
+> >>>>> +
+> >>>>> +maintainers:
+> >>>>> +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> >>>>> +  - Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+> >>>>> +
+> >>>>> +description:
+> >>>>> +  The PL353 Static Memory Controller is a bus where you can connect two kinds
+> >>>>> +  of memory interfaces, which are NAND and memory mapped interfaces (such as
+> >>>>> +  SRAM or NOR).
+> >>>>> +
+> >>>>> +# We need a select here so we don't match all nodes with 'arm,primecell'
+> >>>>> +select:
+> >>>>> +  properties:
+> >>>>> +    compatible:
+> >>>>> +      contains:
+> >>>>> +        enum:
+> >>>>> +          - arm,pl353-smc-r2p1
+> >>>>
+> >>>> That's a const... but also I don't get the need for select.
+> >>>
+> >>> I think this is needed to ensure this binding is not enforced against
+> >>> arm,primecell compatible nodes which are not featuring the
+> >>> arm,pl353-smc-r2p1 compatible.
+> >>
+> >> Which seems to be result of unusual compatible match, so once you
+> >> convert to regular match, this select is not needed.
+> >
+> > I don't think so, I received a hint from Rob some time ago, he told
+> > me to add this additional select line as in all other arm,primecell
+> > binding.
+> >
+> > Rob, any additional info regarding this?
+>
+> Hmm, I think you' are right. Since arm,primecell is used in many other
+> compatibles (including ones without schema yet), the select is needed.
+>
+> In such case the select can be only:
+>
+> select:
+>   properties:
+>     compatible:
+>       contains:
+>         const: arm,pl353-smc-r2p1
+
+The above is true if there's no 'compatible'. So you need 'required: [
+compatible ]' as well.
+
+Rob
