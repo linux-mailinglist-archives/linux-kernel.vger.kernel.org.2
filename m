@@ -2,103 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1A03A1E59
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C973A1E4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhFIUyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 16:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhFIUyj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:54:39 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B11C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 13:52:27 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id j2so12562767lfg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:52:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XArs7dfKd1jb8KVECknZ5tHK7pCuauc7kNtOU0BuGyQ=;
-        b=d2c1kWEJ0AgEydECoXutpmofFDQXFyVtEZ9eA5D5JURcxb31tlEXBtljToI9e7Yp4S
-         nnIcfeTgiuCVJKge24fWKsfVzi+rcZe0APlOb5EAnE+y2tUwASVAyuMnEM1BsjngaF8O
-         6ZbYHAR2LSXCzqR6zx26XbzDZ2HReHBMouhrY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XArs7dfKd1jb8KVECknZ5tHK7pCuauc7kNtOU0BuGyQ=;
-        b=qmKbGEldLgle+uViy1PDPX8pRHOmrc8hiUEluqxI+4QMs0KzOurVBWMPTdoovZ+r8T
-         SZvXZY9CVon8JaN9R0vFYwPZTbhQBTBJTDV/H4BRNxhIEvLYm4+YiFWRRugfMrbcGq9c
-         /TVNJdmsR9i80Q2ZQEnDRNDe6dRk8Q91zEuAVHpQ+5Xamic6qIljYYsmdY1RDi4rb+cl
-         lUsntle3zKywb2W1Uhlz5b2jNPLWIffh5F1fX6w/rJhg1hFGO5hmI0zp83ruHKY7FWma
-         buESUmS5qbawbA7tMuJMlXKwp/7D2RD/450N897Gyrh8vDTGyXLDPyWYVzIiMVpLJOpH
-         j/yw==
-X-Gm-Message-State: AOAM533BvZwJwAlYgedu/LuMDhUIgWyvsJybqzK3fO6cZvWDgNtvtASm
-        ugHTzs6oezhkTbi8ILwnSTpfY0Xy5R+mNMij2WM=
-X-Google-Smtp-Source: ABdhPJwkuhEefK+X2bKKyCcGkJyn6WbSMIqHwWaSvp2Irx5a/2mJ+tUnERAXw9JLCxDdQQBKUXrhlg==
-X-Received: by 2002:a19:4f1a:: with SMTP id d26mr820535lfb.265.1623271945153;
-        Wed, 09 Jun 2021 13:52:25 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id t3sm90744lfl.78.2021.06.09.13.52.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 13:52:24 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id f30so40202597lfj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:52:24 -0700 (PDT)
-X-Received: by 2002:ac2:43b9:: with SMTP id t25mr826068lfl.253.1623271944108;
- Wed, 09 Jun 2021 13:52:24 -0700 (PDT)
+        id S229689AbhFIUwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:52:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhFIUwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 16:52:17 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02DF86054E;
+        Wed,  9 Jun 2021 20:50:20 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 21:52:14 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     peda@axentia.se, lars@metafoo.de, pmeerw@pmeerw.net,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v2 8/8] dt-bindings: iio: afe: add binding for
+ temperature-sense-amplifier
+Message-ID: <20210609215214.7e3be504@jic23-huawei>
+In-Reply-To: <20210607144718.1724413-9-liambeguin@gmail.com>
+References: <20210607144718.1724413-1-liambeguin@gmail.com>
+        <20210607144718.1724413-9-liambeguin@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
- <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com>
- <87h7i694ij.fsf_-_@disp2133> <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
- <8735tq9332.fsf@disp2133>
-In-Reply-To: <8735tq9332.fsf@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 9 Jun 2021 13:52:07 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgXROFSDa6gHei4fNmdU=VppqnBThdCraNpuirriSyKQA@mail.gmail.com>
-Message-ID: <CAHk-=wgXROFSDa6gHei4fNmdU=VppqnBThdCraNpuirriSyKQA@mail.gmail.com>
-Subject: Re: [RFC] coredump: Do not interrupt dump for TIF_NOTIFY_SIGNAL
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 1:48 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> It looks like it would need to be:
->
-> static bool dump_interrupted(void)
-> {
->         return fatal_signal_pending() || freezing();
-> }
->
-> As the original implementation of dump_interrupted 528f827ee0bb
-> ("coredump: introduce dump_interrupted()") is deliberately allowing the
-> freezer to terminate the core dumps to allow for reliable system
-> suspend.
+On Mon,  7 Jun 2021 10:47:18 -0400
+Liam Beguin <liambeguin@gmail.com> wrote:
 
-Ack. That would seem to be the right conversion to do.
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> An ADC is often used to measure other quantities indirectly. This
+> binding describe such a use case, the measurement of a temperature
+> through an analog front end connected to a voltage channel.
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> ---
+>  .../iio/afe/temperature-sense-amplifier.yaml  | 57 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 58 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
+> new file mode 100644
+> index 000000000000..08f97f052a91
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/afe/temperature-sense-amplifier.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Temperature Sense Amplifier
+> +
+> +maintainers:
+> +  - Liam Beguin <lvb@xiphos.com>
+> +
+> +description: |
+> +  When an io-channel measures the output voltage of a temperature analog front
+> +  end such as an RTD (resistance thermometer) or a temperature to current
+> +  sensor, the interesting measurement is almost always the corresponding
+> +  temperature, not the voltage output. This binding describes such a circuit.
 
-Now, I'm not sure if system suspend really should abort a core dump,
-but it's clearly what we have done in the past.
+Perhaps add something about this only covering the linear cases...
 
-Maybe we'd like to remove that "|| freezing()" at some point, but
-that's a separate discussion, I think. At least having it in that form
-makes it all very explicit, instead of the current very subtle exact
-interaction with the TIF_NOTIFY_SIGNAL bit (that has other meanings).
+> +
+> +properties:
+> +  compatible:
+> +    const: temperature-sense-amplifier
+> +
+> +  io-channels:
+> +    maxItems: 1
+> +    description: |
+> +      Channel node of a voltage io-channel.
+> +
+> +  '#io-channel-cells':
+> +    const: 1
+> +
+> +  sense-gain-mult:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: Amplifier gain multiplier. The default is <1>.
+> +
+> +  sense-gain-div:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: Amplifier gain divider. The default is <1>.
+> +
+> +  sense-offset-millicelsius:
+> +    description: Amplifier offset. The default is <0>.
 
-Hmm?
+Whilst it may seem obvious I'd like to see a statement of
+how these are used somewhere in here.
 
-             Linus
+   temp_celcius = voltage * gain-mult / gain-div + offset
+
+Mainly because those familiar with the IIO usage of offset
+would expect
+(voltage + offset) * gain-mult/gain-div 
+
+which doesn't make sense for this device but might leave
+people confused!
+
+> +
+> +additionalProperties: false
+> +required:
+> +  - compatible
+> +  - io-channels
+> +
+> +examples:
+> +  - |
+> +    pt1000_1: temperature-sensor {
+> +        compatible = "temperature-sense-amplifier";
+> +        #io-channel-cells = <1>;
+> +        io-channels = <&temp_adc 3>;
+> +
+> +        sense-gain-mult = <1000000>;
+> +        sense-gain-div = <3908>;
+> +        sense-offset-millicelsius = <(-255885)>;
+> +    };
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e679d422b472..4f7b4ee9f19b 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8887,6 +8887,7 @@ L:	linux-iio@vger.kernel.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/iio/afe/current-sense-amplifier.yaml
+>  F:	Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
+> +F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
+>  F:	Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
+>  F:	drivers/iio/afe/iio-rescale.c
+>  
+
