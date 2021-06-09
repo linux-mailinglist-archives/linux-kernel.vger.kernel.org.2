@@ -2,201 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BEA3A0EBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249C83A0EBF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237665AbhFIIaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232333AbhFIIaP (ORCPT
+        id S237570AbhFIIc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:32:59 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:22171 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232333AbhFIIc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:30:15 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F37FC06175F;
-        Wed,  9 Jun 2021 01:28:21 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso3219697pjx.1;
-        Wed, 09 Jun 2021 01:28:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=puGwaOMDT26719cQFE7/Yjic9yAlIAlsYvRcNj+B5nU=;
-        b=BZ4TybxfQj4ufSrSUmRlBSZpJgceWCA7FM7IAgOG2x74ABWeWB+Sj7LoXEnnIS1bZI
-         7TqLriNnLkeDalM1/nkxCX1NSrDQrsB4Z5CxsESxAQMUD9FoE51E64h6XJAE9am9Zdch
-         8OHOezAljyLgPURvrgg8hDcu+DzdgiMIJvr3yyU25lUhuAhEwKMH3l15ShpeuQBdwSe3
-         0yM+NxbC1qC0LjQlwgCmBh65z3bAH8qPU7vH1xY8u5RGr8Y7rVBDQTOmi/GOh2HZhA7x
-         JJMThyiFy3RntW0SQx6tA6xKA5EXRhbHSQ6hHjEnASssA3REtoTgCOuddVlgh/B48gBC
-         wBkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=puGwaOMDT26719cQFE7/Yjic9yAlIAlsYvRcNj+B5nU=;
-        b=Q5UPKuxYPAqVFtDzi6a01GRxf2/L59CQlqQk5sY5bRR7Km7h0SaH6stVX54M7hbGAH
-         5ZNlrwq2q8z4dv0n8HfbQU8/G7NfvxVhBeXmj7JSQLnCvU3bj5ze1/UcZj5g/k9aeMGj
-         wfDa8cH+6jZpVph7GZD1uoHou+jV1hzXldgOPFA388O/yWFc/NuUf8uw066CtLcjQFAO
-         CBTcQ39PfXsi+w0+e0A6MVFhW5JqCgYQ1zCRrByNJjFzzhRzhIndE69BCvkci3vUFfd1
-         lz6/kH9ClNBYDkAduv3zbOONe/oRoj7txPr1QPSZiS604Ra0wnpzAYrQtB81mBrDzmf8
-         NtEg==
-X-Gm-Message-State: AOAM533E2vw+OhEGqlF8EMzO4hCCCqSFUIgK+1npOFUB6myu0HNx+Gji
-        HtxgoCTiM3O1QUQKAQ8fIK0=
-X-Google-Smtp-Source: ABdhPJyhu5I84q3D44AwVRdsKNxgLUGoLOqz7ZrLc2Vp/RCdPXk302yCQG0QbUolnPmW9yvqV8MjHQ==
-X-Received: by 2002:a17:90a:6305:: with SMTP id e5mr9406398pjj.232.1623227300895;
-        Wed, 09 Jun 2021 01:28:20 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id q24sm13728484pgk.32.2021.06.09.01.28.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 01:28:19 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 17:28:10 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     jic23@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        kernel@pengutronix.de, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, david@lechnology.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de, jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v11 26/33] counter: Add character device interface
-Message-ID: <YMB7mq0LHqmyAAzb@shinobu>
-References: <cover.1623201081.git.vilhelm.gray@gmail.com>
- <2b9526ab7f2de91bb867cbd3b12552c77c00b655.1623201082.git.vilhelm.gray@gmail.com>
- <20210609080708.GL10983@kadam>
+        Wed, 9 Jun 2021 04:32:58 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id D449924000F;
+        Wed,  9 Jun 2021 08:31:01 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 10:31:01 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: at91: fix count of periph clocks passed to
+ pmc_data_allocate
+Message-ID: <YMB8RYhCY4WVQXg+@piout.net>
+References: <20210609080145.44226-1-clement.leger@bootlin.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9wrHIhMj6VuHeXH8"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210609080708.GL10983@kadam>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210609080145.44226-1-clement.leger@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+hi,
 
---9wrHIhMj6VuHeXH8
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Subject should have been:
+clk: at91: sama5d2: fix count of periph clocks passed to pmc_data_allocate
 
-On Wed, Jun 09, 2021 at 11:07:08AM +0300, Dan Carpenter wrote:
-> On Wed, Jun 09, 2021 at 10:31:29AM +0900, William Breathitt Gray wrote:
-> > +static int counter_set_event_node(struct counter_device *const counter,
-> > +				  struct counter_watch *const watch,
-> > +				  const struct counter_comp_node *const cfg)
-> > +{
-> > +	struct counter_event_node *event_node;
-> > +	struct counter_comp_node *comp_node;
-> > +
->=20
-> The caller should be holding the counter->events_list_lock lock but it's
-> not.
 
-Hi Dan,
 
-The counter_set_event_node() function doesn't access or modify
-counter->events_list (it works on counter->next_events_list) so holding
-the counter->events_list_lock here isn't necessary.
+On 09/06/2021 10:01:44+0200, Clément Léger wrote:
+> When allocating clk_hw structure, only the periph32 clocks are considered.
+> Since sama5d2_periphck are also added to the phws there is currently an
+> out of bound write. Fix this by adding the count of periphck to periph32ck.
+> 
+> Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+Fixes: a2038077de9a ("clk: at91: add sama5d2 PMC driver")
 
-> > +	/* Search for event in the list */
-> > +	list_for_each_entry(event_node, &counter->next_events_list, l)
-> > +		if (event_node->event =3D=3D watch->event &&
-> > +		    event_node->channel =3D=3D watch->channel)
-> > +			break;
-> > +
-> > +	/* If event is not already in the list */
-> > +	if (&event_node->l =3D=3D &counter->next_events_list) {
-> > +		/* Allocate new event node */
-> > +		event_node =3D kmalloc(sizeof(*event_node), GFP_ATOMIC);
-> > +		if (!event_node)
-> > +			return -ENOMEM;
-> > +
-> > +		/* Configure event node and add to the list */
-> > +		event_node->event =3D watch->event;
-> > +		event_node->channel =3D watch->channel;
-> > +		INIT_LIST_HEAD(&event_node->comp_list);
-> > +		list_add(&event_node->l, &counter->next_events_list);
-> > +	}
-> > +
-> > +	/* Check if component watch has already been set before */
-> > +	list_for_each_entry(comp_node, &event_node->comp_list, l)
-> > +		if (comp_node->parent =3D=3D cfg->parent &&
-> > +		    comp_node->comp.count_u8_read =3D=3D cfg->comp.count_u8_read)
-> > +			return -EINVAL;
-> > +
-> > +	/* Allocate component node */
-> > +	comp_node =3D kmalloc(sizeof(*comp_node), GFP_ATOMIC);
-> > +	if (!comp_node) {
-> > +		/* Free event node if no one else is watching */
-> > +		if (list_empty(&event_node->comp_list)) {
-> > +			list_del(&event_node->l);
-> > +			kfree(event_node);
-> > +		}
-> > +		return -ENOMEM;
-> > +	}
-> > +	*comp_node =3D *cfg;
-> > +
-> > +	/* Add component node to event node */
-> > +	list_add_tail(&comp_node->l, &event_node->comp_list);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int counter_disable_events(struct counter_device *const counter)
-> > +{
-> > +	unsigned long flags;
-> > +	int err =3D 0;
-> > +
-> > +	spin_lock_irqsave(&counter->events_list_lock, flags);
-> > +
-> > +	counter_events_list_free(&counter->events_list);
-> > +
-> > +	if (counter->ops->events_configure)
-> > +		err =3D counter->ops->events_configure(counter);
-> > +
-> > +	spin_unlock_irqrestore(&counter->events_list_lock, flags);
-> > +
-> > +	counter_events_list_free(&counter->next_events_list);
-> > +
-> > +	return err;
-> > +}
-> > +
-> > +static int counter_add_watch(struct counter_device *const counter,
-> > +			     const unsigned long arg)
-> > +{
-> > +	void __user *const uwatch =3D (void __user *)arg;
-> > +	struct counter_watch watch;
-> > +	struct counter_comp_node comp_node =3D {0};
->=20
-> Always use =3D {};.  It's the new hotness, and it avoids a Sparse warning
-> for using 0 instead of NULL.  #IDidNotTest #CouldBeWrongAboutSparse
+> ---
+>  drivers/clk/at91/sama5d2.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/at91/sama5d2.c b/drivers/clk/at91/sama5d2.c
+> index 3d1f78176c3e..663b73a032ee 100644
+> --- a/drivers/clk/at91/sama5d2.c
+> +++ b/drivers/clk/at91/sama5d2.c
+> @@ -170,7 +170,7 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
+>  
+>  	sama5d2_pmc = pmc_data_allocate(PMC_AUDIOPLLCK + 1,
+>  					nck(sama5d2_systemck),
+> -					nck(sama5d2_periph32ck),
+> +					nck(sama5d2_periphck) + nck(sama5d2_periph32ck),
+>  					nck(sama5d2_gck), 3);
+>  	if (!sama5d2_pmc)
+>  		return;
+> -- 
+> 2.32.0
+> 
 
-Thanks for the heads-up! I think this is the only patch where I have
-this, so I'll hold off submitting a v12 for just this change unless
-something else comes up with this patchset (I can fix this spare warning
-in a subsequent patch).
-
-William Breathitt Gray
-
---9wrHIhMj6VuHeXH8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmDAe4gACgkQhvpINdm7
-VJL7BBAA3+1/yr5bhewW4LafcCUbzU1wyuT5jrmB1Ru3YTfniv9LBoq0EZCMkI+e
-PzR5jkXM5cZK2CBE/byhsJPBQvJ1C0pNGi4jUDBbFPElYpkEB8cAOhskimabCkGF
-pWghRQp5KQzl3GSgB+Jak/5Rt8IqWGtQ+8oK3hpP6oj5EFeXRO6NxgmjiUjrpEAp
-DsFvizy3KVdLlQjfq1yxYlXkaz54zzndsXyWAw9LbGMs6ioRvmiFsqgK7beW6i4a
-V9U9CPeda6HCeJ3nkPIorclXXc3m5OwbY2FuAewFVpy2fInsSeGjpcnfBIs1onMl
-zkdIEKcjOi1v9g8IXdn5lgW8OPXc1IjaF1LZGQ939Iu0oiwYNC+g6ie/nQwM1ZqT
-BJlurA8LdpNo+baCWNTZdPAAVQ6GMNCLilYUJmG99j8s7PzdAU12l/e1kjzv/M0O
-wagcrNhCdkSSb0FyQjGc5CrQdNlpVNadk3dWhbO0eNEDJszZObBQRQzfe0k8lQPx
-pKTpkA1q/R+9E0VD/K5IP0xuCIwW5QM6V57uG7EuP5rRRh686FeDeirvFuJXyVpG
-vdWH2keUIRpuxmRd1PvOaA8d/USnzfXhoJyYt1vAyeb6HO8PjQV6zuhTsWzq36kG
-TT925QHbUQH7t7b2/hmrLLPmsDKHwuTyGuW9gh+a3n49cEnqjXM=
-=MpJ2
------END PGP SIGNATURE-----
-
---9wrHIhMj6VuHeXH8--
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
