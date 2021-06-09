@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CD73A09BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AECC3A09B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbhFICBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 22:01:33 -0400
-Received: from m12-17.163.com ([220.181.12.17]:49551 "EHLO m12-17.163.com"
+        id S233267AbhFICAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 22:00:15 -0400
+Received: from mga01.intel.com ([192.55.52.88]:29232 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231389AbhFICBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 22:01:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=rEKYu
-        t1HFRNQ9zBRmnM/SsccPyPDqTPFS/9b9M6eq3M=; b=eY//UsyoV6FqpvFgvAUUx
-        JfJp+Nt+nAMsji6kJAVZ+PXi798z02ajdwPf5F3qmuY7nP75E0WNcOC27pMbkJNb
-        h4eQr3hxVZDQs7025qATawzaVPLXMpKvrZbBySgyr162JYqhs1Hidut1NgBLaPEN
-        xQaEcSn2KKFFjjIRAMzqC0=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp13 (Coremail) with SMTP id EcCowADn7IxiIMBgFE0o6Q--.16349S2;
-        Wed, 09 Jun 2021 09:58:59 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] scsi: lpfc: lpfc_attr: deleted the repeated word
-Date:   Wed,  9 Jun 2021 09:57:57 +0800
-Message-Id: <20210609015757.290870-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S229685AbhFICAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 22:00:14 -0400
+IronPort-SDR: aIXev9uo9voKZ2Rz8fxzOe3O4f5qxZxWSaHHrDcUJRzF9ZcOxTb5ovmwZayXzilUx2AUazqi3s
+ uZFqVvhuTfxg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="226348637"
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="226348637"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 18:58:20 -0700
+IronPort-SDR: KYJW5Refe0V9ltnuDGlVJ6TLopiUWwZYULWIqWG34N4OkvARGXzz0Av7vRHCtdujeOQY9X1fyQ
+ 6/vheDgG7Nyg==
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="482201138"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 18:58:19 -0700
+Date:   Tue, 8 Jun 2021 18:58:19 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geoff Levand <geoff@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        ceph-devel@vger.kernel.org
+Subject: Re: [PATCH 14/16] block: use memcpy_from_bvec in __blk_queue_bounce
+Message-ID: <20210609015819.GU3697498@iweiny-DESK2.sc.intel.com>
+References: <20210608160603.1535935-1-hch@lst.de>
+ <20210608160603.1535935-15-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowADn7IxiIMBgFE0o6Q--.16349S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tr4kGr15KFWxCF4rXrW3Awb_yoW8tw13pa
-        93Gay0yrsFgF97tr43Zr4kZ3W5tw4fKFyjyanFy343uFWrK3y7JFyFkrWYy3sxJF1rJ3ZF
-        yrs2g3srCFWjvFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07b1nY7UUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiqxSsUFUMZwKYUgABs0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608160603.1535935-15-hch@lst.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+On Tue, Jun 08, 2021 at 06:06:01PM +0200, Christoph Hellwig wrote:
+> Rewrite the actual bounce buffering loop in __blk_queue_bounce to that
+> the memcpy_to_bvec helper can be used to perform the data copies.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  block/bounce.c | 21 +++++++--------------
+>  1 file changed, 7 insertions(+), 14 deletions(-)
+> 
+> diff --git a/block/bounce.c b/block/bounce.c
+> index a2fc6326b6c9..b5ad09e07bcf 100644
+> --- a/block/bounce.c
+> +++ b/block/bounce.c
+> @@ -243,24 +243,17 @@ void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig)
+>  	 * because the 'bio' is single-page bvec.
+>  	 */
+>  	for (i = 0, to = bio->bi_io_vec; i < bio->bi_vcnt; to++, i++) {
+> -		struct page *page = to->bv_page;
+> +		struct page *bounce_page;
+>  
+> -		if (!PageHighMem(page))
+> +		if (!PageHighMem(to->bv_page))
+>  			continue;
+>  
+> -		to->bv_page = mempool_alloc(&page_pool, GFP_NOIO);
+> -		inc_zone_page_state(to->bv_page, NR_BOUNCE);
+> +		bounce_page = mempool_alloc(&page_pool, GFP_NOIO);
+> +		inc_zone_page_state(bounce_page, NR_BOUNCE);
+>  
+> -		if (rw == WRITE) {
+> -			char *vto, *vfrom;
+> -
+> -			flush_dcache_page(page);
+> -
+> -			vto = page_address(to->bv_page) + to->bv_offset;
+> -			vfrom = kmap_atomic(page) + to->bv_offset;
+> -			memcpy(vto, vfrom, to->bv_len);
+> -			kunmap_atomic(vfrom);
+> -		}
+> +		if (rw == WRITE)
+> +			memcpy_from_bvec(page_address(bounce_page), to);
 
-deleted the repeated word 'the' in the comments.
+NIT: the fact that the copy is from 'to' makes my head hurt...  But I don't
+see a good way to change that without declaring unnecessary variables...  :-(
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- drivers/scsi/lpfc/lpfc_attr.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+The logic seems right.
 
-diff --git a/drivers/scsi/lpfc/lpfc_attr.c b/drivers/scsi/lpfc/lpfc_attr.c
-index 0975a8b252a0..6bf76576527c 100644
---- a/drivers/scsi/lpfc/lpfc_attr.c
-+++ b/drivers/scsi/lpfc/lpfc_attr.c
-@@ -2255,7 +2255,7 @@ static inline bool lpfc_rangecheck(uint val, uint min, uint max)
- 
- /**
-  * lpfc_enable_bbcr_set: Sets an attribute value.
-- * @phba: pointer the the adapter structure.
-+ * @phba: pointer the adapter structure.
-  * @val: integer attribute value.
-  *
-  * Description:
-@@ -2346,7 +2346,7 @@ lpfc_##attr##_show(struct device *dev, struct device_attribute *attr, \
-  * takes a default argument, a minimum and maximum argument.
-  *
-  * lpfc_##attr##_init: Initializes an attribute.
-- * @phba: pointer the the adapter structure.
-+ * @phba: pointer the adapter structure.
-  * @val: integer attribute value.
-  *
-  * Validates the min and max values then sets the adapter config field
-@@ -2379,7 +2379,7 @@ lpfc_##attr##_init(struct lpfc_hba *phba, uint val) \
-  * into a function with the name lpfc_hba_queue_depth_set
-  *
-  * lpfc_##attr##_set: Sets an attribute value.
-- * @phba: pointer the the adapter structure.
-+ * @phba: pointer the adapter structure.
-  * @val: integer attribute value.
-  *
-  * Description:
-@@ -2508,7 +2508,7 @@ lpfc_##attr##_show(struct device *dev, struct device_attribute *attr, \
-  * lpfc_##attr##_init: validates the min and max values then sets the
-  * adapter config field accordingly, or uses the default if out of range
-  * and prints an error message.
-- * @phba: pointer the the adapter structure.
-+ * @phba: pointer the adapter structure.
-  * @val: integer attribute value.
-  *
-  * Returns:
-@@ -2540,7 +2540,7 @@ lpfc_##attr##_init(struct lpfc_vport *vport, uint val) \
-  * lpfc_##attr##_set: validates the min and max values then sets the
-  * adapter config field if in the valid range. prints error message
-  * and does not set the parameter if invalid.
-- * @phba: pointer the the adapter structure.
-+ * @phba: pointer the adapter structure.
-  * @val:	integer attribute value.
-  *
-  * Returns:
--- 
-2.25.1
+Ira
 
-
+> +		to->bv_page = bounce_page;
+>  	}
+>  
+>  	trace_block_bio_bounce(*bio_orig);
+> -- 
+> 2.30.2
+> 
