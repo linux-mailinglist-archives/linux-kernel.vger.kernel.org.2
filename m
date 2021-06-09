@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EB93A1E2B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBC83A1E2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbhFIUgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 16:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhFIUgF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:36:05 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B9FC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 13:33:56 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id r14so1518512ljd.10
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:33:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HKOE8BadJeo+YL8tRU0iYJhaHWhLziwYQepJorZ98hY=;
-        b=UBP8J6oYchq2ROBkKb/OBl2yhXz9+41fIVP2jys4OwQsSgcG7GA3wC9CyITc1BANel
-         6pUPf1o7H/jAprU3hJI9Orap/rRnTmgpIpJfaXDu+lmLVs+eno55vuWfJKvk061XOrqM
-         lIKlhsHcRIejWytT4LUfn+BysOlyh7R4deQ6Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HKOE8BadJeo+YL8tRU0iYJhaHWhLziwYQepJorZ98hY=;
-        b=GR4ucuq0nvf/uOBsCOCIWGuCQy68DXnoKY2uP/JjNsWVRP56qUFxNLLXhirmWM5Pxz
-         xkn7zRxT1JolYpyJYtUjYdKmL19I8lpe3uK/vV0Xgnp44vs1ZU5dlUSwr5HDhZ9/pBAf
-         /ue4ZzlCdkLHiyjDx89Rha+OYfZSuaxSKF57jUXU+Sjigx8K+x14+iNF+/IWTtjP3hHW
-         bJsb/B8lZJ+i2Aj/7VZeHWW0iTzh9elDznm75l9/2VhiO2RQKun3JvYRRHqrVxEmaXsh
-         WfXERs036rNdy8xsmMM4/tbmTFd2VmRhjkRWcBODUM9S4Zc/s5J7csfVywwbXAFKUSj0
-         B+JA==
-X-Gm-Message-State: AOAM532VoqLtPpTjc0z9wBa4gq22qdCvv6m+oUU7/F0RHfLDwj9Kllcp
-        RVpGW0aI7+Jswo1MWypRIy+gGKAlJgnYjmgokgI=
-X-Google-Smtp-Source: ABdhPJzS6osxQJn+zFl9cwVbI+OqVVG50n6en+WyldiptSTjm9c0dLgoAhzE4nPY3Te3H70xm34Yig==
-X-Received: by 2002:a2e:9544:: with SMTP id t4mr1221957ljh.474.1623270835118;
-        Wed, 09 Jun 2021 13:33:55 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id i124sm86389lfd.62.2021.06.09.13.33.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 13:33:53 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id n17so1570708ljg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:33:52 -0700 (PDT)
-X-Received: by 2002:a2e:9644:: with SMTP id z4mr1178053ljh.507.1623270832349;
- Wed, 09 Jun 2021 13:33:52 -0700 (PDT)
+        id S229689AbhFIUjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:39:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhFIUjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 16:39:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E567F613C7;
+        Wed,  9 Jun 2021 20:37:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623271031;
+        bh=ffSZlhzhbcUaE+U7uXQnWatQL71KPPN6+vezT0av1dA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=B0z+MJbqu2bKrGPpRsSks/CXq0ZpNLHTBjxL3r8jWhDGTI7Ck8KEv4aFs5rvSFKCw
+         yGA88ZpwarmvEg+v+DRh2GaCQ+t5IDN3i4RpOfh9Zm1Y2BI2/rtPsQgiSeJfBqdnm1
+         O4Nr095OtiFF+/T5UmNt7I0X1fYkaG12W9oQGLFmguMRzcylYo721wmUw1ZOADmUp6
+         SNG0Dp7LC3C1+aP5S8gSEsKU9N7vMVZoyZO70wDeaihteLaY5O0jd0frvjORFnQ0eX
+         Cbo3Pzo6LS7lHqGr/l4G80ORFatOUrNGrZq+bgDqLgfCZObZi8iMgWg3AMKsPXkjgL
+         FSFzzu+7SnQ5A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B8BAB5C039E; Wed,  9 Jun 2021 13:37:11 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 13:37:11 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Jiangong.Han" <jiangong.han@windriver.com>
+Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu-scale: change rcu-scale report.
+Message-ID: <20210609203711.GL4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210605070019.30377-1-jiangong.han@windriver.com>
 MIME-Version: 1.0
-References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
- <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com> <87h7i694ij.fsf_-_@disp2133>
-In-Reply-To: <87h7i694ij.fsf_-_@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 9 Jun 2021 13:33:36 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
-Message-ID: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
-Subject: Re: [RFC] coredump: Do not interrupt dump for TIF_NOTIFY_SIGNAL
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210605070019.30377-1-jiangong.han@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 1:17 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
-> In short the coredump code deliberately supports being interrupted by
-> SIGKILL, and depends upon prepare_signal to filter out all other
-> signals.
+On Sat, Jun 05, 2021 at 03:00:19PM +0800, Jiangong.Han wrote:
+> The report on rcu-scale shows there are N grace periods, and gps
+> are listed from 0 to N-1.
+> This commit make writer_n_durations stores the counts of gps,
+> change the listed gps index begin from 1 to N.
+> 
+> From
+>     [ 8306.087880] rcu-scale: writer 0 gps: 133
+>     ......
+>     [ 8307.864630] rcu-scale:    0 writer-duration:     0 44003961
+>     [ 8307.935711] rcu-scale:    0 writer-duration:     1 32003582
+>     ......
+>     [ 8316.472860] rcu-scale:    0 writer-duration:   131 28004391
+>     [ 8316.538498] rcu-scale:    0 writer-duration:   132 27996410
+> 
+> to
+>     [ 8306.087880] rcu-scale: writer 0 gps: 133
+>     ......
+>     [ 8307.864630] rcu-scale:    0 writer-duration:     1 44003961
+>     [ 8307.935711] rcu-scale:    0 writer-duration:     2 32003582
+>     ......
+>     [ 8316.472860] rcu-scale:    0 writer-duration:   132 28004391
+>     [ 8316.538498] rcu-scale:    0 writer-duration:   133 27996410
+> 
+> Signed-off-by: Jiangong.Han <jiangong.han@windriver.com>
 
-Hmm.
+You lost me on this one.  Why is this helpful?  And how does the change
+shown below actually result in the output shown above, given that
+rcu_scale_cleanup() still starts j at zero?
 
-I have to say, that looks like the core reason for the bug: if you
-want to be interrupted by a fatal signal, you shouldn't use
-signal_pending(), you should use fatal_signal_pending().
+							Thanx, Paul
 
-Now, the fact that we haven't cleared TIF_NOTIFY_SIGNAL for the first
-signal is clearly the immediate cause of this, but at the same time I
-really get the feeling that that coredump aborting code should always
-had used fatal_signal_pending().
-
-We do want to be able to abort core-dumps (stuck network filesystems
-is the traditional reason), but the fact that it used signal_pending()
-looks buggy.
-
-In fact, the very comment in that dump_interrupted() function seems to
-acknowledge that signal_pending() is all kinds of silly.
-
-So regardless of the fact that io_uring does seem to have messed up
-this part of signals, I think the fix is not to change
-signal_pending() to task_sigpending(), but to just do what the comment
-suggests we should do.
-
-But also:
-
-> With the io_uring code comes an extra test in signal_pending
-> for TIF_NOTIFY_SIGNAL (which is something about asking a task to run
-> task_work_run).
-
-Jens, is this still relevant? Maybe we can revert that whole series
-now, and make the confusing difference between signal_pending() and
-task_sigpending() go away again?
-
-               Linus
+> ---
+>  kernel/rcu/rcuscale.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index dca51fe9c73f..2cc34a22a506 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -487,7 +487,7 @@ rcu_scale_writer(void *arg)
+>  	if (gp_async) {
+>  		cur_ops->gp_barrier();
+>  	}
+> -	writer_n_durations[me] = i_max;
+> +	writer_n_durations[me] = i_max + 1;
+>  	torture_kthread_stopping("rcu_scale_writer");
+>  	return 0;
+>  }
+> @@ -561,7 +561,7 @@ rcu_scale_cleanup(void)
+>  			wdpp = writer_durations[i];
+>  			if (!wdpp)
+>  				continue;
+> -			for (j = 0; j <= writer_n_durations[i]; j++) {
+> +			for (j = 0; j < writer_n_durations[i]; j++) {
+>  				wdp = &wdpp[j];
+>  				pr_alert("%s%s %4d writer-duration: %5d %llu\n",
+>  					scale_type, SCALE_FLAG,
+> -- 
+> 2.17.1
+> 
