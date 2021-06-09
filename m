@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CECF53A0CD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F9D3A0CD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233942AbhFIG62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:58:28 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8105 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231403AbhFIG6W (ORCPT
+        id S234749AbhFIG7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:59:04 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3914 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234065AbhFIG67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:58:22 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0HrJ5z5NzYsX5;
-        Wed,  9 Jun 2021 14:53:36 +0800 (CST)
+        Wed, 9 Jun 2021 02:58:59 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0Hrm1ZRCz6wk6;
+        Wed,  9 Jun 2021 14:54:00 +0800 (CST)
 Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
  dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 14:56:26 +0800
+ 15.1.2176.2; Wed, 9 Jun 2021 14:57:03 +0800
 Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
  (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 14:56:25 +0800
+ 14:57:03 +0800
 From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Lyude Paul <lyude@redhat.com>
+To:     <linux-kernel@vger.kernel.org>, Felipe Balbi <balbi@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Zqiang <qiang.zhang@windriver.com>,
+        Wei Ming Chen <jj251510319013@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Michael R Sweet <msweet@msweet.org>
 CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
         <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, <dri-devel@lists.freedesktop.org>,
-        <nouveau@lists.freedesktop.org>, <kernel-janitors@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next v2] drm/nouveau/fifo: use list_move instead of list_del/list_add in base.c
-Date:   Wed, 9 Jun 2021 15:05:34 +0800
-Message-ID: <20210609070534.1324550-1-libaokun1@huawei.com>
+        <libaokun1@huawei.com>, <linux-usb@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next v2] usb: gadget: function: printer: use list_move instead of list_del/list_add
+Date:   Wed, 9 Jun 2021 15:06:12 +0800
+Message-ID: <20210609070612.1325044-1-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Type:   text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggpeml500020.china.huawei.com (7.185.36.88)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_move() instead of list_del() + list_add() in base.c.
+Using list_move() instead of list_del() + list_add().
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
@@ -55,31 +57,21 @@ Signed-off-by: Baokun Li <libaokun1@huawei.com>
 V1->V2:
 	CC mailist
 
- drivers/gpu/drm/nouveau/nvkm/engine/fifo/base.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/usb/gadget/function/f_printer.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/base.c b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/base.c
-index 2ed4ff05d207..1802ac78b78f 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/base.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/base.c
-@@ -79,8 +79,7 @@ nvkm_fifo_chan_inst_locked(struct nvkm_fifo *fifo, u64 inst)
- 	struct nvkm_fifo_chan *chan;
- 	list_for_each_entry(chan, &fifo->chan, head) {
- 		if (chan->inst->addr == inst) {
--			list_del(&chan->head);
--			list_add(&chan->head, &fifo->chan);
-+			list_move(&chan->head, &fifo->chan);
- 			return chan;
- 		}
- 	}
-@@ -109,8 +108,7 @@ nvkm_fifo_chan_chid(struct nvkm_fifo *fifo, int chid, unsigned long *rflags)
- 	spin_lock_irqsave(&fifo->lock, flags);
- 	list_for_each_entry(chan, &fifo->chan, head) {
- 		if (chan->chid == chid) {
--			list_del(&chan->head);
--			list_add(&chan->head, &fifo->chan);
-+			list_move(&chan->head, &fifo->chan);
- 			*rflags = flags;
- 			return chan;
- 		}
+diff --git a/drivers/usb/gadget/function/f_printer.c b/drivers/usb/gadget/function/f_printer.c
+index f47fdc1fa7f1..b5112f6974f2 100644
+--- a/drivers/usb/gadget/function/f_printer.c
++++ b/drivers/usb/gadget/function/f_printer.c
+@@ -667,8 +667,7 @@ printer_write(struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
+ 		value = usb_ep_queue(dev->in_ep, req, GFP_ATOMIC);
+ 		spin_lock(&dev->lock);
+ 		if (value) {
+-			list_del(&req->list);
+-			list_add(&req->list, &dev->tx_reqs);
++			list_move(&req->list, &dev->tx_reqs);
+ 			spin_unlock_irqrestore(&dev->lock, flags);
+ 			mutex_unlock(&dev->lock_printer_io);
+ 			return -EAGAIN;
 
