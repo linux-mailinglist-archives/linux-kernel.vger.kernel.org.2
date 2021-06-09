@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F6F3A1B76
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570833A1B7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231284AbhFIRGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:06:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231225AbhFIRGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:06:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 768A7613C7;
-        Wed,  9 Jun 2021 17:04:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623258277;
-        bh=dGcTtxqqWrrTv7jkKWpp8RX54dwnPJA5qlbS3WKY1dA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GSVjfPhRQLUP5yyJCxY+UyoVvImOiF0+643Lz3Gm/LOBf4OALIdCZyYtxCPAgp60Y
-         3J5dR8VZhGYIFVEmhSjhjcUJZj2bgdu+jv78gHJPY0oa+7ZT6S00GTBZ9D85/VGev+
-         Lvi9X8reL00C+yqHALofpIuWVr/teWuTXbo37qXo=
-Date:   Wed, 9 Jun 2021 19:04:35 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jarvis.w.jiang@gmail.com, loic.poulain@linaro.org,
-        Shujun Wang <wsj20369@163.com>
-Subject: Re: [PATCH 3/3] bus: mhi: pci-generic: Fix hibernation
-Message-ID: <YMD0o26UzZ72mdDp@kroah.com>
-References: <20210606153741.20725-1-manivannan.sadhasivam@linaro.org>
- <20210606153741.20725-4-manivannan.sadhasivam@linaro.org>
+        id S231343AbhFIRH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:07:26 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49331 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231290AbhFIRHU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 13:07:20 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lr1dh-0007Xt-Te; Wed, 09 Jun 2021 17:05:14 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net: stmmac: Fix missing { } around two statements in an if statement
+Date:   Wed,  9 Jun 2021 18:05:12 +0100
+Message-Id: <20210609170512.297623-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210606153741.20725-4-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 09:07:41PM +0530, Manivannan Sadhasivam wrote:
-> From: Loic Poulain <loic.poulain@linaro.org>
-> 
-> This patch fixes crash after resuming from hibernation. The issue
-> occurs when mhi stack is builtin and so part of the 'restore-kernel',
-> causing the device to be resumed from 'restored kernel' with a no
-> more valid context (memory mappings etc...) and leading to spurious
-> crashes.
-> 
-> This patch fixes the issue by implementing proper freeze/restore
-> callbacks.
-> 
-> Reported-by: Shujun Wang <wsj20369@163.com>
-> Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Link: https://lore.kernel.org/r/1622571445-4505-1-git-send-email-loic.poulain@linaro.org
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/bus/mhi/pci_generic.c | 36 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 35 insertions(+), 1 deletion(-)
+From: Colin Ian King <colin.king@canonical.com>
 
-Also needs a stable link, right?  I'll go add it by hand.  Please be
-more careful next time...
+There are missing { } around a block of code on an if statement. Fix this
+by adding them in.
 
-greg k-h
+Addresses-Coverity: ("Nesting level does not match indentation")
+Fixes: 46682cb86a37 ("net: stmmac: enable Intel mGbE 2.5Gbps link speed")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 1c881ec8cd04..1f817b1b890c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -932,9 +932,10 @@ static void stmmac_validate(struct phylink_config *config,
+ 		phylink_set(mask, 1000baseT_Full);
+ 		phylink_set(mask, 1000baseX_Full);
+ 	} else if (priv->plat->has_gmac4) {
+-		if (!max_speed || max_speed >= 2500)
++		if (!max_speed || max_speed >= 2500) {
+ 			phylink_set(mac_supported, 2500baseT_Full);
+ 			phylink_set(mac_supported, 2500baseX_Full);
++		}
+ 	} else if (priv->plat->has_xgmac) {
+ 		if (!max_speed || (max_speed >= 2500)) {
+ 			phylink_set(mac_supported, 2500baseT_Full);
+-- 
+2.31.1
+
