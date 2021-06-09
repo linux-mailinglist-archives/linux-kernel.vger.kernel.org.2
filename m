@@ -2,108 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E123A1A9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3D73A1A9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236273AbhFIQOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:14:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbhFIQOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:14:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A074613B1;
-        Wed,  9 Jun 2021 16:12:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623255148;
-        bh=PKcMvlnuCGLjsb4hOzK8hNIvlkQ5Y4RWi55WNvghvU4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=PPiPJw2ymMgctmPJluUp2SzAbWsrj2hTh3Tnt4XAxDDWmdQgLwek9UEmTsAf5S2PF
-         +eLxnF2d6xXxPytI5wB4OUgY+JGAhXMbXwIUrnCRHPG48qNkgG5wjAF+QoTWfbtIQ5
-         vx/ZiVVnk2LKEFDSQPvYY/q+j4ZBOr/E96pnl9o0PnAdHeOaa94zy3XruU8aUkEPUw
-         nO2QTaA0v5EminN35R8cZqcSTgP1b+Mcn0Xi72cp21rRb1ycLV7yns8s2Rf+H/NoYl
-         y03jBacciv5oDtT53eFnoN70bVYclsLsM+iLOlKd/pI7VsoP+Q5jf3b2neuDzO3MuO
-         4n1/QOBRFsGLw==
-Subject: Re: [RFC v2-fix-v4 1/1] x86/tdx: Skip WBINVD instruction for TDX
- guest
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
- <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4gLeKPfYOx1kmg-mO1_mNd+XGqVO-CbqX+2d52GZ+DSFw@mail.gmail.com>
- <682f0239-8da0-3702-0f14-99b6244af499@linux.intel.com>
- <CAPcyv4jfFPGm2-cvPExeujZnaSKKky3AQRp69tzG1gcZ09dj8A@mail.gmail.com>
- <ffedf1d2-e5ec-e0e3-8e83-edd186231029@linux.intel.com>
- <CAPcyv4haWYhqk_xLD56QnB0ahK+fynOmqGdSD907UW-=7B176g@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <c2f4254d-3d28-544a-efd2-e65dd40d99f1@kernel.org>
-Date:   Wed, 9 Jun 2021 09:12:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S236487AbhFIQOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233896AbhFIQOn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 12:14:43 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346A6C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 09:12:48 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id z26so18734545pfj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:12:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B80WuFTp3m8SwecqT3IfJ//IoK5UJC0lbvLHibfCmx8=;
+        b=FWVZCG644MLckCLl4nD1KJzI72GQEbRGPhQm6FEHnfs/bflCedBZIU/WTxM6oDPOkt
+         98dy/fmo83KtIU4f4k6lfCKV73LxZP4D3hl/mx3tEcyZEMl3jyXhvUJkO+Lmfk94UwoB
+         Ue8HOtSn0aj86hr91DQOz8gVsETP2ZR7af+/2Dw6Mm5Ga993W8n5WamXKxTRKNtjmttd
+         UOUD/hJM0CrF1ETOrP9ld+91UwFgLsk3Ooqn7i6werfSXPKazJOmHooOiZIFXIsCJtKv
+         YTc5QJuoa2w4474990DrcXsbBrQtWyEdf7cv2U2gjrWUuXvDPitimB9E4KZkONlXRh8N
+         pICg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B80WuFTp3m8SwecqT3IfJ//IoK5UJC0lbvLHibfCmx8=;
+        b=fCRaATSFEmSJlrbF0Eezdp7/fdR2SLQBgBstnWmUt8aVguJEwK/2UyRgefIaejF0wG
+         UOzazdeqaBz0HU8PuL2WqV8s6XqaZL2oG9YyLKHLgUmsExONMZYNkby3ZiqpsPtihX7f
+         QVvpzVhDRPVugqAbM1nsxuDrzbRBDw/uM3WrPKvpc4MN+IGIY51rHi9DHwK0dh1hdo7h
+         Yf1n/EFUxS4Q62YJdZaGQRgCjm60Ke3LQCAVBc94XY4TK+Ez8n9XE1nfrxV76qNPJg34
+         r7K7a8wvkqrl5gZ8Gu5O8gmjiyZ6vyRARpbSudd/EX4HY0s4CDzPGj21lno0wyci6n0k
+         SCww==
+X-Gm-Message-State: AOAM53065apjF3YcF4JS1aAIaYuL9KsUvjLibBjojkvZZnFoaNQxP2/k
+        Hjjq9ut+aKr7GkFO4t6lTWP6Eg==
+X-Google-Smtp-Source: ABdhPJxvlWFsnIlVWfNlW143h1l1tU2YoUyMXelmM/SalweFWK2m0qPlPzphjNaD0OiHDM8Sb/hzZg==
+X-Received: by 2002:a62:2581:0:b029:2ea:228e:5a37 with SMTP id l123-20020a6225810000b02902ea228e5a37mr524454pfl.63.1623255167466;
+        Wed, 09 Jun 2021 09:12:47 -0700 (PDT)
+Received: from google.com ([2620:15c:f:10:bfdc:c2e5:77b1:8ef3])
+        by smtp.gmail.com with ESMTPSA id z22sm92340pfa.157.2021.06.09.09.12.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 09:12:46 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 09:12:40 -0700
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] KVM: x86: Ensure liveliness of nested VM-Enter fail
+ tracepoint message
+Message-ID: <YMDoeDTrAMmfl6+k@google.com>
+References: <20210607175748.674002-1-seanjc@google.com>
+ <CANRm+CxWovvM187BKtuvS1_WWnSdKc6wFA5swF-sJPJqYSWnUg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4haWYhqk_xLD56QnB0ahK+fynOmqGdSD907UW-=7B176g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANRm+CxWovvM187BKtuvS1_WWnSdKc6wFA5swF-sJPJqYSWnUg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/9/21 8:09 AM, Dan Williams wrote:
-> On Tue, Jun 8, 2021 at 9:27 PM Andi Kleen <ak@linux.intel.com> wrote:
->>
->>
->> here is no resume path.
->>
->>> Host is free to go into S3 independent of any guest state.
->>
->> Actually my understanding is that none of the systems which support TDX
->> support S3. S3 has been deprecated for a long time.
+On Wed, Jun 09, 2021, Wanpeng Li wrote:
+> On Tue, 8 Jun 2021 at 02:00, Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > Use the __string() machinery provided by the tracing subystem to make a
+> > copy of the string literals consumed by the "nested VM-Enter failed"
+> > tracepoint.  A complete copy is necessary to ensure that the tracepoint
+> > can't outlive the data/memory it consumes and deference stale memory.
+> >
+> > Because the tracepoint itself is defined by kvm, if kvm-intel and/or
+> > kvm-amd are built as modules, the memory holding the string literals
+> > defined by the vendor modules will be freed when the module is unloaded,
+> > whereas the tracepoint and its data in the ring buffer will live until
+> > kvm is unloaded (or "indefinitely" if kvm is built-in).
+> >
+> > This bug has existed since the tracepoint was added, but was recently
+> > exposed by a new check in tracing to detect exactly this type of bug.
+> >
+> >   fmt: '%s%s
+> >   ' current_buffer: ' vmx_dirty_log_t-140127  [003] ....  kvm_nested_vmenter_failed: '
+> >   WARNING: CPU: 3 PID: 140134 at kernel/trace/trace.c:3759 trace_check_vprintf+0x3be/0x3e0
+> >   CPU: 3 PID: 140134 Comm: less Not tainted 5.13.0-rc1-ce2e73ce600a-req #184
+> >   Hardware name: ASUS Q87M-E/Q87M-E, BIOS 1102 03/03/2014
+> >   RIP: 0010:trace_check_vprintf+0x3be/0x3e0
+> >   Code: <0f> 0b 44 8b 4c 24 1c e9 a9 fe ff ff c6 44 02 ff 00 49 8b 97 b0 20
+> >   RSP: 0018:ffffa895cc37bcb0 EFLAGS: 00010282
+> >   RAX: 0000000000000000 RBX: ffffa895cc37bd08 RCX: 0000000000000027
+> >   RDX: 0000000000000027 RSI: 00000000ffffdfff RDI: ffff9766cfad74f8
+> >   RBP: ffffffffc0a041d4 R08: ffff9766cfad74f0 R09: ffffa895cc37bad8
+> >   R10: 0000000000000001 R11: 0000000000000001 R12: ffffffffc0a041d4
+> >   R13: ffffffffc0f4dba8 R14: 0000000000000000 R15: ffff976409f2c000
+> >   FS:  00007f92fa200740(0000) GS:ffff9766cfac0000(0000) knlGS:0000000000000000
+> >   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >   CR2: 0000559bd11b0000 CR3: 000000019fbaa002 CR4: 00000000001726e0
+> >   Call Trace:
+> >    trace_event_printf+0x5e/0x80
+> >    trace_raw_output_kvm_nested_vmenter_failed+0x3a/0x60 [kvm]
+> >    print_trace_line+0x1dd/0x4e0
+> >    s_show+0x45/0x150
+> >    seq_read_iter+0x2d5/0x4c0
+> >    seq_read+0x106/0x150
+> >    vfs_read+0x98/0x180
+> >    ksys_read+0x5f/0xe0
+> >    do_syscall_64+0x40/0xb0
+> >    entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> Ok, I wanted to imply any power state that might power-off caches.
-> 
->>
->>
->>>   A hostile
->>> host is free to do just enough cache management so that it can resume
->>> from S3 while arranging for TDX guest dirty data to be lost. Does a
->>> TDX guest go fatal if the cache loses power?
->>
->> That would be a machine check, and yes it would be fatal.
-> 
-> Sounds good, so incorporating this and Andy's feedback:
-> 
-> "TDX guests, like other typical guests, use standard ACPI mechanisms
-> to signal sleep state entry (including reboot) to the host. The ACPI
-> specification mandates WBINVD on any sleep state entry with the
-> expectation that the platform is only responsible for maintaining the
-> state of memory over sleep states, not preserving dirty data in any
-> CPU caches. ACPI cache flushing requirements pre-date the advent of
-> virtualization. Given guest sleep state entry does not affect any host
-> power rails it is not required to flush caches. The host is
-> responsible for maintaining cache state over its own bare metal sleep
-> state transitions that power-off the cache. A TDX guest, unlike a
-> typical guest, will machine check if the CPU cache is powered off."
-> 
-> Andi, is that machine check behavior relative to power states
-> mentioned in the docs?
+> I can observe tons of other kvm tracepoints warning like this after
+> commit 9a6944fee68e25 (tracing: Add a verifier to check string
+> pointers for trace events), just echo 1 >
+> /sys/kernel/tracing/events/kvm/enable and boot a linux guest.
 
-I don't think there's anything about power states.  There is a general
-documented mechanism to integrity-check TD guest memory, but it is *not*
-replay-resistant.  So, if the guest dirties a cache line, and the cache
-line is lost, it seems entirely plausible that the guest would get
-silently corrupted.
+Can you provide your .config?  With all of events/kvm and events/kvmmmu enabled
+I don't get any warnings running a Linux guest, a nested Linux guest, and
+kvm-unit-tests.
 
-I would argue that, if this happens, it's a host, TD module, or
-architecture bug, and it's not the guest's fault.
-
---Andy
+Do you see the behavior with other tracepoints?  E.g. enabling all events on my
+systems yields warnings for a USB module, but everything else is clean.
