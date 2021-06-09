@@ -2,68 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831043A1D8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 21:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771613A1D91
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 21:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhFITSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 15:18:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhFITSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 15:18:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E32F613D4;
-        Wed,  9 Jun 2021 19:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623266165;
-        bh=4cqLWh1ppp/hZrwvpFtKbyel9fKraZQyl4S5GrUmaVI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FA0IuT82Kmgb26c4HTEsXhhtvzA+EzUysDU8lXY0+Kh9VkRo5vsJ8K8o+83kTaSBK
-         83h9SUNVw+pEmcWmhu42J42Rq9Loxp1JkA/ihTPv3Wb/CrbSPv27GI+R3J2uRAX1U1
-         yRpYkVqhuHlOYypXxehed+CqsD/H0UoDc/OuZ3WY=
-Date:   Wed, 9 Jun 2021 21:16:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com,
-        nava.manne@xilinx.com, dinguyen@kernel.org,
-        krzysztof.kozlowski@canonical.com, yilun.xu@intel.com,
-        arnd@arndb.de, fpacheco@redhat.com, richard.gong@intel.com,
-        luca@lucaceresoli.net, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/4] fpga: reorganize to subdirs
-Message-ID: <YMETcualK2uPMLMc@kroah.com>
-References: <20210609142208.3085451-1-trix@redhat.com>
- <YMDV7R52QUTFhpHH@kroah.com>
- <2738ee7a-448f-c327-c430-13fb44da45ec@redhat.com>
- <YMDueTEHGWuAcknP@kroah.com>
- <a35f5fda-a202-dc66-4445-b3ce333a55e6@redhat.com>
- <YMD2yxtsQN16MoPA@kroah.com>
- <aba774cb-1135-26aa-6e20-3c00b4e269ac@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aba774cb-1135-26aa-6e20-3c00b4e269ac@redhat.com>
+        id S229957AbhFITTw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 15:19:52 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:42502 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhFITTv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 15:19:51 -0400
+Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 19970CECD6;
+        Wed,  9 Jun 2021 21:25:52 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH 1/2] Bluetooth: btusb: Record debug log for Mediatek Chip.
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210609190734.30088-1-mark-yw.chen@mediatek.com>
+Date:   Wed, 9 Jun 2021 21:17:52 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>, chris.lu@mediatek.com,
+        will-cy.lee@mediatek.com, Sean Wang <sean.wang@mediatek.com>,
+        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        michaelfsun@google.com, shawnku@google.com, jemele@google.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <35B0FA64-903D-4747-8D39-4FA48D30A680@holtmann.org>
+References: <20210609190734.30088-1-mark-yw.chen@mediatek.com>
+To:     mark-yw.chen@mediatek.com
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:52:44AM -0700, Tom Rix wrote:
-> > My main complaints here are:
-> > 	- these patches were not tested
-> > 	- you renamed kernel modules "accidentally"
-> > 	- you forgot SPDX lines
-> > 	- lack of description of why these files being moved was
-> > 	  necessary in the changelog where you moved the files
-> > 
-> > Remember, patch 0/X never shows up in changelogs...
+Hi Mark,
+
+> 1. Add btusb_recv_bulk_mtk to receive debug log.
+> 2. Send the debug log via hci_recv_diag channel.
+> 3. The upper layerd use hci_channel_minitor to receive
+>   these packets.
 > 
-> I will respin and collapse the patches to a single patch with a better
-> commit log.
+> Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
+> ---
+> drivers/bluetooth/btusb.c | 67 +++++++++++++++++++++++++++++++++++++++
+> 1 file changed, 67 insertions(+)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index b015dcecfb13..2a55ae0a5f8c 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -3851,6 +3851,72 @@ static int btusb_mtk_shutdown(struct hci_dev *hdev)
+> 	return 0;
+> }
+> 
+> +static int btusb_recv_bulk_mtk(struct btusb_data *data, void *buffer, int count)
+> +{
+> +	struct sk_buff *skb;
+> +	unsigned long flags;
+> +	int err = 0;
+> +
+> +	spin_lock_irqsave(&data->rxlock, flags);
+> +	skb = data->acl_skb;
+> +
+> +	while (count) {
+> +		int len;
+> +
+> +		if (!skb) {
+> +			skb = bt_skb_alloc(HCI_MAX_FRAME_SIZE, GFP_ATOMIC);
+> +			if (!skb) {
+> +				err = -ENOMEM;
+> +				break;
+> +			}
+> +
+> +			hci_skb_pkt_type(skb) = HCI_ACLDATA_PKT;
+> +			hci_skb_expect(skb) = HCI_ACL_HDR_SIZE;
+> +		}
+> +
+> +		len = min_t(uint, hci_skb_expect(skb), count);
+> +		skb_put_data(skb, buffer, len);
+> +
+> +		count -= len;
+> +		buffer += len;
+> +		hci_skb_expect(skb) -= len;
+> +
+> +		if (skb->len == HCI_ACL_HDR_SIZE) {
+> +			__le16 dlen = hci_acl_hdr(skb)->dlen;
+> +
+> +			/* Complete ACL header */
+> +			hci_skb_expect(skb) = __le16_to_cpu(dlen);
+> +
+> +			if (skb_tailroom(skb) < hci_skb_expect(skb)) {
+> +				kfree_skb(skb);
+> +				skb = NULL;
+> +
+> +				err = -EILSEQ;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (!hci_skb_expect(skb)) {
+> +			/* Complete frame */
+> +			if (skb->data[0] == 0x6f && skb->data[1] == 0xfc) {
+> +				usb_disable_autosuspend(data->udev);
+> +				hci_recv_diag(data->hdev, skb);
+> +			} else if ((skb->data[0] == 0xfe || skb->data[0] == 0xff) &&
+> +				   skb->data[1] == 0x05) {
+> +				hci_recv_diag(data->hdev, skb);
+> +			} else {
+> +				hci_recv_frame(data->hdev, skb);
+> +			}
+> +			skb = NULL;
+> +		}
+> +	}
+> +
+> +	data->acl_skb = skb;
+> +	spin_unlock_irqrestore(&data->rxlock, flags);
+> +
+> +	return err;
+> +}
+> +
+> MODULE_FIRMWARE(FIRMWARE_MT7663);
+> MODULE_FIRMWARE(FIRMWARE_MT7668);
+> 
+> @@ -4669,6 +4735,7 @@ static int btusb_probe(struct usb_interface *intf,
+> 		hdev->setup = btusb_mtk_setup;
+> 		hdev->shutdown = btusb_mtk_shutdown;
+> 		hdev->manufacturer = 70;
+> +		data->recv_bulk = btusb_recv_bulk_mtk;
+> 		set_bit(HCI_QUIRK_NON_PERSISTENT_SETUP, &hdev->quirks);
 
-They should not be a single patch, I never said that at all :(
+NO. The recv_bulk was meant for cases when bulk was faster and needed to redirected as interrupt/event data. Doing a complete copy of btusb_recv_bulk is not acceptable. You need to introduce data->recv_acl.
 
-Please read what I wrote above, did I ever mention there was too many
-patches in the series here?
+Regards
 
-{sigh}
+Marcel
 
-greg k-h
