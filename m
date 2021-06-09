@@ -2,301 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04DE3A10E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5F13A10E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238636AbhFIKKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:10:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33562 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238612AbhFIKKi (ORCPT
+        id S238658AbhFIKLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:11:13 -0400
+Received: from mail-lf1-f48.google.com ([209.85.167.48]:44691 "EHLO
+        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238652AbhFIKLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:10:38 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 159A3OuQ019957;
-        Wed, 9 Jun 2021 06:08:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=DqJCfyurpuPL+OBlOqQOT67VvAOg8m1Vl+0FbCzIswI=;
- b=DIoPEb8Pteh/R6CXFLowuXvokwzz3K02xB3+5x85U0XpLLTE3DOZFjAgKbmd9JiXpQHf
- MN1Fi9v/szreRi1fR+lQ/DcPFPv2lmfuYip4AopGWcSFmXxH9u2t/VI9jpp3M9zqdscJ
- LmLT5miSSTdic2zVcliiMZUnjHh0L1fGA8iYJf1xmiLulh0ohU1Mp4PEiTM96MHCagBV
- X5w7B+HG49qUjUhG2/KxShhlPiK3XDmDMX73fUlO1zlAkhIdNqVKLvHZnuYSnduuwwMf
- Z99arZZDX6/EVvPOE8cHrCeVsty1p8w2B7S7CRC67B/hRQnWQwiSqe3ivhcVVfddclin Dw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 392ug8g7ud-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 06:08:24 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 159A4BMP025235;
-        Wed, 9 Jun 2021 06:08:24 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 392ug8g7sq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 06:08:23 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 159A7ZO6012253;
-        Wed, 9 Jun 2021 10:08:21 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 3900hhh57w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 10:08:21 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 159A8Jxo20906314
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Jun 2021 10:08:19 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA1964C040;
-        Wed,  9 Jun 2021 10:08:18 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 16F7E4C046;
-        Wed,  9 Jun 2021 10:08:17 +0000 (GMT)
-Received: from [9.102.17.60] (unknown [9.102.17.60])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Jun 2021 10:08:16 +0000 (GMT)
-Subject: Re: [RFC] powerpc/pseries: Interface to represent PAPR firmware
- attributes
-To:     Fabiano Rosas <farosas@linux.ibm.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
-References: <20210604163501.51511-1-psampat@linux.ibm.com>
- <87wnr4uhs9.fsf@linux.ibm.com>
-From:   Pratik Sampat <psampat@linux.ibm.com>
-Message-ID: <5c9cb57b-e9d8-0361-8be7-60dc9618db34@linux.ibm.com>
-Date:   Wed, 9 Jun 2021 15:38:15 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 9 Jun 2021 06:11:08 -0400
+Received: by mail-lf1-f48.google.com with SMTP id r198so33797255lff.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ycBV7W+Z4gGupsDwiNMvurO0enCT2qnqxmC8+tIujTs=;
+        b=ChMG4OAUVihcSMJETWizwykkGL+XM2iEOokvplS6iAWVZcqF70BtDu8kJeHcT0hZfo
+         vbKH87Ek3+fn2RofGbTw91LmYM3u2zfqlD8Z9IhjO6z3IMKoByQmfudnZOqCi+drmUho
+         l0g9lLnOLOZDmIN4rky27x0zI0NUk9n3PlPZWpxBfr7LrG7mmZDkz+mKksrpK37VJdNt
+         vePXcdBNeAvgHmiEA3q7ijL/rqb7VYxytRbZXpAbP7A1K2yp5ax8hISa9EG2dkE3qEOY
+         BfL1MyCSquTTL9B7F3acy6Fw/WY1vPoFJyLdfNIh9axIB4Zior60W/4/8djkmjl/nZ4T
+         jwXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ycBV7W+Z4gGupsDwiNMvurO0enCT2qnqxmC8+tIujTs=;
+        b=t3QlApg1EKvArWPN89SS8TdQ0swDpOciJ7Rrs8C/7eWow4nAP5r4Y0XUXoKcMAqMFZ
+         xC8xTXuEWC022WuhiLkKr+7YbiLOsfvuhKHi1pdjMEvHOH5AbLHidYd44ZBmlSJ4LbMF
+         LQnevdtU3/tj53Hm7Ds6yUGstTLk7oqTQTzCclI6MERpzxzxYKxJMlPyMuFWlNbNwb89
+         C0cDcESGx5TBwWq53fRPWKILRmncMozRLc8dv5z9UjYPpojmTgb/IU0qq6LFeE9A66iW
+         krTIyATOPqegahKffkmUjnS5AXwfFhP2+IuFxouWRX0sQhQf6+mhmBJIDQIFstRkpk8e
+         ZW9Q==
+X-Gm-Message-State: AOAM530trncN00DP59woJXi2DEU2fHi4ddif68njalZhoqiGTipZV4LS
+        upxG1gZSdT05eZWFGX9VNqd8/g==
+X-Google-Smtp-Source: ABdhPJzuGkUvJj/AJoTCCtnNh2nfQU8KxExaJycKNJ8fsWv+zFzEpVWfSZ1IbjKpMTAAGyvlAy8tww==
+X-Received: by 2002:a05:6512:54b:: with SMTP id h11mr18858506lfl.236.1623233281541;
+        Wed, 09 Jun 2021 03:08:01 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id y17sm304690lfy.14.2021.06.09.03.08.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 03:08:00 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 43E0110265B; Wed,  9 Jun 2021 13:08:16 +0300 (+03)
+Date:   Wed, 9 Jun 2021 13:08:16 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu Xu <xuyu@linux.alibaba.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, hughd@google.com,
+        akpm@linux-foundation.org, gavin.dg@linux.alibaba.com
+Subject: Re: [PATCH v2] mm, thp: use head page in __migration_entry_wait
+Message-ID: <20210609100816.tmgcy2vq4cmw7o7e@box.shutemov.name>
+References: <b9836c1dd522e903891760af9f0c86a2cce987eb.1623144009.git.xuyu@linux.alibaba.com>
+ <20210608120026.ugfh72ydjeba44bo@box.shutemov.name>
+ <57e151a8-03b2-3458-0178-21edb4ce97d2@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <87wnr4uhs9.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: K_Z-vtNz1WoHlJOwzSkupWjpeLL8b5O1
-X-Proofpoint-ORIG-GUID: nTxWXxaDuuduZDLvQMRZudsdIaKClQbu
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-09_04:2021-06-04,2021-06-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 adultscore=0
- clxscore=1015 mlxlogscore=999 impostorscore=0 suspectscore=0 mlxscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106090047
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57e151a8-03b2-3458-0178-21edb4ce97d2@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-Thank you for your comments on the design.
+On Tue, Jun 08, 2021 at 09:22:28PM +0800, Yu Xu wrote:
+> On 6/8/21 8:00 PM, Kirill A. Shutemov wrote:
+> > On Tue, Jun 08, 2021 at 05:22:39PM +0800, Xu Yu wrote:
+> > > We notice that hung task happens in a conner but practical scenario when
+> > > CONFIG_PREEMPT_NONE is enabled, as follows.
+> > > 
+> > > Process 0                       Process 1                     Process 2..Inf
+> > > split_huge_page_to_list
+> > >      unmap_page
+> > >          split_huge_pmd_address
+> > >                                  __migration_entry_wait(head)
+> > >                                                                __migration_entry_wait(tail)
+> > >      remap_page (roll back)
+> > >          remove_migration_ptes
+> > >              rmap_walk_anon
+> > >                  cond_resched
+> > > 
+> > > Where __migration_entry_wait(tail) is occurred in kernel space, e.g.,
+> > > copy_to_user in fstat, which will immediately fault again without
+> > > rescheduling, and thus occupy the cpu fully.
+> > > 
+> > > When there are too many processes performing __migration_entry_wait on
+> > > tail page, remap_page will never be done after cond_resched.
+> > > 
+> > > This makes __migration_entry_wait operate on the compound head page,
+> > > thus waits for remap_page to complete, whether the THP is split
+> > > successfully or roll back.
+> > > 
+> > > Note that put_and_wait_on_page_locked helps to drop the page reference
+> > > acquired with get_page_unless_zero, as soon as the page is on the wait
+> > > queue, before actually waiting. So splitting the THP is only prevented
+> > > for a brief interval.
+> > > 
+> > > Fixes: ba98828088ad ("thp: add option to setup migration entries during PMD split")
+> > > Suggested-by: Hugh Dickins <hughd@google.com>
+> > > Signed-off-by: Gang Deng <gavin.dg@linux.alibaba.com>
+> > > Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
+> > 
+> > Looks good to me:
+> > 
+> > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > 
+> > But there's one quirk: if split succeed we effectively wait on wrong
+> > page to be unlocked. And it may take indefinite time if split_huge_page()
+> > was called on the head page.
+> 
+> Inspired by you, I look into the codes, and have a new question (nothing
+> to do with this patch).
+> 
+> If we split_huge_page_to_list on *tail* page (in fact, I haven't seen
+> that used yet),
 
-On 09/06/21 3:43 am, Fabiano Rosas wrote:
-> "Pratik R. Sampat" <psampat@linux.ibm.com> writes:
->
-> Hi, I have some general comments and questions, mostly trying to
-> understand design of the hcall and use cases of the sysfs data:
->
->> Adds a generic interface to represent the energy and frequency related
->> PAPR attributes on the system using the new H_CALL
->> "H_GET_ENERGY_SCALE_INFO".
->>
->> H_GET_EM_PARMS H_CALL was previously responsible for exporting this
->> information in the lparcfg, however the H_GET_EM_PARMS H_CALL
->> will be deprecated P10 onwards.
->>
->> The H_GET_ENERGY_SCALE_INFO H_CALL is of the following call format:
->> hcall(
->>    uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
->>    uint64 flags,           // Per the flag request
->>    uint64 firstAttributeId,// The attribute id
->>    uint64 bufferAddress,   // The logical address of the output buffer
-> Instead of logical address, guest address or guest physical address
-> would be more precise.
+See ksm code for instance.
 
-Yes, the name guest physical address makes more sense for this attribute.
-The term logical address had me confused too when I first read it in the ACR,
-however that isn't the case.
+> mm/huge_memory.c:2666 checks "VM_BUG_ON_PAGE(!PageLocked(head), head);"
+> in split_huge_page_to_list(), while
+> 
+> mm/huge_memory.c:2497 does "unlock_page(subpage)", where subpage can
+> be head in this scenario, in __split_huge_page().
+> 
+> My confusion is
+> 1) how the pin on the @subpage is got outside split_huge_page_to_list()?
+>    can we ever get tail page?
 
-I'll change it to guest physical address here. Thanks for pointing out.
+This loop:
 
->
->>    uint64 bufferSize       // The size in bytes of the output buffer
->> );
->>
->> This H_CALL can query either all the attributes at once with
->> firstAttributeId = 0, flags = 0 as well as query only one attribute
->> at a time with firstAttributeId = id
->>
->> The output buffer consists of the following
->> 1. number of attributes              - 8 bytes
->> 2. array offset to the data location - 8 bytes
-> The offset is from the start of the buffer, isn't it? So not the array
-> offset.
+	for (i = 0; i < nr; i++) {
+		struct page *subpage = head + i;
+		if (subpage == page)
+			continue;
+		unlock_page(subpage);
 
-Yes,the offset carries information that is to the start of the data buffer.
+		/*
+		 * Subpages may be freed if there wasn't any mapping
+		 * like if add_to_swap() is running on a lru page that
+		 * had its mapping zapped. And freeing these pages
+		 * requires taking the lru_lock so we do the put_page
+		 * of the tail pages after the split is complete.
+		 */
+		put_page(subpage);
+	}
 
->> 3. version info                      - 1 byte
->> 4. A data array of size num attributes, which contains the following:
->>    a. attribute ID              - 8 bytes
->>    b. attribute value in number - 8 bytes
->>    c. attribute name in string  - 64 bytes
->>    d. attribute value in string - 64 bytes
-> Is this new hypercall already present in the spec? These seem a bit
-> underspecified to me.
+We skip unlocking and unpinning the page split_huge_page() got called for.
 
-Yes, it is present in the spec. I probably summarized a little more than needed
-here and I could expand upon below.
+> 
+> 2) head page is locked outside split_huge_page_to_list(), but unlocked
+>    in __split_huge_page()?
 
-The input buffer recives the following data:
+If called on tail page, yes.
 
-1. “flags”:
-	a. Bit 0: singleAttribute
-		If set to 1, only return the single attribute matching firstAttributeId.
-	b. Bits 1-63: Reserved
-2. “firstAttributeId”: The first attribute to retrieve
-3. “bufferAddress”: The logical real address of the start of the output buffer
-4. “bufferSize”: The size in bytes of the output buffer
-	
-
- From the document, the format of the output buffer is as follows:
-
-Table 1 --> output buffer
-================================================================================
-| Field Name           | Byte   | Length   |  Description
-|                      | Offset | in Bytes |
-================================================================================
-| NumberOf             |        |          | Number of Attributes in Buffer
-| AttributesInBuffer   | 0x000  | 0x08     |
---------------------------------------------------------------------------------
-| AttributeArrayOffset | 0x008  | 0x08     | Byte offset to start of Array
-|                      |        |          | of Attributes
-|                      |        |          |
---------------------------------------------------------------------------------
-| OutputBufferData     |        |          | Version of the Header.
-| HeaderVersion        | 0x010  | 0x01     | The header will be always
-| AttributesInBuffer   |        |          | backward compatible, and changes
-|                      |        |          | will not impact the Array of
-|                      |        |          | attributes.
-|                      |        |          | Current version = 0x01
---------------------------------------------------------------------------------
-| ArrayOfAttributes    |        |          | The array will contain
-|                      |        |          | "NumberOfAttributesInBuffer"
-|                      |        |          | array elements not to exceed
-|                      |        |          | the size of the buffer.
-|                      |        |          | Layout of the array is
-|                      |        |          | detailed in Table 2.
---------------------------------------------------------------------------------
-
-
-Table 2 --> Array of attributes
-================================================================================
-| Field Name           | Byte   | Length   |  Description
-|                      | Offset | in Bytes |
-================================================================================
-| 1st AttributeId      | 0x000  | 0x08     | The ID of the Attribute
---------------------------------------------------------------------------------
-| 1st AttributeValue   | 0x008  | 0x08     | The numerical value of
-|                      |        |          | the attribute
---------------------------------------------------------------------------------
-| 1st AttributeString  | 0x010  | 0x40     | The ASCII string
-| Description          |        |          | description of the
-|                      |        |          | attribute, up to 63
-|                      |        |          | characters plus a NULL
-|                      |        |          | terminator.
---------------------------------------------------------------------------------
-| 1st AttributeValue   | 0x050  | 0x40     | The ASCII string
-| StringDescription    |        |          | description of the
-|                      |        |          | attribute value, up to 63
-|                      |        |          | characters plus a NULL
-|                      |        |          | terminator. If this
-|                      |        |          | contains only a NULL
-|                      |        |          | terminator, then there is
-|                      |        |          | no ASCII string
-|                      |        |          | associated with AttributeValue.
---------------------------------------------------------------------------------
-| ....                 |        |          |
-
-
->
->> The new H_CALL exports information in direct string value format, hence
->> a new interface has been introduced in /sys/firmware/papr to export
-> Hm.. Maybe this should be something less generic than "papr"?
-
-The interface naming was inspired from /sys/firmware/opal's naming convention.
-We believed the name PAPR could serve as more generic name to be used by both
-Linux running on PHYP and linux on KVM.
-
-If you have something more concrete in mind, please let me know. I'm open to
-suggestions.
-
->
->> this information to userspace in an extensible pass-through format.
->> The H_CALL returns the name, numeric value and string value. As string
->> values are in human readable format, therefore if the string value
->> exists then that is given precedence over the numeric value.
-> So the hypervisor could simply not send the string representation? How
-> will the userspace tell the difference since they are reading everything
-> from a file?
->
-> Overall I'd say we should give the data in a more structured way and let
-> the user-facing tool do the formatting and presentation.
-
-That's a valid concern, the design for this was inspired from hwmon's interface
-to housing the sensor information.
-
-One alternative to add more structure to this format could be to introduce:
-attr_X_name, attr_X_num_val, attr_X_str_val
-
-However, in some cases like min/max frequency the string value is empty. In
-that case the file attr_X_str_val will also be empty.
-Is that an acceptable format of having empty files that in some cases will
-never be populated?
-We also went ahead to confirm with the SPEC team that if a string value exists
-in their buffer, that must be given precedence.
-
-Another alternative format could to keep attr_X_name, attr_X_val intact but
-change what X means. Currently X is just an iteratively increasing number. But
-X can also serve as an ID which we get from H_CALL output buffer.
-
-In this case, we should also include some versioning so that the tool now also
-has cognizance of contents of each file.
-
->> The format of exposing the sysfs information is as follows:
->> /sys/firmware/papr/
->>    |-- attr_0_name
->>    |-- attr_0_val
->>    |-- attr_1_name
->>    |-- attr_1_val
->> ...
-> How do we keep a stable interface with userspace? Say the hypervisor
-> decides to add or remove attributes, change their order, string
-> representation, etc? It will inform us via the version field, but that
-> is lost when we output this to sysfs.
->
-> I get that if the userspace just iterate over the contents of the
-> directory then nothing breaks, but there is not much else it could do it
-> seems.
-
-Fair point, having the version exposed to the sysfs does seem crucial.
-
-Currently in ppc-utils we iterate over all the information, however as you
-rightly pointed out there may be other tools needing just specific information.
-The alternative I suggested a few sentences above to include ID based attribute
-naming and versioning maybe a more elegant way of solving this problem.
-
-What are your thoughts on a design like this?
-
->> The energy information that is exported is useful for userspace tools
->> such as powerpc-utils. Currently these tools infer the
->> "power_mode_data" value in the lparcfg, which in turn is obtained from
->> the to be deprecated H_GET_EM_PARMS H_CALL.
->> On future platforms, such userspace utilities will have to look at the
->> data returned from the new H_CALL being populated in this new sysfs
->> interface and report this information directly without the need of
->> interpretation.
->>
->> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
-
-Thanks
-Pratik
-
+-- 
+ Kirill A. Shutemov
