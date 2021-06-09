@@ -2,172 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4013A3A0D5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAD03A0DAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237114AbhFIHOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:14:51 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5462 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235698AbhFIHOv (ORCPT
+        id S237287AbhFIHYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:24:30 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:43222 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235509AbhFIHY3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:14:51 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0JCK1mDZzZfb2;
-        Wed,  9 Jun 2021 15:10:05 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 15:12:54 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 15:12:53 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, <linux-scsi@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next v2] [SCSI] bfa: Use list_move_tail instead of list_del/list_add_tail in bfa_fcpim.c
-Date:   Wed, 9 Jun 2021 15:22:02 +0800
-Message-ID: <20210609072202.1352890-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+        Wed, 9 Jun 2021 03:24:29 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UbpzKCG_1623223352;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UbpzKCG_1623223352)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 09 Jun 2021 15:22:33 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     rui.zhang@intel.com
+Cc:     daniel.lezcano@linaro.org, amitk@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH v2] thermal: devfreq_cooling: Fix kernel-doc
+Date:   Wed,  9 Jun 2021 15:22:30 +0800
+Message-Id: <1623223350-128104-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_move_tail() instead of list_del() + list_add_tail() in bfa_fcpim.c.
+Fix function name in devfreq_cooling.c comment to remove a 
+warning found by kernel-doc.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
+drivers/thermal/devfreq_cooling.c:479: warning: expecting prototype for
+devfreq_cooling_em_register_power(). Prototype was for
+devfreq_cooling_em_register() instead.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 ---
-V1->V2:
-	CC mailist
 
- drivers/scsi/bfa/bfa_fcpim.c | 37 +++++++++---------------
- 1 file changed, 13 insertions(+), 24 deletions(-)
+Change in v2:
+--replaced s/clang(make W=1 LLVM=1)/kernel-doc/ in commit.
+https://lore.kernel.org/patchwork/patch/1442639/
 
-diff --git a/drivers/scsi/bfa/bfa_fcpim.c b/drivers/scsi/bfa/bfa_fcpim.c
-index 7ad22288071b..a5eeb8a59afe 100644
---- a/drivers/scsi/bfa/bfa_fcpim.c
-+++ b/drivers/scsi/bfa/bfa_fcpim.c
-@@ -83,8 +83,7 @@ enum bfa_itnim_event {
-  *  BFA IOIM related definitions
-  */
- #define bfa_ioim_move_to_comp_q(__ioim) do {				\
--	list_del(&(__ioim)->qe);					\
--	list_add_tail(&(__ioim)->qe, &(__ioim)->fcpim->ioim_comp_q);	\
-+	list_move_tail(&(__ioim)->qe, &(__ioim)->fcpim->ioim_comp_q);	\
- } while (0)
+ drivers/thermal/devfreq_cooling.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+index 3a788ac..5a86cff 100644
+--- a/drivers/thermal/devfreq_cooling.c
++++ b/drivers/thermal/devfreq_cooling.c
+@@ -458,7 +458,7 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
+ EXPORT_SYMBOL_GPL(devfreq_cooling_register);
  
- 
-@@ -1023,8 +1022,7 @@ bfa_itnim_cleanup(struct bfa_itnim_s *itnim)
- 		 * Move IO to a cleanup queue from active queue so that a later
- 		 * TM will not pickup this IO.
- 		 */
--		list_del(&ioim->qe);
--		list_add_tail(&ioim->qe, &itnim->io_cleanup_q);
-+		list_move_tail(&ioim->qe, &itnim->io_cleanup_q);
- 
- 		bfa_wc_up(&itnim->wc);
- 		bfa_ioim_cleanup(ioim);
-@@ -1509,15 +1507,13 @@ bfa_ioim_sm_uninit(struct bfa_ioim_s *ioim, enum bfa_ioim_event event)
- 		if (!bfa_itnim_is_online(ioim->itnim)) {
- 			if (!bfa_itnim_hold_io(ioim->itnim)) {
- 				bfa_sm_set_state(ioim, bfa_ioim_sm_hcb);
--				list_del(&ioim->qe);
--				list_add_tail(&ioim->qe,
--					&ioim->fcpim->ioim_comp_q);
-+				list_move_tail(&ioim->qe,
-+					       &ioim->fcpim->ioim_comp_q);
- 				bfa_cb_queue(ioim->bfa, &ioim->hcb_qe,
- 						__bfa_cb_ioim_pathtov, ioim);
- 			} else {
--				list_del(&ioim->qe);
--				list_add_tail(&ioim->qe,
--					&ioim->itnim->pending_q);
-+				list_move_tail(&ioim->qe,
-+					       &ioim->itnim->pending_q);
- 			}
- 			break;
- 		}
-@@ -2044,8 +2040,7 @@ bfa_ioim_sm_hcb_free(struct bfa_ioim_s *ioim, enum bfa_ioim_event event)
- 	switch (event) {
- 	case BFA_IOIM_SM_HCB:
- 		bfa_sm_set_state(ioim, bfa_ioim_sm_resfree);
--		list_del(&ioim->qe);
--		list_add_tail(&ioim->qe, &ioim->fcpim->ioim_resfree_q);
-+		list_move_tail(&ioim->qe, &ioim->fcpim->ioim_resfree_q);
- 		break;
- 
- 	case BFA_IOIM_SM_FREE:
-@@ -2672,14 +2667,12 @@ bfa_ioim_notify_cleanup(struct bfa_ioim_s *ioim)
- 	 * Move IO from itnim queue to fcpim global queue since itnim will be
- 	 * freed.
- 	 */
--	list_del(&ioim->qe);
--	list_add_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
-+	list_move_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
- 
- 	if (!ioim->iosp->tskim) {
- 		if (ioim->fcpim->delay_comp && ioim->itnim->iotov_active) {
- 			bfa_cb_dequeue(&ioim->hcb_qe);
--			list_del(&ioim->qe);
--			list_add_tail(&ioim->qe, &ioim->itnim->delay_comp_q);
-+			list_move_tail(&ioim->qe, &ioim->itnim->delay_comp_q);
- 		}
- 		bfa_itnim_iodone(ioim->itnim);
- 	} else
-@@ -2723,8 +2716,7 @@ bfa_ioim_delayed_comp(struct bfa_ioim_s *ioim, bfa_boolean_t iotov)
- 	 * Move IO to fcpim global queue since itnim will be
- 	 * freed.
- 	 */
--	list_del(&ioim->qe);
--	list_add_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
-+	list_move_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
- }
- 
- 
-@@ -3318,8 +3310,7 @@ bfa_tskim_gather_ios(struct bfa_tskim_s *tskim)
- 		cmnd = (struct scsi_cmnd *) ioim->dio;
- 		int_to_scsilun(cmnd->device->lun, &scsilun);
- 		if (bfa_tskim_match_scope(tskim, scsilun)) {
--			list_del(&ioim->qe);
--			list_add_tail(&ioim->qe, &tskim->io_q);
-+			list_move_tail(&ioim->qe, &tskim->io_q);
- 		}
- 	}
- 
-@@ -3331,8 +3322,7 @@ bfa_tskim_gather_ios(struct bfa_tskim_s *tskim)
- 		cmnd = (struct scsi_cmnd *) ioim->dio;
- 		int_to_scsilun(cmnd->device->lun, &scsilun);
- 		if (bfa_tskim_match_scope(tskim, scsilun)) {
--			list_del(&ioim->qe);
--			list_add_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
-+			list_move_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
- 			bfa_ioim_tov(ioim);
- 		}
- 	}
-@@ -3576,8 +3566,7 @@ void
- bfa_tskim_free(struct bfa_tskim_s *tskim)
- {
- 	WARN_ON(!bfa_q_is_on_q_func(&tskim->itnim->tsk_q, &tskim->qe));
--	list_del(&tskim->qe);
--	list_add_tail(&tskim->qe, &tskim->fcpim->tskim_free_q);
-+	list_move_tail(&tskim->qe, &tskim->fcpim->tskim_free_q);
- }
- 
- /*
+ /**
+- * devfreq_cooling_em_register_power() - Register devfreq cooling device with
++ * devfreq_cooling_em_register() - Register devfreq cooling device with
+  *		power information and automatically register Energy Model (EM)
+  * @df:		Pointer to devfreq device.
+  * @dfc_power:	Pointer to devfreq_cooling_power.
+-- 
+1.8.3.1
 
