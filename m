@@ -2,81 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211483A0B4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0873A0B51
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbhFIEb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 00:31:26 -0400
-Received: from mail-pg1-f181.google.com ([209.85.215.181]:35578 "EHLO
-        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231513AbhFIEbZ (ORCPT
+        id S233691AbhFIEcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 00:32:24 -0400
+Received: from mail-lf1-f42.google.com ([209.85.167.42]:37439 "EHLO
+        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231268AbhFIEcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 00:31:25 -0400
-Received: by mail-pg1-f181.google.com with SMTP id o9so15540961pgd.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 21:29:31 -0700 (PDT)
+        Wed, 9 Jun 2021 00:32:22 -0400
+Received: by mail-lf1-f42.google.com with SMTP id p7so1733327lfg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 21:30:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=466GkKYajJKZZ8o449pbsZdtpv8lFssIM+BWMw8ocbc=;
-        b=KtkLh+yzYPo/Hy3dD5Bh0G2chrU6J9xzOFbDHK+rZvotMK0hnsssHwFb+FBZX+cuQR
-         CRfnxQYW8YO3s9J7PZ/7rJZ0XFiXVl+0pBoZsHkYSfWCQhI4e897se29QTvVVlD/6j/Q
-         foeKQ9AcskFmhaAZz6gyQUOI+qAXZ+UKHjZb8KZrUgTt64UcUP48RvOF79KJWxYYVxFK
-         JUs0IuTulQBDBLbNTxeWd5LnKBUE/Y5tyC2JCBLGLstGvjuGTgs/YcN/Rz6yeO6fbz22
-         LaH+9xAqoSoFNrHhmBEivYylm1VIF6mfE8dWp6FlqPuFmGx2YHwkHrY9A09kKv2CtOLY
-         3MLQ==
+        bh=s49P6l+xu1vflFN4QLmJCfSZvBVyezq9InIWh0eoZY8=;
+        b=rblvkurEZ17edKlzUlvor2BKX1S4M5Ir5iIXrAatPAyVLSAunLl8VWTIpV5DJCZu48
+         4f3X/0WA+TpUlXW9X6yrguwaOAmXWPhjqMe0i9cQcFEvKwhVZeTh61elv+26TbxKGt6i
+         rKDj9Ea/1cgs6kMr7FS9VRPl6T13GIUzdUMAYA3Nt13cLwFoi4akncoOJuMJjLo3VqrB
+         kdRvKZL0NdxQm4OsqgcroTxcosrvqKNdJmbeQ+cE+aK1AqoXtdXv0dEuoU9k6dKQDDmI
+         GOK4D1YBsDLWk5XaOUsMJVu4ytaz6QYHMBJ1y2atqTBdkyUiBKKAq3vwyzDW2ta+zwrv
+         l9rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=466GkKYajJKZZ8o449pbsZdtpv8lFssIM+BWMw8ocbc=;
-        b=NyACVynju3ApkOumkkHLpMshQVwtWeGvQw8LhypswTFaYYnRP02Geb+l3oPqk56YNh
-         tOxk0ukxcVlaT4qucMkKaWHrmRWx5RCTGoT81twBCgRXkUtMBySfxJiEkfYS4U1wK7zf
-         00YVrQs+CcFPEHXer4da4WTI+lhRE82LZIH1AGKeaQIkQ6u0JVpW2jj4XoBZBLsG147z
-         7ffPdus0eJ/4P597c/1szEUIvhNS2CElSa07rCJUvZMb9JcZU0IiF9MLWHNvVwkT0hu2
-         AlCWOdvm3g5pMmD2XtT7OfTphl1TO4MtdLs/iLQ7OkYbkkRJ7dS1Tt2v9vFYw6YKkDuP
-         x6Lw==
-X-Gm-Message-State: AOAM5333o38qD2/c04sK2t0yv9hLxAqySjsF/QpXx1aCy8N/th3dU5uQ
-        IMJDPJFQOhKNIrCMmAN3ONYbgoXItqmezYpeDlS5pQ==
-X-Google-Smtp-Source: ABdhPJy7sycljRIcbt0LIUJlmjby8WgEapGKwnO8xUzbihnwucMVt6qQXRNQcZiFKraeUhWwUBe0yaKe2B6quIssEDY=
-X-Received: by 2002:aa7:952b:0:b029:2e9:eef1:8e17 with SMTP id
- c11-20020aa7952b0000b02902e9eef18e17mr3379605pfp.70.1623212911484; Tue, 08
- Jun 2021 21:28:31 -0700 (PDT)
+        bh=s49P6l+xu1vflFN4QLmJCfSZvBVyezq9InIWh0eoZY8=;
+        b=lZjbgmgzK321w4OWyY9p12q4YH0fn2EKqmN8RBnhfR+XI8wKVsa2ylublbk0/Rpm/z
+         b39SJYzZr3ktNTqcm+xPImzFAXdsuJ1C55Oho6r9jmnrAsTYxy/susELRkY3Gc24G0Jt
+         zphDO2dAenHkrmZQzd9NdJG4xQtS2lYb8AP2THzvSoXCwXCo0lSxRAw71TXccTCTwBf6
+         X3JTTWfJlc6jQTmgamdr1oGZXzAxzQuF0LC0v83rz7vOG3H3wAuH5UWAN1a3eDYzgHg0
+         GMOk2BGhhaWYRCBb6C9JgUY+wWDz/LfTC+skFAT/xR4pye6OvSyvXHU7ftT5er8SbLPh
+         OSdw==
+X-Gm-Message-State: AOAM5339fgCrGrrnZb/KK8Bcx068ebYXmJUb01sBH5Yj0IphIGjad3qO
+        1nWspBgd3FHpvWwLRTRwY/iYBgZPA/wx3u+W2AlFvQ==
+X-Google-Smtp-Source: ABdhPJxUXeDd5DBVTOvA07F2QFaCIqI6h2pUgfRQof32+ULWRrzJ2a8Kg2QT/2i1lEyQfjE3cHAhrQv8M0sgzMtaWpE=
+X-Received: by 2002:a19:484d:: with SMTP id v74mr17541890lfa.396.1623212957298;
+ Tue, 08 Jun 2021 21:29:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210609135237.22bde319@canb.auug.org.au>
-In-Reply-To: <20210609135237.22bde319@canb.auug.org.au>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 8 Jun 2021 21:28:20 -0700
-Message-ID: <CAPcyv4j946hkhZVrP=eOav52VpCDj5whwwSyQ7cRgBGvoSXjJw@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the block tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210609002326.210024-1-tyhicks@linux.microsoft.com> <20210609002326.210024-6-tyhicks@linux.microsoft.com>
+In-Reply-To: <20210609002326.210024-6-tyhicks@linux.microsoft.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 9 Jun 2021 09:59:04 +0530
+Message-ID: <CAFA6WYOZC0iHzZm6pOxz31eW_=8g2wyJdm4wiOGKggO6-a9MdA@mail.gmail.com>
+Subject: Re: [PATCH v3 5/7] tee: Support shm registration without dma-buf backing
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        op-tee@lists.trustedfirmware.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 8:52 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the block tree, today's linux-next build (powerpc
-> ppc64_defconfig) produced this warning:
->
-> drivers/nvdimm/pmem.c: In function 'pmem_pagemap_cleanup':
-> drivers/nvdimm/pmem.c:338:24: warning: unused variable 'q' [-Wunused-variable]
->   338 |  struct request_queue *q =
->       |                        ^
->
+Hi Tyler,
 
-Ugh, I should have caught this... fix incoming.
+On Wed, 9 Jun 2021 at 05:55, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
+>
+> Uncouple the registration of dynamic shared memory buffers from the
+> TEE_SHM_DMA_BUF flag. Drivers may wish to allocate dynamic shared memory
+> regions but do not need them to be backed by a dma-buf when the memory
+> region is private to the driver.
 
-> Introduced by commit
+In this case drivers should use tee_shm_register() instead where the
+memory allocated is actually private to the driver. However, you need
+to remove TEE_SHM_DMA_BUF as a mandatory flag for tee_shm_register().
+Have a look at an example here [1]. So modifying tee_shm_alloc() for
+this purpose doesn't look appropriate to me.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/keys/trusted-keys/trusted_tee.c#n73
+
+-Sumit
+
 >
->   80b58f4e9f4a ("libnvdimm/pmem: Fix blk_cleanup_disk() usage")
+> Allow callers of tee_shm_alloc() to specify the TEE_SHM_REGISTER flag to
+> request registration. If the TEE implementation does not require dynamic
+> shared memory to be registered, clear the flag prior to calling the
+> corresponding pool alloc function. Update the OP-TEE driver to respect
+> TEE_SHM_REGISTER, rather than TEE_SHM_DMA_BUF, when deciding whether to
+> (un)register on alloc/free operations. The AMD-TEE driver continues to
+> ignore the TEE_SHM_REGISTER flag.
 >
+> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+>  drivers/tee/optee/shm_pool.c |  5 ++---
+>  drivers/tee/tee_shm.c        | 11 ++++++++++-
+>  2 files changed, 12 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
+> index da06ce9b9313..6054343a29fb 100644
+> --- a/drivers/tee/optee/shm_pool.c
+> +++ b/drivers/tee/optee/shm_pool.c
+> @@ -27,7 +27,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+>         shm->paddr = page_to_phys(page);
+>         shm->size = PAGE_SIZE << order;
+>
+> -       if (shm->flags & TEE_SHM_DMA_BUF) {
+> +       if (shm->flags & TEE_SHM_REGISTER) {
+>                 unsigned int nr_pages = 1 << order, i;
+>                 struct page **pages;
+>
+> @@ -42,7 +42,6 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+>                         page++;
+>                 }
+>
+> -               shm->flags |= TEE_SHM_REGISTER;
+>                 rc = optee_shm_register(shm->ctx, shm, pages, nr_pages,
+>                                         (unsigned long)shm->kaddr);
+>                 kfree(pages);
+> @@ -60,7 +59,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+>  static void pool_op_free(struct tee_shm_pool_mgr *poolm,
+>                          struct tee_shm *shm)
+>  {
+> -       if (shm->flags & TEE_SHM_DMA_BUF)
+> +       if (shm->flags & TEE_SHM_REGISTER)
+>                 optee_shm_unregister(shm->ctx, shm);
+>
+>         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
+> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+> index 00472f5ce22e..1c0176550b9c 100644
+> --- a/drivers/tee/tee_shm.c
+> +++ b/drivers/tee/tee_shm.c
+> @@ -117,7 +117,7 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+>                 return ERR_PTR(-EINVAL);
+>         }
+>
+> -       if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF))) {
+> +       if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF | TEE_SHM_REGISTER))) {
+>                 dev_err(teedev->dev.parent, "invalid shm flags 0x%x", flags);
+>                 return ERR_PTR(-EINVAL);
+>         }
+> @@ -137,6 +137,15 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+>                 goto err_dev_put;
+>         }
+>
+> +       if (!teedev->desc->ops->shm_register ||
+> +           !teedev->desc->ops->shm_unregister) {
+> +               /* registration is not required by the TEE implementation */
+> +               flags &= ~TEE_SHM_REGISTER;
+> +       } else if (flags & TEE_SHM_DMA_BUF) {
+> +               /* all dma-buf backed shm allocations are registered */
+> +               flags |= TEE_SHM_REGISTER;
+> +       }
+> +
+>         shm->flags = flags | TEE_SHM_POOL;
+>         shm->ctx = ctx;
+>         if (flags & TEE_SHM_DMA_BUF)
 > --
-> Cheers,
-> Stephen Rothwell
+> 2.25.1
+>
