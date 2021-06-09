@@ -2,123 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2543A0DBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F111A3A0D90
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237287AbhFIH3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:29:30 -0400
-Received: from mail-vs1-f51.google.com ([209.85.217.51]:38895 "EHLO
-        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230221AbhFIH3Y (ORCPT
+        id S237193AbhFIHUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:20:09 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8111 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232746AbhFIHUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:29:24 -0400
-Received: by mail-vs1-f51.google.com with SMTP id x8so12353492vso.5;
-        Wed, 09 Jun 2021 00:27:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nWNpzXGRyCGRE/T+VmaA6oH+l9WqaV/Ah1VoOoi8rDk=;
-        b=OM7/mwsLDWu9Bi3GDZiXBCo90xdVImQGQLQF7dH3HKWKufMpkZFeoEWT/eMRJVvZXB
-         5oPK+cOSaEQ0Uh8sMMZxfwwvWYd/YBX3S0Gs4d5957LaRxItNMA7pjeYvXTTSkcRJqzN
-         lAysbIWNU1BlHZK71RnRk26+q4It0QDZyE2hVjw/3Qw7vPDqIoP1QCJLUItpQmusvXJD
-         vzZN8+Nna0CrRWgjoszJdOewH8hJxPp+yEGjIodxT/GDKWqE4F0XS73gWi0NRr3PPxvz
-         r/alPK5Tx2JzMFUgq4+KgFDsyUanT+Jy9Ek2T+SNv5Oo3uOSgxaiE+1hq2aklkxdgKMr
-         4ddg==
-X-Gm-Message-State: AOAM5313Gt902dbZM/lQ43C0gomUJ6HUZKLH9RfZK2iIP5b1MmnDGyFL
-        9Nm9vsAUL05dpp54cqgVRwkPJBic0XH2dr/16E6nvzNi526MBw==
-X-Google-Smtp-Source: ABdhPJxRBcZfyGdvJxRstRs7Opkp9as+0vaZOjoxAlvkppxwAy0BA5T7tOpNPuM9ZrrqvGbj2LS3FrBdiwdN+Px/dek=
-X-Received: by 2002:a05:6102:2011:: with SMTP id p17mr3979601vsr.40.1623223636944;
- Wed, 09 Jun 2021 00:27:16 -0700 (PDT)
+        Wed, 9 Jun 2021 03:20:07 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0JKQ1GX9zYsXy;
+        Wed,  9 Jun 2021 15:15:22 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 15:18:11 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
+ 15:18:11 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, Peter Chen <peter.chen@kernel.org>,
+        "Pawel Laszczak" <pawell@cadence.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>, <linux-usb@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next v2] usb: cdns3: cdns3-gadget: Use list_move_tail instead of list_del/list_add_tail
+Date:   Wed, 9 Jun 2021 15:27:20 +0800
+Message-ID: <20210609072720.1358527-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210604180933.16754-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210604180933.16754-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210604180933.16754-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 9 Jun 2021 09:27:05 +0200
-Message-ID: <CAMuHMdVkKhD3kU-DtPzrGfNf4Sn5Ht09Z1N0scwx1XJoG-F6Mg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] soc: renesas: Add support to read LSI DEVID register
- of RZ/G2{L,LC} SoC's
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+Using list_move_tail() instead of list_del() + list_add_tail().
 
-On Fri, Jun 4, 2021 at 8:09 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add support for reading the LSI DEVID register which is present in
-> SYSC block of RZ/G2{L,LC} SoC's.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+V1->V2:
+	CC mailist
 
-Thanks for your patch!
+ drivers/usb/cdns3/cdns3-gadget.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> --- a/drivers/soc/renesas/renesas-soc.c
-> +++ b/drivers/soc/renesas/renesas-soc.c
-> @@ -56,6 +56,11 @@ static const struct renesas_family fam_rzg2 __initconst __maybe_unused = {
->         .reg    = 0xfff00044,           /* PRR (Product Register) */
->  };
->
-> +static const struct renesas_family fam_rzg2l __initconst __maybe_unused = {
-> +       .name   = "RZ/G2L",
-> +       .reg    = 0x11020a04,
+diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
+index 57adcdbfab5f..5d8c982019af 100644
+--- a/drivers/usb/cdns3/cdns3-gadget.c
++++ b/drivers/usb/cdns3/cdns3-gadget.c
+@@ -430,9 +430,7 @@ static int cdns3_start_all_request(struct cdns3_device *priv_dev,
+ 		if (ret)
+ 			return ret;
+ 
+-		list_del(&request->list);
+-		list_add_tail(&request->list,
+-			      &priv_ep->pending_req_list);
++		list_move_tail(&request->list, &priv_ep->pending_req_list);
+ 		if (request->stream_id != 0 || (priv_ep->flags & EP_TDLCHK_EN))
+ 			break;
+ 	}
 
-Please don't add hardcoded register addresses for new SoCs (i.e. drop
-".reg").  The "renesas,r9a07g044-sysc" is always present.
-And if it were missing, the hardcoded fallback would lead into the
-classic CCCR/PRR scheme, which is not correct for RZ/G2L...
-
-> @@ -348,6 +361,25 @@ static int __init renesas_soc_init(void)
->                 goto done;
->         }
->
-> +       np = of_find_compatible_node(NULL, NULL, "renesas,r9a07g044-sysc");
-> +       if (np) {
-> +               of_node_put(np);
-> +               chipid = ioremap(family->reg, 4);
-
-Just use of_iomap(np, 0)...
-
-> +
-> +               if (chipid) {
-> +                       product = readl(chipid);
-
-... and add the DEVID offset within the SYSC block here.
-
-> +                       iounmap(chipid);
-> +
-> +                       if (soc->id && (product & 0xfffffff) != soc->id) {
-> +                               pr_warn("SoC mismatch (product = 0x%x)\n",
-> +                                       product);
-> +                               return -ENODEV;
-> +                       }
-> +               }
-> +
-> +               goto done;
-> +       }
-> +
->         /* Try PRR first, then hardcoded fallback */
->         np = of_find_compatible_node(NULL, NULL, "renesas,prr");
->         if (np) {
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
