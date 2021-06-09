@@ -2,337 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B843B3A17A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67273A17A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238070AbhFIOqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:46:07 -0400
-Received: from mga17.intel.com ([192.55.52.151]:46728 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236867AbhFIOqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:46:05 -0400
-IronPort-SDR: Y29RpTk9WaDNrw3RR46f5LZNMr4DbXOSkz+XbwytmSUra75JniQvxdnudMuYHC1muy7vPJ6B0/
- h49MHFTZ4W4Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="185459884"
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="185459884"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 07:44:10 -0700
-IronPort-SDR: VKhjsp8LxCzZLg2MpzTkmEXbT89DZLSwNBDJcUUxpOilZCuK2/UYwePpGYZEiPozEnP4b9wCka
- QrR5vT7FEX7g==
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="419300967"
-Received: from pmadadi-mobl.amr.corp.intel.com (HELO [10.254.191.7]) ([10.254.191.7])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 07:44:09 -0700
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v4] soundwire: intel: move to auxiliary bus
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        hui.wang@canonical.com, Jason Gunthorpe <jgg@nvidia.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        sanyog.r.kale@intel.com,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20210511052132.28150-1-yung-chuan.liao@linux.intel.com>
- <21002781-0b78-3b36-952f-683482a925d7@linux.intel.com>
- <YLS4N2KgzfsMBD1c@vkoul-mobl.Dlink>
- <b316763b-d219-6ea3-401e-3eb9718aabf3@linux.intel.com>
- <YMBHj6PBzeHexXJb@vkoul-mobl>
-Message-ID: <07dbe0a2-0abb-810b-ef39-b83511d3f3e0@linux.intel.com>
-Date:   Wed, 9 Jun 2021 09:44:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S238074AbhFIOrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:47:31 -0400
+Received: from mail-dm6nam08on2056.outbound.protection.outlook.com ([40.107.102.56]:34273
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231162AbhFIOr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:47:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e9uJAxA9IRUCSERxnNYEXhO2TNZqyW2+a9q3wEd00JRvpzWUx0S5w8hBP5o+h2m7meFC3ub3wFfHok9aTrlaM8FwBOiqobVAewwI+AcaAtJZLG7jaUEqEpq7YkmPAqTPI8V/egMHW1mTjd2XW2xW4qgVRjtPbAb0jtKd2P9Kbqjo4vzJAy4cjVFwWsJNvwSWOGOISU9Z/tJrzBFRedJnDHwPL5Bw9L1K09RqSqkbc+9NH3kQQW6AsQSsNCfK7KjqAw40txCXBOak2pZ7Vhn+iyXT8pzVjlqOBh9SrBuxFZ/LvVGuFMoSWIFkzAmarZMaN9W19eY0/jWC/WdriqMA8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Pt6geJ100e+qGBfPGrQ3RZau30+Im5rgBmwNsyhsnI=;
+ b=AFOUot7KWAjzzjhHT+R+vd7CvGz5YEc4e5Mhng9i53WN/OTp4OLgM8EAAcjCO2mTFA79sTJuALBF0q9my637wcPs10d0QsRXc9Ig2rZHghPUVhIOU5zTw+N6+KEmgRzqq7tKunU3mvtq8EYQu7ZZaJnNLur8XT/D+cui+MqqbvskdL8MbnJF65xR1vIu80sV4+bpFCuBi0ZLGjSIVbU6hGF7oVhKUyMpTH4OtC6jPYFzK7zDE1mw2faSlxbgiUxhhdiRB88qTbXrJ/AqZBsBMhzwbBBiMhDrrnGAsv3sloAJyP+QdSCVF7e2aiSNh6Je15TZAgQLmEBPQw0RCmtraA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Pt6geJ100e+qGBfPGrQ3RZau30+Im5rgBmwNsyhsnI=;
+ b=WI175eI/jcqiKCeEwonvx/5BlumNYc9WbNXEKH0IvTzxQwn+F4y17IFOOKlnagus6NiVSW2lLE+USwmguUSod8H8cc8QNHZfrYg1wJVA6mJiNyOFxlQa5Cg1VgkIZiGi2j22Zz//A62aS9xuU6GjxT5ELe+bWSzw65yaILCvJKm7NWVkQwIE6T0NJIu1Iv+8NPqDVPOmLIovUMt2D3Sdv3ZUag3K6wMz5IsTKikXM/dwhO8DwlCUSni04Y+kcxEE1dsVPlXDAs4PkfUhHh0zI0KiC+X4fUHQnBY7iOmNaf/eO8YBJN9vSCAGIuVnzPi2yIuxzl5nxrJPyOhgLLm29g==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5303.namprd12.prod.outlook.com (2603:10b6:208:317::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Wed, 9 Jun
+ 2021 14:45:31 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4219.021; Wed, 9 Jun 2021
+ 14:45:31 +0000
+Date:   Wed, 9 Jun 2021 11:45:30 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210609144530.GD1002214@nvidia.com>
+References: <20210607175926.GJ1002214@nvidia.com>
+ <fdb2f38c-da1f-9c12-af44-22df039fcfea@redhat.com>
+ <20210608131547.GE1002214@nvidia.com>
+ <89d30977-119c-49f3-3bf6-d3f7104e07d8@redhat.com>
+ <20210608124700.7b9aa5a6.alex.williamson@redhat.com>
+ <20210608190022.GM1002214@nvidia.com>
+ <ec0b1ef9-ae2f-d6c7-99b7-4699ced146e4@metux.net>
+ <671efe89-2430-04fa-5f31-f52589276f01@redhat.com>
+ <20210609115445.GX1002214@nvidia.com>
+ <20210609083134.396055e3.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609083134.396055e3.alex.williamson@redhat.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR08CA0012.namprd08.prod.outlook.com
+ (2603:10b6:208:239::17) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <YMBHj6PBzeHexXJb@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR08CA0012.namprd08.prod.outlook.com (2603:10b6:208:239::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Wed, 9 Jun 2021 14:45:31 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lqzSU-004ePg-HJ; Wed, 09 Jun 2021 11:45:30 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 33ad18be-3a58-418f-6578-08d92b553b29
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5303:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5303615E79C26145A813EA1BC2369@BL1PR12MB5303.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iLA8Atl84dQgiE/SWKEuJugG++yFpkcYT3vmQnsqMFWEzwMml8HXoGSb6Stxp0NPyWWYTp0XRBcYKUggQD3gXDw2YWqYh2TzP6oq1U5q/cT3cilHnrTLU1G7hAocPci1b9SXeeLXW+KeoFWvwQCKueCxjvLtETPBYs94XCxF1tWv7PmXdz8/QX36gXejv+krzBApESuKj5/jiVRA2mutLzDKH4lw2IeeCAxN1vBd8/U4z2YBj8iaVFdFHM7Y0H5U/6NuyN+39PgW95PVys99eNkbe2B6pyuHjopJnZwAjhTXfVfUI80D565QgZvp08brKUSz5q5XBdKYZO4IEBqqj9mVFZrgirXxv5bBJggjoCbzmQ3P0wcvGxfq4i41mrK7E7LKlHrdVJMRs1sbkw6qaBJEbshvv3ozuibe9Xcpfx+ObZxw4gKHJW72IJK/xjTeKcUXvXsJ6EX3XSr9D/TceeqnbHjmZJiJSp2iGeGgHkXr3wrLc6dGCGgTe19E/xMId7Gy4GUzChvVhOBUJEKQLJBs8KQg8pQpOYfKlEZJPINWcPG6ELSsxsJvI6KHC1aWVz38LwCFog4dRhxZrNuZAd98f/E+IRExBQBA4UojoFA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(4326008)(8676002)(83380400001)(38100700002)(7416002)(54906003)(5660300002)(2616005)(9746002)(9786002)(426003)(498600001)(8936002)(86362001)(26005)(66556008)(66946007)(1076003)(33656002)(186003)(6916009)(36756003)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XBIvD+cGNY/e/v5s4OsdZcDJ727LzuXX4EPkWrLzbXrum1bgAgvv9FLl6a2T?=
+ =?us-ascii?Q?wjnl1KxhVvhOR8XpL7FYijgCyvmxFMTqXgHISFHVDbHZ2PxVBR7ryM3ghsiw?=
+ =?us-ascii?Q?7Z6GIXPeSu/CBl2BVXX5I1MEk/f0FNwvoDim5x9PDBTYi60+dkzmmJWuRsLS?=
+ =?us-ascii?Q?9pKTpCzJr+yQVj1t3mTJNIGdWQJ2RuDS/0x+qXbqsVcotgSfrcl6ULR84mgU?=
+ =?us-ascii?Q?ubKEYT/G2qresGKQonQCn79NHvuHrBaHJhQO2YzglxRVoHEPUY/eetJIwszc?=
+ =?us-ascii?Q?3wHXRp5TejK6GH2bB1vwRWb7jUQplN020cMAEhoC5la4YSOWI9qIUYDrsdyI?=
+ =?us-ascii?Q?pNBL60DdItt5YypsmKqKyrV0AKjF3VPUZh8eM7oeVlP42GzmTPmCH1gB7+yW?=
+ =?us-ascii?Q?4aIXqRvIyN1zvjE/g/I9Y+qeMEfEiZqJK30qjkif06UD/6I+4REIE8epAr/x?=
+ =?us-ascii?Q?5HTw672ATaAkJR42tjd5vjvRx1W83sD+ndeEIf/cUkStpa6if9rIUZglHG8p?=
+ =?us-ascii?Q?g897SZ55P7YaJZ56YIi7CgJNXibN88VMBZG6ZVzzCZWfA0D6BU0AgyYvR3Im?=
+ =?us-ascii?Q?lDWSE2XawkNaB4HFHTJplL6oYIXAbAmLV945INewG2zH+1/or2bkFNLlKqEq?=
+ =?us-ascii?Q?EF7w4sKz9W2hF1HHH/HnvjqhRMeq4YtB/I1YaCdtUYfiV/oVjIuope1S7HnM?=
+ =?us-ascii?Q?H0FR9vM95GaDm3YgqEQF9kyORj+pE7OPfFVAArpBSWWe4csDlowRKHKJpzl5?=
+ =?us-ascii?Q?JBVSTTdxLusJrEJI0aOmMgVowcnbiERdxmjrywzIHIPJ58e5bgDOxG7R7/kh?=
+ =?us-ascii?Q?g5wmILwclNR79Y8Z6Ja7tFiICpcyINpdIKXMO8mcNyeeM2yexwhLTs/8m0j3?=
+ =?us-ascii?Q?N2dKe9ySBFAKFzDcK/gsRyEp9/n+a8FgO0ZzNMyNyOmgYatKOwhtMRQ2cfhr?=
+ =?us-ascii?Q?2lt1ZNnrhU8jE2O6KiCqxtnWiIH81WI+GqJ3v1JJZiDXBPYz5cMlSI3WXmIK?=
+ =?us-ascii?Q?YsxVE3Si1lBrjehLMj8mYgNkMGAu9Kt9cmbbejaeunXySu2AEKOhEycOivBY?=
+ =?us-ascii?Q?lHSx8QJflyZ5NwLq4KGWwKfXSlcnv7tcleLTnZqB0JirIIlhZSLEEMQ+YqVM?=
+ =?us-ascii?Q?B+9qKdBIYk1rmrmyx1oEVfqh5qU3bIeF8XJkXPGl+/HdP74q5M6TtJ1KIZfe?=
+ =?us-ascii?Q?zX0Bn78kz3oGlh6uWKj3gfRP2KFHrblEWQEseWzl4kEUPj8urT9Qpu2zv+vi?=
+ =?us-ascii?Q?jZSjXDQsS5XvYwzbe9VmMyCo14qg7AMznMhsFxJpjdu9ScHTuYs8IoJ6S8D8?=
+ =?us-ascii?Q?es+lMMQ1109p+LGSheTxGY3X?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 33ad18be-3a58-418f-6578-08d92b553b29
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 14:45:31.6231
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wPv7dkGOuJP57ADrRcX8jlH/XI+T9FcebDKGR37jwcHw1Af2acAjEEStb2OgZWH+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5303
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 09, 2021 at 08:31:34AM -0600, Alex Williamson wrote:
 
+> If we go back to the wbinvd ioctl mechanism, if I call that ioctl with
+> an ioasidfd that contains no devices, then I shouldn't be able to
+> generate a wbinvd on the processor, right?  If I add a device,
+> especially in a configuration that can generate non-coherent DMA, now
+> that ioctl should work.  If I then remove all devices from that ioasid,
+> what then is the difference from the initial state.  Should the ioctl
+> now work because it worked once in the past?
 
-On 6/8/21 11:46 PM, Vinod Koul wrote:
-> Hi Pierre,
+The ioctl is fine, but telling KVM to enable WBINVD is very similar to
+open and then reconfiguring the ioasid_fd is very similar to
+chmod. From a security perspective revoke is not strictly required,
+IMHO.
+
+> access.  This is no different than starting a shell via sudo (ie. an
+> ongoing reference) or having the previous authentication time out, or
+> in our case be notified it has expired.
+
+Those are all authentication gates as well, yes sudo has a timer, but
+once the timer expires it doesn't forcibly revoke & close all the
+existing sudo sessions. It just means you can't create new ones
+without authenticating.
+
+> > > That's already more or less meaningless for both KVM and VFIO, since they
+> > > are tied to an mm.  
+> > 
+> > vfio isn't supposed to be tied to a mm.
 > 
-> You might want to check your setting, this and some other mail (not all
-> though) sent by you seem to have landed up in my spam folder, dont know
-> why gmail is doing that...
+> vfio does accounting against an mm, why shouldn't it be tied to an mm?
 
-I haven't changed any of my configurations, not sure what happens?
+It looks like vfio type 1 is doing it properly, each ranch of of user
+VA is stuffed into a struct vfio_dma and that contains a struct task
+(which can be a mm_struct these days) that refers to the owning mm.
 
-> On 01-06-21, 08:56, Pierre-Louis Bossart wrote:
->>
->>>> b) Vinod commented:
->>>>
->>>> "What I would like to see the end result is that sdw driver for Intel
->>>> controller here is a simple auxdev device and no additional custom setup
->>>> layer required... which implies that this handling should be moved into
->>>> auxdev or Intel code setting up auxdev..."
->>>>
->>>> I was unable to figure out what this comment hinted at: the auxbus is
->>>> already handled in the intel_init.c and intel.c files and the auxbus is used
->>>> to model a set of links/managers below the PCI device, not the controller
->>>> itself. There is also no such thing as a simple auxdev device used in the
->>>> kernel today, the base layer is meant to be extended with domain-specific
->>>> structures. There is really no point in creating a simple auxbus device
->>>> without extensions.
->>>
->>> <back from vacations>
->>
->> same here :-)
->>
->>> I would like to see that the init_init.c removed completely, that is my
->>> ask here
->>>
->>> This layer was created by me to aid in creating the platform devices.
->>> Also the mistake was not to use platform resources and instead pass a
->>> custom structure for resources (device iomem address, irq etc)
->>
->> We are 100% aligned on the ask to remove intel_init.c, this layer is
->> unnecessary and adds more work for developers/maintainers. We will move all
->> this in the SOF driver.
->>
->>> I would like to see is the PCI/SOF parent driver create the sdw aux
->>> device and that should be all needed to be done. The aux device would be
->>> probed by sdw driver. No custom resource structs for resources please.
->> I was following the previous paragraph but got stuck on the last sentence
->> 'no custom structs for resources', see below.
->>
->>> If that is not possible, I would like to understand technical details of
->>> why that would be that case. If required necessary changes should be
->>> made to aux bus to handle and not have sequencing issue which you had
->>> trouble with platform approach.
->>
->> I don't know what you are referring to with the 'sequencing issue which you
->> had trouble with platform approach'. We never had any technical issues with
->> platform devices, the solution works and has been productized. We are only
->> doing this iso-functionality transition because GregKH asked us to do only
->> use platform devices IF there is a real platform device (controlled by
->> DT/ACPI).
->>
->> I think we are also having language/specification issues here. I don't
->> understand what you describe as a 'resource' - there is no interaction with
->> firmware - nor how we can avoid being domain-specific for something that is
->> Intel-specific.
->>
->> Let's go back to the code to help the discussion: the auxiliary driver which
->> manages a SoundWire link needs to be provided with a 'custom' structure that
->> describes basic information provided by the PCI parent (link masks, quirks,
->> IO register bases) and contains internal fields needed for the link
->> management (mutex, ops, list, etc). This is the structure we use:
->>
->> struct sdw_intel_link_res {
->> 	void __iomem *mmio_base; /* not strictly needed, useful for debug */
->> 	void __iomem *registers;
->> 	void __iomem *shim;
->> 	void __iomem *alh;
-> 
-> These are resources and any auxiliary_device should add this. That way
-> while creating you can set up. Hint look at how platform_device sets up
-> resources
+Looks like a single fd can hold multiple vfio_dma's and I don't see an
+enforcment that current is locked to any specific process.
 
-If you look at the *existing* code, we don't handle any "resources" with 
-the platform devices, we use the platform_device_info.data to pass the 
-link information. It's a void pointer. We do not touch the resource 
-field in the platform_device_into at all.
+When the accounting is done it is done via the mm obtained through the
+vfio_dma struct, not a global FD wide mm.
 
-https://elixir.bootlin.com/linux/latest/source/drivers/soundwire/intel_init.c#L168
+This appears all fine for something using pin_user_pages(). We don't
+expect FDs to become locked to a single process on the first call to
+pin_user_pages() that is un-unixy.
 
->> 	int irq;
-> 
-> irq is a generic field and should be again moved into auxiliary_device
+kvm is special in this regard.
 
-It's information passed by the parent so that all links use the same 
-irq. We added this maybe 1.5 years ago after spending months chasing 
-race conditions that we could not root cause. there's nothing generic 
-about this field.
-
->> 	const struct sdw_intel_ops *ops;
-> 
-> This is for callbacks right? Why cant the sdw aux driver call APIs
-> exported by SOF driver?
-
-this is part of the context, this could be moved to a different structure.
-
->> 	struct device *dev;
-> 
-> Why do you need a dev pointer here? Is this parent or something else?
-
-for convenience for runtime_pm, there are cases where the link can 
-suspend but the parent has to remain active due to power rail 
-dependencies, so we need to handle pm_runtime_get_noresume() and 
-pm_runtime_put_noidle().
-
-https://elixir.bootlin.com/linux/latest/source/drivers/soundwire/intel.h#L25
-
-We already use this field *today*, this isn't new. I guess we could use 
-dev->parent but that'd be a different patch.
-
->> 	struct mutex *shim_lock; /* protect shared registers */
-> 
-> Okay so you serialize the access to shim across sdw and sof right?
-> export an api from sof driver and get rid of lock here
-
-this is again something we do today. This is not a new field.
-
-see the description here:
-
-https://elixir.bootlin.com/linux/latest/source/drivers/soundwire/intel.h#L25
-
-This is not about serialization between SOF and SDW, only SDW drivers 
-access the shim. It's about serialization between the different SDW 
-driver instances accessing common hardware registers. Nothing new.
-
->> 	u32 *shim_mask;
->> 	u32 clock_stop_quirks;
->> 	u32 link_mask;
->> 	struct sdw_cdns *cdns;
->> 	struct list_head list;
-> 
-> 
-> these sound as internal data to sdw instance, move into intel
-> driver instances
-
-what intel driver?
-
-We have a PCI Intel driver for the parent (SOF) and a driver instance 
-for each SoundWire link - probed when the parent creates the different 
-SoundWire devices.
-
-we need to have an Intel link driver which is different from the SOF 
-driver used for the parent. This is information needed at the child level.
-
->> };
->>
->> We could if it was desired for architectural clarity split this structure in
->> what is provided by the parent and what is used inside of the auxiliary
->> driver as an internal context that the parent doesn't touch, but these
->> definitions are again Intel-specific.
-> 
-> So rather than think Intel specfic, I would suggest you think in generic
-> terms. You have a child auxiliary_device (think like PCI etc), add
-> the generic resources like iomem regions, irq etc and call into SOF
-> driver. That would make sdw driver look neat and help you get rid of
-> this bits
-
-Not able to get what this means, sorry. the child device should not 
-'call into the SOF driver', mixing parent and child layers leads to 
-disaster in general.
-
-The model is exactly the same as what we have today with the platform 
-devices. We did not add ANY new fields or information, what is passed in 
-that structure is exactly the same as what we do upstream today with the 
-platform devices.
-
-To make my point, here is the structure in intel.h as of v5.13-rc1
-
-struct sdw_intel_link_res {
-	struct platform_device *pdev;
-	void __iomem *mmio_base; /* not strictly needed, useful for debug */
-	void __iomem *registers;
-	void __iomem *shim;
-	void __iomem *alh;
-	int irq;
-	const struct sdw_intel_ops *ops;
-	struct device *dev;
-	struct mutex *shim_lock; /* protect shared registers */
-	u32 *shim_mask;
-	u32 clock_stop_quirks;
-	u32 link_mask;
-	struct sdw_cdns *cdns;
-	struct list_head list;
-};
-
-and here's what we suggested in this patch:
-
-struct sdw_intel_link_res {
-	void __iomem *mmio_base; /* not strictly needed, useful for debug */
-	void __iomem *registers;
-	void __iomem *shim;
-	void __iomem *alh;
-	int irq;
-	const struct sdw_intel_ops *ops;
-	struct device *dev;
-	struct mutex *shim_lock; /* protect shared registers */
-	u32 *shim_mask;
-	u32 clock_stop_quirks;
-	u32 link_mask;
-	struct sdw_cdns *cdns;
-	struct list_head list;
-};
-
-You will notice that we removed the platform_device *pdev, but embedded 
-this structure into a larger one to make use of container_of()
-
-struct sdw_intel_link_dev {
-	struct auxiliary_device auxdev;
-	struct sdw_intel_link_res link_res;
-};
-
-That's it. We did not change anything else, all the other fields are 
-identical. We are only changing the TYPE of device and the interfaces 
-for probe/remove but using the same information and the same device 
-hierarchy.
-
->> Then both types of information are included in the 'link_dev' extension of
->> the auxiliary device.
->>
->> struct sdw_intel_link_dev {
->> 	struct auxiliary_device auxdev;
->> 	struct sdw_intel_link_res link_res;
->> };
->>
->> That's the basic design of the auxiliary bus, domain-specific data
->> structures are not added inside of the auxiliary_device but are part of an
->> extension accessed with container_of(). That's what everyone using the
->> auxiliary bus is doing.
-> 
-> I would say resources (as illustrated above) are not domain-specific
-> data but a generic stuff which any type of device object should contain
-
-??
-
->> Vinod, if you can elaborate on what 'resources' refer to in your reply that
->> would help. We've been using the same approach as others relying on the
->> auxiliary bus and I am struggling to see what is wrong with the solution we
->> suggested, or what changes to the auxiliary bus core would be needed. I
->> don't mind doing something different but I just don't understand what the
->> suggestion is.
-> 
-> I think auxiliary_device needs to look more like a real device rather
-> than a simple wrapper as it is now and put heavy onus on implementers.
-
-The consensus for the auxiliary_device model was hard to reach, and the 
-agreement was to align on a minimal model. If you disagree with the 
-directions, you will have to convince Nvidia/Mellanox and Intel 
-networking folks who contributed the solution to do something different.
-
-I also don't see what's heavy, we are not adding new complexity compared 
-to the use of the platform devices. It's the same code that implementers 
-need to provide, there is no additional cost.
-
-> Device drivers should be simple and boring. The details should be
-> handled in bus
-
-The auxiliary bus is minimal on purpose and cannot contain details if it 
-used in areas as diverse as networking, SOF clients and SoundWire child 
-devices. The 'details' need to be handled as domain-specific extensions.
-
-This patch only suggests a modification from platform devices to 
-auxiliary devices. That's it. Iso functionality. No new features or 
-concepts. No new fields. No performance/footprint/cost change.
-
-I did not ask to do this work and I don't have have any emotional 
-attachment to this work. I was trying to make GregKH happy after he 
-mentioned more than 2 years ago that plaform devices should not be used 
-when there isn't an ACPI/DT description.
-
-If you don't agree with the directions, we will withdraw this patch and 
-stay with the platform devices. There are no negative impacts from a 
-performance perspective, but it's not what GregKH wanted. I try to make 
-both of you happy, if this doesn't happen then there's no solution, is 
-there?
+Jason
