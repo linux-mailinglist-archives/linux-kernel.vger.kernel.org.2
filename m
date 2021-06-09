@@ -2,108 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2BF3A1B4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D9A3A1B51
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbhFIQy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42618 "EHLO
+        id S230371AbhFIQzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhFIQy0 (ORCPT
+        with ESMTP id S230215AbhFIQzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:54:26 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960F7C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 09:52:31 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so1739541pjp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:52:31 -0700 (PDT)
+        Wed, 9 Jun 2021 12:55:54 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AD6C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 09:53:59 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id ce15so39429513ejb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:53:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LD9HSxwVBYD4Eigmm4/eFaSooe5X81yBa6b9diyTxLk=;
-        b=N47Q7iKRccjNkYwWKqUHqFn73mIgkb6yUnEgVpfiCnpd7KGAo+RwkJGh7fCyhsJ5rJ
-         PHoctqrgLpYFlXiogoGImI85Yu3OsLM3sfJYRnwP4OzsOAGtIgoKDG+IYVT+VOE0fTE/
-         27PJSIvlhBf+evKmhRLXx/yOa0KOermG9co7o=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CjuPCxkHMajDm0LJZ6HojP9067gxaOE35kQ09vyuTbY=;
+        b=fsZc6cAAlB0htjqxdXE0wo5PNRQysfgWur6+bR1Zo6eVJrQNOtXwHgNg791zHZexAT
+         ylFxAKIlMjIKiqqfcAN8r11+yZ1HlVaMOyIyFrjXC6wAD5L2rmPmS/NuQZKP2Lj1ug1z
+         3MDWYvTABFF2uy2lhTgAYXCQkK7lBdK7zsHdkMN9i2lwd69QKUFYAS3F1n+MnJTWpWVH
+         Db/EbKaa6BxRRF87mMa9XCRZGVCIfYNn6Dj6bnCxmXCxGRF7LRF3TgxTwEAMtSR5P+gm
+         gA6YcLiwHJ7USXf8qYwYm735BOV7s/f0kA2ehkABwbq0ymzEYl1+IM2/YVOncfWyuFfZ
+         adhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LD9HSxwVBYD4Eigmm4/eFaSooe5X81yBa6b9diyTxLk=;
-        b=moxOxxIOVhoITDMjqrPKDifzPk06cKehFm0BjLYiB9e+wZTeCKz9o+ynBepQ5phc9x
-         n/NR2dXLhMS7088mZC8C35VYSy0gtGLohCfp05cFMCwXyGQ5gnaMIWeWe3S5nbIcTtAw
-         vmg8bK84S5a9NV/zaGKYVRVae08urdXdxMoh0zcNRTkffeh/dubXnp648DTGyhX28IyC
-         yJ+nkAJ4QWH+Pl1toN5wwmmrAfDHJcXIkIk8RMtxWgSHm78RjbIk35Z2sdMFogjFSgQi
-         BtqU3BMPRQQmK/cVLWal4mBXZuGifj09VW0to/s5FdcChs86wKX/gPcXRaDhrGLF77e8
-         izxw==
-X-Gm-Message-State: AOAM531nLa+UaY2pDLMuBO/augnwPUR4+VXk2rH9iTYd/WpK4JSzVFLA
-        nx0V0Gj1t1zwlwNyRhdTKCR6aQ==
-X-Google-Smtp-Source: ABdhPJzNXeQzlTinS1wmW8MEliQZalVLosypCXm6YUl9Lebh2/tT7cpsPFLagkE3mdC+ClBbYzFVAQ==
-X-Received: by 2002:a17:902:988f:b029:114:12d2:d548 with SMTP id s15-20020a170902988fb029011412d2d548mr479973plp.73.1623257550841;
-        Wed, 09 Jun 2021 09:52:30 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k30sm305187pgf.59.2021.06.09.09.52.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 09:52:30 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 09:52:29 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     John Wood <john.wood@gmx.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>, valdis.kletnieks@vt.edu,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v8 0/8] Fork brute force attack mitigation
-Message-ID: <202106090951.8C1B5BAD@keescook>
-References: <20210605150405.6936-1-john.wood@gmx.com>
- <202106081616.EC17DC1D0D@keescook>
- <cbfd306b-6e37-a697-ebdb-4a5029d36583@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CjuPCxkHMajDm0LJZ6HojP9067gxaOE35kQ09vyuTbY=;
+        b=qiILomHSpG1A8AX2/qbI3w6XOY+SsvLfddbzSlO/fApOxfqVOWzHeXe0922scMi9la
+         eyQlZ8Z6NTJGxZ7Fx+25bMjrPFV8wynFVRf/yp06ddEkSwAvfhvqj7rsU6lFlqgA1Xx2
+         Z10aJ7Xa7APV3EaXAi2c/rY3c5V7IUbeMj12P+HN8AIVxEzp7FMiPS9q6G0kXFx4I6S5
+         nyxVoxmJ49gFg3miMltWG3J9evI9l+62/uCgYRj+Fk8okLnkMrlH3x+UFRFyXQbjL3Xc
+         PCkEhhaciW7HajiCfys/avbuTCV4qoGS0AqU+IutTkmDoxgI03fI/2X8StWFcFV0lfU4
+         mesg==
+X-Gm-Message-State: AOAM530NNzY5JQWQ4N88QY3UrMqLvsJlx5LCAiY5abudGFkWXru/pKDE
+        EPn3KUeefpWMeY9CHceUkaPAtSIr2dAk4aL3Oa/EQPlTME8=
+X-Google-Smtp-Source: ABdhPJyxNnJY1mRKbOQyd8Piy7wEoYiZWAgvyt3+9ySh0YfpyREn2j0vfzXc12Y6SXpgpcQ7xRjRhax25zHTWa1V36E=
+X-Received: by 2002:a17:906:488a:: with SMTP id v10mr755069ejq.383.1623257638180;
+ Wed, 09 Jun 2021 09:53:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cbfd306b-6e37-a697-ebdb-4a5029d36583@linux.intel.com>
+References: <59d94b4-c0dd-310-894-be99416f3c92@google.com>
+In-Reply-To: <59d94b4-c0dd-310-894-be99416f3c92@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 9 Jun 2021 09:53:46 -0700
+Message-ID: <CAHbLzkrUvvhQRYQDEOYi66sWL5HSQCyAU0McgdYT8=59g=szXg@mail.gmail.com>
+Subject: Re: [PATCH v2 01/10] mm/thp: fix __split_huge_pmd_locked() on shmem
+ migration entry (fwd)
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 04:38:15PM -0700, Andi Kleen wrote:
-> 
-> On 6/8/2021 4:19 PM, Kees Cook wrote:
-> > On Sat, Jun 05, 2021 at 05:03:57PM +0200, John Wood wrote:
-> > > [...]
-> > > the kselftest to avoid the detection ;) ). So, in this version, to track
-> > > all the statistical data (info related with application crashes), the
-> > > extended attributes feature for the executable files are used. The xattr is
-> > > also used to mark the executables as "not allowed" when an attack is
-> > > detected. Then, the execve system call rely on this flag to avoid following
-> > > executions of this file.
-> > I have some concerns about this being actually usable and not creating
-> > DoS situations. For example, let's say an attacker had found a hard-to-hit
-> > bug in "sudo", and starts brute forcing it. When the brute LSM notices,
-> > it'll make "sudo" unusable for the entire system, yes?
-> > 
-> > And a reboot won't fix it, either, IIUC.
-> > 
-> The whole point of the mitigation is to trade potential attacks against DOS.
-> 
-> If you're worried about DOS the whole thing is not for you.
+On Tue, Jun 8, 2021 at 9:05 PM Hugh Dickins <hughd@google.com> wrote:
+>
+>
+>
+> ---------- Forwarded message ----------
+> Date: Tue, 8 Jun 2021 21:00:12 -0700 (PDT)
+> From: Hugh Dickins <hughd@google.com>
+> To: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Hugh Dickins <hughd@google.com>,
+>     Kirill A. Shutemov <kirill.shutemov@linux.intel.com>,
+>     Yang Shi <shy828301@gmail.com>, Wang Yugui <wangyugui@e16-tech.com>,
+>     Matthew Wilcox <willy@infradead.org>,
+>     Naoya Horiguchi <naoya.horiguchi@nec.com>,
+>     Alistair Popple <apopple@nvidia.com>, Ralph Campbell <rcampbell@nvidia.com>,
+>     Zi Yan <ziy@nvidia.com>, Miaohe Lin <linmiaohe@huawei.com>,
+>     Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
+>     Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
+>     Shakeel Butt <shakeelb@google.com>, Oscar Salvador <osalvador@suse.de>
+> Subject: [PATCH v2 01/10] mm/thp: fix __split_huge_pmd_locked() on shmem
+>     migration entry
+>
+> Stressing huge tmpfs page migration racing hole punch often crashed on the
+> VM_BUG_ON(!pmd_present) in pmdp_huge_clear_flush(), with DEBUG_VM=y kernel;
+> or shortly afterwards, on a bad dereference in __split_huge_pmd_locked()
+> when DEBUG_VM=n.  They forgot to allow for pmd migration entries in the
+> non-anonymous case.
+>
+> Full disclosure: those particular experiments were on a kernel with more
+> relaxed mmap_lock and i_mmap_rwsem locking, and were not repeated on the
+> vanilla kernel: it is conceivable that stricter locking happens to avoid
+> those cases, or makes them less likely; but __split_huge_pmd_locked()
+> already allowed for pmd migration entries when handling anonymous THPs,
+> so this commit brings the shmem and file THP handling into line.
+>
+> And while there: use old_pmd rather than _pmd, as in the following blocks;
+> and make it clearer to the eye that the !vma_is_anonymous() block is
+> self-contained, making an early return after accounting for unmapping.
+>
+> Fixes: e71769ae5260 ("mm: enable thp migration for shmem thp")
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Cc: <stable@vger.kernel.org>
 
-Right, but there's no need to make a system unusable for everyone else.
-There's nothing here that relaxes the defense (i.e. stop spawning apache
-for 10 minutes). Writing it to disk with nothing that undoes it seems a
-bit too much. :)
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 
--- 
-Kees Cook
+> ---
+> v2: omit is_huge_zero_pmd() mods (done differently in next), per Kirill
+>
+>  mm/huge_memory.c     | 27 ++++++++++++++++++---------
+>  mm/pgtable-generic.c |  5 ++---
+>  2 files changed, 20 insertions(+), 12 deletions(-)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 63ed6b25deaa..42cfefc6e66e 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2044,7 +2044,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+>         count_vm_event(THP_SPLIT_PMD);
+>
+>         if (!vma_is_anonymous(vma)) {
+> -               _pmd = pmdp_huge_clear_flush_notify(vma, haddr, pmd);
+> +               old_pmd = pmdp_huge_clear_flush_notify(vma, haddr, pmd);
+>                 /*
+>                  * We are going to unmap this huge page. So
+>                  * just go ahead and zap it
+> @@ -2053,16 +2053,25 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+>                         zap_deposited_table(mm, pmd);
+>                 if (vma_is_special_huge(vma))
+>                         return;
+> -               page = pmd_page(_pmd);
+> -               if (!PageDirty(page) && pmd_dirty(_pmd))
+> -                       set_page_dirty(page);
+> -               if (!PageReferenced(page) && pmd_young(_pmd))
+> -                       SetPageReferenced(page);
+> -               page_remove_rmap(page, true);
+> -               put_page(page);
+> +               if (unlikely(is_pmd_migration_entry(old_pmd))) {
+> +                       swp_entry_t entry;
+> +
+> +                       entry = pmd_to_swp_entry(old_pmd);
+> +                       page = migration_entry_to_page(entry);
+> +               } else {
+> +                       page = pmd_page(old_pmd);
+> +                       if (!PageDirty(page) && pmd_dirty(old_pmd))
+> +                               set_page_dirty(page);
+> +                       if (!PageReferenced(page) && pmd_young(old_pmd))
+> +                               SetPageReferenced(page);
+> +                       page_remove_rmap(page, true);
+> +                       put_page(page);
+> +               }
+>                 add_mm_counter(mm, mm_counter_file(page), -HPAGE_PMD_NR);
+>                 return;
+> -       } else if (pmd_trans_huge(*pmd) && is_huge_zero_pmd(*pmd)) {
+> +       }
+> +
+> +       if (pmd_trans_huge(*pmd) && is_huge_zero_pmd(*pmd)) {
+>                 /*
+>                  * FIXME: Do we want to invalidate secondary mmu by calling
+>                  * mmu_notifier_invalidate_range() see comments below inside
+> diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
+> index c2210e1cdb51..4e640baf9794 100644
+> --- a/mm/pgtable-generic.c
+> +++ b/mm/pgtable-generic.c
+> @@ -135,9 +135,8 @@ pmd_t pmdp_huge_clear_flush(struct vm_area_struct *vma, unsigned long address,
+>  {
+>         pmd_t pmd;
+>         VM_BUG_ON(address & ~HPAGE_PMD_MASK);
+> -       VM_BUG_ON(!pmd_present(*pmdp));
+> -       /* Below assumes pmd_present() is true */
+> -       VM_BUG_ON(!pmd_trans_huge(*pmdp) && !pmd_devmap(*pmdp));
+> +       VM_BUG_ON(pmd_present(*pmdp) && !pmd_trans_huge(*pmdp) &&
+> +                          !pmd_devmap(*pmdp));
+>         pmd = pmdp_huge_get_and_clear(vma->vm_mm, address, pmdp);
+>         flush_pmd_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
+>         return pmd;
+> --
+> 2.26.2
+>
+>
