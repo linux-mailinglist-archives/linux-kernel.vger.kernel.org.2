@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F35DE3A1BCE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342D63A1BD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhFIRcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:32:19 -0400
-Received: from mga14.intel.com ([192.55.52.115]:27500 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229961AbhFIRcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:32:18 -0400
-IronPort-SDR: 1ZjXi/olLDN+krB6eCcakL8J/TKg/EGWe3+eUstKHHxMHGxEV+KdrKbK1p9GrLDYZ5vPFvDI28
- BSsoIJWpc6zw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="204937086"
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="204937086"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 10:30:23 -0700
-IronPort-SDR: JYaEUtInlXRxvx9R42ABSyWPD5FldFMAlV9OB3wYCFEChl8YEcR+1ketRibhSBtVS6vUS1whrj
- 1Fct8FFaLa5Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="552051340"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 09 Jun 2021 10:30:21 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 9A2DAE7; Wed,  9 Jun 2021 20:30:45 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>, wsa@kernel.org
-Subject: [PATCH v2 1/1] i2c: cht-wc: Replace of_node by NULL
-Date:   Wed,  9 Jun 2021 20:30:35 +0300
-Message-Id: <20210609173035.83777-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S230136AbhFIRdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:33:10 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:38459 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229792AbhFIRdI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 13:33:08 -0400
+Received: by mail-ot1-f50.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so11098106otk.5;
+        Wed, 09 Jun 2021 10:30:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TFcJ7rQXnzhGAm63jAT5SpqjhtSTOISSCQfC1ETOR3w=;
+        b=qvrqm6AokDjhT8iK0j9CVN7tRjmo+VJu7MCt8Y+EdCE6NO5JItI21qt0obvlhb516r
+         EEQgD/xtwXty3y6ZzGEEtX346NdsZPaIRlom0la80cSh1hDGVLDMSMEsD+VF5V1yVK1m
+         kkcPi2C4tlJGgpvu+NFN6KbGfyg64RAaMRAAlcxYq8MKJeLvXuXx0Ewc+SMCye4dPzDi
+         iRmQV8dH/yvHQN1zNP87WuK5GY3r389VxnsO4QkaZCxyMInRhiWJgEaZTlwev/h6U64E
+         +BMJBxypLjlUuMUGYjHmCXtManb5BQSxbSX03lEmHYs6rNhFLDQstjCrC+NHRj09UO8t
+         XQtQ==
+X-Gm-Message-State: AOAM5314rGuoOANOHmxIYafIPXhyIAZwd9KslwS3fp7v1GR+osVyhR7H
+        koMWavfPNqa0uFy8KfuyIvsM6x9rzaglwQT7R9qRuRtI
+X-Google-Smtp-Source: ABdhPJzQH4LkJfUDW3AILGfrSgUnDqTM6XhyjAUCmq3vRVPBEq7atuZi/f2UOt8kbQERruECPHLUlOKndmiROD2SwZ8=
+X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr458727otb.206.1623259857222;
+ Wed, 09 Jun 2021 10:30:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210528081417.31474-1-puwen@hygon.cn>
+In-Reply-To: <20210528081417.31474-1-puwen@hygon.cn>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 9 Jun 2021 19:30:45 +0200
+Message-ID: <CAJZ5v0j-9zZvuSyKtRYePHE6aSr824SZz=E6VS_Ysv3cByGZyQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/cstate: Allow ACPI C1 FFH MWAIT use on Hygon systems
+To:     Pu Wen <puwen@hygon.cn>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver is run on the platforms where OF node is always NULL.
-The confusion comes from IRQ domain APIs that take either OF or
-firmware node as input parameter. Since fwnode is not used here
-either, replace of_node by NULL.
+On Fri, May 28, 2021 at 10:44 AM Pu Wen <puwen@hygon.cn> wrote:
+>
+> Hygon systems support the Monitor/Mwait instructions and these can be used
+> for ACPI C1 in the same way as on AMD and Intel systems.
+>
+> The BIOS declares a C1 state in _CST to use FFH and CPUID_Fn00000005_EDX
+> is non-zero on Hygon systems.
+>
+> Allow ffh_cstate_init() to succeed on Hygon systems to default using FFH
+> MWAIT instead of HALT for ACPI C1.
+>
+> Tested successfully on Hygon Fam18h systems.
+>
+> Signed-off-by: Pu Wen <puwen@hygon.cn>
+> ---
+>  arch/x86/kernel/acpi/cstate.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
+> index 49ae4e1ac9cd..7de599eba7f0 100644
+> --- a/arch/x86/kernel/acpi/cstate.c
+> +++ b/arch/x86/kernel/acpi/cstate.c
+> @@ -197,7 +197,8 @@ static int __init ffh_cstate_init(void)
+>         struct cpuinfo_x86 *c = &boot_cpu_data;
+>
+>         if (c->x86_vendor != X86_VENDOR_INTEL &&
+> -           c->x86_vendor != X86_VENDOR_AMD)
+> +           c->x86_vendor != X86_VENDOR_AMD &&
+> +           c->x86_vendor != X86_VENDOR_HYGON)
+>                 return -1;
+>
+>         cpu_cstate_entry = alloc_percpu(struct cstate_entry);
+> --
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: rewrote in order to pass NULL instead of of_node (Hans)
- drivers/i2c/busses/i2c-cht-wc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-cht-wc.c b/drivers/i2c/busses/i2c-cht-wc.c
-index 08f491ea21ac..1cf68f85b2e1 100644
---- a/drivers/i2c/busses/i2c-cht-wc.c
-+++ b/drivers/i2c/busses/i2c-cht-wc.c
-@@ -354,8 +354,7 @@ static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	/* Alloc and register client IRQ */
--	adap->irq_domain = irq_domain_add_linear(pdev->dev.of_node, 1,
--						 &irq_domain_simple_ops, NULL);
-+	adap->irq_domain = irq_domain_add_linear(NULL, 1, &irq_domain_simple_ops, NULL);
- 	if (!adap->irq_domain)
- 		return -ENOMEM;
- 
--- 
-2.30.2
-
+Applied as 5.14 material, thanks!
