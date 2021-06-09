@@ -2,65 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670AC3A0C7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9943A0C73
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236681AbhFIGgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:36:50 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:39534 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232185AbhFIGgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:36:49 -0400
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 1596Ylxp013759
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Jun 2021 08:34:47 +0200
-Received: from localhost.localdomain ([139.22.32.109])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 1596RRxQ012013;
-        Wed, 9 Jun 2021 08:27:27 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Andy Shevchenko <andy@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Henning Schild <henning.schild@siemens.com>
-Subject: [PATCH] pinctrl: intel: fix NULL pointer deref
-Date:   Wed,  9 Jun 2021 08:27:22 +0200
-Message-Id: <20210609062722.9132-1-henning.schild@siemens.com>
-X-Mailer: git-send-email 2.31.1
+        id S236039AbhFIGdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:33:02 -0400
+Received: from mail-vs1-f45.google.com ([209.85.217.45]:43787 "EHLO
+        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231847AbhFIGdA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 02:33:00 -0400
+Received: by mail-vs1-f45.google.com with SMTP id s22so12272992vsl.10;
+        Tue, 08 Jun 2021 23:31:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AXXJVR5Kvh9DfRAdNlNbcwWy6ZK6zdovOov80Vu519Q=;
+        b=GE+9YkMVeQjRyWZa5J5Esvoi+qnhKhxXky/ExZ46oneXyeRKipmQvJgd9d8Nyzf2oA
+         v87eSl/t7uE5IH/RJVYDzn58vOgDVCBozDatQ5mk4y7p9b97ZQtyRbrQUtXZgU7/xcvD
+         yLBevPV6whh71HVGIw3pbdXcqH1mejc0O9FSpXtBIiTGX8Lu1Qz1NGeB+sVFvBz0wjaH
+         7Ksg0++Dkq/MGjrm0xyRYg82ND7DuHc9w6wBoF3QMBaxUecRrDiMFRFAVPTU9c07/kKm
+         LoI29ymTpCu2zJ2CbSkOyEgZ+p/88iZbA94sfaDoN1eEyCUW655o5FZUZh5vm3Ixq4Jb
+         rIqg==
+X-Gm-Message-State: AOAM532hYsKSsmMs6D7PrIDPm7eix75tPop1uo4QP7Oxcv1buFi4EB8V
+        5lx5YkPpp8JwbD2rJIffWiCd48pMBwRwg+gN6Vk=
+X-Google-Smtp-Source: ABdhPJytskfX8RUZ+4NhknMctxOwBSUBELeh6tvFA09PULcHxmJwYO2ANDAZkYVxZDa/Or7kb9nCfGg8yyfm0oSnUI0=
+X-Received: by 2002:a67:3c2:: with SMTP id 185mr3441670vsd.42.1623220266397;
+ Tue, 08 Jun 2021 23:31:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1623131194.git.fthain@linux-m68k.org> <e781c54ae2c837c3c15b2505c5cde19b8b340a59.1623131194.git.fthain@linux-m68k.org>
+In-Reply-To: <e781c54ae2c837c3c15b2505c5cde19b8b340a59.1623131194.git.fthain@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 9 Jun 2021 08:30:55 +0200
+Message-ID: <CAMuHMdVXPfV20TQgpczGVGELFQ4gcqhgX=K=Hb1k-7Ph6j4jZg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] m68k/q40: Replace q40ide driver with pata_falcon
+ and falconide
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Richard Zidlicky <rz@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ide@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-match could be NULL in which case we do not go ACPI after all
+On Tue, Jun 8, 2021 at 8:04 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> This allows m68k q40 systems to switch from the deprecated IDE subsystem
+> to libata.
+>
+> Enhance the byte-swapping falconide and pata_falcon platform drivers to
+> accept an irq resource, for use on q40. Atari ST-DMA IRQ arrangements seem
+> to co-exist with q40 IRQ arrangements without too much mess.
+>
+> The new IO resources were added solely for the purpose of making
+> request_region() reservations identical to those made by q40ide: these
+> regions aren't used for actual IO.
+>
+> Cc: Michael Schmitz <schmitzmic@gmail.com>
+> Cc: Richard Zidlicky <rz@linux-m68k.org>
+> Reviewed-and-tested-by: Michael Schmitz <schmitzmic@gmail.com>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-Signed-off-by: Henning Schild <henning.schild@siemens.com>
----
- drivers/pinctrl/intel/pinctrl-intel.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thanks for your patch!
 
-diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-index 85750974d182..dca17bb76cac 100644
---- a/drivers/pinctrl/intel/pinctrl-intel.c
-+++ b/drivers/pinctrl/intel/pinctrl-intel.c
-@@ -1601,12 +1601,12 @@ const struct intel_pinctrl_soc_data *intel_pinctrl_get_soc_data(struct platform_
- 	const struct intel_pinctrl_soc_data *data = NULL;
- 	const struct intel_pinctrl_soc_data **table;
- 	struct acpi_device *adev;
-+	const void *match;
- 	unsigned int i;
- 
- 	adev = ACPI_COMPANION(&pdev->dev);
--	if (adev) {
--		const void *match = device_get_match_data(&pdev->dev);
--
-+	match = device_get_match_data(&pdev->dev);
-+	if (adev && match) {
- 		table = (const struct intel_pinctrl_soc_data **)match;
- 		for (i = 0; table[i]; i++) {
- 			if (!strcmp(adev->pnp.unique_id, table[i]->uid)) {
+>  arch/m68k/atari/config.c          |  12 +--
+>  arch/m68k/configs/multi_defconfig |   1 -
+>  arch/m68k/configs/q40_defconfig   |   2 +-
+>  arch/m68k/q40/config.c            |  37 +++++--
+>  drivers/ata/Kconfig               |   6 +-
+>  drivers/ata/pata_falcon.c         |  62 ++++++++---
+>  drivers/ide/Kconfig               |  18 +---
+>  drivers/ide/Makefile              |   1 -
+>  drivers/ide/falconide.c           |  75 ++++++++-----
+>  drivers/ide/q40ide.c              | 168 ------------------------------
+>  10 files changed, 137 insertions(+), 245 deletions(-)
+>  delete mode 100644 drivers/ide/q40ide.c
+
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.31.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
