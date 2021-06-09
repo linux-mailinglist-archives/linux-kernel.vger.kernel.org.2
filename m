@@ -2,179 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8C03A17AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CE23A17BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238098AbhFIOrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:47:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:33532 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238100AbhFIOri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:47:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86EBCD6E;
-        Wed,  9 Jun 2021 07:45:43 -0700 (PDT)
-Received: from [10.57.6.115] (unknown [10.57.6.115])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B97EF3F73D;
-        Wed,  9 Jun 2021 07:45:41 -0700 (PDT)
-Subject: Re: [RFC] mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        ulf.hansson@linaro.org
-Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, linux-mmc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-References: <CGME20210608153357eucas1p24cbc7a2ddb00beada8cdd51ae2337c53@eucas1p2.samsung.com>
- <20210608153344.3813661-1-narmstrong@baylibre.com>
- <e9f057f6-324e-0637-b57a-cc2f87e0d108@samsung.com>
- <ebb1421c-e55c-eee3-ea42-09ae051659d4@baylibre.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <92024ca5-c6fa-0e6a-b6ba-f35f92222e76@arm.com>
-Date:   Wed, 9 Jun 2021 15:45:36 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S238161AbhFIOsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:48:46 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54970 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238100AbhFIOsn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:48:43 -0400
+Date:   Wed, 09 Jun 2021 14:46:46 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623250007;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0VCGyWAfeJrDIZv4nbwzFIx1nxkq+p7yg81wLtDsQFg=;
+        b=EacmVklHdkwKI2qpQjIr6OQZU0cmld0HZTeJIV8tRJBF8Y12o2428XyiOKnbTONc1nBQXa
+        YCyea4jUTU5ri9Xa5kaXb+AA7qtaBR5df2ubLtLByj6xE/NyRehe6Ir/kzRs3SiEmxCGD3
+        CMQzoSeA/0ki6n09ux03O8MRM8Px3nZApBMi2hdl8lKmgdY5wvZNEuXYcwKAJ70QEhhnjB
+        MEbvEXY81UHzLvp4FdAfmP/USJ8ET99+qqKG2Y9JxGXYPpuUHuuyNU7lXS1TjjZLhSpZZe
+        uYU6TEzg+8cWPCcENFytBSlGT7ruL8sDEzXG+nK6IiXJyuVgzofCzSK9URpBeA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623250007;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0VCGyWAfeJrDIZv4nbwzFIx1nxkq+p7yg81wLtDsQFg=;
+        b=Hgefg1rNdGIkhKmW22fQRX5Beng/h6GXspKs0C8B3RZMpLGEs9sWEuxEBhsfGNJwPVgPEE
+        EeXA5Lmy8se7YdBA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/pkru: Write hardware init value to PKRU when
+ xstate is init
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Babu Moger <babu.moger@amd.com>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210608144346.045616965@linutronix.de>
+References: <20210608144346.045616965@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <ebb1421c-e55c-eee3-ea42-09ae051659d4@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Message-ID: <162325000667.29796.2871509185639909359.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-09 14:07, Neil Armstrong wrote:
-> Hi,
-> 
-> On 08/06/2021 17:50, Marek Szyprowski wrote:
->> Hi
->>
->> On 08.06.2021 17:33, Neil Armstrong wrote:
->>> It has been reported that usage of memcpy() to/from an iomem mapping is invalid,
->>> and and recent arm64 memcpy update [1] triggers a memory abort when dram-access-quirk
->>> is used on the G12A/G12B platforms.
->>>
->>> This adds a local sg_copy_to_buffer which makes usage of io versions of memcpy
->>> when dram-access-quirk is enabled.
->>>
->>> Fixes: acdc8e71d9bb ("mmc: meson-gx: add dram-access-quirk")
->>> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
->>> Suggested-by: Mark Rutland <mark.rutland@arm.com>
->>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->>>
->>> [1] 285133040e6c ("arm64: Import latest memcpy()/memmove() implementation")
->>>
->>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->>> ---
->>> Hi Ulf, Marek, Mark,
->>>
->>> I haven't tested the patch yet, but should fix issue reported at [2].
->>
->> Works fine here and fixed the issue.
->>
->> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> 
-> Thanks, I'll need to rework to pass an __iomem pointer to memcpy_to/fromio so sparse doesn't scream anymore.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Hmm, might it be worth factoring out general sg_copy_{to,from}_iomem() 
-helpers? From a quick grep I found at least mv_cesa_sg_copy() already 
-doing essentially the same thing as meson_mmc_copy_buffer().
+Commit-ID:     510b80a6a0f1a0d114c6e33bcea64747d127973c
+Gitweb:        https://git.kernel.org/tip/510b80a6a0f1a0d114c6e33bcea64747d127973c
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 08 Jun 2021 16:36:21 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 09 Jun 2021 12:12:45 +02:00
 
-Robin.
+x86/pkru: Write hardware init value to PKRU when xstate is init
 
-> 
-> Neil
-> 
->>
->>> Neil
->>>
->>> [2] https://lore.kernel.org/r/acb244ad-0759-5a96-c659-5c23003d3dcd@samsung.com
->>>
->>>    drivers/mmc/host/meson-gx-mmc.c | 48 ++++++++++++++++++++++++++++++---
->>>    1 file changed, 44 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
->>> index b8b771b643cc..89ff6038092d 100644
->>> --- a/drivers/mmc/host/meson-gx-mmc.c
->>> +++ b/drivers/mmc/host/meson-gx-mmc.c
->>> @@ -742,6 +742,48 @@ static void meson_mmc_desc_chain_transfer(struct mmc_host *mmc, u32 cmd_cfg)
->>>    	writel(start, host->regs + SD_EMMC_START);
->>>    }
->>>    
->>> +/* local sg copy to buffer version with _to/fromio usage for dram_access_quirk */
->>> +static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data,
->>> +				  size_t buflen, bool to_buffer)
->>> +{
->>> +	unsigned int sg_flags = SG_MITER_ATOMIC;
->>> +	struct scatterlist *sgl = data->sg;
->>> +	unsigned int nents = data->sg_len;
->>> +	struct sg_mapping_iter miter;
->>> +	void *buf = host->bounce_buf;
->>> +	unsigned int offset = 0;
->>> +
->>> +	if (to_buffer)
->>> +		sg_flags |= SG_MITER_FROM_SG;
->>> +	else
->>> +		sg_flags |= SG_MITER_TO_SG;
->>> +
->>> +	sg_miter_start(&miter, sgl, nents, sg_flags);
->>> +
->>> +	while ((offset < buflen) && sg_miter_next(&miter)) {
->>> +		unsigned int len;
->>> +
->>> +		len = min(miter.length, buflen - offset);
->>> +
->>> +		/* When dram_access_quirk, the bounce buffer is a iomem mapping */
->>> +		if (host->dram_access_quirk) {
->>> +			if (to_buffer)
->>> +				memcpy_toio(buf + offset, miter.addr, len);
->>> +			else
->>> +				memcpy_fromio(miter.addr, buf + offset, len);
->>> +		} else {
->>> +			if (to_buffer)
->>> +				memcpy(buf + offset, miter.addr, len);
->>> +			else
->>> +				memcpy(miter.addr, buf + offset, len);
->>> +		}
->>> +
->>> +		offset += len;
->>> +	}
->>> +
->>> +	sg_miter_stop(&miter);
->>> +}
->>> +
->>>    static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
->>>    {
->>>    	struct meson_host *host = mmc_priv(mmc);
->>> @@ -785,8 +827,7 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
->>>    		if (data->flags & MMC_DATA_WRITE) {
->>>    			cmd_cfg |= CMD_CFG_DATA_WR;
->>>    			WARN_ON(xfer_bytes > host->bounce_buf_size);
->>> -			sg_copy_to_buffer(data->sg, data->sg_len,
->>> -					  host->bounce_buf, xfer_bytes);
->>> +			meson_mmc_copy_buffer(host, data, xfer_bytes, true);
->>>    			dma_wmb();
->>>    		}
->>>    
->>> @@ -955,8 +996,7 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
->>>    	if (meson_mmc_bounce_buf_read(data)) {
->>>    		xfer_bytes = data->blksz * data->blocks;
->>>    		WARN_ON(xfer_bytes > host->bounce_buf_size);
->>> -		sg_copy_from_buffer(data->sg, data->sg_len,
->>> -				    host->bounce_buf, xfer_bytes);
->>> +		meson_mmc_copy_buffer(host, data, xfer_bytes, false);
->>>    	}
->>>    
->>>    	next_cmd = meson_mmc_get_next_command(cmd);
->>
->> Best regards
->>
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+When user space brings PKRU into init state, then the kernel handling is
+broken:
+
+  T1 user space
+     xsave(state)
+     state.header.xfeatures &= ~XFEATURE_MASK_PKRU;
+     xrstor(state)
+
+  T1 -> kernel
+     schedule()
+       XSAVE(S) -> T1->xsave.header.xfeatures[PKRU] == 0
+       T1->flags |= TIF_NEED_FPU_LOAD;
+
+       wrpkru();
+
+     schedule()
+       ...
+       pk = get_xsave_addr(&T1->fpu->state.xsave, XFEATURE_PKRU);
+       if (pk)
+	 wrpkru(pk->pkru);
+       else
+	 wrpkru(DEFAULT_PKRU);
+
+Because the xfeatures bit is 0 and therefore the value in the xsave
+storage is not valid, get_xsave_addr() returns NULL and switch_to()
+writes the default PKRU. -> FAIL #1!
+
+So that wrecks any copy_to/from_user() on the way back to user space
+which hits memory which is protected by the default PKRU value.
+
+Assumed that this does not fail (pure luck) then T1 goes back to user
+space and because TIF_NEED_FPU_LOAD is set it ends up in
+
+  switch_fpu_return()
+      __fpregs_load_activate()
+        if (!fpregs_state_valid()) {
+  	 load_XSTATE_from_task();
+        }
+
+But if nothing touched the FPU between T1 scheduling out and back in,
+then the fpregs_state is still valid which means switch_fpu_return()
+does nothing and just clears TIF_NEED_FPU_LOAD. Back to user space with
+DEFAULT_PKRU loaded. -> FAIL #2!
+
+The fix is simple: if get_xsave_addr() returns NULL then set the
+PKRU value to 0 instead of the restrictive default PKRU value in
+init_pkru_value.
+
+ [ bp: Massage in minor nitpicks from folks. ]
+
+Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Acked-by: Rik van Riel <riel@surriel.com>
+Tested-by: Babu Moger <babu.moger@amd.com>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20210608144346.045616965@linutronix.de
+---
+ arch/x86/include/asm/fpu/internal.h | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+index 18382ac..fdee23e 100644
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -579,9 +579,16 @@ static inline void switch_fpu_finish(struct fpu *new_fpu)
+ 	 * return to userland e.g. for a copy_to_user() operation.
+ 	 */
+ 	if (!(current->flags & PF_KTHREAD)) {
++		/*
++		 * If the PKRU bit in xsave.header.xfeatures is not set,
++		 * then the PKRU component was in init state, which means
++		 * XRSTOR will set PKRU to 0. If the bit is not set then
++		 * get_xsave_addr() will return NULL because the PKRU value
++		 * in memory is not valid. This means pkru_val has to be
++		 * set to 0 and not to init_pkru_value.
++		 */
+ 		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
+-		if (pk)
+-			pkru_val = pk->pkru;
++		pkru_val = pk ? pk->pkru : 0;
+ 	}
+ 	__write_pkru(pkru_val);
+ }
