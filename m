@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65733A0A32
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66C63A0A37
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235805AbhFICsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 22:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbhFICsI (ORCPT
+        id S235865AbhFICtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 22:49:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47593 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231668AbhFICtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 22:48:08 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E0CC061574;
-        Tue,  8 Jun 2021 19:46:02 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id z3so23694074oib.5;
-        Tue, 08 Jun 2021 19:46:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=szkL7ncrfM2hy/BvMWM0s5Huh4IFZhuvbwx23L8o1dE=;
-        b=kRNocKu1gPoPbfo4iolUj+fUN0EREEirmiGidoFnX3OlcUGENGem6uJtuermuHDLWl
-         6NTwsp+KT6DHNDCsSdJIcjSB2O3cYDLvKnx7AjE8sFF4f1TPUY83x51r4OB1Iv+CelCy
-         REVQJkeVw8tUSiE2z/fkU4vtmyD/SdARACmZusH5g6vo3dKMJE9v7ybhtX1wBtzkXzlI
-         ChJVBvgn3wklKGiXtJglbRGRQ48pfXa6RDTfcqZetBdcx2dXTrFfnvJqssiamvm+Da55
-         R0dgapnLGDX/4EoCRPOZ5CcVkixn0ZJbf8wKGM+o0TrgUfzpX/WgytOvdxlIqmnNqqr5
-         9ZKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=szkL7ncrfM2hy/BvMWM0s5Huh4IFZhuvbwx23L8o1dE=;
-        b=Mll6tG4RtOKl0865dgXcdeYgLp91tRG03Mh8frO3EtRyrAPquelGU2vymYI1h/rtRj
-         qdSmWpk6lxv5TJ/cmOVJ4f0DRw8FHOUFkgvVXAdEaATIX0Giaj7U8HezhBFHXxUySD9Y
-         4xhZldMmC4r9ecmXl9SJW/Oax5fYEaJ1tauPia6mDH4JmJmyVOiqAKGaQfvEcjtIwj/R
-         INVJ+peN/gktNslb/PO+kGfZAzVXKIwr/WwamfLc4Ih7pxKhF1VrNN2J11/Ps/Woz+vP
-         WP2HRx4elzfop/DPqz63oJl6tXPLrpFZWorxFwfKknPieZSP8OS4dD3jGBEQV7mIzcC7
-         KKEQ==
-X-Gm-Message-State: AOAM530KQv31+tg2D2Y1CvWwHPhzyrMnVEvUVINcm1DlreHTBXvt/yeD
-        k0nVqVGKG6SP3bLbsF99eogivJckPiCrGQ==
-X-Google-Smtp-Source: ABdhPJwZLlD+UF6khW8UPly7po2FnFZ1ZDLO7TRTFA1MvABfjVFHSawElsb+ga6K3tgio2dxAtVyTg==
-X-Received: by 2002:a05:6808:14d0:: with SMTP id f16mr4819978oiw.156.1623206759340;
-        Tue, 08 Jun 2021 19:45:59 -0700 (PDT)
-Received: from fractal ([2600:1700:1151:2380:53e3:3a03:bcf3:da13])
-        by smtp.gmail.com with ESMTPSA id d136sm444959oib.4.2021.06.08.19.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 19:45:58 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 19:45:56 -0700
-From:   Satya Tangirala <satyaprateek2357@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Satya Tangirala <satyat@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v8 0/8] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <20210609024556.GA11153@fractal>
-References: <20210121230336.1373726-1-satyat@google.com>
- <CAF2Aj3jbEnnG1-bHARSt6xF12VKttg7Bt52gV=bEQUkaspDC9w@mail.gmail.com>
- <YK09eG0xm9dphL/1@google.com>
- <20210526080224.GI4005783@dell>
+        Tue, 8 Jun 2021 22:49:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623206846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M6AD2nLmb56QVhFCgYdZqvhrlY7oWTcZgGvZozkCcw0=;
+        b=JrZbxaRs3FfRuNVNfiSiRpuE08zFVo6iGIxxYekCCvQsvsMf2k1xjnSNDawy/DNKBa7Y9Q
+        2B4Ku2RoPoDKniE9B/QfjJmKZ1znqJow8be8OnltmjRDhea6o5XeV6yHyAGFK0sX0Xa/Uz
+        c1gHj1rihM6VHZFzrJawAaINELUoMvM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-518-ycxNtIymMJ2lkUBWT-83bg-1; Tue, 08 Jun 2021 22:47:23 -0400
+X-MC-Unique: ycxNtIymMJ2lkUBWT-83bg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DFB2107ACE4;
+        Wed,  9 Jun 2021 02:47:20 +0000 (UTC)
+Received: from localhost (ovpn-13-223.pek2.redhat.com [10.72.13.223])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 14C5160CC9;
+        Wed,  9 Jun 2021 02:47:12 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 10:47:09 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Kazuhito Hagio <k-hagio@ab.jp.nec.com>,
+        Dave Young <dyoung@redhat.com>, Boris Petkov <bp@alien8.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        James Morse <james.morse@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Dave Anderson <anderson@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] crash_core, vmcoreinfo: Append 'SECTION_SIZE_BITS' to
+ vmcoreinfo
+Message-ID: <20210609024709.GA591017@MiWiFi-R3L-srv>
+References: <20210608103359.84907-1-kernelfans@gmail.com>
+ <20210608142432.GA587883@MiWiFi-R3L-srv>
+ <20210608141410.0026a925ba3a609b0dd4e560@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210526080224.GI4005783@dell>
+In-Reply-To: <20210608141410.0026a925ba3a609b0dd4e560@linux-foundation.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 09:02:24AM +0100, Lee Jones wrote:
-> On Tue, 25 May 2021, Satya Tangirala wrote:
-> 65;6200;1c
-> > On Tue, May 25, 2021 at 01:57:28PM +0100, Lee Jones wrote:
-> > > On Thu, 21 Jan 2021 at 23:06, Satya Tangirala <satyat@google.com> wrote:
-> > > 
-> > > > This patch series adds support for direct I/O with fscrypt using
-> > > > blk-crypto.
-> > > >
-> > > 
-> > > Is there an update on this set please?
-> > > 
-> > > I can't seem to find any reviews or follow-up since v8 was posted back in
-> > > January.
-> > > 
-> > This patchset relies on the block layer fixes patchset here
-> > https://lore.kernel.org/linux-block/20210325212609.492188-1-satyat@google.com/
-> > That said, I haven't been able to actively work on both the patchsets
-> > for a while, but I'll send out updates for both patchsets over the
-> > next week or so.
+On 06/08/21 at 02:14pm, Andrew Morton wrote:
+> On Tue, 8 Jun 2021 22:24:32 +0800 Baoquan He <bhe@redhat.com> wrote:
 > 
-> Thanks Satya, I'd appreciate that.
-FYI I sent out an updated patch series last week at
-https://lore.kernel.org/linux-fscrypt/20210604210908.2105870-1-satyat@google.com/
+> > On 06/08/21 at 06:33am, Pingfan Liu wrote:
+> > > As mentioned in kernel commit 1d50e5d0c505 ("crash_core, vmcoreinfo:
+> > > Append 'MAX_PHYSMEM_BITS' to vmcoreinfo"), SECTION_SIZE_BITS in the
+> > > formula:
+> > >     #define SECTIONS_SHIFT    (MAX_PHYSMEM_BITS - SECTION_SIZE_BITS)
+> > > 
+> > > Besides SECTIONS_SHIFT, SECTION_SIZE_BITS is also used to calculate
+> > > PAGES_PER_SECTION in makedumpfile just like kernel.
+> > > 
+> > > Unfortunately, this arch-dependent macro SECTION_SIZE_BITS changes, e.g.
+> > > recently in kernel commit f0b13ee23241 ("arm64/sparsemem: reduce
+> > > SECTION_SIZE_BITS"). But user space wants a stable interface to get this
+> > > info. Such info is impossible to be deduced from a crashdump vmcore.
+> > > Hence append SECTION_SIZE_BITS to vmcoreinfo.
+> > 
+> > ...
+> >
+> > Add the discussion of the original thread in kexec ML for reference:
+> > http://lists.infradead.org/pipermail/kexec/2021-June/022676.html
+> 
+> I added a Link: for this.
+
+Thanks, Andrew.
+
+>  
+> > This looks good to me.
+> > 
+> > Acked-by: Baoquan He <bhe@redhat.com>
+> 
+> I'm thinking we should backport this at least to Fixes:f0b13ee23241. 
+> But perhaps it's simpler to just backport it as far as possible, so I
+> added a bare cc:stable with no Fixes:.  Thoughts?
+
+Yeah, it should add cc:stable, thanks. Otherwise it will break
+vmcore dumping on 5.12 stable kernel even though with the updated
+makedumpfile utility. Fixes:f0b13ee23241 will help stable kernel
+maintainer easier to identify which kernel this patch need be applied
+on? If only having cc:stable with no Fixes is allowed, it's also OK. 
+
