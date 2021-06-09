@@ -2,91 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8146C3A157A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041613A1576
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236327AbhFINZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:25:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236226AbhFINZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:25:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 681F66124C;
-        Wed,  9 Jun 2021 13:23:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623244998;
-        bh=qZZ54d39TiFbhQpE8H0JV/13poWZQXPY6mO/t430Wl0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TNhiXuREgICawyLWD1zL1HTuRIkpMd87vjH3N2YhXlgQGVrZ1qNo/XjRxnTna0H2J
-         qhy0ScV9Nof7F6ioAsHpHS9ZwXZH84sc421wPusFtegrsYGFX157afWCXzEgpP6G0R
-         pV4BIP04aAJe/hM6XTxBMDXcN9eBJk6Aomw+diSSVTJVikBhdIE6HfFTN20dUHTJY/
-         A2Mr3UPYvCCDIpwpbA7ntcGnP8RtaVns7bPI0Mhicara3PhHNPZrp/ndDjZwbT7kkD
-         SnERnQJFbU/idzwHg1UK1J0er1fqxglfMj634KoKt427mtOQVG+BeDABslwvugs6DM
-         DbqXvWmmWFsxg==
-Date:   Wed, 9 Jun 2021 14:23:02 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Adrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH 1/2] Revert "regmap: mdio: Add clause-45 support"
-Message-ID: <20210609132302.GA9596@sirena.org.uk>
-References: <cover.1623238313.git.sander@svanheule.net>
- <deed937f8fd63285e95acdfa8ca327638057811f.1623238313.git.sander@svanheule.net>
- <20210609122401.GA20286@sirena.org.uk>
- <ba7ef002d610ff5b5fc2c31411a1009587e2f068.camel@svanheule.net>
+        id S236205AbhFINZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:25:16 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42919 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236118AbhFINZI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 09:25:08 -0400
+Received: from mail-wm1-f71.google.com ([209.85.128.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lqyAr-0006wS-55
+        for linux-kernel@vger.kernel.org; Wed, 09 Jun 2021 13:23:13 +0000
+Received: by mail-wm1-f71.google.com with SMTP id a25-20020a7bc1d90000b029019dd2ac7025so1949559wmj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 06:23:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HZHcwmcBCk5lvprMQJK82JaJ9zMetfOy1nrGFdC8Lf8=;
+        b=WAcGvaFHLyZsaesZaJsPI/6Kvw0bs4t9CG2cskP9ED0mQXhqatt+QMrF2KLEuN4Jgj
+         S7LJIb+8Wa62e7FSl3uvfuNon4oSlyX3FJy0bE0Z44o/WDIVdN46KDGMHh2RxF23CDPn
+         p2DL2X4D9aoznYH+crBPRQYYvOpvkRksxVsmeX7hswgjy/C2Y8LB7s/jagJ/g4Gji1K0
+         HSmJDpVPbsO6xeconLFlvfAw7WyPk/S+JgSXwfUcno38pSHbvNhd6x9TDKNNa3vRDIwG
+         E4qcXKC6+K/WunbmDra0zDpaRGq7VbCag0UeuzntTJcYvxNOa1QvdL89DZrIv0AkebnM
+         sQfQ==
+X-Gm-Message-State: AOAM533Hs4l/zqtckpLLLC+xYSIQE7gNSLDR2C4yxaZQtK0FUtgbL6NB
+        /JysiEGm8n1s+ldLCS3Sh/kpXSZ2dsv3VKszMBS49OykhaVO6eXb5wAcDIsq1JTn7uSvXHrU2mB
+        wduwzTQam9QBIpxYAD0NeYeqMJIJy5uC635/QeZdQ2g==
+X-Received: by 2002:a05:600c:410a:: with SMTP id j10mr9555978wmi.6.1623244992938;
+        Wed, 09 Jun 2021 06:23:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwE07PURI2CbXH6LOfvKl/P4UxKK5oXM/IoS0mjhrCSr11j6J28ssoLODge0i12ZK8N16q/iw==
+X-Received: by 2002:a05:600c:410a:: with SMTP id j10mr9555966wmi.6.1623244992844;
+        Wed, 09 Jun 2021 06:23:12 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id e16sm3716389wrw.49.2021.06.09.06.23.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 06:23:12 -0700 (PDT)
+Subject: Re: [PATCH v22 15/18] MAINTAINERS: Add PL353 SMC entry
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Naga Sureshkumar Relli <nagasure@xilinx.com>
+Cc:     Michal Simek <monstr@monstr.eu>,
+        Amit Kumar Mahapatra <akumarma@xilinx.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
+        Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>
+References: <20210609080112.1753221-1-miquel.raynal@bootlin.com>
+ <20210609080112.1753221-16-miquel.raynal@bootlin.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <f04b06fc-72f9-8f90-343d-e4826a3bf4d7@canonical.com>
+Date:   Wed, 9 Jun 2021 15:23:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
-Content-Disposition: inline
-In-Reply-To: <ba7ef002d610ff5b5fc2c31411a1009587e2f068.camel@svanheule.net>
-X-Cookie: Marriage, n.:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210609080112.1753221-16-miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 09/06/2021 10:01, Miquel Raynal wrote:
+> Add Naga from Xilinx and myself responsible of this driver.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  MAINTAINERS | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Memory controller bits look good to me, except few things in bindings. I
+can take them up to this patch, for which I would need also Ack from
+Naga Sureshkumar Relli confirming he will co-maintain this code.
 
-On Wed, Jun 09, 2021 at 02:42:06PM +0200, Sander Vanheule wrote:
-> On Wed, 2021-06-09 at 13:24 +0100, Mark Brown wrote:
+I assume the NAND driver depends on this, so I can prepare a stable tag
+with the memory controller part, if needed.
 
-> > Please submit patches using subject lines reflecting the style for the
-> > subsystem, this makes it easier for people to identify relevant patches.
-> > Look at what existing commits in the area you're changing are doing and
-> > make sure your subject lines visually resemble what they're doing.
-> > There's no need to resubmit to fix this alone.
-
-> I had grepped the commit log for other reverting patches, which also appear to
-> use this style, but I didn't check the regmap-specific ones.
-
-There's nothing in submitting-patches.rst which says to skip the usual
-process for reverts - the fact that people sometimes apply things with
-non-ideal subject lines doesn't mean it's best practice.
-
-> I'll submit a v2 that fixes __regmap_init_mdio, and also applies the address
-> checks to C45 access.
-
-OK.
-
---FCuugMFkClbJLl1L
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDAwLUACgkQJNaLcl1U
-h9BSFQf+JeEFVyZ7fyAaVO2H/zrC6fiFqlCxCWYdv5dUWhYcTFtfUlP9eJ6I8jRz
-3n5iv8LX65jDTceUDaTdB0pwUS83l9xqOGSKKGI+cMXGXVuNl6pkYJ7pK4o3GYsM
-CoOFj9KB1KjLwtRBQ545BxkOHszNzH+GIfPyEmJdfxPuYzktm9/0E51txUjX7oX/
-huMeFjGgyBQKDg2S/CjRtn74b0Thc6L5tHs/T2vxKv3VzXSAnCxfKS8bscWdXGMN
-y+OlgI/NyJ0+WXriaajQjGNg7R04YeGVUpXotAd7D/g7XzVv4uju5CCefFqDFp3E
-kf/oWZY2xVCm+edyE4T1ftUgA6Ajgg==
-=kyPO
------END PGP SIGNATURE-----
-
---FCuugMFkClbJLl1L--
+Best regards,
+Krzysztof
