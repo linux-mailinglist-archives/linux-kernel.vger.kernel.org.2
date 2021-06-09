@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFB13A0CCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CECF53A0CD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbhFIG5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:57:32 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3807 "EHLO
+        id S233942AbhFIG62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:58:28 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8105 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhFIG5b (ORCPT
+        with ESMTP id S231403AbhFIG6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:57:31 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0Hmz3cS8zWtK4;
-        Wed,  9 Jun 2021 14:50:43 +0800 (CST)
+        Wed, 9 Jun 2021 02:58:22 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0HrJ5z5NzYsX5;
+        Wed,  9 Jun 2021 14:53:36 +0800 (CST)
 Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 14:55:25 +0800
+ 15.1.2176.2; Wed, 9 Jun 2021 14:56:26 +0800
 Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
  (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 14:55:24 +0800
+ 14:56:25 +0800
 From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, Alasdair Kergon <agk@redhat.com>,
-        "Mike Snitzer" <snitzer@redhat.com>, <dm-devel@redhat.com>
+To:     <linux-kernel@vger.kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
+        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Lyude Paul <lyude@redhat.com>
 CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
         <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, <kernel-janitors@vger.kernel.org>,
+        <libaokun1@huawei.com>, <dri-devel@lists.freedesktop.org>,
+        <nouveau@lists.freedesktop.org>, <kernel-janitors@vger.kernel.org>,
         Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next v2] dm writecache: use list_move instead of list_del/list_add in dm-writecache.c
-Date:   Wed, 9 Jun 2021 15:04:33 +0800
-Message-ID: <20210609070433.1323812-1-libaokun1@huawei.com>
+Subject: [PATCH -next v2] drm/nouveau/fifo: use list_move instead of list_del/list_add in base.c
+Date:   Wed, 9 Jun 2021 15:05:34 +0800
+Message-ID: <20210609070534.1324550-1-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Type:   text/plain; charset=US-ASCII
@@ -45,7 +47,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_move() instead of list_del() + list_add() in dm-writecache.c.
+Using list_move() instead of list_del() + list_add() in base.c.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
@@ -53,39 +55,31 @@ Signed-off-by: Baokun Li <libaokun1@huawei.com>
 V1->V2:
 	CC mailist
 
- drivers/md/dm-writecache.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/nouveau/nvkm/engine/fifo/base.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
-index ea9f0d8fff1d..a809a616d691 100644
---- a/drivers/md/dm-writecache.c
-+++ b/drivers/md/dm-writecache.c
-@@ -1868,15 +1868,13 @@ static void writecache_writeback(struct work_struct *work)
- 			if (unlikely(read_original_sector(wc, f) ==
- 				     read_original_sector(wc, e))) {
- 				BUG_ON(!f->write_in_progress);
--				list_del(&e->lru);
--				list_add(&e->lru, &skipped);
-+				list_move(&e->lru, &skipped);
- 				cond_resched();
- 				continue;
- 			}
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/base.c b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/base.c
+index 2ed4ff05d207..1802ac78b78f 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/base.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/base.c
+@@ -79,8 +79,7 @@ nvkm_fifo_chan_inst_locked(struct nvkm_fifo *fifo, u64 inst)
+ 	struct nvkm_fifo_chan *chan;
+ 	list_for_each_entry(chan, &fifo->chan, head) {
+ 		if (chan->inst->addr == inst) {
+-			list_del(&chan->head);
+-			list_add(&chan->head, &fifo->chan);
++			list_move(&chan->head, &fifo->chan);
+ 			return chan;
  		}
- 		wc->writeback_size++;
--		list_del(&e->lru);
--		list_add(&e->lru, &wbl.list);
-+		list_move(&e->lru, &wbl.list);
- 		wbl.size++;
- 		e->write_in_progress = true;
- 		e->wc_list_contiguous = 1;
-@@ -1911,8 +1909,7 @@ static void writecache_writeback(struct work_struct *work)
- 			//	break;
- 
- 			wc->writeback_size++;
--			list_del(&g->lru);
--			list_add(&g->lru, &wbl.list);
-+			list_move(&g->lru, &wbl.list);
- 			wbl.size++;
- 			g->write_in_progress = true;
- 			g->wc_list_contiguous = BIO_MAX_VECS;
+ 	}
+@@ -109,8 +108,7 @@ nvkm_fifo_chan_chid(struct nvkm_fifo *fifo, int chid, unsigned long *rflags)
+ 	spin_lock_irqsave(&fifo->lock, flags);
+ 	list_for_each_entry(chan, &fifo->chan, head) {
+ 		if (chan->chid == chid) {
+-			list_del(&chan->head);
+-			list_add(&chan->head, &fifo->chan);
++			list_move(&chan->head, &fifo->chan);
+ 			*rflags = flags;
+ 			return chan;
+ 		}
 
