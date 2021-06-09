@@ -2,75 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1193A0D45
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C7B3A0D9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237004AbhFIHLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:11:13 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5303 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234009AbhFIHKu (ORCPT
+        id S236207AbhFIHV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:21:26 -0400
+Received: from mail-oo1-f43.google.com ([209.85.161.43]:45959 "EHLO
+        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235215AbhFIHVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:10:50 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G0J4M2ccYz1BJhn;
-        Wed,  9 Jun 2021 15:04:03 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 15:08:55 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 15:08:54 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Zack Rusin <zackr@vmware.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, <dri-devel@lists.freedesktop.org>,
-        <kernel-janitors@vger.kernel.org>, "Hulk Robot" <hulkci@huawei.com>
-Subject: [PATCH -next v2] drm/vmwgfx: Use list_move_tail instead of list_del/list_add_tail in vmwgfx_cmdbuf.c
-Date:   Wed, 9 Jun 2021 15:18:03 +0800
-Message-ID: <20210609071803.1347254-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 9 Jun 2021 03:21:23 -0400
+Received: by mail-oo1-f43.google.com with SMTP id q20-20020a4a6c140000b029024915d1bd7cso4004717ooc.12;
+        Wed, 09 Jun 2021 00:19:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+BHctJq4G6Xr6Ip6lTcKa8uU4EOvZqV3z9gMl+bgMSg=;
+        b=AZjhMfyznzZ7CaqdWdCG1QVYM8DchQO91O9YCnOQ22DTupG7gBaWvkgN5F5pV1/mtO
+         ssvHbO8v1zBqieFvkEOYrXKHZdLdNZC9hu1fAuG0fSxmjcmb+ic6+11KimbpQNC72Ygo
+         tglaeubOwmMx8+pCizToZXKypqRfv6ziy/X6VGNh1piyzjvNxQuUnubfcijJAXK1td0J
+         lDVYO/0Q76/RYVnh0imbHX+0N0ED/IbYafx4JaMIsbuC5m7odr5tuKDsjt33OADXQjDg
+         MMv5bPbxXuawwfn0IvVgD9lgQcNQnQv0v64tjygA2BSi8VDfD03s0gokdjfEiR4GYdMG
+         qSCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+BHctJq4G6Xr6Ip6lTcKa8uU4EOvZqV3z9gMl+bgMSg=;
+        b=JyQ9lZSsdhAlqoldSjl0DRMvOeSrztb/44PjwIWCiyhf5jBFmfBGgCZkaRED5YWdm5
+         0Is4VzvwhRcarKPLOTCKqqAlpzK3HLdLkWg3/ZTXCYrbQKlGwi6rY2DF5iRJv0UgisL6
+         t+SWdW0IRbVAdMc5bbNnsWT+Hkn7xr2St6yqkLIUY1i46jORUpErD6vHpw7ote/xS9s0
+         V3MwpOx2IA9NbXJcpgWR6p6cBHph290LKeGQEXiEhmFyNtkFbaHld+5eoJwlF2It432L
+         0q/Rk9eeyNcZvpvtthQUfl2oXesyxTASNCTh0P5lvg91B7h5iGIigtcl3CBm/WuYKI8m
+         RZfA==
+X-Gm-Message-State: AOAM531ltPB6tTZCtKkLtb2ZzgugkbKdHhk3b3tEeVdtf9oBEdmsBwI/
+        LW6Tbab8KlLPRK34EaNorEKXtsysPxKdbvOsdYk=
+X-Google-Smtp-Source: ABdhPJxUDcZdETlsFOkn0jYTarWVUL7yd4g/Xnj4LvTZZro2P5NNGaH6xuCLD0g0sQbJtP5WE1Z8ASiQqPQEseD1k5g=
+X-Received: by 2002:a4a:e9fb:: with SMTP id w27mr111006ooc.41.1623223109273;
+ Wed, 09 Jun 2021 00:18:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+References: <1623050385-100988-1-git-send-email-wanpengli@tencent.com>
+ <1623050385-100988-2-git-send-email-wanpengli@tencent.com>
+ <0584d79d-9f2c-52dd-5dcc-beffd18f265b@redhat.com> <CANRm+Cx3LpnMwWHAvJoTErAdWoceO9DBPqY0UkbQHW-ZUHw5=g@mail.gmail.com>
+ <f8c80e8a-0749-eb5b-d5ab-162f504c9d33@redhat.com>
+In-Reply-To: <f8c80e8a-0749-eb5b-d5ab-162f504c9d33@redhat.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Wed, 9 Jun 2021 15:18:18 +0800
+Message-ID: <CANRm+Cwee=zwanKQZ1zWA2warRJdp4LVMTn+=uBoWT7-+xm3nQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] KVM: LAPIC: Reset TMCCT during vCPU reset
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_move_tail() instead of list_del() + list_add_tail() in vmwgfx_cmdbuf.c.
+On Wed, 9 Jun 2021 at 13:52, Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 09/06/21 04:15, Wanpeng Li wrote:
+> > On Wed, 9 Jun 2021 at 00:27, Paolo Bonzini <pbonzini@redhat.com> wrote:
+> > [...]
+> >> Perhaps instead set TMCCT to 0 in kvm_apic_set_state, instead of keeping
+> >> the value that was filled in by KVM_GET_LAPIC?
+> >
+> > Keeping the value that was filled in by KVM_GET_LAPIC is introduced by
+> > commit 24647e0a39b6 (KVM: x86: Return updated timer current count
+> > register from KVM_GET_LAPIC), could you elaborate more? :)
+>
+> KVM_GET_LAPIC stores the current value of TMCCT and KVM_SET_LAPIC's
+> memcpy stores it in vcpu->arch.apic->regs.  KVM_SET_LAPIC perhaps could
+> store zero in vcpu->arch.apic->regs after it uses it, and then the
+> stored value would always be zero.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	CC mailist
+Just do it in a new version, thanks. :)
 
- drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c b/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
-index 6bb4961e64a5..58417d972b69 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c
-@@ -358,8 +358,7 @@ static void vmw_cmdbuf_ctx_submit(struct vmw_cmdbuf_man *man,
- 			break;
- 		}
- 
--		list_del(&entry->list);
--		list_add_tail(&entry->list, &ctx->hw_submitted);
-+		list_move_tail(&entry->list, &ctx->hw_submitted);
- 		ctx->num_hw_submitted++;
- 	}
- 
-
+   Wanpeng
