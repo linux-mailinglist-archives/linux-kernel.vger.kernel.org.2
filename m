@@ -2,155 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC743A1E83
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB5E3A1E99
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhFIVGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:06:50 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.113]:24165 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229578AbhFIVGt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:06:49 -0400
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id A0CA04AAFFB
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 16:04:52 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id r5Ncl9I75VBxyr5NclY6cL; Wed, 09 Jun 2021 16:04:52 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=aGBUJ9HOtviuGvbmgQnPzao3xVoE+BnMOpGtLCe0oYI=; b=qzDXrNzNII/znLV8UiB96rbABF
-        z8S979CmOSrBzynuGrimRN/2Q1PBhrTumifH6kYbN4oyhkF301AZkJQdERIcUu+cWr4YnXwrkqBL7
-        x9BhXfr3GX2RBDe180MqKSMY7ZzGOmYh5Ed93ZiSbke9qmR5/2BUDgwKMvr2XMYYeQpdLD6gxBPGH
-        3qRzbNR7QkyPSjvBvmOvSN8pNZEQ1Sg8I1lbUJEpCUci85fawaqN0bWUbaQT6Fy4ScwbrRP+CZNDj
-        WcX89T8Uhb8LJ8mYlu3xKC5jdfHw8xNrlI5xW70h1Egkq+5H9LibyNsjlbCE7KTxSTHhUHIfvOJjp
-        6+YaqGwQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:49552 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lr5NY-000UuU-VN; Wed, 09 Jun 2021 16:04:48 -0500
-Subject: Re: [PATCH v3][venus-for-next-v5.14] media: venus: hfi_cmds: Fix
- packet size calculation
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-References: <20210603001708.GA55239@embeddedor>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <9c717bb8-e01a-b6b1-0480-996da8135155@embeddedor.com>
-Date:   Wed, 9 Jun 2021 16:06:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229937AbhFIVME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:12:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhFIVL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:11:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7412A613F2;
+        Wed,  9 Jun 2021 21:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623273004;
+        bh=1sMtcFGBqiygNuQlJow5wPDwFt1q3xy044Hg4Df3oO4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=QxWi9Tceiu5MFg6CJccZoFJuiOA9YIComdbU35iT7ovj4sdsyWbsZGkKa/erqd/h/
+         pDwJqOg41Qer+kTR8NgR0RO4zweksz69j8zltPBoVLtXSf0y9HPPVPMmKKmKbrLN3S
+         zXAe+1N6Z9kNuJcuT2SFPC+vEz9TbB5zX7kwU49WzpRIKn9zzLPvAsZQzuL37B2aZ+
+         /queDO58iQXvU/EIGMv/GAJf1i8nuFZUrpDn2F0hPk6JNBLrP/jZ0yt/0Px2a0+aSl
+         udzcistsmfyWXoAXaAMNRn/tmIWDn+8wqbOQDVqxa6M7mzcG0nVIdwT6c596nrwmkk
+         y8yVxXyyIm2LA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6C12E609E3;
+        Wed,  9 Jun 2021 21:10:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210603001708.GA55239@embeddedor>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lr5NY-000UuU-VN
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:49552
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 18
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2] net: hns3: use list_move_tail instead of
+ list_del/list_add_tail in hclge_main.c
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162327300443.16455.14671235606790351646.git-patchwork-notify@kernel.org>
+Date:   Wed, 09 Jun 2021 21:10:04 +0000
+References: <20210609072056.1351940-1-libaokun1@huawei.com>
+In-Reply-To: <20210609072056.1351940-1-libaokun1@huawei.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, davem@davemloft.net, kuba@kernel.org,
+        tanhuazhong@huawei.com, shenjian15@huawei.com,
+        huangguangbin2@huawei.com, moyufeng@huawei.com,
+        liaoguojia@huawei.com, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com, yangjihong1@huawei.com, yukuai3@huawei.com,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        hulkci@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hello:
 
-Friendly ping: who can take this, please?
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Thanks
---
-Gustavo
-
-On 6/2/21 19:17, Gustavo A. R. Silva wrote:
-> Now that a one-element array was replaced with a flexible-array member
-> in struct hfi_sys_set_property_pkt, use the struct_size() helper to
-> correctly calculate the packet size.
+On Wed, 9 Jun 2021 15:20:56 +0800 you wrote:
+> Using list_move_tail() instead of list_del() + list_add_tail() in hclge_main.c.
 > 
-> Fixes: 701e10b3fd9f ("media: venus: hfi_cmds.h: Replace one-element array with flexible-array member")
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 > ---
-> Changes in v3:
->  - Fix size calculation in call to struct_size().
->    Link: https://lore.kernel.org/linux-hardening/202106021254.39A1561075@keescook/
->    Link: https://lore.kernel.org/linux-hardening/113fd896-464c-6aef-215a-a53ac6103a62@embeddedor.com/
+> V1->V2:
+> 	CC mailist
 > 
-> Changes in v2:
->  - Include linux/overflow.h for struct_size().
-> 
->  drivers/media/platform/qcom/venus/hfi_cmds.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-> index 4b9dea7f6940..f51024786991 100644
-> --- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-> +++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-> @@ -3,6 +3,7 @@
->   * Copyright (c) 2012-2016, The Linux Foundation. All rights reserved.
->   * Copyright (C) 2017 Linaro Ltd.
->   */
-> +#include <linux/overflow.h>
->  #include <linux/errno.h>
->  #include <linux/hash.h>
->  
-> @@ -27,7 +28,7 @@ void pkt_sys_idle_indicator(struct hfi_sys_set_property_pkt *pkt, u32 enable)
->  {
->  	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
->  
-> -	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
-> +	pkt->hdr.size = struct_size(pkt, data, 1) + sizeof(*hfi);
->  	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
->  	pkt->num_properties = 1;
->  	pkt->data[0] = HFI_PROPERTY_SYS_IDLE_INDICATOR;
-> @@ -39,7 +40,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
->  {
->  	struct hfi_debug_config *hfi;
->  
-> -	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
-> +	pkt->hdr.size = struct_size(pkt, data, 1) + sizeof(*hfi);
->  	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
->  	pkt->num_properties = 1;
->  	pkt->data[0] = HFI_PROPERTY_SYS_DEBUG_CONFIG;
-> @@ -50,7 +51,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
->  
->  void pkt_sys_coverage_config(struct hfi_sys_set_property_pkt *pkt, u32 mode)
->  {
-> -	pkt->hdr.size = sizeof(*pkt) + sizeof(u32);
-> +	pkt->hdr.size = struct_size(pkt, data, 2);
->  	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
->  	pkt->num_properties = 1;
->  	pkt->data[0] = HFI_PROPERTY_SYS_CONFIG_COVERAGE;
-> @@ -116,7 +117,7 @@ void pkt_sys_power_control(struct hfi_sys_set_property_pkt *pkt, u32 enable)
->  {
->  	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
->  
-> -	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
-> +	pkt->hdr.size = struct_size(pkt, data, 1) + sizeof(*hfi);
->  	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
->  	pkt->num_properties = 1;
->  	pkt->data[0] = HFI_PROPERTY_SYS_CODEC_POWER_PLANE_CTRL;
-> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v2] net: hns3: use list_move_tail instead of list_del/list_add_tail in hclge_main.c
+    https://git.kernel.org/netdev/net-next/c/4724acc47c94
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
