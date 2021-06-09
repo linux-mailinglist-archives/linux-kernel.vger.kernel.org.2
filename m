@@ -2,82 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4382A3A1EB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1239D3A1EAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhFIVPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:15:49 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:39829 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhFIVPs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:15:48 -0400
-Received: by mail-wr1-f45.google.com with SMTP id l2so27009559wrw.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 14:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=cAUmhDMcAs6pVQpZ39SGVcYjz64esmLkl1UKed+u18o=;
-        b=pNeRzIRnaTGmkgMPbCsKBqgdbBVn9dylp+G0Eqvxu807/HBsMAHxFUc5a+XIu1yHK6
-         SKaaUgzOTNFBC4rvP2sqwz3/JVHsQc+6eTBDV1LrgowQmYyY2ozO+r3AudwfHuKHMPOt
-         nGTVhRY7x9UToA6cGogqALMWoCpW1Q/oI5ZWOeIz6AqDIsPLFWHwkV40xCBf57Scki0W
-         chuyVwZKLNkuY0csTRr/Q2Pu3QnvfhgPVge/m3gQajCdvc6Xhcsz3s8PJvC/bTEeK9Mh
-         BS/28jwR12tLz6YgMI3N38oshG8cqKarWsMbTtKfAbFsGm1SAiDy1/0jJCJf3CZOQ/JX
-         ZaOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=cAUmhDMcAs6pVQpZ39SGVcYjz64esmLkl1UKed+u18o=;
-        b=PMSAwXDZV76uTa+UL24mTQO9wZKAMxYR6r2XIruXAuBGJqCruvbFSF4uZG9SL8R33V
-         fJCEXpInI4QqWIaH3d1VxuQ6My2+8chaP/5dtSvpjZ63Pn9NORVQJdHNdhZ2lUO8N4Ns
-         2x+0gwUisabQye3DY7a5GDbA2CHSnvkLXFI0QOJl5prmQgOtp2pKHopQvjoKC84O6O+t
-         B5ZA9sLPRfzzCWUphgvrdvsP2pRXTEv6BhFzA2e17kJujsWueVdVW6Ac1QGte+9RkqA/
-         sOng+Bwo64lXK43vr9BPR8RceTrutcWMpIAKlnTxslJvzlooF7vohbuLhVjTSRSE/JHT
-         C34A==
-X-Gm-Message-State: AOAM530b3KYxHSnzz7ihRNCBwRMUPgDkezjaEFvf5zrlc1P+b+Ui5P+u
-        QSDipJmO5ta/FCEFVl2ZKXCsIw==
-X-Google-Smtp-Source: ABdhPJyQoNukEOdgVu3ZKB+pj81tAMSWz8KS/fjVm7EvL0ZxydElHHPfNS/0BXv1kWn2Op9TO/p/xA==
-X-Received: by 2002:a05:6000:8b:: with SMTP id m11mr1736396wrx.22.1623273172798;
-        Wed, 09 Jun 2021 14:12:52 -0700 (PDT)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id m21sm7088297wms.42.2021.06.09.14.12.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 14:12:52 -0700 (PDT)
-References: <20210604032957.224496-1-xieqinick@gmail.com>
-User-agent: mu4e 1.4.15; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     xieqinick@gmail.com, narmstrong@baylibre.com,
-        mturquette@baylibre.com, sboyd@kernel.org, khilman@baylibre.com,
-        martin.blumenstingl@googlemail.com,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     nick@khadas.com, artem@khadas.com
-Subject: Re: [PATCH] clk: meson: g12a: Add missing NNA source clocks for g12b
-In-reply-to: <20210604032957.224496-1-xieqinick@gmail.com>
-Message-ID: <1j1r9a214c.fsf@starbuckisacylon.baylibre.com>
-Date:   Wed, 09 Jun 2021 23:12:51 +0200
+        id S230027AbhFIVP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:15:28 -0400
+Received: from mga12.intel.com ([192.55.52.136]:46130 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229638AbhFIVP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:15:27 -0400
+IronPort-SDR: gRcu5mJDhvP/krO+tB2G7HhhQg2rdUWtY0dmUhqCfzKvKiGcxGZk24uOQC18GtrWh167lzbih/
+ 6YI4NWQniQmA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="184860023"
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="184860023"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 14:13:30 -0700
+IronPort-SDR: Sn9mVQgbacN+vtbB9+W1hgdFA79e0GPdGVYeBryEc/URi6IU489p1K4oLDj52BLOzwzzG0F4J3
+ TLdLhwlqsdqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="552807840"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Jun 2021 14:13:29 -0700
+Date:   Wed, 9 Jun 2021 14:13:38 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH 3/4] x86/tsx: Clear CPUID bits when TSX always force aborts
+Message-ID: <aaf129dab23878913bf6f370894c336fc45388a2.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As a result of TSX deprecation some processors always aborts TSX
+transactions by default.
 
-On Fri 04 Jun 2021 at 05:29, xieqinick@gmail.com wrote:
+When TSX feature cannot be used it is better to hide it. Clear CPUID.RTM
+and CPUID.HLE bits when TSX transactions always aborts.
 
-> From: Nick Xie <nick@khadas.com>
->
-> This adds the Neural Network Accelerator source clocks for g12b.
->
-> Initial support for sm1 already exist in
-> commit 2f1efa5340ef
-> ("clk: meson: g12a: Add support for NNA CLK source clocks")
->
-> The sm1 and g12b share the same NNA source clocks.
-> This patch add missing NNA clocks for A311D (g12b).
->
-> Signed-off-by: Nick Xie <nick@khadas.com>
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Tested-by: Neelima Krishnan <neelima.krishnan@intel.com>
+---
+ arch/x86/kernel/cpu/cpu.h   |  2 ++-
+ arch/x86/kernel/cpu/intel.c |  4 +++-
+ arch/x86/kernel/cpu/tsx.c   | 41 ++++++++++++++++++++++++++++++++++----
+ 3 files changed, 42 insertions(+), 5 deletions(-)
 
-Applied. Thx.
+diff --git a/arch/x86/kernel/cpu/cpu.h b/arch/x86/kernel/cpu/cpu.h
+index 67944128876d..95521302630d 100644
+--- a/arch/x86/kernel/cpu/cpu.h
++++ b/arch/x86/kernel/cpu/cpu.h
+@@ -48,6 +48,7 @@ extern const struct cpu_dev *const __x86_cpu_dev_start[],
+ enum tsx_ctrl_states {
+ 	TSX_CTRL_ENABLE,
+ 	TSX_CTRL_DISABLE,
++	TSX_CTRL_RTM_ALWAYS_ABORT,
+ 	TSX_CTRL_NOT_SUPPORTED,
+ };
+ 
+@@ -56,6 +57,7 @@ extern __ro_after_init enum tsx_ctrl_states tsx_ctrl_state;
+ extern void __init tsx_init(void);
+ extern void tsx_enable(void);
+ extern void tsx_disable(void);
++extern void tsx_clear_cpuid(void);
+ #else
+ static inline void tsx_init(void) { }
+ #endif /* CONFIG_CPU_SUP_INTEL */
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 8adffc17fa8b..861e919eba9a 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -717,8 +717,10 @@ static void init_intel(struct cpuinfo_x86 *c)
+ 
+ 	if (tsx_ctrl_state == TSX_CTRL_ENABLE)
+ 		tsx_enable();
+-	if (tsx_ctrl_state == TSX_CTRL_DISABLE)
++	else if (tsx_ctrl_state == TSX_CTRL_DISABLE)
+ 		tsx_disable();
++	else if (tsx_ctrl_state == TSX_CTRL_RTM_ALWAYS_ABORT)
++		tsx_clear_cpuid();
+ 
+ 	split_lock_init();
+ 	bus_lock_init();
+diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
+index e2ad30e474f8..5ed99811504c 100644
+--- a/arch/x86/kernel/cpu/tsx.c
++++ b/arch/x86/kernel/cpu/tsx.c
+@@ -2,7 +2,7 @@
+ /*
+  * Intel Transactional Synchronization Extensions (TSX) control.
+  *
+- * Copyright (C) 2019 Intel Corporation
++ * Copyright (C) 2019-2021 Intel Corporation
+  *
+  * Author:
+  *	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+@@ -84,14 +84,27 @@ static enum tsx_ctrl_states x86_get_tsx_auto_mode(void)
+ 	return TSX_CTRL_ENABLE;
+ }
+ 
++void tsx_clear_cpuid(void)
++{
++	u64 msr;
++
++	/*
++	 * MSR_TFA_TSX_CPUID_CLEAR bit is only present when both CPUID bits
++	 * RTM_ALWAYS_ABORT and TSX_FORCE_ABORT are enumerated.
++	 */
++	if (boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT) &&
++	    boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
++		rdmsrl(MSR_TSX_FORCE_ABORT, msr);
++		msr |= MSR_TFA_TSX_CPUID_CLEAR;
++		wrmsrl(MSR_TSX_FORCE_ABORT, msr);
++	}
++}
++
+ void __init tsx_init(void)
+ {
+ 	char arg[5] = {};
+ 	int ret;
+ 
+-	if (!tsx_ctrl_is_supported())
+-		return;
+-
+ 	ret = cmdline_find_option(boot_command_line, "tsx", arg, sizeof(arg));
+ 	if (ret >= 0) {
+ 		if (!strcmp(arg, "on")) {
+@@ -114,6 +127,26 @@ void __init tsx_init(void)
+ 			tsx_ctrl_state = TSX_CTRL_ENABLE;
+ 	}
+ 
++	/*
++	 * Hardware will always abort a TSX transaction if both CPUID bits
++	 * RTM_ALWAYS_ABORT and TSX_FORCE_ABORT are enumerated.  In this case it
++	 * is better not to enumerate CPUID.RTM and CPUID.HLE bits. Clear them
++	 * here.
++	 */
++	if (boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT) &&
++	    boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
++		tsx_ctrl_state = TSX_CTRL_RTM_ALWAYS_ABORT;
++		tsx_clear_cpuid();
++		setup_clear_cpu_cap(X86_FEATURE_RTM);
++		setup_clear_cpu_cap(X86_FEATURE_HLE);
++		return;
++	}
++
++	if (!tsx_ctrl_is_supported()) {
++		tsx_ctrl_state = TSX_CTRL_NOT_SUPPORTED;
++		return;
++	}
++
+ 	if (tsx_ctrl_state == TSX_CTRL_DISABLE) {
+ 		tsx_disable();
+ 
+-- 
+git-series 0.9.1
+
