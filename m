@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7E23A1373
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00773A137C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234365AbhFILwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:52:08 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40416 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235114AbhFILwD (ORCPT
+        id S239134AbhFILxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239066AbhFILxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:52:03 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lqwil-0006hA-UX; Wed, 09 Jun 2021 11:50:08 +0000
-To:     "Hans de Goede <hdegoede"@redhat.com,
-        Mark Gross <mgross@linux.intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Cc:     platform-driver-x86@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Computation of return value being discarded in get_cpu_power() in
- drivers/platform/x86/intel_ips.c
-Message-ID: <548dd463-3942-00a1-85c3-232897dea1a3@canonical.com>
-Date:   Wed, 9 Jun 2021 12:50:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 9 Jun 2021 07:53:19 -0400
+Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96CBC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:51:22 -0700 (PDT)
+Received: from [IPv6:2a02:a03f:eafb:ee01:a92e:8520:f692:3284] (unknown [IPv6:2a02:a03f:eafb:ee01:a92e:8520:f692:3284])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 67DF020B13A;
+        Wed,  9 Jun 2021 13:51:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1623239480;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vvIs7BSWDaUkVsbeyxXThQ2H+fkaFFZWCw9joFRm2U8=;
+        b=gFjEON8hUCLabCORedO1Kj2zALBP73NqXdjJaPJl2JceI1Yn3mrwVDJWHSPTXZwsPn5fm4
+        ufW4IYocNDcO/eaSkLN32v+EzikBZW+XHuOmA4chMUDfVKOkhEjoaOZRIgLugdpVvClBpL
+        rdJuaE1hKJKS1c1p2QuqVzwzNsBaDplr2NF+pkenHn6wGjiRj5qhZIRbfraH7E/D3I+vnU
+        npVioi5WSrM0ygi0LumM6JXDqXnaaT85CCOj6zn400/E57pL8dJi7luV8BKQl0LD3yUKiF
+        4JuGtsUOWHyIrrZhTgLR/LqDrSCgpNf4BGs+xJQNzzE5K9g1WqxM/n11Q+aB9Q==
+Message-ID: <3328306a4d5b4f8f58b3b8666eeccac714440da8.camel@svanheule.net>
+Subject: Re: [PATCH] regmap: mdio: Reject invalid clause-22 addresses
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>
+Date:   Wed, 09 Jun 2021 13:51:18 +0200
+In-Reply-To: <20210607110355.GA5705@sirena.org.uk>
+References: <cover.1622743333.git.sander@svanheule.net>
+         <20210605083116.12786-1-sander@svanheule.net>
+         <20210607110355.GA5705@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Mark,
 
-I was reviewing some old unassigned variable warnings from static
-analysis by Coverity and found an issue introduced with the following
-commit:
+On Mon, 2021-06-07 at 12:03 +0100, Mark Brown wrote:
+> On Sat, Jun 05, 2021 at 10:31:18AM +0200, Sander Vanheule wrote:
+> > Currently a regmap configuration for regmap-mdio must have a register
+> > address width of 5 bits (cf. clause-22 register access). This is not
+> > enforced on the provided register addresses, which would enable
+> > clause-45 MDIO bus access, if the right bit packing is used.
+> 
+> Please don't send new patches in reply to old patch serieses, it makes
+> it hard to follow what's going on and what the current state of things
+> is and makes it easy for things to get missed when threads get cleaned
+> out.
 
-commit aa7ffc01d254c91a36bf854d57a14049c6134c72
-Author: Jesse Barnes <jbarnes@virtuousgeek.org>
-Date:   Fri May 14 15:41:14 2010 -0700
+It appears that this has caused you to merge the RFC patches instead. I've
+posted two new patches, to bring the code in line with the discussion on the
+original RFC patches. See:
+https://lore.kernel.org/lkml/cover.1623238313.git.sander@svanheule.net/
 
-    x86 platform driver: intelligent power sharing driver
+My apologies for the extra work this has caused.
 
-The analysis is as follows:
-
-drivers/platform/x86/intel_ips.c
-
- 871 static u32 get_cpu_power(struct ips_driver *ips, u32 *last, int period)
- 872 {
- 873        u32 val;
- 874        u32 ret;
- 875
- 876        /*
- 877         * CEC is in joules/65535.  Take difference over time to
- 878         * get watts.
- 879         */
- 880        val = thm_readl(THM_CEC);
- 881
- 882        /* period is in ms and we want mW */
- 883        ret = (((val - *last) * 1000) / period);
-
-Unused value (UNUSED_VALUE)
-assigned_value:  Assigning value from ret * 1000U / 65535U to ret here,
-but that stored value is not used.
-
- 884        ret = (ret * 1000) / 65535;
- 885        *last = val;
- 886
- 887        return 0;
- 888 }
-
-I'm really not sure why ret is being calculated on lines 883,884 and not
-being used. Should that be *last = ret on line 885? Looks suspect anyhow.
-
-Colin
-
+Best,
+Sander
 
