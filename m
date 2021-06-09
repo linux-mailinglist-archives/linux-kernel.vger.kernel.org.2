@@ -2,244 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8602D3A0F49
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5153A0F5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 11:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237848AbhFIJIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:08:43 -0400
-Received: from mga18.intel.com ([134.134.136.126]:25232 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233016AbhFIJIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:08:42 -0400
-IronPort-SDR: 8LNtiLexIRnC7VGExVc4/ISzLfVxtAUSCjbmTULTa1phtepR4tiS9HqUyeGIzk1VZhcx61sL00
- PyVfzu0ltouQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="192352283"
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="192352283"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 02:06:47 -0700
-IronPort-SDR: EhIfHPrRrsPwwrlZmgZ8RenaWdihugiQ8MwmXSBj5s5S+JxqXeYTh5jYKdL28bLUjN1t1mAMje
- VHZPp+S0AuIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="552613914"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 09 Jun 2021 02:06:36 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lquAV-0009Vq-GI; Wed, 09 Jun 2021 09:06:35 +0000
-Date:   Wed, 09 Jun 2021 17:06:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- ec35d1d93bf8976f0668cb1026ea8c7d7bcad3c1
-Message-ID: <60c08495.A7etXB3bMFyfl78O%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S237874AbhFIJNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:13:15 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]:56093 "EHLO
+        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237923AbhFIJNH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 05:13:07 -0400
+Received: by mail-wm1-f44.google.com with SMTP id g204so3528612wmf.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0qa4D2spX1g8yj7RaDUoK2ZQ8yrlEpkE/9jNnX7bJv8=;
+        b=RPMbGrQTNf9/hpcQ8pAfoLnXzdUeu9Cvzr5SYmrRvOXTMg2nxNR0w9SY0Mtjih1MYR
+         521dJKRT3tmj3U4POI1m6TKDX6KxpmwhJ3U0EbQbqNffKriWuuS4BoQUqxp9saLqnifi
+         3OhSrkx0bpKB/GG/fylfKzRR//vyZdPHkXBcGMbditW8UYywUdPwgy7Bx95u4dt7Qs58
+         ihSpisFvuRQowRNQvDB158Bezlm8C44vqnFsR6IDi/x87+gXTu25bk8Bgr0jfkkeDTvQ
+         gpSkY84jsFFooxjs1Bd626gcIDaFLbJXeoaaNTrL8mjcKWP23iAccN1DI/tYGpiuG1D4
+         a1UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0qa4D2spX1g8yj7RaDUoK2ZQ8yrlEpkE/9jNnX7bJv8=;
+        b=FDNsFDm2zlKTAB7b0v/tJvMa6Rm9Zfwpu2zyZYXC9qdHQcxJepA7ReCyTbOjzuFgUm
+         x5k2GlJibG/r04y+Tr5ai/xjW3Qvgxeax9ZUUWc1tE9rXAE2wbEyCfgD3oUZFyTlLdhO
+         mIrP85xPzr5VgfiJC5JyyOvWL7iU6gQZJJE0oDWXPuR7jrucevoxJ+AdCrsvHbdFptwO
+         YRiz6l38IR4XJSQPz8V4Wzc5zlM4n7UCohZ57ivT2PIhtXVyPLfy+sAcHOHdOoXKt3W1
+         z11LAbfG2g7kKIaM+c/JamQG7yM6+d2T/9HTNKFovV2NXgHz0OZp6mw+0T4GbOOOlGRW
+         bk0Q==
+X-Gm-Message-State: AOAM53164NCQVgGRiQxl7XhD20eMQ/yKIXHxRKs0unHN+K1OxioGLMgV
+        U8AjntlgI6GMf7l8ZGY4tb/S6Q==
+X-Google-Smtp-Source: ABdhPJxnMhTgiSNU0jqqgT3HWW8u0CAb9KIqI1fqxlM27NQcORb/mbfA939gSZqzPyfVeRIcc6L1vg==
+X-Received: by 2002:a05:600c:4e89:: with SMTP id f9mr6571431wmq.140.1623229799177;
+        Wed, 09 Jun 2021 02:09:59 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id v18sm25165385wrb.10.2021.06.09.02.09.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 02:09:58 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     robh@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v9 0/9] ASoC: codecs: add wcd938x support
+Date:   Wed,  9 Jun 2021 10:09:34 +0100
+Message-Id: <20210609090943.7896-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: ec35d1d93bf8976f0668cb1026ea8c7d7bcad3c1  x86/setup: Document that Windows reserves the first MiB
+This patchset adds support for Qualcomm WCD938X codec.
 
-elapsed time: 724m
+Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
+connected over SoundWire. This device has two SoundWire devices, RX and
+TX respectively supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
+7 x TX diff inputs, 8 DMICs and MBHC.
 
-configs tested: 182
-configs skipped: 2
+Eventhough this device has two SoundWire devices, only tx device has
+access to main codec Control/Status Registers!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+For codec driver to be functional it would need both tx and rx Soundwire devices
+to be up and this is taken care by using device component framework and device-links
+are used to ensure proper pm dependencies. Ex tx does not enter suspend
+before rx or codec is suspended.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         rt305x_defconfig
-mips                      malta_kvm_defconfig
-powerpc                     asp8347_defconfig
-arm                           spitz_defconfig
-sparc                       sparc32_defconfig
-h8300                       h8s-sim_defconfig
-arm                   milbeaut_m10v_defconfig
-xtensa                           alldefconfig
-mips                          ath79_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                           se7722_defconfig
-sh                           se7724_defconfig
-sh                          sdk7786_defconfig
-arc                          axs103_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                     loongson2k_defconfig
-powerpc                     taishan_defconfig
-xtensa                          iss_defconfig
-powerpc                     pseries_defconfig
-parisc                generic-32bit_defconfig
-h8300                    h8300h-sim_defconfig
-mips                      loongson3_defconfig
-ia64                      gensparse_defconfig
-m68k                            q40_defconfig
-openrisc                            defconfig
-mips                     cu1000-neo_defconfig
-arc                        nsim_700_defconfig
-arm                       versatile_defconfig
-sh                         microdev_defconfig
-sh                             espt_defconfig
-powerpc                 mpc837x_rdb_defconfig
-h8300                            allyesconfig
-powerpc                      ep88xc_defconfig
-m68k                          atari_defconfig
-powerpc                      cm5200_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                       eiger_defconfig
-powerpc                     tqm8560_defconfig
-mips                      fuloong2e_defconfig
-xtensa                  audio_kc705_defconfig
-arm                         lpc32xx_defconfig
-sh                           se7343_defconfig
-mips                         tb0226_defconfig
-arm                      integrator_defconfig
-arm                         cm_x300_defconfig
-arm                         bcm2835_defconfig
-mips                            ar7_defconfig
-arm64                            alldefconfig
-arm                           tegra_defconfig
-sh                           se7206_defconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                 linkstation_defconfig
-xtensa                  nommu_kc705_defconfig
-i386                             allyesconfig
-ia64                        generic_defconfig
-powerpc                        warp_defconfig
-powerpc                   currituck_defconfig
-mips                  cavium_octeon_defconfig
-sh                          sdk7780_defconfig
-arm                             mxs_defconfig
-mips                             allmodconfig
-mips                       rbtx49xx_defconfig
-arm                       aspeed_g4_defconfig
-mips                           ip27_defconfig
-powerpc                      ppc6xx_defconfig
-arm                         s5pv210_defconfig
-nios2                         3c120_defconfig
-powerpc                    mvme5100_defconfig
-arm                        cerfcube_defconfig
-mips                      maltaaprp_defconfig
-csky                                defconfig
-powerpc                    gamecube_defconfig
-um                           x86_64_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                         mv78xx0_defconfig
-sh                           se7619_defconfig
-xtensa                         virt_defconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                       imx_v6_v7_defconfig
-um                             i386_defconfig
-arm                       netwinder_defconfig
-powerpc                     tqm5200_defconfig
-sh                   secureedge5410_defconfig
-powerpc                      bamboo_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                        workpad_defconfig
-powerpc                     mpc83xx_defconfig
-arm                      jornada720_defconfig
-nds32                             allnoconfig
-arc                           tb10x_defconfig
-microblaze                          defconfig
-powerpc                     kilauea_defconfig
-sh                        edosk7760_defconfig
-s390                             allyesconfig
-sh                   sh7770_generic_defconfig
-arm                     am200epdkit_defconfig
-powerpc                      pmac32_defconfig
-mips                      bmips_stb_defconfig
-um                               alldefconfig
-arm                          pxa168_defconfig
-arm                        spear6xx_defconfig
-x86_64                           alldefconfig
-m68k                         amcore_defconfig
-powerpc                      ppc64e_defconfig
-arc                     nsimosci_hs_defconfig
-h8300                               defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210608
-x86_64               randconfig-a002-20210608
-x86_64               randconfig-a003-20210608
-x86_64               randconfig-a006-20210608
-x86_64               randconfig-a005-20210608
-x86_64               randconfig-a001-20210608
-i386                 randconfig-a003-20210608
-i386                 randconfig-a006-20210608
-i386                 randconfig-a004-20210608
-i386                 randconfig-a001-20210608
-i386                 randconfig-a005-20210608
-i386                 randconfig-a002-20210608
-i386                 randconfig-a015-20210608
-i386                 randconfig-a013-20210608
-i386                 randconfig-a016-20210608
-i386                 randconfig-a011-20210608
-i386                 randconfig-a012-20210608
-i386                 randconfig-a014-20210608
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+This patchset along with other SoundWire patches on the list
+have been tested on SM8250 MTP device.
 
-clang tested configs:
-x86_64               randconfig-a002-20210607
-x86_64               randconfig-a004-20210607
-x86_64               randconfig-a003-20210607
-x86_64               randconfig-a006-20210607
-x86_64               randconfig-a005-20210607
-x86_64               randconfig-a001-20210607
-x86_64               randconfig-a015-20210608
-x86_64               randconfig-a012-20210608
-x86_64               randconfig-a014-20210608
-x86_64               randconfig-a011-20210608
-x86_64               randconfig-a016-20210608
-x86_64               randconfig-a013-20210608
+Thanks,
+srini
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Changes since v8:
+ - moved Kconfig and Makefile changes to last patch as suggested by Mark
+ - removed array of enums and used static entries instead. Suggested by Mark
+ - return true if put succeeds, Suggested by Mark
+ - removed some unneeded semi-colons in switch
+
+Srinivas Kandagatla (9):
+  ASoC: dt-bindings: wcd938x: add bindings for wcd938x
+  ASoC: codecs: wcd-clsh: add new version support
+  ASoC: codecs: wcd938x: add basic driver
+  ASoC: dt-bindings: wcd938x-sdw: add bindings for wcd938x-sdw
+  ASoC: codecs: wcd938x-sdw: add SoundWire driver
+  ASoC: codecs: wcd938x: add basic controls
+  ASoC: codecs: wcd938x: add playback dapm widgets
+  ASoC: codecs: wcd938x: add capture dapm widgets
+  ASoC: codecs: wcd938x: add audio routing and Kconfig
+
+ .../bindings/sound/qcom,wcd938x-sdw.yaml      |   70 +
+ .../bindings/sound/qcom,wcd938x.yaml          |  146 +
+ sound/soc/codecs/Kconfig                      |   14 +
+ sound/soc/codecs/Makefile                     |    4 +
+ sound/soc/codecs/wcd-clsh-v2.c                |  348 +-
+ sound/soc/codecs/wcd-clsh-v2.h                |   16 +
+ sound/soc/codecs/wcd938x-sdw.c                |  315 ++
+ sound/soc/codecs/wcd938x.c                    | 3753 +++++++++++++++++
+ sound/soc/codecs/wcd938x.h                    |  720 ++++
+ 9 files changed, 5376 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+ create mode 100644 sound/soc/codecs/wcd938x-sdw.c
+ create mode 100644 sound/soc/codecs/wcd938x.c
+ create mode 100644 sound/soc/codecs/wcd938x.h
+
+-- 
+2.21.0
+
