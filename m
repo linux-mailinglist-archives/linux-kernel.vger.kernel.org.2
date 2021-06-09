@@ -2,168 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000AE3A1662
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726643A166E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237156AbhFIODX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:03:23 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:49265 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237148AbhFIODS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:03:18 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G0TKt4K9TzBBZH;
-        Wed,  9 Jun 2021 16:01:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id a1uqyJtO2ulD; Wed,  9 Jun 2021 16:01:22 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G0TKt3M9JzBBTw;
-        Wed,  9 Jun 2021 16:01:22 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3400D8B7E3;
-        Wed,  9 Jun 2021 16:01:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 793nCcEw9Je0; Wed,  9 Jun 2021 16:01:22 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 96F388B7C3;
-        Wed,  9 Jun 2021 16:01:21 +0200 (CEST)
-Subject: Re: include/linux/compiler_types.h:326:38: error: call to
- '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON
- failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
-To:     kernel test robot <lkp@intel.com>, linux-btrfs@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <202106092159.05DloM1z-lkp@intel.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <6cc4b52b-48cd-45e2-67b5-289c4962fedb@csgroup.eu>
-Date:   Wed, 9 Jun 2021 16:01:20 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237163AbhFIOEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:04:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232724AbhFIOEP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 10:04:15 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4467BC061574;
+        Wed,  9 Jun 2021 07:02:04 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id h3so4085278wmq.3;
+        Wed, 09 Jun 2021 07:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N+/riSjz4euVjoS0RyWGJtslWdSbTXbIIzdHyoJErc4=;
+        b=CmEM6g3wKtqAtYflVQVVErEtCQXW7Uy97gHNNQMjxtonip1VUyhvcZC2QebjWgKwCi
+         mTwlhj6sJugCtXWgwTDKYP7Dgw/sM58GRyFv5FQEGYkCwLYFWh1Sm14Mhikl7RyGLpVx
+         5rwwrSAwCRSdayPE3twckTuAnsjOsNX3mgm9fUArlTkRqWz5RI3SYIeLlT0v/r686OJE
+         Hp2c8EZDe0diw7WWe1oq0c0gKahOs6oj3sTodA7+lK4AiG2LeuX+3I6p6S7mT+uy13zd
+         oZDVmcNiNuqFszcQnViykC4Ulq9c6IbD7u4akpvCoHXRumMc0XNMbm10q7oy3XJuU7tF
+         QKBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N+/riSjz4euVjoS0RyWGJtslWdSbTXbIIzdHyoJErc4=;
+        b=OQbDUA1AeaSUBCJuk9yx/WaQihYp5Vk3Kw7IwWabmyAtO97SEkhjhQMS6uShWE3RGb
+         F1iPrkR58B7N39EUCWbKL57N3SYQTj2rH4v6cTVggFDkTxr0Nvi18voY2JthgV9t2m3T
+         4almrkgMhdxEFdeZeyUcIUQbk50j/umMUtfbNm/LwUhc5ebq5tFFtXza/hYrFkXonZRK
+         YZtoqpr+pm62cnTjSjmtzkp4WmRwRwPgRix8lTXscQbs6oZ4sXYd4cFdhfIqQt8YfU9e
+         SY22tmGCGF8uP8BfsfwPtW288gCnm8vcDZ9ONGInRy3Rba5uJK1Tmha3u+DOy93GCyzI
+         vH7w==
+X-Gm-Message-State: AOAM530RyVEo5CMgMq5PhqbZ4x88FDD1sf4yvjNqXOY1u+BTm6nrY4bk
+        /e8t3HI/lfVniilx5ZjcE4eZXGe6JyrbCg==
+X-Google-Smtp-Source: ABdhPJxxFNmbfZIorFhb7skleM0DfQgbYgi6xFHPj/VVl6nDB7ZfDAyLHUwUiAruZiFx1d9ydxCZBg==
+X-Received: by 2002:a1c:c256:: with SMTP id s83mr221wmf.86.1623247322353;
+        Wed, 09 Jun 2021 07:02:02 -0700 (PDT)
+Received: from localhost.localdomain (103.red-81-47-144.staticip.rima-tde.net. [81.47.144.103])
+        by smtp.gmail.com with ESMTPSA id m23sm5673912wms.2.2021.06.09.07.02.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Jun 2021 07:02:01 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     linux-pci@vger.kernel.org
+Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
+        devicetree@vger.kernel.org, matthias.bgg@gmail.com,
+        john@phrozen.org, bhelgaas@google.com, robh+dt@kernel.org,
+        linux-staging@lists.linux.dev, gregkh@linuxfoundation.org,
+        neil@brown.name, ilya.lipnitskiy@gmail.com,
+        linux-kernel@vger.kernel.org, pali@kernel.org
+Subject: [PATCH v2 0/3] PCI: mt7621: Add MediaTek MT7621 PCIe host controller driver
+Date:   Wed,  9 Jun 2021 16:01:56 +0200
+Message-Id: <20210609140159.20476-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <202106092159.05DloM1z-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 09/06/2021 à 15:55, kernel test robot a écrit :
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   368094df48e680fa51cedb68537408cfa64b788e
-> commit: 4eeef098b43242ed145c83fba9989d586d707589 powerpc/44x: Remove STDBINUTILS kconfig option
-> date:   4 months ago
-> config: powerpc-randconfig-r012-20210609 (attached as .config)
-> compiler: powerpc-linux-gcc (GCC) 9.3.0
+MediaTek MT7621 PCIe subsys supports single Root complex (RC)
+with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link.
+Topology is as follows:
 
-That's a BTRFS issue, and not directly linked to the above mentioned commit. Before that commit the 
-problem was already present.
+                          MT7621 PCIe HOST Topology
 
-Problem is that with 256k PAGE_SIZE, following BUILD_BUG() pops up:
+                                   .-------.
+                                   |       |
+                                   |  CPU  |
+                                   |       |
+                                   '-------'
+                                       |
+                                       |
+                                       |
+                                       v
+                              .------------------.
+                  .-----------|  HOST/PCI Bridge |------------.
+                  |           '------------------'            |     Type1 
+         BUS0     |                     |                     |    Access 
+                  v                     v                     v    On Bus0
+          .-------------.        .-------------.       .-------------.
+          | VIRTUAL P2P |        | VIRTUAL P2P |       | VIRTUAL P2P |
+          |    BUS0     |        |    BUS0     |       |    BUS0     |
+          |    DEV0     |        |    DEV1     |       |    DEV2     |
+          '-------------'        '-------------'       '-------------'
+    Type0        |          Type0       |         Type0       |
+   Access   BUS1 |         Access   BUS2|        Access   BUS3|
+   On Bus1       v         On Bus2      v        On Bus3      v
+           .----------.           .----------.          .----------.
+           | Device 0 |           | Device 0 |          | Device 0 |
+           |  Func 0  |           |  Func 0  |          |  Func 0  |
+           '----------'           '----------'          '----------'
 
-BUILD_BUG_ON((BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0)
+This driver has been very long time in staging and I have been cleaning
+it from its first versions where there was code kaos and PCI_LEGACY support.
+Original code came probably from openWRT based on mediatek's SDK code. There
+is no documentation at all about the mt7621 PCI subsystem.
+I have been cleaning it targeting mt7621 SoC which is the one I use in
+my GNUBee PC1 board and HiLink HLK-MT7621A evaluation board.
 
+Now I think is clean enough to be moved into 'drivers/pci/controller'.
+This driver is mips/ralink architecture and need 'mips_cps_numiocu()'
+to properly configure iocu regions for mips.
 
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4eeef098b43242ed145c83fba9989d586d707589
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout 4eeef098b43242ed145c83fba9989d586d707589
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All error/warnings (new ones prefixed by >>):
-> 
->     fs/buffer.c: In function 'block_read_full_page':
->>> fs/buffer.c:2342:1: warning: the frame size of 2048 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->      2342 | }
->           | ^
-> --
->     fs/ext4/move_extent.c: In function 'mext_page_mkuptodate':
->>> fs/ext4/move_extent.c:227:1: warning: the frame size of 2056 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->       227 | }
->           | ^
-> --
->     fs/fat/dir.c: In function 'fat_add_new_entries':
->>> fs/fat/dir.c:1279:1: warning: the frame size of 2088 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->      1279 | }
->           | ^
->     fs/fat/dir.c: In function 'fat_alloc_new_dir':
->     fs/fat/dir.c:1195:1: warning: the frame size of 2064 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->      1195 | }
->           | ^
-> --
->     fs/fat/fatent.c: In function 'fat_free_clusters':
->>> fs/fat/fatent.c:632:1: warning: the frame size of 2080 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->       632 | }
->           | ^
->     fs/fat/fatent.c: In function 'fat_alloc_clusters':
->     fs/fat/fatent.c:550:1: warning: the frame size of 2112 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->       550 | }
->           | ^
-> --
->     fs/exfat/fatent.c: In function 'exfat_zeroed_cluster':
->>> fs/exfat/fatent.c:277:1: warning: the frame size of 2048 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->       277 | }
->           | ^
-> --
->     In file included from <command-line>:
->     fs/btrfs/inode.c: In function 'compress_file_range':
->>> include/linux/compiler_types.h:326:38: error: call to '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
->       326 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->           |                                      ^
->     include/linux/compiler_types.h:307:4: note: in definition of macro '__compiletime_assert'
->       307 |    prefix ## suffix();    \
->           |    ^~~~~~
->     include/linux/compiler_types.h:326:2: note: in expansion of macro '_compiletime_assert'
->       326 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->           |  ^~~~~~~~~~~~~~~~~~~
->     include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
->        39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->           |                                     ^~~~~~~~~~~~~~~~~~
->     include/linux/build_bug.h:50:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
->        50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
->           |  ^~~~~~~~~~~~~~~~
->     fs/btrfs/inode.c:563:2: note: in expansion of macro 'BUILD_BUG_ON'
->       563 |  BUILD_BUG_ON((BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0);
->           |  ^~~~~~~~~~~~
-> 
-> 
-> vim +/__compiletime_assert_791 +326 include/linux/compiler_types.h
-> 
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  312
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  313  #define _compiletime_assert(condition, msg, prefix, suffix) \
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  314  	__compiletime_assert(condition, msg, prefix, suffix)
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  315
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  316  /**
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  317   * compiletime_assert - break build and emit msg if condition is false
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  318   * @condition: a compile-time constant condition to check
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  319   * @msg:       a message to emit if condition is false
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  320   *
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  321   * In tradition of POSIX assert, this macro will break the build if the
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  322   * supplied condition is *false*, emitting the supplied error message if the
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  323   * compiler has support to do so.
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  324   */
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  325  #define compiletime_assert(condition, msg) \
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21 @326  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  327
-> 
-> :::::: The code at line 326 was first introduced by commit
-> :::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
-> 
-> :::::: TO: Will Deacon <will@kernel.org>
-> :::::: CC: Will Deacon <will@kernel.org>
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+This driver also uses already mainlined pci phy driver located in
+'drivers/phy/ralink/phy-mt7621-pci.c'. There are two instances of
+the phy being the first one dual ported for pci0 and pci1, and the
+second one not dual ported dedicated to pci2. Because of writing twice
+some phy registers of the dual-ported one sometimes become in not
+confident boot cycles we have to take care of this when device link
+is checked here in controller driver. We power on the dual ported-phy
+if there is something connected in pcie0 or pcie1. In the same manner
+we have to properly disable it only if nothing is connected in of both
+pcie0 and pcie1 slots.
+
+Another thing that must be mentioned is that this driver uses IO
+in physical address 0x001e160000. IO_SPACE_LIMIT for MIPS is 0xffff
+so some generic PCI functions (like of_pci_range_to_resource) won't
+work and the resource ranges part for IO is set manually.
+
+Changes in v2:
+    - Make one commit moving driver directly from staging into
+     'drivers/pci/controllers' instead of two commits making
+     one add and a later remove.
+    - Update binding documentation moving 'clocks', 'resets' and
+     'phys' properties to child root bridge nodes. 
+    - Update code to properly be able to use new bindings.
+    - Kconfig: add || (MIPS && COMPILE_TEST).
+    - Use {read/write}_relaxed versions.
+    - Use 'PCI_BASE_ADDRESS_0' instead of a custom definition.
+    - Avoid to set 'PCI_COMMAND_MASTER' and re-do functions
+     'mt7621_pcie_enable_ports' and 'mt7621_pcie_enable_port'.
+
+NOTE: Greg, I have maintained your Acked-by from previous series in
+delete driver commit and added in the one which is moving code here
+and delete the remaining stuff. If you are not ok with this, just
+let me now and I'll drop it and resend.
+
+Thanks in advance for your time.
+
+Best regards,
+    Sergio Paracuellos
+
+Sergio Paracuellos (3):
+  dt-bindings: mt7621-pci: PCIe binding documentation for MT7621 SoCs
+  PCI: mt7621: Add MediaTek MT7621 PCIe host controller driver
+  MAINTAINERS: add myself as maintainer of the MT7621 PCI controller
+    driver
+
+ .../bindings/pci/mediatek,mt7621-pci.yaml     | 142 ++++++++++++++++++
+ MAINTAINERS                                   |   6 +
+ arch/mips/ralink/Kconfig                      |   2 +-
+ drivers/pci/controller/Kconfig                |   8 +
+ drivers/pci/controller/Makefile               |   1 +
+ .../controller}/pci-mt7621.c                  |   0
+ drivers/staging/Kconfig                       |   2 -
+ drivers/staging/Makefile                      |   1 -
+ drivers/staging/mt7621-pci/Kconfig            |   8 -
+ drivers/staging/mt7621-pci/Makefile           |   2 -
+ drivers/staging/mt7621-pci/TODO               |   4 -
+ .../mt7621-pci/mediatek,mt7621-pci.txt        | 104 -------------
+ 12 files changed, 158 insertions(+), 122 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+ rename drivers/{staging/mt7621-pci => pci/controller}/pci-mt7621.c (100%)
+ delete mode 100644 drivers/staging/mt7621-pci/Kconfig
+ delete mode 100644 drivers/staging/mt7621-pci/Makefile
+ delete mode 100644 drivers/staging/mt7621-pci/TODO
+ delete mode 100644 drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
+
+-- 
+2.25.1
+
