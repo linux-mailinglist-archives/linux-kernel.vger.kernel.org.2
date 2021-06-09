@@ -2,160 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8187B3A1A1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20F73A1A1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234258AbhFIPuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235417AbhFIPuQ (ORCPT
+        id S236875AbhFIPud convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 11:50:33 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20052 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236081AbhFIPu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:50:16 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECC4C061574;
-        Wed,  9 Jun 2021 08:48:21 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id m13-20020a17090b068db02901656cc93a75so1627323pjz.3;
-        Wed, 09 Jun 2021 08:48:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vyDVyLfPuRvXW3psMvZrGfoYLzSaxY+80nkzI+WIEzE=;
-        b=PucRjujR5+uxNW2fJVOa9kbmJrNpVaZIPswxY7Ka6pj99DjNm2EHCwpbLk1u3/IWu2
-         uOL8lFiT/VGSKYWcqw9moHzqwv3aiB2d1XZ5+JmzsrP3GBL65uAn6Ao2MynTCM1sCzZ8
-         2Zr01Mr2Wt9qtRWNCr42VQ3lw4kNNt2PIj7xW+JNejMN6JJ1zC0o5niyCk/Z3nAWWvVj
-         OHgZA3Gx/eLzkn3PCWRc3J2pFc4LALQ9qLiAy1j4KyPkQ+yROrkJi3K186md29/4KBuz
-         9BLbi5rrcFxb6fVQQE0IbbuIeN4ns1tqKv9rdmqHsCgMByl8m+MfHl9G64aUO/Kk/6ND
-         UC2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vyDVyLfPuRvXW3psMvZrGfoYLzSaxY+80nkzI+WIEzE=;
-        b=UEF/5fhYoWjwEFIvm5j7cGreAljDmjq/B1DD+rHS+UvBzpmC4+1oYkaXTFuPEHT5FQ
-         +pnAT6NOFevHtFfR5h8CGUkuL9dKQz6Y3uUTewmqcW6wQPLSNqPGjyqPQ68OYW5vrpdC
-         19APWVhfyyHkwORUVaQWlDQumMEaIfAfot1frkdkH5Zzjycje3NSxv/0bPvMhyymdy+q
-         hM25hmb70ZlOw9bJh5LI9jybWhJqlgLXSYAt1NjADkP2oOP9aHs+JmnLlS/TZbQTOUTi
-         9x8u3uXJOFd5rgsH+1LOK8Q6WMniDaubYdD5nZ3DgxOQ7cXuLYbBL3twTlL6MN4cj4lz
-         CYQQ==
-X-Gm-Message-State: AOAM533nzuEqOf4pH12Q7n7x8Gy4XJk6B00tHTNK6ekOQ9QQXMHNWQLR
-        XaNeKmAbMQKEnvW3peN0dEw=
-X-Google-Smtp-Source: ABdhPJxh5GLIqWkiRPPzW4Lzh/aEcbyNHtsNthc3er14l4v+e0TkJxr2O5pS0qkS61zBXhjW9z8dzQ==
-X-Received: by 2002:a17:90a:c8b:: with SMTP id v11mr4532868pja.114.1623253699327;
-        Wed, 09 Jun 2021 08:48:19 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id q23sm213042pgm.31.2021.06.09.08.48.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 08:48:18 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 00:48:12 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     syednwaris@gmail.com, Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de, jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v11 04/33] counter: 104-quad-8: Return error when invalid
- mode during ceiling_write
-Message-ID: <YMDivMBOuhg98oAM@shinobu>
-References: <cover.1623201081.git.vilhelm.gray@gmail.com>
- <538122752d61df30dd450276b87df606a17ac4c7.1623201081.git.vilhelm.gray@gmail.com>
- <20210609161236.52b2d99f@jic23-huawei>
+        Wed, 9 Jun 2021 11:50:26 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-226-GQipw093PZmHTRm0NPY0xg-1; Wed, 09 Jun 2021 16:48:28 +0100
+X-MC-Unique: GQipw093PZmHTRm0NPY0xg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Wed, 9 Jun 2021 16:48:27 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Wed, 9 Jun 2021 16:48:27 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jason Gunthorpe' <jgg@nvidia.com>
+CC:     'Chuck Lever III' <chuck.lever@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Tom Talpey <tom@talpey.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Honggang LI <honli@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: RE: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
+ default for kernel ULPs
+Thread-Topic: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
+ default for kernel ULPs
+Thread-Index: AQHXXS5Xb0qnCJaKiUGWJCqTq1wvwKsLs9tw///62wCAABWUYP//83AAgAAWdEA=
+Date:   Wed, 9 Jun 2021 15:48:27 +0000
+Message-ID: <1a3512e2891642a193004ee4450a11dd@AcuMS.aculab.com>
+References: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
+ <20210609125241.GA1347@lst.de>
+ <6b370a8fde1e406192d37c748b79ad01@AcuMS.aculab.com>
+ <ACCBE9AD-9A59-4300-A872-69EDBB4D4203@oracle.com>
+ <25c32f2a147a4dff8b7d6577286d7954@AcuMS.aculab.com>
+ <20210609150922.GA1109697@nvidia.com>
+In-Reply-To: <20210609150922.GA1109697@nvidia.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HwSslquuWeRs22J3"
-Content-Disposition: inline
-In-Reply-To: <20210609161236.52b2d99f@jic23-huawei>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jason Gunthorpe
+> Sent: 09 June 2021 16:09
+> 
+> On Wed, Jun 09, 2021 at 03:05:52PM +0000, David Laight wrote:
+> 
+> > In principle some writel() could generate PCIe write TLP (going
+> > to the target) that have the 'relaxed ordering' bit set.
+> 
+> In Linux we call this writel_relaxed(), though I know of no
+> implementation that sets the RO bit in the TLP based on this, it would
+> be semantically correct to do so.
+> 
+> writel() has strong order requirements and must not generate a RO TLP.
 
---HwSslquuWeRs22J3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Somewhere I'd forgotten about that :-(
+It usually just allows the compiler and cpu hardware re-sequence
+the bus cycles.
 
-On Wed, Jun 09, 2021 at 04:12:36PM +0100, Jonathan Cameron wrote:
-> On Wed,  9 Jun 2021 10:31:07 +0900
-> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
->=20
-> > The 104-QUAD-8 only has two count modes where a ceiling value makes
-> > sense: Range Limit and Modulo-N. Outside of these two modes, setting a
-> > ceiling value is an invalid operation -- so let's report it as such by
-> > returning -EINVAL.
-> >=20
-> > Fixes: fc069262261c ("counter: 104-quad-8: Add lock guards - generic in=
-terface")
-> > Acked-by: Syed Nayyar Waris <syednwaris@gmail.com>
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
->=20
-> We seem to have some inconsistency in the driver about whether
-> we hold the priv->lock when calling quad8_preset_register_set()
->=20
-> Can we look to make that consistent?
+OTOH I doubt any/many PCIe targets have 'memory' areas that would
+benefit from RO write TLP.
+Especially since everything is organised to use target issued buffer
+copies.
 
-We do need to hold the lock when calling quad8_preset_register_set()
-lest priv->preset goes out of sync with the device state.
+I'm guessing that the benefits from RO are when the writes hit memory
+that is on a NUMA node or 'differently cached'.
+So writes to once cache line can proceed while earlier writes are
+still waiting for the cache-coherency protocol.
 
-Syed, if you have no objections I'll adjust this in the next version.
+From what I've seen writel() aren't too bad - they are async.
+The real problem is readl().
+The x86 cpu I have use a separate TLP id (I've forgotten the correct
+term) for each cpu core.
+So while multiple cpu can (and do) issue concurrent reads, reads from
+a single cpu happen one TLP at a time - even though it would be legitimate
+for the out-of-order execution unit to issue additional read TLP.
+There are times when you really do have to do PIO buffer reads :-(
 
-William Breathitt Gray
+	David
 
-> > ---
-> >  drivers/counter/104-quad-8.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
-> > index 4bb9abffae48..233a3acc1377 100644
-> > --- a/drivers/counter/104-quad-8.c
-> > +++ b/drivers/counter/104-quad-8.c
-> > @@ -714,13 +714,14 @@ static ssize_t quad8_count_ceiling_write(struct c=
-ounter_device *counter,
-> >  	switch (priv->count_mode[count->id]) {
-> >  	case 1:
-> >  	case 3:
-> > +		mutex_unlock(&priv->lock);
->=20
-> Probably swap this line and the next one...]
->=20
-> >  		quad8_preset_register_set(priv, count->id, ceiling);
-> > -		break;
-> > +		return len;
-> >  	}
-> > =20
-> >  	mutex_unlock(&priv->lock);
-> > =20
-> > -	return len;
-> > +	return -EINVAL;
-> >  }
-> > =20
-> >  static ssize_t quad8_count_preset_enable_read(struct counter_device *c=
-ounter,
->=20
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
---HwSslquuWeRs22J3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmDA4rwACgkQhvpINdm7
-VJKcxRAA2lDJEsRamD6ptPESbNoCgjVVQCRWJX7wfOydG31YyVXdbmR22IhLx02N
-KKYKMtnDY5oeGqszRcdJzLS+N/i8TuDtWmmFmWJrAUICaf/rHcyLVNuO1qy0VEQM
-oe5xjSegTK8NPDvWxp9Z9zWmSlseO9QccbMyjm8fhHMAuHt1F0PE0ua3S1ttHQz8
-2VnVALRTWZfl8nEMr+5Mjs6x+9U5o3oGQ5Xh4BlVFN7wmDsoSmMTgjTx8fBpzrRq
-/IVS+xDKCJa12JcucBr+dk1TROTFQoLLfL2MEJHfdbfGfnjfSPMgdY/dnsviAxLn
-JZAEdoEGhvFHi/zlFqG+zTXry1rRFPoye2nImJt/sb8sj57qlm3jbJneLUtNjswW
-qjrb9IhXdsKcPen/chKRoavCmlvbsbT9+ob0OajQmCp55MaWmhWMiLpIXyE00Srb
-7F1qKB2G87eF3i1Wjgc2j9YEIgsgVkF95wJZXZ1fr7Qd2VIWT//tyIBGjyewwX2a
-mCjVFX6epV2CMf8AiMS0KGyP8kRfeWr9nNN27cOtR5plvEN/kFp7uaibI8W/7A1d
-iFYXeoTy0u1jt46np6EXG/FfiQ38nKikSxkLqOu2pvJLDlQ9j0CQ0D40rDG0B//d
-5RywU+DSHx6rtYQJmQZFPJiXecM4wVpqHKmmPFv3IuNJHthtmVM=
-=u514
------END PGP SIGNATURE-----
-
---HwSslquuWeRs22J3--
