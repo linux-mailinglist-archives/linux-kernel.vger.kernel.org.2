@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9693A16A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCC83A16A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhFIOKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:10:40 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5312 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232474AbhFIOKj (ORCPT
+        id S233694AbhFIOLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:11:12 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33332 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232474AbhFIOLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:10:39 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G0TNg0cKRz1BKV0;
-        Wed,  9 Jun 2021 22:03:47 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 22:08:38 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 22:08:38 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] irqchip/imgpdc: remove unnecessary oom message
-Date:   Wed, 9 Jun 2021 22:08:28 +0800
-Message-ID: <20210609140828.14584-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Wed, 9 Jun 2021 10:11:11 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 159E9COZ013195;
+        Wed, 9 Jun 2021 09:09:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623247752;
+        bh=+hUmNy6lh00j1G/dAJ1wjYIi58XeS/+ysrAXq6S55UU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=fz9VhToeahDH2NuSCmGHwZb3/eD5QPqKEoIn5iV6xjl0GssQdBgCloJCcuUwbnpK6
+         BKawYpJ/NO63HeqWQ/0qRVR6BE4HdZpXa5aVsVCbP5em0Mtia9ZqNf5RBZiR96K1/H
+         2vEyXug+hASA2rodz3TPo2OspIaNc6FoBEaXxCoA=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 159E9CiV055770
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Jun 2021 09:09:12 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
+ 2021 09:09:11 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 9 Jun 2021 09:09:11 -0500
+Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 159E96lQ073591;
+        Wed, 9 Jun 2021 09:09:08 -0500
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-am64-main: Update the location of
+ ATF in SRAM and increase its max size
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>, Suman Anna <s-anna@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210607133806.18158-1-a-govindraju@ti.com>
+From:   Lokesh Vutla <lokeshvutla@ti.com>
+Message-ID: <ad34982c-0067-7b8b-f7e6-775e8cffe21c@ti.com>
+Date:   Wed, 9 Jun 2021 19:39:06 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210607133806.18158-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes scripts/checkpatch.pl warning:
-WARNING: Possible unnecessary 'out of memory' message
-
-Remove it can help us save a bit of memory.
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/irqchip/irq-imgpdc.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/irqchip/irq-imgpdc.c b/drivers/irqchip/irq-imgpdc.c
-index 646dfbf4890bd9f..5831be454673693 100644
---- a/drivers/irqchip/irq-imgpdc.c
-+++ b/drivers/irqchip/irq-imgpdc.c
-@@ -313,10 +313,8 @@ static int pdc_intc_probe(struct platform_device *pdev)
- 
- 	/* Allocate driver data */
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
--	if (!priv) {
--		dev_err(&pdev->dev, "cannot allocate device data\n");
-+	if (!priv)
- 		return -ENOMEM;
--	}
- 	raw_spin_lock_init(&priv->lock);
- 	platform_set_drvdata(pdev, priv);
- 
-@@ -353,10 +351,8 @@ static int pdc_intc_probe(struct platform_device *pdev)
- 	/* Get peripheral IRQ numbers */
- 	priv->perip_irqs = devm_kcalloc(&pdev->dev, 4, priv->nr_perips,
- 					GFP_KERNEL);
--	if (!priv->perip_irqs) {
--		dev_err(&pdev->dev, "cannot allocate perip IRQ list\n");
-+	if (!priv->perip_irqs)
- 		return -ENOMEM;
--	}
- 	for (i = 0; i < priv->nr_perips; ++i) {
- 		irq = platform_get_irq(pdev, 1 + i);
- 		if (irq < 0)
--- 
-2.26.0.106.g9fadedd
 
 
+On 07/06/21 7:08 pm, Aswath Govindraju wrote:
+> Due to a limitation for USB DFU boot mode, SPL load address has to be less
+> than  or equal to 0x70001000. So, load address of SPL and ATF have been
+> moved to 0x70000000 and 0x701a0000 respectively.
+> 
+> Also, the maximum size of ATF has been increased to 0x1c000 [1].
+> 
+> Therefore, update ATF's location and maximum size accordingly in the device
+> tree file.
+> 
+> [1] - https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=2fb5312f61a7de8b7a70e1639199c4f14a10b6f9
+> 
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+
+Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+
+I have already applied the corresponding U-Boot change into for-next branch.
+
+Thanks and regards,
+Lokesh
