@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041613A1576
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3D33A158C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236205AbhFINZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:25:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42919 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236118AbhFINZI (ORCPT
+        id S236374AbhFIN0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:26:49 -0400
+Received: from mail-wm1-f53.google.com ([209.85.128.53]:33419 "EHLO
+        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231254AbhFIN0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:25:08 -0400
-Received: from mail-wm1-f71.google.com ([209.85.128.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lqyAr-0006wS-55
-        for linux-kernel@vger.kernel.org; Wed, 09 Jun 2021 13:23:13 +0000
-Received: by mail-wm1-f71.google.com with SMTP id a25-20020a7bc1d90000b029019dd2ac7025so1949559wmj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 06:23:13 -0700 (PDT)
+        Wed, 9 Jun 2021 09:26:46 -0400
+Received: by mail-wm1-f53.google.com with SMTP id s70-20020a1ca9490000b02901a589651424so3224511wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 06:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lP2ITBV7zRm5ag9NRrSPl6Qm8uDsIEGXg/GTfJ0e8kU=;
+        b=KK0oiU/t558sncv3jMwVG6ULytasfYiT98qny4LgoNaCN4ZSgD6PwE+DZj2cOWMt4s
+         Bz+mSAotwP41jlg3HXkiJRfKh0A4/m2EqFbxkK5BBSMm+XwzJTWAx71qNB99UH4D86ki
+         HuAHbEHk9hJjNZyk82WLiaiYEyDWgjGEpNIHeVhoUAdMvrVpH6ZkZ83qyfWAlgpnnCSi
+         6DrcGcTl8TKtFWS/aJH4M7bLQcr6GuzDznE+5LiawcuKF+wp6veX+6OTHBOiusJBBgzU
+         23d33dn1akI3nRLlFyZ6ZtAw9/lLSZ/NV3dpDs4hNPtDXQ9nbYzUUjQGJIGbmwX4Bb5D
+         U5Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=HZHcwmcBCk5lvprMQJK82JaJ9zMetfOy1nrGFdC8Lf8=;
-        b=WAcGvaFHLyZsaesZaJsPI/6Kvw0bs4t9CG2cskP9ED0mQXhqatt+QMrF2KLEuN4Jgj
-         S7LJIb+8Wa62e7FSl3uvfuNon4oSlyX3FJy0bE0Z44o/WDIVdN46KDGMHh2RxF23CDPn
-         p2DL2X4D9aoznYH+crBPRQYYvOpvkRksxVsmeX7hswgjy/C2Y8LB7s/jagJ/g4Gji1K0
-         HSmJDpVPbsO6xeconLFlvfAw7WyPk/S+JgSXwfUcno38pSHbvNhd6x9TDKNNa3vRDIwG
-         E4qcXKC6+K/WunbmDra0zDpaRGq7VbCag0UeuzntTJcYvxNOa1QvdL89DZrIv0AkebnM
-         sQfQ==
-X-Gm-Message-State: AOAM533Hs4l/zqtckpLLLC+xYSIQE7gNSLDR2C4yxaZQtK0FUtgbL6NB
-        /JysiEGm8n1s+ldLCS3Sh/kpXSZ2dsv3VKszMBS49OykhaVO6eXb5wAcDIsq1JTn7uSvXHrU2mB
-        wduwzTQam9QBIpxYAD0NeYeqMJIJy5uC635/QeZdQ2g==
-X-Received: by 2002:a05:600c:410a:: with SMTP id j10mr9555978wmi.6.1623244992938;
-        Wed, 09 Jun 2021 06:23:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwE07PURI2CbXH6LOfvKl/P4UxKK5oXM/IoS0mjhrCSr11j6J28ssoLODge0i12ZK8N16q/iw==
-X-Received: by 2002:a05:600c:410a:: with SMTP id j10mr9555966wmi.6.1623244992844;
-        Wed, 09 Jun 2021 06:23:12 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id e16sm3716389wrw.49.2021.06.09.06.23.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 06:23:12 -0700 (PDT)
-Subject: Re: [PATCH v22 15/18] MAINTAINERS: Add PL353 SMC entry
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Naga Sureshkumar Relli <nagasure@xilinx.com>
-Cc:     Michal Simek <monstr@monstr.eu>,
-        Amit Kumar Mahapatra <akumarma@xilinx.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
-        Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>
-References: <20210609080112.1753221-1-miquel.raynal@bootlin.com>
- <20210609080112.1753221-16-miquel.raynal@bootlin.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <f04b06fc-72f9-8f90-343d-e4826a3bf4d7@canonical.com>
-Date:   Wed, 9 Jun 2021 15:23:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=lP2ITBV7zRm5ag9NRrSPl6Qm8uDsIEGXg/GTfJ0e8kU=;
+        b=gvFQ958V0ewE+jl7P2EkoaVQj0vfpc1mNeNuqg5DJbbHyyZoO9F4i3LwsJbUn46kDI
+         sQmEuv8ZfnVrW4goyBYkXWj7K53fGngHkdVb3inK/8Mx0yfPmitWThnAvSYnOjNF46mm
+         rjhu97CphpnobIAV84M5EoaplJGYz0SxDdkh5bCWQGXbQeVaR2sn22cUzxww3ZwhIJI/
+         lJEfwkMFYFI27C/QeNUCnWU3UhxPIyWd9UxMu79t5M8nJvHgVYQepfpf4tNblZXZGjO1
+         D387oJ5t1GatkeFUdJ5K2Nq6ErM1Ko6UsEUlNH5lm2xiyutvAiF6B1AaD5P3thzq2dSe
+         SkEA==
+X-Gm-Message-State: AOAM5323XrUQyKDe7ChXBL1/IRXAjKH9+n9f5LCwES+e4UOI/Syf+PbV
+        6jOjzK0GrIns6CLgqegIhjw=
+X-Google-Smtp-Source: ABdhPJx/b5jPlSGViDVrOKwFkkoGyNC7ZtT0/PWdyiyLa/U64F0l7hYPf+1VTBXpCJjIQLtSoc5Kbg==
+X-Received: by 2002:a05:600c:4e8e:: with SMTP id f14mr9624626wmq.172.1623245031597;
+        Wed, 09 Jun 2021 06:23:51 -0700 (PDT)
+Received: from linux.local (host-82-59-55-132.retail.telecomitalia.it. [82.59.55.132])
+        by smtp.gmail.com with ESMTPSA id f5sm27793994wrf.22.2021.06.09.06.23.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 06:23:51 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joe Perches <joe@perches.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v2] staging: rtl8723bs: os_dep: Remove conditions with no effects
+Date:   Wed,  9 Jun 2021 15:23:46 +0200
+Message-Id: <20210609132346.15403-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210609080112.1753221-16-miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06/2021 10:01, Miquel Raynal wrote:
-> Add Naga from Xilinx and myself responsible of this driver.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  MAINTAINERS | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
+Removed conditions with no effects. Detected by Coccinelle.
+Deleted a variable that is no longer used because of the above-mentioned
+removals.
 
-Memory controller bits look good to me, except few things in bindings. I
-can take them up to this patch, for which I would need also Ack from
-Naga Sureshkumar Relli confirming he will co-maintain this code.
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Reviewed-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
 
-I assume the NAND driver depends on this, so I can prepare a stable tag
-with the memory controller part, if needed.
+v1->v2: As reported by Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+deleted a variable that became unused because of the removal of the
+conditions.
 
-Best regards,
-Krzysztof
+ drivers/staging/rtl8723bs/os_dep/os_intfs.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
+index 213ec5b4ce98..11b9a5919da4 100644
+--- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
++++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
+@@ -1187,10 +1187,7 @@ void rtw_suspend_common(struct adapter *padapter)
+ 
+ 	rtw_ps_deny_cancel(padapter, PS_DENY_SUSPEND);
+ 
+-	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE))
+-		rtw_suspend_normal(padapter);
+-	else
+-		rtw_suspend_normal(padapter);
++	rtw_suspend_normal(padapter);
+ 
+ 	netdev_dbg(padapter->pnetdev, "rtw suspend success in %d ms\n",
+ 		   jiffies_to_msecs(jiffies - start_time));
+@@ -1264,15 +1261,10 @@ int rtw_resume_common(struct adapter *padapter)
+ 	int ret = 0;
+ 	unsigned long start_time = jiffies;
+ 	struct pwrctrl_priv *pwrpriv = adapter_to_pwrctl(padapter);
+-	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 
+ 	netdev_dbg(padapter->pnetdev, "resume start\n");
+ 
+-	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE)) {
+-		rtw_resume_process_normal(padapter);
+-	} else {
+-		rtw_resume_process_normal(padapter);
+-	}
++	rtw_resume_process_normal(padapter);
+ 
+ 	hal_btcoex_SuspendNotify(padapter, 0);
+ 
+-- 
+2.31.1
+
