@@ -2,85 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B843A113B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858713A114B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238975AbhFIKgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:36:46 -0400
-Received: from mail-pf1-f177.google.com ([209.85.210.177]:38484 "EHLO
-        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238857AbhFIKgo (ORCPT
+        id S237586AbhFIKkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:40:12 -0400
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:55012 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237198AbhFIKkI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:36:44 -0400
-Received: by mail-pf1-f177.google.com with SMTP id z26so18054412pfj.5;
-        Wed, 09 Jun 2021 03:34:50 -0700 (PDT)
+        Wed, 9 Jun 2021 06:40:08 -0400
+Received: by mail-wm1-f45.google.com with SMTP id o127so3686116wmo.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ev80YovBIlVWJS+RO/GBMGe2qi6AXe4JDQTN0MTh/0s=;
-        b=ogMvtAiF2JN+J354MPhiU5ntuKvaaRKNGWU/zUwHi5cXq7oDw9wGilxl6eWpIWVqY/
-         KKlhvUSu5YWhOeJ6FRwV6Ff7Kv3bZSbGnZbU2KGi4qP75C2HceFUGje8PxfLc5mYzBO/
-         0oh2BFw4/moMx7SwPpyzYfCxlASNmcCfrQlbKny0SUd89jUnVN4rnCvVHnAn9T8LBRRP
-         SW7Yv/QOae9iD4srOziTrs+ufRlzlM8a8RJcS7cmgPrB8ctjRMtM5uQhNtyGKXVWOBEB
-         WzGmQb1G3mnYByDypKEINWNE9qGsWQDDjACPjcwwzRt3oWlgRbDopXLmOX+wBJbHpfcw
-         C/vQ==
+        bh=rYodVtyswGkxjPZ1N4VGwVug/p/tXWlRC7vMIsTSrBI=;
+        b=bPJatgBr7cf/n/nozcV2QXkJ6KuYcmc76wQhAXvk8Hq+0jiCf6/weX5BvAxYuOgBWL
+         tWw35amLPl4/ErMRBcCXdpHGnDsivP8d9+T96WJsPIFQQuvwIwuFoyuH2TlXYHmZ2ekD
+         ZHqceoPEjeLEw6zJEJ06j9uYxHOY54DttYbKMAdqmOlbIrAWgymewLD+n551uHTZtvzs
+         sOjOc8+zgOxmMeABVYyDzKOSdJcSU9UhkbnQi+/fvmYNGPmcUMs04w8EC+rjHzLRf0ns
+         4vQ2+Re0/hFuAliL64jRfAkIloDs4EoP1BMiVF3mO1y7nPY5SiFjRYqqgQMKjLc0z6Y9
+         jWDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ev80YovBIlVWJS+RO/GBMGe2qi6AXe4JDQTN0MTh/0s=;
-        b=KDN9WF2CA7SMksJ/HsboFpAhuNohYenEoLzJqzayRpjQbIqEYAZfPo7aVTfIG6Vow/
-         l7XmE1hgz6gKVtdkM8rDRPWuWc3+l7yLlKTFhgV+RMnsS4/xzn4ioNBwOs7+QAnaKPjl
-         SssIx16NNUamTtC+wWxnoaDRHGBFRkVmnv7XdPh8r5xOeeoeELzSdAy73HFo7srTsf3Q
-         pJK77V7ZXtpitZ2gIFd5qNEidtvcYNEOM2rDVohITKE4qgPFdmhVmDmXnVMAbW3XooYC
-         QDO9se5coOkRppGH0LI0eub0l014+SEA3E3rAh074U0ml6+y1R7WLDCeX8/2y+x5LL6S
-         tD6A==
-X-Gm-Message-State: AOAM531KZngdshwmDsszY8JllmmshXuRsxMTyrw8JoDihCTPQoS6as/N
-        3fAFEZHY+Tyr71bci5Y+vuk1DopBeuZZ9CDCZaH9r5p/jM03aw==
-X-Google-Smtp-Source: ABdhPJyj9aW6PgG4Tk5hHIOg59I8yrocu9mtuS0J0yNiQoA5ZN9QmaO2LfQV2tteumt0RurKJ3zJOuvRMjHGbk7aQ9Y=
-X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id
- p30-20020a056a000a1eb02902e289d85c87mr4619952pfh.73.1623234830296; Wed, 09
- Jun 2021 03:33:50 -0700 (PDT)
+        bh=rYodVtyswGkxjPZ1N4VGwVug/p/tXWlRC7vMIsTSrBI=;
+        b=DqZAAtoXNtH57DUsOW1nWtyPjE2+3VbiXZHe+cGBxck5EgaZmND1d9gPYtlS+MMZS9
+         ld1CKD6TjqhCagr/FfXmmQ1v5Q0LNq5dr6+M422r60LPDDRnYWNGqKxnIi7e5uiqnneE
+         +bTxPc/Fmxw4LMC6fNUpvL4Ii8c6CnFlMoICPibuXkqyxt8iXKcB3426dwpQoPPmFP6+
+         gDPj2/SeJYXXOMIwd4JJZ4+XOInHH7VyfAwSEBFrSaJIhq1UkmxzQYEoI00n9lkTqtPH
+         GxOm53RTsSas14oS8brAm6YKqkF+8w6l6UUA93yPthN4qFpmrA77s/vUS1LcpJd4LrNX
+         Uf+g==
+X-Gm-Message-State: AOAM530ePQEVIeaw82C5gvycZRBwHP5AS5yI5ZtDXvxjik6Z9+nLP1my
+        tDxOUfDxL12aW+m2xQv5DMNDiY39sDunCiZSFAahag==
+X-Google-Smtp-Source: ABdhPJwOxSjrqbtXWi10C+dUk2jqM3x4JRkuQ+gY4Ec5hihOhUwkVNAF+kUVfPzxoPSu0goTPjfOIV7UIM3SddRgI/Q=
+X-Received: by 2002:a05:600c:4ec7:: with SMTP id g7mr13233266wmq.157.1623235022430;
+ Wed, 09 Jun 2021 03:37:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210609062722.9132-1-henning.schild@siemens.com> <YMCT+izizEg0gPLD@lahna.fi.intel.com>
-In-Reply-To: <YMCT+izizEg0gPLD@lahna.fi.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 9 Jun 2021 13:33:34 +0300
-Message-ID: <CAHp75Vcj9wmM7H908sqGmXs10BQN8ty1C4qfmk_nXpG_s=BjTQ@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: intel: fix NULL pointer deref
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Henning Schild <henning.schild@siemens.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
+References: <20210602112321.2241566-1-anup.patel@wdc.com> <20210602112321.2241566-7-anup.patel@wdc.com>
+ <26cddfa8-75e2-7b5b-1a47-e01cc1c7821e@sholland.org>
+In-Reply-To: <26cddfa8-75e2-7b5b-1a47-e01cc1c7821e@sholland.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 9 Jun 2021 16:06:51 +0530
+Message-ID: <CAAhSdy3jKY_48bFCSyzCcJ8kW=aERNEjBRz=5GEasefuN3Bydw@mail.gmail.com>
+Subject: Re: [PATCH v5 6/8] cpuidle: Add RISC-V SBI CPU idle driver
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Sandeep Tripathy <milun.tripathy@gmail.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Liush <liush@allwinnertech.com>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 1:12 PM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
-> On Wed, Jun 09, 2021 at 08:27:22AM +0200, Henning Schild wrote:
-> > match could be NULL in which case we do not go ACPI after all
-
-...
-
-> >       adev = ACPI_COMPANION(&pdev->dev);
-> > -     if (adev) {
-> > -             const void *match = device_get_match_data(&pdev->dev);
-> > -
-> > +     match = device_get_match_data(&pdev->dev);
+On Mon, Jun 7, 2021 at 12:09 AM Samuel Holland <samuel@sholland.org> wrote:
 >
-> Actually we don't even call intel_pinctrl_get_soc_data() if the ACPI ID
-> is not listed in the corresponding driver's module table. So I don't
-> think match can ever be NULL.
+> On 6/2/21 6:23 AM, Anup Patel wrote:
+> > The RISC-V SBI HSM extension provides HSM suspend call which can
+> > be used by Linux RISC-V to enter platform specific low-power state.
+> >
+> > This patch adds a CPU idle driver based on RISC-V SBI calls which
+> > will populate idle states from device tree and use SBI calls to
+> > entry these idle states.
+> >
+> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> > ---
+> >  MAINTAINERS                   |   7 +
+> >  drivers/cpuidle/Kconfig       |   5 +
+> >  drivers/cpuidle/Kconfig.riscv |  15 +
+> >  drivers/cpuidle/Makefile      |   4 +
+> >  drivers/cpuidle/cpuidle-sbi.c | 626 ++++++++++++++++++++++++++++++++++
+> >  5 files changed, 657 insertions(+)
+> >  create mode 100644 drivers/cpuidle/Kconfig.riscv
+> >  create mode 100644 drivers/cpuidle/cpuidle-sbi.c
+> >
+> > ...
+> > diff --git a/drivers/cpuidle/cpuidle-sbi.c b/drivers/cpuidle/cpuidle-sbi.c
+> > new file mode 100644
+> > index 000000000000..f743684d07de
+> > --- /dev/null
+> > +++ b/drivers/cpuidle/cpuidle-sbi.c
+> > @@ -0,0 +1,626 @@
+> > ...
+> > +     /* Initialize idle states from DT. */
+> > +     ret = sbi_cpuidle_dt_init_states(dev, drv, cpu, state_count);
+> > +     if (ret) {
+> > +             pr_err("HART%ld: failed to init idle states\n",
+> > +                    cpuid_to_hartid_map(cpu));
+> > +             return ret;
+> > +     }
+> > +
+> > +     ret = cpuidle_register(drv, NULL);
+> > +     if (ret)
+> > +             goto deinit;
+> > +
+> > +     cpuidle_cooling_register(drv);
+> > +
+> > +     return 0;
+> > +deinit:
+> > +     sbi_cpuidle_deinit_cpu(cpu);
+> > +     return ret;
+> > +}
+> > +
+> > +static int sbi_cpuidle_pd_power_off(struct generic_pm_domain *pd)
 >
-> But feel free to prove me wrong ;-)
+> This function should be moved inside the CONFIG_DT_IDLE_GENPD block
+> below. Otherwise it is defined but unused.
 
-It's possible to have bugs in this driver, but can we see the real case here?
+Indeed, sbi_cpuidle_pd_power_off() should be under
+"#ifdef CONFIG_DT_IDLE_GENPD". I will update in the
+next patch revision.
 
--- 
-With Best Regards,
-Andy Shevchenko
+>
+> > +{
+> > +     struct genpd_power_state *state = &pd->states[pd->state_idx];
+> > +     u32 *pd_state;
+> > +
+> > +     if (!state->data)
+> > +             return 0;
+> > +
+> > +     if (!sbi_cpuidle_pd_allow_domain_state)
+> > +             return -EBUSY;
+> > +
+> > +     /* OSI mode is enabled, set the corresponding domain state. */
+> > +     pd_state = state->data;
+> > +     sbi_set_domain_state(*pd_state);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static void sbi_cpuidle_domain_sync_state(struct device *dev)
+> > +{
+> > +     /*
+> > +      * All devices have now been attached/probed to the PM domain
+> > +      * topology, hence it's fine to allow domain states to be picked.
+> > +      */
+> > +     sbi_cpuidle_pd_allow_domain_state = true;
+> > +}
+> > +
+> > +#ifdef CONFIG_DT_IDLE_GENPD
+> > +
+> > +struct sbi_pd_provider {
+> > +     struct list_head link;
+> > +     struct device_node *node;
+> > +};
+> > +
+> > +static LIST_HEAD(sbi_pd_providers);
+> > +
+> > +static int sbi_pd_init(struct device_node *np)
+> > +{
+> > +     struct generic_pm_domain *pd;
+> > +     struct sbi_pd_provider *pd_provider;
+> > +     struct dev_power_governor *pd_gov;
+> > +     int ret = -ENOMEM, state_count = 0;
+> > +
+> > +     pd = dt_idle_pd_alloc(np, sbi_dt_parse_state_node);
+> > +     if (!pd)
+> > +             goto out;
+> > ...
+
+Regards,
+Anup
