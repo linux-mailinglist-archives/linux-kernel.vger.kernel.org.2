@@ -2,74 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BF23A169C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8640E3A169F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237475AbhFIOHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 10:07:44 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5311 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237483AbhFIOHi (ORCPT
+        id S237495AbhFIOI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 10:08:26 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42832 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233803AbhFIOIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:07:38 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G0TKC10Ytz1BK2X;
-        Wed,  9 Jun 2021 22:00:47 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 22:05:39 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 22:05:38 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] irqchip/gic-v2m: remove unnecessary oom message
-Date:   Wed, 9 Jun 2021 22:05:34 +0800
-Message-ID: <20210609140534.14478-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Wed, 9 Jun 2021 10:08:18 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 159E6KRi050340;
+        Wed, 9 Jun 2021 09:06:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623247580;
+        bh=yb8Sxqxy99dpc2ubYDYTp0LMBNhTC8C2NS2ZuUFEc9o=;
+        h=From:To:CC:Subject:Date;
+        b=JD4dmsDKqe3zYJIzbkmZJrDT8s1p7HAYe1fSSWhtY+e2DRctHyVEbS7k57xIAj0wY
+         6YhVg2IKrMSdBf+ktV5F1XKhUZTRqX6mgo8oDn9QQDBHnLg0uqaF+yVA80P76rSVTL
+         A5pKNvzTtLa4E4EbPuWwbHPNtyjY6txvnHHpORnA=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 159E6KWp049606
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Jun 2021 09:06:20 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
+ 2021 09:06:20 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 9 Jun 2021 09:06:20 -0500
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 159E6H2d067032;
+        Wed, 9 Jun 2021 09:06:18 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Nishanth Menon <nm@ti.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH] arm64: dts: ti: k3-am64-main: Add SYSFW reserved ranges in OCRAM
+Date:   Wed, 9 Jun 2021 19:36:04 +0530
+Message-ID: <20210609140604.9490-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes scripts/checkpatch.pl warning:
-WARNING: Possible unnecessary 'out of memory' message
+Last 256K of OCRAM (256K@0x701c0000) is reserved for SYSFW usage. Hence
+add an entry in DT so that its not used for generic pool memory
+allocation.
 
-Remove it can help us save a bit of memory.
+Without this certain drivers using SRAM as generic shared memory pool
+may end up being allocated memory from this range and will lead to boot
+time crash when the reserved range is accessed (due to firewall
+violation).
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- drivers/irqchip/irq-gic-v2m.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/irqchip/irq-gic-v2m.c b/drivers/irqchip/irq-gic-v2m.c
-index 4116b48e60aff87..be9ea6fd6f8b2e6 100644
---- a/drivers/irqchip/irq-gic-v2m.c
-+++ b/drivers/irqchip/irq-gic-v2m.c
-@@ -323,10 +323,8 @@ static int __init gicv2m_init_one(struct fwnode_handle *fwnode,
- 	struct v2m_data *v2m;
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+index f1c42ef05e52..77b88e536534 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+@@ -16,6 +16,10 @@ oc_sram: sram@70000000 {
+ 		atf-sram@0 {
+ 			reg = <0x0 0x1a000>;
+ 		};
++
++		dmsc-sram@1c0000 {
++			reg = <0x1c0000 0x40000>;
++		};
+ 	};
  
- 	v2m = kzalloc(sizeof(struct v2m_data), GFP_KERNEL);
--	if (!v2m) {
--		pr_err("Failed to allocate struct v2m_data.\n");
-+	if (!v2m)
- 		return -ENOMEM;
--	}
- 
- 	INIT_LIST_HEAD(&v2m->entry);
- 	v2m->fwnode = fwnode;
+ 	gic500: interrupt-controller@1800000 {
 -- 
-2.26.0.106.g9fadedd
-
+2.31.1
 
