@@ -2,90 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D503A0BB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511013A0BB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbhFIE40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 00:56:26 -0400
-Received: from mga07.intel.com ([134.134.136.100]:55376 "EHLO mga07.intel.com"
+        id S231168AbhFIFAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 01:00:36 -0400
+Received: from mga02.intel.com ([134.134.136.20]:24557 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229639AbhFIE4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 00:56:24 -0400
-IronPort-SDR: gBMjJfB3w7HqRntFRuekXA9EAYm8c3CXr9Z4EqcqqOAhtBg8PsdwbeR+d+XYACEkCht+H42/3P
- luT0FBjSYjVA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="268858160"
+        id S229792AbhFIFAe (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 01:00:34 -0400
+IronPort-SDR: 4BRBdw8GXfMuYpmcVIEpt3O0GG0uZAwQwlZ879WE0vDHJJmWazbIcJzCvf7CTJMvRFEjzJZBM9
+ JLPO+F6MEOow==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="192111653"
 X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="268858160"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 21:54:30 -0700
-IronPort-SDR: yp6UxF6aTXDSGVA4DPfi/owkf5vf9OHVqY0BKZnY7xrkn53TRi3Z4NH2wuigV9P47xY6yJ4s8J
- f5maYtJ7LDxA==
+   d="scan'208";a="192111653"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 21:58:40 -0700
+IronPort-SDR: kymJqfXxEZAvsDP2HquRRN4m+j4rcSiU+QfQenxQ593h845nNfs1PxI1/eTFlFO6ZTDhIL8S1Y
+ zkrwmlpu6RoA==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="402317455"
-Received: from dabarred-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.185.80])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 21:54:29 -0700
-Subject: Re: [RFC v2-fix-v4 1/1] x86/tdx: Skip WBINVD instruction for TDX
- guest
-To:     Andi Kleen <ak@linux.intel.com>, Andy Lutomirski <luto@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
- <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4gLeKPfYOx1kmg-mO1_mNd+XGqVO-CbqX+2d52GZ+DSFw@mail.gmail.com>
- <23418f34-7c03-7477-6fbf-1b36b4718cb9@kernel.org>
- <4e5ac34f-28cb-def6-0b87-e560fa42e5e5@linux.intel.com>
- <e9b2aab2-4a6f-4739-a939-c448414e6af2@www.fastmail.com>
- <390d6712-35b5-e52a-fb32-205844bad4ef@linux.intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <b1eb467e-1cb4-0e5e-c3e0-d99044f83ab6@linux.intel.com>
-Date:   Tue, 8 Jun 2021 21:54:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <390d6712-35b5-e52a-fb32-205844bad4ef@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+   d="scan'208";a="476843351"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Jun 2021 21:58:37 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v1] perf tools: Fix pattern matching for same substring used in different pmu type
+Date:   Wed,  9 Jun 2021 12:57:38 +0800
+Message-Id: <20210609045738.1051-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some different pmu types may have same substring. For example,
+on Icelake server, we have pmu types "uncore_imc" and
+"uncore_imc_free_running". Both pmu types have substring "uncore_imc".
+But the parser would wrongly think they are the same pmu type.
 
+We enable an imc event,
+perf stat -e uncore_imc/event=0xe3/ -a -- sleep 1
 
-On 6/8/21 9:40 PM, Andi Kleen wrote:
-> 
->>> KVM only turns it into a noop if there is no VT-d, because with VT-d you
->>> might need it to turn mappings into uncached and vice versa.
->> Wow, I found the kvm_arch_register_noncoherent_dma() stuff.  That's horrifying.  What's it for?  e
-> 
-> e.g. if you want to run a GPU it really needs some uncached memory. Same is true for other more 
-> complex devices.
-> 
-> Now modern Linux of course will be preferring CLFLUSH instead for the conversion, but there are old 
-> versions that preferred WBINVD.
-> 
-> I don't think it's a DoS, as long as you're not too picky about latencies on the host.
-> 
-> -Andi
-> 
+Perf actually expands the event to:
+uncore_imc_0/event=0xe3/
+uncore_imc_1/event=0xe3/
+uncore_imc_2/event=0xe3/
+uncore_imc_3/event=0xe3/
+uncore_imc_4/event=0xe3/
+uncore_imc_5/event=0xe3/
+uncore_imc_6/event=0xe3/
+uncore_imc_7/event=0xe3/
+uncore_imc_free_running_0/event=0xe3/
+uncore_imc_free_running_1/event=0xe3/
+uncore_imc_free_running_3/event=0xe3/
+uncore_imc_free_running_4/event=0xe3/
 
-Currently we use prot_guest_has(PR_GUEST_DISABLE_WBINVD)) check for disabling the wbinvd()
-usage (which can be selectively enabled for tested guests).
+That's because the "uncore_imc_free_running" matches the
+pattern "uncore_imc*".
 
-Is it alright to generalize it with boot_cpu_has(X86_FEATURE_HYPERVISOR) without
-verify it?
+Now we check that the last characters of pmu name is
+'_<digit>'.
 
-> 
-> 
+Fixes: b2b9d3a3f021 ("perf pmu: Support wildcards on pmu name in dynamic pmu events")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/util/parse-events.y |  2 ++
+ tools/perf/util/pmu.c          | 25 ++++++++++++++++++++++++-
+ tools/perf/util/pmu.h          |  1 +
+ 3 files changed, 27 insertions(+), 1 deletion(-)
 
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index aba12a4d488e..7a694c7f7f1a 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -317,6 +317,8 @@ event_pmu_name opt_pmu_config
+ 			    strncmp($1, "uncore_", 7))
+ 				name += 7;
+ 			if (!fnmatch(pattern, name, 0)) {
++				if (!perf_pmu__valid_suffix($1, name))
++					continue;
+ 				if (parse_events_copy_term_list(orig_terms, &terms))
+ 					CLEANUP_YYABORT;
+ 				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 88c8ecdc60b0..78af01959830 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -3,6 +3,7 @@
+ #include <linux/compiler.h>
+ #include <linux/string.h>
+ #include <linux/zalloc.h>
++#include <linux/ctype.h>
+ #include <subcmd/pager.h>
+ #include <sys/types.h>
+ #include <errno.h>
+@@ -768,7 +769,7 @@ bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+ 	 */
+ 	for (; tok; name += strlen(tok), tok = strtok_r(NULL, ",", &tmp)) {
+ 		name = strstr(name, tok);
+-		if (!name) {
++		if (!name || !perf_pmu__valid_suffix(tok, (char *)name)) {
+ 			res = false;
+ 			goto out;
+ 		}
+@@ -1872,3 +1873,25 @@ bool perf_pmu__has_hybrid(void)
+ 
+ 	return !list_empty(&perf_pmu__hybrid_pmus);
+ }
++
++bool perf_pmu__valid_suffix(char *tok, char *pmu_name)
++{
++	char *p;
++
++	/*
++	 * The pmu_name has substring tok. If the format of
++	 * pmu_name is <tok> or <tok>_<digit>, return true.
++	 */
++	p = pmu_name + strlen(tok);
++	if (*p == 0)
++		return true;
++
++	if (*p != '_')
++		return false;
++
++	++p;
++	if (*p == 0 || !isdigit(*p))
++		return false;
++
++	return true;
++}
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index a790ef758171..ebfd2b71532b 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -133,5 +133,6 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
+ 				   char *name);
+ 
+ bool perf_pmu__has_hybrid(void);
++bool perf_pmu__valid_suffix(char *tok, char *pmu_name);
+ 
+ #endif /* __PMU_H */
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.17.1
+
