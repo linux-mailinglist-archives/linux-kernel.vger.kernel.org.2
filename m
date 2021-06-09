@@ -2,89 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8C53A1AD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5C03A1ADA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhFIQWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:22:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhFIQWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:22:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BF2611AE;
-        Wed,  9 Jun 2021 16:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623255623;
-        bh=X7M0xs0eGOmGuyMA4YS5bDY1/R9cG9+jlCsQLk+6Bk8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=f9wWN/fooTuhyCp0R8Jp2CjqYeL3J0UBFkIffvtnJYsNs3ToYGhvYKqEn5KHZDRXS
-         bx/TPjiJWwkpgdpMPu08fRjiiZgYuAEBnVentnCTUZ/SwI0672IoGErniHzwjOi8s2
-         hSCD7whhOlz4fmTnDVg5Tg9pWdpuvB/1ZDBlkV553NotAMfXHpP4FnZD3j1hRPbvYX
-         1YJ3Kc/MNLLaKtORDj+KXiFUZOJwfDIssdnzwkDyJ4QpH0UUmmoFQHu+Yc1PmMU2S5
-         HUg7iCGgHi7Vj+PTnWZZgsh4udEep36w4UJFLg2SEcLjkMGxgP779G5TYteDa0wSlr
-         UHdHP8jCEoMdg==
-Date:   Wed, 9 Jun 2021 09:20:16 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>, <cong.wang@bytedance.com>,
-        <xiyou.wangcong@gmail.com>, <john.fastabend@gmail.com>,
-        <mkubecek@suse.cz>
-Cc:     Vladimir Oltean <olteanv@gmail.com>, <davem@davemloft.net>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <andriin@fb.com>,
-        <edumazet@google.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <jiri@resnulli.us>, <andrii@kernel.org>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <bjorn@kernel.org>, <alobakin@pm.me>
-Subject: Re: [PATCH net-next v2 0/3] Some optimization for lockless qdisc
-Message-ID: <20210609092016.4c43192f@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
-References: <1622684880-39895-1-git-send-email-linyunsheng@huawei.com>
-        <20210603113548.2d71b4d3@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <20210608125349.7azp7zeae3oq3izc@skbuf>
-        <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
+        id S233148AbhFIQ2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:28:13 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:49269 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231919AbhFIQ2I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 12:28:08 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-172-FdJreY3ZMLiLZuNVmMRzPw-1; Wed, 09 Jun 2021 17:26:11 +0100
+X-MC-Unique: FdJreY3ZMLiLZuNVmMRzPw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Wed, 9 Jun 2021 17:26:09 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Wed, 9 Jun 2021 17:26:09 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+CC:     =?utf-8?B?QW5kcsOpIEFsbWVpZGE=?= <andrealmeid@collabora.com>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "Andrey Semashev" <andrey.semashev@gmail.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "kernel@collabora.com" <kernel@collabora.com>,
+        "krisman@collabora.com" <krisman@collabora.com>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "malteskarupke@fastmail.fm" <malteskarupke@fastmail.fm>,
+        Ingo Molnar <mingo@redhat.com>,
+        "pgriffais@valvesoftware.com" <pgriffais@valvesoftware.com>,
+        Peter Oskolkov <posk@posk.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "z.figura12@gmail.com" <z.figura12@gmail.com>
+Subject: RE: [PATCH v4 00/15] Add futex2 syscalls
+Thread-Topic: [PATCH v4 00/15] Add futex2 syscalls
+Thread-Index: AQHXXHH+yOYikfdseE6EaGQch1EuiqsL3IpQ
+Date:   Wed, 9 Jun 2021 16:26:09 +0000
+Message-ID: <ae5b077863fb4853b4f26c3f0b176ac0@AcuMS.aculab.com>
+References: <20210603195924.361327-1-andrealmeid@collabora.com>
+ <1622799088.hsuspipe84.astroid@bobo.none>
+ <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
+ <1622853816.mokf23xgnt.astroid@bobo.none>
+ <22137ccd-c5e6-9fcc-a176-789558e9ab1e@collabora.com>
+ <20210608122622.oxf662ruaawrtyrd@linutronix.de>
+ <YL99cR0H+7xgU8L1@hirez.programming.kicks-ass.net>
+In-Reply-To: <YL99cR0H+7xgU8L1@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 09:31:39 +0800 Yunsheng Lin wrote:
-> On 2021/6/8 20:53, Vladimir Oltean wrote:
-> > On Thu, Jun 03, 2021 at 11:35:48AM -0700, Jakub Kicinski wrote:  
-> >> On Thu, 3 Jun 2021 09:47:57 +0800 Yunsheng Lin wrote:  
-> >>> Patch 1: remove unnecessary seqcount operation.
-> >>> Patch 2: implement TCQ_F_CAN_BYPASS.
-> >>> Patch 3: remove qdisc->empty.
-> >>>
-> >>> Performance data for pktgen in queue_xmit mode + dummy netdev
-> >>> with pfifo_fast:
-> >>>
-> >>>  threads    unpatched           patched             delta
-> >>>     1       2.60Mpps            3.21Mpps             +23%
-> >>>     2       3.84Mpps            5.56Mpps             +44%
-> >>>     4       5.52Mpps            5.58Mpps             +1%
-> >>>     8       2.77Mpps            2.76Mpps             -0.3%
-> >>>    16       2.24Mpps            2.23Mpps             +0.4%
-> >>>
-> >>> Performance for IP forward testing: 1.05Mpps increases to
-> >>> 1.16Mpps, about 10% improvement.  
-> >>
-> >> Acked-by: Jakub Kicinski <kuba@kernel.org>  
-> > 
-> > Any idea why these patches are deferred in patchwork?
-> > https://patchwork.kernel.org/project/netdevbpf/cover/1622684880-39895-1-git-send-email-linyunsheng@huawei.com/  
-> 
-> I suppose it is a controversial change, which need more time
-> hanging to be reviewed and tested.
+RnJvbTogUGV0ZXIgWmlqbHN0cmENCj4gU2VudDogMDggSnVuZSAyMDIxIDE1OjI0DQouLi4NCj4g
+QW5kIGlmIHdlJ3JlIGdvaW5nIHRvIGRvIGEgbmV3IGludGVyZmFjZSwgd2Ugb3VnaHQgdG8gbWFr
+ZSBvbmUgdGhhdCBjYW4NCj4gc29sdmUgYWxsIHRoZXNlIHByb2JsZW1zLiBOb3csIGlkZWFsbHkg
+Z2xpYmMgd2lsbCBicmluZyBmb3J0aCBzb21lDQo+IG9waW5pb25zLCBidXQgaWYgdGhleSBkb24n
+dCB3YW50IHRvIHBsYXksIHdlJ2xsIGdvIGJhY2sgdG8gdGhlIGdvb2Qgb2xkDQo+IGRheXMgb2Yg
+bm9uLXN0YW5kYXJkIGxvY2tpbmcgbGlicmFyaWVzLi4gd2UncmUgaGFsZndheSB0aGVyZSBhbHJl
+YWR5IGR1ZQ0KPiB0byBnbGliYyBub3Qgd2FudGluZyB0byBicmVhayB3aXRoIFBPU0lYIHdlcmUg
+d2Uga25vdyBQT1NJWCB3YXMganVzdA0KPiBkZWFkIHdyb25nIGJyb2tlbi4NCg0KSSBoYWQgYSBw
+cm9ibGVtIHdpdGggcHRocmVhZF9icm9hZGNhc3QoKS4NCkkndmUgZ290IG11bHRpcGxlIHRocmVh
+ZHMgYWxsIGJvdW5kIHRvIGRpZmZlcmVudCBjcHUgYW5kDQpJIHJlYWxseSBkbyB3YW50IHRvIHdh
+a2UgdGhlbSBhbGwgdXAgYXQgb25jZS4NCk5vdywgSSBrbm93IHRoZXknbGwgc3BpbiBvbiB0aGUg
+bXV0ZXggZm9yIGEgYml0IC0gYnV0IHRoYXQNCmlzIHNvb24gcmVsZWFzZWQgKHRoZSAnYWRhcHRp
+dmUnIHNwaW4gaXMgcHJvYmFibHkgbG9uZyBlbm91Z2gpLg0KDQpCdXQgd2hhdCBhY3R1YWxseSBo
+YXBwZW5zIChwcm9iYWJseSBiZWNhdXNlIG9mIHRoZSB3YXkgZ2xpYmMNCmlzIGNvbnN0cmFpbmVk
+IGJ5IHRoZSBmdXRleHQgc3lzdGVtIGNhbGwpIGlzOg0KMSkgVGhlIGZpcnN0IHRocmVhZCBpcyB3
+b2tlbi4NCjIpIEl0J3MgY3B1IGNvbWVzIG91dCBvZiBzbGVlcC4NCjMpIE9uY2UgcnVubmluZyBp
+dCB3YWtlcyB0aGUgc2Vjb25kIHRocmVhZC4NCjQpIEl0J3MgY3B1IGNvbWVzIG91dCBvZiBzbGVl
+cC4NCi4uLg0KU28geW91IGdldCBhIHZlcnkgc2xvdyByaXBwbGUgb2YgdGhlIHRocmVhZHMgc3Rh
+cnRpbmcuDQoNCldvcnNlIHN0aWxsLCBpZiB0aGUgdGhyZWFkIGNhbid0IGJlIHNjaGVkdWxlZCAo
+ZWcgYmVjYXVzZQ0KaXRzIGNwdSBpcyBydW5uaW5nIGFsbCB0aGUgbmV0d29yayBzdGFjayBzb2Z0
+aW50IGNvZGUpDQp0aGVuIG5vbmUgb2YgdGhlIGxhdGVyIHRocmVhZHMgc3RhcnQgcnVubmluZy4N
+Cg0KSSd2ZSBtaXRpZ2F0ZWQgaXQgYnkgdXNpbmcgYSBzZXBhcmF0ZSBjdiBmb3IgZWFjaCB0aHJl
+YWQNCmFuZCBsb29waW5nIHRvIHdha2UgdGhlbSBhbGwgLSBidXQgaXQgc2hvdWxkbid0IHJlYWxs
+eQ0KYmUgbmVjZXNzYXJ5Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2Vz
+aWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVL
+DQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-That'd be my guess also. A review from area experts would be great,
-perhaps from Cong, John, Michal..  If the review doesn't come by
-Friday - I'd repost.
