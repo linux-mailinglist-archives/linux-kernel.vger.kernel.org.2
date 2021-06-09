@@ -2,203 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABB03A0BF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DD33A0BFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232820AbhFIFsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 01:48:23 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:38882 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbhFIFsT (ORCPT
+        id S233271AbhFIFy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 01:54:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31952 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233165AbhFIFy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 01:48:19 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E27FA20B7188;
-        Tue,  8 Jun 2021 22:46:23 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E27FA20B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623217584;
-        bh=Yy1Z01l6fmBdA5WxLEx26t5fbzEqPko8tRZCEEhLhho=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GQZMCdxcM9s6uLlAub8NQGqtgpUhIWWby5ndzCH38PO5Q9g6Q9U9vaK+JxmioEBJa
-         7elEeXpj4zUetLFmPkXeKP9sETHyqgjOruaHIIHxqFMhXRXXeDJLhE/93pPL09YnLW
-         yCRN5bXyOOYhSXIgrAONZQ4dR7a5up3eAq0AxgJc=
-Date:   Wed, 9 Jun 2021 00:46:21 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Wed, 9 Jun 2021 01:54:27 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1595WaEV006804;
+        Wed, 9 Jun 2021 01:51:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=gjmqYGcd0wsw2MORSb2x1vkekNfP3sefDMsNGhyGlK4=;
+ b=SCk/9dR4vFgOuJknDxGxhza76eqnL9wG5AmWiIt7227Oy2gz417xieuriZlCCr0D5npE
+ kpMWkXUu2JcPH7VowArVDe3yoLMNKfHRsKS76erBMFx/2NKE0oaMYIctIv6VSiX4H+M8
+ RegxZ+1+YA8/hRArcHvxiEtBnJO/ai64YF4ufRc9o1zy0sGOliRyAGJCnqrNDqOF9DFZ
+ jIr9S5yKsbO+IFzpKvGkGWjZehm3YGMKkRp9R043iYWjLyWlvG7RPaSzyvAl3N7YmOsL
+ 70QzaUo5j3/mTgNNa83zRrbdy7czLKMCFp+4t9V3DxZU8cDyQT+RDIPkRdL7llkTG1t1 +A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 392pjrht97-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Jun 2021 01:51:11 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1595YJLY012698;
+        Wed, 9 Jun 2021 01:51:11 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 392pjrht8d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Jun 2021 01:51:10 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1595hDl1005435;
+        Wed, 9 Jun 2021 05:51:08 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 3900w8hwnc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Jun 2021 05:51:08 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1595oI0k28377562
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Jun 2021 05:50:18 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BCDA752057;
+        Wed,  9 Jun 2021 05:51:05 +0000 (GMT)
+Received: from osiris (unknown [9.171.25.171])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id CB30152051;
+        Wed,  9 Jun 2021 05:51:03 +0000 (GMT)
+Date:   Wed, 9 Jun 2021 07:51:02 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Marek Kedzierski <mkedzier@redhat.com>,
+        Hui Zhu <teawater@gmail.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
         Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        op-tee@lists.trustedfirmware.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 5/7] tee: Support shm registration without dma-buf
- backing
-Message-ID: <20210609054621.GB4910@sequoia>
-References: <20210609002326.210024-1-tyhicks@linux.microsoft.com>
- <20210609002326.210024-6-tyhicks@linux.microsoft.com>
- <CAFA6WYOZC0iHzZm6pOxz31eW_=8g2wyJdm4wiOGKggO6-a9MdA@mail.gmail.com>
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-acpi@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Baoquan He <bhe@redhat.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Joe Perches <joe@perches.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Jia He <justin.he@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org
+Subject: Re: [PATCH v1 04/12] mm/memory_hotplug: remove nid parameter from
+ arch_remove_memory()
+Message-ID: <YMBWxiUGBjJCz1+q@osiris>
+References: <20210607195430.48228-1-david@redhat.com>
+ <20210607195430.48228-5-david@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFA6WYOZC0iHzZm6pOxz31eW_=8g2wyJdm4wiOGKggO6-a9MdA@mail.gmail.com>
+In-Reply-To: <20210607195430.48228-5-david@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: YmICdrBc-KG4i-61RykYBVdFdJ3s1NyM
+X-Proofpoint-ORIG-GUID: qw89e5qOMxCOu0pR5cZeD51I3FVnw-xL
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-09_01:2021-06-04,2021-06-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=901 bulkscore=0
+ spamscore=0 mlxscore=0 impostorscore=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 adultscore=0 clxscore=1011
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106090015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-09 09:59:04, Sumit Garg wrote:
-> Hi Tyler,
-
-Hey Sumit - Thanks for the review. 
-
+On Mon, Jun 07, 2021 at 09:54:22PM +0200, David Hildenbrand wrote:
+> The parameter is unused, let's remove it.
 > 
-> On Wed, 9 Jun 2021 at 05:55, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
-> >
-> > Uncouple the registration of dynamic shared memory buffers from the
-> > TEE_SHM_DMA_BUF flag. Drivers may wish to allocate dynamic shared memory
-> > regions but do not need them to be backed by a dma-buf when the memory
-> > region is private to the driver.
-> 
-> In this case drivers should use tee_shm_register() instead where the
-> memory allocated is actually private to the driver. However, you need
-> to remove TEE_SHM_DMA_BUF as a mandatory flag for tee_shm_register().
-> Have a look at an example here [1]. So modifying tee_shm_alloc() for
-> this purpose doesn't look appropriate to me.
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/keys/trusted-keys/trusted_tee.c#n73
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/arm64/mm/mmu.c            | 3 +--
+>  arch/ia64/mm/init.c            | 3 +--
+>  arch/powerpc/mm/mem.c          | 3 +--
+>  arch/s390/mm/init.c            | 3 +--
+>  arch/sh/mm/init.c              | 3 +--
+>  arch/x86/mm/init_32.c          | 3 +--
+>  arch/x86/mm/init_64.c          | 3 +--
+>  include/linux/memory_hotplug.h | 3 +--
+>  mm/memory_hotplug.c            | 4 ++--
+>  mm/memremap.c                  | 5 +----
+>  10 files changed, 11 insertions(+), 22 deletions(-)
 
-I noticed what you did in commit 2a6ba3f794e8 ("tee: enable support to
-register kernel memory") and considered moving ftpm and tee_bnxt_fw over
-to tee_shm_register(). I think that's likely the right long term
-approach but I decided against it since this series is a minimal set of
-bug fixes that will hopefully go to stable (I'm affected by these bugs
-in 5.4). Here are my reasons for feeling like moving to
-tee_shm_register() isn't minimal in terms of a stable-focused fix:
-
-- tee_shm_alloc() looks like it should work fine with AMD-TEE today.
-  tee_shm_register() definitely does not since AMD-TEE doesn't provide a
-  .shm_register or .shm_unregister hook. This may break existing users
-  of AMD-TEE?
-- tee_shm_register() has not historically been used for kernel
-  allocations and is not fixed wrt the bug that Jens fixed in commit
-  f1bbacedb0af ("tee: don't assign shm id for private shms").
-- tee_shm_alloc() performs allocations using contiguous pages
-  from alloc_pages() while tee_shm_register() performs non-contiguous
-  allocations with kcalloc(). I suspect this would be fine but I don't
-  know the secure world side of these things well enough to assess the
-  risk involved with such a change on the kernel side.
-
-I should have mentioned this in the cover letter but my hope was that
-these minimal changes would be accepted and then additional work could
-be done to merge tee_shm_alloc() and tee_shm_register() in a way that
-would allow the caller to request contiguous or non-contiguous pages,
-fix up the additional issues mentioned above, and then adjust the
-call sites in ftpm and tee_bnxt_fw as appropriate.
-
-I think that's a bigger set of changes because there are several things
-that still confuse/concern me:
-
-- Why does tee_shm_alloc() use TEE_SHM_MAPPED while tee_shm_register()
-  uses TEE_SHM_KERNEL_MAPPED or TEE_SHM_USER_MAPPED? Why do all three
-  exist?
-- Why does tee_shm_register() unconditionally use non-contiguous
-  allocations without ever taking into account whether or not
-  OPTEE_SMC_SEC_CAP_DYNAMIC_SHM was set? It sounds like that's required
-  from my reading of https://optee.readthedocs.io/en/latest/architecture/core.html#noncontiguous-shared-buffers.
-- Why is TEE_SHM_REGISTER implemented at the TEE driver level when it is
-  specific to OP-TEE? How to better abstract that away?
-
-Let me know if you agree with the more minimal approach that I took for
-these bug fix series or still feel like tee_shm_register() should be
-fixed up so that it is usable. Thanks!
-
-Tyler
-
-> 
-> -Sumit
-> 
-> >
-> > Allow callers of tee_shm_alloc() to specify the TEE_SHM_REGISTER flag to
-> > request registration. If the TEE implementation does not require dynamic
-> > shared memory to be registered, clear the flag prior to calling the
-> > corresponding pool alloc function. Update the OP-TEE driver to respect
-> > TEE_SHM_REGISTER, rather than TEE_SHM_DMA_BUF, when deciding whether to
-> > (un)register on alloc/free operations. The AMD-TEE driver continues to
-> > ignore the TEE_SHM_REGISTER flag.
-> >
-> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > ---
-> >  drivers/tee/optee/shm_pool.c |  5 ++---
-> >  drivers/tee/tee_shm.c        | 11 ++++++++++-
-> >  2 files changed, 12 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
-> > index da06ce9b9313..6054343a29fb 100644
-> > --- a/drivers/tee/optee/shm_pool.c
-> > +++ b/drivers/tee/optee/shm_pool.c
-> > @@ -27,7 +27,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
-> >         shm->paddr = page_to_phys(page);
-> >         shm->size = PAGE_SIZE << order;
-> >
-> > -       if (shm->flags & TEE_SHM_DMA_BUF) {
-> > +       if (shm->flags & TEE_SHM_REGISTER) {
-> >                 unsigned int nr_pages = 1 << order, i;
-> >                 struct page **pages;
-> >
-> > @@ -42,7 +42,6 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
-> >                         page++;
-> >                 }
-> >
-> > -               shm->flags |= TEE_SHM_REGISTER;
-> >                 rc = optee_shm_register(shm->ctx, shm, pages, nr_pages,
-> >                                         (unsigned long)shm->kaddr);
-> >                 kfree(pages);
-> > @@ -60,7 +59,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
-> >  static void pool_op_free(struct tee_shm_pool_mgr *poolm,
-> >                          struct tee_shm *shm)
-> >  {
-> > -       if (shm->flags & TEE_SHM_DMA_BUF)
-> > +       if (shm->flags & TEE_SHM_REGISTER)
-> >                 optee_shm_unregister(shm->ctx, shm);
-> >
-> >         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
-> > diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-> > index 00472f5ce22e..1c0176550b9c 100644
-> > --- a/drivers/tee/tee_shm.c
-> > +++ b/drivers/tee/tee_shm.c
-> > @@ -117,7 +117,7 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
-> >                 return ERR_PTR(-EINVAL);
-> >         }
-> >
-> > -       if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF))) {
-> > +       if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF | TEE_SHM_REGISTER))) {
-> >                 dev_err(teedev->dev.parent, "invalid shm flags 0x%x", flags);
-> >                 return ERR_PTR(-EINVAL);
-> >         }
-> > @@ -137,6 +137,15 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
-> >                 goto err_dev_put;
-> >         }
-> >
-> > +       if (!teedev->desc->ops->shm_register ||
-> > +           !teedev->desc->ops->shm_unregister) {
-> > +               /* registration is not required by the TEE implementation */
-> > +               flags &= ~TEE_SHM_REGISTER;
-> > +       } else if (flags & TEE_SHM_DMA_BUF) {
-> > +               /* all dma-buf backed shm allocations are registered */
-> > +               flags |= TEE_SHM_REGISTER;
-> > +       }
-> > +
-> >         shm->flags = flags | TEE_SHM_POOL;
-> >         shm->ctx = ctx;
-> >         if (flags & TEE_SHM_DMA_BUF)
-> > --
-> > 2.25.1
-> >
-> 
+For s390:
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
