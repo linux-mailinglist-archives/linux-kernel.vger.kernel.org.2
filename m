@@ -2,154 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FCC53A1A38
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9241D3A1A3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237438AbhFIPz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:55:27 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:36661 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237163AbhFIPzZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:55:25 -0400
-Received: by mail-oi1-f177.google.com with SMTP id a21so25564326oiw.3;
-        Wed, 09 Jun 2021 08:53:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GePodMOee0azACNFHtOPRzOQtkdj5aSzI6hkdk+H1q0=;
-        b=YNnGETb17eWKvd+m4ZFdeEfNWhCsxvRnQb0RsbuoMPu8xJuM+UE7pos8Q5+EuGa+PQ
-         EFjUIHzUNU2sq/J+icsn7oQwd6keFR8vNflAviGj085zDEdI4M9yswkK18aBa1LHBEFd
-         iZoQz/LTfpkrC2QELocUZjIulfm/c9uGQP4b8ACYXTVmNsDbakZ7HF+oG3BfCrJL9bW6
-         YMuQFBfQICIHXYrOCBekMiUEvne74SWoGW6hjJwg3YN7jGmJjfuEhiCHYvJz5S8POD6h
-         AbGLtb10B9Rtvek6g6MAy61g7wg488Rt6EvKkrs6Ej6fatCNd34iH2L3rwea82ZgeR/+
-         tHnA==
-X-Gm-Message-State: AOAM531DDPkax3DOu3EvmfrPJ0BRN1Ono/6t6hCXolQVATppqbVWo2Tb
-        H7KJLU6ZXrfGpNkcUWPgiB7bpJkGo5pc5PVQtPw=
-X-Google-Smtp-Source: ABdhPJxnbRlOyuffFoSua4bAcB9GXMNu8SUX35LPlLqZk5YDmXmpHkEXKt/Ad8rhNhXSst29mFVrTBH5VulyDGBWxM0=
-X-Received: by 2002:aca:650d:: with SMTP id m13mr7053680oim.157.1623254010275;
- Wed, 09 Jun 2021 08:53:30 -0700 (PDT)
+        id S235311AbhFIP6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:58:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230311AbhFIP6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:58:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EA7C61278;
+        Wed,  9 Jun 2021 15:56:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623254165;
+        bh=Brj8Ps1D07lmJb6l+32gl6pseZbIS/xTqR+sZ9RrEqQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=si0WHEUraK33aa73XI62zclY1ZoTVBTXpVGjoHXZf5VcLR26D1Sm/dJ2hOENR+HH0
+         tzs+Rz8KxAZjpDuxO6mIYlNnAIXvDdK3uyeWZllSEuM+WlGDgN1uLTF/1rL0nvZFds
+         Ql/DUmvvc1yQbTOvz9zayqj5lOXhJ+7ch2Ajdb6X+0FPgnWdW5y1BAm0PBnRJIXjEg
+         Uk5rYyfM8oRkaz273VrGWPhBnr0yPhvc7CmT80Kts4fCRosNNYj9QoZhBGd07D7sM0
+         TLEzsjzpEbKmy/09EE+5AAn6j2ctbqI9scZIlEdY69i/ozqpU6B1IdJ2GmTJyQ5PW0
+         x88JdjLTJ7bqg==
+Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Lukasz Majczak <lma@semihalf.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Guenter Roeck <groeck@google.com>,
+        Juergen Gross <jgross@suse.com>,
+        =?UTF-8?Q?=c5=81ukasz_Bartosik?= <lb@semihalf.com>,
+        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
+        =?UTF-8?Q?Rados=c5=82aw_Biernacki?= <rad@semihalf.com>,
+        upstream@semihalf.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+References: <YL3q1qFO9QIRL/BA@hirez.programming.kicks-ass.net>
+ <CAKwvOdkuJBwZRigeqdZGevPF9WHyrC5pBAsz6_tWdXAc-wO+1A@mail.gmail.com>
+ <e351ac97-4038-61b5-b373-63698a787fc1@kernel.org>
+ <YL+nb235rIfEdye0@hirez.programming.kicks-ass.net>
+ <de1a21c0-f20a-cde5-016e-4b8ca92eafa9@kernel.org>
+ <YL+0MO/1Ra1tnzhT@hirez.programming.kicks-ass.net>
+ <5dd58dce-c3a7-39e5-8959-b858de95b72c@kernel.org>
+ <CAFJ_xbp5YzYNQWEJLDySyC_bWUsirq=P03k8HHW=B4sH0V_uUg@mail.gmail.com>
+ <YMBrqDI0Oxj9+Cr/@hirez.programming.kicks-ass.net>
+ <CAFJ_xbodWTQQaJ-3yJ4ZQOiTFFXo6M+cn_F0p157o=80BwrQAw@mail.gmail.com>
+ <20210609150804.GF68208@worktop.programming.kicks-ass.net>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <6caa3fa0-f71c-1a3f-b944-57b518645e74@kernel.org>
+Date:   Wed, 9 Jun 2021 08:56:04 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210528032054.7572-1-yu.c.chen@intel.com>
-In-Reply-To: <20210528032054.7572-1-yu.c.chen@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 9 Jun 2021 17:53:19 +0200
-Message-ID: <CAJZ5v0gaSd_6XqYhrKm49mk01U1JC+2Vfgy=tG8dBWrKwdLHjg@mail.gmail.com>
-Subject: Re: [PATCH][v2] intel_idle: Adjust the SKX C6 latency and residency
- if PC6 is disabled
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210609150804.GF68208@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 5:16 AM Chen Yu <yu.c.chen@intel.com> wrote:
->
-> Currently cpuidle assumes worst-case C-state parameters, and so C6
-> is described with PC6 parameters, which is worst case for requesting
-> CC6. When PC6 is enabled, this is appropriate. But if PC6 is disabled
-> in BIOS, the exit latency and target_residency should be adjusted
-> accordingly.
->
-> Exit latency:
-> Previously the C6 exit latency was measured when woken up from CC6/PC6.
-> With PC6 disabled, the C6 exit latency should be CC6/PC0.
->
-> Target residency:
-> With PC6 disabled, idle duration within [CC6, PC6) would make the
-> idle governor choose C1E over C6. This would cause low energy-efficiency.
-> We should lower the bar to request C6 when PC6 is disabled.
->
-> To fill this gap, check if PC6 is disabled in the BIOS in the
-> MSR_PKG_CST_CONFIG_CONTROL(0xe2). If so, use CC6/PC0 parameters as the
-> new exit latency. Meanwhile, update target_residency to 3 times of the new
-> exit latency. This is consistent with how intel_idle driver uses _CST to
-> calculate the target_residency. The consequence is that, the OS would
-> be more offen to choose C6 over C1E when PC6 is disabled. This is reasonable
-> because if the user is using C6, it implies that the user cares about energy,
-> so choosing C6 more frequently is in accordance with user requirement.
->
-> The new exit latency of CC6/PC0 92us was from wult[1] result on SKX, which was
-> measured via NIC wakeup from 99.99th latency. Besides SKX, the CLX and CPX
-> both have the same CPU model number. And since they have similar CC6 exit latency
-> to SKX, 96us and 89us respectively, reuse the value of SKX.
->
-> There is concern that if we should introduce a more generic solution
-> rather than optimizing on each platforms. However consider the
-> code complexity and different PC6 bit interpretation on different
-> platforms, tune the code per platform seems to be an acceptable trade-off.
->
-> [1] https://intel.github.io/wult/
->
-> Suggested-by: Len Brown <len.brown@intel.com>
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> ---
-> v2: Simplify the commit log to not mention C3/PC3. (Artem)
->     Confirm the exit latency on CLX and CPX.(Artem)
-> ---
->  drivers/idle/intel_idle.c | 33 +++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
->
-> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-> index ec1b9d306ba6..e6c543b5ee1d 100644
-> --- a/drivers/idle/intel_idle.c
-> +++ b/drivers/idle/intel_idle.c
-> @@ -1484,6 +1484,36 @@ static void __init sklh_idle_state_table_update(void)
->         skl_cstates[6].flags |= CPUIDLE_FLAG_UNUSABLE;  /* C9-SKL */
->  }
->
-> +/**
-> + * skx_idle_state_table_update - Adjust the Sky Lake/Cascade Lake
-> + * idle states table.
-> + */
-> +static void __init skx_idle_state_table_update(void)
-> +{
-> +       unsigned long long msr;
-> +
-> +       rdmsrl(MSR_PKG_CST_CONFIG_CONTROL, msr);
-> +
-> +       /*
-> +        * 000b: C0/C1 (no package C-state support)
-> +        * 001b: C2
-> +        * 010b: C6 (non-retention)
-> +        * 011b: C6 (retention)
-> +        * 111b: No Package C state limits.
-> +        */
-> +       if ((msr & 0x7) < 2) {
-> +               /*
-> +                * Uses the CC6 + PC0 latency and 3 times of
-> +                * latency for target_residency if the PC6
-> +                * is disabled in BIOS. This is consistent
-> +                * with how intel_idle driver uses _CST
-> +                * to set the target_residency.
-> +                */
-> +               skx_cstates[2].exit_latency = 92;
-> +               skx_cstates[2].target_residency = 276;
-> +       }
-> +}
-> +
->  static bool __init intel_idle_verify_cstate(unsigned int mwait_hint)
->  {
->         unsigned int mwait_cstate = MWAIT_HINT2CSTATE(mwait_hint) + 1;
-> @@ -1515,6 +1545,9 @@ static void __init intel_idle_init_cstates_icpu(struct cpuidle_driver *drv)
->         case INTEL_FAM6_SKYLAKE:
->                 sklh_idle_state_table_update();
->                 break;
-> +       case INTEL_FAM6_SKYLAKE_X:
-> +               skx_idle_state_table_update();
-> +               break;
->         }
->
->         for (cstate = 0; cstate < CPUIDLE_STATE_MAX; ++cstate) {
-> --
+On 6/9/2021 8:08 AM, Peter Zijlstra wrote:
+> On Wed, Jun 09, 2021 at 02:23:28PM +0200, Lukasz Majczak wrote:
+>> śr., 9 cze 2021 o 09:20 Peter Zijlstra <peterz@infradead.org> napisał(a):
+>>>
+>>> On Wed, Jun 09, 2021 at 09:11:18AM +0200, Lukasz Majczak wrote:
+>>>
+>>>> I'm sorry I was on vacation last week - do you still need the requested debugs?
+>>>
+>>> If the patch here:
+>>>
+>>>    https://lkml.kernel.org/r/YL3q1qFO9QIRL/BA@hirez.programming.kicks-ass.net
+>>>
+>>> does not fix things for you (don't think it actually will), then yes,
+>>> please send me the information requested.
+>>
+>> Ok, it didn't help. Peter, Josh I have sent you a private email with
+>> requested information.
+> 
+> OK, I think I've found it. Check this one:
+> 
+>   5d5:   0f 85 00 00 00 00       jne    5db <cpuidle_reflect+0x22>       5d7: R_X86_64_PLT32     __x86_indirect_thunk_r11-0x4
+> 
+> 
+> +Relocation section '.rela.altinstructions' at offset 0 contains 14 entries:
+> +    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+> 
+> +0000000000000018  0000000200000002 R_X86_64_PC32          0000000000000000 .text + 5d5
+> +000000000000001c  0000009200000002 R_X86_64_PC32          0000000000000000 __x86_indirect_alt_call_r11 + 0
+> 
+> Apparently we get conditional branches to retpoline thunks and objtool
+> completely messes that up. I'm betting this also explains the problems
+> Nathan is having.
 
-Applied as 5.14 material with some edits in the subject and changelog.
+Yes, the below patch gets my kernel back to booting so it seems the root 
+cause is the same.
 
-Thanks!
+> *groan*,.. not sure what to do about this, except return to having
+> objtool generate code, which everybody hated on. For now I'll make it
+> skip the conditional branches.
+> 
+> I wonder if the compiler will also generate conditional tail calls, and
+> what that does with static_call... now I have to check all that.
+> 
+> ---
+
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+
+> diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+> index 24295d39713b..523aa4157f80 100644
+> --- a/tools/objtool/arch/x86/decode.c
+> +++ b/tools/objtool/arch/x86/decode.c
+> @@ -747,6 +747,10 @@ int arch_rewrite_retpolines(struct objtool_file *file)
+>   
+>   	list_for_each_entry(insn, &file->retpoline_call_list, call_node) {
+>   
+> +		if (insn->type != INSN_JUMP_DYNAMIC &&
+> +		    insn->type != INSN_CALL_DYNAMIC)
+> +			continue;
+> +
+>   		if (!strcmp(insn->sec->name, ".text.__x86.indirect_thunk"))
+>   			continue;
+>   
+> 
