@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D823A20D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2724B3A20D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhFIXg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 19:36:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39982 "EHLO mail.kernel.org"
+        id S229770AbhFIXjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 19:39:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229507AbhFIXg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 19:36:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8478613EA;
-        Wed,  9 Jun 2021 23:34:31 +0000 (UTC)
+        id S229507AbhFIXjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 19:39:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5471B61182;
+        Wed,  9 Jun 2021 23:37:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623281672;
-        bh=v/OMLrZ7k1ho5plhz+nTklqFfax/AAUTQJ3FLEHqrb0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=r9XhoTnmXYMSJWHKIs4KYbb8PWWQYhZlDxwpUA22hukjgfvytH2lFZD4XcBmLtMjF
-         j0817xJ70upRSk0Ooh8FXVR4T54Kpo7OjI5dPSI33iXoAV3PN3VmKzYGuEUN2hLyeV
-         J0ePjL2Cq9nCeturi+r/eUzOTYRLYPeYqPr3629SglOJfmYpIqtC1M/OD6zFgLSpat
-         VJA6gtDMJNrjiaXaJbYZ7u6lQjaVV9W+TS0fi+wTmGeDpczh0uDBthEcJ7gbyfAaAg
-         885L/ML0f2Xnh4Afw7IXB8whR5z3zfNUFzK1qY8M4nyKB21xt8VmQGffXUTneBMTjn
-         o34O/maI4AiDg==
-Subject: Re: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and
- remove update_pasid()
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     "Yu, Fenghua" <fenghua.yu@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
-References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
- <1600187413-163670-10-git-send-email-fenghua.yu@intel.com>
- <87mtsd6gr9.ffs@nanos.tec.linutronix.de> <YLShmFEzddfm7WQs@zn.tnic>
- <87y2bv438p.ffs@nanos.tec.linutronix.de>
- <36866b38ec92425b879881a88acf547b@intel.com>
- <db552f51-76ee-b7f5-20f1-14f1c703d423@kernel.org>
- <7d8788a9e04d4901a03bcea11e8e842b@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <bd5bb38c-0b81-a302-dd20-ef56fd970c9e@kernel.org>
-Date:   Wed, 9 Jun 2021 16:34:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        s=k20201202; t=1623281843;
+        bh=s4lj4jaG7j9skEZ0/i486amDJv+SO4e2EY7hKMmEHEk=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=R5yMbOkry1pAKFYQ3rE58shOJrKGwwFPv8B1hzzXeXNxGWEl2UnE3U0r8fOiX+L94
+         z81oRb2mqvYq/erMTYzgOFgNvaIrYfyrFPaDV4vuwE8PeM0VGGj7uTucwIBBUUj29V
+         tw5KwPMYwNUl6KW4zOGKf3lhGPB2yI0GFHARKkL+qjorXJhlHwjHoKRrzMWfYsdmS+
+         JTM9FUWXU95iK58tLqfwqwWQ0Xm85aViXLmAO+426INBFqobagSVdZ5F1zG98Mnmgo
+         ZqstscUX9S5VsoJQW/mb9PU2qTR1BRfYq2wLIN7Muur2/O1BOPg9Gfx+x3aDW2Pf9l
+         NRPuBu5jig9cQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 175BA5C08D8; Wed,  9 Jun 2021 16:37:23 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 16:37:23 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
+        luming.yu@intel.com
+Subject: [GIT PULL clocksource] Clocksource watchdog commits for v5.14
+Message-ID: <20210609233723.GA1717240@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <7d8788a9e04d4901a03bcea11e8e842b@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/9/21 10:32 AM, Luck, Tony wrote:
->>> I've told Fenghua to dig out the previous iteration of this patch where
->>> the plan was to lazily fix the PASID_MSR in other threads in the #GP
->>> handler.
->>
->> Blech.  Also this won't work for other PASID-like features.
->>
->> I have a half-written patch to fix this up for real.  Stay tuned.
-> 
-> Andy: Any update on this?
-> 
-> -Tony
-> 
+Hello, Thomas,
 
-Let me try to merge my pile with tglx's pile and come up with something
-halfway sane.
+This pull request contains changes to cause the clocksource watchdog to
+reject measurement noise caused by delays between clocksource reads.
+These have been posted a few times to LKML, most recently v15:
+
+https://lore.kernel.org/lkml/20210527190042.GA438700@paulmck-ThinkPad-P17-Gen-1/
+
+These have been acked by Feng Tang and reviewed by Luming Yu.  These have
+also been subjected to subjected to the kbuild test robot and -next
+testing, and are available in the git repository based on v5.13-rc1 at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git clocksource
+
+for you to fetch changes up to 023766fbdde49c75c13acd268bf9af810d624c59:
+
+  clocksource: Print deviation in nanoseconds for unstable case (2021-06-04 13:20:31 -0700)
+
+----------------------------------------------------------------
+Feng Tang (1):
+      clocksource: Print deviation in nanoseconds for unstable case
+
+Paul E. McKenney (5):
+      clocksource: Retry clock read if long delays detected
+      clocksource: Check per-CPU clock synchronization when marked unstable
+      clocksource: Limit number of CPUs checked for clock synchronization
+      clocksource: Reduce clocksource-skew threshold for TSC
+      clocksource: Provide kernel module to test clocksource watchdog
+
+ Documentation/admin-guide/kernel-parameters.txt |  22 +++
+ arch/x86/kernel/tsc.c                           |   4 +-
+ include/linux/clocksource.h                     |   8 +-
+ kernel/time/Makefile                            |   1 +
+ kernel/time/clocksource-wdtest.c                | 202 +++++++++++++++++++++
+ kernel/time/clocksource.c                       | 226 ++++++++++++++++++++++--
+ kernel/time/jiffies.c                           |  15 +-
+ lib/Kconfig.debug                               |  12 ++
+ 8 files changed, 468 insertions(+), 22 deletions(-)
+ create mode 100644 kernel/time/clocksource-wdtest.c
