@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6AA3A0D54
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271273A0DAA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237050AbhFIHN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:13:56 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:5347 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbhFIHNx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:13:53 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G0J9171sVz6vlK;
-        Wed,  9 Jun 2021 15:08:05 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 15:11:48 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 15:11:47 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        Jian Shen <shenjian15@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        GuoJia Liao <liaoguojia@huawei.com>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, <netdev@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH net-next v2] net: hns3: use list_move_tail instead of list_del/list_add_tail in hclge_main.c
-Date:   Wed, 9 Jun 2021 15:20:56 +0800
-Message-ID: <20210609072056.1351940-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S237289AbhFIHXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:23:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234826AbhFIHXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 03:23:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A30A6008E;
+        Wed,  9 Jun 2021 07:21:11 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 09:21:08 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        gregkh@linuxfoundation.org, containers@lists.linux.dev,
+        linux-kernel@vger.kernel.org, lkml@metux.net
+Subject: Re: device namespaces
+Message-ID: <20210609072108.ldhsxfnfql4pacqx@wittgenstein>
+References: <YL9liW99Ytf6uBlu@kroah.com>
+ <9157affa-b27a-c0f4-f6ee-def4a991fd4e@suse.de>
+ <20210608142911.ievp2rpuquxjuyus@wittgenstein>
+ <d956398e-7ee6-ba36-43cc-4cdcea34b5b9@suse.de>
+ <877dj4ff9g.fsf@disp2133>
+ <20210609063818.xnod4rzvti3ujkvn@wittgenstein>
+ <b9ea9116-7120-b0a7-b739-dd8513e12c5e@suse.de>
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b9ea9116-7120-b0a7-b739-dd8513e12c5e@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_move_tail() instead of list_del() + list_add_tail() in hclge_main.c.
+On Wed, Jun 09, 2021 at 09:02:36AM +0200, Hannes Reinecke wrote:
+> On 6/9/21 8:38 AM, Christian Brauner wrote:
+> > On Tue, Jun 08, 2021 at 12:16:43PM -0500, Eric W. Biederman wrote:
+> > > Hannes Reinecke <hare@suse.de> writes:
+> > > 
+> > > > On 6/8/21 4:29 PM, Christian Brauner wrote:
+> > > > > On Tue, Jun 08, 2021 at 04:10:08PM +0200, Hannes Reinecke wrote:
+> [ .. ]
+> > > > Granted, modifying sysfs layout is not something for the faint-hearted,
+> > > > and one really has to look closely to ensure you end up with a
+> > > > consistent layout afterwards.
+> > > > 
+> > > > But let's see how things go; might well be that it turns out to be too
+> > > > complex to consider. Can't tell yet.
+> > > 
+> > > I would suggest aiming for something like devptsfs without the
+> > > complication of /dev/ptmx.
+> > > 
+> > > That is a pseudo filesystem that has a control node and virtual block
+> > > devices that were created using that control node.
+> > 
+> > Also see android/binder/binderfs.c
+> > 
+> Ah. Will have a look.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	CC mailist
+I implemented this a few years back and I think it should've made it
+onto Android by default now. So that approach does indeed work well, it
+seems:
+https://chromium.googlesource.com/aosp/platform/system/core/+/master/rootdir/init.rc#257
 
- .../hns3/hns3pf/hclge_main.c          | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+This should be easier to follow than the devpts case because you don't
+need to wade through the {t,p}ty layer.
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 6ecc106af334..2e95d36fcc52 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -8799,8 +8799,7 @@ static bool hclge_sync_from_add_list(struct list_head *add_list,
- 			kfree(mac_node);
- 		} else if (mac_node->state == HCLGE_MAC_ACTIVE) {
- 			mac_node->state = HCLGE_MAC_TO_DEL;
--			list_del(&mac_node->node);
--			list_add_tail(&mac_node->node, mac_list);
-+			list_move_tail(&mac_node->node, mac_list);
- 		} else {
- 			list_del(&mac_node->node);
- 			kfree(mac_node);
-@@ -8829,8 +8828,7 @@ static void hclge_sync_from_del_list(struct list_head *del_list,
- 			list_del(&mac_node->node);
- 			kfree(mac_node);
- 		} else {
--			list_del(&mac_node->node);
--			list_add_tail(&mac_node->node, mac_list);
-+			list_move_tail(&mac_node->node, mac_list);
- 		}
- 	}
- }
-@@ -8874,8 +8872,7 @@ static void hclge_sync_vport_mac_table(struct hclge_vport *vport,
- 	list_for_each_entry_safe(mac_node, tmp, list, node) {
- 		switch (mac_node->state) {
- 		case HCLGE_MAC_TO_DEL:
--			list_del(&mac_node->node);
--			list_add_tail(&mac_node->node, &tmp_del_list);
-+			list_move_tail(&mac_node->node, &tmp_del_list);
- 			break;
- 		case HCLGE_MAC_TO_ADD:
- 			new_node = kzalloc(sizeof(*new_node), GFP_ATOMIC);
-@@ -8957,8 +8954,7 @@ static void hclge_build_del_list(struct list_head *list,
- 		switch (mac_cfg->state) {
- 		case HCLGE_MAC_TO_DEL:
- 		case HCLGE_MAC_ACTIVE:
--			list_del(&mac_cfg->node);
--			list_add_tail(&mac_cfg->node, tmp_del_list);
-+			list_move_tail(&mac_cfg->node, tmp_del_list);
- 			break;
- 		case HCLGE_MAC_TO_ADD:
- 			if (is_del_list) {
-@@ -9053,8 +9049,7 @@ static void hclge_uninit_vport_mac_list(struct hclge_vport *vport,
- 		switch (mac_node->state) {
- 		case HCLGE_MAC_TO_DEL:
- 		case HCLGE_MAC_ACTIVE:
--			list_del(&mac_node->node);
--			list_add_tail(&mac_node->node, &tmp_del_list);
-+			list_move_tail(&mac_node->node, &tmp_del_list);
- 			break;
- 		case HCLGE_MAC_TO_ADD:
- 			list_del(&mac_node->node);
+> 
+> > > 
+> > > That is the cleanest solution I know and is not strictly limited to use
+> > > with containers so it can also gain greater traction.  The interaction
+> > > with devtmpfs should be simply having devtmpfs create a mount point for
+> > > that filesystem.
+> > > 
+> > > This could be a new cleaner api for things like loopback devices.
+> > 
+> > I sent a patchset that implemented this last year.
+> > 
+> Do you have a pointer/commit hash for this?
 
+Yes, sure:
+https://lore.kernel.org/linux-block/20200424162052.441452-1-christian.brauner@ubuntu.com/
+
+You can also just pull my branch. I think it's still based on v5.7 or sm:
+https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=loopfs
+
+I'm happy to collaborate on this too.
+
+Christian
