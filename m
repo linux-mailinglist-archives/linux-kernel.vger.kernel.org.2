@@ -2,1295 +2,455 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA8C3A0E6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452803A0E73
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237532AbhFIIFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:05:32 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:59541 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237494AbhFIIDt (ORCPT
+        id S237556AbhFIIGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:06:32 -0400
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:39885 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237610AbhFIIFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:03:49 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id C6C0020001C;
-        Wed,  9 Jun 2021 08:01:51 +0000 (UTC)
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Michal Simek <monstr@monstr.eu>,
-        Naga Sureshkumar Relli <nagasure@xilinx.com>,
-        Amit Kumar Mahapatra <akumarma@xilinx.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, helmut.grohne@intenta.de,
-        Srinivas Goud <sgoud@xilinx.com>,
-        Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH v22 18/18] mtd: rawnand: pl353: Add support for the ARM PL353 SMC NAND controller
-Date:   Wed,  9 Jun 2021 10:01:12 +0200
-Message-Id: <20210609080112.1753221-19-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210609080112.1753221-1-miquel.raynal@bootlin.com>
-References: <20210609080112.1753221-1-miquel.raynal@bootlin.com>
+        Wed, 9 Jun 2021 04:05:55 -0400
+Received: by mail-pf1-f181.google.com with SMTP id k15so17799656pfp.6;
+        Wed, 09 Jun 2021 01:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yg7uBR4ZfPitmEvzYeOGmoORP+sszOSumhJO9/+TdEs=;
+        b=kxhhdLYXXS+ISPxE4mjvXHluRTpNSvtAnRWzYxMQUo7tU1l9klWJp7EiW/m1pq2isF
+         WcY1k28RyMMYvwpKGr+SGK++thLqxBQWFh5+TlVhmK6so53mqrgtB4AY6RVsCkaxYGxz
+         vErt44rUh4bT1s4oZwOqvzx7XNffcXNAyxtCJbVEsv1oWJ7hALEDTK5B48RadV1lD3Au
+         UzJ89GtEOUgx/hI/LJ7CXpDQ5bSspv55wTp0WIClOxBn9cENVteOZXrv5eHMbvgVI40d
+         uRqcXqHFrRPg4t3Gu+rWtS93IVbTtnFxpUKGX1EilqnZ+4lT9VaOZddWjjWbQKL1hX33
+         yNOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yg7uBR4ZfPitmEvzYeOGmoORP+sszOSumhJO9/+TdEs=;
+        b=ohaUJ1kna/w2n6ZY4x8O0tPM9LiyhbQjBIAe+bUhBSeFV0VlkA0i1HJXEm7N2tiqP8
+         b3WzaznmPq8ADGS9zE97U0UqLIbrN8lh/7OZy1PPLYZ2qEeADGff9a1bzqmnmc4wuqNF
+         VS5Uahb04O+t61d2waUXFtjPtRg1FExKvcTKNlRSV5GoCKHk0/UYeBWN/EheFyD3KJet
+         A0uPf4jL89QZTgVeNg8tO62yWwDWYAM5P61vnCqnLfglaPMzOcHbF24QDRELo9ctOVhv
+         44H+6FAxhx0GJtSULk5hpCz6/Og+wvms4iY+k3S8GBNo/cXAxJfGyn5mERpTQ29d7AC+
+         e0dw==
+X-Gm-Message-State: AOAM531OEjQqmntew+aRYenYeSU1rcRbJr9dcQjofjL9l3XZgW75s8J1
+        TlslNSWQ6A/btFbQInWiy3Rv2Zrj5xuWtg==
+X-Google-Smtp-Source: ABdhPJz0Md8i+vGKvtFdnrpsKkKNjFtEw7jCX/HixKFnIO0bfTvJCG6G6cl13aNVFFKFpjgZOUMNmg==
+X-Received: by 2002:a62:1d0e:0:b029:2d8:30a3:687f with SMTP id d14-20020a621d0e0000b02902d830a3687fmr3908163pfd.17.1623225780994;
+        Wed, 09 Jun 2021 01:03:00 -0700 (PDT)
+Received: from localhost.localdomain ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id w59sm17045293pjj.13.2021.06.09.01.02.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 01:03:00 -0700 (PDT)
+From:   Herman <herman.yim88@gmail.com>
+X-Google-Original-From: Herman <yanshuaijun@yulong.com>
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hverkuil@xs4all.nl, Herman <yanshuaijun@yulong.com>
+Subject: [PATCH] drivers/media/usb/gspca/zc3xx.c: fix typo issues
+Date:   Wed,  9 Jun 2021 16:01:22 +0800
+Message-Id: <20210609080122.7376-1-yanshuaijun@yulong.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This hardware controller is embedded in XilinX Zynq-7000 SoCs and has
-partial support for Hamming ECC correction.
+change 'Fliker' into 'Flicker'
 
-This work is inspired from the original contributions of Punnaiah
-Choudary Kalluri and Naga Sureshkumar Relli.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Tested-by: Michael Walle <michael@walle.cc> [on zynq-7000]
+Signed-off-by: Herman <yanshuaijun@yulong.com>
 ---
- drivers/mtd/nand/raw/Kconfig                 |    8 +
- drivers/mtd/nand/raw/Makefile                |    1 +
- drivers/mtd/nand/raw/pl35x-nand-controller.c | 1194 ++++++++++++++++++
- 3 files changed, 1203 insertions(+)
- create mode 100644 drivers/mtd/nand/raw/pl35x-nand-controller.c
+ drivers/media/usb/gspca/zc3xx.c | 134 ++++++++++++++++----------------
+ 1 file changed, 67 insertions(+), 67 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 30f061939560..630728de4b7c 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -453,6 +453,14 @@ config MTD_NAND_ROCKCHIP
- 	    NFC v800: RK3308, RV1108
- 	    NFC v900: PX30, RK3326
+diff --git a/drivers/media/usb/gspca/zc3xx.c b/drivers/media/usb/gspca/zc3xx.c
+index 1bbf8071dde0..5bcbf0d40147 100644
+--- a/drivers/media/usb/gspca/zc3xx.c
++++ b/drivers/media/usb/gspca/zc3xx.c
+@@ -323,7 +323,7 @@ static const struct usb_action adcm2700_60HZ[] = {
+ 	{0xaa, 0x28, 0x0002},				/* 00,28,02,aa */
+ 	{}
+ };
+-static const struct usb_action adcm2700_NoFliker[] = {
++static const struct usb_action adcm2700_NoFlicker[] = {
+ 	{0xa0, 0x01, ZC3XX_R010_CMOSSENSORSELECT},	/* 00,10,01,cc */
+ 	{0xaa, 0xfe, 0x0002},				/* 00,fe,02,aa */
+ 	{0xa0, 0x0a, ZC3XX_R010_CMOSSENSORSELECT},	/* 00,10,0a,cc */
+@@ -525,7 +525,7 @@ static const struct usb_action cs2102_60HZ[] = {
+ 	{0xa0, 0xff, ZC3XX_R020_HSYNC_3},
+ 	{}
+ };
+-static const struct usb_action cs2102_NoFlikerScale[] = {
++static const struct usb_action cs2102_NoFlickerScale[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
+ 	{0xaa, 0x23, 0x0001},
+ 	{0xaa, 0x24, 0x005f},
+@@ -547,7 +547,7 @@ static const struct usb_action cs2102_NoFlikerScale[] = {
+ 	{0xa0, 0xff, ZC3XX_R020_HSYNC_3},
+ 	{}
+ };
+-static const struct usb_action cs2102_NoFliker[] = {
++static const struct usb_action cs2102_NoFlicker[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
+ 	{0xaa, 0x23, 0x0000},
+ 	{0xaa, 0x24, 0x00af},
+@@ -1385,7 +1385,7 @@ static const struct usb_action gc0305_60HZ[] = {
+ 	{}
+ };
  
-+config MTD_NAND_PL35X
-+	tristate "ARM PL35X NAND controller"
-+	depends on OF || COMPILE_TEST
-+	depends on PL353_SMC
-+	help
-+	  Enables support for PrimeCell SMC PL351 and PL353 NAND
-+	  controller found on Zynq7000.
-+
- comment "Misc"
+-static const struct usb_action gc0305_NoFliker[] = {
++static const struct usb_action gc0305_NoFlicker[] = {
+ 	{0xa0, 0x0c, ZC3XX_R100_OPERATIONMODE},	/* 01,00,0c,cc */
+ 	{0xaa, 0x82, 0x0000},	/* 00,82,00,aa */
+ 	{0xaa, 0x83, 0x0000},	/* 00,83,00,aa */
+@@ -1710,7 +1710,7 @@ static const struct usb_action hdcs2020_60HZ[] = {
+ 	{0xa0, 0x2c, ZC3XX_R01F_HSYNC_2}, /* 00,1f,2c,cc */
+ 	{}
+ };
+-static const struct usb_action hdcs2020_NoFliker[] = {
++static const struct usb_action hdcs2020_NoFlicker[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS}, /* 00,19,00,cc */
+ 	{0xaa, 0x13, 0x0010},			/* 00,13,10,aa */
+ 	{0xaa, 0x14, 0x0001},			/* 00,14,01,aa */
+@@ -1925,7 +1925,7 @@ static const struct usb_action hv7131b_60HZScale[] = {	/* 320x240 */
+ 	{0xa0, 0x40, ZC3XX_R020_HSYNC_3},	/* 00,20,40,cc */
+ 	{}
+ };
+-static const struct usb_action hv7131b_NoFliker[] = {	/* 640x480*/
++static const struct usb_action hv7131b_NoFlicker[] = {	/* 640x480*/
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},	/* 00,19,00,cc */
+ 	{0xaa, 0x25, 0x0003},			/* 00,25,03,aa */
+ 	{0xaa, 0x26, 0x0000},			/* 00,26,00,aa */
+@@ -1950,7 +1950,7 @@ static const struct usb_action hv7131b_NoFliker[] = {	/* 640x480*/
+ 	{0xa0, 0x03, ZC3XX_R020_HSYNC_3},	/* 00,20,03,cc */
+ 	{}
+ };
+-static const struct usb_action hv7131b_NoFlikerScale[] = { /* 320x240 */
++static const struct usb_action hv7131b_NoFlickerScale[] = { /* 320x240 */
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},	/* 00,19,00,cc */
+ 	{0xaa, 0x25, 0x0003},			/* 00,25,03,aa */
+ 	{0xaa, 0x26, 0x0000},			/* 00,26,00,aa */
+@@ -2141,7 +2141,7 @@ static const struct usb_action hv7131r_60HZScale[] = {
+ 	{0xa0, 0x08, ZC3XX_R020_HSYNC_3},
+ 	{}
+ };
+-static const struct usb_action hv7131r_NoFliker[] = {
++static const struct usb_action hv7131r_NoFlicker[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
+ 	{0xa0, 0x2f, ZC3XX_R190_EXPOSURELIMITHIGH},
+ 	{0xa0, 0xf8, ZC3XX_R191_EXPOSURELIMITMID},
+@@ -2159,7 +2159,7 @@ static const struct usb_action hv7131r_NoFliker[] = {
+ 	{0xa0, 0x08, ZC3XX_R020_HSYNC_3},
+ 	{}
+ };
+-static const struct usb_action hv7131r_NoFlikerScale[] = {
++static const struct usb_action hv7131r_NoFlickerScale[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
+ 	{0xa0, 0x2f, ZC3XX_R190_EXPOSURELIMITHIGH},
+ 	{0xa0, 0xf8, ZC3XX_R191_EXPOSURELIMITMID},
+@@ -2662,7 +2662,7 @@ static const struct usb_action icm105a_60HZ[] = {
+ 	{0xa0, 0xc0, ZC3XX_R1A8_DIGITALGAIN}, /* 01,a8,c0,cc */
+ 	{}
+ };
+-static const struct usb_action icm105a_NoFlikerScale[] = {
++static const struct usb_action icm105a_NoFlickerScale[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS}, /* 00,19,00,cc */
+ 	{0xaa, 0x0d, 0x0003}, /* 00,0d,03,aa */
+ 	{0xaa, 0x0c, 0x0004}, /* 00,0c,04,aa */
+@@ -2693,7 +2693,7 @@ static const struct usb_action icm105a_NoFlikerScale[] = {
+ 	{0xa0, 0xff, ZC3XX_R020_HSYNC_3}, /* 00,20,ff,cc */
+ 	{}
+ };
+-static const struct usb_action icm105a_NoFliker[] = {
++static const struct usb_action icm105a_NoFlicker[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS}, /* 00,19,00,cc */
+ 	{0xaa, 0x0d, 0x0003}, /* 00,0d,03,aa */
+ 	{0xaa, 0x0c, 0x0004}, /* 00,0c,04,aa */
+@@ -3009,7 +3009,7 @@ static const struct usb_action mc501cb_60HZScale[] = {
+ 	{}
+ };
  
- config MTD_SM_COMMON
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index d011c6c53f8f..2f97958c3a33 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -57,6 +57,7 @@ obj-$(CONFIG_MTD_NAND_CADENCE)		+= cadence-nand-controller.o
- obj-$(CONFIG_MTD_NAND_ARASAN)		+= arasan-nand-controller.o
- obj-$(CONFIG_MTD_NAND_INTEL_LGM)	+= intel-nand-controller.o
- obj-$(CONFIG_MTD_NAND_ROCKCHIP)		+= rockchip-nand-controller.o
-+obj-$(CONFIG_MTD_NAND_PL35X)		+= pl35x-nand-controller.o
+-static const struct usb_action mc501cb_NoFliker[] = {
++static const struct usb_action mc501cb_NoFlicker[] = {
+ 	{0xaa, 0x03, 0x0003}, /* 00,03,03,aa */
+ 	{0xaa, 0x10, 0x00fc}, /* 00,10,fc,aa */
+ 	{0xaa, 0x36, 0x0018}, /* 00,36,18,aa */
+@@ -3021,7 +3021,7 @@ static const struct usb_action mc501cb_NoFliker[] = {
+ 	{}
+ };
  
- nand-objs := nand_base.o nand_legacy.o nand_bbt.o nand_timings.o nand_ids.o
- nand-objs += nand_onfi.o
-diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-new file mode 100644
-index 000000000000..8a91e069ee2e
---- /dev/null
-+++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-@@ -0,0 +1,1194 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * ARM PL35X NAND flash controller driver
-+ *
-+ * Copyright (C) 2017 Xilinx, Inc
-+ * Author:
-+ *   Miquel Raynal <miquel.raynal@bootlin.com>
-+ * Original work (rewritten):
-+ *   Punnaiah Choudary Kalluri <punnaia@xilinx.com>
-+ *   Naga Sureshkumar Relli <nagasure@xilinx.com>
-+ */
-+
-+#include <linux/amba/bus.h>
-+#include <linux/err.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/ioport.h>
-+#include <linux/iopoll.h>
-+#include <linux/irq.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/rawnand.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/clk.h>
-+
-+#define PL35X_NANDC_DRIVER_NAME "pl35x-nand-controller"
-+
-+/* SMC controller status register (RO) */
-+#define PL35X_SMC_MEMC_STATUS 0x0
-+#define   PL35X_SMC_MEMC_STATUS_RAW_INT_STATUS1	BIT(6)
-+/* SMC clear config register (WO) */
-+#define PL35X_SMC_MEMC_CFG_CLR 0xC
-+#define   PL35X_SMC_MEMC_CFG_CLR_INT_DIS_1	BIT(1)
-+#define   PL35X_SMC_MEMC_CFG_CLR_INT_CLR_1	BIT(4)
-+#define   PL35X_SMC_MEMC_CFG_CLR_ECC_INT_DIS_1	BIT(6)
-+/* SMC direct command register (WO) */
-+#define PL35X_SMC_DIRECT_CMD 0x10
-+#define   PL35X_SMC_DIRECT_CMD_NAND_CS (0x4 << 23)
-+#define   PL35X_SMC_DIRECT_CMD_UPD_REGS (0x2 << 21)
-+/* SMC set cycles register (WO) */
-+#define PL35X_SMC_CYCLES 0x14
-+#define   PL35X_SMC_NAND_TRC_CYCLES(x) ((x) << 0)
-+#define   PL35X_SMC_NAND_TWC_CYCLES(x) ((x) << 4)
-+#define   PL35X_SMC_NAND_TREA_CYCLES(x) ((x) << 8)
-+#define   PL35X_SMC_NAND_TWP_CYCLES(x) ((x) << 11)
-+#define   PL35X_SMC_NAND_TCLR_CYCLES(x) ((x) << 14)
-+#define   PL35X_SMC_NAND_TAR_CYCLES(x) ((x) << 17)
-+#define   PL35X_SMC_NAND_TRR_CYCLES(x) ((x) << 20)
-+/* SMC set opmode register (WO) */
-+#define PL35X_SMC_OPMODE 0x18
-+#define   PL35X_SMC_OPMODE_BW_8 0
-+#define   PL35X_SMC_OPMODE_BW_16 1
-+/* SMC ECC status register (RO) */
-+#define PL35X_SMC_ECC_STATUS 0x400
-+#define   PL35X_SMC_ECC_STATUS_ECC_BUSY BIT(6)
-+/* SMC ECC configuration register */
-+#define PL35X_SMC_ECC_CFG 0x404
-+#define   PL35X_SMC_ECC_CFG_MODE_MASK 0xC
-+#define   PL35X_SMC_ECC_CFG_MODE_BYPASS 0
-+#define   PL35X_SMC_ECC_CFG_MODE_APB BIT(2)
-+#define   PL35X_SMC_ECC_CFG_MODE_MEM BIT(3)
-+#define   PL35X_SMC_ECC_CFG_PGSIZE_MASK	0x3
-+/* SMC ECC command 1 register */
-+#define PL35X_SMC_ECC_CMD1 0x408
-+#define   PL35X_SMC_ECC_CMD1_WRITE(x) ((x) << 0)
-+#define   PL35X_SMC_ECC_CMD1_READ(x) ((x) << 8)
-+#define   PL35X_SMC_ECC_CMD1_READ_END(x) ((x) << 16)
-+#define   PL35X_SMC_ECC_CMD1_READ_END_VALID(x) ((x) << 24)
-+/* SMC ECC command 2 register */
-+#define PL35X_SMC_ECC_CMD2 0x40C
-+#define   PL35X_SMC_ECC_CMD2_WRITE_COL_CHG(x) ((x) << 0)
-+#define   PL35X_SMC_ECC_CMD2_READ_COL_CHG(x) ((x) << 8)
-+#define   PL35X_SMC_ECC_CMD2_READ_COL_CHG_END(x) ((x) << 16)
-+#define   PL35X_SMC_ECC_CMD2_READ_COL_CHG_END_VALID(x) ((x) << 24)
-+/* SMC ECC value registers (RO) */
-+#define PL35X_SMC_ECC_VALUE(x) (0x418 + (4 * (x)))
-+#define   PL35X_SMC_ECC_VALUE_IS_CORRECTABLE(x) ((x) & BIT(27))
-+#define   PL35X_SMC_ECC_VALUE_HAS_FAILED(x) ((x) & BIT(28))
-+#define   PL35X_SMC_ECC_VALUE_IS_VALID(x) ((x) & BIT(30))
-+
-+/* NAND AXI interface */
-+#define PL35X_SMC_CMD_PHASE 0
-+#define PL35X_SMC_CMD_PHASE_CMD0(x) ((x) << 3)
-+#define PL35X_SMC_CMD_PHASE_CMD1(x) ((x) << 11)
-+#define PL35X_SMC_CMD_PHASE_CMD1_VALID BIT(20)
-+#define PL35X_SMC_CMD_PHASE_ADDR(pos, x) ((x) << (8 * (pos)))
-+#define PL35X_SMC_CMD_PHASE_NADDRS(x) ((x) << 21)
-+#define PL35X_SMC_DATA_PHASE BIT(19)
-+#define PL35X_SMC_DATA_PHASE_ECC_LAST BIT(10)
-+#define PL35X_SMC_DATA_PHASE_CLEAR_CS BIT(21)
-+
-+#define PL35X_NAND_MAX_CS 1
-+#define PL35X_NAND_LAST_XFER_SZ 4
-+#define TO_CYCLES(ps, period_ns) (DIV_ROUND_UP((ps) / 1000, period_ns))
-+
-+#define PL35X_NAND_ECC_BITS_MASK 0xFFF
-+#define PL35X_NAND_ECC_BYTE_OFF_MASK 0x1FF
-+#define PL35X_NAND_ECC_BIT_OFF_MASK 0x7
-+
-+struct pl35x_nand_timings {
-+	unsigned int t_rc:4;
-+	unsigned int t_wc:4;
-+	unsigned int t_rea:3;
-+	unsigned int t_wp:3;
-+	unsigned int t_clr:3;
-+	unsigned int t_ar:3;
-+	unsigned int t_rr:4;
-+	unsigned int rsvd:8;
-+};
-+
-+struct pl35x_nand {
-+	struct list_head node;
-+	struct nand_chip chip;
-+	unsigned int cs;
-+	unsigned int addr_cycles;
-+	u32 ecc_cfg;
-+	u32 timings;
-+};
-+
-+/**
-+ * struct pl35x_nandc - NAND flash controller driver structure
-+ * @dev: Kernel device
-+ * @conf_regs: SMC configuration registers for command phase
-+ * @io_regs: NAND data registers for data phase
-+ * @controller: Core NAND controller structure
-+ * @chip: NAND chip information structure
-+ * @selected_chip: NAND chip currently selected by the controller
-+ * @assigned_cs: List of assigned CS
-+ * @ecc_buf: Temporary buffer to extract ECC bytes
-+ */
-+struct pl35x_nandc {
-+	struct device *dev;
-+	void __iomem *conf_regs;
-+	void __iomem *io_regs;
-+	struct nand_controller controller;
-+	struct list_head chips;
-+	struct nand_chip *selected_chip;
-+	unsigned long assigned_cs;
-+	u8 *ecc_buf;
-+};
-+
-+static inline struct pl35x_nandc *to_pl35x_nandc(struct nand_controller *ctrl)
-+{
-+	return container_of(ctrl, struct pl35x_nandc, controller);
-+}
-+
-+static inline struct pl35x_nand *to_pl35x_nand(struct nand_chip *chip)
-+{
-+	return container_of(chip, struct pl35x_nand, chip);
-+}
-+
-+static int pl35x_ecc_ooblayout16_ecc(struct mtd_info *mtd, int section,
-+				     struct mtd_oob_region *oobregion)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	if (section >= chip->ecc.steps)
-+		return -ERANGE;
-+
-+	oobregion->offset = (section * chip->ecc.bytes);
-+	oobregion->length = chip->ecc.bytes;
-+
-+	return 0;
-+}
-+
-+static int pl35x_ecc_ooblayout16_free(struct mtd_info *mtd, int section,
-+				      struct mtd_oob_region *oobregion)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	if (section >= chip->ecc.steps)
-+		return -ERANGE;
-+
-+	oobregion->offset = (section * chip->ecc.bytes) + 8;
-+	oobregion->length = 8;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops pl35x_ecc_ooblayout16_ops = {
-+	.ecc = pl35x_ecc_ooblayout16_ecc,
-+	.free = pl35x_ecc_ooblayout16_free,
-+};
-+
-+/* Generic flash bbt decriptors */
-+static u8 bbt_pattern[] = { 'B', 'b', 't', '0' };
-+static u8 mirror_pattern[] = { '1', 't', 'b', 'B' };
-+
-+static struct nand_bbt_descr bbt_main_descr = {
-+	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
-+		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
-+	.offs = 4,
-+	.len = 4,
-+	.veroffs = 20,
-+	.maxblocks = 4,
-+	.pattern = bbt_pattern
-+};
-+
-+static struct nand_bbt_descr bbt_mirror_descr = {
-+	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
-+		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
-+	.offs = 4,
-+	.len = 4,
-+	.veroffs = 20,
-+	.maxblocks = 4,
-+	.pattern = mirror_pattern
-+};
-+
-+static void pl35x_smc_update_regs(struct pl35x_nandc *nfc)
-+{
-+	writel(PL35X_SMC_DIRECT_CMD_NAND_CS |
-+	       PL35X_SMC_DIRECT_CMD_UPD_REGS,
-+	       nfc->conf_regs + PL35X_SMC_DIRECT_CMD);
-+}
-+
-+static int pl35x_smc_set_buswidth(struct pl35x_nandc *nfc, unsigned int bw)
-+{
-+	if (bw != PL35X_SMC_OPMODE_BW_8 && bw != PL35X_SMC_OPMODE_BW_16)
-+		return -EINVAL;
-+
-+	writel(bw, nfc->conf_regs + PL35X_SMC_OPMODE);
-+	pl35x_smc_update_regs(nfc);
-+
-+	return 0;
-+}
-+
-+static void pl35x_smc_clear_irq(struct pl35x_nandc *nfc)
-+{
-+	writel(PL35X_SMC_MEMC_CFG_CLR_INT_CLR_1,
-+	       nfc->conf_regs + PL35X_SMC_MEMC_CFG_CLR);
-+}
-+
-+static int pl35x_smc_wait_for_irq(struct pl35x_nandc *nfc)
-+{
-+	u32 reg;
-+	int ret;
-+
-+	ret = readl_poll_timeout(nfc->conf_regs + PL35X_SMC_MEMC_STATUS, reg,
-+				 reg & PL35X_SMC_MEMC_STATUS_RAW_INT_STATUS1,
-+				 10, 1000000);
-+	if (ret)
-+		dev_err(nfc->dev,
-+			"Timeout polling on NAND controller interrupt (0x%x)\n",
-+			reg);
-+
-+	pl35x_smc_clear_irq(nfc);
-+
-+	return ret;
-+}
-+
-+static int pl35x_smc_wait_for_ecc_done(struct pl35x_nandc *nfc)
-+{
-+	u32 reg;
-+	int ret;
-+
-+	ret = readl_poll_timeout(nfc->conf_regs + PL35X_SMC_ECC_STATUS, reg,
-+				 !(reg & PL35X_SMC_ECC_STATUS_ECC_BUSY),
-+				 10, 1000000);
-+	if (ret)
-+		dev_err(nfc->dev,
-+			"Timeout polling on ECC controller interrupt\n");
-+
-+	return ret;
-+}
-+
-+static int pl35x_smc_set_ecc_mode(struct pl35x_nandc *nfc,
-+				  struct nand_chip *chip,
-+				  unsigned int mode)
-+{
-+	struct pl35x_nand *plnand;
-+	u32 ecc_cfg;
-+
-+	ecc_cfg = readl(nfc->conf_regs + PL35X_SMC_ECC_CFG);
-+	ecc_cfg &= ~PL35X_SMC_ECC_CFG_MODE_MASK;
-+	ecc_cfg |= mode;
-+	writel(ecc_cfg, nfc->conf_regs + PL35X_SMC_ECC_CFG);
-+
-+	if (chip) {
-+		plnand = to_pl35x_nand(chip);
-+		plnand->ecc_cfg = ecc_cfg;
-+	}
-+
-+	if (mode != PL35X_SMC_ECC_CFG_MODE_BYPASS)
-+		return pl35x_smc_wait_for_ecc_done(nfc);
-+
-+	return 0;
-+}
-+
-+static void pl35x_smc_force_byte_access(struct nand_chip *chip,
-+					bool force_8bit)
-+{
-+	struct pl35x_nandc *nfc = to_pl35x_nandc(chip->controller);
-+	int ret;
-+
-+	if (!(chip->options & NAND_BUSWIDTH_16))
-+		return;
-+
-+	if (force_8bit)
-+		ret = pl35x_smc_set_buswidth(nfc, PL35X_SMC_OPMODE_BW_8);
-+	else
-+		ret = pl35x_smc_set_buswidth(nfc, PL35X_SMC_OPMODE_BW_16);
-+
-+	if (ret)
-+		dev_err(nfc->dev, "Error in Buswidth\n");
-+}
-+
-+static void pl35x_nand_select_target(struct nand_chip *chip,
-+				     unsigned int die_nr)
-+{
-+	struct pl35x_nandc *nfc = to_pl35x_nandc(chip->controller);
-+	struct pl35x_nand *plnand = to_pl35x_nand(chip);
-+
-+	if (chip == nfc->selected_chip)
-+		return;
-+
-+	/* Setup the timings */
-+	writel(plnand->timings, nfc->conf_regs + PL35X_SMC_CYCLES);
-+	pl35x_smc_update_regs(nfc);
-+
-+	/* Configure the ECC engine */
-+	writel(plnand->ecc_cfg, nfc->conf_regs + PL35X_SMC_ECC_CFG);
-+
-+	nfc->selected_chip = chip;
-+}
-+
-+static void pl35x_nand_read_data_op(struct nand_chip *chip, u8 *in,
-+				    unsigned int len, bool force_8bit,
-+				    unsigned int flags, unsigned int last_flags)
-+{
-+	struct pl35x_nandc *nfc = to_pl35x_nandc(chip->controller);
-+	unsigned int buf_end = len / 4;
-+	unsigned int in_start = round_down(len, 4);
-+	unsigned int data_phase_addr;
-+	u32 *buf32 = (u32 *)in;
-+	u8 *buf8 = (u8 *)in;
-+	int i;
-+
-+	if (force_8bit)
-+		pl35x_smc_force_byte_access(chip, true);
-+
-+	for (i = 0; i < buf_end; i++) {
-+		data_phase_addr = PL35X_SMC_DATA_PHASE + flags;
-+		if (i + 1 == buf_end)
-+			data_phase_addr = PL35X_SMC_DATA_PHASE + last_flags;
-+
-+		buf32[i] = readl(nfc->io_regs + data_phase_addr);
-+	}
-+
-+	/* No working extra flags on unaligned data accesses */
-+	for (i = in_start; i < len; i++)
-+		buf8[i] = readb(nfc->io_regs + PL35X_SMC_DATA_PHASE);
-+
-+	if (force_8bit)
-+		pl35x_smc_force_byte_access(chip, false);
-+}
-+
-+static void pl35x_nand_write_data_op(struct nand_chip *chip, const u8 *out,
-+				     int len, bool force_8bit,
-+				     unsigned int flags,
-+				     unsigned int last_flags)
-+{
-+	struct pl35x_nandc *nfc = to_pl35x_nandc(chip->controller);
-+	unsigned int buf_end = len / 4;
-+	unsigned int in_start = round_down(len, 4);
-+	const u32 *buf32 = (const u32 *)out;
-+	const u8 *buf8 = (const u8 *)out;
-+	unsigned int data_phase_addr;
-+	int i;
-+
-+	if (force_8bit)
-+		pl35x_smc_force_byte_access(chip, true);
-+
-+	for (i = 0; i < buf_end; i++) {
-+		data_phase_addr = PL35X_SMC_DATA_PHASE + flags;
-+		if (i + 1 == buf_end)
-+			data_phase_addr = PL35X_SMC_DATA_PHASE + last_flags;
-+
-+		writel(buf32[i], nfc->io_regs + data_phase_addr);
-+	}
-+
-+	/* No working extra flags on unaligned data accesses */
-+	for (i = in_start; i < len; i++)
-+		writeb(buf8[i], nfc->io_regs + PL35X_SMC_DATA_PHASE);
-+
-+	if (force_8bit)
-+		pl35x_smc_force_byte_access(chip, false);
-+}
-+
-+static int pl35x_nand_correct_data(struct pl35x_nandc *nfc, unsigned char *buf,
-+				   unsigned char *read_ecc,
-+				   unsigned char *calc_ecc)
-+{
-+	unsigned short ecc_odd, ecc_even, read_ecc_lower, read_ecc_upper;
-+	unsigned short calc_ecc_lower, calc_ecc_upper;
-+	unsigned short byte_addr, bit_addr;
-+
-+	read_ecc_lower = (read_ecc[0] | (read_ecc[1] << 8)) &
-+			 PL35X_NAND_ECC_BITS_MASK;
-+	read_ecc_upper = ((read_ecc[1] >> 4) | (read_ecc[2] << 4)) &
-+			 PL35X_NAND_ECC_BITS_MASK;
-+
-+	calc_ecc_lower = (calc_ecc[0] | (calc_ecc[1] << 8)) &
-+			 PL35X_NAND_ECC_BITS_MASK;
-+	calc_ecc_upper = ((calc_ecc[1] >> 4) | (calc_ecc[2] << 4)) &
-+			 PL35X_NAND_ECC_BITS_MASK;
-+
-+	ecc_odd = read_ecc_lower ^ calc_ecc_lower;
-+	ecc_even = read_ecc_upper ^ calc_ecc_upper;
-+
-+	/* No error */
-+	if (likely(!ecc_odd && !ecc_even))
-+		return 0;
-+
-+	/* One error in the main data; to be corrected */
-+	if (ecc_odd == (~ecc_even & PL35X_NAND_ECC_BITS_MASK)) {
-+		/* Bits [11:3] of error code give the byte offset */
-+		byte_addr = (ecc_odd >> 3) & PL35X_NAND_ECC_BYTE_OFF_MASK;
-+		/* Bits [2:0] of error code give the bit offset */
-+		bit_addr = ecc_odd & PL35X_NAND_ECC_BIT_OFF_MASK;
-+		/* Toggle the faulty bit */
-+		buf[byte_addr] ^= (BIT(bit_addr));
-+
-+		return 1;
-+	}
-+
-+	/* One error in the ECC data; no action needed */
-+	if (hweight32(ecc_odd | ecc_even) == 1)
-+		return 1;
-+
-+	return -EBADMSG;
-+}
-+
-+static void pl35x_nand_ecc_reg_to_array(struct nand_chip *chip, u32 ecc_reg,
-+					u8 *ecc_array)
-+{
-+	u32 ecc_value = ~ecc_reg;
-+	unsigned int ecc_byte;
-+
-+	for (ecc_byte = 0; ecc_byte < chip->ecc.bytes; ecc_byte++)
-+		ecc_array[ecc_byte] = ecc_value >> (8 * ecc_byte);
-+}
-+
-+static int pl35x_nand_read_eccbytes(struct pl35x_nandc *nfc,
-+				    struct nand_chip *chip, u8 *read_ecc)
-+{
-+	u32 ecc_value;
-+	int chunk;
-+
-+	for (chunk = 0; chunk < chip->ecc.steps;
-+	     chunk++, read_ecc += chip->ecc.bytes) {
-+		ecc_value = readl(nfc->conf_regs + PL35X_SMC_ECC_VALUE(chunk));
-+		if (!PL35X_SMC_ECC_VALUE_IS_VALID(ecc_value))
-+			return -EINVAL;
-+
-+		pl35x_nand_ecc_reg_to_array(chip, ecc_value, read_ecc);
-+	}
-+
-+	return 0;
-+}
-+
-+static int pl35x_nand_recover_data_hwecc(struct pl35x_nandc *nfc,
-+					 struct nand_chip *chip, u8 *data,
-+					 u8 *read_ecc)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	unsigned int max_bitflips = 0, chunk;
-+	u8 calc_ecc[3];
-+	u32 ecc_value;
-+	int stats;
-+
-+	for (chunk = 0; chunk < chip->ecc.steps;
-+	     chunk++, data += chip->ecc.size, read_ecc += chip->ecc.bytes) {
-+		/* Read ECC value for each chunk */
-+		ecc_value = readl(nfc->conf_regs + PL35X_SMC_ECC_VALUE(chunk));
-+
-+		if (!PL35X_SMC_ECC_VALUE_IS_VALID(ecc_value))
-+			return -EINVAL;
-+
-+		if (PL35X_SMC_ECC_VALUE_HAS_FAILED(ecc_value)) {
-+			mtd->ecc_stats.failed++;
-+			continue;
-+		}
-+
-+		pl35x_nand_ecc_reg_to_array(chip, ecc_value, calc_ecc);
-+		stats = pl35x_nand_correct_data(nfc, data, read_ecc, calc_ecc);
-+		if (stats < 0) {
-+			mtd->ecc_stats.failed++;
-+		} else {
-+			mtd->ecc_stats.corrected += stats;
-+			max_bitflips = max_t(unsigned int, max_bitflips, stats);
-+		}
-+	}
-+
-+	return max_bitflips;
-+}
-+
-+static int pl35x_nand_write_page_hwecc(struct nand_chip *chip,
-+				       const u8 *buf, int oob_required,
-+				       int page)
-+{
-+	struct pl35x_nandc *nfc = to_pl35x_nandc(chip->controller);
-+	struct pl35x_nand *plnand = to_pl35x_nand(chip);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	unsigned int first_row = (mtd->writesize <= 512) ? 1 : 2;
-+	unsigned int nrows = plnand->addr_cycles;
-+	u32 addr1 = 0, addr2 = 0, row;
-+	u32 cmd_addr;
-+	int i, ret;
-+
-+	ret = pl35x_smc_set_ecc_mode(nfc, chip, PL35X_SMC_ECC_CFG_MODE_APB);
-+	if (ret)
-+		return ret;
-+
-+	cmd_addr = PL35X_SMC_CMD_PHASE |
-+		   PL35X_SMC_CMD_PHASE_NADDRS(plnand->addr_cycles) |
-+		   PL35X_SMC_CMD_PHASE_CMD0(NAND_CMD_SEQIN);
-+
-+	for (i = 0, row = first_row; row < nrows; i++, row++) {
-+		u8 addr = page >> ((i * 8) & 0xFF);
-+
-+		if (row < 4)
-+			addr1 |= PL35X_SMC_CMD_PHASE_ADDR(row, addr);
-+		else
-+			addr2 |= PL35X_SMC_CMD_PHASE_ADDR(row - 4, addr);
-+	}
-+
-+	/* Send the command and address cycles */
-+	writel(addr1, nfc->io_regs + cmd_addr);
-+	if (plnand->addr_cycles > 4)
-+		writel(addr2, nfc->io_regs + cmd_addr);
-+
-+	/* Write the data with the engine enabled */
-+	pl35x_nand_write_data_op(chip, buf, mtd->writesize, false,
-+				 0, PL35X_SMC_DATA_PHASE_ECC_LAST);
-+	ret = pl35x_smc_wait_for_ecc_done(nfc);
-+	if (ret)
-+		goto disable_ecc_engine;
-+
-+	/* Copy the HW calculated ECC bytes in the OOB buffer */
-+	ret = pl35x_nand_read_eccbytes(nfc, chip, nfc->ecc_buf);
-+	if (ret)
-+		goto disable_ecc_engine;
-+
-+	if (!oob_required)
-+		memset(chip->oob_poi, 0xFF, mtd->oobsize);
-+
-+	ret = mtd_ooblayout_set_eccbytes(mtd, nfc->ecc_buf, chip->oob_poi,
-+					 0, chip->ecc.total);
-+	if (ret)
-+		goto disable_ecc_engine;
-+
-+	/* Write the spare area with ECC bytes */
-+	pl35x_nand_write_data_op(chip, chip->oob_poi, mtd->oobsize, false, 0,
-+				 PL35X_SMC_CMD_PHASE_CMD1(NAND_CMD_PAGEPROG) |
-+				 PL35X_SMC_CMD_PHASE_CMD1_VALID |
-+				 PL35X_SMC_DATA_PHASE_CLEAR_CS);
-+	ret = pl35x_smc_wait_for_irq(nfc);
-+	if (ret)
-+		goto disable_ecc_engine;
-+
-+disable_ecc_engine:
-+	pl35x_smc_set_ecc_mode(nfc, chip, PL35X_SMC_ECC_CFG_MODE_BYPASS);
-+
-+	return ret;
-+}
-+
-+/*
-+ * This functions reads data and checks the data integrity by comparing hardware
-+ * generated ECC values and read ECC values from spare area.
-+ *
-+ * There is a limitation with SMC controller: ECC_LAST must be set on the
-+ * last data access to tell the ECC engine not to expect any further data.
-+ * In practice, this implies to shrink the last data transfert by eg. 4 bytes,
-+ * and doing a last 4-byte transfer with the additional bit set. The last block
-+ * should be aligned with the end of an ECC block. Because of this limitation,
-+ * it is not possible to use the core routines.
-+ */
-+static int pl35x_nand_read_page_hwecc(struct nand_chip *chip,
-+				      u8 *buf, int oob_required, int page)
-+{
-+	const struct nand_sdr_timings *sdr =
-+		nand_get_sdr_timings(nand_get_interface_config(chip));
-+	struct pl35x_nandc *nfc = to_pl35x_nandc(chip->controller);
-+	struct pl35x_nand *plnand = to_pl35x_nand(chip);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	unsigned int first_row = (mtd->writesize <= 512) ? 1 : 2;
-+	unsigned int nrows = plnand->addr_cycles;
-+	unsigned int addr1 = 0, addr2 = 0, row;
-+	u32 cmd_addr;
-+	int i, ret;
-+
-+	ret = pl35x_smc_set_ecc_mode(nfc, chip, PL35X_SMC_ECC_CFG_MODE_APB);
-+	if (ret)
-+		return ret;
-+
-+	cmd_addr = PL35X_SMC_CMD_PHASE |
-+		   PL35X_SMC_CMD_PHASE_NADDRS(plnand->addr_cycles) |
-+		   PL35X_SMC_CMD_PHASE_CMD0(NAND_CMD_READ0) |
-+		   PL35X_SMC_CMD_PHASE_CMD1(NAND_CMD_READSTART) |
-+		   PL35X_SMC_CMD_PHASE_CMD1_VALID;
-+
-+	for (i = 0, row = first_row; row < nrows; i++, row++) {
-+		u8 addr = page >> ((i * 8) & 0xFF);
-+
-+		if (row < 4)
-+			addr1 |= PL35X_SMC_CMD_PHASE_ADDR(row, addr);
-+		else
-+			addr2 |= PL35X_SMC_CMD_PHASE_ADDR(row - 4, addr);
-+	}
-+
-+	/* Send the command and address cycles */
-+	writel(addr1, nfc->io_regs + cmd_addr);
-+	if (plnand->addr_cycles > 4)
-+		writel(addr2, nfc->io_regs + cmd_addr);
-+
-+	/* Wait the data to be available in the NAND cache */
-+	ndelay(PSEC_TO_NSEC(sdr->tRR_min));
-+	ret = pl35x_smc_wait_for_irq(nfc);
-+	if (ret)
-+		goto disable_ecc_engine;
-+
-+	/* Retrieve the raw data with the engine enabled */
-+	pl35x_nand_read_data_op(chip, buf, mtd->writesize, false,
-+				0, PL35X_SMC_DATA_PHASE_ECC_LAST);
-+	ret = pl35x_smc_wait_for_ecc_done(nfc);
-+	if (ret)
-+		goto disable_ecc_engine;
-+
-+	/* Retrieve the stored ECC bytes */
-+	pl35x_nand_read_data_op(chip, chip->oob_poi, mtd->oobsize, false,
-+				0, PL35X_SMC_DATA_PHASE_CLEAR_CS);
-+	ret = mtd_ooblayout_get_eccbytes(mtd, nfc->ecc_buf, chip->oob_poi, 0,
-+					 chip->ecc.total);
-+	if (ret)
-+		goto disable_ecc_engine;
-+
-+	pl35x_smc_set_ecc_mode(nfc, chip, PL35X_SMC_ECC_CFG_MODE_BYPASS);
-+
-+	/* Correct the data and report failures */
-+	return pl35x_nand_recover_data_hwecc(nfc, chip, buf, nfc->ecc_buf);
-+
-+disable_ecc_engine:
-+	pl35x_smc_set_ecc_mode(nfc, chip, PL35X_SMC_ECC_CFG_MODE_BYPASS);
-+
-+	return ret;
-+}
-+
-+static int pl35x_nand_exec_op(struct nand_chip *chip,
-+			      const struct nand_subop *subop)
-+{
-+	struct pl35x_nandc *nfc = to_pl35x_nandc(chip->controller);
-+	const struct nand_op_instr *instr, *data_instr = NULL;
-+	unsigned int rdy_tim_ms = 0, naddrs = 0, cmds = 0, last_flags = 0;
-+	u32 addr1 = 0, addr2 = 0, cmd0 = 0, cmd1 = 0, cmd_addr = 0;
-+	unsigned int op_id, len, offset, rdy_del_ns;
-+	int last_instr_type = -1;
-+	bool cmd1_valid = false;
-+	const u8 *addrs;
-+	int i, ret;
-+
-+	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
-+		instr = &subop->instrs[op_id];
-+
-+		switch (instr->type) {
-+		case NAND_OP_CMD_INSTR:
-+			if (!cmds) {
-+				cmd0 = PL35X_SMC_CMD_PHASE_CMD0(instr->ctx.cmd.opcode);
-+			} else {
-+				cmd1 = PL35X_SMC_CMD_PHASE_CMD1(instr->ctx.cmd.opcode);
-+				if (last_instr_type != NAND_OP_DATA_OUT_INSTR)
-+					cmd1_valid = true;
-+			}
-+			cmds++;
-+			break;
-+
-+		case NAND_OP_ADDR_INSTR:
-+			offset = nand_subop_get_addr_start_off(subop, op_id);
-+			naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
-+			addrs = &instr->ctx.addr.addrs[offset];
-+			cmd_addr |= PL35X_SMC_CMD_PHASE_NADDRS(naddrs);
-+
-+			for (i = offset; i < naddrs; i++) {
-+				if (i < 4)
-+					addr1 |= PL35X_SMC_CMD_PHASE_ADDR(i, addrs[i]);
-+				else
-+					addr2 |= PL35X_SMC_CMD_PHASE_ADDR(i - 4, addrs[i]);
-+			}
-+			break;
-+
-+		case NAND_OP_DATA_IN_INSTR:
-+		case NAND_OP_DATA_OUT_INSTR:
-+			data_instr = instr;
-+			len = nand_subop_get_data_len(subop, op_id);
-+			break;
-+
-+		case NAND_OP_WAITRDY_INSTR:
-+			rdy_tim_ms = instr->ctx.waitrdy.timeout_ms;
-+			rdy_del_ns = instr->delay_ns;
-+			break;
-+		}
-+
-+		last_instr_type = instr->type;
-+	}
-+
-+	/* Command phase */
-+	cmd_addr |= PL35X_SMC_CMD_PHASE | cmd0 | cmd1 |
-+		    (cmd1_valid ? PL35X_SMC_CMD_PHASE_CMD1_VALID : 0);
-+	writel(addr1, nfc->io_regs + cmd_addr);
-+	if (naddrs > 4)
-+		writel(addr2, nfc->io_regs + cmd_addr);
-+
-+	/* Data phase */
-+	if (data_instr && data_instr->type == NAND_OP_DATA_OUT_INSTR) {
-+		last_flags = PL35X_SMC_DATA_PHASE_CLEAR_CS;
-+		if (cmds == 2)
-+			last_flags |= cmd1 | PL35X_SMC_CMD_PHASE_CMD1_VALID;
-+
-+		pl35x_nand_write_data_op(chip, data_instr->ctx.data.buf.out,
-+					 len, data_instr->ctx.data.force_8bit,
-+					 0, last_flags);
-+	}
-+
-+	if (rdy_tim_ms) {
-+		ndelay(rdy_del_ns);
-+		ret = pl35x_smc_wait_for_irq(nfc);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	if (data_instr && data_instr->type == NAND_OP_DATA_IN_INSTR)
-+		pl35x_nand_read_data_op(chip, data_instr->ctx.data.buf.in,
-+					len, data_instr->ctx.data.force_8bit,
-+					0, PL35X_SMC_DATA_PHASE_CLEAR_CS);
-+
-+	return 0;
-+}
-+
-+static const struct nand_op_parser pl35x_nandc_op_parser = NAND_OP_PARSER(
-+	NAND_OP_PARSER_PATTERN(pl35x_nand_exec_op,
-+			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
-+			       NAND_OP_PARSER_PAT_ADDR_ELEM(true, 7),
-+			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
-+			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
-+			       NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, 2112)),
-+	NAND_OP_PARSER_PATTERN(pl35x_nand_exec_op,
-+			       NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+			       NAND_OP_PARSER_PAT_ADDR_ELEM(false, 7),
-+			       NAND_OP_PARSER_PAT_DATA_OUT_ELEM(false, 2112),
-+			       NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(true)),
-+	NAND_OP_PARSER_PATTERN(pl35x_nand_exec_op,
-+			       NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+			       NAND_OP_PARSER_PAT_ADDR_ELEM(false, 7),
-+			       NAND_OP_PARSER_PAT_DATA_OUT_ELEM(false, 2112),
-+			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
-+			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(true)),
-+	);
-+
-+static int pl35x_nfc_exec_op(struct nand_chip *chip,
-+			     const struct nand_operation *op,
-+			     bool check_only)
-+{
-+	if (!check_only)
-+		pl35x_nand_select_target(chip, op->cs);
-+
-+	return nand_op_parser_exec_op(chip, &pl35x_nandc_op_parser,
-+				      op, check_only);
-+}
-+
-+static int pl35x_nfc_setup_interface(struct nand_chip *chip, int cs,
-+				     const struct nand_interface_config *conf)
-+{
-+	struct pl35x_nandc *nfc = to_pl35x_nandc(chip->controller);
-+	struct pl35x_nand *plnand = to_pl35x_nand(chip);
-+	struct pl35x_nand_timings tmgs = {};
-+	const struct nand_sdr_timings *sdr;
-+	unsigned int period_ns, val;
-+	struct clk *mclk;
-+
-+	sdr = nand_get_sdr_timings(conf);
-+	if (IS_ERR(sdr))
-+		return PTR_ERR(sdr);
-+
-+	mclk = of_clk_get_by_name(nfc->dev->parent->of_node, "memclk");
-+	if (IS_ERR(mclk)) {
-+		dev_err(nfc->dev, "Failed to retrieve SMC memclk\n");
-+		return PTR_ERR(mclk);
-+	}
-+
-+	/*
-+	 * SDR timings are given in pico-seconds while NFC timings must be
-+	 * expressed in NAND controller clock cycles. We use the TO_CYCLE()
-+	 * macro to convert from one to the other.
-+	 */
-+	period_ns = NSEC_PER_SEC / clk_get_rate(mclk);
-+
-+	/*
-+	 * PL35X SMC needs one extra read cycle in SDR Mode 5. This is not
-+	 * written anywhere in the datasheet but is an empirical observation.
-+	 */
-+	val = TO_CYCLES(sdr->tRC_min, period_ns);
-+	if (sdr->tRC_min <= 20000)
-+		val++;
-+
-+	tmgs.t_rc = val;
-+	if (tmgs.t_rc != val || tmgs.t_rc < 2)
-+		return -EINVAL;
-+
-+	val = TO_CYCLES(sdr->tWC_min, period_ns);
-+	tmgs.t_wc = val;
-+	if (tmgs.t_wc != val || tmgs.t_wc < 2)
-+		return -EINVAL;
-+
-+	/*
-+	 * For all SDR modes, PL35X SMC needs tREA_max being 1,
-+	 * this is also an empirical result.
-+	 */
-+	tmgs.t_rea = 1;
-+
-+	val = TO_CYCLES(sdr->tWP_min, period_ns);
-+	tmgs.t_wp = val;
-+	if (tmgs.t_wp != val || tmgs.t_wp < 1)
-+		return -EINVAL;
-+
-+	val = TO_CYCLES(sdr->tCLR_min, period_ns);
-+	tmgs.t_clr = val;
-+	if (tmgs.t_clr != val)
-+		return -EINVAL;
-+
-+	val = TO_CYCLES(sdr->tAR_min, period_ns);
-+	tmgs.t_ar = val;
-+	if (tmgs.t_ar != val)
-+		return -EINVAL;
-+
-+	val = TO_CYCLES(sdr->tRR_min, period_ns);
-+	tmgs.t_rr = val;
-+	if (tmgs.t_rr != val)
-+		return -EINVAL;
-+
-+	if (cs == NAND_DATA_IFACE_CHECK_ONLY)
-+		return 0;
-+
-+	plnand->timings = PL35X_SMC_NAND_TRC_CYCLES(tmgs.t_rc) |
-+			  PL35X_SMC_NAND_TWC_CYCLES(tmgs.t_wc) |
-+			  PL35X_SMC_NAND_TREA_CYCLES(tmgs.t_rea) |
-+			  PL35X_SMC_NAND_TWP_CYCLES(tmgs.t_wp) |
-+			  PL35X_SMC_NAND_TCLR_CYCLES(tmgs.t_clr) |
-+			  PL35X_SMC_NAND_TAR_CYCLES(tmgs.t_ar) |
-+			  PL35X_SMC_NAND_TRR_CYCLES(tmgs.t_rr);
-+
-+	return 0;
-+}
-+
-+static void pl35x_smc_set_ecc_pg_size(struct pl35x_nandc *nfc,
-+				      struct nand_chip *chip,
-+				      unsigned int pg_sz)
-+{
-+	struct pl35x_nand *plnand = to_pl35x_nand(chip);
-+	u32 sz;
-+
-+	switch (pg_sz) {
-+	case SZ_512:
-+		sz = 1;
-+		break;
-+	case SZ_1K:
-+		sz = 2;
-+		break;
-+	case SZ_2K:
-+		sz = 3;
-+		break;
-+	default:
-+		sz = 0;
-+		break;
-+	}
-+
-+	plnand->ecc_cfg = readl(nfc->conf_regs + PL35X_SMC_ECC_CFG);
-+	plnand->ecc_cfg &= ~PL35X_SMC_ECC_CFG_PGSIZE_MASK;
-+	plnand->ecc_cfg |= sz;
-+	writel(plnand->ecc_cfg, nfc->conf_regs + PL35X_SMC_ECC_CFG);
-+}
-+
-+static int pl35x_nand_init_hw_ecc_controller(struct pl35x_nandc *nfc,
-+					     struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	int ret = 0;
-+
-+	if (mtd->writesize < SZ_512 || mtd->writesize > SZ_2K) {
-+		dev_err(nfc->dev,
-+			"The hardware ECC engine is limited to pages up to 2kiB\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	chip->ecc.strength = 1;
-+	chip->ecc.bytes = 3;
-+	chip->ecc.size = SZ_512;
-+	chip->ecc.steps = mtd->writesize / chip->ecc.size;
-+	chip->ecc.read_page = pl35x_nand_read_page_hwecc;
-+	chip->ecc.write_page = pl35x_nand_write_page_hwecc;
-+	chip->ecc.write_page_raw = nand_monolithic_write_page_raw;
-+	pl35x_smc_set_ecc_pg_size(nfc, chip, mtd->writesize);
-+
-+	nfc->ecc_buf = devm_kmalloc(nfc->dev, chip->ecc.bytes * chip->ecc.steps,
-+				    GFP_KERNEL);
-+	if (!nfc->ecc_buf)
-+		return -ENOMEM;
-+
-+	switch (mtd->oobsize) {
-+	case 16:
-+		/* Legacy Xilinx layout */
-+		mtd_set_ooblayout(mtd, &pl35x_ecc_ooblayout16_ops);
-+		chip->bbt_options |= NAND_BBT_NO_OOB_BBM;
-+		break;
-+	case 64:
-+		mtd_set_ooblayout(mtd, nand_get_large_page_ooblayout());
-+		break;
-+	default:
-+		dev_err(nfc->dev, "Unsupported OOB size\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return ret;
-+}
-+
-+static int pl35x_nand_attach_chip(struct nand_chip *chip)
-+{
-+	const struct nand_ecc_props *requirements =
-+		nanddev_get_ecc_requirements(&chip->base);
-+	struct pl35x_nandc *nfc = to_pl35x_nandc(chip->controller);
-+	struct pl35x_nand *plnand = to_pl35x_nand(chip);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	int ret;
-+
-+	if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_NONE &&
-+	    (!chip->ecc.size || !chip->ecc.strength)) {
-+		if (requirements->step_size && requirements->strength) {
-+			chip->ecc.size = requirements->step_size;
-+			chip->ecc.strength = requirements->strength;
-+		} else {
-+			dev_info(nfc->dev,
-+				 "No minimum ECC strength, using 1b/512B\n");
-+			chip->ecc.size = 512;
-+			chip->ecc.strength = 1;
-+		}
-+	}
-+
-+	if (mtd->writesize <= SZ_512)
-+		plnand->addr_cycles = 1;
-+	else
-+		plnand->addr_cycles = 2;
-+
-+	if (chip->options & NAND_ROW_ADDR_3)
-+		plnand->addr_cycles += 3;
-+	else
-+		plnand->addr_cycles += 2;
-+
-+	switch (chip->ecc.engine_type) {
-+	case NAND_ECC_ENGINE_TYPE_ON_DIE:
-+		/* Keep these legacy BBT descriptors for ON_DIE situations */
-+		chip->bbt_td = &bbt_main_descr;
-+		chip->bbt_md = &bbt_mirror_descr;
-+		fallthrough;
-+	case NAND_ECC_ENGINE_TYPE_NONE:
-+	case NAND_ECC_ENGINE_TYPE_SOFT:
-+		break;
-+	case NAND_ECC_ENGINE_TYPE_ON_HOST:
-+		ret = pl35x_nand_init_hw_ecc_controller(nfc, chip);
-+		if (ret)
-+			return ret;
-+		break;
-+	default:
-+		dev_err(nfc->dev, "Unsupported ECC mode: %d\n",
-+			chip->ecc.engine_type);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct nand_controller_ops pl35x_nandc_ops = {
-+	.attach_chip = pl35x_nand_attach_chip,
-+	.exec_op = pl35x_nfc_exec_op,
-+	.setup_interface = pl35x_nfc_setup_interface,
-+};
-+
-+static int pl35x_nand_reset_state(struct pl35x_nandc *nfc)
-+{
-+	int ret;
-+
-+	/* Disable interrupts and clear their status */
-+	writel(PL35X_SMC_MEMC_CFG_CLR_INT_CLR_1 |
-+	       PL35X_SMC_MEMC_CFG_CLR_ECC_INT_DIS_1 |
-+	       PL35X_SMC_MEMC_CFG_CLR_INT_DIS_1,
-+	       nfc->conf_regs + PL35X_SMC_MEMC_CFG_CLR);
-+
-+	/* Set default bus width to 8-bit */
-+	ret = pl35x_smc_set_buswidth(nfc, PL35X_SMC_OPMODE_BW_8);
-+	if (ret)
-+		return ret;
-+
-+	/* Ensure the ECC controller is bypassed by default */
-+	ret = pl35x_smc_set_ecc_mode(nfc, NULL, PL35X_SMC_ECC_CFG_MODE_BYPASS);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * Configure the commands that the ECC block uses to detect the
-+	 * operations it should start/end.
-+	 */
-+	writel(PL35X_SMC_ECC_CMD1_WRITE(NAND_CMD_SEQIN) |
-+	       PL35X_SMC_ECC_CMD1_READ(NAND_CMD_READ0) |
-+	       PL35X_SMC_ECC_CMD1_READ_END(NAND_CMD_READSTART) |
-+	       PL35X_SMC_ECC_CMD1_READ_END_VALID(NAND_CMD_READ1),
-+	       nfc->conf_regs + PL35X_SMC_ECC_CMD1);
-+	writel(PL35X_SMC_ECC_CMD2_WRITE_COL_CHG(NAND_CMD_RNDIN) |
-+	       PL35X_SMC_ECC_CMD2_READ_COL_CHG(NAND_CMD_RNDOUT) |
-+	       PL35X_SMC_ECC_CMD2_READ_COL_CHG_END(NAND_CMD_RNDOUTSTART) |
-+	       PL35X_SMC_ECC_CMD2_READ_COL_CHG_END_VALID(NAND_CMD_READ1),
-+	       nfc->conf_regs + PL35X_SMC_ECC_CMD2);
-+
-+	return 0;
-+}
-+
-+static int pl35x_nand_chip_init(struct pl35x_nandc *nfc,
-+				struct device_node *np)
-+{
-+	struct pl35x_nand *plnand;
-+	struct nand_chip *chip;
-+	struct mtd_info *mtd;
-+	int cs, ret;
-+
-+	plnand = devm_kzalloc(nfc->dev, sizeof(*plnand), GFP_KERNEL);
-+	if (!plnand)
-+		return -ENOMEM;
-+
-+	ret = of_property_read_u32(np, "reg", &cs);
-+	if (ret)
-+		return ret;
-+
-+	if (cs >= PL35X_NAND_MAX_CS) {
-+		dev_err(nfc->dev, "Wrong CS %d\n", cs);
-+		return -EINVAL;
-+	}
-+
-+	if (test_and_set_bit(cs, &nfc->assigned_cs)) {
-+		dev_err(nfc->dev, "Already assigned CS %d\n", cs);
-+		return -EINVAL;
-+	}
-+
-+	plnand->cs = cs;
-+
-+	chip = &plnand->chip;
-+	chip->options = NAND_BUSWIDTH_AUTO | NAND_USES_DMA | NAND_NO_SUBPAGE_WRITE;
-+	chip->bbt_options = NAND_BBT_USE_FLASH;
-+	chip->controller = &nfc->controller;
-+	mtd = nand_to_mtd(chip);
-+	mtd->dev.parent = nfc->dev;
-+	nand_set_flash_node(chip, nfc->dev->of_node);
-+	if (!mtd->name) {
-+		mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
-+					   "%s", PL35X_NANDC_DRIVER_NAME);
-+		if (!mtd->name) {
-+			dev_err(nfc->dev, "Failed to allocate mtd->name\n");
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	ret = nand_scan(chip, 1);
-+	if (ret)
-+		return ret;
-+
-+	ret = mtd_device_register(mtd, NULL, 0);
-+	if (ret) {
-+		nand_cleanup(chip);
-+		return ret;
-+	}
-+
-+	list_add_tail(&plnand->node, &nfc->chips);
-+
-+	return ret;
-+}
-+
-+static void pl35x_nand_chips_cleanup(struct pl35x_nandc *nfc)
-+{
-+	struct pl35x_nand *plnand, *tmp;
-+	struct nand_chip *chip;
-+	int ret;
-+
-+	list_for_each_entry_safe(plnand, tmp, &nfc->chips, node) {
-+		chip = &plnand->chip;
-+		ret = mtd_device_unregister(nand_to_mtd(chip));
-+		WARN_ON(ret);
-+		nand_cleanup(chip);
-+		list_del(&plnand->node);
-+	}
-+}
-+
-+static int pl35x_nand_chips_init(struct pl35x_nandc *nfc)
-+{
-+	struct device_node *np = nfc->dev->of_node, *nand_np;
-+	int nchips = of_get_child_count(np);
-+	int ret;
-+
-+	if (!nchips || nchips > PL35X_NAND_MAX_CS) {
-+		dev_err(nfc->dev, "Incorrect number of NAND chips (%d)\n",
-+			nchips);
-+		return -EINVAL;
-+	}
-+
-+	for_each_child_of_node(np, nand_np) {
-+		ret = pl35x_nand_chip_init(nfc, nand_np);
-+		if (ret) {
-+			of_node_put(nand_np);
-+			pl35x_nand_chips_cleanup(nfc);
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static int pl35x_nand_probe(struct platform_device *pdev)
-+{
-+	struct device *smc_dev = pdev->dev.parent;
-+	struct amba_device *smc_amba = to_amba_device(smc_dev);
-+	struct pl35x_nandc *nfc;
-+	u32 ret;
-+
-+	nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-+	if (!nfc)
-+		return -ENOMEM;
-+
-+	nfc->dev = &pdev->dev;
-+	nand_controller_init(&nfc->controller);
-+	nfc->controller.ops = &pl35x_nandc_ops;
-+	INIT_LIST_HEAD(&nfc->chips);
-+
-+	nfc->conf_regs = devm_ioremap_resource(&smc_amba->dev, &smc_amba->res);
-+	if (IS_ERR(nfc->conf_regs))
-+		return PTR_ERR(nfc->conf_regs);
-+
-+	nfc->io_regs = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(nfc->io_regs))
-+		return PTR_ERR(nfc->io_regs);
-+
-+	ret = pl35x_nand_reset_state(nfc);
-+	if (ret)
-+		return ret;
-+
-+	ret = pl35x_nand_chips_init(nfc);
-+	if (ret)
-+		return ret;
-+
-+	platform_set_drvdata(pdev, nfc);
-+
-+	return 0;
-+}
-+
-+static int pl35x_nand_remove(struct platform_device *pdev)
-+{
-+	struct pl35x_nandc *nfc = platform_get_drvdata(pdev);
-+
-+	pl35x_nand_chips_cleanup(nfc);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id pl35x_nand_of_match[] = {
-+	{ .compatible = "arm,pl353-nand-r2p1" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, pl35x_nand_of_match);
-+
-+static struct platform_driver pl35x_nandc_driver = {
-+	.probe = pl35x_nand_probe,
-+	.remove	= pl35x_nand_remove,
-+	.driver = {
-+		.name = PL35X_NANDC_DRIVER_NAME,
-+		.of_match_table = pl35x_nand_of_match,
-+	},
-+};
-+module_platform_driver(pl35x_nandc_driver);
-+
-+MODULE_AUTHOR("Xilinx, Inc.");
-+MODULE_ALIAS("platform:" PL35X_NANDC_DRIVER_NAME);
-+MODULE_DESCRIPTION("ARM PL35X NAND controller driver");
-+MODULE_LICENSE("GPL");
+-static const struct usb_action mc501cb_NoFlikerScale[] = {
++static const struct usb_action mc501cb_NoFlickerScale[] = {
+ 	{0xaa, 0x03, 0x0003}, /* 00,03,03,aa */
+ 	{0xaa, 0x10, 0x00fc}, /* 00,10,fc,aa */
+ 	{0xaa, 0x36, 0x0030}, /* 00,36,30,aa */
+@@ -3211,7 +3211,7 @@ static const struct usb_action ov7620_60HZ[] = {
+ 	{0xa1, 0x01, 0x0037},		*/
+ 	{}
+ };
+-static const struct usb_action ov7620_NoFliker[] = {
++static const struct usb_action ov7620_NoFlicker[] = {
+ 	{0xdd, 0x00, 0x0100},			/* 00,01,00,dd */
+ 	{0xaa, 0x2b, 0x0000},			/* 00,2b,00,aa */
+ 	/* disable 1/120s & 1/100s exposures for banding filter */
+@@ -3827,7 +3827,7 @@ static const struct usb_action pas106b_60HZ[] = {
+ 	{0xa0, 0x04, ZC3XX_R1A9_DIGITALLIMITDIFF}, /* 01,a9,04,cc */
+ 	{}
+ };
+-static const struct usb_action pas106b_NoFliker[] = {
++static const struct usb_action pas106b_NoFlicker[] = {
+ 	{0xa0, 0x00, ZC3XX_R190_EXPOSURELIMITHIGH}, /* 01,90,00,cc */
+ 	{0xa0, 0x06, ZC3XX_R191_EXPOSURELIMITMID}, /* 01,91,06,cc */
+ 	{0xa0, 0x50, ZC3XX_R192_EXPOSURELIMITLOW}, /* 01,92,50,cc */
+@@ -4051,7 +4051,7 @@ static const struct usb_action pas202b_60HZScale[] = {
+ 	{0xa0, 0x0e, ZC3XX_R088_EXPTIMELOW},		/* 00,88,0e,cc */
+ 	{}
+ };
+-static const struct usb_action pas202b_NoFliker[] = {
++static const struct usb_action pas202b_NoFlicker[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},		/* 00,19,00,cc */
+ 	{0xa0, 0x20, ZC3XX_R087_EXPTIMEMID},		/* 00,87,20,cc */
+ 	{0xa0, 0x21, ZC3XX_R088_EXPTIMELOW},		/* 00,88,21,cc */
+@@ -4080,7 +4080,7 @@ static const struct usb_action pas202b_NoFliker[] = {
+ 	{0xa0, 0x0e, ZC3XX_R088_EXPTIMELOW},		/* 00,88,0e,cc */
+ 	{}
+ };
+-static const struct usb_action pas202b_NoFlikerScale[] = {
++static const struct usb_action pas202b_NoFlickerScale[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},		/* 00,19,00,cc */
+ 	{0xa0, 0x20, ZC3XX_R087_EXPTIMEMID},		/* 00,87,20,cc */
+ 	{0xa0, 0x21, ZC3XX_R088_EXPTIMELOW},		/* 00,88,21,cc */
+@@ -4309,7 +4309,7 @@ static const struct usb_action mt9v111_1_AE60HZScale[] = {
+ 	{0xa0, 0x42, ZC3XX_R180_AUTOCORRECTENABLE},
+ 	{}
+ };
+-static const struct usb_action mt9v111_1_AENoFliker[] = {
++static const struct usb_action mt9v111_1_AENoFlicker[] = {
+ 	{0xa0, 0x00, ZC3XX_R180_AUTOCORRECTENABLE},
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
+ 	{0xbb, 0x00, 0x0509},
+@@ -4332,7 +4332,7 @@ static const struct usb_action mt9v111_1_AENoFliker[] = {
+ 	{0xa0, 0x42, ZC3XX_R180_AUTOCORRECTENABLE},
+ 	{}
+ };
+-static const struct usb_action mt9v111_1_AENoFlikerScale[] = {
++static const struct usb_action mt9v111_1_AENoFlickerScale[] = {
+ 	{0xa0, 0x00, ZC3XX_R180_AUTOCORRECTENABLE},
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
+ 	{0xbb, 0x00, 0x0534},
+@@ -4554,7 +4554,7 @@ static const struct usb_action mt9v111_3_AE60HZScale[] = {
+ 	{0xa0, 0x42, ZC3XX_R180_AUTOCORRECTENABLE},
+ 	{}
+ };
+-static const struct usb_action mt9v111_3_AENoFliker[] = {
++static const struct usb_action mt9v111_3_AENoFlicker[] = {
+ 	{0xa0, 0x00, ZC3XX_R180_AUTOCORRECTENABLE},
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
+ 	{0xaa, 0x05, 0x0034},
+@@ -4577,7 +4577,7 @@ static const struct usb_action mt9v111_3_AENoFliker[] = {
+ 	{0xa0, 0x42, ZC3XX_R180_AUTOCORRECTENABLE},
+ 	{}
+ };
+-static const struct usb_action mt9v111_3_AENoFlikerScale[] = {
++static const struct usb_action mt9v111_3_AENoFlickerScale[] = {
+ 	{0xa0, 0x00, ZC3XX_R180_AUTOCORRECTENABLE},
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
+ 	{0xaa, 0x05, 0x0034},
+@@ -4787,7 +4787,7 @@ static const struct usb_action pb0330_60HZScale[] = {
+ 	{0xa0, 0xd0, ZC3XX_R020_HSYNC_3},
+ 	{}
+ };
+-static const struct usb_action pb0330_NoFliker[] = {
++static const struct usb_action pb0330_NoFlicker[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
+ 	{0xbb, 0x00, 0x0509},
+ 	{0xbb, 0x02, 0x0940},
+@@ -4809,7 +4809,7 @@ static const struct usb_action pb0330_NoFliker[] = {
+ 	{0xa0, 0xe0, ZC3XX_R020_HSYNC_3},
+ 	{}
+ };
+-static const struct usb_action pb0330_NoFlikerScale[] = {
++static const struct usb_action pb0330_NoFlickerScale[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS},
+ 	{0xbb, 0x00, 0x0535},
+ 	{0xbb, 0x01, 0x0980},
+@@ -5031,7 +5031,7 @@ static const struct usb_action po2030_60HZ[] = {
+ 	{}
+ };
+ 
+-static const struct usb_action po2030_NoFliker[] = {
++static const struct usb_action po2030_NoFlicker[] = {
+ 	{0xa0, 0x02, ZC3XX_R180_AUTOCORRECTENABLE}, /* 01,80,02,cc */
+ 	{0xaa, 0x8d, 0x000d}, /* 00,8d,0d,aa */
+ 	{0xaa, 0x1a, 0x0000}, /* 00,1a,00,aa */
+@@ -5215,7 +5215,7 @@ static const struct usb_action tas5130c_60HZScale[] = {
+ 	{0xa0, 0x50, ZC3XX_R11D_GLOBALGAIN},
+ 	{}
+ };
+-static const struct usb_action tas5130c_NoFliker[] = {
++static const struct usb_action tas5130c_NoFlicker[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS}, /* 00,19,00,cc */
+ 	{0xaa, 0xa3, 0x0001}, /* 00,a3,01,aa */
+ 	{0xaa, 0xa4, 0x0040}, /* 00,a4,40,aa */
+@@ -5241,7 +5241,7 @@ static const struct usb_action tas5130c_NoFliker[] = {
+ 	{}
+ };
+ 
+-static const struct usb_action tas5130c_NoFlikerScale[] = {
++static const struct usb_action tas5130c_NoFlickerScale[] = {
+ 	{0xa0, 0x00, ZC3XX_R019_AUTOADJUSTFPS}, /* 00,19,00,cc */
+ 	{0xaa, 0xa3, 0x0001}, /* 00,a3,01,aa */
+ 	{0xaa, 0xa4, 0x0090}, /* 00,a4,90,aa */
+@@ -5482,7 +5482,7 @@ static const struct usb_action gc0303_60HZScale[] = {
+ 	{}
+ };
+ 
+-static const struct usb_action gc0303_NoFliker[] = {
++static const struct usb_action gc0303_NoFlicker[] = {
+ 	{0xa0, 0x0c, ZC3XX_R100_OPERATIONMODE},		/* 01,00,0c,cc, */
+ 	{0xaa, 0x82, 0x0000},		/* 00,82,00,aa */
+ 	{0xaa, 0x83, 0x0000},		/* 00,83,00,aa */
+@@ -5504,7 +5504,7 @@ static const struct usb_action gc0303_NoFliker[] = {
+ 	{}
+ };
+ 
+-static const struct usb_action gc0303_NoFlikerScale[] = {
++static const struct usb_action gc0303_NoFlickerScale[] = {
+ 	{0xa0, 0x0c, ZC3XX_R100_OPERATIONMODE},		/* 01,00,0c,cc, */
+ 	{0xaa, 0x82, 0x0000},		/* 00,82,00,aa */
+ 	{0xaa, 0x83, 0x0000},		/* 00,83,00,aa */
+@@ -5806,7 +5806,7 @@ static void setquality(struct gspca_dev *gspca_dev)
+  * Valid frequencies are:
+  *	50Hz, for European and Asian lighting (default)
+  *	60Hz, for American lighting
+- *	0 = No Fliker (for outdoor usage)
++ *	0 = No Flicker (for outdoor usage)
+  */
+ static void setlightfreq(struct gspca_dev *gspca_dev, s32 val)
+ {
+@@ -5814,80 +5814,80 @@ static void setlightfreq(struct gspca_dev *gspca_dev, s32 val)
+ 	int i, mode;
+ 	const struct usb_action *zc3_freq;
+ 	static const struct usb_action *freq_tb[SENSOR_MAX][6] = {
+-	[SENSOR_ADCM2700] =
+-		{adcm2700_NoFliker, adcm2700_NoFliker,
++	[SENSOR_ADCM2700] = {
++		 adcm2700_NoFlicker, adcm2700_NoFlicker,
+ 		 adcm2700_50HZ, adcm2700_50HZ,
+ 		 adcm2700_60HZ, adcm2700_60HZ},
+-	[SENSOR_CS2102] =
+-		{cs2102_NoFliker, cs2102_NoFlikerScale,
++	[SENSOR_CS2102] = {
++		 cs2102_NoFlicker, cs2102_NoFlickerScale,
+ 		 cs2102_50HZ, cs2102_50HZScale,
+ 		 cs2102_60HZ, cs2102_60HZScale},
+-	[SENSOR_CS2102K] =
+-		{cs2102_NoFliker, cs2102_NoFlikerScale,
++	[SENSOR_CS2102K] = {
++		 cs2102_NoFlicker, cs2102_NoFlickerScale,
+ 		 NULL, NULL, /* currently disabled */
+ 		 NULL, NULL},
+-	[SENSOR_GC0303] =
+-		{gc0303_NoFliker, gc0303_NoFlikerScale,
++	[SENSOR_GC0303] = {
++		 gc0303_NoFlicker, gc0303_NoFlickerScale,
+ 		 gc0303_50HZ, gc0303_50HZScale,
+ 		 gc0303_60HZ, gc0303_60HZScale},
+-	[SENSOR_GC0305] =
+-		{gc0305_NoFliker, gc0305_NoFliker,
++	[SENSOR_GC0305] = {
++		 gc0305_NoFlicker, gc0305_NoFlicker,
+ 		 gc0305_50HZ, gc0305_50HZ,
+ 		 gc0305_60HZ, gc0305_60HZ},
+-	[SENSOR_HDCS2020] =
+-		{hdcs2020_NoFliker, hdcs2020_NoFliker,
++	[SENSOR_HDCS2020] = {
++		 hdcs2020_NoFlicker, hdcs2020_NoFlicker,
+ 		 hdcs2020_50HZ, hdcs2020_50HZ,
+ 		 hdcs2020_60HZ, hdcs2020_60HZ},
+-	[SENSOR_HV7131B] =
+-		{hv7131b_NoFliker, hv7131b_NoFlikerScale,
++	[SENSOR_HV7131B] = {
++		 hv7131b_NoFlicker, hv7131b_NoFlickerScale,
+ 		 hv7131b_50HZ, hv7131b_50HZScale,
+ 		 hv7131b_60HZ, hv7131b_60HZScale},
+-	[SENSOR_HV7131R] =
+-		{hv7131r_NoFliker, hv7131r_NoFlikerScale,
++	[SENSOR_HV7131R] = {
++		 hv7131r_NoFlicker, hv7131r_NoFlickerScale,
+ 		 hv7131r_50HZ, hv7131r_50HZScale,
+ 		 hv7131r_60HZ, hv7131r_60HZScale},
+-	[SENSOR_ICM105A] =
+-		{icm105a_NoFliker, icm105a_NoFlikerScale,
++	[SENSOR_ICM105A] = {
++		 icm105a_NoFlicker, icm105a_NoFlickerScale,
+ 		 icm105a_50HZ, icm105a_50HZScale,
+ 		 icm105a_60HZ, icm105a_60HZScale},
+-	[SENSOR_MC501CB] =
+-		{mc501cb_NoFliker, mc501cb_NoFlikerScale,
++	[SENSOR_MC501CB] = {
++		 mc501cb_NoFlicker, mc501cb_NoFlickerScale,
+ 		 mc501cb_50HZ, mc501cb_50HZScale,
+ 		 mc501cb_60HZ, mc501cb_60HZScale},
+-	[SENSOR_MT9V111_1] =
+-		{mt9v111_1_AENoFliker, mt9v111_1_AENoFlikerScale,
++	[SENSOR_MT9V111_1] = {
++		 mt9v111_1_AENoFlicker, mt9v111_1_AENoFlickerScale,
+ 		 mt9v111_1_AE50HZ, mt9v111_1_AE50HZScale,
+ 		 mt9v111_1_AE60HZ, mt9v111_1_AE60HZScale},
+-	[SENSOR_MT9V111_3] =
+-		{mt9v111_3_AENoFliker, mt9v111_3_AENoFlikerScale,
++	[SENSOR_MT9V111_3] = {
++		 mt9v111_3_AENoFlicker, mt9v111_3_AENoFlickerScale,
+ 		 mt9v111_3_AE50HZ, mt9v111_3_AE50HZScale,
+ 		 mt9v111_3_AE60HZ, mt9v111_3_AE60HZScale},
+-	[SENSOR_OV7620] =
+-		{ov7620_NoFliker, ov7620_NoFliker,
++	[SENSOR_OV7620] = {
++		 ov7620_NoFlicker, ov7620_NoFlicker,
+ 		 ov7620_50HZ, ov7620_50HZ,
+ 		 ov7620_60HZ, ov7620_60HZ},
+-	[SENSOR_OV7630C] =
+-		{NULL, NULL,
++	[SENSOR_OV7630C] = {
++		 NULL, NULL,
+ 		 NULL, NULL,
+ 		 NULL, NULL},
+-	[SENSOR_PAS106] =
+-		{pas106b_NoFliker, pas106b_NoFliker,
++	[SENSOR_PAS106] = {
++		 pas106b_NoFlicker, pas106b_NoFlicker,
+ 		 pas106b_50HZ, pas106b_50HZ,
+ 		 pas106b_60HZ, pas106b_60HZ},
+-	[SENSOR_PAS202B] =
+-		{pas202b_NoFliker, pas202b_NoFlikerScale,
++	[SENSOR_PAS202B] = {
++		 pas202b_NoFlicker, pas202b_NoFlickerScale,
+ 		 pas202b_50HZ, pas202b_50HZScale,
+ 		 pas202b_60HZ, pas202b_60HZScale},
+-	[SENSOR_PB0330] =
+-		{pb0330_NoFliker, pb0330_NoFlikerScale,
++	[SENSOR_PB0330] = {
++		 pb0330_NoFlicker, pb0330_NoFlickerScale,
+ 		 pb0330_50HZ, pb0330_50HZScale,
+ 		 pb0330_60HZ, pb0330_60HZScale},
+-	[SENSOR_PO2030] =
+-		{po2030_NoFliker, po2030_NoFliker,
++	[SENSOR_PO2030] = {
++		 po2030_NoFlicker, po2030_NoFlicker,
+ 		 po2030_50HZ, po2030_50HZ,
+ 		 po2030_60HZ, po2030_60HZ},
+-	[SENSOR_TAS5130C] =
+-		{tas5130c_NoFliker, tas5130c_NoFlikerScale,
++	[SENSOR_TAS5130C] = {
++		 tas5130c_NoFlicker, tas5130c_NoFlickerScale,
+ 		 tas5130c_50HZ, tas5130c_50HZScale,
+ 		 tas5130c_60HZ, tas5130c_60HZScale},
+ 	};
 -- 
-2.27.0
+2.25.1
 
