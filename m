@@ -2,79 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB5A3A0DDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E01F3A0DE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233136AbhFIHkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:40:12 -0400
-Received: from m12-13.163.com ([220.181.12.13]:57935 "EHLO m12-13.163.com"
+        id S234786AbhFIHlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:41:50 -0400
+Received: from mga01.intel.com ([192.55.52.88]:4080 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230233AbhFIHkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:40:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5w0iz
-        X5VwBuefS4CW+9UqNDwu4o9puDc/xC+lscmSXc=; b=fO0+1yYoHFnxByB51/csR
-        3L41OwYLp6VMDJ325nSVi7AuBw4ACgXRpKWKbPuExTZMNjGVqqg3NTs1coxi3rD2
-        rc4PGrzlaGQwiLOpRKfW1zxikjT3dXE4gqSUAGx+rxdlFak97G0qNBmC/G0wb5eh
-        loO5KnFRAvpm76H10eJacU=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp9 (Coremail) with SMTP id DcCowAD3__veb8BgzQKLFQ--.2842S2;
-        Wed, 09 Jun 2021 15:38:07 +0800 (CST)
-From:   Jian Xin <xinjian34324@163.com>
-To:     dinguyen@kernel.org, mturquette@baylibre.com, sboyd@kernel.org
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jian Xin <xinjian@yulong.com>
-Subject: [PATCH] clk: socfpga: clk-pll: Remove unused variable 'rc'
-Date:   Wed,  9 Jun 2021 15:37:42 +0800
-Message-Id: <20210609073742.722911-1-xinjian34324@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S233673AbhFIHlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 03:41:49 -0400
+IronPort-SDR: lPjvnVmCPt9swgK553Hb395krJfGfCYgpf8jDLSYhHqoJwwZqK4l02/mogdh3IVKvDc1L95XMP
+ fNeFuF+FE0Tg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="226388873"
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="226388873"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 00:39:54 -0700
+IronPort-SDR: AYtn74xIwP8My0IIMbt5vdLIRcpsAeU0Wcq1r9Tv+oWPyUlWLIDCE17iGrDeZRwr9pshWLHezV
+ EL0X2dzYoaFg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="552588883"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.105]) ([10.239.159.105])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Jun 2021 00:39:51 -0700
+Cc:     baolu.lu@linux.intel.com, lukas.bulwahn@gmail.com,
+        rdunlap@infradead.org, dwmw2@infradead.org, joro@8bytes.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH] iommu/vt-d: fix kernel-doc syntax in file header
+To:     Aditya Srivastava <yashsri421@gmail.com>, will@kernel.org
+References: <20210523143245.19040-1-yashsri421@gmail.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <cb50b161-5a72-7eb6-f912-3583ebd75d33@linux.intel.com>
+Date:   Wed, 9 Jun 2021 15:38:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowAD3__veb8BgzQKLFQ--.2842S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JrWDGF1fGF1DAw4xKrW3Jrb_yoWkKFX_uF
-        yjg392gw1UGw1rAFWUC3W3Z34vkrs7urZ5XF1293y3Ja4fXryUAFy7ur1xt345Cr42yFW2
-        gw1DGF4UZ397GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUn_cTDUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: x0lqyxtdqtkjisu6il2tof0z/1tbiLACsCFspau9OeAAAsJ
+In-Reply-To: <20210523143245.19040-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian Xin <xinjian@yulong.com>
+On 5/23/21 10:32 PM, Aditya Srivastava wrote:
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> The header for drivers/iommu/intel/pasid.c follows this syntax, but
+> the content inside does not comply with kernel-doc.
+> 
+> This line was probably not meant for kernel-doc parsing, but is parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warnings from kernel-doc:
+> warning: Function parameter or member 'fmt' not described in 'pr_fmt'
+> 
+> Provide a simple fix by replacing this occurrence with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+> 
+> Signed-off-by: Aditya Srivastava<yashsri421@gmail.com>
 
-Fix the following build warning:
-  drivers/clk/socfpga/clk-pll.c: In function ‘__socfpga_pll_init’:
-  drivers/clk/socfpga/clk-pll.c:83:6: warning: variable ‘rc’ set but not used [-Wunused-but-set-variable]
+Queued for v5.14. Thanks!
 
-Signed-off-by: Jian Xin <xinjian@yulong.com>
----
- drivers/clk/socfpga/clk-pll.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/clk/socfpga/clk-pll.c b/drivers/clk/socfpga/clk-pll.c
-index dcb573d44034..127cc849c5ee 100644
---- a/drivers/clk/socfpga/clk-pll.c
-+++ b/drivers/clk/socfpga/clk-pll.c
-@@ -80,7 +80,6 @@ static __init struct clk_hw *__socfpga_pll_init(struct device_node *node,
- 	const char *parent_name[SOCFPGA_MAX_PARENTS];
- 	struct clk_init_data init;
- 	struct device_node *clkmgr_np;
--	int rc;
- 	int err;
- 
- 	of_property_read_u32(node, "reg", &reg);
-@@ -114,7 +113,7 @@ static __init struct clk_hw *__socfpga_pll_init(struct device_node *node,
- 		kfree(pll_clk);
- 		return ERR_PTR(err);
- 	}
--	rc = of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
-+	of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
- 	return hw_clk;
- }
- 
--- 
-2.25.1
-
-
+Best regards,
+baolu
