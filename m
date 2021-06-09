@@ -2,103 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482C63A0821
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6421C3A0823
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbhFIAJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 20:09:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56699 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230190AbhFIAJk (ORCPT
+        id S234327AbhFIAKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 20:10:11 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:50052 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231791AbhFIAKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 20:09:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623197266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=O14j7dxClgRbKQAjhRALjymjpBp3yVkxQg15WOtC9xo=;
-        b=S9WrhAAhqhzROUAkND1auM+FwasMiTiz4wPbMGZYXCnzt6/Ru3qkj8vfnfzl/vhp7ZnuFJ
-        TtfrCcZ2rkgp+bTRo/0krTQz1qxtgACEx9cGqE8Q3bu4qAKWm22Q0YRSh6MJNCiaT1QJgA
-        8JXQbsyYpdz3MPK6zDYGZY6CFV4jV6c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-62-Cp6fLCX_NKqF_r3iEqSAWA-1; Tue, 08 Jun 2021 20:07:44 -0400
-X-MC-Unique: Cp6fLCX_NKqF_r3iEqSAWA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 8 Jun 2021 20:10:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623197296; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=BSV6xlX0X/MGOVMKKHLN7kDPPVxnF8zn2RwBKv3Qo8I=;
+ b=ozb4ab2r/T9OAOMhnAKVKCbZr6LrWFoaWhRAOwJ7BcgNXLP/7/RYfN7ynTKjgLchRUQbLVOy
+ XAb5NgCSH/hdNoxFGaLFVVMZGbTht3qlKX3Qkw4sPoPNOUcuPYB75p3gJtIuNU2Es4Ed2D7F
+ ZLVpPP5vzRu1gX6Aj7VudY2ShH4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60c0066ded59bf69cc129d00 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Jun 2021 00:08:13
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CFC6EC4360C; Wed,  9 Jun 2021 00:08:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCF73107ACCD;
-        Wed,  9 Jun 2021 00:07:43 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6D5D160CCC;
-        Wed,  9 Jun 2021 00:07:43 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM fixes for 5.13-rc6
-Date:   Tue,  8 Jun 2021 20:07:43 -0400
-Message-Id: <20210609000743.126676-1-pbonzini@redhat.com>
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D9BFBC433F1;
+        Wed,  9 Jun 2021 00:08:10 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 08 Jun 2021 17:08:10 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Stephen Boyd <swboyd@chromium.org>, sbillaka@codeaurora.org,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Chandan Uddaraju <chandanu@codeaurora.org>
+Subject: Re: [Freedreno] [PATCH 1/4] drm/msm/dp: Simplify the mvid/nvid
+ calculation
+In-Reply-To: <YL/PbsggxgQCiCsM@builder.lan>
+References: <20210511042043.592802-1-bjorn.andersson@linaro.org>
+ <20210511042043.592802-2-bjorn.andersson@linaro.org>
+ <a761ca2648c290300442f4addb4a0ea2@codeaurora.org>
+ <YL/PbsggxgQCiCsM@builder.lan>
+Message-ID: <f2ce6ae51c50b0d2e57b905c63b43413@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Bjorn
 
-The following changes since commit 000ac42953395a4f0a63d5db640c5e4c88a548c5:
+On 2021-06-08 13:13, Bjorn Andersson wrote:
+> On Fri 28 May 18:11 CDT 2021, abhinavk@codeaurora.org wrote:
+> 
+>> Hi Bjorn
+>> 
+>> On 2021-05-10 21:20, Bjorn Andersson wrote:
+>> > In the search for causes to timing issues seen during implementation of
+>> > eDP support for SC8180x a fair amount of time was spent concluding why
+>> > the calculated mvid/nvid values where wrong.
+>> >
+>> > The overall conclusion is that the ratio of MVID/NVID describes, and
+>> > should match, the ratio between the pixel and link clock.
+>> >
+>> > Downstream this calculation reads the M and N values off the pixel clock
+>> > straight from DISP_CC and are then adjusted based on knowledge of how
+>> > the link and vco_div (parent of the pixel clock) are derrived from the
+>> > common VCO.
+>> >
+>> > While upstreaming, and then extracting the PHY driver, the resulting
+>> > function performs the following steps:
+>> >
+>> > 1) Adjust the passed link rate based on the VCO divider used in the PHY
+>> >    driver, and multiply this by 10 based on the link rate divider.
+>> > 2) Pick reasonable choices of M and N, by calculating the ratio between
+>> >    this new clock and the pixel clock.
+>> > 3) Subtract M from N and flip the bits, to match the encoding of the N
+>> >    register in DISP_CC.
+>> > 4) Flip the bits of N and add M, to get the value of N back.
+>> > 5) Multiply M with 5, per the documentation.
+>> > 6) Scale the values such that N is close to 0x8000 (or larger)
+>> > 7) Multply M with 2 or 3 depending on the link rate of HBR2 or HBR3.
+>> >
+>> > Presumably step 3) was added to provide step 4) with expected input, so
+>> > the two cancel each other out. The factor of 10 from step 1) goes into
+>> > the denominator and is partially cancelled by the 5 in the numerator in
+>> > step 5), resulting in step 7) simply cancelling out step 1).
+>> >
+>> 
+>> Both the multiplication of M with 5 and N with 2 or 3 is coming 
+>> because of
+>> the
+>> ratio between the vco clk and the link clk.
+>> So we could have 2.7, 5.4 or 8.1 Gbps link clks and the factor of 2 or 
+>> 3
+>> gets added because hbr2 is 2 * hbr and hbr3 is 3 * hbr.
+>> 
+> 
+> Thanks for explaining the origin of these numbers, I had quite a
+> difficult time figuring out where the "magic" came from.
+> 
+>> Your summary is pretty much right otherwise. Let me add some more 
+>> points
+>> here:
+>> 
+>> 1) Originally we removed reading the M_VID and N_VID from the DISPCC 
+>> regs
+>> because
+>> of previous upstream comments that we can potentially just recalculate
+>> whatever the clk driver is programming
+>> by using rational_best_approximation
+>> https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/clk/qcom/clk-rcg2.c#L1160
+>> 
+>> Not having to read from DISPCC register is also useful because we dont 
+>> have
+>> to maintain the register offset
+>> of the M_VID and N_VID which keeps changing across chipsets.
+>> 
+> 
+> Right, so downstream we do all the math and then we scale the
+> denominator by 2x or 3x to compensate for the fact that we didn't
+> account for the division as the clock left the PLL.
+> 
+> As this was reworked upstream for some reason this compensation was
+> retained, so the denominator would always be 2x or 3x to large for HBR2
+> and HBR3. So the way this was solved was to divide by 2x or 3x before
+> calculating the ratio.
+> 
+>> However we discussed this again after viewing this patch. So the clk 
+>> driver
+>> always operates on the vco clk
+>> and calculates the pixel clk from it and sets the M_VID and N_VID 
+>> based on
+>> that.
+>> In terms of accuracy, the best way is still to re-use the M_VID and 
+>> N_VID
+>> which the clk driver sets because
+>> the pixel clock was generated based on that and that is the actual 
+>> pixel
+>> clock we are going to get.
+>> 
+>> So even before this change we lost some accuracy because the pixel 
+>> clock we
+>> are giving here to recalculate
+>> the M_VID and N_VID is a theoretical value. Although for most values 
+>> of
+>> pixel clk, theoretical and actual
+>> should match. There could be corner cases of pixel clock where its a 
+>> bit
+>> different. Hence ideally, re-using the M_VID
+>> and N_VID which the clk driver set would have been the best but not 
+>> having
+>> to hard-code M_VID and N_VID offsets
+>> was a good enough reason to not go back to that again.
+>> 
+>> Now, coming to this change. Here its trying to again re-calculate the 
+>> M_VID
+>> and N_VID by using the same
+>> API which the clk driver uses but uses link clk and pixel clk as the
+>> parameters Vs the clk driver uses
+>> vco clk and actual pixel clock to calculate this.
+>> 
+>> So even though this cleanup eliminates the adjustments we need to make 
+>> to
+>> account for the VCO clk to link clk ratio,
+>> it also could bring additional difference between what was actually 
+>> set by
+>> the clk driver and what we are calculating
+>> here because clk driver used vco clk as the input vs here we use link 
+>> clk
+>> after this change.
+>> There might be some pixel clock rates of some resolutions where this
+>> difference could be risky.
+>> 
+>> Hence the overall conclusion here was to keep using vco clk as the 
+>> input to
+>> rational_best_approximation
+>> and not make more changes to this.
+>> 
+> 
+> So what you're saying is that the reason for this obfuscation is to
+> replicate any rounding errors happening in the path of the link clock
+> generation?
+> 
+> If that's the case then this needs a giant comment describing exactly
+> what's happening and why this function needs to be impenetrable.
+> 
+> 
+> That said, from my attempts to write this patch (and add widebus
+> support) I saw a huge flexibility in getting this right, so can you
+> please elaborate on the value of the precision of the ratio.
+> 
 
-  selftests: kvm: fix overlapping addresses in memslot_perf_test (2021-05-29 06:28:06 -0400)
+The overall goal here is just to replicate whats happening in the clock 
+driver and clock hardware to calculate the pixel clock.
+That is, use the same inputs and function as the ones used in clk driver 
+to calculated to set the DISPCC_MVID and DISPCC_NVID regs.
 
-are available in the Git repository at:
+I think i have already explained why we need the *2 and *3 in the math. 
+If you need, sure I can document this as well in code
+comments.
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+By obfuscation are you referring to this snippet?
+https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/gpu/drm/msm/dp/dp_catalog.c#L446
 
-for you to fetch changes up to da27a83fd6cc7780fea190e1f5c19e87019da65c:
+This is just recalculating the dispcc rate from the pixel clock rate so 
+that we feed the same input
+to the rational_best_approximation as what the clock driver would do and 
+hence making our input
+and output same for the rational_best_approximation as the clock driver 
+to maintain consistency and I will explain why.
 
-  kvm: avoid speculation-based attacks from out-of-range memslot accesses (2021-06-08 17:12:05 -0400)
+Let me explain a little bit more on the mnd precision i am referring to.
 
-----------------------------------------------------------------
-Bugfixes, including a TLB flush fix that affects processors
-without nested page tables.
+The clock driver will also use the same API to calculate the mnds and 
+generate a pixel clock.
+It might not match the requested theoretical pixel clock as the mnds 
+calculated with this API might have some precision errors.
 
-----------------------------------------------------------------
-Ashish Kalra (1):
-      KVM: SVM: Fix SEV SEND_START session length & SEND_UPDATE_DATA query length after commit 238eca821cee
+rational_best_approximation(dispcc_input_rate, stream_rate_khz,
+			(unsigned long)(1 << 16) - 1,
+			(unsigned long)(1 << 16) - 1, &den, &num);
 
-Christian Borntraeger (1):
-      KVM: selftests: introduce P47V64 for s390x
+By using the same input (dispcc rate) and output(pixel clk) rates, we 
+are getting the same mnds and hence same mvid and nvid.
 
-Lai Jiangshan (3):
-      KVM: X86: MMU: Use the correct inherited permissions to get shadow page
-      KVM: x86: Ensure PV TLB flush tracepoint reflects KVM behavior
-      KVM: x86: Unload MMU on guest TLB flush if TDP disabled to force MMU sync
+If you use the link clk rate here instead, it might generate some other 
+mvid/nvid and the pixel clock for that might be which is different
+from what is the actual pixel clock which the PLL generated ( due to the 
+mnd calculated using the API ).
 
-Paolo Bonzini (1):
-      kvm: avoid speculation-based attacks from out-of-range memslot accesses
+Hence to preserve the same loss of accuracy which the clock driver would 
+have, we would prefer to use the same input here too.
 
-Sean Christopherson (1):
-      KVM: x86: Ensure liveliness of nested VM-Enter fail tracepoint message
+Let me know if its still not clear.
 
-Wanpeng Li (1):
-      KVM: LAPIC: Write 0 to TMICT should also cancel vmx-preemption timer
-
-Zhenzhong Duan (1):
-      selftests: kvm: Add support for customized slot0 memory size
-
- Documentation/virt/kvm/mmu.rst                    |  4 +-
- arch/x86/kvm/lapic.c                              | 17 +++++---
- arch/x86/kvm/mmu/paging_tmpl.h                    | 14 +++---
- arch/x86/kvm/svm/sev.c                            |  6 +--
- arch/x86/kvm/trace.h                              |  6 +--
- arch/x86/kvm/x86.c                                | 19 ++++++++-
- include/linux/kvm_host.h                          | 10 ++++-
- tools/testing/selftests/kvm/include/kvm_util.h    | 10 +++--
- tools/testing/selftests/kvm/kvm_page_table_test.c |  2 +-
- tools/testing/selftests/kvm/lib/kvm_util.c        | 52 +++++++++++++++++++----
- tools/testing/selftests/kvm/lib/perf_test_util.c  |  2 +-
- tools/testing/selftests/kvm/memslot_perf_test.c   |  2 +-
- 12 files changed, 105 insertions(+), 39 deletions(-)
-
+> Regards,
+> Bjorn
