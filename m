@@ -2,99 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0D73A0EA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810783A0EAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237614AbhFIITC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:19:02 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:45353 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236085AbhFIIS7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:18:59 -0400
-Received: from [192.168.1.155] ([77.9.120.3]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1Md6AP-1lIexq0haV-00aHkm; Wed, 09 Jun 2021 10:16:29 +0200
-Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
-To:     Chris Down <chris@chrisdown.name>, legion@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>
-References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
- <YLi+JoBwfLtqVGiP@chrisdown.name>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <b8c86081-503c-3671-2ea3-dd3a0950ce25@metux.net>
-Date:   Wed, 9 Jun 2021 10:16:25 +0200
+        id S237618AbhFIIZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:25:06 -0400
+Received: from mga01.intel.com ([192.55.52.88]:7219 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236161AbhFIIZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 04:25:02 -0400
+IronPort-SDR: npEVE186Hlzc8j6uSYt+hBaEPhWWnzZ+YTkyfMWbnX0/GAD9f9meAKZnxpLbbrq7qpHlEMJ9Jn
+ MtIoLOzh/Yvw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="226395376"
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="226395376"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 01:23:00 -0700
+IronPort-SDR: 7PEud1cuUSnZaaYrwPItsgM29nX57AV8UOQZF+rIBpJ1HMHahxHxx4pGAdJBq15m7Pker0o5nl
+ bzOIPse5OozQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="482294965"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by orsmga001.jf.intel.com with ESMTP; 09 Jun 2021 01:22:56 -0700
+Subject: Re: [PATCH v2 8/8] perf record: Directly bail out for compat case
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+References: <20210602103007.184993-1-leo.yan@linaro.org>
+ <20210602103007.184993-9-leo.yan@linaro.org>
+ <c321e998-6fd2-86e9-7876-7250a9b23c25@intel.com>
+ <20210602123847.GE10272@leoy-ThinkPad-X240s>
+ <96e5fac6-17a2-ea03-9b15-338b84321ecf@intel.com>
+ <20210607150903.GC1071897@leoy-ThinkPad-X240s>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <d87d8fd8-c6f1-9d9b-5c2e-629588123a9c@intel.com>
+Date:   Wed, 9 Jun 2021 11:23:25 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YLi+JoBwfLtqVGiP@chrisdown.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:7koxO5BYDpAqMJLkjAi8sQ3UCPPXcTQYX99ymXS5Xqgz0nlGGuK
- Hxb+ndUGgPuVDZUuZ5nTXtCvHrxWi4iW5JK0j7U974MtjWtMY2aS0VLI/KED+rz6ayZZcA4
- Xx0b/USmKF42nW+OADIYE9NI4u/lRQ5grSAxY4BuHtuBMJUcJGwP8P+bG/xzNZubYSDqN5Y
- CvXBoBECUCVPaja1xu0uw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wo5zd+VdzY0=:WzJo4B1hGsN1c/G3OJ0Xqi
- 6bpG3QrMz5EWv5/XdALXVYgynfY8jHF6cxC7hhR2eU2/KHVsemxVCEraCnDbGV53VFq6EnrN8
- YQpMSx+JVivz86PrADc2V+zC0jT06VAeYEOSKmg8swZ56AkcZDAzVS79YbmHeRB1IJeWW0RXf
- BjRzusAphKr5cqYTAuAFaasm9whF+e8iwijwWttQ92Illd9ID6Y4aessHWfAiYZyECH1RpWrQ
- lyV7Mvu7T0dIuaG4IQKEcRtk0BDd8BI9r90T8R+4kvYa4ZzpV/psMBg9f6+ebwZ+kOdSBHTQR
- hhxk7Qabba6bWe8261ONlT8xDldTIAIMqE5UpWg1nwK4xhZqAoKW477qAeeKDNjDzTw1OXn3r
- vuTDCU5CfxyHcXDFDDPDmBk9tPOe6a8eGXLo5Ei98A+HVdcPrMacgSPaJdcavMwBWqkK/0dOi
- q4XlbR4XfeoLD+0Nv0/QdoQgyq5YpSVeCAdJaI0oPxn+HTLmFszQMLleS73jOaVzWhxpPNWlp
- zWWEXt3f11Y7HY4FlDEUm0=
+In-Reply-To: <20210607150903.GC1071897@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.06.21 13:33, Chris Down wrote:
-
-Hi folks,
-
-
-> Putting stuff in /proc to get around the problem of "some other metric I 
-> need might not be exported to a container" is not a very compelling 
-> argument. If they want it, then export it to the container...
+On 7/06/21 6:09 pm, Leo Yan wrote:
+> On Mon, Jun 07, 2021 at 01:23:43PM +0300, Adrian Hunter wrote:
+>> On 2/06/21 3:38 pm, Leo Yan wrote:
+>>> Hi Adrain,
+>>>
+>>> On Wed, Jun 02, 2021 at 02:18:47PM +0300, Adrian Hunter wrote:
+>>>> On 2/06/21 1:30 pm, Leo Yan wrote:
+>>>>> Since the 64-bit atomicity is not promised in 32-bit perf, directly
+>>>>> report the error and bail out for this case.
+>>>>>
+>>>>> Now only applies on x86_64 and Arm64 platforms.
+>>>>>
+>>>>> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
+>>>>
+>>>> Maybe we can do better for the compat case.
+>>>>
+>>>> We can assume the upper 32-bits change very seldom,
+>>>> and always increase. So for the 'read' case:
+>>>>
+>>>> 	u64 first, second, last;
+>>>> 	u64 mask = (u64)((u32)-1) << 32;
+>>>>
+>>>> 	do {
+>>>> 		first = READ_ONCE(pc->aux_head);
+>>>> 		rmb();
+>>>> 		second = READ_ONCE(pc->aux_head);
+>>>> 		rmb();
+>>>> 		last = READ_ONCE(pc->aux_head);
+>>>> 	} while ((first & mask) != (last & mask));
+>>>> 	return second;
+>>>>
+>>>> For the write case, we can cause a fatal error only if the new
+>>>> tail has non-zero upper 32-bits.  That gives up to 4GiB of data
+>>>> before aborting:
+>>>>
+>>>> 	if (tail & mask)
+>>>> 		return -1;
+>>>> 	smp_mb();
+>>>> 	WRITE_ONCE(pc->aux_tail, tail);
+>>>
+>>> Seems to me, it's pointless to only support aux_head for 64-bit and
+>>> support aux_tail for 32-bit.  I understand this can be helpful for the
+>>> snapshot mode which only uses aux_head, but it still fails to support
+>>> the normal case for AUX ring buffer using 64-bit head/tail.
+>>
+>> I am not sure why you say it is pointless.  'perf record' would still be
+>> able to capture up to 4GiB of data. Do you mean you usually capture more
+>> than 4GiB of data?
 > 
-> Ultimately, if they're going to have to add support for a new 
-> /proc/self/meminfo file anyway, these use cases should just do it 
-> properly through the already supported APIs.
+> Okay, understand.  We can support 32-bit perf for compat mode when the
+> trace data is less than 4GiB.
+> 
+>> I was thinking we would separate out the compat case:
+>>
+>> #if BITS_PER_LONG == 32
+>> 	if (kernel_is_64_bit)
+>> 		return compat_auxtrace_mmap__[read_head/write_tail]()
+>> #endif
+>>
+>> So the non-compat cases would not be affected.
+> 
+> Because I don't want to introduce the complexity for read/write head
+> and tail, and we also need to handle the same issue for the perf ring
+> buffer.  So how about below change?
+> 
+> The main idea for below change is it allows the perf to run normally
+> on the compat mode and exitly if detects the buffer head is close to
+> the low 32-bit's overflow: when detect the low 32-bit value is bigger
+> than 0xf0000000 (so we have 256MiB margin to the overflow), it reports
+> error and exit.
+> 
+> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
+> index 1b4091a3b508..2a9965bfeab4 100644
+> --- a/tools/perf/util/auxtrace.c
+> +++ b/tools/perf/util/auxtrace.c
+> @@ -1693,6 +1693,14 @@ static int __auxtrace_mmap__read(struct mmap *map,
+>  	pr_debug3("auxtrace idx %d old %#"PRIx64" head %#"PRIx64" diff %#"PRIx64"\n",
+>  		  mm->idx, old, head, head - old);
+>  
+> +#ifdef BITS_PER_LONG == 32
+> +	if (kernel_is_64bit() && head >= 0xf0000000) {
 
-It's even a bit more complex ...
+You are assuming the head never increases by more than 256MiB which
+means you should limit the buffer size to 256MiB maximum.
 
-/proc/meminfo always tells what the *machine* has available, not what a
-process can eat up. That has been this way even long before cgroups.
-(eg. ulimits).
+To me this seems a bit too far from an ideal solution.
 
-Even if you want a container look more like a VM - /proc/meminfo showing
-what the container (instead of the machine) has available - just looking
-at the calling task's cgroup is also wrong. Because there're cgroups
-outside containers (that really shouldn't be affected) and there're even
-other cgroups inside the container (that further restrict below the
-container's limits).
+I would have thought separating out the compat case makes things
+simpler to understand.
 
-BTW: applications trying to autotune themselves by looking at
-/proc/meminfo are broken-by-design anyways. This never has been a valid
-metric on how much memory invididual processes can or should eat.
+> +		pr_err("32-bit perf cannot read 64-bit value atomically;\n");
+> +		pr_err("exit to avoid the 4GB (32-bit) AUX buffer overflow on compat mode.\n");
+> +		return -ENOMEM;
+> +	}
+> +#endif
+> +
+>  	if (mm->mask) {
+>  		head_off = head & mm->mask;
+>  		old_off = old & mm->mask;
+> diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+> index 9130f6fad8d5..823b69895b85 100644
+> --- a/tools/perf/util/env.c
+> +++ b/tools/perf/util/env.c
+> @@ -405,3 +405,20 @@ int perf_env__numa_node(struct perf_env *env, int cpu)
+>  
+>  	return cpu >= 0 && cpu < env->nr_numa_map ? env->numa_map[cpu] : -1;
+>  }
+> +
+> +int perf_kernel_is_64bit(void)
+> +{
+> +	struct utsname uts;
+> +	int ret;
+> +
+> +	ret = uname(&uts);
+> +	if (ret < 0)
+> +		return 0;
+> +
+> +	if (!strncmp(uts.machine, "x86_64", 6) ||
+> +	    !strncmp(uts.machine, "aarch64", 7) ||
+> +	    !strncmp(uts.machine, "arm64", 5))
+> +		return 1;
+> +
+> +	return 0;
+> +}
+
+Obviously, we don't need to keep checking uname. It could be a global variable
+that is always set up early.
 
 
---mtx
+> diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
+> index ca249bf5e984..c6c034fc08f6 100644
+> --- a/tools/perf/util/env.h
+> +++ b/tools/perf/util/env.h
+> @@ -147,4 +147,6 @@ void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
+>  struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id);
+>  
+>  int perf_env__numa_node(struct perf_env *env, int cpu);
+> +
+> +int perf_kernel_is_64bit(void);
+>  #endif /* __PERF_ENV_H */
+> diff --git a/tools/perf/util/mmap.c b/tools/perf/util/mmap.c
+> index ab7108d22428..f1d3725d599a 100644
+> --- a/tools/perf/util/mmap.c
+> +++ b/tools/perf/util/mmap.c
+> @@ -323,6 +323,14 @@ int perf_mmap__push(struct mmap *md, void *to,
+>  	if (rc < 0)
+>  		return (rc == -EAGAIN) ? 1 : -1;
+>  
+> +#ifdef BITS_PER_LONG == 32
+> +	if (kernel_is_64bit() && head >= 0xf0000000) {
+> +		pr_err("32-bit perf cannot read 64-bit value atomically;\n");
+> +		pr_err("exit to avoid the 4GB (32-bit) buffer overflow on compat mode.\n");
+> +		return -ENOMEM;
+> +	}
+> +#endif
+> +
+>  	size = md->core.end - md->core.start;
+>  
+>  	if ((md->core.start & md->core.mask) + size != (md->core.end & md->core.mask)) {
+> 
+> Thanks,
+> Leo
+> 
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
