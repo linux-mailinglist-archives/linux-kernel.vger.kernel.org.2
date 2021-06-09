@@ -2,139 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24F83A137F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00163A1382
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239441AbhFILyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:54:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
+        id S239499AbhFIL4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239629AbhFILyF (ORCPT
+        with ESMTP id S231612AbhFIL4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:54:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18580C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:52:11 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lqwke-0004za-3X; Wed, 09 Jun 2021 13:52:04 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lqwkc-0004MU-Oi; Wed, 09 Jun 2021 13:52:02 +0200
-Date:   Wed, 9 Jun 2021 13:52:02 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2][next] net: usb: asix: ax88772: net: Fix less than
- zero comparison of a u16
-Message-ID: <20210609115202.ms32g2rwco56iygz@pengutronix.de>
-References: <20210608152249.160333-1-colin.king@canonical.com>
- <20210608152249.160333-2-colin.king@canonical.com>
- <20210608181129.7mnuba6dcaemslul@pengutronix.de>
- <a289d8fa-3cfd-6b85-20ec-fe0f5b682383@canonical.com>
+        Wed, 9 Jun 2021 07:56:11 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711AFC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:54:06 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id r11so28281633edt.13
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:54:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cfMAdBAKjfU4ryCc+9LZO7m3/l9hziyk+MjjxRLu300=;
+        b=l0WnzNrvswluTVlcdYymG2+Ku6Gpu1Y7bybyQLL+iDYxZCqdd2qxD5LBUwuJzvBoZc
+         nW5GU61R5ghtpqdARJCtIgD3MBaGtwiaODZzJbhQ09cZEecQFxegkXZQmGs9AY+3v9Y5
+         jkJOKkArbowMP3wLXv4AEs75n4ONRZ4gLYkfOGG3sAhnsm0QXZF7ssIpGwrzQc4GxFEy
+         hN1f/my6Nsd/BcBeq087OKRpFKNS6R2tdrCrr7+VjDnSeiT3jb/iGyuBPcwt6V6+drbb
+         oiXZZVfICrXaSYCtP4afvu1vBbIgdwkO2Pu9VoBMPblt3etdqPErolhofNGbhmG0emSN
+         1Vqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cfMAdBAKjfU4ryCc+9LZO7m3/l9hziyk+MjjxRLu300=;
+        b=ifRsaA6t75t0+4Ofg7RCAux6MG/2YRicGHdF9S5g+yy0eS7t1PDZCqmU22dGEx9rAX
+         R6R+kF4kIll4wKAPyHauWTddgAB6B4+Klvqb6fCa1/U2ypZQhpthmjaG9p/OcRog6UQR
+         Vmz9N4iHWms2X2Cp9rWxUE6TFkdORcXa7CJ7ALwOPIYZFAWWsFyp5OGLKmdMkYx9sETV
+         Cxc8G1remwQ/5a32T0koXI2igyBskTFsC0h2PDSIXRl2odjHmfGe2AYDAy/tIxLxrFQ8
+         3yPTzCYNWx07zOkLOUgTTTN0SoiaavO0I1hdqWjZABlso3SnAx4tTlAZwdZgE9bnmi8A
+         miqQ==
+X-Gm-Message-State: AOAM532HdPTkXB0gBMIsPMrePIavxn348KSQbUBg3flrza2TKIXMOmur
+        hC8n7rOGjnbvct4TIuMqUmZAy1Qb9jAZ21G+e9cTNw==
+X-Google-Smtp-Source: ABdhPJxUVP5Gvqz4EmDFzDv25YAdnv40ufguE62/Okw/MmNvvYGh9pdyY+w0yBhXsllg29DYhCsNlPeGNtmxRqJQ7Wc=
+X-Received: by 2002:a50:fd0a:: with SMTP id i10mr30633837eds.78.1623239644846;
+ Wed, 09 Jun 2021 04:54:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a289d8fa-3cfd-6b85-20ec-fe0f5b682383@canonical.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 13:50:21 up 189 days,  1:56, 46 users,  load average: 0.18, 0.07,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210608175927.821075974@linuxfoundation.org>
+In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 9 Jun 2021 17:23:53 +0530
+Message-ID: <CA+G9fYvaXJfoEAibA232pujDvb+JY+9Gpyca87ZZCAa3uMaEJg@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/29] 4.9.272-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 10:51:09AM +0100, Colin Ian King wrote:
-> On 08/06/2021 19:11, Oleksij Rempel wrote:
-> > On Tue, Jun 08, 2021 at 04:22:49PM +0100, Colin King wrote:
-> >> From: Colin Ian King <colin.king@canonical.com>
-> >>
-> >> The comparison of the u16 priv->phy_addr < 0 is always false because
-> >> phy_addr is unsigned. Fix this by assigning the return from the call
-> >> to function asix_read_phy_addr to int ret and using this for the
-> >> less than zero error check comparison.
-> >>
-> >> Addresses-Coverity: ("Unsigned compared against 0")
-> >> Fixes: 7e88b11a862a ("net: usb: asix: refactor asix_read_phy_addr() and handle errors on return")
-> > 
-> > Here is wrong Fixes tag. This assignment was bogus before this patch.
-> 
-> I'm not sure that's correct, that commit has the following change in it:
-> 
-> diff --git a/drivers/net/usb/ax88172a.c b/drivers/net/usb/ax88172a.c
-> index b404c9462dce..c8ca5187eece 100644
-> --- a/drivers/net/usb/ax88172a.c
-> +++ b/drivers/net/usb/ax88172a.c
-> @@ -220,6 +220,11 @@ static int ax88172a_bind(struct usbnet *dev, struct
-> usb_interface *intf)
->         }
-> 
->         priv->phy_addr = asix_read_phy_addr(dev, priv->use_embdphy);
-> +       if (priv->phy_addr < 0) {
-> +               ret = priv->phy_addr;
-> +               goto free;
-> +       }
-> +
-> 
+On Tue, 8 Jun 2021 at 23:59, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.272 release.
+> There are 29 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.272-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Even before my patch asix_read_phy_addr() was returning different
-error values. My patch just add check for the return value.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> > 
-> >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> >> ---
-> >>  drivers/net/usb/ax88172a.c | 3 ++-
-> >>  1 file changed, 2 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/net/usb/ax88172a.c b/drivers/net/usb/ax88172a.c
-> >> index 2e2081346740..e24773bb9398 100644
-> >> --- a/drivers/net/usb/ax88172a.c
-> >> +++ b/drivers/net/usb/ax88172a.c
-> >> @@ -205,7 +205,8 @@ static int ax88172a_bind(struct usbnet *dev, struct usb_interface *intf)
-> >>  		goto free;
-> >>  	}
-> >>  
-> >> -	priv->phy_addr = asix_read_phy_addr(dev, priv->use_embdphy);
-> >> +	ret = asix_read_phy_addr(dev, priv->use_embdphy);
-> >> +	priv->phy_addr = ret;
-> > 
-> > Ah.. it is same bug in different color :)
-> > You probably wonted to do:
-> > 	if (ret < 0)
-> > 		goto free;
-> > 
-> > 	priv->phy_addr = ret;
-> 
-> Doh, brain failure of mine. I'll send a V2 later today.
-> 
-> > 
-> >>  	if (priv->phy_addr < 0) {
-> >>  		ret = priv->phy_addr;
-> >>  		goto free;
-> >> -- 
-> >> 2.31.1
-> >>
-> >>
-> > 
-> 
-> 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+## Build
+* kernel: 4.9.272-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.9.y
+* git commit: 5f3a05577796b0a04f9705503ae9cfbfaa10cd8f
+* git describe: v4.9.271-30-g5f3a05577796
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+71-30-g5f3a05577796
+
+## No regressions (compared to v4.9.271)
+
+## No fixes (compared to v4.9.271)
+
+## Test result summary
+ total: 52318, pass: 40533, fail: 1073, skip: 9644, xfail: 1068,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
