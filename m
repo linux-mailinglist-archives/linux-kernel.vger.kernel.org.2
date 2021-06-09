@@ -2,226 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00163A1382
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278B13A1381
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239499AbhFIL4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:56:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbhFIL4L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:56:11 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711AFC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:54:06 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id r11so28281633edt.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:54:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cfMAdBAKjfU4ryCc+9LZO7m3/l9hziyk+MjjxRLu300=;
-        b=l0WnzNrvswluTVlcdYymG2+Ku6Gpu1Y7bybyQLL+iDYxZCqdd2qxD5LBUwuJzvBoZc
-         nW5GU61R5ghtpqdARJCtIgD3MBaGtwiaODZzJbhQ09cZEecQFxegkXZQmGs9AY+3v9Y5
-         jkJOKkArbowMP3wLXv4AEs75n4ONRZ4gLYkfOGG3sAhnsm0QXZF7ssIpGwrzQc4GxFEy
-         hN1f/my6Nsd/BcBeq087OKRpFKNS6R2tdrCrr7+VjDnSeiT3jb/iGyuBPcwt6V6+drbb
-         oiXZZVfICrXaSYCtP4afvu1vBbIgdwkO2Pu9VoBMPblt3etdqPErolhofNGbhmG0emSN
-         1Vqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cfMAdBAKjfU4ryCc+9LZO7m3/l9hziyk+MjjxRLu300=;
-        b=ifRsaA6t75t0+4Ofg7RCAux6MG/2YRicGHdF9S5g+yy0eS7t1PDZCqmU22dGEx9rAX
-         R6R+kF4kIll4wKAPyHauWTddgAB6B4+Klvqb6fCa1/U2ypZQhpthmjaG9p/OcRog6UQR
-         Vmz9N4iHWms2X2Cp9rWxUE6TFkdORcXa7CJ7ALwOPIYZFAWWsFyp5OGLKmdMkYx9sETV
-         Cxc8G1remwQ/5a32T0koXI2igyBskTFsC0h2PDSIXRl2odjHmfGe2AYDAy/tIxLxrFQ8
-         3yPTzCYNWx07zOkLOUgTTTN0SoiaavO0I1hdqWjZABlso3SnAx4tTlAZwdZgE9bnmi8A
-         miqQ==
-X-Gm-Message-State: AOAM532HdPTkXB0gBMIsPMrePIavxn348KSQbUBg3flrza2TKIXMOmur
-        hC8n7rOGjnbvct4TIuMqUmZAy1Qb9jAZ21G+e9cTNw==
-X-Google-Smtp-Source: ABdhPJxUVP5Gvqz4EmDFzDv25YAdnv40ufguE62/Okw/MmNvvYGh9pdyY+w0yBhXsllg29DYhCsNlPeGNtmxRqJQ7Wc=
-X-Received: by 2002:a50:fd0a:: with SMTP id i10mr30633837eds.78.1623239644846;
- Wed, 09 Jun 2021 04:54:04 -0700 (PDT)
+        id S239373AbhFIL4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:56:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231612AbhFILz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 07:55:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C70296100B;
+        Wed,  9 Jun 2021 11:54:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623239643;
+        bh=B2VGGA/Njpagy/zTT2ydH2UN3O5PEQtkbmNoWUl0Ny0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U5+jSkqJM0u5bFGSzIbpT77QtTxILy1RtAkdAqjRcII2YuxGQo4sYJly7ct8Ec266
+         N1H0K+aVJsORPozfP6LJJ3JafTbL9o7TeWDhEqRHrt+4gdKO2/0isbqXLj7JJUnsNq
+         O6iSx3dIg2jUcC51pYmv/zt0rgewO3PTRRZDduG4t90HdVpRCKpwvi2Kt4jfY8VIwX
+         sDsxv8Ya01tJIhN2pVb6U1hu38lNXmqdPUTXoaWU5WhmlDmsJyOXcNhatr4lPbviBe
+         7SnVUPq5IFPRsEmkoWiJlZyfP6FVWcYPA/3zL+wpntj2Xsm29a8eqCtew2GzggT9Pb
+         p79jwyuCPQlow==
+Date:   Wed, 9 Jun 2021 13:54:00 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 1/6] posix-cpu-timers: Fix rearm racing against process
+ tick
+Message-ID: <20210609115400.GD104634@lothringen>
+References: <20210604113159.26177-1-frederic@kernel.org>
+ <20210604113159.26177-2-frederic@kernel.org>
 MIME-Version: 1.0
-References: <20210608175927.821075974@linuxfoundation.org>
-In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 9 Jun 2021 17:23:53 +0530
-Message-ID: <CA+G9fYvaXJfoEAibA232pujDvb+JY+9Gpyca87ZZCAa3uMaEJg@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/29] 4.9.272-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604113159.26177-2-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 at 23:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.272 release.
-> There are 29 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.272-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Fri, Jun 04, 2021 at 01:31:54PM +0200, Frederic Weisbecker wrote:
+> Since the process wide cputime counter is started locklessly from
+> posix_cpu_timer_rearm(), it can be concurrently stopped by operations
+> on other timers from the same thread group, such as in the following
+> unlucky scenario:
+> 
+>          CPU 0                                CPU 1
+>          -----                                -----
+>                                            timer_settime(TIMER B)
+>    posix_cpu_timer_rearm(TIMER A)
+>        cpu_clock_sample_group()
+>            (pct->timers_active already true)
+> 
+>                                            handle_posix_cpu_timers()
+>                                                check_process_timers()
+>                                                    stop_process_timers()
+>                                                        pct->timers_active = false
+>        arm_timer(TIMER A)
+> 
+>    tick -> run_posix_cpu_timers()
+>        // sees !pct->timers_active, ignore
+>        // our TIMER A
+> 
+> Fix this with simply locking process wide cputime counting start and
+> timer arm in the same block.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Eric W. Biederman <ebiederm@xmission.com>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.9.272-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.9.y
-* git commit: 5f3a05577796b0a04f9705503ae9cfbfaa10cd8f
-* git describe: v4.9.271-30-g5f3a05577796
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
-71-30-g5f3a05577796
-
-## No regressions (compared to v4.9.271)
-
-## No fixes (compared to v4.9.271)
-
-## Test result summary
- total: 52318, pass: 40533, fail: 1073, skip: 9644, xfail: 1068,
-
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 24 total, 24 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 14 total, 14 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Fixes: 60f2ceaa8111 ("posix-cpu-timers: Remove unnecessary locking around cpu_clock_sample_group")
+Cc: stable@vger.kernel.org
