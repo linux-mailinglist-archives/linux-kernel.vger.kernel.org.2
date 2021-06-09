@@ -2,71 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F09C83A1928
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D033A1949
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhFIPVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:21:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230086AbhFIPVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:21:54 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9F7B611CC;
-        Wed,  9 Jun 2021 15:19:55 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 16:21:48 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v11 08/33] counter: interrupt-cnt: Add const qualifier
- for functions_list array
-Message-ID: <20210609162148.3f6631c6@jic23-huawei>
-In-Reply-To: <86f7fb77f703cf2508a6b4ee9cf80aa523392976.1623201081.git.vilhelm.gray@gmail.com>
-References: <cover.1623201081.git.vilhelm.gray@gmail.com>
-        <86f7fb77f703cf2508a6b4ee9cf80aa523392976.1623201081.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232861AbhFIPY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:24:26 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52902 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236229AbhFIPYP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:24:15 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 159FME8l044782;
+        Wed, 9 Jun 2021 10:22:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623252134;
+        bh=/YYW8+5hUOTZSjbo9YoBErRYYOKy+9jxlYTRR6frC90=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=agDtikecCqXl8WjLJSxZfSnzC6Tw1PbP/fQ4A0dvbTK3bWy6YoNJcEZK24Yw4yLix
+         kncT5QtzxthuNPTv27qLtxJttSMXYxzJLMvJxmskSXkvf/a3TwG/SfmToVENjREnim
+         tmBVqy8Iwk74Y5RzAfXh3T7Z1ya7Exy97wIzigyY=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 159FMEUN109002
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Jun 2021 10:22:14 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
+ 2021 10:22:14 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 9 Jun 2021 10:22:14 -0500
+Received: from [10.250.149.110] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 159FM8kI081547;
+        Wed, 9 Jun 2021 10:22:10 -0500
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-am64-main: Update the location of
+ ATF in SRAM and increase its max size
+To:     Lokesh Vutla <lokeshvutla@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>, Suman Anna <s-anna@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210607133806.18158-1-a-govindraju@ti.com>
+ <e53458a9-e5f6-6507-f95c-2406b47b5576@ti.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <b709d5a8-17dd-37e7-405a-35f39f84878b@ti.com>
+Date:   Wed, 9 Jun 2021 20:52:07 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <e53458a9-e5f6-6507-f95c-2406b47b5576@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  9 Jun 2021 10:31:11 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+Hi Lokesh,
 
-> The struct counter_count functions_list member expects a const enum
-> counter_count_function array. This patch adds the const qualifier to the
-> interrupt__cnt_functions to match functions_list.
+On 09/06/21 7:59 pm, Lokesh Vutla wrote:
 > 
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Applied
-> ---
->  drivers/counter/interrupt-cnt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/counter/interrupt-cnt.c b/drivers/counter/interrupt-cnt.c
-> index a99ee7996977..827d785e19b4 100644
-> --- a/drivers/counter/interrupt-cnt.c
-> +++ b/drivers/counter/interrupt-cnt.c
-> @@ -112,7 +112,7 @@ static int interrupt_cnt_write(struct counter_device *counter,
->  	return 0;
->  }
->  
-> -static enum counter_count_function interrupt_cnt_functions[] = {
-> +static const enum counter_count_function interrupt_cnt_functions[] = {
->  	COUNTER_COUNT_FUNCTION_INCREASE,
->  };
->  
+> On 07/06/21 7:08 pm, Aswath Govindraju wrote:
+>> Due to a limitation for USB DFU boot mode, SPL load address has to be less
+>> than  or equal to 0x70001000. So, load address of SPL and ATF have been
+>> moved to 0x70000000 and 0x701a0000 respectively.
+>>
+>> Also, the maximum size of ATF has been increased to 0x1c000 [1].
+>>
+>> Therefore, update ATF's location and maximum size accordingly in the device
+>> tree file.
+>>
+>> [1] - https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=2fb5312f61a7de8b7a70e1639199c4f14a10b6f9
+>>
+>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+>> ---
+>>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> index ca59d1f711f8..fcd12b6f10f6 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> @@ -13,8 +13,8 @@
+>>  		#size-cells = <1>;
+>>  		ranges = <0x0 0x00 0x70000000 0x200000>;
+>>  
+>> -		atf-sram@0 {
+>> -			reg = <0x0 0x1a000>;
+>> +		atf-sram@1a0000 {
+>> +			reg = <0x1a0000 0x1c000>;
+> 
+> After thinking a bot more, isn't size be 0x20000?
+> ATF is allocated with 125KB no? no point keeping the ~3 as hole IMO.
+> 
+
+The max size of ATF as defined above in [1] is 0x1c000 and as the
+argument has to reflect it I have modified it to the same.
+
+Thanks,
+Aswath
+
+
+> Thanks and regards,
+> Lokesh
+> 
+>>  		};
+>>  	};
+>>  
+>>
 
