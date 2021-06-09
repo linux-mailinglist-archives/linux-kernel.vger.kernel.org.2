@@ -2,183 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858713A114B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4C23A1147
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237586AbhFIKkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:40:12 -0400
-Received: from mail-wm1-f45.google.com ([209.85.128.45]:55012 "EHLO
-        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237198AbhFIKkI (ORCPT
+        id S232850AbhFIKjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:39:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38950 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234039AbhFIKjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:40:08 -0400
-Received: by mail-wm1-f45.google.com with SMTP id o127so3686116wmo.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rYodVtyswGkxjPZ1N4VGwVug/p/tXWlRC7vMIsTSrBI=;
-        b=bPJatgBr7cf/n/nozcV2QXkJ6KuYcmc76wQhAXvk8Hq+0jiCf6/weX5BvAxYuOgBWL
-         tWw35amLPl4/ErMRBcCXdpHGnDsivP8d9+T96WJsPIFQQuvwIwuFoyuH2TlXYHmZ2ekD
-         ZHqceoPEjeLEw6zJEJ06j9uYxHOY54DttYbKMAdqmOlbIrAWgymewLD+n551uHTZtvzs
-         sOjOc8+zgOxmMeABVYyDzKOSdJcSU9UhkbnQi+/fvmYNGPmcUMs04w8EC+rjHzLRf0ns
-         4vQ2+Re0/hFuAliL64jRfAkIloDs4EoP1BMiVF3mO1y7nPY5SiFjRYqqgQMKjLc0z6Y9
-         jWDw==
+        Wed, 9 Jun 2021 06:39:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623235060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GXhuyr8heOXQm5DhE+A2Fq3L85+vZLqOuEIP9E5CaCk=;
+        b=QpF7HR/7zOGh61YOtlY8dqcVkUj+yYVo4cmQJvAskdE/cJnbqHCDWYPV11ObBsIUrvcyT3
+        pysNVP/he+CVTa66STgetI7XHG5fjnSOw3u2IFroXl+sGkTRKqZVXKW6hm+MTP+b/Lghub
+        in61uffd3xSL54ub9vSD66/PiBsF31g=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-572-Wd6OhEHFPBKmvZHUx2OP8Q-1; Wed, 09 Jun 2021 06:37:39 -0400
+X-MC-Unique: Wd6OhEHFPBKmvZHUx2OP8Q-1
+Received: by mail-wr1-f71.google.com with SMTP id d5-20020a0560001865b0290119bba6e1c7so6614833wri.20
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 03:37:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rYodVtyswGkxjPZ1N4VGwVug/p/tXWlRC7vMIsTSrBI=;
-        b=DqZAAtoXNtH57DUsOW1nWtyPjE2+3VbiXZHe+cGBxck5EgaZmND1d9gPYtlS+MMZS9
-         ld1CKD6TjqhCagr/FfXmmQ1v5Q0LNq5dr6+M422r60LPDDRnYWNGqKxnIi7e5uiqnneE
-         +bTxPc/Fmxw4LMC6fNUpvL4Ii8c6CnFlMoICPibuXkqyxt8iXKcB3426dwpQoPPmFP6+
-         gDPj2/SeJYXXOMIwd4JJZ4+XOInHH7VyfAwSEBFrSaJIhq1UkmxzQYEoI00n9lkTqtPH
-         GxOm53RTsSas14oS8brAm6YKqkF+8w6l6UUA93yPthN4qFpmrA77s/vUS1LcpJd4LrNX
-         Uf+g==
-X-Gm-Message-State: AOAM530ePQEVIeaw82C5gvycZRBwHP5AS5yI5ZtDXvxjik6Z9+nLP1my
-        tDxOUfDxL12aW+m2xQv5DMNDiY39sDunCiZSFAahag==
-X-Google-Smtp-Source: ABdhPJwOxSjrqbtXWi10C+dUk2jqM3x4JRkuQ+gY4Ec5hihOhUwkVNAF+kUVfPzxoPSu0goTPjfOIV7UIM3SddRgI/Q=
-X-Received: by 2002:a05:600c:4ec7:: with SMTP id g7mr13233266wmq.157.1623235022430;
- Wed, 09 Jun 2021 03:37:02 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=GXhuyr8heOXQm5DhE+A2Fq3L85+vZLqOuEIP9E5CaCk=;
+        b=ah3trc5pKCiisc4j1o1zfhjCVINxjL18ZUNUE4eRTHO5gvh2rw6vxx/0BaGqRuNmty
+         4lOT9cT65IHgZXa1VZnD9BNI1Qh5immY1QrFqmuDMLIhb6IijKjJ0HMNoe85csuiyRas
+         pumcKkgWmnr5zeOj9CwXieWJW/8l3a2totH0Hj5NKaEho22O3AzYCtTh/7O5d/D7yRfd
+         3C+kdAnH96wgYp/vUfmcD5ysOdBePwr+BgscTeq0Ry8LgP11jYZw2Dey7Lx4PT9m5iRC
+         X9rAlPLNzygfTzLNQdu6w6qCJ98HjBlmM8VZYnTJlhfYVEsocC7qwX4PmGjOEZn6XhZ1
+         lNKA==
+X-Gm-Message-State: AOAM53070JOsL50Iicjrha6xZhLsL55yK7XfO17GOZyzAPhKpanim5iB
+        0kZVQf6F+8Mz+Y7IL8he5kJHI8LzO9UTspM/Sr3vwIKPS68PkiXMTGktjfYRqS3afS0ZAUha5/R
+        1vEwsMK3MJfF2s94iT5yUuEI4
+X-Received: by 2002:a5d:4984:: with SMTP id r4mr27081036wrq.152.1623235058406;
+        Wed, 09 Jun 2021 03:37:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxx5QPJlJibMJq5KkrldmC0yuk9Qgb+mpFY3QEuhdJz4/D402+HjHMF51cTVSM1EXp++YpYXw==
+X-Received: by 2002:a5d:4984:: with SMTP id r4mr27081015wrq.152.1623235058237;
+        Wed, 09 Jun 2021 03:37:38 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
+        by smtp.gmail.com with ESMTPSA id l5sm5668999wmi.46.2021.06.09.03.37.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 03:37:37 -0700 (PDT)
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
+References: <YH2hs6EsPTpDAqXc@mit.edu>
+ <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
+ <YIx7R6tmcRRCl/az@mit.edu>
+ <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
+ <YK+esqGjKaPb+b/Q@kroah.com>
+ <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+Message-ID: <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
+Date:   Wed, 9 Jun 2021 12:37:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210602112321.2241566-1-anup.patel@wdc.com> <20210602112321.2241566-7-anup.patel@wdc.com>
- <26cddfa8-75e2-7b5b-1a47-e01cc1c7821e@sholland.org>
-In-Reply-To: <26cddfa8-75e2-7b5b-1a47-e01cc1c7821e@sholland.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 9 Jun 2021 16:06:51 +0530
-Message-ID: <CAAhSdy3jKY_48bFCSyzCcJ8kW=aERNEjBRz=5GEasefuN3Bydw@mail.gmail.com>
-Subject: Re: [PATCH v5 6/8] cpuidle: Add RISC-V SBI CPU idle driver
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Sandeep Tripathy <milun.tripathy@gmail.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Liush <liush@allwinnertech.com>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 12:09 AM Samuel Holland <samuel@sholland.org> wrote:
->
-> On 6/2/21 6:23 AM, Anup Patel wrote:
-> > The RISC-V SBI HSM extension provides HSM suspend call which can
-> > be used by Linux RISC-V to enter platform specific low-power state.
-> >
-> > This patch adds a CPU idle driver based on RISC-V SBI calls which
-> > will populate idle states from device tree and use SBI calls to
-> > entry these idle states.
-> >
-> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> > ---
-> >  MAINTAINERS                   |   7 +
-> >  drivers/cpuidle/Kconfig       |   5 +
-> >  drivers/cpuidle/Kconfig.riscv |  15 +
-> >  drivers/cpuidle/Makefile      |   4 +
-> >  drivers/cpuidle/cpuidle-sbi.c | 626 ++++++++++++++++++++++++++++++++++
-> >  5 files changed, 657 insertions(+)
-> >  create mode 100644 drivers/cpuidle/Kconfig.riscv
-> >  create mode 100644 drivers/cpuidle/cpuidle-sbi.c
-> >
-> > ...
-> > diff --git a/drivers/cpuidle/cpuidle-sbi.c b/drivers/cpuidle/cpuidle-sbi.c
-> > new file mode 100644
-> > index 000000000000..f743684d07de
-> > --- /dev/null
-> > +++ b/drivers/cpuidle/cpuidle-sbi.c
-> > @@ -0,0 +1,626 @@
-> > ...
-> > +     /* Initialize idle states from DT. */
-> > +     ret = sbi_cpuidle_dt_init_states(dev, drv, cpu, state_count);
-> > +     if (ret) {
-> > +             pr_err("HART%ld: failed to init idle states\n",
-> > +                    cpuid_to_hartid_map(cpu));
-> > +             return ret;
-> > +     }
-> > +
-> > +     ret = cpuidle_register(drv, NULL);
-> > +     if (ret)
-> > +             goto deinit;
-> > +
-> > +     cpuidle_cooling_register(drv);
-> > +
-> > +     return 0;
-> > +deinit:
-> > +     sbi_cpuidle_deinit_cpu(cpu);
-> > +     return ret;
-> > +}
-> > +
-> > +static int sbi_cpuidle_pd_power_off(struct generic_pm_domain *pd)
->
-> This function should be moved inside the CONFIG_DT_IDLE_GENPD block
-> below. Otherwise it is defined but unused.
+On 28.05.21 16:58, James Bottomley wrote:
+> On Thu, 2021-05-27 at 15:29 +0200, Greg KH wrote:
+>> On Thu, May 27, 2021 at 03:23:03PM +0200, Christoph Lameter wrote:
+>>> On Fri, 30 Apr 2021, Theodore Ts'o wrote:
+>>>
+>>>> I know we're all really hungry for some in-person meetups and
+>>>> discussions, but at least for LPC, Kernel Summit, and
+>>>> Maintainer's Summit, we're going to have to wait for another
+>>>> year,
+>>>
+>>> Well now that we are vaccinated: Can we still change it?
+>>>
+>>
+>> Speak for yourself, remember that Europe and other parts of the world
+>> are not as "flush" with vaccines as the US currently is :(
+> 
+> The rollout is accelerating in Europe.  At least in Germany, I know
+> people younger than me are already vaccinated. 
 
-Indeed, sbi_cpuidle_pd_power_off() should be under
-"#ifdef CONFIG_DT_IDLE_GENPD". I will update in the
-next patch revision.
+And I know people younger than you in Germany personally ( ;) ) that are 
+not vaccinated yet and might not even get the first shot before 
+September, not even dreaming about a second one + waiting until the 
+vaccine is fully in effect.
 
->
-> > +{
-> > +     struct genpd_power_state *state = &pd->states[pd->state_idx];
-> > +     u32 *pd_state;
-> > +
-> > +     if (!state->data)
-> > +             return 0;
-> > +
-> > +     if (!sbi_cpuidle_pd_allow_domain_state)
-> > +             return -EBUSY;
-> > +
-> > +     /* OSI mode is enabled, set the corresponding domain state. */
-> > +     pd_state = state->data;
-> > +     sbi_set_domain_state(*pd_state);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void sbi_cpuidle_domain_sync_state(struct device *dev)
-> > +{
-> > +     /*
-> > +      * All devices have now been attached/probed to the PM domain
-> > +      * topology, hence it's fine to allow domain states to be picked.
-> > +      */
-> > +     sbi_cpuidle_pd_allow_domain_state = true;
-> > +}
-> > +
-> > +#ifdef CONFIG_DT_IDLE_GENPD
-> > +
-> > +struct sbi_pd_provider {
-> > +     struct list_head link;
-> > +     struct device_node *node;
-> > +};
-> > +
-> > +static LIST_HEAD(sbi_pd_providers);
-> > +
-> > +static int sbi_pd_init(struct device_node *np)
-> > +{
-> > +     struct generic_pm_domain *pd;
-> > +     struct sbi_pd_provider *pd_provider;
-> > +     struct dev_power_governor *pd_gov;
-> > +     int ret = -ENOMEM, state_count = 0;
-> > +
-> > +     pd = dt_idle_pd_alloc(np, sbi_dt_parse_state_node);
-> > +     if (!pd)
-> > +             goto out;
-> > ...
+So yes, sure, nobody can stop people that think the pandemic is over 
+("we are vaccinated") from meeting in person. Just make sure to not 
+ignore the poor souls that really won't be traveling this year, because 
+"we are not vaccinated".
 
-Regards,
-Anup
+-- 
+Thanks,
+
+David / dhildenb
+
