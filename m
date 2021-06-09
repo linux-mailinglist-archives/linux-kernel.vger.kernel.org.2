@@ -2,225 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7C33A14F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F64B3A14FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 14:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233787AbhFIM6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:58:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54408 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231424AbhFIM6Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:58:16 -0400
-Date:   Wed, 09 Jun 2021 12:56:19 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623243380;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xjNPwZvHCCtWZrGSeqi7tBe9oVflAX42XE/hHvuTsm4=;
-        b=zu60UP5rn9dm/wu6AY3cQk6mqQ2M0UTlHrGumb2K33xKwVu85RIHi0CP2U6CGeejFz5eJy
-        +16sxMcUhP5vATXieO1dMLW3Vbqy6AH2epLFxkGMngkvuhN5X2QXT5W7tCwQ1iZ38GL27M
-        zdgQZBu+9QP4d9Rl/GZrkbj/0D6sW43WoK3BxR/aJlMDUr+KTm6nJb/0eCbTQUVLGR7r07
-        4sjvP9nznfB1L/JtYIrZGOAH86wPUcyh6fa16PXIXdOjsdc8wtNWHt2tW4//+UNVZO6UTW
-        ZQSKm/Rq1QtbWOYhabqLK2z9kkEyra6z90jq0d0pAkbkNPMiNRLXTRBfa8q5Lw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623243380;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xjNPwZvHCCtWZrGSeqi7tBe9oVflAX42XE/hHvuTsm4=;
-        b=brfAa8f2CEFzY5iMcKYlYq0LOC2Ewrml74fgpSTV5JQJDV1jX2QUfs4tLdL59x8QyfWU5b
-        CVYSJ0/uyHPebBDQ==
-From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] selftests/x86: Test signal frame XSTATE header
- corruption handling
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210608144346.234764986@linutronix.de>
-References: <20210608144346.234764986@linutronix.de>
+        id S233793AbhFIM6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 08:58:52 -0400
+Received: from mga05.intel.com ([192.55.52.43]:1387 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233695AbhFIM6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 08:58:31 -0400
+IronPort-SDR: 0mRr7MCMWslOPEDSGTuxA2J7b1YWusGhGfewSl5J5z9nWRvCeUCMHW16zhX6DflUd6trMVBVDN
+ zBSDgrJ4eOSw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="290695607"
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208,223";a="290695607"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 05:56:34 -0700
+IronPort-SDR: j/xqj6JXOtVwlECxTMAqiXS5Vh9eCFx7EWvOmpAClhaaBOT9yQDTBmG3/6M/KrKN7bsc4FLgig
+ FsZ/mexenffw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208,223";a="552664927"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 09 Jun 2021 05:56:31 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 09 Jun 2021 15:56:30 +0300
+Date:   Wed, 9 Jun 2021 15:56:30 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Benjamin Berg <bberg@redhat.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/7] usb: typec: ucsi: Polling the alt modes and PDOs
+Message-ID: <YMC6fgoWiAe1C3uZ@kuha.fi.intel.com>
+References: <20210607131442.20121-1-heikki.krogerus@linux.intel.com>
+ <4a76d2152f016b58298bec16aa2003a6ec55f8a8.camel@redhat.com>
+ <YL8RPiVsEFOM9PBo@kuha.fi.intel.com>
+ <YL8UD+nlBSSQGIMO@kuha.fi.intel.com>
+ <f9e1640d4d1a2acbaacf83dee021cd4aa55f233f.camel@redhat.com>
+ <YMClRTC8wW82IrDT@kuha.fi.intel.com>
+ <YMCxfC+S9EJNEiwq@kuha.fi.intel.com>
 MIME-Version: 1.0
-Message-ID: <162324337919.29796.4599968372466254532.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="/TeB+Hja9PywstF5"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YMCxfC+S9EJNEiwq@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/fpu branch of tip:
 
-Commit-ID:     b7c11876d24bdd7ae3feeaa771b8f903f6cf05eb
-Gitweb:        https://git.kernel.org/tip/b7c11876d24bdd7ae3feeaa771b8f903f6cf05eb
-Author:        Andy Lutomirski <luto@kernel.org>
-AuthorDate:    Tue, 08 Jun 2021 16:36:23 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 09 Jun 2021 14:46:30 +02:00
+--/TeB+Hja9PywstF5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-selftests/x86: Test signal frame XSTATE header corruption handling
+On Wed, Jun 09, 2021 at 03:18:04PM +0300, Heikki Krogerus wrote:
+> On Wed, Jun 09, 2021 at 02:26:00PM +0300, Heikki Krogerus wrote:
+> > On Tue, Jun 08, 2021 at 09:32:01PM +0200, Benjamin Berg wrote:
+> > > On Tue, 2021-06-08 at 09:54 +0300, Heikki Krogerus wrote:
+> > > > On Tue, Jun 08, 2021 at 09:42:09AM +0300, Heikki Krogerus wrote:
+> > > > > Please check does the partner device get removed. What do you have
+> > > > > under /sys/class/typec after that happens?
+> > > > 
+> > > > Oh yes. Could you also share the trace output when that happens?
+> > > > 
+> > > >         cd /sys/kernel/debug/tracing
+> > > >         echo 1 > events/ucsi/enable
+> > > >         # now reproduce the issue
+> > > >         cat trace > ucsi.trace
+> > > 
+> > > So, the partner device is still there when this happens (see below). I
+> > > also only see a single event in the trace for the fast plug/unplug
+> > > case:
+> > >    kworker/u16:8-1771    [003] .... 18848.872145: ucsi_connector_change: port1 status: change=4a04, opmode=5, connected=1, sourcing=0, partner_flags=1, partner_type=1, request_data_obj=1304b12c, BC status=1
+> > 
+> > OK. Sorry I had to double check because you were only talking about
+> > the psy online state.
+> > 
+> > Can you now try this HACK on top of these patches:
+> > 
+> > diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+> > index bd39fe2cb1d0b..99f072700ce7f 100644
+> > --- a/drivers/usb/typec/ucsi/ucsi.c
+> > +++ b/drivers/usb/typec/ucsi/ucsi.c
+> > @@ -843,7 +843,8 @@ static void ucsi_handle_connector_change(struct work_struct *work)
+> >  
+> >         if (!status.change) {
+> >                 dev_dbg(con->ucsi->dev, "con%d: spurious event\n", con->num);
+> > -               goto out_ack;
+> > +               /* XXX Force connection check. */
+> > +               status.change = UCSI_CONSTAT_CONNECT_CHANGE;
+> >         }
+> >  
+> >         event = kzalloc(sizeof(*event), GFP_KERNEL);
+> 
+> No, that's not enough. Sorry.
+> 
+> I'm trying to get a confirmation on my suspecion that we do always
+> actually get an event from the EC firmware, but we just end up
+> filtering it out in this case because we are too slow in the driver. I
+> have an idea what could be done about that, but I need to test if that
+> really is the case.
+> 
+> I'll prepare a new version out of this entire series.
 
-This is very heavily based on some code from Thomas Gleixner.  On a system
-without XSAVES, it triggers the WARN_ON():
+Actually, it's easier if you could just test this attached patch on
+top of this series. It makes sure the every single event is
+considered. I'm sorry about the hassle.
 
-  Bad FPU state detected at copy_kernel_to_fpregs+0x2f/0x40, reinitializing FPU registers.
+thanks,
 
-  [ bp: Massage in nitpicks. ]
+-- 
+heikki
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Acked-by: Rik van Riel <riel@surriel.com>
-Link: https://lkml.kernel.org/r/20210608144346.234764986@linutronix.de
+--/TeB+Hja9PywstF5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-usb-typec-ucsi-Test-patch-for-confirming-events.patch"
+
+From 9a5fc7d8e22ca5d0077a97345b8f079957a465b5 Mon Sep 17 00:00:00 2001
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Date: Wed, 9 Jun 2021 15:48:23 +0300
+Subject: [PATCH] usb: typec: ucsi: Test patch for confirming events
+
+NOT-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
- tools/testing/selftests/x86/Makefile                |   3 +-
- tools/testing/selftests/x86/corrupt_xstate_header.c | 114 +++++++++++-
- 2 files changed, 116 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/x86/corrupt_xstate_header.c
+ drivers/usb/typec/ucsi/ucsi.c | 80 ++++++++++++-----------------------
+ 1 file changed, 27 insertions(+), 53 deletions(-)
 
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index 65bba2a..b4142cd 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -17,7 +17,8 @@ TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt test_mremap
- TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
- 			test_FCMOV test_FCOMI test_FISTTP \
- 			vdso_restorer
--TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering
-+TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering \
-+			corrupt_xstate_header
- # Some selftests require 32bit support enabled also on 64bit systems
- TARGETS_C_32BIT_NEEDED := ldt_gdt ptrace_syscall
+diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+index bd39fe2cb1d0b..53718e655edbf 100644
+--- a/drivers/usb/typec/ucsi/ucsi.c
++++ b/drivers/usb/typec/ucsi/ucsi.c
+@@ -748,16 +748,34 @@ static void ucsi_connector_work(struct work_struct *work)
+ {
+ 	struct ucsi_con_event *event = container_of(work, struct ucsi_con_event, work);
+ 	struct ucsi_connector *con = event->con;
++	struct ucsi_connector_status status;
+ 	struct ucsi *ucsi = con->ucsi;
+ 	enum typec_role role;
+ 	enum usb_role u_role = USB_ROLE_NONE;
++	u64 command;
+ 	int ret;
  
-diff --git a/tools/testing/selftests/x86/corrupt_xstate_header.c b/tools/testing/selftests/x86/corrupt_xstate_header.c
-new file mode 100644
-index 0000000..ab8599c
---- /dev/null
-+++ b/tools/testing/selftests/x86/corrupt_xstate_header.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Corrupt the XSTATE header in a signal frame
-+ *
-+ * Based on analysis and a test case from Thomas Gleixner.
-+ */
++	kfree(event);
 +
-+#define _GNU_SOURCE
++	command = UCSI_GET_CONNECTOR_STATUS | UCSI_CONNECTOR_NUMBER(con->num);
++	ret = ucsi_send_command(ucsi, command, &status, sizeof(status));
++	if (ret < 0)
++		dev_err(ucsi->dev, "GET_CONNECTOR_STATUS failed (%d)\n", ret);
 +
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <err.h>
-+#include <unistd.h>
-+#include <stdint.h>
-+#include <sys/wait.h>
-+
-+static inline void __cpuid(unsigned int *eax, unsigned int *ebx,
-+			   unsigned int *ecx, unsigned int *edx)
-+{
-+	asm volatile(
-+		"cpuid;"
-+		: "=a" (*eax),
-+		  "=b" (*ebx),
-+		  "=c" (*ecx),
-+		  "=d" (*edx)
-+		: "0" (*eax), "2" (*ecx));
-+}
-+
-+static inline int xsave_enabled(void)
-+{
-+	unsigned int eax, ebx, ecx, edx;
-+
-+	eax = 0x1;
-+	ecx = 0x0;
-+	__cpuid(&eax, &ebx, &ecx, &edx);
-+
-+	/* Is CR4.OSXSAVE enabled ? */
-+	return ecx & (1U << 27);
-+}
-+
-+static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
-+		       int flags)
-+{
-+	struct sigaction sa;
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sa_sigaction = handler;
-+	sa.sa_flags = SA_SIGINFO | flags;
-+	sigemptyset(&sa.sa_mask);
-+	if (sigaction(sig, &sa, 0))
-+		err(1, "sigaction");
-+}
-+
-+static void sigusr1(int sig, siginfo_t *info, void *uc_void)
-+{
-+	ucontext_t *uc = uc_void;
-+	uint8_t *fpstate = (uint8_t *)uc->uc_mcontext.fpregs;
-+	uint64_t *xfeatures = (uint64_t *)(fpstate + 512);
-+
-+	printf("\tWreck XSTATE header\n");
-+	/* Wreck the first reserved bytes in the header */
-+	*(xfeatures + 2) = 0xfffffff;
-+}
-+
-+static void sigsegv(int sig, siginfo_t *info, void *uc_void)
-+{
-+	printf("\tGot SIGSEGV\n");
-+}
-+
-+int main(void)
-+{
-+	cpu_set_t set;
-+
-+	sethandler(SIGUSR1, sigusr1, 0);
-+	sethandler(SIGSEGV, sigsegv, 0);
-+
-+	if (!xsave_enabled()) {
-+		printf("[SKIP] CR4.OSXSAVE disabled.\n");
-+		return 0;
++	if (!status.change) {
++		dev_dbg(ucsi->dev, "con%d: spurious event\n", con->num);
++		/* XXX: Force connection check. */
++		status.change = UCSI_CONSTAT_CONNECT_CHANGE;
 +	}
 +
-+	CPU_ZERO(&set);
-+	CPU_SET(0, &set);
++	ret = ucsi_acknowledge_connector_change(ucsi);
++	if (ret)
++		dev_err(ucsi->dev, "%s: ACK failed (%d)", __func__, ret);
 +
-+	/*
-+	 * Enforce that the child runs on the same CPU
-+	 * which in turn forces a schedule.
-+	 */
-+	sched_setaffinity(getpid(), sizeof(set), &set);
-+
-+	printf("[RUN]\tSend ourselves a signal\n");
-+	raise(SIGUSR1);
-+
-+	printf("[OK]\tBack from the signal.  Now schedule.\n");
-+	pid_t child = fork();
-+	if (child < 0)
-+		err(1, "fork");
-+	if (child == 0)
-+		return 0;
-+	if (child)
-+		waitpid(child, NULL, 0);
-+	printf("[OK]\tBack in the main thread.\n");
-+
-+	/*
-+	 * We could try to confirm that extended state is still preserved
-+	 * when we schedule.  For now, the only indication of failure is
-+	 * a warning in the kernel logs.
-+	 */
-+
-+	return 0;
-+}
+ 	mutex_lock(&con->lock);
+ 
+-	trace_ucsi_connector_change(con->num, &event->status);
+-	con->status = event->status;
+-	kfree(event);
++	trace_ucsi_connector_change(con->num, &status);
++	con->status = status;
+ 
+ 	role = !!(con->status.flags & UCSI_CONSTAT_PWR_DIR);
+ 
+@@ -816,53 +834,6 @@ static void ucsi_connector_work(struct work_struct *work)
+ 	mutex_unlock(&con->lock);
+ }
+ 
+-/*
+- * We can not read the connector status in ucsi_connector_change() function
+- * below because there may be already a command pending. This work is scheduled
+- * separately only because of that.
+- *
+- * This function must finish fast so we do not loose the next events. Every
+- * event will have a separate job queued for it in the connector specific
+- * workqueue. That way the next event can be generated safely before the
+- * previous ones are fully processed.
+- */
+-static void ucsi_handle_connector_change(struct work_struct *work)
+-{
+-	struct ucsi_connector *con = container_of(work, struct ucsi_connector, work);
+-	struct ucsi_connector_status status;
+-	struct ucsi_con_event *event;
+-	u64 command;
+-	int ret;
+-
+-	command = UCSI_GET_CONNECTOR_STATUS | UCSI_CONNECTOR_NUMBER(con->num);
+-	ret = ucsi_send_command(con->ucsi, command, &status, sizeof(status));
+-	if (ret < 0) {
+-		dev_err(con->ucsi->dev, "GET_CONNECTOR_STATUS failed (%d)\n", ret);
+-		goto out_ack;
+-	}
+-
+-	if (!status.change) {
+-		dev_dbg(con->ucsi->dev, "con%d: spurious event\n", con->num);
+-		goto out_ack;
+-	}
+-
+-	event = kzalloc(sizeof(*event), GFP_KERNEL);
+-	if (!event)
+-		goto out_ack;
+-
+-	INIT_WORK(&event->work, ucsi_connector_work);
+-	event->status = status;
+-	event->con = con;
+-	queue_work(con->wq, &event->work);
+-
+-out_ack:
+-	clear_bit(EVENT_PENDING, &con->ucsi->flags);
+-
+-	ret = ucsi_acknowledge_connector_change(con->ucsi);
+-	if (ret)
+-		dev_err(con->ucsi->dev, "%s: ACK failed (%d)", __func__, ret);
+-}
+-
+ /**
+  * ucsi_connector_change - Process Connector Change Event
+  * @ucsi: UCSI Interface
+@@ -871,16 +842,20 @@ static void ucsi_handle_connector_change(struct work_struct *work)
+ void ucsi_connector_change(struct ucsi *ucsi, u8 num)
+ {
+ 	struct ucsi_connector *con = &ucsi->connector[num - 1];
++	struct ucsi_con_event *event;
+ 
+ 	if (!(ucsi->ntfy & UCSI_ENABLE_NTFY_CONNECTOR_CHANGE)) {
+ 		dev_dbg(ucsi->dev, "Bogus connector change event\n");
+ 		return;
+ 	}
+ 
+-	if (test_and_set_bit(EVENT_PENDING, &ucsi->flags))
++	event = kzalloc(sizeof(*event), GFP_KERNEL);
++	if (!event)
+ 		return;
+ 
+-	schedule_work(&con->work);
++	INIT_WORK(&event->work, ucsi_connector_work);
++	event->con = con;
++	queue_work(con->wq, &event->work);
+ }
+ EXPORT_SYMBOL_GPL(ucsi_connector_change);
+ 
+@@ -1078,7 +1053,6 @@ static int ucsi_register_port(struct ucsi *ucsi, int index)
+ 	if (!con->wq)
+ 		return -ENOMEM;
+ 
+-	INIT_WORK(&con->work, ucsi_handle_connector_change);
+ 	init_completion(&con->complete);
+ 	mutex_init(&con->lock);
+ 	con->num = index + 1;
+-- 
+2.30.2
+
+
+--/TeB+Hja9PywstF5--
