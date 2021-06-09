@@ -2,139 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0DBC3A1DFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F34A3A1DF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhFIUL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 16:11:57 -0400
-Received: from mail-lj1-f175.google.com ([209.85.208.175]:38570 "EHLO
-        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhFIUL4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:11:56 -0400
-Received: by mail-lj1-f175.google.com with SMTP id s22so1462725ljg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lH+j2KiVN2G/yHhVjeQt6p3BwbyIHnyM+0CcxE7yrDU=;
-        b=AA02DUQuVWJT5MsI3unO8Y7QIOeiM7ojSOf+tqLac1WvD6nIyHkv7Pa0qjcMI+hTcR
-         0zNRwRgAg7m2VsUhZD7G21UqsG1aPq/XdzJPGqoO5RrowffR7FXb+T/ICZxJJuMRYvvw
-         NdivjzlAyufhdDOwqw5p5T7ogMbkumjfEy93w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lH+j2KiVN2G/yHhVjeQt6p3BwbyIHnyM+0CcxE7yrDU=;
-        b=A6ZdWQbAafNSd6PWdKdmr3z1zebcTpUUNNo58hKjCPjI587ZuM7bo4WlayWRXE5KqH
-         E8vD3Jd/PVLzCmtbQaaeMHxQF4BbRoZq8ZDQb+EH20g+OkY0Age8AbwdgxL8cVk9d9kr
-         AlFaNCbcWET+XsIEG/5zXdDzL6d7RHQiHQQKAEhMTQ6W/UqUjG+e0O9tYBUdlDShcID0
-         5dPUTFubB9geSQzyPZOUqssj6Pmpkm+TRjER5J9zVJnK6V0oEQJwCRIgzWgcj6WXP65o
-         VTwpCFhVZLij3jJeaCS3A7EOIqPOtKxZ8fskZMe7m9ZlK06gr7RzRlVmr2iLtCWnAph3
-         on3g==
-X-Gm-Message-State: AOAM533SQieog70mXGuvglwhNl2bXlMqcxzF/9gDMpT8K8hkaFchcAQ9
-        dTcQC9MDs2JP7yzIU/I8QlhMOcXKiaJ859b+uD0=
-X-Google-Smtp-Source: ABdhPJx4I1nOt3/mkO6mc8/5sNLUevfpGSUTbn/VwyJm9egHHbb5oXpPhYz4+0sVuX3JHLZzrRiftg==
-X-Received: by 2002:a05:651c:514:: with SMTP id o20mr1168291ljp.201.1623269331551;
-        Wed, 09 Jun 2021 13:08:51 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id a7sm80574lfj.42.2021.06.09.13.08.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 13:08:50 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id w33so40007234lfu.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:08:50 -0700 (PDT)
-X-Received: by 2002:a19:7d04:: with SMTP id y4mr684978lfc.201.1623269330357;
- Wed, 09 Jun 2021 13:08:50 -0700 (PDT)
+        id S229548AbhFIUJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:09:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229472AbhFIUJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 16:09:41 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD9496139A;
+        Wed,  9 Jun 2021 20:07:44 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 21:09:35 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan.Cameron@huawei.com, alexandru.tachici@analog.com,
+        linux@deviqon.com
+Subject: Re: [PATCH v4 00/12] ad_sigma_delta: convert all drivers to
+ device-managed
+Message-ID: <20210609210935.062e0c68@jic23-huawei>
+In-Reply-To: <20210513120752.90074-1-aardelean@deviqon.com>
+References: <20210513120752.90074-1-aardelean@deviqon.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210607125734.1770447-1-liangyan.peng@linux.alibaba.com> <71fa2e69-a60b-0795-5fef-31658f89591a@linux.alibaba.com>
-In-Reply-To: <71fa2e69-a60b-0795-5fef-31658f89591a@linux.alibaba.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 9 Jun 2021 13:08:34 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whKbJkuVmzb0hD3N6q7veprUrSpiBHRxVY=AffWZPtxmg@mail.gmail.com>
-Message-ID: <CAHk-=whKbJkuVmzb0hD3N6q7veprUrSpiBHRxVY=AffWZPtxmg@mail.gmail.com>
-Subject: Re: [PATCH] tracing: Correct the length check which causes memory corruption
-To:     James Wang <jnwang@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Liangyan <liangyan.peng@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        yinbinbin@alibabacloud.com, wetp <wetp.zy@linux.alibaba.com>,
-        stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steven?
+On Thu, 13 May 2021 15:07:40 +0300
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
 
-On Mon, Jun 7, 2021 at 6:46 AM James Wang <jnwang@linux.alibaba.com> wrote:
->
-> >
-> > James Wang has reproduced it stably on the latest 4.19 LTS.
-> > After some debugging, we finally proved that it's due to ftrace
-> > buffer out-of-bound access using a debug tool as follows:
-[..]
+> Well, for lack of a better title that's what this series does.
+> It merges Jonathan's patches from:
+>   * https://lore.kernel.org/linux-iio/20210508182319.488551-1-jic23@kernel.org/
+>     Patch 3/3 was a polished a bit with my comments from that review and also
+>     to use the devm_ad_sd_setup_buffer_and_trigger() function.
+>   * https://lore.kernel.org/linux-iio/20210509114118.660422-1-jic23@kernel.org/
+>     Added only to base the conversion to devm_
+> 
+> The AD Sigma Delta family of ADC drivers share a lot of the logic in the
+> ad_sigma_delta lib-driver.
+> 
+> This set introduces a devm_ad_sd_setup_buffer_and_trigger() call, which
+> aims to replace the 'ad_sd_{setup,cleanup}_buffer_and_trigger()' pair.
+> 
+> This helps with converting the AD7780, AD7791, AD7793 and AD7192
+> drivers use be fully converted to device-managed functions.
 
-Looks about right:
+Remainder of series applied to the togreg branch of iio.git and pushed out
+as testing for 0-day to poke at it.
 
-> > diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> > index a21ef9cd2aae..9299057feb56 100644
-> > --- a/kernel/trace/trace.c
-> > +++ b/kernel/trace/trace.c
-> > @@ -2736,7 +2736,7 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
-> >           (entry = this_cpu_read(trace_buffered_event))) {
-> >               /* Try to use the per cpu buffer first */
-> >               val = this_cpu_inc_return(trace_buffered_event_cnt);
-> > -             if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
-> > +             if ((len < (PAGE_SIZE - sizeof(*entry) - sizeof(entry->array[0]))) && val == 1) {
-> >                       trace_event_setup(entry, type, trace_ctx);
-> >                       entry->array[0] = len;
-> >                       return entry;
+Thanks,
 
-I have to say that I don't love that code. Not before, and not with the fix.
+Jonathan
 
-That "sizeof(*entry)" is clearly wrong, because it doesn't take the
-unsized array into account.
+> 
+> Changelog v3 -> v4:
+> * https://lore.kernel.org/linux-iio/20210512174914.10549-1-aardelean@deviqon.com/
+> * patch 'iio: adc: ad7192: handle zero Avdd regulator value'
+>   is now 'iio: adc: ad7192: handle regulator voltage error first'
+>   - now checking the regulator_voltage() return first for an error
+> 
+> Changelog v2 -> v3:
+> * https://lore.kernel.org/linux-iio/20210511071831.576145-1-aardelean@deviqon.com/
+> * patch 'iio: adc: ad7192: handle zero Avdd regulator value as error'
+>   is now 'iio: adc: ad7192: handle zero Avdd regulator value'
+>   essentially just doing a simple 'if (voltage_uv >= 0)' check now
+> 
+> Changelog v1 -> v2:
+> * https://lore.kernel.org/linux-iio/20210510125523.1271237-1-aardelean@deviqon.com/
+> * add my S-o-b tags on all patches; with @deviqon.com email
+>   - Note: I'm a little unsure about the correctness of these tags; there
+>     are a few mixed-in, with Reviewed-by & Signed-off-by; I'm fine if
+>     Jonathan tweaks these as needed;
+> * added patch 'iio: adc: ad7192: handle zero Avdd regulator value as error'
+> * all Fixes patches should be now at the beginning of the series
+> 
+> Alexandru Ardelean (8):
+>   iio: adc: ad7192: handle regulator voltage error first
+>   iio: adc: ad_sigma_delta: introduct
+>     devm_ad_sd_setup_buffer_and_trigger()
+>   iio: adc: ad7793: convert to device-managed functions
+>   iio: adc: ad7791: convert to device-managed functions
+>   iio: adc: ad7780: convert to device-managed functions
+>   iio: adc: ad7192: use devm_clk_get_optional() for mclk
+>   iio: adc: ad7192: convert to device-managed functions
+>   iio: adc: ad_sigma_delta: remove
+>     ad_sd_{setup,cleanup}_buffer_and_trigger()
+> 
+> Jonathan Cameron (4):
+>   iio: adc: ad7124: Fix missbalanced regulator enable / disable on
+>     error.
+>   iio: adc: ad7124: Fix potential overflow due to non sequential channel
+>     numbers
+>   iio: adc: ad7192: Avoid disabling a clock that was never enabled.
+>   iio: adc: ad7124: Use devm_ managed calls for all of probe() + drop
+>     remove()
+> 
+>  drivers/iio/adc/ad7124.c               | 84 +++++++++-------------
+>  drivers/iio/adc/ad7192.c               | 98 +++++++++++---------------
+>  drivers/iio/adc/ad7780.c               | 38 +++-------
+>  drivers/iio/adc/ad7791.c               | 44 ++++--------
+>  drivers/iio/adc/ad7793.c               | 53 ++++----------
+>  drivers/iio/adc/ad_sigma_delta.c       | 82 ++++++++-------------
+>  include/linux/iio/adc/ad_sigma_delta.h |  4 +-
+>  7 files changed, 144 insertions(+), 259 deletions(-)
+> 
 
-But adding the sizeof() for a single array entry doesn't make that
-already unreadable and buggy code much more readable.
-
-It would probably be better to use "struct_size(entry, buffer, 1)"
-instead, and I think it would be good to just split things up a bit to
-be more legibe:
-
-        unsigned long max_len = PAGE_SIZE - struct_size(entry, array, 1);
-
-        if (val == 1 && len < max_len && val == 1) {
-                trace_event_setup(entry, type, trace_ctx);
-                ..
-
-instead.
-
-However, I have a few questions:
-
- - why "len < max_offset" rather than "<="?
-
- - why don't we check the length before we even try to reserve that
-percpu buffer with the expensive atomic this_cpu_inc_return()?
-
- - is the size of that array guaranteed to always be 1? If so, why is
-it unsized? Why is it an array at all?
-
- - clearly the array{} size must not be guaranteed to be 1, but why a
-size of 1 then always sufficient here? Clearly a size of 1 is the
-minimum required since we do that
-
-        entry->array[0] = len;
-
-   and thus use one entry, but what is it that makes it ok that it
-really is just one entry?
-
-Steven, please excuse the above stupid questions of mine, but that
-code looks really odd.
-
-               Linus
