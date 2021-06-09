@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19BC3A0A76
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8FB3A0A7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236272AbhFIDIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 23:08:24 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8100 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236273AbhFIDIT (ORCPT
+        id S236332AbhFIDKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 23:10:16 -0400
+Received: from mail-pg1-f171.google.com ([209.85.215.171]:41860 "EHLO
+        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233424AbhFIDKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 23:08:19 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0Bkt5hfzzYsFY;
-        Wed,  9 Jun 2021 11:03:34 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 11:06:24 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 11:06:24 +0800
-Subject: Re: [PATCH 1/1] ring-buffer: remove leading spaces before tabs
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210608081051.13382-1-thunder.leizhen@huawei.com>
- <20210608105943.2376328c@oasis.local.home>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <60fcce9f-abf5-4dd0-1bba-a1f19ec251d0@huawei.com>
-Date:   Wed, 9 Jun 2021 11:06:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Tue, 8 Jun 2021 23:10:12 -0400
+Received: by mail-pg1-f171.google.com with SMTP id l184so2692066pgd.8;
+        Tue, 08 Jun 2021 20:08:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lhOA0nGrbjhRPVswA/mywNHLTKJKSXnKV9s3KRuT9b0=;
+        b=eEmOANjFoGPTyGNLvXOsBxdb0fTnjiOwL3tROU9dOMmgDoC4VLjtO4w3cbWVHjP/hK
+         wahkSdOQe6292A4Zn72SHDGSDQaqSZvso7WyW9u34Vwqv2L5DHF5rRaf9WSCKL+42j6D
+         sTsko0XWv/xQ3arflI694ZIhCh54TuUiXuSReVeG4nsdfYAx1jK8QJf8lwJC1b0ugrvg
+         +RP1QuPDBGV1ZSp/zvIsyRKloDrOWI3p2hrm/8AVOXa2zEeXEX82q0sCAb2jGwMuXF4g
+         /2ReUEHOTSgMrDGy+jyIek6skxY2OZkHy6r6YEa3aAzhdybCiZjSqeTZNjJQ8d8nSY2S
+         ot4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lhOA0nGrbjhRPVswA/mywNHLTKJKSXnKV9s3KRuT9b0=;
+        b=bqt8TZL46XHlspCSjlpLQ1Al5XNLlGflPKlT1r08WJ/3pUdoKgz4wYawK9DiLGHsV1
+         9HxgAU7BfHW+WMGsBJLpUwuWY67jWELkxlhUTrfc/G0Jps4t6uB0l/myZeMQPG6PRQfG
+         JcpSBvLSshGvH1RHr8MaTqBDuY2SzqgQTY9lR3zva1hPhZtLA9Byfp1A3FMHSpqS5l05
+         ikBT0B0lWgsITjeY27eljw8hW74NVWz5efm1MrfwgKPzB5zM6HouGSOGPsCLCnkgH0FD
+         JKHDkEWYKa++c5wNwhJvQOyxeB/kA/0eOJHSDnyGCpuvMDpClXk5hyET7yCaiYhbAxPW
+         6C+Q==
+X-Gm-Message-State: AOAM531UNyqxfYRqVqG16ay5S+fzR9X93ImTIG4wPGyzYFh9z+csqyJ6
+        rlY8nFRMb2l3xJAHdTDxOG8=
+X-Google-Smtp-Source: ABdhPJwrg5MzG8QRD1JUtBgAuC+Cuk6MZaXdsiHLg5dbQBqrcdPsR4+dfoUF+OL919y4bNLZoHDv+A==
+X-Received: by 2002:a63:7e11:: with SMTP id z17mr1517467pgc.9.1623208028225;
+        Tue, 08 Jun 2021 20:07:08 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id 78sm12733364pgg.73.2021.06.08.20.07.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 20:07:07 -0700 (PDT)
+Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
+ controller on the BCM7211
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Al Cooper <alcooperx@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
+        Scott Branden <sbranden@broadcom.com>
+References: <20210602192758.38735-1-alcooperx@gmail.com>
+ <20210602192758.38735-2-alcooperx@gmail.com>
+ <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com>
+Date:   Tue, 8 Jun 2021 20:07:05 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210608105943.2376328c@oasis.local.home>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/6/8 22:59, Steven Rostedt wrote:
-> On Tue, 8 Jun 2021 16:10:51 +0800
-> Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> 
->> 1) Run the following command to find and remove the leading spaces before
->>    tabs:
->>    find kernel/trace/ -type f | xargs sed -r -i 's/^[ ]+\t/\t/'
->> 2) Manually check and correct if necessary
+On 6/8/2021 5:40 AM, Ulf Hansson wrote:
+> On Wed, 2 Jun 2021 at 21:28, Al Cooper <alcooperx@gmail.com> wrote:
 >>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> Add support for the legacy Arasan sdhci controller on the BCM7211 and
+>> related SoC's. This includes adding a .shutdown callback to increase
+>> the power savings during S5.
 > 
-> Sorry, but I do not accept whitespace changes. Clean ups like this is
-> only welcomed if they come along with actual changes to the code around
+> Please split this into two separate changes.
+> 
+> May I also ask about the ->shutdown() callback and in relation to S5.
+> What makes the ->shutdown callback only being invoked for S5?
 
-It's the wrong way of thinking. It's like having mosquitoes in the house and
-killing a mosquito only when you meet it. Mosquitoes will exist for a long
-time, and not all mosquitoes will be killed. People who have been in the house
-will always face being bitten unless they don't care.
+It is not only called for S5 (entered via poweroff on a prompt) but also
+during kexec or reboot. The poweroff path is via:
 
+kernel_power_off() -> kernel_shutdown_prepare() -> device_shutdown() ->
+.shutdown()
 
-> them. Otherwise, this just causes extra churn and unwelcomed work for
-> the maintainer.
-
-Yes, the changes are a little less. There is no owner for the whole kernel
-module. So I had to take it apart. As a programmer, since I discovered it,
-I had an instinctive drive to fix it. Even if it won't be accepted.
-
-> 
-> -- Steve
-> 
-> 
->> ---
->>  kernel/trace/ring_buffer.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
->> index 833ade3d0b00..a555258556c5 100644
->> --- a/kernel/trace/ring_buffer.c
->> +++ b/kernel/trace/ring_buffer.c
->> @@ -5887,7 +5887,7 @@ static __init int test_ringbuffer(void)
->>  		}
->>  
->>  		kthread_bind(rb_threads[cpu], cpu);
->> - 		wake_up_process(rb_threads[cpu]);
->> +		wake_up_process(rb_threads[cpu]);
->>  	}
->>  
->>  	/* Now create the rb hammer! */
-> 
-> 
-> .
-> 
-
+For kexec or reboot we do not really care about power savings since we
+are about to load a new image anyway, however for S5/poweroff we do care
+about quiescing the eMMC controller in a way that its clocks and the
+eMMC device can be put into low power mode since we will stay in that
+mode for seconds/hours/days until someone presses a button on their
+remote (or other wake-up sources).
+-- 
+Florian
