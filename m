@@ -2,177 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7703A20A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226E13A20B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbhFIXSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 19:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
+        id S229792AbhFIX3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 19:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhFIXSF (ORCPT
+        with ESMTP id S229722AbhFIX3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 19:18:05 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F22C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 16:15:57 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so25689313otg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 16:15:57 -0700 (PDT)
+        Wed, 9 Jun 2021 19:29:33 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CE7C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 16:27:25 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id md2-20020a17090b23c2b029016de4440381so2645796pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 16:27:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=W+qXEuKMwT/Oi1kda+1x77Hj9YustkgX0B7x2oE+wko=;
-        b=CozgERK9mWAGLeGbIgbK6FIiUpzN01bkJbwK/Zks7x8ccKbLRkaESJ+H+Bv0lV1ePV
-         dbhEAWHlvCAqC2pwJYqmctisuPGwGCFbgCRbogD7A1URYsQ7XV4UqRNeR8OZd9pw7HI4
-         gZc2e7RJqgb+buc8mmmKN7uVQ7SKLU6mAqMimjUVONpqRm0dHhYt9Buly5JHj8Ey1gKN
-         jNlJ98Iyw4/az9+JOYoZ0CWndTp61RM5JRav4t4eySFXtEw1f6P4mdM3uiFK0CfM4M+e
-         aTr/6qgDHcAzvKEB9/MCEbGW9PuU/pQa0+Oms0AB95wq/z033XlgOyecmdFXtOcmmR1P
-         /cog==
+        bh=rPwFm+rW5VJo250kQOZcru/sRI6+UZ6fSWYAEKjNOl8=;
+        b=koQ9XOS9Ahh++/EJkQYsM/lmckBNtNk3H15jg9UrEF+0vJyfvFlAa/gQhNntz9gu1w
+         Oqs61SCcdSCMc9H5FE4ZdoooczAaIPcxe7jAJxGaFaFKASEslnvZ6mQDqd5rYc8npZmh
+         0isbpH8z/+CjhFiJHWfargQyKl+5Ht4rUjK5jpkUo31LpnfC9GTUkrgEmEXjVgd4V0DC
+         V6WlFXcSgBGg7EKnZDJcgXtuOk5CErlGosgLzxm0O0L+Gak1ws8U/hS7hyAv4/PA0bPh
+         8K9yGOI3EaKetOMc1Ru2ifH5BxK58xfPsr/H8Q9ofhN51F4bQ43i8Vv6FFy7qXVo5p/z
+         Sg1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=W+qXEuKMwT/Oi1kda+1x77Hj9YustkgX0B7x2oE+wko=;
-        b=oNNhJQrIawJpattYZO3e8VSRnPlXCIm7KSRzGSNJCjvtU1yPJHsWyw4PwetFfQ+T3C
-         +Dq31NXp3JQiKEMbgoCr1Cr9iU/tnHVyy7/dvG+ZG2hdse/NuWNq2ZZWAwAb27BSNtAr
-         ayjV5ebuktYYGLetnvscpzi2ELDnbxIav6XZuHzt4BdWmEHl1ZIfoZIDPopcK3Cd95e3
-         ggubS2+9xSdHYVVhWZxk7kvrFHgNKN/xccYMfsH9w/8CtlSUXtFP6Zrajo97lwCaBwcZ
-         onz0f+lglVvwEbaaPneFPBRzlUTntlsMOY8IvLYRRIWUPXhjtV0AR1V2Edf8PpQn5bWN
-         4/7Q==
-X-Gm-Message-State: AOAM533vU/BbqNGQfIXC2kz26LU6KqvlxRW06YYPG9bpeIGaaepwGWi7
-        DAfLCtjJXJdsNEu5xtTSGcuQ+g==
-X-Google-Smtp-Source: ABdhPJzooXnp7EQxQROOT+sxrgNDDlaYzFNFLhSLck9XXChNXHZU8TVmbfVi32Cje1OtodPD0qw5ow==
-X-Received: by 2002:a9d:1b63:: with SMTP id l90mr1519714otl.219.1623280556395;
-        Wed, 09 Jun 2021 16:15:56 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f19sm299960ots.41.2021.06.09.16.15.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 16:15:55 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/dpu: Avoid ABBA deadlock between IRQ modules
-Date:   Wed,  9 Jun 2021 16:15:07 -0700
-Message-Id: <20210609231507.3031904-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        bh=rPwFm+rW5VJo250kQOZcru/sRI6+UZ6fSWYAEKjNOl8=;
+        b=gzLjjXQSUWV7c4Impbl6WnbA44uQXk4bx7UMUmzpGdbus7opsr7xBFivbb9alC1goM
+         QxHP2mYjuJaQ1MFFb5yAd80T9jV9LGxuFEGJa2wiIgBM+EEnONygUcClfwv4mbn4VTb5
+         H3hNcZy2TVBZODdT5tdZ3mvBS7UXSjCXX9SZQaLcUfe7M6yFlNEvxw1oGWvTqfFQCtQF
+         808KSIRbxeXs0yuWIGW3rbf2Kwh4XoZfbTkgmGJF3IJW5tT0HW4j01Eu4s+1+syvI7ps
+         Z7/og2A4ItTyZfBRZNX4xBiHLnH/D1gn+UHh6zhHaHfK99CHGmuZQZQjuvsemr+Khiso
+         MC1Q==
+X-Gm-Message-State: AOAM531oYEDtYEkJNiVQ+sYi0NFHBT0T0RTf9Ih9bv59Or3KgHIyGQ38
+        KdqXOK7ycCLbrhEUQohFfXI3gw==
+X-Google-Smtp-Source: ABdhPJx7y5w6Y2cekg09LzZc1GmAicnE6+tSkLAtxpBWIyREqveDAqIwuJX1FGXwpqEcOmgaufVpkg==
+X-Received: by 2002:a17:90a:dc04:: with SMTP id i4mr135874pjv.75.1623281244893;
+        Wed, 09 Jun 2021 16:27:24 -0700 (PDT)
+Received: from n124-121-013.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
+        by smtp.gmail.com with ESMTPSA id k1sm526783pfa.30.2021.06.09.16.27.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Jun 2021 16:27:24 -0700 (PDT)
+From:   Jiang Wang <jiang.wang@bytedance.com>
+To:     sgarzare@redhat.com
+Cc:     virtualization@lists.linux-foundation.org, stefanha@redhat.com,
+        mst@redhat.com, arseny.krasnov@kaspersky.com,
+        jhansen@vmware.comments, cong.wang@bytedance.com,
+        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
+        chaiwen.cc@bytedance.com, Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Lu Wei <luwei32@huawei.com>,
+        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC v1 0/6] virtio/vsock: introduce SOCK_DGRAM support
+Date:   Wed,  9 Jun 2021 23:24:52 +0000
+Message-Id: <20210609232501.171257-1-jiang.wang@bytedance.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Handling of the interrupt callback lists is done in dpu_core_irq.c,
-under the "cb_lock" spinlock. When these operations results in the need
-for enableing or disabling the IRQ in the hardware the code jumps to
-dpu_hw_interrupts.c, which protects its operations with "irq_lock"
-spinlock.
+This patchset implements support of SOCK_DGRAM for virtio
+transport.
 
-When an interrupt fires, dpu_hw_intr_dispatch_irq() inspects the
-hardware state while holding the "irq_lock" spinlock and jumps to
-dpu_core_irq_callback_handler() to invoke the registered handlers, which
-traverses the callback list under the "cb_lock" spinlock.
+Datagram sockets are connectionless and unreliable. To avoid unfair contention
+with stream and other sockets, add two more virtqueues and
+a new feature bit to indicate if those two new queues exist or not.
 
-As such, in the event that these happens concurrently we'll end up with
-a deadlock.
+Dgram does not use the existing credit update mechanism for
+stream sockets. When sending from the guest/driver, sending packets 
+synchronously, so the sender will get an error when the virtqueue is full.
+When sending from the host/device, send packets asynchronously
+because the descriptor memory belongs to the corresponding QEMU
+process.
 
-Prior to '1c1e7763a6d4 ("drm/msm/dpu: simplify IRQ enabling/disabling")'
-the enable/disable of the hardware interrupt was done outside the
-"cb_lock" region, optimitically by using an atomic enable-counter for
-each interrupt and an warning print if someone changed the list between
-the atomic_read and the time the operation concluded.
+The virtio spec patch is here: 
+https://www.spinics.net/lists/linux-virtualization/msg50027.html
 
-Rather than re-introducing the large array of atomics, serialize the
-register/unregister operations under a single mutex.
+For those who prefer git repo, here is the link for the linux kernel：
+https://github.com/Jiang1155/linux/tree/vsock-dgram-v1
 
-Fixes: 1c1e7763a6d4 ("drm/msm/dpu: simplify IRQ enabling/disabling")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c | 10 +++++++---
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h      |  2 ++
- 2 files changed, 9 insertions(+), 3 deletions(-)
+qemu patch link:
+https://github.com/Jiang1155/qemu/tree/vsock-dgram-v1
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-index 4f110c428b60..62bbe35eff7b 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-@@ -82,11 +82,13 @@ int dpu_core_irq_register_callback(struct dpu_kms *dpu_kms, int irq_idx,
- 
- 	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
- 
-+	mutex_lock(&dpu_kms->irq_obj.hw_enable_lock);
- 	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
- 	trace_dpu_core_irq_register_callback(irq_idx, register_irq_cb);
- 	list_del_init(&register_irq_cb->list);
- 	list_add_tail(&register_irq_cb->list,
- 			&dpu_kms->irq_obj.irq_cb_tbl[irq_idx]);
-+	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
- 	if (list_is_first(&register_irq_cb->list,
- 			&dpu_kms->irq_obj.irq_cb_tbl[irq_idx])) {
- 		int ret = dpu_kms->hw_intr->ops.enable_irq(
-@@ -96,8 +98,7 @@ int dpu_core_irq_register_callback(struct dpu_kms *dpu_kms, int irq_idx,
- 			DPU_ERROR("Fail to enable IRQ for irq_idx:%d\n",
- 					irq_idx);
- 	}
--
--	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
-+	mutex_unlock(&dpu_kms->irq_obj.hw_enable_lock);
- 
- 	return 0;
- }
-@@ -127,9 +128,11 @@ int dpu_core_irq_unregister_callback(struct dpu_kms *dpu_kms, int irq_idx,
- 
- 	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
- 
-+	mutex_lock(&dpu_kms->irq_obj.hw_enable_lock);
- 	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
- 	trace_dpu_core_irq_unregister_callback(irq_idx, register_irq_cb);
- 	list_del_init(&register_irq_cb->list);
-+	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
- 	/* empty callback list but interrupt is still enabled */
- 	if (list_empty(&dpu_kms->irq_obj.irq_cb_tbl[irq_idx])) {
- 		int ret = dpu_kms->hw_intr->ops.disable_irq(
-@@ -140,7 +143,7 @@ int dpu_core_irq_unregister_callback(struct dpu_kms *dpu_kms, int irq_idx,
- 					irq_idx);
- 		DPU_DEBUG("irq_idx=%d ret=%d\n", irq_idx, ret);
- 	}
--	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
-+	mutex_unlock(&dpu_kms->irq_obj.hw_enable_lock);
- 
- 	return 0;
- }
-@@ -207,6 +210,7 @@ void dpu_core_irq_preinstall(struct dpu_kms *dpu_kms)
- 	dpu_disable_all_irqs(dpu_kms);
- 	pm_runtime_put_sync(&dpu_kms->pdev->dev);
- 
-+	mutex_init(&dpu_kms->irq_obj.hw_enable_lock);
- 	spin_lock_init(&dpu_kms->irq_obj.cb_lock);
- 
- 	/* Create irq callbacks for all possible irq_idx */
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-index f6840b1af6e4..5a162caea29d 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-@@ -83,6 +83,7 @@ struct dpu_irq_callback {
-  * @total_irq:    total number of irq_idx obtained from HW interrupts mapping
-  * @irq_cb_tbl:   array of IRQ callbacks setting
-  * @cb_lock:      callback lock
-+ * @hw_enable_lock: lock to synchronize callback register and unregister
-  * @debugfs_file: debugfs file for irq statistics
-  */
- struct dpu_irq {
-@@ -90,6 +91,7 @@ struct dpu_irq {
- 	struct list_head *irq_cb_tbl;
- 	atomic_t *irq_counts;
- 	spinlock_t cb_lock;
-+	struct mutex hw_enable_lock;
- };
- 
- struct dpu_kms {
+
+To do:
+1. use skb when receiving packets
+2. support multiple transport
+3. support mergeable rx buffer
+
+
+Jiang Wang (6):
+  virtio/vsock: add VIRTIO_VSOCK_F_DGRAM feature bit
+  virtio/vsock: add support for virtio datagram
+  vhost/vsock: add support for vhost dgram.
+  vsock_test: add tests for vsock dgram
+  vhost/vsock: add kconfig for vhost dgram support
+  virtio/vsock: add sysfs for rx buf len for dgram
+
+ drivers/vhost/Kconfig                              |   8 +
+ drivers/vhost/vsock.c                              | 207 ++++++++--
+ include/linux/virtio_vsock.h                       |   9 +
+ include/net/af_vsock.h                             |   1 +
+ .../trace/events/vsock_virtio_transport_common.h   |   5 +-
+ include/uapi/linux/virtio_vsock.h                  |   4 +
+ net/vmw_vsock/af_vsock.c                           |  12 +
+ net/vmw_vsock/virtio_transport.c                   | 433 ++++++++++++++++++---
+ net/vmw_vsock/virtio_transport_common.c            | 184 ++++++++-
+ tools/testing/vsock/util.c                         | 105 +++++
+ tools/testing/vsock/util.h                         |   4 +
+ tools/testing/vsock/vsock_test.c                   | 195 ++++++++++
+ 12 files changed, 1070 insertions(+), 97 deletions(-)
+
 -- 
-2.29.2
+2.11.0
 
