@@ -2,85 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CA23A08D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BB93A08CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 02:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235374AbhFIA6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 20:58:49 -0400
-Received: from mail-wm1-f44.google.com ([209.85.128.44]:36705 "EHLO
-        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235327AbhFIA6p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 20:58:45 -0400
-Received: by mail-wm1-f44.google.com with SMTP id h11-20020a05600c350bb02901b59c28e8b4so2666397wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 17:56:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9qeiNnEqHnToVwTF+YALaJhts33Y3hAzDOiNFEpUNqM=;
-        b=nqsl5TFA6nFViy1WhnYLZii0d/gfdyqbxMgo5ZeCK+zscVoklu4FygICY98Ui//B6f
-         nCqThTZMMhYiHD4SThREyZrFCg+F9BfwGkG4DqwOzwpjwwl7ICQYAkZ/P3DlUE32eBtl
-         npsM7xAJQBoLFsBLrlmr81kRgV5HvHjICWZSA/fZgQBWkdDx/2nHjZU1GQ/Lj6p2IV98
-         FmmigXGK7Z0E94aqQpyP2g921KQ/vi1edhJoiU6MSqBsPr9zsKXC8FFKOo4R32sUVPuB
-         WWLLPhyl/pILiWvSG9BUxQf+Jkkb0QIyP35vDEmcfqloSOejvDWhu0tJnTMgBQOcc/sy
-         Ovww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9qeiNnEqHnToVwTF+YALaJhts33Y3hAzDOiNFEpUNqM=;
-        b=g1AJT3DXzj9ZqXqcwwmvhlLKCw+VRmfoWO3NwKCLqO/pW3Loq5/EiVSQZpksOK5/51
-         WzbAN0qr57piOwf7OXyQn8aoAKqqRnEIY7bolsJIc6OPIHVSbjaiXOTPn3N5oRfhmHNQ
-         xGSjSZJn9ISBbsmI3a3SBFe3Kr3t9h0OAf47ZUQsYrNEqgGwvlISvSVN5S1868X+iSr5
-         UXacQpgFbQS8mBIFA89FPudBkldZeZ5HL2ZBqMYFdjcus2ZRNXiGdrML8Uwx1pGYKz0G
-         m/ooC2yzVRJJwMMPEJeY8fDgro7FdlCxqq0mklfztEhgbEv2eu4kThBMsFZEnumv2mj1
-         jHcQ==
-X-Gm-Message-State: AOAM5301ejOr77o+vv/rOdwZbJSkaWkd9Uxa/eGjEM2FU/dRb+9eGruZ
-        9ZmgFBBoVxQBwbNfsnTA3o58OsqxqtmC7LeL4jXSRQ==
-X-Google-Smtp-Source: ABdhPJwGRvjqPAaMqbRNcEgccpnUGqtyTTgun+Da0x1HGhPQzUmbKr8INifXJjdvTGBCDxpQ3rvZx1RAIbgdMxBGVss=
-X-Received: by 2002:a7b:cbd1:: with SMTP id n17mr25640495wmi.2.1623200151418;
- Tue, 08 Jun 2021 17:55:51 -0700 (PDT)
+        id S235318AbhFIA55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 20:57:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231765AbhFIA54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 20:57:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8FDF6124B;
+        Wed,  9 Jun 2021 00:56:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623200162;
+        bh=9VZZ3dYanjL4pxobsOVDXf3FlQOUGrTbEBeIxBUzJTQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HtP5BNNO1bd7ZPvsPWKIiMgc6B6yH+iG11ZCZDZ1vYm/Q26cd40/0aI/1UbmZ15Yl
+         A61XyLUv0CTFXdyCS9Qqz+lpET5muULfCS/ZYIl3obcMGNBvG2SfD46ZK9iFa/TAes
+         2v1tsgs3BHL2SmNZfEjgP1KVy0/RoIZJNCyq/DUCo4bbvB9p9N604zhJjO44ZTchAy
+         wYMi/OAxIPaZuRV0noEbhAvNKKtkOC+kCY/Ee7CoMbHIHkmjWjy7/K9+Sgwgw33Oot
+         aQxjqppjUO6oIVjAmYx6hu2pktc+zlHHdSaJ9eZQ2BbM5sSLjT4r8TMjJpX1SuFMgy
+         Nll1j/iq6ABCg==
+Received: by mail-qt1-f175.google.com with SMTP id r20so1446557qtp.3;
+        Tue, 08 Jun 2021 17:56:02 -0700 (PDT)
+X-Gm-Message-State: AOAM530Hgf4lidR9soIzaUcC26yep3W6IWY9PCmhXRSaAdzSIExGsQ67
+        t2jZWgHBxTBQoZGJ7rplGvoyGgNwNmbitbLCBQ==
+X-Google-Smtp-Source: ABdhPJysm9gRFl1Ia/PV0WqH78X/KYQI39DaJW4wUxJODVFqslxntRsKzyfSkVIMQAf0+Yem27Ky25KQdgLXYnkXk1s=
+X-Received: by 2002:aed:30cd:: with SMTP id 71mr23683635qtf.31.1623200162179;
+ Tue, 08 Jun 2021 17:56:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210608143159.1.I230026301243fbcee23d408c75aa468c1fec58f7@changeid>
- <e599ffb5-da5c-e4bb-a7d6-c2208a48868d@amd.com>
-In-Reply-To: <e599ffb5-da5c-e4bb-a7d6-c2208a48868d@amd.com>
-From:   "Anand K. Mistry" <amistry@google.com>
-Date:   Wed, 9 Jun 2021 10:55:38 +1000
-Message-ID: <CAATStaPcjYAoMdUVj_G3p_OQuw_faQY0PGiXeo3unPFd=WN2vA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Fix error code on failure to set brightness
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     amd-gfx@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, Eryk Brol <eryk.brol@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Nikola Cornij <nikola.cornij@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Wayne Lin <Wayne.Lin@amd.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210607193928.3092186-1-robh@kernel.org>
+In-Reply-To: <20210607193928.3092186-1-robh@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 8 Jun 2021 19:55:51 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKBYnLixhgVaMRACLAny_3_stqvgxyot2frhiiKP56KXA@mail.gmail.com>
+Message-ID: <CAL_JsqKBYnLixhgVaMRACLAny_3_stqvgxyot2frhiiKP56KXA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: virtio: Convert virtio-mmio to DT schema
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 7, 2021 at 2:39 PM Rob Herring <robh@kernel.org> wrote:
 >
-> Thanks for your patch but this code has changed on amd-staging-drm-next.
+> Convert the virtio-mmio binding to DT schema format.
 >
-> Can you try with the latest? The new backlight_update_status will always
-> return 0 now.
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: virtualization@lists.linux-foundation.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> Jean-Philippe, hopefully you are okay with being listed as the
+> maintainer here. You're the only active person that's touched this
+> binding.
+>
+>  .../devicetree/bindings/virtio/mmio.txt       | 47 ---------------
+>  .../devicetree/bindings/virtio/mmio.yaml      | 60 +++++++++++++++++++
+>  2 files changed, 60 insertions(+), 47 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/virtio/mmio.txt
+>  create mode 100644 Documentation/devicetree/bindings/virtio/mmio.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/virtio/mmio.txt b/Documentation/devicetree/bindings/virtio/mmio.txt
+> deleted file mode 100644
+> index 0a575f329f6e..000000000000
+> --- a/Documentation/devicetree/bindings/virtio/mmio.txt
+> +++ /dev/null
+> @@ -1,47 +0,0 @@
+> -* virtio memory mapped device
+> -
+> -See https://ozlabs.org/~rusty/virtio-spec/ for more details.
+> -
+> -Required properties:
+> -
+> -- compatible:  "virtio,mmio" compatibility string
+> -- reg:         control registers base address and size including configuration space
+> -- interrupts:  interrupt generated by the device
+> -
+> -Required properties for virtio-iommu:
+> -
+> -- #iommu-cells:        When the node corresponds to a virtio-iommu device, it is
+> -               linked to DMA masters using the "iommus" or "iommu-map"
+> -               properties [1][2]. #iommu-cells specifies the size of the
+> -               "iommus" property. For virtio-iommu #iommu-cells must be
+> -               1, each cell describing a single endpoint ID.
+> -
+> -Optional properties:
+> -
+> -- iommus:      If the device accesses memory through an IOMMU, it should
+> -               have an "iommus" property [1]. Since virtio-iommu itself
+> -               does not access memory through an IOMMU, the "virtio,mmio"
+> -               node cannot have both an "#iommu-cells" and an "iommus"
+> -               property.
+> -
+> -Example:
+> -
+> -       virtio_block@3000 {
+> -               compatible = "virtio,mmio";
+> -               reg = <0x3000 0x100>;
+> -               interrupts = <41>;
+> -
+> -               /* Device has endpoint ID 23 */
+> -               iommus = <&viommu 23>
+> -       }
+> -
+> -       viommu: iommu@3100 {
+> -               compatible = "virtio,mmio";
+> -               reg = <0x3100 0x100>;
+> -               interrupts = <42>;
+> -
+> -               #iommu-cells = <1>
+> -       }
+> -
+> -[1] Documentation/devicetree/bindings/iommu/iommu.txt
+> -[2] Documentation/devicetree/bindings/pci/pci-iommu.txt
+> diff --git a/Documentation/devicetree/bindings/virtio/mmio.yaml b/Documentation/devicetree/bindings/virtio/mmio.yaml
+> new file mode 100644
+> index 000000000000..444bfa24affc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/virtio/mmio.yaml
+> @@ -0,0 +1,60 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/virtio/mmio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: virtio memory mapped devices
+> +
+> +maintainers:
+> +  - Jean-Philippe Brucker <jean-philippe@linaro.org>
+> +
+> +description:
+> +  See https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio for
+> +  more details.
+> +
+> +properties:
+> +  compatible:
+> +    const: virtio-mmio
 
-Perfect! This solves my actual issue which is that restoring the
-backlight level is failing on my device. Thank you.
-
-
--- 
-Anand K. Mistry
-Software Engineer
-Google Australia
+This should be virtio,mmio.
