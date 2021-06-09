@@ -2,221 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B96B3A0971
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F863A097F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236117AbhFIBhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 21:37:14 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8096 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236076AbhFIBhC (ORCPT
+        id S232105AbhFIBjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 21:39:06 -0400
+Received: from mail-pl1-f178.google.com ([209.85.214.178]:36458 "EHLO
+        mail-pl1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231344AbhFIBjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 21:37:02 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G08jY3hsjzYsVK;
-        Wed,  9 Jun 2021 09:32:17 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 09:35:07 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 09:35:06 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Joe Perches <joe@perches.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/1] lib: Fix spelling mistakes in header files
-Date:   Wed, 9 Jun 2021 09:34:51 +0800
-Message-ID: <20210609013451.13706-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210609013451.13706-1-thunder.leizhen@huawei.com>
-References: <20210609013451.13706-1-thunder.leizhen@huawei.com>
+        Tue, 8 Jun 2021 21:39:05 -0400
+Received: by mail-pl1-f178.google.com with SMTP id x10so11686615plg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 18:37:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ADGx8I2KcMDPVSoVByCVW4+6HsQLP6CKmqo+BRHHLzc=;
+        b=O+J6P1Rm38MQriGs607fNK5W+OdHQ4cnplN9ZC+kswm45I0FvLSINUD4YuTrE3bHPO
+         DOSS5CN/52sj2+kIkVA5oBqiVuPVSjuqBkdy6MCmI2LIk88GwHE/M9kW+N73hPEdPK3C
+         nfNMpryWJvk5RHX6TxS/oc3tYATk6yukvu3G5Ju9bzee56fWpAfvWFx7obzmnhBSwwu9
+         uAvhwg8PzWHqSyVV8OcZiQH/IWrvCO/IL67KDKy14QHWZIMsCdeSNUPFNpL2qFUuTzy/
+         wpv9XnhIA0yLmWlcGbmx6KhNZCaxVOZDiJ/oAyxdD3lsZpKjVADEkWKb86/TZKTk+9Wj
+         isJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ADGx8I2KcMDPVSoVByCVW4+6HsQLP6CKmqo+BRHHLzc=;
+        b=i3Fpd5kPV4nspu/GSaVBAaBKXyyanA+ltBFCsJ0oWsUWSlNnKobOOpE+uxORvYUyzw
+         bx/DbtnLFI4nGaG5tin/eLxsgvPDXF89YlctzcfdoekKrCZosksJ0Nv8pDwqw568mPM3
+         TxEu8HAUMwkvHHCyDmqqzwdyDDNXMywZq+z7coU5CohW6ykaam5gjbk15UPfh1NKRPIy
+         XZ6T6kEBnBnBLpmQe555Md+DHeNJvRPIDgKvNu4GekCkGZnGr2HMdb9YF5HesLbytlge
+         ezyB+NqdFiQ4xetxMtlDj71S6sO09/tgJL1Jwm826XGz7c4wOSRmuHUahBelYPIsq8H1
+         ZR9A==
+X-Gm-Message-State: AOAM530PuNCgmenzZId+WUrdGZGYoiA1U0I78xQJN7cIfJlP3gSFXE4b
+        XSW8yLRg38lTlb+Kak5qH+1XcQ==
+X-Google-Smtp-Source: ABdhPJzMBGCVS1q9skbi2XatNkAp/tRgKA6BSqDd8okbKfPzx7mA8R7I60UbR1xs0xRDqhAfmguNOQ==
+X-Received: by 2002:a17:902:e302:b029:110:994a:abb7 with SMTP id q2-20020a170902e302b0290110994aabb7mr2972334plc.53.1623202562643;
+        Tue, 08 Jun 2021 18:36:02 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (ec2-18-167-84-74.ap-east-1.compute.amazonaws.com. [18.167.84.74])
+        by smtp.gmail.com with ESMTPSA id w63sm11968095pfw.153.2021.06.08.18.35.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 18:36:02 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 09:35:55 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Denis Nikitin <denik@google.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] coresight: etm-perf: Correct buffer syncing for
+ snapshot
+Message-ID: <20210609013555.GD4640@leoy-ThinkPad-X240s>
+References: <20210528161552.654907-1-leo.yan@linaro.org>
+ <20210528161552.654907-2-leo.yan@linaro.org>
+ <20210608214149.GA331611@p14s>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608214149.GA331611@p14s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some spelling mistakes in comments found by "codespell":
-Hoever ==> However
-poiter ==> pointer
-representaion ==> representation
-uppon ==> upon
-independend ==> independent
-aquired ==> acquired
-mis-match ==> mismatch
-scrach ==> scratch
-struture ==> structure
-Analagous ==> Analogous
-interation ==> iteration
+On Tue, Jun 08, 2021 at 03:41:49PM -0600, Mathieu Poirier wrote:
+> On Sat, May 29, 2021 at 12:15:50AM +0800, Leo Yan wrote:
+> > The perf tool records the Arm CoreSight trace data with snapshot mode
+> > with the option '-S', when receiving USR2 signal, it is observed the
+> > captured trace data size is very varied: from several MBs to ~20MBs.
+> > This can be reproduced with the command:
+> > 
+> >   perf record -e cs_etm// -S \
+> > 	-- dd if=/dev/zero of=/dev/null > /dev/null 2>&1 &
+> >   PERFPID=$!
+> >   sleep 1
+> >   kill -USR2 $PERFPID
+> > 
+> > It's different for only specifying option '-S' than options '-a -S'.  If
+> > without option '-a', perf tool creates separate AUX buffers for every
+> > CPU, but the tracer will be enabled only when the profiled program is
+> > scheduled onto the corresponding CPU, this might lead to record very
+> > old trace data when snapshot.
+> 
+> I'm very perplexed by this paragraph...  The '-a' option means tracing on all
+> CPUs, which will definitely allocate an AUX buffer per CPU.
 
-And one was discovered manually by Joe Perches:
-stroed ==> stored
+Sorry for confusion.  We can understand the mechanism based on two factors:
+one factor is AUX buffer allocation (per CPU or single AUX buffer
+shared by all CPUs), another factor is what's the occasion to enable tracers.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- include/linux/bootconfig.h      | 4 ++--
- include/linux/cpumask.h         | 2 +-
- include/linux/debugobjects.h    | 2 +-
- include/linux/lru_cache.h       | 8 ++++----
- include/linux/nodemask.h        | 6 +++---
- include/linux/percpu-refcount.h | 2 +-
- include/linux/scatterlist.h     | 2 +-
- 7 files changed, 13 insertions(+), 13 deletions(-)
+If with only option '-a -S', as you said, perf allocates an AUX buffer per CPU.
+And it always enable ETMs for all CPUs.
 
-diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
-index 2696eb0fc149..6e688dd11d4f 100644
---- a/include/linux/bootconfig.h
-+++ b/include/linux/bootconfig.h
-@@ -162,10 +162,10 @@ static inline struct xbc_node * __init xbc_find_node(const char *key)
-  * @value: Iterated value of array entry.
-  *
-  * Iterate array entries of given @key under @node. Each array entry node
-- * is stroed to @anode and @value. If the @node doesn't have @key node,
-+ * is stored to @anode and @value. If the @node doesn't have @key node,
-  * it does nothing.
-  * Note that even if the found key node has only one value (not array)
-- * this executes block once. Hoever, if the found key node has no value
-+ * this executes block once. However, if the found key node has no value
-  * (key-only node), this does nothing. So don't use this for testing the
-  * key-value pair existence.
-  */
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index bfc4690de4f4..f3689a52bfd0 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -259,7 +259,7 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
- /**
-  * for_each_cpu_wrap - iterate over every cpu in a mask, starting at a specified location
-  * @cpu: the (optionally unsigned) integer iterator
-- * @mask: the cpumask poiter
-+ * @mask: the cpumask pointer
-  * @start: the start location
-  *
-  * The implementation does not assume any bit in @mask is set (including @start).
-diff --git a/include/linux/debugobjects.h b/include/linux/debugobjects.h
-index 8d2dde23e9fb..32444686b6ff 100644
---- a/include/linux/debugobjects.h
-+++ b/include/linux/debugobjects.h
-@@ -18,7 +18,7 @@ enum debug_obj_state {
- struct debug_obj_descr;
- 
- /**
-- * struct debug_obj - representaion of an tracked object
-+ * struct debug_obj - representation of an tracked object
-  * @node:	hlist node to link the object into the tracker list
-  * @state:	tracked object state
-  * @astate:	current active state
-diff --git a/include/linux/lru_cache.h b/include/linux/lru_cache.h
-index 429d67d815ce..f65c6734be3c 100644
---- a/include/linux/lru_cache.h
-+++ b/include/linux/lru_cache.h
-@@ -32,7 +32,7 @@ This header file (and its .c file; kernel-doc of functions see there)
-   Because of this later property, it is called "lru_cache".
-   As it actually Tracks Objects in an Active SeT, we could also call it
-   toast (incidentally that is what may happen to the data on the
--  backend storage uppon next resync, if we don't get it right).
-+  backend storage upon next resync, if we don't get it right).
- 
- What for?
- 
-@@ -152,7 +152,7 @@ struct lc_element {
- 	 * for paranoia, and for "lc_element_to_index" */
- 	unsigned lc_index;
- 	/* if we want to track a larger set of objects,
--	 * it needs to become arch independend u64 */
-+	 * it needs to become arch independent u64 */
- 	unsigned lc_number;
- 	/* special label when on free list */
- #define LC_FREE (~0U)
-@@ -263,7 +263,7 @@ extern void lc_seq_dump_details(struct seq_file *seq, struct lru_cache *lc, char
-  *
-  * Allows (expects) the set to be "dirty".  Note that the reference counts and
-  * order on the active and lru lists may still change.  Used to serialize
-- * changing transactions.  Returns true if we aquired the lock.
-+ * changing transactions.  Returns true if we acquired the lock.
-  */
- static inline int lc_try_lock_for_transaction(struct lru_cache *lc)
- {
-@@ -275,7 +275,7 @@ static inline int lc_try_lock_for_transaction(struct lru_cache *lc)
-  * @lc: the lru cache to operate on
-  *
-  * Note that the reference counts and order on the active and lru lists may
-- * still change.  Only works on a "clean" set.  Returns true if we aquired the
-+ * still change.  Only works on a "clean" set.  Returns true if we acquired the
-  * lock, which means there are no pending changes, and any further attempt to
-  * change the set will not succeed until the next lc_unlock().
-  */
-diff --git a/include/linux/nodemask.h b/include/linux/nodemask.h
-index ac398e143c9a..cfa21b78b8d5 100644
---- a/include/linux/nodemask.h
-+++ b/include/linux/nodemask.h
-@@ -119,7 +119,7 @@ static inline const unsigned long *__nodemask_pr_bits(const nodemask_t *m)
-  * The inline keyword gives the compiler room to decide to inline, or
-  * not inline a function as it sees best.  However, as these functions
-  * are called in both __init and non-__init functions, if they are not
-- * inlined we will end up with a section mis-match error (of the type of
-+ * inlined we will end up with a section mismatch error (of the type of
-  * freeable items not being freed).  So we must use __always_inline here
-  * to fix the problem.  If other functions in the future also end up in
-  * this situation they will also need to be annotated as __always_inline
-@@ -515,7 +515,7 @@ static inline int node_random(const nodemask_t *mask)
- #define for_each_online_node(node) for_each_node_state(node, N_ONLINE)
- 
- /*
-- * For nodemask scrach area.
-+ * For nodemask scratch area.
-  * NODEMASK_ALLOC(type, name) allocates an object with a specified type and
-  * name.
-  */
-@@ -528,7 +528,7 @@ static inline int node_random(const nodemask_t *mask)
- #define NODEMASK_FREE(m)			do {} while (0)
- #endif
- 
--/* A example struture for using NODEMASK_ALLOC, used in mempolicy. */
-+/* A example structure for using NODEMASK_ALLOC, used in mempolicy. */
- struct nodemask_scratch {
- 	nodemask_t	mask1;
- 	nodemask_t	mask2;
-diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
-index 16c35a728b4c..ae16a9856305 100644
---- a/include/linux/percpu-refcount.h
-+++ b/include/linux/percpu-refcount.h
-@@ -213,7 +213,7 @@ static inline void percpu_ref_get_many(struct percpu_ref *ref, unsigned long nr)
-  * percpu_ref_get - increment a percpu refcount
-  * @ref: percpu_ref to get
-  *
-- * Analagous to atomic_long_inc().
-+ * Analogous to atomic_long_inc().
-  *
-  * This function is safe to call as long as @ref is between init and exit.
-  */
-diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-index 6f70572b2938..ecf87484814f 100644
---- a/include/linux/scatterlist.h
-+++ b/include/linux/scatterlist.h
-@@ -474,7 +474,7 @@ sg_page_iter_dma_address(struct sg_dma_page_iter *dma_iter)
-  * Iterates over sg entries mapping page-by-page.  On each successful
-  * iteration, @miter->page points to the mapped page and
-  * @miter->length bytes of data can be accessed at @miter->addr.  As
-- * long as an interation is enclosed between start and stop, the user
-+ * long as an iteration is enclosed between start and stop, the user
-  * is free to choose control structure and when to stop.
-  *
-  * @miter->consumed is set to @miter->length on each iteration.  It
--- 
-2.25.1
+If with option '-S', perf also allocates an AUX buffer per CPU, but
+it's different for enabling tracers from the option '-a -S';  in this
+case, perf works like per-thread mode, the tracer (ETM) is only enabled
+when the profiled process is scheduled on a specific CPU.  e.g. when
+the task is scheduled on CPU2, then the ETM attached to CPU2 is
+enabled for tracing.
 
+> > Let's see below diagram:
+> >                                                             snapshot
+> >   CPU0: ______###P1###__________________________________________|
+> >   CPU1: __________________________###P3###____________###P5###__|
+> >   CPU2: ____________________________________###P4###____________|
+> >   CPU3: ________________###P2###________________________________V
+> > 
+> > In this diagram, the program runs for 5 periods (from P1 to P5), these 5
+> > periods show the task run on different CPUs, e.g. during P1 period the
+> > program runs on CPU0, and during P2 period the program is migrated to
+> > CPU1, and so on.  At the end of P1 period when the program is switched
+> > out from CPU0, the ETR trace data is saved into AUX trace buffer, this
+> > AUX buffer is a dedicated buffer for CPU0's tracer.  With the same
+> > logic, P2's trace data is saved into CPU3's tracer buffer, P4's trace
+> > data is saved into CPU2's buffer, P3 and P5's trace data is saved into
+> > CPU1's.  Therefore, when snapshot, it saves the trace data from all AUX
+> > ring buffers (in this case, it have total 4 AUX ring buffers) into perf
+> > data file.
+> >
+> 
+> When a snapshot happens and if the event is currently active, traces
+> accumulated since the event was _installed_ on the CPU will be copied from the
+> coresight buffer to the AUX buffer.  Trace data accumulated in other buffers will
+> already have been copied when the event was scheduled out.
 
+Yes.
+
+> I *think* what is happening here is that if P5 was still active when the
+> snapshot occurs, we would get trace data from P3 and P5, and not P4.  Is my
+> understanding correct?
+
+No, in current code, when the snapshot occurs, we get trace data from
+P1 to P5.
+
+Keep in mind that the AUX ring buffer and CoreSight's bounce buffer are
+allocated per CPU.  So P1 trace data is stored into AUX buffer 0, P3 and
+P5 trace data is stored in AUX buffer 1, and so on.
+
+When the snapshot is taken, it iterates the AUX buffers one bye one
+from buffer 0 to buffer 3, see the function
+record__auxtrace_read_snapshot_all() in the perf source file builtin-record.c.
+Since every AUX buffer contains the trace data, so P1 to P5's trace
+data will be recorded into perf data file.
+
+> > This is why we can see varied trace data size, it's quite dependent on
+> > the task scheduling on CPUs, if the task is spinned to only one CPU and
+> > without scheduling out, it will only record trace data from only one
+> > AUX trace buffer.  If the task is frequently scheduled in and out, then
+> > it gives more chance to fill trace data into the AUX buffer.
+> > 
+> > In this example, it also causes the discontinuous trace data.  If P3's
+> > trace data is lost after P5's trace data overwrites the AUX trace data,
+> > thus perf tool fails to record continuous trace data if only have
+> > trace data for P1/P2/P4/P5.
+> > 
+> > For snapshot mode, usually the user only wants to capture the trace data
+> > for the specific time point and prior to the that point the tracer
+> > should work with free run mode.  This means it's not necessary to
+> > capture trace data for task's scheduling in and out until the perf tool
+> > explicitly disables tracers for snapshot.  This can be fulfilled by
+> > checking the variable "event->ctx->is_active", when the task is
+> > scheduled out this variable is set to zero, and when snapshot this
+> > variable is still non-zero value.  So the driver can only record trace
+> > data only when "event->ctx->is_active" is non-zero.
+> 
+> The problem with this approach is that if the AUX buffer is 4MB and the CS
+> buffer is 1MB then we only record 1MB, but because of N:1 topologies we may not
+> be able to do better.  I haven't looked at the code yet, something I will do
+> tomorrow.
+
+Yes, the fixing in this patch copies the trace data is limited by the
+CoreSight bounce buffer length.  So if CoreSight buffer length is
+1MiB, then we have no chance to allocate 4MiB for AUX buffer.
+
+Seems to me, it's unlikely that we have the AUX buffer with 4MiB and
+CoreSight bounce buffer with 1MiB.  I read the function
+tmc_alloc_etr_buffer(), in most case, the AUX buffer size and
+CoreSight bounce buffer size is consistent.
+
+If have any furter questions, just let me know.  Thanks for reviewing.
+
+Leo
