@@ -2,90 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E288E3A2087
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7703A20A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhFIXMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 19:12:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229507AbhFIXL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 19:11:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AF792613EE;
-        Wed,  9 Jun 2021 23:10:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623280204;
-        bh=eNgzYvBQDIPXLygVpH2eOXGfTsPlfSr5iuav7vW4i5Y=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=r4fen7UTfmMveKwYQB3FljtPOn+P9O3OsJYRsNX3e3RqZg9F6/m1VU17OA23wZlot
-         kj+6Tfp/bPVvQFlCXPHqE19Jl0lihOkISSqRk0DmaKfm5yX4T/Wooe7FwtBRDfE6lO
-         lVQm6nVrm4T/Gfv5hAjc4wYGSnRZ3JjM/WXuoKVmUQIAP6W2nPO/Rzf40KCVkwXUoG
-         jQuQYasZWxovQeXAJbqrB8YZHjJGZV8Wwe/GmGpEKK+Z7Ks+uk4Hr+1cqHuvxwEoSq
-         LY0usN7fw8Z3DM8UcKuzbBegythuzJOklGgrS8YQRMGEQzAhFy9/IxO+2SBOv7mGJk
-         qPSRvv0yBDcrA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9B37460A4D;
-        Wed,  9 Jun 2021 23:10:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229802AbhFIXSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 19:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhFIXSF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 19:18:05 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F22C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 16:15:57 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so25689313otg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 16:15:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W+qXEuKMwT/Oi1kda+1x77Hj9YustkgX0B7x2oE+wko=;
+        b=CozgERK9mWAGLeGbIgbK6FIiUpzN01bkJbwK/Zks7x8ccKbLRkaESJ+H+Bv0lV1ePV
+         dbhEAWHlvCAqC2pwJYqmctisuPGwGCFbgCRbogD7A1URYsQ7XV4UqRNeR8OZd9pw7HI4
+         gZc2e7RJqgb+buc8mmmKN7uVQ7SKLU6mAqMimjUVONpqRm0dHhYt9Buly5JHj8Ey1gKN
+         jNlJ98Iyw4/az9+JOYoZ0CWndTp61RM5JRav4t4eySFXtEw1f6P4mdM3uiFK0CfM4M+e
+         aTr/6qgDHcAzvKEB9/MCEbGW9PuU/pQa0+Oms0AB95wq/z033XlgOyecmdFXtOcmmR1P
+         /cog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W+qXEuKMwT/Oi1kda+1x77Hj9YustkgX0B7x2oE+wko=;
+        b=oNNhJQrIawJpattYZO3e8VSRnPlXCIm7KSRzGSNJCjvtU1yPJHsWyw4PwetFfQ+T3C
+         +Dq31NXp3JQiKEMbgoCr1Cr9iU/tnHVyy7/dvG+ZG2hdse/NuWNq2ZZWAwAb27BSNtAr
+         ayjV5ebuktYYGLetnvscpzi2ELDnbxIav6XZuHzt4BdWmEHl1ZIfoZIDPopcK3Cd95e3
+         ggubS2+9xSdHYVVhWZxk7kvrFHgNKN/xccYMfsH9w/8CtlSUXtFP6Zrajo97lwCaBwcZ
+         onz0f+lglVvwEbaaPneFPBRzlUTntlsMOY8IvLYRRIWUPXhjtV0AR1V2Edf8PpQn5bWN
+         4/7Q==
+X-Gm-Message-State: AOAM533vU/BbqNGQfIXC2kz26LU6KqvlxRW06YYPG9bpeIGaaepwGWi7
+        DAfLCtjJXJdsNEu5xtTSGcuQ+g==
+X-Google-Smtp-Source: ABdhPJzooXnp7EQxQROOT+sxrgNDDlaYzFNFLhSLck9XXChNXHZU8TVmbfVi32Cje1OtodPD0qw5ow==
+X-Received: by 2002:a9d:1b63:: with SMTP id l90mr1519714otl.219.1623280556395;
+        Wed, 09 Jun 2021 16:15:56 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id f19sm299960ots.41.2021.06.09.16.15.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 16:15:55 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dpu: Avoid ABBA deadlock between IRQ modules
+Date:   Wed,  9 Jun 2021 16:15:07 -0700
+Message-Id: <20210609231507.3031904-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 00/11] net: ipa: memory region rework, part 1
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162328020463.6274.14788072203026589858.git-patchwork-notify@kernel.org>
-Date:   Wed, 09 Jun 2021 23:10:04 +0000
-References: <20210609223503.2649114-1-elder@linaro.org>
-In-Reply-To: <20210609223503.2649114-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Handling of the interrupt callback lists is done in dpu_core_irq.c,
+under the "cb_lock" spinlock. When these operations results in the need
+for enableing or disabling the IRQ in the hardware the code jumps to
+dpu_hw_interrupts.c, which protects its operations with "irq_lock"
+spinlock.
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+When an interrupt fires, dpu_hw_intr_dispatch_irq() inspects the
+hardware state while holding the "irq_lock" spinlock and jumps to
+dpu_core_irq_callback_handler() to invoke the registered handlers, which
+traverses the callback list under the "cb_lock" spinlock.
 
-On Wed,  9 Jun 2021 17:34:52 -0500 you wrote:
-> This is the first portion of a very long series of patches that has
-> been split in two.  Once these patches are accepted, I'll post the
-> remaining patches.
-> 
-> The combined series reworks the way memory regions are defined in
-> the configuration data, and in the process solidifies code that
-> ensures configurations are valid.
-> 
-> [...]
+As such, in the event that these happens concurrently we'll end up with
+a deadlock.
 
-Here is the summary with links:
-  - [net-next,01/11] net: ipa: define IPA_MEM_END_MARKER
-    https://git.kernel.org/netdev/net-next/c/f636a83662ff
-  - [net-next,02/11] net: ipa: store memory region id in descriptor
-    https://git.kernel.org/netdev/net-next/c/14ab6a208c11
-  - [net-next,03/11] net: ipa: validate memory regions unconditionally
-    https://git.kernel.org/netdev/net-next/c/0300df2d9d24
-  - [net-next,04/11] net: ipa: separate memory validation from initialization
-    https://git.kernel.org/netdev/net-next/c/98334d2a3ba4
-  - [net-next,05/11] net: ipa: separate region range check from other validation
-    https://git.kernel.org/netdev/net-next/c/5e57c6c5a349
-  - [net-next,06/11] net: ipa: validate memory regions at init time
-    https://git.kernel.org/netdev/net-next/c/2f9be1e90860
-  - [net-next,07/11] net: ipa: pass memory configuration data to ipa_mem_valid()
-    https://git.kernel.org/netdev/net-next/c/1eec767746e5
-  - [net-next,08/11] net: ipa: introduce ipa_mem_id_optional()
-    https://git.kernel.org/netdev/net-next/c/d39ffb97079b
-  - [net-next,09/11] net: ipa: validate memory regions based on version
-    https://git.kernel.org/netdev/net-next/c/75bcfde6c113
-  - [net-next,10/11] net: ipa: flag duplicate memory regions
-    https://git.kernel.org/netdev/net-next/c/eadf7f937614
-  - [net-next,11/11] net: ipa: use bitmap to check for missing regions
-    https://git.kernel.org/netdev/net-next/c/6857b02392ab
+Prior to '1c1e7763a6d4 ("drm/msm/dpu: simplify IRQ enabling/disabling")'
+the enable/disable of the hardware interrupt was done outside the
+"cb_lock" region, optimitically by using an atomic enable-counter for
+each interrupt and an warning print if someone changed the list between
+the atomic_read and the time the operation concluded.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Rather than re-introducing the large array of atomics, serialize the
+register/unregister operations under a single mutex.
 
+Fixes: 1c1e7763a6d4 ("drm/msm/dpu: simplify IRQ enabling/disabling")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c | 10 +++++++---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h      |  2 ++
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
+index 4f110c428b60..62bbe35eff7b 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
+@@ -82,11 +82,13 @@ int dpu_core_irq_register_callback(struct dpu_kms *dpu_kms, int irq_idx,
+ 
+ 	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
+ 
++	mutex_lock(&dpu_kms->irq_obj.hw_enable_lock);
+ 	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
+ 	trace_dpu_core_irq_register_callback(irq_idx, register_irq_cb);
+ 	list_del_init(&register_irq_cb->list);
+ 	list_add_tail(&register_irq_cb->list,
+ 			&dpu_kms->irq_obj.irq_cb_tbl[irq_idx]);
++	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
+ 	if (list_is_first(&register_irq_cb->list,
+ 			&dpu_kms->irq_obj.irq_cb_tbl[irq_idx])) {
+ 		int ret = dpu_kms->hw_intr->ops.enable_irq(
+@@ -96,8 +98,7 @@ int dpu_core_irq_register_callback(struct dpu_kms *dpu_kms, int irq_idx,
+ 			DPU_ERROR("Fail to enable IRQ for irq_idx:%d\n",
+ 					irq_idx);
+ 	}
+-
+-	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
++	mutex_unlock(&dpu_kms->irq_obj.hw_enable_lock);
+ 
+ 	return 0;
+ }
+@@ -127,9 +128,11 @@ int dpu_core_irq_unregister_callback(struct dpu_kms *dpu_kms, int irq_idx,
+ 
+ 	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
+ 
++	mutex_lock(&dpu_kms->irq_obj.hw_enable_lock);
+ 	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
+ 	trace_dpu_core_irq_unregister_callback(irq_idx, register_irq_cb);
+ 	list_del_init(&register_irq_cb->list);
++	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
+ 	/* empty callback list but interrupt is still enabled */
+ 	if (list_empty(&dpu_kms->irq_obj.irq_cb_tbl[irq_idx])) {
+ 		int ret = dpu_kms->hw_intr->ops.disable_irq(
+@@ -140,7 +143,7 @@ int dpu_core_irq_unregister_callback(struct dpu_kms *dpu_kms, int irq_idx,
+ 					irq_idx);
+ 		DPU_DEBUG("irq_idx=%d ret=%d\n", irq_idx, ret);
+ 	}
+-	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
++	mutex_unlock(&dpu_kms->irq_obj.hw_enable_lock);
+ 
+ 	return 0;
+ }
+@@ -207,6 +210,7 @@ void dpu_core_irq_preinstall(struct dpu_kms *dpu_kms)
+ 	dpu_disable_all_irqs(dpu_kms);
+ 	pm_runtime_put_sync(&dpu_kms->pdev->dev);
+ 
++	mutex_init(&dpu_kms->irq_obj.hw_enable_lock);
+ 	spin_lock_init(&dpu_kms->irq_obj.cb_lock);
+ 
+ 	/* Create irq callbacks for all possible irq_idx */
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+index f6840b1af6e4..5a162caea29d 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+@@ -83,6 +83,7 @@ struct dpu_irq_callback {
+  * @total_irq:    total number of irq_idx obtained from HW interrupts mapping
+  * @irq_cb_tbl:   array of IRQ callbacks setting
+  * @cb_lock:      callback lock
++ * @hw_enable_lock: lock to synchronize callback register and unregister
+  * @debugfs_file: debugfs file for irq statistics
+  */
+ struct dpu_irq {
+@@ -90,6 +91,7 @@ struct dpu_irq {
+ 	struct list_head *irq_cb_tbl;
+ 	atomic_t *irq_counts;
+ 	spinlock_t cb_lock;
++	struct mutex hw_enable_lock;
+ };
+ 
+ struct dpu_kms {
+-- 
+2.29.2
 
