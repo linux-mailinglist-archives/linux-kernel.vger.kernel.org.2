@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AD83A1BA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5033A1BB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbhFIRXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:23:43 -0400
-Received: from mga02.intel.com ([134.134.136.20]:59862 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230265AbhFIRXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:23:41 -0400
-IronPort-SDR: N88xRHU9ld/4lfnie5o8jflewYg3SsYjITxxbkdY06Bf5x8FB2oQPOZC0WlciGuzQznpWKsjLp
- CQeCkK3qL31g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="192230146"
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="192230146"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 10:21:46 -0700
-IronPort-SDR: Er/IXdl5TxmffXNO7G1Tf/lT9M+JflXYpEisQVYctTf2MieXLpd8tgVqUTFB8ktGKh27PLaDz+
- ZZepVoItG6sg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="419354068"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 09 Jun 2021 10:21:44 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id E3CF3E7; Wed,  9 Jun 2021 20:22:07 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 1/1] usb: typec: wcove: Use LE to CPU conversion when accessing msg->header
-Date:   Wed,  9 Jun 2021 20:22:02 +0300
-Message-Id: <20210609172202.83377-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S231562AbhFIRZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:25:37 -0400
+Received: from mail-wm1-f42.google.com ([209.85.128.42]:53129 "EHLO
+        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231520AbhFIRZe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 13:25:34 -0400
+Received: by mail-wm1-f42.google.com with SMTP id f17so4522090wmf.2;
+        Wed, 09 Jun 2021 10:23:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UHxpr2/3BM0v4QSliS/kvZrmMoG8MPeA0PSvAAg0/EY=;
+        b=TFdaj5gNbb6fufhVD8TKnOgtHxfXMokHJycEaubVSfHm7ZzLxzVi2X0H7mfvrPZ2p3
+         1Y7nG+dctGB67msZyqvuDbg7C6acjO96zeU0V5cRjLAkbbHi4m0w34mvjxx2TLl81/8B
+         US2Z1yh9tC4owDYEtIhHdxcrbVNee4havtbvq+6szdjhAAhx5OGTzWvVDcz7VeQSe4c5
+         ItevT5IA7/C0xvDhCwaQeDsnC8a/z1aCdN8oEh2ufTnjkaMQtI8JfL7Uf2lXoNP5eF1e
+         ++xg7YREEJcjf9lGYxPygdjwxUPldv2w0t2ZBduwBvGuhjqtUDwgaSzO1f5saHqtrhGO
+         nXWg==
+X-Gm-Message-State: AOAM531c0u/Xvq6sh+uZOb/dAk5tbFAxssoXxg7myQB3sisHm0YyS7D0
+        Mx64b0JZRNlKrE4z/oCe/tmqzCuMwIs=
+X-Google-Smtp-Source: ABdhPJxafdci0ArPt4wYrQ5LFS61fet+iASno5NpGkN1oI5C0tG79RhILnqtIZ4NT/sLY7NXT56spw==
+X-Received: by 2002:a7b:c935:: with SMTP id h21mr10859615wml.183.1623259402301;
+        Wed, 09 Jun 2021 10:23:22 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
+        by smtp.gmail.com with ESMTPSA id r2sm615261wrv.39.2021.06.09.10.23.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 10:23:21 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>
+Subject: [PATCH net-next] stmmac: prefetch right address
+Date:   Wed,  9 Jun 2021 19:23:03 +0200
+Message-Id: <20210609172303.49529-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As LKP noticed the Sparse is not happy about strict type handling:
-   .../typec/tcpm/wcove.c:380:50: sparse:     expected unsigned short [usertype] header
-   .../typec/tcpm/wcove.c:380:50: sparse:     got restricted __le16 const [usertype] header
+From: Matteo Croce <mcroce@microsoft.com>
 
-Fix this by switching to use pd_header_cnt_le() instead of pd_header_cnt()
-in the affected code.
+To support XDP, a headroom is prepended to the packet data.
+Consider this offset when doing a prefetch.
 
-Fixes: ae8a2ca8a221 ("usb: typec: Group all TCPCI/TCPM code together")
-Fixes: 3c4fb9f16921 ("usb: typec: wcove: start using tcpm for USB PD support")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Fixes: da5ec7f22a0f ("net: stmmac: refactor stmmac_init_rx_buffers for stmmac_reinit_rx_buffers")
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 ---
-v2: added Rb tag (Heikki), amend Fixes tags (Greg)
- drivers/usb/typec/tcpm/wcove.c | 2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/typec/tcpm/wcove.c b/drivers/usb/typec/tcpm/wcove.c
-index 8072e222eb99..20917d85d6f4 100644
---- a/drivers/usb/typec/tcpm/wcove.c
-+++ b/drivers/usb/typec/tcpm/wcove.c
-@@ -378,7 +378,7 @@ static int wcove_pd_transmit(struct tcpc_dev *tcpc,
- 		const u8 *data = (void *)msg;
- 		int i;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 0a266fa0af7e..30b411762a9c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -5129,7 +5129,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
  
--		for (i = 0; i < pd_header_cnt(msg->header) * 4 + 2; i++) {
-+		for (i = 0; i < pd_header_cnt_le(msg->header) * 4 + 2; i++) {
- 			ret = regmap_write(wcove->regmap, USBC_TX_DATA + i,
- 					   data[i]);
- 			if (ret)
+ 		/* Buffer is good. Go on. */
+ 
+-		prefetch(page_address(buf->page));
++		prefetch(page_address(buf->page) + buf->page_offset);
+ 		if (buf->sec_page)
+ 			prefetch(page_address(buf->sec_page));
+ 
 -- 
-2.30.2
+2.31.1
 
