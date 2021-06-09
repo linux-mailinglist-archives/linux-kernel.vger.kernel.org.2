@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0DC3A1FCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D54D3A1FD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhFIWKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 18:10:48 -0400
-Received: from mail-ej1-f46.google.com ([209.85.218.46]:37553 "EHLO
-        mail-ej1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhFIWKq (ORCPT
+        id S229740AbhFIWMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 18:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhFIWMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 18:10:46 -0400
-Received: by mail-ej1-f46.google.com with SMTP id ce15so40691163ejb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 15:08:37 -0700 (PDT)
+        Wed, 9 Jun 2021 18:12:49 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C1BC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 15:10:54 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id l1so20915995pgm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 15:10:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DmHuey4cBQMswlLLUPQdxLcQq4bcm4Xw89GIxtMTQuY=;
-        b=kCpbBnD3FPXMBZhPjwjsn1hRdjXyvj7R1pPQ67vE4PBWKitdWy561xORxvaqA/xeom
-         Gdy09gpnEA2MoLeI08rVfagTxl0xwbmajYuofLWwlykAxd4YqB8NRr0nSK9NI03C3OWJ
-         VqTMoLDN4pWZXHpptf2pX5nY0czfddPYRLGC8XYMkEMkNSKAvy6CSK50qFhHmRcFDqjx
-         1Nn1R1FZosA71CqCd3LtjSnGerjPUPSm9oPGf+7T9Av0Ydyr2FdND/rQdYzjgO+hS5XI
-         ieYXIyBwxC3ntXgXIy4KxgPPO6z7TOaiirKeu1LXThSRTJAQZHlnKwYSlwrZRB1cuziA
-         gtuQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z5AhBfpqP3gat2Xo7WmpL+INYzzgwJmtJNXeXywDiHs=;
+        b=mjBoBWYx/JebUJ5m+WqpayYBePydDymtxwGR7IdD4HK7G88SU9MDNjzfQTzSZUhW7E
+         pVypou7T6C4KVN8gR7pjEWOf3jQqixLZWl2wlOY5mx4Swv9+kqu7A1n6GMEHoYKBBhIc
+         UUovg/7VmrYxau5mhdHu9wN7vUTfvaWT+knDx7ZAtVeM7jt8d1bKxQ9TJeXRwGNMF9i+
+         5tjbTQBbLLJ7qDCgyGTuqXGkpqu+27rrSm3g0Z4Pdm5bkJ2QJIFqen89nMgrk5gaYzbL
+         kf6UfohwmuSft1CojI0twZWkNoExi4ZRqPgcng8wC2juLNvpjkcXe3ITy00Kg77b/ooc
+         DN+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DmHuey4cBQMswlLLUPQdxLcQq4bcm4Xw89GIxtMTQuY=;
-        b=nuo0UEysFIjAEUREQ7xdTMBLGAKEZfO0LksCCmzAJWi+mjnSkYoK63okDR3OR+dOwK
-         YfS7bcLqeVs6g0E8oscFhQfqQ/OPbfaR0m+hofgHhcrARQqrlRtBe+HLWs27VCcoDZgg
-         U3TzvlMJJQGQcamhpq+SYLicRLUYVth8KwnHDWRjkRvlB8WY80rr7cVRq1GxRypuX0KH
-         7quCaC/3VZHYrtbljqc5IHvjM+dmfQr/2CGb7O0SmOA2nZAPO0mKEfgpJ6TQGdIScYTc
-         e0QsRD9lVTGYpfyaynqSaVLPFWUnr1Ce71BbYLuTI1IdE/4zHkPkoo+LB8EJYQzBSCpF
-         mJGw==
-X-Gm-Message-State: AOAM531iU5uGDAApC24tqkOqZHgcJvpGw4YgR2fDsl0No18TMSxL0h1O
-        lVT8IPoMp2mskh3AVWa8QAGCOGhh4JtzWA==
-X-Google-Smtp-Source: ABdhPJzWF/+YLbb8YQlYfbo9ySrHFfjMk/ow95h1OIOwtbJczccDo+PAk/42a+FOs/pxuavP2gQ4RQ==
-X-Received: by 2002:a17:906:3b87:: with SMTP id u7mr1721897ejf.548.1623276456891;
-        Wed, 09 Jun 2021 15:07:36 -0700 (PDT)
-Received: from localhost.localdomain (dh207-96-76.xnet.hr. [88.207.96.76])
-        by smtp.googlemail.com with ESMTPSA id q16sm409770edt.26.2021.06.09.15.07.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z5AhBfpqP3gat2Xo7WmpL+INYzzgwJmtJNXeXywDiHs=;
+        b=osycdgWnpXQnWdkhU3ECMVhK44XZvwxSDg9N5ZEWVLdydyRGiuFlGIGTXFKR96V0+H
+         rjBUbq4C8AxMo3sq8nabWOveZIjFPqb+Dw/bqEDbbpmGjUXfdb8/AZJoP//1K/MYFiGj
+         R8k0YkDBJD7Thf5134OIZVdvPUA3MzFpSkSghtex3/B8qfk1b7H/mKF3KCrrUWmiSsBS
+         cfDxAPKemU9H+Rrr+/oKyrk2qoNsKYaRrlwi3AT+Y7nuvlGYXuTvDn5AZC8RbPDJWHOa
+         ssa76GyGWDQ+aQL0yMNvZwJr4NXWqdOTWAZyqjY1+Au1VYtVuOiii3cP+usdICSfpdgd
+         aX1Q==
+X-Gm-Message-State: AOAM530nvs+wfB7rE3TrN2/3uYj55GASfVb9rfUqOLK/eOpLmMAQbc0I
+        YzPacOizD+1aQdU3HXLr84JtnQ==
+X-Google-Smtp-Source: ABdhPJwx/2yEIWEw4VYHQeKuiME3PW+fR2fCoXP4ekCi9WYe2/orCGwPM2moM2aVvnhaAbcnS6kiXQ==
+X-Received: by 2002:a63:5b0e:: with SMTP id p14mr1800571pgb.110.1623276653975;
+        Wed, 09 Jun 2021 15:10:53 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id h8sm645022pgr.43.2021.06.09.15.10.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 15:07:36 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH 3/3] hwmon: (tps23861) correct shunt LSB values
-Date:   Thu, 10 Jun 2021 00:07:28 +0200
-Message-Id: <20210609220728.499879-3-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210609220728.499879-1-robert.marko@sartura.hr>
-References: <20210609220728.499879-1-robert.marko@sartura.hr>
+        Wed, 09 Jun 2021 15:10:53 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 22:10:49 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 04/10] x86/tdx: Handle early IO operations
+Message-ID: <YME8aZVqI8x/a/Ld@google.com>
+References: <20210609214555.1955404-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210609214555.1955404-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609214555.1955404-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current shunt LSB values got reversed during in the
-original driver commit.
+On Wed, Jun 09, 2021, Kuppuswamy Sathyanarayanan wrote:
+> +/*
+> + * Handle early IO, mainly for early printks serial output.
+> + * This avoids anything that doesn't work early on, like tracing
+> + * or printks, by calling the low level functions directly. Any
+> + * problems are handled by falling back to a standard early exception.
+> + *
+> + * Assumes the IO instruction was using ax, which is enforced
+> + * by the standard io.h macros.
+> + */
+> +static __init bool tdx_early_io(struct pt_regs *regs, u32 exit_qual)
 
-So, correct the current shunt LSB values according to
-the datasheet.
-
-This caused reading slightly skewed current values.
-
-Fixes: fff7b8ab2255 ("hwmon: add Texas Instruments TPS23861 driver")
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
----
- drivers/hwmon/tps23861.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hwmon/tps23861.c b/drivers/hwmon/tps23861.c
-index c3685b7e9e82..8bd6435c13e8 100644
---- a/drivers/hwmon/tps23861.c
-+++ b/drivers/hwmon/tps23861.c
-@@ -105,8 +105,8 @@
- #define TEMPERATURE_LSB			652 /* 0.652 degrees Celsius */
- #define VOLTAGE_LSB			3662 /* 3.662 mV */
- #define SHUNT_RESISTOR_DEFAULT		255000 /* 255 mOhm */
--#define CURRENT_LSB_255			62260 /* 62.260 uA */
--#define CURRENT_LSB_250			61039 /* 61.039 uA */
-+#define CURRENT_LSB_250			62260 /* 62.260 uA */
-+#define CURRENT_LSB_255			61039 /* 61.039 uA */
- #define RESISTANCE_LSB			110966 /* 11.0966 Ohm*/
- #define RESISTANCE_LSB_LOW		157216 /* 15.7216 Ohm*/
- 
--- 
-2.31.1
-
+If y'all insist on shoving "tdg" down people's throats, at least get it right.
