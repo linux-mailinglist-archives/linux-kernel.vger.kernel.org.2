@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB713A1F7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3023A1F82
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 23:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbhFIV6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 17:58:05 -0400
-Received: from ozlabs.org ([203.11.71.1]:49127 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230117AbhFIV6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 17:58:01 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G0gsb5QrJz9sW8;
-        Thu, 10 Jun 2021 07:56:03 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623275765;
-        bh=KtI+FrtnLjcslTw1sLwN057C10zoC4aGvN1cs+VX0Sg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aXwJbKjzD5bsFELyCbCCx3WRQxLKhiXvF2/mZ8C64zwxlAsmkmuNFKf8aGmFf0vti
-         nrDQcrAtXOVPMB9lvbkTPElMl4SN/XXi0XP4MgVeg/8tb5SayramBPzdE6hRNa8ZiO
-         SL+6Vxx0Nz3fa2KHFKZJw+3Sqx444FoFup+GiIWJBk//G5gFtCGpsAop0pJQVJGFkZ
-         yvyx0iBoXYCuM4ufCcbFBt/C+O0cVBF3DdRrCsnvpaEch+8tq9o9S3FUgmklDWjG+F
-         6ecQvjKfurg9UMhbYvKgTSZEzgsamChjPFF98+Cg43o14qOoL4IiwKIz3OA8eP1771
-         ZlMHmgSbxfEoQ==
-Date:   Thu, 10 Jun 2021 07:56:02 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>,
+        id S230232AbhFIV6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 17:58:34 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:44030 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhFIV6a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 17:58:30 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:51958 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lr6Bb-0002oY-I6; Wed, 09 Jun 2021 17:56:31 -0400
+Message-ID: <8880aac1e81ac38928f58da2d29057cb69139d8c.camel@trillion01.com>
+Subject: Re: [RFC] coredump: Do not interrupt dump for TIF_NOTIFY_SIGNAL
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tags need some work in the netfilter-next tree
-Message-ID: <20210610075602.3c5c7b2c@canb.auug.org.au>
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Pavel Begunkov>" <asml.silence@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Date:   Wed, 09 Jun 2021 17:56:30 -0400
+In-Reply-To: <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
+References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
+         <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com>
+         <87h7i694ij.fsf_-_@disp2133>
+         <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
+         <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
+         <87eeda7nqe.fsf@disp2133>
+         <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_NqZtn/HkU1PF=XKAiUVtB=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_NqZtn/HkU1PF=XKAiUVtB=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 2021-06-09 at 17:26 -0400, Olivier Langlois wrote:
+> On Wed, 2021-06-09 at 16:05 -0500, Eric W. Biederman wrote:
+> > > 
+> > > So the TIF_NOTIFY_SIGNAL does get set WHILE the core dump is
+> > > written.
+> > 
+> > Did you mean?
+> > 
+> > So the TIF_NOTIFY_SIGNAL does _not_ get set WHILE the core dump is
+> > written.
+> > 
+> > 
+> Absolutely not. I did really mean what I have said. Bear with me
+> that,
+> I am not qualifying myself as an expert kernel dev yet so feel free
+> to
+> correct me if I say some heresy...
+> 
+> io_uring is placing my task in my TCP socket wait queue because it
+> wants to read data from it.
+> 
+> The task returns to user space and core dump with a SEGV.
+> 
+> now my understanding is that the code that is waking up tasks, it is
+> the NIC driver interrupt handler which can occur while the core dump
+> is
+> written.
+> 
+> does that make sense?
+> 
+> my testing is telling me that this is exactly what happens...
+> 
+> 
+Another thing to know is that dump_interrupted() isn't only called from
+do_coredump().
 
-Hi all,
+At first, I did the mistake to think that if dump_interrupt() was
+returning false when called from do_coredump() all was good.
 
-In commit
+It is not the case. dump_interrupted() is also called from dump_emit()
+which is called from several places by functions inside binfmt_elf.c
 
-  c5c6accd7b7e ("netfilter: nf_tables: move base hook annotation to init he=
-lper")
+So dump_interrupted() is called several times during the coredump
+generation.
 
-Fixes tag
 
-  Fixes: 65b8b7bfc5284f ("netfilter: annotate nf_tables base hook ops")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 7b4b2fa37587 ("netfilter: annotate nf_tables base hook ops")
-
-In commit
-
-  d4fb1f954fc7 ("netfilter: nfnetlink_hook: add depends-on nftables")
-
-Fixes tag
-
-  Fixes: 252956528caa ("netfilter: add new hook nfnl subsystem")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: e2cf17d3774c ("netfilter: add new hook nfnl subsystem")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/_NqZtn/HkU1PF=XKAiUVtB=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDBOPIACgkQAVBC80lX
-0GzyJAf/QbBiLtA3ZNNgxTsfgI101t8h9iAyKsZXd4KGiKn2DMzVdHwXpaIffKrx
-08gDkUKv5mFHlQsysiY5NHoOyT1+FkVwcTkRLc7U+hGvYe0QarxV8qqoDfIfifxQ
-R+BvrCvOmdezi8+sW+uPYWaeYCrVlz2t3RnpatqaSbTBtJOF7ZD1lO1FudxsYdti
-XVwOU03yI5IP/f3KfrMZ/QS4iC70ZcZ9ncVRENZaKHvTw7MFpq6usIR3vXr+mFPp
-NInwgVWvi2/Tnz5GTU0SZFoZT5OpMWsmMjKoMvHNC2oQlinkAOQIBxOuP2w13upz
-M0hCM7auJ7B6o+wMn65MT0QtaM9Ygw==
-=eH+a
------END PGP SIGNATURE-----
-
---Sig_/_NqZtn/HkU1PF=XKAiUVtB=--
