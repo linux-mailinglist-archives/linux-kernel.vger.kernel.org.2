@@ -2,157 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905223A1084
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E343A108B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235670AbhFIJrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
+        id S237797AbhFIJu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234017AbhFIJri (ORCPT
+        with ESMTP id S234690AbhFIJuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:47:38 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD3FC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 02:45:44 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id 68so187593vsu.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:45:44 -0700 (PDT)
+        Wed, 9 Jun 2021 05:50:55 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CA4C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 02:49:00 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id z1so24748079ils.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:49:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cDVcIBWGDWM1PdDfQAVglfmSkwPbg11fBeIYPrXJ/UE=;
-        b=FhEYZOKJhzxspT2d9TFZAKGjjqIfVENB2iSfH/Fwt0o+FXReR7ZOUSms9DEaWnu8rV
-         o5e7KPr5YKzzz7KJvHHf5CLRevXm63ElLQDxbJd34au9Bu7aOD9lSrqngzz4Hx1dWCbf
-         YNe25SFeIfKi6D/DBjDlm3WIa9Le0iwzjFLgmOw5XF3OUp+kkEE0+vHSn3F4OPTtY5+5
-         TlqgfrUEjQjegaHPx8FKW0NRVi+fIl23yxILbGiDjKJJ6y2H5rK055h6FhyR/AaTg88s
-         OmEZyXdPtB5DzQ5A1kFBxEl7le8MVMA7AJ7gLHhCsO/e1/B4AIOj3TfPc9141Inc8LrF
-         sGTQ==
+        bh=ZCj9GCI+5QISlmGJjehDkaz0A2PdjbYMmQM8TFM7cPQ=;
+        b=eJFtZM3I6Dm/cIcSWJdNjF3jep+VNcHdOjE4Inxmm7DNf5csnGMG1e+98OSj/SImd/
+         wBzkqd/JQyXoIo2or+T2MIs3EKFuHAazJoCZ0i4DHsmOvL3sec1wOKWsfgZn9pF7AYUK
+         i76J3nSz/DDNHF/bzdTKFIitmBwzGlnpHAmXs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cDVcIBWGDWM1PdDfQAVglfmSkwPbg11fBeIYPrXJ/UE=;
-        b=kJaPtWN4nvWuAE5/sB/cE52DF5pDRVsJ6kc/nnP/mwrYaE+Q3a5hglqjSQB5paEU1i
-         dNlBfADgexzqz/nBm1wWqwLPiN0zpGGHLYfqlUmu0ENyDhxZz2OcU61dtkLUipHENGBp
-         tJ2U5IWrPvZFy/DXLfMNtNbgHAW5erah4bawlYAWtDF48oW46yEuRvnvRmHhNzg2aWLn
-         s1QAZuSLsTYp19j3O4VDhdNr6hfOYoBhBxP+6+Fd5hXGwkVzOdYijFYbSb1hbgPx5uOk
-         M5i7UBWDd+AfNDRSBnr42fYcwgKi38mCr9VemA1/3knCRGca0axO+Bl0XygjuQvNEVJA
-         H0Kw==
-X-Gm-Message-State: AOAM531D8cKQ998WuIT+ARQ6XNJ7rUqbsWeMIHcX5wXnCV2N+cppdim9
-        /8RcXbRpvOetAczTJ+y5s3JaO22NCN4Dnb/ARfugXg==
-X-Google-Smtp-Source: ABdhPJyG6uoIvr6Vzcz/k06+wX6BQNTTQd+f+J8E9FZbeuZhjBmXHmBVipMAQXUix9BZvEKgyotFjFETrSsQplAdAoA=
-X-Received: by 2002:a67:e359:: with SMTP id s25mr3271454vsm.55.1623231943491;
- Wed, 09 Jun 2021 02:45:43 -0700 (PDT)
+        bh=ZCj9GCI+5QISlmGJjehDkaz0A2PdjbYMmQM8TFM7cPQ=;
+        b=ghu+Gyd14ISKTyS0A+Nwf33zkdahxVfIIKOsbDpI+/SeJom/Lu/GEb4RKJLDNHWWdU
+         5taCVl8URtDfsWwHiW4BOXU+up1c9xfY9eiZqg8pF7GSsvzra0vvq8z0orGQv499AF07
+         2YKkAGgdBNqD8LN2xt4Y6pG8/jM243KbgCHc3OoX5xinohMurx+ZqsMmZz1S8l1hRRm/
+         BepcyP/H5OGI5hSp0N5ESAiEXJUK0igqgXYu04CMB8UEYLxGVI2iYIvONJfLEt38A1vT
+         meIF7awyQc6JKjrrgqHBZcHMv+2G2UUyhBQoX+N/ViiZsZ8Funb3+mLPFh5bMenKVXtO
+         MIWQ==
+X-Gm-Message-State: AOAM533Yy+WHR/suFEb0jCxhITqmKKUKLyBn20wMTVRdHmJCLYTfvawx
+        8SKYQPJomo/n1992VAxF8pgLH4a49sX7Iw==
+X-Google-Smtp-Source: ABdhPJz2g3YXjXusWf49O2tC8dqOL+DhOKbZtoiNPtiE1pir7bjRAGEOUrfkDay7z3cpxN3KJi5ATA==
+X-Received: by 2002:a05:6638:1029:: with SMTP id n9mr24641041jan.48.1623232138915;
+        Wed, 09 Jun 2021 02:48:58 -0700 (PDT)
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com. [209.85.166.175])
+        by smtp.gmail.com with ESMTPSA id b23sm1241123ior.4.2021.06.09.02.48.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 02:48:58 -0700 (PDT)
+Received: by mail-il1-f175.google.com with SMTP id v13so24608955ilh.13
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 02:48:58 -0700 (PDT)
+X-Received: by 2002:a92:d589:: with SMTP id a9mr22625576iln.175.1623232137595;
+ Wed, 09 Jun 2021 02:48:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210608090250.85256-1-ulf.hansson@linaro.org>
- <20210608090250.85256-4-ulf.hansson@linaro.org> <20210608142325.GC1804083@rowland.harvard.edu>
- <CAPDyKFrwP+w4grUEHQb6B4gTBMoDPx+nEt8hJEnkM3prZuYfPQ@mail.gmail.com> <20210608144905.GE1804083@rowland.harvard.edu>
-In-Reply-To: <20210608144905.GE1804083@rowland.harvard.edu>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 9 Jun 2021 11:45:07 +0200
-Message-ID: <CAPDyKFrrwAgm+=X5ra_f+Ln9eX6phj=YPd5sFdEyyLR3JdV4vg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] PM: runtime: Clarify documentation when callbacks
- are unassigned
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210517173314.140912-1-gene.chen.richtek@gmail.com> <20210517173314.140912-5-gene.chen.richtek@gmail.com>
+In-Reply-To: <20210517173314.140912-5-gene.chen.richtek@gmail.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Wed, 9 Jun 2021 17:48:21 +0800
+X-Gmail-Original-Message-ID: <CAC=S1njg1PUAkz+TvbtPPxm4uDb3xDSA5HmOOgjwrLz01vFzHw@mail.gmail.com>
+Message-ID: <CAC=S1njg1PUAkz+TvbtPPxm4uDb3xDSA5HmOOgjwrLz01vFzHw@mail.gmail.com>
+Subject: Re: [PATCH v8 04/10] mfd: mt6360: Combine mt6360 pmic/ldo resources
+ into mt6360 regulator resources
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     lee.jones@linaro.org, Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 at 16:49, Alan Stern <stern@rowland.harvard.edu> wrote:
+On Tue, May 18, 2021 at 1:34 AM Gene Chen <gene.chen.richtek@gmail.com> wrote:
 >
-> On Tue, Jun 08, 2021 at 04:30:48PM +0200, Ulf Hansson wrote:
-> > On Tue, 8 Jun 2021 at 16:23, Alan Stern <stern@rowland.harvard.edu> wrote:
-> > >
-> > > On Tue, Jun 08, 2021 at 11:02:50AM +0200, Ulf Hansson wrote:
-> > > > Recent changes to the PM core allows ->runtime_suspend|resume callbacks to
-> > > > be unassigned.
-> > > >
-> > > > In the earlier behaviour the PM core would return -ENOSYS, when trying to
-> > > > runtime resume a device, for example. Let's update the documentation to
-> > > > clarify this.
-> > > >
-> > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > > ---
-> > > >
-> > > > Changes in v2:
-> > > >       - Added a new patch for the updating the docs, as pointed out by Alan.
-> > > >
-> > > > ---
-> > > >  Documentation/power/runtime_pm.rst | 8 ++++++++
-> > > >  1 file changed, 8 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/power/runtime_pm.rst b/Documentation/power/runtime_pm.rst
-> > > > index 18ae21bf7f92..3d09c9fd450d 100644
-> > > > --- a/Documentation/power/runtime_pm.rst
-> > > > +++ b/Documentation/power/runtime_pm.rst
-> > > > @@ -827,6 +827,14 @@ or driver about runtime power changes.  Instead, the driver for the device's
-> > > >  parent must take responsibility for telling the device's driver when the
-> > > >  parent's power state changes.
-> > > >
-> > > > +Note that, in some cases it may not be desirable for subsystems/drivers to call
+> From: Gene Chen <gene_chen@richtek.com>
 >
-> More than 80 chars.
+> Combine mt6360 pmic/ldo resources into mt6360 regulator resources
+> to simplify the similar resources object.
+>
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/mfd/mt6360-core.c | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+> index 512480f7bd40..3553c7045829 100644
+> --- a/drivers/mfd/mt6360-core.c
+> +++ b/drivers/mfd/mt6360-core.c
+> @@ -266,7 +266,7 @@ static const struct resource mt6360_led_resources[] = {
+>         DEFINE_RES_IRQ_NAMED(MT6360_FLED1_STRB_TO_EVT, "fled1_strb_to_evt"),
+>  };
+>
+> -static const struct resource mt6360_pmic_resources[] = {
+> +static const struct resource mt6360_regulator_resources[] = {
+>         DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_PGB_EVT, "buck1_pgb_evt"),
+>         DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OC_EVT, "buck1_oc_evt"),
+>         DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OV_EVT, "buck1_ov_evt"),
+> @@ -279,9 +279,6 @@ static const struct resource mt6360_pmic_resources[] = {
+>         DEFINE_RES_IRQ_NAMED(MT6360_LDO7_OC_EVT, "ldo7_oc_evt"),
+>         DEFINE_RES_IRQ_NAMED(MT6360_LDO6_PGB_EVT, "ldo6_pgb_evt"),
+>         DEFINE_RES_IRQ_NAMED(MT6360_LDO7_PGB_EVT, "ldo7_pgb_evt"),
 
-Perhaps it's the email client that messes up the patch in some way.
-This above line in the patch is 79 chars.
-
-If you have a look at the patch in patchwork [1], you should see (I
-hope) that it respects the 80 chars per line!?
+Nit: sort MT6360_LDO*_OC_EVT and MT6360_LDO*_PGB_EVT after combining
+the resources.
 
 >
-> > > > +pm_runtime_no_callbacks() for their devices. This could be because a subset of
+> -};
+> -
+> -static const struct resource mt6360_ldo_resources[] = {
+>         DEFINE_RES_IRQ_NAMED(MT6360_LDO1_OC_EVT, "ldo1_oc_evt"),
+>         DEFINE_RES_IRQ_NAMED(MT6360_LDO2_OC_EVT, "ldo2_oc_evt"),
+>         DEFINE_RES_IRQ_NAMED(MT6360_LDO3_OC_EVT, "ldo3_oc_evt"),
+> @@ -299,10 +296,7 @@ static const struct mfd_cell mt6360_devs[] = {
+>                     NULL, 0, 0, "mediatek,mt6360-chg"),
+>         MFD_CELL_OF("mt6360-led", mt6360_led_resources,
+>                     NULL, 0, 0, "mediatek,mt6360-led"),
+> -       MFD_CELL_OF("mt6360-pmic", mt6360_pmic_resources,
+> -                   NULL, 0, 0, "mediatek,mt6360-pmic"),
+> -       MFD_CELL_OF("mt6360-ldo", mt6360_ldo_resources,
+> -                   NULL, 0, 0, "mediatek,mt6360-ldo"),
+> +       MFD_CELL_RES("mt6360-regulator", mt6360_regulator_resources),
+>         MFD_CELL_OF("mt6360-tcpc", NULL,
+>                     NULL, 0, 0, "mediatek,mt6360-tcpc"),
+>  };
+> --
+> 2.25.1
 >
-> More than 80 chars.
 >
-> > > > +the runtime PM callbacks needs to be implemented, a platform dependent PM
-> > > > +domain could get attached to the device or that the device is power manged
->
-> s/manged/managed/
-
-Thanks for spotting this, my spell checker accepted "manged". :-)
-
->
-> > > > +through a supplier device link. For these reasons and to avoid boilerplate code
->
-> More than 80 chars.
->
-> > > > +in subsystems/drivers, the PM core allows runtime PM callbacks to be
-> > > > +unassigned.
-> > > > +
-> > >
-> > > You should also mention that if a callback pointer is NULL, the
-> > > runtime PM core will act as though there was a callback and it
-> > > returned 0.  That's an important consideration.
-> >
-> > Good point, let me add it.
-> >
-> > I send a new version of $subject patch, unless Rafael is happy to do
-> > the amending when/if applying?
-> >
-> > >
-> > > Also, notice that this file was carefully edited to make sure that
-> > > none of the lines exceed 80 characters.  Your new addition should
-> > > be the same.
-> >
-> > Absolutely, but it should be okay already, no?
->
-> See above.
->
-> Alan
-
-Kind regards
-Uffe
-
-[1]
-https://patchwork.kernel.org/project/linux-pm/patch/20210608090250.85256-4-ulf.hansson@linaro.org/
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
