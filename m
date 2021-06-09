@@ -2,66 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179BB3A1299
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916253A12A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239047AbhFIL1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:27:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40858 "EHLO mail.kernel.org"
+        id S239066AbhFIL14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:27:56 -0400
+Received: from mga11.intel.com ([192.55.52.93]:22014 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237376AbhFIL1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:27:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FAD561184;
-        Wed,  9 Jun 2021 11:25:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623237946;
-        bh=c54OUGESMRp934+SAAOMMobp54ilfYzv+4CFnvOlhoA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aJ2tul7LZIem+qa4no0D7IRLQmvS7hWNIxSH2QccKQDsLluEKyUQScglWYJFmkR5n
-         4xdxmVMf6Zl6HNnOJE722sLD9b8bG5Zq4oDi117dGRmAi9n+W+U+Ygi7zCAM5t3q/d
-         KTkljaIsOYxXZbvEx0EPY+J9Yaz02jqW+TBLeOC4HwrdprlLIazCtxsZIYrxUFZXHL
-         X0/MyAqtQe2e+mOEm6WEQZ03VdfwOzvewO8+XzKWt32aLz7RzyUbf99oprAmuTk/gD
-         FVzU4svZTYKSoOIHRXkWR320hEUc1sPuq1ip06UX9Ng/rtMiY/5QNQRHD4lNse4E7+
-         Hu7P4KQvt21FQ==
-Date:   Wed, 9 Jun 2021 13:25:44 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] sched: Add default dynamic preempt mode Kconfig
-Message-ID: <20210609112544.GB104634@lothringen>
-References: <20210608120442.93587-1-frederic@kernel.org>
- <20210608120442.93587-2-frederic@kernel.org>
- <YL9271QMQfyn174k@hirez.programming.kicks-ass.net>
+        id S239057AbhFIL1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 07:27:55 -0400
+IronPort-SDR: mAM37eUPQgoX8Jxzj8zLXDb9Yzy1lUUR7KuYDB7eOiFHjY4Zg+bXBJ/0zNDDXfrEdRXWqrbKiw
+ kl7lWBFIifDQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="202028741"
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="202028741"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 04:26:00 -0700
+IronPort-SDR: dZEKBJhI74Ef4xMKb71rzCQINR0E6fZ8nlQ9ijauWzDSJ266mMWgJ62E0rjbiCIfsN13bCaVZ2
+ R2r23ogX6M2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="552645489"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 09 Jun 2021 04:25:58 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 09 Jun 2021 14:25:57 +0300
+Date:   Wed, 9 Jun 2021 14:25:57 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Benjamin Berg <bberg@redhat.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/7] usb: typec: ucsi: Polling the alt modes and PDOs
+Message-ID: <YMClRTC8wW82IrDT@kuha.fi.intel.com>
+References: <20210607131442.20121-1-heikki.krogerus@linux.intel.com>
+ <4a76d2152f016b58298bec16aa2003a6ec55f8a8.camel@redhat.com>
+ <YL8RPiVsEFOM9PBo@kuha.fi.intel.com>
+ <YL8UD+nlBSSQGIMO@kuha.fi.intel.com>
+ <f9e1640d4d1a2acbaacf83dee021cd4aa55f233f.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YL9271QMQfyn174k@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f9e1640d4d1a2acbaacf83dee021cd4aa55f233f.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 03:55:59PM +0200, Peter Zijlstra wrote:
-> On Tue, Jun 08, 2021 at 02:04:41PM +0200, Frederic Weisbecker wrote:
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 9e9a5be35cde..df47a8275c37 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -6238,6 +6238,14 @@ enum {
-> >  
-> >  int preempt_dynamic_mode = preempt_dynamic_full;
-> >  
-> > +#if defined(CONFIG_PREEMPT_DYNAMIC_FULL)
-> > +static __initdata int preempt_dynamic_mode_init = preempt_dynamic_full;
-> > +#elif defined(CONFIG_PREEMPT_DYNAMIC_VOLUNTARY)
-> > +static __initdata int preempt_dynamic_mode_init = preempt_dynamic_voluntary;
-> > +#elif defined(CONFIG_PREEMPT_DYNAMIC_NONE)
-> > +static __initdata int preempt_dynamic_mode_init = preempt_dynamic_none;
-> > +#endif
+On Tue, Jun 08, 2021 at 09:32:01PM +0200, Benjamin Berg wrote:
+> On Tue, 2021-06-08 at 09:54 +0300, Heikki Krogerus wrote:
+> > On Tue, Jun 08, 2021 at 09:42:09AM +0300, Heikki Krogerus wrote:
+> > > Please check does the partner device get removed. What do you have
+> > > under /sys/class/typec after that happens?
+> > 
+> > Oh yes. Could you also share the trace output when that happens?
+> > 
+> >         cd /sys/kernel/debug/tracing
+> >         echo 1 > events/ucsi/enable
+> >         # now reproduce the issue
+> >         cat trace > ucsi.trace
 > 
-> Why does preempt_dynamic_mode_init exist? Why can't we simply set
-> preempt_dynamic_mode?
+> So, the partner device is still there when this happens (see below). I
+> also only see a single event in the trace for the fast plug/unplug
+> case:
+>    kworker/u16:8-1771    [003] .... 18848.872145: ucsi_connector_change: port1 status: change=4a04, opmode=5, connected=1, sourcing=0, partner_flags=1, partner_type=1, request_data_obj=1304b12c, BC status=1
 
-To avoid the unconditional calls to static_call_update() on boot but I can do
-it in a more simple way.
+OK. Sorry I had to double check because you were only talking about
+the psy online state.
 
-Thanks.
+Can you now try this HACK on top of these patches:
+
+diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+index bd39fe2cb1d0b..99f072700ce7f 100644
+--- a/drivers/usb/typec/ucsi/ucsi.c
++++ b/drivers/usb/typec/ucsi/ucsi.c
+@@ -843,7 +843,8 @@ static void ucsi_handle_connector_change(struct work_struct *work)
+ 
+        if (!status.change) {
+                dev_dbg(con->ucsi->dev, "con%d: spurious event\n", con->num);
+-               goto out_ack;
++               /* XXX Force connection check. */
++               status.change = UCSI_CONSTAT_CONNECT_CHANGE;
+        }
+ 
+        event = kzalloc(sizeof(*event), GFP_KERNEL);
+
+thanks,
+
+-- 
+heikki
