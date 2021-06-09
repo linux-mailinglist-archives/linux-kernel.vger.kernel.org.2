@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB053A0CFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4353A0D4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236921AbhFIHC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:02:58 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:5345 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234196AbhFIHC4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:02:56 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G0HwP1Cn8z6vkS;
-        Wed,  9 Jun 2021 14:57:09 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 15:00:52 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 15:00:51 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Lyude Paul <lyude@redhat.com>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, <dri-devel@lists.freedesktop.org>,
-        <nouveau@lists.freedesktop.org>, <kernel-janitors@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next v2] drm/nouveau/gr: use list_move instead of list_del/list_add in nv40.c
-Date:   Wed, 9 Jun 2021 15:10:00 +0800
-Message-ID: <20210609071000.1330837-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S236710AbhFIHNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:13:10 -0400
+Received: from m12-12.163.com ([220.181.12.12]:42063 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234969AbhFIHNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 03:13:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ZhXBU
+        Uhb8IEEd5BfnTokZalclItqpdzTrKmB683qQ6k=; b=oSVvRZmA5/8pTz33ZVDB+
+        vlpYKz2Sp4teJUgS2jGA4+dOlL8ayzisaM4tjHbHE9gGblgBFtuFTten52dTdPUA
+        IVw2EJaiELoyvOALvdWTDqHENyCVFHYoNLdPqz4gaRItkwiBhnk1QVaNAo9Pu4tq
+        5+39TJ8JFc4bDGlwhIZs7M=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp8 (Coremail) with SMTP id DMCowADnuCmsZcBgWI2WIw--.37107S2;
+        Wed, 09 Jun 2021 14:54:36 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Subject: [PATCH] scsi: lpfc: lpfc_bsg: deleted these repeated words
+Date:   Wed,  9 Jun 2021 14:53:39 +0800
+Message-Id: <20210609065339.428697-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMCowADnuCmsZcBgWI2WIw--.37107S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Ww1fWFy3uFW3XFWrWF48Zwb_yoW8XrWfpF
+        W8Cay7CrykXa1kKa4fA34UZ3s0va97JFy7CFs0v3s5ZFWUJrykXFWrtr1UXFWUWFWv9r9I
+        qrs3KrWDuF1qvrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bbZXrUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiSg2sUFPAOoUs4AAAsb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_move() instead of list_del() + list_add() in nv40.c.
+From: lijian <lijian@yulong.com>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
+deleted these repeated words 'the' and 'is' in the comments.
+
+Signed-off-by: lijian <lijian@yulong.com>
 ---
-V1->V2:
-	CC mailist
+ drivers/scsi/lpfc/lpfc_bsg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/gpu/drm/nouveau/nvkm/engine/gr/nv40.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+diff --git a/drivers/scsi/lpfc/lpfc_bsg.c b/drivers/scsi/lpfc/lpfc_bsg.c
+index 38cfe1bc6a4d..08be16e7a60a 100644
+--- a/drivers/scsi/lpfc/lpfc_bsg.c
++++ b/drivers/scsi/lpfc/lpfc_bsg.c
+@@ -1766,7 +1766,7 @@ lpfc_bsg_diag_mode_exit(struct lpfc_hba *phba)
+  * This function is responsible for placing an sli3  port into diagnostic
+  * loopback mode in order to perform a diagnostic loopback test.
+  * All new scsi requests are blocked, a small delay is used to allow the
+- * scsi requests to complete then the link is brought down. If the link is
++ * scsi requests to complete then the link is brought down. If the link
+  * is placed in loopback mode then scsi requests are again allowed
+  * so the scsi mid-layer doesn't give up on the port.
+  * All of this is done in-line.
+@@ -5883,7 +5883,7 @@ lpfc_bsg_timeout(struct bsg_job *job)
+ 		return -EIO;
+ 
+ 	/* if job's driver data is NULL, the command completed or is in the
+-	 * the process of completing.  In this case, return status to request
++	 * process of completing.  In this case, return status to request
+ 	 * so the timeout is retried.  This avoids double completion issues
+ 	 * and the request will be pulled off the timer queue when the
+ 	 * command's completion handler executes.  Otherwise, prevent the
+-- 
+2.25.1
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/nv40.c b/drivers/gpu/drm/nouveau/nvkm/engine/gr/nv40.c
-index 67f3535ff97e..c65ca839e4de 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/nv40.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/nv40.c
-@@ -252,8 +252,7 @@ nv40_gr_intr(struct nvkm_gr *base)
- 	list_for_each_entry(temp, &gr->chan, head) {
- 		if (temp->inst >> 4 == inst) {
- 			chan = temp;
--			list_del(&chan->head);
--			list_add(&chan->head, &gr->chan);
-+			list_move(&chan->head, &gr->chan);
- 			break;
- 		}
- 	}
 
