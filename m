@@ -2,199 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEDE3A1A6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D74353A1A70
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbhFIQFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234765AbhFIQF3 (ORCPT
+        id S232476AbhFIQGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:06:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32708 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230358AbhFIQGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:05:29 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B1DC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 09:03:19 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id e2so519044ljk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:03:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RuqmxOf4yLjpj10dbnagltrDlQxjHHVud1GYFzl+boM=;
-        b=GEg8dLJ94tZCVq6q2y7z6VM8keYXWV75ZhV1YTmZDzlAhHD3c0Rnlwhy5pH9XXOLFl
-         huo9jmerCVyVYXlD4gagBsWkGC6Jt/1hgf8P0CUvqvN2ki3dawB1SxdZqN27Gh6wXMli
-         Gfg+Tr/pW2X2idypNwEQseXO4fI7JAQ+jHsvxhN9athlTNM/C4xeDy04L+61hSjBVkGD
-         tVXohVyllv1daYzL+ZeYSQ7G2Irsziaz0HJEvWMT0DP20bA+NkOFYw1hTT8FkrFM/SFS
-         7gyN5KtaM7L8VJ8AV2YMau9YAcm3M2AkUOhmdK0UoQsal3OQua28zu2XNDLOFQV4odA1
-         qNiQ==
+        Wed, 9 Jun 2021 12:06:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623254694;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jlsRXJEr6LiJo2+q8NkInylNQDLsfhpmGjGniaTEWmM=;
+        b=HZ2UOspKPR6J5AiYZDYMsCoqQvg2UdSAqVYatqbisAU2vCeyROAOYqSBwW37O/Y4E2FskR
+        szHVmA7MVAwm0ZzQxSu4D0KBNeRb0hvrGoAoKuz+0iQzNZ0ik3VpQyMhftMB1tPk7tjGUz
+        wnLdW+t/j3l2Y9H8E+drRVdJ+GHdZKM=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-177-39tzDrnsODa443d4pXOUgg-1; Wed, 09 Jun 2021 12:04:53 -0400
+X-MC-Unique: 39tzDrnsODa443d4pXOUgg-1
+Received: by mail-ej1-f72.google.com with SMTP id f1-20020a1709064941b02903f6b5ef17bfso8210135ejt.20
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 09:04:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=RuqmxOf4yLjpj10dbnagltrDlQxjHHVud1GYFzl+boM=;
-        b=DYmr8ycyrKPWghh/ZpYAxVWi/Th/XL3MMtqJEplHF/7BdLm062a63Y8DE7I5CqTXYw
-         kFjY0sDvP/VCVC7r59VJ7EB7oxfEyiEJghyOeHa31GDyPYU/ZkufeYVx5X0txIKHAeZS
-         ICwvn3I1aOZJRyRMG5Y2tTRm9U2N1Q/Q99pu8Kl3ryuY6Cme1FEdoUR2BXSHdr/8c4bZ
-         7mcd+MtlhuWRdDABgOL1Pm4GZA4vPbA8THII/Ixa07QvdIc67vkzYh9YQNXqOEzPsNa2
-         z6Ya71YPbVBr7ARl+uaC9iVKVIvAubkUC2WHqo4dhooSgnUrQ3YA1Mnxr1lXh3Nx0pRS
-         ncVg==
-X-Gm-Message-State: AOAM530j/rMeatAMOBjjjwBREp0BBLfcPfzfnEmpKJPOzN9j6XbA1zMp
-        ZJbBPIJapCyds3ah1b+PFK+npQ==
-X-Google-Smtp-Source: ABdhPJzQ1weTRVvAD8CXw6+IYKmErnPUi5/X4q8gI1IcNYVRfaM8pZHTNA/9BLB1wSammGbnHh4cJw==
-X-Received: by 2002:a2e:8743:: with SMTP id q3mr525632ljj.14.1623254596655;
-        Wed, 09 Jun 2021 09:03:16 -0700 (PDT)
-Received: from [192.168.1.8] ([93.92.200.219])
-        by smtp.gmail.com with ESMTPSA id f13sm24228lfv.126.2021.06.09.09.03.14
+        bh=jlsRXJEr6LiJo2+q8NkInylNQDLsfhpmGjGniaTEWmM=;
+        b=UxZosxtDuEiNJmjo5lTw25HT+b73z5kuSwqZpRIXbaqbaOWBxE06ojTBSn3fglIMQS
+         yExqZPyT/FZ/rzNXARjLvQg/5gqGUFhdZZlUSpwrtRBSRgp9ibXIbe5yJg3JLm0lBcFX
+         aAshjIV97vrKq8Uojoegj1AoxTAnLstyYsrQKCkMHcEWRgDj8s4AlSMCUZ1WPGIxMXLk
+         a+zPL4b/IVZD0vSS+4XwQwp3N9brTyPBhg4lV+Ewpy6mOjdSTYExcI0hfX0HTiX4tJSE
+         ykmh60V7wwS9rHg0pb1bJOYcuhA+OjyNjynHfhcCNrzSW/LIJZ+CJEC0R14usi7/viax
+         +2DQ==
+X-Gm-Message-State: AOAM532s4eknYL/aR/PIihIv0RFm0qRJ8p2NgVWfIFDkb7T83hfe9RWz
+        odEoe1pmn8QmqgKldCnMlcj9pD6mfNz+wMPkz02OW51oHWoAi2RgGKG6LMla00cifg0xXSiZHd5
+        weiNHFrtcmmwS03keEQxx0EuiHEzR34Qz71Ts062mcVhMVlokD+MUheAA2PZwze6Vb5pLYx5iet
+        kt
+X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr597249ejc.494.1623254692176;
+        Wed, 09 Jun 2021 09:04:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxZ0Bs8BiBbljc4OGOpwfru3Q0ICUTvzCkmjEbSYRb1tmwl0z3LAjYZ4WMHg4pBmK/e2g+0g==
+X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr597220ejc.494.1623254691934;
+        Wed, 09 Jun 2021 09:04:51 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id d24sm69575edr.95.2021.06.09.09.04.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 09:03:15 -0700 (PDT)
-Subject: Re: [PATCH] drm/msm/dsi: Stash away calculated vco frequency on
- recalc
-To:     Stephen Boyd <swboyd@chromium.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Abhinav Kumar <abhinavk@codeaurora.org>
-References: <20210608195519.125561-1-swboyd@chromium.org>
- <a6356956-9d4a-6fe7-2acc-bbe968d3a936@linaro.org>
- <CAE-0n521fW2F9V6E_7ei2KMsEUMLKSOCtAbRrVX+xXyrS0K9XQ@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <68b1697e-acb0-10b7-3e89-2287e196a230@linaro.org>
-Date:   Wed, 9 Jun 2021 19:03:14 +0300
+        Wed, 09 Jun 2021 09:04:51 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: dell-wmi-sysman: set fw_attr_class
+ storage-class to static
+To:     trix@redhat.com, divya.bharathi@dell.com, prasanth.ksr@dell.com,
+        mgross@linux.intel.com
+Cc:     Dell.Client.Kernel@dell.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210609153445.3090046-1-trix@redhat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <073c59e6-8d2c-2412-537b-2fd5f78538c8@redhat.com>
+Date:   Wed, 9 Jun 2021 18:04:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n521fW2F9V6E_7ei2KMsEUMLKSOCtAbRrVX+xXyrS0K9XQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210609153445.3090046-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06/2021 01:11, Stephen Boyd wrote:
-> Quoting Dmitry Baryshkov (2021-06-08 14:41:21)
->> Hi Stephen,
->>
->> On 08/06/2021 22:55, Stephen Boyd wrote:
->>> A problem was reported on CoachZ devices where the display wouldn't come
->>> up, or it would be distorted. It turns out that the PLL code here wasn't
->>> getting called once dsi_pll_10nm_vco_recalc_rate() started returning the
->>> same exact frequency, down to the Hz, that the bootloader was setting
->>> instead of 0 when the clk was registered with the clk framework.
->>>
->>> After commit 001d8dc33875 ("drm/msm/dsi: remove temp data from global
->>> pll structure") we use a hardcoded value for the parent clk frequency,
->>> i.e.  VCO_REF_CLK_RATE, and we also hardcode the value for FRAC_BITS,
->>> instead of getting it from the config structure. This combination of
->>> changes to the recalc function allows us to properly calculate the
->>> frequency of the PLL regardless of whether or not the PLL has been
->>> clk_prepare()d or clk_set_rate()d. That's a good improvement.
->>>
->>> Unfortunately, this means that now we won't call down into the PLL clk
->>> driver when we call clk_set_rate() because the frequency calculated in
->>> the framework matches the frequency that is set in hardware. If the rate
->>> is the same as what we want it should be OK to not call the set_rate PLL
->>> op. The real problem is that the prepare op in this driver uses a
->>> private struct member to stash away the vco frequency so that it can
->>> call the set_rate op directly during prepare. Once the set_rate op is
->>> never called because recalc_rate told us the rate is the same, we don't
->>> set this private struct member before the prepare op runs, so we try to
->>> call the set_rate function directly with a frequency of 0. This
->>> effectively kills the PLL and configures it for a rate that won't work.
->>> Calling set_rate from prepare is really quite bad and will confuse any
->>> downstream clks about what the rate actually is of their parent. Fixing
->>> that will be a rather large change though so we leave that to later.
->>>
->>> For now, let's stash away the rate we calculate during recalc so that
->>> the prepare op knows what frequency to set, instead of 0. This way
->>> things keep working and the display can enable the PLL properly. In the
->>> future, we should remove that code from the prepare op so that it
->>> doesn't even try to call the set rate function.
->>>
->>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->>> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
->>> Fixes: 001d8dc33875 ("drm/msm/dsi: remove temp data from global pll structure")
->>> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
->>
->> Thank you for the lengthy explanation. May I suggest another solution:
->>    - Apply
->> https://lore.kernel.org/linux-arm-msm/010101750064e17e-3db0087e-fc37-494d-aac9-2c2b9b0a7c5b-000000@us-west-2.amazonses.com/
->>
->>    - And make save_state for 7nm and 10nm cache vco freq (like 14nm does).
->>
->> What do you think?
->>
+Hi Tom,
+
+On 6/9/21 5:34 PM, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> Maybe that can be done for the next merge window? I'd like to get the
-> smallest possible patch in as a fix for this cycle given that the Fixes
-> tag is a recent regression introduced during the most recent merge
-> window.
+> An allyesconfig has this linking error
+> drivers/platform/x86/think-lmi.o:
+>   multiple definition of `fw_attr_class'
+> drivers/platform/x86/dell/dell-wmi-sysman/sysman.o:
+>   first defined here
 > 
-> I honestly have no idea what's going on with the clk driver in these
-> files but from the clk framework perspective there are bigger problems
-> than caching the vco freq properly. As I stated in the commit text
-> above, calling set_rate from prepare is plain bad. That should stop.
-
-Could you please spend few more words, on why calling the clock's 
-set_rate() callback from the same clock's prepare callback is bad? I 
-don't see how this would affect downstream clocks (as we do not change 
-the frequency, we just set the registers).
-
->  From my quick glance, the patch you mention looks like another
-> workaround instead of a proper fix. Why would we need to save the
-> registers at boot and then snap them back into place on enable? Maybe we
-> shouldn't reset the phy after registering the clks? Instead register the
-> clks after the phy is reset so recalc_rate can accurately calculate the
-> frequency.
-
-The problem here is not about registration. PHY gets reset not just only 
-on registration, it also might be powered off/reset later (e.g. when the 
-DSI output is disabled for any reason). And during each of these resets 
-we have to keep the PLL state. So keeping the state from the bootloaders 
-seems also natural to me.
-
-> I suppose that would break continuous splash screen though
-> where you want the PLL to stay running the entire boot? But then
-> issuing a reset would break that, wouldn't it? As you can see I'm pretty
-> confused about how this is all supposed to work.
-
-Yes, the continuous splash would be broken by resetting the PHY early.
-
-> Note: my problem isn't about recovering what boot sets, it's mostly
-> exposing incorrect usage of the clk framework in this driver because it
-> relies on this chain of events:
+> fw_attr_class is only used locally, so change to static
 > 
->   1) recalc rate calculates something different than what is
->      set via clk_set_rate()
+> Signed-off-by: Tom Rix <trix@redhat.com>
+
+Thank you for your 2 patches, I just merged another patch doing
+the same earlier today.
+
+Regards,
+
+Hans
+
+
+> ---
+>  drivers/platform/x86/dell/dell-wmi-sysman/sysman.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->   2) clk_set_rate() is called with the different rate
+> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
+> index 1378c18786582..636bdfa83284d 100644
+> --- a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
+> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
+> @@ -25,7 +25,7 @@ struct wmi_sysman_priv wmi_priv = {
+>  /* reset bios to defaults */
+>  static const char * const reset_types[] = {"builtinsafe", "lastknowngood", "factory", "custom"};
+>  static int reset_option = -1;
+> -struct class *fw_attr_class;
+> +static struct class *fw_attr_class;
+>  
+>  
+>  /**
 > 
->   3) clk_prepare() is called to actually enable the PLL and wait for it
->      to start
-> 
-> If clk_prepare() was called before clk_set_rate(), which is totally
-> valid, then it should similarly fail and think the rate is 0 and the PLL
-> won't lock. Does implementing save_state fix that? If so, it seems like
-> we have two pieces of code working around each other, maybe for
-> suspend/resume purposes.
 
-Ah, we were safe here because the DSI driver first calls clk_set_rate, 
-then clk_prepare_enable for the link clocks, which in turn makes VCO 
-clock first receive the rate and then enable PLL.
-
-> I admit this patch I'm proposing is another workaround, but at least it
-> makes things work again without going off and adding a bunch of register
-> save/restore logic.
-
-I think we can not come with the better solution in the next day or two, 
-we should merge your workaround. For now I'm trying to understand what 
-are the alternatives and which of them can be better.
-
-Also it's not about registers save/resore. We can add a call to 
-recalc_rate to pll_save_state (as 14nm driver does).
-
-
--- 
-With best wishes
-Dmitry
