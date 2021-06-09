@@ -2,130 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824443A0E29
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044993A0E2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237360AbhFIH6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:58:43 -0400
-Received: from mail-yb1-f173.google.com ([209.85.219.173]:43668 "EHLO
-        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235676AbhFIH6l (ORCPT
+        id S237369AbhFIIAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:00:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21973 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235417AbhFIIAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:58:41 -0400
-Received: by mail-yb1-f173.google.com with SMTP id b9so34189621ybg.10;
-        Wed, 09 Jun 2021 00:56:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KXMGHXTBrIil+I7I4kjVUCaxAzxvJ/gccp3wjNKkRTM=;
-        b=TdlrugkUXsgXQ/klf03KArJGCtrAiDPExNhLRnhLTnf0alb/+ecpu/0+DwhUwzslD8
-         nGjl98bGRk4TwWuui+zYqmbhQr9bE0tNad0C3W2RJJpCdV7bG1JYyCQyLp6E2zYgAgge
-         hYHrDcWoMprH8As++8E927poTTiodJXfPK8yQ60+diRba59Zs8p1OizhGYGLa2UCPvPO
-         shDuXeIIZjrEwzvPp0q8fRjng4RqUsXokYqWPTvr37PzK88XtWMX169uVCMYLKFj/Oy5
-         OaJ0Krnxml+yQE3E7NIdcLkIIdr83D4StVlpWWXnNynGmnQy5cXUCG7QldrHNjjwAuJB
-         p3QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KXMGHXTBrIil+I7I4kjVUCaxAzxvJ/gccp3wjNKkRTM=;
-        b=tqEBozAFRcT+wQhxQoyEFjz/b3tE7qI1nGAoGxyPpSxAUQvxT0sCk2ID7nKwz8ehDI
-         SIjSdhReWt5ufQMDcBoOwoUq/ceIsOdUwAnT+8jGKujRYRkIxRLRPf4XYOq9pbVUm1f1
-         /F8Sgy7hDpNZx11xo3cV2HpF7WR95rSdiAz35xTZnaKo4GsEwglED1MIQnH28jUugTF/
-         QImAYjzIVgbpx1ck8eiAhANvAgXhI0jAQJGSgo5lAmabbLFXySy4+OVnS4pm6H0qigfP
-         9DN0yjfT9ubCTgLq3xYG0e1xN7IXm34S9w0/IPI8rVeNqZ/jw8Bwxtd3eCgj6UTo92+a
-         LhgA==
-X-Gm-Message-State: AOAM530WV5PG2ASxpQPK9R0Rx6oDkMtjm4WzZ2ytRXc/ATR8LLJ5h2jD
-        1YXxyLXnculWQ2c2Az/Qh14dywP5T1zIMHDLSts=
-X-Google-Smtp-Source: ABdhPJwAbGPtDbZtlUcIsNuAqy/YZy5uVx2bQGCuOHQkm9uid77r2z6Qq8LBhTcmzyQfawpZBULT7hw/ULTpug/IjSw=
-X-Received: by 2002:a25:d888:: with SMTP id p130mr1010477ybg.179.1623225331965;
- Wed, 09 Jun 2021 00:55:31 -0700 (PDT)
+        Wed, 9 Jun 2021 04:00:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623225486;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nlX5Q+2DzD0tH8iiIBHTsugJFJXGJze9zF4zU747aOQ=;
+        b=NF53BojjB3K38rkBNelu+Hr2zDCt64JM97x//zhR226N7fQ60rooZWLWncGzYRKBqJSaZY
+        N+J5jfdLMKEj+10qZbthhM9YqP/0wYbo05pDWlAq+7yxmLQSUsKoavQdBqfh1zM2+z5x5T
+        QxG5kYoDsYxU/rqa1y2Wr1GENCxH9i0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-65-zAiDhkZfPO2stKepXVe3sA-1; Wed, 09 Jun 2021 03:58:02 -0400
+X-MC-Unique: zAiDhkZfPO2stKepXVe3sA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2A67802575;
+        Wed,  9 Jun 2021 07:57:59 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-114-217.ams2.redhat.com [10.36.114.217])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 009A019C45;
+        Wed,  9 Jun 2021 07:57:52 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH v3 0/2] memory-hotplug.rst: complete admin-guide overhaul
+Date:   Wed,  9 Jun 2021 09:57:50 +0200
+Message-Id: <20210609075752.4596-1-david@redhat.com>
 MIME-Version: 1.0
-References: <20210603221758.10305-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210603221758.10305-13-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXO1RyF9ZuXR2CGHqvPOh6jnf07_EEreTOmiwUzoEg5hQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdXO1RyF9ZuXR2CGHqvPOh6jnf07_EEreTOmiwUzoEg5hQ@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 9 Jun 2021 08:55:06 +0100
-Message-ID: <CA+V-a8uaAcFOqqRzNVdjmSD2LsQO9yHjM8AcQRA8gOFmF5q8gg@mail.gmail.com>
-Subject: Re: [PATCH v2 12/12] arm64: dts: renesas: Add initial device tree for
- RZ/G2L SMARC EVK
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+This is v3 of the memory hot(un)plug admin-guide overhaul.
 
-Thank you for the review.
+v2 -> v3:
+- Added ACKs and RBs (thanks!)
+- s/aarch64/arm64/
+- Refine error handling when onlining/offlining
+- s/memory hotplug/memory offlining/ in the vmemmap optimization section
+  for huge pages
 
-On Wed, Jun 9, 2021 at 8:18 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Fri, Jun 4, 2021 at 12:19 AM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add basic support for RZ/G2L SMARC EVK (based on R9A07G044L2):
-> > - memory
-> > - External input clock
-> > - SCIF
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/renesas/r9a07g044l2-smarc.dts
-> > @@ -0,0 +1,21 @@
-> > +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +/*
-> > + * Device Tree Source for the RZ/G2L SMARC EVK board
-> > + *
-> > + * Copyright (C) 2021 Renesas Electronics Corp.
-> > + */
-> > +
-> > +/dts-v1/;
-> > +#include "r9a07g044.dtsi"
->
-> So this should include r9a07g044l2.dtsi.
->
-Good point I'll create an empty r9a07g044l2.dtsi file including
-"r9a07g044.dtsi '' along with the compatible value and include it
-here.
+v1 -> v2:
+- Added "memory-hotplug.rst: remove locking details from admin-guide"
+- Incorporated all feedback from Mike and Michal (thanks!)
+- Compressed some lines to make full use of 80 chars.
+- Added details regarding 64bit/supported archs to the introduction.
+- Added KASAN to the list of sizing considerations.
 
-Cheers,
-Prabhakar
+David Hildenbrand (2):
+  memory-hotplug.rst: remove locking details from admin-guide
+  memory-hotplug.rst: complete admin-guide overhaul
 
-> The rest looks fine, so
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+ .../admin-guide/mm/memory-hotplug.rst         | 800 ++++++++++--------
+ 1 file changed, 455 insertions(+), 345 deletions(-)
+
+-- 
+2.31.1
+
