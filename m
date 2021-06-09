@@ -2,131 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41ACF3A0ED2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF82E3A0EE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237679AbhFIIjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:39:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232333AbhFIIjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:39:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E57261285;
-        Wed,  9 Jun 2021 08:37:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623227844;
-        bh=TG0XNosqjGnib4pkkze7Jw7/X+EAzPSRH0ty43ce6EI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l4voZ/2Inn6lOW+y3VoWnc0Lt4jTaU4g2GIN87FcotsIeYHN9N5e57He1a6uBWSPi
-         HDRkH36CRTgpYMrB53g+VQ5swizXsnsQrEIGZ154b4iCYeCsSLOHDiBZJJWYjkT/I7
-         YDip+fwcUFuuXDolzbl4a8hGQ8mE8fBpw3yO4SUyzPJ97/idEzqbau1ElnR7s6Je+E
-         mno1L32X5vteD7BX0QjFQIiyy/eHpNF3Oe4qoXb//jy3dH5ZDNVJVZjQTe7nDaGixK
-         IrljHQSBxgtyHIutdKlLaK50VtLUTrRDXem+zEN2cmExu9p4byFN633mXyt+lsB1KI
-         7nv8QAuuwabww==
-Date:   Wed, 9 Jun 2021 11:37:20 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Anand Khoje <anand.a.khoje@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dledford@redhat.com, jgg@ziepe.ca, haakon.bugge@oracle.com
-Subject: Re: [PATCH v3 1/3] IB/core: Removed port validity check from
- ib_get_cached_subnet_prefix
-Message-ID: <YMB9wEygi58hjDLy@unreal>
-References: <20210609055534.855-1-anand.a.khoje@oracle.com>
- <20210609055534.855-2-anand.a.khoje@oracle.com>
+        id S237734AbhFIIr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:47:57 -0400
+Received: from forward1-smtp.messagingengine.com ([66.111.4.223]:50821 "EHLO
+        forward1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231917AbhFIIr4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 04:47:56 -0400
+X-Greylist: delayed 447 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Jun 2021 04:47:56 EDT
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailforward.nyi.internal (Postfix) with ESMTP id 0B3BC1940C78;
+        Wed,  9 Jun 2021 04:38:35 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 09 Jun 2021 04:38:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=cf/f/6
+        o53yZFK0c2xysdNHLo69ogP+H0lETTTPrZ740=; b=EdqkiQZfh1eLVc36Dw4nBB
+        NTCZmIrf7x9ln/qRz/fbBhzTxeNtEn58C+23Q+NSlwVo8ooWVWU2Hhla3pgIDkV0
+        uA0SIg49+9LkaHIhSzO0opOe7PrOH7dcXm9ONeqPxlWmaR2yPx/q5t7kfwROXqsa
+        l5E8F65qopnxjNekYmOZpfuyG/e7PYlt0oJAkjK890tPBbJSKYF4d+76+b/rNGQm
+        4NsSGGytEsiA+Iq2ji+t2FeFNHkVVw7agmiVjk7RgBdOpHpSg2DFaknP/qqK/DJZ
+        JYrhtbQSAZj7Aybe1SXLnR159j9FOjcTQzQjdYC0yHXzfoTYxYc1QmV4LY7ANxwA
+        ==
+X-ME-Sender: <xms:CX7AYNf3F6PQNqia6vNmZ49Wt4dUzrVaRMz452EjH8oGNVjE_ddtBg>
+    <xme:CX7AYLPMCS6IUEWgUdu4_3NM3gxqzk0BCH0M2PnpdZUkVMakH4e_2ouTDeyaYtRrc
+    Pfu8fu_hAwVlg_8xUM>
+X-ME-Received: <xmr:CX7AYGhSeU6jOLATGR-9y_SsmvUZ9ScjSBmt_EfdxTETIQC-cloSguMa2ztUup8auw1SHTPls2-Ziuji0Cj0R4SNcPHsarEDEl1gp7Vo8kU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeduuddgtdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvffujghfhfffkfggtgesthdtredttddttdenucfhrhhomhepffgrvhhiugcu
+    gfgumhhonhgushhonhcuoegumhgvsegumhgvrdhorhhgqeenucggtffrrghtthgvrhhnpe
+    fhkeeguedtvdegffffteehjedvjeeitefgfefgffdugeffffegudehgeetgeelkeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegumhgvsegumh
+    gvrdhorhhg
+X-ME-Proxy: <xmx:CX7AYG_ydNb130YPu_XZeJ45sxTJK6If-a5xSB2X35CUYgYp0UefXA>
+    <xmx:CX7AYJu3Ml5FOZ9Ch-QdB8LpO7luxBpPHXHs1l4KbBeyZnMLEc007w>
+    <xmx:CX7AYFELWNo2jD5jZ84QYFhL1P3EVUSIRFzWccON4NUe_iKrcxl8zQ>
+    <xmx:C37AYCFwlatc5Qq92Q6bjv37HhEciO5NGjFU0HLCeXsM17Ym162T5ey_Kz8>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 9 Jun 2021 04:38:32 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 854acb37;
+        Wed, 9 Jun 2021 08:38:30 +0000 (UTC)
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        syzbot+2067e764dbcd10721e2e@syzkaller.appspotmail.com,
+        Borislav Petkov <bp@suse.de>, Rik van Riel <riel@surriel.com>
+Subject: Re: [patch V3 6/6] selftests/x86: Test signal frame XSTATE header
+ corruption handling
+In-Reply-To: <20210608144346.234764986@linutronix.de>
+References: <20210608143617.565868844@linutronix.de>
+ <20210608144346.234764986@linutronix.de>
+X-HGTTG: zarquon
+From:   David Edmondson <dme@dme.org>
+Date:   Wed, 09 Jun 2021 09:38:30 +0100
+Message-ID: <cunmtrz1lh5.fsf@dme.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609055534.855-2-anand.a.khoje@oracle.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:25:32AM +0530, Anand Khoje wrote:
-> Removed port validity check from ib_get_cached_subnet_prefix()
-> as this check is not needed because "port_num" is valid.
-> 
-> Suggested-by: Leon Romanovsky <leonro@nvidia.com>
-> Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
-> Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
-> 
-> ---
-> 
-> v1 -> v2:
->     -	Added changes as per Leon's suggestion of removing port
->     validity check from ib_get_cached_subnet_prefix().
->     -	Split the v1 patch in 3 patches as per Leon's suggestion.
-> v2 -> v3:
->     -	Added some formatting changes per Leon's suggestions
->     and removed return from ib_get_cached_subnet_prefix.
-> 
-> ---
->  drivers/infiniband/core/cache.c     |  6 +-----
->  drivers/infiniband/core/core_priv.h |  2 +-
->  drivers/infiniband/core/device.c    | 13 ++++---------
->  drivers/infiniband/core/security.c  |  7 ++-----
->  4 files changed, 8 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-> index 3b0991fedd81..e957f0c915a3 100644
-> --- a/drivers/infiniband/core/cache.c
-> +++ b/drivers/infiniband/core/cache.c
-> @@ -1069,19 +1069,15 @@ int ib_get_cached_pkey(struct ib_device *device,
->  }
->  EXPORT_SYMBOL(ib_get_cached_pkey);
->  
-> -int ib_get_cached_subnet_prefix(struct ib_device *device, u32 port_num,
-> +void ib_get_cached_subnet_prefix(struct ib_device *device, u32 port_num,
->  				u64 *sn_pfx)
->  {
->  	unsigned long flags;
->  
-> -	if (!rdma_is_port_valid(device, port_num))
-> -		return -EINVAL;
-> -
->  	read_lock_irqsave(&device->cache_lock, flags);
->  	*sn_pfx = device->port_data[port_num].cache.subnet_prefix;
->  	read_unlock_irqrestore(&device->cache_lock, flags);
->  
-> -	return 0;
->  }
->  EXPORT_SYMBOL(ib_get_cached_subnet_prefix);
->  
-> diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-> index 29809dd30041..0b23f50fa958 100644
-> --- a/drivers/infiniband/core/core_priv.h
-> +++ b/drivers/infiniband/core/core_priv.h
-> @@ -214,7 +214,7 @@ int ib_nl_handle_ip_res_resp(struct sk_buff *skb,
->  			     struct nlmsghdr *nlh,
->  			     struct netlink_ext_ack *extack);
->  
-> -int ib_get_cached_subnet_prefix(struct ib_device *device,
-> +void ib_get_cached_subnet_prefix(struct ib_device *device,
->  				u32 port_num,
->  				u64 *sn_pfx);
->  
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index c660cef66ac6..595128b26c34 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -886,15 +886,10 @@ static void ib_policy_change_task(struct work_struct *work)
->  
->  		rdma_for_each_port (dev, i) {
->  			u64 sp;
-> -			int ret = ib_get_cached_subnet_prefix(dev,
-> -							      i,
-> -							      &sp);
-> -
-> -			WARN_ONCE(ret,
-> -				  "ib_get_cached_subnet_prefix err: %d, this should never happen here\n",
-> -				  ret);
-> -			if (!ret)
-> -				ib_security_cache_change(dev, i, sp);
-> +
-> +			ib_get_cached_subnet_prefix(dev, i, &sp);
-> +
-> +			ib_security_cache_change(dev, i, sp);
+On Tuesday, 2021-06-08 at 16:36:23 +02, Thomas Gleixner wrote:
 
-nitpick, the blank line is not needed.
+> From: Andy Lutomirski <luto@kernel.org>
+>
+> This is very heavily based on some code from Thomas Gleixner.  On a system
+> without XSAVES, it triggers the WARN_ON():
+>
+>     Bad FPU state detected at copy_kernel_to_fpregs+0x2f/0x40, reinitializing FPU registers.
+>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+> V2: main() -> main(void) - Borislav
+> ---
+>  tools/testing/selftests/x86/Makefile                |    3 
+>  tools/testing/selftests/x86/corrupt_xstate_header.c |  114 ++++++++++++++++++++
+>  2 files changed, 116 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/x86/corrupt_xstate_header.c
+>
+> --- a/tools/testing/selftests/x86/Makefile
+> +++ b/tools/testing/selftests/x86/Makefile
+> @@ -17,7 +17,8 @@ TARGETS_C_BOTHBITS := single_step_syscal
+>  TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
+>  			test_FCMOV test_FCOMI test_FISTTP \
+>  			vdso_restorer
+> -TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering
+> +TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering \
+> +			corrupt_xstate_header
+>  # Some selftests require 32bit support enabled also on 64bit systems
+>  TARGETS_C_32BIT_NEEDED := ldt_gdt ptrace_syscall
+>  
+> --- /dev/null
+> +++ b/tools/testing/selftests/x86/corrupt_xstate_header.c
+> @@ -0,0 +1,114 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Corrupt the XSTATE header in a signal frame
+> + *
+> + * Based on analysis and a test case from Thomas Gleixner.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include <string.h>
+> +#include <sched.h>
+> +#include <signal.h>
+> +#include <err.h>
+> +#include <unistd.h>
+> +#include <stdint.h>
+> +#include <sys/wait.h>
+> +
+> +static inline void __cpuid(unsigned int *eax, unsigned int *ebx,
+> +			   unsigned int *ecx, unsigned int *edx)
+> +{
+> +	asm volatile(
+> +		"cpuid;"
+> +		: "=a" (*eax),
+> +		  "=b" (*ebx),
+> +		  "=c" (*ecx),
+> +		  "=d" (*edx)
+> +		: "0" (*eax), "2" (*ecx));
+> +}
+> +
+> +static inline int xsave_enabled(void)
+> +{
+> +	unsigned int eax, ebx, ecx, edx;
+> +
+> +	eax = 0x1;
+> +	ecx = 0x0;
+> +	__cpuid(&eax, &ebx, &ecx, &edx);
+> +
+> +	/* Is CR4.OSXSAVE enabled ? */
+> +	return ecx & (1U << 27);
+> +}
+> +
+> +static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
+> +		       int flags)
+> +{
+> +	struct sigaction sa;
+> +
+> +	memset(&sa, 0, sizeof(sa));
+> +	sa.sa_sigaction = handler;
+> +	sa.sa_flags = SA_SIGINFO | flags;
+> +	sigemptyset(&sa.sa_mask);
+> +	if (sigaction(sig, &sa, 0))
+> +		err(1, "sigaction");
+> +}
+> +
+> +static void sigusr1(int sig, siginfo_t *info, void *uc_void)
+> +{
+> +	ucontext_t *uc = uc_void;
+> +	uint8_t *fpstate = (uint8_t *)uc->uc_mcontext.fpregs;
+> +	uint64_t *xfeatures = (uint64_t *)(fpstate + 512);
+> +
+> +	printf("\tWreckage XSTATE header\n");
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+"Wreckage" is an odd word to use here, as it usually refers to the
+objects that are the result of a wreck. Maybe "wreck" or (to match the
+test name) "corrupt"?
+
+> +	/* Wreckage the first reserved byte in the header */
+> +	*(xfeatures + 2) = 0xfffffff;
+
+This trashes more than a byte, which doesn't seem significant, but it
+would be good to have the comment and code match.
+
+> +}
+> +
+> +static void sigsegv(int sig, siginfo_t *info, void *uc_void)
+> +{
+> +	printf("\tGot SIGSEGV\n");
+> +}
+> +
+> +int main(void)
+> +{
+> +	cpu_set_t set;
+> +
+> +	sethandler(SIGUSR1, sigusr1, 0);
+> +	sethandler(SIGSEGV, sigsegv, 0);
+> +
+> +	if (!xsave_enabled()) {
+> +		printf("[SKIP] CR4.OSXSAVE disabled.\n");
+> +		return 0;
+> +	}
+> +
+> +	CPU_ZERO(&set);
+> +	CPU_SET(0, &set);
+> +
+> +	/*
+> +	 * Enforce that the child runs on the same CPU
+> +	 * which in turn forces a schedule.
+> +	 */
+> +	sched_setaffinity(getpid(), sizeof(set), &set);
+> +
+> +	printf("[RUN]\tSend ourselves a signal\n");
+> +	raise(SIGUSR1);
+> +
+> +	printf("[OK]\tBack from the signal.  Now schedule.\n");
+> +	pid_t child = fork();
+> +	if (child < 0)
+> +		err(1, "fork");
+> +	if (child == 0)
+> +		return 0;
+> +	if (child)
+> +		waitpid(child, NULL, 0);
+> +	printf("[OK]\tBack in the main thread.\n");
+> +
+> +	/*
+> +	 * We could try to confirm that extended state is still preserved
+> +	 * when we schedule.  For now, the only indication of failure is
+> +	 * a warning in the kernel logs.
+> +	 */
+> +
+> +	return 0;
+> +}
+
+dme.
+-- 
+It's alright, we told you what to dream.
