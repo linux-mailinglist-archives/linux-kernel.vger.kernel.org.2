@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0FA3A1601
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277033A15FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236611AbhFINuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:50:15 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:45611 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232911AbhFINuJ (ORCPT
+        id S236621AbhFINtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:49:49 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:53554 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233773AbhFINtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:50:09 -0400
-Received: by mail-wr1-f51.google.com with SMTP id z8so25531988wrp.12;
-        Wed, 09 Jun 2021 06:48:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ob6PnWhKav7jMFqFY+b+WTV4eaWghvwiq60OTVa4u2A=;
-        b=GYHSeZPo34jeBLHh/sCUIdxO1hQZh36/JnIyZDl0LES2nd23mJwjBw3GSlGkBfOQJx
-         sR8vGgFXr+jt+aMIR3dvvAzZep2RdTIGtGjLZvB3GlJvlqUzG+i/DqPfqKxVlRzKa1uk
-         J36X2QQ6rlpPy7AplDQ2dosl9aMrEG09mPl7Q+XmVpFkqbKpo7wMxl92lPHZh8FtmEy4
-         dGp+t+CIoXh6d23izgxdotfQbERpnyTbftiFvEbGT2bMUlPmHghsM4A+/kpVvznSG+sN
-         aF1TRHZbn0luDb5XzVQ8ZDLG4VdQLFrGjJR1DT/UBDcFLBwbpjMbu7kF/uwYtgJv8RC8
-         nZSA==
-X-Gm-Message-State: AOAM5301qvP4bTOAQxGu0WjirDJp039bqUg1hk8u7UdQPR/0JcdETMxT
-        yGVYEChX2yKpqdLfGYCm8uRPsMBkht+EXg==
-X-Google-Smtp-Source: ABdhPJyaQfaop0D//baox/2aMwkJjAdH0+kRl4J2HwWcdWYJxkqS9EQfqvwqrw4W6zuMhvoxcFMRZw==
-X-Received: by 2002:adf:f78d:: with SMTP id q13mr27990870wrp.191.1623246493659;
-        Wed, 09 Jun 2021 06:48:13 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
-        by smtp.gmail.com with ESMTPSA id o5sm13882351wrw.65.2021.06.09.06.48.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 06:48:13 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: [PATCH net-next 2/2] mvpp2: prefetch page
-Date:   Wed,  9 Jun 2021 15:47:14 +0200
-Message-Id: <20210609134714.13715-3-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210609134714.13715-1-mcroce@linux.microsoft.com>
-References: <20210609134714.13715-1-mcroce@linux.microsoft.com>
+        Wed, 9 Jun 2021 09:49:47 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 159DliYZ001608;
+        Wed, 9 Jun 2021 08:47:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623246464;
+        bh=r81EU4YF9chVd2IZTA3TUdq4Zmxh9TGeZjs2q9m+MBs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=UQqr66EFN8exKq9pMM5lyRHN+Qa1wg9WAKXMXHxtnpkfap6Wt6dat0F3vwTaU+4yZ
+         7x+wk9y2VYqIbZHZ3IBRYrCmtzkMWiKefbJkZuxPMs834EQbB/UA2r3U1R4KUQnkSe
+         YQIF340v3eGKO5/2IH+rDUe08KDcUtHXcnGgTmKs=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 159DliEl003702
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Jun 2021 08:47:44 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
+ 2021 08:47:44 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 9 Jun 2021 08:47:44 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 159Dld5r126278;
+        Wed, 9 Jun 2021 08:47:41 -0500
+Subject: Re: [PATCH v2 2/2] arm64: dts: ti: k3-am642-evm: align
+ ti,pindir-d0-out-d1-in property with dt-shema
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210608051414.14873-1-a-govindraju@ti.com>
+ <20210608051414.14873-3-a-govindraju@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <d7f97a1e-4870-9837-3cc6-f6788310ec54@ti.com>
+Date:   Wed, 9 Jun 2021 19:17:38 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210608051414.14873-3-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
 
-Most of the time during the RX is caused by the compound_head() call
-done at the end of the RX loop:
 
-       │     build_skb():
-       [...]
-       │     static inline struct page *compound_head(struct page *page)
-       │     {
-       │     unsigned long head = READ_ONCE(page->compound_head);
- 65.23 │       ldr  x2, [x1, #8]
-
-Prefetch the page struct as soon as possible, to speedup the RX path
-noticeabily by a ~3-4% packet rate in a drop test.
-
-       │     build_skb():
-       [...]
-       │     static inline struct page *compound_head(struct page *page)
-       │     {
-       │     unsigned long head = READ_ONCE(page->compound_head);
- 17.92 │       ldr  x2, [x1, #8]
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 07d8f3e31b52..9bca8c8f9f8d 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -3900,15 +3900,19 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 		phys_addr_t phys_addr;
- 		u32 rx_status, timestamp;
- 		int pool, rx_bytes, err, ret;
-+		struct page *page;
- 		void *data;
- 
-+		phys_addr = mvpp2_rxdesc_cookie_get(port, rx_desc);
-+		data = (void *)phys_to_virt(phys_addr);
-+		page = virt_to_page(data);
-+		prefetch(page);
-+
- 		rx_done++;
- 		rx_status = mvpp2_rxdesc_status_get(port, rx_desc);
- 		rx_bytes = mvpp2_rxdesc_size_get(port, rx_desc);
- 		rx_bytes -= MVPP2_MH_SIZE;
- 		dma_addr = mvpp2_rxdesc_dma_addr_get(port, rx_desc);
--		phys_addr = mvpp2_rxdesc_cookie_get(port, rx_desc);
--		data = (void *)phys_to_virt(phys_addr);
- 
- 		pool = (rx_status & MVPP2_RXD_BM_POOL_ID_MASK) >>
- 			MVPP2_RXD_BM_POOL_ID_OFFS;
-@@ -3997,7 +4001,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 		}
- 
- 		if (pp)
--			skb_mark_for_recycle(skb, virt_to_page(data), pp);
-+			skb_mark_for_recycle(skb, page, pp);
- 		else
- 			dma_unmap_single_attrs(dev->dev.parent, dma_addr,
- 					       bm_pool->buf_size, DMA_FROM_DEVICE,
--- 
-2.31.1
-
+On 6/8/21 10:44 AM, Aswath Govindraju wrote:
+> ti,pindir-d0-out-d1-in property is expected to be of type boolean.
+> Therefore, fix the property accordingly.
+> 
+> Fixes: 4fb6c04683aa ("arm64: dts: ti: k3-am642-evm: Add support for SPI EEPROM")
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-am642-evm.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> index dad0efa961ed..2fd0de905e61 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> @@ -334,7 +334,7 @@
+>  &main_spi0 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&main_spi0_pins_default>;
+> -	ti,pindir-d0-out-d1-in = <1>;
+> +	ti,pindir-d0-out-d1-in;
+>  	eeprom@0 {
+>  		compatible = "microchip,93lc46b";
+>  		reg = <0>;
+> 
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
