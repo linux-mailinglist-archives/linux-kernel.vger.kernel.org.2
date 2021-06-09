@@ -2,66 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B823B3A15C8
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3B03A15C7
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236513AbhFINiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:38:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235485AbhFINiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:38:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9784E6101A;
-        Wed,  9 Jun 2021 13:36:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623245818;
-        bh=6fmOCtWMIQ8U3T64X0/kcwrng7XoZZcmbhy8x4YefrY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fChaQePngQbk4Nj9N0F0EQ9xMr1xwMwT609pff6BQ59rA3cv/+azpDIiiZuEsVDCT
-         yGy8Vth+hI/o7d87rMA7SgksL9G+kc8Xc1z3YpbSTJKrl26pHaYa65JQNhBnxnNSIg
-         VWG4xM3zKhTUsVUALY2ySdYvGTTPijcO3xUUfuGnrleJiYBuntHwBlZv/GRUdNJgda
-         /20OtBYStW1gGSSzlSL3khg7Smw0ed4U+N0pdH6mIJJov/94DKx7EUJnP/lOMaenmg
-         8Mqn9gNz3m0TmmorqIU1YFHagaGe/6i2ctkcMFrYU1/SqkdvVx4TYIa8IzYL9qBrgk
-         TbwlHk4N7jhpA==
-Date:   Wed, 9 Jun 2021 15:36:14 +0200
-From:   Miguel Ojeda <ojeda@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] clang-format for v5.13-rc6
-Message-ID: <20210609133614.GA4132@kernel.org>
+        id S236495AbhFINiZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 09:38:25 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:60681 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235485AbhFINiX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 09:38:23 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id E115C6000B;
+        Wed,  9 Jun 2021 13:36:22 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 15:36:21 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Naga Sureshkumar Relli <nagasure@xilinx.com>,
+        Amit Kumar Mahapatra <akumarma@xilinx.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
+        Siva Durga Prasad Paladugu <sivadur@xilinx.com>
+Subject: Re: [PATCH v22 17/18] dt-bindings: mtd: pl353-nand: Describe this
+ hardware controller
+Message-ID: <20210609153621.1303bc4d@xps13>
+In-Reply-To: <57ef16cd-33e7-6c16-3a24-9634f47831b3@canonical.com>
+References: <20210609080112.1753221-1-miquel.raynal@bootlin.com>
+        <20210609080112.1753221-18-miquel.raynal@bootlin.com>
+        <57ef16cd-33e7-6c16-3a24-9634f47831b3@canonical.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: elm/2
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Krzysztof,
 
-Here comes the usual update for `clang-format`.
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote on Wed, 9
+Jun 2021 14:01:10 +0200:
 
-Cheers,
-Miguel
+> On 09/06/2021 10:01, Miquel Raynal wrote:
+> > Add a yaml description of this NAND controller which is described as a
+> > subnode of the SMC bus.
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  .../bindings/mtd/arm,pl353-nand-r2p1.yaml     | 57 +++++++++++++++++++
+> >  1 file changed, 57 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> > new file mode 100644
+> > index 000000000000..e72fa14b4385
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> > @@ -0,0 +1,57 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mtd/arm,pl353-nand-r2p1.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: PL353 NAND Controller device tree bindings
+> > +
+> > +allOf:
+> > +  - $ref: "nand-controller.yaml"
+> > +
+> > +maintainers:
+> > +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> > +  - Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - enum:  
+> 
+> That's not an enum, but simple const without items.
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+Ok.
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+> 
+> > +          - arm,pl353-nand-r2p1
+> > +
+> > +  reg:
+> > +    items:
+> > +      - items:
+> > +          - description: CS with regard to the parent ranges property
+> > +          - description: Offset of the memory region requested by the device
+> > +          - description: Length of the memory region requested by the device  
+> 
+> Doesn't it depend on parent's address/size cells?
 
-are available in the Git repository at:
+Yes, but as the child nodes are not defined in the parent's binding
+(ie. the SMC) I think it's interesting to have them defined here, no?
 
-  https://github.com/ojeda/linux.git tags/clang-format-for-linus-v5.13-rc6
+> > +
+> > +  "#address-cells": true
+> > +  "#size-cells": true  
+> 
+> These should come from nand-controller.yaml
 
-for you to fetch changes up to 4792f9dd12936ec35deced665ae3a4ca8fe98729:
+Right, I'll drop these, they are probably redundant.
 
-  clang-format: Update with the latest for_each macro list (2021-05-12 23:32:39 +0200)
-
-----------------------------------------------------------------
-The usual update for `clang-format`.
-
-----------------------------------------------------------------
-Miguel Ojeda (1):
-      clang-format: Update with the latest for_each macro list
-
- .clang-format | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+Thanks,
+Miquèl
