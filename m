@@ -2,158 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E138D3A0B02
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2D83A0B03
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhFIEOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 00:14:33 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:22098 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbhFIEO3 (ORCPT
+        id S230477AbhFIEPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 00:15:20 -0400
+Received: from gw.atmark-techno.com ([13.115.124.170]:35982 "EHLO
+        gw.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230466AbhFIEPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 00:14:29 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1593wd7F009056;
-        Wed, 9 Jun 2021 11:58:39 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 9 Jun
- 2021 12:12:31 +0800
-Date:   Wed, 9 Jun 2021 12:12:28 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH v5 06/10] gpio: gpio-aspeed-sgpio: Add AST2400 and
- AST2500 platform data.
-Message-ID: <20210609041227.GB14839@aspeedtech.com>
-References: <20210608102547.4880-1-steven_lee@aspeedtech.com>
- <20210608102547.4880-7-steven_lee@aspeedtech.com>
- <6f87ccf4-9b8f-4c67-84a1-e83a2ee5103b@www.fastmail.com>
+        Wed, 9 Jun 2021 00:15:14 -0400
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
+        by gw.atmark-techno.com (Postfix) with ESMTPS id AF2238023C
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 13:13:12 +0900 (JST)
+Received: by mail-pl1-f199.google.com with SMTP id q15-20020a170902788fb0290115d406df52so256116pll.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 21:13:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9QfyL1AUne5+PBkZwxn6iFg7I6n6SWl6hKQ4WQ41Sdw=;
+        b=D/uTl+16oxfKGT1FXgH1JJQhZrroEDGZLdCkBgTUwiEv8843I0mcoRkxvj/nh3RUCf
+         Ub5PC53Ti8Exy6Q8cQuzq19lbksRONg9t958UGnJuGTjy04m35/i8VrZdf8YQvwyFBgf
+         /Zy9T6tQUeQ8srYhWIKvfi6IiS90s7m9geuST8DPChECuoqi1W8J8rM5u8f8PDL8EkZe
+         N9AlGAJSySFJMZDxfqjL33nHRhD6spNFVQuz+KUMyB1+gJq2tXqbPne8qUdnDMLs51Iz
+         f44jKIoIWogmPwuu2ok1HZFL3J5OQcN3M4GEe6TFHUByNn8OEf+HBfTDY13u7xqeEHmS
+         P+vA==
+X-Gm-Message-State: AOAM531Nnwv4LNZKfOrvKkBwunnKczRvPcHZhaNCpANkzxfv3OJLKmgj
+        I1nBCuflD/TDHvKJnnxpbG02l6987Us1OxyMwNbffW6ehmgCEngwoXwEoFGGAVnv4e8ISt62rNG
+        s9WG9JqAfjRRmbCjqPaXxUiTu5cN8
+X-Received: by 2002:a63:e453:: with SMTP id i19mr1792186pgk.134.1623211991859;
+        Tue, 08 Jun 2021 21:13:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9HC5Bv6qB3T/yEtdheshM0zEACgeTRb+kFv+9S95dtq6BS65/TpUlvArfNquzDDeJmTnupQ==
+X-Received: by 2002:a63:e453:: with SMTP id i19mr1792172pgk.134.1623211991610;
+        Tue, 08 Jun 2021 21:13:11 -0700 (PDT)
+Received: from pc-0115 (178.101.200.35.bc.googleusercontent.com. [35.200.101.178])
+        by smtp.gmail.com with ESMTPSA id nn6sm15509433pjb.57.2021.06.08.21.13.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Jun 2021 21:13:11 -0700 (PDT)
+Received: from martinet by pc-0115 with local (Exim 4.94.2)
+        (envelope-from <martinet@pc-0115>)
+        id 1lqpaX-009K8i-MQ; Wed, 09 Jun 2021 13:13:09 +0900
+Date:   Wed, 9 Jun 2021 13:12:59 +0900
+From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        linux-uvc-devel@lists.sourceforge.net, linux-usb@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v3 0/5] media: uvcvideo: Fix race conditions
+Message-ID: <YMA/y9RZZmumuXVd@atmark-techno.com>
+References: <20200917022547.198090-1-linux@roeck-us.net>
+ <20200917124714.GD3969@pendragon.ideasonboard.com>
+ <990652f1-b6e4-211c-7a96-8c3fc3ea6efd@roeck-us.net>
+ <YEsZ7qnSRv0EkJGG@atmark-techno.com>
+ <74c0c32a-ebb5-34e0-d3a2-6b417ce328a1@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <6f87ccf4-9b8f-4c67-84a1-e83a2ee5103b@www.fastmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1593wd7F009056
+In-Reply-To: <74c0c32a-ebb5-34e0-d3a2-6b417ce328a1@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 06/09/2021 08:55, Andrew Jeffery wrote:
-> 
-> 
-> On Tue, 8 Jun 2021, at 19:55, Steven Lee wrote:
-> > We use platform data to store GPIO pin mask and the max number of
-> > available GPIO pins for AST2600.
-> > Refactor driver to also add the platform data for AST2400/AST2500 and
-> > remove unused MAX_NR_HW_SGPIO and ASPEED_SGPIO_PINS_MASK macros.
+Guenter Roeck wrote on Fri, Mar 12, 2021 at 06:54:52AM -0800:
+> On 3/11/21 11:36 PM, Dominique MARTINET wrote:
+> > Guenter Roeck wrote on Thu, Sep 17, 2020 at 07:16:17PM -0700:
+> >> On 9/17/20 5:47 AM, Laurent Pinchart wrote:
+> >>> I haven't checked the mailing list, but I've found it in my inbox :-)
+> >>> I'm not forgetting about you, just been fairly busy recently. I still
+> >>> plan to try and provide an alternative implementation in the V4L2 core
+> >>> (in a form that I think should even be moved to the cdev core) that
+> >>> would fix this for all drivers.
+> >>>
+> >> Thanks for letting me know. As it turns out, this problem is responsible
+> >> for about 2% of all Chromebook crashes, so I'll probably not wait for
+> >> the series to be accepted upstream but apply it as-is to the various
+> >> ChromeOS kernel branches.
 > > 
-> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> > ---
-> >  drivers/gpio/gpio-aspeed-sgpio.c | 34 +++++++++++---------------------
-> >  1 file changed, 12 insertions(+), 22 deletions(-)
+> > We have a customer who reported the same issue recently, has there been
+> > any development?
 > > 
-> > diff --git a/drivers/gpio/gpio-aspeed-sgpio.c b/drivers/gpio/gpio-aspeed-sgpio.c
-> > index ea20a0127748..7d0a4f6fd9d1 100644
-> > --- a/drivers/gpio/gpio-aspeed-sgpio.c
-> > +++ b/drivers/gpio/gpio-aspeed-sgpio.c
-> > @@ -17,21 +17,8 @@
-> >  #include <linux/spinlock.h>
-> >  #include <linux/string.h>
-> >  
-> > -/*
-> > - * MAX_NR_HW_GPIO represents the number of actual hardware-supported GPIOs (ie,
-> > - * slots within the clocked serial GPIO data). Since each HW GPIO is both an
-> > - * input and an output, we provide MAX_NR_HW_GPIO * 2 lines on our gpiochip
-> > - * device.
-> > - *
-> > - * We use SGPIO_OUTPUT_OFFSET to define the split between the inputs and
-> > - * outputs; the inputs start at line 0, the outputs start at OUTPUT_OFFSET.
-> > - */
-> > -#define MAX_NR_HW_SGPIO			80
-> > -#define SGPIO_OUTPUT_OFFSET		MAX_NR_HW_SGPIO
-> > -
-> >  #define ASPEED_SGPIO_CTRL		0x54
-> >  
-> > -#define ASPEED_SGPIO_PINS_MASK		GENMASK(9, 6)
-> >  #define ASPEED_SGPIO_CLK_DIV_MASK	GENMASK(31, 16)
-> >  #define ASPEED_SGPIO_ENABLE		BIT(0)
-> >  #define ASPEED_SGPIO_PINS_SHIFT		6
-> > @@ -484,6 +471,11 @@ static int aspeed_sgpio_setup_irqs(struct 
-> > aspeed_sgpio *gpio,
-> >  	return 0;
-> >  }
-> >  
-> > +static const struct aspeed_sgpio_pdata ast2400_sgpio_pdata = {
-> > +	.max_ngpios = 80,
-> > +	.pin_mask = GENMASK(9, 6),
-> > +};
-> > +
-> >  static const struct aspeed_sgpio_pdata ast2600_sgpiom_128_pdata = {
-> >  	.max_ngpios = 128,
-> >  	.pin_mask = GENMASK(10, 6),
-> > @@ -495,8 +487,8 @@ static const struct aspeed_sgpio_pdata 
-> > ast2600_sgpiom_80_pdata = {
-> >  };
-> >  
-> >  static const struct of_device_id aspeed_sgpio_of_table[] = {
-> > -	{ .compatible = "aspeed,ast2400-sgpio" },
-> > -	{ .compatible = "aspeed,ast2500-sgpio" },
-> > +	{ .compatible = "aspeed,ast2400-sgpio", .data = &ast2400_sgpio_pdata, 
-> > },
-> > +	{ .compatible = "aspeed,ast2500-sgpio", .data = &ast2400_sgpio_pdata, 
-> > },
-> >  	{ .compatible = "aspeed,ast2600-sgpiom-128", .data = 
-> > &ast2600_sgpiom_128_pdata, },
-> >  	{ .compatible = "aspeed,ast2600-sgpiom-80", .data = 
-> > &ast2600_sgpiom_80_pdata, },
-> >  	{}
-> > @@ -521,13 +513,11 @@ static int __init aspeed_sgpio_probe(struct 
-> > platform_device *pdev)
-> >  		return PTR_ERR(gpio->base);
-> >  
-> >  	pdata = device_get_match_data(&pdev->dev);
-> > -	if (pdata) {
-> > -		gpio->max_ngpios = pdata->max_ngpios;
-> > -		pin_mask = pdata->pin_mask;
-> > -	} else {
-> > -		gpio->max_ngpios = MAX_NR_HW_SGPIO;
-> > -		pin_mask = ASPEED_SGPIO_PINS_MASK;
-> > -	}
-> > +	if (!pdata)
-> > +		return -EINVAL;
-> > +
-> > +	gpio->max_ngpios = pdata->max_ngpios;
-> > +	pin_mask = pdata->pin_mask;
 > 
-> Hmm, okay, maybe just re-order the patches so this commit comes before the previous one. That way we don't immediately rip out this condition that we just introduced in the previous patch.
-> 
-> I think I suggested squashing it into the previous patch, but with the removal of the comments and macros I think it's worth leaving it separate, just reordered.
-> 
+> Not that I know of. We applied the series to all Chrome OS kernel branches,
+> and it reliably fixes the problem for us. We'd like to have the problem
+> fixed upstream; until that happens we'll have to carry the series forward.
 
-I was wondering if I can squash patch-05 and patch-06 into one patch
-as this patch(patch-06) requires macros, structures, and functions that
-modified in the previous patch(patch-05).
+Thanks for confirming.
+Laurent, would it make sense to take the patches as they are until a
+better fix is ready?
 
-Thanks,
-Steven
-
-> Andrew
+-- 
+Dominique
