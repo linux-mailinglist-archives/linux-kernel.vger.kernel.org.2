@@ -2,78 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEE03A08DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5DD3A08E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233934AbhFIBGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 21:06:14 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:44603 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbhFIBGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 21:06:13 -0400
-Received: by mail-oi1-f176.google.com with SMTP id a26so2791340oie.11;
-        Tue, 08 Jun 2021 18:04:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QHpQfhrLgwKNLV3ivBE+3b0dPjMmP/5BQ7SbDecHwUo=;
-        b=ZXxDpmYP7vzA7aMvjj6+paqkkZ0r+ThDDCECy5Jn5YipD1gGJyWp0y31P61kxt2YNJ
-         4haEVyLEZeYtgZ/OcTfvpkwisTip2SlYRQkyMLsd7j3OHLRgYaW9ejDL13Ij/A27gmnA
-         HPxbCUS++jxq+I6YtxlYoF138s8/Woo32eLAdR25U9LdnAL2LplLNd2+GX40EPM5lPfz
-         hvLt4qpc+sHSn65Fnn6juFUhyiPvMaz+WjIgAuvaMFhfIk94wM3Uwu/C2BS9r0dXRAfS
-         Xr9Q2KBO2sHBmL6Uz8BgTOl+3uuY5Gf6+VDwwUJ5/Ebsmmgb4VyLzbmOJlHgf6XtFRhY
-         fYfw==
-X-Gm-Message-State: AOAM533tcHrsxRyIZqzjwJn66U1TVBkQJjFv+AIlb+iPHnA0ZcqN46Tk
-        xuJyh0oxG18vt1DZDiFvrQruOuE5yw==
-X-Google-Smtp-Source: ABdhPJw4gAos93VhNhqfo0KsKL7P6oMULhao9gZBHasZhpw4yX4fTm1ueTNM9Muj0MrTxxRw8hPxtQ==
-X-Received: by 2002:aca:5c04:: with SMTP id q4mr4592082oib.11.1623200659290;
-        Tue, 08 Jun 2021 18:04:19 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 102sm3428828otf.37.2021.06.08.18.04.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 18:04:17 -0700 (PDT)
-Received: (nullmailer pid 2011104 invoked by uid 1000);
-        Wed, 09 Jun 2021 01:04:16 -0000
-Date:   Tue, 8 Jun 2021 20:04:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-media@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH] media: dt-bindings: media: renesas,drif: Fix fck
- definition
-Message-ID: <20210609010416.GA2010770@robh.at.kernel.org>
-References: <20210408202436.3706-1-fabrizio.castro.jz@renesas.com>
+        id S234089AbhFIBMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 21:12:34 -0400
+Received: from mga09.intel.com ([134.134.136.24]:4545 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230303AbhFIBMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 21:12:33 -0400
+IronPort-SDR: NWGxnZYkjaV3BXAmIzhqpx5+yWe3Dp6cE5B55HCyDCXtBnLA/tH2trUEw7ZFmIneFsqFaG8vjv
+ VNaMB4Zi3qaQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="204945263"
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="204945263"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 18:10:36 -0700
+IronPort-SDR: utZxyyNe3y7pg7wb9UwrXKbm43aoJ5qnhu2hF7ABjYpQoJhziEJIBYO6XRQfISgnAtQMzxQCGh
+ NfD33/Yed3Nw==
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="402269682"
+Received: from ticela-az-103.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.36.77])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 18:10:35 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v2-fix-v4 1/1] x86/tdx: Skip WBINVD instruction for TDX guest
+Date:   Tue,  8 Jun 2021 18:10:30 -0700
+Message-Id: <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
+References: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408202436.3706-1-fabrizio.castro.jz@renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 08 Apr 2021 21:24:36 +0100, Fabrizio Castro wrote:
-> dt_binding_check reports the below error with the latest schema:
-> 
-> Documentation/devicetree/bindings/media/renesas,drif.yaml:
->   properties:clock-names:maxItems: False schema does not allow 1
-> Documentation/devicetree/bindings/media/renesas,drif.yaml:
->   ignoring, error in schema: properties: clock-names: maxItems
-> 
-> This patch fixes the problem.
-> 
-> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-> ---
->  Documentation/devicetree/bindings/media/renesas,drif.yaml | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
+Current TDX spec does not have support to emulate the WBINVD
+instruction. If any feature that uses WBINVD is enabled/used
+in TDX guest, it will lead to un-handled #VE exception, which
+will be handled as #GP fault.
 
-Applied, thanks!
+ACPI drivers also uses WBINVD instruction for cache flushes in
+reboot or shutdown code path. Since TDX guest has requirement
+to support shutdown feature, skip WBINVD instruction usage
+in ACPI drivers for TDX guest.
+
+Since cache is always coherent in TDX guests, making wbinvd as
+noop should not cause any issues in above mentioned code path.
+The end-behavior is the same as KVM guest (treat as noops).
+
+In future, once TDX guest specification adds support for WBINVD
+hypercall, we can pass the handle to KVM to handle it.
+   
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
+
+Changes since RFC v2-fix-v3:
+ * Fixed commit log as per review comments.
+ * Instead of fixing all usages of ACPI_FLUSH_CPU_CACHE(),
+   created TDX specific exception for it in its implementation.
+
+Changes since RFC v2-fix-v2:
+ * Instead of handling WBINVD #VE exception as nop, we skip its
+   usage in currently enabled drivers.
+ * Adapted commit log for above change.
+
+ arch/x86/include/asm/acenv.h    | 7 ++++++-
+ arch/x86/kernel/tdx.c           | 1 +
+ include/linux/protected_guest.h | 2 ++
+ 3 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/acenv.h b/arch/x86/include/asm/acenv.h
+index 9aff97f0de7f..36c87b69366b 100644
+--- a/arch/x86/include/asm/acenv.h
++++ b/arch/x86/include/asm/acenv.h
+@@ -10,10 +10,15 @@
+ #define _ASM_X86_ACENV_H
+ 
+ #include <asm/special_insns.h>
++#include <linux/protected_guest.h>
+ 
+ /* Asm macros */
+ 
+-#define ACPI_FLUSH_CPU_CACHE()	wbinvd()
++#define ACPI_FLUSH_CPU_CACHE()				\
++do {							\
++	if (!prot_guest_has(PR_GUEST_DISABLE_WBINVD))	\
++		wbinvd();				\
++} while (0)
+ 
+ int __acpi_acquire_global_lock(unsigned int *lock);
+ int __acpi_release_global_lock(unsigned int *lock);
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 06fcbca402cb..fd27cf651f0b 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -92,6 +92,7 @@ bool tdx_protected_guest_has(unsigned long flag)
+ 	case PR_GUEST_MEM_ENCRYPT_ACTIVE:
+ 	case PR_GUEST_UNROLL_STRING_IO:
+ 	case PR_GUEST_SHARED_MAPPING_INIT:
++	case PR_GUEST_DISABLE_WBINVD:
+ 		return true;
+ 	}
+ 
+diff --git a/include/linux/protected_guest.h b/include/linux/protected_guest.h
+index adfa62e2615e..0ec4dab86f67 100644
+--- a/include/linux/protected_guest.h
++++ b/include/linux/protected_guest.h
+@@ -18,6 +18,8 @@
+ #define PR_GUEST_HOST_MEM_ENCRYPT		0x103
+ /* Support for shared mapping initialization (after early init) */
+ #define PR_GUEST_SHARED_MAPPING_INIT		0x104
++/* Support to disable WBINVD */
++#define PR_GUEST_DISABLE_WBINVD			0x105
+ 
+ #if defined(CONFIG_INTEL_TDX_GUEST) || defined(CONFIG_AMD_MEM_ENCRYPT)
+ 
+-- 
+2.25.1
+
