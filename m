@@ -2,111 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66C63A0A37
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1B23A0A43
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235865AbhFICtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 22:49:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47593 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231668AbhFICtU (ORCPT
+        id S236094AbhFICvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 22:51:40 -0400
+Received: from mail-pl1-f178.google.com ([209.85.214.178]:40880 "EHLO
+        mail-pl1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232690AbhFICvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 22:49:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623206846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M6AD2nLmb56QVhFCgYdZqvhrlY7oWTcZgGvZozkCcw0=;
-        b=JrZbxaRs3FfRuNVNfiSiRpuE08zFVo6iGIxxYekCCvQsvsMf2k1xjnSNDawy/DNKBa7Y9Q
-        2B4Ku2RoPoDKniE9B/QfjJmKZ1znqJow8be8OnltmjRDhea6o5XeV6yHyAGFK0sX0Xa/Uz
-        c1gHj1rihM6VHZFzrJawAaINELUoMvM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-ycxNtIymMJ2lkUBWT-83bg-1; Tue, 08 Jun 2021 22:47:23 -0400
-X-MC-Unique: ycxNtIymMJ2lkUBWT-83bg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DFB2107ACE4;
-        Wed,  9 Jun 2021 02:47:20 +0000 (UTC)
-Received: from localhost (ovpn-13-223.pek2.redhat.com [10.72.13.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 14C5160CC9;
-        Wed,  9 Jun 2021 02:47:12 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 10:47:09 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Kazuhito Hagio <k-hagio@ab.jp.nec.com>,
-        Dave Young <dyoung@redhat.com>, Boris Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        James Morse <james.morse@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Dave Anderson <anderson@redhat.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] crash_core, vmcoreinfo: Append 'SECTION_SIZE_BITS' to
- vmcoreinfo
-Message-ID: <20210609024709.GA591017@MiWiFi-R3L-srv>
-References: <20210608103359.84907-1-kernelfans@gmail.com>
- <20210608142432.GA587883@MiWiFi-R3L-srv>
- <20210608141410.0026a925ba3a609b0dd4e560@linux-foundation.org>
+        Tue, 8 Jun 2021 22:51:39 -0400
+Received: by mail-pl1-f178.google.com with SMTP id e7so11763649plj.7;
+        Tue, 08 Jun 2021 19:49:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wtsD9Wl4PiCzwJ+AjHCemki/R0XFKsC3fAJOVKuHles=;
+        b=ACjwEp9McuoWtf0GsaLxG3hyeLvVzpMa4PiVhvkSulXlyybqhfo/8h1elQQaz+s5Nm
+         2YVbjVG5Izuv01+m54q9/3adYM7uXVdsiN1AmmDWBrgJSKbgnYuxjLcpGy9k8vxxX2X/
+         K6bLsW87/uMuypQ7p1BrJSHHm0gmsg20cdAzXXutZAGad0iX0BHqF/3vh1dX2Rk/MfvX
+         rwUH3+POjEs6R+cfAlOUumd3a54ZiK9xb2jFOtK7jaaHnovUTr2DiHZ5ESz/3cwAM4LE
+         ogh+KtHlohT6XC+jXR4WWv0FWm1/4ccTsdppBabvrZdNUjNiFL/H+JoFSQB6fi6L3Ue3
+         FLoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wtsD9Wl4PiCzwJ+AjHCemki/R0XFKsC3fAJOVKuHles=;
+        b=nK9YxmjpLqWcDNGguxuuNPBeWT6ASYbupywr0RR8b59DjPPa83RPUcCZVTkiHQMh4d
+         Z7ja4LhcjAE6FG8UV7f9NewQZgA/ALmYsK1HIcavPf0YbOoFW8u1aRxwYhgf4veggJxy
+         SCGNj1B1akIVCLaypTPKDBJZf2R0QwrdgJcpGYayZLxyQCxfI21ipRj0GsyTaMb8Zu25
+         dDs7OVhFLlVRg/JB1lDhLeiOVVlOA4AT9azHWsAOljiK+0mDrG8xZd67L5FOaztmbnlF
+         wGiIz7SGcZcGuYQbxUbKwOlxUHjidEjq6yTP6kjkQMYvyZ/OnX3dA5lcuQHe0/fH69SB
+         Zbvg==
+X-Gm-Message-State: AOAM532se+QbtHziTeneiJPotY+gDmRg1G2JuDTHMxm2VtRG66TJzb2X
+        Kgd61nzbVXj+VLXDQeHjk/lsOkflTt2i8gYbhK0=
+X-Google-Smtp-Source: ABdhPJzsB+JY5z4t0j0mUuJK6sBM5bxQw/2mh7pSOUNCA5Srll/a2Ufr13J59eCgiZcNtDnCheiU1Q==
+X-Received: by 2002:a17:90b:d98:: with SMTP id bg24mr26534224pjb.41.1623206912169;
+        Tue, 08 Jun 2021 19:48:32 -0700 (PDT)
+Received: from localhost.members.linode.com ([2400:8902::f03c:92ff:fe55:8c1e])
+        by smtp.gmail.com with ESMTPSA id 130sm13218444pgc.19.2021.06.08.19.48.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Jun 2021 19:48:31 -0700 (PDT)
+From:   zpershuai <zpershuai@gmail.com>
+To:     Radu Pirea <radu_nicolae.pirea@upb.ro>,
+        Mark Brown <broonie@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     zpershuai <zpershuai@gmail.com>
+Subject: [PATCH v2] =?UTF-8?q?spi:=20spi-at91-usart:=C2=A0Fix=20wrong=20go?= =?UTF-8?q?to=20jump=20label=20when=20spi=5Falloc=5Fmaster()=20returns=20e?= =?UTF-8?q?rror.?=
+Date:   Wed,  9 Jun 2021 10:48:14 +0800
+Message-Id: <1623206895-8282-1-git-send-email-zpershuai@gmail.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608141410.0026a925ba3a609b0dd4e560@linux-foundation.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/21 at 02:14pm, Andrew Morton wrote:
-> On Tue, 8 Jun 2021 22:24:32 +0800 Baoquan He <bhe@redhat.com> wrote:
-> 
-> > On 06/08/21 at 06:33am, Pingfan Liu wrote:
-> > > As mentioned in kernel commit 1d50e5d0c505 ("crash_core, vmcoreinfo:
-> > > Append 'MAX_PHYSMEM_BITS' to vmcoreinfo"), SECTION_SIZE_BITS in the
-> > > formula:
-> > >     #define SECTIONS_SHIFT    (MAX_PHYSMEM_BITS - SECTION_SIZE_BITS)
-> > > 
-> > > Besides SECTIONS_SHIFT, SECTION_SIZE_BITS is also used to calculate
-> > > PAGES_PER_SECTION in makedumpfile just like kernel.
-> > > 
-> > > Unfortunately, this arch-dependent macro SECTION_SIZE_BITS changes, e.g.
-> > > recently in kernel commit f0b13ee23241 ("arm64/sparsemem: reduce
-> > > SECTION_SIZE_BITS"). But user space wants a stable interface to get this
-> > > info. Such info is impossible to be deduced from a crashdump vmcore.
-> > > Hence append SECTION_SIZE_BITS to vmcoreinfo.
-> > 
-> > ...
-> >
-> > Add the discussion of the original thread in kexec ML for reference:
-> > http://lists.infradead.org/pipermail/kexec/2021-June/022676.html
-> 
-> I added a Link: for this.
+When spi_alloc_master() returns null pointer, it’s no need to use
+spi_master_put() to release the memory, although spi_master_put()
+function has null pointer checks.
 
-Thanks, Andrew.
+Signed-off-by: zpershuai <zpershuai@gmail.com>
+---
+ drivers/spi/spi-at91-usart.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
->  
-> > This looks good to me.
-> > 
-> > Acked-by: Baoquan He <bhe@redhat.com>
-> 
-> I'm thinking we should backport this at least to Fixes:f0b13ee23241. 
-> But perhaps it's simpler to just backport it as far as possible, so I
-> added a bare cc:stable with no Fixes:.  Thoughts?
-
-Yeah, it should add cc:stable, thanks. Otherwise it will break
-vmcore dumping on 5.12 stable kernel even though with the updated
-makedumpfile utility. Fixes:f0b13ee23241 will help stable kernel
-maintainer easier to identify which kernel this patch need be applied
-on? If only having cc:stable with no Fixes is allowed, it's also OK. 
+diff --git a/drivers/spi/spi-at91-usart.c b/drivers/spi/spi-at91-usart.c
+index 8c83526..e5c2d2c 100644
+--- a/drivers/spi/spi-at91-usart.c
++++ b/drivers/spi/spi-at91-usart.c
+@@ -531,10 +531,9 @@ static int at91_usart_spi_probe(struct platform_device *pdev)
+ 	if (IS_ERR(clk))
+ 		return PTR_ERR(clk);
+ 
+-	ret = -ENOMEM;
+ 	controller = spi_alloc_master(&pdev->dev, sizeof(*aus));
+ 	if (!controller)
+-		goto at91_usart_spi_probe_fail;
++		return -ENOMEM;
+ 
+ 	ret = at91_usart_gpio_setup(pdev);
+ 	if (ret)
+-- 
+2.7.4
 
