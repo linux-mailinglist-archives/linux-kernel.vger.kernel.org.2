@@ -2,89 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7373C3A0A27
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65733A0A32
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235367AbhFICpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 22:45:50 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:28621 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231668AbhFICpt (ORCPT
+        id S235805AbhFICsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 22:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231668AbhFICsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 22:45:49 -0400
-X-UUID: f59f9558455346669f8bd0657494bac2-20210609
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=YlJZ3DSxIMXeeLudsnal26OpngdTHTMDMazjVteE63M=;
-        b=oXlRf4LYUNlbjKZsBgREzBjofsq6ZhYSeR7vwnYuiSt1XPWB2G2wPhUPLK8gKZHrXcN7wVEDg/+SVuC7pFLOwJRDzZ1W9R/jhrl8RKv9CPcBBFhs9FU/MECdWMVivq4ToyQg6fy48n+NlelLjPc/DCDV5zX4G6o+b22kHxCJNew=;
-X-UUID: f59f9558455346669f8bd0657494bac2-20210609
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <kewei.xu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1086761753; Wed, 09 Jun 2021 10:43:49 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 9 Jun
- 2021 10:43:47 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 9 Jun 2021 10:43:44 +0800
-Message-ID: <1623206624.14050.10.camel@mhfsdcap03>
-Subject: Re: [PATCH 2/3] i2c: mediatek: Dump i2c/dma register when a timeout
- occurs
-From:   Kewei Xu <kewei.xu@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <wsa@the-dreams.de>, <robh+dt@kernel.org>,
-        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>, <qiangming.xia@mediatek.com>,
-        <liguo.zhang@mediatek.com>
-Date:   Wed, 9 Jun 2021 10:43:44 +0800
-In-Reply-To: <54301510-e0d5-0762-1979-b194b8fd5eb8@gmail.com>
-References: <1623122200-1896-1-git-send-email-kewei.xu@mediatek.com>
-         <1623122200-1896-3-git-send-email-kewei.xu@mediatek.com>
-         <54301510-e0d5-0762-1979-b194b8fd5eb8@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 8 Jun 2021 22:48:08 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E0CC061574;
+        Tue,  8 Jun 2021 19:46:02 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id z3so23694074oib.5;
+        Tue, 08 Jun 2021 19:46:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=szkL7ncrfM2hy/BvMWM0s5Huh4IFZhuvbwx23L8o1dE=;
+        b=kRNocKu1gPoPbfo4iolUj+fUN0EREEirmiGidoFnX3OlcUGENGem6uJtuermuHDLWl
+         6NTwsp+KT6DHNDCsSdJIcjSB2O3cYDLvKnx7AjE8sFF4f1TPUY83x51r4OB1Iv+CelCy
+         REVQJkeVw8tUSiE2z/fkU4vtmyD/SdARACmZusH5g6vo3dKMJE9v7ybhtX1wBtzkXzlI
+         ChJVBvgn3wklKGiXtJglbRGRQ48pfXa6RDTfcqZetBdcx2dXTrFfnvJqssiamvm+Da55
+         R0dgapnLGDX/4EoCRPOZ5CcVkixn0ZJbf8wKGM+o0TrgUfzpX/WgytOvdxlIqmnNqqr5
+         9ZKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=szkL7ncrfM2hy/BvMWM0s5Huh4IFZhuvbwx23L8o1dE=;
+        b=Mll6tG4RtOKl0865dgXcdeYgLp91tRG03Mh8frO3EtRyrAPquelGU2vymYI1h/rtRj
+         qdSmWpk6lxv5TJ/cmOVJ4f0DRw8FHOUFkgvVXAdEaATIX0Giaj7U8HezhBFHXxUySD9Y
+         4xhZldMmC4r9ecmXl9SJW/Oax5fYEaJ1tauPia6mDH4JmJmyVOiqAKGaQfvEcjtIwj/R
+         INVJ+peN/gktNslb/PO+kGfZAzVXKIwr/WwamfLc4Ih7pxKhF1VrNN2J11/Ps/Woz+vP
+         WP2HRx4elzfop/DPqz63oJl6tXPLrpFZWorxFwfKknPieZSP8OS4dD3jGBEQV7mIzcC7
+         KKEQ==
+X-Gm-Message-State: AOAM530KQv31+tg2D2Y1CvWwHPhzyrMnVEvUVINcm1DlreHTBXvt/yeD
+        k0nVqVGKG6SP3bLbsF99eogivJckPiCrGQ==
+X-Google-Smtp-Source: ABdhPJwZLlD+UF6khW8UPly7po2FnFZ1ZDLO7TRTFA1MvABfjVFHSawElsb+ga6K3tgio2dxAtVyTg==
+X-Received: by 2002:a05:6808:14d0:: with SMTP id f16mr4819978oiw.156.1623206759340;
+        Tue, 08 Jun 2021 19:45:59 -0700 (PDT)
+Received: from fractal ([2600:1700:1151:2380:53e3:3a03:bcf3:da13])
+        by smtp.gmail.com with ESMTPSA id d136sm444959oib.4.2021.06.08.19.45.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 19:45:58 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 19:45:56 -0700
+From:   Satya Tangirala <satyaprateek2357@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Satya Tangirala <satyat@google.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v8 0/8] add support for direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <20210609024556.GA11153@fractal>
+References: <20210121230336.1373726-1-satyat@google.com>
+ <CAF2Aj3jbEnnG1-bHARSt6xF12VKttg7Bt52gV=bEQUkaspDC9w@mail.gmail.com>
+ <YK09eG0xm9dphL/1@google.com>
+ <20210526080224.GI4005783@dell>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 978AC84873E67237AE466C5D838E8CDB2EB7D777515206BE778ADE526AA155F82000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526080224.GI4005783@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA2LTA4IGF0IDE2OjAxICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
-Og0KPiANCj4gT24gMDgvMDYvMjAyMSAwNToxNiwgS2V3ZWkgWHUgd3JvdGU6DQo+ID4gRnJvbTog
-Iktld2VpLlh1IiA8a2V3ZWkueHVAbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IFdoZW4gYSB0aW1l
-b3V0IGVycm9yIG9jY3VycyBpbiBpMmMgdHJhbnN0ZXIsIGl0IGlzIHVzdWFsbHkgcmVsYXRlZA0K
-PiA+IHRvIHRoZSBpMmMvZG1hIElQIGhhcmR3YXJlIGNvbmZpZ3VyYXRpb24uIFRoZXJlZm9yZSwg
-dGhlIHB1cnBvc2Ugb2YNCj4gPiB0aGlzIHBhdGNoIGlzIHRvIGR1bXAgdGhlIGtleSByZWdpc3Rl
-ciB2YWx1ZXMgb2YgaTJjL2RtYSB3aGVuIGENCj4gPiB0aW1lb3V0IG9jY3VycyBpbiBpMmMgZm9y
-IGRlYnVnZ2luZy4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBLZXdlaS5YdSA8a2V3ZWkueHVA
-bWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4
-eC5jIHwgOTcgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0NCj4gPiAg
-MSBmaWxlIGNoYW5nZWQsIDk1IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4gDQo+
-ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMgYi9kcml2ZXJz
-L2kyYy9idXNzZXMvaTJjLW10NjV4eC5jDQo+ID4gaW5kZXggNWRkZmE0ZS4uZTY1YTQxZSAxMDA2
-NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jDQo+ID4gKysrIGIv
-ZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KPiA+IEBAIC0xMjUsNiArMTI1LDcgQEAg
-ZW51bSBJMkNfUkVHU19PRkZTRVQgew0KPiA+ICAJT0ZGU0VUX0hTLA0KPiA+ICAJT0ZGU0VUX1NP
-RlRSRVNFVCwNCj4gPiAgCU9GRlNFVF9EQ01fRU4sDQo+ID4gKwlPRkZTRVRfTVVMVElfRE1BLA0K
-PiA+ICAJT0ZGU0VUX1BBVEhfRElSLA0KPiA+ICAJT0ZGU0VUX0RFQlVHU1RBVCwNCj4gPiAgCU9G
-RlNFVF9ERUJVR0NUUkwsDQo+ID4gQEAgLTE5Miw4ICsxOTMsOSBAQCBlbnVtIEkyQ19SRUdTX09G
-RlNFVCB7DQo+ID4gIAlbT0ZGU0VUX1RSQU5TRkVSX0xFTl9BVVhdID0gMHg0NCwNCj4gPiAgCVtP
-RkZTRVRfQ0xPQ0tfRElWXSA9IDB4NDgsDQo+ID4gIAlbT0ZGU0VUX1NPRlRSRVNFVF0gPSAweDUw
-LA0KPiA+ICsJW09GRlNFVF9NVUxUSV9ETUFdID0gMHg4NCwNCj4gPiAgCVtPRkZTRVRfU0NMX01J
-U19DT01QX1BPSU5UXSA9IDB4OTAsDQo+ID4gLQlbT0ZGU0VUX0RFQlVHU1RBVF0gPSAweGUwLA0K
-PiA+ICsJW09GRlNFVF9ERUJVR1NUQVRdID0gMHhlNCwNCj4gDQo+IElzIHRoaXMgb2Zmc2V0IG9u
-bHkgZm9yIG10ODE5MiBvciBhbHNvIGZvciBtdDgxODM/DQo+IEluIGFueSBjYXNlIHRoYXQgc2hv
-dWxkIGdvIGluIGFzIGFub3RoZXIgcGF0Y2guIEVpdGhlciBhIGZpeCBvciBhIG5ldw0KPiBtdF9p
-MmNfcmVnc192M1tdDQo+IA0KPiBSZWdhcmRzLA0KICBNYXR0aGlhcw0KDQpIaSBNYXR0aGlhcywN
-Cg0KVGhpcyBvZmZzZXQgdmFsdWUgaXMgc3VpdGFibGUgZm9yIHRoZSBJQyBvZiBtdF9pMmNfcmVn
-c192MiBoYXJkd2FyZQ0KZGVzaWduIHNpbWlsYXIgdG8gbXQ4MTkyLzgxOTUsIG5vdCBmb3IgODE4
-My4NCg0KVGhlIHJlYXNvbiBmb3IgdGhlIG1vZGlmaWNhdGlvbiBoZXJlIGlzIHRoYXQgdGhlIHBy
-ZXZpb3VzDQpvZmZzZXQgaW5mb3JtYXRpb24gaXMgaW5jb3JyZWN0LCBPRkZTRVRfREVCVUdTVEFU
-ID0gMFhFNCBpcw0KdGhlIGNvcnJlY3QgdmFsdWUuDQoNClJlZ2FyZHMsDQpLZXdlaQ0KDQoNCg==
-
+On Wed, May 26, 2021 at 09:02:24AM +0100, Lee Jones wrote:
+> On Tue, 25 May 2021, Satya Tangirala wrote:
+> 65;6200;1c
+> > On Tue, May 25, 2021 at 01:57:28PM +0100, Lee Jones wrote:
+> > > On Thu, 21 Jan 2021 at 23:06, Satya Tangirala <satyat@google.com> wrote:
+> > > 
+> > > > This patch series adds support for direct I/O with fscrypt using
+> > > > blk-crypto.
+> > > >
+> > > 
+> > > Is there an update on this set please?
+> > > 
+> > > I can't seem to find any reviews or follow-up since v8 was posted back in
+> > > January.
+> > > 
+> > This patchset relies on the block layer fixes patchset here
+> > https://lore.kernel.org/linux-block/20210325212609.492188-1-satyat@google.com/
+> > That said, I haven't been able to actively work on both the patchsets
+> > for a while, but I'll send out updates for both patchsets over the
+> > next week or so.
+> 
+> Thanks Satya, I'd appreciate that.
+FYI I sent out an updated patch series last week at
+https://lore.kernel.org/linux-fscrypt/20210604210908.2105870-1-satyat@google.com/
