@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BE23A20E8
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAF73A20E9
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhFIXpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 19:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48350 "EHLO
+        id S230155AbhFIXpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 19:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhFIXo5 (ORCPT
+        with ESMTP id S229943AbhFIXpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 19:44:57 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1FDC061760
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 16:42:49 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id n3-20020a378b030000b02903a624ca95adso18102969qkd.17
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 16:42:49 -0700 (PDT)
+        Wed, 9 Jun 2021 19:45:01 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA80C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 16:42:50 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id k12-20020a0cfd6c0000b029020df9543019so16755605qvs.14
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 16:42:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=LN0JaAN3T5+nq6SFVxphdupyoLpcoEoPHxPPBl9bv9U=;
-        b=Tla+YY0L+7EOHZs/dedTljFCSPp26cpMfl30zgXQ+OLUmSM/PUJMr+izjPlZ5UJBMu
-         ii9xWBIsKqjss/9j8fA5GoeSocniFYkln61UJap8MPcxp8XXdZNYdjT+DktrczynrTXk
-         4HvgjORzpc4CzCRf9zsyU+RFcAUMMJ+8LxkVAxs+a6CgiwkBddTyvEvlApbvbFofThvp
-         rrt4mM3//Ck/2FGMMZAQwtCbbly+YjzzPuIH3ZlPjGVcZdM4CpmpO/ampQMKhX9XmR70
-         WQJyu/ntDcu4dKxhl0wNDj2ePL+0rNI1SIf02fEGC8Z+Zp/DNuvjBwXhnAk4lKc+eLDz
-         zpvQ==
+        bh=zb4BgBHrj3z234wVPkDQ98HLS1UUgQ6DIJZgVdXDBds=;
+        b=g/HXga9GcQ4nONrdSa0q1CxhKd1rennpVPxoeipm+a5+/DzEA9X2i5YtsuWEXG25t3
+         DnnDVM2jong448xcz0BXsCL7LMlZR+ZRN6Px3RPGIoNK1CyDjsS8Ob1ml/97DORJzTln
+         i4ZkNF86Luqpqza7MDEIUFYqLFrF57CK6B8qmjhr+WUmuxF7kYN0qibLRf8EPy2rt2C4
+         0T/PJ2PtXbyTfm/VvXdLAjO3iF9WrfEmIQr3qScTeHscTyn5htdTSOm8aWzvu3h3rVEO
+         Pg34qcOTy02QviOOM4AXNOzw0FxNF0KvoG8F5ZIIJpjqfuKx6U6x37xYZgH0Mpe33pmo
+         GgFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=LN0JaAN3T5+nq6SFVxphdupyoLpcoEoPHxPPBl9bv9U=;
-        b=ljxYKHTKvQ8/uEKKG1rySy2IaJ15a3/FEVIdQR+pdxv/6qi/gcOUSzCKDrizF/R1LR
-         kHmPS4ljERtWMno1lSUnBOL/zxEe9H0vT5Guk3ZqPwwZS0s0xYLrTbvac4zWeTwHtNDK
-         Iw9TAOlZmzrDso+TvjpDERjxmNo3vltNtYlcPt7FbP1QGdK/982nlcyAE+D7HqgTUGAk
-         hLk4n0Q+FoJMY74DdQnnP/RRT1ZuNQaHMIqxaagjpEVPlDuwtI5O1zXaqBC9GpynZ217
-         0y9HgVFXYe8oGQzQ91mK1pvtdQGwCq5ELtQC9ppRR3UyKQikXTrH3wrQD6XjSxEF8hwL
-         rBVw==
-X-Gm-Message-State: AOAM531ASa5mVS2o6t4wB02XwjXQ+O83diRxugsd8NplEilCTcr0EAVG
-        yL0CYYKN46jNbkaXE2UeFgvQdkVNJrM=
-X-Google-Smtp-Source: ABdhPJy1wdnajK8auCAaIPjf4hKWJO3bnez97krGV/zeyw/JEJzMfsrA/ZOHXieVRy2GU1OrEiucYXPEmVQ=
+        bh=zb4BgBHrj3z234wVPkDQ98HLS1UUgQ6DIJZgVdXDBds=;
+        b=aT2/2dp1Lz469ig8b50/LM0W1ztab5+MMjfBExoHx0+SuJjKnc3+H+YaVqaqhT6hVz
+         N6FsYPPEWmV47ZLPrLzrl7stxX30D7/C/vubhiey9YihuaMl7km24WSEDUQNOYIpAJJb
+         wYA6DR+E//SoKqJbkj/9MD/DEPgJpxNjsnVy0SvQDnXlks6Guj7gaNymd1coSRyEO8RI
+         k4XJRV5RJYgMG5jW6r/De08L7tHWbvCaJ1Glc/FV/Kaz58B1J87TJDEUGMp1DjA0/Gvj
+         +PcTuH/ZOqFE5uZRUqzJlONXh509wH/vX9LM168s6surghVIIm8FGH4b0k2lbUXz8Wcl
+         XlXg==
+X-Gm-Message-State: AOAM532LcREDRM/7amCJ2VPP3VyFanSJgezj4PtNk60nlLI5muZVZB34
+        hChTLYD1fRGnFIa/G3+GaweMFE7WXF4=
+X-Google-Smtp-Source: ABdhPJzLiGRqYKhQpiJw4Ox9Mpuyg4GqiBUdrg+GEm8Q6sIJdKTPuIUixfOa55zZay0YzPthMxaoysV9S9E=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:8daf:e5e:ae50:4f28])
- (user=seanjc job=sendgmr) by 2002:ad4:4c0c:: with SMTP id bz12mr2346916qvb.21.1623282166720;
- Wed, 09 Jun 2021 16:42:46 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a0c:ea83:: with SMTP id d3mr2600334qvp.25.1623282169148;
+ Wed, 09 Jun 2021 16:42:49 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  9 Jun 2021 16:42:22 -0700
+Date:   Wed,  9 Jun 2021 16:42:23 -0700
 In-Reply-To: <20210609234235.1244004-1-seanjc@google.com>
-Message-Id: <20210609234235.1244004-3-seanjc@google.com>
+Message-Id: <20210609234235.1244004-4-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210609234235.1244004-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-Subject: [PATCH 02/15] KVM: nVMX: Ensure 64-bit shift when checking VMFUNC bitmap
+Subject: [PATCH 03/15] KVM: nVMX: Don't clobber nested MMU's A/D status on
+ EPTP switch
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,45 +69,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use BIT_ULL() instead of an open-coded shift to check whether or not a
-function is enabled in L1's VMFUNC bitmap.  This is a benign bug as KVM
-supports only bit 0, and will fail VM-Enter if any other bits are set,
-i.e. bits 63:32 are guaranteed to be zero.
+Drop bogus logic that incorrectly clobbers the accessed/dirty enabling
+status of the nested MMU on an EPTP switch.  When nested EPT is enabled,
+walk_mmu points at L2's _legacy_ page tables, not L1's EPT for L2.
 
-Note, "function" is bounded by hardware as VMFUNC will #UD before taking
-a VM-Exit if the function is greater than 63.
+This is likely a benign bug, as mmu->ept_ad is never consumed (since the
+MMU is not a nested EPT MMU), and stuffing mmu_role.base.ad_disabled will
+never propagate into future shadow pages since the nested MMU isn't used
+to map anything, just to walk L2's page tables.
 
-Before:
-  if ((vmcs12->vm_function_control & (1 << function)) == 0)
-   0x000000000001a916 <+118>:	mov    $0x1,%eax
-   0x000000000001a91b <+123>:	shl    %cl,%eax
-   0x000000000001a91d <+125>:	cltq
-   0x000000000001a91f <+127>:	and    0x128(%rbx),%rax
+Note, KVM also does a full MMU reload, i.e. the guest_mmu will be
+recreated using the new EPTP, and thus any change in A/D enabling will be
+properly recognized in the relevant MMU.
 
-After:
-  if (!(vmcs12->vm_function_control & BIT_ULL(function & 63)))
-   0x000000000001a955 <+117>:	mov    0x128(%rbx),%rdx
-   0x000000000001a95c <+124>:	bt     %rax,%rdx
-
-Fixes: 27c42a1bb867 ("KVM: nVMX: Enable VMFUNC for the L1 hypervisor")
+Fixes: 41ab93727467 ("KVM: nVMX: Emulate EPTP switching for the L1 hypervisor")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/nested.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/vmx/nested.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
 diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 1c243758dd2c..c3624109ffeb 100644
+index c3624109ffeb..e102a5c10a83 100644
 --- a/arch/x86/kvm/vmx/nested.c
 +++ b/arch/x86/kvm/vmx/nested.c
-@@ -5540,7 +5540,7 @@ static int handle_vmfunc(struct kvm_vcpu *vcpu)
- 	}
+@@ -5488,8 +5488,6 @@ static int nested_vmx_eptp_switching(struct kvm_vcpu *vcpu,
+ {
+ 	u32 index = kvm_rcx_read(vcpu);
+ 	u64 new_eptp;
+-	bool accessed_dirty;
+-	struct kvm_mmu *mmu = vcpu->arch.walk_mmu;
  
- 	vmcs12 = get_vmcs12(vcpu);
--	if ((vmcs12->vm_function_control & (1 << function)) == 0)
-+	if (!(vmcs12->vm_function_control & BIT_ULL(function)))
- 		goto fail;
+ 	if (!nested_cpu_has_eptp_switching(vmcs12) ||
+ 	    !nested_cpu_has_ept(vmcs12))
+@@ -5498,13 +5496,10 @@ static int nested_vmx_eptp_switching(struct kvm_vcpu *vcpu,
+ 	if (index >= VMFUNC_EPTP_ENTRIES)
+ 		return 1;
  
- 	switch (function) {
+-
+ 	if (kvm_vcpu_read_guest_page(vcpu, vmcs12->eptp_list_address >> PAGE_SHIFT,
+ 				     &new_eptp, index * 8, 8))
+ 		return 1;
+ 
+-	accessed_dirty = !!(new_eptp & VMX_EPTP_AD_ENABLE_BIT);
+-
+ 	/*
+ 	 * If the (L2) guest does a vmfunc to the currently
+ 	 * active ept pointer, we don't have to do anything else
+@@ -5513,8 +5508,6 @@ static int nested_vmx_eptp_switching(struct kvm_vcpu *vcpu,
+ 		if (!nested_vmx_check_eptp(vcpu, new_eptp))
+ 			return 1;
+ 
+-		mmu->ept_ad = accessed_dirty;
+-		mmu->mmu_role.base.ad_disabled = !accessed_dirty;
+ 		vmcs12->ept_pointer = new_eptp;
+ 
+ 		kvm_make_request(KVM_REQ_MMU_RELOAD, vcpu);
 -- 
 2.32.0.rc1.229.g3e70b5a671-goog
 
