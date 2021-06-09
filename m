@@ -2,148 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DD33A0BFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C596E3A0BF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhFIFy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 01:54:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31952 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233165AbhFIFy1 (ORCPT
+        id S233032AbhFIFx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 01:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232671AbhFIFx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 01:54:27 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1595WaEV006804;
-        Wed, 9 Jun 2021 01:51:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=gjmqYGcd0wsw2MORSb2x1vkekNfP3sefDMsNGhyGlK4=;
- b=SCk/9dR4vFgOuJknDxGxhza76eqnL9wG5AmWiIt7227Oy2gz417xieuriZlCCr0D5npE
- kpMWkXUu2JcPH7VowArVDe3yoLMNKfHRsKS76erBMFx/2NKE0oaMYIctIv6VSiX4H+M8
- RegxZ+1+YA8/hRArcHvxiEtBnJO/ai64YF4ufRc9o1zy0sGOliRyAGJCnqrNDqOF9DFZ
- jIr9S5yKsbO+IFzpKvGkGWjZehm3YGMKkRp9R043iYWjLyWlvG7RPaSzyvAl3N7YmOsL
- 70QzaUo5j3/mTgNNa83zRrbdy7czLKMCFp+4t9V3DxZU8cDyQT+RDIPkRdL7llkTG1t1 +A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 392pjrht97-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 01:51:11 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1595YJLY012698;
-        Wed, 9 Jun 2021 01:51:11 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 392pjrht8d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 01:51:10 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1595hDl1005435;
-        Wed, 9 Jun 2021 05:51:08 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 3900w8hwnc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 05:51:08 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1595oI0k28377562
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Jun 2021 05:50:18 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BCDA752057;
-        Wed,  9 Jun 2021 05:51:05 +0000 (GMT)
-Received: from osiris (unknown [9.171.25.171])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id CB30152051;
-        Wed,  9 Jun 2021 05:51:03 +0000 (GMT)
-Date:   Wed, 9 Jun 2021 07:51:02 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Marek Kedzierski <mkedzier@redhat.com>,
-        Hui Zhu <teawater@gmail.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-acpi@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        Wed, 9 Jun 2021 01:53:27 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724CEC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 22:51:19 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id u30so22615117qke.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 22:51:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Q8sTBTD7rqUBliLRHrxCmEIR6SotTCZJtXQ0xNJl0ps=;
+        b=jc8qOTt8Oip/8bbn8zI7lQ382Nv/JjOqm0/85z3jXtEs02APBXJte68vjIBeLPaAgr
+         8thN6vFm7LY859Yzo4JhsA0RXTv849sULwn2NTBgRVFZvWQ7bW5S4wV+bqbn8jACftVM
+         PadCgvjVGYYCQ294hAV+xd3LCnTD+wDTnxBZugD8CAUXZ7Mk6ClNUXsscIob/debc9Yb
+         ++TTO539UY5TfFdbjsHQENMRryzxavGBVGwlc42EF21Kbp2x5gXqwBzKa3jedwGOzcNb
+         WpRGbRa7ISr2BUaTX+p05ClXCyPc75YaA+r5EhhCjf7rG59SHYoz/9GzyyHLJ9l5DncY
+         1BDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Q8sTBTD7rqUBliLRHrxCmEIR6SotTCZJtXQ0xNJl0ps=;
+        b=h+CtDYim1BfBVGlTYZSfLQS76A3wtfor7t70CrIkrwEboEG7A/MUltdJhmp9OWneQh
+         jI9G0heBxh/I0ASfWDJQnGsHn14t2BWJB1Blq1RqloU081VGKZAn1ANLSad8cDbMf+Dm
+         5Chf0F7z7dJS5V62U287tXwtpAh4KZY6usQdk+TT2pDmQ/NS8EJX+rr59AKR+dkSX0O9
+         Gnsh0BFHupNwwVMp2ATp7sI2y4JsyaeDkVFtu8sBJb/z7n5jo0FgsDku7s8VC77clO/G
+         +a4Gz3nkSPJOSyWa6vXBK3ILKhCSHczPUAh6WnHT/lL91JTrG3jRzirYoSQoQBVKY59u
+         VY8w==
+X-Gm-Message-State: AOAM533c9LuOaQbeqcLlyt/fnriig4c1LoGjEnLTeUqvD2xF5MNuC3pu
+        4bjT41aQbxh4D6J7o3nBtrM=
+X-Google-Smtp-Source: ABdhPJxxA8J8MOBhkHg6pxRDuQxesUSikSLI8O9AegUX7qOIzZD2LHX5Ab14oRo0m7F/p9XkLgjFEQ==
+X-Received: by 2002:a05:620a:228b:: with SMTP id o11mr9373599qkh.426.1623217878471;
+        Tue, 08 Jun 2021 22:51:18 -0700 (PDT)
+Received: from ?IPv6:2804:14c:482:87bb::1000? ([2804:14c:482:87bb::1000])
+        by smtp.gmail.com with ESMTPSA id g2sm7003048qtb.63.2021.06.08.22.51.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 22:51:18 -0700 (PDT)
+Message-ID: <a69f18159b90c5ede95e6d3769e224b883cc974f.camel@gmail.com>
+Subject: Re: [PATCH v2 1/3] powerpc/mm/hash: Avoid resizing-down HPT on
+ first memory hotplug
+From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Baoquan He <bhe@redhat.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Joe Perches <joe@perches.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Jia He <justin.he@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org
-Subject: Re: [PATCH v1 04/12] mm/memory_hotplug: remove nid parameter from
- arch_remove_memory()
-Message-ID: <YMBWxiUGBjJCz1+q@osiris>
-References: <20210607195430.48228-1-david@redhat.com>
- <20210607195430.48228-5-david@redhat.com>
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Wed, 09 Jun 2021 02:51:49 -0300
+In-Reply-To: <YMBGW3RQOzoQxBqy@yekko>
+References: <20210430143607.135005-1-leobras.c@gmail.com>
+         <20210430143607.135005-2-leobras.c@gmail.com> <YL2obsnp4rWbW6CV@yekko>
+         <648b382159009c5f4277d9b9c3f896142ea75d6c.camel@gmail.com>
+         <YMBGW3RQOzoQxBqy@yekko>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607195430.48228-5-david@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: YmICdrBc-KG4i-61RykYBVdFdJ3s1NyM
-X-Proofpoint-ORIG-GUID: qw89e5qOMxCOu0pR5cZeD51I3FVnw-xL
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-09_01:2021-06-04,2021-06-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=901 bulkscore=0
- spamscore=0 mlxscore=0 impostorscore=0 priorityscore=1501
- lowpriorityscore=0 suspectscore=0 adultscore=0 clxscore=1011
- malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106090015
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 09:54:22PM +0200, David Hildenbrand wrote:
-> The parameter is unused, let's remove it.
+On Wed, 2021-06-09 at 14:40 +1000, David Gibson wrote:
+> On Tue, Jun 08, 2021 at 09:52:10PM -0300, Leonardo Brás wrote:
+> > On Mon, 2021-06-07 at 15:02 +1000, David Gibson wrote:
+> > > On Fri, Apr 30, 2021 at 11:36:06AM -0300, Leonardo Bras wrote:
+> > > > Because hypervisors may need to create HPTs without knowing the
+> > > > guest
+> > > > page size, the smallest used page-size (4k) may be chosen,
+> > > > resulting in
+> > > > a HPT that is possibly bigger than needed.
+> > > > 
+> > > > On a guest with bigger page-sizes, the amount of entries for
+> > > > HTP
+> > > > may be
+> > > > too high, causing the guest to ask for a HPT resize-down on the
+> > > > first
+> > > > hotplug.
+> > > > 
+> > > > This becomes a problem when HPT resize-down fails, and causes
+> > > > the
+> > > > HPT resize to be performed on every LMB added, until HPT size
+> > > > is
+> > > > compatible to guest memory size, causing a major slowdown.
+> > > > 
+> > > > So, avoiding HPT resizing-down on hot-add significantly
+> > > > improves
+> > > > memory
+> > > > hotplug times.
+> > > > 
+> > > > As an example, hotplugging 256GB on a 129GB guest took 710s
+> > > > without
+> > > > this
+> > > > patch, and 21s after applied.
+> > > > 
+> > > > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> > > 
+> > > Sorry it's taken me so long to look at these
+> > > 
+> > > I don't love the extra statefulness that the 'shrinking'
+> > > parameter
+> > > adds, but I can't see an elegant way to avoid it, so:
+> > > 
+> > > Reviewed-by: David Gibson <david@gibson.dropbear.id.au>
+> > 
+> > np, thanks for reviewing!
 > 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  arch/arm64/mm/mmu.c            | 3 +--
->  arch/ia64/mm/init.c            | 3 +--
->  arch/powerpc/mm/mem.c          | 3 +--
->  arch/s390/mm/init.c            | 3 +--
->  arch/sh/mm/init.c              | 3 +--
->  arch/x86/mm/init_32.c          | 3 +--
->  arch/x86/mm/init_64.c          | 3 +--
->  include/linux/memory_hotplug.h | 3 +--
->  mm/memory_hotplug.c            | 4 ++--
->  mm/memremap.c                  | 5 +----
->  10 files changed, 11 insertions(+), 22 deletions(-)
+> Actually... I take that back.  With the subsequent patches my
+> discomfort with the complexity of implementing the batching grew.
+> 
+> I think I can see a simpler way - although it wasn't as clear as I
+> thought it might be, without some deep history on this feature.
+> 
+> What's going on here is pretty hard to follow, because it starts in
+> arch-specific code (arch/powerpc/platforms/pseries/hotplug-memory.c)
+> where it processes the add/remove requests, then goes into generic
+> code __add_memory() which eventually emerges back in arch specific
+> code (hash__create_section_mapping()).
+> 
+> The HPT resizing calls are in the "inner" arch specific section,
+> whereas it's only the outer arch section that has the information to
+> batch properly.  The mutex and 'shrinking' parameter in Leonardo's
+> code are all about conveying information from the outer to inner
+> section.
+> 
+> Now, I think the reason I had the resize calls in the inner section
+> was to accomodate the notion that a) pHyp might support resizing in
+> future, and it could come in through a different path with its drmgr
+> thingy and/or b) bare metal hash architectures might want to
+> implement
+> hash resizing, and this would make at least part of the path common.
+> 
+> Given the decreasing relevance of hash MMUs, I think we can now
+> safely
+> say neither of these is ever going to happen.
+> 
+> Therefore, we can simplify things by moving the HPT resize calls into
+> the pseries LMB code, instead of create/remove_section_mapping.  Then
+> to do batching without extra complications we just need this logic
+> for
+> all resizes (both add and remove):
+> 
+>         let new_hpt_order = expected HPT size for new mem size;
+> 
+>         if (new_hpt_order > current_hpt_order)
+>                 resize to new_hpt_order
+> 
+>         add/remove memory
+> 
+>         if (new_hpt_order < current_hpt_order - 1)
+>                 resize to new_hpt_order
+> 
+> 
 
-For s390:
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+
+Ok, that really does seem to simplify a lot the batching.
+
+Question:
+by LMB code, you mean dlpar_memory_{add,remove}_by_* ?
+(dealing only with dlpar_{add,remove}_lmb() would not be enough to deal
+with batching)
+
+In my 3/3 repĺy I sent you some other examples of functions that
+currently end up calling resize_hpt_for_hotplug() without comming from 
+hotplug-memory.c. Is that ok that they do not call it anymore?
+
+
+Best regards,
+Leonardo Bras
+
