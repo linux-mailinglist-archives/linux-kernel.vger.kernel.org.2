@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8303A1E0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D89E3A1E1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhFIUXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 16:23:19 -0400
-Received: from mail-ej1-f53.google.com ([209.85.218.53]:40658 "EHLO
-        mail-ej1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhFIUXS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:23:18 -0400
-Received: by mail-ej1-f53.google.com with SMTP id my49so23634886ejc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:21:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g1GjlLUDtM2mEAEvdu2FMZEVrykbRH7EpEHQNoxkDU4=;
-        b=niZu8GLvw1ayIHdeNNDj6brBfFOpWsKB3p1cyzLN9Jq5nuciCUMYN1nwj0n16gtAfZ
-         0vvSwPQRNEhEXTLkwsfH92bR5I0qMebE00KEDCdOezV/q0xXI3+u03aS3PVsWsmfJbad
-         2xAbeKyA8nCuyXC/cpKA5QwasrWMdkqJhE8x1vDr0oowPr6vStNZjz3NauwJVkVXR7uW
-         S6+kmLOsx3+Nslxgc2lGCuv5AFbgaL/q/fiFwL7UNCfnQFxA/JvmqM8zir9rGLOeaaUd
-         MQwkQZDE9derH7iIOIEXQvL1JNNr2jozF3TpVoURl4hvLuG1Q1Swnfa4BxNRm0HR4mWw
-         aGDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g1GjlLUDtM2mEAEvdu2FMZEVrykbRH7EpEHQNoxkDU4=;
-        b=SEurlAuLjpwM6v0f/9ETmgSliiA7FtWcpHz3bqxTpibluH2CfxrTnw5UvBPK5t1uGB
-         fcnnwB/baTqKB0MUmM0je8x9bvZ4Dd4hCgabEKCHFBH9UwdLABWdRtKFDo7SmTp6Ts3k
-         UHlodzv+oBlAabkGh7kQK4kOvAlD+NtDPAlOu2/qFPqj7vNP389tqfQA/E/c15gK+n9/
-         xpGCuzjUAtTCIwGvkZjMrpjy4DOmPNeshngmUz5ztFBzlVLi/Mwh2f2KjUpajgcJ1fy1
-         nowrMxMot2U23apjyuqXqc/Z/eNiTCdf388E73TQmyeq7Oryjqt3l8EfL+sLLpwheuu4
-         JKGA==
-X-Gm-Message-State: AOAM531t7ZtWuHQhKV9Z9vLnu6y2YYMjZcbMjpkIu+H6G91IxjVdgoNS
-        q8+Aiag7wLFc5Bwy8TXLSIbYlW1vEiEeow==
-X-Google-Smtp-Source: ABdhPJyE2We8oSGaqvQe0DO/z+AqXv4xQ+RUCvWYLtVth4uml/OhWI+D1bK/0hDRlO4uR5ZM27ZHYA==
-X-Received: by 2002:a17:906:520f:: with SMTP id g15mr1510005ejm.126.1623270023173;
-        Wed, 09 Jun 2021 13:20:23 -0700 (PDT)
-Received: from jackdaw.lan (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.googlemail.com with ESMTPSA id u19sm249358ejt.74.2021.06.09.13.20.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 13:20:22 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] arm64: meson: remove COMMON_CLK
-Date:   Wed,  9 Jun 2021 22:20:09 +0200
-Message-Id: <20210609202009.1424879-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+        id S229685AbhFIUcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:32:03 -0400
+Received: from gate.crashing.org ([63.228.1.57]:51896 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229507AbhFIUcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 16:32:02 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 159KOVoh018172;
+        Wed, 9 Jun 2021 15:24:31 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 159KOR2Q018166;
+        Wed, 9 Jun 2021 15:24:27 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 9 Jun 2021 15:24:27 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Marco Elver <elver@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210609202427.GK18427@gate.crashing.org>
+References: <20210607152806.GS4397@paulmck-ThinkPad-P17-Gen-1> <YL5Risa6sFgnvvnG@elver.google.com> <CANpmjNNtDX+eBEpuP9-NgT6RAwHK5OgbQHT9b+8LZQJtwWpvPg@mail.gmail.com> <YL9TEqealhxBBhoS@hirez.programming.kicks-ass.net> <20210608152851.GX18427@gate.crashing.org> <CANpmjNPJaDT4vBqkTw8XaRfKgDuwh71qmrvNfq-vx-Zyp4ugNg@mail.gmail.com> <20210609153133.GF18427@gate.crashing.org> <CANpmjNPq3NBhi_pFpNd6TwXOVjw0LE2NuQ63dWZrYSfEet3ChQ@mail.gmail.com> <20210609171419.GI18427@gate.crashing.org> <CAKwvOdn0t-z9pa5csvqSEJ1LLnwef8HQwZzfJgdkddN6GVZpXA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdn0t-z9pa5csvqSEJ1LLnwef8HQwZzfJgdkddN6GVZpXA@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit aea7a80ad5effd48f44a7a08c3903168be038a43.
-Selecting COMMON_CLK is not necessary, it is already selected by
-CONFIG_ARM64
+On Wed, Jun 09, 2021 at 10:31:13AM -0700, Nick Desaulniers wrote:
+> On Wed, Jun 9, 2021 at 10:20 AM Segher Boessenkool
+> <segher@kernel.crashing.org> wrote:
+> >
+> > On Wed, Jun 09, 2021 at 06:13:00PM +0200, Marco Elver wrote:
+> > > On Wed, 9 Jun 2021 at 17:33, Segher Boessenkool
+> > > <segher@kernel.crashing.org> wrote:
+> > > [...]
+> > > > > An alternative design would be to use a statement attribute to only
+> > > > > enforce (C) ("__attribute__((mustcontrol))" ?).
+> > > >
+> > > > Statement attributes only exist for empty statements.  It is unclear how
+> > > > (and if!) we could support it for general statements.
+> > >
+> > > Statement attributes can apply to anything -- Clang has had them apply
+> > > to non-empty statements for a while.
+> >
+> > First off, it is not GCC's problem if LLVM decides to use a GCC
+> > extension in some non-compatible way.
+> 
+> Reminds me of
+> https://lore.kernel.org/lkml/CAHk-=whu19Du_rZ-zBtGsXAB-Qo7NtoJjQjd-Sa9OB5u1Cq_Zw@mail.gmail.com/
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- arch/arm64/Kconfig.platforms | 1 -
- 1 file changed, 1 deletion(-)
+And my reply to that
+https://lore.kernel.org/lkml/20200910154423.GK28786@gate.crashing.org/
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index 7336c1fd0dda..6409b47b73e4 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -165,7 +165,6 @@ config ARCH_MEDIATEK
- 
- config ARCH_MESON
- 	bool "Amlogic Platforms"
--	select COMMON_CLK
- 	select MESON_IRQ_GPIO
- 	help
- 	  This enables support for the arm64 based Amlogic SoCs
--- 
-2.32.0
 
+Segher
