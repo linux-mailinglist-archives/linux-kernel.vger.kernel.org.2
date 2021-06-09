@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DBF3A11F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905203A128A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238657AbhFILB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:01:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235843AbhFILBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:01:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1397B6136D;
-        Wed,  9 Jun 2021 10:59:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623236370;
-        bh=hawZVUXye10SHmSE8BbW1Adn+u8wdEz8D70FNM/p/ow=;
-        h=From:To:Cc:Subject:Date:From;
-        b=I5Zd+n0T3syBuzrroz7Udd5xRxBeLjphh31KHH3D2d+zCIO/BsRt3FzlzkGDd7055
-         SF/+Om8NIyh5i/n4fN/hZDGV27dSSw2fuBGyc0A8ZrD9LFOLz1mtdBfHc3+OiKfyJV
-         N8aQ5HtaP6fJdW32VBZnM19prlCW6zjgmRxcP/IULdZeMLmWzaSGDc4fTD2goCGVML
-         uebKrfvP/Omvh523OhEabwzigW6xHE47zTioBBaoY7ej/ueFxgaEcI2SK9MHLY4hfk
-         IDzMq63GRTYNnfuPdGqqp7yjXrFbJO7Sb4n5zD20FxHKJZSzbwZq6iruH1paiJUbhF
-         aMJkhPSG5kH0Q==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mark Zhang <markzhang@nvidia.com>
-Subject: [PATCH rdma-next] IB/cm: Remove dgid from the cm_id_priv av
-Date:   Wed,  9 Jun 2021 13:59:25 +0300
-Message-Id: <2e7c87b6f662c90c642fc1838e363ad3e6ef14a4.1623236345.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S239055AbhFILYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:24:01 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:41440 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239020AbhFILX7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 07:23:59 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1599FZOe126813;
+        Wed, 9 Jun 2021 09:28:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=YnBQKz3dqrUNxi9NhuYJmaFtMbuoNqMgRmHcuk+qdpI=;
+ b=sRxE+MxijCFxqckZdPl516xZAoGyX4NeLSEsGHwHm/QVAm/0Bw+WjX4xTL2C/7NQVnZg
+ zBk19bqzgQP7rN6UDxSba1m0HSyHL9gJYPemVVCczqu9MTVftCXXi5C9e9bG9t7Wdrfl
+ 3VAeuZLBtXH4J0eDRmuesh1HKYwP7WW4Mq2MOAHSqcrbq8psLlsRhRqXjj6b8RgSYAuo
+ PaxaribDfQN3wQbDt6Z8EhJ3SSIVkUOCsZuKbnV9hA3LYobBlUQ1j7xR9WKJtIGFfVQ1
+ qOoYQ7FQtfIugBcr4VxqxBGw22rtYZKGyzUB4aUkjkIYED1mswvaVzd+PbOJKby/yNFF zg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 38yxscgnb8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Jun 2021 09:28:42 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1599QZRP051047;
+        Wed, 9 Jun 2021 09:28:42 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 3922wuedkh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Jun 2021 09:28:42 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1599SfGF066343;
+        Wed, 9 Jun 2021 09:28:41 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 3922wuedjh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Jun 2021 09:28:41 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1599SeDQ031727;
+        Wed, 9 Jun 2021 09:28:40 GMT
+Received: from mwanda (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Jun 2021 09:28:39 +0000
+Date:   Wed, 9 Jun 2021 12:28:31 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Shai Malin <smalin@marvell.com>
+Cc:     Ariel Elior <aelior@marvell.com>, Keith Busch <kbusch@kernel.org>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] nvme-tcp-offload: Fix error code in
+ nvme_tcp_ofld_create_ctrl()
+Message-ID: <YMCJv0sYKm+Gcwr7@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-ORIG-GUID: dwTMuy1y2bpTs-2e3Ko8WmdLFuDxgBH-
+X-Proofpoint-GUID: dwTMuy1y2bpTs-2e3Ko8WmdLFuDxgBH-
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10009 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
+ phishscore=0 suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501
+ mlxscore=0 malwarescore=0 mlxlogscore=999 clxscore=1011 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106090042
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+Return an error pointer if try_module_get() fails.  Currently it returns
+NULL.
 
-It turns out this is only being used to store the LID for SIDR mode to
-search the RB tree for request de-duplication. Store the LID value
-directly and don't pretend it is a GID.
-
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Mark Zhang <markzhang@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Fixes: 4b8178ec5794 ("nvme-tcp-offload: Add device scan implementation")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/infiniband/core/cm.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ drivers/nvme/host/tcp-offload.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 1827118c41e3..4a92729068eb 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -174,7 +174,6 @@ struct cm_device {
+diff --git a/drivers/nvme/host/tcp-offload.c b/drivers/nvme/host/tcp-offload.c
+index c76822e5ada7..c07f84a7e697 100644
+--- a/drivers/nvme/host/tcp-offload.c
++++ b/drivers/nvme/host/tcp-offload.c
+@@ -1215,7 +1215,7 @@ nvme_tcp_ofld_create_ctrl(struct device *ndev, struct nvmf_ctrl_options *opts)
+ 	/* Increase driver refcnt */
+ 	if (!try_module_get(dev->ops->module)) {
+ 		pr_err("try_module_get failed\n");
+-		dev = NULL;
++		rc = -ENODEV;
+ 		goto out_free_ctrl;
+ 	}
  
- struct cm_av {
- 	struct cm_port *port;
--	union ib_gid dgid;
- 	struct rdma_ah_attr ah_attr;
- 	u16 pkey_index;
- 	u8 timeout;
-@@ -207,6 +206,7 @@ struct cm_id_private {
- 
- 	struct rb_node service_node;
- 	struct rb_node sidr_id_node;
-+	u32 sidr_slid;
- 	spinlock_t lock;	/* Do not acquire inside cm.lock */
- 	struct completion comp;
- 	refcount_t refcount;
-@@ -785,7 +785,6 @@ cm_insert_remote_sidr(struct cm_id_private *cm_id_priv)
- 	struct rb_node **link = &cm.remote_sidr_table.rb_node;
- 	struct rb_node *parent = NULL;
- 	struct cm_id_private *cur_cm_id_priv;
--	union ib_gid *port_gid = &cm_id_priv->av.dgid;
- 	__be32 remote_id = cm_id_priv->id.remote_id;
- 
- 	while (*link) {
-@@ -797,12 +796,9 @@ cm_insert_remote_sidr(struct cm_id_private *cm_id_priv)
- 		else if (be32_gt(remote_id, cur_cm_id_priv->id.remote_id))
- 			link = &(*link)->rb_right;
- 		else {
--			int cmp;
--			cmp = memcmp(port_gid, &cur_cm_id_priv->av.dgid,
--				     sizeof *port_gid);
--			if (cmp < 0)
-+			if (cur_cm_id_priv->sidr_slid < cm_id_priv->sidr_slid)
- 				link = &(*link)->rb_left;
--			else if (cmp > 0)
-+			else if (cur_cm_id_priv->sidr_slid > cm_id_priv->sidr_slid)
- 				link = &(*link)->rb_right;
- 			else
- 				return cur_cm_id_priv;
-@@ -3568,8 +3564,7 @@ static int cm_sidr_req_handler(struct cm_work *work)
- 	cm_id_priv->tid = sidr_req_msg->hdr.tid;
- 
- 	wc = work->mad_recv_wc->wc;
--	cm_id_priv->av.dgid.global.subnet_prefix = cpu_to_be64(wc->slid);
--	cm_id_priv->av.dgid.global.interface_id = 0;
-+	cm_id_priv->sidr_slid = wc->slid;
- 	ret = cm_init_av_for_response(work->port, work->mad_recv_wc->wc,
- 				      work->mad_recv_wc->recv_buf.grh,
- 				      &cm_id_priv->av);
 -- 
-2.31.1
+2.30.2
 
