@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482AD3A1211
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6608E3A1218
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236901AbhFILLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236416AbhFILLF (ORCPT
+        id S237306AbhFILMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:12:46 -0400
+Received: from mail-lj1-f177.google.com ([209.85.208.177]:38537 "EHLO
+        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234777AbhFILMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:11:05 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE165C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:08:53 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id z22so15179303ljh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:08:53 -0700 (PDT)
+        Wed, 9 Jun 2021 07:12:44 -0400
+Received: by mail-lj1-f177.google.com with SMTP id s22so10695946ljg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:10:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UjzND9QnxwT8ifLhktgAKCRkzmnIT7lNJ4apsIOpbtw=;
-        b=dBMRi3EmuIA041sODLhPvK+P60mTibEwJWo7dwzWinbjydvuRwgJHJvzNtChXBgd+4
-         hjkivI5u/QbQrRBzaRU5Xsj//Y7mWrxSXSttBk5ltjsww5Zxy5yQrd+j8PamxA+1NqTk
-         EzLmJJSA5lZexPPtpMa4HxUv6esdGsupwC+lZCCs4Y0hzjCoOVUqrLx8BEV02YD0RKTl
-         vlsilNgiomDc2nbZf3Ya5H4HZxViabIa3gd/K2fnZlJqtTf4cOj0MLy6rMy/fphZ+O/E
-         5YAIDWrIhxiVToPS+kl6FrWjFnwBjVu1Uuk9hE3bWP14rFI1mrm2NP+c3tRxSXCU6jrX
-         rJSw==
+        bh=UEmEhJRy3OP1xPt4yLPOXzII4gM5OzUq9kkp8l/Xvok=;
+        b=ugy7xZQ+7+93G7dUIr6Hp2icQgcsPO/2hueMIo7Fi/D1w5oYszoADHu+HcJqnz1gEk
+         aofijq0inLtV8T7Qw1drJwn56L+FGAmO2oQbMCdJq+0myJyuqs7/af90+c+t6sl4Zr+v
+         vxb96PuuPSS3fCBq0RXADxmo4SmJozgOETR0V/onsQ0zPHgOJlxq4xBzVM27mQhG6MA8
+         URhH1QGEF7hKNaFQM5QGYwzC6K9xVmkMAPMBjwLnu1vpBOE0u2ObDFt7w1PLCdFsmsO5
+         OIeWhoyDFP2BIRcZehpWxV3K6xl++n+H34hi7ud9xLXqn624vxbJpC+IOM+5kmAb/mC4
+         X4ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UjzND9QnxwT8ifLhktgAKCRkzmnIT7lNJ4apsIOpbtw=;
-        b=rNi9/0vLfkOaCgNGZQqMfi3g+DLZZ+ngSJ1Lk3rTTqBCnPskP0VwbYSg8Lbov+4Nc6
-         gENwraPuT+k/7C1URFUMT6Whg142DKUF3m1YtVUeINyR+uwkB1+fOY/ZUnfk0gqTuTTz
-         VkBN7xC2abrojRU6U1f3pmzHa1veYrpkN+WGcfp4uqUql3xsl/rQLcP/U7fWbfwwiWuF
-         jlbuSDEDRlDOWvtJAzvvHKGP8hAXgoabNxnvRnn3O6tN6HmdIuKheLLWlmpF/YlI8PNz
-         uTLCYNDsyee2kKNA2WNLw0JRwzxc5XhChN9tDCWrM4xOfWjh4fOwpDcNR6bkkw2tzEpb
-         mtSQ==
-X-Gm-Message-State: AOAM5324SsYp78d+4KF6D/Sy7cQBWPRmXlmISbvn0tolWIoZf1VKx6W6
-        CZ1aIGgE5Pz+5NSZJAgN4Rtvb2W46+Jdl1TltsWFPg==
-X-Google-Smtp-Source: ABdhPJykUmPRzCleHYD3OvQZymAb45ky68Al8YzP3yNAw/wnHb+nvI8h+4+IwRpDxc60T+bXfIuOSqUjSlY8+FPslE4=
-X-Received: by 2002:a05:651c:4c6:: with SMTP id e6mr21911588lji.326.1623236931972;
- Wed, 09 Jun 2021 04:08:51 -0700 (PDT)
+        bh=UEmEhJRy3OP1xPt4yLPOXzII4gM5OzUq9kkp8l/Xvok=;
+        b=YcA0hTEe+VH1jLFRH8koAde9iTkOrup3LgyIDPS/yfB1D+vVHoPdf4ts6xNmF99LxH
+         caH8bjFLH1fepUl2Jh4By+sd3n9sM2gJIb17hcZ4uWwOZo7gp2qNPS2NAvdvf5uBmmSw
+         Y4eQ6MAb/obqkkPSZixGWtzo6ibpNzoCcldODtTn64nidlfMZ8LEgVuJuEB1FjxkxuEk
+         FWM2Mn6Z5Ud0gYu6WWK3+qCxP7h4z9FOUzdtlYg4fTIU3l8r9GzDPiQVZTeduupBw/vy
+         aS6ZM77Q5OYPTEFGrWPK9xnmhMqZ23Tc/lRmB9LlpvhTTbV3c9RELJ4zawkqAeyxtoGU
+         hilg==
+X-Gm-Message-State: AOAM530FEWZi7K3BK3d6Lx/PbqhhkH0Jb0a6/yvcc0Llf7kYwyZb826z
+        Y9CwGsCwbw6zJGGV+EiM1vIz/7htmwZ1vHn1mXcmCg==
+X-Google-Smtp-Source: ABdhPJyMLoBLDIRG5xKEy7bVqMqGX94w0qiryrDa8by3M6lJ0F89j5oh2ybqvmg8q+DMNwfB6uBVIWMg1Zh3OeLMHwY=
+X-Received: by 2002:a05:651c:1501:: with SMTP id e1mr22737718ljf.74.1623236989363;
+ Wed, 09 Jun 2021 04:09:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210607170555.4006050-1-dianders@chromium.org> <20210607100234.v9.7.If89144992cb9d900f8c91a8d1817dbe00f543720@changeid>
-In-Reply-To: <20210607100234.v9.7.If89144992cb9d900f8c91a8d1817dbe00f543720@changeid>
+References: <20210607170555.4006050-1-dianders@chromium.org> <20210607100234.v9.10.I24bba069e63b1eea84443eef0c8535fd032a6311@changeid>
+In-Reply-To: <20210607100234.v9.10.I24bba069e63b1eea84443eef0c8535fd032a6311@changeid>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 9 Jun 2021 13:08:41 +0200
-Message-ID: <CACRpkdZ82tQw5wLXcJ4SwYr4_T+tmc93a-E_AED2dd7MzQ0h=Q@mail.gmail.com>
-Subject: Re: [PATCH v9 07/11] drm/bridge: ti-sn65dsi86: Promote the AUX
- channel to its own sub-dev
+Date:   Wed, 9 Jun 2021 13:09:38 +0200
+Message-ID: <CACRpkdZq6XX7zKbdQU1GhaMGvWSC7isO4UoO1iVqs-4An0FQKg@mail.gmail.com>
+Subject: Re: [PATCH v9 10/11] drm/bridge: ti-sn65dsi86: Improve probe errors
+ with dev_err_probe()
 To:     Douglas Anderson <dianders@chromium.org>
 Cc:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -80,65 +77,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Jun 7, 2021 at 7:06 PM Douglas Anderson <dianders@chromium.org> wrote:
 
-> On its own, this change looks a little strange and doesn't do too much
-> useful. To understand why we're doing this we need to look forward to
-> future patches where we're going to probe our panel using the new DP
-> AUX bus. See the patch ("drm/bridge: ti-sn65dsi86: Add support for the
-> DP AUX bus").
+> As I was testing to make sure that the DEFER path worked well with my
+> patch series, I got tired of seeing this scary message in my logs just
+> because the panel needed to defer:
+>   [drm:ti_sn_bridge_probe] *ERROR* could not find any panel node
 >
-> Let's think about the set of steps we'll want to happen when we have
-> the DP AUX bus:
->
-> 1. We'll create the DP AUX bus.
-> 2. We'll populate the devices on the DP AUX bus (AKA our panel).
-> 3. For setting up the bridge-related functions of ti-sn65dsi86 we'll
->    need to get a reference to the panel.
->
-> If we do #1 - #3 in a single probe call things _mostly_ will work, but
-> it won't be massively robust. Let's explore.
->
-> First let's think of the easy case of no -EPROBE_DEFER. In that case
-> in step #2 when we populate the devices on the DP AUX bus it will
-> actually try probing the panel right away. Since the panel probe
-> doesn't defer then in step #3 we'll get a reference to the panel and
-> we're golden.
->
-> Second, let's think of the case when the panel returns
-> -EPROBE_DEFER. In that case step #2 won't synchronously create the
-> panel (it'll just add the device to the defer list to do it
-> later). Step #3 will fail to get the panel and the bridge sub-device
-> will return -EPROBE_DEFER. We'll depopulate the DP AUX bus. Later
-> we'll try the whole sequence again. Presumably the panel will
-> eventually stop returning -EPROBE_DEFER and we'll go back to the first
-> case where things were golden. So this case is OK too even if it's a
-> bit ugly that we have to keep creating / deleting the AUX bus over and
-> over.
->
-> So where is the problem? As I said, it's mostly about robustness. I
-> don't believe that step #2 (creating the sub-devices) is really
-> guaranteed to be synchronous. This is evidenced by the fact that it's
-> allowed to "succeed" by just sticking the device on the deferred
-> list. If anything about the process changes in Linux as a whole and
-> step #2 just kicks off the probe of the DP AUX endpoints (our panel)
-> in the background then we'd be in trouble because we might never get
-> the panel in step #3.
->
-> Adding an extra sub-device means we just don't need to worry about
-> it. We'll create the sub-device for the DP AUX bus and it won't go
-> away until the whole ti-sn65dsi86 driver goes away. If the bridge
-> sub-device defers (maybe because it can't find the panel) that won't
-> depopulate the DP AUX bus and so we don't need to worry about it.
->
-> NOTE: there's a little bit of a trick here. Though the AUX channel can
-> run without the MIPI-to-eDP bits of the code, the MIPI-to-eDP bits
-> can't run without the AUX channel. We could come up a complicated
-> signaling scheme (have the MIPI-to-eDP bits return EPROBE_DEFER for a
-> while or wait on some sort of completion), but it seems simple enough
-> to just not even bother creating the bridge device until the AUX
-> channel probes. That's what we'll do.
+> Let's use dev_err_probe() which nicely quiets this error and also
+> simplifies the code a tiny bit. We'll also update other places in the
+> file which can use dev_err_probe().
 >
 > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Lyude Paul <lyude@redhat.com>
 
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
