@@ -2,103 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277DE3A139B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B250B3A1377
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhFIMBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 08:01:13 -0400
-Received: from mail-lj1-f180.google.com ([209.85.208.180]:36534 "EHLO
-        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231928AbhFIMBL (ORCPT
+        id S239527AbhFILw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:52:26 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8113 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231704AbhFILwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 08:01:11 -0400
-Received: by mail-lj1-f180.google.com with SMTP id 131so31325899ljj.3;
-        Wed, 09 Jun 2021 04:59:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8h2Tk8aBPc/iaCITxAcn87/DrSk8zNe5RTwQkE4qwIA=;
-        b=J5vAbp5yYNNWYMqneMYO3QID9Im23AK33Ci4F7MVIUWXw5ZPHha9uKO6f50JJWUuUn
-         YJm94gbKSKvZU4nuLHPsl9M+PCMaQpUwhAUtPPdMwios9JWH5AVsCUmxFQzvqY07zfPr
-         Y8WDs74iEzIJn4KITWdUe0y0u07AXeR984z8znDhHFSqMR5wM6iF9PXxS1OWOXU/Uc+7
-         k6HU312U8st+dfPkR8cOkQ5Gjpum9rxp1XkE6+jbP6vAaU7+pNQabM5i/sJxmhzRYw8m
-         2UEnPc93Ajk14T7qYP7nTvaqAYRKjCqgUgPOoFB/lzpO/QKNUT+cZW8k4VRS1ZDcoJer
-         qHzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8h2Tk8aBPc/iaCITxAcn87/DrSk8zNe5RTwQkE4qwIA=;
-        b=EqDoIh6Y8FWQcMtbs9RzZF+doghnWYAUsdzQK/BnabGwvMEZg66rd7vHRo9mbGqZtu
-         UNUx2hnFT/hakhT12VRJUJ6Mg3y7n2DaV+hhUv+QY2DOC+gL700dlnoA4eluRQU1cUTh
-         YZBDZ721bNTLQPXufNG8LdvlsQhYFfE8kPq5QOntYiNHb2/8Up7gbPS03hoPTM3U+Cgs
-         JaxP82X/Uc+5HOypEYHEB9WMrPB+wq0DAfwVy1ruWmrIYOaBC6YnTjXSPcfcM6h1zGEE
-         yhSLJmk5FTXk8uXLapA0mMFaqPUQzRSUTWvuwg8QTVffPKQHI13BQkQvmh0DytIG6nBy
-         0EIw==
-X-Gm-Message-State: AOAM533Sk24v+ZgVQkWZ+XptowetPIa+9xuAIX7N3WeDzNW4e66wB0ux
-        TPn5Qy4Ii6nD8uJ2UdipVrnsH9VoRwc=
-X-Google-Smtp-Source: ABdhPJyXUei0TqGN1j9fV39yK8w32s4YHopGTlsxhxbWJshSrganTkW3vgO0DSSMx/CEGj0GFBYHoQ==
-X-Received: by 2002:a2e:9192:: with SMTP id f18mr21534561ljg.77.1623239880962;
-        Wed, 09 Jun 2021 04:58:00 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-21-60.dynamic.spd-mgts.ru. [94.29.21.60])
-        by smtp.googlemail.com with ESMTPSA id w17sm339815lfn.5.2021.06.09.04.58.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 04:58:00 -0700 (PDT)
-Subject: Re: [PATCH 1/2] memory: tegra: Add missing dependencies
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210609112806.3565057-1-thierry.reding@gmail.com>
- <20210609112806.3565057-2-thierry.reding@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
-Date:   Wed, 9 Jun 2021 14:58:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 9 Jun 2021 07:52:23 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0QMS3s2YzYsXR;
+        Wed,  9 Jun 2021 19:47:32 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 19:50:22 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
+ 2021 19:50:21 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <quentin@isovalent.com>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <chengzhihao1@huawei.com>,
+        <yukuai3@huawei.com>
+Subject: [PATCH] tools/bpftool: Fix error return code in do_batch()
+Date:   Wed, 9 Jun 2021 19:59:16 +0800
+Message-ID: <20210609115916.2186872-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210609112806.3565057-2-thierry.reding@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-09.06.2021 14:28, Thierry Reding пишет:
-> From: Thierry Reding <treding@nvidia.com>
-> 
-> When enabling the COMPILE_TEST Kconfig option, the Tegra memory
-> controller can be built without ARCH_TEGRA being selected. However, the
-> driver implicitly depends on some symbols pulled in via ARCH_TEGRA,
-> which causes the build to break.
-> 
-> Add explicit dependencies for OF_EARLY_FLATTREE and OF_RESERVED_MEM to
-> the Tegra MC Kconfig option to make sure they are selected even if
-> ARCH_TEGRA is not.
-> 
-> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Signed-off-by: Thierry Reding <treding@nvidia.com>
-> ---
->  drivers/memory/tegra/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconfig
-> index f9bae36c03a3..ecfb071fc4f4 100644
-> --- a/drivers/memory/tegra/Kconfig
-> +++ b/drivers/memory/tegra/Kconfig
-> @@ -48,6 +48,8 @@ config TEGRA124_EMC
->  config TEGRA210_EMC_TABLE
->  	bool
->  	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
-> +	select OF_EARLY_FLATTREE
-> +	select OF_RESERVED_MEM
->  
->  config TEGRA210_EMC
->  	tristate "NVIDIA Tegra210 External Memory Controller driver"
-> 
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Will this work if CONFIG_OF is disabled?
+Fixes: 668da745af3c2 ("tools: bpftool: add support for quotations ...")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ tools/bpf/bpftool/main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 7f2817d97079..3ddfd4843738 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -341,8 +341,10 @@ static int do_batch(int argc, char **argv)
+ 		n_argc = make_args(buf, n_argv, BATCH_ARG_NB_MAX, lines);
+ 		if (!n_argc)
+ 			continue;
+-		if (n_argc < 0)
++		if (n_argc < 0) {
++			err = n_argc;
+ 			goto err_close;
++		}
+ 
+ 		if (json_output) {
+ 			jsonw_start_object(json_wtr);
+-- 
+2.31.1
+
