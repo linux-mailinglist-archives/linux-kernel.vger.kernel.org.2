@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70043A1367
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5883C3A1340
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239637AbhFILul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:50:41 -0400
-Received: from mail-wm1-f45.google.com ([209.85.128.45]:54981 "EHLO
-        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239652AbhFILtR (ORCPT
+        id S239505AbhFILsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239440AbhFILsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:49:17 -0400
-Received: by mail-wm1-f45.google.com with SMTP id o127so3805964wmo.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:47:08 -0700 (PDT)
+        Wed, 9 Jun 2021 07:48:21 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7FBC0613A2
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:46:10 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id s70-20020a1ca9490000b02901a589651424so3074948wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fh8Ijkb1J1EQRbMUlgIiVh7lHaVO6VD8BKhO7+YIbyY=;
-        b=D/VNpJ3Luz2OD+p1JYllXDKuVZsLfQlJjEIoHdNrJKGh7AcbH+KHixYNJeuWORUqJy
-         ulPePsO/kin9INWcNraTBSAf0IyO7tKfQMnQtCLaWTt8s6iF5AmihmJl8Dte1rDnGyEL
-         HrdlLzdvk9hFz+WEMrBxnCQ6ieR+OITGstd8OdeISS0XrbAAq66RvZ3nlQwYDw0S6feA
-         hdEgB7nAl+yNNOxz3UVjxvouSRl7UdguUroxoUMRN7Sc3/ZStvQgrSYlnlyTMBL/hinN
-         cRpDF4tsidc5MoHTgbu01ByMW1RFnGa363MxpZOb0RKd9U2DGTYNzGG9XjFPk598Nt1L
-         106g==
+        bh=faDJwJkZnio3K1+D2/qEPWG8piye6Bb4xmyIkwVtbsM=;
+        b=UmrttrlpGT6MTSmxtyJNOBUbmgFtWxEkrhN37QpZ+rjaocPopM9jfvdyufpxSLlm3G
+         DdiTLtUDRpfqttGSfpsIllmhbJ3yPScaZZRUaRyJBZnNXj6wCa8gAabrGfeTZI1gYv8B
+         iWLYVRax67K6VijlPRVRzhtdTgkuxDM8hXOCH+VVNa3OjM6deZP0eUuAGBbjkJ8vRiuL
+         zu+VMO8ydFC+lQDEtpVBfrbRwMRXOe6wuzYmvRUBNhn6EDgRRTgpL1qFdSVUAnXjwYtC
+         ZHZzvTOJNmF8AwrInbW5Kro32m3fh9DIeaXdNYkIyeLLcWbLrBPSgWUdKK3oT7IBb2N4
+         AdPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=fh8Ijkb1J1EQRbMUlgIiVh7lHaVO6VD8BKhO7+YIbyY=;
-        b=TooZYaGQXtywxQwQgt8kfYnz6Bmc1vRtNv3dCSmVyV5reqIuyKsCwz6fHGmJhKCgqg
-         f1DVip7v2ovEOjZaFs55u2KPqfr9M+5vNcORAlNw7ekkbG5Io80MfNOgTzpUYqiiRLsT
-         +FrpuUXELjHsIZTEmZAnfQHMP2E4okbDWJS5/Xyn0ZMdS/Um3Z/0BqolqJ67m6krCq7L
-         3MNEe9yh+ACoWbGkw9M0BF9n277omeY0NLQ1jYnrv3sXMZ64oskKlBwpesDysBVdp5Rw
-         oUMorcKJhA2BQYPSWZ70P7ij8A6/h/M4hxdQVJLJpm0LKaeZA0P+nmoLuks9NQWFTCeB
-         cWSw==
-X-Gm-Message-State: AOAM5319Kw4EgGAVzxpCRi95AqwHblUsDMWc/6bMLuxnOAn2bfDbJA/J
-        VBwpUVE9wIztICGgsEIsh8sJHv+EWqBgsK22
-X-Google-Smtp-Source: ABdhPJycDus8GKbp8t7/Pd8ttcToS1P6blHP7sMp1XcpcIJ2J7Ay0cG4bN89bUuVpSkKiQHZbuDkDA==
-X-Received: by 2002:a05:600c:2059:: with SMTP id p25mr26372912wmg.56.1623239167529;
-        Wed, 09 Jun 2021 04:46:07 -0700 (PDT)
+        bh=faDJwJkZnio3K1+D2/qEPWG8piye6Bb4xmyIkwVtbsM=;
+        b=kXRArugJhq3u+xa7gdi8ed4UNzGUkDxK5ocErIWoxl1L94RVWxJpAKsrg3QAqyngyD
+         1jZcwUpxfDGVe0ICgU6yrGxN2GTIKag/9nJRnIDL5e7LztOnccZyDvxpXFv7Qx1gVcr1
+         hfNSq0LmP3YwLFnlvw4Bwgz6xbi9+jEFvzoUo1mQaylx5BsyfDH1rl6yJr06rO/CeLCm
+         sI15+YSdBEWW57aiuYddoXYSrTl6HPB9kSfG9+VnOiwT/JiQTPFZare8dmKlvmyU/KVG
+         J/BtI3pL7YH4QwX0/axhkf4CNoFtcc31E9FZxoVPkSNqA2jijRd8qlAIkM7sXiF4iDMF
+         rIzg==
+X-Gm-Message-State: AOAM532G9iEBZidzloA0h73eJQEipE4eeFK37RZgOE2bWoSPHFA+GiHI
+        m9pfN3C3wq6AqG6z1Gjx0Rc9UqYvqPlAREXg
+X-Google-Smtp-Source: ABdhPJwyvaRJV27WEeZvyOtiMcZITiOPSb+nkAyiLSj8gjv4MqWxJI0U3RW05ioxpVts1hS0s+ciiw==
+X-Received: by 2002:a05:600c:4f8f:: with SMTP id n15mr11461111wmq.116.1623239169240;
+        Wed, 09 Jun 2021 04:46:09 -0700 (PDT)
 Received: from localhost ([2a02:768:2307:40d6::45a])
-        by smtp.gmail.com with ESMTPSA id n12sm8065135wrw.83.2021.06.09.04.46.06
+        by smtp.gmail.com with ESMTPSA id x18sm2153689wrw.19.2021.06.09.04.46.08
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Jun 2021 04:46:07 -0700 (PDT)
+        Wed, 09 Jun 2021 04:46:08 -0700 (PDT)
 Sender: Michal Simek <monstr@monstr.eu>
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         michal.simek@xilinx.com, git@xilinx.com,
         Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 27/31] arm64: zynqmp: Add reset description for sata
-Date:   Wed,  9 Jun 2021 13:45:03 +0200
-Message-Id: <95ef94aafc4abb374900b4e97d99f95eb22c342e.1623239033.git.michal.simek@xilinx.com>
+Subject: [PATCH 28/31] arm64: zynqmp: Sync psgtr node location with zcu104-revA
+Date:   Wed,  9 Jun 2021 13:45:04 +0200
+Message-Id: <cd168b19c13fd46874e017a6735a744111f3b47a.1623239033.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1623239033.git.michal.simek@xilinx.com>
 References: <cover.1623239033.git.michal.simek@xilinx.com>
@@ -66,27 +68,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sata needs to get reset before configuration that's why add property for it
-there.
+zcu104-revA has node below pinctrl which is not the same on revC. Sync
+location for easier comparison.
+Also zc1751-dc1 is not using this position.
 
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
 
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ .../boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts    | 14 +++++++-------
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts  | 14 +++++++-------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index da54a2d35552..6f0fcec28ae2 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -673,6 +673,7 @@ sata: ahci@fd0c0000 {
- 			interrupt-parent = <&gic>;
- 			interrupts = <0 133 4>;
- 			power-domains = <&zynqmp_firmware PD_SATA>;
-+			resets = <&zynqmp_reset ZYNQMP_RESET_SATA>;
- 			#stream-id-cells = <4>;
- 			iommus = <&smmu 0x4c0>, <&smmu 0x4c1>,
- 				 <&smmu 0x4c2>, <&smmu 0x4c3>;
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
+index 9f176307b62a..d78439e891b9 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
+@@ -58,13 +58,6 @@ clock_si5338_3: clk150 {
+ 	};
+ };
+ 
+-&psgtr {
+-	status = "okay";
+-	/* dp, usb3, sata */
+-	clocks = <&clock_si5338_0>, <&clock_si5338_2>, <&clock_si5338_3>;
+-	clock-names = "ref1", "ref2", "ref3";
+-};
+-
+ &fpd_dma_chan1 {
+ 	status = "okay";
+ };
+@@ -340,6 +333,13 @@ conf {
+ 	};
+ };
+ 
++&psgtr {
++	status = "okay";
++	/* dp, usb3, sata */
++	clocks = <&clock_si5338_0>, <&clock_si5338_2>, <&clock_si5338_3>;
++	clock-names = "ref1", "ref2", "ref3";
++};
++
+ &qspi {
+ 	status = "okay";
+ 	flash@0 {
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
+index fb8d76b5c27f..c21d9612ce04 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
+@@ -429,6 +429,13 @@ conf-tx {
+ 	};
+ };
+ 
++&psgtr {
++	status = "okay";
++	/* nc, sata, usb3, dp */
++	clocks = <&clock_8t49n287_5>, <&clock_8t49n287_2>, <&clock_8t49n287_3>;
++	clock-names = "ref1", "ref2", "ref3";
++};
++
+ &qspi {
+ 	status = "okay";
+ 	flash@0 {
+@@ -446,13 +453,6 @@ &rtc {
+ 	status = "okay";
+ };
+ 
+-&psgtr {
+-	status = "okay";
+-	/* nc, sata, usb3, dp */
+-	clocks = <&clock_8t49n287_5>, <&clock_8t49n287_2>, <&clock_8t49n287_3>;
+-	clock-names = "ref1", "ref2", "ref3";
+-};
+-
+ &sata {
+ 	status = "okay";
+ 	/* SATA OOB timing settings */
 -- 
 2.31.1
 
