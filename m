@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEA13A09A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A18F83A09A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233051AbhFIBvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 21:51:48 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3910 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhFIBvr (ORCPT
+        id S233075AbhFIBxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 21:53:55 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:39391 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232938AbhFIBxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 21:51:47 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G092J3t9dz6wsf;
-        Wed,  9 Jun 2021 09:46:48 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 09:49:52 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 09:49:50 +0800
-Subject: Re: [PATCH 1/1] audit: remove trailing spaces and tabs
-To:     Richard Guy Briggs <rgb@redhat.com>
-CC:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
-        linux-audit <linux-audit@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210608075437.13120-1-thunder.leizhen@huawei.com>
- <20210608151744.GD2268484@madcap2.tricolour.ca>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <8f3615c5-db21-4642-8b38-459974747ec2@huawei.com>
-Date:   Wed, 9 Jun 2021 09:49:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Tue, 8 Jun 2021 21:53:54 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1591c2nC096728;
+        Wed, 9 Jun 2021 09:38:02 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 9 Jun
+ 2021 09:51:53 +0800
+Date:   Wed, 9 Jun 2021 09:51:49 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Subject: Re: [PATCH v5 03/10] ARM: dts: aspeed-g6: Add SGPIO node.
+Message-ID: <20210609015148.GA14839@aspeedtech.com>
+References: <20210608102547.4880-1-steven_lee@aspeedtech.com>
+ <20210608102547.4880-4-steven_lee@aspeedtech.com>
+ <cef3e619-bd49-4318-bdcd-f844d2b80af7@www.fastmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210608151744.GD2268484@madcap2.tricolour.ca>
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <cef3e619-bd49-4318-bdcd-f844d2b80af7@www.fastmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1591c2nC096728
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/6/8 23:17, Richard Guy Briggs wrote:
-> On 2021-06-08 15:54, Zhen Lei wrote:
->> Run the following command to find and remove the trailing spaces and tabs:
->>
->> sed -r -i 's/[ \t]+$//' kernel/audit*
-> 
-> The api header include/uapi/linux/audit.h should probably be included.
-
-OK, I will included it in v2.
-
-> 
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  kernel/audit.h   | 2 +-
->>  kernel/auditsc.c | 8 ++++----
->>  2 files changed, 5 insertions(+), 5 deletions(-)
->>
->> diff --git a/kernel/audit.h b/kernel/audit.h
->> index 1522e100fd17..cab3e2652dab 100644
->> --- a/kernel/audit.h
->> +++ b/kernel/audit.h
->> @@ -1,5 +1,5 @@
->>  /* SPDX-License-Identifier: GPL-2.0-or-later */
->> -/* audit -- definition of audit_context structure and supporting types 
->> +/* audit -- definition of audit_context structure and supporting types
->>   *
->>   * Copyright 2003-2004 Red Hat, Inc.
->>   * Copyright 2005 Hewlett-Packard Development Company, L.P.
->> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
->> index 0a9a1569f1ea..679a43fd342a 100644
->> --- a/kernel/auditsc.c
->> +++ b/kernel/auditsc.c
->> @@ -343,13 +343,13 @@ static int audit_compare_uid(kuid_t uid,
->>  {
->>  	struct audit_names *n;
->>  	int rc;
->> - 
->> +
->>  	if (name) {
->>  		rc = audit_uid_comparator(uid, f->op, name->uid);
->>  		if (rc)
->>  			return rc;
->>  	}
->> - 
->> +
->>  	if (ctx) {
->>  		list_for_each_entry(n, &ctx->names_list, list) {
->>  			rc = audit_uid_comparator(uid, f->op, n->uid);
->> @@ -367,13 +367,13 @@ static int audit_compare_gid(kgid_t gid,
->>  {
->>  	struct audit_names *n;
->>  	int rc;
->> - 
->> +
->>  	if (name) {
->>  		rc = audit_gid_comparator(gid, f->op, name->gid);
->>  		if (rc)
->>  			return rc;
->>  	}
->> - 
->> +
->>  	if (ctx) {
->>  		list_for_each_entry(n, &ctx->names_list, list) {
->>  			rc = audit_gid_comparator(gid, f->op, n->gid);
->> -- 
->> 2.25.1
-> 
-> - RGB
-> 
-> --
-> Richard Guy Briggs <rgb@redhat.com>
-> Sr. S/W Engineer, Kernel Security, Base Operating Systems
-> Remote, Ottawa, Red Hat Canada
-> IRC: rgb, SunRaycer
-> Voice: +1.647.777.2635, Internal: (81) 32635
+The 06/09/2021 08:43, Andrew Jeffery wrote:
 > 
 > 
-> .
+> On Tue, 8 Jun 2021, at 19:55, Steven Lee wrote:
+> > AST2600 supports 2 SGPIO master interfaces one with 128 pins another one
+> > with 80 pins.
+> > 
+> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> > ---
+> >  arch/arm/boot/dts/aspeed-g6.dtsi | 28 ++++++++++++++++++++++++++++
+> >  1 file changed, 28 insertions(+)
+> > 
+> > diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
+> > index f96607b7b4e2..c55baaf94314 100644
+> > --- a/arch/arm/boot/dts/aspeed-g6.dtsi
+> > +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+> > @@ -377,6 +377,34 @@
+> >  				#interrupt-cells = <2>;
+> >  			};
+> >  
+> > +			sgpiom0: sgpiom@1e780500 {
+> > +				#gpio-cells = <2>;
+> > +				gpio-controller;
+> > +				compatible = "aspeed,ast2600-sgpiom-128";
+> > +				reg = <0x1e780500 0x100>;
+> > +				interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
+> > +				clocks = <&syscon ASPEED_CLK_APB2>;
+> 
+> The example in the binding document used ASPEED_CLK_APB. Which is correct? I assume ASPEED_CLK_APB2?
 > 
 
+The example in the binding document is for aspeed-g5.
+aspeed-g5 and aspeed-g6 use different clocks.
+Should I add a new patch for adding an example for aspeed-g6?
+
+> > +				interrupt-controller;
+> > +				bus-frequency = <12000000>;
+> > +				pinctrl-names = "default";
+> > +				pinctrl-0 = <&pinctrl_sgpm1_default>;
+> > +				status = "disabled";
+> > +			};
+> > +
+> > +			sgpiom1: sgpiom@1e780600 {
+> > +				#gpio-cells = <2>;
+> > +				gpio-controller;
+> > +				compatible = "aspeed,ast2600-sgpiom-80";
+> > +				reg = <0x1e780600 0x100>;
+> > +				interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
+> > +				clocks = <&syscon ASPEED_CLK_APB2>;
+> > +				interrupt-controller;
+> > +				bus-frequency = <12000000>;
+> > +				pinctrl-names = "default";
+> > +				pinctrl-0 = <&pinctrl_sgpm2_default>;
+> > +				status = "disabled";
+> > +			};
+> > +
+> >  			gpio1: gpio@1e780800 {
+> >  				#gpio-cells = <2>;
+> >  				gpio-controller;
+> > -- 
+> > 2.17.1
+> > 
+> > 
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> > 
