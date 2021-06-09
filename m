@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE943A0AAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E95D3A0AB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 05:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236438AbhFIDe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 23:34:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41585 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231909AbhFIDe5 (ORCPT
+        id S236507AbhFIDkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 23:40:10 -0400
+Received: from mail-pl1-f172.google.com ([209.85.214.172]:46891 "EHLO
+        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236493AbhFIDkI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 23:34:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623209583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=umLfKhpHP+RuI0WJ/3k+B1+HOsxB0tKVXkMkbJg5ENY=;
-        b=DpILld8NKvQC+qGUCctqtqXyj/77L3ys8MOQhePWWFw3wFdQtvORWKPcwhe5cD4K4KKUMN
-        G98vURzqFsHLVOcjrhGV6g0sgJoYF3hQSuV9lFLslpaWDQtsliQesGcNIeK2qw3OJly3z8
-        wVYpV7nv3u9tkYP8afOvdhscr08NDbY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-ygZ5VinmNvipqjSqZSKDzQ-1; Tue, 08 Jun 2021 23:33:00 -0400
-X-MC-Unique: ygZ5VinmNvipqjSqZSKDzQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 943FA107ACCA;
-        Wed,  9 Jun 2021 03:32:58 +0000 (UTC)
-Received: from T590 (ovpn-12-143.pek2.redhat.com [10.72.12.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0C77F5C1BB;
-        Wed,  9 Jun 2021 03:32:48 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 11:32:44 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org,
-        Jan Kara <jack@suse.com>
-Subject: Re: [PATCH v9 3/8] writeback, cgroup: increment isw_nr_in_flight
- before grabbing an inode
-Message-ID: <YMA2XEnJrHyVLWrD@T590>
-References: <20210608230225.2078447-1-guro@fb.com>
- <20210608230225.2078447-4-guro@fb.com>
+        Tue, 8 Jun 2021 23:40:08 -0400
+Received: by mail-pl1-f172.google.com with SMTP id e1so11807179pld.13;
+        Tue, 08 Jun 2021 20:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k+n/pA6p3AzaSZEumNtpsPgnM1a8UgNMxk8Yo9VkS/0=;
+        b=ECa21rCsZv0K+oxyaQ0e9LtETPxuIH/smkpkOgMI0YEhKkyRC2nDCwk4ZBkeN4+uI5
+         aiiaTD+nh+ec7HkTXSemgnpCI99ff96FvONAAR31orVfeemrxkOAsdn6PackTgEr9Gyj
+         QyM/hjeiOp4hUyy8YRcpUhqIBOORnMC3SlN/NCddhSRkp79mKL6Rywa4TCRVqNbrR7sr
+         wNgQZgVtZ5gaDzdoV4nlYDH9Bn09Bhd/sAqkmcZdvNEaREK8OGlkNJfgtDYeia8cqBYw
+         z0jM3bnMIWhBUeXA0FQzWHtGBI+xPrBBroKqYY81sFWdAH9nO2HaLH9VjaXyRp3YOxI3
+         vu9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k+n/pA6p3AzaSZEumNtpsPgnM1a8UgNMxk8Yo9VkS/0=;
+        b=PYRv2gRaHRs7/V2rIKZZGXt1HvydP/7mLi5nTz9CX3YkLx7FvQQBclnm8q3OonfCXF
+         i8PS7ykzVpyTSx3o6PA2wFCxg6R+qjbxGxvKDiPcUVBjSPAoY0/rAV4bGlv4vimJ7UWf
+         Hj6K1O68xt6EQsMwHfK3LNiY963iGlIsQYzGbwKc/H0nhxxAjtwgF3fw0clFhR77K+w6
+         wNtraOotTQekQ/Vq2w8lngwOSrdtxoAwvUWgXMjem8ZAyfAfrxbRJGwByXq9zGlMZL4j
+         pz+5PUOVZCkFKWvnwf6NHkMw2wgwpEE7vXw4wHYY3GUNjw2Hm0kupunjSt4yhMjjkOX6
+         rmbg==
+X-Gm-Message-State: AOAM532LkQnmCzVPyZ+bmlzlHp+MwM6Cmma/Q+1d7O/WkG1Ouqn7KEuz
+        6ivV/t2zvg7iqpwut4E9fmQDLkM75jRofA==
+X-Google-Smtp-Source: ABdhPJwmJtdf+n0jjAMpN3ddngR2DsAl6EUB0Atlemu7ajAh0g6Y5YsiByNLJme2T7eZMFwhkq8msA==
+X-Received: by 2002:a17:90a:b94c:: with SMTP id f12mr29729708pjw.32.1623209819220;
+        Tue, 08 Jun 2021 20:36:59 -0700 (PDT)
+Received: from localhost.localdomain ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id b23sm11731099pfi.34.2021.06.08.20.36.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 20:36:58 -0700 (PDT)
+From:   Herman <herman.yim88@gmail.com>
+X-Google-Original-From: Herman <yanshuaijun@yulong.com>
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Herman <yanshuaijun@yulong.com>
+Subject: [PATCH] drivers/media/usb/gspca: fix typo issues
+Date:   Wed,  9 Jun 2021 11:32:45 +0800
+Message-Id: <20210609033245.3410-1-yanshuaijun@yulong.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608230225.2078447-4-guro@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 04:02:20PM -0700, Roman Gushchin wrote:
-> isw_nr_in_flight is used do determine whether the inode switch queue
-> should be flushed from the umount path. Currently it's increased
-> after grabbing an inode and even scheduling the switch work. It means
-> the umount path can be walked past cleanup_offline_cgwb() with active
-> inode references, which can result in a "Busy inodes after unmount."
-> message and use-after-free issues (with inode->i_sb which gets freed).
-> 
-> Fix it by incrementing isw_nr_in_flight before doing anything with
-> the inode and decrementing in the case when switching wasn't scheduled.
-> 
-> The problem hasn't yet been seen in the real life and was discovered
-> by Jan Kara by looking into the code.
-> 
-> Suggested-by: Jan Kara <jack@suse.com>
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/fs-writeback.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index b6fc13a4962d..4413e005c28c 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -505,6 +505,8 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
->  	if (!isw)
->  		return;
->  
-> +	atomic_inc(&isw_nr_in_flight);
+spca501.c : remove redundant 'is'
+zc3xx.c   : change 'outdoore' into 'outdoor'
 
-smp_mb() may be required for ordering the WRITE in 'atomic_inc(&isw_nr_in_flight)'
-and the following READ on 'inode->i_sb->s_flags & SB_ACTIVE'. Otherwise,
-cgroup_writeback_umount() may observe zero of 'isw_nr_in_flight' because of
-re-order of the two OPs, then miss the flush_workqueue().
+Signed-off-by: Herman <yanshuaijun@yulong.com>
+---
+ drivers/media/usb/gspca/spca501.c | 2 +-
+ drivers/media/usb/gspca/zc3xx.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Also this barrier should serve as pair of the one added in cgroup_writeback_umount(),
-so maybe this patch should be merged with 2/8.
-
-
-Thanks, 
-Ming
+diff --git a/drivers/media/usb/gspca/spca501.c b/drivers/media/usb/gspca/spca501.c
+index ecc97f807cfa..f7c75d7535c4 100644
+--- a/drivers/media/usb/gspca/spca501.c
++++ b/drivers/media/usb/gspca/spca501.c
+@@ -488,7 +488,7 @@ static const __u16 spca501_init_data[][3] = {
+ 
+ /* Data for video camera init before capture.
+  * Capture and decoding by Colin Peart.
+- * This is is for the 3com HomeConnect Lite which is spca501a based.
++ * This is for the 3com HomeConnect Lite which is spca501a based.
+  */
+ static const __u16 spca501_3com_open_data[][3] = {
+ 	/* bmRequest,value,index */
+diff --git a/drivers/media/usb/gspca/zc3xx.c b/drivers/media/usb/gspca/zc3xx.c
+index aa285d5d6c0d..1bbf8071dde0 100644
+--- a/drivers/media/usb/gspca/zc3xx.c
++++ b/drivers/media/usb/gspca/zc3xx.c
+@@ -5806,7 +5806,7 @@ static void setquality(struct gspca_dev *gspca_dev)
+  * Valid frequencies are:
+  *	50Hz, for European and Asian lighting (default)
+  *	60Hz, for American lighting
+- *	0 = No Fliker (for outdoore usage)
++ *	0 = No Fliker (for outdoor usage)
+  */
+ static void setlightfreq(struct gspca_dev *gspca_dev, s32 val)
+ {
+-- 
+2.25.1
 
