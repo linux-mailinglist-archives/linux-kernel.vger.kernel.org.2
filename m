@@ -2,137 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5DD3A08E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3965E3A08E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234089AbhFIBMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 21:12:34 -0400
-Received: from mga09.intel.com ([134.134.136.24]:4545 "EHLO mga09.intel.com"
+        id S234360AbhFIBNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 21:13:08 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:52030 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230303AbhFIBMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 21:12:33 -0400
-IronPort-SDR: NWGxnZYkjaV3BXAmIzhqpx5+yWe3Dp6cE5B55HCyDCXtBnLA/tH2trUEw7ZFmIneFsqFaG8vjv
- VNaMB4Zi3qaQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="204945263"
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="204945263"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 18:10:36 -0700
-IronPort-SDR: utZxyyNe3y7pg7wb9UwrXKbm43aoJ5qnhu2hF7ABjYpQoJhziEJIBYO6XRQfISgnAtQMzxQCGh
- NfD33/Yed3Nw==
-X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
-   d="scan'208";a="402269682"
-Received: from ticela-az-103.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.36.77])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 18:10:35 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC v2-fix-v4 1/1] x86/tdx: Skip WBINVD instruction for TDX guest
-Date:   Tue,  8 Jun 2021 18:10:30 -0700
-Message-Id: <20210609011030.751451-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
-References: <CAPcyv4iAgXnMmg+Z1cqrgeQUcuQgXZ1WCtAaNmeHuLT_5QArUw@mail.gmail.com>
+        id S230303AbhFIBNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 21:13:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623201074; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=hOY4IY8I46gA8MMjH6W8hGdwOQJifP1exL50IuuC0xA=;
+ b=qEpKcrvxBEB2dN9925WULspN09L4zp7tXEsaJDH2S76gzyHJTSvO7Zq2JCQz/8ZzXYR6nYFD
+ 11MFsusCFxYNAd3HXpahJnZ9g66oFw1lFwTOckOE9M3m0GifDHWMyNTglaKa2RTdwbjTpM8e
+ tA+GFa5XcGF0gInKoi80P89OYlQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60c0150fe570c0561986610b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Jun 2021 01:10:39
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7AF14C43460; Wed,  9 Jun 2021 01:10:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8831CC433F1;
+        Wed,  9 Jun 2021 01:10:38 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 09 Jun 2021 09:10:38 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: scsi: ufs: Optimize host lock on transfer requests send/compl
+ paths (uninitialized pointer error)
+In-Reply-To: <fa66c94c-3df6-3813-dc2d-572cee16071b@canonical.com>
+References: <fa66c94c-3df6-3813-dc2d-572cee16071b@canonical.com>
+Message-ID: <c723f68d3bfd535ea0c749fc93d06f32@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current TDX spec does not have support to emulate the WBINVD
-instruction. If any feature that uses WBINVD is enabled/used
-in TDX guest, it will lead to un-handled #VE exception, which
-will be handled as #GP fault.
+Hi Colin,
 
-ACPI drivers also uses WBINVD instruction for cache flushes in
-reboot or shutdown code path. Since TDX guest has requirement
-to support shutdown feature, skip WBINVD instruction usage
-in ACPI drivers for TDX guest.
+On 2021-06-08 23:44, Colin Ian King wrote:
+> Hi,
+> 
+> static analysis with Coverity on linux-next has found an issue in
+> drivers/scsi/ufs/ufshcd.c introduced by the following commit:
+> 
+> commit a45f937110fa6b0c2c06a5d3ef026963a5759050
+> Author: Can Guo <cang@codeaurora.org>
+> Date:   Mon May 24 01:36:57 2021 -0700
+> 
+>     scsi: ufs: Optimize host lock on transfer requests send/compl paths
+> 
+> The analysis is as follows:
+> 
+> 
+> 2948 static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
+> 2949                enum dev_cmd_type cmd_type, int timeout)
+> 2950 {
+> 2951        struct request_queue *q = hba->cmd_queue;
+> 2952        struct request *req;
+> 
+>     1. var_decl: Declaring variable lrbp without initializer.
+> 
+> 2953        struct ufshcd_lrb *lrbp;
+> 2954        int err;
+> 2955        int tag;
+> 2956        struct completion wait;
+> 2957
+> 2958        down_read(&hba->clk_scaling_lock);
+> 2959
+> 2960        /*
+> 2961         * Get free slot, sleep if slots are unavailable.
+> 2962         * Even though we use wait_event() which sleeps 
+> indefinitely,
+> 2963         * the maximum wait time is bounded by SCSI request 
+> timeout.
+> 2964         */
+> 2965        req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
+> 
+>     2. Condition IS_ERR(req), taking false branch.
+> 
+> 2966        if (IS_ERR(req)) {
+> 2967                err = PTR_ERR(req);
+> 2968                goto out_unlock;
+> 2969        }
+> 2970        tag = req->tag;
+> 
+>     3. Condition !!__ret_warn_on, taking false branch.
+>     4. Condition !!__ret_warn_on, taking false branch.
+> 
+> 2971        WARN_ON_ONCE(!ufshcd_valid_tag(hba, tag));
+> 2972        /* Set the timeout such that the SCSI error handler is not
+> activated. */
+> 2973        req->timeout = msecs_to_jiffies(2 * timeout);
+> 2974        blk_mq_start_request(req);
+> 2975
+> 
+>     5. Condition !!test_bit(tag, &hba->outstanding_reqs), taking true
+> branch.
+> 
+> 2976        if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
+> 2977                err = -EBUSY;
+> 
+>     6. Jumping to label out.
+> 
+> 2978                goto out;
+> 2979        }
+> 2980
+> 2981        init_completion(&wait);
+> 2982        lrbp = &hba->lrb[tag];
+> 2983        WARN_ON(lrbp->cmd);
+> 2984        err = ufshcd_compose_dev_cmd(hba, lrbp, cmd_type, tag);
+> 2985        if (unlikely(err))
+> 2986                goto out_put_tag;
+> 2987
+> 2988        hba->dev_cmd.complete = &wait;
+> 2989
+> 2990        ufshcd_add_query_upiu_trace(hba, UFS_QUERY_SEND,
+> lrbp->ucd_req_ptr);
+> 2991        /* Make sure descriptors are ready before ringing the
+> doorbell */
+> 2992        wmb();
+> 2993
+> 2994        ufshcd_send_command(hba, tag);
+> 2995        err = ufshcd_wait_for_dev_cmd(hba, lrbp, timeout);
+> 2996 out:
+> 
+>     7. Condition err, taking true branch.
+> 
+>     Uninitialized pointer read (UNINIT)
+>     8. uninit_use: Using uninitialized value lrbp.
+> 
+> 2997        ufshcd_add_query_upiu_trace(hba, err ? UFS_QUERY_ERR :
+> UFS_QUERY_COMP,
+> 2998                                    (struct utp_upiu_req
+> *)lrbp->ucd_rsp_ptr);
+> 2999
+> 3000 out_put_tag:
+> 3001        blk_put_request(req);
+> 3002 out_unlock:
+> 3003        up_read(&hba->clk_scaling_lock);
+> 3004        return err;
+> 3005 }
+> 
+> Pointer lrbp is being accessed on the error exit path on line 2989
+> because it is no longer being initialized early, the pointer assignment
+> was moved to a later point (line 2982) by the commit referenced in the
+> top of the email.
+> 
+> Colin
 
-Since cache is always coherent in TDX guests, making wbinvd as
-noop should not cause any issues in above mentioned code path.
-The end-behavior is the same as KVM guest (treat as noops).
+I will fix it by changing "goto out;" -> "goto out_put_tag;" on line 
+#2978
+in a new patch.
 
-In future, once TDX guest specification adds support for WBINVD
-hypercall, we can pass the handle to KVM to handle it.
-   
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
-
-Changes since RFC v2-fix-v3:
- * Fixed commit log as per review comments.
- * Instead of fixing all usages of ACPI_FLUSH_CPU_CACHE(),
-   created TDX specific exception for it in its implementation.
-
-Changes since RFC v2-fix-v2:
- * Instead of handling WBINVD #VE exception as nop, we skip its
-   usage in currently enabled drivers.
- * Adapted commit log for above change.
-
- arch/x86/include/asm/acenv.h    | 7 ++++++-
- arch/x86/kernel/tdx.c           | 1 +
- include/linux/protected_guest.h | 2 ++
- 3 files changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/acenv.h b/arch/x86/include/asm/acenv.h
-index 9aff97f0de7f..36c87b69366b 100644
---- a/arch/x86/include/asm/acenv.h
-+++ b/arch/x86/include/asm/acenv.h
-@@ -10,10 +10,15 @@
- #define _ASM_X86_ACENV_H
- 
- #include <asm/special_insns.h>
-+#include <linux/protected_guest.h>
- 
- /* Asm macros */
- 
--#define ACPI_FLUSH_CPU_CACHE()	wbinvd()
-+#define ACPI_FLUSH_CPU_CACHE()				\
-+do {							\
-+	if (!prot_guest_has(PR_GUEST_DISABLE_WBINVD))	\
-+		wbinvd();				\
-+} while (0)
- 
- int __acpi_acquire_global_lock(unsigned int *lock);
- int __acpi_release_global_lock(unsigned int *lock);
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 06fcbca402cb..fd27cf651f0b 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -92,6 +92,7 @@ bool tdx_protected_guest_has(unsigned long flag)
- 	case PR_GUEST_MEM_ENCRYPT_ACTIVE:
- 	case PR_GUEST_UNROLL_STRING_IO:
- 	case PR_GUEST_SHARED_MAPPING_INIT:
-+	case PR_GUEST_DISABLE_WBINVD:
- 		return true;
- 	}
- 
-diff --git a/include/linux/protected_guest.h b/include/linux/protected_guest.h
-index adfa62e2615e..0ec4dab86f67 100644
---- a/include/linux/protected_guest.h
-+++ b/include/linux/protected_guest.h
-@@ -18,6 +18,8 @@
- #define PR_GUEST_HOST_MEM_ENCRYPT		0x103
- /* Support for shared mapping initialization (after early init) */
- #define PR_GUEST_SHARED_MAPPING_INIT		0x104
-+/* Support to disable WBINVD */
-+#define PR_GUEST_DISABLE_WBINVD			0x105
- 
- #if defined(CONFIG_INTEL_TDX_GUEST) || defined(CONFIG_AMD_MEM_ENCRYPT)
- 
--- 
-2.25.1
-
+Thanks,
+Can Guo.
