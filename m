@@ -2,206 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9C33A0B0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E123A0B0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 06:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhFIEQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 00:16:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57390 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230492AbhFIEQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 00:16:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71F7A61249;
-        Wed,  9 Jun 2021 04:14:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623212072;
-        bh=lG9yoFm92vars8t5WlI242ptHsbT0FMXExAdBBnMNhA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=lmEBRVWgHGF6E9pR+N+UOHsHjBLa/GX1gbUeabkrbs+3+ZpsKupvFzdvn6a93HTxz
-         Hfm1gmtaJK/1tSWpEMKcd9Exu+k3zIdE2t1WR0Tk4gNZggO6YBFkWXsM1MGgygGDgQ
-         4lWWJ9Nq2WRTcJWLpezf6SX5asrYEcz22O6tETTgEzse1S1HkjC+EhjkpuFKjcLtjG
-         X38gLOkHf9Fl/4EtgHaA+1j4wq5xLZJWhmph9yfFiC0PKiNIcJr80wOH1H4iukWe/f
-         UYDNw21CwOkduIqNwBcGSdRrBlOSX3pcubSVhg3W/PBGXBOozexRCOdDf77+PiSgOz
-         PrA/b1afFbVpQ==
-Subject: Re: [kbuild-all] Re: kernel/rcu/tree.c:2073:23: warning: stack frame
- size of 2704 bytes in function 'rcu_gp_kthread'
-To:     paulmck@kernel.org
-Cc:     Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-References: <202106061253.0X2QKyyI-lkp@intel.com>
- <20210606044926.GJ4397@paulmck-ThinkPad-P17-Gen-1>
- <4696fe3d-a7ad-acae-686e-6295ca327737@intel.com>
- <20210607151939.GP4397@paulmck-ThinkPad-P17-Gen-1>
- <e7bbb0e5-3063-031b-af6e-273e97f1d61f@intel.com>
- <20210608050134.GZ4397@paulmck-ThinkPad-P17-Gen-1>
- <f3cc5211-0c68-17c8-a222-4bc2c2525522@kernel.org>
- <20210609035805.GA4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <7f03e5bc-d8a3-74a4-273a-f8047b62ab02@kernel.org>
-Date:   Tue, 8 Jun 2021 21:14:29 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231252AbhFIEUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 00:20:08 -0400
+Received: from mail-qk1-f175.google.com ([209.85.222.175]:38843 "EHLO
+        mail-qk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhFIEUH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 00:20:07 -0400
+Received: by mail-qk1-f175.google.com with SMTP id c138so9629039qkg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 21:17:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=pMyjc9CYqvbfrzl29URaDu3TgxtX0dXCEwyNP3GAvus=;
+        b=e+RJ2E4Zeq65xDwtDBfefBHjqSQnt+ObhFB8cWd4WRWktC46wAECrkAZKegtHdI57U
+         HyS/iTRZE/hQ/0dcjCit9KO1wTdujI5nzTGsQKyg9bQ9N2gU1tj4YVT8ng8kZREo+E96
+         xARjzVhT8FwML3scpPqULTgmVCY4SQM+lYFSWhA8HS/odAxZoSccQjNwV2nTcEMzZSqQ
+         DIY1QHUYRNURhsUZE2XmNWgYyGCdf5Aae/6I2/mYb8dovDNSfNE1rHjzju6+5ttvsrpP
+         qJbZyxiXkKTI3g8+QTZRDVwQ/qMO+rxvZW0EGckKBU+OweiVkeyZ3hQbL4N4AXxrI7DL
+         0XyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=pMyjc9CYqvbfrzl29URaDu3TgxtX0dXCEwyNP3GAvus=;
+        b=hSe2qO4mSqIfIpC+ynNAUP2244hqKLc7bEjWO8ckFTe3V6uGzjQAxCqfV/ttoeZWtw
+         e/2OKDSPwWN0g4MAEfm6IqPEsdgtqFXehw4Vz6dsLzn9my09832wXKaVXWgyQVHvQHfj
+         SnLE35uVqodah0fVeZiZLCaQba8waG0EJfZD3/J6rXtzX1QkdqVPxnet6Wi3fVtWxqIY
+         /95yFAYW19HLfpIlNCnCL6LAEHJDJ2FNKgb5U1iv+w4bSs+BtrCrIpltz4zrlFlYr+y2
+         oafGj+yDKzbeh8aDPLeHwI+rn6EnuCuXHm/Z/vke5xPn5FX8xpH7hyybTk3OKE8bWSRh
+         L+hw==
+X-Gm-Message-State: AOAM530jvHgfYcrnJjTq5BY/HkzrjT93ujhYFc2Rv3nyCRVhh++OURxk
+        BZbILmoq7YW7WeCrJFXifwLQ2g==
+X-Google-Smtp-Source: ABdhPJzwS8WKYUfmOquNK2fdMAaAFTRZEgzgFXIqA/SGDE+nqIO6HtJ9kNcpbTsmL3mRhIqH41zW8g==
+X-Received: by 2002:a05:620a:39e:: with SMTP id q30mr25347667qkm.116.1623212219181;
+        Tue, 08 Jun 2021 21:16:59 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id k19sm7673587qkj.89.2021.06.08.21.16.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 21:16:58 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 21:16:55 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
+        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 05/10] mm/thp: fix page_address_in_vma() on file THP
+ tails
+In-Reply-To: <af88612-1473-2eaa-903-8d1a448b26@google.com>
+Message-ID: <a0d9b53-bf5d-8bab-ac5-759dc61819c1@google.com>
+References: <af88612-1473-2eaa-903-8d1a448b26@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210609035805.GA4397@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/2021 8:58 PM, Paul E. McKenney wrote:
-> On Tue, Jun 08, 2021 at 08:53:17AM -0700, Nathan Chancellor wrote:
->> On 6/7/2021 10:01 PM, Paul E. McKenney wrote:
->>> On Tue, Jun 08, 2021 at 11:14:40AM +0800, Rong Chen wrote:
->>>>
->>>>
->>>> On 6/7/21 11:19 PM, Paul E. McKenney wrote:
->>>>> On Mon, Jun 07, 2021 at 05:18:21PM +0800, Rong Chen wrote:
->>>>>>
->>>>>> On 6/6/21 12:49 PM, Paul E. McKenney wrote:
->>>>>>> On Sun, Jun 06, 2021 at 12:19:57PM +0800, kernel test robot wrote:
->>>>>>>> Hi Paul,
->>>>>>>>
->>>>>>>> FYI, the error/warning still remains.
->>>>>>>>
->>>>>>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>>>>>>> head:   f5b6eb1e018203913dfefcf6fa988649ad11ad6e
->>>>>>>> commit: 7dffe01765d9309b8bd5505503933ec0ec53d192 rcu: Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node() macros
->>>>>>>> date:   5 months ago
->>>>>>>> config: powerpc-randconfig-r023-20210606 (attached as .config)
->>>>>>>> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 551a697c5cf33275b66add4fc467fcf59084cffb)
->>>>>>>> reproduce (this is a W=1 build):
->>>>>>>>             wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>>>>>>             chmod +x ~/bin/make.cross
->>>>>>>>             # install powerpc cross compiling tool for clang build
->>>>>>>>             # apt-get install binutils-powerpc-linux-gnu
->>>>>>>>             # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7dffe01765d9309b8bd5505503933ec0ec53d192
->>>>>>>>             git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>>>>>>             git fetch --no-tags linus master
->>>>>>>>             git checkout 7dffe01765d9309b8bd5505503933ec0ec53d192
->>>>>>>>             # save the attached .config to linux build tree
->>>>>>>>             COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc
->>>>>>>>
->>>>>>>> If you fix the issue, kindly add following tag as appropriate
->>>>>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>>>>>
->>>>>>>> All warnings (new ones prefixed by >>):
->>>>>>>>
->>>>>>>>        In file included from kernel/rcu/tree.c:21:
->>>>>>>>        In file included from include/linux/kernel.h:12:
->>>>>>>>        In file included from include/linux/bitops.h:29:
->>>>>>>>        In file included from arch/powerpc/include/asm/bitops.h:62:
->>>>>>>>        arch/powerpc/include/asm/barrier.h:49:9: warning: '__lwsync' macro redefined [-Wmacro-redefined]
->>>>>>>>        #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
->>>>>>>>                ^
->>>>>>>>        <built-in>:310:9: note: previous definition is here
->>>>>>>>        #define __lwsync __builtin_ppc_lwsync
->>>>>>>>                ^
->>>>>>>>>> kernel/rcu/tree.c:2073:23: warning: stack frame size of 2704 bytes in function 'rcu_gp_kthread' [-Wframe-larger-than=]
->>>>>>>>        static int __noreturn rcu_gp_kthread(void *unused)
->>>>>>> Does -rcu commit 2f20de99a63b ("rcu: Make rcu_gp_cleanup() be noinline
->>>>>>> for tracing") help?
->>>>>> Hi Paul,
->>>>>>
->>>>>> The stack frame size decreased to 2256 bytes:
->>>>>>
->>>>>>      kernel/rcu/tree.c:2129:23: warning: stack frame size of 2256 bytes in
->>>>>> function 'rcu_gp_kthread' [-Wframe-larger-than=]
->>>>> Very good, thank you!  Does the following patch (in addition to that
->>>>> commit) also help?
->>>>
->>>> Hi Paul,
->>>>
->>>> I applied the below patch on commit 2f20de99a63b and the warning is gone.
->>>
->>> Very good, and thank you for your testing.  I have applied the requested
->>> Reported-by and your Tested-by on the commit shown below.  Please let
->>> me know if you would prefer some other Reported/Tested setup.
->>>
->>> 							Thanx, Paul
->>>
->>> ------------------------------------------------------------------------
->>>
->>> commit 336e92638287615d47c07af4ff6feb397cfe2084
->>> Author: Paul E. McKenney <paulmck@kernel.org>
->>> Date:   Mon Jun 7 21:57:02 2021 -0700
->>>
->>>       rcu: Make rcu_gp_init() and rcu_gp_fqs_loop noinline to conserve stack
->>>       The kbuild test project found an oversized stack frame in rcu_gp_kthread()
->>>       for some kernel configurations.  This oversizing was due to a very large
->>>       amount of inlining, which is unnecessary due to the fact that this code
->>>       executes infrequently.  This commit therefore marks rcu_gp_init() and
->>>       rcu_gp_fqs_loop noinline to conserve stack space.
->>>       Reported-by: kernel test robot <lkp@intel.com>
->>>       Tested-by: Rong Chen <rong.a.chen@intel.com>
->>>       Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>>
->>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->>> index 13bd8eee62bf..ef435aeac993 100644
->>> --- a/kernel/rcu/tree.c
->>> +++ b/kernel/rcu/tree.c
->>> @@ -1737,7 +1737,7 @@ static void rcu_strict_gp_boundary(void *unused)
->>>    /*
->>>     * Initialize a new grace period.  Return false if no grace period required.
->>>     */
->>> -static bool rcu_gp_init(void)
->>> +static noinline bool rcu_gp_init(void)
->>
->> Small comment if it is not too late. noinline_for_stack expands to the same
->> thing but is self documenting :) that way people do not have to git blame to
->> see why these are marked as noinline (not that too many people are probably
->> touching this but still).
-> 
-> How about like the following?
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 8aa0ceef4264012abd7b98d29f0a968f0f0046cb
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Mon Jun 7 21:57:02 2021 -0700
-> 
->      rcu: Make rcu_gp_init() and rcu_gp_fqs_loop noinline to conserve stack
->      
->      The kbuild test project found an oversized stack frame in rcu_gp_kthread()
->      for some kernel configurations.  This oversizing was due to a very large
->      amount of inlining, which is unnecessary due to the fact that this code
->      executes infrequently.  This commit therefore marks rcu_gp_init() and
->      rcu_gp_fqs_loop noinline_for_stack to conserve stack space.
->      
->      Reported-by: kernel test robot <lkp@intel.com>
->      Tested-by: Rong Chen <rong.a.chen@intel.com>
->      [ paulmck: noinline_for_stack per Nathan Chancellor. ]
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+From: Jue Wang <juew@google.com>
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Anon THP tails were already supported, but memory-failure may need to use
+page_address_in_vma() on file THP tails, which its page->mapping check did
+not permit: fix it.
 
-Thanks!
+hughd adds: no current usage is known to hit the issue, but this does fix
+a subtle trap in a general helper: best fixed in stable sooner than later.
 
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 13bd8eee62bf..d8052adcdcb1 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1737,7 +1737,7 @@ static void rcu_strict_gp_boundary(void *unused)
->   /*
->    * Initialize a new grace period.  Return false if no grace period required.
->    */
-> -static bool rcu_gp_init(void)
-> +static noinline_for_stack bool rcu_gp_init(void)
->   {
->   	unsigned long firstseq;
->   	unsigned long flags;
-> @@ -1931,7 +1931,7 @@ static void rcu_gp_fqs(bool first_time)
->   /*
->    * Loop doing repeated quiescent-state forcing until the grace period ends.
->    */
-> -static void rcu_gp_fqs_loop(void)
-> +static noinline_for_stack void rcu_gp_fqs_loop(void)
->   {
->   	bool first_gp_fqs;
->   	int gf = 0;
-> 
+Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
+Signed-off-by: Jue Wang <juew@google.com>
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: <stable@vger.kernel.org>
+---
+ mm/rmap.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 144de54efc1c..e05c300048e6 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -716,11 +716,11 @@ unsigned long page_address_in_vma(struct page *page, struct vm_area_struct *vma)
+ 		if (!vma->anon_vma || !page__anon_vma ||
+ 		    vma->anon_vma->root != page__anon_vma->root)
+ 			return -EFAULT;
+-	} else if (page->mapping) {
+-		if (!vma->vm_file || vma->vm_file->f_mapping != page->mapping)
+-			return -EFAULT;
+-	} else
++	} else if (!vma->vm_file) {
++		return -EFAULT;
++	} else if (vma->vm_file->f_mapping != compound_head(page)->mapping) {
+ 		return -EFAULT;
++	}
+ 
+ 	return vma_address(page, vma);
+ }
+-- 
+2.26.2
+
