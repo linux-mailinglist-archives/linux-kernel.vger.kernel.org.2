@@ -2,116 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3B03A15C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BFB3A15B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236495AbhFINiZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 09:38:25 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:60681 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235485AbhFINiX (ORCPT
+        id S236285AbhFINfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:35:15 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5472 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234749AbhFINfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:38:23 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id E115C6000B;
-        Wed,  9 Jun 2021 13:36:22 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 15:36:21 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Naga Sureshkumar Relli <nagasure@xilinx.com>,
-        Amit Kumar Mahapatra <akumarma@xilinx.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
-        Siva Durga Prasad Paladugu <sivadur@xilinx.com>
-Subject: Re: [PATCH v22 17/18] dt-bindings: mtd: pl353-nand: Describe this
- hardware controller
-Message-ID: <20210609153621.1303bc4d@xps13>
-In-Reply-To: <57ef16cd-33e7-6c16-3a24-9634f47831b3@canonical.com>
-References: <20210609080112.1753221-1-miquel.raynal@bootlin.com>
-        <20210609080112.1753221-18-miquel.raynal@bootlin.com>
-        <57ef16cd-33e7-6c16-3a24-9634f47831b3@canonical.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 9 Jun 2021 09:35:08 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0Sdc0j6ZzYqQc;
+        Wed,  9 Jun 2021 21:29:56 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 21:32:46 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
+ 21:32:45 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <peppe.cavallaro@st.com>, <davem@davemloft.net>, <kuba@kernel.org>
+Subject: [PATCH net-next] net: stmmac: Use devm_platform_ioremap_resource_byname()
+Date:   Wed, 9 Jun 2021 21:36:55 +0800
+Message-ID: <20210609133655.2710031-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Use the devm_platform_ioremap_resource_byname() helper instead of
+calling platform_get_resource_byname() and devm_ioremap_resource()
+separately.
 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote on Wed, 9
-Jun 2021 14:01:10 +0200:
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> On 09/06/2021 10:01, Miquel Raynal wrote:
-> > Add a yaml description of this NAND controller which is described as a
-> > subnode of the SMC bus.
-> > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >  .../bindings/mtd/arm,pl353-nand-r2p1.yaml     | 57 +++++++++++++++++++
-> >  1 file changed, 57 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
-> > new file mode 100644
-> > index 000000000000..e72fa14b4385
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
-> > @@ -0,0 +1,57 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mtd/arm,pl353-nand-r2p1.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: PL353 NAND Controller device tree bindings
-> > +
-> > +allOf:
-> > +  - $ref: "nand-controller.yaml"
-> > +
-> > +maintainers:
-> > +  - Miquel Raynal <miquel.raynal@bootlin.com>
-> > +  - Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - enum:  
-> 
-> That's not an enum, but simple const without items.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+index 84382fc5cc4d..5c74b6279d69 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+@@ -454,7 +454,6 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
+ 	struct stmmac_resources stmmac_res;
+ 	const struct ethqos_emac_driver_data *data;
+ 	struct qcom_ethqos *ethqos;
+-	struct resource *res;
+ 	int ret;
+ 
+ 	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
+@@ -474,8 +473,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ethqos->pdev = pdev;
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "rgmii");
+-	ethqos->rgmii_base = devm_ioremap_resource(&pdev->dev, res);
++	ethqos->rgmii_base = devm_platform_ioremap_resource_byname(pdev, "rgmii");
+ 	if (IS_ERR(ethqos->rgmii_base)) {
+ 		ret = PTR_ERR(ethqos->rgmii_base);
+ 		goto err_mem;
+-- 
+2.25.1
 
-Ok.
-
-> 
-> > +          - arm,pl353-nand-r2p1
-> > +
-> > +  reg:
-> > +    items:
-> > +      - items:
-> > +          - description: CS with regard to the parent ranges property
-> > +          - description: Offset of the memory region requested by the device
-> > +          - description: Length of the memory region requested by the device  
-> 
-> Doesn't it depend on parent's address/size cells?
-
-Yes, but as the child nodes are not defined in the parent's binding
-(ie. the SMC) I think it's interesting to have them defined here, no?
-
-> > +
-> > +  "#address-cells": true
-> > +  "#size-cells": true  
-> 
-> These should come from nand-controller.yaml
-
-Right, I'll drop these, they are probably redundant.
-
-Thanks,
-Miquèl
