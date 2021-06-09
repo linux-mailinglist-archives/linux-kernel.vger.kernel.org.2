@@ -2,136 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1433A1C5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775773A1C65
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231871AbhFIRwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:52:43 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60678 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231785AbhFIRwn (ORCPT
+        id S231905AbhFIR67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:58:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50616 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231745AbhFIR66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:52:43 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 159HXGdG062295;
-        Wed, 9 Jun 2021 13:50:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=TsE7K9AEgOY5t7Fl5iXw74bhWOBWGgF7QY2kPSYlNb8=;
- b=of6Ys8gf/aMloMG3AblIDMM4yVktSuQy9oBpdS4zGFyO7uEbhZDtQOghDpgmBl8VVsTi
- oYiLTx7P0nkuNrba8/jLPnosI/n3zQn+eAMiXeATNg6lFFqg1F04v7eGCDQ35zZQt47T
- Rdqb9naZMTghHIZjTkdO1OzJEYkLfw8uA/FerCXn+2EjPVXCb8frUoTosiy6RUMjWMHD
- bYHYDhjyKwVP0KrUrwF95HrpULMRHZ9/QvxddBLMS2zjyuLLK7PUmp5333etOFab3Kqn
- Z+AOxzeCcO06roXiDR+B27PPTEYy97/CcnwNCYA+5WnPN9ENuA1YjTfGNxtmRD++1Pjo lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39324grcm8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 13:50:35 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 159HZ8ho069317;
-        Wed, 9 Jun 2021 13:50:35 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39324grcka-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 13:50:35 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 159HlNHp012435;
-        Wed, 9 Jun 2021 17:50:32 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3900w8jb5t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 17:50:32 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 159Hncrp27525546
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Jun 2021 17:49:38 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 39843AE053;
-        Wed,  9 Jun 2021 17:50:29 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3A8EFAE045;
-        Wed,  9 Jun 2021 17:50:28 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.13.5])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Jun 2021 17:50:28 +0000 (GMT)
-Subject: Re: [PATCH v2 1/2] mm/vmalloc: export __vmalloc_node_range
-To:     Uladzislau Rezki <urezki@gmail.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, frankja@linux.ibm.com,
-        cohuck@redhat.com, david@redhat.com, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>
-References: <20210608180618.477766-1-imbrenda@linux.ibm.com>
- <20210608180618.477766-2-imbrenda@linux.ibm.com>
- <YMDlVdB8m62AhbB7@infradead.org> <20210609182809.7ae07aad@ibm-vm>
- <20210609164919.GA1938@pc638.lan>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <1fec60f1-6479-39a6-f47f-f47166f754f6@de.ibm.com>
-Date:   Wed, 9 Jun 2021 19:50:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 9 Jun 2021 13:58:58 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lr2Rl-0002p7-NS; Wed, 09 Jun 2021 17:56:57 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mykola Kostenok <c_mykolak@nvidia.com>,
+        Vadim Pasternak <vadimp@nvidia.com>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] mlxsw: thermal: Fix null dereference of NULL temperature parameter
+Date:   Wed,  9 Jun 2021 18:56:57 +0100
+Message-Id: <20210609175657.299112-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210609164919.GA1938@pc638.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: C7pzIybad354Dlmg-WHXAmSDyDEkUBA0
-X-Proofpoint-ORIG-GUID: 8lJefzpcUGju01xPyP9PWcM0k5gaepPN
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-09_07:2021-06-04,2021-06-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- mlxscore=0 malwarescore=0 phishscore=0 priorityscore=1501 adultscore=0
- suspectscore=0 clxscore=1015 spamscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106090087
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
+The call to mlxsw_thermal_module_temp_and_thresholds_get passes a NULL
+pointer for the temperature and this can be dereferenced in this function
+if the mlxsw_reg_query call fails.  The simplist fix is to pass the
+address of dummy temperature variable instead of a NULL pointer.
 
-On 09.06.21 18:49, Uladzislau Rezki wrote:
-> On Wed, Jun 09, 2021 at 06:28:09PM +0200, Claudio Imbrenda wrote:
->> On Wed, 9 Jun 2021 16:59:17 +0100
->> Christoph Hellwig <hch@infradead.org> wrote:
->>
->>> On Tue, Jun 08, 2021 at 08:06:17PM +0200, Claudio Imbrenda wrote:
->>>> The recent patches to add support for hugepage vmalloc mappings
->>>> added a flag for __vmalloc_node_range to allow to request small
->>>> pages. This flag is not accessible when calling vmalloc, the only
->>>> option is to call directly __vmalloc_node_range, which is not
->>>> exported.
->>>>
->>>> This means that a module can't vmalloc memory with small pages.
->>>>
->>>> Case in point: KVM on s390x needs to vmalloc a large area, and it
->>>> needs to be mapped with small pages, because of a hardware
->>>> limitation.
->>>>
->>>> This patch exports __vmalloc_node_range so it can be used in modules
->>>> too.
->>>
->>> No.  I spent a lot of effort to mak sure such a low-level API is
->>> not exported.
->>
->> ok, but then how can we vmalloc memory with small pages from KVM?
-> Does the s390x support CONFIG_HAVE_ARCH_HUGE_VMALLOC what is arch
-> specific?
+Addresses-Coverity: ("Explicit null dereferenced")
+Fixes: 72a64c2fe9d8 ("mlxsw: thermal: Read module temperature thresholds using MTMP register")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/mellanox/mlxsw/core_thermal.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Not yet, but we surely want that for almost everything on s390.
-Only this particular firmware interface does not handle large pages
-for donated memory.
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c b/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
+index d54b67d0bda7..0998dcc9cac0 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
+@@ -743,7 +743,7 @@ mlxsw_thermal_module_init(struct device *dev, struct mlxsw_core *core,
+ 			  struct mlxsw_thermal *thermal, u8 module)
+ {
+ 	struct mlxsw_thermal_module *module_tz;
+-	int crit_temp, emerg_temp;
++	int dummy_temp, crit_temp, emerg_temp;
+ 	u16 sensor_index;
+ 
+ 	sensor_index = MLXSW_REG_MTMP_MODULE_INDEX_MIN + module;
+@@ -758,7 +758,7 @@ mlxsw_thermal_module_init(struct device *dev, struct mlxsw_core *core,
+ 	/* Initialize all trip point. */
+ 	mlxsw_thermal_module_trips_reset(module_tz);
+ 	/* Read module temperature and thresholds. */
+-	mlxsw_thermal_module_temp_and_thresholds_get(core, sensor_index, NULL,
++	mlxsw_thermal_module_temp_and_thresholds_get(core, sensor_index, &dummy_temp,
+ 						     &crit_temp, &emerg_temp);
+ 	/* Update trip point according to the module data. */
+ 	return mlxsw_thermal_module_trips_update(dev, core, module_tz,
+-- 
+2.31.1
 
-> 
-> If not then small pages are used. Or am i missing something?
-> 
-> I agree with Christoph that exporting a low level internals
-> is not a good idea.
