@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBC83A1E2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D18613A1E2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhFIUjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 16:39:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhFIUjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:39:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E567F613C7;
-        Wed,  9 Jun 2021 20:37:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623271031;
-        bh=ffSZlhzhbcUaE+U7uXQnWatQL71KPPN6+vezT0av1dA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=B0z+MJbqu2bKrGPpRsSks/CXq0ZpNLHTBjxL3r8jWhDGTI7Ck8KEv4aFs5rvSFKCw
-         yGA88ZpwarmvEg+v+DRh2GaCQ+t5IDN3i4RpOfh9Zm1Y2BI2/rtPsQgiSeJfBqdnm1
-         O4Nr095OtiFF+/T5UmNt7I0X1fYkaG12W9oQGLFmguMRzcylYo721wmUw1ZOADmUp6
-         SNG0Dp7LC3C1+aP5S8gSEsKU9N7vMVZoyZO70wDeaihteLaY5O0jd0frvjORFnQ0eX
-         Cbo3Pzo6LS7lHqGr/l4G80ORFatOUrNGrZq+bgDqLgfCZObZi8iMgWg3AMKsPXkjgL
-         FSFzzu+7SnQ5A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B8BAB5C039E; Wed,  9 Jun 2021 13:37:11 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 13:37:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Jiangong.Han" <jiangong.han@windriver.com>
-Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu-scale: change rcu-scale report.
-Message-ID: <20210609203711.GL4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210605070019.30377-1-jiangong.han@windriver.com>
+        id S229705AbhFIUkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:40:36 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:49748 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229517AbhFIUkf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 16:40:35 -0400
+Received: from mailhost.synopsys.com (sv1-mailhost1.synopsys.com [10.205.2.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 8988840137;
+        Wed,  9 Jun 2021 20:38:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1623271120; bh=x5FZ7s0gV3TtZbTpP8ZsfARwbUhd7+uaV2J4rMMqm00=;
+        h=From:To:Cc:Subject:Date:From;
+        b=POuVRDtyBlXcMS9O86zOEcpQMRthj9jSEcMlEoy/JCbVnjS8IdDSNMWfwzVZVAJ3F
+         QycEpLZDRgdmWyCtD7efSUeHZsJ8Y1ce7VaVsySiFnNuNGbF/IlxXo3/jk9VAfdGpH
+         45fyqinxauXZaVeECkP9bC12GaHDQH0ZNxMqWC6jORkic/Kh49DUIq0GU1ahOIi2tm
+         nIbHFR6FVT16oiB1egf1t3Ms3FD4fLG+ZPpVIkw68s+h+7p/koTfVdPeTQMNXj33T/
+         uQzY4S1z4WrYlMS63hiR01M5yr6UadCztUayftRncFuAx/toKZmO+/usK9yJekDEH7
+         bdTnKx8zo6iWA==
+Received: from vineetg-Latitude-7400.internal.synopsys.com (snps-fugpbdpduq.internal.synopsys.com [10.202.17.37])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 64D4BA005E;
+        Wed,  9 Jun 2021 20:38:38 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     linux-snps-arc@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, libc-alpha@sourceware.org,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        stable@vger.kernel.org,
+        Vladimir Isaev <Vladimir.Isaev@synopsys.com>
+Subject: [PATCH] ARCv2: save ABI registers across signal handling
+Date:   Wed,  9 Jun 2021 13:38:36 -0700
+Message-Id: <20210609203836.2213688-1-vgupta@synopsys.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210605070019.30377-1-jiangong.han@windriver.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 03:00:19PM +0800, Jiangong.Han wrote:
-> The report on rcu-scale shows there are N grace periods, and gps
-> are listed from 0 to N-1.
-> This commit make writer_n_durations stores the counts of gps,
-> change the listed gps index begin from 1 to N.
-> 
-> From
->     [ 8306.087880] rcu-scale: writer 0 gps: 133
->     ......
->     [ 8307.864630] rcu-scale:    0 writer-duration:     0 44003961
->     [ 8307.935711] rcu-scale:    0 writer-duration:     1 32003582
->     ......
->     [ 8316.472860] rcu-scale:    0 writer-duration:   131 28004391
->     [ 8316.538498] rcu-scale:    0 writer-duration:   132 27996410
-> 
-> to
->     [ 8306.087880] rcu-scale: writer 0 gps: 133
->     ......
->     [ 8307.864630] rcu-scale:    0 writer-duration:     1 44003961
->     [ 8307.935711] rcu-scale:    0 writer-duration:     2 32003582
->     ......
->     [ 8316.472860] rcu-scale:    0 writer-duration:   132 28004391
->     [ 8316.538498] rcu-scale:    0 writer-duration:   133 27996410
-> 
-> Signed-off-by: Jiangong.Han <jiangong.han@windriver.com>
+ARCv2 has some configuration dependent registers (r30, r58, r59) which
+could be targetted by the compiler. To keep the ABI stable, these were
+unconditionally part of the glibc ABI
+(sysdeps/unix/sysv/linux/arc/sys/ucontext.h:mcontext_t) however we
+missed populating them (by saving/restoring them across signal
+handling).
 
-You lost me on this one.  Why is this helpful?  And how does the change
-shown below actually result in the output shown above, given that
-rcu_scale_cleanup() still starts j at zero?
+This patch fixes the issue by
+ - adding arcv2 ABI regs to kernel struct sigcontext
+ - populating them during signal handling
 
-							Thanx, Paul
+Change to struct sigcontext might seem like a glibc ABI change (although
+it primarily uses ucontext_t:mcontext_t) but the fact is
+ - it has only been extended (existing fields are not touched)
+ - the old sigcontext was ABI incomplete to begin with anyways
 
-> ---
->  kernel/rcu/rcuscale.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> index dca51fe9c73f..2cc34a22a506 100644
-> --- a/kernel/rcu/rcuscale.c
-> +++ b/kernel/rcu/rcuscale.c
-> @@ -487,7 +487,7 @@ rcu_scale_writer(void *arg)
->  	if (gp_async) {
->  		cur_ops->gp_barrier();
->  	}
-> -	writer_n_durations[me] = i_max;
-> +	writer_n_durations[me] = i_max + 1;
->  	torture_kthread_stopping("rcu_scale_writer");
->  	return 0;
->  }
-> @@ -561,7 +561,7 @@ rcu_scale_cleanup(void)
->  			wdpp = writer_durations[i];
->  			if (!wdpp)
->  				continue;
-> -			for (j = 0; j <= writer_n_durations[i]; j++) {
-> +			for (j = 0; j < writer_n_durations[i]; j++) {
->  				wdp = &wdpp[j];
->  				pr_alert("%s%s %4d writer-duration: %5d %llu\n",
->  					scale_type, SCALE_FLAG,
-> -- 
-> 2.17.1
-> 
+Fixes: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/53
+Cc: <stable@vger.kernel.org>
+Reported-by: Vladimir Isaev <isaev@synopsys.com>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+---
+ arch/arc/include/uapi/asm/sigcontext.h |  1 +
+ arch/arc/kernel/signal.c               | 29 ++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
+
+diff --git a/arch/arc/include/uapi/asm/sigcontext.h b/arch/arc/include/uapi/asm/sigcontext.h
+index 95f8a4380e11..7a5449dfcb29 100644
+--- a/arch/arc/include/uapi/asm/sigcontext.h
++++ b/arch/arc/include/uapi/asm/sigcontext.h
+@@ -18,6 +18,7 @@
+  */
+ struct sigcontext {
+ 	struct user_regs_struct regs;
++	struct user_regs_arcv2 v2abi;
+ };
+ 
+ #endif /* _ASM_ARC_SIGCONTEXT_H */
+diff --git a/arch/arc/kernel/signal.c b/arch/arc/kernel/signal.c
+index b3ccb9e5ffe4..534b3d9bafc8 100644
+--- a/arch/arc/kernel/signal.c
++++ b/arch/arc/kernel/signal.c
+@@ -94,6 +94,21 @@ stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
+ 
+ 	err = __copy_to_user(&(sf->uc.uc_mcontext.regs.scratch), &uregs.scratch,
+ 			     sizeof(sf->uc.uc_mcontext.regs.scratch));
++
++	if (is_isa_arcv2()) {
++		struct user_regs_arcv2 v2abi;
++
++		v2abi.r30 = regs->r30;
++#ifdef CONFIG_ARC_HAS_ACCL_REGS
++		v2abi.r58 = regs->r58;
++		v2abi.r59 = regs->r59;
++#else
++		v2abi.r58 = v2abi.r59 = 0;
++#endif
++		err |= __copy_to_user(&(sf->uc.uc_mcontext.v2abi), &v2abi,
++				      sizeof(sf->uc.uc_mcontext.v2abi));
++	}
++
+ 	err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
+ 
+ 	return err ? -EFAULT : 0;
+@@ -109,6 +124,20 @@ static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
+ 	err |= __copy_from_user(&uregs.scratch,
+ 				&(sf->uc.uc_mcontext.regs.scratch),
+ 				sizeof(sf->uc.uc_mcontext.regs.scratch));
++
++	if (is_isa_arcv2()) {
++		struct user_regs_arcv2 v2abi;
++
++		err |= __copy_from_user(&v2abi,	&(sf->uc.uc_mcontext.v2abi),
++					sizeof(sf->uc.uc_mcontext.v2abi));
++
++		regs->r30 = v2abi.r30;
++#ifdef CONFIG_ARC_HAS_ACCL_REGS
++		regs->r58 = v2abi.r58;
++		regs->r59 = v2abi.r59;
++#endif
++	}
++
+ 	if (err)
+ 		return -EFAULT;
+ 
+-- 
+2.25.1
+
