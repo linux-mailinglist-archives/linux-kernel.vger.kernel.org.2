@@ -2,67 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADAB3A10DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04DE3A10E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238591AbhFIKKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:10:04 -0400
-Received: from m12-14.163.com ([220.181.12.14]:40393 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234249AbhFIKKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:10:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=CyN9y
-        auZ9A10j7+vRszAOPbzX0M3IqT0uJAzoEoUjPs=; b=SzDGISK4rr1bh3Vb9uCNM
-        LTso1KEBhdDNmM8KBcAHM74YHyybqAphNHh/ufM6vgcId5bpAwdx8nT6cvxYracp
-        zBsxSmlygYWFb8gywnu6M0gS3MjFu2+Jb3eBuCObPWOWMsoOocR9TzpiFtmGd5dd
-        3w70bL451kA8fc21w1pXDQ=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp10 (Coremail) with SMTP id DsCowAB3C2DiksBgXskzNw--.23263S2;
-        Wed, 09 Jun 2021 18:07:31 +0800 (CST)
-From:   13145886936@163.com
-To:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] wext: fix a misspelling
-Date:   Wed,  9 Jun 2021 03:07:24 -0700
-Message-Id: <20210609100724.23376-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S238636AbhFIKKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:10:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33562 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238612AbhFIKKi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 06:10:38 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 159A3OuQ019957;
+        Wed, 9 Jun 2021 06:08:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=DqJCfyurpuPL+OBlOqQOT67VvAOg8m1Vl+0FbCzIswI=;
+ b=DIoPEb8Pteh/R6CXFLowuXvokwzz3K02xB3+5x85U0XpLLTE3DOZFjAgKbmd9JiXpQHf
+ MN1Fi9v/szreRi1fR+lQ/DcPFPv2lmfuYip4AopGWcSFmXxH9u2t/VI9jpp3M9zqdscJ
+ LmLT5miSSTdic2zVcliiMZUnjHh0L1fGA8iYJf1xmiLulh0ohU1Mp4PEiTM96MHCagBV
+ X5w7B+HG49qUjUhG2/KxShhlPiK3XDmDMX73fUlO1zlAkhIdNqVKLvHZnuYSnduuwwMf
+ Z99arZZDX6/EVvPOE8cHrCeVsty1p8w2B7S7CRC67B/hRQnWQwiSqe3ivhcVVfddclin Dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 392ug8g7ud-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Jun 2021 06:08:24 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 159A4BMP025235;
+        Wed, 9 Jun 2021 06:08:24 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 392ug8g7sq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Jun 2021 06:08:23 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 159A7ZO6012253;
+        Wed, 9 Jun 2021 10:08:21 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06fra.de.ibm.com with ESMTP id 3900hhh57w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Jun 2021 10:08:21 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 159A8Jxo20906314
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Jun 2021 10:08:19 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA1964C040;
+        Wed,  9 Jun 2021 10:08:18 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 16F7E4C046;
+        Wed,  9 Jun 2021 10:08:17 +0000 (GMT)
+Received: from [9.102.17.60] (unknown [9.102.17.60])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Jun 2021 10:08:16 +0000 (GMT)
+Subject: Re: [RFC] powerpc/pseries: Interface to represent PAPR firmware
+ attributes
+To:     Fabiano Rosas <farosas@linux.ibm.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
+References: <20210604163501.51511-1-psampat@linux.ibm.com>
+ <87wnr4uhs9.fsf@linux.ibm.com>
+From:   Pratik Sampat <psampat@linux.ibm.com>
+Message-ID: <5c9cb57b-e9d8-0361-8be7-60dc9618db34@linux.ibm.com>
+Date:   Wed, 9 Jun 2021 15:38:15 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <87wnr4uhs9.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowAB3C2DiksBgXskzNw--.23263S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtryrtw15trWkKw1rtr15twb_yoW3CrX_Gr
-        WxJw1kKFW8JrnavayUuw4xur4jy3y0qa1Fga9xtrySyw4DA3yDt3s5Cr4Utw429w4jyrWf
-        C3Z5Jr45tF4fZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUekgA3UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiygOsg1QHMViXDgAAsF
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: K_Z-vtNz1WoHlJOwzSkupWjpeLL8b5O1
+X-Proofpoint-ORIG-GUID: nTxWXxaDuuduZDLvQMRZudsdIaKClQbu
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-09_04:2021-06-04,2021-06-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 adultscore=0
+ clxscore=1015 mlxlogscore=999 impostorscore=0 suspectscore=0 mlxscore=0
+ malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106090047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+Hello,
+Thank you for your comments on the design.
 
-Fix a misspelling.
+On 09/06/21 3:43 am, Fabiano Rosas wrote:
+> "Pratik R. Sampat" <psampat@linux.ibm.com> writes:
+>
+> Hi, I have some general comments and questions, mostly trying to
+> understand design of the hcall and use cases of the sysfs data:
+>
+>> Adds a generic interface to represent the energy and frequency related
+>> PAPR attributes on the system using the new H_CALL
+>> "H_GET_ENERGY_SCALE_INFO".
+>>
+>> H_GET_EM_PARMS H_CALL was previously responsible for exporting this
+>> information in the lparcfg, however the H_GET_EM_PARMS H_CALL
+>> will be deprecated P10 onwards.
+>>
+>> The H_GET_ENERGY_SCALE_INFO H_CALL is of the following call format:
+>> hcall(
+>>    uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
+>>    uint64 flags,           // Per the flag request
+>>    uint64 firstAttributeId,// The attribute id
+>>    uint64 bufferAddress,   // The logical address of the output buffer
+> Instead of logical address, guest address or guest physical address
+> would be more precise.
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- net/wireless/wext-compat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, the name guest physical address makes more sense for this attribute.
+The term logical address had me confused too when I first read it in the ACR,
+however that isn't the case.
 
-diff --git a/net/wireless/wext-compat.c b/net/wireless/wext-compat.c
-index a8320dc59af7..7ef6fd26450c 100644
---- a/net/wireless/wext-compat.c
-+++ b/net/wireless/wext-compat.c
-@@ -1183,7 +1183,7 @@ static int cfg80211_wext_siwpower(struct net_device *dev,
- 		switch (wrq->flags & IW_POWER_MODE) {
- 		case IW_POWER_ON:       /* If not specified */
- 		case IW_POWER_MODE:     /* If set all mask */
--		case IW_POWER_ALL_R:    /* If explicitely state all */
-+		case IW_POWER_ALL_R:    /* If explicitly state all */
- 			ps = true;
- 			break;
- 		default:                /* Otherwise we ignore */
--- 
-2.25.1
+I'll change it to guest physical address here. Thanks for pointing out.
+
+>
+>>    uint64 bufferSize       // The size in bytes of the output buffer
+>> );
+>>
+>> This H_CALL can query either all the attributes at once with
+>> firstAttributeId = 0, flags = 0 as well as query only one attribute
+>> at a time with firstAttributeId = id
+>>
+>> The output buffer consists of the following
+>> 1. number of attributes              - 8 bytes
+>> 2. array offset to the data location - 8 bytes
+> The offset is from the start of the buffer, isn't it? So not the array
+> offset.
+
+Yes,the offset carries information that is to the start of the data buffer.
+
+>> 3. version info                      - 1 byte
+>> 4. A data array of size num attributes, which contains the following:
+>>    a. attribute ID              - 8 bytes
+>>    b. attribute value in number - 8 bytes
+>>    c. attribute name in string  - 64 bytes
+>>    d. attribute value in string - 64 bytes
+> Is this new hypercall already present in the spec? These seem a bit
+> underspecified to me.
+
+Yes, it is present in the spec. I probably summarized a little more than needed
+here and I could expand upon below.
+
+The input buffer recives the following data:
+
+1. “flags”:
+	a. Bit 0: singleAttribute
+		If set to 1, only return the single attribute matching firstAttributeId.
+	b. Bits 1-63: Reserved
+2. “firstAttributeId”: The first attribute to retrieve
+3. “bufferAddress”: The logical real address of the start of the output buffer
+4. “bufferSize”: The size in bytes of the output buffer
+	
+
+ From the document, the format of the output buffer is as follows:
+
+Table 1 --> output buffer
+================================================================================
+| Field Name           | Byte   | Length   |  Description
+|                      | Offset | in Bytes |
+================================================================================
+| NumberOf             |        |          | Number of Attributes in Buffer
+| AttributesInBuffer   | 0x000  | 0x08     |
+--------------------------------------------------------------------------------
+| AttributeArrayOffset | 0x008  | 0x08     | Byte offset to start of Array
+|                      |        |          | of Attributes
+|                      |        |          |
+--------------------------------------------------------------------------------
+| OutputBufferData     |        |          | Version of the Header.
+| HeaderVersion        | 0x010  | 0x01     | The header will be always
+| AttributesInBuffer   |        |          | backward compatible, and changes
+|                      |        |          | will not impact the Array of
+|                      |        |          | attributes.
+|                      |        |          | Current version = 0x01
+--------------------------------------------------------------------------------
+| ArrayOfAttributes    |        |          | The array will contain
+|                      |        |          | "NumberOfAttributesInBuffer"
+|                      |        |          | array elements not to exceed
+|                      |        |          | the size of the buffer.
+|                      |        |          | Layout of the array is
+|                      |        |          | detailed in Table 2.
+--------------------------------------------------------------------------------
+
+
+Table 2 --> Array of attributes
+================================================================================
+| Field Name           | Byte   | Length   |  Description
+|                      | Offset | in Bytes |
+================================================================================
+| 1st AttributeId      | 0x000  | 0x08     | The ID of the Attribute
+--------------------------------------------------------------------------------
+| 1st AttributeValue   | 0x008  | 0x08     | The numerical value of
+|                      |        |          | the attribute
+--------------------------------------------------------------------------------
+| 1st AttributeString  | 0x010  | 0x40     | The ASCII string
+| Description          |        |          | description of the
+|                      |        |          | attribute, up to 63
+|                      |        |          | characters plus a NULL
+|                      |        |          | terminator.
+--------------------------------------------------------------------------------
+| 1st AttributeValue   | 0x050  | 0x40     | The ASCII string
+| StringDescription    |        |          | description of the
+|                      |        |          | attribute value, up to 63
+|                      |        |          | characters plus a NULL
+|                      |        |          | terminator. If this
+|                      |        |          | contains only a NULL
+|                      |        |          | terminator, then there is
+|                      |        |          | no ASCII string
+|                      |        |          | associated with AttributeValue.
+--------------------------------------------------------------------------------
+| ....                 |        |          |
+
+
+>
+>> The new H_CALL exports information in direct string value format, hence
+>> a new interface has been introduced in /sys/firmware/papr to export
+> Hm.. Maybe this should be something less generic than "papr"?
+
+The interface naming was inspired from /sys/firmware/opal's naming convention.
+We believed the name PAPR could serve as more generic name to be used by both
+Linux running on PHYP and linux on KVM.
+
+If you have something more concrete in mind, please let me know. I'm open to
+suggestions.
+
+>
+>> this information to userspace in an extensible pass-through format.
+>> The H_CALL returns the name, numeric value and string value. As string
+>> values are in human readable format, therefore if the string value
+>> exists then that is given precedence over the numeric value.
+> So the hypervisor could simply not send the string representation? How
+> will the userspace tell the difference since they are reading everything
+> from a file?
+>
+> Overall I'd say we should give the data in a more structured way and let
+> the user-facing tool do the formatting and presentation.
+
+That's a valid concern, the design for this was inspired from hwmon's interface
+to housing the sensor information.
+
+One alternative to add more structure to this format could be to introduce:
+attr_X_name, attr_X_num_val, attr_X_str_val
+
+However, in some cases like min/max frequency the string value is empty. In
+that case the file attr_X_str_val will also be empty.
+Is that an acceptable format of having empty files that in some cases will
+never be populated?
+We also went ahead to confirm with the SPEC team that if a string value exists
+in their buffer, that must be given precedence.
+
+Another alternative format could to keep attr_X_name, attr_X_val intact but
+change what X means. Currently X is just an iteratively increasing number. But
+X can also serve as an ID which we get from H_CALL output buffer.
+
+In this case, we should also include some versioning so that the tool now also
+has cognizance of contents of each file.
+
+>> The format of exposing the sysfs information is as follows:
+>> /sys/firmware/papr/
+>>    |-- attr_0_name
+>>    |-- attr_0_val
+>>    |-- attr_1_name
+>>    |-- attr_1_val
+>> ...
+> How do we keep a stable interface with userspace? Say the hypervisor
+> decides to add or remove attributes, change their order, string
+> representation, etc? It will inform us via the version field, but that
+> is lost when we output this to sysfs.
+>
+> I get that if the userspace just iterate over the contents of the
+> directory then nothing breaks, but there is not much else it could do it
+> seems.
+
+Fair point, having the version exposed to the sysfs does seem crucial.
+
+Currently in ppc-utils we iterate over all the information, however as you
+rightly pointed out there may be other tools needing just specific information.
+The alternative I suggested a few sentences above to include ID based attribute
+naming and versioning maybe a more elegant way of solving this problem.
+
+What are your thoughts on a design like this?
+
+>> The energy information that is exported is useful for userspace tools
+>> such as powerpc-utils. Currently these tools infer the
+>> "power_mode_data" value in the lparcfg, which in turn is obtained from
+>> the to be deprecated H_GET_EM_PARMS H_CALL.
+>> On future platforms, such userspace utilities will have to look at the
+>> data returned from the new H_CALL being populated in this new sysfs
+>> interface and report this information directly without the need of
+>> interpretation.
+>>
+>> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
+
+Thanks
+Pratik
 
