@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5732B3A1C90
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EA33A1C93
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhFISOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 14:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhFISOT (ORCPT
+        id S229981AbhFISQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 14:16:57 -0400
+Received: from mail-pl1-f176.google.com ([209.85.214.176]:33604 "EHLO
+        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhFISQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 14:14:19 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB42C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 11:12:24 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id j12so20226329pgh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 11:12:24 -0700 (PDT)
+        Wed, 9 Jun 2021 14:16:56 -0400
+Received: by mail-pl1-f176.google.com with SMTP id c13so13060176plz.0;
+        Wed, 09 Jun 2021 11:14:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gks6qbv9Lr+imHtC7AaeB4+/G8WI7NzfclheXnHYu0Y=;
-        b=UdhbgzZUkddxIZ5rHW9r5JA7w1k60HSJek2eW6w9ZJzw/vlksEFnZgQ/MSRRILhjpU
-         CPn+IdzCaDhGEx3viK0Uc7ioDMPVeCvbzlAGFDRk1d1hXyIMvW5HjV/CoTM+nXEbpc1A
-         kescIHMYfbgdVwjWFpCwWbXDK+316/NOYRRc8=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wwfufyKvmvEMNzYlwDLpaW9ByvmiH5n3ydfZUfKPQ0o=;
+        b=UF+EyQxDzrgR2+h9n0XecWNi6AXcmwM+5Ntm0fefDtJYMPIcem5IlFCnKFacXPvTM+
+         jFkcGXUuLgMlIOu/dM1tW+IHSAtmF9mf11MREWHhDrNAyCgb6Z3FNErO58qmEnUxFe1y
+         WP2YjHseJJT3nWhtFrF+Ntl//OQTBg+yD9AyHYHY/gIc/L2hgEAmeicg/N8lVWeZFIPE
+         2OmkSeln4Qg3xY6otJMfOgJoirTCvzyj2JAgpbAXhPDlTHX/4iZYTAbDDL7rrtkBQa4r
+         z9LQye8gN//spW+Ghbgwp2PuBdtHS0CSZWg6IsuYM9OGn/Wghwk/bSex5t5YofH83+vC
+         Ky8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gks6qbv9Lr+imHtC7AaeB4+/G8WI7NzfclheXnHYu0Y=;
-        b=IcNtx7yQZUfyMwTExoX3N0vliRGGJUKSAwCSTI7va6RNhZQCUAH1K30Uha7/3xAl1j
-         f0srlmLk47glEAvA5BzF4UYv+MI2sBLbscCMmHYTkxaqMG79ITZbjgyfSq3lkXOdSjJZ
-         3+1kZHL9CpSkcJEAZiZy137oZB45WhDlyoZ8mpyyUDoVbs238XJeOUU1l2IS6oFns2B/
-         9JMMMgUaFzRa40wc0qY/NLGLz78Tl58scA5dZ1ftbBbqbhJVSSMrTgGMd5amdAQpsq8M
-         gBLDwPe1VhNzZYvzYCiRJEs7VLvXuYXpOcMFo1dQGrusrtIpzA3OAHdzYlm4DKXP3P6S
-         k/dA==
-X-Gm-Message-State: AOAM532aXxYSNEki/l6jk8Q3kleEegETY79KeKa1fIjI2GQ8B6hKyY26
-        E1aQiQSOqJgr9x9kmoJdU/91fKYs1nlW7A==
-X-Google-Smtp-Source: ABdhPJz2NS8YTClpY3QzVpJIjA5NuhRW9njVzmhpgF8VNv7ILKzJkp6maVlZgUrsgcXmluyEqRW9EA==
-X-Received: by 2002:a63:1d09:: with SMTP id d9mr941895pgd.302.1623262343701;
-        Wed, 09 Jun 2021 11:12:23 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d66sm246332pfa.32.2021.06.09.11.12.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 11:12:23 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 11:12:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>,
-        rostedt@goodmis.org, ccross@android.com,
-        linux-kernel@vger.kernel.org, Zhangjinhao <zhangjinhao2@huawei.com>
-Subject: Re: [BUG] I found a bug when try to enable record_ftrace
-Message-ID: <202106091110.F13B8B6@keescook>
-References: <01472d0f-55c1-15ea-9beb-5d64b322bb44@huawei.com>
- <202106021042.8527F3AB30@keescook>
- <YL/CHEbw5L2Selfm@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wwfufyKvmvEMNzYlwDLpaW9ByvmiH5n3ydfZUfKPQ0o=;
+        b=cFfmtmVq6rKJEc23nAff/v+fp6mYasvlOzxITJg3G7NugQPKyxpIfrgqMZcX8B5cFo
+         Po/o32AYQYqkxfVRzDIOrFQRmf8yySMnAoM4OzU+U/xpGgXokpL71yTwQNW58N/aFhG4
+         hkdO5pKAgbVpABadcCcj6qKK3dizjA0RKGJBen8OhtjwAGj9V6ONWz6U8QA6nUnqHro2
+         Xfzc8vG/lX8DJGTFpIqjFMuDElLVmomRLCLv9jcxj28gJiSA5jA1AwD4jx43Xuxko5fY
+         4zl8QulPfVvAhC9fVFpIguGc3eHphF15MUt4GSFa3ntDdJp/XsmvTFgH1bl/AS/sJexT
+         yCGQ==
+X-Gm-Message-State: AOAM530hxg4TqbYWw7A+C0j2m+s/xdXmGD5vTeA87i8g0YPU7PSTLiWG
+        5i3tlmKm7hNzLwJ+WjZUkh4hGdU4GOU=
+X-Google-Smtp-Source: ABdhPJxOuU3bBbjm5CmEh4pG6cx6MHMHT0WPG9bqTMucVge33E1J6Pcqg1w7J2s5n4qggz7KEgfNMg==
+X-Received: by 2002:a17:90b:19cb:: with SMTP id nm11mr831313pjb.1.1623262425574;
+        Wed, 09 Jun 2021 11:13:45 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 60sm317125pjz.42.2021.06.09.11.13.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 11:13:44 -0700 (PDT)
+Subject: Re: [PATCH 4.9 00/29] 4.9.272-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210608175927.821075974@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <2b7b3fd7-a5ce-b15b-b6db-91c6a886c0ff@gmail.com>
+Date:   Wed, 9 Jun 2021 11:13:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL/CHEbw5L2Selfm@google.com>
+In-Reply-To: <20210608175927.821075974@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 03:16:44PM -0400, Joel Fernandes wrote:
-> On Wed, Jun 02, 2021 at 10:43:29AM -0700, Kees Cook wrote:
-> > 
-> > On Wed, Jun 02, 2021 at 03:42:23PM +0800, Zhengyejian (Zetta) wrote:
-> > > Hello,
-> > > 
-> > > There may be a deadlock caused by ftrace recursion when try to enable
-> > > record_ftrace.
-> > 
-> > Hi,
-> > 
-> > Thanks for the report. Joel, is this something you can take a look at?
+
+
+On 6/8/2021 11:26 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.272 release.
+> There are 29 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Kees,
+> Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
+> Anything received after that time might be too late.
 > 
-> Sorry for late reply. Right now I am dealing with a production-stop bug and
-> would not likely get time. Plus I feel a bit less motivated, because the
-> ftrace in pstore the way it stands now is unusable due to perf issues anyway
-> (I wonder if anyone uses it at all now). I would rather someone who has time
-> to work on this try to revive: https://lkml.org/lkml/2020/9/2/1075 . Should
-> we just delete pstore function tracing till then?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.272-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-If no one is using it, then yes, let's rip it out. Zetta, are you using
-pstore ftrace?
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
--Kees
-
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Kees Cook
+Florian
