@@ -2,92 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271273A0DAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4013A3A0D5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237289AbhFIHXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 03:23:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234826AbhFIHXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:23:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A30A6008E;
-        Wed,  9 Jun 2021 07:21:11 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 09:21:08 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        gregkh@linuxfoundation.org, containers@lists.linux.dev,
-        linux-kernel@vger.kernel.org, lkml@metux.net
-Subject: Re: device namespaces
-Message-ID: <20210609072108.ldhsxfnfql4pacqx@wittgenstein>
-References: <YL9liW99Ytf6uBlu@kroah.com>
- <9157affa-b27a-c0f4-f6ee-def4a991fd4e@suse.de>
- <20210608142911.ievp2rpuquxjuyus@wittgenstein>
- <d956398e-7ee6-ba36-43cc-4cdcea34b5b9@suse.de>
- <877dj4ff9g.fsf@disp2133>
- <20210609063818.xnod4rzvti3ujkvn@wittgenstein>
- <b9ea9116-7120-b0a7-b739-dd8513e12c5e@suse.de>
+        id S237114AbhFIHOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:14:51 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5462 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235698AbhFIHOv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 03:14:51 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0JCK1mDZzZfb2;
+        Wed,  9 Jun 2021 15:10:05 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 15:12:54 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
+ 15:12:53 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
+        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>, <linux-scsi@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next v2] [SCSI] bfa: Use list_move_tail instead of list_del/list_add_tail in bfa_fcpim.c
+Date:   Wed, 9 Jun 2021 15:22:02 +0800
+Message-ID: <20210609072202.1352890-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b9ea9116-7120-b0a7-b739-dd8513e12c5e@suse.de>
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 09:02:36AM +0200, Hannes Reinecke wrote:
-> On 6/9/21 8:38 AM, Christian Brauner wrote:
-> > On Tue, Jun 08, 2021 at 12:16:43PM -0500, Eric W. Biederman wrote:
-> > > Hannes Reinecke <hare@suse.de> writes:
-> > > 
-> > > > On 6/8/21 4:29 PM, Christian Brauner wrote:
-> > > > > On Tue, Jun 08, 2021 at 04:10:08PM +0200, Hannes Reinecke wrote:
-> [ .. ]
-> > > > Granted, modifying sysfs layout is not something for the faint-hearted,
-> > > > and one really has to look closely to ensure you end up with a
-> > > > consistent layout afterwards.
-> > > > 
-> > > > But let's see how things go; might well be that it turns out to be too
-> > > > complex to consider. Can't tell yet.
-> > > 
-> > > I would suggest aiming for something like devptsfs without the
-> > > complication of /dev/ptmx.
-> > > 
-> > > That is a pseudo filesystem that has a control node and virtual block
-> > > devices that were created using that control node.
-> > 
-> > Also see android/binder/binderfs.c
-> > 
-> Ah. Will have a look.
+Using list_move_tail() instead of list_del() + list_add_tail() in bfa_fcpim.c.
 
-I implemented this a few years back and I think it should've made it
-onto Android by default now. So that approach does indeed work well, it
-seems:
-https://chromium.googlesource.com/aosp/platform/system/core/+/master/rootdir/init.rc#257
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+V1->V2:
+	CC mailist
 
-This should be easier to follow than the devpts case because you don't
-need to wade through the {t,p}ty layer.
+ drivers/scsi/bfa/bfa_fcpim.c | 37 +++++++++---------------
+ 1 file changed, 13 insertions(+), 24 deletions(-)
 
-> 
-> > > 
-> > > That is the cleanest solution I know and is not strictly limited to use
-> > > with containers so it can also gain greater traction.  The interaction
-> > > with devtmpfs should be simply having devtmpfs create a mount point for
-> > > that filesystem.
-> > > 
-> > > This could be a new cleaner api for things like loopback devices.
-> > 
-> > I sent a patchset that implemented this last year.
-> > 
-> Do you have a pointer/commit hash for this?
+diff --git a/drivers/scsi/bfa/bfa_fcpim.c b/drivers/scsi/bfa/bfa_fcpim.c
+index 7ad22288071b..a5eeb8a59afe 100644
+--- a/drivers/scsi/bfa/bfa_fcpim.c
++++ b/drivers/scsi/bfa/bfa_fcpim.c
+@@ -83,8 +83,7 @@ enum bfa_itnim_event {
+  *  BFA IOIM related definitions
+  */
+ #define bfa_ioim_move_to_comp_q(__ioim) do {				\
+-	list_del(&(__ioim)->qe);					\
+-	list_add_tail(&(__ioim)->qe, &(__ioim)->fcpim->ioim_comp_q);	\
++	list_move_tail(&(__ioim)->qe, &(__ioim)->fcpim->ioim_comp_q);	\
+ } while (0)
+ 
+ 
+@@ -1023,8 +1022,7 @@ bfa_itnim_cleanup(struct bfa_itnim_s *itnim)
+ 		 * Move IO to a cleanup queue from active queue so that a later
+ 		 * TM will not pickup this IO.
+ 		 */
+-		list_del(&ioim->qe);
+-		list_add_tail(&ioim->qe, &itnim->io_cleanup_q);
++		list_move_tail(&ioim->qe, &itnim->io_cleanup_q);
+ 
+ 		bfa_wc_up(&itnim->wc);
+ 		bfa_ioim_cleanup(ioim);
+@@ -1509,15 +1507,13 @@ bfa_ioim_sm_uninit(struct bfa_ioim_s *ioim, enum bfa_ioim_event event)
+ 		if (!bfa_itnim_is_online(ioim->itnim)) {
+ 			if (!bfa_itnim_hold_io(ioim->itnim)) {
+ 				bfa_sm_set_state(ioim, bfa_ioim_sm_hcb);
+-				list_del(&ioim->qe);
+-				list_add_tail(&ioim->qe,
+-					&ioim->fcpim->ioim_comp_q);
++				list_move_tail(&ioim->qe,
++					       &ioim->fcpim->ioim_comp_q);
+ 				bfa_cb_queue(ioim->bfa, &ioim->hcb_qe,
+ 						__bfa_cb_ioim_pathtov, ioim);
+ 			} else {
+-				list_del(&ioim->qe);
+-				list_add_tail(&ioim->qe,
+-					&ioim->itnim->pending_q);
++				list_move_tail(&ioim->qe,
++					       &ioim->itnim->pending_q);
+ 			}
+ 			break;
+ 		}
+@@ -2044,8 +2040,7 @@ bfa_ioim_sm_hcb_free(struct bfa_ioim_s *ioim, enum bfa_ioim_event event)
+ 	switch (event) {
+ 	case BFA_IOIM_SM_HCB:
+ 		bfa_sm_set_state(ioim, bfa_ioim_sm_resfree);
+-		list_del(&ioim->qe);
+-		list_add_tail(&ioim->qe, &ioim->fcpim->ioim_resfree_q);
++		list_move_tail(&ioim->qe, &ioim->fcpim->ioim_resfree_q);
+ 		break;
+ 
+ 	case BFA_IOIM_SM_FREE:
+@@ -2672,14 +2667,12 @@ bfa_ioim_notify_cleanup(struct bfa_ioim_s *ioim)
+ 	 * Move IO from itnim queue to fcpim global queue since itnim will be
+ 	 * freed.
+ 	 */
+-	list_del(&ioim->qe);
+-	list_add_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
++	list_move_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
+ 
+ 	if (!ioim->iosp->tskim) {
+ 		if (ioim->fcpim->delay_comp && ioim->itnim->iotov_active) {
+ 			bfa_cb_dequeue(&ioim->hcb_qe);
+-			list_del(&ioim->qe);
+-			list_add_tail(&ioim->qe, &ioim->itnim->delay_comp_q);
++			list_move_tail(&ioim->qe, &ioim->itnim->delay_comp_q);
+ 		}
+ 		bfa_itnim_iodone(ioim->itnim);
+ 	} else
+@@ -2723,8 +2716,7 @@ bfa_ioim_delayed_comp(struct bfa_ioim_s *ioim, bfa_boolean_t iotov)
+ 	 * Move IO to fcpim global queue since itnim will be
+ 	 * freed.
+ 	 */
+-	list_del(&ioim->qe);
+-	list_add_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
++	list_move_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
+ }
+ 
+ 
+@@ -3318,8 +3310,7 @@ bfa_tskim_gather_ios(struct bfa_tskim_s *tskim)
+ 		cmnd = (struct scsi_cmnd *) ioim->dio;
+ 		int_to_scsilun(cmnd->device->lun, &scsilun);
+ 		if (bfa_tskim_match_scope(tskim, scsilun)) {
+-			list_del(&ioim->qe);
+-			list_add_tail(&ioim->qe, &tskim->io_q);
++			list_move_tail(&ioim->qe, &tskim->io_q);
+ 		}
+ 	}
+ 
+@@ -3331,8 +3322,7 @@ bfa_tskim_gather_ios(struct bfa_tskim_s *tskim)
+ 		cmnd = (struct scsi_cmnd *) ioim->dio;
+ 		int_to_scsilun(cmnd->device->lun, &scsilun);
+ 		if (bfa_tskim_match_scope(tskim, scsilun)) {
+-			list_del(&ioim->qe);
+-			list_add_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
++			list_move_tail(&ioim->qe, &ioim->fcpim->ioim_comp_q);
+ 			bfa_ioim_tov(ioim);
+ 		}
+ 	}
+@@ -3576,8 +3566,7 @@ void
+ bfa_tskim_free(struct bfa_tskim_s *tskim)
+ {
+ 	WARN_ON(!bfa_q_is_on_q_func(&tskim->itnim->tsk_q, &tskim->qe));
+-	list_del(&tskim->qe);
+-	list_add_tail(&tskim->qe, &tskim->fcpim->tskim_free_q);
++	list_move_tail(&tskim->qe, &tskim->fcpim->tskim_free_q);
+ }
+ 
+ /*
 
-Yes, sure:
-https://lore.kernel.org/linux-block/20200424162052.441452-1-christian.brauner@ubuntu.com/
-
-You can also just pull my branch. I think it's still based on v5.7 or sm:
-https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=loopfs
-
-I'm happy to collaborate on this too.
-
-Christian
