@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337593A09D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9713A09D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 04:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233587AbhFICOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 22:14:33 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:48911 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S233322AbhFICOc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 22:14:32 -0400
-Received: (qmail 1828243 invoked by uid 1000); 8 Jun 2021 22:12:37 -0400
-Date:   Tue, 8 Jun 2021 22:12:37 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        ierturk@ieee.org
-Subject: Re: Strange problem with USB device
-Message-ID: <20210609021237.GA1826754@rowland.harvard.edu>
-References: <cfc37ce0-823e-0d19-f5d7-fcd571a94943@lwfinger.net>
- <20210608182038.GA1812516@rowland.harvard.edu>
- <a7c7ba62-a74f-d7db-bfd9-4f6c8e25e0b8@lwfinger.net>
- <20210608185314.GB1812516@rowland.harvard.edu>
- <960057be-ef17-49e7-adba-ba2929d3a01f@lwfinger.net>
+        id S234071AbhFICPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 22:15:51 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57531 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233597AbhFICPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 22:15:50 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G09dW2cXpz9sRK;
+        Wed,  9 Jun 2021 12:13:50 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623204835;
+        bh=bXuTb1ueSomSD65NEmeoVPQYFtjdthhrhXcI2UWfZV8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PclM2nqmHi3yvM1ib1ox+Kc591/Xf0YNfdyXeSt4vAgBVUQHn5Xc7V2sjShDyBar/
+         +bPb/9ixibfvwXpKrfB+Vpa7f3vJ39L3tHQR6D42+jdhZBcLLuZRmZ/uEvkXpBuoG6
+         kKPLzVms+0ZlCZSTPVs301gRIUR8UwQnqelhKeUbdLCmLcLdvHcEWe0Cfz1c0/sRXb
+         B+rleDt1Eo+u2dqvUrZUVGlI6z9FstBHzOaZmq1wBQUeFImn8HfCg4b5SubCwc6Ew4
+         kq9XF8rys2+digQdJKj78pGQZkDeF1KY8pdLTHUoQuis8O1qYDQVxqePnsimtQI79C
+         cV/+TfBraYpjg==
+Date:   Wed, 9 Jun 2021 12:13:49 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the gfs2 tree with the vfs tree
+Message-ID: <20210609121349.74ba0b69@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <960057be-ef17-49e7-adba-ba2929d3a01f@lwfinger.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/4Z8LU8p1cBUmeB6w0D7CaZJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 03:56:11PM -0500, Larry Finger wrote:
-> On 6/8/21 1:53 PM, Alan Stern wrote:
-> > I don't get it.  If this is a PCIe device, why should it appear
-> > on a USB bus?  Wouldn't you expect it to show up as a PCI device
-> > on a PCI bus instead?
-> > 
-> 
-> I do not know the internal details, but Realtek packages a PCIe wifi
-> device and a bluetooth USB device in the same package. Intel does the
-> same thing on my Wireless 7260.
-> 
-> My lsusb shows:
-> Bus 003 Device 002: ID 8087:8000 Intel Corp. Integrated Rate Matching Hub
-> Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> Bus 001 Device 002: ID 8087:8008 Intel Corp. Integrated Rate Matching Hub
-> Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-> Bus 002 Device 004: ID 8087:07dc Intel Corp. Bluetooth wireless interface
-> Bus 002 Device 003: ID 0bda:c822 Realtek Semiconductor Corp. Bluetooth Radio
-> Bus 002 Device 002: ID 04f2:b3b2 Chicony Electronics Co., Ltd TOSHIBA
-> Web Camera - FHD
-> Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> 
-> I have no devices plugged into a USB port.
+--Sig_/4Z8LU8p1cBUmeB6w0D7CaZJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Okay, now I get the picture.  The Intel PCIe card contains an 
-EHCI USB host controller plus a couple of on-board USB Bluetooth 
-devices and an on-board USB webcam, in addition to the PCIe wifi 
-device.
+Hi all,
 
-Which means you're looking at the problem all wrong.  It isn't a 
-USB problem at all; it's a PCI problem.  Namely, why doesn't the 
-system detect the USB host controller on the PCIe board?
+Today's linux-next merge of the gfs2 tree got conflicts in:
 
-I have added the PCI maintainer and mailing list to the CC.  
-Maybe they can help shed some light.
+  include/linux/uio.h
+  lib/iov_iter.c
 
-The original Suse Bugzilla report:
+between commit:
 
-	https://bugzilla.suse.com/show_bug.cgi?id=1186889
+  c8129a6f6ed1 ("sanitize iov_iter_fault_in_readable()")
 
-shows the Realtek board at PCI address 0000:03:00.0, but there's 
-no mention of a USB host controller on that board.  The only host 
-controller on the system is the one at address 0000:00:14.0, 
-which is xHCI and is directly on the motherboard.
+from the vfs tree and commit:
 
-Furthermore, there's no trace of any mention of an EHCI USB host 
-controller in the system log.  So maybe the board has to be told 
-somehow to turn that controller on before it will show up, and 
-the rtw_8822ce driver isn't giving the appropriate order.
+  f8524fce6a88 ("iov_iter: Add iov_iter_fault_in_writeable()")
 
-Can the bug reporter get information from Windows about the USB 
-host controllers, and in particular, the one on the RTL8822 
-board?
+from the gfs2 tree.
 
-Alan Stern
+I fixed it up (see below - both commits fixed up the indentation in
+iov_iter_fault_in_readable()) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/uio.h
+index fd88d9911dad,6811eb6ac6e3..000000000000
+--- a/include/linux/uio.h
++++ b/include/linux/uio.h
+@@@ -115,11 -119,12 +115,12 @@@ static inline struct iovec iov_iter_iov
+  	};
+  }
+ =20
+ -size_t iov_iter_copy_from_user_atomic(struct page *page,
+ -		struct iov_iter *i, unsigned long offset, size_t bytes);
+ +size_t copy_page_from_iter_atomic(struct page *page, unsigned offset,
+ +				  size_t bytes, struct iov_iter *i);
+  void iov_iter_advance(struct iov_iter *i, size_t bytes);
+  void iov_iter_revert(struct iov_iter *i, size_t bytes);
+ -int iov_iter_fault_in_readable(struct iov_iter *i, size_t bytes);
+ +int iov_iter_fault_in_readable(const struct iov_iter *i, size_t bytes);
++ int iov_iter_fault_in_writeable(struct iov_iter *i, size_t bytes);
+  size_t iov_iter_single_seg_count(const struct iov_iter *i);
+  size_t copy_page_to_iter(struct page *page, size_t offset, size_t bytes,
+  			 struct iov_iter *i);
+diff --cc lib/iov_iter.c
+index 8842ca6995c3,317c94eac907..000000000000
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+
+--Sig_/4Z8LU8p1cBUmeB6w0D7CaZJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDAI94ACgkQAVBC80lX
+0GwEIAf/RCrlUFEDmzaKLh9/mnRES9gAcMCooVf5DErUWZT7vTBVPx8cveL4o6GY
+Nx3/o6eZF4Hot5Ak2r7Eswp9gdiBsn+fAtKbY4n56D85ANbXP6SLojSLe5HOboVR
+xMdMlR2SL11iX4K8BPl84u5PCJylH8nC5Y42U9AR5UU4f8bW7t0Q1rRPWDGHsf5O
+kghy7vkRJbOC4RfruooibUDWagxtRCDWwS8Jbe5FnYaevpK7mGZ9GtEL1oTt5Fws
+pbN5k/mLYwEW/zgc9Ib4T9dfBF2p4k6w17K8Vysjz+LlHlUPEMc0CshA386jnmci
+EsK2iXRo7TaNifqY7y0AW1HfvKPFJw==
+=QAEa
+-----END PGP SIGNATURE-----
+
+--Sig_/4Z8LU8p1cBUmeB6w0D7CaZJ--
