@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2507B3A0C55
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DA13A0C62
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236780AbhFIGY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:24:27 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:59699 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231503AbhFIGY0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:24:26 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 8F07D23F1;
-        Wed,  9 Jun 2021 02:22:31 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 09 Jun 2021 02:22:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=VzIpShIJ81NOtKGbsMynymINOsO
-        4efkrr8lJ3dk3FnU=; b=Fbi14MWF94I86eQgClspdOz1uCkG1dcNvIrlprR6VMq
-        t7d9CqYuBCPsgtc0vwiut1ZI6yFTRTyE7sGk3OcB7m5tqmHF+5f2XB2Mvmr0nmC+
-        fjWV4pR4XhDnvTul8fUq5g7Vx7E+QvzsgNfpm4W9FGlSl8v8ypn23WyKGNihH6vH
-        5PHm9aSw5iDORtOcYbjFJyyFlt9Esz3c6n+KEU0j90IZEt+dWN4Woshg+EG9da5B
-        r+oCduWl4Hvn8YKbNb+NonXpVTbRY7I57GGllJ2iYKcBRaFj7Z9tSc1KIqqyl6i1
-        t6f9dUKQeg0nMBnH4UwxRdC0VizsjMTpSRg/5jUF3CQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=VzIpSh
-        IJ81NOtKGbsMynymINOsO4efkrr8lJ3dk3FnU=; b=WWYkMfWKrIQBb8ib5FpzKw
-        HYTzBAznu061oi9zcT7JGEKs4Epfb6xrUef9iRB7TX0zZ4LJXS0EcAUEXaKZi5r6
-        bgRwDvqvqS7tW5vf7Pe0M6oKw8koeGeQoxjaLBKpSXoqHOLB1CjHcm0rfrftgPvO
-        nIFNUvCRSWoO6aCxzZIWsyppAy2xgrjlsV5vP3m0lp7TYNGkS0CdGRLXAz1IEkeW
-        vhSD8fISa+T/QDTFjaCY2/cc64+Ra94QTzz76s61Gq8dKQqJkfLKxU4mzJNT0urp
-        FHAfzVJ3x/t5KFJ5z2Hx5MFXZT2qR9hlhMG4eMW0XT1FUZFznXnvsTLAIs0yyqRw
-        ==
-X-ME-Sender: <xms:Jl7AYIMkOvRzJ-IQYJ4RgRt9wFyaa99BLqoGemBtXdBXp8qcXNrQEA>
-    <xme:Jl7AYO9ZScQkCUIfOENu90htseSS0_vnfOJZBep_QT-RQu7aLru75dlUEniUrt3-S
-    G1kvEaLFqOUHg>
-X-ME-Received: <xmr:Jl7AYPRcvJua6YDS8Q26jMU2rBpMcQ6nlcftLqRHKzPI-mRiZ1Th-3c-z_aKAwMQ2yFa4IpqBnq73zQ1XBp3-CklgrdF0Jtt>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedutddgleekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:Jl7AYAs4ihgvXLkQb1rXV7YG-NHyc8scMymRd1LAufhVs8uwFz832g>
-    <xmx:Jl7AYAeDmxF5Vv1hJOejgnKYS0q6zE_RyxnFRCS8fK9qUauf0CPiSw>
-    <xmx:Jl7AYE2wSZS1-cJrJjRY97_TIjOef1ogTS1CVVZVSO00UOUf5tLdyA>
-    <xmx:J17AYG2CK1e6oJViqSD_yNdcyHSQtA0jIJQ9yDoA42Yonxtg7_75RWv-Puo>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 9 Jun 2021 02:22:29 -0400 (EDT)
-Date:   Wed, 9 Jun 2021 08:22:27 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Keerthy <j-keerthy@ti.com>, Tero Kristo <kristo@kernel.org>
-Subject: Re: [Backport for linux-5.4.y PATCH 2/4] ARM: OMAP2+: Prepare timer
- code to backport dra7 timer wrap errata i940
-Message-ID: <YMBeI4aOMmWMRsu/@kroah.com>
-References: <20210602104625.6079-1-tony@atomide.com>
- <20210602104625.6079-2-tony@atomide.com>
- <YL+lOumPYQ1fNoYw@kroah.com>
- <YMBcIbBPfr6W19j5@atomide.com>
+        id S233167AbhFIG1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:27:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230096AbhFIG1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 02:27:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC0CE61040;
+        Wed,  9 Jun 2021 06:25:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623219926;
+        bh=8hvt6+ZkRROs1PtG4jACBGU3OkGalj2mK9AeMaRtTHo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kf8O9zBR01nzRZVPwUNwKoK+6Ys/lzDk1nQl6HFstNiKOCHrobWlbRbmelep5xIwc
+         QHZiDYG8jSDAGFNLtTsFy041CRFVVJl2OtXQpNR28ht3UVQTJtzIYMIVSy01GhmRIN
+         d7GiYglOUdNRisekPwpZpqoE21Il7kZVqKUVKchE=
+Date:   Wed, 9 Jun 2021 08:25:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Ludwig Zenz <lzenz@dh-electronics.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 4.19 28/58] ARM: dts: imx6q-dhcom: Add PU,VDD1P1,VDD2P5
+ regulators
+Message-ID: <YMBe07JJemw4zH97@kroah.com>
+References: <20210608175932.263480586@linuxfoundation.org>
+ <20210608175933.214613488@linuxfoundation.org>
+ <CA+G9fYvFujaoUqbLh_gcfnPjUVVQD=VHqi6k2ruf57BO1tR5ag@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMBcIbBPfr6W19j5@atomide.com>
+In-Reply-To: <CA+G9fYvFujaoUqbLh_gcfnPjUVVQD=VHqi6k2ruf57BO1tR5ag@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 09:13:53AM +0300, Tony Lindgren wrote:
-> Hi,
+On Wed, Jun 09, 2021 at 12:43:46AM +0530, Naresh Kamboju wrote:
+> On Wed, 9 Jun 2021 at 00:08, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > From: Marek Vasut <marex@denx.de>
+> >
+> > commit 8967b27a6c1c19251989c7ab33c058d16e4a5f53 upstream.
+> >
+> > Per schematic, both PU and SOC regulator are supplied from LTC3676 SW1
+> > via VDDSOC_IN rail, add the PU input. Both VDD1P1, VDD2P5 are supplied
+> > from LTC3676 SW2 via VDDHIGH_IN rail, add both inputs.
+> >
+> > While no instability or problems are currently observed, the regulators
+> > should be fully described in DT and that description should fully match
+> > the hardware, else this might lead to unforseen issues later. Fix this.
+> >
+> > Fixes: 52c7a088badd ("ARM: dts: imx6q: Add support for the DHCOM iMX6 SoM and PDK2")
+> > Reviewed-by: Fabio Estevam <festevam@gmail.com>
+> > Signed-off-by: Marek Vasut <marex@denx.de>
+> > Cc: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+> > Cc: Fabio Estevam <festevam@gmail.com>
+> > Cc: Ludwig Zenz <lzenz@dh-electronics.com>
+> > Cc: NXP Linux Team <linux-imx@nxp.com>
+> > Cc: Shawn Guo <shawnguo@kernel.org>
+> > Cc: stable@vger.kernel.org
+> > Reviewed-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+> > Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  arch/arm/boot/dts/imx6q-dhcom-som.dtsi |   12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> >
+> > --- a/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
+> > +++ b/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
+> > @@ -407,6 +407,18 @@
+> >         vin-supply = <&sw1_reg>;
+> >  };
+> >
+> > +&reg_pu {
+> > +       vin-supply = <&sw1_reg>;
+> > +};
+> > +
+> > +&reg_vdd1p1 {
+> > +       vin-supply = <&sw2_reg>;
+> > +};
+> > +
+> > +&reg_vdd2p5 {
+> > +       vin-supply = <&sw2_reg>;
+> > +};
+> > +
+> >  &uart1 {
+> >         pinctrl-names = "default";
+> >         pinctrl-0 = <&pinctrl_uart1>;
 > 
-> * Greg KH <greg@kroah.com> [210608 17:13]:
-> > On Wed, Jun 02, 2021 at 01:46:23PM +0300, Tony Lindgren wrote:
-> > > Prepare linux-5.4.y to backport upstream timer wrap errata commit
-> > > 3efe7a878a11c13b5297057bfc1e5639ce1241ce and commit
-> > > 25de4ce5ed02994aea8bc111d133308f6fd62566. Earlier kernels still use
-> > > mach-omap2/timer instead of drivers/clocksource as these kernels still
-> > > depend on legacy platform code for timers. Note that earlier stable
-> > > kernels need also additional patches and will be posted separately.
-> > 
-> > I do not understand this paragraph.
-> > 
-> > What upstream commit is this?  And "posted separately" shouldn't show up
-> > in a changelog text, right?
+> arm dtb build failed on stable rc 4.19
 > 
-> This would be a partial backport to add struct dmtimer_clockevent from
-> commit 52762fbd1c4778ac9b173624ca0faacd22ef4724 to the platform timer
-> code used in the older kernels.
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm
+> CROSS_COMPILE=arm-linux-gnueabihf- 'CC=sccache
+> arm-linux-gnueabihf-gcc' 'HOSTCC=sccache gcc'
+> Error: /builds/linux/arch/arm/boot/dts/imx6q-dhcom-som.dtsi:414.1-12
+> Label or path reg_vdd1p1 not found
+> Error: /builds/linux/arch/arm/boot/dts/imx6q-dhcom-som.dtsi:418.1-12
+> Label or path reg_vdd2p5 not found
+> FATAL ERROR: Syntax error parsing input tree
+> make[2]: *** [scripts/Makefile.lib:294:
+> arch/arm/boot/dts/imx6q-dhcom-pdk2.dtb] Error 1
 > 
-> How about the following for the description:
+> Reported-by:  Linux Kernel Functional Testing <lkft@linaro.org>
 > 
-> Upstream commit 52762fbd1c4778ac9b173624ca0faacd22ef4724 usage of
-> struct dmtimer_clockevent backported to the platform timer code
-> still used in linux-5.4.y stable kernel. Needed to backport upstream
-> commit 3efe7a878a11c13b5297057bfc1e5639ce1241ce and commit
-> 25de4ce5ed02994aea8bc111d133308f6fd62566. Earlier kernels use
-> mach-omap2/timer instead of drivers/clocksource as these kernels still
-> depend on legacy platform code for booting.
-
-Why are you combining 2 commits into one here?
-
-I do not understand what this commit really is at all still, sorry.
-
-How about just providing backports for the individual commits, do not
-combine them as that just is a mess.
-
-> > Can you fix this up to make this obvious what is happening here and make
-> > a patch series that I can take without editing changelog text?
+> build url:
+> https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1328891505#L477
 > 
-> Sure I'll repost the series, assuming the above is OK for description :)
-> Please let me know if you need further details added.
-> 
-> Hmm so what's the correct way to prevent automatically applying these
-> into the earlier stable kernels?
+> Config:
+> https://builds.tuxbuild.com/1tg0YjTz4ow5CkHv0bzTc05pVs5/config
 
-What would cause them to be automatically applied?  You need to let us
-know what kernel(s) they should go to.
-
-thanks,
+Thanks, will go delete this and push out a -rc2.
 
 greg k-h
