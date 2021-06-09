@@ -2,67 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14D23A0F1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9DD53A0F22
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233824AbhFII6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:58:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47846 "EHLO mail.kernel.org"
+        id S233973AbhFII6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:58:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:53490 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233595AbhFII6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:58:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17C6361040;
-        Wed,  9 Jun 2021 08:56:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623229004;
-        bh=y+rZC8ET704ZyS2De756e+uIOdbE3GgO+5jsgP/wVHM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cZ978C9G3XwZmTJTDMir+CoiQtR2oyMeMSKp9wMx/JlLPdrT3x39jvc351tPpe9SM
-         0mzvQskwYMhzSRJD1ohOGpKYvsh7rrImM9laSRwHvz1U8lW1m7kWo4VdeZIUIcUUTM
-         8wO0ND0g6XtGJ1xfP4q5C0zrUtt40e9TqtMojvbI=
-Date:   Wed, 9 Jun 2021 10:56:42 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v1 1/1] usb: typec: wcove: Use LE to CPU conversion when
- accessing msg->header
-Message-ID: <YMCCSiNnvc9oh7P+@kroah.com>
-References: <20210519085534.48732-1-andriy.shevchenko@linux.intel.com>
- <YKYrQXXk/X72iI+0@kuha.fi.intel.com>
- <YL47Ny7hXZmgH/dx@smile.fi.intel.com>
+        id S233846AbhFII6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 04:58:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DAD811FB;
+        Wed,  9 Jun 2021 01:56:51 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8AA293F719;
+        Wed,  9 Jun 2021 01:56:48 -0700 (PDT)
+Subject: Re: [PATCH v14 2/8] arm64: Handle MTE tags zeroing in
+ __alloc_zeroed_user_highpage()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210607110816.25762-1-steven.price@arm.com>
+ <20210607110816.25762-3-steven.price@arm.com>
+ <20210607170714.GA17957@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <7a3f14de-211b-94f9-6886-393d233193d5@arm.com>
+Date:   Wed, 9 Jun 2021 09:56:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL47Ny7hXZmgH/dx@smile.fi.intel.com>
+In-Reply-To: <20210607170714.GA17957@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 06:28:55PM +0300, Andy Shevchenko wrote:
-> On Thu, May 20, 2021 at 12:26:25PM +0300, Heikki Krogerus wrote:
-> > On Wed, May 19, 2021 at 11:55:34AM +0300, Andy Shevchenko wrote:
-> > > As LKP noticed the Sparse is not happy about strict type handling:
-> > >    .../typec/tcpm/wcove.c:380:50: sparse:     expected unsigned short [usertype] header
-> > >    .../typec/tcpm/wcove.c:380:50: sparse:     got restricted __le16 const [usertype] header
-> > > 
-> > > Fix this by switching to use pd_header_cnt_le() instead of pd_header_cnt()
-> > > in the affected code.
-> > > 
-> > > Fixes: ae8a2ca8a221 ("usb: typec: Group all TCPCI/TCPM code together")
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > 
-> > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+On 07/06/2021 18:07, Catalin Marinas wrote:
+> On Mon, Jun 07, 2021 at 12:08:10PM +0100, Steven Price wrote:
+>> From: Catalin Marinas <catalin.marinas@arm.com>
+>>
+>> Currently, on an anonymous page fault, the kernel allocates a zeroed
+>> page and maps it in user space. If the mapping is tagged (PROT_MTE),
+>> set_pte_at() additionally clears the tags under a spinlock to avoid a
+>> race on the page->flags. In order to optimise the lock, clear the page
+>> tags on allocation in __alloc_zeroed_user_highpage() if the vma flags
+>> have VM_MTE set.
+>>
+>> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+>> Signed-off-by: Steven Price <steven.price@arm.com>
 > 
-> Thanks!
+> I think you can drop this patch now that Peter's series has been queued
+> via the arm64 tree:
 > 
-> Greg, should I amend or resend this?
+> https://lore.kernel.org/r/20210602235230.3928842-4-pcc@google.com
+> 
 
-Both please.
+Thanks for the heads up - I hadn't seen that land. I'll drop this patch
+from the next posting.
 
-thanks,
-
-greg k-h
+Steve
