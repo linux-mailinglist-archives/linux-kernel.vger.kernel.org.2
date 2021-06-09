@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F1D3A0985
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FE53A0990
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhFIBmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 21:42:25 -0400
-Received: from mail-pj1-f47.google.com ([209.85.216.47]:43762 "EHLO
-        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbhFIBmY (ORCPT
+        id S232428AbhFIBqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 21:46:10 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:50551 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231344AbhFIBqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 21:42:24 -0400
-Received: by mail-pj1-f47.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso423505pjp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 18:40:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/d3k4uICSgLjCjjIICNIctgXwaLJ2Iz2BJO+iXE+CTE=;
-        b=Ce1GhVArmiYuuqT3j94UWVmFQjeZPH3AVVC2vYIteA7rQdnD0WFRDvMmtGayLw+riE
-         Sp6so76C+tLWPyEOllGZzFeMuO3ooazJwBFesKhcWXaWAfwVPx1hmzILRlRt1Kbf648j
-         ZhCkC7sb07qz2RjQcnXgzD11+7EvDvyxfJaFQeZNDo5K9zLTfAIRovvm9SqucfB8y8Pg
-         aZ0mEqBWkPv4puVReUYxXzc49m9jaEUKPj2DAUr4oe/hRbmaeBMeyHQZ7yAx9kaHGeFh
-         1CBxvjDOrMiKF6MaC0CW4475LMcDvZp2k0ew8w/rkX0KgiJgmb916EC+3X1yjlMAPRfu
-         h3QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/d3k4uICSgLjCjjIICNIctgXwaLJ2Iz2BJO+iXE+CTE=;
-        b=Mts7GkTryAKzausW2BU+rUm0rg3Wv9FQfbxKKhyznKdxIGr3TcECaa2sg34gxEC/x/
-         HQ0LHJd8i+Qt4vns0TlMj5RNmAMMxZw3hlbPKKOCiZEjU3rfZJ0TElaGRBLJXuFJQaku
-         uk8s19EVJKpg2zDykX78ghwDFHKDE83ukA6IT8uiKZdBUnZZE1WBLjprR3Sn8I/q3oaQ
-         JjOASgzAS/pG6AiXN4tn4Hp5iY5rCspQGFpDPuj7o7FX9EeYiNptgtBynvLkft3Vzshg
-         aNWGXgLfSju2sndtMdiKXe334cde83bULaNDtJvpHgcCbk3W9iDBAG+UPtesYp2dI+EI
-         KtWw==
-X-Gm-Message-State: AOAM530GQCvB8ySkBTWZePe8jKMpCuItM/Ke5jp5IgKcWEH1LleDbHUt
-        +Uy30WQPD7Uib88SXRCY82w5Gg==
-X-Google-Smtp-Source: ABdhPJy0fGqUCQQPXLN28cPcP97FKbCAmwU7xD+S4UOlHjhmhegG8QJK9GpXyIrEx+rq3flbIZuqvg==
-X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr238868pjp.1.1623202755591;
-        Tue, 08 Jun 2021 18:39:15 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (ec2-18-167-84-74.ap-east-1.compute.amazonaws.com. [18.167.84.74])
-        by smtp.gmail.com with ESMTPSA id f17sm12272157pgm.37.2021.06.08.18.39.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 18:39:15 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 09:39:09 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Denis Nikitin <denik@google.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] coresight: etm-perf: Correct buffer syncing for
- snapshot
-Message-ID: <20210609013909.GE4640@leoy-ThinkPad-X240s>
-References: <20210528161552.654907-1-leo.yan@linaro.org>
- <20210528161552.654907-2-leo.yan@linaro.org>
- <20210608214149.GA331611@p14s>
- <20210609013555.GD4640@leoy-ThinkPad-X240s>
+        Tue, 8 Jun 2021 21:46:09 -0400
+Received: (Authenticated sender: n@nfraprado.net)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 2DDFB60004;
+        Wed,  9 Jun 2021 01:44:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nfraprado.net;
+        s=gm1; t=1623203054;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tHl203Zaulu9R4l03LoKzVS64z8W71qCWI26IsznQy4=;
+        b=ojVwy1rvMa2XENDZgJ6WJntPmfRtT6S9s5EjW3HGUIWzuwR+UFlpHSqNGb6634Z+Pd6Qrt
+        R6c/drQQYUx5eM8O53GmgzO2IuRjYCrCMHyXQJyho1RWdVLnn/SwK9zym2tUBgRfZdmDF4
+        DKHqM28+46GD2ZsnP4rVSn8I5fvfORvi3gp9Yz+FRBk6nW/sW4iZOAKnPLWrOiH7opzRzG
+        DOkgbQ2w+aWkvfjsG9NG7qpNMNYTCswcVnaacjcWiqvAw0Zx8p1NPiBqBAhCkcWfOY0a0a
+        3yhFe8qqgsGeQzNYaNt3t+miGrgS3Bp5kFx/zSo0pnkTOnei6SgdkYGEvd5Tgg==
+From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <n@nfraprado.net>
+To:     linux-doc@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
+        ~lkcamp/patches@lists.sr.ht
+Subject: [RFC PATCH 0/2] docs: automarkup.py: Add literal markup of known constants
+Date:   Tue,  8 Jun 2021 22:43:06 -0300
+Message-Id: <20210609014308.234027-1-n@nfraprado.net>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609013555.GD4640@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 09:35:55AM +0800, Leo Yan wrote:
+Hi,
 
-[...]
+a while back Matthew suggested adding automatic markup of known constants, like
+NULL and error codes, as literals [1]. This is a great idea since those literals
+are very frequently used throughout the documentation and are fixed names, so we
+can easily match them without false positives and make the source files less
+cluttered.
 
-> > The problem with this approach is that if the AUX buffer is 4MB and the CS
-> > buffer is 1MB then we only record 1MB, but because of N:1 topologies we may not
-> > be able to do better.  I haven't looked at the code yet, something I will do
-> > tomorrow.
-> 
-> Yes, the fixing in this patch copies the trace data is limited by the
-> CoreSight bounce buffer length.  So if CoreSight buffer length is
-> 1MiB, then we have no chance to allocate 4MiB for AUX buffer.
+Patch 1 adds that feature to automarkup.py, while patch 2 removes the no longer
+needed markup from the xarray.rst file which was given as an example.
 
-Sorry for typo, just correct:
+Some things I'd like to discuss:
 
-if CoreSight buffer length is 1MiB, then we have no chance to *copy*
-4MiB trace data for AUX buffer.
+* As a first draft I added the constants I found on xarray.rst plus all error
+  codes from errno-base.h and errno.h. We don't need to start with everything,
+  but we can certainly do better than this. What are common constants that
+  should be added here? (Matthew mentioned ANSI C or POSIX, some reference to
+  the constants in those would be great, even more if they are easily parsable)
+
+* The Literals list added is already a bit big with just the error codes, so
+  perhaps we should move them to a separate plain text file that is read on
+  startup?
+
+* There was also mention of automatically converting uppercase words to
+  literals. I'm not so sure about that one so I left it out for now.
+
+  The example given was XA_MARK_0, which is a #define in xarray.h. The way
+  to go here is certainly to first use kernel-doc to get it included in the
+  documentation, and then cross-reference to it. FWICT at the moment kernel-doc
+  for defines should be done like for functions (but the parenthesis can be
+  omitted, although they show up in the output):
+
+	/**
+	  * XA_MARK_0 - Brief description.
+	  *
+	  * Description of the type.
+	  */
+
+  At the current state, the cross-reference would then need to be done either
+  through plain :c:macro:`XA_MARK_0`, or, by relying on automarkup, typedef
+  XA_MARK_0 (which is not ideal since this isn't a typedef). Options for
+  improvements would be to add 'macro' as a possible prefix (so eg. macro
+  XA_MARK_0), or go all out and try to cross-reference on every uppercase word
+  like suggested. We should strive for what is the most natural to write, as
+  long as the regex isn't too broad.
+
+  Since automarkup.py is opt-out rather than opt-in, I think we should be extra
+  careful not to make the regexes too broad, even if in this case it relies on a
+  C symbol being present.
+
+  One other idea I had was that we could limit to all uppercase words as
+  long as it has an _ on it, since I don't expect we would get false positives
+  with that. The downside is that it might be very confusing to people why their
+  MACRONAME isn't being automatically cross-referenced to...
+
+Thanks,
+Nícolas
+
+[1] https://lore.kernel.org/linux-doc/20201007234024.GY20115@casper.infradead.org/
+
+Nícolas F. R. A. Prado (2):
+  docs: automarkup.py: Add literal markup of known constants
+  XArray: Remove literal markup from known constants
+
+ Documentation/core-api/xarray.rst  | 48 +++++++++++++++---------------
+ Documentation/sphinx/automarkup.py | 45 ++++++++++++++++++++++++++--
+ 2 files changed, 67 insertions(+), 26 deletions(-)
+
+-- 
+2.32.0
+
