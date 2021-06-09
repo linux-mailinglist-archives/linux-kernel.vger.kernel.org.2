@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421093A1845
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 16:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183FA3A1857
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238161AbhFIPAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:00:13 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54966 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234434AbhFIPAM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:00:12 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3A72220B7188;
-        Wed,  9 Jun 2021 07:58:17 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3A72220B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623250697;
-        bh=UJ8w+2UkCTqOO7t0THpVN1Z+lmRBpIYgm5bx/zHc61k=;
+        id S238703AbhFIPCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:02:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238378AbhFIPCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46166611CC;
+        Wed,  9 Jun 2021 15:00:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623250800;
+        bh=49nXecvhsLBHihPFzr4F1shvMNvWEV2skUmEodggHXs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r+mbMmR7zBOFUPNpvddxTsw6rYp5Yv6seXHZlg4vEYBw9ut8QsoWzSVElTA2B1qBt
-         i3XUSJI+6bmdMbHf9gmIoE2jI+7HErf1ru10WB8h/qqH811cZnhgtGYomhaHpfruRF
-         sJcKGyf5IJP/CLii/BhpRrtqruuZu5KpPRaAqbrA=
-Date:   Wed, 9 Jun 2021 09:58:11 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 6/7] firmware: tee_bnxt: use tee_shm_alloc_kernel_buf()
-Message-ID: <20210609145811.GJ4910@sequoia>
-References: <20210609102324.2222332-1-jens.wiklander@linaro.org>
- <20210609102324.2222332-7-jens.wiklander@linaro.org>
+        b=N7/Nd/zuds8aJM/XE8CD7Qy708zqWC+oTwV5MoOmEHCPALfB37ouXaY5eSmS4j4eO
+         HNjLgTrAPIM5H3TRpZQQQpErtoQZAjEhuly03r7j3mv0Vv2sbCrJN1Bc0IivMIxPrg
+         zlugSh2FzNlpApkjnRjS3w7t+Mv+Nz7VUM2t1/oQ=
+Date:   Wed, 9 Jun 2021 16:59:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     yong w <yongw.pur@gmail.com>
+Cc:     minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org,
+        axboe@kernel.dk, akpm@linux-foundation.org,
+        songmuchun@bytedance.com, David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org, linux-api@vger.kernel.org,
+        lu.zhongjun@zte.com.cn, yang.yang29@zte.com.cn,
+        zhang.wenya1@zte.com.cn, wang.yong12@zte.com.cn
+Subject: Re: [RFC PATCH V3] zram:calculate available memory when zram is used
+Message-ID: <YMDXbh0H20MPG87V@kroah.com>
+References: <1623080354-21453-1-git-send-email-yongw.pur@gmail.com>
+ <YL84boGKozWE+n23@kroah.com>
+ <CAOH5QeBV5zq=SpMSxZHJqgmfKegdgc7ehpots6AKjjgEYq5rGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210609102324.2222332-7-jens.wiklander@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOH5QeBV5zq=SpMSxZHJqgmfKegdgc7ehpots6AKjjgEYq5rGg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-09 12:23:23, Jens Wiklander wrote:
-> Uses the new simplified tee_shm_alloc_kernel_buf() function instead of
-> the old deprecated tee_shm_alloc() function which required specific
-> TEE_SHM-flags.
+On Wed, Jun 09, 2021 at 10:23:36PM +0800, yong w wrote:
+> Greg KH <gregkh@linuxfoundation.org> 于2021年6月8日周二 下午5:29写道：
 > 
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-
-Since this series is essentially a rewrite of the shm allocation logic,
-it is worth pointing out that the rewrite still uses contiguous
-allocations (from alloc_pages()). The tee_bnxt_fw driver is performing
-an order-10 allocation which is the max, by default. I've only tested
-tee_bnxt_fw when it was built-in to the kernel and tee_bnxt_fw_probe()
-was called early in boot but I suspect that it might not succeed when
-built as a module and loaded later after memory is segmented. I think
-this driver would benefit from being able to request a non-contiguous
-allocation.
-
-Is this rewrite a good time to offer drivers a way to perform a
-non-contiguous allocation?
-
-Tyler
-
-> ---
->  drivers/firmware/broadcom/tee_bnxt_fw.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> >
+> > On Mon, Jun 07, 2021 at 08:39:14AM -0700, yongw.pur@gmail.com wrote:
+> > > From: wangyong <wang.yong12@zte.com.cn>
+> > >
+> > > When zram is used, available+Swap free memory is obviously bigger than we
+> > > actually can use, because zram can compress memory by compression
+> > > algorithm and zram compressed data will occupy memory too.
+> > >
+> > > So, we can count the compression ratio of zram in the kernel. The space
+> > > will be saved by zram and other swap device are calculated as follows:
+> > > zram[swapfree - swapfree * compress ratio] + swapdev[swapfree]
+> > > We can evaluate the available memory of the whole system as:
+> > > MemAvailable+zram[swapfree - swapfree * compress ratio]+swapdev[swapfree]
+> >
+> > Why is this needed to be exported by userspace?  Who is going to use
+> > this information and why can't they just calculate it from the exported
+> > information already?
 > 
-> diff --git a/drivers/firmware/broadcom/tee_bnxt_fw.c b/drivers/firmware/broadcom/tee_bnxt_fw.c
-> index ed10da5313e8..56d00ddd4357 100644
-> --- a/drivers/firmware/broadcom/tee_bnxt_fw.c
-> +++ b/drivers/firmware/broadcom/tee_bnxt_fw.c
-> @@ -212,10 +212,9 @@ static int tee_bnxt_fw_probe(struct device *dev)
->  
->  	pvt_data.dev = dev;
->  
-> -	fw_shm_pool = tee_shm_alloc(pvt_data.ctx, MAX_SHM_MEM_SZ,
-> -				    TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-> +	fw_shm_pool = tee_shm_alloc_kernel_buf(pvt_data.ctx, MAX_SHM_MEM_SZ);
->  	if (IS_ERR(fw_shm_pool)) {
-> -		dev_err(pvt_data.dev, "tee_shm_alloc failed\n");
-> +		dev_err(pvt_data.dev, "tee_shm_alloc_kernel_buf failed\n");
->  		err = PTR_ERR(fw_shm_pool);
->  		goto out_sess;
->  	}
-> -- 
-> 2.31.1
+> In embedded devices, it is necessary to assess how much memory is available.
+
+Why is that any different from a server?  Or a laptop?  Or any other
+system running Linux?  "embedded" isn't special here :)
+
+> If the memory allocation is based on available+swapfree, it may cause oom and
+> affect the normal use of the devices. And it is more accurate and safe
+> to calculate
+> the swap available memory through minimum compression ratio.
 > 
+> Although mm_stat interface provides compressed information，but it is not easy to
+> get the minimum compression ratio during swaping out. Kernel provides a common
+> interface, which makes it easier to use and judge the state of system memory
+
+If you are running up against this type of limit, how is a proc file
+guess going to help much?  What are you going to do based on the result?
+And as it's always going to be a guess, how reliable is it?
+
+> > What tool requires this new information and what is it going to be used
+> > for?
+> 
+> It can be used in embedded devices to evaluate the memory condition
+> and avoid causing oom; Also If we wants to know more accurate available
+> memory information when zram is used.
+
+Why not rely on the oom logic instead?  What is wrong with that as this
+is always going to be just a guess.  You are never going to be able to
+react fast enough to reading this value to be able to do anything better
+than you could through the existing oom notifier/logic, right?
+
+> > And why add a block driver's information to a core proc file?  Shouldn't
+> > the information only be in the block driver's sysfs directory only?
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> I thought it would be better to put it there.
+
+If no one needs it, why add it?  :)
+
+> In the first patch, MemAvailable returned with swap available memory, and
+> David recommended a separate interface.
+
+A sysfs file makes more sense to me, and seems simpler.
+
+But again, this is just a guess, trying to do real work based on it
+feels really risky.
+
+thanks,
+
+greg k-h
