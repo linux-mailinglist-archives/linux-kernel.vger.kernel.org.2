@@ -2,100 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494133A0BE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABB03A0BF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 07:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhFIFgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 01:36:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230222AbhFIFgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 01:36:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D36E3610A5;
-        Wed,  9 Jun 2021 05:34:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623216875;
-        bh=ojxH3o3H0Mqq+n9f5YLeEz8IbAGLfvn8g3b7SARtU/E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gHu+JJrnCVvAMVDMFa6ztvhdY0H/mRd/fOS7SkAR7PaSe19nmbVVMCI/kVltOA4FI
-         rwZ6ZagtboTpOv9Y5pEdZKnNpYMK3upW276FGhQTfVkZ1u/yYV1dQt0rt1VZ43fpch
-         Rc3s7CYewdGHmDnPWBmRrIEm6BPzZqA3ywhiLNL8=
-Date:   Tue, 8 Jun 2021 22:34:34 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH v9 8/8] writeback, cgroup: release dying cgwbs by
- switching attached inodes
-Message-Id: <20210608223434.25efb827a66f10ad36f7fe0b@linux-foundation.org>
-In-Reply-To: <YMANNhixU0QUqZIJ@google.com>
-References: <20210608230225.2078447-1-guro@fb.com>
-        <20210608230225.2078447-9-guro@fb.com>
-        <20210608171237.be2f4223de89458841c10fd4@linux-foundation.org>
-        <YMAKBgVgOhYHhB3N@carbon.dhcp.thefacebook.com>
-        <YMANNhixU0QUqZIJ@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232820AbhFIFsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 01:48:23 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:38882 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230152AbhFIFsT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 01:48:19 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E27FA20B7188;
+        Tue,  8 Jun 2021 22:46:23 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E27FA20B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623217584;
+        bh=Yy1Z01l6fmBdA5WxLEx26t5fbzEqPko8tRZCEEhLhho=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GQZMCdxcM9s6uLlAub8NQGqtgpUhIWWby5ndzCH38PO5Q9g6Q9U9vaK+JxmioEBJa
+         7elEeXpj4zUetLFmPkXeKP9sETHyqgjOruaHIIHxqFMhXRXXeDJLhE/93pPL09YnLW
+         yCRN5bXyOOYhSXIgrAONZQ4dR7a5up3eAq0AxgJc=
+Date:   Wed, 9 Jun 2021 00:46:21 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        op-tee@lists.trustedfirmware.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 5/7] tee: Support shm registration without dma-buf
+ backing
+Message-ID: <20210609054621.GB4910@sequoia>
+References: <20210609002326.210024-1-tyhicks@linux.microsoft.com>
+ <20210609002326.210024-6-tyhicks@linux.microsoft.com>
+ <CAFA6WYOZC0iHzZm6pOxz31eW_=8g2wyJdm4wiOGKggO6-a9MdA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYOZC0iHzZm6pOxz31eW_=8g2wyJdm4wiOGKggO6-a9MdA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 00:37:10 +0000 Dennis Zhou <dennis@kernel.org> wrote:
+On 2021-06-09 09:59:04, Sumit Garg wrote:
+> Hi Tyler,
 
-> On Tue, Jun 08, 2021 at 05:23:34PM -0700, Roman Gushchin wrote:
-> > On Tue, Jun 08, 2021 at 05:12:37PM -0700, Andrew Morton wrote:
-> > > On Tue, 8 Jun 2021 16:02:25 -0700 Roman Gushchin <guro@fb.com> wrote:
-> > > 
-> > > > Asynchronously try to release dying cgwbs by switching attached inodes
-> > > > to the nearest living ancestor wb. It helps to get rid of per-cgroup
-> > > > writeback structures themselves and of pinned memory and block cgroups,
-> > > > which are significantly larger structures (mostly due to large per-cpu
-> > > > statistics data). This prevents memory waste and helps to avoid
-> > > > different scalability problems caused by large piles of dying cgroups.
-> > > > 
-> > > > Reuse the existing mechanism of inode switching used for foreign inode
-> > > > detection. To speed things up batch up to 115 inode switching in a
-> > > > single operation (the maximum number is selected so that the resulting
-> > > > struct inode_switch_wbs_context can fit into 1024 bytes). Because
-> > > > every switching consists of two steps divided by an RCU grace period,
-> > > > it would be too slow without batching. Please note that the whole
-> > > > batch counts as a single operation (when increasing/decreasing
-> > > > isw_nr_in_flight). This allows to keep umounting working (flush the
-> > > > switching queue), however prevents cleanups from consuming the whole
-> > > > switching quota and effectively blocking the frn switching.
-> > > > 
-> > > > A cgwb cleanup operation can fail due to different reasons (e.g. not
-> > > > enough memory, the cgwb has an in-flight/pending io, an attached inode
-> > > > in a wrong state, etc). In this case the next scheduled cleanup will
-> > > > make a new attempt. An attempt is made each time a new cgwb is offlined
-> > > > (in other words a memcg and/or a blkcg is deleted by a user). In the
-> > > > future an additional attempt scheduled by a timer can be implemented.
-> > > > 
-> > > > ...
-> > > >
-> > > > +/*
-> > > > + * Maximum inodes per isw.  A specific value has been chosen to make
-> > > > + * struct inode_switch_wbs_context fit into 1024 bytes kmalloc.
-> > > > + */
-> > > > +#define WB_MAX_INODES_PER_ISW	115
-> > > 
-> > > Can't we do 1024/sizeof(struct inode_switch_wbs_context)?
-> > 
-> > It must be something like
-> > DIV_ROUND_DOWN_ULL(1024 - sizeof(struct inode_switch_wbs_context), sizeof(struct inode *)) + 1
-> 
-> Sorry to keep popping in for 1 offs but maybe this instead? I think the
-> above would result in > 1024 kzalloc() call.
-> 
-> DIV_ROUND_DOWN_ULL(max(1024 - sizeof(struct inode_switch_wbs_context), sizeof(struct inode *)),
->                    sizeof(struct inode *))
-> 
-> might need max_t not sure.
+Hey Sumit - Thanks for the review. 
 
-Unclear to me why plain old division won't work, but whatever.  Please
-figure it out?  "115" is too sad to live!
+> 
+> On Wed, 9 Jun 2021 at 05:55, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
+> >
+> > Uncouple the registration of dynamic shared memory buffers from the
+> > TEE_SHM_DMA_BUF flag. Drivers may wish to allocate dynamic shared memory
+> > regions but do not need them to be backed by a dma-buf when the memory
+> > region is private to the driver.
+> 
+> In this case drivers should use tee_shm_register() instead where the
+> memory allocated is actually private to the driver. However, you need
+> to remove TEE_SHM_DMA_BUF as a mandatory flag for tee_shm_register().
+> Have a look at an example here [1]. So modifying tee_shm_alloc() for
+> this purpose doesn't look appropriate to me.
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/keys/trusted-keys/trusted_tee.c#n73
+
+I noticed what you did in commit 2a6ba3f794e8 ("tee: enable support to
+register kernel memory") and considered moving ftpm and tee_bnxt_fw over
+to tee_shm_register(). I think that's likely the right long term
+approach but I decided against it since this series is a minimal set of
+bug fixes that will hopefully go to stable (I'm affected by these bugs
+in 5.4). Here are my reasons for feeling like moving to
+tee_shm_register() isn't minimal in terms of a stable-focused fix:
+
+- tee_shm_alloc() looks like it should work fine with AMD-TEE today.
+  tee_shm_register() definitely does not since AMD-TEE doesn't provide a
+  .shm_register or .shm_unregister hook. This may break existing users
+  of AMD-TEE?
+- tee_shm_register() has not historically been used for kernel
+  allocations and is not fixed wrt the bug that Jens fixed in commit
+  f1bbacedb0af ("tee: don't assign shm id for private shms").
+- tee_shm_alloc() performs allocations using contiguous pages
+  from alloc_pages() while tee_shm_register() performs non-contiguous
+  allocations with kcalloc(). I suspect this would be fine but I don't
+  know the secure world side of these things well enough to assess the
+  risk involved with such a change on the kernel side.
+
+I should have mentioned this in the cover letter but my hope was that
+these minimal changes would be accepted and then additional work could
+be done to merge tee_shm_alloc() and tee_shm_register() in a way that
+would allow the caller to request contiguous or non-contiguous pages,
+fix up the additional issues mentioned above, and then adjust the
+call sites in ftpm and tee_bnxt_fw as appropriate.
+
+I think that's a bigger set of changes because there are several things
+that still confuse/concern me:
+
+- Why does tee_shm_alloc() use TEE_SHM_MAPPED while tee_shm_register()
+  uses TEE_SHM_KERNEL_MAPPED or TEE_SHM_USER_MAPPED? Why do all three
+  exist?
+- Why does tee_shm_register() unconditionally use non-contiguous
+  allocations without ever taking into account whether or not
+  OPTEE_SMC_SEC_CAP_DYNAMIC_SHM was set? It sounds like that's required
+  from my reading of https://optee.readthedocs.io/en/latest/architecture/core.html#noncontiguous-shared-buffers.
+- Why is TEE_SHM_REGISTER implemented at the TEE driver level when it is
+  specific to OP-TEE? How to better abstract that away?
+
+Let me know if you agree with the more minimal approach that I took for
+these bug fix series or still feel like tee_shm_register() should be
+fixed up so that it is usable. Thanks!
+
+Tyler
+
+> 
+> -Sumit
+> 
+> >
+> > Allow callers of tee_shm_alloc() to specify the TEE_SHM_REGISTER flag to
+> > request registration. If the TEE implementation does not require dynamic
+> > shared memory to be registered, clear the flag prior to calling the
+> > corresponding pool alloc function. Update the OP-TEE driver to respect
+> > TEE_SHM_REGISTER, rather than TEE_SHM_DMA_BUF, when deciding whether to
+> > (un)register on alloc/free operations. The AMD-TEE driver continues to
+> > ignore the TEE_SHM_REGISTER flag.
+> >
+> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > ---
+> >  drivers/tee/optee/shm_pool.c |  5 ++---
+> >  drivers/tee/tee_shm.c        | 11 ++++++++++-
+> >  2 files changed, 12 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
+> > index da06ce9b9313..6054343a29fb 100644
+> > --- a/drivers/tee/optee/shm_pool.c
+> > +++ b/drivers/tee/optee/shm_pool.c
+> > @@ -27,7 +27,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+> >         shm->paddr = page_to_phys(page);
+> >         shm->size = PAGE_SIZE << order;
+> >
+> > -       if (shm->flags & TEE_SHM_DMA_BUF) {
+> > +       if (shm->flags & TEE_SHM_REGISTER) {
+> >                 unsigned int nr_pages = 1 << order, i;
+> >                 struct page **pages;
+> >
+> > @@ -42,7 +42,6 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+> >                         page++;
+> >                 }
+> >
+> > -               shm->flags |= TEE_SHM_REGISTER;
+> >                 rc = optee_shm_register(shm->ctx, shm, pages, nr_pages,
+> >                                         (unsigned long)shm->kaddr);
+> >                 kfree(pages);
+> > @@ -60,7 +59,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+> >  static void pool_op_free(struct tee_shm_pool_mgr *poolm,
+> >                          struct tee_shm *shm)
+> >  {
+> > -       if (shm->flags & TEE_SHM_DMA_BUF)
+> > +       if (shm->flags & TEE_SHM_REGISTER)
+> >                 optee_shm_unregister(shm->ctx, shm);
+> >
+> >         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
+> > diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+> > index 00472f5ce22e..1c0176550b9c 100644
+> > --- a/drivers/tee/tee_shm.c
+> > +++ b/drivers/tee/tee_shm.c
+> > @@ -117,7 +117,7 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+> >                 return ERR_PTR(-EINVAL);
+> >         }
+> >
+> > -       if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF))) {
+> > +       if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF | TEE_SHM_REGISTER))) {
+> >                 dev_err(teedev->dev.parent, "invalid shm flags 0x%x", flags);
+> >                 return ERR_PTR(-EINVAL);
+> >         }
+> > @@ -137,6 +137,15 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+> >                 goto err_dev_put;
+> >         }
+> >
+> > +       if (!teedev->desc->ops->shm_register ||
+> > +           !teedev->desc->ops->shm_unregister) {
+> > +               /* registration is not required by the TEE implementation */
+> > +               flags &= ~TEE_SHM_REGISTER;
+> > +       } else if (flags & TEE_SHM_DMA_BUF) {
+> > +               /* all dma-buf backed shm allocations are registered */
+> > +               flags |= TEE_SHM_REGISTER;
+> > +       }
+> > +
+> >         shm->flags = flags | TEE_SHM_POOL;
+> >         shm->ctx = ctx;
+> >         if (flags & TEE_SHM_DMA_BUF)
+> > --
+> > 2.25.1
+> >
+> 
