@@ -2,127 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B445C3A0ED6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065EE3A0ED8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 10:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237687AbhFIInk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 04:43:40 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54644 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235548AbhFIIni (ORCPT
+        id S237710AbhFIIny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 04:43:54 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:49199 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232555AbhFIInw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 04:43:38 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        Wed, 9 Jun 2021 04:43:52 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 85175219B9;
-        Wed,  9 Jun 2021 08:41:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623228103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 47D6922173;
+        Wed,  9 Jun 2021 10:41:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1623228117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XW50r/dVGSB8GZhYgnYKju32pddbaWM8FKgjyzfxzdc=;
-        b=Ts9zdesHFrCvu5FYB1cN8HQJQto0fnqSf/aSkJQY+FL6Ohhrdukw4yupD8JatkUL7qWuoJ
-        7lcfSuhPzKi0+jDFYQuzlN4OnXxUr4l2bw85HleDo71XLUe8f8JkgXwbhMN39mfgEVckN6
-        6bLHi58L+BruKadlUR3hsFwqbbGU7WE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623228103;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XW50r/dVGSB8GZhYgnYKju32pddbaWM8FKgjyzfxzdc=;
-        b=lzOofCO4L+MEvzYmZo7eT1zsHFhf4PCx2jkHGSshPy8rKZpE1o65W3t6YRNhLSAdJVB30z
-        SOal9mAK8P1iAfCQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 6149B118DD;
-        Wed,  9 Jun 2021 08:41:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623228103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XW50r/dVGSB8GZhYgnYKju32pddbaWM8FKgjyzfxzdc=;
-        b=Ts9zdesHFrCvu5FYB1cN8HQJQto0fnqSf/aSkJQY+FL6Ohhrdukw4yupD8JatkUL7qWuoJ
-        7lcfSuhPzKi0+jDFYQuzlN4OnXxUr4l2bw85HleDo71XLUe8f8JkgXwbhMN39mfgEVckN6
-        6bLHi58L+BruKadlUR3hsFwqbbGU7WE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623228103;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XW50r/dVGSB8GZhYgnYKju32pddbaWM8FKgjyzfxzdc=;
-        b=lzOofCO4L+MEvzYmZo7eT1zsHFhf4PCx2jkHGSshPy8rKZpE1o65W3t6YRNhLSAdJVB30z
-        SOal9mAK8P1iAfCQ==
-Received: from director1.suse.de ([192.168.254.71])
-        by imap3-int with ESMTPSA
-        id VP8zF8d+wGD3XwAALh3uQQ
-        (envelope-from <vbabka@suse.cz>); Wed, 09 Jun 2021 08:41:43 +0000
-Subject: Re: [RFC 25/26] mm, slub: use migrate_disable() in put_cpu_partial()
-To:     Jann Horn <jannh@google.com>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210524233946.20352-1-vbabka@suse.cz>
- <20210524233946.20352-26-vbabka@suse.cz>
- <CAG48ez1mvUuXwg0YPH5ANzhQLpbphqk-ZS+jbRz+H66fvm4FcA@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <2a5cddf1-100d-9d24-fb98-8a5bd439a804@suse.cz>
-Date:   Wed, 9 Jun 2021 10:41:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        bh=vIOggMOH/sTibwxER0iVx8Wsd+NnlmsfQG1YNVwFlk0=;
+        b=NJlJPCftDBjjCFjGBv5judzgch7SzBocWzptSmxUhu2LiKrjDq+VbRJ49EpFXhiAb6/HYF
+        SVmmeiwbGtjIjso8WmGI+saz87lo7D9qkdw/GD1nSyvGzFx0VjtYtUfYJnYZjJdqEZi+tq
+        zjgk/7XpdAWxOt7jmqJKUqyxUmr2xBw=
 MIME-Version: 1.0
-In-Reply-To: <CAG48ez1mvUuXwg0YPH5ANzhQLpbphqk-ZS+jbRz+H66fvm4FcA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 09 Jun 2021 10:41:55 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
+        allan.nielsen@microchip.com,
+        Claudiu Manoil <claudiu.manoil@nxp.com>, davem@davemloft.net,
+        idosch@mellanox.com, joergen.andreasen@microchip.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Po Liu <po.liu@nxp.com>, vinicius.gomes@intel.com
+Subject: Re: [EXT] Re: [net-next] net: dsa: felix: disable always guard band
+ bit for TAS config
+In-Reply-To: <DB8PR04MB5785C5BDBDD51401362563D6F0369@DB8PR04MB5785.eurprd04.prod.outlook.com>
+References: <c7618025da6723418c56a54fe4683bd7@walle.cc>
+ <20210504185040.ftkub3ropuacmyel@skbuf>
+ <ccb40b7fd18b51ecfc3f849a47378c54@walle.cc>
+ <20210504191739.73oejybqb6z7dlxr@skbuf>
+ <d933eef300cb1e1db7d36ca2cb876ef6@walle.cc>
+ <20210504213259.l5rbnyhxrrbkykyg@skbuf>
+ <efe5ac03ceddc8ff472144b5fe9fd046@walle.cc>
+ <DB8PR04MB5785A6A773FEA4F3E0E77698F0579@DB8PR04MB5785.eurprd04.prod.outlook.com>
+ <2898c3ae1319756e13b95da2b74ccacc@walle.cc>
+ <DB8PR04MB5785D01D2F9091FB9267D515F0579@DB8PR04MB5785.eurprd04.prod.outlook.com>
+ <20210507121909.ojzlsiexficjjjun@skbuf>
+ <07b1bc11eee83d724d4ddc4ee8378a12@walle.cc>
+ <DB8PR04MB5785C5BDBDD51401362563D6F0369@DB8PR04MB5785.eurprd04.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <32f1854fdc0fda86627371bb82f2c873@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/21 5:33 PM, Jann Horn wrote:
-> On Tue, May 25, 2021 at 1:40 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->> In put_cpu_partial, we need a stable cpu, but being preempted is not an issue.
->> So, disable migration instead of preemption.
+Am 2021-06-09 10:06, schrieb Xiaoliang Yang:
+> On 2021-06-07 19:26, Michael Walle wrote:
+>> 
+>> Hi Vladimir, Hi Xiaoliang,
+>> 
+>> Am 2021-05-07 14:19, schrieb Vladimir Oltean:
+>> > Devices like Felix need the per-queue max SDU from the user - if that
+>> > isn's specified in the netlink message they'll have to default to the
+>> > interface's MTU.
+>> 
+>> Btw. just to let you and Xiaoliang know:
+>> 
+>> It appears that PORT_MAX_SDU isn't working as expected. It is used as 
+>> a
+>> fallback if QMAXSDU_CFG_n isn't set for the guard band calculation. 
+>> But it
+>> appears to be _not_ used for discarding any frames. E.g. if you set
+>> PORT_MAX_SDU to 500 the port will still happily send frames larger 
+>> than 500
+>> bytes. (Unless of course you hit the guard band of 500 bytes). OTOH
+>> QMAXSDU_CFG_n works as expected, it will discard oversized frames - 
+>> and
+>> presumly will set the guard band accordingly, I haven't tested this 
+>> explicitly.
+>> 
+>> Thus, I wonder what sense PORT_MAX_SDU makes at all. If you set the 
+>> guard
+>> band to a smaller value than the MTU, you'll also need to make sure, 
+>> there will
+>> be no larger frames scheduled on that port.
+>> 
+>> In any case, the workaround is to set QMAXSDU_CFG_n (for all
+>> n=0..7) to the desired max_sdu value instead of using PORT_MAX_SDU.
+>> 
+>> It might also make sense to check with the IP supplier.
+>> 
+>> In the case anyone wants to implement that for (upstream) linux ;)
+>> 
+>> -michael
 > 
-> I wouldn't say "not an issue", more like "you're not making it worse".
-> 
-> From what I can tell, the following race can already theoretically happen:
-> 
-> task A: put_cpu_partial() calls preempt_disable()
-> task A: oldpage = this_cpu_read(s->cpu_slab->partial)
-> interrupt: kfree() reaches unfreeze_partials() and discards the page
-> task B (on another CPU): reallocates page as page cache
-> task A: reads page->pages and page->pobjects, which are actually
-> halves of the pointer page->lru.prev
-> task B (on another CPU): frees page
-> interrupt: allocates page as SLUB page and places it on the percpu partial list
-> task A: this_cpu_cmpxchg() succeeds
+> Yes, PORT_MAX_SDU is only used for guard band calculation. DEV_GMII:
+> MAC_MAXLEN_CFG
+> limited the frame length accepted by the MAC.
 
-Oops, nice find. Thanks.
+But MAC_MAXLEN_CFG is for ingress handling while you want egress 
+handling,
+for example think two ingress ports sending to one egress port. The
+limitation is on the egress side. Or two queues with different guard
+bands/maxsdu settings.
 
-> which would cause page->pages and page->pobjects to end up containing
-> halves of pointers that would then influence when put_cpu_partial()
-> happens and show up in root-only sysfs files. Maybe that's acceptable,
-> I don't know. But there should probably at least be a comment for now
-> to point out that we're reading union fields of a page that might be
-> in a completely different state.
-> 
-> (Someone should probably fix that code sometime and get rid of
-> page->pobjects entirely, given how inaccurate it is...)
+> I am worried that
+> QMAXSDU is not a universal
+> setting, it may just be set on Felix, so there is no suitable place to
+> add this configuration.
 
-I'll try to address it separately later. Probably just target a number of pages,
-instead of objects, on the list and store the number as part of struct
-kmem_cache_cpu, not struct page. The inaccuracy leading to potentially long
-lists is a good reason enough, the race scenario above is another one...
+I can't follow you here. I'm talkling about felix and its quirks. Eg. 
+the
+static guard band handling there, the reason why we need the maxsdu
+setting in the first place.
 
+Or do you think about how to communicate that setting from user space to
+the kernel? In this case, I'd say we'll need some kind of parameter for
+this kind of devices which doesn't have a dynamic guard band mechanism.
+Felix won't be the only one.
+
+-michael
