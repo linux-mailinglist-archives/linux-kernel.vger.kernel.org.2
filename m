@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95733A136C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7E23A1373
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239606AbhFILuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:50:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239507AbhFILt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:49:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9D5961108;
-        Wed,  9 Jun 2021 11:48:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623239283;
-        bh=L0TaDiumV9g0cIteIcgFV0j4u4Kh80VYFpiyW9vBRQY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V3GbvmOpjfoGU/6X02DR5JX6hvIedBwigbJH4DPNd3RxI73jhsvmlKTbhj330ujVg
-         MkQoQiCf+VlCj/IQGfkJBa2OWLchCy8AHrP1QwVIYkJ6lCBFduRyJc0EFX4RkxnW7T
-         5cOAVjmHcsL6/p7UHZjX4Vd99wZbb01BEjFPO7df7hZZgWma4c0njSDGZ4xtCQUlWW
-         7Df5KvMkOO2W5bc+qyNlxYNOSQ7kHmGqFkk1/a3mWd2BIwKjPadoo5PkOl9aD6IDGL
-         dAAgr1dEGqbHZ70tTAxmDvr5fXFKw4A/m6l9HCoLsTKQSMc5RybHRyo3Z1RYtGTiIS
-         kU0ltdsnuhLAg==
-Date:   Wed, 9 Jun 2021 12:47:47 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCHv3 3/5] dt-bindings: misc: ge-achc: Convert to DT schema
- format
-Message-ID: <20210609114747.GA19966@sirena.org.uk>
-References: <20210528113346.37137-1-sebastian.reichel@collabora.com>
- <20210528113346.37137-4-sebastian.reichel@collabora.com>
+        id S234365AbhFILwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:52:08 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40416 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235114AbhFILwD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 07:52:03 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lqwil-0006hA-UX; Wed, 09 Jun 2021 11:50:08 +0000
+To:     "Hans de Goede <hdegoede"@redhat.com,
+        Mark Gross <mgross@linux.intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Cc:     platform-driver-x86@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Computation of return value being discarded in get_cpu_power() in
+ drivers/platform/x86/intel_ips.c
+Message-ID: <548dd463-3942-00a1-85c3-232897dea1a3@canonical.com>
+Date:   Wed, 9 Jun 2021 12:50:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
-Content-Disposition: inline
-In-Reply-To: <20210528113346.37137-4-sebastian.reichel@collabora.com>
-X-Cookie: Don't I know you?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---SLDf9lqlvOQaIe6s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I was reviewing some old unassigned variable warnings from static
+analysis by Coverity and found an issue introduced with the following
+commit:
 
-On Fri, May 28, 2021 at 01:33:45PM +0200, Sebastian Reichel wrote:
+commit aa7ffc01d254c91a36bf854d57a14049c6134c72
+Author: Jesse Barnes <jbarnes@virtuousgeek.org>
+Date:   Fri May 14 15:41:14 2010 -0700
 
-> -Required SPI properties:
-> -
-> -- reg : Should be address of the device chip select within
-> -  the controller.
+    x86 platform driver: intelligent power sharing driver
 
-There is an existing binding...
+The analysis is as follows:
 
-> +  reg:
-> +    minItems: 2
-> +    maxItems: 2
-> +    items:
-> +      - description: Control interface
-> +      - description: Firmware programming interface
+drivers/platform/x86/intel_ips.c
 
-...but this new one is incompatible with it.
+ 871 static u32 get_cpu_power(struct ips_driver *ips, u32 *last, int period)
+ 872 {
+ 873        u32 val;
+ 874        u32 ret;
+ 875
+ 876        /*
+ 877         * CEC is in joules/65535.  Take difference over time to
+ 878         * get watts.
+ 879         */
+ 880        val = thm_readl(THM_CEC);
+ 881
+ 882        /* period is in ms and we want mW */
+ 883        ret = (((val - *last) * 1000) / period);
 
---SLDf9lqlvOQaIe6s
-Content-Type: application/pgp-signature; name="signature.asc"
+Unused value (UNUSED_VALUE)
+assigned_value:  Assigning value from ret * 1000U / 65535U to ret here,
+but that stored value is not used.
 
------BEGIN PGP SIGNATURE-----
+ 884        ret = (ret * 1000) / 65535;
+ 885        *last = val;
+ 886
+ 887        return 0;
+ 888 }
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDAqmIACgkQJNaLcl1U
-h9BnSQf9E6uWlvT9txzp0eCNjIwGtxi15bHwfyQ4dQhGbb7CsFQJLzub+Wbk+LUT
-F79SYf9G4QslbbSb3U2qPEJOZLH2Vki3dv/qccDBbi7wFRqs+lfTYuDcoENV0e/j
-TOJgIdZxKSl+bAmtZunnFwj2rEOEE/iTiocEaBK1vCuosIRgb4D6KpG7wccD23hY
-jwd6Tr8O84lFz0182zSN8p1yyBJ2kqa+oR+T8ijsFcWwQHFITxT++vX4iFfcrHao
-O1rzeerLasTMOHz2gQwSHH7zdohOpHIoGSjc/2dISoVSr6jph5yhDikTn2Rpyxb2
-lJwWmyNimO47h5zx7Qt2PkiQDcsDRQ==
-=sL3/
------END PGP SIGNATURE-----
+I'm really not sure why ret is being calculated on lines 883,884 and not
+being used. Should that be *last = ret on line 885? Looks suspect anyhow.
 
---SLDf9lqlvOQaIe6s--
+Colin
+
+
