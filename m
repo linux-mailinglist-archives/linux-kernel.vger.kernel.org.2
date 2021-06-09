@@ -2,70 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C27B3A0C95
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCEE3A0C94
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236808AbhFIGlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:41:53 -0400
-Received: from m12-14.163.com ([220.181.12.14]:47666 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232644AbhFIGlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:41:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=mfXDD
-        30mZIKAgidz42wFNQIPzrbm0VZQE69hwJp3nEU=; b=dMQioE975TwvBssOQ7LA1
-        jvF2TUp0+qSzC+t0OOXu0wHUxjHmz5oQE8B6Nk3TQuYPbsNmIp1k1Qr8sQu3qlCu
-        nYCeaZilkV7GFT/cd413QpT4m1UtBDeKI5SGi1vJxoaGtzXCmPMGJQkMAeCkzzQg
-        XlWzTgBg8iIa3kLhEUkpoc=
-Received: from localhost.localdomain (unknown [218.17.89.111])
-        by smtp10 (Coremail) with SMTP id DsCowABXoWUGYsBgw6ASNw--.18641S2;
-        Wed, 09 Jun 2021 14:39:25 +0800 (CST)
-From:   ChunyouTang <tangchunyou@163.com>
-To:     robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, airlied@linux.ie, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        tangchunyou@icubecorp.cn,
-        tangchunyou <tangchunyou@163.icubecorp.cn>
-Subject: [PATCH] modified: gpu/drm/panfrost/panfrost_gpu.c
-Date:   Wed,  9 Jun 2021 14:38:50 +0800
-Message-Id: <20210609063850.2060-1-tangchunyou@163.com>
-X-Mailer: git-send-email 2.30.0.windows.1
+        id S236792AbhFIGlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:41:08 -0400
+Received: from smtprelay0019.hostedemail.com ([216.40.44.19]:40892 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230484AbhFIGlH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 02:41:07 -0400
+Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id E0DE7182CED28;
+        Wed,  9 Jun 2021 06:39:12 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 094A520D75C;
+        Wed,  9 Jun 2021 06:39:11 +0000 (UTC)
+Message-ID: <9ebb46d4cb9f66c2bb3e6d1987d8e79fa20323f9.camel@perches.com>
+Subject: Re: Re: [PATCH] drivers/media/usb/gspca: fix typo issues
+From:   Joe Perches <joe@perches.com>
+To:     herman yim <herman.yim88@gmail.com>,
+        "yanshuaijun@yulong.com" <yanshuaijun@yulong.com>
+Cc:     mchehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Tue, 08 Jun 2021 23:39:10 -0700
+In-Reply-To: <CAP6HEvL-wCAfBJLBoJ2gaUBN0G-CWFb95e2nd6nwPNdwF7VaJQ@mail.gmail.com>
+References: <20210609033245.3410-1-yanshuaijun@yulong.com>
+         <601ccbd8b792abd0177475dd09fdd2d6c6f4a6af.camel@perches.com>
+         <60c05921.1c69fb81.dbb59.4019SMTPIN_ADDED_BROKEN@mx.google.com>
+         <CAP6HEvL-wCAfBJLBoJ2gaUBN0G-CWFb95e2nd6nwPNdwF7VaJQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowABXoWUGYsBgw6ASNw--.18641S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XrykCFWkXw13Aw15XFWDArb_yoWDZrg_u3
-        W7ur9rXrZIkFn0kwsayan7uryS9ryUZw40vw1xGryvk3Z8Ar9rK3s2vrs8Zr18Ww4UAFnF
-        yanFqF1Fyry7tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnZYFJUUUUU==
-X-Originating-IP: [218.17.89.111]
-X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/xtbBRQesUVPAMVKOAwAAsC
+X-Spam-Status: No, score=1.60
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 094A520D75C
+X-Stat-Signature: 8s5kkpjp14sbpo9587ncxwj9wrczg6uo
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/lv6VH2VNvOHeZQWgaoCjS0n3Zjcgn6GU=
+X-HE-Tag: 1623220751-774289
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: tangchunyou <tangchunyou@163.icubecorp.cn>
+On Wed, 2021-06-09 at 14:29 +0800, herman yim wrote:
+> hi Joe,
+>  many flicker written into fliker in this file, relate to variable name and
+> function name.
+>  change them together ? what is your suggestion ?
 
-The GPU exception fault status register(0x3C),the low 8 bit is the
-EXCEPTION_TYPE.We can see the description at P3-78 in spec.
+Leave it alone.  It's old and probably obsolete.
 
-Signed-off-by: tangchunyou <tangchunyou@163.icubecorp.cn>
----
- drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-index 2aae636f1cf5..1fffb6a0b24f 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-@@ -33,7 +33,7 @@ static irqreturn_t panfrost_gpu_irq_handler(int irq, void *data)
- 		address |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO);
- 
- 		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at 0x%016llx\n",
--			 fault_status & 0xFF, panfrost_exception_name(pfdev, fault_status),
-+			 fault_status & 0xFF, panfrost_exception_name(pfdev, fault_status & 0xFF),
- 			 address);
- 
- 		if (state & GPU_IRQ_MULTIPLE_FAULT)
--- 
-2.25.1
 
