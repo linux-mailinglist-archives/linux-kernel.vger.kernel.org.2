@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E7A3A1FC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7453A1FCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhFIWHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 18:07:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229823AbhFIWHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 18:07:34 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 375C4613EF;
-        Wed,  9 Jun 2021 22:05:39 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1lr6KQ-002aU0-98; Wed, 09 Jun 2021 18:05:38 -0400
-Message-ID: <20210609220538.117061369@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Wed, 09 Jun 2021 18:04:59 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 2/2] tracing: Add better comments for the filtering temp buffer use case
-References: <20210609220457.220164154@goodmis.org>
+        id S229976AbhFIWKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 18:10:32 -0400
+Received: from mail-ej1-f52.google.com ([209.85.218.52]:33703 "EHLO
+        mail-ej1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhFIWKa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 18:10:30 -0400
+Received: by mail-ej1-f52.google.com with SMTP id g20so40753915ejt.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 15:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=huNq8zmvWoHj/7mX4452ngkraIV+X5LPemMUygCMxm8=;
+        b=hgBnGnfItYVgT5nriZbB0awvzlm/Y0OnGqaFvrmrMhLayljVz6MpfbFb1vDi5elTiW
+         ZnNFsmL499p8pjS6d5GlOegvwFdtnv8frb4HUR+XZpxWCy0V4FTQgr1N5pg+M/r6lwpm
+         0xNyTe/qWVkOoT0Y1glmWBzvQjIcX3mue7U6tcMkEI9U0kNXebcEc6xkBY/IMwdYAfOu
+         0lyuxp7bzR36Va0EwPv1ylvw4/aG9XJgZbrIQw4ZW7H8wCspUmz+AYrVHR2OXWFvN00t
+         bBKWe2VM4k/N+Uq8cBOqIG5mn+ClUmhamrz8ANyvM/IpW2ditKaF4PYqN/oYMRTJjQPI
+         zijQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=huNq8zmvWoHj/7mX4452ngkraIV+X5LPemMUygCMxm8=;
+        b=k9yrmrlkKtwwEeHKonTLGolntkzs0bL3E2XU3fB7wgQMO1mZX5NPItkE/unjyP32//
+         iVNjj12qi1zsnHyeYTOu6lHXgR9hhWUw+NwuhWy0JSMQdWWrt7M/wMRt78hQ92b91qzJ
+         5METc0pp2KN7OIm2XEQPuhj3mvTqTksHBLYPHXprPippmYdtYn7Rsyk3B/BCdeSJ7Dmt
+         LkAEr6HIdlK6lFEey2swdvrxcyx5KJLbWtCCHTs/S7zWVXphEYPzTDeJ+jECnFxMKVu2
+         4DZTTuzakqYLftr3RF2737DR+hpehpSdYMbCszQhpZ18IK1tYIynMOWF9za/OEpRXESN
+         aHrw==
+X-Gm-Message-State: AOAM533foJ0h78npD82vCYB83hYVGjPnlkN6pC5QTkK9kY8nsBZAknk+
+        QNF/Jyh+Ab1P7MwWUycc5uGEt3k0ckZF1g==
+X-Google-Smtp-Source: ABdhPJxUs7A+2kn2ss1y8X2MuWMFqe4tr8KWiOfHP/1frCLYVaynJFV7hn31iqn35kevXzXOt6e77Q==
+X-Received: by 2002:a17:906:2854:: with SMTP id s20mr1678505ejc.335.1623276454157;
+        Wed, 09 Jun 2021 15:07:34 -0700 (PDT)
+Received: from localhost.localdomain (dh207-96-76.xnet.hr. [88.207.96.76])
+        by smtp.googlemail.com with ESMTPSA id q16sm409770edt.26.2021.06.09.15.07.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 15:07:33 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH 1/3] hwmon: (tps23861) define regmap max register
+Date:   Thu, 10 Jun 2021 00:07:26 +0200
+Message-Id: <20210609220728.499879-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Define the max register address the device supports.
+This allows reading the whole register space via
+regmap debugfs, without it only register 0x0 is visible.
 
-When filtering is enabled, the event is copied into a temp buffer instead
-of being written into the ring buffer directly, because the discarding of
-events from the ring buffer is very expensive, and doing the extra copy is
-much faster than having to discard most of the time.
+This was forgotten in the original driver commit.
 
-As that logic is subtle, add comments to explain in more detail to what is
-going on and how it works.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
 ---
- kernel/trace/trace.c | 36 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
+ drivers/hwmon/tps23861.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 7f198d8959f2..6a83ab5c5147 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2736,10 +2736,44 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
- 	if (!tr->no_filter_buffering_ref &&
- 	    (trace_file->flags & (EVENT_FILE_FL_SOFT_DISABLED | EVENT_FILE_FL_FILTERED)) &&
- 	    (entry = this_cpu_read(trace_buffered_event))) {
--		/* Try to use the per cpu buffer first */
-+		/*
-+		 * Filtering is on, so try to use the per cpu buffer first.
-+		 * This buffer will simulate a ring_buffer_event,
-+		 * where the type_len is zero and the array[0] will
-+		 * hold the full length.
-+		 * (see include/linux/ring-buffer.h for details on
-+		 *  how the ring_buffer_event is structured).
-+		 *
-+		 * Using a temp buffer during filtering and copying it
-+		 * on a matched filter is quicker than writing directly
-+		 * into the ring buffer and then discarding it when
-+		 * it doesn't match. That is because the discard
-+		 * requires several atomic operations to get right.
-+		 * Copying on match and doing nothing on a failed match
-+		 * is still quicker than no copy on match, but having
-+		 * to discard out of the ring buffer on a failed match.
-+		 */
- 		int max_len = PAGE_SIZE - struct_size(entry, array, 1);
+diff --git a/drivers/hwmon/tps23861.c b/drivers/hwmon/tps23861.c
+index c2484f15298b..fd0be8883829 100644
+--- a/drivers/hwmon/tps23861.c
++++ b/drivers/hwmon/tps23861.c
+@@ -117,6 +117,7 @@ struct tps23861_data {
+ static struct regmap_config tps23861_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
++	.max_register = 0x6f,
+ };
  
- 		val = this_cpu_inc_return(trace_buffered_event_cnt);
-+
-+		/*
-+		 * Preemption is disabled, but interrupts and NMIs
-+		 * can still come in now. If that happens after
-+		 * the above increment, then it will have to go
-+		 * back to the old method of allocating the event
-+		 * on the ring buffer, and if the filter fails, it
-+		 * will have to call ring_buffer_discard_commit()
-+		 * to remove it.
-+		 *
-+		 * Need to also check the unlikely case that the
-+		 * length is bigger than the temp buffer size.
-+		 * If that happens, then the reserve is pretty much
-+		 * guaranteed to fail, as the ring buffer currently
-+		 * only allows events less than a page. But that may
-+		 * change in the future, so let the ring buffer reserve
-+		 * handle the failure in that case.
-+		 */
- 		if (val == 1 && unlikely(len < max_len)) {
- 			trace_event_setup(entry, type, trace_ctx);
- 			entry->array[0] = len;
+ static int tps23861_read_temp(struct tps23861_data *data, long *val)
 -- 
-2.30.2
+2.31.1
+
