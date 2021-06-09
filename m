@@ -2,189 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FD73A1178
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC34F3A1060
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238387AbhFIKwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 06:52:06 -0400
-Received: from smtp.outgoing.loopia.se ([93.188.3.37]:55561 "EHLO
-        smtp.outgoing.loopia.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238095AbhFIKvx (ORCPT
+        id S238156AbhFIJn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 05:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234720AbhFIJn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 06:51:53 -0400
-Received: from s807.loopia.se (localhost [127.0.0.1])
-        by s807.loopia.se (Postfix) with ESMTP id E4FB42E6677A
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 11:32:29 +0200 (CEST)
-Received: from s499.loopia.se (unknown [172.22.191.5])
-        by s807.loopia.se (Postfix) with ESMTP id D456A2E2DB77;
-        Wed,  9 Jun 2021 11:32:29 +0200 (CEST)
-Received: from s472.loopia.se (unknown [172.22.191.5])
-        by s499.loopia.se (Postfix) with ESMTP id CE0DE1CE6294;
-        Wed,  9 Jun 2021 11:32:29 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at amavis.loopia.se
-X-Spam-Flag: NO
-X-Spam-Score: -1
-X-Spam-Level: 
-X-Spam-Status: No, score=-1 tagged_above=-999 required=6.2
-        tests=[ALL_TRUSTED=-1] autolearn=disabled
-Received: from s645.loopia.se ([172.22.191.5])
-        by s472.loopia.se (s472.loopia.se [172.22.190.12]) (amavisd-new, port 10024)
-        with LMTP id 8fMooHoXKhsw; Wed,  9 Jun 2021 11:32:29 +0200 (CEST)
-X-Loopia-Auth: user
-X-Loopia-User: carl@hgsystem.se
-X-Loopia-Originating-IP: 155.4.133.180
-Received: from localhost.localdomain (h-155-4-133-180.NA.cust.bahnhof.se [155.4.133.180])
-        (Authenticated sender: carl@hgsystem.se)
-        by s645.loopia.se (Postfix) with ESMTPSA id 05215157A074;
-        Wed,  9 Jun 2021 11:32:28 +0200 (CEST)
-From:   Erik Rosen <erik.rosen@metormote.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Erik Rosen <erik.rosen@metormote.com>
-Subject: [PATCH v5 5/5] hwmon: (pmbus/pim4328) Add documentation for the pim4328 PMBus driver
-Date:   Wed,  9 Jun 2021 11:32:09 +0200
-Message-Id: <20210609093209.8349-6-erik.rosen@metormote.com>
-X-Mailer: git-send-email 2.11.0 (Apple Git-81)
-In-Reply-To: <20210609093209.8349-1-erik.rosen@metormote.com>
-References: <20210609093209.8349-1-erik.rosen@metormote.com>
+        Wed, 9 Jun 2021 05:43:26 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D9DC061574;
+        Wed,  9 Jun 2021 02:41:31 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id j12so18978861pgh.7;
+        Wed, 09 Jun 2021 02:41:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mhMcjERsi3wx3J0HCHYpS+goiMXBDBgg8cMNxlYjvGA=;
+        b=ADcj1YVvHTLC+vKMpsqWPDJsBSDbQj9Juth1j7LfkjKpeyQiAv4eLJia7JtZshRFtJ
+         A+TDHANIoo9IOJ4Kh0lYPvrrYa5nHWPVMBPmA405nRsS3sz38uj/ZBeAXl2ZMbNQjV+D
+         mqkGmibxA5nlTggMZR8xaJL9mgWWlN0qvJ13j0sbvH5mcxMOF9754ReExqahIfdHqL2I
+         NGrYqKJ6VLkatC3yXMel7BVvJXeid1JTMV2nRKXWSqgMLC4VnNuNxzIDSde7bQegncwu
+         8i1TuPOBXCJ8KzJ7C/7oFxid3upfTcHVU7lyPDQqvDi7b+rtEOCs4e9uougdvb5+gY72
+         zPtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mhMcjERsi3wx3J0HCHYpS+goiMXBDBgg8cMNxlYjvGA=;
+        b=ZwyFoZ53V0dbFpm6oVmzTiQtyyCEfJTI9z3MPc9OY6EFJpmkkteZ466t9mbB5u0PDr
+         nAZuYLqz0rmGo0DwpVMMQRuQ3SMl8CWcW4PFTX1eUY9CiAZu6tGnMNo2XxHGqmvlddcb
+         sXnh1tIBj+z7ojFXEqIxre4fvESjSTZnpKupLIG/WJHYvUDZofFm6LojcgB+5cJfPl24
+         EwR/p11kAdrynFD3/D8gGUMMKHsGr5UHcWP6LWMZK2nnfnQhjBQTdez7GJl97vntFceA
+         0x7zb2KVcxPmywj4V2S25Jnz70/PJOW5QLnEuVsaYFh0Cf9UOoGvcd6RcxTvmFheJWxi
+         WNjw==
+X-Gm-Message-State: AOAM532QXMwSk4MEFV1rcDXVB7QZVtWxnWlHpHTZg05X2MhAeWTbBR+N
+        XeOnMRYimKy1lcoWHAL7v0u0hhqTCzQuHQS5GOXjkVZ/dhWXvg==
+X-Google-Smtp-Source: ABdhPJwAXk5XLhiYZ2SCv5KKecZJLPTCdFzz10ao0FJv/DCA2fGlPOpnYQTjWTA/Q177jVl11ZJJ3bM2RHXJ7omJZKU=
+X-Received: by 2002:a6b:287:: with SMTP id 129mr18520979ioc.182.1623231195095;
+ Wed, 09 Jun 2021 02:33:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210608160603.1535935-1-hch@lst.de> <20210608160603.1535935-5-hch@lst.de>
+In-Reply-To: <20210608160603.1535935-5-hch@lst.de>
+From:   Ilya Dryomov <idryomov@gmail.com>
+Date:   Wed, 9 Jun 2021 11:33:13 +0200
+Message-ID: <CAOi1vP8Xe1ZqE8fe=8KcU00xDjRrvaRONAC_TYYctsE1dns0Og@mail.gmail.com>
+Subject: Re: [PATCH 04/16] bvec: add a bvec_kmap_local helper
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geoff Levand <geoff@infradead.org>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
+        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Ceph Development <ceph-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation and index link for pim4328 PMBus driver.
+On Tue, Jun 8, 2021 at 6:06 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Add a helper to call kmap_local_page on a bvec.  There is no need for
+> an unmap helper given that kunmap_local accept any address in the mapped
+> page.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  include/linux/bvec.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/include/linux/bvec.h b/include/linux/bvec.h
+> index 883faf5f1523..d64d6c0ceb77 100644
+> --- a/include/linux/bvec.h
+> +++ b/include/linux/bvec.h
+> @@ -7,6 +7,7 @@
+>  #ifndef __LINUX_BVEC_H
+>  #define __LINUX_BVEC_H
+>
+> +#include <linux/highmem.h>
+>  #include <linux/bug.h>
+>  #include <linux/errno.h>
+>  #include <linux/limits.h>
+> @@ -183,4 +184,9 @@ static inline void bvec_advance(const struct bio_vec *bvec,
+>         }
+>  }
+>
+> +static inline void *bvec_kmap_local(struct bio_vec *bvec)
+> +{
+> +       return kmap_local_page(bvec->bv_page) + bvec->bv_offset;
+> +}
+> +
+>  #endif /* __LINUX_BVEC_H */
 
-Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
----
- Documentation/hwmon/index.rst   |   1 +
- Documentation/hwmon/pim4328.rst | 105 ++++++++++++++++++++++++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 Documentation/hwmon/pim4328.rst
+Might be useful to add the second sentence of the commit message as
+a comment for bvec_kmap_local().  It could be expanded to mention the
+single-page bvec caveat too.
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 9ed60fa84cbe..719625f8f755 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -150,6 +150,7 @@ Hardware Monitoring Kernel Drivers
-    pc87360
-    pc87427
-    pcf8591
-+   pim4328
-    pm6764tr
-    pmbus
-    powr1220
-diff --git a/Documentation/hwmon/pim4328.rst b/Documentation/hwmon/pim4328.rst
-new file mode 100644
-index 000000000000..70c9e7a6882c
---- /dev/null
-+++ b/Documentation/hwmon/pim4328.rst
-@@ -0,0 +1,105 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Kernel driver pim4328
-+=====================
-+
-+Supported chips:
-+
-+  * Flex PIM4328
-+
-+    Prefix: 'pim4328', 'bmr455'
-+
-+    Addresses scanned: -
-+
-+    Datasheet:
-+
-+https://flexpowermodules.com/resources/fpm-techspec-pim4328
-+
-+  * Flex PIM4820
-+
-+    Prefixes: 'pim4820'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-pim4820
-+
-+  * Flex PIM4006, PIM4106, PIM4206, PIM4306, PIM4406
-+
-+    Prefixes: 'pim4006', 'pim4106', 'pim4206', 'pim4306', 'pim4406'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-pim4006
-+
-+Author: Erik Rosen <erik.rosen@metormote.com>
-+
-+
-+Description
-+-----------
-+
-+This driver supports hardware monitoring for Flex PIM4328 and
-+compatible digital power interface modules.
-+
-+The driver is a client driver to the core PMBus driver. Please see
-+Documentation/hwmon/pmbus.rst and Documentation.hwmon/pmbus-core for details
-+on PMBus client drivers.
-+
-+
-+Usage Notes
-+-----------
-+
-+This driver does not auto-detect devices. You will have to instantiate the
-+devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-+details.
-+
-+
-+Platform data support
-+---------------------
-+
-+The driver supports standard PMBus driver platform data.
-+
-+
-+Sysfs entries
-+-------------
-+
-+The following attributes are supported. All attributes are read-only.
-+
-+======================= ========================================================
-+in1_label		"vin"
-+in1_input		Measured input voltage.
-+in1_alarm		Input voltage alarm.
-+
-+in2_label		"vin.0"
-+in2_input		Measured input voltage on input A.
-+
-+			PIM4328 and PIM4X06
-+
-+in3_label		"vin.1"
-+in3_input		Measured input voltage on input B.
-+
-+			PIM4328 and PIM4X06
-+
-+in4_label		"vcap"
-+in4_input		Measured voltage on holdup capacitor.
-+
-+			PIM4328
-+
-+curr1_label		"iin.0"
-+curr1_input		Measured input current on input A.
-+
-+			PIM4X06
-+
-+curr2_label		"iin.1"
-+curr2_input		Measured input current on input B.
-+
-+			PIM4X06
-+
-+currX_label		"iout1"
-+currX_input		Measured output current.
-+currX_alarm		Output current alarm.
-+
-+			X is 1 for PIM4820, 3 otherwise.
-+
-+temp1_input		Measured temperature.
-+temp1_alarm		High temperature alarm.
-+======================= ========================================================
--- 
-2.20.1
+Thanks,
 
+                Ilya
