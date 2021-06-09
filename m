@@ -2,105 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4773E3A2070
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12003A206F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 00:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhFIW5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 18:57:14 -0400
-Received: from mail-yb1-f177.google.com ([209.85.219.177]:45967 "EHLO
-        mail-yb1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhFIW5K (ORCPT
+        id S229931AbhFIW4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 18:56:49 -0400
+Received: from mail-lj1-f172.google.com ([209.85.208.172]:46791 "EHLO
+        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhFIW4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 18:57:10 -0400
-Received: by mail-yb1-f177.google.com with SMTP id g38so37796921ybi.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 15:55:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fZBw4seN/uDk7Yq4vwAfnRw1lvG+8DAJe0IFY4xw8iw=;
-        b=SNMeNLAWCy+4o9WJQIdCW6GI6FA/sKubFjkzsRQMl4XIV5T+AJ645WZpDmT+J9VdEm
-         oylkyspzkQPU7zVo8QGOmoJGi/F3XUhZf+17iZWSpquM3NCV+o+XJOt2XWTs+/b9mbgl
-         8bWQtICXxgeTJ4TbCAPIDgUV4QSOKQ6JIq9hr8PICnvf9cGbHrUQz832UiXR8Q1IEsKQ
-         SQa2+PEZdrLS1Tivk9WMywQAPStx3Q20uKLWsABiDpewtomrjjqX3GjlsjBzY1kYR8xu
-         yD8NWFh567Qh1pv7vbi1CSP1rrofr4fb2u+MF48pHa8YFSdmT9VORFAGtMNuJR8cjMtp
-         OgCQ==
+        Wed, 9 Jun 2021 18:56:48 -0400
+Received: by mail-lj1-f172.google.com with SMTP id e11so1910581ljn.13;
+        Wed, 09 Jun 2021 15:54:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fZBw4seN/uDk7Yq4vwAfnRw1lvG+8DAJe0IFY4xw8iw=;
-        b=mOCiXM9W6rBWMrpazo3jYzV0N85dIMsQwvFCrlDkzVBEDDTKaG8LqWHeb9NmNuY380
-         xTJpaM+hzOzrAjxnzJEZ/u1uvA3nWcX77mref2EL53cB4AdCZRHJpr/xen74+GbNl5KJ
-         KHcZW7Zy99emenF8cnjMSeqXA4QVmXc2kyyQefX3DIoUpcotPbirPMJ5+1PWojRdozk/
-         iBtSzJ3tePhQ4vNkLmK2mTmUV+I4vXefVI50Ef5GjmxbjyaJUD1oPfdBYLRsDx1dH0CA
-         WdPqTPHNqoFjUZqVHAIY0XidtvEVepP3vOmr0yNXfU+XUiZ1gArngR2DIdvPBUI2b4iT
-         NeCg==
-X-Gm-Message-State: AOAM533julgWZEKQ3CC6gVPEIPi5OsxGtRxXK+TcusTU5FPijj/kM9mA
-        18L8bEANgJLRH+rqafFsjtk1rVJnwRoqxziJsEg=
-X-Google-Smtp-Source: ABdhPJwcOE4kLnxQHt/eCz3TJYPRsWmpHTwIPtVPollhBKgFbSOe72BJEo/PDOLLx//2NNY+rBtceAXmGFLdlCJWPvE=
-X-Received: by 2002:a25:d008:: with SMTP id h8mr3437465ybg.436.1623279242508;
- Wed, 09 Jun 2021 15:54:02 -0700 (PDT)
+        bh=8MSqYylR/ClWK2tbw4XHVsBk6QIun8xemFhmgATk+Yg=;
+        b=BBQL9gxmTGJqQjKfmTK3PafZOR1HfYIC+x+vOgU2W4/eg8QAQvwD3Dm0GJfb37jcuo
+         rpSjFfy55u/KCAJOfNmpryqWnNGptqCVAp/zPTTuXrBJ05uCIdTJZFwN+F/F3jjzSHGE
+         ghfxGx9b3dNGzExGReNW6/BiNc0yaAmZK40goT9eg7l+BuQPAi14hvNxDqnszrp1i2JF
+         HI7oeOs+pH1tOWp8UWWvS2TDuF3LWQIMYs083nHm90trlCNB8kQPdGiW1Cl561IMD1cQ
+         6L5CvYJc68F5pXUC6sNvEOsHq3niZRUv7Di4MiXzZY4PbZkGvd30muf79m9A1tgXUh3e
+         lE3g==
+X-Gm-Message-State: AOAM530RLvXl6D/AEAcsIFF/692HqcEWlub8h3V4Daa9TPShR5zKW/p5
+        lDzuLyCLab7lQNF9a1y/xfxg2wYOI9ZK6kRH8dI=
+X-Google-Smtp-Source: ABdhPJwHzWXOfySif2iX8OiOTYOHDkpXBPM3E96KNt+65PBThPRZxhJFHWYfB2+DMgv2KIRUM59Cq4ME1atOu7wMUJk=
+X-Received: by 2002:a2e:a795:: with SMTP id c21mr1501932ljf.26.1623279275739;
+ Wed, 09 Jun 2021 15:54:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <YMDX3Ly91OQUxEge@zn.tnic> <20210609194137.1949436-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20210609194137.1949436-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Sathyanarayanan Kuppuswamy Natarajan 
-        <sathyanarayanan.nkuppuswamy@gmail.com>
-Date:   Wed, 9 Jun 2021 15:53:51 -0700
-Message-ID: <CAC41dw-0dcJRy5Q+Me-LkQjQNf7oCtXpj3L9phiicYMGDgRb1Q@mail.gmail.com>
-Subject: Re: [RFC v2-fix-v4 1/1] x86: Introduce generic protected guest abstraction
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
+References: <cover.1622025774.git.alexey.v.bayduraev@linux.intel.com>
+ <c5a046f8bed989e4ede98f1fcdaa9d0b6bf78cac.1622025774.git.alexey.v.bayduraev@linux.intel.com>
+ <3b297a17f935d2a00bfa74afbbf064b01fe83607.camel@gmail.com>
+In-Reply-To: <3b297a17f935d2a00bfa74afbbf064b01fe83607.camel@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 9 Jun 2021 15:54:23 -0700
+Message-ID: <CAM9d7cjJKDoMrKTzuCK=zDZivTdT-o30JKPt=97D2JEnXaHr0w@mail.gmail.com>
+Subject: Re: [PATCH v6 03/20] perf record: Introduce thread local variable
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Hi Riccardo,
 
-On Wed, Jun 9, 2021 at 12:42 PM Kuppuswamy Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+On Thu, Jun 3, 2021 at 3:56 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
 >
-> Add a generic way to check if we run with an encrypted guest,
-> without requiring x86 specific ifdefs. This can then be used in
-> non architecture specific code.
+> Hi,
 >
-> prot_guest_has() is used to check for protected guest feature
-> flags.
+> thank you very much for your work for adding threading capabilites to perf
+> record.
+> I did some testing on your entire patchset, especially checking for memory
+> issues using ASan. This is just the first of a couple of emails to point out
+> some issues I found.
+> I will also do additional tests in the future.
 >
-> Originally-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
-
-I have sent a non RFC version of this patch for x86 review. Please use
-it for further
-discussion.
-
-https://lore.kernel.org/patchwork/patch/1444184/
-
-> Changes since RFC v2-fix-v3:
->  * Introduced ARCH_HAS_PROTECTED_GUEST and moved arch specific checks to
->    asm/protected_guest.h
+> On Wed, 2021-05-26 at 13:52 +0300, Alexey Bayduraev wrote:
+> SNIP
+> > @@ -2220,18 +2275,20 @@ static int __cmd_record(struct record *rec, int argc,
+> > const char **argv)
+> >                 goto out_child;
+> >         }
+> >
+> > -       if (!quiet)
+> > -               fprintf(stderr, "[ perf record: Woken up %ld times to write data
+> > ]\n", waking);
+> > -
+> >         if (target__none(&rec->opts.target))
+> >                 record__synthesize_workload(rec, true);
+> >
+> >  out_child:
+> > +       record__stop_threads(rec, &waking);
+> > +out_free_threads:
+> >         record__free_thread_data(rec);
+> >         evlist__finalize_ctlfd(rec->evlist);
+> >         record__mmap_read_all(rec, true);
+> >         record__aio_mmap_read_sync(rec);
 >
-> Changes since RFC v2-fix-v2:
->  * Renamed protected_guest_has() to prot_guest_has().
->  * Changed flag prefix from VM_ to PR_GUEST_
->  * Merged Borislav AMD implementation fix.
+> record__mmap_read_all should be moved before record__free_thread_data since it
+> uses the thread_data that's just been freed.
+> Furthermore, record__mmap_read_all should also be moved before the
+> out_free_threads label, since it cannot be called unless record__start_threads
+> succeeded, otherwise thread would be NULL and will cause a segfault (it happens
+> if there is an error somewhere else in perf, for example).
+>
+> In my tests the following order works, but it should be double checked for
+> possible side-effects of this order change.
+>
+> out_child:
+>         record__stop_threads(rec, &waking);
+>         record__mmap_read_all(rec, true);
+> out_free_threads:
+>         record__free_thread_data(rec);
+>         evlist__finalize_ctlfd(rec->evlist);
+>         record__aio_mmap_read_sync(rec);
 
+I wonder how it worked before.. maybe we should place
+record__free_thread_data() far below.
 
-
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Thanks,
+Namhyung
