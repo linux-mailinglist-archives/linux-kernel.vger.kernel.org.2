@@ -2,57 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08E23A20F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722C53A2102
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhFIXp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 19:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhFIXpM (ORCPT
+        id S230455AbhFIXqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 19:46:21 -0400
+Received: from mail-yb1-f201.google.com ([209.85.219.201]:42897 "EHLO
+        mail-yb1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhFIXqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 19:45:12 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB842C061280
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 16:43:15 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id b20-20020ac87fd40000b02901e1370c5e12so12478066qtk.17
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 16:43:15 -0700 (PDT)
+        Wed, 9 Jun 2021 19:46:12 -0400
+Received: by mail-yb1-f201.google.com with SMTP id 22-20020a250d160000b0290532b914c9f4so33366341ybn.9
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 16:44:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=AvlzpSEIa9aM5YGGjLq2zoHFMvduDK875CtYDd8dUL4=;
-        b=ifbBgdC2nQ37DNJxiu2U2mgYs0uHPbXMIH2n+cwuFFAH3iKBe0qhAO5/HRlTdd/4gs
-         weRLHdWGD9UbIn2pAQUz8rHljyeUxKHvtCbS+xVYvJCSnDe3dxpRkMXraJCLh/gyvhm5
-         5yrTTOtc7Mny/qg/Gj7Vg4/nOw02qcWhgnsgPkIwueGb2ZabKjxzssvPCtXkp60CfKFE
-         PmoQ45l64W4zQkJrONpN53AUoSBmF7Je3yLzxcZ5RUwEZrYHZLNwDeyGtEeFMYv0WR6g
-         HNk4IRb6Qsrddzx8dVSpTL71KipzEdzcFYuM1HCXzJ5Hg6kSObAN4k3pBurFUMN3geqe
-         de7w==
+        bh=JW6PtqG5EBBMLWfIzHJuPDSiGDz3QYcEpSpJG7r7k4g=;
+        b=Wbx/J0n9iESf85d0G1L74LLD2eLDijf8SWts0pPqgG2Sh6Qt30OBZcAeexQRuv2Eic
+         AdDdnF7Ylc2SOHlJdoC3UVNxMt/X7lyHmAFrIxYmvsssBjq2lE/qjMVC5Ywox/b4dmbK
+         6Or2DNy9yEyhVAPfwLdxCSxfRL9wl/nJtSKM2e0/naTxCLKa7n1DZDteuLHsWHbSEP7k
+         ywPmFqd7HCMdpm/KUzBcwG+HN20+uUH2hHynJtjnXjLJVRXqGxt9qgntherm675NlU2o
+         tRNazhW5B1ioLVhGBf9yD6NY4i0tH3UR7T73lP+Sbzl2JFxhoSF4dnkXP/Slxro3GFgI
+         eN+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=AvlzpSEIa9aM5YGGjLq2zoHFMvduDK875CtYDd8dUL4=;
-        b=bC3PSU1x6+X7ekqNBn/w+zlYdqxLeDDhy8KIXCKIlR7sRGkbc4U+FdjApyrCalaFZ3
-         W7xL2hk3hGZc7NX8Z16i2iAtcea5BWlNYGshL8Jm1VicThzRzkzaA2STpaQDcR6z6DEX
-         JGuTAYnVNjiistasbNhMVxwcIVTXA9F89SNyNZZb6d4mI7lgC6FjQD1bdla9tJd1GRv7
-         N38B6HEJPDJlO+OuMo5DoGxxu57EAiLjehJAPG571c4Kmq+4JSSHKfbR8n7ekvA6XcZF
-         3NI9txt9YRr7LPUXJGz7PqHG+DmSn4HiQyCef7uMiY+JtHBohZP0SSgdEnPS65Myc+Wd
-         9yuw==
-X-Gm-Message-State: AOAM532HIAt4UohSMlQhdUjkt+8/dI7TKTdT3iQpZghcXQLcxyspjUaJ
-        dOJwqbV5rMX74U6Zvi7EhpNYBLB4NY4=
-X-Google-Smtp-Source: ABdhPJx232hNBWou88XddItzp4JVduww7ZRV8rUjKiIgDLbiXVcQWPYtOjEGIKR1VhkY6bLEHvW6mLXOC/U=
+        bh=JW6PtqG5EBBMLWfIzHJuPDSiGDz3QYcEpSpJG7r7k4g=;
+        b=I4o9jj1ArNDtpTVGeslAhCbERfpPZrmZFlYjIK5ex6EFmUvZf1vO99kLiqPIljYtVV
+         1Uw20wv12t5JpMR85JslYi3kJU3wJhlTDW+Wc5ddax1igP/XFzYRUJHfofZJgglaAqUB
+         zSbzKcuAWu8xcGfRUnRVPoX2uH/QkwXxQSrItetpbNH47DMMlX+5fawbidDcQp11iAdy
+         wii8gy6s0LnC/af5v18uvwFp51u+R9QPA1TXkwWJVbsmHF7Ar6fI3QfOobnlO982pbkI
+         vRq6LBYmKP7q2zUZKaUZt5maFAYb9Tv2yGd8iaUT7T3AYZ3Myb+j5nYxqGEU63SDdyNg
+         58bA==
+X-Gm-Message-State: AOAM530/0jiK1cKvxom/S9RgjyT5OQdQYDN+ZcRxe2DoCl2mVnshWNS4
+        wc3zo4V4lOHSroq2kLd91z6PuH6Bqzo=
+X-Google-Smtp-Source: ABdhPJz/9YQGh8Mu2InFaNSyU2MwVQXomSR7fbxj6idTc8vdJENDrCVczbkCOzHIWvle3h2EcYAz7iWtxKw=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:8daf:e5e:ae50:4f28])
- (user=seanjc job=sendgmr) by 2002:ad4:576e:: with SMTP id r14mr2569384qvx.61.1623282195011;
- Wed, 09 Jun 2021 16:43:15 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:aa53:: with SMTP id s77mr3153575ybi.89.1623282197388;
+ Wed, 09 Jun 2021 16:43:17 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  9 Jun 2021 16:42:34 -0700
+Date:   Wed,  9 Jun 2021 16:42:35 -0700
 In-Reply-To: <20210609234235.1244004-1-seanjc@google.com>
-Message-Id: <20210609234235.1244004-15-seanjc@google.com>
+Message-Id: <20210609234235.1244004-16-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210609234235.1244004-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-Subject: [PATCH 14/15] KVM: nVMX: WARN if subtly-impossible VMFUNC conditions occur
+Subject: [PATCH 15/15] KVM: nVMX: Drop redundant checks on vmcs12 in EPTP
+ switching emulation
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,38 +66,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WARN and inject #UD when emulating VMFUNC for L2 if the function is
-out-of-bounds or if VMFUNC is not enabled in vmcs12.  Neither condition
-should occur in practice, as the CPU is supposed to prioritize the #UD
-over VM-Exit for out-of-bounds input and KVM is supposed to enable
-VMFUNC in vmcs02 if and only if it's enabled in vmcs12, but neither of
-those dependencies is obvious.
+Drop the explicit checks on EPTP switching and EPT itself being enabled.
+The EPTP switching check is handled in the generic VMFUNC function check,
+the underlying VMFUNC enablement check is done by hardware and redone
+by generic VMFUNC emulation, and the vmcs12 EPT check is handled by KVM
+at VM-Enter in the form of a consistency check.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/nested.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/x86/kvm/vmx/nested.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index f686618d9ede..0075d3f0f8fa 100644
+index 0075d3f0f8fa..479ec9378609 100644
 --- a/arch/x86/kvm/vmx/nested.c
 +++ b/arch/x86/kvm/vmx/nested.c
-@@ -5494,6 +5494,16 @@ static int handle_vmfunc(struct kvm_vcpu *vcpu)
- 	}
+@@ -5448,10 +5448,6 @@ static int nested_vmx_eptp_switching(struct kvm_vcpu *vcpu,
+ 	u32 index = kvm_rcx_read(vcpu);
+ 	u64 new_eptp;
  
- 	vmcs12 = get_vmcs12(vcpu);
-+
-+	/*
-+	 * #UD on out-of-bounds function has priority over VM-Exit, and VMFUNC
-+	 * is enabled in vmcs02 if and only if it's enabled in vmcs12.
-+	 */
-+	if (WARN_ON_ONCE((function > 63) || !nested_cpu_has_vmfunc(vmcs12))) {
-+		kvm_queue_exception(vcpu, UD_VECTOR);
-+		return 1;
-+	}
-+
- 	if (!(vmcs12->vm_function_control & BIT_ULL(function)))
- 		goto fail;
+-	if (!nested_cpu_has_eptp_switching(vmcs12) ||
+-	    !nested_cpu_has_ept(vmcs12))
+-		return 1;
+-
+ 	if (index >= VMFUNC_EPTP_ENTRIES)
+ 		return 1;
  
 -- 
 2.32.0.rc1.229.g3e70b5a671-goog
