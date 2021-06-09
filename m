@@ -2,557 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3E33A19F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED783A1A06
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhFIPkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:40:06 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:60152 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234774AbhFIPkB (ORCPT
+        id S234774AbhFIPrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:47:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39139 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234271AbhFIPru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:40:01 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id AEDF320B7188;
-        Wed,  9 Jun 2021 08:38:05 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AEDF320B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623253086;
-        bh=lWZjqFA2eq6xz5zQ5R5Yyv/HzfAlHH1518rKVhlINzk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sEg6YxI69qV58kCp+xQVezxw/Ola/hrzlD7sJCkBr8CZoXPjmJGsDGth2KgP7Slb/
-         ZJS8BI59ZQAYxRMozR6TVXjF9O3q7RaGyxScqTSrjpEZj/kZTJhVJOAZmfbFPkyAjD
-         8CZIrz5VsD+ZVnsb2dUBrNjKxNWFDjkEbgA30jYQ=
-Date:   Wed, 9 Jun 2021 10:38:01 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 7/7] tee: replace tee_shm_alloc()
-Message-ID: <20210609153801.GL4910@sequoia>
-References: <20210609102324.2222332-1-jens.wiklander@linaro.org>
- <20210609102324.2222332-8-jens.wiklander@linaro.org>
- <20210609153215.GK4910@sequoia>
+        Wed, 9 Jun 2021 11:47:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623253555;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k0h2FiXjWVIPi0yn2dv3rK6XwTKryWiZd+hyxzHDne0=;
+        b=f9ZGb1rn8g8YLFsTiCcGL6RNn2soq0wkFHhehUt4Ft0MRXgAt/fDyblqdTNs602i7mmTQM
+        AwXWY8lo7p7Flke34/HwmFzzhz23RwpsqJdMnBBL+9Bc3sFu123j9dY1GHYybsVMfbvWpP
+        dHNp3oIVCgHSCVARMgNeuDtkbD/HVZ8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-MuLHCExcOGCbSqVaUNbLZg-1; Wed, 09 Jun 2021 11:45:53 -0400
+X-MC-Unique: MuLHCExcOGCbSqVaUNbLZg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DFB27A40C8;
+        Wed,  9 Jun 2021 15:45:51 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-112-33.rdu2.redhat.com [10.10.112.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 78A265D6AD;
+        Wed,  9 Jun 2021 15:45:44 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 03EA822054F; Wed,  9 Jun 2021 11:45:43 -0400 (EDT)
+Date:   Wed, 9 Jun 2021 11:45:43 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
+        linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        David Howells <dhowells@redhat.com>, viro@zeniv.linux.org.uk,
+        Richard Weinberger <richard.weinberger@gmail.com>,
+        dgilbert@redhat.com, Dominique Martinet <asmadeus@codewreck.org>,
+        v9fs-developer@lists.sourceforge.net,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] init/do_mounts.c: Add root="fstag:<tag>" syntax for root
+ device
+Message-ID: <20210609154543.GA579806@redhat.com>
+References: <20210608153524.GB504497@redhat.com>
+ <YMCPPCbjbRoPAEcL@stefanha-x1.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210609153215.GK4910@sequoia>
+In-Reply-To: <YMCPPCbjbRoPAEcL@stefanha-x1.localdomain>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-09 10:32:18, Tyler Hicks wrote:
-> On 2021-06-09 12:23:24, Jens Wiklander wrote:
-> > tee_shm_alloc() is replaced by three new functions,
+On Wed, Jun 09, 2021 at 10:51:56AM +0100, Stefan Hajnoczi wrote:
+> On Tue, Jun 08, 2021 at 11:35:24AM -0400, Vivek Goyal wrote:
+> > We want to be able to mount virtiofs as rootfs and pass appropriate
+> > kernel command line. Right now there does not seem to be a good way
+> > to do that. If I specify "root=myfs rootfstype=virtiofs", system
+> > panics.
 > > 
-> > tee_shm_alloc_user_buf() - for user mode allocations, replacing passing
-> > the flags TEE_SHM_MAPPED | TEE_SHM_DMA_BUF
+> > virtio-fs: tag </dev/root> not found
+> > ..
+> > ..
+> > [ end Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0) ]
 > > 
-> > tee_shm_alloc_kernel_buf() - for kernel mode allocations, slightly
-> > optimized compared to using the flags TEE_SHM_MAPPED | TEE_SHM_DMA_BUF
-> > since we now can avoid using the dma-buf registration.
+> > Basic problem here is that kernel assumes that device identifier
+> > passed in "root=" is a block device. But there are few execptions
+> > to this rule to take care of the needs of mtd, ubi, NFS and CIFS.
 > > 
-> > tee_shm_alloc_anon_kernel_buf() - for TEE driver internal use only
-> > allowing decoupling a shared memory object from its original
-> > tee_context.
+> > For example, mtd and ubi prefix "mtd:" or "ubi:" respectively.
 > > 
-> > This also makes the interface easier to use as we can get rid of the
-> > somewhat hard to use flags parameter.
+> > "root=mtd:<identifier>" or "root=ubi:<identifier>"
 > > 
-> > The TEE subsystem and the TEE drivers are updated to use the new
-> > functions instead.
+> > NFS and CIFS use "root=/dev/nfs" and CIFS passes "root=/dev/cifs" and
+> > actual root device details come from filesystem specific kernel
+> > command line options.
 > > 
-> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > ---
-> >  drivers/tee/optee/call.c   |  16 ++--
-> >  drivers/tee/optee/core.c   |   4 +-
-> >  drivers/tee/optee/device.c |   5 +-
-> >  drivers/tee/optee/rpc.c    |   8 +-
-> >  drivers/tee/tee_core.c     |   2 +-
-> >  drivers/tee/tee_shm.c      | 186 +++++++++++++++++++++++++++----------
-> >  include/linux/tee_drv.h    |  19 +---
-> >  7 files changed, 156 insertions(+), 84 deletions(-)
+> > virtiofs does not seem to fit in any of the above categories. In fact
+> > we have 9pfs which can be used to boot from but it also does not
+> > have a proper syntax to specify rootfs and does not fit into any of
+> > the existing syntax. They both expect a device "tag" to be passed
+> > in a device to be mounted. And filesystem knows how to parse and
+> > use "tag".
 > > 
-> > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> > index 6132cc8d014c..f31257649c0e 100644
-> > --- a/drivers/tee/optee/call.c
-> > +++ b/drivers/tee/optee/call.c
-> > @@ -183,8 +183,8 @@ static struct tee_shm *get_msg_arg(struct tee_context *ctx, size_t num_params,
-> >  	struct tee_shm *shm;
-> >  	struct optee_msg_arg *ma;
-> >  
-> > -	shm = tee_shm_alloc(ctx, OPTEE_MSG_GET_ARG_SIZE(num_params),
-> > -			    TEE_SHM_MAPPED);
-> > +	shm = tee_shm_alloc_anon_kernel_buf(ctx,
-> > +					    OPTEE_MSG_GET_ARG_SIZE(num_params));
+> > So this patch proposes that we add a new prefix "fstag:" which specifies
+> > that identifier which follows is filesystem specific tag and its not
+> > a block device. Just pass this tag to filesystem and filesystem will
+> > figure out how to mount it.
+> > 
+> > For example, "root=fstag:<tag>".
+> > 
+> > In case of virtiofs, I can specify "root=fstag:myfs rootfstype=virtiofs"
+> > and it works.
+> > 
+> > I think this should work for 9p as well. "root=fstag:myfs rootfstype=9p".
+> > Though I have yet to test it.
+> > 
+> > This kind of syntax should be able to address wide variety of use cases
+> > where root device is not a block device and is simply some kind of
+> > tag/label understood by filesystem.
 > 
-> The error handling in get_msg_arg() should be updated to call
-> tee_shm_free_anon_kernel_buf() instead of tee_shm_free().
-> 
-> >  	if (IS_ERR(shm))
-> >  		return shm;
-> >  
-> > @@ -281,7 +281,7 @@ int optee_open_session(struct tee_context *ctx,
-> >  		arg->ret_origin = msg_arg->ret_origin;
-> >  	}
-> >  out:
-> > -	tee_shm_free(shm);
-> > +	tee_shm_free_anon_kernel_buf(ctx, shm);
-> >  
-> >  	return rc;
-> >  }
-> > @@ -312,7 +312,7 @@ int optee_close_session(struct tee_context *ctx, u32 session)
-> >  	msg_arg->session = session;
-> >  	optee_do_call_with_arg(ctx, msg_parg);
-> >  
-> > -	tee_shm_free(shm);
-> > +	tee_shm_free_anon_kernel_buf(ctx, shm);
-> >  	return 0;
-> >  }
-> >  
-> > @@ -358,7 +358,7 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
-> >  	arg->ret = msg_arg->ret;
-> >  	arg->ret_origin = msg_arg->ret_origin;
-> >  out:
-> > -	tee_shm_free(shm);
-> > +	tee_shm_free_anon_kernel_buf(ctx, shm);
-> >  	return rc;
-> >  }
-> >  
-> > @@ -386,7 +386,7 @@ int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session)
-> >  	msg_arg->cancel_id = cancel_id;
-> >  	optee_do_call_with_arg(ctx, msg_parg);
-> >  
-> > -	tee_shm_free(shm);
-> > +	tee_shm_free_anon_kernel_buf(ctx, shm);
-> >  	return 0;
-> >  }
-> >  
-> > @@ -625,7 +625,7 @@ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
-> >  	    msg_arg->ret != TEEC_SUCCESS)
-> >  		rc = -EINVAL;
-> >  
-> > -	tee_shm_free(shm_arg);
-> > +	tee_shm_free_anon_kernel_buf(ctx, shm_arg);
-> >  out:
-> >  	optee_free_pages_list(pages_list, num_pages);
-> >  	return rc;
-> > @@ -650,7 +650,7 @@ int optee_shm_unregister(struct tee_context *ctx, struct tee_shm *shm)
-> >  	if (optee_do_call_with_arg(ctx, msg_parg) ||
-> >  	    msg_arg->ret != TEEC_SUCCESS)
-> >  		rc = -EINVAL;
-> > -	tee_shm_free(shm_arg);
-> > +	tee_shm_free_anon_kernel_buf(ctx, shm_arg);
-> >  	return rc;
-> >  }
-> >  
-> > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> > index 0c287345f9fe..a15dc3881636 100644
-> > --- a/drivers/tee/optee/core.c
-> > +++ b/drivers/tee/optee/core.c
-> > @@ -277,7 +277,7 @@ static void optee_release(struct tee_context *ctx)
-> >  	if (!ctxdata)
-> >  		return;
-> >  
-> > -	shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg), TEE_SHM_MAPPED);
-> > +	shm = tee_shm_alloc_anon_kernel_buf(ctx, sizeof(struct optee_msg_arg));
-> >  	if (!IS_ERR(shm)) {
-> >  		arg = tee_shm_get_va(shm, 0);
-> >  		/*
-> > @@ -305,7 +305,7 @@ static void optee_release(struct tee_context *ctx)
-> >  	kfree(ctxdata);
-> >  
-> >  	if (!IS_ERR(shm))
-> > -		tee_shm_free(shm);
-> > +		tee_shm_free_anon_kernel_buf(ctx, shm);
-> >  
-> >  	ctx->data = NULL;
-> >  
-> > diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-> > index ec1d24693eba..5a5bf86b1b95 100644
-> > --- a/drivers/tee/optee/device.c
-> > +++ b/drivers/tee/optee/device.c
-> > @@ -113,10 +113,9 @@ static int __optee_enumerate_devices(u32 func)
-> >  	if (rc < 0 || !shm_size)
-> >  		goto out_sess;
-> >  
-> > -	device_shm = tee_shm_alloc(ctx, shm_size,
-> > -				   TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-> > +	device_shm = tee_shm_alloc_kernel_buf(ctx, shm_size);
-> 
-> The error handling in the 'err' label needs to use
-> tee_shm_free_anon_kernel_buf() instead of tee_shm_free().
+> "fstag" is kind of virtio-9p/fs specific. The intended effect is really
+> to specify the file system source (like in mount(2)) without it being
+> interpreted as a block device.
 
-Sorry, I got confused here. The error handling in this function should
-continue to use tee_shm_free().
+[ CC christoph ]
 
-To avoid this confusion in the future, perhaps the following macro would
-be a nice touch in include/linux/tee_drv.h?
-
-#define tee_shm_free_kernel_buf tee_shm_free
-
-If so, then all of the new users of tee_shm_alloc_kernel_buf() should be
-updated to use tee_shm_free_kernel_buf().
-
-Tyler
+I think mount(2) has little different requirements. It more or less
+passes the source to filesystem. But during early boot, we do so
+much more with source, that is parse it and determine device major
+and minor and create blockdevice and then call into filesystem.
 
 > 
-> >  	if (IS_ERR(device_shm)) {
-> > -		pr_err("tee_shm_alloc failed\n");
-> > +		pr_err("tee_shm_alloc_kernel_buf failed\n");
-> >  		rc = PTR_ERR(device_shm);
-> >  		goto out_sess;
-> >  	}
-> > diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-> > index 1849180b0278..9108aedb3eee 100644
-> > --- a/drivers/tee/optee/rpc.c
-> > +++ b/drivers/tee/optee/rpc.c
-> > @@ -314,7 +314,7 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
-> >  		shm = cmd_alloc_suppl(ctx, sz);
-> >  		break;
-> >  	case OPTEE_RPC_SHM_TYPE_KERNEL:
-> > -		shm = tee_shm_alloc(ctx, sz, TEE_SHM_MAPPED);
-> > +		shm = tee_shm_alloc_anon_kernel_buf(ctx, sz);
+> In a previous discussion David Gilbert suggested detecting file systems
+> that do not need a block device:
+> https://patchwork.kernel.org/project/linux-fsdevel/patch/20190906100324.8492-1-stefanha@redhat.com/
 > 
-> The error handling in the 'bad' label still uses tee_shm_free(). I guess
-> it needs to do something like handle_rpc_func_cmd_shm_free()?
+> I never got around to doing it, but can do_mounts.c just look at struct
+> file_system_type::fs_flags FS_REQUIRES_DEV to detect non-block device
+> file systems?
+
+I guess we can use FS_REQUIRES_DEV. We probably will need to add a helper
+to determine if filesystem passed in "rootfstype=" has FS_REQUIRES_DEV
+set or not.
+
+For now, I have written a patch which does not rely on FS_REQUIRES_DEV.
+Instead I have created an array of filesystems which do not want
+root=<source> to be treated as block device and expect that "source"
+will be directly passed to filesytem to be mounted.
+
+Reason I am not parsing FS_REQUIRES_DEV yet is that I am afraid that
+this can change behavior and introduce regression. Some filesystem
+which does not have FS_REQUIRES_DEV set but still somehow is going
+through block device path (or some path which I can't see yet).
+
+So for now I am playing safe and explicitly creating a list of
+filesystems which will opt-in into this behavior. But if folks think
+that my fears of regression are misplaced and I should parse
+FS_REQUIRES_DEV and that way any filesystem which does not have
+FS_REQUIRES_DEV set automatically gets opted in, I can do that.
+
 > 
-> >  		break;
-> >  	default:
-> >  		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
-> > @@ -424,7 +424,7 @@ static void handle_rpc_func_cmd_shm_free(struct tee_context *ctx,
-> >  		cmd_free_suppl(ctx, shm);
-> >  		break;
-> >  	case OPTEE_RPC_SHM_TYPE_KERNEL:
-> > -		tee_shm_free(shm);
-> > +		tee_shm_free_anon_kernel_buf(ctx, shm);
-> >  		break;
-> >  	default:
-> >  		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
-> > @@ -502,7 +502,7 @@ void optee_handle_rpc(struct tee_context *ctx, struct optee_rpc_param *param,
-> >  
-> >  	switch (OPTEE_SMC_RETURN_GET_RPC_FUNC(param->a0)) {
-> >  	case OPTEE_SMC_RPC_FUNC_ALLOC:
-> > -		shm = tee_shm_alloc(ctx, param->a1, TEE_SHM_MAPPED);
-> > +		shm = tee_shm_alloc_anon_kernel_buf(ctx, param->a1);
-> >  		if (!IS_ERR(shm) && !tee_shm_get_pa(shm, 0, &pa)) {
-> >  			reg_pair_from_64(&param->a1, &param->a2, pa);
-> >  			reg_pair_from_64(&param->a4, &param->a5,
-> > @@ -516,7 +516,7 @@ void optee_handle_rpc(struct tee_context *ctx, struct optee_rpc_param *param,
-> >  		break;
-> >  	case OPTEE_SMC_RPC_FUNC_FREE:
-> >  		shm = reg_pair_to_ptr(param->a1, param->a2);
-> > -		tee_shm_free(shm);
-> > +		tee_shm_free_anon_kernel_buf(ctx, shm);
-> >  		break;
-> >  	case OPTEE_SMC_RPC_FUNC_FOREIGN_INTR:
-> >  		/*
-> > diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-> > index 480d294a23ab..4f5c7c17a434 100644
-> > --- a/drivers/tee/tee_core.c
-> > +++ b/drivers/tee/tee_core.c
-> > @@ -293,7 +293,7 @@ static int tee_ioctl_shm_alloc(struct tee_context *ctx,
-> >  	if (data.flags)
-> >  		return -EINVAL;
-> >  
-> > -	shm = tee_shm_alloc(ctx, data.size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-> > +	shm = tee_shm_alloc_user_buf(ctx, data.size);
-> >  	if (IS_ERR(shm))
-> >  		return PTR_ERR(shm);
-> >  
-> > diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-> > index 63fce8d39d8b..d134e2778a3a 100644
-> > --- a/drivers/tee/tee_shm.c
-> > +++ b/drivers/tee/tee_shm.c
-> > @@ -96,25 +96,14 @@ static const struct dma_buf_ops tee_shm_dma_buf_ops = {
-> >  	.mmap = tee_shm_op_mmap,
-> >  };
-> >  
-> > -struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
-> > +static struct tee_shm *shm_alloc_helper(struct tee_context *ctx, size_t size,
-> > +					size_t align, u32 flags)
-> >  {
-> >  	struct tee_device *teedev = ctx->teedev;
-> >  	struct tee_shm *shm;
-> > -	size_t align;
-> >  	void *ret;
-> >  	int rc;
-> >  
-> > -	if (!(flags & TEE_SHM_MAPPED)) {
-> > -		dev_err(teedev->dev.parent,
-> > -			"only mapped allocations supported\n");
-> > -		return ERR_PTR(-EINVAL);
-> > -	}
-> > -
-> > -	if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF))) {
-> > -		dev_err(teedev->dev.parent, "invalid shm flags 0x%x", flags);
-> > -		return ERR_PTR(-EINVAL);
-> > -	}
-> > -
-> >  	if (!tee_device_get(teedev))
-> >  		return ERR_PTR(-EINVAL);
-> >  
-> > @@ -131,17 +120,14 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
-> >  	}
-> >  
-> >  	shm->flags = flags | TEE_SHM_POOL;
-> > +
-> > +	/*
-> > +	 * We're assigning this as it is needed if the shm is to be
-> > +	 * registered. If this function returns OK then the caller expected
-> > +	 * to call teedev_ctx_get() or clear shm->ctx in case it's not
-> > +	 * needed any longer.
-> > +	 */
-> >  	shm->ctx = ctx;
-> > -	if (flags & TEE_SHM_DMA_BUF) {
-> > -		align = PAGE_SIZE;
-> > -		/*
-> > -		 * Request to register the shm in the pool allocator below
-> > -		 * if supported.
-> > -		 */
-> > -		shm->flags |= TEE_SHM_REGISTER;
-> > -	} else {
-> > -		align = 2 * sizeof(long);
-> > -	}
-> >  
-> >  	rc = teedev->pool->ops->alloc(teedev->pool, shm, size, align);
-> >  	if (rc) {
-> > @@ -149,48 +135,71 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
-> >  		goto err_kfree;
-> >  	}
-> >  
-> > +	return shm;
-> > +err_kfree:
-> > +	kfree(shm);
-> > +err_dev_put:
-> > +	tee_device_put(teedev);
-> > +	return ret;
-> > +}
-> >  
-> > -	if (flags & TEE_SHM_DMA_BUF) {
-> > -		DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
-> > +/**
-> > + * tee_shm_alloc_user_buf() - Allocate shared memory for user space
-> > + * @ctx:	Context that allocates the shared memory
-> > + * @size:	Requested size of shared memory
-> > + *
-> > + * Memory allocated as user space shared memory is automatically freed when
-> > + * the TEE file pointer is closed. The primary usage of this function is
-> > + * when the TEE driver doesn't support registering ordinary user space
-> > + * memory.
-> > + *
-> > + * @returns a pointer to 'struct tee_shm'
-> > + */
-> > +struct tee_shm *tee_shm_alloc_user_buf(struct tee_context *ctx, size_t size)
-> > +{
-> > +	u32 flags = TEE_SHM_MAPPED | TEE_SHM_DMA_BUF | TEE_SHM_REGISTER;
+> That way it would know to just mount with root= as the source instead of
+> treating it as a block device. No root= prefix would be required and it
+> would handle NFS, virtiofs, virtio-9p, etc without introducing the
+> concept of a "tag".
 > 
-> Why not TEE_SHM_USER_MAPPED instead of TEE_SHM_MAPPED here?
+>   root=myfs rootfstype=virtiofs rootflags=...
 > 
-> > +	struct tee_device *teedev = ctx->teedev;
-> > +	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
-> > +	struct tee_shm *shm;
-> > +	void *ret;
-> >  
-> > -		mutex_lock(&teedev->mutex);
-> > -		shm->id = idr_alloc(&teedev->idr, shm, 1, 0, GFP_KERNEL);
-> > -		mutex_unlock(&teedev->mutex);
-> > -		if (shm->id < 0) {
-> > -			ret = ERR_PTR(shm->id);
-> > -			goto err_pool_free;
-> > -		}
-> > +	shm = shm_alloc_helper(ctx, size, PAGE_SIZE, flags);
-> > +	if (IS_ERR(shm))
-> > +		return shm;
-> >  
-> > -		exp_info.ops = &tee_shm_dma_buf_ops;
-> > -		exp_info.size = shm->size;
-> > -		exp_info.flags = O_RDWR;
-> > -		exp_info.priv = shm;
-> > +	mutex_lock(&teedev->mutex);
-> > +	shm->id = idr_alloc(&teedev->idr, shm, 1, 0, GFP_KERNEL);
-> > +	mutex_unlock(&teedev->mutex);
-> > +	if (shm->id < 0) {
-> > +		ret = ERR_PTR(shm->id);
-> > +		goto err_pool_free;
-> > +	}
-> >  
-> > -		shm->dmabuf = dma_buf_export(&exp_info);
-> > -		if (IS_ERR(shm->dmabuf)) {
-> > -			ret = ERR_CAST(shm->dmabuf);
-> > -			goto err_rem;
-> > -		}
-> > +	exp_info.ops = &tee_shm_dma_buf_ops;
-> > +	exp_info.size = shm->size;
-> > +	exp_info.flags = O_RDWR;
-> > +	exp_info.priv = shm;
-> > +
-> > +	shm->dmabuf = dma_buf_export(&exp_info);
-> > +	if (IS_ERR(shm->dmabuf)) {
-> > +		ret = ERR_CAST(shm->dmabuf);
-> > +		goto err_rem;
-> >  	}
-> >  
-> >  	teedev_ctx_get(ctx);
-> > -
-> >  	return shm;
-> >  err_rem:
-> > -	if (flags & TEE_SHM_DMA_BUF) {
-> > -		mutex_lock(&teedev->mutex);
-> > -		idr_remove(&teedev->idr, shm->id);
-> > -		mutex_unlock(&teedev->mutex);
-> > -	}
-> > +	mutex_lock(&teedev->mutex);
-> > +	idr_remove(&teedev->idr, shm->id);
-> > +	mutex_unlock(&teedev->mutex);
-> >  err_pool_free:
-> >  	teedev->pool->ops->free(teedev->pool, shm);
-> > -err_kfree:
-> >  	kfree(shm);
-> > -err_dev_put:
-> >  	tee_device_put(teedev);
-> >  	return ret;
-> > +
-> >  }
-> > -EXPORT_SYMBOL_GPL(tee_shm_alloc);
-> > +EXPORT_SYMBOL_GPL(tee_shm_alloc_user_buf);
-> >  
-> >  /**
-> >   * tee_shm_alloc_kernel_buf() - Allocate shared memory for kernel buffer
-> > @@ -206,10 +215,85 @@ EXPORT_SYMBOL_GPL(tee_shm_alloc);
-> >   */
-> >  struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
-> >  {
-> > -	return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-> > +	u32 flags = TEE_SHM_MAPPED | TEE_SHM_REGISTER;
-> 
-> Similar question as above... why not TEE_SHM_KERNEL_MAPPED instead of
-> TEE_SHM_MAPPED?
-> 
-> > +	struct tee_shm *shm;
-> > +
-> > +	shm = shm_alloc_helper(ctx, size, PAGE_SIZE, flags);
-> > +	if (IS_ERR(shm))
-> > +		return shm;
-> > +
-> > +	teedev_ctx_get(ctx);
-> > +	return shm;
-> >  }
-> >  EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
-> >  
-> > +/**
-> > + * tee_shm_alloc_anon_kernel_buf() - Allocate shared memory for anonymous
-> > + *				     kernel buffer
-> > + * @ctx:	Context that allocates the shared memory
-> > + * @size:	Requested size of shared memory
-> > + *
-> > + * This function returns similar shared memory as tee_shm_alloc_kernel_buf(),
-> > + * but with two differences:
-> > + * 1. The memory might not be registered in secure world
-> > + *    in case the driver supports passing memory not registered in advance.
-> > + * 2. The memory is not directly associated with the passed tee_context,
-> > + *    rather the tee_device used by the context.
-> > + *
-> > + * This function should normally only be used internally in the TEE
-> > + * drivers. The memory must later only be freed using
-> > + * tee_shm_free_anon_kernel_buf() with a tee_contex with the same internal
-> > + * tee_device as when the memory was allocated.
-> > + *
-> > + * This allows allocating the shared memory using one context which is
-> > + * destroyed while the memory continues to live and finally freed using
-> > + * another context.
-> > + *
-> > + * @returns a pointer to 'struct tee_shm'
-> > + */
-> > +struct tee_shm *tee_shm_alloc_anon_kernel_buf(struct tee_context *ctx,
-> > +					      size_t size)
-> > +{
-> > +	struct tee_shm *shm;
-> > +
-> > +	shm = shm_alloc_helper(ctx, size, sizeof(long) * 2, TEE_SHM_MAPPED);
-> 
-> The generic TEE_SHM_MAPPED is used here, as well.
-> 
-> Tyler
-> 
-> > +	if (IS_ERR(shm))
-> > +		return shm;
-> > +
-> > +	shm->ctx = NULL;
-> > +	return shm;
-> > +}
-> > +EXPORT_SYMBOL_GPL(tee_shm_alloc_anon_kernel_buf);
-> > +
-> > +/**
-> > + * tee_shm_free_anon_kernel_buf() - Free anonymous shared kernel memory
-> > + * @ctx:	Borrowed context when freeing the shared memory
-> > + * @shm:	Handle to shared memory to free
-> > + *
-> > + * This function must only be used to free a tee_shm allocated with
-> > + * tee_shm_alloc_anon_kernel_buf(). The passed @ctx has to have the same
-> > + * internal tee_device as was used by the tee_context passed when the
-> > + * memory was allocated.
-> > + */
-> > +void tee_shm_free_anon_kernel_buf(struct tee_context *ctx, struct tee_shm *shm)
-> > +{
-> > +	struct tee_device *teedev = ctx->teedev;
-> > +
-> > +	/*
-> > +	 * The anonymous kernel buffer isn't attached to any tee_context
-> > +	 * we're instead assigning the current tee_context temporarily.
-> > +	 * This is needed because an eventual call to unregister the shared
-> > +	 * memory might need a context. As long as this context uses the
-> > +	 * same tee_device as in the ctx in the call in
-> > +	 * tee_shm_alloc_anon_kernel_buf() above we are OK.
-> > +	 */
-> > +	shm->ctx = ctx;
-> > +	teedev->pool->ops->free(teedev->pool, shm);
-> > +	kfree(shm);
-> > +	tee_device_put(teedev);
-> > +}
-> > +EXPORT_SYMBOL_GPL(tee_shm_free_anon_kernel_buf);
-> > +
-> >  struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
-> >  				 size_t length, u32 flags)
-> >  {
-> > diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-> > index 58b319766f8e..11a4e556bdf9 100644
-> > --- a/include/linux/tee_drv.h
-> > +++ b/include/linux/tee_drv.h
-> > @@ -267,22 +267,11 @@ static inline void tee_shm_pool_free(struct tee_shm_pool *pool)
-> >   */
-> >  void *tee_get_drvdata(struct tee_device *teedev);
-> >  
-> > -/**
-> > - * tee_shm_alloc() - Allocate shared memory
-> > - * @ctx:	Context that allocates the shared memory
-> > - * @size:	Requested size of shared memory
-> > - * @flags:	Flags setting properties for the requested shared memory.
-> > - *
-> > - * Memory allocated as global shared memory is automatically freed when the
-> > - * TEE file pointer is closed. The @flags field uses the bits defined by
-> > - * TEE_SHM_* above. TEE_SHM_MAPPED must currently always be set. If
-> > - * TEE_SHM_DMA_BUF global shared memory will be allocated and associated
-> > - * with a dma-buf handle, else driver private memory.
-> > - *
-> > - * @returns a pointer to 'struct tee_shm'
-> > - */
-> > -struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags);
-> > +struct tee_shm *tee_shm_alloc_user_buf(struct tee_context *ctx, size_t size);
-> >  struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size);
-> > +struct tee_shm *tee_shm_alloc_anon_kernel_buf(struct tee_context *ctx,
-> > +					      size_t size);
-> > +void tee_shm_free_anon_kernel_buf(struct tee_context *ctx, struct tee_shm *shm);
-> >  
-> >  /**
-> >   * tee_shm_register() - Register shared memory buffer
-> > -- 
-> > 2.31.1
-> > 
+> I wrote this up quickly after not thinking about the topic for 2 years,
+> so the idea may not work at all :).
+
+Now with this patch "root=myfs, rootfstype=virtiofs, rootflags=..." syntax
+works for virtiofs.
+
+Please have a look.
+
+Thanks
+Vivek
+
+
+Subject: [PATCH] init/do_mounts.c: Add a path to boot from non blockdev filesystems
+
+We want to be able to mount virtiofs as rootfs and pass appropriate
+kernel command line. Right now there does not seem to be a good way
+to do that. If I specify "root=myfs rootfstype=virtiofs", system
+panics.
+
+virtio-fs: tag </dev/root> not found
+..
+..
+[ end Kernel panic - not syncing: VFS: Unable to mount root fs on
++unknown-block(0,0) ]
+
+Basic problem here is that kernel assumes that device identifier
+passed in "root=" is a block device. But there are few execptions
+to this rule to take care of the needs of mtd, ubi, NFS and CIFS.
+
+For example, mtd and ubi prefix "mtd:" or "ubi:" respectively.
+
+"root=mtd:<identifier>" or "root=ubi:<identifier>"
+
+NFS and CIFS use "root=/dev/nfs" and CIFS passes "root=/dev/cifs" and
+actual root device details come from filesystem specific kernel
+command line options.
+
+virtiofs does not seem to fit in any of the above categories. In fact
+we have 9pfs which can be used to boot from but it also does not
+have a proper syntax to specify rootfs and does not fit into any of
+the existing syntax. They both expect a device "tag" to be passed
+in a device to be mounted. And filesystem knows how to parse and
+use "tag".
+
+So this patch proposes that we internally create a list of filesystems
+which don't expect a block device and whatever "source" has been
+passed in "root=<source>" option, should be passed to filesystem and
+filesystem should be able to figure out how to use "source" to
+mount filesystem.
+
+As of now I have only added "virtiofs" in the list of such filesystems.
+To enable it on 9p, it should be a simple change. Just add "9p" to
+the nobdev_filesystems[] array.
+
+And any other file system which is fine with these semantics, that
+is pass "source" to filesystem directo to mount, should be able
+to work with it easily. 
+
+Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+---
+ init/do_mounts.c |   30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+Index: redhat-linux/init/do_mounts.c
+===================================================================
+--- redhat-linux.orig/init/do_mounts.c	2021-06-09 11:12:58.839309965 -0400
++++ redhat-linux/init/do_mounts.c	2021-06-09 11:41:56.642982703 -0400
+@@ -31,6 +31,8 @@
+ int root_mountflags = MS_RDONLY | MS_SILENT;
+ static char * __initdata root_device_name;
+ static char __initdata saved_root_name[64];
++static char *__initdata nobdev_filesystems[] = {"virtiofs"};
++static bool __initdata nobdev_root = false;
+ static int root_wait;
+ 
+ dev_t ROOT_DEV;
+@@ -552,6 +554,14 @@ void __init mount_root(void)
+ 		return;
+ 	}
+ #endif
++	if (nobdev_root) {
++		if (!do_mount_root(root_device_name, root_fs_names,
++				   root_mountflags, root_mount_data))
++			return;
++		panic("VFS: Unable to mount root \"%s\" via \"%s\"\n",
++		      root_device_name, root_fs_names);
++	}
++
+ #ifdef CONFIG_BLOCK
+ 	{
+ 		int err = create_dev("/dev/root", ROOT_DEV);
+@@ -563,6 +573,22 @@ void __init mount_root(void)
+ #endif
+ }
+ 
++static bool nobdev_rootfs(char *name)
++{
++	int i, len;
++
++	len = sizeof(nobdev_filesystems)/sizeof(nobdev_filesystems[0]);
++
++	for (i = 0; i < len; i++) {
++		int name_len = strlen(nobdev_filesystems[i]) + 1;
++
++               if (!strncmp(nobdev_filesystems[i], name, name_len))
++                       return true;
++       }
++
++       return false;
++}
++
+ /*
+  * Prepare the namespace - decide what/where to mount, load ramdisks, etc.
+  */
+@@ -593,6 +619,10 @@ void __init prepare_namespace(void)
+ 			goto out;
+ 		}
+ 		ROOT_DEV = name_to_dev_t(root_device_name);
++		if (ROOT_DEV == 0 && root_fs_names) {
++			if (nobdev_rootfs(root_fs_names))
++				nobdev_root = true;
++		}
+ 		if (strncmp(root_device_name, "/dev/", 5) == 0)
+ 			root_device_name += 5;
+ 	}
+
