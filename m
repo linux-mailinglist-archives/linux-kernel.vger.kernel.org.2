@@ -2,82 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C6C3A0E06
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1533A0E05
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 09:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237216AbhFIHss convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Jun 2021 03:48:48 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:30002 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236397AbhFIHsn (ORCPT
+        id S235987AbhFIHso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 03:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235781AbhFIHsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:48:43 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-9YzCg37yOaSVqD-GcmL0zw-1; Wed, 09 Jun 2021 03:46:45 -0400
-X-MC-Unique: 9YzCg37yOaSVqD-GcmL0zw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40AAE1922961;
-        Wed,  9 Jun 2021 07:46:44 +0000 (UTC)
-Received: from bahia.lan (ovpn-112-166.ams2.redhat.com [10.36.112.166])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C4BA60853;
-        Wed,  9 Jun 2021 07:46:39 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 09:46:38 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Max Reitz <mreitz@redhat.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
-        Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH v2 0/7] fuse: Some fixes for submounts
-Message-ID: <20210609094638.197ca7fc@bahia.lan>
-In-Reply-To: <c3d49438-6ee1-32b1-1be4-41be78cec2ce@redhat.com>
-References: <20210604161156.408496-1-groug@kaod.org>
-        <c3d49438-6ee1-32b1-1be4-41be78cec2ce@redhat.com>
+        Wed, 9 Jun 2021 03:48:42 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4177DC061574;
+        Wed,  9 Jun 2021 00:46:48 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id e11so14136145wrg.3;
+        Wed, 09 Jun 2021 00:46:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mfF8AjJH5axTBcPP0IxexexYabY3e1he3WLMrp8BjK8=;
+        b=IgAZFn/WHkagwnBqkoL0xUnTvaGUW1R+i+upYBkYG/N35EWOwSaMkevwNHWNRqsV29
+         DvxkVyuIMfd5rj0rgZDe/gHmtWveCrw1dxdNxy6epxsI9RrkRQXrKs+2/FMm/yCKiP8s
+         GBsYM/gc11fh3z5yKSTZ5BTVQhikMHchjNlgN4pYkJbSSpcVQBGUDOAWKlMz+4FnAwWt
+         yoEjqp2kHmPfLIrj1TU3vmtpPEadeYiVbq9e2QC67nxTCxWE0HDg6DOZvvy6iAMLXziM
+         uFHOJthRSe9goTjZq7o7m7TiaQICvSymXVahJTyP++dum3sWzGw8xhOxYqWhMnELf+UK
+         xzyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mfF8AjJH5axTBcPP0IxexexYabY3e1he3WLMrp8BjK8=;
+        b=VIOwtmDCp6kBkDA9GI2/Lx1pFOW4K+YRx3A9XCB/a13ZcXWGinTBka7fPn1MFWZzxi
+         Vok+EFxYblxbLp4QHIMMssIx5FGFXdOEt7v53clE4w88uN2WP1Dslmrop2iWhwthsiyY
+         +/eHeOHES86l9sw46EDl2z8WaPGYgxIG8Tyn0o/1Sc7l5ruu5oYAlNTMOkP4KNRRhhg8
+         qzjVSEnPzslZrapYhLcLQJ8K+qaDtH9u5j2DwlU8tHhOfUDPb+b14cSj1A6tpzjboTBX
+         0kHPYE7ZY3FkNNZYGvJkiy2V5h6he1J+u+SXDKD8m1oZVp0zgRolDnn3oQXo+o2nIhFG
+         /rTw==
+X-Gm-Message-State: AOAM532JCjMJv08QJY21iNDScEIEfH4meqd0q2XpiV1jLHkhug5UXjxD
+        N95+hBi0Slc88RLo4lnDEsw=
+X-Google-Smtp-Source: ABdhPJxwaNus7YWPn57nqY0Er0FpsC7q84dR0F9oofTVVONfuhFu7p/dA/7CkWaxhVWRofM1dNEAsQ==
+X-Received: by 2002:adf:f54a:: with SMTP id j10mr26111411wrp.383.1623224805989;
+        Wed, 09 Jun 2021 00:46:45 -0700 (PDT)
+Received: from ziggy.stardust (81.172.61.185.dyn.user.ono.com. [81.172.61.185])
+        by smtp.gmail.com with ESMTPSA id h9sm5571159wmm.33.2021.06.09.00.46.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 00:46:45 -0700 (PDT)
+Subject: Re: [PATCH v2] arm64: dts: mt8183: add jpeg enc node for mt8183
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        maoguang.meng@mediatek.com, yong.wu@mediatek.com,
+        tfiga@chromium.org
+References: <20210609044854.393452-1-hsinyi@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <7a96166f-70d9-bc0e-72cc-53a8612741e8@gmail.com>
+Date:   Wed, 9 Jun 2021 09:46:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kaod.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210609044854.393452-1-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 17:52:13 +0200
-Max Reitz <mreitz@redhat.com> wrote:
 
-> On 04.06.21 18:11, Greg Kurz wrote:
-> > v2:
-> >
-> > - add an extra fix (patch 2) : mount is now added to the list before
-> >    unlocking sb->s_umount
-> > - set SB_BORN just before unlocking sb->s_umount, just like it would
-> >    happen when using fc_mount() (Max)
-> > - don't allocate a FUSE context for the submounts (Max)
-> > - introduce a dedicated context ops for submounts
-> > - add a extra cleanup : simplify the code even more with fc_mount()
-> >
-> > v1:
-> >
-> > While working on adding syncfs() support in FUSE, I've hit some severe
-> > bugs with submounts (a crash and an infinite loop). The fix for the
-> > crash is straightforward (patch 1), but the fix for the infinite loop
-> > is more invasive : as suggested by Miklos, a simple bug fix is applied
-> > first (patch 2) and the final fix (patch 3) is applied on top.
+
+On 09/06/2021 06:48, Hsin-Yi Wang wrote:
+> From: Maoguang Meng <maoguang.meng@mediatek.com>
 > 
-> Thanks a lot for these patches. I’ve had a style nit on patch 6, but 
-> other than that, looks nice to me.
+> Add jpeg encoder device tree node.
 > 
-
-Thanks a lot for the review !
-
-Cheers,
-
---
-Greg
-
-> Max
+> Signed-off-by: Maoguang Meng <maoguang.meng@mediatek.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+> v2: rebase to latest
+> v1: https://patchwork.kernel.org/project/linux-media/patch/20200914094012.5817-1-maoguang.meng@mediatek.com/
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index c5e822b6b77a3..fffe0c52909ce 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -1329,6 +1329,17 @@ larb4: larb@17010000 {
+>  			power-domains = <&spm MT8183_POWER_DOMAIN_VENC>;
+>  		};
+>  
+> +		venc_jpg: venc_jpg@17030000 {
+> +			compatible = "mediatek,mt8183-jpgenc", "mediatek,mtk-jpgenc";
 
+We are missing "mediatek,mt8183-jpgenc" in mediatek-jpeg-encoder.txt. Would be
+great if you could help to convert it to yaml before adding the new compatible.
+
+Thanks!
+Matthias
+> +			reg = <0 0x17030000 0 0x1000>;
+> +			interrupts = <GIC_SPI 249 IRQ_TYPE_LEVEL_LOW>;
+> +			iommus = <&iommu M4U_PORT_JPGENC_RDMA>,
+> +				 <&iommu M4U_PORT_JPGENC_BSDMA>;
+> +			power-domains = <&spm MT8183_POWER_DOMAIN_VENC>;
+> +			clocks = <&vencsys CLK_VENC_JPGENC>;
+> +			clock-names = "jpgenc";
+> +		};
+> +
+>  		ipu_conn: syscon@19000000 {
+>  			compatible = "mediatek,mt8183-ipu_conn", "syscon";
+>  			reg = <0 0x19000000 0 0x1000>;
+> 
