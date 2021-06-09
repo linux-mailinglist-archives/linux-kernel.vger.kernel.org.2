@@ -2,155 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710F63A1950
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FA83A1970
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbhFIPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:25:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32654 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232458AbhFIPZW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:25:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623252207;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K7r3YpjfY15K3g48OrujqDYQDOPyWp2wSpWjzmNEuVQ=;
-        b=fr+NP/EBCEmmpmoZFqVq6bjG3rgSIjYZ78w6KDon2O4bVmnLY9QShyYJ3WAOFnNCDLTpgf
-        H7G3i3gChCalWNcB3hAGgITvHrXeLFHhRzU6M0UDEffkGinZk056d+XVP402Y1pv6JEpoI
-        IVYB4AD7Ws5l+QE1iFxqi8E5dW8UWbE=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-4-8Bbw2ZOCy4OaycF-RspQ-1; Wed, 09 Jun 2021 11:23:27 -0400
-X-MC-Unique: 4-8Bbw2ZOCy4OaycF-RspQ-1
-Received: by mail-ed1-f71.google.com with SMTP id y18-20020a0564022712b029038ffac1995eso12620133edd.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 08:23:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K7r3YpjfY15K3g48OrujqDYQDOPyWp2wSpWjzmNEuVQ=;
-        b=DFjLnw/NXyraiAw4BMZ2y+uHHXW0HVIMxAvEnnFVnod9K03nOQXuJrrMuIj9Zzx1ls
-         4GO6hah0yAi1hgAj4733rWA6HkEBhI4WmBKXDbBvJzXbXLTpqxovJ8XMHtmC15yBqnlL
-         i3d+ccCB5iXZnxozkkVQ3Q+UeXKTzrtqBpHzIBE623n/jrjQKKaE9+7QDztTuDR3WIqk
-         GBIPEFVjXgmfV/9zOuC2yvXtADjcVafMGcirKLdIJQj8b3v7LZf3Z5XfnjR6sUGu9PHO
-         slUsZXxnEY8mNW+7gXRTLunO1n05OQa+PomD7kkZBFCjmmHmwb5nXzRYKUopNWWOoRY3
-         IJEA==
-X-Gm-Message-State: AOAM533pyeOM8Tx8EEbW7HFGhZE0Yezn0jkaTjlFtgpuJDDtvUs3gAJy
-        9wX+VVQHp6n++S5c4BH0jcIzrXqQNbVuVBqyCH4ok0Lr16PUD0Q85F+c1AiP5PLHYq29CcA2cdM
-        i/ssPMZLtfcEz+otrp/ImYt4nREyyBwer2Czajqdjw4UIPD/r6sXr3uUk641pq8EISaHV6KekBn
-        WM
-X-Received: by 2002:a17:906:660c:: with SMTP id b12mr459258ejp.86.1623252205608;
-        Wed, 09 Jun 2021 08:23:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxENoNet7wbOz8SCkAec3i87+0hhGeX43cLDQgiU3p4HoaIZo/cEiPjZbuOLsyJK6XHlo3Juw==
-X-Received: by 2002:a17:906:660c:: with SMTP id b12mr459235ejp.86.1623252205394;
-        Wed, 09 Jun 2021 08:23:25 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id s2sm26253edu.89.2021.06.09.08.23.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 08:23:25 -0700 (PDT)
-Subject: Re: [PATCH RESEND v2 0/5] Add devm helper for work-queue
- initialization
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <2ab1589e-a14b-3058-5582-ac5c304f7e80@redhat.com>
-Date:   Wed, 9 Jun 2021 17:23:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S236258AbhFIP1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:27:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236251AbhFIP1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:27:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0098613BF;
+        Wed,  9 Jun 2021 15:25:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623252323;
+        bh=vtYkuK0gwuAmFRZnC/BipTEB3/onfMoeZxcZ8jbvKK4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T5nBFtbuBZAg3XVZd08qF+v6Uu6MAIzsYvZ8CF8m0lpJsZRR6h4Omn+LAUufQuagE
+         OxN1OxkCHUp+gdWr+ircp3SpRdEaFx2YjUaVInyuPnEO+DfL5EXLOaUGpzFdJh+Ipu
+         V0bGRXo4QWJr6s8F1eDLNhqPFEgCuIsrmEJ6Pgpo+1RPJRbEbyCe39Ilp2R92bRIpa
+         p4TSjtTbEh3TeCeYW3UARh6YGJHbeHKsbnJf1yx2+VKO3ZUbXbmPvBLb2BJOfi7ec4
+         l+eyrT7Nh8gx8PHuK/mRV//H2uB72RtLsoubueQSbUhq8QxK7OjMVGlqwujYFWgrzw
+         jbN5Z5XOQxPNQ==
+Received: by mail-wr1-f52.google.com with SMTP id c5so25909145wrq.9;
+        Wed, 09 Jun 2021 08:25:22 -0700 (PDT)
+X-Gm-Message-State: AOAM530DOOXYBQ9TXH8e7ZHWEvs1MrxytlUGtfxGM4T56Ulg9IMhAITG
+        yrFf0HkktLfscHNBkWn/CU8OI+NDXU4qCwGBoW0=
+X-Google-Smtp-Source: ABdhPJxZdHDgCOtt66hi1597iP4beUCl/5c+ssCerXxe6ToZxJkpYR6wfSdYg8zBBcRzVLGRujSJZ7GLeYxxTL53I64=
+X-Received: by 2002:adf:a28c:: with SMTP id s12mr383873wra.105.1623252321487;
+ Wed, 09 Jun 2021 08:25:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cover.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210204152957.1288448-1-arnd@kernel.org> <20210609110531.GA1528247@roeck-us.net>
+ <CAK8P3a2cVpJf+r2b-8YCbknOeOA4w=bY8njr-+vmzbmm8AAC3Q@mail.gmail.com> <20210609151608.GA3389541@roeck-us.net>
+In-Reply-To: <20210609151608.GA3389541@roeck-us.net>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 9 Jun 2021 17:23:28 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a33q0nocghetws5m_gK89_aqE5v2t1P1D6kMcoswjzfuw@mail.gmail.com>
+Message-ID: <CAK8P3a33q0nocghetws5m_gK89_aqE5v2t1P1D6kMcoswjzfuw@mail.gmail.com>
+Subject: Re: [PATCH] kallsyms: fix nonconverging kallsyms table with lld
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mikhail Petrov <Mikhail.Petrov@mir.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mfaltesek@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On Wed, Jun 9, 2021 at 5:16 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Wed, Jun 09, 2021 at 01:24:18PM +0200, Arnd Bergmann wrote:
+> > On Wed, Jun 9, 2021 at 1:05 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > > On Thu, Feb 04, 2021 at 04:29:47PM +0100, Arnd Bergmann wrote:
+> > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > >
+> > > > ARM randconfig builds with lld sometimes show a build failure
+> > > > from kallsyms:
+> > > >
+> > > >   Inconsistent kallsyms data
+> > > >   Try make KALLSYMS_EXTRA_PASS=1 as a workaround
+> > > >
+> > > > The problem is the veneers/thunks getting added by the linker extend
+> > > > the symbol table, which in turn leads to more veneers being needed,
+> > > > so it may take a few extra iterations to converge.
+> > > >
+> > > > This bug has been fixed multiple times before, but comes back every time
+> > > > a new symbol name is used. lld uses a different set of idenitifiers from
+> > > > ld.bfd, so the additional ones need to be added as well.
+> > > >
+> > > > I looked through the sources and found that arm64 and mips define similar
+> > > > prefixes, so I'm adding those as well, aside from the ones I observed. I'm
+> > > > not sure about powerpc64, which seems to already be handled through a
+> > > > section match, but if it comes back, the "__long_branch_" and "__plt_"
+> > > > prefixes would have to get added as well.
+> > > >
+> > >
+> > > This is such a whack-a-mole. The problem is hitting us yet again. I suspect
+> > > it may be due to a new version of lld using new symbols, but I didn't really
+> > > try to track it down. Is there an easy way to search for missed symbols ?
+> >
+> > The way I did it previously was to hack Kbuild to not remove the temporary
+> > files after a failure, and then compare the "objdump --syms" output of the
+> > last two stages.
+>
+> Problem with that is that we have a non-deterministic problem: The build
+> fails for us on some build servers, but we are unable to reproduce the
+> problem when building the same image manually on a development server.
+> That is similar to what I had observed before, where powerpc builds would
+> pass on one server, but the same kernel with the same configuration would
+> fail to build on a second almost identical server. It would really be great
+> if we can find a better solution.
 
-On 6/8/21 12:09 PM, Matti Vaittinen wrote:
-> This series adds new devm_work_autocancel() helper.
-> 
-> Note:
-> "The beef" of this series is the new devm-helper. This means that
-> normally it would be picked-up by Hans. In this case Hans asked if this
-> series could be taken in extconn tree:
-> https://lore.kernel.org/lkml/fbbfba71-bdcc-b78f-48be-d7c657adce61@redhat.com/
+Right, that sucks. I suppose removing the ignore-lists from scripts/kallsyms.c
+would make it more easily reproducible after a few local randconfig builds,
+at least enough to add some form of scripting that is able to print the names
+of the generated symbols.
 
-Yes, and given that most of the changes are in the extcon code I still
-believe this is best.
-
-Alternatively I can create an immutable branch with these 5 patches on
-top of 5.13-rc1 and then send a pull-req to Chanwoo and MyongJoo.
-
-Chanwoo and/or MyongJoo can you please let us know how you want to proceed
-with this series?
-
-Regards,
-
-Hans
-
-
-
-> 
-> Many drivers which use work-queues must ensure the work is not queued when
-> driver is detached. Often this is done by ensuring new work is not added and
-> then calling cancel_work_sync() at remove(). In many cases this also requires
-> cleanup at probe error path - which is easy to forget (or get wrong).
-> 
-> Also the "by ensuring new work is not added" has a gotcha.
-> 
-> It is not strange to see devm managed IRQs scheduling work.
-> Mixing this with manual wq clean-up is hard to do correctly because the
-> devm is likely to free the IRQ only after the remove() is ran. So manual
-> wq cancellation and devm-based IRQ management do not mix well - there is
-> a short(?) time-window after the wq clean-up when IRQs are still not
-> freed and may schedule new work.
-> 
-> When both WQs and IRQs are managed by devm things are likely to just
-> work. WQs should be initialized before IRQs (when IRQs need to schedule
-> work) and devm unwinds things in "FILO" order.
-> 
-> This series implements wq cancellation on top of devm and replaces
-> the obvious cases where only thing remove call-back in a driver does is
-> cancelling the work. There might be other cases where we could switch
-> more than just work cancellation to use managed version and thus get rid
-> of remove or mixed (manual and devm) resource management.
-> 
-> Changelog v2:
->   - rebased on v5.13-rc2
->   - split the extcon-max8997 change into two. First a simple,
->     back-portable fix for omitting IRQ freeing at error path, second
->     being the devm-simpification which does not need backporting.
-> 
-> ---
-> 
-> Matti Vaittinen (5):
->   devm-helpers: Add resource managed version of work init
->   extcon: extcon-max14577: Fix potential work-queue cancellation race
->   extcon: extcon-max77693.c: Fix potential work-queue cancellation race
->   extcon: extcon-max8997: Fix IRQ freeing at error path
->   extcon: extcon-max8997: Simplify driver using devm
-> 
->  drivers/extcon/extcon-max14577.c | 16 ++++--------
->  drivers/extcon/extcon-max77693.c | 17 ++++--------
->  drivers/extcon/extcon-max8997.c  | 45 +++++++++++---------------------
->  include/linux/devm-helpers.h     | 25 ++++++++++++++++++
->  4 files changed, 50 insertions(+), 53 deletions(-)
-> 
-> 
-> base-commit: d07f6ca923ea0927a1024dfccafc5b53b61cfecc
-> 
-
+       Arnd
