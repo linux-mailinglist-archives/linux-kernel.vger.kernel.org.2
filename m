@@ -2,223 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5909C3A0994
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F08033A0999
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 03:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbhFIBqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 21:46:21 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:34137 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232730AbhFIBqR (ORCPT
+        id S232277AbhFIBuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 21:50:03 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53039 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231438AbhFIBuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 21:46:17 -0400
-Received: (Authenticated sender: n@nfraprado.net)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 57DC860007;
-        Wed,  9 Jun 2021 01:44:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nfraprado.net;
-        s=gm1; t=1623203062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FiczIQOpLwUkbUH4OiKCMBybtZT9qTlWGQ6371aC+A4=;
-        b=YaZiTWybPWTmo7xHq8KmjDuYbJ7htro180KQbZrNabAI7jrlO/7R6cYzUmkrhwwZRh8LAc
-        79ZwAFyOenkNPQm5hxW0r5FfzPw1WawPVjaERocsau5X/39INNSjqkaWh1BptxCwpVXIeZ
-        8xHHV90dW2hE8iWToBfLGXwoStK3RL2nsA7qNx6rplpSFRawIpMam3y7QR0o20Cb5VmuFV
-        7tzJLkOPW5AdXzy1j7tbKNQEtjeznHmy+r2Hghc4zoeqQv3Ym0cBs8L94rs+wuwVQ/yJ9s
-        hHUi01JPicE0OMPTCm3mcwagkvkByOmO7aP8EOV6FFr2Krobo1zG4NJattwx6A==
-From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <n@nfraprado.net>
-To:     linux-doc@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        ~lkcamp/patches@lists.sr.ht
-Subject: [RFC PATCH 2/2] XArray: Remove literal markup from known constants
-Date:   Tue,  8 Jun 2021 22:43:08 -0300
-Message-Id: <20210609014308.234027-3-n@nfraprado.net>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210609014308.234027-1-n@nfraprado.net>
-References: <20210609014308.234027-1-n@nfraprado.net>
+        Tue, 8 Jun 2021 21:50:02 -0400
+Received: from mail-oo1-f72.google.com ([209.85.161.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <koba.ko@canonical.com>)
+        id 1lqnKC-0004kX-0P
+        for linux-kernel@vger.kernel.org; Wed, 09 Jun 2021 01:48:08 +0000
+Received: by mail-oo1-f72.google.com with SMTP id j9-20020a4ad1890000b0290249480f62d9so9467877oor.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 18:48:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=futngJHh7CtFBTJR94UbQKkh6INPUohMLZeIfsqI8Mo=;
+        b=K+/mbMBYkg4Pr0SWpSChpJLrAhTzeaPMnqvAjSn/AtYk8NgdAUsI0R6T2/8oDeQrwd
+         UnB8D1p78w57XGI2MMx4I/wDvw0tInMx3hjpt368dGdilNQW8t3TDUUVEVPnED6ph/UD
+         /0nEqwtRP1ldZQmfyasg9TmrDH/CfJ1eHL+16u1bcWEEmhSop3YjNDSOcRV9WKwGoqZD
+         /OmM2+j8KWrzfzRVQ4HdWZ5xA4aAiLQINjOVHvgLt6clmx66OEVEYCxamUyeRE1Ny+Tu
+         ay8XZQ/tG7E5hKTAAECSdnN7G2OT9dgfLsQjCUefWk9gZaquzXe3EmJY/WSuPK2n5dYf
+         00Pw==
+X-Gm-Message-State: AOAM533W1YEYpKsscWfA2HF8tJD1/Qa3lYP63IO59QJLVpzHubQwekXp
+        4HspVj1jAsM0kwYxHRU2wglbrSVRhLwUQbyUm+cQqt5h+ITTUz2IlNYXnSysjPBiR7AUZq7xaXa
+        MY4FTTiJDXoi/rCBKytGEnHbw6qtRFYbpl/09VbksYr+mkFffeGbPIIOXew==
+X-Received: by 2002:a9d:4115:: with SMTP id o21mr4755702ote.3.1623203286862;
+        Tue, 08 Jun 2021 18:48:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyq8IemLP50bRdVvQ2g6xTP/bhi/Z2ANIRDsAl3kH28TKUYMprEFd/96lQbApprYK8FVp03giL/IOPidFnc1lc=
+X-Received: by 2002:a9d:4115:: with SMTP id o21mr4755685ote.3.1623203286481;
+ Tue, 08 Jun 2021 18:48:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210608032207.2923574-1-koba.ko@canonical.com>
+ <84eb168e-58ff-0350-74e2-c55249eb258c@gmail.com> <CAJB-X+XFYa1cZgtJEL1KCNWviL3Y4X6EbN--rE8CD_9oD9EFyA@mail.gmail.com>
+ <7a36c032-38fa-6aa6-fa0f-c3664850d8ea@gmail.com> <CAJB-X+V78kUM97AZQp9ZQbp=tzWwD9FQWEcFS6VnVRZnSHkb7g@mail.gmail.com>
+ <4508fbcb-f8ec-3805-4aa3-eeea4975de31@gmail.com>
+In-Reply-To: <4508fbcb-f8ec-3805-4aa3-eeea4975de31@gmail.com>
+From:   Koba Ko <koba.ko@canonical.com>
+Date:   Wed, 9 Jun 2021 09:47:55 +0800
+Message-ID: <CAJB-X+WgTE4pENU24=AraQ7mzeL23j34nmNQ1Qyk_f9f5JpbEg@mail.gmail.com>
+Subject: Re: [PATCH] [v2] r8169: Use PHY_POLL when RTL8106E enable ASPM
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove literal markup from known constants, instead relying on
-automarkup.py to make them into literals.
+On Wed, Jun 9, 2021 at 4:58 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>
+> On 08.06.2021 16:17, Koba Ko wrote:
+> > On Tue, Jun 8, 2021 at 9:45 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> >>
+> >> On 08.06.2021 12:43, Koba Ko wrote:
+> >>> On Tue, Jun 8, 2021 at 4:00 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> >>>>
+> >>>> On 08.06.2021 05:22, Koba Ko wrote:
+> >>>>> For RTL8106E, it's a Fast-ethernet chip.
+> >>>>> If ASPM is enabled, the link chang interrupt wouldn't be triggered
+> >>>>> immediately and must wait a very long time to get link change interrupt.
+> >>>>> Even the link change interrupt isn't triggered, the phy link is already
+> >>>>> established.
+> >>>>>
+> >>>>> Use PHY_POLL to watch the status of phy link and disable
+> >>>>> the link change interrupt when ASPM is enabled on RTL8106E.
+> >>>>>
+> >>>>> v2: Instead use PHY_POLL and identify 8106E by RTL_GIGA_MAC_VER_39.
+> >>>>>
+> >>>>
+> >>>> Still the issue description doesn't convince me that it's a hw bug
+> >>>> with the respective chip version. What has been stated so far:
+> >>>>
+> >>>> 1. (and most important) Issue doesn't occur in mainline because ASPM
+> >>>>    is disabled in mainline for r8169. Issue occurs only with a
+> >>>>    downstream kernel with ASPM enabled for r8169.
+> >>>
+> >>> mainline kernel and enable L1, the issue is also observed.
+> >>>
+> >> Yes, but enabling L1 via sysfs is at own risk.
+> >
+> > but we could have a workaround if hw have an aspm issue.
+> >
+> >>
+> >>>> 2. Issue occurs only with ASPM L1.1 not disabled, even though this chip
+> >>>>    version doesn't support L1 sub-states. Just L0s/L1 don't trigger
+> >>>>    the issue.
+> >>>>    The NIC doesn't announce L1.1 support, therefore PCI core won't
+> >>>>    enable L1 sub-states on the PCIe link between NIC and upstream
+> >>>>    PCI bridge.
+> >>>
+> >>> More precisely, when L1 is enabled, the issue would be triggered.
+> >>> For RTL8106E,
+> >>> 1. Only disable L0s, pcie_aspm_enabled return 1, issue is triggered.
+> >>> 2. Only disable L1_1, pcie_aspm_enabled return 1, issue is triggered.
+> >>>
+> >>> 3. Only disable L1, pcie_aspm_enabled return 0, issue is not triggered.
+> >>>
+> >>>>
+> >>>> 3. Issue occurs only with a GBit-capable link partner. 100MBit link
+> >>>>    partners are fine. Not clear whether issue occurs with a specific
+> >>>>    Gbit link partner only or with GBit-capable link partners in general.
+> >>>>
+> >>>> 4. Only link-up interrupt is affected. Not link-down and not interrupts
+> >>>>    triggered by other interrupt sources.
+> >>>>
+> >>>> 5. Realtek couldn't confirm that there's such a hw bug on RTL8106e.
+> >>>>
+> >>>> One thing that hasn't been asked yet:
+> >>>> Does issue occur always if you re-plug the cable? Or only on boot?
+> >>>> I'm asking because in the dmesg log you attached to the bugzilla issue
+> >>>> the following looks totally ok.
+> >>>>
+> >>>> [   61.651643] r8169 0000:01:00.0 enp1s0: Link is Down
+> >>>> [   63.720015] r8169 0000:01:00.0 enp1s0: Link is Up - 100Mbps/Full - flow control rx/tx
+> >>>> [   66.685499] r8169 0000:01:00.0 enp1s0: Link is Down
+> >>>
+> >>> Once the link is up,
+> >>> 1. If cable is unplug&plug immediately,  you wouldn't see the issue.
+> >>> 2. Unplug cable and wait a long time (~1Mins), then plug the cable,
+> >>> the issue appears again.
+> >>>
+> >> This sounds runtime-pm-related. After 10s the NIC runtime-suspends,
+> >> and once the cable is re-plugged a PME is triggered that lets the
+> >> PCI core return the PCIe link from D3hot to D0.
+> >> If you re-plug the cable after such a longer time, do you see the
+> >> PCIe PME immediately in /proc/interrupts?
+> >
+> > I don't know which irq number is for RTL8106e PME, but check all PME
+> > in /proc/interrupt,
+> >
+> > There's no interrupt increase on all PME entries and rtl8106e irq entry(irq 32).
+> >
+> >>
+> >> And if you set /sys/class/net/<if>/power/control to "on", does the
+> >> issue still occur?
+> >
+> > Yes, after echo "on" to /sys/class/net/<if>/power/control and
+> > replugging the cable, the issue is still caught.
+> >>
+> >>>>
+> >>>>> Signed-off-by: Koba Ko <koba.ko@canonical.com>
+> >>>>> ---
+> >>>>>  drivers/net/ethernet/realtek/r8169_main.c | 21 +++++++++++++++++++--
+> >>>>>  1 file changed, 19 insertions(+), 2 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> >>>>> index 2c89cde7da1e..a59cbaef2839 100644
+> >>>>> --- a/drivers/net/ethernet/realtek/r8169_main.c
+> >>>>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> >>>>> @@ -4914,6 +4914,19 @@ static const struct dev_pm_ops rtl8169_pm_ops = {
+> >>>>>
+> >>>>>  #endif /* CONFIG_PM */
+> >>>>>
+> >>>>> +static int rtl_phy_poll_quirk(struct rtl8169_private *tp)
+> >>>>> +{
+> >>>>> +     struct pci_dev *pdev = tp->pci_dev;
+> >>>>> +
+> >>>>> +     if (!pcie_aspm_enabled(pdev))
+> >>>>
+> >>>> That's the wrong call. According to what you said earlier you want to
+> >>>> check for L1 sub-states, not for ASPM in general.
+> >>>
+> >>> As per described above, that's why use pcie_aspm_enabled here.
+> >>>
+> >>>>
+> >>>>> +             return 0;
+> >>>>> +
+> >>>>> +     if (tp->mac_version == RTL_GIGA_MAC_VER_39)
+> >>>>> +             return 1;
+> >>>>> +
+> >>>>> +     return 0;
+> >>>>> +}
+> >>>>> +
+> >>>>>  static void rtl_wol_shutdown_quirk(struct rtl8169_private *tp)
+> >>>>>  {
+> >>>>>       /* WoL fails with 8168b when the receiver is disabled. */
+> >>>>> @@ -4991,7 +5004,10 @@ static const struct net_device_ops rtl_netdev_ops = {
+> >>>>>
+> >>>>>  static void rtl_set_irq_mask(struct rtl8169_private *tp)
+> >>>>>  {
+> >>>>> -     tp->irq_mask = RxOK | RxErr | TxOK | TxErr | LinkChg;
+> >>>>> +     tp->irq_mask = RxOK | RxErr | TxOK | TxErr;
+> >>>>> +
+> >>>>> +     if (!rtl_phy_poll_quirk(tp))
+> >>>>> +             tp->irq_mask |= LinkChg;
+> >>>>>
+> >>>>>       if (tp->mac_version <= RTL_GIGA_MAC_VER_06)
+> >>>>>               tp->irq_mask |= SYSErr | RxOverflow | RxFIFOOver;
+> >>>>> @@ -5085,7 +5101,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
+> >>>>>       new_bus->name = "r8169";
+> >>>>>       new_bus->priv = tp;
+> >>>>>       new_bus->parent = &pdev->dev;
+> >>>>> -     new_bus->irq[0] = PHY_MAC_INTERRUPT;
+> >>>>> +     new_bus->irq[0] =
+> >>>>> +             (rtl_phy_poll_quirk(tp) ? PHY_POLL : PHY_MAC_INTERRUPT);
+> >>>>>       snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
+> >>>>>
+> >>>>>       new_bus->read = r8169_mdio_read_reg;
+> >>>>>
+> >>>>
+> >>
+>
+> The r8101 vendor driver applies a special setting for RTL8106e if ASPM is enabled.
+> Not sure whether it's related but it's worth a try. Could you please check whether
+> the following makes a difference?
 
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Nícolas F. R. A. Prado <n@nfraprado.net>
----
- Documentation/core-api/xarray.rst | 48 +++++++++++++++----------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+After applying this patch, it can't help relieve the issue.
+The 8101 vendor driver also use polling method to watch the link change event.
+Tried to disable polling method and enable LinkChg Irq, but it also
+can't get LinkChg interrupt.
 
-diff --git a/Documentation/core-api/xarray.rst b/Documentation/core-api/xarray.rst
-index a137a0e6d068..6e608e2e8e5b 100644
---- a/Documentation/core-api/xarray.rst
-+++ b/Documentation/core-api/xarray.rst
-@@ -22,7 +22,7 @@ The XArray implementation is efficient when the indices used are densely
- clustered; hashing the object and using the hash as the index will not
- perform well.  The XArray is optimised for small indices, but still has
- good performance with large indices.  If your index can be larger than
--``ULONG_MAX`` then the XArray is not the data type for you.  The most
-+ULONG_MAX then the XArray is not the data type for you.  The most
- important user of the XArray is the page cache.
- 
- Normal pointers may be stored in the XArray directly.  They must be 4-byte
-@@ -31,7 +31,7 @@ alloc_page().  It isn't true for arbitrary user-space pointers,
- nor for function pointers.  You can store pointers to statically allocated
- objects, as long as those objects have an alignment of at least 4.
- 
--You can also store integers between 0 and ``LONG_MAX`` in the XArray.
-+You can also store integers between 0 and LONG_MAX in the XArray.
- You must first convert it into an entry using xa_mk_value().
- When you retrieve an entry from the XArray, you can check whether it is
- a value entry by calling xa_is_value(), and convert it back to
-@@ -52,7 +52,7 @@ An unusual feature of the XArray is the ability to create entries which
- occupy a range of indices.  Once stored to, looking up any index in
- the range will return the same entry as looking up any other index in
- the range.  Storing to any index will store to all of them.  Multi-index
--entries can be explicitly split into smaller entries, or storing ``NULL``
-+entries can be explicitly split into smaller entries, or storing NULL
- into any entry will cause the XArray to forget about the range.
- 
- Normal API
-@@ -60,16 +60,16 @@ Normal API
- 
- Start by initialising an XArray, either with DEFINE_XARRAY()
- for statically allocated XArrays or xa_init() for dynamically
--allocated ones.  A freshly-initialised XArray contains a ``NULL``
-+allocated ones.  A freshly-initialised XArray contains a NULL
- pointer at every index.
- 
- You can then set entries using xa_store() and get entries
- using xa_load().  xa_store will overwrite any entry with the
- new entry and return the previous entry stored at that index.  You can
- use xa_erase() instead of calling xa_store() with a
--``NULL`` entry.  There is no difference between an entry that has never
-+NULL a entry.  There is no difference between an entry that has never
- been stored to, one that has been erased and one that has most recently
--had ``NULL`` stored to it.
-+had NULL stored to it.
- 
- You can conditionally replace an entry at an index by using
- xa_cmpxchg().  Like cmpxchg(), it will only succeed if
-@@ -78,8 +78,8 @@ which was at that index; if it returns the same entry which was passed as
- 'old', then xa_cmpxchg() succeeded.
- 
- If you want to only store a new entry to an index if the current entry
--at that index is ``NULL``, you can use xa_insert() which
--returns ``-EBUSY`` if the entry is not empty.
-+at that index is NULL, you can use xa_insert() which
-+returns -EBUSY if the entry is not empty.
- 
- You can copy entries out of the XArray into a plain array by calling
- xa_extract().  Or you can iterate over the present entries in the XArray
-@@ -97,14 +97,14 @@ some, but not all of the other indices changing.
- Sometimes you need to ensure that a subsequent call to xa_store()
- will not need to allocate memory.  The xa_reserve() function
- will store a reserved entry at the indicated index.  Users of the
--normal API will see this entry as containing ``NULL``.  If you do
-+normal API will see this entry as containing NULL.  If you do
- not need to use the reserved entry, you can call xa_release()
- to remove the unused entry.  If another user has stored to the entry
- in the meantime, xa_release() will do nothing; if instead you
--want the entry to become ``NULL``, you should use xa_erase().
-+want the entry to become NULL, you should use xa_erase().
- Using xa_insert() on a reserved entry will fail.
- 
--If all entries in the array are ``NULL``, the xa_empty() function
-+If all entries in the array are NULL, the xa_empty() function
- will return ``true``.
- 
- Finally, you can remove all entries from an XArray by calling
-@@ -120,7 +120,7 @@ Each mark may be set or cleared independently of the others.  You can
- iterate over marked entries by using the xa_for_each_marked() iterator.
- 
- You can enquire whether a mark is set on an entry by using
--xa_get_mark().  If the entry is not ``NULL``, you can set a mark on it
-+xa_get_mark().  If the entry is not NULL, you can set a mark on it
- by using xa_set_mark() and remove the mark from an entry by calling
- xa_clear_mark().  You can ask whether any entry in the XArray has a
- particular mark set by calling xa_marked().  Erasing an entry from the
-@@ -151,9 +151,9 @@ interrupts while allocating the ID.
- 
- Using xa_store(), xa_cmpxchg() or xa_insert() will
- also mark the entry as being allocated.  Unlike a normal XArray, storing
--``NULL`` will mark the entry as being in use, like xa_reserve().
-+NULL will mark the entry as being in use, like xa_reserve().
- To free an entry, use xa_erase() (or xa_release() if
--you only want to free the entry if it's ``NULL``).
-+you only want to free the entry if it's NULL).
- 
- By default, the lowest free entry is allocated starting from 0.  If you
- want to allocate entries starting at 1, it is more efficient to use
-@@ -326,11 +326,11 @@ xas_error() to retrieve the error.  All operations check whether
- the xa_state is in an error state before proceeding, so there's no need
- for you to check for an error after each call; you can make multiple
- calls in succession and only check at a convenient point.  The only
--errors currently generated by the XArray code itself are ``ENOMEM`` and
--``EINVAL``, but it supports arbitrary errors in case you want to call
-+errors currently generated by the XArray code itself are ENOMEM and
-+EINVAL, but it supports arbitrary errors in case you want to call
- xas_set_err() yourself.
- 
--If the xa_state is holding an ``ENOMEM`` error, calling xas_nomem()
-+If the xa_state is holding an ENOMEM error, calling xas_nomem()
- will attempt to allocate more memory using the specified gfp flags and
- cache it in the xa_state for the next attempt.  The idea is that you take
- the xa_lock, attempt the operation and drop the lock.  The operation
-@@ -340,7 +340,7 @@ can try harder to allocate more memory.  It will return ``true`` if it
- is worth retrying the operation (i.e. that there was a memory error *and*
- more memory was allocated).  If it has previously allocated memory, and
- that memory wasn't used, and there is no error (or some error that isn't
--``ENOMEM``), then it will free the memory previously allocated.
-+ENOMEM), then it will free the memory previously allocated.
- 
- Internal Entries
- ----------------
-@@ -375,10 +375,10 @@ to xas_retry(), and retry the operation if it returns ``true``.
- 
-    * - Zero
-      - xa_is_zero()
--     - Zero entries appear as ``NULL`` through the Normal API, but occupy
-+     - Zero entries appear as NULL through the Normal API, but occupy
-        an entry in the XArray which can be used to reserve the index for
-        future use.  This is used by allocating XArrays for allocated entries
--       which are ``NULL``.
-+       which are NULL.
- 
- Other internal entries may be added in the future.  As far as possible, they
- will be handled by xas_retry().
-@@ -461,9 +461,9 @@ You can create a multi-index entry by using XA_STATE_ORDER()
- or xas_set_order() followed by a call to xas_store().
- Calling xas_load() with a multi-index xa_state will walk the
- xa_state to the right location in the tree, but the return value is not
--meaningful, potentially being an internal entry or ``NULL`` even when there
-+meaningful, potentially being an internal entry or NULL even when there
- is an entry stored within the range.  Calling xas_find_conflict()
--will return the first entry within the range or ``NULL`` if there are no
-+will return the first entry within the range or NULL if there are no
- entries in the range.  The xas_for_each_conflict() iterator will
- iterate over every entry which overlaps the specified range.
- 
-@@ -479,8 +479,8 @@ Using xas_next() or xas_prev() with a multi-index xa_state is not
- supported.  Using either of these functions on a multi-index entry will
- reveal sibling entries; these should be skipped over by the caller.
- 
--Storing ``NULL`` into any index of a multi-index entry will set the
--entry at every index to ``NULL`` and dissolve the tie.  A multi-index
-+Storing NULL into any index of a multi-index entry will set the
-+entry at every index to NULL and dissolve the tie.  A multi-index
- entry can be split into entries occupying smaller ranges by calling
- xas_split_alloc() without the xa_lock held, followed by taking the lock
- and calling xas_split().
--- 
-2.32.0
-
+>
+> diff --git a/drivers/net/ethernet/realtek/r8169_phy_config.c b/drivers/net/ethernet/realtek/r8169_phy_config.c
+> index 50f0f621b..60014b9c4 100644
+> --- a/drivers/net/ethernet/realtek/r8169_phy_config.c
+> +++ b/drivers/net/ethernet/realtek/r8169_phy_config.c
+> @@ -1153,6 +1153,7 @@ static void rtl8106e_hw_phy_config(struct rtl8169_private *tp,
+>         r8169_apply_firmware(tp);
+>
+>         rtl_writephy_batch(phydev, phy_reg_init);
+> +       phy_write(phydev, 0x18, 0x8310);
+>  }
+>
+>  static void rtl8125_legacy_force_mode(struct phy_device *phydev)
+> --
+> 2.32.0
+>
+>
