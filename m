@@ -2,76 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B013A10B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2032E3A10BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238414AbhFIJ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:58:42 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:5354 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235816AbhFIJ6l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:58:41 -0400
-Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G0Mq90lYGz6tqL;
-        Wed,  9 Jun 2021 17:52:53 +0800 (CST)
-Received: from huawei.com (10.67.174.47) by dggeme758-chm.china.huawei.com
- (10.3.19.104) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
- 2021 17:56:44 +0800
-From:   He Ying <heying24@huawei.com>
-To:     <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <heying24@huawei.com>
-Subject: [PATCH -next] netfilter: Make NETFILTER_NETLINK_HOOK depends on NF_TABLES
-Date:   Wed, 9 Jun 2021 05:57:30 -0400
-Message-ID: <20210609095730.185982-1-heying24@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S238398AbhFIKAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:00:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235816AbhFIKAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 06:00:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53BAC61108;
+        Wed,  9 Jun 2021 09:58:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623232691;
+        bh=LVMyo9Spr1AN6Nc0PzUAUPSDefGf1/zfkI5i4p5A0wA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nPqr1if+FmVXU775yqSylEGz1BATyFjDIJlwoR356hJWeymL/EKsXJb2ETjze/tJP
+         OMtXuWlPpB1oeeqC8OBJRKW6+KPNlgzgko7lWhHWncZMuPUh4bhCMzTO3y9BIEiRqp
+         0JGSjIxZ/nbWwsTx+lR3LBCzIc1Ervy2TORdmItQ=
+Date:   Wed, 9 Jun 2021 11:58:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     trix@redhat.com
+Cc:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
+        michal.simek@xilinx.com, dinguyen@kernel.org,
+        krzysztof.kozlowski@canonical.com, nava.manne@xilinx.com,
+        yilun.xu@intel.com, davidgow@google.com, fpacheco@redhat.com,
+        richard.gong@intel.com, luca@lucaceresoli.net,
+        linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/7] fpga: reorganize to subdirs
+Message-ID: <YMCQsboQRTQd/AF7@kroah.com>
+References: <20210608162340.3010204-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.174.47]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme758-chm.china.huawei.com (10.3.19.104)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608162340.3010204-1-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compiling errors happen when CONFIG_NETFILTER_NETLINK_HOOK = y
-while CONFIG_NF_TABLES is not set:
+On Tue, Jun 08, 2021 at 09:23:32AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> The incoming xrt patchset has a toplevel subdir xrt/
+> The current fpga/ uses a single dir with filename prefixes to subdivide owners
+> For consistency, there should be only one way to organize the fpga/ dir.
+> Because the subdir model scales better, refactor to use it.
+> The discussion wrt xrt is here:
+> https://lore.kernel.org/linux-fpga/68e85a4f-4a10-1ff9-0443-aa565878c855@redhat.com/
 
-net/netfilter/nfnetlink_hook.c: In function ‘nfnl_hook_put_nft_chain_info’:
-net/netfilter/nfnetlink_hook.c:76:7: error: implicit declaration of function
-‘nft_is_active’ [-Werror=implicit-function-declaration]
-   76 |  if (!nft_is_active(net, chain))
-      |       ^~~~~~~~~~~~~
+Your series was odd, patches 6 and 7 were not threaded properly.
 
-Notice that nft_is_active macro is only defined when CONFIG_NF_TABLES
-is enabled, so add dependency on NF_TABLES in NETFILTER_NETLINK_HOOK
-configurations.
+Please fix up your emailer and resend so that tools can correctly pick
+them up automatically.
 
-Fixes: e2cf17d3774c ("netfilter: add new hook nfnl subsystem")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: He Ying <heying24@huawei.com>
----
- net/netfilter/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+thanks,
 
-diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
-index c81321372198..54395266339d 100644
---- a/net/netfilter/Kconfig
-+++ b/net/netfilter/Kconfig
-@@ -22,6 +22,7 @@ config NETFILTER_FAMILY_ARP
- config NETFILTER_NETLINK_HOOK
- 	tristate "Netfilter base hook dump support"
- 	depends on NETFILTER_ADVANCED
-+	depends on NF_TABLES
- 	select NETFILTER_NETLINK
- 	help
- 	  If this option is enabled, the kernel will include support
--- 
-2.17.1
-
+greg k-h
