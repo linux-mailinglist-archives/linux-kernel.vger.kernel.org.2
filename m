@@ -2,175 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1812E3A1088
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1FF3A1112
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 12:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235517AbhFIJth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 05:49:37 -0400
-Received: from mail-co1nam11on2077.outbound.protection.outlook.com ([40.107.220.77]:20064
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232867AbhFIJtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:49:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W90QJeCXcxy+/hVcA2AJyFT2KxKX2tqxvz2Af7lvbHOBI2EeDTeW0YeHKg3GLrMds5ESLpEyjdJTG2uKLwTOtTp9lEJ5NhZkbuVSf5rUNivxC9BcyrrNLqvhRh+/PkqLi3wMfAWH0gdEDtPb9qmFKxDZNjxoYxdOzAgh8T9D5Sfg/bhRNu6BMt7RpR8HZ6p7sXH65kqVPrcRgY7BV+3oe16bQxE7xT34MgxCykG1FqgdTWHKyOYYBb5+iNggrRJlip87N64zzMbh+VBOzagUCSxFGTQFhdWO4UK/2ycUCmk8og0UroZMa8jspTjHTswk4/ClTQ01zuSg/fhvMtmY6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6ooC6jTm71DwvonShNu3gVaaf/I4QGxB3Sx4Dk4AHMI=;
- b=RbNKq22oCk4n9ekCXoa32BJXCvnSDiX1LWLJNAyfmEi6pHRM1vADAP7uuhc2jzjbPtvQlRjxPXia3XKOg0TLhgR7DM2aMZVb+rj+MSu40H6gwpjKsAXxZOtM+WXAv86x8nbpdwRlgZNHpTiFUPGuGMsBJl+pqf9B/GdzLO9Dp052OywqfZhNfmV+lHMQpRz0wIeawTTumBnBdze6NOmPBxKU+pjwAWVFyyWrz5Z1mbGcus4PNm/lEyh3RwXRLwf6Dc/QX0pvarcEQnnDsK+lt0V/enlsloNatCrIWZ1rme+tssUg5EVXZ8cAkgF7V0tJ1Rwk3C8zRWR/x2/fJ/jkWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=synopsys.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6ooC6jTm71DwvonShNu3gVaaf/I4QGxB3Sx4Dk4AHMI=;
- b=rLnvhUcaMbE7tJLWnnRBM4gEEj/K+XhV1TU375q1HnEz60L9KvGQadBkObnS5+xjQzrIPj1CExTUqZLDUXCBgw5LKe+Tp4yUCY61DZ9Yecj2RxekA9T+663GuNXwFtDCX1elcgc5ARrEkw+O8vIbTfLjWAkTI4mD15IAIFto4xJx6zMx8h4ftlTBaL+J4EZsug+vESQE7eIvTpN1V+ByLShiZHwNDurf1cUmvZ7AZFUnaBRLbUiNeLGwTGI2k82jqIZML80AZSMRa8SlCBeM3FEqDaEU2mt1kUh6dfcdQPDznWW1EGI3t0eYktTRIDeuSFONpK/2OwALc1NSeMJ5ZA==
-Received: from MWHPR03CA0011.namprd03.prod.outlook.com (2603:10b6:300:117::21)
- by BN8PR12MB3331.namprd12.prod.outlook.com (2603:10b6:408:45::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Wed, 9 Jun
- 2021 09:47:39 +0000
-Received: from CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:117:cafe::b8) by MWHPR03CA0011.outlook.office365.com
- (2603:10b6:300:117::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend
- Transport; Wed, 9 Jun 2021 09:47:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; synopsys.com; dkim=none (message not signed)
- header.d=none;synopsys.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT006.mail.protection.outlook.com (10.13.174.246) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4195.22 via Frontend Transport; Wed, 9 Jun 2021 09:47:39 +0000
-Received: from localhost (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 9 Jun
- 2021 09:47:38 +0000
-Date:   Wed, 9 Jun 2021 11:49:20 +0200
-From:   Thierry Reding <treding@nvidia.com>
-To:     Vidya Sagar <vidyas@nvidia.com>
-CC:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
-        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
-        Joao Pinto <Joao.Pinto@synopsys.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krishna Thota <kthota@nvidia.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Query regarding the use of pcie-designware-plat.c file
-Message-ID: <YMCOoGzE2uGxabqF@orome.fritz.box>
-References: <34650ed1-6567-3c8f-fe29-8816f0fd74f2@nvidia.com>
- <DM5PR12MB18351813A8F94B0D18E6B505DA379@DM5PR12MB1835.namprd12.prod.outlook.com>
- <d142b6be-f006-1edf-8780-da72ff4f20e3@nvidia.com>
+        id S236875AbhFIK2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 06:28:44 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38552 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234515AbhFIK2l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 06:28:41 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D7E45219AF;
+        Wed,  9 Jun 2021 09:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623232234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=SvW0mHPDOY2f5vF2VERxSgZ7iWKgInFYzb+o7n87p3Y=;
+        b=IwHRgY2gpyS8zg3lLb7hhAOoCeF335f24+a6gmGqKFAUrl93rdww0hcU4QNJwrPax8S3MW
+        6zXB5NNBi5h2kv+uhMTMBHGPIYdPXV59SewYrtGxKbnmiL79N9JLTCxNRgiVlfRfsvoCzR
+        5GAiIdWEB/1EchUuS3Td3mzTC79NQFY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623232234;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=SvW0mHPDOY2f5vF2VERxSgZ7iWKgInFYzb+o7n87p3Y=;
+        b=VmxFXjatL1IpMgt1H1mGLL6m4tJ53rwtrocntVoh7KVdBcf2xnuOHjH3xkpUO617hV8GUw
+        l3fzSjN1H7fYARBQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id BD5FE118DD;
+        Wed,  9 Jun 2021 09:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623232234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=SvW0mHPDOY2f5vF2VERxSgZ7iWKgInFYzb+o7n87p3Y=;
+        b=IwHRgY2gpyS8zg3lLb7hhAOoCeF335f24+a6gmGqKFAUrl93rdww0hcU4QNJwrPax8S3MW
+        6zXB5NNBi5h2kv+uhMTMBHGPIYdPXV59SewYrtGxKbnmiL79N9JLTCxNRgiVlfRfsvoCzR
+        5GAiIdWEB/1EchUuS3Td3mzTC79NQFY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623232234;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=SvW0mHPDOY2f5vF2VERxSgZ7iWKgInFYzb+o7n87p3Y=;
+        b=VmxFXjatL1IpMgt1H1mGLL6m4tJ53rwtrocntVoh7KVdBcf2xnuOHjH3xkpUO617hV8GUw
+        l3fzSjN1H7fYARBQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id PjKULuqOwGDUGAAALh3uQQ
+        (envelope-from <dwagner@suse.de>); Wed, 09 Jun 2021 09:50:34 +0000
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-scsi@vger.kernel.org, Nilesh Javali <njavali@marvell.com>
+Cc:     linux-kernel@vger.kernel.org,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Arun Easi <aeasi@marvell.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Benjamin Block <bblock@linux.ibm.com>,
+        Roman Bolshakov <r.bolshakov@yadro.com>,
+        James Smart <jsmart2021@gmail.com>,
+        Hannes Reinecke <hare@suse.de>, Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH] qla2xxx: synchronize rport dev_loss_tmo setting
+Date:   Wed,  9 Jun 2021 11:49:56 +0200
+Message-Id: <20210609094956.11286-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wRn0FFzKJbdSi9sg"
-Content-Disposition: inline
-In-Reply-To: <d142b6be-f006-1edf-8780-da72ff4f20e3@nvidia.com>
-X-NVConfidentiality: public
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6ab78106-5ce5-4b2b-d21c-08d92b2b9e87
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3331:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB3331050A0D4931412BA72646CF369@BN8PR12MB3331.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 061u1w7y9doF6tM3MmK7dPrF+EkItH0OmklcEurbQYbqT7hwZLSlVhkQW3RvMd7hGYFJlKuFoHoYlM/dMcmW7BJX9pkFZ4DblgSAThQWOCuITao7fyZU879ngyMRrSHv1rC4WtXXwK+g15vSED1m7I51JvaSgNU4c+KC/ZSQ1n/CCmDjYCfE3LuIfXhCTgQfE3jop1WNbpLOHrNEQUZ3HNV9TNw4ELz/Umte+jeDE60VP+/42TWhAYTKIybLuxHZw8s37MGwwqXnEgoosj+D+ZdDqwZXvfFlisTThGssmHIiERCg/ygLxo1HBJXPjbLRNS7KV5cL+UmWJOs68ql+joSePv2jWEscUA6wYjnKnQi0Jwmn8iqunX4d84+UdeifjklNmp7YYqN7XnLUB+PPRD0am/WjtJ4aTpDncFQw2sLAeMG+NUXIEwUeZCSvrk38Mw0/gI3auW6bfo1tDsWKKtlxmNfenh+Mjq8MH5rorrxolpx38grCKFlxr5ZDGlBLApRZkrXaS1oK4MDrwqXjho03aP6lwFwqlOsOopm27kt95wXRM5qYOMplgwBdBh9md8i82GqN37RG7ZpbTn0cf4IQH++R/iJYXH7pvcVxTASZSzWyw2xqOen7M0D5JWvQmV+FHJ44BCGdaIGWuXWcpRpM67f2ch4A6Y06UED7HYwzZqQmNQb/4yqGIyKj4YQR
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(39860400002)(46966006)(36840700001)(70586007)(6636002)(5660300002)(82310400003)(6666004)(9686003)(70206006)(2906002)(7636003)(82740400003)(47076005)(356005)(6862004)(86362001)(8936002)(36906005)(54906003)(21480400003)(8676002)(4326008)(316002)(426003)(478600001)(16526019)(26005)(186003)(336012)(36860700001)(44144004)(53546011)(2700100001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 09:47:39.1705
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ab78106-5ce5-4b2b-d21c-08d92b2b9e87
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3331
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---wRn0FFzKJbdSi9sg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Hannes Reinecke <hare@suse.de>
 
-On Wed, Jun 09, 2021 at 10:56:48AM +0530, Vidya Sagar wrote:
->=20
->=20
-> On 6/9/2021 2:47 AM, Gustavo Pimentel wrote:
-> > External email: Use caution opening links or attachments
-> >=20
-> >=20
-> > Hi Vidya,
-> >=20
-> > The pcie-designware-plat.c is the driver for the Synopsys PCIe RC IP
-> > prototype.
-> Thanks for the info Gustavo.
-> But, I don't see any DT file having only "snps,dw-pcie" compatibility
-> string. All the DT files that have "snps,dw-pci" compatibility string also
-> have their platform specific compatibility string and their respective ho=
-st
-> controller drivers. Also, it is the platform specific compatibility string
-> that is used for binding purpose with their respective drivers and not the
-> "snps,dw-pcie". So, wondering when will pcie-designware-plat.c be used as
-> there is not DT file which has only "snps,dw-pcie" as the compatibility
-> string.
+Currently, the dev_loss_tmo setting is only ever used for SCSI
+devices. This patch reshuffles initialisation such that the SCSI
+remote ports are registered before the NVMe ones, allowing the
+dev_loss_tmo setting to be synchronized between SCSI and NVMe.
 
-Sounds to me like we have two options:
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+Hi,
 
-  1. If there's indeed real hardware that's identified by the existing
-     "snps,dw-pcie" compatible string, then it's wrong for other devices
-     to list that in their compatible string because they are likely not
-     compatible with that (i.e. they might be from a register point of
-     view, but at least from an integration point of view they usually
-     differ).
+This is a followup on
 
-  2. If "snps,dw-pcie" is meant to describe the fact that these are all
-     based off the same IP but may be differently integrated, then there
-     should be no driver matching on that compatible string.
+  https://lore.kernel.org/linux-scsi/20210419100014.47144-1-dwagner@suse.de/
 
-Option 2 is not very robust because somebody could easily add a matching
-driver at some point in the future. Also, if we don't match on a
-compatible string there's not a lot of use in listing it in DT in the
-first place.
+Hannes and I started to play with this patch. After a few iterations
+on getting the right dev_loss_tmo variables set, it works as
+hoped. With this change, it's possible to use the same udev rule for
+qla2xxx as we currently use for lpfc driver. And it survived serious
+testing sessions.
 
-So I think option 1 would be preferred.
+Thanks,
+Daniel
 
-Thierry
+ drivers/scsi/qla2xxx/qla_attr.c |  6 ++++++
+ drivers/scsi/qla2xxx/qla_init.c | 10 +++-------
+ drivers/scsi/qla2xxx/qla_nvme.c |  5 ++++-
+ 3 files changed, 13 insertions(+), 8 deletions(-)
 
---wRn0FFzKJbdSi9sg
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
+index 3aa9869f6fae..c762c940970f 100644
+--- a/drivers/scsi/qla2xxx/qla_attr.c
++++ b/drivers/scsi/qla2xxx/qla_attr.c
+@@ -2648,7 +2648,13 @@ qla2x00_get_starget_port_id(struct scsi_target *starget)
+ static inline void
+ qla2x00_set_rport_loss_tmo(struct fc_rport *rport, uint32_t timeout)
+ {
++	fc_port_t *fcport = *(fc_port_t **)rport->dd_data;
++
+ 	rport->dev_loss_tmo = timeout ? timeout : 1;
++
++	if (fcport->nvme_remote_port)
++		nvme_fc_set_remoteport_devloss(fcport->nvme_remote_port,
++					       rport->dev_loss_tmo);
+ }
+ 
+ static void
+diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
+index eb825318e3f5..7f5b64a5ec90 100644
+--- a/drivers/scsi/qla2xxx/qla_init.c
++++ b/drivers/scsi/qla2xxx/qla_init.c
+@@ -5629,13 +5629,6 @@ qla2x00_update_fcport(scsi_qla_host_t *vha, fc_port_t *fcport)
+ 
+ 	qla2x00_dfs_create_rport(vha, fcport);
+ 
+-	if (NVME_TARGET(vha->hw, fcport)) {
+-		qla_nvme_register_remote(vha, fcport);
+-		qla2x00_set_fcport_disc_state(fcport, DSC_LOGIN_COMPLETE);
+-		qla2x00_set_fcport_state(fcport, FCS_ONLINE);
+-		return;
+-	}
+-
+ 	qla24xx_update_fcport_fcp_prio(vha, fcport);
+ 
+ 	switch (vha->host->active_mode) {
+@@ -5657,6 +5650,9 @@ qla2x00_update_fcport(scsi_qla_host_t *vha, fc_port_t *fcport)
+ 		break;
+ 	}
+ 
++	if (NVME_TARGET(vha->hw, fcport))
++		qla_nvme_register_remote(vha, fcport);
++
+ 	qla2x00_set_fcport_state(fcport, FCS_ONLINE);
+ 
+ 	if (IS_IIDMA_CAPABLE(vha->hw) && vha->hw->flags.gpsc_supported) {
+diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
+index e119f8b24e33..5cc58957dbec 100644
+--- a/drivers/scsi/qla2xxx/qla_nvme.c
++++ b/drivers/scsi/qla2xxx/qla_nvme.c
+@@ -41,7 +41,7 @@ int qla_nvme_register_remote(struct scsi_qla_host *vha, struct fc_port *fcport)
+ 	req.port_name = wwn_to_u64(fcport->port_name);
+ 	req.node_name = wwn_to_u64(fcport->node_name);
+ 	req.port_role = 0;
+-	req.dev_loss_tmo = 0;
++	req.dev_loss_tmo = fcport->dev_loss_tmo;
+ 
+ 	if (fcport->nvme_prli_service_param & NVME_PRLI_SP_INITIATOR)
+ 		req.port_role = FC_PORT_ROLE_NVME_INITIATOR;
+@@ -68,6 +68,9 @@ int qla_nvme_register_remote(struct scsi_qla_host *vha, struct fc_port *fcport)
+ 		return ret;
+ 	}
+ 
++	nvme_fc_set_remoteport_devloss(fcport->nvme_remote_port,
++				       fcport->dev_loss_tmo);
++
+ 	if (fcport->nvme_prli_service_param & NVME_PRLI_SP_SLER)
+ 		ql_log(ql_log_info, vha, 0x212a,
+ 		       "PortID:%06x Supports SLER\n", req.port_id);
+-- 
+2.29.2
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmDAjp4ACgkQ3SOs138+
-s6G1hw/+N2tk/slpSl+GaiMhQXUQgDwRw5V5XiELwX1vLqgGKWwJsiQn+LD6TvMa
-kCgRrLw1rIKjqG/EUKLsrM/7ftAcwArO7DGMzKQQ8AcuSHRY6R0QjGDzYyJVO0VJ
-696kNW7CvfnxJDOpnQn1BionbkyY0MHlElOYRhOW+IZNfPAJRc4oWao6zV/vdzE9
-1sKSi/5GWACo/2zhLIa9bu1llWbFcDaNlENpDbkulI5OjcR2aB8NSmKzRLUbpoeE
-QXRDQkvAnnOidjA5UggZ8q6mNhsqcsnkX+AEDxhqb3j/VuHUhtLfWQhKkTBgjwxc
-Pdie+wYq6IRcXW2JXOdGoFw4SNG92FV4oCVFRjtPKhlnwZBet6U3OjWtNcskm6w8
-UUjVH2tsWlpWUMABPtqxb+LeYEFpUIPjXXo82lCWn9ObORy6VICpZmt0IHlapeQv
-jJr6rUbZdsaDUcAJ6OOteNOmaOpY5CNfSLs06Ub4rlpwYLABFSp/UHvuaIwZvMfC
-i4ZXFSG/8EtyHO0DOMk31oxMFVKiGF81aCk5kBG4zhXaBMxyZrABmFVuWdSIE3Q9
-pFtNIq7Lrg0KLGYTxFrONLDJUEarubfvR5RPb+e/MbSAwkoqmWNEOg72dHgCRzwi
-6Rm+TKEG5rx1WuW1/UPP6sFoj8IUvsEtphSQ6cE6Zl9rufzVxdw=
-=DHEE
------END PGP SIGNATURE-----
-
---wRn0FFzKJbdSi9sg--
