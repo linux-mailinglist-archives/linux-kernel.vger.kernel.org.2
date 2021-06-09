@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F783A0CBC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42543A0CC2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 08:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbhFIGyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 02:54:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231660AbhFIGyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 02:54:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F40D661249;
-        Wed,  9 Jun 2021 06:52:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623221541;
-        bh=1NOcR9X1qrsVWC8pZ+WOBsJYlerWmKCJZFjAHZSyi1g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R3Ua7SSrAmPcigjQENQSeeEMj920XMPbd0mRAH+B4DHPNXP+taIOYwYUWcVIXb5j6
-         VJBySmzsOYZnbE6P4kMoE9ZvUpFBLiddGWhEYtU+E0KEUzEdWHkJqeLVtgBH6jO4C9
-         Pe9x2UVR5RoSXUB4d6262LpkrrGlAOAE5RSKB4ZbL931VU3fcHDPQIgBFXazdDNmx0
-         KYGm7I3vStPQPXah/NfmgtdSVOkJw8ewGPxvh3kYk2hvG8vZe26iLuJ3PqURc/rI07
-         p6tkwWjdfIcQ6IB7Wn8wiS2wG0e2oDGZCpnQAvL+zgWVSStPrtFhj2bz5Vv7w2pP3G
-         OCNYfrxKsGSKw==
-Date:   Wed, 9 Jun 2021 09:52:08 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH v3 8/9] mm: replace CONFIG_NEED_MULTIPLE_NODES with
- CONFIG_NUMA
-Message-ID: <YMBlGBxaWDPV1ouT@kernel.org>
-References: <20210608091316.3622-1-rppt@kernel.org>
- <20210608091316.3622-9-rppt@kernel.org>
- <20210608172544.d9bf17549565d866fbb18451@linux-foundation.org>
+        id S233939AbhFIGyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 02:54:43 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:41733 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233737AbhFIGyl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 02:54:41 -0400
+Received: by mail-vs1-f48.google.com with SMTP id c1so5879517vsh.8;
+        Tue, 08 Jun 2021 23:52:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TSoKY793QQP8Lg3KOL1Eq+qF4VFHd0Ap3iIktbWFwKI=;
+        b=KSVubdfoeAuqOuX9m1upjOWdRs5t7BQLckzSDREAF52bbf+XY+1MhrVOdGB+zLX2F4
+         Q2VciOI8NLZ3i02+nLZ3Vn5OqDcbw6NMfQ325qRHZcqzAADV1/yRZqBjY7coSBvpcZCA
+         X9wvq2D4Lt5dpc1a2YgS5Q3ELL32/CtmAFj2gIyxH/ZULg30y3R+tDHm+hhOvK5HoIiL
+         /GJDPH/A1NZ45uq8Z4kq9GrRc8MNy0B+ewC2nJjv/AWdjuM7ZBeuNV4YAi5WfiZXf/GX
+         gc+oBWvOlmcKMpfJvx87uNmGl2TsEul8JjIRsZNsQuecXwZc79oyawYEB0ssmqn4v05B
+         WjZw==
+X-Gm-Message-State: AOAM530REf3fVdLLE1/0voOCgthYnteHP4zISfoa26/O4jRpxbRkFGwO
+        FKQl1vjsk7iIHxoo0oxF+LcdbnWnM3QNnLvkfq8ZUA/SNgt6Cg==
+X-Google-Smtp-Source: ABdhPJygZr/3LQ/D9FOyetVDM2EZnw/62aS6ccgNDCfA/ODtwcs1rC1hedtwimbImN81NOV5Bk77rEP4L35DofRZdSM=
+X-Received: by 2002:a05:6102:c4c:: with SMTP id y12mr3828568vss.18.1623221553803;
+ Tue, 08 Jun 2021 23:52:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608172544.d9bf17549565d866fbb18451@linux-foundation.org>
+References: <20210603221758.10305-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210603221758.10305-12-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210603221758.10305-12-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 9 Jun 2021 08:52:22 +0200
+Message-ID: <CAMuHMdW8Nn2q06J0F+zFCFFSGz5TEGus46gc++oKAb8-gKi5fQ@mail.gmail.com>
+Subject: Re: [PATCH v2 11/12] arm64: dts: renesas: Add initial DTSI for
+ RZ/G2{L,LC} SoC's
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 05:25:44PM -0700, Andrew Morton wrote:
-> On Tue,  8 Jun 2021 12:13:15 +0300 Mike Rapoport <rppt@kernel.org> wrote:
-> 
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > After removal of DISCINTIGMEM the NEED_MULTIPLE_NODES and NUMA
-> > configuration options are equivalent.
-> > 
-> > Drop CONFIG_NEED_MULTIPLE_NODES and use CONFIG_NUMA instead.
-> > 
-> > Done with
-> > 
-> > 	$ sed -i 's/CONFIG_NEED_MULTIPLE_NODES/CONFIG_NUMA/' \
-> > 		$(git grep -wl CONFIG_NEED_MULTIPLE_NODES)
-> > 	$ sed -i 's/NEED_MULTIPLE_NODES/NUMA/' \
-> > 		$(git grep -wl NEED_MULTIPLE_NODES)
-> > 
-> > with manual tweaks afterwards.
-> > 
-> > ...
-> >
-> > --- a/include/linux/mmzone.h
-> > +++ b/include/linux/mmzone.h
-> > @@ -987,7 +987,7 @@ extern int movable_zone;
-> >  #ifdef CONFIG_HIGHMEM
-> >  static inline int zone_movable_is_highmem(void)
-> >  {
-> > -#ifdef CONFIG_NEED_MULTIPLE_NODES
-> > +#ifdef CONFIG_NUMA
-> >  	return movable_zone == ZONE_HIGHMEM;
-> >  #else
-> >  	return (ZONE_MOVABLE - 1) == ZONE_HIGHMEM;
-> 
-> I dropped this hunk - your "mm/mmzone.h: simplify is_highmem_idx()"
-> removed zone_movable_is_highmem().  
+Hi Prabhakar,
 
-Ah, right.
-Thanks!
+On Fri, Jun 4, 2021 at 12:18 AM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add initial DTSI for RZ/G2{L,LC} SoC's.
+>
+> File structure:
+> r9a07g044.dtsi  => RZ/G2L family SoC common parts
+> r9a07g044l1.dtsi => Specific to RZ/G2L (R9A07G044L single cortex A55) SoC
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+
+Thanks for your patch!
+
+> ---
+>  arch/arm64/boot/dts/renesas/r9a07g044.dtsi   | 119 +++++++++++++++++++
+>  arch/arm64/boot/dts/renesas/r9a07g044l1.dtsi |  25 ++++
+>  2 files changed, 144 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044.dtsi
+>  create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044l1.dtsi
+
+Don't you still want an r9a07g044l2.dtsi, for symmetry, and to add the
+"renesas,r9a07g044l2" root compatible value?
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Sincerely yours,
-Mike.
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
