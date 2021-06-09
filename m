@@ -2,75 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AE53A1B8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78AD3A1B91
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhFIRMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:12:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230152AbhFIRMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:12:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8D69613D4;
-        Wed,  9 Jun 2021 17:10:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623258642;
-        bh=h4nMSu4AZ8agjaiEa4OlMP+fxDbpoFKYbqj2Uhln6CA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wyMUr776h+jSZh3pJcgvo6Sop0SIMtlC2JslwRnDqCDNyqnXTXAvz5p6zXuo0i8Lq
-         nW0L7vdE6WckCb0kferb9ZOizjDXoPoW2HkFeu6JpPbmoWn5GVuk2/7uMpP4jtgOX4
-         nkCi6u58bbb2wrXREc+EjQWNOF+71rFoFbVPkn6c=
-Date:   Wed, 9 Jun 2021 19:10:40 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Chris Chiu <chris.chiu@canonical.com>
-Cc:     Ricky WU <ricky_wu@realtek.com>, arnd@arndb.de,
-        Bjorn Helgaas <bhelgaas@google.com>, ulf.hansson@linaro.org,
-        rui_feng@realsil.com.cn, vaibhavgupta40@gmail.com,
-        yang.lee@linux.alibaba.com,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] misc: rtsx: separate aspm mode into MODE_REG and
- MODE_CFG
-Message-ID: <YMD2EEdxufU+WxrP@kroah.com>
-References: <20210607101634.4948-1-ricky_wu@realtek.com>
- <CABTNMG1yoYPgs0gr1bHsrxCmpNM8fUB+3S5E+HS7c9pPGiFxrQ@mail.gmail.com>
- <YL8xYRwKfA5EtSqT@kroah.com>
- <CABTNMG2HZD52DmQ8iqC1jqLf6v4QpqCyxOXgjMjzD7rySgGa7A@mail.gmail.com>
- <YL9t/ZfRsIMSpXfm@kroah.com>
- <CABTNMG0PfX=eC0=hyUexoomH83NYzePwVkf4P0FLE05=wSyssQ@mail.gmail.com>
+        id S231290AbhFIRPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:15:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34802 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230152AbhFIRPR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 13:15:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623258802;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0PU3D9xng4HWsSgSCmW5Y5xsfidNOi9bqS36Xaxp+Ao=;
+        b=FBTao43xAoB6XDtp99i1AYaqYLNaQ2faEnEczx/r+3EXcfhF5XRK8G0eN3dR2OiOgAW/7t
+        2NPHhXyJbDmrC93HhKfPb+8yu9Fj4ZB23uJKCHaFLVOKmef8M9Qg3BsEH4BTshKCRTxAmr
+        DXfYVFEsoUObF+An4zGXz5BaE1xzBdk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-221-RhFjz5RlNOGogXcS6nSMMQ-1; Wed, 09 Jun 2021 13:13:15 -0400
+X-MC-Unique: RhFjz5RlNOGogXcS6nSMMQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F178B10C1ADC;
+        Wed,  9 Jun 2021 17:13:13 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A16D15D9C6;
+        Wed,  9 Jun 2021 17:13:13 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL v2] KVM fixes for 5.13-rc6
+Date:   Wed,  9 Jun 2021 13:13:13 -0400
+Message-Id: <20210609171313.150207-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABTNMG0PfX=eC0=hyUexoomH83NYzePwVkf4P0FLE05=wSyssQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:01:53AM +0800, Chris Chiu wrote:
-> On Tue, Jun 8, 2021 at 9:17 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Tue, Jun 08, 2021 at 07:16:14PM +0800, Chris Chiu wrote:
-> > > On Tue, Jun 8, 2021 at 4:59 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Tue, Jun 08, 2021 at 11:43:03AM +0800, Chris Chiu wrote:
-> > > > > On Mon, Jun 7, 2021 at 6:16 PM <ricky_wu@realtek.com> wrote:
-> > > > > >
-> > > > > > From: Ricky Wu <ricky_wu@realtek.com>
-> > > > > >
-> > > > > > aspm (Active State Power Management)
-> > > > > > rtsx_comm_set_aspm: this function is for driver to make sure
-> > > > > > not enter power saving when processing of init and card_detcct
-> > > > > > ASPM_MODE_CFG: 8411 5209 5227 5229 5249 5250
-> > > > > > Change back to use original way to control aspm
-> > > > > > ASPM_MODE_REG: 5227A 524A 5250A 5260 5261 5228
-> > > > > > Keep the new way to control aspm
-> > > > > >
-> > > > > > Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
-> > > > > > ---
-> > > > > Reported-by: Chris Chiu <chris.chiu@canonical.com>
-> 
-> Tested-by: Gordon Lack <gordon.lack@dsl.pipex.com>
-> Fixes: 121e9c6b5c4c ("misc: rtsx: modify and fix init_hw function")
+Linus,
 
-Thanks, now queued up.
+The following changes since commit 000ac42953395a4f0a63d5db640c5e4c88a548c5:
 
-greg k-h
+  selftests: kvm: fix overlapping addresses in memslot_perf_test (2021-05-29 06:28:06 -0400)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to 4422829e8053068e0225e4d0ef42dc41ea7c9ef5:
+
+  kvm: fix previous commit for 32-bit builds (2021-06-09 01:49:13 -0400)
+
+32-bit builds had a warning with v1 of the pull request.  I have added a
+patch that fixes it.
+
+----------------------------------------------------------------
+Bugfixes, including a TLB flush fix that affects processors
+without nested page tables.
+
+----------------------------------------------------------------
+Ashish Kalra (1):
+      KVM: SVM: Fix SEV SEND_START session length & SEND_UPDATE_DATA query length after commit 238eca821cee
+
+Christian Borntraeger (1):
+      KVM: selftests: introduce P47V64 for s390x
+
+Lai Jiangshan (3):
+      KVM: X86: MMU: Use the correct inherited permissions to get shadow page
+      KVM: x86: Ensure PV TLB flush tracepoint reflects KVM behavior
+      KVM: x86: Unload MMU on guest TLB flush if TDP disabled to force MMU sync
+
+Paolo Bonzini (2):
+      kvm: avoid speculation-based attacks from out-of-range memslot accesses
+      kvm: fix previous commit for 32-bit builds
+
+Sean Christopherson (1):
+      KVM: x86: Ensure liveliness of nested VM-Enter fail tracepoint message
+
+Wanpeng Li (1):
+      KVM: LAPIC: Write 0 to TMICT should also cancel vmx-preemption timer
+
+Zhenzhong Duan (1):
+      selftests: kvm: Add support for customized slot0 memory size
+
+ Documentation/virt/kvm/mmu.rst                    |  4 +-
+ arch/x86/kvm/lapic.c                              | 17 +++++---
+ arch/x86/kvm/mmu/paging_tmpl.h                    | 14 +++---
+ arch/x86/kvm/svm/sev.c                            |  6 +--
+ arch/x86/kvm/trace.h                              |  6 +--
+ arch/x86/kvm/x86.c                                | 19 ++++++++-
+ include/linux/kvm_host.h                          | 10 ++++-
+ tools/testing/selftests/kvm/include/kvm_util.h    | 10 +++--
+ tools/testing/selftests/kvm/kvm_page_table_test.c |  2 +-
+ tools/testing/selftests/kvm/lib/kvm_util.c        | 52 +++++++++++++++++++----
+ tools/testing/selftests/kvm/lib/perf_test_util.c  |  2 +-
+ tools/testing/selftests/kvm/memslot_perf_test.c   |  2 +-
+ 12 files changed, 105 insertions(+), 39 deletions(-)
+
