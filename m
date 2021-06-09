@@ -2,109 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B3B3A162F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE9F3A162D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 15:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236783AbhFIN4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 09:56:06 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:34621 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234326AbhFIN4F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 09:56:05 -0400
-Received: by mail-wr1-f47.google.com with SMTP id q5so25621642wrm.1;
-        Wed, 09 Jun 2021 06:54:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0acANAgz0MlP9hPrB8I/frs/iBRqhU+q6XEBhj3gv8Q=;
-        b=Cb4nEUXmhZvh1I1hdtpEsgGzcI8hqQQrc7hh7BmIb/NX9p0nBm+QjwFq9gL6Ze2N9k
-         5/kF/QBn0UJ0x7F6q/wS/GIekJmnYYdLBYYwnYGSwRI8T1fFvnS0Vt3wj9kG6zU0uN0H
-         ZFPOXyzQVSXJJbyAkKMZ/rIMtRGWVYMRDbH30IuOvtdrAUkcjtlT+BNnp+toj6YK68x+
-         SW+2wbaS6w12L2ph1J9OfxsbLKm6oQc0N4ZXjcenr30sAKY3LkKYddG/44vFeDVCwMyZ
-         s+hkxsGE2LffD4jYDQDPDULTxBaqYCM1nxoPITOvQOymZOUkwmXNOGqH6G9uQtQPxHqg
-         NrFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0acANAgz0MlP9hPrB8I/frs/iBRqhU+q6XEBhj3gv8Q=;
-        b=jFQyalXWMpS8afIru5kxoBouivTkeJhC5coJ+/43pL2UM0SIxIekf+jkSVWkvAIu4Y
-         rxQ1HE7NCb53QNotzBDDcv1ISmOfK8m1PEYwoNKCpRgSDn1BpBPqVRz76jzA4B4uFhfU
-         cqD9lh8K6tlL8rJTT42CqK162V1IIsyiNtRj9vp3Mn0qirhSzTNDu2cXOobiQQgIL07l
-         AiKUA5FQSfaJxnG9lqD+PLU6ivWSE9rJgp8mDOCN/UgoiPknAvZGBXTB8qhkIRcKrumA
-         iyRsKG88/JwCovP2drsGLsZhlm5uQnkUqEtOsQV5fsdWnqns16z9qiJZ+EPnrGcFn2SG
-         i8kA==
-X-Gm-Message-State: AOAM531wBRVOpUIVgqFLMvN9Jbl+W6RyUP4RYYVINvneDUcGUHrvF6x0
-        OCyYFI6wmUsx5lasi0CC4zc=
-X-Google-Smtp-Source: ABdhPJwdmtEhrw/I6sV9OLtji5VUn/ZbC7buSNEwtJICXxu0yAJLmTXM7NFYTrhsWxKQQG1r2WrGig==
-X-Received: by 2002:adf:9d81:: with SMTP id p1mr27685928wre.287.1623246779787;
-        Wed, 09 Jun 2021 06:52:59 -0700 (PDT)
-Received: from ziggy.stardust (81.172.61.185.dyn.user.ono.com. [81.172.61.185])
-        by smtp.gmail.com with ESMTPSA id v16sm10195wrr.6.2021.06.09.06.52.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 06:52:59 -0700 (PDT)
-Subject: Re: [PATCH v5 09/16] drm/mediatek: Use pm_runtime_resume_and_get for
- PM get_sync
-To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Evan Green <evgreen@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
-        yi.kuo@mediatek.com, eizan@chromium.org, acourbot@chromium.org
-References: <20210410091128.31823-1-yong.wu@mediatek.com>
- <20210410091128.31823-10-yong.wu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <299857fd-533d-5e6e-0744-92ee56078638@gmail.com>
-Date:   Wed, 9 Jun 2021 15:52:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S236854AbhFINzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 09:55:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236756AbhFINzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 09:55:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6742461182;
+        Wed,  9 Jun 2021 13:53:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623246807;
+        bh=ff4dV/Z38To+N3LgvFxthRICWqy7lAIQzMK8o90TLz0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z9LlhhaezrjS96RWuxlvB34lPrzTrgB3HFhR/nN2rWzG3+eKQ3wDsOcfbBHH+AYi4
+         joWFOtxLR/EWF9a7PbBVQ2wcx4jB3p5IkLxM8i3S9vzbHKUNc6F/8ULX1U+2F2WmvD
+         vif2BBIs/AKAWytfY96yOAbR5Sm7EGDmhGYxn4mW0q6R0yaqVfkL1jMG+E1lvJ41KY
+         zhyTJq5FbaNJYkY56QD6tVRyRNcqOG2AO2lcsDQiqmMCHwZxDrTNNh6UVMoQ+fYJoE
+         7BCFakgISw87PGqSmSsYn3npcSlXHq7vfd2P4fQ6S6bugdyAZD5hbifEqIXsWopNVC
+         0TdvuWhikcarw==
+Date:   Wed, 9 Jun 2021 16:53:23 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Tom Talpey <tom@talpey.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Honggang LI <honli@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
+ default for kernel ULPs
+Message-ID: <YMDH05/yTtSIk9kI@unreal>
+References: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
+ <20210609125241.GA1347@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20210410091128.31823-10-yong.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609125241.GA1347@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/04/2021 11:11, Yong Wu wrote:
-> pm_runtime_get_sync will increment pm usage counter even it failed.
-> This patch use pm_runtime_resume_and_get instead of pm_runtime_get
-> to keep usage counter balanced.
+On Wed, Jun 09, 2021 at 02:52:41PM +0200, Christoph Hellwig wrote:
+> On Wed, Jun 09, 2021 at 02:05:03PM +0300, Leon Romanovsky wrote:
+> > From: Avihai Horon <avihaih@nvidia.com>
+> > 
+> > Relaxed Ordering is a capability that can only benefit users that support
+> > it. All kernel ULPs should support Relaxed Ordering, as they are designed
+> > to read data only after observing the CQE and use the DMA API correctly.
+> > 
+> > Hence, implicitly enable Relaxed Ordering by default for kernel ULPs.
+> > 
+> > Signed-off-by: Avihai Horon <avihaih@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> > Changelog:
+> > v2:
+> >  * Dropped IB/core patch and set RO implicitly in mlx5 exactly like in
+> >    eth side of mlx5 driver.
 > 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> This looks great in terms of code changes.  But can we please also add a
+> patch to document that PCIe relaxed ordering is fine for kernel ULP usage
+> somewhere?
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+Sure, did you have in mind some concrete place? Or will new file in the
+Documentation/infiniband/ folder be good enough too?
 
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> index 8b0de90156c6..69d23ce56d2c 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -259,7 +259,7 @@ static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc)
->  		drm_connector_list_iter_end(&conn_iter);
->  	}
->  
-> -	ret = pm_runtime_get_sync(crtc->dev->dev);
-> +	ret = pm_runtime_resume_and_get(crtc->dev->dev);
->  	if (ret < 0) {
->  		DRM_ERROR("Failed to enable power domain: %d\n", ret);
->  		return ret;
-> 
+Thanks
