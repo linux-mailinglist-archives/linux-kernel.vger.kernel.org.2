@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485E33A1334
+	by mail.lfdr.de (Postfix) with ESMTP id DC1DF3A1336
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239332AbhFILsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
+        id S239370AbhFILsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239268AbhFILsD (ORCPT
+        with ESMTP id S239361AbhFILsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:48:03 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB67C061789
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:45:58 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id a20so25193155wrc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:45:58 -0700 (PDT)
+        Wed, 9 Jun 2021 07:48:07 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67208C06178B
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 04:46:00 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso3991013wms.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:46:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=z0cFsHWQuOk9G5jkREqSCN4u8xY+Z74kdKMqaqt4F9c=;
-        b=GvmwQD/kVLwJG8MdRtkEKzfGwg4M/mxylb+khtTOyeA3+SLGx2OUbQFFTTt9wyBwkD
-         Mi7bmH/2zVcvBMNBHjfMtoKpayYcLp+HU920cKoCMxygc2eatLFmyHEPd7Lhl4y95qMT
-         eiSIqRE2H+CH4nGNFNJqZiJ9t2XCm/H4EJhGu9/shfFYYvwoM2gHLPXJa1baZmcqqbw+
-         cMb66j98hZklxUcZftjivNEJxwfZLt5iSDH6GpXW+F8/N8WxGEvA4FUaqMo6VOWQy7UY
-         pyA88f4dqOg08wA4ewBLliDAuWlnA1rg/PZ7WMlxLcMZqM2IHTwrMn/Z3Jy/MDfxlrbE
-         ovNw==
+        bh=nrZElwT9y3W18Lbft5uOXhWR0ueAWy9kjrpr8/SaaVM=;
+        b=MGJwUTU3ouxTrRBx54L0Y6kIMPTVVjeIZYE3AWfYF0mIToRFlUq+j2r4xInXqkSulV
+         0RypE2euRdG6Z5W+Q7q+gtQNZaKgW9bLj+aUuWzGZQTNUjH5ePKxxepJ6OssY/y+JHyF
+         cP7QULlnNfvQNYhCcf6OYTS11mXKblu8QwbKKHHTdJlnNs8NjdG2vu5tleRoHt3WfUxd
+         YhwQW5egSiEly3y8h2gObFaJsK7G7oL/ko96qLqsTYgy3hNWfWowIM+Xrc4W95HaLSeY
+         cLGhxNcMLOPJYpltFnfr4CdbHmJIs3CRYnAks8qIOo56KUEybGG+ggbrkC2BDyArUL7n
+         bAxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=z0cFsHWQuOk9G5jkREqSCN4u8xY+Z74kdKMqaqt4F9c=;
-        b=SvGJMvxc0mksgiwBbS4EXsfL90ueS8ISlDKW+endcjO+e1ibznTAXPBj23gm13oie4
-         ss8xJLyb+My5yz1AqG4hl3o2yacsPS767V65f2VwwRPvpYH5sFnfp7SM7HFSmvXptRYz
-         d1B+SYpAQHnIdbI6u22qVFdsCJaobIxFN88g4ib2TIgCFgRYXpyFCuTdUbzw7Ue2waZB
-         IeuwyUHLFuQ0IS8YSUe3WVY09tnCaSLPengCCwC7lNeFtAnKEkghpnJfXrIS2VWInwoz
-         sGc6n0HFDOYEiXtndxgGfiJocQvsA8b3tUWF8XB5nGtZOVeG0Px1VrLiI5Ubcw7oWfBQ
-         3Tqg==
-X-Gm-Message-State: AOAM530jqQpcpmPwwkJkHCtd2kR0zes08b1GAl6wsurUcgoubaqJYBi6
-        Jtkv5OYkgYVtAJZ9+OyPQYfliOVARv36O5H5
-X-Google-Smtp-Source: ABdhPJzamxlVbLxHizavnn9Xv6irhxfglkP3D6Bxq6qyeu1A2aPWPNdor17d4qPb3u0HWsmS+HU1BA==
-X-Received: by 2002:a05:6000:18f:: with SMTP id p15mr22537019wrx.102.1623239157104;
-        Wed, 09 Jun 2021 04:45:57 -0700 (PDT)
+        bh=nrZElwT9y3W18Lbft5uOXhWR0ueAWy9kjrpr8/SaaVM=;
+        b=O5wqcHP3+hFGn/KOrXjbofDx2O1U4Y9+B1Hq3l/1iHhWNiQ1TDW+7MUfgdtv9MmqPz
+         uLbZtC/w6mdSIWf5Z+TOhhpOAT9aQ0nkErRtW55NOxLim8r8OT5SVYG+1cMH7AZbxgaP
+         f2t6QWr8y16ztqAF44Q0CyXP7F2JBSu5VyLwyYS6uTxDIAUEmb7HvbwmBr2VMyP5rX54
+         7waQGhQ5JTXmVSowwZtF9pMT0muNSkeZMdDkeelqgi2vRHxGekmebsk+C16CEaN5c5R2
+         22ZGfVDO4ZcWx1zsR+VrIPQBrbnHXiw7ZUCe459Tw5DuK609BilTriNsQllFWcbun3jT
+         knDg==
+X-Gm-Message-State: AOAM532y3G+77oNda0I7vTR32d/jo5arfXg8wpCM2hUkzGkUh7N9Qn71
+        /lgopF4Ari78sP0geIYEVj+xR7UsXBv+l/KU
+X-Google-Smtp-Source: ABdhPJz/Klyqy8Y+luI/yuy0IgYB1SCvJlkMPYkQe0DhLcM9V6pZ1BGe43mytDAP3OWX+IGqnqrpMQ==
+X-Received: by 2002:a1c:bad6:: with SMTP id k205mr9594035wmf.171.1623239158850;
+        Wed, 09 Jun 2021 04:45:58 -0700 (PDT)
 Received: from localhost ([2a02:768:2307:40d6::45a])
-        by smtp.gmail.com with ESMTPSA id k36sm11937395wms.30.2021.06.09.04.45.56
+        by smtp.gmail.com with ESMTPSA id l31sm6047615wms.16.2021.06.09.04.45.58
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Jun 2021 04:45:56 -0700 (PDT)
+        Wed, 09 Jun 2021 04:45:58 -0700 (PDT)
 Sender: Michal Simek <monstr@monstr.eu>
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         michal.simek@xilinx.com, git@xilinx.com,
         Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Quanyang Wang <quanyang.wang@windriver.com>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 21/31] arm64: zynqmp: Move DP nodes to the end of file on zcu106
-Date:   Wed,  9 Jun 2021 13:44:57 +0200
-Message-Id: <4d1c79f6f184367687f61608bb8e0f18d9121802.1623239033.git.michal.simek@xilinx.com>
+Subject: [PATCH 22/31] arm64: zynqmp: Add note about UHS mode on some boards
+Date:   Wed,  9 Jun 2021 13:44:58 +0200
+Message-Id: <ac36b2b31cd32bfad09544d898c98114146af518.1623239033.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1623239033.git.michal.simek@xilinx.com>
 References: <cover.1623239033.git.michal.simek@xilinx.com>
@@ -69,51 +70,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This location is used by others DTs files that's why this move.
+Add note about UHS mode and add no-1-8-v property to zc1751-dc1 board.
 
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
 
- .../boot/dts/xilinx/zynqmp-zcu106-revA.dts    | 22 +++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts | 4 ++++
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts      | 4 ++++
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts      | 3 +++
+ arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts      | 5 ++++-
+ 4 files changed, 15 insertions(+), 1 deletion(-)
 
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
+index 460aba6e7990..cd406947ec34 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
+@@ -370,6 +370,10 @@ &sdhci0 {
+ /* SD1 with level shifter */
+ &sdhci1 {
+ 	status = "okay";
++	/*
++	 * This property should be removed for supporting UHS mode
++	 */
++	no-1-8-v;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_sdhci1_default>;
+ 	xlnx,mio-bank = <1>;
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+index 5ddcfdf48626..3cbc51b4587d 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+@@ -956,6 +956,10 @@ &sata {
+ /* SD1 with level shifter */
+ &sdhci1 {
+ 	status = "okay";
++	/*
++	 * 1.0 revision has level shifter and this property should be
++	 * removed for supporting UHS mode
++	 */
+ 	no-1-8-v;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_sdhci1_default>;
 diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
-index dbb8bfbb5c7f..4a0f3370bf7f 100644
+index 4a0f3370bf7f..2c1c4d96fb21 100644
 --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
 +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
-@@ -160,17 +160,6 @@ &dcc {
+@@ -951,6 +951,9 @@ &sata {
+ /* SD1 with level shifter */
+ &sdhci1 {
  	status = "okay";
++	/*
++	 * This property should be removed for supporting UHS mode
++	 */
+ 	no-1-8-v;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_sdhci1_default>;
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+index 85e9d0e2f9bd..c9d41d16c3f0 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+@@ -796,8 +796,11 @@ &sdhci1 {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_sdhci1_default>;
+-	no-1-8-v;
+ 	disable-wp;
++	/*
++	 * This property should be removed for supporting UHS mode
++	 */
++	no-1-8-v;
+ 	xlnx,mio-bank = <1>;
  };
  
--&zynqmp_dpdma {
--	status = "okay";
--};
--
--&zynqmp_dpsub {
--	status = "okay";
--	phy-names = "dp-phy0", "dp-phy1";
--	phys = <&psgtr 1 PHY_TYPE_DP 0 3>,
--	       <&psgtr 0 PHY_TYPE_DP 1 3>;
--};
--
- /* fpd_dma clk 667MHz, lpd_dma 500MHz */
- &fpd_dma_chan1 {
- 	status = "okay";
-@@ -994,3 +983,14 @@ &usb0 {
- &watchdog0 {
- 	status = "okay";
- };
-+
-+&zynqmp_dpdma {
-+	status = "okay";
-+};
-+
-+&zynqmp_dpsub {
-+	status = "okay";
-+	phy-names = "dp-phy0", "dp-phy1";
-+	phys = <&psgtr 1 PHY_TYPE_DP 0 3>,
-+	       <&psgtr 0 PHY_TYPE_DP 1 3>;
-+};
 -- 
 2.31.1
 
