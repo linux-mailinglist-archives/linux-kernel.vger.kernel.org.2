@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D918E3A1234
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE803A1240
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 13:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238802AbhFILTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 07:19:32 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:44692 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237302AbhFILT3 (ORCPT
+        id S238855AbhFILVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 07:21:23 -0400
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:40915 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238795AbhFILVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:19:29 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 159BHKOM070200;
-        Wed, 9 Jun 2021 06:17:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623237440;
-        bh=k+MYscYK157qqj9O9OVFOcOn5X9nPnm+nv8lFRPh3Fg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=eiO3GUxBoaX4CZoZ8CSZP8nEJ2jbE8OZ1eM759a0fUqHRGwiuA/ZeSdvkuGvtT3pZ
-         uKP+CBaQ+lTNVVAgh4hUqKMolYuyKuaNM2BtYU70Ef7jdpV5uK/Lo054u+8RO25oqk
-         jopC6PKnT25tx3sMdhpfGPSZ+BWqQDZLLebtAQIU=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 159BHKcj085970
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Jun 2021 06:17:20 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 9 Jun
- 2021 06:17:19 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 9 Jun 2021 06:17:19 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 159BH7uH073420;
-        Wed, 9 Jun 2021 06:17:16 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>
-CC:     Nishanth Menon <nm@ti.com>, Michael Walle <michael@walle.cc>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH 2/2] dt-bindings: mtd: spi-nor: Add a reference to spi-slave-props.yaml
-Date:   Wed, 9 Jun 2021 16:47:07 +0530
-Message-ID: <20210609111707.9555-3-p.yadav@ti.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210609111707.9555-1-p.yadav@ti.com>
-References: <20210609111707.9555-1-p.yadav@ti.com>
+        Wed, 9 Jun 2021 07:21:22 -0400
+Received: by mail-lf1-f44.google.com with SMTP id w33so37459630lfu.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 04:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b9O4t6ei1D8lp6tbh7xKEJ5OiZwVBxTMlh+LjUyHQ54=;
+        b=JJZhVBK8XAeaFL6DQ8+82CH3Tn27KdaGFCTgYUZmudfX3Q/cnQXnIZvxUARhticvpC
+         JycTC4ZOyQIZfYn0/HlZ6zKqQYWsLVhkD2xM6H21LShj4YIaMowxdtUPl0sHreMG6pfg
+         iogNmtktJywuOe7b7Zs/BMrpw2PHEZMoYqW+XS8uqi3iI6xXJgP8NSFZqDZTDnNw+yEU
+         qcsSnKO99UJcGNn3K6R3FY7XpYqPCtPh4FcbMjP0x4Lqe2J3Zna34PNL5b4Gnj2QInhO
+         2dLE0mxaniEQcolKdtm+vSIkMkMQA3y49Y6nx38isVwhIQsyOa5RKQFoiWJOwEvK9ymm
+         6AuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b9O4t6ei1D8lp6tbh7xKEJ5OiZwVBxTMlh+LjUyHQ54=;
+        b=aDEoi+mPjEwj2pOrX85anb1g0oiDesm/Z3o8fLazPZWSISbmP0syaEFW6gbtIYX9D/
+         NcnKJGd3DvXO4c4goK2yEGrxiq+EjyJKti9Ez4gUnHUoGpReIcLrn505s5+ULeSJClIR
+         WnVT+nQpCXxbpdmTv7yJeinwHlODCfR5miQtMp0H/mkjSkcy5AqbbOJjIMCVgWRchMUH
+         Vt8TESlXqsHf4EN1Gc29SqTBtkn4SlBKa25f6nxerilJLvgCaJZMXjpmAf6SleCeeYwS
+         pDSIQTYr3Igly9RHiupFZQ+oJ2n2izP15Au1RghB37mLwM8m0TjnLK+XUHV6ugLKWAP7
+         na3w==
+X-Gm-Message-State: AOAM532z+JvYGu7H3f5RLAR3Ip5B9GqDIJX6EZJxpIfogEwLol6i26QQ
+        0O/Yr+FWPgDJtkDuOd5TUKFNhqzipD9O27kQpZdk4A==
+X-Google-Smtp-Source: ABdhPJz6NHE+0gvKyfv7+YEJSuyHHStlfocuRfWgrhgqSQh4vX6owc1UlB2pSgkAV6u9cWfZUZXY08Yzd+FfgNCdZtI=
+X-Received: by 2002:a05:6512:2105:: with SMTP id q5mr18131046lfr.649.1623237507147;
+ Wed, 09 Jun 2021 04:18:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210608150656.29007-1-matthias.bgg@kernel.org>
+In-Reply-To: <20210608150656.29007-1-matthias.bgg@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 9 Jun 2021 13:18:16 +0200
+Message-ID: <CACRpkdZ+9LeokSfZDhMWyR4yE-oq4CSbSPRqwJncOS0rm_f8Tg@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: mediatek: fix mode encoding
+To:     matthias.bgg@kernel.org
+Cc:     Sean Wang <sean.wang@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The spi-slave-props.yaml schema contains slave-specific properties
-for SPI controllers that should be present in the slave node. Add a
-reference to that so its constraints are followed.
+On Tue, Jun 8, 2021 at 5:07 PM <matthias.bgg@kernel.org> wrote:
 
-additionalProperties: false cannot be used since it marks the controller
-properties as unknown. Use unevaluatedProperties: false instead. This
-has the side effect of allowing extra properties that are not specified
-in the schema. The alternative is to list all the controller properties
-in this schema but that would mean every slave binding would have to
-repeat the same set of properties for each controller.
+> From: Matthias Brugger <mbrugger@suse.com>
+>
+> Pin modes are encoded in the SoC data structure. Use that value to set
+> IES SMT.
+>
+> Cc: Fabien Parent <fparent@baylibre.com>
+> Cc: Sean Wang <sean.wang@kernel.org>
+> Cc: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+> Cc: linux-mediatek@lists.infradead.org
+> Fixes: 696beef77521 ("pinctrl: mediatek: move bit assignment")
+> Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+Patch applied!
 
----
-
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-index ed590d7c6e37..e69a8fbb91f1 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-@@ -11,6 +11,7 @@ maintainers:
- 
- allOf:
-   - $ref: "mtd.yaml#"
-+  - $ref: /schemas/spi/spi-slave-props.yaml#
- 
- properties:
-   compatible:
-@@ -88,7 +89,7 @@ patternProperties:
-   "^otp(-[0-9]+)?$":
-     type: object
- 
--additionalProperties: false
-+unevaluatedProperties: false
- 
- examples:
-   - |
--- 
-2.30.0
-
+Yours,
+Linus Walleij
