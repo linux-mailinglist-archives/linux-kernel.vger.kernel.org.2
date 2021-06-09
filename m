@@ -2,151 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D673A1E26
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5893A1E25
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhFIUeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 16:34:46 -0400
-Received: from mail-qk1-f173.google.com ([209.85.222.173]:33561 "EHLO
-        mail-qk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhFIUep (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:34:45 -0400
-Received: by mail-qk1-f173.google.com with SMTP id k4so25132010qkd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 13:32:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4tou8Ij0MR64Lz7wvtzPtmf/akDmg+C8gLyT+EbWhtY=;
-        b=l+WAIxTSX0+7AYWb4Zsg5/UW3epyBa2JngfMmH0BO49mEDNpyjh33mYiwtMkRHBRiw
-         YdvYAcIGIyCuJ22jFnhjm87zBEui4oDOaT/MnaQaXqfxDSvz655+8bUJm2UzugvUUmJs
-         R9fTjM9fUlHY/QJFZaEnM2gAqGukpqbHAHUgo7qMZabYr9tqOQg0bUBlRKxYlf9uIOcF
-         ZXhdnylcHfz5zUNB38jfPl5MZ9sYaP8rr0bg/CWu3ufkqHG9r7R8Gh90vZ347oxwICng
-         7ckPHHOTIvlkZB5uCqYQ2UMMmD0lYzSyfppjJ7ZtIr4QO+GtyOZTyc9iG7r7zL87W+fV
-         Xelw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4tou8Ij0MR64Lz7wvtzPtmf/akDmg+C8gLyT+EbWhtY=;
-        b=cUR7tJvMx5ggnTYkzxMrexI7fkcfhJaAERK4PUxX8Tula2uieo3gFlypKtZAGmXBCE
-         phFgrziI5HofaXgiYKgOaXmlVpyG/baFr46NhEdXpyq9cBif6zW8LofjFXmGvx8X3JpM
-         HD8kfpKHOHSIUZiBTgUO6DGEuAKFWSc4IGMdSYoLjx6QCFLNbXG0uKNmktFzXdpFG2LU
-         JLgULr5Lh1IYkmQVM/CQkjUYr28ZwrF++5IaKDPg1aA9kxZUKt33+w301jg3Jaz1In1A
-         T8SOdReJD45w5pJ1OjJKNTTf8lHyHF1T5Uq1MsY92yHoEk7VWruzypzbewyw+41TDTOb
-         dzKw==
-X-Gm-Message-State: AOAM532Ca1MByxyrx4UbaaIFnxx6SJ3iSsASBIgi+/IbSBRNHoW3BS4v
-        RpRy5AkGLlI2pCN7LJivtwMLVA==
-X-Google-Smtp-Source: ABdhPJxUlgcTmZr9HuiF5jr294kcz/LFgjRp/R6q/V5HHkkvWATBaunm70lpEJrVBM/OdCEj9/twcQ==
-X-Received: by 2002:a37:848:: with SMTP id 69mr1444328qki.411.1623270699692;
-        Wed, 09 Jun 2021 13:31:39 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:2165])
-        by smtp.gmail.com with ESMTPSA id e3sm789600qts.34.2021.06.09.13.31.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 13:31:38 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 16:31:37 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Chris Down <chris@chrisdown.name>, legion@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
-Message-ID: <YMElKcrVIhJg4GTT@cmpxchg.org>
-References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
- <YLi+JoBwfLtqVGiP@chrisdown.name>
- <b8c86081-503c-3671-2ea3-dd3a0950ce25@metux.net>
- <87k0n2am0n.fsf@disp2133>
+        id S229808AbhFIUe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:34:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229517AbhFIUe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 16:34:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0407461354;
+        Wed,  9 Jun 2021 20:32:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623270751;
+        bh=cwN1ib5e//5k0TeRbpqXnirj82rEAs0iDe99zClbmEk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=sXbT756GWk7nw2Z7clgWCHP5IScIdjBj7/XNuW8X8bOUZlyBVpVoXGWiwBsm3+kB9
+         a0MJgT+5967prN4B+Y6A/X5h8qF7JQ673U5/LzUtSuNt6Y87OUiVLQim6Zm70E85tY
+         StanHUZofak7dTls8zGSPpA0zeuioWtQtqlJz8bCSg7Cb+mt68jwuWbl6jiR+ZiEVt
+         EneLoNcjwRNNah1+nOQBhDqEbYvb0ZaKkpj+TGQSuAmiPS/BtvBhdRk7Ss4vVLub8J
+         CctAF2jY9gmISQMvF9LXc1PufB/lv2nR0+kIJsiOretQ3GqzdV9OSmivk46mwbRI7L
+         YnZgvW/dfx3+Q==
+Date:   Wed, 9 Jun 2021 15:32:29 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     linux-kernel@vger.kernel.org, wim@linux-watchdog.org,
+        linux@roeck-us.net, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 2/3] watchdog: iTCO_wdt: use dev_*() instead of pr_*()
+ for logging
+Message-ID: <20210609203229.GA2664456@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87k0n2am0n.fsf@disp2133>
+In-Reply-To: <20201117152214.32244-2-info@metux.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 02:14:16PM -0500, Eric W. Biederman wrote:
-> "Enrico Weigelt, metux IT consult" <lkml@metux.net> writes:
+On Tue, Nov 17, 2020 at 04:22:13PM +0100, Enrico Weigelt, metux IT consult wrote:
+> For device log outputs, it's better to have device name / ID
+> prefixed in all messages, so use the proper dev_*() functions here.
 > 
-> > On 03.06.21 13:33, Chris Down wrote:
-> >
-> > Hi folks,
-> >
-> >
-> >> Putting stuff in /proc to get around the problem of "some other metric I need
-> >> might not be exported to a container" is not a very compelling argument. If
-> >> they want it, then export it to the container...
-> >>
-> >> Ultimately, if they're going to have to add support for a new
-> >> /proc/self/meminfo file anyway, these use cases should just do it properly
-> >> through the already supported APIs.
-> >
-> > It's even a bit more complex ...
-> >
-> > /proc/meminfo always tells what the *machine* has available, not what a
-> > process can eat up. That has been this way even long before cgroups.
-> > (eg. ulimits).
-> >
-> > Even if you want a container look more like a VM - /proc/meminfo showing
-> > what the container (instead of the machine) has available - just looking
-> > at the calling task's cgroup is also wrong. Because there're cgroups
-> > outside containers (that really shouldn't be affected) and there're even
-> > other cgroups inside the container (that further restrict below the
-> > container's limits).
-> >
-> > BTW: applications trying to autotune themselves by looking at
-> > /proc/meminfo are broken-by-design anyways. This never has been a valid
-> > metric on how much memory invididual processes can or should eat.
+> Explicit message on module load/unload don't seem to be really helpful
+> (we have other means to check which modules have been loaded), instead
+> just add noise to the kernel log. So, removing them.
 > 
-> Which brings us to the problem.
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+
+I like this patch a lot; thanks for doing it!  It's merged upstream as
+c21172b3a73e ("watchdog: iTCO_wdt: use dev_*() instead of pr_*() for
+logging").
+
+It looks like there are a couple more pr_err() uses, so I wondered if
+they were missed or skipped intentionally:
+
+  if (p->smi_res) {
+          /* The TCO logic uses the TCO_EN bit in the SMI_EN register */
+          if (!devm_request_region(dev, p->smi_res->start,
+                                   resource_size(p->smi_res),
+                                   pdev->name)) {
+                  pr_err("I/O address 0x%04llx already in use, device disabled\n",
+                         (u64)SMI_EN(p));
+                  return -EBUSY;
+          }
+  } else if (iTCO_vendorsupport ||
+             turn_SMI_watchdog_clear_off >= p->iTCO_version) {
+          pr_err("SMI I/O resource is missing\n");
+          return -ENODEV;
+  }
+
+> ---
+>  drivers/watchdog/iTCO_wdt.c | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
 > 
-> Using /proc/meminfo is not valid unless your application can know it has
-> the machine to itself.  Something that is becoming increasing less
-> common.
+> diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
+> index f2ddc8fc71cd..edc588a06ae6 100644
+> --- a/drivers/watchdog/iTCO_wdt.c
+> +++ b/drivers/watchdog/iTCO_wdt.c
+> @@ -40,8 +40,6 @@
+>   *	Includes, defines, variables, module parameters, ...
+>   */
+>  
+> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> -
+>  /* Module and version information */
+>  #define DRV_NAME	"iTCO_wdt"
+>  #define DRV_VERSION	"1.11"
+> @@ -279,7 +277,7 @@ static int iTCO_wdt_start(struct watchdog_device *wd_dev)
+>  	/* disable chipset's NO_REBOOT bit */
+>  	if (p->update_no_reboot_bit(p->no_reboot_priv, false)) {
+>  		spin_unlock(&p->io_lock);
+> -		pr_err("failed to reset NO_REBOOT flag, reboot disabled by hardware/BIOS\n");
+> +		dev_err(wd_dev->dev, "failed to reset NO_REBOOT flag, reboot disabled by hardware/BIOS\n");
+>  		return -EIO;
+>  	}
+>  
+> @@ -510,7 +508,7 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
+>  	/* Check chipset's NO_REBOOT bit */
+>  	if (p->update_no_reboot_bit(p->no_reboot_priv, false) &&
+>  	    iTCO_vendor_check_noreboot_on()) {
+> -		pr_info("unable to reset NO_REBOOT flag, device disabled by hardware/BIOS\n");
+> +		dev_info(dev, "unable to reset NO_REBOOT flag, device disabled by hardware/BIOS\n");
+>  		return -ENODEV;	/* Cannot reset NO_REBOOT bit */
+>  	}
+>  
+> @@ -530,12 +528,12 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
+>  	if (!devm_request_region(dev, p->tco_res->start,
+>  				 resource_size(p->tco_res),
+>  				 pdev->name)) {
+> -		pr_err("I/O address 0x%04llx already in use, device disabled\n",
+> +		dev_err(dev, "I/O address 0x%04llx already in use, device disabled\n",
+>  		       (u64)TCOBASE(p));
+>  		return -EBUSY;
+>  	}
+>  
+> -	pr_info("Found a %s TCO device (Version=%d, TCOBASE=0x%04llx)\n",
+> +	dev_info(dev, "Found a %s TCO device (Version=%d, TCOBASE=0x%04llx)\n",
+>  		pdata->name, pdata->version, (u64)TCOBASE(p));
+>  
+>  	/* Clear out the (probably old) status */
+> @@ -558,7 +556,7 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
+>  		break;
+>  	}
+>  
+> -	p->wddev.info =	&ident,
+> +	p->wddev.info = &ident,
+>  	p->wddev.ops = &iTCO_wdt_ops,
+>  	p->wddev.bootstatus = 0;
+>  	p->wddev.timeout = WATCHDOG_TIMEOUT;
+> @@ -575,7 +573,7 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
+>  	   if not reset to the default */
+>  	if (iTCO_wdt_set_timeout(&p->wddev, heartbeat)) {
+>  		iTCO_wdt_set_timeout(&p->wddev, WATCHDOG_TIMEOUT);
+> -		pr_info("timeout value out of range, using %d\n",
+> +		dev_info(dev, "timeout value out of range, using %d\n",
+>  			WATCHDOG_TIMEOUT);
+>  	}
+>  
+> @@ -583,11 +581,11 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
+>  	watchdog_stop_on_unregister(&p->wddev);
+>  	ret = devm_watchdog_register_device(dev, &p->wddev);
+>  	if (ret != 0) {
+> -		pr_err("cannot register watchdog device (err=%d)\n", ret);
+> +		dev_err(dev, "cannot register watchdog device (err=%d)\n", ret);
+>  		return ret;
+>  	}
+>  
+> -	pr_info("initialized. heartbeat=%d sec (nowayout=%d)\n",
+> +	dev_info(dev, "initialized. heartbeat=%d sec (nowayout=%d)\n",
+>  		heartbeat, nowayout);
+>  
+>  	return 0;
+> -- 
+> 2.11.0
 > 
-> Unless something has changed in the last couple of years, reading values
-> out of the cgroup filesystem is both difficult (v1 and v2 have some
-> gratuitous differences) and is actively discouraged.
-> 
-> So what should applications do?
-> 
-> Alex has found applications that are trying to do something with
-> meminfo, and the fields that those applications care about.  I don't see
-> anyone making the case that specifically what the applications are
-> trying to do is buggy.
-> 
-> Alex's suggest is to have a /proc/self/meminfo that has the information
-> that applications want, which would be something that would be easy
-> to switch applications to.  The patch to userspace at that point is
-> as simple as 3 lines of code.  I can imagine people take that patch into
-> their userspace programs.
-
-But is it actually what applications want?
-
-Not all the information at the system level translates well to the
-container level. Things like available memory require a hierarchical
-assessment rather than just a look at the local level, since there
-could be limits higher up the tree.
-
-Not all items in meminfo have a container equivalent, either.
-
-The familiar format is likely a liability rather than an asset.
-
-> The simple fact that people are using /proc/meminfo when it doesn't make
-> sense for anything except system monitoring tools is a pretty solid bug
-> report on the existing linux apis.
-
-I agree that we likely need a better interface for applications to
-query the memory state of their container. But I don't think we should
-try to emulate a format that is a poor fit for this.
-
-We should also not speculate what users intended to do with the
-meminfo data right now. There is a surprising amount of misconception
-around what these values actually mean. I'd rather have users show up
-on the mailing list directly and outline the broader usecase.
