@@ -2,134 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F883A1E66
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365DE3A1E6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 22:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhFIU6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 16:58:51 -0400
-Received: from mga02.intel.com ([134.134.136.20]:12142 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhFIU6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 16:58:50 -0400
-IronPort-SDR: HD3Zh19AtBXSCfafk4SypDMqumD5qWpFRTUMw60qd5qubDcrJbV7kjc4pmFiTdZKGsmgGV+t/i
- tWUYotAi0Bzw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="192277612"
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="192277612"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 13:56:53 -0700
-IronPort-SDR: Ffi2XUDy+iYMJrIzCWv3mR7Pf88GSUoUxDTgwJTrUJkmVMt/EUQ0FtaD449IZzOl9dDAD77lpU
- w003NYRufdsg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="477075884"
-Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
-  by FMSMGA003.fm.intel.com with ESMTP; 09 Jun 2021 13:56:52 -0700
-Date:   Wed, 9 Jun 2021 13:57:01 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tony Luck <tony.luck@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Victor Ding <victording@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Anand K Mistry <amistry@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: [PATCH 0/4] TSX force abort
-Message-ID: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+        id S229976AbhFIU7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 16:59:46 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:58433 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhFIU7p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 16:59:45 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623272270; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
+ Subject: Sender; bh=nzlPsbiXe8YZGFdkYnkK+8MI+UNQoJBQtFJDPoUTWE8=; b=pDL1ow8ZPwGOoDBLO9M9hKCjBYPS1PDWIBKhIWx73QEscNpQBNstGzLm/+L+J3wK/gJxmA13
+ DytsS3Y99H2zt7obkZCQlM28eC+7BYKIcAj37wRQCJTe1pbCoRM1NpTyb5w1oPAoaQnld4ng
+ qdK3WW74lsh4EVvDJORukyQdj7w=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60c12b3df726fa4188d0e0e7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Jun 2021 20:57:33
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DACDFC4338A; Wed,  9 Jun 2021 20:57:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.62.3] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CEDCBC433D3;
+        Wed,  9 Jun 2021 20:57:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CEDCBC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v2] usb: dwc3: gadget: Replace list_for_each_entry_safe()
+ if using giveback
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     Felipe Balbi <balbi@kernel.org>, gregkh@linuxfoundation.org,
+        peter.chen@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org
+References: <1620716636-12422-1-git-send-email-wcheng@codeaurora.org>
+ <87tun9g01v.fsf@kernel.org>
+ <2675db9e-0cab-06b5-2986-0b4456a1f040@codeaurora.org>
+Message-ID: <5156238d-c1d8-a0d3-47af-8b52467fd071@codeaurora.org>
+Date:   Wed, 9 Jun 2021 13:57:30 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <2675db9e-0cab-06b5-2986-0b4456a1f040@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduction
-============
-On some Intel processors [1] a microcode update will always abort
-Transactional Synchronization Extensions (TSX) transactions by default. These
-CPUs were previously affected by the TSX memory ordering issue [2]. A
-workaround was earlier added to perf related to memory ordering which is no
-longer required(because TSX is defeatured on these systems). This series adds
-support for new bits added to TSX_FORCE_ABORT MSR and CPUID to enumerate new
-abort behavior and to bypass the workaround.
+Hi Felipe,
 
-Roadmap to this series
-======================
+On 5/19/2021 1:52 AM, Wesley Cheng wrote:
+> 
+> 
+> On 5/11/2021 1:13 AM, Felipe Balbi wrote:
+>>
+>> Hi,
+>>
+>> Wesley Cheng <wcheng@codeaurora.org> writes:
+>>> The list_for_each_entry_safe() macro saves the current item (n) and
+>>> the item after (n+1), so that n can be safely removed without
+>>> corrupting the list.  However, when traversing the list and removing
+>>> items using gadget giveback, the DWC3 lock is briefly released,
+>>> allowing other routines to execute.  There is a situation where, while
+>>> items are being removed from the cancelled_list using
+>>> dwc3_gadget_ep_cleanup_cancelled_requests(), the pullup disable
+>>> routine is running in parallel (due to UDC unbind).  As the cleanup
+>>> routine removes n, and the pullup disable removes n+1, once the
+>>> cleanup retakes the DWC3 lock, it references a request who was already
+>>> removed/handled.  With list debug enabled, this leads to a panic.
+>>> Ensure all instances of the macro are replaced where gadget giveback
+>>> is used.
+>>>
+>>> Example call stack:
+>>>
+>>> Thread#1:
+>>> __dwc3_gadget_ep_set_halt() - CLEAR HALT
+>>>   -> dwc3_gadget_ep_cleanup_cancelled_requests()
+>>>     ->list_for_each_entry_safe()
+>>>     ->dwc3_gadget_giveback(n)
+>>>       ->dwc3_gadget_del_and_unmap_request()- n deleted[cancelled_list]
+>>>       ->spin_unlock
+>>>       ->Thread#2 executes
+>>>       ...
+>>>     ->dwc3_gadget_giveback(n+1)
+>>>       ->Already removed!
+>>>
+>>> Thread#2:
+>>> dwc3_gadget_pullup()
+>>>   ->waiting for dwc3 spin_lock
+>>>   ...
+>>>   ->Thread#1 released lock
+>>>   ->dwc3_stop_active_transfers()
+>>>     ->dwc3_remove_requests()
+>>>       ->fetches n+1 item from cancelled_list (n removed by Thread#1)
+>>>       ->dwc3_gadget_giveback()
+>>>         ->dwc3_gadget_del_and_unmap_request()- n+1 deleted[cancelled_list]
+>>>         ->spin_unlock
+>>>
+>>> Fixes: d4f1afe5e896 ("usb: dwc3: gadget: move requests to cancelled_list")
+>>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>>> Reviewed-by: Peter Chen <peter.chen@kernel.org>
+>>> ---
+>>> Changes in v2:
+>>>  - Updated commit message with context call stack of an example scenario
+>>>    seen on device.
+>>>
+>>>  drivers/usb/dwc3/gadget.c | 8 ++++----
+>>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>>> index dd80e5c..efa939b 100644
+>>> --- a/drivers/usb/dwc3/gadget.c
+>>> +++ b/drivers/usb/dwc3/gadget.c
+>>> @@ -1737,10 +1737,10 @@ static void dwc3_gadget_ep_skip_trbs(struct dwc3_ep *dep, struct dwc3_request *r
+>>>  static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
+>>>  {
+>>>  	struct dwc3_request		*req;
+>>> -	struct dwc3_request		*tmp;
+>>>  	struct dwc3			*dwc = dep->dwc;
+>>>  
+>>> -	list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list) {
+>>> +	while (!list_empty(&dep->cancelled_list)) {
+>>> +		req = next_request(&dep->cancelled_list);
+>>
+>> couldn't this be solved list_replace_init() instead? Then we can keep
+>> using the regular list_for_each_entry_safe() which has an added semantic
+>> meaning due to its name.
+>>
+> 
+> Hi Felipe,
+> 
+> Sorry for the late response.  So I tried with a list_replace_init() to
+> within the list_for_each_entry_safe() loop to update tmp w/ the
+> cancelled_list list head, but the issue was still observed.  This is
+> because we can't replace the reference the loop already has stored in
+> tmp, which is simply updated as the current item on the next iteration.
+> 
+> I believe this is what you were trying to achieve?
+> 
+Was wondering if you had any further inputs on this change?  As
+mentioned, I tried a few things with list_replace_init(), which did not
+work.
 
-0001:	Define new CPUID and MSR bits that are added by the microcode update.
-	(The new CPUID.RTM_ALWAYS_ABORT is not shown in /proc/cpuinfo)
+Thanks
+Wesley Cheng
 
-0002:	When new microcode is enumerated bypass perf counter workaround for [1].
-	Perf workaround is no longer required after the microcode update.
-
-0003:	Clear CPUID.RTM and CPUID.HLE when TSX is defeatured, so that software
-	does not enumerate and try to use TSX.
-
-0004:	Add tsx=fake cmdline option to not hide CPUID.RTM and CPUID.HLE. This
-	may be desirable when resuming saved guest image that require RTM and HLE
-	feature bits to be present.
-
-Thanks,
-Pawan
-
-[1] Intel® TSX Memory and Performance Monitoring Update for Intel® Processors
-    https://www.intel.com/content/www/us/en/support/articles/000059422/processors.html
-
-[2] Performance Monitoring Impact of Intel® Transactional Synchronization Extension Memory
-    http://cdrdv2.intel.com/v1/dl/getContent/604224
-
-Pawan Gupta (4):
-  x86/msr: Define new bits in TSX_FORCE_ABORT MSR
-  perf/x86/intel: Do not deploy workaround when TSX is deprecated
-  x86/tsx: Clear CPUID bits when TSX always force aborts
-  x86/tsx: Add cmdline tsx=fake to not clear CPUID bits RTM and HLE
-
- Documentation/admin-guide/kernel-parameters.txt |  3 +-
- arch/x86/events/intel/core.c                    | 22 +++++++--
- arch/x86/include/asm/cpufeatures.h              |  1 +-
- arch/x86/include/asm/msr-index.h                |  4 ++-
- arch/x86/kernel/cpu/bugs.c                      |  5 +-
- arch/x86/kernel/cpu/cpu.h                       |  3 +-
- arch/x86/kernel/cpu/intel.c                     |  4 +-
- arch/x86/kernel/cpu/tsx.c                       | 44 ++++++++++++++++--
- 8 files changed, 75 insertions(+), 11 deletions(-)
-
-base-commit: 614124bea77e452aa6df7a8714e8bc820b489922
 -- 
-git-series 0.9.1
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
