@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FA83A1970
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFFD3A195D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 17:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236258AbhFIP1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 11:27:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236251AbhFIP1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 11:27:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0098613BF;
-        Wed,  9 Jun 2021 15:25:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623252323;
-        bh=vtYkuK0gwuAmFRZnC/BipTEB3/onfMoeZxcZ8jbvKK4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=T5nBFtbuBZAg3XVZd08qF+v6Uu6MAIzsYvZ8CF8m0lpJsZRR6h4Omn+LAUufQuagE
-         OxN1OxkCHUp+gdWr+ircp3SpRdEaFx2YjUaVInyuPnEO+DfL5EXLOaUGpzFdJh+Ipu
-         V0bGRXo4QWJr6s8F1eDLNhqPFEgCuIsrmEJ6Pgpo+1RPJRbEbyCe39Ilp2R92bRIpa
-         p4TSjtTbEh3TeCeYW3UARh6YGJHbeHKsbnJf1yx2+VKO3ZUbXbmPvBLb2BJOfi7ec4
-         l+eyrT7Nh8gx8PHuK/mRV//H2uB72RtLsoubueQSbUhq8QxK7OjMVGlqwujYFWgrzw
-         jbN5Z5XOQxPNQ==
-Received: by mail-wr1-f52.google.com with SMTP id c5so25909145wrq.9;
-        Wed, 09 Jun 2021 08:25:22 -0700 (PDT)
-X-Gm-Message-State: AOAM530DOOXYBQ9TXH8e7ZHWEvs1MrxytlUGtfxGM4T56Ulg9IMhAITG
-        yrFf0HkktLfscHNBkWn/CU8OI+NDXU4qCwGBoW0=
-X-Google-Smtp-Source: ABdhPJxZdHDgCOtt66hi1597iP4beUCl/5c+ssCerXxe6ToZxJkpYR6wfSdYg8zBBcRzVLGRujSJZ7GLeYxxTL53I64=
-X-Received: by 2002:adf:a28c:: with SMTP id s12mr383873wra.105.1623252321487;
- Wed, 09 Jun 2021 08:25:21 -0700 (PDT)
+        id S236054AbhFIP0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 11:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235485AbhFIP0G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 11:26:06 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DE9C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 08:24:00 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id e20so7811234pgg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 08:24:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Cr+10Kcfl8befxhqRoI8l0gcA3LyZMDypV8e112mfEc=;
+        b=AH3D/1geZxNQ9z7YrsuVfHmFRcc4zb4CpT+zCT2VTLWK7G9ov5dEiDrmCxGSG8WNEI
+         CPKRyZAnTx5UhqiHuh9oP61Lf2HYLn1vfm7NAqmkXes4zrBEooiVkMIT7VCxU+tBdrvp
+         472ChJEtwnijTmR8BIU2Yqnlb+yIvnzCH5gU2ECzmgNPbuxMeMj0agfTrNQIktqBoh5g
+         SU+2uO640bMJwQ31gultXLG2asZrqrBzEoxRuE5a/swDwHss9x3BfPTGaSnItw4Taz+P
+         TslHN48bkywfy31FZUQY9o18326L4QmCwCFfwOjgDdPmU7zA9qKvwg2uTR5kEIw9RdmL
+         szkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Cr+10Kcfl8befxhqRoI8l0gcA3LyZMDypV8e112mfEc=;
+        b=L39v+SZKdozbHbYQS6pWuf26LJE5cURuy4JCVDbh+TarlSGZtenFYsEuXZDmBig3ia
+         dLwffVOERN250uqFCOJpvN9Rw8l0ljv4OLtxjRigD3wKOj3a7gcnclh9aR0Ei0L956kJ
+         hJXU/JmaFSKcSjiWjFsolo0mvyUx20SBFoBJ9OCXMZz0T2FO95sOI6POtKUYhKkzsZX2
+         8rt4z5AErVkNER4jc39Ht5xHWjjmQLqlY9dHOJ5MhnloIWH2x4X3uQVNhpFxWsvAAa3q
+         o3afz61FtiT/jwpttRIkDZJW+OT8AHsJQEFAQg8LSMUqzTfHCvdk5llPVwguY+Vpj2Ra
+         VbvQ==
+X-Gm-Message-State: AOAM5327LxqmKJuj9MAn0nLH2/yfcXsrHqKDerRc5HLJ9nstU+NOuTXS
+        kvC0M758kUDftKcF7OyuplFQTg==
+X-Google-Smtp-Source: ABdhPJz4JFxHF5HT/Sf/16gK3QpUtzsWvDwelmezplwVTNeYf4CgjXeF5D6OGEv3bKFwzB3+WtKvdA==
+X-Received: by 2002:a05:6a00:b8a:b029:2ec:761e:33e3 with SMTP id g10-20020a056a000b8ab02902ec761e33e3mr375293pfj.35.1623252239567;
+        Wed, 09 Jun 2021 08:23:59 -0700 (PDT)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id k7sm5424258pjj.46.2021.06.09.08.23.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 08:23:59 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] Use libata platform drivers to replace deprecated
+ m68k IDE drivers
+To:     Michael Schmitz <schmitzmic@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Finn Thain <fthain@linux-m68k.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Joshua Thompson <funaho@jurai.org>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        Richard Zidlicky <rz@linux-m68k.org>
+References: <cover.1623131194.git.fthain@linux-m68k.org>
+ <YL+AqIEPjMgG519L@infradead.org>
+ <d3c70f7a-368a-ad9a-6575-8289234b0ce0@kernel.dk>
+ <36f7519d-698f-1284-551a-0dbd82e2a0d8@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <aca5ed6b-f54d-1a3e-b905-920be85d51d8@kernel.dk>
+Date:   Wed, 9 Jun 2021 09:23:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210204152957.1288448-1-arnd@kernel.org> <20210609110531.GA1528247@roeck-us.net>
- <CAK8P3a2cVpJf+r2b-8YCbknOeOA4w=bY8njr-+vmzbmm8AAC3Q@mail.gmail.com> <20210609151608.GA3389541@roeck-us.net>
-In-Reply-To: <20210609151608.GA3389541@roeck-us.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 9 Jun 2021 17:23:28 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a33q0nocghetws5m_gK89_aqE5v2t1P1D6kMcoswjzfuw@mail.gmail.com>
-Message-ID: <CAK8P3a33q0nocghetws5m_gK89_aqE5v2t1P1D6kMcoswjzfuw@mail.gmail.com>
-Subject: Re: [PATCH] kallsyms: fix nonconverging kallsyms table with lld
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        David Brazdil <dbrazdil@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mikhail Petrov <Mikhail.Petrov@mir.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mfaltesek@google.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <36f7519d-698f-1284-551a-0dbd82e2a0d8@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 5:16 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Wed, Jun 09, 2021 at 01:24:18PM +0200, Arnd Bergmann wrote:
-> > On Wed, Jun 9, 2021 at 1:05 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > On Thu, Feb 04, 2021 at 04:29:47PM +0100, Arnd Bergmann wrote:
-> > > > From: Arnd Bergmann <arnd@arndb.de>
-> > > >
-> > > > ARM randconfig builds with lld sometimes show a build failure
-> > > > from kallsyms:
-> > > >
-> > > >   Inconsistent kallsyms data
-> > > >   Try make KALLSYMS_EXTRA_PASS=1 as a workaround
-> > > >
-> > > > The problem is the veneers/thunks getting added by the linker extend
-> > > > the symbol table, which in turn leads to more veneers being needed,
-> > > > so it may take a few extra iterations to converge.
-> > > >
-> > > > This bug has been fixed multiple times before, but comes back every time
-> > > > a new symbol name is used. lld uses a different set of idenitifiers from
-> > > > ld.bfd, so the additional ones need to be added as well.
-> > > >
-> > > > I looked through the sources and found that arm64 and mips define similar
-> > > > prefixes, so I'm adding those as well, aside from the ones I observed. I'm
-> > > > not sure about powerpc64, which seems to already be handled through a
-> > > > section match, but if it comes back, the "__long_branch_" and "__plt_"
-> > > > prefixes would have to get added as well.
-> > > >
-> > >
-> > > This is such a whack-a-mole. The problem is hitting us yet again. I suspect
-> > > it may be due to a new version of lld using new symbols, but I didn't really
-> > > try to track it down. Is there an easy way to search for missed symbols ?
-> >
-> > The way I did it previously was to hack Kbuild to not remove the temporary
-> > files after a failure, and then compare the "objdump --syms" output of the
-> > last two stages.
->
-> Problem with that is that we have a non-deterministic problem: The build
-> fails for us on some build servers, but we are unable to reproduce the
-> problem when building the same image manually on a development server.
-> That is similar to what I had observed before, where powerpc builds would
-> pass on one server, but the same kernel with the same configuration would
-> fail to build on a second almost identical server. It would really be great
-> if we can find a better solution.
+On 6/8/21 3:50 PM, Michael Schmitz wrote:
+> Hi Jens,
+> 
+> please note that Finn's patch depends on one of mine currently under 
+> review. Without that one, Q40 support may break in certain cases.
 
-Right, that sucks. I suppose removing the ignore-lists from scripts/kallsyms.c
-would make it more easily reproducible after a few local randconfig builds,
-at least enough to add some form of scripting that is able to print the names
-of the generated symbols.
+Can you point me at it?
 
-       Arnd
+-- 
+Jens Axboe
+
