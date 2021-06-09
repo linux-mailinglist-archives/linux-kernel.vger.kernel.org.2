@@ -2,186 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97983A1B13
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948733A1B21
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbhFIQjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhFIQjU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:39:20 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806F2C061574;
-        Wed,  9 Jun 2021 09:37:24 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id l184so4401519pgd.8;
-        Wed, 09 Jun 2021 09:37:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lLAFftWTRfU9UdVVIqPeG3pBuEuPsjeirhpadGfrMlU=;
-        b=hd3OxYzuCxjJshqISM1dEksV2/cS79/tq5n1KGKoEvYqhhObrPAqnqWKHxFKO4QqRh
-         RMBfRjGOYnhtDCtxtGx8I+5qUyoJpVDcq2oted4KqRuBhi8RzuDPnv9DAFGj3wbewIcV
-         /x5XzFs6rlUxUXgCt61wTPUdcBwzLMlvhJa7/wvDTYwAZcV3p4FAsCgYOTMsHiXFjV2v
-         oxcAY5VBXzUoWltekZB49tTkznLeP3NhvFBuguka4zk4AEoGpCtS3EE8RpCv6JIZ0Bqy
-         4AankeT4cz8rOgYWsrwBKNxKVP/gf4vd/gGozLDf10aAZfjE4XvNKEDWyMErGSmKiEuc
-         fKHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=lLAFftWTRfU9UdVVIqPeG3pBuEuPsjeirhpadGfrMlU=;
-        b=i2FPsN5YfMXEfK4unUydEp+4wzxWoGOXpw5TEwq+FOGFf49K7znGe0ZurLNaLLJ15p
-         FxJ7a4XgJnHL5DX8pycB1UQ4XvjUOAUJkAG/Dy1m7gIQqRQQrb7NxgNA8qK3/WVPu4ME
-         ykzcECfR3xeH+V8b6TUdcM+qr9o2vrDsCVlhNv3U6nAMNXGDOW1FXGBeWWBLIFvSi3V8
-         V0kQ2HZt+Pv4ra53X8lqmfcJQLJwzpNcaNBFhVO+L2uLaixYCn9tqrKAdkncpCFx1sFr
-         tkBphLqGMwoTcL8Dar7wlLr8SuCArqPlvn/QdGd4NgFdli9RzhylFhMs5TS/nknij7dA
-         5vBg==
-X-Gm-Message-State: AOAM532+YjU8r81EMlWzSIPidHoO08b8zTfFzpiR3yHU7gJmZQI5Sdyg
-        2y2EJpL5rP0/6+fHX6U4+Eo=
-X-Google-Smtp-Source: ABdhPJzGLrhPCpezHw5int0HjuHaXd3Ci67fi02DODacM0Yj2H8EhBPXTMocSAg36IKVf0reU2XJTw==
-X-Received: by 2002:a63:540d:: with SMTP id i13mr557601pgb.360.1623256644009;
-        Wed, 09 Jun 2021 09:37:24 -0700 (PDT)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:f6bf:4fe:3a78:d973])
-        by smtp.gmail.com with ESMTPSA id j17sm127848pff.77.2021.06.09.09.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 09:37:23 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        John Dias <joaodias@google.com>,
-        Paul Moore <paul@paul-moore.com>, selinux@vger.kernel.org,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH] selinux: use __GFP_NOWARN with GFP_NOWAIT
-Date:   Wed,  9 Jun 2021 09:37:17 -0700
-Message-Id: <20210609163717.2719253-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+        id S235082AbhFIQkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:40:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230027AbhFIQkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 12:40:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F56B610A1;
+        Wed,  9 Jun 2021 16:38:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623256700;
+        bh=+RFAsW+BaB3yvovWMXUbFjPkdC4MfCKQ/OHeDLLypOo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gz1l5VeehUfuEU6uicGlld1GwqCqBHYgpO85Pmfr4E/YdbaxulWCSv6b0/qeNw1WG
+         UrWc8Fiy6UDCIU06XQ6J/0l8agXXwVZkozQ+6KSMd/MYgVjPGu+PkjH5Koa7dHPA7N
+         U3d3ykLDZGypq2nCWAzNdvniD/CGFax2paWCvLI4=
+Date:   Wed, 9 Jun 2021 18:38:17 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com,
+        nava.manne@xilinx.com, dinguyen@kernel.org,
+        krzysztof.kozlowski@canonical.com, yilun.xu@intel.com,
+        arnd@arndb.de, fpacheco@redhat.com, richard.gong@intel.com,
+        luca@lucaceresoli.net, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/4] fpga: reorganize to subdirs
+Message-ID: <YMDueTEHGWuAcknP@kroah.com>
+References: <20210609142208.3085451-1-trix@redhat.com>
+ <YMDV7R52QUTFhpHH@kroah.com>
+ <2738ee7a-448f-c327-c430-13fb44da45ec@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2738ee7a-448f-c327-c430-13fb44da45ec@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the field, we have seen lots of allocation failure from the call path below.
+On Wed, Jun 09, 2021 at 08:08:06AM -0700, Tom Rix wrote:
+> 
+> On 6/9/21 7:53 AM, Greg KH wrote:
+> > On Wed, Jun 09, 2021 at 07:22:03AM -0700, trix@redhat.com wrote:
+> > > From: Tom Rix <trix@redhat.com>
+> > > 
+> > > The incoming xrt patchset has a toplevel subdir xrt/
+> > > The current fpga/ uses a single dir with filename prefixes to subdivide owners
+> > > For consistency, there should be only one way to organize the fpga/ dir.
+> > > Because the subdir model scales better, refactor to use it.
+> > > The discussion wrt xrt is here:
+> > > https://lore.kernel.org/linux-fpga/68e85a4f-4a10-1ff9-0443-aa565878c855@redhat.com/
+> > > 
+> > > Follow drivers/net/ethernet/ which has control configs
+> > > NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+> > > Since fpgas do not have many vendors, drop the 'VENDOR' and use
+> > > FPGA_BLA.
+> > > 
+> > > There are several new subdirs
+> > > altera/
+> > > dfl/
+> > > lattice/
+> > > xilinx/
+> > > 
+> > > Each subdir has a Kconfig that has a new/reused
+> > > 
+> > > if FPGA_BLA
+> > >    ... existing configs ...
+> > > endif FPGA_BLA
+> > > 
+> > > Which is sourced into the main fpga/Kconfig
+> > > 
+> > > Each subdir has a Makefile whose transversal is controlled in the
+> > > fpga/Makefile by
+> > > 
+> > > obj-$(CONFIG_FPGA_BLA) += bla/
+> > > 
+> > > Some cleanup to arrange thing alphabetically and make fpga/Makefile's
+> > > whitespace look more like net/'s
+> > > 
+> > > Changes from
+> > > v1
+> > >    Drop renaming files
+> > >    Cleanup makefiles
+> > You can rename the files, you just can not rename the .ko objects
+> > without everyone knowing what you are doing and you trying to bury it in
+> > the middle of a differently described patch.
+> > 
+> > If you want to do that, do you?  I don't really understand why you want
+> > to move things around right now other than "we have 40 files in one
+> > directory, ick!".
+> 
+> I am trying to resolve the layout inconsistency between what we have and
+> what the xrt patchset does.
 
-06-03 13:29:12.999 1010315 31557 31557 W Binder  : 31542_2: page allocation failure: order:0, mode:0x800(GFP_NOWAIT), nodemask=(null),cpuset=background,mems_allowed=0
-...
-...
-06-03 13:29:12.999 1010315 31557 31557 W Call trace:
-06-03 13:29:12.999 1010315 31557 31557 W         : dump_backtrace.cfi_jt+0x0/0x8
-06-03 13:29:12.999 1010315 31557 31557 W         : dump_stack+0xc8/0x14c
-06-03 13:29:12.999 1010315 31557 31557 W         : warn_alloc+0x158/0x1c8
-06-03 13:29:12.999 1010315 31557 31557 W         : __alloc_pages_slowpath+0x9d8/0xb80
-06-03 13:29:12.999 1010315 31557 31557 W         : __alloc_pages_nodemask+0x1c4/0x430
-06-03 13:29:12.999 1010315 31557 31557 W         : allocate_slab+0xb4/0x390
-06-03 13:29:12.999 1010315 31557 31557 W         : ___slab_alloc+0x12c/0x3a4
-06-03 13:29:12.999 1010315 31557 31557 W         : kmem_cache_alloc+0x358/0x5e4
-06-03 13:29:12.999 1010315 31557 31557 W         : avc_alloc_node+0x30/0x184
-06-03 13:29:12.999 1010315 31557 31557 W         : avc_update_node+0x54/0x4f0
-06-03 13:29:12.999 1010315 31557 31557 W         : avc_has_extended_perms+0x1a4/0x460
-06-03 13:29:12.999 1010315 31557 31557 W         : selinux_file_ioctl+0x320/0x3d0
-06-03 13:29:12.999 1010315 31557 31557 W         : __arm64_sys_ioctl+0xec/0x1fc
-06-03 13:29:12.999 1010315 31557 31557 W         : el0_svc_common+0xc0/0x24c
-06-03 13:29:12.999 1010315 31557 31557 W         : el0_svc+0x28/0x88
-06-03 13:29:12.999 1010315 31557 31557 W         : el0_sync_handler+0x8c/0xf0
-06-03 13:29:12.999 1010315 31557 31557 W         : el0_sync+0x1a4/0x1c0
-..
-..
-06-03 13:29:12.999 1010315 31557 31557 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:12.999 1010315 31557 31557 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:12.999 1010315 31557 31557 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:12.999 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:12.999 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:12.999 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:12.999 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:12.999 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:12.999 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:12.999 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:12.999 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:12.999 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:13.000 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:13.000 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:13.000 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:13.000 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:13.000 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:13.000 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:13.000 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:13.000 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:13.000 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:13.000 10230 30892 30892 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:13.000 10230 30892 30892 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:13.000 10230 30892 30892 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:13.000 10230 30892 30892 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:13.000 10230 30892 30892 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
+Why does it matter?  New stuff can be added to a new dir, why worry
+about old stuff?  What does it hurt?
 
-Based on [1], selinux is tolerate for failure of memory allocation.
-Then, use __GFP_NOWARN together.
+> The big issue is the files vs dirs.
+> 
+> Over specified filenames is secondary, so I dropped them.
+> 
+> 40 files in one dir is itself not a problem.
+> 
+> having 40 files and an xrt/ is.
 
-[1] 476accbe2f6e, selinux: use GFP_NOWAIT in the AVC kmem_caches
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- security/selinux/avc.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+Why is that a "problem"?
 
-diff --git a/security/selinux/avc.c b/security/selinux/avc.c
-index c90f45587a0c..6417ed49661f 100644
---- a/security/selinux/avc.c
-+++ b/security/selinux/avc.c
-@@ -297,26 +297,27 @@ static struct avc_xperms_decision_node
- 	struct avc_xperms_decision_node *xpd_node;
- 	struct extended_perms_decision *xpd;
- 
--	xpd_node = kmem_cache_zalloc(avc_xperms_decision_cachep, GFP_NOWAIT);
-+	xpd_node = kmem_cache_zalloc(avc_xperms_decision_cachep,
-+				     GFP_NOWAIT | __GFP_NOWARN);
- 	if (!xpd_node)
- 		return NULL;
- 
- 	xpd = &xpd_node->xpd;
- 	if (which & XPERMS_ALLOWED) {
- 		xpd->allowed = kmem_cache_zalloc(avc_xperms_data_cachep,
--						GFP_NOWAIT);
-+						GFP_NOWAIT | __GFP_NOWARN);
- 		if (!xpd->allowed)
- 			goto error;
- 	}
- 	if (which & XPERMS_AUDITALLOW) {
- 		xpd->auditallow = kmem_cache_zalloc(avc_xperms_data_cachep,
--						GFP_NOWAIT);
-+						GFP_NOWAIT | __GFP_NOWARN);
- 		if (!xpd->auditallow)
- 			goto error;
- 	}
- 	if (which & XPERMS_DONTAUDIT) {
- 		xpd->dontaudit = kmem_cache_zalloc(avc_xperms_data_cachep,
--						GFP_NOWAIT);
-+						GFP_NOWAIT | __GFP_NOWARN);
- 		if (!xpd->dontaudit)
- 			goto error;
- 	}
-@@ -344,7 +345,7 @@ static struct avc_xperms_node *avc_xperms_alloc(void)
- {
- 	struct avc_xperms_node *xp_node;
- 
--	xp_node = kmem_cache_zalloc(avc_xperms_cachep, GFP_NOWAIT);
-+	xp_node = kmem_cache_zalloc(avc_xperms_cachep, GFP_NOWAIT | __GFP_NOWARN);
- 	if (!xp_node)
- 		return xp_node;
- 	INIT_LIST_HEAD(&xp_node->xpd_head);
-@@ -500,7 +501,7 @@ static struct avc_node *avc_alloc_node(struct selinux_avc *avc)
- {
- 	struct avc_node *node;
- 
--	node = kmem_cache_zalloc(avc_node_cachep, GFP_NOWAIT);
-+	node = kmem_cache_zalloc(avc_node_cachep, GFP_NOWAIT | __GFP_NOWARN);
- 	if (!node)
- 		goto out;
- 
--- 
-2.32.0.rc1.229.g3e70b5a671-goog
+> fpga/ layout should be consistent so the Makefile and Kconfig are easier to
+> maintain.
 
+Is it somehow hard to maintain today?  Seems pretty trivial to me...
+
+thanks,
+
+greg k-h
