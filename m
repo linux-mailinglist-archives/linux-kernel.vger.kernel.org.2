@@ -2,62 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5A73A1B68
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF943A1B6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 19:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhFIRDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 13:03:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48750 "EHLO mail.kernel.org"
+        id S230314AbhFIREk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 13:04:40 -0400
+Received: from mga01.intel.com ([192.55.52.88]:47988 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230205AbhFIRDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:03:50 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 538C660C40;
-        Wed,  9 Jun 2021 17:01:55 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 13:01:53 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Wanpeng Li <kernellwp@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] KVM: x86: Ensure liveliness of nested VM-Enter fail
- tracepoint message
-Message-ID: <20210609130153.42b3ca81@oasis.local.home>
-In-Reply-To: <YMDoeDTrAMmfl6+k@google.com>
-References: <20210607175748.674002-1-seanjc@google.com>
-        <CANRm+CxWovvM187BKtuvS1_WWnSdKc6wFA5swF-sJPJqYSWnUg@mail.gmail.com>
-        <YMDoeDTrAMmfl6+k@google.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229782AbhFIREj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 13:04:39 -0400
+IronPort-SDR: H2UIBIJzElUxNLA3vsfq6qJ6aZ8Z6LW9ASlG0Q98Y+s/ISmH+3iP+FioDxoPYmmMLaiCkqdd2L
+ baq8YQDupt+g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="226489061"
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="226489061"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 10:02:22 -0700
+IronPort-SDR: 5fyRoLzc2uv6n6hr50Cup3ww997RaijPGa0L9t6/pZ4fv1OZeW+exB1+4Y0HnoYZxC6ZK4O85R
+ Cung1lU7MNVg==
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="448353825"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 10:02:20 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lr1ar-000tm1-Ty; Wed, 09 Jun 2021 20:02:17 +0300
+Date:   Wed, 9 Jun 2021 20:02:17 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v1 2/3] serial: 8250_exar: Extract exar_get_platform()
+ helper
+Message-ID: <YMD0GZdbwICgmSmA@smile.fi.intel.com>
+References: <20210608144239.12697-1-andriy.shevchenko@linux.intel.com>
+ <20210608144239.12697-2-andriy.shevchenko@linux.intel.com>
+ <YMC3AhYbxA0Nbp8q@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMC3AhYbxA0Nbp8q@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 09:12:40 -0700
-Sean Christopherson <seanjc@google.com> wrote:
+On Wed, Jun 09, 2021 at 02:41:38PM +0200, Greg Kroah-Hartman wrote:
+> On Tue, Jun 08, 2021 at 05:42:38PM +0300, Andy Shevchenko wrote:
+> > We would like to use DMI matching in other functions as well.
+> > Hence, extract it as exar_get_platform() helper function.
 
-> > I can observe tons of other kvm tracepoints warning like this after
-> > commit 9a6944fee68e25 (tracing: Add a verifier to check string
-> > pointers for trace events), just echo 1 >
-> > /sys/kernel/tracing/events/kvm/enable and boot a linux guest.  
+> Do not mix "fixes with features" in a single series, as I now have to
+> pick it apart and apply it to different branches by hand :(
 > 
-> Can you provide your .config?  With all of events/kvm and events/kvmmmu enabled
-> I don't get any warnings running a Linux guest, a nested Linux guest, and
-> kvm-unit-tests.
-> 
-> Do you see the behavior with other tracepoints?  E.g. enabling all events on my
-> systems yields warnings for a USB module, but everything else is clean.
+> Please do different series for the two different things if at all
+> possible.
 
-Right, I tested this with running KVM guests when it was added. I was
-actually surprised with Sean's report saying it was a kvm trace event,
-until I noticed that the problem event is only triggered on error paths.
+I see. Thank  you for pointing out, I will keep in mind for the future submissions.
 
--- Steve
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
