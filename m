@@ -2,74 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B72D3A1AC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FA13A1AC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 18:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237600AbhFIQTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 12:19:21 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:37629 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237569AbhFIQTH (ORCPT
+        id S237542AbhFIQTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 12:19:03 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:46812 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237477AbhFIQS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:19:07 -0400
-Received: by mail-ot1-f46.google.com with SMTP id 102-20020a9d0eef0000b02903fccc5b733fso1430451otj.4;
-        Wed, 09 Jun 2021 09:16:56 -0700 (PDT)
+        Wed, 9 Jun 2021 12:18:59 -0400
+Received: by mail-ot1-f47.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso24405513otl.13;
+        Wed, 09 Jun 2021 09:16:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=CHX5KZWTpPcC/yJko/I/+4jvnHoXctpkINpWSG1gYOU=;
-        b=cjvEn7aUOSAtgDSHRORTN1FHkDjhi8oSyn5ebaao6ViDJ0/Mi/5C1dZ1HxzeyhJFF/
-         f51Tn2MM127iDIuGAtG+Vaxo3hZXgdsCKBWrL5Lp0RpkP/EPtN8JIsugAUqTQPG45eAa
-         vmQ8KwC2S3+/H3F1L19uap2BCuoi1WLC7SsQVV3wk8eHqGx8DhJpeqKqAFUu+uvOq1Z9
-         PTIpATScBWWjysERkWLXS1pq9xu6y6rUYhk6WY0c9THh1u85++2Ffe/L/ekrOaYPCF8n
-         C4NUeMRWknHqQRXdZpFN1pnlqixb6jBY3lkj+FK9hnFLbMMNV0BN41Np+hkaBt7aLjqd
-         AmhQ==
-X-Gm-Message-State: AOAM533zYXGED4sZo0mippQVTWY6RXYdWnwlwUJ9KTq2530FlbMP+kVR
-        EXRf07gScbOxfeT7pn6Q5g==
-X-Google-Smtp-Source: ABdhPJxVyGxyGLGNx7gbHhTpkRi1VCa2iO+S92c5wEEUjPoMljEIPQVGMfNm0TNIzliApcqPK7juEQ==
-X-Received: by 2002:a9d:7a5:: with SMTP id 34mr140930oto.371.1623255415676;
-        Wed, 09 Jun 2021 09:16:55 -0700 (PDT)
+        bh=pGGy0QJiGHO1VqANFEeP8eQnM2OGRel1gTBvXXS9M6M=;
+        b=F4pC2j1+8nk11vArjlRzMOKHXpbTptScH8fuR1EM+n2/SL6RUTNf8NArckvNXRvP+R
+         lUHm5VhvFWRHzWiu1wy4/+RBbTEB6+cwG/O0b5UWmswGXuV3spuvLmmaFGgXlYdKbqmK
+         jgBKLUNAW/yVdbnvZq2Lq+3mRRW7zqDr+2r/0JhTSFGaUz+0+uPOau5+P9/XVpu2ex1X
+         FSCQWaxdpKqyMtVc6k2i+TcLzL6l15eRHZCtDXKUa+biuwXuRb1+cxRZGaYukyLwvXxB
+         lskEJQ5lATCm66LJMkDAQs0bTHQxwWNK1uwFI1V8n/P5+wtwnoGhZvWARuujaShRX+UN
+         Y9lg==
+X-Gm-Message-State: AOAM532nB9mFNylyiMUUXCGkSEx8R4D2lkK96Kh0P7ced0SgMisNiZNr
+        VsABep2S3nW+zVLAmapc7w==
+X-Google-Smtp-Source: ABdhPJz9lb6nQLNfKFtmUMYZW5PMOiiZPprVnIwJWUBq/29WErexzGXTF+CbUeDZFUDAGFLzY7eHew==
+X-Received: by 2002:a05:6830:14c:: with SMTP id j12mr196670otp.0.1623255408424;
+        Wed, 09 Jun 2021 09:16:48 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p25sm34364ood.4.2021.06.09.09.16.54
+        by smtp.gmail.com with ESMTPSA id v203sm49302oie.52.2021.06.09.09.16.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 09:16:55 -0700 (PDT)
-Received: (nullmailer pid 3763306 invoked by uid 1000);
+        Wed, 09 Jun 2021 09:16:47 -0700 (PDT)
+Received: (nullmailer pid 3763302 invoked by uid 1000);
         Wed, 09 Jun 2021 16:16:43 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Amit Kumar Mahapatra <akumarma@xilinx.com>,
-        linux-mtd@lists.infradead.org, helmut.grohne@intenta.de,
-        Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        devicetree@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
         Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Srinivas Goud <sgoud@xilinx.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Naga Sureshkumar Relli <nagasure@xilinx.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>
-In-Reply-To: <20210609080112.1753221-18-miquel.raynal@bootlin.com>
-References: <20210609080112.1753221-1-miquel.raynal@bootlin.com> <20210609080112.1753221-18-miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v22 17/18] dt-bindings: mtd: pl353-nand: Describe this hardware controller
+        Rob Clark <robdclark@gmail.com>
+In-Reply-To: <20210608195342.18269-2-jonathan@marek.ca>
+References: <20210608195342.18269-1-jonathan@marek.ca> <20210608195342.18269-2-jonathan@marek.ca>
+Subject: Re: [PATCH v3 1/3] dt-bindings: msm: dsi: add missing 7nm bindings
 Date:   Wed, 09 Jun 2021 11:16:43 -0500
-Message-Id: <1623255403.668043.3763305.nullmailer@robh.at.kernel.org>
+Message-Id: <1623255403.647740.3763301.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Jun 2021 10:01:11 +0200, Miquel Raynal wrote:
-> Add a yaml description of this NAND controller which is described as a
-> subnode of the SMC bus.
+On Tue, 08 Jun 2021 15:53:27 -0400, Jonathan Marek wrote:
+> These got lost when going from .txt to .yaml bindings, add them back.
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 > ---
->  .../bindings/mtd/arm,pl353-nand-r2p1.yaml     | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+>  .../bindings/display/msm/dsi-phy-7nm.yaml     | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -78,10 +69,16 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.example.dt.yaml:0:0: /example-0/memory-controller@e000e000: failed to match any schema with compatible: ['arm,pl353-smc-r2p1', 'arm,primecell']
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/display/msm/dsi-phy-common.yaml'
+xargs: dt-doc-validate: exited with status 255; aborting
+Error: Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.example.dts:26.38-39 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1416: dt_binding_check] Error 2
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1489731
+See https://patchwork.ozlabs.org/patch/1489620
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
