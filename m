@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CCE3A1CF8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C323A1CFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 20:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhFISpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 14:45:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230161AbhFISp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 14:45:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BBE2613AC;
-        Wed,  9 Jun 2021 18:43:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623264213;
-        bh=vQ1SsFfCywlqRQRnaHRZ0AG6i982cLly1NBLPalQ438=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KNq0WJ0yN5xclxnJkMdACG3Nq7ICu17YRELK6TYkDFTbdsmlCv+C6JxITHWzlqi22
-         ZKw1TUCA62EdnA12aBTi+YKko9SRWAy3wKyrLQ6tCw5EJicYpB5pks9D1qK1vOMn17
-         FPKQ9mNwgC0IZA3FzV8Qw6Q368AlvIkeg65SFSHJim10xmlGe2URIopbZymCTEl3bm
-         JGdcCCNIsR/LZcLmK+Lv8Cnr7aJZ8E9UDUJbCc0pr3NRvVZ40OZnN0rPS9TfziWNWg
-         L/x90essw1KJFOjv4iCrSzKAJD1wP70/mdKFQmD10HuwiANoFbNbisicFaGDSf/Ocu
-         LOSKgO+P8ufNw==
-Date:   Wed, 9 Jun 2021 11:43:31 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: introduce FI_COMPRESS_RELEASED
- instead of using IMMUTABLE bit
-Message-ID: <YMEL06gZC5n3J2bX@google.com>
-References: <20210525204955.2512409-1-jaegeuk@kernel.org>
- <20210525204955.2512409-2-jaegeuk@kernel.org>
- <95b5669f-a521-5865-2089-320e2a2493de@kernel.org>
- <YL5P15nLsc/3GQOY@google.com>
- <3f2c2543-c8a4-3477-76af-5c7614b643e8@kernel.org>
+        id S230188AbhFISqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 14:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229941AbhFISqP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 14:46:15 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02D3C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 11:44:05 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id m18so26605051wrv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 11:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=/OeoAGy1A3IEy3Gj7xVoOV+pgm3ejfFP6M33G2/qTsw=;
+        b=pkyiwUcWdl2NTbfay2RmnndJmbGNmeF/TpRKXQlrM09uMItjvBrIuMW/yqfZXL6Zfj
+         mWuImxuPnqlTYVHPBD5Zy6AAT/yXeXsJ3b/roRx448bStXeICJnt6cywkf/QblOyUwls
+         tuLyNqScuMyfa+jJOHqL49vjyZ8UMTLs8a2nZu2G42tA5sQOsIr018nRTrTIJ88oyjRt
+         wmLwn1OFIyLeJJKsiM/NGTkIjA7fmuh3e7ZleCZLQwtYF6JxYXOTWZiMR08kRvbja9UZ
+         uCSQT1W16VwadtXZuZtPckPedy3bX3MgHMxglkSuHtDIlGl9Gn4blMIpe4I5fOGm9XAq
+         RRQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=/OeoAGy1A3IEy3Gj7xVoOV+pgm3ejfFP6M33G2/qTsw=;
+        b=cBEpIXzX1DkoaCMi67FmC4x38lkr1LZJahv5RD8yxv5ermutxzjCuvY7FRNNl/fJSF
+         NsJEciR+TyrIoGb4l2eaTXLOGH2CurXWG5bVFydSEvDLTEJx+FYoe24UfYsGhWtIBzPp
+         eCLbSEdK0vyeDPgvXi+B/RRi7Pax3w0993MFzkZTjvpQHwinULz8tjnOPdAWmXw8vUXV
+         Ap2Xb0MTw+AOKIyCMqV/y93LbDs3pKbHe1a22GVctzYUQTz0TTPJC6saXznflEAYbcFL
+         7t8I9ZmFmq+rbHpPkoprXooxX2sum2ZyZ238FGO/g0PZ93CWelgJ1fnPM6f9/a0mDQyw
+         Fhjw==
+X-Gm-Message-State: AOAM532B03ThCNmXbOIasC0mxHndIPX62rdJjf5zNVKWD4AokOR5TZGA
+        5L/Uy0OwNFiBNozKbnND3/4vPkCjm0c=
+X-Google-Smtp-Source: ABdhPJyqUYDNMxAjgCCKsq5G3Vq3A3JYH+56SAGroHWV29UQhmfk99mYGfD+gkI2OWijT1G7x88U/Q==
+X-Received: by 2002:adf:9b9d:: with SMTP id d29mr1224843wrc.226.1623264244284;
+        Wed, 09 Jun 2021 11:44:04 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f29:3800:a9b1:fb24:eb4f:c8ac? (p200300ea8f293800a9b1fb24eb4fc8ac.dip0.t-ipconnect.de. [2003:ea:8f29:3800:a9b1:fb24:eb4f:c8ac])
+        by smtp.googlemail.com with ESMTPSA id x18sm794930wrw.19.2021.06.09.11.44.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 11:44:03 -0700 (PDT)
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: linux-next: NVME using PCI legacy interrupts only
+Message-ID: <52371274-20bc-a150-a3ed-ba3e1305ad3e@gmail.com>
+Date:   Wed, 9 Jun 2021 20:43:57 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f2c2543-c8a4-3477-76af-5c7614b643e8@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08, Chao Yu wrote:
-> On 2021/6/8 0:56, Jaegeuk Kim wrote:
-> > On 06/06, Chao Yu wrote:
-> > > On 2021/5/26 4:49, Jaegeuk Kim wrote:
-> > > > Once we release compressed blocks, we used to set IMMUTABLE bit. But it turned
-> > > > out it disallows every fs operations which we don't need for compression.
-> > > > 
-> > > > Let's just prevent writing data only.
-> > > > 
-> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > > 
-> > > Reviewed-by: Chao Yu <yuchao0@huawei.com>
-> > > 
-> > > BTW, we need to expose .i_inline field to userspace since there is no
-> > > way to check status of inode whether it has released blocks?
-> > 
-> > Need to add some in F2FS_IOC_GET_COMPRESS_OPTION?
-> 
-> We should not change this interface, in order to keep its compatibility for
-> userspace usage. How about adding it in F2FS_IOC_GET_COMPRESS_OPTION_EX?
+I found that on linux-next from June 8th my nvme disk is using legacy
+interrupts only. Some debugging lead me to irq_find_mapping() in
+msi_domain_alloc() returning -EEXIST.
 
-Hmm, or need to add it in getflags?
+The nvme core first allocates a MSI-X interrupt for setup purposes
+and later frees it and allocates the final number of MSI-X interrupts.
 
-> 
-> Thanks,
-> 
-> > 
-> > > 
-> > > Thanks,
+The following experimental change brought back the MSI-X interrupts.
+This makes me think that somehow freeing a MSI-X interrupt doesn't
+free it completely. I didn't see this behavior a few days ago,
+therefore I think it's related to the recent changes to
+irqdomain/genirq.
+
+Didn't do a bisect yet, maybe you have an idea already.
+
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index a29b17070..8cc600819 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -2381,7 +2381,7 @@ static int nvme_pci_enable(struct nvme_dev *dev)
+         * interrupts. Pre-enable a single MSIX or MSI vec for setup. We'll
+         * adjust this later.
+         */
+-       result = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
++       result = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_LEGACY);
+        if (result < 0)
+                return result;
+
+
