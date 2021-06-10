@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4BA3A355F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F069A3A3564
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhFJVGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 17:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhFJVGU (ORCPT
+        id S230356AbhFJVHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:07:02 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:59734 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229963AbhFJVHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:06:20 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFFFC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 14:04:23 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id n17so6808405ljg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 14:04:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hvL3lGwbeiN7MBxmsi5XUSzTl5bywBkq1SiXoFH9p/Y=;
-        b=h5msG03u/H4hnhe+y6dZRvJGZM7Z1bjF9rSXqXZFXISpshwR35XOKKkNfFcU03dOQZ
-         UOuf4TEMF1JPT/M4VVo37xPOjNyCt/8oZXgGCHZDs4SCE2xITO/oY8+2Ss+oKPbfETpd
-         Q1u/byu5sVQ5jFQU3+ukI40pjUCqgaobqASIg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hvL3lGwbeiN7MBxmsi5XUSzTl5bywBkq1SiXoFH9p/Y=;
-        b=tkGZhqfBmZnUoKiH3e/6guWtqF1eUp0MyjZrLZCZlgtiLd63KNYGrRowrRak3QHM5V
-         BMzVPZUaG95tbvfz3He8dAtuTH+mrXfm/e8hS0fwdfrv7KkGlZUo7kK9nZ61FQvj1IB7
-         91sILCS3SocsnLNkQ7mpmXPheLVSd+wh4ScwfkY12csrfkZjIEuanenxwIGHHtafHtZS
-         4XNIfP+yuLci9nv7HG6oJuPcS5YnxZacfoQx4LOarO/odMfWlvKWLzICN2JqgrCERQs5
-         cQdrEg48Ox/s6Bu+wf5JU3MhOxCI1BD5+1+XUvsLrYpL2Xt2Ob5WQCEXkRfWjCcHqDcB
-         +F5Q==
-X-Gm-Message-State: AOAM533Z0AFi1pqSTKs6rouOiJ8Qz+u9M9pj1ziIHafgF9cl9VWmN5OL
-        T9LDXuM4izlmDv4aZAWCP/HeSQOtq+tK7+vhQg8=
-X-Google-Smtp-Source: ABdhPJxWzd1corZuC3G018lswKcq/qTWZ8pLEwQgOYy1Ui4ibo90b//IKbebbWNmW7TUwfaVc5fF8w==
-X-Received: by 2002:a2e:9a96:: with SMTP id p22mr363606lji.389.1623359061430;
-        Thu, 10 Jun 2021 14:04:21 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id f19sm466553ljn.88.2021.06.10.14.04.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 14:04:20 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id i10so5333737lfj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 14:04:20 -0700 (PDT)
-X-Received: by 2002:a05:6512:3d13:: with SMTP id d19mr433821lfv.41.1623359060330;
- Thu, 10 Jun 2021 14:04:20 -0700 (PDT)
+        Thu, 10 Jun 2021 17:07:01 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 1A69520B7178;
+        Thu, 10 Jun 2021 14:05:03 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1A69520B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623359104;
+        bh=9heYwDg7HkXqmnRyjiu31yAcnxTkKMw3sVGVK8qX7II=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NL/mZr/sTjypmf8YXwF9PG/hiD3wixy3Z8rZov3Q4mL477kgo3L+JGWgn5s1E/IhJ
+         ok1Q2mM+7sKmkUGr4th02hNY+gb2HRC533UHj4s/mXCKrzfqjZeeNL1WvBMeab1g3z
+         TJczE2jmC3xVo/G1up5fiW4ZFLlX5bKSWA+85HKs=
+Date:   Thu, 10 Jun 2021 16:05:01 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Sumit Garg <sumit.garg@linaro.org>, Rijo-john.Thomas@amd.com,
+        Allen Pais <apais@linux.microsoft.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        op-tee@lists.trustedfirmware.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 5/7] tee: Support shm registration without dma-buf
+ backing
+Message-ID: <20210610210501.GP4910@sequoia>
+References: <20210609002326.210024-1-tyhicks@linux.microsoft.com>
+ <20210609002326.210024-6-tyhicks@linux.microsoft.com>
+ <CAFA6WYOZC0iHzZm6pOxz31eW_=8g2wyJdm4wiOGKggO6-a9MdA@mail.gmail.com>
+ <20210609054621.GB4910@sequoia>
+ <CAFA6WYOYt2vcQ4ng=Nwu2R7d6=R=DGXQKpQ-+UiENerEtQRKWg@mail.gmail.com>
+ <20210609121533.GA2267052@jade>
+ <20210609134225.GC4910@sequoia>
+ <20210610074948.GC2753553@jade>
 MIME-Version: 1.0
-References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
- <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com>
- <87h7i694ij.fsf_-_@disp2133> <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
- <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
- <87eeda7nqe.fsf@disp2133> <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
- <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133> <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
- <87y2bh4jg5.fsf@disp2133> <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
- <87sg1p4h0g.fsf_-_@disp2133>
-In-Reply-To: <87sg1p4h0g.fsf_-_@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 10 Jun 2021 14:04:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj5_=m4DyZ=8==bfL2UCnWU=UDjQu-XCq_b92oDJh1i-Q@mail.gmail.com>
-Message-ID: <CAHk-=wj5_=m4DyZ=8==bfL2UCnWU=UDjQu-XCq_b92oDJh1i-Q@mail.gmail.com>
-Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Olivier Langlois <olivier@trillion01.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610074948.GC2753553@jade>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 1:11 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Make the coredump code more robust by explicitly testing for all of
-> the wakeup conditions the coredump code supports.  This prevents
-> new wakeup conditions from breaking the coredump code, as well
-> as fixing the current issue.
+On 2021-06-10 09:49:48, Jens Wiklander wrote:
+> On Wed, Jun 09, 2021 at 08:42:25AM -0500, Tyler Hicks wrote:
+> [snip]
+> > > I've just posted "[PATCH 0/7] tee: shared memory updates",
+> > > https://lore.kernel.org/lkml/20210609102324.2222332-1-jens.wiklander@linaro.org/
+> > > 
+> > > Where tee_shm_alloc() is replaced by among other functions
+> > > tee_shm_alloc_kernel_buf(). tee_shm_alloc_kernel_buf() takes care of the
+> > > problem with TEE_SHM_DMA_BUF.
+> > 
+> > Thanks! At first glance, that series would take care of the last three
+> > patches in my kexec/kdump series.
+> > 
+> > I'm a bit worried that it is a rewrite of the shm allocator. Do you plan
+> > to send all of that to stable? (I mentioned earlier in this thread that
+> > I'm affected by these bugs in linux-5.4.y.)
+> 
+> No, that might be a bit much.
+> 
+> > Also, you and Sumit don't seem to have the same opinion on kernel
+> > drivers making use of tee_shm_register() for allocations that are only
+> > used internally. Can you comment on that?
+> > 
+> > I'm not clear on the next steps for fixing these kexec/kdump bugs in
+> > older releases. I appreciate any guidance here.
+> 
+> Neither am I be honest. You're the only one that has brought up this
+> problem so perhaps it's enough to focus on the stable branch you need to
+> have fixed.
 
-Thanks, applied.
+I've already added Fixes tags to all of my patches. If you are
+comfortable with them going to stable, you'd add
+'Cc: stable@vger.kernel.org' to them if/when you merge them so that the
+stable team will ensure that they're applied.
 
-And lots of thanks to Olivier who kept debugging the odd coredump
-behavior he saw.
+Note that I'm not the only person that brought up this bug:
 
-            Linus
+ https://github.com/OP-TEE/optee_os/issues/3637
+
+Once I started digging in, I realized that there were more kexec/kdump
+bugs and the series grew.
+
+> If I've understood it correctly it's best if it's possible to
+> cherry-pick the fixes from mainline to the stable branch in question.
+> So we must make sure to get your needed patches in before any rewrites
+> that would make cherry-picking impossible. The rewrite I'm proposing
+> isn't urgent so it can be held off for a while.
+
+Thanks for holding off. I'll be quick on my revisions so that you don't
+have to moth ball your series for too much longer.
+
+Tyler
+
+> 
+> Cheers,
+> Jens
+> 
