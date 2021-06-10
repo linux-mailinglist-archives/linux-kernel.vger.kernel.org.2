@@ -2,222 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1023A2E7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A82A3A2E7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhFJOqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbhFJOqY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:46:24 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032A2C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:44:28 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso14709824oto.12
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5r1JUAnf5vqj0yEA5qbVlT9HSVi/kDaJI1P3a5pkfsU=;
-        b=W70cv9kRs5vC91D+5krSiC2wgrRgfcRqDBAvHN6Jz57LjX2QVyZmsMEhHTP67RchNg
-         qOLEMa6gQuxFjFntv/fypYATIKLR/Bdo11s57OcCPfIP5M4k2gXoq7tRYnSsADHUBL61
-         /6/U9NGTqfT0AfqKcIcb0zYJr1y/r0NI/dAfWCMYFiS2Wco5+JOwEof1nQMYLQHIKlHe
-         NASNPYOQ63fs3H4YA94pAv/O8n6F80sT5CuspLWbFS3W9Y5aT2oWbHk9bUmVVtKCU5DI
-         Xb95PoULP6bLz93XftyUEJRHt0V69MydJiwUUJPsCIZRsCVOCXSQowzCAHE22j++5wRa
-         pc2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5r1JUAnf5vqj0yEA5qbVlT9HSVi/kDaJI1P3a5pkfsU=;
-        b=qRDfZWo000JGqh4PWWvk3J6AwiB1+wUbHq+u2I/1OrKhz5yhUMxgZ6Wi5StX3K6ctx
-         svTPb4/UXRmNkI1EbGcubZiHS7/Vesm+oeFQqZ0J5qs8zQ8CKmQlDTcYKsT14R+Lwa0G
-         MhKo6cAlnYQqs4wkI6sJZo7va+OwpA0k77hiNBJDEExkBuiSnPEi0k59eQT0n/r2nvaL
-         CMEI04xF9gwqx8kApsx9ZbZLS62U/HcVFgP7+3SKQ+xSN7mHGp82JTO/Z3zAyhkun97W
-         VTyd7rD8Vyc0ZAqcDlYId1LnSGoiW7dv0VFkGP/C7R6z48j2rVO9f4Ionu5g5kQlhu3z
-         efjQ==
-X-Gm-Message-State: AOAM5330hHBtDQNjHgenisgFuvTiLiEIegPBBnySzzEkpbJ7TL6KV/+0
-        7KYrFKvJPqZ7fmmydMYMHan3WfHgNKOVFw==
-X-Google-Smtp-Source: ABdhPJyU40SttyHVQTJlyA84enWC1soa+5ksDd5YxGOEO8l6OO67Iv+5BiAGIy1r5b60eDx25QCl9A==
-X-Received: by 2002:a9d:65:: with SMTP id 92mr2691191ota.239.1623336267233;
-        Thu, 10 Jun 2021 07:44:27 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f2sm562397ooj.22.2021.06.10.07.44.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 07:44:26 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 09:44:24 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dpu: Avoid ABBA deadlock between IRQ modules
-Message-ID: <YMIlSHlRoF4Lhhdb@yoga>
-References: <20210609231507.3031904-1-bjorn.andersson@linaro.org>
- <faf0dbb2-a219-51fe-5cbd-752848a0286f@linaro.org>
+        id S231398AbhFJOqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:46:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230153AbhFJOqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:46:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97E4060E08;
+        Thu, 10 Jun 2021 14:44:40 +0000 (UTC)
+Subject: Re: arch/m68k/68000/dragen2.c:73:16: error: 'screen_bits' undeclared
+To:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+References: <202106082234.K2ejj9O2-lkp@intel.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <b7d33ae8-24f5-cf5f-ba80-348b6c2e6853@linux-m68k.org>
+Date:   Fri, 11 Jun 2021 00:44:38 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <faf0dbb2-a219-51fe-5cbd-752848a0286f@linaro.org>
+In-Reply-To: <202106082234.K2ejj9O2-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10 Jun 06:46 CDT 2021, Dmitry Baryshkov wrote:
 
-> On 10/06/2021 02:15, Bjorn Andersson wrote:
-> > Handling of the interrupt callback lists is done in dpu_core_irq.c,
-> > under the "cb_lock" spinlock. When these operations results in the need
-> > for enableing or disabling the IRQ in the hardware the code jumps to
-> > dpu_hw_interrupts.c, which protects its operations with "irq_lock"
-> > spinlock.
-> > 
-> > When an interrupt fires, dpu_hw_intr_dispatch_irq() inspects the
-> > hardware state while holding the "irq_lock" spinlock and jumps to
-> > dpu_core_irq_callback_handler() to invoke the registered handlers, which
-> > traverses the callback list under the "cb_lock" spinlock.
-> > 
-> > As such, in the event that these happens concurrently we'll end up with
-> > a deadlock.
-> > 
-> > Prior to '1c1e7763a6d4 ("drm/msm/dpu: simplify IRQ enabling/disabling")'
-> > the enable/disable of the hardware interrupt was done outside the
-> > "cb_lock" region, optimitically by using an atomic enable-counter for
-> > each interrupt and an warning print if someone changed the list between
-> > the atomic_read and the time the operation concluded.
-> > 
-> > Rather than re-introducing the large array of atomics, serialize the
-> > register/unregister operations under a single mutex.
-> > 
-> > Fixes: 1c1e7763a6d4 ("drm/msm/dpu: simplify IRQ enabling/disabling")
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+On 9/6/21 12:01 am, kernel test robot wrote:
+> Hi Arnd,
 > 
-> I have been thinking about this for quite some time. I'm still not confident
-> about the proposed scheme.
+> FYI, the error/warning still remains.
+
+My fault. I have pushed the fix to the m68knommu git tree, for-next branch now.
+See:
+
+     https://lore.kernel.org/linux-m68k/fd18edff-ddaf-e10c-5649-da0ade22dafa@linux-m68k.org/T/#t
+
+Regards
+Greg
+
+     
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   614124bea77e452aa6df7a8714e8bc820b489922
+> commit: a734bbf694270dca8594a5c33375867dc31503f5 m68k: m68328: move platform code to separate files
+> date:   6 months ago
+> config: m68k-randconfig-r021-20210608 (attached as .config)
+> compiler: m68k-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a734bbf694270dca8594a5c33375867dc31503f5
+>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>          git fetch --no-tags linus master
+>          git checkout a734bbf694270dca8594a5c33375867dc31503f5
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=m68k
 > 
-> What more intrusive, but more obvious change:
->  - Drop dpu_kms->irq_obj.cb_lock alltogether. Use hw_intr's irq_lock instead
-> in the register/unregister path and no locks in the callback itself.
-
-I did consider this as well, but while I certainly don't like the
-current design I think it would be easy to miss the fact that the two
-"different" modules share the lock.
-
->  - Do not take locks in the dpu_hw_intr_enable_irq/disable_irq (as we are
-> already locked outside).
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-
-This is correct.
-
-> The core_irq is the only user of the hw_intr framework. In fact I'd like to
-> squash them together at some point (if I get some time, I'll send patches
-> during this cycle).
+> All errors (new ones prefixed by >>):
 > 
-
-As we've seen the two modules are tightly coupled, and it's full of slow
-function pointer calls, so I'm definitely in favor of us refactoring
-this into a single thing.
-
-Further more, rather than dealing with the callback lists in
-dpu_core_irq, I think we should explore just implementing this as
-another chained irq handler, and just use the common IRQ code directly -
-it has a known API and is known to work.
-
-
-That said, such redesign will take a little bit of time and we
-definitely need to squash the deadlock, as my laptop only survives 10-15
-minutes with two displays active.
-
-So if we agree that we want to squash the two modules, then your
-suggestion of sharing the lock seems like a reasonable intermediate
-workaround. I'll respin and retest my patch accordingly.
-
-Thanks,
-Bjorn
-
-> 
-> > ---
-> >   drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c | 10 +++++++---
-> >   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h      |  2 ++
-> >   2 files changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-> > index 4f110c428b60..62bbe35eff7b 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
-> > @@ -82,11 +82,13 @@ int dpu_core_irq_register_callback(struct dpu_kms *dpu_kms, int irq_idx,
-> >   	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
-> > +	mutex_lock(&dpu_kms->irq_obj.hw_enable_lock);
-> >   	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
-> >   	trace_dpu_core_irq_register_callback(irq_idx, register_irq_cb);
-> >   	list_del_init(&register_irq_cb->list);
-> >   	list_add_tail(&register_irq_cb->list,
-> >   			&dpu_kms->irq_obj.irq_cb_tbl[irq_idx]);
-> > +	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
-> >   	if (list_is_first(&register_irq_cb->list,
-> >   			&dpu_kms->irq_obj.irq_cb_tbl[irq_idx])) {
-> >   		int ret = dpu_kms->hw_intr->ops.enable_irq(
-> > @@ -96,8 +98,7 @@ int dpu_core_irq_register_callback(struct dpu_kms *dpu_kms, int irq_idx,
-> >   			DPU_ERROR("Fail to enable IRQ for irq_idx:%d\n",
-> >   					irq_idx);
-> >   	}
-> > -
-> > -	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
-> > +	mutex_unlock(&dpu_kms->irq_obj.hw_enable_lock);
-> >   	return 0;
-> >   }
-> > @@ -127,9 +128,11 @@ int dpu_core_irq_unregister_callback(struct dpu_kms *dpu_kms, int irq_idx,
-> >   	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
-> > +	mutex_lock(&dpu_kms->irq_obj.hw_enable_lock);
-> >   	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
-> >   	trace_dpu_core_irq_unregister_callback(irq_idx, register_irq_cb);
-> >   	list_del_init(&register_irq_cb->list);
-> > +	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
-> >   	/* empty callback list but interrupt is still enabled */
-> >   	if (list_empty(&dpu_kms->irq_obj.irq_cb_tbl[irq_idx])) {
-> >   		int ret = dpu_kms->hw_intr->ops.disable_irq(
-> > @@ -140,7 +143,7 @@ int dpu_core_irq_unregister_callback(struct dpu_kms *dpu_kms, int irq_idx,
-> >   					irq_idx);
-> >   		DPU_DEBUG("irq_idx=%d ret=%d\n", irq_idx, ret);
-> >   	}
-> > -	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
-> > +	mutex_unlock(&dpu_kms->irq_obj.hw_enable_lock);
-> >   	return 0;
-> >   }
-> > @@ -207,6 +210,7 @@ void dpu_core_irq_preinstall(struct dpu_kms *dpu_kms)
-> >   	dpu_disable_all_irqs(dpu_kms);
-> >   	pm_runtime_put_sync(&dpu_kms->pdev->dev);
-> > +	mutex_init(&dpu_kms->irq_obj.hw_enable_lock);
-> >   	spin_lock_init(&dpu_kms->irq_obj.cb_lock);
-> >   	/* Create irq callbacks for all possible irq_idx */
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> > index f6840b1af6e4..5a162caea29d 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> > @@ -83,6 +83,7 @@ struct dpu_irq_callback {
-> >    * @total_irq:    total number of irq_idx obtained from HW interrupts mapping
-> >    * @irq_cb_tbl:   array of IRQ callbacks setting
-> >    * @cb_lock:      callback lock
-> > + * @hw_enable_lock: lock to synchronize callback register and unregister
-> >    * @debugfs_file: debugfs file for irq statistics
-> >    */
-> >   struct dpu_irq {
-> > @@ -90,6 +91,7 @@ struct dpu_irq {
-> >   	struct list_head *irq_cb_tbl;
-> >   	atomic_t *irq_counts;
-> >   	spinlock_t cb_lock;
-> > +	struct mutex hw_enable_lock;
-> >   };
-> >   struct dpu_kms {
-> > 
+>     arch/m68k/68000/dragen2.c:38:13: warning: no previous prototype for 'init_dragen2' [-Wmissing-prototypes]
+>        38 | void __init init_dragen2(char *command, int size)
+>           |             ^~~~~~~~~~~~
+>     arch/m68k/68000/dragen2.c: In function 'init_dragen2':
+>>> arch/m68k/68000/dragen2.c:73:16: error: 'screen_bits' undeclared (first use in this function)
+>        73 |  LSSA = (long) screen_bits;
+>           |                ^~~~~~~~~~~
+>     arch/m68k/68000/dragen2.c:73:16: note: each undeclared identifier is reported only once for each function it appears in
 > 
 > 
-> -- 
-> With best wishes
-> Dmitry
+> vim +/screen_bits +73 arch/m68k/68000/dragen2.c
+> 
+>      45	
+>      46		/* CSGB Init */
+>      47		CSGBB = 0x4000;
+>      48		CSB = 0x1a1;
+>      49	
+>      50		/* CS8900 init */
+>      51		/* PK3: hardware sleep function pin, active low */
+>      52		PKSEL |= PK(3);				/* select pin as I/O */
+>      53		PKDIR |= PK(3);				/* select pin as output */
+>      54		PKDATA |= PK(3);			/* set pin high */
+>      55	
+>      56		/* PF5: hardware reset function pin, active high */
+>      57		PFSEL |= PF(5);				/* select pin as I/O */
+>      58		PFDIR |= PF(5);				/* select pin as output */
+>      59		PFDATA &= ~PF(5);			/* set pin low */
+>      60	
+>      61		/* cs8900 hardware reset */
+>      62		PFDATA |= PF(5);
+>      63		{ int i; for (i = 0; i < 32000; ++i); }
+>      64		PFDATA &= ~PF(5);
+>      65	
+>      66		/* INT1 enable (cs8900 IRQ) */
+>      67		PDPOL &= ~PD(1);			/* active high signal */
+>      68		PDIQEG &= ~PD(1);
+>      69		PDIRQEN |= PD(1);			/* IRQ enabled */
+>      70	
+>      71	#ifdef CONFIG_INIT_LCD
+>      72		/* initialize LCD controller */
+>    > 73		LSSA = (long) screen_bits;
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
