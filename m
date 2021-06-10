@@ -2,209 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901203A22E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958E93A22F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhFJDm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 23:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhFJDmz (ORCPT
+        id S230059AbhFJDrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 23:47:02 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:43849 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhFJDqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 23:42:55 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A34C061574;
-        Wed,  9 Jun 2021 20:40:59 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id v12so235711plo.10;
-        Wed, 09 Jun 2021 20:40:59 -0700 (PDT)
+        Wed, 9 Jun 2021 23:46:24 -0400
+Received: by mail-ot1-f45.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso26121524otu.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 20:44:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5Xlibc6hX8kwCcZz0XQ+FE2nBQRDGeD6dPLbec7873k=;
-        b=DVTYq6Mr1yqRlhqT7rDJJzuzmOmfvg9GpbBgcFCCMoS2myqdZzw4QprxJa3JuRM0bT
-         fszOnj6rUU7V7rYDu0HGjJcJy1yQAUdizhaEoGkPQzR15ji4aDgk+aXSrhcsi7gqhe+G
-         FbdtEAWpmeblMOYMUvr2S21hfhKKrlglWsQBqonLnxMmqrsmn/d6e7SiWMqOV3qNwCVt
-         MjkE0KZvqwHcPR1gFvf6SGbPoar3A3hQy1/dss8bOCmgU9bYYqUwRNPllieVX49CDrRs
-         OGKsrv8nYSQYOj9EWI/IpaiVHNGbMB2096LrKggIDabS0tZogPRN014RCOf5EOHysaLH
-         EbNg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=d/HsOChtoCYv2fZLAnHj+L8OfimOjEe4YM7F//2V4UM=;
+        b=Xh67DyPE6Dr/kBZT1T6WHVHNDgnklob0hvRge79XgS3dUfpC+iqe3geJA0EJxO4kzK
+         Ot37b8Pulgxw5XN5Fa6KGf7GYNhkyGy+9RcqdrLjnpbSuIDFQPEbKb0Xf44MrNP1zLm2
+         WrWY3RAEWZtR0mQ87N4jnbpzkvSxN3+BHFZgazaGKzsNdaOKZFiEScjc0GExA2l5UsJ4
+         F0wFDYmOkxIRvWpAt2j18370FgzP+3AndnwDqjm1R/xH7PG3XDpFClhwRA5bo5+vnqTl
+         HWjnxbrNmbjoFG/D0xBPsqZ+n+UakseIticWoF9S9UcgMHc0R+YVxkD8cqlRd/7fe3CB
+         Zt2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5Xlibc6hX8kwCcZz0XQ+FE2nBQRDGeD6dPLbec7873k=;
-        b=JikrwUeFQzNm4P/ORdLegpXDihJxiRbU7lFcL/JXZw0t9Uw1RFrQzZ4j5cDLZfgTZH
-         nuxqqnWv1cevyo2jX+rWaHcvNqlQu/Kou6gr+7bcbz7ed2NFt79r7eSEgqf5u3h7KI8s
-         t9rGBDzrHBis16KRKdBi86nyzkEf8fJHHV2xcCntj79VTLqovqC3xO5f/8+tuqLc/mQR
-         Kt1H2aENUlM8nzFF+nOHs97rKHg7pO8JQaWk8fqdDL2oAZpl5ymyWMLjkZvy76EhJ7Qy
-         mWJ7X1qetwjfV0otX/pQjPgK6yEi5HxibxNSXq+sFv4nR3Ejnq1H/syGe5pCnmRBEMM5
-         czOQ==
-X-Gm-Message-State: AOAM530kLORc+RJkQvMiaUzMadOHcK1A69lY1vKuAYyi2gtZyv6TwjLs
-        aD0b4WqYDRfn2gVxmPc6sYClOQlWuFLroQ==
-X-Google-Smtp-Source: ABdhPJxgl9h4/OPyjw92jNQqYTa2w/KubhZ0K6geEeXfvOoqlm7ziFyRkXCKamikxNJH3oslXBnMlQ==
-X-Received: by 2002:a17:90b:881:: with SMTP id bj1mr1103306pjb.119.1623296459278;
-        Wed, 09 Jun 2021 20:40:59 -0700 (PDT)
-Received: from devnote2 (122x208x150x49.ap122.ftth.ucom.ne.jp. [122.208.150.49])
-        by smtp.gmail.com with ESMTPSA id t14sm1059136pgm.9.2021.06.09.20.40.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 20:40:58 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 12:40:52 +0900
-From:   Masami Hiramatsu <masami.hiramatsu@gmail.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v7 00/13] kprobes: Fix stacktrace with kretprobes
- on x86
-Message-Id: <20210610124052.486df6a3bcc5337919e21e83@gmail.com>
-In-Reply-To: <162209754288.436794.3904335049560916855.stgit@devnote2>
-References: <162209754288.436794.3904335049560916855.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=d/HsOChtoCYv2fZLAnHj+L8OfimOjEe4YM7F//2V4UM=;
+        b=IKH2WY4P5vCJaduueMmzE1bQY4uDl7NW2eYA5wJRGwvaqxogIWrBukovn8z8g6z/sh
+         tX2sZ+DVzviBAWkLXlVX9sVsDYGtdu2GHF4jU3JrNS1KilBOcp4dwO+A62Q8s3CiOub2
+         rDf8da06j/Nr4YkACsGowtJhsnaJsF1zOfbz2z0QehfwLHYCbJCvsWSpsZyumuJExEoA
+         OHUakG6MW3OtaLIVTadRtzSYkB46046bkGlpQZBR4J51qE9RBLyJuIFMD78S6qrW8jcR
+         XH6cAeUsdz7XBlT1F8TBHw0pfLM7wWenTgwxwdc6T4rB3bbfJw/L23vrJlMxs4qWb3ss
+         t8yg==
+X-Gm-Message-State: AOAM5302r7KxSyW+lrmLV7OfC75/IRON9KTOM79DnTdraJzJ/Jy1RqfW
+        qnVbsTlubt2qrIT/h7RV2Hyi38E4q3rEPvAhw6EKoQ==
+X-Google-Smtp-Source: ABdhPJwaI7pY5h+Lp2iauvfmhJT8Zg+jqsNfguAo720I85KWBapKSLe5j38W7lEBj40rsZP877aszFSAKUNQM7jHv0A=
+X-Received: by 2002:a9d:711c:: with SMTP id n28mr704194otj.180.1623296592541;
+ Wed, 09 Jun 2021 20:43:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210609232501.171257-1-jiang.wang@bytedance.com> <da90f17a-1c24-b475-76ef-f6a7fc2bcdd5@redhat.com>
+In-Reply-To: <da90f17a-1c24-b475-76ef-f6a7fc2bcdd5@redhat.com>
+From:   "Jiang Wang ." <jiang.wang@bytedance.com>
+Date:   Wed, 9 Jun 2021 20:43:01 -0700
+Message-ID: <CAP_N_Z_VDd+JUJ_Y-peOEc7FgwNGB8O3uZpVumQT_DbW62Jpjw@mail.gmail.com>
+Subject: Re: Re: [RFC v1 0/6] virtio/vsock: introduce SOCK_DGRAM support
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        jhansen@vmware.comments, cong.wang@bytedance.com,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Yongji Xie <xieyongji@bytedance.com>,
+        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Lu Wei <luwei32@huawei.com>,
+        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Josh,
+On Wed, Jun 9, 2021 at 6:51 PM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/6/10 =E4=B8=8A=E5=8D=887:24, Jiang Wang =E5=86=99=E9=81=93=
+:
+> > This patchset implements support of SOCK_DGRAM for virtio
+> > transport.
+> >
+> > Datagram sockets are connectionless and unreliable. To avoid unfair con=
+tention
+> > with stream and other sockets, add two more virtqueues and
+> > a new feature bit to indicate if those two new queues exist or not.
+> >
+> > Dgram does not use the existing credit update mechanism for
+> > stream sockets. When sending from the guest/driver, sending packets
+> > synchronously, so the sender will get an error when the virtqueue is fu=
+ll.
+> > When sending from the host/device, send packets asynchronously
+> > because the descriptor memory belongs to the corresponding QEMU
+> > process.
+>
+>
+> What's the use case for the datagram vsock?
+>
+One use case is for non critical info logging from the guest
+to the host, such as the performance data of some applications.
 
-Would you have any comment on this series?
+It can also be used to replace UDP communications between
+the guest and the host.
 
-Thank you,
+> >
+> > The virtio spec patch is here:
+> > https://www.spinics.net/lists/linux-virtualization/msg50027.html
+>
+>
+> Have a quick glance, I suggest to split mergeable rx buffer into an
+> separate patch.
 
-On Thu, 27 May 2021 15:39:03 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Sure.
 
-> Hello,
-> 
-> Here is the 7th version of the series to fix the stacktrace with kretprobe on x86.
-> 
-> The previous version is;
-> 
->  https://lore.kernel.org/bpf/162201612941.278331.5293566981784464165.stgit@devnote2/
-> 
-> This version is adding Tested-by from Andrii and do minor cleanups to solve some
-> warnings from kernel test bots.
-> 
-> Changes from v6:
-> For x86 and generic patch:
->   - Add Andrii's Tested-by. (Andrii, I think you have tested only x86, is it OK?)
-> [11/13]:
->   - Remove superfluous #include <linux/kprobes.h>.
-> [13/13]:
->   - Add a prototype for arch_kretprobe_fixup_return().
-> 
-> 
-> With this series, unwinder can unwind stack correctly from ftrace as below;
-> 
->   # cd /sys/kernel/debug/tracing
->   # echo > trace
->   # echo 1 > options/sym-offset
->   # echo r vfs_read >> kprobe_events
->   # echo r full_proxy_read >> kprobe_events
->   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
->   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
->   # echo 1 > events/kprobes/enable
->   # cat /sys/kernel/debug/kprobes/list
-> ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
-> ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
->   # echo 0 > events/kprobes/enable
->   # cat trace
-> # tracer: nop
-> #
-> # entries-in-buffer/entries-written: 3/3   #P:8
-> #
-> #                                _-----=> irqs-off
-> #                               / _----=> need-resched
-> #                              | / _---=> hardirq/softirq
-> #                              || / _--=> preempt-depth
-> #                              ||| /     delay
-> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
-> #              | |         |   ||||      |         |
->            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
->            <...>-134     [007] ...1    16.185901: <stack trace>
->  => kretprobe_trace_func+0x209/0x300
->  => kretprobe_dispatcher+0x4a/0x70
->  => __kretprobe_trampoline_handler+0xd4/0x170
->  => trampoline_handler+0x43/0x60
->  => kretprobe_trampoline+0x2a/0x50
->  => vfs_read+0x98/0x180
->  => ksys_read+0x5f/0xe0
->  => do_syscall_64+0x37/0x90
->  => entry_SYSCALL_64_after_hwframe+0x44/0xae
->            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
-> 
-> This shows the double return probes (vfs_read and full_proxy_read) on the stack
-> correctly unwinded. (vfs_read will return to ksys_read+0x5f and full_proxy_read
-> will return to vfs_read+0x98)
-> 
-> This actually changes the kretprobe behavisor a bit, now the instraction pointer in
-> the pt_regs passed to kretprobe user handler is correctly set the real return
-> address. So user handlers can get it via instruction_pointer() API.
-> 
-> You can also get this series from 
->  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v7
-> 
-> 
-> Thank you,
-> 
-> ---
-> 
-> Josh Poimboeuf (1):
->       x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
-> 
-> Masami Hiramatsu (12):
->       ia64: kprobes: Fix to pass correct trampoline address to the handler
->       kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
->       kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
->       kprobes: Add kretprobe_find_ret_addr() for searching return address
->       ARC: Add instruction_pointer_set() API
->       ia64: Add instruction_pointer_set() API
->       arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
->       kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
->       x86/kprobes: Push a fake return address at kretprobe_trampoline
->       x86/unwind: Recover kretprobe trampoline entry
->       tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
->       x86/kprobes: Fixup return address in generic trampoline handler
-> 
-> 
->  arch/arc/include/asm/ptrace.h       |    5 ++
->  arch/arc/kernel/kprobes.c           |    2 -
->  arch/arm/probes/kprobes/core.c      |    5 +-
->  arch/arm64/kernel/probes/kprobes.c  |    3 -
->  arch/csky/kernel/probes/kprobes.c   |    2 -
->  arch/ia64/include/asm/ptrace.h      |    5 ++
->  arch/ia64/kernel/kprobes.c          |   15 ++---
->  arch/mips/kernel/kprobes.c          |    3 -
->  arch/parisc/kernel/kprobes.c        |    4 +
->  arch/powerpc/kernel/kprobes.c       |   13 ----
->  arch/riscv/kernel/probes/kprobes.c  |    2 -
->  arch/s390/kernel/kprobes.c          |    2 -
->  arch/sh/kernel/kprobes.c            |    2 -
->  arch/sparc/kernel/kprobes.c         |    2 -
->  arch/x86/include/asm/kprobes.h      |    1 
->  arch/x86/include/asm/unwind.h       |   23 +++++++
->  arch/x86/include/asm/unwind_hints.h |    5 ++
->  arch/x86/kernel/kprobes/core.c      |   53 +++++++++++++++--
->  arch/x86/kernel/unwind_frame.c      |    3 -
->  arch/x86/kernel/unwind_guess.c      |    3 -
->  arch/x86/kernel/unwind_orc.c        |   18 +++++-
->  include/linux/kprobes.h             |   44 ++++++++++++--
->  kernel/kprobes.c                    |  108 +++++++++++++++++++++++++----------
->  kernel/trace/trace_output.c         |   17 +-----
->  lib/error-inject.c                  |    3 +
->  25 files changed, 238 insertions(+), 105 deletions(-)
-> 
-> --
-> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+> But I think it's time to revisit the idea of unifying the virtio-net and
+> virtio-vsock. Otherwise we're duplicating features and bugs.
 
+For mergeable rxbuf related code, I think a set of common helper
+functions can be used by both virtio-net and virtio-vsock. For other
+parts, that may not be very beneficial. I will think about more.
 
--- 
-Masami Hiramatsu
+If there is a previous email discussion about this topic, could you send me
+some links? I did a quick web search but did not find any related
+info. Thanks.
+
+> Thanks
+>
+>
+> >
+> > For those who prefer git repo, here is the link for the linux kernel=EF=
+=BC=9A
+> > https://github.com/Jiang1155/linux/tree/vsock-dgram-v1
+> >
+> > qemu patch link:
+> > https://github.com/Jiang1155/qemu/tree/vsock-dgram-v1
+> >
+> >
+> > To do:
+> > 1. use skb when receiving packets
+> > 2. support multiple transport
+> > 3. support mergeable rx buffer
+> >
+> >
+> > Jiang Wang (6):
+> >    virtio/vsock: add VIRTIO_VSOCK_F_DGRAM feature bit
+> >    virtio/vsock: add support for virtio datagram
+> >    vhost/vsock: add support for vhost dgram.
+> >    vsock_test: add tests for vsock dgram
+> >    vhost/vsock: add kconfig for vhost dgram support
+> >    virtio/vsock: add sysfs for rx buf len for dgram
+> >
+> >   drivers/vhost/Kconfig                              |   8 +
+> >   drivers/vhost/vsock.c                              | 207 ++++++++--
+> >   include/linux/virtio_vsock.h                       |   9 +
+> >   include/net/af_vsock.h                             |   1 +
+> >   .../trace/events/vsock_virtio_transport_common.h   |   5 +-
+> >   include/uapi/linux/virtio_vsock.h                  |   4 +
+> >   net/vmw_vsock/af_vsock.c                           |  12 +
+> >   net/vmw_vsock/virtio_transport.c                   | 433 ++++++++++++=
+++++++---
+> >   net/vmw_vsock/virtio_transport_common.c            | 184 ++++++++-
+> >   tools/testing/vsock/util.c                         | 105 +++++
+> >   tools/testing/vsock/util.h                         |   4 +
+> >   tools/testing/vsock/vsock_test.c                   | 195 ++++++++++
+> >   12 files changed, 1070 insertions(+), 97 deletions(-)
+> >
+>
