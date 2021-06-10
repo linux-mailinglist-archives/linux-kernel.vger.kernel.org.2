@@ -2,115 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4D43A2765
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352BE3A2771
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhFJIuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:50:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44272 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhFJIuP (ORCPT
+        id S230001AbhFJIxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 04:53:40 -0400
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:34797 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229778AbhFJIxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:50:15 -0400
-Received: from mail-wm1-f70.google.com ([209.85.128.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lrGMM-0007vX-6R
-        for linux-kernel@vger.kernel.org; Thu, 10 Jun 2021 08:48:18 +0000
-Received: by mail-wm1-f70.google.com with SMTP id 18-20020a05600c0252b029019a0ce35d36so3542821wmj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 01:48:18 -0700 (PDT)
+        Thu, 10 Jun 2021 04:53:39 -0400
+Received: by mail-vs1-f43.google.com with SMTP id q2so1458595vsr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 01:51:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0n9dDqvP+lODnMQ5qHqWheaeGBbbZs8YgGz8kfCeEwE=;
+        b=JkDxdgQpwfa+eXaZCKAJkqqIgDJlXievjNrXMtpoIJp6+zIC1G25BQDrEvuVDpGRm0
+         plRQJtPmIF08MTR5knKoO2iTXQX9rfFxoUYK1L+9CoJGzLBgyyBwx9A2KiEzcstXgM1O
+         jdozPW1VC/HCG1J4vEN2akMEAhUCrSxjOBZKfqP+rAojYe3Z9JLddsVNkYmJ2gh1CnWH
+         H2iBlL5JptW+Ca+jEt9McBKUWVHQ4zVe6tUMJOlycNhGzY+g7kxeNsy/9gds+usgQgKI
+         3ZGc7l9fLcMiQgxSYGqeVPDXXHBBD17aSUmo81BIx5vk4U1jhPWmyNdlowhYaUs0ZTQz
+         iiQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YCThDjpaFHnd9q5rWUaETkYePP9lVv23un9cpBMG23U=;
-        b=nSnJbsot9+7ngJi3bChDXtP3f4YP1pTm5QLEEljtRtRk2zBpQmgfWQbra9FzICCrkq
-         KsWxseLWZZF2G5Zd+bVviqlkSo/hG7hTW8CVV3NRwbDglqJ+Z1WUyJdS6b+nQSBkOJ7O
-         UAhVm1YHgOw9kuvNVylHEL37JZkTaZ0tBcIadbhbrSTylJyUwwWLXLrODhISUDUeInsD
-         E3qTMFvsXJF6PM+w3z3inUP6HLj9umeuzsxXaSmtlUedbBxvH+2vMnfrJaVpn3b+z4Xg
-         2cXGvIpbFFvvcpZ5tF7Tp9JCauwricHXuz9m3+Nid7hz/VPK03vAmOcqamD1d1O6kTUK
-         hYew==
-X-Gm-Message-State: AOAM533iBD1pV+yNFB3YHknAAJ2oMgPt/3uc73oe3pc/xBIwE8zfjLZs
-        RsvwIvNz7kiVerNkWMjoz36AXP6macsl/WfTvdO7NL1Hk9JsgOnr5JFUkh+X5+71iRp5Fgu0Y3a
-        Qn1IyeRx2aK/Em6zVW/lViugiepLYIbClApo0Y6JRvg==
-X-Received: by 2002:a5d:6a02:: with SMTP id m2mr4101185wru.77.1623314897978;
-        Thu, 10 Jun 2021 01:48:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxnI69OSD3AX6rHDEwFixaiCIwaEQAjUyh8avsvzpR/BP415Z0ipn+qaT3Xcoa9ZnIkST0Cww==
-X-Received: by 2002:a5d:6a02:: with SMTP id m2mr4101169wru.77.1623314897855;
-        Thu, 10 Jun 2021 01:48:17 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id d131sm8758029wmd.4.2021.06.10.01.48.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 01:48:17 -0700 (PDT)
-Subject: Re: [PATCH v23 17/18] dt-bindings: mtd: pl353-nand: Describe this
- hardware controller
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org
-Cc:     Michal Simek <monstr@monstr.eu>,
-        Naga Sureshkumar Relli <nagasure@xilinx.com>,
-        Amit Kumar Mahapatra <akumarma@xilinx.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
-        Siva Durga Prasad Paladugu <sivadur@xilinx.com>
-References: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
- <20210610082040.2075611-18-miquel.raynal@bootlin.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <ce97c460-14eb-a758-31f6-124585e733f1@canonical.com>
-Date:   Thu, 10 Jun 2021 10:48:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0n9dDqvP+lODnMQ5qHqWheaeGBbbZs8YgGz8kfCeEwE=;
+        b=pvl8pxJ7faoKzlj2cvFntCbQRL/0HmHjIVOg4vqyDQJ56S87x5z5x8EEJDL+uI9nA9
+         Xpj/AFh1rECGAvWS2wWO18iF6SkmDj/1Vv/zp9o/ejedgKQb8GyY93xBtVoPjBVb8KNj
+         H8KEOXe4S9KOcHCIrs8SRQbBUK7v1q1zLFzNPq7Pn5nd8SfC1UE40PcTJI6bTlL4a1a5
+         5NnmD0sh8pZNZAeGVhP7pAZ0Zz1DqR5GVN6h/X5D4X+M63PC13xM1mGGypoyoeZQhmVw
+         aEKyhpnEKJlLbFW7rpkUg0tcJgI/dSC88dvFEQ9BZx20ykZF3vj3pXm63iLfZ6gfHpP0
+         RhOA==
+X-Gm-Message-State: AOAM533j+X4hwdR2Shj8neXrDE5Hbny3u1v/SN90k0ULbDVAGGky/lru
+        ccz0At+jg9wtWM8r22qptWkm40n6SA61jXg/9WEozF/8ak3QH74E
+X-Google-Smtp-Source: ABdhPJzstZsJ7BuqoMSAVvMFwNv9YXy7kEZbmqM17vT0c7zJLt83fqECmPBoDLcuzViZxiKRyf+OKJntCcPl3ZSYZx0=
+X-Received: by 2002:a67:19c2:: with SMTP id 185mr521314vsz.34.1623315031276;
+ Thu, 10 Jun 2021 01:50:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210610082040.2075611-18-miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210602192758.38735-1-alcooperx@gmail.com> <20210602192758.38735-2-alcooperx@gmail.com>
+ <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
+ <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com> <CAPDyKFpEtvjS1mWC68gRBWD64dq2M1LO84UWE5uDLTzbGz1g8Q@mail.gmail.com>
+ <6acd480a-8928-89bb-0f40-d278294973a1@gmail.com>
+In-Reply-To: <6acd480a-8928-89bb-0f40-d278294973a1@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 10 Jun 2021 10:49:55 +0200
+Message-ID: <CAPDyKFqk23xg5R2k9GwQrnamwWYbMkmrbWYsHPF9VBQTAbvQHw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
+ controller on the BCM7211
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
+        Scott Branden <sbranden@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06/2021 10:20, Miquel Raynal wrote:
-> Add a yaml description of this NAND controller which is described as a
-> subnode of the SMC bus.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../bindings/mtd/arm,pl353-nand-r2p1.yaml     | 53 +++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
-> new file mode 100644
-> index 000000000000..5f126bb9b202
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
-> @@ -0,0 +1,53 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/arm,pl353-nand-r2p1.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: PL353 NAND Controller device tree bindings
-> +
-> +allOf:
-> +  - $ref: "nand-controller.yaml"
-> +
-> +maintainers:
-> +  - Miquel Raynal <miquel.raynal@bootlin.com>
-> +  - Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-> +
-> +properties:
-> +  compatible:
-> +    items:
+On Thu, 10 Jun 2021 at 01:59, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+>
+>
+> On 6/9/2021 2:22 AM, Ulf Hansson wrote:
+> > On Wed, 9 Jun 2021 at 05:07, Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >>
+> >>
+> >>
+> >> On 6/8/2021 5:40 AM, Ulf Hansson wrote:
+> >>> On Wed, 2 Jun 2021 at 21:28, Al Cooper <alcooperx@gmail.com> wrote:
+> >>>>
+> >>>> Add support for the legacy Arasan sdhci controller on the BCM7211 and
+> >>>> related SoC's. This includes adding a .shutdown callback to increase
+> >>>> the power savings during S5.
+> >>>
+> >>> Please split this into two separate changes.
+> >>>
+> >>> May I also ask about the ->shutdown() callback and in relation to S5.
+> >>> What makes the ->shutdown callback only being invoked for S5?
+> >>
+> >> It is not only called for S5 (entered via poweroff on a prompt) but also
+> >> during kexec or reboot. The poweroff path is via:
+> >>
+> >> kernel_power_off() -> kernel_shutdown_prepare() -> device_shutdown() ->
+> >> .shutdown()
+> >>
+> >> For kexec or reboot we do not really care about power savings since we
+> >> are about to load a new image anyway, however for S5/poweroff we do care
+> >> about quiescing the eMMC controller in a way that its clocks and the
+> >> eMMC device can be put into low power mode since we will stay in that
+> >> mode for seconds/hours/days until someone presses a button on their
+> >> remote (or other wake-up sources).
+> >
+> > Hmm, I am not sure I understand correctly. At shutdown we don't care
+> > about wake-up sources from the kernel point of view, instead we treat
+> > everything as if it will be powered off.
+>
+> The same .shutdown() path is used whether you kexec, reboot or poweroff,
+> but for poweroff we do care about allowing specific wake-up sources
+> configured as such to wake-up the system at a later time, like GPIOs,
+> RTC, etc.
 
-I think you can skip the "items" here and leave only "const: foo".
+That's true, but using the ->shutdown() callbacks in this way would
+certainly be a new use case.
 
-Best regards,
-Krzysztof
+Most subsystems/drivers don't care about power management in those
+callbacks, but rather just about managing a graceful shutdown.
+
+It sounds to me like you should have a look at the hibernation
+path/callbacks instead - or perhaps even the system suspend
+path/callback. Normally, that's where we care about power management.
+
+I have looped in Rafael, to allow him to share his opinion on this.
+
+>
+> >
+> > We put devices into low power state at system suspend and potentially
+> > also during some of the hibernation phases.
+> >
+> > Graceful shutdown of the eMMC is also managed by the mmc core.
+>
+> AFAICT that calls mmc_blk_shutdown() but that is pretty much it, the
+> SDHCI platform_driver still needs to do something in order to conserve
+> power including disabling host->clk, otherwise we would not have done
+> that for sdhci-brcmstb.c.
+
+That's not entirely correct. When mmc_bus_shutdown() is called for the
+struct device* that belongs to an eMMC card, two actions are taken.
+
+*) We call mmc_blk_shutdown(), to suspend the block device queue from
+receiving new I/O requests.
+**) We call host->bus_ops->shutdown(), which is an eMMC specific
+callback set to mmc_shutdown(). In this step, we do a graceful
+shutdown/power-off of the eMMC card.
+
+When it comes to controller specific resources, like clocks and PM
+domains, for example, those may very well stay turned on. Do deal with
+these, then yes, you would need to implement the ->shutdown()
+callback. But as I said above, I am not sure it's the right thing to
+do.
+
+Kind regards
+Uffe
