@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985113A36CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE4F3A36DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhFJWEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:04:16 -0400
-Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:44611 "EHLO
-        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229941AbhFJWEM (ORCPT
+        id S230332AbhFJWNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 18:13:49 -0400
+Received: from mail-ej1-f48.google.com ([209.85.218.48]:46972 "EHLO
+        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhFJWNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:04:12 -0400
-Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
-        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id C64A6102D835;
-        Fri, 11 Jun 2021 08:01:56 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lrSkN-00BIbv-6t; Fri, 11 Jun 2021 08:01:55 +1000
-Date:   Fri, 11 Jun 2021 08:01:55 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Dave Chinner <dchinner@redhat.com>,
-        Chandan Babu R <chandanrlinux@gmail.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
-        noreply@ellerman.id.au
-Subject: Re: [PATCH] xfs: Fix 64-bit division on 32-bit in
- xlog_state_switch_iclogs()
-Message-ID: <20210610220155.GQ664593@dread.disaster.area>
-References: <20210610110001.2805317-1-geert@linux-m68k.org>
+        Thu, 10 Jun 2021 18:13:45 -0400
+Received: by mail-ej1-f48.google.com with SMTP id he7so1398979ejc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IH1SveIFJ5wJ6kocsX0s8v3WiB0uqtridXReuF2KUMY=;
+        b=Qzof8FNEW2Ba5XPZGpDfZSR6rdtd6WGsu717h8Er0yjM+Qrz/xmDEYF47olKQxMaDV
+         /WuPvFIxyme1vchmGP1HhMrAqH5OzNDJ6D669STTMCTBS8PPP8U2SeAmmSAiNv3xHWUT
+         sYS5gTDilCKxc+IrHBQDdFNyeZ8axOedobMUc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IH1SveIFJ5wJ6kocsX0s8v3WiB0uqtridXReuF2KUMY=;
+        b=A3QZp3UgOzkirYvEauz+LwrgkkVeL+iC3DIrMQ9FOF4uWrnKDLKLYBmslZcR1yms61
+         hJx1FmIIK4BhYCPOJQf40O9PQdERTREGERJ7Q2x3IBU7vI8ltvyvuYh3SuPdCfnFMmqX
+         hxCNPIvruTJmTwQog/NoJ7juQdfmkemAiERl6K6an5LeWzSQ1daHKdx1eAJ6X6O4/M0H
+         su2NDIOjAKqCAa8wfTGlu0H0STe6kFTi5ox737c8XV/gDOm64GYSUjHemuVVc4Iy7UIQ
+         Hkk1ILZOtPNgGBZB3kuhVONmfbBg+Sz4ckVdUwMvHjHhweJBAZsySmyAIu8Rij1JzbO7
+         cQyg==
+X-Gm-Message-State: AOAM533/tNxTLaM2R6ck+dmFHdLnjH+cfYlyda412OwFg/CSmx1vJ8+N
+        yAEWPEai1i+Y/+tjmTWVUseuoJEA4TDEQV6vacc=
+X-Google-Smtp-Source: ABdhPJxcP+Y+74mF5ic2l1V/7ohuFsbNnz1lbGOm8VDySkRNviFRTktkXap5wlfW4XbCiAjTRQIS/g==
+X-Received: by 2002:a17:906:b212:: with SMTP id p18mr595521ejz.109.1623363034818;
+        Thu, 10 Jun 2021 15:10:34 -0700 (PDT)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
+        by smtp.gmail.com with ESMTPSA id s2sm1956381edu.89.2021.06.10.15.10.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 15:10:34 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id og14so1454829ejc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:10:34 -0700 (PDT)
+X-Received: by 2002:ac2:43b9:: with SMTP id t25mr578806lfl.253.1623362689248;
+ Thu, 10 Jun 2021 15:04:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610110001.2805317-1-geert@linux-m68k.org>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
-        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
-        a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=tBb2bbeoAAAA:8 a=20KFwNOVAAAA:8
-        a=7-415B0cAAAA:8 a=-m77PIS_ppZt2-LBGwIA:9 a=CjuIK1q_8ugA:10
-        a=Oj-tNtZlA1e06AYgeCfH:22 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <87sg1p30a1.fsf@disp2133>
+In-Reply-To: <87sg1p30a1.fsf@disp2133>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 10 Jun 2021 15:04:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+Message-ID: <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>,
+        Daniel Jacobowitz <drow@nevyn.them.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 01:00:01PM +0200, Geert Uytterhoeven wrote:
-> On 32-bit (e.g. m68k):
-> 
->     ERROR: modpost: "__udivdi3" [fs/xfs/xfs.ko] undefined!
-> 
-> Fix this by using a uint32_t intermediate, like before.
-> 
-> Reported-by: noreply@ellerman.id.au
-> Fixes: 7660a5b48fbef958 ("xfs: log stripe roundoff is a property of the log")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> Compile-tested only.
-> ---
->  fs/xfs/xfs_log.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+On Thu, Jun 10, 2021 at 1:58 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> The problem is sometimes we read all of the registers from
+> a context where they are not all saved.
 
-<sigh>
+Ouch. Yes. And this is really painful because none of the *normal*
+architectures do this, so it gets absolutely no coverage.
 
-64 bit division on 32 bit platforms is still a problem in this day
-and age?
+> I think at this point we need to say that the architectures that have a
+> do this need to be fixed to at least call do_exit and the kernel
+> function in create_io_thread with the deeper stack.
 
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Yeah. We traditionally have that requirement for fork() and friends
+too (vfork/clone), so adding exit and io_uring to do so seems like the
+most straightforward thing.
 
-Maybe we should just put "requires 64 bit kernel" on XFS these days...
+But I really wish we had some way to test and trigger this so that we
+wouldn't get caught on this before. Something in task_pt_regs() that
+catches "this doesn't actually work" and does a WARN_ON_ONCE() on the
+affected architectures?
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+               Linus
