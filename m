@@ -2,117 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E151C3A27CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265763A27D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhFJJKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:10:42 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3192 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbhFJJKl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:10:41 -0400
-Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G0yf15yzSz6N5Kh;
-        Thu, 10 Jun 2021 17:02:01 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 11:08:44 +0200
-Received: from localhost (10.52.126.112) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
- 2021 10:08:43 +0100
-Date:   Thu, 10 Jun 2021 10:08:41 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Liam Beguin <liambeguin@gmail.com>
-CC:     Jonathan Cameron <jic23@kernel.org>, <peda@axentia.se>,
-        <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 4/8] iio: inkern: return valid type on raw to
- processed conversion
-Message-ID: <20210610100841.00001f76@Huawei.com>
-In-Reply-To: <CBZF1GGLRR7Y.2S244HIQOEERN@shaak>
-References: <20210607144718.1724413-1-liambeguin@gmail.com>
-        <20210607144718.1724413-5-liambeguin@gmail.com>
-        <20210609213247.2ad09186@jic23-huawei>
-        <CBZF1GGLRR7Y.2S244HIQOEERN@shaak>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S230291AbhFJJLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:11:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:54442 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230083AbhFJJLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 05:11:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0001D6E;
+        Thu, 10 Jun 2021 02:09:04 -0700 (PDT)
+Received: from [10.57.6.115] (unknown [10.57.6.115])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBEB53F719;
+        Thu, 10 Jun 2021 02:09:03 -0700 (PDT)
+Subject: Re: [PATCH] iommu/io-pgtable-arm: Optimize partial walk flush for
+ large scatter-gather list
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210609145315.25750-1-saiprakash.ranjan@codeaurora.org>
+ <dbcd394a-4d85-316c-5dd0-033546a66132@arm.com>
+ <c600e9b2534d54082a5272b508a7985f@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <35bfd245-45e2-8083-b620-330d6dbd7bd7@arm.com>
+Date:   Thu, 10 Jun 2021 10:08:58 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.126.112]
-X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+In-Reply-To: <c600e9b2534d54082a5272b508a7985f@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Jun 2021 17:46:58 -0400
-"Liam Beguin" <liambeguin@gmail.com> wrote:
-
-> On Wed Jun 9, 2021 at 4:32 PM EDT, Jonathan Cameron wrote:
-> > On Mon, 7 Jun 2021 10:47:14 -0400
-> > Liam Beguin <liambeguin@gmail.com> wrote:
-> >  
-> > > From: Liam Beguin <lvb@xiphos.com>
-> > > 
-> > > iio_convert_raw_to_processed_unlocked() applies the offset and scale of
-> > > a channel on it's raw value.
-> > > The processed value returned is always an integer. Return IIO_VAL_INT so
-> > > that consumers can use this return value directly.
-> > > 
-> > > Signed-off-by: Liam Beguin <lvb@xiphos.com>  
-> > This looks likely to cause breakage given that return value will go to
-> > consumers directly via iio_convert_raw_to_processed()
-> >
-> > Looks like this will break lmp91000 which checks for error as
-> >
-> > if (ret)
-> >  
+On 2021-06-10 06:24, Sai Prakash Ranjan wrote:
+> Hi Robin,
 > 
-> IIO_VAL_INT seems like a better return value here since the consumer
-> gets an integer. I can look at existing consumers and patch those too.
-> Or would you rather I drop this patch?
-If we were looking at actually allowing this to return other types,
-then I'd agree with updating callers appropriately.
-
-For now we aren't doing that, so the only question is success or fail.
-So I'd drop this one.
-
-Most consumers don't care about IIO types.
-
-Jonathan
-
+> On 2021-06-10 00:14, Robin Murphy wrote:
+>> On 2021-06-09 15:53, Sai Prakash Ranjan wrote:
+>>> Currently for iommu_unmap() of large scatter-gather list with page size
+>>> elements, the majority of time is spent in flushing of partial walks in
+>>> __arm_lpae_unmap() which is a VA based TLB invalidation (TLBIVA for
+>>> arm-smmu).
+>>>
+>>> For example: to unmap a 32MB scatter-gather list with page size elements
+>>> (8192 entries), there are 16->2MB buffer unmaps based on the pgsize (2MB
+>>> for 4K granule) and each of 2MB will further result in 512 TLBIVAs 
+>>> (2MB/4K)
+>>> resulting in a total of 8192 TLBIVAs (512*16) for 16->2MB causing a huge
+>>> overhead.
+>>>
+>>> So instead use io_pgtable_tlb_flush_all() to invalidate the entire 
+>>> context
+>>> if size (pgsize) is greater than the granule size (4K, 16K, 64K). For 
+>>> this
+>>> example of 32MB scatter-gather list unmap, this results in just 16 ASID
+>>> based TLB invalidations or tlb_flush_all() callback (TLBIASID in case of
+>>> arm-smmu) as opposed to 8192 TLBIVAs thereby increasing the 
+>>> performance of
+>>> unmaps drastically.
+>>>
+>>> Condition (size > granule size) is chosen for io_pgtable_tlb_flush_all()
+>>> because for any granule with supported pgsizes, we will have at least 
+>>> 512
+>>> TLB invalidations for which tlb_flush_all() is already recommended. For
+>>> example, take 4K granule with 2MB pgsize, this will result in 512 TLBIVA
+>>> in partial walk flush.
+>>>
+>>> Test on QTI SM8150 SoC for 10 iterations of iommu_{map_sg}/unmap:
+>>> (average over 10 iterations)
+>>>
+>>> Before this optimization:
+>>>
+>>>      size        iommu_map_sg      iommu_unmap
+>>>        4K            2.067 us         1.854 us
+>>>       64K            9.598 us         8.802 us
+>>>        1M          148.890 us       130.718 us
+>>>        2M          305.864 us        67.291 us
+>>>       12M         1793.604 us       390.838 us
+>>>       16M         2386.848 us       518.187 us
+>>>       24M         3563.296 us       775.989 us
+>>>       32M         4747.171 us      1033.364 us
+>>>
+>>> After this optimization:
+>>>
+>>>      size        iommu_map_sg      iommu_unmap
+>>>        4K            1.723 us         1.765 us
+>>>       64K            9.880 us         8.869 us
+>>>        1M          155.364 us       135.223 us
+>>>        2M          303.906 us         5.385 us
+>>>       12M         1786.557 us        21.250 us
+>>>       16M         2391.890 us        27.437 us
+>>>       24M         3570.895 us        39.937 us
+>>>       32M         4755.234 us        51.797 us
+>>>
+>>> This is further reduced once the map/unmap_pages() support gets in which
+>>> will result in just 1 tlb_flush_all() as opposed to 16 tlb_flush_all().
+>>>
+>>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>>> ---
+>>>   drivers/iommu/io-pgtable-arm.c | 7 +++++--
+>>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/iommu/io-pgtable-arm.c 
+>>> b/drivers/iommu/io-pgtable-arm.c
+>>> index 87def58e79b5..c3cb9add3179 100644
+>>> --- a/drivers/iommu/io-pgtable-arm.c
+>>> +++ b/drivers/iommu/io-pgtable-arm.c
+>>> @@ -589,8 +589,11 @@ static size_t __arm_lpae_unmap(struct 
+>>> arm_lpae_io_pgtable *data,
+>>>             if (!iopte_leaf(pte, lvl, iop->fmt)) {
+>>>               /* Also flush any partial walks */
+>>> -            io_pgtable_tlb_flush_walk(iop, iova, size,
+>>> -                          ARM_LPAE_GRANULE(data));
+>>> +            if (size > ARM_LPAE_GRANULE(data))
+>>> +                io_pgtable_tlb_flush_all(iop);
+>>> +            else
+>>
+>> Erm, when will the above condition ever not be true? ;)
+>>
 > 
-> > > ---
-> > >  drivers/iio/inkern.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
-> > > index 0b5667f22b1d..00d234e87234 100644
-> > > --- a/drivers/iio/inkern.c
-> > > +++ b/drivers/iio/inkern.c
-> > > @@ -618,7 +618,7 @@ static int iio_convert_raw_to_processed_unlocked(struct iio_channel *chan,
-> > >  		 * raw value and return.
-> > >  		 */
-> > >  		*processed = raw * scale;
-> > > -		return 0;
-> > > +		return IIO_VAL_INT;
-> > >  	}
-> > >  
-> > >  	switch (scale_type) {
-> > > @@ -652,7 +652,7 @@ static int iio_convert_raw_to_processed_unlocked(struct iio_channel *chan,
-> > >  		return -EINVAL;
-> > >  	}
-> > >  
-> > > -	return 0;
-> > > +	return IIO_VAL_INT;
-> > >  }
-> > >  
-> > >  int iio_convert_raw_to_processed(struct iio_channel *chan, int raw,  
+> Ah right, silly me :)
 > 
+>> Taking a step back, though, what about the impact to drivers other
+>> than SMMUv2?
+> 
+> Other drivers would be msm_iommu.c, qcom_iommu.c which does the same
+> thing as arm-smmu-v2 (page based invalidations), then there is ipmmu-vmsa.c
+> which does tlb_flush_all() for flush walk.
+> 
+>> In particular I'm thinking of SMMUv3.2 where the whole
+>> range can be invalidated by VA in a single command anyway, so the
+>> additional penalties of TLBIALL are undesirable.
+>>
+> 
+> Right, so I am thinking we can have a new generic quirk 
+> IO_PGTABLE_QUIRK_RANGE_INV
+> to choose between range based invalidations(tlb_flush_walk) and 
+> tlb_flush_all().
+> In this case of arm-smmu-v3.2, we can tie up ARM_SMMU_FEAT_RANGE_INV 
+> with this quirk
+> and have something like below, thoughts?
+> 
+> if (iop->cfg.quirks & IO_PGTABLE_QUIRK_RANGE_INV)
+>          io_pgtable_tlb_flush_walk(iop, iova, size,
+>                                    ARM_LPAE_GRANULE(data));
+> else
+>          io_pgtable_tlb_flush_all(iop);
 
+The design here has always been that io-pgtable says *what* needs 
+invalidating, and we left it up to the drivers to decide exactly *how*. 
+Even though things have evolved a bit I don't think that has 
+fundamentally changed - tlb_flush_walk is now only used in this one 
+place (technically I suppose it could be renamed tlb_flush_table but 
+it's not worth the churn), so drivers can implement their own preferred 
+table-invalidating behaviour even more easily than choosing whether to 
+bounce a quirk through the common code or not. Consider what you've 
+already seen for the Renesas IPMMU, or SMMUv1 stage 2...
+
+I'm instinctively a little twitchy about making this a blanket 
+optimisation for SMMUv2 since I still remember the palaver with our 
+display and MMU-500 integrations, where it had to implement the dodgy 
+"prefetch" register to trigger translations before scanning out a frame 
+since it couldn't ever afford a TLB miss, thus TLBIALL when freeing an 
+old buffer would be a dangerous hammer to swing. However IIRC it also 
+had to ensure everything was mapped as 2MB blocks to guarantee fitting 
+everything in the TLBs in the first place, so I guess it would still 
+work out OK due to never realistically unmapping a whole table at once 
+anyway.
+
+Cheers,
+Robin.
