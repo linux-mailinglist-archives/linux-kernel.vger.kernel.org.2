@@ -2,211 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42183A2139
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 02:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E0B3A2147
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 02:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbhFJAUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 20:20:32 -0400
-Received: from mail-bn8nam12on2081.outbound.protection.outlook.com ([40.107.237.81]:19233
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229507AbhFJAUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 20:20:30 -0400
+        id S230017AbhFJAX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 20:23:29 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48780 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229957AbhFJAX0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 20:23:26 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15A0FgFW020551;
+        Wed, 9 Jun 2021 17:21:20 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=TpK1cdobo9o7wKCHVN2XbKA1lu3rGsD869bUAtYau8w=;
+ b=k/2l+fZ5vvfGbMqv4qfFYUW2YzWyA5kDEJDH8d5ZOzxro+78YefJKW3k48uLoh4ESc6u
+ nMkL2lrZQVgw7s69ZMUtLaDkRFb3sIYaPMFXt7MzKDhMc9KR6Z/Zngz7bpWKnEtsA//X
+ lhVEvIEi+HlajwQ0J8Jhk42I0jscqpsoKi0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3925y2vgt5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 09 Jun 2021 17:21:20 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 17:21:18 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DDc6wGRBcSe9Iin+n20QfZ4cOYfFkcv5HbBO6DevawgC/SnXp+uQqwnMyPyMu3dHAun2BC8lNfw9wiiiaZGbxr6XpPTYRNj3nkvIxKNt9hcBIMTE70Z9n7/8jPaosXWltu9oZ3BMtUT/4UB+WomWmTWgXUg6QntYyOF1YGJI1bJOMiFV5Eq8ft0YnYI61nOt0SxOK4nDI/EinVxdpT03zrBmVEXnb0N7bB+dirx5yPGTM5has86geS6HLtSK1MynJAkkDFFqyAyvgTgCSZwKpLzX8DwIX10WjRhCJmu8l/yXQ6TRLHNH4YHlaK4wImxOKgDdRK40GHseYIhr9oX0iQ==
+ b=LoXcGS2cSf6A0kDXiN/fLy1MAf+4lkeUIZMCUvwuZAikEW65hrHfwj8OfDn1SU6sUEMfOoWvOYvsMaUtX7OHq5qB7ASyu1ybMtMYUtyNRmz49dpaceSvPlWbAbefGgxpKZ+svUkKNwOVuSYvahH9/ObrkZZshj2GFS5TXXeBUd+TTDcMmlVi5our8R3YCr4dQ9SB0pcX5Fg15Mi43rBu3rxBE/4YCxjMUCvdMrG52LOw8HReQxH04gRXG8SMtGk05SBjyOTXp0t0T8oDPyQ+MthawUT9qJKU7oxyFtywDtmITgGF9MSDfsNoKg0kDf8yDOcULM/BmsN9q39SN+mjmQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oqQgHpdtvWbU7rRWihL+swNvcuWMGwKR0xDyAz4+zq0=;
- b=XsE0OZzxmhZqgVcOJ2P7F8Hrrp5gJHOd1dTtu42JweX0VXj+ebxu1d3NzdBTinOAcip4S3/Rw37ltpeAu/CTkwZWb+qUhs7UrhtBdKRORdtBZv0VAfBBHqOwokQJNXwYybPCciZS2ugahF1OUPam57KqOJCfpmGwINRRc/LLzX/LmOpTQs12PfolEwJwhLwytnYm+J4LAH2N8Jgy/K4/u0vMn+deNMGwnpIxGcFjoVQJXSrNeP4V7Muf1lfsiqrPMAAPCJ94JySKU61MWuJ3Q1QwATgq6xDO59UhUUUO3+fphyL4r6tPI4CrqS67Ck/w0ZFjYcJdMDrDyUAfwtrlyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oqQgHpdtvWbU7rRWihL+swNvcuWMGwKR0xDyAz4+zq0=;
- b=Sg3qFjcVbjVAbtzSsWU43dovnXZrWeiUn/GLc9tyxqxJLcECeGDsv5LU0ohSBXur4AxxBZdlEewwGPlIYVeV135IhCG0m3Hq+Jl8Zd6U3/YDNBCq84abRJ0Iyux4MjbZCuxTZ1HVkMTCAsZTz1gQgxJNMh5FMT7q9xFfd2AKHjZD8ZgfjD33G95rrlVbJd3ITBdqfG21gzyt8xN+63svik2hWHQCugLP/gFTz6TY+IX7+9nfBOZbhdU5VQP+P7UoKafXtWwA0sX1PsEJ39sdMDhgNJ8twTNP9Pi5fZGYOowUE1mBj3rBCY0J+TuXT09QszFfJvsxsfTHBg8cALm1kQ==
-Received: from BN6PR11CA0035.namprd11.prod.outlook.com (2603:10b6:404:4b::21)
- by DM6PR12MB4793.namprd12.prod.outlook.com (2603:10b6:5:169::17) with
+ bh=TpK1cdobo9o7wKCHVN2XbKA1lu3rGsD869bUAtYau8w=;
+ b=BfbPlHuvfr7CoH+dllkScm+W3sg9E4NQjT/3NavjfB9eyZaWbtbHKzBFR2WHPuvQRRBGDAvbgT1hrsuHvpVfWk8BurXV/aiIdkr9HFghSpvxGs/qok4gBjNbJrkoyF+xIfVSYzUuwgf43ylIenfFuIrXoWh/0Qcbd/jHFabf29r03SxH94eqPIjFWJ4YPVpsPDziIK90wdl04M9pcYT+syazWuus1+4o0ZZMvmGNHymFIupncWBUBBKyEupQwLa0ifuVkynR/oZIFH8eZQ51IIs2aGA4+9eVL44X8EIcFTsZU863IgEwC33JLmLQJL1gHPiK0thAvBnsdOYlVbgCGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3288.namprd15.prod.outlook.com (2603:10b6:a03:108::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.26; Thu, 10 Jun
- 2021 00:18:32 +0000
-Received: from BN8NAM11FT046.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:4b:cafe::ba) by BN6PR11CA0035.outlook.office365.com
- (2603:10b6:404:4b::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend
- Transport; Thu, 10 Jun 2021 00:18:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT046.mail.protection.outlook.com (10.13.177.127) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4219.21 via Frontend Transport; Thu, 10 Jun 2021 00:18:32 +0000
-Received: from nvdebian.localnet (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Jun
- 2021 00:18:28 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Peter Xu <peterx@redhat.com>
-CC:     <linux-mm@kvack.org>, <akpm@linux-foundation.org>,
-        <rcampbell@nvidia.com>, <linux-doc@vger.kernel.org>,
-        <nouveau@lists.freedesktop.org>, <hughd@google.com>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <hch@infradead.org>, <bskeggs@redhat.com>, <jgg@nvidia.com>,
-        <shakeelb@google.com>, <jhubbard@nvidia.com>,
-        <willy@infradead.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v10 07/10] mm: Device exclusive memory access
-Date:   Thu, 10 Jun 2021 10:18:25 +1000
-Message-ID: <2773835.D95cIkl9rl@nvdebian>
-In-Reply-To: <YMDmsha6GDtUf3Vs@t490s>
-References: <20210607075855.5084-1-apopple@nvidia.com> <270551728.uXnuCZxQlr@nvdebian> <YMDmsha6GDtUf3Vs@t490s>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Thu, 10 Jun
+ 2021 00:21:17 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4219.021; Thu, 10 Jun 2021
+ 00:21:17 +0000
+Date:   Wed, 9 Jun 2021 17:21:14 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>, Dennis Zhou <dennis@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>,
+        Jan Kara <jack@suse.com>
+Subject: Re: [PATCH v9 3/8] writeback, cgroup: increment isw_nr_in_flight
+ before grabbing an inode
+Message-ID: <YMFa+guFw7OFjf3X@carbon.dhcp.thefacebook.com>
+References: <20210608230225.2078447-1-guro@fb.com>
+ <20210608230225.2078447-4-guro@fb.com>
+ <YMA2XEnJrHyVLWrD@T590>
 Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
+Content-Disposition: inline
+In-Reply-To: <YMA2XEnJrHyVLWrD@T590>
+X-Originating-IP: [2620:10d:c090:400::5:4d50]
+X-ClientProxiedBy: SJ0PR03CA0129.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::14) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:4d50) by SJ0PR03CA0129.namprd03.prod.outlook.com (2603:10b6:a03:33c::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend Transport; Thu, 10 Jun 2021 00:21:16 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 95ea4e46-dad4-4300-059e-08d92ba547bd
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4793:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4793F1F6B0C06BC28FB8A60EDF359@DM6PR12MB4793.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: cdb4613c-1038-48e8-4112-08d92ba5a9d0
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3288:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB32886CDB1CC71072D916ABE1BE359@BYAPR15MB3288.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:250;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xdh2iPHY6MT0D78EhtGbzPbcjwPORjs8Cakn1CRk6BE9RPLe/lS+wI/if9YU4o+k77t1oqxLZb/CoslK+4t3K1laOKt58jKBq19q9u+NvtG/kgrzuh3gt3L0ois4Lzqb0kOmedF7OfQN++WDTwIg0LoZgSVmmmkPHf/vihf/s0UJKz3/B5z7GkHHOSwK5d2myj87si7ox+forCZ3n2DulnbK9qEfJboMaEERU5Kqju/+3qWcKKfdar4jHTUugnP9M0sbRhQYEKHkrIfDuKepbrQ0BmjJyfwvnv2ASbNfg/tUnGUKjKdADqxe5CLuytxyMFRW5dpMPCrhDt/Q8O77Etm7LQHlCkr/EcDnzuoE7cZy6FhRzOLk+h5jG4C1mS1lPkPhym/L/EkjNw67+pcoeQMWbMGi7/w/Z7e1qyP2VU/nxsRLRmKlJKTW2UQ16OC9bbjoFPoQbAcm5hGejHWsz7SKyVmL3wAhbg9p7scCQ8hU0Vn06mSoFX8GkTS8UbiWLmLAoymx68U8Y1w7h2fxxAnTWuGMegySJHcTbXJm/usErOqtXQQhUyn3xg+n/eOYp3SwpRhM2qet78tD89u1QFoWkoQRQJz8gTHg4dPRpK+4BNisayBDpWYknv/gC5yE5Fzt4IHYKDi3CZpZEjkTZlvfHSQUw95g0n8V+luRE0RAD+7CknTBC+OPKHaLWeA/
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(396003)(346002)(36840700001)(46966006)(478600001)(54906003)(70586007)(83380400001)(47076005)(6916009)(33716001)(5660300002)(86362001)(7416002)(6666004)(4326008)(316002)(8676002)(26005)(70206006)(426003)(36906005)(8936002)(82740400003)(7636003)(356005)(336012)(82310400003)(2906002)(36860700001)(9576002)(16526019)(9686003)(186003)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 00:18:32.1055
+X-Microsoft-Antispam-Message-Info: 04W54hqiGmcJak8cQqEJC06XQW2V3fcLEiO8Kcw05SWig8ZdDELBnyVvyAHYcpZm46LMUndVYBpe/8YqxnzT02HfWSq+EDD3xkXI7+tBB87o60XGCGxahR+/5eMZ5bEebeKwTatbeBECWLYhKlXvrIa7BXOwruxnyMa866oseBprDOetVE3KTv2UBHSx10qcCTwnMSVYRvvS4vjJGfKc/X5oNBORWNChrNXO1+NvLgMfuoYy7/vdFOdMiyf/jnjNNFWCYP+m7b7vKEpEqmsaNiWOByxeGqJoCELPSEpqHVZqOE2aBgYsAZ3fgqwjeNaVyg28333xD9ax0AHh9jva/pajaVlfpHyXc6EZ61SUuMrZVa+mX0whjkeyS7StPAlbPBNqA5/vriOs/jj2N5ubb9cIN+Lh1NccQWjVP5cThXQXs/7Dga/Cj7/5BFjvqq0pdU7uWOGU+6Tkjhfga7aLX9nQBTWcNt85XvOr7Voa6alUqoJPVhPd8FNUJVIUGsbtBA8xuK5KNLCxGoIMgSImTgpg+338Kd3IlJNDHISjNuM+U3AQ4x3+OWkqKs5ds8HZl/RQg7ABEZ4APDphPwhequoktOMaTnwKtKefGD5ukjoqRaZKAJGTLfPicJF2/75vPj0n5M9buQP+Io0mkAghTQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(39860400002)(136003)(366004)(8676002)(186003)(6506007)(86362001)(66556008)(9686003)(478600001)(38100700002)(8936002)(66946007)(66476007)(53546011)(316002)(6916009)(7696005)(5660300002)(4326008)(55016002)(52116002)(83380400001)(2906002)(54906003)(16526019)(7416002)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Jgwd+etnhlU2chyfMY/HWV/rvcTCaJj0Sp/6jQAWzwuR/9Ijie00cGlf3ZQ0?=
+ =?us-ascii?Q?sBA7pwlGtPG4X+qrGwPM68vePL03Cj+C1O319w0jFzx24bbDgBo9jRPs9Jaq?=
+ =?us-ascii?Q?/+vobUdelLmpTpcChQPAfukVHpRZYj+6TcA2+5TU7tiXESckcR77ZL+5TbCN?=
+ =?us-ascii?Q?Nac0jQII3nsN2VbKOmyeRMTqzzIwseA5VnaqtJE2ZRLa0HVMXmYwqVODOVfB?=
+ =?us-ascii?Q?J3WvB4cR/QmWiqGGuYKU0V6e85H3CTpP563c7Nlbbw423jSb0gJ3jxqtc+O9?=
+ =?us-ascii?Q?KBidFzXiEGLWc77KosiKjPJsBM1Wg7P7UNSToG1l2tFoRF97jf9mD3YlJPJt?=
+ =?us-ascii?Q?Jd/rhEIPVg+bi+pcLUVURGX3kk8ilQfRtxNqJ5wsMQlYUYzYzvMCdx0O1ITY?=
+ =?us-ascii?Q?UlTRdl9Z63bEuDq8RREFVarXE/oOi9Npd9EnZSKkIvOtIfUZQTkoLT5ouctT?=
+ =?us-ascii?Q?WumPvUePGGz9thwkh93vTQYSL/ktk78ZbTUcuKFBZQ3dTV6DB+AUWXxPb0u7?=
+ =?us-ascii?Q?DToZoy5vgJnONu0XrSeq6mvs6jK2e38PRMPSS1iU5wZT8wzY4KKiI5jBRrz1?=
+ =?us-ascii?Q?bdSsMr/PVzhgOcKwSRM/m8ensJRmKneYfsWqVtrlECb1IUqGQc67oqE8k7df?=
+ =?us-ascii?Q?DJtU2FHz9Fe0SVTCuzE0/nC2c6dkIEch1MmL4wYIR2Jc/r7vjrSCwGX3AOVv?=
+ =?us-ascii?Q?LV1J0lM1QI8T+bNJ7rOyX/9ZhVKaf9liD3R3d2HCYCxgEfflYpVi5rEVm2eU?=
+ =?us-ascii?Q?ayUXxpBE4BWAkeH6VbDtSFUQt7QDDTHfm7OnXjKW1Pt92G7INVZ0WBwHe8N6?=
+ =?us-ascii?Q?MDMvGtlacrEY/w65PdX4RyUHTWeM7SEb5gzyDKMVrApn3FTQe+QJWLK/ckX9?=
+ =?us-ascii?Q?WQeEHsgc8/m4mHfxoZ1YGwyMJtfNp2Zy1zKjHZVFqOZAJhXRZIC2XKuozZci?=
+ =?us-ascii?Q?k7CCy4QSKN+yuAcVpFjIZmI689OTbf0mJ+F/JdN8oqQPSs7EryerEdQ8J5SM?=
+ =?us-ascii?Q?yV2ExmkINkDXAyr1deyHJ9jpVW4W10P+LK6rJaM3CvY/R+zAYS7QD0Y369p2?=
+ =?us-ascii?Q?787tAiN5pW9jVGwkInLpQ63YN4EsFzNzMtGDCm+q2HEKHNraGZSaxMyk0GYx?=
+ =?us-ascii?Q?FIO5EyKwM7pe8jV0PuxauRLZ5dP97n7q6lbcUgNKodZugJqSBM8x8mN0nm1f?=
+ =?us-ascii?Q?Yp3ucCVEQiViuLCWo0yW+6Ympl6rYVB8Jtswt8b1/kOFcnivMQgykWKIGCzI?=
+ =?us-ascii?Q?hgLVAA5G8DjHq3ddSHo9/RKllg7ktBNI77W8EVbEC8ucpGHvPBdX5bcMrLeG?=
+ =?us-ascii?Q?rD1bkzoDiZgHncrnvCQwpd2xkctmAqdCcRPCfSJmVJcXLQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cdb4613c-1038-48e8-4112-08d92ba5a9d0
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 00:21:17.0237
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95ea4e46-dad4-4300-059e-08d92ba547bd
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT046.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4793
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0uNyR9K77Yec6XizboG4zBhepmV1P9FrWXGyLmMbVmICLM7iJtv3wRMfEGZFcFbE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3288
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: K5BhMUB4VNTlPxlc9AlMkzgA8oyP45_Z
+X-Proofpoint-ORIG-GUID: K5BhMUB4VNTlPxlc9AlMkzgA8oyP45_Z
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-09_07:2021-06-04,2021-06-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ impostorscore=0 mlxlogscore=999 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106100000
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 10 June 2021 2:05:06 AM AEST Peter Xu wrote:
-> On Wed, Jun 09, 2021 at 07:38:04PM +1000, Alistair Popple wrote:
-> > On Wednesday, 9 June 2021 4:33:52 AM AEST Peter Xu wrote:
-> > > On Mon, Jun 07, 2021 at 05:58:52PM +1000, Alistair Popple wrote:
-
-[...]
-
-> > For thp this means we could end up passing
-> > tail pages to rmap_walk(), however it doesn't actually walk them.
-> >
-> > Based on the results of previous testing I had done I assumed rmap_walk()
-> > filtered out tail pages. It does, and I didn't hit the BUG_ON above, but the
-> > filtering was not as deliberate as assumed.
-> >
-> > I've gone back and looked at what was happening in my earlier tests and the
-> > tail pages get filtered because the VMA is not getting locked in
-> > page_lock_anon_vma_read() due to failing this check:
-> >
-> >       anon_mapping = (unsigned long)READ_ONCE(page->mapping);
-> >       if ((anon_mapping & PAGE_MAPPING_FLAGS) != PAGE_MAPPING_ANON)
-> >               goto out;
-> >
-> > And now I'm not sure it makes sense to read page->mapping of a tail page. So
-> > it might be best if we explicitly ignore any tail pages returned from GUP, at
-> > least for now (a future series will improve thp support such as adding a pmd
-> > version for exclusive entries).
+On Wed, Jun 09, 2021 at 11:32:44AM +0800, Ming Lei wrote:
+> On Tue, Jun 08, 2021 at 04:02:20PM -0700, Roman Gushchin wrote:
+> > isw_nr_in_flight is used do determine whether the inode switch queue
+> > should be flushed from the umount path. Currently it's increased
+> > after grabbing an inode and even scheduling the switch work. It means
+> > the umount path can be walked past cleanup_offline_cgwb() with active
+> > inode references, which can result in a "Busy inodes after unmount."
+> > message and use-after-free issues (with inode->i_sb which gets freed).
+> > 
+> > Fix it by incrementing isw_nr_in_flight before doing anything with
+> > the inode and decrementing in the case when switching wasn't scheduled.
+> > 
+> > The problem hasn't yet been seen in the real life and was discovered
+> > by Jan Kara by looking into the code.
+> > 
+> > Suggested-by: Jan Kara <jack@suse.com>
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  fs/fs-writeback.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> > index b6fc13a4962d..4413e005c28c 100644
+> > --- a/fs/fs-writeback.c
+> > +++ b/fs/fs-writeback.c
+> > @@ -505,6 +505,8 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+> >  	if (!isw)
+> >  		return;
+> >  
+> > +	atomic_inc(&isw_nr_in_flight);
 > 
-> I feel like it's illegal to access page->mapping of tail pages; I looked at
-> what happens if we call page_anon_vma() on a tail page:
+> smp_mb() may be required for ordering the WRITE in 'atomic_inc(&isw_nr_in_flight)'
+> and the following READ on 'inode->i_sb->s_flags & SB_ACTIVE'. Otherwise,
+> cgroup_writeback_umount() may observe zero of 'isw_nr_in_flight' because of
+> re-order of the two OPs, then miss the flush_workqueue().
 > 
-> struct anon_vma *page_anon_vma(struct page *page)
-> {
->         unsigned long mapping;
-> 
->         page = compound_head(page);
->         mapping = (unsigned long)page->mapping;
->         if ((mapping & PAGE_MAPPING_FLAGS) != PAGE_MAPPING_ANON)
->                 return NULL;
->         return __page_rmapping(page);
-> }
-> 
-> It'll just take the head's mapping instead.  It makes sense since the tail page
-> shouldn't have a different value against the head page, afaiu.
+> Also this barrier should serve as pair of the one added in cgroup_writeback_umount(),
+> so maybe this patch should be merged with 2/8.
 
-Right, it makes no sense to look at ->mapping on a tail page because the field
-is used for something else. On the 1st tail page it is ->compound_nr and on the
-2nd tail page it is ->deferred_list. See the definitions of compound_nr() and
-page_deferred_list() respectively. I suppose on the rest of the pages it could
-be anything.
+Hi Ming!
 
-I think in practice it is probably ok - iuc bit 0 won't be set for compound_nr
-and certainly not for deferred_list->next (a pointer). But none of that seems
-intentional, so it would be better to be explicit and not walk the tail pages.
+Good point, I agree. How about a patch below?
 
-> It would be great if thp experts could chim in.  Before that happens, I agree
-> with you that a safer approach is to explicitly not walk a tail page for its
-> rmap (and I think the rmap of a tail page will be the same of the head
-> anyways.. since they seem to share the anon_vma as quoted).
-> >
-> > > So... for thp mappings, wondering whether we should do normal GUP (without
-> > > SPLIT), pass in always normal or head pages into rmap_walk(), but then
-> > > unconditionally split_huge_pmd_address() in page_make_device_exclusive_one()?
-> >
-> > That could work (although I think GUP will still return tail pages - see
-> > follow_trans_huge_pmd() which is called from follow_pmd_mask() in gup).
-> 
-> Agreed.
-> 
-> > The main problem is split_huge_pmd_address() unconditionally calls a mmu
-> > notifier so I would need to plumb in passing an owner everywhere which could
-> > get messy.
-> 
-> Could I ask why?  split_huge_pmd_address() will notify with CLEAR, so I'm a bit
-> confused why we need to pass over the owner.
+Thanks!
 
-Sure, it is the same reason we need to pass it for the exclusive notifier.
-Any invalidation during the make exclusive operation will break the mmu read
-side critical section forcing a retry of the operation. The owner field is what
-is used to filter out invalidations (such as the exclusive invalidation) that
-don't need to be retried.
- 
-> I thought plumb it right before your EXCLUSIVE notifier init would work?
+--
 
-I did try this just to double check and it doesn't work due to the unconditional
-notifier.
+From 282861286074c47907759d80c01419f0d0630dae Mon Sep 17 00:00:00 2001
+From: Roman Gushchin <guro@fb.com>
+Date: Wed, 9 Jun 2021 14:14:26 -0700
+Subject: [PATCH] cgroup, writeback: add smp_mb() to inode_prepare_wbs_switch()
 
-> ---8<---
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index a94d9aed9d95..360ce86f3822 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -2042,6 +2042,12 @@ static bool page_make_device_exclusive_one(struct page *page,
->         swp_entry_t entry;
->         pte_t swp_pte;
-> 
-> +       /*
-> +        * Make sure thps split as device exclusive entries only support pte
-> +        * level for now.
-> +        */
-> +       split_huge_pmd_address(vma, address, false, page);
-> +
->         mmu_notifier_range_init_owner(&range, MMU_NOTIFY_EXCLUSIVE, 0, vma,
->                                       vma->vm_mm, address, min(vma->vm_end,
->                                       address + page_size(page)), args->owner);
-> ---8<---
-> 
-> Thanks,
-> 
-> --
-> Peter Xu
-> 
+Add a memory barrier between incrementing isw_nr_in_flight
+and checking the sb's SB_ACTIVE flag and grabbing an inode in
+inode_prepare_wbs_switch(). It's required to prevent grabbing
+an inode before incrementing isw_nr_in_flight, otherwise
+0 can be obtained as isw_nr_in_flight in cgroup_writeback_umount()
+and isw_wq will not be flushed, potentially leading to a memory
+corruption.
 
+Added smp_mb() will work in pair with smp_mb() in
+cgroup_writeback_umount().
 
+Suggested-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Roman Gushchin <guro@fb.com>
+---
+ fs/fs-writeback.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 545fce68e919..6332b86ca4ed 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -513,6 +513,14 @@ static void inode_switch_wbs_work_fn(struct work_struct *work)
+ static bool inode_prepare_wbs_switch(struct inode *inode,
+ 				     struct bdi_writeback *new_wb)
+ {
++	/*
++	 * Paired with smp_mb() in cgroup_writeback_umount().
++	 * isw_nr_in_flight must be increased before checking SB_ACTIVE and
++	 * grabbing an inode, otherwise isw_nr_in_flight can be observed as 0
++	 * in cgroup_writeback_umount() and the isw_wq will be not flushed.
++	 */
++	smp_mb();
++
+ 	/* while holding I_WB_SWITCH, no one else can update the association */
+ 	spin_lock(&inode->i_lock);
+ 	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
+-- 
+2.31.1
 
