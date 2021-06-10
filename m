@@ -2,115 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF6C3A2DFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B8E3A2DFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhFJOWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:22:15 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45268 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230267AbhFJOWN (ORCPT
+        id S231380AbhFJOWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231365AbhFJOWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:22:13 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15AEENVB055864;
-        Thu, 10 Jun 2021 10:20:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=f+GezljSdiJkbrktAHsZueMoVCCsL7CmeGI26dX+WHM=;
- b=dDXd2IQPWrl0IYR+bMqeHQOz2uCKga9izEsuCWjDu81+gjvVRPAGk0Ft/fpT1rKtXuh1
- thpcpJBgg/2HgHqzTPQ4pOnaoxAMwOpy229ksySXnu/DzjYVQKpMeO3Rpa6UA96AU/nU
- rpjkXVEmrIYJrITYRQ+9e6X8NAYJopIkyaSXt7My+CssWWO2B3zeljbW+sNU4K94kHda
- cICxFaayG8prY23cHSaJxh92HXDOvucV5C68Q03YhA3iabdUyMlirhhsPevFJiculFNY
- FKWVusxiaO3jqE01HtfUZqpQbULiJr3DXyoyyQh8TgqYxpFei/XT1rEt8BIpSNBJL5Hv CA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 393man86yc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 10:20:07 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15AEFNvM062503;
-        Thu, 10 Jun 2021 10:20:06 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 393man86xf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 10:20:06 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15AEG7Ds013524;
-        Thu, 10 Jun 2021 14:20:05 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 3900w8avdm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 14:20:05 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15AEJBRe26739060
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Jun 2021 14:19:11 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4BA6D4C05A;
-        Thu, 10 Jun 2021 14:20:01 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 410024C058;
-        Thu, 10 Jun 2021 14:19:59 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.91.59])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Jun 2021 14:19:59 +0000 (GMT)
-Message-ID: <b3c1f5a0a37419fac51d570cd1c8e521f59cee14.camel@linux.ibm.com>
-Subject: Re: ima - wait for tpm load
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>
-Date:   Thu, 10 Jun 2021 10:19:58 -0400
-In-Reply-To: <20210610071633.GA30216@trex>
-References: <20210610071633.GA30216@trex>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0U3gc6pr1KzWqWTNLPRcz7M3gCbXPNHb
-X-Proofpoint-GUID: rlXwXebxr61XdBXnHvUQfvIM0CGIRX5e
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-10_07:2021-06-10,2021-06-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 spamscore=0 priorityscore=1501
- bulkscore=0 impostorscore=0 clxscore=1011 suspectscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106100091
+        Thu, 10 Jun 2021 10:22:23 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA31C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:20:27 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lrLXb-0007L1-2W; Thu, 10 Jun 2021 16:20:15 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lrLXZ-0004Df-5r; Thu, 10 Jun 2021 16:20:13 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Jon Hunter <jonathanh@nvidia.com>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v1 1/1] net: usb: asix: ax88772: manage PHY PM from MAC
+Date:   Thu, 10 Jun 2021 16:20:09 +0200
+Message-Id: <20210610142009.16162-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc'ing Jarkko]
+Take over PHY power management, otherwise PHY framework will try to
+access ASIX MDIO bus before MAC resume was completed.
 
-On Thu, 2021-06-10 at 09:16 +0200, Jorge Ramirez-Ortiz, Foundries
-wrote:
-> I am enabling IMA on a ZynqMP based platform using an SPI based TPM
-> from Infineon.
-> 
-> The SPI TPM driver is built-in but since the IMA is initalized from a
-> late_initcall, IMA never finds the TPM.
-> 
-> Is there a recomended way to work around this issue?
-> 
-> fio@uz3cg-dwg:~$ dmesg | grep tpm
-> [    3.381181] tpm_tis_spi spi1.1: 2.0 TPM (device-id 0x1B, rev-id 22)
-> [    3.423608] tpm tpm0: A TPM error (256) occurred attempting the self test
-> [    3.430406] tpm tpm0: starting up the TPM manually
-> 
-> fio@uz3cg-dwg:~$ dmesg | grep ima
-> [    3.525741] ima: No TPM chip found, activating TPM-bypass!
-> [    3.531233] ima: Allocated hash algorithm: sha1
+Fixes: e532a096be0e ("net: usb: asix: ax88772: add phylib support")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Suggested-by: Heiner Kallweit <hkallweit1@gmail.com>
+---
+ drivers/net/usb/asix_devices.c | 43 ++++++++++------------------------
+ 1 file changed, 12 insertions(+), 31 deletions(-)
 
-Lengthening the TPM timeout, executing the TPM self test have been past
-reasons for the TPM not to initialize prior to IMA.
-
-(Missing from this bug report is the kernel version.)
-
-thanks,
-
-Mimi
+diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
+index 8a477171e8f5..aec97b021a73 100644
+--- a/drivers/net/usb/asix_devices.c
++++ b/drivers/net/usb/asix_devices.c
+@@ -598,6 +598,9 @@ static void ax88772_suspend(struct usbnet *dev)
+ 	struct asix_common_private *priv = dev->driver_priv;
+ 	u16 medium;
+ 
++	if (netif_running(dev->net))
++		phy_stop(priv->phydev);
++
+ 	/* Stop MAC operation */
+ 	medium = asix_read_medium_status(dev, 1);
+ 	medium &= ~AX_MEDIUM_RE;
+@@ -605,14 +608,6 @@ static void ax88772_suspend(struct usbnet *dev)
+ 
+ 	netdev_dbg(dev->net, "ax88772_suspend: medium=0x%04x\n",
+ 		   asix_read_medium_status(dev, 1));
+-
+-	/* Preserve BMCR for restoring */
+-	priv->presvd_phy_bmcr =
+-		asix_mdio_read_nopm(dev->net, dev->mii.phy_id, MII_BMCR);
+-
+-	/* Preserve ANAR for restoring */
+-	priv->presvd_phy_advertise =
+-		asix_mdio_read_nopm(dev->net, dev->mii.phy_id, MII_ADVERTISE);
+ }
+ 
+ static int asix_suspend(struct usb_interface *intf, pm_message_t message)
+@@ -626,39 +621,22 @@ static int asix_suspend(struct usb_interface *intf, pm_message_t message)
+ 	return usbnet_suspend(intf, message);
+ }
+ 
+-static void ax88772_restore_phy(struct usbnet *dev)
+-{
+-	struct asix_common_private *priv = dev->driver_priv;
+-
+-	if (priv->presvd_phy_advertise) {
+-		/* Restore Advertisement control reg */
+-		asix_mdio_write_nopm(dev->net, dev->mii.phy_id, MII_ADVERTISE,
+-				     priv->presvd_phy_advertise);
+-
+-		/* Restore BMCR */
+-		if (priv->presvd_phy_bmcr & BMCR_ANENABLE)
+-			priv->presvd_phy_bmcr |= BMCR_ANRESTART;
+-
+-		asix_mdio_write_nopm(dev->net, dev->mii.phy_id, MII_BMCR,
+-				     priv->presvd_phy_bmcr);
+-
+-		priv->presvd_phy_advertise = 0;
+-		priv->presvd_phy_bmcr = 0;
+-	}
+-}
+-
+ static void ax88772_resume(struct usbnet *dev)
+ {
++	struct asix_common_private *priv = dev->driver_priv;
+ 	int i;
+ 
+ 	for (i = 0; i < 3; i++)
+ 		if (!ax88772_hw_reset(dev, 1))
+ 			break;
+-	ax88772_restore_phy(dev);
++
++	if (netif_running(dev->net))
++		phy_start(priv->phydev);
+ }
+ 
+ static void ax88772a_resume(struct usbnet *dev)
+ {
++	struct asix_common_private *priv = dev->driver_priv;
+ 	int i;
+ 
+ 	for (i = 0; i < 3; i++) {
+@@ -666,7 +644,8 @@ static void ax88772a_resume(struct usbnet *dev)
+ 			break;
+ 	}
+ 
+-	ax88772_restore_phy(dev);
++	if (netif_running(dev->net))
++		phy_start(priv->phydev);
+ }
+ 
+ static int asix_resume(struct usb_interface *intf)
+@@ -722,6 +701,8 @@ static int ax88772_init_phy(struct usbnet *dev)
+ 		return ret;
+ 	}
+ 
++	priv->phydev->mac_managed_pm = 1;
++
+ 	phy_attached_info(priv->phydev);
+ 
+ 	return 0;
+-- 
+2.29.2
 
