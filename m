@@ -2,86 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FAF3A3395
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2F53A339C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhFJS4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 14:56:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229935AbhFJS4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 14:56:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C399613B0;
-        Thu, 10 Jun 2021 18:54:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623351290;
-        bh=UgDy/YIt0wcpF3ZFwRGLuTVpW0LrD/15mzM1MbySke0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=UVcjrF6tcIWAwppxNnC9vo54gFl1xDCWWPPdU+nAG9e76MrBYDxIm8NtmJgvu2o8f
-         4aCh5Dd7Qbbrw6LnWSrcqXxlzga8tCfsVxodq4mX4rD3/lCRUwIm1NDKQZGfZf6aPo
-         +ySG5os3M0Pm88ldw+khux3FgUFGfEmlLjEqNOuO3V4sursnspIM9yDAkDDguLl70V
-         Y4LCnWliy4i0+mPqLglSbDhZxGIeORHh8sBJ8W1heMFyt2VX+WMVHO6Xmj6nWrzFqg
-         J/RTBZJP36ppI1QeGgWiDk5dK4NYqJ2j0LFoGvwyD1DRkzhHmuFWkwGJFr6Lrqwp0S
-         WYdvFpnL1933Q==
-Subject: Re: [PATCH 01/13] objtool: Rewrite hashtable sizing
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jpoimboe@redhat.com, jbaron@akamai.com,
-        rostedt@goodmis.org, ardb@kernel.org, linux-kernel@vger.kernel.org,
-        samitolvanen@google.com, ndesaulniers@google.com,
-        clang-built-linux@googlegroups.com
-References: <20210506193352.719596001@infradead.org>
- <20210506194157.452881700@infradead.org>
- <YMJWmzXgSipOqXAf@DESKTOP-1V8MEUQ.localdomain>
- <YMJdYdCR0vD2t2WC@hirez.programming.kicks-ass.net>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <7165b24e-0628-c273-f1e2-67a75358991f@kernel.org>
-Date:   Thu, 10 Jun 2021 11:54:50 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230500AbhFJS7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 14:59:05 -0400
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:45957 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230428AbhFJS67 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 14:58:59 -0400
+Received: by mail-lf1-f44.google.com with SMTP id a1so4781437lfr.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 11:57:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fRLZs+xpPU0awlv/sVbELYsIsLJoY4yzfXqdoTcuQ/A=;
+        b=N7QJDxWDEjuPBEPA12jyVO3YWDYYqbNGXTo1BRgU5oCecpzdx8aNTH5DOHymsmQDFW
+         bM6009FTN+jOq0LFqGFGMXMPP21MQXClexESyGzTEThu4AXhimLTKMLcGuhoQmMeObv4
+         vKQi6VaJqiVAgxlZQuMHHR7MXSYsdMaF0cbPA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fRLZs+xpPU0awlv/sVbELYsIsLJoY4yzfXqdoTcuQ/A=;
+        b=c8vKGbttk6SnHe2gh/+q7fBHzkGgBuh3yS6T3CEvFd/2REqR/OulfikVTn2IZq2+1N
+         AKE5afPh4+qEleVrcb7/zeOdy8XzXVyAdwhzDzeYoMZcro2DImi7ZVlMwsapWo8AvgVR
+         qLBCNYN+5CNwx5iT6sBj2L4AqSdshoKwApvXSr3zc6sO5ejAEYByinkL1WakMAdtxKB6
+         84M7EVoZXvWB2jwVEdyFjqgevAzgazOtcBhPMsHP/xD5bKin7s+j9MHlArsyFAaOmLxV
+         Rcaem+5ERvk8SdrdKHkIDMjhI/6vBcsKJwPTo0UWEvOh0qxBJXxIji4qdQsmAyEGF5xI
+         Nifg==
+X-Gm-Message-State: AOAM532YwxlFQtgXhZlXCz3ESa0guZZ/1nnBWM1wH5k3J6B6Irao7c0T
+        /rCxp7+CY7j4rDLzKRQJ3n8K+tgpwKGYYOH2
+X-Google-Smtp-Source: ABdhPJyhDQLXB6hj+mSA9VuhxIgw2JQ6aHENsJXQ6Wm/mm5Dcvwpycd0y+0ITbYLCDYdC6U7NU2iqA==
+X-Received: by 2002:ac2:5a11:: with SMTP id q17mr186098lfn.60.1623351361760;
+        Thu, 10 Jun 2021 11:56:01 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id l26sm436405ljg.87.2021.06.10.11.55.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 11:55:59 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id j2so4805757lfg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 11:55:58 -0700 (PDT)
+X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr149804lfs.377.1623351358045;
+ Thu, 10 Jun 2021 11:55:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YMJdYdCR0vD2t2WC@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <YH2hs6EsPTpDAqXc@mit.edu> <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
+ <YIx7R6tmcRRCl/az@mit.edu> <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
+ <YK+esqGjKaPb+b/Q@kroah.com> <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+ <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com> <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
+In-Reply-To: <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 10 Jun 2021 11:55:41 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiB6FJknDC5PMfpkg4gZrbSuC3d391VyReM4Wb0+JYXXA@mail.gmail.com>
+Message-ID: <CAHk-=wiB6FJknDC5PMfpkg4gZrbSuC3d391VyReM4Wb0+JYXXA@mail.gmail.com>
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     David Hildenbrand <david@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/2021 11:43 AM, Peter Zijlstra wrote:
-> On Thu, Jun 10, 2021 at 11:14:51AM -0700, Nathan Chancellor wrote:
-> 
->> This patch as commit 25cf0d8aa2a3 ("objtool: Rewrite hashtable sizing")
->> in -tip causes a massive compile time regression with allmodconfig +
->> ThinLTO.
-> 
-> Moo... the allyesconfig builds I used it on were much faster, but that
-> was on regular GCC vmlinux.o after linking.
-> 
->> Adding Sami because I am not sure why this patch would have much of an impact
->> in relation to LTO. https://git.kernel.org/tip/25cf0d8aa2a3 is the patch in
->> question.
->>
->> If I can provide any further information or help debug, please let me know.
->>
->> If you are interested in reproducing this locally, you will need a
->> fairly recent LLVM stack (I used the stable release/12.x branch) and to
->> cherry-pick commit 976aac5f8829 ("kcsan: Fix debugfs initcall return
->> type") to fix an unrelated build failure. My script [2] can build a
->> self-contained toolchain fairly quickly if you cannot get one from your
->> package manager. A command like below will speed up the build a bit:
-> 
-> Would something like llvm-13 from Debian be good enough?
-> 
-> $ clang-13 --version
-> Debian clang version 13.0.0-++20210418105309+a0898f0cecc7-1~exp1
-> Target: x86_64-pc-linux-gnu
-> Thread model: posix
-> InstalledDir: /usr/bin
-> 
+On Thu, Jun 10, 2021 at 11:08 AM Enrico Weigelt, metux IT consult
+<lkml@metux.net> wrote:
+>
+> And I know *a lot* of people who will never take part in this generic
+> human experiment that basically creates a new humanoid race (people
+> who generate and exhaust the toxic spike proteine, whose gene sequence
+> doesn't look quote natural). I'm one of them, as my whole family.
 
-Yes, that would work. That is what we use in our CI.
+Please keep your insane and technically incorrect anti-vax comments to yourself.
 
-Looks like Sami gave a reply that explains it.
+You don't know what you are talking about, you don't know what mRNA
+is, and you're spreading idiotic lies. Maybe you do so unwittingly,
+because of bad education. Maybe you do so because you've talked to
+"experts" or watched youtube videos by charlatans that don't know what
+they are talking about.
 
-Cheers,
-Nathan
+But dammit, regardless of where you have gotten your mis-information
+from, any Linux kernel discussion list isn't going to have your
+idiotic drivel pass uncontested from me.
+
+Vaccines have saved the lives of literally tens of millions of people.
+
+Just for your edification in case you are actually willing to be
+educated: mRNA doesn't change your genetic sequence in any way. It is
+the exact same intermediate - and temporary - kind of material that
+your cells generate internally all the time as part of your normal
+cell processes, and all that the mRNA vaccines do is to add a dose
+their own specialized sequence that then makes your normal cell
+machinery generate that spike protein so that your body learns how to
+recognize it.
+
+The half-life of mRNA is a few hours. Any injected mRNA will be all
+gone from your body in a day or two. It doesn't change anything
+long-term, except for that natural "your body now knows how to
+recognize and fight off a new foreign protein" (which then tends to
+fade over time too, but lasts a lot longer than a few days). And yes,
+while your body learns to fight off that foreign material, you may
+feel like shit for a while. That's normal, and it's your natural
+response to your cells spending resources on learning how to deal with
+the new threat.
+
+And of the vaccines, the mRNA ones are the most modern, and the most
+targeted - exactly because they do *not* need to have any of the other
+genetic material that you traditionally have in a vaccine (ie no need
+for basically the whole - if weakened - bacterial or virus genetic
+material). So the mRNA vaccines actually have *less* of that foreign
+material in them than traditional vaccines do. And  a *lot* less than
+the very real and actual COVID-19 virus that is spreading in your
+neighborhood.
+
+Honestly, anybody who has told you differently, and who has told you
+that it changes your genetic material, is simply uneducated.  You need
+to stop believing the anti-vax lies, and you need to start protecting
+your family and the people around you.  Get vaccinated.
+
+I think you are in Germany, and COVID-19 numbers are going down. It's
+spreading a lot less these days, largely because people around you
+have started getting the vaccine - about half having gotten their
+first dose around you, and about a quarter being fully vaccinated. If
+you and your family are more protected these days, it's because of all
+those other people who made the right choice, but it's worth noting
+that as you see the disease numbers go down in your neighborhood,
+those diminishing numbers are going to predominantly be about people
+like you and your family.
+
+So don't feel all warm and fuzzy about the fact that covid cases have
+dropped a lot around you. Yes, all those vaccinated people around you
+will protect you too, but if there is another wave, possibly due to a
+more transmissible version - you and your family will be at _much_
+higher risk than those vaccinated people because of your ignorance and
+mis-information.
+
+Get vaccinated. Stop believing the anti-vax lies.
+
+And if you insist on believing in the crazy conspiracy theories, at
+least SHUT THE HELL UP about it on Linux kernel discussion lists.
+
+                Linus
