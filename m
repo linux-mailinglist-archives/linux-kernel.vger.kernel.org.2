@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B023A31CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF903A31D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhFJRNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:13:48 -0400
-Received: from mail-out.m-online.net ([212.18.0.10]:38489 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbhFJRNp (ORCPT
+        id S230291AbhFJRPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:15:02 -0400
+Received: from mail-pl1-f182.google.com ([209.85.214.182]:40492 "EHLO
+        mail-pl1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229935AbhFJRPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:13:45 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4G19W10RlZz1s3pn;
-        Thu, 10 Jun 2021 19:11:41 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4G19W05vXlz1qr46;
-        Thu, 10 Jun 2021 19:11:40 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id jeCLGjcaYHdm; Thu, 10 Jun 2021 19:11:39 +0200 (CEST)
-X-Auth-Info: tTD/jRVROUkeu+CRr/dYNOPU0H88WKfaxb3K8PZ1hjL42mqxsQYgvXW0pSyHF28S
-Received: from igel.home (ppp-46-244-161-203.dynamic.mnet-online.de [46.244.161.203])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 10 Jun 2021 19:11:39 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 8C8602C36A1; Thu, 10 Jun 2021 19:11:38 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Alex Ghiti <alex@ghiti.fr>, Palmer Dabbelt <palmer@dabbelt.com>,
-        corbet@lwn.net, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
-        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
-        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v5 1/3] riscv: Move kernel mapping outside of linear
- mapping
-References: <mhng-90fff6bd-5a70-4927-98c1-a515a7448e71@palmerdabbelt-glaptop>
-        <76353fc0-f734-db47-0d0c-f0f379763aa0@ghiti.fr>
-        <a58c4616-572f-4a0b-2ce9-fd00735843be@ghiti.fr>
-        <7b647da1-b3aa-287f-7ca8-3b44c5661cb8@ghiti.fr>
-        <87fsxphdx0.fsf@igel.home> <20210610171025.GA3861769@roeck-us.net>
-X-Yow:  There's a little picture of ED MCMAHON doing BAD THINGS to JOAN RIVERS
- in a $200,000 MALIBU BEACH HOUSE!!
-Date:   Thu, 10 Jun 2021 19:11:38 +0200
-In-Reply-To: <20210610171025.GA3861769@roeck-us.net> (Guenter Roeck's message
-        of "Thu, 10 Jun 2021 10:10:25 -0700")
-Message-ID: <87bl8dhcfp.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Thu, 10 Jun 2021 13:15:01 -0400
+Received: by mail-pl1-f182.google.com with SMTP id e7so1374000plj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:12:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ea935A73j1hJeytBYHJPVhPk9COUigRxCnmA0Y3k2rg=;
+        b=VHQ7nUeAzy07BAYvlr5k8nBagN4vsG3hVhbUvT9IVe7hE52y0/XAvXAD65IXDLcRcB
+         JFZILCJC+2CUO3vbBd7rc6ub4cgwF9GVHA6PLo5igLGeuIDVeAX0oq4LOJKxEl9prws/
+         R7fMe+95piuC7Whq2rP+4o7uPKFTFSShur/k4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ea935A73j1hJeytBYHJPVhPk9COUigRxCnmA0Y3k2rg=;
+        b=TTVbfNrF64dRp1ZbYnxYaoJaWbecBbJtfdTVTRrheBY2N1gQ4NbLkRf87fv3e6wo0i
+         ZvNInppZhVGmocth5qZeUIvEZjhH2DbamZcj3dqdbY9DdQqUl82x3LmxQif6VRy29B9h
+         STFRzjKGVJIUI9MgJEM1bYO4gH03aeQL85/7qcLfOmIseFAsJmxwuPQYsES+LptOChxz
+         Y72/J27CywO5YSCDqPmACZxOsqXZtHiFCar5i2LoTAOuOXuVHuGr4Ca8UwB+DJIxVZL/
+         jCA4NlSQm5UTEIuY4juo5ZuKwUhr/B7PCVKszosdW/Mu8FLUT/BRX7AEh+rff447+vyQ
+         WNsA==
+X-Gm-Message-State: AOAM532rGajjMdqcUlFg0PAoUsZYhUqyo5YU7Drbtxzzd2Uc5CEc/KB0
+        6Bz5wMDkXdTAn6rE9FSpNJLzDg==
+X-Google-Smtp-Source: ABdhPJxkDuKqu3ecUgQW9NPEuuKsjhXFiJ9qZcsRNnYFVMBhC+vjUbf6+ke8hc9Egt7xX51BEGtlRg==
+X-Received: by 2002:a17:90a:640c:: with SMTP id g12mr4510182pjj.52.1623345108306;
+        Thu, 10 Jun 2021 10:11:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id fs24sm2976112pjb.6.2021.06.10.10.11.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 10:11:47 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nathan Chancellor <nathan@kernel.org>, x86@kernel.org,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] x86: Enable clang LTO for 32-bit as well
+Date:   Thu, 10 Jun 2021 10:11:42 -0700
+Message-Id: <162334510028.1236130.14295655998961530983.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210429232611.3966964-1-nathan@kernel.org>
+References: <20210429232611.3966964-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jun 10 2021, Guenter Roeck wrote:
+On Thu, 29 Apr 2021 16:26:12 -0700, Nathan Chancellor wrote:
+> Commit b33fff07e3e3 ("x86, build: allow LTO to be selected") enabled
+> support for LTO for x86_64 but 32-bit works fine as well.
+> 
+> I tested the following config combinations:
+> 
+> * i386_defconfig + CONFIG_LTO_CLANG_FULL=y
+> 
+> [...]
 
-> On Thu, Jun 10, 2021 at 06:39:39PM +0200, Andreas Schwab wrote:
->> On Apr 18 2021, Alex Ghiti wrote:
->> 
->> > To sum up, there are 3 patches that fix this series:
->> >
->> > https://patchwork.kernel.org/project/linux-riscv/patch/20210415110426.2238-1-alex@ghiti.fr/
->> >
->> > https://patchwork.kernel.org/project/linux-riscv/patch/20210417172159.32085-1-alex@ghiti.fr/
->> >
->> > https://patchwork.kernel.org/project/linux-riscv/patch/20210418112856.15078-1-alex@ghiti.fr/
->> 
->> Has this been fixed yet?  Booting is still broken here.
->> 
->
-> In -next ?
+Applied to for-next/clang/features, thanks!
 
-No, -rc5.
-
-Andreas.
+[1/1] x86: Enable clang LTO for 32-bit as well
+      https://git.kernel.org/kees/c/5083971eb1a8
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Kees Cook
+
