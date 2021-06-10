@@ -2,122 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5E03A3540
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEFC53A3544
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFJVAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 17:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbhFJVAK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:00:10 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B28C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 13:58:13 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4G1GXM1KY0zQjhX;
-        Thu, 10 Jun 2021 22:58:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-language:content-type
-        :content-type:mime-version:date:date:message-id:subject:subject
-        :from:from:received; s=mail20150812; t=1623358687; bh=8DNpmKTXNd
-        Sq1ifPtsy7Fm/QubhY8gRgwIKquoH/6pg=; b=YN3BRYuY/NmUeb7nclIP0L6PeP
-        dTLL1NiYZCUEd3imEkcHJZT8jAvjP0m8s///0+PBhYIIMEkJUZ4DqwFiHteDtrxe
-        mfq9bRMCGtzuTIulKqfsGb0UpbRiF2uKij2K7Y28EtzSdxhVj2w+24OZ5zbDBbCq
-        /MuK+iYVOBj5+ZB5H5IBxNwWLQaoSWkAUwH0oSsAHuTvt0rG5ev8FKR+Ugl8CY4e
-        wCTJBvGBqA9oTobsyNcSJcanBRQIKeUrG6noxwYIkWzom0HKdfk9rtpwbTKQr/zo
-        Ywuz+J6WvVnhr74G+FQX6DmI5LoZ/hKbSkpNrh4uMujswWkuDe3hv5hB1V1Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1623358689;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TC/huu5w6Vq+jWW3wxo62gGwMM9Lr1uzxzAJMRLZVQw=;
-        b=gvi7Y4glHZfDMejrTcM0P1jYMoy+BKHufvXhVAHxkWl7p5YfVdGHO/skOSM8338a3Bumk6
-        6aEMH+AVx0mOd7J2y/bm+SszxykV2O7k+tDIK4AaTMe4D8Z4ll47mWFuzjACS7JCtBDMP9
-        rIGZ8fyefTl/2QPafoBJ1qrpn+O1A9iOQz9XZABdbV4lA8kpbDYCHjifPfQpcNwaAccUq3
-        lGDIMi41Qo1Joav1HsdsNvNesCXkLmQ+jodkTwY4eCuXlGYGayiL8bZ1vp5UHN0RY4T6aJ
-        Csbfg5T3rC9WVJqmczLx/vIWPlnVUW8U2MFGHuvUzeu/eq7WcHvfScSGROCKww==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
-        with ESMTP id An5_chuNxmli; Thu, 10 Jun 2021 22:58:07 +0200 (CEST)
-From:   Tor Vic <torvic9@mailbox.org>
-Subject: [PATCH v2 1/1] x86/Makefile: make -stack-alignment conditional on LLD
- < 13.0.0
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>
-Cc:     "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Message-ID: <f2c018ee-5999-741e-58d4-e482d5246067@mailbox.org>
-Date:   Thu, 10 Jun 2021 20:58:06 +0000
+        id S230303AbhFJVB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:01:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229941AbhFJVBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 17:01:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD09D613B3;
+        Thu, 10 Jun 2021 20:59:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623358769;
+        bh=DKDbdzJErGy6T0/5CYDDzlalGvMMsJdIK0b/MVLHi1E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CFIPb1n62xzGCdnnNnKZN/mfW3tKtRnxpLrN+Fr4uN4v2RIW/xAxnAJg4rJ3MhrlW
+         9eQkPWtlrQocDgngRIczQ7iIP+CLSoIU/gCAC0tRnfyuOAJ/LgkknNqTO85SBrSrVm
+         k7+ZoOP06R7sAbD3A3MFfQxRkk+seINVv3uMXowQJU26BtdHr+wjisbcb4AHo32ER0
+         7emavZziek7CpCGSkB4SJaH9lD+aOYr9ESK2fPLt+XDlXO7vx3CI7B/BCV9dFG4RIH
+         iIV8l2UL90nYZQ+LFTepInD57IKVMnXLpZ9kCGShcj1PR99yGRGIYzZJDmaK9aQICy
+         gQbhT/D5/E/CA==
+Date:   Thu, 10 Jun 2021 13:59:28 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>, X86 ML <x86@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH 01/13] objtool: Rewrite hashtable sizing
+Message-ID: <YMJ9MGyXHi9Xa0ne@DESKTOP-1V8MEUQ.localdomain>
+References: <20210506193352.719596001@infradead.org>
+ <20210506194157.452881700@infradead.org>
+ <YMJWmzXgSipOqXAf@DESKTOP-1V8MEUQ.localdomain>
+ <CABCJKudzC-Nss_LGrpYwRqwdDxeWOf1o6Bvp3J2fBQthEB=WGg@mail.gmail.com>
+ <YMJpGLuGNsGtA5JJ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -6.23 / 15.00 / 15.00
-X-Rspamd-Queue-Id: F1254180C
-X-Rspamd-UID: 88ee33
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YMJpGLuGNsGtA5JJ@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since LLVM commit 3787ee4, the '-stack-alignment' flag has been dropped
-[1], leading to the following error message when building a LTO kernel
-with Clang-13 and LLD-13:
+On Thu, Jun 10, 2021 at 09:33:44PM +0200, Peter Zijlstra wrote:
+> On Thu, Jun 10, 2021 at 11:50:36AM -0700, Sami Tolvanen wrote:
+> > On Thu, Jun 10, 2021 at 11:14 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> > > Adding Sami because I am not sure why this patch would have much of an impact
+> > > in relation to LTO. https://git.kernel.org/tip/25cf0d8aa2a3 is the patch in
+> > > question.
+> > 
+> > It's because LLVM enables -ffunction-sections with LTO, so using .text
+> > section size to estimate the reloc hash table size isn't going to be
+> > accurate, as confirmed by objtool output with --stats:
+> > 
+> >   OBJTOOL vmlinux.o
+> > nr_sections: 141481
+> > section_bits: 17
+> > nr_symbols: 215262
+> > symbol_bits: 17
+> > max_reloc: 24850
+> > tot_reloc: 590890
+> > reloc_bits: 10
+> 
+> Bah. Would something like the *completely* untested below help with that?
 
-    ld.lld: error: -plugin-opt=-: ld.lld: Unknown command line argument
-    '-stack-alignment=8'.  Try 'ld.lld --help'
-    ld.lld: Did you mean '--stackrealign=8'?
+LGTM, thanks for the quick fix!
 
-It also appears that the '-code-model' flag is not necessary anymore
-starting with LLVM-9 [2].
+Benchmark #1: allmodconfig
+  Time (mean ± σ):     624.555 s ±  2.089 s    [User: 35109.967 s, System: 2146.215 s]
+  Range (min … max):   623.078 s … 626.032 s    2 runs
 
-Drop '-code-model' and make '-stack-alignment' conditional on LLD < 13.0.0.
+Benchmark #2: allmodconfig with ThinLTO
+  Time (mean ± σ):     769.959 s ±  1.819 s    [User: 39692.409 s, System: 2308.010 s]
+  Range (min … max):   768.673 s … 771.245 s    2 runs
 
-These flags were necessary because these flags were not encoded in the
-IR properly, so the link would restart optimizations without them. Now
-there are properly encoded in the IR, and these flags exposing
-implementation details are no longer necessary.
+Summary
+  'allmodconfig' ran
+    1.23 ± 0.01 times faster than 'allmodconfig with ThinLTO'
 
-Changes from v1:
-- based on mainline
-- provide more information about the flags (Nick)
-- use correct tags
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-Cc: stable@vger.kernel.org
-Link: https://github.com/ClangBuiltLinux/linux/issues/1377
-[1]: https://reviews.llvm.org/D103048
-[2]: https://reviews.llvm.org/D52322
-Signed-off-by: Tor Vic <torvic9@mailbox.org>
----
- arch/x86/Makefile | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 307529417021..cb5e8d39cac1 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -200,8 +200,9 @@ endif
- KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
-
- ifdef CONFIG_LTO_CLANG
--KBUILD_LDFLAGS	+= -plugin-opt=-code-model=kernel \
--		   -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
-+ifeq ($(shell test $(CONFIG_LLD_VERSION) -lt 130000; echo $$?),0)
-+KBUILD_LDFLAGS	+= -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
-+endif
- endif
-
- ifdef CONFIG_X86_NEED_RELOCS
--- 
-2.32.0
+> ---
+> diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+> index 25f6d293bc86..8676c7598728 100644
+> --- a/tools/objtool/elf.c
+> +++ b/tools/objtool/elf.c
+> @@ -288,6 +288,9 @@ static int read_sections(struct elf *elf)
+>  		}
+>  		sec->len = sec->sh.sh_size;
+>  
+> +		if (sec->sh.sh_flags & SHF_EXECINSTR)
+> +			elf->text_size += sec->len;
+> +
+>  		list_add_tail(&sec->list, &elf->sections);
+>  		elf_hash_add(section, &sec->hash, sec->idx);
+>  		elf_hash_add(section_name, &sec->name_hash, str_hash(sec->name));
+> @@ -581,13 +584,7 @@ static int read_relocs(struct elf *elf)
+>  	unsigned int symndx;
+>  	unsigned long nr_reloc, max_reloc = 0, tot_reloc = 0;
+>  
+> -	sec = find_section_by_name(elf, ".text");
+> -	if (!sec) {
+> -		WARN("no .text");
+> -		return -1;
+> -	}
+> -
+> -	if (!elf_alloc_hash(reloc, sec->len / 16))
+> +	if (!elf_alloc_hash(reloc, elf->text_size / 16))
+>  		return -1;
+>  
+>  	list_for_each_entry(sec, &elf->sections, list) {
+> diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
+> index 90082751f851..e34395047530 100644
+> --- a/tools/objtool/include/objtool/elf.h
+> +++ b/tools/objtool/include/objtool/elf.h
+> @@ -83,6 +83,7 @@ struct elf {
+>  	int fd;
+>  	bool changed;
+>  	char *name;
+> +	unsigned int text_size;
+>  	struct list_head sections;
+>  
+>  	int symbol_bits;
