@@ -2,306 +2,469 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E681C3A325F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F603A3254
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFJRnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:43:13 -0400
-Received: from mail-qk1-f173.google.com ([209.85.222.173]:35552 "EHLO
-        mail-qk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230452AbhFJRnJ (ORCPT
+        id S230281AbhFJRmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhFJRmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:43:09 -0400
-Received: by mail-qk1-f173.google.com with SMTP id j189so28228072qkf.2;
-        Thu, 10 Jun 2021 10:41:01 -0700 (PDT)
+        Thu, 10 Jun 2021 13:42:52 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F4FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:40:56 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so6971512wmq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:40:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tJIm18e4PpawbVoKgbHVrGJrxEY+IxOXNktYagljzSs=;
-        b=QdXJaINwy/NpNcHfO6r+pZO7yxptiQfjs8olLYZlteZrLcCfhawLTv/sm/ZXiyIvkq
-         MuwF31YELaSBsWzo4eZ8lx9NNQ/x3zb2BrHhhFSP4pGeg9OI4fgFeUEynH9qv0ToCqy9
-         rVVsWsv1PWppqQ/x+ajUCzRl5gMbqkxvvoaShvIwCFf9KMGAfXYLO2/veCp7+SkELo+M
-         FHBgvxzKSL/MSLvA4TVTBjLDZlfDKWUZaNaWvL/7cNRjGlmHn4op5AFbTyMxRfbvwmTn
-         Z78QRlZGA1KT9tT1JpRVRw/zk4Be8/4/PPUtbYWTJ29BGASmIr7KjZ+gtyCkAAa8Ciwr
-         aRqA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pM0nGDKYkIAlAyStdsFgVkBk0BheQrtlQf6NUZDyxZc=;
+        b=RMpsPJ8bO5z7WShZXYgZ16d5HuTl8pNS52Jfm7re37G6EP3jVZDe69rbLC6jVxkjz9
+         9loefUHesBYOQ8LNyQ4abquuwLGVHeYWtaFVkrNlFsZ2wGCNU77bykUI/M3o854L7vuD
+         5EAJ2I4mKkJq7w0lhOyX2kG5zIl1GGVW+Nk8EC5F8Mf9ibxITIlF81xwaC5i7hLzsqSv
+         OZl/XJFzUAzl2CxPopRZ7GNnG2ydzu+bpHBFPC2qEOyjwoYO5oJvDgoAcfU4myl8ATEk
+         xE6bLyfpnQKY/fWmTDFGV9N6UCGsX4Sv3Ye3lvj0ynn8AXcFzOdlhaDo7xTR42uSM79e
+         Us/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tJIm18e4PpawbVoKgbHVrGJrxEY+IxOXNktYagljzSs=;
-        b=ke9DE7DHCdtpw+fMiJJA+diss4JH3jylRdixogamSmf7CT57jVpZK8PHiaUsYIVTjf
-         s5kF30SrfziaTjXe9y4nxmqiG7AmJRH7Pb40I6hycR/fFa9j7U1c+oSU5+pqJEOufrNv
-         34i+B7vCGGvR3p+D9tf9eGjbNRFs/KrLiTfiGECHLpolymmA8ay9oNRRTEq5FpLi03dv
-         zScuneoQiA5SGbQwTuXvap0BFBfRFzQ0/3iMeDJBDnQ6tqToxviiY5H8jk13kX2JwujA
-         ndvyzCfOkXuNB2LJCxdd+Ny2kat+6SN0HDqnhaoZsw/7/CATl8uLTeqVUwWUi20HvUxP
-         Kd8Q==
-X-Gm-Message-State: AOAM533FmPWcmeAZC38lR51D+sfgzar40N4swzL6Q6j3F1s9jpsxluhS
-        pzAjmuavXwham8oUxMhD3h6jUYEumLmkyA==
-X-Google-Smtp-Source: ABdhPJzNsA8mpG1QH1phmDuCkqfzvwRflB+jk+YhkTbnLsGobBVg/k69jshudORFoFO6BYHq2/Ktyg==
-X-Received: by 2002:a37:a505:: with SMTP id o5mr641495qke.355.1623346801224;
-        Thu, 10 Jun 2021 10:40:01 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:be7a])
-        by smtp.gmail.com with ESMTPSA id w2sm2567401qkf.88.2021.06.10.10.40.00
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pM0nGDKYkIAlAyStdsFgVkBk0BheQrtlQf6NUZDyxZc=;
+        b=n337mgkjgCUdSnb4EZe+ub++jo/PhU9WHtnJPwrJzC+Noc6WywP11jUVtEKuKeRph0
+         I1vLSbb7jAOI1qqnjvn/TTfwH97gSXSFtnsQe4ZtvT+f2xX8ehr1EwVeZwTEmwJIbecp
+         9TqMlnFw87cA7cQ8JuYmPmzsAVocLDUMF+kXI9tXXzIf3NW4j7hprA9uCuC0uOx+7dcj
+         RpyDm2FwVyysCeo0z+0SnPdNweFlo3lc7/O75yPLmZ1vcBRTKuzkIPXpD444C4gR2QNa
+         7STpIOHGP2ItNdmNF749KBXqaC35Pm1whJg1lKaqpvNncvLf1wsP/s4JXXgLpdOPjkA5
+         EKUw==
+X-Gm-Message-State: AOAM531pSal0uVIvz4wUGoaPOFdCW+nussKDgPsxIeTwz6Sjy1cCDDBi
+        GGraqW0LSleew0CLG8mQy0xeJQ==
+X-Google-Smtp-Source: ABdhPJxFKaPJ/cNP/K6C3Vrm4B+BeTN6H5aOuYQJCi6l9RyqVt+7t5JA+gie06VrmwhuEAuEbml1Fw==
+X-Received: by 2002:a1c:f705:: with SMTP id v5mr16323711wmh.69.1623346854910;
+        Thu, 10 Jun 2021 10:40:54 -0700 (PDT)
+Received: from myrica (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
+        by smtp.gmail.com with ESMTPSA id o18sm9747450wmq.23.2021.06.10.10.40.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 10:40:00 -0700 (PDT)
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-block@vger.kernel.org (open list:BLOCK LAYER),
-        linux-kernel@vger.kernel.org (open list),
-        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
-        linux-mm@kvack.org (open list:MEMORY MANAGEMENT),
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 3/3] loop: Charge i/o to mem and blk cg
-Date:   Thu, 10 Jun 2021 10:39:44 -0700
-Message-Id: <20210610173944.1203706-4-schatzberg.dan@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
-References: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
+        Thu, 10 Jun 2021 10:40:54 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 19:40:35 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-gpio@vger.kernel.org, Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, stratos-dev@op-lists.linaro.org
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Message-ID: <YMJOk6RWuztRNBXO@myrica>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <01000179f5da7763-2ea817c6-e176-423a-952e-de02443f71e2-000000@email.amazonses.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01000179f5da7763-2ea817c6-e176-423a-952e-de02443f71e2-000000@email.amazonses.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current code only associates with the existing blkcg when aio is
-used to access the backing file. This patch covers all types of i/o to
-the backing file and also associates the memcg so if the backing file is
-on tmpfs, memory is charged appropriately.
+Hi,
 
-This patch also exports cgroup_get_e_css and int_active_memcg so it
-can be used by the loop module.
+Not being very familiar with GPIO, I just have a few general comments and
+one on the config space layout
 
-Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Jens Axboe <axboe@kernel.dk>
----
- drivers/block/loop.c       | 61 +++++++++++++++++++++++++-------------
- drivers/block/loop.h       |  3 +-
- include/linux/memcontrol.h |  6 ++++
- kernel/cgroup/cgroup.c     |  1 +
- mm/memcontrol.c            |  1 +
- 5 files changed, 51 insertions(+), 21 deletions(-)
+On Thu, Jun 10, 2021 at 12:16:46PM +0000, Viresh Kumar via Stratos-dev wrote:
+> +static int virtio_gpio_req(struct virtio_gpio *vgpio, u16 type, u16 gpio,
+> +			   u8 txdata, u8 *rxdata)
+> +{
+> +	struct virtio_gpio_response *res = &vgpio->cres;
+> +	struct virtio_gpio_request *req = &vgpio->creq;
+> +	struct scatterlist *sgs[2], req_sg, res_sg;
+> +	struct device *dev = &vgpio->vdev->dev;
+> +	unsigned long time_left;
+> +	unsigned int len;
+> +	int ret;
+> +
+> +	req->type = cpu_to_le16(type);
+> +	req->gpio = cpu_to_le16(gpio);
+> +	req->data = txdata;
+> +
+> +	sg_init_one(&req_sg, req, sizeof(*req));
+> +	sg_init_one(&res_sg, res, sizeof(*res));
+> +	sgs[0] = &req_sg;
+> +	sgs[1] = &res_sg;
+> +
+> +	mutex_lock(&vgpio->lock);
+> +	ret = virtqueue_add_sgs(vgpio->command_vq, sgs, 1, 1, res, GFP_KERNEL);
+> +	if (ret) {
+> +		dev_err(dev, "failed to add request to vq\n");
+> +		goto out;
+> +	}
+> +
+> +	reinit_completion(&vgpio->completion);
+> +	virtqueue_kick(vgpio->command_vq);
+> +
+> +	time_left = wait_for_completion_timeout(&vgpio->completion, HZ / 10);
+> +	if (!time_left) {
+> +		dev_err(dev, "virtio GPIO backend timeout\n");
+> +		return -ETIMEDOUT;
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index fc4a0186d381..5198d8ad181c 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -78,6 +78,7 @@
- #include <linux/uio.h>
- #include <linux/ioprio.h>
- #include <linux/blk-cgroup.h>
-+#include <linux/sched/mm.h>
- 
- #include "loop.h"
- 
-@@ -516,8 +517,6 @@ static void lo_rw_aio_complete(struct kiocb *iocb, long ret, long ret2)
- {
- 	struct loop_cmd *cmd = container_of(iocb, struct loop_cmd, iocb);
- 
--	if (cmd->css)
--		css_put(cmd->css);
- 	cmd->ret = ret;
- 	lo_rw_aio_do_completion(cmd);
- }
-@@ -578,8 +577,6 @@ static int lo_rw_aio(struct loop_device *lo, struct loop_cmd *cmd,
- 	cmd->iocb.ki_complete = lo_rw_aio_complete;
- 	cmd->iocb.ki_flags = IOCB_DIRECT;
- 	cmd->iocb.ki_ioprio = IOPRIO_PRIO_VALUE(IOPRIO_CLASS_NONE, 0);
--	if (cmd->css)
--		kthread_associate_blkcg(cmd->css);
- 
- 	if (rw == WRITE)
- 		ret = call_write_iter(file, &cmd->iocb, &iter);
-@@ -587,7 +584,6 @@ static int lo_rw_aio(struct loop_device *lo, struct loop_cmd *cmd,
- 		ret = call_read_iter(file, &cmd->iocb, &iter);
- 
- 	lo_rw_aio_do_completion(cmd);
--	kthread_associate_blkcg(NULL);
- 
- 	if (ret != -EIOCBQUEUED)
- 		cmd->iocb.ki_complete(&cmd->iocb, ret, 0);
-@@ -928,7 +924,7 @@ struct loop_worker {
- 	struct list_head cmd_list;
- 	struct list_head idle_list;
- 	struct loop_device *lo;
--	struct cgroup_subsys_state *css;
-+	struct cgroup_subsys_state *blkcg_css;
- 	unsigned long last_ran_at;
- };
- 
-@@ -957,7 +953,7 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
- 
- 	spin_lock_irq(&lo->lo_work_lock);
- 
--	if (queue_on_root_worker(cmd->css))
-+	if (queue_on_root_worker(cmd->blkcg_css))
- 		goto queue_work;
- 
- 	node = &lo->worker_tree.rb_node;
-@@ -965,10 +961,10 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
- 	while (*node) {
- 		parent = *node;
- 		cur_worker = container_of(*node, struct loop_worker, rb_node);
--		if (cur_worker->css == cmd->css) {
-+		if (cur_worker->blkcg_css == cmd->blkcg_css) {
- 			worker = cur_worker;
- 			break;
--		} else if ((long)cur_worker->css < (long)cmd->css) {
-+		} else if ((long)cur_worker->blkcg_css < (long)cmd->blkcg_css) {
- 			node = &(*node)->rb_left;
- 		} else {
- 			node = &(*node)->rb_right;
-@@ -980,13 +976,18 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
- 	worker = kzalloc(sizeof(struct loop_worker), GFP_NOWAIT | __GFP_NOWARN);
- 	/*
- 	 * In the event we cannot allocate a worker, just queue on the
--	 * rootcg worker
-+	 * rootcg worker and issue the I/O as the rootcg
- 	 */
--	if (!worker)
-+	if (!worker) {
-+		cmd->blkcg_css = NULL;
-+		if (cmd->memcg_css)
-+			css_put(cmd->memcg_css);
-+		cmd->memcg_css = NULL;
- 		goto queue_work;
-+	}
- 
--	worker->css = cmd->css;
--	css_get(worker->css);
-+	worker->blkcg_css = cmd->blkcg_css;
-+	css_get(worker->blkcg_css);
- 	INIT_WORK(&worker->work, loop_workfn);
- 	INIT_LIST_HEAD(&worker->cmd_list);
- 	INIT_LIST_HEAD(&worker->idle_list);
-@@ -1306,7 +1307,7 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
- 				idle_list) {
- 		list_del(&worker->idle_list);
- 		rb_erase(&worker->rb_node, &lo->worker_tree);
--		css_put(worker->css);
-+		css_put(worker->blkcg_css);
- 		kfree(worker);
- 	}
- 	spin_unlock_irq(&lo->lo_work_lock);
-@@ -2111,13 +2112,18 @@ static blk_status_t loop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	}
- 
- 	/* always use the first bio's css */
-+	cmd->blkcg_css = NULL;
-+	cmd->memcg_css = NULL;
- #ifdef CONFIG_BLK_CGROUP
--	if (cmd->use_aio && rq->bio && rq->bio->bi_blkg) {
--		cmd->css = &bio_blkcg(rq->bio)->css;
--		css_get(cmd->css);
--	} else
-+	if (rq->bio && rq->bio->bi_blkg) {
-+		cmd->blkcg_css = &bio_blkcg(rq->bio)->css;
-+#ifdef CONFIG_MEMCG
-+		cmd->memcg_css =
-+			cgroup_get_e_css(cmd->blkcg_css->cgroup,
-+					&memory_cgrp_subsys);
-+#endif
-+	}
- #endif
--		cmd->css = NULL;
- 	loop_queue_work(lo, cmd);
- 
- 	return BLK_STS_OK;
-@@ -2129,13 +2135,28 @@ static void loop_handle_cmd(struct loop_cmd *cmd)
- 	const bool write = op_is_write(req_op(rq));
- 	struct loop_device *lo = rq->q->queuedata;
- 	int ret = 0;
-+	struct mem_cgroup *old_memcg = NULL;
- 
- 	if (write && (lo->lo_flags & LO_FLAGS_READ_ONLY)) {
- 		ret = -EIO;
- 		goto failed;
- 	}
- 
-+	if (cmd->blkcg_css)
-+		kthread_associate_blkcg(cmd->blkcg_css);
-+	if (cmd->memcg_css)
-+		old_memcg = set_active_memcg(
-+			mem_cgroup_from_css(cmd->memcg_css));
-+
- 	ret = do_req_filebacked(lo, rq);
-+
-+	if (cmd->blkcg_css)
-+		kthread_associate_blkcg(NULL);
-+
-+	if (cmd->memcg_css) {
-+		set_active_memcg(old_memcg);
-+		css_put(cmd->memcg_css);
-+	}
-  failed:
- 	/* complete non-aio request */
- 	if (!cmd->use_aio || ret) {
-@@ -2214,7 +2235,7 @@ static void loop_free_idle_workers(struct timer_list *timer)
- 			break;
- 		list_del(&worker->idle_list);
- 		rb_erase(&worker->rb_node, &lo->worker_tree);
--		css_put(worker->css);
-+		css_put(worker->blkcg_css);
- 		kfree(worker);
- 	}
- 	if (!list_empty(&lo->idle_worker_list))
-diff --git a/drivers/block/loop.h b/drivers/block/loop.h
-index 9289c1cd6374..cd24a81e00e6 100644
---- a/drivers/block/loop.h
-+++ b/drivers/block/loop.h
-@@ -76,7 +76,8 @@ struct loop_cmd {
- 	long ret;
- 	struct kiocb iocb;
- 	struct bio_vec *bvec;
--	struct cgroup_subsys_state *css;
-+	struct cgroup_subsys_state *blkcg_css;
-+	struct cgroup_subsys_state *memcg_css;
- };
- 
- /* Support for loadable transfer modules */
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index bd0644d3a6df..360e61de53d7 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1230,6 +1230,12 @@ static inline struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
- 	return NULL;
- }
- 
-+static inline
-+struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css)
-+{
-+	return NULL;
-+}
-+
- static inline void mem_cgroup_put(struct mem_cgroup *memcg)
- {
- }
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 74e3cc801615..90329cfff48d 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -577,6 +577,7 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct cgroup *cgrp,
- 	rcu_read_unlock();
- 	return css;
- }
-+EXPORT_SYMBOL_GPL(cgroup_get_e_css);
- 
- static void cgroup_get_live(struct cgroup *cgrp)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 919736ee656b..ae1f5d0cb581 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -78,6 +78,7 @@ struct mem_cgroup *root_mem_cgroup __read_mostly;
- 
- /* Active memory cgroup to use from an interrupt context */
- DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
-+EXPORT_PER_CPU_SYMBOL_GPL(int_active_memcg);
- 
- /* Socket memory accounting disabled? */
- static bool cgroup_memory_nosocket __ro_after_init;
--- 
-2.30.2
+mutex is still held
 
+> +	}
+> +
+> +	WARN_ON(res != virtqueue_get_buf(vgpio->command_vq, &len));
+> +	if (unlikely(res->status != VIRTIO_GPIO_STATUS_OK)) {
+> +		dev_err(dev, "virtio GPIO request failed: %d\n", gpio);
+> +		return -EINVAL;
+
+and here
+
+> +	}
+> +
+> +	if (rxdata)
+> +		*rxdata = res->data;
+> +
+> +out:
+> +	mutex_unlock(&vgpio->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int virtio_gpio_request(struct gpio_chip *gc, unsigned int gpio)
+> +{
+> +	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
+> +
+> +	return virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_ACTIVATE, gpio, 0, NULL);
+> +}
+> +
+> +static void virtio_gpio_free(struct gpio_chip *gc, unsigned int gpio)
+> +{
+> +	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
+> +
+> +	virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_DEACTIVATE, gpio, 0, NULL);
+> +}
+> +
+> +static int virtio_gpio_get_direction(struct gpio_chip *gc, unsigned int gpio)
+> +{
+> +	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
+> +	u8 direction;
+> +	int ret;
+> +
+> +	ret = virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_GET_DIRECTION, gpio, 0,
+> +			      &direction);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return direction;
+> +}
+> +
+> +static int virtio_gpio_direction_input(struct gpio_chip *gc, unsigned int gpio)
+> +{
+> +	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
+> +
+> +	return virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_DIRECTION_IN, gpio, 0,
+> +			       NULL);
+> +}
+> +
+> +static int virtio_gpio_direction_output(struct gpio_chip *gc, unsigned int gpio,
+> +					int value)
+> +{
+> +	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
+> +
+> +	return virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_DIRECTION_OUT, gpio, (u8)
+
+(that dangling cast looks a bit odd to me)
+
+> +			       value, NULL);
+> +}
+> +
+> +static int virtio_gpio_get(struct gpio_chip *gc, unsigned int gpio)
+> +{
+> +	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
+> +	u8 value;
+> +	int ret;
+> +
+> +	ret = virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_GET_VALUE, gpio, 0, &value);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return value;
+> +}
+> +
+> +static void virtio_gpio_set(struct gpio_chip *gc, unsigned int gpio, int value)
+> +{
+> +	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
+> +
+> +	virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_SET_VALUE, gpio, value, NULL);
+> +}
+> +
+> +static void virtio_gpio_command(struct virtqueue *vq)
+> +{
+> +	struct virtio_gpio *vgpio = vq->vdev->priv;
+> +
+> +	complete(&vgpio->completion);
+> +}
+> +
+> +static int virtio_gpio_alloc_vqs(struct virtio_device *vdev)
+> +{
+> +	struct virtio_gpio *vgpio = vdev->priv;
+> +	const char * const names[] = { "command" };
+> +	vq_callback_t *cbs[] = {
+> +		virtio_gpio_command,
+> +	};
+> +	struct virtqueue *vqs[1] = {NULL};
+> +	int ret;
+> +
+> +	ret = virtio_find_vqs(vdev, 1, vqs, cbs, names, NULL);
+> +	if (ret) {
+> +		dev_err(&vdev->dev, "failed to allocate vqs: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	vgpio->command_vq = vqs[0];
+> +
+> +	/* Mark the device ready to perform operations from within probe() */
+> +	virtio_device_ready(vgpio->vdev);
+
+May fit better in the parent function
+
+> +	return 0;
+> +}
+> +
+> +static void virtio_gpio_free_vqs(struct virtio_device *vdev)
+> +{
+> +	vdev->config->reset(vdev);
+> +	vdev->config->del_vqs(vdev);
+> +}
+> +
+> +static const char **parse_gpio_names(struct virtio_device *vdev,
+> +			       struct virtio_gpio_config *config)
+> +{
+> +	struct device *dev = &vdev->dev;
+> +	char *str = config->gpio_names;
+> +	const char **names;
+> +	int i, len;
+> +
+> +	if (!config->gpio_names_size)
+> +		return NULL;
+> +
+> +	names = devm_kcalloc(dev, config->ngpio, sizeof(names), GFP_KERNEL);
+> +	if (!names)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	/* NULL terminate the string instead of checking it */
+> +	config->gpio_names[config->gpio_names_size - 1] = '\0';
+> +
+> +	for (i = 0; i < config->ngpio; i++) {
+> +		/*
+> +		 * We have already marked the last byte with '\0'
+> +		 * earlier, this shall be enough here.
+> +		 */
+> +		if (str == config->gpio_names + config->gpio_names_size) {
+> +			dev_err(dev, "Invalid gpio_names\n");
+> +			return ERR_PTR(-EINVAL);
+> +		}
+> +
+> +		len = strlen(str);
+> +		if (!len) {
+> +			dev_err(dev, "Missing GPIO name: %d\n", i);
+> +			return ERR_PTR(-EINVAL);
+> +		}
+> +
+> +		names[i] = str;
+> +		str += len + 1;
+> +	}
+> +
+> +	return names;
+> +}
+> +
+> +static int virtio_gpio_probe(struct virtio_device *vdev)
+> +{
+> +	struct virtio_gpio_config *config;
+> +	struct device *dev = &vdev->dev;
+> +	struct virtio_gpio *vgpio;
+> +	u32 size;
+> +	int ret;
+> +
+> +	virtio_cread(vdev, struct virtio_gpio_config, gpio_names_size, &size);
+> +	size = cpu_to_le32(size);
+
+le32_to_cpu()? 
+> +
+> +	vgpio = devm_kzalloc(dev, sizeof(*vgpio) + size, GFP_KERNEL);
+> +	if (!vgpio)
+> +		return -ENOMEM;
+> +
+> +	config = &vgpio->config;
+> +
+> +	/* Read configuration */
+> +	virtio_cread_bytes(vdev, 0, config, sizeof(*config) + size);
+> +
+> +	/* NULL terminate the string instead of checking it */
+> +	config->name[sizeof(config->name) - 1] = '\0';
+> +	config->ngpio = cpu_to_le16(config->ngpio);
+> +	config->gpio_names_size = cpu_to_le32(config->gpio_names_size);
+
+leXX_to_cpu()?
+
+> +
+> +	if (!config->ngpio) {
+> +		dev_err(dev, "Number of GPIOs can't be zero\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	vgpio->vdev			= vdev;
+> +	vgpio->gc.request		= virtio_gpio_request;
+> +	vgpio->gc.free			= virtio_gpio_free;
+> +	vgpio->gc.get_direction		= virtio_gpio_get_direction;
+> +	vgpio->gc.direction_input	= virtio_gpio_direction_input;
+> +	vgpio->gc.direction_output	= virtio_gpio_direction_output;
+> +	vgpio->gc.get			= virtio_gpio_get;
+> +	vgpio->gc.set			= virtio_gpio_set;
+> +	vgpio->gc.ngpio			= config->ngpio;
+> +	vgpio->gc.base			= -1; /* Allocate base dynamically */
+> +	vgpio->gc.label			= config->name[0] ?
+> +					  config->name : dev_name(dev);
+> +	vgpio->gc.parent		= dev;
+> +	vgpio->gc.owner			= THIS_MODULE;
+> +	vgpio->gc.can_sleep		= true;
+> +	vgpio->gc.names			= parse_gpio_names(vdev, config);
+> +	if (IS_ERR(vgpio->gc.names))
+> +		return PTR_ERR(vgpio->gc.names);
+> +
+> +	vdev->priv = vgpio;
+> +	mutex_init(&vgpio->lock);
+> +	init_completion(&vgpio->completion);
+> +
+> +	ret = virtio_gpio_alloc_vqs(vdev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = gpiochip_add(&vgpio->gc);
+> +	if (ret) {
+> +		virtio_gpio_free_vqs(vdev);
+> +		dev_err(dev, "Failed to add virtio-gpio controller\n");
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static void virtio_gpio_remove(struct virtio_device *vdev)
+> +{
+> +	struct virtio_gpio *vgpio = vdev->priv;
+> +
+> +	gpiochip_remove(&vgpio->gc);
+> +	virtio_gpio_free_vqs(vdev);
+> +}
+> +
+> +static const struct virtio_device_id id_table[] = {
+> +	{ VIRTIO_ID_GPIO, VIRTIO_DEV_ANY_ID },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(virtio, id_table);
+> +
+> +static struct virtio_driver virtio_gpio_driver = {
+> +	.id_table		= id_table,
+> +	.probe			= virtio_gpio_probe,
+> +	.remove			= virtio_gpio_remove,
+> +	.driver			= {
+> +		.name		= KBUILD_MODNAME,
+> +		.owner		= THIS_MODULE,
+> +	},
+> +};
+> +module_virtio_driver(virtio_gpio_driver);
+> +
+> +MODULE_AUTHOR("Enrico Weigelt, metux IT consult <info@metux.net>");
+> +MODULE_AUTHOR("Viresh Kumar <viresh.kumar@linaro.org>");
+> +MODULE_DESCRIPTION("VirtIO GPIO driver");
+> +MODULE_LICENSE("GPL");
+> diff --git a/include/uapi/linux/virtio_gpio.h b/include/uapi/linux/virtio_gpio.h
+> new file mode 100644
+> index 000000000000..e805e33a79cb
+> --- /dev/null
+> +++ b/include/uapi/linux/virtio_gpio.h
+> @@ -0,0 +1,41 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +
+> +#ifndef _LINUX_VIRTIO_GPIO_H
+> +#define _LINUX_VIRTIO_GPIO_H
+> +
+> +#include <linux/types.h>
+> +
+> +/* Virtio GPIO request types */
+> +#define VIRTIO_GPIO_REQ_ACTIVATE		0x01
+> +#define VIRTIO_GPIO_REQ_DEACTIVATE		0x02
+> +#define VIRTIO_GPIO_REQ_GET_DIRECTION		0x03
+> +#define VIRTIO_GPIO_REQ_DIRECTION_IN		0x04
+> +#define VIRTIO_GPIO_REQ_DIRECTION_OUT		0x05
+> +#define VIRTIO_GPIO_REQ_GET_VALUE		0x06
+> +#define VIRTIO_GPIO_REQ_SET_VALUE		0x07
+> +
+> +/* Possible values of the status field */
+> +#define VIRTIO_GPIO_STATUS_OK			0x0
+> +#define VIRTIO_GPIO_STATUS_ERR			0x1
+> +
+> +struct virtio_gpio_config {
+> +	char name[32];
+> +	__u16 ngpio;
+> +	__u16 padding;
+> +	__u32 gpio_names_size;
+> +	char gpio_names[0];
+
+A variable-size array here will make it very difficult to append new
+fields to virtio_gpio_config, when adding new features to the device. (New
+fields cannot be inserted in between, since older drivers will expect
+existing fields at a specific offset.)
+
+You could replace it with a reference to the string array, for example
+"__u16 gpio_names_offset" declaring the offset between the beginning of
+device-specific config and the string array. The 'name' field could also
+be indirect to avoid setting a fixed 32-char size, but that's not as
+important.
+
+> +} __packed;
+
+No need for __packed, because the fields are naturally aligned (as
+required by the virtio spec)
+
+Thanks,
+Jean
+
+> +
+> +/* Virtio GPIO Request / Response */
+> +struct virtio_gpio_request {
+> +	__u16 type;
+> +	__u16 gpio;
+> +	__u8 data;
+> +};
+> +
+> +struct virtio_gpio_response {
+> +	__u8 status;
+> +	__u8 data;
+> +};
+> +
+> +#endif /* _LINUX_VIRTIO_GPIO_H */
+> diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
+> index b89391dff6c9..0c24e8ae2499 100644
+> --- a/include/uapi/linux/virtio_ids.h
+> +++ b/include/uapi/linux/virtio_ids.h
+> @@ -55,5 +55,6 @@
+>  #define VIRTIO_ID_PMEM			27 /* virtio pmem */
+>  #define VIRTIO_ID_MAC80211_HWSIM	29 /* virtio mac80211-hwsim */
+>  #define VIRTIO_ID_I2C_ADAPTER		34 /* virtio i2c adapter */
+> +#define VIRTIO_ID_GPIO			41 /* virtio GPIO */
+>  
+>  #endif /* _LINUX_VIRTIO_IDS_H */
+> -- 
+> 2.31.1.272.g89b43f80a514
+> 
+> -- 
+> Stratos-dev mailing list
+> Stratos-dev@op-lists.linaro.org
+> https://op-lists.linaro.org/mailman/listinfo/stratos-dev
