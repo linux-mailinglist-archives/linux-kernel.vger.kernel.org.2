@@ -2,82 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF273A378B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246E43A3798
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhFJXDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 19:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbhFJXDr (ORCPT
+        id S231229AbhFJXF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 19:05:59 -0400
+Received: from mail-qk1-f181.google.com ([209.85.222.181]:34586 "EHLO
+        mail-qk1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhFJXF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 19:03:47 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A20C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 16:01:38 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id go18-20020a17090b03d2b029016e4ae973f7so3718604pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 16:01:38 -0700 (PDT)
+        Thu, 10 Jun 2021 19:05:58 -0400
+Received: by mail-qk1-f181.google.com with SMTP id k11so27523593qkk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 16:03:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=H5c4wPtxJ4irmL/5t82UsuY3LS4vd3rmssVb2xf2eHY=;
-        b=MeNKHjv+cbmFb/892w/ue0qm5oQAgWr1JUrlO+UnhF3F7gx/DE/XUKL9zhe8EEVGbB
-         EqFNgff80GDDzKdGoFe+gK1TEOPEEmFh7kqTdVyQhtA6nD3BFlkBwUphWYpYsbnJ6hgu
-         Jkb6ZhlK6ZzHSrj6Emm4WAgB8BnmiQw72t1Js=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=qeFcj3RvFIgn+Y/tzqbFYekNNwhIfYGgU+jLdlJf6yw=;
+        b=S2vuX7oNdf+mrc2CccHRI8RD2z52UkXdVZCD3Z4nXs1ZCTOGjOCB00hpBp6Le71dDN
+         nEP3uCRUpx8e82Ph5jWK0V6ONwe0HUyXaLOO5KCWsFXIr6Rp7IYB2R97cJkmT9B/1MsW
+         m228PdcwPPzD4PXXyTkyr2A4nEIYBIrRgSCygv96STR3dn22sZ1WU9gETjb6lL2w0kdb
+         E3PlCgGTZ2IrMT/bj/mrNQ8OH9kJzOyUXA3RkleGCwx8jCSNFs1eWLDj5zCwDqVI7NmT
+         a4kts9fj++lUiud4KgPiMAUmkfbjMsDciun/TWKze+DzJy/xXx9gVqa26XtmmfQo87rO
+         UA7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H5c4wPtxJ4irmL/5t82UsuY3LS4vd3rmssVb2xf2eHY=;
-        b=qTkq9A5Lz+lK+8IL2OBd4CvBzoGYJDW+jJh4SKMuGr/Y6kyX3u/JC2P9Qe/pdv1OtQ
-         Lejatix9sJW1EV9oHONRia++45JLyJw9L+ic3PqVyBkWDZH6QK7Vzh6LJNaHDnQ+y9zC
-         Zxh6LEdI+0xM+nhUu3tqHjtYIV6rz1quf5jMJmSNUEUjzh71u0UH+DY6EHeCp4qXdYhn
-         FlpiSWtXXwWHUcQBa5JzSfh4FOjS53cCtGG0nQphQnwR69+DUZZGl1/ueeAAdowPKXCm
-         F553iaVzn+VMUWHM4xUTWkWkb0w9zYUDcyeYnjjdQPOtJCpaCsBDseDlPvRHmtS0doU1
-         H4UA==
-X-Gm-Message-State: AOAM533n+qdMYklsocQ3rdkXnCcMgJ+TMaAK8MUuBTh94mEyLBR1vH+G
-        Df9j6KXhFsRdEG225Z9SBpj7gA==
-X-Google-Smtp-Source: ABdhPJzZ1Ekn9usvShs9+OF2hMkEFfpxWfgC9twP8DwMLvgr68CyHfFiKexonCRkxjyek5VxnsaQBg==
-X-Received: by 2002:a17:902:eb52:b029:106:50e3:b2d8 with SMTP id i18-20020a170902eb52b029010650e3b2d8mr991118pli.51.1623366097712;
-        Thu, 10 Jun 2021 16:01:37 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i16sm3281367pji.30.2021.06.10.16.01.36
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=qeFcj3RvFIgn+Y/tzqbFYekNNwhIfYGgU+jLdlJf6yw=;
+        b=sv3bitD9Z0QS/EFKEhxdhH2/5u+3Fb58bUvmgoE1kaTMEUbKXQgPE6J+h0UTg05uWF
+         9Na0zKdUcKuoUkUStYMANiSnLvqpz+fQ99r8g/9JGikCs0VC5xMRbluJqvVXzHxLvUsl
+         9K3soXKrVlaD2g6ej5v7MeaNAWjESmZW3nMjW3E4iP8E+/POOI+6DG/yqw/U6u4yaSrE
+         7pojnbDuR5lXzj5vFlt9Fb92e341saQ4YWL6Q8PfE385k7H3F/h1ST08Rhg8lNEn5A2j
+         x5XBc+suhtqd4+cJ1HgQyW6629zIaitog5VfU/PMtmr1tbEFmbxBvB92FJBeZJw4fk/L
+         Cfqg==
+X-Gm-Message-State: AOAM532eD2cv2WeGf1EHzMhBEgDZOX+FrPBvrxNfWf4NGz4fhkC5oxIm
+        hzMex2Vqm/LbLpVs8jkfzxa24Q==
+X-Google-Smtp-Source: ABdhPJw0UZNntSZ2RdzdfiSlt9jzmTDqgxw9uetF/bojrQqYtAUHHFHI2tYNdUiBCL1HjkCwrM5gMw==
+X-Received: by 2002:a37:9381:: with SMTP id v123mr1087360qkd.64.1623366169388;
+        Thu, 10 Jun 2021 16:02:49 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id o22sm3063286qtq.89.2021.06.10.16.02.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 16:01:36 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 16:01:36 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Lin, Zhenpeng" <zplin@psu.edu>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Thu, 10 Jun 2021 16:02:49 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 16:02:47 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+cc:     Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] slub: choose the right freelist pointer location when
- creating small caches
-Message-ID: <202106101601.E9273DD34@keescook>
-References: <6746FEEA-FD69-4792-8DDA-C78F5FE7DA02@psu.edu>
- <202106081125.E2DA4DE8@keescook>
- <F9847E9B-5557-4FAC-AE80-829D0AD712A3@psu.edu>
- <202106081140.F73F91F@keescook>
- <25AB8A72-B970-47C2-8688-48126075E72E@psu.edu>
- <202106081614.E57675D17@keescook>
- <C7AC6780-9DCE-4CE5-90B1-9AA0731341BF@psu.edu>
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/11] mm: page_vma_mapped_walk(): crossing page table
+ boundary
+In-Reply-To: <20210610093203.x42jpifagiavmrlp@box.shutemov.name>
+Message-ID: <4679ec74-80a-ed13-e58e-654911fbab28@google.com>
+References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com> <799b3f9c-2a9e-dfef-5d89-26e9f76fd97@google.com> <20210610093203.x42jpifagiavmrlp@box.shutemov.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C7AC6780-9DCE-4CE5-90B1-9AA0731341BF@psu.edu>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 08:20:31PM +0000, Lin, Zhenpeng wrote:
-> Sounds good. But I would suggest this to go to -stable as soon as possible. Because this bug is affecting the basic functionality of DCCP. It crashes kernel whenever a new socket in this module is created.
+On Thu, 10 Jun 2021, Kirill A. Shutemov wrote:
+> On Wed, Jun 09, 2021 at 11:44:10PM -0700, Hugh Dickins wrote:
+> > page_vma_mapped_walk() cleanup: adjust the test for crossing page table
+> > boundary - I believe pvmw->address is always page-aligned, but nothing
+> > else here assumed that;
+> 
+> Maybe we should just get it aligned instead? (PMD_SIZE - PAGE_SIZE) is not
+> most obvious mask calculation.
 
-But only when redzoning is enabled, yes?
+Would you prefer it with another line of comment after the
+/* Did we cross page table boundary? */
 
--- 
-Kees Cook
+Maybe,
+/* Is address always page-aligned? No need to assume that. */
+
+I just don't see the point in forcing alignment when the test is good
+(and don't know for sure whether address is always aligned there or not).
+
+I prefer to leave it as is, just letting the commit message document it.
+
+> 
+> > and remember to reset pvmw->pte to NULL after
+> > unmapping the page table, though I never saw any bug from that.
+> 
+> Okay, it's fair enough.
+
+Thanks,
+Hugh
