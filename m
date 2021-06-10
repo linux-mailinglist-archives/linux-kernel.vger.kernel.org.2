@@ -2,107 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8573A32AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0D93A32B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhFJSGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 14:06:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33065 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229963AbhFJSGg (ORCPT
+        id S230197AbhFJSHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 14:07:50 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:37669 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229941AbhFJSHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 14:06:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623348279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CEoL5V4Mmey/+otE2j2URoJUKULpKPt4rB1iuEzrSWg=;
-        b=G6norW3i4bK27LW6BCb6fBgCQx1yBFMpw9I0bWinL1NMtiLwv6uNCH3gwJNc8YdXUraUU0
-        708WvDvpOGVtvn3Ht61kyV0PkpLgiGCGSdF26qFkcchEqXSm+MhgZAhrfyhOt5+xy6CePH
-        dVIZy3NdrrfEaUVnKIV1BzOVlvZNksE=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-oRf-DWo2M_-2fr0ocTPvUg-1; Thu, 10 Jun 2021 14:04:38 -0400
-X-MC-Unique: oRf-DWo2M_-2fr0ocTPvUg-1
-Received: by mail-qt1-f199.google.com with SMTP id r1-20020ac85c810000b02901fa9798cdb5so370031qta.8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 11:04:38 -0700 (PDT)
+        Thu, 10 Jun 2021 14:07:48 -0400
+Received: by mail-oi1-f169.google.com with SMTP id h9so3050584oih.4;
+        Thu, 10 Jun 2021 11:05:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CEoL5V4Mmey/+otE2j2URoJUKULpKPt4rB1iuEzrSWg=;
-        b=M1nGGCyeZ/It00AOYKA3NsRpl3lc3JDFqhYPuJnJxtDtq/JAJB+63KuXzVbUIs224K
-         LQoLpWTsFyCc+Y0FVhfEr04V+ezmd/HqX8JmKD5WbmjMyHCPYWGZ19kH1mM5qQcMuOkY
-         RLWvapQddJdwlvfmdt/p0Mj+624SwlM5qhcmaTTBJqovbk6H8Hx3rbMqAGNXVDwRudX2
-         sag8vSTmPVCXGL2xGtZVi15RPo8PhIJixBXTp7ZqinJ2Lvq9LTLAoWHNul1waIVU7m9M
-         YuzhAj+Y4aTpZ/3SseGbd4PXTS2eBuKBOswV92Ga3ZQN5cuHxmxz5e+3ZjbN52kjgq7s
-         wrag==
-X-Gm-Message-State: AOAM533UbptPXfk02YpJ2Tmqs6a1C2WhTDwHySk1BG59VQf2gm2KGN4s
-        pv3R5RD21MbdPTtk3+Ku7R4m6lbmz828XsFHFL9waCfnyTiBpEYB10YcqxLzVmO3s5/hWPnwyBW
-        dc3y/pMzFy/hEDra9aheBpsgI
-X-Received: by 2002:aed:306f:: with SMTP id 102mr3467qte.197.1623348277897;
-        Thu, 10 Jun 2021 11:04:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTTO+KkTdxTZkkMrHOmkbo6ejQaZkDXpeywK0BwU0l5R3cowlkisPdpRInl2BsP3WxC79JBQ==
-X-Received: by 2002:aed:306f:: with SMTP id 102mr3418qte.197.1623348277505;
-        Thu, 10 Jun 2021 11:04:37 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-88-174-93-75-200.dsl.bell.ca. [174.93.75.200])
-        by smtp.gmail.com with ESMTPSA id o3sm2731692qkc.93.2021.06.10.11.04.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 11:04:36 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 14:04:35 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        rcampbell@nvidia.com, linux-doc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, hughd@google.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        hch@infradead.org, bskeggs@redhat.com, jgg@nvidia.com,
-        shakeelb@google.com, jhubbard@nvidia.com, willy@infradead.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v10 07/10] mm: Device exclusive memory access
-Message-ID: <YMJUM4sx1VclR7oz@t490s>
-References: <20210607075855.5084-1-apopple@nvidia.com>
- <270551728.uXnuCZxQlr@nvdebian>
- <YMDmsha6GDtUf3Vs@t490s>
- <2773835.D95cIkl9rl@nvdebian>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6tFMdKF66GtiGCGuvjiXKRo9ePOn5bxziMQAgLo1RwQ=;
+        b=tXifdLjtt7Hj0WOCAAbhwvnB7W4trRIs5WTgpiu7nAEYY2x4q5r+tnEp9a6s9zbcZ5
+         2f+npVuIKn+YLGMSjrGjYQ6yWus/T80JEvB05w7XM+SucEIoj83W3NuTlR6HGCyLpK/+
+         9XLfKL40uj72VdSnTu7NRnjHuMvQWnRRakj1SB1shWT9kxrF7rpj3gXfOM5ma+0oH6Nf
+         OM4Pq1Q3KqxQqkpdNOP5vrfldzgRM+eTMuqHjQhHl4bqOefV61lx2KdNyUGiYQ2AKPj/
+         0oN/AXPl3zlkrVOUPzVbN2iU1SFinw8qIxBLdrHxzDaDZx1uKzsU7sGf9mcLUgXDpXjM
+         h32A==
+X-Gm-Message-State: AOAM5334/7ecQbXz7/MDI97TjHo0oJW5kz0/WkX7Ed9IiTsGHhV00AGQ
+        s0i5qDRhIUmnijrzvhzH+KfPkH/0J2+2N6os1OE=
+X-Google-Smtp-Source: ABdhPJye8bhCZ3nvbsoG/AWSQExSaZgQ+UgWztP4soqwRMwdfz+Yf6AgchrvP9rp8nrhLcVOg1JZ7oftyXUEbxzdG7w=
+X-Received: by 2002:a05:6808:f08:: with SMTP id m8mr1212972oiw.69.1623348342904;
+ Thu, 10 Jun 2021 11:05:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2773835.D95cIkl9rl@nvdebian>
+References: <20210610163917.4138412-1-ciorneiioana@gmail.com> <20210610163917.4138412-2-ciorneiioana@gmail.com>
+In-Reply-To: <20210610163917.4138412-2-ciorneiioana@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 10 Jun 2021 20:05:31 +0200
+Message-ID: <CAJZ5v0jMspgw8tvA3xV5p7sRxTUOq89G5zSgaZa52EAi+9Cfbw@mail.gmail.com>
+Subject: Re: [PATCH net-next v8 01/15] Documentation: ACPI: DSD: Document MDIO PHY
+To:     Ioana Ciornei <ciorneiioana@gmail.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>, calvin.johnson@nxp.com,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>, netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 10:18:25AM +1000, Alistair Popple wrote:
-> > > The main problem is split_huge_pmd_address() unconditionally calls a mmu
-> > > notifier so I would need to plumb in passing an owner everywhere which could
-> > > get messy.
-> > 
-> > Could I ask why?  split_huge_pmd_address() will notify with CLEAR, so I'm a bit
-> > confused why we need to pass over the owner.
-> 
-> Sure, it is the same reason we need to pass it for the exclusive notifier.
-> Any invalidation during the make exclusive operation will break the mmu read
-> side critical section forcing a retry of the operation. The owner field is what
-> is used to filter out invalidations (such as the exclusive invalidation) that
-> don't need to be retried.
+On Thu, Jun 10, 2021 at 6:40 PM Ioana Ciornei <ciorneiioana@gmail.com> wrote:
+>
+> From: Calvin Johnson <calvin.johnson@oss.nxp.com>
+>
+> Introduce ACPI mechanism to get PHYs registered on a MDIO bus and
+> provide them to be connected to MAC.
 
-Do you mean the mmu_interval_read_begin|retry() calls?
+This is not an "ACPI mechanism", because it is not part of the ACPI
+specification or support documentation thereof.
 
-Hmm, the thing is.. to me FOLL_SPLIT_PMD should have similar effect to explicit
-call split_huge_pmd_address(), afaict.  Since both of them use __split_huge_pmd()
-internally which will generate that unwanted CLEAR notify.
+I would call it "a mechanism based on generic ACPI _DSD device
+properties definition []1]".  And provide a reference to the _DSD
+properties definition document.
 
-If that's the case, I think it fails because split_huge_pmd_address() will
-trigger that CLEAR notify unconditionally (even if it's not a thp; not sure
-whether it should be optimized to not notify at all... definitely another
-story), while FOLL_SPLIT_PMD will skip the notify as it calls split_huge_pmd()
-instead, who checks the pmd before calling __split_huge_pmd().
+With that changed, you can add
 
-Does it also mean that if there's a real THP it won't really work?  As then
-FOLL_SPLIT_PMD will start to trigger that CLEAR notify too, I think..
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
--- 
-Peter Xu
+to this patch.
 
+Note, however, that within the traditional ACPI framework, the _DSD
+properties are consumed by the driver that binds to the device
+represented by the ACPI device object containing the _DSD in question
+in its scope, while in this case IIUC the properties are expected to
+be consumed by the general networking code in the kernel.  That is not
+wrong in principle, but it means that operating systems other than
+Linux are not likely to be using them.
+
+> Describe properties "phy-handle" and "phy-mode".
+>
+> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+> ---
+>
+> Changes in v8: None
+> Changes in v7: None
+> Changes in v6:
+> - Minor cleanup
+>
+> Changes in v5:
+> - More cleanup
+>
+> Changes in v4:
+> - More cleanup
+>
+> Changes in v3: None
+> Changes in v2:
+> - Updated with more description in document
+>
+>  Documentation/firmware-guide/acpi/dsd/phy.rst | 133 ++++++++++++++++++
+>  1 file changed, 133 insertions(+)
+>  create mode 100644 Documentation/firmware-guide/acpi/dsd/phy.rst
+>
+> diff --git a/Documentation/firmware-guide/acpi/dsd/phy.rst b/Documentation/firmware-guide/acpi/dsd/phy.rst
+> new file mode 100644
+> index 000000000000..7d01ae8b3cc6
+> --- /dev/null
+> +++ b/Documentation/firmware-guide/acpi/dsd/phy.rst
+> @@ -0,0 +1,133 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=========================
+> +MDIO bus and PHYs in ACPI
+> +=========================
+> +
+> +The PHYs on an MDIO bus [1] are probed and registered using
+> +fwnode_mdiobus_register_phy().
+> +
+> +Later, for connecting these PHYs to their respective MACs, the PHYs registered
+> +on the MDIO bus have to be referenced.
+> +
+> +This document introduces two _DSD properties that are to be used
+> +for connecting PHYs on the MDIO bus [3] to the MAC layer.
+> +
+> +These properties are defined in accordance with the "Device
+> +Properties UUID For _DSD" [2] document and the
+> +daffd814-6eba-4d8c-8a91-bc9bbf4aa301 UUID must be used in the Device
+> +Data Descriptors containing them.
+> +
+> +phy-handle
+> +----------
+> +For each MAC node, a device property "phy-handle" is used to reference
+> +the PHY that is registered on an MDIO bus. This is mandatory for
+> +network interfaces that have PHYs connected to MAC via MDIO bus.
+> +
+> +During the MDIO bus driver initialization, PHYs on this bus are probed
+> +using the _ADR object as shown below and are registered on the MDIO bus.
+> +
+> +::
+> +      Scope(\_SB.MDI0)
+> +      {
+> +        Device(PHY1) {
+> +          Name (_ADR, 0x1)
+> +        } // end of PHY1
+> +
+> +        Device(PHY2) {
+> +          Name (_ADR, 0x2)
+> +        } // end of PHY2
+> +      }
+> +
+> +Later, during the MAC driver initialization, the registered PHY devices
+> +have to be retrieved from the MDIO bus. For this, the MAC driver needs
+> +references to the previously registered PHYs which are provided
+> +as device object references (e.g. \_SB.MDI0.PHY1).
+> +
+> +phy-mode
+> +--------
+> +The "phy-mode" _DSD property is used to describe the connection to
+> +the PHY. The valid values for "phy-mode" are defined in [4].
+> +
+> +The following ASL example illustrates the usage of these properties.
+> +
+> +DSDT entry for MDIO node
+> +------------------------
+> +
+> +The MDIO bus has an SoC component (MDIO controller) and a platform
+> +component (PHYs on the MDIO bus).
+> +
+> +a) Silicon Component
+> +This node describes the MDIO controller, MDI0
+> +---------------------------------------------
+> +::
+> +       Scope(_SB)
+> +       {
+> +         Device(MDI0) {
+> +           Name(_HID, "NXP0006")
+> +           Name(_CCA, 1)
+> +           Name(_UID, 0)
+> +           Name(_CRS, ResourceTemplate() {
+> +             Memory32Fixed(ReadWrite, MDI0_BASE, MDI_LEN)
+> +             Interrupt(ResourceConsumer, Level, ActiveHigh, Shared)
+> +              {
+> +                MDI0_IT
+> +              }
+> +           }) // end of _CRS for MDI0
+> +         } // end of MDI0
+> +       }
+> +
+> +b) Platform Component
+> +The PHY1 and PHY2 nodes represent the PHYs connected to MDIO bus MDI0
+> +---------------------------------------------------------------------
+> +::
+> +       Scope(\_SB.MDI0)
+> +       {
+> +         Device(PHY1) {
+> +           Name (_ADR, 0x1)
+> +         } // end of PHY1
+> +
+> +         Device(PHY2) {
+> +           Name (_ADR, 0x2)
+> +         } // end of PHY2
+> +       }
+> +
+> +DSDT entries representing MAC nodes
+> +-----------------------------------
+> +
+> +Below are the MAC nodes where PHY nodes are referenced.
+> +phy-mode and phy-handle are used as explained earlier.
+> +------------------------------------------------------
+> +::
+> +       Scope(\_SB.MCE0.PR17)
+> +       {
+> +         Name (_DSD, Package () {
+> +            ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+> +                Package () {
+> +                    Package (2) {"phy-mode", "rgmii-id"},
+> +                    Package (2) {"phy-handle", \_SB.MDI0.PHY1}
+> +             }
+> +          })
+> +       }
+> +
+> +       Scope(\_SB.MCE0.PR18)
+> +       {
+> +         Name (_DSD, Package () {
+> +           ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+> +               Package () {
+> +                   Package (2) {"phy-mode", "rgmii-id"},
+> +                   Package (2) {"phy-handle", \_SB.MDI0.PHY2}}
+> +           }
+> +         })
+> +       }
+> +
+> +References
+> +==========
+> +
+> +[1] Documentation/networking/phy.rst
+> +
+> +[2] https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
+> +
+> +[3] Documentation/firmware-guide/acpi/DSD-properties-rules.rst
+> +
+> +[4] Documentation/devicetree/bindings/net/ethernet-controller.yaml
+> --
+> 2.31.1
+>
