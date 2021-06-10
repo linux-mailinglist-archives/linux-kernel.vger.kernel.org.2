@@ -2,84 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E7B3A2ADD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F30F3A2AE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhFJL5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 07:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbhFJL5u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:57:50 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D3CC061574;
-        Thu, 10 Jun 2021 04:55:54 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0cf600e70433578266b34c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:f600:e704:3357:8266:b34c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B0BF01EC0493;
-        Thu, 10 Jun 2021 13:55:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623326152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=/OkYzBblS5E80gbut5AjIVLNBezP0yfMo4EhaUphYzk=;
-        b=Fr1L5iVb1Zf1mpwfXQeto2+0vBXCdpABE6OxACL9kMxpiBXNWZGBcDJoS7fFN4vPyZOHV0
-        raJJFa1vp+t0o5K2+Y3b/d5kQ3zLz7FrEZnGw7KNTPooGxB08UvPGvNYcwP5stowzTlM+1
-        evUtk64+j+1mZxVwknoj5QNuJHw20lw=
-Date:   Thu, 10 Jun 2021 13:55:46 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Muralidhara M K <muralimk@amd.com>,
-        Akshay Gupta <Akshay.Gupta@amd.com>,
-        Youquan Song <youquan.song@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 2/2] x86/mce: Add support for Extended Physical Address
- MCA changes
-Message-ID: <YMH9wqUnjudiAVlr@zn.tnic>
-References: <20210608221012.223696-1-Smita.KoralahalliChannabasappa@amd.com>
- <20210608221012.223696-3-Smita.KoralahalliChannabasappa@amd.com>
+        id S230336AbhFJL6D convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Jun 2021 07:58:03 -0400
+Received: from mga01.intel.com ([192.55.52.88]:17349 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230332AbhFJL55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 07:57:57 -0400
+IronPort-SDR: idLIkENXxoI1tYvt4i3NCTDbm3wG2Og/F6WcbZoQhbWRFigvZK+Id0eemiJw5a8Upfi0KPlIH2
+ HiryWn7Dkukw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="226674750"
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="226674750"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 04:56:00 -0700
+IronPort-SDR: 4HvAtng04rI4EJIc41e55QWKIaW7jQqGvhjYUtLTF0hdMxIBFL6IQ5+7pimANgYAGLEbf4SHuB
+ XVJpwNFOA9Qw==
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="402663181"
+Received: from jwalsh5-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.28.33])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 04:55:57 -0700
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210608221012.223696-3-Smita.KoralahalliChannabasappa@amd.com>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <548dd463-3942-00a1-85c3-232897dea1a3@canonical.com>
+References: <548dd463-3942-00a1-85c3-232897dea1a3@canonical.com>
+From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Subject: Re: Computation of return value being discarded in get_cpu_power() in drivers/platform/x86/intel_ips.c
+Cc:     platform-driver-x86@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To:     "Hans de Goede" <hdegoede@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Jesse Barnes <jsbarnes@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <162332615476.15946.17135355064135638083@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: alot/0.8.1
+Date:   Thu, 10 Jun 2021 14:55:54 +0300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 05:10:12PM -0500, Smita Koralahalli wrote:
-> diff --git a/arch/x86/kernel/cpu/mce/amd.c b/arch/x86/kernel/cpu/mce/amd.c
-> index f71435e53cdb..480a497877e2 100644
-> --- a/arch/x86/kernel/cpu/mce/amd.c
-> +++ b/arch/x86/kernel/cpu/mce/amd.c
-> @@ -204,6 +204,12 @@ EXPORT_SYMBOL_GPL(smca_banks);
->  #define MAX_MCATYPE_NAME_LEN	30
->  static char buf_mcatype[MAX_MCATYPE_NAME_LEN];
->  
-> +struct smca_config {
-> +	__u64 lsb_in_status     :  1,
-> +	__reserved_0            : 63;
-> +};
-> +static DEFINE_PER_CPU_READ_MOSTLY(struct smca_config[MAX_NR_BANKS], smca_cfg);
+(Address for Hans was corrupt in previous message, which confused my mail
+client. Sorry for duplicate message, the other is without From: field).
 
-Per CPU and per bank, huh? For a single bit?
++ Jesse
 
-Even if we have
+Quoting Colin Ian King (2021-06-09 14:50:07)
+> Hi,
+> 
+> I was reviewing some old unassigned variable warnings from static
+> analysis by Coverity and found an issue introduced with the following
+> commit:
+> 
+> commit aa7ffc01d254c91a36bf854d57a14049c6134c72
+> Author: Jesse Barnes <jbarnes@virtuousgeek.org>
+> Date:   Fri May 14 15:41:14 2010 -0700
+> 
+>     x86 platform driver: intelligent power sharing driver
+> 
+> The analysis is as follows:
+> 
+> drivers/platform/x86/intel_ips.c
+> 
+>  871 static u32 get_cpu_power(struct ips_driver *ips, u32 *last, int period)
+>  872 {
+>  873        u32 val;
+>  874        u32 ret;
+>  875
+>  876        /*
+>  877         * CEC is in joules/65535.  Take difference over time to
+>  878         * get watts.
+>  879         */
+>  880        val = thm_readl(THM_CEC);
+>  881
+>  882        /* period is in ms and we want mW */
+>  883        ret = (((val - *last) * 1000) / period);
+> 
+> Unused value (UNUSED_VALUE)
+> assigned_value:  Assigning value from ret * 1000U / 65535U to ret here,
+> but that stored value is not used.
+> 
+>  884        ret = (ret * 1000) / 65535;
+>  885        *last = val;
+>  886
+>  887        return 0;
+>  888 }
+> 
+> I'm really not sure why ret is being calculated on lines 883,884 and not
+> being used. Should that be *last = ret on line 885? Looks suspect anyhow.
 
-static DEFINE_PER_CPU_READ_MOSTLY(struct mce_bank[MAX_NR_BANKS], mce_banks_array);
+According to git blame code seems to have been disabled intentionally by the
+following commit:
+  
+commit 96f3823f537088c13735cfdfbf284436c802352a
+Author: Jesse Barnes <jbarnes@virtuousgeek.org>
+Date:   Tue Oct 5 14:50:59 2010 -0400
+  
+    [PATCH 2/2] IPS driver: disable CPU turbo
+  
+    The undocumented interface we're using for reading CPU power seems to be
+    overreporting power.  Until we figure out how to correct it, disable CPU
+    turbo and power reporting to be safe.  This will keep the CPU within default
+    limits and still allow us to increase GPU frequency as needed.
+  
+Maybe wrap the code after thm_readl() in #if 0 in case somebody ends up
+wanting to fix it? Or eliminate completely.
+  
+In theory the thm_readl() may affect the system behavior so would not
+remove that for extra paranoia.
+  
+Regards, Joonas
 
-already?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> Colin
+> 
+> 
