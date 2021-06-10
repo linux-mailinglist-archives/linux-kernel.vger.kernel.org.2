@@ -2,89 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1053A33CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458CC3A33D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhFJTTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 15:19:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhFJTTa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 15:19:30 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6028BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:17:33 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id e2so6414145ljk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aPTyDJh/FqkPC7Of53mXpiFCJnipzLbSqzQI1i7wKkI=;
-        b=TUj4T7lxOrr9qEMnqhOCizt9ERRD5MAMSJj4cRHm63u6EGu7ChB1eCYd47d9FGqLjl
-         MOihAMN8+mkGyhbSMPPVPDLPhmgFLcrgkk0cvoUHj0jRjdnHTebtipEYIex8b3kM5mMt
-         PtdSABebDp9MCpQZlU8cKNz6UtSbPye0n/YnXiuaQuWs3ddzen6tBSUdXVynKiAspwCC
-         bbVgih8HOQ3zDntPyaqW6eVgl/+rmF0ke3FeRfBsiL/2kk9Y+xccCkG0wFK/l3AsSmIo
-         TfUBeyGpKUg8tEVDF7/RZYFVjKsIfMe3RyLKBb0bNxKemosihwVxfQtlke7lmpoPynCY
-         ef2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aPTyDJh/FqkPC7Of53mXpiFCJnipzLbSqzQI1i7wKkI=;
-        b=QdwgOzssnW0U1WGDCd07Kmoy4dIlFjsoGkcOOOQ/XbaXQxhOHQp+dqG3HBrLZXQZ46
-         w9Qn/ec57WUTidugWxN/tkFv5vmi30qeS6uCPNFIVYffdulo+YTm9K6Kc3ffAMAVApDm
-         6/Mn53wHF+lQN6s1sonOGHxcmPJG2n6Y9QR+uq+yOhABZ7wBfZ6B6AiGLusiUOZxWNKE
-         g0oij0+MrNepYTGYAIdubQOiW6cKEi3sOvHYLEcVUfmnzJPOqaUYC38BQsKLtD6E+KBm
-         C8eeXRH50MoZ1JpuxfSZfWib1ZyffSFaXlmCZclW4cg/YpM76w4o3VJM7ZQ82hWeWBZm
-         0yWg==
-X-Gm-Message-State: AOAM5335QwFmkLXXg0cpzMP9KH58JrnfTTaZ8Mbi9Dm7Sq9NhVBo21aV
-        bFTsaTlKhv9Smrb/ecCMmwy5IL8hp+OthwFFLX2olg==
-X-Google-Smtp-Source: ABdhPJzcPa3ZWjUiuCZT9vcsG+t+BaG7ZWNzmhAnb13V0AEQb0YClVnreY/gDLAzgWo+WTX2EkalWOi815F5nddmsls=
-X-Received: by 2002:a2e:3c06:: with SMTP id j6mr68159lja.495.1623352651424;
- Thu, 10 Jun 2021 12:17:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <214134496.67043.1623317284090@office.mailbox.org>
- <ea01f4cb-3e65-0b79-ae93-ba0957e076fc@kernel.org> <ba06e4f5-709a-08cc-0f62-e50c64fc301f@mailbox.org>
-In-Reply-To: <ba06e4f5-709a-08cc-0f62-e50c64fc301f@mailbox.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 10 Jun 2021 12:17:20 -0700
-Message-ID: <CAKwvOdkpce5kjqXg_Gr8LAzqh3pZt+uJUn348wk2nESvfjB5JA@mail.gmail.com>
-Subject: Re: [PATCH] x86/Makefile: make -stack-alignment conditional on LLD < 13.0.0
-To:     Tor Vic <torvic9@mailbox.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230329AbhFJTU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 15:20:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230130AbhFJTU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 15:20:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1F8C761246;
+        Thu, 10 Jun 2021 19:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623352711;
+        bh=Zy+D1ZBoTWiwKUGzhi4t1y6ft657IsVXfyU4yEkBBK8=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=PGzd80FNWBw60Aw0FA+2rncVosunysf2rnfX8bPBEBOPzTW3mu1YSm1RJQSOSk2OM
+         VBqkHUIFl5V1eYrthyzntKne/MbYcfaVbjpE3/zRnEYJ6xz2XwuZqJE55/+cGamYRk
+         FiyJh6+LbWCQzwEu8cVHM5L0EXQAVz4rwoK7JpD9b+9A4Os84UBLYbkI5+3Lq6DxTz
+         f0g9Jp4zJ3nqnxQ35iKRE71Ian1sUwYMK8evnsJeC653BPnf1glJ7PkRfpG5cr+Fhp
+         gLZzuV5vVfMfScoigWTJdjjMGKG5ZicEiCYUsrsRbsdYdwNAFh+CFzI3RB5/3DpUE4
+         017EeKiuNd8gw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0DA6860A0C;
+        Thu, 10 Jun 2021 19:18:31 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210610123745.GA1260478@nvidia.com>
+References: <20210610123745.GA1260478@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210610123745.GA1260478@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 2ba0aa2feebda680ecfc3c552e867cf4d1b05a3a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 29a877d5768471c5ed97ea967c0ee9436b8c03fc
+Message-Id: <162335271099.23981.1476888197598035841.pr-tracker-bot@kernel.org>
+Date:   Thu, 10 Jun 2021 19:18:30 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 11:39 AM Tor Vic <torvic9@mailbox.org> wrote:
->
-> Hi Nathan,
->
-> On 10.06.21 16:42, Nathan Chancellor wrote:
-> > As Greg's auto-response points out, there needs to be an actual
-> >
-> > Cc: stable@vger.kernel.org
-> >
-> > here in the patch, rather than just cc'ing stable@vger.kernel.org
-> > through email.
-> >
->
-> Yes I misinterpreted this in the sense of "put stable mail in CC".
-> So if I get this right, I should NOT put stable email in CC, but only
-> add the "Cc: stable@vger.kernel.org" tag above the "Signed-off-by"?
+The pull request you sent on Thu, 10 Jun 2021 09:37:45 -0300:
 
-Yep, just above the Link: tags would be perfect. Don't worry, you'll
-get the hang of it.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/29a877d5768471c5ed97ea967c0ee9436b8c03fc
+
+Thank you!
+
 -- 
-Thanks,
-~Nick Desaulniers
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
