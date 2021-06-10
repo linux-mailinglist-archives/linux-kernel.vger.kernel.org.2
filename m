@@ -2,241 +2,375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0703A28C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFA43A28C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFJJxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:53:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46590 "EHLO
+        id S230280AbhFJJyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:54:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30465 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229778AbhFJJxx (ORCPT
+        by vger.kernel.org with ESMTP id S229961AbhFJJyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:53:53 -0400
+        Thu, 10 Jun 2021 05:54:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623318717;
+        s=mimecast20190719; t=1623318727;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oTD4X05DmvXZmZ+nk5ppfERwzEcj05YeBZi3dJeI59Y=;
-        b=dwN0DjL7WDETRz5J28mxzglzhx/S/CgI1gn4PFDTvpCqgC6j8AlGP6aulF/YP4h4hzpVmK
-        WLeJ6sRhLY31QEF9UgRfxvX51pRfpg9dOAdzGMcDYML48cpqfjKhmimTVg9u4T1GwY48XC
-        AlPb9x50mRsETCDyGGus4eQT6E84xaQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-ZEliQ-fhPtudogxHCoVyAw-1; Thu, 10 Jun 2021 05:51:56 -0400
-X-MC-Unique: ZEliQ-fhPtudogxHCoVyAw-1
-Received: by mail-ej1-f71.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so8797898ejz.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:51:55 -0700 (PDT)
+        bh=YoVNk4j9gtFSnQb0D1+J8+G6ag1xYY93rHbDDkf83Y8=;
+        b=ISC1pEaxtPoGZJyp+6B4QUSMDWdiMu4+Djk2EHBRyOr7C+JSe1VzaujRAEjdANel6JmL+r
+        SJRFYS3yY3GtnjjInhnuLEIASxDwXx6Qtn9Iv3s93i8iZmHkU/pnz7tm2b7NONDZyOCNKq
+        drVYb9XWSxv8FaXVn3JkuotG1y12wKU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-znHplBp3M427kf34tQ6yWg-1; Thu, 10 Jun 2021 05:52:05 -0400
+X-MC-Unique: znHplBp3M427kf34tQ6yWg-1
+Received: by mail-wr1-f72.google.com with SMTP id n2-20020adfb7420000b029010e47b59f31so631245wre.9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:52:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=oTD4X05DmvXZmZ+nk5ppfERwzEcj05YeBZi3dJeI59Y=;
-        b=iMrfjbW0FDdWDslOBCnAKsfQgukVX+DntijYRptpCq8XFiH7JPM9Sf1x/7ErVcp9Tq
-         ffAwhUtFO23pEPB3LqkygltKDkoEDbaC35yfFRfvEWTdycu5isXW863k4JRlQSV3zxUg
-         hixDq2rt0tQXx62ATiGApPz5mfrpUedXeo9rZLGjp1EQlopceKe/2EuTeATHagc8KjA/
-         KLvFE/5agaS29s/RVK0oZxhs7itZ4R49yMiPqH942BEjQn5p+KaajVnSp5u7T1pxDugl
-         xiKmPm0Ykjbvr8CGx3JoSA3JkWoAZ6HnguBPJAx1jJAOtpcjWl5IfHTELB27dnmFhnk1
-         doDw==
-X-Gm-Message-State: AOAM532osB72wusbKxVqKktQBVNFj75qGCTmIkzSGKDId9XPRgHzIS53
-        ZdmqSHdjkrIoFt/YkF7acQqRGnFYO4OyqwHUf02imJN4s+tSybGPcBbY5vS0wksf3BLccTEx/d4
-        u40If9Tr/Wibf1PDlNNmidSD9
-X-Received: by 2002:a17:906:546:: with SMTP id k6mr3667868eja.53.1623318714862;
-        Thu, 10 Jun 2021 02:51:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxAt+GEShJ3nyodJQl9prURDNMT3FZNtNtpzfzWl5Wsj4as49iUo+FaYaGvMJnyLT6U5H9b0g==
-X-Received: by 2002:a17:906:546:: with SMTP id k6mr3667844eja.53.1623318714647;
-        Thu, 10 Jun 2021 02:51:54 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id h19sm804248ejy.82.2021.06.10.02.51.53
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=YoVNk4j9gtFSnQb0D1+J8+G6ag1xYY93rHbDDkf83Y8=;
+        b=MlR9wMCeKRULlV8qkezQh23O69QL2zZbvXZrSRl/lH+x4IBoV7GkBC1+f8b4mCHl/4
+         prmR2fyD4hg+P0zF3oKHaDWQ41wEo6t1Mp7G8aSUTD3JnsnaksLzwnKqotEG/r1YkZi2
+         pUUjE2r9brVYnQnIB4vYcwK+y155pMZgN4y8k10bEGfYczqApvFxPeaGWj4MoohgXJ3D
+         /fH4YI5Ny5eZavmNPA5uMKc5MJoZszLQcF3z6OgOU4W/3UQRQvxF0hFjeAqVerQnJh2H
+         Z6pvdU0MoEZWQXudx8zvjpbDN8lrJhwh6u4D15+0rCQp1jddPC9iZDlCLbHBx5GkUyVB
+         gkwA==
+X-Gm-Message-State: AOAM531Cp8TohvK2Iiui2hlCbbbMicsnqESQRsJI1EeRZHOF5FP7EEsH
+        VgiIpwoApj8syolXVT+lVoy9jv4djY6acYF+IoiFoLVG2fk1KzKtSpOwGPyedvbbjYDBqLedDHY
+        PUQpf5rZqeFD7HxdAn8RwgYvG
+X-Received: by 2002:a5d:6111:: with SMTP id v17mr4390272wrt.20.1623318724429;
+        Thu, 10 Jun 2021 02:52:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJws7/mCqvX4+aPUx81hg5pKpa/fS4mRAQA+Xfvs2mECl/9+zJ/36DfVftBI3zRBfZ+Q7l7Vlw==
+X-Received: by 2002:a5d:6111:: with SMTP id v17mr4390203wrt.20.1623318724162;
+        Thu, 10 Jun 2021 02:52:04 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id i2sm2324384wmo.40.2021.06.10.02.52.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 02:51:54 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 11:51:51 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>,
-        "Jiang Wang ." <jiang.wang@bytedance.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        jhansen@vmware.comments, cong.wang@bytedance.com,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?utf-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Lu Wei <luwei32@huawei.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v1 0/6] virtio/vsock: introduce SOCK_DGRAM support
-Message-ID: <20210610095151.2cpyny56kbotzppp@steredhat>
-References: <20210609232501.171257-1-jiang.wang@bytedance.com>
- <da90f17a-1c24-b475-76ef-f6a7fc2bcdd5@redhat.com>
- <CAP_N_Z_VDd+JUJ_Y-peOEc7FgwNGB8O3uZpVumQT_DbW62Jpjw@mail.gmail.com>
- <ac0c241c-1013-1304-036f-504d0edc5fd7@redhat.com>
- <20210610072358.3fuvsahxec2sht4y@steredhat>
- <47ce307b-f95e-25c7-ed58-9cd1cbff5b57@redhat.com>
+        Thu, 10 Jun 2021 02:52:03 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com,
+        sunilmut@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, arnd@arndb.de, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        hannes@cmpxchg.org, cai@lca.pw, krish.sadhukhan@oracle.com,
+        saravanand@fb.com, Tianyu.Lan@microsoft.com,
+        konrad.wilk@oracle.com, hch@lst.de, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
+        xen-devel@lists.xenproject.org, davem@davemloft.net,
+        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com
+Subject: Re: [RFC PATCH V3 10/11] HV/Netvsc: Add Isolation VM support for
+ netvsc driver
+In-Reply-To: <20210530150628.2063957-11-ltykernel@gmail.com>
+References: <20210530150628.2063957-1-ltykernel@gmail.com>
+ <20210530150628.2063957-11-ltykernel@gmail.com>
+Date:   Thu, 10 Jun 2021 11:52:01 +0200
+Message-ID: <874ke6yrlq.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <47ce307b-f95e-25c7-ed58-9cd1cbff5b57@redhat.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 03:46:55PM +0800, Jason Wang wrote:
->
->在 2021/6/10 下午3:23, Stefano Garzarella 写道:
->>On Thu, Jun 10, 2021 at 12:02:35PM +0800, Jason Wang wrote:
->>>
->>>在 2021/6/10 上午11:43, Jiang Wang . 写道:
->>>>On Wed, Jun 9, 2021 at 6:51 PM Jason Wang <jasowang@redhat.com> wrote:
->>>>>
->>>>>在 2021/6/10 上午7:24, Jiang Wang 写道:
->>>>>>This patchset implements support of SOCK_DGRAM for virtio
->>>>>>transport.
->>>>>>
->>>>>>Datagram sockets are connectionless and unreliable. To avoid 
->>>>>>unfair contention
->>>>>>with stream and other sockets, add two more virtqueues and
->>>>>>a new feature bit to indicate if those two new queues exist or not.
->>>>>>
->>>>>>Dgram does not use the existing credit update mechanism for
->>>>>>stream sockets. When sending from the guest/driver, sending packets
->>>>>>synchronously, so the sender will get an error when the 
->>>>>>virtqueue is full.
->>>>>>When sending from the host/device, send packets asynchronously
->>>>>>because the descriptor memory belongs to the corresponding QEMU
->>>>>>process.
->>>>>
->>>>>What's the use case for the datagram vsock?
->>>>>
->>>>One use case is for non critical info logging from the guest
->>>>to the host, such as the performance data of some applications.
->>>
->>>
->>>Anything that prevents you from using the stream socket?
->>>
->>>
->>>>
->>>>It can also be used to replace UDP communications between
->>>>the guest and the host.
->>>
->>>
->>>Any advantage for VSOCK in this case? Is it for performance (I 
->>>guess not since I don't exepct vsock will be faster).
->>
->>I think the general advantage to using vsock are for the guest 
->>agents that potentially don't need any configuration.
->
->
->Right, I wonder if we really need datagram consider the host to guest 
->communication is reliable.
->
->(Note that I don't object it since vsock has already supported that, 
->just wonder its use cases)
+Tianyu Lan <ltykernel@gmail.com> writes:
 
-Yep, it was the same concern I had :-)
-Also because we're now adding SEQPACKET, which provides reliable 
-datagram support.
+> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+>
+> In Isolation VM, all shared memory with host needs to mark visible
+> to host via hvcall. vmbus_establish_gpadl() has already done it for
+> netvsc rx/tx ring buffer. The page buffer used by vmbus_sendpacket_
+> pagebuffer() still need to handle. Use DMA API to map/umap these
+> memory during sending/receiving packet and Hyper-V DMA ops callback
+> will use swiotlb function to allocate bounce buffer and copy data
+> from/to bounce buffer.
+>
+> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+> ---
+>  drivers/net/hyperv/hyperv_net.h   |   6 ++
+>  drivers/net/hyperv/netvsc.c       | 125 ++++++++++++++++++++++++++++--
+>  drivers/net/hyperv/rndis_filter.c |   3 +
+>  include/linux/hyperv.h            |   5 ++
+>  4 files changed, 133 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/net/hyperv/hyperv_net.h b/drivers/net/hyperv/hyperv_net.h
+> index b11aa68b44ec..c2fbb9d4df2c 100644
+> --- a/drivers/net/hyperv/hyperv_net.h
+> +++ b/drivers/net/hyperv/hyperv_net.h
+> @@ -164,6 +164,7 @@ struct hv_netvsc_packet {
+>  	u32 total_bytes;
+>  	u32 send_buf_index;
+>  	u32 total_data_buflen;
+> +	struct hv_dma_range *dma_range;
+>  };
+>  
+>  #define NETVSC_HASH_KEYLEN 40
+> @@ -1074,6 +1075,7 @@ struct netvsc_device {
+>  
+>  	/* Receive buffer allocated by us but manages by NetVSP */
+>  	void *recv_buf;
+> +	void *recv_original_buf;
+>  	u32 recv_buf_size; /* allocated bytes */
+>  	u32 recv_buf_gpadl_handle;
+>  	u32 recv_section_cnt;
+> @@ -1082,6 +1084,8 @@ struct netvsc_device {
+>  
+>  	/* Send buffer allocated by us */
+>  	void *send_buf;
+> +	void *send_original_buf;
+> +	u32 send_buf_size;
+>  	u32 send_buf_gpadl_handle;
+>  	u32 send_section_cnt;
+>  	u32 send_section_size;
+> @@ -1729,4 +1733,6 @@ struct rndis_message {
+>  #define RETRY_US_HI	10000
+>  #define RETRY_MAX	2000	/* >10 sec */
+>  
+> +void netvsc_dma_unmap(struct hv_device *hv_dev,
+> +		      struct hv_netvsc_packet *packet);
+>  #endif /* _HYPERV_NET_H */
+> diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
+> index 7bd935412853..a01740c6c6b8 100644
+> --- a/drivers/net/hyperv/netvsc.c
+> +++ b/drivers/net/hyperv/netvsc.c
+> @@ -153,8 +153,21 @@ static void free_netvsc_device(struct rcu_head *head)
+>  	int i;
+>  
+>  	kfree(nvdev->extension);
+> -	vfree(nvdev->recv_buf);
+> -	vfree(nvdev->send_buf);
+> +
+> +	if (nvdev->recv_original_buf) {
+> +		vunmap(nvdev->recv_buf);
+> +		vfree(nvdev->recv_original_buf);
+> +	} else {
+> +		vfree(nvdev->recv_buf);
+> +	}
+> +
+> +	if (nvdev->send_original_buf) {
+> +		vunmap(nvdev->send_buf);
+> +		vfree(nvdev->send_original_buf);
+> +	} else {
+> +		vfree(nvdev->send_buf);
+> +	}
+> +
+>  	kfree(nvdev->send_section_map);
+>  
+>  	for (i = 0; i < VRSS_CHANNEL_MAX; i++) {
+> @@ -338,8 +351,10 @@ static int netvsc_init_buf(struct hv_device *device,
+>  	struct net_device *ndev = hv_get_drvdata(device);
+>  	struct nvsp_message *init_packet;
+>  	unsigned int buf_size;
+> +	unsigned long *pfns;
+>  	size_t map_words;
+>  	int i, ret = 0;
+> +	void *vaddr;
+>  
+>  	/* Get receive buffer area. */
+>  	buf_size = device_info->recv_sections * device_info->recv_section_size;
+> @@ -375,6 +390,21 @@ static int netvsc_init_buf(struct hv_device *device,
+>  		goto cleanup;
+>  	}
+>  
+> +	if (hv_isolation_type_snp()) {
+> +		pfns = kcalloc(buf_size / HV_HYP_PAGE_SIZE, sizeof(unsigned long),
+> +			       GFP_KERNEL);
+> +		for (i = 0; i < buf_size / HV_HYP_PAGE_SIZE; i++)
+> +			pfns[i] = virt_to_hvpfn(net_device->recv_buf + i * HV_HYP_PAGE_SIZE) +
+> +				(ms_hyperv.shared_gpa_boundary >> HV_HYP_PAGE_SHIFT);
+> +
+> +		vaddr = vmap_pfn(pfns, buf_size / HV_HYP_PAGE_SIZE, PAGE_KERNEL_IO);
+> +		kfree(pfns);
+> +		if (!vaddr)
+> +			goto cleanup;
+> +		net_device->recv_original_buf = net_device->recv_buf;
+> +		net_device->recv_buf = vaddr;
+> +	}
+> +
+>  	/* Notify the NetVsp of the gpadl handle */
+>  	init_packet = &net_device->channel_init_pkt;
+>  	memset(init_packet, 0, sizeof(struct nvsp_message));
+> @@ -477,6 +507,23 @@ static int netvsc_init_buf(struct hv_device *device,
+>  		goto cleanup;
+>  	}
+>  
+> +	if (hv_isolation_type_snp()) {
+> +		pfns = kcalloc(buf_size / HV_HYP_PAGE_SIZE, sizeof(unsigned long),
+> +			       GFP_KERNEL);
+> +
+> +		for (i = 0; i < buf_size / HV_HYP_PAGE_SIZE; i++)
+> +			pfns[i] = virt_to_hvpfn(net_device->send_buf + i * HV_HYP_PAGE_SIZE)
+> +				+ (ms_hyperv.shared_gpa_boundary >> HV_HYP_PAGE_SHIFT);
+> +
+> +		vaddr = vmap_pfn(pfns, buf_size / HV_HYP_PAGE_SIZE, PAGE_KERNEL_IO);
+> +		kfree(pfns);
+> +		if (!vaddr)
+> +			goto cleanup;
+> +
+> +		net_device->send_original_buf = net_device->send_buf;
+> +		net_device->send_buf = vaddr;
+> +	}
+> +
+>  	/* Notify the NetVsp of the gpadl handle */
+>  	init_packet = &net_device->channel_init_pkt;
+>  	memset(init_packet, 0, sizeof(struct nvsp_message));
+> @@ -767,7 +814,7 @@ static void netvsc_send_tx_complete(struct net_device *ndev,
+>  
+>  	/* Notify the layer above us */
+>  	if (likely(skb)) {
+> -		const struct hv_netvsc_packet *packet
+> +		struct hv_netvsc_packet *packet
+>  			= (struct hv_netvsc_packet *)skb->cb;
+>  		u32 send_index = packet->send_buf_index;
+>  		struct netvsc_stats *tx_stats;
+> @@ -783,6 +830,7 @@ static void netvsc_send_tx_complete(struct net_device *ndev,
+>  		tx_stats->bytes += packet->total_bytes;
+>  		u64_stats_update_end(&tx_stats->syncp);
+>  
+> +		netvsc_dma_unmap(ndev_ctx->device_ctx, packet);
+>  		napi_consume_skb(skb, budget);
+>  	}
+>  
+> @@ -947,6 +995,63 @@ static void netvsc_copy_to_send_buf(struct netvsc_device *net_device,
+>  		memset(dest, 0, padding);
+>  }
+>  
+> +void netvsc_dma_unmap(struct hv_device *hv_dev,
+> +		      struct hv_netvsc_packet *packet)
+> +{
+> +	u32 page_count = packet->cp_partial ?
+> +		packet->page_buf_cnt - packet->rmsg_pgcnt :
+> +		packet->page_buf_cnt;
+> +	int i;
+> +
+> +	if (!packet->dma_range)
+> +		return;
+> +
+> +	for (i = 0; i < page_count; i++)
+> +		dma_unmap_single(&hv_dev->device, packet->dma_range[i].dma,
+> +				 packet->dma_range[i].mapping_size,
+> +				 DMA_TO_DEVICE);
+> +
+> +	kfree(packet->dma_range);
+> +}
+> +
+> +int netvsc_dma_map(struct hv_device *hv_dev,
+> +		   struct hv_netvsc_packet *packet,
+> +		   struct hv_page_buffer *pb)
+> +{
+> +	u32 page_count =  packet->cp_partial ?
+> +		packet->page_buf_cnt - packet->rmsg_pgcnt :
+> +		packet->page_buf_cnt;
+> +	dma_addr_t dma;
+> +	int i;
+> +
+> +	packet->dma_range = kcalloc(page_count,
+> +				    sizeof(*packet->dma_range),
+> +				    GFP_KERNEL);
+> +	if (!packet->dma_range)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < page_count; i++) {
+> +		char *src = phys_to_virt((pb[i].pfn << HV_HYP_PAGE_SHIFT)
+> +					 + pb[i].offset);
+> +		u32 len = pb[i].len;
+> +
+> +		dma = dma_map_single(&hv_dev->device, src, len,
+> +				     DMA_TO_DEVICE);
+> +		if (dma_mapping_error(&hv_dev->device, dma)) {
+> +			kfree(packet->dma_range);
+> +			return -ENOMEM;
+> +		}
+> +
+> +		packet->dma_range[i].dma = dma;
+> +		packet->dma_range[i].mapping_size = len;
+> +		pb[i].pfn = dma >> HV_HYP_PAGE_SHIFT;
+> +		pb[i].offset = offset_in_hvpage(dma);
+> +		pb[i].len = len;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static inline int netvsc_send_pkt(
+>  	struct hv_device *device,
+>  	struct hv_netvsc_packet *packet,
+> @@ -987,14 +1092,22 @@ static inline int netvsc_send_pkt(
+>  
+>  	trace_nvsp_send_pkt(ndev, out_channel, rpkt);
+>  
+> +	packet->dma_range = NULL;
+>  	if (packet->page_buf_cnt) {
+>  		if (packet->cp_partial)
+>  			pb += packet->rmsg_pgcnt;
+>  
+> +		ret = netvsc_dma_map(ndev_ctx->device_ctx, packet, pb);
+> +		if (ret)
+> +			return ret;
+> +
+>  		ret = vmbus_sendpacket_pagebuffer(out_channel,
+> -						  pb, packet->page_buf_cnt,
+> -						  &nvmsg, sizeof(nvmsg),
+> -						  req_id);
+> +					  pb, packet->page_buf_cnt,
+> +					  &nvmsg, sizeof(nvmsg),
+> +					  req_id);
 
-But IIUC the use case is the logging where you don't need a reliable 
-communication and you want to avoid to keep more open connections with 
-different guests.
+Nitpick: stray change? 
 
-So the server in the host can be pretty simple and doesn't have to 
-handle connections. It just waits for datagrams on a port.
+> +
+> +		if (ret)
+> +			netvsc_dma_unmap(ndev_ctx->device_ctx, packet);
+>  	} else {
+>  		ret = vmbus_sendpacket(out_channel,
+>  				       &nvmsg, sizeof(nvmsg),
+> diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis_filter.c
+> index 983bf362466a..448c1ee39246 100644
+> --- a/drivers/net/hyperv/rndis_filter.c
+> +++ b/drivers/net/hyperv/rndis_filter.c
+> @@ -293,6 +293,8 @@ static void rndis_filter_receive_response(struct net_device *ndev,
+>  	u32 *req_id = &resp->msg.init_complete.req_id;
+>  	struct rndis_device *dev = nvdev->extension;
+>  	struct rndis_request *request = NULL;
+> +	struct hv_device *hv_dev = ((struct net_device_context *)
+> +			netdev_priv(ndev))->device_ctx;
+>  	bool found = false;
+>  	unsigned long flags;
+>  
+> @@ -361,6 +363,7 @@ static void rndis_filter_receive_response(struct net_device *ndev,
+>  			}
+>  		}
+>  
+> +		netvsc_dma_unmap(hv_dev, &request->pkt);
+>  		complete(&request->wait_event);
+>  	} else {
+>  		netdev_err(ndev,
+> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+> index babbe19f57e2..90abff664495 100644
+> --- a/include/linux/hyperv.h
+> +++ b/include/linux/hyperv.h
+> @@ -1616,6 +1616,11 @@ struct hyperv_service_callback {
+>  	void (*callback)(void *context);
+>  };
+>  
+> +struct hv_dma_range {
+> +	dma_addr_t dma;
+> +	u32 mapping_size;
+> +};
+> +
+>  #define MAX_SRV_VER	0x7ffffff
+>  extern bool vmbus_prep_negotiate_resp(struct icmsg_hdr *icmsghdrp, u8 *buf, u32 buflen,
+>  				const int *fw_version, int fw_vercnt,
 
->
->
->>
->>>
->>>An obvious drawback is that it breaks the migration. Using UDP you 
->>>can have a very rich features support from the kernel where vsock 
->>>can't.
->>>
->>
->>Thanks for bringing this up!
->>What features does UDP support and datagram on vsock could not support?
->
->
->E.g the sendpage() and busy polling. And using UDP means qdiscs and 
->eBPF can work.
-
-Thanks, I see!
-
->
->
->>
->>>
->>>>
->>>>>>The virtio spec patch is here:
->>>>>>https://www.spinics.net/lists/linux-virtualization/msg50027.html
->>>>>
->>>>>Have a quick glance, I suggest to split mergeable rx buffer into an
->>>>>separate patch.
->>>>Sure.
->>>>
->>>>>But I think it's time to revisit the idea of unifying the 
->>>>>virtio-net and
->>>>>virtio-vsock. Otherwise we're duplicating features and bugs.
->>>>For mergeable rxbuf related code, I think a set of common helper
->>>>functions can be used by both virtio-net and virtio-vsock. For other
->>>>parts, that may not be very beneficial. I will think about more.
->>>>
->>>>If there is a previous email discussion about this topic, could 
->>>>you send me
->>>>some links? I did a quick web search but did not find any related
->>>>info. Thanks.
->>>
->>>
->>>We had a lot:
->>>
->>>[1] https://patchwork.kernel.org/project/kvm/patch/5BDFF537.3050806@huawei.com/
->>>[2] https://lists.linuxfoundation.org/pipermail/virtualization/2018-November/039798.html
->>>[3] https://www.lkml.org/lkml/2020/1/16/2043
->>>
->>
->>When I tried it, the biggest problem that blocked me were all the 
->>features strictly related to TCP/IP stack and ethernet devices that 
->>vsock device doesn't know how to handle: TSO, GSO, checksums, MAC, 
->>napi, xdp, min ethernet frame size, MTU, etc.
->
->
->It depends on which level we want to share:
->
->1) sharing codes
->2) sharing devices
->3) make vsock a protocol that is understood by the network core
->
->We can start from 1), the low level tx/rx logic can be shared at both 
->virtio-net and vhost-net. For 2) we probably need some work on the 
->spec, probably with a new feature bit to demonstrate that it's a vsock 
->device not a ethernet device. Then if it is probed as a vsock device we 
->won't let packet to be delivered in the TCP/IP stack. For 3), it would 
->be even harder and I'm not sure it's worth to do that.
->
->
->>
->>So in my opinion to unify them is not so simple, because vsock is not 
->>really an ethernet device, but simply a socket.
->
->
->We can start from sharing codes.
-
-Yep, I agree, and maybe the mergeable buffer is a good starting point to 
-share code!
-
-@Jiang, do you want to take a look of this possibility?
-
-Thanks,
-Stefano
+-- 
+Vitaly
 
