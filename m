@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BA33A2DE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28823A2DE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhFJOUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:20:41 -0400
-Received: from mail-pj1-f50.google.com ([209.85.216.50]:52934 "EHLO
-        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbhFJOUk (ORCPT
+        id S231345AbhFJOTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:19:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23527 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230387AbhFJOTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:20:40 -0400
-Received: by mail-pj1-f50.google.com with SMTP id h16so3745236pjv.2;
-        Thu, 10 Jun 2021 07:18:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=Qr+1IlJcgDNDchkAHw4h++pZkdHdyTM7HD3qP1Vs7HQ=;
-        b=qrwcXgGM1x7QALpPDd+KCgaUYfaG3b9bFaQT3jFcf95Xbsk2cqDKXblyVYwGoFg2ty
-         256uo970KVHY5Ut8qtlWoyYcREDQI0N2nFSNuFd5uOTTSd+T5Y/Rarm0/20sRHahxTfr
-         XGIWs+NAOJllN460pdFynNP5sl0uSaTOi8F6YfQB/liuupsUB5E8wiaK3ISWQrE1ZORc
-         AXAIbkG9gO09Fwyp559l73T5kqN1GFeCZ4/reb7MIK70IWVv2nfS5Jc2/5hEIuMHY69v
-         MyvoqruWTi/DJAbyXQgDK8vFLfykvUDkA+g3HGTdOjubms8CNNIvjJ8QKTkK296NxomG
-         01/g==
+        Thu, 10 Jun 2021 10:19:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623334659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2ettsBbd343DElYNQaOh/2OpHE71CrjjsdmVGaKy6xw=;
+        b=UOE1Jj3Hh9z2MsSSyVHJWTuTEvfi35bRA437/ZcEHZTqo3P1G64yPcDZ+vBlm42qgOQEV+
+        mMNh/rgT9LbGNIl0V6Guwyq+WeYQNc1Q8Lld9l6BzYYp82RTuKz6w+IpmUWYSiEboNWzwW
+        n6ywapyHqbomghBjmMKIR7Fdx1nTFvY=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-CvN1yRumOnmgnNpKuchCMA-1; Thu, 10 Jun 2021 10:17:36 -0400
+X-MC-Unique: CvN1yRumOnmgnNpKuchCMA-1
+Received: by mail-qv1-f69.google.com with SMTP id ce7-20020a05621403c7b0290238a4eac5c4so5565259qvb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:17:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=Qr+1IlJcgDNDchkAHw4h++pZkdHdyTM7HD3qP1Vs7HQ=;
-        b=sdFUv+hNrJt+OywWP41X5jizc+V+TJUghDzy3tXqLM2OtC1U8FD2VbL7pBbjXMBb1Z
-         3w3jM/dknh8pbL32r/FVLyP+eHzalpJDJfvmaKPHVKeinBm1WVonEPeBMjboKQSwqv/w
-         pY2lKGLdKPNSynSxIsvkj54J/Jek35md+QOIrca/GjEMlOzFAp5q7NC3ixVziY8PRzJ6
-         XpMM+9mh4dLVCyEzKP+8rLJ1AzfUSzctRq2UJ4G0JKo4dp2R0oeV0FIbSIpKNZTrVQV+
-         fOAoAcHhpsTs8LUfWrsN2CcCXNmP7sxu0WbmWDkJzfLCgoibM46mBJX7UxzQEWhf2JIU
-         FzRw==
-X-Gm-Message-State: AOAM533cuEzfQqfwkz0K9D3Z13jUqHHAm4+qRB5A1+PFAoi4dOmOAoWy
-        OZKMxANcBSW9gmRgwS/y+XE=
-X-Google-Smtp-Source: ABdhPJxervl3oVnLBCHRuQ8kkSIWXHCgBRo0ufvlwRVsg78SmcUvr6ue2xbrVsYa3LDG+S1Mp03vKQ==
-X-Received: by 2002:a17:90a:f197:: with SMTP id bv23mr3539616pjb.113.1623334649554;
-        Thu, 10 Jun 2021 07:17:29 -0700 (PDT)
-Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id 23sm2759820pjw.28.2021.06.10.07.17.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2ettsBbd343DElYNQaOh/2OpHE71CrjjsdmVGaKy6xw=;
+        b=Lb1lTOnMmMD634Iq/2eA3g+JF1YhgLqiVRw2otjF8bFlKYRCVwRojhC5fBmA5mE34M
+         gmVUOJIAeiKlZWNjJZF5xaLHH28fWSASKLsVGRn89PX6yYPErfQSOoc39THPwBDlSa0Y
+         /8C4gfILWCA9pyCpylitOWTXR+FQzIy9+wZSa5Bh3vOwFVWDALboVFvbjWSlZrw/dN7U
+         8eXb3cPeEqRwkYo6uA1KQpp/hE63t/aJp2R2TBuPeA5MjrryIcABzBbJWzoyIqvemGzG
+         8/I5X8kaT2Egvj0JX1jfPnmPrZSuIgpfiCWSYT0943Acn/fKA3N03/m585GRnL7opna0
+         Gl9A==
+X-Gm-Message-State: AOAM530+cZg4KNnw48OgnpkjCnbc/sqU8XrlNag+n6jawT01F58TUefe
+        tQ1dJMoM3LrwGDafnEMorsrftyjtERIzLLMMarkbJa/qbN/+ScBF09JllWg2ajAPoHA7Z2NE7Bt
+        mEhq+afikhXSNOtSzjOEeSzWK
+X-Received: by 2002:a37:2fc3:: with SMTP id v186mr4893540qkh.28.1623334656091;
+        Thu, 10 Jun 2021 07:17:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz5juRO0nS6UGUfzZy9UuXFLrxmwuTJ0ipKNPqy4Doeu+Jg0pREfqsFhkhccahOFDRbBsOHcA==
+X-Received: by 2002:a37:2fc3:: with SMTP id v186mr4893513qkh.28.1623334655890;
+        Thu, 10 Jun 2021 07:17:35 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-88-174-93-75-200.dsl.bell.ca. [174.93.75.200])
+        by smtp.gmail.com with ESMTPSA id q18sm2271315qkc.27.2021.06.10.07.17.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 07:17:28 -0700 (PDT)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     helgaas@kernel.org, robh+dt@kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, alexandru.elisei@arm.com, wqu@suse.com,
-        robin.murphy@arm.com, pgwipeout@gmail.com, ardb@kernel.org,
-        briannorris@chromium.org, shawn.lin@rock-chips.com
-Subject: Re: [PATCH v3 0/4] PCI: of: Improvements to handle 64-bit attribute
- for non-prefetchable ranges
-References: <20210607112856.3499682-1-punitagrawal@gmail.com>
-        <87lf7jqavd.wl-maz@kernel.org>
-Date:   Thu, 10 Jun 2021 23:17:26 +0900
-In-Reply-To: <87lf7jqavd.wl-maz@kernel.org> (Marc Zyngier's message of "Wed,
-        09 Jun 2021 17:08:22 +0100")
-Message-ID: <87r1h9kdmx.fsf@stealth>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Thu, 10 Jun 2021 07:17:35 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 10:17:34 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Will Deacon <will@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/11] mm: page_vma_mapped_walk(): settle PageHuge on
+ entry
+Message-ID: <YMIe/mn9TKpK3n4K@t490s>
+References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
+ <e31a483c-6d73-a6bb-26c5-43c3b880a2@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e31a483c-6d73-a6bb-26c5-43c3b880a2@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On Wed, Jun 09, 2021 at 11:36:36PM -0700, Hugh Dickins wrote:
+> page_vma_mapped_walk() cleanup: get the hugetlbfs PageHuge case
+> out of the way at the start, so no need to worry about it later.
+> 
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Cc: <stable@vger.kernel.org>
+> ---
+>  mm/page_vma_mapped.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+> index a6dbf714ca15..7c0504641fb8 100644
+> --- a/mm/page_vma_mapped.c
+> +++ b/mm/page_vma_mapped.c
+> @@ -153,10 +153,11 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+>  	if (pvmw->pmd && !pvmw->pte)
+>  		return not_found(pvmw);
+>  
+> -	if (pvmw->pte)
+> -		goto next_pte;
+> -
+>  	if (unlikely(PageHuge(page))) {
+> +		/* The only possible mapping was handled on last iteration */
+> +		if (pvmw->pte)
+> +			return not_found(pvmw);
+> +
+>  		/* when pud is not present, pte will be NULL */
+>  		pvmw->pte = huge_pte_offset(mm, pvmw->address, page_size(page));
+>  		if (!pvmw->pte)
 
-Marc Zyngier <maz@kernel.org> writes:
+Would it be even nicer to move the initial check to be after PageHuge() too?
 
-> Hi Punit,
->
-> On Mon, 07 Jun 2021 12:28:52 +0100,
-> Punit Agrawal <punitagrawal@gmail.com> wrote:
->> 
->> Hi,
->> 
->> This is the third iteration to improve handling of the 64-bit
->> attribute on non-prefetchable host bridge ranges. Previous version can
->> be found at [0][1].
->> 
->> This version is a small update over the previous version - changelog
->> below. If there is no futher feedback on the patches, please consider
->> merging them.
->
-> Thanks for this. This brings my test machine back to life:
->
-> Acked-by: Marc Zyngier <maz@kernel.org>
-> Tested-by: Marc Zyngier <maz@kernel.org>
+	if (pvmw->pmd && !pvmw->pte)
+		return not_found(pvmw);
 
-Thanks for taking the patches for a spin. Based on the comments on Patch
-1, there'll at least be another update. I'll copy you when I send that
-out.
+It looks already better, so no strong opinion.
+
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
 Thanks,
-Punit
 
-[...]
+-- 
+Peter Xu
 
