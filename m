@@ -2,63 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4667A3A37CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2823A37E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhFJX1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 19:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhFJX1g (ORCPT
+        id S231355AbhFJXbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 19:31:13 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:44926 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230368AbhFJXbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 19:27:36 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4886BC061574;
-        Thu, 10 Jun 2021 16:25:39 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 646B992009C; Fri, 11 Jun 2021 01:25:36 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 6070992009B;
-        Fri, 11 Jun 2021 01:25:36 +0200 (CEST)
-Date:   Fri, 11 Jun 2021 01:25:36 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Nix <nix@esperi.org.uk>, Khalid Aziz <khalid@gonehiking.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-cc:     Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PING][PATCH v2 0/5] Bring the BusLogic host bus adapter driver up
- to Y2021
-In-Reply-To: <alpine.DEB.2.21.2104201934280.44318@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2106110102340.1657@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2104201934280.44318@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Thu, 10 Jun 2021 19:31:12 -0400
+Received: by mail-wr1-f43.google.com with SMTP id f2so4016878wri.11;
+        Thu, 10 Jun 2021 16:29:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NkHOILVMygEEoZYONCaDsk6m76wqea7EMgUYfwAkp6E=;
+        b=AyrM6aYYpCk/W3IH4jtqrK0gdAw7TpdyWoH75b18wAoaCzycuAPB/OMesODG2n27Ak
+         CJhmqFVk5R6G7f3zjKNhxwJvEeqTKVRhaNjSv2oHwSwzcLmMANt4ydOCjHqWDhPgCjQs
+         qwYoIk+YNbxnj+/Ww8DLfV+gwj7y0KZD5oFvuo36CxEu8kwPKfdsCuvI4UU4vFk+OeoR
+         Ij93lWV/1GQ94JZ+/TbrCxe2vQrhrZ4sfAvO/IvSqSpICf1n1iK3f7VoVeZPHCsgGSRO
+         jFx74kMtQU5BaLC7+huYoNyI6c9N1alScZmUAyg0a9oYC50y+820qMlRIIPt6AuIa4YQ
+         0nfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NkHOILVMygEEoZYONCaDsk6m76wqea7EMgUYfwAkp6E=;
+        b=RBHRpBIHpeCxGqH8LnglD2g27wgv6rw7tDnGE5ECbgCl7dx9KdX2eHY2cZ4oygHA1t
+         mLcwgfIFg1has3m4B5Skhohjj/4TjhIIGJ1Fmk65u1Xu9tsOUaFw59bSi4Af+umjgbNq
+         gSDruRcb/YN3WhGyrLsWb2GeH3y5C2agLn5mK/9lx5zzwEg0Q3FD9RfAZDSkeVOSMJKy
+         n/pbkrwGZ3E85pZ9qWo+B+9gIFUDoGtqYpyKXgRvLsqm02Hnl6jnmmAYa9KsUlxfPh4W
+         gzNBkkADGhZlWDOXrB3Vu+D6hWYMu3X9wG7lSoLaOkTBbwKgE/t2ykaXOf1l3+xcQOlr
+         xfdw==
+X-Gm-Message-State: AOAM531EeP9y2T7F8cTWYbJALYLAd1XOJo3HYlHlYsHX8JeTg9CR2Rnd
+        +YUEVRHWxqssiqOfecNDIIs9/eWmrsY=
+X-Google-Smtp-Source: ABdhPJypWTWUMZFBvZneUf16gGGhOmY/Vj3MErZvt8ucDJz8tXaOY9ccvLRmQnYzWdMk9kcOr9TuVA==
+X-Received: by 2002:adf:e8cb:: with SMTP id k11mr754337wrn.127.1623367694702;
+        Thu, 10 Jun 2021 16:28:14 -0700 (PDT)
+Received: from cluster5 ([80.76.206.81])
+        by smtp.gmail.com with ESMTPSA id w13sm5478549wrc.31.2021.06.10.16.28.13
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 10 Jun 2021 16:28:14 -0700 (PDT)
+From:   Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Matthew Hagan <mnhagan88@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 0/5] ARM: dts: NSP: add Meraki MX64/MX65
+Date:   Fri, 11 Jun 2021 00:27:12 +0100
+Message-Id: <20210610232727.1383117-1-mnhagan88@gmail.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021, Maciej W. Rozycki wrote:
+Changes from v1:
+- add dtb entries to Makefile
+- add bindings entries to brcm,nsp.yaml
+- change naming to include Meraki name
+- remove unnecessary portions, including pinctrl from meraki-mx6x-common
+- add A0 variant for MX64
 
->  Questions, comments, concerns?  Otherwise please apply.
+Matthew Hagan (5):
+  dt-bindings: arm: bcm: NSP: add Meraki MX64/MX65
+  ARM: dts: NSP: Add Meraki MX64/MX65 to Makefile
+  ARM: dts: NSP: Add common bindings for MX64/MX65
+  ARM: dts: NSP: Add DT files for Meraki MX64 series
+  ARM: dts: NSP: Add DT files for Meraki MX65 series
 
- Ping for: 
+ .../devicetree/bindings/arm/bcm/brcm,nsp.yaml |   6 +
+ arch/arm/boot/dts/Makefile                    |   6 +
+ arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi | 298 ++++++++++++++++++
+ .../boot/dts/bcm958625-meraki-kingpin.dtsi    | 131 ++++++++
+ .../arm/boot/dts/bcm958625-meraki-mx64-a0.dts |  45 +++
+ arch/arm/boot/dts/bcm958625-meraki-mx64.dts   |  15 +
+ .../boot/dts/bcm958625-meraki-mx64w-a0.dts    |  55 ++++
+ arch/arm/boot/dts/bcm958625-meraki-mx64w.dts  |  23 ++
+ arch/arm/boot/dts/bcm958625-meraki-mx65.dts   |  15 +
+ arch/arm/boot/dts/bcm958625-meraki-mx65w.dts  |  23 ++
+ .../dts/bcm958625-meraki-mx6x-common.dtsi     | 148 +++++++++
+ 11 files changed, 765 insertions(+)
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-kingpin.dtsi
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64-a0.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64w-a0.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64w.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx65.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx65w.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi
 
-<https://patchwork.kernel.org/project/linux-scsi/list/?series=470455&archive=both>.
+-- 
+2.26.3
 
- Where are we with this patch series?  I can see it's been archived in 
-patchwork in the new state.  With the unexpected serial device fixes which 
-preempted me and which I've just posted, moving them off the table I now 
-have some spare cycles to get back here, but I'm not sure what to do.
-
- Nix was kind enough to verify and tell me off-list that 5/5 still works 
-correctly with his system that required the earlier change referred there 
-and the need for which was not completely understood back then -- Nix, are 
-you OK with adding a `Tested-by' tag for your verification?
-
- Otherwise is there anything I need to do to move forward with these 
-changes?  Shall I just repost the series as it was given that it still 
-applies to Linus master verbatim?
-
-  Maciej
