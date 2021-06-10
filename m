@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FC43A381D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AC23A3820
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbhFJXw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 19:52:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33724 "EHLO mail.kernel.org"
+        id S230351AbhFJXzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 19:55:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhFJXw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 19:52:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7D2F6136D;
-        Thu, 10 Jun 2021 23:50:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623369060;
-        bh=iwUAIwA2W61o1prvvamdUIf6AtaFz5r7O1ts0WnAZvs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=1hl+iDvOesB0fP8b2CzjhanTWLNZOLkfRKgOqgpfhGZM15tqXB+coZwUEFJ2lASH/
-         XRLZjV1KhdbNKDn1pEge5HGh0MSAlnXvhQiELoSAsV6sFnPd/MbX1Qz8koYfTmJ/21
-         p61OmRf9ebrOMJdCoGcgNkHPV/mSGJTsF2RpdD3k=
-Date:   Thu, 10 Jun 2021 16:50:59 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
-Cc:     linux-mm@kvack.org, Linus Torvalds <torvalds@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm/hwpoison: do not lock page again when
- me_huge_page() successfully recovers
-Message-Id: <20210610165059.6618498250f60674c1bb9c03@linux-foundation.org>
-In-Reply-To: <20210609072029.74645-1-nao.horiguchi@gmail.com>
-References: <20210609072029.74645-1-nao.horiguchi@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229578AbhFJXzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 19:55:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E95A6108E;
+        Thu, 10 Jun 2021 23:53:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623369201;
+        bh=1zH71ovmh14caYSetueMphwRQtBcsUIGDJVzbxjkDA4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=bAnrWtUKfsYY8bKRX96hNC9KgOJvw7yBFz6jbgyb24/i7w7jHXes/SQXiJVDjUEH0
+         2RckCXVG/7wONhAz+u7LVAVPqVnzVkPBvX2fk9OuYtcvaIce0S2lY0PK29MuCZbSyd
+         TC0s4/dSIeMITkYCHqIOZs3YIfyirJS3Cz5ODPp0CilGh+THHRcoeq9u6KSr0qQbtH
+         i/ojbILdmQqanIpA4fRng82hMZrgr0Ig6Oa5NddDQAdqaqPx3I+RDOmwuJxm3lKIyp
+         5t8JK20diJoRlaiRxk187oZIyjx72wg1Os07x8peK5QRyiwhKD72z9LSKvlezcUCSu
+         Z8wV30FzjXplw==
+Date:   Thu, 10 Jun 2021 18:53:19 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shanker R Donthineni <sdonthineni@nvidia.com>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Sinan Kaya <okaya@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 7/8] PCI: Enable NO_BUS_RESET quirk for Nvidia GPUs
+Message-ID: <20210610235319.GA2796526@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <762dd911-2899-f4e7-da38-860316febbf0@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  9 Jun 2021 16:20:29 +0900 Naoya Horiguchi <nao.horiguchi@gmail.com> wrote:
+On Thu, Jun 10, 2021 at 06:43:26PM -0500, Shanker R Donthineni wrote:
+> On 6/10/21 6:16 PM, Bjorn Helgaas wrote:
+> >> From: Shanker Donthineni <sdonthineni@nvidia.com>
+> >>
+> >> On select platforms, some Nvidia GPU devices do not work with SBR.
+> > Interesting that you say "on select platforms."  Apparently SBR does
+> > work for some of these GPUs, but not on all platforms?  If you have
+> > any clarification here, I can still update the commit log.
+> >
+> Yes, SBR works for some GPUs but GPUs which are listed in this quirk will
+> not work and these GPUs are available only on selected server platforms.
+> I believe commit text reflects the issue but please update if needed. 
 
-> Currently me_huge_page() temporary unlocks page to perform some actions
-> then locks it again later.  My testcase (which calls hard-offline on
-> some tail page in a hugetlb, then accesses the address of the hugetlb
-> range) showed that page allocation code detects this page lock on buddy
-> page and printed out "BUG: Bad page state" message.
-> 
-> check_new_page_bad() does not consider a page with __PG_HWPOISON as bad
-> page, so this flag works as kind of filter, but this filtering doesn't
-> work in this case because the "bad page" is not the actual hwpoisoned
-> page. So stop locking page again.  Actions to be taken depend on the
-> page type of the error, so page unlocking should be done in ->action()
-> callbacks.  So let's make it assumed and change all existing callbacks
-> that way.
+It sounds like there is no actual dependency on the platform.  So even
+though these GPUs are only available on certain platforms, if one were
+to move one of them to a different, non-supported platform, SBR would
+still not work.
 
-I'm getting a reject against Linus mainline here, and a -stable patch
-doesn't want such things happening.
+So I think I'll remove the reference to "select platforms" since it
+doesn't add any useful information and might suggest that SBR should
+work on some platforms, if you could only find the right ones.
 
---- mm/memory-failure.c
-+++ mm/memory-failure.c
-@@ -1782,6 +1796,8 @@ int memory_failure(unsigned long pfn, int flags)
- 
- identify_page_state:
- 	res = identify_page_state(pfn, p, page_flags);
-+	mutex_unlock(&mf_mutex);
-+	return res;
- unlock_page:
- 	unlock_page(p);
- unlock_mutex:
-
-and...  That mutex_unlock() looks odd.  The patch adds no matching
-mutex_lock?
+Bjorn
