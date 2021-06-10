@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28823A2DE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CAA3A2DF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhFJOTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:19:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23527 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230387AbhFJOTg (ORCPT
+        id S231316AbhFJOWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:22:00 -0400
+Received: from mail-pf1-f173.google.com ([209.85.210.173]:40837 "EHLO
+        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230084AbhFJOV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:19:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623334659;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2ettsBbd343DElYNQaOh/2OpHE71CrjjsdmVGaKy6xw=;
-        b=UOE1Jj3Hh9z2MsSSyVHJWTuTEvfi35bRA437/ZcEHZTqo3P1G64yPcDZ+vBlm42qgOQEV+
-        mMNh/rgT9LbGNIl0V6Guwyq+WeYQNc1Q8Lld9l6BzYYp82RTuKz6w+IpmUWYSiEboNWzwW
-        n6ywapyHqbomghBjmMKIR7Fdx1nTFvY=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-460-CvN1yRumOnmgnNpKuchCMA-1; Thu, 10 Jun 2021 10:17:36 -0400
-X-MC-Unique: CvN1yRumOnmgnNpKuchCMA-1
-Received: by mail-qv1-f69.google.com with SMTP id ce7-20020a05621403c7b0290238a4eac5c4so5565259qvb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:17:36 -0700 (PDT)
+        Thu, 10 Jun 2021 10:21:56 -0400
+Received: by mail-pf1-f173.google.com with SMTP id q25so1744617pfh.7;
+        Thu, 10 Jun 2021 07:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=S7U7wM1689XPFk0ln7YagGhi2kwC7oBCIYjLHGTATmA=;
+        b=j1ssCm/VIao3T0Xc2kwXH6tQqWfrySQ1IoYffbIUZhSffD09z3SFuktT6padpAZaa/
+         O6dOSr9MfmJ3BaiaCjc0PA9hj1D56rpnhXvTnUEKbRnxOiqwlkMuTGEQqMho8+laNO3A
+         Ps4g2Ewhuj5lqgG3+vb3Pr6h4xORMt0ouVqwcSeoFvA+lTlqRvdEpC++3hJnHyetmZQS
+         Y1STui7T1ekgTq6zzEkx3p9dSbyB7UT0DfPgF2o16fgVpJiH+bKr87Q/n9chxbr1Li1Z
+         sUz1mgnrmF2Vvd/rNoSeF09YxbBnVBhhC9qN6Rqm62kNLgrUCEgGYVPXMjW1fXotfIvd
+         p8kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2ettsBbd343DElYNQaOh/2OpHE71CrjjsdmVGaKy6xw=;
-        b=Lb1lTOnMmMD634Iq/2eA3g+JF1YhgLqiVRw2otjF8bFlKYRCVwRojhC5fBmA5mE34M
-         gmVUOJIAeiKlZWNjJZF5xaLHH28fWSASKLsVGRn89PX6yYPErfQSOoc39THPwBDlSa0Y
-         /8C4gfILWCA9pyCpylitOWTXR+FQzIy9+wZSa5Bh3vOwFVWDALboVFvbjWSlZrw/dN7U
-         8eXb3cPeEqRwkYo6uA1KQpp/hE63t/aJp2R2TBuPeA5MjrryIcABzBbJWzoyIqvemGzG
-         8/I5X8kaT2Egvj0JX1jfPnmPrZSuIgpfiCWSYT0943Acn/fKA3N03/m585GRnL7opna0
-         Gl9A==
-X-Gm-Message-State: AOAM530+cZg4KNnw48OgnpkjCnbc/sqU8XrlNag+n6jawT01F58TUefe
-        tQ1dJMoM3LrwGDafnEMorsrftyjtERIzLLMMarkbJa/qbN/+ScBF09JllWg2ajAPoHA7Z2NE7Bt
-        mEhq+afikhXSNOtSzjOEeSzWK
-X-Received: by 2002:a37:2fc3:: with SMTP id v186mr4893540qkh.28.1623334656091;
-        Thu, 10 Jun 2021 07:17:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz5juRO0nS6UGUfzZy9UuXFLrxmwuTJ0ipKNPqy4Doeu+Jg0pREfqsFhkhccahOFDRbBsOHcA==
-X-Received: by 2002:a37:2fc3:: with SMTP id v186mr4893513qkh.28.1623334655890;
-        Thu, 10 Jun 2021 07:17:35 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-88-174-93-75-200.dsl.bell.ca. [174.93.75.200])
-        by smtp.gmail.com with ESMTPSA id q18sm2271315qkc.27.2021.06.10.07.17.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 07:17:35 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 10:17:34 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Will Deacon <will@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/11] mm: page_vma_mapped_walk(): settle PageHuge on
- entry
-Message-ID: <YMIe/mn9TKpK3n4K@t490s>
-References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
- <e31a483c-6d73-a6bb-26c5-43c3b880a2@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S7U7wM1689XPFk0ln7YagGhi2kwC7oBCIYjLHGTATmA=;
+        b=kWJ0n92EMSemDX8LCjIXl8nXzyu0NXPmNfJA/KwwaLVT59wFJ6d9CXrx+1thVckuQm
+         OloP7fD0zPnEPSKzo++vi2GpXMKgMFR/69Qr5ezRaGS7CT3OhhJOraSAJ1899mXft0ke
+         sbA8v7XnLGOa65igfE9KGrhkGaGO57CB9CpaADqu8QKMlv4xBpEtLL3wX5/xdLkcBro/
+         kT9X8WOy5QW5ISwoWH+0SuOyacepYUq/T2TupIAwYzL+P1cejLGpBoYqCt73P8PEvvay
+         cBUDhpdVdZWwmxPf4okrjk+DLXa9pab5VZTbSZii8ZYigACwvLmaAqoMQ2p6eQO4oEQE
+         dsrg==
+X-Gm-Message-State: AOAM530Bxq8Bw8GdvqHfhlwO8NSPrVUZZD9qoYds0///pQywi5vf1hvT
+        0I3PrlCNQA8LquJmQjTlWO0=
+X-Google-Smtp-Source: ABdhPJykpYU7kOZkoptn+vRUH+LpqhlVAnDQIkp8KIQpRwT8RFYkpZNT1LtsR90ESObN7s+cfunBTA==
+X-Received: by 2002:a63:7404:: with SMTP id p4mr5123864pgc.405.1623334740224;
+        Thu, 10 Jun 2021 07:19:00 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id s22sm2725797pfd.94.2021.06.10.07.18.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 07:18:59 -0700 (PDT)
+Subject: Re: [RFC PATCH V3 03/11] x86/Hyper-V: Add new hvcall guest address
+ host visibility support
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        rppt@kernel.org, hannes@cmpxchg.org, cai@lca.pw,
+        krish.sadhukhan@oracle.com, saravanand@fb.com,
+        Tianyu.Lan@microsoft.com, konrad.wilk@oracle.com, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
+        xen-devel@lists.xenproject.org, davem@davemloft.net,
+        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com,
+        sunilmut@microsoft.com
+References: <20210530150628.2063957-1-ltykernel@gmail.com>
+ <20210530150628.2063957-4-ltykernel@gmail.com>
+ <878s3iyrtg.fsf@vitty.brq.redhat.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <2a0170a9-e4d5-1c63-7901-416094f6ab64@gmail.com>
+Date:   Thu, 10 Jun 2021 22:18:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e31a483c-6d73-a6bb-26c5-43c3b880a2@google.com>
+In-Reply-To: <878s3iyrtg.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:36:36PM -0700, Hugh Dickins wrote:
-> page_vma_mapped_walk() cleanup: get the hugetlbfs PageHuge case
-> out of the way at the start, so no need to worry about it later.
+Hi Vitaly:
+	Thanks for your review.
+
+On 6/10/2021 5:47 PM, Vitaly Kuznetsov wrote:
+>> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+>> index 606f5cc579b2..632281b91b44 100644
+>> --- a/arch/x86/include/asm/hyperv-tlfs.h
+>> +++ b/arch/x86/include/asm/hyperv-tlfs.h
+>> @@ -262,6 +262,17 @@ enum hv_isolation_type {
+>>   #define HV_X64_MSR_TIME_REF_COUNT	HV_REGISTER_TIME_REF_COUNT
+>>   #define HV_X64_MSR_REFERENCE_TSC	HV_REGISTER_REFERENCE_TSC
+>>   
+>> +/* Hyper-V GPA map flags */
+>> +#define HV_MAP_GPA_PERMISSIONS_NONE            0x0
+>> +#define HV_MAP_GPA_READABLE                    0x1
+>> +#define HV_MAP_GPA_WRITABLE                    0x2
+>> +
+>> +enum vmbus_page_visibility {
+>> +	VMBUS_PAGE_NOT_VISIBLE = 0,
+>> +	VMBUS_PAGE_VISIBLE_READ_ONLY = 1,
+>> +	VMBUS_PAGE_VISIBLE_READ_WRITE = 3
+>> +};
+>> +
+> Why do we need both flags and the enum? I don't see HV_MAP_GPA_* being
+> used anywhere and VMBUS_PAGE_VISIBLE_READ_WRITE looks like
+> HV_MAP_GPA_READABLE | HV_MAP_GPA_WRITABLE.
 > 
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
-> ---
->  mm/page_vma_mapped.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+> As this is used to communicate with the host, I'd suggest to avoid using
+> enum and just use flags everywhere.
 > 
-> diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-> index a6dbf714ca15..7c0504641fb8 100644
-> --- a/mm/page_vma_mapped.c
-> +++ b/mm/page_vma_mapped.c
-> @@ -153,10 +153,11 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
->  	if (pvmw->pmd && !pvmw->pte)
->  		return not_found(pvmw);
->  
-> -	if (pvmw->pte)
-> -		goto next_pte;
-> -
->  	if (unlikely(PageHuge(page))) {
-> +		/* The only possible mapping was handled on last iteration */
-> +		if (pvmw->pte)
-> +			return not_found(pvmw);
-> +
->  		/* when pud is not present, pte will be NULL */
->  		pvmw->pte = huge_pte_offset(mm, pvmw->address, page_size(page));
->  		if (!pvmw->pte)
 
-Would it be even nicer to move the initial check to be after PageHuge() too?
+Nice catch. Will update in the next version.
 
-	if (pvmw->pmd && !pvmw->pte)
-		return not_found(pvmw);
-
-It looks already better, so no strong opinion.
-
-Reviewed-by: Peter Xu <peterx@redhat.com>
-
-Thanks,
-
--- 
-Peter Xu
-
+Thanks.
