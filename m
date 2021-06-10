@@ -2,131 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308CC3A3745
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C051B3A374F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhFJWnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:43:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230001AbhFJWnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:43:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C75D061364;
-        Thu, 10 Jun 2021 22:41:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623364905;
-        bh=1EzAaDvaFtP7Jm3FouqrhNK+M8umJ1dLnxcuadWZZyM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=g82LyrLtHJp7n9C1Fx1pxaYvj9XON2CaM/MB4WCFLewGEEtjxSTSVKJvrrkPjaW1y
-         dKPI6lw30iEApcacy1AWsuW9xysCexDR+NzTYrnZ3XW6HdQbAOjpfA2x9ogU5CGxlw
-         LE2Uwof9jb+h+eM3CmCAMyj6HoLXf18Yx2/aeaeMWqTl1L4RUTZJ8Hi5UFBB/vpSqh
-         jp/tVDVI+NYkUtesKw+oedi3RN2OQQ4FcFl/qqWnrrXxdklPKZr5JCpduLEP8BJlm7
-         JfOF3em9A6lw0aVB5ePzSWUytakcyfxm+96yHwyo0mrW4HUwUSBArTm/ZEdldxYcnc
-         nQvVI8GgSPakQ==
-Date:   Thu, 10 Jun 2021 17:41:43 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
-        Sanket.Goswami@amd.com, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v7 1/4] PCI: Introduce pcim_alloc_irq_vectors()
-Message-ID: <20210610224143.GA2785655@bjorn-Precision-5520>
+        id S231171AbhFJWpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 18:45:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28426 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230462AbhFJWpG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 18:45:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623364989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V5yzb21nbg0WXga74jQ6xsvVDaavF5Xwuj6ArQYTfOY=;
+        b=M1YK6yb9pe86NT7q23TTdZXC8HIbtgqxKNSyyqoazVmHG5Mu/Lr8N+givFtOfgxrhiFqHQ
+        6SzzFq5UnvMGyX1e+TRf8vYJAkoyFeX+PmUjoZEUn7pKbEJVz4nr+cWH4PJ5XI2FCaIQzi
+        kHxksnZewNzAcbwUOMCbV47xU7MYCXk=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-331-EGftjJSbPGuFZmvlRq6G3Q-1; Thu, 10 Jun 2021 18:43:08 -0400
+X-MC-Unique: EGftjJSbPGuFZmvlRq6G3Q-1
+Received: by mail-ed1-f71.google.com with SMTP id u26-20020a05640207dab02903935beb5c71so9192282edy.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:43:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=V5yzb21nbg0WXga74jQ6xsvVDaavF5Xwuj6ArQYTfOY=;
+        b=MzWoTB/l2xn1giG/YuTd+815tK15I/qfyYjYStG64M4aRv3VJdIeFypD1yeo3bXZEp
+         nGbjExBLCMzR/ttbb90kuquXeVoj5Yz3c6lfkP+GCHifnPXiCHbUqA0kVGzI80TpjsB/
+         +Jz8raqA7m5UykEPIY1GrYYm9l71cAJbbkCnDQ6o+Yt72Yykuis8x//7LzyTmui5Tx1X
+         2zyzoaDcqDPp2k6smqGbV+YvsXUov9oDJ9MlIr7M21jOQH5ebZFITENMsNLrQf3LCItN
+         cLY1n1qPyfhf1QI5XT5y5+NmzRgW7Tugh8JC+BwpV4IiLlvWyGCtw2fb1mXSOHcjf6va
+         PZEg==
+X-Gm-Message-State: AOAM532CXH66RbASpASzmGP6bQChk7GSTy908ZWWpVm9fkU9zsXniUQG
+        MgSlZaPw3gsybZbMWbjPCpmTjWhDI5HwYAlFmV3TO+DgFDdbTma+i8Hu3/sioJlbBGDz2CYPCCy
+        WCXRedKTVKbicFXaymWwx9ZOk
+X-Received: by 2002:a17:906:e44:: with SMTP id q4mr686719eji.120.1623364987091;
+        Thu, 10 Jun 2021 15:43:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx3Of813xtsFNMUywKOhdyaCRUGvejxpofMzlcEGjq5vOPDHQSpbSONXjsKSs4Nlp7UDRGRdQ==
+X-Received: by 2002:a17:906:e44:: with SMTP id q4mr686706eji.120.1623364986880;
+        Thu, 10 Jun 2021 15:43:06 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id ci12sm1489704ejc.17.2021.06.10.15.43.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 15:43:06 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 627F718071E; Fri, 11 Jun 2021 00:43:05 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        David Hildenbrand <david@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
+        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+In-Reply-To: <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
+References: <YH2hs6EsPTpDAqXc@mit.edu>
+ <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
+ <YIx7R6tmcRRCl/az@mit.edu>
+ <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
+ <YK+esqGjKaPb+b/Q@kroah.com>
+ <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+ <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
+ <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
+ <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
+ <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
+ <20210610152633.7e4a7304@oasis.local.home>
+ <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 11 Jun 2021 00:43:05 +0200
+Message-ID: <87tum5uyrq.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607153916.1021016-2-zhengdejin5@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:39:13PM +0800, Dejin Zheng wrote:
-> Introduce pcim_alloc_irq_vectors(), a device-managed version of
-> pci_alloc_irq_vectors(). Introducing this function can simplify
-> the error handling path in many drivers.
-> 
-> And use pci_free_irq_vectors() to replace some code in pcim_release(),
-> they are equivalent, and no functional change. It is more explicit
-> that pcim_alloc_irq_vectors() is a device-managed function.
+Shuah Khan <skhan@linuxfoundation.org> writes:
 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 452351025a09..e3b3fc59bd35 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -1989,10 +1989,7 @@ static void pcim_release(struct device *gendev, void *res)
->  	struct pci_devres *this = res;
->  	int i;
->  
-> -	if (dev->msi_enabled)
-> -		pci_disable_msi(dev);
-> -	if (dev->msix_enabled)
-> -		pci_disable_msix(dev);
-> +	pci_free_irq_vectors(dev);
+> On 6/10/21 1:26 PM, Steven Rostedt wrote:
+>> On Thu, 10 Jun 2021 21:39:49 +0300
+>> Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
+>> 
+>>> There will always be more informal discussions between on-site
+>>> participants. After all, this is one of the benefits of conferences, by
+>>> being all together we can easily organize ad-hoc discussions. This is
+>>> traditionally done by finding a not too noisy corner in the conference
+>>> center, would it be useful to have more break-out rooms with A/V
+>>> equipment than usual ?
+>> 
+>> I've been giving this quite some thought too, and I've come to the
+>> understanding (and sure I can be wrong, but I don't think that I am),
+>> is that when doing a hybrid event, the remote people will always be
+>> "second class citizens" with respect to the communication that is going
+>> on. Saying that we can make it the same is not going to happen unless
+>> you start restricting what people can do that are present, and that
+>> will just destroy the conference IMO.
+>> 
+>> That said, I think we should add more to make the communication better
+>> for those that are not present. Maybe an idea is to have break outs
+>> followed by the presentation and evening events that include remote
+>> attendees to discuss with those that are there about what they might
+>> have missed. Have incentives at these break outs (free stacks and
+>> beer?) to encourage the live attendees to attend and have a discussion
+>> with the remote attendees.
+>> 
+>> The presentations would have remote access, where remote attendees can
+>> at the very least write in some chat their questions or comments. If
+>> video and connectivity is good enough, perhaps have a screen where they
+>> can show up and talk, but that may have logistical limitations.
+>> 
+>
+> You are absolutely right that the remote people will have a hard time
+> participating and keeping up with in-person participants. I have a
+> couple of ideas on how we might be able to improve remote experience
+> without restricting in-person experience.
+>
+> - Have one or two moderators per session to watch chat and Q&A to enable
+>    remote participants to chime in and participate.
+> - Moderators can make sure remote participation doesn't go unnoticed and
+>    enable taking turns for remote vs. people participating in person.
+>
+> It will be change in the way we interact in all in-person sessions for
+> sure, however it might enhance the experience for remote attendees.
 
-If I understand correctly, this hunk is a nice simplification, but
-actually has nothing to do with making pcim_alloc_irq_vectors().  I
-have it split to a separate patch in my local tree.  Or am I wrong
-about that?
+This is basically how IETF meetings function: At the beginning of every
+session, a volunteer "jabber scribe" is selected to watch the chat and
+relay any questions to a microphone in the room. And the video streaming
+platform has a "virtual queue" that remove participants can enter and
+the session chairs are then responsible for giving people a chance to
+speak. Works reasonably well, I'd say :)
 
->  	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++)
->  		if (this->region_mask & (1 << i))
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index c20211e59a57..5783262c4643 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -1730,6 +1730,7 @@ static inline struct pci_dev *pci_get_class(unsigned int class,
->  
->  static inline void pci_set_master(struct pci_dev *dev) { }
->  static inline int pci_enable_device(struct pci_dev *dev) { return -EIO; }
-> +static inline int pci_is_managed(struct pci_dev *pdev) { return 0; }
->  static inline void pci_disable_device(struct pci_dev *dev) { }
->  static inline int pcim_enable_device(struct pci_dev *pdev) { return -EIO; }
->  static inline int pci_assign_resource(struct pci_dev *dev, int i)
-> @@ -1825,6 +1826,30 @@ pci_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
->  					      NULL);
->  }
->  
-> +/**
-> + * pcim_alloc_irq_vectors - a device-managed pci_alloc_irq_vectors()
-> + * @dev:		PCI device to operate on
-> + * @min_vecs:		minimum number of vectors required (must be >= 1)
-> + * @max_vecs:		maximum (desired) number of vectors
-> + * @flags:		flags or quirks for the allocation
-> + *
-> + * Return the number of vectors allocated, (which might be smaller than
-> + * @max_vecs) if successful, or a negative error code on error. If less
-> + * than @min_vecs interrupt vectors are available for @dev the function
-> + * will fail with -ENOSPC.
-> + *
-> + * It depends on calling pcim_enable_device() to make IRQ resources
-> + * manageable.
-> + */
-> +static inline int
-> +pcim_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
-> +			unsigned int max_vecs, unsigned int flags)
-> +{
-> +	if (!pci_is_managed(dev))
-> +		return -EINVAL;
-> +	return pci_alloc_irq_vectors(dev, min_vecs, max_vecs, flags);
+-Toke
 
-This is great, but can you explain how pci_alloc_irq_vectors()
-magically becomes a managed interface if we've already called
-pcim_enable_device()?
-
-I certainly believe it does; I'd just like to put a hint in the commit
-log since my 5 minutes of grepping around didn't make it obvious to
-me.
-
-I see that pcim_enable_device() sets pdev->is_managed, but I didn't
-find the connection between that and pci_alloc_irq_vectors().
-
-> +}
-> +
->  /* Include architecture-dependent settings and functions */
->  
->  #include <asm/pci.h>
-> -- 
-> 2.30.1
-> 
