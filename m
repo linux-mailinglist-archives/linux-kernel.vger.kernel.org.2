@@ -2,119 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A35F3A369A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736103A36B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhFJVsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 17:48:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46334 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231528AbhFJVsJ (ORCPT
+        id S230351AbhFJVzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:55:24 -0400
+Received: from mail-pg1-f171.google.com ([209.85.215.171]:35468 "EHLO
+        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230077AbhFJVzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:48:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623361572;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=70NgQXU1//Wzo0iLFWpl3KegQtCCZiFqqErbm/ywz0w=;
-        b=Vrg4XV9hgyphlC4J6SavACOWbYunocoMgGzQMYEVEGpZJ2gaAlbF54D27zkeGJxN3raSad
-        OV6LieyfXL9jZWa39pAnDdrZzV99KDo0Jjf1c6GV4rBU+kS3ZBGQPSNXyVQgALHMiMIbrR
-        Avx6WvzKl2wJgH+Z4nKj8iKlFKO3m5w=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-142-nBEQxMQyOfSVdC8xzS9s9Q-1; Thu, 10 Jun 2021 17:46:11 -0400
-X-MC-Unique: nBEQxMQyOfSVdC8xzS9s9Q-1
-Received: by mail-oi1-f197.google.com with SMTP id j20-20020aca17140000b02901f3ef48ce7dso1895020oii.12
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 14:46:11 -0700 (PDT)
+        Thu, 10 Jun 2021 17:55:22 -0400
+Received: by mail-pg1-f171.google.com with SMTP id o9so838710pgd.2;
+        Thu, 10 Jun 2021 14:53:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=70NgQXU1//Wzo0iLFWpl3KegQtCCZiFqqErbm/ywz0w=;
-        b=V0R6teKDcjesQ4EH1iEHxifQlPMlHsF5K+svCUYNj8+qRA3t/syt46UjSJMxHMa3bG
-         5dMZlF6NOYAFD6KUUVv3mIXtxOMuN8kwrVzSEg+vS2CoKUXNym1eR7k3MgIWZWvTcChS
-         6hNtBfCMVOKD7ffVyYWli3KkTyxgWEKT9QB7MCsdh/mxKFenj++GQslLXCASl4LjrGPI
-         YoLG3DIzltiPVe8MO/AZKdhoY9I1r6jO2MS9HV1FkVO+ukLgbdwyw2Tya7Guh6+YDZIL
-         YAPQpkE7eI/Ee2sVzwGaALufjEUW6g1lbp7/tavjAj7dtagxGBV38se6ZVsBHyqJZIZK
-         pqag==
-X-Gm-Message-State: AOAM531gCgE9BgV+wcvE2DAvs4vNERDz+HCa6U/ypvwHFOFtJkRYStie
-        O9I9uXRJZp8kLpZ/85UTikYZWkTggkU6N6dPAmAZgaYCYey6UCt9pmV015Z2OFNRLwXi/RsqeTt
-        BQV+jM6+2ivHP08gX66rGz/iA
-X-Received: by 2002:a9d:554f:: with SMTP id h15mr358483oti.237.1623361570541;
-        Thu, 10 Jun 2021 14:46:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz5xdp4Jwej97Ul1cmx7ubsXWjXdzvP8bKBwCPJ0ttg8L6uH+IckI6kmbkyG1b9obIsJHKQNQ==
-X-Received: by 2002:a9d:554f:: with SMTP id h15mr358446oti.237.1623361570280;
-        Thu, 10 Jun 2021 14:46:10 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id i15sm881839ots.39.2021.06.10.14.46.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iEZb1HAGunNhdY/5Q0B2TV+VUw7SSqmOp3IfiC1KV6w=;
+        b=LlM0EbxyzOdNSgxyKNDPYtwDG1WVHV+v4fouU3DbziOjdnCFbtqXLM7cBPaqmHn/wY
+         zQrUE1e6OaFw6hcH0WXCkqqRxcukL3q3bzaCOTTqfBRCiYcmu03tF2nbNubikt92uekU
+         o3vVJgH0RGd7biDy05iNc6pqv2cdGIwToCXOtACVtx0zSuKs7biRJzGjaALlyKHbPm6/
+         uQ685VztdDyalme+cY9E6FAM8r81704fyMvE6Kz/KRLt9E+fFt/Qk+eT2LUJNhXAketD
+         jAW9uloYiRJtQr1YXyIBnnyRJmw69R3cLbvNIsHr+3oOY5dDHSOnpEyT4TTbBfUJbnS/
+         BcOw==
+X-Gm-Message-State: AOAM531yJYGQ0hsuUnP8uxb5UR1U2kh7K0j7Bn3tI9aVm0LNJXV53mvr
+        Z5TmPRvPZNOiF4OmSlc1M7gGZRzaVQ==
+X-Google-Smtp-Source: ABdhPJw2uSITGPgILdhT5spNIAo7woiW7K/FwcK/RX8wK9+o6A5ugRaagkUTjKfKG++E54w8NU8sRw==
+X-Received: by 2002:a63:e316:: with SMTP id f22mr470463pgh.100.1623361993434;
+        Thu, 10 Jun 2021 14:53:13 -0700 (PDT)
+Received: from robh.at.kernel.org ([208.184.162.218])
+        by smtp.gmail.com with ESMTPSA id h8sm3326621pjf.7.2021.06.10.14.52.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 14:46:09 -0700 (PDT)
-From:   trix@redhat.com
-To:     robh+dt@kernel.org, tsbogend@alpha.franken.de, jic23@kernel.org,
-        lars@metafoo.de, tomas.winkler@intel.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, nbd@nbd.name,
-        lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        matthias.bgg@gmail.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, apw@canonical.com, joe@perches.com,
-        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        chenhuacai@kernel.org, jiaxun.yang@flygoat.com,
-        zhangqing@loongson.cn, jbhayana@google.com, sean.wang@mediatek.com,
-        shayne.chen@mediatek.com, Soul.Huang@mediatek.com,
-        shorne@gmail.com, gsomlo@gmail.com,
-        pczarnecki@internships.antmicro.com, mholenko@antmicro.com,
-        davidgow@google.com
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com, Tom Rix <trix@redhat.com>
-Subject: [PATCH 7/7] mt76: use SPDX header file comment style
-Date:   Thu, 10 Jun 2021 14:44:38 -0700
-Message-Id: <20210610214438.3161140-9-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210610214438.3161140-1-trix@redhat.com>
-References: <20210610214438.3161140-1-trix@redhat.com>
+        Thu, 10 Jun 2021 14:53:11 -0700 (PDT)
+Received: (nullmailer pid 2435399 invoked by uid 1000);
+        Thu, 10 Jun 2021 21:46:48 -0000
+Date:   Thu, 10 Jun 2021 16:46:48 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: pci: Add devicetree binding for
+ Qualcomm PCIe EP controller
+Message-ID: <20210610214648.GA2407603@robh.at.kernel.org>
+References: <20210603103814.95177-1-manivannan.sadhasivam@linaro.org>
+ <20210603103814.95177-2-manivannan.sadhasivam@linaro.org>
+ <YLw9de/J7h5KZtHu@builder.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLw9de/J7h5KZtHu@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Sat, Jun 05, 2021 at 10:13:57PM -0500, Bjorn Andersson wrote:
+> On Thu 03 Jun 05:38 CDT 2021, Manivannan Sadhasivam wrote:
+> 
+> > Add devicetree binding for Qualcomm PCIe EP controller used in platforms
+> > like SDX55. The EP controller is based on the Designware core with
+> > Qualcomm specific wrappers.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 144 ++++++++++++++++++
+> >  1 file changed, 144 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> > new file mode 100644
+> > index 000000000000..3e357cb03a5c
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> > @@ -0,0 +1,144 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm PCIe Endpoint Controller binding
+> > +
+> > +maintainers:
+> > +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > +
+> > +allOf:
+> > +  - $ref: "pci-ep.yaml#"
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: qcom,sdx55-pcie-ep
+> 
+> The binding looks good, but this is going to cause us an inevitable
+> warning as we'd have to describe the controller twice (rc + ep) in the
+> sdx55.dtsi.
+> 
+> @Rob, what do you suggest we do about this, because it's the same
+> problem currently responsible for hundreds of warnings in the case of
+> GENI (where each node is duplicated for different functions).
 
-header files should use '/* SPDX ... */
-Change from c file comment syle to header style
+What determines the mode? Assuming it is fixed for a platform, can't you 
+just have 2 .dtsi files and include the right one. The SoC file could 
+have the common h/w specific parts (clks, resets, etc.) as those 
+shouldn't really be different depending on the mode. IIRC, some PCI 
+bindings do this by design (meaning there's only one definition).
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/net/wireless/mediatek/mt76/mt7615/sdio.h     | 2 +-
- drivers/net/wireless/mediatek/mt76/mt7915/testmode.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/sdio.h b/drivers/net/wireless/mediatek/mt76/mt7615/sdio.h
-index 05180971de841..03877d89e1520 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/sdio.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/sdio.h
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: ISC
-+/* SPDX-License-Identifier: ISC */
- /* Copyright (C) 2020 MediaTek Inc.
-  *
-  * Author: Sean Wang <sean.wang@mediatek.com>
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/testmode.h b/drivers/net/wireless/mediatek/mt76/mt7915/testmode.h
-index 8f8533ef9859f..397a6b5532bcc 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/testmode.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/testmode.h
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: ISC
-+/* SPDX-License-Identifier: ISC */
- /* Copyright (C) 2020 MediaTek Inc. */
- 
- #ifndef __MT7915_TESTMODE_H
--- 
-2.26.3
-
+Rob
