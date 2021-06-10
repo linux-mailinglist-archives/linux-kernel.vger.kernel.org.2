@@ -2,361 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94023A2D71
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0413A3A2D76
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhFJNvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:51:55 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:6008 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230289AbhFJNvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:51:54 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15ADhRwN021302;
-        Thu, 10 Jun 2021 15:49:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=zGTTzhaUVC9nEHP/Db6ADLqp7ZdTZ+d9X5zLPlCiQr0=;
- b=YIF+QBQ2c/v7OxdrIKKkqw0OuY0CD7LcgvZ879YHcoejO/Jl27ZIurDHvQ6vPu466cWn
- DLZeUNRVTkr1THn/i3SFR53h231ey6rDns8aSWo0Av0/EPiUec5T6k+cd93Hu+D6fm+k
- xeXA8Nr8BkVbTZrk/5ENJLBqBt7HySukRRYSHoLYugRtT+P2GXVjotAH6iB1i+WEVlxh
- 6g72LbACgAGpOICCsjBrTSUYdtq8YTYmslfgVWgPCJxamzKvcwHeGybCxmDtBY9wHhcb
- KF/21t8kmTTCR6R6saLq4Epmi7l8DZNWYHvoKrqJqLrIn7KrsETffV4xvrbt+7w5vF99 Aw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 392xq7y349-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 15:49:35 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C536810002A;
-        Thu, 10 Jun 2021 15:49:33 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A5D022291B4;
-        Thu, 10 Jun 2021 15:49:33 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Jun
- 2021 15:49:33 +0200
-Subject: Re: [PATCH v2 1/2] clocksource: arm_global_timer: implement rate
- compensation whenever source clock changes
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andrea Merello <andrea.merello@gmail.com>, <tglx@linutronix.de>
-CC:     Patrice Chotard <patrice.chotard@st.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        =?UTF-8?Q?S=c3=b6ren_Brinkmann?= <soren.brinkmann@xilinx.com>
-References: <20210406130045.15491-1-andrea.merello@gmail.com>
- <20210406130045.15491-2-andrea.merello@gmail.com>
- <0d33db1f-8af1-1519-aba1-3e46afa4cf4c@linaro.org>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <1a7d339e-4ac4-86c2-a66b-3741781d8618@foss.st.com>
-Date:   Thu, 10 Jun 2021 15:49:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231215AbhFJNx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:53:27 -0400
+Received: from mout.gmx.net ([212.227.15.18]:45035 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230322AbhFJNxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 09:53:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1623333079;
+        bh=FhMPsDuNTkIcroGrocTv4Th0r3ifg2AX/Ou/LtkyD9w=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=BiEwTRBehru6TfGJTBvOvDehaU04aZ2JPWlbqgTiNkYiSQZCKw9axNjrAeleXMOYA
+         cyrE6xEwHr568LYnX/0/Enyjr/mck1FR2PHJHW6psEZnGP0smMHTPlCjO2zx/krKqO
+         3s5F9KUC5S0CSdRs3kJxGc/1DG40TeDwiR4cIMU0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MrQIv-1lWKLg2EdT-00oaTm; Thu, 10
+ Jun 2021 15:51:19 +0200
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     gregkh@linuxfoundation.org
+Cc:     linux@armlinux.org.uk, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Subject: [PATCH] serial: amba-pl011: add RS485 support
+Date:   Thu, 10 Jun 2021 15:50:04 +0200
+Message-Id: <20210610135004.7585-1-LinoSanfilippo@gmx.de>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <0d33db1f-8af1-1519-aba1-3e46afa4cf4c@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-10_07:2021-06-10,2021-06-10 signatures=0
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:SnbNrTGSw/Dk5Z77Um92lL9RApvFqWM9OyYcRkT18i759IWDWHa
+ dXa/Sk0oPoKWsoogaKj3u9dBf1sBpfmcruoNVmSUByJgfl/7dVuP5oNcjute+vjzrl6X22O
+ 9SvfUUSTiOWlX9ec0CrztB3i/2LZexfXRd9jtYoFT4B8nTls/qsuGxpoxnx3DzWAyBkJg1X
+ TX/C/lP5TdSVaLMldm/8Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9EmTWMNaGhc=:xwR3pbxMImgeBCm9Ug6+y6
+ zrIC0rlDFhfMtxY16wwLj83SfhMxoNSaQcY1VmUZFGJ0jwOVFI3c0ZHQTSYBMK3xg7dzveG5u
+ JQc2byn40bNSepdeJcmM2+A5ff7KrPddreTCX7Wg29FqlasXQj9fKVZUuowQOUt3uBRGwCQzy
+ INQia0lKCTEyCYvW41nI1OyVvNO7D9rleApmP2xapvbPieMzK6CstPgixF7KP0WTh3XIiqlw+
+ Fdi7Vk8vQCkI1ABFawEKS1DYVBp3XHl5+dCLGIRVtJbQLbHJ1A8qy2pMclYmnl27jW+jFEphH
+ pFxNDWPM3xTdT9dUvzBBGV0rzOq/C7sxoFiw4FFM3sxwNC8sT7I7IcIT4biXeBf5S/3cE5dbs
+ Q493Wf4GXjoAGNWUuP+W2Fo65EOEx8zQYhO5I68BmGK/EEFhSmhh5A4EuWCuc1cbTlQsgILn9
+ LJMbB+zwhcdznk5WENbuybO1/ASBob8H4qoVLSGHfyqL2An5XVaoFqAjirr8VHT3KxnaFHAuX
+ XXt2YALP2ObLR84fzQ/+i6a7DKOKGvpZm0jYH7qhNBUzXrgqbMtyCPZXAuuXzY2e3mM5BeZ/D
+ fCQmk0fmJPorHKqjTJPscwXlLv6iNyx+Kfot5Ncg8IPhcWL7kJbRvG0H038cJymwpvQDC7KEs
+ PjtH2Mrfkf9sP7pA5dHyNhrf1o3okXneKDMCJYNQr6gWm6IdZULSyQJWAsKVxKntlOFGoAuqd
+ rdaxDWJq8MXVIJx8Ebo+A3JAVkMdy2mrA6mTgquJT+ZsOxe6JxoLTNw8pTMf8IChfCB/uZMsX
+ M5SGqIyUdQGSasXFNYqm4yW0XxNuKKOlLExelmv0bo6mh5H+2PA/j1UbFawl1TZv08h8w/QBa
+ wHoIT6U+XdN+iTbkd+c1nJng+aqghNKagWSFV56tzkWUrPuHh89LrbQs6ZiCmfmf4YZazqMiQ
+ tOoRfAdiIecRqsUYxY9WRk7BFLg9AAM1k8437hP4jc3yz/3l1vcy+iOxH/lo2nZ+gpgozIuPw
+ XRUNJerr2z5BpU5ULEW5gG6yaX4m7CaB6FzWJyYh2N2yjHmw1EIPSJ96U6CyxwXi8G3YHU4jW
+ GtiCR2ETYJ9FdJ6Bh0q5DAtsar+MAOt1Yl5JyJ5CxNGgkxEwwMm1+oKOA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel
-
-Thanks for pinging me, i forget this patch.
-
-On 6/10/21 3:01 PM, Daniel Lezcano wrote:
-> 
-> Hi Patrice,
-> 
-> do you have any comment about these changes ?
-> 
-> 
-> On 06/04/2021 15:00, Andrea Merello wrote:
->> This patch adds rate change notification support for the parent clock;
->> should that clock change, then we try to adjust the our prescaler in order
->> to compensate (i.e. we adjust to still get the same timer frequency).
->>
->> This is loosely based on what it's done in timer-cadence-ttc. timer-sun51,
->> mips-gic-timer and smp_twd.c also seem to look at their parent clock rate
->> and to perform some kind of adjustment whenever needed.
->>
->> In this particular case we have only one single counter and prescaler for
->> all clocksource, clockevent and timer_delay, and we just update it for all
->> (i.e. we don't let it go and call clockevents_update_freq() to notify to
->> the kernel that our rate has changed).
->>
->> Note that, there is apparently no other way to fixup things, because once
->> we call register_current_timer_delay(), specifying the timer rate, it seems
->> that that rate is not supposed to change ever.
->>
->> In order for this mechanism to work, we have to make assumptions about how
->> much the initial clock is supposed to eventually decrease from the initial
->> one, and set our initial prescaler to a value that we can eventually
->> decrease enough to compensate. We provide an option in KConfig for this.
->>
->> In case we end up in a situation in which we are not able to compensate the
->> parent clock change, we fail returning NOTIFY_BAD.
->>
->> This fixes a real-world problem with Zynq arch not being able to use this
->> driver and CPU_FREQ at the same time (because ARM global timer is fed by
->> the CPU clock, which may keep changing when CPU_FREQ is enabled).
->>
->> Signed-off-by: Andrea Merello <andrea.merello@gmail.com>
->> Cc: Patrice Chotard <patrice.chotard@st.com>
->> Cc: linux-kernel@vger.kernel.org
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: Michal Simek <michal.simek@xilinx.com>
->> Cc: Sören Brinkmann <soren.brinkmann@xilinx.com>
->> ---
->>  drivers/clocksource/Kconfig            |  13 +++
->>  drivers/clocksource/arm_global_timer.c | 122 +++++++++++++++++++++++--
->>  2 files changed, 125 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
->> index 39aa21d01e05..19fc5f8883e0 100644
->> --- a/drivers/clocksource/Kconfig
->> +++ b/drivers/clocksource/Kconfig
->> @@ -358,6 +358,19 @@ config ARM_GLOBAL_TIMER
->>  	help
->>  	  This option enables support for the ARM global timer unit.
->>  
->> +config ARM_GT_INITIAL_PRESCALER_VAL
->> +	int "ARM global timer initial prescaler value"
->> +	default 1
->> +	depends on ARM_GLOBAL_TIMER
->> +	help
->> +	  When the ARM global timer initializes, its current rate is declared
->> +	  to the kernel and maintained forever. Should it's parent clock
->> +	  change, the driver tries to fix the timer's internal prescaler.
->> +	  On some machs (i.e. Zynq) the initial prescaler value thus poses
->> +	  bounds about how much the parent clock is allowed to decrease or
->> +	  increase wrt the initial clock value.
->> +	  This affects CPU_FREQ max delta from the initial frequency.
->> +
->>  config ARM_TIMER_SP804
->>  	bool "Support for Dual Timer SP804 module" if COMPILE_TEST
->>  	depends on GENERIC_SCHED_CLOCK && CLKDEV_LOOKUP
->> diff --git a/drivers/clocksource/arm_global_timer.c b/drivers/clocksource/arm_global_timer.c
->> index 88b2d38a7a61..60a8047fd32e 100644
->> --- a/drivers/clocksource/arm_global_timer.c
->> +++ b/drivers/clocksource/arm_global_timer.c
->> @@ -31,6 +31,10 @@
->>  #define GT_CONTROL_COMP_ENABLE		BIT(1)	/* banked */
->>  #define GT_CONTROL_IRQ_ENABLE		BIT(2)	/* banked */
->>  #define GT_CONTROL_AUTO_INC		BIT(3)	/* banked */
->> +#define GT_CONTROL_PRESCALER_SHIFT      8
->> +#define GT_CONTROL_PRESCALER_MAX        0xF
->> +#define GT_CONTROL_PRESCALER_MASK       (GT_CONTROL_PRESCALER_MAX << \
->> +					 GT_CONTROL_PRESCALER_SHIFT)
->>  
->>  #define GT_INT_STATUS	0x0c
->>  #define GT_INT_STATUS_EVENT_FLAG	BIT(0)
->> @@ -39,6 +43,7 @@
->>  #define GT_COMP1	0x14
->>  #define GT_AUTO_INC	0x18
->>  
->> +#define MAX_F_ERR 50
->>  /*
->>   * We are expecting to be clocked by the ARM peripheral clock.
->>   *
->> @@ -46,7 +51,8 @@
->>   * the units for all operations.
->>   */
->>  static void __iomem *gt_base;
->> -static unsigned long gt_clk_rate;
->> +struct notifier_block gt_clk_rate_change_nb;
->> +static u32 gt_psv_new, gt_psv_bck, gt_target_rate;
->>  static int gt_ppi;
->>  static struct clock_event_device __percpu *gt_evt;
->>  
->> @@ -96,7 +102,10 @@ static void gt_compare_set(unsigned long delta, int periodic)
->>  	unsigned long ctrl;
->>  
->>  	counter += delta;
->> -	ctrl = GT_CONTROL_TIMER_ENABLE;
->> +	ctrl = readl(gt_base + GT_CONTROL);
->> +	ctrl &= ~(GT_CONTROL_COMP_ENABLE | GT_CONTROL_IRQ_ENABLE |
->> +		  GT_CONTROL_AUTO_INC | GT_CONTROL_AUTO_INC);
->> +	ctrl |= GT_CONTROL_TIMER_ENABLE;
->>  	writel_relaxed(ctrl, gt_base + GT_CONTROL);
->>  	writel_relaxed(lower_32_bits(counter), gt_base + GT_COMP0);
->>  	writel_relaxed(upper_32_bits(counter), gt_base + GT_COMP1);
->> @@ -123,7 +132,7 @@ static int gt_clockevent_shutdown(struct clock_event_device *evt)
->>  
->>  static int gt_clockevent_set_periodic(struct clock_event_device *evt)
->>  {
->> -	gt_compare_set(DIV_ROUND_CLOSEST(gt_clk_rate, HZ), 1);
->> +	gt_compare_set(DIV_ROUND_CLOSEST(gt_target_rate, HZ), 1);
->>  	return 0;
->>  }
->>  
->> @@ -177,7 +186,7 @@ static int gt_starting_cpu(unsigned int cpu)
->>  	clk->cpumask = cpumask_of(cpu);
->>  	clk->rating = 300;
->>  	clk->irq = gt_ppi;
->> -	clockevents_config_and_register(clk, gt_clk_rate,
->> +	clockevents_config_and_register(clk, gt_target_rate,
->>  					1, 0xffffffff);
->>  	enable_percpu_irq(clk->irq, IRQ_TYPE_NONE);
->>  	return 0;
->> @@ -232,9 +241,28 @@ static struct delay_timer gt_delay_timer = {
->>  	.read_current_timer = gt_read_long,
->>  };
->>  
->> +static void gt_write_presc(u32 psv)
->> +{
->> +	u32 reg;
->> +
->> +	reg = readl(gt_base + GT_CONTROL);
->> +	reg &= ~GT_CONTROL_PRESCALER_MASK;
->> +	reg |= psv << GT_CONTROL_PRESCALER_SHIFT;
->> +	writel(reg, gt_base + GT_CONTROL);
->> +}
->> +
->> +static u32 gt_read_presc(void)
->> +{
->> +	u32 reg;
->> +
->> +	reg = readl(gt_base + GT_CONTROL);
->> +	reg &= GT_CONTROL_PRESCALER_MASK;
->> +	return reg >> GT_CONTROL_PRESCALER_SHIFT;
->> +}
->> +
->>  static void __init gt_delay_timer_init(void)
->>  {
->> -	gt_delay_timer.freq = gt_clk_rate;
->> +	gt_delay_timer.freq = gt_target_rate;
->>  	register_current_timer_delay(&gt_delay_timer);
->>  }
->>  
->> @@ -243,18 +271,81 @@ static int __init gt_clocksource_init(void)
->>  	writel(0, gt_base + GT_CONTROL);
->>  	writel(0, gt_base + GT_COUNTER0);
->>  	writel(0, gt_base + GT_COUNTER1);
->> -	/* enables timer on all the cores */
->> -	writel(GT_CONTROL_TIMER_ENABLE, gt_base + GT_CONTROL);
->> +	/* set prescaler and enable timer on all the cores */
->> +	writel(((CONFIG_ARM_GT_INITIAL_PRESCALER_VAL - 1) <<
->> +		GT_CONTROL_PRESCALER_SHIFT)
->> +	       | GT_CONTROL_TIMER_ENABLE, gt_base + GT_CONTROL);
->>  
->>  #ifdef CONFIG_CLKSRC_ARM_GLOBAL_TIMER_SCHED_CLOCK
->> -	sched_clock_register(gt_sched_clock_read, 64, gt_clk_rate);
->> +	sched_clock_register(gt_sched_clock_read, 64, gt_target_rate);
->>  #endif
->> -	return clocksource_register_hz(&gt_clocksource, gt_clk_rate);
->> +	return clocksource_register_hz(&gt_clocksource, gt_target_rate);
->> +}
->> +
->> +static int gt_clk_rate_change_cb(struct notifier_block *nb,
->> +				 unsigned long event, void *data)
->> +{
->> +	struct clk_notifier_data *ndata = data;
->> +
->> +	switch (event) {
->> +	case PRE_RATE_CHANGE:
->> +	{
->> +		int psv;
->> +
->> +		psv = DIV_ROUND_CLOSEST(ndata->new_rate,
->> +					gt_target_rate);
->> +
->> +		if (abs(gt_target_rate - (ndata->new_rate / psv)) > MAX_F_ERR)
->> +			return NOTIFY_BAD;
->> +
->> +		psv--;
->> +
->> +		/* prescaler within legal range? */
->> +		if (psv < 0 || psv > GT_CONTROL_PRESCALER_MAX)
->> +			return NOTIFY_BAD;
->> +
->> +		/*
->> +		 * store timer clock ctrl register so we can restore it in case
->> +		 * of an abort.
->> +		 */
->> +		gt_psv_bck = gt_read_presc();
->> +		gt_psv_new = psv;
->> +		/* scale down: adjust divider in post-change notification */
->> +		if (ndata->new_rate < ndata->old_rate)
->> +			return NOTIFY_DONE;
->> +
->> +		/* scale up: adjust divider now - before frequency change */
->> +		gt_write_presc(psv);
->> +		break;
->> +	}
->> +	case POST_RATE_CHANGE:
->> +		/* scale up: pre-change notification did the adjustment */
->> +		if (ndata->new_rate > ndata->old_rate)
->> +			return NOTIFY_OK;
->> +
->> +		/* scale down: adjust divider now - after frequency change */
->> +		gt_write_presc(gt_psv_new);
->> +		break;
->> +
->> +	case ABORT_RATE_CHANGE:
->> +		/* we have to undo the adjustment in case we scale up */
->> +		if (ndata->new_rate < ndata->old_rate)
->> +			return NOTIFY_OK;
->> +
->> +		/* restore original register value */
->> +		gt_write_presc(gt_psv_bck);
->> +		break;
->> +	default:
->> +		return NOTIFY_DONE;
->> +	}
->> +
->> +	return NOTIFY_DONE;
->>  }
->>  
->>  static int __init global_timer_of_register(struct device_node *np)
->>  {
->>  	struct clk *gt_clk;
->> +	static unsigned long gt_clk_rate;
->>  	int err = 0;
->>  
->>  	/*
->> @@ -292,11 +383,20 @@ static int __init global_timer_of_register(struct device_node *np)
->>  	}
->>  
->>  	gt_clk_rate = clk_get_rate(gt_clk);
->> +	gt_target_rate = gt_clk_rate / CONFIG_ARM_GT_INITIAL_PRESCALER_VAL;
->> +	gt_clk_rate_change_nb.notifier_call =
->> +		gt_clk_rate_change_cb;
->> +	err = clk_notifier_register(gt_clk, &gt_clk_rate_change_nb);
->> +	if (err) {
->> +		pr_warn("Unable to register clock notifier\n");
->> +		goto out_clk;
->> +	}
->> +
->>  	gt_evt = alloc_percpu(struct clock_event_device);
->>  	if (!gt_evt) {
->>  		pr_warn("global-timer: can't allocate memory\n");
->>  		err = -ENOMEM;
->> -		goto out_clk;
->> +		goto out_clk_nb;
->>  	}
->>  
->>  	err = request_percpu_irq(gt_ppi, gt_clockevent_interrupt,
->> @@ -326,6 +426,8 @@ static int __init global_timer_of_register(struct device_node *np)
->>  	free_percpu_irq(gt_ppi, gt_evt);
->>  out_free:
->>  	free_percpu(gt_evt);
->> +out_clk_nb:
->> +	clk_notifier_unregister(gt_clk, &gt_clk_rate_change_nb);
->>  out_clk:
->>  	clk_disable_unprepare(gt_clk);
->>  out_unmap:
->>
-> 
-> 
-Reviewed-by: Patrice Chotard <patrice.chotard@foss.st.com>
-Thanks
-Patrice
+QWRkIGJhc2ljIHN1cHBvcnQgZm9yIFJTNDg1OiBQcm92aWRlIGEgY2FsbGJhY2sgdG8gY29uZmln
+dXJlIHJzNDg1CnNldHRpbmdzLiBIYW5kbGUgdGhlIFJTNDg1IHNwZWNpZmljIHBhcnQgaW4gdGhl
+IGZ1bmN0aW9ucwpwbDAxMV9yczQ4NV90eF9zdGFydCgpIGFuZCBwbDAxMV9yczQ4NV90eF9zdG9w
+KCkgd2hpY2ggZXh0ZW5kIHRoZSBnZW5lcmljCnN0YXJ0L3N0b3AgY2FsbGJhY2tzLgpCZXNpZGUg
+dmlhIElPQ1RMIGZyb20gdXNlcnNwYWNlIFJTNDg1IGNhbiBiZSBlbmFibGVkIGJ5IG1lYW5zIG9m
+IHRoZQpkZXZpY2UgdHJlZSBwcm9wZXJ0eSAicnM0ODUtZW5hYmxlZC1hdC1ib290LXRpbWUiLgoK
+U2lnbmVkLW9mZi1ieTogTGlubyBTYW5maWxpcHBvIDxMaW5vU2FuZmlsaXBwb0BnbXguZGU+Ci0t
+LQpUaGlzIHBhdGNoIGhhcyBiZWVuIHRlc3RlZCB3aXRoIGEgUmFzcGJlcnJ5IFBpIENNMy4KCiBk
+cml2ZXJzL3R0eS9zZXJpYWwvYW1iYS1wbDAxMS5jIHwgMTQzICsrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKystCiAxIGZpbGUgY2hhbmdlZCwgMTQwIGluc2VydGlvbnMoKyksIDMgZGVsZXRp
+b25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy90dHkvc2VyaWFsL2FtYmEtcGwwMTEuYyBiL2Ry
+aXZlcnMvdHR5L3NlcmlhbC9hbWJhLXBsMDExLmMKaW5kZXggNzg2ODJjMTIxNTZhLi4zNmU4Yjkz
+OGNkYmEgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvdHR5L3NlcmlhbC9hbWJhLXBsMDExLmMKKysrIGIv
+ZHJpdmVycy90dHkvc2VyaWFsL2FtYmEtcGwwMTEuYwpAQCAtMjY1LDYgKzI2NSw4IEBAIHN0cnVj
+dCB1YXJ0X2FtYmFfcG9ydCB7CiAJdW5zaWduZWQgaW50CQlvbGRfY3I7CQkvKiBzdGF0ZSBkdXJp
+bmcgc2h1dGRvd24gKi8KIAl1bnNpZ25lZCBpbnQJCWZpeGVkX2JhdWQ7CS8qIHZlbmRvci1zZXQg
+Zml4ZWQgYmF1ZCByYXRlICovCiAJY2hhcgkJCXR5cGVbMTJdOworCWJvb2wJCQlyczQ4NV90eF9z
+dGFydGVkOworCXVuc2lnbmVkIGludAkJcnM0ODVfdHhfZHJhaW5faW50ZXJ2YWw7IC8qIHVzZWNz
+ICovCiAjaWZkZWYgQ09ORklHX0RNQV9FTkdJTkUKIAkvKiBETUEgc3R1ZmYgKi8KIAlib29sCQkJ
+dXNpbmdfdHhfZG1hOwpAQCAtMjc1LDYgKzI3Nyw4IEBAIHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCB7
+CiAjZW5kaWYKIH07CiAKK3N0YXRpYyB1bnNpZ25lZCBpbnQgcGwwMTFfdHhfZW1wdHkoc3RydWN0
+IHVhcnRfcG9ydCAqcG9ydCk7CisKIHN0YXRpYyB1bnNpZ25lZCBpbnQgcGwwMTFfcmVnX3RvX29m
+ZnNldChjb25zdCBzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCwKIAl1bnNpZ25lZCBpbnQgcmVn
+KQogewpAQCAtMTI4Miw2ICsxMjg2LDM0IEBAIHN0YXRpYyBpbmxpbmUgYm9vbCBwbDAxMV9kbWFf
+cnhfcnVubmluZyhzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCkKICNkZWZpbmUgcGwwMTFfZG1h
+X2ZsdXNoX2J1ZmZlcglOVUxMCiAjZW5kaWYKIAorc3RhdGljIGludCBwbDAxMV9yczQ4NV90eF9z
+dG9wKHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwKQoreworCXN0cnVjdCB1YXJ0X3BvcnQgKnBv
+cnQgPSAmdWFwLT5wb3J0OworCXUzMiBjcjsKKworCS8qIFdhaXQgdW50aWwgaGFyZHdhcmUgdHgg
+cXVldWUgaXMgZW1wdHkgKi8KKwl3aGlsZSAoIXBsMDExX3R4X2VtcHR5KHBvcnQpKQorCQl1ZGVs
+YXkodWFwLT5yczQ4NV90eF9kcmFpbl9pbnRlcnZhbCk7CisKKwlpZiAocG9ydC0+cnM0ODUuZGVs
+YXlfcnRzX2FmdGVyX3NlbmQpCisJCW1kZWxheShwb3J0LT5yczQ4NS5kZWxheV9ydHNfYWZ0ZXJf
+c2VuZCk7CisKKwljciA9IHBsMDExX3JlYWQodWFwLCBSRUdfQ1IpOworCisJaWYgKHBvcnQtPnJz
+NDg1LmZsYWdzICYgU0VSX1JTNDg1X1JUU19BRlRFUl9TRU5EKQorCQljciAmPSB+VUFSVDAxMV9D
+Ul9SVFM7CisJZWxzZQorCQljciB8PSBVQVJUMDExX0NSX1JUUzsKKwkvKiBEaXNhYmxlIHRoZSB0
+cmFuc21pdHRlciBhbmQgcmVlbmFibGUgdGhlIHRyYW5zY2VpdmVyICovCisJY3IgJj0gflVBUlQw
+MTFfQ1JfVFhFOworCWNyIHw9IFVBUlQwMTFfQ1JfUlhFOworCXBsMDExX3dyaXRlKGNyLCB1YXAs
+IFJFR19DUik7CisKKwl1YXAtPnJzNDg1X3R4X3N0YXJ0ZWQgPSBmYWxzZTsKKworCXJldHVybiAw
+OworfQorCiBzdGF0aWMgdm9pZCBwbDAxMV9zdG9wX3R4KHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQp
+CiB7CiAJc3RydWN0IHVhcnRfYW1iYV9wb3J0ICp1YXAgPQpAQCAtMTI5MCw2ICsxMzIyLDkgQEAg
+c3RhdGljIHZvaWQgcGwwMTFfc3RvcF90eChzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0KQogCXVhcC0+
+aW0gJj0gflVBUlQwMTFfVFhJTTsKIAlwbDAxMV93cml0ZSh1YXAtPmltLCB1YXAsIFJFR19JTVND
+KTsKIAlwbDAxMV9kbWFfdHhfc3RvcCh1YXApOworCisJaWYgKChwb3J0LT5yczQ4NS5mbGFncyAm
+IFNFUl9SUzQ4NV9FTkFCTEVEKSAmJiB1YXAtPnJzNDg1X3R4X3N0YXJ0ZWQpCisJCXBsMDExX3Jz
+NDg1X3R4X3N0b3AodWFwKTsKIH0KIAogc3RhdGljIGJvb2wgcGwwMTFfdHhfY2hhcnMoc3RydWN0
+IHVhcnRfYW1iYV9wb3J0ICp1YXAsIGJvb2wgZnJvbV9pcnEpOwpAQCAtMTM4MCw2ICsxNDE1LDMx
+IEBAIHN0YXRpYyBib29sIHBsMDExX3R4X2NoYXIoc3RydWN0IHVhcnRfYW1iYV9wb3J0ICp1YXAs
+IHVuc2lnbmVkIGNoYXIgYywKIAlyZXR1cm4gdHJ1ZTsKIH0KIAorc3RhdGljIHZvaWQgcGwwMTFf
+cnM0ODVfdHhfc3RhcnQoc3RydWN0IHVhcnRfYW1iYV9wb3J0ICp1YXApCit7CisJc3RydWN0IHVh
+cnRfcG9ydCAqcG9ydCA9ICZ1YXAtPnBvcnQ7CisJdTMyIGNyOworCisJLyogRW5hYmxlIHRyYW5z
+bWl0dGVyICovCisJY3IgPSBwbDAxMV9yZWFkKHVhcCwgUkVHX0NSKTsKKwljciB8PSBVQVJUMDEx
+X0NSX1RYRTsKKwkvKiBEaXNhYmxlIHJlY2VpdmVyIGlmIGhhbGYtZHVwbGV4ICovCisJaWYgKCEo
+cG9ydC0+cnM0ODUuZmxhZ3MgJiBTRVJfUlM0ODVfUlhfRFVSSU5HX1RYKSkKKwkJY3IgJj0gflVB
+UlQwMTFfQ1JfUlhFOworCisJaWYgKHBvcnQtPnJzNDg1LmZsYWdzICYgU0VSX1JTNDg1X1JUU19P
+Tl9TRU5EKQorCQljciAmPSB+VUFSVDAxMV9DUl9SVFM7CisJZWxzZQorCQljciB8PSBVQVJUMDEx
+X0NSX1JUUzsKKworCXBsMDExX3dyaXRlKGNyLCB1YXAsIFJFR19DUik7CisKKwlpZiAocG9ydC0+
+cnM0ODUuZGVsYXlfcnRzX2JlZm9yZV9zZW5kKQorCQltZGVsYXkocG9ydC0+cnM0ODUuZGVsYXlf
+cnRzX2JlZm9yZV9zZW5kKTsKKworCXVhcC0+cnM0ODVfdHhfc3RhcnRlZCA9IHRydWU7Cit9CisK
+IC8qIFJldHVybnMgdHJ1ZSBpZiB0eCBpbnRlcnJ1cHRzIGhhdmUgdG8gYmUgKGtlcHQpIGVuYWJs
+ZWQgICovCiBzdGF0aWMgYm9vbCBwbDAxMV90eF9jaGFycyhzdHJ1Y3QgdWFydF9hbWJhX3BvcnQg
+KnVhcCwgYm9vbCBmcm9tX2lycSkKIHsKQEAgLTEzOTcsNiArMTQ1NywxMCBAQCBzdGF0aWMgYm9v
+bCBwbDAxMV90eF9jaGFycyhzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCwgYm9vbCBmcm9tX2ly
+cSkKIAkJcmV0dXJuIGZhbHNlOwogCX0KIAorCWlmICgodWFwLT5wb3J0LnJzNDg1LmZsYWdzICYg
+U0VSX1JTNDg1X0VOQUJMRUQpICYmCisJICAgICF1YXAtPnJzNDg1X3R4X3N0YXJ0ZWQpCisJCXBs
+MDExX3JzNDg1X3R4X3N0YXJ0KHVhcCk7CisKIAkvKiBJZiB3ZSBhcmUgdXNpbmcgRE1BIG1vZGUs
+IHRyeSB0byBzZW5kIHNvbWUgY2hhcmFjdGVycy4gKi8KIAlpZiAocGwwMTFfZG1hX3R4X2lycSh1
+YXApKQogCQlyZXR1cm4gdHJ1ZTsKQEAgLTE1NDIsNiArMTYwNiw5IEBAIHN0YXRpYyB2b2lkIHBs
+MDExX3NldF9tY3RybChzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0LCB1bnNpZ25lZCBpbnQgbWN0cmwp
+CiAJICAgIGNvbnRhaW5lcl9vZihwb3J0LCBzdHJ1Y3QgdWFydF9hbWJhX3BvcnQsIHBvcnQpOwog
+CXVuc2lnbmVkIGludCBjcjsKIAorCWlmIChwb3J0LT5yczQ4NS5mbGFncyAmIFNFUl9SUzQ4NV9F
+TkFCTEVEKQorCQltY3RybCAmPSB+VElPQ01fUlRTOworCiAJY3IgPSBwbDAxMV9yZWFkKHVhcCwg
+UkVHX0NSKTsKIAogI2RlZmluZQlUSU9DTUJJVCh0aW9jbWJpdCwgdWFydGJpdCkJCVwKQEAgLTE3
+NjMsNyArMTgzMCwxNyBAQCBzdGF0aWMgaW50IHBsMDExX3N0YXJ0dXAoc3RydWN0IHVhcnRfcG9y
+dCAqcG9ydCkKIAogCS8qIHJlc3RvcmUgUlRTIGFuZCBEVFIgKi8KIAljciA9IHVhcC0+b2xkX2Ny
+ICYgKFVBUlQwMTFfQ1JfUlRTIHwgVUFSVDAxMV9DUl9EVFIpOwotCWNyIHw9IFVBUlQwMXhfQ1Jf
+VUFSVEVOIHwgVUFSVDAxMV9DUl9SWEUgfCBVQVJUMDExX0NSX1RYRTsKKwljciB8PSBVQVJUMDF4
+X0NSX1VBUlRFTiB8IFVBUlQwMTFfQ1JfUlhFOworCisJaWYgKHBvcnQtPnJzNDg1LmZsYWdzICYg
+U0VSX1JTNDg1X0VOQUJMRUQpIHsKKwkJaWYgKHBvcnQtPnJzNDg1LmZsYWdzICYgU0VSX1JTNDg1
+X1JUU19BRlRFUl9TRU5EKQorCQkJY3IgJj0gflVBUlQwMTFfQ1JfUlRTOworCQllbHNlCisJCQlj
+ciB8PSBVQVJUMDExX0NSX1JUUzsKKwl9IGVsc2UgeworCQljciB8PSBVQVJUMDExX0NSX1RYRTsK
+Kwl9CisKIAlwbDAxMV93cml0ZShjciwgdWFwLCBSRUdfQ1IpOwogCiAJc3Bpbl91bmxvY2tfaXJx
+KCZ1YXAtPnBvcnQubG9jayk7CkBAIC0xODY0LDYgKzE5NDEsOSBAQCBzdGF0aWMgdm9pZCBwbDAx
+MV9zaHV0ZG93bihzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0KQogCiAJcGwwMTFfZG1hX3NodXRkb3du
+KHVhcCk7CiAKKwlpZiAoKHBvcnQtPnJzNDg1LmZsYWdzICYgU0VSX1JTNDg1X0VOQUJMRUQpICYm
+IHVhcC0+cnM0ODVfdHhfc3RhcnRlZCkKKwkJcGwwMTFfcnM0ODVfdHhfc3RvcCh1YXApOworCiAJ
+ZnJlZV9pcnEodWFwLT5wb3J0LmlycSwgdWFwKTsKIAogCXBsMDExX2Rpc2FibGVfdWFydCh1YXAp
+OwpAQCAtMTk0MSw2ICsyMDIxLDcgQEAgcGwwMTFfc2V0X3Rlcm1pb3Moc3RydWN0IHVhcnRfcG9y
+dCAqcG9ydCwgc3RydWN0IGt0ZXJtaW9zICp0ZXJtaW9zLAogCXVuc2lnbmVkIGludCBsY3JfaCwg
+b2xkX2NyOwogCXVuc2lnbmVkIGxvbmcgZmxhZ3M7CiAJdW5zaWduZWQgaW50IGJhdWQsIHF1b3Qs
+IGNsa2RpdjsKKwl1bnNpZ25lZCBpbnQgYml0czsKIAogCWlmICh1YXAtPnZlbmRvci0+b3ZlcnNh
+bXBsaW5nKQogCQljbGtkaXYgPSA4OwpAQCAtMTk2OCwyNSArMjA0OSwzMiBAQCBwbDAxMV9zZXRf
+dGVybWlvcyhzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0LCBzdHJ1Y3Qga3Rlcm1pb3MgKnRlcm1pb3Ms
+CiAJc3dpdGNoICh0ZXJtaW9zLT5jX2NmbGFnICYgQ1NJWkUpIHsKIAljYXNlIENTNToKIAkJbGNy
+X2ggPSBVQVJUMDF4X0xDUkhfV0xFTl81OworCQliaXRzID0gNzsKIAkJYnJlYWs7CiAJY2FzZSBD
+UzY6CiAJCWxjcl9oID0gVUFSVDAxeF9MQ1JIX1dMRU5fNjsKKwkJYml0cyA9IDg7CiAJCWJyZWFr
+OwogCWNhc2UgQ1M3OgogCQlsY3JfaCA9IFVBUlQwMXhfTENSSF9XTEVOXzc7CisJCWJpdHMgPSA5
+OwogCQlicmVhazsKIAlkZWZhdWx0OiAvLyBDUzgKIAkJbGNyX2ggPSBVQVJUMDF4X0xDUkhfV0xF
+Tl84OworCQliaXRzID0gMTA7CiAJCWJyZWFrOwogCX0KLQlpZiAodGVybWlvcy0+Y19jZmxhZyAm
+IENTVE9QQikKKwlpZiAodGVybWlvcy0+Y19jZmxhZyAmIENTVE9QQikgewogCQlsY3JfaCB8PSBV
+QVJUMDF4X0xDUkhfU1RQMjsKKwkJYml0cysrOworCX0KIAlpZiAodGVybWlvcy0+Y19jZmxhZyAm
+IFBBUkVOQikgewogCQlsY3JfaCB8PSBVQVJUMDF4X0xDUkhfUEVOOwogCQlpZiAoISh0ZXJtaW9z
+LT5jX2NmbGFnICYgUEFST0REKSkKIAkJCWxjcl9oIHw9IFVBUlQwMXhfTENSSF9FUFM7CiAJCWlm
+ICh0ZXJtaW9zLT5jX2NmbGFnICYgQ01TUEFSKQogCQkJbGNyX2ggfD0gVUFSVDAxMV9MQ1JIX1NQ
+UzsKKwkJYml0cysrOwogCX0KIAlpZiAodWFwLT5maWZvc2l6ZSA+IDEpCiAJCWxjcl9oIHw9IFVB
+UlQwMXhfTENSSF9GRU47CkBAIC0xOTk3LDEyICsyMDg1LDIxIEBAIHBsMDExX3NldF90ZXJtaW9z
+KHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQsIHN0cnVjdCBrdGVybWlvcyAqdGVybWlvcywKIAkgKiBV
+cGRhdGUgdGhlIHBlci1wb3J0IHRpbWVvdXQuCiAJICovCiAJdWFydF91cGRhdGVfdGltZW91dChw
+b3J0LCB0ZXJtaW9zLT5jX2NmbGFnLCBiYXVkKTsKKwkvKgorCSAqIENhbGN1bGF0ZSB0aGUgYXBw
+cm94aW1hdGVkIHRpbWUgaXQgdGFrZXMgdG8gdHJhbnNtaXQgb25lIGNoYXJhY3RlcgorCSAqIHdp
+dGggdGhlIGdpdmVuIGJhdWQgcmF0ZS4gV2UgdXNlIHRoaXMgYXMgdGhlIHBvbGwgaW50ZXJ2YWwg
+d2hlbiB3ZQorCSAqIHdhaXQgZm9yIHRoZSB0eCBxdWV1ZSB0byBlbXB0eS4KKwkgKi8KKwl1YXAt
+PnJzNDg1X3R4X2RyYWluX2ludGVydmFsID0gKGJpdHMgKiAxMDAwICogMTAwMCkgLyBiYXVkOwog
+CiAJcGwwMTFfc2V0dXBfc3RhdHVzX21hc2tzKHBvcnQsIHRlcm1pb3MpOwogCiAJaWYgKFVBUlRf
+RU5BQkxFX01TKHBvcnQsIHRlcm1pb3MtPmNfY2ZsYWcpKQogCQlwbDAxMV9lbmFibGVfbXMocG9y
+dCk7CiAKKwlpZiAocG9ydC0+cnM0ODUuZmxhZ3MgJiBTRVJfUlM0ODVfRU5BQkxFRCkKKwkJdGVy
+bWlvcy0+Y19jZmxhZyAmPSB+Q1JUU0NUUzsKKwogCS8qIGZpcnN0LCBkaXNhYmxlIGV2ZXJ5dGhp
+bmcgKi8KIAlvbGRfY3IgPSBwbDAxMV9yZWFkKHVhcCwgUkVHX0NSKTsKIAlwbDAxMV93cml0ZSgw
+LCB1YXAsIFJFR19DUik7CkBAIC0yMTI0LDYgKzIyMjEsNDEgQEAgc3RhdGljIGludCBwbDAxMV92
+ZXJpZnlfcG9ydChzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0LCBzdHJ1Y3Qgc2VyaWFsX3N0cnVjdCAq
+c2VyKQogCXJldHVybiByZXQ7CiB9CiAKK3N0YXRpYyBpbnQgcGwwMTFfcnM0ODVfY29uZmlnKHN0
+cnVjdCB1YXJ0X3BvcnQgKnBvcnQsCisJCQkgICAgICBzdHJ1Y3Qgc2VyaWFsX3JzNDg1ICpyczQ4
+NSkKK3sKKwlzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCA9CisJCWNvbnRhaW5lcl9vZihwb3J0
+LCBzdHJ1Y3QgdWFydF9hbWJhX3BvcnQsIHBvcnQpOworCisJLyogcGljayBzYW5lIHNldHRpbmdz
+IGlmIHRoZSB1c2VyIGhhc24ndCAqLworCWlmICghIShyczQ4NS0+ZmxhZ3MgJiBTRVJfUlM0ODVf
+UlRTX09OX1NFTkQpID09CisJICAgICEhKHJzNDg1LT5mbGFncyAmIFNFUl9SUzQ4NV9SVFNfQUZU
+RVJfU0VORCkpIHsKKwkJcnM0ODUtPmZsYWdzIHw9IFNFUl9SUzQ4NV9SVFNfT05fU0VORDsKKwkJ
+cnM0ODUtPmZsYWdzICY9IH5TRVJfUlM0ODVfUlRTX0FGVEVSX1NFTkQ7CisJfQorCisJcnM0ODUt
+PmRlbGF5X3J0c19iZWZvcmVfc2VuZCA9IG1pbihyczQ4NS0+ZGVsYXlfcnRzX2JlZm9yZV9zZW5k
+LCAxMDAwVSk7CisJcnM0ODUtPmRlbGF5X3J0c19hZnRlcl9zZW5kID0gbWluKHJzNDg1LT5kZWxh
+eV9ydHNfYWZ0ZXJfc2VuZCwgMTAwMFUpOworCW1lbXNldChyczQ4NS0+cGFkZGluZywgMCwgc2l6
+ZW9mKHJzNDg1LT5wYWRkaW5nKSk7CisKKwlpZiAocG9ydC0+cnM0ODUuZmxhZ3MgJiBTRVJfUlM0
+ODVfRU5BQkxFRCkKKwkJcGwwMTFfcnM0ODVfdHhfc3RvcCh1YXApOworCisJLyogU2V0IG5ldyBj
+b25maWd1cmF0aW9uICovCisJcG9ydC0+cnM0ODUgPSAqcnM0ODU7CisJLyogTWFrZSBzdXJlIGF1
+dG8gUlRTIGlzIGRpc2FibGVkICovCisJaWYgKHBvcnQtPnJzNDg1LmZsYWdzICYgU0VSX1JTNDg1
+X0VOQUJMRUQpIHsKKwkJdTMyIGNyID0gcGwwMTFfcmVhZCh1YXAsIFJFR19DUik7CisKKwkJY3Ig
+Jj0gflVBUlQwMTFfQ1JfUlRTRU47CisJCXBsMDExX3dyaXRlKGNyLCB1YXAsIFJFR19DUik7CisJ
+CXBvcnQtPnN0YXR1cyAmPSB+VVBTVEFUX0FVVE9SVFM7CisJfQorCisKKwlyZXR1cm4gMDsKK30K
+Kwogc3RhdGljIGNvbnN0IHN0cnVjdCB1YXJ0X29wcyBhbWJhX3BsMDExX3BvcHMgPSB7CiAJLnR4
+X2VtcHR5CT0gcGwwMTFfdHhfZW1wdHksCiAJLnNldF9tY3RybAk9IHBsMDExX3NldF9tY3RybCwK
+QEAgLTI1OTIsNiArMjcyNCw3IEBAIHN0YXRpYyBpbnQgcGwwMTFfc2V0dXBfcG9ydChzdHJ1Y3Qg
+ZGV2aWNlICpkZXYsIHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwLAogCQkJICAgIHN0cnVjdCBy
+ZXNvdXJjZSAqbW1pb2Jhc2UsIGludCBpbmRleCkKIHsKIAl2b2lkIF9faW9tZW0gKmJhc2U7CisJ
+aW50IHJldDsKIAogCWJhc2UgPSBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoZGV2LCBtbWlvYmFzZSk7
+CiAJaWYgKElTX0VSUihiYXNlKSkKQEAgLTI2MDgsNiArMjc0MSwxMCBAQCBzdGF0aWMgaW50IHBs
+MDExX3NldHVwX3BvcnQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgdWFydF9hbWJhX3BvcnQg
+KnVhcCwKIAl1YXAtPnBvcnQuZmxhZ3MgPSBVUEZfQk9PVF9BVVRPQ09ORjsKIAl1YXAtPnBvcnQu
+bGluZSA9IGluZGV4OwogCisJcmV0ID0gdWFydF9nZXRfcnM0ODVfbW9kZSgmdWFwLT5wb3J0KTsK
+KwlpZiAocmV0KQorCQlyZXR1cm4gcmV0OworCiAJYW1iYV9wb3J0c1tpbmRleF0gPSB1YXA7CiAK
+IAlyZXR1cm4gMDsKQEAgLTI2NjUsNyArMjgwMiw3IEBAIHN0YXRpYyBpbnQgcGwwMTFfcHJvYmUo
+c3RydWN0IGFtYmFfZGV2aWNlICpkZXYsIGNvbnN0IHN0cnVjdCBhbWJhX2lkICppZCkKIAl1YXAt
+PnBvcnQuaW90eXBlID0gdmVuZG9yLT5hY2Nlc3NfMzJiID8gVVBJT19NRU0zMiA6IFVQSU9fTUVN
+OwogCXVhcC0+cG9ydC5pcnEgPSBkZXYtPmlycVswXTsKIAl1YXAtPnBvcnQub3BzID0gJmFtYmFf
+cGwwMTFfcG9wczsKLQorCXVhcC0+cG9ydC5yczQ4NV9jb25maWcgPSBwbDAxMV9yczQ4NV9jb25m
+aWc7CiAJc25wcmludGYodWFwLT50eXBlLCBzaXplb2YodWFwLT50eXBlKSwgIlBMMDExIHJldiV1
+IiwgYW1iYV9yZXYoZGV2KSk7CiAKIAlyZXQgPSBwbDAxMV9zZXR1cF9wb3J0KCZkZXYtPmRldiwg
+dWFwLCAmZGV2LT5yZXMsIHBvcnRucik7CgpiYXNlLWNvbW1pdDogY2QxMjQ1ZDc1Y2U5M2I4ZmQy
+MDZmNGIzNGViNThiY2ZlMTU2ZDVlOQotLSAKMi4zMS4xCgo=
