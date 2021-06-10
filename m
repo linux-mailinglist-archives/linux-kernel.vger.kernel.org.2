@@ -2,158 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050F93A2286
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4D33A2291
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbhFJDDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 23:03:47 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:57046 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhFJDDp (ORCPT
+        id S230039AbhFJDGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 23:06:35 -0400
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:42853 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhFJDGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 23:03:45 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15A2twHI036509;
-        Thu, 10 Jun 2021 03:01:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=DAbqP0w1sCVB+C8at7yvhIeKrVwHx10jlEVlWPPKkmM=;
- b=sIkCH2vp8JKac/g3DuH8Yy/viHeJZPfMZjVRii9boHsM7CtYvXrowpVDUKW+T61HB0RX
- vHiZweaTALvezX3djTibgJAWpniBoFP30VgWju962lW0dJbKbxZCE6tISJCTaAl4Z88L
- yFtSTY2U7PnJg4w50Dc9x9OLxSDiU/p7NWwVrwDzizViOykPLx4v/TpaQb+PXHk37liH
- zmjflmHA2HosPoffEQX8IDasppBghNgjPlgDArr+COWPJfZLv3tqfNVGyDG0XhjxXkZI
- IFPZfWUtvQeFpsVGmfcDHWWdjNgUryupb7vKVHapi3U7KmLo1JCnSNG3WJSAXNYbanhh xg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 38yxscjsbx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Jun 2021 03:01:44 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15A30Reg034686;
-        Thu, 10 Jun 2021 03:01:44 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
-        by userp3030.oracle.com with ESMTP id 38yxcw6srq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Jun 2021 03:01:44 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AdJA4S5uL/pZS+aoei/eJf/EWkVOu7maIabhLGvq6i4+owRNLrqHQLcrO2GFVkUP7zsaixz4WqSO46jc3RO2PNnx0pUwDXSXY6OlSdCsXYts8G+O9j9NClKr0hYuIkUhj9DymIRrSxN6ZM89GSfokIC2WayS1YHzA4yLGpCPv/3GVmiA1XzoMpfxGr+G4ICl0YzDiQHyPMWe9C/i9UCGBhXgaezptTLd0gRkWXdFy5NtncoSCT55A/xhlFhXw8AJWKW5tr+WUX0BGkgKDvNJGAV6WVdEZkKQqwP8950mNO9aAR6tNvaq/gHoLL4T4kZF+0QlAfxhvjFDn+qpf8PoDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DAbqP0w1sCVB+C8at7yvhIeKrVwHx10jlEVlWPPKkmM=;
- b=R15dyf7HYBZrlkP5QP4qvDYxap/Un8TrmqDdPYmBWFjQetoOK8l9767D2a24k3VxEi4vefzvnmbLnzzA3tV/WOjryPEo5Uhc/FPXQuYgvZicEVxsL7TCzqft95rgG4iBLv6D0cWu9txfp2aLNAd9KkKNByWZx+LSdF4IO0xE1Bi4MwWSWtjs46haYcDTbV+doBG9MkpRNb/RDMT0RR112ZsZmbc1w8abSr6eiBs9IFtmGyII4j/IjkVbibH/RRHsqmYzsh+hhOV5HQtcUwtOjT9ZdwE7XWc9uxJxRYrAsM8bypKBBotetXlWAthNPatCASP+ZDzRae8n40lOBGdC7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 9 Jun 2021 23:06:34 -0400
+Received: by mail-pl1-f174.google.com with SMTP id v13so200809ple.9;
+        Wed, 09 Jun 2021 20:04:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DAbqP0w1sCVB+C8at7yvhIeKrVwHx10jlEVlWPPKkmM=;
- b=ao6DYYncsltkeyKu+LMv0C46oqnA8lVlVh+0PUQzYTldbGxv2NICbcntlbDS5iNOzQNPlqz7UCARAAHM2RWWpGUZhxtK+JhehIr48RhSSot1ZS5FPYDPZL+A2O1T7UQwCZy+Tc6+bJq2Rda7I6lbLESCtzxZ65eJEiFCLO25gM4=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4775.namprd10.prod.outlook.com (2603:10b6:510:38::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Thu, 10 Jun
- 2021 03:01:41 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4219.022; Thu, 10 Jun 2021
- 03:01:41 +0000
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Tomas Henzl <thenzl@redhat.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] scsi: mpi3mr: delete unnecessary NULL check
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1bl8eh184.fsf@ca-mkp.ca.oracle.com>
-References: <YMCJKgykDYtyvY44@mwanda>
-Date:   Wed, 09 Jun 2021 23:01:38 -0400
-In-Reply-To: <YMCJKgykDYtyvY44@mwanda> (Dan Carpenter's message of "Wed, 9 Jun
-        2021 12:26:02 +0300")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: SJ0PR13CA0055.namprd13.prod.outlook.com
- (2603:10b6:a03:2c2::30) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR13CA0055.namprd13.prod.outlook.com (2603:10b6:a03:2c2::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.9 via Frontend Transport; Thu, 10 Jun 2021 03:01:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2032c4fe-9e1e-4c1a-4656-08d92bbc1256
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4775:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4775C143F08E8578D6B0C26E8E359@PH0PR10MB4775.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xxTpv1ebkcAQUIxSKRNaxLEzyeI7IEutlx52/DBPDXz8p8TXYRnxDhv0d7iTSQcDrceQQYEl/B9yxaCFE1DnJLjv06LXFE5jpFdR3GN5f6vhhvblOqRyfy8Hfq8yRG/o+VMJxFbRQ+7Rv7qk2DTjd11llu/+BzyuR575+X+rO7kQk0C2pnqMYXEin1wXKqmQ3lbA6cs6tQ11HHsvWsWMZNeOw7sjAABz8qjKpM/fCIni4h6I2mS9hudzZNcU7v1yb2QROkACHJSP8SyYAogUdASDzDIhvQYnigoDFDtBkSLQeVWzxzFHagbBQMZkTa/pSJ6KyOCJMwZcNOhRJOMBLefNe89xu7bxbUqrUnT41vKpWhV3avUVNJXV3l2okrkvt28JK+f3MCw2WG7O4nqG71187Bx3agg+H4R0VbatW4zs+/ixJSbZbA1pnB76RpBm6GTvA7Pj1wDzozBNF9SbbgLNSeN4mzUyVIMFQH6pRjUIkPEqBB/Q67Lqf4D6ZUJYNI3WPXKC6qYru3mEl15eY4iWId0Ji7VkwykyyFdGYPPGAJ7vsUgF0q++1Blvn4IuVGOwfQ8ohM45/WOFktc4SmigWgAmyuN82FSE6rNcMj/4QRQEhB1wrbb/H4HovQxxyvPaTE/hxiEf8k0z9IDqmorOuOZFzTJq/yrRQfKGj9tcjhRDLkvKlCPR5KFVZsGD
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(346002)(136003)(39860400002)(366004)(6862004)(66946007)(86362001)(66476007)(316002)(54906003)(26005)(5660300002)(83380400001)(16526019)(6636002)(52116002)(8676002)(4326008)(38350700002)(2906002)(8936002)(36916002)(38100700002)(7696005)(186003)(478600001)(956004)(55016002)(558084003)(66556008)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uUvlkCDQLWeL7QrXHby7bbLrwXMupezkup3J/l3KsldlxnwI+xJlrgB7RBnO?=
- =?us-ascii?Q?v8NqNyEAHS8vshisScHonX5daU5fO3qIsP5YGiO0P4lqyLe/bogEa1Xmqxbc?=
- =?us-ascii?Q?G9dIc5YmEKD0ELqVJCT292/eQVvY0tQTypbxBcOcoBCxq3i8Pqal1HQkL0kk?=
- =?us-ascii?Q?G3H1KgJM/N2Kvrl+xtde1On+SviB6PbPuWKig8nBcQQH7+G8Tbgk3L1Eha4E?=
- =?us-ascii?Q?QvuT0CNh021hpCjCxkzfgFvi41Bj4V0eCbcZhZkrCYDvY7sZlwGY6wKQFbdg?=
- =?us-ascii?Q?VMQDS0bsnOXqzQiI3Az8XvnpZb2jLLLpnVhp6L3YbhEWiqAIg+9Tvje4w7RS?=
- =?us-ascii?Q?Tl5JRCoy3lazwEwKGUPUFUsVRdEZ8fkMByp92c1AXISJWH3ysV1JAmKJYWIv?=
- =?us-ascii?Q?NgxEvmFoM8+SKFmsmA6UcLgOzDjDh6ldGWkYmTNhHKCDAMcA/eA0u/eboIFA?=
- =?us-ascii?Q?42qtqPdWz29LpTA8QbMeoG72yeyVP+vUU8Nfw6fwd3JLvp+p0neB9jtvvCN+?=
- =?us-ascii?Q?dsG+IqoTUZ262xfWNTFmuDaf54PEFllBiQzLLHnwJH0hINEmre579nPRw6L4?=
- =?us-ascii?Q?4hzvOzhcQO4CsL/bSUOZYRqxh32563H4F4QC5oUcA3vAA8ujT2QxEO2+33pA?=
- =?us-ascii?Q?qUhRvAF2DU1KUDm5gF401GPuPDNvSJB/kznqhzkME9ngW9QXeBnIBM3t711c?=
- =?us-ascii?Q?mEiUaWDjDUTp+mIJGeJS6ijZDpKoxbb8KviN00rrnOISpDfsdH82klFRoUMB?=
- =?us-ascii?Q?WA4rf3u+eYh+JsqxOxRx4IiNVJq6jFHFSwJ7W0Y00nPwjULAGy44ZhsisTOd?=
- =?us-ascii?Q?sk2qrKWzJXKYYpszvrMIblSTZg/SNm8vjPfR0BkBFNKhKNDXiNoHiua+3GZQ?=
- =?us-ascii?Q?ZflQSiwWMvJsRDyJ81xtVAitithaNuqmERSvCeED9Vm3ae2xG5Bvc0/4FNRA?=
- =?us-ascii?Q?5tWlt19nv1EVUXN6NFVKvAOOSxVI4OEXKEEv/prFCNsQy5+iqUYnQAvrAXxt?=
- =?us-ascii?Q?MEafa081LCtX3y3Ka2jdL73rJEWW+V8TVu+N1lQZoWM+ZUvlesvJ2DlFbPM5?=
- =?us-ascii?Q?nhhaKm/D02SsNfNM4sHMpy0b6aA2prysq/eu6jE9JGj0dsrtrmU3AoaZBzGU?=
- =?us-ascii?Q?4h1kUH21zE816gZfSbScSxgZksL64PdPM2R7nH17J/AdXb3aoS7ampuabE+m?=
- =?us-ascii?Q?hthbpttBkOEbMKU58PMItMtRrrRHy/fOC5cA4HpJS6bClxKmKDImZAA+FVDd?=
- =?us-ascii?Q?zRztnm2AOQU0/LctHsiXt8KAjgtKHgXPDNu1wgEL+qPlmIi+FALRf/bgHDrU?=
- =?us-ascii?Q?SNL9L6Vp+k9M6UO4+hUHc0a5?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2032c4fe-9e1e-4c1a-4656-08d92bbc1256
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 03:01:41.2240
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MWd2M7lMZQo91xGgem1giRN9kewgxDzVAcB64P0qKylo5m9XiTHg4IEvBQisU9IlC9587dnsn5tzaM7aa2iU1sojZ6fuiEsebG0cjkVCoZQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4775
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10010 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
- spamscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106100018
-X-Proofpoint-ORIG-GUID: -1IFGhc8BKS2htARtJtJRxM7BmJhDP1s
-X-Proofpoint-GUID: -1IFGhc8BKS2htARtJtJRxM7BmJhDP1s
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10010 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
- phishscore=0 suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501
- mlxscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106100017
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=B8Zbm8iJYmqDKfwYU3NvGqWfWb4jFMFKhBBsq+CtUJM=;
+        b=eCidbGM6f18dRikxKXcQJXT10LVogp0ILgExD75Acn6KTckWhtlBTJkE79HiFQ/e0M
+         4dkAuvFsa5S3rj+R0RBRjjtnQ5huQ2LlkyjNJrWF91KiDT5ISYgAlGcSfTZnH6/0/KzH
+         Q3M4dxennOlopKvTXcEfdmebRz3yy3X6JKkka3/dUyZGw9l/X+ade52JrSzzft+mODRd
+         sSw+gPwUkevxcdgQluwWxV8VtBsbdWgNHs9IRpkzy6oYW1HS4opOJW0c7P1vhXD49zdO
+         0yQSFvpvUGytxjQJMvmJRnOPeBkZijA4KLT3ZIBJqjAEFoS79MTpGhZPOso1q3rwpksw
+         Oh5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=B8Zbm8iJYmqDKfwYU3NvGqWfWb4jFMFKhBBsq+CtUJM=;
+        b=SW0m82J2KHqiU488z+kK3hzPVNeGtHG61jwCbIenTE4GJDROm4qjbN5Dhc+akxuc9N
+         kI0FwlG9NVJJuvyiPcDOhX33WONKSOqsKQxrgxvRn+ASFENN0CVS/qz/U4GsvgJEUCOh
+         c9UG+jB9DswyEXRjNgdjuVwc5hf8s5Kvw/7Tb6RBZECQEwddS8kLkbMDMcLN3ohyjkne
+         hkzDuRankUnuVTz9M0yvv61zCW9OMfuC/wNi81kzmBFqzbhK5lxtAIZ1NYWt41RwOzD3
+         F76On79HblLFSjVRVmach/rFUqUq4bf7WE5XYP/UsIO+8DbMf+ckoMcEzrfFphQH1pje
+         8y0g==
+X-Gm-Message-State: AOAM533zdxIWmfxeuT26pIiRDWWXsv41MxNoUAD3GKKZFTa/k2KA9IZt
+        G0LXsGYIO242lvHVrqdniw==
+X-Google-Smtp-Source: ABdhPJyYKE6rMFqcOPXMVeLvY7aWkzHOeJcjBR2+G6vcpaUZu3Hb669Of0JjSVYIGBVFJ6N4D9fgKA==
+X-Received: by 2002:a17:902:b594:b029:f8:fb4f:f8d3 with SMTP id a20-20020a170902b594b02900f8fb4ff8d3mr2832626pls.25.1623294207367;
+        Wed, 09 Jun 2021 20:03:27 -0700 (PDT)
+Received: from vultr.guest ([107.191.53.97])
+        by smtp.gmail.com with ESMTPSA id 23sm852892pjw.28.2021.06.09.20.03.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Jun 2021 20:03:26 -0700 (PDT)
+From:   Zheyu Ma <zheyuma97@gmail.com>
+To:     scott@spiteful.org, bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zheyu Ma <zheyuma97@gmail.com>
+Subject: [PATCH] PCI: hotplug: set 'thread_finished' flag to be true by default
+Date:   Thu, 10 Jun 2021 03:02:41 +0000
+Message-Id: <1623294161-7917-1-git-send-email-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In the process of probing the driver 'cpcihp_zt5550', function
+'pci_get_device' may fail, at this time 'cpci_hp_unregister_controller'
+will be called. Since the default value of 'thread_finished' is 0,
+'cpci_stop_thread' will be executed, but at this time 'cpci_thread' has
+not been allocated, which leads to a null pointer dereference.
 
-Dan,
+Fix this by set 'thread_finished' to be true by default.
 
-> The "mrioc->intr_info" pointer can't be NULL, but if it could then the
-> second iteration through the loop would Oops.  Let's delete the
-> confusing and impossible NULL check.
+This log reveals it:
 
-Applied 1+2 to 5.14/scsi-staging, thanks!
+BUG: kernel NULL pointer dereference, address: 0000000000000028
+PGD 0 P4D 0
+Oops: 0002 [#1] PREEMPT SMP PTI
+CPU: 5 PID: 1 Comm: swapper/0 Not tainted 5.12.4-g70e7f0549188-dirty #74
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:kthread_stop+0x51/0x380
+Code: b5 4e 10 00 65 8b 05 46 da e1 7e 89 c0 48 0f a3 05 5c c1 ef 05 0f 82 68 01 00 00 e8 99 4e 10 00 4c 8d 6b 28 41 bc 01 00 00 00 <f0> 44 0f c1 63 28 45 85 e4 0f 84 af 02 00 00 e8 7b 4e 10 00 45 85
+RSP: 0000:ffffc90000017ba8 EFLAGS: 00010293
+RAX: ffff888100850000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff811f3b37 RDI: ffffffff86259ca6
+RBP: ffffc90000017bc8 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000001 R11: 00000000ffffffff R12: 0000000000000001
+R13: 0000000000000028 R14: ffff88810160a0c8 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88817b200000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000028 CR3: 0000000006a32000 CR4: 00000000000006e0
+Call Trace:
+ cpci_stop_thread+0x1a/0x30
+ cpci_hp_unregister_controller+0x43/0xc0
+ zt5550_hc_init_one+0x67d/0x720
+ local_pci_probe+0x4f/0xb0
+ pci_device_probe+0x169/0x230
+ ? pci_device_remove+0x110/0x110
+ really_probe+0x283/0x650
+ driver_probe_device+0x89/0x1d0
+ ? mutex_lock_nested+0x1b/0x20
+ device_driver_attach+0x68/0x70
+ __driver_attach+0x11c/0x1b0
+ ? device_driver_attach+0x70/0x70
+ bus_for_each_dev+0xbb/0x110
+ ? rdinit_setup+0x45/0x45
+ driver_attach+0x27/0x30
+ bus_add_driver+0x1eb/0x2a0
+ driver_register+0xa9/0x180
+ __pci_register_driver+0x7c/0x90
+ ? cpci_hotplug_init+0x1c/0x1c
+ zt5550_init+0x66/0x91
+ do_one_initcall+0x7f/0x3d0
+ ? rdinit_setup+0x45/0x45
+ ? rcu_read_lock_sched_held+0x4f/0x80
+ kernel_init_freeable+0x2d7/0x329
+ ? rest_init+0x2c0/0x2c0
+ kernel_init+0x18/0x190
+ ? rest_init+0x2c0/0x2c0
+ ? rest_init+0x2c0/0x2c0
+ ret_from_fork+0x1f/0x30
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+CR2: 0000000000000028
+---[ end trace ef108f49fd26a20c ]---
+RIP: 0010:kthread_stop+0x51/0x380
+Code: b5 4e 10 00 65 8b 05 46 da e1 7e 89 c0 48 0f a3 05 5c c1 ef 05 0f 82 68 01 00 00 e8 99 4e 10 00 4c 8d 6b 28 41 bc 01 00 00 00 <f0> 44 0f c1 63 28 45 85 e4 0f 84 af 02 00 00 e8 7b 4e 10 00 45 85
+RSP: 0000:ffffc90000017ba8 EFLAGS: 00010293
+RAX: ffff888100850000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff811f3b37 RDI: ffffffff86259ca6
+RBP: ffffc90000017bc8 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000001 R11: 00000000ffffffff R12: 0000000000000001
+R13: 0000000000000028 R14: ffff88810160a0c8 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88817b200000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000028 CR3: 0000000006a32000 CR4: 00000000000006e0
+Kernel panic - not syncing: Fatal exception
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+Kernel Offset: disabled
+Rebooting in 1 seconds..
 
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+---
+ drivers/pci/hotplug/cpci_hotplug_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pci/hotplug/cpci_hotplug_core.c b/drivers/pci/hotplug/cpci_hotplug_core.c
+index d0559d2faf50..d527aae4cc60 100644
+--- a/drivers/pci/hotplug/cpci_hotplug_core.c
++++ b/drivers/pci/hotplug/cpci_hotplug_core.c
+@@ -47,7 +47,7 @@ static atomic_t extracting;
+ int cpci_debug;
+ static struct cpci_hp_controller *controller;
+ static struct task_struct *cpci_thread;
+-static int thread_finished;
++static int thread_finished = 1;
+ 
+ static int enable_slot(struct hotplug_slot *slot);
+ static int disable_slot(struct hotplug_slot *slot);
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.17.6
+
