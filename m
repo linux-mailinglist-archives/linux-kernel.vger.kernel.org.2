@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7783A2594
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DCF3A25BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhFJHgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:36:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230216AbhFJHgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:36:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0813A613C8;
-        Thu, 10 Jun 2021 07:34:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623310482;
-        bh=O1B3V2YPO+YDp3N7oiYD0TcuWdFjo3OnLD6+S6ZVUYQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dfAgcFxv2C+3x9JN7Hc1OC16J444Krsc4aHaJPL28gn6cQfNgIZ5/2r/L0bS/8lF2
-         54fFyvWORyRwMM4H9hKT26z4keSnP+tRcWgtk2xlE75fWnDHy/ExFL7xVYb6FrWlQv
-         FJHgR4qJ373zht/QUYBf1qP4i29yUORllsCMzAtzpYd86GYvXibn237z3xjZQ+Pp0y
-         1QqVFNBiSIII9scrDcEszro86QiSpAl1L/Jyu0nnV9dJxMVxTLOgixstcQyIRE8R6l
-         iocR/QNZRFnJIUoJ4FyUrOQnqFWBehIGRkUA/VvjOkyT2sQLZ525kVh+1gOfsccvFZ
-         oZserdl87dJZw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alaa Hleihel <alaa@nvidia.com>, Aharon Landau <aharonl@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>
-Subject: [PATCH rdma-rc 3/3] IB/mlx5: Fix initializing CQ fragments buffer
-Date:   Thu, 10 Jun 2021 10:34:27 +0300
-Message-Id: <90a0e8c924093cfa50a482880ad7e7edb73dc19a.1623309971.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1623309971.git.leonro@nvidia.com>
-References: <cover.1623309971.git.leonro@nvidia.com>
+        id S230188AbhFJHrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:47:21 -0400
+Received: from webserver.carbg.com ([212.45.67.1]:44470 "EHLO
+        webserver.carbg.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhFJHrQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 03:47:16 -0400
+X-Greylist: delayed 618 seconds by postgrey-1.27 at vger.kernel.org; Thu, 10 Jun 2021 03:47:14 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by webserver.carbg.com (Postfix) with ESMTP id 420B212800FF;
+        Thu, 10 Jun 2021 10:34:56 +0300 (EEST)
+Received: from webserver.carbg.com ([127.0.0.1])
+        by localhost (webserver.carbg.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id uwRJpuT8_BLJ; Thu, 10 Jun 2021 10:34:48 +0300 (EEST)
+Received: by webserver.carbg.com (Postfix, from userid 107)
+        id 7B67912800FC; Thu, 10 Jun 2021 10:34:47 +0300 (EEST)
+X-Spam-ASN:  
+Received: from MacBook-Pro.local (macbook [10.44.66.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: georgi@djakov.com)
+        by webserver.carbg.com (Postfix) with ESMTPSA id 05CA412800FB;
+        Thu, 10 Jun 2021 10:34:29 +0300 (EEST)
+Authentication-Results: webserver.carbg.com; dmarc=none header.from=kernel.org
+Subject: Re: [PATCH V1] arm64: dts: qcom: sc7180: bus votes for eMMC and SD
+ card
+To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
+        adrian.hunter@intel.com, ulf.hansson@linaro.org, robh+dt@kernel.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, sartgarg@codeaurora.org,
+        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        sibis@codeaurora.org, okukatla@codeaurora.org, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org
+References: <1623309189-27943-1-git-send-email-sbhanu@codeaurora.org>
+From:   Georgi Djakov <djakov@kernel.org>
+Message-ID: <b1d108f1-75c1-87a7-a9de-3a004f56596e@kernel.org>
+Date:   Thu, 10 Jun 2021 10:34:28 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1623309189-27943-1-git-send-email-sbhanu@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alaa Hleihel <alaa@nvidia.com>
+Hi Sajida,
 
-Function init_cq_frag_buf() can be called to initialize the current CQ
-fragments buffer cq->buf, or the temporary cq->resize_buf that is filled
-during CQ resize operation.
+Thank you for the patch!
 
-However, the offending commit started to use function get_cqe() for
-getting the CQEs, the issue with this change is that get_cqe() always
-returns CQEs from cq->buf, which leads us to initialize the wrong
-buffer, and in case of enlarging the CQ we try to access elements beyond
-the size of the current cq->buf and eventually hit a kernel panic.
+On 10.06.21 10:13, Shaik Sajida Bhanu wrote:
+> Updated bus votes for eMMC and Sd card.
 
- [exception RIP: init_cq_frag_buf+103]
-  [ffff9f799ddcbcd8] mlx5_ib_resize_cq at ffffffffc0835d60 [mlx5_ib]
-  [ffff9f799ddcbdb0] ib_resize_cq at ffffffffc05270df [ib_core]
-  [ffff9f799ddcbdc0] llt_rdma_setup_qp at ffffffffc0a6a712 [llt]
-  [ffff9f799ddcbe10] llt_rdma_cc_event_action at ffffffffc0a6b411 [llt]
-  [ffff9f799ddcbe98] llt_rdma_client_conn_thread at ffffffffc0a6bb75 [llt]
-  [ffff9f799ddcbec8] kthread at ffffffffa66c5da1
-  [ffff9f799ddcbf50] ret_from_fork_nospec_begin at ffffffffa6d95ddd
+The commit text should also give answer to the question "Why is this 
+patch necessary?". Do we need a Fixes: tag? The subject could be 
+improved too. Please check:
+https://www.kernel.org/doc/Documentation/process/submitting-patches.rst
 
-Fix it by getting the needed CQE by calling mlx5_frag_buf_get_wqe() that
-takes the correct source buffer as a parameter.
+Thanks,
+Georgi
 
-Fixes: 388ca8be0037 ("IB/mlx5: Implement fragmented completion queue (CQ)")
-Signed-off-by: Alaa Hleihel <alaa@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/cq.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index eb92cefffd77..9ce01f729673 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -849,15 +849,14 @@ static void destroy_cq_user(struct mlx5_ib_cq *cq, struct ib_udata *udata)
- 	ib_umem_release(cq->buf.umem);
- }
- 
--static void init_cq_frag_buf(struct mlx5_ib_cq *cq,
--			     struct mlx5_ib_cq_buf *buf)
-+static void init_cq_frag_buf(struct mlx5_ib_cq_buf *buf)
- {
- 	int i;
- 	void *cqe;
- 	struct mlx5_cqe64 *cqe64;
- 
- 	for (i = 0; i < buf->nent; i++) {
--		cqe = get_cqe(cq, i);
-+		cqe = mlx5_frag_buf_get_wqe(&buf->fbc, i);
- 		cqe64 = buf->cqe_size == 64 ? cqe : cqe + 64;
- 		cqe64->op_own = MLX5_CQE_INVALID << 4;
- 	}
-@@ -883,7 +882,7 @@ static int create_cq_kernel(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *cq,
- 	if (err)
- 		goto err_db;
- 
--	init_cq_frag_buf(cq, &cq->buf);
-+	init_cq_frag_buf(&cq->buf);
- 
- 	*inlen = MLX5_ST_SZ_BYTES(create_cq_in) +
- 		 MLX5_FLD_SZ_BYTES(create_cq_in, pas[0]) *
-@@ -1184,7 +1183,7 @@ static int resize_kernel(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *cq,
- 	if (err)
- 		goto ex;
- 
--	init_cq_frag_buf(cq, cq->resize_buf);
-+	init_cq_frag_buf(cq->resize_buf);
- 
- 	return 0;
- 
--- 
-2.31.1
+> 
+> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+> ---
+>   arch/arm64/boot/dts/qcom/sc7180.dtsi | 20 ++++++++++----------
+>   1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index 295844e..1fce39d 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -726,15 +726,15 @@
+>   				opp-100000000 {
+>   					opp-hz = /bits/ 64 <100000000>;
+>   					required-opps = <&rpmhpd_opp_low_svs>;
+> -					opp-peak-kBps = <100000 100000>;
+> -					opp-avg-kBps = <100000 50000>;
+> +					opp-peak-kBps = <1800000 600000>;
+> +					opp-avg-kBps = <100000 0>;
+>   				};
+>   
+>   				opp-384000000 {
+>   					opp-hz = /bits/ 64 <384000000>;
+> -					required-opps = <&rpmhpd_opp_svs_l1>;
+> -					opp-peak-kBps = <600000 900000>;
+> -					opp-avg-kBps = <261438 300000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +					opp-peak-kBps = <5400000 1600000>;
+> +					opp-avg-kBps = <390000 0>;
+>   				};
+>   			};
+>   		};
+> @@ -2685,15 +2685,15 @@
+>   				opp-100000000 {
+>   					opp-hz = /bits/ 64 <100000000>;
+>   					required-opps = <&rpmhpd_opp_low_svs>;
+> -					opp-peak-kBps = <160000 100000>;
+> -					opp-avg-kBps = <80000 50000>;
+> +					opp-peak-kBps = <1800000 600000>;
+> +					opp-avg-kBps = <100000 0>;
+>   				};
+>   
+>   				opp-202000000 {
+>   					opp-hz = /bits/ 64 <202000000>;
+> -					required-opps = <&rpmhpd_opp_svs_l1>;
+> -					opp-peak-kBps = <200000	120000>;
+> -					opp-avg-kBps = <100000 60000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +					opp-peak-kBps = <5400000 1600000>;
+> +					opp-avg-kBps = <200000 0>;
+>   				};
+>   			};
+>   		};
+> 
 
