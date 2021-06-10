@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371643A24BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059513A24C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhFJGvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:51:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhFJGvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:51:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A418613CA;
-        Thu, 10 Jun 2021 06:49:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623307749;
-        bh=iIkVGEdZ6nVOvPq75U9lbg5Ox4Vh5/72oUnE/OZA/bc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QB4gOl+EsIvP5QsweNEAYkLbiEjI3pWQwjomUchuL2PfwIp/zEtOjKbE9F2hlDdpX
-         OmIKO0TbL/jsB/pJK6Oov3SCFutZZ4NqXnSRZ4dnaFVrFBJHMBdUCLS/zT+0IIMZND
-         ULdlWuTbv+5ZUMshzIzBvnv4KIlFDhWAaQ+kfJRs=
-Date:   Thu, 10 Jun 2021 08:49:06 +0200
-From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-To:     linyyuan@codeaurora.org
-Cc:     'Felipe Balbi' <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: eem: fix command packet transfer issue
-Message-ID: <YMG14paBDjYmrxhs@kroah.com>
-References: <000201d75dbf$58d1cc40$0a7564c0$@codeaurora.org>
+        id S230083AbhFJGwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:52:50 -0400
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:35609 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhFJGwr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 02:52:47 -0400
+Received: by mail-lf1-f51.google.com with SMTP id i10so1450467lfj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=67pgjCx8vmxJvqmbawagxHeBDG9F0WOXi380k50exuo=;
+        b=po0rea81p6koLdoj90+BpTqr297m34vqZiDHl35MFKN5HmBo/cINMskvg8Rj1AiXCD
+         P/mX6NsU8ilK5hyP7AW2r0V1bwvN2iVAetVFInJHL3ulhputAR1fbbnR8g/j+kgSLQRN
+         iXciNRcfQNWXmevrvU/V5C2Ds7I+9bLqYeVGkHSoUKiLnS7CZ/zFob00D4OF3VknComV
+         +qQqQK4kXsp5qjvVU5KnImu/nnQ+tNK8McFDo2o+UIVNatGM0GWVemlGxwcDZQAGmctV
+         Yi8SxUDNO9ks7NLikMTm/51IqsXk6A361yvzd5VwX3BuQ5o0Bb4YtgNKJRMi3H4g+gpU
+         x25A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=67pgjCx8vmxJvqmbawagxHeBDG9F0WOXi380k50exuo=;
+        b=OR+KsFU+Z+sJ9/i0Azm7XmweXMdcUWi6KA+WxWVleyAO5+tn48VUymtlI4sQkeG4SF
+         jcw2AQMTDkTdmjy0YVcvMx7dT4WFY1XF7qEoUfMdvm3lk/waFIoyYeHDwVaeTGHaWsZM
+         Wu6OTK7xCFN+32taMu/I30cP0HtOuvcU1tkJwamjpYPXFwKn5Y1P3GwvTvuEA7id61E9
+         cnN909+D27CexYO81x1NxpQPE6Z76C6cm8LpetaISb8zx3lGzvztkuQA+WuhqVftKu+5
+         +lY2XVxsMWzoejLM73TVnKiF+6+I1782vj1nR1HFaYzEj9D5o4LVqocUDLoCjiDMMfvL
+         mK5A==
+X-Gm-Message-State: AOAM530PW0lfkam5WbM8EErGy0s6aXQO3NilC9+AO5CG65i7vYOHEinJ
+        rV9R5xZtwjbinWfOI9kcRWPWbB3aQ4RoSf/4ZBcRQg==
+X-Google-Smtp-Source: ABdhPJz6FaRyzkyT5JROY4fDMVlcASzRb2xRU5K+8ShUxTZ08+8Qwr8pCgPa1FkXe3u+pAUYQeCllBc3ABd61aq8ik8=
+X-Received: by 2002:a05:6512:3b84:: with SMTP id g4mr969823lfv.277.1623307791024;
+ Wed, 09 Jun 2021 23:49:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000201d75dbf$58d1cc40$0a7564c0$@codeaurora.org>
+References: <20210604102314.697749-1-odin@uged.al> <YL+dTtsCtZjMeZWn@blackbook>
+In-Reply-To: <YL+dTtsCtZjMeZWn@blackbook>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 10 Jun 2021 08:49:39 +0200
+Message-ID: <CAKfTPtBEZZo9fHDxe7viLyZmCe=4NTLLtBFyWM_UuJ1nmqxGvA@mail.gmail.com>
+Subject: Re: [PATCH v4] sched/fair: Correctly insert cfs_rq's to list on unthrottle
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 02:10:40PM +0800, linyyuan@codeaurora.org wrote:
-> From: Linyu Yuan <linyyuan@codeaurora.com>
-> 
-> there is following warning,
-> [<ffffff8008905a94>] dwc3_gadget_ep_queue+0x1b4/0x1c8
-> [<ffffff800895ec9c>] usb_ep_queue+0x3c/0x120
-> [<ffffff80089677a0>] eem_unwrap+0x180/0x330
-> [<ffffff80089634f8>] rx_complete+0x70/0x230
-> [<ffffff800895edbc>] usb_gadget_giveback_request+0x3c/0xe8
-> [<ffffff8008901e7c>] dwc3_gadget_giveback+0xb4/0x190
-> [<ffffff8008905254>] dwc3_endpoint_transfer_complete+0x32c/0x410
-> [<ffffff80089060fc>] dwc3_bh_work+0x654/0x12e8
-> [<ffffff80080c63fc>] process_one_work+0x1d4/0x4a8
-> [<ffffff80080c6720>] worker_thread+0x50/0x4a8
-> [<ffffff80080cc8e8>] kthread+0xe8/0x100
-> [<ffffff8008083980>] ret_from_fork+0x10/0x50
-> request ffffffc0716bf200 belongs to 'ep0out'
-> 
-> when gadget receive a eem command packet from host, it need to response,
-> but queue usb request to wrong endpoint.
-> fix it by queue usb request to eem IN endpoint and allow host read it.
-> 
-> Cc: stable <stable@vger.kernel.org>
-> Signed-off-by: Linyu Yuan <linyyuan@codeaurora.org>
-> ---
->  drivers/usb/gadget/function/f_eem.c | 44
-> ++++++++++++++++++++++++++++++++-----
+On Tue, 8 Jun 2021 at 18:39, Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
+>
+> Hello.
+>
+> On Fri, Jun 04, 2021 at 12:23:14PM +0200, Odin Ugedal <odin@uged.al> wrot=
+e:
+>
+> > @@ -4719,8 +4738,8 @@ static int tg_unthrottle_up(struct task_group *tg=
+, void *data)
+> >               cfs_rq->throttled_clock_task_time +=3D rq_clock_task(rq) =
+-
+> >                                            cfs_rq->throttled_clock_task=
+;
+> >
+> > -             /* Add cfs_rq with already running entity in the list */
+> > -             if (cfs_rq->nr_running >=3D 1)
+> > +             /* Add cfs_rq with load or one or more already running en=
+tities to the list */
+> > +             if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
+> >                       list_add_leaf_cfs_rq(cfs_rq);
+> >       }
+>
+> Can there be a decayed cfs_rq with positive nr_running?
+> I.e. can the condition be simplified to just the decayed check?
 
-Your patch is line-wrapped and can not be applied :(
+Yes, nothing prevent a task with a null load to be enqueued on a
+throttle cfs as an example
 
-Please fix your email client to properly send patches correctly.
-
-thanks,
-
-greg k-h
+>
+> (I'm looking at account_entity_enqueue() but I don't know if an entity's
+> weight can be zero in some singular cases.)
+>
+> Thanks,
+> Michal
