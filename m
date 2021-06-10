@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31453A3434
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510913A343D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhFJTmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 15:42:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhFJTmJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 15:42:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F589C061574;
-        Thu, 10 Jun 2021 12:40:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dFVbMgHSVXeqKN6P1dJ+5aGTI7wSx+DxBg16yiPD+NU=; b=jLWPqrtTHgNShn8IpLGkd6FVZ3
-        izj6LMj2aFyZzsEkle6f5RA+iQCJVb9B2PjXWPNQtwI7lOQfDhA07umz1wQEi89AcaF/T3JA5MdQP
-        U3PE/a9COCNVIXjSrn6TYJgtyiBpWeJVmsgb0/O83RY1Lwybg5rDDktCwQI0h4MwYYS2N18/wc3Lf
-        i7qeN9Mfj4Ux1UzKetZKr2BUtH1JMEiJqcWxv0/E1OhXjMVlpZXEphZ/8r9LGCLa6xboy6Jq0ABya
-        eG/+sh4cdiXw55XeyETHRsXU/l6jlFvf2G6lBGetSMirYQJI1sTMe1W6EWeguc9qbkJNm8jNA0+iN
-        OOYGIErQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lrQWe-00228z-HP; Thu, 10 Jun 2021 19:39:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B5EDD3001E4;
-        Thu, 10 Jun 2021 21:39:35 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6379721AB0AC0; Thu, 10 Jun 2021 21:39:35 +0200 (CEST)
-Date:   Thu, 10 Jun 2021 21:39:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH 2/5] cgroup/cpuset: Add new cpus.partition type with no
- load balancing
-Message-ID: <YMJqd1JJcFTThH8j@hirez.programming.kicks-ass.net>
-References: <20210603212416.25934-1-longman@redhat.com>
- <20210603212416.25934-3-longman@redhat.com>
- <YMJfDHr1+xxm6SBi@hirez.programming.kicks-ass.net>
- <820aff72-fce2-ac2f-88e6-787249e04308@redhat.com>
+        id S230288AbhFJTo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 15:44:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229823AbhFJToz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 15:44:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7A0961414;
+        Thu, 10 Jun 2021 19:42:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623354178;
+        bh=e1qYqp9Ml4zXeFi4sMYRsxc9z9GOxYqqa+CE28wWI4U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UtwWwOounqCQDCI2o/53cZnytek08hk2lIx6VXjwSc6qRSpnetjeqNGhQ4NmbEvU1
+         GkCRcTc3Y45E2a8Dvqy5J3RoNJMbMqPt597XTM7Jgw7RZAFohVLRXHjb691iK1autt
+         /Lbe0GfobQxTqPF2ahUPC+oQ7PvJrocoT6vNfYMHp/adAsqhzqXJ7MN509Q6moDtNU
+         qV3C8Uti77SZZaJDiSZDiihxsDa69eg6/CZw5XGIPXgSi4xfK8uEmKvtLsNJRQAnkx
+         aS5T6Mtwplu/kd6YAYlLwQKFf8IgrC14aEN4PDVRPYlRQIKAlxEiVEeeVOpsNjDa0P
+         wyBVZb8KIpBkA==
+Received: by mail-wr1-f49.google.com with SMTP id c5so3538812wrq.9;
+        Thu, 10 Jun 2021 12:42:58 -0700 (PDT)
+X-Gm-Message-State: AOAM531D1dvpY5+mNf2xqIj3xFAm6f28hzc44RYUYkzZoB7WaXJbpUAE
+        xKZOTJcwnD0GCUuJFbqRIME9+oA4Ih9s5OZCjro=
+X-Google-Smtp-Source: ABdhPJySe7wd3XPNxujQj2IjqvLZE5RbBmPWKoLwo/i2COztQ95WbJMiDewLDXNHMXFcXE1bVv/W041r59h4dgeLYOE=
+X-Received: by 2002:adf:a28c:: with SMTP id s12mr104051wra.105.1623354177356;
+ Thu, 10 Jun 2021 12:42:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <820aff72-fce2-ac2f-88e6-787249e04308@redhat.com>
+References: <cover.1623326176.git.viresh.kumar@linaro.org> <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
+ <01000179f6a7715c-cd106846-7770-4088-bb7c-a696bfcbf83e-000000@email.amazonses.com>
+ <YMJF5fF31ksmSdiq@myrica>
+In-Reply-To: <YMJF5fF31ksmSdiq@myrica>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 10 Jun 2021 21:41:01 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1E7WzhX4NvUPn6iDzsUqTzAEMcsow7feTGRWTLe9+FFQ@mail.gmail.com>
+Message-ID: <CAK8P3a1E7WzhX4NvUPn6iDzsUqTzAEMcsow7feTGRWTLe9+FFQ@mail.gmail.com>
+Subject: Re: [Stratos-dev] [PATCH V3 1/3] gpio: Add virtio-gpio driver
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jason Wang <jasowang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 03:16:29PM -0400, Waiman Long wrote:
-> On 6/10/21 2:50 PM, Peter Zijlstra wrote:
-> > On Thu, Jun 03, 2021 at 05:24:13PM -0400, Waiman Long wrote:
-> > > Cpuset v1 uses the sched_load_balance control file to determine if load
-> > > balancing should be enabled.  Cpuset v2 gets rid of sched_load_balance
-> > > as its use may require disabling load balancing at cgroup root.
-> > > 
-> > > For workloads that require very low latency like DPDK, the latency
-> > > jitters caused by periodic load balancing may exceed the desired
-> > > latency limit.
-> > > 
-> > > When cpuset v2 is in use, the only way to avoid this latency cost is to
-> > > use the "isolcpus=" kernel boot option to isolate a set of CPUs. After
-> > > the kernel boot, however, there is no way to add or remove CPUs from
-> > > this isolated set. For workloads that are more dynamic in nature, that
-> > > means users have to provision enough CPUs for the worst case situation
-> > > resulting in excess idle CPUs.
-> > > 
-> > > To address this issue for cpuset v2, a new cpuset.cpus.partition type
-> > > "root-nolb" is added which allows the creation of a cpuset partition with
-> > > no load balancing. This will allow system administrators to dynamically
-> > > adjust the size of the no load balancing partition to the current need
-> > > of the workload without rebooting the system.
-> > I'm confused, why do you need this? Just create a parition for each cpu.
-> > 
-> From a management point of view, it is more cumbersome to do one cpu per
-> partition. I have suggested this idea of 1 cpu per partition to the
-> container developers, but they don't seem to like it.
+On Thu, Jun 10, 2021 at 7:03 PM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+>
+> On Thu, Jun 10, 2021 at 04:00:39PM +0000, Enrico Weigelt, metux IT consult via Stratos-dev wrote:
+> > On 10.06.21 15:22, Arnd Bergmann wrote:
+> >
+> > > Can you give an example of how this would be hooked up to other drivers
+> > > using those gpios. Can you give an example of how using the "gpio-keys" or
+> > > "gpio-leds" drivers in combination with virtio-gpio looks like in the DT?
+> >
+> > Connecting between self-probing bus'es and DT is generally tricky. IMHO
+> > we don't have any generic mechanism for that.
+>
+> DT does have a generic description of PCI endpoints, which virtio-iommu
+> relies on to express the relation between IOMMU and endpoint nodes [1].
+> I think the problem here is similar: the client node needs a phandle to
+> the GPIO controller which may use virtio-pci transport?
 
-Oh, because it then creates a cgroup tree per CPU and you get to move
-tasks between cgroups?
+Right, the code to set dev->of_node is fairly simple, the device probe
+just needs to scan for child nodes. Aside from PCI, similar code exists
+for USB and MMC/SDIO, which are usually discoverable but sometimes
+need additional properties.
 
-OK I suppose.
+> Note that it mostly works if the device is on the root PCI bus. Behind a
+> bridge the OS may change the device's bus number as needed, so the BDF
+> reference in DT is only valid if the software providing the DT description
+> (VMM or firmware) initializes bus numbers accordingly (and I don't
+> remember if Linux supports this case well).
+
+I think you can mark the host bridge as "probe-only" to prevent the OS
+(at least Linux) from renumbering the buses.
+
+The part I did not find though is assigning dev->of_node in the virtio_device
+to a child of the PCI device node.
+
+      Arnd
