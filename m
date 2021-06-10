@@ -2,101 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D773A2B60
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1B33A2B79
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhFJMZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:25:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46001 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230130AbhFJMZX (ORCPT
+        id S230313AbhFJM1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:27:54 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:51091 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230130AbhFJM1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:25:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623327807;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k3ZsCUUFI0x3gcU4BiStSbLUQmPZdLJKXVyrciTNj1w=;
-        b=Um8nuXS5/ATis/XaB4oVqNDkjtp4sosVKokfk5aVmF8rAm5d9BALScXie+BIAnejlB99Nz
-        3qt1K2PUYEY8TUvY/AupXn2xsBXYkLRHDWPq5+H6D7+ePmpdTriMLOt1LSnyRNy77Plmsm
-        N/t6HDVOjJ1c99NAxhjrDzfpzddvfZU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-qtVmBQzQPIuD7QurY0fZuA-1; Thu, 10 Jun 2021 08:23:26 -0400
-X-MC-Unique: qtVmBQzQPIuD7QurY0fZuA-1
-Received: by mail-wr1-f69.google.com with SMTP id h10-20020a5d688a0000b0290119c2ce2499so794622wru.19
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:23:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k3ZsCUUFI0x3gcU4BiStSbLUQmPZdLJKXVyrciTNj1w=;
-        b=QdVob4MoNSTasEtKSVSxrlgx3aTyGdbXcfsenZnkFZpe+iDJewzmaFHsyWigCkDnpJ
-         jF7xgZdacrodMApVEL+m8br3d7/WsqkwWeyScob8U4TH9YxXByFj4a9Y36zH1N1Um0kk
-         JZMnqcGnvaKiROf2LIHkRveL2TyLspHPVxcKmsUh8nhofagTNRvvV/KW5iLdQRXwTjyT
-         8Bjbs/bf97LJ0z4B6nEeXAg+uERS7jJZpCr/skW+THmhMbteaJ50h0FjqTINV0MijkqK
-         nJtq2SzadfRFhV0HDFiu7Xd5Qn9OzNLWSDMPJUI/tvOnmn3KYQ65ytRo8SoxsYHip+sX
-         Cs5Q==
-X-Gm-Message-State: AOAM5337PfWmBMcY80N14nylD4x4f3e4ec6jWxpEILFrbBILr4Vi7NIw
-        26dlq8wOmftvrMbcgTHQMWTp0taV7n2AD0CFxrvP/I8E8wmBsA22Z/ejVrixa3ze8YTACHr3srD
-        4VnDmeWN54Y5UfDI21XrojNw=
-X-Received: by 2002:a1c:98d0:: with SMTP id a199mr14932330wme.22.1623327804933;
-        Thu, 10 Jun 2021 05:23:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyLBOWhy739yhKr41MwPncysH3eK0v8XABzjqjEi2LNax5ipEJ+oI8jGaCj5PihtPVu26t8JQ==
-X-Received: by 2002:a1c:98d0:: with SMTP id a199mr14932315wme.22.1623327804761;
-        Thu, 10 Jun 2021 05:23:24 -0700 (PDT)
-Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
-        by smtp.gmail.com with ESMTPSA id o17sm3206320wrp.47.2021.06.10.05.23.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 05:23:24 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 13:23:23 +0100
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Waiman Long <llong@redhat.com>, Shakeel Butt <shakeelb@google.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] mm/oom_kill: allow oom kill allocating task for
- non-global case
-Message-ID: <20210610122323.6geriip66jjmdstj@ava.usersys.com>
-X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
-X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
-References: <CALvZod4eUoquGTQ5AsWgbWTQyqtCNNwb-9+fRw_ZPavH-r9dbA@mail.gmail.com>
- <dc7f54eb-933e-5bbb-7959-815dfbfcc836@redhat.com>
- <YL5tqdw+iWLLavxV@dhcp22.suse.cz>
- <6d23ce58-4c4b-116a-6d74-c2cf4947492b@redhat.com>
- <YL51Tp/3jVHUrpuj@dhcp22.suse.cz>
- <YL57rLFwAo7EpYeH@dhcp22.suse.cz>
- <353d012f-e8d4-c54c-b33e-54737e1a0115@redhat.com>
- <YL8MjSteKeO7w0il@dhcp22.suse.cz>
- <20210609143534.v65qknfihqimiivd@ava.usersys.com>
- <YMHivM+0DRYXzAD0@dhcp22.suse.cz>
+        Thu, 10 Jun 2021 08:27:52 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id 0A5342396;
+        Thu, 10 Jun 2021 08:25:54 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 10 Jun 2021 08:25:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:mime-version:content-type; s=
+        fm3; bh=uHio+4NIJ30iZUQOLrOe+MHQN4Sn7Af3MGSexW5w2ps=; b=hufp3yt3
+        de8jPWnUZ25P43F3IykGVCi9XgBRZS2x61/71w0pFKMTJcMO9ON3msRCEh0LlLlk
+        xzXKCq7kSJFW4u9exfsmgaKua4Unr+zP39zxv+5aN3DN/hpGBwYvK7xJubVwaO1D
+        qCROwhzBqOP4vnH9WzkDdiSPuBLR9NuIdiS8REy4SmqzFHWcgqfo7p+vhIdXHnbB
+        7OvFLaTL+jPoLoZTO0RuC4IpcgYXQECwX5hkAOHLmFmRsXklHzOTtcG7ctxD8aYW
+        4+AB2aLYCS4X/6mvoIoBBnzEmXtpHIbg9vpukIloTntKAtBW7fbf1TlXqcwRU9CT
+        Aqu2/TPwgbwaMw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:message-id
+        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm3; bh=uHio+4NIJ30iZUQOLrOe+MHQN4Sn7
+        Af3MGSexW5w2ps=; b=EyB9o7DsGY9CuOi1kBEWYqPdraY21EYolZfAkA8eMyGc4
+        pnxEdC4PN1GJY1Pp2F9xxYvYtmt0XiHXLnEt+yRDAP8mbMMjZP/M4pQx+x9O3eQL
+        YW1NnJ/qFvtn+cbSGjCk82Obh7zQXhQQ17aq6V+W2SXKp4MKlExKpsvyDpOsfdj6
+        tDRky6m55vbq3Z3rDhCLrTnY70JlBGgYt7EVQh9WREZVp6/00iGm/IUFqIPqRgiZ
+        OwtP8p+qaNclriRVfDo9DjuXWfA4ysZ1m1rbXQ6dZ275UgvOEAEhtqVJroZG4NyI
+        anyGh7/UtOXXUj9LCCQOY92OMESfPZ4xxpqvBZhUw==
+X-ME-Sender: <xms:0QTCYHrGmzKu1eaFc4iYinPp7RG4Wdq9s1MPkR7RgGu9_xFeWSoaow>
+    <xme:0QTCYBo6E40GdbMHzyX_rnPeRsErqukbrrs7crs7AFsA5njwW_zOP12ZigetZ8rEe
+    IqXOiYjyg1T16lfo-A>
+X-ME-Received: <xmr:0QTCYENxu2qhnxUvHdq2qXJ03nC4fQj8Dthlsf2Lm56OlW9BQCl1Z1bL1l4QNkAPG-wid1xHHKE1oqdgLQMVuZiAPYKLnoef_X5p>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedufedgheduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfggtggusehgtderredttddvnecuhfhrohhmpeforgigihhmvgcu
+    tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
+    hrnhepgfdvuedtvdevvddvvddtheevvdelgefhgefhleeuvdfhheduhfehffeuhfejffeg
+    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:0QTCYK7XOKLlL5JE6wujqWuwBrCaZc4RSqt2AOhRuND-C3vPjpOJlQ>
+    <xmx:0QTCYG7tpRgVTc1woTzO_GHiTUWP2BBjUBl_cnxxlyhu8nqeSQTr-g>
+    <xmx:0QTCYCiIRVg0S9Rdv2tM8UUJUriwahw_c13uAetSBJZ28Si37uj61w>
+    <xmx:0gTCYDy3OvQaZaL83E1A_JOFP4CBtIF_A8Llyit8jQPQGt41O7vL-3mIhEo>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 10 Jun 2021 08:25:52 -0400 (EDT)
+Date:   Thu, 10 Jun 2021 14:25:50 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>
+Cc:     Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: [GIT PULL] HDMI codec improvements, v2
+Message-ID: <20210610122550.jnriewchqspdcrwk@gilmour>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7tlmdj33bp5wxhna"
 Content-Disposition: inline
-In-Reply-To: <YMHivM+0DRYXzAD0@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-06-10 12:00 +0200, Michal Hocko wrote:
-> If that was the case then the allocating (charging) task would not hit
-> the oom path at all
 
-Yes, you are correct. I was looking at another version of the source code.
-I does not make sense to consider the OOM code path at all, in this
-context. The allocating task is selected/or marked as an "OOM vicitm" after
-SIGKILL is sent (see __oom_kill_process()).
+--7tlmdj33bp5wxhna
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> What do you mean by allocating task being unkillable?
+Hi,
 
-Please disregard this statement, as per the above.
-Anyhow, I think we should exclude tasks that have MMF_OOM_SKIP applied in
-dump_tasks() as it could be misleading.
+Here's a PR for the changes to hdmi-codec that need to be shared between
+drm-misc-next and ASoC.
+
+This is the second iteration, fixing a bisection issue with compilation
+
+Thanks!
+Maxime
 
 
--- 
-Aaron Tomlin
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mripard/linux.git tags/asoc-hdmi-codec-improvements-v2
+
+for you to fetch changes up to 2fef64eec23a0840c97977b16dd8919afaffa876:
+
+  ASoC: hdmi-codec: Add a prepare hook (2021-06-10 11:48:56 +0200)
+
+----------------------------------------------------------------
+Improvements to the hdmi-codec driver and ALSA infrastructure around it
+to support the HDMI Channel Mapping and IEC958 controls
+
+----------------------------------------------------------------
+Maxime Ripard (5):
+      ALSA: doc: Clarify IEC958 controls iface
+      ALSA: iec958: Split status creation and fill
+      ASoC: hdmi-codec: Rework to support more controls
+      ASoC: hdmi-codec: Add iec958 controls
+      ASoC: hdmi-codec: Add a prepare hook
+
+ .../sound/kernel-api/writing-an-alsa-driver.rst    |  13 +-
+ include/sound/hdmi-codec.h                         |  12 +-
+ include/sound/pcm_iec958.h                         |   8 +
+ sound/core/pcm_iec958.c                            | 176 +++++++++++++----
+ sound/soc/codecs/hdmi-codec.c                      | 219 +++++++++++++++++----
+ 5 files changed, 337 insertions(+), 91 deletions(-)
+
+--7tlmdj33bp5wxhna
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYMIEzgAKCRDj7w1vZxhR
+xWTFAP9Htr7a2qyESSYy+oZKtBB+ulMs7bWhtFqZEAHtQecZpgD/R7HTX4nAch5g
+lwYonMvzPyUzYI2ah5Wvcqkp6B51fgg=
+=6y7C
+-----END PGP SIGNATURE-----
+
+--7tlmdj33bp5wxhna--
