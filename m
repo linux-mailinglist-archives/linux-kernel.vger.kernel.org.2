@@ -2,114 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A82A3A2E7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905F13A2E7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhFJOqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:46:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230153AbhFJOqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:46:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97E4060E08;
-        Thu, 10 Jun 2021 14:44:40 +0000 (UTC)
-Subject: Re: arch/m68k/68000/dragen2.c:73:16: error: 'screen_bits' undeclared
-To:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202106082234.K2ejj9O2-lkp@intel.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <b7d33ae8-24f5-cf5f-ba80-348b6c2e6853@linux-m68k.org>
-Date:   Fri, 11 Jun 2021 00:44:38 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231437AbhFJOqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230153AbhFJOqr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:46:47 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6411C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:44:51 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623336288;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=P9i2STUTf93CvmLRHys/MQ1Ky/p6ZQuDDGUamBB9Eck=;
+        b=vpDtlHv1NS1/V317LnuTkH896gyzPYuQGYD9mhkWJ10PPjX9wCcpinJkcUnSp3Tu/+tJxr
+        AfB+IKciypPYrNNXpjBqeaPTEu+d/wa+MmfNO0p837VWJWJzTBi4QxwOmTVfxqJg1IqTW2
+        8xGJRB3dEMztazTWzX0wdlCfuHWmDyoqcsF0M/t8FtyuE98jk2feDZpz89ZHayYWS36/GS
+        HpRL3ehlDa3FqbLA5oe6dzxlfiLzXMhY8FEmB8B4hyfR8n6I1qK8JgXl89ea1wbpRP7QyV
+        1SEVjyv3IsmFX/mMXmZ23n89/1l01xwlQFCq0pmIVHh/VxfVNXNolqa14xcY3g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623336288;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=P9i2STUTf93CvmLRHys/MQ1Ky/p6ZQuDDGUamBB9Eck=;
+        b=+Taf8z23t0At0JDxwlzPar9AdexA4I253DPxA5+DbzYMxBkkWNM4rzOWKyNwJG6HFZZTXN
+        vEwl+uECIWOQrHDA==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH next v2 2/2] printk: fix cpu lock ordering
+In-Reply-To: <YL+DjNG0uhg/uT+C@alley>
+References: <20210607200232.22211-1-john.ogness@linutronix.de> <20210607200232.22211-3-john.ogness@linutronix.de> <YL9osWvgvdCo4JAK@alley> <875yyoigms.fsf@jogness.linutronix.de> <YL+DjNG0uhg/uT+C@alley>
+Date:   Thu, 10 Jun 2021 16:44:47 +0200
+Message-ID: <8735tpu6cg.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <202106082234.K2ejj9O2-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-06-08, Petr Mladek <pmladek@suse.com> wrote:
+>> 	/*
+>> 	 * Guarantee loads and stores from this CPU when it is the lock owner
+>> 	 * are _not_ visible to the previous lock owner. This pairs with
+>> 	 * cpu_unlock:B.
+>> 	 *
+>> 	 * Memory barrier involvement:
+>> 	 *
+>> 	 * If cpu_lock:A reads from cpu_unlock:B, then cpu_unlock:A can never
+>> 	 * read from cpu_lock:B.
+>> 	 *
+>> 	 * Relies on:
+>> 	 *
+>> 	 * RELEASE from cpu_unlock:A to cpu_unlock:B
+>> 	 *    matching
+>> 	 * ACQUIRE from cpu_lock:A to cpu_lock:B
+>> 	 */
+>
+> I can't check this so I believe you ;-)
 
-On 9/6/21 12:01 am, kernel test robot wrote:
-> Hi Arnd,
-> 
-> FYI, the error/warning still remains.
+I appreciate your confidence in me, but for the record, we should
+operate on proofs. Here is a litmus test for this case that is only
+using the 2 memory barriers described in the coments. I also added
+commented out non-memory-barrier variants so you can quickly check what
+happens if either memory barrier is removed.
 
-My fault. I have pushed the fix to the m68knommu git tree, for-next branch now.
-See:
+-------- BEGIN prevent_backwards_leak.litmus --------
+C prevent_backwards_leak
 
-     https://lore.kernel.org/linux-m68k/fd18edff-ddaf-e10c-5649-da0ade22dafa@linux-m68k.org/T/#t
+(*
+ * Guarantee a previous CPU (P0) in the critical section cannot
+ * see data stored by the next CPU (P1) in the critical section.
+ *
+ * RELEASE in P0 matches ACQUIRE in P1
+ *)
 
-Regards
-Greg
+{ }
 
-     
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   614124bea77e452aa6df7a8714e8bc820b489922
-> commit: a734bbf694270dca8594a5c33375867dc31503f5 m68k: m68328: move platform code to separate files
-> date:   6 months ago
-> config: m68k-randconfig-r021-20210608 (attached as .config)
-> compiler: m68k-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a734bbf694270dca8594a5c33375867dc31503f5
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout a734bbf694270dca8594a5c33375867dc31503f5
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=m68k
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->     arch/m68k/68000/dragen2.c:38:13: warning: no previous prototype for 'init_dragen2' [-Wmissing-prototypes]
->        38 | void __init init_dragen2(char *command, int size)
->           |             ^~~~~~~~~~~~
->     arch/m68k/68000/dragen2.c: In function 'init_dragen2':
->>> arch/m68k/68000/dragen2.c:73:16: error: 'screen_bits' undeclared (first use in this function)
->        73 |  LSSA = (long) screen_bits;
->           |                ^~~~~~~~~~~
->     arch/m68k/68000/dragen2.c:73:16: note: each undeclared identifier is reported only once for each function it appears in
-> 
-> 
-> vim +/screen_bits +73 arch/m68k/68000/dragen2.c
-> 
->      45	
->      46		/* CSGB Init */
->      47		CSGBB = 0x4000;
->      48		CSB = 0x1a1;
->      49	
->      50		/* CS8900 init */
->      51		/* PK3: hardware sleep function pin, active low */
->      52		PKSEL |= PK(3);				/* select pin as I/O */
->      53		PKDIR |= PK(3);				/* select pin as output */
->      54		PKDATA |= PK(3);			/* set pin high */
->      55	
->      56		/* PF5: hardware reset function pin, active high */
->      57		PFSEL |= PF(5);				/* select pin as I/O */
->      58		PFDIR |= PF(5);				/* select pin as output */
->      59		PFDATA &= ~PF(5);			/* set pin low */
->      60	
->      61		/* cs8900 hardware reset */
->      62		PFDATA |= PF(5);
->      63		{ int i; for (i = 0; i < 32000; ++i); }
->      64		PFDATA &= ~PF(5);
->      65	
->      66		/* INT1 enable (cs8900 IRQ) */
->      67		PDPOL &= ~PD(1);			/* active high signal */
->      68		PDIQEG &= ~PD(1);
->      69		PDIRQEN |= PD(1);			/* IRQ enabled */
->      70	
->      71	#ifdef CONFIG_INIT_LCD
->      72		/* initialize LCD controller */
->    > 73		LSSA = (long) screen_bits;
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+P0(int *lck, int *var)
+{
+	int old;
+	int val;
+
+	old = atomic_cmpxchg_relaxed(lck, 0, 1);
+	if (old == 0) {
+		val = *var;
+		atomic_set_release(lck, 2);
+		//atomic_set(lck, 2);
+	}
+}
+
+P1(int *lck, int *var)
+{
+	int old;
+
+	old = atomic_cmpxchg_acquire(lck, 2, 3);
+	//old = atomic_cmpxchg_relaxed(lck, 2, 3);
+	if (old == 2) {
+		*var = 1;
+		atomic_set(lck, 3);
+	}
+}
+
+exists (1:old=2 /\ 0:val=1)
+-------- END prevent_backwards_leak.litmus --------
+
+And running it shows:
+
+$ herd7 -conf linux-kernel.cfg prevent_backwards_leak.litmus
+Test prevent_backwards_leak Allowed
+States 3
+0:val=0; 1:old=0;
+0:val=0; 1:old=1;
+0:val=0; 1:old=2;
+No
+Witnesses
+Positive: 0 Negative: 3
+Condition exists (1:old=2 /\ 0:val=1)
+Observation prevent_backwards_leak Never 0 3
+Time prevent_backwards_leak 0.01
+Hash=a83f3a63382111d7f61810639fa38ad4
+
+If either of the two memory barriers are removed, the results will show
+that @val in first CPU (P0) can be 1 (0:val=1), which was the value set
+by the following CPU (P1) in the critical section.
+
+>> 	/*
+>> 	 * Guarantee loads and stores from this CPU when it was the
+>> 	 * lock owner are visible to the next lock owner. This pairs
+>> 	 * with cpu_lock:A.
+>> 	 *
+>> 	 * Memory barrier involvement:
+>> 	 *
+>> 	 * If cpu_lock:A reads from cpu_unlock:B, then cpu_lock:B
+>> 	 * reads from cpu_unlock:A.
+>> 	 *
+>> 	 * Relies on:
+>> 	 *
+>> 	 * RELEASE from cpu_unlock:A to cpu_unlock:B
+>> 	 *    matching
+>> 	 * ACQUIRE from cpu_lock:A to cpu_lock:B
+>> 	 */
+>
+> Same as for acquire ;-)
+
+And here is the litmus test for this case, also with extra commented out
+non-memory-barrier variants.
+
+-------- BEGIN guarantee_forward_visibility.litmus --------
+C guarantee_forward_visibility
+
+(*
+ * Guarantee data stored by a previous CPU (P0) in the critical
+ * section is always visible to the next CPU (P1) in the critical
+ * section.
+ *
+ * RELEASE in P0 matches ACQUIRE in P1
+ *)
+
+{ }
+
+P0(int *lck, int *var)
+{
+	int old;
+
+	old = atomic_cmpxchg_relaxed(lck, 0, 1);
+	if (old == 0) {
+		*var = 1;
+		atomic_set_release(lck, 2);
+		//atomic_set(lck, 2);
+	}
+}
+
+P1(int *lck, int *var)
+{
+	int old;
+	int val;
+
+	old = atomic_cmpxchg_acquire(lck, 2, 3);
+	//old = atomic_cmpxchg_relaxed(lck, 2, 3);
+	if (old == 2) {
+		val = *var;
+		atomic_set(lck, 3);
+	}
+}
+
+exists (1:old=2 /\ 1:val=0 )
+-------- END guarantee_forward_visibility.litmus --------
+
+$ herd7 -conf linux-kernel.cfg guarantee_forward_visibility.litmus
+Test guarantee_forward_visibility Allowed
+States 3
+1:old=0; 1:val=0;
+1:old=1; 1:val=0;
+1:old=2; 1:val=1;
+No
+Witnesses
+Positive: 0 Negative: 3
+Condition exists (1:old=2 /\ 1:val=0)
+Observation guarantee_forward_visibility Never 0 3
+Time guarantee_forward_visibility 0.00
+Hash=fad189f07da06da99b97a7ab1215a5dc
+
+Also here, if either of the memory barriers are removed, @val in the
+later CPU (P1) can be 0 (1:val=0). Meaning that the a following CPU in
+the critical section would not see a value set by the previous CPU in
+the critical section.
+
+John Ogness
