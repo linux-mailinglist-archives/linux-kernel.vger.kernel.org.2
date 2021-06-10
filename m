@@ -2,159 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AA33A249C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7153A24A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhFJGlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhFJGl2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:41:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBFCC061574;
-        Wed,  9 Jun 2021 23:39:32 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 06:39:27 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623307168;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pHfBmgSSl0LVj0j/mIks/eDK1NXKCYXj541XDw2jgp8=;
-        b=G+6GumO1S0lYEs3+FOoZZE3bhxdSiq8/J0eJJk48lx+JX2GpEDTS2UvBT+kUM2/bKByrOA
-        WnFM2OEWOJCpqHMpdMJZx8tZ6MsJ2aH6J/OHGoXdAxsT95654yLuUzlaocK7OAWrOjaBMo
-        ylk2ie0pZk4/PxIcdNeBkGAVkFi78FuMCgkx/SAhIfJ1O6CEHaGmBmf/DqsX2UkFloOT72
-        xl7ch28e4IENsMYIRetnTEZHPmXB0fLKmN/EVluUqaNg+85L+k/4K3CZU9KkHvLJ3RvFZn
-        AOgwdBXvgWIPAsejv93eal7RyDa0w7pS3JJpdEuuG5tWMktmFqNiOiavnlleNQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623307168;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pHfBmgSSl0LVj0j/mIks/eDK1NXKCYXj541XDw2jgp8=;
-        b=ilb+VLgXgKZc9sZQyMSoP9oGDa2TMKk2a7NaLnNUPDRbXpuftWMJ1o6t4fedoIjz7eu/6x
-        6pIjC36oU31SOtAw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/fpu: Reset state for all signal restore failures
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
-        stable@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <87mtryyhhz.ffs@nanos.tec.linutronix.de>
-References: <87mtryyhhz.ffs@nanos.tec.linutronix.de>
+        id S229802AbhFJGoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:44:06 -0400
+Received: from m12-16.163.com ([220.181.12.16]:44166 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229634AbhFJGoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 02:44:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=y+e2b
+        PmexqtbrmKw2MH4HI+pB5lEaw8BySK7BAtauXA=; b=E/drF/s30r49VUTPCp8i4
+        4dpIEzzv6Rege3jBXcY0yKs1giE/kICHaEUoUvap/7QO1KQZS4TAn3JsTGrJ0fhL
+        Qz9hhgzsew5UpjSYD2S0UI7vWjtBnAtQplZWjxYosURp/ijkr2XpNIMOkKgfydlK
+        NImjFjMI+fqIfItFYGw0hQ=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp12 (Coremail) with SMTP id EMCowACXs0_Hs8FgENRawQ--.34426S2;
+        Thu, 10 Jun 2021 14:40:08 +0800 (CST)
+From:   =?UTF-8?q?=C2=A0Zhongjun=20Tan?= <hbut_tan@163.com>
+To:     thierry.reding@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        jonathanh@nvidia.com
+Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tan Zhongjun <tanzhongjun@yulong.com>
+Subject: [PATCH] drm/tegra:Remove superfluous error messages around platform_get_irq()
+Date:   Thu, 10 Jun 2021 14:39:55 +0800
+Message-Id: <20210610063955.1064-1-hbut_tan@163.com>
+X-Mailer: git-send-email 2.30.0.windows.2
 MIME-Version: 1.0
-Message-ID: <162330716797.29796.6651101584652382146.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowACXs0_Hs8FgENRawQ--.34426S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrykKFy7tryDZw1furWDtwb_yoWfuFX_Ca
+        4UZrn7Wr4S9r1qvFyDZry3Za42yFn09r48Z3ZrKa4Sy343J3WUG3yUWF18ur4UXw1UGas7
+        X3W8Wr4avrsxCjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeC1vDUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: xkex3sxwdqqiywtou0bp/xtbBqBetxl75dLHjvgAAsr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+From: Tan Zhongjun <tanzhongjun@yulong.com>
 
-Commit-ID:     efa165504943f2128d50f63de0c02faf6dcceb0d
-Gitweb:        https://git.kernel.org/tip/efa165504943f2128d50f63de0c02faf6dcceb0d
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 09 Jun 2021 21:18:00 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 10 Jun 2021 08:04:24 +02:00
+The platform_get_irq() prints error message telling that interrupt is
+missing,hence there is no need to duplicated that message in the
+drivers.
 
-x86/fpu: Reset state for all signal restore failures
-
-If access_ok() or fpregs_soft_set() fails in __fpu__restore_sig() then the
-function just returns but does not clear the FPU state as it does for all
-other fatal failures.
-
-Clear the FPU state for these failures as well.
-
-Fixes: 72a671ced66d ("x86, fpu: Unify signal handling code paths for x86 and x86_64 kernels")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/87mtryyhhz.ffs@nanos.tec.linutronix.de
+Signed-off-by: Tan Zhongjun <tanzhongjun@yulong.com>
 ---
- arch/x86/kernel/fpu/signal.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/tegra/dpaux.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index 4ab9aeb..ec3ae30 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -307,13 +307,17 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 		return 0;
- 	}
+diff --git a/drivers/gpu/drm/tegra/dpaux.c b/drivers/gpu/drm/tegra/dpaux.c
+index 7d7cc90b6fc9..1f96e416fa08 100644
+--- a/drivers/gpu/drm/tegra/dpaux.c
++++ b/drivers/gpu/drm/tegra/dpaux.c
+@@ -467,10 +467,8 @@ static int tegra_dpaux_probe(struct platform_device *pdev)
+ 		return PTR_ERR(dpaux->regs);
  
--	if (!access_ok(buf, size))
--		return -EACCES;
-+	if (!access_ok(buf, size)) {
-+		ret = -EACCES;
-+		goto out;
-+	}
+ 	dpaux->irq = platform_get_irq(pdev, 0);
+-	if (dpaux->irq < 0) {
+-		dev_err(&pdev->dev, "failed to get IRQ\n");
++	if (dpaux->irq < 0)
+ 		return -ENXIO;
+-	}
  
--	if (!static_cpu_has(X86_FEATURE_FPU))
--		return fpregs_soft_set(current, NULL,
--				       0, sizeof(struct user_i387_ia32_struct),
--				       NULL, buf) != 0;
-+	if (!static_cpu_has(X86_FEATURE_FPU)) {
-+		ret = fpregs_soft_set(current, NULL, 0,
-+				      sizeof(struct user_i387_ia32_struct),
-+				      NULL, buf);
-+		goto out;
-+	}
- 
- 	if (use_xsave()) {
- 		struct _fpx_sw_bytes fx_sw_user;
-@@ -396,7 +400,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 		 */
- 		ret = __copy_from_user(&env, buf, sizeof(env));
- 		if (ret)
--			goto err_out;
-+			goto out;
- 		envp = &env;
- 	}
- 
-@@ -426,7 +430,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 
- 		ret = copy_user_to_xstate(&fpu->state.xsave, buf_fx);
- 		if (ret)
--			goto err_out;
-+			goto out;
- 
- 		sanitize_restored_user_xstate(&fpu->state, envp, user_xfeatures,
- 					      fx_only);
-@@ -446,7 +450,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 		ret = __copy_from_user(&fpu->state.fxsave, buf_fx, state_size);
- 		if (ret) {
- 			ret = -EFAULT;
--			goto err_out;
-+			goto out;
- 		}
- 
- 		sanitize_restored_user_xstate(&fpu->state, envp, user_xfeatures,
-@@ -464,7 +468,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 	} else {
- 		ret = __copy_from_user(&fpu->state.fsave, buf_fx, state_size);
- 		if (ret)
--			goto err_out;
-+			goto out;
- 
- 		fpregs_lock();
- 		ret = copy_kernel_to_fregs_err(&fpu->state.fsave);
-@@ -475,7 +479,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 		fpregs_deactivate(fpu);
- 	fpregs_unlock();
- 
--err_out:
-+out:
- 	if (ret)
- 		fpu__clear_user_states(fpu);
- 	return ret;
+ 	if (!pdev->dev.pm_domain) {
+ 		dpaux->rst = devm_reset_control_get(&pdev->dev, "dpaux");
+-- 
+2.17.1
+
+
