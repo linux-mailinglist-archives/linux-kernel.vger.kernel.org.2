@@ -2,148 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E943A31F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E653A31FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhFJRX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:23:56 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:45010 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhFJRXy (ORCPT
+        id S230396AbhFJR1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:27:17 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:56133 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230113AbhFJR1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:23:54 -0400
-Received: by mail-ot1-f41.google.com with SMTP id q5-20020a9d66450000b02903f18d65089fso403495otm.11;
-        Thu, 10 Jun 2021 10:21:44 -0700 (PDT)
+        Thu, 10 Jun 2021 13:27:15 -0400
+Received: by mail-wm1-f54.google.com with SMTP id g204so6611970wmf.5;
+        Thu, 10 Jun 2021 10:25:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gHUSjbESYNfD7sG28gBLSykvdruQjgsFLHrNm+2HmfQ=;
+        b=emflGDuQWMyQVmaReahmSphhsN3tGq/01vqu6RyLp5Axnm+528aJAiwHnxjq+x+799
+         cmpg+bS8CflQUI6AO1f5ERbbfejwjnAFrpDyUXsJ/K5CvPIshDAZfh03ia6DUXm84Mbn
+         GEEeIKPyy0hH73WIJtWFc7G49QT9mQHthBxWLQqBtM0VNmpqXZF4H/fChX+dBKA6D1xi
+         GPcQloo24VIQ2z7F7nmAW6GdD83xhxL9IPoBN++47/8QwVt51XPKb1kfwdDQS6QN2B75
+         cG3/Hgfpp8hebVs5paQ+r9s1wzuCiH1cRWyvlV8WiL40nrtSEJw2FDXoFpzPA95dbeGK
+         hGwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ifnPsB6wQoNjNoGIoOZ3f4syykDwHdUi4l5zc8NJ55Y=;
-        b=O5HFamT9x37XvfLsiphsPUpX1WPPPe1DsNl18GdgX9H4Qcjxo43yF4JUgcnR0xrrDm
-         BVQqraWlD8DA6icCi/2dFTRoSHjZJvg95Pj8vIQBEiUEgUCYfGEmkCBlQN8T4Hocp6/S
-         iAp9/sKBixxmbvmKYS22nZBRmjzKmOvjBRJ+hUuWv/0Ktxj/106RRHVidEWfkSpi7tXz
-         xTaZ+1gLxBQOG1VTdBCT3WrgdvHhNy9CPCFKY5Oa0Cn+aT2gRth7KVpaVMn+UtAdpP8j
-         Em4Maet6xVhbTZHku27k/XhEgpv7mb7ThqNWunhPyPjQcB04/pgP3X+CPBzEQneHNO6L
-         MJMw==
-X-Gm-Message-State: AOAM533E8kDneaMQW6eJaAFVyl5dvq/1eVyZcB6djpOYhoM/7VMZ1AqY
-        yUNPY7ReDufZEj3t3gOL9w==
-X-Google-Smtp-Source: ABdhPJwZ2mnbD6nRpRtHSzRyehAprYA+2uqAJimI3xSlzSOJtyOGi9mT5r/GmrvQZuEkT1ji4imRAg==
-X-Received: by 2002:a05:6830:43:: with SMTP id d3mr3263268otp.118.1623345704552;
-        Thu, 10 Jun 2021 10:21:44 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.113])
-        by smtp.gmail.com with ESMTPSA id u1sm629502ooo.18.2021.06.10.10.21.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 10:21:43 -0700 (PDT)
-Received: (nullmailer pid 2054170 invoked by uid 1000);
-        Thu, 10 Jun 2021 17:21:41 -0000
-Date:   Thu, 10 Jun 2021 12:21:41 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: rtc: zynqmp: convert bindings to YAML
-Message-ID: <20210610172141.GA1972573@robh.at.kernel.org>
-References: <20210602000918.779983-1-iwamatsu@nigauri.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gHUSjbESYNfD7sG28gBLSykvdruQjgsFLHrNm+2HmfQ=;
+        b=JfmynvajxoWxnUzv4bZIIIm3ElGokr4EZJmZKFZg1OrcsuNBthfUzgiARBPulWO7Ml
+         9DLuLZgJA7K3DPMkOqKGvgYDgFsHeH4wn06JcCB0snqd4EB20dOoKWnJPPsKczapS/xg
+         sG3oC5QLfhRkn1SxLgqpePjSGYLTcoP5dHFqv4Yx8uIgMJeftlIvE8b5cVjjVp4I1PT+
+         5l8UNJW/Od2UWuxiN1Yuo49BJ3VdN0gyDgL1iUoR9RXSSSvxlVCfTyIAo19GrV/24SSE
+         ZX7mDS0zeeCZapYxPxEIq/eYSy4+uAa8f4Vpy4jK0ReQ2i9k674Uy8ugIWbPijSzv7q4
+         FpwA==
+X-Gm-Message-State: AOAM532gkjkiqD0iskan4386ysIsIexJeYK56seypHQlKQeNkaP2WxQf
+        p9jZQttaCdkmz8OYS73pG9qbfipujTAq8g==
+X-Google-Smtp-Source: ABdhPJywlX06vBk6jltAnNjUFb5g1wiIIz5kiuW5Yo4w+tKby+/h5S0v09iWGBmzSvqcqV5BUF+rdA==
+X-Received: by 2002:a05:600c:3514:: with SMTP id h20mr3816566wmq.70.1623345857699;
+        Thu, 10 Jun 2021 10:24:17 -0700 (PDT)
+Received: from [192.168.181.98] (228.18.23.93.rev.sfr.net. [93.23.18.228])
+        by smtp.gmail.com with ESMTPSA id x125sm4033996wmg.37.2021.06.10.10.24.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 10:24:17 -0700 (PDT)
+Subject: Re: [PATCH v7 bpf-next 01/11] net: Introduce
+ net.ipv4.tcp_migrate_req.
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210521182104.18273-1-kuniyu@amazon.co.jp>
+ <20210521182104.18273-2-kuniyu@amazon.co.jp>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <3a9ecbe4-fe7e-1acf-36b7-1f999f8f01d6@gmail.com>
+Date:   Thu, 10 Jun 2021 19:24:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602000918.779983-1-iwamatsu@nigauri.org>
+In-Reply-To: <20210521182104.18273-2-kuniyu@amazon.co.jp>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 09:09:18AM +0900, Nobuhiro Iwamatsu wrote:
-> Convert Real Time Clock for Xilinx Zynq MPSoC SoC bindings documentation
-> to YAML schemas.
-> And this renamed the file to compatible string of DT.
+
+
+On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
+> This commit adds a new sysctl option: net.ipv4.tcp_migrate_req. If this
+> option is enabled or eBPF program is attached, we will be able to migrate
+> child sockets from a listener to another in the same reuseport group after
+> close() or shutdown() syscalls.
 > 
-> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 > ---
-> 
-> v2: Fix warning with DT_CHECKER_FLAGS=-m
-> 
->  .../bindings/rtc/xlnx,zynqmp-rtc.yaml         | 61 +++++++++++++++++++
->  .../devicetree/bindings/rtc/xlnx-rtc.txt      | 25 --------
->  2 files changed, 61 insertions(+), 25 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
->  delete mode 100644 Documentation/devicetree/bindings/rtc/xlnx-rtc.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml b/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
-> new file mode 100644
-> index 00000000000000..c205cb86ef00be
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
-> @@ -0,0 +1,61 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/rtc/xlnx,zynqmp-rtc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Xilinx Zynq Ultrascale+ MPSoC Real Time Clock
-> +
-> +description: |
+>  Documentation/networking/ip-sysctl.rst | 25 +++++++++++++++++++++++++
+>  include/net/netns/ipv4.h               |  1 +
+>  net/ipv4/sysctl_net_ipv4.c             |  9 +++++++++
+>  3 files changed, 35 insertions(+)
 
-Don't need '|'
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-> +  RTC controller for the Xilinx Zynq MPSoC Real Time Clock.
-> +  This separates IRQ lines for seconds and alarm.
-
-The RTC controller has separate IRQ...
-
-> +
-> +maintainers:
-> +  - Michal Simek <michal.simek@xilinx.com>
-> +
-> +allOf:
-> +  - $ref: rtc.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: xlnx,zynqmp-rtc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    minItems: 2
-> +
-> +  interrupt-names:
-> +    items:
-> +      - const: alarm
-> +      - const: sec
-> +
-> +  calibration:
-> +    description: |
-> +      calibration value for 1 sec period which will
-> +      be programmed directly to calibration register.
-
-Needs a type $ref.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    soc {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-> +
-> +      rtc: rtc@ffa60000 {
-> +        compatible = "xlnx,zynqmp-rtc";
-> +        reg = <0x0 0xffa60000 0x0 0x100>;
-> +        interrupt-parent = <&gic>;
-> +        interrupts = <0 26 4>, <0 27 4>;
-> +        interrupt-names = "alarm", "sec";
-> +        calibration = <0x198233>;
-> +      };
-> +    };
