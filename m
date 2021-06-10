@@ -2,73 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD8D3A3610
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30B43A361C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFJVil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 17:38:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229963AbhFJVik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:38:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D848613BC;
-        Thu, 10 Jun 2021 21:36:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623361003;
-        bh=VPiu+326ifHN2/G78z3abv1E9z0XDI+YU7cXCgX001Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VuQ4lsOMievNZQblMuF0nRy9ZL10RTvi5MN7JyQqypvCKdIEhj9jf4aH4rvz6Xs8M
-         q51Vhve8nJpZKKqc9WbMyvx6wBKIfjjrFVeb/0uMGjZzlI1XntsrnsCRcNM4BVc98D
-         0hPqj3icMwnfR4HtixvMv5jV+xf/XQ1OHcfD8wm8=
-Date:   Thu, 10 Jun 2021 14:36:42 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Charles Haithcock <chaithco@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Adrian Reber <areber@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCHv8] exec: Fix dead-lock in de_thread with ptrace_attach
-Message-Id: <20210610143642.e4535dbdc0db0b1bd3ee5367@linux-foundation.org>
-In-Reply-To: <AM8PR10MB4708AFBD838138A84CE89EF8E4359@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
-References: <AM8PR10MB4708AFBD838138A84CE89EF8E4359@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230230AbhFJVlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:41:44 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:36793 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230160AbhFJVln (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 17:41:43 -0400
+Received: by mail-ot1-f48.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so1175559otl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 14:39:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SpNN+AXXHfxpEVep3vQpF/ecsEUb6Lp2ZvyEY9AUsEg=;
+        b=HECdxmdMMOIliEYytMoL2cIUIemVwiFqYGmrsJaFWjN+mv9JNwZQwgZWePouI/ubo0
+         oqs5LSbc27ytGu2DvDTs876tt2OkaQnStdNT3Gl3NdXk1Tfucxlp2Hq1a/MmZW9nbCCo
+         peg4HaEO/cf1Sjz1YQiRTsZUwCCt/mvOL/rl0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SpNN+AXXHfxpEVep3vQpF/ecsEUb6Lp2ZvyEY9AUsEg=;
+        b=mnaZpTQxisBns209Fc6SYnDA3wsDwdVGE3X3uWYMgQyxyfk0VBH8owrvHGpbYYTfrg
+         hXkwYSUXSXEMHhwrD0xnwgyxii2tylfOxohqYbu2ESd0V9RUoOENWpf9fpEDHDpgzDBe
+         SA2UBnKRk+VloA00iq1JsxRPWnF2B03mg3USn5k3EWaaUDn0C3SlKSCqxgyKPrsdRxSW
+         jX1G076u1tN3sIVcdxPpbOwhVzzdUXHFJiVRRZixy66Xgtg8uWatxa9OzztfPH/RmvbF
+         oUgoIc9LNeniv1TcWVrbydV2G4nrGJo/8gpQw3FEMX7YkTA2sgFai8yS7lEew7ZSb0uF
+         pZKg==
+X-Gm-Message-State: AOAM533Svk8kXHOloaNRllsxffDveCk2SYgvwaTZiqIiWwIKWEdIqRDS
+        X9zcvm67ppHe0wOfQdc6GLgCPA==
+X-Google-Smtp-Source: ABdhPJywu9SyHkna+eTSCkc4gDKPf1YqdnpsFOyutZ8FRoRFghL3mNFAeyzGwVbek/pqPieT4QSqQQ==
+X-Received: by 2002:a9d:a78:: with SMTP id 111mr362764otg.93.1623361126070;
+        Thu, 10 Jun 2021 14:38:46 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id p25sm772788ood.4.2021.06.10.14.38.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 14:38:45 -0700 (PDT)
+Subject: Re: [PATCH] soc: qcom: ipa: Remove superfluous error message around
+ platform_get_irq()
+To:     David Miller <davem@davemloft.net>, hbut_tan@163.com
+Cc:     elder@kernel.org, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tanzhongjun@yulong.com
+References: <20210610140118.1437-1-hbut_tan@163.com>
+ <20210610.141142.1384244468678097702.davem@davemloft.net>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <a3765a86-bb9e-b5f8-32a1-3c3fa939bb4e@ieee.org>
+Date:   Thu, 10 Jun 2021 16:38:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210610.141142.1384244468678097702.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 09:31:42 +0200 Bernd Edlinger <bernd.edlinger@hotmail.de> wrote:
+On 6/10/21 4:11 PM, David Miller wrote:
+> From:  Zhongjun Tan <hbut_tan@163.com>
+> Date: Thu, 10 Jun 2021 22:01:18 +0800
+> 
+>> diff --git a/drivers/net/ipa/ipa_smp2p.c b/drivers/net/ipa/ipa_smp2p.c
+>> index 34b68dc43886..93270e50b6b3 100644
+>> --- a/drivers/net/ipa/ipa_smp2p.c
+>> +++ b/drivers/net/ipa/ipa_smp2p.c
+>> @@ -177,11 +177,8 @@ static int ipa_smp2p_irq_init(struct ipa_smp2p *smp2p, const char *name,
+>>   	int ret;
+>>   
+>>   	ret = platform_get_irq_byname(smp2p->ipa->pdev, name);
+>> -	if (ret <= 0) {
+>> -		dev_err(dev, "DT error %d getting \"%s\" IRQ property\n",
+>> -			ret, name);
+>> +	if (ret <= 0)
+> Applied, but this code still rejects an irq of zero which is a valid irq number.
 
-> This introduces signal->unsafe_execve_in_progress,
-> which is used to fix the case when at least one of the
-> sibling threads is traced, and therefore the trace
-> process may dead-lock in ptrace_attach, but de_thread
-> will need to wait for the tracer to continue execution.
+It rejects IRQ 0 intentionally.  And if 0 is returned, there
+will now be no message printed by the platform code.
 
-Deadlocks are serious.  Is this exploitable by unprivileged userspace?
+As I recall, I looked for a *long* time to see whether IRQ 0
+was a valid IRQ number in Linux.  One reason I even questioned
+it is that NO_IRQ is defined with value 0 on some architectures
+(though not for Arm).  I even asked Rob Herring about privately
+it a few years back and he suggested I shouldn't allow 0.
 
-> Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
+Yes, it *looked* like IRQ 0 could be a valid return.  But I
+decided it was safer to just reject it, on the assumption
+that it's unlikely to be returned (I don't believe it is
+or ever will be used as the IRQ for SMP2P).
 
-Was a -stable backport considered?
+If you are certain it's valid, and should be allowed, I
+have no objection to changing that "<=" to be "<".
 
+					-Alex
 
+PS  A quick search found this oldie:
+       https://yarchive.net/comp/linux/no_irq.html
