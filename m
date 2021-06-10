@@ -2,69 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FAA3A328D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6538D3A328F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFJR6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:58:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229823AbhFJR6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:58:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7865C613BC;
-        Thu, 10 Jun 2021 17:56:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623347807;
-        bh=Crpi7Vd8aG1AIzHpP2cG2rG9WGptNGWFx7PZCSlviGQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=reWh7csN0s6vc+PhZ1WkeoW4RAJZ7pSsQZDiQxTRShBch2OXN0ick9QZ3t23jUoD2
-         bct7RmH806AO3ZG0arO8Z7x3Dz4jg8MN9F8sI/LizgCvD31Fkv9MPl65QozB+WXyRo
-         +K+oXhuRuSH5Jn2E4/4H7kZZeN9ITJ6/lxAIngLc=
-Date:   Thu, 10 Jun 2021 19:56:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     valentina.manea.m@gmail.com, shuah@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usbip: tools: usbipd: use ARRAY_SIZE for sockfdlist
-Message-ID: <YMJSXCRGzJz+Sfqb@kroah.com>
-References: <1623232316-89719-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S230470AbhFJR6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:58:54 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:51810 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230410AbhFJR6x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 13:58:53 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:51978 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lrOvG-0000o2-5S; Thu, 10 Jun 2021 13:56:54 -0400
+Message-ID: <9938f22a0bb09f344fa5c9c5c1b91f0d12e7566f.camel@trillion01.com>
+Subject: Re: [PATCH] io_uring: reduce latency by reissueing the operation
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 10 Jun 2021 13:56:53 -0400
+In-Reply-To: <a7d6f2fd-b59e-e6fa-475a-23962d45b6fa@gmail.com>
+References: <60c13bec.1c69fb81.73967.f06dSMTPIN_ADDED_MISSING@mx.google.com>
+         <84e42313-d738-fb19-c398-08a4ed0e0d9c@gmail.com>
+         <4b5644bff43e072a98a19d7a5ca36bb5e11497ec.camel@trillion01.com>
+         <a7d6f2fd-b59e-e6fa-475a-23962d45b6fa@gmail.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623232316-89719-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 05:51:56PM +0800, Jiapeng Chong wrote:
-> Use ARRAY_SIZE instead of dividing sizeof array with sizeof an
-> element.
+On Thu, 2021-06-10 at 16:51 +0100, Pavel Begunkov wrote:
+> Right, but it still stalls other requests and IIRC there are people
+> not liking the syscall already taking too long. Consider
+> io_req_task_queue(), adds more overhead but will delay execution
+> to the syscall exit.
 > 
-> Clean up the following coccicheck warning:
+> In any case, would be great to have numbers, e.g. to see if
+> io_req_task_queue() is good enough, how often your problem
+> takes places and how much it gives us.
 > 
-> ./tools/usb/usbip/src/usbipd.c:536:19-20: WARNING: Use ARRAY_SIZE.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  tools/usb/usbip/src/usbipd.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/tools/usb/usbip/src/usbipd.c b/tools/usb/usbip/src/usbipd.c
-> index 48398a7..4826d13 100644
-> --- a/tools/usb/usbip/src/usbipd.c
-> +++ b/tools/usb/usbip/src/usbipd.c
-> @@ -532,8 +532,7 @@ static int do_standalone_mode(int daemonize, int ipv4, int ipv6)
->  		usbip_driver_close(driver);
->  		return -1;
->  	}
-> -	nsockfd = listen_all_addrinfo(ai_head, sockfdlist,
-> -		sizeof(sockfdlist) / sizeof(*sockfdlist));
-> +	nsockfd = listen_all_addrinfo(ai_head, sockfdlist, ARRAY_SIZE(sockfdlist));
+I will get you more more data later but I did run a fast test that
+lasted 81 seconds with a single TCP connection.
 
-Always test-build your patches before sending them out, otherwise you
-just get grumpy maintainers complaining when you break the build :(
+The # of times that the sqe got reissued is 57.
 
-Your "robot" needs some serious work here.
+I'll intrumentalize a bit the code to answer the following questions:
 
-greg k-h
+1. What is the ratio of reissued read sqe/total read sqe
+2. Average exec time of __io_queue_sqe() for a read sqe when data is
+already available vs avg exec time when sqe is reissued
+3. average exec time when the sqe is pushed to async when it could have
+been reissued.
+
+With that info, I think that we will be in better position to evaluate
+whether or not the patch is good or not.
+
+Can you think of other numbers that would be useful to know to evaluate
+the patch performance?
+
+
