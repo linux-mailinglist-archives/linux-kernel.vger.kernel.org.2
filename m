@@ -2,294 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40473A324C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33293A325B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhFJRlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhFJRlA (ORCPT
+        id S231200AbhFJRnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:43:00 -0400
+Received: from mail-qt1-f182.google.com ([209.85.160.182]:46970 "EHLO
+        mail-qt1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230479AbhFJRm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:41:00 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6337AC061574;
-        Thu, 10 Jun 2021 10:38:50 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id c5so3220745wrq.9;
-        Thu, 10 Jun 2021 10:38:50 -0700 (PDT)
+        Thu, 10 Jun 2021 13:42:57 -0400
+Received: by mail-qt1-f182.google.com with SMTP id a15so436533qtx.13;
+        Thu, 10 Jun 2021 10:40:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tUXqSeEZXltOhPTHiAdqKtvdjZ0xLSS8jzn9c1dkxjY=;
-        b=pjfRdjx4L/QnD58wtcJ6TM/aLvwpHmU8YQJfsqmj8xb85HSGjgBfshNjR/j9kr4yVj
-         OMYST3l5aaJQ1VCSksnoUJfqWNPfT4epA7pIrymzyp6AZWuDodv1/WXkF74xTrD+4rx+
-         MEWljkHKYzkZyNj/naudRBHTLluWido3OoIKMQGZtqj+u3DUETqIAMedUNDhFjfIiGDy
-         mm6QfrmcSGDNqvZH6R/yE0SFsTHRbGVn15qSzvSS4i76ObSDml5+0IkxMhBQm/85sRuP
-         B2NsbCtgPsq3WceqC+hzgWSSp6K/LBSjVbfVGEn7UOVeuhT4ybflbbnXLVXSmjsiJdzI
-         LCCQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aWOZidZP0x7GLTaV0tNbVWE6yJUvGbKMUKncxkGIKXc=;
+        b=XPC6uYHLKCsy9omlrkaT8PtT4NlJhA4tDwIVebFGd3BKERAT8QsJZ5Q4mcqyl4Wpar
+         uLbl9EK46Q5uyJ8hiT+QFeCqqL8DzIrIV9uImuGmRorRcyIPZ11KS7Kr1GkySBLMRNzP
+         UUIJkekElO9+gtz56QtAKcdpKrFm9ofEi3WlwmkSHIn2zZHJHxLAHs3jSYCzHYdDcS+a
+         zP45WFAebM7tEJjwI0oCGEq+sjCMPfs8MERECC0QCT0Em1G/tZYgXqmGvlBneZ5zeuFc
+         j/syk/iQ6rQYop9pxjVnh1/Q2sH5y6Ocb6NbmJ1mmv5DgQ6flUPSVRkYMz+/xWeP1brp
+         B+zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=tUXqSeEZXltOhPTHiAdqKtvdjZ0xLSS8jzn9c1dkxjY=;
-        b=d06oyO8dvSjkHi/e1fwh2b6aWG/QFLvF9RnYoCA26MFUGTOOLOmTg+u3MPU1MgtCBa
-         7km0gVSaOvWj+HuLAVYbQ/sXh3AhTS8gCKrjysAN9Kxt4NB70YqEEIPTHU7Xo80SucEH
-         T3dbM/xcVs/tbbaTZSaLgAf3vrR+ETu1yP7Fux6fon/OAtjHDqTXNZmb/v52u3FyQSXv
-         ALB0Zn2kzS4x0+nzaxqcFcGmDQUPsljCwCyoUSx6Idoo6veFEG6vl0nFmojwh7jqIt8g
-         ZXL9Aj6AGWKy4xWmXvXpjomdPderrpYwzDRARlBUBkv4C49QsmlnF3OKP9fAaRh4VWHs
-         H+Qg==
-X-Gm-Message-State: AOAM5303wy736Kr3AB7Sv1KTdywhUa/WcDDGlAiYJnKXGLOL4nDLudpA
-        1RLjUu0g4r74TKq7ivRuFST6F/nCZsDAqQ==
-X-Google-Smtp-Source: ABdhPJyW3em1GAoiY1cGwoDdGbzEerrtlDApG0CGW8yDf/p5nnK70PRh4ID0ShpihZuNsXMyeFUd5g==
-X-Received: by 2002:adf:de03:: with SMTP id b3mr6724701wrm.15.1623346728707;
-        Thu, 10 Jun 2021 10:38:48 -0700 (PDT)
-Received: from [192.168.181.98] (228.18.23.93.rev.sfr.net. [93.23.18.228])
-        by smtp.gmail.com with ESMTPSA id f14sm9074150wmq.10.2021.06.10.10.38.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 10:38:48 -0700 (PDT)
-Subject: Re: [PATCH v7 bpf-next 02/11] tcp: Add num_closed_socks to struct
- sock_reuseport.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210521182104.18273-1-kuniyu@amazon.co.jp>
- <20210521182104.18273-3-kuniyu@amazon.co.jp>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <942283cd-4b8a-5127-b047-0e26031adc6c@gmail.com>
-Date:   Thu, 10 Jun 2021 19:38:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        bh=aWOZidZP0x7GLTaV0tNbVWE6yJUvGbKMUKncxkGIKXc=;
+        b=oUGnkyQeaeaMyoTIR6K6anu+cUWNGIN8DBAk26lrGQ8HQE0h76PB+Fe7CKiLLgyXvk
+         wvQ0LQeo3HddVqU9bU5cBw7SSGD1+l4fbi3st02O10fb2JwwAqbu3YWkfUT31dzcLtPE
+         LJqrPqeu1avBI7PXWAIgGk8C+Z+ARnOuB7yYpiLBVlSbBYKeWim6PPYVIV3kUTP3GXjU
+         ZwgYtlG2wjPMaOO+8A7j04zVCAuqud3mHvRwCtuhG1MtNjKcNxOoRPlhWwmpnZkegRDi
+         2VUPCvMRdJaPrsGwB0wYrcJkR9jseRkOT2ZMmih4FlnjNr4BEZTur3Y+PqWmgHcgnFNO
+         skLw==
+X-Gm-Message-State: AOAM533SBE5+Usu7GzpGaLdkTeZdezHI0jkKWmLhljS1i/ObC33Qteg6
+        kr/OhcwIkUlt1GGp0FfZ9xbTh+QUoCc=
+X-Google-Smtp-Source: ABdhPJz1aG5jgPo2g+XJbpQSi3wtAkb4E9Zp6iQ7OEkJHzLAoSKEOAi6jqi90A6lfGUsAsqPQZCFZQ==
+X-Received: by 2002:ac8:7311:: with SMTP id x17mr790791qto.3.1623346795690;
+        Thu, 10 Jun 2021 10:39:55 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:be7a])
+        by smtp.gmail.com with ESMTPSA id 104sm2667808qta.90.2021.06.10.10.39.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 10:39:55 -0700 (PDT)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        linux-kernel@vger.kernel.org (open list),
+        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
+        linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+Subject: [PATCH V14 0/3] Charge loop device i/o to issuing cgroup
+Date:   Thu, 10 Jun 2021 10:39:41 -0700
+Message-Id: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210521182104.18273-3-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Rebased on top of mm-tree
 
+As per the suggestion last time [1], could this go through the -mm
+tree to deal with memcg conflicts?
 
-On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
-> As noted in the following commit, a closed listener has to hold the
-> reference to the reuseport group for socket migration. This patch adds a
-> field (num_closed_socks) to struct sock_reuseport to manage closed sockets
-> within the same reuseport group. Moreover, this and the following commits
-> introduce some helper functions to split socks[] into two sections and keep
-> TCP_LISTEN and TCP_CLOSE sockets in each section. Like a double-ended
-> queue, we will place TCP_LISTEN sockets from the front and TCP_CLOSE
-> sockets from the end.
-> 
->   TCP_LISTEN---------->       <-------TCP_CLOSE
->   +---+---+  ---  +---+  ---  +---+  ---  +---+
->   | 0 | 1 |  ...  | i |  ...  | j |  ...  | k |
->   +---+---+  ---  +---+  ---  +---+  ---  +---+
-> 
->   i = num_socks - 1
->   j = max_socks - num_closed_socks
->   k = max_socks - 1
-> 
-> This patch also extends reuseport_add_sock() and reuseport_grow() to
-> support num_closed_socks.
-> 
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
-> ---
->  include/net/sock_reuseport.h |  5 ++-
->  net/core/sock_reuseport.c    | 76 +++++++++++++++++++++++++++---------
->  2 files changed, 60 insertions(+), 21 deletions(-)
-> 
-> diff --git a/include/net/sock_reuseport.h b/include/net/sock_reuseport.h
-> index 505f1e18e9bf..0e558ca7afbf 100644
-> --- a/include/net/sock_reuseport.h
-> +++ b/include/net/sock_reuseport.h
-> @@ -13,8 +13,9 @@ extern spinlock_t reuseport_lock;
->  struct sock_reuseport {
->  	struct rcu_head		rcu;
->  
-> -	u16			max_socks;	/* length of socks */
-> -	u16			num_socks;	/* elements in socks */
-> +	u16			max_socks;		/* length of socks */
-> +	u16			num_socks;		/* elements in socks */
-> +	u16			num_closed_socks;	/* closed elements in socks */
->  	/* The last synq overflow event timestamp of this
->  	 * reuse->socks[] group.
->  	 */
-> diff --git a/net/core/sock_reuseport.c b/net/core/sock_reuseport.c
-> index b065f0a103ed..079bd1aca0e7 100644
-> --- a/net/core/sock_reuseport.c
-> +++ b/net/core/sock_reuseport.c
-> @@ -18,6 +18,49 @@ DEFINE_SPINLOCK(reuseport_lock);
->  
->  static DEFINE_IDA(reuseport_ida);
->  
-> +static int reuseport_sock_index(struct sock *sk,
-> +				struct sock_reuseport *reuse,
-> +				bool closed)
+[1] https://lore.kernel.org/lkml/CALvZod6FMQQC17Zsu9xoKs=dFWaJdMC2Qk3YiDPUUQHx8teLYg@mail.gmail.com/
 
+Changes since V13:
 
-const struct sock_reuseport *reuse
+* Small change to get_mem_cgroup_from_mm to return early when the
+  return is root memcg
+* Avoid allocating loop worker if the issuing blkcg is root_blkcg
 
+Changes since V12:
 
-> +{
-> +	int left, right;
-> +
-> +	if (!closed) {
-> +		left = 0;
-> +		right = reuse->num_socks;
-> +	} else {
-> +		left = reuse->max_socks - reuse->num_closed_socks;
-> +		right = reuse->max_socks;
-> +	}
+* Small change to get_mem_cgroup_from_mm to avoid needing
+  get_active_memcg
 
+Changes since V11:
 
+* Removed WQ_MEM_RECLAIM flag from loop workqueue. Technically, this
+  can be driven by writeback, but this was causing a warning in xfs
+  and likely other filesystems aren't equipped to be driven by reclaim
+  at the VFS layer.
+* Included a small fix from Colin Ian King.
+* reworked get_mem_cgroup_from_mm to institute the necessary charge
+  priority.
 
-> +
-> +	for (; left < right; left++)
-> +		if (reuse->socks[left] == sk)
-> +			return left;
+Changes since V10:
 
+* Added page-cache charging to mm: Charge active memcg when no mm is set
 
-Is this even possible (to return -1) ?
+Changes since V9:
 
-> +	return -1;
-> +}
-> +
-> +static void __reuseport_add_sock(struct sock *sk,
-> +				 struct sock_reuseport *reuse)
-> +{
-> +	reuse->socks[reuse->num_socks] = sk;
-> +	/* paired with smp_rmb() in reuseport_select_sock() */
-> +	smp_wmb();
-> +	reuse->num_socks++;
-> +}
-> +
-> +static bool __reuseport_detach_sock(struct sock *sk,
-> +				    struct sock_reuseport *reuse)
-> +{
-> +	int i = reuseport_sock_index(sk, reuse, false);
-> +
-> +	if (i == -1)
-> +		return false;
-> +
-> +	reuse->socks[i] = reuse->socks[reuse->num_socks - 1];
-> +	reuse->num_socks--;
-> +
-> +	return true;
-> +}
-> +
->  static struct sock_reuseport *__reuseport_alloc(unsigned int max_socks)
->  {
->  	unsigned int size = sizeof(struct sock_reuseport) +
-> @@ -72,9 +115,8 @@ int reuseport_alloc(struct sock *sk, bool bind_inany)
->  	}
->  
->  	reuse->reuseport_id = id;
-> -	reuse->socks[0] = sk;
-> -	reuse->num_socks = 1;
->  	reuse->bind_inany = bind_inany;
-> +	__reuseport_add_sock(sk, reuse);
+* Rebased against linus's branch which now includes Roman Gushchin's
+  patch this series is based off of
 
-Not sure why you changed this part, really no smp_wmb() is needed at this point ?
+Changes since V8:
 
->  	rcu_assign_pointer(sk->sk_reuseport_cb, reuse);
->  
->  out:
-> @@ -98,6 +140,7 @@ static struct sock_reuseport *reuseport_grow(struct sock_reuseport *reuse)
->  		return NULL;
->  
->  	more_reuse->num_socks = reuse->num_socks;
-> +	more_reuse->num_closed_socks = reuse->num_closed_socks;
->  	more_reuse->prog = reuse->prog;
->  	more_reuse->reuseport_id = reuse->reuseport_id;
->  	more_reuse->bind_inany = reuse->bind_inany;
-> @@ -105,9 +148,13 @@ static struct sock_reuseport *reuseport_grow(struct sock_reuseport *reuse)
->  
->  	memcpy(more_reuse->socks, reuse->socks,
->  	       reuse->num_socks * sizeof(struct sock *));
-> +	memcpy(more_reuse->socks +
-> +	       (more_reuse->max_socks - more_reuse->num_closed_socks),
-> +	       reuse->socks + reuse->num_socks,
+* Rebased on top of Roman Gushchin's patch
+  (https://lkml.org/lkml/2020/8/21/1464) which provides the nesting
+  support for setting active memcg. Dropped the patch from this series
+  that did the same thing.
 
-The second memcpy() is to copy the closed sockets,
-they should start at reuse->socks + (reuse->max_socks - reuse->num_closed_socks) ?
+Changes since V7:
 
+* Rebased against linus's branch
 
-> +	       reuse->num_closed_socks * sizeof(struct sock *));
->  	more_reuse->synq_overflow_ts = READ_ONCE(reuse->synq_overflow_ts);
->  
-> -	for (i = 0; i < reuse->num_socks; ++i)
-> +	for (i = 0; i < reuse->max_socks; ++i)
->  		rcu_assign_pointer(reuse->socks[i]->sk_reuseport_cb,
->  				   more_reuse);
->  
-> @@ -158,7 +205,7 @@ int reuseport_add_sock(struct sock *sk, struct sock *sk2, bool bind_inany)
->  		return -EBUSY;
->  	}
->  
-> -	if (reuse->num_socks == reuse->max_socks) {
-> +	if (reuse->num_socks + reuse->num_closed_socks == reuse->max_socks) {
->  		reuse = reuseport_grow(reuse);
->  		if (!reuse) {
->  			spin_unlock_bh(&reuseport_lock);
-> @@ -166,10 +213,7 @@ int reuseport_add_sock(struct sock *sk, struct sock *sk2, bool bind_inany)
->  		}
->  	}
->  
-> -	reuse->socks[reuse->num_socks] = sk;
-> -	/* paired with smp_rmb() in reuseport_select_sock() */
-> -	smp_wmb();
-> -	reuse->num_socks++;
-> +	__reuseport_add_sock(sk, reuse);
->  	rcu_assign_pointer(sk->sk_reuseport_cb, reuse);
->  
->  	spin_unlock_bh(&reuseport_lock);
-> @@ -183,7 +227,6 @@ EXPORT_SYMBOL(reuseport_add_sock);
->  void reuseport_detach_sock(struct sock *sk)
->  {
->  	struct sock_reuseport *reuse;
-> -	int i;
->  
->  	spin_lock_bh(&reuseport_lock);
->  	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
-> @@ -200,16 +243,11 @@ void reuseport_detach_sock(struct sock *sk)
->  	bpf_sk_reuseport_detach(sk);
->  
->  	rcu_assign_pointer(sk->sk_reuseport_cb, NULL);
-> +	__reuseport_detach_sock(sk, reuse);
-> +
-> +	if (reuse->num_socks + reuse->num_closed_socks == 0)
-> +		call_rcu(&reuse->rcu, reuseport_free_rcu);
->  
-> -	for (i = 0; i < reuse->num_socks; i++) {
-> -		if (reuse->socks[i] == sk) {
-> -			reuse->socks[i] = reuse->socks[reuse->num_socks - 1];
-> -			reuse->num_socks--;
-> -			if (reuse->num_socks == 0)
-> -				call_rcu(&reuse->rcu, reuseport_free_rcu);
-> -			break;
-> -		}
-> -	}
->  	spin_unlock_bh(&reuseport_lock);
->  }
->  EXPORT_SYMBOL(reuseport_detach_sock);
-> @@ -274,7 +312,7 @@ struct sock *reuseport_select_sock(struct sock *sk,
->  	prog = rcu_dereference(reuse->prog);
->  	socks = READ_ONCE(reuse->num_socks);
->  	if (likely(socks)) {
-> -		/* paired with smp_wmb() in reuseport_add_sock() */
-> +		/* paired with smp_wmb() in __reuseport_add_sock() */
->  		smp_rmb();
->  
->  		if (!prog || !skb)
-> 
+Changes since V6:
+
+* Added separate spinlock for worker synchronization
+* Minor style changes
+
+Changes since V5:
+
+* Fixed a missing css_put when failing to allocate a worker
+* Minor style changes
+
+Changes since V4:
+
+Only patches 1 and 2 have changed.
+
+* Fixed irq lock ordering bug
+* Simplified loop detach
+* Added support for nesting memalloc_use_memcg
+
+Changes since V3:
+
+* Fix race on loop device destruction and deferred worker cleanup
+* Ensure charge on shmem_swapin_page works just like getpage
+* Minor style changes
+
+Changes since V2:
+
+* Deferred destruction of workqueue items so in the common case there
+  is no allocation needed
+
+Changes since V1:
+
+* Split out and reordered patches so cgroup charging changes are
+  separate from kworker -> workqueue change
+
+* Add mem_css to struct loop_cmd to simplify logic
+
+The loop device runs all i/o to the backing file on a separate kworker
+thread which results in all i/o being charged to the root cgroup. This
+allows a loop device to be used to trivially bypass resource limits
+and other policy. This patch series fixes this gap in accounting.
+
+A simple script to demonstrate this behavior on cgroupv2 machine:
+
+'''
+#!/bin/bash
+set -e
+
+CGROUP=/sys/fs/cgroup/test.slice
+LOOP_DEV=/dev/loop0
+
+if [[ ! -d $CGROUP ]]
+then
+    sudo mkdir $CGROUP
+fi
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit to tmpfs -> OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+dd if=/dev/zero of=/tmp/file bs=1M count=256" || true
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit through loopback
+# device -> no OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+truncate -s 512m /tmp/backing_file
+losetup $LOOP_DEV /tmp/backing_file
+dd if=/dev/zero of=$LOOP_DEV bs=1M count=256;
+losetup -D $LOOP_DEV" || true
+
+grep oom_kill $CGROUP/memory.events
+'''
+
+Naively charging cgroups could result in priority inversions through
+the single kworker thread in the case where multiple cgroups are
+reading/writing to the same loop device. This patch series does some
+minor modification to the loop driver so that each cgroup can make
+forward progress independently to avoid this inversion.
+
+With this patch series applied, the above script triggers OOM kills
+when writing through the loop device as expected.
+
+Dan Schatzberg (3):
+  loop: Use worker per cgroup instead of kworker
+  mm: Charge active memcg when no mm is set
+  loop: Charge i/o to mem and blk cg
+
+ drivers/block/loop.c       | 250 +++++++++++++++++++++++++++++++------
+ drivers/block/loop.h       |  15 ++-
+ include/linux/memcontrol.h |   6 +
+ kernel/cgroup/cgroup.c     |   1 +
+ mm/filemap.c               |   2 +-
+ mm/memcontrol.c            |  42 ++++---
+ mm/shmem.c                 |   4 +-
+ 7 files changed, 258 insertions(+), 62 deletions(-)
+
+-- 
+2.30.2
+
