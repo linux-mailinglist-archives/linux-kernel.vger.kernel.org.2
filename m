@@ -2,223 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905F13A2E7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4908D3A2E82
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhFJOqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbhFJOqr (ORCPT
+        id S231358AbhFJOrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:47:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51816 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230280AbhFJOrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:46:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6411C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:44:51 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623336288;
+        Thu, 10 Jun 2021 10:47:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623336344;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=P9i2STUTf93CvmLRHys/MQ1Ky/p6ZQuDDGUamBB9Eck=;
-        b=vpDtlHv1NS1/V317LnuTkH896gyzPYuQGYD9mhkWJ10PPjX9wCcpinJkcUnSp3Tu/+tJxr
-        AfB+IKciypPYrNNXpjBqeaPTEu+d/wa+MmfNO0p837VWJWJzTBi4QxwOmTVfxqJg1IqTW2
-        8xGJRB3dEMztazTWzX0wdlCfuHWmDyoqcsF0M/t8FtyuE98jk2feDZpz89ZHayYWS36/GS
-        HpRL3ehlDa3FqbLA5oe6dzxlfiLzXMhY8FEmB8B4hyfR8n6I1qK8JgXl89ea1wbpRP7QyV
-        1SEVjyv3IsmFX/mMXmZ23n89/1l01xwlQFCq0pmIVHh/VxfVNXNolqa14xcY3g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623336288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=P9i2STUTf93CvmLRHys/MQ1Ky/p6ZQuDDGUamBB9Eck=;
-        b=+Taf8z23t0At0JDxwlzPar9AdexA4I253DPxA5+DbzYMxBkkWNM4rzOWKyNwJG6HFZZTXN
-        vEwl+uECIWOQrHDA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        bh=DaR8EEvOWwwKbyA2/NyEHgRAALNGyhbJ1RDxYMv5YZk=;
+        b=brFq/QaXAc5kXPHcK92SY61T7K0AMIAiimZXK3O/g7s0ve4aBZijk28aaVUoYXv6lN0vXZ
+        HGWfoqeuWXJ93yQ2qrnddJFbkIBU50Tx6VECj5IPQPYYniUkSpsGfN8dFNF9yz86We7M0S
+        qE4Y30II6ATIYbJ+NKZSuW7on0um3vM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-4-xsx70SySNLuKK79ZOrNWiQ-1; Thu, 10 Jun 2021 10:45:43 -0400
+X-MC-Unique: xsx70SySNLuKK79ZOrNWiQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 782A58049CD;
+        Thu, 10 Jun 2021 14:45:41 +0000 (UTC)
+Received: from T590 (ovpn-13-145.pek2.redhat.com [10.72.13.145])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1067B100760F;
+        Thu, 10 Jun 2021 14:45:34 +0000 (UTC)
+Date:   Thu, 10 Jun 2021 22:45:30 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Ingo Franzki <ifranzki@linux.ibm.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH next v2 2/2] printk: fix cpu lock ordering
-In-Reply-To: <YL+DjNG0uhg/uT+C@alley>
-References: <20210607200232.22211-1-john.ogness@linutronix.de> <20210607200232.22211-3-john.ogness@linutronix.de> <YL9osWvgvdCo4JAK@alley> <875yyoigms.fsf@jogness.linutronix.de> <YL+DjNG0uhg/uT+C@alley>
-Date:   Thu, 10 Jun 2021 16:44:47 +0200
-Message-ID: <8735tpu6cg.fsf@jogness.linutronix.de>
+        Juergen Christ <jchrist@linux.ibm.com>
+Subject: Re: loop_set_block_size: loop0 () has still dirty pages (nrpages=2)
+Message-ID: <YMIliuPi2tTLUJxv@T590>
+References: <8bed44f2-273c-856e-0018-69f127ea4258@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8bed44f2-273c-856e-0018-69f127ea4258@linux.ibm.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-08, Petr Mladek <pmladek@suse.com> wrote:
->> 	/*
->> 	 * Guarantee loads and stores from this CPU when it is the lock owner
->> 	 * are _not_ visible to the previous lock owner. This pairs with
->> 	 * cpu_unlock:B.
->> 	 *
->> 	 * Memory barrier involvement:
->> 	 *
->> 	 * If cpu_lock:A reads from cpu_unlock:B, then cpu_unlock:A can never
->> 	 * read from cpu_lock:B.
->> 	 *
->> 	 * Relies on:
->> 	 *
->> 	 * RELEASE from cpu_unlock:A to cpu_unlock:B
->> 	 *    matching
->> 	 * ACQUIRE from cpu_lock:A to cpu_lock:B
->> 	 */
->
-> I can't check this so I believe you ;-)
+On Tue, Jun 08, 2021 at 02:01:29PM +0200, Ingo Franzki wrote:
+> Hi all,
+> 
+> we occasionally encounter a problem when setting up a loop device in one of our automated testcases.
+> 
+> We set up a loop device as follows:
+> 
+>     # dd if=/dev/zero of=/var/tmp/loopbackfile1.img bs=1M count=2500 status=none
+>     # losetup --sector-size 4096 -fP --show /var/tmp/loopbackfile1.img
+> 
+> This works fine most of the times, but in the seldom case of the error, we get 'losetup: /var/tmp/loopbackfile1.img: failed to set up loop device: Resource temporarily unavailable'.
+> 
+> I am sure that no other loop device is currently defined, so we don't run out of loop devices.
+> 
+> We also see the following message in the syslog when the error occurs:
+> 
+>      loop_set_block_size: loop0 () has still dirty pages (nrpages=2)
+> 
+> The nrpages number varies from time to time. 
+> 
+> "Resource temporarily unavailable" is EAGAIN, and function loop_set_block_size() in drivers/block/loop.c returns this after printing the syslog message via pr_warn:
+> 
+> static int loop_set_block_size(struct loop_device *lo, unsigned long arg)
+> {
+> 	int err = 0;
+> 
+> 	if (lo->lo_state != Lo_bound)
+> 		return -ENXIO;
+> 
+> 	err = loop_validate_block_size(arg);
+> 	if (err)
+> 		return err;
+> 
+> 	if (lo->lo_queue->limits.logical_block_size == arg)
+> 		return 0;
+> 
+> 	sync_blockdev(lo->lo_device);
+> 	invalidate_bdev(lo->lo_device);
+> 
+> 	blk_mq_freeze_queue(lo->lo_queue);
+> 
+> 	/* invalidate_bdev should have truncated all the pages */
+> 	if (lo->lo_device->bd_inode->i_mapping->nrpages) {
+> 		err = -EAGAIN;
+> 		pr_warn("%s: loop%d (%s) has still dirty pages (nrpages=%lu)\n",
+> 			__func__, lo->lo_number, lo->lo_file_name,
+> 			lo->lo_device->bd_inode->i_mapping->nrpages);
+> 		goto out_unfreeze;
+> 	}
+> 
+> 	blk_queue_logical_block_size(lo->lo_queue, arg);
+> 	blk_queue_physical_block_size(lo->lo_queue, arg);
+> 	blk_queue_io_min(lo->lo_queue, arg);
+> 	loop_update_dio(lo);
+> out_unfreeze:
+> 	blk_mq_unfreeze_queue(lo->lo_queue);
+> 
+> 	return err;
+> }
+> 
+> So looks like invalidate_bdev() did actually not truncate all the pages under some circumstances....
+> 
+> The problem only happens when '--sector-size 4096' is specified, with the default sector size is always works. It does not call loop_set_block_size() in the default case I guess.
+> 
+> The loop0 device has certainly be used by other testcases before, most likely with the default block size. But at the time of this run, no loop device is currently active (losetup shows nothing). 
+> 
+> Anyone have an idea what goes wrong here? 
 
-I appreciate your confidence in me, but for the record, we should
-operate on proofs. Here is a litmus test for this case that is only
-using the 2 memory barriers described in the coments. I also added
-commented out non-memory-barrier variants so you can quickly check what
-happens if either memory barrier is removed.
+It returns '-EAGAIN' to ask userspace to try again.
 
--------- BEGIN prevent_backwards_leak.litmus --------
-C prevent_backwards_leak
+I understand loop_set_block_size() doesn't prevent page cache of this
+loop disk from being dirtied, so it isn't strange to
+see lo_device->bd_inode->i_mapping->nrpages isn't zero after sync_blockdev()
+& invalidate_bdev() on loop.
 
-(*
- * Guarantee a previous CPU (P0) in the critical section cannot
- * see data stored by the next CPU (P1) in the critical section.
- *
- * RELEASE in P0 matches ACQUIRE in P1
- *)
+> 
+> This happens on upstream kernels on the s390x platform, but I can't tell if is related to the platform or a specific kernel version. 
 
-{ }
+It can be reproduced easily when you run buffered write on loop disk,
+meantime keeping to change block size from one to another on this loop.
 
-P0(int *lck, int *var)
-{
-	int old;
-	int val;
 
-	old = atomic_cmpxchg_relaxed(lck, 0, 1);
-	if (old == 0) {
-		val = *var;
-		atomic_set_release(lck, 2);
-		//atomic_set(lck, 2);
-	}
-}
+Thanks,
+Ming
 
-P1(int *lck, int *var)
-{
-	int old;
-
-	old = atomic_cmpxchg_acquire(lck, 2, 3);
-	//old = atomic_cmpxchg_relaxed(lck, 2, 3);
-	if (old == 2) {
-		*var = 1;
-		atomic_set(lck, 3);
-	}
-}
-
-exists (1:old=2 /\ 0:val=1)
--------- END prevent_backwards_leak.litmus --------
-
-And running it shows:
-
-$ herd7 -conf linux-kernel.cfg prevent_backwards_leak.litmus
-Test prevent_backwards_leak Allowed
-States 3
-0:val=0; 1:old=0;
-0:val=0; 1:old=1;
-0:val=0; 1:old=2;
-No
-Witnesses
-Positive: 0 Negative: 3
-Condition exists (1:old=2 /\ 0:val=1)
-Observation prevent_backwards_leak Never 0 3
-Time prevent_backwards_leak 0.01
-Hash=a83f3a63382111d7f61810639fa38ad4
-
-If either of the two memory barriers are removed, the results will show
-that @val in first CPU (P0) can be 1 (0:val=1), which was the value set
-by the following CPU (P1) in the critical section.
-
->> 	/*
->> 	 * Guarantee loads and stores from this CPU when it was the
->> 	 * lock owner are visible to the next lock owner. This pairs
->> 	 * with cpu_lock:A.
->> 	 *
->> 	 * Memory barrier involvement:
->> 	 *
->> 	 * If cpu_lock:A reads from cpu_unlock:B, then cpu_lock:B
->> 	 * reads from cpu_unlock:A.
->> 	 *
->> 	 * Relies on:
->> 	 *
->> 	 * RELEASE from cpu_unlock:A to cpu_unlock:B
->> 	 *    matching
->> 	 * ACQUIRE from cpu_lock:A to cpu_lock:B
->> 	 */
->
-> Same as for acquire ;-)
-
-And here is the litmus test for this case, also with extra commented out
-non-memory-barrier variants.
-
--------- BEGIN guarantee_forward_visibility.litmus --------
-C guarantee_forward_visibility
-
-(*
- * Guarantee data stored by a previous CPU (P0) in the critical
- * section is always visible to the next CPU (P1) in the critical
- * section.
- *
- * RELEASE in P0 matches ACQUIRE in P1
- *)
-
-{ }
-
-P0(int *lck, int *var)
-{
-	int old;
-
-	old = atomic_cmpxchg_relaxed(lck, 0, 1);
-	if (old == 0) {
-		*var = 1;
-		atomic_set_release(lck, 2);
-		//atomic_set(lck, 2);
-	}
-}
-
-P1(int *lck, int *var)
-{
-	int old;
-	int val;
-
-	old = atomic_cmpxchg_acquire(lck, 2, 3);
-	//old = atomic_cmpxchg_relaxed(lck, 2, 3);
-	if (old == 2) {
-		val = *var;
-		atomic_set(lck, 3);
-	}
-}
-
-exists (1:old=2 /\ 1:val=0 )
--------- END guarantee_forward_visibility.litmus --------
-
-$ herd7 -conf linux-kernel.cfg guarantee_forward_visibility.litmus
-Test guarantee_forward_visibility Allowed
-States 3
-1:old=0; 1:val=0;
-1:old=1; 1:val=0;
-1:old=2; 1:val=1;
-No
-Witnesses
-Positive: 0 Negative: 3
-Condition exists (1:old=2 /\ 1:val=0)
-Observation guarantee_forward_visibility Never 0 3
-Time guarantee_forward_visibility 0.00
-Hash=fad189f07da06da99b97a7ab1215a5dc
-
-Also here, if either of the memory barriers are removed, @val in the
-later CPU (P1) can be 0 (1:val=0). Meaning that the a following CPU in
-the critical section would not see a value set by the previous CPU in
-the critical section.
-
-John Ogness
