@@ -2,93 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9B13A2F76
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27673A2F7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhFJPkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:40:09 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:43813 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhFJPkG (ORCPT
+        id S231682AbhFJPku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:40:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25120 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231551AbhFJPkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:40:06 -0400
-Received: by mail-ot1-f44.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso77584otu.10;
-        Thu, 10 Jun 2021 08:37:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uscoCCIMohFxBDDb3Te91Dlm8R7xrxz4+PygaqFS3BE=;
-        b=EGGnQjEyyOmLI1z0BHEofLAqlgL55eNhiquIbC8qx2iyvfo01gnhVz4qskycU3FnHt
-         Nl1EW6UrAoP7QGxwzjgegD5kGzvZywvipKSNoYfZrKMh/hkJxQfqkCeG0/ygUUBSgcKj
-         adkD6+oIPjWVrspJBjdLCuLBF8rzUJLUoxKZX2bFyAjO75vhFz8uR+tJlFkKfgPvqnbl
-         UMoNXU1ZHR9ZZ1pIr/PeIC5zH7ELLXDLro5YU+LRydJTgx/lN9gkYiXd2SqnswuMYvg8
-         jqtkNBxcojtlyXPzOy7ltR3mpCEG3UwWDF+RNFd8Lg1FZGjAmArRHNTJyle9l+biYIYU
-         T0uw==
+        Thu, 10 Jun 2021 11:40:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623339528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H5vCQsPxj9Rl4XFnBcjEoEFYRWMfJkRJOGwBf1rRHTk=;
+        b=is/9f3h9zNaS0sUO9crmnoYyPT/qRd4qksHF2qseLCRQpuSrI6rwf/IY+A2jl85wo1JZV+
+        AmyUMboUi6g3I3vVw0CcTk3yvgqJ5ZOaW0Er8jD8vRU/PmY4N1iRB4jNZQSS5mZ5MnlR3Z
+        eLy9v6zU0bkikCG6+FtGIuak4HEprN0=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-290-6blAAXx_MvK2IiKe_-IrWw-1; Thu, 10 Jun 2021 11:38:47 -0400
+X-MC-Unique: 6blAAXx_MvK2IiKe_-IrWw-1
+Received: by mail-oo1-f71.google.com with SMTP id r4-20020a4ab5040000b02902446eb55473so17498749ooo.20
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 08:38:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=uscoCCIMohFxBDDb3Te91Dlm8R7xrxz4+PygaqFS3BE=;
-        b=n/eYMZYmbVh2YFFH9o7KYR1f+uMu4NPXD1mbrhuucd3o46TDmn2IvMmhEQuRmMG7Yc
-         yCtH8WeCODIEuZyXCeSeWOcyFB+nOkUpldAN1LD8Ddu8bdkQFZrHO8o2z5/g1FWfdwDK
-         pihRDkcYiIxqPRyg0lBlK1yzN1NeOMv2TSg04HMjIHjBci29+wJNkbTWnpxHkRagAeMM
-         AWdzpzjetS1nDQH6iUL0y/rWCo+dlj7fGE2EmsuYOlteNZHwooP77CO3NoI9W2ZhIqEf
-         QftynqVJlKWRm9LWKDhj04YWqSLF1JWg9fzFArMGTFNpbG3F/PIVSnMXqsU8e6ha2dYU
-         zmYQ==
-X-Gm-Message-State: AOAM5303UiJwQyqCGR1b7u12eDrPBju0K5ARMH4sc8ltzuluu29pvv1m
-        3MXFQl4F+cHGYoDjwbLS74k=
-X-Google-Smtp-Source: ABdhPJxbjXaD0sLmXIFDzB4cTd2OW+4OJbuyU8hplLBprxYreMa+B3Zl1fRVKaNxKTabYOGVj89MYQ==
-X-Received: by 2002:a05:6830:1e37:: with SMTP id t23mr2868655otr.318.1623339414639;
-        Thu, 10 Jun 2021 08:36:54 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w69sm613369oia.22.2021.06.10.08.36.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=H5vCQsPxj9Rl4XFnBcjEoEFYRWMfJkRJOGwBf1rRHTk=;
+        b=FpGbwxUPmP2GR4vxejjWxD7kNeEKBWZAJsi0naTM00uDtnxOSPv+qDFXyw9LFOgHCL
+         Yyz8f3R/+9OIqnNW4EWTaqyjHOKyZM+50dNW8wwt0ANlcBNu/T/xr5jwlobWdXU8CbBH
+         qGUmmlW3/I9erCQsZ6iyARY/MHMNwyMOiZ6qpTl7TB1XApNldIMOK7o8laWGrp7mvSaX
+         ImwBQMZkOPYeGTLf2IhWPkqZIeZX3EHCu8oZ/bYH5d42WTpQ4NSRqB3cCb5ujiUiAWl7
+         X6PVIbKPV62x+jgbtBCctGYxW5XGhJcHYFAXoMLG6ANgvtf9e8sUxhm7KTb0f/oYa3iR
+         aLng==
+X-Gm-Message-State: AOAM531umqUAxMITBHoHE7wxiVq5za7GosTDqPYYvAfQZSDjYKADKNG6
+        DEPncWgrXN9o7BLCiV6FrcHdusmNKFRDj6PtVm6zW39QCEw+nraZ1ub6pkFSxjenNLuJQUTagOL
+        JQ5UZgNb9w4YYk9iDKGum5fcI
+X-Received: by 2002:aca:b509:: with SMTP id e9mr10551683oif.66.1623339525495;
+        Thu, 10 Jun 2021 08:38:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw1WqCo3KpeRMtYpynRYuPC4Ltn/l2lGkxqUYzCtd60e9V2qVA2O3E/wRwbwvaY4koN1So0ww==
+X-Received: by 2002:aca:b509:: with SMTP id e9mr10551672oif.66.1623339525286;
+        Thu, 10 Jun 2021 08:38:45 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id q6sm586111oot.40.2021.06.10.08.38.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 08:36:53 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 10 Jun 2021 08:36:52 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr
-Subject: Re: [PATCH 1/3] hwmon: (tps23861) define regmap max register
-Message-ID: <20210610153652.GA3858775@roeck-us.net>
-References: <20210609220728.499879-1-robert.marko@sartura.hr>
+        Thu, 10 Jun 2021 08:38:44 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 09:38:42 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: Plan for /dev/ioasid RFC v2
+Message-ID: <20210610093842.6b9a4e5b.alex.williamson@redhat.com>
+In-Reply-To: <20210609184940.GH1002214@nvidia.com>
+References: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <YMCy48Xnt/aphfh3@8bytes.org>
+        <20210609123919.GA1002214@nvidia.com>
+        <YMDC8tOMvw4FtSek@8bytes.org>
+        <20210609150009.GE1002214@nvidia.com>
+        <YMDjfmJKUDSrbZbo@8bytes.org>
+        <20210609101532.452851eb.alex.williamson@redhat.com>
+        <20210609102722.5abf62e1.alex.williamson@redhat.com>
+        <20210609184940.GH1002214@nvidia.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609220728.499879-1-robert.marko@sartura.hr>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 12:07:26AM +0200, Robert Marko wrote:
-> Define the max register address the device supports.
-> This allows reading the whole register space via
-> regmap debugfs, without it only register 0x0 is visible.
-> 
-> This was forgotten in the original driver commit.
-> 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+On Wed, 9 Jun 2021 15:49:40 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-Applied.
-
-Thanks,
-Guenter
-
-> ---
->  drivers/hwmon/tps23861.c | 1 +
->  1 file changed, 1 insertion(+)
+> On Wed, Jun 09, 2021 at 10:27:22AM -0600, Alex Williamson wrote:
 > 
-> diff --git a/drivers/hwmon/tps23861.c b/drivers/hwmon/tps23861.c
-> index c2484f15298b..fd0be8883829 100644
-> --- a/drivers/hwmon/tps23861.c
-> +++ b/drivers/hwmon/tps23861.c
-> @@ -117,6 +117,7 @@ struct tps23861_data {
->  static struct regmap_config tps23861_regmap_config = {
->  	.reg_bits = 8,
->  	.val_bits = 8,
-> +	.max_register = 0x6f,
->  };
->  
->  static int tps23861_read_temp(struct tps23861_data *data, long *val)
+> > > > It is a kernel decision, because a fundamental task of the kernel is to
+> > > > ensure isolation between user-space tasks as good as it can. And if a
+> > > > device assigned to one task can interfer with a device of another task
+> > > > (e.g. by sending P2P messages), then the promise of isolation is broken.    
+> > > 
+> > > AIUI, the IOASID model will still enforce IOMMU groups, but it's not an
+> > > explicit part of the interface like it is for vfio.  For example the
+> > > IOASID model allows attaching individual devices such that we have
+> > > granularity to create per device IOASIDs, but all devices within an
+> > > IOMMU group are required to be attached to an IOASID before they can be
+> > > used.    
+> 
+> Yes, thanks Alex
+> 
+> > > It's not entirely clear to me yet how that last bit gets
+> > > implemented though, ie. what barrier is in place to prevent device
+> > > usage prior to reaching this viable state.  
+> 
+> The major security checkpoint for the group is on the VFIO side.  We
+> must require the group before userspace can be allowed access to any
+> device registers. Obtaining the device_fd from the group_fd does this
+> today as the group_fd is the security proof.
+> 
+> Actually, thinking about this some more.. If the only way to get a
+> working device_fd in the first place is to get it from the group_fd
+> and thus pass a group-based security check, why do we need to do
+> anything at the ioasid level?
+> 
+> The security concept of isolation was satisfied as soon as userspace
+> opened the group_fd. What do more checks in the kernel accomplish?
+
+Opening the group is not the extent of the security check currently
+required, the group must be added to a container and an IOMMU model
+configured for the container *before* the user can get a devicefd.
+Each devicefd creates a reference to this security context, therefore
+access to a device does not exist without such a context.
+
+This proposal has of course put the device before the group, which then
+makes it more difficult for vfio to retroactively enforce security.
+
+> Yes, we have the issue where some groups require all devices to use
+> the same IOASID, but once someone has the group_fd that is no longer a
+> security issue. We can fail VFIO_DEVICE_ATTACH_IOASID callss that
+> don't make sense.
+
+The groupfd only proves the user has an ownership claim to the devices,
+it does not itself prove that the devices are in an isolated context.
+Device access is not granted until that isolated context is configured.
+
+vfio owns the device, so it would make sense for vfio to enforce the
+security of device access only in a secure context, but how do we know
+a device is in a secure context?
+
+Is it sufficient to track the vfio device ioctls for attach/detach for
+an IOASID or will the user be able to manipulate IOASID configuration
+for a device directly via the IOASIDfd?
+
+What happens on detach?  As we've discussed elsewhere in this thread,
+revoking access is more difficult than holding a reference to the
+secure context, but I'm under the impression that moving a device
+between IOASIDs could be standard practice in this new model.  A device
+that's detached from a secure context, even temporarily, is a problem.
+Access to other devices in the same group as a device detached from a
+secure context is a problem.
+
+> > > > > Groups should be primarily about isolation security, not about IOASID
+> > > > > matching.      
+> > > > 
+> > > > That doesn't make any sense, what do you mean by 'IOASID matching'?    
+> > > 
+> > > One of the problems with the vfio interface use of groups is that we
+> > > conflate the IOMMU group for both isolation and granularity.  I think
+> > > what Jason is referring to here is that we still want groups to be the
+> > > basis of isolation, but we don't want a uAPI that presumes all devices
+> > > within the group must use the same IOASID.    
+> 
+> Yes, thanks again Alex
+> 
+> > > For example, if a user owns an IOMMU group consisting of
+> > > non-isolated functions of a multi-function device, they should be
+> > > able to create a vIOMMU VM where each of those functions has its
+> > > own address space.  That can't be done today, the entire group
+> > > would need to be attached to the VM under a PCIe-to-PCI bridge to
+> > > reflect the address space limitation imposed by the vfio group
+> > > uAPI model.  Thanks,  
+> > 
+> > Hmm, likely discussed previously in these threads, but I can't come up
+> > with the argument that prevents us from making the BIND interface
+> > at the group level but the ATTACH interface at the device level?  For
+> > example:
+> > 
+> >  - VFIO_GROUP_BIND_IOASID_FD
+> >  - VFIO_DEVICE_ATTACH_IOASID
+> > 
+> > AFAICT that makes the group ownership more explicit but still allows
+> > the device level IOASID granularity.  Logically this is just an
+> > internal iommu_group_for_each_dev() in the BIND ioctl.  Thanks,  
+> 
+> At a high level it sounds OK.
+> 
+> However I think your above question needs to be answered - what do we
+> want to enforce on the iommu_fd and why?
+> 
+> Also, this creates a problem with the device label idea, we still
+> need to associate each device_fd with a label, so your above sequence
+> is probably:
+> 
+>   VFIO_GROUP_BIND_IOASID_FD(group fd)
+>   VFIO_BIND_IOASID_FD(device fd 1, device_label)
+>   VFIO_BIND_IOASID_FD(device fd 2, device_label)
+>   VFIO_DEVICE_ATTACH_IOASID(..)
+> 
+> And then I think we are back to where I had started, we can trigger
+> whatever VFIO_GROUP_BIND_IOASID_FD does automatically as soon as all
+> of the devices in the group have been bound.
+
+How to label a device seems like a relatively mundane issue relative to
+ownership and isolated contexts of groups and devices.  The label is
+essentially just creating an identifier to device mapping, where the
+identifier (label) will be used in the IOASID interface, right?  As I
+note above, that makes it difficult for vfio to maintain that a user
+only accesses a device in a secure context.  This is exactly why vfio
+has the model of getting a devicefd from a groupfd only when that group
+is in a secure context and maintaining references to that secure
+context for each device.  Split ownership of the secure context in
+IOASID vs device access in vfio and exposing devicefds outside the group
+is still a big question mark for me.  Thanks,
+
+Alex
+
