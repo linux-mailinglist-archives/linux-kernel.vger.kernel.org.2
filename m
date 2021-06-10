@@ -2,76 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825773A31CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B023A31CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbhFJRNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:13:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229802AbhFJRNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:13:39 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S231324AbhFJRNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:13:48 -0400
+Received: from mail-out.m-online.net ([212.18.0.10]:38489 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231230AbhFJRNp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 13:13:45 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4G19W10RlZz1s3pn;
+        Thu, 10 Jun 2021 19:11:41 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4G19W05vXlz1qr46;
+        Thu, 10 Jun 2021 19:11:40 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id jeCLGjcaYHdm; Thu, 10 Jun 2021 19:11:39 +0200 (CEST)
+X-Auth-Info: tTD/jRVROUkeu+CRr/dYNOPU0H88WKfaxb3K8PZ1hjL42mqxsQYgvXW0pSyHF28S
+Received: from igel.home (ppp-46-244-161-203.dynamic.mnet-online.de [46.244.161.203])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4999E613C9;
-        Thu, 10 Jun 2021 17:11:43 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1lrODV-006n2Q-7T; Thu, 10 Jun 2021 18:11:41 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: [GIT PULL] irqchip fixes for 5.13, take #2
-Date:   Thu, 10 Jun 2021 18:11:27 +0100
-Message-Id: <20210610171127.2404752-1-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Thu, 10 Jun 2021 19:11:39 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id 8C8602C36A1; Thu, 10 Jun 2021 19:11:38 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Alex Ghiti <alex@ghiti.fr>, Palmer Dabbelt <palmer@dabbelt.com>,
+        corbet@lwn.net, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
+        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
+        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v5 1/3] riscv: Move kernel mapping outside of linear
+ mapping
+References: <mhng-90fff6bd-5a70-4927-98c1-a515a7448e71@palmerdabbelt-glaptop>
+        <76353fc0-f734-db47-0d0c-f0f379763aa0@ghiti.fr>
+        <a58c4616-572f-4a0b-2ce9-fd00735843be@ghiti.fr>
+        <7b647da1-b3aa-287f-7ca8-3b44c5661cb8@ghiti.fr>
+        <87fsxphdx0.fsf@igel.home> <20210610171025.GA3861769@roeck-us.net>
+X-Yow:  There's a little picture of ED MCMAHON doing BAD THINGS to JOAN RIVERS
+ in a $200,000 MALIBU BEACH HOUSE!!
+Date:   Thu, 10 Jun 2021 19:11:38 +0200
+In-Reply-To: <20210610171025.GA3861769@roeck-us.net> (Guenter Roeck's message
+        of "Thu, 10 Jun 2021 10:10:25 -0700")
+Message-ID: <87bl8dhcfp.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, catalin.marinas@arm.com, mark.rutland@arm.com, will@kernel.org, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Jun 10 2021, Guenter Roeck wrote:
 
-Here's a lone fix from the irqchip tree, addressing an annoying
-mishandling of IRQs in NMI context with GICv3 on arm64. I really hope
-not to have to debug this again...
+> On Thu, Jun 10, 2021 at 06:39:39PM +0200, Andreas Schwab wrote:
+>> On Apr 18 2021, Alex Ghiti wrote:
+>> 
+>> > To sum up, there are 3 patches that fix this series:
+>> >
+>> > https://patchwork.kernel.org/project/linux-riscv/patch/20210415110426.2238-1-alex@ghiti.fr/
+>> >
+>> > https://patchwork.kernel.org/project/linux-riscv/patch/20210417172159.32085-1-alex@ghiti.fr/
+>> >
+>> > https://patchwork.kernel.org/project/linux-riscv/patch/20210418112856.15078-1-alex@ghiti.fr/
+>> 
+>> Has this been fixed yet?  Booting is still broken here.
+>> 
+>
+> In -next ?
 
-Please pull,
+No, -rc5.
 
-	M.
+Andreas.
 
-The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
-
-  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.13-2
-
-for you to fetch changes up to 382e6e177bc1c02473e56591fe5083ae1e4904f6:
-
-  irqchip/gic-v3: Workaround inconsistent PMR setting on NMI entry (2021-06-10 17:54:34 +0100)
-
-----------------------------------------------------------------
-irqchip fixes for 5.13, take #2
-
-- Fix GICv3 NMI handling where an IRQ could be mistakenly handled
-  as a NMI, with disatrous effects
-
-----------------------------------------------------------------
-Marc Zyngier (1):
-      irqchip/gic-v3: Workaround inconsistent PMR setting on NMI entry
-
- drivers/irqchip/irq-gic-v3.c | 36 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
