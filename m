@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6D73A33C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2956E3A33C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhFJTSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 15:18:23 -0400
-Received: from mail-qv1-f52.google.com ([209.85.219.52]:41650 "EHLO
-        mail-qv1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhFJTSW (ORCPT
+        id S230205AbhFJTRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 15:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230077AbhFJTRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 15:18:22 -0400
-Received: by mail-qv1-f52.google.com with SMTP id x2so14629491qvo.8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oEUq6PRtk2+KwPWA8PsdACW/flkPVXr2oIuLoBeXcIA=;
-        b=dJmaDHFNcTY9Iu2JChRODk288p22hR3sXhCHjHxMjLhPtEbWPQyJ9vmXKJPA57RuYw
-         i8D37pv3aqM/VZ4hso039QmU3ZMbpioO+K0f2fV6ofjoDzA6OQm2QsLIa+qnKKyPg0K/
-         3007zurkBZnZY2JL1US8aiix2dQyuqODk4+BtUNU9spDwFAxVVraKo+ag13YVNN82B29
-         aGYozSBbnFD/h6cVuHLrx5X9ngi1h0rcn5BM6PUihLR/CFAdDv/tI34bhhOcMrLR/js+
-         a0gT/gajJpUPLF2ugnZiYWeEypUI7DF8rrt2s00dsVYFFihZga4yAotjBbuqBlpFC9VS
-         pxMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oEUq6PRtk2+KwPWA8PsdACW/flkPVXr2oIuLoBeXcIA=;
-        b=ivH4LZadQPFXFlYHSZlq0kU3yCcHaeoUL7on4vBXOsgRML+p8H97dsucKvfQytotg3
-         +PpKrvyB6CbKLQxHmiY662aFrVMz89RPSA1h2Yk1Uvgj6NMgp2lDar22aw3t/cYRgCcu
-         8bkR+XF2vmmvzhnlCIAQIwtdY2QCplDzOyaKPm0fURd7pWjTUj0J8zGgoUfoFJwafB3i
-         tr7YhT357rmjBT1kIDHK8Hm+JD4Cr2FpzJ3IS1nKjYRNVo1wUemufQqY75579ctMHLK4
-         TeTK6oIiKCGzyBV/AU+mcRaSosPH91SYg6J4k0U739KSXH7sRkAYWrw8Ts5NxLiuKqKH
-         z/ug==
-X-Gm-Message-State: AOAM533qYrCJcjPiRDpzL29wVPN+DEOgHO9abB73J3agGkREWqK7XMjd
-        oKhkT17GGpYJ05X3mHssxCrzypQz5x3n1u/vTeml9w==
-X-Google-Smtp-Source: ABdhPJzAVKz/mIvy6XgYB/nG0FmvToBVD01LGEZHGu6mfM32iUahtd0gtE+dhxwph0VaBSjJ6FY89cIWjuRaKBFq7l4=
-X-Received: by 2002:ad4:5d67:: with SMTP id fn7mr1178435qvb.1.1623352508999;
- Thu, 10 Jun 2021 12:15:08 -0700 (PDT)
+        Thu, 10 Jun 2021 15:17:50 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99A7C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:15:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P1llf2QexIB6zftx6d6h4bt2id9V5bEpqvB36CLnZ5s=; b=pB/nSbzZ9NBklnx3gdhK/e8jb+
+        3D1uWchY/ea/THpxd6LenWQHBTMN3FFZS8Rf8opsB7PRjqTsbAI7qoNQKwC/hZybPYE7PnlWLkHu9
+        /eWXa5ERaqnHFUsso2TWIKRSMhpVNkdZdNJN3v3LV3QOstmb0Jy77s/EXQKUvYRJ62eRtEwj73524
+        lfGBrkzDBvYoiWw3Ftbbd3iOZKQfImrvKIrAvvHVvVwN8Z9svRZt/0sgYzvOyApz1PAMxI2oEEf2i
+        KHYACY/rZC+GJppDItCosv7GN6NegMQaDqekfFot/Ybg9M+0xsEjiafGKoV1D+V5jqKwNwbEe+rss
+        5mgytmiQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lrQ9T-005bjF-N1; Thu, 10 Jun 2021 19:15:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7CFEA3001E4;
+        Thu, 10 Jun 2021 21:15:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 61DCB200F8CB3; Thu, 10 Jun 2021 21:15:45 +0200 (CEST)
+Date:   Thu, 10 Jun 2021 21:15:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, qais.yousef@arm.com, rickyiu@google.com,
+        wvw@google.com, patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v2 2/3] sched: Skip priority checks with
+ SCHED_FLAG_KEEP_PARAMS
+Message-ID: <YMJk4TWEAGL3EKUO@hirez.programming.kicks-ass.net>
+References: <20210610151306.1789549-1-qperret@google.com>
+ <20210610151306.1789549-3-qperret@google.com>
 MIME-Version: 1.0
-References: <20210608231132.32012-1-joshdon@google.com> <e3fc3338-c469-0c0c-ada2-a0bbc9f969fe@arm.com>
-In-Reply-To: <e3fc3338-c469-0c0c-ada2-a0bbc9f969fe@arm.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 10 Jun 2021 12:14:57 -0700
-Message-ID: <CABk29Nu=mxz3tugjhDV9xCF7DRsMi9U747H+BqubviEva36RUw@mail.gmail.com>
-Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610151306.1789549-3-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Dietmar,
+On Thu, Jun 10, 2021 at 03:13:05PM +0000, Quentin Perret wrote:
+> SCHED_FLAG_KEEP_PARAMS can be passed to sched_setattr to specify that
+> the call must not touch scheduling parameters (nice or priority). This
+> is particularly handy for uclamp when used in conjunction with
+> SCHED_FLAG_KEEP_POLICY as that allows to issue a syscall that only
+> impacts uclamp values.
+> 
+> However, sched_setattr always checks whether the priorities and nice
+> values passed in sched_attr are valid first, even if those never get
+> used down the line. This is useless at best since userspace can
+> trivially bypass this check to set the uclamp values by specifying low
+> priorities. However, it is cumbersome to do so as there is no single
+> expression of this that skips both RT and CFS checks at once. As such,
+> userspace needs to query the task policy first with e.g. sched_getattr
+> and then set sched_attr.sched_priority accordingly. This is racy and
+> slower than a single call.
+> 
+> As the priority and nice checks are useless when SCHED_FLAG_KEEP_PARAMS
+> is specified, simply inherit them in this case to match the policy
+> inheritance of SCHED_FLAG_KEEP_POLICY.
+> 
+> Reported-by: Wei Wang <wvw@google.com>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  kernel/sched/core.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 3b213402798e..1d4aedbbcf96 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -6585,6 +6585,10 @@ SYSCALL_DEFINE3(sched_setattr, pid_t, pid, struct sched_attr __user *, uattr,
+>  	rcu_read_unlock();
+>  
+>  	if (likely(p)) {
+> +		if (attr.sched_flags & SCHED_FLAG_KEEP_PARAMS) {
+> +			attr.sched_priority = p->rt_priority;
+> +			attr.sched_nice = task_nice(p);
+> +		}
+>  		retval = sched_setattr(p, &attr);
+>  		put_task_struct(p);
+>  	}
 
-On Thu, Jun 10, 2021 at 5:53 AM Dietmar Eggemann
-<dietmar.eggemann@arm.com> wrote:
->
-> Any reason why this should only work on cgroup-v2?
+I don't like this much... afaict the KEEP_PARAMS clause in
+__setscheduler() also covers the DL params, and you 'forgot' to copy
+those.
 
-My (perhaps incorrect) assumption that new development should not
-extend v1. I'd actually prefer making this work on v1 as well; I'll
-add that support.
-
-> struct cftype cpu_legacy_files[] vs. cpu_files[]
->
-> [...]
->
-> > @@ -11340,10 +11408,14 @@ void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,
-> >
-> >  static DEFINE_MUTEX(shares_mutex);
-> >
-> > -int sched_group_set_shares(struct task_group *tg, unsigned long shares)
-> > +#define IDLE_WEIGHT sched_prio_to_weight[ARRAY_SIZE(sched_prio_to_weight) - 1]
->
-> Why not 3 ? Like for tasks (WEIGHT_IDLEPRIO)?
->
-> [...]
-
-Went back and forth on this; on second look, I do think it makes sense
-to use the IDLEPRIO weight of 3 here. This gets converted to a 0,
-rather than a 1 for display of cpu.weight, which is also actually a
-nice property.
+Can't we short circuit the validation logic?
