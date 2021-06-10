@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D23A3A34B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76DB3A34B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhFJUSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 16:18:55 -0400
-Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47]:56801
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229961AbhFJUSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 16:18:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SzJv69/9dvhgQny/s8YvHa9YNZj+OYV1qSQ4VPoXkyMou68YxOKzmgIh0d7Y0qN+vpEhrXwjvkf70ZY7s+7zRNHhvxkKucgr1j883MTmWMxdjR2HJhTO1sIiaw350TEtIpVSrQoO/bq2bpzdmSxDF2bEOCBnxjoaJPIkgCulDH7Vgnx7PVvA06J3FBIT/uoBT9nfQKaEDjzYUH5L4jk8PU5bwSA3CClW6TthGZEeEpUCzR0oH6JdPrMisTSGxzrVhm+muHbKNbH/uF4sdvRC515CkXUDnuR1hETu9y2uzexJP3YpU24VBaI0vRatI5uuYOqhMMoomPwAh0EwStiWBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CsgnWTuO7uSGqLYZ6YC+PCezngTTpCXcd5QqhUaTrLQ=;
- b=QkmZjlh/iMNlo37epaDhrD+utshIcipnawgqMZ/ScVDoA3NQWqtfI3h3rsudM1XXVqT25or/o4XFRoVXAOZuV9KEz6uOOM0kJ4VY2cosS4cFI+RKuciiDEMkf7NOjHvAYOGXV3k0uBQkbFEMfXjIqpWbBxTUdPM3xIAbgNHfqK4iFGSgyh2c9ZDITJdysnFm0ZW0SdZvD53e/YFMCe3wTBVHP7yj1etukKmNlEZ6H1UiQCVLE5o/PPczyLey7L24f1TnLuXZ8p/UhojPUhuwS5YTpdF5VN/n+esIOdGe6YIZKOGo3YJSqLL867hZFHjCNyGSvTg1lJQwqZT6zvwpwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=nutanix.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CsgnWTuO7uSGqLYZ6YC+PCezngTTpCXcd5QqhUaTrLQ=;
- b=t/C7q9LSwN8Lacs/F37J7RmIKProA+8LdLP7OdM5uJEWRjIG73q9rPf1z5YP/+cWsJV271JMADtZTMVhrI+RB01RdMk7l481x94F1mOIm8JBU0tviCdRe1nEgIK9yzClPN9dOJF/EXMuP/9cAWRtSdhuyIMtGm6R197Xk6F15EzkDQ09yvRIWnaujDFDssFfa+0wXguYvu4o3qDLc+YHdOU63iPjSZCnKrBycvlKL/E/SMqjh2GXTRcR6taH9YAfAixrw7+eCRHUfrizL8TDR7sJPddzm/iT4Wz704LHMMRkku+pWH5+QQFw4h8O7SQoQ54FKqKuv/BpQspj1fNJsg==
-Received: from BN7PR02CA0005.namprd02.prod.outlook.com (2603:10b6:408:20::18)
- by DM5PR12MB1900.namprd12.prod.outlook.com (2603:10b6:3:10f::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.21; Thu, 10 Jun
- 2021 20:16:57 +0000
-Received: from BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:20:cafe::20) by BN7PR02CA0005.outlook.office365.com
- (2603:10b6:408:20::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend
- Transport; Thu, 10 Jun 2021 20:16:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; nutanix.com; dkim=none (message not signed)
- header.d=none;nutanix.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT018.mail.protection.outlook.com (10.13.176.89) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4219.21 via Frontend Transport; Thu, 10 Jun 2021 20:16:56 +0000
-Received: from [10.20.22.154] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Jun
- 2021 20:16:53 +0000
-Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-To:     Amey Narkhede <ameynarkhede03@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <alex.williamson@redhat.com>,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kw@linux.com>, Sinan Kaya <okaya@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-References: <20210608054857.18963-1-ameynarkhede03@gmail.com>
- <20210608054857.18963-5-ameynarkhede03@gmail.com>
-From:   Shanker R Donthineni <sdonthineni@nvidia.com>
-Message-ID: <71915313-b95f-059b-e178-d358de4ad1cb@nvidia.com>
-Date:   Thu, 10 Jun 2021 15:16:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230453AbhFJUTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 16:19:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52432 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230130AbhFJUTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 16:19:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1BE96139A;
+        Thu, 10 Jun 2021 20:17:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623356233;
+        bh=nhEn6DbWrwaK255UgkRjv7t7Hm+VJsFrnmQKWYlFQTc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VLZmoep3lo4evx0jYG0euA5dEpwIkS0KwTCiK83JkcoTvTApqQtoutG9uLVHJTjWY
+         RHh1Lc+KpehDi7+aon62xUTzqTlEeGjkrStw40IKyvhsFbCZ90tddzkpsKV58o2ANc
+         SJF9tdMSh0ylkK4x8/hHyT9srwmoVxgfer5buWvvnC/me441m8PHdwpj5Lj6IwdPyA
+         LD2kBVmd3qA/7HXX2BMxeEkHII+pvE3ss6av3IYCjbtGmv9gs8HASUXxzTflB/SBBy
+         pt4s3habv5FVkcsl9CYd6AjaFlaLTfTMiJTdKNG0zY65EgvGttNkH1yQZT99Hw5nyI
+         ize0X2cHb6H5Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9B9345C04C6; Thu, 10 Jun 2021 13:17:13 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 13:17:13 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     frederic@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Question about a8ea6fc9b089 ("sched: Stop PF_NO_SETAFFINITY from
+ being inherited by various init system threads")
+Message-ID: <20210610201713.GU4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210610170435.GA2187550@paulmck-ThinkPad-P17-Gen-1>
+ <8735tpd15i.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210608054857.18963-5-ameynarkhede03@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fbedd467-0451-4d58-6e9a-08d92c4cb204
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1900:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB190022267C9B1D3DCAE31489C7359@DM5PR12MB1900.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:227;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hMCaY/mxztUStegL7kmR9/kuNaCsN4Di92eJ8++u56KVIyUtgWW+M0n1kUi3dpud2kOm42jW8QzfeiRuqtxpWwRl+TGaSPplZmcnyRx1Op1WaWeDYJxm6wiOfAnxDzjkOolCmizwTXGj6HKrQ9upIK3c4LeMyv+0rtnHA5me09ZUtIFSUab0ggyUWr/h3SAk35Yh+EWmemcP72m6y8HBPF4wuNvKyZmQ7kS82JHW4CN0SJEtShh1rMXWXEyIkRcSi/lZGrHWx0O01frgrMSCKKWC+QVDLCfvkVXvBJX3y7fyyOdJeSNXT1Ox9hT8lHNtYl0IU3fBDyz/FM6i71ZR/AZMc43LKLhA2G+dE9Xq4pp4wjO/pOyDhdS07Q0T2vvfNbzD38eeDDpgfJXY5OEek2GwKkfDgKcPI43XvuTnXqjp4PZlaqN9sjDLo1IzSB4fb3ZjzChivaq2RGQ3AemDpb2YM2M9Swy8LZ1Xc9WE2Iqy910pFDQWtlc4n06fb+zGeo12fr3j3NEd4OydzDmQ11p46hQHh4QJv0YVtGc6Yy4eNvFT1mm/vsg4q6If7vf/STSGXdQdpN8guFsTFi4HT0inhLUICY7y09la/RiS667H4o4adJMxWEyQYyrp3xPzlVFOlMreckDZU+ISKd2wf1V+RjWPEFCHllCcVWXJ65MnAKYL2tuPVk3mx0kMMeZB
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(136003)(396003)(46966006)(36840700001)(53546011)(82740400003)(4744005)(31696002)(8676002)(82310400003)(7636003)(83380400001)(54906003)(70206006)(8936002)(16576012)(70586007)(5660300002)(336012)(316002)(356005)(110136005)(296002)(26005)(4326008)(426003)(36756003)(47076005)(7416002)(36860700001)(31686004)(478600001)(86362001)(16526019)(2616005)(2906002)(186003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 20:16:56.2758
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fbedd467-0451-4d58-6e9a-08d92c4cb204
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1900
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8735tpd15i.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 10, 2021 at 07:28:57PM +0100, Valentin Schneider wrote:
+> On 10/06/21 10:04, Paul E. McKenney wrote:
+> 
+> Hi,
+> > Hello, Frederic,
+> >
+> > This commit works well, but has the unfortunate side-effect of making
+> > smp_processor_id() complain when used in a preemptible region even
+> > though the kthread has been pinned onto a single CPU by a call to
+> > set_cpus_allowed_ptr().  (Which did return success.)
+> >
+> 
+> On which tree are you encountering this?
 
+I bisected to this commit in -next tag next-20210609, and this commit
+could of course be an innocent bystander caught in the crossfire.
 
-On 6/8/21 12:48 AM, Amey Narkhede wrote:
-> Add reset_method sysfs attribute to enable user to
-> query and set user preferred device reset methods and
-> their ordering.
->
-> Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> Looking at check_preemption_disabled() and CPU affinity, v5.13-rc5 has:
+> 
+>         /*
+>          * Kernel threads bound to a single CPU can safely use
+>          * smp_processor_id():
+>          */
+>         if (current->nr_cpus_allowed == 1)
+>                 goto out;
+> 
+> tip/sched/core additionally hinges that on PF_NO_SETAFFINITY:
+> 
+>   570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread() instead of nr_cpus_allowed")
+> 
+> The former shouldn't be affected by Frederic's patch, and the latter should
+> only cause warnings if the pinned task isn't a "proper" kthread (thus
+> doesn't have PF_NO_SETAFFINITY)... Exceptions that come to mind are things
+> like UMH which doesn't use kthread_create().
 
-Tested-by: Shanker Donthineni <sdonthineni@nvidia.com>
+And reverting 570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread()
+instead of nr_cpus_allowed") causes the kernel to once again be OK with
+smp_processor_id(), so thank you!  And apologies to Frederic for the
+false alarm.
+
+Added Yejune on CC.  Thoughts?
+
+							Thanx, Paul
+
+> > This isn't a big deal -- I can easily switch to raw_smp_processor_id(),
+> > which is arguably a better choice anyway because it prevents the
+> > complaints from flooding out any real warnings due to error returns
+> > from set_cpus_allowed_ptr() or something else unpinning the kthread.
+> > Which I am in the process of doing:
+> >
+> > 516e52e9f5ec ("scftorture: Avoid excess warnings")
+> > 475d6d49f21d ("refscale: Avoid excess warnings in ref_scale_reader()")
+> >
+> > But I figured that I should check to see if this change was in fact
+> > intentional.
+> >
+> >                                                       Thanx, Paul
