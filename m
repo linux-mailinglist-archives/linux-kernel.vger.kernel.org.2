@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458CC3A33D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CEF3A33D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhFJTU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 15:20:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57256 "EHLO mail.kernel.org"
+        id S230377AbhFJTUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 15:20:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230130AbhFJTU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 15:20:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1F8C761246;
-        Thu, 10 Jun 2021 19:18:31 +0000 (UTC)
+        id S230343AbhFJTU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 15:20:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5D7E4613E1;
+        Thu, 10 Jun 2021 19:18:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623352711;
-        bh=Zy+D1ZBoTWiwKUGzhi4t1y6ft657IsVXfyU4yEkBBK8=;
+        s=k20201202; t=1623352712;
+        bh=V6Mh4utTcaCYp/3IU5a9nkuqJqsDNpxv6UzH9zGKe4A=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=PGzd80FNWBw60Aw0FA+2rncVosunysf2rnfX8bPBEBOPzTW3mu1YSm1RJQSOSk2OM
-         VBqkHUIFl5V1eYrthyzntKne/MbYcfaVbjpE3/zRnEYJ6xz2XwuZqJE55/+cGamYRk
-         FiyJh6+LbWCQzwEu8cVHM5L0EXQAVz4rwoK7JpD9b+9A4Os84UBLYbkI5+3Lq6DxTz
-         f0g9Jp4zJ3nqnxQ35iKRE71Ian1sUwYMK8evnsJeC653BPnf1glJ7PkRfpG5cr+Fhp
-         gLZzuV5vVfMfScoigWTJdjjMGKG5ZicEiCYUsrsRbsdYdwNAFh+CFzI3RB5/3DpUE4
-         017EeKiuNd8gw==
+        b=DkH3fAiZbOESC2kIakx+fQ9aJkULXS4eJJhxtVJYwSrRpdjUgoKGMK1R/TNSVWa7p
+         fmA49ad6z7HB7OoVeLWVmOGRMXklsm/AmMvOoSKud9lrVM1WghxOmxb9iK59UlX8br
+         7bOIrAwQlJ1iblpiGzQfPPA3xy25SoAQNFjXb0J5lFPgyJkBDIPndQ4lOdQOT3OOJ8
+         oki6kL+1M9Oa9mzC0bsfWrL96z5FQAaSI066Y2+KFko0pXwPOC2bCZILbzeQuwQCZe
+         mc0skAhcwlj6pShglS1rrS63qqZkXF42tnXIzFbnCkwjrjPiloPVLCuP/FZyo7M7Y8
+         AzLdQDVudL57Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0DA6860A0C;
-        Thu, 10 Jun 2021 19:18:31 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4F3F0609E4;
+        Thu, 10 Jun 2021 19:18:32 +0000 (UTC)
+Subject: Re: [GIT PULL] cgroup fixes for v5.13-rc5
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210610123745.GA1260478@nvidia.com>
-References: <20210610123745.GA1260478@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210610123745.GA1260478@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: 2ba0aa2feebda680ecfc3c552e867cf4d1b05a3a
+In-Reply-To: <YMIg/rC1TQwEbabA@slm.duckdns.org>
+References: <YMIg/rC1TQwEbabA@slm.duckdns.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YMIg/rC1TQwEbabA@slm.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.13-fixes
+X-PR-Tracked-Commit-Id: b7e24eb1caa5f8da20d405d262dba67943aedc42
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 29a877d5768471c5ed97ea967c0ee9436b8c03fc
-Message-Id: <162335271099.23981.1476888197598035841.pr-tracker-bot@kernel.org>
-Date:   Thu, 10 Jun 2021 19:18:30 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
+X-PR-Merge-Commit-Id: f09eacca59d27efc15001795c33dbc78ca070732
+Message-Id: <162335271231.23981.15027693961958091298.pr-tracker-bot@kernel.org>
+Date:   Thu, 10 Jun 2021 19:18:32 +0000
+To:     Tejun Heo <tj@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 10 Jun 2021 09:37:45 -0300:
+The pull request you sent on Thu, 10 Jun 2021 10:26:06 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.13-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/29a877d5768471c5ed97ea967c0ee9436b8c03fc
+https://git.kernel.org/torvalds/c/f09eacca59d27efc15001795c33dbc78ca070732
 
 Thank you!
 
