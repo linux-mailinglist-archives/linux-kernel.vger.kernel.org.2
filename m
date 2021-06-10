@@ -2,112 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFA63A2C50
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25743A2C53
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhFJNCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:02:35 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:40844 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhFJNCd (ORCPT
+        id S230346AbhFJNCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:02:45 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60958 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230035AbhFJNCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:02:33 -0400
-Received: by mail-ot1-f48.google.com with SMTP id l15-20020a05683016cfb02903fca0eacd15so3508447otr.7;
-        Thu, 10 Jun 2021 06:00:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j6llwn+tAyxhNtIDtiMmXbYyDut7cQGn+uwgoIvVkUY=;
-        b=t9UZmeZwFmga9aQSYY3SEF+8wc+cNwgvn7v/9d5TYGCP7GzD9KGZQPYG4nrm/yijun
-         nYwWTHowFZZ5Pzp4ScqvOeSHFa0VExD8pTgVIf0Ub90SNcT4yWMlA5UZ09oFINT8WLPK
-         lqriF2kIJsDFAHXvX3da2YMexR+ZOMTMGHQOk5uNdE4kdowTbDPku46oIdUM9OORsRNb
-         Qxdq4JsTIuRu9Tj8RPsfmhkVZijAHN/pcOMOVRvIiV4pvrEwjgrnv0+AHKHDDcGEFC+4
-         TdWbiJB5sCoXVIUzPunjVHbPpsWdY3pc8SgCqQu5KaIB6OLYxoP99BjWC+oEfwXNRWtj
-         5JFA==
-X-Gm-Message-State: AOAM531gdpxNTek28HR7q/Kq2u8AHC1yfMEQDJexA2N7NBu/FS/POjJo
-        3WfJ7ba77dc6XhgI7yRLLn2YqNqAi25oWR4/oPimzaF1
-X-Google-Smtp-Source: ABdhPJy8MgNECmmgQIG338LOVlCxAFayIc9KMY9uTEAP1rrPg5Lg3Lb6SZbegfCEZJDdjRLAqBEJRugmw76B1mRvsXs=
-X-Received: by 2002:a9d:3e53:: with SMTP id h19mr2359706otg.260.1623330021209;
- Thu, 10 Jun 2021 06:00:21 -0700 (PDT)
+        Thu, 10 Jun 2021 09:02:43 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623330045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZzkRlz8+MqeOaaHBWpHKuxVmWTuasJwPOdO8ljJCk0g=;
+        b=exzVZMomiEpuYg1EmWtXdGSQv+zn10DAb7E6jodHrTleeODF2amKk5FLbTEiF66yVOOJyD
+        WXIL5+kq6f12dAdqv+RC4Lt52VA+efoRwdPxyvpnMirXNDrKor6UZZZHkq353eBa4e0HKV
+        omX9LkNotO+gELDGRcAhxmbZrF0kkykzJl1cLiaLOOeIACuHg8lbUzqJ8zfdElGwPvnXq0
+        SgMtJjRAKbjU1N4pRZeylRBysTlBBT5oZwVe6JYI0+UDGRj3yIOrhRfGOEyVAhP1kiUn+B
+        cew5dblrcvOLUplFvlD6RWdeEcjfDYc2fulWZPiShNxs5SfxbwhOthzv9h5mwA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623330045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZzkRlz8+MqeOaaHBWpHKuxVmWTuasJwPOdO8ljJCk0g=;
+        b=21A3bT6ApPeJPmtO1SMUzY3kZTuGNpEQmJEvJ7TdEoOcsMxt67F5KSMo+6LHLHexpPtbSL
+        H8VM9BXRoWxeWPAA==
+To:     Dave Jiang <dave.jiang@intel.com>, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, vkoul@kernel.org, jgg@mellanox.com
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, megha.dey@intel.com,
+        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        eric.auger@redhat.com, pbonzini@redhat.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v6 05/20] vfio: mdev: common lib code for setting up Interrupt Message Store
+In-Reply-To: <febc19ac-4105-fb83-709a-5d1fa5871b7e@intel.com>
+References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com> <162164277624.261970.7989190254803052804.stgit@djiang5-desk3.ch.intel.com> <87pmx73tfw.ffs@nanos.tec.linutronix.de> <febc19ac-4105-fb83-709a-5d1fa5871b7e@intel.com>
+Date:   Thu, 10 Jun 2021 15:00:45 +0200
+Message-ID: <87im2lyiv6.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210609215047.1955866-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210609215047.1955866-6-sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20210609215047.1955866-6-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 10 Jun 2021 15:00:10 +0200
-Message-ID: <CAJZ5v0gWPrL4VPds2jkMte_dymV8GyaarY3338OUkAGgTrTbEg@mail.gmail.com>
-Subject: Re: [PATCH v1 5/5] x86: Skip WBINVD instruction for VM guest
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 11:51 PM Kuppuswamy Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
-> VM guests that supports ACPI, use standard ACPI mechanisms to signal
-> sleep state entry (including reboot) to the host. The ACPI
-> specification mandates WBINVD on any sleep state entry with the
-> expectation that the platform is only responsible for maintaining the
-> state of memory over sleep states, not preserving dirty data in any
-> CPU caches. ACPI cache flushing requirements pre-date the advent of
-> virtualization. Given guest sleep state entry does not affect any
-> host power rails it is not required to flush caches. The host is
-> responsible for maintaining cache state over its own bare metal sleep
-> state transitions that power-off the cache. A TDX guest, unlike a
-> typical guest, will machine check if the CPU cache is powered off.
->
-> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> Cc: linux-acpi@vger.kernel.org
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+On Tue, Jun 08 2021 at 08:57, Dave Jiang wrote:
+> On 5/31/2021 6:48 AM, Thomas Gleixner wrote:
+>> What's unclear to me is under which circumstances does the IMS interrupt
+>> require a PASID.
+>>
+>>     1) Always
+>>     2) Use case dependent
+>>
+> Thomas, thank you for the review. I'll try to provide a summary below
+> with what's going on with IMS after taking in yours and Jason's
+> comments.
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+<snip>
 
-> ---
->  arch/x86/include/asm/acenv.h | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+No need to paste the manuals into mail.
+
+</snip>
+
+> DSA provides a way to skip PASID validation for IMS handles. This can
+> be used if host kernel is the *only* agent generating work. Host
+> usages without IOMMU scalable mode are not currently implemented.
+
+So the IMS irq chip driver can do:
+
+ims_array_alloc_msi_store(domain, dev)
+{
+        struct msi_domain_info *info =3D domain->host_data;
+        struct ims_array_data *ims =3D info->data;
+
+        if (ims->flags & VALIDATE_PASID) {
+        	if (!valid_pasid(dev))
+                	return -EINVAL;
+        }
+
+or something like that.
+
+> The following is the call flow for mdev without vSVM support:
+> 1.=C2=A0=C2=A0=C2=A0 idxd host driver sets PASID from iommu_aux_get_pasid=
+() to =E2=80=98struct device=E2=80=99
+
+Why needs every driver to implement that?
+
+That should be part of the iommu management to store that.
+
+> 2.=C2=A0=C2=A0=C2=A0 idxd guest driver calls request_irq()
+> 3.=C2=A0=C2=A0=C2=A0 VFIO calls VFIO_DEVICE_SET_IRQS ioctl
+
+How does the guest driver request_irq() end up in the VFIO ioctl on the
+host?
+
+> 4.=C2=A0=C2=A0=C2=A0 idxd host driver calls vfio_set_ims_trigger() (newly=
+ created common helper function)
+> 	a.=C2=A0=C2=A0=C2=A0 VFIO calls msi_domain_alloc_irqs() and programs val=
+id 'struct device' PASID as auxdata to IMS entry
+
+VFIO does not program anything into the IMS entry.
+
+The IMS irq chip driver retrieves PASID from struct device and does
+that. That can be part of the domain allocation function, but there is
+no requirement to do so. It can be done later, e.g. when the interrupt
+is started up.
+
+> 	b.=C2=A0=C2=A0=C2=A0 Host driver calls request_irq() for IMS interrupts
 >
-> diff --git a/arch/x86/include/asm/acenv.h b/arch/x86/include/asm/acenv.h
-> index 9aff97f0de7f..d4162e94bee8 100644
-> --- a/arch/x86/include/asm/acenv.h
-> +++ b/arch/x86/include/asm/acenv.h
-> @@ -10,10 +10,15 @@
->  #define _ASM_X86_ACENV_H
->
->  #include <asm/special_insns.h>
-> +#include <asm/cpu.h>
->
->  /* Asm macros */
->
-> -#define ACPI_FLUSH_CPU_CACHE() wbinvd()
-> +#define ACPI_FLUSH_CPU_CACHE()                         \
-> +do {                                                   \
-> +       if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))      \
-> +               wbinvd();                               \
-> +} while (0)
->
->  int __acpi_acquire_global_lock(unsigned int *lock);
->  int __acpi_release_global_lock(unsigned int *lock);
-> --
-> 2.25.1
->
+> With a default pasid programmed to 'struct device', for this use case
+> above we shouldn't have the need of programming pasid outside of
+> irqchip.
+
+s/shouldn't/do not/
+
+> The following is the call flow for mdev with vSVM support:
+> 1. idxd host driver sets PASID to mdev =E2=80=98struct device=E2=80=99 vi=
+a iommu_aux_get_PASID()
+> 2. idxd guest driver binds supervisor pasid
+> 3. idxd guest driver calls request_irq()
+> 4. VFIO calls VFIO_DEVICE_SET_IRQS ioctl
+> 5. idxd host driver calls vfio_set_ims_trigger()
+>    a. VFIO calls msi_domain_alloc_irqs() and programs PASID as auxdata to=
+ IMS entry
+>    b. Host driver calls request_irq() for IMS interrupts
+> 6. idxd guest driver programs virtual device MSIX permission table with g=
+uest PASID.
+> 7. Host driver mdev MMIO emulation retrieves guest PASID from vdev
+>    MSIXPERM table and matches to host PASID via ioasid_find_by_spid().
+>    a. Host driver calls irq_set_auxdata() to change to the new PASID
+>       for IMS entry.
+
+What enforces this ordering? Certainly not the hardware.
+
+The guest driver knows the guest PASID _before_ interrupts are allocated
+or requested for the device. So it can store the guest PASID _before_ it
+triggers the mechanism which makes vfio/host initialize the interrupts.
+
+So no. It's not needed at all. It's pretty much the same as the host
+side driver except for the that MSIXPERM stuff.
+
+And just for the record. Setting MSIXPERM _after_ request_irq()
+completed is just wrong because if an interrupt is raised _before_ that
+MSIXPERM muck is set up, then it will fire with the host PASID and not
+with the guest's.
+
+This whole IDXD stuff has been a monstrous layering violation from the
+very beginning and unfortunately this hasn't changed much since then.
+
+Thanks,
+
+        tglx
