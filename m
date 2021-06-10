@@ -2,186 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E013A22D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423583A22DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhFJDhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 23:37:19 -0400
-Received: from mail-lf1-f52.google.com ([209.85.167.52]:39463 "EHLO
-        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhFJDhS (ORCPT
+        id S229910AbhFJDkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 23:40:01 -0400
+Received: from mail-pg1-f179.google.com ([209.85.215.179]:41721 "EHLO
+        mail-pg1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhFJDkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 23:37:18 -0400
-Received: by mail-lf1-f52.google.com with SMTP id p17so729945lfc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 20:35:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3SI2Cs/KC3jzMc8VUYVE4yg+hAWb5g2oHwl9sJaeR1I=;
-        b=qowBlqPyceTtChCMAiT4qQyWnPbybMtSZiQgEPmQxgIYeHV802/3qRtz+w1EoHHCH6
-         LPWDNXhD0+ErBL35VygsDvBiRzxoj+ucwz8q6JUFxXc8f2CQcF1/0uMGYdqpIivEnR/l
-         XT7BRJUzQI4mTCOyxGLr/MFi1Ziohsl646mnIBQmrzBqbaaLAwtok0tvYoFcmj7o1mPj
-         fLFIEQq8saXAlH/xJq4PDzj5sV7WevQ9EKbRCtETYmfF1vh24GMom5Rdq3a1VsVWl7CR
-         0bSDkgqmEk0mYrVvj8frTqTKIcDywD/995y5c52G2cntTTPSW9iTlwJKiJVxkjaB3MCd
-         4Khw==
+        Wed, 9 Jun 2021 23:40:00 -0400
+Received: by mail-pg1-f179.google.com with SMTP id l184so5918743pgd.8;
+        Wed, 09 Jun 2021 20:37:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3SI2Cs/KC3jzMc8VUYVE4yg+hAWb5g2oHwl9sJaeR1I=;
-        b=POFlnF/xcN2dWnnZ0bYG8Q/qiKxaYCYlB+SpDSIOrp4e0EFehbruRWTbLYM7LZejJ5
-         p8QrmQXNct2cMsPbLzbFgifQwacyyrYawvj97ej/+ddLWF1j61U/BggeAW6uMJv0m+lE
-         KJK7No1CIi1NGSDTXcSZGOOqQgIAnd6IaNc38uFJMHzpIpEpB2egetsZ2db6v3MeXZ2c
-         rK1bDmIulcOkIA8/3wknMtW2+gU3CIZnWQVEGnBYzViwVB1/zv0WJ7c2ViNHOT0od4lA
-         Ut6vyMk9yofNwj5WXvF9XDCJTCunb2DqOOjxOf0Qmhk/DVwLXTzkFplCIy5M/5xuLXmN
-         JxqQ==
-X-Gm-Message-State: AOAM530h2BgnBaz5qFF4DI+qjh/R2qK0job5Vt7Iv6NmPWjk0cLhhVUl
-        ZsTm6rp0IQ0lTayRhi2XQ+5xECaUWgJ8dwGh9Lg=
-X-Google-Smtp-Source: ABdhPJwm4/DfJDamFH508ZT0a6Li0Tyd+gVYXQsUW0HZ4Ujd4TX65IUB1YkQVFURykcC3gOI5UQa2dYR3RGfXDSiFLE=
-X-Received: by 2002:ac2:4d93:: with SMTP id g19mr540781lfe.622.1623296048728;
- Wed, 09 Jun 2021 20:34:08 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=U2fzF+FH8NHU0kJqF6vs1aTBHFiGo2VBWqy5QQXaPiw=;
+        b=eOqYHc64PJiAf7qr+OOqUYbofs7fyTc+dosM2e5oZgTJHgtYVMa8NUtVZQxjNNwOSR
+         24h1pccffbIajol6Vx/LVk5b0qmB6g67XVsU4bmZPOvsG6Zd1EE+cyqbq94PInry/ZK4
+         gWkz+vpK0N0Ljzj/xlYE98qp9Os+TypM7GQZPrL6he1nRBSyAu+KfiKQNQtXvYyT9m9G
+         lN8nQ5S5gLsXHNvypqWUd6L4IU/ROb6yiH9p6RwkhIydCJRPR/0V5E9ksKZ+d+SnqopJ
+         o//RL8rupzCEXH+pxX7X3mivCIyTOmblTWumeqr0JjZL8IPfaWx5PwzES+czba54p1qx
+         D5iw==
+X-Gm-Message-State: AOAM533ThbwTg0RRg2QJH36Lmdo7HZRDs36w+Gw+H6U9tCivKhmtSOIi
+        9OrZe+T8eDYLtwhDckP41as=
+X-Google-Smtp-Source: ABdhPJxLe5QhX2GKhgyMGvYBeKCpCByDq25oMinjn1y9oASMGORKPFFQRmniwdFqCvQHmW22pej05g==
+X-Received: by 2002:a05:6a00:189e:b029:2f0:94d6:78c5 with SMTP id x30-20020a056a00189eb02902f094d678c5mr974475pfh.46.1623296272543;
+        Wed, 09 Jun 2021 20:37:52 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id v67sm816445pfb.193.2021.06.09.20.37.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 20:37:52 -0700 (PDT)
+Subject: Re: [PATCH v36 4/4] scsi: ufs: Add HPB 2.0 support
+To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+References: <20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p2>
+ <CGME20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p7>
+ <20210607041927epcms2p707781de1678af1e1d0f4d88782125f7b@epcms2p7>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <25912c0a-7f52-8b04-2ac1-6686aee01f87@acm.org>
+Date:   Wed, 9 Jun 2021 20:37:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210609175901.1423553-1-qperret@google.com>
-In-Reply-To: <20210609175901.1423553-1-qperret@google.com>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Thu, 10 Jun 2021 11:33:04 +0800
-Message-ID: <CAB8ipk_LY=9G5E8TcE3b7i3Ntfj+vJUuqSR7LWYn8=yOaTtCEg@mail.gmail.com>
-Subject: Re: [PATCH] sched: Make uclamp changes depend on CAP_SYS_NICE
-To:     Quentin Perret <qperret@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>, rickyiu@google.com,
-        wvw@google.com, Patrick Bellasi <patrick.bellasi@matbug.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210607041927epcms2p707781de1678af1e1d0f4d88782125f7b@epcms2p7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 2:16 AM Quentin Perret <qperret@google.com> wrote:
->
-> There is currently nothing preventing tasks from changing their per-task
-> clamp values in anyway that they like. The rationale is probably that
-> systems administrator are still able to limit those clamps thanks to the
-> cgroup interface. However, this causes pain in a system where both
-> per-task and per-cgroup clamps values are expected to be under the
-> control of core system components (as is the case for Android).
->
-> To fix this, let's require CAP_SYS_NICE to increase per-task clamp
-> values. This allows unprivileged tasks to lower their requests, but not
-> increase them, which is consistent with the existing behaviour for nice
-> values.
->
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  kernel/sched/core.c | 48 ++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 41 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 1d4aedbbcf96..1e5f9ae441a0 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1430,6 +1430,11 @@ static int uclamp_validate(struct task_struct *p,
->         if (util_min != -1 && util_max != -1 && util_min > util_max)
->                 return -EINVAL;
->
-> +       return 0;
-> +}
-> +
-> +static void uclamp_enable(void)
-> +{
->         /*
->          * We have valid uclamp attributes; make sure uclamp is enabled.
->          *
-> @@ -1438,8 +1443,25 @@ static int uclamp_validate(struct task_struct *p,
->          * scheduler locks.
->          */
->         static_branch_enable(&sched_uclamp_used);
-> +}
->
-> -       return 0;
-> +static bool uclamp_reduce(struct task_struct *p, const struct sched_attr *attr)
-> +{
-> +       int util_min, util_max;
-> +
-> +       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-> +               util_min = p->uclamp_req[UCLAMP_MIN].value;
-> +               if (attr->sched_util_min > util_min)
-> +                       return false;
-> +       }
-> +
-> +       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
-> +               util_max = p->uclamp_req[UCLAMP_MAX].value;
-> +               if (attr->sched_util_max > util_max)
-> +                       return false;
+On 6/6/21 9:19 PM, Daejun Park wrote:
+> -What:		/sys/class/scsi_device/*/device/hpb_sysfs/hit_cnt
+> +What:		/sys/class/scsi_device/*/device/hpb_stat_sysfs/hit_cnt
+>  Date:		June 2021
+>  Contact:	Daejun Park <daejun7.park@samsung.com>
+>  Description:	This entry shows the number of reads that changed to HPB read.
+>  
+>  		The file is read only.
 
-when the attr->sched_util_max = -1, and the util_max < 1024, here may
-should return false, but it would return ture.
+Is it really useful to have a suffix "_sysfs" for a directory that
+occurs in sysfs? If not, please leave it out.
 
-Thanks
-xuewen
-> +       }
+Should "hpb_stat" perhaps be renamed into "hpb_stats"? An example of
+another directory with statistics is /sys/power/suspend_stats. The name
+of that directory also ends in "stats" (plural form).
+
+> +What:		/sys/bus/platform/drivers/ufshcd/*/attributes/max_data_size_hpb_single_cmd
+> +Date:		June 2021
+> +Contact:	Daejun Park <daejun7.park@samsung.com>
+> +Description:	This entry shows the maximum HPB data size for using single HPB
+> +		command.
 > +
-> +       return true;
->  }
->
->  static bool uclamp_reset(const struct sched_attr *attr,
-> @@ -1580,6 +1602,11 @@ static inline int uclamp_validate(struct task_struct *p,
->  {
->         return -EOPNOTSUPP;
->  }
-> +static inline void uclamp_enable(void) { }
-> +static bool uclamp_reduce(struct task_struct *p, const struct sched_attr *attr)
+> +		===  ========
+> +		00h  4KB
+> +		01h  8KB
+> +		02h  12KB
+> +		...
+> +		FFh  1024KB
+> +		===  ========
+> +
+> +		The file is read only.
+
+This is not clear enough. What are the values reported through this
+sysfs attribute? Are that perhaps the values 00h .. FFh? Is the software
+that reads this attribute perhaps expected to convert this attribute
+from hex to int and next convert the int into a size in KB by using the
+above lookup table? That seems awkward to me. Please report the maximum
+data size directly, either in KB or in bytes.
+
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index f99059b31e0a..d902414e4a6f 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -652,6 +652,8 @@ struct ufs_hba_variant_params {
+>   * @srgn_size: device reported HPB sub-region size
+>   * @slave_conf_cnt: counter to check all lu finished initialization
+>   * @hpb_disabled: flag to check if HPB is disabled
+> + * @max_hpb_single_cmd: maximum size of single HPB command
+> + * @is_legacy: flag to check HPB 1.0
+>   */
+>  struct ufshpb_dev_info {
+>  	int num_lu;
+> @@ -659,6 +661,8 @@ struct ufshpb_dev_info {
+>  	int srgn_size;
+>  	atomic_t slave_conf_cnt;
+>  	bool hpb_disabled;
+> +	int max_hpb_single_cmd;
+> +	bool is_legacy;
+>  };
+>  #endif
+
+Elsewhere in this patch I see that max_hpb_single_cmd is the value read
+from the bMAX_DATA_SIZE_FOR_SINGLE_CMD descriptor (one byte). Does this
+mean that the type of 'max_hpb_single_cmd' should be changed into
+uint8_t? Additionally, please make it clear in the comment block above
+struct ufshpb_dev_info that max_hpb_single_cmd is not a size in bytes.
+
+> +bool ufshpb_is_legacy(struct ufs_hba *hba)
 > +{
-> +       return true;
+> +	return hba->ufshpb_dev.is_legacy;
 > +}
->  static void __setscheduler_uclamp(struct task_struct *p,
->                                   const struct sched_attr *attr) { }
->  static inline void uclamp_fork(struct task_struct *p) { }
-> @@ -6116,6 +6143,13 @@ static int __sched_setscheduler(struct task_struct *p,
->             (rt_policy(policy) != (attr->sched_priority != 0)))
->                 return -EINVAL;
->
-> +       /* Update task specific "requested" clamps */
-> +       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP) {
-> +               retval = uclamp_validate(p, attr);
-> +               if (retval)
-> +                       return retval;
-> +       }
+
+Please add a comment above this function that explains what 'legacy'
+means in the context of HPB.
+
+> +static int ufshpb_execute_umap_req(struct ufshpb_lu *hpb,
+> +				   struct ufshpb_req *umap_req,
+> +				   struct ufshpb_region *rgn)
+> +{
+> +	struct request *req;
+> +	struct scsi_request *rq;
 > +
->         /*
->          * Allow unprivileged RT tasks to decrease priority:
->          */
-> @@ -6165,6 +6199,10 @@ static int __sched_setscheduler(struct task_struct *p,
->                 /* Normal users shall not reset the sched_reset_on_fork flag: */
->                 if (p->sched_reset_on_fork && !reset_on_fork)
->                         return -EPERM;
+> +	req = umap_req->req;
+> +	req->timeout = 0;
+> +	req->end_io_data = (void *)umap_req;
+> +	rq = scsi_req(req);
+> +	ufshpb_set_unmap_cmd(rq->cmd, rgn);
+> +	rq->cmd_len = HPB_WRITE_BUFFER_CMD_LENGTH;
 > +
-> +               /* Can't increase util-clamps */
-> +               if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP && !uclamp_reduce(p, attr))
-> +                       return -EPERM;
->         }
->
->         if (user) {
-> @@ -6176,12 +6214,8 @@ static int __sched_setscheduler(struct task_struct *p,
->                         return retval;
->         }
->
-> -       /* Update task specific "requested" clamps */
-> -       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP) {
-> -               retval = uclamp_validate(p, attr);
-> -               if (retval)
-> -                       return retval;
-> -       }
-> +       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)
-> +               uclamp_enable();
->
->         if (pi)
->                 cpuset_read_lock();
-> --
-> 2.32.0.272.g935e593368-goog
->
+> +	blk_execute_rq_nowait(NULL, req, 1, ufshpb_umap_req_compl_fn);
+> +
+> +	return 0;
+> +}
+
+This function always returns 0. Please change the return type from 'int'
+into 'void'.
+
+> +/* SYSFS functions */
+> +#define ufshpb_sysfs_param_show_func(__name)				\
+> +static ssize_t __name##_show(struct device *dev,			\
+> +	struct device_attribute *attr, char *buf)			\
+> +{									\
+> +	struct scsi_device *sdev = to_scsi_device(dev);			\
+> +	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);		\
+> +	if (!hpb)							\
+> +		return -ENODEV;						\
+> +									\
+> +	return sysfs_emit(buf, "%d\n", hpb->params.__name);		\
+> +}
+
+Please leave a blank line between variable declarations and code.
+
+Thanks,
+
+Bart.
