@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FD33A2746
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665CF3A274C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhFJIlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:41:39 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:22170 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbhFJIlh (ORCPT
+        id S230287AbhFJIml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 04:42:41 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:57070 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229910AbhFJImj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:41:37 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 15A8Pde1068923;
-        Thu, 10 Jun 2021 16:25:39 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Jun
- 2021 16:39:33 +0800
-Date:   Thu, 10 Jun 2021 16:39:32 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH v5 00/10] ASPEED sgpio driver enhancement.
-Message-ID: <20210610083932.GA30360@aspeedtech.com>
-References: <20210608102547.4880-1-steven_lee@aspeedtech.com>
- <CACRpkdZOStr+K9U9QTkAcsk4NxuSqBRVv_-9_VkGJbT69iSxmQ@mail.gmail.com>
- <20210610022416.GA27188@aspeedtech.com>
- <CACRpkda60eB6i2+2MQFyhqYn4Q0WRGPPs91cu9K-g1maov61+w@mail.gmail.com>
+        Thu, 10 Jun 2021 04:42:39 -0400
+Received: from localhost (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id D51C9AC8EE3;
+        Thu, 10 Jun 2021 10:40:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1623314442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gZ5PoN9svtHAXgn4Aog0MvH+fbi6k6ZsouWk2RBwJrE=;
+        b=jX7jKEvlifW0Ktpr778aXv8q6EQHCGrajesTO4jQbbbcv/WI8d0ObiNGAYLy7aXDJ33HFx
+        gbbRv3zrc6likDWQ1NtNp6uPg+aQsddTa9pOOyMvDinqJKunbx6UwBPbDBVJ6+eJRNhKmh
+        s5XyeJN6+lGICdeMGjGmh/nZ1yR6V7c=
+Date:   Thu, 10 Jun 2021 10:40:41 +0200
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Toralf =?utf-8?Q?F=C3=B6rster?= <toralf.foerster@gmx.de>
+Cc:     Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: repeating [Hardware Error]: Corrected error, no action required.
+Message-ID: <20210610084041.42a73peuwy7ivyt4@spock.localdomain>
+References: <cba1f224-7a21-7a1f-3f82-6f7e98a274d0@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CACRpkda60eB6i2+2MQFyhqYn4Q0WRGPPs91cu9K-g1maov61+w@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 15A8Pde1068923
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cba1f224-7a21-7a1f-3f82-6f7e98a274d0@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 06/10/2021 15:50, Linus Walleij wrote:
-> On Thu, Jun 10, 2021 at 4:24 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+Hello.
+
+On Wed, Jun 09, 2021 at 08:27:26PM +0200, Toralf Förster wrote:
+> My syslog messages show at a hardened Gentoo
 > 
-> > Per the comment in the following mail
-> > https://lkml.org/lkml/2021/6/9/317
-> >
-> > I was wondering if I should prepare v6 for the currnet solution or
-> > I should drop this patch series then prepare another patch for the
-> > new solution(piar GPIO input/output) which breaks userspace but is
-> > better than the current solution.
+> # uname -a
+> Linux mr-fox 5.12.9 #8 SMP Thu Jun 3 17:59:32 CEST 2021 x86_64 AMD Ryzen
+> 9 5950X 16-Core Processor AuthenticAMD GNU/Linux
+> mr-fox ~ #
 > 
-> I would say just go ahead with the new solution. AFAIK Aspeed
-> has pretty tight control over what kind of userspace run on these
-> systems.
+> repeating entries every 5 mins like (always same address
+> 0x000000031fb566e0):
 > 
-> BTW please influence Aspeed to use the GPIO character device
-> and ligpiod
-> https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
-> if you are doing any kind of userspace GPIO control (which I
-> suspect that you do).
+> Jun  9 16:21:24 mr-fox kernel: mce: [Hardware Error]: Machine check
+> events logged
+> Jun  9 16:21:24 mr-fox kernel: [Hardware Error]: Corrected error, no
+> action required.
+> Jun  9 16:21:24 mr-fox kernel: [Hardware Error]: CPU:0 (19:21:0)
+> MC17_STATUS[Over|CE|MiscV|AddrV|-|-|SyndV|CECC|-|-|-]: 0xdc2040000000011b
+> Jun  9 16:21:24 mr-fox kernel: [Hardware Error]: Error Addr:
+> 0x000000031fb566e0
+> Jun  9 16:21:24 mr-fox kernel: [Hardware Error]: IPID:
+> 0x0000009600050f00, Syndrome: 0x33fa01000a800101
+> Jun  9 16:21:24 mr-fox kernel: [Hardware Error]: Unified Memory
+> Controller Ext. Error Code: 0, DRAM ECC error.
+> Jun  9 16:21:24 mr-fox kernel: EDAC MC0: 1 CE on mc#0csrow#1channel#0
+> (csrow:1 channel:0 page:0xcaed59 offset:0x8e0 grain:64 syndrome:0x100)
+> Jun  9 16:21:24 mr-fox kernel: [Hardware Error]: cache level: L3/GEN,
+> tx: GEN, mem-tx: RD
 > 
+> 
+> A hw mem check by Hetzner didn't found anything.
 
-We currently use gpioset and gpioget that provided by libgpiod to test
-aspeed gpio and sgpio drivers.
+Did they run memtest in a loop for 10 times at least?
 
-For the current solution on AST2600,
-the valid range of input pins  is 0 ~ 127,
-the valid range of output pins is 128 ~ 255.
-So we access input pins by the following command
+> May I asked whether I sahll worry about or not ?
 
-```
-gpioget $chipId 0 1 2 3 4 ... 127
-```
+If the reported page is indeed the same, then probably yes, you should
+worry.
 
-and access output pins by the following command
-
-```
-gpioset $chipId 128=1 129=0 130=1 131=1 ... 255=1
-
-```
-
-
-The new solution will change the gpio id order as follows
-Input:
-```
-gpioget $chipId 0 2 4 6 8 ... 254
-
-```
-
-Output:
-
-```
-gpioset $chipId 1=1 3=0 5=1 7=1 ... 255=1
-
-```
-
-Thanks,
-Steven
-
-> Yours,
-> Linus Walleij
+-- 
+  Oleksandr Natalenko (post-factum)
