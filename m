@@ -2,170 +2,406 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692AD3A24FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6853A24FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhFJHGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:06:30 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3932 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhFJHG1 (ORCPT
+        id S230026AbhFJHG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhFJHG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:06:27 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0vyn0pbFz6xDh;
-        Thu, 10 Jun 2021 15:01:21 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 15:04:24 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 10 Jun
- 2021 15:04:24 +0800
-Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
-To:     Parav Pandit <parav@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
-CC:     moyufeng <moyufeng@huawei.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Or Gerlitz <gerlitz.or@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "lipeng (Y)" <lipeng321@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        "shenjian15@huawei.com" <shenjian15@huawei.com>,
-        "chenhao (DY)" <chenhao288@hisilicon.com>,
-        Jiaran Zhang <zhangjiaran@huawei.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
- <857e7a19-1559-b929-fd15-05e8f38e9d45@huawei.com>
- <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <c9afecb5-3c0e-6421-ea58-b041d8173636@huawei.com>
- <20210604114109.3a7ada85@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <4e7a41ed-3f4d-d55d-8302-df3bc42dedd4@huawei.com>
- <20210607124643.1bb1c6a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <530ff54c-3cee-0eb6-30b0-b607826f68cf@huawei.com>
- <20210608102945.3edff79a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <2acd8373-b3dc-4920-1cbe-2b5ae29acb5b@huawei.com>
- <DM8PR12MB54802CA9A47F1585DC3347A5DC369@DM8PR12MB5480.namprd12.prod.outlook.com>
- <d54ae715-8634-c983-1602-8cd8dea2a5e2@huawei.com>
- <DM8PR12MB5480F577E5F02105B8C1FE9BDC369@DM8PR12MB5480.namprd12.prod.outlook.com>
- <acf08577-34c6-bc9e-a788-568b67fa8d2e@huawei.com>
- <DM8PR12MB5480CA5904F1242202F9D51ADC369@DM8PR12MB5480.namprd12.prod.outlook.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <387c80e7-e50f-8f2f-0fea-d699902ef84e@huawei.com>
+        Thu, 10 Jun 2021 03:06:26 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6920BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:04:27 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id e1so472703pld.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:04:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=68pDiFNuiNAnDxPi9NXUEirmvtndBB2jkdTjxfCQjTc=;
+        b=i7jGSxz1sRZzashx/SP0GekR6y/YLAECGqykgI0XppaKEkw/RYDfUhd6O91ZqQDhK1
+         NjTseqHM/M7+ETYyiM0kVAxmbVVT1PJkLUzS82LkW0136G0965IQnHvdupRjPmpCpzmR
+         Oj5Na6WB7wzlRkKbKiqgm+1xB2q31I+UOw3pjZLhvASU8y0NZP+qjSZvRutT975JMb/D
+         vaV/Ra/lUUo7ymH0OZOfGU16ezNUpEY6QjRWFgL1o073mKK9EjKZuTmKMwCrlqLHyil2
+         i/xl8hVbv30nJk/SNN5qKHB136T3TjnkVNEKp+D9wXGlJZ0M9LtBMKaN5IAvgYdkAtGy
+         V/Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=68pDiFNuiNAnDxPi9NXUEirmvtndBB2jkdTjxfCQjTc=;
+        b=EjbSMBh3dqav/0lAdtNTNhpgg8cXAtQ0tZvP5PiktQL78VGnLTsl2IVhAh9EaaF9f3
+         3AsP01XiXPKY6/k9lah60oGvvqH18UJ30HCUB2C+TJpn1YhFm4/rpLVqAJ8p4LKt756D
+         LG8W4fAVsJwkQnJwGXGjaxmqeziO0jDzv7nLj5r2NSIq5pH5fkBd0CVKhxIicbSQLTij
+         xDQ1WEBY5olVAKGKkqOt+AepQy0HBJt4B7fVt0MVDrXOjg0To71xnZsKYYwfCQv3QQ3u
+         mpfBcDlVO6HZdoxt0CQeQTcGAn27BqZI5nrL6eewb1iFiay5pKR0WSnzESdQn4XNu/f8
+         8x3A==
+X-Gm-Message-State: AOAM53259P00iLwl1H2EpPKyLuK/8W52IPvuTcp5suqei7jn54FTaMl7
+        J4xL04dzmUQU5pXhKoDP0KI=
+X-Google-Smtp-Source: ABdhPJzVYB/RWkK1efdTgrucTwD2phPUqqKAQ4n9bXgog8f4i2CBXOWIv0Q/Bu64sdmSsY/g49aerQ==
+X-Received: by 2002:a17:90b:ecd:: with SMTP id gz13mr1852143pjb.107.1623308666977;
+        Thu, 10 Jun 2021 00:04:26 -0700 (PDT)
+Received: from VM-0-3-centos.localdomain ([101.32.213.191])
+        by smtp.gmail.com with ESMTPSA id k7sm6864170pjj.46.2021.06.10.00.04.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Jun 2021 00:04:26 -0700 (PDT)
+From:   brookxu <brookxu.cn@gmail.com>
+To:     bsingharora@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v3] delayacct: refactor the code to simplify the implementation
 Date:   Thu, 10 Jun 2021 15:04:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
-MIME-Version: 1.0
-In-Reply-To: <DM8PR12MB5480CA5904F1242202F9D51ADC369@DM8PR12MB5480.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme705-chm.china.huawei.com (10.1.199.101) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Message-Id: <1623308664-17589-1-git-send-email-brookxu.cn@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/9 21:45, Parav Pandit wrote:
- >> From: Yunsheng Lin <linyunsheng@huawei.com>
->> Sent: Wednesday, June 9, 2021 6:00 PM
->>
->> On 2021/6/9 19:59, Parav Pandit wrote:
->>>> From: Yunsheng Lin <linyunsheng@huawei.com>
->>>> Sent: Wednesday, June 9, 2021 4:35 PM
->>>>
->>>> On 2021/6/9 17:38, Parav Pandit wrote:
->>>>>
->>>>>> From: Yunsheng Lin <linyunsheng@huawei.com>
->>>>>> Sent: Wednesday, June 9, 2021 2:46 PM
->>>>>>
->>>>> [..]
->>>>>
->>>>>>>> Is there any reason why VF use its own devlink instance?
->>>>>>>
->>>>>>> Primary use case for VFs is virtual environments where guest isn't
->>>>>>> trusted, so tying the VF to the main devlink instance, over which
->>>>>>> guest should have no control is counter productive.
->>>>>>
->>>>>> The security is mainly about VF using in container case, right?
->>>>>> Because VF using in VM, it is different host, it means a different
->>>>>> devlink instance for VF, so there is no security issue for VF using
->>>>>> in VM
->>>> case?
->>>>>> But it might not be the case for VF using in container?
->>>>> Devlink instance has net namespace attached to it controlled using
->>>>> devlink
->>>> reload command.
->>>>> So a VF devlink instance can be assigned to a container/process
->>>>> running in a
->>>> specific net namespace.
->>>>>
->>>>> $ ip netns add n1
->>>>> $ devlink dev reload pci/0000:06:00.4 netns n1
->>>>>                                      ^^^^^^^^^^^^^
->>>>>                                      PCI VF/PF/SF.
->>>>
->>>> Could we create another devlink instance when the net namespace of
->>>> devlink port instance is changed?
->>> Net namespace of (a) netdevice (b) rdma device (c) devlink instance can be
->> changed.
->>> Net namespace of devlink port cannot be changed.
->>
->> Yes, net namespace is changed based on the devlink instance, not devlink
->> port instance, *right now*.
->>
->>>
->>>> It may seems we need to change the net namespace based on devlink
->>>> port instance instead of devlink instance.
->>>> This way container case seems be similiar to the VM case?
->>> I mostly do not understand the topology you have in mind or if you
->> explained previously I missed the thread.
->>> In your case what is the flavour of a devlink port?
->>
->> flavour of the devlink port instance is FLAVOUR_PHYSICAL or
->> FLAVOUR_VIRTUAL.
->>
->> The reason I suggest to change the net namespace on devlink port instance
->> instead of devlink instance is：
->> I proposed that all the PF and VF in the same ASIC are registered to the same
->> devlink instance as flavour FLAVOUR_PHYSICAL or FLAVOUR_VIRTUAL when
->> there are in the same host and in the same net namespace.
->>
->> If a VF's devlink port instance is unregistered from old devlink instance in the
->> old net namespace and registered to new devlink instance in the new net
->> namespace(create a new devlink instance if
->> needed) when devlink port instance's net namespace is changed, then the
->> security mentioned by jakub is not a issue any more?
-> 
-> It seems that devlink instance of VF is not needed in your case, and if so what is the motivation to even have VIRTUAL port attach to the PF?
+From: Chunguang Xu <brookxu@tencent.com>
 
-The devlink instance is mainly used to hold the devlink port instance
-of VF if there is only one VF in vm, we might still need to have
-param/health specific to the VF to registered to the devlink port
-instance of that VF.
+The existing data structure is not very convenient for
+expansion, and part of the code can be saved. Here, try
+to optimize, which can make the code more concise and
+easy to expand.
 
-> If only netdevice of the VF is of interest, it can be assigned to net namespace directly.
+V3: Nothing change, just port to lastest branch.
+v2: Fix some errors prompted by the kernel test robot.
 
-I think that is another option, if there is nothing in the devlink port
-instance specific to VF that need exposing to the user in another net
-namespace.
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+---
+ include/linux/delayacct.h | 123 +++++++++++++++++++---------------------------
+ kernel/delayacct.c        |  88 +++++++--------------------------
+ 2 files changed, 68 insertions(+), 143 deletions(-)
 
-> 
-> It doesn’t make sense to me to create new devlink instance in new net namespace, that also needs to be deleted when net ns is deleted.
-> And pre_exit() routine will mostly deadlock holding global devlink_mutex.
-
-Would you be more specific why there is deadlock?
-It seems more of implementation detail, which we can discuss later
-when we are agreed it is the right way to go down deeper?
-
-> 
+diff --git a/include/linux/delayacct.h b/include/linux/delayacct.h
+index 21651f9..b81a2ed 100644
+--- a/include/linux/delayacct.h
++++ b/include/linux/delayacct.h
+@@ -2,12 +2,15 @@
+ /* delayacct.h - per-task delay accounting
+  *
+  * Copyright (C) Shailabh Nagar, IBM Corp. 2006
++ * Copyright (C) Chunguang Xu, Tencent Corp. 2021
+  */
+ 
+ #ifndef _LINUX_DELAYACCT_H
+ #define _LINUX_DELAYACCT_H
+ 
+ #include <uapi/linux/taskstats.h>
++#include <linux/sched.h>
++#include <linux/slab.h>
+ 
+ /*
+  * Per-task flags relevant to delay accounting
+@@ -15,71 +18,39 @@
+  * Used to set current->delays->flags
+  */
+ #define DELAYACCT_PF_SWAPIN	0x00000001	/* I am doing a swapin */
+-#define DELAYACCT_PF_BLKIO	0x00000002	/* I am waiting on IO */
+ 
+ #ifdef CONFIG_TASK_DELAY_ACCT
++enum delayacct_item {
++	DELAYACCT_BLKIO,     /* block IO latency */
++	DELAYACCT_SWAPIN,    /* swapin IO latency*/
++	DELAYACCT_THRASHING, /* pagecache thrashing IO latency*/
++	DELAYACCT_FREEPAGES, /* memory reclaim latency*/
++	DELAYACCT_NR_ITEMS
++};
++
++struct delayacct_count {
++	u64 start;  /* start timestamp of XXX operation */
++	u32 count;  /* incremented on every XXX operation */
++	u64 delay;  /* accumulated delay time in nanoseconds */
++};
++
+ struct task_delay_info {
+ 	raw_spinlock_t	lock;
+ 	unsigned int	flags;	/* Private per-task flags */
+-
+-	/* For each stat XXX, add following, aligned appropriately
+-	 *
+-	 * struct timespec XXX_start, XXX_end;
+-	 * u64 XXX_delay;
+-	 * u32 XXX_count;
+-	 *
+-	 * Atomicity of updates to XXX_delay, XXX_count protected by
+-	 * single lock above (split into XXX_lock if contention is an issue).
+-	 */
+-
+-	/*
+-	 * XXX_count is incremented on every XXX operation, the delay
+-	 * associated with the operation is added to XXX_delay.
+-	 * XXX_delay contains the accumulated delay time in nanoseconds.
+-	 */
+-	u64 blkio_start;	/* Shared by blkio, swapin */
+-	u64 blkio_delay;	/* wait for sync block io completion */
+-	u64 swapin_delay;	/* wait for swapin block io completion */
+-	u32 blkio_count;	/* total count of the number of sync block */
+-				/* io operations performed */
+-	u32 swapin_count;	/* total count of the number of swapin block */
+-				/* io operations performed */
+-
+-	u64 freepages_start;
+-	u64 freepages_delay;	/* wait for memory reclaim */
+-
+-	u64 thrashing_start;
+-	u64 thrashing_delay;	/* wait for thrashing page */
+-
+-	u32 freepages_count;	/* total count of memory reclaim */
+-	u32 thrashing_count;	/* total count of thrash waits */
++	struct delayacct_count items[DELAYACCT_NR_ITEMS];
+ };
+-#endif
+-
+-#include <linux/sched.h>
+-#include <linux/slab.h>
+ 
+-#ifdef CONFIG_TASK_DELAY_ACCT
+ extern int delayacct_on;	/* Delay accounting turned on/off */
+ extern struct kmem_cache *delayacct_cache;
+ extern void delayacct_init(void);
+ extern void __delayacct_tsk_init(struct task_struct *);
+-extern void __delayacct_tsk_exit(struct task_struct *);
+-extern void __delayacct_blkio_start(void);
+-extern void __delayacct_blkio_end(struct task_struct *);
+-extern int __delayacct_add_tsk(struct taskstats *, struct task_struct *);
+-extern __u64 __delayacct_blkio_ticks(struct task_struct *);
+-extern void __delayacct_freepages_start(void);
+-extern void __delayacct_freepages_end(void);
+-extern void __delayacct_thrashing_start(void);
+-extern void __delayacct_thrashing_end(void);
+-
+-static inline int delayacct_is_task_waiting_on_io(struct task_struct *p)
++extern int  __delayacct_add_tsk(struct taskstats *d, struct task_struct *tsk);
++extern u64  __delayacct_blkio_ticks(struct task_struct *tsk);
++extern void __delayacct_end(struct task_delay_info *delays, int item);
++
++static inline void __delayacct_start(struct task_delay_info *delays, int item)
+ {
+-	if (p->delays)
+-		return (p->delays->flags & DELAYACCT_PF_BLKIO);
+-	else
+-		return 0;
++	delays->items[item].start = ktime_get_ns();
+ }
+ 
+ static inline void delayacct_set_flag(struct task_struct *p, int flag)
+@@ -112,20 +83,6 @@ static inline void delayacct_tsk_free(struct task_struct *tsk)
+ 	tsk->delays = NULL;
+ }
+ 
+-static inline void delayacct_blkio_start(void)
+-{
+-	delayacct_set_flag(current, DELAYACCT_PF_BLKIO);
+-	if (current->delays)
+-		__delayacct_blkio_start();
+-}
+-
+-static inline void delayacct_blkio_end(struct task_struct *p)
+-{
+-	if (p->delays)
+-		__delayacct_blkio_end(p);
+-	delayacct_clear_flag(p, DELAYACCT_PF_BLKIO);
+-}
+-
+ static inline int delayacct_add_tsk(struct taskstats *d,
+ 					struct task_struct *tsk)
+ {
+@@ -141,28 +98,50 @@ static inline __u64 delayacct_blkio_ticks(struct task_struct *tsk)
+ 	return 0;
+ }
+ 
++static inline void delayacct_blkio_start(void)
++{
++	if (!current->delays)
++		return;
++
++	if (current->delays->flags & DELAYACCT_PF_SWAPIN)
++		__delayacct_start(current->delays, DELAYACCT_SWAPIN);
++	else
++		__delayacct_start(current->delays, DELAYACCT_BLKIO);
++}
++
++static inline void delayacct_blkio_end(struct task_struct *p)
++{
++	if (!p->delays)
++		return;
++
++	if (p->delays->flags & DELAYACCT_PF_SWAPIN)
++		__delayacct_end(p->delays, DELAYACCT_SWAPIN);
++	else
++		__delayacct_end(p->delays, DELAYACCT_BLKIO);
++}
++
+ static inline void delayacct_freepages_start(void)
+ {
+ 	if (current->delays)
+-		__delayacct_freepages_start();
++		__delayacct_start(current->delays, DELAYACCT_FREEPAGES);
+ }
+ 
+ static inline void delayacct_freepages_end(void)
+ {
+ 	if (current->delays)
+-		__delayacct_freepages_end();
++		__delayacct_end(current->delays, DELAYACCT_FREEPAGES);
+ }
+ 
+ static inline void delayacct_thrashing_start(void)
+ {
+ 	if (current->delays)
+-		__delayacct_thrashing_start();
++		__delayacct_start(current->delays, DELAYACCT_THRASHING);
+ }
+ 
+ static inline void delayacct_thrashing_end(void)
+ {
+ 	if (current->delays)
+-		__delayacct_thrashing_end();
++		__delayacct_end(current->delays, DELAYACCT_THRASHING);
+ }
+ 
+ #else
+@@ -185,8 +164,6 @@ static inline int delayacct_add_tsk(struct taskstats *d,
+ { return 0; }
+ static inline __u64 delayacct_blkio_ticks(struct task_struct *tsk)
+ { return 0; }
+-static inline int delayacct_is_task_waiting_on_io(struct task_struct *p)
+-{ return 0; }
+ static inline void delayacct_freepages_start(void)
+ {}
+ static inline void delayacct_freepages_end(void)
+diff --git a/kernel/delayacct.c b/kernel/delayacct.c
+index 27725754..f44d559 100644
+--- a/kernel/delayacct.c
++++ b/kernel/delayacct.c
+@@ -2,6 +2,7 @@
+ /* delayacct.c - per-task delay accounting
+  *
+  * Copyright (C) Shailabh Nagar, IBM Corp. 2006
++ * Copyright (C) Chunguang Xu, Tencent Corp. 2021
+  */
+ 
+ #include <linux/sched.h>
+@@ -42,46 +43,20 @@ void __delayacct_tsk_init(struct task_struct *tsk)
+  * Finish delay accounting for a statistic using its timestamps (@start),
+  * accumalator (@total) and @count
+  */
+-static void delayacct_end(raw_spinlock_t *lock, u64 *start, u64 *total,
+-			  u32 *count)
++void __delayacct_end(struct task_delay_info *delays, int item)
+ {
+-	s64 ns = ktime_get_ns() - *start;
++	struct delayacct_count *delay = &delays->items[item];
++	s64 ns = ktime_get_ns() - delay->start;
+ 	unsigned long flags;
+ 
+ 	if (ns > 0) {
+-		raw_spin_lock_irqsave(lock, flags);
+-		*total += ns;
+-		(*count)++;
+-		raw_spin_unlock_irqrestore(lock, flags);
++		raw_spin_lock_irqsave(&delays->lock, flags);
++		delay->delay += ns;
++		delay->count++;
++		raw_spin_unlock_irqrestore(&delays->lock, flags);
+ 	}
+ }
+ 
+-void __delayacct_blkio_start(void)
+-{
+-	current->delays->blkio_start = ktime_get_ns();
+-}
+-
+-/*
+- * We cannot rely on the `current` macro, as we haven't yet switched back to
+- * the process being woken.
+- */
+-void __delayacct_blkio_end(struct task_struct *p)
+-{
+-	struct task_delay_info *delays = p->delays;
+-	u64 *total;
+-	u32 *count;
+-
+-	if (p->delays->flags & DELAYACCT_PF_SWAPIN) {
+-		total = &delays->swapin_delay;
+-		count = &delays->swapin_count;
+-	} else {
+-		total = &delays->blkio_delay;
+-		count = &delays->blkio_count;
+-	}
+-
+-	delayacct_end(&delays->lock, &delays->blkio_start, total, count);
+-}
+-
+ int __delayacct_add_tsk(struct taskstats *d, struct task_struct *tsk)
+ {
+ 	u64 utime, stime, stimescaled, utimescaled;
+@@ -120,18 +95,18 @@ int __delayacct_add_tsk(struct taskstats *d, struct task_struct *tsk)
+ 	/* zero XXX_total, non-zero XXX_count implies XXX stat overflowed */
+ 
+ 	raw_spin_lock_irqsave(&tsk->delays->lock, flags);
+-	tmp = d->blkio_delay_total + tsk->delays->blkio_delay;
++	tmp = d->blkio_delay_total + tsk->delays->items[DELAYACCT_BLKIO].delay;
+ 	d->blkio_delay_total = (tmp < d->blkio_delay_total) ? 0 : tmp;
+-	tmp = d->swapin_delay_total + tsk->delays->swapin_delay;
++	tmp = d->swapin_delay_total + tsk->delays->items[DELAYACCT_SWAPIN].delay;
+ 	d->swapin_delay_total = (tmp < d->swapin_delay_total) ? 0 : tmp;
+-	tmp = d->freepages_delay_total + tsk->delays->freepages_delay;
++	tmp = d->freepages_delay_total + tsk->delays->items[DELAYACCT_FREEPAGES].delay;
+ 	d->freepages_delay_total = (tmp < d->freepages_delay_total) ? 0 : tmp;
+-	tmp = d->thrashing_delay_total + tsk->delays->thrashing_delay;
++	tmp = d->thrashing_delay_total + tsk->delays->items[DELAYACCT_THRASHING].delay;
+ 	d->thrashing_delay_total = (tmp < d->thrashing_delay_total) ? 0 : tmp;
+-	d->blkio_count += tsk->delays->blkio_count;
+-	d->swapin_count += tsk->delays->swapin_count;
+-	d->freepages_count += tsk->delays->freepages_count;
+-	d->thrashing_count += tsk->delays->thrashing_count;
++	d->blkio_count += tsk->delays->items[DELAYACCT_BLKIO].count;
++	d->swapin_count += tsk->delays->items[DELAYACCT_SWAPIN].count;
++	d->freepages_count += tsk->delays->items[DELAYACCT_FREEPAGES].count;
++	d->thrashing_count += tsk->delays->items[DELAYACCT_THRASHING].count;
+ 	raw_spin_unlock_irqrestore(&tsk->delays->lock, flags);
+ 
+ 	return 0;
+@@ -143,35 +118,8 @@ __u64 __delayacct_blkio_ticks(struct task_struct *tsk)
+ 	unsigned long flags;
+ 
+ 	raw_spin_lock_irqsave(&tsk->delays->lock, flags);
+-	ret = nsec_to_clock_t(tsk->delays->blkio_delay +
+-				tsk->delays->swapin_delay);
++	ret = nsec_to_clock_t(tsk->delays->items[DELAYACCT_BLKIO].delay +
++			      tsk->delays->items[DELAYACCT_SWAPIN].delay);
+ 	raw_spin_unlock_irqrestore(&tsk->delays->lock, flags);
+ 	return ret;
+ }
+-
+-void __delayacct_freepages_start(void)
+-{
+-	current->delays->freepages_start = ktime_get_ns();
+-}
+-
+-void __delayacct_freepages_end(void)
+-{
+-	delayacct_end(
+-		&current->delays->lock,
+-		&current->delays->freepages_start,
+-		&current->delays->freepages_delay,
+-		&current->delays->freepages_count);
+-}
+-
+-void __delayacct_thrashing_start(void)
+-{
+-	current->delays->thrashing_start = ktime_get_ns();
+-}
+-
+-void __delayacct_thrashing_end(void)
+-{
+-	delayacct_end(&current->delays->lock,
+-		      &current->delays->thrashing_start,
+-		      &current->delays->thrashing_delay,
+-		      &current->delays->thrashing_count);
+-}
+-- 
+1.8.3.1
 
