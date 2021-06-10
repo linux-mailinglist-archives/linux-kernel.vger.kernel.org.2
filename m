@@ -2,86 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA793A3456
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F42F3A345F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhFJT4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 15:56:34 -0400
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:33534 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhFJT4c (ORCPT
+        id S230409AbhFJT6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 15:58:35 -0400
+Received: from mail-il1-f173.google.com ([209.85.166.173]:39681 "EHLO
+        mail-il1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhFJT6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 15:56:32 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d69 with ME
-        id FXuX2500721Fzsu03XuYBA; Thu, 10 Jun 2021 21:54:33 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 10 Jun 2021 21:54:33 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Yasunari.Takiguchi@sony.com, mchehab@kernel.org,
-        narmstrong@baylibre.com, sean@mess.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH v2] media: cxd2880-spi: Fix an error handling path
-Date:   Thu, 10 Jun 2021 21:54:31 +0200
-Message-Id: <40b114d7200d2a87150249f8228b88f7a4ee15e0.1621599392.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Thu, 10 Jun 2021 15:58:33 -0400
+Received: by mail-il1-f173.google.com with SMTP id j14so163996ila.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:56:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yThRUwhG7TVMYzDnZQ36xlr9oSGBGPDfSkCu6ZGlYLg=;
+        b=bPBjb3iQyivF7+ujnusT5zb7CgKPA/MPb60wwSSgl0fWJCJFIRsspxS5FLO3i3Db7o
+         QTBIFLfWtoa+OTwkJsl8Od0iL6SjdITaP1KUiA1ZLnO0nbgYzNu8qBP6bqF9wOw6coVS
+         0TZuIt7YeN1EtKC3bKArUXZMWQq1C4xTGVKSk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yThRUwhG7TVMYzDnZQ36xlr9oSGBGPDfSkCu6ZGlYLg=;
+        b=dD3tEJQ3zlTLb+g+oiD7tL2XCqBwDxYaAKwoTAADlJOWCRwd9GJqsOikYJSmuAFb1D
+         N7Aw6YaIwUPTiBjbQskEt/CwUiq3sRQpEAaFsVHvkiit2Kx0h/IpLhH6+g4urWhr78pK
+         iNMRvltoatBvC0rPPyREjZOjgy4VY7L8UxT+rjt1W0wvUEhMIypeXS59OwbiJrNglQZ7
+         4fF97phg4SXXNO2e2uh4OR8k58VkfPG3xKzhncar2aFwrPmMVazEO5ct9gibAItcWf6K
+         WppfhC7nDg7scBEPzXU8OY/MJ+M2D4VhMmqcK+o3HnFJOUSRT6VT5ft1Z5PLPzzJ/tCR
+         jqGQ==
+X-Gm-Message-State: AOAM531Cm8YRPU9tEsyynzxNZCi3MAoPqkIafI92Z6DOpQVzfZ4b7eRK
+        f68fYpdNRiBh+LIrg7hYT78P1A==
+X-Google-Smtp-Source: ABdhPJxrEvwWy3XAmz/7jj02iTalwtXM7UAmJCMJjFJ1UH5U58C7wt3JsSnlbOrDwD06v36kFE802g==
+X-Received: by 2002:a05:6e02:4b0:: with SMTP id e16mr335801ils.71.1623354925138;
+        Thu, 10 Jun 2021 12:55:25 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id u18sm2447941ilb.51.2021.06.10.12.55.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 12:55:24 -0700 (PDT)
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        David Hildenbrand <david@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
+        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <YH2hs6EsPTpDAqXc@mit.edu>
+ <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
+ <YIx7R6tmcRRCl/az@mit.edu>
+ <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
+ <YK+esqGjKaPb+b/Q@kroah.com>
+ <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+ <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
+ <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
+ <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
+ <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
+ <20210610152633.7e4a7304@oasis.local.home>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
+Date:   Thu, 10 Jun 2021 13:55:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210610152633.7e4a7304@oasis.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after a successful 'regulator_enable()' call,
-'regulator_disable()' must be called.
+On 6/10/21 1:26 PM, Steven Rostedt wrote:
+> On Thu, 10 Jun 2021 21:39:49 +0300
+> Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
+> 
+>> There will always be more informal discussions between on-site
+>> participants. After all, this is one of the benefits of conferences, by
+>> being all together we can easily organize ad-hoc discussions. This is
+>> traditionally done by finding a not too noisy corner in the conference
+>> center, would it be useful to have more break-out rooms with A/V
+>> equipment than usual ?
+> 
+> I've been giving this quite some thought too, and I've come to the
+> understanding (and sure I can be wrong, but I don't think that I am),
+> is that when doing a hybrid event, the remote people will always be
+> "second class citizens" with respect to the communication that is going
+> on. Saying that we can make it the same is not going to happen unless
+> you start restricting what people can do that are present, and that
+> will just destroy the conference IMO.
+> 
+> That said, I think we should add more to make the communication better
+> for those that are not present. Maybe an idea is to have break outs
+> followed by the presentation and evening events that include remote
+> attendees to discuss with those that are there about what they might
+> have missed. Have incentives at these break outs (free stacks and
+> beer?) to encourage the live attendees to attend and have a discussion
+> with the remote attendees.
+> 
+> The presentations would have remote access, where remote attendees can
+> at the very least write in some chat their questions or comments. If
+> video and connectivity is good enough, perhaps have a screen where they
+> can show up and talk, but that may have logistical limitations.
+> 
 
-Fix the error handling path of the probe accordingly.
+You are absolutely right that the remote people will have a hard time
+participating and keeping up with in-person participants. I have a
+couple of ideas on how we might be able to improve remote experience
+without restricting in-person experience.
 
-Fixes: cb496cd472af ("media: cxd2880-spi: Add optional vcc regulator")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-v2: In case of error 'dvb_spi->vcc_supply' is set to NULL
-    So test for NULL instead of IS_ERR as spotted by Sean Young
+- Have one or two moderators per session to watch chat and Q&A to enable
+   remote participants to chime in and participate.
+- Moderators can make sure remote participation doesn't go unnoticed and
+   enable taking turns for remote vs. people participating in person.
 
-v1 was part of a small serie. Patch 2/2 has been applied, so this update
-is now sent as a single patch
----
- drivers/media/spi/cxd2880-spi.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+It will be change in the way we interact in all in-person sessions for
+sure, however it might enhance the experience for remote attendees.
 
-diff --git a/drivers/media/spi/cxd2880-spi.c b/drivers/media/spi/cxd2880-spi.c
-index 931ec0727cd3..df1335e7061c 100644
---- a/drivers/media/spi/cxd2880-spi.c
-+++ b/drivers/media/spi/cxd2880-spi.c
-@@ -524,13 +524,13 @@ cxd2880_spi_probe(struct spi_device *spi)
- 	if (IS_ERR(dvb_spi->vcc_supply)) {
- 		if (PTR_ERR(dvb_spi->vcc_supply) == -EPROBE_DEFER) {
- 			ret = -EPROBE_DEFER;
--			goto fail_adapter;
-+			goto fail_regulator;
- 		}
- 		dvb_spi->vcc_supply = NULL;
- 	} else {
- 		ret = regulator_enable(dvb_spi->vcc_supply);
- 		if (ret)
--			goto fail_adapter;
-+			goto fail_regulator;
- 	}
- 
- 	dvb_spi->spi = spi;
-@@ -618,6 +618,9 @@ cxd2880_spi_probe(struct spi_device *spi)
- fail_attach:
- 	dvb_unregister_adapter(&dvb_spi->adapter);
- fail_adapter:
-+	if (!dvb_spi->vcc_supply)
-+		regulator_disable(dvb_spi->vcc_supply);
-+fail_regulator:
- 	kfree(dvb_spi);
- 	return ret;
- }
--- 
-2.30.2
-
+thanks,
+-- Shuah
