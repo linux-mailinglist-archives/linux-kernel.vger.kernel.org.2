@@ -2,139 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8D33A32D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946293A32E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhFJSQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 14:16:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53638 "EHLO mail.kernel.org"
+        id S231251AbhFJSSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 14:18:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:36061 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230376AbhFJSQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 14:16:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 417CB613F5;
-        Thu, 10 Jun 2021 18:14:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623348892;
-        bh=PADwB9sqrvEq0/W9oqNmCqgADNHwyj1AM7E076Ndpy8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rZ+gjzX8DykFeOrU9l9xA6YbyKgbjW3VSyTWrXErzTZjJVtlG0k+8+V5gXquBEFcZ
-         96b4z8yhyIGmBDKQlL0cT0tg4jnWusockBru+bZhC459GHXRabWR140+sC/3fggx8G
-         8HrZA4aMbS78v82eDFlsqIDIzbyyJCgZiw6lLmaLyI6D6a0UUeoRljJjTYdgzdRBV1
-         GhdJIUqYyZQMPOjEkak5pdNiUnigZnBNkRUnEwU0exoybZpW5VH5HGwwwGrDoi2/lw
-         sfdywd8Php3R3LtChihtunu909tYgKb34zIX9sJAhYnQs/e7CniU8GY5SB7Rn5Pr31
-         fQD6LEyJikx2w==
-Date:   Thu, 10 Jun 2021 11:14:51 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jpoimboe@redhat.com, jbaron@akamai.com,
-        rostedt@goodmis.org, ardb@kernel.org, linux-kernel@vger.kernel.org,
-        samitolvanen@google.com, ndesaulniers@google.com,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 01/13] objtool: Rewrite hashtable sizing
-Message-ID: <YMJWmzXgSipOqXAf@DESKTOP-1V8MEUQ.localdomain>
-References: <20210506193352.719596001@infradead.org>
- <20210506194157.452881700@infradead.org>
+        id S231220AbhFJSSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 14:18:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623348970; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=mVLUJXd2RETjC0iRuba0DAjVBduoMP1Tm2AuF8peuf4=; b=LA/RYAV2MPhcpvcEll40elkhZwv4ZiijC2HcG9M5mNYZO9klfXvR4GXTKK+lRMTDILWGOIem
+ 5tmBLjOUE6qwQV6CXWJfkBo8llbf8gJB1xDL9N2cwxx+cF8hr7aRAiF8UeZwXBgtYmPG9Qi+
+ U3q5GMlFuNBew0KWIb8U7DWU7/w=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60c256c4ed59bf69ccddf89a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Jun 2021 18:15:32
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3809C4338A; Thu, 10 Jun 2021 18:15:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.62.3] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 88EB7C433D3;
+        Thu, 10 Jun 2021 18:15:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 88EB7C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v9 0/5] Re-introduce TX FIFO resize for larger EP bursting
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        jackp@codeaurora.org, Thinh.Nguyen@synopsys.com
+References: <1621410561-32762-1-git-send-email-wcheng@codeaurora.org>
+ <YLoUiO8tpRpmvcyU@kroah.com> <87k0n9btnb.fsf@kernel.org>
+ <YLo6W5sKaXvy51eW@kroah.com>
+ <c2daab34-1b25-7ee3-e203-a414c1e486d5@codeaurora.org>
+ <874ke62i0v.fsf@kernel.org>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <e5f231ca-6807-bcea-29c2-ab3926057310@codeaurora.org>
+Date:   Thu, 10 Jun 2021 11:15:28 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <874ke62i0v.fsf@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210506194157.452881700@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hi Felipe,
 
-On Thu, May 06, 2021 at 09:33:53PM +0200, Peter Zijlstra wrote:
-> Currently objtool has 5 hashtables and sizes them 16 or 20 bits
-> depending on the --vmlinux argument.
+On 6/10/2021 2:20 AM, Felipe Balbi wrote:
 > 
-> However, a single side doesn't really work well for the 5 tables,
-> which among them, cover 3 different uses. Also, while vmlinux is
-> larger, there is still a very wide difference between a defconfig and
-> allyesconfig build, which again isn't optimally covered by a single
-> size.
+> Hi,
 > 
-> Another aspect is the cost of elf_hash_init(), which for large tables
-> dominates the runtime for small input files. It turns out that all it
-> does it assign NULL, something that is required when using malloc().
-> However, when we allocate memory using mmap(), we're guaranteed to get
-> zero filled pages.
+> Wesley Cheng <wcheng@codeaurora.org> writes:
 > 
-> Therefore, rewrite the whole thing to:
+>> Hi Greg/Felipe,
+>>
+>> On 6/4/2021 7:36 AM, Greg KH wrote:
+>>> On Fri, Jun 04, 2021 at 05:18:16PM +0300, Felipe Balbi wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> Greg KH <gregkh@linuxfoundation.org> writes:
+>>>>> On Wed, May 19, 2021 at 12:49:16AM -0700, Wesley Cheng wrote:
+>>>>>> Changes in V9:
+>>>>>>  - Fixed incorrect patch in series.  Removed changes in DTSI, as dwc3-qcom will
+>>>>>>    add the property by default from the kernel.
+>>>>>
+>>>>> This patch series has one build failure and one warning added:
+>>>>>
+>>>>> drivers/usb/dwc3/gadget.c: In function ‘dwc3_gadget_calc_tx_fifo_size’:
+>>>>> drivers/usb/dwc3/gadget.c:653:45: warning: passing argument 1 of ‘dwc3_mdwidth’ makes pointer from integer without a cast [-Wint-conversion]
+>>>>>   653 |         mdwidth = dwc3_mdwidth(dwc->hwparams.hwparams0);
+>>>>>       |                                ~~~~~~~~~~~~~^~~~~~~~~~
+>>>>>       |                                             |
+>>>>>       |                                             u32 {aka unsigned int}
+>>>>> In file included from drivers/usb/dwc3/debug.h:14,
+>>>>>                  from drivers/usb/dwc3/gadget.c:25:
+>>>>> drivers/usb/dwc3/core.h:1493:45: note: expected ‘struct dwc3 *’ but argument is of type ‘u32’ {aka ‘unsigned int’}
+>>>>>  1493 | static inline u32 dwc3_mdwidth(struct dwc3 *dwc)
+>>>>>       |                                ~~~~~~~~~~~~~^~~
+>>>>>
+>>>>>
+>>>>> drivers/usb/dwc3/dwc3-qcom.c: In function ‘dwc3_qcom_of_register_core’:
+>>>>> drivers/usb/dwc3/dwc3-qcom.c:660:23: error: implicit declaration of function ‘of_add_property’; did you mean ‘of_get_property’? [-Werror=implicit-function-declaration]
+>>>>>   660 |                 ret = of_add_property(dwc3_np, prop);
+>>>>>       |                       ^~~~~~~~~~~~~~~
+>>>>>       |                       of_get_property
+>>>>>
+>>>>>
+>>>>> How did you test these?
+>>
+>> I ran these changes on our internal branches, which were probably
+>> missing some of the recent changes done to the DWC3 drivers.  Will fix
+>> the above compile errors and re-submit.
+>>
+>> In regards to how much these changes have been tested, we've been
+>> maintaining the TX FIFO resize logic downstream for a few years already,
+>> so its being used in end products.  We also verify this with our
+>> internal testing, which has certain benchmarks we need to meet.
 > 
->  1) use more dynamic sized tables, depending on the input file,
->  2) avoid the need for elf_hash_init() entirely by using mmap().
+> the problem with that is that you *know* which gadget is running
+> there. You know everyone of those is going to run the android
+> gadget. In a sense, all those multiple products are testing the same
+> exact use case :-)
 > 
-> This speeds up a regular kernel build (100s to 98s for
-> x86_64-defconfig), and potentially dramatically speeds up vmlinux
-> processing.
+
+Mmmm, the USB gadget has changed from since we've implemented it, such
+as going from Android gadget to Configfs.  Don't forget, we do have
+other business segments that use this feature in other configurations as
+well :).
+
+>>>> to be honest, I don't think these should go in (apart from the build
+>>>> failure) because it's likely to break instantiations of the core with
+>>>> differing FIFO sizes. Some instantiations even have some endpoints with
+>>>> dedicated functionality that requires the default FIFO size configured
+>>>> during coreConsultant instantiation. I know of at OMAP5 and some Intel
+>>>> implementations which have dedicated endpoints for processor tracing.
+>>>>
+>>>> With OMAP5, these endpoints are configured at the top of the available
+>>>> endpoints, which means that if a gadget driver gets loaded and takes
+>>>> over most of the FIFO space because of this resizing, processor tracing
+>>>> will have a hard time running. That being said, processor tracing isn't
+>>>> supported in upstream at this moment.
+>>>>
+>>
+>> I agree that the application of this logic may differ between vendors,
+>> hence why I wanted to keep this controllable by the DT property, so that
+>> for those which do not support this use case can leave it disabled.  The
+>> logic is there to ensure that for a given USB configuration, for each EP
+>> it would have at least 1 TX FIFO.  For USB configurations which don't
+>> utilize all available IN EPs, it would allow re-allocation of internal
+>> memory to EPs which will actually be in use.
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> The feature ends up being all-or-nothing, then :-) It sounds like we can
+> be a little nicer in this regard.
+> 
 
-This patch as commit 25cf0d8aa2a3 ("objtool: Rewrite hashtable sizing")
-in -tip causes a massive compile time regression with allmodconfig +
-ThinLTO.
+Don't get me wrong, I think once those features become available
+upstream, we can improve the logic.  From what I remember when looking
+at Andy Shevchenko's Github, the Intel tracer downstream changes were
+just to remove physical EP1 and 2 from the DWC3 endpoint list.  If that
+was the change which ended up upstream for the Intel tracer then we
+could improve the logic to avoid re-sizing those particular EPs.
+However, I'm not sure how the changes would look like in the end, so I
+would like to wait later down the line to include that :).
 
-At v5.13-rc1, the performance penalty is only about 23%, as measured with
-hyperfine for two runs [1]:
+>>>> I still think this may cause other places to break down. The promise the
+>>>> databook makes is that increasing the FIFO size over 2x wMaxPacketSize
+>>>> should bring little to no benefit, if we're not maintaining that, I
+>>>> wonder if the problem is with some of the BUSCFG registers instead,
+>>>> where we configure interconnect bursting and the like.
+>>>
+>>
+>> I've been referring mainly to the DWC3 programming guide for
+>> recommendations on how to improve USB performance in:
+>> Section 3.3.5 System Bus Features to Improve USB Performance
+> 
+> dwc3 or dwc3.1? Either way, since I left Intel I don't have access to
+> the databook anymore. I have to trust what you guys are telling me and,
+> based on the description so far, I don't think we're doing the right
+> thing (yet).
+> 
 
-Benchmark #1: allmodconfig
-  Time (mean ± σ):     625.173 s ±  2.198 s    [User: 35120.895 s, System: 2176.868 s]
-  Range (min … max):   623.619 s … 626.727 s    2 runs
+Ah, I see.  DWC3.1 and DWC3 both have that USB performance section.  I
+can explain some of the points I made with a bit more detail.  I thought
+you still had access to it.
 
-Benchmark #2: allmodconfig with ThinLTO
-  Time (mean ± σ):     771.034 s ±  0.369 s    [User: 39706.084 s, System: 2326.166 s]
-  Range (min … max):   770.773 s … 771.295 s    2 runs
+> It would be nice if other users would test this patchset with different
+> gadget drivers and different platforms to have some confidence that
+> we're limiting possible regressions.
+> 
+> I would like for Thinh to comment from Synopsys side here.
+> 
+>> At least when I ran the initial profiling, adjusting the RX/TX
+>> thresholds brought little to no benefits.  Even in some of the examples,
+> 
+> right, the FIFO sizes shouldn't help much. At least that's what Paul
+> told me several years ago. Thinh, has the recommendation changed?
+> 
 
-Summary
-  'allmodconfig' ran
-    1.23 ± 0.00 times faster than 'allmodconfig with ThinLTO'
+So when I mention the RX/TX thresholds, this is different than the FIFO
+resize.  The RX/TX threshold is used by the controller to determine when
+to send or receive data based on the number of available FIFOs.  So for
+the TX case, if we set the TX threshold, the controller will not start
+transmitting data over the link after X amount of packets are copied to
+the TXFIFO.  So for example, a TXFIFO size of 6 w/ a TX threshold of 3,
+means that the controller will wait for 3 FIFO slots to be filled before
+it sends the data.  So as you can see, with our configuration of TX FIFO
+size of 2 and TX threshold of 1, this would really be not beneficial to
+us, because we can only change the TX threshold to 2 at max, and at
+least in my observations, once we have to go out to system memory to
+fetch the next data packet, that latency takes enough time for the
+controller to end the current burst.
 
-However, at 25cf0d8aa2a3, it is almost 150% on a 64-core server.
+>> they have diagrams showing a TXFIFO size of 6 max packets (Figure 3-5).
+>>  I think its difficult to say that the TX fifo resizing won't help in
+>> systems with limited, or shared resources where the bus latencies would
+>> be somewhat larger.  By adjusting the TX FIFO size, the controller would
+>> be able to fetch more data from system memory into the memory within the
+>> controller, leading to less frequent end of bursts, etc... as data is
+>> readily available.
+>>
+>> In terms of adjusting the AXI/AHB bursting, I would think the bandwidth
+>> increase would eventually be constrained based on your system's design.
+>>  We don't touch the GSBUSCFG registers, and leave them as is based off
+>> the recommendations from the HW designers.
+> 
+> Right, I want to touch those as little as possible too :-) However, to
+> illustrate, the only reason I implemented FIFO resizing was because
+> OMAP5 ES1 had TX FIFOs that were smaller than a full USB3 packet. HW
+> Designer's recommendation can be bogus too ;-)
+> 
 
-Benchmark #1: allmodconfig
-  Time (mean ± σ):     624.759 s ±  2.153 s    [User: 35114.379 s, System: 2145.456 s]
-  Range (min … max):   623.237 s … 626.281 s    2 runs
+Haha...true, we question their designs only when there's something
+clearly wrong, but the AXI/AHB settings look good.  :)
 
-Benchmark #2: allmodconfig with ThinLTO
-  Time (mean ± σ):     1555.377 s ± 12.806 s    [User: 40558.463 s, System: 2310.139 s]
-  Range (min … max):   1546.321 s … 1564.432 s    2 runs
+>>> Good points.
+>>>
+>>> Wesley, what kind of testing have you done on this on different devices?
+>>>
+>>
+>> As mentioned above, these changes are currently present on end user
+>> devices for the past few years, so its been through a lot of testing :).
+> 
+> all with the same gadget driver. Also, who uses USB on android devices
+> these days? Most of the data transfer goes via WiFi or Bluetooth, anyway
+> :-)
+> 
+> I guess only developers are using USB during development to flash dev
+> images heh.
+> 
 
-Summary
-  'allmodconfig' ran
-    2.49 ± 0.02 times faster than 'allmodconfig with ThinLTO'
+I used to be a customer facing engineer, so honestly I did see some
+really interesting and crazy designs.  Again, we do have non-Android
+products that use the same code, and it has been working in there for a
+few years as well.  The TXFIFO sizing really has helped with multimedia
+use cases, which use isoc endpoints, since esp. in those lower end CPU
+chips where latencies across the system are much larger, and a missed
+ISOC interval leads to a pop in your ear.
 
-Adding Sami because I am not sure why this patch would have much of an impact
-in relation to LTO. https://git.kernel.org/tip/25cf0d8aa2a3 is the patch in
-question.
+Thanks
+Wesley Cheng
 
-If I can provide any further information or help debug, please let me know.
-
-If you are interested in reproducing this locally, you will need a
-fairly recent LLVM stack (I used the stable release/12.x branch) and to
-cherry-pick commit 976aac5f8829 ("kcsan: Fix debugfs initcall return
-type") to fix an unrelated build failure. My script [2] can build a
-self-contained toolchain fairly quickly if you cannot get one from your
-package manager. A command like below will speed up the build a bit:
-
-$ ./build-llvm.py \
-    --branch "release/12.x" \
-    --build-stage1-only \
-    --install-stage1-only \
-    --projects "clang;lld" \
-    --targets X86
-
-After adding the "install/bin" directory to PATH:
-
-$ echo "CONFIG_GCOV_KERNEL=n
-CONFIG_KASAN=n
-CONFIG_LTO_CLANG_THIN=y" >allmod.config
-
-$ make -skj"$(nproc)" LLVM=1 LLVM_IAS=1 allmodconfig all
-
-[1]: https://github.com/sharkdp/hyperfine
-[2]: https://github.com/ClangBuiltLinux/tc-build
-
-Cheers,
-Nathan
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
