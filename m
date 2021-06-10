@@ -2,184 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDB93A2FFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8133A2FFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhFJQB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbhFJQB1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:01:27 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4096DC061574;
-        Thu, 10 Jun 2021 08:59:18 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id l184so119957pgd.8;
-        Thu, 10 Jun 2021 08:59:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gEOhLn04ufSH/EYWeHJiDResBxu7Zjy3LEUOA404M9M=;
-        b=MvNErbbuJgsYARWhegkk6WNOEMgQbvVcbR6iy+mrAf8t7qZEQVAxp85okAny4keJwX
-         ktOiDfhx4YSPeOjaSjn/FAnDn1o1k0B1UQP3Pmrgpo6e9oiLdScB6ih72n/LORqPLHTx
-         2VUoOZ01+qKFp/xpD7TNsWYLe9AQEWeB7x1mZurgDS0W90mzURpQcKdKnd5lc7XTjStO
-         Y1TRsa3iOSUUbArQiTztEZzJ2UUUuih/Q2gM5x0OVoL9iH8CKLa2xlxm8qr0AgsOuW9B
-         K0DFR3SSjqIVPPZ7TDp8Ok8JzMstH0xwBLoUeElcE+B7PNX1GB4APwxDOjjLyKrdtljF
-         44xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gEOhLn04ufSH/EYWeHJiDResBxu7Zjy3LEUOA404M9M=;
-        b=TNTkHt1N4yGdcNzVp26dIw6GlZs1UqX0iCA9APBeSK/P30n9o8z1+ZRRjDoU2lgkhf
-         6SIOViogWuiVTuk/Qj+o+fDl/Qp7X7ldPJ19HVDos8GyfrGVhCQgW1VDrVpVRoors1u+
-         6B/gnNXXaVlh97pSAYBorIqFFRXHXP8L/CWWqMWe0/8dx5m8JdusnWeLsarYmIJFgd8W
-         QubgUKegnCk2vsYvkx1HaAnX4p5T5KZLa8CBzQeg7bSU30h3j1Fj7/iFT5JGQLfTKBbm
-         INZjcDQ2ygtLVWg5CE/xgG3nC4f+As/Wx1xHWes2p3APkN11k+MOG4K0IDHUZzHSniyN
-         tgoA==
-X-Gm-Message-State: AOAM531DO0/FRlmzcoDacCGPZKaIDHpnbrBTlPeGFygqtMkXWxCBMyMB
-        LjziUGkX386yMTADVX8C6xQ=
-X-Google-Smtp-Source: ABdhPJx9vmsDtDTL4nbg98zKMRj7QHMyQ/zFV0vq4rlqsoMu8CSPycYkvg5HeWMzsT0A8Xewb8Gt3A==
-X-Received: by 2002:a63:ff1f:: with SMTP id k31mr5482804pgi.315.1623340757631;
-        Thu, 10 Jun 2021 08:59:17 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id p20sm2708534pff.204.2021.06.10.08.59.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 08:59:17 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
- controller on the BCM7211
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
-        Scott Branden <sbranden@broadcom.com>
-References: <20210602192758.38735-1-alcooperx@gmail.com>
- <20210602192758.38735-2-alcooperx@gmail.com>
- <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
- <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com>
- <CAPDyKFpEtvjS1mWC68gRBWD64dq2M1LO84UWE5uDLTzbGz1g8Q@mail.gmail.com>
- <6acd480a-8928-89bb-0f40-d278294973a1@gmail.com>
- <CAPDyKFqk23xg5R2k9GwQrnamwWYbMkmrbWYsHPF9VBQTAbvQHw@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <a1199e99-eb29-125b-2bac-f0abb4803c9b@gmail.com>
-Date:   Thu, 10 Jun 2021 08:59:07 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        id S230493AbhFJQBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:01:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:35418 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230247AbhFJQBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 12:01:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1ABAED1;
+        Thu, 10 Jun 2021 08:59:42 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.7.234])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E6473F719;
+        Thu, 10 Jun 2021 08:59:40 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 16:59:30 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        valentin.schneider@arm.com, kernel-team@android.com
+Subject: Re: [PATCH] irqchip/gic-v3: Workaround inconsistent PMR setting on
+ NMI entry
+Message-ID: <20210610155917.GA63335@C02TD0UTHF1T.local>
+References: <20210610145731.1350460-1-maz@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFqk23xg5R2k9GwQrnamwWYbMkmrbWYsHPF9VBQTAbvQHw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610145731.1350460-1-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marc,
 
+On Thu, Jun 10, 2021 at 03:57:31PM +0100, Marc Zyngier wrote:
+> The arm64 entry code suffers from an annoying issue on taking
+> a NMI, as it sets PMR to a value that actually allows IRQs
+> to be acknowledged. This is done for consistency with other parts
+> of the code, and is in the process of being fixed. This shouldn't
+> be a problem, as we are not enabling interrupts whilst in NMI
+> context.
+> 
+> However, in the infortunate scenario that we took a spurious NMI
+> (retired before the read of IAR) *and* that there is an IRQ pending
+> at the same time, we'll ack the IRQ in NMI context. Too bad.
+> 
+> In order to avoid deadlocks while running something like perf,
+> teach the GICv3 driver about this situation: if we were in
+> a context where no interrupt should have fired, transiently
+> set PMR to a value that only allows NMIs before acking the pending
+> interrupt, and restore the original value after that.
+> 
+> This papers over the core issue for the time being, and makes
+> NMIs great again. Sort of.
+> 
+> Co-developed-by: Mark Rutland <mark.rutland@arm.com>
 
-On 6/10/2021 1:49 AM, Ulf Hansson wrote:
-> On Thu, 10 Jun 2021 at 01:59, Florian Fainelli <f.fainelli@gmail.com> wrote:
->>
->>
->>
->> On 6/9/2021 2:22 AM, Ulf Hansson wrote:
->>> On Wed, 9 Jun 2021 at 05:07, Florian Fainelli <f.fainelli@gmail.com> wrote:
->>>>
->>>>
->>>>
->>>> On 6/8/2021 5:40 AM, Ulf Hansson wrote:
->>>>> On Wed, 2 Jun 2021 at 21:28, Al Cooper <alcooperx@gmail.com> wrote:
->>>>>>
->>>>>> Add support for the legacy Arasan sdhci controller on the BCM7211 and
->>>>>> related SoC's. This includes adding a .shutdown callback to increase
->>>>>> the power savings during S5.
->>>>>
->>>>> Please split this into two separate changes.
->>>>>
->>>>> May I also ask about the ->shutdown() callback and in relation to S5.
->>>>> What makes the ->shutdown callback only being invoked for S5?
->>>>
->>>> It is not only called for S5 (entered via poweroff on a prompt) but also
->>>> during kexec or reboot. The poweroff path is via:
->>>>
->>>> kernel_power_off() -> kernel_shutdown_prepare() -> device_shutdown() ->
->>>> .shutdown()
->>>>
->>>> For kexec or reboot we do not really care about power savings since we
->>>> are about to load a new image anyway, however for S5/poweroff we do care
->>>> about quiescing the eMMC controller in a way that its clocks and the
->>>> eMMC device can be put into low power mode since we will stay in that
->>>> mode for seconds/hours/days until someone presses a button on their
->>>> remote (or other wake-up sources).
->>>
->>> Hmm, I am not sure I understand correctly. At shutdown we don't care
->>> about wake-up sources from the kernel point of view, instead we treat
->>> everything as if it will be powered off.
->>
->> The same .shutdown() path is used whether you kexec, reboot or poweroff,
->> but for poweroff we do care about allowing specific wake-up sources
->> configured as such to wake-up the system at a later time, like GPIOs,
->> RTC, etc.
-> 
-> That's true, but using the ->shutdown() callbacks in this way would
-> certainly be a new use case.
-> 
-> Most subsystems/drivers don't care about power management in those
-> callbacks, but rather just about managing a graceful shutdown.
-> 
-> It sounds to me like you should have a look at the hibernation
-> path/callbacks instead - or perhaps even the system suspend
-> path/callback. Normally, that's where we care about power management.
+According to the kernel documentation, a Co-developed-by should be
+immediately followed by that developer's Signed-off-by, so FWIW:
 
-The platforms we use do not support hibernation, keep in mind that these
-are embedded SoCs that support the S2 (standby), S3 (mem) and poweroff
-suspend states, hibernation is not something that we can support.
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 
-> 
-> I have looped in Rafael, to allow him to share his opinion on this.
-> 
->>
->>>
->>> We put devices into low power state at system suspend and potentially
->>> also during some of the hibernation phases.
->>>
->>> Graceful shutdown of the eMMC is also managed by the mmc core.
->>
->> AFAICT that calls mmc_blk_shutdown() but that is pretty much it, the
->> SDHCI platform_driver still needs to do something in order to conserve
->> power including disabling host->clk, otherwise we would not have done
->> that for sdhci-brcmstb.c.
-> 
-> That's not entirely correct. When mmc_bus_shutdown() is called for the
-> struct device* that belongs to an eMMC card, two actions are taken.
-> 
-> *) We call mmc_blk_shutdown(), to suspend the block device queue from
-> receiving new I/O requests.
-> **) We call host->bus_ops->shutdown(), which is an eMMC specific
-> callback set to mmc_shutdown(). In this step, we do a graceful
-> shutdown/power-off of the eMMC card.
-> 
-> When it comes to controller specific resources, like clocks and PM
-> domains, for example, those may very well stay turned on. Do deal with
-> these, then yes, you would need to implement the ->shutdown()
-> callback. But as I said above, I am not sure it's the right thing to
-> do.
+... unless you want to downgrade that to a Suggested-by, which is also
+fine by me!
 
-As explained before, we can enter S5 for an indefinite amount of time
-until a wake-up source wakes us up so we must conserve power, even if we
-happen to wake up the next second, we don't know that ahead of time. The
-point of calling sdhci_pltfm_suspend() here is to ensure that host->clk
-is turned off which cuts the eMMC controller digital clock, I forgot how
-much power we save by doing so, but every 10s of mW counts for us.
--- 
-Florian
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+
+Having played about with a few options, I think this is the
+simplest/cleanest thing we can do for now, and given it's all in one
+place and "obviously correct", I think there's little risk that this
+will break something else. So:
+
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+
+We should probably also give this:
+
+Fixes: 4d6a38da8e79e94c ("arm64: entry: always set GIC_PRIO_PSR_I_SET during entry")
+
+... since prior to that commit the `gic_prio_irq_setup` gunk would
+prevent this specific problem (though other bits like
+local_daif_{save,restore}()) would be broken in NMI paths.
+
+Thanks,
+Mark.
+
+> ---
+>  drivers/irqchip/irq-gic-v3.c | 36 +++++++++++++++++++++++++++++++++++-
+>  1 file changed, 35 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index 37a23aa6de37..3d3502efb807 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -642,11 +642,45 @@ static inline void gic_handle_nmi(u32 irqnr, struct pt_regs *regs)
+>  		nmi_exit();
+>  }
+>  
+> +static u32 do_read_iar(struct pt_regs *regs)
+> +{
+> +	u32 iar;
+> +
+> +	if (gic_supports_nmi() && unlikely(!interrupts_enabled(regs))) {
+> +		u64 pmr;
+> +
+> +		/*
+> +		 * We were in a context with interrupt disabled. However,
+> +		 * the entry code has set PMR to a value that allows any
+> +		 * interrupt to be acknowledged, and not just NMIs. This can
+> +		 * lead to surprising effects if the NMI has been retired in
+> +		 * the meantime, and that there is an IRQ pending. The IRQ
+> +		 * would then be taken in NMI context, something that nobody
+> +		 * wants to debug a second time.
+> +		 *
+> +		 * Until we sort this, drop PMR again to a level that will
+> +		 * actually only allow NMIs before reading IAR, and then
+> +		 * restore it to what it was.
+> +		 */
+> +		pmr = gic_read_pmr();
+> +		gic_pmr_mask_irqs();
+> +		isb();
+> +
+> +		iar = gic_read_iar();
+> +
+> +		gic_write_pmr(pmr);
+> +	} else {
+> +		iar = gic_read_iar();
+> +	}
+> +
+> +	return iar;
+> +}
+> +
+>  static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
+>  {
+>  	u32 irqnr;
+>  
+> -	irqnr = gic_read_iar();
+> +	irqnr = do_read_iar(regs);
+>  
+>  	/* Check for special IDs first */
+>  	if ((irqnr >= 1020 && irqnr <= 1023))
+> -- 
+> 2.30.2
+> 
