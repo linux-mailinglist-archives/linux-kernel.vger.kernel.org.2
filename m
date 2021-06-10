@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF1F3A2B85
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5C83A2B87
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhFJM3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:29:24 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3945 "EHLO
+        id S230427AbhFJM3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:29:25 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3946 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhFJM3N (ORCPT
+        with ESMTP id S230426AbhFJM3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Jun 2021 08:29:13 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G137H1pNQz6tsD;
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G137H2fZfz6v1P;
         Thu, 10 Jun 2021 20:24:11 +0800 (CST)
 Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
  dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 20:27:15 +0800
+ 15.1.2176.2; Thu, 10 Jun 2021 20:27:16 +0800
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 20:27:08 +0800
+ 15.1.2176.2; Thu, 10 Jun 2021 20:27:09 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     Russell King <linux@armlinux.org.uk>,
         <linux-arm-kernel@lists.infradead.org>
@@ -32,10 +32,12 @@ CC:     Catalin Marinas <catalin.marinas@arm.com>,
         Jungseung Lee <js07.lee@gmail.com>,
         Will Deacon <will@kernel.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v3 0/6] ARM: mm: cleanup page fault and fix pxn process issue
-Date:   Thu, 10 Jun 2021 20:35:50 +0800
-Message-ID: <20210610123556.171328-1-wangkefeng.wang@huawei.com>
+Subject: [PATCH v3 1/6] ARM: mm: Rafactor the __do_page_fault()
+Date:   Thu, 10 Jun 2021 20:35:51 +0800
+Message-ID: <20210610123556.171328-2-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210610123556.171328-1-wangkefeng.wang@huawei.com>
+References: <20210610123556.171328-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -47,92 +49,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patchset cleanup ARM page fault handle to improve readability,
-fix the page table entries printing and fix infinite loop in the
-page fault handler when user code execution with privilege mode if
-ARM_LPAE enabled.
+Clean up the multiple goto statements and drops local variable
+vm_fault_t fault, which will make the __do_page_fault() much
+more readability.
 
-echo EXEC_USERSPACE > /sys/kernel/debug/provoke-crash/DIRECT
+No functional change.
 
-Before:
--------
- lkdtm: Performing direct entry EXEC_USERSPACE
- lkdtm: attempting ok execution at c0717674
- lkdtm: attempting bad execution at b6fd6000
- rcu: INFO: rcu_sched self-detected stall on CPU
- rcu:	1-....: (2100 ticks this GP) idle=7e2/1/0x40000002 softirq=136/136 fqs=1050 
-	(t=2101 jiffies g=-1027 q=16)
- NMI backtrace for cpu 1
- CPU: 1 PID: 57 Comm: sh Not tainted 5.13.0-rc4 #126
- ...
-  r9:c1f04000 r8:c0e04cc8 r7:c1f05cbc r6:ffffffff r5:60000113 r4:c03724f8
- [<c03722e0>] (handle_mm_fault) from [<c02152f4>] (do_page_fault+0x1a0/0x3d8)
-  r10:c180ec48 r9:c11b1aa0 r8:c11b1ac0 r7:8000020f r6:b6fd6000 r5:c180ec00
-  r4:c1f05df8
- [<c0215154>] (do_page_fault) from [<c02157cc>] (do_PrefetchAbort+0x40/0x94)
-  r10:0000000f r9:c1f04000 r8:c1f05df8 r7:b6fd6000 r6:c0215154 r5:0000020f
-  r4:c0e09b18
- [<c021578c>] (do_PrefetchAbort) from [<c0200c50>] (__pabt_svc+0x50/0x80)
- Exception stack(0xc1f05df8 to 0xc1f05e40)
- 5de0: 0000002b 2e34f000
- 5e00: 3ee77213 3ee77213 b6fd6000 c0b51020 c140d000 c0a4b5dc 0000000f c1f05f58
- 5e20: 0000000f c1f05e64 c1f05d88 c1f05e48 c0717a6c b6fd6000 60000013 ffffffff
-  r8:0000000f r7:c1f05e2c r6:ffffffff r5:60000013 r4:b6fd6000
- [<c07179a8>] (lkdtm_EXEC_USERSPACE) from [<c09a51b8>] (lkdtm_do_action+0x48/0x4c)
-  r4:00000027
- ...
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ arch/arm/mm/fault.c | 34 +++++++++++++---------------------
+ 1 file changed, 13 insertions(+), 21 deletions(-)
 
-
-After:
--------
- lkdtm: Performing direct entry EXEC_USERSPACE
- lkdtm: attempting ok execution at c07176d4
- lkdtm: attempting bad execution at b6f57000
- 8<--- cut here ---
- Unable to handle kernel execution of memory at virtual address b6f57000
- pgd = 81e20f00
- [b6f57000] *pgd=81e23003, *pmd=13ee9c003
- Internal error: Oops: 8000020f [#1] SMP ARM
- Modules linked in:
- CPU: 0 PID: 57 Comm: sh Not tainted 5.13.0-rc4+ #127
- Hardware name: ARM-Versatile Express
- PC is at 0xb6f57000
- LR is at lkdtm_EXEC_USERSPACE+0xc4/0xd4
- pc : [<b6f57000>]    lr : [<c0717acc>]    psr: 60000013
- sp : c1f3de48  ip : c1f3dd88  fp : c1f3de64
- r10: 0000000f  r9 : c1f3df58  r8 : 0000000f
- r7 : c0a4b5dc  r6 : c1f1d000  r5 : c0b51070  r4 :b6f57000
- r3 : 7e62f7da  r2 : 7e62f7da  r1 : 2e330000  r0 :0000002b
- Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
- ...
-
-v3:
-- drop the fix about page table printing
-- kill page table base print instead of printing the physical address
-- only die when permission fault both kernel-mode and user code execution
-  with privilege mode
-- drop LPAE specific
-
-v2:
-- split patch into smaller changes suggested by Russell
-- fix page table printing in show_pte()
-- add new die_kernel_fault() helper 
-- report "execution of user memory" when user code execution with
-  privilege mode
-
-
-Kefeng Wang (6):
-  ARM: mm: Rafactor the __do_page_fault()
-  ARM: mm: Kill task_struct argument for __do_page_fault()
-  ARM: mm: Cleanup access_error()
-  ARM: mm: Kill page table base print in show_pte()
-  ARM: mm: Provide die_kernel_fault() helper
-  ARM: mm: Fix PXN process with LPAE feature
-
- arch/arm/mm/fault.c | 119 +++++++++++++++++++++++---------------------
- arch/arm/mm/fault.h |   4 ++
- 2 files changed, 67 insertions(+), 56 deletions(-)
-
+diff --git a/arch/arm/mm/fault.c b/arch/arm/mm/fault.c
+index efa402025031..662ac3ca3c8a 100644
+--- a/arch/arm/mm/fault.c
++++ b/arch/arm/mm/fault.c
+@@ -205,35 +205,27 @@ __do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
+ 		unsigned int flags, struct task_struct *tsk,
+ 		struct pt_regs *regs)
+ {
+-	struct vm_area_struct *vma;
+-	vm_fault_t fault;
+-
+-	vma = find_vma(mm, addr);
+-	fault = VM_FAULT_BADMAP;
++	struct vm_area_struct *vma = find_vma(mm, addr);
+ 	if (unlikely(!vma))
+-		goto out;
+-	if (unlikely(vma->vm_start > addr))
+-		goto check_stack;
++		return VM_FAULT_BADMAP;
++
++	if (unlikely(vma->vm_start > addr)) {
++		if (!(vma->vm_flags & VM_GROWSDOWN))
++			return VM_FAULT_BADMAP;
++		if (addr < FIRST_USER_ADDRESS)
++			return VM_FAULT_BADMAP;
++		if (expand_stack(vma, addr))
++			return VM_FAULT_BADMAP;
++	}
+ 
+ 	/*
+ 	 * Ok, we have a good vm_area for this
+ 	 * memory access, so we can handle it.
+ 	 */
+-good_area:
+-	if (access_error(fsr, vma)) {
+-		fault = VM_FAULT_BADACCESS;
+-		goto out;
+-	}
++	if (access_error(fsr, vma))
++		return VM_FAULT_BADACCESS;
+ 
+ 	return handle_mm_fault(vma, addr & PAGE_MASK, flags, regs);
+-
+-check_stack:
+-	/* Don't allow expansion below FIRST_USER_ADDRESS */
+-	if (vma->vm_flags & VM_GROWSDOWN &&
+-	    addr >= FIRST_USER_ADDRESS && !expand_stack(vma, addr))
+-		goto good_area;
+-out:
+-	return fault;
+ }
+ 
+ static int __kprobes
 -- 
 2.26.2
 
