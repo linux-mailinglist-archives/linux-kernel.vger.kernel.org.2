@@ -2,260 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4779A3A2255
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4743A2257
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhFJCpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 22:45:49 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:42683 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhFJCps (ORCPT
+        id S229985AbhFJCqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 22:46:13 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:56687 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229557AbhFJCqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 22:45:48 -0400
-Received: by mail-ot1-f48.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so21633561oth.9;
-        Wed, 09 Jun 2021 19:43:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dImUtuZhYj/XM6SXnOoPdWYPwbVVRclZFlt4djv5m4I=;
-        b=cH7y15kEHrJ47sZWtvD297j0h5QHBvMA1zP91mw/T8WpN0nfH1V+ghQON721FILm+R
-         It0amWvMkiNvs6OEjhRIuUaOg4dGBdpzewwB/spDjZqD1Y9HAvFU5QdzuthboQPhceD7
-         TS75RP/em7JIuGz/GY0SEss85fFBQVJzeFr+y1CrILFAKXXGA/8Es+DnyJKpN7v68DTV
-         G1x/fM6KoNfaSETzkT3FkC433J8XfnnpuazJMBOZJ7VK2pklZ16iWWoXu+7uhvgQdl2L
-         +zaT1c7tgQ5LMQOHin816l1AECBpwpQSEHBe9nwXDTAQQue/QMq608Ei9dENMYvYe2n3
-         hOLQ==
-X-Gm-Message-State: AOAM533ZIOpoS+L4NlMsZZMbN7ijE8T0nGPWqOaNbnGYz2+kTBevyVyn
-        maabgC5kGA0WjHc5Sd7ROg==
-X-Google-Smtp-Source: ABdhPJyBbya+zcm+FNUz27ZCbnnVovIW8rnlJgE1oiJjPoTI61rtVEt6hV/gGWqmvF9ZFn0ASOJC/w==
-X-Received: by 2002:a9d:554f:: with SMTP id h15mr534270oti.237.1623293032608;
-        Wed, 09 Jun 2021 19:43:52 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q6sm316972oot.40.2021.06.09.19.43.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 19:43:51 -0700 (PDT)
-Received: (nullmailer pid 706007 invoked by uid 1000);
-        Thu, 10 Jun 2021 02:43:50 -0000
-Date:   Wed, 9 Jun 2021 21:43:50 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jon Lin <jon.lin@rock-chips.com>
-Cc:     linux-spi@vger.kernel.org, broonie@kernel.org, heiko@sntech.de,
-        jbx6244@gmail.com, hjc@rock-chips.com, yifeng.zhao@rock-chips.com,
-        sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org,
-        linux-mtd@lists.infradead.org, p.yadav@ti.com,
-        macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
-Subject: Re: [PATCH v7 1/9] dt-bindings: rockchip-sfc: Bindings for Rockchip
- serial flash controller
-Message-ID: <20210610024350.GA697147@robh.at.kernel.org>
-References: <20210609140412.16058-1-jon.lin@rock-chips.com>
- <20210609140412.16058-2-jon.lin@rock-chips.com>
+        Wed, 9 Jun 2021 22:46:12 -0400
+X-UUID: dadec77041434efda46e582c0246c266-20210610
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=5vOS/Pawx2igF/OjJqE41kmDlZ4xFVZV9zAtz+OMj9U=;
+        b=egw/okHwtRyMn7wM/Ksfw3mYbZCqr3TYKsNgb+CtzNNDPizLeXvuvu/H/Sgt1u23kPW6XIdloQW9COn0D5nk1strAcSgHsfr2YsckBpFfwBN0YioqBC6Vt5W2Tdp4I7FdDg4W2amMp8hNdG17XAlKmnZPhgdRwDeWcNArHzH4XQ=;
+X-UUID: dadec77041434efda46e582c0246c266-20210610
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <james.lo@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1072800198; Thu, 10 Jun 2021 10:44:13 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 10 Jun 2021 10:44:12 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 10 Jun 2021 10:44:12 +0800
+Message-ID: <2a117e5fe9fe0ece39e9165a463082ef42be973f.camel@mediatek.com>
+Subject: Re: [PATCH 2/2] soc: mediatek: pwrap: add pwrap driver for MT8195
+ SoC
+From:   James Lo <james.lo@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Fei Shao <fshao@chromium.org>
+CC:     Sascha Hauer <s.hauer@pengutronix.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Henry Chen <henryc.chen@mediatek.com>
+Date:   Thu, 10 Jun 2021 10:44:12 +0800
+In-Reply-To: <87ab50ff-bae3-b2a3-1e54-642cdce3600d@gmail.com>
+References: <20210602112050.12338-1-james.lo@mediatek.com>
+         <20210602112050.12338-3-james.lo@mediatek.com>
+         <CAC=S1nhUB=6y1SXUvAuhdj69S36FQnp9nr9V65TtS72pxuoRTg@mail.gmail.com>
+         <87ab50ff-bae3-b2a3-1e54-642cdce3600d@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609140412.16058-2-jon.lin@rock-chips.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 10:04:04PM +0800, Jon Lin wrote:
-> From: Chris Morgan <macromorgan@hotmail.com>
-> 
-> Add bindings for the Rockchip serial flash controller. New device
-> specific parameter of rockchip,sfc-no-dma included in documentation.
-> 
-> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
-> ---
-> 
-> Changes in v7:
-> - Fix up the sclk_sfc parent error in rk3036
-> - Unify to "rockchip,sfc" compatible id because all the feature update
->   will have a new IP version, so the driver is used for the SFC IP in
->   all SoCs
-> - Change to use node "sfc" to name the SFC pinctrl group
-> - Add subnode reg property check
-> - Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
-> - Limit max_iosize to 32KB
-> 
-> Changes in v6:
-> - Add support in device trees for rv1126(Declared in series 5 but not
->   submitted)
-> - Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
->   affect interpretation and has been widely used
-> - Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
-> - Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
->   in series 5 but not submitted)
-> - Support SFC ver4 ver5(Declared in series 5 but not submitted)
-> - Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
-> - Change to use devm_spi_alloc_master and spi_unregister_master
-> 
-> Changes in v5:
-> - Add support in device trees for rv1126
-> - Support sfc tx_dual, tx_quad
-> - Simplify the code, such as remove "rockchip_sfc_register_all"
-> - Support SFC ver4 ver5
-> 
-> Changes in v4:
-> - Changing patch back to an "RFC". An engineer from Rockchip
->   reached out to me to let me know they are working on this patch for
->   upstream, I am submitting this v4 for the community to see however
->   I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
->   soon and these are the ones we should pursue for mainlining. Jon's
->   patch series should include support for more hardware than this
->   series.
-> - Clean up documentation more and ensure it is correct per
->   make dt_binding_check.
-> - Add support in device trees for rk3036, rk3308, and rv1108.
-> - Add ahb clock (hclk_sfc) support for rk3036.
-> - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
-> - Change IRQ code to only mark IRQ as handled if it handles the
->   specific IRQ (DMA transfer finish) it is supposed to handle.
-> 
-> Changes in v3:
-> - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
-> - Changed the compatible string from rockchip,sfc to
->   rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
->   driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
->   RV1108 SoCs, and possibly more. However, I am currently only able
->   to test this on a PX30 (an RK3326). The technical reference manuals
->   appear to list the same registers for each device.
-> - Corrected devicetree documentation for formatting and to note these
->   changes.
-> - Replaced the maintainer with Heiko Stuebner and myself, as we will
->   take ownership of this going forward.
-> - Noted that the device (per the reference manual) supports 4 CS, but
->   I am only able to test a single CS (CS 0).
-> - Reordered patches to comply with upstream rules.
-> 
-> Changes in v2:
-> - Reimplemented driver using spi-mem subsystem.
-> - Removed power management code as I couldn't get it working properly.
-> - Added device tree bindings for Odroid Go Advance.
-> 
-> Changes in v1:
-> hanges made in this new series versus the v8 of the old series:
-> - Added function to read spi-rx-bus-width from device tree, in the
->   event that the SPI chip supports 4x mode but only has 2 pins
->   wired (such as the Odroid Go Advance).
-> - Changed device tree documentation from txt to yaml format.
-> - Made "reset" message a dev_dbg from a dev_info.
-> - Changed read and write fifo functions to remove redundant checks.
-> - Changed the write and read from relaxed to non-relaxed when
->   starting the DMA transfer or reading the DMA IRQ.
-> - Changed from dma_coerce_mask_and_coherent to just
->   dma_set_mask_and_coherent.
-> - Changed name of get_if_type to rockchip_sfc_get_if_type.
-> 
->  .../devicetree/bindings/spi/rockchip-sfc.yaml | 88 +++++++++++++++++++
->  1 file changed, 88 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
-> new file mode 100644
-> index 000000000000..42e4198e92af
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
-> @@ -0,0 +1,88 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/rockchip-sfc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip Serial Flash Controller (SFC)
-> +
-> +maintainers:
-> +  - Heiko Stuebner <heiko@sntech.de>
-> +  - Chris Morgan <macromorgan@hotmail.com>
-> +
-> +allOf:
-> +  - $ref: spi-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: rockchip,sfc
+T24gV2VkLCAyMDIxLTA2LTA5IGF0IDEwOjA2ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMDkvMDYvMjAyMSAwOTo1MSwgRmVpIFNoYW8gd3JvdGU6DQo+ID4gT24gV2Vk
+LCBKdW4gMiwgMjAyMSBhdCA3OjIxIFBNIEphbWVzIExvIDxqYW1lcy5sb0BtZWRpYXRlay5jb20+
+DQo+ID4gd3JvdGU6DQo+ID4gPiANCj4gPiA+IEZyb206IEhlbnJ5IENoZW4gPGhlbnJ5Yy5jaGVu
+QG1lZGlhdGVrLmNvbT4NCj4gPiA+IA0KPiA+ID4gTVQ4MTk1IGFyZSBoaWdobHkgaW50ZWdyYXRl
+ZCBTb0MgYW5kIHVzZSBQTUlDX01UNjM1OSBmb3INCj4gPiA+IHBvd2VyIG1hbmFnZW1lbnQuIFRo
+aXMgcGF0Y2ggYWRkcyBwd3JhcCBtYXN0ZXIgZHJpdmVyIHRvDQo+ID4gPiBhY2Nlc3MgUE1JQ19N
+VDYzNTkuDQo+ID4gPiANCj4gPiA+IFNpZ25lZC1vZmYtYnk6IEhlbnJ5IENoZW4gPGhlbnJ5Yy5j
+aGVuQG1lZGlhdGVrLmNvbT4NCj4gPiA+IC0tLQ0KPiA+ID4gIGRyaXZlcnMvc29jL21lZGlhdGVr
+L210ay1wbWljLXdyYXAuYyB8IDM1DQo+ID4gPiArKysrKysrKysrKysrKysrKysrKysrKysrKysr
+DQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDM1IGluc2VydGlvbnMoKykNCj4gPiA+IA0KPiA+ID4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1wbWljLXdyYXAuYw0KPiA+ID4g
+Yi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG1pYy13cmFwLmMNCj4gPiA+IGluZGV4IGU0ZGU3
+NWYzNWMzMy4uOTUyYmM1NTRmNDQzIDEwMDY0NA0KPiA+ID4gLS0tIGEvZHJpdmVycy9zb2MvbWVk
+aWF0ZWsvbXRrLXBtaWMtd3JhcC5jDQo+ID4gPiArKysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9t
+dGstcG1pYy13cmFwLmMNCj4gPiA+IEBAIC05NjEsNiArOTYxLDIzIEBAIHN0YXRpYyBpbnQgbXQ4
+MTgzX3JlZ3NbXSA9IHsNCj4gPiA+ICAgICAgICAgW1BXUkFQX1dBQ1MyX1ZMRENMUl0gPSAgICAg
+ICAgICAgICAgICAgIDB4QzI4LA0KPiA+ID4gIH07DQo+ID4gPiANCj4gPiA+ICtzdGF0aWMgaW50
+IG10ODE5NV9yZWdzW10gPSB7DQo+ID4gPiArICAgICAgIFtQV1JBUF9JTklUX0RPTkUyXSA9ICAg
+ICAgICAgICAgMHgwLA0KPiA+ID4gKyAgICAgICBbUFdSQVBfU1RBVVBEX0NUUkxdID0gICAgICAg
+ICAgIDB4NEMsDQo+ID4gPiArICAgICAgIFtQV1JBUF9USU1FUl9FTl0gPSAgICAgICAgICAgICAg
+MHgzRTQsDQo+ID4gPiArICAgICAgIFtQV1JBUF9JTlRfRU5dID0gICAgICAgICAgICAgICAgMHg0
+MjAsDQo+ID4gPiArICAgICAgIFtQV1JBUF9JTlRfRkxHXSA9ICAgICAgICAgICAgICAgMHg0Mjgs
+DQo+ID4gPiArICAgICAgIFtQV1JBUF9JTlRfQ0xSXSA9ICAgICAgICAgICAgICAgMHg0MkMsDQo+
+ID4gPiArICAgICAgIFtQV1JBUF9JTlQxX0VOXSA9ICAgICAgICAgICAgICAgMHg0NTAsDQo+ID4g
+PiArICAgICAgIFtQV1JBUF9JTlQxX0ZMR10gPSAgICAgICAgICAgICAgMHg0NTgsDQo+ID4gPiAr
+ICAgICAgIFtQV1JBUF9JTlQxX0NMUl0gPSAgICAgICAgICAgICAgMHg0NUMsDQo+ID4gPiArICAg
+ICAgIFtQV1JBUF9XQUNTMl9DTURdID0gICAgICAgICAgICAgMHg4ODAsDQo+ID4gPiArICAgICAg
+IFtQV1JBUF9TV0lORl8yX1dEQVRBXzMxXzBdID0gICAgMHg4ODQsDQo+ID4gPiArICAgICAgIFtQ
+V1JBUF9TV0lORl8yX1JEQVRBXzMxXzBdID0gICAgMHg4OTQsDQo+ID4gPiArICAgICAgIFtQV1JB
+UF9XQUNTMl9WTERDTFJdID0gICAgICAgICAgMHg4QTQsDQo+ID4gPiArICAgICAgIFtQV1JBUF9X
+QUNTMl9SREFUQV0gPSAgICAgICAgICAgMHg4QTgsDQo+ID4gPiArfTsNCj4gPiA+ICsNCj4gPiA+
+ICBzdGF0aWMgaW50IG10ODUxNl9yZWdzW10gPSB7DQo+ID4gPiAgICAgICAgIFtQV1JBUF9NVVhf
+U0VMXSA9ICAgICAgICAgICAgICAgMHgwLA0KPiA+ID4gICAgICAgICBbUFdSQVBfV1JBUF9FTl0g
+PSAgICAgICAgICAgICAgIDB4NCwNCj4gPiA+IEBAIC0xMDY2LDYgKzEwODMsNyBAQCBlbnVtIHB3
+cmFwX3R5cGUgew0KPiA+ID4gICAgICAgICBQV1JBUF9NVDgxMzUsDQo+ID4gPiAgICAgICAgIFBX
+UkFQX01UODE3MywNCj4gPiA+ICAgICAgICAgUFdSQVBfTVQ4MTgzLA0KPiA+ID4gKyAgICAgICBQ
+V1JBUF9NVDgxOTUsDQo+ID4gPiAgICAgICAgIFBXUkFQX01UODUxNiwNCj4gPiA+ICB9Ow0KPiA+
+ID4gDQo+ID4gPiBAQCAtMTUyNSw2ICsxNTQzLDcgQEAgc3RhdGljIGludCBwd3JhcF9pbml0X2Np
+cGhlcihzdHJ1Y3QNCj4gPiA+IHBtaWNfd3JhcHBlciAqd3JwKQ0KPiA+ID4gICAgICAgICAgICAg
+ICAgIGJyZWFrOw0KPiA+ID4gICAgICAgICBjYXNlIFBXUkFQX01UNjg3MzoNCj4gPiA+ICAgICAg
+ICAgY2FzZSBQV1JBUF9NVDgxODM6DQo+ID4gPiArICAgICAgIGNhc2UgUFdSQVBfTVQ4MTk1Og0K
+PiA+ID4gICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+ID4gICAgICAgICB9DQo+ID4gPiANCj4g
+PiA+IEBAIC0yMDI1LDYgKzIwNDQsMTkgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBwbWljX3dyYXBw
+ZXJfdHlwZQ0KPiA+ID4gcHdyYXBfbXQ4MTgzID0gew0KPiA+ID4gICAgICAgICAuaW5pdF9zb2Nf
+c3BlY2lmaWMgPSBwd3JhcF9tdDgxODNfaW5pdF9zb2Nfc3BlY2lmaWMsDQo+ID4gPiAgfTsNCj4g
+PiA+IA0KPiA+ID4gK3N0YXRpYyBzdHJ1Y3QgcG1pY193cmFwcGVyX3R5cGUgcHdyYXBfbXQ4MTk1
+ID0gew0KPiA+ID4gKyAgICAgICAucmVncyA9IG10ODE5NV9yZWdzLA0KPiA+ID4gKyAgICAgICAu
+dHlwZSA9IFBXUkFQX01UODE5NSwNCj4gPiA+ICsgICAgICAgLmFyYl9lbl9hbGwgPSAweDc3N2Ys
+IC8qIE5FRUQgQ09ORklSTSAqLw0KPiA+ID4gKyAgICAgICAuaW50X2VuX2FsbCA9IDB4MTgwMDAw
+LCAvKiBORUVEIENPTkZJUk0gKi8NCj4gPiANCj4gPiBQbGVhc2UgZ2V0IHRoZSBjb25maXJtYXRp
+dmUgdmFsdWVzIGhlcmUgdGhlbiBzZW5kIHRoZSBuZXh0IHBhdGNoLA0KPiA+IHRoYW5rcy4NCj4g
+PiANCj4gDQo+IFllcyBwbGVhc2UuIFlvdSBjYW4gc2VuZCB0aGlzIGFzIGEgZm9sbG93LXVwIHBh
+dGNoLCBvdGhlcndpc2UgSSdkDQo+IG5lZWQgdG8gcmVtb3ZlDQo+IHRoaXMgZnJvbSBteSBxdWV1
+ZSwgYXMgSSBoYXZlIG92ZXJzZWVuIHRoZSBmYWN0IHRoYXQgbm90IGFsbCB2YWx1ZXMNCj4gYXJl
+IGNvbmZpcm1lZC4NCj4gDQo+IFJlZ2FyZHMsDQo+IE1hdHRoaWFzDQoNCkFsbCB2YWx1ZXMgYXJl
+IGNvbmZpcm1lZCBhbmQgc29ycnkgZm9yIEkgZm9yZ2V0IHRvIHJlbW92ZSB0aG9zZQ0KY29tbWVu
+dHMuIENvdWxkIHlvdSBwbGVhc2UgaGVscCB1cyB0byByZW1vdmUgdGhvc2UgY29tbWVudHMgPw0K
+DQpCZWZvcmUgOg0KLmFyYl9lbl9hbGwgPSAweDc3N2YsIC8qIE5FRUQgQ09ORklSTSAqLw0KLmlu
+dF9lbl9hbGwgPSAweDE4MDAwMCwgLyogTkVFRCBDT05GSVJNICovDQoNCkFmdGVyIDoNCi5hcmJf
+ZW5fYWxsID0gMHg3NzdmLA0KLmludF9lbl9hbGwgPSAweDE4MDAwMCwNCg0KTWFueSB0aGFua3MN
+CkphbWVzIExvDQo=
 
-Use 'enum' instead of oneOf+const.
-
-You need an SoC specific compatible.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: Bus Clock
-> +      - description: Module Clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: clk_sfc
-> +      - const: hclk_sfc
-
-Do you have these backwards? 'hclk' is usually an AHB bus clock.
-
-Also, '_sfc' is redundant.
-
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  rockchip,sfc-no-dma:
-> +    description: Disable DMA and utilize FIFO mode only
-> +    type: boolean
-> +
-> +patternProperties:
-> +    "^flash@[0-3]$":
-> +      type: object
-> +      properties:
-> +        reg:
-> +          minimum: 0
-> +          maximum: 3
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/px30-cru.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/power/px30-power.h>
-> +
-> +    sfc: spi@ff3a0000 {
-> +        compatible = "rockchip,sfc";
-> +        reg = <0xff3a0000 0x4000>;
-> +        interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
-> +        clock-names = "clk_sfc", "hclk_sfc";
-> +        pinctrl-0 = <&sfc_clk &sfc_cs &sfc_bus2>;
-> +        pinctrl-names = "default";
-> +        power-domains = <&power PX30_PD_MMC_NAND>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        flash@0 {
-> +            compatible = "jedec,spi-nor";
-> +            reg = <0>;
-> +            spi-max-frequency = <108000000>;
-> +            spi-rx-bus-width = <2>;
-> +            spi-tx-bus-width = <2>;
-> +        };
-> +    };
-> +
-> +...
-> -- 
-> 2.17.1
