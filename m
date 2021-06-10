@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FEA3A2DF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF6C3A2DFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhFJOWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:22:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41182 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231336AbhFJOWG (ORCPT
+        id S231362AbhFJOWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:22:15 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45268 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230267AbhFJOWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:22:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623334810;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vPeoXcqrS3MIzkBmzsxPXiPd+AVSGxxS032+qPVyFQc=;
-        b=T6qdBr3FPLk20HMihxZe2RAAurUjN3YdouD4OHt5s7i1lfUAxBlGQivFhGG47hnZMX4Zer
-        OFCWpWLy8SJDw4kkbAgyvdGLS103JyusaOpgfxVYMEO/knyRLfn/UgtHcybC81Sk+1Ijw6
-        WW4cl0Ki/moQI7j6GLTXqsqFrY+e94U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-4Iz9mnYoM26GMVnPmhD8sw-1; Thu, 10 Jun 2021 10:20:06 -0400
-X-MC-Unique: 4Iz9mnYoM26GMVnPmhD8sw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB3378030A0;
-        Thu, 10 Jun 2021 14:20:01 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.8.122])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 95DAB60C5E;
-        Thu, 10 Jun 2021 14:19:49 +0000 (UTC)
-Date:   Thu, 10 Jun 2021 10:19:47 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH 0/5] cgroup/cpuset: Enable cpuset partition with no load
- balancing
-Message-ID: <YMIfg0Aa2HZQPEy+@lorien.usersys.redhat.com>
-References: <20210603212416.25934-1-longman@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603212416.25934-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Thu, 10 Jun 2021 10:22:13 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15AEENVB055864;
+        Thu, 10 Jun 2021 10:20:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=f+GezljSdiJkbrktAHsZueMoVCCsL7CmeGI26dX+WHM=;
+ b=dDXd2IQPWrl0IYR+bMqeHQOz2uCKga9izEsuCWjDu81+gjvVRPAGk0Ft/fpT1rKtXuh1
+ thpcpJBgg/2HgHqzTPQ4pOnaoxAMwOpy229ksySXnu/DzjYVQKpMeO3Rpa6UA96AU/nU
+ rpjkXVEmrIYJrITYRQ+9e6X8NAYJopIkyaSXt7My+CssWWO2B3zeljbW+sNU4K94kHda
+ cICxFaayG8prY23cHSaJxh92HXDOvucV5C68Q03YhA3iabdUyMlirhhsPevFJiculFNY
+ FKWVusxiaO3jqE01HtfUZqpQbULiJr3DXyoyyQh8TgqYxpFei/XT1rEt8BIpSNBJL5Hv CA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 393man86yc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 10:20:07 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15AEFNvM062503;
+        Thu, 10 Jun 2021 10:20:06 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 393man86xf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 10:20:06 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15AEG7Ds013524;
+        Thu, 10 Jun 2021 14:20:05 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 3900w8avdm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 14:20:05 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15AEJBRe26739060
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 14:19:11 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4BA6D4C05A;
+        Thu, 10 Jun 2021 14:20:01 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 410024C058;
+        Thu, 10 Jun 2021 14:19:59 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.91.59])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Jun 2021 14:19:59 +0000 (GMT)
+Message-ID: <b3c1f5a0a37419fac51d570cd1c8e521f59cee14.camel@linux.ibm.com>
+Subject: Re: ima - wait for tpm load
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>
+Date:   Thu, 10 Jun 2021 10:19:58 -0400
+In-Reply-To: <20210610071633.GA30216@trex>
+References: <20210610071633.GA30216@trex>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 0U3gc6pr1KzWqWTNLPRcz7M3gCbXPNHb
+X-Proofpoint-GUID: rlXwXebxr61XdBXnHvUQfvIM0CGIRX5e
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-10_07:2021-06-10,2021-06-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 spamscore=0 priorityscore=1501
+ bulkscore=0 impostorscore=0 clxscore=1011 suspectscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106100091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Waiman,
+[Cc'ing Jarkko]
 
-On Thu, Jun 03, 2021 at 05:24:11PM -0400 Waiman Long wrote:
-> This patchset makes the following two major changes to the cpuset v2 code:
+On Thu, 2021-06-10 at 09:16 +0200, Jorge Ramirez-Ortiz, Foundries
+wrote:
+> I am enabling IMA on a ZynqMP based platform using an SPI based TPM
+> from Infineon.
 > 
->  Patch 2: Add a new partition state "root-nolb" to create a partition
->  root with load balancing disabled. This is for handling intermitten
->  workloads that have a strict low latency requirement.
+> The SPI TPM driver is built-in but since the IMA is initalized from a
+> late_initcall, IMA never finds the TPM.
 > 
->  Patch 3: Allow partition roots that are not the top cpuset to distribute
->  all its cpus to child partitions as long as there is no task associated
->  with that partition root. This allows more flexibility for middleware
->  to manage multiple partitions.
+> Is there a recomended way to work around this issue?
+> 
+> fio@uz3cg-dwg:~$ dmesg | grep tpm
+> [    3.381181] tpm_tis_spi spi1.1: 2.0 TPM (device-id 0x1B, rev-id 22)
+> [    3.423608] tpm tpm0: A TPM error (256) occurred attempting the self test
+> [    3.430406] tpm tpm0: starting up the TPM manually
+> 
+> fio@uz3cg-dwg:~$ dmesg | grep ima
+> [    3.525741] ima: No TPM chip found, activating TPM-bypass!
+> [    3.531233] ima: Allocated hash algorithm: sha1
 
-Thanks!  This looks like it will be a usable replacement for the functionality
-lost when SD_LOAD_BALANCE went away.
+Lengthening the TPM timeout, executing the TPM self test have been past
+reasons for the TPM not to initialize prior to IMA.
 
+(Missing from this bug report is the kernel version.)
 
-Cheers,
-Phil
+thanks,
 
-> 
-> Patch 4 updates the cgroup-v2.rst file accordingly. Patch 5 adds a test
-> to test the new cpuset partition code.
-> 
-> Waiman Long (5):
->   cgroup/cpuset: Don't call validate_change() for some flag changes
->   cgroup/cpuset: Add new cpus.partition type with no load balancing
->   cgroup/cpuset: Allow non-top parent partition root to distribute out
->     all CPUs
->   cgroup/cpuset: Update description of cpuset.cpus.partition in
->     cgroup-v2.rst
->   kselftest/cgroup: Add cpuset v2 partition root state test
-> 
->  Documentation/admin-guide/cgroup-v2.rst       |  19 ++-
->  kernel/cgroup/cpuset.c                        | 124 +++++++++++----
->  tools/testing/selftests/cgroup/Makefile       |   2 +-
->  .../selftests/cgroup/test_cpuset_prs.sh       | 141 ++++++++++++++++++
->  4 files changed, 247 insertions(+), 39 deletions(-)
->  create mode 100755 tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> 
-> -- 
-> 2.18.1
-> 
-
--- 
+Mimi
 
