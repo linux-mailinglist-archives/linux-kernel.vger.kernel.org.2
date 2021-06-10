@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5103A224D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC2B3A2251
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhFJCkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 22:40:16 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:39659 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229557AbhFJCkN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 22:40:13 -0400
-X-UUID: ef50c15be2334802b7cdca957a4e26cf-20210610
-X-UUID: ef50c15be2334802b7cdca957a4e26cf-20210610
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 702430866; Thu, 10 Jun 2021 10:38:15 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 10 Jun 2021 10:38:14 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 10 Jun 2021 10:38:14 +0800
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH 0/3] Mediatek MT8195 power domain support
-Date:   Thu, 10 Jun 2021 10:36:11 +0800
-Message-ID: <20210610023614.5375-1-chun-jie.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S229914AbhFJCpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 22:45:19 -0400
+Received: from m12-15.163.com ([220.181.12.15]:49719 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229557AbhFJCpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 22:45:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=w8moP
+        c3hHLCFUQuSedhYS174W2JUhWhhiPc7iombNd0=; b=Ob3bPwE29KUeYSMy80hYv
+        5YwzPzLBYIvSB6kNJXyMRKRS+fTNkU+/5n7SNrB7BIvASp7+Zriq9gnBKA1Nl/40
+        qouRpFEGjF39ru7uNVVXK1tvB85eeMYjNYT3SufFap+aNuYG2HkdxdDIeyQBx+j9
+        rvUxGpCe8YJCfT1IyFUpeA=
+Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
+        by smtp11 (Coremail) with SMTP id D8CowADn75+te8FgtmN8AA--.6S2;
+        Thu, 10 Jun 2021 10:42:34 +0800 (CST)
+From:   zuoqilin1@163.com
+To:     daniel@zonque.org, haojian.zhuang@gmail.com,
+        robert.jarzmik@free.fr, perex@perex.cz, tiwai@suse.com
+Cc:     linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
+Subject: [PATCH] sound/arm: Remove unnecessary variables
+Date:   Thu, 10 Jun 2021 10:40:53 +0800
+Message-Id: <20210610024053.1217-1-zuoqilin1@163.com>
+X-Mailer: git-send-email 2.28.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowADn75+te8FgtmN8AA--.6S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7XF4DJF4kXryDWw47Cry8Zrb_yoW3Zwb_ta
+        yIqF4kWryIvw1Svw1fAw15XFW0qF47uF4rWr10kF15ZF45X39Y9ryDJr17uryFva109r43
+        W3y2qry3Cr9a9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1ZNVJUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiTgCsiVUDKBc7vgABsG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds power domain support for MT8195
-and is based on 5.13-rc3.
+From: zuoqilin <zuoqilin@yulong.com>
 
-chun-jie.chen (3):
-  soc: mediatek: pm-domains: Move power status offset to power domain
-    data
-  dt-bindings: power: Add MT8195 power domains
-  soc: mediatek: pm-domains: Add support for mt8195
+There is no need to define the variable "ret" to receive.
 
- .../power/mediatek,power-controller.yaml      |   2 +
- drivers/soc/mediatek/mt8167-pm-domains.h      |  16 +-
- drivers/soc/mediatek/mt8173-pm-domains.h      |  22 +-
- drivers/soc/mediatek/mt8183-pm-domains.h      |  32 +-
- drivers/soc/mediatek/mt8192-pm-domains.h      |  44 +-
- drivers/soc/mediatek/mt8195-pm-domains.h      | 738 ++++++++++++++++++
- drivers/soc/mediatek/mtk-pm-domains.c         |  12 +-
- drivers/soc/mediatek/mtk-pm-domains.h         |   8 +-
- include/dt-bindings/power/mt8195-power.h      |  51 ++
- include/linux/soc/mediatek/infracfg.h         | 103 +++
- 10 files changed, 1013 insertions(+), 15 deletions(-)
- create mode 100644 drivers/soc/mediatek/mt8195-pm-domains.h
- create mode 100644 include/dt-bindings/power/mt8195-power.h
+Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+---
+ sound/arm/pxa2xx-ac97.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---
-2.18.0
+diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+index 6322e639..a67e668 100644
+--- a/sound/arm/pxa2xx-ac97.c
++++ b/sound/arm/pxa2xx-ac97.c
+@@ -47,9 +47,7 @@ static unsigned short pxa2xx_ac97_legacy_read(struct snd_ac97 *ac97,
+ static void pxa2xx_ac97_legacy_write(struct snd_ac97 *ac97,
+ 				     unsigned short reg, unsigned short val)
+ {
+-	int __always_unused ret;
+-
+-	ret = pxa2xx_ac97_write(ac97->num, reg, val);
++	pxa2xx_ac97_write(ac97->num, reg, val);
+ }
+ 
+ static const struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
+-- 
+1.9.1
 
