@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F35273A2269
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CDB3A2266
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhFJC5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 22:57:07 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:54661
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229557AbhFJC5G (ORCPT
+        id S229874AbhFJC4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 22:56:37 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:34411 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhFJC4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 22:57:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=jn/EjmGGckleuJt8CqtNRaFp6JLoR8YiMQkH65xsvOo=; b=L
-        D39/abMdtrtUctqW7l3M14ZzSmpr7mrXxkpoHfEWlT8wxJJxRw24JnMbJ2Aja71x
-        xta/2cEC9bx2X0B2kT1yGU52fwE418Jl3oOVshEPJ8HUW5BqgVdD4Uq8hbUDS0u4
-        6pfvTfDpS0y+yktfkwa5itG2kEADsj1sEGtJAaQVio=
-Received: from localhost.localdomain (unknown [10.162.161.90])
-        by app2 (Coremail) with SMTP id XQUFCgC3vSXtfsFgGs1UAw--.39302S3;
-        Thu, 10 Jun 2021 10:54:37 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH v2] iommu/arm-smmu: Fix arm_smmu_device refcount leak when arm_smmu_rpm_get fails
-Date:   Thu, 10 Jun 2021 10:54:29 +0800
-Message-Id: <1623293672-17954-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XQUFCgC3vSXtfsFgGs1UAw--.39302S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJryxJw1kuFWfCr47Ar1DKFg_yoW8GrW5pw
-        4UWr90vr1kWa4UtFykJa1vvF98W3y8JFyqyrs5Gas8Zr1UJa45Kr13t34agrykCrWkJa13
-        Xwn2qw43CFn8ArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9l14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
-        6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2
-        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-        6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-        s7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
-        4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUFYFADUUUU
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        Wed, 9 Jun 2021 22:56:36 -0400
+Received: by mail-oi1-f173.google.com with SMTP id u11so523935oiv.1;
+        Wed, 09 Jun 2021 19:54:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pFQ0HVskYN+r9fzWJAQa0wlVzPlvU5e2ueuLh14hP8M=;
+        b=jsTLmsVjm1qdVnX9FW1ukRqOCgJKXFP/VbhwusUHEsH5X7s1iD/14xZeQYpRCEOFj6
+         oGbMpJ/ZXsxCmlC1ScXzDYL6h08qkh0f6XYdA6aJbZeeyEyc90f/xho7sO1T6Ne0vgJV
+         CSAtTVc3yEkVTMEElRWKB7KDMxlnbfKOWDxXUOyyVuSdiH5sMkX1FrPdbXf/tNVJXT4f
+         0SD5l7FCkX6tluPrrZxV6NvnDFWYBenHUG5BKiQwm9QRc1rTLYZlTmksBSImCVAhKMq8
+         YuBfzwYTLjb3VGq8HxAkBInKhEmEu2dZb7YkExLZlOlMNZrjLN0MJX2A2fDNrjOHIyUV
+         lGyw==
+X-Gm-Message-State: AOAM532szTU0JBTvx7lhj/J9vX+ftPq7hpSlx+PUSmNSsg6ya3DZPFzm
+        MEgFA2mOTzAk2hs+5TKA1w==
+X-Google-Smtp-Source: ABdhPJzEOtUvmJdHWhy3NhrpJq/wqcfDkuFKSxjGhoTzmi0X3cUVs6H8OeD4rNntIdtNhfhTlSV0QA==
+X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr8184047oih.105.1623293681070;
+        Wed, 09 Jun 2021 19:54:41 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r83sm320000oih.48.2021.06.09.19.54.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 19:54:39 -0700 (PDT)
+Received: (nullmailer pid 729105 invoked by uid 1000);
+        Thu, 10 Jun 2021 02:54:38 -0000
+Date:   Wed, 9 Jun 2021 21:54:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, f.fainelli@gmail.com,
+        Jisheng.Zhang@synaptics.com, linux-imx@nxp.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 net-next 1/4] dt-bindings: net: add dt binding for
+ realtek rtl82xx phy
+Message-ID: <20210610025438.GA720819@robh.at.kernel.org>
+References: <20210608031535.3651-1-qiangqing.zhang@nxp.com>
+ <20210608031535.3651-2-qiangqing.zhang@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608031535.3651-2-qiangqing.zhang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arm_smmu_rpm_get() invokes pm_runtime_get_sync(), which increases the
-refcount of the "smmu" even though the return value is less than 0.
+On Tue, Jun 08, 2021 at 11:15:32AM +0800, Joakim Zhang wrote:
+> Add binding for realtek rtl82xx phy.
+> 
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> ---
+>  .../bindings/net/realtek,rtl82xx.yaml         | 45 +++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/realtek,rtl82xx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/realtek,rtl82xx.yaml b/Documentation/devicetree/bindings/net/realtek,rtl82xx.yaml
+> new file mode 100644
+> index 000000000000..bb94a2388520
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/realtek,rtl82xx.yaml
+> @@ -0,0 +1,45 @@
+> +# SPDX-License-Identifier: GPL-2.0+
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/realtek,rtl82xx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Realtek RTL82xx PHY
+> +
+> +maintainers:
+> +  - Andrew Lunn <andrew@lunn.ch>
+> +  - Florian Fainelli <f.fainelli@gmail.com>
+> +  - Heiner Kallweit <hkallweit1@gmail.com>
+> +
+> +description:
+> +  Bindings for Realtek RTL82xx PHYs
+> +
+> +allOf:
+> +  - $ref: ethernet-phy.yaml#
+> +
+> +properties:
+> +  realtek,clkout-disable:
+> +    type: boolean
+> +    description:
+> +      Disable CLKOUT clock, CLKOUT clock default is enabled after hardware reset.
+> +
+> +
 
-The reference counting issue happens in some error handling paths of
-arm_smmu_rpm_get() in its caller functions. When arm_smmu_rpm_get()
-fails, the caller functions forget to decrease the refcount of "smmu"
-increased by arm_smmu_rpm_get(), causing a refcount leak.
+Extra blank line.
 
-Fix this issue by calling pm_runtime_resume_and_get() instead of
-pm_runtime_get_sync() in arm_smmu_rpm_get(), which can keep the refcount
-balanced in case of failure.
+> +  realtek,aldps-enable:
+> +    type: boolean
+> +    description:
+> +      Enable ALDPS mode, ALDPS mode default is disabled after hardware reset.
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    mdio {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        ethphy1: ethernet-phy@1 {
+> +                reg = <1>;
+> +                realtek,clkout-disable;
+> +                realtek,aldps-enable;
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- drivers/iommu/arm/arm-smmu/arm-smmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The schema here will never be applied because there is nothing to match 
+on to determine which nodes it is valid. This should have a compatible 
+(because ethernet phys are not special).
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index 3a3847277320..1a647e0ea3eb 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -74,7 +74,7 @@ static bool using_legacy_binding, using_generic_binding;
- static inline int arm_smmu_rpm_get(struct arm_smmu_device *smmu)
- {
- 	if (pm_runtime_enabled(smmu->dev))
--		return pm_runtime_get_sync(smmu->dev);
-+		return pm_runtime_resume_and_get(smmu->dev);
- 
- 	return 0;
- }
--- 
-2.7.4
-
+Rob
