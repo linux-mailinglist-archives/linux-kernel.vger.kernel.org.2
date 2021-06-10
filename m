@@ -2,117 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C30E3A2EA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCC73A2E90
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbhFJOwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:52:20 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:8321 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231336AbhFJOwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:52:16 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G16Mt6NybzBBTQ;
-        Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id IgLzEJiZ-597; Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G16Mt5QJzzBB9r;
-        Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 375368B81B;
-        Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id DzO9RJN6YzIB; Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B07968B80F;
-        Thu, 10 Jun 2021 16:50:17 +0200 (CEST)
-Subject: Re: [PATCH] btrfs: Disable BTRFS on platforms having 256K pages
-To:     Chris Mason <clm@fb.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
-References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
- <185278AF-1D87-432D-87E9-C86B3223113E@fb.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
-Date:   Thu, 10 Jun 2021 16:50:09 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231272AbhFJOuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230298AbhFJOuP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:50:15 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8568C061574;
+        Thu, 10 Jun 2021 07:48:06 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso6727390wmh.4;
+        Thu, 10 Jun 2021 07:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=D/ihjXO4RqE7jX7suSjDihZYCxFd3H0ms2fk8B+1vrY=;
+        b=r9aCM9AHb8JpMAdzpnuIG/pJhJkaOVrMX09Mz+tP7L5ahdd51MuGMJBZ7ltUxxNN32
+         kkmrAarwMbcwPlLQMDF9/+2/d5CudUoTqWLfobzSqEKEWITkDQnUpgq6I/bPmWAiUJxF
+         cHQwkZn6oYYYyENrQuX3xtQMLeMRhIILcyapldrzkApmrwTTJRRxb/EZb0WKv1+agi6y
+         Kzuv8ntPYyRGyNFesU+HYqB1cbFErbX13tEXxUOfRnSOGMF8DZPz2nGrIySRF86guCaj
+         eMy1FFOTD/L3mGHT/9usARui+NqlbvMZ1+TRBwO3liFoiUBXvwFwUUuNSvSQjo4+w/qT
+         NlGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=D/ihjXO4RqE7jX7suSjDihZYCxFd3H0ms2fk8B+1vrY=;
+        b=X44iHVIQK7wE2KNKA0QP6/p/W8fm1BnOq5P/b3XU/jyFkELBppEKdi1hIof/w4qwCG
+         NPi90siFfZMM9Bd38cTzXjnCvsDoVYBlhu39T+h3yA996l2s6y/zm+KQBjsln/BqLGdQ
+         PkMmmWL0JROldglHXmIGlpYP02xDjUFJFf47W0/gc7PHtY01brNGECLUiTZMQb7UxVr8
+         LRDH4xrnt6tI20EDHI0kHk7b+Waq00lSJ6ynC7jHuIIK+8/Tsg/lY20qOSn/TS7WZL7H
+         7hTb+WWV+/+GaZiNKob2uWWqK1mgDwvGvCbk7/h+ZDwUHactIctsETEcMV027PBnxL/7
+         REYA==
+X-Gm-Message-State: AOAM532O3ZdFfwk6IoxvHAmr9GpenRyu8bzLdblzCVwR5Np7g2FXcbEk
+        xmoC9GlNxlMQafFQSdnzQIu9I6I6kgQ+1IUyz7I=
+X-Google-Smtp-Source: ABdhPJxs+Nw9AecB4n5d4NRAI3Sze1CREk1iqKnLbtL7oryF5BI7b2gh+Dmm/XxLsQJnB6KluTS30+Rjsn/w3RtRtPA=
+X-Received: by 2002:a05:600c:1c84:: with SMTP id k4mr15648966wms.164.1623336485064;
+ Thu, 10 Jun 2021 07:48:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <185278AF-1D87-432D-87E9-C86B3223113E@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <d60373362ed41b49f763cdb46c9973e2@codeaurora.com>
+In-Reply-To: <d60373362ed41b49f763cdb46c9973e2@codeaurora.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 10 Jun 2021 07:51:58 -0700
+Message-ID: <CAF6AEGui16Q9uDrkXNuDsi0Do-ZNDJa9aQGWhqG_tjV7O2DReg@mail.gmail.com>
+Subject: Re: Re : Query on UFS Lun detection
+To:     vhiren@codeaurora.com
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        adrian.hunter@intel.com, Rob Herring <robh+dt@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Asutosh Das <asutoshd@codeaurora.org>, stummala@codeaurora.org,
+        sayalil@codeaurora.org, rampraka@codeaurora.org,
+        vbadigan@codeaurora.org, Stephen Boyd <sboyd@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-mmc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        linux-mmc-owner@vger.kernel.org, nitirawa@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 10, 2021 at 6:28 AM <vhiren@codeaurora.com> wrote:
+>
+> Hi Community,
+>
+> We are using UFS as a boot device, and we encountered an error,
+> mentioned below while booting through UFS.
+>
+>
+> APPS Crash - Kernel panic - not syncing: VFS: Unable to mount root fs on
+> unknown-block(8,7)
+>
+> Here in Kernel command line we are passing "root=3Dsda7", this is our
+> Filesystem partition to be mounted.
+>
+> While debugging the same we observed the partition which is suppose to
+> be mounted as Filesystem is not enumerated  itself.
+> The reason behind not enumerating of partition is, the other Lun got
+> detected first instead of one which is having FS partition.
 
+Use the UUID or PARTUUID instead, ie:
 
-Le 10/06/2021 à 15:54, Chris Mason a écrit :
-> 
->> On Jun 10, 2021, at 1:23 AM, Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
->>
->> With a config having PAGE_SIZE set to 256K, BTRFS build fails
->> with the following message
->>
->> include/linux/compiler_types.h:326:38: error: call to '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
->>
->> BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
->> 256K pages at the time being.
->>
->> There are two platforms that can select 256K pages:
->> - hexagon
->> - powerpc
->>
->> Disable BTRFS when 256K page size is selected.
->>
-> 
-> We’ll have other subpage blocksize concerns with 256K pages, but this BTRFS_MAX_COMPRESSED #define is arbitrary.  It’s just trying to have an upper bound on the amount of memory we’ll need to uncompress a single page’s worth of random reads.
-> 
-> We could change it to max(PAGE_SIZE, 128K) or just bump to 256K.
-> 
+  root=3DUUID=3D13846802-672b-4a5d-9f0a-22d13957add3
 
-But if 256K is problematic in other ways, is it worth bumping BTRFS_MAX_COMPRESSED to 256K ?
+(but you'd have to check the actual UUID of your partition with a tool
+like blkid
 
-David, in below mail, said that 256K support would require deaper changes. So disabling BTRFS 
-support seems the easiest solution for the time being, at least for Stable (I forgot the Fixes: tag 
-and the CC: to stable).
+BR,
+-R
 
-On powerpc, 256k pages is a corner case, it requires customised binutils, so I don't think disabling 
-BTRFS is a issue there. For hexagon I don't know.
-
-
-https://lkml.org/lkml/2021/6/9/978
-
-Le 09/06/2021 à 17:22, David Sterba a écrit :
- > On Wed, Jun 09, 2021 at 04:01:20PM +0200, Christophe Leroy wrote:
- >> Le 09/06/2021 à 15:55, kernel test robot a écrit :
- >>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
- >>> head:   368094df48e680fa51cedb68537408cfa64b788e
- >>> commit: 4eeef098b43242ed145c83fba9989d586d707589 powerpc/44x: Remove STDBINUTILS kconfig option
- >>> date:   4 months ago
- >>> config: powerpc-randconfig-r012-20210609 (attached as .config)
- >>> compiler: powerpc-linux-gcc (GCC) 9.3.0
- >>
- >> That's a BTRFS issue, and not directly linked to the above mentioned commit. Before that commit the
- >> problem was already present.
- >>
- >> Problem is that with 256k PAGE_SIZE, following BUILD_BUG() pops up:
- >>
- >> BUILD_BUG_ON((BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0)
- >
- > A 256K page is a problem for btrfs, until now I was not even aware
- > there's an architecture supporting that so. That the build fails is
- > probably best thing. Maximum metadata nodesize supported is 64K and
- > having that on a 256K page would need deeper changes, no top of the
- > currently developed subpage changes (that do 4K blocks on 64K pages).
- >
+> We are using async probe, hence we know the detection will happen in
+> async way,
+>
+>
+> In working case :  it looks like below
+>
+> sd 0:0:0:0: sda1 sda2 sda3 sda4 =E2=80=A6..sda8
+>
+> sd 0:0:0:1: sdb1 sdb2
+> Here, sd 0:0:0:0 Lun got detected first and enumerated as "sdaN", we
+> have FS partition as "sda7" and so we don=E2=80=99t see above mentioned e=
+rror.
+>
+>
+> In non working case : it looks like below
+>
+> sd 0:0:0:0: sdb1 sdb2 sdb3 sdb4 =E2=80=A6..sdb8
+>
+> sd 0:0:0:1: sda1 sda2
+> Here, sd 0:0:0:1 Lun got detected first and enumerated as "sdaN" but we
+> don=E2=80=99t have FS partition in this Lun. Instead FS partition now bec=
+ame
+> "sdb7".
+>
+>
+> Observation here is, which ever Lun gets detected first it will have
+> "sda" enumeration and so on.
+> However, sdx=E2=80=99s driver scsi/sd.c uses async probe to improve perfo=
+rmance,
+> meaning sdx disks are created in parallel. Whoever calls
+> device_add_disk() first becomes sda, the next become sdb=E2=80=A6.
+>
+>
+> Is there any way, where we can fix this in the Lun detection part of
+> code?
+>
+> Thank You,
+> Regards,
+> Hiren Gohel
