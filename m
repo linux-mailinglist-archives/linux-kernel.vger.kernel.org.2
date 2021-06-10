@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059513A24C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB043A24BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhFJGwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:52:50 -0400
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:35609 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhFJGwr (ORCPT
+        id S229989AbhFJGwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhFJGwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:52:47 -0400
-Received: by mail-lf1-f51.google.com with SMTP id i10so1450467lfj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:50:51 -0700 (PDT)
+        Thu, 10 Jun 2021 02:52:37 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5443EC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 23:50:26 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id e18so14168264qvm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:50:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=67pgjCx8vmxJvqmbawagxHeBDG9F0WOXi380k50exuo=;
-        b=po0rea81p6koLdoj90+BpTqr297m34vqZiDHl35MFKN5HmBo/cINMskvg8Rj1AiXCD
-         P/mX6NsU8ilK5hyP7AW2r0V1bwvN2iVAetVFInJHL3ulhputAR1fbbnR8g/j+kgSLQRN
-         iXciNRcfQNWXmevrvU/V5C2Ds7I+9bLqYeVGkHSoUKiLnS7CZ/zFob00D4OF3VknComV
-         +qQqQK4kXsp5qjvVU5KnImu/nnQ+tNK8McFDo2o+UIVNatGM0GWVemlGxwcDZQAGmctV
-         Yi8SxUDNO9ks7NLikMTm/51IqsXk6A361yvzd5VwX3BuQ5o0Bb4YtgNKJRMi3H4g+gpU
-         x25A==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=MW3P4dEVpzQaKkCia9N+0MaZJYQT+2IAhJVUZg7cfs8=;
+        b=Do8aT0u+DdZZq8kaOVvB6kgFwGS6mToQyGIoS2wWY4uZ3M/EtH9HIcV12t4Dntbu4B
+         GSIWT43fzAd1hVrjp33IgBv/via5r3NIF7MXRDjCH4X2pxhRMwAV7HcouDjLk6kIda0G
+         C77fRSpITnyPd2/XRz/RJyywcVeEZYG/HfryDo45NoUasSyLQPKi1euqRC+PfEg+vddE
+         PwCwcq6Iqa3GiwU4B6VYphKpI242PJS34F4JI0jv5njbSjFOXldXBll/yYyqDWeVRGb4
+         STufu8xuwTwB7QL2nHvVLIOTQ95uumyfHuejvqKOZ/YfEufUrAtwIpjTPqeUgPnIP4BZ
+         2yLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=67pgjCx8vmxJvqmbawagxHeBDG9F0WOXi380k50exuo=;
-        b=OR+KsFU+Z+sJ9/i0Azm7XmweXMdcUWi6KA+WxWVleyAO5+tn48VUymtlI4sQkeG4SF
-         jcw2AQMTDkTdmjy0YVcvMx7dT4WFY1XF7qEoUfMdvm3lk/waFIoyYeHDwVaeTGHaWsZM
-         Wu6OTK7xCFN+32taMu/I30cP0HtOuvcU1tkJwamjpYPXFwKn5Y1P3GwvTvuEA7id61E9
-         cnN909+D27CexYO81x1NxpQPE6Z76C6cm8LpetaISb8zx3lGzvztkuQA+WuhqVftKu+5
-         +lY2XVxsMWzoejLM73TVnKiF+6+I1782vj1nR1HFaYzEj9D5o4LVqocUDLoCjiDMMfvL
-         mK5A==
-X-Gm-Message-State: AOAM530PW0lfkam5WbM8EErGy0s6aXQO3NilC9+AO5CG65i7vYOHEinJ
-        rV9R5xZtwjbinWfOI9kcRWPWbB3aQ4RoSf/4ZBcRQg==
-X-Google-Smtp-Source: ABdhPJz6FaRyzkyT5JROY4fDMVlcASzRb2xRU5K+8ShUxTZ08+8Qwr8pCgPa1FkXe3u+pAUYQeCllBc3ABd61aq8ik8=
-X-Received: by 2002:a05:6512:3b84:: with SMTP id g4mr969823lfv.277.1623307791024;
- Wed, 09 Jun 2021 23:49:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=MW3P4dEVpzQaKkCia9N+0MaZJYQT+2IAhJVUZg7cfs8=;
+        b=mafG01UpPVUoCLctULj3lZ2B7pnBlyob5HJo1ydJyD27nUrGb3a0Te2xQDy0o4vXrM
+         Wjc4FZbXNS6LloQJN/slOMJwXiTQxPjtftRxRT3CLjtgw+RHpcKvedqN3vC4OJFBfuXY
+         NpX69BQPQZvxh5raLGImvpiiCd7+UxBaZi9lNQY050fss70SzM/cyDLg5OSG8H0+cn5X
+         DXRS1Y1aFVB23l9ik7b3SRzTZxP4EPdfClaObjCxDirgNg90Er5+EzBsxkNmy/aqlAtP
+         OxzpSvZWCUlibxfsbMo/0u4F2GXFFT126m+cg/2wtPMNYtc/7hFYJ6tqhHNDrNP+drdE
+         7jGA==
+X-Gm-Message-State: AOAM532S/qtJHWHrXXZj6Xn8RkZshC7Hm2A6s+x6d6RHuRy+N85AX1vv
+        xBTMIfglpJVcDQ7zqCyJbF/pVA==
+X-Google-Smtp-Source: ABdhPJxZswruLW9txlbS5dufC/7Inh5U9BCmjlx6PQDp97tfhKPQgM3yJjJJ09wVZQfRUJlz0FRbqw==
+X-Received: by 2002:ad4:5fc7:: with SMTP id jq7mr3417734qvb.41.1623307825295;
+        Wed, 09 Jun 2021 23:50:25 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 85sm1678043qko.14.2021.06.09.23.50.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 23:50:25 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 23:50:23 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 09/11] mm: page_vma_mapped_walk(): get vma_address_end()
+ earlier
+In-Reply-To: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
+Message-ID: <4542b34d-862f-7cb4-bb22-e0df6ce830a2@google.com>
+References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
 MIME-Version: 1.0
-References: <20210604102314.697749-1-odin@uged.al> <YL+dTtsCtZjMeZWn@blackbook>
-In-Reply-To: <YL+dTtsCtZjMeZWn@blackbook>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 10 Jun 2021 08:49:39 +0200
-Message-ID: <CAKfTPtBEZZo9fHDxe7viLyZmCe=4NTLLtBFyWM_UuJ1nmqxGvA@mail.gmail.com>
-Subject: Re: [PATCH v4] sched/fair: Correctly insert cfs_rq's to list on unthrottle
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 at 18:39, Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
->
-> Hello.
->
-> On Fri, Jun 04, 2021 at 12:23:14PM +0200, Odin Ugedal <odin@uged.al> wrot=
-e:
->
-> > @@ -4719,8 +4738,8 @@ static int tg_unthrottle_up(struct task_group *tg=
-, void *data)
-> >               cfs_rq->throttled_clock_task_time +=3D rq_clock_task(rq) =
--
-> >                                            cfs_rq->throttled_clock_task=
-;
-> >
-> > -             /* Add cfs_rq with already running entity in the list */
-> > -             if (cfs_rq->nr_running >=3D 1)
-> > +             /* Add cfs_rq with load or one or more already running en=
-tities to the list */
-> > +             if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
-> >                       list_add_leaf_cfs_rq(cfs_rq);
-> >       }
->
-> Can there be a decayed cfs_rq with positive nr_running?
-> I.e. can the condition be simplified to just the decayed check?
+page_vma_mapped_walk() cleanup: get THP's vma_address_end() at the start,
+rather than later at next_pte.  It's a little unnecessary overhead on the
+first call, but makes for a simpler loop in the following commit.
 
-Yes, nothing prevent a task with a null load to be enqueued on a
-throttle cfs as an example
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Cc: <stable@vger.kernel.org>
+---
+ mm/page_vma_mapped.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
->
-> (I'm looking at account_entity_enqueue() but I don't know if an entity's
-> weight can be zero in some singular cases.)
->
-> Thanks,
-> Michal
+diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+index 006f4814abbc..f6839f536645 100644
+--- a/mm/page_vma_mapped.c
++++ b/mm/page_vma_mapped.c
+@@ -171,6 +171,15 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+ 		return true;
+ 	}
+ 
++	/*
++	 * Seek to next pte only makes sense for THP.
++	 * But more important than that optimization, is to filter out
++	 * any PageKsm page: whose page->index misleads vma_address()
++	 * and vma_address_end() to disaster.
++	 */
++	end = PageTransCompound(page) ?
++		vma_address_end(page, pvmw->vma) :
++		pvmw->address + PAGE_SIZE;
+ 	if (pvmw->pte)
+ 		goto next_pte;
+ restart:
+@@ -239,10 +248,6 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+ 		if (check_pte(pvmw))
+ 			return true;
+ next_pte:
+-		/* Seek to next pte only makes sense for THP */
+-		if (!PageTransHuge(page))
+-			return not_found(pvmw);
+-		end = vma_address_end(page, pvmw->vma);
+ 		do {
+ 			pvmw->address += PAGE_SIZE;
+ 			if (pvmw->address >= end)
+-- 
+2.26.2
+
