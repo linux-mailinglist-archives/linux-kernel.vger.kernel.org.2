@@ -2,87 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59ED3A2D7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73CA3A2D7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231284AbhFJNyd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Jun 2021 09:54:33 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:52316 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbhFJNyb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:54:31 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 48A4C6108195;
-        Thu, 10 Jun 2021 15:52:33 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id mdb_2wIHQ5WY; Thu, 10 Jun 2021 15:52:33 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id DB88961081AE;
-        Thu, 10 Jun 2021 15:52:32 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ZFDMESNVU0ar; Thu, 10 Jun 2021 15:52:32 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id B7A756108195;
-        Thu, 10 Jun 2021 15:52:32 +0200 (CEST)
-Date:   Thu, 10 Jun 2021 15:52:32 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Pintu Agarwal <pintu.ping@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Message-ID: <361047717.98543.1623333152629.JavaMail.zimbra@nod.at>
-In-Reply-To: <CAOuPNLhPiVgi5Q343VP-p7vwBtA1-A5jt8Ow4_2eF4ZwsiA+eQ@mail.gmail.com>
-References: <CAOuPNLiRDZ9M4n3uh=i6FpHXoVEWMHpt0At8YaydrOM=LvSvdg@mail.gmail.com> <295072107.94766.1623262940865.JavaMail.zimbra@nod.at> <CAOuPNLhPiVgi5Q343VP-p7vwBtA1-A5jt8Ow4_2eF4ZwsiA+eQ@mail.gmail.com>
-Subject: Re: qemu: arm: mounting ubifs using nandsim on busybox
+        id S231302AbhFJNzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:55:15 -0400
+Received: from relais.etsmtl.ca ([142.137.1.25]:54158 "EHLO relais.etsmtl.ca"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230329AbhFJNzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 09:55:13 -0400
+Content-Type: text/plain; charset="UTF-8"
+DKIM-Signature: v=1; a=rsa-sha256; d=etsmtl.ca; s=bbb; c=relaxed/relaxed;
+        t=1623333196; h=from:subject:to:date:ad-hoc;
+        bh=j3oCbljVfV3a5vZ7w621ARkBBGcGHNysssfAUWTOSB8=;
+        b=Ac12XPsIJ9B3G3Otax9h+AYRd+yfUEwK/EpqYL8GmoMtWkU++OAvdtlXoMQLVYLw3UYDNa2RiNx
+        Z14pzLePCaHzqKnTPMz2WBQj2QGVCuBJlkw6HqcvPQ2Dar53oVT2k6NGxKXFQB8YDckm0TRdNY0lv
+        +La8cUAXVuHb7W9oRoc=
+X-Gm-Message-State: AOAM532kQkpUghnIxewNTJOhNB9h6Xpt7wPsJrFwbowrELl1rqxg8X5z
+        WUsodlSm1cuEZXiR/mT2FG2CwM3bwB5U9l/G83s=
+X-Google-Smtp-Source: ABdhPJzal31zP8KEgxyDpJyVOOU/6Ae9/Vny59ZdLcQpjpXZV2H9rt6ezM6+/iqFE0LlNEnlsJ8o9vX+51/M2ujY/QI=
+X-Received: by 2002:aca:3bc5:: with SMTP id i188mr3573052oia.72.1623333196029;
+ Thu, 10 Jun 2021 06:53:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: qemu: arm: mounting ubifs using nandsim on busybox
-Thread-Index: FCBZQEPb3fuCAU5mJvWAQ23NQZd17Q==
+References: <20210604161023.1498582-1-pascal.giard@etsmtl.ca>
+ <YLsdEtbAWJxLB+GF@kroah.com> <CAJNNDmk7z=aJtx00C+8kpBOk0j_XVOk2fDMG9Xf9Na_ChXM2OA@mail.gmail.com>
+ <YMGhotmI1kHFe3gL@kroah.com>
+In-Reply-To: <YMGhotmI1kHFe3gL@kroah.com>
+From:   Pascal Giard <pascal.giard@etsmtl.ca>
+Date:   Thu, 10 Jun 2021 09:53:04 -0400
+X-Gmail-Original-Message-ID: <CAJNNDmmz60qn+AXWD7423T62DoO-gC8KjrtLmfyR0o4vWzhZfw@mail.gmail.com>
+Message-ID: <CAJNNDmmz60qn+AXWD7423T62DoO-gC8KjrtLmfyR0o4vWzhZfw@mail.gmail.com>
+Subject: Re: [PATCH] HID: sony: fix freeze when inserting ghlive ps3/wii dongles
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>,
+        Daniel Nguyen <daniel.nguyen.1@ens.etsmtl.ca>
+X-Originating-IP: [142.137.250.50]
+X-ClientProxiedBy: FacteurA.ad.etsmtl.ca (10.162.28.14) To
+ FacteurB.ad.etsmtl.ca (10.162.28.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pintu,
+On Thu, Jun 10, 2021 at 1:25 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Jun 09, 2021 at 08:25:47PM -0400, Pascal Giard wrote:
+>
+> > I apologize for failing to follow the procedure. I had already read
+> > these guidelines, and I actually thought I was following Option 1 :-/
+>
+> Is this commit already in Linus's tree?  If so then we just need a git
+> commit id and we can queue it up.
 
------ Ursprüngliche Mail -----
-> Von: "Pintu Agarwal" <pintu.ping@gmail.com>
->> nandsim works as expected. It creates a new and *erased* NAND for you.
->> So you have no UBI volumes. Therfore UBIFS cannot be mounted.
->> I suggest creating a tiny initramfs that creates UBI volumes before mounting
->> UBIFS on
->> one of the freshly created (and empty) volumes.
->>
-> oh sorry I forgot to mention this.
-> I am able to create and update volumes manually after booting the
-> system with initramfs.
-> {{{
-> Creating rootfs volume:
-> mknod /dev/ubi0 c 250 0
-> mknod /dev/ubi0_0 c 250 1
-> ubiattach /dev/ubi_ctrl -m 2
-> ubimkvol /dev/ubi0 -N rootfs -m
-> ubiupdatevol /dev/ubi0_0 ubifs-rootfs.img
-> mount -t ubifs ubi0:rootfs ubi-root/
-> }}}
-> 
-> But I wanted to do all these automatically during boot time itself.
-> Also I wanted to use ubinize.cfg as is from the original system and
-> simulate everything using qemu and nadsim (if possible)
-> So I thought it must be possible by setting some parameters in qemu such as:
-> mtdparts=nand:,
-> -device nand,chip_id=0x39,drive=mtd0,
-> -drive if=mtd,file=./ubi-boot.img,id=mtd0,
-> anything else ?
+No, it isn't yet. My patch has not been reviewed yet.
 
-Well, this has nothing to do with nandsim.
-If qemu can emulate a NAND chip (plus a controller) all you need is a driver on the Linux side.
+> > I thought that I had to get my patch merged into next first (patch
+> > against dtor's git) and that by adding stable@ as CC, it would
+> > automatically get considered for inclusion into stable once merged
+> > into Linus' tree. Based on your email, I got that wrong...
+>
+> It will, but you need to add that to the signed-off-by: area, as the
+> document says.
 
-Thanks,
-//richrd
+Oh dear, that's the bit I missed.
+
+At this point I assume that I should not resubmit a patch (to avoid
+unnecessary noise) and patiently wait for a review, e.g., by Jiri, for
+it to be included in next.
+From there, I'll try to do the right thing (CC stable in the
+signed-off area) shall a new version be necessary or follow option 2
+with the commit id when it gets merged to Linus' tree.
+
+Once again, my apologies for failing to follow the procedure and thank
+you for your patience.
+
+-Pascal
