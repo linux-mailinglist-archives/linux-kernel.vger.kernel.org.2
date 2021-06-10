@@ -2,500 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B7B3A371A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CFD3A3706
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhFJW21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:28:27 -0400
-Received: from mga05.intel.com ([192.55.52.43]:26534 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231262AbhFJW2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:28:23 -0400
-IronPort-SDR: 3Beqe6VmCqgVjYqiBClOTVTYMWEqj/gowWtuI1SdBhIvz9Z1OEg8Cxy0TKNzrcr42zVvnXLxZ5
- 3zhOIDKLKoDQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="291048420"
-X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; 
-   d="scan'208";a="291048420"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 15:26:26 -0700
-IronPort-SDR: 9cb9p9+8nrVk2cPCsKuj/JpPAO6C0/VJZL73YLibVODJpIcDCv6N29pNtAgwudgQJzfwPZyZQy
- iwvwXuNL0MeA==
-X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; 
-   d="scan'208";a="448899650"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 15:26:26 -0700
-Subject: [PATCH 5/5] cxl/pmem: Register 'pmem' / cxl_nvdimm  devices
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-cxl@vger.kernel.org
-Cc:     nvdimm@lists.linux.dev, ben.widawsky@intel.com,
-        alison.schofield@intel.com, vishal.l.verma@intel.com,
-        ira.weiny@intel.com, linux-kernel@vger.kernel.org
-Date:   Thu, 10 Jun 2021 15:26:26 -0700
-Message-ID: <162336398605.2462439.17422037666825492593.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <162336395765.2462439.11368504490069925374.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <162336395765.2462439.11368504490069925374.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S230500AbhFJW11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 18:27:27 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:37515 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230447AbhFJW1Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 18:27:25 -0400
+Received: by mail-io1-f51.google.com with SMTP id q7so28829890iob.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:25:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w7TVjLZ+YHlKeGJ8qAU9Un06YFm9yXurMjRE2VQEqoY=;
+        b=lcnU0h1GZrdQJLHy8y+QLyi53BxH+7M3T72jS6rR9R+chmR1B7uM/QQBUr0wb9Na5Y
+         ztJ6PqO0L1apCQeAEkrh7TvbJK5Uw0hLjM37NV2AFe/Kgnno9gNP2tycgvMLwh4zbi58
+         Q26dJPAFABhMVEZeABUu2C+MTVBBYla4XZvvU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w7TVjLZ+YHlKeGJ8qAU9Un06YFm9yXurMjRE2VQEqoY=;
+        b=VFqctm/KJkBHchXK6ctpIcK7bNsCseL5PE7wTtICiGQVGrJ+UCKrIKYCjjRpmWra6i
+         7N/Oe3yO/siwGof8Hx2zl83LXJJBgfDpaX6+u54pWZOJ98xH+HMzOdjEEN54AkhRrfVv
+         rEyi+WUHgtZAizFzoWNOAk8AoqY3D6hftZiIcSRGuI8WVF6bIxw3yxLzf+CwunYxfoOo
+         /N9CjzD32ByAegk8PGN6XUsU5z9iKLJXl6gaPetLO8FFK4GXzmeRA+VqTFjg/K3ZDtq1
+         4JWjT7lnNuZ5VOQRQmteV6SlFs+Z5vsknPc76EWnvgcQay5aR6U1ulB42WlK12f4FIdY
+         QfNQ==
+X-Gm-Message-State: AOAM530H5moJq+OINtpn2KSk0nUgDYts42m9hm1wYWcfX4+gE0VtCEmU
+        aUVJEsgjrbxnkyNESi941P7bKTZp2Q+rjg+cdvDZag==
+X-Google-Smtp-Source: ABdhPJxXRsWHoRSS+DqKbfDPMQ4aRNvfX6WB5CCyhEHmFMsKbxf9xeh5w6evmQo2ATTX7WJCxTs0JimQzDD9PcEr90Q=
+X-Received: by 2002:a6b:cf13:: with SMTP id o19mr599046ioa.206.1623363860099;
+ Thu, 10 Jun 2021 15:24:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <1623293391-17261-1-git-send-email-xiyuyang19@fudan.edu.cn>
+In-Reply-To: <1623293391-17261-1-git-send-email-xiyuyang19@fudan.edu.cn>
+From:   Rob Clark <robdclark@chromium.org>
+Date:   Thu, 10 Jun 2021 15:28:15 -0700
+Message-ID: <CAJs_Fx6qgQFOp16SLQfz-Aaj4mqTo+vCvfpQr_E3UapVTrsu6Q@mail.gmail.com>
+Subject: Re: [PATCH v2] iommu/arm-smmu: Fix arm_smmu_device refcount leak in
+ address translation
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>, yuanxzhang@fudan.edu.cn,
+        Xin Tan <tanxin.ctf@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While a memX device on /sys/bus/cxl represents a CXL memory expander
-control interface, a pmemX device represents the persistent memory
-sub-functionality. It bridges the CXL subystem to the libnvdimm nmemX
-control interface.
+On Wed, Jun 9, 2021 at 7:50 PM Xiyu Yang <xiyuyang19@fudan.edu.cn> wrote:
+>
+> The reference counting issue happens in several exception handling paths
+> of arm_smmu_iova_to_phys_hard(). When those error scenarios occur, the
+> function forgets to decrease the refcount of "smmu" increased by
+> arm_smmu_rpm_get(), causing a refcount leak.
+>
+> Fix this issue by jumping to "out" label when those error scenarios
+> occur.
+>
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> ---
+>  drivers/iommu/arm/arm-smmu/arm-smmu.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> index 6f72c4d208ca..3a3847277320 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> @@ -1271,6 +1271,7 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
+>         u64 phys;
+>         unsigned long va, flags;
+>         int ret, idx = cfg->cbndx;
+> +       phys_addr_t addr = 0;
+>
+>         ret = arm_smmu_rpm_get(smmu);
+>         if (ret < 0)
+> @@ -1290,6 +1291,7 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
+>                 dev_err(dev,
+>                         "iova to phys timed out on %pad. Falling back to software table walk.\n",
+>                         &iova);
+> +               arm_smmu_rpm_put(smmu);
+>                 return ops->iova_to_phys(ops, iova);
 
-With this skeleton ndctl can now see persistent memory devices on a
-"CXL" bus. Later patches add support for translating libnvdimm native
-commands to CXL commands.
+I suppose you could also:
 
-# ndctl list -BDiu -b CXL
-{
-  "provider":"CXL",
-  "dev":"ndbus1",
-  "dimms":[
-    {
-      "dev":"nmem1",
-      "state":"disabled"
-    },
-    {
-      "dev":"nmem0",
-      "state":"disabled"
-    }
-  ]
-}
+   addr = ops->iov_to_phys(...);
+   goto out;
 
-Given nvdimm_bus_unregister() removes all devices on an ndbus0 the
-cxl_pmem infrastructure needs to arrange ->remove() to be triggered on
-cxl_nvdimm devices to keep their enabled state synchronized with the
-registration state of their corresponding device on the nvdimm_bus. In
-other words, always arrange for cxl_nvdimm_driver.remove() to unregister
-nvdimms from an nvdimm_bus ahead of the bus being unregistered.
+but either way,
 
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/cxl/core.c |   86 ++++++++++++++++++++++++++++++++++++++++
- drivers/cxl/cxl.h  |   13 ++++++
- drivers/cxl/mem.h  |    2 +
- drivers/cxl/pci.c  |   23 ++++++++---
- drivers/cxl/pmem.c |  111 +++++++++++++++++++++++++++++++++++++++++++++++-----
- 5 files changed, 217 insertions(+), 18 deletions(-)
+Reviewed-by: Rob Clark <robdclark@chromium.org>
 
-diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
-index f0305c9c91c8..6db660249cea 100644
---- a/drivers/cxl/core.c
-+++ b/drivers/cxl/core.c
-@@ -7,6 +7,7 @@
- #include <linux/slab.h>
- #include <linux/idr.h>
- #include "cxl.h"
-+#include "mem.h"
- 
- /**
-  * DOC: cxl core
-@@ -731,6 +732,89 @@ struct cxl_nvdimm_bridge *devm_cxl_add_nvdimm_bridge(struct device *host,
- }
- EXPORT_SYMBOL_GPL(devm_cxl_add_nvdimm_bridge);
- 
-+static void cxl_nvdimm_release(struct device *dev)
-+{
-+	struct cxl_nvdimm *cxl_nvd = to_cxl_nvdimm(dev);
-+
-+	kfree(cxl_nvd);
-+}
-+
-+static const struct attribute_group *cxl_nvdimm_attribute_groups[] = {
-+	&cxl_base_attribute_group,
-+	NULL,
-+};
-+
-+static const struct device_type cxl_nvdimm_type = {
-+	.name = "cxl_nvdimm",
-+	.release = cxl_nvdimm_release,
-+	.groups = cxl_nvdimm_attribute_groups,
-+};
-+
-+bool is_cxl_nvdimm(struct device *dev)
-+{
-+	return dev->type == &cxl_nvdimm_type;
-+}
-+EXPORT_SYMBOL_GPL(is_cxl_nvdimm);
-+
-+struct cxl_nvdimm *to_cxl_nvdimm(struct device *dev)
-+{
-+	if (dev_WARN_ONCE(dev, !is_cxl_nvdimm(dev),
-+			  "not a cxl_nvdimm device\n"))
-+		return NULL;
-+	return container_of(dev, struct cxl_nvdimm, dev);
-+}
-+EXPORT_SYMBOL_GPL(to_cxl_nvdimm);
-+
-+static struct cxl_nvdimm *cxl_nvdimm_alloc(struct cxl_memdev *cxlmd)
-+{
-+	struct cxl_nvdimm *cxl_nvd;
-+	struct device *dev;
-+
-+	cxl_nvd = kzalloc(sizeof(*cxl_nvd), GFP_KERNEL);
-+	if (!cxl_nvd)
-+		return ERR_PTR(-ENOMEM);
-+
-+	dev = &cxl_nvd->dev;
-+	cxl_nvd->cxlmd = cxlmd;
-+	device_initialize(dev);
-+	device_set_pm_not_required(dev);
-+	dev->parent = &cxlmd->dev;
-+	dev->bus = &cxl_bus_type;
-+	dev->type = &cxl_nvdimm_type;
-+
-+	return cxl_nvd;
-+}
-+
-+int devm_cxl_add_nvdimm(struct device *host, struct cxl_memdev *cxlmd)
-+{
-+	struct cxl_nvdimm *cxl_nvd;
-+	struct device *dev;
-+	int rc;
-+
-+	cxl_nvd = cxl_nvdimm_alloc(cxlmd);
-+	if (IS_ERR(cxl_nvd))
-+		return PTR_ERR(cxl_nvd);
-+
-+	dev = &cxl_nvd->dev;
-+	rc = dev_set_name(dev, "pmem%d", cxlmd->id);
-+	if (rc)
-+		goto err;
-+
-+	rc = device_add(dev);
-+	if (rc)
-+		goto err;
-+
-+	dev_dbg(host, "%s: register %s\n", dev_name(dev->parent),
-+		dev_name(dev));
-+
-+	return devm_add_action_or_reset(host, unregister_dev, dev);
-+
-+err:
-+	put_device(dev);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(devm_cxl_add_nvdimm);
-+
- /**
-  * cxl_probe_device_regs() - Detect CXL Device register blocks
-  * @dev: Host device of the @base mapping
-@@ -930,6 +1014,8 @@ static int cxl_device_id(struct device *dev)
- {
- 	if (dev->type == &cxl_nvdimm_bridge_type)
- 		return CXL_DEVICE_NVDIMM_BRIDGE;
-+	if (dev->type == &cxl_nvdimm_type)
-+		return CXL_DEVICE_NVDIMM;
- 	return 0;
- }
- 
-diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-index 47fcb7ad5978..3f9a6f7b05db 100644
---- a/drivers/cxl/cxl.h
-+++ b/drivers/cxl/cxl.h
-@@ -213,6 +213,13 @@ struct cxl_nvdimm_bridge {
- 	enum cxl_nvdimm_brige_state state;
- };
- 
-+struct cxl_mem;
-+struct cxl_nvdimm {
-+	struct device dev;
-+	struct cxl_memdev *cxlmd;
-+	struct nvdimm *nvdimm;
-+};
-+
- /**
-  * struct cxl_port - logical collection of upstream port devices and
-  *		     downstream port devices to construct a CXL memory
-@@ -299,7 +306,8 @@ int __cxl_driver_register(struct cxl_driver *cxl_drv, struct module *owner,
- #define cxl_driver_register(x) __cxl_driver_register(x, THIS_MODULE, KBUILD_MODNAME)
- void cxl_driver_unregister(struct cxl_driver *cxl_drv);
- 
--#define CXL_DEVICE_NVDIMM_BRIDGE 1
-+#define CXL_DEVICE_NVDIMM_BRIDGE	1
-+#define CXL_DEVICE_NVDIMM		2
- 
- #define MODULE_ALIAS_CXL(type) MODULE_ALIAS("cxl:t" __stringify(type) "*")
- #define CXL_MODALIAS_FMT "cxl:t%d"
-@@ -307,4 +315,7 @@ void cxl_driver_unregister(struct cxl_driver *cxl_drv);
- struct cxl_nvdimm_bridge *to_cxl_nvdimm_bridge(struct device *dev);
- struct cxl_nvdimm_bridge *devm_cxl_add_nvdimm_bridge(struct device *host,
- 						     struct cxl_port *port);
-+struct cxl_nvdimm *to_cxl_nvdimm(struct device *dev);
-+bool is_cxl_nvdimm(struct device *dev);
-+int devm_cxl_add_nvdimm(struct device *host, struct cxl_memdev *cxlmd);
- #endif /* __CXL_H__ */
-diff --git a/drivers/cxl/mem.h b/drivers/cxl/mem.h
-index 13868ff7cadf..8f02d02b26b4 100644
---- a/drivers/cxl/mem.h
-+++ b/drivers/cxl/mem.h
-@@ -2,6 +2,8 @@
- /* Copyright(c) 2020-2021 Intel Corporation. */
- #ifndef __CXL_MEM_H__
- #define __CXL_MEM_H__
-+#include <linux/cdev.h>
-+#include "cxl.h"
- 
- /* CXL 2.0 8.2.8.5.1.1 Memory Device Status Register */
- #define CXLMDEV_STATUS_OFFSET 0x0
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index 5a1705b52278..83e81b44c8f5 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -1313,7 +1313,8 @@ static struct cxl_memdev *cxl_memdev_alloc(struct cxl_mem *cxlm)
- 	return ERR_PTR(rc);
- }
- 
--static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
-+static struct cxl_memdev *devm_cxl_add_memdev(struct device *host,
-+					      struct cxl_mem *cxlm)
- {
- 	struct cxl_memdev *cxlmd;
- 	struct device *dev;
-@@ -1322,7 +1323,7 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
- 
- 	cxlmd = cxl_memdev_alloc(cxlm);
- 	if (IS_ERR(cxlmd))
--		return PTR_ERR(cxlmd);
-+		return cxlmd;
- 
- 	dev = &cxlmd->dev;
- 	rc = dev_set_name(dev, "mem%d", cxlmd->id);
-@@ -1340,8 +1341,10 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
- 	if (rc)
- 		goto err;
- 
--	return devm_add_action_or_reset(dev->parent, cxl_memdev_unregister,
--					cxlmd);
-+	rc = devm_add_action_or_reset(host, cxl_memdev_unregister, cxlmd);
-+	if (rc)
-+		return ERR_PTR(rc);
-+	return cxlmd;
- 
- err:
- 	/*
-@@ -1350,7 +1353,7 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
- 	 */
- 	cxl_memdev_shutdown(cxlmd);
- 	put_device(dev);
--	return rc;
-+	return ERR_PTR(rc);
- }
- 
- static int cxl_xfer_log(struct cxl_mem *cxlm, uuid_t *uuid, u32 size, u8 *out)
-@@ -1561,6 +1564,7 @@ static int cxl_mem_identify(struct cxl_mem *cxlm)
- 
- static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- {
-+	struct cxl_memdev *cxlmd;
- 	struct cxl_mem *cxlm;
- 	int rc;
- 
-@@ -1588,7 +1592,14 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (rc)
- 		return rc;
- 
--	return cxl_mem_add_memdev(cxlm);
-+	cxlmd = devm_cxl_add_memdev(&pdev->dev, cxlm);
-+	if (IS_ERR(cxlmd))
-+		return PTR_ERR(cxlmd);
-+
-+	if (range_len(&cxlm->pmem_range) && IS_ENABLED(CONFIG_CXL_PMEM))
-+		rc = devm_cxl_add_nvdimm(&pdev->dev, cxlmd);
-+
-+	return rc;
- }
- 
- static const struct pci_device_id cxl_mem_pci_tbl[] = {
-diff --git a/drivers/cxl/pmem.c b/drivers/cxl/pmem.c
-index 0067bd734559..1ed19e213157 100644
---- a/drivers/cxl/pmem.c
-+++ b/drivers/cxl/pmem.c
-@@ -3,7 +3,10 @@
- #include <linux/libnvdimm.h>
- #include <linux/device.h>
- #include <linux/module.h>
-+#include <linux/ndctl.h>
-+#include <linux/async.h>
- #include <linux/slab.h>
-+#include "mem.h"
- #include "cxl.h"
- 
- /*
-@@ -13,6 +16,64 @@
-  */
- static struct workqueue_struct *cxl_pmem_wq;
- 
-+static void unregister_nvdimm(void *nvdimm)
-+{
-+	nvdimm_delete(nvdimm);
-+}
-+
-+static int match_nvdimm_bridge(struct device *dev, const void *data)
-+{
-+	return strcmp(dev_name(dev), "nvdimm-bridge") == 0;
-+}
-+
-+static struct cxl_nvdimm_bridge *cxl_find_nvdimm_bridge(void)
-+{
-+	struct device *dev;
-+
-+	dev = bus_find_device(&cxl_bus_type, NULL, NULL, match_nvdimm_bridge);
-+	if (!dev)
-+		return NULL;
-+	return to_cxl_nvdimm_bridge(dev);
-+}
-+
-+static int cxl_nvdimm_probe(struct device *dev)
-+{
-+	struct cxl_nvdimm *cxl_nvd = to_cxl_nvdimm(dev);
-+	struct cxl_nvdimm_bridge *cxl_nvb;
-+	unsigned long flags = 0;
-+	struct nvdimm *nvdimm;
-+	int rc = -ENXIO;
-+
-+	cxl_nvb = cxl_find_nvdimm_bridge();
-+	if (!cxl_nvb)
-+		return -ENXIO;
-+
-+	device_lock(&cxl_nvb->dev);
-+	if (!cxl_nvb->nvdimm_bus)
-+		goto out;
-+
-+	set_bit(NDD_LABELING, &flags);
-+	nvdimm = nvdimm_create(cxl_nvb->nvdimm_bus, cxl_nvd, NULL, flags, 0, 0,
-+			       NULL);
-+	if (!nvdimm)
-+		goto out;
-+
-+	dev_set_drvdata(dev, nvdimm);
-+
-+	rc = devm_add_action_or_reset(dev, unregister_nvdimm, nvdimm);
-+out:
-+	device_unlock(&cxl_nvb->dev);
-+	put_device(&cxl_nvb->dev);
-+
-+	return rc;
-+}
-+
-+static struct cxl_driver cxl_nvdimm_driver = {
-+	.name = "cxl_nvdimm",
-+	.probe = cxl_nvdimm_probe,
-+	.id = CXL_DEVICE_NVDIMM,
-+};
-+
- static int cxl_pmem_ctl(struct nvdimm_bus_descriptor *nd_desc,
- 			struct nvdimm *nvdimm, unsigned int cmd, void *buf,
- 			unsigned int buf_len, int *cmd_rc)
-@@ -28,19 +89,31 @@ static void online_nvdimm_bus(struct cxl_nvdimm_bridge *cxl_nvb)
- 		nvdimm_bus_register(&cxl_nvb->dev, &cxl_nvb->nd_desc);
- }
- 
--static void offline_nvdimm_bus(struct cxl_nvdimm_bridge *cxl_nvb)
-+static int cxl_nvdimm_release_driver(struct device *dev, void *data)
- {
--	if (!cxl_nvb->nvdimm_bus)
--		return;
--	nvdimm_bus_unregister(cxl_nvb->nvdimm_bus);
--	cxl_nvb->nvdimm_bus = NULL;
-+	if (!is_cxl_nvdimm(dev))
-+		return 0;
-+	device_release_driver(dev);
-+	return 0;
-+}
-+
-+static void offline_nvdimm_bus(struct nvdimm_bus *nvdimm_bus)
-+{
-+	/*
-+	 * Set the state of cxl_nvdimm devices to unbound / idle before
-+	 * nvdimm_bus_unregister() rips the nvdimm objects out from
-+	 * underneath them.
-+	 */
-+	bus_for_each_dev(&cxl_bus_type, NULL, NULL, cxl_nvdimm_release_driver);
-+	nvdimm_bus_unregister(nvdimm_bus);
- }
- 
- static void cxl_nvb_update_state(struct work_struct *work)
- {
- 	struct cxl_nvdimm_bridge *cxl_nvb =
- 		container_of(work, typeof(*cxl_nvb), state_work);
--	bool release = false;
-+	struct nvdimm_bus *nvdimm_bus = NULL;
-+	bool release = false, rescan = false;
- 
- 	device_lock(&cxl_nvb->dev);
- 	switch (cxl_nvb->state) {
-@@ -50,11 +123,13 @@ static void cxl_nvb_update_state(struct work_struct *work)
- 			dev_err(&cxl_nvb->dev,
- 				"failed to establish nvdimm bus\n");
- 			release = true;
--		}
-+		} else
-+			rescan = true;
- 		break;
- 	case CXL_NVB_OFFLINE:
- 	case CXL_NVB_DEAD:
--		offline_nvdimm_bus(cxl_nvb);
-+		nvdimm_bus = cxl_nvb->nvdimm_bus;
-+		cxl_nvb->nvdimm_bus = NULL;
- 		break;
- 	default:
- 		break;
-@@ -63,6 +138,13 @@ static void cxl_nvb_update_state(struct work_struct *work)
- 
- 	if (release)
- 		device_release_driver(&cxl_nvb->dev);
-+	if (rescan) {
-+		int rc = bus_rescan_devices(&cxl_bus_type);
-+
-+		dev_dbg(&cxl_nvb->dev, "rescan: %d\n", rc);
-+	}
-+	if (nvdimm_bus)
-+		offline_nvdimm_bus(nvdimm_bus);
- 
- 	put_device(&cxl_nvb->dev);
- }
-@@ -113,23 +195,29 @@ static __init int cxl_pmem_init(void)
- 	int rc;
- 
- 	cxl_pmem_wq = alloc_ordered_workqueue("cxl_pmem", 0);
--
- 	if (!cxl_pmem_wq)
- 		return -ENXIO;
- 
- 	rc = cxl_driver_register(&cxl_nvdimm_bridge_driver);
- 	if (rc)
--		goto err;
-+		goto err_bridge;
-+
-+	rc = cxl_driver_register(&cxl_nvdimm_driver);
-+	if (rc)
-+		goto err_nvdimm;
- 
- 	return 0;
- 
--err:
-+err_nvdimm:
-+	cxl_driver_unregister(&cxl_nvdimm_bridge_driver);
-+err_bridge:
- 	destroy_workqueue(cxl_pmem_wq);
- 	return rc;
- }
- 
- static __exit void cxl_pmem_exit(void)
- {
-+	cxl_driver_unregister(&cxl_nvdimm_driver);
- 	cxl_driver_unregister(&cxl_nvdimm_bridge_driver);
- 	destroy_workqueue(cxl_pmem_wq);
- }
-@@ -139,3 +227,4 @@ module_init(cxl_pmem_init);
- module_exit(cxl_pmem_exit);
- MODULE_IMPORT_NS(CXL);
- MODULE_ALIAS_CXL(CXL_DEVICE_NVDIMM_BRIDGE);
-+MODULE_ALIAS_CXL(CXL_DEVICE_NVDIMM);
-
+>         }
+>
+> @@ -1298,12 +1300,14 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
+>         if (phys & ARM_SMMU_CB_PAR_F) {
+>                 dev_err(dev, "translation fault!\n");
+>                 dev_err(dev, "PAR = 0x%llx\n", phys);
+> -               return 0;
+> +               goto out;
+>         }
+>
+> +       addr = (phys & GENMASK_ULL(39, 12)) | (iova & 0xfff);
+> +out:
+>         arm_smmu_rpm_put(smmu);
+>
+> -       return (phys & GENMASK_ULL(39, 12)) | (iova & 0xfff);
+> +       return addr;
+>  }
+>
+>  static phys_addr_t arm_smmu_iova_to_phys(struct iommu_domain *domain,
+> --
+> 2.7.4
+>
