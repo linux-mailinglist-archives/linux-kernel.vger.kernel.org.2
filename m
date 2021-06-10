@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92993A2306
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 06:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 776E13A230B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 06:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbhFJEEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 00:04:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42696 "EHLO
+        id S230023AbhFJEF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 00:05:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46405 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229778AbhFJEEr (ORCPT
+        by vger.kernel.org with ESMTP id S229778AbhFJEF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 00:04:47 -0400
+        Thu, 10 Jun 2021 00:05:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623297771;
+        s=mimecast20190719; t=1623297840;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SXvZ6tuoPkEIoxHMDeEeqKamN/QqFwtdpQS3VL200LM=;
-        b=anlLlpn7xbZZyoP5l93owSI0ZdMFSAvPB9zG3OQycsRkmQg7KkFew0MDl02L5qOpnQxM/x
-        UpANjbfZiLW23LECy4DOKaDFE4pdOJCJAb5kYuFvAYpfpws3hmH7IqC9RCbW/fWoQPnfzn
-        f+me0GUjJQgt2ZgVqHWemOMjoWQo4zk=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-i4SvnH7MNe-6oHgO9iI4hw-1; Thu, 10 Jun 2021 00:02:50 -0400
-X-MC-Unique: i4SvnH7MNe-6oHgO9iI4hw-1
-Received: by mail-pf1-f200.google.com with SMTP id s5-20020aa78d450000b02902ace63a7e93so471455pfe.8
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 21:02:50 -0700 (PDT)
+        bh=19S4V0oFIhYTEmjCi3wnOG6CCDqJn4GFX2fH4afLaKA=;
+        b=P7OmA0kTxagkieW5Zt9yOQsoDKq2Z7bhg5HmpZgCxhtJrbAUVNhPnWQW7B191ray7uxKQe
+        beb6aY6du44gIJYFxQhHUZ5vfTCfUqLVD15758itaL+pC7RBkk6w3raxyo8QzX+njunR4c
+        1z1O/m3kt/hGBCIp37wpyKO1128d2ls=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-vSZknIcUOviRhEESFySbWg-1; Thu, 10 Jun 2021 00:03:58 -0400
+X-MC-Unique: vSZknIcUOviRhEESFySbWg-1
+Received: by mail-pg1-f198.google.com with SMTP id a26-20020a631a5a0000b02902205085fa58so4389514pgm.16
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 21:03:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=SXvZ6tuoPkEIoxHMDeEeqKamN/QqFwtdpQS3VL200LM=;
-        b=SEXdQPmLIUpu6ngEx3Q77fDPnCo0uGZpooM56k/GSVspmGQ21/gSRS6CfvaHeequwG
-         vey8knfu5DNtRBnewRRN5gHOuEh0ty/ocicq4rngjBx9f2UsaCvuidXB0h04/WwoLMlF
-         Ftc/9SoJnBbw+6myZK4Y7EbUSGSCRXeunNFDvSL69+0NdU2I+nPJQy1OHrHmqm2R3tNL
-         sxFRN0EJawSy1sDo1eXm0LUYoFkRUjt0sB0jr04PVG/Q3JSWLWFXDEJLNTmdlscyisoz
-         QdFwNxVWeqv+HvPtraOose7JglucmOuj3sMSK0sZUbtQXCv8ELqBEa7v1Fh29KMpj73N
-         QIYQ==
-X-Gm-Message-State: AOAM5318p5PWJlkIh6sEaWRmLWcsN6YIf2gCOEJBSmKhpa1/UiL1di+q
-        NX3hp0Gq0ooYHkTmHNpDGCEMGfq4KUbR5YibMQNvTzxLWV/cVQkslNN9zEH9QXl1KeTeeNWVr2Q
-        9ehSwSqkh1RWP0g3HFyzKDvnBAXcP9aOT9rGSjYaFEIGuD9myxfq2136wVAWBOs2nO9l5yTTdzk
-        eT
-X-Received: by 2002:a62:30c2:0:b029:289:116c:ec81 with SMTP id w185-20020a6230c20000b0290289116cec81mr1068678pfw.42.1623297768812;
-        Wed, 09 Jun 2021 21:02:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwVU961zRB+Y9SorZKkIgfJPcbM10PZ2K2e5HZSOxfr9z+jedPA7qXZVldVdXfDjt/JlhuXbA==
-X-Received: by 2002:a62:30c2:0:b029:289:116c:ec81 with SMTP id w185-20020a6230c20000b0290289116cec81mr1068621pfw.42.1623297768474;
-        Wed, 09 Jun 2021 21:02:48 -0700 (PDT)
+        bh=19S4V0oFIhYTEmjCi3wnOG6CCDqJn4GFX2fH4afLaKA=;
+        b=Pzf5nr771/KupNGDsZLgzzyVOxQNAfeDBPeoa+giKIVXesLEw3LmqqEcIpwnpnuZ/z
+         45PWdwLeuel4R1DYY+uXV/6K9InFNJ/56SnZazzjRxq3JND/s+IeXDUwAVjlYOcNhY3b
+         bP2qcxCkw0KMEcJwkawBz8AqH8ahxKGMCIljJR7XG/6lOMcReu22xhI3tdAldCGoh8L/
+         NZ216iozjznT+qWj2Lp/u2WOohM3UE8p6tUHIdp6PNUa035I/Wip+AInSIEtLO6F/jHq
+         gWccaOSfnL1W505P8zHTJzqI5Jlf0sSs99mW7dqHzFlJOstTnCdUeRobnQPDvhTPWjrT
+         skVQ==
+X-Gm-Message-State: AOAM5327lf0BINYmvM/7AueXANDbE/kFQpCxbRCSktndz7XpcGtjE6oN
+        9wliqQTAmzMzxfgfI5S/q+BB0XnF652CPdLtf/nWl2+o4HLOo9K/HJIy4CGPGGlc2pVcEEdQcVv
+        JJDrJRK32A9bVRCzg223QwItY
+X-Received: by 2002:a63:3fc6:: with SMTP id m189mr2985876pga.239.1623297837852;
+        Wed, 09 Jun 2021 21:03:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVMH4GRlTNZgCb4SGiAzZbg0vm86YmdxLIXUVjkXzrgfxl13LW9u+XyYW03LglmHfkfEaonA==
+X-Received: by 2002:a63:3fc6:: with SMTP id m189mr2985870pga.239.1623297837705;
+        Wed, 09 Jun 2021 21:03:57 -0700 (PDT)
 Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id j7sm6490106pjf.0.2021.06.09.21.02.41
+        by smtp.gmail.com with ESMTPSA id j16sm1136234pgh.69.2021.06.09.21.03.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 21:02:48 -0700 (PDT)
-Subject: Re: [RFC v1 0/6] virtio/vsock: introduce SOCK_DGRAM support
-To:     "Jiang Wang ." <jiang.wang@bytedance.com>
-Cc:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        jhansen@vmware.comments, cong.wang@bytedance.com,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Lu Wei <luwei32@huawei.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
-References: <20210609232501.171257-1-jiang.wang@bytedance.com>
- <da90f17a-1c24-b475-76ef-f6a7fc2bcdd5@redhat.com>
- <CAP_N_Z_VDd+JUJ_Y-peOEc7FgwNGB8O3uZpVumQT_DbW62Jpjw@mail.gmail.com>
+        Wed, 09 Jun 2021 21:03:57 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <ac0c241c-1013-1304-036f-504d0edc5fd7@redhat.com>
-Date:   Thu, 10 Jun 2021 12:02:35 +0800
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Liu Yi L <yi.l.liu@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
+        <alex.williamson@redhat.com>, David Woodhouse <dwmw2@infradead.org>
+References: <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
+ <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
+ <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <05d7f790-870d-5551-1ced-86926a0aa1a6@redhat.com>
+ <MWHPR11MB1886269E2B3DE471F1A9A7618C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <42a71462-1abc-0404-156c-60a7ee1ad333@redhat.com>
+ <20210601173138.GM1002214@nvidia.com>
+ <f69137e3-0f60-4f73-a0ff-8e57c79675d5@redhat.com>
+ <20210602172154.GC1002214@nvidia.com>
+ <c84787ec-9d8f-3198-e800-fe0dc8eb53c7@redhat.com>
+ <20210608132039.GG1002214@nvidia.com>
+ <f4d70f28-4bd6-5315-d7c7-0a509e4f1d1d@redhat.com>
+Message-ID: <3af22408-f0f1-7e04-48ab-852619d28ef6@redhat.com>
+Date:   Thu, 10 Jun 2021 12:03:52 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAP_N_Z_VDd+JUJ_Y-peOEc7FgwNGB8O3uZpVumQT_DbW62Jpjw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <f4d70f28-4bd6-5315-d7c7-0a509e4f1d1d@redhat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
 Precedence: bulk
@@ -93,111 +90,41 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-åœ¨ 2021/6/10 ä¸Šåˆ11:43, Jiang Wang . å†™é“:
-> On Wed, Jun 9, 2021 at 6:51 PM Jason Wang <jasowang@redhat.com> wrote:
->>
->> åœ¨ 2021/6/10 ä¸Šåˆ7:24, Jiang Wang å†™é“:
->>> This patchset implements support of SOCK_DGRAM for virtio
->>> transport.
->>>
->>> Datagram sockets are connectionless and unreliable. To avoid unfair contention
->>> with stream and other sockets, add two more virtqueues and
->>> a new feature bit to indicate if those two new queues exist or not.
->>>
->>> Dgram does not use the existing credit update mechanism for
->>> stream sockets. When sending from the guest/driver, sending packets
->>> synchronously, so the sender will get an error when the virtqueue is full.
->>> When sending from the host/device, send packets asynchronously
->>> because the descriptor memory belongs to the corresponding QEMU
->>> process.
->>
->> What's the use case for the datagram vsock?
->>
-> One use case is for non critical info logging from the guest
-> to the host, such as the performance data of some applications.
-
-
-Anything that prevents you from using the stream socket?
-
-
+ÔÚ 2021/6/10 ÉÏÎç10:00, Jason Wang Ð´µÀ:
 >
-> It can also be used to replace UDP communications between
-> the guest and the host.
-
-
-Any advantage for VSOCK in this case? Is it for performance (I guess not 
-since I don't exepct vsock will be faster).
-
-An obvious drawback is that it breaks the migration. Using UDP you can 
-have a very rich features support from the kernel where vsock can't.
-
-
->
->>> The virtio spec patch is here:
->>> https://www.spinics.net/lists/linux-virtualization/msg50027.html
+> ÔÚ 2021/6/8 ÏÂÎç9:20, Jason Gunthorpe Ð´µÀ:
+>> On Tue, Jun 08, 2021 at 09:10:42AM +0800, Jason Wang wrote:
 >>
->> Have a quick glance, I suggest to split mergeable rx buffer into an
->> separate patch.
-> Sure.
+>>> Well, this sounds like a re-invention of io_uring which has already 
+>>> worked
+>>> for multifds.
+>> How so? io_uring is about sending work to the kernel, not getting
+>> structued events back?
 >
->> But I think it's time to revisit the idea of unifying the virtio-net and
->> virtio-vsock. Otherwise we're duplicating features and bugs.
-> For mergeable rxbuf related code, I think a set of common helper
-> functions can be used by both virtio-net and virtio-vsock. For other
-> parts, that may not be very beneficial. I will think about more.
 >
-> If there is a previous email discussion about this topic, could you send me
-> some links? I did a quick web search but did not find any related
-> info. Thanks.
+> Actually it can. Userspace can poll multiple fds via preparing 
+> multiple sqes with IORING_OP_ADD flag.
 
 
-We had a lot:
-
-[1] 
-https://patchwork.kernel.org/project/kvm/patch/5BDFF537.3050806@huawei.com/
-[2] 
-https://lists.linuxfoundation.org/pipermail/virtualization/2018-November/039798.html
-[3] https://www.lkml.org/lkml/2020/1/16/2043
+IORING_OP_POLL_ADD actually.
 
 Thanks
 
+
 >
->> Thanks
+>
 >>
+>> It is more like one of the perf rings
+>
+>
+> This means another ring and we need introduce ioctl() to add or remove 
+> ioasids from the poll. And it still need a kind of fallback like a 
+> list if the ring is full.
+>
+> Thanks
+>
+>
 >>
->>> For those who prefer git repo, here is the link for the linux kernelï¼š
->>> https://github.com/Jiang1155/linux/tree/vsock-dgram-v1
->>>
->>> qemu patch link:
->>> https://github.com/Jiang1155/qemu/tree/vsock-dgram-v1
->>>
->>>
->>> To do:
->>> 1. use skb when receiving packets
->>> 2. support multiple transport
->>> 3. support mergeable rx buffer
->>>
->>>
->>> Jiang Wang (6):
->>>     virtio/vsock: add VIRTIO_VSOCK_F_DGRAM feature bit
->>>     virtio/vsock: add support for virtio datagram
->>>     vhost/vsock: add support for vhost dgram.
->>>     vsock_test: add tests for vsock dgram
->>>     vhost/vsock: add kconfig for vhost dgram support
->>>     virtio/vsock: add sysfs for rx buf len for dgram
->>>
->>>    drivers/vhost/Kconfig                              |   8 +
->>>    drivers/vhost/vsock.c                              | 207 ++++++++--
->>>    include/linux/virtio_vsock.h                       |   9 +
->>>    include/net/af_vsock.h                             |   1 +
->>>    .../trace/events/vsock_virtio_transport_common.h   |   5 +-
->>>    include/uapi/linux/virtio_vsock.h                  |   4 +
->>>    net/vmw_vsock/af_vsock.c                           |  12 +
->>>    net/vmw_vsock/virtio_transport.c                   | 433 ++++++++++++++++++---
->>>    net/vmw_vsock/virtio_transport_common.c            | 184 ++++++++-
->>>    tools/testing/vsock/util.c                         | 105 +++++
->>>    tools/testing/vsock/util.h                         |   4 +
->>>    tools/testing/vsock/vsock_test.c                   | 195 ++++++++++
->>>    12 files changed, 1070 insertions(+), 97 deletions(-)
->>>
+>> Jason
+>>
 
