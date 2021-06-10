@@ -2,90 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745F73A3738
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E2D3A373B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhFJWjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:39:12 -0400
-Received: from ozlabs.org ([203.11.71.1]:42451 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230440AbhFJWjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:39:10 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G1JkZ0Ktyz9sVm;
-        Fri, 11 Jun 2021 08:37:10 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623364630;
-        bh=nGBXmZ5pR69Nz3OT+L4NP5pAXNqS/z+zK57gIpUIdQ0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Zca7b+11WJLIHQ+fZqKh5FO8s5io4ZBwh9FFgPMGaMmTSqJ36Noj/DITbhQaTqyfH
-         f4F86B0UC9QDkzVSUcTzau+sl7Q/URujPiEJpmrd0WaYwM/1Ma65mIyG8Obz7GZyEI
-         h7ij+yHw3rh5znabFq4GAWmcSD8JB3UcW5ZkwulZgGqgYSnBmpK7XUdXHG/IK8XPgj
-         dE1CSdntWWTPlnJLlPS+B4oLN2BxK8EzzApq9fFTL8j2MlLCvlDBCIIjrh6Kvz5Y0k
-         ++hJuVd/AJrigQBzElB+1ecrNUrPFSIeLPwlArj4Fhl1gHywUbkc9+0TkROkfF0LAt
-         +U9BcMG4+dtow==
-Date:   Fri, 11 Jun 2021 08:37:09 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Steven Whitehouse <swhiteho@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: rebase and update of the gfs2 tree
-Message-ID: <20210611083709.040cc790@canb.auug.org.au>
-In-Reply-To: <20210611081135.3245330a@canb.auug.org.au>
-References: <20210611081135.3245330a@canb.auug.org.au>
+        id S231191AbhFJWji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 18:39:38 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:58478 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhFJWjg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 18:39:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1623364660; x=1654900660;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=pwa9iNCMYzaOFfi5zFCAhrxikXICuCtA5BrImYbauiw=;
+  b=mQJ5+nEYuwgF2tKQrqkQLLLT+31SZWd3ljtJt4kuZKbJGHbOcSBqqmF0
+   BkmOu1oObgiRVSHcR5Z7kpeIkEhoD9xunvvujUkPwmc8c53Vt7Nmm1X0r
+   fqZqv/8VrnMTSdRRFShN5ppZEg4eS6PQqUfNyaoEVlJ6Wf4U4hfZz0c01
+   k=;
+X-IronPort-AV: E=Sophos;i="5.83,264,1616457600"; 
+   d="scan'208";a="6075798"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 10 Jun 2021 22:37:40 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id 2F913A05BF;
+        Thu, 10 Jun 2021 22:37:39 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 10 Jun 2021 22:37:38 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.17) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 10 Jun 2021 22:37:33 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <eric.dumazet@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
+        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v7 bpf-next 03/11] tcp: Keep TCP_CLOSE sockets in the reuseport group.
+Date:   Fri, 11 Jun 2021 07:37:30 +0900
+Message-ID: <20210610223730.97716-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <c89d2cec-4cf2-1972-354b-5f5ca1330d82@gmail.com>
+References: <c89d2cec-4cf2-1972-354b-5f5ca1330d82@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Z/I4GucHwUi/_jgJbdV8Reb";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.17]
+X-ClientProxiedBy: EX13D46UWC004.ant.amazon.com (10.43.162.173) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Z/I4GucHwUi/_jgJbdV8Reb
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Date:   Thu, 10 Jun 2021 19:59:15 +0200
+> On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
+> > When we close a listening socket, to migrate its connections to another
+> > listener in the same reuseport group, we have to handle two kinds of child
+> > sockets. One is that a listening socket has a reference to, and the other
+> > is not.
+> > 
+> > The former is the TCP_ESTABLISHED/TCP_SYN_RECV sockets, and they are in the
+> > accept queue of their listening socket. So we can pop them out and push
+> > them into another listener's queue at close() or shutdown() syscalls. On
+> > the other hand, the latter, the TCP_NEW_SYN_RECV socket is during the
+> > three-way handshake and not in the accept queue. Thus, we cannot access
+> > such sockets at close() or shutdown() syscalls. Accordingly, we have to
+> > migrate immature sockets after their listening socket has been closed.
+> > 
+> > Currently, if their listening socket has been closed, TCP_NEW_SYN_RECV
+> > sockets are freed at receiving the final ACK or retransmitting SYN+ACKs. At
+> > that time, if we could select a new listener from the same reuseport group,
+> > no connection would be aborted. However, we cannot do that because
+> > reuseport_detach_sock() sets NULL to sk_reuseport_cb and forbids access to
+> > the reuseport group from closed sockets.
+> > 
+> > This patch allows TCP_CLOSE sockets to remain in the reuseport group and
+> > access it while any child socket references them. The point is that
+> > reuseport_detach_sock() was called twice from inet_unhash() and
+> > sk_destruct(). This patch replaces the first reuseport_detach_sock() with
+> > reuseport_stop_listen_sock(), which checks if the reuseport group is
+> > capable of migration. If capable, it decrements num_socks, moves the socket
+> > backwards in socks[] and increments num_closed_socks. When all connections
+> > are migrated, sk_destruct() calls reuseport_detach_sock() to remove the
+> > socket from socks[], decrement num_closed_socks, and set NULL to
+> > sk_reuseport_cb.
+> > 
+> > By this change, closed or shutdowned sockets can keep sk_reuseport_cb.
+> > Consequently, calling listen() after shutdown() can cause EADDRINUSE or
+> > EBUSY in inet_csk_bind_conflict() or reuseport_add_sock() which expects
+> > such sockets not to have the reuseport group. Therefore, this patch also
+> > loosens such validation rules so that a socket can listen again if it has a
+> > reuseport group with num_closed_socks more than 0.
+> > 
+> > When such sockets listen again, we handle them in reuseport_resurrect(). If
+> > there is an existing reuseport group (reuseport_add_sock() path), we move
+> > the socket from the old group to the new one and free the old one if
+> > necessary. If there is no existing group (reuseport_alloc() path), we
+> > allocate a new reuseport group, detach sk from the old one, and free it if
+> > necessary, not to break the current shutdown behaviour:
+> > 
+> >   - we cannot carry over the eBPF prog of shutdowned sockets
+> >   - we cannot attach/detach an eBPF prog to/from listening sockets via
+> >     shutdowned sockets
+> > 
+> > Note that when the number of sockets gets over U16_MAX, we try to detach a
+> > closed socket randomly to make room for the new listening socket in
+> > reuseport_grow().
+> > 
+> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > ---
+> >  include/net/sock_reuseport.h    |   1 +
+> >  net/core/sock_reuseport.c       | 184 ++++++++++++++++++++++++++++++--
+> >  net/ipv4/inet_connection_sock.c |  12 ++-
+> >  net/ipv4/inet_hashtables.c      |   2 +-
+> >  4 files changed, 188 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/include/net/sock_reuseport.h b/include/net/sock_reuseport.h
+> > index 0e558ca7afbf..1333d0cddfbc 100644
+> > --- a/include/net/sock_reuseport.h
+> > +++ b/include/net/sock_reuseport.h
+> > @@ -32,6 +32,7 @@ extern int reuseport_alloc(struct sock *sk, bool bind_inany);
+> >  extern int reuseport_add_sock(struct sock *sk, struct sock *sk2,
+> >  			      bool bind_inany);
+> >  extern void reuseport_detach_sock(struct sock *sk);
+> > +void reuseport_stop_listen_sock(struct sock *sk);
+> >  extern struct sock *reuseport_select_sock(struct sock *sk,
+> >  					  u32 hash,
+> >  					  struct sk_buff *skb,
+> > diff --git a/net/core/sock_reuseport.c b/net/core/sock_reuseport.c
+> > index 079bd1aca0e7..ea0e900d3e97 100644
+> > --- a/net/core/sock_reuseport.c
+> > +++ b/net/core/sock_reuseport.c
+> > @@ -17,6 +17,8 @@
+> >  DEFINE_SPINLOCK(reuseport_lock);
+> >  
+> >  static DEFINE_IDA(reuseport_ida);
+> > +static int reuseport_resurrect(struct sock *sk, struct sock_reuseport *old_reuse,
+> > +			       struct sock_reuseport *reuse, bool bind_inany);
+> >  
+> >  static int reuseport_sock_index(struct sock *sk,
+> >  				struct sock_reuseport *reuse,
+> > @@ -61,6 +63,29 @@ static bool __reuseport_detach_sock(struct sock *sk,
+> >  	return true;
+> >  }
+> >  
+> > +static void __reuseport_add_closed_sock(struct sock *sk,
+> > +					struct sock_reuseport *reuse)
+> > +{
+> > +	reuse->socks[reuse->max_socks - reuse->num_closed_socks - 1] = sk;
+> > +	/* paired with READ_ONCE() in inet_csk_bind_conflict() */
+> > +	WRITE_ONCE(reuse->num_closed_socks, reuse->num_closed_socks + 1);
+> > +}
+> > +
+> > +static bool __reuseport_detach_closed_sock(struct sock *sk,
+> > +					   struct sock_reuseport *reuse)
+> > +{
+> > +	int i = reuseport_sock_index(sk, reuse, true);
+> > +
+> > +	if (i == -1)
+> > +		return false;
+> > +
+> > +	reuse->socks[i] = reuse->socks[reuse->max_socks - reuse->num_closed_socks];
+> > +	/* paired with READ_ONCE() in inet_csk_bind_conflict() */
+> > +	WRITE_ONCE(reuse->num_closed_socks, reuse->num_closed_socks - 1);
+> > +
+> > +	return true;
+> > +}
+> > +
+> >  static struct sock_reuseport *__reuseport_alloc(unsigned int max_socks)
+> >  {
+> >  	unsigned int size = sizeof(struct sock_reuseport) +
+> > @@ -92,6 +117,14 @@ int reuseport_alloc(struct sock *sk, bool bind_inany)
+> >  	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
+> >  					  lockdep_is_held(&reuseport_lock));
+> >  	if (reuse) {
+> > +		if (reuse->num_closed_socks) {
+> > +			/* sk was shutdown()ed before */
+> > +			int err = reuseport_resurrect(sk, reuse, NULL, bind_inany);
+> > +
+> > +			spin_unlock_bh(&reuseport_lock);
+> > +			return err;
+> 
+> It seems coding style in this function would rather do
+> 			ret = reuseport_resurrect(sk, reuse, NULL, bind_inany);
+> 			goto out;
+> 
+> Overall, changes in this commit are a bit scarry.
 
-Hi all,
+I will change the style with ret and goto.
 
-On Fri, 11 Jun 2021 08:11:35 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> So yesterday I reported a conflict between the vfs and gfs2 trees.
-> Today it has been "fixed" by the gfs2 tree rebasing and merging a
-> topic branch from the vfs tree.  Unfortunately, that topic branch has
-> been rebased in the vfs tree today, so now in linux-next I will have
-> two (slightly different) versions of that vfs tree topic branch (and
-> presumably I will get more conflicts).
->=20
-> Please think about what is wrong with this situation.  Hint: two already
-> published branches have been rebased/rewritten.  And maybe there has
-> been a lack of communication between developers.
-
-Please read Documentation/maintainer/rebasing-and-merging.rst
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Z/I4GucHwUi/_jgJbdV8Reb
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDClBUACgkQAVBC80lX
-0GwEngf/d8UHjVEsnRfFU1i2Rs6zKBsP9yYoUU+t9ysHX7tOeo4WXM58FW10s8ZQ
-uHC16uYFmS55ZO+Pgwbat/iH2zYmdddCMr1Ekomol4SUMeapqDQS9uI6xZ2r/r2g
-pDYDD/HHV0SJE8Aj2tXtBpFVq33cXK8KrVjAjeYiFOdb2XvonKWHFoQ4BIRj3Zxo
-bqpz3iACcZgpbr3gaV64pMkdclnh4NjH4TlcnP/NcutDdEpz0rqVg62P6hTr0q8t
-8zBne0ZMntZPs+7tSWUqvqobpBEeFwy6rrocLcOl/gemztPg+q9RjAJ57cF25LyS
-gOLX14RxGULW4sdJIB45FwT7JkWsaw==
-=IA3U
------END PGP SIGNATURE-----
-
---Sig_/Z/I4GucHwUi/_jgJbdV8Reb--
+Thank you.
