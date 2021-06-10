@@ -2,97 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D41B3A25F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849AB3A2604
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhFJIBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:01:37 -0400
-Received: from mail-pg1-f175.google.com ([209.85.215.175]:37829 "EHLO
-        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhFJIBf (ORCPT
+        id S230217AbhFJIC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 04:02:57 -0400
+Received: from out28-97.mail.aliyun.com ([115.124.28.97]:51002 "EHLO
+        out28-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230171AbhFJIC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:01:35 -0400
-Received: by mail-pg1-f175.google.com with SMTP id t9so21942390pgn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:59:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z8Q0hqWJSG4oD1OkwryocprVGZHye8iWaplw5ZkUYjk=;
-        b=tcc/C0wbgpnfYomjqB3ocj6Nb8I8xhnoeQshcEO4ywGIcuxtdcl1MlWkUXy3/cppz9
-         MZeqe+cn2yn0t+lFTHTGY4yLSk3q/s2itTQTRvXycbeYi1EBU+gnzh05nxs7uJTnCqpp
-         ssh6Oe1+M3CF4xUREFWqQgEbsTBLkoGEWzYBIe73u3ZRP6uXeY4+/hzE2dIrzPu09ijI
-         tespyZShSOfEaIMFdCb4RY5LAyugA+cTVn35V7+ipeI+sXz2ZSDk+hjsH964P7U/SO73
-         udNSAqgllOXdsOIduXzvflaiejZFb03Q/NcLDp4Y1YJocM9Zo2YQicT/pZ1HtnrUuuF+
-         PI4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z8Q0hqWJSG4oD1OkwryocprVGZHye8iWaplw5ZkUYjk=;
-        b=NaOzZM1zDS48ytnFQDb6iD4+umwq9xj7Ai/01TkwqY0+ERGg+79WpqHmNiLST4FzTO
-         WzXNn9kdo8oM7YGQ0S4DkFsl8b/DeCQ9yChkq8O7FRRsZ/NeLejhp0mGN8oz0zCO7dr8
-         0gnTcgTfC0BI8IjaWTxp0qsYVyo7wfEJc/N9IPkUpC8qtT7xa+DUYsbPqtgfCbSPdqWw
-         hRNvyxBsnH85YH1YeD8rL5OCZhCj6DVrGJo9IUfGBfoapdv7P+FuqFYMYblzDp2Dycy+
-         m41FRE01+Jnlr9SOVbBqbfhkTdSP1RebKRjTRosaqPJEEbbfM8exynLrvrC9DOUKsoXj
-         Nftw==
-X-Gm-Message-State: AOAM531ISb3f9Y+gLQWvSo9kVIUsGNNpuBepem74nOV9iSzCHpfvaYJp
-        viW0ScZdu9Z9tV0l2rHv53DQHQ==
-X-Google-Smtp-Source: ABdhPJywbRMqfw0QXGls+j3DOsQKG6/gnAV+3bWcXky4WTUNxRvzEMFMvnh6wo0qxKegHxgNpSBV1A==
-X-Received: by 2002:a63:3ec3:: with SMTP id l186mr3710947pga.371.1623311919974;
-        Thu, 10 Jun 2021 00:58:39 -0700 (PDT)
-Received: from localhost ([136.185.169.128])
-        by smtp.gmail.com with ESMTPSA id 141sm1755906pgf.92.2021.06.10.00.58.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 00:58:39 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cpufreq: cppc: Mark frequency invariance broken
-Date:   Thu, 10 Jun 2021 13:28:29 +0530
-Message-Id: <28308fc0d38f252baf90e6ffb31fd2f8660be273.1623311808.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+        Thu, 10 Jun 2021 04:02:29 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436536|-1;CH=green;DM=|CONTINUE|false|;DS=||;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=21;RT=21;SR=0;TI=SMTPD_---.KQMISdx_1623312022;
+Received: from 192.168.88.129(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KQMISdx_1623312022)
+          by smtp.aliyun-inc.com(10.147.41.120);
+          Thu, 10 Jun 2021 16:00:23 +0800
+Subject: Re: [PATCH v2 2/2] net: stmmac: Add Ingenic SoCs MAC support.
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com, paul@crapouillou.net
+References: <1623260110-25842-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1623260110-25842-3-git-send-email-zhouyanjie@wanyeetech.com>
+ <YMGEutCet7fP1NZ9@lunn.ch>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <405696cb-5987-0e56-87f8-5a1443eadc19@wanyeetech.com>
+Date:   Thu, 10 Jun 2021 16:00:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <YMGEutCet7fP1NZ9@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are few races in the frequency invariance support for CPPC driver,
-namely the driver doesn't stop the kthread_work and irq_work on policy
-exit during suspend/resume or CPU hotplug.
+Hi Andrew,
 
-A proper fix won't be possible for the 5.13-rc, as it requires a lot of
-changes. Instead of reverting the patch, mark this feature BROKEN for
-now.
+On 2021/6/10 上午11:19, Andrew Lunn wrote:
+>> +static int jz4775_mac_set_mode(struct plat_stmmacenet_data *plat_dat)
+>> +{
+>> +	struct ingenic_mac *mac = plat_dat->bsp_priv;
+>> +	unsigned int val;
+>
+>> +	case PHY_INTERFACE_MODE_RGMII:
+>> +	case PHY_INTERFACE_MODE_RGMII_ID:
+>> +	case PHY_INTERFACE_MODE_RGMII_RXID:
+>> +	case PHY_INTERFACE_MODE_RGMII_TXID:
+>> +		val = FIELD_PREP(MACPHYC_TXCLK_SEL_MASK, MACPHYC_TXCLK_SEL_INPUT) |
+>> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII);
+>> +		dev_dbg(mac->dev, "MAC PHY Control Register: PHY_INTERFACE_MODE_RGMII\n");
+>> +		break;
+> So this does what DT writes expect. They put 'rgmii-id' as phy
+> mode. The MAC does not add a delay. PHY_INTERFACE_MODE_RGMII_ID is
+> passed to the PHY and it adds the delay. And frames flow to/from the
+> PHY and users are happy. The majority of MAC drivers are like this.
 
-Fixes: 4c38f2df71c8 ("cpufreq: CPPC: Add support for frequency invariance")
-Reported-by: Qian Cai <quic_qiancai@quicinc.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
-Rafael, please apply this for v5.13-rc if it looks fine to you.
 
- drivers/cpufreq/Kconfig.arm | 1 +
- 1 file changed, 1 insertion(+)
+Got it, thanks!
 
-diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-index a5c5f70acfc9..614c34350f41 100644
---- a/drivers/cpufreq/Kconfig.arm
-+++ b/drivers/cpufreq/Kconfig.arm
-@@ -22,6 +22,7 @@ config ACPI_CPPC_CPUFREQ
- config ACPI_CPPC_CPUFREQ_FIE
- 	bool "Frequency Invariance support for CPPC cpufreq driver"
- 	depends on ACPI_CPPC_CPUFREQ && GENERIC_ARCH_TOPOLOGY
-+	depends on BROKEN
- 	default y
- 	help
- 	  This extends frequency invariance support in the CPPC cpufreq driver,
--- 
-2.31.1.272.g89b43f80a514
 
+>
+>> +static int x2000_mac_set_mode(struct plat_stmmacenet_data *plat_dat)
+>> +{
+>> +	struct ingenic_mac *mac = plat_dat->bsp_priv;
+>> +	unsigned int val;
+> Here we have a complete different story.
+>
+>
+>> +	case PHY_INTERFACE_MODE_RGMII:
+>> +		val = FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII);
+>> +
+>> +		if (mac->tx_delay == 0) {
+>> +			val |= FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_ORIGIN);
+>> +		} else {
+>> +			val |= FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_DELAY);
+>> +
+>> +			if (mac->tx_delay > MACPHYC_TX_DELAY_MAX)
+>> +				val |= FIELD_PREP(MACPHYC_TX_DELAY_MASK, MACPHYC_TX_DELAY_MAX - 1);
+>> +			else
+>> +				val |= FIELD_PREP(MACPHYC_TX_DELAY_MASK, mac->tx_delay - 1);
+>> +		}
+> What are the units of tx_delay. The DT binding should be pS, and you
+> need to convert from that to whatever the hardware is using.
+
+
+The manual does not tell how much ps a unit is.
+
+I am confirming with Ingenic, but there is no reply
+
+at the moment. Can we follow Rockchip's approach?
+
+According to the description in "rockchip-dwmac.yaml"
+
+and the related code in "dwmac-rk.c", it seems that their
+
+delay parameter seems to be the value used by the hardware
+
+directly instead of ps.
+
+
+> If mac->tx_delay is greater than MACPHYC_TX_DELAY_MAX, please return
+> -EINVAL when parsing the binding. We want the DT writer to know they
+> have requested something the hardware cannot do.
+
+
+Sure, I'll change it in the next version.
+
+
+> So if the device tree contains 'rgmii' for PHY mode, you can use this
+> for when you have long clock lines on your board adding the delay, and
+> you just need to fine tune the delay, add a few pS. The PHY will also
+> not add a delay, due to receiving PHY_INTERFACE_MODE_RGMII.
+>
+>> +
+>> +		if (mac->rx_delay == 0) {
+>> +			val |= FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_ORIGIN);
+>> +		} else {
+>> +			val |= FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_DELAY);
+>> +
+>> +			if (mac->rx_delay > MACPHYC_RX_DELAY_MAX)
+>> +				val |= FIELD_PREP(MACPHYC_RX_DELAY_MASK, MACPHYC_RX_DELAY_MAX - 1);
+>> +			else
+>> +				val |= FIELD_PREP(MACPHYC_RX_DELAY_MASK, mac->rx_delay - 1);
+>> +		}
+>> +
+>> +		dev_dbg(mac->dev, "MAC PHY Control Register: PHY_INTERFACE_MODE_RGMII\n");
+>> +		break;
+>> +
+>> +	case PHY_INTERFACE_MODE_RGMII_ID:
+>> +		val = FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_ORIGIN) |
+>> +			  FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_ORIGIN) |
+>> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII);
+>> +		dev_dbg(mac->dev, "MAC PHY Control Register: PHY_INTERFACE_MODE_RGMII_ID\n");
+>> +		break;
+> So this one is pretty normal. The MAC does not add a delay,
+> PHY_INTERFACE_MODE_RGMII_ID is passed to the PHY, and it adds the
+> delay. The interface will likely work.
+>
+>> +
+>> +	case PHY_INTERFACE_MODE_RGMII_RXID:
+>> +		val = FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII) |
+>> +			  FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_ORIGIN);
+>> +
+>> +		if (mac->tx_delay == 0) {
+>> +			val |= FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_ORIGIN);
+>> +		} else {
+>> +			val |= FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_DELAY);
+>> +
+>> +			if (mac->tx_delay > MACPHYC_TX_DELAY_MAX)
+>> +				val |= FIELD_PREP(MACPHYC_TX_DELAY_MASK, MACPHYC_TX_DELAY_MAX - 1);
+>> +			else
+>> +				val |= FIELD_PREP(MACPHYC_TX_DELAY_MASK, mac->tx_delay - 1);
+>> +		}
+> So here, the PHY is going to be passed PHY_INTERFACE_MODE_RGMII_RXID.
+> The PHY will add a delay in the receive path. The MAC needs to add the
+> delay in the transmit path. So tx_delay needs to be the full 2ns, not
+> just a small fine tuning value, or the PCB is adding the delay. And
+> you also cannot fine tune the RX delay, since rx_delay is ignored.
+>
+>> +
+>> +		dev_dbg(mac->dev, "MAC PHY Control Register: PHY_INTERFACE_MODE_RGMII_RXID\n");
+>> +		break;
+>> +
+>> +	case PHY_INTERFACE_MODE_RGMII_TXID:
+>> +		val = FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII) |
+>> +			  FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_ORIGIN);
+>> +
+>> +		if (mac->rx_delay == 0) {
+>> +			val |= FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_ORIGIN);
+>> +		} else {
+>> +			val |= FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_DELAY);
+>> +
+>> +			if (mac->rx_delay > MACPHYC_RX_DELAY_MAX)
+>> +				val |= FIELD_PREP(MACPHYC_RX_DELAY_MASK, MACPHYC_RX_DELAY_MAX - 1);
+>> +			else
+>> +				val |= FIELD_PREP(MACPHYC_RX_DELAY_MASK, mac->rx_delay - 1);
+>> +		}
+> And here we have the opposite to PHY_INTERFACE_MODE_RGMII_RXID.
+>
+> So you need to clearly document in the device tree binding when
+> rx_delay and tx_delay are used, and when they are ignored. You don't
+> want to have DT writers having to look deep into the code to figure
+> this out.
+
+
+Sure, maybe I should write a new independent document
+
+for Ingenic instead of just making corresponding changes
+
+in "snps, dwmac.yaml"
+
+
+>
+> Personally, i would simply this, in a big way. I see two options:
+>
+> 1) The MAC never adds a delay. The hardware is there, but simply don't
+> use it, to keep thing simple, and the same as nearly every other MAC.
+>
+> 2) If the hardware can do small steps of delay, allow this delay, both
+> RX and TX, to be configured in all four modes, in order to allow for
+> fine tuning. Leave the PHY to insert the majority of the delay.
+
+
+It seems that this method is better, I will adopt it in v3.
+
+
+>> +	/* Get MAC PHY control register */
+>> +	mac->regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "mode-reg");
+>> +	if (IS_ERR(mac->regmap)) {
+>> +		dev_err(&pdev->dev, "%s: failed to get syscon regmap\n", __func__);
+>> +		goto err_remove_config_dt;
+>> +	}
+> Please document this in the device tree binding.
+
+
+Sure.
+
+
+>
+>> +
+>> +	ret = of_property_read_u32(pdev->dev.of_node, "rx-clk-delay", &mac->rx_delay);
+>> +	if (ret)
+>> +		mac->rx_delay = 0;
+>> +
+>> +	ret = of_property_read_u32(pdev->dev.of_node, "tx-clk-delay", &mac->tx_delay);
+>> +	if (ret)
+>> +		mac->tx_delay = 0;
+> Please take a look at dwmac-mediatek.c. It handles delays nicely. I
+> would suggest that is the model to follow.
+
+
+Sure.
+
+
+Thanks and best regards!
+
+
+>
+>         Andrew
