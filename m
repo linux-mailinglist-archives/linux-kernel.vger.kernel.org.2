@@ -2,74 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C3E3A3167
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BBE33A3135
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbhFJQy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49590 "EHLO
+        id S231315AbhFJQq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhFJQyW (ORCPT
+        with ESMTP id S230396AbhFJQq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:54:22 -0400
-X-Greylist: delayed 463 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Jun 2021 09:52:25 PDT
-Received: from mail1.systemli.org (mail1.systemli.org [IPv6:2a00:c38:11e:ffff::a032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4313C061574;
-        Thu, 10 Jun 2021 09:52:25 -0700 (PDT)
-Subject: Re: [PATCH -next] dccp: tfrc: fix doc warnings in tfrc_equation.c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
-        s=default; t=1623343478;
-        bh=uZE8Th48OJiDQ9WnoC2cT/ZZKeuF68wKkFGlFE6GfyM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=kO1CMB4/qrYS5j+GDCiNhE6VsJiP4E+JGBINvxBsv1d4GlfpzbA9pJ+clT7wpu5fU
-         512fMEhyqGLNoXVbTkUJnZvibizz0505/A4ITz1NS9Lrg41Qp4TEhWJ8OFy6ZfGQ7a
-         ACysX5sS/gz8FHE+J1W+EwMLK76NlptyHRBLmdqvWAdl09BWvHt+WyUjt6T5KIZ3Ih
-         fRlF04R3HX5cfPJxtYY1iYzv1mX2sqgbX8Kue8LiBbCnMCBg7kf6fNAC6WuFta4fwE
-         QZduAHYrrhQdjJFxuBr5ptFtrDCO/QXXyKp2BVWQG7E8aVweZED4Sa6lDEGWqgDSU/
-         4Oon8JiheHTjA==
-To:     Baokun Li <libaokun1@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org, dccp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     weiyongjun1@huawei.com, yuehaibing@huawei.com,
-        yangjihong1@huawei.com, yukuai3@huawei.com
-References: <20210610132603.597563-1-libaokun1@huawei.com>
-From:   Richard Sailer <richard_siegfried@systemli.org>
-Message-ID: <1ef2e838-5cf9-c121-624d-3c6e5d5f1649@systemli.org>
-Date:   Thu, 10 Jun 2021 18:44:35 +0200
+        Thu, 10 Jun 2021 12:46:56 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2EEC061574;
+        Thu, 10 Jun 2021 09:45:00 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DA40D8D4;
+        Thu, 10 Jun 2021 18:44:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623343499;
+        bh=wR9rgS0wJPfpshTam9JQSlToh4InHCD6v4gDFDG33VU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AW1xjY00YC7O7qH/nnvJErH7PuTn4amz9bEPRzlsK1rRLbfcW5t6rrMZWmmNLsR5y
+         nPzTb9M+5h7HjMA9vrOzoyIwPLQkxJE3P5yqaUXnwcsKpqp4UuEULEnAGfUkWk5COH
+         8dfI+wrqdDiElqJb2HVTXnY55mfwayb52q6DlYqg=
+Date:   Thu, 10 Jun 2021 19:44:40 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+Subject: Re: [PATCH v9 10/22] media: uvcvideo: Use dev->name for querycap()
+Message-ID: <YMJBeNCDdH+MApbd@pendragon.ideasonboard.com>
+References: <20210326095840.364424-1-ribalda@chromium.org>
+ <20210326095840.364424-11-ribalda@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20210610132603.597563-1-libaokun1@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210326095840.364424-11-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just adds a correct comment. Looks fine to me.
+Hi Ricardo,
 
-Reviewed-by: Richard Sailer <richard_siegfried@systemli.org>
+Thank you for the patch.
 
-On 10/06/2021 15:26, Baokun Li wrote:
-> Add description for `tfrc_invert_loss_event_rate` to fix the W=1 warnings:
-> 
->   net/dccp/ccids/lib/tfrc_equation.c:695: warning: Function parameter or
->    member 'loss_event_rate' not described in 'tfrc_invert_loss_event_rate'
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+On Fri, Mar 26, 2021 at 10:58:28AM +0100, Ricardo Ribalda wrote:
+> Use the device name for the card name instead of vdev->name.
+
+The commit message should explain at least briefly why this is desired.
+
+> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
 > ---
->   net/dccp/ccids/lib/tfrc_equation.c | 1 +
->   1 file changed, 1 insertion(+)
+>  drivers/media/usb/uvc/uvc_metadata.c | 2 +-
+>  drivers/media/usb/uvc/uvc_v4l2.c     | 3 +--
+>  2 files changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/net/dccp/ccids/lib/tfrc_equation.c b/net/dccp/ccids/lib/tfrc_equation.c
-> index e2a337fa9ff7..92a8c6bea316 100644
-> --- a/net/dccp/ccids/lib/tfrc_equation.c
-> +++ b/net/dccp/ccids/lib/tfrc_equation.c
-> @@ -688,6 +688,7 @@ u32 tfrc_calc_x_reverse_lookup(u32 fvalue)
->   
->   /**
->    * tfrc_invert_loss_event_rate  -  Compute p so that 10^6 corresponds to 100%
-> + * @loss_event_rate: loss event rate to invert
->    * When @loss_event_rate is large, there is a chance that p is truncated to 0.
->    * To avoid re-entering slow-start in that case, we set p = TFRC_SMALLEST_P > 0.
->    */
-> 
+> diff --git a/drivers/media/usb/uvc/uvc_metadata.c b/drivers/media/usb/uvc/uvc_metadata.c
+> index b6279ad7ac84..82de7781f5b6 100644
+> --- a/drivers/media/usb/uvc/uvc_metadata.c
+> +++ b/drivers/media/usb/uvc/uvc_metadata.c
+> @@ -30,7 +30,7 @@ static int uvc_meta_v4l2_querycap(struct file *file, void *fh,
+>  	struct uvc_video_chain *chain = stream->chain;
+>  
+>  	strscpy(cap->driver, "uvcvideo", sizeof(cap->driver));
+> -	strscpy(cap->card, vfh->vdev->name, sizeof(cap->card));
+> +	strscpy(cap->card, stream->dev->name, sizeof(cap->card));
+>  	usb_make_path(stream->dev->udev, cap->bus_info, sizeof(cap->bus_info));
+>  	cap->capabilities = V4L2_CAP_DEVICE_CAPS | V4L2_CAP_STREAMING
+>  			  | chain->caps;
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index 1eeeb00280e4..9cdd30eff495 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -617,13 +617,12 @@ static int uvc_v4l2_release(struct file *file)
+>  static int uvc_ioctl_querycap(struct file *file, void *fh,
+>  			      struct v4l2_capability *cap)
+>  {
+> -	struct video_device *vdev = video_devdata(file);
+>  	struct uvc_fh *handle = file->private_data;
+>  	struct uvc_video_chain *chain = handle->chain;
+>  	struct uvc_streaming *stream = handle->stream;
+>  
+>  	strscpy(cap->driver, "uvcvideo", sizeof(cap->driver));
+> -	strscpy(cap->card, vdev->name, sizeof(cap->card));
+> +	strscpy(cap->card, handle->stream->dev->name, sizeof(cap->card));
+>  	usb_make_path(stream->dev->udev, cap->bus_info, sizeof(cap->bus_info));
+>  	cap->capabilities = V4L2_CAP_DEVICE_CAPS | V4L2_CAP_STREAMING
+>  			  | chain->caps;
+
+-- 
+Regards,
+
+Laurent Pinchart
