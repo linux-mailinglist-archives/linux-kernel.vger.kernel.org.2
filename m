@@ -2,160 +2,523 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC843A2B3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F09B3A2B3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhFJMR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:17:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35883 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230343AbhFJMRy (ORCPT
+        id S230378AbhFJMSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhFJMSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:17:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623327358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tRQIAiisGIrw+JGfT9AyG3U4rv0tgzEX+Jux94bTB+4=;
-        b=eFDDPYIAdd8UNozvHX4Gg81bEUDjpGnE7IXkoArGETo22/qu6nu61fFndN4RBlZiT3GOQJ
-        TIDdv1vA2cMTlT5jzjLGenM9oA5D7T91CAZg4alQz5nL2RAUFF1UwJBBG+qGL4TD6AKQbY
-        MbJiiZFI2wYVjyiX5M4MdgxjzMQ5wao=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-127-mAcYdpyjMia7pSQst82PKQ-1; Thu, 10 Jun 2021 08:15:57 -0400
-X-MC-Unique: mAcYdpyjMia7pSQst82PKQ-1
-Received: by mail-wr1-f69.google.com with SMTP id z4-20020adfe5440000b0290114f89c9931so800319wrm.17
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:15:56 -0700 (PDT)
+        Thu, 10 Jun 2021 08:18:36 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056F0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:16:40 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id e7so910166plj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:16:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wOu3fDG+mFoQYcon/7H3S12nd7R/QAMh1wpiZegcxiw=;
+        b=rRdA3EI31LXvnOC+g6aCM6DuO0S2PmQp7rld4OmfNnfkRQYt5aXM5niEdn4EuLPn4/
+         CazA3pRWpK7Mp4DFm3IhRJHyhVGPTG+pjfstJyxs2bfcQQ2qKV1Rj8iPUgAek0gWNnqX
+         nAsQVH5Y/FUtRGKLScrhSsA17hbYgMsmDOZH7wwNBlY3asySna88wdc1VPv8gAZ19hAf
+         RDb0R0BFQhonAN31caUKp9BjXMcWGN690vFEXEJMtxiPB95XXatF1V7s6GLVQ2JnqWu5
+         Bn6hEd6o6kfjTM+/Lpd1pvuCWEfT4KMIF55SQa3/rlJfHTxdB2bTHy6DA1rMV4eHnt4D
+         U6fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tRQIAiisGIrw+JGfT9AyG3U4rv0tgzEX+Jux94bTB+4=;
-        b=rKS7JSGrIsFpAEhypMH9I1TlQ6DHrZVWZ9qprVbu3ynAOhG8pTFR3DPf1/xJuqtVtE
-         +CXMY8rfZmAxfYfAY7SctLtKdeX74tQqwLXiWJiqsIgdyeoNA6JNC1KD0WN8exTDQ1mx
-         QFK/OD9+U+vU0Nhrc0/I3CoNiAhmc60uyy2Oid4fVTL/idTKeGWBunBbU+gTxWLFM41z
-         6tKyQkBS1l3Ok2+fLuro176E5sLHQpBOWv9Mri9LE9YmLzSkTW18vOw6KmG2HjuvU2c3
-         OWyC3xNSWmKTFuKACGIGJklnrql4zD1icEvK40zRCzfyabFqp1hS3rmlKN8XJJHK1IfE
-         4CEw==
-X-Gm-Message-State: AOAM5338YyIG+7QXhjXF+E+h/8Hf/u+BjcJOERFrjGKNuwkVGoSN3eh0
-        wSTVwVkib0K7JBoyAENDMydFEcpd/6yKBhX5urFwxT78b4ntGyy5treIY1ifN5Aff54mV+I/wAH
-        6SxLXEoCt1aw+/qa4fszU2pSgsXKlgHC1g2ZKcIPPUe3NA98zkwHvqqnRJm0Ix+qaE3nqMrujnI
-        ZC
-X-Received: by 2002:a1c:4c04:: with SMTP id z4mr4130050wmf.47.1623327355659;
-        Thu, 10 Jun 2021 05:15:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwtpTmN/gbuEuGL+MyLdgwa9rsIkG/gN2oXtnPsR9mIUvPWzyeCECrc6bFL/6s21g8Ac5nCuw==
-X-Received: by 2002:a1c:4c04:: with SMTP id z4mr4130021wmf.47.1623327355404;
-        Thu, 10 Jun 2021 05:15:55 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id r4sm3668055wre.84.2021.06.10.05.15.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 05:15:54 -0700 (PDT)
-Subject: Re: [PATCHv3 2/2] kvm: x86: implement KVM PM-notifier
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210606021045.14159-1-senozhatsky@chromium.org>
- <20210606021045.14159-2-senozhatsky@chromium.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4cb326cf-fba6-9894-980a-34c1a19183f2@redhat.com>
-Date:   Thu, 10 Jun 2021 14:15:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wOu3fDG+mFoQYcon/7H3S12nd7R/QAMh1wpiZegcxiw=;
+        b=Wjuy1qLPjXB39fmJg+jkT77h6h4frIgomWQwI/1BQXlaukxMUIfvPPctI0kEmXjigM
+         NSw1bLdlGEIAYMQrhNhBOtLOyg7Gf6F0Ap9Djd/JUQ+zehYSlHVJvUMdOi9q2rDhWjG3
+         yGYROUqRmAk0/OZCqllnm/ODyHAHoWOrQrtHvK5b6llx895sADTPQN5srhIegLobKiIC
+         6GUcjkQ/ZXem4kC296HJLtXZyT5LkL/E/Y2eBJuWVJFNPZenUt4xxifdCEMWGsM1P23s
+         QBVnH3nd1o6HSPXvkzTt2Q83bdsyeF5uqlJaqRJOyvAKjF36eoZSE5JEHTMOSLy0aHvI
+         53LA==
+X-Gm-Message-State: AOAM532NFBnIGgNFnJyGJLsV/tgsXFPUo1MU7eNyzTfisxk+KYK7SJmg
+        VIufH62XVckH1DM/KIUefU7nXA==
+X-Google-Smtp-Source: ABdhPJyCSGKmtTnZqbuXMjPjzsWE3+hnB+b0w2VauqA1bWDMsis5W3vEtGjU9EKzYfZVIE/WfAN4cw==
+X-Received: by 2002:a17:90b:4f44:: with SMTP id pj4mr3029377pjb.97.1623327398442;
+        Thu, 10 Jun 2021 05:16:38 -0700 (PDT)
+Received: from localhost ([136.185.169.128])
+        by smtp.gmail.com with ESMTPSA id kb14sm1720723pjb.2.2021.06.10.05.16.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 05:16:37 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
+Subject: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Date:   Thu, 10 Jun 2021 17:46:32 +0530
+Message-Id: <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+In-Reply-To: <cover.1623326176.git.viresh.kumar@linaro.org>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210606021045.14159-2-senozhatsky@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/06/21 04:10, Sergey Senozhatsky wrote:
-> Implement PM hibernation/suspend prepare notifiers so that KVM
-> can reliably set PVCLOCK_GUEST_STOPPED on VCPUs and properly
-> suspend VMs.
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->   arch/x86/kvm/Kconfig |  1 +
->   arch/x86/kvm/x86.c   | 36 ++++++++++++++++++++++++++++++++++++
->   2 files changed, 37 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> index fb8efb387aff..ac69894eab88 100644
-> --- a/arch/x86/kvm/Kconfig
-> +++ b/arch/x86/kvm/Kconfig
-> @@ -43,6 +43,7 @@ config KVM
->   	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
->   	select KVM_VFIO
->   	select SRCU
-> +	select HAVE_KVM_PM_NOTIFIER if PM
->   	help
->   	  Support hosting fully virtualized guest machines using hardware
->   	  virtualization extensions.  You will need a fairly recent
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index b594275d49b5..af1ab527a0cb 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -58,6 +58,7 @@
->   #include <linux/sched/isolation.h>
->   #include <linux/mem_encrypt.h>
->   #include <linux/entry-kvm.h>
-> +#include <linux/suspend.h>
->   
->   #include <trace/events/kvm.h>
->   
-> @@ -5615,6 +5616,41 @@ static int kvm_vm_ioctl_set_msr_filter(struct kvm *kvm, void __user *argp)
->   	return 0;
->   }
->   
-> +#ifdef CONFIG_HAVE_KVM_PM_NOTIFIER
-> +static int kvm_arch_suspend_notifier(struct kvm *kvm)
-> +{
-> +	struct kvm_vcpu *vcpu;
-> +	int i, ret = 0;
-> +
-> +	mutex_lock(&kvm->lock);
-> +	kvm_for_each_vcpu(i, vcpu, kvm) {
-> +		if (!vcpu->arch.pv_time_enabled)
-> +			continue;
-> +
-> +		ret = kvm_set_guest_paused(vcpu);
-> +		if (ret) {
-> +			kvm_err("Failed to pause guest VCPU%d: %d\n",
-> +				vcpu->vcpu_id, ret);
-> +			break;
-> +		}
-> +	}
-> +	mutex_unlock(&kvm->lock);
-> +
-> +	return ret ? NOTIFY_BAD : NOTIFY_DONE;
-> +}
-> +
-> +int kvm_arch_pm_notifier(struct kvm *kvm, unsigned long state)
-> +{
-> +	switch (state) {
-> +	case PM_HIBERNATION_PREPARE:
-> +	case PM_SUSPEND_PREPARE:
-> +		return kvm_arch_suspend_notifier(kvm);
-> +	}
-> +
-> +	return NOTIFY_DONE;
-> +}
-> +#endif /* CONFIG_HAVE_KVM_PM_NOTIFIER */
-> +
->   long kvm_arch_vm_ioctl(struct file *filp,
->   		       unsigned int ioctl, unsigned long arg)
->   {
-> 
+From: "Enrico Weigelt, metux IT consult" <info@metux.net>
 
-Queued, thanks.
+This patch adds a new driver for Virtio based GPIO devices.
 
-Paolo
+This allows a guest VM running Linux to access GPIO device provided by
+the host. It supports all basic operations for now, except interrupts
+for the GPIO lines.
+
+Signed-off-by: "Enrico Weigelt, metux IT consult" <info@metux.net>
+Co-developed-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/gpio/Kconfig             |   9 +
+ drivers/gpio/Makefile            |   1 +
+ drivers/gpio/gpio-virtio.c       | 326 +++++++++++++++++++++++++++++++
+ include/uapi/linux/virtio_gpio.h |  41 ++++
+ include/uapi/linux/virtio_ids.h  |   1 +
+ 5 files changed, 378 insertions(+)
+ create mode 100644 drivers/gpio/gpio-virtio.c
+ create mode 100644 include/uapi/linux/virtio_gpio.h
+
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index e3607ec4c2e8..7f12fb65d130 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -1633,6 +1633,15 @@ config GPIO_MOCKUP
+ 	  tools/testing/selftests/gpio/gpio-mockup.sh. Reference the usage in
+ 	  it.
+ 
++config GPIO_VIRTIO
++	tristate "VirtIO GPIO support"
++	depends on VIRTIO
++	help
++	  Say Y here to enable guest support for virtio-based GPIO controllers.
++
++	  These virtual GPIOs can be routed to real GPIOs or attached to
++	  simulators on the host (like QEMU).
++
+ endmenu
+ 
+ endif
+diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+index c58a90a3c3b1..ace004c80871 100644
+--- a/drivers/gpio/Makefile
++++ b/drivers/gpio/Makefile
+@@ -162,6 +162,7 @@ obj-$(CONFIG_GPIO_UCB1400)		+= gpio-ucb1400.o
+ obj-$(CONFIG_GPIO_UNIPHIER)		+= gpio-uniphier.o
+ obj-$(CONFIG_GPIO_VF610)		+= gpio-vf610.o
+ obj-$(CONFIG_GPIO_VIPERBOARD)		+= gpio-viperboard.o
++obj-$(CONFIG_GPIO_VIRTIO)		+= gpio-virtio.o
+ obj-$(CONFIG_GPIO_VISCONTI)		+= gpio-visconti.o
+ obj-$(CONFIG_GPIO_VR41XX)		+= gpio-vr41xx.o
+ obj-$(CONFIG_GPIO_VX855)		+= gpio-vx855.o
+diff --git a/drivers/gpio/gpio-virtio.c b/drivers/gpio/gpio-virtio.c
+new file mode 100644
+index 000000000000..1ba8ddf4693a
+--- /dev/null
++++ b/drivers/gpio/gpio-virtio.c
+@@ -0,0 +1,326 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * GPIO driver for virtio-based virtual GPIO controllers
++ *
++ * Copyright (C) 2021 metux IT consult
++ * Enrico Weigelt, metux IT consult <info@metux.net>
++ *
++ * Copyright (C) 2021 Linaro.
++ * Viresh Kumar <viresh.kumar@linaro.org>
++ */
++
++#include <linux/completion.h>
++#include <linux/err.h>
++#include <linux/gpio/driver.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/virtio_config.h>
++#include <uapi/linux/virtio_gpio.h>
++#include <uapi/linux/virtio_ids.h>
++
++struct virtio_gpio {
++	struct virtio_device *vdev;
++	struct mutex lock;
++	struct gpio_chip gc;
++
++	struct completion completion;
++	struct virtqueue *command_vq;
++	struct virtio_gpio_request creq;
++	struct virtio_gpio_response cres;
++
++	/* This must be kept as the last entry here, hint: gpio_names[0] */
++	struct virtio_gpio_config config;
++};
++
++#define gpio_chip_to_vgpio(chip) container_of(chip, struct virtio_gpio, gc)
++
++static int virtio_gpio_req(struct virtio_gpio *vgpio, u16 type, u16 gpio,
++			   u8 txdata, u8 *rxdata)
++{
++	struct virtio_gpio_response *res = &vgpio->cres;
++	struct virtio_gpio_request *req = &vgpio->creq;
++	struct scatterlist *sgs[2], req_sg, res_sg;
++	struct device *dev = &vgpio->vdev->dev;
++	unsigned long time_left;
++	unsigned int len;
++	int ret;
++
++	req->type = cpu_to_le16(type);
++	req->gpio = cpu_to_le16(gpio);
++	req->data = txdata;
++
++	sg_init_one(&req_sg, req, sizeof(*req));
++	sg_init_one(&res_sg, res, sizeof(*res));
++	sgs[0] = &req_sg;
++	sgs[1] = &res_sg;
++
++	mutex_lock(&vgpio->lock);
++	ret = virtqueue_add_sgs(vgpio->command_vq, sgs, 1, 1, res, GFP_KERNEL);
++	if (ret) {
++		dev_err(dev, "failed to add request to vq\n");
++		goto out;
++	}
++
++	reinit_completion(&vgpio->completion);
++	virtqueue_kick(vgpio->command_vq);
++
++	time_left = wait_for_completion_timeout(&vgpio->completion, HZ / 10);
++	if (!time_left) {
++		dev_err(dev, "virtio GPIO backend timeout\n");
++		return -ETIMEDOUT;
++	}
++
++	WARN_ON(res != virtqueue_get_buf(vgpio->command_vq, &len));
++	if (unlikely(res->status != VIRTIO_GPIO_STATUS_OK)) {
++		dev_err(dev, "virtio GPIO request failed: %d\n", gpio);
++		return -EINVAL;
++	}
++
++	if (rxdata)
++		*rxdata = res->data;
++
++out:
++	mutex_unlock(&vgpio->lock);
++
++	return ret;
++}
++
++static int virtio_gpio_request(struct gpio_chip *gc, unsigned int gpio)
++{
++	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
++
++	return virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_ACTIVATE, gpio, 0, NULL);
++}
++
++static void virtio_gpio_free(struct gpio_chip *gc, unsigned int gpio)
++{
++	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
++
++	virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_DEACTIVATE, gpio, 0, NULL);
++}
++
++static int virtio_gpio_get_direction(struct gpio_chip *gc, unsigned int gpio)
++{
++	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
++	u8 direction;
++	int ret;
++
++	ret = virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_GET_DIRECTION, gpio, 0,
++			      &direction);
++	if (ret)
++		return ret;
++
++	return direction;
++}
++
++static int virtio_gpio_direction_input(struct gpio_chip *gc, unsigned int gpio)
++{
++	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
++
++	return virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_DIRECTION_IN, gpio, 0,
++			       NULL);
++}
++
++static int virtio_gpio_direction_output(struct gpio_chip *gc, unsigned int gpio,
++					int value)
++{
++	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
++
++	return virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_DIRECTION_OUT, gpio, (u8)
++			       value, NULL);
++}
++
++static int virtio_gpio_get(struct gpio_chip *gc, unsigned int gpio)
++{
++	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
++	u8 value;
++	int ret;
++
++	ret = virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_GET_VALUE, gpio, 0, &value);
++	if (ret)
++		return ret;
++
++	return value;
++}
++
++static void virtio_gpio_set(struct gpio_chip *gc, unsigned int gpio, int value)
++{
++	struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
++
++	virtio_gpio_req(vgpio, VIRTIO_GPIO_REQ_SET_VALUE, gpio, value, NULL);
++}
++
++static void virtio_gpio_command(struct virtqueue *vq)
++{
++	struct virtio_gpio *vgpio = vq->vdev->priv;
++
++	complete(&vgpio->completion);
++}
++
++static int virtio_gpio_alloc_vqs(struct virtio_device *vdev)
++{
++	struct virtio_gpio *vgpio = vdev->priv;
++	const char * const names[] = { "command" };
++	vq_callback_t *cbs[] = {
++		virtio_gpio_command,
++	};
++	struct virtqueue *vqs[1] = {NULL};
++	int ret;
++
++	ret = virtio_find_vqs(vdev, 1, vqs, cbs, names, NULL);
++	if (ret) {
++		dev_err(&vdev->dev, "failed to allocate vqs: %d\n", ret);
++		return ret;
++	}
++
++	vgpio->command_vq = vqs[0];
++
++	/* Mark the device ready to perform operations from within probe() */
++	virtio_device_ready(vgpio->vdev);
++	return 0;
++}
++
++static void virtio_gpio_free_vqs(struct virtio_device *vdev)
++{
++	vdev->config->reset(vdev);
++	vdev->config->del_vqs(vdev);
++}
++
++static const char **parse_gpio_names(struct virtio_device *vdev,
++			       struct virtio_gpio_config *config)
++{
++	struct device *dev = &vdev->dev;
++	char *str = config->gpio_names;
++	const char **names;
++	int i, len;
++
++	if (!config->gpio_names_size)
++		return NULL;
++
++	names = devm_kcalloc(dev, config->ngpio, sizeof(names), GFP_KERNEL);
++	if (!names)
++		return ERR_PTR(-ENOMEM);
++
++	/* NULL terminate the string instead of checking it */
++	config->gpio_names[config->gpio_names_size - 1] = '\0';
++
++	for (i = 0; i < config->ngpio; i++) {
++		/*
++		 * We have already marked the last byte with '\0'
++		 * earlier, this shall be enough here.
++		 */
++		if (str == config->gpio_names + config->gpio_names_size) {
++			dev_err(dev, "Invalid gpio_names\n");
++			return ERR_PTR(-EINVAL);
++		}
++
++		len = strlen(str);
++		if (!len) {
++			dev_err(dev, "Missing GPIO name: %d\n", i);
++			return ERR_PTR(-EINVAL);
++		}
++
++		names[i] = str;
++		str += len + 1;
++	}
++
++	return names;
++}
++
++static int virtio_gpio_probe(struct virtio_device *vdev)
++{
++	struct virtio_gpio_config *config;
++	struct device *dev = &vdev->dev;
++	struct virtio_gpio *vgpio;
++	u32 size;
++	int ret;
++
++	virtio_cread(vdev, struct virtio_gpio_config, gpio_names_size, &size);
++	size = cpu_to_le32(size);
++
++	vgpio = devm_kzalloc(dev, sizeof(*vgpio) + size, GFP_KERNEL);
++	if (!vgpio)
++		return -ENOMEM;
++
++	config = &vgpio->config;
++
++	/* Read configuration */
++	virtio_cread_bytes(vdev, 0, config, sizeof(*config) + size);
++
++	/* NULL terminate the string instead of checking it */
++	config->name[sizeof(config->name) - 1] = '\0';
++	config->ngpio = cpu_to_le16(config->ngpio);
++	config->gpio_names_size = cpu_to_le32(config->gpio_names_size);
++
++	if (!config->ngpio) {
++		dev_err(dev, "Number of GPIOs can't be zero\n");
++		return -EINVAL;
++	}
++
++	vgpio->vdev			= vdev;
++	vgpio->gc.request		= virtio_gpio_request;
++	vgpio->gc.free			= virtio_gpio_free;
++	vgpio->gc.get_direction		= virtio_gpio_get_direction;
++	vgpio->gc.direction_input	= virtio_gpio_direction_input;
++	vgpio->gc.direction_output	= virtio_gpio_direction_output;
++	vgpio->gc.get			= virtio_gpio_get;
++	vgpio->gc.set			= virtio_gpio_set;
++	vgpio->gc.ngpio			= config->ngpio;
++	vgpio->gc.base			= -1; /* Allocate base dynamically */
++	vgpio->gc.label			= config->name[0] ?
++					  config->name : dev_name(dev);
++	vgpio->gc.parent		= dev;
++	vgpio->gc.owner			= THIS_MODULE;
++	vgpio->gc.can_sleep		= true;
++	vgpio->gc.names			= parse_gpio_names(vdev, config);
++	if (IS_ERR(vgpio->gc.names))
++		return PTR_ERR(vgpio->gc.names);
++
++	vdev->priv = vgpio;
++	mutex_init(&vgpio->lock);
++	init_completion(&vgpio->completion);
++
++	ret = virtio_gpio_alloc_vqs(vdev);
++	if (ret)
++		return ret;
++
++	ret = gpiochip_add(&vgpio->gc);
++	if (ret) {
++		virtio_gpio_free_vqs(vdev);
++		dev_err(dev, "Failed to add virtio-gpio controller\n");
++	}
++
++	return ret;
++}
++
++static void virtio_gpio_remove(struct virtio_device *vdev)
++{
++	struct virtio_gpio *vgpio = vdev->priv;
++
++	gpiochip_remove(&vgpio->gc);
++	virtio_gpio_free_vqs(vdev);
++}
++
++static const struct virtio_device_id id_table[] = {
++	{ VIRTIO_ID_GPIO, VIRTIO_DEV_ANY_ID },
++	{},
++};
++MODULE_DEVICE_TABLE(virtio, id_table);
++
++static struct virtio_driver virtio_gpio_driver = {
++	.id_table		= id_table,
++	.probe			= virtio_gpio_probe,
++	.remove			= virtio_gpio_remove,
++	.driver			= {
++		.name		= KBUILD_MODNAME,
++		.owner		= THIS_MODULE,
++	},
++};
++module_virtio_driver(virtio_gpio_driver);
++
++MODULE_AUTHOR("Enrico Weigelt, metux IT consult <info@metux.net>");
++MODULE_AUTHOR("Viresh Kumar <viresh.kumar@linaro.org>");
++MODULE_DESCRIPTION("VirtIO GPIO driver");
++MODULE_LICENSE("GPL");
+diff --git a/include/uapi/linux/virtio_gpio.h b/include/uapi/linux/virtio_gpio.h
+new file mode 100644
+index 000000000000..e805e33a79cb
+--- /dev/null
++++ b/include/uapi/linux/virtio_gpio.h
+@@ -0,0 +1,41 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++
++#ifndef _LINUX_VIRTIO_GPIO_H
++#define _LINUX_VIRTIO_GPIO_H
++
++#include <linux/types.h>
++
++/* Virtio GPIO request types */
++#define VIRTIO_GPIO_REQ_ACTIVATE		0x01
++#define VIRTIO_GPIO_REQ_DEACTIVATE		0x02
++#define VIRTIO_GPIO_REQ_GET_DIRECTION		0x03
++#define VIRTIO_GPIO_REQ_DIRECTION_IN		0x04
++#define VIRTIO_GPIO_REQ_DIRECTION_OUT		0x05
++#define VIRTIO_GPIO_REQ_GET_VALUE		0x06
++#define VIRTIO_GPIO_REQ_SET_VALUE		0x07
++
++/* Possible values of the status field */
++#define VIRTIO_GPIO_STATUS_OK			0x0
++#define VIRTIO_GPIO_STATUS_ERR			0x1
++
++struct virtio_gpio_config {
++	char name[32];
++	__u16 ngpio;
++	__u16 padding;
++	__u32 gpio_names_size;
++	char gpio_names[0];
++} __packed;
++
++/* Virtio GPIO Request / Response */
++struct virtio_gpio_request {
++	__u16 type;
++	__u16 gpio;
++	__u8 data;
++};
++
++struct virtio_gpio_response {
++	__u8 status;
++	__u8 data;
++};
++
++#endif /* _LINUX_VIRTIO_GPIO_H */
+diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
+index b89391dff6c9..0c24e8ae2499 100644
+--- a/include/uapi/linux/virtio_ids.h
++++ b/include/uapi/linux/virtio_ids.h
+@@ -55,5 +55,6 @@
+ #define VIRTIO_ID_PMEM			27 /* virtio pmem */
+ #define VIRTIO_ID_MAC80211_HWSIM	29 /* virtio mac80211-hwsim */
+ #define VIRTIO_ID_I2C_ADAPTER		34 /* virtio i2c adapter */
++#define VIRTIO_ID_GPIO			41 /* virtio GPIO */
+ 
+ #endif /* _LINUX_VIRTIO_IDS_H */
+-- 
+2.31.1.272.g89b43f80a514
 
