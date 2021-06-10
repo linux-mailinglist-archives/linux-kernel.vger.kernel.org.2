@@ -2,188 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9E53A2991
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B713A29B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhFJKrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 06:47:16 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5485 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230033AbhFJKrO (ORCPT
+        id S230146AbhFJLBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 07:01:46 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42924 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhFJLBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 06:47:14 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G10ss2tqKzZfXP;
-        Thu, 10 Jun 2021 18:42:25 +0800 (CST)
-Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 18:45:16 +0800
-Received: from [10.174.179.24] (10.174.179.24) by
- dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 18:45:15 +0800
-Subject: Re: [PATCH -next] netlabel: Fix memory leak in netlbl_mgmt_add_common
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-References: <20210610020108.1356361-1-liushixin2@huawei.com>
- <CAD-N9QWypyEa65-sz3rrtM2o5xzQd_5kJPyC4n+nK5JTviQvEQ@mail.gmail.com>
-CC:     Paul Moore <paul@paul-moore.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-From:   Liu Shixin <liushixin2@huawei.com>
-Message-ID: <ea1c6878-94d4-63ba-5dea-1190c146581d@huawei.com>
-Date:   Thu, 10 Jun 2021 18:45:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Thu, 10 Jun 2021 07:01:43 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6C56621A24;
+        Thu, 10 Jun 2021 10:59:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623322786;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zQS0qB/amfmlxFzlgfZBYMFK2FG3zor2og3viZ7XNGk=;
+        b=V9d3nm8QpwImHkoYll84Z5KcYk5PQtB8GgO3vwN9tlx8/SVvNFInlgF5CLVQV/pdkuYTLb
+        1MzKMVW55mPTy44s/sjIkClpEwnr5PPPaAhuSAaWQYbIu6K8lS9tqh4Q2q3AUjsWU1+bv5
+        bODxcG4rqsbnSSmmvWboCISfW7tO+lw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623322786;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zQS0qB/amfmlxFzlgfZBYMFK2FG3zor2og3viZ7XNGk=;
+        b=WZcfX5tRr/mGg0POBBSmg8vMRXepmz0ZgDwUdBubPFTOP/Hpl/qhoPTE+5FN8+mguIems/
+        hwO6s/YE8c8weDDA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 5EE19A3B8A;
+        Thu, 10 Jun 2021 10:59:46 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id E0547DAEB9; Thu, 10 Jun 2021 12:57:01 +0200 (CEST)
+Date:   Thu, 10 Jun 2021 12:57:01 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH] ipwireless: remove unused ipw_tty::closing
+Message-ID: <20210610105701.GA28158@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Jiri Slaby <jslaby@suse.cz>,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        David Sterba <dsterba@suse.com>
+References: <20210610090307.2689-1-jslaby@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <CAD-N9QWypyEa65-sz3rrtM2o5xzQd_5kJPyC4n+nK5JTviQvEQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.24]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610090307.2689-1-jslaby@suse.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/10 11:08, Dongliang Mu wrote:
-> On Thu, Jun 10, 2021 at 9:31 AM Liu Shixin <liushixin2@huawei.com> wrote:
->> Hulk Robot reported memory leak in netlbl_mgmt_add_common.
->> The problem is non-freed map in case of netlbl_domhsh_add() failed.
->>
->> BUG: memory leak
->> unreferenced object 0xffff888100ab7080 (size 96):
->>   comm "syz-executor537", pid 360, jiffies 4294862456 (age 22.678s)
->>   hex dump (first 32 bytes):
->>     05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->>     fe 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01  ................
->>   backtrace:
->>     [<0000000008b40026>] netlbl_mgmt_add_common.isra.0+0xb2a/0x1b40
->>     [<000000003be10950>] netlbl_mgmt_add+0x271/0x3c0
->>     [<00000000c70487ed>] genl_family_rcv_msg_doit.isra.0+0x20e/0x320
->>     [<000000001f2ff614>] genl_rcv_msg+0x2bf/0x4f0
->>     [<0000000089045792>] netlink_rcv_skb+0x134/0x3d0
->>     [<0000000020e96fdd>] genl_rcv+0x24/0x40
->>     [<0000000042810c66>] netlink_unicast+0x4a0/0x6a0
->>     [<000000002e1659f0>] netlink_sendmsg+0x789/0xc70
->>     [<000000006e43415f>] sock_sendmsg+0x139/0x170
->>     [<00000000680a73d7>] ____sys_sendmsg+0x658/0x7d0
->>     [<0000000065cbb8af>] ___sys_sendmsg+0xf8/0x170
->>     [<0000000019932b6c>] __sys_sendmsg+0xd3/0x190
->>     [<00000000643ac172>] do_syscall_64+0x37/0x90
->>     [<000000009b79d6dc>] entry_SYSCALL_64_after_hwframe+0x44/0xae
->>
->> Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
->> ---
->>  net/netlabel/netlabel_mgmt.c | 20 ++++++++++++++++----
->>  1 file changed, 16 insertions(+), 4 deletions(-)
->>
->> diff --git a/net/netlabel/netlabel_mgmt.c b/net/netlabel/netlabel_mgmt.c
->> index e664ab990941..e7f00c0f441e 100644
->> --- a/net/netlabel/netlabel_mgmt.c
->> +++ b/net/netlabel/netlabel_mgmt.c
->> @@ -191,6 +191,12 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
->>                 entry->family = AF_INET;
->>                 entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
->>                 entry->def.addrsel = addrmap;
->> +
->> +               ret_val = netlbl_domhsh_add(entry, audit_info);
->> +               if (ret_val != 0) {
->> +                       kfree(map);
->> +                       goto add_free_addrmap;
->> +               }
->>  #if IS_ENABLED(CONFIG_IPV6)
->>         } else if (info->attrs[NLBL_MGMT_A_IPV6ADDR]) {
->>                 struct in6_addr *addr;
->> @@ -243,13 +249,19 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
->>                 entry->family = AF_INET6;
->>                 entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
->>                 entry->def.addrsel = addrmap;
->> +
->> +               ret_val = netlbl_domhsh_add(entry, audit_info);
->> +               if (ret_val != 0) {
->> +                       kfree(map);
->> +                       goto add_free_addrmap;
->> +               }
->>  #endif /* IPv6 */
->> +       } else {
->> +               ret_val = netlbl_domhsh_add(entry, audit_info);
->> +               if (ret_val != 0)
->> +                       goto add_free_addrmap;
->>         }
->>
->> -       ret_val = netlbl_domhsh_add(entry, audit_info);
->> -       if (ret_val != 0)
->> -               goto add_free_addrmap;
->> -
-> Hi Shixin,
->
-> I have a small suggestion about this patch: you can move the variable
-> map out of if/else if branches, like the following code snippet.
->
-> Be aware to assign the variable map to NULL at first. Then kfree in
-> the last else branch will do nothing.
->
-> I don't test the following diff, if there are any issues, please let me know.
->
-> diff --git a/net/netlabel/netlabel_mgmt.c b/net/netlabel/netlabel_mgmt.c
-> index ca52f5085989..1824bcd2272b 100644
-> --- a/net/netlabel/netlabel_mgmt.c
-> +++ b/net/netlabel/netlabel_mgmt.c
-> @@ -78,6 +78,7 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
->  {
->         int ret_val = -EINVAL;
->         struct netlbl_domaddr_map *addrmap = NULL;
-> +       struct netlbl_domaddr4_map *map = NULL;
->         struct cipso_v4_doi *cipsov4 = NULL;
->  #if IS_ENABLED(CONFIG_IPV6)
->         struct calipso_doi *calipso = NULL;
-> @@ -147,7 +148,6 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
->         if (info->attrs[NLBL_MGMT_A_IPV4ADDR]) {
->                 struct in_addr *addr;
->                 struct in_addr *mask;
-> -               struct netlbl_domaddr4_map *map;
->
->                 addrmap = kzalloc(sizeof(*addrmap), GFP_KERNEL);
->                 if (addrmap == NULL) {
-> @@ -195,7 +195,6 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
->         } else if (info->attrs[NLBL_MGMT_A_IPV6ADDR]) {
->                 struct in6_addr *addr;
->                 struct in6_addr *mask;
-> -               struct netlbl_domaddr6_map *map;
->
->                 addrmap = kzalloc(sizeof(*addrmap), GFP_KERNEL);
->                 if (addrmap == NULL) {
-> @@ -247,8 +246,10 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
->         }
->
->         ret_val = netlbl_domhsh_add(entry, audit_info);
-> -       if (ret_val != 0)
-> +       if (ret_val != 0) {
-> +               kfree(map);
->                 goto add_free_addrmap;
-> +       }
->
->         return 0;
->
-The type of map can be struct netlbl_domaddr4_map or struct netlbl_domaddr6_map
-under different conditions. It seems like I can't put them together simply.
+On Thu, Jun 10, 2021 at 11:03:07AM +0200, Jiri Slaby wrote:
+> It's only set, but never read.
 
-Thanks,
->
->
->
->>         return 0;
->>
->>  add_free_addrmap:
->> --
->> 2.18.0.huawei.25
->>
-> .
->
+Thanks. Please update the changelog with:
 
+Commit 01261cb94318 ("tty: ipwireless: Remove tty->closing abort from
+ipw_open()") removed last use of tty::closing.
