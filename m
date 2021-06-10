@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5889B3A2F1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6843A2F21
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhFJPR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230287AbhFJPRz (ORCPT
+        id S231603AbhFJPS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:18:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27083 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231451AbhFJPS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:17:55 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B930FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 08:15:59 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id b14so12370990iow.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 08:15:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CoLn4qViOeYGj00Cr57KHBOqwdLExPB58jgkoo3+kw4=;
-        b=Om2bUvQgE2Xgs9cDoQxX/2kBFI2K66NFIlU9JDmEIPGlMCHD0ieH6TlNQnXGQz3B07
-         M2bCCqT3HjMFO1o8A7QhWEK3x00FJzwQZAIWMPYfx29Kgnl791SPIi9sUkPq/4TDbIix
-         MsvhgDVntFLr8RjuuittAj8mZltWU2WKZ9hV0=
+        Thu, 10 Jun 2021 11:18:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623338220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uvvlZU+GigwYDe2gW41VAVg7tPYfG2cr//m/IuHGiJY=;
+        b=Xq7QKjgAi6cOuOcjxhZ4bhrFjSG5XEHAk+G2HQy1p/AAXWFOvaQYo6nsYImLEQNzMlofL5
+        w+LSoDTlvHakzmNVDikTSfXMt1OVbNuh8bGF4rsEVi+pbkPJx4GGCivmTc5yNIGu1xCcuq
+        OARf3e5qwxrVEzWOTqJPUVg6DPuAF28=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-203-xvyWKFcPNmykxAZgSQJHjA-1; Thu, 10 Jun 2021 11:16:59 -0400
+X-MC-Unique: xvyWKFcPNmykxAZgSQJHjA-1
+Received: by mail-wm1-f72.google.com with SMTP id a19-20020a1c98130000b02901960b3b5621so1249578wme.8
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 08:16:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=CoLn4qViOeYGj00Cr57KHBOqwdLExPB58jgkoo3+kw4=;
-        b=bMYmj2FQhO85oxacQfFqO+p2tqUkd7PSHUoXCDFuO2aXVhQrNYp+YiJgF0/osl0B2P
-         vuZqS50XtN9tcmiJtJ/lDiI2NIy0quGOAIpVLQgGM9NkUzglB14XeGToD1Gws6jXzl3J
-         BIPoj4O4VeFf2zn94wrfGBj7vI9PwzhjKoA3UtGoX2n3kRm28Ex4mpaVQ2cofNpLewX9
-         01CCjchggu1U+M0CJ1swmNp0ZrCgllV8WHpuDEU1Nuyzzi7z4ROL2D44JCdMJWKs9kAM
-         5bNXMKABZNFZUQJ0pmBD8imAruXsRpLM2Mv6lkdiUEpGcGfAvbgRUXNsTlSYRmZde55X
-         edXA==
-X-Gm-Message-State: AOAM533Zf0u7nCuf4kgpKV/KJdHc6rPandj+FoxiNLnkdH2qHuiCJJ8p
-        eQ/jxDFFK9QJ328CbOBu16lFIw==
-X-Google-Smtp-Source: ABdhPJzrK+ymUDdzzgUR5JsVtJu/hPBNk+7tFS5Ro4H8pl6LapGKsn8k4Sq+vVh6f6Sbxu1L7cxBtQ==
-X-Received: by 2002:a05:6638:1202:: with SMTP id n2mr5200296jas.57.1623338159216;
-        Thu, 10 Jun 2021 08:15:59 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id g14sm1671700ioo.19.2021.06.10.08.15.56
+        bh=uvvlZU+GigwYDe2gW41VAVg7tPYfG2cr//m/IuHGiJY=;
+        b=gvTnaW1SGFQ42B7gXC+W17+7TR+CIHbIjBKj3s35MGxzmhz9K38Pmn8TnwMCg/cYNU
+         Iinbt1oMYXQORgguvVD9+0I6K+0BKYAGVQtrY2TkdOk2Mwaj7uZsueNVTxBdngWf1iRC
+         Rx7wu1dbu38Dq7KcOCqxAzHJiuaCQXAFR1DxKJPPKB48DfXFqhy/ViK67CryWrpoQXGy
+         sf1Eh98/9O0ZdIj3wHUwF9F4xL0sUbSh4M8gxWW4T7zuMtqG7ZMqwLW8VM4Q3a6RzaXv
+         ZuIh2lZBHxgYQNbjqglX/zHKJ0t16RgBDdvLFQIj+CKvu6QDERr8WHjG+xAxg76GeBP2
+         9Yig==
+X-Gm-Message-State: AOAM531esytAj7kY6YTvvFIvzWT9fzDopkx+JfywmD0UjsNDUE1jGLHs
+        RH/0hUJDsXPq0nX/Yw8/IKxqS/T0K8BN8SaqYMrGsXkpmtwYKRPs7o68eOv9eaVS3e/qf6Ph9wm
+        Yh0gaI2++ensQIGBWokUEQ3Kn
+X-Received: by 2002:a1c:1fc8:: with SMTP id f191mr3963422wmf.33.1623338218397;
+        Thu, 10 Jun 2021 08:16:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwOk4REtOe9YUHUfQj5Jwv3P+mhb8LGKgs2qnGVxCH1EYirT5Ot3TtCxvAz3PWOAyYfTIa4qw==
+X-Received: by 2002:a1c:1fc8:: with SMTP id f191mr3963407wmf.33.1623338218245;
+        Thu, 10 Jun 2021 08:16:58 -0700 (PDT)
+Received: from ?IPv6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
+        by smtp.gmail.com with ESMTPSA id o9sm3587454wri.68.2021.06.10.08.16.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 08:15:57 -0700 (PDT)
-Subject: Re: [PATCH v3 4/4] tty: make use of tty_get_{char,frame}_size
-To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, David Lin <dtwlin@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Oliver Neukum <oneukum@suse.com>
-References: <20210505091928.22010-1-jslaby@suse.cz>
- <20210610090247.2593-1-jslaby@suse.cz> <20210610090247.2593-4-jslaby@suse.cz>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <0f61ae31-cfad-cd78-b976-c05f56c89d4c@ieee.org>
-Date:   Thu, 10 Jun 2021 10:15:55 -0500
+        Thu, 10 Jun 2021 08:16:57 -0700 (PDT)
+Subject: Re: [PATCH v5 7/7] KVM: SVM: hyper-v: Direct Virtual Flush support
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+References: <cover.1622730232.git.viremana@linux.microsoft.com>
+ <fc8d24d8eb7017266bb961e39a171b0caf298d7f.1622730232.git.viremana@linux.microsoft.com>
+ <871r9aynoe.fsf@vitty.brq.redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <dacd2187-2952-afa7-3802-9a7b9b99856d@redhat.com>
+Date:   Thu, 10 Jun 2021 17:16:55 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210610090247.2593-4-jslaby@suse.cz>
+In-Reply-To: <871r9aynoe.fsf@vitty.brq.redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,27 +87,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/21 4:02 AM, Jiri Slaby wrote:
-> In the previous patch, we introduced tty_get_char_size() and
-> tty_get_frame_size() for computing character and frame sizes,
-> respectively. Here, we make use of them in various tty drivers where
-> applicable.
+On 10/06/21 13:16, Vitaly Kuznetsov wrote:
+>> +int hv_enable_direct_tlbflush(struct kvm_vcpu *vcpu)
+>> +{
+> I would've avoided re-using 'hv_enable_direct_tlbflush()' name which we
+> already have in vmx. In fact, in the spirit of this patch, I'd suggest
+> we create arch/x86/kvm/vmx/vmx_onhyperv.c and move the existing
+> hv_enable_direct_tlbflush() there. We can then re-name it to e.g.
 > 
-> The stats look nice: 12 insertions, 169 deletions.
+> vmx_enable_hv_direct_tlbflush()
+> 
+> so the one introduced by this patch will be
+> 
+> svm_enable_hv_direct_tlbflush()
+> 
 
-Agreed.  Looks good to me (for drivers/staging/greybus/uart.c).
+I did the rename, and agree with creating a similar file that is split 
+off vmx.c.
 
-Acked-by: Alex Elder <elder@kernel.org>
+Paolo
 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: David Lin <dtwlin@gmail.com>
-> Cc: Johan Hovold <johan@kernel.org>
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-> Cc: Oliver Neukum <oneukum@suse.com>
