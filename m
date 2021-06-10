@@ -2,82 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0363A3096
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A6C3A3098
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhFJQ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:29:17 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:36647 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhFJQ3Q (ORCPT
+        id S231302AbhFJQ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:29:40 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33892 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230445AbhFJQ3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:29:16 -0400
-Received: by mail-ot1-f43.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so278615otl.3;
-        Thu, 10 Jun 2021 09:27:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EK1mjQ/f6ITujp115mW7JL3SX+0ni6SRT4tA38v94s8=;
-        b=R99UAnvNu2JpX8nTSsbEpgjrVV5j4Sk0jcdy48zekAq6YcI0myIjCWzwpnPCBVBM9T
-         EWk17p41LHIKX9MwldLsQFrmLx2VBUAzmZ6SMrwva3cp0jZqNS35N7Win4r9ZZ3uw2uW
-         fxdTtK8eGnVBxA/O5vBO3vqFfgM/cPomf8rWvSBYZyGBkZtwZ2ojC6AmehSsWISxlW8e
-         wmh7GnYGANFtCI7WQPHrMmMnq4fBQ6ieYHJdIFU+b7+Gp4svgbTLuJwsNDJJVYo5xigN
-         7/DuHGbpD4Xrinz5vEX3Kji8TrZkvFm+iZ/33heG9jGkoxB+sshVHcn2qZ2nM4bXmyie
-         9aOw==
-X-Gm-Message-State: AOAM530b8f1LoUnsqKFQ04wjigoiqfp724vjwWZJsKB3+W5VqGNh0XCy
-        c7zDOoMoEQd8frzMIWdHn44VingI+A==
-X-Google-Smtp-Source: ABdhPJwMG5KQzeXTml4Qxe43YPpLaVrfXTxJx+3v3r2q4/7IYsKPox0ZydBayDxAopu9ZE2DafgDcw==
-X-Received: by 2002:a05:6830:2415:: with SMTP id j21mr2971197ots.224.1623342439617;
-        Thu, 10 Jun 2021 09:27:19 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.113])
-        by smtp.gmail.com with ESMTPSA id k8sm604856ool.5.2021.06.10.09.27.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 09:27:18 -0700 (PDT)
-Received: (nullmailer pid 1921923 invoked by uid 1000);
-        Thu, 10 Jun 2021 16:27:15 -0000
-Date:   Thu, 10 Jun 2021 11:27:15 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Aleksander Jan Bajkowski <olek2@wp.pl>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        linux-gpio@vger.kernel.org, john@phrozen.org, robh+dt@kernel.org
-Subject: Re: [PATCH v4] dt-bindings: gpio: stp: convert to json-schema
-Message-ID: <20210610162715.GA1921873@robh.at.kernel.org>
-References: <20210603135945.3495-1-olek2@wp.pl>
+        Thu, 10 Jun 2021 12:29:39 -0400
+Date:   Thu, 10 Jun 2021 16:27:40 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623342462;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HeQByG8RpQ++WnUTSK2nC9PUxl8n/DOzzfm4V9ERr08=;
+        b=Zxzfk85sz4YeymwQANqL2JPfI27kIYYaTArP0Lq6fFVTu2AzI/KvzGSLwF3YLafNhibKh+
+        EcdK2LHZiBJZssxWUkxsnuwnU269FJqvnkdmdE1DTwUWVBdfvUnOgtPQO6uCwMwhk/Upgu
+        wmyE6NuYXQpIqxEa9NaPELY+kJBIX3Yjjcf1OpeeLGtL0R4Fg2BY//fQ6FTkihcRuQWW69
+        I74zFe6n0mHeEeLoOEKPxwodIbNFP/XFAUfAnlmQ7GA3MwSyvAnbVyDcLIVz91b8NmS823
+        Z76rDoaKzaEyU7sijJYpjmuXJ/ypVSBUZzJ+50eFesiDhyigh1g+Nf39+qrzeA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623342462;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HeQByG8RpQ++WnUTSK2nC9PUxl8n/DOzzfm4V9ERr08=;
+        b=RsBt+4Q6fAB3mMLu7QSl+DtPVB9C08EW8aUY/qkJxZhu6RlcX8+QoSauzX0FUGQs29pfcD
+        6yL7pUg7leBmpdCQ==
+From:   "tip-bot2 for Hubert Jasudowicz" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] doc: Remove references to IBM Calgary
+Cc:     Hubert Jasudowicz <hubert.jasudowicz@gmail.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3C1bd2b57dd1db53df09e520b8170ff61418805de4=2E16232?=
+ =?utf-8?q?74832=2Egit=2Ehubert=2Ejasudowicz=40gmail=2Ecom=3E?=
+References: =?utf-8?q?=3C1bd2b57dd1db53df09e520b8170ff61418805de4=2E162327?=
+ =?utf-8?q?4832=2Egit=2Ehubert=2Ejasudowicz=40gmail=2Ecom=3E?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603135945.3495-1-olek2@wp.pl>
+Message-ID: <162334246092.29796.9005969074055956442.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Jun 2021 15:59:45 +0200, Aleksander Jan Bajkowski wrote:
-> Convert the Lantiq STP Device Tree binding documentation to json-schema.
-> Add the missing pinctrl property to the example. Add missing lantiq,phy3
-> and lantiq,phy4 bindings for xRX300 and xRX330 SoCs.
-> 
-> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> Changes since v3:
->  - Removed description of the reg property.
->  - Changed regex pattern property.
->  - Moved lantiq,rising to properties.
-> Changes since v2:
->  - Changed phy numbering in description of pattern Properties. Numbering
->    should start with 1.
-> Changes since v1:
->  - Renamed node to gpio.
->  - Dropped default pinctrl from this binding.
->  - Converted lantiq,phyX to patternProperties.
-> ---
->  .../bindings/gpio/gpio-stp-xway.txt           | 42 --------
->  .../bindings/gpio/gpio-stp-xway.yaml          | 99 +++++++++++++++++++
->  2 files changed, 99 insertions(+), 42 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
->  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
-> 
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Commit-ID:     0e5a89dbb49920cea22193044bbbfd76a9b0f458
+Gitweb:        https://git.kernel.org/tip/0e5a89dbb49920cea22193044bbbfd76a9b0f458
+Author:        Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
+AuthorDate:    Wed, 09 Jun 2021 23:51:12 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 10 Jun 2021 18:19:36 +02:00
+
+doc: Remove references to IBM Calgary
+
+The Calgary IOMMU driver has been removed in
+
+  90dc392fc445 ("x86: Remove the calgary IOMMU driver")
+
+Clean up stale docs that refer to it.
+
+Signed-off-by: Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/1bd2b57dd1db53df09e520b8170ff61418805de4.1623274832.git.hubert.jasudowicz@gmail.com
+---
+ Documentation/x86/x86_64/boot-options.rst | 31 +----------------------
+ 1 file changed, 1 insertion(+), 30 deletions(-)
+
+diff --git a/Documentation/x86/x86_64/boot-options.rst b/Documentation/x86/x86_64/boot-options.rst
+index 324ceff..5f62b3b 100644
+--- a/Documentation/x86/x86_64/boot-options.rst
++++ b/Documentation/x86/x86_64/boot-options.rst
+@@ -247,16 +247,11 @@ Multiple x86-64 PCI-DMA mapping implementations exist, for example:
+       Kernel boot message: "PCI-DMA: Using software bounce buffering
+       for IO (SWIOTLB)"
+ 
+-   4. <arch/x86_64/pci-calgary.c> : IBM Calgary hardware IOMMU. Used in IBM
+-      pSeries and xSeries servers. This hardware IOMMU supports DMA address
+-      mapping with memory protection, etc.
+-      Kernel boot message: "PCI-DMA: Using Calgary IOMMU"
+-
+ ::
+ 
+   iommu=[<size>][,noagp][,off][,force][,noforce]
+   [,memaper[=<order>]][,merge][,fullflush][,nomerge]
+-  [,noaperture][,calgary]
++  [,noaperture]
+ 
+ General iommu options:
+ 
+@@ -295,8 +290,6 @@ iommu options only relevant to the AMD GART hardware IOMMU:
+       Don't initialize the AGP driver and use full aperture.
+     panic
+       Always panic when IOMMU overflows.
+-    calgary
+-      Use the Calgary IOMMU if it is available
+ 
+ iommu options only relevant to the software bounce buffering (SWIOTLB) IOMMU
+ implementation:
+@@ -307,28 +300,6 @@ implementation:
+       force
+         Force all IO through the software TLB.
+ 
+-Settings for the IBM Calgary hardware IOMMU currently found in IBM
+-pSeries and xSeries machines
+-
+-    calgary=[64k,128k,256k,512k,1M,2M,4M,8M]
+-      Set the size of each PCI slot's translation table when using the
+-      Calgary IOMMU. This is the size of the translation table itself
+-      in main memory. The smallest table, 64k, covers an IO space of
+-      32MB; the largest, 8MB table, can cover an IO space of 4GB.
+-      Normally the kernel will make the right choice by itself.
+-    calgary=[translate_empty_slots]
+-      Enable translation even on slots that have no devices attached to
+-      them, in case a device will be hotplugged in the future.
+-    calgary=[disable=<PCI bus number>]
+-      Disable translation on a given PHB. For
+-      example, the built-in graphics adapter resides on the first bridge
+-      (PCI bus number 0); if translation (isolation) is enabled on this
+-      bridge, X servers that access the hardware directly from user
+-      space might stop working. Use this option if you have devices that
+-      are accessed from userspace directly on some PCI host bridge.
+-    panic
+-      Always panic when IOMMU overflows
+-
+ 
+ Miscellaneous
+ =============
