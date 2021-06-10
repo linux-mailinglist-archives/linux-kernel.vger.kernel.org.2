@@ -2,94 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869CB3A2797
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66AC3A2798
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhFJJD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhFJJDZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:03:25 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0370CC061574;
-        Thu, 10 Jun 2021 02:01:29 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id l2so1353558wrw.6;
-        Thu, 10 Jun 2021 02:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4dpwSf8vT6ZCk9fHZ67LbAm98yCy+a/1aUnvXz/Mv6U=;
-        b=Yz1qT65yQzMBpxR1aYxjRrHl0iIApV9zHOtqaZ3lve77U97GnP8hNWAX/6IjoboFPV
-         Q5eIFN82ivi0n2yR1RuimtiIitjEYy/DZ1tDsXDGnpPrnN6I5Y+PuOrDFjbio5Tp72tG
-         q1Vnm7lifanjACQc6Iu0TcM7liBWVxXZY6xQzfahbgFNnrQa1EgpHjvGEk21rj0Iu1sB
-         sfaECm+gXIfU/Je0MSlUvS1n8FuATu6VQDYcgEaxiKkV1Ioq1XScgEknxG68YzjWZlcC
-         6HIshhR+xZaBy7yTdDWz8by7eLU99tUO3za7gjQtMmydn7p8aDkc6WZi2hNYTItxlhmh
-         N5aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4dpwSf8vT6ZCk9fHZ67LbAm98yCy+a/1aUnvXz/Mv6U=;
-        b=FjbrAwPUkEf+IioP7f3leg2GxorITHJkft27WbGLl/qcfVPHRq2RsMXDEyoUwNfpnl
-         MiHKNlINpmDTKA+crqVk54lJSHyKqan5EkrpIzJ4YuoCpjQLkQHH6BIkWkW393JQABWi
-         pRnosWcmHmJFs+pu24RRmSMKhGNaISkmOFA0ZsRW2VK//5r8stXds4uUHSB5XdxlejwF
-         Zu+bwKAwy+Gc3Dj0hyKLCSn/X96humO6w8UXCjZ9Dr2kqvQWaGMZ6VvmaF09fjec6fWd
-         xAmI4+UxAUYvPZvgyG5VdlRIvSkwHIR8kCqHexd1ciE/HjLvbt1fQzwAjyY/NXtDqi9m
-         XB+Q==
-X-Gm-Message-State: AOAM533bqkyeaUFdSc8hyehmBaKwJ1+KOZ5H0MrE2taZ/KU28tLt2uK0
-        4EGadI0WMtlp7QUScwhj+o4=
-X-Google-Smtp-Source: ABdhPJxJC0OUaQM7kH2MWGaNpfzjKP/BY0Gf8wNb38ZzGQBjLb+U3+XCK46503a3DxiUQAFTWZvlYQ==
-X-Received: by 2002:a5d:6e04:: with SMTP id h4mr4062789wrz.256.1623315685955;
-        Thu, 10 Jun 2021 02:01:25 -0700 (PDT)
-Received: from debian (host-2-98-62-17.as13285.net. [2.98.62.17])
-        by smtp.gmail.com with ESMTPSA id t1sm2663837wrx.28.2021.06.10.02.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 02:01:25 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 10:01:23 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/78] 5.4.125-rc1 review
-Message-ID: <YMHU4zKBr/JzHFVA@debian>
-References: <20210608175935.254388043@linuxfoundation.org>
+        id S230144AbhFJJDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:03:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230113AbhFJJDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 05:03:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DAA760E0B;
+        Thu, 10 Jun 2021 09:01:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623315696;
+        bh=oHe8XcKEKLKDeuczDRI5GTPHAyzZzPeeYWrrKnD+Opg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DxIxupouoekDcM7btq1RBeEeCiJm6dBAlhOQuXMXWAM4YPvKVYTw5uBQ6EpQK4IBz
+         5Q5eW2PAIhusIJgOVo63nycde2B3kNjSTaLjrym8FC0urw0Y7PsMSDFe+Gv/ErGLcQ
+         0tfRGPILHL62YouQUE5YoKSBKR3pqCpj6dCPciTRjhsv9fx0iwr7iZR1jofHpjzMdO
+         5SQfpEiSgkgqjrf8irplCwqJea3qaq9mFCI8dZ/LBxdbWuv4IJMTuP7sSqnhkZ9PIM
+         JVAYq7wv6A6DWP0pr6gIMWU1du9N4xeCqC7O+W/AdxI0uTdfqq11KbTutleFYHAV4X
+         6WYBp178VsjIA==
+Date:   Thu, 10 Jun 2021 12:01:34 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-sgx@vger.kernel.org
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Add SGX_PAGE_REPEAT flag for
+ SGX_IOC_ENCLAVE_ADD_PAGES
+Message-ID: <20210610090134.xetwllckm4dugg5c@kernel.org>
+References: <20210610072117.76987-1-jarkko@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210610072117.76987-1-jarkko@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Tue, Jun 08, 2021 at 08:26:29PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.125 release.
-> There are 78 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, Jun 10, 2021 at 10:21:17AM +0300, Jarkko Sakkinen wrote:
+> For uninitialized data, there's a need to add the same page multiple times,
+> e.g. a zero page, instead of traversing the source memory forward. With the
+> current API, this requires to call SGX_IOC_ENCLAVE_ADD_PAGES multiple
+> times, once per page, which is not very efficient.
 > 
-> Responses should be made by Thu, 10 Jun 2021 17:59:18 +0000.
-> Anything received after that time might be too late.
+> Add a new SGX_PAGE_REPEAT flag to resolve the issue. When this flag is set
+> to the 'flags' field of struct sgx_enclave_pages, the ioctl will apply the
+> page at 'src' multiple times, instead of moving forward in the address
+> space.
+> 
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Build test:
-mips (gcc version 11.1.1 20210523): 65 configs -> no failure
-arm (gcc version 11.1.1 20210523): 107 configs -> no new failure
-arm64 (gcc version 11.1.1 20210523): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+After sending this, I started to think that maybe it would actually better
+to just add SGX_PAGE_ZERO flag, i.e. add zero pages and ignore src. That's
+the main use case right now, and saves the user space from extra trouble of
+having to do such page by hand.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
+That neither does prevent adding SGX_PAGE_REPEAT later on. I just see no
+point of that generic functionality right now. It only makes simple use
+case more complex.
 
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
+/Jarkko
