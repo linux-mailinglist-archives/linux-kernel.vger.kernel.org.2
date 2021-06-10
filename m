@@ -2,72 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309BB3A32F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01303A32FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhFJSXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 14:23:14 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:41640 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhFJSXM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 14:23:12 -0400
-Received: by mail-wr1-f52.google.com with SMTP id o3so3336038wri.8;
-        Thu, 10 Jun 2021 11:21:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Eqm4ERZ6h/WqHjEhJGoI0O+yCyk+QKdXa8kIv9Ki3oY=;
-        b=DEXY7oJdM85vIOGwoOIIVmLNdMO7qybnn0lXygsKXhbL4fKQAwbPA2Weqep3H7ZymM
-         d2YTpgzoRh33Jg/arpFtI+R8ISfPi/Imh4vAuAgzQI2ZycBxCfc09zmWimD3aC79Pk11
-         W0TlG3HDXmS1BN3a3nivj7RaVur9CgGVut6jvPyk6zlO/O2lI4BW4l+CtVMmpxdq5+tu
-         8xekqEsE3xoAZvIjoW+WG1Ximicaj2h4pZTEurWfX5hf86vTLE5V9OzINOqT51eKxbcE
-         D8nf4+PfJrTJ5ODT82XM4Beoe4CYbfxhkypI4UFpWKVcLLoEJsDmHCjJTrEHQM2FGCN2
-         a4zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Eqm4ERZ6h/WqHjEhJGoI0O+yCyk+QKdXa8kIv9Ki3oY=;
-        b=rvzmszs7ErWGMwzq8np60oJcLMU9lFRBO92JdVtR8YIU9KOzFJ7q+wUS9ABK6Pws1Q
-         yZuIuYb09sMwj9611u0p66NyDKOfbUr86jq2fFhHXCfgsKkCcuQdb43+DZOBEOc9Ojpd
-         0RyGPT0YFWnsC219XqShqOuNO/z7yKKEBbQcNhEJhwhJd/H4WHUkPO4Ytrky8fEbFfUs
-         SXm9/c/3a3puHfVlpxkGD4oyDVkOTteZhlZAG4oi+F2DZkhMjjeX1V9Y6aiewmUXPP0D
-         kRKmvlUbU2KI4zTBQQS1Mw6flaUenuLjexkfr5bFyFHb8iYRjPy7Vxh9dD89avsPWmWr
-         mOVA==
-X-Gm-Message-State: AOAM5328GgJ05AqJx7wKGWai2k+8LMtuRsyAiDtCqCW/uzb36jD1rqay
-        mbpqEQcpyvH48oeNz0ckMVEXGOJGJZ8=
-X-Google-Smtp-Source: ABdhPJxkjsYkOzZE7mN3JZEckq5gTUdXaG7XdUEF3AHDGs9v4FmtXWlyUep2IkhqCa1nDfngmPbHdQ==
-X-Received: by 2002:a5d:564a:: with SMTP id j10mr6956285wrw.171.1623349214816;
-        Thu, 10 Jun 2021 11:20:14 -0700 (PDT)
-Received: from [192.168.181.98] (228.18.23.93.rev.sfr.net. [93.23.18.228])
-        by smtp.gmail.com with ESMTPSA id k12sm10280228wmr.2.2021.06.10.11.20.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 11:20:14 -0700 (PDT)
-Subject: Re: [PATCH v7 bpf-next 05/11] tcp: Migrate
- TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210521182104.18273-1-kuniyu@amazon.co.jp>
- <20210521182104.18273-6-kuniyu@amazon.co.jp>
-From:   Eric Dumazet <erdnetdev@gmail.com>
-Message-ID: <612b0da4-1e3e-66b8-0902-f76840796f36@gmail.com>
-Date:   Thu, 10 Jun 2021 20:20:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231295AbhFJSYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 14:24:13 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22203 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231254AbhFJSYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 14:24:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623349335; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=E3TulAYeD48+XPfMqj2062F9NYilPaepjuhGKVCkFIg=; b=JPfDRQCRBDuXDGwl7k7WXjexphTcfqgq9faLaeSFMJ8pTTjfT2p64fBsxoK2GYVdPCoZeo9X
+ DC03hyt4xsRYZuY9ABfohLpBKF/nYVst2i6ml6yJz1T4QxW3KfcdO1cqu0MwQ4lncQRWApSZ
+ 2mxGFpNvvsIjP5TqaQAmNSqujro=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60c25842f726fa41880f020e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Jun 2021 18:21:54
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3C694C4360C; Thu, 10 Jun 2021 18:21:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.62.3] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4B639C433D3;
+        Thu, 10 Jun 2021 18:21:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4B639C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH] usb: dwc3: gadget: Disable gadget IRQ during pullup
+ disable
+To:     Felipe Balbi <balbi@kernel.org>, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org
+References: <1621571037-1424-1-git-send-email-wcheng@codeaurora.org>
+ <87h7i60ye8.fsf@kernel.org>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <724ba69a-8c67-4b4b-3e6a-a5834b09e6e1@codeaurora.org>
+Date:   Thu, 10 Jun 2021 11:21:51 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210521182104.18273-6-kuniyu@amazon.co.jp>
+In-Reply-To: <87h7i60ye8.fsf@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -77,134 +66,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
-> When we call close() or shutdown() for listening sockets, each child socket
-> in the accept queue are freed at inet_csk_listen_stop(). If we can get a
-> new listener by reuseport_migrate_sock() and clone the request by
-> inet_reqsk_clone(), we try to add it into the new listener's accept queue
-> by inet_csk_reqsk_queue_add(). If it fails, we have to call __reqsk_free()
-> to call sock_put() for its listener and free the cloned request.
+On 6/10/2021 4:09 AM, Felipe Balbi wrote:
+> Wesley Cheng <wcheng@codeaurora.org> writes:
 > 
-> After putting the full socket into ehash, tcp_v[46]_syn_recv_sock() sets
-> NULL to ireq_opt/pktopts in struct inet_request_sock, but ipv6_opt can be
-> non-NULL. So, we have to set NULL to ipv6_opt of the old request to avoid
-> double free.
+>> Current sequence utilizes dwc3_gadget_disable_irq() alongside
+>> synchronize_irq() to ensure that no further DWC3 events are generated.
+>> However, the dwc3_gadget_disable_irq() API only disables device
+>> specific events.  Endpoint events can still be generated.  Briefly
+>> disable the interrupt line, so that the cleanup code can run to
+>> prevent device and endpoint events. (i.e. __dwc3_gadget_stop() and
+>> dwc3_stop_active_transfers() respectively)
+>>
+>> Without doing so, it can lead to both the interrupt handler and the
+>> pullup disable routine both writing to the GEVNTCOUNT register, which
+>> will cause an incorrect count being read from future interrupts.
+>>
+>> Fixes: ae7e86108b12 ("usb: dwc3: Stop active transfers before halting the controller")
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>>  drivers/usb/dwc3/gadget.c | 11 +++++------
+>>  1 file changed, 5 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>> index 49ca5da..89aa9ac 100644
+>> --- a/drivers/usb/dwc3/gadget.c
+>> +++ b/drivers/usb/dwc3/gadget.c
+>> @@ -2260,13 +2260,10 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+>>  	}
+>>  
+>>  	/*
+>> -	 * Synchronize any pending event handling before executing the controller
+>> -	 * halt routine.
+>> +	 * Synchronize and disable any further event handling while controller
+>> +	 * is being enabled/disabled.
+>>  	 */
+>> -	if (!is_on) {
+>> -		dwc3_gadget_disable_irq(dwc);
+>> -		synchronize_irq(dwc->irq_gadget);
+>> -	}
+>> +	disable_irq(dwc->irq_gadget);
+>>  
+>>  	spin_lock_irqsave(&dwc->lock, flags);
 > 
-> Note that we do not update req->rsk_listener and instead clone the req to
-> migrate because another path may reference the original request. If we
-> protected it by RCU, we would need to add rcu_read_lock() in many places.
+> spin_lock_irqsave() is already disabling interrupt, right? Why do we
+> need another call to disable_irq()?
 > 
-> Link: https://lore.kernel.org/netdev/20201209030903.hhow5r53l6fmozjn@kafai-mbp.dhcp.thefacebook.com/
-> Suggested-by: Martin KaFai Lau <kafai@fb.com>
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
-> ---
->  net/ipv4/inet_connection_sock.c | 71 ++++++++++++++++++++++++++++++++-
->  1 file changed, 70 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> index fa806e9167ec..07e97b2f3635 100644
-> --- a/net/ipv4/inet_connection_sock.c
-> +++ b/net/ipv4/inet_connection_sock.c
-> @@ -695,6 +695,53 @@ int inet_rtx_syn_ack(const struct sock *parent, struct request_sock *req)
->  }
->  EXPORT_SYMBOL(inet_rtx_syn_ack);
->  
-> +static struct request_sock *inet_reqsk_clone(struct request_sock *req,
-> +					     struct sock *sk)
-> +{
-> +	struct sock *req_sk, *nreq_sk;
-> +	struct request_sock *nreq;
-> +
-> +	nreq = kmem_cache_alloc(req->rsk_ops->slab, GFP_ATOMIC | __GFP_NOWARN);
-> +	if (!nreq) {
-> +		/* paired with refcount_inc_not_zero() in reuseport_migrate_sock() */
-> +		sock_put(sk);
-> +		return NULL;
-> +	}
-> +
-> +	req_sk = req_to_sk(req);
-> +	nreq_sk = req_to_sk(nreq);
-> +
-> +	memcpy(nreq_sk, req_sk,
-> +	       offsetof(struct sock, sk_dontcopy_begin));
-> +	memcpy(&nreq_sk->sk_dontcopy_end, &req_sk->sk_dontcopy_end,
-> +	       req->rsk_ops->obj_size - offsetof(struct sock, sk_dontcopy_end));
-> +
-> +	sk_node_init(&nreq_sk->sk_node);
-> +	nreq_sk->sk_tx_queue_mapping = req_sk->sk_tx_queue_mapping;
-> +#ifdef CONFIG_XPS
-> +	nreq_sk->sk_rx_queue_mapping = req_sk->sk_rx_queue_mapping;
-> +#endif
-> +	nreq_sk->sk_incoming_cpu = req_sk->sk_incoming_cpu;
-> +	refcount_set(&nreq_sk->sk_refcnt, 0);
 
-Not sure why you clear sk_refcnt here (it is set to 1 later)
+Hi Felipe,
 
-> +
-> +	nreq->rsk_listener = sk;
-> +
-> +	/* We need not acquire fastopenq->lock
-> +	 * because the child socket is locked in inet_csk_listen_stop().
-> +	 */
-> +	if (sk->sk_protocol == IPPROTO_TCP && tcp_rsk(nreq)->tfo_listener)
-> +		rcu_assign_pointer(tcp_sk(nreq->sk)->fastopen_rsk, nreq);
-> +
-> +	return nreq;
-> +}
+Yes, I remember you brought up that point as well before.  So when I
+checked the logs (USB and scheduler ftrace) for this issue, I clearly
+saw that we were handling a soft disconnect on CPU3 and then an DWC3 IRQ
+being scheduled into CPU0.  Last time we discussed, I mentioned that
+spin_lock_irqsave() only disables interrupts on that particular CPU the
+thread is running on.
 
-Ouch, this is going to be hard to maintain...
+Thanks
+Wesley Cheng
 
-
-
-
-> +
-> +static void reqsk_migrate_reset(struct request_sock *req)
-> +{
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +	inet_rsk(req)->ipv6_opt = NULL;
-> +#endif
-> +}
-> +
->  /* return true if req was found in the ehash table */
->  static bool reqsk_queue_unlink(struct request_sock *req)
->  {
-> @@ -1036,14 +1083,36 @@ void inet_csk_listen_stop(struct sock *sk)
->  	 * of the variants now.			--ANK
->  	 */
->  	while ((req = reqsk_queue_remove(queue, sk)) != NULL) {
-> -		struct sock *child = req->sk;
-> +		struct sock *child = req->sk, *nsk;
-> +		struct request_sock *nreq;
->  
->  		local_bh_disable();
->  		bh_lock_sock(child);
->  		WARN_ON(sock_owned_by_user(child));
->  		sock_hold(child);
->  
-> +		nsk = reuseport_migrate_sock(sk, child, NULL);
-> +		if (nsk) {
-> +			nreq = inet_reqsk_clone(req, nsk);
-> +			if (nreq) {
-> +				refcount_set(&nreq->rsk_refcnt, 1);
-> +
-> +				if (inet_csk_reqsk_queue_add(nsk, nreq, child)) {
-> +					reqsk_migrate_reset(req);
-> +				} else {
-> +					reqsk_migrate_reset(nreq);
-> +					__reqsk_free(nreq);
-> +				}
-> +
-> +				/* inet_csk_reqsk_queue_add() has already
-> +				 * called inet_child_forget() on failure case.
-> +				 */
-> +				goto skip_child_forget;
-> +			}
-> +		}
-> +
->  		inet_child_forget(sk, req, child);
-> +skip_child_forget:
->  		reqsk_put(req);
->  		bh_unlock_sock(child);
->  		local_bh_enable();
-> 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
