@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741343A376B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD993A376D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhFJWyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:54:15 -0400
-Received: from ozlabs.org ([203.11.71.1]:43921 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231133AbhFJWyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:54:13 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G1K3y5GLtz9sVm;
-        Fri, 11 Jun 2021 08:52:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623365535;
-        bh=iUWEZ+yzmix4qIkq6pvo8nFE4B65u9WJ5wdC3ysqTU4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dONJqGKltC4QPuKWYjytedZwVACExMkXcBdFqHb1SzXG8RruFlP8AITKGomasU3Oc
-         w48gKXo+zK75eEP0CqN7mD3nlOxg8usReOmM4kGIn+C5K3gkPDvXkhXbADG8ewJAF1
-         1CNru87r+YGiNPcLld9mnCjlspsLddzI74X2Ovyb3uQf2gt9cvUpDdkW5dmFUmI6Zl
-         3lDUxBC26GYyFI02K7zZ2FWXLqrg4j1Wlfn6MVpK1CdCGS8dUUbo/kSe+umbLU3bCb
-         IgeJuZrukRUQ3YXlGOrmjM8xeHL/n5S0SjZtPz6jof5qczEFjJHUtv1y9vi3x7xPJ5
-         71gFXqvWFsmhA==
-Date:   Fri, 11 Jun 2021 08:52:13 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Joel Stanley <joel@jms.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the usb.current tree
-Message-ID: <20210611085213.4c8379ca@canb.auug.org.au>
+        id S231193AbhFJWzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 18:55:05 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:6626 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhFJWzE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 18:55:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1623365587; x=1654901587;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=MavhUkwec3KxpmIuIqa2ujWlt3bbQK3gmsqMev55N9g=;
+  b=Uraga2nFfVs8uJU4qboinaI1G46RyK2lL+0NpxF4phJCQaBBLNY8PF8L
+   KyYQ1zxQNOIUBhUdkqhDbZ8tvmamqmpTz8cxUkVGDAidAmUgPFgH5/BBr
+   M/0IrNI2+S/wKkoboiujkdd3Kzby4DfsSXf7o6MmAAnBURHJhEhgZpGzH
+   g=;
+X-IronPort-AV: E=Sophos;i="5.83,264,1616457600"; 
+   d="scan'208";a="115114206"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 10 Jun 2021 22:53:06 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id F15AFA25D0;
+        Thu, 10 Jun 2021 22:53:03 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 10 Jun 2021 22:53:03 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.41) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 10 Jun 2021 22:52:58 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <eric.dumazet@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
+        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v7 bpf-next 06/11] tcp: Migrate TCP_NEW_SYN_RECV requests at retransmitting SYN+ACKs.
+Date:   Fri, 11 Jun 2021 07:52:55 +0900
+Message-ID: <20210610225255.410-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <3e02db84-1cda-8b5a-49ea-cdbad900e3ea@gmail.com>
+References: <3e02db84-1cda-8b5a-49ea-cdbad900e3ea@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/C/meI_7/NtS6n458XN6cwGj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.41]
+X-ClientProxiedBy: EX13D24UWA002.ant.amazon.com (10.43.160.200) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/C/meI_7/NtS6n458XN6cwGj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Date:   Thu, 10 Jun 2021 22:21:00 +0200
+> On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
+> > As with the preceding patch, this patch changes reqsk_timer_handler() to
+> > call reuseport_migrate_sock() and inet_reqsk_clone() to migrate in-flight
+> > requests at retransmitting SYN+ACKs. If we can select a new listener and
+> > clone the request, we resume setting the SYN+ACK timer for the new req. If
+> > we can set the timer, we call inet_ehash_insert() to unhash the old req and
+> > put the new req into ehash.
+> > 
+> 
+> ...
+> 
+> >  static void reqsk_migrate_reset(struct request_sock *req)
+> >  {
+> > +	req->saved_syn = NULL;
+> > +	inet_rsk(req)->ireq_opt = NULL;
+> >  #if IS_ENABLED(CONFIG_IPV6)
+> > -	inet_rsk(req)->ipv6_opt = NULL;
+> > +	inet_rsk(req)->pktopts = NULL;
+> >  #endif
+> >  }
+> 
+> This is fragile. 
+> 
+> Maybe instead :
+> 
+> #if IS_ENABLED(CONFIG_IPV6)
+> 	inet_rsk(req)->ipv6_opt = NULL;
+> 	inet_rsk(req)->pktopts = NULL;
+> #else
+> 	inet_rsk(req)->ireq_opt = NULL;
+> #endif
 
-Hi all,
+I will fix this, thank you.
 
-After merging the usb.current tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
-
-arm-linux-gnueabi-ld: drivers/usb/gadget/udc/fsl_udc_core.o: in function `f=
-sl_udc_remove':
-fsl_udc_core.c:(.text+0xc88): undefined reference to `fsl_udc_clk_release'
-arm-linux-gnueabi-ld: drivers/usb/gadget/udc/fsl_udc_core.o: in function `f=
-sl_udc_probe':
-fsl_udc_core.c:(.text+0x1c44): undefined reference to `fsl_udc_clk_init'
-arm-linux-gnueabi-ld: fsl_udc_core.c:(.text+0x1dcc): undefined reference to=
- `fsl_udc_clk_finalize'
-arm-linux-gnueabi-ld: fsl_udc_core.c:(.text+0x1fe8): undefined reference to=
- `fsl_udc_clk_release'
-
-Caused by commit
-
-  e0e8b6abe8c8 ("usb: gadget: fsl: Re-enable driver for ARM SoCs")
-
-I have reverted that commit for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/C/meI_7/NtS6n458XN6cwGj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDCl50ACgkQAVBC80lX
-0Gy0cwgAi/DSAqgIEnKh7tudpLOYRw4eZAQkeOu4ecOAPb2CrNJy+gf3KHfKe1EJ
-As63hNpUZJGTQMVlqFE44ji8lm+qwUdhhiX9B64soyCbO1YhTHniIC4siXH+yBaQ
-t4qwBvc62lra1926LgYDJ/iOsB7BdIQNdfFNvbyd1YMlBs+GrB9jFwL4y8fXSvPn
-Vg/Zz2rl6Bqaa0ACQnRfM5ArNubFzmUOpkZYyd/FDS17iNd9DojdYjXXoPnz+TY3
-KxIsec4fu+GKDmVzdj1XQ4tZIG1QiW4fY9+AnJVYaKzg/euoRfO4WwLE5iOUYidX
-a8qyYe1FkG5JeE6SwObRFxQUyrzygg==
-=4Eqe
------END PGP SIGNATURE-----
-
---Sig_/C/meI_7/NtS6n458XN6cwGj--
+Also I will send a follow-up patch later to fix the same style in
+inet_reqsk_alloc().
