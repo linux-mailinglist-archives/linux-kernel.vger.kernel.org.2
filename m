@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CFD3A3706
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D763A371E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhFJW11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:27:27 -0400
-Received: from mail-io1-f51.google.com ([209.85.166.51]:37515 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbhFJW1Z (ORCPT
+        id S230331AbhFJWbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 18:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhFJWbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:27:25 -0400
-Received: by mail-io1-f51.google.com with SMTP id q7so28829890iob.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:25:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w7TVjLZ+YHlKeGJ8qAU9Un06YFm9yXurMjRE2VQEqoY=;
-        b=lcnU0h1GZrdQJLHy8y+QLyi53BxH+7M3T72jS6rR9R+chmR1B7uM/QQBUr0wb9Na5Y
-         ztJ6PqO0L1apCQeAEkrh7TvbJK5Uw0hLjM37NV2AFe/Kgnno9gNP2tycgvMLwh4zbi58
-         Q26dJPAFABhMVEZeABUu2C+MTVBBYla4XZvvU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w7TVjLZ+YHlKeGJ8qAU9Un06YFm9yXurMjRE2VQEqoY=;
-        b=VFqctm/KJkBHchXK6ctpIcK7bNsCseL5PE7wTtICiGQVGrJ+UCKrIKYCjjRpmWra6i
-         7N/Oe3yO/siwGof8Hx2zl83LXJJBgfDpaX6+u54pWZOJ98xH+HMzOdjEEN54AkhRrfVv
-         rEyi+WUHgtZAizFzoWNOAk8AoqY3D6hftZiIcSRGuI8WVF6bIxw3yxLzf+CwunYxfoOo
-         /N9CjzD32ByAegk8PGN6XUsU5z9iKLJXl6gaPetLO8FFK4GXzmeRA+VqTFjg/K3ZDtq1
-         4JWjT7lnNuZ5VOQRQmteV6SlFs+Z5vsknPc76EWnvgcQay5aR6U1ulB42WlK12f4FIdY
-         QfNQ==
-X-Gm-Message-State: AOAM530H5moJq+OINtpn2KSk0nUgDYts42m9hm1wYWcfX4+gE0VtCEmU
-        aUVJEsgjrbxnkyNESi941P7bKTZp2Q+rjg+cdvDZag==
-X-Google-Smtp-Source: ABdhPJxXRsWHoRSS+DqKbfDPMQ4aRNvfX6WB5CCyhEHmFMsKbxf9xeh5w6evmQo2ATTX7WJCxTs0JimQzDD9PcEr90Q=
-X-Received: by 2002:a6b:cf13:: with SMTP id o19mr599046ioa.206.1623363860099;
- Thu, 10 Jun 2021 15:24:20 -0700 (PDT)
+        Thu, 10 Jun 2021 18:31:32 -0400
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [IPv6:2a01:37:3000::53df:4ef0:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE7AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:29:35 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 89852280011C3;
+        Fri, 11 Jun 2021 00:29:33 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 7E4F9F88D0; Fri, 11 Jun 2021 00:29:33 +0200 (CEST)
+Date:   Fri, 11 Jun 2021 00:29:33 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH AUTOSEL 5.12 03/43] spi: Fix spi device unregister flow
+Message-ID: <20210610222933.GB6120@wunner.de>
+References: <20210603170734.3168284-1-sashal@kernel.org>
+ <20210603170734.3168284-3-sashal@kernel.org>
+ <20210606111028.GA20948@wunner.de>
+ <YMJR/FNCwDllHIDG@sashalap>
+ <CAGETcx_w8pHs3OXQyVXYWV1CY4qGTWrZ9QNEwz=TL8SLbyq1bA@mail.gmail.com>
+ <20210610192608.GA31461@wunner.de>
+ <CAGETcx9xSsBMmxzKzgwkWYTrFbKidxY5ANmCmXsF6LduTMKtbA@mail.gmail.com>
 MIME-Version: 1.0
-References: <1623293391-17261-1-git-send-email-xiyuyang19@fudan.edu.cn>
-In-Reply-To: <1623293391-17261-1-git-send-email-xiyuyang19@fudan.edu.cn>
-From:   Rob Clark <robdclark@chromium.org>
-Date:   Thu, 10 Jun 2021 15:28:15 -0700
-Message-ID: <CAJs_Fx6qgQFOp16SLQfz-Aaj4mqTo+vCvfpQr_E3UapVTrsu6Q@mail.gmail.com>
-Subject: Re: [PATCH v2] iommu/arm-smmu: Fix arm_smmu_device refcount leak in
- address translation
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>, yuanxzhang@fudan.edu.cn,
-        Xin Tan <tanxin.ctf@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx9xSsBMmxzKzgwkWYTrFbKidxY5ANmCmXsF6LduTMKtbA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 7:50 PM Xiyu Yang <xiyuyang19@fudan.edu.cn> wrote:
->
-> The reference counting issue happens in several exception handling paths
-> of arm_smmu_iova_to_phys_hard(). When those error scenarios occur, the
-> function forgets to decrease the refcount of "smmu" increased by
-> arm_smmu_rpm_get(), causing a refcount leak.
->
-> Fix this issue by jumping to "out" label when those error scenarios
-> occur.
->
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> ---
->  drivers/iommu/arm/arm-smmu/arm-smmu.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> index 6f72c4d208ca..3a3847277320 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> @@ -1271,6 +1271,7 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
->         u64 phys;
->         unsigned long va, flags;
->         int ret, idx = cfg->cbndx;
-> +       phys_addr_t addr = 0;
->
->         ret = arm_smmu_rpm_get(smmu);
->         if (ret < 0)
-> @@ -1290,6 +1291,7 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
->                 dev_err(dev,
->                         "iova to phys timed out on %pad. Falling back to software table walk.\n",
->                         &iova);
-> +               arm_smmu_rpm_put(smmu);
->                 return ops->iova_to_phys(ops, iova);
+On Thu, Jun 10, 2021 at 12:30:18PM -0700, Saravana Kannan wrote:
+> On Thu, Jun 10, 2021 at 12:26 PM Lukas Wunner <lukas@wunner.de> wrote:
+> >
+> > On Thu, Jun 10, 2021 at 12:22:40PM -0700, Saravana Kannan wrote:
+> > > On Thu, Jun 10, 2021 at 10:55 AM Sasha Levin <sashal@kernel.org> wrote:
+> > > > On Sun, Jun 06, 2021 at 01:10:28PM +0200, Lukas Wunner wrote:
+> > > > >On Thu, Jun 03, 2021 at 01:06:53PM -0400, Sasha Levin wrote:
+> > > > >> From: Saravana Kannan <saravanak@google.com>
+> > > > >>
+> > > > >> [ Upstream commit c7299fea67696db5bd09d924d1f1080d894f92ef ]
+> > > > >
+> > > > >This commit shouldn't be backported to stable by itself, it requires
+> > > > >that the following fixups are applied on top of it:
+> > > > >
+> > > > >* Upstream commit 27e7db56cf3d ("spi: Don't have controller clean up spi
+> > > > >  device before driver unbind")
+> > > > >
+> > > > >* spi.git commit 2ec6f20b33eb ("spi: Cleanup on failure of initial setup")
+> > > > >  https://git.kernel.org/broonie/spi/c/2ec6f20b33eb
+> > > > >
+> > > > >Note that the latter is queued for v5.13, but hasn't landed there yet.
+> > > > >So you probably need to back out c7299fea6769 from the stable queue and
+> > > > >wait for 2ec6f20b33eb to land in upstream.
+> > > > >
+> > > > >Since you've applied c7299fea6769 to v5.12, v5.10, v5.4, v4.14 and v4.19
+> > > > >stable trees, the two fixups listed above need to be backported to all
+> > > > >of them.
+> > > >
+> > > > I took those two patches into 5.12-5.4, but as they needed a more
+> > > > complex backport for 4.14 and 4.19, I've dropped c7299fea67 from those
+> > > > trees.
+> > >
+> > > Sounds good. Also, there was a subsequent "Fixes" for this patch and I
+> > > think another "Fixes" for the "Fixes". So, before picking this up,
+> > > maybe make sure those Fixes patches are pickable too?
+> >
+> > Aren't those the commits I've listed above?  Or did I miss any fixes?
+> > I'm not aware of any others besides these two.
+> 
+> Ah, those are the ones. I didn't see them. My bad.
 
-I suppose you could also:
+All good.  Sasha says that backporting the fixes is a little more
+involved in the case of 4.14 and 4.19.  Do you consider the issue
+critical enough that it should be addressed in those stable kernels
+as well?  (I assume the issue concerns Android devices, not sure
+in how far those are using 4.14 and 4.19?)
 
-   addr = ops->iov_to_phys(...);
-   goto out;
+Thanks,
 
-but either way,
-
-Reviewed-by: Rob Clark <robdclark@chromium.org>
-
->         }
->
-> @@ -1298,12 +1300,14 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
->         if (phys & ARM_SMMU_CB_PAR_F) {
->                 dev_err(dev, "translation fault!\n");
->                 dev_err(dev, "PAR = 0x%llx\n", phys);
-> -               return 0;
-> +               goto out;
->         }
->
-> +       addr = (phys & GENMASK_ULL(39, 12)) | (iova & 0xfff);
-> +out:
->         arm_smmu_rpm_put(smmu);
->
-> -       return (phys & GENMASK_ULL(39, 12)) | (iova & 0xfff);
-> +       return addr;
->  }
->
->  static phys_addr_t arm_smmu_iova_to_phys(struct iommu_domain *domain,
-> --
-> 2.7.4
->
+Lukas
