@@ -2,81 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204E83A2E10
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 815623A2E16
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhFJO10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:27:26 -0400
-Received: from mga09.intel.com ([134.134.136.24]:11363 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230153AbhFJO1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:27:24 -0400
-IronPort-SDR: m3ke9AlduWM3gybvvkZdqqWTy4ZCOrwBBPUYA3bwgMYf0y/+kbJI9vWQXuZr6EuLC45AfzukQz
- BOazx+N7ts+w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="205267272"
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="205267272"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 07:25:08 -0700
-IronPort-SDR: hCAbLj1fQwzqoL6BHxgCVeU2vNdluBm4WylVZkxZ976mLCh4TDFm/a1VI41LmrHJ6ULT+gAS0z
- qfq5yc61ZPCQ==
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="402876746"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 07:25:06 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1lrLcG-001AbZ-6U; Thu, 10 Jun 2021 17:25:04 +0300
-Date:   Thu, 10 Jun 2021 17:25:04 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] pinctrl: intel: fix NULL pointer deref
-Message-ID: <YMIgwORlAzz/gJcK@smile.fi.intel.com>
-References: <20210609062722.9132-1-henning.schild@siemens.com>
- <YMCT+izizEg0gPLD@lahna.fi.intel.com>
- <CAHp75Vcj9wmM7H908sqGmXs10BQN8ty1C4qfmk_nXpG_s=BjTQ@mail.gmail.com>
- <20210609130816.3631f0aa@md1za8fc.ad001.siemens.net>
+        id S231350AbhFJO1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230153AbhFJO1g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:27:36 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867CFC061574;
+        Thu, 10 Jun 2021 07:25:24 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id k22-20020a17090aef16b0290163512accedso5574790pjz.0;
+        Thu, 10 Jun 2021 07:25:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9LfruKTSmGsaKr3T0KtsgMI2g1V5D5r+FfKoliRoTY8=;
+        b=c3W9IY55kAGRSZQMUKIse7CYjATOc/WNsezUixaF5fWDkVciqS0+iWaZcHtL2rFFUw
+         q6Af9zyVo5zJyfySRvKv8k+huR+szVR1Xb8GDyTonmbkQ3V0MoPt+EBqk/fvrUpoIhu0
+         FpoCg5T+vTYyaf/IELWrWdHqeg6MOtolC1d7jn3ifj33bWYJ1rAiXRMyOW50J2wlpwFG
+         OzCk7HbGROQ8oMztcbHmPooQ1M2yg6rOw9Gp0rsVbF3wVqRpT60yIqJM59aQu50FPywK
+         5PKEXQwlOBjWNljf/CAPll8LJKaf8zXSJtCqfJmCU42oGpqB5i4sk/wWojxWFZDHy/Ps
+         2toA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9LfruKTSmGsaKr3T0KtsgMI2g1V5D5r+FfKoliRoTY8=;
+        b=T2G4mEfYrGXXBVm8dgrZKagV13bFY1A1h5Qq4PACuqFfIl5QWe1xp4uwe4SnckpWDZ
+         OSFrJ82BHaCkdmhlYo2sK+D7VgKZU0VsSsdfH6v3owDUZcBa5pPg/5ehXFTWSu5LJOGM
+         4oC8qT1/4BvnWnVdSMsQonN4LsXOPpO2aC/ng8IPEpRJgh5a2byoSZNClYvMGnZ5ogpv
+         +GdYb8110SMZTCMI/fsWCyhVFpjNtdAaxT9Zs1jxPqhhhGg8HYWt1XjSSVcACAwzxuiK
+         tQKd+GByD1vxHJVirQIl3USitpTOWN3t16Xd830rqrDksPcdB/mMKhm3UhtxFXcbITYR
+         PhyQ==
+X-Gm-Message-State: AOAM530EL4WiVuZJrwHe6k5KGYiiGLTdFc+l0/GqHytLu9oSLQ6VjrFz
+        vHYFGzLDx4ENRmclKn5FuRE=
+X-Google-Smtp-Source: ABdhPJzdwp2MX3HMzPasMcsmUlDqisDdNAsXcZ2anZ9ouahX31714ETLaZ+TtT/Nrt8h3xRgpVym6w==
+X-Received: by 2002:a17:90a:7bce:: with SMTP id d14mr3702065pjl.38.1623335123951;
+        Thu, 10 Jun 2021 07:25:23 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id 1sm8338487pjm.8.2021.06.10.07.25.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 07:25:23 -0700 (PDT)
+Subject: Re: [RFC PATCH V3 08/11] swiotlb: Add bounce buffer remap address
+ setting function
+From:   Tianyu Lan <ltykernel@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        arnd@arndb.de, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        hannes@cmpxchg.org, cai@lca.pw, krish.sadhukhan@oracle.com,
+        saravanand@fb.com, Tianyu.Lan@microsoft.com,
+        konrad.wilk@oracle.com, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
+        xen-devel@lists.xenproject.org, davem@davemloft.net,
+        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, sunilmut@microsoft.com
+References: <20210530150628.2063957-1-ltykernel@gmail.com>
+ <20210530150628.2063957-9-ltykernel@gmail.com>
+ <20210607064312.GB24478@lst.de>
+ <48516ce3-564c-419e-b355-0ce53794dcb1@gmail.com>
+Message-ID: <9c05f7fd-6460-5d4a-aa83-08626839d18e@gmail.com>
+Date:   Thu, 10 Jun 2021 22:25:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609130816.3631f0aa@md1za8fc.ad001.siemens.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <48516ce3-564c-419e-b355-0ce53794dcb1@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 01:08:16PM +0200, Henning Schild wrote:
-> Am Wed, 9 Jun 2021 13:33:34 +0300
-> schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
 
-...
 
-> In order to use GPIO from the drivers i need to make sure
-> "broxton-pinctrl" comes up even if p2sb is hidden.
+On 6/7/2021 10:56 PM, Tianyu Lan wrote:
 > 
-> Long story short, i thought the patch was simple enough to merge even
-> taken out of my special context.
+> On 6/7/2021 2:43 PM, Christoph Hellwig wrote:
+>> On Sun, May 30, 2021 at 11:06:25AM -0400, Tianyu Lan wrote:
+>>> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+>>>
+>>> For Hyper-V isolation VM with AMD SEV SNP, the bounce buffer(shared 
+>>> memory)
+>>> needs to be accessed via extra address space(e.g address above bit39).
+>>> Hyper-V code may remap extra address space outside of swiotlb. swiotlb_
+>>> bounce() needs to use remap virtual address to copy data from/to bounce
+>>> buffer. Add new interface swiotlb_set_bounce_remap() to do that.
+>>
+>> Why can't you use the bus_dma_region ranges to remap to your preferred
+>> address?
+>>
 > 
-> Currently intel_pinctl only works if "ps2b is not hidden by BIOS" or
-> "ACPI tables are correct", lifting the ban on the hidden p2sb seems
-> like a useful thing in general (i.e. sysfs gpio interface). And i was
-> hoping Andy would take the lead on that. It is something my Siemens
-> drivers would depend on, but really a generic thing as far as i
-> understand it.
+> Thanks for your suggestion.
+> 
+> These addresses in extra address space works as system memory mirror. 
+> The shared memory with host in Isolation VM needs to be accessed via 
+> extra address space which is above shared gpa boundary. During 
+> initializing swiotlb bounce buffer pool, only address bellow shared gpa 
+> boundary can be accepted by swiotlb API because it is treated as system 
+> memory and managed by memory management. This is why Hyper-V swiotlb 
+> bounce buffer pool needs to be allocated in Hyper-V code and map
+> associated physical address in extra address space. The patch target is
+> to add the new interface to set start virtual address of bounce buffer
+> pool and let swiotlb boucne buffer copy function to use right virtual 
+> address for extra address space.
+> 
+> bus_dma_region is to translate cpu physical address to dma address.
+> It can't modify the virtual address of bounce buffer pool and let
+> swiotlb code to copy data with right address. If some thing missed,
+> please correct me.
+> 
 
-From p2sb series discussion it appears that this patch is not needed.
-The case is when BIOS already provides an ACPI device.
+Hi Christoph:
+	Sorry to bother you. Could you have a look at my previous reply?
+I try figuring out the right way.
 
-So, the initial bug is in that series that needs to check if the ACPI device is
-exposed and forbid platform device instantiation in that case.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks.
