@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B373A3524
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CD43A351C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhFJUwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 16:52:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41776 "EHLO mail.kernel.org"
+        id S230427AbhFJUwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 16:52:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230304AbhFJUwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 16:52:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E655361429;
+        id S230294AbhFJUwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 16:52:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C58A96141D;
         Thu, 10 Jun 2021 20:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623358206;
-        bh=vsHzK4s5AG0JTFJagkIiirN8+lz3jELSsMoR03gSfRc=;
+        bh=OLCtVh65ZZU77JY37oRtbRO+WOtkt2lNHnP3NDBNhgY=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=PpyDCOn0iV76mIxkFv9LyXmpy5JWFNakdX6l0EpIOvXgYw/OaVa5BLuJByRgB4Fot
-         p/j8evJMESwrLyxTHVoixEH/b35WBmrXuXwm/PlN6G5TY23+w5zee/fSbCWSg6DM4n
-         4zhppMMQli2K0eWS8bFxR5UVP4XuWSIMrwg6mVRd+vds8yHWhXFCKk2Ue/1744tBbo
-         IJ9XNhIw5Mycoc2q9Un+3HR2EDb7g9Ci1Dpzg8sBOYRU4kp6DAEaWdSp8c3+0TgIAg
-         f/BlFax/YNfwSmVNwBg+raP/fXd4jmB9Y3yMB29LsUYgRIMJNHfwOVxHBF2byw36pa
-         YAOeipmj8cFWQ==
+        b=EV3xdYcCusyEb6JMiFEEAN7etTWJmibglbbJudJTbEKKq5rL4qVjSiJ58YU+Iq1oF
+         tBe8D9JYEq461LufvnFDUb/I0ivHNB9p9OizM08BZXuUFiTrJnMAR7maPywm/iCRJI
+         1Yydv11JNlm7hDPMK1qPUPR91X/PXjY572jxcMJj0BxHOUZ4mVKccgOPA3fmGbkfbi
+         grS0uogMIAqkjvgVxd8dINgaNkP4q52YkdLJnpe6nXB00nUBBY1hSdb+BM+rdpvyGH
+         56a93AAG2rVLChTm2iBkXQYVsowkuT9freaTmg7a+LxC2XIVArP0kj7mdtT9ihHZRH
+         XQNYOf0tuaKGw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DCFCB60A6C;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BF61F60BE2;
         Thu, 10 Jun 2021 20:50:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] tipc:subscr.c: fix a spelling mistake
+Subject: Re: [PATCH] tipc: socket.c: fix the use of copular verb
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162335820690.975.16634510333070331192.git-patchwork-notify@kernel.org>
+Message-Id: <162335820677.975.10680513951676624271.git-patchwork-notify@kernel.org>
 Date:   Thu, 10 Jun 2021 20:50:06 +0000
-References: <20210610062958.38656-1-13145886936@163.com>
-In-Reply-To: <20210610062958.38656-1-13145886936@163.com>
+References: <20210610061853.38137-1-13145886936@163.com>
+In-Reply-To: <20210610061853.38137-1-13145886936@163.com>
 To:     None <13145886936@163.com>
 Cc:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
         kuba@kernel.org, netdev@vger.kernel.org,
@@ -48,19 +48,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed,  9 Jun 2021 23:29:58 -0700 you wrote:
+On Wed,  9 Jun 2021 23:18:53 -0700 you wrote:
 > From: gushengxian <gushengxian@yulong.com>
 > 
-> Fix a spelling mistake.
+> Fix the use of copular verb.
 > 
 > Signed-off-by: gushengxian <gushengxian@yulong.com>
 > ---
->  net/tipc/subscr.c | 2 +-
+>  net/tipc/socket.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - tipc:subscr.c: fix a spelling mistake
-    https://git.kernel.org/netdev/net-next/c/f1dcdc075617
+  - tipc: socket.c: fix the use of copular verb
+    https://git.kernel.org/netdev/net-next/c/326af505ca1f
 
 You are awesome, thank you!
 --
