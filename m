@@ -2,94 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1123A3369
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEAA3A336E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbhFJSmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 14:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45382 "EHLO
+        id S231372AbhFJSmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 14:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhFJSmG (ORCPT
+        with ESMTP id S231379AbhFJSmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 14:42:06 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF00C061574;
-        Thu, 10 Jun 2021 11:40:09 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5A8BE8D4;
-        Thu, 10 Jun 2021 20:40:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1623350407;
-        bh=3OnZB1761PB+ay2D9PLynmCjGhCXhNjzmmTAaqHSDKk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R351bkpH3ApWxPQMlPcqE/s2/L58xwMdjvOStsdVnFG3jNwq00tuRSaQ+WrbLfOvr
-         tIRfRcMfwoIp02htQIoKPDdp00AtXBtVgB5F7dNzRX6B8yxo8VObb8hsFjgR0ZNFbb
-         67HEIO/yoCNzyOJbl3Qac5R4BVddQTQi+0vTaGgc=
-Date:   Thu, 10 Jun 2021 21:39:49 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-Message-ID: <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
-References: <YH2hs6EsPTpDAqXc@mit.edu>
- <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
- <YIx7R6tmcRRCl/az@mit.edu>
- <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
- <YK+esqGjKaPb+b/Q@kroah.com>
- <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
- <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
- <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
- <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
+        Thu, 10 Jun 2021 14:42:24 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C2CC0617A8
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 11:40:28 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id z1so2827318ils.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 11:40:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nf6J5VPNhOdTIuNzS3DZB8U4CF2Pa9aEYKvb9flUDmE=;
+        b=L9ROHi2BHpv08ujQ0qbHKjVArHSZnmhGjjBBzyRm68KOimSWOubX9EnG8CQ0OXAVev
+         +CJgYDykJlToHLMoS/FMyD5TmcfVYoP2/XrCIqGk92OfAGYPgPU0piy1c776G5VCviVD
+         uFvX2DGmcDFLBAYbS3HHS+ZqUy0mFxi3w67Xw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nf6J5VPNhOdTIuNzS3DZB8U4CF2Pa9aEYKvb9flUDmE=;
+        b=CFl6Z52P93397hush1axQwSRMdROOMboNWaYDY77DgRWh6OnqqRxS6N8ey6JKX4Y9G
+         6v2JdlExIU01OQTKvwXOxzCJQUThA3doL0ljkxcDrvAL9OtHCBg3Q/zyM3ZNssB0h8XI
+         t2VRDNlA8ffzC8PFHc3RqbXxLlUqnGlVwVIYTvAaH5OKCCMjtVyqsUcAnM8a531TRbYx
+         +Ani2GVMG1bbIlk9W3CGQhKxMRe6bbYxL4FtS8xU3QvZBxHWri4dunrg4hitfpUXtfIp
+         yMfLhyoaSXiyD66f+2CeH4UCeQW7lcNwOMQwFCIly4FoRQIf1Kiz20pY/gb61l4ki3WZ
+         MxFw==
+X-Gm-Message-State: AOAM5300/o6vp+J0EIC61ClOSsHfVgEBoxtPx3jWCV9AHMTFE9zOCPdL
+        UZcERqIxtjAKlsWB7Un9dJ7cqPVXO3mzFw==
+X-Google-Smtp-Source: ABdhPJzWd1wvNKilHx1+Zs6ognkbkdzuQz8atznrWZFZD4RgEsjh/FhR3yh+20B1uOv5RhiTGTD3IQ==
+X-Received: by 2002:a05:6e02:54e:: with SMTP id i14mr158374ils.129.1623350427474;
+        Thu, 10 Jun 2021 11:40:27 -0700 (PDT)
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com. [209.85.166.43])
+        by smtp.gmail.com with ESMTPSA id e4sm2279669iow.47.2021.06.10.11.40.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 11:40:27 -0700 (PDT)
+Received: by mail-io1-f43.google.com with SMTP id q7so28172796iob.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 11:40:26 -0700 (PDT)
+X-Received: by 2002:a5e:974d:: with SMTP id h13mr4904715ioq.150.1623350426300;
+ Thu, 10 Jun 2021 11:40:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
+References: <20210326095840.364424-1-ribalda@chromium.org> <20210326095840.364424-17-ribalda@chromium.org>
+ <YMJLxPgH756t+4qY@pendragon.ideasonboard.com>
+In-Reply-To: <YMJLxPgH756t+4qY@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Thu, 10 Jun 2021 20:40:15 +0200
+X-Gmail-Original-Message-ID: <CANiDSCu5jtm1gvS0j1QjPny5bfXa8DRKy9EdZ=xbo0i--8sMJQ@mail.gmail.com>
+Message-ID: <CANiDSCu5jtm1gvS0j1QjPny5bfXa8DRKy9EdZ=xbo0i--8sMJQ@mail.gmail.com>
+Subject: Re: [PATCH v9 16/22] media: uvcvideo: Return -EACCES to inactive controls
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 02:23:18PM -0400, Konstantin Ryabitsev wrote:
-> On Thu, Jun 10, 2021 at 08:07:55PM +0200, Enrico Weigelt, metux IT consult wrote:
-> > On 09.06.21 12:37, David Hildenbrand wrote:
-> > > On 28.05.21 16:58, James Bottomley wrote:
-> 
-> *moderator hat on*
-> 
-> I'm requesting that all vaccine talk is restricted solely to how it would
-> impact international travel to/from ksummit.
+Hi Laurent
 
-Which will largely be set by governments, travel companies and
-conference venues, so there's probably very little to discuss on that
-topic.
+Thanks for your review!
 
-The topic of how to best organize hybrid events to maximize
-inclusiveness for remote participants is more interesting to me. LPC did
-an amazing job last year with the fully remote setup, but a hybrid setup
-brings new challenges. One issue I've previously experienced in hybrid
-setups, especially for brainstorming-type discussions, was that on-site
-attendees can very quickly break out conversations in small groups (it's
-an issue for fully on-site events too). Session leads should be aware of
-the need to ensure even more than usual that all speakers use
-microphones. I don't think we need to go as far as specific training on
-these topics, but emphasizing the importance of moderation would be
-useful in my opinion.
+On Thu, 10 Jun 2021 at 19:28, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> Thank you for the patch.
+>
+> On Fri, Mar 26, 2021 at 10:58:34AM +0100, Ricardo Ribalda wrote:
+> > If a control is inactive return -EACCES to let the userspace know that
+> > the value will not be applied automatically when the control is active
+> > again.
+>
+> Isn't the device supposed to stall the control set in that case, with
+> the bRequestErrorCode set to "Wrong state", which uvc_query_ctrl()
+> translates to -EACCES already ? Could you elaborate on why this patch is
+> needed ?
 
-There will always be more informal discussions between on-site
-participants. After all, this is one of the benefits of conferences, by
-being all together we can easily organize ad-hoc discussions. This is
-traditionally done by finding a not too noisy corner in the conference
-center, would it be useful to have more break-out rooms with A/V
-equipment than usual ?
+The problem is that the hardware was not returning the equivalent of
+EACCES, so we had to capture it manually.
+I will try to revert the patch and capture an error.
+
+>
+> > Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_ctrl.c | 71 +++++++++++++++++++++-----------
+> >  1 file changed, 48 insertions(+), 23 deletions(-)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> > index bcebf9d1a46f..d9d4add1e813 100644
+> > --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> > @@ -1082,13 +1082,36 @@ static const char *uvc_map_get_name(const struct uvc_control_mapping *map)
+> >       return "Unknown Control";
+> >  }
+> >
+> > +static bool uvc_ctrl_is_inactive(struct uvc_video_chain *chain,
+> > +                              struct uvc_control *ctrl,
+> > +                              struct uvc_control_mapping *mapping)
+> > +{
+> > +     struct uvc_control_mapping *master_map = NULL;
+> > +     struct uvc_control *master_ctrl = NULL;
+> > +     s32 val;
+> > +     int ret;
+> > +
+> > +     if (!mapping->master_id)
+> > +             return false;
+> > +
+> > +     __uvc_find_control(ctrl->entity, mapping->master_id, &master_map,
+> > +                        &master_ctrl, 0);
+> > +
+> > +     if (!master_ctrl || !(master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
+> > +             return false;
+> > +
+> > +     ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
+> > +     if (ret < 0 || val == mapping->master_manual)
+> > +             return false;
+> > +
+> > +     return true;
+> > +}
+> > +
+> >  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> >       struct uvc_control *ctrl,
+> >       struct uvc_control_mapping *mapping,
+> >       struct v4l2_queryctrl *v4l2_ctrl)
+> >  {
+> > -     struct uvc_control_mapping *master_map = NULL;
+> > -     struct uvc_control *master_ctrl = NULL;
+> >       const struct uvc_menu_info *menu;
+> >       unsigned int i;
+> >
+> > @@ -1104,18 +1127,8 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> >       if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR))
+> >               v4l2_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> >
+> > -     if (mapping->master_id)
+> > -             __uvc_find_control(ctrl->entity, mapping->master_id,
+> > -                                &master_map, &master_ctrl, 0);
+> > -     if (master_ctrl && (master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR)) {
+> > -             s32 val;
+> > -             int ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
+> > -             if (ret < 0)
+> > -                     return ret;
+>
+> There's a small change in behaviour here, the driver used to return an
+> error, now it will ignore it. Is it intentional ?
+
+AFAIK The error did not follow the v4l2 spec. You shall always be able
+to query a ctrl.
+
+I will add it to the commit message to make it clear.
+
+>
+> > -
+> > -             if (val != mapping->master_manual)
+> > -                             v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
+> > -     }
+> > +     if (uvc_ctrl_is_inactive(chain, ctrl, mapping))
+> > +             v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
+> >
+> >       if (!ctrl->cached) {
+> >               int ret = uvc_ctrl_populate_cache(chain, ctrl);
+> > @@ -1638,25 +1651,37 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
+> >       return 0;
+> >  }
+> >
+> > -static int uvc_ctrl_find_ctrlidx(struct uvc_entity *entity,
+> > +static int uvc_ctrl_commit_error(struct uvc_video_chain *chain,
+> > +                              struct uvc_entity *entity,
+> >                                struct v4l2_ext_controls *ctrls,
+> > -                              struct uvc_control *uvc_control)
+> > +                              struct uvc_control *err_control,
+> > +                              int ret)
+> >  {
+> >       struct uvc_control_mapping *mapping;
+> >       struct uvc_control *ctrl_found;
+> >       unsigned int i;
+> >
+> > -     if (!entity)
+> > -             return ctrls->count;
+> > +     if (!entity) {
+> > +             ctrls->error_idx = ctrls->count;
+> > +             return ret;
+> > +     }
+> >
+> >       for (i = 0; i < ctrls->count; i++) {
+> >               __uvc_find_control(entity, ctrls->controls[i].id, &mapping,
+> >                                  &ctrl_found, 0);
+> > -             if (uvc_control == ctrl_found)
+> > -                     return i;
+> > +             if (err_control == ctrl_found)
+> > +                     break;
+> >       }
+> > +     ctrls->error_idx = i;
+>
+> I think this line should be moved after the next check.
+
+Not really, if we cannot find a control, we cannot blame it on control 0 ;)
+
+>
+> > +
+> > +     /* We could not find the control that failed. */
+> > +     if (i == ctrls->count)
+> > +             return ret;
+> >
+> > -     return ctrls->count;
+> > +     if (uvc_ctrl_is_inactive(chain, err_control, mapping))
+> > +             return -EACCES;
+> > +
+> > +     return ret;
+> >  }
+> >
+> >  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+> > @@ -1679,8 +1704,8 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+> >               uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
+> >  done:
+> >       if (ret < 0 && ctrls)
+> > -             ctrls->error_idx = uvc_ctrl_find_ctrlidx(entity, ctrls,
+> > -                                                      err_ctrl);
+> > +             ret = uvc_ctrl_commit_error(chain, entity, ctrls, err_ctrl,
+> > +                                         ret);
+> >       mutex_unlock(&chain->ctrl_mutex);
+> >       return ret;
+> >  }
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+
+
 
 -- 
-Regards,
-
-Laurent Pinchart
+Ricardo Ribalda
