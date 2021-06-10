@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62503A2FE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3B03A2FE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhFJP4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:56:03 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:38516 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231450AbhFJPz7 (ORCPT
+        id S231835AbhFJP4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:56:14 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:45435 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230413AbhFJP4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:55:59 -0400
-Received: by mail-oi1-f177.google.com with SMTP id z3so2608709oib.5;
-        Thu, 10 Jun 2021 08:53:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VRySpPzJlLYhI3h/JIF31rTc1KoHGLh9s0BINnZ+x9M=;
-        b=XuMKGROQXfdsi/Ljt6hppjHzrRChQvD3NZykFY93nb+40NcF3/dSRdDWfK2lvUNFPp
-         z5obCMAuHUAD1WKOQwLrGM/iInWnnHmNv4GEdRj8jKJxKNRu0jczURQlvCfBinan002x
-         WDmhAd8de7+XthiHNR4tReiOH36yisbD2bmd+TcyPHAei+FCkQ1NL98S/tR7JJccqGGx
-         t0p4g6Ah4tCyCyvPWCFZRuhJRD3wrtks9pnRKnyHMTuXz9PwAp2jTvoyIM60KBZ8QkXW
-         Hlnz4c/0u13p0IdsTJE9zuOjkckCz4+SXe3rrLBtnIBW2DjUtO7KtRYt1xLl94qUt6to
-         Krvw==
-X-Gm-Message-State: AOAM533LMX9Kpc84CydL48UhLMXQynIBUYZJaLKat4KLppJCQV6S7IVf
-        huEsYAX6veD3w6LBWGmERA==
-X-Google-Smtp-Source: ABdhPJy1S0NCE5ntUuS+7phY6/iHJ2rMqyiVziT1ZAtosDKXBmthXoUwpRdOtZBBEhZ1W70GFFQXfg==
-X-Received: by 2002:a05:6808:8fb:: with SMTP id d27mr6116265oic.115.1623340432085;
-        Thu, 10 Jun 2021 08:53:52 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.113])
-        by smtp.gmail.com with ESMTPSA id f25sm677899oto.26.2021.06.10.08.53.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 08:53:51 -0700 (PDT)
-Received: (nullmailer pid 1877730 invoked by uid 1000);
-        Thu, 10 Jun 2021 15:53:45 -0000
-Date:   Thu, 10 Jun 2021 10:53:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Naga Sureshkumar Relli <nagasure@xilinx.com>,
-        Amit Kumar Mahapatra <akumarma@xilinx.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
-        Siva Durga Prasad Paladugu <sivadur@xilinx.com>
-Subject: Re: [PATCH v23 08/18] dt-binding: memory: pl353-smc: Enhance the
- description of the reg property
-Message-ID: <20210610155345.GA1873816@robh.at.kernel.org>
-References: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
- <20210610082040.2075611-9-miquel.raynal@bootlin.com>
+        Thu, 10 Jun 2021 11:56:13 -0400
+Received: from [192.168.1.155] ([95.115.39.199]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MYcy3-1lmiJv27xT-00VeCN; Thu, 10 Jun 2021 17:54:08 +0200
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <96994f4c-8755-90a8-0c50-4e21c436f137@metux.net>
+Date:   Thu, 10 Jun 2021 17:54:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610082040.2075611-9-miquel.raynal@bootlin.com>
+In-Reply-To: <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:TpZLghCRLTrNtNW+A1KmT6oXfMlGYLufbz1HB4G9ZrndMBLiAMA
+ FVfl8K9eppG2BpJKNJptrV94A784Wye+RIBqfGfto9qYovYlwzDTQZBKORdm5Nb/3TK2+4n
+ 4XYrJWRfsSoOilWq4fKT4mBK5lonv00flbjvk8KLQn9c/McKTZOWz8fND0XqCHl1eX8PW5x
+ 86KB391zJUIxpNc8lPzxw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:N8ukqCZYYn8=:BSOYsJ6jT2KSyQltacOA9y
+ agJM0fJ5GIxIEpyhyOMp+UDIQQJYGuL9AFSbYrI1hW8pmjE9d9pRf49tKmoSXSPR4+0AcCO1j
+ uHobuj05FlEXa8eHxeOkOFMAmKNeSbK8Ke4NyQjrRulTdjc6eS3P+uFat9cXaVydtKeWzPcDH
+ EW49OxY3dDn5U8HMIsDTI6vcDvrvlZiL8OhwXwL5cuCSDCP6xc0yyCQWMedR8mjragnGEZgYB
+ K9YYGwdVqzQEMCq2b9IYDUmIObXUoONMzdzrTeI5fMfNQX1yJ6bwANSq86aa3pG4P0ZjxAODh
+ fMOA4z+WG7nXbldgwoq2YirtTd/ZTAAY7k8PsskJBZ/Kf9LRyfZ0TJa39X61DzRfaMLE2u9is
+ aUPkjGdoUWuC3LtErxd2nnUZO4Ot+sJ4e9frRUYUbKVYPYw54ZP2c4CUGVbbyaQeEark6K+xy
+ Dbk0SnU+jiiM3zgLOcZRfdqvqSPnrreALdAYaNLfqqWQ5Tyb59gn+yPgU9/2wHtr7fb7FUUI5
+ m8P3VXKNCbDR02ZLLUpNPk=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 10:20:30AM +0200, Miquel Raynal wrote:
-> The SMC bus controller features several register sets. The one pointed
-> by the reg property is for the SMC configuration (impacts the
-> sub-controllers configuration), while the others are meant to be used to
-> send regular cycles on the memory bus (eg. CMD, ADDR, DATA for a NAND
-> device). Detail this a little bit for the sake of clarity.
+On 10.06.21 14:16, Viresh Kumar wrote:
+> From: "Enrico Weigelt, metux IT consult" <info@metux.net>
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../devicetree/bindings/memory-controllers/pl353-smc.txt       | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> This patch adds a new driver for Virtio based GPIO devices.
 > 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
-> index ecd46856f139..ba6a5426f62b 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
-> +++ b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
-> @@ -5,7 +5,8 @@ of memory interfaces: NAND and memory mapped interfaces (such as SRAM or NOR).
->  
->  Required properties:
->  - compatible		: Should be "arm,pl353-smc-r2p1", "arm,primecell".
-> -- reg			: Controller registers map and length.
-> +- reg			: SMC controller and sub-controllers configuration
-> +			  registers.
+> This allows a guest VM running Linux to access GPIO device provided by
+> the host. It supports all basic operations for now, except interrupts
+> for the GPIO lines.
 
-I think you could just drop this patch. Otherwise, this doesn't match 
-what's now in the yaml file.
+What exactly did you change here from my original driver ?
 
-Rob
+Your already changed the spec havily (w/o consulting me first), so I
+guess this driver hasn't so much in common w/ my original design.
+
+Note that I made my original design decisions for good reaons
+(see virtio-dev list). It already support async notifications
+(IOW: irqs), had an easy upgrade path for future additions, etc.
+
+Note #2: it's already implemented and running in the field (different
+kernels, different hypervisors, ...) - it just lacked the going through
+virtio comitte's formal specification process, which blocked mainlining.
+
+Is there anything fundamentally wrong w/ my original design, why you
+invented a completely new one ?
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
