@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790B23A2144
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 02:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE9B3A215D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 02:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhFJAXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 20:23:18 -0400
-Received: from ozlabs.org ([203.11.71.1]:51701 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229788AbhFJAXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 20:23:17 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G0l5D060jz9sRK;
-        Thu, 10 Jun 2021 10:21:19 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623284480;
-        bh=OcbPtiGtoSQqHQwInlNZuQFJbqE5IHOH3h37Obg5fdQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nerQ0PujLoIlzVrTUBC4jWcZwWTx7zzRdMSb+brct/wTTcJhUWQ6jt5KyajFtirW7
-         TK5OedxnzilSZUcp42+P1pK7/j+hhWLgJdY0wy7tmD6+ecmpDHU/57MA8o3LS+ai9p
-         OsyzxJyKD6+MtjKVbd8pD9J2rMTtT+yFjO1ZQt6mPmvnsJMEveVU+YZogfhz/D3WZW
-         suBaYgZL/UsyRIPNpcjrPuH3GTGYyTqu2eEXQC08m/VYlVvjgjgt9hkvMr1rDwlv8R
-         QU2r8UVMEybDyYFu7BVKW215mM9TVIaR498yMh+hwKdsxLpuzSX/eCt/Hslw/qccUX
-         Kj406waf7z0ug==
-Date:   Thu, 10 Jun 2021 10:21:17 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Robert Marko <robert.marko@sartura.hr>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the hwmon-staging tree
-Message-ID: <20210610102117.4881387a@canb.auug.org.au>
+        id S230313AbhFJAYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 20:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230242AbhFJAYd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 20:24:33 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DE7C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 17:22:21 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id s23so165205oiw.9
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 17:22:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wqda7Y7VY751qiHwi67sa4oN0nY0qPs95IMKdq6kzvM=;
+        b=hyD8x/fW6GsldHTArxMhnA3R2kAL+eRuDK38kF7nsv5rweEFUVlvRsFIq6YnB/7G7U
+         uCY0EuD3R3D/Sq/7xCriTow2Z7n/EMAG1FrdVT/hthzlVPFZxKrrzzhzsNaBqqtrudiY
+         OcE1q4nf7JwnnYlB0lO2frXfbpbs52WiGebqGZXaM8Q6i7iL/naSM8D6ZgJ+un3L+sfS
+         WM1ETk/18IMXsa/7NKdO6HtTIBrljKQCE4WngS4rmUhG67CpTvNK22OnCkOu02jXjJxu
+         pvkwKHxYTTVj/0YMDyz1cJxj4tS9qWJswwXS24ml9AurGJXhCX2qRUlNQHyUmtYdTHNk
+         sFKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wqda7Y7VY751qiHwi67sa4oN0nY0qPs95IMKdq6kzvM=;
+        b=QzZegicAgw7HZva9BAy2d6YVM2iJ2oef4xCt0d5xsMp1enyxDaKvux0TOpg+0f6SFh
+         wKLwebRgm3BUyQKOvY35a2T1Ukh6YbFufLJLUkXCBPjktlIWzmPlAHSxZa4Cnh4BmPsg
+         /cgAedcNSAYnpccDCw7IdNBdGQrGYcxjkDVaYhchrDC0kIii/05f5A986TZhMszXn5OG
+         aWuy4HqZW/Uk/Y1bcKOfsi9G/zG8wjGKPQLSABnI+wdoHqBjBoad/vyNuWjbQob3y/GY
+         xa9GGbHqQdcGFDWKqLBWRTmjsG0i+ER5bw5Qwr/R50pKG86nODc8Mgo3JAKQOf6rGvfM
+         mxgg==
+X-Gm-Message-State: AOAM530MJN6OEdQvDhhWTsiNSexh8KF+ZkbzejWFjlS8e9gT/qD5OVMC
+        FhVUSUFK1pU7aJAT5TqGGAkzfw==
+X-Google-Smtp-Source: ABdhPJyNWi8kzQXPfxhp1H+j0xAp/kCFS4t+JKbUxUDX2zvHdnv+7i0GONlblnouQYxwNWuqlC0Kzg==
+X-Received: by 2002:aca:3e06:: with SMTP id l6mr1521121oia.147.1623284541085;
+        Wed, 09 Jun 2021 17:22:21 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z19sm319048oth.20.2021.06.09.17.22.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 17:22:20 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] usb: typec: mux: Fix copy-paste mistake in typec_mux_match
+Date:   Wed,  9 Jun 2021 17:21:32 -0700
+Message-Id: <20210610002132.3088083-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7WHVZOlxlGAspllA84TDl9C";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7WHVZOlxlGAspllA84TDl9C
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Fix the copy-paste mistake in the return path of typec_mux_match(),
+where dev is considered a member of struct typec_switch rather than
+struct typec_mux.
 
-Hi all,
+The two structs are identical in regards to having the struct device as
+the first entry, so this provides no functional change.
 
-After merging the hwmon-staging tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+Fixes: 3370db35193b ("usb: typec: Registering real device entries for the muxes")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
-WARNING: modpost: module dps920ab uses symbol pmbus_get_debugfs_dir from na=
-mespace PMBUS, but does not import it.
-WARNING: modpost: module dps920ab uses symbol pmbus_do_probe from namespace=
- PMBUS, but does not import it.
-WARNING: modpost: module dps920ab uses symbol pmbus_read_word_data from nam=
-espace PMBUS, but does not import it.
-WARNING: modpost: module dps920ab uses symbol pmbus_write_word_data from na=
-mespace PMBUS, but does not import it.
+Changes since v1:
+- Don't touch the typec_switch part of mux.c...
 
-Introduced by commit
+ drivers/usb/typec/mux.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  47e986c5a316 ("hwmon: (pmbus) Add driver for Delta DPS-920AB PSU")
+diff --git a/drivers/usb/typec/mux.c b/drivers/usb/typec/mux.c
+index 664fb3513f48..c8340de0ed49 100644
+--- a/drivers/usb/typec/mux.c
++++ b/drivers/usb/typec/mux.c
+@@ -246,7 +246,7 @@ static void *typec_mux_match(struct fwnode_handle *fwnode, const char *id,
+ 	dev = class_find_device(&typec_mux_class, NULL, fwnode,
+ 				mux_fwnode_match);
+ 
+-	return dev ? to_typec_switch(dev) : ERR_PTR(-EPROBE_DEFER);
++	return dev ? to_typec_mux(dev) : ERR_PTR(-EPROBE_DEFER);
+ }
+ 
+ /**
+-- 
+2.29.2
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/7WHVZOlxlGAspllA84TDl9C
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDBWv0ACgkQAVBC80lX
-0GzrXQf8C2FXTdYttM/i6WVF/ipogCM06XeoeIdAWhmFsB6Kw7R6PgoHOG9asMDM
-rzEqme6pByopfkMp/vZvxSTCr5kiDMXuBTwgnwYARXOHKSxeBsPLO4nKdpiQrE3L
-E4ODvqEZdIACR8X2gJ6nljHDjRDoZxKoaG7VwhwzDO6tLmShsrlKD0uEkNxy4evf
-fmcZB+1gApkE+/g/KRVc8blZCwrAr0hx6edMM97ZLedNrc+CK6IEaI1WkcFennxi
-436xHRFJf7ouTUQW0ucyMvuEQdxg+BRaC8QDIGyQh2lFE9WSDvAkcJUlM71xvHCy
-JQk949dhvf2sdsScYV9ppmBhdcLnuQ==
-=CVsG
------END PGP SIGNATURE-----
-
---Sig_/7WHVZOlxlGAspllA84TDl9C--
