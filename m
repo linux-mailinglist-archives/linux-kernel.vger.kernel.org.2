@@ -2,158 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EC33A2D96
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0443A2D9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbhFJOAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230469AbhFJOAw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:00:52 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE135C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 06:58:39 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id i68so23810186qke.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 06:58:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qbWXLgylg1lCqYHMLSK3fde/7z8bs1MrbZWTWcmNHtA=;
-        b=ybTyd277v1HAHoj3lzgpzg884bHkAU8Mx/AM9qqUT6Tv84dimmMfLaHGHVLo5EDmv4
-         8Qg8HivOINUoFhHCgQ8Q5TaswMrbkPnOyfsb0frwfATbRsSDNKHKQZwbjNeL9jBQUrao
-         L+untWLtc30b9aEMhbMFhIqNYXuu9JI5/0NHCKTDIiPudQvjISP/HHsGWm/zH4yhJyJ9
-         aX04zCmtaRhNBpAUVygPwHROWaV4lGjMCfD33fWkiNNUl0kMEjbu6Q4FEltW4yhQSAN2
-         lmAZ+CciEzzKv9jC8ixEt65TGsCsbWYzkOaVUZ9I4cP26b2QriYoTR4uVYGIEdhLE0rn
-         8XpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qbWXLgylg1lCqYHMLSK3fde/7z8bs1MrbZWTWcmNHtA=;
-        b=CzMMKsdPtFsfHb+VKUOlI2c+qhEld2XYMhcxwyykMuOa4MIJ+Xal7DmyHSQ8aGkXxR
-         bCUNU5/oqAB3VkKG/wFt0vZZJnePF4BNf7srxFFr7S8pHrLpOkQO6S5rNg94iwjuTWuE
-         vRa68yhoMZeTniUFVhTr16D/RQWn0mAqFUONP/JWu0jAC3+Kbza5zfJ9MyyiKwiMEjfF
-         5fc2kpdy5cq5lhyFC4VNjx6kvZaeFOqhRwcMfLEqQ8ybJq0oXyCnS4ZlN8dnPzWlL2MD
-         2FlJzSz5DhxzbOTl85B5/O0hSzZb/3PDA3g56wnmOP6dnAJ0MRJmpdD84CynhU6Jxovp
-         Ox5A==
-X-Gm-Message-State: AOAM531yKIQPZ9IUy9PuZsXbb/pRFkDD+Wxiizkv7N/+qpcX65I9YTz+
-        EmNdhbT8BQIgPoL2ZXNR92lEQw==
-X-Google-Smtp-Source: ABdhPJwLeaSO+cbGHDFgIrr/v1x2Zi+WZ+QN+xXfxfAF7DDOrCBUTEsQLzrRzK6YfBidsqmteEKtDw==
-X-Received: by 2002:a37:a793:: with SMTP id q141mr4713888qke.107.1623333515840;
-        Thu, 10 Jun 2021 06:58:35 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:2165])
-        by smtp.gmail.com with ESMTPSA id y20sm2187531qtv.64.2021.06.10.06.58.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 06:58:35 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 09:58:32 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jared Pochtar <jpochtar@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH] psi: fix sampling artifact from pressure file read
- frequency
-Message-ID: <YMIaiDaDA/lZ+l2j@cmpxchg.org>
-References: <20210608190336.77380-1-hannes@cmpxchg.org>
- <CAJuCfpHkug8t+yR+dtudANjJgzGs_T4v8_5fEoR0tg7Tw3h3bQ@mail.gmail.com>
+        id S230469AbhFJOBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:01:12 -0400
+Received: from mga01.intel.com ([192.55.52.88]:27575 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231235AbhFJOBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:01:11 -0400
+IronPort-SDR: i2btdUb5SbcwH3LJVN1NNtmavkSHrHrevrfxGswBi9owfWsFGidtQlsiFSpy4Atv8ClDMlteK9
+ 0OOygDC1j+nw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="226694684"
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="226694684"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 06:59:10 -0700
+IronPort-SDR: XHbZH+HZrj2U71+lkWuQxpimHe/PQ3EjXTtquyCEop8srNKuzKq5h0bcD+r324eNVIKQ7C+9DI
+ Y2alSLaUCP4w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="419721161"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga002.jf.intel.com with SMTP; 10 Jun 2021 06:59:05 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 10 Jun 2021 16:59:05 +0300
+Date:   Thu, 10 Jun 2021 16:59:05 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Werner Sembach <wse@tuxedocomputers.com>, tzimmermann@suse.de,
+        intel-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        airlied@linux.ie, amd-gfx@lists.freedesktop.org,
+        rodrigo.vivi@intel.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com
+Subject: Re: [PATCH v2 4/7] drm/i915/display: Add handling for new "active
+ bpc" property
+Message-ID: <YMIaqZnWTAiixwXJ@intel.com>
+References: <20210608174320.37429-1-wse@tuxedocomputers.com>
+ <20210608174320.37429-5-wse@tuxedocomputers.com>
+ <20210610125036.33fpnaoz4xpiqslw@gilmour>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpHkug8t+yR+dtudANjJgzGs_T4v8_5fEoR0tg7Tw3h3bQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210610125036.33fpnaoz4xpiqslw@gilmour>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 08:32:51PM -0700, Suren Baghdasaryan wrote:
-> On Tue, Jun 8, 2021 at 12:03 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > Currently, every time a psi pressure file is read, the per-cpu states
-> > are collected and aggregated according to the CPU's non-idle time
-> > weight. This dynamically changes the sampling period, which means read
-> > frequency can introduce variance into the observed results. This is
-> > somewhat unexpected for users and can be confusing, when e.g. two
-> > nested cgroups with the same workload report different pressure levels
-> > just because they have different consumers reading the pressure files.
-> >
-> > Consider the following two CPU timelines:
-> >
-> >         CPU0: [ STALL ] [ SLEEP ]
-> >         CPU1: [  RUN  ] [  RUN  ]
-> >
-> > If we sample and aggregate once for the whole period, we get the
-> > following total stall time for CPU0:
-> >
-> >         CPU0 = stall(1) + nonidle(1) / nonidle_total(3) = 0.3
-> >
-> > But if we sample twice, the total for the period is higher:
-> >
-> >         CPU0 = stall(1) + nonidle(1) / nonidle_total(2) = 0.5
-> >         CPU0 = stall(0) + nonidle(0) / nonidle_total(1) = 0
-> >                                                           ---
-> >                                                           0.5
-> >
-> > Neither answer is inherently wrong: if the user asks for pressure
-> > after half the period, we can't know yet that the CPU will go to sleep
-> > right after and its weight would be lower over the combined period.
-> >
-> > We could normalize the weight averaging to a fixed window regardless
-> > of how often stall times themselves are sampled. But that would make
-> > reporting less adaptive to sudden changes when the user intentionally
-> > uses poll() with short intervals in order to get a higher resolution.
-> >
-> > For now, simply limit sampling of the pressure file contents to the
-> > fixed two-second period already used by the aggregation worker.
+On Thu, Jun 10, 2021 at 02:50:36PM +0200, Maxime Ripard wrote:
+> Hi
 > 
-> Hmm. This is tricky.
+> On Tue, Jun 08, 2021 at 07:43:17PM +0200, Werner Sembach wrote:
+> > This commits implements the "active bpc" drm property for the Intel GPU driver.
+> > 
+> > Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> > ---
+> >  drivers/gpu/drm/i915/display/intel_display.c | 14 ++++++++++++++
+> >  drivers/gpu/drm/i915/display/intel_dp.c      |  8 ++++++--
+> >  drivers/gpu/drm/i915/display/intel_dp_mst.c  |  4 +++-
+> >  drivers/gpu/drm/i915/display/intel_hdmi.c    |  4 +++-
+> >  4 files changed, 26 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
+> > index 64e9107d70f7..50c11b8770a7 100644
+> > --- a/drivers/gpu/drm/i915/display/intel_display.c
+> > +++ b/drivers/gpu/drm/i915/display/intel_display.c
+> > @@ -10388,6 +10388,9 @@ static int intel_atomic_commit(struct drm_device *dev,
+> >  {
+> >  	struct intel_atomic_state *state = to_intel_atomic_state(_state);
+> >  	struct drm_i915_private *dev_priv = to_i915(dev);
+> > +	struct drm_connector *connector;
+> > +	struct drm_connector_state *new_conn_state;
+> > +	int i;
+> >  	int ret = 0;
+> >  
+> >  	state->wakeref = intel_runtime_pm_get(&dev_priv->runtime_pm);
+> > @@ -10456,6 +10459,17 @@ static int intel_atomic_commit(struct drm_device *dev,
+> >  	intel_shared_dpll_swap_state(state);
+> >  	intel_atomic_track_fbs(state);
+> >  
+> > +	/* Extract information from crtc to communicate it to userspace as connector properties */
+> > +	for_each_new_connector_in_state(&state->base, connector, new_conn_state, i) {
+> > +		struct intel_crtc *crtc = to_intel_crtc(new_conn_state->crtc);
+> > +		if (crtc) {
+> > +			struct intel_crtc_state *new_crtc_state = intel_atomic_get_new_crtc_state(state, crtc);
+> > +			new_conn_state->active_bpc = new_crtc_state->pipe_bpp / 3;
+> > +		}
+> > +		else
+> > +			new_conn_state->active_bpc = 0;
+> > +	}
+> > +
+> 
+> This seems fairly intrusive, but also commit / commit_tail might not be
+> the best place to put this, we want to support it at the connector
+> level.
+> 
+> Indeed, this will cause some issue if your HDMI output is a bridge for
+> example, where the commit will be in an entirely different driver that
+> has no dependency on the HDMI controller one.
+> 
+> I think it would be best to do that assignment in atomic_check. That
+> way, if the userspace does a commit with DRM_MODE_ATOMIC_TEST_ONLY it
+> would know what the output state would have been like.
 
-Yes ;)
+DRM_MODE_ATOMIC_TEST_ONLY isn't allowed to change anything.
 
-> So, userspace-visible effect of this change is that totals will not
-> update when the psi file is read unless the psi_period expires.
-
-That's a visible side effect, but yeah, correct.
-
-> We used to postpone updating only the averages and now the totals
-> will follow suit. Not sure if presenting stale data is better than
-> having this dependency on timing of the read. As you noted, the
-> value we get is not inherently wrong. But one could argue both ways
-> I guess... Having this "quantum" effect when the act of observation
-> changes the state of the object is indeed weird, to say the least.
-
-Yes. Especially *because* we don't update the averages more than once
-per 2s window. It gives the impression they would follow steady
-sampling, but they're calculated based on total= which is aggregated
-on every read.
-
-Tying the total= updates to the same fixed window presents slightly
-less current data, but results in more obvious and intuitive behavior.
-
-For more current data there is always poll() - which is a better idea
-than busy-reading the pressure files for a sub-2s resolution...
-
-> In the paragraph above you say "For now". Do you have an idea that
-> could solve the issue with totals being stale while removing this
-> dependency on the timing of reads?
-
-Yeah, it's hinted at in the paragraph before that.
-
-What we could do is decouple the CPU weight sampling from the stall
-time sampling, and use a fixed-window average for the nonidle /
-nonidle_total ratio when aggregating. This way, no matter how
-frequently you read the stall times, you get the same results.
-
-However, because the update frequency absent any reads is 2s, that
-would be the window size we'd have to use. So while we could present
-updated total= on every read, they would still be aggregated based on
-a relatively stale CPU load distribution.
-
-They wouldn't be as current as they might seem - and as current as the
-user would assume them to be if they read the file frequently and got
-new totals every time. This is even more subtle than the status quo.
-
-IMO the cleanest interface is simply to be honest and consistent about
-the pressure files following a fixed 2s aggregation frequency, and
-refer people who need a higher resolution to poll().
+-- 
+Ville Syrjälä
+Intel
