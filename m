@@ -2,126 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17BD3A31AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9D83A31AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhFJRIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:08:23 -0400
-Received: from mail-pj1-f51.google.com ([209.85.216.51]:42766 "EHLO
-        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbhFJRIW (ORCPT
+        id S230478AbhFJRHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229895AbhFJRHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:08:22 -0400
-Received: by mail-pj1-f51.google.com with SMTP id md2-20020a17090b23c2b029016de4440381so4246940pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:06:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zsuHs8q2OPqCHBMokULd2KXAu5PDhngkMlqiRUWGhEQ=;
-        b=F2TUxQY2snWw8ctmSasL8n8yd1F/8VJkGWADtJezydVUh0feZ2ggQESqkLle9qp1HM
-         HvmpS7ERNGH6v5vjMBIcnp6UatHp8sjOPLrasDOQJo9y4hUB9QC6h290zuTr/sq6mRmA
-         zFdQpBJ8yEny9GV6JXukn1KXu3DE12KljL1elMAFh2aaDATN/+ie62uhTdb+pLrZwaC9
-         gOz2ELUAr9QT5ixrEFveLybjpjZcKoUEKXp0k7MamWMLH4B5Dm8HtVfqRpCzM/Tb/qXg
-         opEp6Gc5PFhHZyvPztLLkM/+vwrJJqeW5AFCwjiIl6S6N+xz2VAPdJlBet0cFlIP3kEK
-         FMBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zsuHs8q2OPqCHBMokULd2KXAu5PDhngkMlqiRUWGhEQ=;
-        b=szn6Zc3XMFUyb01TsRAaCH9sL8+eN0LutmdGYDTfwM2WbL+oEvVXGFVy5ArDE8DdQb
-         Q+5Y+JrS2iVR5j0CfyfN4ED0obwcMdFiHmdkg5aJdEKXaQ7DmzSzZgEYPV5wVk41xKBm
-         Neno1Vus2EH0ZaX9vZZ1cB/4qWFaqMLe5KvO9RexE0+NDVz8FNy6TiDaTkMmePpc44Qe
-         plvYbwcpD5sfgj4MO6Pe+rJrUD20naVLCzV68CEa1yo0pWsKwFZjWT+SuO889enPe3Jr
-         oSJI1vLSGgy9xreWezBS/E4AmmN5Fjfq6MUoHDnHOmH3UfMp+JAKvXbyKWHud6PLMEXr
-         m0Fg==
-X-Gm-Message-State: AOAM530tyYPQrPD43RTqCUYzJzpiZdVSuRUluh1deeipYn7p6xB7kXa5
-        UOHAcG7fkP1CZ/CXT8mPoE6SWA==
-X-Google-Smtp-Source: ABdhPJxjWwnJbs8N7HYKTbnCv8+sVi6XLob6NDA40U/LIZlS7d/nvHV2Ol/uuIWQ9gr5lVB8cFcUeg==
-X-Received: by 2002:a17:902:bc81:b029:ef:3f99:9f76 with SMTP id bb1-20020a170902bc81b02900ef3f999f76mr5901515plb.33.1623344712906;
-        Thu, 10 Jun 2021 10:05:12 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id r28sm3077053pgm.53.2021.06.10.10.05.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 10:05:11 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 11:05:09 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH 2/2] remoteproc: imx_rproc: support i.MX8ULP
-Message-ID: <20210610170509.GE34238@p14s>
-References: <20210604072311.9186-1-peng.fan@oss.nxp.com>
- <20210604072311.9186-3-peng.fan@oss.nxp.com>
+        Thu, 10 Jun 2021 13:07:40 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1096C061574;
+        Thu, 10 Jun 2021 10:05:43 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 501A68D4;
+        Thu, 10 Jun 2021 19:05:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623344742;
+        bh=hC0zTkxGKY1Fw6li2Kpb85k/zv0nOvbkNQ3leiAXUj8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pie8zyexvtxtKATK9Ab2IYb2am5Tu2xAoKAdvTOBr6frSZUCIH82CzVwBipfHpxfW
+         +oTXl6jykxn2e/IGxWzJ1q6bF/0lyc6fIQpwH/zPiIoH0wy6szQFNHcUGrr3OTlAE0
+         XBhs9OXxv4jC744phIJ6L8rWlwHBL5li/5WWRaII=
+Date:   Thu, 10 Jun 2021 20:05:23 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+Subject: Re: [PATCH v9 15/22] media: uvcvideo: Set error_idx during
+ ctrl_commit errors
+Message-ID: <YMJGU65navuuEjnA@pendragon.ideasonboard.com>
+References: <20210326095840.364424-1-ribalda@chromium.org>
+ <20210326095840.364424-16-ribalda@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210604072311.9186-3-peng.fan@oss.nxp.com>
+In-Reply-To: <20210326095840.364424-16-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 03:23:11PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+Hi Ricardo,
+
+Thank you for the patch.
+
+On Fri, Mar 26, 2021 at 10:58:33AM +0100, Ricardo Ribalda wrote:
+> If we have an error setting a control, return the affected control in
+> the error_idx field.
 > 
-> i.MX8ULP is a new SoC with Ultra low power support, it has a Cortex-M33
-> core and two Cortex-A35 cores. We need to add new configuration because
-> it could not reuse the previous i.MX7/8 configuration.
-> 
-> i.MX8ULP M33 core is kicked by ROM, it is not under control of A35 core.
-> So need to mark the method is IMX_RPROC_NONE.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 > ---
->  drivers/remoteproc/imx_rproc.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index 7cc0cadea1cc..d88f76f5305e 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -172,6 +172,12 @@ static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
->  	{ 0x40000000, 0x40000000, 0x80000000, 0 },
->  };
->  
-> +static const struct imx_rproc_att imx_rproc_att_imx8ulp[] = {
-> +	{0x1FFC0000, 0x1FFC0000, 0xC0000, ATT_OWN},
-> +	{0x21000000, 0x21000000, 0x10000, ATT_OWN},
-> +	{0x80000000, 0x80000000, 0x60000000, 0}
-> +};
-> +
->  static const struct imx_rproc_att imx_rproc_att_imx7ulp[] = {
->  	{0x1FFD0000, 0x1FFD0000, 0x30000, ATT_OWN},
->  	{0x20000000, 0x20000000, 0x10000, ATT_OWN},
-> @@ -246,6 +252,12 @@ static const struct imx_rproc_dcfg imx_rproc_cfg_imx8mq = {
->  	.method		= IMX_RPROC_MMIO,
->  };
->  
-> +static const struct imx_rproc_dcfg imx_rproc_cfg_imx8ulp = {
-> +	.att		= imx_rproc_att_imx8ulp,
-> +	.att_size	= ARRAY_SIZE(imx_rproc_att_imx8ulp),
-> +	.method		= IMX_RPROC_NONE,
-> +};
-> +
->  static const struct imx_rproc_dcfg imx_rproc_cfg_imx7ulp = {
->  	.att		= imx_rproc_att_imx7ulp,
->  	.att_size	= ARRAY_SIZE(imx_rproc_att_imx7ulp),
-> @@ -824,6 +836,7 @@ static const struct of_device_id imx_rproc_of_match[] = {
->  	{ .compatible = "fsl,imx8mm-cm4", .data = &imx_rproc_cfg_imx8mq },
->  	{ .compatible = "fsl,imx8mn-cm7", .data = &imx_rproc_cfg_imx8mn },
->  	{ .compatible = "fsl,imx8mp-cm7", .data = &imx_rproc_cfg_imx8mn },
-> +	{ .compatible = "fsl,imx8ulp-cm33", .data = &imx_rproc_cfg_imx8ulp },
->  	{},
->  };
->  MODULE_DEVICE_TABLE(of, imx_rproc_of_match);
-> -- 
-> 2.30.0
+>  drivers/media/usb/uvc/uvc_ctrl.c | 42 ++++++++++++++++++++++++++------
+>  drivers/media/usb/uvc/uvc_v4l2.c |  2 +-
+>  drivers/media/usb/uvc/uvcvideo.h | 10 +++-----
+>  3 files changed, 40 insertions(+), 14 deletions(-)
 > 
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index 24fd5afc4e4f..bcebf9d1a46f 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -1586,7 +1586,7 @@ int uvc_ctrl_begin(struct uvc_video_chain *chain)
+>  }
+>  
+>  static int uvc_ctrl_commit_entity(struct uvc_device *dev,
+> -	struct uvc_entity *entity, int rollback)
+> +	struct uvc_entity *entity, int rollback, struct uvc_control **err_ctrl)
+>  {
+>  	struct uvc_control *ctrl;
+>  	unsigned int i;
+> @@ -1628,31 +1628,59 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
+>  
+>  		ctrl->dirty = 0;
+>  
+> -		if (ret < 0)
+> +		if (ret < 0) {
+> +			if (err_ctrl)
+> +				*err_ctrl = ctrl;
+>  			return ret;
+> +		}
+>  	}
+>  
+>  	return 0;
+>  }
+>  
+> +static int uvc_ctrl_find_ctrlidx(struct uvc_entity *entity,
+
+s/uvc_ctrl_find_ctrlidx/uvc_ctrl_find_ctrl_idx/
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +				 struct v4l2_ext_controls *ctrls,
+> +				 struct uvc_control *uvc_control)
+> +{
+> +	struct uvc_control_mapping *mapping;
+> +	struct uvc_control *ctrl_found;
+> +	unsigned int i;
+> +
+> +	if (!entity)
+> +		return ctrls->count;
+> +
+> +	for (i = 0; i < ctrls->count; i++) {
+> +		__uvc_find_control(entity, ctrls->controls[i].id, &mapping,
+> +				   &ctrl_found, 0);
+> +		if (uvc_control == ctrl_found)
+> +			return i;
+> +	}
+> +
+> +	return ctrls->count;
+> +}
+> +
+>  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+> -		      const struct v4l2_ext_control *xctrls,
+> -		      unsigned int xctrls_count)
+> +		      struct v4l2_ext_controls *ctrls)
+>  {
+>  	struct uvc_video_chain *chain = handle->chain;
+> +	struct uvc_control *err_ctrl;
+>  	struct uvc_entity *entity;
+>  	int ret = 0;
+>  
+>  	/* Find the control. */
+>  	list_for_each_entry(entity, &chain->entities, chain) {
+> -		ret = uvc_ctrl_commit_entity(chain->dev, entity, rollback);
+> +		ret = uvc_ctrl_commit_entity(chain->dev, entity, rollback,
+> +					     &err_ctrl);
+>  		if (ret < 0)
+>  			goto done;
+>  	}
+>  
+>  	if (!rollback)
+> -		uvc_ctrl_send_events(handle, xctrls, xctrls_count);
+> +		uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
+>  done:
+> +	if (ret < 0 && ctrls)
+> +		ctrls->error_idx = uvc_ctrl_find_ctrlidx(entity, ctrls,
+> +							 err_ctrl);
+>  	mutex_unlock(&chain->ctrl_mutex);
+>  	return ret;
+>  }
+> @@ -2110,7 +2138,7 @@ int uvc_ctrl_restore_values(struct uvc_device *dev)
+>  			ctrl->dirty = 1;
+>  		}
+>  
+> -		ret = uvc_ctrl_commit_entity(dev, entity, 0);
+> +		ret = uvc_ctrl_commit_entity(dev, entity, 0, NULL);
+>  		if (ret < 0)
+>  			return ret;
+>  	}
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index a3ee1dc003fc..8d8b12a4db34 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -1088,7 +1088,7 @@ static int uvc_ioctl_s_try_ext_ctrls(struct uvc_fh *handle,
+>  	ctrls->error_idx = 0;
+>  
+>  	if (ioctl == VIDIOC_S_EXT_CTRLS)
+> -		return uvc_ctrl_commit(handle, ctrls->controls, ctrls->count);
+> +		return uvc_ctrl_commit(handle, ctrls);
+>  	else
+>  		return uvc_ctrl_rollback(handle);
+>  }
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index 9471c342a310..0313b30f0cea 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -887,17 +887,15 @@ void uvc_ctrl_status_event(struct uvc_video_chain *chain,
+>  
+>  int uvc_ctrl_begin(struct uvc_video_chain *chain);
+>  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+> -		      const struct v4l2_ext_control *xctrls,
+> -		      unsigned int xctrls_count);
+> +		      struct v4l2_ext_controls *ctrls);
+>  static inline int uvc_ctrl_commit(struct uvc_fh *handle,
+> -				  const struct v4l2_ext_control *xctrls,
+> -				  unsigned int xctrls_count)
+> +				  struct v4l2_ext_controls *ctrls)
+>  {
+> -	return __uvc_ctrl_commit(handle, 0, xctrls, xctrls_count);
+> +	return __uvc_ctrl_commit(handle, 0, ctrls);
+>  }
+>  static inline int uvc_ctrl_rollback(struct uvc_fh *handle)
+>  {
+> -	return __uvc_ctrl_commit(handle, 1, NULL, 0);
+> +	return __uvc_ctrl_commit(handle, 1, NULL);
+>  }
+>  
+>  int uvc_ctrl_get(struct uvc_video_chain *chain, struct v4l2_ext_control *xctrl);
+
+-- 
+Regards,
+
+Laurent Pinchart
