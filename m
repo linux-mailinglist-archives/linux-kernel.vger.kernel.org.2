@@ -2,76 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702503A23FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 07:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD13F3A23FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 07:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhFJF1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230303AbhFJF1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 01:27:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61239 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229966AbhFJF1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Jun 2021 01:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhFJF1J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 01:27:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D5DC061574;
-        Wed,  9 Jun 2021 22:25:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0q4RCvc/9mzT3mQV4dTF1WnKIhRqdnIIYV31Jdhy1KQ=; b=WV2xiZA3cNN/xfc3Hy5VQQcra4
-        i/kUVdx5dj/vBw9CKf7eqA2UCMB3gebnUW1fhL0LTlnOkgyCrIjCV0gqFx9+usHQBS4yvbucRBoGg
-        JNC+75/rCUoVxOKlaov0NGbYIjSbwDxhx8FfXuvpM+5tXkSnW5TbXX7FSq+fqxim45alIaVx8m2JM
-        RtddiwUAZEG2sUILhPcMnydEMwqkqT+MOttywz2PULGGqe57UtiCPLWggiJ/PhST4eb0l8+EgJZyk
-        GEVQrc0al3ZUAifTo7iDYlWQpycpUgWOUYkaU4sqTxsRyDJEED2YCd2wUzo/0DR4zIMnpm3fuIuYg
-        1hxYTrng==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lrDBH-001GCn-Eh; Thu, 10 Jun 2021 05:24:46 +0000
-Date:   Thu, 10 Jun 2021 06:24:39 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, frankja@linux.ibm.com,
-        cohuck@redhat.com, david@redhat.com, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH v2 1/2] mm/vmalloc: export __vmalloc_node_range
-Message-ID: <YMGiFya4JP9VuV0Y@infradead.org>
-References: <20210608180618.477766-1-imbrenda@linux.ibm.com>
- <20210608180618.477766-2-imbrenda@linux.ibm.com>
- <YMDlVdB8m62AhbB7@infradead.org>
- <20210609182809.7ae07aad@ibm-vm>
- <6bf6fb06-0930-8cae-3e2b-8cb3237a6197@de.ibm.com>
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623302715; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Bgf1x/nFWFQGqJpMO9ldu/lRRQ3GhGowilaUgKGPmUA=;
+ b=EeWzjBDhR/7rX3NJoN94o3cnTFpWcfcJJpE0HFDfW6L1OT2tC4tpQo8g7x7lMR9x2XTU1d8y
+ ireyGMvUU1xDrP5siM3HfdbXlt2g0VPjbaZGWwM9LA1druavlt6smFvPVqWzbJ4+aeCcbapk
+ XaRePHGjhE0R+HSrWBVnTFWOJ3U=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60c1a22ce27c0cc77f461e9b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Jun 2021 05:25:00
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DDBA7C43144; Thu, 10 Jun 2021 05:24:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 23D8BC4338A;
+        Thu, 10 Jun 2021 05:24:58 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6bf6fb06-0930-8cae-3e2b-8cb3237a6197@de.ibm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 10 Jun 2021 10:54:58 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] iommu/io-pgtable-arm: Optimize partial walk flush for
+ large scatter-gather list
+In-Reply-To: <dbcd394a-4d85-316c-5dd0-033546a66132@arm.com>
+References: <20210609145315.25750-1-saiprakash.ranjan@codeaurora.org>
+ <dbcd394a-4d85-316c-5dd0-033546a66132@arm.com>
+Message-ID: <c600e9b2534d54082a5272b508a7985f@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 07:47:43PM +0200, Christian Borntraeger wrote:
-> An alternative would be to provide a vmalloc_no_huge function in generic
-> code  (similar to  vmalloc_32) (or if preferred in s390 base architecture code)
-> Something like
-> 
-> void *vmalloc_no_huge(unsigned long size)
-> {
->         return __vmalloc_node_flags(size, NUMA_NO_NODE,VM_NO_HUGE_VMAP |
->                                 GFP_KERNEL | __GFP_ZERO);
-> }
-> EXPORT_SYMBOL(vmalloc_no_huge);
-> 
-> or a similar vzalloc variant.
+Hi Robin,
 
-Exactly.  Given that this seems to be a weird pecularity of legacy s390
-interfaces I'd only export it for 390 for now, although for
-documentation purposes I'd probably still keep it in vmalloc.c.
+On 2021-06-10 00:14, Robin Murphy wrote:
+> On 2021-06-09 15:53, Sai Prakash Ranjan wrote:
+>> Currently for iommu_unmap() of large scatter-gather list with page 
+>> size
+>> elements, the majority of time is spent in flushing of partial walks 
+>> in
+>> __arm_lpae_unmap() which is a VA based TLB invalidation (TLBIVA for
+>> arm-smmu).
+>> 
+>> For example: to unmap a 32MB scatter-gather list with page size 
+>> elements
+>> (8192 entries), there are 16->2MB buffer unmaps based on the pgsize 
+>> (2MB
+>> for 4K granule) and each of 2MB will further result in 512 TLBIVAs 
+>> (2MB/4K)
+>> resulting in a total of 8192 TLBIVAs (512*16) for 16->2MB causing a 
+>> huge
+>> overhead.
+>> 
+>> So instead use io_pgtable_tlb_flush_all() to invalidate the entire 
+>> context
+>> if size (pgsize) is greater than the granule size (4K, 16K, 64K). For 
+>> this
+>> example of 32MB scatter-gather list unmap, this results in just 16 
+>> ASID
+>> based TLB invalidations or tlb_flush_all() callback (TLBIASID in case 
+>> of
+>> arm-smmu) as opposed to 8192 TLBIVAs thereby increasing the 
+>> performance of
+>> unmaps drastically.
+>> 
+>> Condition (size > granule size) is chosen for 
+>> io_pgtable_tlb_flush_all()
+>> because for any granule with supported pgsizes, we will have at least 
+>> 512
+>> TLB invalidations for which tlb_flush_all() is already recommended. 
+>> For
+>> example, take 4K granule with 2MB pgsize, this will result in 512 
+>> TLBIVA
+>> in partial walk flush.
+>> 
+>> Test on QTI SM8150 SoC for 10 iterations of iommu_{map_sg}/unmap:
+>> (average over 10 iterations)
+>> 
+>> Before this optimization:
+>> 
+>>      size        iommu_map_sg      iommu_unmap
+>>        4K            2.067 us         1.854 us
+>>       64K            9.598 us         8.802 us
+>>        1M          148.890 us       130.718 us
+>>        2M          305.864 us        67.291 us
+>>       12M         1793.604 us       390.838 us
+>>       16M         2386.848 us       518.187 us
+>>       24M         3563.296 us       775.989 us
+>>       32M         4747.171 us      1033.364 us
+>> 
+>> After this optimization:
+>> 
+>>      size        iommu_map_sg      iommu_unmap
+>>        4K            1.723 us         1.765 us
+>>       64K            9.880 us         8.869 us
+>>        1M          155.364 us       135.223 us
+>>        2M          303.906 us         5.385 us
+>>       12M         1786.557 us        21.250 us
+>>       16M         2391.890 us        27.437 us
+>>       24M         3570.895 us        39.937 us
+>>       32M         4755.234 us        51.797 us
+>> 
+>> This is further reduced once the map/unmap_pages() support gets in 
+>> which
+>> will result in just 1 tlb_flush_all() as opposed to 16 
+>> tlb_flush_all().
+>> 
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> ---
+>>   drivers/iommu/io-pgtable-arm.c | 7 +++++--
+>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/iommu/io-pgtable-arm.c 
+>> b/drivers/iommu/io-pgtable-arm.c
+>> index 87def58e79b5..c3cb9add3179 100644
+>> --- a/drivers/iommu/io-pgtable-arm.c
+>> +++ b/drivers/iommu/io-pgtable-arm.c
+>> @@ -589,8 +589,11 @@ static size_t __arm_lpae_unmap(struct 
+>> arm_lpae_io_pgtable *data,
+>>     		if (!iopte_leaf(pte, lvl, iop->fmt)) {
+>>   			/* Also flush any partial walks */
+>> -			io_pgtable_tlb_flush_walk(iop, iova, size,
+>> -						  ARM_LPAE_GRANULE(data));
+>> +			if (size > ARM_LPAE_GRANULE(data))
+>> +				io_pgtable_tlb_flush_all(iop);
+>> +			else
+> 
+> Erm, when will the above condition ever not be true? ;)
+> 
+
+Ah right, silly me :)
+
+> Taking a step back, though, what about the impact to drivers other
+> than SMMUv2?
+
+Other drivers would be msm_iommu.c, qcom_iommu.c which does the same
+thing as arm-smmu-v2 (page based invalidations), then there is 
+ipmmu-vmsa.c
+which does tlb_flush_all() for flush walk.
+
+> In particular I'm thinking of SMMUv3.2 where the whole
+> range can be invalidated by VA in a single command anyway, so the
+> additional penalties of TLBIALL are undesirable.
+> 
+
+Right, so I am thinking we can have a new generic quirk 
+IO_PGTABLE_QUIRK_RANGE_INV
+to choose between range based invalidations(tlb_flush_walk) and 
+tlb_flush_all().
+In this case of arm-smmu-v3.2, we can tie up ARM_SMMU_FEAT_RANGE_INV 
+with this quirk
+and have something like below, thoughts?
+
+if (iop->cfg.quirks & IO_PGTABLE_QUIRK_RANGE_INV)
+         io_pgtable_tlb_flush_walk(iop, iova, size,
+                                   ARM_LPAE_GRANULE(data));
+else
+         io_pgtable_tlb_flush_all(iop);
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
