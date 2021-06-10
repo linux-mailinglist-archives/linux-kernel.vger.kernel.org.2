@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AAF3A305F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637A73A3063
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhFJQUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:20:18 -0400
-Received: from mail-oo1-f45.google.com ([209.85.161.45]:33594 "EHLO
-        mail-oo1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhFJQUQ (ORCPT
+        id S230492AbhFJQVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:21:42 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21380 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhFJQVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:20:16 -0400
-Received: by mail-oo1-f45.google.com with SMTP id v17-20020a4aa5110000b0290249d63900faso31952ook.0;
-        Thu, 10 Jun 2021 09:18:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zowArRjAAnzKvHBN+RPg0/JH6reTanVtBG1ZhO+au30=;
-        b=EI5YcDTe7N1MF/8ijscPU/eVMz2TiVMpb2ivL0fUIz6bzODo3IDqWdbjrYE+DWBUoe
-         hY+wXF4MJhrz9cWpKzzcDFUVaNjiPGWTA7Rghho7AlwFjyW20LM7l6qjKTKnC/APULVs
-         dYSVend+KeS4kU8pKalnXOltYUpVOguT/UTa+8wy8PGdw+AGSAWYnGdh1VwFryeLq3HI
-         QDmSShOek/0xwriO8FaHAwwVuZRBBTnhhSc5ElJShTwyuDGdw/mrR7WcWkTKLl+97Owq
-         /8hcQxPZ372O3blEIujqGivs3rBcecnBaIDl8LdsyXg4oeeRsrUJhQTD/xXuRf8tQ/+g
-         1vsQ==
-X-Gm-Message-State: AOAM532OHdwJyhwUgL/ZErvnL4bSUvIwKkhZz1gGXPJuguhy8Cfd1iPD
-        trcn9fcYuXsC9zI2/Ze5Wg==
-X-Google-Smtp-Source: ABdhPJxDa2nJg5IbToRfbbwFxUmVIEpzV4GOafbjOpqGflOC3KFiwmEQEvu7SFxiC9JxpaBHK8QyWQ==
-X-Received: by 2002:a4a:a9c8:: with SMTP id h8mr2975424oon.1.1623341899426;
-        Thu, 10 Jun 2021 09:18:19 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.113])
-        by smtp.gmail.com with ESMTPSA id x187sm637622oia.17.2021.06.10.09.18.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 09:18:18 -0700 (PDT)
-Received: (nullmailer pid 1910178 invoked by uid 1000);
-        Thu, 10 Jun 2021 16:18:15 -0000
-Date:   Thu, 10 Jun 2021 11:18:15 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        billy_tsai@aspeedtech.com,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, ryan_chen@aspeedtech.com,
-        Hongweiz@ami.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH v5 01/10] dt-bindings: aspeed-sgpio: Convert txt bindings
- to yaml.
-Message-ID: <20210610161815.GA1910106@robh.at.kernel.org>
-References: <20210608102547.4880-1-steven_lee@aspeedtech.com>
- <20210608102547.4880-2-steven_lee@aspeedtech.com>
+        Thu, 10 Jun 2021 12:21:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1623341975; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=coZG9heMNMaVtmLhvzg39WQj9ttAHjAVR4Xin5Tl++EWjGNVjHgc6AeSB+Vk1smMrxq5KpkFXzOKp/Em7YDDMc7mglty70BFURFtxlQWlsY76wyMP4j8MIrciVkVy1rLqIKLkYN6XoE+Uy4x149sALB9uRbG6WeWyKlkGoX7PGA=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1623341975; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=HAKm0vB87VfcW2UTN+pnBdBfKxvZ/KF9QbxznGuDeHk=; 
+        b=YJNMlInwHU9N8ys4lH9xuXLkGPlV7lqA1FhRB9HDJBeHmR0q5UAa3qNV2UFdpX6iRTxkIjBK8L03kVnbvAVWFmSpUATF6aBnkmZRnzAXkpYa8rHD97MT6ukk/A2cwsdA1R7LV1xqatg+e3xEju/BvEnGC3EfsreBzO20gs5PC5k=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1623341975;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=HAKm0vB87VfcW2UTN+pnBdBfKxvZ/KF9QbxznGuDeHk=;
+        b=BA8qi6XYZGlPo9t9larjyIpSYdNf/1i1q1n064Y/76Q8WS1IPvtnMV7JBTz+EN4v
+        REcxm2tTb2BXvkiP5tjgYm7OLxbD25WFMjFMhXjhdPzAkmaUJDiVVT7zJM9vrB9LeP6
+        Da7A1TLPNKuLHyOjwsiIHR1WweIArmmdFx8Eys3k=
+Received: from localhost.localdomain (106.51.105.43 [106.51.105.43]) by mx.zohomail.com
+        with SMTPS id 1623341973610765.8442819280449; Thu, 10 Jun 2021 09:19:33 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mac80211_hwsim: correctly handle zero length frames
+Date:   Thu, 10 Jun 2021 21:49:16 +0530
+Message-Id: <20210610161916.9307-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608102547.4880-2-steven_lee@aspeedtech.com>
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Jun 2021 18:25:36 +0800, Steven Lee wrote:
-> sgpio-aspeed bindings should be converted to yaml format.
-> 
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> ---
->  .../bindings/gpio/aspeed,sgpio.yaml           | 75 +++++++++++++++++++
->  .../devicetree/bindings/gpio/sgpio-aspeed.txt | 46 ------------
->  2 files changed, 75 insertions(+), 46 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
->  delete mode 100644 Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
-> 
+syzbot, using KMSAN, has reported an uninit-value access in
+hwsim_cloned_frame_received_nl(). This is happening because frame_data_len
+is 0. The code doesn't detect this case and blindly tries to read the
+frame's header.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Fix this by bailing out in case frame_data_len is 0.
+
+Reported-by: syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com
+Tested-by: syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+---
+ drivers/net/wireless/mac80211_hwsim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
+index 51ce767eaf88..ccfe40313109 100644
+--- a/drivers/net/wireless/mac80211_hwsim.c
++++ b/drivers/net/wireless/mac80211_hwsim.c
+@@ -3649,7 +3649,7 @@ static int hwsim_cloned_frame_received_nl(struct sk_buff *skb_2,
+ 	if (skb == NULL)
+ 		goto err;
+ 
+-	if (frame_data_len > IEEE80211_MAX_DATA_LEN)
++	if (frame_data_len == 0 || frame_data_len > IEEE80211_MAX_DATA_LEN)
+ 		goto err;
+ 
+ 	/* Copy the data */
+-- 
+2.26.2
+
