@@ -2,215 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5030E3A30D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EEC3A3116
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbhFJQld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:41:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhFJQl3 (ORCPT
+        id S231961AbhFJQo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:44:27 -0400
+Received: from mail-ej1-f46.google.com ([209.85.218.46]:45735 "EHLO
+        mail-ej1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231648AbhFJQnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:41:29 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39851C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 09:39:17 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id p13so2114244pfw.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 09:39:17 -0700 (PDT)
+        Thu, 10 Jun 2021 12:43:50 -0400
+Received: by mail-ej1-f46.google.com with SMTP id k7so161147ejv.12;
+        Thu, 10 Jun 2021 09:41:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3NrbkZ4gaNm3FYjrbDCPAtrIiFQJBVFjNcUyHj2TZc0=;
-        b=vXk5Nc6zTRjyHXZeqYqRph0d3uohuXDQMuPmlDb453IXgCHpGm4VSAqhRI7mJpkDSR
-         h0wry1rKPCMkHOR5rmdKpKbZ1uuOmBD4KRwOXwUdgv0P2kP6MuSCiW+M58AfyQXYBung
-         +wGlGYF+4TJQ7SchzkDDuXWEXjjihL5yJXc7ETBAlJoYmVAZgpsNLwBL83e4H4pAuCO1
-         QrnnV5uuFoP3VnyhSDkf2J/+/0KIJqREz8BnBpk7Z6zzuNK51ZlvzQmI+lBkklpRxBaD
-         z+Ga5H1y4XQVRij0r+jNdNCYZlkEwPekmwhw9ry29KEoa/+evjZ6GIu+0AANW8/Hv4wA
-         yPQQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rRvwfKkukgnoScSahSMFZLRC5h4rW9MQ8oHY/dsa0CU=;
+        b=aHI+Pj3SA0nCldSK7rXsO6hP+jGwaE6IW07XrKEEHSkDNew4YG2JTnjt27+2ZAPRnf
+         RC8KXMTxfHm6qMHOVzaiVuTg1R+hy32Ms1HYer+OLcBUSksLHYvsXfNIMBW/bSojiIrS
+         j6i9lzw1mqdS9KfllULTePyca9ec50Vqvv8K3LSpeI/TyvB1qD4SL2RKnMP8fLFWlmP5
+         HmN9oeWoBBr7l7edk8czk7jnUH+4sd/3KHzB4P73IJcWVtjImsWqfXX4EI/AlvjXR7JS
+         Sy0wgnCFXcROo2l1ojBTXUJoL9V3GaN1kQa+2TQZP+h3gb7wEuULFBaana/6rE/tg9kK
+         9GNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3NrbkZ4gaNm3FYjrbDCPAtrIiFQJBVFjNcUyHj2TZc0=;
-        b=gizaiZNxlWUA18EeLYi3P2HgLCCkGVs48aekbB6fKajjEwJmxWS88aExLS1lycplJ9
-         OVs1V9min5QofCeyg1jgAudbIB5mt720OId3qrqoTusWfy9MwzVqNHaZ3syyZEZte6rU
-         VwlFHbu5sGISAL7RKWZhSMrZne1l2v2efy6gAyjX1lIOGeEwY8M75HpM0cJZP6mb6tJr
-         KFXVMArxCDB6b/eJ0gkSZIt2H+gPj+HL99z+nmHhmQuSOirKJOiDSxJzFiXpUUtoy0Lv
-         qKS0tDirtXNrFRgRJ2+MRIinJ8QRszavqvEtKXO7o4TetmU2PzQru38j6nszjnEoxKUj
-         2uoQ==
-X-Gm-Message-State: AOAM531mDouS5ILIMhww1sH5WDA7zi46oS3lHS2loe3ykKTzlNSWtvt0
-        snsYkZbPE4um6te9KHrWQPjwTw==
-X-Google-Smtp-Source: ABdhPJzqNVU4qiHI8ZgBJyDv1p3wQXmjPBPk06IxqnpR+pNKkkM1qwcl5vmwrJ43ifur651sDdvc0g==
-X-Received: by 2002:a63:5f4e:: with SMTP id t75mr5728782pgb.75.1623343156587;
-        Thu, 10 Jun 2021 09:39:16 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id bo14sm8069376pjb.40.2021.06.10.09.39.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rRvwfKkukgnoScSahSMFZLRC5h4rW9MQ8oHY/dsa0CU=;
+        b=JY31oBIx2ylsTvIUVIEKLdsKwuzAzfGDKArnugDAYfO9QpFLpCeGOToRiNB9+eMI/n
+         m3kr3dVuggNB3bXd2/S9Ax1l3CDfpA3cNV84R0uMlHpU2c6Uzb25hgzHWbhJjNcTCbq7
+         X0nF+e85nEFDkEh1K/UixGej1IebKkhAN3uoQ0kKwaHuE4Hnv19tf6qXAgoabamuVU6s
+         37vqntUuPUE8O/RFyi4xlfDPn9Vnc7+LnUzaRQNjGwM2Ev9NOI1pgPsUGYWClXUX0NvF
+         6MpGhHbGGsByII/FKgFNDdW9/UQ13+W95ygTTGEIsvU9tS0eKitChWd1StcT1qoBrmmr
+         z9GA==
+X-Gm-Message-State: AOAM532meHB67F27gr/PmOaA70kvI0kPMQ5bvmd/SPlJCoudHB2aLSJI
+        ZxaYaJ3wrpDPZJWKZxebu44=
+X-Google-Smtp-Source: ABdhPJz4YWRBuxeFIQcGWxDtMKhJvdtWzIe7Vy6kryVThIQL7lMptpfJil7bBVFS+oUTz/kkBJ+dkg==
+X-Received: by 2002:a17:906:f889:: with SMTP id lg9mr509833ejb.82.1623343238190;
+        Thu, 10 Jun 2021 09:40:38 -0700 (PDT)
+Received: from yoga-910.localhost ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id e22sm1657166edv.57.2021.06.10.09.40.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 09:39:15 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 10:39:13 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     acme@kernel.org, coresight@lists.linaro.org, leo.yan@linaro.org,
-        al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        Thu, 10 Jun 2021 09:40:37 -0700 (PDT)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+To:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>, calvin.johnson@nxp.com
+Cc:     Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
         linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf cs-etm: Delay decode of non-timeless data until
- cs_etm__flush_events()
-Message-ID: <20210610163913.GD34238@p14s>
-References: <20210609130421.13934-1-james.clark@arm.com>
- <20210610162453.GC34238@p14s>
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux.cj@gmail.com, netdev@vger.kernel.org,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: [PATCH net-next v8 11/15] net: mdio: Add ACPI support code for mdio
+Date:   Thu, 10 Jun 2021 19:39:13 +0300
+Message-Id: <20210610163917.4138412-12-ciorneiioana@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210610163917.4138412-1-ciorneiioana@gmail.com>
+References: <20210610163917.4138412-1-ciorneiioana@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610162453.GC34238@p14s>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 10:24:53AM -0600, Mathieu Poirier wrote:
-> This patch doesn't apply on coresight next.  
+From: Calvin Johnson <calvin.johnson@oss.nxp.com>
 
-I was able to apply this patch to Arnaldo's tree.
+Define acpi_mdiobus_register() to Register mii_bus and create PHYs for
+each ACPI child node.
 
-> 
-> On Wed, Jun 09, 2021 at 04:04:20PM +0300, James Clark wrote:
-> > Currently, timeless mode starts the decode on PERF_RECORD_EXIT, and
-> > non-timeless mode starts decoding on the fist PERF_RECORD_AUX record.
-> > 
-> > This can cause the "data has no samples!" error if the first
-> > PERF_RECORD_AUX record comes before the first (or any relevant)
-> > PERF_RECORD_MMAP2 record because the mmaps are required by the decoder
-> > to access the binary data.
-> > 
-> > This change pushes the start of non-timeless decoding to the very end of
-> > parsing the file. The PERF_RECORD_EXIT event can't be used because it
-> > might not exist in system-wide or snapshot modes.
-> > 
-> > I have not been able to find the exact cause for the events to be
-> > intermittently in the wrong order in the basic scenario:
-> > 
-> > 	perf record -e cs_etm/@tmc_etr0/u top
-> > 
-> > But it can be made to happen every time with the --delay option. This is
-> > because "enable_on_exec" is disabled, which causes tracing to start
-> > before the process to be launched is exec'd. For example:
-> > 
-> > 	perf record -e cs_etm/@tmc_etr0/u --delay=1 top
-> > 	perf report -D | grep 'AUX\|MAP'
-> > 
-> > 	0 16714475632740 0x520 [0x40]: PERF_RECORD_AUX offset: 0 size: 0x30 flags: 0 []
-> > 	0 16714476494960 0x5d0 [0x40]: PERF_RECORD_AUX offset: 0x30 size: 0x30 flags: 0 []
-> > 	0 16714478208900 0x660 [0x40]: PERF_RECORD_AUX offset: 0x60 size: 0x30 flags: 0 []
-> > 	4294967295 16714478293340 0x700 [0x70]: PERF_RECORD_MMAP2 8712/8712: [0x557a460000(0x54000) @ 0 00:17 5329258 0]: r-xp /usr/bin/top
-> > 	4294967295 16714478353020 0x770 [0x88]: PERF_RECORD_MMAP2 8712/8712: [0x7f86f72000(0x34000) @ 0 00:17 5214354 0]: r-xp /usr/lib/aarch64-linux-gnu/ld-2.31.so
-> > 
-> > Another scenario in which decoding from the first aux record fails is a
-> > workload that forks. Although the aux record comes after 'bash', it
-> > comes before 'top', which is what we are interested in. For example:
-> > 
-> > 	perf record -e cs_etm/@tmc_etr0/u -- bash -c top
-> > 	perf report -D | grep 'AUX\|MAP'
-> > 
-> > 	4294967295 16853946421300 0x510 [0x70]: PERF_RECORD_MMAP2 8723/8723: [0x558f280000(0x142000) @ 0 00:17 5213953 0]: r-xp /usr/bin/bash
-> > 	4294967295 16853946543560 0x580 [0x88]: PERF_RECORD_MMAP2 8723/8723: [0x7fbba6e000(0x34000) @ 0 00:17 5214354 0]: r-xp /usr/lib/aarch64-linux-gnu/ld-2.31.so
-> > 	4294967295 16853946628420 0x608 [0x68]: PERF_RECORD_MMAP2 8723/8723: [0x7fbba9e000(0x1000) @ 0 00:00 0 0]: r-xp [vdso]
-> > 	0 16853947067300 0x690 [0x40]: PERF_RECORD_AUX offset: 0 size: 0x3a60 flags: 0 []
-> > 	...
-> > 	0 16853966602580 0x1758 [0x40]: PERF_RECORD_AUX offset: 0xc2470 size: 0x30 flags: 0 []
-> > 	4294967295 16853967119860 0x1818 [0x70]: PERF_RECORD_MMAP2 8723/8723: [0x5559e70000(0x54000) @ 0 00:17 5329258 0]: r-xp /usr/bin/top
-> > 	4294967295 16853967181620 0x1888 [0x88]: PERF_RECORD_MMAP2 8723/8723: [0x7f9ed06000(0x34000) @ 0 00:17 5214354 0]: r-xp /usr/lib/aarch64-linux-gnu/ld-2.31.so
-> > 	4294967295 16853967237180 0x1910 [0x68]: PERF_RECORD_MMAP2 8723/8723: [0x7f9ed36000(0x1000) @ 0 00:00 0 0]: r-xp [vdso]
-> > 
-> > A third scenario is when the majority of time is spent in a shared
-> > library that is not loaded at startup. For example a dynamically loaded
-> > plugin.
-> > 
-> > Testing
-> > =======
-> > 
-> > Testing was done by checking if any samples that are present in the
-> > old output are missing from the new output. Timestamps must be
-> > stripped out with awk because now they are set to the last AUX sample,
-> > rather than the first:
-> > 
-> > 	./perf script $4 | awk '!($4="")' > new.script
-> > 	./perf-default script $4 | awk '!($4="")' > default.script
-> > 	comm -13 <(sort -u new.script) <(sort -u default.script)
-> > 
-> > Testing showed that the new output is a superset of the old. When lines
-> > appear in the comm output, it is not because they are missing but
-> > because [unknown] is now resolved to sensible locations. For example
-> > last putp branch here now resolves to libtinfo, so it's not missing
-> > from the output, but is actually improved:
-> > 
-> > Old:
-> > 	top 305 [001]  1 branches:uH: 402830 _init+0x30 (/usr/bin/top.procps) => 404a1c [unknown] (/usr/bin/top.procps)
-> > 	top 305 [001]  1 branches:uH: 404a20 [unknown] (/usr/bin/top.procps) => 402970 putp@plt+0x0 (/usr/bin/top.procps)
-> > 	top 305 [001]  1 branches:uH: 40297c putp@plt+0xc (/usr/bin/top.procps) => 0 [unknown] ([unknown])
-> > New:
-> > 	top 305 [001]  1 branches:uH: 402830 _init+0x30 (/usr/bin/top.procps) => 404a1c [unknown] (/usr/bin/top.procps)
-> > 	top 305 [001]  1 branches:uH: 404a20 [unknown] (/usr/bin/top.procps) => 402970 putp@plt+0x0 (/usr/bin/top.procps)
-> > 	top 305 [001]  1 branches:uH: 40297c putp@plt+0xc (/usr/bin/top.procps) => 7f8ab39208 putp+0x0 (/lib/libtinfo.so.5.9)
-> > 
-> > In the following two modes, decoding now works and the "data has no
-> > samples!" error is not displayed any more:
-> > 
-> > 	perf record -e cs_etm/@tmc_etr0/u -- bash -c top
-> > 	perf record -e cs_etm/@tmc_etr0/u --delay=1 top
-> > 
-> > In snapshot mode, there is also an improvement to decoding. Previously
-> > samples for the 'kill' process that was used to send SIGUSR2 were
-> > completely missing, because the process hadn't started yet. But now
-> > there are additional samples present:
-> > 
-> > 	perf record -e cs_etm/@tmc_etr0/u --snapshot -a
-> > 	perf script
-> > 
-> > 		stress 19380 [003] 161627.938153:    1000000    instructions:uH:      aaaabb612fb4 [unknown] (/usr/bin/stress)
-> > 		  kill 19644 [000] 161627.938153:    1000000    instructions:uH:      ffffae0ef210 [unknown] (/lib/aarch64-linux-gnu/ld-2.27.so)
-> > 		stress 19380 [003] 161627.938153:    1000000    instructions:uH:      ffff9e754d40 random_r+0x20 (/lib/aarch64-linux-gnu/libc-2.27.so)
-> > 
-> > Also tested was the round trip of 'perf inject' followed by 'perf
-> > report' which has the same differences and improvements.
-> > 
-> > Signed-off-by: James Clark <james.clark@arm.com>
-> > ---
-> >  tools/perf/util/cs-etm.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> > index 57aea2c7fc77..ceed0b038796 100644
-> > --- a/tools/perf/util/cs-etm.c
-> > +++ b/tools/perf/util/cs-etm.c
-> > @@ -2407,6 +2407,11 @@ static int cs_etm__process_event(struct perf_session *session,
-> >  			return err;
-> >  	}
-> >  
-> > +	/*
-> > +	 * Don't wait for cs_etm__flush_events() in per-thread/timeless mode to start the decode. We
-> > +	 * need the tid of the PERF_RECORD_EXIT event to assign to the synthesised samples because
-> > +	 * ETM_OPT_CTXTID is not enabled.
-> > +	 */
-> >  	if (etm->timeless_decoding &&
-> >  	    event->header.type == PERF_RECORD_EXIT)
-> >  		return cs_etm__process_timeless_queues(etm,
-> > @@ -2424,7 +2429,6 @@ static int cs_etm__process_event(struct perf_session *session,
-> >  		 * onwards.
-> >  		 */
-> >  		etm->latest_kernel_timestamp = sample_kernel_timestamp;
-> > -		return cs_etm__process_queues(etm);
-> >  	}
-> >  
-> >  	return 0;
-> > -- 
-> > 2.28.0
-> > 
+Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+---
+
+Changes in v8: None
+Changes in v7:
+- Include headers directly used in acpi_mdio.c
+
+Changes in v6:
+- use GENMASK() and ACPI_COMPANION_SET()
+- some cleanup
+- remove unwanted header inclusion
+
+Changes in v5:
+- add missing MODULE_LICENSE()
+- replace fwnode_get_id() with OF and ACPI function calls
+
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+
+ MAINTAINERS                  |  1 +
+ drivers/net/mdio/Kconfig     |  7 +++++
+ drivers/net/mdio/Makefile    |  1 +
+ drivers/net/mdio/acpi_mdio.c | 56 ++++++++++++++++++++++++++++++++++++
+ include/linux/acpi_mdio.h    | 26 +++++++++++++++++
+ 5 files changed, 91 insertions(+)
+ create mode 100644 drivers/net/mdio/acpi_mdio.c
+ create mode 100644 include/linux/acpi_mdio.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e8f8b6c33a51..2172f594be8f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6811,6 +6811,7 @@ F:	Documentation/devicetree/bindings/net/mdio*
+ F:	Documentation/devicetree/bindings/net/qca,ar803x.yaml
+ F:	Documentation/networking/phy.rst
+ F:	drivers/net/mdio/
++F:	drivers/net/mdio/acpi_mdio.c
+ F:	drivers/net/mdio/fwnode_mdio.c
+ F:	drivers/net/mdio/of_mdio.c
+ F:	drivers/net/pcs/
+diff --git a/drivers/net/mdio/Kconfig b/drivers/net/mdio/Kconfig
+index 422e9e042a3c..99a6c13a11af 100644
+--- a/drivers/net/mdio/Kconfig
++++ b/drivers/net/mdio/Kconfig
+@@ -34,6 +34,13 @@ config OF_MDIO
+ 	help
+ 	  OpenFirmware MDIO bus (Ethernet PHY) accessors
+ 
++config ACPI_MDIO
++	def_tristate PHYLIB
++	depends on ACPI
++	depends on PHYLIB
++	help
++	  ACPI MDIO bus (Ethernet PHY) accessors
++
+ if MDIO_BUS
+ 
+ config MDIO_DEVRES
+diff --git a/drivers/net/mdio/Makefile b/drivers/net/mdio/Makefile
+index 2e6813c709eb..15f8dc4042ce 100644
+--- a/drivers/net/mdio/Makefile
++++ b/drivers/net/mdio/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # Makefile for Linux MDIO bus drivers
+ 
++obj-$(CONFIG_ACPI_MDIO)		+= acpi_mdio.o
+ obj-$(CONFIG_FWNODE_MDIO)	+= fwnode_mdio.o
+ obj-$(CONFIG_OF_MDIO)		+= of_mdio.o
+ 
+diff --git a/drivers/net/mdio/acpi_mdio.c b/drivers/net/mdio/acpi_mdio.c
+new file mode 100644
+index 000000000000..60a86e3fc246
+--- /dev/null
++++ b/drivers/net/mdio/acpi_mdio.c
+@@ -0,0 +1,56 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * ACPI helpers for the MDIO (Ethernet PHY) API
++ *
++ * This file provides helper functions for extracting PHY device information
++ * out of the ACPI ASL and using it to populate an mii_bus.
++ */
++
++#include <linux/acpi.h>
++#include <linux/acpi_mdio.h>
++#include <linux/bits.h>
++#include <linux/dev_printk.h>
++#include <linux/fwnode_mdio.h>
++#include <linux/module.h>
++#include <linux/types.h>
++
++MODULE_AUTHOR("Calvin Johnson <calvin.johnson@oss.nxp.com>");
++MODULE_LICENSE("GPL");
++
++/**
++ * acpi_mdiobus_register - Register mii_bus and create PHYs from the ACPI ASL.
++ * @mdio: pointer to mii_bus structure
++ * @fwnode: pointer to fwnode of MDIO bus.
++ *
++ * This function registers the mii_bus structure and registers a phy_device
++ * for each child node of @fwnode.
++ */
++int acpi_mdiobus_register(struct mii_bus *mdio, struct fwnode_handle *fwnode)
++{
++	struct fwnode_handle *child;
++	u32 addr;
++	int ret;
++
++	/* Mask out all PHYs from auto probing. */
++	mdio->phy_mask = GENMASK(31, 0);
++	ret = mdiobus_register(mdio);
++	if (ret)
++		return ret;
++
++	ACPI_COMPANION_SET(&mdio->dev, to_acpi_device_node(fwnode));
++
++	/* Loop over the child nodes and register a phy_device for each PHY */
++	fwnode_for_each_child_node(fwnode, child) {
++		ret = acpi_get_local_address(ACPI_HANDLE_FWNODE(child), &addr);
++		if (ret || addr >= PHY_MAX_ADDR)
++			continue;
++
++		ret = fwnode_mdiobus_register_phy(mdio, child, addr);
++		if (ret == -ENODEV)
++			dev_err(&mdio->dev,
++				"MDIO device at address %d is missing.\n",
++				addr);
++	}
++	return 0;
++}
++EXPORT_SYMBOL(acpi_mdiobus_register);
+diff --git a/include/linux/acpi_mdio.h b/include/linux/acpi_mdio.h
+new file mode 100644
+index 000000000000..0a24ab7cb66f
+--- /dev/null
++++ b/include/linux/acpi_mdio.h
+@@ -0,0 +1,26 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * ACPI helper for the MDIO (Ethernet PHY) API
++ */
++
++#ifndef __LINUX_ACPI_MDIO_H
++#define __LINUX_ACPI_MDIO_H
++
++#include <linux/phy.h>
++
++#if IS_ENABLED(CONFIG_ACPI_MDIO)
++int acpi_mdiobus_register(struct mii_bus *mdio, struct fwnode_handle *fwnode);
++#else /* CONFIG_ACPI_MDIO */
++static inline int
++acpi_mdiobus_register(struct mii_bus *mdio, struct fwnode_handle *fwnode)
++{
++	/*
++	 * Fall back to mdiobus_register() function to register a bus.
++	 * This way, we don't have to keep compat bits around in drivers.
++	 */
++
++	return mdiobus_register(mdio);
++}
++#endif
++
++#endif /* __LINUX_ACPI_MDIO_H */
+-- 
+2.31.1
+
