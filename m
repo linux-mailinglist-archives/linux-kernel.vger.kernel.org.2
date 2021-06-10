@@ -2,155 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352BE3A2771
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB8A3A276C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhFJIxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:53:40 -0400
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:34797 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhFJIxj (ORCPT
+        id S230060AbhFJIwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 04:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229778AbhFJIwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:53:39 -0400
-Received: by mail-vs1-f43.google.com with SMTP id q2so1458595vsr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 01:51:31 -0700 (PDT)
+        Thu, 10 Jun 2021 04:52:23 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8909C061574;
+        Thu, 10 Jun 2021 01:50:20 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id b145-20020a1c80970000b029019c8c824054so6003875wmd.5;
+        Thu, 10 Jun 2021 01:50:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0n9dDqvP+lODnMQ5qHqWheaeGBbbZs8YgGz8kfCeEwE=;
-        b=JkDxdgQpwfa+eXaZCKAJkqqIgDJlXievjNrXMtpoIJp6+zIC1G25BQDrEvuVDpGRm0
-         plRQJtPmIF08MTR5knKoO2iTXQX9rfFxoUYK1L+9CoJGzLBgyyBwx9A2KiEzcstXgM1O
-         jdozPW1VC/HCG1J4vEN2akMEAhUCrSxjOBZKfqP+rAojYe3Z9JLddsVNkYmJ2gh1CnWH
-         H2iBlL5JptW+Ca+jEt9McBKUWVHQ4zVe6tUMJOlycNhGzY+g7kxeNsy/9gds+usgQgKI
-         3ZGc7l9fLcMiQgxSYGqeVPDXXHBBD17aSUmo81BIx5vk4U1jhPWmyNdlowhYaUs0ZTQz
-         iiQQ==
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=44JZKXW5mlJ+V66lNHP+kLdlMsmv+wQwqYhG+XePn7c=;
+        b=M7yW14u97s0esMMs5NLjNyxtwj6BNY8fZyF5sZK8eL0iaCFu/ff14nbLM1WLXapT8c
+         xP7B3ubFVTXi9zKXlwpz5T5vTGo23jRWOKqANUpzdn+rnOFbL+yzyg0rdCD0Qi4mkyXy
+         W0FyMfdZ13WgAMGzxC5wF+A/vEhYx4C2Y2BE7ytxDwXGLkTBiNtfQE71ZDGT18v2CKfY
+         jfrfHYgByJTSqEK+uybf+x3IEJ8H7rAO8ePDaBcvHs6FAtFlKnhTk6JA1UwImYLFt998
+         etkfyMgFQDdru6TrrZTaXxFnR87EmbRST5fl46lwAsJcdKQFsCnWaQwodLq3I0AmOcLq
+         p3Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0n9dDqvP+lODnMQ5qHqWheaeGBbbZs8YgGz8kfCeEwE=;
-        b=pvl8pxJ7faoKzlj2cvFntCbQRL/0HmHjIVOg4vqyDQJ56S87x5z5x8EEJDL+uI9nA9
-         Xpj/AFh1rECGAvWS2wWO18iF6SkmDj/1Vv/zp9o/ejedgKQb8GyY93xBtVoPjBVb8KNj
-         H8KEOXe4S9KOcHCIrs8SRQbBUK7v1q1zLFzNPq7Pn5nd8SfC1UE40PcTJI6bTlL4a1a5
-         5NnmD0sh8pZNZAeGVhP7pAZ0Zz1DqR5GVN6h/X5D4X+M63PC13xM1mGGypoyoeZQhmVw
-         aEKyhpnEKJlLbFW7rpkUg0tcJgI/dSC88dvFEQ9BZx20ykZF3vj3pXm63iLfZ6gfHpP0
-         RhOA==
-X-Gm-Message-State: AOAM533j+X4hwdR2Shj8neXrDE5Hbny3u1v/SN90k0ULbDVAGGky/lru
-        ccz0At+jg9wtWM8r22qptWkm40n6SA61jXg/9WEozF/8ak3QH74E
-X-Google-Smtp-Source: ABdhPJzstZsJ7BuqoMSAVvMFwNv9YXy7kEZbmqM17vT0c7zJLt83fqECmPBoDLcuzViZxiKRyf+OKJntCcPl3ZSYZx0=
-X-Received: by 2002:a67:19c2:: with SMTP id 185mr521314vsz.34.1623315031276;
- Thu, 10 Jun 2021 01:50:31 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=44JZKXW5mlJ+V66lNHP+kLdlMsmv+wQwqYhG+XePn7c=;
+        b=Uu9/wXqrdpSofsLLRkdICQ3FlIM80rB2aRa4/I80/UoAaLUI1Czm1LT76XUmJ/04uN
+         cAIRs1WqpvppO5dwWVHuUj0C0TunEYPARqgQ6Ah+f1SvRWzpJb2QobcRXkRUEF4PowZt
+         7Bg0XqN0EMiKSiDZvMtFtTBGbGypviycewQrZiikItcNHVLwIQnVjldOpaqnE2g1iOOP
+         EV7PlE1ZJ/E/vokiJ+1UaGv3EyJHkJt7jDirSsyrLayTemCTMWVdhpAhohdQ3lJeEaCM
+         I/DQdfrSD2DkfixxUFTDWPMPsoxpKdtINwYrwIK9ja70EcmoEHigXsVOIdjpdLxhIbWq
+         MzAA==
+X-Gm-Message-State: AOAM532ibKS7l97qi8tbyJN6Y2g2D7mTK4WZtgurjEDV27EKIYQDy2Sz
+        Zv69vn/HfSFAgoSCqjFBzwg=
+X-Google-Smtp-Source: ABdhPJzipKj0+rm+nYuqnnIexKWbIJ3xlkSONQUmo8ETNx/aSznC0DwV2AcZ+4LyWwkx6A/f1k88hw==
+X-Received: by 2002:a7b:c042:: with SMTP id u2mr3798921wmc.127.1623315019312;
+        Thu, 10 Jun 2021 01:50:19 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id v7sm2650858wru.66.2021.06.10.01.50.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 01:50:18 -0700 (PDT)
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        "chun-jie.chen" <chun-jie.chen@mediatek.corp-partner.google.com>
+References: <20210610023614.5375-1-chun-jie.chen@mediatek.com>
+ <20210610023614.5375-4-chun-jie.chen@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [PATCH 3/3] soc: mediatek: pm-domains: Add support for mt8195
+Message-ID: <f050f072-1732-b6f0-f505-2d0a44563ce5@gmail.com>
+Date:   Thu, 10 Jun 2021 10:50:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210602192758.38735-1-alcooperx@gmail.com> <20210602192758.38735-2-alcooperx@gmail.com>
- <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
- <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com> <CAPDyKFpEtvjS1mWC68gRBWD64dq2M1LO84UWE5uDLTzbGz1g8Q@mail.gmail.com>
- <6acd480a-8928-89bb-0f40-d278294973a1@gmail.com>
-In-Reply-To: <6acd480a-8928-89bb-0f40-d278294973a1@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 10 Jun 2021 10:49:55 +0200
-Message-ID: <CAPDyKFqk23xg5R2k9GwQrnamwWYbMkmrbWYsHPF9VBQTAbvQHw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
- controller on the BCM7211
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
-        Scott Branden <sbranden@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210610023614.5375-4-chun-jie.chen@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 at 01:59, Florian Fainelli <f.fainelli@gmail.com> wrote:
->
->
->
-> On 6/9/2021 2:22 AM, Ulf Hansson wrote:
-> > On Wed, 9 Jun 2021 at 05:07, Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >>
-> >>
-> >>
-> >> On 6/8/2021 5:40 AM, Ulf Hansson wrote:
-> >>> On Wed, 2 Jun 2021 at 21:28, Al Cooper <alcooperx@gmail.com> wrote:
-> >>>>
-> >>>> Add support for the legacy Arasan sdhci controller on the BCM7211 and
-> >>>> related SoC's. This includes adding a .shutdown callback to increase
-> >>>> the power savings during S5.
-> >>>
-> >>> Please split this into two separate changes.
-> >>>
-> >>> May I also ask about the ->shutdown() callback and in relation to S5.
-> >>> What makes the ->shutdown callback only being invoked for S5?
-> >>
-> >> It is not only called for S5 (entered via poweroff on a prompt) but also
-> >> during kexec or reboot. The poweroff path is via:
-> >>
-> >> kernel_power_off() -> kernel_shutdown_prepare() -> device_shutdown() ->
-> >> .shutdown()
-> >>
-> >> For kexec or reboot we do not really care about power savings since we
-> >> are about to load a new image anyway, however for S5/poweroff we do care
-> >> about quiescing the eMMC controller in a way that its clocks and the
-> >> eMMC device can be put into low power mode since we will stay in that
-> >> mode for seconds/hours/days until someone presses a button on their
-> >> remote (or other wake-up sources).
-> >
-> > Hmm, I am not sure I understand correctly. At shutdown we don't care
-> > about wake-up sources from the kernel point of view, instead we treat
-> > everything as if it will be powered off.
->
-> The same .shutdown() path is used whether you kexec, reboot or poweroff,
-> but for poweroff we do care about allowing specific wake-up sources
-> configured as such to wake-up the system at a later time, like GPIOs,
-> RTC, etc.
+Hi Chun-Jie,
 
-That's true, but using the ->shutdown() callbacks in this way would
-certainly be a new use case.
+Thanks for the patch, comments below.
 
-Most subsystems/drivers don't care about power management in those
-callbacks, but rather just about managing a graceful shutdown.
+On 10/06/2021 04:36, Chun-Jie Chen wrote:
+> From: "chun-jie.chen" <chun-jie.chen@mediatek.corp-partner.google.com>
+> 
+> Add the needed board data to support mt8195 SoC.
+> 
 
-It sounds to me like you should have a look at the hibernation
-path/callbacks instead - or perhaps even the system suspend
-path/callback. Normally, that's where we care about power management.
+Please try to come up with a better commit message. Especially mention that we
+have to increase the SPM_MAX_BUS_PROT_DATA.
 
-I have looped in Rafael, to allow him to share his opinion on this.
+> Signed-off-by: chun-jie.chen <chun-jie.chen@mediatek.com>
 
->
-> >
-> > We put devices into low power state at system suspend and potentially
-> > also during some of the hibernation phases.
-> >
-> > Graceful shutdown of the eMMC is also managed by the mmc core.
->
-> AFAICT that calls mmc_blk_shutdown() but that is pretty much it, the
-> SDHCI platform_driver still needs to do something in order to conserve
-> power including disabling host->clk, otherwise we would not have done
-> that for sdhci-brcmstb.c.
+I suppose your name would be "Chun-Jie Chen"
 
-That's not entirely correct. When mmc_bus_shutdown() is called for the
-struct device* that belongs to an eMMC card, two actions are taken.
+Please also fix your git settings to that From and Signed-off-by matches.
 
-*) We call mmc_blk_shutdown(), to suspend the block device queue from
-receiving new I/O requests.
-**) We call host->bus_ops->shutdown(), which is an eMMC specific
-callback set to mmc_shutdown(). In this step, we do a graceful
-shutdown/power-off of the eMMC card.
+[...]
 
-When it comes to controller specific resources, like clocks and PM
-domains, for example, those may very well stay turned on. Do deal with
-these, then yes, you would need to implement the ->shutdown()
-callback. But as I said above, I am not sure it's the right thing to
-do.
+>  
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
+> index 8b86ed22ca56..1b8967b9829e 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.h
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
+> @@ -37,7 +37,7 @@
+>  #define PWR_STATUS_AUDIO		BIT(24)
+>  #define PWR_STATUS_USB			BIT(25)
+>  
+> -#define SPM_MAX_BUS_PROT_DATA		5
+> +#define SPM_MAX_BUS_PROT_DATA		6
+>  
+>  #define _BUS_PROT(_mask, _set, _clr, _sta, _update, _ignore) {	\
+>  		.bus_prot_mask = (_mask),			\
+> @@ -72,8 +72,6 @@ struct scpsys_bus_prot_data {
+>  	bool ignore_clr_ack;
+>  };
+>  
+> -#define MAX_SUBSYS_CLKS 10
+> -
 
-Kind regards
-Uffe
+Good catch, not needed define. Can you put that in a new patch please?
+
+Regards,
+Matthias
