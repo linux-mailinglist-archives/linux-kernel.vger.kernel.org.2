@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528A83A2C04
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148FA3A2BFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhFJMyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:54:38 -0400
-Received: from mail-ej1-f49.google.com ([209.85.218.49]:33392 "EHLO
-        mail-ej1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbhFJMyf (ORCPT
+        id S230289AbhFJMyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:54:11 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:40255 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230136AbhFJMyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:54:35 -0400
-Received: by mail-ej1-f49.google.com with SMTP id g20so44039352ejt.0;
-        Thu, 10 Jun 2021 05:52:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BIJBn/I6DRBXkEoZUzmiw1Hh2oOM7OAEUZCbmNimrwY=;
-        b=JkluSf/kl2F7pNpCnxbzkaVwHuZZbX004ST6XQIMXpUB48TnjcdtkwyMJF3vjfK+US
-         dCsa1LW5/u5uVXRow00lXdnBnabFjYoxv4ih3oGHdLwcYW7N+3t0VO///nBRaMPE4CQM
-         y17F3pnDnvPxrH6LrAPIZJiWTHw6yzLRGkG9q+XdGSy8RojgFDBH14Qwf1/0YGP6JfgV
-         ir1CGl09B0TG9crbxf1wpzWsS9/iGdKfXfAZqTthgRm/AfsIbHcNB3tOSzicfcQfkc49
-         YOaec5jHZNOY0VZ5bDGQg/uwbGnJzwfcCZ9ESx6gRYiB/iYHZxpQ+ZAuoXqaZ2N4hECy
-         IBFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BIJBn/I6DRBXkEoZUzmiw1Hh2oOM7OAEUZCbmNimrwY=;
-        b=b+1x3W6PYCCibglnJ+2iZDWsgbjqvNZ4baL4NG9oTltLTlotcsQ3lm0BLHBbpzcAK6
-         BxD+keSi+Y1ADjOZxF4S37DtAqpGF6/rsEveqAuto4AwHdm4BZ/GV6pC1OhmcoF+ruLY
-         o+zSdE3IL0bvSs1O+zTYDPAszwrEWRj6nVk7j+58FT4QszqrZe7sqppDcyraH4hgFdG1
-         YkMgCRx93VqydpVu+yEH9iXS3yBrKy+sfQSwh+ChhByIY+MendDSU77Xx3wKAnhOafk2
-         Fc+mlZ5nK1tH4c52bV/+t/MgImLNfApYu8DwEXbmCit7Iu+RfQwyWf7hOBGBwcbQyZbR
-         OSzw==
-X-Gm-Message-State: AOAM531gF7UOSKGA21FYzw1pMXaPFYMod49/MdCg2/cSOcgnKWuE+BfO
-        FvURuMCBrBTnsXhirDSmXR9+nrlRPvHmzC9cW3Y=
-X-Google-Smtp-Source: ABdhPJxXGCyOtIxT2sWmcCzl9YoKQTh3945/iYZzq+xMr4L07m30j9mVZpaBSttdKfgV16WQ8kEgWktAM7iiCMaEC60=
-X-Received: by 2002:a17:906:c293:: with SMTP id r19mr4417749ejz.252.1623329489454;
- Thu, 10 Jun 2021 05:51:29 -0700 (PDT)
+        Thu, 10 Jun 2021 08:54:09 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 58E5A2101;
+        Thu, 10 Jun 2021 08:52:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 10 Jun 2021 08:52:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=E5Pc7fipEbBuER2SNRqORMg07Xg
+        /kjPfCBgdeNOwwzM=; b=uq6gkHgO9P4locKPO6euSQbmudLsOCueuxjgrVcQzUn
+        jIuPRd0L2ilYFUJM5fDYevFoxX3Q5mZT4EHcO2eeYX/nhzN6C/Bbk5udF9bOecCX
+        IF3ogEnb6EQE9ee8fZfCKU51fxPf1gtLymjRvGXaeSNgZB4jupKyUcK91WFUeY1h
+        C7YQW66FVS8agu5Nf6J3OUodV5qKCNdNlVe/NG7vfcNmUgYFzVTNp+/TeaGL3L/k
+        sn1hCtz9v6+4Up4fLxAnNb7mNqFJA80feYZEe3VdTZFnrthHtWn2m5UwxKDace+M
+        6xqgi0tqDyxn65Px5GpD4g3Qg2n6D1Pi5o1XTkHzeMA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=E5Pc7f
+        ipEbBuER2SNRqORMg07Xg/kjPfCBgdeNOwwzM=; b=ZqXhRvdLv45r+chVTO/7Gn
+        4rkTQyCMncwDlexzWTVXLDnhXkbbSKs5Xe9MxCsVqpd0TVjcyvUfK4xAtRjSzLRI
+        gl7uAgr9e2S2Ocr9XjLPRkSG6SH1NrKWpp5s3ES8NS5S7CKays9SWhpyBFE4hS77
+        KVplRntLY+OkP0sUlE0jPpQUnnOuBv3dk87lBosI12nZe2mZKu4kEiYFA7cvzJhf
+        ufH89d4ym7eV5GD8XfnCA0RexPkqAcNKmIfl3Ejr0FeCTncX9O0Y8ybAvyh1xYCe
+        ctIL6Xbo2Ei1SHgo2h9Y7fRF2s0XB19aapdramN8/FEKyvPZQj0SMssjYB8zZPuw
+        ==
+X-ME-Sender: <xms:-grCYIpZbk5lCYj5uIN1DWB4fQsO8JVtMIPqmV1WF0BXFVndtZiI4g>
+    <xme:-grCYOo3nAhFXjOAHrf3GQVv00tNDtviMzBCYRZEoeluqolcj37rIcPBiKZFTYIRk
+    ZEBd0-OkqrArdUvJc8>
+X-ME-Received: <xmr:-grCYNNi2HN3uwtsvbhZBGogEDdiC_tn2F4TBDmI_46TB2aM14r7e9TM_QHQrAXDOggB8AytUl9rhM6hc9PnFAZB-MkfML50IzvX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedufedgheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:-grCYP4RUxWvahUH6bjMQyTyFo7s_d5zqATDaS6mrGP7hYEDPhuADQ>
+    <xmx:-grCYH6h9MyvrQghSck7vrbCmTz9Mva5GdXqYe7m8QpgnUyWJmTSqA>
+    <xmx:-grCYPiSTrLLLOf4_U1B4WhOym-nAdceCSX-CrQreObSrp6nRr0eQA>
+    <xmx:-wrCYEs1rcT8oVyHC_bxhQL45xKAEUpsBzsH6sJAbrobiqh3DWVlTA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 10 Jun 2021 08:52:10 -0400 (EDT)
+Date:   Thu, 10 Jun 2021 14:52:09 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: allwinner: a64-sopine-baseboard: change
+ RGMII mode to TXID
+Message-ID: <20210610125209.glrd2qlpwqiha24h@gilmour>
+References: <20210609083843.463750-1-icenowy@aosc.io>
 MIME-Version: 1.0
-References: <CAOuPNLiRDZ9M4n3uh=i6FpHXoVEWMHpt0At8YaydrOM=LvSvdg@mail.gmail.com>
- <295072107.94766.1623262940865.JavaMail.zimbra@nod.at>
-In-Reply-To: <295072107.94766.1623262940865.JavaMail.zimbra@nod.at>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Thu, 10 Jun 2021 18:21:18 +0530
-Message-ID: <CAOuPNLhPiVgi5Q343VP-p7vwBtA1-A5jt8Ow4_2eF4ZwsiA+eQ@mail.gmail.com>
-Subject: Re: qemu: arm: mounting ubifs using nandsim on busybox
-To:     Richard Weinberger <richard@nod.at>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="io7uwxozpxpfiet4"
+Content-Disposition: inline
+In-Reply-To: <20210609083843.463750-1-icenowy@aosc.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 at 23:52, Richard Weinberger <richard@nod.at> wrote:
->
-> Pintu,
->
-> ----- Urspr=C3=BCngliche Mail -----
-> > Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-blo=
-ck(31,0)
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> >
-> > If any one has used nandsim on qemu before, please let us know the exac=
-t steps.
->
-> nandsim works as expected. It creates a new and *erased* NAND for you.
-> So you have no UBI volumes. Therfore UBIFS cannot be mounted.
-> I suggest creating a tiny initramfs that creates UBI volumes before mount=
-ing UBIFS on
-> one of the freshly created (and empty) volumes.
->
-oh sorry I forgot to mention this.
-I am able to create and update volumes manually after booting the
-system with initramfs.
-{{{
-Creating rootfs volume:
-mknod /dev/ubi0 c 250 0
-mknod /dev/ubi0_0 c 250 1
-ubiattach /dev/ubi_ctrl -m 2
-ubimkvol /dev/ubi0 -N rootfs -m
-ubiupdatevol /dev/ubi0_0 ubifs-rootfs.img
-mount -t ubifs ubi0:rootfs ubi-root/
-}}}
 
-But I wanted to do all these automatically during boot time itself.
-Also I wanted to use ubinize.cfg as is from the original system and
-simulate everything using qemu and nadsim (if possible)
-So I thought it must be possible by setting some parameters in qemu such as=
-:
-mtdparts=3Dnand:,
--device nand,chip_id=3D0x39,drive=3Dmtd0,
--drive if=3Dmtd,file=3D./ubi-boot.img,id=3Dmtd0,
-anything else ?
+--io7uwxozpxpfiet4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Or maybe do something at the boot time itself to load the volume image ?
-If there are some possibilities please let me know.
-With this I can use my original setup as it is and verify everything
-with different kernel versions.
+On Wed, Jun 09, 2021 at 04:38:43PM +0800, Icenowy Zheng wrote:
+> Although the schematics of Pine A64-LTS and SoPine Baseboard shows both
+> the RX and TX internal delay are enabled, they're using the same broken
+> RTL8211E chip batch with Pine A64+, so they should use TXID instead, not
+> ID.
+>=20
+> In addition, by checking the real components soldered on both a SoPine
+> Baseboard and a Pine A64-LTS, RX delay is not enabled (GR69 soldered and
+> GR70 NC) despite the schematics says it's enabled. It's a common
+> situation for Pine64 boards that the NC information on schematics is not
+> the same with the board.
+>=20
+> So the RGMII delay mode should be TXID on these boards.
+>=20
+> Fixes: c2b111e59a7b ("arm64: dts: allwinner: A64 Sopine: phy-mode rgmii-i=
+d")
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 
-Thanks,
-Pintu
+Applied, thanks
+Maxime
+
+--io7uwxozpxpfiet4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYMIK+QAKCRDj7w1vZxhR
+xdspAP9uCPofAxHimp/PmBqZWpgDIoj9Jm6i11JcI3I8w29RPQEAl/hyxPgO52Bq
+BJlk9Q56TTqTCDsAPS0wOl8F0unSGAg=
+=DvGq
+-----END PGP SIGNATURE-----
+
+--io7uwxozpxpfiet4--
