@@ -2,126 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BB93A2F80
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914863A2F83
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbhFJPlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
+        id S231706AbhFJPmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbhFJPlU (ORCPT
+        with ESMTP id S230366AbhFJPmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:41:20 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97187C061574;
-        Thu, 10 Jun 2021 08:39:24 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id m137so2557708oig.6;
-        Thu, 10 Jun 2021 08:39:24 -0700 (PDT)
+        Thu, 10 Jun 2021 11:42:08 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2381FC061574;
+        Thu, 10 Jun 2021 08:39:58 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id g24so3886874pji.4;
+        Thu, 10 Jun 2021 08:39:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ILxhXAMqUZH3RrsKOKuIXVx1gcDUtk6YKsr0+FSu9+c=;
-        b=nNv3dNmWdCYcSNKvifk4zv/Q8JdJtnsVZE5Im2MsHOVASwUxHRqb5GKj30BSvcE5qh
-         Qnpp6RLD9Q/1yrpzGQqkxkt+gGXWxsR0otDuW63W/d4K7kLhtJ9D+2+7VVTc/2DI+c5T
-         iqNFTiIbTMmJkoiIqM4RW7T0VPLScD7sO7E69rJNPMC42DKTJp2qpjQPu4jG7q6FCdwN
-         lOGyG99I1a3Vx/Eu2IcJ2xcC0KyxgeVPw+LrOqQK+nnDeKsRHAYw+JN/1kDuLVixr4LE
-         Hg8e0cv1GXjXnlndtk666L+igx5NwEV3Su9QFTq5drh3NyFjs6HUkLJsKkj68qT3AF0J
-         herQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kc4pXr5gVNJ0GV4/7ScD/COeGEHHNK7iRy2xX2e12DI=;
+        b=IyHkDvw7B+4DLlhCIY1ijXU4xhYagkAothzqzrFunFLKuLnEVOqkdR2K4sb+G4yX4u
+         6tM4ZgYCPl6sy7KEg4m4SLIebhn6p+6GQAP2L6UVjjnnc5UXmpDqdIe+Y0FiEM8UhSe8
+         mkzSBptJ3N80xbNZshoFQReZ2hLe5viMlsmrAmcvh+9o7RlhVVlIGyYhy02LUBEF4an1
+         4+N1CKRID8/C2PcAORbife1Ix0eibaTSni68Ulr2YbI+Mzm1AxXZCKyVBBbU1i7if2hY
+         oQ/aoy0YCI39Whwwr5XipCmfiPViR1OaZ7oyXtfNyYZTCdnrxE6f5taifFDN4QQwKdzq
+         +Q0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ILxhXAMqUZH3RrsKOKuIXVx1gcDUtk6YKsr0+FSu9+c=;
-        b=Nuy4I80wXoXnFwTw2CrAXjS2UkbM1okR62vZb6Gxld2sFKekDpricRiyhF1lsK/CKp
-         i7CbvdwD/eMVY//MTZgjL9vvzhEgZY6Rjzl0VD4iq9t2+Iu/EbXwDkJ2OO31zzPF5j+q
-         C+/Oc6vPeZP8yYevWA/ZovSLAyBgkjB1wghFWFKGWQCx+5tItNTrtIOJDThFhG44x4so
-         +tUU/pTaB5U4iSxYmPO9D+Cz4PQkPyKMCJGGc8uOT5FXHbAQqF3CViNddILLs4CcWo4C
-         ClhUC8vgGntZFDGnlTWQNrSUM/3BpVkVmDH9eCfsaj3xYoZwT6rYEZvOUWu2pw3m/amQ
-         bcbg==
-X-Gm-Message-State: AOAM531GrLUO+3hKmGAXrGJegrf9+9GrBPEFTAtdKxiIgyJBO1ZUupte
-        UVfWAb+kPz6n57fbsjZ6yrA=
-X-Google-Smtp-Source: ABdhPJxuRxPbXLh5NG+IQk+gOlpJz5UnWegy/9u83oV7qVEZ3COtdGlmfb8dhI4XnyltSET0BpXuyQ==
-X-Received: by 2002:a05:6808:55c:: with SMTP id i28mr3913334oig.66.1623339564066;
-        Thu, 10 Jun 2021 08:39:24 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q15sm592488oon.28.2021.06.10.08.39.23
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kc4pXr5gVNJ0GV4/7ScD/COeGEHHNK7iRy2xX2e12DI=;
+        b=dhnMFblOrHYLA22AiRbqWq57yBEMA9E63IO+oXxwiOmv/beHnYDsiVBaMyJUaxiX37
+         IO6nYKhQCqsZIMNR4W+7Ov+G8YDZf0K2n4fSSfpo7IhkG/XlLoLzhgMSz2swfCMPXYpi
+         jEtkPwjUXKQAz15DiDGZa0LodyQGyIAA2GqKdws68rKVVhfukdHBTeTleLhq0Y45PUDw
+         lq9tmVBWuAJ+r6JL5i4d+zjpBCoK7+o7T/3u7zfrpA6+Crp69ohv4cka3IBQEy7dhp6+
+         IiYzqAW8eLC4vs4vvCr9AFmoolGzQK8NClWwrznQNnJjxQCqBOzvN+/FtOTVQfzurvPS
+         p8cg==
+X-Gm-Message-State: AOAM532Tfq7r8hQAjp6tEqL8wjAaMHCIKAKUTI8bUA6MIGuoQY0o+/er
+        Yh04W6zYvjerLcvIkpg9v5A=
+X-Google-Smtp-Source: ABdhPJy1+X7uMGr8zSTlJxnbngnw425lzx3UTys1Mj/5qiNq30fMS492iOZMLFe6EE7yv4rXyxMmcw==
+X-Received: by 2002:a17:902:728d:b029:113:23:c65f with SMTP id d13-20020a170902728db02901130023c65fmr5425981pll.23.1623339597692;
+        Thu, 10 Jun 2021 08:39:57 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id o20sm2864553pjq.4.2021.06.10.08.39.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 08:39:23 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 10 Jun 2021 08:39:22 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr
-Subject: Re: [PATCH 2/3] hwmon: (tps23861) set current shunt value
-Message-ID: <20210610153922.GA3859014@roeck-us.net>
-References: <20210609220728.499879-1-robert.marko@sartura.hr>
- <20210609220728.499879-2-robert.marko@sartura.hr>
+        Thu, 10 Jun 2021 08:39:57 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jakub Kici nski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH v3] net: make get_net_ns return error if NET_NS is disabled
+Date:   Thu, 10 Jun 2021 23:39:41 +0800
+Message-Id: <20210610153941.118945-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609220728.499879-2-robert.marko@sartura.hr>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 12:07:27AM +0200, Robert Marko wrote:
-> TPS23861 has a configuration bit for setting of the
-> current shunt value used on the board.
-> Its bit 0 of the General Mask 1 register.
-> 
-> According to the datasheet bit values are:
-> 0 for 255 mOhm (Default)
-> 1 for 250 mOhm
-> 
-> So, configure the bit before registering the hwmon
-> device according to the value passed in the DTS or
-> default one if none is passed.
-> 
-> This caused potentially reading slightly skewed values
-> due to max current value being 1.02A when 250mOhm shunt
-> is used instead of 1.0A when 255mOhm is used.
-> 
-> Fixes: fff7b8ab2255 ("hwmon: add Texas Instruments TPS23861 driver")
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+There is a panic in socket ioctl cmd SIOCGSKNS when NET_NS is not enabled.
+The reason is that nsfs tries to access ns->ops but the proc_ns_operations
+is not implemented in this case.
 
-Applied.
+[7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
+[7.670268] pgd = 32b54000
+[7.670544] [00000010] *pgd=00000000
+[7.671861] Internal error: Oops: 5 [#1] SMP ARM
+[7.672315] Modules linked in:
+[7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
+[7.673309] Hardware name: Generic DT based system
+[7.673642] PC is at nsfs_evict+0x24/0x30
+[7.674486] LR is at clear_inode+0x20/0x9c
 
-Thanks,
-Guenter
+The same to tun SIOCGSKNS command.
 
-> ---
->  drivers/hwmon/tps23861.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/hwmon/tps23861.c b/drivers/hwmon/tps23861.c
-> index fd0be8883829..c3685b7e9e82 100644
-> --- a/drivers/hwmon/tps23861.c
-> +++ b/drivers/hwmon/tps23861.c
-> @@ -99,6 +99,9 @@
->  #define POWER_ENABLE			0x19
->  #define TPS23861_NUM_PORTS		4
->  
-> +#define TPS23861_GENERAL_MASK_1		0x17
-> +#define TPS23861_CURRENT_SHUNT_MASK	BIT(0)
-> +
->  #define TEMPERATURE_LSB			652 /* 0.652 degrees Celsius */
->  #define VOLTAGE_LSB			3662 /* 3.662 mV */
->  #define SHUNT_RESISTOR_DEFAULT		255000 /* 255 mOhm */
-> @@ -561,6 +564,15 @@ static int tps23861_probe(struct i2c_client *client)
->  	else
->  		data->shunt_resistor = SHUNT_RESISTOR_DEFAULT;
->  
-> +	if (data->shunt_resistor == SHUNT_RESISTOR_DEFAULT)
-> +		regmap_clear_bits(data->regmap,
-> +				  TPS23861_GENERAL_MASK_1,
-> +				  TPS23861_CURRENT_SHUNT_MASK);
-> +	else
-> +		regmap_set_bits(data->regmap,
-> +				TPS23861_GENERAL_MASK_1,
-> +				TPS23861_CURRENT_SHUNT_MASK);
-> +
->  	hwmon_dev = devm_hwmon_device_register_with_info(dev, client->name,
->  							 data, &tps23861_chip_info,
->  							 NULL);
+To fix this problem, we make get_net_ns() return -EINVAL when NET_NS is
+disabled. Meanwhile move it to right place net/core/net_namespace.c.
+
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: David Laight <David.Laight@ACULAB.COM>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+
+---
+Patch "net: make get_net_ns_by_fd inline if NET_NS is disabled" must be
+applied first.
+---
+ include/linux/socket.h      |  2 --
+ include/net/net_namespace.h |  6 ++++++
+ net/core/net_namespace.c    | 12 ++++++++++++
+ net/socket.c                | 13 -------------
+ 4 files changed, 18 insertions(+), 15 deletions(-)
+
+diff --git a/include/linux/socket.h b/include/linux/socket.h
+index b8fc5c53ba6f..0d8e3dcb7f88 100644
+--- a/include/linux/socket.h
++++ b/include/linux/socket.h
+@@ -438,6 +438,4 @@ extern int __sys_socketpair(int family, int type, int protocol,
+ 			    int __user *usockvec);
+ extern int __sys_shutdown_sock(struct socket *sock, int how);
+ extern int __sys_shutdown(int fd, int how);
+-
+-extern struct ns_common *get_net_ns(struct ns_common *ns);
+ #endif /* _LINUX_SOCKET_H */
+diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
+index 0a25f95691d9..bdc0459a595e 100644
+--- a/include/net/net_namespace.h
++++ b/include/net/net_namespace.h
+@@ -185,6 +185,7 @@ void net_ns_get_ownership(const struct net *net, kuid_t *uid, kgid_t *gid);
+ 
+ void net_ns_barrier(void);
+ 
++struct ns_common *get_net_ns(struct ns_common *ns);
+ struct net *get_net_ns_by_fd(int fd);
+ #else /* CONFIG_NET_NS */
+ #include <linux/sched.h>
+@@ -206,6 +207,11 @@ static inline void net_ns_get_ownership(const struct net *net,
+ 
+ static inline void net_ns_barrier(void) {}
+ 
++static inline struct ns_common *get_net_ns(struct ns_common *ns)
++{
++	return ERR_PTR(-EINVAL);
++}
++
+ static inline struct net *get_net_ns_by_fd(int fd)
+ {
+ 	return ERR_PTR(-EINVAL);
+diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+index 6a0d9583d69c..9b5a767eddd5 100644
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -641,6 +641,18 @@ void __put_net(struct net *net)
+ }
+ EXPORT_SYMBOL_GPL(__put_net);
+ 
++/**
++ * get_net_ns - increment the refcount of the network namespace
++ * @ns: common namespace (net)
++ *
++ * Returns the net's common namespace.
++ */
++struct ns_common *get_net_ns(struct ns_common *ns)
++{
++	return &get_net(container_of(ns, struct net, ns))->ns;
++}
++EXPORT_SYMBOL_GPL(get_net_ns);
++
+ struct net *get_net_ns_by_fd(int fd)
+ {
+ 	struct file *file;
+diff --git a/net/socket.c b/net/socket.c
+index 27e3e7d53f8e..4f2c6d2795d0 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -1072,19 +1072,6 @@ static long sock_do_ioctl(struct net *net, struct socket *sock,
+  *	what to do with it - that's up to the protocol still.
+  */
+ 
+-/**
+- *	get_net_ns - increment the refcount of the network namespace
+- *	@ns: common namespace (net)
+- *
+- *	Returns the net's common namespace.
+- */
+-
+-struct ns_common *get_net_ns(struct ns_common *ns)
+-{
+-	return &get_net(container_of(ns, struct net, ns))->ns;
+-}
+-EXPORT_SYMBOL_GPL(get_net_ns);
+-
+ static long sock_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+ {
+ 	struct socket *sock;
+-- 
+2.30.2
+
