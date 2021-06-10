@@ -2,95 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7ECF3A31C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF1E3A31C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhFJRMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhFJRMY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:12:24 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6DAC061574;
-        Thu, 10 Jun 2021 10:10:27 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so388765otu.6;
-        Thu, 10 Jun 2021 10:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UEldWJV1cPWL8Nx8+B0VxRHw0WvFlQxd1i6CoueNSPg=;
-        b=IRdg245kSIcipiUDAQsfeK8J7xCVSoOfZfPJ4r14rCu8g+/JY3t7WSjzmZpNfatzGA
-         tdKtwOJKK7vj2sdT2/oC3mcL6UUy9itw++Knge0r2zC3GOdEwXz4tNJRExYZdxAmjxz7
-         lYxBEsCby173q+VLTjhlgdy4pkqZ83fUBtrkwMGTPQGYizuQsYHUjRulz1WD1li99zaZ
-         Cpw5NWZtPzRSAEiP4SSlWgE0/PRiOjHDFBEQtLCrIqCIVUgukQdXFkh15HYEUOfIqQo8
-         nAlza83rQ5+c5oxa2W0soy2OALvCh3UobmoYd9YUiJ4zKpijb3qye6DaUV0fN51y7f74
-         i3NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=UEldWJV1cPWL8Nx8+B0VxRHw0WvFlQxd1i6CoueNSPg=;
-        b=PMqXlKUonycS/bDFeua3DjDojuOhCL0wceRTewEZ46RqbBr1J4Pd6R4whowYiW2lNr
-         GxKT5rkC46ZU0tLhDmnGjr+h4Meypv0qEtXJT3TIgCxLSN2+2yC0j5/agDudRt17w33n
-         AsVnELButY6602g+YGc4g1fxmFIv+hoAiBLpVQz03C2BEYa8YiWgoupBAOQN0M5oIotm
-         TMxv+0km/1vUrlVdUm/Jyu8a1BXSRv3H7Hf3Cw5eaz2mzllONYq3AYCTEvnlmAuz+UkS
-         O2rGifjrws5ov4d1UiK83JZOQB83brDBKPUO9moYJ9Qhh+4UWBzvajVK3nhHtD4vrRCg
-         GOAA==
-X-Gm-Message-State: AOAM5326rSrnje8mXnDO9WIAigt7U9fzESPr7W2znxhWrA6Yv3y29jOO
-        OpqHsbyMLfcJEn3O7C1aa4U=
-X-Google-Smtp-Source: ABdhPJxEihMj+amx9LkloPuUl4Htc/kRCs+S/cbsGvuN5hAZAo13Hhp/u6shvqBvrF3NMlAL7NQETQ==
-X-Received: by 2002:a05:6830:2684:: with SMTP id l4mr3378035otu.294.1623345027254;
-        Thu, 10 Jun 2021 10:10:27 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t18sm706988otl.80.2021.06.10.10.10.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 10:10:26 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 10 Jun 2021 10:10:25 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Alex Ghiti <alex@ghiti.fr>, Palmer Dabbelt <palmer@dabbelt.com>,
-        corbet@lwn.net, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
-        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
-        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v5 1/3] riscv: Move kernel mapping outside of linear
- mapping
-Message-ID: <20210610171025.GA3861769@roeck-us.net>
-References: <mhng-90fff6bd-5a70-4927-98c1-a515a7448e71@palmerdabbelt-glaptop>
- <76353fc0-f734-db47-0d0c-f0f379763aa0@ghiti.fr>
- <a58c4616-572f-4a0b-2ce9-fd00735843be@ghiti.fr>
- <7b647da1-b3aa-287f-7ca8-3b44c5661cb8@ghiti.fr>
- <87fsxphdx0.fsf@igel.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87fsxphdx0.fsf@igel.home>
+        id S231148AbhFJRNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:13:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46834 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229802AbhFJRNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 13:13:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C289613C9;
+        Thu, 10 Jun 2021 17:11:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623345080;
+        bh=5i1YYQPe0SKOHI2nfgnCq6FvKp5HQINwp673ARQ1VXM=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=sZLYDAkzceQzmHC8j1hrcOsy4f5x6gHdtTEbmkpg8MoRNEu9XCYJkIDM2/bHTVeI0
+         6irbV3NMp/06UEtvUSVSTK4C37F0xD9yI4TL3GN2WPhftgeIgf1IZNE760YDpU/tkD
+         hjBHLXWtWh3dKTUuVs0YLqGNn0zKd8ERO94g1G9axxNSKBuQGy34iT4FsPI6bd2w7a
+         IpaMZ9zVMo86HXa4YNBCeGlUMD8CtcipbYvNAHAjqZpH/hlsBocU1fOlet7VKvhUnt
+         OR574b3hy7Z2HH49kw3x+E+4legwFjHGX2/YDjT6JqMwXEb0sGjbiOtzQPGQ5XLVpp
+         tgFL4F+4rCN7w==
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id A622027C005A;
+        Thu, 10 Jun 2021 13:11:18 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute2.internal (MEProxy); Thu, 10 Jun 2021 13:11:18 -0400
+X-ME-Sender: <xms:tEfCYAkCygQ17ogjTQTpay2ewKtC920hX-Fiv0qpyYENRVKY6ybqCw>
+    <xme:tEfCYP0PGX7P5Be8vbtLotgJtAy5FuRy9nbn2mxOvCCvh0dce0w7NsWPJHSD9izSv
+    FmwlngHcpzthO2jfhc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedufedguddtkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
+    ggtffrrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieev
+    ieeufeevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
+    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
+    hugidrlhhuthhordhush
+X-ME-Proxy: <xmx:tEfCYOp0pU9BgDyRti454DjWmvRh0_zcUEA1jTYT_hLk3xZFk1cqhA>
+    <xmx:tEfCYMlvGIn00t_9cZHUDQokpCAfzzQTKEwj_0Ij4wKBD6exN940NQ>
+    <xmx:tEfCYO3yZeuRGfmv94NLqkQXEyVSb89LAdIJc9pltBhLmljhKs_8Dg>
+    <xmx:tkfCYHmTikck1C3cZBxLLX-6xeC9vy5OaeNY694m8PmXKwKk5_pjjkLwlno>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 8673251C0060; Thu, 10 Jun 2021 13:11:16 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <ca2d7f44-bbef-448a-bbd4-ff27cc6f0c9e@www.fastmail.com>
+In-Reply-To: <20210608144345.912645927@linutronix.de>
+References: <20210608143617.565868844@linutronix.de>
+ <20210608144345.912645927@linutronix.de>
+Date:   Thu, 10 Jun 2021 10:10:51 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "Fenghua Yu" <fenghua.yu@intel.com>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
+        "Sebastian Andrzej Siewior" <bigeasy@linutronix.de>,
+        "Rik van Riel" <riel@surriel.com>, "Borislav Petkov" <bp@suse.de>
+Subject: =?UTF-8?Q?Re:_[patch_V3_3/6]_x86/process:_Check_PF=5FKTHREAD_and_not_cur?=
+ =?UTF-8?Q?rent->mm_for_kernel_threads?=
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 06:39:39PM +0200, Andreas Schwab wrote:
-> On Apr 18 2021, Alex Ghiti wrote:
-> 
-> > To sum up, there are 3 patches that fix this series:
-> >
-> > https://patchwork.kernel.org/project/linux-riscv/patch/20210415110426.2238-1-alex@ghiti.fr/
-> >
-> > https://patchwork.kernel.org/project/linux-riscv/patch/20210417172159.32085-1-alex@ghiti.fr/
-> >
-> > https://patchwork.kernel.org/project/linux-riscv/patch/20210418112856.15078-1-alex@ghiti.fr/
-> 
-> Has this been fixed yet?  Booting is still broken here.
-> 
 
-In -next ? riscv32 doesn't even build for me there, and riscv64 images
-generate warnings and/or don't boot (but that doesn't seem to be riscv
-related, at least at first glance).
 
-Guenter
+On Tue, Jun 8, 2021, at 7:36 AM, Thomas Gleixner wrote:
+> switch_fpu_finish() checks current->mm as indicator for kernel threads=
+.
+> That's wrong because kernel threads can temporarily use a mm of a user=
+
+> process via kthread_use_mm().
+>=20
+> Check the task flags for PF_KTHREAD instead.
+>=20
+> Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Rik van Riel <riel@surriel.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  arch/x86/include/asm/fpu/internal.h |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> --- a/arch/x86/include/asm/fpu/internal.h
+> +++ b/arch/x86/include/asm/fpu/internal.h
+> @@ -578,7 +578,7 @@ static inline void switch_fpu_finish(str
+>  	 * PKRU state is switched eagerly because it needs to be valid befor=
+e we
+>  	 * return to userland e.g. for a copy_to_user() operation.
+>  	 */
+> -	if (current->mm) {
+> +	if (!(current->flags & PF_KTHREAD)) {
+>  		pk =3D get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
+>  		if (pk)
+>  			pkru_val =3D pk->pkru;
+>=20
+>=20
+
+Why are we checking this at all?  I actually tend to agree with the ->mm=
+ check more than PF_anything. If we have a user address space, then PKRU=
+ matters. If we don=E2=80=99t, then it doesn=E2=80=99t.
