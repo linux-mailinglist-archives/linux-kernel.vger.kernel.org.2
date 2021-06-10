@@ -2,116 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2DC3A3125
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80CC3A312A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbhFJQpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:45:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49278 "EHLO mail.kernel.org"
+        id S231487AbhFJQpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:45:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231747AbhFJQob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:44:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A61560FDA;
-        Thu, 10 Jun 2021 16:42:33 +0000 (UTC)
+        id S231765AbhFJQpN (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 12:45:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 907A7613DD;
+        Thu, 10 Jun 2021 16:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623343354;
-        bh=EIDifK6jf6MgC1sFt3cf8qGcGiF4IAvL00gBZkMEqQc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=fytVhHWTmTy8QxU8u895ibp3VqbqqQcCbEYj31Pqr5ftUbrX2FahMEXPpK4Omw+wl
-         0f3AzHnZhlts/2a28zumR2jcAtnxBk3SvTvzh4Omw9n99pJCaKFMmHIOnNrJzA8kqB
-         cbq/S5Ch4i8SK2TllE30EzpZwYPINaraOuJv+oT4pA/KAufkkiCSQ97TYOvLPq7X7b
-         YPTCYXJ1929TXCs3h85sqkbajEXqQz/cgtioBFDMGNhj7AG3pNLF9rqe38Fr31KzWx
-         Es+Ysco5ZucjICHuS73hn6OHg5b9k2vKrevUXPn2YrYW4BsXrcanENE//Lw3TgjPt9
-         llnQpVFJ6z19A==
-Subject: Re: [PATCH] x86/Makefile: make -stack-alignment conditional on LLD <
- 13.0.0
-To:     torvic9@mailbox.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>
-Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "x86@kernel.org" <x86@kernel.org>
-References: <214134496.67043.1623317284090@office.mailbox.org>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <ea01f4cb-3e65-0b79-ae93-ba0957e076fc@kernel.org>
-Date:   Thu, 10 Jun 2021 09:42:34 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        s=k20201202; t=1623343396;
+        bh=1TI3P5xNylhJ3HbRoJRSII56aRhipspy+WKJIxECdwc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JSaFfwPTJOSrCY1T42ZcEQtzQ6qNaCkky1S+zXNqqxnK0RAyW1Up5B/FhQ2pLzUr1
+         AIxSnRdq18+P6x2e+n20yNLMm9lw3G+RbuV20b7CurfvR9N06XJHi/VcP8WO7c36gO
+         MpnIX9ldga89MKJxRugdXDVHKliLteMoTBtGbVU8ZpooJBzQoemlyB+S7lwdzVKmud
+         YHWtFnrU/OviKMc9qiZeUhBKPdDLhFKqYQuHVCpo5Qo39Iz+lBTvjOGuSUTUcWqF+X
+         GRs0TRGiTq1mOZtwHig6blSWEr1vOvIYU4EApSW91iqhBCpUxidFNfVFNvkDwyF58Q
+         h5OMGdUm986vg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A2A4F40B1A; Thu, 10 Jun 2021 13:43:11 -0300 (-03)
+Date:   Thu, 10 Jun 2021 13:43:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v2] perf evsel: Adjust hybrid event and global event
+ mixed group
+Message-ID: <YMJBH6Os6IgE9NYh@kernel.org>
+References: <20210609044555.27180-1-yao.jin@linux.intel.com>
+ <YMEhYYwQaT5i9/UE@krava>
 MIME-Version: 1.0
-In-Reply-To: <214134496.67043.1623317284090@office.mailbox.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMEhYYwQaT5i9/UE@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tor,
+Em Wed, Jun 09, 2021 at 10:15:29PM +0200, Jiri Olsa escreveu:
+> On Wed, Jun 09, 2021 at 12:45:55PM +0800, Jin Yao wrote:
+> > A group mixed with hybrid event and global event is allowed. For example,
+> > group leader is 'intel_pt//' and the group member is 'cpu_atom/cycles/'.
+> > 
+> > e.g.
+> > perf record --aux-sample -e '{intel_pt//,cpu_atom/cycles/}:u'
+> > 
+> > The challenge is their available cpus are not fully matched. For example,
+> > 'intel_pt//' is available on CPU0-CPU23, but 'cpu_atom/cycles/' is
+> > available on CPU16-CPU23.
+> > 
+> > When getting the group id for group member, we must be very careful.
+> > Because the cpu for 'intel_pt//' is not equal to the cpu for
+> > 'cpu_atom/cycles/'. Actually the cpu here is the index of evsel->core.cpus,
+> > not the real CPU ID.
 
-On 6/10/2021 2:28 AM, torvic9@mailbox.org wrote:
-> Since LLVM commit 3787ee4, the '-stack-alignment' flag has been dropped [1],
-> leading to the following error message when building a LTO kernel with
-> Clang-13 and LLD-13:
-> 
->      ld.lld: error: -plugin-opt=-: ld.lld: Unknown command line argument
->      '-stack-alignment=8'.  Try 'ld.lld --help'
->      ld.lld: Did you mean '--stackrealign=8'?
-> 
-> It also appears that the '-code-model' flag is not necessary anymore starting
-> with LLVM-9 [2].
-> 
-> Drop '-code-model' and make '-stack-alignment' conditional on LLD < 13.0.0.
-> 
-> This is for linux-stable 5.12.
-> Another patch will be submitted for 5.13 shortly (unless there are objections).
+<SNIP>
 
-This patch needs to be accepted into mainline first before it can go to 
-stable so this line needs to be removed. The rest of the description 
-looks good to me, good job on being descriptive!
+> > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+ 
+> looks good to me
+ 
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-> Discussion: https://github.com/ClangBuiltLinux/linux/issues/1377
-> [1]: https://reviews.llvm.org/D103048
-> [2]: https://reviews.llvm.org/D52322
+Thanks, applied.
 
-As Greg's auto-response points out, there needs to be an actual
+- Arnaldo
 
-Cc: stable@vger.kernel.org
-
-here in the patch, rather than just cc'ing stable@vger.kernel.org 
-through email.
-
-> Signed-off-by: Tor Vic <torvic9@mailbox.org>
-
-The actual patch itself looks good and I have verified that it fixes the 
-build error. On the resend with the above fixed, please feel free to add:
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
->   arch/x86/Makefile | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 1f2e5bf..2855a1a 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -192,8 +192,9 @@ endif
->   KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
->   
->   ifdef CONFIG_LTO_CLANG
-> -KBUILD_LDFLAGS	+= -plugin-opt=-code-model=kernel \
-> -		   -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
-> +ifeq ($(shell test $(CONFIG_LLD_VERSION) -lt 130000; echo $$?),0)
-> +KBUILD_LDFLAGS	+= -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
-> +endif
->   endif
->   
->   ifdef CONFIG_X86_NEED_RELOCS
-> 
-
-Cheers,
-Nathan
