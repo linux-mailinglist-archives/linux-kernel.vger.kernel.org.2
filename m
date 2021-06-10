@@ -2,124 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F30F3A2AE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D563A2AE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbhFJL6D convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Jun 2021 07:58:03 -0400
-Received: from mga01.intel.com ([192.55.52.88]:17349 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230332AbhFJL55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:57:57 -0400
-IronPort-SDR: idLIkENXxoI1tYvt4i3NCTDbm3wG2Og/F6WcbZoQhbWRFigvZK+Id0eemiJw5a8Upfi0KPlIH2
- HiryWn7Dkukw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="226674750"
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="226674750"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 04:56:00 -0700
-IronPort-SDR: 4HvAtng04rI4EJIc41e55QWKIaW7jQqGvhjYUtLTF0hdMxIBFL6IQ5+7pimANgYAGLEbf4SHuB
- XVJpwNFOA9Qw==
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="402663181"
-Received: from jwalsh5-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.28.33])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 04:55:57 -0700
-Content-Type: text/plain; charset="utf-8"
+        id S230301AbhFJL7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 07:59:21 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:32979 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230113AbhFJL7U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 07:59:20 -0400
+X-UUID: 884a963e274e4ff3aefc74ac7a06f8b4-20210610
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=elJ9YOjsWZi/CCl9FuG5SvQqldYPlUBku3yqU/pScuY=;
+        b=pftvq2X5i4XCwLgWFMCWvFzXhka7jEmLnlY5nMhBIOhOuhKMcZhIjhGwsCe6nJz3VmRg+ukItsGe8bt57F3ISvWKbjeyHrdY0HTfftx6+wcOtNpo1dU6ZykcovoJ4AcJw4VHmYgC9TLvGAXSPXdwW81TnMvt9RmkYUKOiJKSXsQ=;
+X-UUID: 884a963e274e4ff3aefc74ac7a06f8b4-20210610
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1652861480; Thu, 10 Jun 2021 19:57:20 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Jun
+ 2021 19:57:17 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 10 Jun 2021 19:57:17 +0800
+Message-ID: <1623326237.23717.15.camel@mhfsdcap03>
+Subject: Re: [PATCH v2] dt-bindings: mediatek: convert mtk jpeg
+ decoder/encoder to yaml
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <maoguang.meng@mediatek.com>
+Date:   Thu, 10 Jun 2021 19:57:17 +0800
+In-Reply-To: <c324de79-9a07-2f2c-e29a-dcd448da29f8@gmail.com>
+References: <20210609180130.693944-1-hsinyi@chromium.org>
+         <c324de79-9a07-2f2c-e29a-dcd448da29f8@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <548dd463-3942-00a1-85c3-232897dea1a3@canonical.com>
-References: <548dd463-3942-00a1-85c3-232897dea1a3@canonical.com>
-From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Subject: Re: Computation of return value being discarded in get_cpu_power() in drivers/platform/x86/intel_ips.c
-Cc:     platform-driver-x86@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-To:     "Hans de Goede" <hdegoede@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Jesse Barnes <jsbarnes@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID: <162332615476.15946.17135355064135638083@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: alot/0.8.1
-Date:   Thu, 10 Jun 2021 14:55:54 +0300
+X-TM-SNTS-SMTP: 73A1C0BC2E8DD718376B7BC09E60E8F00CCCB19571270216A0D526E592F538382000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Address for Hans was corrupt in previous message, which confused my mail
-client. Sorry for duplicate message, the other is without From: field).
+T24gVGh1LCAyMDIxLTA2LTEwIGF0IDEwOjM3ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiBIaSBIc2luLVlpLA0KPiANCj4gT24gMDkvMDYvMjAyMSAyMDowMSwgSHNpbi1ZaSBXYW5n
+IHdyb3RlOg0KPiA+IENvbnZlcnQgbWVkaWF0ZWsganBlZyBkZWNvZGVyIGFuZCBlbmNvZGVyIGJp
+bmRpbmdzIHRvIHlhbWwuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogSHNpbi1ZaSBXYW5nIDxo
+c2lueWlAY2hyb21pdW0ub3JnPg0KPiA+IC0tLQ0KPiA+IHYyOiBmaXggZHRfYmluZGluZ19jaGVj
+ayBlcnJvcnMNCj4gPiAtLS0NCj4gPiAgLi4uL2JpbmRpbmdzL21lZGlhL21lZGlhdGVrLWpwZWct
+ZGVjb2Rlci50eHQgIHwgMzggLS0tLS0tLS0tLQ0KPiA+ICAuLi4vYmluZGluZ3MvbWVkaWEvbWVk
+aWF0ZWstanBlZy1kZWNvZGVyLnlhbWwgfCA3NiArKysrKysrKysrKysrKysrKysrDQo+ID4gIC4u
+Li9iaW5kaW5ncy9tZWRpYS9tZWRpYXRlay1qcGVnLWVuY29kZXIudHh0ICB8IDM1IC0tLS0tLS0t
+LQ0KPiA+ICAuLi4vYmluZGluZ3MvbWVkaWEvbWVkaWF0ZWstanBlZy1lbmNvZGVyLnlhbWwgfCA2
+OCArKysrKysrKysrKysrKysrKw0KPiA+ICA0IGZpbGVzIGNoYW5nZWQsIDE0NCBpbnNlcnRpb25z
+KCspLCA3MyBkZWxldGlvbnMoLSkNCj4gPiAgZGVsZXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9tZWRpYXRlay1qcGVnLWRlY29kZXIudHh0DQo+
+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bWVkaWEvbWVkaWF0ZWstanBlZy1kZWNvZGVyLnlhbWwNCj4gPiAgZGVsZXRlIG1vZGUgMTAwNjQ0
+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9tZWRpYXRlay1qcGVnLWVu
+Y29kZXIudHh0DQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3MvbWVkaWEvbWVkaWF0ZWstanBlZy1lbmNvZGVyLnlhbWwNCj4gPiANCj4gPiBk
+aWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lZGlhL21lZGlh
+dGVrLWpwZWctZGVjb2Rlci50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bWVkaWEvbWVkaWF0ZWstanBlZy1kZWNvZGVyLnR4dA0KPiA+IGRlbGV0ZWQgZmlsZSBtb2RlIDEw
+MDY0NA0KPiA+IGluZGV4IDM5YzEwMjhiMmRmYjQuLjAwMDAwMDAwMDAwMDANCj4gPiAtLS0gYS9E
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvbWVkaWF0ZWstanBlZy1kZWNv
+ZGVyLnR4dA0KPiA+ICsrKyAvZGV2L251bGwNCj4gPiBAQCAtMSwzOCArMCwwIEBADQo+ID4gLSog
+TWVkaWF0ZWsgSlBFRyBEZWNvZGVyDQo+ID4gLQ0KPiA+IC1NZWRpYXRlayBKUEVHIERlY29kZXIg
+aXMgdGhlIEpQRUcgZGVjb2RlIGhhcmR3YXJlIHByZXNlbnQgaW4gTWVkaWF0ZWsgU29Dcw0KPiA+
+IC0NCj4gPiAtUmVxdWlyZWQgcHJvcGVydGllczoNCj4gPiAtLSBjb21wYXRpYmxlIDogbXVzdCBi
+ZSBvbmUgb2YgdGhlIGZvbGxvd2luZyBzdHJpbmc6DQo+ID4gLQkibWVkaWF0ZWssbXQ4MTczLWpw
+Z2RlYyINCj4gPiAtCSJtZWRpYXRlayxtdDc2MjMtanBnZGVjIiwgIm1lZGlhdGVrLG10MjcwMS1q
+cGdkZWMiDQo+ID4gLQkibWVkaWF0ZWssbXQyNzAxLWpwZ2RlYyINCj4gPiAtLSByZWcgOiBwaHlz
+aWNhbCBiYXNlIGFkZHJlc3Mgb2YgdGhlIGpwZWcgZGVjb2RlciByZWdpc3RlcnMgYW5kIGxlbmd0
+aCBvZg0KPiA+IC0gIG1lbW9yeSBtYXBwZWQgcmVnaW9uLg0KPiA+IC0tIGludGVycnVwdHMgOiBp
+bnRlcnJ1cHQgbnVtYmVyIHRvIHRoZSBpbnRlcnJ1cHQgY29udHJvbGxlci4NCj4gPiAtLSBjbG9j
+a3M6IGRldmljZSBjbG9ja3MsIHNlZQ0KPiA+IC0gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9jbG9jay9jbG9jay1iaW5kaW5ncy50eHQgZm9yIGRldGFpbHMuDQo+ID4gLS0gY2xv
+Y2stbmFtZXM6IG11c3QgY29udGFpbiAianBnZGVjLXNtaSIgYW5kICJqcGdkZWMiLg0KPiA+IC0t
+IHBvd2VyLWRvbWFpbnM6IGEgcGhhbmRsZSB0byB0aGUgcG93ZXIgZG9tYWluLCBzZWUNCj4gPiAt
+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcG93ZXIvcG93ZXJfZG9tYWluLnR4
+dCBmb3IgZGV0YWlscy4NCj4gPiAtLSBtZWRpYXRlayxsYXJiOiBtdXN0IGNvbnRhaW4gdGhlIGxv
+Y2FsIGFyYml0ZXJzIGluIHRoZSBjdXJyZW50IFNvY3MsIHNlZQ0KPiA+IC0gIERvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMvbWVkaWF0ZWssc21pLWxh
+cmIueWFtbA0KPiA+IC0gIGZvciBkZXRhaWxzLg0KPiANCj4gV2UgbWlzcyB0aGUgbWVkaWF0ZWss
+bGFyYiBpbiB0aGUgeWFtbC4NCg0KSGkgSHNpbi1ZaSwNCg0KSSB3aWxsIHJlYmFzZSB0aGlzIG9u
+ZSB3aGVuIHJlbW92aW5nIG1lZGlhdGVrLGxhcmIuDQoNCj4gDQo+ID4gLS0gaW9tbXVzOiBzaG91
+bGQgcG9pbnQgdG8gdGhlIHJlc3BlY3RpdmUgSU9NTVUgYmxvY2sgd2l0aCBtYXN0ZXIgcG9ydCBh
+cw0KPiA+IC0gIGFyZ3VtZW50LCBzZWUgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L2lvbW11L21lZGlhdGVrLGlvbW11LnlhbWwNCj4gPiAtICBmb3IgZGV0YWlscy4NCj4gPiAtDQo+
+ID4gLUV4YW1wbGU6DQo+ID4gLQlqcGVnZGVjOiBqcGVnZGVjQDE1MDA0MDAwIHsNCj4gPiAtCQlj
+b21wYXRpYmxlID0gIm1lZGlhdGVrLG10MjcwMS1qcGdkZWMiOw0KPiA+IC0JCXJlZyA9IDwwIDB4
+MTUwMDQwMDAgMCAweDEwMDA+Ow0KPiA+IC0JCWludGVycnVwdHMgPSA8R0lDX1NQSSAxNDMgSVJR
+X1RZUEVfTEVWRUxfTE9XPjsNCj4gPiAtCQljbG9ja3MgPSAgPCZpbWdzeXMgQ0xLX0lNR19KUEdE
+RUNfU01JPiwNCj4gPiAtCQkJICA8JmltZ3N5cyBDTEtfSU1HX0pQR0RFQz47DQo+ID4gLQkJY2xv
+Y2stbmFtZXMgPSAianBnZGVjLXNtaSIsDQo+ID4gLQkJCSAgICAgICJqcGdkZWMiOw0KPiA+IC0J
+CXBvd2VyLWRvbWFpbnMgPSA8JnNjcHN5cyBNVDI3MDFfUE9XRVJfRE9NQUlOX0lTUD47DQo+ID4g
+LQkJbWVkaWF0ZWssbGFyYiA9IDwmbGFyYjI+Ow0KPiA+IC0JCWlvbW11cyA9IDwmaW9tbXUgTVQy
+NzAxX000VV9QT1JUX0pQR0RFQ19XRE1BPiwNCj4gPiAtCQkJIDwmaW9tbXUgTVQyNzAxX000VV9Q
+T1JUX0pQR0RFQ19CU0RNQT47DQo+ID4gLQl9Ow0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvbWVkaWF0ZWstanBlZy1kZWNvZGVyLnlhbWwg
+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvbWVkaWF0ZWstanBlZy1k
+ZWNvZGVyLnlhbWwNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAw
+MDAwMDAuLjgyMWU2YjQ4MDkwMWENCj4gPiAtLS0gL2Rldi9udWxsDQo+ID4gKysrIGIvRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lZGlhL21lZGlhdGVrLWpwZWctZGVjb2Rlci55
+YW1sDQo+ID4gQEAgLTAsMCArMSw3NiBAQA0KPiA+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVy
+OiAoR1BMLTIuMCBPUiBCU0QtMi1DbGF1c2UpDQo+ID4gKyVZQU1MIDEuMg0KPiA+ICstLS0NCj4g
+PiArJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9tZWRpYS9tZWRpYXRlay1qcGVn
+LWRlY29kZXIueWFtbCMNCj4gPiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEt
+c2NoZW1hcy9jb3JlLnlhbWwjDQo+ID4gKw0KPiA+ICt0aXRsZTogTWVkaWFUZWsgSlBFRyBEZWNv
+ZGVyIERldmljZSBUcmVlIEJpbmRpbmdzDQo+ID4gKw0KPiA+ICttYWludGFpbmVyczoNCj4gPiAr
+ICAtIFhpYSBKaWFuZyA8eGlhLmppYW5nQG1lZGlhdGVrLmNvbT4NCj4gPiArDQo+ID4gK2Rlc2Ny
+aXB0aW9uOiB8LQ0KPiA+ICsgIE1lZGlhdGVrIEpQRUcgRGVjb2RlciBpcyB0aGUgSlBFRyBkZWNv
+ZGUgaGFyZHdhcmUgcHJlc2VudCBpbiBNZWRpYXRlayBTb0NzDQo+ID4gKw0KPiA+ICtwcm9wZXJ0
+aWVzOg0KPiA+ICsgIGNvbXBhdGlibGU6DQo+ID4gKyAgICBvbmVPZjoNCj4gPiArICAgICAgLSBp
+dGVtczoNCj4gPiArICAgICAgICAgIC0gY29uc3Q6IG1lZGlhdGVrLG10ODE3My1qcGdkZWMNCj4g
+PiArICAgICAgLSBpdGVtczoNCj4gPiArICAgICAgICAgIC0gY29uc3Q6IG1lZGlhdGVrLG10Mjcw
+MS1qcGdkZWMNCj4gPiArICAgICAgLSBpdGVtczoNCj4gPiArICAgICAgICAgIC0gZW51bToNCj4g
+PiArICAgICAgICAgICAgICAtIG1lZGlhdGVrLG10NzYyMy1qcGdkZWMNCj4gPiArICAgICAgICAg
+IC0gY29uc3Q6IG1lZGlhdGVrLG10MjcwMS1qcGdkZWMNCj4gPiArDQo+ID4gKyAgcmVnOg0KPiA+
+ICsgICAgbWF4SXRlbXM6IDENCj4gPiArDQo+ID4gKyAgaW50ZXJydXB0czoNCj4gPiArICAgIG1h
+eEl0ZW1zOiAxDQo+ID4gKw0KPiA+ICsgIGNsb2NrczoNCj4gPiArICAgIG1heEl0ZW1zOiAyDQo+
+ID4gKyAgICBtaW5JdGVtczogMg0KPiA+ICsNCj4gPiArICBjbG9jay1uYW1lczoNCj4gPiArICAg
+IGl0ZW1zOg0KPiA+ICsgICAgICAtIGNvbnN0OiBqcGdkZWMtc21pDQo+ID4gKyAgICAgIC0gY29u
+c3Q6IGpwZ2RlYw0KPiA+ICsNCj4gPiArICBwb3dlci1kb21haW5zOg0KPiA+ICsgICAgbWF4SXRl
+bXM6IDENCj4gPiArDQo+ID4gKyAgaW9tbXVzOg0KPiA+ICsgICAgbWF4SXRlbXM6IDINCj4gPiAr
+DQo+ID4gK3JlcXVpcmVkOg0KPiA+ICsgIC0gY29tcGF0aWJsZQ0KPiA+ICsgIC0gcmVnDQo+ID4g
+KyAgLSBpbnRlcnJ1cHRzDQo+ID4gKyAgLSBjbG9ja3MNCj4gPiArICAtIGNsb2NrLW5hbWVzDQo+
+ID4gKyAgLSBwb3dlci1kb21haW5zDQo+ID4gKyAgLSBpb21tdXMNCj4gPiArDQo+ID4gK2FkZGl0
+aW9uYWxQcm9wZXJ0aWVzOiBmYWxzZQ0KPiA+ICsNCj4gPiArZXhhbXBsZXM6DQo+ID4gKyAgLSB8
+DQo+ID4gKyAgICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvY2xvY2svbXQyNzAxLWNsay5oPg0KPiA+
+ICsgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVwdC1jb250cm9sbGVyL2FybS1naWMu
+aD4NCj4gPiArICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9tZW1vcnkvbXQyNzAxLWxhcmItcG9y
+dC5oPg0KPiA+ICsgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL3Bvd2VyL210MjcwMS1wb3dlci5o
+Pg0KPiA+ICsgICAganBlZ2RlYzoganBlZ2RlY0AxNTAwNDAwMCB7DQo+ID4gKyAgICAgIGNvbXBh
+dGlibGUgPSAibWVkaWF0ZWssbXQyNzAxLWpwZ2RlYyI7DQo+ID4gKyAgICAgIHJlZyA9IDwweDE1
+MDA0MDAwIDB4MTAwMD47DQo+ID4gKyAgICAgIGludGVycnVwdHMgPSA8R0lDX1NQSSAxNDMgSVJR
+X1RZUEVfTEVWRUxfTE9XPjsNCj4gPiArICAgICAgY2xvY2tzID0gIDwmaW1nc3lzIENMS19JTUdf
+SlBHREVDX1NNST4sDQo+ID4gKyAgICAgICAgICAgICAgICA8JmltZ3N5cyBDTEtfSU1HX0pQR0RF
+Qz47DQo+ID4gKyAgICAgIGNsb2NrLW5hbWVzID0gImpwZ2RlYy1zbWkiLA0KPiA+ICsgICAgICAg
+ICAgICAgICAgICAgICJqcGdkZWMiOw0KPiA+ICsgICAgICBwb3dlci1kb21haW5zID0gPCZzY3Bz
+eXMgTVQyNzAxX1BPV0VSX0RPTUFJTl9JU1A+Ow0KPiA+ICsgICAgICBpb21tdXMgPSA8JmlvbW11
+IE1UMjcwMV9NNFVfUE9SVF9KUEdERUNfV0RNQT4sDQo+ID4gKyAgICAgICAgICAgICAgIDwmaW9t
+bXUgTVQyNzAxX000VV9QT1JUX0pQR0RFQ19CU0RNQT47DQo+ID4gKyAgICB9Ow0KPiA+IGRpZmYg
+LS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvbWVkaWF0ZWst
+anBlZy1lbmNvZGVyLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRp
+YS9tZWRpYXRlay1qcGVnLWVuY29kZXIudHh0DQo+ID4gZGVsZXRlZCBmaWxlIG1vZGUgMTAwNjQ0
+DQo+ID4gaW5kZXggNWU1M2M2YWI1MmQwMS4uMDAwMDAwMDAwMDAwMA0KPiA+IC0tLSBhL0RvY3Vt
+ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9tZWRpYXRlay1qcGVnLWVuY29kZXIu
+dHh0DQo+ID4gKysrIC9kZXYvbnVsbA0KPiA+IEBAIC0xLDM1ICswLDAgQEANCj4gPiAtKiBNZWRp
+YVRlayBKUEVHIEVuY29kZXINCj4gPiAtDQo+ID4gLU1lZGlhVGVrIEpQRUcgRW5jb2RlciBpcyB0
+aGUgSlBFRyBlbmNvZGUgaGFyZHdhcmUgcHJlc2VudCBpbiBNZWRpYVRlayBTb0NzDQo+ID4gLQ0K
+PiA+IC1SZXF1aXJlZCBwcm9wZXJ0aWVzOg0KPiA+IC0tIGNvbXBhdGlibGUgOiAibWVkaWF0ZWss
+bXQyNzAxLWpwZ2VuYyINCj4gPiAtICBmb2xsb3dlZCBieSAibWVkaWF0ZWssbXRrLWpwZ2VuYyIN
+Cj4gPiAtLSByZWcgOiBwaHlzaWNhbCBiYXNlIGFkZHJlc3Mgb2YgdGhlIEpQRUcgZW5jb2RlciBy
+ZWdpc3RlcnMgYW5kIGxlbmd0aCBvZg0KPiA+IC0gIG1lbW9yeSBtYXBwZWQgcmVnaW9uLg0KPiA+
+IC0tIGludGVycnVwdHMgOiBpbnRlcnJ1cHQgbnVtYmVyIHRvIHRoZSBpbnRlcnJ1cHQgY29udHJv
+bGxlci4NCj4gPiAtLSBjbG9ja3M6IGRldmljZSBjbG9ja3MsIHNlZQ0KPiA+IC0gIERvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9jbG9jay9jbG9jay1iaW5kaW5ncy50eHQgZm9yIGRl
+dGFpbHMuDQo+ID4gLS0gY2xvY2stbmFtZXM6IG11c3QgY29udGFpbiAianBnZW5jIi4gSXQgaXMg
+dGhlIGNsb2NrIG9mIEpQRUcgZW5jb2Rlci4NCj4gPiAtLSBwb3dlci1kb21haW5zOiBhIHBoYW5k
+bGUgdG8gdGhlIHBvd2VyIGRvbWFpbiwgc2VlDQo+ID4gLSAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0
+cmVlL2JpbmRpbmdzL3Bvd2VyL3Bvd2VyX2RvbWFpbi50eHQgZm9yIGRldGFpbHMuDQo+ID4gLS0g
+bWVkaWF0ZWssbGFyYjogbXVzdCBjb250YWluIHRoZSBsb2NhbCBhcmJpdGVycyBpbiB0aGUgY3Vy
+cmVudCBTb0NzLCBzZWUNCj4gPiAtICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1sYXJiLnlhbWwNCj4gPiAtICBmb3IgZGV0
+YWlscy4NCj4gDQo+IFNhbWUgaGVyZS4NCj4gDQo+IFJlZ2FyZHMsDQo+IE1hdHRoaWFzDQoNCg==
 
-+ Jesse
-
-Quoting Colin Ian King (2021-06-09 14:50:07)
-> Hi,
-> 
-> I was reviewing some old unassigned variable warnings from static
-> analysis by Coverity and found an issue introduced with the following
-> commit:
-> 
-> commit aa7ffc01d254c91a36bf854d57a14049c6134c72
-> Author: Jesse Barnes <jbarnes@virtuousgeek.org>
-> Date:   Fri May 14 15:41:14 2010 -0700
-> 
->     x86 platform driver: intelligent power sharing driver
-> 
-> The analysis is as follows:
-> 
-> drivers/platform/x86/intel_ips.c
-> 
->  871 static u32 get_cpu_power(struct ips_driver *ips, u32 *last, int period)
->  872 {
->  873        u32 val;
->  874        u32 ret;
->  875
->  876        /*
->  877         * CEC is in joules/65535.  Take difference over time to
->  878         * get watts.
->  879         */
->  880        val = thm_readl(THM_CEC);
->  881
->  882        /* period is in ms and we want mW */
->  883        ret = (((val - *last) * 1000) / period);
-> 
-> Unused value (UNUSED_VALUE)
-> assigned_value:  Assigning value from ret * 1000U / 65535U to ret here,
-> but that stored value is not used.
-> 
->  884        ret = (ret * 1000) / 65535;
->  885        *last = val;
->  886
->  887        return 0;
->  888 }
-> 
-> I'm really not sure why ret is being calculated on lines 883,884 and not
-> being used. Should that be *last = ret on line 885? Looks suspect anyhow.
-
-According to git blame code seems to have been disabled intentionally by the
-following commit:
-  
-commit 96f3823f537088c13735cfdfbf284436c802352a
-Author: Jesse Barnes <jbarnes@virtuousgeek.org>
-Date:   Tue Oct 5 14:50:59 2010 -0400
-  
-    [PATCH 2/2] IPS driver: disable CPU turbo
-  
-    The undocumented interface we're using for reading CPU power seems to be
-    overreporting power.  Until we figure out how to correct it, disable CPU
-    turbo and power reporting to be safe.  This will keep the CPU within default
-    limits and still allow us to increase GPU frequency as needed.
-  
-Maybe wrap the code after thm_readl() in #if 0 in case somebody ends up
-wanting to fix it? Or eliminate completely.
-  
-In theory the thm_readl() may affect the system behavior so would not
-remove that for extra paranoia.
-  
-Regards, Joonas
-
-> Colin
-> 
-> 
