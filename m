@@ -2,78 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526A53A256D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E633A257E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhFJH1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:27:38 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5317 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhFJH1Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:27:24 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G0wNy05dCz1BKwX;
-        Thu, 10 Jun 2021 15:20:34 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 15:25:25 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
- 2021 15:25:25 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>
-Subject: [PATCH net-next] net: w5100: Use devm_platform_get_and_ioremap_resource()
-Date:   Thu, 10 Jun 2021 15:29:33 +0800
-Message-ID: <20210610072933.4074571-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S229980AbhFJHcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:32:52 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:40494 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229634AbhFJHcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 03:32:51 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lrF9P-0002mW-8K; Thu, 10 Jun 2021 09:30:51 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     robh+dt@kernel.org, vkoul@kernel.org, kishon@ti.com,
+        t.schramm@manjaro.org, linux-phy@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: soc: rockchip: drop unnecessary #phy-cells from grf.yaml
+Date:   Thu, 10 Jun 2021 09:30:50 +0200
+Message-ID: <11362049.qUNvkh4Gvn@diego>
+In-Reply-To: <46289b3c-f804-624b-3c74-1989e57d0a7c@gmail.com>
+References: <e7e09072-9cac-413e-dca2-e2a668c1807e@gmail.com> <20210607141845.3331910-1-heiko@sntech.de> <46289b3c-f804-624b-3c74-1989e57d0a7c@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_platform_get_and_ioremap_resource() to simplify
-code.
+Am Montag, 7. Juni 2021, 17:37:06 CEST schrieb Johan Jonker:
+> 
+> On 6/7/21 4:18 PM, Heiko Stuebner wrote:
+> > The recent yaml conversion of the grf and inno-usb2-phy bindings
+> > left the #phy-cells in place in the main usb2phy node inside the
+> > example in grf.yaml, causing new warnings.
+> > 
+> > Drop it to make the bindingcheck happy.
+> > 
+> > Fixes: e71ccdff376b ("dt-bindings: phy: rename phy nodename in phy-rockchip-inno-usb2.yaml")
+> > Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+> > ---
+> 
+> > Like this I guess?
+> 
+> Hi Heiko,
+> 
+> When I apply this patch locally and give the command below the
+> notifications are gone.
+> 
+> make ARCH=arm dt_binding_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/soc/rockchip/grf.yaml
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/net/ethernet/wiznet/w5100.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+so I've applied the patch on top now in my tree.
 
-diff --git a/drivers/net/ethernet/wiznet/w5100.c b/drivers/net/ethernet/wiznet/w5100.c
-index ec5db481c9cd..811815f8cd3b 100644
---- a/drivers/net/ethernet/wiznet/w5100.c
-+++ b/drivers/net/ethernet/wiznet/w5100.c
-@@ -263,19 +263,14 @@ static int w5100_writebulk_direct(struct net_device *ndev, u32 addr,
- static int w5100_mmio_init(struct net_device *ndev)
- {
- 	struct platform_device *pdev = to_platform_device(ndev->dev.parent);
--	struct w5100_priv *priv = netdev_priv(ndev);
- 	struct w5100_mmio_priv *mmio_priv = w5100_mmio_priv(ndev);
--	struct resource *mem;
- 
- 	spin_lock_init(&mmio_priv->reg_lock);
- 
--	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	mmio_priv->base = devm_ioremap_resource(&pdev->dev, mem);
-+	mmio_priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
- 	if (IS_ERR(mmio_priv->base))
- 		return PTR_ERR(mmio_priv->base);
- 
--	netdev_info(ndev, "at 0x%llx irq %d\n", (u64)mem->start, priv->irq);
--
- 	return 0;
- }
- 
--- 
-2.25.1
+Heiko
+
+
 
