@@ -2,68 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B713A29B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515593A29B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhFJLBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 07:01:46 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42924 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhFJLBn (ORCPT
+        id S230166AbhFJLCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 07:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhFJLCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:01:43 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6C56621A24;
-        Thu, 10 Jun 2021 10:59:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623322786;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zQS0qB/amfmlxFzlgfZBYMFK2FG3zor2og3viZ7XNGk=;
-        b=V9d3nm8QpwImHkoYll84Z5KcYk5PQtB8GgO3vwN9tlx8/SVvNFInlgF5CLVQV/pdkuYTLb
-        1MzKMVW55mPTy44s/sjIkClpEwnr5PPPaAhuSAaWQYbIu6K8lS9tqh4Q2q3AUjsWU1+bv5
-        bODxcG4rqsbnSSmmvWboCISfW7tO+lw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623322786;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zQS0qB/amfmlxFzlgfZBYMFK2FG3zor2og3viZ7XNGk=;
-        b=WZcfX5tRr/mGg0POBBSmg8vMRXepmz0ZgDwUdBubPFTOP/Hpl/qhoPTE+5FN8+mguIems/
-        hwO6s/YE8c8weDDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 5EE19A3B8A;
-        Thu, 10 Jun 2021 10:59:46 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E0547DAEB9; Thu, 10 Jun 2021 12:57:01 +0200 (CEST)
-Date:   Thu, 10 Jun 2021 12:57:01 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH] ipwireless: remove unused ipw_tty::closing
-Message-ID: <20210610105701.GA28158@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Jiri Slaby <jslaby@suse.cz>,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        David Sterba <dsterba@suse.com>
-References: <20210610090307.2689-1-jslaby@suse.cz>
+        Thu, 10 Jun 2021 07:02:03 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DBEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 04:00:07 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:a946:bccb:b1a1:3055])
+        by xavier.telenet-ops.be with bizsmtp
+        id FP04250060wnyou01P04UY; Thu, 10 Jun 2021 13:00:05 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lrIPr-00FF9M-Na; Thu, 10 Jun 2021 13:00:03 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lrIPq-00Blno-SW; Thu, 10 Jun 2021 13:00:02 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Dave Chinner <dchinner@redhat.com>,
+        Chandan Babu R <chandanrlinux@gmail.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-xfs@vger.kernel.org, linux-next@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        noreply@ellerman.id.au
+Subject: [PATCH] xfs: Fix 64-bit division on 32-bit in xlog_state_switch_iclogs()
+Date:   Thu, 10 Jun 2021 13:00:01 +0200
+Message-Id: <20210610110001.2805317-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610090307.2689-1-jslaby@suse.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 11:03:07AM +0200, Jiri Slaby wrote:
-> It's only set, but never read.
+On 32-bit (e.g. m68k):
 
-Thanks. Please update the changelog with:
+    ERROR: modpost: "__udivdi3" [fs/xfs/xfs.ko] undefined!
 
-Commit 01261cb94318 ("tty: ipwireless: Remove tty->closing abort from
-ipw_open()") removed last use of tty::closing.
+Fix this by using a uint32_t intermediate, like before.
+
+Reported-by: noreply@ellerman.id.au
+Fixes: 7660a5b48fbef958 ("xfs: log stripe roundoff is a property of the log")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Compile-tested only.
+---
+ fs/xfs/xfs_log.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
+index 0e563ff8cd3be4aa..0c91da5defee6b9f 100644
+--- a/fs/xfs/xfs_log.c
++++ b/fs/xfs/xfs_log.c
+@@ -3143,8 +3143,8 @@ xlog_state_switch_iclogs(
+ 
+ 	/* Round up to next log-sunit */
+ 	if (log->l_iclog_roundoff > BBSIZE) {
+-		log->l_curr_block = roundup(log->l_curr_block,
+-						BTOBB(log->l_iclog_roundoff));
++		uint32_t sunit_bb = BTOBB(log->l_iclog_roundoff);
++		log->l_curr_block = roundup(log->l_curr_block, sunit_bb);
+ 	}
+ 
+ 	if (log->l_curr_block >= log->l_logBBsize) {
+-- 
+2.25.1
+
