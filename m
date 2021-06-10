@@ -2,160 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840E13A2717
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D473A271A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhFJId4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbhFJIdt (ORCPT
+        id S230084AbhFJIeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 04:34:17 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44176 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230450AbhFJIeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:33:49 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5678C0617A6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 01:31:51 -0700 (PDT)
-Received: from localhost (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Thu, 10 Jun 2021 04:34:12 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 9AB93AC8E83;
-        Thu, 10 Jun 2021 10:31:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1623313908;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1B0DE1FD37;
+        Thu, 10 Jun 2021 08:32:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623313935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jn+AugA0jjeMf75IXMzBMJDsoobmw9Ii5lTQIUixXj4=;
-        b=Q65hq5fFQmFLGz6fM4S+YX8dskwWz+s7YJOd1oD5HrNpwJh/9osLB6RLffrQQXbtNO4bxr
-        tYAk0GX6jZQREnlchpLJfETwaD6I4Az5KX7IYCNwk5yBzWh2QWdzsIenBwrNa1CLtDKlvv
-        gFXgStH0IAv4fOolr4VlKgFVTiI4UcM=
-Date:   Thu, 10 Jun 2021 10:31:47 +0200
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     paolo.valente@linaro.org, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Piotr Gorski <lucjan.lucjanov@gmail.com>
-Subject: Re: [RESEND PATCH 1/8] bfq: introduce bfq_entity_to_bfqg helper
- method
-Message-ID: <20210610083147.xoefokucl5ey7v32@spock.localdomain>
-References: <cover.1618916839.git.brookxu@tencent.com>
- <20210610072230.TAxxdh-wsL4sihK2TJxF-Gz85ZgsFR7IwOuifnxFi0k@z>
+        bh=OeAO0bqW50FXm34lxR7plvPCmDbRwpAchjw0krk6Plk=;
+        b=knI7HCq6TTN2dfs+hCsTzmfhOxtcDoXx7S67sSKKFnO2etfBoRDSK+HjvwoPflVDuLJ4vz
+        tuYOSCf5FHI8OsMiSJbz8ZoUMbf47nC72YS0HwX7p21flISGe323b7zJSyj1nrsqHjwycr
+        tMNH2mabp+qp0VdWhU3XS683JWXUFVM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623313935;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OeAO0bqW50FXm34lxR7plvPCmDbRwpAchjw0krk6Plk=;
+        b=f/oIQ2VAqmm2/ojemgNGACPMRyz+K93+H/HrSdoDL/UKKzyTHrFic48I1WsdjH5zUkS73r
+        QcGvsMuM7oNSMRCQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id E3558118DD;
+        Thu, 10 Jun 2021 08:32:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623313935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OeAO0bqW50FXm34lxR7plvPCmDbRwpAchjw0krk6Plk=;
+        b=knI7HCq6TTN2dfs+hCsTzmfhOxtcDoXx7S67sSKKFnO2etfBoRDSK+HjvwoPflVDuLJ4vz
+        tuYOSCf5FHI8OsMiSJbz8ZoUMbf47nC72YS0HwX7p21flISGe323b7zJSyj1nrsqHjwycr
+        tMNH2mabp+qp0VdWhU3XS683JWXUFVM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623313935;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OeAO0bqW50FXm34lxR7plvPCmDbRwpAchjw0krk6Plk=;
+        b=f/oIQ2VAqmm2/ojemgNGACPMRyz+K93+H/HrSdoDL/UKKzyTHrFic48I1WsdjH5zUkS73r
+        QcGvsMuM7oNSMRCQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id ETl0Ng7OwWCbGgAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Thu, 10 Jun 2021 08:32:14 +0000
+To:     Cyrill Gorcunov <gorcunov@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>
+References: <20210609113903.1421-1-vbabka@suse.cz>
+ <20210609113903.1421-30-vbabka@suse.cz> <YMFAu5kuhZbZquiI@grain>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [RFC v2 29/34] mm: slub: Move flush_cpu_slab() invocations
+ __free_slab() invocations out of IRQ context
+Message-ID: <ea99ecc5-365d-95d5-df88-e32a07b67b3a@suse.cz>
+Date:   Thu, 10 Jun 2021 10:32:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610072230.TAxxdh-wsL4sihK2TJxF-Gz85ZgsFR7IwOuifnxFi0k@z>
+In-Reply-To: <YMFAu5kuhZbZquiI@grain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
-
-On Thu, Jun 10, 2021 at 03:22:30PM +0800, brookxu wrote:
-> From: Chunguang Xu <brookxu@tencent.com>
+On 6/10/21 12:29 AM, Cyrill Gorcunov wrote:
+> On Wed, Jun 09, 2021 at 01:38:58PM +0200, Vlastimil Babka wrote:
+>> +static DEFINE_MUTEX(flush_lock);
+>> +static DEFINE_PER_CPU(struct slub_flush_work, slub_flush);
+>> +
+>>  static void flush_all(struct kmem_cache *s)
+>>  {
+>> -	on_each_cpu_cond(has_cpu_slab, flush_cpu_slab, s, 1);
+>> +	struct slub_flush_work *sfw;
+>> +	unsigned int cpu;
+>> +
+>> +	cpus_read_lock();
+>> +	mutex_lock(&flush_lock);
+>> +
 > 
-> Introduce bfq_entity_to_bfqg() to make it easier to obtain the
-> bfq_group corresponding to the entity.
-> 
-> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-> ---
->  block/bfq-cgroup.c  |  6 ++----
->  block/bfq-iosched.h |  1 +
->  block/bfq-wf2q.c    | 16 ++++++++++++----
->  3 files changed, 15 insertions(+), 8 deletions(-)
-> 
-> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-> index b791e20..a5f544a 100644
-> --- a/block/bfq-cgroup.c
-> +++ b/block/bfq-cgroup.c
-> @@ -309,8 +309,7 @@ struct bfq_group *bfqq_group(struct bfq_queue *bfqq)
->  {
->  	struct bfq_entity *group_entity = bfqq->entity.parent;
->  
-> -	return group_entity ? container_of(group_entity, struct bfq_group,
-> -					   entity) :
-> +	return group_entity ? bfq_entity_to_bfqg(group_entity) :
->  			      bfqq->bfqd->root_group;
->  }
->  
-> @@ -610,8 +609,7 @@ struct bfq_group *bfq_find_set_group(struct bfq_data *bfqd,
->  	 */
->  	entity = &bfqg->entity;
->  	for_each_entity(entity) {
-> -		struct bfq_group *curr_bfqg = container_of(entity,
-> -						struct bfq_group, entity);
-> +		struct bfq_group *curr_bfqg = bfq_entity_to_bfqg(entity);
->  		if (curr_bfqg != bfqd->root_group) {
->  			parent = bfqg_parent(curr_bfqg);
->  			if (!parent)
-> diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-> index b8e793c..a6f98e9 100644
-> --- a/block/bfq-iosched.h
-> +++ b/block/bfq-iosched.h
-> @@ -941,6 +941,7 @@ struct bfq_group {
->  #endif
->  
->  struct bfq_queue *bfq_entity_to_bfqq(struct bfq_entity *entity);
-> +struct bfq_group *bfq_entity_to_bfqg(struct bfq_entity *entity);
->  
->  /* --------------- main algorithm interface ----------------- */
->  
-> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-> index 070e34a..5ff0028 100644
-> --- a/block/bfq-wf2q.c
-> +++ b/block/bfq-wf2q.c
-> @@ -149,7 +149,7 @@ struct bfq_group *bfq_bfqq_to_bfqg(struct bfq_queue *bfqq)
->  	if (!group_entity)
->  		group_entity = &bfqq->bfqd->root_group->entity;
->  
-> -	return container_of(group_entity, struct bfq_group, entity);
-> +	return bfq_entity_to_bfqg(group_entity);
->  }
->  
->  /*
-> @@ -208,7 +208,7 @@ static bool bfq_no_longer_next_in_service(struct bfq_entity *entity)
->  	if (bfq_entity_to_bfqq(entity))
->  		return true;
->  
-> -	bfqg = container_of(entity, struct bfq_group, entity);
-> +	bfqg = bfq_entity_to_bfqg(entity);
->  
->  	/*
->  	 * The field active_entities does not always contain the
-> @@ -266,6 +266,15 @@ struct bfq_queue *bfq_entity_to_bfqq(struct bfq_entity *entity)
->  	return bfqq;
->  }
->  
-> +struct bfq_group *bfq_entity_to_bfqg(struct bfq_entity *entity)
-> +{
-> +	struct bfq_group *bfqg = NULL;
-> +
-> +	if (entity->my_sched_data)
-> +		bfqg = container_of(entity, struct bfq_group, entity);
-> +
-> +	return bfqg;
-> +}
->  
->  /**
->   * bfq_delta - map service into the virtual time domain.
-> @@ -1001,8 +1010,7 @@ static void __bfq_activate_entity(struct bfq_entity *entity,
->  
->  #ifdef CONFIG_BFQ_GROUP_IOSCHED
->  	if (!bfq_entity_to_bfqq(entity)) { /* bfq_group */
-> -		struct bfq_group *bfqg =
-> -			container_of(entity, struct bfq_group, entity);
-> +		struct bfq_group *bfqg = bfq_entity_to_bfqg(entity);
->  		struct bfq_data *bfqd = bfqg->bfqd;
->  
->  		if (!entity->in_groups_with_pending_reqs) {
-> -- 
-> 1.8.3.1
-> 
+> Hi, Vlastimil! Could you please point why do you lock cpus first and
+> mutex only after? Why not mutex_lock + cpus_read_lock instead?
 
-If it is a resend only, I can offer my Tested-by since I'm running this
-series for quite some time already.
+Good question! I must admit I didn't think about it much and just followed the
+order that was in the original Sebastian's patch [1]
+But there was a good reason for this order as some paths via
+__kmem_cache_shutdown() and __kmem_cache_shrink() were alreadu called under
+cpus_read_lock. Meanwhile mainline (me, actually) removed those, so now it
+doesn't seem to be a need to keep this order anymore and we could switch it.
 
-Thanks.
+Thanks,
+Vlastimil
 
--- 
-  Oleksandr Natalenko (post-factum)
+[1]
+https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/tree/patches/0005-mm-slub-Move-flush_cpu_slab-invocations-__free_slab-.patch?h=linux-5.12.y-rt-patches
+
+
