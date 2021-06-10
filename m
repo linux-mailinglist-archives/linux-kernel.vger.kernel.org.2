@@ -2,127 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E133A24AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 848D03A24A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhFJGpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:45:32 -0400
-Received: from mail-qk1-f173.google.com ([209.85.222.173]:36839 "EHLO
-        mail-qk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhFJGp2 (ORCPT
+        id S230077AbhFJGoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:44:15 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39842 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229914AbhFJGoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:45:28 -0400
-Received: by mail-qk1-f173.google.com with SMTP id i68so22726152qke.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:43:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=BF7gYv4bUzMzXTGdnVKsNQ49KcCRY8OjCfC9I0iFikc=;
-        b=GK3lO1UZgj0viQsuAlknaSC++U0LASLzlwmP3Ygwbb0R9vdkntk33kVgOb7rxaj4mv
-         yxELPE7Wjnfn5+KYoCameACweq3+yaeqsgFT02R4Enrx84iAhpVMmP9vYxfrkrQl+Kng
-         uxPGPPZQY5yq4sqOdyU8EhRoY8yxvHKoWeg9g0uZxHFxVolQ6WQnJI/bjtzolnTrCdUM
-         1wVj2lTu50F52DoY7yru/rfi+5TOyctn1dnsEZeLWvRdVpMJknSFUXsKHSmQ1lx/3Yv3
-         ENPncba//NbOxmU6ZHEO65cr0hMI9dEqQrNvqtd6/uNamY9ozwlilcN9U39yjjxwV6AD
-         PF9g==
+        Thu, 10 Jun 2021 02:44:14 -0400
+Received: from mail-wm1-f72.google.com ([209.85.128.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lrEOQ-0005A0-8y
+        for linux-kernel@vger.kernel.org; Thu, 10 Jun 2021 06:42:18 +0000
+Received: by mail-wm1-f72.google.com with SMTP id f186-20020a1c1fc30000b02901aaa08ad8f4so3393422wmf.8
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:42:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=BF7gYv4bUzMzXTGdnVKsNQ49KcCRY8OjCfC9I0iFikc=;
-        b=mRXLp+W2jGhbomK0DLt1ZZ1Bmu9sP4zQvNXJ1fFzmR1B64KWRQ/aTYnfxmVQ7cL3sv
-         CWWpQ4mTza8Z12ktwSN41TLttX9NwcbMCnK5S11bCytt3jPrAat+6RTRSABBouKZ79IA
-         b1D46E1uLOFGxElQt85dr+CrAQ0TKLpZmSSxLyXk7+nes6olr6v06GinmwkM6BI3rfHg
-         V8QNHFdq4CL/h2ctFGk0KizL7hgYpI5zGmUvi4NAhMgNuTQ4UZcXmlnvXe61LfRj82aV
-         /D5nV9IZFN6lusS3+m4d7MgI5cLPuw43BoWI8XEah/UnLBTQz4VTOu6kl85sVfl+qizs
-         BW0w==
-X-Gm-Message-State: AOAM5303SaDqEhaBs0I0D1wtNbyn3EgeolMVHVmPyWsXKEiX/TnKLp3V
-        q+TkO9XocJDfqeYgWpwZWfzadg==
-X-Google-Smtp-Source: ABdhPJyXu+PktDehHYGHVmTT0YocIN/sxyUPwE+UTTh86S5eE20bKBx41KVp+5SfZNFFJyhSi8avtw==
-X-Received: by 2002:a37:a107:: with SMTP id k7mr3267352qke.362.1623307335910;
-        Wed, 09 Jun 2021 23:42:15 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id m14sm1671302qti.12.2021.06.09.23.42.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 23:42:15 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 23:42:12 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 05/11] mm: page_vma_mapped_walk(): prettify PVMW_MIGRATION
- block
-In-Reply-To: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
-Message-ID: <378c8650-1488-2edf-9647-32a53cf2e21@google.com>
-References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V7+XL9sJ4avOAFbP8M5lm1xje4LiQLiEskoJgKOFT0w=;
+        b=pw8rSmCKfEOkzQhCNofEbohP7r+xCL9IpJ5UFCRauEqn3Efx4WKIQeYzHVg534CQg2
+         /mBSHY7IzmKBQDJzIt2OYQKTGFRZnIIoXH0Z7dgAr8j9yketB0ZnU1qiWUVETjVtbBhV
+         H01YA6gomJQMzRiF/zqkWYkGqAGf6xczJHWoKsRv1+d6ftOyp0vPNH8IShd+VM1Bp8CD
+         VdUUP6JaOLODzQHSLeyGUlVN/ZDXY9gjwHob8YTsYdv7K9nk9wd1FMmVbAZ7UCVfgg/z
+         kX0K4knknWHkSry2TuGhD3QQeoRR9IgKYATmIOVIEkGE8Z5FehmA9+asZwfxrGXrft1b
+         QabQ==
+X-Gm-Message-State: AOAM532fyKjeQkDC548A+fi1c4I9L6kFM4PJCONPSlDtWCen84D/N9tu
+        YGlbGZ5w3JYRUJRj0g4k4SB9kZ1yhNWYISRwcKUPvJi8mAzHNOFIdOssPWCtamklJO6v+DZSEkt
+        akQPWQ7r5t8EcnCS4ZWjXYIcpEro3wiDl3uyCtQWDFQ==
+X-Received: by 2002:adf:eb82:: with SMTP id t2mr3473061wrn.337.1623307337805;
+        Wed, 09 Jun 2021 23:42:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwlNhcMYrDVL1IhoA/EKJ232q5LCxiyh5RMHIvdN4gRnzqxkVa6hl0Ki6hS5rAH/xKnsxMs5Q==
+X-Received: by 2002:adf:eb82:: with SMTP id t2mr3473045wrn.337.1623307337644;
+        Wed, 09 Jun 2021 23:42:17 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id u18sm1853015wmj.15.2021.06.09.23.42.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 23:42:17 -0700 (PDT)
+Subject: Re: [PATCH 1/2] memory: tegra: Add missing dependencies
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210609112806.3565057-1-thierry.reding@gmail.com>
+ <20210609112806.3565057-2-thierry.reding@gmail.com>
+ <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
+ <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
+ <YMDzkyjaMhoJjMzL@orome.fritz.box>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <97fc44f9-30d5-cbcf-431a-fd0c4c7517b7@canonical.com>
+Date:   Thu, 10 Jun 2021 08:42:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YMDzkyjaMhoJjMzL@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-page_vma_mapped_walk() cleanup: rearrange the !pmd_present() block to
-follow the same "return not_found, return not_found, return true" pattern
-as the block above it (note: returning not_found there is never premature,
-since existence or prior existence of huge pmd guarantees good alignment).
+On 09/06/2021 19:00, Thierry Reding wrote:
+> On Wed, Jun 09, 2021 at 03:19:12PM +0200, Krzysztof Kozlowski wrote:
+>> On 09/06/2021 13:58, Dmitry Osipenko wrote:
+>>> 09.06.2021 14:28, Thierry Reding пишет:
+>>>> From: Thierry Reding <treding@nvidia.com>
+>>>>
+>>>> When enabling the COMPILE_TEST Kconfig option, the Tegra memory
+>>>> controller can be built without ARCH_TEGRA being selected. However, the
+>>>> driver implicitly depends on some symbols pulled in via ARCH_TEGRA,
+>>>> which causes the build to break.
+>>>>
+>>>> Add explicit dependencies for OF_EARLY_FLATTREE and OF_RESERVED_MEM to
+>>>> the Tegra MC Kconfig option to make sure they are selected even if
+>>>> ARCH_TEGRA is not.
+>>>>
+>>>> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>>> Signed-off-by: Thierry Reding <treding@nvidia.com>
+>>>> ---
+>>>>  drivers/memory/tegra/Kconfig | 2 ++
+>>>>  1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconfig
+>>>> index f9bae36c03a3..ecfb071fc4f4 100644
+>>>> --- a/drivers/memory/tegra/Kconfig
+>>>> +++ b/drivers/memory/tegra/Kconfig
+>>>> @@ -48,6 +48,8 @@ config TEGRA124_EMC
+>>>>  config TEGRA210_EMC_TABLE
+>>>>  	bool
+>>>>  	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
+>>>> +	select OF_EARLY_FLATTREE
+>>>> +	select OF_RESERVED_MEM
+>>>>  
+>>>>  config TEGRA210_EMC
+>>>>  	tristate "NVIDIA Tegra210 External Memory Controller driver"
+>>>>
+>>>
+>>> Will this work if CONFIG_OF is disabled?
+>>
+>> Yeah, good question. That's why I propose "depends on". No issues with
+>> unmet or circular dependencies.
+> 
+> I couldn't find a way to make this work with "depends on" because
+> OF_RESERVED_MEM is not user-visible and the only way to get it enabled
+> is if something also selects OF_EARLY_FLATTREE, which is only ever done
+> at the architecture Kconfig level (and for OF unit testing).
+> 
+> So switching this to a "depends on" causes the TEGRA210_EMC never to get
+> enabled.
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: <stable@vger.kernel.org>
----
- mm/page_vma_mapped.c | 30 ++++++++++++++----------------
- 1 file changed, 14 insertions(+), 16 deletions(-)
+Right.
 
-diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-index 81000dd0b5da..b96fae568bc2 100644
---- a/mm/page_vma_mapped.c
-+++ b/mm/page_vma_mapped.c
-@@ -201,24 +201,22 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
- 			if (pmd_page(pmde) != page)
- 				return not_found(pvmw);
- 			return true;
--		} else if (!pmd_present(pmde)) {
--			if (thp_migration_supported()) {
--				if (!(pvmw->flags & PVMW_MIGRATION))
--					return not_found(pvmw);
--				if (is_migration_entry(pmd_to_swp_entry(pmde))) {
--					swp_entry_t entry = pmd_to_swp_entry(pmde);
-+		}
-+		if (!pmd_present(pmde)) {
-+			swp_entry_t entry;
- 
--					if (migration_entry_to_page(entry) != page)
--						return not_found(pvmw);
--					return true;
--				}
--			}
--			return not_found(pvmw);
--		} else {
--			/* THP pmd was split under us: handle on pte level */
--			spin_unlock(pvmw->ptl);
--			pvmw->ptl = NULL;
-+			if (!thp_migration_supported() ||
-+			    !(pvmw->flags & PVMW_MIGRATION))
-+				return not_found(pvmw);
-+			entry = pmd_to_swp_entry(pmde);
-+			if (!is_migration_entry(entry) ||
-+			    migration_entry_to_page(entry) != page)
-+				return not_found(pvmw);
-+			return true;
- 		}
-+		/* THP pmd was split under us: handle on pte level */
-+		spin_unlock(pvmw->ptl);
-+		pvmw->ptl = NULL;
- 	} else if (!pmd_present(pmde)) {
- 		/*
- 		 * If PVMW_SYNC, take and drop THP pmd lock so that we
--- 
-2.26.2
+> 
+> However, with OF disabled, the above causes issues because it can lead
+> to unmet direct dependencies. That, in turn, can be fixed by appending
+> && OF to the COMPILE_TEST branch, which seems like a good enough
+> compromise.
+> 
+> Here's what I have on top of the above patch and that seems to do the
+> trick.
+> 
+> --- >8 ---
+> diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconfig
+> index ecfb071fc4f4..1c553895160c 100644
+> --- a/drivers/memory/tegra/Kconfig
+> +++ b/drivers/memory/tegra/Kconfig
+> @@ -47,13 +47,13 @@ config TEGRA124_EMC
+>  
+>  config TEGRA210_EMC_TABLE
+>  	bool
+> -	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
+> +	depends on ARCH_TEGRA_210_SOC || (COMPILE_TEST && OF)
+>  	select OF_EARLY_FLATTREE
+>  	select OF_RESERVED_MEM
+>  
+>  config TEGRA210_EMC
+>  	tristate "NVIDIA Tegra210 External Memory Controller driver"
+> -	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
+> +	depends on ARCH_TEGRA_210_SOC || (COMPILE_TEST && OF)
+>  	select TEGRA210_EMC_TABLE
+>  	help
+>  	  This driver is for the External Memory Controller (EMC) found on
+> --- >8 ---
+> 
+> So in a nutshell this will only get compile-tested if OF is enabled, but
+> then it will select OF_RESERVED_MEM and OF_EARLY_FLATTREE to get the
+> required symbols.
 
+Could be also separate "depends on OF", even though it is included in
+ARCH_TEGRA_XXX, but I am fine with this here.
+
+Best regards,
+Krzysztof
