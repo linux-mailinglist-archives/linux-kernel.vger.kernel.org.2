@@ -2,98 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE9B3A215D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 02:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BAE3A215F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 02:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhFJAYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 20:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhFJAYd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 20:24:33 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DE7C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 17:22:21 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id s23so165205oiw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 17:22:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wqda7Y7VY751qiHwi67sa4oN0nY0qPs95IMKdq6kzvM=;
-        b=hyD8x/fW6GsldHTArxMhnA3R2kAL+eRuDK38kF7nsv5rweEFUVlvRsFIq6YnB/7G7U
-         uCY0EuD3R3D/Sq/7xCriTow2Z7n/EMAG1FrdVT/hthzlVPFZxKrrzzhzsNaBqqtrudiY
-         OcE1q4nf7JwnnYlB0lO2frXfbpbs52WiGebqGZXaM8Q6i7iL/naSM8D6ZgJ+un3L+sfS
-         WM1ETk/18IMXsa/7NKdO6HtTIBrljKQCE4WngS4rmUhG67CpTvNK22OnCkOu02jXjJxu
-         pvkwKHxYTTVj/0YMDyz1cJxj4tS9qWJswwXS24ml9AurGJXhCX2qRUlNQHyUmtYdTHNk
-         sFKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wqda7Y7VY751qiHwi67sa4oN0nY0qPs95IMKdq6kzvM=;
-        b=QzZegicAgw7HZva9BAy2d6YVM2iJ2oef4xCt0d5xsMp1enyxDaKvux0TOpg+0f6SFh
-         wKLwebRgm3BUyQKOvY35a2T1Ukh6YbFufLJLUkXCBPjktlIWzmPlAHSxZa4Cnh4BmPsg
-         /cgAedcNSAYnpccDCw7IdNBdGQrGYcxjkDVaYhchrDC0kIii/05f5A986TZhMszXn5OG
-         aWuy4HqZW/Uk/Y1bcKOfsi9G/zG8wjGKPQLSABnI+wdoHqBjBoad/vyNuWjbQob3y/GY
-         xa9GGbHqQdcGFDWKqLBWRTmjsG0i+ER5bw5Qwr/R50pKG86nODc8Mgo3JAKQOf6rGvfM
-         mxgg==
-X-Gm-Message-State: AOAM530MJN6OEdQvDhhWTsiNSexh8KF+ZkbzejWFjlS8e9gT/qD5OVMC
-        FhVUSUFK1pU7aJAT5TqGGAkzfw==
-X-Google-Smtp-Source: ABdhPJyNWi8kzQXPfxhp1H+j0xAp/kCFS4t+JKbUxUDX2zvHdnv+7i0GONlblnouQYxwNWuqlC0Kzg==
-X-Received: by 2002:aca:3e06:: with SMTP id l6mr1521121oia.147.1623284541085;
-        Wed, 09 Jun 2021 17:22:21 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z19sm319048oth.20.2021.06.09.17.22.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 17:22:20 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] usb: typec: mux: Fix copy-paste mistake in typec_mux_match
-Date:   Wed,  9 Jun 2021 17:21:32 -0700
-Message-Id: <20210610002132.3088083-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        id S230285AbhFJAYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 20:24:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229740AbhFJAYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 20:24:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A202613EC;
+        Thu, 10 Jun 2021 00:22:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623284577;
+        bh=1ou36G5z4ISmBgYTkl+QY1b+Z7f8tmx56db6O6BZH8Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=hCUqCStiKTi+c41zEsR2OLq8QrOXGEoOPTv38uAT1iLZdW20i5YPJLmaoum1R40Fa
+         JjPYE7SYJrswOPcKfWRp53d7cnspY8PQXIdb7mkFstOhs+5UlJkLT27iYQx1e1tSce
+         p4enlJ8nQ1Bus7Cyj2RXNd0N/dTkjrvgke+nllfp56NjeSr7F6z+kpgED9FSCFmeRy
+         f3zWJE8+LM0IORF+/Wpy4XcXGJ3RWBKpAFwD5P4uEm818Kz95xATb1h3pQ1hC6AHw8
+         lecsdK2j8UWPwnSac/foW+ozyVT3qy1Ue3iTsZssbT5uhQZjytcfq40HtwrMKGntML
+         4JKYEeKA0UJbg==
+Date:   Wed, 9 Jun 2021 19:22:56 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, alexandru.elisei@arm.com, wqu@suse.com,
+        robin.murphy@arm.com, pgwipeout@gmail.com, ardb@kernel.org,
+        briannorris@chromium.org, shawn.lin@rock-chips.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Leonardo Bras <leobras.c@gmail.com>
+Subject: Re: [PATCH v3 1/4] PCI: of: Clear 64-bit flag for non-prefetchable
+ memory below 4GB
+Message-ID: <20210610002256.GA2680171@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607112856.3499682-2-punitagrawal@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the copy-paste mistake in the return path of typec_mux_match(),
-where dev is considered a member of struct typec_switch rather than
-struct typec_mux.
+[+cc Leonardo]
 
-The two structs are identical in regards to having the struct device as
-the first entry, so this provides no functional change.
+On Mon, Jun 07, 2021 at 08:28:53PM +0900, Punit Agrawal wrote:
+> Some host bridges advertise non-prefetchable memory windows that are
+> entirely located below 4GB but are marked as 64-bit address memory.
+> 
+> Since commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource
+> flags for 64-bit memory addresses"), the OF PCI range parser takes a
+> stricter view and treats 64-bit address ranges as advertised while
+> before such ranges were treated as 32-bit.
+> 
+> A PCI root port modelled as a PCI-to-PCI bridge cannot forward 64-bit
+> non-prefetchable memory ranges. As a result, the change in behaviour
+> due to the commit causes failure to allocate 32-bit BAR from a 64-bit
+> non-prefetchable window.
+> 
+> In order to not break platforms where non-prefetchable memory ranges
+> lie entirely below 4GB, clear the 64-bit flag.
 
-Fixes: 3370db35193b ("usb: typec: Registering real device entries for the muxes")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+I don't think we should care about the address width DT supplies for a
+host bridge window.  Prior to 9d57e61bf723, I don't think we *did*
+care because of_bus_pci_get_flags() threw away that information.
 
-Changes since v1:
-- Don't touch the typec_switch part of mux.c...
+My proposal for a commit log, including information about the problem
+report and a "Fixes:" tag:
 
- drivers/usb/typec/mux.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  Alexandru and Qu reported this resource allocation failure on
+  ROCKPro64 v2 and ROCK Pi 4B, both based on the RK3399:
 
-diff --git a/drivers/usb/typec/mux.c b/drivers/usb/typec/mux.c
-index 664fb3513f48..c8340de0ed49 100644
---- a/drivers/usb/typec/mux.c
-+++ b/drivers/usb/typec/mux.c
-@@ -246,7 +246,7 @@ static void *typec_mux_match(struct fwnode_handle *fwnode, const char *id,
- 	dev = class_find_device(&typec_mux_class, NULL, fwnode,
- 				mux_fwnode_match);
- 
--	return dev ? to_typec_switch(dev) : ERR_PTR(-EPROBE_DEFER);
-+	return dev ? to_typec_mux(dev) : ERR_PTR(-EPROBE_DEFER);
- }
- 
- /**
--- 
-2.29.2
+    pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
+    pci 0000:00:00.0: PCI bridge to [bus 01]
+    pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
+    pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
 
+  "BAR 14" is the PCI bridge's 32-bit non-prefetchable window, and our
+  PCI allocation code isn't smart enough to allocate it in a host
+  bridge window marked as 64-bit, even though this should work fine.
+
+  A DT host bridge description includes the windows from the CPU
+  address space to the PCI bus space.  On a few architectures
+  (microblaze, powerpc, sparc), the DT may also describe PCI devices
+  themselves, including their BARs.
+
+  Before 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource
+  flags for 64-bit memory addresses"), of_bus_pci_get_flags() ignored
+  the fact that some DT addresses described 64-bit windows and BARs.
+  That was a problem because the virtio virtual NIC has a 32-bit BAR
+  and a 64-bit BAR, and the driver couldn't distinguish them.
+
+  9d57e61bf723 set IORESOURCE_MEM_64 for those 64-bit DT ranges, which
+  fixed the virtio driver.  But it also set IORESOURCE_MEM_64 for host
+  bridge windows, which exposed the fact that the PCI allocator isn't
+  smart enough to put 32-bit resources in those 64-bit windows.
+
+  Clear IORESOURCE_MEM_64 from host bridge windows since we don't need
+  that information.
+
+  Fixes: 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
+  Reported-at: https://lore.kernel.org/lkml/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com/
+  Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
+  Reported-by: Qu Wenruo <wqu@suse.com>
+
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com
+> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> ---
+>  drivers/pci/of.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index 85dcb7097da4..1e45186a5715 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -353,6 +353,14 @@ static int devm_of_pci_get_host_bridge_resources(struct device *dev,
+>  				dev_warn(dev, "More than one I/O resource converted for %pOF. CPU base address for old range lost!\n",
+>  					 dev_node);
+>  			*io_base = range.cpu_addr;
+> +		} else if (resource_type(res) == IORESOURCE_MEM) {
+> +			if (!(res->flags & IORESOURCE_PREFETCH)) {
+> +				if (res->flags & IORESOURCE_MEM_64)
+> +					if (!upper_32_bits(range.pci_addr + range.size - 1)) {
+> +						dev_warn(dev, "Clearing 64-bit flag for non-prefetchable memory below 4GB\n");
+> +						res->flags &= ~IORESOURCE_MEM_64;
+> +					}
+> +			}
+
+Why do we need to check IORESOURCE_PREFETCH, IORESOURCE_MEM_64, and
+upper_32_bits()?  If I understand this correctly, prior to
+9d57e61bf723, IORESOURCE_MEM_64 was *never* set here.  Isn't something
+like this sufficient?
+
+  } else if (resource_type(res) == IORESOURCE_MEM) {
+    res->flags &= ~IORESOURCE_MEM_64;
+  }
+
+I'm not sure we need a warning either.  We didn't warn before
+9d57e61bf723, and there's nothing the user needs to do anyway.
+
+>  		}
+>  
+>  		pci_add_resource_offset(resources, res,	res->start - range.pci_addr);
+> -- 
+> 2.30.2
+> 
