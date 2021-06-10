@@ -2,97 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FCA3A2A4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164613A2A4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhFJLhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 07:37:00 -0400
-Received: from mail-pf1-f175.google.com ([209.85.210.175]:34344 "EHLO
-        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbhFJLg6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:36:58 -0400
-Received: by mail-pf1-f175.google.com with SMTP id g6so1375421pfq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IAYWQy/NatfpIcXJIRpsRB5B4j7vaD9GdXi8w2oAwB0=;
-        b=W5pUG3St5KymyWOc7NfMZB9I5KV6ob7gbyVykdBi9XBvrZtPeYW1ArRBP0hOrligL7
-         +aXXVJRJGYssqUraDO+Icq6cABG4gEP2NoqB+z2kSuf2/HJIJjuKNFoyQ0lHOkjtb8Hd
-         mQnoyD/K0gdtxbGnlYQF3iPN2MkZuFuKVQvD1VpNX0ytJtnBefV3aFP+/ikMttzukk/M
-         s/m+KiBPfs0JDOyxaRvmrWVIBwXTeCwrHoV/CA05rb4vCNvH47tTS1wDO0xpVVQXvPjb
-         Vl9vhC8Ays1Oa3KyIr77Gx8LrzT8SMhj6GCCUmUy3h2tXuoO0znhCMi092PiB4WE+kuJ
-         DEfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IAYWQy/NatfpIcXJIRpsRB5B4j7vaD9GdXi8w2oAwB0=;
-        b=L4p6qjJs+onZoHiE9gL/jaFTFMtsIaHryrsjWxYtrrF774cZBa1gX6KwihzZ8XZisC
-         n31upgt6uH6j6WUfa90S0J1t0BQx1lRFCycqjFkZPFs1UrPoqmpXX2wfLlTF6/Z8DwF6
-         f710W0rPt6D4Lw0c70+G9RSvYrekxZxo7fSJJTHisV6k/C/9R9NCSncnuffPbnr2NxYu
-         52apGjNOU3IyqidNKmFBghpbVxNTItbQIhSlh30ILQxPwkNCQBeNVM6O0/QIeOVV15+k
-         MzZIVF5Lz3TwdZKsYLhvM4j01W0aVl7F7D0td9uFCsOefm28nUJLtE3Q3QDjgUQKVZo9
-         i4zQ==
-X-Gm-Message-State: AOAM5323jQMAm/4FCnafDp0fqeLk/788v3zOjA18RUu3PH45Hva9XRyZ
-        tT1qqnHEqOnSbHgpjniBw1hXiA==
-X-Google-Smtp-Source: ABdhPJx2wjAW6NK3r+kW3K0nffrtvAGOgWQTRJxfHls6ATvVpriTrEbU3Eb3w9qKs+rc2DfC1aZkqA==
-X-Received: by 2002:a63:5c4:: with SMTP id 187mr4616940pgf.368.1623324842169;
-        Thu, 10 Jun 2021 04:34:02 -0700 (PDT)
-Received: from localhost ([136.185.169.128])
-        by smtp.gmail.com with ESMTPSA id n8sm7738416pjo.1.2021.06.10.04.34.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 04:34:01 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 17:03:59 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cpufreq: cppc: Mark frequency invariance broken
-Message-ID: <20210610113359.gb2cu3miwuo44d5b@vireshk-i7>
-References: <28308fc0d38f252baf90e6ffb31fd2f8660be273.1623311808.git.viresh.kumar@linaro.org>
- <CAJZ5v0i+GvobLS=cM9kc9Cj4BhLcEmTzRoBsRvDqQjLO-o7yGA@mail.gmail.com>
+        id S230287AbhFJLg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 07:36:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48468 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230269AbhFJLgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 07:36:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC319613F1;
+        Thu, 10 Jun 2021 11:34:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623324899;
+        bh=l8IZLyM4CjzTPFP+AGl149QeNvbWneewzSq0NoEyGME=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EwFH2ADW3juKdeoXbSZbGot65Oo72A2bR2SqbIoLg11F5c0BABp152mhUWLrqMZha
+         UEsjj50EEqoy6S37DQ1WvKITCOaV0NjPUqIasRjN4BwVibpkAm8a2dlAoKHkrtQqs8
+         7h5BEuYO4ZgbCYcK3zS/DLiG/8QBIlbOBEUqs8YM=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.272
+Date:   Thu, 10 Jun 2021 13:34:55 +0200
+Message-Id: <162332489624716@kroah.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0i+GvobLS=cM9kc9Cj4BhLcEmTzRoBsRvDqQjLO-o7yGA@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-06-21, 13:19, Rafael J. Wysocki wrote:
-> On Thu, Jun 10, 2021 at 9:58 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > There are few races in the frequency invariance support for CPPC driver,
-> > namely the driver doesn't stop the kthread_work and irq_work on policy
-> > exit during suspend/resume or CPU hotplug.
-> >
-> > A proper fix won't be possible for the 5.13-rc, as it requires a lot of
-> > changes. Instead of reverting the patch, mark this feature BROKEN for
-> > now.
-> >
-> > Fixes: 4c38f2df71c8 ("cpufreq: CPPC: Add support for frequency invariance")
-> > Reported-by: Qian Cai <quic_qiancai@quicinc.com>
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> 
-> Well, why don't we revert 4c38f2df71c8 instead?
-> 
-> Is there any particular reason for retaining it?
+I'm announcing the release of the 4.4.272 kernel.
 
-I was just trying to reduce the diff size here, since this feature
-(which broke) was controlled by a CONFIG option, it looked like a nice
-way of doing it.
+All users of the 4.4 kernel series must upgrade.
 
-It was already reviewed and a diff over it should be easier to review.
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-I can do a full revert if that's what you want.
+thanks,
 
--- 
-viresh
+greg k-h
+
+------------
+
+ Makefile                                     |    2 
+ arch/arm64/kernel/traps.c                    |    8 ---
+ arch/x86/kvm/svm.c                           |    8 +--
+ drivers/firmware/efi/cper.c                  |    4 -
+ drivers/hid/usbhid/hid-pidff.c               |    1 
+ drivers/vfio/pci/vfio_pci_config.c           |    2 
+ drivers/vfio/platform/vfio_platform_common.c |    2 
+ drivers/xen/xen-pciback/vpci.c               |   14 +++---
+ fs/btrfs/tree-log.c                          |   13 +++---
+ fs/ext4/extents.c                            |   43 +++++++++++----------
+ fs/ocfs2/file.c                              |   55 ++++++++++++++++++++++++---
+ include/net/caif/caif_dev.h                  |    2 
+ include/net/caif/cfcnfg.h                    |    2 
+ include/net/caif/cfserl.h                    |    1 
+ init/main.c                                  |    2 
+ net/bluetooth/hci_core.c                     |    7 ++-
+ net/bluetooth/hci_sock.c                     |    4 -
+ net/caif/caif_dev.c                          |   13 ++++--
+ net/caif/caif_usb.c                          |   14 ++++++
+ net/caif/cfcnfg.c                            |   16 +++++--
+ net/caif/cfserl.c                            |    5 ++
+ net/ieee802154/nl-mac.c                      |    4 +
+ net/ieee802154/nl-phy.c                      |    4 +
+ net/netfilter/ipvs/ip_vs_ctl.c               |    2 
+ net/netfilter/nfnetlink_cthelper.c           |    8 ++-
+ net/nfc/llcp_sock.c                          |    2 
+ sound/core/timer.c                           |    3 -
+ 27 files changed, 164 insertions(+), 77 deletions(-)
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.272
+
+Jan Beulich (1):
+      xen-pciback: redo VF placement in the virtual topology
+
+Josef Bacik (1):
+      btrfs: fixup error handling in fixup_inode_link_counts
+
+Julian Anastasov (1):
+      ipvs: ignore IP_VS_SVC_F_HASHED flag when adding service
+
+Junxiao Bi (1):
+      ocfs2: fix data corruption by fallocate
+
+Krzysztof Kozlowski (1):
+      nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
+
+Lin Ma (2):
+      Bluetooth: fix the erroneous flush_work() order
+      Bluetooth: use correct lock to prevent UAF of hdev object
+
+Mark Rutland (1):
+      pid: take a reference when initializing `cad_pid`
+
+Max Gurtovoy (1):
+      vfio/platform: fix module_put call in error flow
+
+Michael Weiser (1):
+      arm64: Remove unimplemented syscall log message
+
+Pablo Neira Ayuso (1):
+      netfilter: nfnetlink_cthelper: hit EBUSY on updates if size mismatches
+
+Pavel Skripkin (4):
+      net: caif: added cfserl_release function
+      net: caif: add proper error handling
+      net: caif: fix memory leak in caif_device_notify
+      net: caif: fix memory leak in cfusbl_device_notify
+
+Rasmus Villemoes (1):
+      efi: cper: fix snprintf() use in cper_dimm_err_location()
+
+Sean Christopherson (1):
+      KVM: SVM: Truncate GPR value for DR and CR accesses in !64-bit mode
+
+Takashi Iwai (1):
+      ALSA: timer: Fix master timer notification
+
+Wei Yongjun (1):
+      ieee802154: fix error return code in ieee802154_llsec_getparams()
+
+Ye Bin (1):
+      ext4: fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
+
+Zhen Lei (3):
+      vfio/pci: Fix error return code in vfio_ecap_init()
+      HID: pidff: fix error return code in hid_pidff_init()
+      ieee802154: fix error return code in ieee802154_add_iface()
+
