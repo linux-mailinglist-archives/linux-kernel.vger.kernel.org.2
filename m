@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AEB3A250F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EFF3A2519
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbhFJHLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhFJHLp (ORCPT
+        id S229942AbhFJHOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:14:45 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:33170 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229705AbhFJHOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:11:45 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30946C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:09:49 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:a946:bccb:b1a1:3055])
-        by albert.telenet-ops.be with bizsmtp
-        id FK9j250030wnyou06K9jcq; Thu, 10 Jun 2021 09:09:44 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lrEow-00FAQa-Le; Thu, 10 Jun 2021 09:09:42 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lrEow-00B8dc-5T; Thu, 10 Jun 2021 09:09:42 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Luca Ceresoli <luca@lucaceresoli.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v6] dt-bindings: clk: versaclock5: Miscellaneous fixes and improvements:
-Date:   Thu, 10 Jun 2021 09:09:40 +0200
-Message-Id: <46310530171886c6ccf4046518e07510274a506c.1623308843.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 10 Jun 2021 03:14:44 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 10 Jun 2021 00:12:48 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 10 Jun 2021 00:12:46 -0700
+X-QCInternal: smtphost
+Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 10 Jun 2021 12:41:53 +0530
+Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
+        id 54D914DC2; Thu, 10 Jun 2021 12:41:52 +0530 (IST)
+From:   Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org, robh+dt@kernel.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, sartgarg@codeaurora.org,
+        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        sibis@codeaurora.org, okukatla@codeaurora.org, djakov@kernel.org,
+        cang@codeaurora.org, pragalla@codeaurora.org,
+        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org,
+        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+Subject: [PATCH V1] arm64: dts: qcom: sc7180: Added xo clock for eMMC and Sd card
+Date:   Thu, 10 Jun 2021 12:41:47 +0530
+Message-Id: <1623309107-27833-1-git-send-email-sbhanu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  - Add missing "additionalProperties: false" for subnodes, to catch
-    typos in properties,
-  - Fix property names in example.
+Added xo clock for eMMC and Sd card.
 
-Fixes: 45c940184b501fc6 ("dt-bindings: clk: versaclock5: convert to yaml")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
 ---
-This depends on dt-schema v2021.2.1.
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-v6:
-  - Rebase on top of commit c17611592d9635c4 ("dt-bindings: More
-    removals of type references on common properties"), which already
-    removed unneeded references for "idt,xtal-load-femtofarads" and
-    "idt,slew-percent",
-
-v5:
-  - Drop reference for "idt,xtal-load-femtofarads",
-
-v4:
-  - Add Reviewed-by, Acked-by,
-
-v3:
-  - Drop references for "idt,voltage-microvolt" and "idt,slew-percent",
-
-v2:
-  - Settle on "idt,voltage-microvolt", cfr. commit 4b003f5fcadfa2d0
-    ('clk: vc5: Use "idt,voltage-microvolt" instead of
-    "idt,voltage-microvolts"'),
-  - Drop reference to clock.yaml, which is already applied
-    unconditionally,
-  - Drop removal of allOf around if condition, as it is unnecessary
-    churn.
----
- .../devicetree/bindings/clock/idt,versaclock5.yaml        | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-index 28675b0b80f1ba53..434212320c9aa7ab 100644
---- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-+++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-@@ -85,6 +85,8 @@ patternProperties:
-         description: The Slew rate control for CMOS single-ended.
-         enum: [ 80, 85, 90, 100 ]
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 295844e..5bb6bd4 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -701,8 +701,9 @@
+ 			interrupt-names = "hc_irq", "pwr_irq";
  
-+    additionalProperties: false
-+
- required:
-   - compatible
-   - reg
-@@ -139,13 +141,13 @@ examples:
-             clock-names = "xin";
+ 			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
+-					<&gcc GCC_SDCC1_AHB_CLK>;
+-			clock-names = "core", "iface";
++					<&gcc GCC_SDCC1_AHB_CLK>,
++					<&rpmhcc RPMH_CXO_CLK>;
++			clock-names = "core", "iface","xo";
+ 			interconnects = <&aggre1_noc MASTER_EMMC 0 &mc_virt SLAVE_EBI1 0>,
+ 					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_EMMC_CFG 0>;
+ 			interconnect-names = "sdhc-ddr","cpu-sdhc";
+@@ -2666,8 +2667,9 @@
+ 			interrupt-names = "hc_irq", "pwr_irq";
  
-             OUT1 {
--                idt,drive-mode = <VC5_CMOSD>;
--                idt,voltage-microvolts = <1800000>;
-+                idt,mode = <VC5_CMOSD>;
-+                idt,voltage-microvolt = <1800000>;
-                 idt,slew-percent = <80>;
-             };
+ 			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
+-					<&gcc GCC_SDCC2_AHB_CLK>;
+-			clock-names = "core", "iface";
++					<&gcc GCC_SDCC2_AHB_CLK>,
++					<&rpmhcc RPMH_CXO_CLK>;
++			clock-names = "core", "iface", "xo";
  
-             OUT4 {
--                idt,drive-mode = <VC5_LVDS>;
-+                idt,mode = <VC5_LVDS>;
-             };
-         };
-     };
+ 			interconnects = <&aggre1_noc MASTER_SDCC_2 0 &mc_virt SLAVE_EBI1 0>,
+ 					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_SDCC_2 0>;
 -- 
-2.25.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
