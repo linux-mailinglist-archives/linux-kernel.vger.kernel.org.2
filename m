@@ -2,207 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B553A2B96
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356863A2BA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhFJMbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:31:36 -0400
-Received: from mga01.intel.com ([192.55.52.88]:19856 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230247AbhFJMbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:31:35 -0400
-IronPort-SDR: DY5l5zF7YIUK5Hzj5sy4m6K5241+w1CWbZcmCd+wkxx7S+AFGl2de6T3fjBcrrCI6sK2u6BKPA
- YsOHaBjPWwZw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="226679576"
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="226679576"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 05:29:36 -0700
-IronPort-SDR: auYvsEbkvitNxBnp9Q9jAZZdi4V4bN1nU9ODjYE74zaETVUUwKqD6f3bZ4uxGu9I7BQuDbGuCb
- SD1s+5ZqbEZg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="402844970"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by orsmga003.jf.intel.com with ESMTP; 10 Jun 2021 05:29:32 -0700
-Subject: Re: [PATCH v3 5/9] scsi: ufs: Simplify error handling preparation
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-6-git-send-email-cang@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <6abb81f6-4dd2-082e-9440-4b549f105788@intel.com>
-Date:   Thu, 10 Jun 2021 15:30:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230434AbhFJMc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:32:59 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:37514 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230406AbhFJMcx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 08:32:53 -0400
+Received: by mail-oi1-f175.google.com with SMTP id h9so1930911oih.4;
+        Thu, 10 Jun 2021 05:30:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MuzNL7tfDK7e4h6RLyE9IdnW6BdejixhbQSLxfkQyeY=;
+        b=MOXKVL/gm7ShmNXGXhm69v7zjS/T3B0BFfCaLfJLWOPrAFskxDACWivteA5mj4yVEx
+         7Wub/sIkUoUBtQbdM2qUWHQZ8gRp3WtXagTyFHz4fhPGxCy31DTqjdL9hMBTpMkHf2ce
+         67NtFcxQynsqLoHXweZLdGpPIaC68te2oTP6w0+0WTNG4azzz9rDsLzen0i4HcDcOvuZ
+         E51n1DuZHgH9NmyZREfp7JWLmvrqNgasIzvp/31JUrJKoKAkG/3qUZXRXLKC4SvOK9z2
+         t7BaVevhy2DDl/uLIhcgBaemzZ6kqyWQ6KXXIZv4DaBSf2mRJPJhnBd7TRdM6/tC4VjS
+         w/hA==
+X-Gm-Message-State: AOAM5336ccHWaX6CGMf4Wvb3IxDgNGZWonvf4yeLKwjFrGaEeHZpDGQ6
+        +CK9fcOmpGKLJfXKevWxqPmM8ouiCUFRSmO4qi/6VMQy
+X-Google-Smtp-Source: ABdhPJwwCBUE8fN+1yyMTDGiGyvEZbldVa9b+ODFBClXQ+w2/+StudMLj/LRVSI+DNBCJIwLKCZz3ybN6Ur8WtSp1Pk=
+X-Received: by 2002:a05:6808:f08:: with SMTP id m8mr210416oiw.69.1623328240475;
+ Thu, 10 Jun 2021 05:30:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1623300218-9454-6-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <28308fc0d38f252baf90e6ffb31fd2f8660be273.1623311808.git.viresh.kumar@linaro.org>
+ <CAJZ5v0i+GvobLS=cM9kc9Cj4BhLcEmTzRoBsRvDqQjLO-o7yGA@mail.gmail.com> <20210610113359.gb2cu3miwuo44d5b@vireshk-i7>
+In-Reply-To: <20210610113359.gb2cu3miwuo44d5b@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 10 Jun 2021 14:30:29 +0200
+Message-ID: <CAJZ5v0iQCGfCj7cVVeSOe1eDSeP9xv6hwubmGDkiY+ix8_eAow@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: cppc: Mark frequency invariance broken
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06/21 7:43 am, Can Guo wrote:
-> Commit cb7e6f05fce67c965194ac04467e1ba7bc70b069 ("scsi: ufs: core: Enable
-> power management for wlun") moves UFS operations out of ufshcd_resume(), so
-> in error handling preparation, if ufshcd hba has failed to resume, there is
-> no point to re-enable IRQ/clk/pwr.
+On Thu, Jun 10, 2021 at 1:34 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 10-06-21, 13:19, Rafael J. Wysocki wrote:
+> > On Thu, Jun 10, 2021 at 9:58 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > There are few races in the frequency invariance support for CPPC driver,
+> > > namely the driver doesn't stop the kthread_work and irq_work on policy
+> > > exit during suspend/resume or CPU hotplug.
+> > >
+> > > A proper fix won't be possible for the 5.13-rc, as it requires a lot of
+> > > changes. Instead of reverting the patch, mark this feature BROKEN for
+> > > now.
+> > >
+> > > Fixes: 4c38f2df71c8 ("cpufreq: CPPC: Add support for frequency invariance")
+> > > Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+> > > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> >
+> > Well, why don't we revert 4c38f2df71c8 instead?
+> >
+> > Is there any particular reason for retaining it?
+>
+> I was just trying to reduce the diff size here, since this feature
+> (which broke) was controlled by a CONFIG option, it looked like a nice
+> way of doing it.
+>
+> It was already reviewed and a diff over it should be easier to review.
+>
+> I can do a full revert if that's what you want.
 
-I am not sure how cb7e6f05fce67c965194ac04467e1ba7bc70b069 made things any
-different, but what I really wonder is why we don't just do recovery
-directly in __ufshcd_wl_suspend() and  __ufshcd_wl_resume() and strip all
-the PM complexity out of ufshcd_err_handling()?
+I would prefer a full revert TBH.
 
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 58 +++++++++++++++++++++++++----------------------
->  1 file changed, 31 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 7dc0fda..0afad6b 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -2727,8 +2727,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
->  		break;
->  	case UFSHCD_STATE_EH_SCHEDULED_FATAL:
->  		/*
-> -		 * pm_runtime_get_sync() is used at error handling preparation
-> -		 * stage. If a scsi cmd, e.g. the SSU cmd, is sent from hba's
-> +		 * ufshcd_rpm_get_sync() is used at error handling preparation
-> +		 * stage. If a scsi cmd, e.g., the SSU cmd, is sent from the
->  		 * PM ops, it can never be finished if we let SCSI layer keep
->  		 * retrying it, which gets err handler stuck forever. Neither
->  		 * can we let the scsi cmd pass through, because UFS is in bad
-> @@ -5915,29 +5915,26 @@ static void ufshcd_clk_scaling_suspend(struct ufs_hba *hba, bool suspend)
->  	}
->  }
->  
-> -static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
-> +static int ufshcd_err_handling_prepare(struct ufs_hba *hba)
->  {
-> +	/*
-> +	 * Exclusively call pm_runtime_get_sync(hba->dev) once, in case
-> +	 * following ufshcd_rpm_get_sync() fails.
-> +	 */
-> +	pm_runtime_get_sync(hba->dev);
-> +	/* End of the world. */
-> +	if (pm_runtime_suspended(hba->dev)) {
-> +		pm_runtime_put(hba->dev);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ufshcd_set_eh_in_progress(hba);
->  	ufshcd_rpm_get_sync(hba);
-> -	if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
-> +	if (pm_runtime_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
->  	    hba->is_wl_sys_suspended) {
-> -		enum ufs_pm_op pm_op;
-> +		enum ufs_pm_op pm_op = hba->is_wl_sys_suspended ?
-> +				       UFS_SYSTEM_PM : UFS_RUNTIME_PM;
->  
-> -		/*
-> -		 * Don't assume anything of resume, if
-> -		 * resume fails, irq and clocks can be OFF, and powers
-> -		 * can be OFF or in LPM.
-> -		 */
-> -		ufshcd_setup_hba_vreg(hba, true);
-> -		ufshcd_setup_vreg(hba, true);
-> -		ufshcd_config_vreg_hpm(hba, hba->vreg_info.vccq);
-> -		ufshcd_config_vreg_hpm(hba, hba->vreg_info.vccq2);
-> -		ufshcd_hold(hba, false);
-> -		if (!ufshcd_is_clkgating_allowed(hba)) {
-> -			ufshcd_setup_clocks(hba, true);
-> -			ufshcd_enable_irq(hba);
-> -		}
-> -		ufshcd_release(hba);
-> -		pm_op = hba->is_wl_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
->  		ufshcd_vops_resume(hba, pm_op);
->  	} else {
->  		ufshcd_hold(hba, false);
-> @@ -5951,22 +5948,25 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
->  	down_write(&hba->clk_scaling_lock);
->  	up_write(&hba->clk_scaling_lock);
->  	cancel_work_sync(&hba->eeh_work);
-> +	return 0;
->  }
->  
->  static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
->  {
-> +	ufshcd_clear_eh_in_progress(hba);
->  	ufshcd_scsi_unblock_requests(hba);
->  	ufshcd_release(hba);
->  	if (ufshcd_is_clkscaling_supported(hba))
->  		ufshcd_clk_scaling_suspend(hba, false);
->  	ufshcd_clear_ua_wluns(hba);
->  	ufshcd_rpm_put(hba);
-> +	pm_runtime_put(hba->dev);
->  }
->  
->  static inline bool ufshcd_err_handling_should_stop(struct ufs_hba *hba)
->  {
->  	return (!hba->is_powered || hba->shutting_down ||
-> -		!hba->sdev_ufs_device ||
-> +		!hba->sdev_ufs_device || hba->is_sys_suspended ||
->  		hba->ufshcd_state == UFSHCD_STATE_ERROR ||
->  		(!(hba->saved_err || hba->saved_uic_err || hba->force_reset ||
->  		   ufshcd_is_link_broken(hba))));
-> @@ -6052,9 +6052,13 @@ static void ufshcd_err_handler(struct work_struct *work)
->  		up(&hba->host_sem);
->  		return;
->  	}
-> -	ufshcd_set_eh_in_progress(hba);
->  	spin_unlock_irqrestore(hba->host->host_lock, flags);
-> -	ufshcd_err_handling_prepare(hba);
-> +	if (ufshcd_err_handling_prepare(hba)) {
-> +		dev_err(hba->dev, "%s: error handling preparation failed\n",
-> +				__func__);
-> +		up(&hba->host_sem);
-> +		return;
-> +	}
->  	/* Complete requests that have door-bell cleared by h/w */
->  	ufshcd_complete_requests(hba);
->  	spin_lock_irqsave(hba->host->host_lock, flags);
-> @@ -6198,7 +6202,6 @@ static void ufshcd_err_handler(struct work_struct *work)
->  			dev_err_ratelimited(hba->dev, "%s: exit: saved_err 0x%x saved_uic_err 0x%x",
->  			    __func__, hba->saved_err, hba->saved_uic_err);
->  	}
-> -	ufshcd_clear_eh_in_progress(hba);
->  	spin_unlock_irqrestore(hba->host->host_lock, flags);
->  	ufshcd_err_handling_unprepare(hba);
->  	up(&hba->host_sem);
-> @@ -8999,6 +9002,9 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  
->  	/* Enable Auto-Hibernate if configured */
->  	ufshcd_auto_hibern8_enable(hba);
-> +
-> +	hba->clk_gating.is_suspended = false;
-> +	ufshcd_release(hba);
->  	goto out;
->  
->  set_old_link_state:
-> @@ -9008,8 +9014,6 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  out:
->  	if (ret)
->  		ufshcd_update_evt_hist(hba, UFS_EVT_WL_RES_ERR, (u32)ret);
-> -	hba->clk_gating.is_suspended = false;
-> -	ufshcd_release(hba);
->  	hba->wl_pm_op_in_progress = false;
->  	return ret <= 0 ? ret : -EINVAL;
->  }
-> 
-
+Making a new feature depend on BROKEN feels like it shouldn't have
+been added at this point in the first place.
