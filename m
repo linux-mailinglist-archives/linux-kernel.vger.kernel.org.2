@@ -2,131 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F42F3A345F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB39C3A3462
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhFJT6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 15:58:35 -0400
-Received: from mail-il1-f173.google.com ([209.85.166.173]:39681 "EHLO
-        mail-il1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhFJT6d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 15:58:33 -0400
-Received: by mail-il1-f173.google.com with SMTP id j14so163996ila.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yThRUwhG7TVMYzDnZQ36xlr9oSGBGPDfSkCu6ZGlYLg=;
-        b=bPBjb3iQyivF7+ujnusT5zb7CgKPA/MPb60wwSSgl0fWJCJFIRsspxS5FLO3i3Db7o
-         QTBIFLfWtoa+OTwkJsl8Od0iL6SjdITaP1KUiA1ZLnO0nbgYzNu8qBP6bqF9wOw6coVS
-         0TZuIt7YeN1EtKC3bKArUXZMWQq1C4xTGVKSk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yThRUwhG7TVMYzDnZQ36xlr9oSGBGPDfSkCu6ZGlYLg=;
-        b=dD3tEJQ3zlTLb+g+oiD7tL2XCqBwDxYaAKwoTAADlJOWCRwd9GJqsOikYJSmuAFb1D
-         N7Aw6YaIwUPTiBjbQskEt/CwUiq3sRQpEAaFsVHvkiit2Kx0h/IpLhH6+g4urWhr78pK
-         iNMRvltoatBvC0rPPyREjZOjgy4VY7L8UxT+rjt1W0wvUEhMIypeXS59OwbiJrNglQZ7
-         4fF97phg4SXXNO2e2uh4OR8k58VkfPG3xKzhncar2aFwrPmMVazEO5ct9gibAItcWf6K
-         WppfhC7nDg7scBEPzXU8OY/MJ+M2D4VhMmqcK+o3HnFJOUSRT6VT5ft1Z5PLPzzJ/tCR
-         jqGQ==
-X-Gm-Message-State: AOAM531Cm8YRPU9tEsyynzxNZCi3MAoPqkIafI92Z6DOpQVzfZ4b7eRK
-        f68fYpdNRiBh+LIrg7hYT78P1A==
-X-Google-Smtp-Source: ABdhPJxrEvwWy3XAmz/7jj02iTalwtXM7UAmJCMJjFJ1UH5U58C7wt3JsSnlbOrDwD06v36kFE802g==
-X-Received: by 2002:a05:6e02:4b0:: with SMTP id e16mr335801ils.71.1623354925138;
-        Thu, 10 Jun 2021 12:55:25 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id u18sm2447941ilb.51.2021.06.10.12.55.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 12:55:24 -0700 (PDT)
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <YH2hs6EsPTpDAqXc@mit.edu>
- <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
- <YIx7R6tmcRRCl/az@mit.edu>
- <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
- <YK+esqGjKaPb+b/Q@kroah.com>
- <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
- <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
- <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
- <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
- <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
- <20210610152633.7e4a7304@oasis.local.home>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
-Date:   Thu, 10 Jun 2021 13:55:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230155AbhFJUAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 16:00:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229823AbhFJUAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 16:00:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47300613F1;
+        Thu, 10 Jun 2021 19:58:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623355120;
+        bh=kyGuLMDF162Fna1fj5F+84zmcept7WSNEY+f7MK484o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=IjPcbRt0GQZMWhtPbUMb8xgQSM+Ne/eCj9jDaMprVwqnCoSXLqvxRninjdI7S19vt
+         7MTs0MMAQWQ2Nj0z295gOE9LqQD6XLetok1Wm2WXBLBEElgSlyYaDP9zzK/8sz/KMM
+         0QLGtRKJY7tMXeMPgjKrA71orT4ccuaFcIkUgQjwsChWIFwZA2ojO7idmCQ7ZyLff7
+         ODE4Fe7sVY/p72UUmPGtBCqp6128pP4O5QDqVVLvUoZ1RoFJXCsWVq2p36kQpnVCmi
+         3uR0DeuTuhiFHnGTtg0usbYvZ7tofQRp2bNv0yQddM2Ma9lSUlmxDyMp5WB4/Jbj+1
+         C7gatqt3P016A==
+Date:   Thu, 10 Jun 2021 14:58:38 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     Vidya Sagar <vidyas@nvidia.com>, robh+dt@kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, alexandru.elisei@arm.com, wqu@suse.com,
+        robin.murphy@arm.com, pgwipeout@gmail.com, ardb@kernel.org,
+        briannorris@chromium.org, shawn.lin@rock-chips.com
+Subject: Re: [PATCH v3 2/4] PCI: of: Relax the condition for warning about
+ non-prefetchable memory aperture size
+Message-ID: <20210610195838.GA2763134@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210610152633.7e4a7304@oasis.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y2bhkdxd.fsf@stealth>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/21 1:26 PM, Steven Rostedt wrote:
-> On Thu, 10 Jun 2021 21:39:49 +0300
-> Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
+On Thu, Jun 10, 2021 at 11:11:10PM +0900, Punit Agrawal wrote:
+> Hi Bjorn,
 > 
->> There will always be more informal discussions between on-site
->> participants. After all, this is one of the benefits of conferences, by
->> being all together we can easily organize ad-hoc discussions. This is
->> traditionally done by finding a not too noisy corner in the conference
->> center, would it be useful to have more break-out rooms with A/V
->> equipment than usual ?
+> Bjorn Helgaas <helgaas@kernel.org> writes:
 > 
-> I've been giving this quite some thought too, and I've come to the
-> understanding (and sure I can be wrong, but I don't think that I am),
-> is that when doing a hybrid event, the remote people will always be
-> "second class citizens" with respect to the communication that is going
-> on. Saying that we can make it the same is not going to happen unless
-> you start restricting what people can do that are present, and that
-> will just destroy the conference IMO.
+> > On Wed, Jun 09, 2021 at 12:36:08AM +0530, Vidya Sagar wrote:
+> >> On 6/7/2021 4:58 PM, Punit Agrawal wrote:
+> >> > 
+> >> > Commit fede8526cc48 ("PCI: of: Warn if non-prefetchable memory
+> >> > aperture size is > 32-bit") introduced a warning for non-prefetchable
+> >> > resources that need more than 32bits to resolve. It turns out that the
+> >> > check is too restrictive and should be applicable to only resources
+> >> > that are limited to host bridge windows that don't have the ability to
+> >> > map 64-bit address space.
+> >>
+> >> I think the host bridge windows having the ability to map 64-bit address
+> >> space is different from restricting the non-prefetchable memory aperture
+> >> size to 32-bit.
+> >
+> >> Whether the host bridge uses internal translations or not to map the
+> >> non-prefetchable resources to 64-bit space, the size needs to be programmed
+> >> in the host bridge's 'Memory Limit Register (Offset 22h)' which can
+> >> represent sizes only fit into 32-bits.
+> >
+> >> Host bridges having the ability to map 64-bit address spaces gives
+> >> flexibility to utilize the vast 64-bit space for the (restrictive)
+> >> non-prefetchable memory (i.e. mapping non-prefetchable BARs of endpoints to
+> >> the 64-bit space in CPU's view) and get it translated internally and put a
+> >> 32-bit address on the PCIe bus finally.
+> >
+> > The vastness of the 64-bit space in the CPU view only helps with
+> > non-prefetchable memory if you have multiple host bridges with
+> > different CPU-to-PCI translations.  Each root bus can only carve up
+> > 4GB of PCI memory space for use by its non-prefetchable memory
+> > windows.
+> >
+> > Of course, if we're willing to give up the performance, there's
+> > nothing to prevent us from using non-prefetchable space for
+> > *prefetchable* resources, as in my example below.
+> >
+> > I think the fede8526cc48 commit log is incorrect, or at least
+> > incomplete:
+> >
+> >   As per PCIe spec r5.0, sec 7.5.1.3.8 only 32-bit BAR registers are defined
+> >   for non-prefetchable memory and hence a warning should be reported when
+> >   the size of them go beyond 32-bits.
+> >
+> > 7.5.1.3.8 is talking about non-prefetchable PCI-to-PCI bridge windows,
+> > not BARs.  AFAIK, 64-bit BARs may be non-prefetchable.  The warning is
+> > in pci_parse_request_of_pci_ranges(), which isn't looking at
+> > PCI-to-PCI bridge windows; it's looking at PCI host bridge windows.
+> > It's legal for a host bridge to have only non-prefetchable windows,
+> > and prefetchable PCI BARs can be placed in them.
+> >
+> > For example, we could have the following:
+> >
+> >   pci_bus 0000:00: root bus resource [mem 0x80000000-0x1_ffffffff] (6GB)
+> >   pci 0000:00:00.0: PCI bridge to [bus 01-7f]
+> >   pci 0000:00:00.0:   bridge window [mem 0x80000000-0xbfffffff] (1GB)
+> >   pci 0000:00:00.0:   bridge window [mem 0x1_00000000-0x1_7fffffff 64bit pref] (2GB)
+> >   pci 0000:00:00.1: PCI bridge to [bus 80-ff]
+> >   pci 0000:00:00.1:   bridge window [mem 0xc0000000-0xffffffff] (1GB)
+> >   pci 0000:00:00.1:   bridge window [mem 0x1_80000000-0x1_ffffffff 64bit pref] (2GB)
+> >
+> > Here the host bridge window is 6GB and is not prefetchable.  The
+> > PCI-to-PCI bridge non-prefetchable windows are 1GB each and the bases
+> > and limits fit in 32 bits.  The prefetchable windows are 2GB each, and
+> > we're allowed but not required to put these in prefetchable host
+> > bridge windows.
+> >
+> > So I'm not convinced this warning is valid to begin with.  It may be
+> > that this host bridge configuration isn't optimal, and we might want
+> > an informational message, but I think it's *legal*.
 > 
-> That said, I think we should add more to make the communication better
-> for those that are not present. Maybe an idea is to have break outs
-> followed by the presentation and evening events that include remote
-> attendees to discuss with those that are there about what they might
-> have missed. Have incentives at these break outs (free stacks and
-> beer?) to encourage the live attendees to attend and have a discussion
-> with the remote attendees.
-> 
-> The presentations would have remote access, where remote attendees can
-> at the very least write in some chat their questions or comments. If
-> video and connectivity is good enough, perhaps have a screen where they
-> can show up and talk, but that may have logistical limitations.
-> 
+> By "optimal" - are you referring to the use of non-prefetchable space
+> for prefetchable window?
 
-You are absolutely right that the remote people will have a hard time
-participating and keeping up with in-person participants. I have a
-couple of ideas on how we might be able to improve remote experience
-without restricting in-person experience.
+Yes.  I just meant that we don't know the specific capabilities of the
+host bridge, and firmware or the native driver may not have configured
+it in the optimal way.
 
-- Have one or two moderators per session to watch chat and Q&A to enable
-   remote participants to chime in and participate.
-- Moderators can make sure remote participation doesn't go unnoticed and
-   enable taking turns for remote vs. people participating in person.
+> Also, if the warning doesn't apply to PCI host bridge windows, should I
+> drop it in the next update? Or leave out this and the next patch to be
+> dealt with separately.
 
-It will be change in the way we interact in all in-person sessions for
-sure, however it might enhance the experience for remote attendees.
+I'd like to hear Vidya's thoughts on this first in case I'm
+misinterpreting something.
 
-thanks,
--- Shuah
+In the meantime, I think it's not terrible if you leave this as-is for
+now.  Worst-case we'll get some warnings that we might not need, but
+IIUC, patches 2/4 and 3/4 don't fix a functional problem.
+
+I don't know whether the IORESOURCE_PREFETCH bit on host bridge
+windows is important or not.  I *think* it's common for ACPI host
+bridge descriptions to have no windows described as "prefetchable" (at
+least, my garden-variety laptop has none):
+
+  pci_bus 0000:00: root bus resource [mem 0xfd000000-0xfe7fffff window]
+  pci 0000:00:01.0: PCI bridge to [bus 01]
+  pci 0000:00:01.0:   bridge window [mem 0xc0000000-0xd1ffffff 64bit pref]
+  pci 0000:00:1c.1: PCI bridge to [bus 03]
+  pci 0000:00:1c.1:   bridge window [mem 0xd2100000-0xd2afffff 64bit pref]
+  pci 0000:00:1d.6: PCI bridge to [bus 06-3e]
+  pci 0000:00:1d.6:   bridge window [mem 0x90000000-0xb1ffffff 64bit pref]
+
+I guess we must just rely on the fact that BIOS has already programmed
+those prefetchable windows?  I really don't know how this works, to be
+honest.
+
+Bjorn
