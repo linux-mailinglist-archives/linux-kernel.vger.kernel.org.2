@@ -2,101 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039D33A31C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825773A31CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhFJRMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhFJRMw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:12:52 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2DFC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:10:55 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so4254266pjq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:10:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fGe4DY8mKKnygk1FE1mf6upUstyZmptYOrEfvpk5Mh4=;
-        b=mdhUfAb6YifrK82K1uc/PcW7Zxwk4vR3l4dsm8mWZeEkgaENHt8dNJfm9RlVGfAeFg
-         HXWfyBTRkCAA8Sw4IU5MahyfcRsTv/7i7ZCIWQYC3dG698lzzVo/PsMeIyKPMhZEfBsb
-         BteICrFlQFZxM6TsPbdHKk39bzZo97p/pLGzdq0hMwTd3yHSqFH0PS9iTeMImIX2OL8k
-         kJkfTNlkVynbsIoVk10EyMZr7Y25M4buoHWx/ITZV395lRP6gJktiI3zgSmSUMMqFbaC
-         3ZqEqdOqRYCsDJ8OWLH2tGhy++wUmUBZrwymWmqSBguSYnRrQZPQhIyIP334l1g9wSxW
-         MC4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fGe4DY8mKKnygk1FE1mf6upUstyZmptYOrEfvpk5Mh4=;
-        b=ahBIICxyJ800JPb+S4E5I7+IzZZqFfbRxJ8geHeG1KUjuC9IXOfdavNlONlRGWpI0i
-         j316PIRncBNLqZMG0dqXKy+eDBiPU18tSfAYqokXEaq/cAlGtsu4CmamnWL6hsaXBxUd
-         tpWAZk8m7il6mnrgFXLnXrtDiQFElkFmEwCnAP9MR0nXQQVP8Oxf9RhhDdk0qCvrIQyq
-         K2LNOL+bFAk4IQ8rZLQrBWZJNrrd8ugl3euIweY70UwohFUHDZGcpESVKWerthL9PXAn
-         3S4Appi3cyeituKilTjT3vbuotZ6HdEmiAsfLOy+mRASNnlEjIdkmQ/QqeJuwd/8Y7ua
-         WKEw==
-X-Gm-Message-State: AOAM530JHQC8ADppzyVYMtDnRo1AzYSqEZD80l5LOl+x2aD8zgnybDFT
-        sGPSls4r/mv5JF50fJ/coOOJwQ==
-X-Google-Smtp-Source: ABdhPJz7u6AlNLguXb+LpDc0K2GTrwuNFStkzdToNRbtHqF0bLOWIe1cPg3HAR319u2Dk5WLeiBA0g==
-X-Received: by 2002:a17:90a:7c02:: with SMTP id v2mr4377021pjf.118.1623345055266;
-        Thu, 10 Jun 2021 10:10:55 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id g6sm3010793pfq.110.2021.06.10.10.10.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 10:10:53 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 11:10:52 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH] rpmsg: Fix rpmsg_create_ept return when RPMSG config is
- not defined
-Message-ID: <20210610171052.GF34238@p14s>
-References: <20210604160549.2122-1-arnaud.pouliquen@foss.st.com>
+        id S231191AbhFJRNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:13:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229802AbhFJRNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 13:13:39 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4999E613C9;
+        Thu, 10 Jun 2021 17:11:43 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lrODV-006n2Q-7T; Thu, 10 Jun 2021 18:11:41 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: [GIT PULL] irqchip fixes for 5.13, take #2
+Date:   Thu, 10 Jun 2021 18:11:27 +0100
+Message-Id: <20210610171127.2404752-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604160549.2122-1-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, catalin.marinas@arm.com, mark.rutland@arm.com, will@kernel.org, linux-kernel@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 06:05:49PM +0200, Arnaud Pouliquen wrote:
-> This is a minor fix.
-> 
-> According to the description of the rpmsg_create_ept in rpmsg_core.c
-> the function should return NULL on error.
-> 
+Hi Thomas,
 
-You are correct, and none of the client return an error code either.
+Here's a lone fix from the irqchip tree, addressing an annoying
+mishandling of IRQs in NMI context with GICv3 on arm64. I really hope
+not to have to debug this again...
 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  include/linux/rpmsg.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-> index d97dcd049f18..a8dcf8a9ae88 100644
-> --- a/include/linux/rpmsg.h
-> +++ b/include/linux/rpmsg.h
-> @@ -231,7 +231,7 @@ static inline struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *rpdev
->  	/* This shouldn't be possible */
->  	WARN_ON(1);
->  
-> -	return ERR_PTR(-ENXIO);
-> +	return NULL;
+Please pull,
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+	M.
 
->  }
->  
->  static inline int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len)
-> -- 
-> 2.17.1
-> 
+The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
+
+  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.13-2
+
+for you to fetch changes up to 382e6e177bc1c02473e56591fe5083ae1e4904f6:
+
+  irqchip/gic-v3: Workaround inconsistent PMR setting on NMI entry (2021-06-10 17:54:34 +0100)
+
+----------------------------------------------------------------
+irqchip fixes for 5.13, take #2
+
+- Fix GICv3 NMI handling where an IRQ could be mistakenly handled
+  as a NMI, with disatrous effects
+
+----------------------------------------------------------------
+Marc Zyngier (1):
+      irqchip/gic-v3: Workaround inconsistent PMR setting on NMI entry
+
+ drivers/irqchip/irq-gic-v3.c | 36 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 35 insertions(+), 1 deletion(-)
