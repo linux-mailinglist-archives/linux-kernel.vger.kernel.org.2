@@ -2,277 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BF63A264F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8103A2655
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhFJIOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhFJIOA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:14:00 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6936C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 01:11:50 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id r5so1818839lfr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 01:11:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=QBEz8WW48tL++mHlIbEXl2SOVC4FnBjVosXF2O0HZkk=;
-        b=S7NHtcCsuDDJ7DRDSnUR5ZVQTdlnZIfgEcJt/4oOqys8gg/6Q+vKBZTC81pKX63+JF
-         LmOK7quYv4iF8z9yjGD6bNdN7kaKLKokEYw2+qeJQSDlGCNLFmbjG+JJmVLZQ5i1gTCz
-         ctsG0vOTV3NepoEiwdjA7VWvALNEdjCn5lHtc/k3lTsBlBW2e2d3T45jlpTlb9XS03DU
-         KKhxbKnS7N7mGc/bj1X7zZwzuxl9UpJgTDy5keCI8hBURJ4ooWyl3cb/VLYmaKRgr0zn
-         27sfcBj3frnf3f/oE3Q01gdGXjtKcYboWPvdD1HEO60980kPrNSff7emCgasGEuQ4iM+
-         gFqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=QBEz8WW48tL++mHlIbEXl2SOVC4FnBjVosXF2O0HZkk=;
-        b=DMh2gu+cWpWyUoXRv15NMaajst/KcLNOfpmoffTMUHRrCeFyDOEfElWTsCNO1O6KV1
-         vLniZilJIJUwhaQcieoPpoq/PwlFbdGY7UBFBFsKDaqryCIKLjj/im6BmU8ZP2HGp7hG
-         98jcQicKNlu75i205Su/NKDiGz3mzuuSnMl/QykSweMRluE3s6HEGmos8QpidaQTn75t
-         Kkyzgke7AIxK7SlfwKD9EezDhjoADRS1KwcO1S2i+n3sTtgoGjfs0flyKw2kkbw7cg7N
-         lA2r5/iIxDaKADAyoTrgsRIplgo+YcrUDKBSWVpxdLBftsbLs4IcmcDz1hjXf8fIeXgY
-         FOZA==
-X-Gm-Message-State: AOAM533zTfc3s2CjRHCSm2oHpevP22jMGaeqjG8LeK4Dm+FZ9flojqLP
-        DDy/V6uPbhtXuHW4WjnmDu0=
-X-Google-Smtp-Source: ABdhPJzzY+o71G1h0X1OHWJYoX8LliR9Q8slGnWDJMdHyOz32K4VAZOp6mrVmXdp0Emhb5rYJStx/g==
-X-Received: by 2002:a19:6007:: with SMTP id u7mr1177350lfb.471.1623312708970;
-        Thu, 10 Jun 2021 01:11:48 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id v6sm226614lfr.182.2021.06.10.01.11.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 01:11:48 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 11:11:45 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH v2 5/7] drm/uAPI: Add "active color format" drm property
- as feedback for userspace
-Message-ID: <20210610111145.7fdf9a53@eldfell>
-In-Reply-To: <20210608174320.37429-6-wse@tuxedocomputers.com>
-References: <20210608174320.37429-1-wse@tuxedocomputers.com>
-        <20210608174320.37429-6-wse@tuxedocomputers.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230117AbhFJIOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 04:14:45 -0400
+Received: from mail-co1nam11on2063.outbound.protection.outlook.com ([40.107.220.63]:8940
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229895AbhFJIOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 04:14:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lhmS+y0485Mh+ddjYKgA3ujhZbcCd7Khrom94OtYpgaSritjJhw/GyFl53llVTZIE+1WEEQlNG08vOJlKw7aITAzUIIcinEIBaCp5RXOoTlLBmG/gfaAkTPWCT47MmJvdtO0isoaazFcFjLv9YPUBkIQFMecUvH6XGG3bmSMgLwuaF1xWc7Rke8mQznJnrbmpK0YBm3claKW1OD+KQUwSJX/zDFIGEdFzrQV2JV50ly6rQqyDtZsNV3blXbvAEAFOjvkbWI/q1WFR2LVcRlcDqV8GD/fg890JVHswhllVTIOVWey8qlYRXmSA33cn3m5RuKWBoE04NJpa6V4fYKj8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=28UGJ5KvwjYbBiZLU17iy86U/FpyLCp+C9IYYGw/QbY=;
+ b=QI1mFo3mI5WtuhVR7NqMhHviMNSdFeh0yxIDnLV13YydkmeJXsz84lkt/D1/BKlxl2dRp49WyIqH95SqyQKoGFxNwxcw5ONHUlANJm4uKFYGeym2qq9gclF00tMqFemRHZE3zHrknq0EwEbpvraLPT+sXgJZUxPrrmt5ZGGDagPisHC5kP0JlGckIU9TYUyTVcJq91VpzeZuXe+r93gM49pTyJCJhWvqLg0RekinWBOG0lQf452w9XpHrC/Mzr9KW8WUIamp6BowLY1+bRnAuMOgXkWnJdD2i5QSNImV/qzomPVrZamFXFrHrRLEWfjjfVGAL9PxJ2/X6OYo5PSqwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=28UGJ5KvwjYbBiZLU17iy86U/FpyLCp+C9IYYGw/QbY=;
+ b=Er1nz9focDkf8Xzn6AQVCJ72QoV4Qpu5nGFyKrj4R+AYplluSMMZEkhdTbsPTqtawiwt4Id96MATgATVhKSCGDR4+MteBigWDgwn0aiEogk1ZX+XNxUzA605x73Izb7WoRLRYoo8DRN88dEipSDXgafKJkuv/LJ/MrFc7PTkcdelTfIeJjZXE/NqwdULbTyXoLp0XneqeiCUr+EipKCy6qFjat1E+TIJv0ZgiIQTvGDuoWUXPNTWwcKM4Rmz2JEqsxuWtPI5aHpCYmRf36KUtMi0TaePyAiTgkN7EyraOF33i3IZ3cpczXxgQvpq0iUJleIaqK768+LC+9JLccug0Q==
+Received: from DM6PR03CA0100.namprd03.prod.outlook.com (2603:10b6:5:333::33)
+ by BN8PR12MB3172.namprd12.prod.outlook.com (2603:10b6:408:68::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Thu, 10 Jun
+ 2021 08:12:46 +0000
+Received: from DM6NAM11FT018.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:333:cafe::a2) by DM6PR03CA0100.outlook.office365.com
+ (2603:10b6:5:333::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend
+ Transport; Thu, 10 Jun 2021 08:12:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT018.mail.protection.outlook.com (10.13.172.110) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4219.21 via Frontend Transport; Thu, 10 Jun 2021 08:12:46 +0000
+Received: from nvdebian.localnet (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Jun
+ 2021 08:12:43 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Hugh Dickins <hughd@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Ralph Campbell" <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/11] mm: page_vma_mapped_walk(): use page for pvmw->page
+Date:   Thu, 10 Jun 2021 18:12:40 +1000
+Message-ID: <3489192.qTgHbfadoh@nvdebian>
+In-Reply-To: <88e67645-f467-c279-bf5e-af4b5c6b13eb@google.com>
+References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com> <88e67645-f467-c279-bf5e-af4b5c6b13eb@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/A0zawA.ljA68TAxQdb2Sl2J"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f1ab939c-7a3f-4e77-200b-08d92be787c4
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3172:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB317295DF64CFCD527711426CDF359@BN8PR12MB3172.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mBL5FDiyRaMDifvHzK8xwuuGfyuC2cM04hw359hds7TMj79GX/3qNHu0+gRFAteTZgWoCpMHrNTzoVwUG28w7MYwEeTQH5xedRg1lOwntKB62hWZbiHsC0pNK67/Ytmx2aqdeTkSu+skBfb0KLJXOGKRxyatVXcZSOC1S/usb0atx4iNxkEnhG5ZXeCOwDXVehrgkxeeSS11guSXM5KMM1VQWD9nBDqtdTWJt7JujrsJW+G1UWgxve0QQWUBoL7KI/EWUFvHHrbiFquFp8zuL1Z9U6eNimTzMDu6MCvQUMIMy1Vh6Bq7mJvv09jnHnmFviE/opCOltRvRmn/YSAzgm3krK0QXJAkO9Ht8vf88rji01KxoWXmnKRWfcegiLY2yWI7B49WWXxV2R+WZ/O3C7+EyVV7VdTj+xw0ofXa+sSd03ZAxzTqno+lO3lny5oLaYowjzBp5xxHMGbpDysw+Yr0MVV1g79PxkM6AqhZB4m9XlFUgn6sJodX0cuMJPl68q/MPunIWImQxCf26yrrtxemN6jH6ha3rvAciMfFlD1LOn92nMiuDPlQRglPoKeC+xGHY6kxtzWBlBmzohi3pgx+xMDBqprlO8FhpsTRcnB8YxXx6JSZMkzM3sdhJkoC6TWEw+DtrQu6lxcN1H32fynpl3vPsPkNqk16ieiOnB0=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39860400002)(396003)(46966006)(36840700001)(426003)(8676002)(8936002)(36860700001)(7636003)(54906003)(316002)(36906005)(336012)(4326008)(478600001)(26005)(186003)(9576002)(82310400003)(7416002)(16526019)(33716001)(86362001)(82740400003)(6916009)(70586007)(9686003)(5660300002)(70206006)(47076005)(356005)(83380400001)(2906002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 08:12:46.3793
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1ab939c-7a3f-4e77-200b-08d92be787c4
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT018.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3172
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/A0zawA.ljA68TAxQdb2Sl2J
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Thanks for this, I've read through page_vma_mapped_walk() a few too many times
+recently and it annoyed me enough to start writing some patches to clean it up,
+but happy to see this instead.
 
-On Tue,  8 Jun 2021 19:43:18 +0200
-Werner Sembach <wse@tuxedocomputers.com> wrote:
+I confirmed pvmw->page isn't modified here or in map/check_pte(pvmw), so the
+patch looks good to me:
 
-> Add a new general drm property "active color format" which can be used by
-> graphic drivers to report the used color format back to userspace.
->=20
-> There was no way to check which color format got actually used on a given
-> monitor. To surely predict this, one must know the exact capabilities of =
-the
-> monitor, the GPU, and the connection used and what the default behaviour =
-of the
-> used driver is (e.g. amdgpu prefers YCbCr 4:4:4 while i915 prefers RGB). =
-This
-> property helps eliminating the guessing on this point.
->=20
-> In the future, automatic color calibration for screens might also depend =
-on this
-> information being available.
->=20
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Reviewed-by: Alistair Popple <apopple@nvidia.com>
+
+On Thursday, 10 June 2021 4:34:40 PM AEST Hugh Dickins wrote:
+> page_vma_mapped_walk() cleanup: sometimes the local copy of pvwm->page was
+> used, sometimes pvmw->page itself: use the local copy "page" throughout.
+> 
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Cc: <stable@vger.kernel.org>
 > ---
->  drivers/gpu/drm/drm_atomic_uapi.c |  2 ++
->  drivers/gpu/drm/drm_connector.c   | 46 +++++++++++++++++++++++++++++++
->  include/drm/drm_connector.h       | 13 +++++++++
->  3 files changed, 61 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atom=
-ic_uapi.c
-> index 7ae4e40936b5..bb78da2405f9 100644
-> --- a/drivers/gpu/drm/drm_atomic_uapi.c
-> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
-> @@ -875,6 +875,8 @@ drm_atomic_connector_get_property(struct drm_connecto=
-r *connector,
->  		*val =3D state->max_requested_bpc;
->  	} else if (property =3D=3D connector->active_bpc_property) {
->  		*val =3D state->active_bpc;
-> +	} else if (property =3D=3D connector->active_color_format_property) {
-> +		*val =3D state->active_color_format;
->  	} else if (connector->funcs->atomic_get_property) {
->  		return connector->funcs->atomic_get_property(connector,
->  				state, property, val);
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connec=
-tor.c
-> index c0c3c09bfed0..f4f35c4117b6 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-> @@ -887,6 +887,14 @@ static const struct drm_prop_enum_list drm_dp_subcon=
-nector_enum_list[] =3D {
->  	{ DRM_MODE_SUBCONNECTOR_Native,	     "Native"    }, /* DP */
->  };
-> =20
-> +static const struct drm_prop_enum_list drm_color_format_enum_list[] =3D {
-> +	{ 0, "none" },
-> +	{ DRM_COLOR_FORMAT_RGB444, "rgb" },
-> +	{ DRM_COLOR_FORMAT_YCRCB444, "ycbcr444" },
-> +	{ DRM_COLOR_FORMAT_YCRCB422, "ycbcr422" },
-> +	{ DRM_COLOR_FORMAT_YCRCB420, "ycbcr420" },
-> +};
-> +
->  DRM_ENUM_NAME_FN(drm_get_dp_subconnector_name,
->  		 drm_dp_subconnector_enum_list)
-> =20
-> @@ -1202,6 +1210,14 @@ static const struct drm_prop_enum_list dp_colorspa=
-ces[] =3D {
->   *	display engine and connected monitor, and the "max bpc" property.
->   *	Drivers shall use drm_connector_attach_active_bpc_property() to insta=
-ll
->   *	this property.
-> +
-> + * active color format:
-> + *	This read-only property tells userspace the color format actually used
-> + *	by the hardware display engine on "the cable" on a connector. The cho=
-sen
-> + *	value depends on hardware capabilities, both display engine and
-> + *	connected monitor. Drivers shall use
-> + *	drm_connector_attach_active_color_format_property() to install this
-> + *	property.
-
-Hi,
-
-I think also the enum values should be documented in the UAPI docs. Or
-listed at the very least. Otherwise userspace developers "do not know"
-what strings to decode.
+>  mm/page_vma_mapped.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+> index e37bd43904af..a6dbf714ca15 100644
+> --- a/mm/page_vma_mapped.c
+> +++ b/mm/page_vma_mapped.c
+> @@ -156,7 +156,7 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+>         if (pvmw->pte)
+>                 goto next_pte;
+> 
+> -       if (unlikely(PageHuge(pvmw->page))) {
+> +       if (unlikely(PageHuge(page))) {
+>                 /* when pud is not present, pte will be NULL */
+>                 pvmw->pte = huge_pte_offset(mm, pvmw->address, page_size(page));
+>                 if (!pvmw->pte)
+> @@ -217,8 +217,7 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+>                  * cannot return prematurely, while zap_huge_pmd() has
+>                  * cleared *pmd but not decremented compound_mapcount().
+>                  */
+> -               if ((pvmw->flags & PVMW_SYNC) &&
+> -                   PageTransCompound(pvmw->page)) {
+> +               if ((pvmw->flags & PVMW_SYNC) && PageTransCompound(page)) {
+>                         spinlock_t *ptl = pmd_lock(mm, pvmw->pmd);
+> 
+>                         spin_unlock(ptl);
+> @@ -234,9 +233,9 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+>                         return true;
+>  next_pte:
+>                 /* Seek to next pte only makes sense for THP */
+> -               if (!PageTransHuge(pvmw->page) || PageHuge(pvmw->page))
+> +               if (!PageTransHuge(page) || PageHuge(page))
+>                         return not_found(pvmw);
+> -               end = vma_address_end(pvmw->page, pvmw->vma);
+> +               end = vma_address_end(page, pvmw->vma);
+>                 do {
+>                         pvmw->address += PAGE_SIZE;
+>                         if (pvmw->address >= end)
+> --
+> 2.26.2
+> 
 
 
-Thanks,
-pq
 
 
->   *
->   * Connectors also have one standardized atomic property:
->   *
-> @@ -2191,6 +2207,36 @@ int drm_connector_attach_active_bpc_property(struc=
-t drm_connector *connector,
->  }
->  EXPORT_SYMBOL(drm_connector_attach_active_bpc_property);
-> =20
-> +/**
-> + * drm_connector_attach_active_color_format_property - attach "active co=
-lor format" property
-> + * @connector: connector to attach active color format property on.
-> + *
-> + * This is used to check the applied color format on a connector.
-> + *
-> + * Returns:
-> + * Zero on success, negative errno on failure.
-> + */
-> +int drm_connector_attach_active_color_format_property(struct drm_connect=
-or *connector)
-> +{
-> +	struct drm_device *dev =3D connector->dev;
-> +	struct drm_property *prop;
-> +
-> +	prop =3D connector->active_color_format_property;
-> +	if (!prop) {
-> +		prop =3D drm_property_create_enum(dev, 0, "active color format", drm_c=
-olor_format_enum_list, ARRAY_SIZE(drm_color_format_enum_list));
-> +		if (!prop)
-> +			return -ENOMEM;
-> +
-> +		connector->active_color_format_property =3D prop;
-> +	}
-> +
-> +	drm_object_attach_property(&connector->base, prop, 0);
-> +	connector->state->active_color_format =3D 0;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drm_connector_attach_active_color_format_property);
-> +
->  /**
->   * drm_connector_set_vrr_capable_property - sets the variable refresh ra=
-te
->   * capable property for a connector
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index c58cba2b6afe..167cd36129ae 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-> @@ -788,6 +788,12 @@ struct drm_connector_state {
->  	 */
->  	u8 active_bpc;
-> =20
-> +	/**
-> +	 * active_color_format: Read only property set by the GPU driver to the
-> +	 * actually used color format after evaluating all hardware limitations.
-> +	 */
-> +	u32 active_color_format;
-> +
->  	/**
->  	 * @hdr_output_metadata:
->  	 * DRM blob property for HDR output metadata
-> @@ -1393,6 +1399,12 @@ struct drm_connector {
->  	 */
->  	struct drm_property *active_bpc_property;
-> =20
-> +	/**
-> +	 * @active_color_format_property: Default connector property for the
-> +	 * active color format to be driven out of the connector.
-> +	 */
-> +	struct drm_property *active_color_format_property;
-> +
->  #define DRM_CONNECTOR_POLL_HPD (1 << 0)
->  #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
->  #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
-> @@ -1713,6 +1725,7 @@ int drm_connector_attach_max_bpc_property(struct dr=
-m_connector *connector,
->  					  int min, int max);
->  int drm_connector_attach_active_bpc_property(struct drm_connector *conne=
-ctor,
->  					  int min, int max);
-> +int drm_connector_attach_active_color_format_property(struct drm_connect=
-or *connector);
-> =20
->  /**
->   * struct drm_tile_group - Tile group metadata
-
-
---Sig_/A0zawA.ljA68TAxQdb2Sl2J
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDByUEACgkQI1/ltBGq
-qqcDsBAAoZ37FOS1kD4IHt354PTB/cEH2cwQYzIr2HmJT5Goehl7zJzKwH3nUfhv
-8XBsNC2bKnizZ/sY7LletT2Rs1bWWmAUY9VmRTmE4wH2/rXHdyTpXhekpdGe4lFP
-hWCi7dhw65t8pHNN4XCkCpoQ2aFO+UroE7r4uN7A+cwRQOpqK4Honh7Vgf2dk2IK
-ywDySVE1f4n7TI+xOdgbfF8cgBO3dYgmJWZ1vnu6vq0uKFFZ+WLPMcTb0kK+Z6pf
-O9ljxlA0gDfTwnOleQ25h3QHJrTNNNoYdgwxLv2mZbAKZdar9NGK0QK4xmUZxtid
-YpdHyg2c7odJ1vtqR27my84PTvogHceZ4IrxHvbPfB6kwdscmLf8jNYzuF19JgzA
-LbkePNb4AFGVxiaehMhOlxI08iVfy/qGFg2dYkOvxAPtYwdFKVe/RcfURBZ38dL/
-pdejjwEryY+wTF+a6CTHeCvHkqtoAXdU+v8pAvvWPQG/U/z5XyOtu/FnyEsrr9cN
-2Ym5b07q7IegW+Zw7/6aZJjl4MkxKuKlh3wL41necM4mSs70dYBLrzs18L3fAr7y
-xAlwpImABIx/rGtvjD+iAEUgXwrzdTdyWG0XTjSoNUJSnakJXzsNbCkLXyhmcjH5
-vmn3NcgravqYxIKozewO8aBAQ4iD1P9ZzCbZodZOo0SP/J3OvOU=
-=N+iF
------END PGP SIGNATURE-----
-
---Sig_/A0zawA.ljA68TAxQdb2Sl2J--
