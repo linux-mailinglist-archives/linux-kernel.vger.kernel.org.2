@@ -2,548 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82583A35E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB00A3A35F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhFJVbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 17:31:44 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:44912 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230348AbhFJVbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:31:42 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lrSFB-0006er-Iv; Thu, 10 Jun 2021 23:29:41 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     kishon@ti.com, vkoul@kernel.org
-Cc:     robh+dt@kernel.org, heiko@sntech.de, ezequiel@collabora.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Subject: [PATCH v2 2/2] phy/rockchip: add Innosilicon-based CSI dphy
-Date:   Thu, 10 Jun 2021 23:29:35 +0200
-Message-Id: <20210610212935.3520341-3-heiko@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210610212935.3520341-1-heiko@sntech.de>
-References: <20210610212935.3520341-1-heiko@sntech.de>
+        id S230457AbhFJVc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230211AbhFJVc1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 17:32:27 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF72DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 14:30:20 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id a19so3693259ljq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 14:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mc0t7dqVDGu20ZDgp1J77BZzzR8pf6dBx6PMN3sIo8c=;
+        b=aOEIplv0pyoO+2D1enYzTH7rRMUM5qf5y/qVUZMMn97grwASNtzDCe6NqISGYiZMo/
+         ukksvEVMwqEiLXlOk7Xqes3HVR1NjBClrE1UmSQ+glzsnFi3+RbYzGF78dSlKpLFU0JZ
+         fdTr/eSTmYpuSXZulL5tGXRJG/I0jBiZbkhkcpdSROdkYtLEck/4uALoj6p0onaq315m
+         JtShyX4vbRX1kL2eW4pFO5ne3PKIMIIoI3VPqWTXEo3+d3M4W6uXg7lVNw/lt/VjhUrE
+         6A8O8GSKAnoiX+g/msiwrr/WSJCOVPblDBUfbeD3OI0es+O8CDxB3CEA+scJZ1LWc7dI
+         gSOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mc0t7dqVDGu20ZDgp1J77BZzzR8pf6dBx6PMN3sIo8c=;
+        b=ZcUtASK7jCigG9MIdVHLSXcIlWYn+b82QRnvFOa/SkAOfrt8n3Q3C0rInPYiFiAM1o
+         NmgcAChW4WylSEId/7j6UllhF+3hKfe57i9wO6oCtY+hXIsdHlavozAegnk4yxAW2iRt
+         hNPQ0JulCQrcsbxkEtJYFK/OydMJbBekXGTX7GSZL8C25x9kkCDd7fH64Mo8yoBPVymS
+         ylHVbbf3NIu8I2piIRUe1neeAMOLo/UGxwwZyCbrP1IARAUPpA1uIkzFlxY554/BgMId
+         vmE1/0SRig05C9UrGqereAkIybNZhQnGplbrMgbYDydKDj+rnBlw2B6cUNnPEdrJzRjX
+         BOEw==
+X-Gm-Message-State: AOAM531FlmamiFuXvoFLW9PPA1cfbkvLvks4I/S60MIH4SAvpOOxY/YO
+        h6sezRc2sxNCXxJ2ETX9iJMt6pbkeKo4gDDtRXm+Ew==
+X-Google-Smtp-Source: ABdhPJwLHL8jOR3WGl2QJnT+GPWUrRqLDv/5Ut16hTcM8MfJaU0MmKihHfxqkHVnSdiiDFsReGTpITxPhKmBolVuFZo=
+X-Received: by 2002:a2e:22c3:: with SMTP id i186mr433222lji.273.1623360618946;
+ Thu, 10 Jun 2021 14:30:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1623326176.git.viresh.kumar@linaro.org> <911941d4bf19f18abdc9700abca9f26b3c04c343.1623326176.git.viresh.kumar@linaro.org>
+In-Reply-To: <911941d4bf19f18abdc9700abca9f26b3c04c343.1623326176.git.viresh.kumar@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 10 Jun 2021 23:30:07 +0200
+Message-ID: <CACRpkdYHMtG_X3FgiArbQW49kTwJwOGn90peDvAV5Bs5oDiC7A@mail.gmail.com>
+Subject: Re: [PATCH V3 2/3] gpio: virtio: Add IRQ support
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Hi Viresh!
 
-The CSI dphy found for example on the rk3326/px30 and rk3368 is based
-on an IP design from Innosilicon. Add a driver for it.
+thanks for this interesting patch!
 
-Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
----
- drivers/phy/rockchip/Kconfig                  |   9 +
- drivers/phy/rockchip/Makefile                 |   1 +
- .../phy/rockchip/phy-rockchip-inno-csidphy.c  | 459 ++++++++++++++++++
- 3 files changed, 469 insertions(+)
- create mode 100644 drivers/phy/rockchip/phy-rockchip-inno-csidphy.c
+On Thu, Jun 10, 2021 at 2:16 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 
-diff --git a/drivers/phy/rockchip/Kconfig b/drivers/phy/rockchip/Kconfig
-index 159285f42e5c..e812adad7242 100644
---- a/drivers/phy/rockchip/Kconfig
-+++ b/drivers/phy/rockchip/Kconfig
-@@ -48,6 +48,15 @@ config PHY_ROCKCHIP_INNO_USB2
- 	help
- 	  Support for Rockchip USB2.0 PHY with Innosilicon IP block.
- 
-+config PHY_ROCKCHIP_INNO_CSIDPHY
-+	tristate "Rockchip Innosilicon MIPI CSI PHY driver"
-+	depends on (ARCH_ROCKCHIP || COMPILE_TEST) && OF
-+	select GENERIC_PHY
-+	select GENERIC_PHY_MIPI_DPHY
-+	help
-+	  Enable this to support the Rockchip MIPI CSI PHY with
-+	  Innosilicon IP block.
-+
- config PHY_ROCKCHIP_INNO_DSIDPHY
- 	tristate "Rockchip Innosilicon MIPI/LVDS/TTL PHY driver"
- 	depends on (ARCH_ROCKCHIP || COMPILE_TEST) && OF
-diff --git a/drivers/phy/rockchip/Makefile b/drivers/phy/rockchip/Makefile
-index c3cfc7f0af5c..f0eec212b2aa 100644
---- a/drivers/phy/rockchip/Makefile
-+++ b/drivers/phy/rockchip/Makefile
-@@ -2,6 +2,7 @@
- obj-$(CONFIG_PHY_ROCKCHIP_DP)		+= phy-rockchip-dp.o
- obj-$(CONFIG_PHY_ROCKCHIP_DPHY_RX0)     += phy-rockchip-dphy-rx0.o
- obj-$(CONFIG_PHY_ROCKCHIP_EMMC)		+= phy-rockchip-emmc.o
-+obj-$(CONFIG_PHY_ROCKCHIP_INNO_CSIDPHY)	+= phy-rockchip-inno-csidphy.o
- obj-$(CONFIG_PHY_ROCKCHIP_INNO_DSIDPHY)	+= phy-rockchip-inno-dsidphy.o
- obj-$(CONFIG_PHY_ROCKCHIP_INNO_HDMI)	+= phy-rockchip-inno-hdmi.o
- obj-$(CONFIG_PHY_ROCKCHIP_INNO_USB2)	+= phy-rockchip-inno-usb2.o
-diff --git a/drivers/phy/rockchip/phy-rockchip-inno-csidphy.c b/drivers/phy/rockchip/phy-rockchip-inno-csidphy.c
-new file mode 100644
-index 000000000000..ca13a604ab4f
---- /dev/null
-+++ b/drivers/phy/rockchip/phy-rockchip-inno-csidphy.c
-@@ -0,0 +1,459 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Rockchip MIPI RX Innosilicon DPHY driver
-+ *
-+ * Copyright (C) 2021 Fuzhou Rockchip Electronics Co., Ltd.
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/io.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/phy/phy.h>
-+#include <linux/phy/phy-mipi-dphy.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regmap.h>
-+#include <linux/reset.h>
-+
-+/* GRF */
-+#define RK1808_GRF_PD_VI_CON_OFFSET	0x0430
-+
-+#define RK3326_GRF_PD_VI_CON_OFFSET	0x0430
-+
-+#define RK3368_GRF_SOC_CON6_OFFSET	0x0418
-+
-+/* PHY */
-+#define CSIDPHY_CTRL_LANE_ENABLE		0x00
-+#define CSIDPHY_CTRL_LANE_ENABLE_CK		BIT(6)
-+#define CSIDPHY_CTRL_LANE_ENABLE_MASK		GENMASK(5, 2)
-+#define CSIDPHY_CTRL_LANE_ENABLE_UNDEFINED	BIT(0)
-+
-+/* not present on all variants */
-+#define CSIDPHY_CTRL_PWRCTL			0x04
-+#define CSIDPHY_CTRL_PWRCTL_UNDEFINED		GENMASK(7, 5)
-+#define CSIDPHY_CTRL_PWRCTL_SYNCRST		BIT(2)
-+#define CSIDPHY_CTRL_PWRCTL_LDO_PD		BIT(1)
-+#define CSIDPHY_CTRL_PWRCTL_PLL_PD		BIT(0)
-+
-+#define CSIDPHY_CTRL_DIG_RST			0x80
-+#define CSIDPHY_CTRL_DIG_RST_UNDEFINED		0x1e
-+#define CSIDPHY_CTRL_DIG_RST_RESET		BIT(0)
-+
-+/* offset after ths_settle_offset */
-+#define CSIDPHY_CLK_THS_SETTLE			0
-+#define CSIDPHY_LANE_THS_SETTLE(n)		(((n) + 1) * 0x80)
-+#define CSIDPHY_THS_SETTLE_MASK			GENMASK(6, 0)
-+
-+/* offset after calib_offset */
-+#define CSIDPHY_CLK_CALIB_EN			0
-+#define CSIDPHY_LANE_CALIB_EN(n)		(((n) + 1) * 0x80)
-+#define CSIDPHY_CALIB_EN			BIT(7)
-+
-+/* Configure the count time of the THS-SETTLE by protocol. */
-+#define RK1808_CSIDPHY_CLK_WR_THS_SETTLE	0x160
-+#define RK3326_CSIDPHY_CLK_WR_THS_SETTLE	0x100
-+#define RK3368_CSIDPHY_CLK_WR_THS_SETTLE	0x100
-+
-+/* Calibration reception enable */
-+#define RK1808_CSIDPHY_CLK_CALIB_EN		0x168
-+
-+/*
-+ * The higher 16-bit of this register is used for write protection
-+ * only if BIT(x + 16) set to 1 the BIT(x) can be written.
-+ */
-+#define HIWORD_UPDATE(val, mask, shift) \
-+		((val) << (shift) | (mask) << ((shift) + 16))
-+
-+#define HZ_TO_MHZ(freq)				div_u64(freq, 1000 * 1000)
-+
-+enum dphy_reg_id {
-+	/* rk1808 & rk3326 */
-+	GRF_DPHY_CSIPHY_FORCERXMODE,
-+	GRF_DPHY_CSIPHY_CLKLANE_EN,
-+	GRF_DPHY_CSIPHY_DATALANE_EN,
-+};
-+
-+struct dphy_reg {
-+	u32 offset;
-+	u32 mask;
-+	u32 shift;
-+};
-+
-+#define PHY_REG(_offset, _width, _shift) \
-+	{ .offset = _offset, .mask = BIT(_width) - 1, .shift = _shift, }
-+
-+static const struct dphy_reg rk1808_grf_dphy_regs[] = {
-+	[GRF_DPHY_CSIPHY_FORCERXMODE] = PHY_REG(RK1808_GRF_PD_VI_CON_OFFSET, 4, 0),
-+	[GRF_DPHY_CSIPHY_CLKLANE_EN] = PHY_REG(RK1808_GRF_PD_VI_CON_OFFSET, 1, 8),
-+	[GRF_DPHY_CSIPHY_DATALANE_EN] = PHY_REG(RK1808_GRF_PD_VI_CON_OFFSET, 4, 4),
-+};
-+
-+static const struct dphy_reg rk3326_grf_dphy_regs[] = {
-+	[GRF_DPHY_CSIPHY_FORCERXMODE] = PHY_REG(RK3326_GRF_PD_VI_CON_OFFSET, 4, 0),
-+	[GRF_DPHY_CSIPHY_CLKLANE_EN] = PHY_REG(RK3326_GRF_PD_VI_CON_OFFSET, 1, 8),
-+	[GRF_DPHY_CSIPHY_DATALANE_EN] = PHY_REG(RK3326_GRF_PD_VI_CON_OFFSET, 4, 4),
-+};
-+
-+static const struct dphy_reg rk3368_grf_dphy_regs[] = {
-+	[GRF_DPHY_CSIPHY_FORCERXMODE] = PHY_REG(RK3368_GRF_SOC_CON6_OFFSET, 4, 8),
-+};
-+
-+struct hsfreq_range {
-+	u32 range_h;
-+	u8 cfg_bit;
-+};
-+
-+struct dphy_drv_data {
-+	int pwrctl_offset;
-+	int ths_settle_offset;
-+	int calib_offset;
-+	const struct hsfreq_range *hsfreq_ranges;
-+	int num_hsfreq_ranges;
-+	const struct dphy_reg *grf_regs;
-+};
-+
-+struct rockchip_inno_csidphy {
-+	struct device *dev;
-+	void __iomem *phy_base;
-+	struct clk *pclk;
-+	struct regmap *grf;
-+	struct reset_control *rst;
-+	const struct dphy_drv_data *drv_data;
-+	struct phy_configure_opts_mipi_dphy config;
-+	u8 hsfreq;
-+};
-+
-+static inline void write_grf_reg(struct rockchip_inno_csidphy *priv,
-+				 int index, u8 value)
-+{
-+	const struct dphy_drv_data *drv_data = priv->drv_data;
-+	const struct dphy_reg *reg = &drv_data->grf_regs[index];
-+
-+	if (reg->offset)
-+		regmap_write(priv->grf, reg->offset,
-+			     HIWORD_UPDATE(value, reg->mask, reg->shift));
-+}
-+
-+/* These tables must be sorted by .range_h ascending. */
-+static const struct hsfreq_range rk1808_mipidphy_hsfreq_ranges[] = {
-+	{ 109, 0x02}, { 149, 0x03}, { 199, 0x06}, { 249, 0x06},
-+	{ 299, 0x06}, { 399, 0x08}, { 499, 0x0b}, { 599, 0x0e},
-+	{ 699, 0x10}, { 799, 0x12}, { 999, 0x16}, {1199, 0x1e},
-+	{1399, 0x23}, {1599, 0x2d}, {1799, 0x32}, {1999, 0x37},
-+	{2199, 0x3c}, {2399, 0x41}, {2499, 0x46}
-+};
-+
-+static const struct hsfreq_range rk3326_mipidphy_hsfreq_ranges[] = {
-+	{ 109, 0x00}, { 149, 0x01}, { 199, 0x02}, { 249, 0x03},
-+	{ 299, 0x04}, { 399, 0x05}, { 499, 0x06}, { 599, 0x07},
-+	{ 699, 0x08}, { 799, 0x09}, { 899, 0x0a}, {1099, 0x0b},
-+	{1249, 0x0c}, {1349, 0x0d}, {1500, 0x0e}
-+};
-+
-+static const struct hsfreq_range rk3368_mipidphy_hsfreq_ranges[] = {
-+	{ 109, 0x00}, { 149, 0x01}, { 199, 0x02}, { 249, 0x03},
-+	{ 299, 0x04}, { 399, 0x05}, { 499, 0x06}, { 599, 0x07},
-+	{ 699, 0x08}, { 799, 0x09}, { 899, 0x0a}, {1099, 0x0b},
-+	{1249, 0x0c}, {1349, 0x0d}, {1500, 0x0e}
-+};
-+
-+static void rockchip_inno_csidphy_ths_settle(struct rockchip_inno_csidphy *priv,
-+					     int hsfreq, int offset)
-+{
-+	const struct dphy_drv_data *drv_data = priv->drv_data;
-+	u32 val;
-+
-+	val = readl(priv->phy_base + drv_data->ths_settle_offset + offset);
-+	val &= ~CSIDPHY_THS_SETTLE_MASK;
-+	val |= hsfreq;
-+	writel(val, priv->phy_base + drv_data->ths_settle_offset + offset);
-+}
-+
-+static int rockchip_inno_csidphy_configure(struct phy *phy,
-+					   union phy_configure_opts *opts)
-+{
-+	struct rockchip_inno_csidphy *priv = phy_get_drvdata(phy);
-+	const struct dphy_drv_data *drv_data = priv->drv_data;
-+	struct phy_configure_opts_mipi_dphy *config = &opts->mipi_dphy;
-+	unsigned int hsfreq = 0;
-+	unsigned int i;
-+	u64 data_rate_mbps;
-+	int ret;
-+
-+	/* pass with phy_mipi_dphy_get_default_config (with pixel rate?) */
-+	ret = phy_mipi_dphy_config_validate(config);
-+	if (ret)
-+		return ret;
-+
-+	data_rate_mbps = HZ_TO_MHZ(config->hs_clk_rate);
-+
-+	dev_dbg(priv->dev, "lanes %d - data_rate_mbps %llu\n",
-+		config->lanes, data_rate_mbps);
-+	for (i = 0; i < drv_data->num_hsfreq_ranges; i++) {
-+		if (drv_data->hsfreq_ranges[i].range_h >= data_rate_mbps) {
-+			hsfreq = drv_data->hsfreq_ranges[i].cfg_bit;
-+			break;
-+		}
-+	}
-+	if (!hsfreq)
-+		return -EINVAL;
-+
-+	priv->hsfreq = hsfreq;
-+	priv->config = *config;
-+	return 0;
-+}
-+
-+static int rockchip_inno_csidphy_power_on(struct phy *phy)
-+{
-+	struct rockchip_inno_csidphy *priv = phy_get_drvdata(phy);
-+	const struct dphy_drv_data *drv_data = priv->drv_data;
-+	u64 data_rate_mbps = HZ_TO_MHZ(priv->config.hs_clk_rate);
-+	u32 val;
-+	int ret, i;
-+
-+	ret = clk_enable(priv->pclk);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = pm_runtime_resume_and_get(priv->dev);
-+	if (ret < 0) {
-+		clk_disable(priv->pclk);
-+		return ret;
-+	}
-+
-+	/* phy start */
-+	if (drv_data->pwrctl_offset >= 0)
-+		writel(CSIDPHY_CTRL_PWRCTL_UNDEFINED |
-+		       CSIDPHY_CTRL_PWRCTL_SYNCRST,
-+		       priv->phy_base + drv_data->pwrctl_offset);
-+
-+	/* set data lane num and enable clock lane */
-+	val = FIELD_PREP(CSIDPHY_CTRL_LANE_ENABLE_MASK, GENMASK(priv->config.lanes - 1, 0)) |
-+	      FIELD_PREP(CSIDPHY_CTRL_LANE_ENABLE_CK, 1) |
-+	      FIELD_PREP(CSIDPHY_CTRL_LANE_ENABLE_UNDEFINED, 1);
-+	writel(val, priv->phy_base + CSIDPHY_CTRL_LANE_ENABLE);
-+
-+	/* Reset dphy analog part */
-+	if (drv_data->pwrctl_offset >= 0)
-+		writel(CSIDPHY_CTRL_PWRCTL_UNDEFINED,
-+		       priv->phy_base + drv_data->pwrctl_offset);
-+	usleep_range(500, 1000);
-+
-+	/* Reset dphy digital part */
-+	writel(CSIDPHY_CTRL_DIG_RST_UNDEFINED,
-+	       priv->phy_base + CSIDPHY_CTRL_DIG_RST);
-+	writel(CSIDPHY_CTRL_DIG_RST_UNDEFINED + CSIDPHY_CTRL_DIG_RST_RESET,
-+	       priv->phy_base + CSIDPHY_CTRL_DIG_RST);
-+
-+	/* not into receive mode/wait stopstate */
-+	write_grf_reg(priv, GRF_DPHY_CSIPHY_FORCERXMODE, 0x0);
-+
-+	/* enable calibration */
-+	if (data_rate_mbps > 1500 && drv_data->calib_offset >= 0) {
-+		writel(CSIDPHY_CALIB_EN,
-+		       priv->phy_base + drv_data->calib_offset +
-+					CSIDPHY_CLK_CALIB_EN);
-+		for (i = 0; i < priv->config.lanes; i++)
-+			writel(CSIDPHY_CALIB_EN,
-+			       priv->phy_base + drv_data->calib_offset +
-+						CSIDPHY_LANE_CALIB_EN(i));
-+	}
-+
-+	rockchip_inno_csidphy_ths_settle(priv, priv->hsfreq,
-+					 CSIDPHY_CLK_THS_SETTLE);
-+	for (i = 0; i < priv->config.lanes; i++)
-+		rockchip_inno_csidphy_ths_settle(priv, priv->hsfreq,
-+						 CSIDPHY_LANE_THS_SETTLE(i));
-+
-+	write_grf_reg(priv, GRF_DPHY_CSIPHY_CLKLANE_EN, 0x1);
-+	write_grf_reg(priv, GRF_DPHY_CSIPHY_DATALANE_EN,
-+		      GENMASK(priv->config.lanes - 1, 0));
-+
-+	return 0;
-+}
-+
-+static int rockchip_inno_csidphy_power_off(struct phy *phy)
-+{
-+	struct rockchip_inno_csidphy *priv = phy_get_drvdata(phy);
-+	const struct dphy_drv_data *drv_data = priv->drv_data;
-+
-+	/* disable all lanes */
-+	writel(CSIDPHY_CTRL_LANE_ENABLE_UNDEFINED,
-+	       priv->phy_base + CSIDPHY_CTRL_LANE_ENABLE);
-+
-+	/* disable pll and ldo */
-+	if (drv_data->pwrctl_offset >= 0)
-+		writel(CSIDPHY_CTRL_PWRCTL_UNDEFINED |
-+		       CSIDPHY_CTRL_PWRCTL_LDO_PD |
-+		       CSIDPHY_CTRL_PWRCTL_PLL_PD,
-+		       priv->phy_base + drv_data->pwrctl_offset);
-+	usleep_range(500, 1000);
-+
-+	pm_runtime_put(priv->dev);
-+	clk_disable(priv->pclk);
-+
-+	return 0;
-+}
-+
-+static int rockchip_inno_csidphy_init(struct phy *phy)
-+{
-+	struct rockchip_inno_csidphy *priv = phy_get_drvdata(phy);
-+
-+	return clk_prepare(priv->pclk);
-+}
-+
-+static int rockchip_inno_csidphy_exit(struct phy *phy)
-+{
-+	struct rockchip_inno_csidphy *priv = phy_get_drvdata(phy);
-+
-+	clk_unprepare(priv->pclk);
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops rockchip_inno_csidphy_ops = {
-+	.power_on	= rockchip_inno_csidphy_power_on,
-+	.power_off	= rockchip_inno_csidphy_power_off,
-+	.init		= rockchip_inno_csidphy_init,
-+	.exit		= rockchip_inno_csidphy_exit,
-+	.configure	= rockchip_inno_csidphy_configure,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static const struct dphy_drv_data rk1808_mipidphy_drv_data = {
-+	.pwrctl_offset = -1,
-+	.ths_settle_offset = RK1808_CSIDPHY_CLK_WR_THS_SETTLE,
-+	.calib_offset = RK1808_CSIDPHY_CLK_CALIB_EN,
-+	.hsfreq_ranges = rk1808_mipidphy_hsfreq_ranges,
-+	.num_hsfreq_ranges = ARRAY_SIZE(rk1808_mipidphy_hsfreq_ranges),
-+	.grf_regs = rk1808_grf_dphy_regs,
-+};
-+
-+static const struct dphy_drv_data rk3326_mipidphy_drv_data = {
-+	.pwrctl_offset = CSIDPHY_CTRL_PWRCTL,
-+	.ths_settle_offset = RK3326_CSIDPHY_CLK_WR_THS_SETTLE,
-+	.calib_offset = -1,
-+	.hsfreq_ranges = rk3326_mipidphy_hsfreq_ranges,
-+	.num_hsfreq_ranges = ARRAY_SIZE(rk3326_mipidphy_hsfreq_ranges),
-+	.grf_regs = rk3326_grf_dphy_regs,
-+};
-+
-+static const struct dphy_drv_data rk3368_mipidphy_drv_data = {
-+	.pwrctl_offset = CSIDPHY_CTRL_PWRCTL,
-+	.ths_settle_offset = RK3368_CSIDPHY_CLK_WR_THS_SETTLE,
-+	.calib_offset = -1,
-+	.hsfreq_ranges = rk3368_mipidphy_hsfreq_ranges,
-+	.num_hsfreq_ranges = ARRAY_SIZE(rk3368_mipidphy_hsfreq_ranges),
-+	.grf_regs = rk3368_grf_dphy_regs,
-+};
-+
-+static const struct of_device_id rockchip_inno_csidphy_match_id[] = {
-+	{
-+		.compatible = "rockchip,px30-csi-dphy",
-+		.data = &rk3326_mipidphy_drv_data,
-+	},
-+	{
-+		.compatible = "rockchip,rk1808-csi-dphy",
-+		.data = &rk1808_mipidphy_drv_data,
-+	},
-+	{
-+		.compatible = "rockchip,rk3326-csi-dphy",
-+		.data = &rk3326_mipidphy_drv_data,
-+	},
-+	{
-+		.compatible = "rockchip,rk3368-csi-dphy",
-+		.data = &rk3368_mipidphy_drv_data,
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, rockchip_inno_csidphy_match_id);
-+
-+static int rockchip_inno_csidphy_probe(struct platform_device *pdev)
-+{
-+	struct rockchip_inno_csidphy *priv;
-+	struct device *dev = &pdev->dev;
-+	struct phy_provider *phy_provider;
-+	struct phy *phy;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->dev = dev;
-+	platform_set_drvdata(pdev, priv);
-+
-+	priv->drv_data = of_device_get_match_data(dev);
-+	if (!priv->drv_data) {
-+		dev_err(dev, "Can't find device data\n");
-+		return -ENODEV;
-+	}
-+
-+	priv->grf = syscon_regmap_lookup_by_phandle(dev->of_node,
-+						    "rockchip,grf");
-+	if (IS_ERR(priv->grf)) {
-+		dev_err(dev, "Can't find GRF syscon\n");
-+		return PTR_ERR(priv->grf);
-+	}
-+
-+	priv->phy_base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->phy_base))
-+		return PTR_ERR(priv->phy_base);
-+
-+	priv->pclk = devm_clk_get(dev, "pclk");
-+	if (IS_ERR(priv->pclk)) {
-+		dev_err(dev, "failed to get pclk\n");
-+		return PTR_ERR(priv->pclk);
-+	}
-+
-+	priv->rst = devm_reset_control_get(dev, "apb");
-+	if (IS_ERR(priv->rst)) {
-+		dev_err(dev, "failed to get system reset control\n");
-+		return PTR_ERR(priv->rst);
-+	}
-+
-+	phy = devm_phy_create(dev, NULL, &rockchip_inno_csidphy_ops);
-+	if (IS_ERR(phy)) {
-+		dev_err(dev, "failed to create phy\n");
-+		return PTR_ERR(phy);
-+	}
-+
-+	phy_set_drvdata(phy, priv);
-+
-+	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-+	if (IS_ERR(phy_provider)) {
-+		dev_err(dev, "failed to register phy provider\n");
-+		return PTR_ERR(phy_provider);
-+	}
-+
-+	pm_runtime_enable(dev);
-+
-+	return 0;
-+}
-+
-+static int rockchip_inno_csidphy_remove(struct platform_device *pdev)
-+{
-+	struct rockchip_inno_csidphy *priv = platform_get_drvdata(pdev);
-+
-+	pm_runtime_disable(priv->dev);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver rockchip_inno_csidphy_driver = {
-+	.driver = {
-+		.name = "rockchip-inno-csidphy",
-+		.of_match_table = rockchip_inno_csidphy_match_id,
-+	},
-+	.probe = rockchip_inno_csidphy_probe,
-+	.remove = rockchip_inno_csidphy_remove,
-+};
-+
-+module_platform_driver(rockchip_inno_csidphy_driver);
-+MODULE_AUTHOR("Heiko Stuebner <heiko.stuebner@theobroma-systems.com>");
-+MODULE_DESCRIPTION("Rockchip MIPI Innosilicon CSI-DPHY driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.29.2
+> This patch adds IRQ support for the virtio GPIO driver. Note that this
+> uses the irq_bus_lock/unlock() callbacks since the operations over
+> virtio can sleep.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
+>  drivers/gpio/gpio-virtio.c       | 256 ++++++++++++++++++++++++++++++-
+>  include/uapi/linux/virtio_gpio.h |  15 ++
+
+You also need to
+select GPIOLIB_IRQCHIP
+in the Kconfig entry for the gpio-virtio driver, because you make
+use of it.
+
+> +static void virtio_gpio_irq_mask(struct irq_data *d)
+> +{
+> +       struct gpio_chip *gc = irq_data_to_gpio_chip(d);
+> +       struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
+> +       struct vgpio_line *line = &vgpio->lines[d->hwirq];
+> +
+> +       line->masked = true;
+> +       line->masked_pending = true;
+> +}
+> +
+> +static void virtio_gpio_irq_unmask(struct irq_data *d)
+> +{
+> +       struct gpio_chip *gc = irq_data_to_gpio_chip(d);
+> +       struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
+> +       struct vgpio_line *line = &vgpio->lines[d->hwirq];
+> +
+> +       line->masked = false;
+> +       line->masked_pending = true;
+> +}
+
+This looks dangerous in combination with this:
+
+> +static void virtio_gpio_interrupt(struct virtqueue *vq)
+> +{
+(...)
+> +       local_irq_disable();
+> +       ret = generic_handle_irq(irq);
+> +       local_irq_enable();
+
+Nominally slow IRQs like those being marshalled over
+virtio should be nested, handle_nested_irq(irq);
+but are they? Or are they just quite slow not super slow?
+
+If a threaded IRQF_ONESHOT was requested the
+IRQ core will kick the thread and *MASK* this IRQ,
+which means it will call back to your .irq_mask() function
+and expect it to be masked from this
+point.
+
+But the IRQ will not actually be masked until you issue
+your callbacks in the .irq_bus_sync_unlock() callback
+right?
+
+So from this point until .irq_bus_sync_unlock()
+get called and actually mask the IRQ, it could be
+fired again? I suppose the IRQ handler is reentrant?
+This would violate the API.
+
+I would say that from this point and until you sync
+you need a spinlock or other locking primitive to
+stop this IRQ from fireing again, and a spinlock will
+imply local_irq_disable() so this gets really complex.
+
+I would say only using nesting IRQs or guarantee this
+some other way, one way would be to specify that
+whatever is at the other side of virtio cannot send another
+GPIO IRQ message before the last one is handled,
+so you would need to send a specific (new)
+VIRTIO_GPIO_REQ_IRQ_ACK after all other messages
+have been sent in .irq_bus_sync_unlock()
+so that the next GPIO IRQ can be dispatched after that.
+
+(Is this how messaged signalled interrupts work? No idea.
+When in doubt ask the IRQ maintainers.)
+
+Thanks,
+Linus Walleij
