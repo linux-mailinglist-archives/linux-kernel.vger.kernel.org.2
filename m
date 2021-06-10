@@ -2,101 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721133A2E2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FD73A2E31
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbhFJOb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbhFJOb0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:31:26 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD23C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:29:30 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id m21so3538944lfg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MvpsVeT4v+qs8w/vvF442+MNQiRIgnPGMMOPxB1N4UM=;
-        b=wvZenha5ehc9n1QOhCznIWzmjzi2EEB1U6vTj2YdN0geUuH5YCEuAB2bbnkmtk9gCh
-         GwzywDheeUg/o/3F/6Z3hbf8yByZHh7BcC5auAZreRHR7cMIMycf2E73NHiYf/FJjmh5
-         I/mjmj8MCDYHZC1OEQBqILFNPwBSM0sbzF/kwwuBY5eHI2ZsTx17drAvzu1Wv4EVnXKN
-         +0e9h/HkUKtu8SBpBqbTDN7q6XzPhQ+mgi+taqES7W6h/ubXnXvStFjvzJsbPFUrSCdq
-         OgPedVCcvlmPHYccxu5TeWOshsQwQBUSbo7i9fqtzuNL+FoMzO3sQ+Ge4SJEJ6X94zMs
-         rODA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MvpsVeT4v+qs8w/vvF442+MNQiRIgnPGMMOPxB1N4UM=;
-        b=i09Anm2q8CgmRwXuyGIXyj+6LClGdnCyUai8UujwLVPc6e7pzZGE2MduEJpBfnIsnw
-         SkXNsPX8LLV+R/YEzJhz/y14NvVCAyPbMT9BPtDCbOPFXDFkrRibA8vCwxfZIVkT8Sx9
-         EWc7EVZLk2brwpwXqko43EQBY2EMatveYlZKZz7JygiYuQKO761x/2vy5WG0x+RKcInD
-         +hzajN2qTrlQZXHSYIUhTqRPfaArjf2r6LMRHq2sXlwDdZjLYWwDEnAHcdlqVfLvd/kV
-         2IxWJ3/wOfzc2UiAmNPAL8AMDAOcs58lJAmdGJhOPun1dpMkYbeXdsihLmUv+upLFAkO
-         +oUA==
-X-Gm-Message-State: AOAM53146fUD/FRaJFXNmoDZh9c1hNMao8NgMslPmg4gSNQ8wPHKYO50
-        R47pA03vb409j7GmH15TYPxx2Q==
-X-Google-Smtp-Source: ABdhPJzWOzaOYro3OInn1ETscjtiKZZYjUr18zDFJq5xf6aXhyp05i1P5SUUBidd5vCSpM699dr4Rg==
-X-Received: by 2002:a05:6512:1c4:: with SMTP id f4mr2075452lfp.95.1623335368791;
-        Thu, 10 Jun 2021 07:29:28 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id y17sm315585lfy.14.2021.06.10.07.29.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 07:29:27 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 945741027EE; Thu, 10 Jun 2021 17:29:43 +0300 (+03)
-Date:   Thu, 10 Jun 2021 17:29:43 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v1 03/11] x86/cpufeatures: Add TDX Guest CPU feature
-Message-ID: <20210610142943.uohw6nzpip5yi4no@box.shutemov.name>
-References: <20210602022136.2186759-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210602022136.2186759-4-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YMIFVh9WpDiUuRsa@zn.tnic>
+        id S231435AbhFJOb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:31:56 -0400
+Received: from mga04.intel.com ([192.55.52.120]:11728 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230406AbhFJObz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:31:55 -0400
+IronPort-SDR: dnnxobe61lALNh83QG0iBuvBELJMkdTxUSVTF5eGSG5KTGG4SKJ43vHekrfoVXX1YhzRaIopJ8
+ tK70qnkgdBLQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="203461898"
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="203461898"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 07:29:58 -0700
+IronPort-SDR: CqbxeVTzHSnV4mW82zmiqTzAQw4SyA7B/76zpUXzQnUE6QC1QDpmbU9GAm7vCNgeujLfxXY/iE
+ sK0JzxoJquPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="441234105"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga007.jf.intel.com with SMTP; 10 Jun 2021 07:29:53 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 10 Jun 2021 17:29:52 +0300
+Date:   Thu, 10 Jun 2021 17:29:52 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
+        sunpeng.li@amd.com, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, rodrigo.vivi@intel.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+Subject: Re: [PATCH 4/4] drm/i915/display: Add handling for new "active bpc"
+ property
+Message-ID: <YMIh4G1CY8EYVEuI@intel.com>
+References: <20210604171723.10276-1-wse@tuxedocomputers.com>
+ <20210604171723.10276-5-wse@tuxedocomputers.com>
+ <YLpjTMegcjT22vQE@intel.com>
+ <bd6a27e7-3ae5-ecb1-2fef-e5f8c1b6a2ac@tuxedocomputers.com>
+ <96d10ed0-f8a2-1d0b-62dd-9d6173722506@tuxedocomputers.com>
+ <210b4108-74a7-bf42-eab8-b98239ce3f1a@tuxedocomputers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YMIFVh9WpDiUuRsa@zn.tnic>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <210b4108-74a7-bf42-eab8-b98239ce3f1a@tuxedocomputers.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 02:28:06PM +0200, Borislav Petkov wrote:
-> > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> > index ac37830ae941..dddc3a27cc8a 100644
-> > --- a/arch/x86/include/asm/cpufeatures.h
-> > +++ b/arch/x86/include/asm/cpufeatures.h
-> > @@ -238,6 +238,7 @@
-> >  #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
-> >  #define X86_FEATURE_PVUNLOCK		( 8*32+20) /* "" PV unlock function */
-> >  #define X86_FEATURE_VCPUPREEMPT		( 8*32+21) /* "" PV vcpu_is_preempted function */
-> > +#define X86_FEATURE_TDX_GUEST		( 8*32+22) /* Trusted Domain Extensions Guest */
+On Tue, Jun 08, 2021 at 07:19:31PM +0200, Werner Sembach wrote:
 > 
-> What's the name of the feature bit? "TDX guest"? Why not only
-> X86_FEATURE_TDX and then you can have "tdx" in cpuinfo?
+> Am 07.06.21 um 22:33 schrieb Werner Sembach:
+> > Am 07.06.21 um 08:47 schrieb Werner Sembach:
+> >>
+> >> Am 04.06.21 um 19:30 schrieb Ville Syrjälä:
+> >>> On Fri, Jun 04, 2021 at 07:17:23PM +0200, Werner Sembach wrote:
+> >>>> This commits implements the "active bpc" drm property for the Intel 
+> >>>> GPU driver.
+> >>>>
+> >>>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> >>>> ---
+> >>>>   drivers/gpu/drm/i915/display/intel_display.c | 13 +++++++++++++
+> >>>>   drivers/gpu/drm/i915/display/intel_dp.c      |  8 ++++++--
+> >>>>   drivers/gpu/drm/i915/display/intel_dp_mst.c  |  4 +++-
+> >>>>   drivers/gpu/drm/i915/display/intel_hdmi.c    |  4 +++-
+> >>>>   4 files changed, 25 insertions(+), 4 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/gpu/drm/i915/display/intel_display.c 
+> >>>> b/drivers/gpu/drm/i915/display/intel_display.c
+> >>>> index 64e9107d70f7..f7898d9d7438 100644
+> >>>> --- a/drivers/gpu/drm/i915/display/intel_display.c
+> >>>> +++ b/drivers/gpu/drm/i915/display/intel_display.c
+> >>>> @@ -10164,6 +10164,8 @@ static void intel_atomic_commit_tail(struct 
+> >>>> intel_atomic_state *state)
+> >>>>       struct drm_i915_private *dev_priv = to_i915(dev);
+> >>>>       struct intel_crtc_state *new_crtc_state, *old_crtc_state;
+> >>>>       struct intel_crtc *crtc;
+> >>>> +    struct drm_connector *connector;
+> >>>> +    struct drm_connector_state *new_conn_state;
+> >>>>       u64 put_domains[I915_MAX_PIPES] = {};
+> >>>>       intel_wakeref_t wakeref = 0;
+> >>>>       int i;
+> >>>> @@ -10324,6 +10326,17 @@ static void 
+> >>>> intel_atomic_commit_tail(struct intel_atomic_state *state)
+> >>>>       }
+> >>>>       intel_runtime_pm_put(&dev_priv->runtime_pm, state->wakeref);
+> >>>>   +    /* Extract information from crtc to communicate it to 
+> >>>> userspace as connector properties */
+> >>>> +    for_each_new_connector_in_state(&state->base, connector, 
+> >>>> new_conn_state, i) {
+> >>>> +        struct drm_crtc *crtc = new_conn_state->crtc;
+> >>>> +        if (crtc) {
+> >>>> +            new_crtc_state = 
+> >>>> to_intel_crtc_state(drm_atomic_get_new_crtc_state(&state->base, 
+> >>>> crtc));
+> >>> intel_atomic_get_new_crtc_state()
+> >> Thanks, will use that.
+> >>>
+> >>>> + new_conn_state->active_bpc = new_crtc_state->pipe_bpp / 3;
+> >>>> +        }
+> >>>> +        else
+> >>>> +            new_conn_state->active_bpc = 0;
+> >>>> +    }
+> >>> This also seems too late. I think the whole thing should be
+> >>> done somewhere around the normal swap_state() stuff.
+> >> Ok, will look into it.
+> > So I tried to put it in intel_atomic_commit() after 
+> > drm_atomic_helper_swap_state() and before 
+> > INIT_WORK(&state->base.commit_work, intel_atomic_commit_work) (which 
+> > creates a worker for intel_atomic_commit_tail), but somewhere in 
+> > between, the connector_state seems to change: The bpc written with the 
+> > for_each_new_connector_in_state() loop, gets discarded.
+> 
+> This was not the problem. Setting the drm property immutable made it 
+> (also?) immutable from the driver context, which I didn't test separately.
+> 
+> Removed the immutable again and moved the loop.
 
-No, "tdx" is host feature. It is part TDX host enabling. This feature
-indicates that kernel runs within TDX guest and named accordingly.
+Immutable props are special. See __drm_object_property_get_value().
 
 -- 
- Kirill A. Shutemov
+Ville Syrjälä
+Intel
