@@ -2,105 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F24C3A31F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E943A31F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhFJRWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhFJRWr (ORCPT
+        id S230272AbhFJRX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:23:56 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:45010 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhFJRXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:22:47 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CEEC061574;
-        Thu, 10 Jun 2021 10:20:37 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso404222otu.10;
-        Thu, 10 Jun 2021 10:20:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g6SU8s5JZXBpJRY7xHwXt52gkhZm/7vIqjpkQlZi7O0=;
-        b=XskWsx9d/db0Cvo+2d6zFcITph7oWit0sJgLFcCJ366DC2XAxdjdrj031Idd1JG0g9
-         8HVfEijZ9TBI0p5y9rJDU8wI/tTt3iN55nxQSwkWdwoNWWSxlrDLe/5C5IQw6Ghbafj2
-         ZtjbvvcUflV4s/k2UOcjvgl63dPTj7/dCNv+25EbcHciiHbuaPGTa6F84d0Nt6W35X20
-         5r1fJJktMsh+4dyxyG/LTWX/n9F2Qh5fwR/XN/Hv5lx8+nj7WveBkyia/PcKOcyMZOjn
-         WC4kRyMGKNkVfFKBnfJ5i1kQer+4mEOozAZMemLnlsiyYuwwSpP2gYgUXDeLF+TPCiaa
-         I5Ig==
+        Thu, 10 Jun 2021 13:23:54 -0400
+Received: by mail-ot1-f41.google.com with SMTP id q5-20020a9d66450000b02903f18d65089fso403495otm.11;
+        Thu, 10 Jun 2021 10:21:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=g6SU8s5JZXBpJRY7xHwXt52gkhZm/7vIqjpkQlZi7O0=;
-        b=n1YKHNmGZ4azIhwnVev+Wwu9ScQbh7S251DbuXxv2VHqRw5W5cfx0hDXUoyqipuwH1
-         tQ9wPRWtuSgnCwdwbS4z206nNqQ2PXYSG396Jp4XBleAWI+6WM8dcddmKfFmQ0owWk4v
-         4iBuhblklhRZ2XfZw+/y3U7svLBDZfWADQ07m17oYuQdrejIRdRg/A5rJSDJzN6cbe/Y
-         hQRSiJX+Zn1N2bgwmJsisWY7Akyzeajip4aBMq1JO1ln1S5PIk5hGvrPcVIhb/k6jRYv
-         sOiKCJ/RotSEBws4tw21j7N1lCoE+6Skz+DY/f41Io7o+k3WmSsqd5EGcTHbOu4Qu5VN
-         lztw==
-X-Gm-Message-State: AOAM5306iELtejkzYP18Rn8N56cJavoR82Gpzs9yZrHTYFv90+7gm3Q2
-        zJdVXCRG/Chmx0cGxSB5a6Y=
-X-Google-Smtp-Source: ABdhPJwwYHm+SgYEfCq2WkycRNl6JVPdshm4tyzMX1ooyqkhQpHuvr1tl5O15Ig2i59bbURiL2Bkzg==
-X-Received: by 2002:a9d:7282:: with SMTP id t2mr3382022otj.288.1623345636778;
-        Thu, 10 Jun 2021 10:20:36 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o2sm634382oom.26.2021.06.10.10.20.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ifnPsB6wQoNjNoGIoOZ3f4syykDwHdUi4l5zc8NJ55Y=;
+        b=O5HFamT9x37XvfLsiphsPUpX1WPPPe1DsNl18GdgX9H4Qcjxo43yF4JUgcnR0xrrDm
+         BVQqraWlD8DA6icCi/2dFTRoSHjZJvg95Pj8vIQBEiUEgUCYfGEmkCBlQN8T4Hocp6/S
+         iAp9/sKBixxmbvmKYS22nZBRmjzKmOvjBRJ+hUuWv/0Ktxj/106RRHVidEWfkSpi7tXz
+         xTaZ+1gLxBQOG1VTdBCT3WrgdvHhNy9CPCFKY5Oa0Cn+aT2gRth7KVpaVMn+UtAdpP8j
+         Em4Maet6xVhbTZHku27k/XhEgpv7mb7ThqNWunhPyPjQcB04/pgP3X+CPBzEQneHNO6L
+         MJMw==
+X-Gm-Message-State: AOAM533E8kDneaMQW6eJaAFVyl5dvq/1eVyZcB6djpOYhoM/7VMZ1AqY
+        yUNPY7ReDufZEj3t3gOL9w==
+X-Google-Smtp-Source: ABdhPJwZ2mnbD6nRpRtHSzRyehAprYA+2uqAJimI3xSlzSOJtyOGi9mT5r/GmrvQZuEkT1ji4imRAg==
+X-Received: by 2002:a05:6830:43:: with SMTP id d3mr3263268otp.118.1623345704552;
+        Thu, 10 Jun 2021 10:21:44 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.99.113])
+        by smtp.gmail.com with ESMTPSA id u1sm629502ooo.18.2021.06.10.10.21.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 10:20:36 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 10 Jun 2021 10:20:35 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Alex Ghiti <alex@ghiti.fr>, Palmer Dabbelt <palmer@dabbelt.com>,
-        corbet@lwn.net, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
-        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
-        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v5 1/3] riscv: Move kernel mapping outside of linear
- mapping
-Message-ID: <20210610172035.GA3862815@roeck-us.net>
-References: <mhng-90fff6bd-5a70-4927-98c1-a515a7448e71@palmerdabbelt-glaptop>
- <76353fc0-f734-db47-0d0c-f0f379763aa0@ghiti.fr>
- <a58c4616-572f-4a0b-2ce9-fd00735843be@ghiti.fr>
- <7b647da1-b3aa-287f-7ca8-3b44c5661cb8@ghiti.fr>
- <87fsxphdx0.fsf@igel.home>
- <20210610171025.GA3861769@roeck-us.net>
- <87bl8dhcfp.fsf@igel.home>
+        Thu, 10 Jun 2021 10:21:43 -0700 (PDT)
+Received: (nullmailer pid 2054170 invoked by uid 1000);
+        Thu, 10 Jun 2021 17:21:41 -0000
+Date:   Thu, 10 Jun 2021 12:21:41 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: rtc: zynqmp: convert bindings to YAML
+Message-ID: <20210610172141.GA1972573@robh.at.kernel.org>
+References: <20210602000918.779983-1-iwamatsu@nigauri.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87bl8dhcfp.fsf@igel.home>
+In-Reply-To: <20210602000918.779983-1-iwamatsu@nigauri.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 07:11:38PM +0200, Andreas Schwab wrote:
-> On Jun 10 2021, Guenter Roeck wrote:
+On Wed, Jun 02, 2021 at 09:09:18AM +0900, Nobuhiro Iwamatsu wrote:
+> Convert Real Time Clock for Xilinx Zynq MPSoC SoC bindings documentation
+> to YAML schemas.
+> And this renamed the file to compatible string of DT.
 > 
-> > On Thu, Jun 10, 2021 at 06:39:39PM +0200, Andreas Schwab wrote:
-> >> On Apr 18 2021, Alex Ghiti wrote:
-> >> 
-> >> > To sum up, there are 3 patches that fix this series:
-> >> >
-> >> > https://patchwork.kernel.org/project/linux-riscv/patch/20210415110426.2238-1-alex@ghiti.fr/
-> >> >
-> >> > https://patchwork.kernel.org/project/linux-riscv/patch/20210417172159.32085-1-alex@ghiti.fr/
-> >> >
-> >> > https://patchwork.kernel.org/project/linux-riscv/patch/20210418112856.15078-1-alex@ghiti.fr/
-> >> 
-> >> Has this been fixed yet?  Booting is still broken here.
-> >> 
-> >
-> > In -next ?
+> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+> ---
 > 
-> No, -rc5.
+> v2: Fix warning with DT_CHECKER_FLAGS=-m
 > 
-Booting v5.13-rc5 in qemu works for me for riscv32 and riscv64,
-but of course that doesn't mean much. Just wondering, not knowing
-the context - did you provide details ?
+>  .../bindings/rtc/xlnx,zynqmp-rtc.yaml         | 61 +++++++++++++++++++
+>  .../devicetree/bindings/rtc/xlnx-rtc.txt      | 25 --------
+>  2 files changed, 61 insertions(+), 25 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/rtc/xlnx-rtc.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml b/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
+> new file mode 100644
+> index 00000000000000..c205cb86ef00be
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rtc/xlnx,zynqmp-rtc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Xilinx Zynq Ultrascale+ MPSoC Real Time Clock
+> +
+> +description: |
 
-Thanks,
-Guenter
+Don't need '|'
+
+> +  RTC controller for the Xilinx Zynq MPSoC Real Time Clock.
+> +  This separates IRQ lines for seconds and alarm.
+
+The RTC controller has separate IRQ...
+
+> +
+> +maintainers:
+> +  - Michal Simek <michal.simek@xilinx.com>
+> +
+> +allOf:
+> +  - $ref: rtc.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: xlnx,zynqmp-rtc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    minItems: 2
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: alarm
+> +      - const: sec
+> +
+> +  calibration:
+> +    description: |
+> +      calibration value for 1 sec period which will
+> +      be programmed directly to calibration register.
+
+Needs a type $ref.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupt-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    soc {
+> +      #address-cells = <2>;
+> +      #size-cells = <2>;
+> +
+> +      rtc: rtc@ffa60000 {
+> +        compatible = "xlnx,zynqmp-rtc";
+> +        reg = <0x0 0xffa60000 0x0 0x100>;
+> +        interrupt-parent = <&gic>;
+> +        interrupts = <0 26 4>, <0 27 4>;
+> +        interrupt-names = "alarm", "sec";
+> +        calibration = <0x198233>;
+> +      };
+> +    };
