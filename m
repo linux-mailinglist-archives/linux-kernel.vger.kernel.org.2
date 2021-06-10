@@ -2,121 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5643A24A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348843A24AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFJGp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhFJGp0 (ORCPT
+        id S230151AbhFJGps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:45:48 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39863 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230130AbhFJGpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:45:26 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D52C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 23:43:31 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id k7so3046350pjf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:43:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aUPABG3O3CDDu1dQnUzHVQ+UKKBGPvf/5NlGon0kreI=;
-        b=MLzV/387AlSC2uS+7or1pUo9owMnkGdTKAI/nKO++4Q6BS+30HOwLJsJi2IxkeFfqi
-         w23uyYrwS5QCmvEm9MNjJCKNaDoNORT7Tz42fCTwRWr01yw3aqyJna2BidJpJcYiXv/0
-         Li8rHcdpM4h66iuMfHmpgo3PT8kTl8Oppqqu+SmLzWG2hZ7PzUiPbg5R1iFomZtTeOSm
-         1ClQNO03jsG9AWmXitVJnW0Ii9xZuXyGe5cfaBrp/qKfow+UvNwoV1F+gZRGvy9dzvwV
-         +g69QVJsjwu2Kq3zUdFWZFL/s6Ux8ltb5N25fczaSQD2HqmoKA4eW/M02zJm2K8sT3e6
-         +x0g==
+        Thu, 10 Jun 2021 02:45:46 -0400
+Received: from mail-wm1-f69.google.com ([209.85.128.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lrEPu-0005GA-70
+        for linux-kernel@vger.kernel.org; Thu, 10 Jun 2021 06:43:50 +0000
+Received: by mail-wm1-f69.google.com with SMTP id z25-20020a1c4c190000b029019f15b0657dso2662949wmf.8
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:43:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aUPABG3O3CDDu1dQnUzHVQ+UKKBGPvf/5NlGon0kreI=;
-        b=Gjnd0uAcKxQvRVnyNytXbeiXGVhZfBkJzKuouwpU9pPQIa9vsdYxDIIK5BP+BxwsQs
-         6FnGYAGvOJuDdjeJZ9zxOhG+yn0SlH2Eqr2G95FRf+A6B3+Wubt/rKrbjDlLmEu6eP5P
-         EmmPW3f9qS+erteiHyDNBgr74+yz/P5Lhxr6rXy7CjZseXCsjFkbxOUjsg//7uSQys/V
-         DFzvxJTnvygacsrrE3L4LpMd0FJBVhj4u1ebnEqeB/+qxUNZpXRkM16rbRhro6NgWQil
-         FHtzd1j/W71FQ4YIHEQL7mdw4rD4rBAZHox58KXYFqxwlqR5TnFaE7HHWKW8a1yOg1Yf
-         LmAw==
-X-Gm-Message-State: AOAM532VEISm9HswXcDFEWroKJcYbtDQWuDZzEG6DSPozGV8M+7JNFmi
-        FAcQ+DxmgzlmYHNc4sPKDrrbQKsyz3migl6rK/5+qQ==
-X-Google-Smtp-Source: ABdhPJzE1OTsOe1Tmv1luM+6FViDqEQT6z+Eg005Ae+ht3Zm7BUL874r5HEauLN7n3KjkzIOOj+R6LKyPskfp+cjn60=
-X-Received: by 2002:a17:90a:fd15:: with SMTP id cv21mr1817207pjb.46.1623307410554;
- Wed, 09 Jun 2021 23:43:30 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1Cnxc9a5Hbs5GVecJ6riph8QcEVy6pKQKSj3ZxVzabg=;
+        b=qCt8gzEPMPThIb6bS/1exoYMgyAmc1mJpR6H6sh32mXvQFGpG0ZanABUbw2MK2bN97
+         hFBB8LEAlkJhziWHenmD20wGhll767JXwehXESqKSwtEqoVYzOKynwPM47xNpMqKTOWl
+         kGF2BJQ8garpkbUb+ELKV0uqBEeySpuqVOOKRw+iTOx7bJOiYnBWBjGh6n6SYajh7Hge
+         E4jqn73jgMRxIH/6lcht8qK1uMp0Pg79ccGZSKgt+/f4ufm7a6b33xcIU3LCTCI0tXma
+         Micj0YPnkuIdkZjeP7Yg0O2ifiVXqJJTnLn4/X6j9ly15/XeHm2f3PBM5GE4I22hi0RP
+         OTWg==
+X-Gm-Message-State: AOAM533OpTM+JGkkx7MuHNDENu4jHV83gYFjCzmmUlF/8+tWmrwqCjOI
+        m/9ioyzJNok1WreYZlqDHPcvDa0HmOHgsNfjddcENLeVoNuejdNMhrx9IT9HAPPJVx8Gya7soaO
+        M2zb/6MP4UPP0r21cLGE6dVm2sC6bzudD9ijzgvmnQw==
+X-Received: by 2002:a5d:648a:: with SMTP id o10mr3513548wri.274.1623307429731;
+        Wed, 09 Jun 2021 23:43:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxOOjeybgNtep8FfbNLzY/mE05daXRXnIof6P9YIUDD5UQ85p+2PLukrf344jAtP/7qei+svw==
+X-Received: by 2002:a5d:648a:: with SMTP id o10mr3513535wri.274.1623307429594;
+        Wed, 09 Jun 2021 23:43:49 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id c7sm2555372wrc.42.2021.06.09.23.43.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 23:43:49 -0700 (PDT)
+Subject: Re: [PATCH 1/2] memory: tegra: Add missing dependencies
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210609112806.3565057-1-thierry.reding@gmail.com>
+ <20210609112806.3565057-2-thierry.reding@gmail.com>
+ <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
+ <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
+ <a3110fbd-c4af-0317-5a6d-1f780f1dac91@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <1400979c-c7a7-9618-1168-70185ed10546@canonical.com>
+Date:   Thu, 10 Jun 2021 08:43:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210528161552.654907-1-leo.yan@linaro.org>
-In-Reply-To: <20210528161552.654907-1-leo.yan@linaro.org>
-From:   Denis Nikitin <denik@google.com>
-Date:   Wed, 9 Jun 2021 23:43:15 -0700
-Message-ID: <CAOYpmdEvkSZaei-_SWrUC4YJ7rOUOoOaxM7+qc6dw=P+b_ivgA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] coresight: Fix for snapshot mode
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a3110fbd-c4af-0317-5a6d-1f780f1dac91@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+On 09/06/2021 18:57, Dmitry Osipenko wrote:
+> 09.06.2021 16:19, Krzysztof Kozlowski пишет:
+>> On 09/06/2021 13:58, Dmitry Osipenko wrote:
+>>> 09.06.2021 14:28, Thierry Reding пишет:
+>>>> From: Thierry Reding <treding@nvidia.com>
+>>>>
+>>>> When enabling the COMPILE_TEST Kconfig option, the Tegra memory
+>>>> controller can be built without ARCH_TEGRA being selected. However, the
+>>>> driver implicitly depends on some symbols pulled in via ARCH_TEGRA,
+>>>> which causes the build to break.
+>>>>
+>>>> Add explicit dependencies for OF_EARLY_FLATTREE and OF_RESERVED_MEM to
+>>>> the Tegra MC Kconfig option to make sure they are selected even if
+>>>> ARCH_TEGRA is not.
+>>>>
+>>>> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>>> Signed-off-by: Thierry Reding <treding@nvidia.com>
+>>>> ---
+>>>>  drivers/memory/tegra/Kconfig | 2 ++
+>>>>  1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconfig
+>>>> index f9bae36c03a3..ecfb071fc4f4 100644
+>>>> --- a/drivers/memory/tegra/Kconfig
+>>>> +++ b/drivers/memory/tegra/Kconfig
+>>>> @@ -48,6 +48,8 @@ config TEGRA124_EMC
+>>>>  config TEGRA210_EMC_TABLE
+>>>>  	bool
+>>>>  	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
+>>>> +	select OF_EARLY_FLATTREE
+>>>> +	select OF_RESERVED_MEM
+>>>>  
+>>>>  config TEGRA210_EMC
+>>>>  	tristate "NVIDIA Tegra210 External Memory Controller driver"
+>>>>
+>>>
+>>> Will this work if CONFIG_OF is disabled?
+>>
+>> Yeah, good question. That's why I propose "depends on". No issues with
+>> unmet or circular dependencies.
+> 
+> What about to add stub for RESERVEDMEM_OF_DECLARE() + CONFIG_OF_RESERVED_MEM=n?
+> 
+> diff --git a/include/linux/of.h b/include/linux/of.h
+> index d8db8d3592fd..9c2e71e202d1 100644
+> --- a/include/linux/of.h
+> +++ b/include/linux/of.h
+> @@ -1329,6 +1329,12 @@ static inline int of_get_available_child_count(const struct device_node *np)
+>  	return num;
+>  }
+>  
+> +#define _OF_DECLARE_STUB(table, name, compat, fn, fn_type)		\
+> +	static const struct of_device_id __of_table_##name		\
+> +		__attribute__((unused))					\
+> +		 = { .compatible = compat,				\
+> +		     .data = (fn == (fn_type)NULL) ? fn : fn }
+> +
+>  #if defined(CONFIG_OF) && !defined(MODULE)
+>  #define _OF_DECLARE(table, name, compat, fn, fn_type)			\
+>  	static const struct of_device_id __of_table_##name		\
+> @@ -1338,10 +1344,7 @@ static inline int of_get_available_child_count(const struct device_node *np)
+>  		     .data = (fn == (fn_type)NULL) ? fn : fn  }
+>  #else
+>  #define _OF_DECLARE(table, name, compat, fn, fn_type)			\
+> -	static const struct of_device_id __of_table_##name		\
+> -		__attribute__((unused))					\
+> -		 = { .compatible = compat,				\
+> -		     .data = (fn == (fn_type)NULL) ? fn : fn }
+> +	_OF_DECLARE_STUB(table, name, compat, fn, fn_type)
+>  #endif
+>  
+>  typedef int (*of_init_fn_2)(struct device_node *, struct device_node *);
+> diff --git a/include/linux/of_reserved_mem.h b/include/linux/of_reserved_mem.h
+> index 76e4a0fffba4..4de2a24cadc9 100644
+> --- a/include/linux/of_reserved_mem.h
+> +++ b/include/linux/of_reserved_mem.h
+> @@ -27,11 +27,11 @@ struct reserved_mem_ops {
+>  
+>  typedef int (*reservedmem_of_init_fn)(struct reserved_mem *rmem);
+>  
+> +#ifdef CONFIG_OF_RESERVED_MEM
+> +
+>  #define RESERVEDMEM_OF_DECLARE(name, compat, init)			\
+>  	_OF_DECLARE(reservedmem, name, compat, init, reservedmem_of_init_fn)
+>  
+> -#ifdef CONFIG_OF_RESERVED_MEM
+> -
+>  int of_reserved_mem_device_init_by_idx(struct device *dev,
+>  				       struct device_node *np, int idx);
+>  int of_reserved_mem_device_init_by_name(struct device *dev,
+> @@ -41,6 +41,10 @@ void of_reserved_mem_device_release(struct device *dev);
+>  
+>  struct reserved_mem *of_reserved_mem_lookup(struct device_node *np);
+>  #else
+> +
+> +#define RESERVEDMEM_OF_DECLARE(name, compat, init)			\
+> +	_OF_DECLARE_STUB(reservedmem, name, compat, init, reservedmem_of_init_fn)
+> +
+>  static inline int of_reserved_mem_device_init_by_idx(struct device *dev,
+>  					struct device_node *np, int idx)
+>  {
 
-On Fri, May 28, 2021 at 9:16 AM Leo Yan <leo.yan@linaro.org> wrote:
->
-> This patch series is to correct the pointer usages for the snapshot
-> mode.
->
-> Patch 01 allows the AUX trace in the free run mode and only syncs the
-> AUX ring buffer when taking snapshot.
->
-> Patch 02 is to polish code, it removes the redundant header maintained
-> in tmc-etr driver and directly uses pointer perf_output_handle::head.
->
-> Patch 03 removes the callback cs_etm_find_snapshot() which wrongly
-> calculates the buffer headers; we can simply use the perf's common
-> function __auxtrace_mmap__read() for headers calculation.
->
-> This patch can be cleanly applied on the mainline kernel with:
->
->   commit 97e5bf604b7a ("Merge branch 'for-5.13-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu")
->
-> And it has been tested on Arm64 Juno board.
+The stubs might be good idea anyway, but the driver explicitly needs for
+runtime working reservedmem, so it should select it.
 
-I have verified the patches on Chrome OS Trogdor device.
-They fixed the problem discussed in
-https://lists.linaro.org/pipermail/coresight/2021-May/006411.html.
-
-Tested-by: Denis Nikitin <denik@chromium.org>
-
-Thanks,
-Denis
-
->
->
-> Leo Yan (3):
->   coresight: etm-perf: Correct buffer syncing for snapshot
->   coresight: tmc-etr: Use perf_output_handle::head for AUX ring buffer
->   perf cs-etm: Remove callback cs_etm_find_snapshot()
->
->  .../hwtracing/coresight/coresight-etm-perf.c  |  30 +++-
->  .../hwtracing/coresight/coresight-etm-perf.h  |   2 +
->  .../hwtracing/coresight/coresight-tmc-etr.c   |  10 +-
->  tools/perf/arch/arm/util/cs-etm.c             | 133 ------------------
->  4 files changed, 32 insertions(+), 143 deletions(-)
->
-> --
-> 2.25.1
->
+Best regards,
+Krzysztof
