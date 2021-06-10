@@ -2,141 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12E63A230D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 06:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA53C3A2312
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 06:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbhFJEG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 00:06:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40728 "EHLO mail.kernel.org"
+        id S230059AbhFJEIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 00:08:02 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55578 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229592AbhFJEGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 00:06:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB2D2613FF;
-        Thu, 10 Jun 2021 04:04:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623297869;
-        bh=gp8DSf2esejDzMXehJatTxOWzp66b5XoGY3UTIHCbD8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=AZmcaE+0HKjr2RD9KRGy4kZ97dxs/cgNCvnqI1q9uOmfdb1Rj2q3RPh84QE/mct9J
-         wx4/AIzg8GsqluYOOlMEfzfDGFCYIgieeqsMET8dR4vq+6pVKLHzXBK4dV05+c896U
-         SxMr26o02Arm84iU8LcbESBixMhb+hezwxvM8OBfes3NoRWP6kObdcdx1vFuVVa5cl
-         vZgHwdXMprNIznRLN4xjppEvlU0phebLYC2UgXyMN+8ToASg3uI3Q3dqY80WyE9B+x
-         nWWHqnGEkH/BM0c1IMSxTYwXaSxGyAKO486tR26hmP/ibsgQLo4VwVPmclLr1jBvfD
-         yU9BrsH3g0XIA==
-Date:   Wed, 9 Jun 2021 23:04:27 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     Punit Agrawal <punitagrawal@gmail.com>, robh+dt@kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, alexandru.elisei@arm.com, wqu@suse.com,
-        robin.murphy@arm.com, pgwipeout@gmail.com, ardb@kernel.org,
-        briannorris@chromium.org, shawn.lin@rock-chips.com
-Subject: Re: [PATCH v3 2/4] PCI: of: Relax the condition for warning about
- non-prefetchable memory aperture size
-Message-ID: <20210610040427.GA2696540@bjorn-Precision-5520>
+        id S229529AbhFJEIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 00:08:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=KjuI8jCqUcyAfx/5RiZL0Drr0Q511dbsI0/UHVUJCP8=; b=rO4X1G0tCX5Sohmhmo7qnuwcHQ
+        IQbYkL+40DJiuLX/GRDJgHGB48j2wcUgEdNXw/d/YSzTMVWHKJEn8F7VKZfBMZswvdUAhvvZU/Suj
+        EsqUsc3DlYkO/NY03/M4krmZ5RK9hv0cskiEZU7pwSzFJpRpzVrjmztGVXwz03dgsvjI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lrBx6-008bPL-He; Thu, 10 Jun 2021 06:05:56 +0200
+Date:   Thu, 10 Jun 2021 06:05:56 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH net-next 1/1] net: phy: probe for C45 PHYs that return
+ PHY ID of zero in C22 space
+Message-ID: <YMGPpIH0OXNS9TuA@lunn.ch>
+References: <20210607023645.2958840-1-vee.khee.wong@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ac6bf3c8-fe8e-5897-b225-699a7c46a818@nvidia.com>
+In-Reply-To: <20210607023645.2958840-1-vee.khee.wong@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 12:36:08AM +0530, Vidya Sagar wrote:
-> On 6/7/2021 4:58 PM, Punit Agrawal wrote:
-> > 
-> > Commit fede8526cc48 ("PCI: of: Warn if non-prefetchable memory
-> > aperture size is > 32-bit") introduced a warning for non-prefetchable
-> > resources that need more than 32bits to resolve. It turns out that the
-> > check is too restrictive and should be applicable to only resources
-> > that are limited to host bridge windows that don't have the ability to
-> > map 64-bit address space.
->
-> I think the host bridge windows having the ability to map 64-bit address
-> space is different from restricting the non-prefetchable memory aperture
-> size to 32-bit.
+On Mon, Jun 07, 2021 at 10:36:45AM +0800, Wong Vee Khee wrote:
+> PHY devices such as the Marvell Alaska 88E2110 does not return a valid
+> PHY ID when probed using Clause-22. The current implementation treats
+> PHY ID of zero as a non-error and valid PHY ID, and causing the PHY
+> device failed to bind to the Marvell driver.
+> 
+> For such devices, we do an additional probe in the Clause-45 space,
+> if a valid PHY ID is returned, we then proceed to attach the PHY
+> device to the matching PHY ID driver.
+> 
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
 
-> Whether the host bridge uses internal translations or not to map the
-> non-prefetchable resources to 64-bit space, the size needs to be programmed
-> in the host bridge's 'Memory Limit Register (Offset 22h)' which can
-> represent sizes only fit into 32-bits.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-> Host bridges having the ability to map 64-bit address spaces gives
-> flexibility to utilize the vast 64-bit space for the (restrictive)
-> non-prefetchable memory (i.e. mapping non-prefetchable BARs of endpoints to
-> the 64-bit space in CPU's view) and get it translated internally and put a
-> 32-bit address on the PCIe bus finally.
-
-The vastness of the 64-bit space in the CPU view only helps with
-non-prefetchable memory if you have multiple host bridges with
-different CPU-to-PCI translations.  Each root bus can only carve up
-4GB of PCI memory space for use by its non-prefetchable memory
-windows.
-
-Of course, if we're willing to give up the performance, there's
-nothing to prevent us from using non-prefetchable space for
-*prefetchable* resources, as in my example below.
-
-I think the fede8526cc48 commit log is incorrect, or at least
-incomplete:
-
-  As per PCIe spec r5.0, sec 7.5.1.3.8 only 32-bit BAR registers are defined
-  for non-prefetchable memory and hence a warning should be reported when
-  the size of them go beyond 32-bits.
-
-7.5.1.3.8 is talking about non-prefetchable PCI-to-PCI bridge windows,
-not BARs.  AFAIK, 64-bit BARs may be non-prefetchable.  The warning is
-in pci_parse_request_of_pci_ranges(), which isn't looking at
-PCI-to-PCI bridge windows; it's looking at PCI host bridge windows.
-It's legal for a host bridge to have only non-prefetchable windows,
-and prefetchable PCI BARs can be placed in them.
-
-For example, we could have the following:
-
-  pci_bus 0000:00: root bus resource [mem 0x80000000-0x1_ffffffff] (6GB)
-  pci 0000:00:00.0: PCI bridge to [bus 01-7f]
-  pci 0000:00:00.0:   bridge window [mem 0x80000000-0xbfffffff] (1GB)
-  pci 0000:00:00.0:   bridge window [mem 0x1_00000000-0x1_7fffffff 64bit pref] (2GB)
-  pci 0000:00:00.1: PCI bridge to [bus 80-ff]
-  pci 0000:00:00.1:   bridge window [mem 0xc0000000-0xffffffff] (1GB)
-  pci 0000:00:00.1:   bridge window [mem 0x1_80000000-0x1_ffffffff 64bit pref] (2GB)
-
-Here the host bridge window is 6GB and is not prefetchable.  The
-PCI-to-PCI bridge non-prefetchable windows are 1GB each and the bases
-and limits fit in 32 bits.  The prefetchable windows are 2GB each, and
-we're allowed but not required to put these in prefetchable host
-bridge windows.
-
-So I'm not convinced this warning is valid to begin with.  It may be
-that this host bridge configuration isn't optimal, and we might want
-an informational message, but I think it's *legal*.
-
-> > Relax the condition to only warn when the resource size requires >
-> > 32-bits and doesn't allow mapping to 64-bit addresses.
-> > 
-> > Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com
-> > Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-> > Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > Cc: Vidya Sagar <vidyas@nvidia.com>
-> > ---
-> >   drivers/pci/of.c | 3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> > index 1e45186a5715..38fe2589beb0 100644
-> > --- a/drivers/pci/of.c
-> > +++ b/drivers/pci/of.c
-> > @@ -581,7 +581,8 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
-> >                          res_valid |= !(res->flags & IORESOURCE_PREFETCH);
-> > 
-> >                          if (!(res->flags & IORESOURCE_PREFETCH))
-> > -                               if (upper_32_bits(resource_size(res)))
-> > +                               if (!(res->flags & IORESOURCE_MEM_64) &&
-> > +                                   upper_32_bits(resource_size(res)))
-> >                                          dev_warn(dev, "Memory resource size exceeds max for 32 bits\n");
-> > 
-> >                          break;
-> > --
-> > 2.30.2
-> > 
+    Andrew
