@@ -2,171 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D792C3A2E55
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E55D3A2E5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhFJOga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:36:30 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3198 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231417AbhFJOg1 (ORCPT
+        id S231489AbhFJOiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:38:12 -0400
+Received: from mail-pj1-f54.google.com ([209.85.216.54]:50847 "EHLO
+        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230366AbhFJOiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:36:27 -0400
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G15pq07q1z689MW;
-        Thu, 10 Jun 2021 22:25:07 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 16:34:29 +0200
-Received: from localhost (10.52.126.112) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
- 2021 15:34:28 +0100
-Date:   Thu, 10 Jun 2021 15:34:25 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] iio: core: Add "extended_name" attribute to all
- channels
-Message-ID: <20210610153425.000029b6@Huawei.com>
-In-Reply-To: <20210610124556.34507-3-paul@crapouillou.net>
-References: <20210610124556.34507-1-paul@crapouillou.net>
-        <20210610124556.34507-3-paul@crapouillou.net>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Thu, 10 Jun 2021 10:38:11 -0400
+Received: by mail-pj1-f54.google.com with SMTP id g4so3798613pjk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:35:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oyVrFSGAL08XcdlFRxTSklLBcj59OiHskRNYyLrSzHI=;
+        b=IYdWGjr7YsprNy0kFSPHQp45XjPXYP9w1MjsSZnyDJ/QqgCHI5PZ1g4Czgp8/tJNOq
+         TsrqukcnZr1Gu6bQPqsqYdbg8XO66Jd9PDiZq2cTJ2RsL5StT2NZMFxfrUyfaFSZjhmG
+         mzDGPDqNjBK5JrWQaoSAwlM3tPcCQJPKRaPtj7faLOm9Iw1332YBtKCl4F8NQ8ZaS3Pz
+         A60rGBXGHC4i8NMtQ+IjIT/ztt8uMZXtN387TZYu5B34ckqTE3qa0fKRPNF/hrAEgimq
+         C6gFHeiOKl2dFdIInnUGLGPgQER4rQLaZy4BUHcJ1W2L/hguSlupFIG3WAie9MUc8Lw7
+         2bdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oyVrFSGAL08XcdlFRxTSklLBcj59OiHskRNYyLrSzHI=;
+        b=GkPKpLupeFfXJYRqmcFieqhVOzTnpmGPOuvNKn5hQXRbRUtiaWIR78XOkMWPR5Ehdb
+         aCZ3E/ft4MYHVFTMowsSBrtgHfkKZTak1Y40YNRyWE1xBOTGOIDnFJWyWa+PJysH7/qi
+         aNsIJvW7DPBvSXsseQbPuRIO3ztKELNGo7hs+uezLwQ0XJaj2w9jbjICA65O0kKPRX8+
+         8BzGADQWIJDAxtfKQfs6lElzG/rS8731ptbvZ076z3ddQnM1pKz32IIB1OlWY6vhrYD+
+         wfyapIqhJSu87l3cmdksQid6SutE/NAGIaj1Lqr0702jmd5iaaU6lWTuDefhJ1QRQOXQ
+         6m7g==
+X-Gm-Message-State: AOAM532+psIXj3rN1+JbDWGUxS7bS1QjmM1wZMDE7CrEf2npPJC9Me+S
+        P/gVLqXsAehB9a1lPuPD1sJN
+X-Google-Smtp-Source: ABdhPJzKI+jvaJVvJEwfwIekR4AVEZldcSpdOKNVfGi25TP+AmnN7uPnu1m/tzX0u7skxjpZL4Gtow==
+X-Received: by 2002:a17:90a:1541:: with SMTP id y1mr3680576pja.74.1623335699620;
+        Thu, 10 Jun 2021 07:34:59 -0700 (PDT)
+Received: from thinkpad ([2409:4072:6d9e:80ad:d341:9a16:2c5c:2249])
+        by smtp.gmail.com with ESMTPSA id j12sm2481637pfj.60.2021.06.10.07.34.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 07:34:59 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 20:04:51 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Edgar Bernardi Righi <edgar.righi@lsitec.org.br>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 5/6] dt-bindings: clock: Add NIC and ETHERNET bindings
+ for Actions S500 SoC
+Message-ID: <20210610143451.GD315240@thinkpad>
+References: <cover.1622119892.git.cristian.ciocaltea@gmail.com>
+ <b76ceb8849370943e675e5ea1a34a25cb513faec.1622119892.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.126.112]
-X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b76ceb8849370943e675e5ea1a34a25cb513faec.1622119892.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 13:45:56 +0100
-Paul Cercueil <paul@crapouillou.net> wrote:
-
-> The point of this new attribute is to make the IIO tree actually
-> parsable.
+On Thu, May 27, 2021 at 04:16:43PM +0300, Cristian Ciocaltea wrote:
+> Add the missing NIC and ETHERNET clock bindings constants for Actions
+> Semi Owl S500 SoC.
 > 
-> Before, given this attribute as a filename:
-> in_voltage0_aux_sample_rate
-> 
-> Userspace had no way to know if the attribute name was
-> "aux_sample_rate" with no extended name, or "sample_rate" with "aux" as
-> the extended name, or just "rate" with "aux_sample" as the extended
-> name.
-> 
-> This was somewhat possible to deduce when there was more than one
-> attribute present for a given channel, e.g:
-> in_voltage0_aux_sample_rate
-> in_voltage0_aux_frequency
-> 
-> There, it was possible to deduce that "aux" was the extended name. But
-> even with more than one attribute, this wasn't very robust, as two
-> attributes starting with the same prefix (e.g. "sample_rate" and
-> "sample_size") would result in the first part of the prefix being
-> interpreted as being part of the extended name.
-> 
-> To address this issue, add an "extended_name" attribute to all channels
-> that actually do have an extended name. 
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Change the patch title to make it clear that it only applies to those
-that have extended_name set.
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-> For this attribute, the extended
-> name is not present in the filename; so in this example, the file name
-> would be "in_voltage0_extended_name", and reading it would return "aux".
+Thanks,
+Mani
 
-Ah. Now I see the slightly issue with my immediate thought that we should
-just put this in the label attribute (and not allow both extended_name
-and label to be provided). 
-
-Hmm. It's a bit ugly but given it hopefully doesn't effect that many drivers
-I could probably live with it.
-
-However, needs a patch to Documentation/ABI/testing/sysfs-bus-iio
-and a clear statement that this is for backwards compatibility reasons.
-I don't want to see extended_name getting added to new drivers!
-
-Jonathan
-
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
->  drivers/iio/industrialio-core.c | 41 +++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
+> Changes in v2:
+>  - Added Acked-by from Rob
 > 
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index ec34d930920c..4cdf9f092d73 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -723,6 +723,16 @@ static ssize_t iio_read_channel_label(struct device *dev,
->  	return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
->  }
+>  include/dt-bindings/clock/actions,s500-cmu.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/dt-bindings/clock/actions,s500-cmu.h b/include/dt-bindings/clock/actions,s500-cmu.h
+> index a250a52a6192..a237eb26accb 100644
+> --- a/include/dt-bindings/clock/actions,s500-cmu.h
+> +++ b/include/dt-bindings/clock/actions,s500-cmu.h
+> @@ -74,10 +74,12 @@
+>  #define CLK_RMII_REF		54
+>  #define CLK_GPIO		55
 >  
-> +static ssize_t iio_read_channel_extended_name(struct device *dev,
-> +					      struct device_attribute *attr,
-> +					      char *buf)
-> +{
-> +	const struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
-> +	const struct iio_chan_spec *chan = this_attr->c;
-> +
-> +	return sprintf(buf, "%s\n", chan->extend_name);
-> +}
-> +
->  static ssize_t iio_read_channel_info(struct device *dev,
->  				     struct device_attribute *attr,
->  				     char *buf)
-> @@ -1185,6 +1195,32 @@ static int iio_device_add_channel_label(struct iio_dev *indio_dev,
->  	return 1;
->  }
+> -/* system clock (part 2) */
+> +/* additional clocks */
+>  #define CLK_APB			56
+>  #define CLK_DMAC		57
+> +#define CLK_NIC			58
+> +#define CLK_ETHERNET		59
 >  
-> +static int
-> +iio_device_add_channel_extended_name(struct iio_dev *indio_dev,
-> +				     struct iio_chan_spec const *chan)
-> +{
-> +	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> +	int ret;
-> +
-> +	if (!chan->extend_name)
-> +		return 0;
-> +
-> +	ret = __iio_add_chan_devattr("extended_name",
-> +				     chan,
-> +				     &iio_read_channel_extended_name,
-> +				     NULL,
-> +				     0,
-> +				     IIO_SEPARATE,
-> +				     &indio_dev->dev,
-> +				     NULL,
-> +				     &iio_dev_opaque->channel_attr_list,
-> +				     false);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 1;
-> +}
-> +
->  static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
->  					 struct iio_chan_spec const *chan,
->  					 enum iio_shared_by shared_by,
-> @@ -1327,6 +1363,11 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
->  		return ret;
->  	attrcount += ret;
+> -#define CLK_NR_CLKS		(CLK_DMAC + 1)
+> +#define CLK_NR_CLKS		(CLK_ETHERNET + 1)
 >  
-> +	ret = iio_device_add_channel_extended_name(indio_dev, chan);
-> +	if (ret < 0)
-> +		return ret;
-> +	attrcount += ret;
-> +
->  	if (chan->ext_info) {
->  		unsigned int i = 0;
->  		for (ext_info = chan->ext_info; ext_info->name; ext_info++) {
-
+>  #endif /* __DT_BINDINGS_CLOCK_S500_CMU_H */
+> -- 
+> 2.31.1
+> 
