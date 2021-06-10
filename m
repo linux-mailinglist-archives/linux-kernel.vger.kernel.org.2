@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA293A21ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 03:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064553A21F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 03:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbhFJBku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 21:40:50 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:33894 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFJBku (ORCPT
+        id S229911AbhFJBod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 21:44:33 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3817 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFJBob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 21:40:50 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 943DA8A2;
-        Thu, 10 Jun 2021 03:38:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1623289133;
-        bh=yqpHWZPanjkC+V9yvODkHojqHp3PntAQ434IwkjrduM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YZNBT8CDKmhWq5cKGb3SHMOG5gszAfxe0XtLk6Wo7lVNi70RuY9TvK2QpWtgZ1nRH
-         D6T9KUrJtNCgWdqCpoaVFXVsaCTZM+Zp1wVyZjlQH71nyGToUpOxi74t2yetS/p5Kc
-         DxCca1Z28Wn1wvjNYmofmVM0reUIVR9mfjTTkXYg=
-Date:   Thu, 10 Jun 2021 04:38:34 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     hyun.kwon@xilinx.com, vkoul@kernel.org, michal.simek@xilinx.com,
-        nathan@kernel.org, ndesaulniers@google.com,
-        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dmaengine: xilinx: dpdma: fix kernel-doc
-Message-ID: <YMFtGqicAMoZ0LOV@pendragon.ideasonboard.com>
-References: <1623222893-123227-1-git-send-email-yang.lee@linux.alibaba.com>
+        Wed, 9 Jun 2021 21:44:31 -0400
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0mnK1j7VzWsc9;
+        Thu, 10 Jun 2021 09:37:41 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 09:42:32 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <yoshfuji@linux-ipv6.org>,
+        <dsahern@kernel.org>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH v5] ping: Check return value of function 'ping_queue_rcv_skb'
+Date:   Thu, 10 Jun 2021 09:41:36 +0800
+Message-ID: <20210610014136.3685188-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1623222893-123227-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme760-chm.china.huawei.com (10.3.19.106)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang Li,
+Function 'ping_queue_rcv_skb' not always return success, which will
+also return fail. If not check the wrong return value of it, lead to function
+`ping_rcv` return success.
 
-Thank you for the patch.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+v2:
+- use rc as return value to make code look cleaner
+v3:
+- delete unnecessary braces {}
+v4:
+- put variable 'rc' declaration at the beginning of function
+v5:
+- don/t print unneed debuginfo in the right path
+ net/ipv4/ping.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-On Wed, Jun 09, 2021 at 03:14:53PM +0800, Yang Li wrote:
-> Fix function name in xilinx/xilinx_dpdma.c comment to remove 
-> a warning found by kernel-doc.
-> 
-> drivers/dma/xilinx/xilinx_dpdma.c:935: warning: expecting prototype for
-> xilinx_dpdma_chan_no_ostand(). Prototype was for
-> xilinx_dpdma_chan_notify_no_ostand() instead.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
-> 
-> Change in v2:
-> --replaced s/clang(make W=1 LLVM=1)/kernel-doc/ in commit.
-> https://lore.kernel.org/patchwork/patch/1442639/
-> 
->  drivers/dma/xilinx/xilinx_dpdma.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
-> index 70b29bd..0c8739a 100644
-> --- a/drivers/dma/xilinx/xilinx_dpdma.c
-> +++ b/drivers/dma/xilinx/xilinx_dpdma.c
-> @@ -915,7 +915,7 @@ static u32 xilinx_dpdma_chan_ostand(struct xilinx_dpdma_chan *chan)
->  }
->  
->  /**
-> - * xilinx_dpdma_chan_no_ostand - Notify no outstanding transaction event
-> + * xilinx_dpdma_chan_notify_no_ostand - Notify no outstanding transaction event
->   * @chan: DPDMA channel
->   *
->   * Notify waiters for no outstanding event, so waiters can stop the channel
-
+diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
+index 1c9f71a37258..ea3ab58d1c38 100644
+--- a/net/ipv4/ping.c
++++ b/net/ipv4/ping.c
+@@ -954,6 +954,7 @@ bool ping_rcv(struct sk_buff *skb)
+ 	struct sock *sk;
+ 	struct net *net = dev_net(skb->dev);
+ 	struct icmphdr *icmph = icmp_hdr(skb);
++	bool rc = false;
+ 
+ 	/* We assume the packet has already been checked by icmp_rcv */
+ 
+@@ -968,14 +969,15 @@ bool ping_rcv(struct sk_buff *skb)
+ 		struct sk_buff *skb2 = skb_clone(skb, GFP_ATOMIC);
+ 
+ 		pr_debug("rcv on socket %p\n", sk);
+-		if (skb2)
+-			ping_queue_rcv_skb(sk, skb2);
++		if (skb2 && !ping_queue_rcv_skb(sk, skb2))
++			rc = true;
+ 		sock_put(sk);
+-		return true;
+ 	}
+-	pr_debug("no socket, dropping\n");
+ 
+-	return false;
++	if (!rc) 
++		pr_debug("no socket, dropping\n");
++
++	return rc;
+ }
+ EXPORT_SYMBOL_GPL(ping_rcv);
+ 
 -- 
-Regards,
+2.25.1
 
-Laurent Pinchart
