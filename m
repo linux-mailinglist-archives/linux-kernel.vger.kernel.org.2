@@ -2,82 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433923A2C43
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253233A2C4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhFJNBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbhFJNBE (ORCPT
+        id S231143AbhFJNCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:02:18 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1292 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230526AbhFJNCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:01:04 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC37C061574;
-        Thu, 10 Jun 2021 05:59:08 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id k15so1557136pfp.6;
-        Thu, 10 Jun 2021 05:59:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kZv55UI1lotbt6zxOJeYG+FLk45h3yJ74p2M096WCtA=;
-        b=U5+g07bCY5xpjLYOIJ95c7kfKcGWVCukCh/hkexG2hfL8FpBgSB2XB8hPvcoWyzQs6
-         os0gvieM9b0xaQO9vUMjxpBrTVs8ZIw3qa2i3t1VYFGaucT+heTHWAUEC+S92Jseeuy0
-         oaRMs2pljiVgfpiDW6SVLfmtwmW8CLEheAZYFgJO1wPY4vEHxJ7W199QenpeogQ01hV3
-         bsROdqbznE8iyA41F1p0rUYUmBZb3jyQgqhA8dNQD87SY5uxD1lnqGJEUpjymBvoCjze
-         rlx1x/mzU7lwHMIH02MNxW5KCU19eKlsFHcrvV3w/e/ZzqV5WissAfj1LnNB9v1YI5Uz
-         FyTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kZv55UI1lotbt6zxOJeYG+FLk45h3yJ74p2M096WCtA=;
-        b=ti3wBWLL3ARZCLsSyCNDe4JxqN4A2yXplPVKt3w/D0Y49V2rXB6CXCt0KM/pkBbIUR
-         QPjt3JRH4GhDyZso5S+l9xfaUh9ww24/4F56QRj3R3AzeVJ0N0i3Xbuf3d56DykB4nKd
-         OKzqyyMI/tUwZ84wIhnXhTk2j5H9W/dk9kSyUqHDYmw9rLm+pI2NkvJr0r851mPNvxkx
-         Cr+zIpKI1pKVSKW80NrhMOILKymek0a+OBwrQWXadRjpOSiOzBJiPauSmwqLfJ/MfPp2
-         JfP6e2QVOXmfgPvpisEJZ9Z7ENRFEgHSohuvZqVzeSHbFqe3vsraYzZAbrZwl7F4+JE0
-         0tNg==
-X-Gm-Message-State: AOAM532T37Msae4dwLhYLe43r29nFvlcVNk8eLijRQ9zx9jAbQayzGqt
-        yzeYVD6fjMBl2SEm1IpcPFnOHK6O1H6D+YbMr5k=
-X-Google-Smtp-Source: ABdhPJxo0dArsVVa15jkG0z2+o8+BBtD16pdCH9utQQm9Rioi2HgsM5klfnl10H0RraA/MDpcBijswWHv4naDqeCFVE=
-X-Received: by 2002:a63:b507:: with SMTP id y7mr4905365pge.74.1623329947859;
- Thu, 10 Jun 2021 05:59:07 -0700 (PDT)
+        Thu, 10 Jun 2021 09:02:15 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15ACY8Iu102396;
+        Thu, 10 Jun 2021 09:00:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=eaoMWKibC48ywMBBJLm1Ve95rH5kpz0SL62FgerNIi4=;
+ b=dm/W68RURyeUskWx4PLUG5VZiaizheaMVkMyUZ3ubC1RyNb5w2JWctVxqH6Ct5iUnM+T
+ uRvTybpKcvHr6ANptGZtB6q0k8ncsdD4k/xOjpgPvHFcPmrtcbdTXOtT2rnMd+SUa+VQ
+ NVGvwGa0/tfpeCouhoSMuTTU/083pi+uLUf1+8FaoaL0FsVGzZmB1XGS+6DZyQYOdVBD
+ MlS0HsgsDX5ol0OvWNlDCk1McaXc+ZrVmV7Jp49JeUU2AZWfre5bMHZSLbn2jkk7F+oE
+ XMejNo+J+Xe8X7CSHAjYxOErLjXUveY7dz42bPu8pv4T/BPqZ7RlXyzr5wuvm5i4G2Kp YQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 393j8f9x66-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 09:00:14 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15ACY9Ir104320;
+        Thu, 10 Jun 2021 09:00:14 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 393j8f9x56-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 09:00:14 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15ACvYfA013223;
+        Thu, 10 Jun 2021 12:59:23 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma03wdc.us.ibm.com with ESMTP id 3900wa8588-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 12:59:23 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15ACxNe56226718
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 12:59:23 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 319F1112075;
+        Thu, 10 Jun 2021 12:59:23 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C0C811206F;
+        Thu, 10 Jun 2021 12:59:23 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Jun 2021 12:59:23 +0000 (GMT)
+Subject: Re: [PATCH v6 0/4] Add support for ECDSA-signed kernel modules
+To:     jeyu@kernel.org, keyrings@vger.kernel.org, dhowells@redhat.com,
+        dwmw2@infradead.org, zohar@linux.ibm.com, jarkko@kernel.org
+Cc:     nayna@linux.ibm.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210610125623.1553792-1-stefanb@linux.ibm.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <81ab17a5-1b35-17a0-e7c9-102df873ef70@linux.ibm.com>
+Date:   Thu, 10 Jun 2021 08:59:22 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210610124556.34507-1-paul@crapouillou.net> <20210610124556.34507-2-paul@crapouillou.net>
-In-Reply-To: <20210610124556.34507-2-paul@crapouillou.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 10 Jun 2021 15:58:51 +0300
-Message-ID: <CAHp75VfR5jjMjDhFRvtT01EbuSTwDBi3HERDKi306mRK22+Fnw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] iio: core: Support removing extended name in
- attribute filename
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210610125623.1553792-1-stefanb@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Cq_DAdgiB_feTJN5nYJ0Ml92zkLF_cEh
+X-Proofpoint-GUID: qRJ5koOk8i0St5gTnEG9eo_Xk_vBHBj4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-10_07:2021-06-10,2021-06-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ priorityscore=1501 suspectscore=0 phishscore=0 adultscore=0 spamscore=0
+ malwarescore=0 mlxlogscore=965 mlxscore=0 lowpriorityscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106100081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 3:47 PM Paul Cercueil <paul@crapouillou.net> wrote:
->
-> By default, when a channel has an extended name, it will appear in the
-> filename of channel attributes. E.g. if the extended name is "aux", the
-> filename of a "sample_rate" attribute will be something like:
-> in_voltage0_aux_sample_rate
->
-> Add a mechanism to disable this feature. This will be used to add a
-> "extended_name" channel attribute.
 
-I'm afraid, NAK. Otherwise, please put an explanation that clearly
-shows that it will be no ABI breakage.
-I.o.w. users for the existing drivers and devices will always get
-those attributes at the same platform configuration(s).
+On 6/10/21 8:56 AM, Stefan Berger wrote:
+>
+> v6:
+>    - Patch 2/4 is fixing V4's 1/2 and 4/4 is fixing V4's 2/2. Both fixup
+>      patches to be squashed.
 
--- 
-With Best Regards,
-Andy Shevchenko
+
+Jarkko, take 2/4 and 4/4 and squash them into the respective queued 
+patches. 1/4 and 3/4 are untouched other than what the rebase did to 3/4.
+
+   Stefan
+
