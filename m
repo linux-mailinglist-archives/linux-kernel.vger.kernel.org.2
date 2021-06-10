@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E843A351F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B373A3524
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhFJUwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 16:52:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41762 "EHLO mail.kernel.org"
+        id S231174AbhFJUwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 16:52:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230298AbhFJUwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 16:52:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D0B746141E;
+        id S230304AbhFJUwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 16:52:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E655361429;
         Thu, 10 Jun 2021 20:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623358206;
-        bh=iOCvqbcdbTetx9TgmK7AN5r3j2XsveiWSJWgx5aX3yU=;
+        bh=vsHzK4s5AG0JTFJagkIiirN8+lz3jELSsMoR03gSfRc=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=IgwvDB3T5dehWbPb9W9niasZneMA94gFudxrDugQtWGm4xopyNgQ4xLo/Y9/bDIpc
-         lr8oZSzdPUn3yg5aKG8M+f6bTqadExpqaNbw5pCcMy38aQGzdpQ3dqL9Oi94v2qBa2
-         zI/F7tHS6yfUGlsci4yij5CrpuVWtz2kz1S/6MRy/LNDchSuHu7hw5GKbFGXH8zi/x
-         280pS9V6ixarHoq/KHcoo6nSsgi9ZDu2zSGMeA5c3WJ0/VDa2ZYYMh37jxZSH7k1d3
-         R37M2AS+tWLsO+Do21+33gfBj9O+sCIqdlPgh4GVmOZxHb2JaMgm8MbloSLTZDAs5h
-         MmvXWQZDvKtiQ==
+        b=PpyDCOn0iV76mIxkFv9LyXmpy5JWFNakdX6l0EpIOvXgYw/OaVa5BLuJByRgB4Fot
+         p/j8evJMESwrLyxTHVoixEH/b35WBmrXuXwm/PlN6G5TY23+w5zee/fSbCWSg6DM4n
+         4zhppMMQli2K0eWS8bFxR5UVP4XuWSIMrwg6mVRd+vds8yHWhXFCKk2Ue/1744tBbo
+         IJ9XNhIw5Mycoc2q9Un+3HR2EDb7g9Ci1Dpzg8sBOYRU4kp6DAEaWdSp8c3+0TgIAg
+         f/BlFax/YNfwSmVNwBg+raP/fXd4jmB9Y3yMB29LsUYgRIMJNHfwOVxHBF2byw36pa
+         YAOeipmj8cFWQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C8BE360952;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DCFCB60A6C;
         Thu, 10 Jun 2021 20:50:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] node.c: fix the use of indefinite article
+Subject: Re: [PATCH] tipc:subscr.c: fix a spelling mistake
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162335820681.975.17808761996434583505.git-patchwork-notify@kernel.org>
+Message-Id: <162335820690.975.16634510333070331192.git-patchwork-notify@kernel.org>
 Date:   Thu, 10 Jun 2021 20:50:06 +0000
-References: <20210610055046.37722-1-13145886936@163.com>
-In-Reply-To: <20210610055046.37722-1-13145886936@163.com>
+References: <20210610062958.38656-1-13145886936@163.com>
+In-Reply-To: <20210610062958.38656-1-13145886936@163.com>
 To:     None <13145886936@163.com>
 Cc:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
         kuba@kernel.org, netdev@vger.kernel.org,
@@ -48,19 +48,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed,  9 Jun 2021 22:50:46 -0700 you wrote:
+On Wed,  9 Jun 2021 23:29:58 -0700 you wrote:
 > From: gushengxian <gushengxian@yulong.com>
 > 
-> Fix the use of indefinite article.
+> Fix a spelling mistake.
 > 
 > Signed-off-by: gushengxian <gushengxian@yulong.com>
 > ---
->  net/tipc/node.c | 2 +-
+>  net/tipc/subscr.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - node.c: fix the use of indefinite article
-    https://git.kernel.org/netdev/net-next/c/15139bcbb610
+  - tipc:subscr.c: fix a spelling mistake
+    https://git.kernel.org/netdev/net-next/c/f1dcdc075617
 
 You are awesome, thank you!
 --
