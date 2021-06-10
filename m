@@ -2,79 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B063A3727
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BD63A372A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhFJWdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:33:15 -0400
-Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:45656 "EHLO
-        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhFJWdL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:33:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1623364275; x=1654900275;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=4L1uhlRXfuioW8/my8xTSASqKD8SZtwMJGn66ovgUUw=;
-  b=SjIItNbD0kFb2t0aBo7jgpXKHv9aj3/NKFTv/UB/gKrKzdg8iYboZjFb
-   PGjKPmO8U3QEdYKIEJPoDJPI8ZhG7at5yuEV+0abx8RmokhkInJU01WDM
-   BtpSX5XkwpdpQxfXwgVAxb1ds9VVSK3KnL7gXN2rTHTmJZ33nuiL8A7oh
-   E=;
-X-IronPort-AV: E=Sophos;i="5.83,264,1616457600"; 
-   d="scan'208";a="6050384"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 10 Jun 2021 22:31:15 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com (Postfix) with ESMTPS id 2A066A1DE8;
-        Thu, 10 Jun 2021 22:31:14 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 10 Jun 2021 22:31:13 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.160.41) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 10 Jun 2021 22:31:08 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <eric.dumazet@gmail.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
-        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v7 bpf-next 01/11] net: Introduce net.ipv4.tcp_migrate_req.
-Date:   Fri, 11 Jun 2021 07:31:05 +0900
-Message-ID: <20210610223105.97080-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <3a9ecbe4-fe7e-1acf-36b7-1f999f8f01d6@gmail.com>
-References: <3a9ecbe4-fe7e-1acf-36b7-1f999f8f01d6@gmail.com>
+        id S230364AbhFJWfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 18:35:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230103AbhFJWfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 18:35:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E40C613E7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 22:33:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623364386;
+        bh=05+TvLpD8afqmEIB/fCJvbcqSr4HEeRL5MwUkTDAZOI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=i8D1npTDntFQ+aIM3jJ0KQXd4BrdlNLQA0d3cdsv5aUWt2SPVJTQ3ntvbLbII0Yo6
+         MbvsBRXJeArqMDW+TYxSN8ciCZHde0ijeb5PWgB2bHX3DPL4ne/c1HUNf75sqg5Vz2
+         SQVcrHpfmNzCaA518ymmED1H8NQmI6atx5Zbm0z11QP9tbmm1pQ1UJLDTv1Th7LAGU
+         5m2TLSID7Qdc1UAQbrEOdddi/MgI3T9nfzYWBw68fSAg9VK56dWF2oIrn6iLmvSDWl
+         fWFAMSd8AjXI2jknvJd3PhJKiOfFBP0Y1SSiG5l6cdssDlfxD9VynPQug0XvXndsrD
+         b/ulaSc47aVRg==
+Received: by mail-qv1-f47.google.com with SMTP id t6so9703766qvp.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:33:06 -0700 (PDT)
+X-Gm-Message-State: AOAM531AGpfFBAJxgQeZhoHMMlcX79DZPKRwiCYN5nfDCtxi+WAY/CpM
+        kFdRbMWkreGWhOvPERAFF1tQ03yX6Y4bVoRVTzE=
+X-Google-Smtp-Source: ABdhPJySFwlIudB4HaMUCIShInVYybm6kjEiekSvo4XR3iGQOvYw6VTcoXLchJNkx6BsMfsqZLmH63Ibp1m1DeqpOnM=
+X-Received: by 2002:ad4:5343:: with SMTP id v3mr1897161qvs.45.1623364385190;
+ Thu, 10 Jun 2021 15:33:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.41]
-X-ClientProxiedBy: EX13D41UWC003.ant.amazon.com (10.43.162.30) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+References: <20210518155921.4181-1-mail@anirudhrb.com> <20210519032014.GS4332@42.do-not-panic.com>
+In-Reply-To: <20210519032014.GS4332@42.do-not-panic.com>
+From:   Luis Chamberlain <mcgrof@kernel.org>
+Date:   Thu, 10 Jun 2021 15:32:53 -0700
+X-Gmail-Original-Message-ID: <CAB=NE6Uq_t9Mbs8zN30QQrwH190p5Oz4M7OwDxmQgUeRRWS_6g@mail.gmail.com>
+Message-ID: <CAB=NE6Uq_t9Mbs8zN30QQrwH190p5Oz4M7OwDxmQgUeRRWS_6g@mail.gmail.com>
+Subject: Re: [PATCH v4] firmware_loader: fix use-after-free in firmware_fallback_sysfs
+To:     Anirudh Rayabharam <mail@anirudhrb.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Junyong Sun <sunjy516@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+de271708674e2093097b@syzkaller.appspotmail.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Date:   Thu, 10 Jun 2021 19:24:14 +0200
-> On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
-> > This commit adds a new sysctl option: net.ipv4.tcp_migrate_req. If this
-> > option is enabled or eBPF program is attached, we will be able to migrate
-> > child sockets from a listener to another in the same reuseport group after
-> > close() or shutdown() syscalls.
-> > 
-> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
-> > Acked-by: Martin KaFai Lau <kafai@fb.com>
+On Tue, May 18, 2021 at 8:20 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> On Tue, May 18, 2021 at 09:29:20PM +0530, Anirudh Rayabharam wrote:
+> > This use-after-free happens when a fw_priv object has been freed but
+> > hasn't been removed from the pending list (pending_fw_head). The next
+> > time fw_load_sysfs_fallback tries to insert into the list, it ends up
+> > accessing the pending_list member of the previoiusly freed fw_priv.
+> >
+> > The root cause here is that all code paths that abort the fw load
+> > don't delete it from the pending list. For example:
+> >
+> >       _request_firmware()
+> >         -> fw_abort_batch_reqs()
+> >             -> fw_state_aborted()
+> >
+> > To fix this, delete the fw_priv from the list in __fw_set_state() if
+> > the new state is DONE or ABORTED. This way, all aborts will remove
+> > the fw_priv from the list. Accordingly, remove calls to list_del_init
+> > that were being made before calling fw_state_(aborted|done)().
+> >
+> > Also, in fw_load_sysfs_fallback, don't add the fw_priv to the list
+> > if it is already aborted. Instead, just jump out and return early.
+> >
+> > Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
+> > Reported-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
+> > Tested-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
+> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
 > > ---
-> >  Documentation/networking/ip-sysctl.rst | 25 +++++++++++++++++++++++++
-> >  include/net/netns/ipv4.h               |  1 +
-> >  net/ipv4/sysctl_net_ipv4.c             |  9 +++++++++
-> >  3 files changed, 35 insertions(+)
-> 
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
+> >
+> > Changes in v4:
+> > Documented the reasons behind the error codes returned from
+> > fw_sysfs_wait_timeout() as suggested by Luis Chamberlain.
+> >
+> > Changes in v3:
+> > Modified the patch to incorporate suggestions by Luis Chamberlain in
+> > order to fix the root cause instead of applying a "band-aid" kind of
+> > fix.
+> > https://lore.kernel.org/lkml/20210403013143.GV4332@42.do-not-panic.com/
+> >
+> > Changes in v2:
+> > 1. Fixed 1 error and 1 warning (in the commit message) reported by
+> > checkpatch.pl. The error was regarding the format for referring to
+> > another commit "commit <sha> ("oneline")". The warning was for line
+> > longer than 75 chars.
+> >
+> > ---
+> >  drivers/base/firmware_loader/fallback.c | 46 ++++++++++++++++++-------
+> >  drivers/base/firmware_loader/firmware.h |  6 +++-
+> >  drivers/base/firmware_loader/main.c     |  2 ++
+> >  3 files changed, 40 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+> > index 91899d185e31..f244c7b89ba5 100644
+> > --- a/drivers/base/firmware_loader/fallback.c
+> > +++ b/drivers/base/firmware_loader/fallback.c
+> > @@ -70,7 +70,31 @@ static inline bool fw_sysfs_loading(struct fw_priv *fw_priv)
+> >
+> >  static inline int fw_sysfs_wait_timeout(struct fw_priv *fw_priv,  long timeout)
+> >  {
+> > -     return __fw_state_wait_common(fw_priv, timeout);
+> > +     int ret = __fw_state_wait_common(fw_priv, timeout);
+> > +
+> > +     /*
+> > +      * A signal could be sent to abort a wait. Consider Android's init
+> > +      * gettting a SIGCHLD, which in turn was the same process issuing the
+> > +      * sysfs store call for the fallback. In such cases we want to be able
+> > +      * to tell apart in userspace when a signal caused a failure on the
+> > +      * wait. In such cases we'd get -ERESTARTSYS.
+> > +      *
+> > +      * Likewise though another race can happen and abort the load earlier.
+> > +      *
+> > +      * In either case the situation is interrupted so we just inform
+> > +      * userspace of that and we end things right away.
+> > +      *
+> > +      * When we really time out just tell userspace it should try again,
+> > +      * perhaps later.
+> > +      */
+> > +     if (ret == -ERESTARTSYS || fw_state_is_aborted(fw_priv))
+> > +             ret = -EINTR;
+> > +     else if (ret == -ETIMEDOUT)
+> > +             ret = -EAGAIN;
+>
+>
+> Shuah has explained to me that the only motivation on her part with
+> using -EAGAIN on commit 0542ad88fbdd81bb ("firmware loader: Fix
+> _request_firmware_load() return val for fw load abort") was to
+> distinguish the error from -ENOMEM, and so there was no real
+> reason to stick to -EAGAIN. Given -EAGAIN is used typically to
+> ask user to retry, but it makes no sense in this case since the
+> sysfs interface is ephemeral, I think we should do away with it
+> and document this rationale.
+>
+> I think we should stick to use -ETIMEDOUT. Its more telling of what
+> happened. And so I think just removing the check should do it, but
+> augmenting the comment should suffice.
+>
+> Since this change is already big, it would be good for this other
+> change to go in as a separate change. If you can test to ensure the
+> -ETIMEDOUT does indeed get propagated that'd be appreciated.
+>
+> Otherwise looks good. Thanks for your patience!
 
-Thank you!
+Anirudh, did you get a chance to test?
