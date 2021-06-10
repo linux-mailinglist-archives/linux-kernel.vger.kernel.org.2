@@ -2,170 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0153A2BDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C283A2BD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFJMsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:48:06 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:34578 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhFJMsF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:48:05 -0400
-Received: by mail-wm1-f43.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso4703670wmc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g7TiuP2WpfKxq21Oat7OGhwnmhrUis17kCLilyIjt+M=;
-        b=HRu4a60k50d+JB0O2NTMWABJCFfiQA2RcYP1msxTcprDAoeMBpoTI1ENO03jjhiqr7
-         u46wP7+4M0yyuJvqtkAXgXUn8wffXhZ0k9UEdNR2fAsXsLqOykReQkfzNr4kp6aZmAj4
-         h31sIMxhS81cLikgksh79kMgbrG8vPMEJQFHZyNLhuQkMiyE3oJgBZP4hIwiehJ09meW
-         kaM+1lD1esg4jijgBDIYWbAYqoPakUrHV1QYO8HO1CKtKEhmDV1dMou72sAaasRudDQN
-         Rxkime7bWiy6h53MeCa7+LCbL7aLPMmlGaa7VO73cE2nDYOMtTimNRbLxd9jpGqfz5s3
-         nJ3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g7TiuP2WpfKxq21Oat7OGhwnmhrUis17kCLilyIjt+M=;
-        b=TpR+njOMXHA7c4x4VaDkAcP5/PSZ12u3CXHV6O7zkinU4JodhJvQnfuCIEAzi+KJbq
-         1CoQWowZRcF0sfBEm/h1ZR/RT57YYdcvGmXaRTUrz2vrwB+Qe5Ow5vj8Tq7MjUTsyf+1
-         zk6bkwZz2Jvl4MKLSNEJdCEkzzvgdPgMom7ZP//iBx+kwTmxCe6tt+3ea3QwX6Ra9SWw
-         RJy+XCoou/YHdgW6LUmpArqUcE19p1Z4jpVXEomK8bddmoA95Ko7ZY6ryDK/lG8ztIQZ
-         1dWCswCAq1ZcsCO/SHweDKiIRWzGmapd+gmB+SsFEC25HjjG/vQCh0RODoUymUFC398R
-         cetQ==
-X-Gm-Message-State: AOAM531Vg46poHHMYSMR7nXtfCXCGKddP4dav6l/KCs36Rafa5xQnVhI
-        PlQO0/MLr1GPryni460BtYiHDA==
-X-Google-Smtp-Source: ABdhPJxIcnCNPtsmmIzFfE6qEFokBKUq+C8okxGUZwsNJ4ydegrjMS8XjCzfE3VNejv5ijC4EmuOtw==
-X-Received: by 2002:a05:600c:5128:: with SMTP id o40mr14639555wms.43.1623329107454;
-        Thu, 10 Jun 2021 05:45:07 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:e537:d458:d3c4:18e1? ([2a01:e34:ed2f:f020:e537:d458:d3c4:18e1])
-        by smtp.googlemail.com with ESMTPSA id f5sm4022143wrf.22.2021.06.10.05.45.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 05:45:06 -0700 (PDT)
-Subject: Re: [PATCH] clocksource: sh_cmt: Fix wrong setting if don't request
- IRQ for clock source channel
-To:     =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Phong Hoang <phong.hoang.wz@renesas.com>
-References: <20210422123443.73334-1-niklas.soderlund+renesas@ragnatech.se>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <7cf6444a-1dc4-a2bb-8fef-696e0b2b6f23@linaro.org>
-Date:   Thu, 10 Jun 2021 14:45:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230293AbhFJMrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:47:05 -0400
+Received: from mail-co1nam11on2067.outbound.protection.outlook.com ([40.107.220.67]:36960
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230001AbhFJMrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 08:47:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KOqsJrptGQpxl8hbgoRW80OE+wyPolkP/QikyNCqVI3yRmjrrNpj+3XY69IHmR3LlgZZotkJ1vf6fG7frGEnd4fsfHTDxVyNNzUAHXVQwot1KN59t/cqIEfLSDqg1rkNO59SP6Du3ZwsesH6fDXetDkyoIygpBpQQBkSw/EcH5fY5m56BX9PQhN6zFm421A2W8fNp/n6P0O/kBL9V15CfrgTmtjIOOAamwW5UfGJwMir0h6jagORO3hmnAs3pIgXnHvpbi6paL9gaYzaCShzK1orY1aXTesOc8l+1fuU7xyqTzuFHG2gjIqSafVKmCfI9R3RnyCL93RuoaPznHZ7hA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4OunsOTf5c+6crV0yUZnAgNfogQyJrJ6snnMa6xf5no=;
+ b=cI4mBr6vw6sKGwcBcb+HtIpVoNXpjrswtPnL6iw0+QzjSMQstErWCr/aQUopJEVSlO7VovQ2reU3ZhP8NMAuF+J2rmxcI3U0dhg6+HOhUZhSRBFNv3CgJAMqVue8bGp8S5HtNIKsgyP7wtXkAUtuyx0zfJLKVpbIXyeSiqrrWdw3hb3niGSSn/lZRaDzyXTciERbK+zR4ZOmJ19wDMqZ+ySB6jbNFyYU0qg2FR2pJL12ZIjI8inrjSeyxY/45YYjvGVm8bcqIHdgIDzCLSWRoyZbXRb7wtW3kttvKxB9BxOiCI53lS6LmVM2PAROI3fguDpRRE98J6Ts1VJFFa4Vgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4OunsOTf5c+6crV0yUZnAgNfogQyJrJ6snnMa6xf5no=;
+ b=Vx3GcOP6zaH59hqgflRwUQhuZsm/5WtL/rF56d/eR/tsFf+HtC64B2ni6imJsTV6qdH7zKv3WJFj9+6GelVPJHwFbfsnDgrLtAJ8ECnsnRDYaGr7l0O67vI46pF8P6qqsRbgd1pigZpqy8uqjKXRhU21BjUx6zZ+HjJ/QYKhTTptBhXogRThLH4UZjYPEzg24zvAghrMCbHpL9UZQzSoyij9xj2b1d/i5Cq1dIfImchi+XWxwPNsqIEtpazJPltgzzNugCFCf34aiNSDsPwN4PzXtAx6kQkoc8zbCLwMT9raZG39ZmJLvwKYVokyTdiSOOWeL+y8ziMGTiUrFHbU1w==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5272.namprd12.prod.outlook.com (2603:10b6:208:319::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Thu, 10 Jun
+ 2021 12:45:06 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4219.021; Thu, 10 Jun 2021
+ 12:45:06 +0000
+Date:   Thu, 10 Jun 2021 09:45:05 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>
+Subject: Re: [PATCH rdma-next] IB/cm: Remove dgid from the cm_id_priv av
+Message-ID: <20210610124505.GB1264557@nvidia.com>
+References: <2e7c87b6f662c90c642fc1838e363ad3e6ef14a4.1623236345.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e7c87b6f662c90c642fc1838e363ad3e6ef14a4.1623236345.git.leonro@nvidia.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR06CA0001.namprd06.prod.outlook.com
+ (2603:10b6:208:23d::6) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <20210422123443.73334-1-niklas.soderlund+renesas@ragnatech.se>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR06CA0001.namprd06.prod.outlook.com (2603:10b6:208:23d::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend Transport; Thu, 10 Jun 2021 12:45:06 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lrK3V-005J1E-Bf; Thu, 10 Jun 2021 09:45:05 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 69a81a21-70bb-44bb-bb5b-08d92c0d92fc
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5272:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5272C047F69D72946B4A5CE9C2359@BL1PR12MB5272.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JkB2joV8VGJMJxvoRqcTfYmx/rh4fNVUIMywdKK63UlM/Z809raj9YYuV8S/bU9TcZmp4ExiaIPXWthUh51j44dpLe4wKA1GLQCA55JFVdDTJ01o2/PD7u61FPKCFwZjhMZ0CIk8NP7uXrlEOmap7s52tAaBCmSotqvaXDonukz9Sy/YJUnNOD/SI6c5zWxHjDtCwu0snxyjFP3wcIdBSEwgBZ8VQVWl5LzTNEWco1xzRhKfsRHrsArwtTPcpjw53gNIxuWGqWcH+HEKw7NM7XO7K8pWf3XTs0iO5F4oBtbelUPhXii0FyezUvOSRVQ51csXIHsxECJTcisCAKR1yV3HvhnTMCcW6Csj4ZoJSd3yXD1u9fCB5SPuRRXQqV+AhQUZ0aiIqU3voj6CBmOdmaBvAxw71DsRM7KI9kuNN/SbqBs+mC5BdaMO4f+qB1E24czihKKtYrn/LlnVXW/hwApernuWOwIFPYQhOoAYyCu1bq/84x522aquY42DPxkE60sPdWZULngAcs/8djnaKlptlfz2xEWcMBnCeMiaUEkT/Dj/t1dYGNcPbB/+bSzmr4/EyC9J45jemgXJUel6Ee4DKacJwDesShMnmQnNFZg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(136003)(396003)(346002)(83380400001)(8676002)(6916009)(86362001)(26005)(4744005)(107886003)(33656002)(4326008)(66476007)(66556008)(8936002)(2616005)(9786002)(1076003)(9746002)(36756003)(426003)(316002)(186003)(5660300002)(2906002)(38100700002)(478600001)(54906003)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6Fnfs9ayLcGIAtffyiav//G+O2awZ0FpJ7HW4Po2uvdANycY8oIB0mVfUrmu?=
+ =?us-ascii?Q?2x+ISzohvmcdW2yoGztrrqI/Ni8u/ribz+y76VgTuZ+ickvo5CZKUt2ruQoD?=
+ =?us-ascii?Q?0XoQgoMYNVTGghVDvzS3VxuzWYR3XcIMi5sv4gGekhADtVKlT6GjNbEC8txP?=
+ =?us-ascii?Q?0ch0wyj1dUlHP4s/7LB/1CwOLib6pV4aWW/tUvpT1kuwYtL3aOWTDJvwsT3d?=
+ =?us-ascii?Q?duybKdkeXWt2TPCIFqBsc0PV58AyPwbXft5pLM+RY5QvL81bPjxNfnjH1dQi?=
+ =?us-ascii?Q?50Ca3RmbWtxTnyEjokmUxxhP+pqLRIxD+9eu2lKA6Q6hM3TvfnDj8U031jlP?=
+ =?us-ascii?Q?rJ8QDm0xYzouEyIL9AK1dY4tiDlVCvjh72bt3pRi66bAkl73BPcd74BY88gH?=
+ =?us-ascii?Q?mLGiWMh4FwG2dpeFacbCC5DpfLt36MWCzyVM83DSzmGdK9SiXjYcSN2mtcx6?=
+ =?us-ascii?Q?7Ue8GeL05/LDV4dTEoAXZROD9wCDcnPlAKgCKHgQvH2hJXqdH3VEgnKiiX+F?=
+ =?us-ascii?Q?GnT72gns4cwWIIlbgPtHVKZ/TP+1ocEOEgeZ9wBfhn6j7lBGRcui9klq2CqC?=
+ =?us-ascii?Q?jBJkFwxcs8cq7Reu+U+muqocBmEZfWXqRcEn4HQzCMqyFA1JXC5UWcRjIKge?=
+ =?us-ascii?Q?K4RYVu6pVaaUqmL4GcEksIbqu9rY+hrcCX48x5xmP2KTX+yp59grjdAjyzRI?=
+ =?us-ascii?Q?R2KhaeoLz0kIJatsrkEBjhwCjyuSztAVTPTIbXHiJEyw4wa6IWU8DsQe6kMj?=
+ =?us-ascii?Q?LU5O8ZZRYyeZlzaun4TzmSgAQUSTrBdLp/7ezPOcIYwo1Ew9kpzV25U1GZHk?=
+ =?us-ascii?Q?xPcSwk5HmLvvLtVPjGGhoLwXWRgihJ2+9IzBo24CBmQsPF/h86jPTvik4pKz?=
+ =?us-ascii?Q?OesJBTu9oLjnbzoWTOxnaOOzEcadYouw33aa3I5slwvQYl3fFkHCu3vsTljJ?=
+ =?us-ascii?Q?29D/nBPoMKpPj+de33HeP+zKYm0j8yDnajn9kAdcdaDgQFDHQXEIohGojea8?=
+ =?us-ascii?Q?V+xv4WxCOZ9mCvtYfeBmMRf7Rlb9Lj7UlMUsZyYaRTQQxkPZ3lyUwxFg+ep8?=
+ =?us-ascii?Q?Tk29/gXtGJsJMvE7Diy9aMdFcoQC8TI3kwl0InjQUFpRCj1EpDdkJHFPIK2B?=
+ =?us-ascii?Q?nQcg2Kn+UHJBOJAuQ+al74XmftFSjS9WZnX17Qau+zcWhRHTB1CECti8Cx6D?=
+ =?us-ascii?Q?bDOD1G8V0xOaV9/vBwyZMeKiELqsZbkYW7Oyxy8FY4P/YY8/EWsfBNlX0Mi6?=
+ =?us-ascii?Q?biOsVNXrckFOJW/GLQZmvgN9/g3cbVfYB1yzWptWaP5WGjHq5eOGfnpoDX6H?=
+ =?us-ascii?Q?i8WSXTst+7pvfhcQxg5dJgDA?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69a81a21-70bb-44bb-bb5b-08d92c0d92fc
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 12:45:06.3870
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XNc5qhkdTsx+7gUg/uVlL8fiQatDHrjjfDtAIJrK0ZTKRAjLpUsBARbLG+h++Hvs
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5272
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/04/2021 14:34, Niklas Söderlund wrote:
-> From: Phong Hoang <phong.hoang.wz@renesas.com>
+On Wed, Jun 09, 2021 at 01:59:25PM +0300, Leon Romanovsky wrote:
+> From: Jason Gunthorpe <jgg@nvidia.com>
 > 
-> If CMT instance has at least two channels, one channel will be used
-> as a clock source and another one used as a clock event device.
-> In that case, IRQ is not requested for clock source channel so
-> sh_cmt_clock_event_program_verify() might work incorrectly.
-> Besides, when a channel is only used for clock source, don't need to
-> re-set the next match_value since it should be maximum timeout as
-> it still is.
+> It turns out this is only being used to store the LID for SIDR mode to
+> search the RB tree for request de-duplication. Store the LID value
+> directly and don't pretend it is a GID.
 > 
-> On the other hand, due to no IRQ, total_cycles is not counted up
-> when reaches compare match time (timer counter resets to zero),
-> so sh_cmt_clocksource_read() returns unexpected value.
-> Therefore, use 64-bit clocksoure's mask for 32-bit or 16-bit variants
-> will also lead to wrong delta calculation. Hence, this mask should
-> correspond to timer counter width, and above function just returns
-> the raw value of timer counter register.
-
-I'm not getting the 'ch->cmt->num_channels == 1' change, can you explain?
-
-> Fixes: bfa76bb12f23 ("clocksource: sh_cmt: Request IRQ for clock event device only")
-> Fixes: 37e7742c55ba ("clocksource/drivers/sh_cmt: Fix clocksource width for 32-bit machines")
-> Signed-off-by: Phong Hoang <phong.hoang.wz@renesas.com>
-> Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Reviewed-by: Mark Zhang <markzhang@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
->  drivers/clocksource/sh_cmt.c | 30 ++++++++++++++++++------------
->  1 file changed, 18 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
-> index c98f8851fd680454..cadd09ad1a0946b9 100644
-> --- a/drivers/clocksource/sh_cmt.c
-> +++ b/drivers/clocksource/sh_cmt.c
-> @@ -578,7 +578,8 @@ static int sh_cmt_start(struct sh_cmt_channel *ch, unsigned long flag)
->  	ch->flags |= flag;
->  
->  	/* setup timeout if no clockevent */
-> -	if ((flag == FLAG_CLOCKSOURCE) && (!(ch->flags & FLAG_CLOCKEVENT)))
-> +	if (ch->cmt->num_channels == 1 &&
-> +	    flag == FLAG_CLOCKSOURCE && (!(ch->flags & FLAG_CLOCKEVENT)))
->  		__sh_cmt_set_next(ch, ch->max_match_value);
->   out:
->  	raw_spin_unlock_irqrestore(&ch->lock, flags);
-> @@ -620,20 +621,25 @@ static struct sh_cmt_channel *cs_to_sh_cmt(struct clocksource *cs)
->  static u64 sh_cmt_clocksource_read(struct clocksource *cs)
->  {
->  	struct sh_cmt_channel *ch = cs_to_sh_cmt(cs);
-> -	unsigned long flags;
->  	u32 has_wrapped;
-> -	u64 value;
-> -	u32 raw;
->  
-> -	raw_spin_lock_irqsave(&ch->lock, flags);
-> -	value = ch->total_cycles;
-> -	raw = sh_cmt_get_counter(ch, &has_wrapped);
-> +	if (ch->cmt->num_channels == 1) {
+>  drivers/infiniband/core/cm.c | 13 ++++---------
+>  1 file changed, 4 insertions(+), 9 deletions(-)
 
+Applied to for-next, thanks
 
-
-> +		unsigned long flags;
-> +		u64 value;
-> +		u32 raw;
->  
-> -	if (unlikely(has_wrapped))
-> -		raw += ch->match_value + 1;
-> -	raw_spin_unlock_irqrestore(&ch->lock, flags);
-> +		raw_spin_lock_irqsave(&ch->lock, flags);
-> +		value = ch->total_cycles;
-> +		raw = sh_cmt_get_counter(ch, &has_wrapped);
->  
-> -	return value + raw;
-> +		if (unlikely(has_wrapped))
-> +			raw += ch->match_value + 1;
-> +		raw_spin_unlock_irqrestore(&ch->lock, flags);
-> +
-> +		return value + raw;
-> +	}
-> +
-> +	return sh_cmt_get_counter(ch, &has_wrapped);
->  }
->  
->  static int sh_cmt_clocksource_enable(struct clocksource *cs)
-> @@ -696,7 +702,7 @@ static int sh_cmt_register_clocksource(struct sh_cmt_channel *ch,
->  	cs->disable = sh_cmt_clocksource_disable;
->  	cs->suspend = sh_cmt_clocksource_suspend;
->  	cs->resume = sh_cmt_clocksource_resume;
-> -	cs->mask = CLOCKSOURCE_MASK(sizeof(u64) * 8);
-> +	cs->mask = CLOCKSOURCE_MASK(ch->cmt->info->width);
->  	cs->flags = CLOCK_SOURCE_IS_CONTINUOUS;
->  
->  	dev_info(&ch->cmt->pdev->dev, "ch%u: used as clock source\n",
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Jason
