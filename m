@@ -2,110 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC193A277F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 717493A2781
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhFJI4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:56:36 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:37164 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230029AbhFJI4f (ORCPT
+        id S230043AbhFJI50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 04:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229778AbhFJI5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:56:35 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15A8praJ018129;
-        Thu, 10 Jun 2021 10:54:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=US13dRyJ4ae/LubuDFGUyWZmKyQMuMTjP+dI9w7XKGg=;
- b=Ixm+qHel0qawwtKyV2HGqzY68LEnPZtupg9TiPFFR4YGeyQK6ZF4QvMm53ctI7qvOYfV
- Uyinf0wlYgrlPcbfd1RmnijdVXG1eapGxbQbmpk420cW3ZzU+4PmNxIo0zES8hEJuPIW
- EJWbgHKxwdlZGKDXr5mcyNzlGJJucNkVXzwk9p8iif5nh4aUgQwLpT2uU0gzhBksJT4R
- 3tO1Zr+HfZ596OQSvzswlE+/QYWJxVNSpgkZ9UQPVz1/HfAMX4KIKfWxhtSvK/uVgUhi
- Y7bFXxrRkvnjowt6smzAMtSX7z3m6iTsV+Dtc3E3EeTTe1QtRwocbdAB78Z45i/gKyU2 kg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39350hb8u5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 10:54:23 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AEA8A10002A;
-        Thu, 10 Jun 2021 10:54:21 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 91302219DA9;
-        Thu, 10 Jun 2021 10:54:21 +0200 (CEST)
-Received: from lmecxl0566.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Jun
- 2021 10:54:20 +0200
-Subject: Re: [PATCH 1/2] serial: stm32: reset dma buffers during probe
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Jiri Slaby <jslaby@suse.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-serial@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Valentin Caron <valentin.caron@foss.st.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>
-References: <20210527091537.8997-1-erwan.leray@foss.st.com>
- <20210527091537.8997-2-erwan.leray@foss.st.com> <YK9rDVeg0W9WE+9a@kroah.com>
-From:   Erwan LE RAY <erwan.leray@foss.st.com>
-Message-ID: <fc153364-b78a-3199-129f-5c6fb7353d49@foss.st.com>
-Date:   Thu, 10 Jun 2021 10:54:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 10 Jun 2021 04:57:22 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EECDC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 01:55:10 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id a1so1981647lfr.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 01:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=k8HHrhbDqQGirpSdp4ZdVQqESPBnbofSKT7LecLAJ9w=;
+        b=mN3F3DYIRqj3v9kvQkuTf5YUM7BDyxusg+h9GvudYAxE2ohZCFPzTyVtLUTz266nMc
+         In45IyTHEvNUDf/hpWrOU8nQtBJ5K4HFD5cgcOUej3vbOoy8knM12+eg3k49f0eaXDzG
+         K4qwXv8cQVkoeCLhoVCeZrlrWQLeAI9KBnwxJy2qNW2FJwI8pPHiEY/029AuKAWJ3Hbk
+         DrxJ9zcPsS2MWznSQ/39WuWdod4rr5FqDIg+8v+YUJPJvE/2YJ1LjtZrcbqESoWXq5k/
+         0sOP86BBymiSplwP354vtkU9qylx3ob7x6BD2SudvT/m4CRjnmoMx238oNgvoSU2JR2x
+         AYag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k8HHrhbDqQGirpSdp4ZdVQqESPBnbofSKT7LecLAJ9w=;
+        b=RIzchT5PL0fby+E7BwYfztPp1nYjqcXqHoPPxYZF84N4Ga7rPk+jgQHbISHh7vcMCh
+         bVQlrgT2p0Kxe73GOAT9LW47aQveJbT9SH1F/fe3pWljPq0s+q2YZZJ5fqwuPx2Juxeo
+         H9Qgf+3JLH6EoDru4M67PDQy/nuKDkOvTw1HKO6+mVP31e40JFi/fOvWIvsSjZrSfC0X
+         77IMJxHhSJpegDEYUWivlNwDCNtRcRbPuWZ3vtPf2mJz/u3Uj8wriQZ+gFjWynvhcSwK
+         FFpNcx+Z5FMgbvFHnVQ5y+QtH3IXHCK0yClSErDYBARiF4fB3/G16kynYWIiXq/lxCWY
+         Zl1g==
+X-Gm-Message-State: AOAM533mt9IbYFlmq+PLiout2KLP8jSYBNOHBdAkub2nCf3tG0w4nwl0
+        ivsDWod/NitJKIUlJ7e0eZGmLA==
+X-Google-Smtp-Source: ABdhPJyfrY1aNiHSavPGpNgO2zxhunWxGSOaf4UNaIjUOZfRquJaVe6wo5dkTZFvxh9D/IpLCOgbHg==
+X-Received: by 2002:a19:4949:: with SMTP id l9mr1209925lfj.642.1623315307579;
+        Thu, 10 Jun 2021 01:55:07 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id x19sm255787lfe.270.2021.06.10.01.55.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 01:55:06 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id BA96D1027EE; Thu, 10 Jun 2021 11:55:22 +0300 (+03)
+Date:   Thu, 10 Jun 2021 11:55:22 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/11] mm: page_vma_mapped_walk(): use page for pvmw->page
+Message-ID: <20210610085522.f5ffyejzn3xtqark@box.shutemov.name>
+References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
+ <88e67645-f467-c279-bf5e-af4b5c6b13eb@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YK9rDVeg0W9WE+9a@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-10_03:2021-06-10,2021-06-10 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <88e67645-f467-c279-bf5e-af4b5c6b13eb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-Thanks for your question. This old patch is finally not necessary any more.
-You can cancel this series, I will resend the second patch.
-
-Best regards, Erwan.
-
-
-On 5/27/21 11:49 AM, Greg Kroah-Hartman wrote:
-> On Thu, May 27, 2021 at 11:15:36AM +0200, Erwan Le Ray wrote:
->> Reset Rx and Tx dma buffers during probe to avoid freeing
->> invalid buffer in no dma mode.
->>
->> Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
->>
->> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
->> index c2ae7b392b86..2ac3b30477a7 100644
->> --- a/drivers/tty/serial/stm32-usart.c
->> +++ b/drivers/tty/serial/stm32-usart.c
->> @@ -1168,6 +1168,8 @@ static struct stm32_port *stm32_usart_of_get_port(struct platform_device *pdev)
->>   	stm32_ports[id].cr1_irq = USART_CR1_RXNEIE;
->>   	stm32_ports[id].cr3_irq = 0;
->>   	stm32_ports[id].last_res = RX_BUF_L;
->> +	stm32_ports[id].rx_dma_buf = 0;
->> +	stm32_ports[id].tx_dma_buf = 0;
->>   	return &stm32_ports[id];
->>   }
->>   
->> -- 
->> 2.17.1
->>
+On Wed, Jun 09, 2021 at 11:34:40PM -0700, Hugh Dickins wrote:
+> page_vma_mapped_walk() cleanup: sometimes the local copy of pvwm->page was
+> used, sometimes pvmw->page itself: use the local copy "page" throughout.
 > 
-> Is this a bugfix?  if so, what commit does this fix and does it need to
-> be backported anywhere?
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Cc: <stable@vger.kernel.org>
+
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+
+A question below.
+
+> ---
+>  mm/page_vma_mapped.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 > 
-> thanks,
-> 
-> greg k-h
-> 
+> diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+> index e37bd43904af..a6dbf714ca15 100644
+> --- a/mm/page_vma_mapped.c
+> +++ b/mm/page_vma_mapped.c
+> @@ -156,7 +156,7 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+>  	if (pvmw->pte)
+>  		goto next_pte;
+>  
+> -	if (unlikely(PageHuge(pvmw->page))) {
+> +	if (unlikely(PageHuge(page))) {
+>  		/* when pud is not present, pte will be NULL */
+>  		pvmw->pte = huge_pte_offset(mm, pvmw->address, page_size(page));
+>  		if (!pvmw->pte)
+> @@ -217,8 +217,7 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+>  		 * cannot return prematurely, while zap_huge_pmd() has
+>  		 * cleared *pmd but not decremented compound_mapcount().
+>  		 */
+> -		if ((pvmw->flags & PVMW_SYNC) &&
+> -		    PageTransCompound(pvmw->page)) {
+> +		if ((pvmw->flags & PVMW_SYNC) && PageTransCompound(page)) {
+>  			spinlock_t *ptl = pmd_lock(mm, pvmw->pmd);
+>  
+>  			spin_unlock(ptl);
+> @@ -234,9 +233,9 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+>  			return true;
+>  next_pte:
+>  		/* Seek to next pte only makes sense for THP */
+> -		if (!PageTransHuge(pvmw->page) || PageHuge(pvmw->page))
+> +		if (!PageTransHuge(page) || PageHuge(page))
+>  			return not_found(pvmw);
+> -		end = vma_address_end(pvmw->page, pvmw->vma);
+> +		end = vma_address_end(page, pvmw->vma);
+>  		do {
+>  			pvmw->address += PAGE_SIZE;
+>  			if (pvmw->address >= end)
+
+I see two more pvmw->page in this loop. Do you leave them here as the code
+will be rewritten later in the patchset?
+
+-- 
+ Kirill A. Shutemov
