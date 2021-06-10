@@ -2,90 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1A23A2C5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5293D3A2C61
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhFJNEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhFJNEx (ORCPT
+        id S230405AbhFJNFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:05:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39754 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230188AbhFJNFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:04:53 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC000C061574;
-        Thu, 10 Jun 2021 06:02:43 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 27so22541180pgy.3;
-        Thu, 10 Jun 2021 06:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U9LSFZNbm/MaeD6MXhWHORKk8t5cnVy9vvWN1eklncY=;
-        b=GapnyBzWAYxsChJY5VZdzy15cr9KtHFu0jvhzep4p+iBiJ8BWi35QeYBDNzWKhhF0A
-         8jUYWz4QUYOkR8Nb7iiNMJF2vjXvq+FH/h2AYz2Z0HIMtip2ld4cdxzqo16qJXaWKEXP
-         ywb665TSPMTaNDRra7ApG1K66nDUjdn5O6qqrWLEmjciKl2pwlCGK2dnzH5lr0IhxAhw
-         t4u0wLBxA/OSqMD0G8rnDS8eBZkxgeZqGYccsTHdub9YbEMiUcMROCfODnINtfNYaWzm
-         pKQZUeR2mppQzW9dZelw6qA8wPsez2+7uuEIj0fdf9kQoiFRAITPcSN1Kknx6KpDmxlU
-         CeMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U9LSFZNbm/MaeD6MXhWHORKk8t5cnVy9vvWN1eklncY=;
-        b=NsAV/zaEeOBHxnvnCqP0Z/pyISFUver1BIOCPuLFW3xSW3DBlApu4rT3XV/ZjLy4px
-         F+yL1wAyXyk0Syl+Mu0G/IiCi2tO36A+hjXDPfs04wKzmodN/TDWp0E8ZvKmFsBwGqK5
-         tdXMNE2oNhNsnNq3roU0kfBvME/MJiDG9goEY2kLxWELnC7PJ/xdhMAmKaCtGVyPyY67
-         xysHZo1OD6S+LTyqYD3RAMOU3KFoYOZPODQBPckB0sJVYVMYdYB71rY5YbPSYjrzy4Gy
-         K5TYHMt6c7T1hlYUp1S66dGnvvTczMS9ax9xnoSKLgIYAbVCfFqMDpphw7szl7KFEcr4
-         frdw==
-X-Gm-Message-State: AOAM533kyXrVLVdd4elhIbWhuWw10c12rp/xjBa23Vr1DIOE4ptwyI4t
-        +OW1vkWr7NkhyhJ6ocUyfcOTeP5+FwP93QTWmkY=
-X-Google-Smtp-Source: ABdhPJySIuUkGxwqNSpMGDUs0nvJGIno65c9UYq/3MMYyTEPeDk0XSOivlDmmBxi3SBkE/K38KUUz8+M4wSeClKis24=
-X-Received: by 2002:a62:e404:0:b029:2ee:f086:726f with SMTP id
- r4-20020a62e4040000b02902eef086726fmr2916062pfh.7.1623330163446; Thu, 10 Jun
- 2021 06:02:43 -0700 (PDT)
+        Thu, 10 Jun 2021 09:05:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623330234;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w1yRG9vI4ont0xlQTDfWQBvjqAZg/7xjdkXXrg1Zl+M=;
+        b=WjzeOjJFr2D4llpTZaYez/OMil270b+h7wDPMX/8SVktCogmt/PvUJ3HsHWoCKwicjaoB/
+        0KoivJJFE4d1TzRx548V88z3w5jqsWpfIEBf9SUOjXY0UzxaTLQz0LkRSFO6SreFBRbmAL
+        AEXdUhz3kvYKghhqQtGxtXUn9Pey790=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-211-2Zzpl9QmNe-i8YEvI8cx5A-1; Thu, 10 Jun 2021 09:03:51 -0400
+X-MC-Unique: 2Zzpl9QmNe-i8YEvI8cx5A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95914100C624;
+        Thu, 10 Jun 2021 13:03:47 +0000 (UTC)
+Received: from work-vm (ovpn-114-240.ams2.redhat.com [10.36.114.240])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 552845C1D1;
+        Thu, 10 Jun 2021 13:03:30 +0000 (UTC)
+Date:   Thu, 10 Jun 2021 14:03:27 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com, Borislav Petkov <bp@suse.de>
+Subject: Re: [PATCH Part2 RFC v3 06/37] x86/sev: Add helper functions for
+ RMPUPDATE and PSMASH instruction
+Message-ID: <YMINnxkDVzRZ8gCQ@work-vm>
+References: <20210602141057.27107-1-brijesh.singh@amd.com>
+ <20210602141057.27107-7-brijesh.singh@amd.com>
 MIME-Version: 1.0
-References: <20210610124556.34507-1-paul@crapouillou.net> <20210610124556.34507-2-paul@crapouillou.net>
- <CAHp75VfR5jjMjDhFRvtT01EbuSTwDBi3HERDKi306mRK22+Fnw@mail.gmail.com>
-In-Reply-To: <CAHp75VfR5jjMjDhFRvtT01EbuSTwDBi3HERDKi306mRK22+Fnw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 10 Jun 2021 16:02:27 +0300
-Message-ID: <CAHp75Vf=S2xUYdxNYO1vnjL29q2NhfzFXB_pfi1OCEmvpBv==w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] iio: core: Support removing extended name in
- attribute filename
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602141057.27107-7-brijesh.singh@amd.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 3:58 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Jun 10, 2021 at 3:47 PM Paul Cercueil <paul@crapouillou.net> wrote:
-> >
-> > By default, when a channel has an extended name, it will appear in the
-> > filename of channel attributes. E.g. if the extended name is "aux", the
-> > filename of a "sample_rate" attribute will be something like:
-> > in_voltage0_aux_sample_rate
-> >
-> > Add a mechanism to disable this feature. This will be used to add a
-> > "extended_name" channel attribute.
->
-> I'm afraid, NAK. Otherwise, please put an explanation that clearly
-> shows that it will be no ABI breakage.
-> I.o.w. users for the existing drivers and devices will always get
-> those attributes at the same platform configuration(s).
+* Brijesh Singh (brijesh.singh@amd.com) wrote:
+> The RMPUPDATE instruction writes a new RMP entry in the RMP Table. The
+> hypervisor will use the instruction to add pages to the RMP table. See
+> APM3 for details on the instruction operations.
+> 
+> The PSMASH instruction expands a 2MB RMP entry into a corresponding set of
+> contiguous 4KB-Page RMP entries. The hypervisor will use this instruction
+> to adjust the RMP entry without invalidating the previous RMP entry.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/kernel/sev.c | 42 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/sev.h   | 20 ++++++++++++++++++++
+>  2 files changed, 62 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+> index 51676ab1a321..9727df945fb1 100644
+> --- a/arch/x86/kernel/sev.c
+> +++ b/arch/x86/kernel/sev.c
+> @@ -2226,3 +2226,45 @@ struct rmpentry *snp_lookup_page_in_rmptable(struct page *page, int *level)
+>  	return entry;
+>  }
+>  EXPORT_SYMBOL_GPL(snp_lookup_page_in_rmptable);
+> +
+> +int psmash(struct page *page)
+> +{
+> +	unsigned long spa = page_to_pfn(page) << PAGE_SHIFT;
+> +	int ret;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		return -ENXIO;
+> +
+> +	/* Retry if another processor is modifying the RMP entry. */
+> +	do {
+> +		/* Binutils version 2.36 supports the PSMASH mnemonic. */
+> +		asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
+> +			      : "=a"(ret)
+> +			      : "a"(spa)
+> +			      : "memory", "cc");
+> +	} while (ret == FAIL_INUSE);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(psmash);
+> +
+> +int rmpupdate(struct page *page, struct rmpupdate *val)
+> +{
+> +	unsigned long spa = page_to_pfn(page) << PAGE_SHIFT;
+> +	int ret;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		return -ENXIO;
+> +
+> +	/* Retry if another processor is modifying the RMP entry. */
+> +	do {
+> +		/* Binutils version 2.36 supports the RMPUPDATE mnemonic. */
+> +		asm volatile(".byte 0xF2, 0x0F, 0x01, 0xFE"
+> +			     : "=a"(ret)
+> +			     : "a"(spa), "c"((unsigned long)val)
+> +			     : "memory", "cc");
+> +	} while (ret == FAIL_INUSE);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(rmpupdate);
+> diff --git a/include/linux/sev.h b/include/linux/sev.h
+> index 83c89e999999..bcd4d75d87c8 100644
+> --- a/include/linux/sev.h
+> +++ b/include/linux/sev.h
+> @@ -39,13 +39,33 @@ struct __packed rmpentry {
+>  
+>  #define RMP_TO_X86_PG_LEVEL(level)	(((level) == RMP_PG_SIZE_4K) ? PG_LEVEL_4K : PG_LEVEL_2M)
+>  
+> +struct rmpupdate {
+> +	u64 gpa;
+> +	u8 assigned;
+> +	u8 pagesize;
+> +	u8 immutable;
+> +	u8 rsvd;
+> +	u32 asid;
+> +} __packed;
+> +
+> +
+> +/*
+> + * The psmash() and rmpupdate() returns FAIL_INUSE when another processor is
+> + * modifying the RMP entry.
+> + */
+> +#define FAIL_INUSE              3
 
-Reading two patches doesn't show to me any breakage so far, am I
-right? Then amend the commit message, please.
+Perhaps SEV_FAIL_INUSE ?
 
+(Given that there are a whole buunch of FAIL_* macros already in
+general)
+
+Dave
+
+>  #ifdef CONFIG_AMD_MEM_ENCRYPT
+>  struct rmpentry *snp_lookup_page_in_rmptable(struct page *page, int *level);
+> +int psmash(struct page *page);
+> +int rmpupdate(struct page *page, struct rmpupdate *e);
+>  #else
+>  static inline struct rmpentry *snp_lookup_page_in_rmptable(struct page *page, int *level)
+>  {
+>  	return NULL;
+>  }
+> +static inline int psmash(struct page *page) { return -ENXIO; }
+> +static inline int rmpupdate(struct page *page, struct rmpupdate *e) { return -ENXIO; }
+>  
+>  #endif /* CONFIG_AMD_MEM_ENCRYPT */
+>  #endif /* __LINUX_SEV_H */
+> -- 
+> 2.17.1
+> 
+> 
 -- 
-With Best Regards,
-Andy Shevchenko
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+
