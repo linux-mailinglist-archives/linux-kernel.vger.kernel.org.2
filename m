@@ -2,89 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C52D3A2D03
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E7E3A2CFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbhFJNbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:31:09 -0400
-Received: from mail-oo1-f48.google.com ([209.85.161.48]:34492 "EHLO
-        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhFJNbI (ORCPT
+        id S231148AbhFJNa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:30:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32721 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230410AbhFJNaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:31:08 -0400
-Received: by mail-oo1-f48.google.com with SMTP id i8-20020a4aa1080000b0290201edd785e7so6775109ool.1;
-        Thu, 10 Jun 2021 06:28:56 -0700 (PDT)
+        Thu, 10 Jun 2021 09:30:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623331739;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PlqPawYArazO4EePzETjFqSxt008hDP9xscnSm3Mc0w=;
+        b=dKPIxFJ6BRoY81iV9SeeAUBLpKBJZHNpT6Q64+YZ8eJbsYqlqjiz29gSSiddlUsyJBVRnB
+        A0+V2OJacPXk/9GXfpPIeDTqd+jyGw8YZwQgxxZ8SaA/BF026BeHZbknMaTe+SmSY+Nnjy
+        2Xar5aewRylPtsL/YUloniBHsQ2YsN4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-501-HgVcy08jOPOIqj91I9t1pQ-1; Thu, 10 Jun 2021 09:28:57 -0400
+X-MC-Unique: HgVcy08jOPOIqj91I9t1pQ-1
+Received: by mail-wr1-f70.google.com with SMTP id g14-20020a5d698e0000b0290117735bd4d3so886476wru.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 06:28:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=usI/+u4XtISFZVHRz7Nuoee8ZW5mOj7emFTwtljSgXE=;
-        b=MUoOo+XzHjn7QZ80fSGELN9sAxIl86paFnEYtXWWlpUHv8QYUn9ousZ5oeK0VZHJXL
-         picEvHYR4QsJ1v1Yprr1nOtW5s3ngLxbzG8mihYkyDdZzdfJzziblXFt/uFRWZeH+eNH
-         Qu1cLUXEVu/iNxSt86Mzkb0yGiMcUt5mbm8x+hcziAwT0sLWF5UrSCHWkp7SWj+JIHvh
-         kzzzABOF1XOty8gwkUA5VrIm9yDG6qKt2/qMszg3AC7WDmhM0CJwTRIXwS5Daw9ZBUlV
-         I6n9gGJ+e8gjZrw32R6i9vYW4/Y5EtPzHFtOAy9iuIxmV1X8B8p1fvVGZjHnIxbmb11r
-         7xAA==
-X-Gm-Message-State: AOAM533AGR9U+Q+lURTxZpqxaH+qXGTI8qdSfNKp+y7lY+4XQfEqogsF
-        Tx+tLzpgs8c7g4dzfgBqGKaQqxOu0KoVIzc3yq8=
-X-Google-Smtp-Source: ABdhPJwBqjvhtrkp9WPzbG4Hw6L1O3KdsOrTkXommgDsWYtjLFOkEkfFrWR46znrKMXBXhvLcon3WaON28lz8M1ia7s=
-X-Received: by 2002:a4a:a9c8:: with SMTP id h8mr2410450oon.1.1623331736507;
- Thu, 10 Jun 2021 06:28:56 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PlqPawYArazO4EePzETjFqSxt008hDP9xscnSm3Mc0w=;
+        b=qLwaaVedWyZkh7bbtKdusbqlcfbmIP7jJcNAdmAAHNvw5rYVDkSgU3wWsHas847tvN
+         Q1Ovs7M7knZVE4tbMQb/7PmPVPVtT/3tgvxZ+ob6LLgAN2K76CbM6qG9kT47dHrgdH0t
+         N0Kz8+e7hoJZ7S+7WlgFcGMQaUTAYa47GOP6DLBDYJG6zHrEaFA9aIJJXs1uGGoQgiE4
+         0BOXBxMrvHm04NwoK1NTai3DxhYqfON2pkUAfS70FGjzJbpDRq8g5p0fNxdeAxJ0N/Tb
+         3Emwu+wUVMy0HqwPV2QEtMqU696Uz0BRpnWWXEbhSZ0UF+pOTwxkCj05n+O+xvRmenkz
+         nYIg==
+X-Gm-Message-State: AOAM530W5+yosxdlUy+/SVWC9xn1jk5KMqNxeZOLN1qT2eotzeFTzAfd
+        GHKSOZFCgtrYnitPSjoxK018uita/ZFs0rPm7cBgK97o9Ic94pkVb9NMaDEK7Fk+lP44or+DKrT
+        QjXQbYIX7HUD8sFZ10Jeka95+
+X-Received: by 2002:a05:6000:1889:: with SMTP id a9mr5575599wri.288.1623331736723;
+        Thu, 10 Jun 2021 06:28:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzAv1xai1qFmu7u1yp22S9GYwfnxl8Ag90DTPRjFRmef50BS0D0Bsl8/7GwaQ8GVD+a8zOcMA==
+X-Received: by 2002:a05:6000:1889:: with SMTP id a9mr5575578wri.288.1623331736489;
+        Thu, 10 Jun 2021 06:28:56 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id v132sm10354950wmb.14.2021.06.10.06.28.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 06:28:55 -0700 (PDT)
+Subject: Re: [PATCH 0/9] KVM: x86: Fix NULL pointer #GP due to RSM bug
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fb0b6a7e8713aeb0319c@syzkaller.appspotmail.com
+References: <20210609185619.992058-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <685b11c1-54a6-3a52-8157-4a10a95251ca@redhat.com>
+Date:   Thu, 10 Jun 2021 15:28:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210609173312.298414-1-colin.king@canonical.com>
-In-Reply-To: <20210609173312.298414-1-colin.king@canonical.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 10 Jun 2021 15:28:45 +0200
-Message-ID: <CAJZ5v0h962RaReLhKSkOMxb6BT44GAwrFq9qLqChfTH3v__toQ@mail.gmail.com>
-Subject: Re: [PATCH][next] ACPI: scan: ensure ret is initialized to avoid
- garbage being returned
-To:     Colin King <colin.king@canonical.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210609185619.992058-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 7:33 PM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> In the unlikely event that there are no callback calls made then ret
-> will be returned as an uninitialized value. Clean up static analysis
-> warnings by ensuring ret is initialized.
->
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: a9e10e587304 ("ACPI: scan: Extend acpi_walk_dep_device_list()")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/acpi/scan.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index c3067e8bfc47..0945d952f0fc 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -2151,7 +2151,7 @@ int acpi_walk_dep_device_list(acpi_handle handle,
->                               void *data)
->  {
->         struct acpi_dep_data *dep, *tmp;
-> -       int ret;
-> +       int ret = 0;
->
->         mutex_lock(&acpi_dep_list_lock);
->         list_for_each_entry_safe(dep, tmp, &acpi_dep_list, node) {
-> --
+On 09/06/21 20:56, Sean Christopherson wrote:
+> Fix a NULL pointer dereference in gfn_to_rmap() that occurs if RSM fails,
+> reported by syzbot.
+> 
+> The immediate problem is that the MMU context's role gets out of sync
+> because KVM clears the SMM flag in the vCPU at the start of RSM emulation,
+> but only resets the MMU context if RSM succeeds.  The divergence in vCPU
+> vs. MMU role with respect to the SMM flag causes explosions if the non-SMM
+> memslots have gfn ranges that are not present in the SMM memslots, because
+> the MMU expects that the memslot for a shadow page cannot magically
+> disappear.
+> 
+> The other obvious problem is that KVM doesn't emulate triple fault on RSM
+> failure, e.g. it keeps running the vCPU in a frankenstate instead of
+> exiting to userspace.  Fixing that would squash the syzbot repro, but
+> would not fix the underlying issue because nothing prevents userspace from
+> calling KVM_RUN on a vCPU that hit shutdown (yay lack of a shutdown state).
+> But, it's easy to fix and definitely worth doing.
+> 
+> Everything after the two bug fixes is cleanup.
+> 
+> Ben Gardon has an internal patch or two that guards against the NULL
+> pointer dereference in gfn_to_rmap().  I'm planning on getting that
+> functionality posted (needs a little massaging) so that these types of
+> snafus don't crash the host (this isn't the first time I've introduced a
+> bug that broke gfn_to_rmap(), though thankfully it's the first time such
+> a bug has made it upstream, knock on wood).
+> 
+> Amusingly, adding gfn_to_rmap() NULL memslot checks might even be a
+> performance improvement.  Because gfn_to_rmap() doesn't check the memslot
+> before using it, and because the compiler can see the search_memslots()
+> returns NULL/0, gcc often/always generates dedicated (and hilarious) code
+> for NULL, e.g. this #GP was caused by an explicit load from 0:
+> 
+>    48 8b 14 25 00 00 00 00	mov    0x0,%rdx
+> 
+> 
+> Sean Christopherson (9):
+>    KVM: x86: Immediately reset the MMU context when the SMM flag is
+>      cleared
+>    KVM: x86: Emulate triple fault shutdown if RSM emulation fails
+>    KVM: x86: Replace .set_hflags() with dedicated .exiting_smm() helper
+>    KVM: x86: Invoke kvm_smm_changed() immediately after clearing SMM flag
+>    KVM: x86: Move (most) SMM hflags modifications into kvm_smm_changed()
+>    KVM: x86: Move "entering SMM" tracepoint into kvm_smm_changed()
+>    KVM: x86: Rename SMM tracepoint to make it reflect reality
+>    KVM: x86: Drop .post_leave_smm(), i.e. the manual post-RSM MMU reset
+>    KVM: x86: Drop "pre_" from enter/leave_smm() helpers
+> 
+>   arch/x86/include/asm/kvm-x86-ops.h |  4 +--
+>   arch/x86/include/asm/kvm_host.h    |  4 +--
+>   arch/x86/kvm/emulate.c             | 31 ++++++++++-------
+>   arch/x86/kvm/kvm_emulate.h         |  7 ++--
+>   arch/x86/kvm/svm/svm.c             |  8 ++---
+>   arch/x86/kvm/trace.h               |  2 +-
+>   arch/x86/kvm/vmx/vmx.c             |  8 ++---
+>   arch/x86/kvm/x86.c                 | 53 +++++++++++++++---------------
+>   8 files changed, 61 insertions(+), 56 deletions(-)
+> 
 
-Applied with some edits in the subject and changelog.
+Queued 2-9 too for 5.14, with Vitaly's suggested change for patch 2.
 
-Basically, if you make changes like this, please specify which piece
-of code you change in the subject/changelog.
+Paolo
 
-Thanks!
