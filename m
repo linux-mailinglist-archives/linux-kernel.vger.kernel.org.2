@@ -2,131 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073BC3A2F96
+	by mail.lfdr.de (Postfix) with ESMTP id BAB123A2F98
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbhFJPos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:44:48 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9528 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230280AbhFJPon (ORCPT
+        id S231623AbhFJPo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:44:58 -0400
+Received: from disco-boy.misterjones.org ([51.254.78.96]:44302 "EHLO
+        disco-boy.misterjones.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231737AbhFJPor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:44:43 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15AFXO9a191021;
-        Thu, 10 Jun 2021 11:42:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=C7T1dNiDQ2imTqntlWjIOOSa+cy5WfZb/znhYm7cuOo=;
- b=KJaB4swg7yxXlUgl4My5M+ngYjmdmpJ0rMKmJPDCWmpGBV3YVuFrH9g40OVZPk2lvGa4
- nXEMD4/leBFZ1GCjJtD5+SSWGlguh6AhZ9HmlIoFYtJypTHWkk+Tmq6nrPO1qw/7a1qH
- 1su1DlWsi9w6NgNWdzGe67mwpIKxmGgjdGOfhX5rRbRO3mLCTWRXUMO1G2A1xFrXtb+o
- JYKgdLuafjEy3lzmq3e0I3c3m/MGrMjGpOJIs340xK8X+qUx9TUzWRYaeg79G5LOwgLY
- WBncbGVcF4JcQHnm1JsZlyd2Qg15WEuSJ+sJPlqXvUdw74TYVsaoZ6KXI0oCNWzAhW7H 7g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 393maq2ymt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 11:42:29 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15AFXOdk191134;
-        Thu, 10 Jun 2021 11:42:28 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 393maq2ykf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 11:42:28 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15AFa5Nb000714;
-        Thu, 10 Jun 2021 15:42:26 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3900w8jwt9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 15:42:26 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15AFgN4A33685930
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Jun 2021 15:42:23 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1BC6D4204B;
-        Thu, 10 Jun 2021 15:42:23 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 714BF42045;
-        Thu, 10 Jun 2021 15:42:22 +0000 (GMT)
-Received: from ibm-vm.ibmuc.com (unknown [9.145.5.240])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Jun 2021 15:42:22 +0000 (GMT)
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, cohuck@redhat.com,
-        david@redhat.com, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH v3 2/2] KVM: s390: fix for hugepage vmalloc
-Date:   Thu, 10 Jun 2021 17:42:20 +0200
-Message-Id: <20210610154220.529122-3-imbrenda@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210610154220.529122-1-imbrenda@linux.ibm.com>
-References: <20210610154220.529122-1-imbrenda@linux.ibm.com>
+        Thu, 10 Jun 2021 11:44:47 -0400
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <maz@misterjones.org>)
+        id 1lrMpR-006lZz-3S; Thu, 10 Jun 2021 16:42:45 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: f2bIjlpU2qOZC5QP62bw1yslvSASTZBD
-X-Proofpoint-GUID: jkcCYnLSx41nMxS6qSlPTyO2Y6TQYMln
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-10_10:2021-06-10,2021-06-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=687 spamscore=0
- clxscore=1015 priorityscore=1501 mlxscore=0 lowpriorityscore=0 bulkscore=0
- phishscore=0 adultscore=0 malwarescore=0 suspectscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106100099
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 10 Jun 2021 16:42:45 +0100
+From:   Marc Zyngier <maz@misterjones.org>
+To:     Ard Biesheuvel <ardb@kernel.org>, Boqun Feng <boqun.feng@gmail.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hyperv@vger.kernel.org, PCI <linux-pci@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, Clint Sbisa <csbisa@amazon.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>
+Subject: Re: [RFC v3 0/7] PCI: hv: Support host bridge probing on ARM64
+In-Reply-To: <CAMj1kXGwa28T5Cr_64OC4rqE3qhwWQz+BJPwjdr54G-pVf9+pA@mail.gmail.com>
+References: <20210609163211.3467449-1-boqun.feng@gmail.com>
+ <CAMj1kXGwa28T5Cr_64OC4rqE3qhwWQz+BJPwjdr54G-pVf9+pA@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <2283b22ae7832db348bd9b3eff3aab16@misterjones.org>
+X-Sender: maz@misterjones.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: ardb@kernel.org, boqun.feng@gmail.com, arnd@arndb.de, bhelgaas@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org, lorenzo.pieralisi@arm.com, robh@kernel.org, csbisa@amazon.com, sunilmut@microsoft.com
+X-SA-Exim-Mail-From: maz@misterjones.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Create Secure Configuration Ultravisor Call does not support using
-large pages for the virtual memory area. This is a hardware limitation.
+On 2021-06-10 16:01, Ard Biesheuvel wrote:
+> On Wed, 9 Jun 2021 at 18:32, Boqun Feng <boqun.feng@gmail.com> wrote:
+>> 
+>> Hi Bjorn, Arnd and Marc,
+>> 
+> 
+> Instead of cc'ing Arnd, you cc'ed me (Ard)
 
-This patch replaces the vzalloc call with an almost equivalent call to
-the newly introduced vmalloc_no_huge function, which guarantees that
-only small pages will be used for the backing.
+And I don't know if you intended to Cc me, but you definitely didn't.
 
-The new call will not clear the allocated memory, but that has never
-been an actual requirement.
+Thanks,
 
-Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Christoph Hellwig <hch@infradead.org>
----
- arch/s390/kvm/pv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+         M.
 
-diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-index 813b6e93dc83..ad7c6d7cc90b 100644
---- a/arch/s390/kvm/pv.c
-+++ b/arch/s390/kvm/pv.c
-@@ -140,7 +140,7 @@ static int kvm_s390_pv_alloc_vm(struct kvm *kvm)
- 	/* Allocate variable storage */
- 	vlen = ALIGN(virt * ((npages * PAGE_SIZE) / HPAGE_SIZE), PAGE_SIZE);
- 	vlen += uv_info.guest_virt_base_stor_len;
--	kvm->arch.pv.stor_var = vzalloc(vlen);
-+	kvm->arch.pv.stor_var = vmalloc_no_huge(vlen);
- 	if (!kvm->arch.pv.stor_var)
- 		goto out_err;
- 	return 0;
+> 
+>> This is the v3 for the preparation of virtual PCI support on Hyper-V
+>> ARM64. Previous versions:
+>> 
+>> v1:     
+>> https://lore.kernel.org/lkml/20210319161956.2838291-1-boqun.feng@gmail.com/
+>> v2:     
+>> https://lore.kernel.org/lkml/20210503144635.2297386-1-boqun.feng@gmail.com/
+>> 
+>> Changes since last version:
+>> 
+>> *       Use a sentinel value approach instead of calling
+>>         pci_bus_find_domain_nr() for every CONFIG_PCI_DOMAIN_GENERIC=y
+>>         arch as per suggestion from
+>> 
+>> *       Improve the commit log and comments for patch #6.
+>> 
+>> *       Rebase to the latest mainline.
+>> 
+>> The basic problem we need to resolve is that ARM64 is an arch with
+>> PCI_DOMAINS_GENERIC=y, so the bus sysdata is pci_config_window. 
+>> However,
+>> Hyper-V PCI provides a paravirtualized PCI interface, so there is no
+>> actual pci_config_window for a PCI host bridge, so no information can 
+>> be
+>> retrieve from the pci_config_window of a Hyper-V virtual PCI bus. Also
+>> there is no corresponding ACPI device for the Hyper-V PCI root bridge.
+>> 
+>> With this patchset, we could enable the virtual PCI on Hyper-V ARM64
+>> guest with other code under development.
+>> 
+>> Comments and suggestions are welcome.
+>> 
+>> Regards,
+>> Boqun
+>> 
+>> Arnd Bergmann (1):
+>>   PCI: hv: Generify PCI probing
+>> 
+>> Boqun Feng (6):
+>>   PCI: Introduce domain_nr in pci_host_bridge
+>>   PCI: Allow msi domain set-up at host probing time
+>>   PCI: hv: Use pci_host_bridge::domain_nr for PCI domain
+>>   PCI: hv: Set up msi domain at bridge probing time
+>>   arm64: PCI: Support root bridge preparation for Hyper-V PCI
+>>   PCI: hv: Turn on the host bridge probing on ARM64
+>> 
+>>  arch/arm64/kernel/pci.c             |  7 ++-
+>>  drivers/pci/controller/pci-hyperv.c | 87 
+>> +++++++++++++++++------------
+>>  drivers/pci/probe.c                 |  9 ++-
+>>  include/linux/pci.h                 | 10 ++++
+>>  4 files changed, 73 insertions(+), 40 deletions(-)
+>> 
+>> --
+>> 2.30.2
+>> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
 -- 
-2.31.1
-
+Who you jivin' with that Cosmik Debris?
