@@ -2,155 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D98C3A2851
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F33D3A28DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhFJJgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:36:33 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:22272 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhFJJgb (ORCPT
+        id S230052AbhFJJ74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:59:56 -0400
+Received: from mail-lf1-f53.google.com ([209.85.167.53]:33535 "EHLO
+        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhFJJ7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:36:31 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210610093434epoutp02812de31ec7426b660e241f09e6398634~HLtLuKj7D2701827018epoutp02i
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 09:34:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210610093434epoutp02812de31ec7426b660e241f09e6398634~HLtLuKj7D2701827018epoutp02i
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1623317674;
-        bh=tka+wauzcwrxN6frgRaLl2DI37frHB5OBI/dmYS0S7w=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=W8ZD4SSRV7I1MDThsNfrxw+/I8GXuhVamYnqH0Jcofc+1MotvGpbqYSEcCn31LKG0
-         oc10J85PxSBUpzUo8RWWu81RDA+bS3hvwOhBWb/GE7yoETLr6KG6Ffq6l3LteWA5bD
-         tJo+7aEOzRYBitRN45dwjWL3kzsIhDGoWZnjasvk=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210610093433epcas1p4d2333a2fd28e81435e0dc6d26a04741b~HLtLZrqt72237822378epcas1p4x;
-        Thu, 10 Jun 2021 09:34:33 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.157]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4G0zMV66SPz4x9Pv; Thu, 10 Jun
-        2021 09:34:30 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        82.26.10258.6ACD1C06; Thu, 10 Jun 2021 18:34:30 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210610093430epcas1p10555aa78d768a5d20d10d6e1d9f84c29~HLtIH3Lau0538205382epcas1p1M;
-        Thu, 10 Jun 2021 09:34:30 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210610093430epsmtrp17e90aced3f027f0768204fa8423d9d54~HLtIHJ18S0176301763epsmtrp1h;
-        Thu, 10 Jun 2021 09:34:30 +0000 (GMT)
-X-AuditID: b6c32a38-419ff70000002812-59-60c1dca62d6d
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BD.DC.08637.6ACD1C06; Thu, 10 Jun 2021 18:34:30 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210610093430epsmtip2e08d80518fc33e325709d96a658b41c5~HLtH42RX60486304863epsmtip2N;
-        Thu, 10 Jun 2021 09:34:30 +0000 (GMT)
-Subject: Re: [PATCH RESEND v2 4/5] extcon: extcon-max8997: Fix IRQ freeing
- at error path
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
+        Thu, 10 Jun 2021 05:59:55 -0400
+Received: by mail-lf1-f53.google.com with SMTP id bp38so2334099lfb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:57:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=qwZZjnJPPw+eU6CxNz0JMWxXvn+B/S70Id3jVssorqg=;
+        b=cOCnoVQplDUqUOzVcVnQo0tsh/HYNrQ0zL5jhKm8fBMxMGswkR1LVeV5JvEGQKVCYB
+         7qHoKvYPnb3Uye8muIAiw+1dHGMBEyp/v0mPVEpf11stxen4GICoqr5yYrblQTJ8sQtl
+         1hC1Lc5jx/ir8D14+C+JxVgwCsdSxlMd73uNMQJPBfEVMKXwPydJ9Vk6695KT2LX9MD5
+         8OObSRPyhcCXoUHW15jngKUZy+hUWg28SFKGvnPeWKHp/tfFd+bL9YiLan31spw8LLg0
+         YSQf0UEbBFybTWwdhtU6pqqnxWjNqFwe3fKNU9iTm6nIvhdqnzksg2EqK3jHned1TTcr
+         KAig==
+X-Gm-Message-State: AOAM530PbX83rmhNh5VQJvkH1/TW9L3Mu/TK+e/rhDSnWtlKuE8ov4qT
+        +DXF/kNVSebocKRPcEAxUrE=
+X-Google-Smtp-Source: ABdhPJxWuWM3q8tYOQbGO6sWabkBOlqDtcIbsqGv/QqhSIxx6pUN2lhmm0k4ZKsmCo7+9owbghbHDQ==
+X-Received: by 2002:a05:6512:3f9b:: with SMTP id x27mr1471575lfa.279.1623319065468;
+        Thu, 10 Jun 2021 02:57:45 -0700 (PDT)
+Received: from dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id m12sm280243ljo.94.2021.06.10.02.57.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 02:57:45 -0700 (PDT)
+Message-ID: <5939eb35e75e9f1288042430c367650b2e8b2996.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH RESEND v2 3/5] extcon: extcon-max77693.c: Fix potential
+ work-queue cancellation race
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Chanwoo Choi <cw00.choi@samsung.com>
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         MyungJoo Ham <myungjoo.ham@samsung.com>,
         Hans de Goede <hdegoede@redhat.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <769ba891-288b-be62-c80a-d382b9d6bf0c@samsung.com>
-Date:   Thu, 10 Jun 2021 18:53:29 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
-MIME-Version: 1.0
-In-Reply-To: <27ee4a48ee775c3f8c9d90459c18b6f2b15edc76.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGJsWRmVeSWpSXmKPExsWy7bCmge6yOwcTDP4eMrDYOGM9q8Wb49OZ
-        LDa+/cFkcXnXHDaLtUfuslts//aIzWLO0hMsFrcbV7A5cHjMauhl8/h99DG7x85Zd9k93u+7
-        yubRt2UVo8fnTXIBbFHZNhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2
-        Si4+AbpumTlABykplCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCiwL9IoTc4tL89L1
-        kvNzrQwNDIxMgQoTsjP+vG1lLmjgqlh76TlbA+Nkji5GTg4JAROJTfMXM3UxcnEICexglFg/
-        9QEjhPOJUWLDnA3sEM43RomTO1aywrTsuDOJDSKxl1Hiwrq1LBDOe0aJaz2r2UGqhAWiJPZ3
-        NTKC2CICqRJPJ01lBiliFpjAJNHx6SxYEZuAlsT+FzfYQGx+AUWJqz8egzXwCthJ9HRsBVvH
-        IqAq8fvvXjBbVCBM4uS2FqgaQYmTM5+wgNicAhkSl1+fAathFjCQOLJoDpQtLnHryXwmCFte
-        YvvbOWBHSAis5JA4c3EbE8Q/LhKPfq2HsoUlXh3fwg5hS0m87G+DsqslVp48wgbR3MEosWX/
-        BWhgGEvsXzoZqllRYufvuYwQ2/gk3n3tAarhAIrzSnS0CUGUKEtcfnAXqlxSYnF7J9sERqVZ
-        SP6ZheSHWUh+mIXkhwWMLKsYxVILinPTU4sNC0yQY3wTIzjBalnsYJz79oPeIUYmDsZDjBIc
-        zEoivGWG+xKEeFMSK6tSi/Lji0pzUosPMZoCg3gis5Rocj4wxeeVxBuaGhkbG1uYGJqZGhoq
-        ifOmO1cnCAmkJ5akZqemFqQWwfQxcXBKNTBFzBPv83/P9Trqo/WFp4vLcq3meVj67/+cIvVu
-        58HTa+t+tro67qu8Zf5SZK25yx3GLY9nmuk+bPoyNXXvJo1L7S8vbvE3k/5uY8dRpyqz4saP
-        LNnZKSaZzvt+PCzS9VUu3bnzTEP9EcHy82f+vJ3Z47nlwY6fR1Yp818M/7/bMHJLVs32IFch
-        zsKoXVkrnh23jlp0LOhf6+PKeTtzF4a5S67Y8ZU9ZOGFuy5yRrPdq25aSRw71mC+f4O20W8H
-        ph+WMs+LasuEJVMCxRh/1k1gLrK4eX3GBy1Dne62fyuv8M55xZPkNOn/F+6Z7Us/TzC8d6bT
-        7+W/v/OeN/UEZEuXfJ8+ec0hrgXMti907u+arsRSnJFoqMVcVJwIAKlbI/45BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42LZdlhJXnfZnYMJBjdf8VlsnLGe1eLN8elM
-        Fhvf/mCyuLxrDpvF2iN32S22f3vEZjFn6QkWi9uNK9gcODxmNfSyefw++pjdY+esu+we7/dd
-        ZfPo27KK0ePzJrkAtigum5TUnMyy1CJ9uwSujD9vW5kLGrgq1l56ztbAOJmji5GTQ0LARGLH
-        nUlsXYxcHEICuxklvr2axAiRkJSYdvEocxcjB5AtLHH4cDFEzVtGie+PjzCB1AgLREn8vzCV
-        BaRGRCBVYtHLXJAaZoFJTBIds7ezQjR8Y5S4+G8ZK0gDm4CWxP4XN9hAbH4BRYmrPx6DLeMV
-        sJPo6dgKVsMioCrx++9eMFtUIExi55LHTBA1ghInZz5hAbE5BTIkLr8+A1bDLKAnseP6Lyhb
-        XOLWk/lMELa8xPa3c5gnMArPQtI+C0nLLCQts5C0LGBkWcUomVpQnJueW2xYYJiXWq5XnJhb
-        XJqXrpecn7uJERxjWpo7GLev+qB3iJGJg/EQowQHs5IIb5nhvgQh3pTEyqrUovz4otKc1OJD
-        jNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamC5I5RWrtFQFPnXQK5Xdodim/pXdYMV6
-        3+W5Luu+fmqZtX2vzQrLywsYumz5Jh+4maEQEKRlfabPY/l7iU/iZtNNwnXivhr3+67Wtlno
-        Wtaf67xsm9/BSW82TvrRcI2h00p+h+2lCnWW80flp3ekT7M51nTo5sJursrezvbmZPaD2l6O
-        UgrLFy7b9lsuIu5nhjMXlz+XRfWLsN8vV7Y3tt+IdfnX9T6+UXQje8ueyykZ81ImOrx0NvI4
-        Vc0X06dm9ZH3aqlOfu6OHSXeqpvKBe23ljXERZ2rNw68cd3kUdP+kIXSvGHTLgpN33Zv6eNM
-        hgij6afD1kYmzQ24nsJcoHW4+4J18d4syQihyVpKLMUZiYZazEXFiQCkN+6fIAMAAA==
-X-CMS-MailID: 20210610093430epcas1p10555aa78d768a5d20d10d6e1d9f84c29
-X-Msg-Generator: CA
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210608101044epcas1p1da70e58b0ffdcc1657744195f1654849
+        linux-kernel@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+In-Reply-To: <7f39c731-b644-0122-d68f-7da7e78b4252@samsung.com>
 References: <cover.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
-        <CGME20210608101044epcas1p1da70e58b0ffdcc1657744195f1654849@epcas1p1.samsung.com>
-        <27ee4a48ee775c3f8c9d90459c18b6f2b15edc76.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
+         <CGME20210608101022epcas1p1c1623dfb74f412153706d3986b373a03@epcas1p1.samsung.com>
+         <cbe8205eed8276f6e6db5003cfe51b8b0d4ac966.1623146580.git.matti.vaittinen@fi.rohmeurope.com>
+         <7f39c731-b644-0122-d68f-7da7e78b4252@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Date:   Thu, 10 Jun 2021 12:57:40 +0300
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/8/21 7:10 PM, Matti Vaittinen wrote:
-> If reading MAX8997_MUIC_REG_STATUS1 fails at probe the driver exits
-> without freeing the requested IRQs.
-> 
-> Free the IRQs prior returning if reading the status fails.
-> 
-> Fixes: 3e34c8198960 ("extcon: max8997: Avoid forcing UART path on drive probe")
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> ---
-> Changelog:
->  v2:
->    - new patch (avoid backporting devm_wq just to fix IRQ freeing)
-> ---
->  drivers/extcon/extcon-max8997.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max8997.c
-> index e1408075ef7d..c15a612067af 100644
-> --- a/drivers/extcon/extcon-max8997.c
-> +++ b/drivers/extcon/extcon-max8997.c
-> @@ -733,7 +733,7 @@ static int max8997_muic_probe(struct platform_device *pdev)
->  				2, info->status);
->  	if (ret) {
->  		dev_err(info->dev, "failed to read MUIC register\n");
-> -		return ret;
-> +		goto err_irq;
->  	}
->  	cable_type = max8997_muic_get_cable_type(info,
->  					   MAX8997_CABLE_GROUP_ADC, &attached);
-> 
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+On Thu, 2021-06-10 at 18:43 +0900, Chanwoo Choi wrote:
+> On 6/8/21 7:10 PM, Matti Vaittinen wrote:
+> > The extcon IRQ schedules a work item. IRQ is requested using devm
+> > while
+> > WQ is cancelld at remove(). This mixing of devm and manual
+> > unwinding has
+> > potential case where the WQ has been emptied (.remove() was ran)
+> > but
+> > devm unwinding of IRQ was not yet done. It may be possible the IRQ
+> > is
+> > triggered at this point scheduling new work item to the already
+> > flushed
+> > queue.
+> > 
+> > According to the input documentation the input device allocated by
+> > devm_input_allocate_device() does not need to be explicitly
+> > unregistered.
+> > Use the new devm_work_autocancel() and remove the remove() to
+> > simplify the
+> > code.
+> > 
+> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com
+> > >
+> > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> > ---
+> > 
+> > Please note that the change is compile-tested only. All proper
+> > testing is
+> > highly appreciated.
+> > ---
+> >  drivers/extcon/extcon-max77693.c | 17 +++++------------
+> >  1 file changed, 5 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/extcon/extcon-max77693.c
+> > b/drivers/extcon/extcon-max77693.c
+> > index 92af97e00828..1f1d9ab0c5c7 100644
+> > --- a/drivers/extcon/extcon-max77693.c
+> > +++ b/drivers/extcon/extcon-max77693.c
+> > @@ -5,6 +5,7 @@
+> >  // Copyright (C) 2012 Samsung Electrnoics
+> >  // Chanwoo Choi <cw00.choi@samsung.com>
+> >  
+> > +#include <linux/devm-helpers.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/module.h>
+> >  #include <linux/i2c.h>
+> > @@ -1127,7 +1128,10 @@ static int max77693_muic_probe(struct
+> > platform_device *pdev)
+> >  	platform_set_drvdata(pdev, info);
+> >  	mutex_init(&info->mutex);
+> >  
+> > -	INIT_WORK(&info->irq_work, max77693_muic_irq_work);
+> > +	ret = devm_work_autocancel(&pdev->dev, &info->irq_work,
+> > +				   max77693_muic_irq_work);
+> > +	if (ret)
+> > +		return ret;
+> >  
+> >  	/* Support irq domain for MAX77693 MUIC device */
+> >  	for (i = 0; i < ARRAY_SIZE(muic_irqs); i++) {
+> > @@ -1254,22 +1258,11 @@ static int max77693_muic_probe(struct
+> > platform_device *pdev)
+> >  	return ret;
+> >  }
+> >  
+> > -static int max77693_muic_remove(struct platform_device *pdev)
+> > -{
+> > -	struct max77693_muic_info *info = platform_get_drvdata(pdev);
+> > -
+> > -	cancel_work_sync(&info->irq_work);
+> > -	input_unregister_device(info->dock);
+> 
+> I think that you have to keep the input_unregister_device().
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Are you sure? I can add back the remove() if required - but the
+kerneldoc for devm_input_allocate_device() seems to be suggesting that
+this would not be needed:
+
+ * Managed input devices do not need to be explicitly unregistered or
+ * freed as it will be done automatically when owner device unbinds
+from
+ * its driver (or binding fails). Once managed input device is
+allocated,
+ * it is ready to be set up and registered in the same fashion as
+regular
+ * input device. There are no special devm_input_device_[un]register()
+ * variants, regular ones work with both managed and unmanaged devices,
+ * should you need them. In most cases however, managed input device
+need
+ * not be explicitly unregistered or freed.
+
+https://elixir.bootlin.com/linux/v5.13-rc5/source/drivers/input/input.c#L1955
+
+I am not going to argue with you though - I am not really familiar with
+the input subsystem. I'd appreciate if someone could shed some light on
+when the input_unregister_device() can be omitted? 
+
+Best Regards
+	Matti Vaittinen
+
+
