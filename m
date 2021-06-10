@@ -2,114 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E6A3A27B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1E03A27BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbhFJJIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhFJJIA (ORCPT
+        id S229802AbhFJJI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:08:58 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3191 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhFJJI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:08:00 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDB5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:06:03 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id r16so3821226ljk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QlZvmq2qt7sBZ6i/lsSs1+uuiPXKgjE+MOFqdsesJLA=;
-        b=YFsPavJKfC42wjrE9OlquvJGz0/n4HMfpd0VQLElz8xzZWsDtyk9LoTI0qVbypsqyG
-         95RHdXeSRxx9K4h7ktcW0Wj2BNSZCAFzhUvxBdWSv8qIuD3R/g3OeuDLwYzmk4NBimeQ
-         dFXjma+3zW2mdwCFKUCDmPugOlnKa6DIdshrhpEzFEJGUt0SnL/yKilEOoajToZ/erhH
-         i8459xG0N87irY0fyTT+/Q3Lj6nIMUBr3DUPgSWNk43J2PjSjCUiSFbwBHyzZAykFtVZ
-         UMplQe8edru4E+3xdiiJqGq2wq9IbaTFsOKvYagHgzcBM2CKZH3Ts7pX3DcsxLGXtuiq
-         1v1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QlZvmq2qt7sBZ6i/lsSs1+uuiPXKgjE+MOFqdsesJLA=;
-        b=j1UV1gNg94m4ZsXYa16fElt0TX9WBoIbOeY3FHoFV4fprEmldYcMc1nONrAwycucdJ
-         cPYOpK/W1Asdwj//up9eD4HvtrQndbYESPweBAxdo7hL+GAQujHucmVHWTk09JnpZwq2
-         lF89wOZCl8KEzasOiDxRG7zflOheDDzKcnyvjLozI1RIZoRN26fX4TLuBt8/ALFTrWTv
-         uGCsboc08aHV6s7I5uaSrpsinAJhDSWzhIVi2/lGiXzRn8YCG53fcDrc9BnQywhY//aU
-         Vw6u6rymYSEzDXXi/v8AIu8GaE4EtifRLOSC85hZrn+dWENb02NegAsvmKvyWqwF6q6y
-         YCtA==
-X-Gm-Message-State: AOAM533jRrKdH3tKNa8KzrrUEf5hwaYDiT5SiE/9OQykh88gF8OL2YpC
-        BXfSTCzqedK2WdbuKa8vakTJ9w==
-X-Google-Smtp-Source: ABdhPJyDjgj256oeRiF0aBgY/0Im7OHNHYnX8h3qtG+OoWa5zWC84GBRpLUC+RMZkgheRm/qEcBDfw==
-X-Received: by 2002:a05:651c:1193:: with SMTP id w19mr1379327ljo.264.1623315962340;
-        Thu, 10 Jun 2021 02:06:02 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id b18sm237862lfb.277.2021.06.10.02.06.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 02:06:01 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 8D88F1027EE; Thu, 10 Jun 2021 12:06:17 +0300 (+03)
-Date:   Thu, 10 Jun 2021 12:06:17 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/11] mm: page_vma_mapped_walk(): use pmd_read_atomic()
-Message-ID: <20210610090617.e6qutzzj3jxcseyi@box.shutemov.name>
-References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
- <594c1f0-d396-5346-1f36-606872cddb18@google.com>
+        Thu, 10 Jun 2021 05:08:57 -0400
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G0yc04tffz6N6PS;
+        Thu, 10 Jun 2021 17:00:16 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 11:06:59 +0200
+Received: from localhost (10.52.126.112) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
+ 2021 10:06:58 +0100
+Date:   Thu, 10 Jun 2021 10:06:55 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Liam Beguin <liambeguin@gmail.com>
+CC:     Jonathan Cameron <jic23@kernel.org>, <peda@axentia.se>,
+        <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 3/8] iio: inkern: error out on unsupported offset
+ type
+Message-ID: <20210610100655.000010ff@Huawei.com>
+In-Reply-To: <CBZEWQ0YIIEC.3A2WESVVMHPJM@shaak>
+References: <20210607144718.1724413-1-liambeguin@gmail.com>
+        <20210607144718.1724413-4-liambeguin@gmail.com>
+        <20210609212850.008d7f84@jic23-huawei>
+        <CBZEWQ0YIIEC.3A2WESVVMHPJM@shaak>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <594c1f0-d396-5346-1f36-606872cddb18@google.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.126.112]
+X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:38:11PM -0700, Hugh Dickins wrote:
-> page_vma_mapped_walk() cleanup: use pmd_read_atomic() with barrier()
-> instead of READ_ONCE() for pmde: some architectures (e.g. i386 with PAE)
-> have a multi-word pmd entry, for which READ_ONCE() is not good enough.
+On Wed, 09 Jun 2021 17:40:47 -0400
+"Liam Beguin" <liambeguin@gmail.com> wrote:
+
+> Hi Jonathan,
 > 
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
-> ---
->  mm/page_vma_mapped.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> On Wed Jun 9, 2021 at 4:28 PM EDT, Jonathan Cameron wrote:
+> > On Mon, 7 Jun 2021 10:47:13 -0400
+> > Liam Beguin <liambeguin@gmail.com> wrote:
+> >  
+> > > From: Liam Beguin <lvb@xiphos.com>
+> > > 
+> > > iio_convert_raw_to_processed_unlocked() assumes the offset is an
+> > > integer.
+> > > Make that clear to the consumer by returning an error on unsupported
+> > > offset types without breaking valid implicit truncations.
+> > > 
+> > > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > > ---
+> > >  drivers/iio/inkern.c | 34 +++++++++++++++++++++++++++++-----
+> > >  1 file changed, 29 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
+> > > index b69027690ed5..0b5667f22b1d 100644
+> > > --- a/drivers/iio/inkern.c
+> > > +++ b/drivers/iio/inkern.c
+> > > @@ -578,13 +578,37 @@ EXPORT_SYMBOL_GPL(iio_read_channel_average_raw);
+> > >  static int iio_convert_raw_to_processed_unlocked(struct iio_channel *chan,
+> > >  	int raw, int *processed, unsigned int scale)
+> > >  {
+> > > -	int scale_type, scale_val, scale_val2, offset;
+> > > +	int scale_type, scale_val, scale_val2;
+> > > +	int offset_type, offset_val, offset_val2;
+> > >  	s64 raw64 = raw;
+> > > -	int ret;
+> > >  
+> > > -	ret = iio_channel_read(chan, &offset, NULL, IIO_CHAN_INFO_OFFSET);
+> > > -	if (ret >= 0)
+> > > -		raw64 += offset;
+> > > +	offset_type = iio_channel_read(chan, &offset_val, &offset_val2,
+> > > +				       IIO_CHAN_INFO_OFFSET);
+> > > +	if (offset_type >= 0) {
+> > > +		switch (offset_type) {
+> > > +		case IIO_VAL_INT:
+> > > +			break;
+> > > +		case IIO_VAL_INT_PLUS_MICRO:
+> > > +			if (offset_val2 > 1000)  
+> >
+> > What's the logic behind this one? > 1000000
+> > would be an interesting corner case, though I'm not sure we've ever
+> > explicitly disallowed it before.
+> >
+> > Why are we at 1000th of that for the check?
+> >  
 > 
-> diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-> index 7c0504641fb8..973c3c4e72cc 100644
-> --- a/mm/page_vma_mapped.c
-> +++ b/mm/page_vma_mapped.c
-> @@ -182,13 +182,16 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
->  	pud = pud_offset(p4d, pvmw->address);
->  	if (!pud_present(*pud))
->  		return false;
-> +
->  	pvmw->pmd = pmd_offset(pud, pvmw->address);
->  	/*
->  	 * Make sure the pmd value isn't cached in a register by the
->  	 * compiler and used as a stale value after we've observed a
->  	 * subsequent update.
->  	 */
-> -	pmde = READ_ONCE(*pvmw->pmd);
-> +	pmde = pmd_read_atomic(pvmw->pmd);
-> +	barrier();
-> +
+> For these the idea was to go with one milli of precision.
+> I don't know if that's a good criteria but I wanted to start with
+> something. Do you have any suggestions?
+> 
+> > > +				return -EINVAL;
+> > > +			break;
+> > > +		case IIO_VAL_INT_PLUS_NANO:
+> > > +			if (offset_val2 > 1000000)  
+> >
+> > Similar this is a bit odd.
+> >  
+> > > +				return -EINVAL;
+> > > +		case IIO_VAL_FRACTIONAL:
+> > > +			if (offset_val2 != 1)
+> > > +				return -EINVAL;  
+> >
+> > We could be more flexible on this, but I don't recall any
+> > channels using this so far.
+> >  
+> > > +			break;
+> > > +		case IIO_VAL_FRACTIONAL_LOG2:
+> > > +			if (offset_val2)
+> > > +				return -EINVAL;  
+> >
+> > Same in this case.
+> >  
+> 
+> For these two cases, I went with what Peter suggested in the previous
+> version, to not break on valid implicit truncations.
+> 
+> What would be a good precision criteria for all offset types?
 
-Hm. It makes me wounder if barrier() has to be part of pmd_read_atomic().
-mm/hmm.c uses the same pattern as you are and I tend to think that the
-rest of pmd_read_atomic() users may be broken.
+@Peter, what were your thoughts on this.
 
-Am I wrong?
+I was thinking we'd just not worry about how much truncation was happening
+and just silently eat it.
 
--- 
- Kirill A. Shutemov
+J
+> 
+> > > +			break;
+> > > +		default:
+> > > +			return -EINVAL;
+> > > +		}
+> > > +
+> > > +		raw64 += offset_val;
+> > > +	}
+> > >  
+> > >  	scale_type = iio_channel_read(chan, &scale_val, &scale_val2,
+> > >  					IIO_CHAN_INFO_SCALE);  
+> 
+> Thanks for looking at this,
+> Liam
+
