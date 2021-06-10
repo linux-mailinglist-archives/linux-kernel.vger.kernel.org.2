@@ -2,91 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7383D3A3069
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4989F3A307E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhFJQWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:22:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230211AbhFJQWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:22:17 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CA1160C40;
-        Thu, 10 Jun 2021 16:20:21 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1lrNPn-006mBw-J7; Thu, 10 Jun 2021 17:20:19 +0100
+        id S231268AbhFJQZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:25:33 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60036 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231230AbhFJQZ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 12:25:29 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id AF84E2199E;
+        Thu, 10 Jun 2021 16:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623342211;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjKhr3a6YXymIHtw/GA/lThxHjdin/LlLBM4rjmo30o=;
+        b=OaCK2JwDCJzSG8mw0/KxhlY24EZJYzmrY1pCXj1ftvfhrFWiJeWwKCF6VRt/3GNGIZQTKI
+        64uAumwxrCoYdgNTs61JjnnHSiudVprP6OUXn6eQhEtgRh2PJr0hss4Xc4UV44n8M0sx8X
+        PenUaTJWzag3UNmGuL8gosguy0gx3Mk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623342211;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjKhr3a6YXymIHtw/GA/lThxHjdin/LlLBM4rjmo30o=;
+        b=Q1+SIX5fmet/R8yDOZj1UmQUYKVKEEmnbImI7UgkAOw2mAruK7BtMq2iRopww2P1n1GTgZ
+        Q69a5hyw9tRxW6Cg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 6326CA3B93;
+        Thu, 10 Jun 2021 16:23:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C6DC9DAEB9; Thu, 10 Jun 2021 18:20:46 +0200 (CEST)
+Date:   Thu, 10 Jun 2021 18:20:46 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: Disable BTRFS on platforms having 256K pages
+Message-ID: <20210610162046.GB28158@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
+References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
+ <185278AF-1D87-432D-87E9-C86B3223113E@fb.com>
+ <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 10 Jun 2021 17:20:19 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hyperv@vger.kernel.org, PCI <linux-pci@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, Clint Sbisa <csbisa@amazon.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>
-Subject: Re: [RFC v3 0/7] PCI: hv: Support host bridge probing on ARM64
-In-Reply-To: <YMI4fWkHzrD3GKTW@boqun-archlinux>
-References: <20210609163211.3467449-1-boqun.feng@gmail.com>
- <CAMj1kXGwa28T5Cr_64OC4rqE3qhwWQz+BJPwjdr54G-pVf9+pA@mail.gmail.com>
- <2283b22ae7832db348bd9b3eff3aab16@misterjones.org>
- <YMI4fWkHzrD3GKTW@boqun-archlinux>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <dceabce36dc39aa9dce179f32391ddcf@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: boqun.feng@gmail.com, ardb@kernel.org, arnd@arndb.de, bhelgaas@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org, lorenzo.pieralisi@arm.com, robh@kernel.org, csbisa@amazon.com, sunilmut@microsoft.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-10 17:06, Boqun Feng wrote:
-> On Thu, Jun 10, 2021 at 04:42:45PM +0100, Marc Zyngier wrote:
->> On 2021-06-10 16:01, Ard Biesheuvel wrote:
->> > On Wed, 9 Jun 2021 at 18:32, Boqun Feng <boqun.feng@gmail.com> wrote:
->> > >
->> > > Hi Bjorn, Arnd and Marc,
->> > >
->> >
->> > Instead of cc'ing Arnd, you cc'ed me (Ard)
->> 
->> And I don't know if you intended to Cc me, but you definitely didn't.
->> 
+On Thu, Jun 10, 2021 at 04:50:09PM +0200, Christophe Leroy wrote:
 > 
-> Weird.. seems my sending script got somewhere wrong. Apologies for you
-> both, and Arnd.. I did intend to Cc you and Arnd.
+> 
+> Le 10/06/2021 à 15:54, Chris Mason a écrit :
+> > 
+> >> On Jun 10, 2021, at 1:23 AM, Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+> >>
+> >> With a config having PAGE_SIZE set to 256K, BTRFS build fails
+> >> with the following message
+> >>
+> >> include/linux/compiler_types.h:326:38: error: call to '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
+> >>
+> >> BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
+> >> 256K pages at the time being.
+> >>
+> >> There are two platforms that can select 256K pages:
+> >> - hexagon
+> >> - powerpc
+> >>
+> >> Disable BTRFS when 256K page size is selected.
+> >>
+> > 
+> > We’ll have other subpage blocksize concerns with 256K pages, but this BTRFS_MAX_COMPRESSED #define is arbitrary.  It’s just trying to have an upper bound on the amount of memory we’ll need to uncompress a single page’s worth of random reads.
+> > 
+> > We could change it to max(PAGE_SIZE, 128K) or just bump to 256K.
+> > 
+> 
+> But if 256K is problematic in other ways, is it worth bumping BTRFS_MAX_COMPRESSED to 256K ?
+> 
+> David, in below mail, said that 256K support would require deaper changes. So disabling BTRFS 
+> support seems the easiest solution for the time being, at least for Stable (I forgot the Fixes: tag 
+> and the CC: to stable).
+> 
+> On powerpc, 256k pages is a corner case, it requires customised binutils, so I don't think disabling 
+> BTRFS is a issue there. For hexagon I don't know.
 
-No worries, it happens (I also used the wrong email address when
-replying, so we're even).
+That it blew up due to the max compressed size is a coincidence. We
+could have explicit BUILD_BUG_ONs for page size or other constraints
+derived from the page size like INLINE_EXTENT_BUFFER_PAGES.
 
-> How do you want this to proceed? I could do a resend right now, or I
-> could wait for a few days (and see others' feedback) and send a V4 next
-> week. Sorry again ;-(
-
-Let the current series simmer on the list for a few days, I can
-always eyeball it there if I'm short of patches to review... ;-)
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+And there's no such thing like "just bump BTRFS_MAX_COMPRESSED to 256K".
+The constant is part of on-disk format for lzo and otherwise changing it
+would impact performance so this would need proper evaluation.
