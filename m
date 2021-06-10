@@ -2,99 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE4F3A36DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C811E3A36D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhFJWNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:13:49 -0400
-Received: from mail-ej1-f48.google.com ([209.85.218.48]:46972 "EHLO
-        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhFJWNp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:13:45 -0400
-Received: by mail-ej1-f48.google.com with SMTP id he7so1398979ejc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IH1SveIFJ5wJ6kocsX0s8v3WiB0uqtridXReuF2KUMY=;
-        b=Qzof8FNEW2Ba5XPZGpDfZSR6rdtd6WGsu717h8Er0yjM+Qrz/xmDEYF47olKQxMaDV
-         /WuPvFIxyme1vchmGP1HhMrAqH5OzNDJ6D669STTMCTBS8PPP8U2SeAmmSAiNv3xHWUT
-         sYS5gTDilCKxc+IrHBQDdFNyeZ8axOedobMUc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IH1SveIFJ5wJ6kocsX0s8v3WiB0uqtridXReuF2KUMY=;
-        b=A3QZp3UgOzkirYvEauz+LwrgkkVeL+iC3DIrMQ9FOF4uWrnKDLKLYBmslZcR1yms61
-         hJx1FmIIK4BhYCPOJQf40O9PQdERTREGERJ7Q2x3IBU7vI8ltvyvuYh3SuPdCfnFMmqX
-         hxCNPIvruTJmTwQog/NoJ7juQdfmkemAiERl6K6an5LeWzSQ1daHKdx1eAJ6X6O4/M0H
-         su2NDIOjAKqCAa8wfTGlu0H0STe6kFTi5ox737c8XV/gDOm64GYSUjHemuVVc4Iy7UIQ
-         Hkk1ILZOtPNgGBZB3kuhVONmfbBg+Sz4ckVdUwMvHjHhweJBAZsySmyAIu8Rij1JzbO7
-         cQyg==
-X-Gm-Message-State: AOAM533/tNxTLaM2R6ck+dmFHdLnjH+cfYlyda412OwFg/CSmx1vJ8+N
-        yAEWPEai1i+Y/+tjmTWVUseuoJEA4TDEQV6vacc=
-X-Google-Smtp-Source: ABdhPJxcP+Y+74mF5ic2l1V/7ohuFsbNnz1lbGOm8VDySkRNviFRTktkXap5wlfW4XbCiAjTRQIS/g==
-X-Received: by 2002:a17:906:b212:: with SMTP id p18mr595521ejz.109.1623363034818;
-        Thu, 10 Jun 2021 15:10:34 -0700 (PDT)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id s2sm1956381edu.89.2021.06.10.15.10.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 15:10:34 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id og14so1454829ejc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:10:34 -0700 (PDT)
-X-Received: by 2002:ac2:43b9:: with SMTP id t25mr578806lfl.253.1623362689248;
- Thu, 10 Jun 2021 15:04:49 -0700 (PDT)
+        id S230349AbhFJWHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 18:07:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229941AbhFJWHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 18:07:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38D0F613F1;
+        Thu, 10 Jun 2021 22:05:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623362743;
+        bh=1RMKsOthF8nmbzYW+O/oUW/rwdCTpBe6yg9JLjyQ8T0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=lr3lkVZ4BUJbcw5jiV8LlIxBUMD1m04SiDmDqiomWiEHFD2c4VWO1wFnmqkkNJ8d5
+         465rSgbip64DmlIbTLOi8tIk4N37KmWE7AQnhCYSwSlw9iQ/8aa/3ipt5Kzlq37QoX
+         Km3f6pmLIfNqJcITrS5u4x0GNQmGN/UhaKFmT9aHW7UOGfjC0QVSYiB02ft+CKJfeH
+         YcP9HWVXSEwvJTaCUrAZJFSagvjcdNhTHfT2j6qIHzX5Vu6Hit56QWZjs225kb5MmF
+         GJMLOihlIOnFsZG3kKKSK1h2AEH6Paths5CjWCIKOX+DSX8/dyLITPXPOniFHExVod
+         Equc5kSo0NJmQ==
+Date:   Thu, 10 Jun 2021 17:05:41 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>
+Subject: Re: [PATCH v1 1/6] PCI/P2PDMA: Rename upstream_bridge_distance() and
+ rework documentation
+Message-ID: <20210610220541.GA2779926@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <87sg1p30a1.fsf@disp2133>
-In-Reply-To: <87sg1p30a1.fsf@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 10 Jun 2021 15:04:33 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
-Message-ID: <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>,
-        Daniel Jacobowitz <drow@nevyn.them.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610160609.28447-2-logang@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 1:58 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> The problem is sometimes we read all of the registers from
-> a context where they are not all saved.
+On Thu, Jun 10, 2021 at 10:06:04AM -0600, Logan Gunthorpe wrote:
+> The function upstream_bridge_distance() has evolved such that it's name
+> is no longer entirely reflective of what the function does.
+> 
+> The function not only calculates the distance between two peers but also
+> calculates how the DMA addresses for those two peers should be mapped.
+> 
+> Thus, rename the function to calc_map_type_and_dist() and rework the
+> documentation to better describe the two pieces of information the
+> function returns.
+> 
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
+>  drivers/pci/p2pdma.c | 63 ++++++++++++++++++++++----------------------
+>  1 file changed, 32 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+> index 196382630363..6f90e9812f6e 100644
+> --- a/drivers/pci/p2pdma.c
+> +++ b/drivers/pci/p2pdma.c
+> @@ -354,7 +354,7 @@ static bool host_bridge_whitelist(struct pci_dev *a, struct pci_dev *b)
+>  }
+>  
+>  static enum pci_p2pdma_map_type
+> -__upstream_bridge_distance(struct pci_dev *provider, struct pci_dev *client,
+> +__calc_map_type_and_dist(struct pci_dev *provider, struct pci_dev *client,
+>  		int *dist, bool *acs_redirects, struct seq_buf *acs_list)
+>  {
+>  	struct pci_dev *a = provider, *b = client, *bb;
+> @@ -433,17 +433,18 @@ static unsigned long map_types_idx(struct pci_dev *client)
+>  }
+>  
+>  /*
+> - * Find the distance through the nearest common upstream bridge between
+> - * two PCI devices.
+> + * Calculate the P2PDMA mapping type and distance between two PCI devices.
+>   *
+> - * If the two devices are the same device then 0 will be returned.
+> + * If the two devices are the same device then PCI_P2PDMA_MAP_BUS_ADDR
+> + * and a distance of 0 will be returned.
+>   *
+>   * If there are two virtual functions of the same device behind the same
+> - * bridge port then 2 will be returned (one step down to the PCIe switch,
+> - * then one step back to the same device).
+> + * bridge port then PCI_P2PDMA_MAP_BUS_ADDR and a distance of 2 will be
+> + * returned (one step down to the PCIe switch, then one step back to the
+> + * same device).
 
-Ouch. Yes. And this is really painful because none of the *normal*
-architectures do this, so it gets absolutely no coverage.
+The new text is:
 
-> I think at this point we need to say that the architectures that have a
-> do this need to be fixed to at least call do_exit and the kernel
-> function in create_io_thread with the deeper stack.
+  If there are two virtual functions of the same device behind the same
+  bridge port then PCI_P2PDMA_MAP_BUS_ADDR and a distance of 2 will be
+  returned (one step down to the PCIe switch, then one step back to the
+  same device).
 
-Yeah. We traditionally have that requirement for fork() and friends
-too (vfork/clone), so adding exit and io_uring to do so seems like the
-most straightforward thing.
+I *think* this includes two functions of the same multi-function
+device, or two virtual functions of the same device, right?  In both
+cases, the two devices are obviously behind the same bridge port.
 
-But I really wish we had some way to test and trigger this so that we
-wouldn't get caught on this before. Something in task_pt_regs() that
-catches "this doesn't actually work" and does a WARN_ON_ONCE() on the
-affected architectures?
+Is this usage of "down to the PCIe switch" the common usage in P2PDMA?
+I normally think of going from an endpoint to a switch as being "up"
+toward the CPU.  But PCIe made it all confusing by putting downstream
+ports at the upstream end of links and vice versa.
 
-               Linus
+We also have a bit of a mix in terminology between "bridge," "switch,"
+"bridge port."  I'd probably write something like:
+
+  If they are two functions of the same device behind the same bridge,
+  return PCI_P2PDMA_MAP_BUS_ADDR and a distance of 2 (one hop up to
+  the bridge, then one hop back down to another function of the same
+  device).
+
+No need to repost for this; just let me know what you think and I can
+tweak accordingly.
+
+Bjorn
