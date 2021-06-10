@@ -2,142 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994173A308E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7F53A307F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbhFJQ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbhFJQ1A (ORCPT
+        id S231277AbhFJQZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:25:36 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:47460 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231243AbhFJQZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:27:00 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C7AC061760;
-        Thu, 10 Jun 2021 09:25:03 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id bn21so5761329ljb.1;
-        Thu, 10 Jun 2021 09:25:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6QucbuFgOMWEGN4VFEHi2XvTZe9V4ccPJlTWt4NGrBo=;
-        b=c4MEbVnfe38PR6J6KsIGT0/uYuEW08pi28SwT7rCIxc0BhUFIclOwg1baQFC0IE9QV
-         7oumeIFy65yJ6YqYIjSL7Iueq3Utafk2Ag7BUFT/ySjW8ZsDqC8McDqVsYO6oLqriXHl
-         H9mD94xABW+u6p3WIyp1DMBmmAg5870Gx3oLwrOZDvb/VQ+ZsVNaZ6KYzrxL+sSZdLYJ
-         Kvi4pul5Sz/lBYNTws5taOH6xlzu/WigpzgZVioO+17+GJUtlYGm63v5TDMEwYk4BZ4a
-         Ql6Ru3aKjAOo7gmO5ih3Q3gYXENfSO9mmFE59uPHDnOgxZo+axdZIYL//HBI2kFgbKHv
-         A/xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6QucbuFgOMWEGN4VFEHi2XvTZe9V4ccPJlTWt4NGrBo=;
-        b=Yda7mGDrmHYf79DtZrxdyEfN+WyYnxXNJqXcNl2wyETM6hB7U65PP6ignEs7ZPU7qM
-         Z3YbROSATR70wfeLMsY2QykFxjea80PwcrB7j6r96li5ewpvmZMAxOPUGCNgtp/U7oh9
-         /AQ47ocBzJdZzqL0Lh8RYYr/1F6Vd/NQs2KgBji31f7/oD/9/t9nepIe9YHlo+80zO+x
-         mCjK92vLdSyldDJnFwb1h2bs+m5hXEGXQb0AKMvP6u32YVAcxneeLDEXpMUQkpHZ+xSK
-         g60Jh1yrh+QXP3FuVFKcTqzd4qGcV8k1ZxScHfe4ZGY9wLjzxsKNocZNyLG/e8vbqbb2
-         q1sQ==
-X-Gm-Message-State: AOAM5324CrzFvVjUAIDaVkS5JsI9STYg4xphWdqXy0MV+H0BRNjrzieO
-        EfFnUt3NkBBnN0PfkE4Z5Fw=
-X-Google-Smtp-Source: ABdhPJznV2QY0x8c0KOwBDbjwAj9tpENJVZ19e/DvBB3y8XWi2CuG965bvQ2EMAEG9C60/84ZCqtCA==
-X-Received: by 2002:a05:651c:178b:: with SMTP id bn11mr2829559ljb.43.1623342301810;
-        Thu, 10 Jun 2021 09:25:01 -0700 (PDT)
-Received: from localhost.localdomain (94-29-21-60.dynamic.spd-mgts.ru. [94.29.21.60])
-        by smtp.gmail.com with ESMTPSA id g2sm340507lfu.173.2021.06.10.09.25.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 09:25:01 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v1] of: reserved-memory: Add stub for RESERVEDMEM_OF_DECLARE()
-Date:   Thu, 10 Jun 2021 19:23:13 +0300
-Message-Id: <20210610162313.20942-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 10 Jun 2021 12:25:31 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0D7628D4;
+        Thu, 10 Jun 2021 18:23:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623342213;
+        bh=MZnu7jeHkrOC9ykNYM9T9iwN0lLDKaGxg+GIuh8egJk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uKJvScU2kYUtm1Pqx88BCeAjDhFsgZ04IksyqaFWp2HNwIQLU0sJjCzQUkSBD0iWj
+         Ar4/e8abXLgxhOWJDv6OJF7e6u8T4rSizDgjZZHHJ+p6depJSGjJsCXLwFH+rFsqbX
+         Q0p+T6TWUKapKsNZg6hlHavy76nm94COIK99bI2U=
+Date:   Thu, 10 Jun 2021 19:23:14 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+Subject: Re: [PATCH v9 04/22] media: v4l2-ioctl: S_CTRL output the right value
+Message-ID: <YMI8cobtlkzdBLnU@pendragon.ideasonboard.com>
+References: <20210326095840.364424-1-ribalda@chromium.org>
+ <20210326095840.364424-5-ribalda@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210326095840.364424-5-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reserved-memory Kconfig could be disabled when drivers are
-compile-tested. In this case RESERVEDMEM_OF_DECLARE() produces a
-noisy warning about the orphaned __reservedmem_of_table section.
-Add the missing stub that fixes the warning. In particular this is
-needed for compile-testing of NVIDIA Tegra210 memory driver which
-uses reserved-memory.
+Hi Ricardo,
 
-Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- include/linux/of.h              | 11 +++++++----
- include/linux/of_reserved_mem.h |  8 ++++++--
- 2 files changed, 13 insertions(+), 6 deletions(-)
+Thank you for the patch.
 
-diff --git a/include/linux/of.h b/include/linux/of.h
-index d8db8d3592fd..9c2e71e202d1 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -1329,6 +1329,12 @@ static inline int of_get_available_child_count(const struct device_node *np)
- 	return num;
- }
- 
-+#define _OF_DECLARE_STUB(table, name, compat, fn, fn_type)		\
-+	static const struct of_device_id __of_table_##name		\
-+		__attribute__((unused))					\
-+		 = { .compatible = compat,				\
-+		     .data = (fn == (fn_type)NULL) ? fn : fn }
-+
- #if defined(CONFIG_OF) && !defined(MODULE)
- #define _OF_DECLARE(table, name, compat, fn, fn_type)			\
- 	static const struct of_device_id __of_table_##name		\
-@@ -1338,10 +1344,7 @@ static inline int of_get_available_child_count(const struct device_node *np)
- 		     .data = (fn == (fn_type)NULL) ? fn : fn  }
- #else
- #define _OF_DECLARE(table, name, compat, fn, fn_type)			\
--	static const struct of_device_id __of_table_##name		\
--		__attribute__((unused))					\
--		 = { .compatible = compat,				\
--		     .data = (fn == (fn_type)NULL) ? fn : fn }
-+	_OF_DECLARE_STUB(table, name, compat, fn, fn_type)
- #endif
- 
- typedef int (*of_init_fn_2)(struct device_node *, struct device_node *);
-diff --git a/include/linux/of_reserved_mem.h b/include/linux/of_reserved_mem.h
-index 76e4a0fffba4..4de2a24cadc9 100644
---- a/include/linux/of_reserved_mem.h
-+++ b/include/linux/of_reserved_mem.h
-@@ -27,11 +27,11 @@ struct reserved_mem_ops {
- 
- typedef int (*reservedmem_of_init_fn)(struct reserved_mem *rmem);
- 
-+#ifdef CONFIG_OF_RESERVED_MEM
-+
- #define RESERVEDMEM_OF_DECLARE(name, compat, init)			\
- 	_OF_DECLARE(reservedmem, name, compat, init, reservedmem_of_init_fn)
- 
--#ifdef CONFIG_OF_RESERVED_MEM
--
- int of_reserved_mem_device_init_by_idx(struct device *dev,
- 				       struct device_node *np, int idx);
- int of_reserved_mem_device_init_by_name(struct device *dev,
-@@ -41,6 +41,10 @@ void of_reserved_mem_device_release(struct device *dev);
- 
- struct reserved_mem *of_reserved_mem_lookup(struct device_node *np);
- #else
-+
-+#define RESERVEDMEM_OF_DECLARE(name, compat, init)			\
-+	_OF_DECLARE_STUB(reservedmem, name, compat, init, reservedmem_of_init_fn)
-+
- static inline int of_reserved_mem_device_init_by_idx(struct device *dev,
- 					struct device_node *np, int idx)
- {
+On Fri, Mar 26, 2021 at 10:58:22AM +0100, Ricardo Ribalda wrote:
+> If the driver does not implement s_ctrl, but it does implement
+> s_ext_ctrls, we convert the call.
+> 
+> When that happens we have also to convert back the response from
+> s_ext_ctrls.
+> 
+> Fixes v4l2_compliance:
+> Control ioctls (Input 0):
+> 		fail: v4l2-test-controls.cpp(411): returned control value out of range
+> 		fail: v4l2-test-controls.cpp(507): invalid control 00980900
+> 	test VIDIOC_G/S_CTRL: FAIL
+> 
+> Fixes: 35ea11ff8471 ("V4L/DVB (8430): videodev: move some functions from v4l2-dev.h to v4l2-common.h or v4l2-ioctl.h")
+> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/media/v4l2-core/v4l2-ioctl.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> index 7b5ebdd329e8..b8f73a48872b 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -2266,6 +2266,7 @@ static int v4l_s_ctrl(const struct v4l2_ioctl_ops *ops,
+>  		test_bit(V4L2_FL_USES_V4L2_FH, &vfd->flags) ? fh : NULL;
+>  	struct v4l2_ext_controls ctrls;
+>  	struct v4l2_ext_control ctrl;
+> +	int ret;
+>  
+>  	if (vfh && vfh->ctrl_handler)
+>  		return v4l2_s_ctrl(vfh, vfh->ctrl_handler, p);
+> @@ -2281,9 +2282,11 @@ static int v4l_s_ctrl(const struct v4l2_ioctl_ops *ops,
+>  	ctrls.controls = &ctrl;
+>  	ctrl.id = p->id;
+>  	ctrl.value = p->value;
+> -	if (check_ext_ctrls(&ctrls, VIDIOC_S_CTRL))
+> -		return ops->vidioc_s_ext_ctrls(file, fh, &ctrls);
+> -	return -EINVAL;
+> +	if (!check_ext_ctrls(&ctrls, VIDIOC_S_CTRL))
+> +		return -EINVAL;
+> +	ret = ops->vidioc_s_ext_ctrls(file, fh, &ctrls);
+> +	p->value = ctrl.value;
+> +	return ret;
+>  }
+>  
+>  static int v4l_g_ext_ctrls(const struct v4l2_ioctl_ops *ops,
+
 -- 
-2.30.2
+Regards,
 
+Laurent Pinchart
