@@ -2,494 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397563A2A17
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AC23A2A18
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhFJLW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 07:22:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27163 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229935AbhFJLWZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:22:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623324029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H4n1JA5Jw90trbK/fB8qO+KGIvEuz9zEAp96gSp6lxs=;
-        b=WpdYbB2wX2S88wbbl9V3JQbb+atsrwAxlZWbF8O0BRo4+pcKIMkynXNclOyPEIS1Zj2mKK
-        Jh1mq6cQi2MOjE9CxHDx+MPAN2cg9LNsOsQ467C3nnv+fHJhgIqq+buQ9CicAC9hf1P43L
-        Dqa+Wo3xgPXb1UAtTPGq6kwnIjFoH/U=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-77StokZlMgSckPAnxFYE8Q-1; Thu, 10 Jun 2021 07:20:25 -0400
-X-MC-Unique: 77StokZlMgSckPAnxFYE8Q-1
-Received: by mail-wm1-f71.google.com with SMTP id n21-20020a7bcbd50000b02901a2ee0826aeso3661514wmi.7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 04:20:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=H4n1JA5Jw90trbK/fB8qO+KGIvEuz9zEAp96gSp6lxs=;
-        b=FW1cIUzGHZLkP6JVkQUG4OuONxSCmn2Rq/sqhAucck6vuWHFZuSHiG8Y+IwkRQ0NK0
-         zWlRiAdi6VFC1iLGF7S0VIU4jj3NKHfOO0ssB3EJ8kBCv1iX52Zg4MIuE+6CcTYQfXOb
-         1ANnltOhaNkakZ73h4V5+XpoUOsD4IlopWOAHtGO9zBtzAo2F4fjNsA9ut2d/kiEA2tH
-         yt+gUpWmbZ48JmR1kBsEl+QgUDWWfZIHjP4+TgtoSHtlvjIYsWADTq0NOwSkNuEi9yQH
-         Kdk65n7r0HS9aPalHjuKM0TVHNfR1342LZHh/ZaWb3sHYM49T5Si3QT1OfgVGb3wO1G8
-         HMWQ==
-X-Gm-Message-State: AOAM533ohN1bcecZY+5IuelNRHaYcm9fxQs8C3xlPSGzUOrsHhhwJn45
-        Jo/foAoqtF8f9fSn6a680GROEkrAL5MeSD7lq3erIWiUV6EynolIu1mHS3XxBXW8kVACPFByEd/
-        viYodC/bt1ZpErjkA7LOdAH1N
-X-Received: by 2002:adf:ebc4:: with SMTP id v4mr4728605wrn.217.1623324024646;
-        Thu, 10 Jun 2021 04:20:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxtgL+TaW5NcfZnCCYZgbLVfeEd+np5aFfDEUY/RGXKvUIEwIe53Q0JRjfE7SvS1kt6u97qHw==
-X-Received: by 2002:adf:ebc4:: with SMTP id v4mr4728577wrn.217.1623324024390;
-        Thu, 10 Jun 2021 04:20:24 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id h9sm9596434wmm.33.2021.06.10.04.20.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 04:20:23 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Vineeth Pillai <viremana@linux.microsoft.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org,
-        Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-Subject: Re: [PATCH v5 3/7] KVM: x86: hyper-v: Move the remote TLB flush
- logic out of vmx
-In-Reply-To: <4f4e4ca19778437dae502f44363a38e99e3ef5d1.1622730232.git.viremana@linux.microsoft.com>
-References: <cover.1622730232.git.viremana@linux.microsoft.com>
- <4f4e4ca19778437dae502f44363a38e99e3ef5d1.1622730232.git.viremana@linux.microsoft.com>
-Date:   Thu, 10 Jun 2021 13:20:22 +0200
-Message-ID: <87y2bix8y1.fsf@vitty.brq.redhat.com>
+        id S230255AbhFJLXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 07:23:17 -0400
+Received: from mga06.intel.com ([134.134.136.31]:62595 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229935AbhFJLXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 07:23:16 -0400
+IronPort-SDR: rMUTyjKmj33HjpJE2tEK5KU5ZM4pgFw966qdJeLNZrOxrAeDHZ2ZutpZwkYjUObZlPsYBzhzY/
+ /DGMs2aFnVqQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="266429746"
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="266429746"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 04:21:19 -0700
+IronPort-SDR: Y7IiAXtTNTq7saXFIFiUYpEJyibBaV+ZnhasbV6TnfrJcQ/pTXr4Ev6+3devQgMi5G2ut526lp
+ Ndq8MiB1zB+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="553029114"
+Received: from lkp-server02.sh.intel.com (HELO 3cb98b298c7e) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Jun 2021 04:21:17 -0700
+Received: from kbuild by 3cb98b298c7e with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lrIkP-00006J-FQ; Thu, 10 Jun 2021 11:21:17 +0000
+Date:   Thu, 10 Jun 2021 19:20:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:clocksource] BUILD SUCCESS
+ 023766fbdde49c75c13acd268bf9af810d624c59
+Message-ID: <60c1f593.HR87IfexLr9IDhbr%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vineeth Pillai <viremana@linux.microsoft.com> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git clocksource
+branch HEAD: 023766fbdde49c75c13acd268bf9af810d624c59  clocksource: Print deviation in nanoseconds for unstable case
 
-> Currently the remote TLB flush logic is specific to VMX.
-> Move it to a common place so that SVM can use it as well.
->
-> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |   9 +++
->  arch/x86/kvm/Makefile           |   5 ++
->  arch/x86/kvm/kvm_onhyperv.c     |  93 ++++++++++++++++++++++++++++
->  arch/x86/kvm/kvm_onhyperv.h     |  32 ++++++++++
->  arch/x86/kvm/vmx/vmx.c          | 105 +-------------------------------
->  arch/x86/kvm/vmx/vmx.h          |   9 ---
->  arch/x86/kvm/x86.c              |   9 +++
->  7 files changed, 150 insertions(+), 112 deletions(-)
->  create mode 100644 arch/x86/kvm/kvm_onhyperv.c
->  create mode 100644 arch/x86/kvm/kvm_onhyperv.h
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index cbbcee0a84f9..bab305230e8d 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -849,6 +849,10 @@ struct kvm_vcpu_arch {
->  
->  	/* Protected Guests */
->  	bool guest_state_protected;
-> +
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	hpa_t hv_root_tdp;
-> +#endif
->  };
->  
->  struct kvm_lpage_info {
-> @@ -1122,6 +1126,11 @@ struct kvm_arch {
->  	 */
->  	spinlock_t tdp_mmu_pages_lock;
->  #endif /* CONFIG_X86_64 */
-> +
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	hpa_t	hv_root_tdp;
-> +	spinlock_t hv_root_tdp_lock;
-> +#endif
->  };
->  
->  struct kvm_vm_stat {
-> diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
-> index c589db5d91b3..a06745c2fef1 100644
-> --- a/arch/x86/kvm/Makefile
-> +++ b/arch/x86/kvm/Makefile
-> @@ -18,6 +18,11 @@ kvm-y			+= x86.o emulate.o i8259.o irq.o lapic.o \
->  			   i8254.o ioapic.o irq_comm.o cpuid.o pmu.o mtrr.o \
->  			   hyperv.o debugfs.o mmu/mmu.o mmu/page_track.o \
->  			   mmu/spte.o
-> +
-> +ifdef CONFIG_HYPERV
-> +kvm-y			+= kvm_onhyperv.o
-> +endif
-> +
->  kvm-$(CONFIG_X86_64) += mmu/tdp_iter.o mmu/tdp_mmu.o
->  kvm-$(CONFIG_KVM_XEN)	+= xen.o
->  
-> diff --git a/arch/x86/kvm/kvm_onhyperv.c b/arch/x86/kvm/kvm_onhyperv.c
-> new file mode 100644
-> index 000000000000..c7db2df50a7a
-> --- /dev/null
-> +++ b/arch/x86/kvm/kvm_onhyperv.c
-> @@ -0,0 +1,93 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * KVM L1 hypervisor optimizations on Hyper-V.
-> + */
-> +
-> +#include <linux/kvm_host.h>
-> +#include <asm/mshyperv.h>
-> +
-> +#include "hyperv.h"
-> +#include "kvm_onhyperv.h"
-> +
-> +static int kvm_fill_hv_flush_list_func(struct hv_guest_mapping_flush_list *flush,
-> +		void *data)
-> +{
-> +	struct kvm_tlb_range *range = data;
-> +
-> +	return hyperv_fill_flush_guest_mapping_list(flush, range->start_gfn,
-> +			range->pages);
-> +}
-> +
-> +static inline int hv_remote_flush_root_tdp(hpa_t root_tdp,
-> +					   struct kvm_tlb_range *range)
-> +{
-> +	if (range)
-> +		return hyperv_flush_guest_mapping_range(root_tdp,
-> +				kvm_fill_hv_flush_list_func, (void *)range);
-> +	else
-> +		return hyperv_flush_guest_mapping(root_tdp);
-> +}
-> +
-> +int hv_remote_flush_tlb_with_range(struct kvm *kvm,
-> +		struct kvm_tlb_range *range)
-> +{
-> +	struct kvm_arch *kvm_arch = &kvm->arch;
-> +	struct kvm_vcpu *vcpu;
-> +	int ret = 0, i, nr_unique_valid_roots;
-> +	hpa_t root;
-> +
-> +	spin_lock(&kvm_arch->hv_root_tdp_lock);
-> +
-> +	if (!VALID_PAGE(kvm_arch->hv_root_tdp)) {
-> +		nr_unique_valid_roots = 0;
-> +
-> +		/*
-> +		 * Flush all valid roots, and see if all vCPUs have converged
-> +		 * on a common root, in which case future flushes can skip the
-> +		 * loop and flush the common root.
-> +		 */
-> +		kvm_for_each_vcpu(i, vcpu, kvm) {
-> +			root = vcpu->arch.hv_root_tdp;
-> +			if (!VALID_PAGE(root) || root == kvm_arch->hv_root_tdp)
-> +				continue;
-> +
-> +			/*
-> +			 * Set the tracked root to the first valid root.  Keep
-> +			 * this root for the entirety of the loop even if more
-> +			 * roots are encountered as a low effort optimization
-> +			 * to avoid flushing the same (first) root again.
-> +			 */
-> +			if (++nr_unique_valid_roots == 1)
-> +				kvm_arch->hv_root_tdp = root;
-> +
-> +			if (!ret)
-> +				ret = hv_remote_flush_root_tdp(root, range);
-> +
-> +			/*
-> +			 * Stop processing roots if a failure occurred and
-> +			 * multiple valid roots have already been detected.
-> +			 */
-> +			if (ret && nr_unique_valid_roots > 1)
-> +				break;
-> +		}
-> +
-> +		/*
-> +		 * The optimized flush of a single root can't be used if there
-> +		 * are multiple valid roots (obviously).
-> +		 */
-> +		if (nr_unique_valid_roots > 1)
-> +			kvm_arch->hv_root_tdp = INVALID_PAGE;
-> +	} else {
-> +		ret = hv_remote_flush_root_tdp(kvm_arch->hv_root_tdp, range);
-> +	}
-> +
-> +	spin_unlock(&kvm_arch->hv_root_tdp_lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(hv_remote_flush_tlb_with_range);
-> +
-> +int hv_remote_flush_tlb(struct kvm *kvm)
-> +{
-> +	return hv_remote_flush_tlb_with_range(kvm, NULL);
-> +}
-> +EXPORT_SYMBOL_GPL(hv_remote_flush_tlb);
-> diff --git a/arch/x86/kvm/kvm_onhyperv.h b/arch/x86/kvm/kvm_onhyperv.h
-> new file mode 100644
-> index 000000000000..c03f01024a70
-> --- /dev/null
-> +++ b/arch/x86/kvm/kvm_onhyperv.h
-> @@ -0,0 +1,32 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * KVM L1 hypervisor optimizations on Hyper-V.
-> + */
-> +
-> +#ifndef __ARCH_X86_KVM_KVM_ONHYPERV_H__
-> +#define __ARCH_X86_KVM_KVM_ONHYPERV_H__
-> +
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +int hv_remote_flush_tlb_with_range(struct kvm *kvm,
-> +		struct kvm_tlb_range *range);
-> +int hv_remote_flush_tlb(struct kvm *kvm);
-> +
-> +static inline void hv_track_root_tdp(struct kvm_vcpu *vcpu, hpa_t root_tdp)
-> +{
-> +	struct kvm_arch *kvm_arch = &vcpu->kvm->arch;
-> +
-> +	if (kvm_x86_ops.tlb_remote_flush == hv_remote_flush_tlb) {
-> +		spin_lock(&kvm_arch->hv_root_tdp_lock);
-> +		vcpu->arch.hv_root_tdp = root_tdp;
-> +		if (root_tdp != kvm_arch->hv_root_tdp)
-> +			kvm_arch->hv_root_tdp = INVALID_PAGE;
-> +		spin_unlock(&kvm_arch->hv_root_tdp_lock);
-> +	}
-> +}
-> +#else
-> +static inline void hv_track_root_tdp(struct kvm_vcpu *vcpu, hpa_t root_tdp)
-> +{
-> +}
-> +#endif
-> +#endif
+elapsed time: 723m
 
-Super-nitpick: I'd suggest adding /* __ARCH_X86_KVM_KVM_ONHYPERV_H__ */
-to the second '#endif' and /* IS_ENABLED(CONFIG_HYPERV) */ to '#else'
-and the first one: files/functions tend to grow and it becomes hard to
-see where the particular '#endif/#else' belongs.
+configs tested: 164
+configs skipped: 2
 
-> +
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index d000cddbd734..117fb88cd354 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -52,6 +52,7 @@
->  #include "cpuid.h"
->  #include "evmcs.h"
->  #include "hyperv.h"
-> +#include "kvm_onhyperv.h"
->  #include "irq.h"
->  #include "kvm_cache_regs.h"
->  #include "lapic.h"
-> @@ -474,86 +475,6 @@ static const u32 vmx_uret_msrs_list[] = {
->  static bool __read_mostly enlightened_vmcs = true;
->  module_param(enlightened_vmcs, bool, 0444);
->  
-> -static int kvm_fill_hv_flush_list_func(struct hv_guest_mapping_flush_list *flush,
-> -		void *data)
-> -{
-> -	struct kvm_tlb_range *range = data;
-> -
-> -	return hyperv_fill_flush_guest_mapping_list(flush, range->start_gfn,
-> -			range->pages);
-> -}
-> -
-> -static inline int hv_remote_flush_root_ept(hpa_t root_ept,
-> -					   struct kvm_tlb_range *range)
-> -{
-> -	if (range)
-> -		return hyperv_flush_guest_mapping_range(root_ept,
-> -				kvm_fill_hv_flush_list_func, (void *)range);
-> -	else
-> -		return hyperv_flush_guest_mapping(root_ept);
-> -}
-> -
-> -static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
-> -		struct kvm_tlb_range *range)
-> -{
-> -	struct kvm_vmx *kvm_vmx = to_kvm_vmx(kvm);
-> -	struct kvm_vcpu *vcpu;
-> -	int ret = 0, i, nr_unique_valid_roots;
-> -	hpa_t root;
-> -
-> -	spin_lock(&kvm_vmx->hv_root_ept_lock);
-> -
-> -	if (!VALID_PAGE(kvm_vmx->hv_root_ept)) {
-> -		nr_unique_valid_roots = 0;
-> -
-> -		/*
-> -		 * Flush all valid roots, and see if all vCPUs have converged
-> -		 * on a common root, in which case future flushes can skip the
-> -		 * loop and flush the common root.
-> -		 */
-> -		kvm_for_each_vcpu(i, vcpu, kvm) {
-> -			root = to_vmx(vcpu)->hv_root_ept;
-> -			if (!VALID_PAGE(root) || root == kvm_vmx->hv_root_ept)
-> -				continue;
-> -
-> -			/*
-> -			 * Set the tracked root to the first valid root.  Keep
-> -			 * this root for the entirety of the loop even if more
-> -			 * roots are encountered as a low effort optimization
-> -			 * to avoid flushing the same (first) root again.
-> -			 */
-> -			if (++nr_unique_valid_roots == 1)
-> -				kvm_vmx->hv_root_ept = root;
-> -
-> -			if (!ret)
-> -				ret = hv_remote_flush_root_ept(root, range);
-> -
-> -			/*
-> -			 * Stop processing roots if a failure occurred and
-> -			 * multiple valid roots have already been detected.
-> -			 */
-> -			if (ret && nr_unique_valid_roots > 1)
-> -				break;
-> -		}
-> -
-> -		/*
-> -		 * The optimized flush of a single root can't be used if there
-> -		 * are multiple valid roots (obviously).
-> -		 */
-> -		if (nr_unique_valid_roots > 1)
-> -			kvm_vmx->hv_root_ept = INVALID_PAGE;
-> -	} else {
-> -		ret = hv_remote_flush_root_ept(kvm_vmx->hv_root_ept, range);
-> -	}
-> -
-> -	spin_unlock(&kvm_vmx->hv_root_ept_lock);
-> -	return ret;
-> -}
-> -static int hv_remote_flush_tlb(struct kvm *kvm)
-> -{
-> -	return hv_remote_flush_tlb_with_range(kvm, NULL);
-> -}
-> -
->  static int hv_enable_direct_tlbflush(struct kvm_vcpu *vcpu)
->  {
->  	struct hv_enlightened_vmcs *evmcs;
-> @@ -581,21 +502,6 @@ static int hv_enable_direct_tlbflush(struct kvm_vcpu *vcpu)
->  
->  #endif /* IS_ENABLED(CONFIG_HYPERV) */
->  
-> -static void hv_track_root_ept(struct kvm_vcpu *vcpu, hpa_t root_ept)
-> -{
-> -#if IS_ENABLED(CONFIG_HYPERV)
-> -	struct kvm_vmx *kvm_vmx = to_kvm_vmx(vcpu->kvm);
-> -
-> -	if (kvm_x86_ops.tlb_remote_flush == hv_remote_flush_tlb) {
-> -		spin_lock(&kvm_vmx->hv_root_ept_lock);
-> -		to_vmx(vcpu)->hv_root_ept = root_ept;
-> -		if (root_ept != kvm_vmx->hv_root_ept)
-> -			kvm_vmx->hv_root_ept = INVALID_PAGE;
-> -		spin_unlock(&kvm_vmx->hv_root_ept_lock);
-> -	}
-> -#endif
-> -}
-> -
->  /*
->   * Comment's format: document - errata name - stepping - processor name.
->   * Refer from
-> @@ -3202,7 +3108,7 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa,
->  		eptp = construct_eptp(vcpu, root_hpa, root_level);
->  		vmcs_write64(EPT_POINTER, eptp);
->  
-> -		hv_track_root_ept(vcpu, root_hpa);
-> +		hv_track_root_tdp(vcpu, root_hpa);
->  
->  		if (!enable_unrestricted_guest && !is_paging(vcpu))
->  			guest_cr3 = to_kvm_vmx(kvm)->ept_identity_map_addr;
-> @@ -6980,9 +6886,6 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  	vmx->pi_desc.nv = POSTED_INTR_VECTOR;
->  	vmx->pi_desc.sn = 1;
->  
-> -#if IS_ENABLED(CONFIG_HYPERV)
-> -	vmx->hv_root_ept = INVALID_PAGE;
-> -#endif
->  	return 0;
->  
->  free_vmcs:
-> @@ -6999,10 +6902,6 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  
->  static int vmx_vm_init(struct kvm *kvm)
->  {
-> -#if IS_ENABLED(CONFIG_HYPERV)
-> -	spin_lock_init(&to_kvm_vmx(kvm)->hv_root_ept_lock);
-> -#endif
-> -
->  	if (!ple_gap)
->  		kvm->arch.pause_in_guest = true;
->  
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 008cb87ff088..d1363e734a01 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -328,10 +328,6 @@ struct vcpu_vmx {
->  	/* SGX Launch Control public key hash */
->  	u64 msr_ia32_sgxlepubkeyhash[4];
->  
-> -#if IS_ENABLED(CONFIG_HYPERV)
-> -	u64 hv_root_ept;
-> -#endif
-> -
->  	struct pt_desc pt_desc;
->  	struct lbr_desc lbr_desc;
->  
-> @@ -349,11 +345,6 @@ struct kvm_vmx {
->  	unsigned int tss_addr;
->  	bool ept_identity_pagetable_done;
->  	gpa_t ept_identity_map_addr;
-> -
-> -#if IS_ENABLED(CONFIG_HYPERV)
-> -	hpa_t hv_root_ept;
-> -	spinlock_t hv_root_ept_lock;
-> -#endif
->  };
->  
->  bool nested_vmx_allowed(struct kvm_vcpu *vcpu);
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 6eda2834fc05..580f3c6c86f9 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10279,6 +10279,10 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->  	vcpu->arch.pending_external_vector = -1;
->  	vcpu->arch.preempted_in_kernel = false;
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	vcpu->arch.hv_root_tdp = INVALID_PAGE;
-> +#endif
-> +
->  	r = static_call(kvm_x86_vcpu_create)(vcpu);
->  	if (r)
->  		goto free_guest_fpu;
-> @@ -10662,6 +10666,11 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->  
->  	kvm->arch.guest_can_read_msr_platform_info = true;
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	spin_lock_init(&kvm->arch.hv_root_tdp_lock);
-> +	kvm->arch.hv_root_tdp = INVALID_PAGE;
-> +#endif
-> +
->  	INIT_DELAYED_WORK(&kvm->arch.kvmclock_update_work, kvmclock_update_fn);
->  	INIT_DELAYED_WORK(&kvm->arch.kvmclock_sync_work, kvmclock_sync_fn);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- 
-Vitaly
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                                defconfig
+arm                       cns3420vb_defconfig
+s390                             alldefconfig
+sh                            shmin_defconfig
+arm                          collie_defconfig
+sh                   sh7724_generic_defconfig
+sh                          kfr2r09_defconfig
+sparc                            alldefconfig
+arm                             rpc_defconfig
+arm                             ezx_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                         lpc18xx_defconfig
+arc                    vdk_hs38_smp_defconfig
+arm                          pxa910_defconfig
+xtensa                  cadence_csp_defconfig
+sh                           se7705_defconfig
+powerpc                     rainier_defconfig
+mips                          ath25_defconfig
+ia64                            zx1_defconfig
+arc                        nsimosci_defconfig
+powerpc                      pasemi_defconfig
+sh                          r7785rp_defconfig
+s390                                defconfig
+arm                              alldefconfig
+powerpc                    mvme5100_defconfig
+sh                           se7619_defconfig
+mips                 decstation_r4k_defconfig
+openrisc                    or1ksim_defconfig
+s390                       zfcpdump_defconfig
+powerpc                    socrates_defconfig
+ia64                        generic_defconfig
+arm                          badge4_defconfig
+arm                  colibri_pxa270_defconfig
+xtensa                       common_defconfig
+sh                 kfr2r09-romimage_defconfig
+openrisc                  or1klitex_defconfig
+powerpc64                           defconfig
+sh                        edosk7760_defconfig
+i386                                defconfig
+mips                         tb0287_defconfig
+powerpc                 mpc8560_ads_defconfig
+sh                           se7721_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                     powernv_defconfig
+m68k                       m5475evb_defconfig
+powerpc                     ppa8548_defconfig
+sh                           se7780_defconfig
+arm                      tct_hammer_defconfig
+parisc                generic-64bit_defconfig
+powerpc                       holly_defconfig
+powerpc                     tqm8555_defconfig
+sh                             espt_defconfig
+mips                     loongson1c_defconfig
+microblaze                          defconfig
+m68k                          multi_defconfig
+arc                                 defconfig
+powerpc                          allyesconfig
+sparc64                             defconfig
+riscv                               defconfig
+m68k                        m5307c3_defconfig
+nios2                         10m50_defconfig
+powerpc                     sbc8548_defconfig
+arm                          pxa168_defconfig
+arm                         orion5x_defconfig
+powerpc                     tqm8541_defconfig
+x86_64                           allyesconfig
+arc                            hsdk_defconfig
+powerpc                       ppc64_defconfig
+arm                        neponset_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210610
+i386                 randconfig-a006-20210610
+i386                 randconfig-a004-20210610
+i386                 randconfig-a001-20210610
+i386                 randconfig-a005-20210610
+i386                 randconfig-a003-20210610
+i386                 randconfig-a003-20210608
+i386                 randconfig-a006-20210608
+i386                 randconfig-a004-20210608
+i386                 randconfig-a001-20210608
+i386                 randconfig-a005-20210608
+i386                 randconfig-a002-20210608
+x86_64               randconfig-a015-20210610
+x86_64               randconfig-a011-20210610
+x86_64               randconfig-a012-20210610
+x86_64               randconfig-a014-20210610
+x86_64               randconfig-a016-20210610
+x86_64               randconfig-a013-20210610
+i386                 randconfig-a015-20210610
+i386                 randconfig-a013-20210610
+i386                 randconfig-a016-20210610
+i386                 randconfig-a014-20210610
+i386                 randconfig-a012-20210610
+i386                 randconfig-a011-20210610
+i386                 randconfig-a015-20210608
+i386                 randconfig-a013-20210608
+i386                 randconfig-a016-20210608
+i386                 randconfig-a011-20210608
+i386                 randconfig-a012-20210608
+i386                 randconfig-a014-20210608
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a002-20210607
+x86_64               randconfig-a004-20210607
+x86_64               randconfig-a003-20210607
+x86_64               randconfig-a006-20210607
+x86_64               randconfig-a005-20210607
+x86_64               randconfig-a001-20210607
+x86_64               randconfig-a002-20210610
+x86_64               randconfig-a001-20210610
+x86_64               randconfig-a004-20210610
+x86_64               randconfig-a003-20210610
+x86_64               randconfig-a006-20210610
+x86_64               randconfig-a005-20210610
+x86_64               randconfig-a015-20210608
+x86_64               randconfig-a012-20210608
+x86_64               randconfig-a014-20210608
+x86_64               randconfig-a011-20210608
+x86_64               randconfig-a016-20210608
+x86_64               randconfig-a013-20210608
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
