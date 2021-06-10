@@ -2,268 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F0F3A22D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E013A22D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhFJDgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 23:36:00 -0400
-Received: from mail-yb1-f174.google.com ([209.85.219.174]:39733 "EHLO
-        mail-yb1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhFJDf6 (ORCPT
+        id S230000AbhFJDhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 23:37:19 -0400
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:39463 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhFJDhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 23:35:58 -0400
-Received: by mail-yb1-f174.google.com with SMTP id n133so38635359ybf.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 20:34:02 -0700 (PDT)
+        Wed, 9 Jun 2021 23:37:18 -0400
+Received: by mail-lf1-f52.google.com with SMTP id p17so729945lfc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 20:35:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qzSAXRjKH3O+mH9NFlypHY0IEGP5i5bv4cjKhj9mCw4=;
-        b=XJd//JzbOWsBig7SqXjsTt2Dqk/QijXi8+J1uepKEBD3TPbKfcpJx9oIDGRaicAtTd
-         0fL3KASdC+S0yrJ+kWBLKvugvrDURvqrI902f6+rJ3idaX4TiQgyrqkbzD3WcPe5jnMa
-         IsIxba6H5KXfFrwZLip06z/qlGsoi+qCaPX59ttMVxU4qmPsnmzR8qr+fXvgnaCBSoBD
-         r44n0I98DFIHFM9GCc9VvstsCkbrzJsrBfBzD6nqfMwgOK1n+WI+fB7JgsO19za+znYi
-         000zALfbXSmYZwkFbFrY3qYIgzB8XaZIzi2n1R9Vm7/eZ3Xal906JsjJqGZlYPHGLIFo
-         UaqQ==
+        bh=3SI2Cs/KC3jzMc8VUYVE4yg+hAWb5g2oHwl9sJaeR1I=;
+        b=qowBlqPyceTtChCMAiT4qQyWnPbybMtSZiQgEPmQxgIYeHV802/3qRtz+w1EoHHCH6
+         LPWDNXhD0+ErBL35VygsDvBiRzxoj+ucwz8q6JUFxXc8f2CQcF1/0uMGYdqpIivEnR/l
+         XT7BRJUzQI4mTCOyxGLr/MFi1Ziohsl646mnIBQmrzBqbaaLAwtok0tvYoFcmj7o1mPj
+         fLFIEQq8saXAlH/xJq4PDzj5sV7WevQ9EKbRCtETYmfF1vh24GMom5Rdq3a1VsVWl7CR
+         0bSDkgqmEk0mYrVvj8frTqTKIcDywD/995y5c52G2cntTTPSW9iTlwJKiJVxkjaB3MCd
+         4Khw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qzSAXRjKH3O+mH9NFlypHY0IEGP5i5bv4cjKhj9mCw4=;
-        b=ESXyUdCfSA1BiOo/aBNMjkFOSlfR2Q9/wNPXm0/ou/MWUNVgIYh0MdyVdoBT29LQOD
-         2L8P2SSybM3K4Dzb+W+QtY1N4FzE18e5y3xYCu20owOt1WXuETAJ5CK8WY9skr5/VINa
-         MhWTjm2i/pFR0Dgb1dVz01Wb+9D5vNBpzgevCwsBQHwX7Gs+qsutRMFBwh4MYlnIDsr8
-         +m0VyatUxtIw2m/LtZkf/MMqyfZUsj8eT8m3LJTNaasLyRYdsGBGX6ov+1573n+E6kOQ
-         8k7CN5JTn18gg+D/33ZuOti1zxJwe8+tIGLN/HHFbiOfwwyxpABK7ds9cJKBjHZtX++w
-         b9dg==
-X-Gm-Message-State: AOAM530Cr9+P5CIuinXjj/uNAFKxUsvtjKy9fDbmv7PdUYiSGDnWqoaD
-        NLbWdo/HemfIxKg/4kEnPd0XdxC7afDjKOc/RBCk2w==
-X-Google-Smtp-Source: ABdhPJw23c1/2hamtSBsFiwLWMZ/sSCyDME0iq+6mzdj5ZM2t8+Lz9dLO9MS/Gu0IMqmaBmuJsIgVIxUj+6FEDipTO4=
-X-Received: by 2002:a25:74c6:: with SMTP id p189mr4585914ybc.84.1623295982271;
- Wed, 09 Jun 2021 20:33:02 -0700 (PDT)
+        bh=3SI2Cs/KC3jzMc8VUYVE4yg+hAWb5g2oHwl9sJaeR1I=;
+        b=POFlnF/xcN2dWnnZ0bYG8Q/qiKxaYCYlB+SpDSIOrp4e0EFehbruRWTbLYM7LZejJ5
+         p8QrmQXNct2cMsPbLzbFgifQwacyyrYawvj97ej/+ddLWF1j61U/BggeAW6uMJv0m+lE
+         KJK7No1CIi1NGSDTXcSZGOOqQgIAnd6IaNc38uFJMHzpIpEpB2egetsZ2db6v3MeXZ2c
+         rK1bDmIulcOkIA8/3wknMtW2+gU3CIZnWQVEGnBYzViwVB1/zv0WJ7c2ViNHOT0od4lA
+         Ut6vyMk9yofNwj5WXvF9XDCJTCunb2DqOOjxOf0Qmhk/DVwLXTzkFplCIy5M/5xuLXmN
+         JxqQ==
+X-Gm-Message-State: AOAM530h2BgnBaz5qFF4DI+qjh/R2qK0job5Vt7Iv6NmPWjk0cLhhVUl
+        ZsTm6rp0IQ0lTayRhi2XQ+5xECaUWgJ8dwGh9Lg=
+X-Google-Smtp-Source: ABdhPJwm4/DfJDamFH508ZT0a6Li0Tyd+gVYXQsUW0HZ4Ujd4TX65IUB1YkQVFURykcC3gOI5UQa2dYR3RGfXDSiFLE=
+X-Received: by 2002:ac2:4d93:: with SMTP id g19mr540781lfe.622.1623296048728;
+ Wed, 09 Jun 2021 20:34:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210608190336.77380-1-hannes@cmpxchg.org>
-In-Reply-To: <20210608190336.77380-1-hannes@cmpxchg.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 9 Jun 2021 20:32:51 -0700
-Message-ID: <CAJuCfpHkug8t+yR+dtudANjJgzGs_T4v8_5fEoR0tg7Tw3h3bQ@mail.gmail.com>
-Subject: Re: [PATCH] psi: fix sampling artifact from pressure file read frequency
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jared Pochtar <jpochtar@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>, kernel-team@fb.com
+References: <20210609175901.1423553-1-qperret@google.com>
+In-Reply-To: <20210609175901.1423553-1-qperret@google.com>
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+Date:   Thu, 10 Jun 2021 11:33:04 +0800
+Message-ID: <CAB8ipk_LY=9G5E8TcE3b7i3Ntfj+vJUuqSR7LWYn8=yOaTtCEg@mail.gmail.com>
+Subject: Re: [PATCH] sched: Make uclamp changes depend on CAP_SYS_NICE
+To:     Quentin Perret <qperret@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>, rickyiu@google.com,
+        wvw@google.com, Patrick Bellasi <patrick.bellasi@matbug.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 12:03 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Thu, Jun 10, 2021 at 2:16 AM Quentin Perret <qperret@google.com> wrote:
 >
-> Currently, every time a psi pressure file is read, the per-cpu states
-> are collected and aggregated according to the CPU's non-idle time
-> weight. This dynamically changes the sampling period, which means read
-> frequency can introduce variance into the observed results. This is
-> somewhat unexpected for users and can be confusing, when e.g. two
-> nested cgroups with the same workload report different pressure levels
-> just because they have different consumers reading the pressure files.
+> There is currently nothing preventing tasks from changing their per-task
+> clamp values in anyway that they like. The rationale is probably that
+> systems administrator are still able to limit those clamps thanks to the
+> cgroup interface. However, this causes pain in a system where both
+> per-task and per-cgroup clamps values are expected to be under the
+> control of core system components (as is the case for Android).
 >
-> Consider the following two CPU timelines:
+> To fix this, let's require CAP_SYS_NICE to increase per-task clamp
+> values. This allows unprivileged tasks to lower their requests, but not
+> increase them, which is consistent with the existing behaviour for nice
+> values.
 >
->         CPU0: [ STALL ] [ SLEEP ]
->         CPU1: [  RUN  ] [  RUN  ]
->
-> If we sample and aggregate once for the whole period, we get the
-> following total stall time for CPU0:
->
->         CPU0 = stall(1) + nonidle(1) / nonidle_total(3) = 0.3
->
-> But if we sample twice, the total for the period is higher:
->
->         CPU0 = stall(1) + nonidle(1) / nonidle_total(2) = 0.5
->         CPU0 = stall(0) + nonidle(0) / nonidle_total(1) = 0
->                                                           ---
->                                                           0.5
->
-> Neither answer is inherently wrong: if the user asks for pressure
-> after half the period, we can't know yet that the CPU will go to sleep
-> right after and its weight would be lower over the combined period.
->
-> We could normalize the weight averaging to a fixed window regardless
-> of how often stall times themselves are sampled. But that would make
-> reporting less adaptive to sudden changes when the user intentionally
-> uses poll() with short intervals in order to get a higher resolution.
->
-> For now, simply limit sampling of the pressure file contents to the
-> fixed two-second period already used by the aggregation worker.
-
-Hmm. This is tricky. So, userspace-visible effect of this change is
-that totals will not update when the psi file is read unless the
-psi_period expires. We used to postpone updating only the averages and
-now the totals will follow suit. Not sure if presenting stale data is
-better than having this dependency on timing of the read. As you
-noted, the value we get is not inherently wrong. But one could argue
-both ways I guess... Having this "quantum" effect when the act of
-observation changes the state of the object is indeed weird, to say
-the least.
-In the paragraph above you say "For now". Do you have an idea that
-could solve the issue with totals being stale while removing this
-dependency on the timing of reads?
-
->
-> psi_show() still needs to force a catch-up run in case the workload
-> went idle and periodic aggregation shut off. Since that can race with
-> periodic aggregation, worker and psi_show() need to fully serialize.
-> And with sampling becoming exclusive, whoever wins the race must also
-> requeue the worker if necessary. Move the locking, the aggregation
-> work, and the worker scheduling logic into update_averages(); use that
-> from the worker and psi_show().
->
-> poll() continues to use the proportional weight sampling window.
->
-> Reported-by: Jared Pochtar <jpochtar@fb.com>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Quentin Perret <qperret@google.com>
 > ---
->  kernel/sched/psi.c | 83 ++++++++++++++++++++++++----------------------
->  1 file changed, 43 insertions(+), 40 deletions(-)
+>  kernel/sched/core.c | 48 ++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 41 insertions(+), 7 deletions(-)
 >
-> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> index cc25a3cff41f..9d647d974f55 100644
-> --- a/kernel/sched/psi.c
-> +++ b/kernel/sched/psi.c
-> @@ -358,17 +358,36 @@ static void collect_percpu_times(struct psi_group *group,
->                 *pchanged_states = changed_states;
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 1d4aedbbcf96..1e5f9ae441a0 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1430,6 +1430,11 @@ static int uclamp_validate(struct task_struct *p,
+>         if (util_min != -1 && util_max != -1 && util_min > util_max)
+>                 return -EINVAL;
+>
+> +       return 0;
+> +}
+> +
+> +static void uclamp_enable(void)
+> +{
+>         /*
+>          * We have valid uclamp attributes; make sure uclamp is enabled.
+>          *
+> @@ -1438,8 +1443,25 @@ static int uclamp_validate(struct task_struct *p,
+>          * scheduler locks.
+>          */
+>         static_branch_enable(&sched_uclamp_used);
+> +}
+>
+> -       return 0;
+> +static bool uclamp_reduce(struct task_struct *p, const struct sched_attr *attr)
+> +{
+> +       int util_min, util_max;
+> +
+> +       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+> +               util_min = p->uclamp_req[UCLAMP_MIN].value;
+> +               if (attr->sched_util_min > util_min)
+> +                       return false;
+> +       }
+> +
+> +       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
+> +               util_max = p->uclamp_req[UCLAMP_MAX].value;
+> +               if (attr->sched_util_max > util_max)
+> +                       return false;
+
+when the attr->sched_util_max = -1, and the util_max < 1024, here may
+should return false, but it would return ture.
+
+Thanks
+xuewen
+> +       }
+> +
+> +       return true;
 >  }
 >
-> -static u64 update_averages(struct psi_group *group, u64 now)
-> +static void update_averages(struct psi_group *group)
+>  static bool uclamp_reset(const struct sched_attr *attr,
+> @@ -1580,6 +1602,11 @@ static inline int uclamp_validate(struct task_struct *p,
 >  {
->         unsigned long missed_periods = 0;
-> -       u64 expires, period;
-> -       u64 avg_next_update;
-> +       u64 now, expires, period;
-> +       u32 changed_states;
->         int s;
+>         return -EOPNOTSUPP;
+>  }
+> +static inline void uclamp_enable(void) { }
+> +static bool uclamp_reduce(struct task_struct *p, const struct sched_attr *attr)
+> +{
+> +       return true;
+> +}
+>  static void __setscheduler_uclamp(struct task_struct *p,
+>                                   const struct sched_attr *attr) { }
+>  static inline void uclamp_fork(struct task_struct *p) { }
+> @@ -6116,6 +6143,13 @@ static int __sched_setscheduler(struct task_struct *p,
+>             (rt_policy(policy) != (attr->sched_priority != 0)))
+>                 return -EINVAL;
 >
->         /* avgX= */
-> +       mutex_lock(&group->avgs_lock);
+> +       /* Update task specific "requested" clamps */
+> +       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP) {
+> +               retval = uclamp_validate(p, attr);
+> +               if (retval)
+> +                       return retval;
+> +       }
 > +
-> +       now = sched_clock();
->         expires = group->avg_next_update;
-> -       if (now - expires >= psi_period)
-> -               missed_periods = div_u64(now - expires, psi_period);
-> +
-> +       /*
-> +        * Periodic aggregation.
-> +        *
-> +        * When tasks in the group are active, we make sure to
-> +        * aggregate per-cpu samples and calculate the running
-> +        * averages at exactly once per PSI_FREQ period.
-> +        *
-> +        * When tasks go idle, there is no point in keeping the
-> +        * workers running, so we shut them down too. Once restarted,
-> +        * we backfill zeroes for the missed periods in calc_avgs().
-> +        *
-> +        * We can get here from inside the aggregation worker, but
-> +        * also from psi_show() as userspace may query pressure files
-> +        * of an idle group whose aggregation worker shut down.
-> +        */
-> +       if (now < expires)
-> +               goto unlock;
->
 >         /*
->          * The periodic clock tick can get delayed for various
-> @@ -377,10 +396,13 @@ static u64 update_averages(struct psi_group *group, u64 now)
->          * But the deltas we sample out of the per-cpu buckets above
->          * are based on the actual time elapsing between clock ticks.
+>          * Allow unprivileged RT tasks to decrease priority:
 >          */
-> -       avg_next_update = expires + ((1 + missed_periods) * psi_period);
-> +       if (now - expires >= psi_period)
-> +               missed_periods = div_u64(now - expires, psi_period);
->         period = now - (group->avg_last_update + (missed_periods * psi_period));
->         group->avg_last_update = now;
-> +       group->avg_next_update = expires + ((1 + missed_periods) * psi_period);
->
-> +       collect_percpu_times(group, PSI_AVGS, &changed_states);
->         for (s = 0; s < NR_PSI_STATES - 1; s++) {
->                 u32 sample;
->
-> @@ -408,42 +430,25 @@ static u64 update_averages(struct psi_group *group, u64 now)
->                 calc_avgs(group->avg[s], missed_periods, sample, period);
+> @@ -6165,6 +6199,10 @@ static int __sched_setscheduler(struct task_struct *p,
+>                 /* Normal users shall not reset the sched_reset_on_fork flag: */
+>                 if (p->sched_reset_on_fork && !reset_on_fork)
+>                         return -EPERM;
+> +
+> +               /* Can't increase util-clamps */
+> +               if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP && !uclamp_reduce(p, attr))
+> +                       return -EPERM;
 >         }
 >
-> -       return avg_next_update;
-> +       if (changed_states & (1 << PSI_NONIDLE)) {
-> +               unsigned long delay;
-> +
-> +               delay = nsecs_to_jiffies(group->avg_next_update - now) + 1;
-> +               schedule_delayed_work(&group->avgs_work, delay);
-> +       }
-> +unlock:
-> +       mutex_unlock(&group->avgs_lock);
->  }
+>         if (user) {
+> @@ -6176,12 +6214,8 @@ static int __sched_setscheduler(struct task_struct *p,
+>                         return retval;
+>         }
 >
->  static void psi_avgs_work(struct work_struct *work)
->  {
->         struct delayed_work *dwork;
->         struct psi_group *group;
-> -       u32 changed_states;
-> -       bool nonidle;
-> -       u64 now;
->
->         dwork = to_delayed_work(work);
->         group = container_of(dwork, struct psi_group, avgs_work);
->
-> -       mutex_lock(&group->avgs_lock);
-> -
-> -       now = sched_clock();
-> -
-> -       collect_percpu_times(group, PSI_AVGS, &changed_states);
-> -       nonidle = changed_states & (1 << PSI_NONIDLE);
-> -       /*
-> -        * If there is task activity, periodically fold the per-cpu
-> -        * times and feed samples into the running averages. If things
-> -        * are idle and there is no data to process, stop the clock.
-> -        * Once restarted, we'll catch up the running averages in one
-> -        * go - see calc_avgs() and missed_periods.
-> -        */
-> -       if (now >= group->avg_next_update)
-> -               group->avg_next_update = update_averages(group, now);
-> -
-> -       if (nonidle) {
-> -               schedule_delayed_work(dwork, nsecs_to_jiffies(
-> -                               group->avg_next_update - now) + 1);
+> -       /* Update task specific "requested" clamps */
+> -       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP) {
+> -               retval = uclamp_validate(p, attr);
+> -               if (retval)
+> -                       return retval;
 > -       }
-> -
-> -       mutex_unlock(&group->avgs_lock);
-> +       update_averages(group);
->  }
+> +       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)
+> +               uclamp_enable();
 >
->  /* Trigger tracking window manipulations */
-> @@ -1029,18 +1034,16 @@ void cgroup_move_task(struct task_struct *task, struct css_set *to)
->  int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
->  {
->         int full;
-> -       u64 now;
->
->         if (static_branch_likely(&psi_disabled))
->                 return -EOPNOTSUPP;
->
-> -       /* Update averages before reporting them */
-> -       mutex_lock(&group->avgs_lock);
-> -       now = sched_clock();
-> -       collect_percpu_times(group, PSI_AVGS, NULL);
-> -       if (now >= group->avg_next_update)
-> -               group->avg_next_update = update_averages(group, now);
-> -       mutex_unlock(&group->avgs_lock);
-> +       /*
-> +        * Periodic aggregation should do all the sampling for us, but
-> +        * if the workload goes idle, the worker goes to sleep before
-> +        * old stalls may have averaged out. Backfill any idle zeroes.
-> +        */
-> +       update_averages(group);
->
->         for (full = 0; full < 2; full++) {
->                 unsigned long avg[3];
+>         if (pi)
+>                 cpuset_read_lock();
 > --
-> 2.32.0
+> 2.32.0.272.g935e593368-goog
 >
