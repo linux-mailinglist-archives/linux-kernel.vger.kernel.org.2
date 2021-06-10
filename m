@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DEF63A289F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580ED3A28A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFJJpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:45:55 -0400
-Received: from mail-lj1-f175.google.com ([209.85.208.175]:46742 "EHLO
-        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbhFJJpx (ORCPT
+        id S230087AbhFJJq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:46:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43056 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229895AbhFJJqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:45:53 -0400
-Received: by mail-lj1-f175.google.com with SMTP id e11so3912661ljn.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:43:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FZtPqiacUMa3RR146lKg3ZwOABR6cRUS7jKKlWzO7H4=;
-        b=H5Sa0qVjQ2xgyVmHndXCzmF7Ekl/Myz3sUzhz7fRE8DMJ+q6hL9fxVGm8HMyEpD5Pq
-         sDqyNz7EgRWEhguXWOhfVzX/oqdjpTJDgw9Tu0aQj04ruORnmNSCUvD91KS36KjQaWzv
-         JaCEejKWRs4Ex6vRaxZ9zZce+0tRxeskRat4zSA/8NZ+YWK9RHGfy8bf9/9FSczBy2B5
-         SZmsukCbTs3vJdCKuq2AWtlu+tXHf0TxjpZhODhtjVV5dh5u+QJINfUcsxOLsDm1CreL
-         FQCB17qdyLrdDe8H5m4+VZW9YIfXV6TCLnmjmVuGsVH883+MvbSnrFRwT64WpMJXnzEB
-         Nx/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FZtPqiacUMa3RR146lKg3ZwOABR6cRUS7jKKlWzO7H4=;
-        b=oIb4UHYvNt5DbSgdYjuzc14fEYmzrlFKQBYCdX8vvHNp9ov7iKhQ+dPJT/SC0GkuSX
-         aiYE2pvbrobfxFvQuBduP9ttoo/Y0J+wCVu/A5AcNQkrnUtoqO4liieGwBH3JCGpjQN6
-         gYiJVbE2cog3DbQaiDf6BPYVSOd+emapfGhIsITPB7FZL+9UWDr1KhjY93tB1L0mxJA4
-         6wSkjAzImguGONivpqsMgaILUrXOgykfwAZk2iFnB0HkcPbwKIu4Iv2UocyQbWqohD9O
-         dKY4t/75plYfVIQOHV+a5CtbTUxUc1+wmG08x86UafXAiQzqsqjOBM17EXFW8GhQmbD8
-         pj9A==
-X-Gm-Message-State: AOAM530m4S1WGHul8/qOpWqBBk5R+Jyp27fRUx4iOvuA7XJ8Lm+lLhJI
-        J41EZ2tVxKtUA38pZZnVEZyEFA==
-X-Google-Smtp-Source: ABdhPJzlJTLZaCZNALHstNwyYrOK83yVaDPi5AM+4+CAkOVPrhmvIkRvQJVcwwM+1qOOHl8GjbRKCA==
-X-Received: by 2002:a2e:5cc4:: with SMTP id q187mr1426076ljb.177.1623318177119;
-        Thu, 10 Jun 2021 02:42:57 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id 76sm277284ljj.32.2021.06.10.02.42.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 02:42:56 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id BCC361027EE; Thu, 10 Jun 2021 12:43:12 +0300 (+03)
-Date:   Thu, 10 Jun 2021 12:43:12 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/11] mm/thp: another PVMW_SYNC fix in
- page_vma_mapped_walk()
-Message-ID: <20210610094312.kzhhqyz4abe2yizg@box.shutemov.name>
-References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
- <1bdf384c-8137-a149-2a1e-475a4791c3c@google.com>
+        Thu, 10 Jun 2021 05:46:55 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15A9XcqQ114272;
+        Thu, 10 Jun 2021 05:44:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=f9KSn0OK7lmxObfPsaPKUYTLBPWHeDf1j4FYQO0jMoo=;
+ b=ocyeH7PvboA2v8nz8n/G/lltWV8s6Pc04wHkBWNYlQHnH6uJU712W6sjKz5ASxtaMi0a
+ MI8DJ3/u3ZzBF28aZEXmYIss5N+MwZW2KFJ46LkHxbtGDaJAcOokQHKsfFhIkKHUemXF
+ IKnAESW6vdz1xauhTeD0LF8IvGoVwgNmgOV3lL+LGPRTOH2qUu+APzlBZcaZrF3SSZ70
+ kmOYwZvoIZGBH+WBEh1hbuXZfGFCIyMGD5jgP+c6eaaQGW/DYl5N85Gh2U9WxEo38OXv
+ VcK6wOE/NXIGUc8L3lrKeMNsLB8LcfpJ93YDMXUSPLb/iB6EHgRTVfsHgWRu4XM3tGB3 ag== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 393g3y0fv1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 05:44:58 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15A9iui1024934;
+        Thu, 10 Jun 2021 09:44:56 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 392e798jb5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 09:44:56 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15A9irEV28049862
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 09:44:53 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6E5734C046;
+        Thu, 10 Jun 2021 09:44:53 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3FC3B4C040;
+        Thu, 10 Jun 2021 09:44:51 +0000 (GMT)
+Received: from naverao1-tp.in.ibm.com (unknown [9.85.115.173])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Jun 2021 09:44:50 +0000 (GMT)
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+To:     <linux-kernel@vger.kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Subject: [PATCH] tools/perf probe: Print a hint if adding a probe fails
+Date:   Thu, 10 Jun 2021 15:14:42 +0530
+Message-Id: <20210610094442.1602714-1-naveen.n.rao@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1bdf384c-8137-a149-2a1e-475a4791c3c@google.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: WW-ZiUoUVEdnndFPnjPYJV6sqJmYIdta
+X-Proofpoint-ORIG-GUID: WW-ZiUoUVEdnndFPnjPYJV6sqJmYIdta
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-10_05:2021-06-10,2021-06-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 spamscore=0 lowpriorityscore=0 clxscore=1011
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106100062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:54:46PM -0700, Hugh Dickins wrote:
-> Aha!  Shouldn't that quick scan over pte_none()s make sure that it holds
-> ptlock in the PVMW_SYNC case?  That too might have been responsible for
-> BUGs or WARNs in split_huge_page_to_list() or its unmap_page(), though
-> I've never seen any.
-> 
-> Fixes: ace71a19cec5 ("mm: introduce page_vma_mapped_walk()")
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
+Adding a probe can fail in a few scenarios. perf already checks for the
+address in the kprobe blacklist. However, the address could still be a
+jump label, or have a BUG_ON(). In such cases, it isn't always evident
+why adding the probe failed. Add a hint so that the user knows how to
+proceed.
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reported-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+---
+ tools/perf/builtin-probe.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/tools/perf/builtin-probe.c b/tools/perf/builtin-probe.c
+index 6b150756677014..ff9f3fdce600dd 100644
+--- a/tools/perf/builtin-probe.c
++++ b/tools/perf/builtin-probe.c
+@@ -352,8 +352,11 @@ static int perf_add_probe_events(struct perf_probe_event *pevs, int npevs)
+ 	}
+ 
+ 	ret = apply_perf_probe_events(pevs, npevs);
+-	if (ret < 0)
++	if (ret < 0) {
++		pr_info("Hint: Check dmesg to understand reason for probe failure.\n"
++			"      Consider probing at the next/previous instruction.\n");
+ 		goto out_cleanup;
++	}
+ 
+ 	for (i = k = 0; i < npevs; i++)
+ 		k += pevs[i].ntevs;
+
+base-commit: 0808b3d5b7514dc856178dbc509929329bbf301d
 -- 
- Kirill A. Shutemov
+2.31.1
+
