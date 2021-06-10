@@ -2,174 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCCA3A2813
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04683A282C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhFJJTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhFJJTe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:19:34 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55638C061574;
-        Thu, 10 Jun 2021 02:17:25 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id m18so1426678wrv.2;
-        Thu, 10 Jun 2021 02:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lufrtSYaRB+3cU25JjfQ213i4rIMewljTlWV6qMFCfU=;
-        b=OfUdSJkaR48ZzMbKamaCpBecfRh/Ga7yYmiWthlZkjbRD2aBAsms4czdHt0TeYv14s
-         gfEl53pzpd2J0B7NlM1RnZc0iENloEpbv9IXOBmMTJ3b4d4LjI+mcXJbUNGsckCtlNtz
-         w7tDV32ehthcXQRyNSqbTDDwcbPO0nV3y2V57Qom5op6xzhPIOiQJVIJ54hkYns38aTL
-         9epRtsCLy5qMyBpvMBv18xMcZvm/Q6COwzdr0ZxD+J8BbPGzWtp/X9bV1kUpiY+vPdbP
-         ugkz7as3b1trF3cEiUxBP8Bh+PiBOTOupB/UI6IHha6W/S2giYgnZtGBPlvCFerb7+/a
-         ffxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lufrtSYaRB+3cU25JjfQ213i4rIMewljTlWV6qMFCfU=;
-        b=Zide5TFQd4u6K6yJd64S5JVkyVvFuQOeW7LCeiHmDBNJvvGagettw133SaQnXkwaCb
-         og8FzN+8bCg1pwQBFV0m39aOzyiegZ9aM/gmnpAfvLEjEy5lF4CvcxraAKoU2eRYF1PF
-         KE0JX7UC01F+4ofT2hI69wj//NbFKvg3xzOETt0RN+JRONHL9zxxA8KC8ZP45voSGiDG
-         A8rI1VBVZHsDr3TsYG2votTNRYkgAKyrqBYiToDipGR6Rj2rB27tSUmXqcZbFn1tewry
-         ADQvnMSgIy5+F+Vcc8m37Z4GzDy0MyQ77vLYj7EBT1gz0h3xAsBgWQyXRHOkchJ0igDT
-         zv6w==
-X-Gm-Message-State: AOAM532EjUqEOYGXcaB5CCswyLJXs1ztVlYaxXYTyJZq537IncR74age
-        RGYIBOI2DdWdnVpkvnXO/uo=
-X-Google-Smtp-Source: ABdhPJyW5m2MHrnAF1Ii+EvXADbLuM7bYTX9Cc1kCfjq7UI7PxLu4x3Bw7uYywoxvxiaKBPgYspf6A==
-X-Received: by 2002:a5d:564a:: with SMTP id j10mr4235390wrw.171.1623316643906;
-        Thu, 10 Jun 2021 02:17:23 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id t1sm2710631wrx.28.2021.06.10.02.17.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 02:17:22 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 11:19:05 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Will Deacon <will@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm@kernel.org, soc@kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        Dmitry Osipenko <digetx@gmail.com>
-Subject: Re: [GIT PULL] memory: Tegra memory controller for v5.14
-Message-ID: <YMHZCaRiQNQCSsVr@orome.fritz.box>
-References: <20210607084910.21024-1-krzysztof.kozlowski@canonical.com>
- <20210608120128.GB10174@willie-the-truck>
- <YL+A+MPjjaa3nSwq@orome.fritz.box>
- <20210608164851.GB10994@willie-the-truck>
+        id S230201AbhFJJWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:22:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229937AbhFJJWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 05:22:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F8BE613ED;
+        Thu, 10 Jun 2021 09:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623316810;
+        bh=5QUE2fV7YVY3lmtCURdzCKjum7famf+vdxyCaBUzw8Q=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=JWEWgpPzZPby7um9izGpK1UxUyZhkmgR6pSUEyQWepXwoofG6/+iiz0xgrnPXIDFj
+         vXW4UTuH2StNzLgHRZU5oeVwuKIKOQ081c4s55uMF71tkD4zZHjUN0LzZmdRj33kJu
+         0JR38Y00+JMIF+nDHfnrZh0qmrQkwn4ZwwEQUiABJuug/ZNEBTCMhRvpdTM7tYjWk3
+         IeKR2+CsWXmamgMoz57Z916rLty5iaobMmVQHS9lshEu10SSf4CrQZzxLED+MiCJWL
+         zZYldzRso+fKs8vcQzgmflSSCDaoVc0y+IlKUSL7vLRVYYYSCNgrzHAhKmmQE+ELMx
+         uwifB5d+WdIMQ==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        jackp@codeaurora.org, Thinh.Nguyen@synopsys.com
+Subject: Re: [PATCH v9 0/5] Re-introduce TX FIFO resize for larger EP bursting
+In-Reply-To: <c2daab34-1b25-7ee3-e203-a414c1e486d5@codeaurora.org>
+References: <1621410561-32762-1-git-send-email-wcheng@codeaurora.org>
+ <YLoUiO8tpRpmvcyU@kroah.com> <87k0n9btnb.fsf@kernel.org>
+ <YLo6W5sKaXvy51eW@kroah.com>
+ <c2daab34-1b25-7ee3-e203-a414c1e486d5@codeaurora.org>
+Date:   Thu, 10 Jun 2021 12:20:00 +0300
+Message-ID: <874ke62i0v.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jVj7juWizf7nxW9D"
-Content-Disposition: inline
-In-Reply-To: <20210608164851.GB10994@willie-the-truck>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---jVj7juWizf7nxW9D
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-=-=
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 08, 2021 at 05:48:51PM +0100, Will Deacon wrote:
-> On Tue, Jun 08, 2021 at 04:38:48PM +0200, Thierry Reding wrote:
-> > On Tue, Jun 08, 2021 at 01:01:29PM +0100, Will Deacon wrote:
-> > > On Mon, Jun 07, 2021 at 10:49:10AM +0200, Krzysztof Kozlowski wrote:
-> > > > This is the pull for you to base further SMMU aptches (prevent earl=
-y SMMU
-> > > > faults).
-> > >=20
-> > > This is a tonne of code for me to pull into the SMMU tree given that =
-I only
-> > > want one patch!
-> > >=20
-> > > Thierry, if I just stick:
-> > >=20
-> > > https://lore.kernel.org/r/20210603164632.1000458-4-thierry.reding@gma=
-il.com
-> > >=20
-> > > on its own branch, can you stitch together whatever you need?
-> >=20
-> > I'm not sure I understand what you're proposing. For reference, here's
-> > the set of patches that I sent out:
-> >=20
-> >   1. memory: tegra: Implement SID override programming
-> >   2. dt-bindings: arm-smmu: Add Tegra186 compatible string
-> >   3. iommu/arm-smmu: Implement ->probe_finalize()
-> >   4. iommu/arm-smmu: tegra: Detect number of instances at runtime
-> >   5. iommu/arm-smmu: tegra: Implement SID override programming
-> >   6. iommu/arm-smmu: Use Tegra implementation on Tegra186
-> >   7. arm64: tegra: Use correct compatible string for Tegra186 SMMU
-> >   8. arm64: tegra: Hook up memory controller to SMMU on Tegra186
-> >   9. arm64: tegra: Enable SMMU support on Tegra194
-> >=20
-> > Krzysztof already picked up patch 1 and I was assuming that you'd pick
-> > up 2-6 because they are to the ARM SMMU driver. However, if you're
-> > primarily interested in just patch 3, which is more "core" ARM SMMU than
-> > the rest, which are Tegra-specific, then I suppose what we could do is
-> > for you to give an Acked-by on the rest (2, 4-6) and then Krzysztof or I
-> > can pick them up and take them via ARM SoC, based on the stable branch
-> > from your tree that only has patch 3.
->=20
-> I think you previously said that patch 5 depends on patch 1, so I can't
-> take 2-6 without also pulling in the memory controller queue.
->=20
-> > Patch 6 touches arm-smmu-impl.c, though it's a two-line change that
-> > touches only the Tegra-specific matching bit in arm_smmu_impl_init(), so
-> > the likelihood of that conflicting with anything else is fairly small.
-> >=20
-> > Is that what you were proposing?
->=20
-> I can queue as much or as little of 2-6 as you like, but I would like to
-> avoid pulling in the memory controller queue into the arm smmu tree. But
-> yes, whichever of those I take, I can put them on a separate branch so
-> that you're not blocked for the later patches.
->=20
-> You have a better handle on the dependencies, so please tell me what works
-> for you. I just want to make sure that at least patch 3 lands in my tree,
-> so we don't get late conflicts with other driver changes.
 
-Yes, if you could pick up patch 3 and send out a link with the stable
-branch, I think Krzysztof or I could pull in that branch and pick up the
-remaining patches. It'd be good if you could also ack the remaining SMMU
-patches so that ARM SoC knows that they've been sanctioned.
+Hi,
 
-Krzysztof: would you be okay with picking up patches 2 and 4-6 on top of
-your memory branch for v5.14?
+Wesley Cheng <wcheng@codeaurora.org> writes:
 
-Thierry
+> Hi Greg/Felipe,
+>
+> On 6/4/2021 7:36 AM, Greg KH wrote:
+>> On Fri, Jun 04, 2021 at 05:18:16PM +0300, Felipe Balbi wrote:
+>>>
+>>> Hi,
+>>>
+>>> Greg KH <gregkh@linuxfoundation.org> writes:
+>>>> On Wed, May 19, 2021 at 12:49:16AM -0700, Wesley Cheng wrote:
+>>>>> Changes in V9:
+>>>>>  - Fixed incorrect patch in series.  Removed changes in DTSI, as dwc3=
+-qcom will
+>>>>>    add the property by default from the kernel.
+>>>>
+>>>> This patch series has one build failure and one warning added:
+>>>>
+>>>> drivers/usb/dwc3/gadget.c: In function =E2=80=98dwc3_gadget_calc_tx_fi=
+fo_size=E2=80=99:
+>>>> drivers/usb/dwc3/gadget.c:653:45: warning: passing argument 1 of =E2=
+=80=98dwc3_mdwidth=E2=80=99 makes pointer from integer without a cast [-Win=
+t-conversion]
+>>>>   653 |         mdwidth =3D dwc3_mdwidth(dwc->hwparams.hwparams0);
+>>>>       |                                ~~~~~~~~~~~~~^~~~~~~~~~
+>>>>       |                                             |
+>>>>       |                                             u32 {aka unsigned =
+int}
+>>>> In file included from drivers/usb/dwc3/debug.h:14,
+>>>>                  from drivers/usb/dwc3/gadget.c:25:
+>>>> drivers/usb/dwc3/core.h:1493:45: note: expected =E2=80=98struct dwc3 *=
+=E2=80=99 but argument is of type =E2=80=98u32=E2=80=99 {aka =E2=80=98unsig=
+ned int=E2=80=99}
+>>>>  1493 | static inline u32 dwc3_mdwidth(struct dwc3 *dwc)
+>>>>       |                                ~~~~~~~~~~~~~^~~
+>>>>
+>>>>
+>>>> drivers/usb/dwc3/dwc3-qcom.c: In function =E2=80=98dwc3_qcom_of_regist=
+er_core=E2=80=99:
+>>>> drivers/usb/dwc3/dwc3-qcom.c:660:23: error: implicit declaration of fu=
+nction =E2=80=98of_add_property=E2=80=99; did you mean =E2=80=98of_get_prop=
+erty=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+>>>>   660 |                 ret =3D of_add_property(dwc3_np, prop);
+>>>>       |                       ^~~~~~~~~~~~~~~
+>>>>       |                       of_get_property
+>>>>
+>>>>
+>>>> How did you test these?
+>
+> I ran these changes on our internal branches, which were probably
+> missing some of the recent changes done to the DWC3 drivers.  Will fix
+> the above compile errors and re-submit.
+>
+> In regards to how much these changes have been tested, we've been
+> maintaining the TX FIFO resize logic downstream for a few years already,
+> so its being used in end products.  We also verify this with our
+> internal testing, which has certain benchmarks we need to meet.
 
---jVj7juWizf7nxW9D
+the problem with that is that you *know* which gadget is running
+there. You know everyone of those is going to run the android
+gadget. In a sense, all those multiple products are testing the same
+exact use case :-)
+
+>>> to be honest, I don't think these should go in (apart from the build
+>>> failure) because it's likely to break instantiations of the core with
+>>> differing FIFO sizes. Some instantiations even have some endpoints with
+>>> dedicated functionality that requires the default FIFO size configured
+>>> during coreConsultant instantiation. I know of at OMAP5 and some Intel
+>>> implementations which have dedicated endpoints for processor tracing.
+>>>
+>>> With OMAP5, these endpoints are configured at the top of the available
+>>> endpoints, which means that if a gadget driver gets loaded and takes
+>>> over most of the FIFO space because of this resizing, processor tracing
+>>> will have a hard time running. That being said, processor tracing isn't
+>>> supported in upstream at this moment.
+>>>
+>
+> I agree that the application of this logic may differ between vendors,
+> hence why I wanted to keep this controllable by the DT property, so that
+> for those which do not support this use case can leave it disabled.  The
+> logic is there to ensure that for a given USB configuration, for each EP
+> it would have at least 1 TX FIFO.  For USB configurations which don't
+> utilize all available IN EPs, it would allow re-allocation of internal
+> memory to EPs which will actually be in use.
+
+The feature ends up being all-or-nothing, then :-) It sounds like we can
+be a little nicer in this regard.
+
+>>> I still think this may cause other places to break down. The promise the
+>>> databook makes is that increasing the FIFO size over 2x wMaxPacketSize
+>>> should bring little to no benefit, if we're not maintaining that, I
+>>> wonder if the problem is with some of the BUSCFG registers instead,
+>>> where we configure interconnect bursting and the like.
+>>=20
+>
+> I've been referring mainly to the DWC3 programming guide for
+> recommendations on how to improve USB performance in:
+> Section 3.3.5 System Bus Features to Improve USB Performance
+
+dwc3 or dwc3.1? Either way, since I left Intel I don't have access to
+the databook anymore. I have to trust what you guys are telling me and,
+based on the description so far, I don't think we're doing the right
+thing (yet).
+
+It would be nice if other users would test this patchset with different
+gadget drivers and different platforms to have some confidence that
+we're limiting possible regressions.
+
+I would like for Thinh to comment from Synopsys side here.
+
+> At least when I ran the initial profiling, adjusting the RX/TX
+> thresholds brought little to no benefits.  Even in some of the examples,
+
+right, the FIFO sizes shouldn't help much. At least that's what Paul
+told me several years ago. Thinh, has the recommendation changed?
+
+> they have diagrams showing a TXFIFO size of 6 max packets (Figure 3-5).
+>  I think its difficult to say that the TX fifo resizing won't help in
+> systems with limited, or shared resources where the bus latencies would
+> be somewhat larger.  By adjusting the TX FIFO size, the controller would
+> be able to fetch more data from system memory into the memory within the
+> controller, leading to less frequent end of bursts, etc... as data is
+> readily available.
+>
+> In terms of adjusting the AXI/AHB bursting, I would think the bandwidth
+> increase would eventually be constrained based on your system's design.
+>  We don't touch the GSBUSCFG registers, and leave them as is based off
+> the recommendations from the HW designers.
+
+Right, I want to touch those as little as possible too :-) However, to
+illustrate, the only reason I implemented FIFO resizing was because
+OMAP5 ES1 had TX FIFOs that were smaller than a full USB3 packet. HW
+Designer's recommendation can be bogus too ;-)
+
+>> Good points.
+>>=20
+>> Wesley, what kind of testing have you done on this on different devices?
+>>=20
+>
+> As mentioned above, these changes are currently present on end user
+> devices for the past few years, so its been through a lot of testing :).
+
+all with the same gadget driver. Also, who uses USB on android devices
+these days? Most of the data transfer goes via WiFi or Bluetooth, anyway
+:-)
+
+I guess only developers are using USB during development to flash dev
+images heh.
+
+=2D-=20
+balbi
+
+--=-=-=
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmDB2QcACgkQ3SOs138+
-s6EnLA//ZgBQdPoxTa9Yc7sswfHwAYyKCWSKQcgTH84rrCOszXWcAZORrfyMA4/d
-3OuzF8mlebPISC4OJoo3k9/EfITpQWbqFZSYQN03cqVDys/Kb+3woqyUvgrqmFUl
-rxrITRTsCOakoo3/OGgAtC0r3P+btzdZco6pqrsTr4PwQe1oUC+179jq6R536pVO
-n+liywt2NNxpGX1lI9rCpePyB777kLZZHI0oJO2HOtwLS/Z3TWLau3cRH1JSY7uy
-GpCUzS87izn2OPo65VOQDIHIDA67M6UiqesYQCOic0AY4fo4hvTIQ7DIdFMQYh0t
-Q2DUAr53VrV7m7DY313Xbo+ZGeq+c+ZQKn4JZ2KIOGDtucts8WpkEfmbJ2q7sUH7
-JnIBMeUs1k5v52eW8/GfZT6reyEcNzYCT/C1w2cSRwB/bCTc7j1+O4Iarc45mJgP
-pXFEsSZErCFLh0TBirnzJEqJ7eUyldWgSUy2jHndovEsS/hYJIuoKt6vILDlb4tn
-9KrMopwWp4gKN6fZwZZIV2dOgx07jzsVXpBjVjtnafnqad4IanU1RobRKOikiNkX
-xi97rLtRq5dB5oI1CTe3yHGUAz/A6gKyYtd3oQPP1hyeXglMAkThHJUBHTBlEAYy
-3GeB7oBGK6Cn/ZmG4qWFvsW82bxW9mjFzwOxW4zmSuLxPCFveG0=
-=Jpm0
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmDB2UARHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUhh6wf5ASkHs6fqBzDQD1V1D6i2+upsmXEEii9P
+rbbYCPi6wR/GN3RqO1gXvxtGOYF2GrSmFcxrk5wmTgsIDKInctwhZvj7K+V/NnV7
+kBxkM6vF4w1gwjbFRAV7SMeuIQB1uqBQdwMQpWlOOlZ67oGLJX6rl6C/u7e8dwvu
+fEP1n4SxZO9tPlxXFPg0CLE5QI6mcTisOPcGBRR02f/DTb7rY0xq8EdDg4m62Atg
+1Sux19GlPFG0kRA2F1+d7E//yZcLc2ukOPkGmAP3W2dg5XqEErBZXpm8Ca6N9oA6
+Q8MMLl1xwoImIm0TRwn7SGDQV7av5KN3LndA3m8lNROHqx1+EyDQjQ==
+=RWpj
 -----END PGP SIGNATURE-----
-
---jVj7juWizf7nxW9D--
+--=-=-=--
