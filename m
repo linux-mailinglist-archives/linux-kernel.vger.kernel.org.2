@@ -2,63 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439513A3773
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FD43A377A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhFJW70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:59:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230001AbhFJW7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:59:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E79A6613E1;
-        Thu, 10 Jun 2021 22:57:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623365849;
-        bh=2qdiKDsyqPFhDYPrvVgVTKvPw/sEvqf7zh726VLz6oY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p4QOnH+iB2+HQX/xjqiXTm6GkBuwf0HXl0tubPc4tqIchX5M/JPj+0aXJc4H1dRc6
-         iHWYY3W8LfE5UR7maDeWIoS6+BDG9TL7DGJJg6qkreFBER7x77XoctmWwnojk2UFTn
-         CWszSxnOAGk9zOy+uPvvMeBKFVAwEhMD0Bmf3K7ZGcRSSN2XGBZ2lBo68IqOYOGt5N
-         aJWUBo+VrJ+mMlsxJ1pGQviVSJ7lgBZJORUm/c+fp+1rm+Z4Zf0oNPPW9fNKeplWxP
-         OlDA9s+Uw9M/4C3csHao6xW3id36sDPefwShQ0sD4KNpbO1xMCcc1pXBa7RxF8EQN3
-         HTXjdy0o2gCeg==
-Date:   Thu, 10 Jun 2021 15:57:27 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: introduce f2fs_casefold_name slab
- cache
-Message-ID: <YMKY11PC5y/EfZYf@gmail.com>
-References: <20210608000022.5509-1-chao@kernel.org>
+        id S230376AbhFJXAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 19:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhFJXAo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 19:00:44 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3065C061574;
+        Thu, 10 Jun 2021 15:58:31 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id cb9so35019314edb.1;
+        Thu, 10 Jun 2021 15:58:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a0WxUB1rSvbS4Ruvft/3V1doKSwifPTvGACvaoKiR0A=;
+        b=p8PTqhCXGui8EF/KLNjMPyuwgYDHpjhMS9mWx6O0KARUl4Y3d+lEGI+vU+hCRVTeVv
+         g3KQlMt6K4ktn5G0TKpnLfvGTeQWjYUObSj+2ImvdhNiBwdWIJ0zfNyiPj3APjBna/yH
+         Sh/XCHvkh9Zkg+SXoJ9IIZV/8qKQV4+3EyJctQn9N0t1G0EQ6oVYIZVktPCLZB1ugjk2
+         0ekQK82GEcM7/w3W+r9lgswc/JONJHDQFz3ui6awh5nGF1QHxFtMB/M/5mJenwF5qXrv
+         foPJI6GbSWzJNy98UqdPQ6eZ5+uSQS6kgC7ocumFeSpOFCo/3f37dzCG48gkju2PI5ox
+         05vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a0WxUB1rSvbS4Ruvft/3V1doKSwifPTvGACvaoKiR0A=;
+        b=CnfU+5Jw5HkiaG3BoHTdU5xhGmyZq2/YSNT5iEhnrfY/Hb7LdlsdmfITTVC0KixRrs
+         xFuS9Bj4lKJdqcAG6C3h2KBviNYURazJltVF3/dbPKVnlRshZ5ttV8Ote9x1b/a1QWQl
+         OVWpzVjI02sHYuLEhVbe/vOwvgoeCXGPKZQ6GGu1f3Pobu646tNNmdGZPNNTNbIgj+qS
+         KH8LC+2frw1P+/Q8CqqiC4rcPd4vD9Es7CYAixvXYL52qaVJcff3toxouXckbp2dOBCR
+         4oZlw88ku3nqspZq9PSDpBOmr3p5yW2njQ5yFdLScxAHXCyAOXsnyS7iZWaGYBXLB/by
+         N5bQ==
+X-Gm-Message-State: AOAM533BIp0XGFOkD8xj2IzVVSMYbf7SsW79RIApYRezN0Y51vBlZaLB
+        SbHusSpJRBX/nxtvnBbdsThM9JrJQA0=
+X-Google-Smtp-Source: ABdhPJwGInWsk+q0DnWcBtVL0z43cuIyc7LEOl7K8V5HPDnvlMG5rvSEgZ/xK4qv6bJ5ZQF61S2xqg==
+X-Received: by 2002:aa7:d798:: with SMTP id s24mr743711edq.243.1623365908509;
+        Thu, 10 Jun 2021 15:58:28 -0700 (PDT)
+Received: from skbuf ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id lu21sm1488620ejb.31.2021.06.10.15.58.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 15:58:28 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 01:58:26 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        linux-kernel@vger.kernel.org,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Andrii Savka <andrii.savka@plvision.eu>,
+        Vadym Kochan <vkochan@marvell.com>
+Subject: Re: [PATCH v2 3/3] net: marvell: prestera: add LAG support
+Message-ID: <20210610225826.uzrufkacbo3vsps4@skbuf>
+References: <20210610154311.23818-1-vadym.kochan@plvision.eu>
+ <20210610154311.23818-4-vadym.kochan@plvision.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210608000022.5509-1-chao@kernel.org>
+In-Reply-To: <20210610154311.23818-4-vadym.kochan@plvision.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 08:00:22AM +0800, Chao Yu wrote:
-> From: Chao Yu <yuchao0@huawei.com>
+On Thu, Jun 10, 2021 at 06:43:11PM +0300, Vadym Kochan wrote:
+> From: Serhiy Boiko <serhiy.boiko@plvision.eu>
 > 
-> Add a slab cache: "f2fs_casefold_name" for memory allocation
-> of casefold name.
-
-Commit message should say "f2fs_casefolded_name", not "f2fs_casefold_name".
-
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> The following features are supported:
+> 
+>     - LAG basic operations
+>         - create/delete LAG
+>         - add/remove a member to LAG
+>         - enable/disable member in LAG
+>     - LAG Bridge support
+>     - LAG VLAN support
+>     - LAG FDB support
+> 
+> Limitations:
+> 
+>     - Only HASH lag tx type is supported
+>     - The Hash parameters are not configurable. They are applied
+>       during the LAG creation stage.
+>     - Enslaving a port to the LAG device that already has an
+>       upper device is not supported.
+> 
+> Co-developed-by: Andrii Savka <andrii.savka@plvision.eu>
+> Signed-off-by: Andrii Savka <andrii.savka@plvision.eu>
+> Signed-off-by: Serhiy Boiko <serhiy.boiko@plvision.eu>
+> Co-developed-by: Vadym Kochan <vkochan@marvell.com>
+> Signed-off-by: Vadym Kochan <vkochan@marvell.com>
 > ---
-> v2:
-> - change slab cache name to "f2fs_casefolded_name"
-> - add a "f2fs_" prefix for slab cache variable name
->  fs/f2fs/dir.c      | 17 +++++++++++------
->  fs/f2fs/recovery.c |  6 +++++-
->  fs/f2fs/super.c    | 24 ++++++++++++++++++++++++
 
-Otherwise this looks good.
-
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-
-- Eric
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
