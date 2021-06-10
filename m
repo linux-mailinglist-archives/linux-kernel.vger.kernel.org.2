@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCE33A2A81
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E76F3A2AC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhFJLnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 07:43:51 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3832 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbhFJLnt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:43:49 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G124p1VmtzWtC7;
-        Thu, 10 Jun 2021 19:36:58 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 19:41:51 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
- 2021 19:41:51 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <idryomov@gmail.com>, <jlayton@kernel.org>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <ceph-devel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>
-Subject: [PATCH -next] libceph: fix doc warnings in cls_lock_client.c
-Date:   Thu, 10 Jun 2021 19:50:58 +0800
-Message-ID: <20210610115058.3779341-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S230322AbhFJLxQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Jun 2021 07:53:16 -0400
+Received: from mga07.intel.com ([134.134.136.100]:16501 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230033AbhFJLxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 07:53:14 -0400
+IronPort-SDR: zRNiTGP4ZlGOWbekUTobUuCNuXxYQfqYkO/vwIqgHg4arChYRT4L5IQWOQniF94Vi2Q8+MpYBp
+ o5YkxVGmhYNg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="269133610"
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="269133610"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 04:51:16 -0700
+IronPort-SDR: hz+VQRvrU+mzoXy2jk494Dz8evJFdG/0nJujzvONqjO8o5f4yu5rt2qrwgOMHR9Jm1Woc+ubWr
+ uFWjKyiZeQJQ==
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="486137535"
+Received: from jwalsh5-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.28.33])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 04:51:13 -0700
+From:   joonas.lahtinen@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <548dd463-3942-00a1-85c3-232897dea1a3@canonical.com>
+References: <548dd463-3942-00a1-85c3-232897dea1a3@canonical.com>
+Cc:     platform-driver-x86@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Computation of return value being discarded in get_cpu_power() in drivers/platform/x86/intel_ips.c
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Jesse Barnes <jsbarnes@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <162332587143.15408.5683489401507477378@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: alot/0.8.1
+Date:   Thu, 10 Jun 2021 14:51:11 +0300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add description to fixes the following W=1 kernel build warning(s):
++ Jesse
 
- net/ceph/cls_lock_client.c:28: warning: Function parameter or
-  member 'osdc' not described in 'ceph_cls_lock'
- net/ceph/cls_lock_client.c:28: warning: Function parameter or
-  member 'oid' not described in 'ceph_cls_lock'
- net/ceph/cls_lock_client.c:28: warning: Function parameter or
-  member 'oloc' not described in 'ceph_cls_lock'
+Quoting Colin Ian King (2021-06-09 14:50:07)
+> Hi,
+> 
+> I was reviewing some old unassigned variable warnings from static
+> analysis by Coverity and found an issue introduced with the following
+> commit:
+> 
+> commit aa7ffc01d254c91a36bf854d57a14049c6134c72
+> Author: Jesse Barnes <jbarnes@virtuousgeek.org>
+> Date:   Fri May 14 15:41:14 2010 -0700
+> 
+>     x86 platform driver: intelligent power sharing driver
+> 
+> The analysis is as follows:
+> 
+> drivers/platform/x86/intel_ips.c
+> 
+>  871 static u32 get_cpu_power(struct ips_driver *ips, u32 *last, int period)
+>  872 {
+>  873        u32 val;
+>  874        u32 ret;
+>  875
+>  876        /*
+>  877         * CEC is in joules/65535.  Take difference over time to
+>  878         * get watts.
+>  879         */
+>  880        val = thm_readl(THM_CEC);
+>  881
+>  882        /* period is in ms and we want mW */
+>  883        ret = (((val - *last) * 1000) / period);
+> 
+> Unused value (UNUSED_VALUE)
+> assigned_value:  Assigning value from ret * 1000U / 65535U to ret here,
+> but that stored value is not used.
+> 
+>  884        ret = (ret * 1000) / 65535;
+>  885        *last = val;
+>  886
+>  887        return 0;
+>  888 }
+> 
+> I'm really not sure why ret is being calculated on lines 883,884 and not
+> being used. Should that be *last = ret on line 885? Looks suspect anyhow.
 
- net/ceph/cls_lock_client.c:93: warning: Function parameter or
-  member 'osdc' not described in 'ceph_cls_unlock'
- net/ceph/cls_lock_client.c:93: warning: Function parameter or
-  member 'oid' not described in 'ceph_cls_unlock'
- net/ceph/cls_lock_client.c:93: warning: Function parameter or
-  member 'oloc' not described in 'ceph_cls_unlock'
+According to git blame code seems to have been disabled intentionally by the
+following commit:
 
- net/ceph/cls_lock_client.c:143: warning: Function parameter or
-  member 'osdc' not described in 'ceph_cls_break_lock'
- net/ceph/cls_lock_client.c:143: warning: Function parameter or
-  member 'oid' not described in 'ceph_cls_break_lock'
- net/ceph/cls_lock_client.c:143: warning: Function parameter or
-  member 'oloc' not described in 'ceph_cls_break_lock'
+commit 96f3823f537088c13735cfdfbf284436c802352a
+Author: Jesse Barnes <jbarnes@virtuousgeek.org>
+Date:   Tue Oct 5 14:50:59 2010 -0400
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- net/ceph/cls_lock_client.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+    [PATCH 2/2] IPS driver: disable CPU turbo
+    
+    The undocumented interface we're using for reading CPU power seems to be
+    overreporting power.  Until we figure out how to correct it, disable CPU
+    turbo and power reporting to be safe.  This will keep the CPU within default
+    limits and still allow us to increase GPU frequency as needed.
 
-diff --git a/net/ceph/cls_lock_client.c b/net/ceph/cls_lock_client.c
-index 17447c19d937..82b7f3e3862f 100644
---- a/net/ceph/cls_lock_client.c
-+++ b/net/ceph/cls_lock_client.c
-@@ -10,7 +10,9 @@
- 
- /**
-  * ceph_cls_lock - grab rados lock for object
-- * @oid, @oloc: object to lock
-+ * @osdc: working on this ceph osd client
-+ * @oid: object to lock
-+ * @oloc: object to lock
-  * @lock_name: the name of the lock
-  * @type: lock type (CEPH_CLS_LOCK_EXCLUSIVE or CEPH_CLS_LOCK_SHARED)
-  * @cookie: user-defined identifier for this instance of the lock
-@@ -82,7 +84,9 @@ EXPORT_SYMBOL(ceph_cls_lock);
- 
- /**
-  * ceph_cls_unlock - release rados lock for object
-- * @oid, @oloc: object to lock
-+ * @osdc: working on this ceph osd client
-+ * @oid: object to lock
-+ * @oloc: object to lock
-  * @lock_name: the name of the lock
-  * @cookie: user-defined identifier for this instance of the lock
-  */
-@@ -130,7 +134,9 @@ EXPORT_SYMBOL(ceph_cls_unlock);
- 
- /**
-  * ceph_cls_break_lock - release rados lock for object for specified client
-- * @oid, @oloc: object to lock
-+ * @osdc: working on this ceph osd client
-+ * @oid: object to lock
-+ * @oloc: object to lock
-  * @lock_name: the name of the lock
-  * @cookie: user-defined identifier for this instance of the lock
-  * @locker: current lock owner
--- 
-2.31.1
+Maybe wrap the code after thm_readl() in #if 0 in case somebody ends up
+wanting to fix it? Or eliminate completely.
 
+In theory the thm_readl() may affect the system behavior so would not
+remove that for extra paranoia.
+
+Regards, Joonas
