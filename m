@@ -2,138 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A32B63A3024
+	by mail.lfdr.de (Postfix) with ESMTP id 122FD3A3022
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbhFJQIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:08:25 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:60178 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbhFJQIR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:08:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Cc:To:From:content-disposition;
-        bh=V8wti9Rbd9gM9W3eLoa9VESkzHe3fDUB5qnOwryji5s=; b=EAuVPPWYpAgnjMxfy/hj2I32Vf
-        +JJFwEARwbnRG5My05BB39xig5RZb2TkrRO/y6baz7GKBIBum7fQfTLr2U0FfrsCfGplHwlGLCJNu
-        cUwO6t6TatP3R079/lBIDjf+R4/jlOCfw22/+SNgsAj8wp7/gQcYwcWb6lMZHZrcNtriQ0+b9//cL
-        S8yWhNy9ben89b71mxXeWBNxWLui0q/5CGQPSzNj8GTAcIavnE0PGNiUKLqnvx0mScCGQ7TefpsHy
-        pi2h0NaP3HfO1b6dWH0gNYdVLrD84Z392tJVZGHmqK/Mysyq9GnGH5gBjIHSagY8Za+JD3uwJcgnq
-        5K0o9iyQ==;
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1lrNCD-0000Jj-G9; Thu, 10 Jun 2021 10:06:21 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1lrNC9-0007Pv-20; Thu, 10 Jun 2021 10:06:13 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Thu, 10 Jun 2021 10:06:09 -0600
-Message-Id: <20210610160609.28447-7-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210610160609.28447-1-logang@deltatee.com>
-References: <20210610160609.28447-1-logang@deltatee.com>
+        id S230358AbhFJQIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:08:20 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:49736 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230215AbhFJQIO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 12:08:14 -0400
+Received: from zn.tnic (p200300ec2f0cf600591105fc6a1dcc4d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:f600:5911:5fc:6a1d:cc4d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DDC801EC047E;
+        Thu, 10 Jun 2021 18:06:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623341177;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=zvbfcUZdo2PPbCEC0uqqnYngk3JUoL4NdQDuqHiqROE=;
+        b=rBw20HNvAR7V08L0GMft3uBM69albdHu50Ep8a4MZGOw3fZWG+UfB3UXav/Je4dU8ESW+y
+        ZPIxa2Juwmr4HNYQKQxeYeb1iwJfGFSqgGKx7tso3pjW7zOM2p3d/IkqTN/QFnstvh28uU
+        gtyPvIzRUxziNpMCQWbAfdkCvWqrpcU=
+Date:   Thu, 10 Jun 2021 18:06:15 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 12/22] x86/kernel: Make the bss.decrypted
+ section shared in RMP table
+Message-ID: <YMI4dxkwes15c+lx@zn.tnic>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-13-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, helgaas@kernel.org, sbates@raithlin.com, hch@lst.de, dan.j.williams@intel.com, jgg@ziepe.ca, christian.koenig@amd.com, jhubbard@nvidia.com, ddutile@redhat.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        MYRULES_FREE,MYRULES_NO_TEXT autolearn=no autolearn_force=no
-        version=3.4.2
-Subject: [PATCH v1 6/6] PCI/P2PDMA: Avoid pci_get_slot() which sleeps
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210602140416.23573-13-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to use upstream_bridge_distance_warn() from a dma_map function,
-it must not sleep. However, pci_get_slot() takes the pci_bus_sem so it
-might sleep.
+On Wed, Jun 02, 2021 at 09:04:06AM -0500, Brijesh Singh wrote:
+> The encryption attribute for the bss.decrypted region is cleared in the
+> initial page table build. This is because the section contains the data
+> that need to be shared between the guest and the hypervisor.
+> 
+> When SEV-SNP is active, just clearing the encryption attribute in the
+> page table is not enough. The page state need to be updated in the RMP
+> table.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/kernel/head64.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+> index de01903c3735..f4c3e632345a 100644
+> --- a/arch/x86/kernel/head64.c
+> +++ b/arch/x86/kernel/head64.c
+> @@ -288,7 +288,14 @@ unsigned long __head __startup_64(unsigned long physaddr,
+>  	if (mem_encrypt_active()) {
+>  		vaddr = (unsigned long)__start_bss_decrypted;
+>  		vaddr_end = (unsigned long)__end_bss_decrypted;
+> +
+>  		for (; vaddr < vaddr_end; vaddr += PMD_SIZE) {
+> +			/*
+> +			 * When SEV-SNP is active then transition the page to shared in the RMP
+> +			 * table so that it is consistent with the page table attribute change.
+> +			 */
+> +			early_snp_set_memory_shared(__pa(vaddr), __pa(vaddr), PTRS_PER_PMD);
+> +
+>  			i = pmd_index(vaddr);
+>  			pmd[i] -= sme_get_me_mask();
+>  		}
+> -- 
 
-In order to avoid this, try to get the host bridge's device from the first
-element in the device list. It should be impossible for the host bridge's
-device to go away while references are held on child devices, so the first
-element should not be able to change and, thus, this should be safe.
+It seems to me that all that code from the sme_encrypt_kernel(bp); call
+to the end of the function should be in a separate function in sev.c
+called sev_prepare_kernel(...args...) to be at least abstracted away
+from the main boot path.
 
-Introduce a static function called pci_host_bridge_dev() to obtain the
-host bridge's root device.
+Thx.
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
----
- drivers/pci/p2pdma.c | 34 ++++++++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-index 5dc1f9f62a93..c7ecd0196102 100644
---- a/drivers/pci/p2pdma.c
-+++ b/drivers/pci/p2pdma.c
-@@ -308,10 +308,41 @@ static const struct pci_p2pdma_whitelist_entry {
- 	{}
- };
- 
-+/*
-+ * This lookup function tries to find the PCI device corresponding to a given
-+ * host bridge.
-+ *
-+ * It assumes the host bridge device is the first PCI device in the
-+ * bus->devices list and that the devfn is 00.0. These assumptions should hold
-+ * for all the devices in the whitelist above.
-+ *
-+ * This function is equivalent to pci_get_slot(host->bus, 0), however it does
-+ * not take the pci_bus_sem lock seeing __host_bridge_whitelist() must not
-+ * sleep.
-+ *
-+ * For this to be safe, the caller should hold a reference to a device on the
-+ * bridge, which should ensure the host_bridge device will not be freed
-+ * or removed from the head of the devices list.
-+ */
-+static struct pci_dev *pci_host_bridge_dev(struct pci_host_bridge *host)
-+{
-+	struct pci_dev *root;
-+
-+	root = list_first_entry_or_null(&host->bus->devices,
-+					struct pci_dev, bus_list);
-+
-+	if (!root)
-+		return NULL;
-+	if (root->devfn != PCI_DEVFN(0, 0))
-+		return NULL;
-+
-+	return root;
-+}
-+
- static bool __host_bridge_whitelist(struct pci_host_bridge *host,
- 				    bool same_host_bridge, bool warn)
- {
--	struct pci_dev *root = pci_get_slot(host->bus, PCI_DEVFN(0, 0));
-+	struct pci_dev *root = pci_host_bridge_dev(host);
- 	const struct pci_p2pdma_whitelist_entry *entry;
- 	unsigned short vendor, device;
- 
-@@ -320,7 +351,6 @@ static bool __host_bridge_whitelist(struct pci_host_bridge *host,
- 
- 	vendor = root->vendor;
- 	device = root->device;
--	pci_dev_put(root);
- 
- 	for (entry = pci_p2pdma_whitelist; entry->vendor; entry++) {
- 		if (vendor != entry->vendor || device != entry->device)
 -- 
-2.20.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
