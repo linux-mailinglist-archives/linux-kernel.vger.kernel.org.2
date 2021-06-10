@@ -2,143 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E373A2B5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C151B3A2B5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhFJMWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:22:55 -0400
-Received: from mail-lj1-f169.google.com ([209.85.208.169]:39535 "EHLO
-        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhFJMWy (ORCPT
+        id S230329AbhFJMYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:24:18 -0400
+Received: from mail-ua1-f54.google.com ([209.85.222.54]:42761 "EHLO
+        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230130AbhFJMYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:22:54 -0400
-Received: by mail-lj1-f169.google.com with SMTP id c11so4590288ljd.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:20:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B5saXN8y8jJnqzcobNPFjAY/LSyHRP80akt09QmswJ4=;
-        b=e/2hVyE4fRiykxrzhmxMG/q+qyIOL1MUvYrqhuSdWzN0nMeZlMi6Ajpaw+yaKeMCCS
-         1h+y8jHR3niT07qbiKeaxsBaO/Adscm/eTQ6wpQ5HTbpLbdhg8m+lqvjk1F6Pgzp8+QI
-         lkF2vcJ0Xc90f3pr5jPsg4LpqetxOmykeLl/H2Nwq5+6h8ZxBpQxEVjyRlzJifg5YlyJ
-         WBOaau+HOhP2WsGfdwpOC6qxAM/6Gok0rv55SGkDxEeYkUBSeE6kh+NVv+mLL/3SaF2e
-         k7zUqJDpac9+h1UAGSBMOA7SXTBDS3PfAExcqauPcvHZ53nSu6E1DftRONJZPJGiPTH8
-         WOsw==
+        Thu, 10 Jun 2021 08:24:17 -0400
+Received: by mail-ua1-f54.google.com with SMTP id w5so1194197uaq.9;
+        Thu, 10 Jun 2021 05:22:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=B5saXN8y8jJnqzcobNPFjAY/LSyHRP80akt09QmswJ4=;
-        b=BU3IjN84rAyxuo1FE9c1nn9WvyHEXIvgpDwXsCuUfH7ENa8GwtYcegHA5qGVKgXnU3
-         6l8Feh1Zn7hETL7BB0tUdOczStd+qJAKOpbcebizTu8B/xfSKZtsfFxDkPKFyux2AHan
-         1WM0a6fltJ9PHXzge6vioTl/Khk2T67rAnePfxaPlfxSxIiFIZtxrQ9S4gQDWMmMhK5Y
-         rV1WZz1af7ULkN105PVDEU5xLj1hMbwHaxsALm/XctpWIsGkFEdikb/S1sOG0Y7St66I
-         Z4oxwNlhrOzMkMVjdIb8LAITDAMv/Vdw0EnS7lCism/SeUqsjmfl0L3LIdxgdmD5UpX5
-         2bSw==
-X-Gm-Message-State: AOAM533gFYDoyr7zMA99tab/5kukK4JJVmUSLYB8cMsWPO1U9AYxMg3X
-        +/yhG8R/zu5J4Ds6Qrz+91UceZmBPWdmdRt+JD1Gjw==
-X-Google-Smtp-Source: ABdhPJwFSEoSyIsifCA2OLdHCyYtfNKqc6atLULHS9wJFnsphHwklXtKHggSuzsWiXxUg8L+g/Ml9vrU9ci8RJd/5z0=
-X-Received: by 2002:a2e:9b07:: with SMTP id u7mr1941210lji.209.1623327597098;
- Thu, 10 Jun 2021 05:19:57 -0700 (PDT)
+        bh=GHImRfBQYLoz3d/i2ivFXTZfIrG8e8ycwCeg8K/SaiY=;
+        b=t0g2XOIVo6nyrSlEBemjJI4Ix+9+B1pDNeQbBBRuEKOpES0yAawHiyE3KuTloHZ+R0
+         tcgSiyraERWjHNrj5RiDwohXet9SUWDALt8ccqHnN/O1RlBk8F429yYupr0Yb/QsFOou
+         +XiW/IwvICslSgD3fMznnD/I2tQM93miV44zWexmvCGWUzY02iDe7TNi5MsFhtlYPRXs
+         od4oEoyRqPTo+1WUwo1z08mugIosvxEIDfAv4kdVFwEDtVZfgodSZg1Mm2s79yoWO2ra
+         xUiUrp+JEi/NodfbTzKhjttlCjPME+bv/m2J1A9zPNN9tYa2CMi/6eWx48toXqddxo2s
+         YKIQ==
+X-Gm-Message-State: AOAM530Bgd0e7/PZxgU1+AqJEi3B/3127XjmgxrNFLrXImEiqRMDmtSE
+        VSvCF4T9pSljgYR9FAjMkmw+Cx44muf3ma0gu4A=
+X-Google-Smtp-Source: ABdhPJw8UipGhmaBBsSwyshnKJEMcNPGGI4TUltcMxoq/ilmmyOmBEd8pDYi8K6oMEVXDwhrjC22r0+D7Mf//KWyLuU=
+X-Received: by 2002:ab0:2a4e:: with SMTP id p14mr3957154uar.2.1623327740301;
+ Thu, 10 Jun 2021 05:22:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210604080954.13915-1-lukasz.luba@arm.com> <20210604080954.13915-2-lukasz.luba@arm.com>
- <2f2fc758-92c6-5023-4fcb-f9558bf3369e@arm.com> <905f1d29-50f9-32be-4199-fc17eab79d04@arm.com>
- <3cfa5690-644b-ba80-3fc3-7c5a3f292e70@arm.com> <c77d00b9-d7a3-0e8a-a528-ab0c1773496f@arm.com>
-In-Reply-To: <c77d00b9-d7a3-0e8a-a528-ab0c1773496f@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 10 Jun 2021 14:19:44 +0200
-Message-ID: <CAKfTPtAc62gyjxSiSY2vD_qr-WjqbC91_GF-LXgNXh8T0Xx-yw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] sched/fair: Take thermal pressure into account
- while estimating energy
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Quentin Perret <qperret@google.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Beata Michalska <Beata.Michalska@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
+References: <20210609163717.3083-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210609163717.3083-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210609163717.3083-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 10 Jun 2021 14:22:09 +0200
+Message-ID: <CAMuHMdVL-6dykmxb9PozWap3iTJEwuNQBgvvJwxHNGEu=r2WOg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: power: renesas,rzg2l-sysc: Add DT
+ binding documentation for SYSC controller
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 at 12:37, Lukasz Luba <lukasz.luba@arm.com> wrote:
->
->
->
-> On 6/10/21 11:07 AM, Dietmar Eggemann wrote:
-> > On 10/06/2021 11:04, Lukasz Luba wrote:
-> >>
->
-> [snip]
->
-> >> Not always, it depends on thermal governor decision, workload and
-> >> 'power actors' (in IPA naming convention). Then it depends when and how
-> >> hard you clamp the CPUs. They (CPUs) don't have to be always
-> >> overutilized, they might be even 50-70% utilized but the GPU reduced
-> >> power budget by 2 Watts, so CPUs left with only 1W. Which is still OK
-> >> for the CPUs, since they are only 'feeding' the GPU with new 'jobs'.
-> >
-> > All this pretty much confines the usefulness of you proposed change. A
-> > precise description of it with the patches is necessary to allow people
-> > to start from there while exploring your patches.
->
-> OK, I see your point.
->
-> [snip]
->
-> >> True, I hope this description above would help to understand the
-> >> scenario.
-> >
-> > This description belongs in the patch header. The scenario in which your
-> > functionality would improve things has to be clear.
-> > I'm sure that not everybody looking at this patches is immediately aware
-> > on how IPA setups work and which specific setup you have in mind here.
->
-> Agree. I will add this description into the patch header for v3.
->
-> [snip]
->
-> >>
-> >> Yes, this code implementation tries to address those issues.
-> >
-> > The point I was making here is: why using the PELT signal
-> > thermal_load_avg() and not per_cpu(thermal_pressure, cpu) directly,
-> > given the fact that the latter perfectly represents the frequency clamping?
-> >
->
-> Good question. I wanted to be aligned with other parts in the fair.c
-> like cpu_capacity() and all it's users. The CPU capacity is reduced by
-> RT, DL, IRQ and thermal load avg, not the 'raw' value from the
-> per-cpu variable.
->
-> TBH I cannot recall what was the argument back then
-> when thermal pressure geometric series was introduced.
-> Maybe to have a better control how fast it raises and decays
-> so other mechanisms in the scheduler will see the change in thermal
-> as not so sharp... (?)
->
->
-> Vincent do you remember the motivation to have geometric series
-> in thermal pressure and not use just the 'raw' value from per-cpu?
+Hi Prabhakar,
 
-In order to have thermal pressure  synced with other metrics used by
-the scheduler like util/rt/dl_avg. As an example, when thermal
-pressure will decrease because thermal capping is removed, the
-utilization will increase at the same pace as thermal will decrease
-and it will not create some fake spare cycle. util_avg is the average
-expected utilization of the cpu, thermal pressure reflects the average
-stolen capacity for the same averaging time scale but this can be the
-result of a toggle between several OPP
+On Wed, Jun 9, 2021 at 6:37 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add DT binding documentation for SYSC controller found on
+> RZ/G2{L,LC,UL} SoC's.
+>
+> SYSC block contains the LSI_DEVID register which is used to retrieve
+> SoC product information.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Using current capping is quite volatile to make a decision as it might
-have changed by the time you apply your decision.
+Thanks for the update!
+
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/renesas,rzg2l-sysc.yaml
+> @@ -0,0 +1,63 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/power/renesas,rzg2l-sysc.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Renesas RZ/G2L System Controller (SYSC)
+> +
+> +maintainers:
+> +  - Geert Uytterhoeven <geert+renesas@glider.be>
+> +
+> +description:
+> +  The RZ/G2L System Controller (SYSC) performs system control of the LSI and
+> +  supports following functions,
+> +  - External terminal state capture function
+> +  - 34-bit address space access function
+> +  - Low power consumption control
+> +  - WDT stop control
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - renesas,r9a07g044-sysc # RZ/G2{L,LC}
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    items:
+> +      - description: CA55/CM33 Sleep/Software Standby Mode request interrupt
+> +      - description: CA55 Software Standby Mode release request interrupt
+> +      - description: CM33 Software Standby Mode release request interrupt
+> +      - description: CA55 ACE Asynchronous Bridge Master/Slave interface deny request interrupt
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: sys_lpm_int
+> +      - const: sys_ca55stbydone_int
+> +      - const: sys_cm33stbyr_int
+> +      - const: sys_ca55_deny
+
+The "sys_" prefixes feel superfluous to me.
+If you don't mind, I can remove them while applying (also from example
+and .dtsi).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
