@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23213A2497
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4063A2492
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbhFJGjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:39:33 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:46781 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhFJGja (ORCPT
+        id S230042AbhFJGig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229914AbhFJGif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:39:30 -0400
-Received: by mail-pj1-f67.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso3174652pjb.5;
-        Wed, 09 Jun 2021 23:37:34 -0700 (PDT)
+        Thu, 10 Jun 2021 02:38:35 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4F2C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 23:36:39 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id g12so14132728qvx.12
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:36:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=z96H5wC0kNJ/kft8S+uNeMa48EWE9xHJtYV30xc9WPI=;
-        b=e9J1BfY5syEbre1p7xgfzIdkF4QF66rDYPYrhQRLN0FTGVSOcOs3xnOCYHmtAx9Lpa
-         ty2OlM8PEIgMxGhBckd7vjhrA2dun6WdlmR5n4IcfSVugg7ZAladRp5FdyE0oYxia68x
-         Fybi0XRSauhkp5LG6MEtDYuFrsh0v6nKebQUV8oc0g7zKTvDV6zivZWWl57DLuxTBCRk
-         wL5ePDwPDSR/KAzzw/wRPV6+9pM1A7bMSt7QLR0gfFpdxWAuTsD+9MbcV1wvKRbYWWJk
-         5W7vdnLdo/sAAW9B0O9lBPsf4B0DrrSrZtikTwSWpkkBX0UOwcPCogGBk2QnL458EyFl
-         PpQQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=rZYXw6BRbvhvPhfR4jmUYFMFeMI725FP/8d3gS3xgfI=;
+        b=kGmVYq1KCmC0sxjG2bvNJSAIEma0Txe8awTrb1MSDSPgZXAAmX8mMA0PtfBAImtoHM
+         qSauEy6+Am03n80BYZHU9UEOnC2BoINeerjMvYrYgNX2nJmjsXTUU4yOttfanzIg+Z10
+         izk8JK2zBz9zFSIg9mOdz5EjjvZqKvGsMJ2MYUoyP9qIW+de6rkSxrrXHnHWJpVZ227k
+         ZQI3LJfwaow8uofHvJ1hY/m61JlpqgX2ZoIuxharrtNEirkWgwqNsyj0XBAo7zg440KQ
+         9WVwWWwLzPdV8d5xIKtSgzFL13Gb62Cqh6fMFffXHRj3u48MRMr2E6Qh0/lUPxEltrlo
+         EjqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z96H5wC0kNJ/kft8S+uNeMa48EWE9xHJtYV30xc9WPI=;
-        b=gelrpsSY+06GGvZKIr7gtCMUgLRky6EwNd8ULpBFaixmMltlys7oYKG+NNoPnYQ550
-         sELGhge2rwbREscT+3Bg8hHFRNycRPOba/7clBsiGSbLS/rjJllN+N3Wn9Pv4A6maPCr
-         wAqfzf4F++4J/dOtOHA1gozh5YnB3aqvDxvqi/+IVPfVszR8jnBEayRllVFpfXfC5raI
-         HQoX7MABHALrF9LDHpBrYWZUHWm9tocGFafNbepJXX27T3OY6Ab4QtTT4jQ7vaDxzYd1
-         vCtEziEOh0vHIlf8MoxS608uGr8XUJAxSpTB6vIiZDLSlxwxksNJ96qLID+W8wLei/c5
-         Pckw==
-X-Gm-Message-State: AOAM533y+sBTAcSnN4t5VT7umcflDSqOy4Q3ANcERmV6eq8yagSGfIfz
-        zYJmBrAYR6gabo5IA78CKEA=
-X-Google-Smtp-Source: ABdhPJynS4JYYCRm7+68gefxhx1c3BbgTQHXaxy0u0Y+D8R6G+ouzPkH6k2R0qXUxOPKchccSjvDHA==
-X-Received: by 2002:a17:90b:901:: with SMTP id bo1mr1805221pjb.0.1623306994254;
-        Wed, 09 Jun 2021 23:36:34 -0700 (PDT)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id k25sm1335478pfk.33.2021.06.09.23.36.33
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=rZYXw6BRbvhvPhfR4jmUYFMFeMI725FP/8d3gS3xgfI=;
+        b=bcb55ipT083c3F5+3g/VzsUSL+dOaSBkAGLsOLVKdEYqN61HZHRKSeHkEUwK/YSq60
+         pDFNx4VbXzoZbubDfnzroaF33FEDX4+jR2RGdtSiA2GcqAoeEnnyQvo+4t72sG8jzdHW
+         4QIixPi3KFQu5OoUXAolFINmdDwwwzzFZtSIm2gTnOeWlbL0GMyGRyeEweWT0sbxCt1L
+         jaaPqp0HhFjypvP5A+yMRwDuZhHStSznLWsovssmDu7mFcap5cgGkZE+dJi7k0U1zQVK
+         t0ujOZZTY2p/FcAksWdFrigsmgKlHQXQ+QgMc5uCmOGsSUweTFrhZTIQ5g3agqG90OuS
+         SJ7A==
+X-Gm-Message-State: AOAM532jiJTDUn4qboNAQKnHSu9+1q/zSGCHii5hj5YxSi4sZRNAxdju
+        OzffHLM1hE99mcJzNgCznFX3aQ==
+X-Google-Smtp-Source: ABdhPJyLamliZT4RHXjzNV5dKT4qjdHxdf/Mhbgo2rrm2QWLrwhPqsgsN3rbxP0uPfGa3iMSDtfciA==
+X-Received: by 2002:a05:6214:162a:: with SMTP id e10mr3723237qvw.49.1623306998481;
+        Wed, 09 Jun 2021 23:36:38 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id q2sm1635598qkc.77.2021.06.09.23.36.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 23:36:33 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 23:36:21 -0700
-From:   Menglong Dong <menglong8.dong@gmail.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     christian.brauner@ubuntu.com, viro@zeniv.linux.org.uk,
-        keescook@chromium.org, samitolvanen@google.com, johan@kernel.org,
-        ojeda@kernel.org, jeyu@kernel.org, masahiroy@kernel.org,
-        joe@perches.com, dong.menglong@zte.com.cn, jack@suse.cz,
-        hare@suse.de, axboe@kernel.dk, tj@kernel.org,
-        gregkh@linuxfoundation.org, song@kernel.org, neilb@suse.de,
-        akpm@linux-foundation.org, linux@rasmusvillemoes.dk,
-        brho@google.com, f.fainelli@gmail.com, palmerdabbelt@google.com,
-        wangkefeng.wang@huawei.com, rostedt@goodmis.org, vbabka@suse.cz,
-        glider@google.com, pmladek@suse.com, johannes.berg@intel.com,
-        ebiederm@xmission.com, jojing64@gmail.com, terrelln@fb.com,
-        geert@linux-m68k.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mcgrof@kernel.org, arnd@arndb.de,
-        chris@chrisdown.name, mingo@kernel.org, bhelgaas@google.com,
-        josh@joshtriplett.org
-Subject: Re: [PATCH v6 0/2] init/initramfs.c: make initramfs support
- pivot_root
-Message-ID: <20210610063621.GA83644@www>
-References: <20210605034447.92917-1-dong.menglong@zte.com.cn>
- <20210609230312.54f3f0ba9bb2ce93b9f5c4a3@kernel.org>
+        Wed, 09 Jun 2021 23:36:38 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 23:36:36 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 02/11] mm: page_vma_mapped_walk(): settle PageHuge on entry
+In-Reply-To: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
+Message-ID: <e31a483c-6d73-a6bb-26c5-43c3b880a2@google.com>
+References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609230312.54f3f0ba9bb2ce93b9f5c4a3@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:03:12PM +0900, Masami Hiramatsu wrote:
-> On Sat,  5 Jun 2021 11:44:45 +0800
-> menglong8.dong@gmail.com wrote:
-> 
-> > From: Menglong Dong <dong.menglong@zte.com.cn>
-> > 
-> > As Luis Chamberlain suggested, I split the patch:
-> > [init/initramfs.c: make initramfs support pivot_root]
-> > (https://lore.kernel.org/linux-fsdevel/20210520154244.20209-1-dong.menglong@zte.com.cn/)
-> > into three.
-> > 
-> > The goal of the series patches is to make pivot_root() support initramfs.
-> > 
-> > In the first patch, I introduce the function ramdisk_exec_exist(), which
-> > is used to check the exist of 'ramdisk_execute_command' in LOOKUP_DOWN
-> > lookup mode.
-> > 
-> > In the second patch, I create a second mount, which is called
-> > 'user root', and make it become the root. Therefore, the root has a
-> > parent mount, and it can be umounted or pivot_root.
-> > 
-> > In the third patch, I fix rootfs_fs_type with ramfs, as it is not used
-> > directly any more, and it make no sense to switch it between ramfs and
-> > tmpfs, just fix it with ramfs to simplify the code.
-> 
-> Hi,
-> 
-> I have tested this series on qemu with shell script container on initramfs.
-> It works for me!
-> 
-> Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Thank you,
-> 
+page_vma_mapped_walk() cleanup: get the hugetlbfs PageHuge case
+out of the way at the start, so no need to worry about it later.
 
-Ok, thank you :/
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Cc: <stable@vger.kernel.org>
+---
+ mm/page_vma_mapped.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Menglong Dong
+diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+index a6dbf714ca15..7c0504641fb8 100644
+--- a/mm/page_vma_mapped.c
++++ b/mm/page_vma_mapped.c
+@@ -153,10 +153,11 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+ 	if (pvmw->pmd && !pvmw->pte)
+ 		return not_found(pvmw);
+ 
+-	if (pvmw->pte)
+-		goto next_pte;
+-
+ 	if (unlikely(PageHuge(page))) {
++		/* The only possible mapping was handled on last iteration */
++		if (pvmw->pte)
++			return not_found(pvmw);
++
+ 		/* when pud is not present, pte will be NULL */
+ 		pvmw->pte = huge_pte_offset(mm, pvmw->address, page_size(page));
+ 		if (!pvmw->pte)
+@@ -168,6 +169,9 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+ 			return not_found(pvmw);
+ 		return true;
+ 	}
++
++	if (pvmw->pte)
++		goto next_pte;
+ restart:
+ 	pgd = pgd_offset(mm, pvmw->address);
+ 	if (!pgd_present(*pgd))
+@@ -233,7 +237,7 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+ 			return true;
+ next_pte:
+ 		/* Seek to next pte only makes sense for THP */
+-		if (!PageTransHuge(page) || PageHuge(page))
++		if (!PageTransHuge(page))
+ 			return not_found(pvmw);
+ 		end = vma_address_end(page, pvmw->vma);
+ 		do {
+-- 
+2.26.2
+
