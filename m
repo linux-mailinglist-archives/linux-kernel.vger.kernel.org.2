@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42AE3A30B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE543A30C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhFJQdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:33:33 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3204 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbhFJQdb (ORCPT
+        id S230452AbhFJQh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:37:58 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:34551 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhFJQh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:33:31 -0400
-Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G18Pt73ckz6H6jZ;
-        Fri, 11 Jun 2021 00:22:10 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 10 Jun 2021 18:31:33 +0200
-Received: from [10.47.80.201] (10.47.80.201) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
- 2021 17:31:32 +0100
-From:   John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH v11 0/3] Enhance IOMMU default DMA mode build options
-To:     Joerg Roedel <joro@8bytes.org>
-CC:     <will@kernel.org>, <dwmw2@infradead.org>,
-        <baolu.lu@linux.intel.com>, <robin.murphy@arm.com>,
-        <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
-        <chenxiang66@hisilicon.com>, <rdunlap@infradead.org>
-References: <1623158308-180604-1-git-send-email-john.garry@huawei.com>
- <YMB4tCrkZv1b44qM@8bytes.org>
-Message-ID: <4c1f02c5-fc6c-997f-19de-081efbb96566@huawei.com>
-Date:   Thu, 10 Jun 2021 17:25:36 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Thu, 10 Jun 2021 12:37:56 -0400
+Received: by mail-oi1-f178.google.com with SMTP id u11so2763396oiv.1;
+        Thu, 10 Jun 2021 09:35:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9ax835iY3Fv7YvJJqM1vnVxu3UyKUpAzW1nQQIubecU=;
+        b=krlPxM0ZBTrjKI9CKlo5Ocqtw0q37VE9NSjI3h+Mdp48t4EehvHUhDI1tdZA845eW8
+         ZPql2pJO5Tf1yWTp5YhzBmyF4z+8KkipV/gqB05+/5xA0attC+y9m50u4bWRjcAJJ0Di
+         vY68Qt0Soh+nSGf2bLbiWLctkKf7sgxC5zjhfipvpGGtSLVS2Uh0YbZHK3+WKkl6VuAC
+         Quv6uFm3ctssPlv1eMmlML246ctKZy3Ut9jiE0MbtrM+Fv7CUSSkB9tfOWf1LP1ihPj5
+         axAyKu11irh/nchxUAiNw4kYfAgcv7BQ5geA5u5+PNXILCT0ZmfMdhCCFDwIWHJu90vK
+         hpyA==
+X-Gm-Message-State: AOAM532h9a9h07fST3sRGRBx3juBsKb5PoLST0hwio+jjRt7t3yV8LIV
+        SpWm2cYtjNTiiWjiCgRPOA==
+X-Google-Smtp-Source: ABdhPJxD9ZYlWHHYVoXO+zmfjEvIuWUpPH31JCI51UEw/VY0yNHhP/uSpMlyB18vV42ntslbMUrc1g==
+X-Received: by 2002:aca:ac47:: with SMTP id v68mr4060272oie.160.1623342943207;
+        Thu, 10 Jun 2021 09:35:43 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.99.113])
+        by smtp.gmail.com with ESMTPSA id x7sm631221ooc.23.2021.06.10.09.35.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 09:35:41 -0700 (PDT)
+Received: (nullmailer pid 1932709 invoked by uid 1000);
+        Thu, 10 Jun 2021 16:35:38 -0000
+Date:   Thu, 10 Jun 2021 11:35:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, jamipkettunen@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        konrad.dybcio@somainline.org, Andy Gross <agross@kernel.org>,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        marijn.suijten@somainline.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: clk: qcom: gcc-sm6125: Document
+ SM6125 GCC driver
+Message-ID: <20210610163538.GA1932655@robh.at.kernel.org>
+References: <20210605121040.282053-1-martin.botka@somainline.org>
 MIME-Version: 1.0
-In-Reply-To: <YMB4tCrkZv1b44qM@8bytes.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.80.201]
-X-ClientProxiedBy: lhreml749-chm.china.huawei.com (10.201.108.199) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210605121040.282053-1-martin.botka@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06/2021 09:15, Joerg Roedel wrote:
-> On Tue, Jun 08, 2021 at 09:18:25PM +0800, John Garry wrote:
->> Zhen Lei (3):
->>    iommu: Enhance IOMMU default DMA mode build options
->>    iommu/vt-d: Add support for IOMMU default DMA mode build options
->>    iommu/amd: Add support for IOMMU default DMA mode build options
-> So I like the idea, but can we go a step further and get (mostly) rid of
-> the driver-specific setup code for lazy/non-lazy mode? This can happen
-> in the dma-iommu code and the drivers only need to keep the support for
-> their legacy command line options.
+On Sat, 05 Jun 2021 14:10:37 +0200, Martin Botka wrote:
+> Document the newly added SM6125 GCC driver.
+> 
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> ---
+> Changes in V2:
+> Add commit description.
+> Changes in V3:
+> Use rpmcc.h instead of rpmh.h
+> Changes in V4:
+> Fix indentation
+> License
+>  .../bindings/clock/qcom,gcc-sm6125.yaml       |  72 ++++++
+>  include/dt-bindings/clock/qcom,gcc-sm6125.h   | 240 ++++++++++++++++++
+>  2 files changed, 312 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-sm6125.h
+> 
 
-The AMD driver just maintains a flag and a print for the strict mode 
-setting.
-
-The Intel driver still maintains some lazy vs strict config, depending 
-on the platform:
-- DMAR caching mode set means that we enforce strict mode globally
-- workaround for ironlake gpu means that we enforce strict mode globally
-
-So there isn't much driver-specific setup remaining, and I can't see the 
-intel stuff being moved into dma-iommu.c or asbtracted (for that).
-
-We could prob replace the driver-specific logs with new logs in iommu.c, 
-and do away with maintaining the proprietary driver strict mode flags. 
-That's if we're ok with replacing the driver-specific logs, though.
-
-Thanks,
-John
-
+Reviewed-by: Rob Herring <robh@kernel.org>
