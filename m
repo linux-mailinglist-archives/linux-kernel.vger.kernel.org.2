@@ -2,86 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28C83A31D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C0E3A31D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhFJRPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:15:38 -0400
-Received: from mail-ua1-f41.google.com ([209.85.222.41]:33409 "EHLO
-        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbhFJRPg (ORCPT
+        id S230080AbhFJRQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:16:21 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:48590 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhFJRQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:15:36 -0400
-Received: by mail-ua1-f41.google.com with SMTP id l12so1552711uai.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:13:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=3wDCOmBqpStNRMosvn3ceXzq1u9OslDi/bGaUXTp8uY=;
-        b=NaGFWO7Q/hbxIZiTgrTvggFendXc+jFMKiFuy7e9MWkIACfQCHM336wUhifgy8FybU
-         MzODfPoYPG2O96pjPmmEuJaE0e/v9whvLmqz4tbLuW4CIsnphra7C8D2u9XcvRA45sXX
-         oOpkKKXw4LCh+AxZw+dG9hAJc8FfMsR6Z6t5lijCOOuSVA/jjRQK/ODCiI5u5GU3uouY
-         oVhCEUaTF6UYLZAkhHDHBvQ8IGX+VFACKLCCRMlL1kdP5/wk65pztD4Ujmmk/4x/dAHr
-         CtrrGlGMPl8wYquqOt25ovKgOFbgE/9YXJcPowaK4KNM0GmYs2QYDYHk2GpztfildxpN
-         5kWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=3wDCOmBqpStNRMosvn3ceXzq1u9OslDi/bGaUXTp8uY=;
-        b=HfPFx2YYOHM38UfRSHxIRzz75i6YVCOQAOWOvs/TDzz0LFGk99veeWvtGLCkfRdOVg
-         GDj7xr7m9NUg32/uV7emVUkzOyup/o0Sgif42a/rB0nyBuc1TzKNDPu0kMFt8U+C+K7z
-         mzMgSjGvrCrGzBCweInNbEWDvHG/jbOW50hgScSd5xLPHgxvoRK9MCQppOBUQDszqM4H
-         DKTkazsMvaBBfSgau1nt3wov339KfPbOWZ0IKd1TxjsGYNzAljIzBg0zaMTGlQ/0Tt3z
-         HV8e3lTRWZKoi8isYSAhYv6N4UVP6BjymdQfnq6xrMN+5ZtGZp09nfzZQ5TkR+ekzDnS
-         waOQ==
-X-Gm-Message-State: AOAM533pg8D2/Jw5f6DJUeyk8rIkggP9aIj/FNtXXiw8NJ3470Jl1X1f
-        caukKjuilRCibt1dQ/qCm5v+Hf9lu+PP/mjk4dk=
-X-Google-Smtp-Source: ABdhPJxfpEb+9qvT1gx+/s6nGvOoHUeYQVL5cHHjmQgJE/XrU4O6JqewqKKsPkdorv3ZHtBOMT4V3T2udYG+8mP6s3s=
-X-Received: by 2002:ab0:1e42:: with SMTP id n2mr888567uak.130.1623345159619;
- Thu, 10 Jun 2021 10:12:39 -0700 (PDT)
+        Thu, 10 Jun 2021 13:16:18 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C8EE78D4;
+        Thu, 10 Jun 2021 19:14:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623345261;
+        bh=W3SG8UnrOuR0iNr7YMC6xV0NHhWpG2qC0B18el8uGRY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CWs4pucu7yHlt13WsWWDMESpaBZ19pWRiJViN5CTYioV6Vd2b3vucesFsxQyScg39
+         dhQnGZNEVeIJ97MQCJWfeq2ue5YQ1lE8JTnke1B6AwLK9EXU76wCxmVKDS1GYcPd+M
+         s7KkN5GmI10Pd+7CpCwlFgeF+F/K6x7NDeCy3Kw4=
+Date:   Thu, 10 Jun 2021 20:14:02 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org, Hans Verkuil <hans.verkuil@cisco.com>
+Subject: Re: [PATCH v9 20/22] uvcvideo: improve error handling in
+ uvc_query_ctrl()
+Message-ID: <YMJIWtvp2AkaRw8T@pendragon.ideasonboard.com>
+References: <20210326095840.364424-1-ribalda@chromium.org>
+ <20210326095840.364424-21-ribalda@chromium.org>
 MIME-Version: 1.0
-Reply-To: mselizbethrobinson@gmail.com
-Sender: ibrakabora135.bib@gmail.com
-Received: by 2002:a67:6b07:0:0:0:0:0 with HTTP; Thu, 10 Jun 2021 10:12:38
- -0700 (PDT)
-From:   MS ELIZABETH ROBINSON <mselizbethrobinson@gmail.com>
-Date:   Thu, 10 Jun 2021 18:12:38 +0100
-X-Google-Sender-Auth: qEMyUkFVIU6ZYz4rqCuZ2VcU87w
-Message-ID: <CAPQQAPEBHNPEH4jzk+JB2+B-K_hMhnNei7MoR5K-QW1Nhs=Wpg@mail.gmail.com>
-Subject: DONATION FOR CHARITY AND NEEDY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210326095840.364424-21-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MY WARM GREETINGS,
+Hi Ricardo and Hans,
 
-I AM MRS.ELIZABETH ROBINSON, I DECIDED TO DONATE WHAT I HAVE TO YOU
-FOR INVESTMENT TOWARDS THE GOOD WORK OF CHARITY ORGANIZATION, AND ALSO
-TO HELP THE MOTHERLESS AND THE LESS PRIVILEGED ONES AND TO CARRY OUT A
-CHARITABLE WORKS IN YOUR COUNTRY AND AROUND THE WORLD ON MY BEHALF.
+Thank you for the patch.
 
-I AM DIAGNOSING OF THROAT CANCER, HOSPITALIZE FOR GOOD 2 YEARS AND
-SOME MONTHS NOW AND QUITE OBVIOUS THAT I HAVE FEW DAYS TO LIVE, AND I
-AM A WIDOW NO CHILD; I DECIDED TO WILL/DONATE THE SUM OF $5.8 MILLION
-PRIVILEGE AND ALSO FORTH ASSISTANCE OF THE WIDOWS. AT THE MOMENT I
-CANNOT TAKE ANY TELEPHONE CALLS RIGHT NOW DUE TO THE FACT THAT M
-RELATIVES (THAT HAVE SQUANDERED THE FUNDS FOR THIS PURPOSE BEFORE) ARE
-AROUND ME AND MY HEALTH STATUS ALSO. I HAVE ADJUSTED MY WILL AND MY
-BANK IS AWARE.
+On Fri, Mar 26, 2021 at 10:58:38AM +0100, Ricardo Ribalda wrote:
+> From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> 
+> - If __uvc_query_ctrl() failed with a non-EPIPE error, then
+>   report that with dev_err. If an error code is obtained, then
+>   report that with dev_dbg.
+> 
+> - For error 2 (Wrong state) return -EACCES instead of -EILSEQ.
+>   EACCES is a much more appropriate error code. EILSEQ will return
+>   "Invalid or incomplete multibyte or wide character." in strerror(),
+>   which is a *very* confusing message.
 
-I HAVE WILLED THOSE PROPERTIES TO YOU BY QUOTING MY PERSONAL FILE
-ROUTING AND ACCOUNT INFORMATION. AND I HAVE ALSO NOTIFIED THE BANK
-THAT I AM WILLING THAT PROPERTIES TO YOU FOR A GOOD, EFFECTIVE AND
-PRUDENT WORK. IT IS RIGHT TO SAY THAT I HAVE BEEN DIRECTED TO DO THIS
-BY GOD. I WILL BE GOING IN FOR A SURGERY SOON AND I WANT TO MAKE SURE
-THAT I MAKE THIS DONATION BEFORE UNDERGOING THIS SURGERY.
+I would have split the commit in two.
 
-I WILL NEED YOUR SUPPORT TO MAKE THIS DREAM COME THROUGH, COULD YOU
-LET ME KNOW YOUR INTEREST TO ENABLE ME GIVE YOU FURTHER INFORMATION.
-AND I HEREBY ADVICE TO CONTACT ME BY THIS EMAIL ADDRESS.
+> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+> ---
+> 
+> I have changed a bit the patch from the original version.
+> 
+> drivers/media/usb/uvc/uvc_video.c | 38 +++++++++++++++++--------------
+>  1 file changed, 21 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> index b63c073ec30e..1c3a94d91724 100644
+> --- a/drivers/media/usb/uvc/uvc_video.c
+> +++ b/drivers/media/usb/uvc/uvc_video.c
+> @@ -76,35 +76,31 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
+>  	if (likely(ret == size))
+>  		return 0;
+>  
+> -	dev_dbg(&dev->udev->dev,
+> -		"Failed to query (%s) UVC control %u on unit %u: %d (exp. %u).\n",
+> -		uvc_query_name(query), cs, unit, ret, size);
+> -
+> -	if (ret != -EPIPE)
+> -		return ret;
+> +	if (ret < 0 && ret != -EPIPE)
+> +		goto err;
+>  
+> +	// reuse data[0] for request the error code.
 
-WAITING YOUR REPLY
-MRS.ELIZABETH ROBINSON
+C-style comments please.
+
+s/for request/to request/
+
+>  	tmp = *(u8 *)data;
+> -
+>  	ret = __uvc_query_ctrl(dev, UVC_GET_CUR, 0, intfnum,
+>  			       UVC_VC_REQUEST_ERROR_CODE_CONTROL, data, 1,
+>  			       UVC_CTRL_CONTROL_TIMEOUT);
+> -
+
+No need to drop the blank lines.
+
+>  	error = *(u8 *)data;
+>  	*(u8 *)data = tmp;
+>  
+> -	if (ret != 1)
+> -		return ret < 0 ? ret : -EPIPE;
+> +	if (ret != 1) {
+> +		ret = ret < 0 ? ret : -EPIPE;
+> +		goto err;
+> +	}
+>  
+> -	uvc_dbg(dev, CONTROL, "Control error %u\n", error);
+> +	dev_dbg(&dev->udev->dev,
+
+Why not uvc_dbg ?
+
+> +		"Failed to query (%s) UVC control %u on unit %u: got error %u.\n",
+> +		uvc_query_name(query), cs, unit, error);
+>  
+>  	switch (error) {
+> -	case 0:
+> -		/* Cannot happen - we received a STALL */
+> -		return -EPIPE;
+>  	case 1: /* Not ready */
+>  		return -EBUSY;
+>  	case 2: /* Wrong state */
+> -		return -EILSEQ;
+> +		return -EACCES;
+>  	case 3: /* Power */
+>  		return -EREMOTE;
+>  	case 4: /* Out of range */
+> @@ -120,10 +116,18 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
+>  	case 8: /* Invalid value within range */
+>  		return -EINVAL;
+>  	default: /* reserved or unknown */
+> -		break;
+> +		dev_err(&dev->udev->dev,
+> +			"Failed to query (%s) UVC control %u on unit %u: got error %u.\n",
+> +			uvc_query_name(query), cs, unit, error);
+
+when debugging is enabled, this will print the error message a second
+time, it's not very nice.
+
+> +		return -EPIPE;
+>  	}
+>  
+> -	return -EPIPE;
+> +err:
+> +	dev_err(&dev->udev->dev,
+> +		"Failed to query (%s) UVC control %u on unit %u: %d (exp. %u).\n",
+> +		uvc_query_name(query), cs, unit, ret, size);
+> +
+> +	return ret;
+>  }
+>  
+>  static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
+
+-- 
+Regards,
+
+Laurent Pinchart
