@@ -2,77 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D1A3A3277
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDBE3A327B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhFJRwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:52:36 -0400
-Received: from mail-oo1-f53.google.com ([209.85.161.53]:37638 "EHLO
-        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbhFJRwf (ORCPT
+        id S230409AbhFJRxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:53:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhFJRxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:52:35 -0400
-Received: by mail-oo1-f53.google.com with SMTP id k10-20020a4abd8a0000b0290249ed2f2919so85392oop.4;
-        Thu, 10 Jun 2021 10:50:39 -0700 (PDT)
+        Thu, 10 Jun 2021 13:53:41 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3AEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:51:44 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id t3so34062158edc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:51:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=solid-run-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W5N9tssE2i0AgVK7/2trUERhx4u2w/EofSnQ2711Vg0=;
+        b=NwyASavLYyq5W9Tb2GGDH2wkOtzzWTAyyvhi06tuRc3Ne1GMb9L1kbyJ13EscFk3nO
+         BFnHWcY9XiM6T+TsIcgSCGFGXmAt7sZ99gmzYCKEJnfghHERCC8XWQgzxn+CovjpBM83
+         BtWyOwSUC3iO/EzsLahGQhj7+v8LpXrDRQfYHPdmiTfOJu8U4zcx24XdPFpEuEjfp/Q+
+         kTQqBQVlGd6FklnVW0c3pxM/u8bVdL+BvKwWURshHDQrNdBPS0FtUOcufze255FZ8Mje
+         kMGNfSQKyz3bHaeFACGsWJuV1cBXZRjGmV5lawxXT0aL/P5M5VETkrqhQjbz6tnTcixz
+         YZXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NeXPeoGgdwqVg+0zla10NtNb6Gyin6Kob8zl01r9rKA=;
-        b=OHkhhK9GTu+vtbd6WgjHrWfSajoXItnq2ezndj+3sS4SA/inunkGKREeq4OIrKs3aC
-         9FTGEcaU+W8J4eAZplPIR8KtwtdJ8DE0RUuktvjVMgDz6yw0y0/4fXVgjgTf3LkiATPA
-         BtvzABKN0IvU+jQlxfbGKJBibA1LUrzZZ7jXCqawxkmEIVvLVCj/CBR/6IPlh0h3Jv9M
-         v8idvCgiVZJzDoivXQk6YXfvKirVudSN3YiiTYF3mn6xuN/+q0dM0C3eAfc3lHpEWSSH
-         3TNk+lLJWng2Mi6umg+Lyp7obubcJmc5dibUTsCqLoOeirEzTXocQf4e6oMLWQJqZApN
-         pWgQ==
-X-Gm-Message-State: AOAM5300WCVT9VHsbAs6TARe526vtuAdKSwk5q7V5jrIkpQ20BFV8HpJ
-        BEPVG0dbtKjRHhoYfwu+hQ==
-X-Google-Smtp-Source: ABdhPJzqi1ApRbqW5KOE33CLWJkfrZffEQeEfH/il8Xk71CokpwyU/VQWSx8856WyKsOFoDCkjQDbg==
-X-Received: by 2002:a4a:9b0f:: with SMTP id a15mr3224210ook.4.1623347438659;
-        Thu, 10 Jun 2021 10:50:38 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.113])
-        by smtp.gmail.com with ESMTPSA id n127sm664477oif.55.2021.06.10.10.50.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 10:50:37 -0700 (PDT)
-Received: (nullmailer pid 2331980 invoked by uid 1000);
-        Thu, 10 Jun 2021 17:50:34 -0000
-Date:   Thu, 10 Jun 2021 11:50:34 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: clk: zynqmp: convert bindings to YAML
-Message-ID: <20210610175034.GA2294595@robh.at.kernel.org>
-References: <20210602001449.780075-1-iwamatsu@nigauri.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W5N9tssE2i0AgVK7/2trUERhx4u2w/EofSnQ2711Vg0=;
+        b=DMEb/cxRvEYT7JbycypnqEtCcZ2ZFWlXhhqf47DnZE9RbZBIiT680fyiMOP+cIUVfP
+         +uH/2duMh6NU4SP3FQlgY5tiGoDSBm4kuTdgyQbtsohRIXcQGJ2xHoeY7YDZnMdvufhC
+         ArMyjzmpLP31lB/J21IMxmwX9r2YdQTaYxM6xdSFdzOum32EvyFOxhS371LXgbFPFV1H
+         r4kB1p0SgB7MwwPw8zb7N23uRUNHHrLJKTlXDiXsANHSeyaiVRl6Xv30TIr3mTIbQdsH
+         Edq5huRSxauqpb5gJYdaTSNHSL/chyJvI2nvCvxwUgDi1mmvhD9X0eVuhF5Tta/D8WBq
+         CGQg==
+X-Gm-Message-State: AOAM531b/fhEC2qPIHHl5UyxhIjHtkjaK7cALkbM+/tvdLHVHasCafNA
+        wHqQcTECOmAc0sNDhAyHG3ouOZ7IK8w27uAdjPxj9A==
+X-Google-Smtp-Source: ABdhPJzCoetYoBQDDWOYa33AgKwAl3+emGrXImDnBKCyVLiFrGTBa7kK2HiwwjAhOB5hDtHoyt6aO6lmFkRa/p6cU/k=
+X-Received: by 2002:aa7:c753:: with SMTP id c19mr675196eds.33.1623347503093;
+ Thu, 10 Jun 2021 10:51:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602001449.780075-1-iwamatsu@nigauri.org>
+References: <20210610163917.4138412-1-ciorneiioana@gmail.com> <YMJEMXEDAE/m9MhA@lunn.ch>
+In-Reply-To: <YMJEMXEDAE/m9MhA@lunn.ch>
+From:   Jon Nettleton <jon@solid-run.com>
+Date:   Thu, 10 Jun 2021 19:51:03 +0200
+Message-ID: <CABdtJHv-Xu5bC2-T7a0UgbYpkNP1SLfWwdLWLLKj5MBvA2Ajyw@mail.gmail.com>
+Subject: Re: [PATCH net-next v8 00/15] ACPI support for dpaa2 driver
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Ioana Ciornei <ciorneiioana@gmail.com>,
+        Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Calvin Johnson <calvin.johnson@nxp.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 09:14:49AM +0900, Nobuhiro Iwamatsu wrote:
-> Convert common clock for Xilinx Zynq MPSoC SoC bindings documentation
-> to YAML.
-> 
-> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-> ---
-> 
-> v2: Fix warning with DT_CHECKER_FLAGS=-m.
-> 
->  .../bindings/clock/xlnx,zynqmp-clk.txt        |  63 ---------
->  .../bindings/clock/xlnx,zynqmp-clk.yaml       |  63 +++++++++
->  .../mailbox/xlnx,zynqmp-ipi-mailbox.txt       | 127 ------------------
+On Thu, Jun 10, 2021 at 6:56 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Thu, Jun 10, 2021 at 07:39:02PM +0300, Ioana Ciornei wrote:
+> > From: Ioana Ciornei <ioana.ciornei@nxp.com>
+> >
+> > This patch set provides ACPI support to DPAA2 network drivers.
+>
+> Just to be clear and avoid confusion, there is a standing NACK against
+> this patchset. Please see the discussion here:
+>
+> https://patchwork.kernel.org/project/linux-acpi/patch/20200715090400.4733-2-calvin.johnson@oss.nxp.com/#23518385
+>
+> So far, i've not seen any indication the issues raised there have been
+> resolved. I don't see any Acked-by from an ACPI maintainer. So this
+> code remains NACKed.
 
-Why is this removed?
+Andrew,
 
-Otherwise, looks fine.
+The ACPI maintainers did bless the use of the ACPI standards followed
+in this patchset, and their only abstinence from ACK'ing the patchset
+was whether the code was used in production systems.  Well currently,
+not only have we, SolidRun, been using this patchset and the associated
+ACPI tables in our SystemsReady certified firmware for the HoneyComb,
+but we also have customers using this same patchset and firmware on
+their systems rolled out to customers.
 
->  3 files changed, 63 insertions(+), 190 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/clock/xlnx,zynqmp-clk.txt
->  create mode 100644 Documentation/devicetree/bindings/clock/xlnx,zynqmp-clk.yaml
->  delete mode 100644 Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.txt
+Additionally we have an entire new product line based on Marvell's
+Armada CN913x series, which also needs this patchset to be fully
+functional.
+
+I am quite certain this is more than enough production systems using
+this ACPI description method for networking to progress this patchset
+forward.
+
+-Jon
