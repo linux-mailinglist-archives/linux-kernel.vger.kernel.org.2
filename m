@@ -2,115 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54DF3A3793
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF273A378B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhFJXFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 19:05:02 -0400
-Received: from mail-yb1-f182.google.com ([209.85.219.182]:34591 "EHLO
-        mail-yb1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhFJXFB (ORCPT
+        id S231151AbhFJXDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 19:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230179AbhFJXDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 19:05:01 -0400
-Received: by mail-yb1-f182.google.com with SMTP id i6so1666341ybm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 16:02:48 -0700 (PDT)
+        Thu, 10 Jun 2021 19:03:47 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A20C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 16:01:38 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id go18-20020a17090b03d2b029016e4ae973f7so3718604pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 16:01:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ISgMIsod5G8ygL+wMDpDBYOa0SoO8LXCWRFKeW2i7ps=;
-        b=EAaVdN4oMV41AxPZjH7l+EoOIon4Nn8cNB7m0rKPoTzNev6l1j2QZ2oVYMKvvTEaBg
-         DyoWJ4DXf/7RGBTYpTLSe2+NvgDb3cd/WLp/Au1vgVeII0zUmor/361uAVaWR3Un63kN
-         e1SnW2f3wRch+/aKwhe8KIzspsZiapx8+uuSKDuaqRXXpl79bxF1EZuvQjl9AVAZfMqV
-         KhlCM+ImuK7NidTYsEybldgsiaeQd8TaWovxT8ywiTKX4CfF1qzxLCqbTPMWJI/Bx1Z4
-         ewV+4FpmdYPtvXZSEqaQKZ5+Wf6U3JckYv43FqFxmGsUTHfYg0D5YFT8IHQGrH4uVbgD
-         ngWw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H5c4wPtxJ4irmL/5t82UsuY3LS4vd3rmssVb2xf2eHY=;
+        b=MeNKHjv+cbmFb/892w/ue0qm5oQAgWr1JUrlO+UnhF3F7gx/DE/XUKL9zhe8EEVGbB
+         EqFNgff80GDDzKdGoFe+gK1TEOPEEmFh7kqTdVyQhtA6nD3BFlkBwUphWYpYsbnJ6hgu
+         Jkb6ZhlK6ZzHSrj6Emm4WAgB8BnmiQw72t1Js=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ISgMIsod5G8ygL+wMDpDBYOa0SoO8LXCWRFKeW2i7ps=;
-        b=mSYs7y9lQVhbcjPFV2f5Zzj0itTixdbBmc5EATJMVtXN2XssQSOq8yzxiHH841xt1e
-         40ZKtKfGUScJyVyU2Vld6FH6lZM305B8lvYE2lpJRnscORbREl5nRXe5E1an5facOjDo
-         u8HRLQ50VFBN12lke9ZYIbK5r5fYqKr0FZEmonuMCWhSO5qr57RypCVcGMsVFtxOMDFf
-         uyO9yoeUHKlMiUCpaxqMCjTrXNpX8uGr8qPYZ2rx/8T+Ee5jxAVeAK9T5/0KMPClq4Qm
-         0RpEB6UDm3uTTD5bzn6UJWNi5IfyciKcjsINMGABe8RdLAdIo0ZjAAuTB+k0Pw+KAjYP
-         gI8g==
-X-Gm-Message-State: AOAM5339AsSKn7CZtkqyxgooNk7SRXm/xvYSgl5XuxSoQll/HYyIWyZG
-        fWlS9AFu2X5vWwSSeLVMMLLxe24OSf+D9R7t1bFGM6ZVefSgHQ==
-X-Google-Smtp-Source: ABdhPJyRUfLS5bW1FKnL1qw7wdbMMm1LxYtRLIGuPjUSbQfYUa6ZN2tQwhboaJtIUDx8pyA4P9k+OQFeVs1JexwZQT8=
-X-Received: by 2002:a25:cbc4:: with SMTP id b187mr1638263ybg.466.1623366107795;
- Thu, 10 Jun 2021 16:01:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H5c4wPtxJ4irmL/5t82UsuY3LS4vd3rmssVb2xf2eHY=;
+        b=qTkq9A5Lz+lK+8IL2OBd4CvBzoGYJDW+jJh4SKMuGr/Y6kyX3u/JC2P9Qe/pdv1OtQ
+         Lejatix9sJW1EV9oHONRia++45JLyJw9L+ic3PqVyBkWDZH6QK7Vzh6LJNaHDnQ+y9zC
+         Zxh6LEdI+0xM+nhUu3tqHjtYIV6rz1quf5jMJmSNUEUjzh71u0UH+DY6EHeCp4qXdYhn
+         FlpiSWtXXwWHUcQBa5JzSfh4FOjS53cCtGG0nQphQnwR69+DUZZGl1/ueeAAdowPKXCm
+         F553iaVzn+VMUWHM4xUTWkWkb0w9zYUDcyeYnjjdQPOtJCpaCsBDseDlPvRHmtS0doU1
+         H4UA==
+X-Gm-Message-State: AOAM533n+qdMYklsocQ3rdkXnCcMgJ+TMaAK8MUuBTh94mEyLBR1vH+G
+        Df9j6KXhFsRdEG225Z9SBpj7gA==
+X-Google-Smtp-Source: ABdhPJzZ1Ekn9usvShs9+OF2hMkEFfpxWfgC9twP8DwMLvgr68CyHfFiKexonCRkxjyek5VxnsaQBg==
+X-Received: by 2002:a17:902:eb52:b029:106:50e3:b2d8 with SMTP id i18-20020a170902eb52b029010650e3b2d8mr991118pli.51.1623366097712;
+        Thu, 10 Jun 2021 16:01:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i16sm3281367pji.30.2021.06.10.16.01.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 16:01:36 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 16:01:36 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Lin, Zhenpeng" <zplin@psu.edu>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] slub: choose the right freelist pointer location when
+ creating small caches
+Message-ID: <202106101601.E9273DD34@keescook>
+References: <6746FEEA-FD69-4792-8DDA-C78F5FE7DA02@psu.edu>
+ <202106081125.E2DA4DE8@keescook>
+ <F9847E9B-5557-4FAC-AE80-829D0AD712A3@psu.edu>
+ <202106081140.F73F91F@keescook>
+ <25AB8A72-B970-47C2-8688-48126075E72E@psu.edu>
+ <202106081614.E57675D17@keescook>
+ <C7AC6780-9DCE-4CE5-90B1-9AA0731341BF@psu.edu>
 MIME-Version: 1.0
-References: <20210603170734.3168284-1-sashal@kernel.org> <20210603170734.3168284-3-sashal@kernel.org>
- <20210606111028.GA20948@wunner.de> <YMJR/FNCwDllHIDG@sashalap>
- <CAGETcx_w8pHs3OXQyVXYWV1CY4qGTWrZ9QNEwz=TL8SLbyq1bA@mail.gmail.com>
- <20210610192608.GA31461@wunner.de> <CAGETcx9xSsBMmxzKzgwkWYTrFbKidxY5ANmCmXsF6LduTMKtbA@mail.gmail.com>
- <20210610222933.GB6120@wunner.de>
-In-Reply-To: <20210610222933.GB6120@wunner.de>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 10 Jun 2021 16:01:11 -0700
-Message-ID: <CAGETcx8vvN-ATLHtmWLZDsNu0dM5DMxyHxiuq9mD0cRvRD0S3w@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.12 03/43] spi: Fix spi device unregister flow
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C7AC6780-9DCE-4CE5-90B1-9AA0731341BF@psu.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 3:29 PM Lukas Wunner <lukas@wunner.de> wrote:
->
-> On Thu, Jun 10, 2021 at 12:30:18PM -0700, Saravana Kannan wrote:
-> > On Thu, Jun 10, 2021 at 12:26 PM Lukas Wunner <lukas@wunner.de> wrote:
-> > >
-> > > On Thu, Jun 10, 2021 at 12:22:40PM -0700, Saravana Kannan wrote:
-> > > > On Thu, Jun 10, 2021 at 10:55 AM Sasha Levin <sashal@kernel.org> wrote:
-> > > > > On Sun, Jun 06, 2021 at 01:10:28PM +0200, Lukas Wunner wrote:
-> > > > > >On Thu, Jun 03, 2021 at 01:06:53PM -0400, Sasha Levin wrote:
-> > > > > >> From: Saravana Kannan <saravanak@google.com>
-> > > > > >>
-> > > > > >> [ Upstream commit c7299fea67696db5bd09d924d1f1080d894f92ef ]
-> > > > > >
-> > > > > >This commit shouldn't be backported to stable by itself, it requires
-> > > > > >that the following fixups are applied on top of it:
-> > > > > >
-> > > > > >* Upstream commit 27e7db56cf3d ("spi: Don't have controller clean up spi
-> > > > > >  device before driver unbind")
-> > > > > >
-> > > > > >* spi.git commit 2ec6f20b33eb ("spi: Cleanup on failure of initial setup")
-> > > > > >  https://git.kernel.org/broonie/spi/c/2ec6f20b33eb
-> > > > > >
-> > > > > >Note that the latter is queued for v5.13, but hasn't landed there yet.
-> > > > > >So you probably need to back out c7299fea6769 from the stable queue and
-> > > > > >wait for 2ec6f20b33eb to land in upstream.
-> > > > > >
-> > > > > >Since you've applied c7299fea6769 to v5.12, v5.10, v5.4, v4.14 and v4.19
-> > > > > >stable trees, the two fixups listed above need to be backported to all
-> > > > > >of them.
-> > > > >
-> > > > > I took those two patches into 5.12-5.4, but as they needed a more
-> > > > > complex backport for 4.14 and 4.19, I've dropped c7299fea67 from those
-> > > > > trees.
-> > > >
-> > > > Sounds good. Also, there was a subsequent "Fixes" for this patch and I
-> > > > think another "Fixes" for the "Fixes". So, before picking this up,
-> > > > maybe make sure those Fixes patches are pickable too?
-> > >
-> > > Aren't those the commits I've listed above?  Or did I miss any fixes?
-> > > I'm not aware of any others besides these two.
-> >
-> > Ah, those are the ones. I didn't see them. My bad.
->
-> All good.  Sasha says that backporting the fixes is a little more
-> involved in the case of 4.14 and 4.19.  Do you consider the issue
-> critical enough that it should be addressed in those stable kernels
-> as well?  (I assume the issue concerns Android devices, not sure
-> in how far those are using 4.14 and 4.19?)
+On Thu, Jun 10, 2021 at 08:20:31PM +0000, Lin, Zhenpeng wrote:
+> Sounds good. But I would suggest this to go to -stable as soon as possible. Because this bug is affecting the basic functionality of DCCP. It crashes kernel whenever a new socket in this module is created.
 
-It isn't android specific, but I don't think it's critical for those kernels.
+But only when redzoning is enabled, yes?
 
--Saravana
+-- 
+Kees Cook
