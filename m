@@ -2,90 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DFA3A3752
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436B33A3757
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhFJWqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:46:35 -0400
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:55282 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhFJWqe (ORCPT
+        id S230462AbhFJWsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 18:48:03 -0400
+Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:2557 "EHLO
+        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhFJWsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:46:34 -0400
-Received: by mail-wm1-f49.google.com with SMTP id m3so1817522wms.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:44:21 -0700 (PDT)
+        Thu, 10 Jun 2021 18:48:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L9Zxj74oCQK3jH0pzFS5VeFrkuqgVWHZv+3oj2SKFSE=;
-        b=oPdyl42BfktkhaGMJ8Z/bWhE5J56cvh3gOM0WJGfci4Jbwsal4LwBPPppceKeQMt3P
-         aJfhq6BEK3mvMoDIoKEX7w9spDXGWuJ6R1b1tzTg9AIz4li6O4F7jFkzGcVLcLyb9Qv2
-         Jfa+SK5VeNBGYhSUbJ+7IMW6plUTw0fODD6/1NdX4TB1xQ1aX6zAMGj7mv7k68FxNAg8
-         5D+ec09OzuVpoGfjZcSEoeAoF2MLYgqjvBO7k1CeBL3V7mV7T/n+MMx6qywCGAWkm8U3
-         s08R3lem1M1XgnU6wAhRY+SOp2ZwGjI81FzzDtTlJt42GM87yUtlKBpKNF/LJaY8Xl+X
-         JzQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L9Zxj74oCQK3jH0pzFS5VeFrkuqgVWHZv+3oj2SKFSE=;
-        b=KPQrclgIDUJ1G06YEIoog32DGilYqJ3XL6s80xRfezSd/wRqN0lO3doVSLo1ngyAOI
-         EsUDDm7BQHn+oBcqc/z2Oeiqe5Rbmw0jJtz3MwriRD6RxWzc4ckpMkG5mIqfGo/nbqva
-         b/zNZBHcadglR6Ko/X/ohkq3jVCX4Ki9ijsvisoGINUOCE6Jjb3OCk3TWVj5xd08EMO8
-         fp1HSLnLSQbl5Imf+JQ/gnP20BwUPM4eyJkOfo64ujPpPlrYP5RwX5liZkE/BZRDFYEH
-         hUe3tHUT2Mg8faxwlzjS4cBfJD9pStxseiYIX5BTGnUrINHUNX0QalCjiEdSgJzw3DaY
-         8tfg==
-X-Gm-Message-State: AOAM531q4zivVqY6W+QwkCiKUGp36uWnT9NICZjabPiFcqZtn2iZzBb5
-        cJ23ljdxVyf/NNge4gna4OadgA==
-X-Google-Smtp-Source: ABdhPJxfHoAeJnu14bJsUP3jRULG6F7yYEMGgb26pkQtGvQytp2Bm38KUVStozmrGDxiNGy92KRNzg==
-X-Received: by 2002:a1c:7c13:: with SMTP id x19mr17329393wmc.96.1623365000973;
-        Thu, 10 Jun 2021 15:43:20 -0700 (PDT)
-Received: from KernelVM (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
-        by smtp.gmail.com with ESMTPSA id b10sm4466588wrx.57.2021.06.10.15.43.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 15:43:20 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 23:43:18 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        straube.linux@gmail.com, kaixuxia@tencent.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8188eu: replace two ODM_RT_TRACE calls in
- hal/phy.c
-Message-ID: <YMKVhgwbfLqWH3bd@KernelVM>
-References: <20210608235609.6726-1-phil@philpotter.co.uk>
- <20210609092106.GE1955@kadam>
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1623365166; x=1654901166;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=IefItx84lkfGf8yGsOjrDLaiwrRpeza0eCBp2p0p1F0=;
+  b=gVtacbUwtaENMlM5Ip5Kc7iHx8sZewl72LsjVrA2k0jKFVOmUrkewxfQ
+   xW2UuNeq0ppyh6+VYNS+W60o5Yzx5ICdvPw7GEkQSsn9N0/BYLykMLnmX
+   hP6ERUFObsIBgKc2ibdedO2LIQNVg6e7JA4LmaEro/8wQCNcMwrLvE1Oy
+   o=;
+X-IronPort-AV: E=Sophos;i="5.83,264,1616457600"; 
+   d="scan'208";a="6053252"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 10 Jun 2021 22:46:04 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id CEE39A216D;
+        Thu, 10 Jun 2021 22:46:00 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 10 Jun 2021 22:45:41 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.162.131) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 10 Jun 2021 22:45:36 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <erdnetdev@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
+        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v7 bpf-next 05/11] tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+Date:   Fri, 11 Jun 2021 07:45:33 +0900
+Message-ID: <20210610224533.99525-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <612b0da4-1e3e-66b8-0902-f76840796f36@gmail.com>
+References: <612b0da4-1e3e-66b8-0902-f76840796f36@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609092106.GE1955@kadam>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.131]
+X-ClientProxiedBy: EX13D21UWB003.ant.amazon.com (10.43.161.212) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 12:21:06PM +0300, Dan Carpenter wrote:
-> On Wed, Jun 09, 2021 at 12:56:09AM +0100, Phillip Potter wrote:
-> > Within rtl88eu_dm_txpower_track_adjust function, retrieve the struct
-> > net_device pointer, and replace both calls to the ODM_RT_TRACE macro
-> > with equivalent netdev_dbg calls, as well as modifying layout, wording
-> > and spacing slightly. The purpose of this, and patches like it, is to
-> > eventually remove the need for include/odm_debug.h, which is an overly
-> > complex way of printing debug/tracing information about the driver.
+From:   Eric Dumazet <erdnetdev@gmail.com>
+Date:   Thu, 10 Jun 2021 20:20:11 +0200
+> On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
+> > When we call close() or shutdown() for listening sockets, each child socket
+> > in the accept queue are freed at inet_csk_listen_stop(). If we can get a
+> > new listener by reuseport_migrate_sock() and clone the request by
+> > inet_reqsk_clone(), we try to add it into the new listener's accept queue
+> > by inet_csk_reqsk_queue_add(). If it fails, we have to call __reqsk_free()
+> > to call sock_put() for its listener and free the cloned request.
 > > 
+> > After putting the full socket into ehash, tcp_v[46]_syn_recv_sock() sets
+> > NULL to ireq_opt/pktopts in struct inet_request_sock, but ipv6_opt can be
+> > non-NULL. So, we have to set NULL to ipv6_opt of the old request to avoid
+> > double free.
+> > 
+> > Note that we do not update req->rsk_listener and instead clone the req to
+> > migrate because another path may reference the original request. If we
+> > protected it by RCU, we would need to add rcu_read_lock() in many places.
+> > 
+> > Link: https://lore.kernel.org/netdev/20201209030903.hhow5r53l6fmozjn@kafai-mbp.dhcp.thefacebook.com/
+> > Suggested-by: Martin KaFai Lau <kafai@fb.com>
+> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> > Acked-by: Martin KaFai Lau <kafai@fb.com>
+> > ---
+> >  net/ipv4/inet_connection_sock.c | 71 ++++++++++++++++++++++++++++++++-
+> >  1 file changed, 70 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+> > index fa806e9167ec..07e97b2f3635 100644
+> > --- a/net/ipv4/inet_connection_sock.c
+> > +++ b/net/ipv4/inet_connection_sock.c
+> > @@ -695,6 +695,53 @@ int inet_rtx_syn_ack(const struct sock *parent, struct request_sock *req)
+> >  }
+> >  EXPORT_SYMBOL(inet_rtx_syn_ack);
+> >  
+> > +static struct request_sock *inet_reqsk_clone(struct request_sock *req,
+> > +					     struct sock *sk)
+> > +{
+> > +	struct sock *req_sk, *nreq_sk;
+> > +	struct request_sock *nreq;
+> > +
+> > +	nreq = kmem_cache_alloc(req->rsk_ops->slab, GFP_ATOMIC | __GFP_NOWARN);
+> > +	if (!nreq) {
+> > +		/* paired with refcount_inc_not_zero() in reuseport_migrate_sock() */
+> > +		sock_put(sk);
+> > +		return NULL;
+> > +	}
+> > +
+> > +	req_sk = req_to_sk(req);
+> > +	nreq_sk = req_to_sk(nreq);
+> > +
+> > +	memcpy(nreq_sk, req_sk,
+> > +	       offsetof(struct sock, sk_dontcopy_begin));
+> > +	memcpy(&nreq_sk->sk_dontcopy_end, &req_sk->sk_dontcopy_end,
+> > +	       req->rsk_ops->obj_size - offsetof(struct sock, sk_dontcopy_end));
+> > +
+> > +	sk_node_init(&nreq_sk->sk_node);
+> > +	nreq_sk->sk_tx_queue_mapping = req_sk->sk_tx_queue_mapping;
+> > +#ifdef CONFIG_XPS
+> > +	nreq_sk->sk_rx_queue_mapping = req_sk->sk_rx_queue_mapping;
+> > +#endif
+> > +	nreq_sk->sk_incoming_cpu = req_sk->sk_incoming_cpu;
+> > +	refcount_set(&nreq_sk->sk_refcnt, 0);
 > 
-> In the original code DebugComponents is always zero so the ODM_RT_TRACE()
-> stuff was dead code and could never be printed.  I would prefer we just
-> delete it all instead of fixing it.
+> Not sure why you clear sk_refcnt here (it is set to 1 later)
+
+I thought it was safer, but I'm fine to remove the line.
+
+
 > 
-> regards,
-> dan carpenter
+> > +
+> > +	nreq->rsk_listener = sk;
+> > +
+> > +	/* We need not acquire fastopenq->lock
+> > +	 * because the child socket is locked in inet_csk_listen_stop().
+> > +	 */
+> > +	if (sk->sk_protocol == IPPROTO_TCP && tcp_rsk(nreq)->tfo_listener)
+> > +		rcu_assign_pointer(tcp_sk(nreq->sk)->fastopen_rsk, nreq);
+> > +
+> > +	return nreq;
+> > +}
 > 
+> Ouch, this is going to be hard to maintain...
 
-Dear Dan (and Greg),
+How could I make it less hard ... ?
 
-Thank you for your feedback. I will just remove all the ODM_RT_TRACE
-calls in a follow up patch set in that case.
 
-Regards,
-Phil
+> 
+> 
+> 
+> 
+> > +
+> > +static void reqsk_migrate_reset(struct request_sock *req)
+> > +{
+> > +#if IS_ENABLED(CONFIG_IPV6)
+> > +	inet_rsk(req)->ipv6_opt = NULL;
+> > +#endif
+> > +}
+> > +
+> >  /* return true if req was found in the ehash table */
+> >  static bool reqsk_queue_unlink(struct request_sock *req)
+> >  {
+> > @@ -1036,14 +1083,36 @@ void inet_csk_listen_stop(struct sock *sk)
+> >  	 * of the variants now.			--ANK
+> >  	 */
+> >  	while ((req = reqsk_queue_remove(queue, sk)) != NULL) {
+> > -		struct sock *child = req->sk;
+> > +		struct sock *child = req->sk, *nsk;
+> > +		struct request_sock *nreq;
+> >  
+> >  		local_bh_disable();
+> >  		bh_lock_sock(child);
+> >  		WARN_ON(sock_owned_by_user(child));
+> >  		sock_hold(child);
+> >  
+> > +		nsk = reuseport_migrate_sock(sk, child, NULL);
+> > +		if (nsk) {
+> > +			nreq = inet_reqsk_clone(req, nsk);
+> > +			if (nreq) {
+> > +				refcount_set(&nreq->rsk_refcnt, 1);
+> > +
+> > +				if (inet_csk_reqsk_queue_add(nsk, nreq, child)) {
+> > +					reqsk_migrate_reset(req);
+> > +				} else {
+> > +					reqsk_migrate_reset(nreq);
+> > +					__reqsk_free(nreq);
+> > +				}
+> > +
+> > +				/* inet_csk_reqsk_queue_add() has already
+> > +				 * called inet_child_forget() on failure case.
+> > +				 */
+> > +				goto skip_child_forget;
+> > +			}
+> > +		}
+> > +
+> >  		inet_child_forget(sk, req, child);
+> > +skip_child_forget:
+> >  		reqsk_put(req);
+> >  		bh_unlock_sock(child);
+> >  		local_bh_enable();
+> > 
