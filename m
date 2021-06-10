@@ -2,148 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B373A34AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D23A3A34B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhFJUSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 16:18:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhFJUSn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 16:18:43 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD1EC061574;
-        Thu, 10 Jun 2021 13:16:47 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4G1FcW6f71zQk2T;
-        Thu, 10 Jun 2021 22:16:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-language:content-type
-        :content-type:in-reply-to:mime-version:date:date:message-id:from
-        :from:references:subject:subject:received; s=mail20150812; t=
-        1623356199; bh=dQSPfn5OIBDPRmFUxtISYE1NBjZOgDsFrLoyXmTkxEw=; b=U
-        mboHjcDk0XW7Wt8/aHoi1zB1OzRc5hqmjWVm2/n/5t5eeRmuvPTHIMioCsZhVGra
-        D7kMPyob/piq3f07YgEpE7JxTOHcbGHXUTUj+lhAN0FNx4mD72NCGBE264QPEnh/
-        tPtz1g8OsdfaTd8l00BbHNQaojlWLT1GWNqOcbMOard5sg+uGMTtmYTbZ/YKId7X
-        zLwLuhMZOt6RmYKEPwQMN6gYz3WEcos7qjaMrxBKmsBBmP/u47tHEHJIJqfzHAQp
-        g//gPxZ3ViYIU/DwM3uCSG2HztIutzhR3DimU3czvpoJ1EBfDzXCcExnFYCGnLXw
-        1CVHj6vNzxmXq3F24T9Ng==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1623356201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2MXpqMDwXkXCnsvAQ3PZgKlt0z04GrXO8gPeprqPtTw=;
-        b=k1Z0W5I+0D8ThdLsE/evBqUgZXzu2jdezq+3K9wYdz86OGkRdPQR55TTU5bW3foOdmPiFW
-        wFXJMtflo+rCO/OhRNf5jg3DyPScXbLSHGKW5Nog/tuKp+A68zWYXL5Ri1XNwfyPCeo/yt
-        H2JJXMZJjdRtNMTbHhmaWdf2gfh4Ru/sOEls/GCu3twTbRppVR67YoKO+iuwjgKl0CTEFX
-        GILoHEymZnRH2WSeutSF0wG6WRwPDvaUm6T2BWOL7/mOnpu9yySg/B06m9f6QDqnNSKX79
-        Fqr4kiHW15v2WMoogz7X9Gb676UWjupf30gdu4AnJpdQdL5Pi+UqcDIlQHkrlA==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
-        with ESMTP id S8nOqlyuYKyU; Thu, 10 Jun 2021 22:16:39 +0200 (CEST)
-Subject: Re: [PATCH] x86/Makefile: make -stack-alignment conditional on LLD <
- 13.0.0
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "x86@kernel.org" <x86@kernel.org>
-References: <214134496.67043.1623317284090@office.mailbox.org>
- <CAKwvOdmU9TUiZ6AatJja=ksneRKP5saNCkx0qodLMOi_BshSSg@mail.gmail.com>
-From:   Tor Vic <torvic9@mailbox.org>
-Message-ID: <156d8beb-2644-8c2b-789b-104cf9268c8a@mailbox.org>
-Date:   Thu, 10 Jun 2021 20:16:38 +0000
+        id S230444AbhFJUSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 16:18:55 -0400
+Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47]:56801
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229961AbhFJUSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 16:18:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SzJv69/9dvhgQny/s8YvHa9YNZj+OYV1qSQ4VPoXkyMou68YxOKzmgIh0d7Y0qN+vpEhrXwjvkf70ZY7s+7zRNHhvxkKucgr1j883MTmWMxdjR2HJhTO1sIiaw350TEtIpVSrQoO/bq2bpzdmSxDF2bEOCBnxjoaJPIkgCulDH7Vgnx7PVvA06J3FBIT/uoBT9nfQKaEDjzYUH5L4jk8PU5bwSA3CClW6TthGZEeEpUCzR0oH6JdPrMisTSGxzrVhm+muHbKNbH/uF4sdvRC515CkXUDnuR1hETu9y2uzexJP3YpU24VBaI0vRatI5uuYOqhMMoomPwAh0EwStiWBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CsgnWTuO7uSGqLYZ6YC+PCezngTTpCXcd5QqhUaTrLQ=;
+ b=QkmZjlh/iMNlo37epaDhrD+utshIcipnawgqMZ/ScVDoA3NQWqtfI3h3rsudM1XXVqT25or/o4XFRoVXAOZuV9KEz6uOOM0kJ4VY2cosS4cFI+RKuciiDEMkf7NOjHvAYOGXV3k0uBQkbFEMfXjIqpWbBxTUdPM3xIAbgNHfqK4iFGSgyh2c9ZDITJdysnFm0ZW0SdZvD53e/YFMCe3wTBVHP7yj1etukKmNlEZ6H1UiQCVLE5o/PPczyLey7L24f1TnLuXZ8p/UhojPUhuwS5YTpdF5VN/n+esIOdGe6YIZKOGo3YJSqLL867hZFHjCNyGSvTg1lJQwqZT6zvwpwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=nutanix.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CsgnWTuO7uSGqLYZ6YC+PCezngTTpCXcd5QqhUaTrLQ=;
+ b=t/C7q9LSwN8Lacs/F37J7RmIKProA+8LdLP7OdM5uJEWRjIG73q9rPf1z5YP/+cWsJV271JMADtZTMVhrI+RB01RdMk7l481x94F1mOIm8JBU0tviCdRe1nEgIK9yzClPN9dOJF/EXMuP/9cAWRtSdhuyIMtGm6R197Xk6F15EzkDQ09yvRIWnaujDFDssFfa+0wXguYvu4o3qDLc+YHdOU63iPjSZCnKrBycvlKL/E/SMqjh2GXTRcR6taH9YAfAixrw7+eCRHUfrizL8TDR7sJPddzm/iT4Wz704LHMMRkku+pWH5+QQFw4h8O7SQoQ54FKqKuv/BpQspj1fNJsg==
+Received: from BN7PR02CA0005.namprd02.prod.outlook.com (2603:10b6:408:20::18)
+ by DM5PR12MB1900.namprd12.prod.outlook.com (2603:10b6:3:10f::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.21; Thu, 10 Jun
+ 2021 20:16:57 +0000
+Received: from BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:20:cafe::20) by BN7PR02CA0005.outlook.office365.com
+ (2603:10b6:408:20::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend
+ Transport; Thu, 10 Jun 2021 20:16:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; nutanix.com; dkim=none (message not signed)
+ header.d=none;nutanix.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT018.mail.protection.outlook.com (10.13.176.89) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4219.21 via Frontend Transport; Thu, 10 Jun 2021 20:16:56 +0000
+Received: from [10.20.22.154] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Jun
+ 2021 20:16:53 +0000
+Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+To:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <alex.williamson@redhat.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kw@linux.com>, Sinan Kaya <okaya@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+References: <20210608054857.18963-1-ameynarkhede03@gmail.com>
+ <20210608054857.18963-5-ameynarkhede03@gmail.com>
+From:   Shanker R Donthineni <sdonthineni@nvidia.com>
+Message-ID: <71915313-b95f-059b-e178-d358de4ad1cb@nvidia.com>
+Date:   Thu, 10 Jun 2021 15:16:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdmU9TUiZ6AatJja=ksneRKP5saNCkx0qodLMOi_BshSSg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210608054857.18963-5-ameynarkhede03@gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -5.56 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 84FC5181E
-X-Rspamd-UID: fd5769
+Content-Language: en-US
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fbedd467-0451-4d58-6e9a-08d92c4cb204
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1900:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB190022267C9B1D3DCAE31489C7359@DM5PR12MB1900.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:227;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hMCaY/mxztUStegL7kmR9/kuNaCsN4Di92eJ8++u56KVIyUtgWW+M0n1kUi3dpud2kOm42jW8QzfeiRuqtxpWwRl+TGaSPplZmcnyRx1Op1WaWeDYJxm6wiOfAnxDzjkOolCmizwTXGj6HKrQ9upIK3c4LeMyv+0rtnHA5me09ZUtIFSUab0ggyUWr/h3SAk35Yh+EWmemcP72m6y8HBPF4wuNvKyZmQ7kS82JHW4CN0SJEtShh1rMXWXEyIkRcSi/lZGrHWx0O01frgrMSCKKWC+QVDLCfvkVXvBJX3y7fyyOdJeSNXT1Ox9hT8lHNtYl0IU3fBDyz/FM6i71ZR/AZMc43LKLhA2G+dE9Xq4pp4wjO/pOyDhdS07Q0T2vvfNbzD38eeDDpgfJXY5OEek2GwKkfDgKcPI43XvuTnXqjp4PZlaqN9sjDLo1IzSB4fb3ZjzChivaq2RGQ3AemDpb2YM2M9Swy8LZ1Xc9WE2Iqy910pFDQWtlc4n06fb+zGeo12fr3j3NEd4OydzDmQ11p46hQHh4QJv0YVtGc6Yy4eNvFT1mm/vsg4q6If7vf/STSGXdQdpN8guFsTFi4HT0inhLUICY7y09la/RiS667H4o4adJMxWEyQYyrp3xPzlVFOlMreckDZU+ISKd2wf1V+RjWPEFCHllCcVWXJ65MnAKYL2tuPVk3mx0kMMeZB
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(136003)(396003)(46966006)(36840700001)(53546011)(82740400003)(4744005)(31696002)(8676002)(82310400003)(7636003)(83380400001)(54906003)(70206006)(8936002)(16576012)(70586007)(5660300002)(336012)(316002)(356005)(110136005)(296002)(26005)(4326008)(426003)(36756003)(47076005)(7416002)(36860700001)(31686004)(478600001)(86362001)(16526019)(2616005)(2906002)(186003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 20:16:56.2758
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fbedd467-0451-4d58-6e9a-08d92c4cb204
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1900
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10.06.21 19:20, Nick Desaulniers wrote:
-> On Thu, Jun 10, 2021 at 2:28 AM <torvic9@mailbox.org> wrote:
->>
->> Since LLVM commit 3787ee4, the '-stack-alignment' flag has been dropped [1],
->> leading to the following error message when building a LTO kernel with
->> Clang-13 and LLD-13:
->>
->>     ld.lld: error: -plugin-opt=-: ld.lld: Unknown command line argument
->>     '-stack-alignment=8'.  Try 'ld.lld --help'
->>     ld.lld: Did you mean '--stackrealign=8'?
->>
->> It also appears that the '-code-model' flag is not necessary anymore starting
->> with LLVM-9 [2].
->>
->> Drop '-code-model' and make '-stack-alignment' conditional on LLD < 13.0.0.
-> 
-> Please include this additional context in v2:
-> ```
-> These flags were necessary because these flags were not encoded in the
-> IR properly, so the link would restart optimizations without them. Now
-> there are properly encoded in the IR, and these flags exposing
-> implementation details are no longer necessary.
-> ```
-> That way it doesn't sound like we're not using an 8B stack alignment
-> on x86; we very much are so; AMDGPU GPFs without it!
-> 
+On 6/8/21 12:48 AM, Amey Narkhede wrote:
+> Add reset_method sysfs attribute to enable user to
+> query and set user preferred device reset methods and
+> their ordering.
+>
+> Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
 
-Will do so.
-Does this have to be a v2 (with a "changes from v1" info) or just a
-resend? It is based on mainline now and the line numbers have changed.
-
-> Cut the below paragraph out on v2.  Thanks for the patch and keep up
-> the good work!
-> 
->>
->> This is for linux-stable 5.12.
->> Another patch will be submitted for 5.13 shortly (unless there are objections).
->>
->> Discussion: https://github.com/ClangBuiltLinux/linux/issues/1377
->> [1]: https://reviews.llvm.org/D103048
->> [2]: https://reviews.llvm.org/D52322
->>
->> Signed-off-by: Tor Vic <torvic9@mailbox.org>
->> ---
->>  arch/x86/Makefile | 5 +++--
->>  1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
->> index 1f2e5bf..2855a1a 100644
->> --- a/arch/x86/Makefile
->> +++ b/arch/x86/Makefile
->> @@ -192,8 +192,9 @@ endif
->>  KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
->>
->>  ifdef CONFIG_LTO_CLANG
->> -KBUILD_LDFLAGS += -plugin-opt=-code-model=kernel \
->> -                  -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
->> +ifeq ($(shell test $(CONFIG_LLD_VERSION) -lt 130000; echo $$?),0)
->> +KBUILD_LDFLAGS += -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
->> +endif
->>  endif
->>
->>  ifdef CONFIG_X86_NEED_RELOCS
->> --
->> 2.32.0
-> 
-> 
-> 
+Tested-by: Shanker Donthineni <sdonthineni@nvidia.com>
