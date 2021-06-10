@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB98F3A2128
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 02:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 264E33A212D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 02:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFJAJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 20:09:31 -0400
-Received: from m12-11.163.com ([220.181.12.11]:45508 "EHLO m12-11.163.com"
+        id S229802AbhFJAJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 20:09:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229809AbhFJAJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 20:09:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=AhPpV
-        fv7B9WklPn9o3YVBYYVlRebfLQtig3SsQelQUU=; b=C0C49bdcVkYoKdta3EBIZ
-        oWq+rDaoGXrtQfiK+Bv63Bm7XB9Dh2BuvAagfiUw8nGEkAY5zNNThD7sGfJkzNGD
-        DgOLpPLfGOr3s7x3ELOrn2oC5tkqX4kz9JtzzrTf19ec+cKnuTWAyLWQwkPaowof
-        jl2AL3MPZc/cKsc7VRBUbs=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp7 (Coremail) with SMTP id C8CowABXf4+0V8Fg8yqphA--.14559S2;
-        Thu, 10 Jun 2021 08:07:17 +0800 (CST)
-From:   13145886936@163.com
-To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] xfrm: policy: fix a spelling mistake
-Date:   Wed,  9 Jun 2021 17:07:15 -0700
-Message-Id: <20210610000715.32647-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowABXf4+0V8Fg8yqphA--.14559S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtFW7ZFykZw1DXFy3KF18AFb_yoWfJwb_Ww
-        1fXryDWry5trs2y3WrJr4DZrWfXr4ruF97u3s7t3Wqg348JrZ5K3srWrZ8Wr47WryUuFnr
-        XF98W392yw1UKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU52fO7UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiGhmtg1aD+D3ChAAAs7
+        id S229705AbhFJAJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 20:09:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9732613F0;
+        Thu, 10 Jun 2021 00:08:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623283682;
+        bh=32g+BqOqkw9hiIJzBLCIC3Ni7y/3goorKlmjTRTpk9Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XA3F7/s63rv1gJ9FmZ5a22Iz+HRzB2YnOKglK+ZJOnMmM2eL5z75rp2l2oUNTtR+f
+         VO24MYvi4Bvw9BiAuWy80hgLdFpOahKvrO7fq9UeiomGziauOIiyNRB+YukukNBbE9
+         0PifGwJjSYiii6Tlvw3sdTpfHvoJvR6zvblFNLhHdWyw+aGbsHq7T06Hc3Wst9hyZV
+         8F3hzyK4e7Ar4wiVWMBeedRAyu6Y9PxkdyGFZhY9XuCaeTZujktZqAGZEUZ7DgDvZU
+         2iMjSruxIzDDsqvr1vDUfkWhRf+YqO/Lcd0IlrEfTQGTL/oKerC/NTyjYn3tavtFMb
+         3PlV6uNBA54KA==
+Date:   Thu, 10 Jun 2021 09:07:58 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, linux-kernel@vger.kernel.org,
+        guoren@kernel.org, linux-csky@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [RFC PATCH 4/5] csky: ftrace: Drop duplicate implementation of
+ arch_check_ftrace_location()
+Message-Id: <20210610090758.dfb02db4d804ffaf319d77a5@kernel.org>
+In-Reply-To: <20210609105019.3626677-5-punitagrawal@gmail.com>
+References: <20210609105019.3626677-1-punitagrawal@gmail.com>
+        <20210609105019.3626677-5-punitagrawal@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+On Wed,  9 Jun 2021 19:50:18 +0900
+Punit Agrawal <punitagrawal@gmail.com> wrote:
 
-Fix a spelling mistake.
+> The csky specific arch_check_ftrace_location() shadows a weak
+> implementation of the function in core code that offers the same
+> functionality but with additional error checking.
+> 
+> Drop the architecture specific function as a step towards further
+> cleanup in core code.
+> 
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- net/xfrm/xfrm_policy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looks good to me.
 
-diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-index ec84d11c3fc1..827d84255021 100644
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -3252,7 +3252,7 @@ xfrm_state_ok(const struct xfrm_tmpl *tmpl, const struct xfrm_state *x,
- 
- /*
-  * 0 or more than 0 is returned when validation is succeeded (either bypass
-- * because of optional transport mode, or next index of the mathced secpath
-+ * because of optional transport mode, or next index of the matched secpath
-  * state with the template.
-  * -1 is returned when no matching template is found.
-  * Otherwise "-2 - errored_index" is returned.
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> Cc: Guo Ren <guoren@linux.alibaba.com>
+> ---
+>  arch/csky/kernel/probes/ftrace.c | 7 -------
+>  1 file changed, 7 deletions(-)
+> 
+> diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+> index ef2bb9bd9605..b388228abbf2 100644
+> --- a/arch/csky/kernel/probes/ftrace.c
+> +++ b/arch/csky/kernel/probes/ftrace.c
+> @@ -2,13 +2,6 @@
+>  
+>  #include <linux/kprobes.h>
+>  
+> -int arch_check_ftrace_location(struct kprobe *p)
+> -{
+> -	if (ftrace_location((unsigned long)p->addr))
+> -		p->flags |= KPROBE_FLAG_FTRACE;
+> -	return 0;
+> -}
+> -
+>  /* Ftrace callback handler for kprobes -- called under preepmt disabled */
+>  void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
+> -- 
+> 2.30.2
+> 
+
+
 -- 
-2.25.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
