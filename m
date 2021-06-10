@@ -2,83 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510A63A338C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 987923A338B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhFJSyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 14:54:03 -0400
-Received: from mail-yb1-f182.google.com ([209.85.219.182]:41552 "EHLO
-        mail-yb1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhFJSxz (ORCPT
+        id S230393AbhFJSxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 14:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230351AbhFJSxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 14:53:55 -0400
-Received: by mail-yb1-f182.google.com with SMTP id q21so734633ybg.8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 11:51:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HfuCeAl5MSl4lisgs4d54ngu4sgiEZWbJvzZFPXnGcA=;
-        b=svkIN/o8q6QyD6NGQYF66lgAUSDiyDZ/YRa9v88JiLTRVvXi/9kmo2nPCMSyST0e3R
-         hGteTKQQF2W3PRa9xzbbYYhm/nTJhUXcqZw2+DLPdmrlAethpVLlvZemaJZiuDZ6IKua
-         LuLLoYkVEQ5uMXCiQeVmphF6NX8r+kxX2rVuzXAcRdXcu+PD8hxsHSxLMOFWSFP1vMtI
-         bBVOzEhox8tRx5vAp3NGUzRPGGPRGzxRrF/aU0etRNtKzzDDBPWRuVFfCrULbiUq5GgJ
-         ixysB+vpzjSszn/5LKFkME3AvAG9QXu/EVzjLuaLE4VKcFMBasS2Sy6uJ5QGJ+Vsi38r
-         yBvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HfuCeAl5MSl4lisgs4d54ngu4sgiEZWbJvzZFPXnGcA=;
-        b=JEOR0HkeM7U0gnEsq/2pgRsMKiGc5EtOODIXPvCHnkKfPw9/XYRcyCjyg3LFfYurmY
-         EBL9TSYI41h6tL0HsIvJGEgvoQL9Y/VcWCjl7Wi1VG7oQKtPF20If5RSBRkM6zE78GWW
-         /1XUoCwnFkDayoNdhhx395Ka3ewdasVGvxiMSgsHPOkxppCmNMuL/tkDikxZj/f5Iltn
-         Wgo2BTUmQSrPFUoJ/gpSotCVzEhhAUB0qeeSLfuR0wCVmiQ3mgo7k6iYwerQ+Gkc7nNI
-         Z0hIVx5IR4di7nshwu17vSGZFLvcVMLRj+4G0pJZlGn/HfHez+EvdjdtKOYxrpasWg4p
-         BqIg==
-X-Gm-Message-State: AOAM5315WAt37SkWTaiek1ysLgNeR67C/lp0Q4DuKhJDePjwFeU2DDa7
-        yQeC52Kh7FpMJ0di8V2CZwcdhjEeq21Mk5JQtuqTQQ==
-X-Google-Smtp-Source: ABdhPJzipU485Q+rpHQ4rMM9oZranxS/4t+QN2Qyh4IDKML6L1xQi5pb6y2LK6b8hkDRGElu0UmTyLCIN9Yjx1rolIY=
-X-Received: by 2002:a25:7085:: with SMTP id l127mr296805ybc.293.1623351047675;
- Thu, 10 Jun 2021 11:50:47 -0700 (PDT)
+        Thu, 10 Jun 2021 14:53:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFC0C061574;
+        Thu, 10 Jun 2021 11:51:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=q5QvTqrG2xVL3YDck5+IL8BU+tiEEtCfhbIy/ABm4q4=; b=CU4PzQCpc4kXcm5s/Gn6dBy1bI
+        V+bvyjbmJQGo1ViZ8M3QSJME2yJXvw18DkMN+PtxeOXj+8+8NryifDEg/1SbgFUDgIIQONtiohFJm
+        VczSDtj8wDlrpDsvkX807Py7w3g9QrQJ6Let0xe8y/sGb9k5vj/gtk/+8jRhPjsVvDg9UrJTeHjJo
+        k6w3VKJzl57npRQq7X3vWd935MbBTgXVSAqvWxZeF0o6G+QDvkIu0EutYlEZTsUeV3fau/0QiRj25
+        zngxTnlIHcTVkM1c25vJcE00sNpDB8t73WJyUxKztTGqU1f/pmgEjjcDqbzb2PadC/+R4VgNC0kkZ
+        dSSrqCaw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lrPlV-001xP4-Iq; Thu, 10 Jun 2021 18:50:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 094783001E4;
+        Thu, 10 Jun 2021 20:50:52 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8E09F200F8CB3; Thu, 10 Jun 2021 20:50:52 +0200 (CEST)
+Date:   Thu, 10 Jun 2021 20:50:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH 2/5] cgroup/cpuset: Add new cpus.partition type with no
+ load balancing
+Message-ID: <YMJfDHr1+xxm6SBi@hirez.programming.kicks-ass.net>
+References: <20210603212416.25934-1-longman@redhat.com>
+ <20210603212416.25934-3-longman@redhat.com>
 MIME-Version: 1.0
-References: <20210506193352.719596001@infradead.org> <20210506194157.452881700@infradead.org>
- <YMJWmzXgSipOqXAf@DESKTOP-1V8MEUQ.localdomain>
-In-Reply-To: <YMJWmzXgSipOqXAf@DESKTOP-1V8MEUQ.localdomain>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 10 Jun 2021 11:50:36 -0700
-Message-ID: <CABCJKudzC-Nss_LGrpYwRqwdDxeWOf1o6Bvp3J2fBQthEB=WGg@mail.gmail.com>
-Subject: Re: [PATCH 01/13] objtool: Rewrite hashtable sizing
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603212416.25934-3-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 11:14 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> Adding Sami because I am not sure why this patch would have much of an impact
-> in relation to LTO. https://git.kernel.org/tip/25cf0d8aa2a3 is the patch in
-> question.
+On Thu, Jun 03, 2021 at 05:24:13PM -0400, Waiman Long wrote:
+> Cpuset v1 uses the sched_load_balance control file to determine if load
+> balancing should be enabled.  Cpuset v2 gets rid of sched_load_balance
+> as its use may require disabling load balancing at cgroup root.
+> 
+> For workloads that require very low latency like DPDK, the latency
+> jitters caused by periodic load balancing may exceed the desired
+> latency limit.
+> 
+> When cpuset v2 is in use, the only way to avoid this latency cost is to
+> use the "isolcpus=" kernel boot option to isolate a set of CPUs. After
+> the kernel boot, however, there is no way to add or remove CPUs from
+> this isolated set. For workloads that are more dynamic in nature, that
+> means users have to provision enough CPUs for the worst case situation
+> resulting in excess idle CPUs.
+> 
+> To address this issue for cpuset v2, a new cpuset.cpus.partition type
+> "root-nolb" is added which allows the creation of a cpuset partition with
+> no load balancing. This will allow system administrators to dynamically
+> adjust the size of the no load balancing partition to the current need
+> of the workload without rebooting the system.
 
-It's because LLVM enables -ffunction-sections with LTO, so using .text
-section size to estimate the reloc hash table size isn't going to be
-accurate, as confirmed by objtool output with --stats:
-
-  OBJTOOL vmlinux.o
-nr_sections: 141481
-section_bits: 17
-nr_symbols: 215262
-symbol_bits: 17
-max_reloc: 24850
-tot_reloc: 590890
-reloc_bits: 10
-
-Sami
+I'm confused, why do you need this? Just create a parition for each cpu.
