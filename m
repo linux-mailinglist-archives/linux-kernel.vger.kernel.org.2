@@ -2,191 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D763A2827
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCCA3A2813
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhFJJVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
+        id S229770AbhFJJTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhFJJVG (ORCPT
+        with ESMTP id S229990AbhFJJTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:21:06 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315D7C061574;
-        Thu, 10 Jun 2021 02:18:56 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id w14so1175223ilv.1;
-        Thu, 10 Jun 2021 02:18:56 -0700 (PDT)
+        Thu, 10 Jun 2021 05:19:34 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55638C061574;
+        Thu, 10 Jun 2021 02:17:25 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id m18so1426678wrv.2;
+        Thu, 10 Jun 2021 02:17:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QfwVCoi6ayQqADlUdXMFpYCGJg5/Zxbp6NlanrqRIxo=;
-        b=p3p1rnxHxD+cZOJ7ZzKuuuBViilPrNvp4A8g246DBAATujj8LIRWWlxkNGGghJlqeN
-         PxW+XY5gtJ4/WTYGiUr2I8aQliE+5AfwnH83NE7YvToW4P/ibydU0Ze04hdr5QufIvVk
-         vHQkdqmeARkqyG/ypR48CsR8pmGUJ3VctqR0DflJhjjwNvQfPkDuG2FA+ExKQZOzjOI7
-         q+8sPYt1I5EcsDOHSbiKzl8vNtYbAqopeEG0Ly/0UfG8HOpWZ1aeqhvzdjEZoZqgZYFw
-         J9bCmhsEGm6GHsbwsNWY+nPEINj9GJ7GAI/dN+WzlMChUm+CwEXOrSMZLAT3two9vO4S
-         auLg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lufrtSYaRB+3cU25JjfQ213i4rIMewljTlWV6qMFCfU=;
+        b=OfUdSJkaR48ZzMbKamaCpBecfRh/Ga7yYmiWthlZkjbRD2aBAsms4czdHt0TeYv14s
+         gfEl53pzpd2J0B7NlM1RnZc0iENloEpbv9IXOBmMTJ3b4d4LjI+mcXJbUNGsckCtlNtz
+         w7tDV32ehthcXQRyNSqbTDDwcbPO0nV3y2V57Qom5op6xzhPIOiQJVIJ54hkYns38aTL
+         9epRtsCLy5qMyBpvMBv18xMcZvm/Q6COwzdr0ZxD+J8BbPGzWtp/X9bV1kUpiY+vPdbP
+         ugkz7as3b1trF3cEiUxBP8Bh+PiBOTOupB/UI6IHha6W/S2giYgnZtGBPlvCFerb7+/a
+         ffxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QfwVCoi6ayQqADlUdXMFpYCGJg5/Zxbp6NlanrqRIxo=;
-        b=t3dKSeKWUZG3WdAp7jvp4W35eVMGZGkLk/R/vGuD/opoxmR8Yn3SC6IPq08tapsmXy
-         h6nh2plZ1VCJLiezTYgSzssnQwq+Fv4cHwiCRQRfhGI8kaLzxAceY7Stscri8ibmwl53
-         MX6u8c6zU60cC8Fy2gV5v09g0+lji2YA4LUuML9tf+p3qU9aPyHy55csVrMUIe3RfUDB
-         gfdUmzRqOzkf6Cf1/Rrcl1PvG21nvzu9mXBTMUv1hQ+jGM7YFzM+sWJpH8hzBAjGVY7c
-         oW9kje/TybXEga240HZ8KWTqiGfDRmHPYOHT2PMSrUfTuGefOjh77Z4/Abxw0aPTFfC4
-         Qzgg==
-X-Gm-Message-State: AOAM533JcF/ym8N/XRkssmk1hpbGF30XbYLFLXRN03z5vbcI+ucFU/vo
-        QWa+bZltq7uQkOlrH66caAPPALxReGWT0WPrIxM=
-X-Google-Smtp-Source: ABdhPJxTN3jIulm+V5g9Zs3FBf3qUGlNdBWAK5dIgGzwEGWqmCoWiOkFxXlymZYZPpAlIQ4OxEHieZaVjKn9ymIrvWU=
-X-Received: by 2002:a05:6e02:1c44:: with SMTP id d4mr3082200ilg.49.1623316735609;
- Thu, 10 Jun 2021 02:18:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lufrtSYaRB+3cU25JjfQ213i4rIMewljTlWV6qMFCfU=;
+        b=Zide5TFQd4u6K6yJd64S5JVkyVvFuQOeW7LCeiHmDBNJvvGagettw133SaQnXkwaCb
+         og8FzN+8bCg1pwQBFV0m39aOzyiegZ9aM/gmnpAfvLEjEy5lF4CvcxraAKoU2eRYF1PF
+         KE0JX7UC01F+4ofT2hI69wj//NbFKvg3xzOETt0RN+JRONHL9zxxA8KC8ZP45voSGiDG
+         A8rI1VBVZHsDr3TsYG2votTNRYkgAKyrqBYiToDipGR6Rj2rB27tSUmXqcZbFn1tewry
+         ADQvnMSgIy5+F+Vcc8m37Z4GzDy0MyQ77vLYj7EBT1gz0h3xAsBgWQyXRHOkchJ0igDT
+         zv6w==
+X-Gm-Message-State: AOAM532EjUqEOYGXcaB5CCswyLJXs1ztVlYaxXYTyJZq537IncR74age
+        RGYIBOI2DdWdnVpkvnXO/uo=
+X-Google-Smtp-Source: ABdhPJyW5m2MHrnAF1Ii+EvXADbLuM7bYTX9Cc1kCfjq7UI7PxLu4x3Bw7uYywoxvxiaKBPgYspf6A==
+X-Received: by 2002:a5d:564a:: with SMTP id j10mr4235390wrw.171.1623316643906;
+        Thu, 10 Jun 2021 02:17:23 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id t1sm2710631wrx.28.2021.06.10.02.17.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 02:17:22 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 11:19:05 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Will Deacon <will@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm@kernel.org, soc@kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        Dmitry Osipenko <digetx@gmail.com>
+Subject: Re: [GIT PULL] memory: Tegra memory controller for v5.14
+Message-ID: <YMHZCaRiQNQCSsVr@orome.fritz.box>
+References: <20210607084910.21024-1-krzysztof.kozlowski@canonical.com>
+ <20210608120128.GB10174@willie-the-truck>
+ <YL+A+MPjjaa3nSwq@orome.fritz.box>
+ <20210608164851.GB10994@willie-the-truck>
 MIME-Version: 1.0
-References: <cover.1618916839.git.brookxu@tencent.com> <20210610072230.TAxxdh-wsL4sihK2TJxF-Gz85ZgsFR7IwOuifnxFi0k@z>
- <20210610083147.xoefokucl5ey7v32@spock.localdomain>
-In-Reply-To: <20210610083147.xoefokucl5ey7v32@spock.localdomain>
-From:   =?UTF-8?Q?Piotr_G=C3=B3rski?= <lucjan.lucjanov@gmail.com>
-Date:   Thu, 10 Jun 2021 11:18:44 +0200
-Message-ID: <CAL2Yj0T70SBPfHLz0GUn7C7PF=i9pS5JD7TzOJhRaNFQN3U0dQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH 1/8] bfq: introduce bfq_entity_to_bfqg helper method
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     brookxu <brookxu.cn@gmail.com>,
-        Paolo Valente <paolo.valente@linaro.org>, axboe@kernel.dk,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jVj7juWizf7nxW9D"
+Content-Disposition: inline
+In-Reply-To: <20210608164851.GB10994@willie-the-truck>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested-by: Piotr Gorski <lucjan.lucjanov@gmail.com>
 
-I have been testing this since the first release and have not noticed
-any irregularities.
+--jVj7juWizf7nxW9D
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-czw., 10 cze 2021 o 10:31 Oleksandr Natalenko
-<oleksandr@natalenko.name> napisa=C5=82(a):
->
-> Hello.
->
-> On Thu, Jun 10, 2021 at 03:22:30PM +0800, brookxu wrote:
-> > From: Chunguang Xu <brookxu@tencent.com>
-> >
-> > Introduce bfq_entity_to_bfqg() to make it easier to obtain the
-> > bfq_group corresponding to the entity.
-> >
-> > Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-> > ---
-> >  block/bfq-cgroup.c  |  6 ++----
-> >  block/bfq-iosched.h |  1 +
-> >  block/bfq-wf2q.c    | 16 ++++++++++++----
-> >  3 files changed, 15 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-> > index b791e20..a5f544a 100644
-> > --- a/block/bfq-cgroup.c
-> > +++ b/block/bfq-cgroup.c
-> > @@ -309,8 +309,7 @@ struct bfq_group *bfqq_group(struct bfq_queue *bfqq=
-)
-> >  {
-> >       struct bfq_entity *group_entity =3D bfqq->entity.parent;
-> >
-> > -     return group_entity ? container_of(group_entity, struct bfq_group=
-,
-> > -                                        entity) :
-> > +     return group_entity ? bfq_entity_to_bfqg(group_entity) :
-> >                             bfqq->bfqd->root_group;
-> >  }
-> >
-> > @@ -610,8 +609,7 @@ struct bfq_group *bfq_find_set_group(struct bfq_dat=
-a *bfqd,
-> >        */
-> >       entity =3D &bfqg->entity;
-> >       for_each_entity(entity) {
-> > -             struct bfq_group *curr_bfqg =3D container_of(entity,
-> > -                                             struct bfq_group, entity)=
-;
-> > +             struct bfq_group *curr_bfqg =3D bfq_entity_to_bfqg(entity=
-);
-> >               if (curr_bfqg !=3D bfqd->root_group) {
-> >                       parent =3D bfqg_parent(curr_bfqg);
-> >                       if (!parent)
-> > diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-> > index b8e793c..a6f98e9 100644
-> > --- a/block/bfq-iosched.h
-> > +++ b/block/bfq-iosched.h
-> > @@ -941,6 +941,7 @@ struct bfq_group {
-> >  #endif
-> >
-> >  struct bfq_queue *bfq_entity_to_bfqq(struct bfq_entity *entity);
-> > +struct bfq_group *bfq_entity_to_bfqg(struct bfq_entity *entity);
-> >
-> >  /* --------------- main algorithm interface ----------------- */
-> >
-> > diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-> > index 070e34a..5ff0028 100644
-> > --- a/block/bfq-wf2q.c
-> > +++ b/block/bfq-wf2q.c
-> > @@ -149,7 +149,7 @@ struct bfq_group *bfq_bfqq_to_bfqg(struct bfq_queue=
- *bfqq)
-> >       if (!group_entity)
-> >               group_entity =3D &bfqq->bfqd->root_group->entity;
-> >
-> > -     return container_of(group_entity, struct bfq_group, entity);
-> > +     return bfq_entity_to_bfqg(group_entity);
-> >  }
-> >
-> >  /*
-> > @@ -208,7 +208,7 @@ static bool bfq_no_longer_next_in_service(struct bf=
-q_entity *entity)
-> >       if (bfq_entity_to_bfqq(entity))
-> >               return true;
-> >
-> > -     bfqg =3D container_of(entity, struct bfq_group, entity);
-> > +     bfqg =3D bfq_entity_to_bfqg(entity);
-> >
-> >       /*
-> >        * The field active_entities does not always contain the
-> > @@ -266,6 +266,15 @@ struct bfq_queue *bfq_entity_to_bfqq(struct bfq_en=
-tity *entity)
-> >       return bfqq;
-> >  }
-> >
-> > +struct bfq_group *bfq_entity_to_bfqg(struct bfq_entity *entity)
-> > +{
-> > +     struct bfq_group *bfqg =3D NULL;
-> > +
-> > +     if (entity->my_sched_data)
-> > +             bfqg =3D container_of(entity, struct bfq_group, entity);
-> > +
-> > +     return bfqg;
-> > +}
-> >
-> >  /**
-> >   * bfq_delta - map service into the virtual time domain.
-> > @@ -1001,8 +1010,7 @@ static void __bfq_activate_entity(struct bfq_enti=
-ty *entity,
-> >
-> >  #ifdef CONFIG_BFQ_GROUP_IOSCHED
-> >       if (!bfq_entity_to_bfqq(entity)) { /* bfq_group */
-> > -             struct bfq_group *bfqg =3D
-> > -                     container_of(entity, struct bfq_group, entity);
-> > +             struct bfq_group *bfqg =3D bfq_entity_to_bfqg(entity);
-> >               struct bfq_data *bfqd =3D bfqg->bfqd;
-> >
-> >               if (!entity->in_groups_with_pending_reqs) {
-> > --
-> > 1.8.3.1
-> >
->
-> If it is a resend only, I can offer my Tested-by since I'm running this
-> series for quite some time already.
->
-> Thanks.
->
-> --
->   Oleksandr Natalenko (post-factum)
+On Tue, Jun 08, 2021 at 05:48:51PM +0100, Will Deacon wrote:
+> On Tue, Jun 08, 2021 at 04:38:48PM +0200, Thierry Reding wrote:
+> > On Tue, Jun 08, 2021 at 01:01:29PM +0100, Will Deacon wrote:
+> > > On Mon, Jun 07, 2021 at 10:49:10AM +0200, Krzysztof Kozlowski wrote:
+> > > > This is the pull for you to base further SMMU aptches (prevent earl=
+y SMMU
+> > > > faults).
+> > >=20
+> > > This is a tonne of code for me to pull into the SMMU tree given that =
+I only
+> > > want one patch!
+> > >=20
+> > > Thierry, if I just stick:
+> > >=20
+> > > https://lore.kernel.org/r/20210603164632.1000458-4-thierry.reding@gma=
+il.com
+> > >=20
+> > > on its own branch, can you stitch together whatever you need?
+> >=20
+> > I'm not sure I understand what you're proposing. For reference, here's
+> > the set of patches that I sent out:
+> >=20
+> >   1. memory: tegra: Implement SID override programming
+> >   2. dt-bindings: arm-smmu: Add Tegra186 compatible string
+> >   3. iommu/arm-smmu: Implement ->probe_finalize()
+> >   4. iommu/arm-smmu: tegra: Detect number of instances at runtime
+> >   5. iommu/arm-smmu: tegra: Implement SID override programming
+> >   6. iommu/arm-smmu: Use Tegra implementation on Tegra186
+> >   7. arm64: tegra: Use correct compatible string for Tegra186 SMMU
+> >   8. arm64: tegra: Hook up memory controller to SMMU on Tegra186
+> >   9. arm64: tegra: Enable SMMU support on Tegra194
+> >=20
+> > Krzysztof already picked up patch 1 and I was assuming that you'd pick
+> > up 2-6 because they are to the ARM SMMU driver. However, if you're
+> > primarily interested in just patch 3, which is more "core" ARM SMMU than
+> > the rest, which are Tegra-specific, then I suppose what we could do is
+> > for you to give an Acked-by on the rest (2, 4-6) and then Krzysztof or I
+> > can pick them up and take them via ARM SoC, based on the stable branch
+> > from your tree that only has patch 3.
+>=20
+> I think you previously said that patch 5 depends on patch 1, so I can't
+> take 2-6 without also pulling in the memory controller queue.
+>=20
+> > Patch 6 touches arm-smmu-impl.c, though it's a two-line change that
+> > touches only the Tegra-specific matching bit in arm_smmu_impl_init(), so
+> > the likelihood of that conflicting with anything else is fairly small.
+> >=20
+> > Is that what you were proposing?
+>=20
+> I can queue as much or as little of 2-6 as you like, but I would like to
+> avoid pulling in the memory controller queue into the arm smmu tree. But
+> yes, whichever of those I take, I can put them on a separate branch so
+> that you're not blocked for the later patches.
+>=20
+> You have a better handle on the dependencies, so please tell me what works
+> for you. I just want to make sure that at least patch 3 lands in my tree,
+> so we don't get late conflicts with other driver changes.
+
+Yes, if you could pick up patch 3 and send out a link with the stable
+branch, I think Krzysztof or I could pull in that branch and pick up the
+remaining patches. It'd be good if you could also ack the remaining SMMU
+patches so that ARM SoC knows that they've been sanctioned.
+
+Krzysztof: would you be okay with picking up patches 2 and 4-6 on top of
+your memory branch for v5.14?
+
+Thierry
+
+--jVj7juWizf7nxW9D
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmDB2QcACgkQ3SOs138+
+s6EnLA//ZgBQdPoxTa9Yc7sswfHwAYyKCWSKQcgTH84rrCOszXWcAZORrfyMA4/d
+3OuzF8mlebPISC4OJoo3k9/EfITpQWbqFZSYQN03cqVDys/Kb+3woqyUvgrqmFUl
+rxrITRTsCOakoo3/OGgAtC0r3P+btzdZco6pqrsTr4PwQe1oUC+179jq6R536pVO
+n+liywt2NNxpGX1lI9rCpePyB777kLZZHI0oJO2HOtwLS/Z3TWLau3cRH1JSY7uy
+GpCUzS87izn2OPo65VOQDIHIDA67M6UiqesYQCOic0AY4fo4hvTIQ7DIdFMQYh0t
+Q2DUAr53VrV7m7DY313Xbo+ZGeq+c+ZQKn4JZ2KIOGDtucts8WpkEfmbJ2q7sUH7
+JnIBMeUs1k5v52eW8/GfZT6reyEcNzYCT/C1w2cSRwB/bCTc7j1+O4Iarc45mJgP
+pXFEsSZErCFLh0TBirnzJEqJ7eUyldWgSUy2jHndovEsS/hYJIuoKt6vILDlb4tn
+9KrMopwWp4gKN6fZwZZIV2dOgx07jzsVXpBjVjtnafnqad4IanU1RobRKOikiNkX
+xi97rLtRq5dB5oI1CTe3yHGUAz/A6gKyYtd3oQPP1hyeXglMAkThHJUBHTBlEAYy
+3GeB7oBGK6Cn/ZmG4qWFvsW82bxW9mjFzwOxW4zmSuLxPCFveG0=
+=Jpm0
+-----END PGP SIGNATURE-----
+
+--jVj7juWizf7nxW9D--
