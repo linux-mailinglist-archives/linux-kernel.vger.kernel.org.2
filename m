@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F5C3A3002
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BEF3A3004
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhFJQC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:02:28 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:44295 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhFJQC1 (ORCPT
+        id S229895AbhFJQDJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Jun 2021 12:03:09 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:34639 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230051AbhFJQDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:02:27 -0400
-Received: from [192.168.1.155] ([95.115.39.199]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MuDPh-1l4MO33oXV-00uYtt; Thu, 10 Jun 2021 18:00:23 +0200
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
-References: <cover.1623326176.git.viresh.kumar@linaro.org>
- <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <82bdf2e6-35fb-74e8-1b2c-198fe8d528e6@metux.net>
-Date:   Thu, 10 Jun 2021 18:00:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 10 Jun 2021 12:03:09 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id B313C20010;
+        Thu, 10 Jun 2021 16:01:08 +0000 (UTC)
+Date:   Thu, 10 Jun 2021 18:01:07 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Naga Sureshkumar Relli <nagasure@xilinx.com>,
+        Amit Kumar Mahapatra <akumarma@xilinx.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
+        Siva Durga Prasad Paladugu <sivadur@xilinx.com>
+Subject: Re: [PATCH v23 08/18] dt-binding: memory: pl353-smc: Enhance the
+ description of the reg property
+Message-ID: <20210610180107.1cc889f3@xps13>
+In-Reply-To: <20210610155345.GA1873816@robh.at.kernel.org>
+References: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
+        <20210610082040.2075611-9-miquel.raynal@bootlin.com>
+        <20210610155345.GA1873816@robh.at.kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:KQsiXSBnL3Xwtzh+4csb7zDCBty4K8v8NkMMz18y2IgJxDpNr5Y
- CrCUFSbcYjjTQ5O21EC7wncPD4V+Gk6ezpYjgVNL9/GfLyBGPjPgnkXjpXfg7/s51ztQj+7
- pFW9cNiVl/uYL2WzCges8+QrQCn47OK5jsGlrL9xl8jnLMLVaexqcraEC5OcyrsDvL64Yu4
- tvhi+Zn62xFEIV+m3UjKA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:16ZCoke447c=:LBGHWn9Vn6ARMF7jtXetBG
- rzMAW5C+Q7RmicndoG9vv77U7RlNn0FxWoYH8+AMP5xE83oxq7wGVOkkHP9bQRAEGIhGjb4YS
- fyr029xkSMxaUHvCiwM+941JVgC5g98zZbLUE6NaV1b1JkePkrJY82CdHUvvy3FxMFBurTQHr
- 4dAoKQFZN+OjBx234+uU2YrZcclQ9EWrLWVSE2FjkuDJ1PFBakQJDZ8fLZFZ37zl71px+S/Q3
- LG4/7SKCmKOlNCTm2ss/r7OLEFXofAJ2J9bi4dft/VpcyoISQC9qudw4kJv8fEjiTpQTMxxSw
- Alos9axtXZa080xASTQGT7KkgPMafcuTLiSyVm1yFd6EDsFI5mZI9eyk6O2YJceftZr4dGdGl
- d9R4eoNBgAbgEfwXMrIbTYCseX6rZOcTrTN+Yp81605SYBw6mPisuaOppWZtEUiaCNCFZD0fF
- cixXsh9fuKHLs+llJ4OB5QRpjJl+JuuCsvoUp85pTkkCBQoWN1xK/pHIDBdGad6JIy609WflN
- +NPQwd0bQFWnpP4bvEfJi0=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.06.21 15:22, Arnd Bergmann wrote:
+Hi Rob, Krzysztof,
 
-> Can you give an example of how this would be hooked up to other drivers
-> using those gpios. Can you give an example of how using the "gpio-keys" or
-> "gpio-leds" drivers in combination with virtio-gpio looks like in the DT?
+Rob Herring <robh@kernel.org> wrote on Thu, 10 Jun 2021 10:53:45 -0500:
 
-Connecting between self-probing bus'es and DT is generally tricky. IMHO
-we don't have any generic mechanism for that.
+> On Thu, Jun 10, 2021 at 10:20:30AM +0200, Miquel Raynal wrote:
+> > The SMC bus controller features several register sets. The one pointed
+> > by the reg property is for the SMC configuration (impacts the
+> > sub-controllers configuration), while the others are meant to be used to
+> > send regular cycles on the memory bus (eg. CMD, ADDR, DATA for a NAND
+> > device). Detail this a little bit for the sake of clarity.
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  .../devicetree/bindings/memory-controllers/pl353-smc.txt       | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+> > index ecd46856f139..ba6a5426f62b 100644
+> > --- a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+> > +++ b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+> > @@ -5,7 +5,8 @@ of memory interfaces: NAND and memory mapped interfaces (such as SRAM or NOR).
+> >  
+> >  Required properties:
+> >  - compatible		: Should be "arm,pl353-smc-r2p1", "arm,primecell".
+> > -- reg			: Controller registers map and length.
+> > +- reg			: SMC controller and sub-controllers configuration
+> > +			  registers.  
+> 
+> I think you could just drop this patch. Otherwise, this doesn't match 
+> what's now in the yaml file.
 
-I've made a few attempts, but nothing practically useful, which would be
-accepted by the corresponding maintainers, yet. We'd either need some
-very special logic in DT probing or pseudo-bus'es for the mapping.
-(DT wants to do those connections via phandle's, which in turn need the
-referenced nodes to be present in the DT).
+Fine.
 
->  From what I can tell, both the mmio and pci variants of virtio can have their
-> dev->of_node populated, but I don't see the logic in register_virtio_device()
-> that looks up the of_node of the virtio_device that the of_gpio code then
-> tries to refer to.
+Krzysztof, if it's still time you can just take patch 9 which Rob
+just acked and forget about this one. I think we'll be good. Otherwise
+that will be for the next MW ;)
 
-Have you ever successfully bound a virtio device via DT ?
-
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Thanks,
+Miquèl
