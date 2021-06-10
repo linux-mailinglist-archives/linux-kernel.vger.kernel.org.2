@@ -2,55 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E3A3A2899
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DEF63A289F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhFJJok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbhFJJoj (ORCPT
+        id S230232AbhFJJpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:45:55 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:46742 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229895AbhFJJpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:44:39 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60964C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:42:30 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id i10so2233501lfj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:42:30 -0700 (PDT)
+        Thu, 10 Jun 2021 05:45:53 -0400
+Received: by mail-lj1-f175.google.com with SMTP id e11so3912661ljn.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:43:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=BY5gWDPGhOOh05MTbHBqo44JzZHQYM/4bR652Xf+XDw=;
-        b=MQJOLlGKsxYhRQMSTHDQKDS/AVvXuBjwfTv9RCF7lTgYMCjlJXuPv2NB2INM4Y0okK
-         kCZ/AODnXxuPill0Rg9SOsoak10eZ//EuEuFIWPsWI8qWmcxZyjq9UsjjmQngCD9Bv4m
-         j35ZnHt+xDTCPwsfIf225yEnlhYQD7yvZrJIaYQhXKAK/NuzdGpzkh9Dddax7q5Ss2/R
-         IeHsHUGxMx9MSID4VTxqSrX35MfjGsmUD5UBbKULAOzcPK3vi/ZUjJQpNKNuX+1AIsOC
-         CBgXHbYsW7sGSh3pwYPZDQ/s0NNK+XpYKwC+/t+HdV/uRIruWJVapVcjMm8xWN9vN2mi
-         +y1A==
+        bh=FZtPqiacUMa3RR146lKg3ZwOABR6cRUS7jKKlWzO7H4=;
+        b=H5Sa0qVjQ2xgyVmHndXCzmF7Ekl/Myz3sUzhz7fRE8DMJ+q6hL9fxVGm8HMyEpD5Pq
+         sDqyNz7EgRWEhguXWOhfVzX/oqdjpTJDgw9Tu0aQj04ruORnmNSCUvD91KS36KjQaWzv
+         JaCEejKWRs4Ex6vRaxZ9zZce+0tRxeskRat4zSA/8NZ+YWK9RHGfy8bf9/9FSczBy2B5
+         SZmsukCbTs3vJdCKuq2AWtlu+tXHf0TxjpZhODhtjVV5dh5u+QJINfUcsxOLsDm1CreL
+         FQCB17qdyLrdDe8H5m4+VZW9YIfXV6TCLnmjmVuGsVH883+MvbSnrFRwT64WpMJXnzEB
+         Nx/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=BY5gWDPGhOOh05MTbHBqo44JzZHQYM/4bR652Xf+XDw=;
-        b=ZC2m8yWjtg3S/XidFsVDrJL7vP9eTb/tPgr/nLFHiJr048BQb4JGKEiZCY16e4g/rS
-         CDmpzUrLOnBVgiXYuUhfTmOJ1+E+idvzjIygw0jRygLPCc8Fr//rQ8q+tI5bRB8+rQaF
-         ecp484GcaIUTI3rPqmBI4n1xQMJvb/nvWnv0lKis+igmc6aaoN9GuGkR/koi9nH7Rmit
-         5N6JuEmwGI4VEyXbpI1yyBiWxVdHOyaoVhX51jLTJtB0oJQ/Z9+MeIKXRcHVTUrZ81hl
-         4ZxrN+Qs26EVWPBDRKVipLdAeLXevw75xQ1A1F1RvcmWSlg29xFJ3e0kHaDrU9E0Z6Ac
-         6zLQ==
-X-Gm-Message-State: AOAM532QKVfmGUEaruUogYbCMBdWI8iF/snZfKS1Aq8uOFTJR2UAGtlW
-        tN/TLEdKbMqjxE53z00QT6g63A==
-X-Google-Smtp-Source: ABdhPJwhWkdCWL07hD3+jqD/nEThG6Ks4sJk7HAe3z3eTSHsg2KK0YXyQLa/vmRIT3d2XoPH5D96pA==
-X-Received: by 2002:a19:8645:: with SMTP id i66mr1345707lfd.332.1623318148740;
-        Thu, 10 Jun 2021 02:42:28 -0700 (PDT)
+        bh=FZtPqiacUMa3RR146lKg3ZwOABR6cRUS7jKKlWzO7H4=;
+        b=oIb4UHYvNt5DbSgdYjuzc14fEYmzrlFKQBYCdX8vvHNp9ov7iKhQ+dPJT/SC0GkuSX
+         aiYE2pvbrobfxFvQuBduP9ttoo/Y0J+wCVu/A5AcNQkrnUtoqO4liieGwBH3JCGpjQN6
+         gYiJVbE2cog3DbQaiDf6BPYVSOd+emapfGhIsITPB7FZL+9UWDr1KhjY93tB1L0mxJA4
+         6wSkjAzImguGONivpqsMgaILUrXOgykfwAZk2iFnB0HkcPbwKIu4Iv2UocyQbWqohD9O
+         dKY4t/75plYfVIQOHV+a5CtbTUxUc1+wmG08x86UafXAiQzqsqjOBM17EXFW8GhQmbD8
+         pj9A==
+X-Gm-Message-State: AOAM530m4S1WGHul8/qOpWqBBk5R+Jyp27fRUx4iOvuA7XJ8Lm+lLhJI
+        J41EZ2tVxKtUA38pZZnVEZyEFA==
+X-Google-Smtp-Source: ABdhPJzlJTLZaCZNALHstNwyYrOK83yVaDPi5AM+4+CAkOVPrhmvIkRvQJVcwwM+1qOOHl8GjbRKCA==
+X-Received: by 2002:a2e:5cc4:: with SMTP id q187mr1426076ljb.177.1623318177119;
+        Thu, 10 Jun 2021 02:42:57 -0700 (PDT)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id o21sm246947lfr.253.2021.06.10.02.42.27
+        by smtp.gmail.com with ESMTPSA id 76sm277284ljj.32.2021.06.10.02.42.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 02:42:28 -0700 (PDT)
+        Thu, 10 Jun 2021 02:42:56 -0700 (PDT)
 Received: by box.localdomain (Postfix, from userid 1000)
-        id 23BDF1027EE; Thu, 10 Jun 2021 12:42:44 +0300 (+03)
-Date:   Thu, 10 Jun 2021 12:42:44 +0300
+        id BCC361027EE; Thu, 10 Jun 2021 12:43:12 +0300 (+03)
+Date:   Thu, 10 Jun 2021 12:43:12 +0300
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 To:     Hugh Dickins <hughd@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -62,44 +59,24 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
         Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/11] mm/thp: fix page_vma_mapped_walk() if THP mapped
- by ptes
-Message-ID: <20210610094244.ag3gp5pnu3ulhhgu@box.shutemov.name>
+Subject: Re: [PATCH 11/11] mm/thp: another PVMW_SYNC fix in
+ page_vma_mapped_walk()
+Message-ID: <20210610094312.kzhhqyz4abe2yizg@box.shutemov.name>
 References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
- <fedb8632-1798-de42-f39e-873551d5bc81@google.com>
+ <1bdf384c-8137-a149-2a1e-475a4791c3c@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fedb8632-1798-de42-f39e-873551d5bc81@google.com>
+In-Reply-To: <1bdf384c-8137-a149-2a1e-475a4791c3c@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:52:37PM -0700, Hugh Dickins wrote:
-> Running certain tests with a DEBUG_VM kernel would crash within hours,
-> on the total_mapcount BUG() in split_huge_page_to_list(), while trying
-> to free up some memory by punching a hole in a shmem huge page: split's
-> try_to_unmap() was unable to find all the mappings of the page (which,
-> on a !DEBUG_VM kernel, would then keep the huge page pinned in memory).
-> 
-> Crash dumps showed two tail pages of a shmem huge page remained mapped
-> by pte: ptes in a non-huge-aligned vma of a gVisor process, at the end
-> of a long unmapped range; and no page table had yet been allocated for
-> the head of the huge page to be mapped into.
-> 
-> Although designed to handle these odd misaligned huge-page-mapped-by-pte
-> cases, page_vma_mapped_walk() falls short by returning false prematurely
-> when !pmd_present or !pud_present or !p4d_present or !pgd_present: there
-> are cases when a huge page may span the boundary, with ptes present in
-> the next.
-> 
-> Restructure page_vma_mapped_walk() as a loop to continue in these cases,
-> while keeping its layout much as before. Add a step_forward() helper to
-> advance pvmw->address across those boundaries: originally I tried to use
-> mm's standard p?d_addr_end() macros, but hit the same crash 512 times
-> less often: because of the way redundant levels are folded together,
-> but folded differently in different configurations, it was just too
-> difficult to use them correctly; and step_forward() is simpler anyway.
+On Wed, Jun 09, 2021 at 11:54:46PM -0700, Hugh Dickins wrote:
+> Aha!  Shouldn't that quick scan over pte_none()s make sure that it holds
+> ptlock in the PVMW_SYNC case?  That too might have been responsible for
+> BUGs or WARNs in split_huge_page_to_list() or its unmap_page(), though
+> I've never seen any.
 > 
 > Fixes: ace71a19cec5 ("mm: introduce page_vma_mapped_walk()")
 > Signed-off-by: Hugh Dickins <hughd@google.com>
