@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE543A30C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798973A30CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhFJQh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:37:58 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:34551 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhFJQh4 (ORCPT
+        id S230380AbhFJQjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:39:24 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:42773 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhFJQjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:37:56 -0400
-Received: by mail-oi1-f178.google.com with SMTP id u11so2763396oiv.1;
-        Thu, 10 Jun 2021 09:35:43 -0700 (PDT)
+        Thu, 10 Jun 2021 12:39:23 -0400
+Received: by mail-ot1-f47.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so270799oth.9;
+        Thu, 10 Jun 2021 09:37:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9ax835iY3Fv7YvJJqM1vnVxu3UyKUpAzW1nQQIubecU=;
-        b=krlPxM0ZBTrjKI9CKlo5Ocqtw0q37VE9NSjI3h+Mdp48t4EehvHUhDI1tdZA845eW8
-         ZPql2pJO5Tf1yWTp5YhzBmyF4z+8KkipV/gqB05+/5xA0attC+y9m50u4bWRjcAJJ0Di
-         vY68Qt0Soh+nSGf2bLbiWLctkKf7sgxC5zjhfipvpGGtSLVS2Uh0YbZHK3+WKkl6VuAC
-         Quv6uFm3ctssPlv1eMmlML246ctKZy3Ut9jiE0MbtrM+Fv7CUSSkB9tfOWf1LP1ihPj5
-         axAyKu11irh/nchxUAiNw4kYfAgcv7BQ5geA5u5+PNXILCT0ZmfMdhCCFDwIWHJu90vK
-         hpyA==
-X-Gm-Message-State: AOAM532h9a9h07fST3sRGRBx3juBsKb5PoLST0hwio+jjRt7t3yV8LIV
-        SpWm2cYtjNTiiWjiCgRPOA==
-X-Google-Smtp-Source: ABdhPJxD9ZYlWHHYVoXO+zmfjEvIuWUpPH31JCI51UEw/VY0yNHhP/uSpMlyB18vV42ntslbMUrc1g==
-X-Received: by 2002:aca:ac47:: with SMTP id v68mr4060272oie.160.1623342943207;
-        Thu, 10 Jun 2021 09:35:43 -0700 (PDT)
+        bh=wdQKSCrcRex0e+UJ+sU32HCth0EXxp66LSDLxbGJ5hI=;
+        b=DvSgGPc9R43Udo8ms1wE1+j8vqHgIHa37b9GSv4jvrYRvfIYlfFmcqdG4mcfqVGNgW
+         z4HfEKXsahfWhbw9vlX4pmznvK3Chq5HsYZmaxkV5a0xGQnCFf9CEd838EXRzydwIefh
+         2h6X3Mi2yuThDdsuGMwiXGdsKoIvAlHTugV6XkkVPVsXHonwayFHngYknLijgGDyifZZ
+         1YPo3rX/1ifebKEI30UKKCVOMeP+SpIRM9s0I/o5Hae9gXVNbfK4Z8T0gmLCy6vuMh4l
+         xo88KMzdqhDKWTzAQ3S+z5SUshV6BoZBXcDOC3DkjaGVKp5ocDG0OjcPmRuBfi6yzHtj
+         3yiA==
+X-Gm-Message-State: AOAM532Q7SdPM9ZvvqIDCiqOTRhKnepJW9s1y7M2OnmGjRa5tUD0HfSw
+        Lcrn+wqBeZUf30P6fq/QBg==
+X-Google-Smtp-Source: ABdhPJwDCcHfdElit0dk67HErzfQ95wKwnoorc+o7d4BDoNVAnuLCxH8V7KBFB5toXOck0p4yfCO7g==
+X-Received: by 2002:a9d:7987:: with SMTP id h7mr3306882otm.98.1623343046512;
+        Thu, 10 Jun 2021 09:37:26 -0700 (PDT)
 Received: from robh.at.kernel.org ([172.58.99.113])
-        by smtp.gmail.com with ESMTPSA id x7sm631221ooc.23.2021.06.10.09.35.39
+        by smtp.gmail.com with ESMTPSA id h23sm647491oih.30.2021.06.10.09.37.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 09:35:41 -0700 (PDT)
-Received: (nullmailer pid 1932709 invoked by uid 1000);
-        Thu, 10 Jun 2021 16:35:38 -0000
-Date:   Thu, 10 Jun 2021 11:35:38 -0500
+        Thu, 10 Jun 2021 09:37:25 -0700 (PDT)
+Received: (nullmailer pid 1935041 invoked by uid 1000);
+        Thu, 10 Jun 2021 16:37:20 -0000
+Date:   Thu, 10 Jun 2021 11:37:20 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Martin Botka <martin.botka@somainline.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, jamipkettunen@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        konrad.dybcio@somainline.org, Andy Gross <agross@kernel.org>,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        marijn.suijten@somainline.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: clk: qcom: gcc-sm6125: Document
- SM6125 GCC driver
-Message-ID: <20210610163538.GA1932655@robh.at.kernel.org>
-References: <20210605121040.282053-1-martin.botka@somainline.org>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     linux-kernel@vger.kernel.org, paul.kocialkowski@bootlin.com,
+        mchehab@kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, shawnx.tu@intel.com,
+        linux-media@vger.kernel.org, pavel@ucw.cz,
+        laurent.pinchart@ideasonboard.com,
+        krzysztof.kozlowski@canonical.com, kernel@puri.sm
+Subject: Re: [PATCH v4 2/5] dt-bindings: media: document SK Hynix Hi-846 MIPI
+ CSI-2 8M pixel sensor
+Message-ID: <20210610163720.GA1935008@robh.at.kernel.org>
+References: <20210607105213.1211722-1-martin.kepplinger@puri.sm>
+ <20210607105213.1211722-3-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210605121040.282053-1-martin.botka@somainline.org>
+In-Reply-To: <20210607105213.1211722-3-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Jun 2021 14:10:37 +0200, Martin Botka wrote:
-> Document the newly added SM6125 GCC driver.
+On Mon, 07 Jun 2021 12:52:10 +0200, Martin Kepplinger wrote:
+> Document the bindings used for the SK Hynix Hi-846 CMOS camera driver.
 > 
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 > ---
-> Changes in V2:
-> Add commit description.
-> Changes in V3:
-> Use rpmcc.h instead of rpmh.h
-> Changes in V4:
-> Fix indentation
-> License
->  .../bindings/clock/qcom,gcc-sm6125.yaml       |  72 ++++++
->  include/dt-bindings/clock/qcom,gcc-sm6125.h   | 240 ++++++++++++++++++
->  2 files changed, 312 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.yaml
->  create mode 100644 include/dt-bindings/clock/qcom,gcc-sm6125.h
+>  .../bindings/media/i2c/hynix,hi846.yaml       | 105 ++++++++++++++++++
+>  1 file changed, 105 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
