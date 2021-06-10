@@ -2,323 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702DB3A2ACE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A593A2AD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhFJLz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 07:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhFJLzZ (ORCPT
+        id S230272AbhFJL4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 07:56:11 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:53111 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229935AbhFJL4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:55:25 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF9CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 04:53:28 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id f16-20020a05600c1550b02901b00c1be4abso6371105wmg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 04:53:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Eq0t+BbPZXalrNecB2UGQAWr22SKkUMPp3zNFgboMxg=;
-        b=SWP2nzuU3Iwl7GwTXjT7Eg6/XQ/xx2HwKHxn+zwHLLlnJT/t9Y4/2qqqZrwhdXIuMh
-         GLPED/Zx4uDmqctc7nJYo/tAUReUz0LTfVwN39iB89rtwdMUDilAs5Oi+cSb2kjAIEAD
-         j4j8hTq2OUNW1OfKUGbQImx7H+YjrJYMaU16NlTfsfO2BRADh7JcCVhvNkmT5WbgAywr
-         Vbvl4gDMFUAP+G51prn886Oq0NVGMR5Rm/Qju4bY0NYlMFsUdHM9Bh5w5BvKmG2J5o6t
-         mUcsoREqe6YyeB5PXrfSXIPHOnGGflTzFI3/9O/hDopg8H1ZQ5f4rUde3vjYBbJe9SQ0
-         wR9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Eq0t+BbPZXalrNecB2UGQAWr22SKkUMPp3zNFgboMxg=;
-        b=iihDvcDuZYWPZRxFoO3oQXgmw6yRLSJwsTn6WEA8YTPpEvbPG9PiKjee0rOZ6PaN53
-         QAyNE+aHKdOqcJCccNJsjO8GWrEHq09QkbzxC9JBxe8XnpLQBY7fPAqZzsdhBUs0atg2
-         FAPC+dzZw4r+8kMCaZOCz1TWBRpsITOEvXmmbu5x8K8xY4O1BA844IW0GqI8QQEQnEBQ
-         d+usnV6LCI2eazhQrgK5V3BFjht0lEFR/REed2ZQnQ9Pola4Vc6xN2e0ef/cJ512aa/4
-         gq22mDCfS5+0wPP/m+AkhhiFxX3GBmTFpAM2c3JoFq3dGRXTsJwklQdsWcD2IEe7YmJm
-         xLFA==
-X-Gm-Message-State: AOAM5311E3hlHzw3e4gmfwhiDKgX7AxEtv5bumL/KJFzxlth6SWhwFRi
-        R9Tu7OHvSr+FY/6eH9bbpFk/YvbXwVTvT6Ql7XyVZg==
-X-Google-Smtp-Source: ABdhPJy4j69xxBPqsrbnXCVu7/eWO0Do2HxE/drcDQIi6n9DWcqbRh4Y9PbOF3guYx6kj4PpjOkPF7aXpab6wN1N98c=
-X-Received: by 2002:a7b:c44f:: with SMTP id l15mr14839106wmi.151.1623326006488;
- Thu, 10 Jun 2021 04:53:26 -0700 (PDT)
+        Thu, 10 Jun 2021 07:56:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623326054; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=DYoWVGF66T3kPghm81L8ucvdZSLOiQtMZDyvXXzEyjY=;
+ b=CK6m2iRjtpOsssrlF4GrFjWCj3reWChlqw41WIFFNF7AoRHW8cHrKbCPatJxF13dfV/W97Qy
+ bebckY4YqgkJbNd6/QMiOu5Pes8tdUpsoRmWXWuo/0BNFDEPgfJySeyeuvwIXPKV62bbLvaL
+ KydIpItA0S72QC2XzGl2SfGsAe8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60c1fd5be27c0cc77f930468 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Jun 2021 11:54:03
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D4904C4338A; Thu, 10 Jun 2021 11:54:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6DDDDC433F1;
+        Thu, 10 Jun 2021 11:54:01 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210609233730.164082-1-andrealmeid@collabora.com> <YMHX1mKuqoRCiHAF@smile.fi.intel.com>
-In-Reply-To: <YMHX1mKuqoRCiHAF@smile.fi.intel.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 10 Jun 2021 19:53:14 +0800
-Message-ID: <CABVgOS=5xkYKD18YfU++u8snpUnL2s=V6bK1e4qc_jTmAuazkw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/1] lib: Convert UUID runtime test to KUnit
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
-        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
-        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
-        Daniel Latypov <dlatypov@google.com>, tales.aparecida@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 10 Jun 2021 17:24:01 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Thierry Reding <treding@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>
+Subject: Re: [PATCH] iommu/io-pgtable-arm: Optimize partial walk flush for
+ large scatter-gather list
+In-Reply-To: <266f190e-99ae-9175-cf13-7a77730af389@arm.com>
+References: <20210609145315.25750-1-saiprakash.ranjan@codeaurora.org>
+ <dbcd394a-4d85-316c-5dd0-033546a66132@arm.com>
+ <c600e9b2534d54082a5272b508a7985f@codeaurora.org>
+ <35bfd245-45e2-8083-b620-330d6dbd7bd7@arm.com>
+ <12067ffb8243b220cf03e83aaac3e823@codeaurora.org>
+ <266f190e-99ae-9175-cf13-7a77730af389@arm.com>
+Message-ID: <dfdabcdec99a4c6e3bf2b3c5eebe067f@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 5:14 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Jun 09, 2021 at 08:37:29PM -0300, Andr=C3=A9 Almeida wrote:
-> > Hi,
-> >
-> > This patch converts existing UUID runtime test to use KUnit framework.
-> >
-> > Below, there's a comparison between the old output format and the new
-> > one. Keep in mind that even if KUnit seems very verbose, this is the
-> > corner case where _every_ test has failed.
-> >
-> > * This is how the current output looks like in success:
-> >
-> >   test_uuid: all 18 tests passed
-> >
-> > * And when it fails:
-> >
-> >   test_uuid: conversion test #1 failed on LE data: 'c33f4995-3701-450e-=
-9fbf-206a2e98e576'
-> >   test_uuid: cmp test #2 failed on LE data: 'c33f4995-3701-450e-9fbf-20=
-6a2e98e576'
-> >   test_uuid: cmp test #2 actual data: 'c33f4995-3701-450e-9fbf-206a2e98=
-e576'
-> >   test_uuid: conversion test #3 failed on BE data: 'c33f4995-3701-450e-=
-9fbf-206a2e98e576'
-> >   test_uuid: cmp test #4 failed on BE data: 'c33f4995-3701-450e-9fbf-20=
-6a2e98e576'
-> >   test_uuid: cmp test #4 actual data: 'c33f4995-3701-450e-9fbf-206a2e98=
-e576'
-> >   test_uuid: conversion test #5 failed on LE data: '64b4371c-77c1-48f9-=
-8221-29f054fc023b'
-> >   test_uuid: cmp test #6 failed on LE data: '64b4371c-77c1-48f9-8221-29=
-f054fc023b'
-> >   test_uuid: cmp test #6 actual data: '64b4371c-77c1-48f9-8221-29f054fc=
-023b'
-> >   test_uuid: conversion test #7 failed on BE data: '64b4371c-77c1-48f9-=
-8221-29f054fc023b'
-> >   test_uuid: cmp test #8 failed on BE data: '64b4371c-77c1-48f9-8221-29=
-f054fc023b'
-> >   test_uuid: cmp test #8 actual data: '64b4371c-77c1-48f9-8221-29f054fc=
-023b'
-> >   test_uuid: conversion test #9 failed on LE data: '0cb4ddff-a545-4401-=
-9d06-688af53e7f84'
-> >   test_uuid: cmp test #10 failed on LE data: '0cb4ddff-a545-4401-9d06-6=
-88af53e7f84'
-> >   test_uuid: cmp test #10 actual data: '0cb4ddff-a545-4401-9d06-688af53=
-e7f84'
-> >   test_uuid: conversion test #11 failed on BE data: '0cb4ddff-a545-4401=
--9d06-688af53e7f84'
-> >   test_uuid: cmp test #12 failed on BE data: '0cb4ddff-a545-4401-9d06-6=
-88af53e7f84'
-> >   test_uuid: cmp test #12 actual data: '0cb4ddff-a545-4401-9d06-688af53=
-e7f84'
-> >   test_uuid: negative test #13 passed on wrong LE data: 'c33f4995-3701-=
-450e-9fbf206a2e98e576 '
-> >   test_uuid: negative test #14 passed on wrong BE data: 'c33f4995-3701-=
-450e-9fbf206a2e98e576 '
-> >   test_uuid: negative test #15 passed on wrong LE data: '64b4371c-77c1-=
-48f9-8221-29f054XX023b'
-> >   test_uuid: negative test #16 passed on wrong BE data: '64b4371c-77c1-=
-48f9-8221-29f054XX023b'
-> >   test_uuid: negative test #17 passed on wrong LE data: '0cb4ddff-a545-=
-4401-9d06-688af53e'
-> >   test_uuid: negative test #18 passed on wrong BE data: '0cb4ddff-a545-=
-4401-9d06-688af53e'
-> >   test_uuid: failed 18 out of 18 tests
-> >
-> >
-> > * Now, here's how it looks like with KUnit:
-> >
-> >   =3D=3D=3D=3D=3D=3D=3D=3D [PASSED] uuid =3D=3D=3D=3D=3D=3D=3D=3D
-> >   [PASSED] uuid_correct_be
-> >   [PASSED] uuid_correct_le
-> >   [PASSED] uuid_wrong_be
-> >   [PASSED] uuid_wrong_le
-> >
-> > * And if every test fail with KUnit:
-> >
-> >   =3D=3D=3D=3D=3D=3D=3D=3D [FAILED] uuid =3D=3D=3D=3D=3D=3D=3D=3D
-> >   [FAILED] uuid_correct_be
-> >       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
-> >       Expected uuid_parse(data->uuid, &be) =3D=3D 1, but
-> >           uuid_parse(data->uuid, &be) =3D=3D 0
-> >
-> >   failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
-> >       # uuid_correct_be: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e57=
-6
-> >       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
-> >       Expected uuid_parse(data->uuid, &be) =3D=3D 1, but
-> >           uuid_parse(data->uuid, &be) =3D=3D 0
-> >
-> >   failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
-> >       # uuid_correct_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023=
-b
-> >       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
-> >       Expected uuid_parse(data->uuid, &be) =3D=3D 1, but
-> >           uuid_parse(data->uuid, &be) =3D=3D 0
-> >
-> >   failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
-> >       # uuid_correct_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f8=
-4
-> >       not ok 1 - uuid_correct_be
-> >
-> >   [FAILED] uuid_correct_le
-> >       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
-> >       Expected guid_parse(data->uuid, &le) =3D=3D 1, but
-> >           guid_parse(data->uuid, &le) =3D=3D 0
-> >
-> >   failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
-> >       # uuid_correct_le: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e57=
-6
-> >       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
-> >       Expected guid_parse(data->uuid, &le) =3D=3D 1, but
-> >           guid_parse(data->uuid, &le) =3D=3D 0
-> >
-> >   failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
-> >       # uuid_correct_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023=
-b
-> >       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
-> >       Expected guid_parse(data->uuid, &le) =3D=3D 1, but
-> >           guid_parse(data->uuid, &le) =3D=3D 0
-> >
-> >   failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
-> >       # uuid_correct_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f8=
-4
-> >       not ok 2 - uuid_correct_le
-> >
-> >   [FAILED] uuid_wrong_be
-> >       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
-> >       Expected uuid_parse(*data, &be) =3D=3D 0, but
-> >           uuid_parse(*data, &be) =3D=3D -22
-> >
-> >   parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
-> >       # uuid_wrong_be: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
-> >       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
-> >       Expected uuid_parse(*data, &be) =3D=3D 0, but
-> >           uuid_parse(*data, &be) =3D=3D -22
-> >
-> >   parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
-> >       # uuid_wrong_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
-> >       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
-> >       Expected uuid_parse(*data, &be) =3D=3D 0, but
-> >           uuid_parse(*data, &be) =3D=3D -22
-> >
-> >   parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
-> >       # uuid_wrong_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
-> >       not ok 3 - uuid_wrong_be
-> >
-> >   [FAILED] uuid_wrong_le
-> >       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
-> >       Expected guid_parse(*data, &le) =3D=3D 0, but
-> >           guid_parse(*data, &le) =3D=3D -22
-> >
-> >   parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
-> >       # uuid_wrong_le: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
-> >       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
-> >       Expected guid_parse(*data, &le) =3D=3D 0, but
-> >           guid_parse(*data, &le) =3D=3D -22
-> >
-> >   parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
-> >       # uuid_wrong_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
-> >       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
-> >       Expected guid_parse(*data, &le) =3D=3D 0, but
-> >           guid_parse(*data, &le) =3D=3D -22
-> >
-> >   parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
-> >       # uuid_wrong_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
-> >       not ok 4 - uuid_wrong_le
+Hi Robin,
 
-Note that this output is from the kunit_tool script, which parses the
-test output.
-It does include a summary line:
-[04:41:01] Testing complete. 4 tests run. 0 failed. 0 crashed.
+On 2021-06-10 17:03, Robin Murphy wrote:
+> On 2021-06-10 10:36, Sai Prakash Ranjan wrote:
+>> Hi Robin,
+>> 
+>> On 2021-06-10 14:38, Robin Murphy wrote:
+>>> On 2021-06-10 06:24, Sai Prakash Ranjan wrote:
+>>>> Hi Robin,
+>>>> 
+>>>> On 2021-06-10 00:14, Robin Murphy wrote:
+>>>>> On 2021-06-09 15:53, Sai Prakash Ranjan wrote:
+>>>>>> Currently for iommu_unmap() of large scatter-gather list with page 
+>>>>>> size
+>>>>>> elements, the majority of time is spent in flushing of partial 
+>>>>>> walks in
+>>>>>> __arm_lpae_unmap() which is a VA based TLB invalidation (TLBIVA 
+>>>>>> for
+>>>>>> arm-smmu).
+>>>>>> 
+>>>>>> For example: to unmap a 32MB scatter-gather list with page size 
+>>>>>> elements
+>>>>>> (8192 entries), there are 16->2MB buffer unmaps based on the 
+>>>>>> pgsize (2MB
+>>>>>> for 4K granule) and each of 2MB will further result in 512 TLBIVAs 
+>>>>>> (2MB/4K)
+>>>>>> resulting in a total of 8192 TLBIVAs (512*16) for 16->2MB causing 
+>>>>>> a huge
+>>>>>> overhead.
+>>>>>> 
+>>>>>> So instead use io_pgtable_tlb_flush_all() to invalidate the entire 
+>>>>>> context
+>>>>>> if size (pgsize) is greater than the granule size (4K, 16K, 64K). 
+>>>>>> For this
+>>>>>> example of 32MB scatter-gather list unmap, this results in just 16 
+>>>>>> ASID
+>>>>>> based TLB invalidations or tlb_flush_all() callback (TLBIASID in 
+>>>>>> case of
+>>>>>> arm-smmu) as opposed to 8192 TLBIVAs thereby increasing the 
+>>>>>> performance of
+>>>>>> unmaps drastically.
+>>>>>> 
+>>>>>> Condition (size > granule size) is chosen for 
+>>>>>> io_pgtable_tlb_flush_all()
+>>>>>> because for any granule with supported pgsizes, we will have at 
+>>>>>> least 512
+>>>>>> TLB invalidations for which tlb_flush_all() is already 
+>>>>>> recommended. For
+>>>>>> example, take 4K granule with 2MB pgsize, this will result in 512 
+>>>>>> TLBIVA
+>>>>>> in partial walk flush.
+>>>>>> 
+>>>>>> Test on QTI SM8150 SoC for 10 iterations of iommu_{map_sg}/unmap:
+>>>>>> (average over 10 iterations)
+>>>>>> 
+>>>>>> Before this optimization:
+>>>>>> 
+>>>>>>      size        iommu_map_sg      iommu_unmap
+>>>>>>        4K            2.067 us         1.854 us
+>>>>>>       64K            9.598 us         8.802 us
+>>>>>>        1M          148.890 us       130.718 us
+>>>>>>        2M          305.864 us        67.291 us
+>>>>>>       12M         1793.604 us       390.838 us
+>>>>>>       16M         2386.848 us       518.187 us
+>>>>>>       24M         3563.296 us       775.989 us
+>>>>>>       32M         4747.171 us      1033.364 us
+>>>>>> 
+>>>>>> After this optimization:
+>>>>>> 
+>>>>>>      size        iommu_map_sg      iommu_unmap
+>>>>>>        4K            1.723 us         1.765 us
+>>>>>>       64K            9.880 us         8.869 us
+>>>>>>        1M          155.364 us       135.223 us
+>>>>>>        2M          303.906 us         5.385 us
+>>>>>>       12M         1786.557 us        21.250 us
+>>>>>>       16M         2391.890 us        27.437 us
+>>>>>>       24M         3570.895 us        39.937 us
+>>>>>>       32M         4755.234 us        51.797 us
+>>>>>> 
+>>>>>> This is further reduced once the map/unmap_pages() support gets in 
+>>>>>> which
+>>>>>> will result in just 1 tlb_flush_all() as opposed to 16 
+>>>>>> tlb_flush_all().
+>>>>>> 
+>>>>>> Signed-off-by: Sai Prakash Ranjan 
+>>>>>> <saiprakash.ranjan@codeaurora.org>
+>>>>>> ---
+>>>>>>   drivers/iommu/io-pgtable-arm.c | 7 +++++--
+>>>>>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>>>>>> 
+>>>>>> diff --git a/drivers/iommu/io-pgtable-arm.c 
+>>>>>> b/drivers/iommu/io-pgtable-arm.c
+>>>>>> index 87def58e79b5..c3cb9add3179 100644
+>>>>>> --- a/drivers/iommu/io-pgtable-arm.c
+>>>>>> +++ b/drivers/iommu/io-pgtable-arm.c
+>>>>>> @@ -589,8 +589,11 @@ static size_t __arm_lpae_unmap(struct 
+>>>>>> arm_lpae_io_pgtable *data,
+>>>>>>             if (!iopte_leaf(pte, lvl, iop->fmt)) {
+>>>>>>               /* Also flush any partial walks */
+>>>>>> -            io_pgtable_tlb_flush_walk(iop, iova, size,
+>>>>>> -                          ARM_LPAE_GRANULE(data));
+>>>>>> +            if (size > ARM_LPAE_GRANULE(data))
+>>>>>> +                io_pgtable_tlb_flush_all(iop);
+>>>>>> +            else
+>>>>> 
+>>>>> Erm, when will the above condition ever not be true? ;)
+>>>>> 
+>>>> 
+>>>> Ah right, silly me :)
+>>>> 
+>>>>> Taking a step back, though, what about the impact to drivers other
+>>>>> than SMMUv2?
+>>>> 
+>>>> Other drivers would be msm_iommu.c, qcom_iommu.c which does the same
+>>>> thing as arm-smmu-v2 (page based invalidations), then there is 
+>>>> ipmmu-vmsa.c
+>>>> which does tlb_flush_all() for flush walk.
+>>>> 
+>>>>> In particular I'm thinking of SMMUv3.2 where the whole
+>>>>> range can be invalidated by VA in a single command anyway, so the
+>>>>> additional penalties of TLBIALL are undesirable.
+>>>>> 
+>>>> 
+>>>> Right, so I am thinking we can have a new generic quirk 
+>>>> IO_PGTABLE_QUIRK_RANGE_INV
+>>>> to choose between range based invalidations(tlb_flush_walk) and 
+>>>> tlb_flush_all().
+>>>> In this case of arm-smmu-v3.2, we can tie up ARM_SMMU_FEAT_RANGE_INV 
+>>>> with this quirk
+>>>> and have something like below, thoughts?
+>>>> 
+>>>> if (iop->cfg.quirks & IO_PGTABLE_QUIRK_RANGE_INV)
+>>>>          io_pgtable_tlb_flush_walk(iop, iova, size,
+>>>>                                    ARM_LPAE_GRANULE(data));
+>>>> else
+>>>>          io_pgtable_tlb_flush_all(iop);
+>>> 
+>>> The design here has always been that io-pgtable says *what* needs
+>>> invalidating, and we left it up to the drivers to decide exactly
+>>> *how*. Even though things have evolved a bit I don't think that has
+>>> fundamentally changed - tlb_flush_walk is now only used in this one
+>>> place (technically I suppose it could be renamed tlb_flush_table but
+>>> it's not worth the churn), so drivers can implement their own
+>>> preferred table-invalidating behaviour even more easily than choosing
+>>> whether to bounce a quirk through the common code or not. Consider
+>>> what you've already seen for the Renesas IPMMU, or SMMUv1 stage 2...
+>>> 
+>> 
+>> Thanks for the explanation, makes sense. If I am not mistaken, I see 
+>> that
+>> you are suggesting to move this logic based on size and granule-size 
+>> to
+>> arm-smmu-v2 driver and one more thing below..
+> 
+> Simpler than that - following on from my original comment above,
+> tlb_flush_walk already knows it's invalidating at least one full level
+> of table so there's nothing it even needs to check. Adding a
+> size-based heuristic to arm_smmu_inv_range_* for leaf invalidations
+> would be a separate concern (note that changing the non-leaf behaviour
+> might allow cleaning up the "reg" indirection there too).
 
-Note that this does only count the number of "tests" run --- the
-individual UUIDs are parameters to the same test, so aren't counted
-independently by the wrapper at the moment.
+Right, sorry I didn't mean to mention the size check as it was obvious
+from your first reply, but rather just calling impl->tlb_inv() in
+arm_smmu_tlb_inv_walk_s1().
 
-That being said, the raw output looks like this (all tests passed):
-TAP version 14
-1..1
-   # Subtest: uuid
-   1..4
-   # uuid_correct_be: ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
-   # uuid_correct_be: ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
-   # uuid_correct_be: ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
-   ok 1 - uuid_correct_be
-   # uuid_correct_le: ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
-   # uuid_correct_le: ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
-   # uuid_correct_le: ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
-   ok 2 - uuid_correct_le
-   # uuid_wrong_be: ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
-   # uuid_wrong_be: ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
-   # uuid_wrong_be: ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
-   ok 3 - uuid_wrong_be
-   # uuid_wrong_le: ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
-   # uuid_wrong_le: ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
-   # uuid_wrong_le: ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
-   ok 4 - uuid_wrong_le
-ok 1 - uuid
+> 
+>>> I'm instinctively a little twitchy about making this a blanket
+>>> optimisation for SMMUv2 since I still remember the palaver with our
+>>> display and MMU-500 integrations, where it had to implement the dodgy
+>>> "prefetch" register to trigger translations before scanning out a
+>>> frame since it couldn't ever afford a TLB miss, thus TLBIALL when
+>>> freeing an old buffer would be a dangerous hammer to swing. However
+>>> IIRC it also had to ensure everything was mapped as 2MB blocks to
+>>> guarantee fitting everything in the TLBs in the first place, so I
+>>> guess it would still work out OK due to never realistically unmapping
+>>> a whole table at once anyway.
+>>> 
+>> 
+>> You are also hinting to not do this for all SMMUv2 implementations and 
+>> make
+>> it QCOM specific?
+> 
+> No, I'm really just wary that the performance implication is more
+> complex than a simple unmap latency benefit, possibly even for QCOM.
+> Consider the access latency, power and memory bandwidth hit from all
+> the additional pagetable walks incurred by other ongoing traffic
+> fighting against those 16 successive TLBIASIDs. Whether it's an
+> overall win really depends on the specific workload and system
+> conditions as much as the SMMU implementation.
 
-A test which failed could look like this:
-    # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
-   Expected guid_parse(data->uuid, &le) =3D=3D 0, but
-       guid_parse(data->uuid, &le) =3D=3D -22
+No, the unmap latency is not just in some test case written, the issue
+is very real and we have workloads where camera is reporting frame drops
+because of this unmap latency in the order of 100s of milliseconds.
+And hardware team recommends using ASID based invalidations for anything
+larger than 128 TLB entries. So yes, we have taken note of impacts here
+before going this way and hence feel more inclined to make this qcom
+specific if required.
 
-failed to parse 'c33f499x5-3701-450e-9fbf-206a2e98e576'
-   # uuid_correct_le: not ok 1 - c33f499x5-3701-450e-9fbf-206a2e98e576
-   # uuid_correct_le: ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
-   # uuid_correct_le: ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
-   not ok 2 - uuid_correct_le
+> Thinking some more, I
+> wonder if the Tegra folks might have an opinion to add here, given
+> that their multiple-SMMU solution was seemingly about trying to get
+> enough TLB and pagetable walk bandwidth in the first place?
+> 
 
->
-> Thanks!
->
-> It's not your fault but I think we need to defer this until KUnit gains s=
-upport
-> of the run statistics. My guts telling me if we allow more and more conve=
-rsions
-> like this the point will vanish and nobody will care.
+Sure but I do not see how that will help with the unmap latency?
 
-Did the test statistics patch we sent out before meet your expectations?
-https://patchwork.kernel.org/project/linux-kselftest/patch/20201211072319.5=
-33803-1-davidgow@google.com/
+Thanks,
+Sai
 
-If so, we can tidy it up and try to push it through straight away, we
-were just waiting for a review from someone who wanted the feature.
-
-
-> I like the code, but I can give my tag after KUnit prints some kind of th=
-is:
->
->  * This is how the current output looks like in success:
->
->    test_uuid: all 18 tests passed
->
->  * And when it fails:
->
->    test_uuid: failed 18 out of 18 tests
->
-
-There are some small restrictions on the exact format KUnit can use
-for this if we want to continue to match the (K)TAP specification
-which is being adopted by kselftest. The patch linked above should
-give something formatted like:
-
-# test_uuid: (0 / 4) tests failed (0 / 12 test parameters)
-
-Would that work for you?
-
-Cheers,
--- David
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
