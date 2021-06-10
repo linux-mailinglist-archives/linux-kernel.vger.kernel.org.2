@@ -2,136 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1B33A2B79
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2CF3A2B83
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhFJM1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:27:54 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:51091 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230130AbhFJM1w (ORCPT
+        id S230382AbhFJM2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:28:50 -0400
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:36417 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhFJM2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:27:52 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 0A5342396;
-        Thu, 10 Jun 2021 08:25:54 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 10 Jun 2021 08:25:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:mime-version:content-type; s=
-        fm3; bh=uHio+4NIJ30iZUQOLrOe+MHQN4Sn7Af3MGSexW5w2ps=; b=hufp3yt3
-        de8jPWnUZ25P43F3IykGVCi9XgBRZS2x61/71w0pFKMTJcMO9ON3msRCEh0LlLlk
-        xzXKCq7kSJFW4u9exfsmgaKua4Unr+zP39zxv+5aN3DN/hpGBwYvK7xJubVwaO1D
-        qCROwhzBqOP4vnH9WzkDdiSPuBLR9NuIdiS8REy4SmqzFHWcgqfo7p+vhIdXHnbB
-        7OvFLaTL+jPoLoZTO0RuC4IpcgYXQECwX5hkAOHLmFmRsXklHzOTtcG7ctxD8aYW
-        4+AB2aLYCS4X/6mvoIoBBnzEmXtpHIbg9vpukIloTntKAtBW7fbf1TlXqcwRU9CT
-        Aqu2/TPwgbwaMw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; bh=uHio+4NIJ30iZUQOLrOe+MHQN4Sn7
-        Af3MGSexW5w2ps=; b=EyB9o7DsGY9CuOi1kBEWYqPdraY21EYolZfAkA8eMyGc4
-        pnxEdC4PN1GJY1Pp2F9xxYvYtmt0XiHXLnEt+yRDAP8mbMMjZP/M4pQx+x9O3eQL
-        YW1NnJ/qFvtn+cbSGjCk82Obh7zQXhQQ17aq6V+W2SXKp4MKlExKpsvyDpOsfdj6
-        tDRky6m55vbq3Z3rDhCLrTnY70JlBGgYt7EVQh9WREZVp6/00iGm/IUFqIPqRgiZ
-        OwtP8p+qaNclriRVfDo9DjuXWfA4ysZ1m1rbXQ6dZ275UgvOEAEhtqVJroZG4NyI
-        anyGh7/UtOXXUj9LCCQOY92OMESfPZ4xxpqvBZhUw==
-X-ME-Sender: <xms:0QTCYHrGmzKu1eaFc4iYinPp7RG4Wdq9s1MPkR7RgGu9_xFeWSoaow>
-    <xme:0QTCYBo6E40GdbMHzyX_rnPeRsErqukbrrs7crs7AFsA5njwW_zOP12ZigetZ8rEe
-    IqXOiYjyg1T16lfo-A>
-X-ME-Received: <xmr:0QTCYENxu2qhnxUvHdq2qXJ03nC4fQj8Dthlsf2Lm56OlW9BQCl1Z1bL1l4QNkAPG-wid1xHHKE1oqdgLQMVuZiAPYKLnoef_X5p>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedufedgheduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfggtggusehgtderredttddvnecuhfhrohhmpeforgigihhmvgcu
-    tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
-    hrnhepgfdvuedtvdevvddvvddtheevvdelgefhgefhleeuvdfhheduhfehffeuhfejffeg
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:0QTCYK7XOKLlL5JE6wujqWuwBrCaZc4RSqt2AOhRuND-C3vPjpOJlQ>
-    <xmx:0QTCYG7tpRgVTc1woTzO_GHiTUWP2BBjUBl_cnxxlyhu8nqeSQTr-g>
-    <xmx:0QTCYCiIRVg0S9Rdv2tM8UUJUriwahw_c13uAetSBJZ28Si37uj61w>
-    <xmx:0gTCYDy3OvQaZaL83E1A_JOFP4CBtIF_A8Llyit8jQPQGt41O7vL-3mIhEo>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 10 Jun 2021 08:25:52 -0400 (EDT)
-Date:   Thu, 10 Jun 2021 14:25:50 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>
-Cc:     Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: [GIT PULL] HDMI codec improvements, v2
-Message-ID: <20210610122550.jnriewchqspdcrwk@gilmour>
+        Thu, 10 Jun 2021 08:28:33 -0400
+Received: by mail-ua1-f53.google.com with SMTP id p9so1210263uar.3;
+        Thu, 10 Jun 2021 05:26:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ppd1Jz5aBQsbrPJtjVVbRRcX70U5zYeai4zzqRqUEIM=;
+        b=MsAyqJ2DyhrecQG31PSwWA8Fgy7etaErJqZNCzMLUru1ZJowHGBOhhyu2XWP/LS6dr
+         zF4uNSfvcqie1/erJFPgiymNnzyQ5gHUqIksDeaBAL4UaNU+KhRNP9nkmIndks4Kkh+s
+         p6+EeubfyFG0NaLzrEZ4BHC8XnckdsX2fNpE+7K1DR0QXEr7UnYWb1pWl4t2wSAmY1Kd
+         uWPGW1ZkK57iluo5aGqgVAZiP0NbD1i9IKeXzEe2udThJGJ5BivZBM6fFOaa6Mgr1yhS
+         EvEA6kliimZafsw/tPNmjpDN5spFdlpJ3zle8MGM4ZolLbo/IPD23AszaF53hhmhVjtL
+         0tgA==
+X-Gm-Message-State: AOAM530pB+xwNOUV5sBsGTpyhcMB+CaEDqhv2d6yaRbGmcnbQUOG73ks
+        Fv3S1ujzSW/7TYuDt6zASbZGcwS9O2c0hYj7m/uMez3cFyk=
+X-Google-Smtp-Source: ABdhPJwL2HfQFWxduhZTBOzYv1lmqfHraGJHjKlwBl+vYAp4R7ciWH6Rc65GOkfbE5uz/+F4ZwEeGsUdZDgTzSeYahg=
+X-Received: by 2002:ab0:708c:: with SMTP id m12mr4164941ual.4.1623327989993;
+ Thu, 10 Jun 2021 05:26:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7tlmdj33bp5wxhna"
-Content-Disposition: inline
+References: <20210609163717.3083-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210609163717.3083-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210609163717.3083-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 10 Jun 2021 14:26:19 +0200
+Message-ID: <CAMuHMdV++2DxhUG+9huDpZAvJ+D9K66ythvJiNTozWE52ZW1Xw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] soc: renesas: Add support to read LSI DEVID
+ register of RZ/G2{L,LC} SoC's
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 9, 2021 at 6:37 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add support for reading the LSI DEVID register which is present in
+> SYSC block of RZ/G2{L,LC} SoC's.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
---7tlmdj33bp5wxhna
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.14.
 
-Hi,
+Gr{oetje,eeting}s,
 
-Here's a PR for the changes to hdmi-codec that need to be shared between
-drm-misc-next and ASoC.
+                        Geert
 
-This is the second iteration, fixing a bisection issue with compilation
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Thanks!
-Maxime
-
-
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mripard/linux.git tags/asoc-hdmi-codec-improvements-v2
-
-for you to fetch changes up to 2fef64eec23a0840c97977b16dd8919afaffa876:
-
-  ASoC: hdmi-codec: Add a prepare hook (2021-06-10 11:48:56 +0200)
-
-----------------------------------------------------------------
-Improvements to the hdmi-codec driver and ALSA infrastructure around it
-to support the HDMI Channel Mapping and IEC958 controls
-
-----------------------------------------------------------------
-Maxime Ripard (5):
-      ALSA: doc: Clarify IEC958 controls iface
-      ALSA: iec958: Split status creation and fill
-      ASoC: hdmi-codec: Rework to support more controls
-      ASoC: hdmi-codec: Add iec958 controls
-      ASoC: hdmi-codec: Add a prepare hook
-
- .../sound/kernel-api/writing-an-alsa-driver.rst    |  13 +-
- include/sound/hdmi-codec.h                         |  12 +-
- include/sound/pcm_iec958.h                         |   8 +
- sound/core/pcm_iec958.c                            | 176 +++++++++++++----
- sound/soc/codecs/hdmi-codec.c                      | 219 +++++++++++++++++----
- 5 files changed, 337 insertions(+), 91 deletions(-)
-
---7tlmdj33bp5wxhna
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYMIEzgAKCRDj7w1vZxhR
-xWTFAP9Htr7a2qyESSYy+oZKtBB+ulMs7bWhtFqZEAHtQecZpgD/R7HTX4nAch5g
-lwYonMvzPyUzYI2ah5Wvcqkp6B51fgg=
-=6y7C
------END PGP SIGNATURE-----
-
---7tlmdj33bp5wxhna--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
