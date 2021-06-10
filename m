@@ -2,86 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969C33A222C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAC13A2235
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhFJCO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 22:14:27 -0400
-Received: from exvmail3.skhynix.com ([166.125.252.90]:46152 "EHLO
-        invmail3.skhynix.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229557AbhFJCO0 (ORCPT
+        id S229788AbhFJCS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 22:18:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38781 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229507AbhFJCS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 22:14:26 -0400
-X-AuditID: a67dfc59-d75ff70000008761-4c-60c1750cf881
-Received: from hymail21.hynixad.com (10.156.135.51) by hymail19.hynixad.com
- (10.156.135.49) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.792.3; Thu, 10 Jun 2021
- 11:12:28 +0900
-Received: from hymail21.hynixad.com ([10.156.135.51]) by hymail21.hynixad.com
- ([10.156.135.51]) with mapi id 15.02.0792.010; Thu, 10 Jun 2021 11:12:28
- +0900
-From:   =?ks_c_5601-1987?B?waS/5MfRKEpPVU5HIFlPSEFOKSBNb2JpbGUgU0U=?= 
-        <yohan.joung@sk.com>
-To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>
-CC:     "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "d_hyun.kwon@samsung.com" <d_hyun.kwon@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "j-young.choi@samsung.com" <j-young.choi@samsung.com>,
-        "jaemyung.lee@samsung.com" <jaemyung.lee@samsung.com>,
-        "javier.gonz@samsung.com" <javier.gonz@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "jh.i.park@samsung.com" <jh.i.park@samsung.com>,
-        "jieon.seol@samsung.com" <jieon.seol@samsung.com>,
-        "keosung.park@samsung.com" <keosung.park@samsung.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "sungjun07.park@samsung.com" <sungjun07.park@samsung.com>
-Subject: Re: [PATCH v36 4/4] scsi: ufs: Add HPB 2.0 support
-Thread-Topic: Re: [PATCH v36 4/4] scsi: ufs: Add HPB 2.0 support
-Thread-Index: AdddnBVr0vzEwO50RpirWSKIimBtxQ==
-Date:   Thu, 10 Jun 2021 02:12:27 +0000
-Message-ID: <b64cf2a49a1b43f09961eb4d5d4ea5c2@sk.com>
-Accept-Language: ko-KR, en-US
-Content-Language: ko-KR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.152.36.34]
-Content-Type: text/plain; charset="ks_c_5601-1987"
-Content-Transfer-Encoding: base64
+        Wed, 9 Jun 2021 22:18:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623291391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NnaUokRoNM6Q2FbT2TvIPzJXqmr5yWwj9gPCdPyZQmw=;
+        b=acHl2IrkP8FXvHOBYUSrLuFY4278K3gD+L939k2a2VK8+9TzC6WP/9KgOulVW0TtqDY/mh
+        8qtuGU/kJ2uCLj6xSbVS3854lk0yWJns5tqYnQGi9jNdKE92/Fnkls1OlVVNWt1NmuHQlL
+        DFkZCo/lLLZ3zxyCc7KvcZs8jruxzm0=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-VaDRKLUUOfK2kPQk-YyJSA-1; Wed, 09 Jun 2021 22:16:30 -0400
+X-MC-Unique: VaDRKLUUOfK2kPQk-YyJSA-1
+Received: by mail-pj1-f69.google.com with SMTP id e12-20020a17090a630cb029016de1736f41so2859202pjj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 19:16:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=NnaUokRoNM6Q2FbT2TvIPzJXqmr5yWwj9gPCdPyZQmw=;
+        b=YgQv3cK2N17KiivoTtPPlE7owI2ssHRHJlNxVQUGtdK/tQxO0w5lExF5FBU/a0MoXB
+         4fUQQdXTtI+x2mIS4QGB3pKSYYWDkxjwTOysJ8NVE1SigkBdEOnsTn4uEUOZXIOrMt9w
+         rCJE+F2tI22CkK6JjuCeuJOKPFO0nwak9pVUGEW5DWTwlvlUItXDqEEOw3M8d3VxkcmK
+         QvV2wkjRcR75U3MyP/sLAT+7+k+npyjFMHG+Wta/1sxTAGsnt/jIGaSeMngdBz1fIFF0
+         DjvXeRZPENCdXyZfdxeTmUHoGssCM2xM6plfGByG2UvA0aK8pGWvZSPh88Kaz1PweJmL
+         BAkA==
+X-Gm-Message-State: AOAM5317BDalud8Bc0Zj8fO+u8sDotYLQqFEIzs5YCiWa7IyfxpI1yJn
+        pcu+zaR99UOkHEKZqBEExE2eJdteApitPcNPKAvmB0F8JySO6F6/jO4DKwccqgWSe1DQJiXAyg8
+        xxS+NoBtuGCz1bfZvgub9VZB2
+X-Received: by 2002:a63:4814:: with SMTP id v20mr2691507pga.8.1623291389544;
+        Wed, 09 Jun 2021 19:16:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwGFH3+Zi1qg8fLvGeVh2H1tnJw2kTEQ1WuxGNYkVj+kLoxCEbUmdaVO29Ee6FLnMdfVVUCXA==
+X-Received: by 2002:a63:4814:: with SMTP id v20mr2691486pga.8.1623291389293;
+        Wed, 09 Jun 2021 19:16:29 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b14sm889674pgl.52.2021.06.09.19.16.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 19:16:28 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Liu Yi L <yi.l.liu@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
+        <alex.williamson@redhat.com>, David Woodhouse <dwmw2@infradead.org>
+References: <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
+ <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
+ <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <05d7f790-870d-5551-1ced-86926a0aa1a6@redhat.com>
+ <MWHPR11MB1886269E2B3DE471F1A9A7618C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <42a71462-1abc-0404-156c-60a7ee1ad333@redhat.com>
+ <20210601173138.GM1002214@nvidia.com>
+ <f69137e3-0f60-4f73-a0ff-8e57c79675d5@redhat.com>
+ <20210602172154.GC1002214@nvidia.com>
+ <51e060a3-fc59-0a13-5955-71692b14eed8@metux.net>
+ <20210607180144.GL1002214@nvidia.com>
+ <633b00c1-b388-856a-db71-8d74e52c2702@metux.net>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <0f9224eb-2158-4769-f709-6e8f56c24bd3@redhat.com>
+Date:   Thu, 10 Jun 2021 10:16:17 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFLMWRmVeSWpSXmKPExsXCNUdUWZen9GCCwdJNihaXd81hs+i+voPN
-        gcnj8ya5AMYoLpuU1JzMstQifbsEroyJj64yFtxir2jZMpG5gfEAexcjJ4eEgInE4cULgWwu
-        DiGBV4wSryaeZIFwFjBKzFjxlhGkik0gSuJx6wqwDhEBS4mDezaxghQxCyzlkHhzZjkTSEJY
-        wFriYFsXG0SRg8SuabdZIGw9iYmvDjKD2CwCqhL3rvWA2bwCphL/f80CGsTBwSggK3H1mgxI
-        mFlAXGLx12vMENcJSCzZcx7KFpV4+fgfK4StILHy+wUmiHojiSWr50PZihJTuh+yQ4wXlDg5
-        8wkLRL2kxMEVN1gmMIrMQrJiFpL2WUjaZyFpX8DIsopRJDOvLDcxM8dYrzg7ozIvs0IvOT93
-        EyMwBpbV/oncwfjtQvAhRgEORiUe3owLBxKEWBPLiitzDzFKcDArifCWGe5LEOJNSaysSi3K
-        jy8qzUktPsQozcGiJM77LSw1QUggPbEkNTs1tSC1CCbLxMEp1cDoU/f0kEOyGs/ORUyhGvsO
-        hb7jfiLparFccceJJVdOqFmGPreYnMhWkKJzaP7NBfdEyxpypjg2sOr3Xjxq+G9zV2/94sWb
-        Xz+Y5fOwyN5jmZWXlXn2E0/9Xfdfe595GqZgey9aLTFF7vSdUO7l5d0HHece/brF0fXF5Z6X
-        s5PZT8y6XbezfqmoEktxRqKhFnNRcSIAzHUF+n0CAAA=
+In-Reply-To: <633b00c1-b388-856a-db71-8d74e52c2702@metux.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaHBiLmggYi9kcml2ZXJzL3Njc2kvdWZz
-L3Vmc2hwYi5oIGluZGV4IDZlNmEwMjUyZGMxNS4uYjExMjhiMGNlNDg2IDEwMDY0NA0KLS0tIGEv
-ZHJpdmVycy9zY3NpL3Vmcy91ZnNocGIuaA0KKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNocGIu
-aA0KQEAgLTMwLDE5ICszMCwyOSBAQA0KICNkZWZpbmUgUElOTkVEX05PVF9TRVQJCQkJVTMyX01B
-WA0KIA0KIC8qIGhwYiBzdXBwb3J0IGNodW5rIHNpemUgKi8NCi0jZGVmaW5lIEhQQl9NVUxUSV9D
-SFVOS19ISUdICQkJMQ0KKyNkZWZpbmUgSFBCX0xFR0FDWV9DSFVOS19ISUdICQkJMQ0KKyNkZWZp
-bmUgSFBCX01VTFRJX0NIVU5LX0xPVwkJCTcNCisjZGVmaW5lIEhQQl9NVUxUSV9DSFVOS19ISUdI
-CQkJMTI4DQogDQpBY2NvcmRpbmcgdG8gdGhlIEpFREVDIHNwZWMsIGJNQVhfREFUQV9TSVpFX0ZP
-Ul9IUEJfU0lOR0xFX0NNRCBjYW4gYmUgc2V0IGZyb20gNGtiIHRvIDEwMjRrYi4gDQpUaGUgdHJh
-bnNmZXIgbGVuZ3RoIHNob3VsZCBiZSBwcm92aWRlZCB1cCB0byAxMDIwa2Igb3IgMTAyNGtiLg0K
-V2h5IGRpZCB5b3Ugc2V0IEhQQl9NVUxUSV9DSFVOS19ISUdIIHRvIDEyOD8gDQpJdCBjYW4gc2Vu
-ZHMgdGhlIGhwYiBjb21tYW5kIHVwIHRvIDUxMmtiLiANClRoaXMgZG9lc24ndCBzZWVtIHRvIG1h
-dGNoIHRoZSBzcGVjcy4NCg0KVGhhbmtzDQpZb2hhbi4NCg0K
+
+在 2021/6/8 下午6:45, Enrico Weigelt, metux IT consult 写道:
+> On 07.06.21 20:01, Jason Gunthorpe wrote:
+>> <shrug> it is what it is, select has a fixed size bitmap of FD #s and
+>> a hard upper bound on that size as part of the glibc ABI - can't be
+>> fixed.
+>
+> in glibc ABI ? Uuuuh!
+>
+
+Note that dealing with select() or try to overcome the limitation via 
+epoll() directly via the application is not a good practice (or it's not 
+portable).
+
+It's suggested to use building blocks provided by glib, e.g the main 
+event loop[1]. That is how Qemu solve the issues of dealing with a lot 
+of file descriptors.
+
+Thanks
+
+[1] https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html
+
+
+>
+> --mtx
+>
+
