@@ -2,194 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3A63A2AAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDF23A2AB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhFJLv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 07:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhFJLv1 (ORCPT
+        id S230313AbhFJLwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 07:52:06 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5228 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230215AbhFJLwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:51:27 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CE7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 04:49:31 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lrJBa-0003jX-HU; Thu, 10 Jun 2021 13:49:22 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lrJBY-0005VQ-Vk; Thu, 10 Jun 2021 13:49:20 +0200
-Date:   Thu, 10 Jun 2021 13:49:20 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: Re: [PATCH net-next v3 4/9] net: phy: micrel: apply resume errata
- workaround for ksz8873 and ksz8863
-Message-ID: <20210610114920.w5xyijxe62svzdfp@pengutronix.de>
-References: <20210526043037.9830-1-o.rempel@pengutronix.de>
- <20210526043037.9830-5-o.rempel@pengutronix.de>
- <20210526224329.raaxr6b2s2uid4dw@skbuf>
+        Thu, 10 Jun 2021 07:52:05 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15ABXaLF183501;
+        Thu, 10 Jun 2021 07:50:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=sOsx0by8qj910X989Lv9ljQz1oCfdyYidDzCaLjOnTg=;
+ b=ijtqNJmOo2TDpS0meMgb+r59PqcV9M6g+HpaZPdIMEwipmECcEOZl/aVRUR/6vj5JPRI
+ vW1gaVxWSLaDxLkQDvGeIIJ3ZCDnOIWtUvMfBZbZi0pUqBf4mkmCXElxg22HMx9sPx7c
+ VQ9HzmWlTh6hfl7YPrK7GmH7XKBd0/RGJMij1BTUrPt7g3GxtCWA/uLFKyJuEUaiEcc8
+ sbvo+OgOTySTqLMBlxVNkbeqXQr1TvT0KvGJCluAYHEoBldzvh7kPrUBPCA1tJY5Q9J1
+ lG3w5Tj9w6y8jE1VUNgOrngbDlhnvxoZcoj8AWdjJc+eni8xgAvbt00RYWluQYMo4Itu 7g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 393guhah2s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 07:50:03 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15ABYetF187223;
+        Thu, 10 Jun 2021 07:50:03 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 393guhah22-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 07:50:03 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15ABlZDQ027823;
+        Thu, 10 Jun 2021 11:50:01 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma03wdc.us.ibm.com with ESMTP id 3900wa7qrj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 11:50:01 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15ABo1SM38273324
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 11:50:01 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6E4F9AE063;
+        Thu, 10 Jun 2021 11:50:01 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 58FBCAE060;
+        Thu, 10 Jun 2021 11:50:01 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Jun 2021 11:50:01 +0000 (GMT)
+Subject: Re: [PATCH v5 0/2] Add support for ECDSA-signed kernel modules
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     jeyu@kernel.org, keyrings@vger.kernel.org, dhowells@redhat.com,
+        dwmw2@infradead.org, zohar@linux.ibm.com, nayna@linux.ibm.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210602143537.545132-1-stefanb@linux.ibm.com>
+ <20210603064738.pwfq3n7erzmncdmw@kernel.org>
+ <8b79651b-1fe4-48c0-3498-529344ac6243@linux.ibm.com>
+ <20210609124412.engcrbo3fezuzyoq@kernel.org>
+ <f22e7ae1-8779-e995-091c-8a899fd7fd76@linux.ibm.com>
+ <20210610090323.f7b47xqxbkwnm5cx@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <66d4a4be-c01c-7f33-9a7f-20cfdb5dcf96@linux.ibm.com>
+Date:   Thu, 10 Jun 2021 07:50:01 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210526224329.raaxr6b2s2uid4dw@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 12:46:00 up 190 days, 52 min, 40 users,  load average: 0.09, 0.05,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210610090323.f7b47xqxbkwnm5cx@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: dlR1wW0VT6VLBzpDlzMqUeHn6uKE9cdf
+X-Proofpoint-ORIG-GUID: FL6cxQpNyhmm27US8oOx8axdF_GmBkMr
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-10_07:2021-06-10,2021-06-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 spamscore=0 phishscore=0 mlxscore=0 priorityscore=1501
+ adultscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106100072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 01:43:29AM +0300, Vladimir Oltean wrote:
-> On Wed, May 26, 2021 at 06:30:32AM +0200, Oleksij Rempel wrote:
-> > The ksz8873 and ksz8863 switches are affected by following errata:
-> > 
-> > | "Receiver error in 100BASE-TX mode following Soft Power Down"
-> > |
-> > | Some KSZ8873 devices may exhibit receiver errors after transitioning
-> > | from Soft Power Down mode to Normal mode, as controlled by register 195
-> > | (0xC3) bits [1:0]. When exiting Soft Power Down mode, the receiver
-> > | blocks may not start up properly, causing the PHY to miss data and
-> > | exhibit erratic behavior. The problem may appear on either port 1 or
-> > | port 2, or both ports. The problem occurs only for 100BASE-TX, not
-> > | 10BASE-T.
-> > |
-> > | END USER IMPLICATIONS
-> > | When the failure occurs, the following symptoms are seen on the affected
-> > | port(s):
-> > | - The port is able to link
-> > | - LED0 blinks, even when there is no traffic
-> > | - The MIB counters indicate receive errors (Rx Fragments, Rx Symbol
-> > |   Errors, Rx CRC Errors, Rx Alignment Errors)
-> > | - Only a small fraction of packets is correctly received and forwarded
-> > |   through the switch. Most packets are dropped due to receive errors.
-> > |
-> > | The failing condition cannot be corrected by the following:
-> > | - Removing and reconnecting the cable
-> > | - Hardware reset
-> > | - Software Reset and PCS Reset bits in register 67 (0x43)
-> > |
-> > | Work around:
-> > | The problem can be corrected by setting and then clearing the Port Power
-> > | Down bits (registers 29 (0x1D) and 45 (0x2D), bit 3). This must be done
-> > | separately for each affected port after returning from Soft Power Down
-> > | Mode to Normal Mode. The following procedure will ensure no further
-> > | issues due to this erratum. To enter Soft Power Down Mode, set register
-> > | 195 (0xC3), bits [1:0] = 10.
-> > |
-> > | To exit Soft Power Down Mode, follow these steps:
-> > | 1. Set register 195 (0xC3), bits [1:0] = 00 // Exit soft power down mode
-> > | 2. Wait 1ms minimum
-> > | 3. Set register 29 (0x1D), bit [3] = 1 // Enter PHY port 1 power down mode
-> > | 4. Set register 29 (0x1D), bit [3] = 0 // Exit PHY port 1 power down mode
-> > | 5. Set register 45 (0x2D), bit [3] = 1 // Enter PHY port 2 power down mode
-> > | 6. Set register 45 (0x2D), bit [3] = 0 // Exit PHY port 2 power down mode
-> > 
-> > This patch implements steps 2...6 of the suggested workaround. The first
-> > step needs to be implemented in the switch driver.
-> 
-> Am I right in understanding that register 195 (0xc3) is not a port register?
-> 
-> To hit the erratum, you have to enter Soft Power Down in the first place,
-> presumably by writing register 0xc3 from somewhere, right?
-> 
-> Where does Linux write this register from?
-> 
-> Once we find that place that enters/exits Soft Power Down mode, can't we
-> just toggle the Port Power Down bits for each port, exactly like the ERR
-> workaround says, instead of fooling around with a PHY driver?
 
-The KSZ8873 switch is using multiple register mappings.
-https://ww1.microchip.com/downloads/en/DeviceDoc/00002348A.pdf
-Page 38:
-"The MIIM interface is used to access the MII PHY registers defined in
-this section. The SPI, I2C, and SMI interfaces can also be used to access
-some of these registers. The latter three interfaces use a different
-mapping mechanism than the MIIM interface."
+On 6/10/21 5:03 AM, Jarkko Sakkinen wrote:
+> On Wed, Jun 09, 2021 at 09:58:29AM -0400, Stefan Berger wrote:
+>> On 6/9/21 8:44 AM, Jarkko Sakkinen wrote:
+>>> On Thu, Jun 03, 2021 at 08:32:59AM -0400, Stefan Berger wrote:
+>>>> On 6/3/21 2:47 AM, Jarkko Sakkinen wrote:
+>>>>>> -- 
+>>>>>> 2.29.2
+>>>>>>
+>>>>>>
+>>>>> Please instead send a fix.
+>>>> We have a Fixes tag in 1/2, so we want this to propagate to older kernels
+>>>> and need the fix in 1/2 for that reason.
+>>>>
+>>>>      Stefan
+>>> So please do an additional fix and send it.
+>> 1/2 is supposed to propagate to older kernels and needs to change as posted
+>> here in v5 (assuming that this does indeed fix what the build bot was
+>> complaining about). 2/2 also changes. A fix on top of v4 would fix 2/2 but
+>> won't apply cleanly to 1/2 as cannot easily propagate to older kernels. Is
+>> that what we want? Why can you not remove v4 from your queue and replace it
+>> with v5?
+>>
+>>     Stefan
+> What you can do is to send fix or fixes with appropriate fixes tags and
+> I can then squash them for appropriate patches. That's less work for me.
 
-This PHY driver is able to work directly over MIIM (MDIO). Or work with DSA over
-integrated register translation mapping.
 
-> > 
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> >  drivers/net/phy/micrel.c | 22 +++++++++++++++++++++-
-> >  1 file changed, 21 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-> > index 227d88db7d27..f03188ed953a 100644
-> > --- a/drivers/net/phy/micrel.c
-> > +++ b/drivers/net/phy/micrel.c
-> > @@ -1048,6 +1048,26 @@ static int ksz8873mll_config_aneg(struct phy_device *phydev)
-> >  	return 0;
-> >  }
-> >  
-> > +static int ksz886x_resume(struct phy_device *phydev)
-> > +{
-> > +	int ret;
-> > +
-> > +	/* Apply errata workaround for KSZ8863 and KSZ8873:
-> > +	 * Receiver error in 100BASE-TX mode following Soft Power Down
-> > +	 *
-> > +	 * When exiting Soft Power Down mode, the receiver blocks may not start
-> > +	 * up properly, causing the PHY to miss data and exhibit erratic
-> > +	 * behavior.
-> > +	 */
-> > +	usleep_range(1000, 2000);
-> > +
-> > +	ret = phy_set_bits(phydev, MII_BMCR, BMCR_PDOWN);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	return phy_clear_bits(phydev, MII_BMCR, BMCR_PDOWN);
-> > +}
-> > +
-> >  static int kszphy_get_sset_count(struct phy_device *phydev)
-> >  {
-> >  	return ARRAY_SIZE(kszphy_hw_stats);
-> > @@ -1401,7 +1421,7 @@ static struct phy_driver ksphy_driver[] = {
-> >  	/* PHY_BASIC_FEATURES */
-> >  	.config_init	= kszphy_config_init,
-> >  	.suspend	= genphy_suspend,
-> > -	.resume		= genphy_resume,
-> > +	.resume		= ksz886x_resume,
-> 
-> Are you able to explain the relation between the call paths of
-> phy_resume() and the lifetime of the Soft Power Down setting of the
-> switch? How do we know that the PHYs are resumed after the switch has
-> exited Soft Power Down mode?
+Once you squash a fix on top of existing 1/2 , existing 2/2 will not 
+apply anymore. I am not sure what to send you. I think it would take 
+less time to remove the existing 2 patches and replace them with v5.
 
-The MII_BMCRs BMCR_PDOWN bit is mapped to the "register 29 (0x1D), bit
-[3]" for the PHY0 and to "register 45 (0x2D), bit [3]" for the PHY1.
+    Stefan
 
-I assume, I'll need to add this comments to the commit message. Or do
-you have other suggestions on how this should be implemented?
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
