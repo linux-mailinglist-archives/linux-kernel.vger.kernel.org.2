@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E7E3A2CFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77503A2D05
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhFJNa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:30:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32721 "EHLO
+        id S231149AbhFJNbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:31:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51349 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230410AbhFJNaz (ORCPT
+        by vger.kernel.org with ESMTP id S230280AbhFJNbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:30:55 -0400
+        Thu, 10 Jun 2021 09:31:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623331739;
+        s=mimecast20190719; t=1623331779;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PlqPawYArazO4EePzETjFqSxt008hDP9xscnSm3Mc0w=;
-        b=dKPIxFJ6BRoY81iV9SeeAUBLpKBJZHNpT6Q64+YZ8eJbsYqlqjiz29gSSiddlUsyJBVRnB
-        A0+V2OJacPXk/9GXfpPIeDTqd+jyGw8YZwQgxxZ8SaA/BF026BeHZbknMaTe+SmSY+Nnjy
-        2Xar5aewRylPtsL/YUloniBHsQ2YsN4=
+        bh=hUww2H6mOYMFrVyPJua5qMXJgouUiMizecBkG9cRXMQ=;
+        b=i3d9UTPk3RihOXNsIsxSn1nGRaMD6NLRnh7yOmDRNoB+54fd4TL/utDQKBe/VsT9KG7nin
+        LR7itkhQ8F9B+S19nneHjY12uUvRm9zhY7FY3WRgD/OT4VMD0ZiKENP837RDI+iayjHXSr
+        aFhfr8HFaMVrmru0WciShILMnwt2kJ8=
 Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
  [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-HgVcy08jOPOIqj91I9t1pQ-1; Thu, 10 Jun 2021 09:28:57 -0400
-X-MC-Unique: HgVcy08jOPOIqj91I9t1pQ-1
-Received: by mail-wr1-f70.google.com with SMTP id g14-20020a5d698e0000b0290117735bd4d3so886476wru.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 06:28:57 -0700 (PDT)
+ us-mta-65-Ipf5rP99MTOCnHOlY82qvw-1; Thu, 10 Jun 2021 09:29:38 -0400
+X-MC-Unique: Ipf5rP99MTOCnHOlY82qvw-1
+Received: by mail-wr1-f70.google.com with SMTP id u20-20020a0560001614b02901115c8f2d89so901489wrb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 06:29:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=PlqPawYArazO4EePzETjFqSxt008hDP9xscnSm3Mc0w=;
-        b=qLwaaVedWyZkh7bbtKdusbqlcfbmIP7jJcNAdmAAHNvw5rYVDkSgU3wWsHas847tvN
-         Q1Ovs7M7knZVE4tbMQb/7PmPVPVtT/3tgvxZ+ob6LLgAN2K76CbM6qG9kT47dHrgdH0t
-         N0Kz8+e7hoJZ7S+7WlgFcGMQaUTAYa47GOP6DLBDYJG6zHrEaFA9aIJJXs1uGGoQgiE4
-         0BOXBxMrvHm04NwoK1NTai3DxhYqfON2pkUAfS70FGjzJbpDRq8g5p0fNxdeAxJ0N/Tb
-         3Emwu+wUVMy0HqwPV2QEtMqU696Uz0BRpnWWXEbhSZ0UF+pOTwxkCj05n+O+xvRmenkz
-         nYIg==
-X-Gm-Message-State: AOAM530W5+yosxdlUy+/SVWC9xn1jk5KMqNxeZOLN1qT2eotzeFTzAfd
-        GHKSOZFCgtrYnitPSjoxK018uita/ZFs0rPm7cBgK97o9Ic94pkVb9NMaDEK7Fk+lP44or+DKrT
-        QjXQbYIX7HUD8sFZ10Jeka95+
-X-Received: by 2002:a05:6000:1889:: with SMTP id a9mr5575599wri.288.1623331736723;
-        Thu, 10 Jun 2021 06:28:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzAv1xai1qFmu7u1yp22S9GYwfnxl8Ag90DTPRjFRmef50BS0D0Bsl8/7GwaQ8GVD+a8zOcMA==
-X-Received: by 2002:a05:6000:1889:: with SMTP id a9mr5575578wri.288.1623331736489;
-        Thu, 10 Jun 2021 06:28:56 -0700 (PDT)
+        bh=hUww2H6mOYMFrVyPJua5qMXJgouUiMizecBkG9cRXMQ=;
+        b=AUlcOZfe8mw8FzzohpDN5KXD+nooveBpdzqen4O8yncuviC9V0xHcl85ZXcQKwJuI5
+         TaEso1SN5uf0qomuWsPOqssV/VS+ADxrGL0z7xOOhLE9bNk5uKy5VlFZP5omq8nxhPs/
+         iAd1CIpFMof8P5PmWgjV6pf7jXGPvn/i1Y15Lg5i7CMbmagIZcXQ7XuUpNR/9LMoOKsx
+         bY8pRExuzBmKE7rkqRoB+M58vS2lLAbzTFhsFvcyLRRWxWGMV0Jf9ACl/r9+e8opB1FG
+         IPZuKj7K0hsRms9tpH5/eDyABgn0t7peiTq00YwKIgrgzjc3z8KXRFn9W4XjTQ9xra1S
+         DH3Q==
+X-Gm-Message-State: AOAM532ILXlkp4i2P+Cyg4lEn2eEd0O/5lNTokrm67PLIf2vrgYiXD8W
+        ARQSdVquZxaNOG+rtPSzJaH6aCECxtsj/x2dzsNmed8FMOdiXjqvdQy5hugZDgsm3drf/Y4jOgQ
+        1vr1KIYqNSyZz8yUXx/WTLEWm
+X-Received: by 2002:a05:6000:154c:: with SMTP id 12mr5449701wry.126.1623331777228;
+        Thu, 10 Jun 2021 06:29:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyvjcRem46QPjln9QkPMp7aRjPQpdNLR+LC2+I4KyWl25z655aAlQqmyfSiC9AjFjCPQJB2Rw==
+X-Received: by 2002:a05:6000:154c:: with SMTP id 12mr5449675wry.126.1623331777028;
+        Thu, 10 Jun 2021 06:29:37 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id v132sm10354950wmb.14.2021.06.10.06.28.55
+        by smtp.gmail.com with ESMTPSA id m3sm3750147wrr.32.2021.06.10.06.29.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 06:28:55 -0700 (PDT)
-Subject: Re: [PATCH 0/9] KVM: x86: Fix NULL pointer #GP due to RSM bug
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
+        Thu, 10 Jun 2021 06:29:36 -0700 (PDT)
+Subject: Re: [PATCH 2/9] KVM: x86: Emulate triple fault shutdown if RSM
+ emulation fails
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
         Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         syzbot+fb0b6a7e8713aeb0319c@syzkaller.appspotmail.com
 References: <20210609185619.992058-1-seanjc@google.com>
+ <20210609185619.992058-3-seanjc@google.com>
+ <87eedayvkn.fsf@vitty.brq.redhat.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <685b11c1-54a6-3a52-8157-4a10a95251ca@redhat.com>
-Date:   Thu, 10 Jun 2021 15:28:54 +0200
+Message-ID: <61e9ec9e-d4f5-bea5-942a-21c259278094@redhat.com>
+Date:   Thu, 10 Jun 2021 15:29:35 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210609185619.992058-1-seanjc@google.com>
+In-Reply-To: <87eedayvkn.fsf@vitty.brq.redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -75,67 +78,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06/21 20:56, Sean Christopherson wrote:
-> Fix a NULL pointer dereference in gfn_to_rmap() that occurs if RSM fails,
-> reported by syzbot.
-> 
-> The immediate problem is that the MMU context's role gets out of sync
-> because KVM clears the SMM flag in the vCPU at the start of RSM emulation,
-> but only resets the MMU context if RSM succeeds.  The divergence in vCPU
-> vs. MMU role with respect to the SMM flag causes explosions if the non-SMM
-> memslots have gfn ranges that are not present in the SMM memslots, because
-> the MMU expects that the memslot for a shadow page cannot magically
-> disappear.
-> 
-> The other obvious problem is that KVM doesn't emulate triple fault on RSM
-> failure, e.g. it keeps running the vCPU in a frankenstate instead of
-> exiting to userspace.  Fixing that would squash the syzbot repro, but
-> would not fix the underlying issue because nothing prevents userspace from
-> calling KVM_RUN on a vCPU that hit shutdown (yay lack of a shutdown state).
-> But, it's easy to fix and definitely worth doing.
-> 
-> Everything after the two bug fixes is cleanup.
-> 
-> Ben Gardon has an internal patch or two that guards against the NULL
-> pointer dereference in gfn_to_rmap().  I'm planning on getting that
-> functionality posted (needs a little massaging) so that these types of
-> snafus don't crash the host (this isn't the first time I've introduced a
-> bug that broke gfn_to_rmap(), though thankfully it's the first time such
-> a bug has made it upstream, knock on wood).
-> 
-> Amusingly, adding gfn_to_rmap() NULL memslot checks might even be a
-> performance improvement.  Because gfn_to_rmap() doesn't check the memslot
-> before using it, and because the compiler can see the search_memslots()
-> returns NULL/0, gcc often/always generates dedicated (and hilarious) code
-> for NULL, e.g. this #GP was caused by an explicit load from 0:
-> 
->    48 8b 14 25 00 00 00 00	mov    0x0,%rdx
-> 
-> 
-> Sean Christopherson (9):
->    KVM: x86: Immediately reset the MMU context when the SMM flag is
->      cleared
->    KVM: x86: Emulate triple fault shutdown if RSM emulation fails
->    KVM: x86: Replace .set_hflags() with dedicated .exiting_smm() helper
->    KVM: x86: Invoke kvm_smm_changed() immediately after clearing SMM flag
->    KVM: x86: Move (most) SMM hflags modifications into kvm_smm_changed()
->    KVM: x86: Move "entering SMM" tracepoint into kvm_smm_changed()
->    KVM: x86: Rename SMM tracepoint to make it reflect reality
->    KVM: x86: Drop .post_leave_smm(), i.e. the manual post-RSM MMU reset
->    KVM: x86: Drop "pre_" from enter/leave_smm() helpers
-> 
->   arch/x86/include/asm/kvm-x86-ops.h |  4 +--
->   arch/x86/include/asm/kvm_host.h    |  4 +--
->   arch/x86/kvm/emulate.c             | 31 ++++++++++-------
->   arch/x86/kvm/kvm_emulate.h         |  7 ++--
->   arch/x86/kvm/svm/svm.c             |  8 ++---
->   arch/x86/kvm/trace.h               |  2 +-
->   arch/x86/kvm/vmx/vmx.c             |  8 ++---
->   arch/x86/kvm/x86.c                 | 53 +++++++++++++++---------------
->   8 files changed, 61 insertions(+), 56 deletions(-)
-> 
+On 10/06/21 10:26, Vitaly Kuznetsov wrote:
+> So should we actually have X86EMUL_CONTINUE when we queue
+> KVM_REQ_TRIPLE_FAULT here?
 
-Queued 2-9 too for 5.14, with Vitaly's suggested change for patch 2.
+Yes...
+
+> (Initially, my comment was supposed to be 'why don't you add
+> TRIPLE_FAULT to smm selftest?' but the above overshadows it)
+
+... and a tenth patch to add a selftest would be nice to have indeed.
 
 Paolo
 
