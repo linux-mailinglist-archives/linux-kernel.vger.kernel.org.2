@@ -2,181 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6568D3A3037
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85223A3043
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhFJQKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:10:37 -0400
-Received: from mail-eopbgr80113.outbound.protection.outlook.com ([40.107.8.113]:42247
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230166AbhFJQK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:10:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dV5o9n79T0v4OUO8/+EGtqv5k40wlD7fuf8IkfRKCjO2SHeGAyaPy+imQV7efFfKiBuZxiTkn5Iae4Vxr1bbhr0ztJAQA7Z5dAsWe24NsuzDFn+r5W7bRoaz6UEK/xh2RPQhQo8lSqteExhpMmbYPgXfJ9uvO7f9EEWOo/KH2mDrbYJcUtkbB5Im0GHLXcGnHJBoi7km4/jhnVc4f6pDmOBsB7ovfaZG0CdFHcYFP8t+cCv5/CASJSWHpXYeYPFh/kVvGd5mUNJwPT9EsOQ3NYXE4zO1YgE5mpRwjOm04ye4PS4UM0S7O0/d1B1cIOUoMOFGFJKKPW8Ov9fmOZiRAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NnS5ednMH6uQ+ILIKkfff6BrBZscg0rbdVfmhDJ6K2s=;
- b=gFRWZJtd05j9YzBf4bpnuzx8JXo5V1x7REIS/qeF8HIQZCpfilyJn3PVNqQ8Ic6Ixkbn1RXrXdWqi6x5x4SPqnIzO9aZD4B03hoNuFP+cZp8Fc2MsfCE5eABpmjYalWAwndO4wyBnQMuPPPVW+sKiVqbra6/8DcO7DOCMHxyMX1qX9ZSvi8foturQbxb01p4iOLNmSLiXCjhW0654Br0CXIMwyt39dTRnmAaKP2Pwxy4UEecY5d+62WGo/9HxdCqkHlDLrENuIZqum6zmlDyTn6S2wTNoXbzrqqWuVfzIgapsojyj1TIIV/Zk+S+X8fLknqADw10GF0y7qcX3zE7hg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NnS5ednMH6uQ+ILIKkfff6BrBZscg0rbdVfmhDJ6K2s=;
- b=fDt3RqCrFFsdZ7zcEAxCZaPCy8RaiD/5xqZ9GVmqKSTYuLRQIS28gshtCbwWCOjfmG39XoD3x/L5qj8tIaYQYOoMmCQtpC+9wGysJcICz0ieTqrGxfCzrA+92KbRUDxddVs+9pIXZS/81hfEOEfXAo8kkVAh1xJBWL6NMpD2UJQ=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0428.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:5c::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4195.27; Thu, 10 Jun 2021 16:08:31 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::e58c:4b87:f666:e53a]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::e58c:4b87:f666:e53a%6]) with mapi id 15.20.4219.023; Thu, 10 Jun 2021
- 16:08:31 +0000
-Date:   Thu, 10 Jun 2021 19:08:28 +0300
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>
-Cc:     Taras Chornyi <tchornyi@marvell.com>, linux-kernel@vger.kernel.org,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        Vadym Kochan <vkochan@marvell.com>
-Subject: Re: [PATCH v2 0/3] net: marvell: prestera: add LAG support
-Message-ID: <20210610160828.GB29315@plvision.eu>
-References: <20210610154311.23818-1-vadym.kochan@plvision.eu>
+        id S230334AbhFJQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:12:19 -0400
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:40463 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229942AbhFJQMS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 12:12:18 -0400
+Received: by mail-pf1-f181.google.com with SMTP id q25so2016017pfh.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 09:10:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kYytFf8w8lGLC87US0lF5QfRu8TkslW/v1k/xfpSpOs=;
+        b=LZLpCp2A/10kvyEMW6w1HKRsdeMviQfJVUcbSXMkP1AtgBMgVOYnqXRSkmsdUA8mcZ
+         FMo7mr++UAryE0x5Ui9QmZMTC1zfXHs//EULrvKUZGbwyP2YR2FQYn5F5fCLgbWKaamX
+         yHyc5Cg1QV/+LqFCHLDYa9jCmqag68lN1Cx390SNnW4iwsTJ9GjWFtS28DUeBqxy0hLo
+         nSFftsX+xqgwWHNrkHvSjtPn0VQIbXk7HGJjLCJS0Tq+Pvi5iwQM58Pz5A1Fqa4iuvo6
+         aOkFHow5TPeGWwhR06HKlxD+rX5UQPdAgq4kjrLXwJPX4tZTpGHd/ioa5Pz0hJ0CNd+u
+         KHcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kYytFf8w8lGLC87US0lF5QfRu8TkslW/v1k/xfpSpOs=;
+        b=n5C7O4RYWWK/TfKw/loaqnBbFtS5uZzLhyFBdivbXQeuZqwK52z7M/aWFe16tjcYeE
+         3C27O0Rka5OhVaNFrElUCZ/TKkeyca29AorIJ6euvEEre/yiII+CsrbKcBp0wfWijCR2
+         Thh8DM1XmJ2VZlG8fIyI/Ti62NJZenKgWBXRzRlh1QMWLihvQySIs3p2UOQjH2MbApcx
+         9LLR+iy2id7JPyhSOZ3LYNSFB5bZg2FlhECSGft8eYA0CJtzzD72DN0j5/vi/juYnPwS
+         3d6sw8mdhPP1pYXQQpt7RGaiRivD+BYq9Bv8KRd3BpFsUxjuKJ2mK1YJE+IW6Irzrx61
+         mQ0g==
+X-Gm-Message-State: AOAM533+4IYIdAGZkODLWkgjTtXEOZpwWxHBcwNYu/b+chru9Z/bY6Ku
+        DKpZahYXRaFM1gmINveo53k6BA==
+X-Google-Smtp-Source: ABdhPJyp5BAJz6wrSY57esY6nrOu2qG1wIdc4fufA1/o01uQxiH7eippiBBxqOZVK1vycj1+UEwdWg==
+X-Received: by 2002:a63:5148:: with SMTP id r8mr5618964pgl.283.1623341345896;
+        Thu, 10 Jun 2021 09:09:05 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id a20sm2946041pfk.145.2021.06.10.09.09.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 09:09:05 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 10:09:03 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        o.rempel@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] remoteproc: imx-rproc: Fix IMX_REMOTEPROC configuration
+Message-ID: <20210610160903.GB34238@p14s>
+References: <20210610031530.26326-1-peng.fan@oss.nxp.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210610154311.23818-1-vadym.kochan@plvision.eu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [217.20.186.93]
-X-ClientProxiedBy: AM0PR01CA0120.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:168::25) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from plvision.eu (217.20.186.93) by AM0PR01CA0120.eurprd01.prod.exchangelabs.com (2603:10a6:208:168::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend Transport; Thu, 10 Jun 2021 16:08:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 19206592-d135-4852-bacc-08d92c29fd96
-X-MS-TrafficTypeDiagnostic: HE1P190MB0428:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB0428C0D12DCE89B9055E78E095359@HE1P190MB0428.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y7E08zoH1fbRCtEp69SkcpWSG954YBzesbxOUuJEDKKXNHKCSreN9EhHApbA0p8xQW5NnzOZUASFObnG81mX9BXm/2Pg6/eR+4GrEahG5LxB6/EQj7ZxZaCVKlUdGqI0daQiLMZk48gIa9OdnYOd1IFXoPHUKPgQa1X28r/Sxj5LUfzP6ZD54FNdi1P8rtsEHoCJiUyRIUX47Agx73GKwM1UX+2E/idGskn7uHvtD3Jsd6/z4y5iuw+P6Ef4NYMbQd/Yrwvj5MmXjgY0g7TPLXRdBggs0lgrUrs4nt+alRjh0UeQJLeRX3995rCqp3tScM4nIdLeeQxcnU+GZWCW+ozcslaD2W/ev7rvz66ytuByUSm/5PfDl6mxM/qEN7VvRcwrwhKc8zjBs71X3fSEM6m+E5zLBQ21Sp++QqK3kRU7N7RvTfryIposNLRKhdecSyFWWxkTzsLRP7ZEM6kwykzHEMLFwW2zH3j+HftZRu4t4PNA4dc5R46pha2PNjukUVk1mftX4a76B4zCQgVHd22aSl+UmgG1w8UrNH9afTv0amCHUqXXJHkTis/7Q/A2e0N4zSCX826XjLxxo8004KUFR68MIx/xRZQyy258UMFZv8vdcB36u61ZN6Ip6DiDumwYk+XRfWmEC3df8dsSS6t2UMOcezAgaALFmPRmeSu5ZQnsICKqePBmVIqruDm6oF3a6lrYB3Pv65ytenNIzPeaGHjdclqNlGuTM9GCZio6ZyndR8p6tW5REk/8oZWw3e2eCKraVgu+VBaVWgvoiw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(346002)(136003)(366004)(39830400003)(376002)(110136005)(8936002)(26005)(36756003)(54906003)(8676002)(16526019)(956004)(186003)(8886007)(4326008)(44832011)(316002)(38350700002)(38100700002)(52116002)(966005)(478600001)(5660300002)(1076003)(86362001)(66946007)(66556008)(66476007)(55016002)(2616005)(33656002)(83380400001)(2906002)(7696005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?6mPBVCQ4TOIyoe/CuuRiPpYyqI1MqVITqX0I/z6zYXzUszNDHBRPFCGNlUMa?=
- =?us-ascii?Q?g9LtM3MGWx5Dg6zAIEZwz61RxfiTrBG/ipenTnldEq7lYhi0hRdWy9W1u/P6?=
- =?us-ascii?Q?pdl/G0JF/H40oizW41dn93F12fTmcvmqdOhYZupFYkOsboQSz3+Zg350I+eu?=
- =?us-ascii?Q?j+WcBhak6aRPn/O9wBlg3wVWw608Rbs3L3O5CyKyNd42YNV/KcQbBpeuTLtb?=
- =?us-ascii?Q?AB3g/N4AJgU8EXQGE235QuS1VLjYvyqQ1BSiIrCK0bEYVBhGjaEa4qSO3YQG?=
- =?us-ascii?Q?3/9ltM5EKWkVVnMSRrdxS7JdenmW2GrgRWDPZqgDBADfSOgsXT/aFZMpGrqL?=
- =?us-ascii?Q?8Wgzp1Rr24FgHseGMl841ZR2VFHjcoNGRcr9Wh9QS8gD8Fogw5anh8W9koG3?=
- =?us-ascii?Q?CvJRfKyN2RFZD0X6iybVGSOFjU9Hz3f/nMCeRooCqFZSVxt3AliSzTSKoGQc?=
- =?us-ascii?Q?xH5sER8z3U1vMAR9B/33HpVl+d4ld0nyu+F1zdMQQM2OEnpgx6jzHuiZQxl2?=
- =?us-ascii?Q?tGrvzthOuLFBHbV+Ng9ULXf4gVWh10zrWRh3ubWg9pORl63oSa3LpLXQ8vqK?=
- =?us-ascii?Q?oGDE1XOL/YUFlQ10vROwXaLAQxHLSs0kBlwA9mof1G10M7XDbhceS4pvV3UJ?=
- =?us-ascii?Q?PaQZAGko9TIKRG+N1ORCULlnS0D7uLQki9QcB4snl6fFJC7JpOZMShlbTkL2?=
- =?us-ascii?Q?zBo6EaPdyplbFftmo1Jr7dIgGna7MIz4tmijsOqqxF+DS/dZ68L1CBPrrqOa?=
- =?us-ascii?Q?oUymwBFO1DwBGSruXb8n99wp4/SO7YGbqYqAuV8r4po8GQYG3X28Kn3ERHDa?=
- =?us-ascii?Q?rnAHMFCZ2bOwyk9Sj0rLLBKC3Nu0oosLBYqLAapsNg5zyuJhPxyyU7dsjtgN?=
- =?us-ascii?Q?U1HIFdtpv1uaufDVBtZTkSH/v6QiEoeuDRA206JfjpcCtotbGPKplw3xmn1A?=
- =?us-ascii?Q?M8LWcz/C7HSqYUgyy7xBbzarfIWmVFGzp5WS4/ero/g+u0qzAkEdYySba5VN?=
- =?us-ascii?Q?/YcWrPmC0qUCofjUTpfl/KT1AT3u3lP+Lpe08MNo3v+V7IefVMaySuvDsL4E?=
- =?us-ascii?Q?qkU7UK3GE7DYZFjl7cTU9uUZ5Ugi5pjeSccJ9YdVgiQcofA6gebOGE7u7qhX?=
- =?us-ascii?Q?meMJsOClJC6u/4quQ6vzZYYeHAIqlis2lYWiI/5X9yFbcpBUsbwVFKwE8bgL?=
- =?us-ascii?Q?nAA/SecCncGKCTVU5kOhkQjyT/C8G8+H6Y2w1EK1VYMG4MkWW/GfLE4ockru?=
- =?us-ascii?Q?FMmIChxdDRzD+jeRgVTpv65EEv6gQVUWD/vBpIRxeCA6eV4aLd0dJuHLcHQR?=
- =?us-ascii?Q?F2sw9Y6z3KOOoLTu7lOiNu/R?=
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19206592-d135-4852-bacc-08d92c29fd96
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 16:08:31.0600
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qJ52z+BXBMpaZNMnHHQiYREj1veBhWLgVbqOCQf/FeMgXnuoa2wMG41YHT9uKQQLaj6zuEVRtuOUcqDMgA+R30OvGJIYZfyLQ0r6SQAUl3o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0428
+In-Reply-To: <20210610031530.26326-1-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, I did not mark it with a "net-next", will resend.
+On Thu, Jun 10, 2021 at 11:15:30AM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> When CONFIG_IMX_REMOTEPROC is y and CONFIG_HAVE_ARM_SMCCC
+> is not set, compiling errors are encountered as follows:
+> 
+> drivers/remoteproc/imx_rproc.o: in function `imx_rproc_stop':
+> imx_rproc.c:(.text+0x140): undefined reference to `__arm_smccc_smc'
+> drivers/remoteproc/imx_rproc.o: in function `imx_rproc_detect_mode':
+> imx_rproc.c:(.text+0x272): undefined reference to `__arm_smccc_smc'
+> drivers/remoteproc/imx_rproc.o: in function `imx_rproc_start':
+> imx_rproc.c:(.text+0x5e0): undefined reference to `__arm_smccc_smc'
+> 
+> __arm_smccc_smc is defined when HAVE_ARM_SMCCC is y, so
+> add dependency on HAVE_ARM_SMCCC in IMX_REMOTEPROC configuration.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-On Thu, Jun 10, 2021 at 06:43:08PM +0300, Vadym Kochan wrote:
-> From: Vadym Kochan <vkochan@marvell.com>
+Next time please add:
+
+Fixes: 79806d32d5aa ("remoteproc: imx_rproc: support i.MX8MN/P")
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
 > 
-> The following features are supported:
-> 
->     - LAG basic operations
->         - create/delete LAG
->         - add/remove a member to LAG
->         - enable/disable member in LAG
->     - LAG Bridge support
->     - LAG VLAN support
->     - LAG FDB support
-> 
-> Limitations:
-> 
->     - Only HASH lag tx type is supported
->     - The Hash parameters are not configurable. They are applied
->       during the LAG creation stage.
->     - Enslaving a port to the LAG device that already has an
->       upper device is not supported.
-> 
-> Changes extracted from:
-> 
->     https://lkml.org/lkml/2021/2/3/877
-> 
-> and marked with "v2".
-> 
-> v2:
-> 
->     There are 2 additional preparation patches which simplifies the
->     netdev topology handling.
-> 
->     1) Initialize 'lag' with NULL in prestera_lag_create()             [suggested by Vladimir Oltean]
-> 
->     2) Use -ENOSPC in prestera_lag_port_add() if max lag               [suggested by Vladimir Oltean]
->        numbers were reached.
-> 
->     3) Do not propagate netdev events to prestera_switchdev            [suggested by Vladimir Oltean]
->        but call bridge specific funcs. It simplifies the code.
-> 
->     4) Check on info->link_up in prestera_netdev_port_lower_event()    [suggested by Vladimir Oltean]
-> 
->     5) Return -EOPNOTSUPP in prestera_netdev_port_event() in case      [suggested by Vladimir Oltean]
->        LAG hashing mode is not supported.
-> 
->     6) Do not pass "lower" netdev to bridge join/leave functions.      [suggested by Vladimir Oltean]
->        It is not need as offloading settings applied on particular
->        physical port. It requires to do extra upper dev lookup
->        in case port is in the LAG which is in the bridge on vlans add/del.
-> 
-> Serhiy Boiko (1):
->   net: marvell: prestera: add LAG support
-> 
-> Vadym Kochan (2):
->   net: marvell: prestera: move netdev topology validation to
->     prestera_main
->   net: marvell: prestera: do not propagate netdev events to
->     prestera_switchdev.c
-> 
->  .../net/ethernet/marvell/prestera/prestera.h  |  30 +-
->  .../ethernet/marvell/prestera/prestera_hw.c   | 180 +++++++++++-
->  .../ethernet/marvell/prestera/prestera_hw.h   |  14 +
->  .../ethernet/marvell/prestera/prestera_main.c | 267 +++++++++++++++++-
->  .../marvell/prestera/prestera_switchdev.c     | 163 ++++++-----
->  .../marvell/prestera/prestera_switchdev.h     |   7 +-
->  6 files changed, 573 insertions(+), 88 deletions(-)
-> 
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index e68fcedc999c..9a6eedc3994a 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -26,6 +26,7 @@ config REMOTEPROC_CDEV
+>  config IMX_REMOTEPROC
+>  	tristate "i.MX remoteproc support"
+>  	depends on ARCH_MXC
+> +	depends on HAVE_ARM_SMCCC
+>  	select MAILBOX
+>  	help
+>  	  Say y here to support iMX's remote processors via the remote
 > -- 
-> 2.17.1
+> 2.30.0
 > 
