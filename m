@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C833A2F8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6943D3A2F94
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbhFJPmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbhFJPmn (ORCPT
+        id S231658AbhFJPop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:44:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4072 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231356AbhFJPom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:42:43 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF761C061760;
-        Thu, 10 Jun 2021 08:40:30 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id u11so2576863oiv.1;
-        Thu, 10 Jun 2021 08:40:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=femDuYUXuqruOqx2TsnJZ+aLFaWLNFefSVqnRCuu/Zs=;
-        b=fxoEBBlSKht7mMd03uvm8OLc9SNR1R/Xu/NJg0ug7QjPztOHliUIjc7+01lt6y1evM
-         P5lPo1Ym4BBzZ2XGqBGaX3KEWj+DvKZa3akWaMLPI+yfOyvWFBJLL8KeBqZcHYcgCyz7
-         gMzePQeAOJz1tduugd9J0liEqseBRyjHXQQFDSKWgAVBnUez4SiJ8hEly1KVf/GK9DjA
-         JnDNvLrGFala4UWZmTNbEsC8CdgOH9B5aktDhlUUNjsIZSjv9GOKHY/7IEavYnFeTDCl
-         6j6EAI3U/9xOba5GxPSjKqYnaMk+GZ5tYBAf/YsRKOemXtj2QToRLHcbaWCRpXZkjpIl
-         6s7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=femDuYUXuqruOqx2TsnJZ+aLFaWLNFefSVqnRCuu/Zs=;
-        b=rzI1FDKk2xPDk5Q8wIikrkGDPcEfXZrFRBqVS9x8VnBk5QxO27On8OpUGNB4xVcOSj
-         cveFxAyIxWnvmivwWxxI5aZmXqiCycSl2HhLszsx7IrYJVg9LSPdj7ka4v/SNEFYuC2V
-         NlCrEVEUdRATz9HssdqfIqnCnPnuJANCZqI/ro8BIgSDyaXx6SUzO+BLJGiXU/FAhEzP
-         rxQ2Qj9+mJfqFaXuTJ2C7q+3ME92QFxnHcQP68YHMbNdLy1stXWpCriRX2URuTUpwNvh
-         YladQnWmmGrjj2VvYkTThp2pSxvvP1yEhzaD02KO1WqiDkUJMkQz2YMjZscdvcieIJVw
-         6t7Q==
-X-Gm-Message-State: AOAM532IqiigupkJx97PZL/9Xa8fJb664LPoAcWGOdrQYajmNFAttMTn
-        w7CNd3EZYG+DkqdwFUYfsCg=
-X-Google-Smtp-Source: ABdhPJzzaheB698nR9MkmUxkaIRuCklDdkjZ69QhLYuQaaVqejJkkodVoeE8czWPimPsUHzbNQtjBg==
-X-Received: by 2002:aca:b906:: with SMTP id j6mr388730oif.40.1623339630351;
-        Thu, 10 Jun 2021 08:40:30 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b26sm669073otq.43.2021.06.10.08.40.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 08:40:29 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 10 Jun 2021 08:40:28 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr
-Subject: Re: [PATCH 3/3] hwmon: (tps23861) correct shunt LSB values
-Message-ID: <20210610154028.GA3859122@roeck-us.net>
-References: <20210609220728.499879-1-robert.marko@sartura.hr>
- <20210609220728.499879-3-robert.marko@sartura.hr>
+        Thu, 10 Jun 2021 11:44:42 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15AFWqd8029246;
+        Thu, 10 Jun 2021 11:42:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=HiYTFe6cLtCeeuwsccFxR5V37AhXH40ycT5J1sYOiQU=;
+ b=b0Svo2+V1B1qZwO64HVWeZ194zZ/Cr9rjrfhhHWpFtuFdlcee5sJ9Mv4xJLXeR6SH+vh
+ vr3eFcTJ3LrZKerDN+gqK72ioxb1giyI8qutxnWP+BFf5G1sA1qi9ebKFZgVH3vD8XyY
+ ooChX1blJ9XSgQhs4eRk221EAq8FNYGS3Z83GM/EnuOmBFljCTlqkfYcT2foCXm3MWJm
+ Oocziz8q3p0odry++X48fuakBpFix9q6tLd6y7/BAQrUmbyoSCJGxJKCXiWpIiBNE4Fb
+ q6bmWLXCzJOSydLexvLBNBZbSyR4VlfOfk9hyLjrwJRhW4nWhuf2K1xDdH9rE3uTVl12 lg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 393nf189ru-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 11:42:27 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15AFZwr2039081;
+        Thu, 10 Jun 2021 11:42:27 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 393nf189qt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 11:42:27 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15AFXZuk032143;
+        Thu, 10 Jun 2021 15:42:24 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 3900w8jwt8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 15:42:24 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15AFgLtH29622546
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 15:42:21 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A17C24203F;
+        Thu, 10 Jun 2021 15:42:21 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EBA4442049;
+        Thu, 10 Jun 2021 15:42:20 +0000 (GMT)
+Received: from ibm-vm.ibmuc.com (unknown [9.145.5.240])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Jun 2021 15:42:20 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, cohuck@redhat.com,
+        david@redhat.com, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: [PATCH v3 0/2] mm: add vmalloc_no_huge and use it
+Date:   Thu, 10 Jun 2021 17:42:18 +0200
+Message-Id: <20210610154220.529122-1-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609220728.499879-3-robert.marko@sartura.hr>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: dJ15_EumK2J4urMghMx0IOHKOjEmGRF0
+X-Proofpoint-ORIG-GUID: -GO27a1NJRTid1GfxKozKvRSQh4iN4Mw
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-10_10:2021-06-10,2021-06-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 priorityscore=1501 phishscore=0 suspectscore=0 bulkscore=0
+ mlxscore=0 clxscore=1011 spamscore=0 lowpriorityscore=0 mlxlogscore=588
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106100099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 12:07:28AM +0200, Robert Marko wrote:
-> Current shunt LSB values got reversed during in the
-> original driver commit.
-> 
-> So, correct the current shunt LSB values according to
-> the datasheet.
-> 
-> This caused reading slightly skewed current values.
-> 
-> Fixes: fff7b8ab2255 ("hwmon: add Texas Instruments TPS23861 driver")
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Add vmalloc_no_huge and export it, so modules can allocate memory with
+small pages.
 
-Applied.
+Use the newly added vmalloc_no_huge in KVM on s390 to get around a
+hardware limitation.
 
-Thanks,
-Guenter
+v2->v3:
+* do not export __vmalloc_node_range
+* add vmalloc_no_huge as a wrapper around __vmalloc_node_range
+* use vmalloc_no_huge instead of __vmalloc_node_range in kvm on s390x
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+
+Claudio Imbrenda (2):
+  mm/vmalloc: add vmalloc_no_huge
+  KVM: s390: fix for hugepage vmalloc
+
+ arch/s390/kvm/pv.c      |  2 +-
+ include/linux/vmalloc.h |  1 +
+ mm/vmalloc.c            | 16 ++++++++++++++++
+ 3 files changed, 18 insertions(+), 1 deletion(-)
+
+-- 
+2.31.1
+
