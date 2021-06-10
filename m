@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D703A2C01
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528A83A2C04
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhFJMy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:54:28 -0400
-Received: from m12-13.163.com ([220.181.12.13]:38468 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230130AbhFJMy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:54:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=R7rRZ
-        DJWfcFuQCiHnx+KSuleoUfxvvGlDesqMsLVoLQ=; b=mPtdElz8voi3VV6tjW0cr
-        xSM9eN0YI4LYD3DsWayu4y6NVB/T24OaHkSLWU7xNRA7ZEAuKN4DY/7Na3PgCcu8
-        efNMTLlRFmgcVPllGYQ5wsdSvuMAN8x3cVZI5CLZ2VUWnv+CJxC6JCl8MzKYIWNP
-        Nxil4eobj7HL6OBThyy3yc=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp9 (Coremail) with SMTP id DcCowAB3ebW_CsJgoBppFg--.24300S2;
-        Thu, 10 Jun 2021 20:51:12 +0800 (CST)
-From:   =?UTF-8?q?=C2=A0Zhongjun=20Tan?= <hbut_tan@163.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, shengjiu.wang@gmail.com, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Tan Zhongjun <tanzhongjun@yulong.com>
-Subject: [PATCH] ASoC:fsl_easrc:Remove superfluous error message around platform_get_irq()
-Date:   Thu, 10 Jun 2021 20:50:52 +0800
-Message-Id: <20210610125052.1280-1-hbut_tan@163.com>
-X-Mailer: git-send-email 2.30.0.windows.2
+        id S230360AbhFJMyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:54:38 -0400
+Received: from mail-ej1-f49.google.com ([209.85.218.49]:33392 "EHLO
+        mail-ej1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230212AbhFJMyf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 08:54:35 -0400
+Received: by mail-ej1-f49.google.com with SMTP id g20so44039352ejt.0;
+        Thu, 10 Jun 2021 05:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BIJBn/I6DRBXkEoZUzmiw1Hh2oOM7OAEUZCbmNimrwY=;
+        b=JkluSf/kl2F7pNpCnxbzkaVwHuZZbX004ST6XQIMXpUB48TnjcdtkwyMJF3vjfK+US
+         dCsa1LW5/u5uVXRow00lXdnBnabFjYoxv4ih3oGHdLwcYW7N+3t0VO///nBRaMPE4CQM
+         y17F3pnDnvPxrH6LrAPIZJiWTHw6yzLRGkG9q+XdGSy8RojgFDBH14Qwf1/0YGP6JfgV
+         ir1CGl09B0TG9crbxf1wpzWsS9/iGdKfXfAZqTthgRm/AfsIbHcNB3tOSzicfcQfkc49
+         YOaec5jHZNOY0VZ5bDGQg/uwbGnJzwfcCZ9ESx6gRYiB/iYHZxpQ+ZAuoXqaZ2N4hECy
+         IBFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BIJBn/I6DRBXkEoZUzmiw1Hh2oOM7OAEUZCbmNimrwY=;
+        b=b+1x3W6PYCCibglnJ+2iZDWsgbjqvNZ4baL4NG9oTltLTlotcsQ3lm0BLHBbpzcAK6
+         BxD+keSi+Y1ADjOZxF4S37DtAqpGF6/rsEveqAuto4AwHdm4BZ/GV6pC1OhmcoF+ruLY
+         o+zSdE3IL0bvSs1O+zTYDPAszwrEWRj6nVk7j+58FT4QszqrZe7sqppDcyraH4hgFdG1
+         YkMgCRx93VqydpVu+yEH9iXS3yBrKy+sfQSwh+ChhByIY+MendDSU77Xx3wKAnhOafk2
+         Fc+mlZ5nK1tH4c52bV/+t/MgImLNfApYu8DwEXbmCit7Iu+RfQwyWf7hOBGBwcbQyZbR
+         OSzw==
+X-Gm-Message-State: AOAM531gF7UOSKGA21FYzw1pMXaPFYMod49/MdCg2/cSOcgnKWuE+BfO
+        FvURuMCBrBTnsXhirDSmXR9+nrlRPvHmzC9cW3Y=
+X-Google-Smtp-Source: ABdhPJxXGCyOtIxT2sWmcCzl9YoKQTh3945/iYZzq+xMr4L07m30j9mVZpaBSttdKfgV16WQ8kEgWktAM7iiCMaEC60=
+X-Received: by 2002:a17:906:c293:: with SMTP id r19mr4417749ejz.252.1623329489454;
+ Thu, 10 Jun 2021 05:51:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowAB3ebW_CsJgoBppFg--.24300S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Jr1xCr1fKF45ur48AFWUJwb_yoWfJFX_J3
-        4UC393XFWrAFWj9ay0va12vr47WFs7CF4jvF4qkFnFv345tw45uayDJrn7uF4F9w4I93yx
-        Wa4rurWFyr15ZjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU50tC7UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: xkex3sxwdqqiywtou0bp/xtbBqBetxl75dLHjvgAEsv
+References: <CAOuPNLiRDZ9M4n3uh=i6FpHXoVEWMHpt0At8YaydrOM=LvSvdg@mail.gmail.com>
+ <295072107.94766.1623262940865.JavaMail.zimbra@nod.at>
+In-Reply-To: <295072107.94766.1623262940865.JavaMail.zimbra@nod.at>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Thu, 10 Jun 2021 18:21:18 +0530
+Message-ID: <CAOuPNLhPiVgi5Q343VP-p7vwBtA1-A5jt8Ow4_2eF4ZwsiA+eQ@mail.gmail.com>
+Subject: Re: qemu: arm: mounting ubifs using nandsim on busybox
+To:     Richard Weinberger <richard@nod.at>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tan Zhongjun <tanzhongjun@yulong.com>
+On Wed, 9 Jun 2021 at 23:52, Richard Weinberger <richard@nod.at> wrote:
+>
+> Pintu,
+>
+> ----- Urspr=C3=BCngliche Mail -----
+> > Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-blo=
+ck(31,0)
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> >
+> > If any one has used nandsim on qemu before, please let us know the exac=
+t steps.
+>
+> nandsim works as expected. It creates a new and *erased* NAND for you.
+> So you have no UBI volumes. Therfore UBIFS cannot be mounted.
+> I suggest creating a tiny initramfs that creates UBI volumes before mount=
+ing UBIFS on
+> one of the freshly created (and empty) volumes.
+>
+oh sorry I forgot to mention this.
+I am able to create and update volumes manually after booting the
+system with initramfs.
+{{{
+Creating rootfs volume:
+mknod /dev/ubi0 c 250 0
+mknod /dev/ubi0_0 c 250 1
+ubiattach /dev/ubi_ctrl -m 2
+ubimkvol /dev/ubi0 -N rootfs -m
+ubiupdatevol /dev/ubi0_0 ubifs-rootfs.img
+mount -t ubifs ubi0:rootfs ubi-root/
+}}}
 
-Clean up the check for irq.dev_err is superfluous as platform_get_irq()
-already prints an error.Remove curly braces to confirm to styling
-requirements.
+But I wanted to do all these automatically during boot time itself.
+Also I wanted to use ubinize.cfg as is from the original system and
+simulate everything using qemu and nadsim (if possible)
+So I thought it must be possible by setting some parameters in qemu such as=
+:
+mtdparts=3Dnand:,
+-device nand,chip_id=3D0x39,drive=3Dmtd0,
+-drive if=3Dmtd,file=3D./ubi-boot.img,id=3Dmtd0,
+anything else ?
 
-Signed-off-by: Tan Zhongjun <tanzhongjun@yulong.com>
----
- sound/soc/fsl/fsl_easrc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Or maybe do something at the boot time itself to load the volume image ?
+If there are some possibilities please let me know.
+With this I can use my original setup as it is and verify everything
+with different kernel versions.
 
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index b1765c7d3bcd..25747433916e 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1901,10 +1901,8 @@ static int fsl_easrc_probe(struct platform_device *pdev)
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0) {
--		dev_err(dev, "no irq for node %pOF\n", np);
-+	if (irq < 0)
- 		return irq;
--	}
- 
- 	ret = devm_request_irq(&pdev->dev, irq, fsl_easrc_isr, 0,
- 			       dev_name(dev), easrc);
--- 
-2.17.1
-
-
+Thanks,
+Pintu
