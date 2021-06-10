@@ -2,112 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4DBA3A27E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DF73A279E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbhFJJMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:12:47 -0400
-Received: from david.siemens.de ([192.35.17.14]:48416 "EHLO david.siemens.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229942AbhFJJMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:12:43 -0400
-X-Greylist: delayed 491 seconds by postgrey-1.27 at vger.kernel.org; Thu, 10 Jun 2021 05:12:42 EDT
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 15A92FRb022870
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Jun 2021 11:02:15 +0200
-Received: from md1za8fc.ad001.siemens.net ([167.87.8.208])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 15A92DK0011717;
-        Thu, 10 Jun 2021 11:02:13 +0200
-Date:   Thu, 10 Jun 2021 11:02:11 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        "Jim Quinlan" <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, <hdegoede@redhat.com>
-Subject: Re: [rfc, PATCH v1 0/7] PCI: introduce p2sb helper
-Message-ID: <20210610110211.0e239af6@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
-References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230188AbhFJJEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:04:46 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54592 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230152AbhFJJEp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 05:04:45 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8369821A32;
+        Thu, 10 Jun 2021 09:02:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623315768; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JIlSlhKtbzlXvZQYQcOTkErs4DA45C8U5DktVPXAF6M=;
+        b=qAJbJqaMcYSNa3HmvciIDvxGFjpyJQWmzcTSxQzsSQHUNarXkuDQ6xQ2YAOHGDpiI03+fr
+        1gEOfOfbXxWcpggJmelBx3yBwx+aDusKj2PAbM7Nlshz+SHpck6IHKa8BxSCvN1AE/262B
+        2EI6jZYaRSY2UVWvgUKph8ToAULdzfU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623315768;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JIlSlhKtbzlXvZQYQcOTkErs4DA45C8U5DktVPXAF6M=;
+        b=E2TP+1uoQKcoZldetoP91Q2XKCTlq3KxYzFjuhA3no6DDz273hj4WDgoZH1cqaWiyOLm0F
+        JgTKMds+3LwVxJDQ==
+Received: from localhost.localdomain (unknown [10.100.208.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 393BAA3B8B;
+        Thu, 10 Jun 2021 09:02:48 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Slaby <jslaby@suse.cz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Joe Perches <joe@perches.com>, Johan Hovold <johan@kernel.org>
+Subject: [PATCH v3 1/4] tty: make tty_get_{char,frame}_size available
+Date:   Thu, 10 Jun 2021 11:02:44 +0200
+Message-Id: <20210610090247.2593-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210505091928.22010-1-jslaby@suse.cz>
+References: <20210505091928.22010-1-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mon, 8 Mar 2021 14:20:13 +0200
-schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
+Many tty drivers contain code to compute bits count depending on termios
+cflags. So extract this code from serial core to two separate tty helper
+functions:
+* tty_get_char_size -- only size of a character, without flags,
+* tty_get_frame_size -- complete size of a frame including flags.
 
-> There are a few users and even at least one more is coming
-> that would like to utilize p2sb mechanisms like hide/unhide
-> a device from PCI configuration space.
-> 
-> Here is the series to deduplicate existing users and provide
-> a generic way for new comers.
-> 
-> It also includes a patch to enable GPIO controllers on Apollo Lake
-> when it's used with ABL bootloader w/o ACPI support.
+In the next patch, calls to these new functions replace many copies of
+this code.
 
-That bit is especially interesting. Making pinctl*lake initialize when
-ACPI IDs are missing and p2sb is hidden.
+Note that we accept only cflag as a parameter. That's because some
+callers like pch_uart_startup or sunsab_console_setup don't have at hand
+termios which we could pass around.
 
-However i have seen pinctl-broxton get confused because it was trying
-to come up twice on a system that has the ACPI entries. Once as
-"INT3452" and second as "apollolake-pinctrl". They should probably
-mutually exclude each other. And the two different names for "the
-same"? thing make it impossible to write a driver using those GPIOs.
-Unless it would try and look up both variants or not looking up with
-gpiochip.label.
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Joe Perches <joe@perches.com>
+Cc: Johan Hovold <johan@kernel.org>
+---
+[v2] simplified the code flow as suggested by Joe and Andy
+[v3] redesign to have 2 functions as suggested by Johan.
 
-I would also need that "enable GPIO w/o ACPI" for skylake. I think it
-would be generally useful if the GPIO controllers would be enabled not
-depending on ACPI, and coming up with only one "label" to build on top.
+ drivers/tty/serial/serial_core.c | 30 +++------------------
+ drivers/tty/tty_ioctl.c          | 45 ++++++++++++++++++++++++++++++++
+ include/linux/tty.h              |  3 +++
+ 3 files changed, 51 insertions(+), 27 deletions(-)
 
-regards,
-Henning
-
-> Please, comment on the approach and individual patches.
-> 
-> (Since it's cross subsystem, the PCI seems like a main one and
->  I think it makes sense to route it thru it with immutable tag
->  or branch provided for the others).
-> 
-> Andy Shevchenko (5):
->   PCI: Introduce pci_bus_*() printing macros when device is not
->     available
->   PCI: Convert __pci_read_base() to __pci_bus_read_base()
->   mfd: lpc_ich: Factor out lpc_ich_enable_spi_write()
->   mfd: lpc_ich: Switch to generic pci_p2sb_bar()
->   i2c: i801: convert to use common P2SB accessor
-> 
-> Jonathan Yong (1):
->   PCI: New Primary to Sideband (P2SB) bridge support library
-> 
-> Tan Jui Nee (1):
->   mfd: lpc_ich: Add support for pinctrl in non-ACPI system
-> 
->  drivers/i2c/busses/Kconfig    |   1 +
->  drivers/i2c/busses/i2c-i801.c |  40 +++-------
->  drivers/mfd/Kconfig           |   1 +
->  drivers/mfd/lpc_ich.c         | 135
-> +++++++++++++++++++++++++++++----- drivers/pci/Kconfig           |
-> 8 ++ drivers/pci/Makefile          |   1 +
->  drivers/pci/pci-p2sb.c        |  89 ++++++++++++++++++++++
->  drivers/pci/pci.h             |  13 +++-
->  drivers/pci/probe.c           |  81 ++++++++++----------
->  include/linux/pci-p2sb.h      |  28 +++++++
->  include/linux/pci.h           |   9 +++
->  11 files changed, 313 insertions(+), 93 deletions(-)
->  create mode 100644 drivers/pci/pci-p2sb.c
->  create mode 100644 include/linux/pci-p2sb.h
-> 
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index 642e24d6c475..69092deba11f 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -334,39 +334,15 @@ void
+ uart_update_timeout(struct uart_port *port, unsigned int cflag,
+ 		    unsigned int baud)
+ {
+-	unsigned int bits;
++	unsigned int size;
+ 
+-	/* byte size and parity */
+-	switch (cflag & CSIZE) {
+-	case CS5:
+-		bits = 7;
+-		break;
+-	case CS6:
+-		bits = 8;
+-		break;
+-	case CS7:
+-		bits = 9;
+-		break;
+-	default:
+-		bits = 10;
+-		break; /* CS8 */
+-	}
+-
+-	if (cflag & CSTOPB)
+-		bits++;
+-	if (cflag & PARENB)
+-		bits++;
+-
+-	/*
+-	 * The total number of bits to be transmitted in the fifo.
+-	 */
+-	bits = bits * port->fifosize;
++	size = tty_get_frame_size(cflag) * port->fifosize;
+ 
+ 	/*
+ 	 * Figure the timeout to send the above number of bits.
+ 	 * Add .02 seconds of slop
+ 	 */
+-	port->timeout = (HZ * bits) / baud + HZ/50;
++	port->timeout = (HZ * size) / baud + HZ/50;
+ }
+ 
+ EXPORT_SYMBOL(uart_update_timeout);
+diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
+index 75885d502749..507a25d692bb 100644
+--- a/drivers/tty/tty_ioctl.c
++++ b/drivers/tty/tty_ioctl.c
+@@ -279,6 +279,51 @@ int tty_termios_hw_change(const struct ktermios *a, const struct ktermios *b)
+ }
+ EXPORT_SYMBOL(tty_termios_hw_change);
+ 
++/**
++ *	tty_get_char_size	-	get size of a character
++ *	@cflag: termios cflag value
++ *
++ *	Get the size (in bits) of a character depending on @cflag's %CSIZE
++ *	setting.
++ */
++unsigned char tty_get_char_size(unsigned int cflag)
++{
++	switch (cflag & CSIZE) {
++	case CS5:
++		return 5;
++	case CS6:
++		return 6;
++	case CS7:
++		return 7;
++	case CS8:
++	default:
++		return 8;
++	}
++}
++EXPORT_SYMBOL_GPL(tty_get_char_size);
++
++/**
++ *	tty_get_frame_size	-	get size of a frame
++ *	@cflag: termios cflag value
++ *
++ *	Get the size (in bits) of a frame depending on @cflag's %CSIZE, %CSTOPB,
++ *	and %PARENB setting. The result is a sum of character size, start and
++ *	stop bits -- one bit each -- second stop bit (if set), and parity bit
++ *	(if set).
++ */
++unsigned char tty_get_frame_size(unsigned int cflag)
++{
++	unsigned char bits = 2 + tty_get_char_size(cflag);
++
++	if (cflag & CSTOPB)
++		bits++;
++	if (cflag & PARENB)
++		bits++;
++
++	return bits;
++}
++EXPORT_SYMBOL_GPL(tty_get_frame_size);
++
+ /**
+  *	tty_set_termios		-	update termios values
+  *	@tty: tty to update
+diff --git a/include/linux/tty.h b/include/linux/tty.h
+index 4c0c7ca1d9a4..19dc1097e09c 100644
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -495,6 +495,9 @@ static inline speed_t tty_get_baud_rate(struct tty_struct *tty)
+ 	return tty_termios_baud_rate(&tty->termios);
+ }
+ 
++unsigned char tty_get_char_size(unsigned int cflag);
++unsigned char tty_get_frame_size(unsigned int cflag);
++
+ extern void tty_termios_copy_hw(struct ktermios *new, struct ktermios *old);
+ extern int tty_termios_hw_change(const struct ktermios *a, const struct ktermios *b);
+ extern int tty_set_termios(struct tty_struct *tty, struct ktermios *kt);
+-- 
+2.32.0
 
