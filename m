@@ -2,96 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E799E3A2958
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C66D3A295C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhFJKba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 06:31:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229935AbhFJKbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 06:31:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBD7F613F5;
-        Thu, 10 Jun 2021 10:29:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623320968;
-        bh=eCzkqws2HXt/qmIfkeMv1/yKpH5J7bcLo8pRkoLVda4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iBWfIw5C5EZb6Q/Qargdb85OEILyOmxB5exVIgkN+8UFEZj2JoWUNZW6DzDbNjx/Q
-         UrpiQQEbjPag52v6v80agUfupKvRrRf3moblDfd5VL6YpQCzovhkhEoHaCh2kt4erc
-         9wvXiEECoXKI3G9mCFa53Epm8MVn8lthngh5sJm4qglWtNdoX/w7CVlrpZPaaGxO+9
-         qrPxAhzHfNMyFSUkl5hCRSVPuEkXhINdMsmrMPnAmgbueK8Bt7OOiSUMoOmeBs9igL
-         +KMSzd+HJi2H+ybvtFFYS69GJbmgn/bn3cCVtphKbeWdlGiuIXlfkV7m0SCSXBuKem
-         am0k3K+RU0jSQ==
-Date:   Thu, 10 Jun 2021 19:29:26 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Subject: Re: [PATCH] tools/perf probe: Print a hint if adding a probe fails
-Message-Id: <20210610192926.6f7b606f1fefd285b3907cd5@kernel.org>
-In-Reply-To: <20210610094442.1602714-1-naveen.n.rao@linux.vnet.ibm.com>
-References: <20210610094442.1602714-1-naveen.n.rao@linux.vnet.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230146AbhFJKcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 06:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229935AbhFJKcM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 06:32:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16928C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 03:30:15 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lrHwq-0003px-Ap; Thu, 10 Jun 2021 12:30:04 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lrHwp-0002SC-Ru; Thu, 10 Jun 2021 12:30:03 +0200
+Date:   Thu, 10 Jun 2021 12:30:03 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: Re: [PATCH net-next v3 3/9] net: phy: micrel: use consistent
+ indention after define
+Message-ID: <20210610103003.n5jgeppvf4aod5hw@pengutronix.de>
+References: <20210526043037.9830-1-o.rempel@pengutronix.de>
+ <20210526043037.9830-4-o.rempel@pengutronix.de>
+ <20210526222448.zjpw3olck75332px@skbuf>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210526222448.zjpw3olck75332px@skbuf>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 12:27:39 up 190 days, 34 min, 40 users,  load average: 0.01, 0.03,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naveen,
-
-On Thu, 10 Jun 2021 15:14:42 +0530
-"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
-
-> Adding a probe can fail in a few scenarios. perf already checks for the
-> address in the kprobe blacklist. However, the address could still be a
-> jump label, or have a BUG_ON(). In such cases, it isn't always evident
-> why adding the probe failed. Add a hint so that the user knows how to
-> proceed.
+On Thu, May 27, 2021 at 01:24:48AM +0300, Vladimir Oltean wrote:
+> On Wed, May 26, 2021 at 06:30:31AM +0200, Oleksij Rempel wrote:
+> > This patch changes the indention to one space between "#define" and the
 > 
-
-Thanks for the report.
-
-Since now there is <tracefs>/error_log, if you see any errors in registering
-probe-events, perf probe should dump the error_log for the hint message.
-Also, kprobes should return the correct different error code for each
-errors.
-
-Thank you,
-
-> Reported-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> ---
->  tools/perf/builtin-probe.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> indention
+> /ɪnˈdɛnʃ(ə)n/
+> noun
+> noun: indention; plural noun: indentions
 > 
-> diff --git a/tools/perf/builtin-probe.c b/tools/perf/builtin-probe.c
-> index 6b150756677014..ff9f3fdce600dd 100644
-> --- a/tools/perf/builtin-probe.c
-> +++ b/tools/perf/builtin-probe.c
-> @@ -352,8 +352,11 @@ static int perf_add_probe_events(struct perf_probe_event *pevs, int npevs)
->  	}
->  
->  	ret = apply_perf_probe_events(pevs, npevs);
-> -	if (ret < 0)
-> +	if (ret < 0) {
-> +		pr_info("Hint: Check dmesg to understand reason for probe failure.\n"
-> +			"      Consider probing at the next/previous instruction.\n");
->  		goto out_cleanup;
-> +	}
->  
->  	for (i = k = 0; i < npevs; i++)
->  		k += pevs[i].ntevs;
+>     archaic term for indentation.
 > 
-> base-commit: 0808b3d5b7514dc856178dbc509929329bbf301d
-> -- 
-> 2.31.1
+> Interesting, I learned something new.
 > 
+> Also, technically it's alignment not indentation.
 
+ok, changed :)
 
+> > macro.
+> > 
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > ---
+> >  drivers/net/phy/micrel.c | 24 ++++++++++++------------
+> >  1 file changed, 12 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+> > index a14a00328fa3..227d88db7d27 100644
+> > --- a/drivers/net/phy/micrel.c
+> > +++ b/drivers/net/phy/micrel.c
+> > @@ -38,15 +38,15 @@
+> >  
+> >  /* general Interrupt control/status reg in vendor specific block. */
+> >  #define MII_KSZPHY_INTCS			0x1B
+> > -#define	KSZPHY_INTCS_JABBER			BIT(15)
+> > -#define	KSZPHY_INTCS_RECEIVE_ERR		BIT(14)
+> > -#define	KSZPHY_INTCS_PAGE_RECEIVE		BIT(13)
+> > -#define	KSZPHY_INTCS_PARELLEL			BIT(12)
+> > -#define	KSZPHY_INTCS_LINK_PARTNER_ACK		BIT(11)
+> > -#define	KSZPHY_INTCS_LINK_DOWN			BIT(10)
+> > -#define	KSZPHY_INTCS_REMOTE_FAULT		BIT(9)
+> > -#define	KSZPHY_INTCS_LINK_UP			BIT(8)
+> > -#define	KSZPHY_INTCS_ALL			(KSZPHY_INTCS_LINK_UP |\
+> > +#define KSZPHY_INTCS_JABBER			BIT(15)
+> > +#define KSZPHY_INTCS_RECEIVE_ERR		BIT(14)
+> > +#define KSZPHY_INTCS_PAGE_RECEIVE		BIT(13)
+> > +#define KSZPHY_INTCS_PARELLEL			BIT(12)
+> > +#define KSZPHY_INTCS_LINK_PARTNER_ACK		BIT(11)
+> > +#define KSZPHY_INTCS_LINK_DOWN			BIT(10)
+> > +#define KSZPHY_INTCS_REMOTE_FAULT		BIT(9)
+> > +#define KSZPHY_INTCS_LINK_UP			BIT(8)
+> > +#define KSZPHY_INTCS_ALL			(KSZPHY_INTCS_LINK_UP |\
+> >  						KSZPHY_INTCS_LINK_DOWN)
+> >  #define	KSZPHY_INTCS_LINK_DOWN_STATUS		BIT(2)
+> >  #define	KSZPHY_INTCS_LINK_UP_STATUS		BIT(0)
+> 
+> You left these aligned using tabs.
+
+done.
+
+> > @@ -54,11 +54,11 @@
+> >  						 KSZPHY_INTCS_LINK_UP_STATUS)
+> >  
+> >  /* PHY Control 1 */
+> > -#define	MII_KSZPHY_CTRL_1			0x1e
+> > +#define MII_KSZPHY_CTRL_1			0x1e
+> >  
+> >  /* PHY Control 2 / PHY Control (if no PHY Control 1) */
+> > -#define	MII_KSZPHY_CTRL_2			0x1f
+> > -#define	MII_KSZPHY_CTRL				MII_KSZPHY_CTRL_2
+> > +#define MII_KSZPHY_CTRL_2			0x1f
+> > +#define MII_KSZPHY_CTRL				MII_KSZPHY_CTRL_2
+> >  /* bitmap of PHY register to set interrupt mode */
+> >  #define KSZPHY_CTRL_INT_ACTIVE_HIGH		BIT(9)
+> >  #define KSZPHY_RMII_REF_CLK_SEL			BIT(7)
+> > -- 
+> > 2.29.2
+> > 
+> 
+> And the last column of these macros at the end is aligned with spaces
+> unlike everything else:
+> 
+> /* Write/read to/from extended registers */
+> #define MII_KSZPHY_EXTREG                       0x0b
+> #define KSZPHY_EXTREG_WRITE                     0x8000
+> 
+> #define MII_KSZPHY_EXTREG_WRITE                 0x0c
+> #define MII_KSZPHY_EXTREG_READ                  0x0d
+> 
+> /* Extended registers */
+> #define MII_KSZPHY_CLK_CONTROL_PAD_SKEW         0x104
+> #define MII_KSZPHY_RX_DATA_PAD_SKEW             0x105
+> #define MII_KSZPHY_TX_DATA_PAD_SKEW             0x106
+> 
+> I guess if you're going to send this patch you might as well refactor it all.
+
+Ok, done.
+
+Regards,
+Oleksij
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
