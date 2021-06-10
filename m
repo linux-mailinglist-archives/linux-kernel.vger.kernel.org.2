@@ -2,76 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428493A2670
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B183A2675
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhFJIVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:21:18 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3937 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhFJIVQ (ORCPT
+        id S230154AbhFJIWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 04:22:42 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:49173 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhFJIWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:21:16 -0400
-Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0xdB6w0Cz6xDF;
-        Thu, 10 Jun 2021 16:16:14 +0800 (CST)
-Received: from huawei.com (10.67.174.47) by dggeme758-chm.china.huawei.com
- (10.3.19.104) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 10
- Jun 2021 16:19:19 +0800
-From:   He Ying <heying24@huawei.com>
-To:     <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
-        <Xinhui.Pan@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <airlied@redhat.com>, <bskeggs@redhat.com>,
-        <matthew.auld@intel.com>, <Ramesh.Errabolu@amd.com>,
-        <mchehab+huawei@kernel.org>, <Dennis.Li@amd.com>,
-        <funfunctor@folklore1984.net>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, <heying24@huawei.com>
-Subject: [PATCH -next] drm/amdgpu: Use DIV_ROUND_UP_ULL instead of DIV_ROUND_UP
-Date:   Thu, 10 Jun 2021 04:20:05 -0400
-Message-ID: <20210610082005.86876-1-heying24@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 10 Jun 2021 04:22:41 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id C976720008;
+        Thu, 10 Jun 2021 08:20:40 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Michal Simek <monstr@monstr.eu>,
+        Naga Sureshkumar Relli <nagasure@xilinx.com>,
+        Amit Kumar Mahapatra <akumarma@xilinx.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, helmut.grohne@intenta.de,
+        Srinivas Goud <sgoud@xilinx.com>,
+        Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v23 00/18] ARM Primecell PL35x support
+Date:   Thu, 10 Jun 2021 10:20:22 +0200
+Message-Id: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.47]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme758-chm.china.huawei.com (10.3.19.104)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling the kernel for MIPS with CONFIG_DRM_AMDGPU = y, errors are
-encountered as follows:
+Hello,
 
-drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.o: In function `amdgpu_vram_mgr_new':
-amdgpu_vram_mgr.c:(.text+0x740): undefined reference to `__udivdi3'
+I am taking over Naga's series, here are the major changes:
+* Cleaning of the SMC bus binding file (and yaml conversion)
+* Superficial cleaning and great simplification of the SMC bus driver
+* Addition of a yaml file describing the NAND controller
+* Full rework of the NAND controller driver. JFFS2 and UBIFS not tested
+  yet, only bare test tools have been used to proove basic correctness
+  of the helpers.
+* Addition of a couple of MAINTAINERS entries.
 
-Making a 64 bit division by a/b (a is uint64_t) is not supported by default
-in linux kernel space. Instead, using do_div is OK for this situation. For
-this problem, using DIV_ROUND_UP_ULL instead of DIV_ROUND_UP is better.
+A Github branch named pl353 is available on my repository:
+https://github.com/miquelraynal/linux/
 
-Fixes: 6a7f76e70fac ("drm/amdgpu: add VRAM manager v2")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: He Ying <heying24@huawei.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Miquèl
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-index 9a6df02477ce..436ec246a7da 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-@@ -407,7 +407,7 @@ static int amdgpu_vram_mgr_new(struct ttm_resource_manager *man,
- #endif
- 		pages_per_node = max_t(uint32_t, pages_per_node,
- 				       tbo->page_alignment);
--		num_nodes = DIV_ROUND_UP(PFN_UP(mem_bytes), pages_per_node);
-+		num_nodes = DIV_ROUND_UP_ULL(PFN_UP(mem_bytes), pages_per_node);
- 	}
- 
- 	node = kvmalloc(struct_size(node, mm_nodes, num_nodes),
+Changes in v23:
+- Collected Naga Acked-by's.
+- Used const instead of single enum entries in the bindings.
+- Dropped the address-cells/size-cells superfluous definitions out of
+  the NAND controller binding.
+- Enhanced the SMC reg property description to mention that the various
+  CS are described in the ranges property.
+- Fixed the SMC child nodes regex to match Rob's requirements.
+
+Changes in v22:
+- Misc typo fixes.
+- Light rewording of a few commit titles.
+- Not forgetting to Cc: Rob and Krzysztof this time...
+
+Changes in v21:
+- Added Rob's Acked-by/Reviewed-by tags.
+- Addressed all comments from Rob and Michael about the bindings.
+- Tested both JFFS2 and UBIFS with simple file I/O.
+
+Miquel Raynal (18):
+  dt-binding: memory: pl353-smc: Rephrase the binding
+  dt-binding: memory: pl353-smc: Document the range property
+  dt-binding: memory: pl353-smc: Drop the partitioning section
+  dt-binding: memory: pl353-smc: Describe the child reg property
+  dt-binding: memory: pl353-smc: Fix the example syntax and style
+  dt-binding: memory: pl353-smc: Drop unsupported nodes from the example
+  dt-binding: memory: pl353-smc: Fix the NAND controller node in the
+    example
+  dt-binding: memory: pl353-smc: Enhance the description of the reg
+    property
+  dt-binding: memory: pl353-smc: Convert to yaml
+  memory: pl353-smc: Fix style
+  memory: pl353-smc: Rename goto labels
+  memory: pl353-smc: Let lower level controller drivers handle inits
+  memory: pl353-smc: Avoid useless acronyms in descriptions
+  memory: pl353-smc: Declare variables following a reverse christmas
+    tree order
+  MAINTAINERS: Add PL353 SMC entry
+  MAINTAINERS: Add PL353 NAND controller entry
+  dt-bindings: mtd: pl353-nand: Describe this hardware controller
+  mtd: rawnand: pl353: Add support for the ARM PL353 SMC NAND controller
+
+ .../memory-controllers/arm,pl353-smc.yaml     |  131 ++
+ .../bindings/memory-controllers/pl353-smc.txt |   47 -
+ .../bindings/mtd/arm,pl353-nand-r2p1.yaml     |   53 +
+ MAINTAINERS                                   |   16 +
+ drivers/memory/pl353-smc.c                    |  314 +----
+ drivers/mtd/nand/raw/Kconfig                  |    8 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ drivers/mtd/nand/raw/pl35x-nand-controller.c  | 1194 +++++++++++++++++
+ include/linux/pl353-smc.h                     |   30 -
+ 9 files changed, 1413 insertions(+), 381 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+ create mode 100644 drivers/mtd/nand/raw/pl35x-nand-controller.c
+ delete mode 100644 include/linux/pl353-smc.h
+
 -- 
-2.17.1
+2.27.0
 
