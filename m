@@ -2,64 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3193A3A2453
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542DA3A245A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbhFJGQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:16:36 -0400
-Received: from ni.piap.pl ([195.187.100.5]:59880 "EHLO ni.piap.pl"
+        id S229914AbhFJGVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:21:31 -0400
+Received: from m12-14.163.com ([220.181.12.14]:34099 "EHLO m12-14.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhFJGQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:16:34 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ni.piap.pl (Postfix) with ESMTPSA id 8D15E443166;
-        Thu, 10 Jun 2021 08:14:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 8D15E443166
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1623305674; bh=xrBsq3MH+xFTU3NQYMsHqFUPF2E/FqDBLg+Y3x9Dmfo=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=ZpA6oJ78T/8xf/1afo0ZvqWE9l0l7HpqvV+EkhqbtcU7NXXQnaXGxIaHGT1iScW2A
-         /tbCwvPMvsEOt2tWef4eBEDB3Sa/eq7U2VxyMpeYhAiB9dlzZDRDwKgAbT4vuIc0rm
-         ELgiCKR9REdujEEcZEzBmoiDZ4iSOPtHj32H7hxY=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESENT] MEDIA CODA: Fix NULL ptr dereference in the
- encoder.
-References: <m3k0n6gciy.fsf@t19.piap.pl>
-        <7ff9ab255bc95ae7400b77bef6e0a2949858f04c.camel@pengutronix.de>
-Sender: khalasa@piap.pl
-Date:   Thu, 10 Jun 2021 08:14:34 +0200
-In-Reply-To: <7ff9ab255bc95ae7400b77bef6e0a2949858f04c.camel@pengutronix.de>
-        (Philipp Zabel's message of "Tue, 08 Jun 2021 11:55:03 +0200")
-Message-ID: <m34ke68cvp.fsf@t19.piap.pl>
+        id S229634AbhFJGVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 02:21:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=xhzqc
+        qyX7DowfdZyA5ftUwBoLpefEUNOStWWIOhwbL0=; b=pnPuqOQO7N5kCGW2NsmsZ
+        26vQ74Ec4AM2foplE4cWBEJ/0GGP0ghEi0wOpipJxOWSP0O+lJErqrz5BxiXrgcN
+        gf1vAIaj6XsvNFyO/cKBjj1rEv73eC1j0GyGUi3eddyo7v5/Y1Dnzyhq0K+/6Pph
+        lj03Fby226gP4Ooupx+7oU=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp10 (Coremail) with SMTP id DsCowAD3PmPQrsFgbKfaNw--.3761S2;
+        Thu, 10 Jun 2021 14:18:58 +0800 (CST)
+From:   13145886936@163.com
+To:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] tipc: socket.c: fix the use of copular verb
+Date:   Wed,  9 Jun 2021 23:18:53 -0700
+Message-Id: <20210610061853.38137-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 4
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DsCowAD3PmPQrsFgbKfaNw--.3761S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7GryDCFW5Gry5GF4rCw4fAFb_yoWfGFb_Ww
+        1UGF4kXrW8Cw4S9a4Uur4DXF4Iy3Wj9F4I9w13tFy3C3sYyFWvk3ykArs5Jry3Kr4UC3yU
+        C3y8t3Z3Aw47ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5O0eJUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiQhOtg1aD-NN8+QAAsA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+From: gushengxian <gushengxian@yulong.com>
 
-> I don't think this is required though.
+Fix the use of copular verb.
 
-and
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ net/tipc/socket.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> This is already fixed by [1] in media-tree/master.
+diff --git a/net/tipc/socket.c b/net/tipc/socket.c
+index 575a0238deb2..34a97ea36cc8 100644
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -662,7 +662,7 @@ static int tipc_release(struct socket *sock)
+  * @skaddr: socket address describing name(s) and desired operation
+  * @alen: size of socket address data structure
+  *
+- * Name and name sequence binding is indicated using a positive scope value;
++ * Name and name sequence binding are indicated using a positive scope value;
+  * a negative scope value unbinds the specified name.  Specifying no name
+  * (i.e. a socket address length of 0) unbinds all names from the socket.
+  *
+-- 
+2.25.1
 
-Ok, thanks, sorry for the noise.
---=20
-Krzysztof Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
