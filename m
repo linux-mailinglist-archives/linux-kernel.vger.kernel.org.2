@@ -2,75 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A03F3A2E6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F973A2E6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhFJOl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:41:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231213AbhFJOl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:41:26 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B510613E3;
-        Thu, 10 Jun 2021 14:39:29 +0000 (UTC)
-Date:   Thu, 10 Jun 2021 10:39:27 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        id S231523AbhFJOoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:44:07 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:47009 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231363AbhFJOoF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:44:05 -0400
+Received: by mail-lj1-f175.google.com with SMTP id e11so5191334ljn.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w7cTvg5Z5DJncBADLZGV4GDgWHVz8pNe7eJCnwA2Y4w=;
+        b=Sbl2yvQUGTLCRqNr7A7e3HSsB4T7oT+UNZaOMFGYW9IeV5Q1mrrr5PdYhLn0DOBG1j
+         K6cmTkS2nHIKAkwZJpBZY3NxpHMu55gi2tKnJo171jEhARmkO+KetdOR4siznZQM4BO7
+         O+RyuIb9vkHPboAuhp2E9f6WWjAZUHssAk8wtbdEBndRDNTMvLohmI3C9i07cgRTvKlG
+         SPmgTMHQjDLjQjfBCzuKFlmhZNwE3CC1a73mGgoc3+QgFjq0ossmZa94pPLJz5EkFaUn
+         F5mZ0VfUsg4YJF3Q4OF1KS7F6VjEAah2OrBnOIxO0sWZQYjOQkZY+l0FaTD+sfkVsLBP
+         EvbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w7cTvg5Z5DJncBADLZGV4GDgWHVz8pNe7eJCnwA2Y4w=;
+        b=SEQtXTaTJjXIjuzhRmn66nVy1pzv4Co+SgGZV4saEZtYwEUJPbVqAK5GL+VhvKxU/R
+         2tvKxGymu7isAa3gPIJ/0LRGSxMb6ou+PFREfLq2Al/Vq2RanHI0IjJNqx0ZZjbzCIh0
+         /nCeWc6VkPliTJxV1Bi7RLR88bRjjSSDtMyeNCLwUEE/lOT+xtjxz9zUKIZ8X7qa9Qgm
+         GoUmOWPt/IKTFTkXhcH9mHZuPqN9JBFwYKVMDa0fHGeXirWTFGRgMiiHlTwHb9DppsOD
+         XT858PeNp+yVnn919r/9IhzjwwUeNMszRV77ZqL1cL+kGxEMEtG8cxwrTpooihH8WU8f
+         HxwQ==
+X-Gm-Message-State: AOAM532bqpdYIyOZn8IJ/nqtJq/7Y7ClJ+6ppXcUn9Iy0Oz42tBRgGYn
+        lKck1c7wzBcri1TMc7rpixeslQ==
+X-Google-Smtp-Source: ABdhPJwkvqkG+K7UUvzBQgdj1nJptVRu+DidcKEuTCIirE4w+o41jZxDFpamrNMzF2tID9M4yQNL3A==
+X-Received: by 2002:a2e:9a4c:: with SMTP id k12mr2533207ljj.172.1623336056416;
+        Thu, 10 Jun 2021 07:40:56 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id i17sm317035lfe.31.2021.06.10.07.40.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 07:40:55 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id EE9211027EE; Thu, 10 Jun 2021 17:41:11 +0300 (+03)
+Date:   Thu, 10 Jun 2021 17:41:11 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-users@vger.kernel.org,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>, eranian@google.com
-Subject: Re: [RFC PATCH] libtraceevent: Increase libtraceevent logging when
- verbose
-Message-ID: <20210610103927.44462e35@oasis.local.home>
-In-Reply-To: <20210610060643.595673-1-irogers@google.com>
-References: <20210610060643.595673-1-irogers@google.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v1 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <20210610144111.lfqs43xweiaogdic@box.shutemov.name>
+References: <20210602022136.2186759-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210602022136.2186759-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YMIFVh9WpDiUuRsa@zn.tnic>
+ <20210610142943.uohw6nzpip5yi4no@box.shutemov.name>
+ <YMIjRC7dD4als88Z@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMIjRC7dD4als88Z@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  9 Jun 2021 23:06:43 -0700
-Ian Rogers <irogers@google.com> wrote:
+On Thu, Jun 10, 2021 at 04:35:48PM +0200, Borislav Petkov wrote:
+> On Thu, Jun 10, 2021 at 05:29:43PM +0300, Kirill A. Shutemov wrote:
+> > No, "tdx" is host feature. It is part TDX host enabling. This feature
+> > indicates that kernel runs within TDX guest and named accordingly.
+> 
+> So there will be X86_FEATURE_TDX_GUEST and X86_FEATURE_TDX, latter to
+> mean TDX host functionality?
+> 
+> Are those patches somewhere public for me to see?
 
-> libtraceevent has added more levels of debug printout and with changes
-> like:
-> https://lore.kernel.org/linux-trace-devel/20210507095022.1079364-3-tz.stoyanov@gmail.com
-> previously generated output like "registering plugin" is no longer
-> displayed. This change makes it so that if perf's verbose debug output
-> is enabled then the debug and info libtraceevent messages can be
-> displayed.
-> As this API isn't present in the deprecated tools version of
-> libtracevent I'm uploading this as an RFC.
+Yes. You are on CC:
 
-Thanks Ian,
+http://lore.kernel.org/r/9a74fb153bc21dc5cac46e84913b88182f216d1b.1605232743.git.isaku.yamahata@intel.com
 
-We need to start porting perf to using the upstream libtraceevent
-library. I think the best way to do that is what we did with trace-cmd.
-That is to have the make files check if the minimum version of
-libtraceevent is installed, and if so, use that instead of the local
-version. If it is not installed, produce a message encouraging the
-developer to install the upstream libtraceevent and warn that it will
-be using a deprecated older versino, then build the deprecated local
-version. After some time, we could simply remove it and make it a
-dependency, but I want to do that when all the main distros being used
-have it.
-
-Currently its in the latest Debian, Ubuntu, and Fedora. I also believe
-its in SUSE but have not checked. It's in Fedora 34, but it doesn't
-appear to be in Fedora 33. As that's not too old, I don't think we
-should make it a dependency as of yet.
-
--- Steve
+-- 
+ Kirill A. Shutemov
