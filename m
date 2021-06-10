@@ -2,117 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E583A25D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9352B3A25D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhFJHws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:52:48 -0400
-Received: from mail-lj1-f171.google.com ([209.85.208.171]:43563 "EHLO
-        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhFJHwr (ORCPT
+        id S230117AbhFJHxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:53:18 -0400
+Received: from mail-lf1-f48.google.com ([209.85.167.48]:33574 "EHLO
+        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhFJHxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:52:47 -0400
-Received: by mail-lj1-f171.google.com with SMTP id r14so3511155ljd.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:50:51 -0700 (PDT)
+        Thu, 10 Jun 2021 03:53:17 -0400
+Received: by mail-lf1-f48.google.com with SMTP id bp38so1771171lfb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:51:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9U6TcdGqm3u7Y2Gu0vtl5OMZBJyJdaAvj/22UF0aYUY=;
-        b=m6h2sCmVnvQGmh62QuSQtgdkFEfB2vCjhZyS/lQSoaS1c1pBGTdiOrA5UOKHG7s+Sw
-         z8vR75Zkxz1UnCNTBSlFmL9+m09W4aGfLenkDWyhatb9ZLrEWNpEqAuIqI7CAqckZWmW
-         xSIlS6ZsP7xRrE5/aacBrCjBsI2Lvtc49J8Xwe0zo5wq8l9plYmELtoYbsjTrBgEx2yV
-         ZwzIiQ/hfz4V9xt5nGRPtyw7bbAG/9Ft+KJNSgCox42XMvFg1SW++nTWQCo2IG06IoAV
-         JEuZF0zqmWC0rcoKKCG+mGzMIBk4YLRQasqjVNoD1zgEZwZads2frxgD87USr0u5m88I
-         S+mQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BV0mX6VHU5X8dHAexL1PQHyIj2OEzudYmOcUzeY2MX4=;
+        b=AdvT/igYobAKGf9/uDLDpNApWa3Pq6oV7rSkMR3xAYpt3CF1g7hBOIQXtIQnQnfLcg
+         V9MCCOKKAbHgP6RiOfevPWvrGybrM0Uisq1KLDzOUrRYmAiMGJf4xjX8wG0zGPaKrC2H
+         YtjNivLvnvqdYnnpF5TPK9UmUlmTSguPrDj30cheFYhIeKrdcGvDUn0VHt1DjPqlyISP
+         wivifzrYIDWZN+HQJegNQQgvR6Yf9NxaB2YBqkfqwbHZjfXWNuu+wZQ120m3N83COajN
+         pMoqB3XHUVSNPnWkV8KMdiR6S4l1UuE99hUPw9UX7pd7CLJj6lSgNilo0vQ6pn76sXTS
+         eiGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9U6TcdGqm3u7Y2Gu0vtl5OMZBJyJdaAvj/22UF0aYUY=;
-        b=Q7+ELnHqPJPQIcrmNGpnv1y954XHAA+HQrhYAf3PnO7FZeKPpJGdj3MjRkDagYiIw2
-         DuE9bRBp95bpCe2PIJnQhY4U2veUaljN80HBohTjvrDTUsJP4WALXWRya/SncQQ3k8Rn
-         s9jMTc0rADnLf2FmTdvuqAd9roTnhZ9brhYBFZUYuvgExy6BsKjMhzvPM+vTLH1dMTtX
-         ZNLQis6pqpoo+S6xBnngwRfYvGc7vL+QGk0P1n2SZ6Tga+5TAP9LrXvmzSy0mWgMUpEA
-         9YIuQn0aBdxgIWpLqOEhKPmJ1ox1aUZnSeRs1Cm5+qxQau8NUhA3cLj5hKpqB2zJpx/T
-         lbjQ==
-X-Gm-Message-State: AOAM530TSSzpIEzfO21UVs7sEdNVICHGORGVgFtic2IlyoroAH1vowVF
-        F2Giyn7DOmFWcOK7W4QkuO77Zg==
-X-Google-Smtp-Source: ABdhPJw+LWHmePKtC4iF5BWtQ+R4/B9mNUcolpBZmJXquUlETwTjG1GUUJVdPdt3rnw/U2h9mcjuvg==
-X-Received: by 2002:a2e:6c12:: with SMTP id h18mr1189990ljc.125.1623311390816;
-        Thu, 10 Jun 2021 00:49:50 -0700 (PDT)
-Received: from jade (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
-        by smtp.gmail.com with ESMTPSA id b2sm220213lfo.221.2021.06.10.00.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 00:49:50 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 09:49:48 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Sumit Garg <sumit.garg@linaro.org>, Rijo-john.Thomas@amd.com,
-        Allen Pais <apais@linux.microsoft.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        op-tee@lists.trustedfirmware.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 5/7] tee: Support shm registration without dma-buf
- backing
-Message-ID: <20210610074948.GC2753553@jade>
-References: <20210609002326.210024-1-tyhicks@linux.microsoft.com>
- <20210609002326.210024-6-tyhicks@linux.microsoft.com>
- <CAFA6WYOZC0iHzZm6pOxz31eW_=8g2wyJdm4wiOGKggO6-a9MdA@mail.gmail.com>
- <20210609054621.GB4910@sequoia>
- <CAFA6WYOYt2vcQ4ng=Nwu2R7d6=R=DGXQKpQ-+UiENerEtQRKWg@mail.gmail.com>
- <20210609121533.GA2267052@jade>
- <20210609134225.GC4910@sequoia>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BV0mX6VHU5X8dHAexL1PQHyIj2OEzudYmOcUzeY2MX4=;
+        b=jePQK9mdk2hjh0bREGhpP+M+GVR89i8K8KT5SzXac5qWTKwJw8ICmwUWIW+XVJnhIh
+         6ol8UpoKF7H5FeRjxlgeQMKqoJFARBHkDSyx+kS2j0JGLP14LAmF4o+cHXULhp+ny5++
+         Gju5nfS8aQdSxQUNol+/UrslI26EfibR2xVOoei5ay0eoBx00WcAKztlly1Em04ybHgS
+         bKyuQZP38Z6vNzasZ0JH+WQypW3VNcUe6dHenvFdKwnv54ysYKMj1rpa0WQ5GjqoEQjR
+         G4t8wqgSywxupHvuofEoRH1cZrfblPaGFXZV2kgUXSPYThse8gb/Gavpa7FCDCVtmF3s
+         762w==
+X-Gm-Message-State: AOAM533I1qiW5gnObkCMFHcH4vCkTFa0zhmt+FacLV18zT/SksV6bnr0
+        ZDwgLuz4g3X6iuhE8oYqsg/vOh4nFfrVWzOkH657iA==
+X-Google-Smtp-Source: ABdhPJwXgej17X2Hq45GoFUg6Fkxs282tt7kcgRz+7nJDajhBBMWhiNOQrCm3BSAzecuEcF6CuKi3ff9MxykHNNR6SE=
+X-Received: by 2002:a05:6512:20c9:: with SMTP id u9mr1074510lfr.291.1623311420585;
+ Thu, 10 Jun 2021 00:50:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210609134225.GC4910@sequoia>
+References: <20210608102547.4880-1-steven_lee@aspeedtech.com>
+ <CACRpkdZOStr+K9U9QTkAcsk4NxuSqBRVv_-9_VkGJbT69iSxmQ@mail.gmail.com> <20210610022416.GA27188@aspeedtech.com>
+In-Reply-To: <20210610022416.GA27188@aspeedtech.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 10 Jun 2021 09:50:09 +0200
+Message-ID: <CACRpkda60eB6i2+2MQFyhqYn4Q0WRGPPs91cu9K-g1maov61+w@mail.gmail.com>
+Subject: Re: [PATCH v5 00/10] ASPEED sgpio driver enhancement.
+To:     Steven Lee <steven_lee@aspeedtech.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 08:42:25AM -0500, Tyler Hicks wrote:
-[snip]
-> > I've just posted "[PATCH 0/7] tee: shared memory updates",
-> > https://lore.kernel.org/lkml/20210609102324.2222332-1-jens.wiklander@linaro.org/
-> > 
-> > Where tee_shm_alloc() is replaced by among other functions
-> > tee_shm_alloc_kernel_buf(). tee_shm_alloc_kernel_buf() takes care of the
-> > problem with TEE_SHM_DMA_BUF.
-> 
-> Thanks! At first glance, that series would take care of the last three
-> patches in my kexec/kdump series.
-> 
-> I'm a bit worried that it is a rewrite of the shm allocator. Do you plan
-> to send all of that to stable? (I mentioned earlier in this thread that
-> I'm affected by these bugs in linux-5.4.y.)
+On Thu, Jun 10, 2021 at 4:24 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
 
-No, that might be a bit much.
+> Per the comment in the following mail
+> https://lkml.org/lkml/2021/6/9/317
+>
+> I was wondering if I should prepare v6 for the currnet solution or
+> I should drop this patch series then prepare another patch for the
+> new solution(piar GPIO input/output) which breaks userspace but is
+> better than the current solution.
 
-> Also, you and Sumit don't seem to have the same opinion on kernel
-> drivers making use of tee_shm_register() for allocations that are only
-> used internally. Can you comment on that?
-> 
-> I'm not clear on the next steps for fixing these kexec/kdump bugs in
-> older releases. I appreciate any guidance here.
+I would say just go ahead with the new solution. AFAIK Aspeed
+has pretty tight control over what kind of userspace run on these
+systems.
 
-Neither am I be honest. You're the only one that has brought up this
-problem so perhaps it's enough to focus on the stable branch you need to
-have fixed.
+BTW please influence Aspeed to use the GPIO character device
+and ligpiod
+https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
+if you are doing any kind of userspace GPIO control (which I
+suspect that you do).
 
-If I've understood it correctly it's best if it's possible to
-cherry-pick the fixes from mainline to the stable branch in question.
-So we must make sure to get your needed patches in before any rewrites
-that would make cherry-picking impossible. The rewrite I'm proposing
-isn't urgent so it can be held off for a while.
-
-Cheers,
-Jens
+Yours,
+Linus Walleij
