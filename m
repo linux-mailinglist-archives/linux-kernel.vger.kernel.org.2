@@ -2,89 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998DC3A2941
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFAF3A294D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbhFJKWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 06:22:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:56194 "EHLO foss.arm.com"
+        id S230103AbhFJK0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 06:26:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230086AbhFJKWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 06:22:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A12CD6E;
-        Thu, 10 Jun 2021 03:20:38 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 051873F694;
-        Thu, 10 Jun 2021 03:20:35 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S229935AbhFJK0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 06:26:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE3E1613FF;
+        Thu, 10 Jun 2021 10:24:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623320654;
+        bh=M6AEleLc4JKp4M6OeGH/BH3NxyqfJE++xRcWRirs5qo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N+Qis6JAheBOaZ3dboJlNbAb1TDo1/FyqLWX70S1HQEkLRBwhZqg85uLAn1U9na5g
+         Y1FqxJwB6ddwRdU52JWGuFXArb4ZA8GEc/yofuVOwPIuL5SeN1h6cQdA+XkTGxJNrt
+         93eEUZeZU7SyumlvQ3Yd6jCAXbNOOLp/eFYzpScB16ytVz5oW7SKFyq86USB0bZJGW
+         uMWrN9sD5EMZlOcoKsXoY4FH6rNSpqrpbI7xZ+VcrIxE3IjmaqqNst8T4VW0lkuNEU
+         eRy3FXwokuGXW6H7NZPejdpTphj9OsaDTO0mSOKiChz+b0uwvP103euRG3070X5Z4/
+         P0kpbtLfXTqzg==
+Date:   Thu, 10 Jun 2021 12:24:11 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v8 11/19] sched: Allow task CPU affinity to be restricted on asymmetric systems
-In-Reply-To: <20210607225202.GB8215@willie-the-truck>
-References: <20210602164719.31777-1-will@kernel.org> <20210602164719.31777-12-will@kernel.org> <87zgw5d05b.mognet@arm.com> <20210607225202.GB8215@willie-the-truck>
-Date:   Thu, 10 Jun 2021 11:20:33 +0100
-Message-ID: <87eedac972.mognet@arm.com>
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 2/6] posix-cpu-timers: Don't start process wide cputime
+ counter if timer is disabled
+Message-ID: <20210610102411.GA127975@lothringen>
+References: <20210604113159.26177-1-frederic@kernel.org>
+ <20210604113159.26177-3-frederic@kernel.org>
+ <20210609121832.GE104634@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609121832.GE104634@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/06/21 23:52, Will Deacon wrote:
-> On Fri, Jun 04, 2021 at 06:12:32PM +0100, Valentin Schneider wrote:
->> On 02/06/21 17:47, Will Deacon wrote:
->> > +	/*
->> > +	 * Forcefully restricting the affinity of a deadline task is
->> > +	 * likely to cause problems, so fail and noisily override the
->> > +	 * mask entirely.
->> > +	 */
->> > +	if (task_has_dl_policy(p) && dl_bandwidth_enabled()) {
->> > +		err = -EPERM;
->> > +		goto err_unlock;
->> > +	}
->> > +
->> > +	if (!cpumask_and(new_mask, &p->cpus_mask, subset_mask)) {
->> > +		err = -EINVAL;
->> > +		goto err_unlock;
->> > +	}
->> > +
->> > +	/*
->> > +	 * We're about to butcher the task affinity, so keep track of what
->> > +	 * the user asked for in case we're able to restore it later on.
->> > +	 */
->> > +	if (user_mask) {
->> > +		cpumask_copy(user_mask, p->cpus_ptr);
->> > +		p->user_cpus_ptr = user_mask;
->> > +	}
->> > +
->>
->> Shouldn't that be done before any of the bailouts above, so we can
->> potentially restore the mask even if we end up forcefully expanding the
->> affinity?
->
-> I don't think so. I deliberately only track the old mask if we've managed
-> to take a subset for the 32-bit task. If we end up having to override the
-> mask entirely, then I treat it the same way as an explicit affinity change
-> (only with a warning printed) and don't then try to restore the old mask --
-> it feels like we'd be overriding the affinity twice if we tried to do that.
->
+On Wed, Jun 09, 2021 at 02:18:34PM +0200, Frederic Weisbecker wrote:
+> On Fri, Jun 04, 2021 at 01:31:55PM +0200, Frederic Weisbecker wrote:
+> > If timer_settime() is called with a 0 expiration on a timer that is
+> > already disabled, the process wide cputime counter will be started
+> > and won't ever get a chance to be stopped by stop_process_timer() since
+> > no timer is actually armed to be processed.
+> > 
+> > This process wide counter might bring some performance hit due to the
+> > concurrent atomic additions at the thread group scope.
+> > 
+> > The following snippet is enough to trigger the issue.
+> > 
+> > 	void trigger_process_counter(void)
+> > 	{
+> > 		timer_t id;
+> > 		struct itimerspec val = { };
+> > 
+> > 		timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
+> > 		timer_settime(id, TIMER_ABSTIME, &val, NULL);
+> > 		timer_delete(id);
+> > 	}
+> > 
+> > So make sure we don't needlessly start it.
+> > 
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Oleg Nesterov <oleg@redhat.com>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Cc: Ingo Molnar <mingo@kernel.org>
+> > Cc: Eric W. Biederman <ebiederm@xmission.com>
+> 
+> No Fixes tag for this one. It has been there since year 1 AG.
+> 
+> I suspect it's the same for most other commits in the series, checking...
 
-Put in this way, it does make sense to me. Thanks!
+Right, so only the first commit needs one.
+
+Thanks.
