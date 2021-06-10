@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28643A33DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32F83A33E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhFJTXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 15:23:50 -0400
-Received: from mail-lj1-f177.google.com ([209.85.208.177]:42567 "EHLO
-        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbhFJTXt (ORCPT
+        id S230083AbhFJTXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 15:23:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21789 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230232AbhFJTXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 15:23:49 -0400
-Received: by mail-lj1-f177.google.com with SMTP id r16so6410970ljk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:21:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TCR4wjdITK+kupOKjLE86TVEkMZcR5bv/LNyb8r3Nyc=;
-        b=LL56kf5WNorUp6A/BtmQdId+ZgvFAEKdiDs120Ls5oqTDleh+FXwNezoG3o0xz3/qX
-         tzp/Tfx6PsqR4ov6sucNa7m8+gshcxH0LmYKavfQPwjKFyKdaKiSxYpfcsPwM7mD9755
-         GE2QRdjM3hpFMYUfu8UQ+W9K3wJJvRe2x67ACeH5hxm2QWlKs0BA3+A2nS+ZBWA70Vb6
-         l8Qd3G55ifmzUzKGWWglKBZVhItqKzdGF9ufZ4xGiqOmNhcLMMTef6WmJGl8rTFMJEty
-         r5GAHe1wLdD2VjyhpAbEH3Js0/66tRhnoRYvDj4q2t01eG/LQf9Pb/hTvnZ235m0nTBO
-         9Gyg==
+        Thu, 10 Jun 2021 15:23:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623352914;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DVG4CWGfyu4y0g9i2OCoAuUtkr+80/M03bPDGkS4TS8=;
+        b=KrmRPXTQzgcO01RxmExyB/c/8VLB/qa3V4z+12QANBuu1neQI+ONGRiBe9rfO3Dgk9vprf
+        zhzFySb7gd8RSMbu6pd4vPLZATtD+gtaMKN5acximHIWBeXtWdzD+o3qWeNk4TKUtCMth1
+        8+xBul22Y5wXyPAlTXCBPQ6IvJnKDuw=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-283-fGiOXAsHOc2hZkX3wPpxEg-1; Thu, 10 Jun 2021 15:21:53 -0400
+X-MC-Unique: fGiOXAsHOc2hZkX3wPpxEg-1
+Received: by mail-qt1-f197.google.com with SMTP id a5-20020ac84d850000b029024998e61d00so488204qtw.14
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:21:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TCR4wjdITK+kupOKjLE86TVEkMZcR5bv/LNyb8r3Nyc=;
-        b=uT+7PPyRZ8Rw09lL3ia8RvtjHIlLkgdCFkL0leqng+ufekLpCZyJAcoKR5CHSaMnm8
-         BzUPJ7HneIFieVlwKmOi5kTNc9UQ8a5DznOA5IFArD2MCrcrQevNoaA/aDMEIpVEW00c
-         vQ87RIPNbOyseMeHar/qUqtUUfAIYVwsZvTNRFT38zJBffbNRzfVm+1jjOxMHfsl0Mfk
-         /KVpUp5y8WnZWci2r1xEBt1M2aQPHKtWl5MJU/cztwozvyJ41CA5fqrt6DBFJsyCSYRr
-         tqkYRpWTiDXy3pLQ6+48p8nzLRhm+Me3cU6+BT8ixVIM20cfd5ZvjJNVBvvdIeZJfZLC
-         UFuA==
-X-Gm-Message-State: AOAM533FRzWFgILKm6udN2CEPdj6mZxTFb/DN8Rz1w17HCZCJTDk8Fgc
-        gXuwOVzBcSlCguOuVo57pDYRAHP3tyq/Py6m9ePmHQ==
-X-Google-Smtp-Source: ABdhPJwYronnVnbnK1r+c0d0G/spznSfvXGbR2w+pI1zmGgTDYwtqcPNQtfMoPAVK7KUn572JWNGeJgWW+pvsbQQA3w=
-X-Received: by 2002:a2e:b5b5:: with SMTP id f21mr79310ljn.479.1623352844553;
- Thu, 10 Jun 2021 12:20:44 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=DVG4CWGfyu4y0g9i2OCoAuUtkr+80/M03bPDGkS4TS8=;
+        b=ZZ88p+zyRTOOFsHIg2DNriAYIdEB9mLREESsTQ9LZYnB6fuLdnlQXcHpSz2syByUEy
+         poEHabtwBrpoGeSnd7lK3dSstFyVWE/7smkLg5OBgk3MsgElAQhm9BoCUsfs3f1FzaHY
+         iEK+p1mN7omh4etrMbcaHsUWie2l4LaX8W9V4PxwGnCxnuLwPrkA0U9DISbH3zkepp0r
+         6BLnpbw37adl6hY3CvE3MuEkBgZjbogay+35GeyFXFT/4m36JpF88c90lflw1+vFzj8B
+         C3sINSmyu5K+nzX6A5z3AFsecQcodrYZl9Wo/RHfbgzMrRsWH06kmd56MJI+1BYqlmF/
+         6csA==
+X-Gm-Message-State: AOAM531AviVMHvQqj4fcMJ5QwywnPn8mYaUeMuowgXuyEDNurT5Z60XO
+        WkyPvBVmGVkWB8VUzDlFxgUFLzoFkUcECwPWqO/2UDHsVDXPzVRCBZXXOYF2vi/JEoyzX2VTDiH
+        I6fm17x2ZPhT0VZkY8gOHrefM
+X-Received: by 2002:ac8:45cd:: with SMTP id e13mr342455qto.45.1623352913270;
+        Thu, 10 Jun 2021 12:21:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzeiZS804EdnkmC4YoAIb9fvGvqBRkzaFwj/cd9U44QFCAH/4ydLc0o5CPvxlig3jZUdN2jTQ==
+X-Received: by 2002:ac8:45cd:: with SMTP id e13mr342442qto.45.1623352913114;
+        Thu, 10 Jun 2021 12:21:53 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id s7sm3033177qkp.35.2021.06.10.12.21.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 12:21:52 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 2/5] cgroup/cpuset: Add new cpus.partition type with no
+ load balancing
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+References: <20210603212416.25934-1-longman@redhat.com>
+ <20210603212416.25934-3-longman@redhat.com>
+ <YMJhObisfWJ1PzgR@hirez.programming.kicks-ass.net>
+Message-ID: <f81f4867-1fea-03fc-639a-2783fbd68abf@redhat.com>
+Date:   Thu, 10 Jun 2021 15:21:51 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <214134496.67043.1623317284090@office.mailbox.org>
-In-Reply-To: <214134496.67043.1623317284090@office.mailbox.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 10 Jun 2021 12:20:33 -0700
-Message-ID: <CAKwvOdmU9TUiZ6AatJja=ksneRKP5saNCkx0qodLMOi_BshSSg@mail.gmail.com>
-Subject: Re: [PATCH] x86/Makefile: make -stack-alignment conditional on LLD < 13.0.0
-To:     Tor Vic <torvic9@mailbox.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YMJhObisfWJ1PzgR@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 2:28 AM <torvic9@mailbox.org> wrote:
+On 6/10/21 3:00 PM, Peter Zijlstra wrote:
+> On Thu, Jun 03, 2021 at 05:24:13PM -0400, Waiman Long wrote:
+>> Cpuset v1 uses the sched_load_balance control file to determine if load
+>> balancing should be enabled.  Cpuset v2 gets rid of sched_load_balance
+>> as its use may require disabling load balancing at cgroup root.
+>>
+>> For workloads that require very low latency like DPDK, the latency
+>> jitters caused by periodic load balancing may exceed the desired
+>> latency limit.
+>>
+>> When cpuset v2 is in use, the only way to avoid this latency cost is to
+>> use the "isolcpus=" kernel boot option to isolate a set of CPUs. After
+>> the kernel boot, however, there is no way to add or remove CPUs from
+>> this isolated set. For workloads that are more dynamic in nature, that
+>> means users have to provision enough CPUs for the worst case situation
+>> resulting in excess idle CPUs.
+> Also, can we change isolcpus to create a default cgroup hierarchy
+> instead of being the fugly hack that it is? I really hate isolcpus with
+> a passion, it needs to die.
 >
-> Since LLVM commit 3787ee4, the '-stack-alignment' flag has been dropped [1],
-> leading to the following error message when building a LTO kernel with
-> Clang-13 and LLD-13:
->
->     ld.lld: error: -plugin-opt=-: ld.lld: Unknown command line argument
->     '-stack-alignment=8'.  Try 'ld.lld --help'
->     ld.lld: Did you mean '--stackrealign=8'?
->
-> It also appears that the '-code-model' flag is not necessary anymore starting
-> with LLVM-9 [2].
->
-> Drop '-code-model' and make '-stack-alignment' conditional on LLD < 13.0.0.
+That is probably doable assuming that we can allow cpuset v2 to have a 
+non-load balanced partition.
 
-Please include this additional context in v2:
-```
-These flags were necessary because these flags were not encoded in the
-IR properly, so the link would restart optimizations without them. Now
-there are properly encoded in the IR, and these flags exposing
-implementation details are no longer necessary.
-```
-That way it doesn't sound like we're not using an 8B stack alignment
-on x86; we very much are so; AMDGPU GPFs without it!
+Depending on which cpuset version is set up, we can automatically set up 
+a isolated subdirectory under / to contain cpus that are isolated. 
+However, that will be a follow-on patch after this one.
 
-Cut the below paragraph out on v2.  Thanks for the patch and keep up
-the good work!
+Cheers,
+Longman
 
->
-> This is for linux-stable 5.12.
-> Another patch will be submitted for 5.13 shortly (unless there are objections).
->
-> Discussion: https://github.com/ClangBuiltLinux/linux/issues/1377
-> [1]: https://reviews.llvm.org/D103048
-> [2]: https://reviews.llvm.org/D52322
->
-> Signed-off-by: Tor Vic <torvic9@mailbox.org>
-> ---
->  arch/x86/Makefile | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 1f2e5bf..2855a1a 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -192,8 +192,9 @@ endif
->  KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
->
->  ifdef CONFIG_LTO_CLANG
-> -KBUILD_LDFLAGS += -plugin-opt=-code-model=kernel \
-> -                  -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
-> +ifeq ($(shell test $(CONFIG_LLD_VERSION) -lt 130000; echo $$?),0)
-> +KBUILD_LDFLAGS += -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
-> +endif
->  endif
->
->  ifdef CONFIG_X86_NEED_RELOCS
-> --
-> 2.32.0
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
