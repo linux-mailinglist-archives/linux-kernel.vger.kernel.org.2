@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8AD3A245D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F347D3A2460
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhFJGWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:22:10 -0400
-Received: from smtprelay0094.hostedemail.com ([216.40.44.94]:50536 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229634AbhFJGWJ (ORCPT
+        id S230059AbhFJGWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:22:54 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:36336 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhFJGWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:22:09 -0400
-Received: from omf12.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 1B59E180A7FE8;
-        Thu, 10 Jun 2021 06:20:12 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id B7F8924023B;
-        Thu, 10 Jun 2021 06:20:10 +0000 (UTC)
-Message-ID: <f36df404d219ff11546c3244054db348538e21db.camel@perches.com>
-Subject: Re: [PATCH v2] scsi: lpfc: lpfc_init: deleted these repeated words
-From:   Joe Perches <joe@perches.com>
-To:     lijian_8010a29@163.com, james.smart@broadcom.com,
-        dick.kennedy@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Date:   Wed, 09 Jun 2021 23:20:09 -0700
-In-Reply-To: <20210610060921.67172-1-lijian_8010a29@163.com>
-References: <20210610060921.67172-1-lijian_8010a29@163.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 10 Jun 2021 02:22:52 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id DA17FBA7F6;
+        Thu, 10 Jun 2021 14:20:43 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by smtp.263.net (postfix) whith ESMTP id P32529T140357287958272S1623306042221794_;
+        Thu, 10 Jun 2021 14:20:44 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <0a0ef2f2f4c7605f7bd6b05bff47d8d4>
+X-RL-SENDER: huangjianghui@uniontech.com
+X-SENDER: huangjianghui@uniontech.com
+X-LOGIN-NAME: huangjianghui@uniontech.com
+X-FST-TO: corbet@lwn.net
+X-RCPT-COUNT: 7
+X-SENDER-IP: 113.57.152.160
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   huangjianghui <huangjianghui@uniontech.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        huangjianghui <huangjianghui@uniontech.com>
+Subject: [PATCH] Docs: hda: Fix spelling mistakes
+Date:   Thu, 10 Jun 2021 14:20:36 +0800
+Message-Id: <20210610062036.30300-1-huangjianghui@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.22
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: B7F8924023B
-X-Stat-Signature: epojie33baoucrokunpomaa1buxnjias
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX182pRNdeCXYGCw9uVtg8ofXfe97+/XR8/s=
-X-HE-Tag: 1623306010-995556
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-10 at 14:09 +0800, lijian_8010a29@163.com wrote:
-> From: lijian <lijian@yulong.com>
-> 
-> deleted these repeated words 'the', 'using' and 'be' in the comments.
-> 
-> Signed-off-by: lijian <lijian@yulong.com>
-> ---
-> v2: Fix these typos
-> Change 'irrelvant' to 'irrelevant'.
-> Change 'will be re-try' to 'will be retried'.
+correct Reatek to Realtek
 
-This should be part of the commit message.
-The content below the --- line is not added to any git commit.
+Signed-off-by: huangjianghui <huangjianghui@uniontech.com>
+---
+ Documentation/sound/hd-audio/controls.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/sound/hd-audio/controls.rst b/Documentation/sound/hd-audio/controls.rst
+index f2ebc4f79b44..dbe6483f4ff4 100644
+--- a/Documentation/sound/hd-audio/controls.rst
++++ b/Documentation/sound/hd-audio/controls.rst
+@@ -102,7 +102,7 @@ Conexant codecs
+ ---------------
  
-> diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
-[]
-> @@ -5894,7 +5894,7 @@ lpfc_sli4_async_fip_evt(struct lpfc_hba *phba,
->  				phba->fcf.fcf_flag &= ~FCF_ACVL_DISC;
->  				spin_unlock_irq(&phba->hbalock);
->  				/*
-> -				 * Last resort will be re-try on
-> +				 * Last resort will be retried on
+ Auto-Mute Mode
+-  See Reatek codecs.
++  See Realtek codecs.
+ 
+ 
+ Analog codecs
+-- 
+2.20.1
 
-retried on the current/to retry (with?) the current
-
-Your spelling fixes seem reasonable but perhaps you could find a
-fully fluent English speaker/writer to review your proposals before
-submitting English grammar patches. 
 
 
