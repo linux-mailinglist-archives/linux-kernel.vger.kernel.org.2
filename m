@@ -2,122 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4063A2492
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8CA3A2493
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbhFJGig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbhFJGif (ORCPT
+        id S230113AbhFJGil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:38:41 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39741 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229865AbhFJGik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:38:35 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4F2C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 23:36:39 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id g12so14132728qvx.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:36:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=rZYXw6BRbvhvPhfR4jmUYFMFeMI725FP/8d3gS3xgfI=;
-        b=kGmVYq1KCmC0sxjG2bvNJSAIEma0Txe8awTrb1MSDSPgZXAAmX8mMA0PtfBAImtoHM
-         qSauEy6+Am03n80BYZHU9UEOnC2BoINeerjMvYrYgNX2nJmjsXTUU4yOttfanzIg+Z10
-         izk8JK2zBz9zFSIg9mOdz5EjjvZqKvGsMJ2MYUoyP9qIW+de6rkSxrrXHnHWJpVZ227k
-         ZQI3LJfwaow8uofHvJ1hY/m61JlpqgX2ZoIuxharrtNEirkWgwqNsyj0XBAo7zg440KQ
-         9WVwWWwLzPdV8d5xIKtSgzFL13Gb62Cqh6fMFffXHRj3u48MRMr2E6Qh0/lUPxEltrlo
-         EjqQ==
+        Thu, 10 Jun 2021 02:38:40 -0400
+Received: from mail-wr1-f72.google.com ([209.85.221.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lrEJ1-0004aL-JE
+        for linux-kernel@vger.kernel.org; Thu, 10 Jun 2021 06:36:43 +0000
+Received: by mail-wr1-f72.google.com with SMTP id x9-20020a5d49090000b0290118d8746e06so414693wrq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:36:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=rZYXw6BRbvhvPhfR4jmUYFMFeMI725FP/8d3gS3xgfI=;
-        b=bcb55ipT083c3F5+3g/VzsUSL+dOaSBkAGLsOLVKdEYqN61HZHRKSeHkEUwK/YSq60
-         pDFNx4VbXzoZbubDfnzroaF33FEDX4+jR2RGdtSiA2GcqAoeEnnyQvo+4t72sG8jzdHW
-         4QIixPi3KFQu5OoUXAolFINmdDwwwzzFZtSIm2gTnOeWlbL0GMyGRyeEweWT0sbxCt1L
-         jaaPqp0HhFjypvP5A+yMRwDuZhHStSznLWsovssmDu7mFcap5cgGkZE+dJi7k0U1zQVK
-         t0ujOZZTY2p/FcAksWdFrigsmgKlHQXQ+QgMc5uCmOGsSUweTFrhZTIQ5g3agqG90OuS
-         SJ7A==
-X-Gm-Message-State: AOAM532jiJTDUn4qboNAQKnHSu9+1q/zSGCHii5hj5YxSi4sZRNAxdju
-        OzffHLM1hE99mcJzNgCznFX3aQ==
-X-Google-Smtp-Source: ABdhPJyLamliZT4RHXjzNV5dKT4qjdHxdf/Mhbgo2rrm2QWLrwhPqsgsN3rbxP0uPfGa3iMSDtfciA==
-X-Received: by 2002:a05:6214:162a:: with SMTP id e10mr3723237qvw.49.1623306998481;
-        Wed, 09 Jun 2021 23:36:38 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id q2sm1635598qkc.77.2021.06.09.23.36.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 23:36:38 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 23:36:36 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 02/11] mm: page_vma_mapped_walk(): settle PageHuge on entry
-In-Reply-To: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
-Message-ID: <e31a483c-6d73-a6bb-26c5-43c3b880a2@google.com>
-References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WtLXS+0tm1k1bpg9yjdyBFk1R42VryqZ5m7j5SsaTlI=;
+        b=XpN4LSOsYC0G9kDKSNqJlh7N8RKS7Qjg3r2aOdh1a3tu4Lt8ZeSHN/6Yg2r8ERy+ZL
+         sLby4KIf8TK+Ts9CAQMYM+ZoNnO40SNlHw5qLToznrNqyJVj4I524rkIn35BD5adcdwP
+         YKktSpi1Hq+3U4hmduXibVertCv+mS8ikRWzJDypJCxPXXLOSBpG5IQrt0dA4mjRxLUn
+         z08EF5k7bnflFDR5ZujaRr1kO4zBDVCIuD5Iep/4yESkU0o4CQl11+5B68aPq702ox/l
+         IB5nZc7IDFraAA/GlVPm0qUZcbkJiC60cRAwiIi38doyaAMxsiZXQiA/PoYhkWKVbQpl
+         EN/w==
+X-Gm-Message-State: AOAM531+BbC5H1HfHtQePriF+XXkRpQZekAY2lqYxeXD0ASU31IRru1P
+        W0MO8jctfKtzeBasxaeRhkfJSVM3b++ondGmrBRwIfaa7X0DYeEiDAstPxqTFB91PuNVBrTbaqX
+        ftTMgjmmAKRcSElWnwLjuH+JRnWOfheBsVF+MeI6yiA==
+X-Received: by 2002:a7b:c453:: with SMTP id l19mr12784106wmi.154.1623307003334;
+        Wed, 09 Jun 2021 23:36:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrKbTB2dPyTcgsNWbqMxfPi2n18eMS3fGLXwsHyavospcUWmdxoXbYyMBB4fiIvgtYPSOVfQ==
+X-Received: by 2002:a7b:c453:: with SMTP id l19mr12784093wmi.154.1623307003211;
+        Wed, 09 Jun 2021 23:36:43 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id a10sm459607wrr.48.2021.06.09.23.36.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 23:36:42 -0700 (PDT)
+Subject: Re: [PATCH] nfc: fdp: remove unnecessary labels
+To:     samirweng1979 <samirweng1979@163.com>, davem@davemloft.net,
+        kuba@kernel.org, unixbhaskar@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+References: <20210610024616.1804-1-samirweng1979@163.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <a4dd4569-2f81-7aac-e8f7-405866bb1b7d@canonical.com>
+Date:   Thu, 10 Jun 2021 08:36:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210610024616.1804-1-samirweng1979@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-page_vma_mapped_walk() cleanup: get the hugetlbfs PageHuge case
-out of the way at the start, so no need to worry about it later.
+On 10/06/2021 04:46, samirweng1979 wrote:
+> From: wengjianfeng <wengjianfeng@yulong.com>
+> 
+> Some labels are meaningless, so we delete them and use the
+> return statement instead of the goto statement.
+> 
+> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> ---
+>  drivers/nfc/fdp/fdp.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: <stable@vger.kernel.org>
----
- mm/page_vma_mapped.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-index a6dbf714ca15..7c0504641fb8 100644
---- a/mm/page_vma_mapped.c
-+++ b/mm/page_vma_mapped.c
-@@ -153,10 +153,11 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
- 	if (pvmw->pmd && !pvmw->pte)
- 		return not_found(pvmw);
- 
--	if (pvmw->pte)
--		goto next_pte;
--
- 	if (unlikely(PageHuge(page))) {
-+		/* The only possible mapping was handled on last iteration */
-+		if (pvmw->pte)
-+			return not_found(pvmw);
-+
- 		/* when pud is not present, pte will be NULL */
- 		pvmw->pte = huge_pte_offset(mm, pvmw->address, page_size(page));
- 		if (!pvmw->pte)
-@@ -168,6 +169,9 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
- 			return not_found(pvmw);
- 		return true;
- 	}
-+
-+	if (pvmw->pte)
-+		goto next_pte;
- restart:
- 	pgd = pgd_offset(mm, pvmw->address);
- 	if (!pgd_present(*pgd))
-@@ -233,7 +237,7 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
- 			return true;
- next_pte:
- 		/* Seek to next pte only makes sense for THP */
--		if (!PageTransHuge(page) || PageHuge(page))
-+		if (!PageTransHuge(page))
- 			return not_found(pvmw);
- 		end = vma_address_end(page, pvmw->vma);
- 		do {
--- 
-2.26.2
+Best regards,
+Krzysztof
 
+> diff --git a/drivers/nfc/fdp/fdp.c b/drivers/nfc/fdp/fdp.c
+> index 7863b25..5287458 100644
+> --- a/drivers/nfc/fdp/fdp.c
+> +++ b/drivers/nfc/fdp/fdp.c
+> @@ -266,7 +266,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
+>  	r = request_firmware(&info->ram_patch, FDP_RAM_PATCH_NAME, dev);
+>  	if (r < 0) {
+>  		nfc_err(dev, "RAM patch request error\n");
+> -		goto error;
+> +		return r;
+>  	}
+>  
+>  	data = (u8 *) info->ram_patch->data;
+> @@ -283,7 +283,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
+>  	r = request_firmware(&info->otp_patch, FDP_OTP_PATCH_NAME, dev);
+>  	if (r < 0) {
+>  		nfc_err(dev, "OTP patch request error\n");
+> -		goto out;
+> +		return 0;
+>  	}
+>  
+>  	data = (u8 *) info->otp_patch->data;
+> @@ -295,10 +295,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
+>  
+>  	dev_dbg(dev, "OTP patch version: %d, size: %d\n",
+>  		 info->otp_patch_version, (int) info->otp_patch->size);
+> -out:
+>  	return 0;
+> -error:
+> -	return r;
+>  }
+>  
+>  static void fdp_nci_release_firmware(struct nci_dev *ndev)
+> 
