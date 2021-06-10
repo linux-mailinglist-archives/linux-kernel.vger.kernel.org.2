@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AFB3A283A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2E03A2830
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhFJJ0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:26:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230023AbhFJJ0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:26:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E9CE613FE;
-        Thu, 10 Jun 2021 09:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623317076;
-        bh=oy4qESkdnKcP3NQlBhbmQ9kp6vNt7W4YelwBDv3HMhs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=G0tM02obRUONAjN4/SwVjbc5w+QUPX8BZqucF0ldMd4VQ6OOPegHfT7RRl2S3AXDs
-         zWSHYy2GNbJFSx+XqdNVl5gOuhwfZIP5LM3NFzYdHh/wGcgKbwREkt08l4MJS68YnI
-         rXiIjYKzp2704ZR+W78Vg0I/U7YA3eQ7y0vnpTuhjnd9sc8q3cWtPiH5Iilrdm+urm
-         HRWsaz7TVnlNZVkKDSIJ/Qb3nr8cQXmm0BBXwiXtQGRhpcEURumGl3ZQbiSen0CraE
-         QCh3TCta3xM7HaZ8Mg+hyb4F4O1NZ4YaaV+CD2Ago1Q1GERLt3Hg/xfUzs/96t6svI
-         FeOugIVm8yHrA==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Sven Peter <sven@svenpeter.dev>, linux-usb@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Sven Peter <sven@svenpeter.dev>
-Subject: Re: [PATCH v3] usb: dwc3: support 64 bit DMA in platform driver
-In-Reply-To: <20210607061751.89752-1-sven@svenpeter.dev>
-References: <20210607061751.89752-1-sven@svenpeter.dev>
-Date:   Thu, 10 Jun 2021 12:24:28 +0300
-Message-ID: <871r9a2htf.fsf@kernel.org>
+        id S230248AbhFJJXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:23:30 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:5369 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229911AbhFJJX2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 05:23:28 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G0z003YFQz6vHn;
+        Thu, 10 Jun 2021 17:17:36 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 17:21:29 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
+ 2021 17:21:28 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <nbd@nbd.name>,
+        <lorenzo.bianconi83@gmail.com>
+Subject: [PATCH net-next] mt76: mt7615: Use devm_platform_get_and_ioremap_resource()
+Date:   Thu, 10 Jun 2021 17:25:35 +0800
+Message-ID: <20210610092535.4156573-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Use devm_platform_get_and_ioremap_resource() to simplify
+code.
 
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/net/wireless/mediatek/mt76/mt7615/soc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Hi,
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/soc.c b/drivers/net/wireless/mediatek/mt76/mt7615/soc.c
+index be9a69fe1b38..f13d1b418742 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/soc.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/soc.c
+@@ -31,7 +31,6 @@ int mt7622_wmac_init(struct mt7615_dev *dev)
+ 
+ static int mt7622_wmac_probe(struct platform_device *pdev)
+ {
+-	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	void __iomem *mem_base;
+ 	int irq;
+ 
+@@ -39,7 +38,7 @@ static int mt7622_wmac_probe(struct platform_device *pdev)
+ 	if (irq < 0)
+ 		return irq;
+ 
+-	mem_base = devm_ioremap_resource(&pdev->dev, res);
++	mem_base = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+ 	if (IS_ERR(mem_base))
+ 		return PTR_ERR(mem_base);
+ 
+-- 
+2.25.1
 
-Sven Peter <sven@svenpeter.dev> writes:
-> Currently, the dwc3 platform driver does not explicitly ask for
-> a DMA mask. This makes it fall back to the default 32-bit mask which
-> breaks the driver on systems that only have RAM starting above the
-> first 4G like the Apple M1 SoC.
->
-> Fix this by calling dma_set_mask_and_coherent with a 64bit mask.
->
-> Signed-off-by: Sven Peter <sven@svenpeter.dev>
-
-Acked-by: Felipe Balbi <balbi@kernel.org>
-
-> ---
->
-> Third time's a charm I hope - this time much simpler :)
->
-> I still think this change should be fairly low risk.
->
-> Unfortunately I only have the Apple M1 to test this on but here
-
-wait a minute. The M1 includes a dwc3? That's awesome. Mind sharing a
-regdump? Should be in debugfs.
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmDB2kwRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzlfNM9wDzUhOVQgArAs3+Ywns0Y7SVUQSIAwRGUnHuSVqK0i
-5xGxGB5tEiQa4FA1DwywFkhJBcnq1JW0180X0rSZfSf6mSTLo3GJDD017GY5AKom
-Zn8YXZZ0RCwoW2TxFda2QDv49m1RH8mwn4YS9F96x7Q71qbc5tM5dRctYqhJKprL
-O6pn3vHztKI3a6/NR2L1MePdtxKItia8OKGt1Eq/YOoK4Soh1kMf8rKMnle3t8p9
-XhL7ToKD4PLpFP1LMJyBIR0Df7AIZKwv48rpDGvmQklTCXJ0MVrtg7zONI1WwG0x
-AQBMojE9tJ2ix15hkH9O/IlgLrn/ERINLN9xbm8kdCeoSJGrY3PB2Q==
-=CWyw
------END PGP SIGNATURE-----
---=-=-=--
