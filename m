@@ -2,134 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15223A2F7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159723A2F88
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhFJPlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:41:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:34812 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231658AbhFJPk6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:40:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B7BF106F;
-        Thu, 10 Jun 2021 08:39:01 -0700 (PDT)
-Received: from [10.57.74.218] (unknown [10.57.74.218])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0C4FB3F719;
-        Thu, 10 Jun 2021 08:38:58 -0700 (PDT)
-Subject: Re: [PATCH v1 2/3] coresight: tmc-etr: Use perf_output_handle::head
- for AUX ring buffer
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Denis Nikitin <denik@google.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20210528161552.654907-1-leo.yan@linaro.org>
- <20210528161552.654907-3-leo.yan@linaro.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <68f0fb5e-6f91-66c3-855a-9473bee7de15@arm.com>
-Date:   Thu, 10 Jun 2021 16:38:57 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S231414AbhFJPmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:42:25 -0400
+Received: from mail-pj1-f42.google.com ([209.85.216.42]:40794 "EHLO
+        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231719AbhFJPmU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 11:42:20 -0400
+Received: by mail-pj1-f42.google.com with SMTP id mp5-20020a17090b1905b029016dd057935fso3962601pjb.5;
+        Thu, 10 Jun 2021 08:40:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K/k5CLOePGEq4ALoOuLfOb/BkxtInR8bR4U+kAjjuQQ=;
+        b=XpxSjuw8JtsYCP1TPKyX6Ix2eRNFOP8AB1xCWZ7HDdVOP9QGu4Y4EEnNL/IUxVE9N7
+         hfzEEYVPcNQ9RY1y5kJGc+nDM/4DmmZtjtLyYNNm7SSYi0hMIio4PQCvDNh1iSwGru+m
+         rMAm78S/ZtKOAFLCvtZbd2RAxjxjwtLyON9veD9ocPjTcYR+fgTt1aVR97R0Tl9TEpaQ
+         XU5wr8MEumLZds98j2TGCnEosXj5vUkzwje+vku6bu5GuM8dXpveP+G+MMqIFwCUN4iH
+         Gz6CANft3Odcux5UmEgS77YJxDHqWd6UU3X7Q5jTQa4lJd861GEyQwyPNEBcImCibrF5
+         3tuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K/k5CLOePGEq4ALoOuLfOb/BkxtInR8bR4U+kAjjuQQ=;
+        b=kfhQSh4dbY8gR6gWJa9ACsKIywJp0oy3kyZiD4FoX27hHCVlMiVyDaUc5qClueK8fu
+         mQPUPcg7tpFg+RaREht+D/OWAHrQuGBBOn3/omM5f3bCDa2i5PEFt8hiXkOxHHNzqP6c
+         uqfeQT0uMRqSiMRaBTWZ3uPlTTYQxM9m8Ctlnar4HezOlGShkP2QD4abon/AiHOQIlBq
+         jj9XECGDaZ5dhX0o5EHDY2JDvQBmokPtXDuBnwIM1tPH/Gcr/lptu1B7LyNSrb67cwp9
+         eEOf9rHScHSOXEnGpCTjGEzGQeFEi29JAZxnoxUiiRP1JgLRyxexiOZAkD8y9Y9MgL7L
+         s1EA==
+X-Gm-Message-State: AOAM530eDoNnrHUUMNC9anny83nH0o0x6ObANOpceMIeI1KiKQJcmiB2
+        AvMtj7Yd9BNpbqMBQrcdJnY=
+X-Google-Smtp-Source: ABdhPJzTe77hC6bd/zlNCUFDIMKL1TVQbtL4RxRofNzpdiYBSrZnHdltINXesc/xg1kMF9FaaFHMRA==
+X-Received: by 2002:a17:90a:de07:: with SMTP id m7mr3999831pjv.100.1623339550713;
+        Thu, 10 Jun 2021 08:39:10 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id s4sm2835948pjn.31.2021.06.10.08.39.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 08:39:10 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jakub Kici nski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH] net: make get_net_ns_by_fd inline if NET_NS is disabled
+Date:   Thu, 10 Jun 2021 23:38:58 +0800
+Message-Id: <20210610153858.118822-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210528161552.654907-3-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo
+The function get_net_ns_by_fd() could be inlined when NET_NS is not
+enabled.
 
-On 28/05/2021 17:15, Leo Yan wrote:
-> When enable the Arm CoreSight PMU event, the context for AUX ring buffer
-> is prepared in the structure perf_output_handle, and its field "head"
-> points the head of the AUX ring buffer and it is updated after filling
-> AUX trace data into buffer.
-> 
-> Current code uses an extra field etr_perf_buffer::head to maintain the
-> header for the AUX ring buffer, thus it's not necessary and it's better
-> to directly perf_output_handle::head.
-> 
-> This patch removes the header etr_perf_buffer::head and directly used
-> perf_output_handle::head as the header for AUX ring buffer.
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->   drivers/hwtracing/coresight/coresight-tmc-etr.c | 10 +++-------
->   1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> index acdb59e0e661..b22823d67680 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> @@ -32,7 +32,6 @@ struct etr_flat_buf {
->    * @etr_buf		- Actual buffer used by the ETR
->    * @pid			- The PID this etr_perf_buffer belongs to.
->    * @snaphost		- Perf session mode
-> - * @head		- handle->head at the beginning of the session.
->    * @nr_pages		- Number of pages in the ring buffer.
->    * @pages		- Array of Pages in the ring buffer.
->    */
-> @@ -41,7 +40,6 @@ struct etr_perf_buffer {
->   	struct etr_buf		*etr_buf;
->   	pid_t			pid;
->   	bool			snapshot;
-> -	unsigned long		head;
->   	int			nr_pages;
->   	void			**pages;
->   };
-> @@ -1437,16 +1435,16 @@ static void tmc_free_etr_buffer(void *config)
->    * buffer to the perf ring buffer.
->    */
->   static void tmc_etr_sync_perf_buffer(struct etr_perf_buffer *etr_perf,
-> +				     unsigned long head,
->   				     unsigned long src_offset,
->   				     unsigned long to_copy)
->   {
->   	long bytes;
->   	long pg_idx, pg_offset;
-> -	unsigned long head = etr_perf->head;
->   	char **dst_pages, *src_buf;
->   	struct etr_buf *etr_buf = etr_perf->etr_buf;
->   
-> -	head = etr_perf->head;
-> +	head = PERF_IDX2OFF(head, etr_perf);
->   	pg_idx = head >> PAGE_SHIFT;
->   	pg_offset = head & (PAGE_SIZE - 1);
->   	dst_pages = (char **)etr_perf->pages;
-> @@ -1553,7 +1551,7 @@ tmc_update_etr_buffer(struct coresight_device *csdev,
->   	/* Insert barrier packets at the beginning, if there was an overflow */
->   	if (lost)
->   		tmc_etr_buf_insert_barrier_packet(etr_buf, offset);
-> -	tmc_etr_sync_perf_buffer(etr_perf, offset, size);
-> +	tmc_etr_sync_perf_buffer(etr_perf, handle->head, offset, size);
->   
->   	/*
->   	 * In snapshot mode we simply increment the head by the number of byte
-> @@ -1605,8 +1603,6 @@ static int tmc_enable_etr_sink_perf(struct coresight_device *csdev, void *data)
->   		goto unlock_out;
->   	}
->   
-> -	etr_perf->head = PERF_IDX2OFF(handle->head, etr_perf);
-> -
->   	/*
->   	 * No HW configuration is needed if the sink is already in
->   	 * use for this session.
-> 
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+---
+ include/net/net_namespace.h | 8 +++++++-
+ net/core/net_namespace.c    | 8 +-------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-This looks good to me and could avoid any potential issues
-with stale offset cached in the etr_perf_buffer.
-
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
+index fa5887143f0d..0a25f95691d9 100644
+--- a/include/net/net_namespace.h
++++ b/include/net/net_namespace.h
+@@ -184,6 +184,8 @@ struct net *copy_net_ns(unsigned long flags, struct user_namespace *user_ns,
+ void net_ns_get_ownership(const struct net *net, kuid_t *uid, kgid_t *gid);
+ 
+ void net_ns_barrier(void);
++
++struct net *get_net_ns_by_fd(int fd);
+ #else /* CONFIG_NET_NS */
+ #include <linux/sched.h>
+ #include <linux/nsproxy.h>
+@@ -203,13 +205,17 @@ static inline void net_ns_get_ownership(const struct net *net,
+ }
+ 
+ static inline void net_ns_barrier(void) {}
++
++static inline struct net *get_net_ns_by_fd(int fd)
++{
++	return ERR_PTR(-EINVAL);
++}
+ #endif /* CONFIG_NET_NS */
+ 
+ 
+ extern struct list_head net_namespace_list;
+ 
+ struct net *get_net_ns_by_pid(pid_t pid);
+-struct net *get_net_ns_by_fd(int fd);
+ 
+ #ifdef CONFIG_SYSCTL
+ void ipx_register_sysctl(void);
+diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+index 43b6ac4c4439..6a0d9583d69c 100644
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -660,14 +660,8 @@ struct net *get_net_ns_by_fd(int fd)
+ 	fput(file);
+ 	return net;
+ }
+-
+-#else
+-struct net *get_net_ns_by_fd(int fd)
+-{
+-	return ERR_PTR(-EINVAL);
+-}
+-#endif
+ EXPORT_SYMBOL_GPL(get_net_ns_by_fd);
++#endif
+ 
+ struct net *get_net_ns_by_pid(pid_t pid)
+ {
+-- 
+2.30.2
 
