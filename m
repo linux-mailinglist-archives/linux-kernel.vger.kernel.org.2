@@ -2,137 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F283A2A35
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2247E3A2A23
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhFJLcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 07:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhFJLc3 (ORCPT
+        id S230161AbhFJL1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 07:27:53 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:5372 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229895AbhFJL1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:32:29 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C86C061574;
-        Thu, 10 Jun 2021 04:30:31 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 87206329; Thu, 10 Jun 2021 13:30:28 +0200 (CEST)
-Date:   Thu, 10 Jun 2021 13:30:27 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 3/6] x86/sev-es: Split up runtime #VC handler for
- correct state tracking
-Message-ID: <YMH30/wFyE1JkKZg@8bytes.org>
-References: <20210610091141.30322-1-joro@8bytes.org>
- <20210610091141.30322-4-joro@8bytes.org>
- <YMHnP1qgvznyYazv@hirez.programming.kicks-ass.net>
+        Thu, 10 Jun 2021 07:27:52 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G11lY3RS1z6vFr;
+        Thu, 10 Jun 2021 19:22:01 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 19:25:54 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
+ 2021 19:25:53 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <rjw@rjwysocki.net>, <lenb@kernel.org>,
+        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>
+Subject: [PATCH -next] ACPI: sysfs: fix doc warnings in device_sysfs.c
+Date:   Thu, 10 Jun 2021 19:35:01 +0800
+Message-ID: <20210610113501.3439670-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMHnP1qgvznyYazv@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Fixes the following W=1 kernel build warning(s):
 
-On Thu, Jun 10, 2021 at 12:19:43PM +0200, Peter Zijlstra wrote:
-> On Thu, Jun 10, 2021 at 11:11:38AM +0200, Joerg Roedel wrote:
-> 
-> > +static void vc_handle_from_kernel(struct pt_regs *regs, unsigned long error_code)
-> 
-> static noinstr ...
+ drivers/acpi/device_sysfs.c:278: warning: Function parameter or
+  member 'dev' not described in 'acpi_device_uevent_modalias'
+ drivers/acpi/device_sysfs.c:278: warning: Function parameter or
+  member 'env' not described in 'acpi_device_uevent_modalias'
+ drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+  member 'dev' not described in 'acpi_device_modalias'
+ drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+  member 'buf' not described in 'acpi_device_modalias'
+ drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+  member 'size' not described in 'acpi_device_modalias'
 
-Right, I forgot that, will update the patch and add the correct noinstr
-annotations.
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ drivers/acpi/device_sysfs.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-> > +	if (user_mode(regs))
-> > +		vc_handle_from_user(regs, error_code);
-> > +	else
-> > +		vc_handle_from_kernel(regs, error_code);
-> >  }
-> 
-> #DB and MCE use idtentry_mce_db and split out in asm. When I look at
-> idtentry_vc, it appears to me that VC_SAFE_STACK already implies
-> from-user, or am I reading that wrong?
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index fa2c1c93072c..3b08efa88ba5 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -268,7 +268,8 @@ int __acpi_device_uevent_modalias(struct acpi_device *adev,
+ 
+ /**
+  * acpi_device_uevent_modalias - uevent modalias for ACPI-enumerated devices.
+- *
++ * @dev: Struct device.
++ * @env: Uevent kobject.
+  * Create the uevent modalias field for ACPI-enumerated devices.
+  *
+  * Because other buses do not support ACPI HIDs & CIDs, e.g. for a device with
+@@ -313,7 +314,9 @@ static int __acpi_device_modalias(struct acpi_device *adev, char *buf, int size)
+ 
+ /**
+  * acpi_device_modalias - modalias sysfs attribute for ACPI-enumerated devices.
+- *
++ * @dev: Struct device.
++ * @buf: The buffer.
++ * @size: Size of the buffer.
+  * Create the modalias sysfs attribute for ACPI-enumerated devices.
+  *
+  * Because other buses do not support ACPI HIDs & CIDs, e.g. for a device with
+-- 
+2.31.1
 
-VC_SAFE_STACK does not imply from-user. It means that the #VC handler
-asm code was able to switch away from the IST stack to either the
-task-stack (if from-user or syscall gap) or to the previous kernel
-stack. There is a check in vc_switch_off_ist() that shows which stacks
-are considered safe.
-
-If it can not switch to a safe stack the VC entry code switches to the
-fall-back stack and a special handler function is called, which for now
-just panics the system.
-
-> How about you don't do that and have exc_ call your new from_kernel
-> function, then we know that safe_stack_ is always from-user. Then also
-> maybe do:
-> 
-> 	s/VS_SAFE_STACK/VC_USER/
-> 	s/safe_stack_/noist_/
-> 
-> to match all the others (#DB/MCE).
-
-So #VC is different from #DB and #MCE in that it switches stacks even
-when coming from kernel mode, so that the #VC handler can be nested.
-What I can do is to call the from_user function directly from asm in
-the .Lfrom_user_mode_switch_stack path. That will avoid having another
-from_user check in C code.
-
-> DEFINE_IDTENTRY_VC(exc_vc)
-> {
-> 	if (unlikely(on_vc_fallback_stack(regs))) {
-> 		instrumentation_begin();
-> 		panic("boohooo\n");
-> 		instrumentation_end();
-
-The on_vc_fallback_stack() path is for now only calling panic(), because
-it can't be hit when the hypervisor is behaving correctly. In the future
-it is not clear yet if that path needs to be extended for SNP page
-validation exceptions, which can basically happen anywhere.
-
-The implementation of SNP should make sure that all memory touched
-during entry (while on unsafe stacks) is always validated, but not sure
-yet if that holds when live-migration of SNP guests is added to the
-picture.
-
-There is the possibility that this doesn't fit in the above branch, but
-it can also be moved to a separate function if needed.
-
-> 	}
-> 
-> 	vc_from_kernel();
-> }
-> 
-> DEFINE_IDTENTRY_VC_USER(exc_vc)
-> {
-> 	vc_from_user();
-> }
-> 
-> Which is, I'm thinking, much simpler, no?
-
-Okay, I am going to try this out. Thanks for your feedback.
-
-Regards,
-
-	Joerg
