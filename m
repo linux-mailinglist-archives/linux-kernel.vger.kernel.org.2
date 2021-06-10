@@ -2,147 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CE13A2E91
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1D13A2E9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhFJOuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:50:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48029 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230291AbhFJOub (ORCPT
+        id S231470AbhFJOwH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Jun 2021 10:52:07 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:58711 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231336AbhFJOwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:50:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623336515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ZGxu50Da0PK61lY+o4FmL9vUYFPvS0gTspd9dJ7Li4=;
-        b=I8OqZYZODtS6+pAzLuSjeZOyC+3HWfNuWjydKMD+5xvj9c60qfWMK+Hhx/pJIaNOS6sWTh
-        JRA6trwjxGFy0/6yLxgXu31uXbgXYo6bXMhhGEVj469YOUB+vgCIjhZmgbFVxLqWnOT+Q/
-        sP1yamMiznl8uMGkXaowZYSVWjitoxc=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-s_GBZaPvPfGMC9_NgVvXnw-1; Thu, 10 Jun 2021 10:48:34 -0400
-X-MC-Unique: s_GBZaPvPfGMC9_NgVvXnw-1
-Received: by mail-qt1-f197.google.com with SMTP id z17-20020ac86b910000b0290244cba55754so10849489qts.19
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:48:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7ZGxu50Da0PK61lY+o4FmL9vUYFPvS0gTspd9dJ7Li4=;
-        b=Kz6uxFMIpTp78V/xYGT+lPkreb/cphnL5X63o8r5iaAd/eOPTaHGFYqEB5M9vugy9Z
-         uhUE38cG3ZMgxoqSkibo8RlX2q3gv2joPqmi8cLb6J66EZERsewXABCzgTV6fv+ZBGcz
-         nmIRIhVKlac+gX3JLaRg7yGXg3t10AhfGEKXLXwjMa+M2ZaCIl5Ro2tGbJLno8FFWk3F
-         IIZ8Y2mV0BglS51VFk5kiz7wJ2/PAyV58gpcOqPY/8A/1FIiMQBrB4gbIh19xqSN0bor
-         9/7dmvnhUOiwOUpehubrT4+slK2eFB6eJ1mWAug4yWsWjwu9qy6caryAZnnEC6SRUcAe
-         v8Eg==
-X-Gm-Message-State: AOAM530F2mR3wHBYLW7CfebWy3jk0gxJKyev1JyG0lvvp5dwTo5DBs6p
-        qgpgtPoVHJSEvf5nCPcppCQamUKgvhoUEjdvfvFAyjrkw5fd3zFSXvRz20KEvnGOBCuxs6QGxvV
-        vl1E4ops0oa8YsgRKNmIU6V9j
-X-Received: by 2002:a05:620a:4106:: with SMTP id j6mr2411680qko.452.1623336513772;
-        Thu, 10 Jun 2021 07:48:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyTi/u+Cp7bUZAv8lFoIKFSr8W7PdTXbg/s5lMh6T2XTw/Ta67B3OK7mKx57FiaQ/QslIoD5w==
-X-Received: by 2002:a05:620a:4106:: with SMTP id j6mr2411668qko.452.1623336513567;
-        Thu, 10 Jun 2021 07:48:33 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-88-174-93-75-200.dsl.bell.ca. [174.93.75.200])
-        by smtp.gmail.com with ESMTPSA id d21sm2257461qtn.24.2021.06.10.07.48.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 07:48:33 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 10:48:31 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Will Deacon <will@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/11] mm: page_vma_mapped_walk(): prettify
- PVMW_MIGRATION block
-Message-ID: <YMImP5fXTDns47jn@t490s>
-References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
- <378c8650-1488-2edf-9647-32a53cf2e21@google.com>
+        Thu, 10 Jun 2021 10:52:06 -0400
+Received: (Authenticated sender: paul@opendingux.net)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 41C4B1BF219;
+        Thu, 10 Jun 2021 14:50:06 +0000 (UTC)
+Date:   Thu, 10 Jun 2021 15:49:58 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 2/2] iio: core: Add "extended_name" attribute to all
+ channels
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <AJQHUQ.F2KTDP14GT7T2@crapouillou.net>
+In-Reply-To: <20210610153425.000029b6@Huawei.com>
+References: <20210610124556.34507-1-paul@crapouillou.net>
+        <20210610124556.34507-3-paul@crapouillou.net>
+        <20210610153425.000029b6@Huawei.com>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <378c8650-1488-2edf-9647-32a53cf2e21@google.com>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:42:12PM -0700, Hugh Dickins wrote:
-> page_vma_mapped_walk() cleanup: rearrange the !pmd_present() block to
-> follow the same "return not_found, return not_found, return true" pattern
-> as the block above it (note: returning not_found there is never premature,
-> since existence or prior existence of huge pmd guarantees good alignment).
+
+
+Le jeu., juin 10 2021 at 15:34:25 +0100, Jonathan Cameron 
+<Jonathan.Cameron@Huawei.com> a écrit :
+> On Thu, 10 Jun 2021 13:45:56 +0100
+> Paul Cercueil <paul@crapouillou.net> wrote:
 > 
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
-> ---
->  mm/page_vma_mapped.c | 30 ++++++++++++++----------------
->  1 file changed, 14 insertions(+), 16 deletions(-)
+>>  The point of this new attribute is to make the IIO tree actually
+>>  parsable.
+>> 
+>>  Before, given this attribute as a filename:
+>>  in_voltage0_aux_sample_rate
+>> 
+>>  Userspace had no way to know if the attribute name was
+>>  "aux_sample_rate" with no extended name, or "sample_rate" with 
+>> "aux" as
+>>  the extended name, or just "rate" with "aux_sample" as the extended
+>>  name.
+>> 
+>>  This was somewhat possible to deduce when there was more than one
+>>  attribute present for a given channel, e.g:
+>>  in_voltage0_aux_sample_rate
+>>  in_voltage0_aux_frequency
+>> 
+>>  There, it was possible to deduce that "aux" was the extended name. 
+>> But
+>>  even with more than one attribute, this wasn't very robust, as two
+>>  attributes starting with the same prefix (e.g. "sample_rate" and
+>>  "sample_size") would result in the first part of the prefix being
+>>  interpreted as being part of the extended name.
+>> 
+>>  To address this issue, add an "extended_name" attribute to all 
+>> channels
+>>  that actually do have an extended name.
 > 
-> diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-> index 81000dd0b5da..b96fae568bc2 100644
-> --- a/mm/page_vma_mapped.c
-> +++ b/mm/page_vma_mapped.c
-> @@ -201,24 +201,22 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
->  			if (pmd_page(pmde) != page)
->  				return not_found(pvmw);
->  			return true;
-> -		} else if (!pmd_present(pmde)) {
-> -			if (thp_migration_supported()) {
-> -				if (!(pvmw->flags & PVMW_MIGRATION))
-> -					return not_found(pvmw);
-> -				if (is_migration_entry(pmd_to_swp_entry(pmde))) {
-> -					swp_entry_t entry = pmd_to_swp_entry(pmde);
-> +		}
-> +		if (!pmd_present(pmde)) {
-> +			swp_entry_t entry;
->  
-> -					if (migration_entry_to_page(entry) != page)
-> -						return not_found(pvmw);
-> -					return true;
-> -				}
-> -			}
-> -			return not_found(pvmw);
-> -		} else {
-> -			/* THP pmd was split under us: handle on pte level */
-> -			spin_unlock(pvmw->ptl);
-> -			pvmw->ptl = NULL;
-> +			if (!thp_migration_supported() ||
-> +			    !(pvmw->flags & PVMW_MIGRATION))
-> +				return not_found(pvmw);
-> +			entry = pmd_to_swp_entry(pmde);
-> +			if (!is_migration_entry(entry) ||
-> +			    migration_entry_to_page(entry) != page)
+> Change the patch title to make it clear that it only applies to those
+> that have extended_name set.
+> 
+>>  For this attribute, the extended
+>>  name is not present in the filename; so in this example, the file 
+>> name
+>>  would be "in_voltage0_extended_name", and reading it would return 
+>> "aux".
+> 
+> Ah. Now I see the slightly issue with my immediate thought that we 
+> should
+> just put this in the label attribute (and not allow both extended_name
+> and label to be provided).
 
-We'll need to do s/migration_entry_to_page/pfn_swap_entry_to_page/, depending
-on whether Alistair's series lands first or not I guess (as you mentioned in
-the cover letter).
+Are there cases where extended_name and label are both used?
 
-Thanks for the change, it does look much better.
+If they are exclusive, then it would be fine to put it in the label 
+attribute. Parsing would be a bit more awkward because of the extended 
+name but still possible (e.g. libiio would read 'in_voltage0_foo_label' 
+and check that it returns 'foo').
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+-Paul
 
-> +				return not_found(pvmw);
-> +			return true;
->  		}
-> +		/* THP pmd was split under us: handle on pte level */
-> +		spin_unlock(pvmw->ptl);
-> +		pvmw->ptl = NULL;
->  	} else if (!pmd_present(pmde)) {
->  		/*
->  		 * If PVMW_SYNC, take and drop THP pmd lock so that we
-> -- 
-> 2.26.2
+> Hmm. It's a bit ugly but given it hopefully doesn't effect that many 
+> drivers
+> I could probably live with it.
+> 
+> However, needs a patch to Documentation/ABI/testing/sysfs-bus-iio
+> and a clear statement that this is for backwards compatibility 
+> reasons.
+> I don't want to see extended_name getting added to new drivers!
+> 
+> Jonathan
+> 
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   drivers/iio/industrialio-core.c | 41 
+>> +++++++++++++++++++++++++++++++++
+>>   1 file changed, 41 insertions(+)
+>> 
+>>  diff --git a/drivers/iio/industrialio-core.c 
+>> b/drivers/iio/industrialio-core.c
+>>  index ec34d930920c..4cdf9f092d73 100644
+>>  --- a/drivers/iio/industrialio-core.c
+>>  +++ b/drivers/iio/industrialio-core.c
+>>  @@ -723,6 +723,16 @@ static ssize_t iio_read_channel_label(struct 
+>> device *dev,
+>>   	return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
+>>   }
+>> 
+>>  +static ssize_t iio_read_channel_extended_name(struct device *dev,
+>>  +					      struct device_attribute *attr,
+>>  +					      char *buf)
+>>  +{
+>>  +	const struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+>>  +	const struct iio_chan_spec *chan = this_attr->c;
+>>  +
+>>  +	return sprintf(buf, "%s\n", chan->extend_name);
+>>  +}
+>>  +
+>>   static ssize_t iio_read_channel_info(struct device *dev,
+>>   				     struct device_attribute *attr,
+>>   				     char *buf)
+>>  @@ -1185,6 +1195,32 @@ static int 
+>> iio_device_add_channel_label(struct iio_dev *indio_dev,
+>>   	return 1;
+>>   }
+>> 
+>>  +static int
+>>  +iio_device_add_channel_extended_name(struct iio_dev *indio_dev,
+>>  +				     struct iio_chan_spec const *chan)
+>>  +{
+>>  +	struct iio_dev_opaque *iio_dev_opaque = 
+>> to_iio_dev_opaque(indio_dev);
+>>  +	int ret;
+>>  +
+>>  +	if (!chan->extend_name)
+>>  +		return 0;
+>>  +
+>>  +	ret = __iio_add_chan_devattr("extended_name",
+>>  +				     chan,
+>>  +				     &iio_read_channel_extended_name,
+>>  +				     NULL,
+>>  +				     0,
+>>  +				     IIO_SEPARATE,
+>>  +				     &indio_dev->dev,
+>>  +				     NULL,
+>>  +				     &iio_dev_opaque->channel_attr_list,
+>>  +				     false);
+>>  +	if (ret < 0)
+>>  +		return ret;
+>>  +
+>>  +	return 1;
+>>  +}
+>>  +
+>>   static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
+>>   					 struct iio_chan_spec const *chan,
+>>   					 enum iio_shared_by shared_by,
+>>  @@ -1327,6 +1363,11 @@ static int 
+>> iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
+>>   		return ret;
+>>   	attrcount += ret;
+>> 
+>>  +	ret = iio_device_add_channel_extended_name(indio_dev, chan);
+>>  +	if (ret < 0)
+>>  +		return ret;
+>>  +	attrcount += ret;
+>>  +
+>>   	if (chan->ext_info) {
+>>   		unsigned int i = 0;
+>>   		for (ext_info = chan->ext_info; ext_info->name; ext_info++) {
 > 
 
--- 
-Peter Xu
 
