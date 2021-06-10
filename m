@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9592B3A28E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2063A28E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhFJKC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 06:02:27 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34558 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhFJKC0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 06:02:26 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9D32821977;
-        Thu, 10 Jun 2021 10:00:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623319229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gBT9cBgbszfObFIQ+8NIrK4HBkhGamQu4yAv7aPuVzY=;
-        b=Gx6x0mZzJsfX3FYBsXYisQfsQH0SIYsRFnudqF7jRkxpigDpihwrMraMM5uqYsGomnF8w7
-        y7zCxya3ICuueI/V/J7bm0sMoq/QP6MBMwS/TNrAvjU6ixlKBw9Q6zsDyRCISPcxjmvFsd
-        zfH4ZpG1KwdzjD00KAMDLii9ogCrQ5o=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 56CD5A3B84;
-        Thu, 10 Jun 2021 10:00:29 +0000 (UTC)
-Date:   Thu, 10 Jun 2021 12:00:28 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Aaron Tomlin <atomlin@redhat.com>
-Cc:     Waiman Long <llong@redhat.com>, Shakeel Butt <shakeelb@google.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] mm/oom_kill: allow oom kill allocating task for
- non-global case
-Message-ID: <YMHivM+0DRYXzAD0@dhcp22.suse.cz>
-References: <c16893a9-35e2-7625-d7f3-83488f874040@redhat.com>
- <CALvZod4eUoquGTQ5AsWgbWTQyqtCNNwb-9+fRw_ZPavH-r9dbA@mail.gmail.com>
- <dc7f54eb-933e-5bbb-7959-815dfbfcc836@redhat.com>
- <YL5tqdw+iWLLavxV@dhcp22.suse.cz>
- <6d23ce58-4c4b-116a-6d74-c2cf4947492b@redhat.com>
- <YL51Tp/3jVHUrpuj@dhcp22.suse.cz>
- <YL57rLFwAo7EpYeH@dhcp22.suse.cz>
- <353d012f-e8d4-c54c-b33e-54737e1a0115@redhat.com>
- <YL8MjSteKeO7w0il@dhcp22.suse.cz>
- <20210609143534.v65qknfihqimiivd@ava.usersys.com>
+        id S230146AbhFJKCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 06:02:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:55726 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229770AbhFJKCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 06:02:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A2822D6E;
+        Thu, 10 Jun 2021 03:00:42 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51ABE3F694;
+        Thu, 10 Jun 2021 03:00:41 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 11:00:39 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
+        patrick.bellasi@matbug.net, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH] sched: Fix UCLAMP_FLAG_IDLE setting
+Message-ID: <20210610100039.2gvnl3lu6o2hu5yj@e107158-lin.cambridge.arm.com>
+References: <20210609143339.1194238-1-qperret@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210609143534.v65qknfihqimiivd@ava.usersys.com>
+In-Reply-To: <20210609143339.1194238-1-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 09-06-21 15:35:34, Aaron Tomlin wrote:
-> On Tue 2021-06-08 08:22 +0200, Michal Hocko wrote:
-> > Is it possible the only eligible task has been killed and oom reaped
-> > already?
+On 06/09/21 14:33, Quentin Perret wrote:
+> The UCLAMP_FLAG_IDLE flag is set on a runqueue when dequeueing the last
+> active task to maintain the last uclamp.max and prevent blocked util
+> from suddenly becoming visible.
 > 
-> Yes, I suspect so; and I had a look at the vmcore, the task in the OOM
-> report is no longer present. Therefore, I suspect the task namely "node"
-> (i.e. PID 1703345) was OOM killed i.e. a SIGKILL was sent and was granted
-> access to memory reserves and selected/or choosen by the OOM reaper for
-> termination; the victim then raised a page fault that triggered yet
-> another "charge" in the memcg that exceeded the memory limit set on the
-> container;
+> However, there is an asymmetry in how the flag is set and cleared which
+> can lead to having the flag set whilst there are active task on the rq.
+> Specifically, the flag is set in the uclamp_rq_inc() path, which is
+> called at enqueue time, but cleared in the uclamp_rq_dec_id() which is
 
-If that was the case then the allocating (charging) task would not hit
-the oom path at all
-stable/linux-4.18.y:mm/memcontrol.c
-try_charge()
-        /*
-         * Unlike in global OOM situations, memcg is not in a physical
-         * memory shortage.  Allow dying and OOM-killed tasks to
-         * bypass the last charges so that they can exit quickly and
-         * free their memory.
-         */
-        if (unlikely(tsk_is_oom_victim(current) ||
-                     fatal_signal_pending(current) ||
-                     current->flags & PF_EXITING))
-                goto force;
+It is actually the other way around. It is cleared in uclamp_rq_inc() and
+set in uclamp_rq_dec_id().
 
-If you have a crash dump available then you can check the memcg
-associate with the allocating task and check whether it is really marked
-as OOM victim.
+> called both when dequeueing and task _and_ during cgroup migrations.
 
-> and since no other task in the memcg had a suitable OOM score
-> and the allocating task/or victim was "unkillable" i.e. already selected
-> for termination by the OOM reaper, we got the message: "Out of memory and
-> no killable processes...".
+Is it cgroup migrations or when cgroup uclamp values are updated you mean?
 
-What do you mean by allocating task being unkillable?
+It is worth being direct and mention that uclamp_update_active() will perform
+uclamp_rq_dec/inc_id() when the cgroup uclamp values are updated, which would
+end up with the flag set but not cleared in this path.
 
--- 
-Michal Hocko
-SUSE Labs
+> 
+> Fix this by setting the flag in the uclamp_rq_inc_id() path to ensure
+> things remain symmetrical.
+> 
+> Reported-by: Rick Yiu <rickyiu@google.com>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+
+With the commit message fixed.
+
+Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+
+Thanks!
+
+--
+Qais Yousef
+
+>  kernel/sched/core.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 5226cc26a095..3b213402798e 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -980,6 +980,7 @@ static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
+>  	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+>  		return;
+>  
+> +	rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+>  	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
+>  }
+>  
+> @@ -1252,10 +1253,6 @@ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+>  
+>  	for_each_clamp_id(clamp_id)
+>  		uclamp_rq_inc_id(rq, p, clamp_id);
+> -
+> -	/* Reset clamp idle holding when there is one RUNNABLE task */
+> -	if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+> -		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+>  }
+>  
+>  static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
+> -- 
+> 2.32.0.272.g935e593368-goog
+> 
