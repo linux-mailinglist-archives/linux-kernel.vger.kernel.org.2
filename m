@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552D93A34D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1DE3A34D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhFJUaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 16:30:25 -0400
-Received: from mga03.intel.com ([134.134.136.65]:2876 "EHLO mga03.intel.com"
+        id S230376AbhFJUbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 16:31:25 -0400
+Received: from mga04.intel.com ([192.55.52.120]:45133 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229941AbhFJUaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 16:30:23 -0400
-IronPort-SDR: LwaPzylnSwMXeQui4MXW6Tt+kPqtwulZJOxTVU04m/rVXIsd2uS5Oht/gEv3+N2ux3Y+4C50Bp
- xask2aMnCrZA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="205427020"
+        id S230299AbhFJUbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 16:31:22 -0400
+IronPort-SDR: tJprMLcKTv1VxXZ/57hLuuWJ+BtX39CdyYG86Olg9w5YsWxL2YNJFa7JCI3UnSfdCe52f7+AG/
+ wjhPAxSFK6+g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="203559311"
 X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; 
-   d="scan'208";a="205427020"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 13:28:24 -0700
-IronPort-SDR: txufAQ+qW5HjZrqGOWi1LTUVldyMKv2VXAEPHchhOqdnMHveX4u8Xy6yunSVdILuNwbCYfaPVm
- l6NAFTXFRA+w==
+   d="scan'208";a="203559311"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 13:29:24 -0700
+IronPort-SDR: wm9iWjhwg92/WX3vAQ5eCmit3BtbFe7OLCOR84TeM4lSNKC73+m4mRxNSnH2PVQJKscWHeLtGE
+ EE8W03eLrF9g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; 
-   d="scan'208";a="553191457"
+   d="scan'208";a="441348978"
 Received: from lkp-server02.sh.intel.com (HELO 3cb98b298c7e) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Jun 2021 13:28:23 -0700
+  by orsmga007.jf.intel.com with ESMTP; 10 Jun 2021 13:29:23 -0700
 Received: from kbuild by 3cb98b298c7e with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lrRHq-0000Fs-Qu; Thu, 10 Jun 2021 20:28:22 +0000
-Date:   Fri, 11 Jun 2021 04:28:03 +0800
+        id 1lrRIo-0000GJ-VY; Thu, 10 Jun 2021 20:29:22 +0000
+Date:   Fri, 11 Jun 2021 04:28:36 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:objtool/urgent] BUILD SUCCESS
- 584fd3b31889852d0d6f3dd1e3d8e9619b660d2c
-Message-ID: <60c275d3.N8DiMy/G+Rig3m4G%lkp@intel.com>
+Subject: [tip:perf/urgent] BUILD SUCCESS
+ a8383dfb2138742a1bb77b481ada047aededa2ba
+Message-ID: <60c275f4.TWTgoSIuX3TsGPXO%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool/urgent
-branch HEAD: 584fd3b31889852d0d6f3dd1e3d8e9619b660d2c  objtool: Fix .symtab_shndx handling for elf_create_undef_symbol()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/urgent
+branch HEAD: a8383dfb2138742a1bb77b481ada047aededa2ba  x86/nmi_watchdog: Fix old-style NMI watchdog regression on old Intel CPUs
 
 elapsed time: 723m
 
-configs tested: 166
+configs tested: 170
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -65,11 +65,6 @@ arm                       cns3420vb_defconfig
 s390                             alldefconfig
 sh                            shmin_defconfig
 arm                          collie_defconfig
-sh                          rsk7264_defconfig
-powerpc                     powernv_defconfig
-arm                      footbridge_defconfig
-arm                        multi_v5_defconfig
-sh                          lboxre2_defconfig
 powerpc                  mpc885_ads_defconfig
 arm                         lpc18xx_defconfig
 arc                    vdk_hs38_smp_defconfig
@@ -78,6 +73,7 @@ xtensa                  cadence_csp_defconfig
 arm                        clps711x_defconfig
 sparc                            alldefconfig
 sh                   sh7770_generic_defconfig
+sh                          lboxre2_defconfig
 sh                        edosk7760_defconfig
 ia64                          tiger_defconfig
 h8300                    h8300h-sim_defconfig
@@ -95,6 +91,12 @@ arc                         haps_hs_defconfig
 ia64                        generic_defconfig
 powerpc                         wii_defconfig
 mips                        vocore2_defconfig
+mips                     cu1830-neo_defconfig
+mips                            ar7_defconfig
+mips                        maltaup_defconfig
+arm                        multi_v5_defconfig
+xtensa                           alldefconfig
+sh                        sh7785lcr_defconfig
 s390                       zfcpdump_defconfig
 powerpc                    socrates_defconfig
 arm                          badge4_defconfig
@@ -109,6 +111,7 @@ um                                  defconfig
 mips                      maltaaprp_defconfig
 sh                      rts7751r2d1_defconfig
 arm                         axm55xx_defconfig
+sh                          rsk7264_defconfig
 powerpc                      pasemi_defconfig
 powerpc                      makalu_defconfig
 mips                      fuloong2e_defconfig
@@ -125,6 +128,7 @@ sh                           se7712_defconfig
 mips                      pistachio_defconfig
 arm                       spear13xx_defconfig
 sh                           se7780_defconfig
+powerpc                     powernv_defconfig
 m68k                       m5475evb_defconfig
 powerpc                     ppa8548_defconfig
 mips                         db1xxx_defconfig
