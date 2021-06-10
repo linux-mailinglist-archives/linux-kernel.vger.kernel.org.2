@@ -2,141 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A473A2929
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157D63A292E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhFJKSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 06:18:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52088 "EHLO mail.kernel.org"
+        id S230244AbhFJKS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 06:18:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhFJKSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 06:18:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29844613C6;
-        Thu, 10 Jun 2021 10:16:45 +0000 (UTC)
+        id S230196AbhFJKS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 06:18:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A3FC613E9;
+        Thu, 10 Jun 2021 10:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623320206;
-        bh=6+nLeDoiuIVoMIimwxK/LqVQ2x7nzoElsByfywPVNkY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OrWJbkTKlJqWvMNBauFZK3YK5P1EjdI/N94S6lEqwGjhg5lZbEMR6Msy+5f0UOOfz
-         DYpDsOF4+EKxh4BRh1l+OSO/lZuMGIqbYFD2fpbDmYBAQPqYckMRw5irjHGJJqC1Eh
-         2QhY5mWDbD0w3DVwTXaobkTMDxZordeKqjdmjzKr+6eEYXI+ZCuluBQYgyJ8iYNVMt
-         bPFpSzFMM8eZi53fdCJafE+mkhHQ6o+M9tnT4cJ8BpFYAs6+uhiY8YAbMdyXm1Gwog
-         9l58+rmZIqVx26U7OFC5TgKyHBdFZlKvKtZsY3IXuUlEyy029HWmIYIqokJAeRRJMb
-         u9Ze3yDKJCxUw==
-Date:   Thu, 10 Jun 2021 19:16:43 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Subject: Re: [PATCH] kprobes: Print an error if probe is rejected
-Message-Id: <20210610191643.d24e7d56d102567070fe8386@kernel.org>
-In-Reply-To: <20210610085617.1590138-1-naveen.n.rao@linux.vnet.ibm.com>
-References: <20210610085617.1590138-1-naveen.n.rao@linux.vnet.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1623320221;
+        bh=/aIpC1FstLWlWF3NH/yW0VxMrUiuut5VKmUgwVjhzR0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=f/A9rQWZjmkoFvw0ujjfWmUTL1JsUCNyZBpri4OZZ0OCLekSjPKrmz7fKXjaRTuam
+         ogNn1CSik6El9Q/hE1c7kPIaC0++RQ+jzHXzVKw5JSj4RfJ/HskHE6OnQRoD8XjTki
+         mK9ZgDP3aWGhpcWFL7AGzH7aL46PafsBqX/qFx+pR2f87BmiWMnkB04MzogKobToak
+         pnxVbuCaeRCXNCM11PFExXa2Iv50I8Ev1v/0xd5JLgar9upI/lyAI4V7Q+ZVpCetPX
+         rr4QsrimLzjPToK21YpqtTiNNIkszm7iacugL84nIlnCJGUl4u3jHkkdiTSsD2x6UJ
+         Nzm7+ZThUpvpA==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Wesley Cheng <wcheng@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        jackp@codeaurora.org, Thinh.Nguyen@synopsys.com
+Subject: Re: [PATCH v9 0/5] Re-introduce TX FIFO resize for larger EP bursting
+In-Reply-To: <YMHjctQsGttUJ1QJ@kroah.com>
+References: <1621410561-32762-1-git-send-email-wcheng@codeaurora.org>
+ <YLoUiO8tpRpmvcyU@kroah.com> <87k0n9btnb.fsf@kernel.org>
+ <YLo6W5sKaXvy51eW@kroah.com>
+ <c2daab34-1b25-7ee3-e203-a414c1e486d5@codeaurora.org>
+ <874ke62i0v.fsf@kernel.org> <YMHjctQsGttUJ1QJ@kroah.com>
+Date:   Thu, 10 Jun 2021 13:16:51 +0300
+Message-ID: <87mtry10to.fsf@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naveen,
-
-On Thu, 10 Jun 2021 14:26:17 +0530
-"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
-
-> When probing at different locations in the kernel, it is not always
-> evident if the location can be probed or not. As an example:
-> 
->     $ perf probe __radix__flush_tlb_range:35
->     Failed to write event: Invalid argument
->       Error: Failed to add events.
-> 
-> The probed line above is:
->      35         if (!mmu_has_feature(MMU_FTR_GTSE) && type == FLUSH_TYPE_GLOBAL) {
-> 
-> This ends up trying to probe on BUILD_BUG_ON(), which is rejected.
-> However, the user receives no indication at all as to why the probe
-> failed. Print an error in such cases so that it is clear that the probe
-> was rejected.
-
-Hmm, Nack for this way, but I understand that is a problem.
-If you got the error in perf probe, which uses ftrace dynamic-event interface.
-In that case, the errors should not be output in the dmesg, but are reported
-via error_log in tracefs.
-And kprobes itself should return different error code to the caller, instead
-of printing error in dmesg. See below.
-
-[...]
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1542,8 +1542,10 @@ static int check_kprobe_address_safe(struct kprobe *p,
->  	int ret;
->  
->  	ret = arch_check_ftrace_location(p);
-> -	if (ret)
-> +	if (ret) {
-> +		pr_err("kprobes: can't probe at the provided ftrace location\n");
->  		return ret;
-
-This must be -EBUSY. (or arch depend return value)
-
-> +	}
->  	jump_label_lock();
->  	preempt_disable();
->  
-> @@ -1552,6 +1554,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
->  	    within_kprobe_blacklist((unsigned long) p->addr) ||
->  	    jump_label_text_reserved(p->addr, p->addr) ||
->  	    find_bug((unsigned long)p->addr)) {
-> +		pr_err("kprobes: can't probe at address in reject list\n");
->  		ret = -EINVAL;
-
-This maybe -EACCESS.
-
->  		goto out;
->  	}
-> @@ -1976,8 +1979,10 @@ int register_kretprobe(struct kretprobe *rp)
->  	void *addr;
->  
->  	ret = kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset);
-> -	if (ret)
-> +	if (ret) {
-> +		pr_err("kretprobes: can't probe at address outside function entry\n");
->  		return ret;
-
-return -ERANGE.
-
-> +	}
->  
->  	/* If only rp->kp.addr is specified, check reregistering kprobes */
->  	if (rp->kp.addr && warn_kprobe_rereg(&rp->kp))
-> @@ -1989,8 +1994,10 @@ int register_kretprobe(struct kretprobe *rp)
->  			return PTR_ERR(addr);
->  
->  		for (i = 0; kretprobe_blacklist[i].name != NULL; i++) {
-> -			if (kretprobe_blacklist[i].addr == addr)
-> +			if (kretprobe_blacklist[i].addr == addr) {
-> +				pr_err("kretprobes: can't probe at address in reject list\n");
->  				return -EINVAL;
-
-return -EACCESS too.
-
-Thank you,
-
-> +			}
->  		}
->  	}
->  
-> 
-> base-commit: 2e38eb04c95e5546b71bb86ee699a891c7d212b5
-> -- 
-> 2.31.1
-> 
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Hi,
+
+Greg KH <gregkh@linuxfoundation.org> writes:
+> On Thu, Jun 10, 2021 at 12:20:00PM +0300, Felipe Balbi wrote:
+>> > As mentioned above, these changes are currently present on end user
+>> > devices for the past few years, so its been through a lot of testing :=
+).
+>>=20
+>> all with the same gadget driver. Also, who uses USB on android devices
+>> these days? Most of the data transfer goes via WiFi or Bluetooth, anyway
+>> :-)
+>
+> I used to think that too, until I saw some of the new crazy designs
+> where lots of SoC connections internally to the device run on USB.  Also
+> look at the USB offload stuff as one example of how the voice sound path
+> goes through the USB controller on the SoC on the latest Samsung Galaxy
+> phones that are shipping now :(
+
+yeah, that's one reason NOT to touch the FIFO sizes :-) OMAP5 has, as
+mentioned before, processor trace offload via USB too. If we modify the
+FIFO configuration set by the HW designer we risk loosing those features.
+
+> There's also devices with the modem/network connection going over USB,
+> along with other device types as well.  Android Auto is crazy with
+
+yeah, and there will be more coming. USB Debug class is already
+integrated in some SoCs, that gives us jtag-like access over USB.
+
+> almost everything hooked up directly with a USB connection to the host
+> system running Linux.
+
+that's running against USB host, though, right? Android is the host, not
+the gadget :-)
+
+The FIFO sizes here are for the gadget side.
+
+>> I guess only developers are using USB during development to flash dev
+>> images heh.
+>
+> I wish, we are reaching the point where the stability of the overall
+> Android system depends on how well the USB controller works.  We are a
+> product of our success...
+>
+> thanks,
+>
+> greg k-h
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmDB5pMRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUjw2wf/crhEH0ndZUqRm7jaTsBxQg7pcZNB5IIa
+B8VUxk/3eGa1Yi7EfiKnoHtxSUDMDKYnyT58C7OdrPZOX1I32NkDWqiLY64k+lSt
+IZn5DcEPYg2m14IfJvz7MYgrWZy2Inz1XKB4iVJodQaVq7ayYa7OqhVrB3ScJ46s
+TYsf+9UtXE53HFNNk/bR8LIUMFxGYn+jTyv3Y3YoOOqqHRyCgH11jI/XbWdEtpbb
+7B7F70ZihlF1lxEuOyzmKdbp713+kFrnZTvqqt90PVfdGDLGCVip06ZoiGigpTZE
+V9iEXnpTaXwcj8d4GXDuSdg9RLQCW/mNJr09zkbQ7a/6UtN62x1pVA==
+=87B3
+-----END PGP SIGNATURE-----
+--=-=-=--
