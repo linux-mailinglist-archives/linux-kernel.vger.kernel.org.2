@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684023A2EE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD693A2EF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhFJPEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:04:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45282 "EHLO mail.kernel.org"
+        id S231526AbhFJPFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:05:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:33946 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231451AbhFJPEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:04:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D475613E9;
-        Thu, 10 Jun 2021 15:02:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623337326;
-        bh=p+H8s0egdv3BGUJk4DbOgLzpOhw4FBnL6dPXfrgDCc0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cq8/V0Fpo8XOlZkPj+d/rVs3in/wDRFomFDz6ZeoQWR6G4Ok3yX5uSFkxuNU02eBb
-         PZwLF0VzB7opk+RJs51k4s1BH47qvnTYO9CHvm6w/IK63s/ugXRl3kdBR72Ej5gd3d
-         uhQXpRTdpuIdSbWl8rydlMOWYvGtl97ngU7HfU6yfm3Xr4xoEpalr5jrEzD9YVCqB9
-         5J50D2D20P37Ki3WNZDt/eGXVpE9z9hzzNZQJpT/l3lILuqoJBUhhLkp2qM4jecyDA
-         IC4Cav5iNZzrMdBwAcpIOJnWguN+7OdshvXSaJ2rpmbzk/gRS4XJvrMIA086TQTw4X
-         SlLpfIciQZ1ow==
-Received: by mail-oi1-f175.google.com with SMTP id z3so2420686oib.5;
-        Thu, 10 Jun 2021 08:02:06 -0700 (PDT)
-X-Gm-Message-State: AOAM533LnU/FxMm4phO3JehjJfAGkZPPq2juz10fK7/LIlRDV3wG21Vi
-        uQkSFmYBJiCIJoPjHw1kAZD3ejKYq8TonKyN80A=
-X-Google-Smtp-Source: ABdhPJzwc9dtTqV4JuYFW4MyFIjIJUhIi1DCsWgsdHf5pQ3cE8Zc4m+2QBQ9n5BXeIej8L3/LPhxI861X/0qqbQMsWI=
-X-Received: by 2002:a54:460a:: with SMTP id p10mr10583973oip.47.1623337325826;
- Thu, 10 Jun 2021 08:02:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1623174621.git.ashish.kalra@amd.com> <13d4bdd5fc0cf9aa0ad81d43da975deb37f0d39c.1623174621.git.ashish.kalra@amd.com>
-In-Reply-To: <13d4bdd5fc0cf9aa0ad81d43da975deb37f0d39c.1623174621.git.ashish.kalra@amd.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 10 Jun 2021 17:01:54 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGOaTR6bCHYtdapgM4wfzNTFQ5f-n5Jf0q28JEmsKimZw@mail.gmail.com>
-Message-ID: <CAMj1kXGOaTR6bCHYtdapgM4wfzNTFQ5f-n5Jf0q28JEmsKimZw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] EFI: Introduce the new AMD Memory Encryption GUID.
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, kvm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steve Rutherford <srutherford@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-efi <linux-efi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230410AbhFJPFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 11:05:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CC2D106F;
+        Thu, 10 Jun 2021 08:03:36 -0700 (PDT)
+Received: from e123648.arm.com (unknown [10.57.4.220])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 80C2B3F719;
+        Thu, 10 Jun 2021 08:03:32 -0700 (PDT)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-pm@vger.kernel.org, peterz@infradead.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, vincent.guittot@linaro.org,
+        qperret@google.com, dietmar.eggemann@arm.com,
+        vincent.donnefort@arm.com, lukasz.luba@arm.com,
+        Beata.Michalska@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
+        rostedt@goodmis.org, segall@google.com, mgorman@suse.de,
+        bristot@redhat.com, thara.gopinath@linaro.org,
+        amit.kachhap@gmail.com, amitk@kernel.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org
+Subject: [PATCH v3 0/3] Add allowed CPU capacity knowledge to EAS
+Date:   Thu, 10 Jun 2021 16:03:21 +0100
+Message-Id: <20210610150324.22919-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 at 20:07, Ashish Kalra <Ashish.Kalra@amd.com> wrote:
->
-> From: Ashish Kalra <ashish.kalra@amd.com>
->
-> Introduce a new AMD Memory Encryption GUID which is currently
-> used for defining a new UEFI environment variable which indicates
-> UEFI/OVMF support for the SEV live migration feature. This variable
-> is setup when UEFI/OVMF detects host/hypervisor support for SEV
-> live migration and later this variable is read by the kernel using
-> EFI runtime services to verify if OVMF supports the live migration
-> feature.
->
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+Hi all,
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+The patch set v3 aims to add knowledge about reduced CPU capacity
+into the Energy Model (EM) and Energy Aware Scheduler (EAS). Currently the
+issue is that SchedUtil CPU frequency and EM frequency are not aligned,
+when there is a CPU thermal capping. This causes an estimation error.
+This patch set provides the information about allowed CPU capacity
+into the EM (thanks to thermal pressure information). This improves the
+energy estimation. More info about this mechanism can be found in the
+patches comments.
 
-> ---
->  include/linux/efi.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/include/linux/efi.h b/include/linux/efi.h
-> index 6b5d36babfcc..dbd39b20e034 100644
-> --- a/include/linux/efi.h
-> +++ b/include/linux/efi.h
-> @@ -362,6 +362,7 @@ void efi_native_runtime_setup(void);
->
->  /* OEM GUIDs */
->  #define DELLEMC_EFI_RCI2_TABLE_GUID            EFI_GUID(0x2d9f28a2, 0xa886, 0x456a,  0x97, 0xa8, 0xf1, 0x1e, 0xf2, 0x4f, 0xf4, 0x55)
-> +#define AMD_SEV_MEM_ENCRYPT_GUID               EFI_GUID(0x0cf29b71, 0x9e51, 0x433a,  0xa3, 0xb7, 0x81, 0xf3, 0xab, 0x16, 0xb8, 0x75)
->
->  typedef struct {
->         efi_guid_t guid;
-> --
-> 2.17.1
->
+There is a new patch 1/3 in this v3, addressing an issue triggered for
+hotplugged out CPU. The offline CPUs don't have proper value stored by
+thermal framework in their per-cpu thermal_pressure. Thus, the thermal
+pressure geometric series machinery reads 'stale' value when the CPU
+is back online. The patch fixes it, so all mechanisms like
+load balance, not only EAS, would have more accurate CPU capacity
+information for those 'returning online' CPUs. I've added also related
+cpu cooling maintainers to the CC of this patch set.
+
+Changelog:
+v3:
+- switched to 'raw' per-cpu thermal pressure instead of thermal pressure
+  geometric series signal, since it more suited for purpose of
+  this use case: predicting SchedUtil frequency (Vincent, Dietmar)
+- added more comment in the patch 2/3 header for use case when thermal
+  capping might be applied even the CPUs are not over-utilized
+  (Dietmar)
+- added ACK tag from Rafael for SchedUtil part
+- added a fix patch for offline CPUs in cpufreq_cooling and per-cpu
+  thermal_pressure missing update
+v2 [2]:
+- clamp the returned value from effective_cpu_util() and avoid irq
+  util scaling issues (Quentin)
+v1 is available at [1]
+
+Regards,
+Lukasz
+
+[1] https://lore.kernel.org/linux-pm/20210602135609.10867-1-lukasz.luba@arm.com/
+[2] https://lore.kernel.org/lkml/20210604080954.13915-1-lukasz.luba@arm.com/
+
+Lukasz Luba (3):
+  thermal: cpufreq_cooling: Update also offline CPUs per-cpu
+    thermal_pressure
+  sched/fair: Take thermal pressure into account while estimating energy
+  sched/cpufreq: Consider reduced CPU capacity in energy calculation
+
+ drivers/thermal/cpufreq_cooling.c |  2 +-
+ include/linux/energy_model.h      | 16 +++++++++++++---
+ include/linux/sched/cpufreq.h     |  2 +-
+ kernel/sched/cpufreq_schedutil.c  |  1 +
+ kernel/sched/fair.c               | 14 ++++++++++----
+ 5 files changed, 26 insertions(+), 9 deletions(-)
+
+-- 
+2.17.1
+
