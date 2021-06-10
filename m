@@ -2,109 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D18E3A2805
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F603A2803
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbhFJJRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:17:03 -0400
-Received: from mail-il1-f169.google.com ([209.85.166.169]:38497 "EHLO
-        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbhFJJRD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:17:03 -0400
-Received: by mail-il1-f169.google.com with SMTP id d1so1154213ils.5;
-        Thu, 10 Jun 2021 02:15:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S/78X0f7LqdRdmPi/tp9TPrXzFkLBCtxmrNk3TI2dNQ=;
-        b=W2Jm6lywEn6eiUCl9Zb+34ejPk2vXPHjqkTN6IqUT09FJpJmNUPd0NfZzqphFg75sG
-         472bLe5QXynhuYVpUIEWi7fiooWU+xfgJlX7IrZ7C5PY+Uu3shpgyhOt/Rz/IEjckAWL
-         9wvjCSru43LYaEXN4TblGDcR9RGq9xBRiqT75ywHBX1+HpAJFq1vAPZLnwwAmK45yCVz
-         Wfum08TntgRmlpslTBnDoSTaAN9fVIyma07r4dqFA+8NjCCPP8PswOfcwxRE629qFko0
-         G4y1Y6dzSDH1DxB+xa8Et6hmIueD2l6e7NlgqVnfy2D+jaYNL9SSFdMICunh5QFeq8+B
-         wLgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S/78X0f7LqdRdmPi/tp9TPrXzFkLBCtxmrNk3TI2dNQ=;
-        b=fms5r30QxX2nIS9Bm2IkvJym3hFZ3GpWN7B6M4mV3ymUXtqIc+tpMzn9V5a0c3I0cO
-         q4gSgbPZQx8K5IbC0+00SICtVloR6szHksC/ElYit8i3+lMaO86ZBpYvt5rOmoRSHyIx
-         696xlUKp8qhlgroEx8c5FsV/+yQ0MtSH7akLCjpCDsDQJr8K0XFdYwLmWdEGGL1EiFUA
-         ElUv1zaADN7UuD6DX8f/WT3uE7hECX2q4SCdUAnk1+8qSKYf+fv/pawwubhcnaKYOZHX
-         rN6p9puWSJLSrfC1EGsZ5zGNsmmmH6T5Ac+RwzuPwmQbLJghhsxVmIP/Hv3v1k5FnpRQ
-         aMTw==
-X-Gm-Message-State: AOAM531QzaUAcRJgsMlCs4TJf7c3NBJcHFRhp/68pXpQFIlcJL4C8AJe
-        6FJvIgM9QL6qxTXD7nqk4Gg=
-X-Google-Smtp-Source: ABdhPJzYSfbe3hWJjYplEeAqz67k/aL8GarfKYOygb1YS3OgVA/VJNIHW2BrKjAJ6NQPA8jI4HE8Ug==
-X-Received: by 2002:a92:cf0a:: with SMTP id c10mr3094498ilo.97.1623316446966;
-        Thu, 10 Jun 2021 02:14:06 -0700 (PDT)
-Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
-        by smtp.googlemail.com with ESMTPSA id e14sm1398266ile.2.2021.06.10.02.14.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 02:14:06 -0700 (PDT)
-From:   Tianling Shen <cnsztl@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Tianling Shen <cnsztl@gmail.com>, Pavel Machek <pavel@ucw.cz>,
-        Marty Jones <mj8263788@gmail.com>,
-        Jensen Huang <jensenhuang@friendlyarm.com>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64: dts: rockchip: add EEPROM node for NanoPi R4S
-Date:   Thu, 10 Jun 2021 17:13:57 +0800
-Message-Id: <20210610091357.6780-1-cnsztl@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S230250AbhFJJQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:16:10 -0400
+Received: from mga18.intel.com ([134.134.136.126]:54770 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230201AbhFJJQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 05:16:07 -0400
+IronPort-SDR: Ayf+1JNF8Lva0pZXNgcoX/dFJYxc1b9m11XptDAjMpRdppyKP1pyknaxpu5GG3oYBdBfrb7ty+
+ xgvx53N8D0iA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="192577962"
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="192577962"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 02:14:05 -0700
+IronPort-SDR: p5N3I7jmtnH/kcXT1MOWh1aqoleSR/qsHi/7TQBhDm0AQjy48YaIOzGpWAztUj5A1WpfYpEgpb
+ LprCGKIcsX0Q==
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="402797595"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 02:14:01 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lrGlC-0015yn-Cy; Thu, 10 Jun 2021 12:13:58 +0300
+Date:   Thu, 10 Jun 2021 12:13:58 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
+        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
+        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
+        David Gow <davidgow@google.com>,
+        Daniel Latypov <dlatypov@google.com>, tales.aparecida@gmail.com
+Subject: Re: [PATCH v2 0/1] lib: Convert UUID runtime test to KUnit
+Message-ID: <YMHX1mKuqoRCiHAF@smile.fi.intel.com>
+References: <20210609233730.164082-1-andrealmeid@collabora.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210609233730.164082-1-andrealmeid@collabora.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NanoPi R4S has a EEPROM attached to the 2nd I2C bus (U92), which
-stores the MAC address.
+On Wed, Jun 09, 2021 at 08:37:29PM -0300, André Almeida wrote:
+> Hi,
+> 
+> This patch converts existing UUID runtime test to use KUnit framework.
+> 
+> Below, there's a comparison between the old output format and the new
+> one. Keep in mind that even if KUnit seems very verbose, this is the
+> corner case where _every_ test has failed.
+> 
+> * This is how the current output looks like in success:
+> 
+>   test_uuid: all 18 tests passed
+> 
+> * And when it fails:
+> 
+>   test_uuid: conversion test #1 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+>   test_uuid: cmp test #2 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+>   test_uuid: cmp test #2 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+>   test_uuid: conversion test #3 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+>   test_uuid: cmp test #4 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+>   test_uuid: cmp test #4 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+>   test_uuid: conversion test #5 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+>   test_uuid: cmp test #6 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+>   test_uuid: cmp test #6 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+>   test_uuid: conversion test #7 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+>   test_uuid: cmp test #8 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+>   test_uuid: cmp test #8 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+>   test_uuid: conversion test #9 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+>   test_uuid: cmp test #10 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+>   test_uuid: cmp test #10 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+>   test_uuid: conversion test #11 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+>   test_uuid: cmp test #12 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+>   test_uuid: cmp test #12 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+>   test_uuid: negative test #13 passed on wrong LE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
+>   test_uuid: negative test #14 passed on wrong BE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
+>   test_uuid: negative test #15 passed on wrong LE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
+>   test_uuid: negative test #16 passed on wrong BE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
+>   test_uuid: negative test #17 passed on wrong LE data: '0cb4ddff-a545-4401-9d06-688af53e'
+>   test_uuid: negative test #18 passed on wrong BE data: '0cb4ddff-a545-4401-9d06-688af53e'
+>   test_uuid: failed 18 out of 18 tests
+> 
+> 
+> * Now, here's how it looks like with KUnit:
+> 
+>   ======== [PASSED] uuid ========
+>   [PASSED] uuid_correct_be
+>   [PASSED] uuid_correct_le
+>   [PASSED] uuid_wrong_be
+>   [PASSED] uuid_wrong_le
+> 
+> * And if every test fail with KUnit:
+> 
+>   ======== [FAILED] uuid ========
+>   [FAILED] uuid_correct_be
+>       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+>       Expected uuid_parse(data->uuid, &be) == 1, but
+>           uuid_parse(data->uuid, &be) == 0
+>   
+>   failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
+>       # uuid_correct_be: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
+>       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+>       Expected uuid_parse(data->uuid, &be) == 1, but
+>           uuid_parse(data->uuid, &be) == 0
+>   
+>   failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
+>       # uuid_correct_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
+>       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+>       Expected uuid_parse(data->uuid, &be) == 1, but
+>           uuid_parse(data->uuid, &be) == 0
+>   
+>   failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
+>       # uuid_correct_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
+>       not ok 1 - uuid_correct_be
+>   
+>   [FAILED] uuid_correct_le
+>       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+>       Expected guid_parse(data->uuid, &le) == 1, but
+>           guid_parse(data->uuid, &le) == 0
+>   
+>   failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
+>       # uuid_correct_le: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
+>       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+>       Expected guid_parse(data->uuid, &le) == 1, but
+>           guid_parse(data->uuid, &le) == 0
+>   
+>   failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
+>       # uuid_correct_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
+>       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+>       Expected guid_parse(data->uuid, &le) == 1, but
+>           guid_parse(data->uuid, &le) == 0
+>   
+>   failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
+>       # uuid_correct_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
+>       not ok 2 - uuid_correct_le
+>   
+>   [FAILED] uuid_wrong_be
+>       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+>       Expected uuid_parse(*data, &be) == 0, but
+>           uuid_parse(*data, &be) == -22
+>   
+>   parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
+>       # uuid_wrong_be: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
+>       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+>       Expected uuid_parse(*data, &be) == 0, but
+>           uuid_parse(*data, &be) == -22
+>   
+>   parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
+>       # uuid_wrong_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
+>       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+>       Expected uuid_parse(*data, &be) == 0, but
+>           uuid_parse(*data, &be) == -22
+>   
+>   parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
+>       # uuid_wrong_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
+>       not ok 3 - uuid_wrong_be
+>   
+>   [FAILED] uuid_wrong_le
+>       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+>       Expected guid_parse(*data, &le) == 0, but
+>           guid_parse(*data, &le) == -22
+>   
+>   parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
+>       # uuid_wrong_le: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
+>       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+>       Expected guid_parse(*data, &le) == 0, but
+>           guid_parse(*data, &le) == -22
+>   
+>   parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
+>       # uuid_wrong_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
+>       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+>       Expected guid_parse(*data, &le) == 0, but
+>           guid_parse(*data, &le) == -22
+>   
+>   parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
+>       # uuid_wrong_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
+>       not ok 4 - uuid_wrong_le
 
-Changes in v2:
-- Added the size of EEPROM
-- Added `mac-address` cell to pass the MAC address to kernel
-- Removed `read-only` property in EEPROM node
+Thanks!
 
-Signed-off-by: Tianling Shen <cnsztl@gmail.com>
----
- .../boot/dts/rockchip/rk3399-nanopi-r4s.dts    | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+It's not your fault but I think we need to defer this until KUnit gains support
+of the run statistics. My guts telling me if we allow more and more conversions
+like this the point will vanish and nobody will care.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-index cef4d18b599d..50d3b11eb925 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-@@ -68,6 +68,24 @@
- 	status = "disabled";
- };
- 
-+&gmac {
-+	nvmem-cells = <&mac_address>;
-+	nvmem-cells-names = "mac-address";
-+};
-+
-+&i2c2 {
-+	eeprom@51 {
-+		compatible = "microchip,24c02", "atmel,24c02";
-+		reg = <0x51>;
-+		pagesize = <16>;
-+		size = <256>;
-+
-+		mac_address: mac-address@fa {
-+			reg = <0xfa 0x06>;
-+		};
-+	};
-+};
-+
- &i2c4 {
- 	status = "disabled";
- };
+I like the code, but I can give my tag after KUnit prints some kind of this:
+
+ * This is how the current output looks like in success:
+
+   test_uuid: all 18 tests passed
+
+ * And when it fails:
+
+   test_uuid: failed 18 out of 18 tests
+
+> Changes from v1:
+>  - Test suite name: uuid_test -> uuid
+>  - Config name: TEST_UUID -> UUID_KUNIT_TEST
+>  - Config entry in the Kconfig file left where it is
+>  - Converted tests to use _MSG variant
+> 
+> André Almeida (1):
+>   lib: Convert UUID runtime test to KUnit
+> 
+>  lib/Kconfig.debug |  11 +++-
+>  lib/Makefile      |   2 +-
+>  lib/test_uuid.c   | 137 +++++++++++++++++++---------------------------
+>  3 files changed, 67 insertions(+), 83 deletions(-)
+> 
+> -- 
+> 2.31.1
+> 
+
 -- 
-2.17.1
+With Best Regards,
+Andy Shevchenko
+
 
