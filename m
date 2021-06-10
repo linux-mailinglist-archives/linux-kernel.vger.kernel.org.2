@@ -2,114 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A083A3153
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E113A3156
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhFJQuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhFJQuy (ORCPT
+        id S231527AbhFJQvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:51:25 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42550 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231153AbhFJQvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:50:54 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F09C061574;
-        Thu, 10 Jun 2021 09:48:58 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8BA5C8D4;
-        Thu, 10 Jun 2021 18:48:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1623343736;
-        bh=iXPjEJ+2DfrRz6SIzleO8bAKe2T2T92xhzAC8XNyuKs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TrQV2e8JAek5J8lppu/hb7Eu+6RklmiaRx7dPQ8npodeoMOzhT13j8DCTRojuUvuc
-         A66zb8WLEom01IVAxjTnD04TPeiHrFe9nV4kWG3w+8/bkamSv9onrNBBQrzNbz/zX+
-         MAPjzNgpZ81LrYDyQ/MF8ADIyU9nsqpR8z5qqiX4=
-Date:   Thu, 10 Jun 2021 19:48:38 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-Subject: Re: [PATCH v9 12/22] media: uvcvideo: Increase the size of
- UVC_METADATA_BUF_SIZE
-Message-ID: <YMJCZiQyLV/BRwhp@pendragon.ideasonboard.com>
-References: <20210326095840.364424-1-ribalda@chromium.org>
- <20210326095840.364424-13-ribalda@chromium.org>
+        Thu, 10 Jun 2021 12:51:24 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15AGYJj9191943;
+        Thu, 10 Jun 2021 12:48:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=mime-version :
+ content-type : content-transfer-encoding : date : from : to : cc : subject
+ : in-reply-to : references : message-id; s=pp1;
+ bh=O16dIPOu+lA989Tusv2fGa0q2M5u6OuqRTodshl8cXw=;
+ b=gxBRII4T5KSTDb0YPAYqOXjGlyb/TbLmcJAtLggjXLxjFlLEOeJXww4h+AYCuv2O0bN1
+ IKlJ8mgV9+/jszNJFspPizd1W2FFTwtlb26wBCt5LtqkJdwQiYsz8meP4Tquc5IAXyp3
+ MFCTymdCqETsQLWd3FaQeZ6NNmgG/ZhHLtX36wWduqgXhUFENhDU2bQNu2zuTOLGaykw
+ JPssn/fKDepKTr85aacncXQJWc0uvUNd3ggvBIbEuW8pf0wl5L6mTAXNlEyOBMWCXPZU
+ tLltYvMNBNf5JpmKMSMZMSvtR0I9ivBXLv7zWO9tfkNncA76w+yRl/jp+sb434rUd/7P FQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 393n76k40h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 12:48:52 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15AGYYKD193372;
+        Thu, 10 Jun 2021 12:48:52 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 393n76k407-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 12:48:51 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15AGlOWe031296;
+        Thu, 10 Jun 2021 16:48:51 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma01dal.us.ibm.com with ESMTP id 3900wa3yex-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 16:48:51 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15AGmnDV10224340
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 16:48:49 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 51B57136051;
+        Thu, 10 Jun 2021 16:48:49 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AAC0413604F;
+        Thu, 10 Jun 2021 16:48:48 +0000 (GMT)
+Received: from ltc.linux.ibm.com (unknown [9.10.229.42])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Jun 2021 16:48:48 +0000 (GMT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210326095840.364424-13-ribalda@chromium.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 10 Jun 2021 09:48:48 -0700
+From:   Dany Madden <drt@linux.ibm.com>
+To:     Lijun Pan <lijunp213@gmail.com>
+Cc:     Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] ibmvnic: Use list_for_each_entry() to simplify
+ code in ibmvnic.c
+In-Reply-To: <CAOhMmr4LQpX79ksQOuZ1ft=M2B4tFOPechV9b_5iJWWL1yekSA@mail.gmail.com>
+References: <20210610125417.3834300-1-wanghai38@huawei.com>
+ <CAOhMmr4LQpX79ksQOuZ1ft=M2B4tFOPechV9b_5iJWWL1yekSA@mail.gmail.com>
+Message-ID: <cef4c1fc2c769c1463ba06b23c7e7d3c@imap.linux.ibm.com>
+X-Sender: drt@linux.ibm.com
+User-Agent: Roundcube Webmail/1.1.12
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: qL_OelDesDuwWtwLzpz6pzFTPWWtDwMu
+X-Proofpoint-ORIG-GUID: JDmX18QMSIhnX5N-5_HdB6m4xZdjcevx
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-10_11:2021-06-10,2021-06-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ mlxlogscore=984 lowpriorityscore=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 priorityscore=1501 clxscore=1011 mlxscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106100105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
-
-Thank you for the patch.
-
-On Fri, Mar 26, 2021 at 10:58:30AM +0100, Ricardo Ribalda wrote:
-> Hans has discovered that in his test device, for the H264 format
-> bytesused goes up to about 570, for YUYV it will actually go up
-> to a bit over 5000 bytes, and for MJPG up to about 2706 bytes.
+On 2021-06-10 07:52, Lijun Pan wrote:
+> On Thu, Jun 10, 2021 at 7:56 AM Wang Hai <wanghai38@huawei.com> wrote:
+>> 
+>> Convert list_for_each() to list_for_each_entry() where
+>> applicable. This simplifies the code.
+>> 
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+>> ---
 > 
-> We should also, according to V4L2_META_FMT_UVC docs, drop headers when
-> the buffer is full.
-> 
-> Credit-to: Hans Verkuil <hverkuil@xs4all.nl>
-> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_video.c | 8 +++++---
->  drivers/media/usb/uvc/uvcvideo.h  | 2 +-
->  2 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index 25fd8aa23529..ea2903dc3252 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -1244,11 +1244,13 @@ static void uvc_video_decode_meta(struct uvc_streaming *stream,
->  	if (!meta_buf || length == 2)
->  		return;
->  
-> +	/*
-> +	 * According to V4L2_META_FMT_UVC docs, we should drop headers when
-> +	 * the buffer is full.
-> +	 */
->  	if (meta_buf->length - meta_buf->bytesused <
-> -	    length + sizeof(meta->ns) + sizeof(meta->sof)) {
-> -		meta_buf->error = 1;
-
-Shouldn't you still set meta_buf->error to 1, even if you drop headers ?
-Otherwise the application can't tell if headers have been dropped.
-
-With this fixed,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +	    length + sizeof(meta->ns) + sizeof(meta->sof))
->  		return;
-> -	}
->  
->  	has_pts = mem[1] & UVC_STREAM_PTS;
->  	has_scr = mem[1] & UVC_STREAM_SCR;
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index b81d3f65e52e..a26bbec8d37b 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -527,7 +527,7 @@ struct uvc_stats_stream {
->  	unsigned int max_sof;		/* Maximum STC.SOF value */
->  };
->  
-> -#define UVC_METADATA_BUF_SIZE 1024
-> +#define UVC_METADATA_BUF_SIZE 10240
->  
->  /**
->   * struct uvc_copy_op: Context structure to schedule asynchronous memcpy
-
--- 
-Regards,
-
-Laurent Pinchart
+> Acked-by: Lijun Pan <lijunp213@gmail.com>
+Reviewed-by: Dany Madden <drt@linux.ibm.com>
