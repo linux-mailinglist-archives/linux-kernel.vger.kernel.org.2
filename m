@@ -2,72 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4773A318F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EED3A3199
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbhFJQ7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:59:25 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:41653 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbhFJQ7Y (ORCPT
+        id S231720AbhFJRAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:00:14 -0400
+Received: from mail-il1-f179.google.com ([209.85.166.179]:37496 "EHLO
+        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231672AbhFJRAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:59:24 -0400
-Received: by mail-ot1-f45.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so337514oth.8;
-        Thu, 10 Jun 2021 09:57:11 -0700 (PDT)
+        Thu, 10 Jun 2021 13:00:13 -0400
+Received: by mail-il1-f179.google.com with SMTP id j26so2524327ila.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 09:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0X69O8OJs898lKTihB59RN3w4SBwx9KHHnsAenVewI4=;
+        b=MrDWnNTX6UU0dgPyVnPoaAwTdlrdSYBcFnMHsFmtnT5nmCLJZBqoxDdFl00SFduCeW
+         fqk+vlydPeX9YBL3b+ulXL23uiuGPCVZtV4S90UCLscus1N0mm/jxeR7MHbyBQ8E2QxD
+         jF0Nj0hhQ6HFsy7QrKDV1SgUHCWUwGWVfotwBtADyV+QHZwPkuCwTqq+HD83OYgrQOBn
+         zjKzIMbJ3IxW903rDc/kU8TK49lWRCQ8dK9BYL6hqFqRmOHldjMuDcoHRfbqyE3lKzSs
+         HO8YOIsWMkwxsUdX1KkZK00lqMvHCe3seWkcDIWMsEmskwgwO+tDyZkAh4pL0mG6fA2J
+         1k6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rpk9mMadMlubIUupImrRcIPYmdZMWvf9CrNUh5GvfhY=;
-        b=uKi0O1AIVCS64vo42XmlcuQ0GE3WaNeTjC1UazN4VeuiqRdaCy3zcsvhMe5QtCEMDa
-         ty3vkm/rCWFdxEEmY286IjEr3YaJydAvfjGNI+iMfvPDUuxckWa9T1z0I3DL65AId1rg
-         daXnaJu3rJOeEwh9mGh4XtwaYVl8wmVaYH3si4XMLgXRkRzyPfCu73OvhrXQvE48A2OM
-         cOoCzyTL98/vPX85R3SF7pu010rOAamPSZ1S9NwevrdSsi2ohpFM71Pp5xRBWdBBrAq8
-         QFAraHJowd5X6RFPkGNUjp8ylKolomxFm84j4F27/spa2lzn+H23ZNzh2KlOPltN21Bu
-         +BzA==
-X-Gm-Message-State: AOAM531rEPP8g+IyYAqrLhtdqHSdRcAZgrWJml3Wm5y/LB88pB7nernZ
-        G4KR7fgXFFXXvu39TXnw8Q==
-X-Google-Smtp-Source: ABdhPJxkWeRbLMG1xLRqP6wAwGiOrxpRQmlxtncpjCzdTkcurSxgutw59zEEym37ZvGzNwyHCQmHew==
-X-Received: by 2002:a05:6830:3147:: with SMTP id c7mr2757649ots.332.1623344231343;
-        Thu, 10 Jun 2021 09:57:11 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.113])
-        by smtp.gmail.com with ESMTPSA id z6sm670609oiz.39.2021.06.10.09.57.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 09:57:10 -0700 (PDT)
-Received: (nullmailer pid 1960841 invoked by uid 1000);
-        Thu, 10 Jun 2021 16:57:02 -0000
-Date:   Thu, 10 Jun 2021 11:57:02 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Romain Perier <romain.perier@gmail.com>
-Cc:     linux-watchdog@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Mohammed Billoo <mohammed.billoo@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Subject: Re: [PATCH v3 1/3] dt-bindings: watchdog: Add Mstar MSC313e WDT
- devicetree bindings documentation
-Message-ID: <20210610165702.GA1960781@robh.at.kernel.org>
-References: <20210605170441.33667-1-romain.perier@gmail.com>
- <20210605170441.33667-2-romain.perier@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0X69O8OJs898lKTihB59RN3w4SBwx9KHHnsAenVewI4=;
+        b=QfyG6xItRO+zd2fMcrrJqea3BLIZsULFn7Ey6RzyTc7qEwLoHVOGUpy/uxVWgCoKwY
+         CtRTYYdTLb9a3wYzcp6VOUcMdycSJfbQqxN1Gd80Fin15YHXEk+ZMxn167jbicRBdHZC
+         pLwHmWDrYdLs7QCG5rSlkSeITp/rY6FniMYxOqfsDeCwXz2mvld4lvzyjbjcvsB/DzuW
+         ohHX7817oeOxvx286nuLDr7l04E+PSpxx8OryyTUsDT/4gFlxucqyi0YCPSPeZ+vNAu8
+         nkpPFRNoXx3OgOlv4y5PPFWeLRuBxBXcaDpKO+hhfI5+b0wjPkCi79+Jkuc+8MqHZuhu
+         O1IA==
+X-Gm-Message-State: AOAM530Cd6qHWyanKvjLshTr4PGWxBghkkLe95sryTWuySaqU5ATtsZM
+        +uZEYsrzquDrmgC6k3AFfXbHHlGdtN9TviVpLxry3Ubd99Q5fw==
+X-Google-Smtp-Source: ABdhPJzvvpd9vpgMr61oKKUPqSKUbzq+CFCSV14x8+buD6sK508dF1frWVtuvrj42uvJsInWXupzdjC/cqHeREHAuvc=
+X-Received: by 2002:a92:7607:: with SMTP id r7mr4800102ilc.31.1623344236838;
+ Thu, 10 Jun 2021 09:57:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210605170441.33667-2-romain.perier@gmail.com>
+References: <cover.1623326176.git.viresh.kumar@linaro.org> <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <96994f4c-8755-90a8-0c50-4e21c436f137@metux.net>
+In-Reply-To: <96994f4c-8755-90a8-0c50-4e21c436f137@metux.net>
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+Date:   Thu, 10 Jun 2021 22:27:05 +0530
+Message-ID: <CAKohpokxSoSVtAJkL-T_OOoS8dW-gYG1Gs5=_DwebvJETE48Xw@mail.gmail.com>
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Jun 2021 19:04:39 +0200, Romain Perier wrote:
-> This adds the documentation for the devicetree bindings of the Mstar
-> MSC313e watchdog driver, found from MSC313e SoCs and newer.
-> 
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> ---
->  .../bindings/watchdog/mstar,msc313e-wdt.yaml  | 40 +++++++++++++++++++
->  1 file changed, 40 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/watchdog/mstar,msc313e-wdt.yaml
-> 
+Hi Enrico,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On Thu, 10 Jun 2021 at 21:24, Enrico Weigelt, metux IT consult
+<lkml@metux.net> wrote:
+> On 10.06.21 14:16, Viresh Kumar wrote:
+> > From: "Enrico Weigelt, metux IT consult" <info@metux.net>
+> >
+> > This patch adds a new driver for Virtio based GPIO devices.
+> >
+> > This allows a guest VM running Linux to access GPIO device provided by
+> > the host. It supports all basic operations for now, except interrupts
+> > for the GPIO lines.
+>
+> What exactly did you change here from my original driver ?
+
+I didn't write it from scratch and used your patch only to start with, and so
+you are still the Author of this particular patch.
+
+This just followed the specification updates and so changes only the stuff
+that was different from your original specs. Apart from that as you know,
+the irqs weren't working in your case as they needed to be implemented
+differently (patch 2 does that) here.
+
+> Your already changed the spec havily (w/o consulting me first),
+
+Isn't that what we are doing on the list? I believe that's why the lists
+exist, so people don't need to discuss in person, offline. I am happy to
+make changes in spec if you want to suggest something and if something
+breaks it for you.
+
+> so I guess this driver hasn't so much in common w/ my original design.
+
+It actually has as I said earlier, it is still based on your patch.
+
+> Note that I made my original design decisions for good reaons
+> (see virtio-dev list).
+
+I tried to follow your patches from December on the Linux kernel list
+and the ID allocation one on virtio-comments list. I wasn't able to search
+for any other attempt at sending the specification, so may have missed
+something.
+
+I do understand that there were reasons why you (and me) chose a
+particular way of doing things and if there is a good reason of following
+that, then we can still modify the spec and fix things for everyone.
+We just need to discuss our reasoning on the list and get through with
+a specfication which works for everyone as this will become a standard
+interface for many in the future and it needs to be robust and efficient
+for everyone.
+
+> It already support async notifications
+> (IOW: irqs), had an easy upgrade path for future additions, etc.
+
+I haven't changed irqs path, we still have a separate virtqueue
+(named "interrupt" vq) which handles just the interrupts now. And so
+will be faster than what you initially suggested.
+
+In your original design you also received the responses for the requests
+on this virtqueue, wihch I have changed to get the response synchronously
+on the "command" virtqueue only.
+
+This is from one of your earlier replies:
+
+"
+I've been under the impression that queues only work in only one
+direction. (at least that's what my web research was telling).
+
+Could you please give an example how bi-directional transmission within
+the same queue could look like ?
+"
+
+It is actually possible and the right thing to do here as we aren't starting
+multiple requests together. The operation needs to be synchronous anyway
+and both request/response on the same channel work better there. Also that
+makes the interrupts reach faster, without additional delay due to responses.
+
+> Note #2: it's already implemented and running in the field (different
+> kernels, different hypervisors, ...) - it just lacked the going through
+> virtio comitte's formal specification process, which blocked mainlining.
+
+I understand the pain you would be reqiured to go through because of this,
+but this is how any open source community will work, like Linux.
+
+There will be changes in specification and code once you post it and any
+solutions already working in the field won't really matter during the
+discussion.
+That is why it is always the right thing to _upstream first_, so one can avoid
+these problems later on. Though I understand that the real world
+needs to move faster than community. But no one can really help in that.
+
+> Is there anything fundamentally wrong w/ my original design, why you
+> invented a completely new one ?
+
+Not much, and I haven't changed a lot as well.
+
+Lemme point out few things which have changed in specification since
+your earlier
+version (the code just followed the specification, that's it).
+
+- config structure
+  - version information is replaced with virtio-features.
+  - Irq support is added as a feature, as you suggested.
+  - extra padding space (24 bytes) removed. If you see this patch we can
+    now read the entire config structure in a single go. Why should
+anyone be required
+    to copy extra 24 bytes? If we need more fields later, we can
+always do that with help
+    of another feature-flag. So this is still extendable.
+
+- Virtqueues: we still have two virtqueues (command and interrupt),
+just responses are
+  moved to the command virtqueue only, as that is more efficient.
+
+- Request/response: Request layout is same, added a new layout for response as
+  the same layout is inefficient.
+
+- IRQ support: Initial specification had no interface for configuring
+irqs from the guest,
+  I added that.
+
+That's all I can gather right now.
+
+I don't think that's a lot and it is mostly improvements only. But if
+there is a good reason
+on why we should do things differently, we can still discuss that. I
+am open to suggestions.
+
+Thanks
+
+--
+Viresh
