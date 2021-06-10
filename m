@@ -2,192 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9892F3A2EFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775943A2F01
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhFJPG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:06:56 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:35766 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbhFJPGz (ORCPT
+        id S231593AbhFJPIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:08:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32893 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231467AbhFJPIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:06:55 -0400
-Received: by mail-wr1-f48.google.com with SMTP id m18so2716351wrv.2;
-        Thu, 10 Jun 2021 08:04:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=maDX1SqEQGmbJlvnWGoFUMoFJ5cg99gOE1aPzue8sQc=;
-        b=CM3OxKfIneIAUiLf5Zk7CX1dZ+8sSdQ76IbHP2tuZgRjPcYy/z1Yv6PUlaqE9NYSBo
-         QWw2VAs6hA/Rt5fp6On+lvmLyJXpiGVnNihRdFlPAjoGXJ361gMv8lMt4qkdtZAHUnlK
-         +WB8MpPrfSQJoARGfQzv3XE4xtLN2foAvm4fcVvJdrgxn1B++udXsElXnAMJpTewDg2w
-         ubV1bzDUShW6GGqKdbh+b5iiVANMa9DBWeBV3ce6k1PXFUK3ich76bw4yYXaTlTf/yY/
-         idZsW7AX4esUjWByduaTJLezo70qlY0CUWWXtc/drySh17MBJAT8e/vM4/bav/3ulLIi
-         09DQ==
+        Thu, 10 Jun 2021 11:08:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623337569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ed14xuc5GLdj1NrbGE3OdC+GrAhtNU/6LCzI+jZmJEs=;
+        b=aW7kIPNAJgu0194i8vVJvhJ7wap+iPm6lCM4QPedbhEtn4wOvIZK5onFf4MqUWE2FaAFo8
+        29MK6TfMUilVTl2S4Nc6BL8fMbHxjJrsGqMnxEgFCUGT8ANr1d0ysDfFdbkbYQN1uwUp7R
+        PR6Su2V2MCHPIWICpGo6xIbWmdiI2WA=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-Z3wXpCWQNGCwcuOzGps6iQ-1; Thu, 10 Jun 2021 11:06:07 -0400
+X-MC-Unique: Z3wXpCWQNGCwcuOzGps6iQ-1
+Received: by mail-wm1-f70.google.com with SMTP id n21-20020a7bcbd50000b02901a2ee0826aeso3895373wmi.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 08:06:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=maDX1SqEQGmbJlvnWGoFUMoFJ5cg99gOE1aPzue8sQc=;
-        b=i7wOUioMzDiTB3mZcdygW7irR+QJy/P3rFBzlU7KinTz6qcFcXPLZQgxZfxZ8nmrjj
-         0IqzrnYN3jJXvlLTUlD5z+Uab3prLjQUD0A2FhweBpX76H3mFaqJAQEC6++1iL6Sd08S
-         xiohm8d7vSXRJxNP1g0NVfHpQKt+6+IaZfwlXbvndNADyszSuRdZ5EkUWqFecgOY2m+o
-         7dwsXIhy+PRuI9dGQzBngPgZY65CYHpaZX+IHlHyz6Nwij3PmRAPoglsqT5zhfNblnVX
-         w01RUVla5E+oQShxgPM02kmztyAesbL/buHwyYlH6tOIluNNNvRbDfa1IJRU/He5tuoU
-         kP7w==
-X-Gm-Message-State: AOAM531dDrqRJw1IDmYHTP1ay9h46BwKl9dgOVxoenaxN+F1VLHsYFEp
-        U9cPPmS+FoCvy5JNVKm60gI=
-X-Google-Smtp-Source: ABdhPJwI0pDe52r2vhAsfmYMLDJnqn5RBM1d0jDdXYIV9WJl4CSRRI62IkWpVAjPBPaE3eD5NbX/ng==
-X-Received: by 2002:adf:f7d1:: with SMTP id a17mr6103816wrq.84.1623337424570;
-        Thu, 10 Jun 2021 08:03:44 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id m132sm3222349wmf.10.2021.06.10.08.03.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 08:03:43 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 17:05:27 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm@kernel.org, soc@kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        Dmitry Osipenko <digetx@gmail.com>
-Subject: Re: [GIT PULL] memory: Tegra memory controller for v5.14
-Message-ID: <YMIqNynz29Z9fYi3@orome.fritz.box>
-References: <20210607084910.21024-1-krzysztof.kozlowski@canonical.com>
- <20210608120128.GB10174@willie-the-truck>
- <YL+A+MPjjaa3nSwq@orome.fritz.box>
- <20210608164851.GB10994@willie-the-truck>
- <YMHZCaRiQNQCSsVr@orome.fritz.box>
- <8c18edeb-2e3e-9072-6bb4-11637d0ca3e5@canonical.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ed14xuc5GLdj1NrbGE3OdC+GrAhtNU/6LCzI+jZmJEs=;
+        b=UAbv0snBnEPj3USOcYmbsHMd/9Hy1/x+C748DkVYZOO7LXIwRrMYZZ5dn8aVXTadCn
+         4FhaIznjC3GYKnM1K7HJT/kfqaGMVQUkOoE78kvNFUz5gqtFxMqP9advcmg6J0nBMN0/
+         Oy0wY/vQZsMYNJBJAjgK3H9oi64cfMiWyOXEUBcJ0l4w0Qd2c6RDuD4wRPepE03I+t7S
+         bKgWH5Prigv5+NpRE1Cg2TltBfk2BaANJE4dn2sNzzljoX2pHWLrd2/yuUYh0aFR+u7C
+         y7QAZWXxSBXMCfQHx8qbZ9HipzkMV1R/z747al9QDZ6zRxlVavCjtOaJeBxKU+mEU3hK
+         i2GA==
+X-Gm-Message-State: AOAM530aSVad5GF5hUE4H2ImT2KxpnSEqcwiZugzkP4inwY1p4/IY35C
+        0Pb/tDZq3UE/hKRkDHWyWn3+QG7BdFQCVbKzzf5446bdcC9cK0sXlvJSf2llgKipFTxpoTfsBtk
+        XAkYjpT71O5IW3I447+UBiTPZ
+X-Received: by 2002:a7b:c098:: with SMTP id r24mr15327303wmh.35.1623337566497;
+        Thu, 10 Jun 2021 08:06:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyHf4OlESk6cmnALRE3mUEXEeyjVHsEEQZzI40uQXGVsfJoMugcGZk20BYFlr8EDnNLDWIA9w==
+X-Received: by 2002:a7b:c098:: with SMTP id r24mr15327292wmh.35.1623337566335;
+        Thu, 10 Jun 2021 08:06:06 -0700 (PDT)
+Received: from ?IPv6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
+        by smtp.gmail.com with ESMTPSA id u15sm8514366wmq.1.2021.06.10.08.06.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 08:06:05 -0700 (PDT)
+Subject: Re: [PATCH v3 7/8] KVM: x86: Introduce KVM_GET_SREGS2 /
+ KVM_SET_SREGS2
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20210607090203.133058-1-mlevitsk@redhat.com>
+ <20210607090203.133058-8-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f6a0aed8-2cfe-0af3-dd6f-26e4f203be9e@redhat.com>
+Date:   Thu, 10 Jun 2021 17:06:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7mpR+8HugVK1gP7Y"
-Content-Disposition: inline
-In-Reply-To: <8c18edeb-2e3e-9072-6bb4-11637d0ca3e5@canonical.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <20210607090203.133058-8-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07/06/21 11:02, Maxim Levitsky wrote:
+> +static int __set_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2)
+> +{
+> +	int mmu_reset_needed = 0;
+> +	bool valid_pdptrs = sregs2->flags & KVM_SREGS2_FLAGS_PDPTRS_VALID;
+> +	int i, ret;
+>   
+> +	if (sregs2->flags & ~KVM_SREGS2_FLAGS_PDPTRS_VALID)
+> +		return -EINVAL;
+> +
+> +	ret = __set_sregs_common(vcpu, (struct kvm_sregs *)sregs2,
+> +				 &mmu_reset_needed, !valid_pdptrs);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (valid_pdptrs) {
+> +		if (!is_pae_paging(vcpu))
+> +			return -EINVAL;
+> +		if (vcpu->arch.guest_state_protected)
+> +			return -EINVAL;
+> +		for (i = 0 ; i < 4 ; i++)
+> +			kvm_pdptr_write(vcpu, i, sregs2->pdptrs[i]);
+> +
+> +		kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
+> +		mmu_reset_needed = 1;
+> +	}
+> +	if (mmu_reset_needed)
+> +		kvm_mmu_reset_context(vcpu);
+> +	return 0;
+>   }
 
---7mpR+8HugVK1gP7Y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's a bit nicer if the checks are done early:
 
-On Thu, Jun 10, 2021 at 04:23:56PM +0200, Krzysztof Kozlowski wrote:
-> On 10/06/2021 11:19, Thierry Reding wrote:
-> > On Tue, Jun 08, 2021 at 05:48:51PM +0100, Will Deacon wrote:
-> >> On Tue, Jun 08, 2021 at 04:38:48PM +0200, Thierry Reding wrote:
-> >>> On Tue, Jun 08, 2021 at 01:01:29PM +0100, Will Deacon wrote:
-> >>>> On Mon, Jun 07, 2021 at 10:49:10AM +0200, Krzysztof Kozlowski wrote:
-> >>>>> This is the pull for you to base further SMMU aptches (prevent earl=
-y SMMU
-> >>>>> faults).
-> >>>>
-> >>>> This is a tonne of code for me to pull into the SMMU tree given that=
- I only
-> >>>> want one patch!
-> >>>>
-> >>>> Thierry, if I just stick:
-> >>>>
-> >>>> https://lore.kernel.org/r/20210603164632.1000458-4-thierry.reding@gm=
-ail.com
-> >>>>
-> >>>> on its own branch, can you stitch together whatever you need?
-> >>>
-> >>> I'm not sure I understand what you're proposing. For reference, here's
-> >>> the set of patches that I sent out:
-> >>>
-> >>>   1. memory: tegra: Implement SID override programming
-> >>>   2. dt-bindings: arm-smmu: Add Tegra186 compatible string
-> >>>   3. iommu/arm-smmu: Implement ->probe_finalize()
-> >>>   4. iommu/arm-smmu: tegra: Detect number of instances at runtime
-> >>>   5. iommu/arm-smmu: tegra: Implement SID override programming
-> >>>   6. iommu/arm-smmu: Use Tegra implementation on Tegra186
-> >>>   7. arm64: tegra: Use correct compatible string for Tegra186 SMMU
-> >>>   8. arm64: tegra: Hook up memory controller to SMMU on Tegra186
-> >>>   9. arm64: tegra: Enable SMMU support on Tegra194
-> >>>
-> >>> Krzysztof already picked up patch 1 and I was assuming that you'd pick
-> >>> up 2-6 because they are to the ARM SMMU driver. However, if you're
-> >>> primarily interested in just patch 3, which is more "core" ARM SMMU t=
-han
-> >>> the rest, which are Tegra-specific, then I suppose what we could do is
-> >>> for you to give an Acked-by on the rest (2, 4-6) and then Krzysztof o=
-r I
-> >>> can pick them up and take them via ARM SoC, based on the stable branch
-> >>> from your tree that only has patch 3.
-> >>
-> >> I think you previously said that patch 5 depends on patch 1, so I can't
-> >> take 2-6 without also pulling in the memory controller queue.
-> >>
-> >>> Patch 6 touches arm-smmu-impl.c, though it's a two-line change that
-> >>> touches only the Tegra-specific matching bit in arm_smmu_impl_init(),=
- so
-> >>> the likelihood of that conflicting with anything else is fairly small.
-> >>>
-> >>> Is that what you were proposing?
-> >>
-> >> I can queue as much or as little of 2-6 as you like, but I would like =
-to
-> >> avoid pulling in the memory controller queue into the arm smmu tree. B=
-ut
-> >> yes, whichever of those I take, I can put them on a separate branch so
-> >> that you're not blocked for the later patches.
-> >>
-> >> You have a better handle on the dependencies, so please tell me what w=
-orks
-> >> for you. I just want to make sure that at least patch 3 lands in my tr=
-ee,
-> >> so we don't get late conflicts with other driver changes.
-> >=20
-> > Yes, if you could pick up patch 3 and send out a link with the stable
-> > branch, I think Krzysztof or I could pull in that branch and pick up the
-> > remaining patches. It'd be good if you could also ack the remaining SMMU
-> > patches so that ARM SoC knows that they've been sanctioned.
-> >=20
-> > Krzysztof: would you be okay with picking up patches 2 and 4-6 on top of
-> > your memory branch for v5.14?
->=20
-> You mean the iommu patches? Yes, I can take them and later explain to
-> Arnd/Olof why they come through me.
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index f20c7c06bd4a..c6f8fec78c53 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -10248,22 +10248,23 @@ static int __set_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2)
+  {
+         int mmu_reset_needed = 0;
+         bool valid_pdptrs = sregs2->flags & KVM_SREGS2_FLAGS_PDPTRS_VALID;
++       bool pae = (sregs2->cr0 & X86_CR0_PG) && (sregs2->cr4 & X86_CR4_PAE) &&
++               !(sregs2->efer & EFER_LMA);
+         int i, ret;
+  
+         if (sregs2->flags & ~KVM_SREGS2_FLAGS_PDPTRS_VALID)
+                 return -EINVAL;
+  
++       if (valid_pdptrs && (!pae || vcpu->arch.guest_state_protected))
++               return -EINVAL;
++
+         ret = __set_sregs_common(vcpu, (struct kvm_sregs *)sregs2,
+                                  &mmu_reset_needed, !valid_pdptrs);
+         if (ret)
+                 return ret;
+  
+         if (valid_pdptrs) {
+-               if (!is_pae_paging(vcpu))
+-                       return -EINVAL;
+-               if (vcpu->arch.guest_state_protected)
+-                       return -EINVAL;
+-               for (i = 0 ; i < 4 ; i++)
++               for (i = 0; i < 4 ; i++)
+                         kvm_pdptr_write(vcpu, i, sregs2->pdptrs[i]);
+  
+                 kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
 
-Okay, great.
+Paolo
 
-Will, can you provide that stable branch? Or would you prefer if I
-prepared it and sent you a pull request? We're kind of running out of
-time, since for ARM SoC the cut-off point for new material is usually
--rc6 and that's coming up pretty fast.
-
-Thierry
-
---7mpR+8HugVK1gP7Y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmDCKjQACgkQ3SOs138+
-s6G9mxAAvng5nEyjLg9tvjEBYmqVzd3B9QUm5jd6sZZq6YdD6wjrUpmwWSTcP7XI
-dJ9T722dGWz3HENw9AIgv4zMj2/ws8g84+1dvjL/eo56PaWLoNdCpm2IokdKjl2G
-3sjYPEBPyEr+nqvsu+wIMbYeiXGfK2nndGg+Mw5wBnt/dQ5fYPLtKc/o5XSo5M5R
-7qmp3ekHSU5fD/X8F5+bCZajyaVyLFNU58FdsCf0yRTcqED5uWPO0TPp/VwPnlIw
-Q19s+JQD+V4XbFMgSadlPF8VP/Dht7W8tiUBl5WpoPMqFpBa8AtkZ6VrAjaM92tf
-fTyVdA/fZg04rh3M1yH8QpOOYA2z3YmGj3U2ShYAAQSnoiqLwW2fE+pEqQfmRDPI
-2rJdP8aTuXzxdMVFpklP7iTPjOd2aNSZc3gQ9U9xNF9tDd74DDYVJqCt3D3C0bhP
-Mk8hioQpf3HtY53fnBcF8g3zGgYrd2ZEQuAp5McB/mbhpmj+kiJs/iUZVVoYfu4H
-GWAERzA11dmouEHyWWjtmVGPujs/Jxt6eSJiNvn4WvuS6ezYP55NQ0Z7U+17/QqI
-1Xo+q01r+6JON6Rx730qOjuWJqqx8Oo1db+BBN/Tp/g1xlC0YmobTwchCC0RSgho
-YOaTy2yuc++OIrpXDJT80MHodI4MBVDJHKqqsOpeH1szjvdGpqc=
-=iL3y
------END PGP SIGNATURE-----
-
---7mpR+8HugVK1gP7Y--
