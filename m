@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13873A21EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 03:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA293A21ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 03:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhFJBjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 21:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFJBjK (ORCPT
+        id S229814AbhFJBku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 21:40:50 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:33894 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFJBku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 21:39:10 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CECAC061574;
-        Wed,  9 Jun 2021 18:37:01 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id x73so243251pfc.8;
-        Wed, 09 Jun 2021 18:37:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0D9NMWJTej053t447eIPNR0Qklez1ed8b2jcSOvvdes=;
-        b=NUsN/F7tXiK21ga7MhoXMSQLca9QR16Q/e7wwMPykRvyv6gqXjYETS8olVF8gLt+lw
-         G/5KhrIutjANeYKZzVrcirzu4OYN36lqmgy522uGlRPSSywUnOtOwLwKxxpCgou8K2y/
-         hzZmnmothERUPg828a0xIXXl3oyKPY2rOXbNRpCUBc84CSRgSvT539uTzzzQQ1WzhvRr
-         7r+T22X4siZafcHH+70o2qcY2iHtvzPlYOM9GUy/xZ6TmTePWIbwO/oh28ITh/o7XTwk
-         aoRFkxjSJcd+b/CZICR3Nj+XXRqyNxRlSzhxeoY5SIbOW1P16KjGC2UOCxBpWOLPL83I
-         3f4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0D9NMWJTej053t447eIPNR0Qklez1ed8b2jcSOvvdes=;
-        b=ByGxiPUnL1oirA0uuk9Nlo8aQx7KJ1usPZpC2k+VSz0LSc+QX5A/nxhBVVJQ/M/ZZV
-         B8l18J2fOAV0JgakwnBeoR8OBqncgmzoSrjOQ1gy8L1hniRSdtqDvxw31rgxu+2B4rdD
-         cpDALTqbCDSb57hJuHQ2yUdqj6J58qHA+SewvUjxZjK/yg4tknw0zR9E7Pv5oPixj8en
-         pk/FkxpAXTNDEX7JNBSngj62evZSLi6o302nG/r2aZoN6xIIbiIEVis6PQ9qmXpwOJfp
-         zDmjMpLBb9ktmCHumx57DxD/m6eerPrfyzwgkisvC9nUDkINFQxFJsVSyZiKfyV9jgVp
-         lxlg==
-X-Gm-Message-State: AOAM532CFx1NMy8tC6cKlI6WM9rm0MrkYPpWebrM7Jok4v2GkQZFeT8h
-        tSfseTASRFmD1JAd+9rsBXU=
-X-Google-Smtp-Source: ABdhPJy+vh3dS9ZcvT9Niyzh7n9FP0Rl4ErnxE0G+a8F8CQviyw6gQUQZSTsrLu2JtVq3vM5Upjs1A==
-X-Received: by 2002:a05:6a00:148e:b029:2ec:398a:16db with SMTP id v14-20020a056a00148eb02902ec398a16dbmr587135pfu.74.1623289020979;
-        Wed, 09 Jun 2021 18:37:00 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id s24sm6101533pju.9.2021.06.09.18.36.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 18:37:00 -0700 (PDT)
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     jic23@kernel.org, linux@rempel-privat.de
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH] counter: interrupt-cnt: Add const qualifier for actions_list array
-Date:   Thu, 10 Jun 2021 10:36:42 +0900
-Message-Id: <20210610013642.149961-1-vilhelm.gray@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 9 Jun 2021 21:40:50 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 943DA8A2;
+        Thu, 10 Jun 2021 03:38:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623289133;
+        bh=yqpHWZPanjkC+V9yvODkHojqHp3PntAQ434IwkjrduM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YZNBT8CDKmhWq5cKGb3SHMOG5gszAfxe0XtLk6Wo7lVNi70RuY9TvK2QpWtgZ1nRH
+         D6T9KUrJtNCgWdqCpoaVFXVsaCTZM+Zp1wVyZjlQH71nyGToUpOxi74t2yetS/p5Kc
+         DxCca1Z28Wn1wvjNYmofmVM0reUIVR9mfjTTkXYg=
+Date:   Thu, 10 Jun 2021 04:38:34 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     hyun.kwon@xilinx.com, vkoul@kernel.org, michal.simek@xilinx.com,
+        nathan@kernel.org, ndesaulniers@google.com,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dmaengine: xilinx: dpdma: fix kernel-doc
+Message-ID: <YMFtGqicAMoZ0LOV@pendragon.ideasonboard.com>
+References: <1623222893-123227-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1623222893-123227-1-git-send-email-yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct counter_synapse actions_list member expects a const enum
-counter_synapse_action array. This patch renames
-interrupt_cnt_synapse_actionss to interrupt_cnt_synapse_actions and adds
-a const qualifier to match actions_list.
+Hi Yang Li,
 
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
----
- drivers/counter/interrupt-cnt.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thank you for the patch.
 
-diff --git a/drivers/counter/interrupt-cnt.c b/drivers/counter/interrupt-cnt.c
-index 827d785e19b4..5df7cd13d4c7 100644
---- a/drivers/counter/interrupt-cnt.c
-+++ b/drivers/counter/interrupt-cnt.c
-@@ -77,7 +77,7 @@ static const struct counter_count_ext interrupt_cnt_ext[] = {
- 	},
- };
- 
--static enum counter_synapse_action interrupt_cnt_synapse_actionss[] = {
-+static const enum counter_synapse_action interrupt_cnt_synapse_actions[] = {
- 	COUNTER_SYNAPSE_ACTION_RISING_EDGE,
- };
- 
-@@ -194,8 +194,8 @@ static int interrupt_cnt_probe(struct platform_device *pdev)
- 	priv->counter.signals = &priv->signals;
- 	priv->counter.num_signals = 1;
- 
--	priv->synapses.actions_list = interrupt_cnt_synapse_actionss;
--	priv->synapses.num_actions = ARRAY_SIZE(interrupt_cnt_synapse_actionss);
-+	priv->synapses.actions_list = interrupt_cnt_synapse_actions;
-+	priv->synapses.num_actions = ARRAY_SIZE(interrupt_cnt_synapse_actions);
- 	priv->synapses.signal = &priv->signals;
- 
- 	priv->cnts.name = "Channel 0 Count";
+On Wed, Jun 09, 2021 at 03:14:53PM +0800, Yang Li wrote:
+> Fix function name in xilinx/xilinx_dpdma.c comment to remove 
+> a warning found by kernel-doc.
+> 
+> drivers/dma/xilinx/xilinx_dpdma.c:935: warning: expecting prototype for
+> xilinx_dpdma_chan_no_ostand(). Prototype was for
+> xilinx_dpdma_chan_notify_no_ostand() instead.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+> 
+> Change in v2:
+> --replaced s/clang(make W=1 LLVM=1)/kernel-doc/ in commit.
+> https://lore.kernel.org/patchwork/patch/1442639/
+> 
+>  drivers/dma/xilinx/xilinx_dpdma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
+> index 70b29bd..0c8739a 100644
+> --- a/drivers/dma/xilinx/xilinx_dpdma.c
+> +++ b/drivers/dma/xilinx/xilinx_dpdma.c
+> @@ -915,7 +915,7 @@ static u32 xilinx_dpdma_chan_ostand(struct xilinx_dpdma_chan *chan)
+>  }
+>  
+>  /**
+> - * xilinx_dpdma_chan_no_ostand - Notify no outstanding transaction event
+> + * xilinx_dpdma_chan_notify_no_ostand - Notify no outstanding transaction event
+>   * @chan: DPDMA channel
+>   *
+>   * Notify waiters for no outstanding event, so waiters can stop the channel
+
 -- 
-2.32.0
+Regards,
 
+Laurent Pinchart
