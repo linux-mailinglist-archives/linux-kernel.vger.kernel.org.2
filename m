@@ -2,239 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9F33A3293
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FAA3A328D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhFJR7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhFJR7g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:59:36 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BE0C061574;
-        Thu, 10 Jun 2021 10:57:38 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2804:14c:1a9:2978:fdf4:5e57:8aee:5d72])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 301EF1F437D3;
-        Thu, 10 Jun 2021 18:57:33 +0100 (BST)
-From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>
-To:     devicetree@vger.kernel.org
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Xing Zheng <zhengxing@rock-chips.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Elaine Zhang <zhangqing@rock-chips.com>, kernel@collabora.com
-Subject: [PATCH] dt-bindings: clk: Convert rockchip,rk3399-cru to DT schema
-Date:   Thu, 10 Jun 2021 14:56:13 -0300
-Message-Id: <20210610175613.167601-1-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.32.0
+        id S230343AbhFJR6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:58:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229823AbhFJR6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 13:58:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7865C613BC;
+        Thu, 10 Jun 2021 17:56:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623347807;
+        bh=Crpi7Vd8aG1AIzHpP2cG2rG9WGptNGWFx7PZCSlviGQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=reWh7csN0s6vc+PhZ1WkeoW4RAJZ7pSsQZDiQxTRShBch2OXN0ick9QZ3t23jUoD2
+         bct7RmH806AO3ZG0arO8Z7x3Dz4jg8MN9F8sI/LizgCvD31Fkv9MPl65QozB+WXyRo
+         +K+oXhuRuSH5Jn2E4/4H7kZZeN9ITJ6/lxAIngLc=
+Date:   Thu, 10 Jun 2021 19:56:44 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     valentina.manea.m@gmail.com, shuah@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usbip: tools: usbipd: use ARRAY_SIZE for sockfdlist
+Message-ID: <YMJSXCRGzJz+Sfqb@kroah.com>
+References: <1623232316-89719-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623232316-89719-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the rockchip,rk3399-cru binding to DT schema format.
-Tested with
-ARCH=arm64 make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/clock/rockchip,rk3399-cru.yaml
-ARCH=arm64 make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/clock/rockchip,rk3399-cru.yaml
+On Wed, Jun 09, 2021 at 05:51:56PM +0800, Jiapeng Chong wrote:
+> Use ARRAY_SIZE instead of dividing sizeof array with sizeof an
+> element.
+> 
+> Clean up the following coccicheck warning:
+> 
+> ./tools/usb/usbip/src/usbipd.c:536:19-20: WARNING: Use ARRAY_SIZE.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  tools/usb/usbip/src/usbipd.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/tools/usb/usbip/src/usbipd.c b/tools/usb/usbip/src/usbipd.c
+> index 48398a7..4826d13 100644
+> --- a/tools/usb/usbip/src/usbipd.c
+> +++ b/tools/usb/usbip/src/usbipd.c
+> @@ -532,8 +532,7 @@ static int do_standalone_mode(int daemonize, int ipv4, int ipv6)
+>  		usbip_driver_close(driver);
+>  		return -1;
+>  	}
+> -	nsockfd = listen_all_addrinfo(ai_head, sockfdlist,
+> -		sizeof(sockfdlist) / sizeof(*sockfdlist));
+> +	nsockfd = listen_all_addrinfo(ai_head, sockfdlist, ARRAY_SIZE(sockfdlist));
 
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
----
+Always test-build your patches before sending them out, otherwise you
+just get grumpy maintainers complaining when you break the build :(
 
-One caveat is that this node expects certain external clocks, mainly 'xin24m'.
-From what I read of clock-bindings.txt, it seems the way to make this dependency
-explicit would be to add 'clocks' and 'clock-names' properties to both the DT
-and the binding. But since I'm not sure changing the DT ABI is desirable, I just
-moved that information to the binding description for now.
+Your "robot" needs some serious work here.
 
- .../bindings/clock/rockchip,rk3399-cru.txt    | 68 --------------
- .../bindings/clock/rockchip,rk3399-cru.yaml   | 92 +++++++++++++++++++
- 2 files changed, 92 insertions(+), 68 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/clock/rockchip,rk3399-cru.txt
- create mode 100644 Documentation/devicetree/bindings/clock/rockchip,rk3399-cru.yaml
-
-diff --git a/Documentation/devicetree/bindings/clock/rockchip,rk3399-cru.txt b/Documentation/devicetree/bindings/clock/rockchip,rk3399-cru.txt
-deleted file mode 100644
-index 3bc56fae90ac..000000000000
---- a/Documentation/devicetree/bindings/clock/rockchip,rk3399-cru.txt
-+++ /dev/null
-@@ -1,68 +0,0 @@
--* Rockchip RK3399 Clock and Reset Unit
--
--The RK3399 clock controller generates and supplies clock to various
--controllers within the SoC and also implements a reset controller for SoC
--peripherals.
--
--Required Properties:
--
--- compatible: PMU for CRU should be "rockchip,rk3399-pmucru"
--- compatible: CRU should be "rockchip,rk3399-cru"
--- reg: physical base address of the controller and length of memory mapped
--  region.
--- #clock-cells: should be 1.
--- #reset-cells: should be 1.
--
--Optional Properties:
--
--- rockchip,grf: phandle to the syscon managing the "general register files".
--  It is used for GRF muxes, if missing any muxes present in the GRF will not
--  be available.
--
--Each clock is assigned an identifier and client nodes can use this identifier
--to specify the clock which they consume. All available clocks are defined as
--preprocessor macros in the dt-bindings/clock/rk3399-cru.h headers and can be
--used in device tree sources. Similar macros exist for the reset sources in
--these files.
--
--External clocks:
--
--There are several clocks that are generated outside the SoC. It is expected
--that they are defined using standard clock bindings with following
--clock-output-names:
-- - "xin24m" - crystal input - required,
-- - "xin32k" - rtc clock - optional,
-- - "clkin_gmac" - external GMAC clock - optional,
-- - "clkin_i2s" - external I2S clock - optional,
-- - "pclkin_cif" - external ISP clock - optional,
-- - "clk_usbphy0_480m" - output clock of the pll in the usbphy0
-- - "clk_usbphy1_480m" - output clock of the pll in the usbphy1
--
--Example: Clock controller node:
--
--	pmucru: pmu-clock-controller@ff750000 {
--		compatible = "rockchip,rk3399-pmucru";
--		reg = <0x0 0xff750000 0x0 0x1000>;
--		#clock-cells = <1>;
--		#reset-cells = <1>;
--	};
--
--	cru: clock-controller@ff760000 {
--		compatible = "rockchip,rk3399-cru";
--		reg = <0x0 0xff760000 0x0 0x1000>;
--		#clock-cells = <1>;
--		#reset-cells = <1>;
--	};
--
--Example: UART controller node that consumes the clock generated by the clock
--  controller:
--
--	uart0: serial@ff1a0000 {
--		compatible = "rockchip,rk3399-uart", "snps,dw-apb-uart";
--		reg = <0x0 0xff180000 0x0 0x100>;
--		clocks = <&cru SCLK_UART0>, <&cru PCLK_UART0>;
--		clock-names = "baudclk", "apb_pclk";
--		interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
--		reg-shift = <2>;
--		reg-io-width = <4>;
--	};
-diff --git a/Documentation/devicetree/bindings/clock/rockchip,rk3399-cru.yaml b/Documentation/devicetree/bindings/clock/rockchip,rk3399-cru.yaml
-new file mode 100644
-index 000000000000..72b286a1beba
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/rockchip,rk3399-cru.yaml
-@@ -0,0 +1,92 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/rockchip,rk3399-cru.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Rockchip RK3399 Clock and Reset Unit
-+
-+maintainers:
-+  - Xing Zheng <zhengxing@rock-chips.com>
-+  - Heiko Stuebner <heiko@sntech.de>
-+
-+description: |
-+  The RK3399 clock controller generates and supplies clock to various
-+  controllers within the SoC and also implements a reset controller for SoC
-+  peripherals.
-+  Each clock is assigned an identifier and client nodes can use this identifier
-+  to specify the clock which they consume. All available clocks are defined as
-+  preprocessor macros in the dt-bindings/clock/rk3399-cru.h headers and can be
-+  used in device tree sources. Similar macros exist for the reset sources in
-+  these files.
-+  There are several clocks that are generated outside the SoC. It is expected
-+  that they are defined using standard clock bindings with following
-+  clock-output-names:
-+    - "xin24m" - crystal input - required,
-+    - "xin32k" - rtc clock - optional,
-+    - "clkin_gmac" - external GMAC clock - optional,
-+    - "clkin_i2s" - external I2S clock - optional,
-+    - "pclkin_cif" - external ISP clock - optional,
-+    - "clk_usbphy0_480m" - output clock of the pll in the usbphy0
-+    - "clk_usbphy1_480m" - output clock of the pll in the usbphy1
-+
-+properties:
-+  compatible:
-+    enum:
-+      - rockchip,rk3399-pmucru
-+      - rockchip,rk3399-cru
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#clock-cells":
-+    const: 1
-+
-+  "#reset-cells":
-+    const: 1
-+
-+  clocks:
-+    minItems: 1
-+
-+  assigned-clocks:
-+    minItems: 1
-+    maxItems: 64
-+
-+  assigned-clock-parents:
-+    minItems: 1
-+    maxItems: 64
-+
-+  assigned-clock-rates:
-+    minItems: 1
-+    maxItems: 64
-+
-+  rockchip,grf:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: >
-+      phandle to the syscon managing the "general register files". It is used
-+      for GRF muxes, if missing any muxes present in the GRF will not be
-+      available.
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#clock-cells"
-+  - "#reset-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    pmucru: pmu-clock-controller@ff750000 {
-+      compatible = "rockchip,rk3399-pmucru";
-+      reg = <0xff750000 0x1000>;
-+      #clock-cells = <1>;
-+      #reset-cells = <1>;
-+    };
-+  - |
-+    cru: clock-controller@ff760000 {
-+      compatible = "rockchip,rk3399-cru";
-+      reg = <0xff760000 0x1000>;
-+      #clock-cells = <1>;
-+      #reset-cells = <1>;
-+    };
--- 
-2.32.0
-
+greg k-h
