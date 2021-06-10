@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F069A3A3564
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72223A356B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhFJVHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 17:07:02 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:59734 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhFJVHB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:07:01 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1A69520B7178;
-        Thu, 10 Jun 2021 14:05:03 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1A69520B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623359104;
-        bh=9heYwDg7HkXqmnRyjiu31yAcnxTkKMw3sVGVK8qX7II=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NL/mZr/sTjypmf8YXwF9PG/hiD3wixy3Z8rZov3Q4mL477kgo3L+JGWgn5s1E/IhJ
-         ok1Q2mM+7sKmkUGr4th02hNY+gb2HRC533UHj4s/mXCKrzfqjZeeNL1WvBMeab1g3z
-         TJczE2jmC3xVo/G1up5fiW4ZFLlX5bKSWA+85HKs=
-Date:   Thu, 10 Jun 2021 16:05:01 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>, Rijo-john.Thomas@amd.com,
-        Allen Pais <apais@linux.microsoft.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        op-tee@lists.trustedfirmware.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 5/7] tee: Support shm registration without dma-buf
- backing
-Message-ID: <20210610210501.GP4910@sequoia>
-References: <20210609002326.210024-1-tyhicks@linux.microsoft.com>
- <20210609002326.210024-6-tyhicks@linux.microsoft.com>
- <CAFA6WYOZC0iHzZm6pOxz31eW_=8g2wyJdm4wiOGKggO6-a9MdA@mail.gmail.com>
- <20210609054621.GB4910@sequoia>
- <CAFA6WYOYt2vcQ4ng=Nwu2R7d6=R=DGXQKpQ-+UiENerEtQRKWg@mail.gmail.com>
- <20210609121533.GA2267052@jade>
- <20210609134225.GC4910@sequoia>
- <20210610074948.GC2753553@jade>
+        id S230239AbhFJVJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:09:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229941AbhFJVJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 17:09:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B702A6100A;
+        Thu, 10 Jun 2021 21:07:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623359251;
+        bh=pHf7P+Kb3MrvjIG7mkj0zoaPtUSfHejw14zrzz56EeQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=uRNsrryiOKU8G5C08uQbch7cIB4uPe1F6y6EvVfv4vD/JnDGswiRybXw5WBmTADXR
+         UTYJuaCl3M4JuXL0BgHDTJMHhLSbp1NlG391aI5nIkXUPlpEUXvb3AAQxlbKXqtoiv
+         0egM/uG0204tfvMTazLFbhMmFOjV/HYrKL1SAvW8ij8hH4SLa/GMOROuHqX/hCj2s/
+         IYcz+dzNINj01SW1ZXQadRmAXtdAAid3dcNTAxC62herqdqH3K9koFqgHqKem9Ekp6
+         hpY2TmiI32fVJTvyVZLlVbx8l60GeM8z/5nPBkeClnzN0A8axdlIoIzuGvBpT7+abJ
+         8H2EsoNmvacOw==
+Subject: Re: [PATCH v2 1/1] x86/Makefile: make -stack-alignment conditional on
+ LLD < 13.0.0
+To:     Tor Vic <torvic9@mailbox.org>
+Cc:     clang-built-linux@googlegroups.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+References: <f2c018ee-5999-741e-58d4-e482d5246067@mailbox.org>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <9b93b016-c19a-21db-2cc4-041810ae722d@kernel.org>
+Date:   Thu, 10 Jun 2021 14:07:30 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610074948.GC2753553@jade>
+In-Reply-To: <f2c018ee-5999-741e-58d4-e482d5246067@mailbox.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-10 09:49:48, Jens Wiklander wrote:
-> On Wed, Jun 09, 2021 at 08:42:25AM -0500, Tyler Hicks wrote:
-> [snip]
-> > > I've just posted "[PATCH 0/7] tee: shared memory updates",
-> > > https://lore.kernel.org/lkml/20210609102324.2222332-1-jens.wiklander@linaro.org/
-> > > 
-> > > Where tee_shm_alloc() is replaced by among other functions
-> > > tee_shm_alloc_kernel_buf(). tee_shm_alloc_kernel_buf() takes care of the
-> > > problem with TEE_SHM_DMA_BUF.
-> > 
-> > Thanks! At first glance, that series would take care of the last three
-> > patches in my kexec/kdump series.
-> > 
-> > I'm a bit worried that it is a rewrite of the shm allocator. Do you plan
-> > to send all of that to stable? (I mentioned earlier in this thread that
-> > I'm affected by these bugs in linux-5.4.y.)
+On 6/10/2021 1:58 PM, Tor Vic wrote:
+> Since LLVM commit 3787ee4, the '-stack-alignment' flag has been dropped
+> [1], leading to the following error message when building a LTO kernel
+> with Clang-13 and LLD-13:
 > 
-> No, that might be a bit much.
+>      ld.lld: error: -plugin-opt=-: ld.lld: Unknown command line argument
+>      '-stack-alignment=8'.  Try 'ld.lld --help'
+>      ld.lld: Did you mean '--stackrealign=8'?
 > 
-> > Also, you and Sumit don't seem to have the same opinion on kernel
-> > drivers making use of tee_shm_register() for allocations that are only
-> > used internally. Can you comment on that?
-> > 
-> > I'm not clear on the next steps for fixing these kexec/kdump bugs in
-> > older releases. I appreciate any guidance here.
+> It also appears that the '-code-model' flag is not necessary anymore
+> starting with LLVM-9 [2].
 > 
-> Neither am I be honest. You're the only one that has brought up this
-> problem so perhaps it's enough to focus on the stable branch you need to
-> have fixed.
-
-I've already added Fixes tags to all of my patches. If you are
-comfortable with them going to stable, you'd add
-'Cc: stable@vger.kernel.org' to them if/when you merge them so that the
-stable team will ensure that they're applied.
-
-Note that I'm not the only person that brought up this bug:
-
- https://github.com/OP-TEE/optee_os/issues/3637
-
-Once I started digging in, I realized that there were more kexec/kdump
-bugs and the series grew.
-
-> If I've understood it correctly it's best if it's possible to
-> cherry-pick the fixes from mainline to the stable branch in question.
-> So we must make sure to get your needed patches in before any rewrites
-> that would make cherry-picking impossible. The rewrite I'm proposing
-> isn't urgent so it can be held off for a while.
-
-Thanks for holding off. I'll be quick on my revisions so that you don't
-have to moth ball your series for too much longer.
-
-Tyler
-
+> Drop '-code-model' and make '-stack-alignment' conditional on LLD < 13.0.0.
 > 
-> Cheers,
-> Jens
+> These flags were necessary because these flags were not encoded in the
+> IR properly, so the link would restart optimizations without them. Now
+> there are properly encoded in the IR, and these flags exposing
+> implementation details are no longer necessary.
 > 
+> Changes from v1:
+> - based on mainline
+> - provide more information about the flags (Nick)
+> - use correct tags
+
+Small note for the future, probably not worth resending unless the x86 
+folks feel it is necessary but these comments belong between the '---' 
+and the stats below so that they do not get included in the final commit 
+message.
+
+> Cc: stable@vger.kernel.org
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1377
+> [1]: https://reviews.llvm.org/D103048
+> [2]: https://reviews.llvm.org/D52322
+> Signed-off-by: Tor Vic <torvic9@mailbox.org>
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+
+Thank you for the patch!
+
+> ---
+>   arch/x86/Makefile | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+> index 307529417021..cb5e8d39cac1 100644
+> --- a/arch/x86/Makefile
+> +++ b/arch/x86/Makefile
+> @@ -200,8 +200,9 @@ endif
+>   KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
+> 
+>   ifdef CONFIG_LTO_CLANG
+> -KBUILD_LDFLAGS	+= -plugin-opt=-code-model=kernel \
+> -		   -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
+> +ifeq ($(shell test $(CONFIG_LLD_VERSION) -lt 130000; echo $$?),0)
+> +KBUILD_LDFLAGS	+= -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
+> +endif
+>   endif
+> 
+>   ifdef CONFIG_X86_NEED_RELOCS
+> 
+
+Cheers,
+Nathan
