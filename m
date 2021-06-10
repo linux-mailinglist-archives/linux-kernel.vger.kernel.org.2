@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF1E3A31C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039D33A31C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhFJRNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:13:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229802AbhFJRNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:13:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C289613C9;
-        Thu, 10 Jun 2021 17:11:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623345080;
-        bh=5i1YYQPe0SKOHI2nfgnCq6FvKp5HQINwp673ARQ1VXM=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=sZLYDAkzceQzmHC8j1hrcOsy4f5x6gHdtTEbmkpg8MoRNEu9XCYJkIDM2/bHTVeI0
-         6irbV3NMp/06UEtvUSVSTK4C37F0xD9yI4TL3GN2WPhftgeIgf1IZNE760YDpU/tkD
-         hjBHLXWtWh3dKTUuVs0YLqGNn0zKd8ERO94g1G9axxNSKBuQGy34iT4FsPI6bd2w7a
-         IpaMZ9zVMo86HXa4YNBCeGlUMD8CtcipbYvNAHAjqZpH/hlsBocU1fOlet7VKvhUnt
-         OR574b3hy7Z2HH49kw3x+E+4legwFjHGX2/YDjT6JqMwXEb0sGjbiOtzQPGQ5XLVpp
-         tgFL4F+4rCN7w==
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id A622027C005A;
-        Thu, 10 Jun 2021 13:11:18 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute2.internal (MEProxy); Thu, 10 Jun 2021 13:11:18 -0400
-X-ME-Sender: <xms:tEfCYAkCygQ17ogjTQTpay2ewKtC920hX-Fiv0qpyYENRVKY6ybqCw>
-    <xme:tEfCYP0PGX7P5Be8vbtLotgJtAy5FuRy9nbn2mxOvCCvh0dce0w7NsWPJHSD9izSv
-    FmwlngHcpzthO2jfhc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedufedguddtkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieev
-    ieeufeevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
-    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
-    hugidrlhhuthhordhush
-X-ME-Proxy: <xmx:tEfCYOp0pU9BgDyRti454DjWmvRh0_zcUEA1jTYT_hLk3xZFk1cqhA>
-    <xmx:tEfCYMlvGIn00t_9cZHUDQokpCAfzzQTKEwj_0Ij4wKBD6exN940NQ>
-    <xmx:tEfCYO3yZeuRGfmv94NLqkQXEyVSb89LAdIJc9pltBhLmljhKs_8Dg>
-    <xmx:tkfCYHmTikck1C3cZBxLLX-6xeC9vy5OaeNY694m8PmXKwKk5_pjjkLwlno>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 8673251C0060; Thu, 10 Jun 2021 13:11:16 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
-Mime-Version: 1.0
-Message-Id: <ca2d7f44-bbef-448a-bbd4-ff27cc6f0c9e@www.fastmail.com>
-In-Reply-To: <20210608144345.912645927@linutronix.de>
-References: <20210608143617.565868844@linutronix.de>
- <20210608144345.912645927@linutronix.de>
-Date:   Thu, 10 Jun 2021 10:10:51 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>,
-        "Fenghua Yu" <fenghua.yu@intel.com>,
-        "Tony Luck" <tony.luck@intel.com>,
-        "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
-        "Sebastian Andrzej Siewior" <bigeasy@linutronix.de>,
-        "Rik van Riel" <riel@surriel.com>, "Borislav Petkov" <bp@suse.de>
-Subject: =?UTF-8?Q?Re:_[patch_V3_3/6]_x86/process:_Check_PF=5FKTHREAD_and_not_cur?=
- =?UTF-8?Q?rent->mm_for_kernel_threads?=
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S230507AbhFJRMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhFJRMw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 13:12:52 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2DFC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:10:55 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so4254266pjq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:10:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fGe4DY8mKKnygk1FE1mf6upUstyZmptYOrEfvpk5Mh4=;
+        b=mdhUfAb6YifrK82K1uc/PcW7Zxwk4vR3l4dsm8mWZeEkgaENHt8dNJfm9RlVGfAeFg
+         HXWfyBTRkCAA8Sw4IU5MahyfcRsTv/7i7ZCIWQYC3dG698lzzVo/PsMeIyKPMhZEfBsb
+         BteICrFlQFZxM6TsPbdHKk39bzZo97p/pLGzdq0hMwTd3yHSqFH0PS9iTeMImIX2OL8k
+         kJkfTNlkVynbsIoVk10EyMZr7Y25M4buoHWx/ITZV395lRP6gJktiI3zgSmSUMMqFbaC
+         3ZqEqdOqRYCsDJ8OWLH2tGhy++wUmUBZrwymWmqSBguSYnRrQZPQhIyIP334l1g9wSxW
+         MC4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fGe4DY8mKKnygk1FE1mf6upUstyZmptYOrEfvpk5Mh4=;
+        b=ahBIICxyJ800JPb+S4E5I7+IzZZqFfbRxJ8geHeG1KUjuC9IXOfdavNlONlRGWpI0i
+         j316PIRncBNLqZMG0dqXKy+eDBiPU18tSfAYqokXEaq/cAlGtsu4CmamnWL6hsaXBxUd
+         tpWAZk8m7il6mnrgFXLnXrtDiQFElkFmEwCnAP9MR0nXQQVP8Oxf9RhhDdk0qCvrIQyq
+         K2LNOL+bFAk4IQ8rZLQrBWZJNrrd8ugl3euIweY70UwohFUHDZGcpESVKWerthL9PXAn
+         3S4Appi3cyeituKilTjT3vbuotZ6HdEmiAsfLOy+mRASNnlEjIdkmQ/QqeJuwd/8Y7ua
+         WKEw==
+X-Gm-Message-State: AOAM530JHQC8ADppzyVYMtDnRo1AzYSqEZD80l5LOl+x2aD8zgnybDFT
+        sGPSls4r/mv5JF50fJ/coOOJwQ==
+X-Google-Smtp-Source: ABdhPJz7u6AlNLguXb+LpDc0K2GTrwuNFStkzdToNRbtHqF0bLOWIe1cPg3HAR319u2Dk5WLeiBA0g==
+X-Received: by 2002:a17:90a:7c02:: with SMTP id v2mr4377021pjf.118.1623345055266;
+        Thu, 10 Jun 2021 10:10:55 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id g6sm3010793pfq.110.2021.06.10.10.10.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 10:10:53 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 11:10:52 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH] rpmsg: Fix rpmsg_create_ept return when RPMSG config is
+ not defined
+Message-ID: <20210610171052.GF34238@p14s>
+References: <20210604160549.2122-1-arnaud.pouliquen@foss.st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604160549.2122-1-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 04, 2021 at 06:05:49PM +0200, Arnaud Pouliquen wrote:
+> This is a minor fix.
+> 
+> According to the description of the rpmsg_create_ept in rpmsg_core.c
+> the function should return NULL on error.
+> 
 
+You are correct, and none of the client return an error code either.
 
-On Tue, Jun 8, 2021, at 7:36 AM, Thomas Gleixner wrote:
-> switch_fpu_finish() checks current->mm as indicator for kernel threads=
-.
-> That's wrong because kernel threads can temporarily use a mm of a user=
-
-> process via kthread_use_mm().
->=20
-> Check the task flags for PF_KTHREAD instead.
->=20
-> Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Rik van Riel <riel@surriel.com>
-> Cc: stable@vger.kernel.org
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
 > ---
->  arch/x86/include/asm/fpu/internal.h |    2 +-
+>  include/linux/rpmsg.h | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> --- a/arch/x86/include/asm/fpu/internal.h
-> +++ b/arch/x86/include/asm/fpu/internal.h
-> @@ -578,7 +578,7 @@ static inline void switch_fpu_finish(str
->  	 * PKRU state is switched eagerly because it needs to be valid befor=
-e we
->  	 * return to userland e.g. for a copy_to_user() operation.
->  	 */
-> -	if (current->mm) {
-> +	if (!(current->flags & PF_KTHREAD)) {
->  		pk =3D get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
->  		if (pk)
->  			pkru_val =3D pk->pkru;
->=20
->=20
+> 
+> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+> index d97dcd049f18..a8dcf8a9ae88 100644
+> --- a/include/linux/rpmsg.h
+> +++ b/include/linux/rpmsg.h
+> @@ -231,7 +231,7 @@ static inline struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *rpdev
+>  	/* This shouldn't be possible */
+>  	WARN_ON(1);
+>  
+> -	return ERR_PTR(-ENXIO);
+> +	return NULL;
 
-Why are we checking this at all?  I actually tend to agree with the ->mm=
- check more than PF_anything. If we have a user address space, then PKRU=
- matters. If we don=E2=80=99t, then it doesn=E2=80=99t.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+>  }
+>  
+>  static inline int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len)
+> -- 
+> 2.17.1
+> 
