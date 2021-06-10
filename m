@@ -2,143 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A6C3A3098
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42AE3A30B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbhFJQ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:29:40 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33892 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230445AbhFJQ3j (ORCPT
+        id S229963AbhFJQdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:33:33 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3204 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230280AbhFJQdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:29:39 -0400
-Date:   Thu, 10 Jun 2021 16:27:40 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623342462;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HeQByG8RpQ++WnUTSK2nC9PUxl8n/DOzzfm4V9ERr08=;
-        b=Zxzfk85sz4YeymwQANqL2JPfI27kIYYaTArP0Lq6fFVTu2AzI/KvzGSLwF3YLafNhibKh+
-        EcdK2LHZiBJZssxWUkxsnuwnU269FJqvnkdmdE1DTwUWVBdfvUnOgtPQO6uCwMwhk/Upgu
-        wmyE6NuYXQpIqxEa9NaPELY+kJBIX3Yjjcf1OpeeLGtL0R4Fg2BY//fQ6FTkihcRuQWW69
-        I74zFe6n0mHeEeLoOEKPxwodIbNFP/XFAUfAnlmQ7GA3MwSyvAnbVyDcLIVz91b8NmS823
-        Z76rDoaKzaEyU7sijJYpjmuXJ/ypVSBUZzJ+50eFesiDhyigh1g+Nf39+qrzeA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623342462;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HeQByG8RpQ++WnUTSK2nC9PUxl8n/DOzzfm4V9ERr08=;
-        b=RsBt+4Q6fAB3mMLu7QSl+DtPVB9C08EW8aUY/qkJxZhu6RlcX8+QoSauzX0FUGQs29pfcD
-        6yL7pUg7leBmpdCQ==
-From:   "tip-bot2 for Hubert Jasudowicz" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] doc: Remove references to IBM Calgary
-Cc:     Hubert Jasudowicz <hubert.jasudowicz@gmail.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3C1bd2b57dd1db53df09e520b8170ff61418805de4=2E16232?=
- =?utf-8?q?74832=2Egit=2Ehubert=2Ejasudowicz=40gmail=2Ecom=3E?=
-References: =?utf-8?q?=3C1bd2b57dd1db53df09e520b8170ff61418805de4=2E162327?=
- =?utf-8?q?4832=2Egit=2Ehubert=2Ejasudowicz=40gmail=2Ecom=3E?=
+        Thu, 10 Jun 2021 12:33:31 -0400
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G18Pt73ckz6H6jZ;
+        Fri, 11 Jun 2021 00:22:10 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 18:31:33 +0200
+Received: from [10.47.80.201] (10.47.80.201) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
+ 2021 17:31:32 +0100
+From:   John Garry <john.garry@huawei.com>
+Subject: Re: [PATCH v11 0/3] Enhance IOMMU default DMA mode build options
+To:     Joerg Roedel <joro@8bytes.org>
+CC:     <will@kernel.org>, <dwmw2@infradead.org>,
+        <baolu.lu@linux.intel.com>, <robin.murphy@arm.com>,
+        <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
+        <chenxiang66@hisilicon.com>, <rdunlap@infradead.org>
+References: <1623158308-180604-1-git-send-email-john.garry@huawei.com>
+ <YMB4tCrkZv1b44qM@8bytes.org>
+Message-ID: <4c1f02c5-fc6c-997f-19de-081efbb96566@huawei.com>
+Date:   Thu, 10 Jun 2021 17:25:36 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Message-ID: <162334246092.29796.9005969074055956442.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YMB4tCrkZv1b44qM@8bytes.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.201]
+X-ClientProxiedBy: lhreml749-chm.china.huawei.com (10.201.108.199) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On 09/06/2021 09:15, Joerg Roedel wrote:
+> On Tue, Jun 08, 2021 at 09:18:25PM +0800, John Garry wrote:
+>> Zhen Lei (3):
+>>    iommu: Enhance IOMMU default DMA mode build options
+>>    iommu/vt-d: Add support for IOMMU default DMA mode build options
+>>    iommu/amd: Add support for IOMMU default DMA mode build options
+> So I like the idea, but can we go a step further and get (mostly) rid of
+> the driver-specific setup code for lazy/non-lazy mode? This can happen
+> in the dma-iommu code and the drivers only need to keep the support for
+> their legacy command line options.
 
-Commit-ID:     0e5a89dbb49920cea22193044bbbfd76a9b0f458
-Gitweb:        https://git.kernel.org/tip/0e5a89dbb49920cea22193044bbbfd76a9b0f458
-Author:        Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
-AuthorDate:    Wed, 09 Jun 2021 23:51:12 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 10 Jun 2021 18:19:36 +02:00
+The AMD driver just maintains a flag and a print for the strict mode 
+setting.
 
-doc: Remove references to IBM Calgary
+The Intel driver still maintains some lazy vs strict config, depending 
+on the platform:
+- DMAR caching mode set means that we enforce strict mode globally
+- workaround for ironlake gpu means that we enforce strict mode globally
 
-The Calgary IOMMU driver has been removed in
+So there isn't much driver-specific setup remaining, and I can't see the 
+intel stuff being moved into dma-iommu.c or asbtracted (for that).
 
-  90dc392fc445 ("x86: Remove the calgary IOMMU driver")
+We could prob replace the driver-specific logs with new logs in iommu.c, 
+and do away with maintaining the proprietary driver strict mode flags. 
+That's if we're ok with replacing the driver-specific logs, though.
 
-Clean up stale docs that refer to it.
+Thanks,
+John
 
-Signed-off-by: Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/1bd2b57dd1db53df09e520b8170ff61418805de4.1623274832.git.hubert.jasudowicz@gmail.com
----
- Documentation/x86/x86_64/boot-options.rst | 31 +----------------------
- 1 file changed, 1 insertion(+), 30 deletions(-)
-
-diff --git a/Documentation/x86/x86_64/boot-options.rst b/Documentation/x86/x86_64/boot-options.rst
-index 324ceff..5f62b3b 100644
---- a/Documentation/x86/x86_64/boot-options.rst
-+++ b/Documentation/x86/x86_64/boot-options.rst
-@@ -247,16 +247,11 @@ Multiple x86-64 PCI-DMA mapping implementations exist, for example:
-       Kernel boot message: "PCI-DMA: Using software bounce buffering
-       for IO (SWIOTLB)"
- 
--   4. <arch/x86_64/pci-calgary.c> : IBM Calgary hardware IOMMU. Used in IBM
--      pSeries and xSeries servers. This hardware IOMMU supports DMA address
--      mapping with memory protection, etc.
--      Kernel boot message: "PCI-DMA: Using Calgary IOMMU"
--
- ::
- 
-   iommu=[<size>][,noagp][,off][,force][,noforce]
-   [,memaper[=<order>]][,merge][,fullflush][,nomerge]
--  [,noaperture][,calgary]
-+  [,noaperture]
- 
- General iommu options:
- 
-@@ -295,8 +290,6 @@ iommu options only relevant to the AMD GART hardware IOMMU:
-       Don't initialize the AGP driver and use full aperture.
-     panic
-       Always panic when IOMMU overflows.
--    calgary
--      Use the Calgary IOMMU if it is available
- 
- iommu options only relevant to the software bounce buffering (SWIOTLB) IOMMU
- implementation:
-@@ -307,28 +300,6 @@ implementation:
-       force
-         Force all IO through the software TLB.
- 
--Settings for the IBM Calgary hardware IOMMU currently found in IBM
--pSeries and xSeries machines
--
--    calgary=[64k,128k,256k,512k,1M,2M,4M,8M]
--      Set the size of each PCI slot's translation table when using the
--      Calgary IOMMU. This is the size of the translation table itself
--      in main memory. The smallest table, 64k, covers an IO space of
--      32MB; the largest, 8MB table, can cover an IO space of 4GB.
--      Normally the kernel will make the right choice by itself.
--    calgary=[translate_empty_slots]
--      Enable translation even on slots that have no devices attached to
--      them, in case a device will be hotplugged in the future.
--    calgary=[disable=<PCI bus number>]
--      Disable translation on a given PHB. For
--      example, the built-in graphics adapter resides on the first bridge
--      (PCI bus number 0); if translation (isolation) is enabled on this
--      bridge, X servers that access the hardware directly from user
--      space might stop working. Use this option if you have devices that
--      are accessed from userspace directly on some PCI host bridge.
--    panic
--      Always panic when IOMMU overflows
--
- 
- Miscellaneous
- =============
