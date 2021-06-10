@@ -2,137 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D0C3A21CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 03:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676033A21D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 03:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhFJBQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 21:16:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229655AbhFJBQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 21:16:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3AA4613FF;
-        Thu, 10 Jun 2021 01:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623287670;
-        bh=3933pBynZO3J3T2i9LqHlsaYhO2NNvTednt0+lPKRXQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W0FS1EUiBdWPHk+2pZu96ZmL81CYmxdBjcNvlOOaRwKdAT8kSF27X/NkcSTx4ckGl
-         tZt/K1Mn8Mc/g1GVSXwzgGL75rXYTDGb+Xax/oNk1umWonpN+I3Uhx41d5uTqApQQh
-         0vWwsfxaCtRCL7iikdvcuWwCeKEWnwu/Ar7ABKgy2xG+jEVJNg98coH2BZmclVZvdZ
-         LLp/YrC/CyoAp0teHpAfynxDdZy9p4iUm0tr115q13AGmRErEf1R5DxqBIpQVXcrLT
-         YUL018pr2vyrJ1hMST9A8bRRXKJ43kz7WkvAinridL2zy6ukPvnQEorfX2VekioFUP
-         g6W6kLdofN2PQ==
-Date:   Thu, 10 Jun 2021 09:14:25 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>,
-        Jack Pham <jackp@codeaurora.org>
-Subject: Re: [PATCH] USB: dwc3: remove debugfs root dentry storage
-Message-ID: <20210610011425.GA6592@nchen>
-References: <20210609093924.3293230-1-gregkh@linuxfoundation.org>
+        id S229788AbhFJBYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 21:24:10 -0400
+Received: from mail-ej1-f49.google.com ([209.85.218.49]:35572 "EHLO
+        mail-ej1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFJBYJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 21:24:09 -0400
+Received: by mail-ej1-f49.google.com with SMTP id h24so41330063ejy.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 18:22:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=uHHzInAq0hJfdAhDUN7XpXEX6yMAOEMfv+NvOITUYbs=;
+        b=ltcXq3Y7hwjQwAuci+mu7Hgf0+WU6RMQ8lKbGlBpzgEMQE6CMnkAhbqDFPBw9796IT
+         p9YaFlmc3r5K+56xIt1659HtFy3LCjq3URxZ2tMlzS8BmQVFihvfdenszQYYN8JidgXR
+         l/iUserGSNjhG+sEDtQ+TKyebUskyQ/itg0nNLrDt8AEivYTGrGzwe4TCReZJCbNEZES
+         hL6S6Vm0INfGAynj6WLAmTXYG1IButFmPLa5V+qKx6YX/jOoVWvwW/UFefSbVUmtmNQp
+         8XT6h8t4SI158gIzxwwHB/RFvcxSMiqDARGpC2fd+WwLE9xfeTKuNljEjH3ylZJNoZBm
+         s5Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=uHHzInAq0hJfdAhDUN7XpXEX6yMAOEMfv+NvOITUYbs=;
+        b=HcLEN32v0408POL6ifM44d7isNAQIgS7BoL0YpaEPhN4D8XDwxiJ/SYBJialfczBne
+         yO5zB5VMCXBciknhbORHtTHilcKPfLmBe2CbHiTw7yGfCCJrtiXTKgX/HKW10rW55jKt
+         lUBhYVaT4gJ4O9g+vjFkC9yup4HPj7TF00D76oxOAoxw9HLxHvKk6aOEkHK1wbnxGJvN
+         OAVEra+fc39a3pD1nes6CIH+YXB4nSpcpAmSNczYhs4L0wP+GqC7m35J93PszGCBvZOW
+         66Dw38qc7nQm8TpOv3gTyatMGcnqcr50sWvBddXHTswBSlMatVFVPnZFcZ9HYhKFqucy
+         /38w==
+X-Gm-Message-State: AOAM532GfaaZuV2lqu0ofs3krlsrVcDOliWi+oP2oGG+/jx3ojfQblFD
+        uJEgETPvryzsGH6gPZE3UsVhMvP9pKua3oHfGdg=
+X-Google-Smtp-Source: ABdhPJybSyA74y5VND0BlYkcyOojtz2UaNoUeXvPF4Aqo9EAqKU38J/TTGkqAVqM5M8dEWGlTydbQkAiUSKHqumERsk=
+X-Received: by 2002:a17:906:365a:: with SMTP id r26mr2281358ejb.340.1623288060590;
+ Wed, 09 Jun 2021 18:21:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609093924.3293230-1-gregkh@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received: by 2002:a17:906:3a8c:0:0:0:0 with HTTP; Wed, 9 Jun 2021 18:21:00
+ -0700 (PDT)
+Reply-To: westernunion8289@zohomail.com
+From:   WESTERN UNION AGENT <adedihapeter@gmail.com>
+Date:   Wed, 9 Jun 2021 18:21:00 -0700
+Message-ID: <CAN_ZWHacO3sBET4+dGwcZZ5U04-=Ej-BLbWgEwQnBmeEubjwng@mail.gmail.com>
+Subject: WESTERN UNION AGENT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-06-09 11:39:24, Greg Kroah-Hartman wrote:
-> There is no need to keep around the debugfs "root" directory for the
-> dwc3 device.  Instead, look it up anytime we need to find it.  This will
-> help when callers get out-of-order and we had the potential to have a
-> "stale" pointer around for the root dentry, as has happened in the past.
-> 
-> Cc: Felipe Balbi <balbi@kernel.org>
-> Cc: Jack Pham <jackp@codeaurora.org>
-> Cc: Peter Chen <peter.chen@kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Good day
 
-Reviewed-by: Peter Chen <peter.chen@kernel.org>
-> ---
->  drivers/usb/dwc3/core.h    | 2 --
->  drivers/usb/dwc3/debugfs.c | 8 ++++----
->  drivers/usb/dwc3/gadget.c  | 4 +++-
->  3 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-> index c5d5760cdf53..dccdf13b5f9e 100644
-> --- a/drivers/usb/dwc3/core.h
-> +++ b/drivers/usb/dwc3/core.h
-> @@ -1013,7 +1013,6 @@ struct dwc3_scratchpad_array {
->   * @link_state: link state
->   * @speed: device speed (super, high, full, low)
->   * @hwparams: copy of hwparams registers
-> - * @root: debugfs root folder pointer
->   * @regset: debugfs pointer to regdump file
->   * @dbg_lsp_select: current debug lsp mux register selection
->   * @test_mode: true when we're entering a USB test mode
-> @@ -1222,7 +1221,6 @@ struct dwc3 {
->  	u8			num_eps;
->  
->  	struct dwc3_hwparams	hwparams;
-> -	struct dentry		*root;
->  	struct debugfs_regset32	*regset;
->  
->  	u32			dbg_lsp_select;
-> diff --git a/drivers/usb/dwc3/debugfs.c b/drivers/usb/dwc3/debugfs.c
-> index 5dbbe53269d3..f2b7675c7f62 100644
-> --- a/drivers/usb/dwc3/debugfs.c
-> +++ b/drivers/usb/dwc3/debugfs.c
-> @@ -889,8 +889,10 @@ static void dwc3_debugfs_create_endpoint_files(struct dwc3_ep *dep,
->  void dwc3_debugfs_create_endpoint_dir(struct dwc3_ep *dep)
->  {
->  	struct dentry		*dir;
-> +	struct dentry		*root;
->  
-> -	dir = debugfs_create_dir(dep->name, dep->dwc->root);
-> +	root = debugfs_lookup(dev_name(dep->dwc->dev), usb_debug_root);
-> +	dir = debugfs_create_dir(dep->name, root);
->  	dwc3_debugfs_create_endpoint_files(dep, dir);
->  }
->  
-> @@ -909,8 +911,6 @@ void dwc3_debugfs_init(struct dwc3 *dwc)
->  	dwc->regset->base = dwc->regs - DWC3_GLOBALS_REGS_START;
->  
->  	root = debugfs_create_dir(dev_name(dwc->dev), usb_debug_root);
-> -	dwc->root = root;
-> -
->  	debugfs_create_regset32("regdump", 0444, root, dwc->regset);
->  	debugfs_create_file("lsp_dump", 0644, root, dwc, &dwc3_lsp_fops);
->  
-> @@ -929,6 +929,6 @@ void dwc3_debugfs_init(struct dwc3 *dwc)
->  
->  void dwc3_debugfs_exit(struct dwc3 *dwc)
->  {
-> -	debugfs_remove_recursive(dwc->root);
-> +	debugfs_remove(debugfs_lookup(dev_name(dwc->dev), usb_debug_root));
->  	kfree(dwc->regset);
->  }
-> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> index 7cc99b6d0bfe..026a2ad0fc80 100644
-> --- a/drivers/usb/dwc3/gadget.c
-> +++ b/drivers/usb/dwc3/gadget.c
-> @@ -2799,7 +2799,9 @@ static void dwc3_gadget_free_endpoints(struct dwc3 *dwc)
->  			list_del(&dep->endpoint.ep_list);
->  		}
->  
-> -		debugfs_remove_recursive(debugfs_lookup(dep->name, dwc->root));
-> +		debugfs_remove_recursive(debugfs_lookup(dep->name,
-> +				debugfs_lookup(dev_name(dep->dwc->dev),
-> +					       usb_debug_root)));
->  		kfree(dep);
->  	}
->  }
-> -- 
-> 2.32.0
-> 
+l need to know if you got my message
 
--- 
-
-Thanks,
-Peter Chen
-
+Best Regards.
+WESTERN UNION AGENT
