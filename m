@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EED53A2C6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9D33A2C72
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhFJNG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:06:26 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3195 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbhFJNGO (ORCPT
+        id S230508AbhFJNGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:06:51 -0400
+Received: from mail-vs1-f50.google.com ([209.85.217.50]:40896 "EHLO
+        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230317AbhFJNGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:06:14 -0400
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G13kk2wXFz6M4h3;
-        Thu, 10 Jun 2021 20:51:26 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 15:04:16 +0200
-Received: from localhost (10.52.126.112) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
- 2021 14:04:15 +0100
-Date:   Thu, 10 Jun 2021 14:04:12 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Paul Cercueil <paul@crapouillou.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] iio: core: Support removing extended name in
- attribute filename
-Message-ID: <20210610140412.000054ac@Huawei.com>
-In-Reply-To: <CAHp75VfR5jjMjDhFRvtT01EbuSTwDBi3HERDKi306mRK22+Fnw@mail.gmail.com>
-References: <20210610124556.34507-1-paul@crapouillou.net>
-        <20210610124556.34507-2-paul@crapouillou.net>
-        <CAHp75VfR5jjMjDhFRvtT01EbuSTwDBi3HERDKi306mRK22+Fnw@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Thu, 10 Jun 2021 09:06:50 -0400
+Received: by mail-vs1-f50.google.com with SMTP id b1so1802561vsh.7;
+        Thu, 10 Jun 2021 06:04:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dtTnjbShfsHfwnFII8h2MIwIChoALSHoXSdICCW25tI=;
+        b=sPpuKvC4am4ycPFH+CGb0nnLeawkisGDRTc4XD4Gu63ZeO1UPa/Eo65vSQPFEOBN+C
+         wHKbVHSWs1uwhqZWilKOwJpwGav0ZT0BuKflxZljGeshAq85zHHwB8UINvPR7rnEKimW
+         yfzKuOSxSEaxubu3HeVhgbKp2jEXu5Aso9GN2aKBh6SoB+vD16pXtNmc2BrKbNrxt1zo
+         yPbBJIpjwGomZN+Lq0lG+Hl2df+6fHBVQQOEL8WCgUgUoOFG1h8hesMgN/MaTWbKEBvY
+         1pdIJUIK3ZIGbLSh+Nk7N7uNtPUCwCWoE2Cc8tINWeD363Wnz2BPc7TI9KFk1yBmhaCv
+         Jcvg==
+X-Gm-Message-State: AOAM532sk2EjZRHB+/bVBkkS76vMhkGAfOIrPwN0RAaQ8bbXgpgaZpvW
+        QY2/nXQiccRkiQVQo8+IosPj4M9tNqaNlNlBrTU=
+X-Google-Smtp-Source: ABdhPJwHRRMMdepvDucLXToAJNJ68PXSF84KowPsfoH9qmacKhu2d7fsNOT5aYSfVWcERx3KIEWynNVqM8wFK6LpH+g=
+X-Received: by 2002:a67:efd6:: with SMTP id s22mr4552947vsp.3.1623330277115;
+ Thu, 10 Jun 2021 06:04:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.126.112]
-X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210609153230.6967-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210609153230.6967-10-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210609153230.6967-10-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 10 Jun 2021 15:04:26 +0200
+Message-ID: <CAMuHMdWHa0dgKCuxpZFMYBz7FeOHDXDLXrN0i3c=Aw-6BaB+5g@mail.gmail.com>
+Subject: Re: [PATCH v3 09/11] clk: renesas: Add support for R9A07G044 SoC
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 15:58:51 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+On Wed, Jun 9, 2021 at 5:33 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Define the clock outputs supported by RZ/G2L (R9A07G044) SoC
+> and bind it with RZ/G2L CPG core.
+>
+> Based on a patch in the BSP by Binh Nguyen
+> <binh.nguyen.jz@renesas.com>.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-> On Thu, Jun 10, 2021 at 3:47 PM Paul Cercueil <paul@crapouillou.net> wrote:
-> >
-> > By default, when a channel has an extended name, it will appear in the
-> > filename of channel attributes. E.g. if the extended name is "aux", the
-> > filename of a "sample_rate" attribute will be something like:
-> > in_voltage0_aux_sample_rate
-> >
-> > Add a mechanism to disable this feature. This will be used to add a
-> > "extended_name" channel attribute.  
-> 
-> I'm afraid, NAK. Otherwise, please put an explanation that clearly
-> shows that it will be no ABI breakage.
-> I.o.w. users for the existing drivers and devices will always get
-> those attributes at the same platform configuration(s).
-> 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-What Andy said.  This was a bad design decision a long time back, but
-we are stuck with it.
+Gr{oetje,eeting}s,
 
-We have the _label attribute today that is the preferred route forwards
-for new drivers but we can't touch the old ones however annoying it might
-be.
+                        Geert
 
-Jonathan
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
