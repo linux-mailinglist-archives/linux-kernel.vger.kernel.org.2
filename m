@@ -2,146 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016063A316A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEB03A316F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhFJQyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:54:35 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62546 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230272AbhFJQye (ORCPT
+        id S231361AbhFJQzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:55:02 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:37555 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhFJQy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:54:34 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15AGmsHr147320;
-        Thu, 10 Jun 2021 12:52:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=4bl6TEgvBMn2nlMyfo2M71N96hZvWMMJC6TvwrGU2ZQ=;
- b=WjajmjDgdqTx01Zdv+AH1yklB6pAD3D0U9fEcs+UJ30LByNKLsWxr1uPBP3a5iRpWpND
- wA5ffc4pYNrbAGFh9q+59+6/uNRDAAdyfk1VP6ULh5Br07khlzxCAJAm6glBWKKhUiHb
- vEcgEkd3JFHfsbXG0eBe9qZJaD37/fymfnr/Vie8oP7lTc6S2RcAsN1Aww3tVt2MU2mP
- 7lfnssbpkQltckjJCNsK+rLjgQOVaqJQJPtdDszjy19Wq90CeYBjQnxXJf0LoUjDSxZY
- huFzgT9a59xadtSLr3YPoCzTAB9XQj0ZzpLN4GoLASCNP2f9lLbJP3u1m3DOiFWtp8kr nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 393pkd01m1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 12:52:25 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15AGpvJx157194;
-        Thu, 10 Jun 2021 12:52:24 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 393pkd01k9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 12:52:24 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15AGm4k5008811;
-        Thu, 10 Jun 2021 16:52:22 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3900hhty4w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 16:52:22 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15AGqJon16646460
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Jun 2021 16:52:19 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0B0C652052;
-        Thu, 10 Jun 2021 16:52:19 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.35.90])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 6436852054;
-        Thu, 10 Jun 2021 16:52:18 +0000 (GMT)
-Subject: Re: [PATCH v3 2/2] KVM: s390: fix for hugepage vmalloc
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, frankja@linux.ibm.com,
-        cohuck@redhat.com, david@redhat.com, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Christoph Hellwig <hch@infradead.org>
-References: <20210610154220.529122-1-imbrenda@linux.ibm.com>
- <20210610154220.529122-3-imbrenda@linux.ibm.com>
- <368cfb74-fdc2-00a7-d452-696e375c2ff7@de.ibm.com>
- <20210610184953.19bed6b4@ibm-vm>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <7001a6a9-d415-e826-9bf0-17032568e7b3@de.ibm.com>
-Date:   Thu, 10 Jun 2021 18:52:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 10 Jun 2021 12:54:57 -0400
+Received: by mail-ot1-f50.google.com with SMTP id 102-20020a9d0eef0000b02903fccc5b733fso351264otj.4;
+        Thu, 10 Jun 2021 09:52:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xmSSSTzI1G/+6aJZJ8BoKiXXr7B+qXzntJBgHmeug3Y=;
+        b=HTjOVHhMPBiGVUGLHzq7WvoWPX9Vf8nL2lpX9mX3lx/VxaqrC17Nc7ZjbNBzsYH/yD
+         xrFG+0ZiUBhzemFNvhNqCJ++cuXS0JCV9jZTH7ZoqN2s0hlrCoec1oYZs1tAVjX93d65
+         8WNPZ2GiDSPnGLlFIeqfdg1Yvo9i7gdUW19mIe9Jw8RYFq4/u9/uzFSpmqWcq5DksnhN
+         yPAMVDDJOlrY1F/56xzgwtV3qfXvLC4JDGHiyzZFtCiUwNJ/NzG/RLTqVr+OUudt6tJC
+         9K8qjakB9ZptiESo2J2Mmn314qqI6LD+WsbeNooGKJpTp0xpbwf46mBMf5CzTOlgV3Zy
+         rszA==
+X-Gm-Message-State: AOAM533SqgMCEIjRRGmSr6N3LCylU/W9JlmW359JnH2NHkiyY20zK0nM
+        OEOs8PEkzq0iFI7680WE8w==
+X-Google-Smtp-Source: ABdhPJyxJx2yyoRpM5CWFF+cVvOk3Yz7iEbL+70+P4FScA/iA6sbd53xkBffuUIqKvda7xsVEg0IYQ==
+X-Received: by 2002:a9d:6d0e:: with SMTP id o14mr3267889otp.90.1623343968019;
+        Thu, 10 Jun 2021 09:52:48 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.99.113])
+        by smtp.gmail.com with ESMTPSA id t15sm643045oie.14.2021.06.10.09.52.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 09:52:47 -0700 (PDT)
+Received: (nullmailer pid 1955270 invoked by uid 1000);
+        Thu, 10 Jun 2021 16:52:44 -0000
+Date:   Thu, 10 Jun 2021 11:52:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        iommu@lists.linux-foundation.org, Alexander Graf <graf@amazon.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: iommu: add DART iommu bindings
+Message-ID: <20210610165244.GA1948260@robh.at.kernel.org>
+References: <20210603085003.50465-1-sven@svenpeter.dev>
+ <20210603085003.50465-3-sven@svenpeter.dev>
 MIME-Version: 1.0
-In-Reply-To: <20210610184953.19bed6b4@ibm-vm>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ik8gMA4YqgbXZWjYsswXqPubT5cdR38g
-X-Proofpoint-ORIG-GUID: FLkjyK-DIdfQS0okD3KmNowzW0wvHa0y
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-10_11:2021-06-10,2021-06-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- lowpriorityscore=0 impostorscore=0 mlxscore=0 spamscore=0
- priorityscore=1501 suspectscore=0 mlxlogscore=787 adultscore=0
- phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106100105
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603085003.50465-3-sven@svenpeter.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 03, 2021 at 10:50:02AM +0200, Sven Peter wrote:
+> DART (Device Address Resolution Table) is the iommu found on Apple
+> ARM SoCs such as the M1.
+> 
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+>  .../devicetree/bindings/iommu/apple,dart.yaml | 81 +++++++++++++++++++
+>  MAINTAINERS                                   |  6 ++
+>  2 files changed, 87 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iommu/apple,dart.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iommu/apple,dart.yaml b/Documentation/devicetree/bindings/iommu/apple,dart.yaml
+> new file mode 100644
+> index 000000000000..db21ca07d121
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iommu/apple,dart.yaml
+> @@ -0,0 +1,81 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iommu/apple,dart.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Apple DART IOMMU
+> +
+> +maintainers:
+> +  - Sven Peter <sven@svenpeter.dev>
+> +
+> +description: |+
+> +  Apple SoCs may contain an implementation of their Device Address
+> +  Resolution Table which provides a mandatory layer of address
+> +  translations for various masters.
+> +
+> +  Each DART instance is capable of handling up to 16 different streams
+> +  with individual pagetables and page-level read/write protection flags.
+> +
+> +  This DART IOMMU also raises interrupts in response to various
+> +  fault conditions.
+> +
+> +properties:
+> +  compatible:
+> +    const: apple,t8103-dart
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description:
+> +      Reference to the gate clock phandle if required for this IOMMU.
+> +      Optional since not all IOMMUs are attached to a clock gate.
+> +
+> +  '#iommu-cells':
+> +    const: 1
+> +    description:
+> +      Has to be one. The single cell describes the stream id emitted by
+> +      a master to the IOMMU.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#iommu-cells'
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |+
+> +    dart1: iommu@82f80000 {
+> +      compatible = "apple,t8103-dart";
+> +      reg = <0x82f80000 0x4000>;
+> +      interrupts = <1 781 4>;
+> +      #iommu-cells = <1>;
+> +    };
+> +
+> +    master1 {
+> +      iommus = <&{/dart1} 0>;
+
+/dart1 is a path, but 'dart1' is a label. You need '&dart1' (or 
+'&{/iommu@82f80000}' but that doesn't really work here because the 
+examples get prefixed with /example-n/...)
+
+With that fixed,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 
-On 10.06.21 18:49, Claudio Imbrenda wrote:
-> On Thu, 10 Jun 2021 17:56:58 +0200
-> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
-> 
->> On 10.06.21 17:42, Claudio Imbrenda wrote:
->>> The Create Secure Configuration Ultravisor Call does not support
->>> using large pages for the virtual memory area. This is a hardware
->>> limitation.
->>>
->>> This patch replaces the vzalloc call with an almost equivalent call
->>> to the newly introduced vmalloc_no_huge function, which guarantees
->>> that only small pages will be used for the backing.
->>>
->>> The new call will not clear the allocated memory, but that has never
->>> been an actual requirement.
-> 
-> ^ here
-> 
->>> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
->>> Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
->>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>> Cc: Nicholas Piggin <npiggin@gmail.com>
->>> Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
->>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>> Cc: Thomas Gleixner <tglx@linutronix.de>
->>> Cc: Ingo Molnar <mingo@redhat.com>
->>> Cc: David Rientjes <rientjes@google.com>
->>> Cc: Christoph Hellwig <hch@infradead.org>
->>> ---
->>>    arch/s390/kvm/pv.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
->>> index 813b6e93dc83..ad7c6d7cc90b 100644
->>> --- a/arch/s390/kvm/pv.c
->>> +++ b/arch/s390/kvm/pv.c
->>> @@ -140,7 +140,7 @@ static int kvm_s390_pv_alloc_vm(struct kvm *kvm)
->>>    	/* Allocate variable storage */
->>>    	vlen = ALIGN(virt * ((npages * PAGE_SIZE) / HPAGE_SIZE),
->>> PAGE_SIZE); vlen += uv_info.guest_virt_base_stor_len;
->>> -	kvm->arch.pv.stor_var = vzalloc(vlen);
->>> +	kvm->arch.pv.stor_var = vmalloc_no_huge(vlen);
->>
->> dont we need a memset now?
-> 
-> no, as explained above
-
-Makes sense.
-
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> +    };
+> +
+> +  - |+
+> +    dart2a: iommu@82f00000 {
+> +      compatible = "apple,t8103-dart";
+> +      reg = <0x82f00000 0x4000>;
+> +      interrupts = <1 781 4>;
+> +      #iommu-cells = <1>;
+> +    };
+> +    dart2b: iommu@82f80000 {
+> +      compatible = "apple,t8103-dart";
+> +      reg = <0x82f80000 0x4000>;
+> +      interrupts = <1 781 4>;
+> +      #iommu-cells = <1>;
+> +    };
+> +
+> +    master2 {
+> +      iommus = <&{/dart2a} 0>, <&{/dart2b} 1>;
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 673cadd5107a..4373d63f9ccf 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1240,6 +1240,12 @@ L:	linux-input@vger.kernel.org
+>  S:	Odd fixes
+>  F:	drivers/input/mouse/bcm5974.c
+>  
+> +APPLE DART IOMMU DRIVER
+> +M:	Sven Peter <sven@svenpeter.dev>
+> +L:	iommu@lists.linux-foundation.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/iommu/apple,dart.yaml
+> +
+>  APPLE SMC DRIVER
+>  M:	Henrik Rydberg <rydberg@bitmath.org>
+>  L:	linux-hwmon@vger.kernel.org
+> -- 
+> 2.25.1
