@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2503A21AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 03:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04EF3A21BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 03:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbhFJBDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 21:03:44 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8121 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFJBDn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 21:03:43 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0lwZ6q4nzYrx0;
-        Thu, 10 Jun 2021 08:58:54 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 09:01:45 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
- 2021 09:01:44 +0800
-Subject: Re: [PATCH 1/1] lib: Fix spelling mistakes
-To:     <nicolas.dichtel@6wind.com>, Jason Baron <jbaron@akamai.com>,
-        "Stefani Seibold" <stefani@seibold.net>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Thomas Graf <tgraf@suug.ch>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "Jens Axboe" <axboe@kernel.dk>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210607072555.12416-1-thunder.leizhen@huawei.com>
- <eff5217f-74b5-3067-9210-6b2eb5ea5f4d@6wind.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <b8aa70b3-e4ac-e488-85cf-b5d70b8779e4@huawei.com>
-Date:   Thu, 10 Jun 2021 09:01:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S229845AbhFJBHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 21:07:16 -0400
+Received: from mga07.intel.com ([134.134.136.100]:17980 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229557AbhFJBHP (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 21:07:15 -0400
+IronPort-SDR: 4g45bOFFpf2ukfila0IlkaaM5hWYyJhGEfsDq9y4q9SaX8AJw4CzOc0JCzby0jKBHK2fUP7RBZ
+ lHL/cO2SdyiA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="269056843"
+X-IronPort-AV: E=Sophos;i="5.83,262,1616482800"; 
+   d="scan'208";a="269056843"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 18:05:11 -0700
+IronPort-SDR: FuCH7fvRVZblQBb315e+9uLrgPuoXS33u99nMBJkUVpAdhQotEkj2u4gMBhAahgYBsU/eW123G
+ FuVx4HhttYYw==
+X-IronPort-AV: E=Sophos;i="5.83,262,1616482800"; 
+   d="scan'208";a="450144864"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.82]) ([10.238.4.82])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 18:05:00 -0700
+Subject: Re: [PATCH v2] perf stat: Disable NMI watchdog message on hybrid
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210609050600.7308-1-yao.jin@linux.intel.com>
+ <YMEj6vuPcEnCz6tr@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <8faa16cf-561e-cd31-7fb2-bfad3ae27782@linux.intel.com>
+Date:   Thu, 10 Jun 2021 09:04:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <eff5217f-74b5-3067-9210-6b2eb5ea5f4d@6wind.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YMEj6vuPcEnCz6tr@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jiri,
 
-
-On 2021/6/9 23:33, Nicolas Dichtel wrote:
-> Le 07/06/2021 à 09:25, Zhen Lei a écrit :
->> Fix some spelling mistakes in comments:
->> permanentely ==> permanently
->> wont ==> won't
->> remaning ==> remaining
->> succed ==> succeed
->> shouldnt ==> shouldn't
->> alpha-numeric ==> alphanumeric
->> storeing ==> storing
->> funtion ==> function
->> documenation ==> documentation
->> Determin ==> Determine
->> intepreted ==> interpreted
->> ammount ==> amount
->> obious ==> obvious
->> interupts ==> interrupts
->> occured ==> occurred
->> asssociated ==> associated
->> taking into acount ==> taking into account
->> squence ==> sequence
->> stil ==> still
->> contiguos ==> contiguous
->> matchs ==> matches
-> I don't know if there is already a patch flying somewhere, but it would be good
-> to add those typos in scripts/spelling.txt
-
-Sorry, I'm inexperienced, I will add them this week.
-
+On 6/10/2021 4:26 AM, Jiri Olsa wrote:
+>> +static bool is_mixed_hybrid_group(struct evsel *counter)
+>> +{
+>> +	struct evlist *evlist = counter->evlist;
+>> +	struct evsel *pos;
+>> +
+>> +	evlist__for_each_entry(evlist, pos) {
+>> +		if (perf_pmu__is_hybrid(pos->pmu_name))
+>> +			return true;
+>> +	}
+> so we care if there's at least one hybrid event in the list right?
+> it can be all full with just hybrid events, but the function name
+> suggests it's mixed with normal events
 > 
-> 
-> Regards,
-> Nicolas
-> 
-> .
+> jirka
 > 
 
+Yes, that's right. We only care there is at least one hybrid event in the evlist.
+
+So do we change the function name to evlist__has_hybrid_event?
+
+Thanks
+Jin Yao
