@@ -2,218 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC11B3A24FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692AD3A24FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhFJHGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:06:38 -0400
-Received: from mout.gmx.net ([212.227.15.18]:49231 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230118AbhFJHGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:06:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1623308673;
-        bh=PT2FAruH41EMJhSUXAlNa2/YRiWJ8FrcU8h5rH4lLGo=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=AaeUkMafJD+hEMxb/D3AyJkqe/EKppLxDuodxv6lXpmaYG3qoYeNfBRhZmxAQptL/
-         t4/Yk3C68YRfcoF5yQgVZgQSZOWZ8cE+rOkvYA00nM/4dqEljSZjGxER3+smD+uPhh
-         oYfQTtq4isp243ZK9+qRdx/i7/NK34kPeNZgjl+o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.130.190]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N1fis-1lBKNF1wng-011yRb; Thu, 10
- Jun 2021 09:04:33 +0200
-Subject: Re: linux-parisc compile failure in current git
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Parisc List <linux-parisc@vger.kernel.org>,
-        Meelis Roos <mroos@linux.ee>,
-        Linux Kernel Development <linux-kernel@vger.kernel.org>
-References: <892b6ab7-862c-1c0a-2996-0f8408e5043d@linux.ee>
- <89515325-fc21-31da-d238-6f7a9abbf9a0@gmx.de>
- <CAK7LNATuzry1MUj-VruOVUwU_nH2xJd_2SxD_s_Z1QBb3PVnQw@mail.gmail.com>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <5dfd81eb-c8ca-b7f5-e80e-8632767c022d@gmx.de>
-Date:   Thu, 10 Jun 2021 09:03:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230084AbhFJHGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:06:30 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3932 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229705AbhFJHG1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 03:06:27 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0vyn0pbFz6xDh;
+        Thu, 10 Jun 2021 15:01:21 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 15:04:24 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 10 Jun
+ 2021 15:04:24 +0800
+Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
+To:     Parav Pandit <parav@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
+CC:     moyufeng <moyufeng@huawei.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Or Gerlitz <gerlitz.or@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "lipeng (Y)" <lipeng321@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        "shenjian15@huawei.com" <shenjian15@huawei.com>,
+        "chenhao (DY)" <chenhao288@hisilicon.com>,
+        Jiaran Zhang <zhangjiaran@huawei.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
+ <857e7a19-1559-b929-fd15-05e8f38e9d45@huawei.com>
+ <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <c9afecb5-3c0e-6421-ea58-b041d8173636@huawei.com>
+ <20210604114109.3a7ada85@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <4e7a41ed-3f4d-d55d-8302-df3bc42dedd4@huawei.com>
+ <20210607124643.1bb1c6a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <530ff54c-3cee-0eb6-30b0-b607826f68cf@huawei.com>
+ <20210608102945.3edff79a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <2acd8373-b3dc-4920-1cbe-2b5ae29acb5b@huawei.com>
+ <DM8PR12MB54802CA9A47F1585DC3347A5DC369@DM8PR12MB5480.namprd12.prod.outlook.com>
+ <d54ae715-8634-c983-1602-8cd8dea2a5e2@huawei.com>
+ <DM8PR12MB5480F577E5F02105B8C1FE9BDC369@DM8PR12MB5480.namprd12.prod.outlook.com>
+ <acf08577-34c6-bc9e-a788-568b67fa8d2e@huawei.com>
+ <DM8PR12MB5480CA5904F1242202F9D51ADC369@DM8PR12MB5480.namprd12.prod.outlook.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <387c80e7-e50f-8f2f-0fea-d699902ef84e@huawei.com>
+Date:   Thu, 10 Jun 2021 15:04:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNATuzry1MUj-VruOVUwU_nH2xJd_2SxD_s_Z1QBb3PVnQw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <DM8PR12MB5480CA5904F1242202F9D51ADC369@DM8PR12MB5480.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ASwgOCYgMs0xMuccufBzqtRI1Qa4WbIKBToBlntpQJjHYZCmVVU
- BCDb1AygBXk5cHH2V8JKWWMCVlOF06pGNz+2xxqHnU9kjAXq4jkYtuV9SRRdUI5yG50+7+r
- R2demVSiaI/q5Bd2VccqZJZJ6Or3DTUzLLqJMlAuf0Nk0IvPy0Udw7GEDJ37PUu33AJyM2a
- k39VcvVD87z7u1RDk30/g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bGxkefuR4j4=:7wNBJNGv3utNVwqDP5kueZ
- AkAjNUtZfXW2UHCEElzZaRSgo5kXLsAner/Ln6AM7p/YKQ/nB2xbXJpq+jQFg7t0GKzDMhpWc
- 7n20gCEzUMbTpnklM4yKD3FqGRm/uCIbuDjDWp0IHWNhaGesaKHYXm//24htYaa3k2I2AXbAs
- qZR+oWuU/sGpDZPNFXNtZH2v8rGsby8xJ1TZ2v5bFxxutgn+leeXqWbquq6PoyMIz6klqrwDW
- 4cSlgo2WeJqzLMnf8K6eJ714MiwUBtiB2U1l/tWNHNo8l2RkA48tS1uQbMh8lXCc5uj52Cu1y
- 9px7Wn83jZJB2rEsoC8/9pZ9vL7x8NTxbYV8q0Au7C5wEdVdj/Rui+6p4KctSqgY78odH+Kd5
- Br7Cwy+GTHn6PXkapjigv6Yeq3S3mpAbELofAMzK8KoYz2tqyRcHMmuyb2523O1qnr8UCZGtS
- Z4NM65X1RSi71baGPinZvO1ECNqEIMZnlR8iEJECC0s9rQtBcj54o9aLOeOR87BnyLDk7zyMs
- uO2/4RyDfnqcIOm8FFTzD+VYBaZt0HfsEOhNS/YojB/YZeuoi8rXIDUT3wmwtAR7cw8WiirrI
- 71iR+9o7RVvqU32Bigi6bOL65txIGdagLXl3e/hJt/y9/yGD32UqHYt93brPN9Sn8PygK19Jq
- HT6wrpLzVMpEWdQCU89e83S8HHhMHI6Ijy1m28DH8MAvQJYijFVt10UVaBxDrpbVMN6q3hJ9T
- y0P2m73lGfKMv9qcjY+mYnum3FpuxK0XBaEiALUrvdv1wS/YyWvv6tZ7fDBsDZU/NlYttKolt
- cvaoQGL0tnRh1WjmuFir1Umr36s9vlT9hCENUqnPSGV2IcEwN6dMG1jF3gAQD7gFVnaE8S5WP
- /XcCcq3/OMqBVUPjgQSn2UvA47kyaztoXZsJq+LIAumYobd7CyzYAnL3wpH4RwnIXn9v2iL9P
- h4raneI3MBBLs+B9wN0mwpMmPsadiDtETYgT3UFLV5KevhRvP+Wa3lFBKXsgA7QiCFFwjXFJh
- gHCPdXllcOnRasbEbU6YTrU6ji463jMeUnrvG4ToZhDlTq8+J8PpOseMBPjh0idJzMlXnwsde
- pz9g33PEu/UgTpzYkqLIVLVsfxEzkwfwq0m
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme705-chm.china.huawei.com (10.1.199.101) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
-
-On 6/10/21 4:03 AM, Masahiro Yamada wrote:
-> On Thu, Jun 10, 2021 at 7:50 AM Helge Deller <deller@gmx.de> wrote:
+On 2021/6/9 21:45, Parav Pandit wrote:
+ >> From: Yunsheng Lin <linyunsheng@huawei.com>
+>> Sent: Wednesday, June 9, 2021 6:00 PM
 >>
->> On 6/1/21 12:21 PM, Meelis Roos wrote:
->>> Upstream Linux git fails to compile on gentoo hppa -  .config below.
->>> I have 2 gcc-s as always:
->>> $ gcc-config -l
->>>    [1] hppa2.0-unknown-linux-gnu-9.3.0
->>>    [2] hppa2.0-unknown-linux-gnu-10.2.0 *
+>> On 2021/6/9 19:59, Parav Pandit wrote:
+>>>> From: Yunsheng Lin <linyunsheng@huawei.com>
+>>>> Sent: Wednesday, June 9, 2021 4:35 PM
+>>>>
+>>>> On 2021/6/9 17:38, Parav Pandit wrote:
+>>>>>
+>>>>>> From: Yunsheng Lin <linyunsheng@huawei.com>
+>>>>>> Sent: Wednesday, June 9, 2021 2:46 PM
+>>>>>>
+>>>>> [..]
+>>>>>
+>>>>>>>> Is there any reason why VF use its own devlink instance?
+>>>>>>>
+>>>>>>> Primary use case for VFs is virtual environments where guest isn't
+>>>>>>> trusted, so tying the VF to the main devlink instance, over which
+>>>>>>> guest should have no control is counter productive.
+>>>>>>
+>>>>>> The security is mainly about VF using in container case, right?
+>>>>>> Because VF using in VM, it is different host, it means a different
+>>>>>> devlink instance for VF, so there is no security issue for VF using
+>>>>>> in VM
+>>>> case?
+>>>>>> But it might not be the case for VF using in container?
+>>>>> Devlink instance has net namespace attached to it controlled using
+>>>>> devlink
+>>>> reload command.
+>>>>> So a VF devlink instance can be assigned to a container/process
+>>>>> running in a
+>>>> specific net namespace.
+>>>>>
+>>>>> $ ip netns add n1
+>>>>> $ devlink dev reload pci/0000:06:00.4 netns n1
+>>>>>                                      ^^^^^^^^^^^^^
+>>>>>                                      PCI VF/PF/SF.
+>>>>
+>>>> Could we create another devlink instance when the net namespace of
+>>>> devlink port instance is changed?
+>>> Net namespace of (a) netdevice (b) rdma device (c) devlink instance can be
+>> changed.
+>>> Net namespace of devlink port cannot be changed.
+>>
+>> Yes, net namespace is changed based on the devlink instance, not devlink
+>> port instance, *right now*.
+>>
 >>>
->>>    [3] hppa64-unknown-linux-gnu-10.2.0 *
+>>>> It may seems we need to change the net namespace based on devlink
+>>>> port instance instead of devlink instance.
+>>>> This way container case seems be similiar to the VM case?
+>>> I mostly do not understand the topology you have in mind or if you
+>> explained previously I missed the thread.
+>>> In your case what is the flavour of a devlink port?
 >>
+>> flavour of the devlink port instance is FLAVOUR_PHYSICAL or
+>> FLAVOUR_VIRTUAL.
 >>
->> I see the same issue too, but only when compiling natively on a parisc =
-machine.
->> Cross-compiling on a x86 box works nicely.
+>> The reason I suggest to change the net namespace on devlink port instance
+>> instead of devlink instance is：
+>> I proposed that all the PF and VF in the same ASIC are registered to the same
+>> devlink instance as flavour FLAVOUR_PHYSICAL or FLAVOUR_VIRTUAL when
+>> there are in the same host and in the same net namespace.
 >>
->> First I thought it's a problem with setting the "cross_compiling" flag =
-in ./Makefile.
->> But that's not sufficient.
->>
->> On a x86 machine (which builds fine) I get
->> SRCARCH=3Dparisc SUBARCH=3Dx86 UTS_MACHINE=3Dparisc
->> The arch/parisc/kernel/asm-offsets.c file gets preprocessed via:
->> hppa64-linux-gnu-gcc
->>
->> On a native 32bit parisc machine I have:
->> SRCARCH=3Dparisc SUBARCH=3Dparisc UTS_MACHINE=3Dparisc
->> Here the arch/parisc/kernel/asm-offsets.c file gets preprocessed via:
->> gcc
->> Instead here the native hppa64-linux-gnu-gcc (cross compiler) should ha=
-ve been used too, since
->> we build a 64-bit hppa kernel (CONFIG_64BIT is set).
->> Note, on hppa we don't have an "-m64" compiler flag as on x86.
->
-> I see.
-> hppa is not a bi-arch compiler, in other words,
-> http- and hppa64- are separate compilers.
+>> If a VF's devlink port instance is unregistered from old devlink instance in the
+>> old net namespace and registered to new devlink instance in the new net
+>> namespace(create a new devlink instance if
+>> needed) when devlink port instance's net namespace is changed, then the
+>> security mentioned by jakub is not a issue any more?
+> 
+> It seems that devlink instance of VF is not needed in your case, and if so what is the motivation to even have VIRTUAL port attach to the PF?
 
-Yes.
+The devlink instance is mainly used to hold the devlink port instance
+of VF if there is only one VF in vm, we might still need to have
+param/health specific to the VF to registered to the devlink port
+instance of that VF.
 
->> Mashahiro, do you maybe have an idea what gets wrong here, or which
->> patch has changed the behaviour how the asm-offsets.c file gets preproc=
-essed?
->
-> Presumably, commit 23243c1ace9fb4eae2f75e0fe0ece8e3219fb4f3
->
-> Prior to that commit, arch/parisc/Makefile was like this:
->
-> ifneq ($(SUBARCH),$(UTS_MACHINE))
->          ifeq ($(CROSS_COMPILE),)
->                      ...
->
-> Now I understand why arch/parisc/Makefile was written this way.
->
-> Reverting the change in arch/parisc/Makefile will restore the original b=
-ehavior.
+> If only netdevice of the VF is of interest, it can be assigned to net namespace directly.
 
-Sadly, reverting this change (23243c1ace9fb4eae2f75e0fe0ece8e3219fb4f3) do=
-es not
-restore the original behavior.
+I think that is another option, if there is nothing in the devlink port
+instance specific to VF that need exposing to the user in another net
+namespace.
 
-> But, please keep in mind that there is an issue remaining.
->
-> Please see this code:
->
-> ifdef CONFIG_64BIT
-> UTS_MACHINE :=3D parisc64
-> CHECKFLAGS +=3D -D__LP64__=3D1
-> CC_ARCHES =3D hppa64
-> LD_BFD :=3D elf64-hppa-linux
-> else # 32-bit
-> CC_ARCHES =3D hppa hppa2.0 hppa1.1
-> LD_BFD :=3D elf32-hppa-linux
-> endif
->
->
-> UTS_MACHINE is determined by CONFIG_64BIT.
->
-> CONFIG_64BIT is defined only after Kconfig is finished.
-> When you are trying to configure the .config,
-> CONFIG_64BIT is not defined yet.
-> So UTS_MACHINE is always 'parisc'.
+> 
+> It doesn’t make sense to me to create new devlink instance in new net namespace, that also needs to be deleted when net ns is deleted.
+> And pre_exit() routine will mostly deadlock holding global devlink_mutex.
 
-Yes.
-See above, but it worked when I had SUBARCH=3Dx86 (when running my laptop)=
-.
+Would you be more specific why there is deadlock?
+It seems more of implementation detail, which we can discuss later
+when we are agreed it is the right way to go down deeper?
 
+> 
 
-> As you know, Kconfig files now have a bunch of 'cc-option' syntax
-> to check the compiler capability in Kconfig time.
-> Hence, you need to provide a proper compiler in Kconfig time too.
->
-> When you build a 64-bit parisc kernel on a 32-bit parisc machine,
-
-Please note, that we don't have a 64-bit parisc userspace yet (just kernel=
-).
-This means, that all builds on parisc machines are 32bit and do a
-cross-compilation to a parisc64 kernel if requested in the .config.
-
-> Kconfig is passed with CC=3Dgcc since SUBARCH=3D=3DUTS_MACHINE=3D=3Dpari=
-sc.
-> After Kconfig, CROSS_COMPILE=3Dhppa64-* is set,
-> and the kernel is built by CC=3Dhppa64-*-gcc.
-
-Right. That is the old behaviour. Based on the CONFIG_64BIT option
-the hppa64 compiler is choosen for CROSS_COMPILE.
-
-> So, Kconfig evaluated a compiletely different compiler. This is pointles=
-s.
-
-Yes, probably.
-
-
-> There are some options
->
-> [option 1]
->    revert the parisc bit of 23243c1ace9fb4eae2f75e0fe0ece8e3219fb4f3
->    This will restore the functionality you may want, but
->    as I said above, Kconfig is doing pointless things.
-
-as mentioned above: Doesn't solve the issue.
-
-> [option 2]
->     Stop using cc-cross-prefix, and pass CROSS_COMPILE explicitly.
->     This is what many architectures including arm, arm64 do.
->     You need to explicitly pass CROSS_COMPILE=3Daarch64-linux-gnu- etc.
->     if you are cross-compiling arm64.
-
-Might be an option, but it's not as handy as simply choosing CONFIG_64BIT
-and then things are done automatically.
-
-> [option 3]
->     Introduce ARCH=3Dparisc64.
->
->     When you are building 64-bit kernel, you can pass ARCH=3Dparisc64
->      A patch attached.  (but not tested much)
-
-Tried it, but doesn't work.
-asm-offsets.c is still preprocessed with 32bit compiler (gcc, not hppa20-g=
-cc).
-
-Thanks for your help so far!
-If you like I'm happy to give you an account on a hppa64 machine to reprod=
-uce yourself.
-I'll now try to bisect where it goes wrong. There must be something else b=
-efore commit 23243c1ace9fb4eae2f75e0fe0ece8e3219fb4f3.
-
-Helge
