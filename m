@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65D23A2FB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A338D3A2FBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbhFJPry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:47:54 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:37633 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbhFJPrC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:47:02 -0400
-Received: by mail-oi1-f175.google.com with SMTP id h9so2584463oih.4;
-        Thu, 10 Jun 2021 08:45:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3jqSSo5ZxW4cngaVZ8vIXakfFOsb0Nrxx/7Baa6wZNU=;
-        b=Bsjag18bqlWCXg4+phbuvd1w9hJbKiLHucIEiRZJbODnJjfKWGDQbsAsChUIFX00Mp
-         0lLuGtFyF+ih0VeTJ0r1TQU9GE3Dmz8GnH+tvPTLBe2t5A29wFSzuF6mlW4apB0aDan+
-         0p8f8te+GMS9SfNmHnLzS3LXjFLuVzZviWjGmH6gzUgm18jJDsH8b72MmgoekF1ko0i5
-         bT3ZuT1sIA8cYo3t9wpLQgViuiM5ZqBHiLwTnYgnnL2pbx6CcybjpvIYVQ6gF2CmFpVz
-         YXlcOamx1cEIjTZXIfpfgcTJaxG7mLL8QYrgLS9gIeXrrMtacCBmPSO3739Mhj3Yq/5e
-         PnDA==
-X-Gm-Message-State: AOAM530qjrQz/bEH8kiS39bCBt1sy1JU7fsVPokVKKgk0je/hWjlN9QR
-        t+5waSMTXu9/NOUa+pOC3w==
-X-Google-Smtp-Source: ABdhPJzurAKnW/5A8ES4UdO/j4opb5V8dick44tOpPDgqwIp4RTe7SZTvh+JcSB8rzhoffnoqjPwww==
-X-Received: by 2002:a05:6808:7c5:: with SMTP id f5mr3770143oij.111.1623339905754;
-        Thu, 10 Jun 2021 08:45:05 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.113])
-        by smtp.gmail.com with ESMTPSA id f7sm589309oot.36.2021.06.10.08.45.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 08:45:04 -0700 (PDT)
-Received: (nullmailer pid 1863145 invoked by uid 1000);
-        Thu, 10 Jun 2021 15:44:56 -0000
-Date:   Thu, 10 Jun 2021 10:44:56 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Amit Kumar Mahapatra <akumarma@xilinx.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Naga Sureshkumar Relli <nagasure@xilinx.com>,
-        helmut.grohne@intenta.de,
-        Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <monstr@monstr.eu>,
-        linux-arm-kernel@lists.infradead.org,
-        Srinivas Goud <sgoud@xilinx.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v23 09/18] dt-binding: memory: pl353-smc: Convert to yaml
-Message-ID: <20210610154456.GA1863070@robh.at.kernel.org>
-References: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
- <20210610082040.2075611-10-miquel.raynal@bootlin.com>
+        id S231934AbhFJPsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:48:06 -0400
+Received: from mga17.intel.com ([192.55.52.151]:16588 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231807AbhFJPrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 11:47:20 -0400
+IronPort-SDR: O7e/JxYBl9Pm+wqz/L0jWtfSn3T+8o8bvRYldbVfzjnyQjSw9QuTxF31zowcwZLIjAlFr0aK2g
+ 5B1yQfGg4g9A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="185697739"
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="185697739"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 08:45:24 -0700
+IronPort-SDR: BVf/NabkpGQFZsvA5q89bpS44643qaJLx1GuC6GwdB8BnFl3CXT9XJ6McQ3vOYuOPUmdI+KR3X
+ iXnQvGCou3pQ==
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="450419341"
+Received: from rpshah-mobl1.amr.corp.intel.com (HELO [10.255.230.181]) ([10.255.230.181])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 08:45:23 -0700
+Subject: Re: [PATCH v8 1/5] selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
+To:     Jarkko Sakkinen <jarkko@kernel.org>, shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+References: <20210610083021.392269-1-jarkko@kernel.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <b5e06639-8bf4-c267-0aa7-b6c110767edc@intel.com>
+Date:   Thu, 10 Jun 2021 08:45:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610082040.2075611-10-miquel.raynal@bootlin.com>
+In-Reply-To: <20210610083021.392269-1-jarkko@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 10:20:31 +0200, Miquel Raynal wrote:
-> Convert this binding file to yaml schema.
+On 6/10/21 1:30 AM, Jarkko Sakkinen wrote:
+> Rename symbols for better clarity:
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../memory-controllers/arm,pl353-smc.yaml     | 131 ++++++++++++++++++
->  .../bindings/memory-controllers/pl353-smc.txt |  45 ------
->  2 files changed, 131 insertions(+), 45 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+> * 'eenter' might be confused for directly calling ENCLU[EENTER].  It does
+>   not.  It calls into the VDSO, which actually has the EENTER instruction.
+> * 'sgx_call_vdso' is *only* used for entering the enclave.  It's not some
+>   generic SGX call into the VDSO.
 > 
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+These all look fine to me.  Feel free to add my ack on them.
+
+Since these are pure x86 selftests and the initial code went through the
+x86 maintainers, should these got through them as well?  Or, since this
+is only selftest code, should Shuah pick them up?
