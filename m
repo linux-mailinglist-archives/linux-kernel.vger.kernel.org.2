@@ -2,72 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530F33A2411
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 07:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CA23A241C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 07:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhFJFuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 01:50:12 -0400
-Received: from m12-17.163.com ([220.181.12.17]:36977 "EHLO m12-17.163.com"
+        id S230103AbhFJFvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 01:51:38 -0400
+Received: from mga17.intel.com ([192.55.52.151]:8479 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhFJFuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 01:50:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=31k3i
-        V9GoasuZDit4YgL+Ut81SpGX7iPAJg3QTv7z00=; b=Mo7K0kJv/4BfYVLN3HDww
-        /FYAxQtQzsmXwyJPE/FQ72z5+qYiLmF7YjtbD1zvFU8ZnF26zqDiDGmV0mDOyF4t
-        l1LMqedA1jD+YPbkiKwjWnxkqY39QGYDesfiR2aMUTebzR0q9Kw39WEc3G4DohoC
-        7gMPSn3J3nzdHPkxS2J4DY=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp13 (Coremail) with SMTP id EcCowAB3UGhtp8FgwkcZ6g--.41572S2;
-        Thu, 10 Jun 2021 13:47:26 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH v2] scsi: lpfc: lpfc_hbadisc: deleted these repeated words
-Date:   Thu, 10 Jun 2021 13:46:24 +0800
-Message-Id: <20210610054624.51800-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S229911AbhFJFvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 01:51:37 -0400
+IronPort-SDR: nMfy9SbY4LfVwgJ2+qBgexBrAxO5TN2DUYDdMRoWn4GaeySPsxvqjq70g8XPSuGJZj0vmY1H0O
+ nOHezkqb0Lug==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="185606692"
+X-IronPort-AV: E=Sophos;i="5.83,262,1616482800"; 
+   d="scan'208";a="185606692"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 22:49:39 -0700
+IronPort-SDR: kZzEu+QSSrB7kZl3BTZPAFFP8h8/C8IKuRvxAD6pEVz72GaM62V2MD/VfxO5va03XteSCPxf2Q
+ nHjtMA8dGCdg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,262,1616482800"; 
+   d="scan'208";a="402699011"
+Received: from lkp-server01.sh.intel.com (HELO 0cc315f1666b) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 09 Jun 2021 22:49:37 -0700
+Received: from kbuild by 0cc315f1666b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lrDZP-00004s-Qp; Thu, 10 Jun 2021 05:49:35 +0000
+Date:   Thu, 10 Jun 2021 13:49:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 516e52e9f5ec7671c7ed78e4bab040272eb03569
+Message-ID: <60c1a7d2.3cXh1XtrYz5Tr9m6%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowAB3UGhtp8FgwkcZ6g--.41572S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XF43Ww48Kw45Jr4fGr48JFb_yoWkGrX_WF
-        48ZF1xJw4kAFZ7AFy7Xr13Zr92q3y5ZFn7C34qqryrXr4DXF4DArs09rWUZryrurZFqa43
-        C3Z3WFyFkw43WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU57CztUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiHQ6tUFSIrHiv9gAAs-
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 516e52e9f5ec7671c7ed78e4bab040272eb03569  scftorture: Avoid excess warnings
 
-deleted these repeated words 'the' and 'random' in the comments.
+elapsed time: 722m
 
-Signed-off-by: lijian <lijian@yulong.com>
+configs tested: 150
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                   sh7724_generic_defconfig
+sh                          kfr2r09_defconfig
+sparc                            alldefconfig
+arm                             rpc_defconfig
+arm                             ezx_defconfig
+arm                          pxa3xx_defconfig
+sh                          r7780mp_defconfig
+arm                       cns3420vb_defconfig
+arm                          ep93xx_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                      pasemi_defconfig
+sh                          r7785rp_defconfig
+s390                                defconfig
+arm                              alldefconfig
+arc                          axs101_defconfig
+mips                      pic32mzda_defconfig
+sparc                       sparc64_defconfig
+powerpc                    mvme5100_defconfig
+sh                           se7619_defconfig
+mips                 decstation_r4k_defconfig
+openrisc                    or1ksim_defconfig
+xtensa                  cadence_csp_defconfig
+s390                       zfcpdump_defconfig
+powerpc                    socrates_defconfig
+ia64                        generic_defconfig
+arm                          badge4_defconfig
+arm                  colibri_pxa270_defconfig
+xtensa                       common_defconfig
+sh                             sh03_defconfig
+sh                        sh7763rdp_defconfig
+mips                     cu1000-neo_defconfig
+sh                        dreamcast_defconfig
+m68k                             allyesconfig
+mips                        workpad_defconfig
+powerpc                      mgcoge_defconfig
+m68k                       m5249evb_defconfig
+arm                           h5000_defconfig
+microblaze                          defconfig
+mips                         tb0287_defconfig
+powerpc                 mpc8560_ads_defconfig
+sh                           se7721_defconfig
+mips                      fuloong2e_defconfig
+um                           x86_64_defconfig
+arc                         haps_hs_defconfig
+ia64                         bigsur_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                     mpc5200_defconfig
+parisc                           alldefconfig
+arm                         assabet_defconfig
+mips                           ip32_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                           ci20_defconfig
+sh                             espt_defconfig
+mips                     loongson1c_defconfig
+m68k                          multi_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                          allyesconfig
+sparc64                             defconfig
+riscv                               defconfig
+arc                                 defconfig
+openrisc                         alldefconfig
+sh                            titan_defconfig
+m68k                       bvme6000_defconfig
+m68k                        m5307c3_defconfig
+nios2                         10m50_defconfig
+powerpc                     sbc8548_defconfig
+arm                          pxa168_defconfig
+arm                         orion5x_defconfig
+sh                               alldefconfig
+powerpc                     tqm8555_defconfig
+mips                      maltasmvp_defconfig
+arm                           sunxi_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210608
+x86_64               randconfig-a002-20210608
+x86_64               randconfig-a003-20210608
+x86_64               randconfig-a006-20210608
+x86_64               randconfig-a005-20210608
+x86_64               randconfig-a001-20210608
+i386                 randconfig-a002-20210610
+i386                 randconfig-a006-20210610
+i386                 randconfig-a004-20210610
+i386                 randconfig-a001-20210610
+i386                 randconfig-a005-20210610
+i386                 randconfig-a003-20210610
+i386                 randconfig-a003-20210608
+i386                 randconfig-a006-20210608
+i386                 randconfig-a004-20210608
+i386                 randconfig-a001-20210608
+i386                 randconfig-a005-20210608
+i386                 randconfig-a002-20210608
+i386                 randconfig-a015-20210608
+i386                 randconfig-a013-20210608
+i386                 randconfig-a016-20210608
+i386                 randconfig-a011-20210608
+i386                 randconfig-a012-20210608
+i386                 randconfig-a014-20210608
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20210608
+x86_64               randconfig-a012-20210608
+x86_64               randconfig-a014-20210608
+x86_64               randconfig-a011-20210608
+x86_64               randconfig-a016-20210608
+x86_64               randconfig-a013-20210608
+
 ---
-v2: fix a typo
-change 'slection' to 'selection'.
-
- drivers/scsi/lpfc/lpfc_hbadisc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/lpfc/lpfc_hbadisc.c b/drivers/scsi/lpfc/lpfc_hbadisc.c
-index 8ade5a520897..d38d721b2b59 100644
---- a/drivers/scsi/lpfc/lpfc_hbadisc.c
-+++ b/drivers/scsi/lpfc/lpfc_hbadisc.c
-@@ -2130,7 +2130,7 @@ static void lpfc_sli4_fcf_pri_list_del(struct lpfc_hba *phba,
-  * @phba: pointer to lpfc hba data structure.
-  * @fcf_index: the index of the fcf record to update
-  * This routine acquires the hbalock and then set the LPFC_FCF_FLOGI_FAILED
-- * flag so the round robin slection for the particular priority level
-+ * flag so the round robin selection for the particular priority level
-  * will try a different fcf record that does not have this bit set.
-  * If the fcf record is re-read for any reason this flag is cleared brfore
-  * adding it to the priority list.
--- 
-2.25.1
-
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
