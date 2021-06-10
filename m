@@ -2,110 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7143A33BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9551D3A33BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhFJTNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 15:13:38 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:39794 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhFJTNh (ORCPT
+        id S230321AbhFJTOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 15:14:18 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:60508 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230117AbhFJTOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 15:13:37 -0400
-Received: by mail-lj1-f181.google.com with SMTP id c11so6370600ljd.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SMdGbg5qY7Xril8PIwC2aCilKl3gyih4vJXN13qnRQs=;
-        b=cqfvjt39dMqE03b8Qk8T6nxGqG5CE1oOqhjvJmr5822PMJQr4Sbq2nJYsWDStaAAwb
-         iZ8tDefBwOO4B7DqY2HZw7POkKfUguqqt97g4qUSfGrtUCu0Qk1R3Aww0cBYlsV+BMuQ
-         btfcXVmLIGGv1LLx4UfLfPNWQHDLhab4yvwWE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SMdGbg5qY7Xril8PIwC2aCilKl3gyih4vJXN13qnRQs=;
-        b=VJmLGUHp2EazorO2FhOlxZQpMAkhIlTrA72olTy1Zn8ph8Bhr4FeV8cW4a0NgKm2ye
-         KmbXQMU7yb7w00EGY4bucVadpitj+cF7aqWFaI4RG/rtykq9IIURmvDmXIE8I7Imzifn
-         MQQNzo146vnm4LIN74GEj6Fg6qr8lP6JHZRcHKbfoMag9Pr/i8v+aeyttBGgxwnu4USX
-         BAVmoDKiTc/xhHF+FJ6cLV3akNplE+OomJyRqt/5mj6729bM0s20lUPc6cXERttzaBQk
-         /3sZ0XDGQ+q/NETljVZvDpR/UamKJROI8+xZpE8ct/SzDRAah5ae4dXNXx8vPKL96z5A
-         eZ6w==
-X-Gm-Message-State: AOAM5314CgSNYDtymF+K9KRz4lMWGbzeT/iJc9n+qBIhKfdBXXC19wsd
-        ENPL8p1chf1Z11sVdkSyQt+lvBJMQX75HN5xRYE=
-X-Google-Smtp-Source: ABdhPJzwvkAwti0UuxFL29o3I3zbSV0rPRmrvlx/Rz3onuC/3EIffpn/zyTa2088FbnoQFrAKaSDeg==
-X-Received: by 2002:a2e:9a96:: with SMTP id p22mr55404lji.389.1623352239396;
-        Thu, 10 Jun 2021 12:10:39 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id c16sm378241lfi.18.2021.06.10.12.10.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 12:10:37 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id 131so6412496ljj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:10:37 -0700 (PDT)
-X-Received: by 2002:a2e:9644:: with SMTP id z4mr50548ljh.507.1623352236538;
- Thu, 10 Jun 2021 12:10:36 -0700 (PDT)
+        Thu, 10 Jun 2021 15:14:16 -0400
+Received: from mailhost.synopsys.com (sv1-mailhost2.synopsys.com [10.205.2.132])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 003FAC0AE5;
+        Thu, 10 Jun 2021 19:12:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1623352339; bh=7khdIaQtTK1MIOXk3FXEO2cEA11Zp9810SHnpbDPJZA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BUHwsYR6TvXrg+CISQaPZ9xrmolRCxM+Zou0Jd01wAIiYogg+XWB6Ato+QTFgkYqd
+         A9nUT4rZW8JdJOplZYGt6MDyWicNV5efvlermv5xuitdMrPUgK047SYD3+x+M4g2JV
+         ZnAoy88i4y7MYV+s6isuAMrLF9BKVJnCODsU5XGZSM0Gh5K0GG7zIkNvxkULBKI2rl
+         OKJ0mKG26mPik+bwlLgHBwnsaji3CKJtf0YMck+yBNfj496cjH7LD0c2rGoZiNJHZv
+         X4oRE32v8e1+HuClTzdhiht/PFqJwerxi6O0LoONoFo5DQN23w1hT7pJAdcCdqEShq
+         ahYJDmTJoiJag==
+Received: from vineetg-Latitude-7400.internal.synopsys.com (snps-fugpbdpduq.internal.synopsys.com [10.202.17.37])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 7CD70A0072;
+        Thu, 10 Jun 2021 19:12:18 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     linux-snps-arc@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Vladimir Isaev <Vladimir.Isaev@synopsys.com>
+Subject: [PATCH v2] ARCv2: save ABI registers across signal handling
+Date:   Thu, 10 Jun 2021 12:12:16 -0700
+Message-Id: <20210610191216.2936035-1-vgupta@synopsys.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <202106101254.80jqhB9j-lkp@intel.com>
+References: <202106101254.80jqhB9j-lkp@intel.com>
 MIME-Version: 1.0
-References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
- <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com>
- <87h7i694ij.fsf_-_@disp2133> <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
- <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
- <87eeda7nqe.fsf@disp2133> <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
- <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
-In-Reply-To: <87czst5yxh.fsf_-_@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 10 Jun 2021 12:10:20 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
-Message-ID: <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
-Subject: Re: [CFT}[PATCH] coredump: Limit what can interrupt coredumps
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Olivier Langlois <olivier@trillion01.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 12:01 PM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
->
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index f7c6ffcbd044..83d534deeb76 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -943,8 +943,6 @@ static bool prepare_signal(int sig, struct task_struct *p, bool force)
->         sigset_t flush;
->
->         if (signal->flags & (SIGNAL_GROUP_EXIT | SIGNAL_GROUP_COREDUMP)) {
-> -               if (!(signal->flags & SIGNAL_GROUP_EXIT))
-> -                       return sig == SIGKILL;
->                 /*
->                  * The process is in the middle of dying, nothing to do.
->                  */
+ARCv2 has some configuration dependent registers (r30, r58, r59) which
+could be targetted by the compiler. To keep the ABI stable, these were
+unconditionally part of the glibc ABI
+(sysdeps/unix/sysv/linux/arc/sys/ucontext.h:mcontext_t) however we
+missed populating them (by saving/restoring them across signal
+handling).
 
-I do think this part of the patch is correct, but I'd like to know
-what triggered this change?
+This patch fixes the issue by
+ - adding arcv2 ABI regs to kernel struct sigcontext
+ - populating them during signal handling
 
-It seems fairly harmless - SIGKILL used to be the only signal that was
-passed through in the coredump case, now you pass through all
-non-ignored signals.
+Change to struct sigcontext might seem like a glibc ABI change (although
+it primarily uses ucontext_t:mcontext_t) but the fact is
+ - it has only been extended (existing fields are not touched)
+ - the old sigcontext was ABI incomplete to begin with anyways
 
-But since SIGKILL is the only signal that is relevant for the
-fatal_signal_pending() case, this change seems irrelevant for the
-coredump issue. Any other signals passed through won't matter.
+Fixes: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/53
+Cc: <stable@vger.kernel.org>
+Tested-by: kernel test robot <lkp@intel.com>
+Reported-by: Vladimir Isaev <isaev@synopsys.com>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+---
+ arch/arc/include/uapi/asm/sigcontext.h |  1 +
+ arch/arc/kernel/signal.c               | 43 ++++++++++++++++++++++++++
+ 2 files changed, 44 insertions(+)
 
-End result: I think removing those two lines is likely a good idea,
-but I also suspect it could/should just be a separate patch with a
-separate explanation for it.
+diff --git a/arch/arc/include/uapi/asm/sigcontext.h b/arch/arc/include/uapi/asm/sigcontext.h
+index 95f8a4380e11..7a5449dfcb29 100644
+--- a/arch/arc/include/uapi/asm/sigcontext.h
++++ b/arch/arc/include/uapi/asm/sigcontext.h
+@@ -18,6 +18,7 @@
+  */
+ struct sigcontext {
+ 	struct user_regs_struct regs;
++	struct user_regs_arcv2 v2abi;
+ };
+ 
+ #endif /* _ASM_ARC_SIGCONTEXT_H */
+diff --git a/arch/arc/kernel/signal.c b/arch/arc/kernel/signal.c
+index b3ccb9e5ffe4..cb2f88502baf 100644
+--- a/arch/arc/kernel/signal.c
++++ b/arch/arc/kernel/signal.c
+@@ -61,6 +61,41 @@ struct rt_sigframe {
+ 	unsigned int sigret_magic;
+ };
+ 
++static int save_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
++{
++	int err = 0;
++#ifndef CONFIG_ISA_ARCOMPACT
++	struct user_regs_arcv2 v2abi;
++
++	v2abi.r30 = regs->r30;
++#ifdef CONFIG_ARC_HAS_ACCL_REGS
++	v2abi.r58 = regs->r58;
++	v2abi.r59 = regs->r59;
++#else
++	v2abi.r58 = v2abi.r59 = 0;
++#endif
++	err = __copy_to_user(&mctx->v2abi, &v2abi, sizeof(v2abi));
++#endif
++	return err;
++}
++
++static int restore_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
++{
++	int err = 0;
++#ifndef CONFIG_ISA_ARCOMPACT
++	struct user_regs_arcv2 v2abi;
++
++	err = __copy_from_user(&v2abi, &mctx->v2abi, sizeof(v2abi));
++
++	regs->r30 = v2abi.r30;
++#ifdef CONFIG_ARC_HAS_ACCL_REGS
++	regs->r58 = v2abi.r58;
++	regs->r59 = v2abi.r59;
++#endif
++#endif
++	return err;
++}
++
+ static int
+ stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
+ 	       sigset_t *set)
+@@ -94,6 +129,10 @@ stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
+ 
+ 	err = __copy_to_user(&(sf->uc.uc_mcontext.regs.scratch), &uregs.scratch,
+ 			     sizeof(sf->uc.uc_mcontext.regs.scratch));
++
++	if (is_isa_arcv2())
++		err |= save_arcv2_regs(&(sf->uc.uc_mcontext), regs);
++
+ 	err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
+ 
+ 	return err ? -EFAULT : 0;
+@@ -109,6 +148,10 @@ static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
+ 	err |= __copy_from_user(&uregs.scratch,
+ 				&(sf->uc.uc_mcontext.regs.scratch),
+ 				sizeof(sf->uc.uc_mcontext.regs.scratch));
++
++	if (is_isa_arcv2())
++		err |= restore_arcv2_regs(&(sf->uc.uc_mcontext), regs);
++
+ 	if (err)
+ 		return -EFAULT;
+ 
+-- 
+2.25.1
 
-Hmm?
-
-              Linus
