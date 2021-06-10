@@ -2,224 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933D13A2532
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FF83A2534
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhFJHUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:20:23 -0400
-Received: from first.geanix.com ([116.203.34.67]:50042 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhFJHUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:20:22 -0400
-Received: from zen.. (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id 95E7846261A;
-        Thu, 10 Jun 2021 07:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1623309503; bh=2rHe7V0F0RQXkzfMD10YtenEcaEXX8BZm2udpsW3DIw=;
-        h=From:To:Cc:Subject:Date;
-        b=AFN3Xrs60hSCOGCY7cFi7/hnUr5gF8D4ievKcaPBmtCtHupHgvZInYeE0Q+TIVyNW
-         E4+GV36qqGipO8lJB6QBg29SYXQSkWtaPaOPy+6zkRUWGCP9+YV9obsqr6iAOJ3/7m
-         6QuXTA35W7u+whTQxo2CBKcxQGXm4la5bebIs7g4rYzP7XtQQ93al7K4+7V+2c8e9y
-         5nPtRnMoHk2v0ZqFRITiDoCLGOe7V3+kiU6uRu9ARHU/rI/lHFNj/13J5tcoY64nba
-         wbqK8fjk8rBU+0W8YLpyLCSashTt/yWaZbk73b2/gHKcrzBUI4Cg7yUoqAk5dDTlZp
-         Kt0n8uYHQHDZg==
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Sean Nyekjaer <sean@geanix.com>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: fix possible circular locking in clk_notifier_register()
-Date:   Thu, 10 Jun 2021 09:17:57 +0200
-Message-Id: <20210610071758.1560592-1-sean@geanix.com>
-X-Mailer: git-send-email 2.31.0
+        id S229808AbhFJHVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:21:12 -0400
+Received: from mail-lj1-f179.google.com ([209.85.208.179]:38437 "EHLO
+        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhFJHVL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 03:21:11 -0400
+Received: by mail-lj1-f179.google.com with SMTP id s22so3403827ljg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:19:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S5kcCRgSqcTyKNiNJobzPvsYTBfnwg3R0que6HtV/iA=;
+        b=gOyVmQmkTb6Ht4MxUDwsPv+sgfc47kSAG/YUkq2lleF0q/dOq8uSIGGFMyN4q/919a
+         vrJXYZGjINTU2nFw31tmzr7UDTqOrJJz80C+ggrqqVmA5YeKdVS6YnlKCutUlQvN8ys7
+         PdCttBfPd8Cua8+a9j7SkMwppyzT2wfq2EtsMK0eY5Oy+NN9hQqPBG3uZSm73nZgL1N5
+         BhVxxVkDqx6eIMkQFiJ16ncU+3RzDLkPJUn6QbS8U+36Vmbnsfum1QLFYtyd33zifNwj
+         30Pw7cA4+dV2r8vNEYcmfBqHwmgg5NgA5fXbPYR+Pr++yb8uBu3+MmUp3tIUe5ktU+E7
+         1mQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S5kcCRgSqcTyKNiNJobzPvsYTBfnwg3R0que6HtV/iA=;
+        b=MCRk2hMV8CzgqeFqMsitkerL0GzgRrkrBfVeGqti+nJFTicu6mle/qD2JALSaGLWcA
+         Ld6vZSUB77nycodidhP/X+SqnNbvn19l0aptrIFANNuzQeqs15W9LZLRIOdJ0pb6BG9l
+         V+gGGJosH00GhfT/Adyg0MRrK04xK+oaHI0OmOBdJfv6jfUSLO6mn6MOMNuOmgFTvWDA
+         Ksfz93gFdnSKYHKhkzekcPiehPrcvaGwNyd412c07kIBvCUu2wsrp8X/hppVaOdkkoPY
+         Sjylc7aSqq9YyJUeiSP4MLo5HGun2zW3wHfGgn73H4nIA7ObpB4HEVWlUF5DTQx/rzct
+         mhsQ==
+X-Gm-Message-State: AOAM533/eeEz/egtt+/Ioq1tJKc497qIo38zLyPsTYtAF/1porg6DFoD
+        CWxKI13MGRRBKuDuikn8UVgOWg==
+X-Google-Smtp-Source: ABdhPJyMj9lGwOCH+acQAVtjCYP7GB+omoXpgU6UYPUc+PU0pXjGQscDFQVLqGLZ50u23iwL4TVVSg==
+X-Received: by 2002:a2e:a605:: with SMTP id v5mr1129883ljp.128.1623309494502;
+        Thu, 10 Jun 2021 00:18:14 -0700 (PDT)
+Received: from jade (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
+        by smtp.gmail.com with ESMTPSA id i21sm238059ljb.10.2021.06.10.00.18.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 00:18:14 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 09:18:12 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Rijo-john.Thomas@amd.com, Allen Pais <apais@linux.microsoft.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        op-tee@lists.trustedfirmware.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 5/7] tee: Support shm registration without dma-buf
+ backing
+Message-ID: <20210610071812.GA2753553@jade>
+References: <20210609002326.210024-1-tyhicks@linux.microsoft.com>
+ <20210609002326.210024-6-tyhicks@linux.microsoft.com>
+ <CAFA6WYOZC0iHzZm6pOxz31eW_=8g2wyJdm4wiOGKggO6-a9MdA@mail.gmail.com>
+ <20210609054621.GB4910@sequoia>
+ <CAFA6WYOYt2vcQ4ng=Nwu2R7d6=R=DGXQKpQ-+UiENerEtQRKWg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYOYt2vcQ4ng=Nwu2R7d6=R=DGXQKpQ-+UiENerEtQRKWg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocating memory with prepare_lock mutex held makes lockdep unhappy
-when memory pressure makes the system do fs_reclaim on eg. rawnand using
-clk.
+On Wed, Jun 09, 2021 at 04:22:49PM +0530, Sumit Garg wrote:
+> + Rijo
+> 
+> On Wed, 9 Jun 2021 at 11:16, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
+[snip]
+> 
+> > - tee_shm_alloc() performs allocations using contiguous pages
+> >   from alloc_pages() while tee_shm_register() performs non-contiguous
+> >   allocations with kcalloc(). I suspect this would be fine but I don't
+> >   know the secure world side of these things well enough to assess the
+> >   risk involved with such a change on the kernel side.
+> >
+> 
+> I don't think that would make any difference.
 
-Push the allocation outside the lock.
+Agree.
 
-[  462.466020] ======================================================
-[  462.472211] WARNING: possible circular locking dependency detected
-[  462.478406] 4.19.128-00489-gffc0949c2231 #2 Not tainted
-[  462.483641] ------------------------------------------------------
-[  462.489831] kswapd0/22 is trying to acquire lock:
-[  462.494553] 882c9532 (&c->commit_sem){++++}, at: make_reservation+0x68/0x41c
-[  462.501638]
-[  462.501638] but task is already holding lock:
-[  462.507483] 11f3c233 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x0/0x48
-[  462.514388]
-[  462.514388] which lock already depends on the new lock.
-[  462.514388]
-[  462.522579]
-[  462.522579] the existing dependency chain (in reverse order) is:
-[  462.530073]
-[  462.530073] -> #4 (fs_reclaim){+.+.}:
-[  462.535242]        fs_reclaim_acquire+0x78/0x88
-[  462.539792]        kmem_cache_alloc_trace+0x34/0x2e8
-[  462.544775]        clk_notifier_register+0x84/0xfc
-[  462.549586]        i2c_imx_probe+0x23c/0x678
-[  462.553872]        platform_drv_probe+0x50/0xa0
-[  462.558419]        really_probe+0x2b8/0x3d8
-[  462.562617]        driver_probe_device+0x64/0x16c
-[  462.567334]        __driver_attach+0x120/0x144
-[  462.571795]        bus_for_each_dev+0x7c/0xc4
-[  462.576166]        driver_attach+0x20/0x28
-[  462.580276]        bus_add_driver+0x174/0x208
-[  462.584646]        driver_register+0x90/0x120
-[  462.589016]        __platform_driver_register+0x38/0x4c
-[  462.594260]        i2c_adap_imx_init+0x18/0x20
-[  462.598721]        do_one_initcall+0x8c/0x32c
-[  462.603096]        kernel_init_freeable+0x300/0x3e4
-[  462.607993]        kernel_init+0x10/0x114
-[  462.612016]        ret_from_fork+0x14/0x20
-[  462.616124]          (null)
-[  462.618928]
-[  462.618928] -> #3 (prepare_lock){+.+.}:
-[  462.624270]        __mutex_lock+0x60/0x8dc
-[  462.628381]        mutex_lock_nested+0x24/0x2c
-[  462.632843]        clk_prepare_lock+0x44/0xec
-[  462.637216]        clk_unprepare+0x24/0x34
-[  462.641327]        gpmi_disable_clk+0x2c/0x3c
-[  462.645697]        gpmi_select_chip+0x84/0xa4
-[  462.650071]        nand_read_oob+0x748/0x7b8
-[  462.654358]        part_read_oob+0x40/0x78
-[  462.658466]        mtd_read+0x10c/0x13c
-[  462.662318]        ubi_io_read+0xc8/0x354
-[  462.666342]        ubi_eba_read_leb+0xc8/0x544
-[  462.670798]        ubi_eba_read_leb_sg+0x70/0x170
-[  462.675514]        ubi_leb_read_sg+0x7c/0xbc
-[  462.679799]        ubiblock_do_work+0xcc/0x118
-[  462.684260]        process_one_work+0x2a4/0x744
-[  462.688805]        worker_thread+0x5c/0x554
-[  462.693004]        kthread+0x120/0x160
-[  462.696767]        ret_from_fork+0x14/0x20
-[  462.700874]          (null)
-[  462.703676]
-[  462.703676] -> #2 (&le->mutex){++++}:
-[  462.708842]        down_read+0x3c/0x80
-[  462.712608]        ubi_eba_read_leb+0x4c/0x544
-[  462.717065]        ubi_leb_read+0x7c/0xbc
-[  462.721089]        ubifs_leb_read+0x34/0x80
-[  462.725288]        ubifs_read_nnode+0x194/0x208
-[  462.729831]        ubifs_lpt_lookup_dirty+0x1e0/0x294
-[  462.734899]        ubifs_replay_journal+0x48/0x15a8
-[  462.739789]        ubifs_mount+0x104c/0x15f0
-[  462.744074]        mount_fs+0x1c/0xb8
-[  462.747753]        vfs_kern_mount.part.0+0x58/0x148
-[  462.752648]        do_mount+0x6a4/0xec8
-[  462.756499]        ksys_mount+0x90/0xbc
-[  462.760349]        sys_mount+0x1c/0x24
-[  462.764108]        ret_fast_syscall+0x0/0x28
-[  462.768390]        0xbebcbb38
-[  462.771367]
-[  462.771367] -> #1 (&c->lp_mutex){+.+.}:
-[  462.776705]        __mutex_lock+0x60/0x8dc
-[  462.780818]        mutex_lock_nested+0x24/0x2c
-[  462.785277]        ubifs_gc_start_commit+0x28/0x32c
-[  462.790170]        do_commit+0x1cc/0x7e4
-[  462.794105]        ubifs_run_commit+0x98/0xd0
-[  462.798476]        grab_empty_leb+0x60/0x98
-[  462.802674]        ubifs_rcvry_gc_commit+0x10c/0x1d8
-[  462.807651]        ubifs_mount+0x1308/0x15f0
-[  462.811934]        mount_fs+0x1c/0xb8
-[  462.815610]        vfs_kern_mount.part.0+0x58/0x148
-[  462.820503]        do_mount+0x6a4/0xec8
-[  462.824353]        ksys_mount+0x90/0xbc
-[  462.828201]        sys_mount+0x1c/0x24
-[  462.831962]        ret_fast_syscall+0x0/0x28
-[  462.836243]        0xbebcbb38
-[  462.839220]
-[  462.839220] -> #0 (&c->commit_sem){++++}:
-[  462.844733]        lock_acquire+0xd4/0x1f8
-[  462.848845]        down_read+0x3c/0x80
-[  462.852608]        make_reservation+0x68/0x41c
-[  462.857064]        ubifs_jnl_write_data+0x134/0x2b8
-[  462.861955]        do_writepage+0x88/0x210
-[  462.866063]        ubifs_writepage+0x1b8/0x274
-[  462.870522]        shrink_page_list+0x800/0xf68
-[  462.875065]        shrink_inactive_list+0x1b4/0x4f0
-[  462.879956]        shrink_node+0x44c/0x9c0
-[  462.884063]        kswapd+0x3f8/0x928
-[  462.887741]        kthread+0x120/0x160
-[  462.891504]        ret_from_fork+0x14/0x20
-[  462.895609]          (null)
-[  462.898412]
-[  462.898412] other info that might help us debug this:
-[  462.898412]
-[  462.906428] Chain exists of:
-[  462.906428]   &c->commit_sem --> prepare_lock --> fs_reclaim
-[  462.906428]
-[  462.916455]  Possible unsafe locking scenario:
-[  462.916455]
-[  462.922384]        CPU0                    CPU1
-[  462.926923]        ----                    ----
-[  462.931459]   lock(fs_reclaim);
-[  462.934613]                                lock(prepare_lock);
-[  462.940458]                                lock(fs_reclaim);
-[  462.946127]   lock(&c->commit_sem);
-[  462.949628]
-[  462.949628]  *** DEADLOCK ***
-[  462.949628]
-[  462.955563] 1 lock held by kswapd0/22:
-[  462.959322]  #0: 11f3c233 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x0/0x48
+> 
+> > I should have mentioned this in the cover letter but my hope was that
+> > these minimal changes would be accepted and then additional work could
+> > be done to merge tee_shm_alloc() and tee_shm_register() in a way that
+> > would allow the caller to request contiguous or non-contiguous pages,
+> > fix up the additional issues mentioned above, and then adjust the
+> > call sites in ftpm and tee_bnxt_fw as appropriate.
+> >
+> > I think that's a bigger set of changes because there are several things
+> > that still confuse/concern me:
+> >
+> > - Why does tee_shm_alloc() use TEE_SHM_MAPPED while tee_shm_register()
+> >   uses TEE_SHM_KERNEL_MAPPED or TEE_SHM_USER_MAPPED? Why do all three
+> >   exist?
+> 
+> AFAIK, its due the the inherent nature of tee_shm_alloc() and
+> tee_shm_register() where tee_shm_alloc() doesn't need to know whether
+> its a kernel or user-space memory since it is the one that allocates
+> whereas tee_shm_register() need to know that since it has to register
+> pre-allocated client memory.
+> 
+> > - Why does tee_shm_register() unconditionally use non-contiguous
+> >   allocations without ever taking into account whether or not
+> >   OPTEE_SMC_SEC_CAP_DYNAMIC_SHM was set? It sounds like that's required
+> >   from my reading of https://optee.readthedocs.io/en/latest/architecture/core.html#noncontiguous-shared-buffers.
+> 
+> Yeah, but do we have platforms in OP-TEE that don't support dynamic
+> shared memory? I guess it has become the sane default which is a
+> mandatory requirement when it comes to OP-TEE driver in u-boot.
+> 
+> > - Why is TEE_SHM_REGISTER implemented at the TEE driver level when it is
+> >   specific to OP-TEE? How to better abstract that away?
+> >
+> 
+> I would like you to go through Section "3.2.4. Shared Memory" in TEE
+> Client API Specification. There are two standard ways for shared
+> memory approach with TEE:
+> 
+> 1. A Shared Memory block can either be existing Client Application
+> memory (kernel driver in our case) which is subsequently registered
+> with the TEE Client API (using tee_shm_register() in our case).
+> 
+> 2. Or memory which is allocated on behalf of the Client Application
+> using the TEE
+> Client API (using tee_shm_alloc() in our case).
+> 
+> > Let me know if you agree with the more minimal approach that I took for
+> > these bug fix series or still feel like tee_shm_register() should be
+> > fixed up so that it is usable. Thanks!
+> 
+> From drivers perspective I think the change should be:
+> 
+> tee_shm_alloc()
+> 
+> to
+> 
+> kcalloc()
+> tee_shm_register()
 
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
----
- drivers/clk/clk.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+I had another approach in mind in "[PATCH 0/7] tee: shared memory updates",
+https://lore.kernel.org/lkml/20210609102324.2222332-1-jens.wiklander@linaro.org/
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 65508eb89ec9..c32b71b08ccb 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -4340,17 +4340,20 @@ int clk_notifier_register(struct clk *clk, struct notifier_block *nb)
- 	if (!clk || !nb)
- 		return -EINVAL;
- 
-+	/* allocate new clk_notifier */
-+	cn = kzalloc(sizeof(*cn), GFP_KERNEL);
-+	if (!cn)
-+		goto out;
-+
- 	clk_prepare_lock();
- 
- 	/* search the list of notifiers for this clk */
- 	list_for_each_entry(cn, &clk_notifier_list, node)
--		if (cn->clk == clk)
-+		if (cn->clk == clk) {
-+			/* if clk is in the notifier list, free new clk_notifier */
-+			kfree(cn);
- 			goto found;
--
--	/* if clk wasn't in the notifier list, allocate new clk_notifier */
--	cn = kzalloc(sizeof(*cn), GFP_KERNEL);
--	if (!cn)
--		goto out;
-+		}
- 
- 	cn->clk = clk;
- 	srcu_init_notifier_head(&cn->notifier_head);
-@@ -4362,9 +4365,9 @@ int clk_notifier_register(struct clk *clk, struct notifier_block *nb)
- 
- 	clk->core->notifier_count++;
- 
--out:
- 	clk_prepare_unlock();
- 
-+out:
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(clk_notifier_register);
--- 
-2.31.0
+The flags needed by tee_shm_alloc() and tee_shm_register() aren't
+very intuitive and in fact only accept quite few combinations. So my
+idea was to hide those flags from callers outside of the TEE subsystem
+with tee_shm_alloc_kernel_buf().
 
+The approach with tee_shm_register() you suggest above has the drawback
+that the TEE driver is forced to be able to handle any kernel memory.
+This is OK with OP-TEE and dynamic shared memory enabled, but there are
+platforms where dynamic shared memory isn't enabled. In those case must
+the memory be allocated from a special pool.
+
+Do you see any problem with instead replacing tee_shm_alloc()
+with tee_shm_alloc_kernel_buf()?
+
+Cheers,
+Jens
