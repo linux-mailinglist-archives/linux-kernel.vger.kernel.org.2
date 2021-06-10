@@ -2,41 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73583A27B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DE93A27BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhFJJGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:06:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:54336 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229715AbhFJJGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:06:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5CADD6E;
-        Thu, 10 Jun 2021 02:04:56 -0700 (PDT)
-Received: from [10.57.4.220] (unknown [10.57.4.220])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 046B43F719;
-        Thu, 10 Jun 2021 02:04:53 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] sched/fair: Take thermal pressure into account
- while estimating energy
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, qperret@google.com,
-        vincent.donnefort@arm.com, Beata.Michalska@arm.com,
-        mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
-        segall@google.com, mgorman@suse.de, bristot@redhat.com
-References: <20210604080954.13915-1-lukasz.luba@arm.com>
- <20210604080954.13915-2-lukasz.luba@arm.com>
- <2f2fc758-92c6-5023-4fcb-f9558bf3369e@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <905f1d29-50f9-32be-4199-fc17eab79d04@arm.com>
-Date:   Thu, 10 Jun 2021 10:04:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S229966AbhFJJIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:08:10 -0400
+Received: from mail-pg1-f172.google.com ([209.85.215.172]:43679 "EHLO
+        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230118AbhFJJIJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 05:08:09 -0400
+Received: by mail-pg1-f172.google.com with SMTP id e22so22044360pgv.10;
+        Thu, 10 Jun 2021 02:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WVYZh37iLNE3J4xzwZTUdF1tvtQC8S/ydWacg9ipzgY=;
+        b=KdpAAEnO2Z2FCmbpRQ/ye4dryVfTV8KCyXdcKGPCEoWI0PEyPkZ2qof3wxuDvUHP91
+         aWFO/y9owh7OoKAdy64N22ZRZquRGuyZdh6Cq1n6v36bCiN1Y2+nMxLeiVYmmAxYZvVN
+         8GgrQ32n9oB2gj5RQxhFJGSbJG8iq9FEA2oEL+KlEe1Bd9Tp/PQVlPOch7t7CT9CB1+9
+         iJ8sWwxS2gEOcy7RyBoyiY5eiqvaKMwYXlqPpl66u0nPMchObxwZAPkZGPlscitzEMRN
+         SYN9DNI20X7Aj1V0u+v/gyzGb5CfAM38ChBCnH/oiMVdTYvYcL5jnvuJdbqyG+/T/Lbg
+         Naig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WVYZh37iLNE3J4xzwZTUdF1tvtQC8S/ydWacg9ipzgY=;
+        b=IAYpe8Zu/JE8jc3TxOWIuaCXVEwRHMO8GroO11VVbIXPsebomR81oIH61aTesbOZ0w
+         Qig56TTJD1v6vdOhBdVNttIJVYlnXIwbH15hlk7YlhkOKu+NKJwxtXEpxH9bPOj+vbD8
+         +vEQ3lAxGO/qQofaVIxgF5sGLOGT/LABL0DS2Jr92Cvvqqn1FNYn8qCl9ZZiUUAKEb1K
+         P+ChSW0P7vJTntmqVW05o1UtQn/o+d1oJxis58pY0D0h3UURUr6TuW1X9Ov4reGuVz+g
+         Ch/5wfLhMvdbRdkcuW61Tij5shaaVGgApXVtcdrmFYP6BrYluaCvLF763hWXyyfCQfNz
+         G1EQ==
+X-Gm-Message-State: AOAM531BCY0lmWI9MxVJrLCBX3HTw6JdY+CQEp0jk6qokiZnRMoH5Ykh
+        rM1tcLNoj1OkzOPlZiHmc+E=
+X-Google-Smtp-Source: ABdhPJyxi4anbag9ZpWO3Zhn+zjYgn2lHwH/b7JXexBto/qLq4Js+VWWoON8KGSaOpcDL64NzrDuzw==
+X-Received: by 2002:aa7:8641:0:b029:2f4:7263:5524 with SMTP id a1-20020aa786410000b02902f472635524mr2083010pfo.70.1623315913522;
+        Thu, 10 Jun 2021 02:05:13 -0700 (PDT)
+Received: from [127.0.0.1] ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id u9sm2084786pgp.90.2021.06.10.02.05.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 02:05:13 -0700 (PDT)
+Subject: Re: [RESEND PATCH 1/8] bfq: introduce bfq_entity_to_bfqg helper
+ method
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     paolo.valente@linaro.org, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Piotr Gorski <lucjan.lucjanov@gmail.com>
+References: <cover.1618916839.git.brookxu@tencent.com>
+ <20210610072230.TAxxdh-wsL4sihK2TJxF-Gz85ZgsFR7IwOuifnxFi0k@z>
+ <20210610083147.xoefokucl5ey7v32@spock.localdomain>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <eac90e08-eb43-848a-7a5f-e0c84b7ea637@gmail.com>
+Date:   Thu, 10 Jun 2021 17:05:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <2f2fc758-92c6-5023-4fcb-f9558bf3369e@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210610083147.xoefokucl5ey7v32@spock.localdomain>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -45,104 +71,115 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 6/10/21 9:42 AM, Dietmar Eggemann wrote:
-
-[snip]
-
+Oleksandr Natalenko wrote on 2021/6/10 16:31:
+> Hello.
 > 
-> So essentially what you want to do is:
-> 
-> Make EAS aware of the frequency clamping schedutil can be faced with:
-> 
->    get_next_freq() -> cpufreq_driver_resolve_freq() ->
-> clamp_val(target_freq, policy->min, policy->max) (1)
-> 
-> by subtracting CPU's Thermal Pressure (ThPr) signal from the original
-> CPU capacity `arch_scale_cpu_capacity()` (2).
-> 
-> ---
-> 
-> Isn't there a conceptional flaw in this design? Let's say we have a
-> big.Little system with two cpufreq cooling devices and a thermal zone
-> (something like Hikey 960). To create a ThPr scenario we have to run
-> stuff on the CPUs (e.g. hackbench (3)).
-> Eventually cpufreq_set_cur_state() [drivers/thermal/cpufreq_cooling.c]
-> will set thermal_pressure to `(2) - (2)*freq/policy->cpuinfo.max_freq`
-> and PELT will provide the ThPr signal via thermal_load_avg().
-> But to create this scenario, the system will become overutilized
-> (system-wide data, if one CPU is overutilized, the whole system is) so
-> EAS is disabled (i.e. find_energy_efficient_cpu() and compute_emergy()
-> are not executed).
-
-Not always, it depends on thermal governor decision, workload and
-'power actors' (in IPA naming convention). Then it depends when and how
-hard you clamp the CPUs. They (CPUs) don't have to be always
-overutilized, they might be even 50-70% utilized but the GPU reduced
-power budget by 2 Watts, so CPUs left with only 1W. Which is still OK
-for the CPUs, since they are only 'feeding' the GPU with new 'jobs'.
-
-> 
-> I can see that there are episodes in which EAS is running and
-> thermal_load_avg() != 0 but those have to be when (3) has stopped and
-> you see the ThPr signal just decaying (no accruing of new ThPr). The
-> cpufreq cooling device can still issue cpufreq_set_cur_state() but only
-> with decreasing states.
-
-It is true for some CPU heavy workloads, when no other SoC components
-are involved like: GPU, DSP, ISP, encoders, etc. For other workloads
-when CPUs don't have to do a lot, but thermal pressure might be seen on
-them, this patch help.
-
-> 
-> ---
-> 
-> IMHO, a precise description of how you envision the system setup,
-> incorporating all participating subsystems, would be helpful here.
-
-True, I hope this description above would help to understand the
-scenario.
-
-> 
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   kernel/sched/fair.c | 17 ++++++++++++++---
->>   1 file changed, 14 insertions(+), 3 deletions(-)
+> On Thu, Jun 10, 2021 at 03:22:30PM +0800, brookxu wrote:
+>> From: Chunguang Xu <brookxu@tencent.com>
 >>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 161b92aa1c79..1aeddecabc20 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -6527,6 +6527,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
->>   	struct cpumask *pd_mask = perf_domain_span(pd);
->>   	unsigned long cpu_cap = arch_scale_cpu_capacity(cpumask_first(pd_mask));
->>   	unsigned long max_util = 0, sum_util = 0;
->> +	unsigned long _cpu_cap = cpu_cap;
->>   	int cpu;
->>   
->>   	/*
->> @@ -6558,14 +6559,24 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
->>   				cpu_util_next(cpu, p, -1) + task_util_est(p);
->>   		}
->>   
->> +		/*
->> +		 * Take the thermal pressure from non-idle CPUs. They have
->> +		 * most up-to-date information. For idle CPUs thermal pressure
->> +		 * signal is not updated so often.
->> +		 */
->> +		if (!idle_cpu(cpu))
->> +			_cpu_cap = cpu_cap - thermal_load_avg(cpu_rq(cpu));
+>> Introduce bfq_entity_to_bfqg() to make it easier to obtain the
+>> bfq_group corresponding to the entity.
+>>
+>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+>> ---
+>>  block/bfq-cgroup.c  |  6 ++----
+>>  block/bfq-iosched.h |  1 +
+>>  block/bfq-wf2q.c    | 16 ++++++++++++----
+>>  3 files changed, 15 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+>> index b791e20..a5f544a 100644
+>> --- a/block/bfq-cgroup.c
+>> +++ b/block/bfq-cgroup.c
+>> @@ -309,8 +309,7 @@ struct bfq_group *bfqq_group(struct bfq_queue *bfqq)
+>>  {
+>>  	struct bfq_entity *group_entity = bfqq->entity.parent;
+>>  
+>> -	return group_entity ? container_of(group_entity, struct bfq_group,
+>> -					   entity) :
+>> +	return group_entity ? bfq_entity_to_bfqg(group_entity) :
+>>  			      bfqq->bfqd->root_group;
+>>  }
+>>  
+>> @@ -610,8 +609,7 @@ struct bfq_group *bfq_find_set_group(struct bfq_data *bfqd,
+>>  	 */
+>>  	entity = &bfqg->entity;
+>>  	for_each_entity(entity) {
+>> -		struct bfq_group *curr_bfqg = container_of(entity,
+>> -						struct bfq_group, entity);
+>> +		struct bfq_group *curr_bfqg = bfq_entity_to_bfqg(entity);
+>>  		if (curr_bfqg != bfqd->root_group) {
+>>  			parent = bfqg_parent(curr_bfqg);
+>>  			if (!parent)
+>> diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+>> index b8e793c..a6f98e9 100644
+>> --- a/block/bfq-iosched.h
+>> +++ b/block/bfq-iosched.h
+>> @@ -941,6 +941,7 @@ struct bfq_group {
+>>  #endif
+>>  
+>>  struct bfq_queue *bfq_entity_to_bfqq(struct bfq_entity *entity);
+>> +struct bfq_group *bfq_entity_to_bfqg(struct bfq_entity *entity);
+>>  
+>>  /* --------------- main algorithm interface ----------------- */
+>>  
+>> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+>> index 070e34a..5ff0028 100644
+>> --- a/block/bfq-wf2q.c
+>> +++ b/block/bfq-wf2q.c
+>> @@ -149,7 +149,7 @@ struct bfq_group *bfq_bfqq_to_bfqg(struct bfq_queue *bfqq)
+>>  	if (!group_entity)
+>>  		group_entity = &bfqq->bfqd->root_group->entity;
+>>  
+>> -	return container_of(group_entity, struct bfq_group, entity);
+>> +	return bfq_entity_to_bfqg(group_entity);
+>>  }
+>>  
+>>  /*
+>> @@ -208,7 +208,7 @@ static bool bfq_no_longer_next_in_service(struct bfq_entity *entity)
+>>  	if (bfq_entity_to_bfqq(entity))
+>>  		return true;
+>>  
+>> -	bfqg = container_of(entity, struct bfq_group, entity);
+>> +	bfqg = bfq_entity_to_bfqg(entity);
+>>  
+>>  	/*
+>>  	 * The field active_entities does not always contain the
+>> @@ -266,6 +266,15 @@ struct bfq_queue *bfq_entity_to_bfqq(struct bfq_entity *entity)
+>>  	return bfqq;
+>>  }
+>>  
+>> +struct bfq_group *bfq_entity_to_bfqg(struct bfq_entity *entity)
+>> +{
+>> +	struct bfq_group *bfqg = NULL;
 >> +
+>> +	if (entity->my_sched_data)
+>> +		bfqg = container_of(entity, struct bfq_group, entity);
+>> +
+>> +	return bfqg;
+>> +}
+>>  
+>>  /**
+>>   * bfq_delta - map service into the virtual time domain.
+>> @@ -1001,8 +1010,7 @@ static void __bfq_activate_entity(struct bfq_entity *entity,
+>>  
+>>  #ifdef CONFIG_BFQ_GROUP_IOSCHED
+>>  	if (!bfq_entity_to_bfqq(entity)) { /* bfq_group */
+>> -		struct bfq_group *bfqg =
+>> -			container_of(entity, struct bfq_group, entity);
+>> +		struct bfq_group *bfqg = bfq_entity_to_bfqg(entity);
+>>  		struct bfq_data *bfqd = bfqg->bfqd;
+>>  
+>>  		if (!entity->in_groups_with_pending_reqs) {
+>> -- 
+>> 1.8.3.1
+>>
 > 
-> This one is probably the result of the fact that cpufreq cooling device
-> sets the ThPr for all CPUs of the policy (Frequency Domain (FD) or
-> Performance Domain (PD)) but PELT updates are happening per-CPU. And
-> only !idle CPUs get the update in scheduler_tick().
+> If it is a resend only, I can offer my Tested-by since I'm running this
+> series for quite some time already.
 > 
-> Looks like thermal_pressure [per_cpu(thermal_pressure, cpu),
-> drivers/base/arch_topology.c] set by cpufreq_set_cur_state() is always
-> in sync with policy->max/cpuinfo_max_freq).
-> So for your use case this instantaneous `signal` is better than the PELT
-> one. It's precise (no decaying when frequency clamping is already gone)
-> and you avoid the per-cpu update issue.
 
-Yes, this code implementation tries to address those issues.
+ok, thank you very much.
+
+> Thanks.
+> 
