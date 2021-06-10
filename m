@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADA03A3735
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745F73A3738
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhFJWhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbhFJWhq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:37:46 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17512C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:35:36 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id t140so3870079oih.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:35:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=8hMl0wiRRmqM61bQjykYoRZiv0fN0EuwY/cCyjTM+xs=;
-        b=tsZzr52aDZt7EMZ9iAWTl+2VnQQbd1/lX9+t/v3t24fg9RKkV3cdkBhHVguv1JYS0K
-         7gHCIcKetKJ/n2u/iVovx9p/gxYWQlzmk4Yp6yrnlimH64Bp8n7hZWD6n8diWDFxIlxF
-         DRstO3+fSwAKHqhVcHD4N35iQhpxpQdJtrfZh4RbhJulePf4s8qL/bl/QHWh2VJ/cj7c
-         vbz9B0RBaYTZO3YFcL8e4Zcjw4oeaVfVe8KaCNXeEZERhgVuRz/anBXPRWx7xehSSX3c
-         KY4IzlxdxyLdR3GOhFqXuMPfF3Fmhhg0R/cry0NrjrX0bwNX0LG6fOmZEzYOeLiPtCSl
-         ATvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=8hMl0wiRRmqM61bQjykYoRZiv0fN0EuwY/cCyjTM+xs=;
-        b=Flrv6XYxvXygLtsQc2B9eQR1mgFPUpt8xjsrOHoOm2wusbrAFLrd/7a8C09Hnb745L
-         0tBMwmCFQZDHnF1JQmykiuGm5voDlWX5IPw/LqFc7vK5qfLYXCfEANhXtRYkvNrKGZEa
-         gJR2r32pPvUGMRam0lx6foK5wmdkHF+mysuAiaIWb0O93vqU5IQER7Gks6tU2J4kRs5k
-         tTpyHnA1OynCBu4TM8wzXWanhnNH422WP0o3hijBeb2EW04WnKxdpcCdvE0ML6/yRXPg
-         r3xJ+nnlQkYbv+bMsm+JXH9n4DVRzt1WBjG2iq43kgKMqUVMHlPGeYhrz3gYXUiSQ7r4
-         nlhw==
-X-Gm-Message-State: AOAM5332lEUdaIXdJ1/TcM8EcV2FdwTOZUojsFNmHPbGcc/eHxshgRWR
-        rFdYeJUBeJn+vQwBKpW0BVDb4A==
-X-Google-Smtp-Source: ABdhPJzkJR3+hkPtCoFRLeiC1N5kr4AOXTv1lh6DRLsVFsUU+zlbpzLOvbpU7+yT9B7UMDMIS94nSg==
-X-Received: by 2002:a05:6808:985:: with SMTP id a5mr2414446oic.77.1623364534395;
-        Thu, 10 Jun 2021 15:35:34 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id e10sm685389otr.5.2021.06.10.15.35.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 15:35:33 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 15:35:31 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Peter Xu <peterx@redhat.com>
-cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Will Deacon <will@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/11] mm: page_vma_mapped_walk(): use page for
- pvmw->page
-In-Reply-To: <YMIeTEYwzmKdrMqG@t490s>
-Message-ID: <82f6838b-ea38-2030-a8c6-8d2defc2e6@google.com>
-References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com> <88e67645-f467-c279-bf5e-af4b5c6b13eb@google.com> <20210610085522.f5ffyejzn3xtqark@box.shutemov.name> <YMIeTEYwzmKdrMqG@t490s>
+        id S231140AbhFJWjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 18:39:12 -0400
+Received: from ozlabs.org ([203.11.71.1]:42451 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230440AbhFJWjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 18:39:10 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G1JkZ0Ktyz9sVm;
+        Fri, 11 Jun 2021 08:37:10 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623364630;
+        bh=nGBXmZ5pR69Nz3OT+L4NP5pAXNqS/z+zK57gIpUIdQ0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Zca7b+11WJLIHQ+fZqKh5FO8s5io4ZBwh9FFgPMGaMmTSqJ36Noj/DITbhQaTqyfH
+         f4F86B0UC9QDkzVSUcTzau+sl7Q/URujPiEJpmrd0WaYwM/1Ma65mIyG8Obz7GZyEI
+         h7ij+yHw3rh5znabFq4GAWmcSD8JB3UcW5ZkwulZgGqgYSnBmpK7XUdXHG/IK8XPgj
+         dE1CSdntWWTPlnJLlPS+B4oLN2BxK8EzzApq9fFTL8j2MlLCvlDBCIIjrh6Kvz5Y0k
+         ++hJuVd/AJrigQBzElB+1ecrNUrPFSIeLPwlArj4Fhl1gHywUbkc9+0TkROkfF0LAt
+         +U9BcMG4+dtow==
+Date:   Fri, 11 Jun 2021 08:37:09 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: rebase and update of the gfs2 tree
+Message-ID: <20210611083709.040cc790@canb.auug.org.au>
+In-Reply-To: <20210611081135.3245330a@canb.auug.org.au>
+References: <20210611081135.3245330a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; boundary="Sig_/Z/I4GucHwUi/_jgJbdV8Reb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021, Peter Xu wrote:
-> On Thu, Jun 10, 2021 at 11:55:22AM +0300, Kirill A. Shutemov wrote:
-> > > @@ -234,9 +233,9 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
-> > >  			return true;
-> > >  next_pte:
-> > >  		/* Seek to next pte only makes sense for THP */
-> > > -		if (!PageTransHuge(pvmw->page) || PageHuge(pvmw->page))
-> > > +		if (!PageTransHuge(page) || PageHuge(page))
-> > >  			return not_found(pvmw);
-> > > -		end = vma_address_end(pvmw->page, pvmw->vma);
-> > > +		end = vma_address_end(page, pvmw->vma);
-> > >  		do {
-> > >  			pvmw->address += PAGE_SIZE;
-> > >  			if (pvmw->address >= end)
-> > 
-> > I see two more pvmw->page in this loop. Do you leave them here as the code
-> > will be rewritten later in the patchset?
+--Sig_/Z/I4GucHwUi/_jgJbdV8Reb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-That would be tacky; but I cannot see them (apart from in check_pte()).
+Hi all,
 
-> 
-> I think they've got removed in previous series ("[PATCH v2 04/10] mm/thp: fix
-> vma_address() if virtual address below file offset").
+On Fri, 11 Jun 2021 08:11:35 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> So yesterday I reported a conflict between the vfs and gfs2 trees.
+> Today it has been "fixed" by the gfs2 tree rebasing and merging a
+> topic branch from the vfs tree.  Unfortunately, that topic branch has
+> been rebased in the vfs tree today, so now in linux-next I will have
+> two (slightly different) versions of that vfs tree topic branch (and
+> presumably I will get more conflicts).
+>=20
+> Please think about what is wrong with this situation.  Hint: two already
+> published branches have been rebased/rewritten.  And maybe there has
+> been a lack of communication between developers.
 
-Yes, I think you've found the right explanation.
+Please read Documentation/maintainer/rebasing-and-merging.rst
 
-> 
-> Reviewed-by: Peter Xu <peterx@redhat.com>
+--=20
+Cheers,
+Stephen Rothwell
 
-Thanks,
-Hugh
+--Sig_/Z/I4GucHwUi/_jgJbdV8Reb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDClBUACgkQAVBC80lX
+0GwEngf/d8UHjVEsnRfFU1i2Rs6zKBsP9yYoUU+t9ysHX7tOeo4WXM58FW10s8ZQ
+uHC16uYFmS55ZO+Pgwbat/iH2zYmdddCMr1Ekomol4SUMeapqDQS9uI6xZ2r/r2g
+pDYDD/HHV0SJE8Aj2tXtBpFVq33cXK8KrVjAjeYiFOdb2XvonKWHFoQ4BIRj3Zxo
+bqpz3iACcZgpbr3gaV64pMkdclnh4NjH4TlcnP/NcutDdEpz0rqVg62P6hTr0q8t
+8zBne0ZMntZPs+7tSWUqvqobpBEeFwy6rrocLcOl/gemztPg+q9RjAJ57cF25LyS
+gOLX14RxGULW4sdJIB45FwT7JkWsaw==
+=IA3U
+-----END PGP SIGNATURE-----
+
+--Sig_/Z/I4GucHwUi/_jgJbdV8Reb--
