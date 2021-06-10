@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C14D3A2787
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 800AF3A2792
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhFJI7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbhFJI7F (ORCPT
+        id S230064AbhFJJCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:02:20 -0400
+Received: from mail-io1-f50.google.com ([209.85.166.50]:37700 "EHLO
+        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhFJJCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:59:05 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693F9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 01:56:53 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id r5so2016757lfr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 01:56:53 -0700 (PDT)
+        Thu, 10 Jun 2021 05:02:19 -0400
+Received: by mail-io1-f50.google.com with SMTP id q7so26043277iob.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:00:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jRYyk3EbV8ykUwHzFQPKAhHsarVLGupggo1jrWfbO38=;
-        b=v5Ao0GMnVycjqJk6Mpy+4+jSeS5Bi8Gw0i1gFO4cXsigiqW/8yiFmbgF0k+D/puZxK
-         KE3pdoBidoXaCUzJXwo3GBleBv1rL6l1Tsq6lOpg2DGkNvuaKbuJStHapIj/81BEVNLt
-         tVcw469DeDqZjnYy/ACEDxECqOWyyHmGLAwA3f8jS7OfUswuKq86iEmJIbMSwi7raMC0
-         tCVJbCudj6bVhuqoHKyp+4UXJwD28A/t794ceGHe3LsskxpH8Xhjfq4NOGF3pbPiNlDf
-         SvBZUEG8Fb2YEuwqPuxQmZUN1Opz8dxyCehcC+DGb4pL/xQDiYMuyGCwBzdghuJb9GWS
-         rfWA==
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=EHYCYrAYv4I7uZ+OBpEcwojG7dBP0+6wCXkNY/u/VUw=;
+        b=CdQxHfU0p2RiKHGmbVdOqI9WCZ7WtstaDAryz6ukoRss5d0P6Ej0AFqxZPXo1TuCCr
+         bxim72WNja9Z3e5jefvAhTTQ8Rr5debhIK3tC/GLxmIWXXM3GVlup8plOLKHAJBKWhIQ
+         YtvwI3P7ljq/HJzuvyUxUXuHIDaUqinwvXAlHWvXFMWKw56ZlxMDSdOY6stb+u8o1/Kf
+         fhMDeNM7V6c809PqoxhohXXpn576dpxDzPZ0eXa4duTgf16Q0Ox/8ll6TtWxwNGV5Ccs
+         G8d4LCg8nXr0Mk4yzzkPo/VvndHdG6OKUmwCPVndRcxe7z+fStWhYHXjbYDnEdJU8til
+         Y1BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jRYyk3EbV8ykUwHzFQPKAhHsarVLGupggo1jrWfbO38=;
-        b=XWyXDTmzoYMb0ePfJkrl59GjPLBhhcT2Ep/e4KHPRwDHt0kJJbXJ9tBehIN8Qtgwvw
-         w30ZL+ZsYMFECkJPF20VErG/4WfUXZLEQ7CD/RnTk45sYiJ3lST747XsLqpXOCL8ed4D
-         d99D6pHNcXEqdehpkkBAbnS8poygtUIv8G+K/81OjtJZT0zrocwKDyo2inDcn2Re8/1Z
-         V5Sxis2m8oxSSd6PzWWf4ZashsPCpUm+WDZ5OCWhdv2vu4r/Z8Ogdgbif+PQvf7LrQ7c
-         9As++ywly3Dzbg0U5SkamgPda3iiD9gbM74wdVtxov5M9gSIXiX8YmOb7W2TU8Rp5w6O
-         Yjiw==
-X-Gm-Message-State: AOAM5304tG7FSEhugmirfx4V3N0s0qtwqHOG2LipIbSQR34OpzAi/Q8S
-        OrSe1Z8f9uG/HtHhn9tW3E+U2A==
-X-Google-Smtp-Source: ABdhPJzPbLO9sDp98FfvgVWezBqX3cN2pgde8sPN+g7m+FvfUPZXJemAdIBqzK3wSNJEDyZfh0UoQw==
-X-Received: by 2002:ac2:551d:: with SMTP id j29mr1241216lfk.319.1623315410884;
-        Thu, 10 Jun 2021 01:56:50 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id p6sm254866lfc.280.2021.06.10.01.56.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 01:56:50 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 3A53E1027EE; Thu, 10 Jun 2021 11:57:06 +0300 (+03)
-Date:   Thu, 10 Jun 2021 11:57:06 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/11] mm: page_vma_mapped_walk(): settle PageHuge on
- entry
-Message-ID: <20210610085706.zyvdoypn6vy43fm3@box.shutemov.name>
-References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
- <e31a483c-6d73-a6bb-26c5-43c3b880a2@google.com>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=EHYCYrAYv4I7uZ+OBpEcwojG7dBP0+6wCXkNY/u/VUw=;
+        b=ExyBz/QAEImMsPEtlQwhho4DHDRH8HS3I6BaVGb/t+8g3EcIKINSkN+u3sXVbBqSpe
+         88WTXLVgfPT8j1o19NfrJ3rYgO5nd+ElsQB+dEJTxR58kmrH0Hat8m2T39i0fbPBw50z
+         k4hxx4o3VB9rx3l6OoPwu8uND5k+7r/b+PgqD4i5HPqm4Gbj5yBCVYzmL0Ut1KsEeCEh
+         /S5D9LXn32YBKF79SprMNpjQlXUfJpHI9TWVRt6U5qglRgE92ILg/cDY5eTtNu/QvMKP
+         TWg6bcNUroI4d59kqK0MVIalfuCVUH7G3MY7mLhd6QD4uqJs2Aodc9PDnydtVAcDV8/g
+         PLlw==
+X-Gm-Message-State: AOAM531dSF9X+xKFwz/W3Z8ezmT/SkUN/yKpiqrJiVt/kuJ+waNFsoGu
+        BBzisdKZ7y8jl351oNna0u5aRuFAo12Xkoum63M=
+X-Google-Smtp-Source: ABdhPJyZZckYZPOWh0pmpqphtk0A5XJfI3i/upWzvbbSpYgvS+FCi76QNcAEJQ1TzZjC0a4fxsiL3pIn9Dw77gnzbEc=
+X-Received: by 2002:a02:cd9c:: with SMTP id l28mr3611124jap.61.1623315552082;
+ Thu, 10 Jun 2021 01:59:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e31a483c-6d73-a6bb-26c5-43c3b880a2@google.com>
+Sender: annabelardelean@gmail.com
+Received: by 2002:a92:d709:0:0:0:0:0 with HTTP; Thu, 10 Jun 2021 01:59:11
+ -0700 (PDT)
+From:   Mrs Kim Hong Yeoh <mrs.kimhongyeoh55@gmail.com>
+Date:   Thu, 10 Jun 2021 08:59:11 +0000
+X-Google-Sender-Auth: cchOoVwa5MYv0DV1qRmvkVztU40
+Message-ID: <CANe==rw0XzYc3HdYcjTF6HXRqKgronP0Jhf=ztEbR1biEBfAvg@mail.gmail.com>
+Subject: HELLO!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:36:36PM -0700, Hugh Dickins wrote:
-> page_vma_mapped_walk() cleanup: get the hugetlbfs PageHuge case
-> out of the way at the start, so no need to worry about it later.
-> 
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
+May God Bless you Dear Friend.
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+I am contacting you through this means because I need your urgent
+assistance and also help me to carry a charity project in your
+country. I found your email address as a true child of God for past
+few days now that I have been praying to know if you are really the
+chosen one for this great charity project, according to God's
+direction, after all prayers I am convinced, and I have decided to
+contact you. Please, i want you use the funds for the Lord's work,
+with confidence, read and respond now.
 
--- 
- Kirill A. Shutemov
+
+My name is Ms. Nadia Emaan, a widow, but currently based in West
+Africa since my life with my late husband, who was a businessman in
+this country before dying some years ago. We were married to many
+years without a child. He died after a brief illness that lasted only
+six days and I myself have been suffering from an ovarian cancer
+disease. At this moment I am about to finish the race in this way
+because the disease has reached a very bad stage, without any family
+member and without children. I hope you do not expose or betray this
+trust and I am sure that I am about to trust you for the mutual
+benefit of orphans and the less privileged. I have some funds that I
+inherited from my late husband, the total sum of ($ 12,500,000.00)
+deposited at a bank here in Burkina Faso. After knowing my current
+state of health, I decided to trust you with this fund, believing that
+you will use it in the way I will instruct here.
+
+
+you will use this $12.5 Million for public benefit as follows;
+
+1. Establish An Orphanage Home To Help The Orphanages Children.
+2. Build A Hospital To Help The Poor.
+3. Build A Nursing Home For Elderly People Need Care & Meal.
+
+You will named them after my late husband.Therefore, I need you to
+help me and claim this money and use it for charities, for orphanages
+and provide justice and help to the poor, needy and to promote the
+words of God and the effort to maintain the house of God, according to
+the bible in the book of. Jeremiah 22: 15-16, without minding our
+different religions.
+
+It will be a pleasure to compensate with 40% percent of the total
+money for your effort in handling the transaction, while 60% of the
+money will go to charity project.
+
+All I need from you is sincerity and ability to complete the task of
+God without any failure. It will be my pleasure to see that the bank
+has finally released and transferred the fund to your bank account in
+the country, even before I die here in the hospital, due to my current
+state of health, everything must be processed as soon as possible.
+
+I am waiting for your immediate response, if you are only interested
+in obtaining more details about the transaction and execution of this
+humanitarian project for the glory and honor of God.
+
+Sorry if you received this letter in your spam, is due to recent
+connection/network error here in the country.
+
+Please I am waiting for your urgent reply now.
+
+May God Bless you,
+Ms. Nadia Emaan.
