@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643B63A352B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66643A353F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFJU41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 16:56:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35114 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhFJU4X (ORCPT
+        id S230301AbhFJVAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:00:11 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:46278 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229963AbhFJVAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 16:56:23 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623358465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lheG/WyLWN4DiKQNRJyzN2wdxM/g4ucOGltzrtvaQRU=;
-        b=dwoNh4+nYuAK9yANrvjpHVtxu/fDB9wcnRWZsmBtswbArd/m8zgOJpmqKp4M+lwC/y3K1T
-        jYAdh+0oC3wVo9hEp16igYoJYVvVp/82uZ6LmAnC5QxeB8R8TTUA83qrFGDT3vZ0qgGyja
-        zkRvKaEguCcp651NSN8dD1NAEALtHMHMXjEy1OFTpKYttdomrTnUaMGscc7R8P1KJESMOe
-        AGWeosxjrW3+A1fshiCs8UlFP1/BBmpKlvEsqYuXpZTUcoJIP/2/zakmY7xN2wtV7WVmGp
-        wGLvoPJ65FaqgEQiyxoEqQzdIAB4y6lkgT1+qoEs1mUZo3piGCzmZCRiZerTWA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623358465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lheG/WyLWN4DiKQNRJyzN2wdxM/g4ucOGltzrtvaQRU=;
-        b=I5Nr+1RTEternKTd7Ss3HewOKcJa5fQ2OKgohH+Hyrg1LOZA1axfZ54uPMrvO9BwS44J8Q
-        9GrX6bICZmwemIDA==
-To:     Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     the arch/x86 maintainers <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Rik van Riel <riel@surriel.com>, Borislav Petkov <bp@suse.de>
-Subject: Re: [patch V3 3/6] x86/process: Check PF_KTHREAD and not current->mm for kernel threads
-In-Reply-To: <ca2d7f44-bbef-448a-bbd4-ff27cc6f0c9e@www.fastmail.com>
-References: <20210608143617.565868844@linutronix.de> <20210608144345.912645927@linutronix.de> <ca2d7f44-bbef-448a-bbd4-ff27cc6f0c9e@www.fastmail.com>
-Date:   Thu, 10 Jun 2021 22:54:24 +0200
-Message-ID: <87fsxpxwxr.ffs@nanos.tec.linutronix.de>
+        Thu, 10 Jun 2021 17:00:09 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lrRkd-00G7Q2-LO; Thu, 10 Jun 2021 14:58:07 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lrRkb-003V64-TI; Thu, 10 Jun 2021 14:58:07 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     <linux-arch@vger.kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>,
+        Daniel Jacobowitz <drow@nevyn.them.org>,
+        Kees Cook <keescook@chromium.org>
+Date:   Thu, 10 Jun 2021 15:57:58 -0500
+Message-ID: <87sg1p30a1.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-XM-SPF: eid=1lrRkb-003V64-TI;;;mid=<87sg1p30a1.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1//8WQu+x+uCru6/HE74WQnaxGdKbF4cdU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,XMSubLong,XM_B_SpammyWords autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;<linux-arch@vger.kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 593 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 15 (2.4%), b_tie_ro: 12 (2.1%), parse: 0.94
+        (0.2%), extract_message_metadata: 3.5 (0.6%), get_uri_detail_list:
+        1.06 (0.2%), tests_pri_-1000: 4.9 (0.8%), tests_pri_-950: 1.75 (0.3%),
+        tests_pri_-900: 1.18 (0.2%), tests_pri_-90: 79 (13.3%), check_bayes:
+        77 (13.0%), b_tokenize: 5 (0.9%), b_tok_get_all: 8 (1.3%),
+        b_comp_prob: 2.3 (0.4%), b_tok_touch_all: 57 (9.6%), b_finish: 1.35
+        (0.2%), tests_pri_0: 467 (78.7%), check_dkim_signature: 0.46 (0.1%),
+        check_dkim_adsp: 3.8 (0.6%), poll_dns_idle: 1.85 (0.3%), tests_pri_10:
+        2.7 (0.5%), tests_pri_500: 8 (1.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10 2021 at 10:10, Andy Lutomirski wrote:
 
-> On Tue, Jun 8, 2021, at 7:36 AM, Thomas Gleixner wrote:
->> switch_fpu_finish() checks current->mm as indicator for kernel threads.
->> That's wrong because kernel threads can temporarily use a mm of a user
->> process via kthread_use_mm().
->>=20
->> Check the task flags for PF_KTHREAD instead.
->>=20
->> Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
->> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Rik van Riel <riel@surriel.com>
->> Cc: stable@vger.kernel.org
->> ---
->>  arch/x86/include/asm/fpu/internal.h |    2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>=20
->> --- a/arch/x86/include/asm/fpu/internal.h
->> +++ b/arch/x86/include/asm/fpu/internal.h
->> @@ -578,7 +578,7 @@ static inline void switch_fpu_finish(str
->>  	 * PKRU state is switched eagerly because it needs to be valid before =
-we
->>  	 * return to userland e.g. for a copy_to_user() operation.
->>  	 */
->> -	if (current->mm) {
->> +	if (!(current->flags & PF_KTHREAD)) {
->>  		pk =3D get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
->>  		if (pk)
->>  			pkru_val =3D pk->pkru;
->>=20
->>=20
-> Why are we checking this at all?  I actually tend to agree with the
-> ->mm check more than PF_anything. If we have a user address space,
-> then PKRU matters. If we don=E2=80=99t, then it doesn=E2=80=99t.
+Folks,
 
-Which PKRU matters? A kernel thread has always the default PKRU no
-matter whether it uses a mm or not. It _cannot_ borrow the PKRU from the
-mm owning process. There is no way, so let's not pretend there would be.
+Digging through the guts of exit I found something I am not quite
+certain what to do with.  On some architectures such as alpha, m68k, and
+nios2 the kernel calls into system calls with a subset of the registers
+saved on the kernel stack, and the kernel calls into signal handling and
+a few other contexts with all of the registers saved on the kernel
+stack.  The problem is sometimes we read all of the registers from
+a context where they are not all saved.
 
-Thanks,
+When this was initially observed it looked just like a coredump problem
+and it could be solved by tweaking the coredump code.  That change was
+77f6ab8b7768 ("don't dump the threads that had been already exiting when
+zapped.")
 
-        tglx
+However I have looked farther and we have the location where get_signal
+is called from io_uring, and we have the ptrace_stop in
+PTRACE_EVENT_EXIT.  In PTRACE_EVENT_EXIT we could be called from exit(2)
+which is a syscall and we definitely won't have everything saved on the
+kernel stack.  I have not doubled checked create_io_thread but I don't
+think create_io_threads saves all of the registers on the kernel stack.
+
+I think at this point we need to say that the architectures that have a
+do this need to be fixed to at least call do_exit and the kernel
+function in create_io_thread with the deeper stack.
+
+Is that reasonable of me to ask?  Is there some other way to deal with
+this issue that I am not seeing?  Am I missing some critical detail that
+makes PTRACE_EVENT_EXIT in do_exit not a problem if someone reads the
+register with ptrace?
+
+Eric
+
