@@ -2,109 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFEF3A255B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5B53A256A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbhFJHZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:25:43 -0400
-Received: from first.geanix.com ([116.203.34.67]:50230 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230316AbhFJHZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:25:28 -0400
-Received: from [192.168.64.199] (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id 7419A46261A;
-        Thu, 10 Jun 2021 07:23:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1623309810; bh=vyfep8YIAK6qo0oOxa4YXp/asnk+y+Zn5gtODqva2d0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=EOBhJsJW93K3V42DZWKWSVDaCHBTSDuSUhvZg455ui0L2NxAQO8nlsmHWbFpPq9KQ
-         a8VC0Ia3snmnV+qqWcTdkAKR8lxkKRPmvjBxG1IVPHwbiYP9oKntrgU9SyPN1iI3T5
-         gO2U1Fvo32uroq49HUqZm7WEnTXWGQ+M7m+LnBOm1XZcMN9+lG/7n3j9uG6HEMdAHo
-         roP5lXMbovdF7o+JtiLs3qOgEdpc5f+KlHx+sV8CmJ9Le00Rb2vtvoOqqmTdXK9Hw3
-         hT00VntQ1iXnYOX8KL81bArtz3dlw/EBqyWoD4J/N20B9zqCAOPPqKL/h1+5OKRaoX
-         85zg6pIwNLqbg==
-Subject: Re: [PATCH] clk: fix possible circular locking in
- clk_notifier_register()
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210610071758.1560592-1-sean@geanix.com>
-From:   Sean Nyekjaer <sean@geanix.com>
-Message-ID: <e9849007-8169-cb32-b0f1-5be6210f1319@geanix.com>
-Date:   Thu, 10 Jun 2021 09:23:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230448AbhFJH0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:26:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56593 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230492AbhFJH0A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 03:26:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623309844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5tlPw+fNQnyyXsv0Z5PViUY/ZrTm7CI6pUHe7QloYKE=;
+        b=EyW3fiK9gRqTF+M8k80TUrqwZZZkGl1HfU/RIEKeNjGVuF396XMBFa3S3upfIgtVO3lU/O
+        ZexDTpgta9yTqkpanS3dPLV+atPokpyBE+zIPhIhsMwzu2F3Xg0ng2yywJhFtLzxxFQtfz
+        IDxGXX5E1OYOp9VzQuVLLSxMmDbj/QY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-266-rjIBf0XlO-aJNZOYpO23bg-1; Thu, 10 Jun 2021 03:24:02 -0400
+X-MC-Unique: rjIBf0XlO-aJNZOYpO23bg-1
+Received: by mail-ed1-f69.google.com with SMTP id df3-20020a05640230a3b029039179c0f290so12010980edb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:24:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=5tlPw+fNQnyyXsv0Z5PViUY/ZrTm7CI6pUHe7QloYKE=;
+        b=P5pevUGXZIgMk0R9107+8WUXzGogVLmHcCz1elQKuePrJ52Q8MKzgy9YnlJLCjoY4s
+         gDl+evU7uGYhO5l8PKTFLxr7YMi9bVoDgskHG2mKOvC7YjyUAHsO7tMeyPXWwiV+N4Gt
+         ka4lGYtdiewqXDnzkz0PzGFj2EX3bFdNvIHP9p5zgGVrB4BN1cQAJfdmYa/O0+aoo3gY
+         vS1+Au/jwwc9RjbArjamUs/VfUMRfTHxOuXq/+R5c9JMSpYVPUVy7Z+NV9KTWr+WnyT8
+         Fk4IE7jKbx3obBR5M16vltSl2+e/pJ5O1akNzJK1KXw5Y2iMUHh5tb445RrDz9YI/lzQ
+         9SVQ==
+X-Gm-Message-State: AOAM531zT4GsL+Fz1XiEK0gDeAUYqJgXfkjtYYwfKuCyBzGqT251hI1V
+        q/seevEWqgmTgxIRLqa4Cl3CS35yuMwgX6FJyyvXDb/muX5ZPEyXxhNbha3DWiG3XL36FGkUtVq
+        sBLYhj2o++gPAozt5AtqFhPE/
+X-Received: by 2002:a05:6402:31a2:: with SMTP id dj2mr3327561edb.206.1623309841253;
+        Thu, 10 Jun 2021 00:24:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQjjBWn2tn5Hz5WlWbOxelGasgbyypBGGNi74+KR/G3TdCo5Fjc4YzbciAEeQef5nBrmemKQ==
+X-Received: by 2002:a05:6402:31a2:: with SMTP id dj2mr3327543edb.206.1623309841108;
+        Thu, 10 Jun 2021 00:24:01 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id o21sm651992ejg.49.2021.06.10.00.23.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 00:24:00 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 09:23:58 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Jiang Wang ." <jiang.wang@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        jhansen@vmware.comments, cong.wang@bytedance.com,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Yongji Xie <xieyongji@bytedance.com>,
+        =?utf-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Lu Wei <luwei32@huawei.com>,
+        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v1 0/6] virtio/vsock: introduce SOCK_DGRAM support
+Message-ID: <20210610072358.3fuvsahxec2sht4y@steredhat>
+References: <20210609232501.171257-1-jiang.wang@bytedance.com>
+ <da90f17a-1c24-b475-76ef-f6a7fc2bcdd5@redhat.com>
+ <CAP_N_Z_VDd+JUJ_Y-peOEc7FgwNGB8O3uZpVumQT_DbW62Jpjw@mail.gmail.com>
+ <ac0c241c-1013-1304-036f-504d0edc5fd7@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210610071758.1560592-1-sean@geanix.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        URIBL_BLOCKED autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ac0c241c-1013-1304-036f-504d0edc5fd7@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06/2021 09.17, Sean Nyekjaer wrote:
-> Allocating memory with prepare_lock mutex held makes lockdep unhappy
-> when memory pressure makes the system do fs_reclaim on eg. rawnand using
-> clk.
-> 
-> Push the allocation outside the lock.
-> 
-[...]
-> 
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Fixes: b2476490ef111 ("clk: introduce the common clock framework")
+On Thu, Jun 10, 2021 at 12:02:35PM +0800, Jason Wang wrote:
+>
+>在 2021/6/10 上午11:43, Jiang Wang . 写道:
+>>On Wed, Jun 9, 2021 at 6:51 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>
+>>>在 2021/6/10 上午7:24, Jiang Wang 写道:
+>>>>This patchset implements support of SOCK_DGRAM for virtio
+>>>>transport.
+>>>>
+>>>>Datagram sockets are connectionless and unreliable. To avoid unfair contention
+>>>>with stream and other sockets, add two more virtqueues and
+>>>>a new feature bit to indicate if those two new queues exist or not.
+>>>>
+>>>>Dgram does not use the existing credit update mechanism for
+>>>>stream sockets. When sending from the guest/driver, sending packets
+>>>>synchronously, so the sender will get an error when the virtqueue is 
+>>>>full.
+>>>>When sending from the host/device, send packets asynchronously
+>>>>because the descriptor memory belongs to the corresponding QEMU
+>>>>process.
+>>>
+>>>What's the use case for the datagram vsock?
+>>>
+>>One use case is for non critical info logging from the guest
+>>to the host, such as the performance data of some applications.
+>
+>
+>Anything that prevents you from using the stream socket?
+>
+>
+>>
+>>It can also be used to replace UDP communications between
+>>the guest and the host.
+>
+>
+>Any advantage for VSOCK in this case? Is it for performance (I guess 
+>not since I don't exepct vsock will be faster).
 
-We could possibly add this fixes tag ^^
-> ---
->  drivers/clk/clk.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index 65508eb89ec9..c32b71b08ccb 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -4340,17 +4340,20 @@ int clk_notifier_register(struct clk *clk, struct notifier_block *nb)
->  	if (!clk || !nb)
->  		return -EINVAL;
->  
-> +	/* allocate new clk_notifier */
-> +	cn = kzalloc(sizeof(*cn), GFP_KERNEL);
-> +	if (!cn)
-> +		goto out;
-> +
->  	clk_prepare_lock();
->  
->  	/* search the list of notifiers for this clk */
->  	list_for_each_entry(cn, &clk_notifier_list, node)
-> -		if (cn->clk == clk)
-> +		if (cn->clk == clk) {
-> +			/* if clk is in the notifier list, free new clk_notifier */
-> +			kfree(cn);
->  			goto found;
-> -
-> -	/* if clk wasn't in the notifier list, allocate new clk_notifier */
-> -	cn = kzalloc(sizeof(*cn), GFP_KERNEL);
-> -	if (!cn)
-> -		goto out;
-> +		}
->  
->  	cn->clk = clk;
->  	srcu_init_notifier_head(&cn->notifier_head);
-> @@ -4362,9 +4365,9 @@ int clk_notifier_register(struct clk *clk, struct notifier_block *nb)
->  
->  	clk->core->notifier_count++;
->  
-> -out:
->  	clk_prepare_unlock();
->  
-> +out:
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(clk_notifier_register);
-> 
+I think the general advantage to using vsock are for the guest agents 
+that potentially don't need any configuration.
+
+>
+>An obvious drawback is that it breaks the migration. Using UDP you can 
+>have a very rich features support from the kernel where vsock can't.
+>
+
+Thanks for bringing this up!
+What features does UDP support and datagram on vsock could not support?
+
+>
+>>
+>>>>The virtio spec patch is here:
+>>>>https://www.spinics.net/lists/linux-virtualization/msg50027.html
+>>>
+>>>Have a quick glance, I suggest to split mergeable rx buffer into an
+>>>separate patch.
+>>Sure.
+>>
+>>>But I think it's time to revisit the idea of unifying the virtio-net 
+>>>and
+>>>virtio-vsock. Otherwise we're duplicating features and bugs.
+>>For mergeable rxbuf related code, I think a set of common helper
+>>functions can be used by both virtio-net and virtio-vsock. For other
+>>parts, that may not be very beneficial. I will think about more.
+>>
+>>If there is a previous email discussion about this topic, could you 
+>>send me
+>>some links? I did a quick web search but did not find any related
+>>info. Thanks.
+>
+>
+>We had a lot:
+>
+>[1] 
+>https://patchwork.kernel.org/project/kvm/patch/5BDFF537.3050806@huawei.com/
+>[2] 
+>https://lists.linuxfoundation.org/pipermail/virtualization/2018-November/039798.html
+>[3] https://www.lkml.org/lkml/2020/1/16/2043
+>
+
+When I tried it, the biggest problem that blocked me were all the 
+features strictly related to TCP/IP stack and ethernet devices that 
+vsock device doesn't know how to handle: TSO, GSO, checksums, MAC, napi, 
+xdp, min ethernet frame size, MTU, etc.
+
+So in my opinion to unify them is not so simple, because vsock is not 
+really an ethernet device, but simply a socket.
+
+But I fully agree that we shouldn't duplicate functionality and code, so 
+maybe we could find those common parts and create helpers to be used by 
+both.
+
+Thanks,
+Stefano
 
