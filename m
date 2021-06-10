@@ -2,142 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0B93A2D24
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D803A2D1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhFJNgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:36:54 -0400
-Received: from mga18.intel.com ([134.134.136.126]:31511 "EHLO mga18.intel.com"
+        id S230393AbhFJNgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:36:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:60166 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230435AbhFJNgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:36:52 -0400
-IronPort-SDR: l5TLdD7cGsxIEf4kLEPWMTEPLz31J8RpgiIdSxHcDL43fWCwf06ErFlsxrNvlFGUd7ZDkXQzFN
- g0+LI8sIzJBA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="192612418"
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="192612418"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 06:32:50 -0700
-IronPort-SDR: 7nUpw3RLVnjyioJh0UKy5Niob54pNKBtNcsAgqMkXa/lbEBX7AR284S94bh+XMP7GFHpgFf1mX
- VIZtpjgBO+Zw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="402861024"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by orsmga003.jf.intel.com with ESMTP; 10 Jun 2021 06:32:00 -0700
-Subject: Re: [PATCH v3 7/9] scsi: ufs: Let host_sem cover the entire system
- suspend/resume
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-8-git-send-email-cang@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <6d31becb-98f8-2302-8ffa-657e6cadd8ec@intel.com>
-Date:   Thu, 10 Jun 2021 16:32:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230188AbhFJNf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 09:35:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22FCF106F;
+        Thu, 10 Jun 2021 06:34:03 -0700 (PDT)
+Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D8D213F73D;
+        Thu, 10 Jun 2021 06:34:01 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 14:33:59 +0100
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: iowait boost is broken
+Message-ID: <20210610133358.GB30309@e120325.cambridge.arm.com>
+References: <CAEXW_YTcO=hbmdq3nOx2RJfT2yPyoFnQx5niB38R2Lzpsp38bA@mail.gmail.com>
+ <20210607191031.GA12489@e120325.cambridge.arm.com>
+ <YL+tDv/EL5ogf/0w@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <1623300218-9454-8-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YL+tDv/EL5ogf/0w@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06/21 7:43 am, Can Guo wrote:
-> UFS error handling now is doing more than just re-probing, but also sending
-> scsi cmds, e.g., for clearing UACs, and recovering runtime PM error, which
-> may change runtime status of scsi devices. To protect system suspend/resume
-> from being disturbed by error handling, move the host_sem from wl pm ops
-> to ufshcd_suspend_prepare() and ufshcd_resume_complete().
-
-Have you checked whether error handling might actually be needed after
-ufshcd_suspend_prepare()?
-
-Wouldn't this complexity go away if we just did recovery
-directly in __ufshcd_wl_suspend() and  __ufshcd_wl_resume()?
-
+On Tue, Jun 08, 2021 at 07:46:54PM +0200, Peter Zijlstra wrote:
+> On Mon, Jun 07, 2021 at 08:10:32PM +0100, Beata Michalska wrote:
+> > So back to the expectations.
+> > The main problem, as I see it, is what do we actually want to achieve with
+> > the I/O boosting? Is it supposed to compensate the time lost while waiting
+> > for the I/O request to be completed or is is supposed to optimize the rate
+> > at which I/O requests are being made. 
 > 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 8 +++-----
->  drivers/scsi/ufs/ufshcd.h | 2 +-
->  2 files changed, 4 insertions(+), 6 deletions(-)
+> The latter, you want to increase the race of submission.
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index c418a19..861942b 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -9060,16 +9060,13 @@ static int ufshcd_wl_suspend(struct device *dev)
->  	ktime_t start = ktime_get();
->  
->  	hba = shost_priv(sdev->host);
-> -	down(&hba->host_sem);
->  
->  	if (pm_runtime_suspended(dev))
->  		goto out;
->  
->  	ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
-> -	if (ret) {
-> +	if (ret)
->  		dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__,  ret);
-> -		up(&hba->host_sem);
-> -	}
->  
->  out:
->  	if (!ret)
-> @@ -9102,7 +9099,6 @@ static int ufshcd_wl_resume(struct device *dev)
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
->  	if (!ret)
->  		hba->is_wl_sys_suspended = false;
-> -	up(&hba->host_sem);
->  	return ret;
->  }
->  #endif
-> @@ -9665,6 +9661,7 @@ void ufshcd_resume_complete(struct device *dev)
->  		ufshcd_rpmb_rpm_put(hba);
->  		hba->rpmb_complete_put = false;
->  	}
-> +	up(&hba->host_sem);
->  }
->  EXPORT_SYMBOL_GPL(ufshcd_resume_complete);
->  
-> @@ -9691,6 +9688,7 @@ int ufshcd_suspend_prepare(struct device *dev)
->  		ufshcd_rpmb_rpm_get_sync(hba);
->  		hba->rpmb_complete_put = true;
->  	}
-> +	down(&hba->host_sem);
->  	return 0;
->  }
->  EXPORT_SYMBOL_GPL(ufshcd_suspend_prepare);
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index eaebb4e..47da47c 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -693,7 +693,7 @@ struct ufs_hba_monitor {
->   * @ee_ctrl_mask: Exception event control mask
->   * @is_powered: flag to check if HBA is powered
->   * @shutting_down: flag to check if shutdown has been invoked
-> - * @host_sem: semaphore used to serialize concurrent contexts
-> + * @host_sem: semaphore used to avoid concurrency of contexts
->   * @eh_wq: Workqueue that eh_work works on
->   * @eh_work: Worker to handle UFS errors that require s/w attention
->   * @eeh_work: Worker to handle exception events
+> > Do we want to boost I/O bound tasks by
+> > default, no limits applied  or should we care about balancing performance
+> > vs power ? And unless those expectations are clearly stated, we might not
+> > get too far with any changes, really.
 > 
+> You want to not increase power beyond what is needed to match the rate
+> of processing I suppose.
 
+This is what I took as a baseline for my playground.
+This tough means we will be are operating on some assumptions (unless we go for
+some major rework) and that boosting may not reach the highest level in some cases.
+For those, I guess we will have to use another way to deal with performance.
+
+Thanks for your comments.
+
+---
+BR
+B.
