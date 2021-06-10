@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A338D3A2FBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCF33A2FC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbhFJPsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:48:06 -0400
-Received: from mga17.intel.com ([192.55.52.151]:16588 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231807AbhFJPrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:47:20 -0400
-IronPort-SDR: O7e/JxYBl9Pm+wqz/L0jWtfSn3T+8o8bvRYldbVfzjnyQjSw9QuTxF31zowcwZLIjAlFr0aK2g
- 5B1yQfGg4g9A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="185697739"
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="185697739"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 08:45:24 -0700
-IronPort-SDR: BVf/NabkpGQFZsvA5q89bpS44643qaJLx1GuC6GwdB8BnFl3CXT9XJ6McQ3vOYuOPUmdI+KR3X
- iXnQvGCou3pQ==
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="450419341"
-Received: from rpshah-mobl1.amr.corp.intel.com (HELO [10.255.230.181]) ([10.255.230.181])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 08:45:23 -0700
-Subject: Re: [PATCH v8 1/5] selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
-To:     Jarkko Sakkinen <jarkko@kernel.org>, shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20210610083021.392269-1-jarkko@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <b5e06639-8bf4-c267-0aa7-b6c110767edc@intel.com>
-Date:   Thu, 10 Jun 2021 08:45:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231734AbhFJPtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:49:01 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21316 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231572AbhFJPs7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 11:48:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1623340003; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=IgiM8ISSZ2YS3LSKUXVHNJy2D3C95YmSRs/hUUExlQlCZ3YgbvMadbx8rdZOy8F/lSGuuiBMUSUsQY1YQxkZ4xRFVYuLJ3lEmBbbj2SyetL5sRwTBiRUEjGEm6WUFGi3GDOBqSPmROkUYVzMJC0rsTG2kY707Hwc6WOIcaRMghw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1623340003; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=S+/94991o1BPiFbH+TJfvpYPY1OSzgLbNS+l1MvqNzI=; 
+        b=Ww8JMb1QorZGUx09/ZIyGOfUg3SZaocOv2pduUgiUgVOzKK3VnjSVEHnYZZyE8fJmqMgLowttcanDnZcZ/OqKe5XWWK3NZB+a3c2/7+kAtu7KI8rxq5PTOI7AXO777RsNmdSjEUfivpVd6hYpeBmAbrTUYNrd43+z34b6ZUkCBc=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1623340003;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=S+/94991o1BPiFbH+TJfvpYPY1OSzgLbNS+l1MvqNzI=;
+        b=Xr3UP7ZyBerFxIEDqYZZEI+9VSghy5xl/t/OV5XYMhNv9JbVJ7heqHNH4rMBdi4n
+        I9V2MYndPwLfMG3r2wFncp541UDZ2XKw1YXbKYolQGFkmL53LuBfRCKehqTrceUTR1c
+        JkFoETmS7djuvuYv5Vqkdz5hBxfqc/HhMTP7ROGg=
+Received: from localhost.localdomain (106.51.105.43 [106.51.105.43]) by mx.zohomail.com
+        with SMTPS id 1623340000838986.2840483348111; Thu, 10 Jun 2021 08:46:40 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Dave Kleikamp <shaggy@austin.ibm.com>,
+        Alex Tomas <alex@clusterfs.com>, Andrew Morton <akpm@osdl.org>
+Cc:     gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 resend] ext4: fix kernel infoleak via ext4_extent_header
+Date:   Thu, 10 Jun 2021 21:16:24 +0530
+Message-Id: <20210610154625.6827-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210610083021.392269-1-jarkko@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/21 1:30 AM, Jarkko Sakkinen wrote:
-> Rename symbols for better clarity:
-> 
-> * 'eenter' might be confused for directly calling ENCLU[EENTER].  It does
->   not.  It calls into the VDSO, which actually has the EENTER instruction.
-> * 'sgx_call_vdso' is *only* used for entering the enclave.  It's not some
->   generic SGX call into the VDSO.
-> 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Initialize eh_generation of struct ext4_extent_header to prevent leaking
+info to userspace. Fixes KMSAN kernel-infoleak bug reported by syzbot at:
+http://syzkaller.appspot.com/bug?id=78e9ad0e6952a3ca16e8234724b2fa92d041b9b8
 
-These all look fine to me.  Feel free to add my ack on them.
+Reported-by: syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com
+Fixes: a86c61812637 ("[PATCH] ext3: add extent map support")
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+---
 
-Since these are pure x86 selftests and the initial code went through the
-x86 maintainers, should these got through them as well?  Or, since this
-is only selftest code, should Shuah pick them up?
+Changes in v2:
+Added a "Fixes:" tag.
+
+v1: https://lore.kernel.org/lkml/20210505133011.32484-1-mail@anirudhrb.com/
+
+---
+ fs/ext4/extents.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 77c84d6f1af6..677d4821bcc1 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -825,6 +825,7 @@ void ext4_ext_tree_init(handle_t *handle, struct inode *inode)
+ 	eh->eh_entries = 0;
+ 	eh->eh_magic = EXT4_EXT_MAGIC;
+ 	eh->eh_max = cpu_to_le16(ext4_ext_space_root(inode, 0));
++	eh->eh_generation = 0;
+ 	ext4_mark_inode_dirty(handle, inode);
+ }
+ 
+@@ -1090,6 +1091,7 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
+ 	neh->eh_max = cpu_to_le16(ext4_ext_space_block(inode, 0));
+ 	neh->eh_magic = EXT4_EXT_MAGIC;
+ 	neh->eh_depth = 0;
++	neh->eh_generation = 0;
+ 
+ 	/* move remainder of path[depth] to the new leaf */
+ 	if (unlikely(path[depth].p_hdr->eh_entries !=
+@@ -1167,6 +1169,7 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
+ 		neh->eh_magic = EXT4_EXT_MAGIC;
+ 		neh->eh_max = cpu_to_le16(ext4_ext_space_block_idx(inode, 0));
+ 		neh->eh_depth = cpu_to_le16(depth - i);
++		neh->eh_generation = 0;
+ 		fidx = EXT_FIRST_INDEX(neh);
+ 		fidx->ei_block = border;
+ 		ext4_idx_store_pblock(fidx, oldblock);
+-- 
+2.26.2
+
