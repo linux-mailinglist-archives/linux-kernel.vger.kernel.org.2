@@ -2,79 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8A13A2EAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEB13A2EAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhFJOyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbhFJOyb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:54:31 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50365C061574;
-        Thu, 10 Jun 2021 07:52:23 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id s70-20020a1ca9490000b02901a589651424so4931166wme.0;
-        Thu, 10 Jun 2021 07:52:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jeNB9kebGsKDKuDyLMLxN2kVS9AOIvWoW2KdfQOv7Vg=;
-        b=S/ZFsDcUkHjZz0Dc59Y2FyQgRMdUd5NEWCTHaSV2yURRDuWUMz7birox7CAoNSJEBR
-         PclwHKJf7MS6I/4BuHvX2AWD/zQQxb31rmo4GPpi1N+9G3D7b5b5rj9ifvyx3y1isUrL
-         k9o+MpV3LdMXD93eonLQ6LvaihyvGtVfroeRvx2xH5VkVUtVQ1/XDvu/6sIzNJYW4u/f
-         k+FhoMET8JSHgum3t8BR4LPJrAKDEjGGxQN+GcrV2H5y4+n16YbtgmEgPdRHja2Vltkx
-         bFrZAYXOqWgeL/ZPaLqIo3q21Qkp6dVNUmlo8CtTqSE+OS4ZNc+mDtPPIlcE4EVJQkOY
-         jKww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jeNB9kebGsKDKuDyLMLxN2kVS9AOIvWoW2KdfQOv7Vg=;
-        b=lmj31AGTH/SWHT1DcdSzvhZlMDadzNrDXz3XXSfxh9TP87IAhsZdFKYhRAF9qMq/Qu
-         r6KNMNOHmUd46+c/xVMFDO2+5WsS6b+fbtyDj1qaenC552d8kGx1Tt93M+BrnI5NHtWv
-         7MRClb6htpyC2exvUbspkO42I8GbtDFBvtNttsvVQCUMlBxBEGhstcX7ZjwdjGV3spl+
-         5uw6sYHZO2+FXaZcOejU3DMHM+G2CvfnQcdN2W0tKqMN4O9rMmcdz1vPEsh+nvJy4R8i
-         mqEhQc6txhnb0/kUcGp25V/k2iepEbWrbUeozRW/F0QDzBdjRPnn+D+asFI32fSLlZIQ
-         D1+A==
-X-Gm-Message-State: AOAM531QlQW83eIHXxqleTYVw5aLw2WH1+M0sI9XCEQ5X0IgimskuWy5
-        Qc2ytQBwGSv6eZ7Y1HcuS00ZT7SXzn4bQBnPtuM=
-X-Google-Smtp-Source: ABdhPJy3XNdWTKNMu4YNp3T9tPJ/9e/8z7A3BFzYYdr7FGqgUbTF+x1xsEhWT5qL7YN+fL1FuYjy3NHNASb6K7niP4o=
-X-Received: by 2002:a7b:c1c5:: with SMTP id a5mr5637396wmj.134.1623336741913;
- Thu, 10 Jun 2021 07:52:21 -0700 (PDT)
+        id S231366AbhFJO4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:56:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:33760 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230322AbhFJO4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:56:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 48FB3106F;
+        Thu, 10 Jun 2021 07:54:24 -0700 (PDT)
+Received: from [10.57.5.44] (unknown [10.57.5.44])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA2023F719;
+        Thu, 10 Jun 2021 07:54:21 -0700 (PDT)
+Subject: Re: [PATCH v1 1/3] coresight: etm-perf: Correct buffer syncing for
+ snapshot
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Denis Nikitin <denik@google.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+References: <20210528161552.654907-1-leo.yan@linaro.org>
+ <20210528161552.654907-2-leo.yan@linaro.org>
+ <f29d2d68-2735-dddf-b872-6163d1dbc8f0@arm.com>
+ <20210601103504.GC10026@leoy-ThinkPad-X240s>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <71158b94-863d-97d3-323a-e2406b708db7@arm.com>
+Date:   Thu, 10 Jun 2021 17:54:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210610125417.3834300-1-wanghai38@huawei.com>
-In-Reply-To: <20210610125417.3834300-1-wanghai38@huawei.com>
-From:   Lijun Pan <lijunp213@gmail.com>
-Date:   Thu, 10 Jun 2021 09:52:11 -0500
-Message-ID: <CAOhMmr4LQpX79ksQOuZ1ft=M2B4tFOPechV9b_5iJWWL1yekSA@mail.gmail.com>
-Subject: Re: [PATCH net-next] ibmvnic: Use list_for_each_entry() to simplify
- code in ibmvnic.c
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Dany Madden <drt@linux.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210601103504.GC10026@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 7:56 AM Wang Hai <wanghai38@huawei.com> wrote:
->
-> Convert list_for_each() to list_for_each_entry() where
-> applicable. This simplifies the code.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> ---
 
-Acked-by: Lijun Pan <lijunp213@gmail.com>
+
+On 01/06/2021 13:35, Leo Yan wrote:
+> Hi James,
+> 
+> On Tue, Jun 01, 2021 at 12:53:16PM +0300, James Clark wrote:
+> 
+> [...]
+> 
+>> Hi Leo,
+>>
+>> I was testing out snapshot mode (without your patch) and I noticed that it
+>> only ever collects from the last CPU. For example on a 4 core system,
+>> the CPU ID of the AUX records and the AUXTRACE buffers is always 3.
+>>
+>> This is with systemwide tracing, and running "stress -m 2 -c 2".
+>> Is this something that your patch fixes, or am I doing something wrong, or
+>> is it just a coincidence?
+> 
+> No, I think it's quite likely caused by blow code:
+> 
+> static unsigned long
+> tmc_update_etr_buffer(struct coresight_device *csdev,
+>                       struct perf_output_handle *handle,
+>                       void *config)
+> {
+>     unsigned long flags, offset, size = 0;
+> 
+>     ...
+> 
+>     /* Don't do anything if another tracer is using this sink */
+>     if (atomic_read(csdev->refcnt) != 1) {
+>         spin_unlock_irqrestore(&drvdata->spinlock, flags);
+>         goto out;
+>     }
+> 
+>     ...
+> 
+>     return size;
+> }
+> 
+> When using the system wide tracing, it updates the AUX ring buffer
+> until the last tracer is stopped.  Thus whis is why it only records
+> AUX ring buffer for the last CPU.
+> 
+> But this makes sense for me, this is because the last CPU is used to
+> copy trace data to AUX ring buffer (so the perf event PERF_RECORD_AUX
+> occurs on CPU3), but when you decode the trace data, you should can
+> see the activities from other CPUs.
+> 
+> Thanks,
+> Leo
+> 
+
+I have one more issue around snapshot mode which I'd like to check if it's
+related to this patchset.
+
+In "[PATCH v5 0/1] perf cs-etm: Split Coresight decode by aux records",
+I added the warning for a missing AUXTRACE buffer as you suggested.
+Now this warning gets triggered on the last AUX record when using
+snapshot mode. I don't know if you are able to reproduce this.
+
+Thanks
+James
