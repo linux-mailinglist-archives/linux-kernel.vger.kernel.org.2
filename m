@@ -2,163 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC683A3113
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5030E3A30D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbhFJQoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:44:23 -0400
-Received: from mail-ej1-f45.google.com ([209.85.218.45]:36688 "EHLO
-        mail-ej1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231626AbhFJQnr (ORCPT
+        id S231229AbhFJQld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhFJQl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:43:47 -0400
-Received: by mail-ej1-f45.google.com with SMTP id a11so227553ejf.3;
-        Thu, 10 Jun 2021 09:41:36 -0700 (PDT)
+        Thu, 10 Jun 2021 12:41:29 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39851C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 09:39:17 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id p13so2114244pfw.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 09:39:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WYaGnISu1YfOE/7UiWGOnu7UNyMRUmG6vqNEYiYQnuw=;
-        b=oOrrc83d8TfIoeXmdiRoiQg6glDODRsfbpbGcLCinVvDPPg4EwsRnclPpJGstuwomD
-         Loe/4iW8ArsQULGi5DaAxbHMvjJ13BPDnbOvZFsEIy2ZPqa51dMbtxYcG4fAawlfR5Jw
-         gKTx7B4SvmEIZY4c0R/PpJdoCQghcoPfzZVhxZ7hdlYVA+oiAlarlUZJGfRfK2IWs1Td
-         UZzn1wJtbaW8kK82d/ly2IcvdtRmbDm2YUKBIz3x6xvsxQcsRVk/ALJGw+GQysJYmabr
-         kg3GsAnLtefhEN7Mwo92YkIbiYiaolH7vbQ77mxVB7Hn9LPpR2OIxhHZvc1a34OC2264
-         AXQg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3NrbkZ4gaNm3FYjrbDCPAtrIiFQJBVFjNcUyHj2TZc0=;
+        b=vXk5Nc6zTRjyHXZeqYqRph0d3uohuXDQMuPmlDb453IXgCHpGm4VSAqhRI7mJpkDSR
+         h0wry1rKPCMkHOR5rmdKpKbZ1uuOmBD4KRwOXwUdgv0P2kP6MuSCiW+M58AfyQXYBung
+         +wGlGYF+4TJQ7SchzkDDuXWEXjjihL5yJXc7ETBAlJoYmVAZgpsNLwBL83e4H4pAuCO1
+         QrnnV5uuFoP3VnyhSDkf2J/+/0KIJqREz8BnBpk7Z6zzuNK51ZlvzQmI+lBkklpRxBaD
+         z+Ga5H1y4XQVRij0r+jNdNCYZlkEwPekmwhw9ry29KEoa/+evjZ6GIu+0AANW8/Hv4wA
+         yPQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WYaGnISu1YfOE/7UiWGOnu7UNyMRUmG6vqNEYiYQnuw=;
-        b=tUixhB4BaaXSXiKsn+NiKFjlDVpgxidpzcGY4SC6jpNLQSITaHvgYlLU/yBhct4ZKK
-         y/AkoXfHf+DFDPgbAi6nV6tvJGZxVDsHYoWNhE0gcvmL51H4sr1IbKimphu0TqyTaNcT
-         MugTHXVjKPV3KBI8Dy0XmCjzgdYPOUIPReBym5bU0NNwFcNAMqsl0aVX3FCNV8/O8TOZ
-         MppJfESDO+6xINqwuM+LBUiHt7SG/I9oEMa1cUanjs7JbUD+g7QYSWhh0w/2C7F2T+3r
-         A0emKUlewr9vSYJMu3hpDPzx/FSKvNRMqNn3fH4fYhAu7NrfZI3rkT39si8ciN1c1Ldx
-         ZeqQ==
-X-Gm-Message-State: AOAM5319UDdUvzCAUiJIg47d+eivf5FlUIGvzSAUbCvOi6KxVq7WRIoQ
-        9ewHvJ/TJ+rKt/Rd04Rihnw=
-X-Google-Smtp-Source: ABdhPJwO+2kntI2vKAnq2EhOGIoStYyq0+AsQrrHaXncx6UCvB7nJNv9I6rRDQY/bNNB9TrVGooJag==
-X-Received: by 2002:a17:906:714d:: with SMTP id z13mr515845ejj.48.1623343236264;
-        Thu, 10 Jun 2021 09:40:36 -0700 (PDT)
-Received: from yoga-910.localhost ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id e22sm1657166edv.57.2021.06.10.09.40.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3NrbkZ4gaNm3FYjrbDCPAtrIiFQJBVFjNcUyHj2TZc0=;
+        b=gizaiZNxlWUA18EeLYi3P2HgLCCkGVs48aekbB6fKajjEwJmxWS88aExLS1lycplJ9
+         OVs1V9min5QofCeyg1jgAudbIB5mt720OId3qrqoTusWfy9MwzVqNHaZ3syyZEZte6rU
+         VwlFHbu5sGISAL7RKWZhSMrZne1l2v2efy6gAyjX1lIOGeEwY8M75HpM0cJZP6mb6tJr
+         KFXVMArxCDB6b/eJ0gkSZIt2H+gPj+HL99z+nmHhmQuSOirKJOiDSxJzFiXpUUtoy0Lv
+         qKS0tDirtXNrFRgRJ2+MRIinJ8QRszavqvEtKXO7o4TetmU2PzQru38j6nszjnEoxKUj
+         2uoQ==
+X-Gm-Message-State: AOAM531mDouS5ILIMhww1sH5WDA7zi46oS3lHS2loe3ykKTzlNSWtvt0
+        snsYkZbPE4um6te9KHrWQPjwTw==
+X-Google-Smtp-Source: ABdhPJzqNVU4qiHI8ZgBJyDv1p3wQXmjPBPk06IxqnpR+pNKkkM1qwcl5vmwrJ43ifur651sDdvc0g==
+X-Received: by 2002:a63:5f4e:: with SMTP id t75mr5728782pgb.75.1623343156587;
+        Thu, 10 Jun 2021 09:39:16 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id bo14sm8069376pjb.40.2021.06.10.09.39.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 09:40:35 -0700 (PDT)
-From:   Ioana Ciornei <ciorneiioana@gmail.com>
-To:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>, calvin.johnson@nxp.com
-Cc:     Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
+        Thu, 10 Jun 2021 09:39:15 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 10:39:13 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     acme@kernel.org, coresight@lists.linaro.org, leo.yan@linaro.org,
+        al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        Mike Leach <mike.leach@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux.cj@gmail.com, netdev@vger.kernel.org,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH net-next v8 10/15] ACPI: utils: Introduce acpi_get_local_address()
-Date:   Thu, 10 Jun 2021 19:39:12 +0300
-Message-Id: <20210610163917.4138412-11-ciorneiioana@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210610163917.4138412-1-ciorneiioana@gmail.com>
-References: <20210610163917.4138412-1-ciorneiioana@gmail.com>
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf cs-etm: Delay decode of non-timeless data until
+ cs_etm__flush_events()
+Message-ID: <20210610163913.GD34238@p14s>
+References: <20210609130421.13934-1-james.clark@arm.com>
+ <20210610162453.GC34238@p14s>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610162453.GC34238@p14s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Calvin Johnson <calvin.johnson@oss.nxp.com>
+On Thu, Jun 10, 2021 at 10:24:53AM -0600, Mathieu Poirier wrote:
+> This patch doesn't apply on coresight next.  
 
-Introduce a wrapper around the _ADR evaluation.
+I was able to apply this patch to Arnaldo's tree.
 
-Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
----
-
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5:
-- Replace fwnode_get_id() with acpi_get_local_address()
-
-Changes in v4:
-- Improve code structure to handle all cases
-
-Changes in v3:
-- Modified to retrieve reg property value for ACPI as well
-- Resolved compilation issue with CONFIG_ACPI = n
-- Added more info into documentation
-
- drivers/acpi/utils.c | 14 ++++++++++++++
- include/linux/acpi.h |  7 +++++++
- 2 files changed, 21 insertions(+)
-
-diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-index 3b54b8fd7396..e7ddd281afff 100644
---- a/drivers/acpi/utils.c
-+++ b/drivers/acpi/utils.c
-@@ -277,6 +277,20 @@ acpi_evaluate_integer(acpi_handle handle,
- 
- EXPORT_SYMBOL(acpi_evaluate_integer);
- 
-+int acpi_get_local_address(acpi_handle handle, u32 *addr)
-+{
-+	unsigned long long adr;
-+	acpi_status status;
-+
-+	status = acpi_evaluate_integer(handle, METHOD_NAME__ADR, NULL, &adr);
-+	if (ACPI_FAILURE(status))
-+		return -ENODATA;
-+
-+	*addr = (u32)adr;
-+	return 0;
-+}
-+EXPORT_SYMBOL(acpi_get_local_address);
-+
- acpi_status
- acpi_evaluate_reference(acpi_handle handle,
- 			acpi_string pathname,
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index c60745f657e9..6ace3a0f1415 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -710,6 +710,8 @@ static inline u64 acpi_arch_get_root_pointer(void)
- }
- #endif
- 
-+int acpi_get_local_address(acpi_handle handle, u32 *addr);
-+
- #else	/* !CONFIG_ACPI */
- 
- #define acpi_disabled 1
-@@ -965,6 +967,11 @@ static inline struct acpi_device *acpi_resource_consumer(struct resource *res)
- 	return NULL;
- }
- 
-+static inline int acpi_get_local_address(acpi_handle handle, u32 *addr)
-+{
-+	return -ENODEV;
-+}
-+
- #endif	/* !CONFIG_ACPI */
- 
- #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
--- 
-2.31.1
-
+> 
+> On Wed, Jun 09, 2021 at 04:04:20PM +0300, James Clark wrote:
+> > Currently, timeless mode starts the decode on PERF_RECORD_EXIT, and
+> > non-timeless mode starts decoding on the fist PERF_RECORD_AUX record.
+> > 
+> > This can cause the "data has no samples!" error if the first
+> > PERF_RECORD_AUX record comes before the first (or any relevant)
+> > PERF_RECORD_MMAP2 record because the mmaps are required by the decoder
+> > to access the binary data.
+> > 
+> > This change pushes the start of non-timeless decoding to the very end of
+> > parsing the file. The PERF_RECORD_EXIT event can't be used because it
+> > might not exist in system-wide or snapshot modes.
+> > 
+> > I have not been able to find the exact cause for the events to be
+> > intermittently in the wrong order in the basic scenario:
+> > 
+> > 	perf record -e cs_etm/@tmc_etr0/u top
+> > 
+> > But it can be made to happen every time with the --delay option. This is
+> > because "enable_on_exec" is disabled, which causes tracing to start
+> > before the process to be launched is exec'd. For example:
+> > 
+> > 	perf record -e cs_etm/@tmc_etr0/u --delay=1 top
+> > 	perf report -D | grep 'AUX\|MAP'
+> > 
+> > 	0 16714475632740 0x520 [0x40]: PERF_RECORD_AUX offset: 0 size: 0x30 flags: 0 []
+> > 	0 16714476494960 0x5d0 [0x40]: PERF_RECORD_AUX offset: 0x30 size: 0x30 flags: 0 []
+> > 	0 16714478208900 0x660 [0x40]: PERF_RECORD_AUX offset: 0x60 size: 0x30 flags: 0 []
+> > 	4294967295 16714478293340 0x700 [0x70]: PERF_RECORD_MMAP2 8712/8712: [0x557a460000(0x54000) @ 0 00:17 5329258 0]: r-xp /usr/bin/top
+> > 	4294967295 16714478353020 0x770 [0x88]: PERF_RECORD_MMAP2 8712/8712: [0x7f86f72000(0x34000) @ 0 00:17 5214354 0]: r-xp /usr/lib/aarch64-linux-gnu/ld-2.31.so
+> > 
+> > Another scenario in which decoding from the first aux record fails is a
+> > workload that forks. Although the aux record comes after 'bash', it
+> > comes before 'top', which is what we are interested in. For example:
+> > 
+> > 	perf record -e cs_etm/@tmc_etr0/u -- bash -c top
+> > 	perf report -D | grep 'AUX\|MAP'
+> > 
+> > 	4294967295 16853946421300 0x510 [0x70]: PERF_RECORD_MMAP2 8723/8723: [0x558f280000(0x142000) @ 0 00:17 5213953 0]: r-xp /usr/bin/bash
+> > 	4294967295 16853946543560 0x580 [0x88]: PERF_RECORD_MMAP2 8723/8723: [0x7fbba6e000(0x34000) @ 0 00:17 5214354 0]: r-xp /usr/lib/aarch64-linux-gnu/ld-2.31.so
+> > 	4294967295 16853946628420 0x608 [0x68]: PERF_RECORD_MMAP2 8723/8723: [0x7fbba9e000(0x1000) @ 0 00:00 0 0]: r-xp [vdso]
+> > 	0 16853947067300 0x690 [0x40]: PERF_RECORD_AUX offset: 0 size: 0x3a60 flags: 0 []
+> > 	...
+> > 	0 16853966602580 0x1758 [0x40]: PERF_RECORD_AUX offset: 0xc2470 size: 0x30 flags: 0 []
+> > 	4294967295 16853967119860 0x1818 [0x70]: PERF_RECORD_MMAP2 8723/8723: [0x5559e70000(0x54000) @ 0 00:17 5329258 0]: r-xp /usr/bin/top
+> > 	4294967295 16853967181620 0x1888 [0x88]: PERF_RECORD_MMAP2 8723/8723: [0x7f9ed06000(0x34000) @ 0 00:17 5214354 0]: r-xp /usr/lib/aarch64-linux-gnu/ld-2.31.so
+> > 	4294967295 16853967237180 0x1910 [0x68]: PERF_RECORD_MMAP2 8723/8723: [0x7f9ed36000(0x1000) @ 0 00:00 0 0]: r-xp [vdso]
+> > 
+> > A third scenario is when the majority of time is spent in a shared
+> > library that is not loaded at startup. For example a dynamically loaded
+> > plugin.
+> > 
+> > Testing
+> > =======
+> > 
+> > Testing was done by checking if any samples that are present in the
+> > old output are missing from the new output. Timestamps must be
+> > stripped out with awk because now they are set to the last AUX sample,
+> > rather than the first:
+> > 
+> > 	./perf script $4 | awk '!($4="")' > new.script
+> > 	./perf-default script $4 | awk '!($4="")' > default.script
+> > 	comm -13 <(sort -u new.script) <(sort -u default.script)
+> > 
+> > Testing showed that the new output is a superset of the old. When lines
+> > appear in the comm output, it is not because they are missing but
+> > because [unknown] is now resolved to sensible locations. For example
+> > last putp branch here now resolves to libtinfo, so it's not missing
+> > from the output, but is actually improved:
+> > 
+> > Old:
+> > 	top 305 [001]  1 branches:uH: 402830 _init+0x30 (/usr/bin/top.procps) => 404a1c [unknown] (/usr/bin/top.procps)
+> > 	top 305 [001]  1 branches:uH: 404a20 [unknown] (/usr/bin/top.procps) => 402970 putp@plt+0x0 (/usr/bin/top.procps)
+> > 	top 305 [001]  1 branches:uH: 40297c putp@plt+0xc (/usr/bin/top.procps) => 0 [unknown] ([unknown])
+> > New:
+> > 	top 305 [001]  1 branches:uH: 402830 _init+0x30 (/usr/bin/top.procps) => 404a1c [unknown] (/usr/bin/top.procps)
+> > 	top 305 [001]  1 branches:uH: 404a20 [unknown] (/usr/bin/top.procps) => 402970 putp@plt+0x0 (/usr/bin/top.procps)
+> > 	top 305 [001]  1 branches:uH: 40297c putp@plt+0xc (/usr/bin/top.procps) => 7f8ab39208 putp+0x0 (/lib/libtinfo.so.5.9)
+> > 
+> > In the following two modes, decoding now works and the "data has no
+> > samples!" error is not displayed any more:
+> > 
+> > 	perf record -e cs_etm/@tmc_etr0/u -- bash -c top
+> > 	perf record -e cs_etm/@tmc_etr0/u --delay=1 top
+> > 
+> > In snapshot mode, there is also an improvement to decoding. Previously
+> > samples for the 'kill' process that was used to send SIGUSR2 were
+> > completely missing, because the process hadn't started yet. But now
+> > there are additional samples present:
+> > 
+> > 	perf record -e cs_etm/@tmc_etr0/u --snapshot -a
+> > 	perf script
+> > 
+> > 		stress 19380 [003] 161627.938153:    1000000    instructions:uH:      aaaabb612fb4 [unknown] (/usr/bin/stress)
+> > 		  kill 19644 [000] 161627.938153:    1000000    instructions:uH:      ffffae0ef210 [unknown] (/lib/aarch64-linux-gnu/ld-2.27.so)
+> > 		stress 19380 [003] 161627.938153:    1000000    instructions:uH:      ffff9e754d40 random_r+0x20 (/lib/aarch64-linux-gnu/libc-2.27.so)
+> > 
+> > Also tested was the round trip of 'perf inject' followed by 'perf
+> > report' which has the same differences and improvements.
+> > 
+> > Signed-off-by: James Clark <james.clark@arm.com>
+> > ---
+> >  tools/perf/util/cs-etm.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> > index 57aea2c7fc77..ceed0b038796 100644
+> > --- a/tools/perf/util/cs-etm.c
+> > +++ b/tools/perf/util/cs-etm.c
+> > @@ -2407,6 +2407,11 @@ static int cs_etm__process_event(struct perf_session *session,
+> >  			return err;
+> >  	}
+> >  
+> > +	/*
+> > +	 * Don't wait for cs_etm__flush_events() in per-thread/timeless mode to start the decode. We
+> > +	 * need the tid of the PERF_RECORD_EXIT event to assign to the synthesised samples because
+> > +	 * ETM_OPT_CTXTID is not enabled.
+> > +	 */
+> >  	if (etm->timeless_decoding &&
+> >  	    event->header.type == PERF_RECORD_EXIT)
+> >  		return cs_etm__process_timeless_queues(etm,
+> > @@ -2424,7 +2429,6 @@ static int cs_etm__process_event(struct perf_session *session,
+> >  		 * onwards.
+> >  		 */
+> >  		etm->latest_kernel_timestamp = sample_kernel_timestamp;
+> > -		return cs_etm__process_queues(etm);
+> >  	}
+> >  
+> >  	return 0;
+> > -- 
+> > 2.28.0
+> > 
