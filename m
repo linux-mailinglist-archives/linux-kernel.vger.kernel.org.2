@@ -2,172 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97E83A37D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AC93A37F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhFJX3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 19:29:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230212AbhFJX3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 19:29:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9886613CB;
-        Thu, 10 Jun 2021 23:27:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623367673;
-        bh=hOK0J1uI//q3YZets8JX6ACpEoV1vqm/HHQw5zocAqo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vfs5YsUpOIzAcog1ud+K4bqVRr77Q/lChQyoH13m2lGR+SA6jipEJRDB6nQSxgNh3
-         QcG0ZcftfzSxVLFH33sgBniohcrNDCxB8GQK8LEVgig7IsUtbxuc7oR1ak2q+rXS+K
-         zxBa7dVmNZ9qQaAHxYZpzJyRhAMvv4lmDeo8JGqpDdfa5I6tWCG3Z46rx/vF6JVHEU
-         lJ1bqZESazgK+eHCjoAzJ2WBNK8QAC7XqFybpsrk//ZLry2nuMy5Od7GzyUdz/hzX1
-         VizpdcVaimCdwF9rYeFtj1QA2LyID4T6W7Cl/kKeXvAdKia91nsKyQp23Eh63NkN1t
-         C0WEX+Vxuf4Zg==
-Date:   Thu, 10 Jun 2021 16:27:51 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        "Markku-Juhani O . Saarinen" <mjos@iki.fi>,
-        Jussi Kivilinna <jussi.kivilinna@iki.fi>, x86@kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] crypto: x86/sm4 - add AES-NI/AVX/x86_64 assembler
- implementation
-Message-ID: <YMKf93/cnPGGtRW3@gmail.com>
-References: <20210610134459.28541-1-tianjia.zhang@linux.alibaba.com>
- <20210610134459.28541-4-tianjia.zhang@linux.alibaba.com>
+        id S231213AbhFJXfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 19:35:01 -0400
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:39663 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhFJXe7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 19:34:59 -0400
+Received: by mail-pj1-f50.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so4710830pjp.4;
+        Thu, 10 Jun 2021 16:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=hRw2xzr7UjnBlZ+QB9b3zSuBhoYlGpx3jNmt2ODUJ4c=;
+        b=TyWPTxVwL52WP/P+bDjkPG1jC78s+wxXCrpXXybprdWYCxaFdEu0QsWa70r4zJf2gu
+         6tKhVWfbB11HV+5TjtE1pgFP5Vz1OJ/MzezjdjhiunTAdfOnEuUleB8qvks0VhbopS1L
+         8odjXbdOQi57H2xvPxF44W//c0RiUI+vlNFWef7TejVRZJo9V5CWhtnREnOgPdyeK6dS
+         3ATdXh12AE7DpReiDUYNHo5End8u9RBnw8d5yZhQXXB8sQKT8N91mU3T2b+Bp+CirxDi
+         r5sChdDoBtTEcaHIic7E3FpuYDXgNJjC6ohWqz4FRIUcEAdDZ6Y4UYG0hJ65zexhXi7N
+         gvCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=hRw2xzr7UjnBlZ+QB9b3zSuBhoYlGpx3jNmt2ODUJ4c=;
+        b=S6qr9YF3htscWDjjKG2zoXzLsNf/WoxjlmXC9C2atPW76Ow8HKMROxSQ5QRbuM8Guj
+         W3ehDwZJ8Z28cIAv9AkvDNiM5GvVN3hwzOg/neG4Q8t6Tw+/dZCdF5a5nSTzkArLQNul
+         t3KWLEKGAgrN4DclSJV/oYEvx9EL3Yd9z5/RHHg90y8QFAzjKdED0lVkzEYGVgwS+oz2
+         COk37SKW3KX/h+vINCSdpfGMIZgfUYaaXe6OhE/KrtJVh8ynF+jWhWPGn3eJoPF/jPv0
+         f8TwTdscS7uCpP5cfhVTiCjvhbTRcb75RO0ib3RHXPnauoKImYeG3dP38425zTOoRQNa
+         MuUA==
+X-Gm-Message-State: AOAM530ZPkc1U/Vpw9iOkvYMfLln/OZ4vCpidl5Iz9BQHX18V366qZB2
+        C6GE0YCqxz9S61K4Qf1DiG4=
+X-Google-Smtp-Source: ABdhPJyeUC/HGYqc/WzekWu8q0H3SUFOzuqTN27aVixOnNg/rM/udoTKdO4ZG5zzQ3exMwrVEwCocQ==
+X-Received: by 2002:a17:902:ee8c:b029:fe:dc5f:564 with SMTP id a12-20020a170902ee8cb02900fedc5f0564mr1104647pld.71.1623367908212;
+        Thu, 10 Jun 2021 16:31:48 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id 188sm3340563pfz.146.2021.06.10.16.31.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 16:31:47 -0700 (PDT)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, linux-kernel@vger.kernel.org,
+        guoren@kernel.org, linux-csky@vger.kernel.org
+Subject: Re: [PATCH 1/5] kprobes: Do not use local variable when creating
+ debugfs file
+References: <20210609105019.3626677-1-punitagrawal@gmail.com>
+        <20210609105019.3626677-2-punitagrawal@gmail.com>
+        <20210609233543.e846251ccaa227317de26b11@kernel.org>
+Date:   Fri, 11 Jun 2021 08:31:44 +0900
+In-Reply-To: <20210609233543.e846251ccaa227317de26b11@kernel.org> (Masami
+        Hiramatsu's message of "Wed, 9 Jun 2021 23:35:43 +0900")
+Message-ID: <87im2ljnz3.fsf@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610134459.28541-4-tianjia.zhang@linux.alibaba.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 09:44:59PM +0800, Tianjia Zhang wrote:
-> This patch adds AES-NI/AVX/x86_64 assembler implementation of SM4
-> block cipher. Through two affine transforms, we can use the AES
-> S-Box to simulate the SM4 S-Box to achieve the effect of instruction
-> acceleration.
-> 
+Hi Masami,
 
-Benchmark results, please.
+Masami Hiramatsu <mhiramat@kernel.org> writes:
 
-Also, is this passing the self-tests, including the fuzz tests?
+> On Wed,  9 Jun 2021 19:50:15 +0900
+> Punit Agrawal <punitagrawal@gmail.com> wrote:
+>
+>> debugfs_create_file() takes a pointer argument that can be used during
+>> file operation callbacks (accessible via i_private in the inode
+>> structure). An obvious requirement is for the pointer to refer to
+>> valid memory when used.
+>> 
+>> When creating the debugfs file to dynamically enable / disable
+>> kprobes, a pointer to local variable is passed to
+>> debugfs_create_file(); which will go out of scope when the init
+>> function returns. The reason this hasn't triggered random memory
+>> corruption is because the pointer is not accessed during the debugfs
+>> file callbacks.
+>> 
+>> Fix the incorrect (and unnecessary) usage of local variable during
+>> debugfs_file_create() by passing NULL instead.
+>> 
+>
+> Good catch! Since the enabled state is managed by the kprobes_all_disabled
+> global variable, it is not needed.
+>
+> Fixes: bf8f6e5b3e51 ("Kprobes: The ON/OFF knob thru debugfs")
+> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-> +/*
-> + * void sm4_aesni_avx_expand_key(const u8 *key, u32 *rk_enc,
-> + *                  u32 *rk_dec, const u32 *fk, const u32 *ck);
-> + */
-> +SYM_FUNC_START(sm4_aesni_avx_expand_key)
-> +	/* input:
-> +	 *	%rdi: 128-bit key
-> +	 *	%rsi: rkey_enc
-> +	 *	%rdx: rkey_dec
-> +	 *	%rcx: fk array
-> +	 *	%r8: ck array
-> +	 */
-> +	FRAME_BEGIN
+Thanks a lot for reviewing the patches.
 
-Key expansion isn't performance-critical.  Can the C library version be used, or
-does the key need to be expanded in a way specific to this x86 implementation?
+I am assuming the tags can be picked up when applying. Let me know if I
+need to resend.
 
-> +/*
-> + * void sm4_aesni_avx_crypt4(const u32 *rk, u8 *dst,
-> + *                          const u8 *src, int nblocks)
-> + */
-> +SYM_FUNC_START(sm4_aesni_avx_crypt4)
-> +	/* input:
-> +	 *	%rdi: round key array, CTX
-> +	 *	%rsi: dst (1..4 blocks)
-> +	 *	%rdx: src (1..4 blocks)
-> +	 *	%rcx: num blocks (1..4)
-> +	 */
-> +	FRAME_BEGIN
-[...]
+Thanks,
+Punit
 
-> +static void sm4_encrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
-> +{
-> +	const struct crypto_sm4_ctx *ctx = crypto_tfm_ctx(tfm);
-> +
-> +	if (crypto_simd_usable()) {
-> +		kernel_fpu_begin();
-> +		sm4_aesni_avx_crypt4(ctx->rkey_enc, out, in, 1);
-> +		kernel_fpu_end();
-> +	} else
-> +		crypto_sm4_do_crypt(ctx->rkey_enc, out, in);
-> +}
-> +
-> +static void sm4_decrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
-> +{
-> +	const struct crypto_sm4_ctx *ctx = crypto_tfm_ctx(tfm);
-> +
-> +	if (crypto_simd_usable()) {
-> +		kernel_fpu_begin();
-> +		sm4_aesni_avx_crypt4(ctx->rkey_dec, out, in, 1);
-> +		kernel_fpu_end();
-> +	} else
-> +		crypto_sm4_do_crypt(ctx->rkey_dec, out, in);
-> +}
-
-Your assembly code appears to handle encrypting up to 4 blocks at a time.
-However you have only wired this up to the "cipher" API which does 1 block at a
-time.  Is this intentional?
-
-What are your performance results with real-world chaining modes like XTS, and
-do you plan to implement any of these modes directly?
-
-> +
-> +static struct crypto_alg sm4_asm_alg = {
-> +	.cra_name		= "sm4",
-> +	.cra_driver_name	= "sm4-asm",
-
-In arch/x86/crypto/, "-asm" usually means a vanilla x86 assembly implementation
-without any AES-NI, SSE, AVX, etc. instructions.  Calling this something like
-"sm4-aesni-avx" would make more sense.  (Or is it actually avx2, not avx?)
-
-> +config CRYPTO_SM4_AESNI_AVX_X86_64
-> +	tristate "SM4 cipher algorithm (x86_64/AES-NI/AVX)"
-> +	depends on X86 && 64BIT
-> +	select CRYPTO_SKCIPHER
-> +	select CRYPTO_SIMD
-> +	select CRYPTO_ALGAPI
-> +	select CRYPTO_LIB_SM4
-
-As-is, neither CRYPTO_SKCIPHER nor CRYPTO_SIMD needs to be selected here.
-
-> +	help
-> +	  SM4 cipher algorithms (OSCCA GB/T 32907-2016) (x86_64/AES-NI/AVX).
-> +
-> +	  SM4 (GBT.32907-2016) is a cryptographic standard issued by the
-> +	  Organization of State Commercial Administration of China (OSCCA)
-> +	  as an authorized cryptographic algorithms for the use within China.
-> +
-> +	  SMS4 was originally created for use in protecting wireless
-> +	  networks, and is mandated in the Chinese National Standard for
-> +	  Wireless LAN WAPI (Wired Authentication and Privacy Infrastructure)
-> +	  (GB.15629.11-2003).
-> +
-> +	  The latest SM4 standard (GBT.32907-2016) was proposed by OSCCA and
-> +	  standardized through TC 260 of the Standardization Administration
-> +	  of the People's Republic of China (SAC).
-> +
-> +	  The input, output, and key of SMS4 are each 128 bits.
-> +
-> +	  See also: <https://eprint.iacr.org/2008/329.pdf>
-> +
-> +	  If unsure, say N.
-
-This is the help text for the x86 implementation specifically.  Please don't
-have boilerplate text about the algorithm here; that already exists for the
-generic implementation.  The text should explain about the x86 implementation.
-
-- Eric
+>
+> Thank you!
+>
+>> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+>> ---
+>>  kernel/kprobes.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>> 
+>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+>> index 745f08fdd7a6..fdb1ea2e963b 100644
+>> --- a/kernel/kprobes.c
+>> +++ b/kernel/kprobes.c
+>> @@ -2816,13 +2816,12 @@ static const struct file_operations fops_kp = {
+>>  static int __init debugfs_kprobe_init(void)
+>>  {
+>>  	struct dentry *dir;
+>> -	unsigned int value = 1;
+>>  
+>>  	dir = debugfs_create_dir("kprobes", NULL);
+>>  
+>>  	debugfs_create_file("list", 0400, dir, NULL, &kprobes_fops);
+>>  
+>> -	debugfs_create_file("enabled", 0600, dir, &value, &fops_kp);
+>> +	debugfs_create_file("enabled", 0600, dir, NULL, &fops_kp);
+>>  
+>>  	debugfs_create_file("blacklist", 0400, dir, NULL,
+>>  			    &kprobe_blacklist_fops);
+>> -- 
+>> 2.30.2
+>> 
