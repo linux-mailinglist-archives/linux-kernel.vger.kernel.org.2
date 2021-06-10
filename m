@@ -2,147 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32BB3A2914
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A66D3A2921
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhFJKNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 06:13:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230084AbhFJKNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 06:13:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC7EE61184;
-        Thu, 10 Jun 2021 10:11:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623319911;
-        bh=Li5h7gAN6SkiNXdFPfRuFav/iBGrnBV+vWpPj8iqHjw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=VtYEHv4uHH9pqFlj/1pMAVoF2+01G3tSwYM6JWXMMwHJyxzBZmnGy6K/2xTP4ijlG
-         FHcxE114Zyad4EDxVneVSUXi6/uh3n0+stKWPsplHbffMxIb+qeF/Ez9H9dGx3Ubhv
-         jbjDDy018iSOYgquDg7te8npJ6ATZWLOqMYNdWPbktJ60/hMC2dqkxluSM+KK6tZ/E
-         lRcwRfJSLsEvtc2M7hflKh+qLHinaSDfiInA+PuxV9Hi9wgzNMGdHA9ieVp6CzlCwn
-         1/fePN9W3wbFeyjFbcFR5g+0ChOB5Pk6vmPSLoLk+ZxEo1hUIOkIOqbhanoNVLfk0D
-         b20ahfroBwpUg==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Jack Pham <jackp@codeaurora.org>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        p.zabel@pengutronix.de, linux-usb@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        sanm@codeaurora.org
-Subject: Re: [BUG] usb: dwc3: Kernel NULL pointer dereference in dwc3_remove()
-In-Reply-To: <20210607180023.GA23045@jackp-linux.qualcomm.com>
-References: <c3c75895-313a-5be7-6421-b32bac741a88@arm.com>
- <87r1hjcvf6.fsf@kernel.org> <70be179c-d36b-de6f-6efc-2888055b1312@arm.com>
- <YLi/u9J5f+nQO4Cm@kroah.com>
- <8272121c-ac8a-1565-a047-e3a16dcf13b0@arm.com> <877djbc8xq.fsf@kernel.org>
- <20210603173632.GA25299@jackp-linux.qualcomm.com>
- <87mts6avnn.fsf@kernel.org>
- <20210607180023.GA23045@jackp-linux.qualcomm.com>
-Date:   Thu, 10 Jun 2021 13:11:42 +0300
-Message-ID: <87sg1q1129.fsf@kernel.org>
+        id S230035AbhFJKSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 06:18:16 -0400
+Received: from mail-pf1-f176.google.com ([209.85.210.176]:46853 "EHLO
+        mail-pf1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhFJKSO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 06:18:14 -0400
+Received: by mail-pf1-f176.google.com with SMTP id u126so1194646pfu.13;
+        Thu, 10 Jun 2021 03:16:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CPAncIK/Xsm93p1b2E0EPPoWmULTHdIaBvwnFau9rDo=;
+        b=D63IRhUnXGXzstNAGqP7JQE0iz/pQ3AMGkIw7CgkJsyESVTpI0h4pcbmHs0zvaOkes
+         n3Pb6XidsmciWKEPkNGZ0pFohS2lqs//gJoXqCOxDnvaFO61p26/68WfvMur0CLJHOo3
+         KlkxGAuqeet2fTWlmRErJsXN7mbYkCrB3TNPx5Dxl1XNbgtn6VMIpc2roxfV/zBkJ+HU
+         jhoSBEo1fOnqvRsHztpyMlH14BjitTZf7k5vQn/bVHPlzU40pqxvOtwCMhuJsezv17eI
+         MN4itPq+5IhCZeBu0rmZXhct81PR8cMNy+K87nGioWGKM/wuQ6QAy4YrktoInsigG0sh
+         0LPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CPAncIK/Xsm93p1b2E0EPPoWmULTHdIaBvwnFau9rDo=;
+        b=nF3HJ0/hRQ7ZWZCb53O1cltEnScDA72hsDpXwLVPv/yNsLn3ZrqS99rmsMx8COxYYL
+         dsyJXwOYpp4NMc2W7TO6zjZUpI7F34HIZ3gI0nwIENnH+j53bjHPNunPouy9wGDcoZ/d
+         E0avvYYn+lS8SobDN737NPtexgkqpLhMPRGga8nVyBhRS27Phu4MPV2RgxKA4k6dPhfQ
+         //VEAiYm8r++Ug4ho47UaZUg+J6v4lOlfCvQI0nAVVeps4pHops6W1HnKYKifElbEZjm
+         b6KI590LhbCWxsS8lNFzgfmzG9OxtBw/7cxV0MbGdvfYS4oERamfXm7JhThij7iwb1+M
+         Q5JA==
+X-Gm-Message-State: AOAM532F7R8teoMJ1n0NV4iBn8CbkhQap5bbxwagwbZGqlJ4Jk8znZiF
+        vgYYMhhlK9Rwgfp+h/eZ++o84XkdJWtErbjTMSQ=
+X-Google-Smtp-Source: ABdhPJzGQTlCQPMgvygsz5zR1Ag52CJUcVlQm7CURdxOiEPyzDSD8tn4z44BuR5xk0/a1nmXqrPINBaJMQqIjtKJiSk=
+X-Received: by 2002:a63:b507:: with SMTP id y7mr4310974pge.74.1623320105647;
+ Thu, 10 Jun 2021 03:15:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com> <20210610110211.0e239af6@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20210610110211.0e239af6@md1za8fc.ad001.siemens.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 10 Jun 2021 13:14:49 +0300
+Message-ID: <CAHp75VeYy0tyP-OLZX5dbYFZM1C_K5eALo64_nb4rSvH7-93FA@mail.gmail.com>
+Subject: Re: [rfc, PATCH v1 0/7] PCI: introduce p2sb helper
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-
-Hi,
-
-Jack Pham <jackp@codeaurora.org> writes:
-> On Fri, Jun 04, 2021 at 11:20:12AM +0300, Felipe Balbi wrote:
->> Jack Pham <jackp@codeaurora.org> writes:
->> >> >>>> Alexandru Elisei <alexandru.elisei@arm.com> writes:
->> >> >>>>> I've been able to bisect the panic and the offending commit is =
-568262bf5492 ("usb:
->> >> >>>>> dwc3: core: Add shutdown callback for dwc3"). I can provide mor=
-e diagnostic
->> >> >>>>> information if needed and I can help test the fix.
->> >> >>>> if you simply revert that commit in HEAD, does the problem reall=
-y go
->> >> >>>> away?
->> >> >>> Kernel built from commit 324c92e5e0ee, which is the kernel tip to=
-day, the panic is
->> >> >>> there. Reverting the offending commit, 568262bf5492, makes the pa=
-nic disappear.
->> >> >> Want to send a revert so I can take it now?
->> >> >
->> >> > I can send a revert, but Felipe was asking Sandeep (the commit auth=
-or) for a fix,
->> >> > so I'll leave it up to Felipe to decide how to proceed.
->> >>=20
->> >> I'm okay with a revert. Feel free to add my Acked-by: Felipe Balbi
->> >> <balbi@kernel.org> or it.
->> >>=20
->> >> Sandeep, please send a new version that doesn't encounter the same
->> >> issue. Make sure to test by reloading the driver in a tight loop for
->> >> several iterations.
->> >
->> > This would probably be tricky to test on other "glue" drivers as the
->> > problem appears to be specific only to dwc3_of_simple.  It looks like
->> > both dwc3_of_simple and the dwc3 core now (due to 568262bf5492) each
->> > implement respective .shutdown callbacks. The latter is simply a wrapp=
-er
->> > around dwc3_remove(). And from the panic call stack above we see that
->> > dwc3_of_simple_shutdown() calls of_platform_depopulate() which will=20
->> > again call dwc3_remove() resulting in the double remove.
->> >
->> > So would an alternative approach be to protect against dwc3_remove()
->> > getting called multiple times? IMO it'd be a bit messy to have to add
->>=20
->> no, I  don't think so. That sounds like a workaround. We should be able
->> to guarantee that ->remove() doesn't get called twice using the driver
->> model properly.
+On Thu, Jun 10, 2021 at 12:14 PM Henning Schild
+<henning.schild@siemens.com> wrote:
 >
-> Completely fair.  So then having a .shutdown callback that directly calls
-> dwc3_remove() is probably not the right thing to do as it completely
-> bypasses the driver model so if and when the driver core does later
-> release the device from the driver that's how we end up with the double
-> remove.
-
-yeah, I would agree with that.
-
->> > additional checks there to know if it had already been called. So maybe
->> > avoid it altogether--should dwc3_of_simple_shutdown() just skip calling
->> > of_platform_depopulate()?
->>=20
->> I don't know what the idiomatic is nowadays, but at least early on, we
->> had to call depopulate.
+> Am Mon, 8 Mar 2021 14:20:13 +0200
+> schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
 >
-> So any suggestions on how to fix the original issue Sandeep was trying
-> to fix with 568262bf5492? Maybe implement .shutdown in dwc3_qcom and have
-> it follow what dwc3_of_simple does with of_platform_depopulate()? But
-> then wouldn't other "glues" want/need to follow suit?
+> > There are a few users and even at least one more is coming
+> > that would like to utilize p2sb mechanisms like hide/unhide
+> > a device from PCI configuration space.
+> >
+> > Here is the series to deduplicate existing users and provide
+> > a generic way for new comers.
+> >
+> > It also includes a patch to enable GPIO controllers on Apollo Lake
+> > when it's used with ABL bootloader w/o ACPI support.
+>
+> That bit is especially interesting. Making pinctl*lake initialize when
+> ACPI IDs are missing and p2sb is hidden.
+>
+> However i have seen pinctl-broxton get confused because it was trying
+> to come up twice on a system that has the ACPI entries. Once as
+> "INT3452" and second as "apollolake-pinctrl". They should probably
+> mutually exclude each other. And the two different names for "the
+> same"? thing make it impossible to write a driver using those GPIOs.
 
-I think we can implement shutdown in core, but we need to careful with
-it. Instead of just blindly calling remove, let's extract the common
-parts to another internal function that both remove and shutdown
-call. debugfs removal should not be part of that generic method :-)
+Then it's clearly told that BIOS provides confusing data, it exposes
+the ACPI device and hides it in p2sb, how is it even supposed to work?
 
-Anything in that generic method should, probably, be idempotent.
+I consider only these are valid:
+ - ACPI device is provided and it's enabled (status = 15) => work with
+ACPI enumeration
+ - no ACPI device provided and it's hidden or not by p2sb => work via board file
+ - no ACPI device provided and no device needed / present => no driver is needed
 
-=2D-=20
-balbi
+> Unless it would try and look up both variants or not looking up with
+> gpiochip.label.
+>
+> I would also need that "enable GPIO w/o ACPI" for skylake.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Not a problem to add a platform driver name there or actually for all
+of the Intel pin control drivers (depends what suits better to the
+current design).
 
------BEGIN PGP SIGNATURE-----
+>  I think it
+> would be generally useful if the GPIO controllers would be enabled not
+> depending on ACPI, and coming up with only one "label" to build on top.
 
-iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmDB5V4RHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzlfNM9wDzUg9Ewf+NproMS9BtlaBnZq0EMVqyl8gHjrytzkc
-nnc//13H/V63dPFSZUjvUx35eVZj227lpFaX8+kjBO45BrhnzrBwIvE3xryPYS5S
-pvE9PZHMwCr+Ic4lt0g+hx8+bp4pePULCLzZnCnfL3BH4KWg9NOg2k4/DgHfmPC3
-GRu/MqivsR30ErtiM91ILkS144AIYVlxtQEIz9ghbHM4srMaMgW5MPegMO1BFZwz
-PVOKcSZ30FJkK733eX1Kxz55gv50wBsCgeZorsaoFP/ruMeCWBe5thkyBJfYi34Y
-MKkzst3/zGDomIkN6ReZbfJFXMw3xB3Wkzx9231riSWS4sonSN0L3g==
-=/AIV
------END PGP SIGNATURE-----
---=-=-=--
+I didn't get what 'label' means here...
+
+> > Please, comment on the approach and individual patches.
+> >
+> > (Since it's cross subsystem, the PCI seems like a main one and
+> >  I think it makes sense to route it thru it with immutable tag
+> >  or branch provided for the others).
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
