@@ -2,83 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B8C3A2B21
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2713A2B24
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhFJMKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:10:46 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:58116 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230113AbhFJMKo (ORCPT
+        id S230323AbhFJMLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229935AbhFJML3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:10:44 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15AC7nn3032110;
-        Thu, 10 Jun 2021 12:08:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=R5gIkfYOSlyle2Ew7mpz5qlfjYV2KAyBhHNWTShZO74=;
- b=c43PC1hU8JRYaDrPBQY5LQocJX0187FwIjTNPnVlqQ5bku5BWN8krS4HuvKiZCUbokmV
- muRIqQPPQNJ1XifpE6yvVPR4cZssAelzDmPmx6N54MGFBqLsNvQ84xx0sqjbgro6AOjz
- SvKlI6DJsBQab3j8/cHnNGLYF2DDtuyspuevsLDtsxOkorlyPoCqAbYXLFyydNs4s6hQ
- xuXrk1xohgw31U6qpivQwHw828yjcT7aREWy+TW32Vj33Q9q5Yu3CNfXg7bd7Ee8WtvU
- Iqc3cKQU0eetW5OTxXeGeolaWgtYdIzC2sZVnDlEcKzgOumM2ywx6Nxo0GdQmQtwPc7v 3g== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3930d50c0c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Jun 2021 12:08:44 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15AC3WW8037943;
-        Thu, 10 Jun 2021 12:08:42 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 390k1sxmqk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Jun 2021 12:08:42 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 15AC8eve020233;
-        Thu, 10 Jun 2021 12:08:40 GMT
-Received: from [10.175.195.97] (/10.175.195.97)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 10 Jun 2021 05:08:40 -0700
-From:   "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-Subject: __gfn_to_hva_memslot Spectre patch for stable (Was: Re: [GIT PULL]
- KVM fixes for 5.13-rc6)
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Artemiy Margaritov <artemiy.margaritov@gmail.com>
-References: <20210609000743.126676-1-pbonzini@redhat.com>
-Message-ID: <341559af-911e-d85f-f966-2bbc88a72114@oracle.com>
-Date:   Thu, 10 Jun 2021 14:08:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 10 Jun 2021 08:11:29 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F18FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:09:18 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id h12so1448703pfe.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:09:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b8nZP+Gapaq0m2CiyXSp+UoYpv4V40nbqCx5vZWy2So=;
+        b=qNpHGLbzx8OhyV03T1XQBAEOd4lRjyRCU0fJwWQZM9z8cmhPoAFi+GDxkHRMRhazLH
+         R0nsMAtnYe96LshwmR/TMRPVGoU8ytMBoxbmB53R8tZYrcmwEFY8HlHAn44TpYb0pzTh
+         qmB77sFVrdZyAyBI4G19njPnorLQYKYdmRF092cSd0Ei7zqUxCPk/1jsa5KnX0YhIvk1
+         SzFP1/gawTAr5K0/RmkjYDxzJD37wlU3JNFPy+LzxoihOhSyx3ZJ+C93QrVboF34Xv0n
+         Li/GbaMZV6qI7CbrdPL5RJ9aq7yt+bgyv+rUCOxswMYCURW7p2jiiOGrkgPqjecyRGWA
+         0TTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b8nZP+Gapaq0m2CiyXSp+UoYpv4V40nbqCx5vZWy2So=;
+        b=f6c6SB9xA9gnrRQj7GSVL/sM16K2HjstGNsdG0gKg4cs8EgOeWYyIlSoO3u1uW97Xj
+         TXfNf0TNbVf7jP1DxrVe3//fEgSwfl0CIo3AD/RDIxbbOJD1mLpPCzYzqtHfvvfw7bz+
+         tirLdmeppMLxRPVFau5nHyFvyOxv24pPBxc9uQygchan1ja6Tmw6dtY5CI5bG7O6s2tp
+         YwHz+2zmg5GlQpyjRdVirpN1tWKdqYqjKl1SiyhLjsObc5vYaIgDQK/Ak10MQKXqM5Bm
+         /tzxJyP/BEm4tmWw08ATAPJ0Ln9rcz/Mun2KsD3D5Gyjrzk5efUg94ltZLqsR7h34jYW
+         QJiQ==
+X-Gm-Message-State: AOAM532hoxwrKQiKiEAuqGlG6b6EsuPJsGkuv1Wxz1Yacz55dIyBUGFA
+        CK+K6x8WX5IR1JtZWJGj3X+CSQ==
+X-Google-Smtp-Source: ABdhPJwSp9xuwNSizzHp3uvbFX+DHZygMqXvOaYSXbJZdQ1gOs84CgFHQge7IuxwbzYsh3V0+5Vtug==
+X-Received: by 2002:a62:ab16:0:b029:2ed:8599:7df8 with SMTP id p22-20020a62ab160000b02902ed85997df8mr2772433pff.31.1623326957801;
+        Thu, 10 Jun 2021 05:09:17 -0700 (PDT)
+Received: from localhost ([136.185.169.128])
+        by smtp.gmail.com with ESMTPSA id v67sm2423802pfb.193.2021.06.10.05.09.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 05:09:17 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Viresh Kumar <vireshk@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
+Subject: [PATCH V3 0/3] gpio: Add virtio based driver
+Date:   Thu, 10 Jun 2021 17:39:05 +0530
+Message-Id: <cover.1623326176.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-In-Reply-To: <20210609000743.126676-1-pbonzini@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10010 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 adultscore=0
- malwarescore=0 phishscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106100079
-X-Proofpoint-ORIG-GUID: UCcEalI8v6TgT1kDdx1_1ueW_X78sQEW
-X-Proofpoint-GUID: UCcEalI8v6TgT1kDdx1_1ueW_X78sQEW
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.06.2021 02:07, Paolo Bonzini wrote:
-(..)
-> Paolo Bonzini (1):
->        kvm: avoid speculation-based attacks from out-of-range memslot accesses
-> 
+Hello,
 
-That commit looks like something that stable kernels might benefit from, too -
-any plans to submit it for stable?
+This adds a virtio based GPIO driver based on the proposed specification [1].
 
-Responding to the pull request since I can't find that patch posted on
-a mailing list.
+The first two versions [2] were sent by Enrico earlier and here is a newer version.
+I have retained the authorship of the work done by Enrico (1st patch) to make
+sure we don't loose his credits.
 
-Thanks,
-Maciej
+I have tested all basic operations of the patchset (with Qemu guest) with the
+libgpiod utility. I have also tested the handling of interrupts on the guest
+side. All works as expected.
+
+I will now be working towards a Rust based hypervisor agnostic backend to
+provide a generic solution for that.
+
+This should be merged only after the specifications are merged, I will keep
+everyone posted for the same.
+
+I am not adding a version history here as a lot of changes have been made, from
+protocol to code and this really needs a full review from scratch.
+
+--
+Viresh
+
+[1] https://lists.oasis-open.org/archives/virtio-comment/202106/msg00022.html
+[2] https://lore.kernel.org/linux-gpio/20201203191135.21576-2-info@metux.net/
+
+Enrico Weigelt, metux IT consult (1):
+  gpio: Add virtio-gpio driver
+
+Viresh Kumar (2):
+  gpio: virtio: Add IRQ support
+  MAINTAINERS: Add entry for Virtio-gpio
+
+ MAINTAINERS                      |   7 +
+ drivers/gpio/Kconfig             |   9 +
+ drivers/gpio/Makefile            |   1 +
+ drivers/gpio/gpio-virtio.c       | 566 +++++++++++++++++++++++++++++++
+ include/uapi/linux/virtio_gpio.h |  56 +++
+ include/uapi/linux/virtio_ids.h  |   1 +
+ 6 files changed, 640 insertions(+)
+ create mode 100644 drivers/gpio/gpio-virtio.c
+ create mode 100644 include/uapi/linux/virtio_gpio.h
+
+-- 
+2.31.1.272.g89b43f80a514
+
