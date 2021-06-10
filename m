@@ -2,110 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E903A29E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF4C3A29F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbhFJLLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 07:11:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58110 "EHLO mail.kernel.org"
+        id S230161AbhFJLRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 07:17:10 -0400
+Received: from mga04.intel.com ([192.55.52.120]:61539 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229961AbhFJLLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:11:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 302016128A;
-        Thu, 10 Jun 2021 11:09:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623323367;
-        bh=OfaX/teV71AJoN/dAZjPB4P3vHvVUY6txaOOAlwSzXU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=I4uoF9vdhxZhZvhoR8wEF2WvOIoVNB99TqW+500EL24KdN9YTzknOZMWtyixl2bhe
-         rWQXby4YcpMFNAkc1lFJyZBK+Wa/ZVsFi/HPaqUZRUpLaOk43s1Oq89WuighL6uddy
-         415Ps7REqUa+wrcjDJaFhnk6M3BKTmWV3pFuzZmvgF6wPij/fdX3/XQQGjB4cujudn
-         tmknbqsyiZ9UUZa0KULP2R8ZQp/fPgrf+H9ROEyAj10BkRxmW8T0BJLMi9rlZOKG7W
-         oGUojLI8cWlqzX28zls4c5w+88zJcYlVzmzn4pk65X5ZWndxA8B0RnMOAXus3Sl5Nt
-         O2+mYLBcY2PEA==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: Re: [PATCH] usb: dwc3: gadget: Disable gadget IRQ during pullup
- disable
-In-Reply-To: <1621571037-1424-1-git-send-email-wcheng@codeaurora.org>
-References: <1621571037-1424-1-git-send-email-wcheng@codeaurora.org>
-Date:   Thu, 10 Jun 2021 14:09:19 +0300
-Message-ID: <87h7i60ye8.fsf@kernel.org>
+        id S229961AbhFJLRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 07:17:08 -0400
+IronPort-SDR: sk8C9x06PQbAvDUKuypin6IIJNBXncYDcTDeTgmUcAHEEe1g6ECPT3ngLX1zrLyq2qwQI0w1bu
+ 5V2TJhX+kXhQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="203430678"
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="203430678"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 04:15:06 -0700
+IronPort-SDR: XnqcV3Q9BMBVPvWBtSITBeTxQQ8i5OPYsrWDZt8lD7F/zaC8CqOb9T5Y/c25xWYydostiuL9DQ
+ xxbhTJ4iDtKA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="402825980"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by orsmga003.jf.intel.com with ESMTP; 10 Jun 2021 04:15:00 -0700
+Subject: Re: [PATCH v3 1/9] scsi: ufs: Differentiate status between hba pm ops
+ and wl pm ops
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-2-git-send-email-cang@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <7d7a771f-6595-0106-8ee5-4e6407caee56@intel.com>
+Date:   Thu, 10 Jun 2021 14:15:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <1623300218-9454-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On 10/06/21 7:43 am, Can Guo wrote:
+> Put pm_op_in_progress and is_sys_suspend flags back to ufshcd hba pm ops,
+> add two new flags, namely wl_pm_op_in_progress and is_wl_sys_suspended, to
+> track the UFS device W-LU pm ops. This helps us differentiate the status of
+> hba and wl pm ops when we need to do troubleshooting.
 
-Wesley Cheng <wcheng@codeaurora.org> writes:
+Really you have 2 changes here:
+1. Renaming to pm_op_in_progress / is_sys_suspend to wl_pm_op_in_progress / is_wl_sys_suspended
+2. Introducing flags for the status of hba
 
-> Current sequence utilizes dwc3_gadget_disable_irq() alongside
-> synchronize_irq() to ensure that no further DWC3 events are generated.
-> However, the dwc3_gadget_disable_irq() API only disables device
-> specific events.  Endpoint events can still be generated.  Briefly
-> disable the interrupt line, so that the cleanup code can run to
-> prevent device and endpoint events. (i.e. __dwc3_gadget_stop() and
-> dwc3_stop_active_transfers() respectively)
->
-> Without doing so, it can lead to both the interrupt handler and the
-> pullup disable routine both writing to the GEVNTCOUNT register, which
-> will cause an incorrect count being read from future interrupts.
->
-> Fixes: ae7e86108b12 ("usb: dwc3: Stop active transfers before halting the=
- controller")
-> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+So it should really be 2 patches.
+
+That would show up things like:
+- did you intend not to change hba->is_sys_suspended in ufs_qcom_resume() ?
+
+> 
+> Signed-off-by: Can Guo <cang@codeaurora.org>
 > ---
->  drivers/usb/dwc3/gadget.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> index 49ca5da..89aa9ac 100644
-> --- a/drivers/usb/dwc3/gadget.c
-> +++ b/drivers/usb/dwc3/gadget.c
-> @@ -2260,13 +2260,10 @@ static int dwc3_gadget_pullup(struct usb_gadget *=
-g, int is_on)
+>  drivers/scsi/ufs/ufshcd.c | 42 ++++++++++++++++++++++++++++--------------
+>  drivers/scsi/ufs/ufshcd.h |  4 +++-
+>  2 files changed, 31 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 25fe18a..47b2a9a 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -549,7 +549,9 @@ static void ufshcd_print_host_state(struct ufs_hba *hba)
+>  		hba->saved_err, hba->saved_uic_err);
+>  	dev_err(hba->dev, "Device power mode=%d, UIC link state=%d\n",
+>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+> -	dev_err(hba->dev, "PM in progress=%d, sys. suspended=%d\n",
+> +	dev_err(hba->dev, "wl_pm_op_in_progress=%d, is_wl_sys_suspended=%d\n",
+> +		hba->wl_pm_op_in_progress, hba->is_wl_sys_suspended);
+> +	dev_err(hba->dev, "pm_op_in_progress=%d, is_sys_suspended=%d\n",
+>  		hba->pm_op_in_progress, hba->is_sys_suspended);
+>  	dev_err(hba->dev, "Auto BKOPS=%d, Host self-block=%d\n",
+>  		hba->auto_bkops_enabled, hba->host->host_self_blocked);
+> @@ -1999,7 +2001,7 @@ static void ufshcd_clk_scaling_start_busy(struct ufs_hba *hba)
+>  	if (!hba->clk_scaling.active_reqs++)
+>  		queue_resume_work = true;
+>  
+> -	if (!hba->clk_scaling.is_enabled || hba->pm_op_in_progress) {
+> +	if (!hba->clk_scaling.is_enabled || hba->wl_pm_op_in_progress) {
+>  		spin_unlock_irqrestore(hba->host->host_lock, flags);
+>  		return;
 >  	}
->=20=20
+> @@ -2734,7 +2736,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+>  		 * err handler blocked for too long. So, just fail the scsi cmd
+>  		 * sent from PM ops, err handler can recover PM error anyways.
+>  		 */
+> -		if (hba->pm_op_in_progress) {
+> +		if (hba->wl_pm_op_in_progress) {
+>  			hba->force_reset = true;
+>  			set_host_byte(cmd, DID_BAD_TARGET);
+>  			cmd->scsi_done(cmd);
+> @@ -2767,7 +2769,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+>  		(hba->clk_gating.state != CLKS_ON));
+>  
+>  	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
+> -		if (hba->pm_op_in_progress)
+> +		if (hba->wl_pm_op_in_progress)
+>  			set_host_byte(cmd, DID_BAD_TARGET);
+>  		else
+>  			err = SCSI_MLQUEUE_HOST_BUSY;
+> @@ -5116,7 +5118,7 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+>  			 * solution could be to abort the system suspend if
+>  			 * UFS device needs urgent BKOPs.
+>  			 */
+> -			if (!hba->pm_op_in_progress &&
+> +			if (!hba->wl_pm_op_in_progress &&
+>  			    !ufshcd_eh_in_progress(hba) &&
+>  			    ufshcd_is_exception_event(lrbp->ucd_rsp_ptr))
+>  				/* Flushed in suspend */
+> @@ -5916,7 +5918,7 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>  {
+>  	ufshcd_rpm_get_sync(hba);
+>  	if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
+> -	    hba->is_sys_suspended) {
+> +	    hba->is_wl_sys_suspended) {
+>  		enum ufs_pm_op pm_op;
+>  
+>  		/*
+> @@ -5933,7 +5935,7 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>  		if (!ufshcd_is_clkgating_allowed(hba))
+>  			ufshcd_setup_clocks(hba, true);
+>  		ufshcd_release(hba);
+> -		pm_op = hba->is_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
+> +		pm_op = hba->is_wl_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
+>  		ufshcd_vops_resume(hba, pm_op);
+>  	} else {
+>  		ufshcd_hold(hba, false);
+> @@ -5976,7 +5978,7 @@ static void ufshcd_recover_pm_error(struct ufs_hba *hba)
+>  	struct request_queue *q;
+>  	int ret;
+>  
+> -	hba->is_sys_suspended = false;
+> +	hba->is_wl_sys_suspended = false;
 >  	/*
-> -	 * Synchronize any pending event handling before executing the controll=
-er
-> -	 * halt routine.
-> +	 * Synchronize and disable any further event handling while controller
-> +	 * is being enabled/disabled.
->  	 */
-> -	if (!is_on) {
-> -		dwc3_gadget_disable_irq(dwc);
-> -		synchronize_irq(dwc->irq_gadget);
-> -	}
-> +	disable_irq(dwc->irq_gadget);
->=20=20
->  	spin_lock_irqsave(&dwc->lock, flags);
+>  	 * Set RPM status of wlun device to RPM_ACTIVE,
+>  	 * this also clears its runtime error.
+> @@ -8784,7 +8786,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	enum ufs_dev_pwr_mode req_dev_pwr_mode;
+>  	enum uic_link_state req_link_state;
+>  
+> -	hba->pm_op_in_progress = true;
+> +	hba->wl_pm_op_in_progress = true;
+>  	if (pm_op != UFS_SHUTDOWN_PM) {
+>  		pm_lvl = pm_op == UFS_RUNTIME_PM ?
+>  			 hba->rpm_lvl : hba->spm_lvl;
+> @@ -8919,7 +8921,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  		hba->clk_gating.is_suspended = false;
+>  		ufshcd_release(hba);
+>  	}
+> -	hba->pm_op_in_progress = false;
+> +	hba->wl_pm_op_in_progress = false;
+>  	return ret;
+>  }
+>  
+> @@ -8928,7 +8930,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	int ret;
+>  	enum uic_link_state old_link_state = hba->uic_link_state;
+>  
+> -	hba->pm_op_in_progress = true;
+> +	hba->wl_pm_op_in_progress = true;
+>  
+>  	/*
+>  	 * Call vendor specific resume callback. As these callbacks may access
+> @@ -9006,7 +9008,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  		ufshcd_update_evt_hist(hba, UFS_EVT_WL_RES_ERR, (u32)ret);
+>  	hba->clk_gating.is_suspended = false;
+>  	ufshcd_release(hba);
+> -	hba->pm_op_in_progress = false;
+> +	hba->wl_pm_op_in_progress = false;
+>  	return ret;
+>  }
+>  
+> @@ -9072,7 +9074,7 @@ static int ufshcd_wl_suspend(struct device *dev)
+>  
+>  out:
+>  	if (!ret)
+> -		hba->is_sys_suspended = true;
+> +		hba->is_wl_sys_suspended = true;
+>  	trace_ufshcd_wl_suspend(dev_name(dev), ret,
+>  		ktime_to_us(ktime_sub(ktime_get(), start)),
+>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+> @@ -9100,7 +9102,7 @@ static int ufshcd_wl_resume(struct device *dev)
+>  		ktime_to_us(ktime_sub(ktime_get(), start)),
+>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>  	if (!ret)
+> -		hba->is_sys_suspended = false;
+> +		hba->is_wl_sys_suspended = false;
+>  	up(&hba->host_sem);
+>  	return ret;
+>  }
+> @@ -9141,6 +9143,8 @@ static int ufshcd_suspend(struct ufs_hba *hba)
+>  
+>  	if (!hba->is_powered)
+>  		return 0;
+> +
+> +	hba->pm_op_in_progress = true;
+>  	/*
+>  	 * Disable the host irq as host controller as there won't be any
+>  	 * host controller transaction expected till resume.
+> @@ -9160,6 +9164,7 @@ static int ufshcd_suspend(struct ufs_hba *hba)
+>  	ufshcd_vreg_set_lpm(hba);
+>  	/* Put the host controller in low power mode if possible */
+>  	ufshcd_hba_vreg_set_lpm(hba);
+> +	hba->pm_op_in_progress = false;
+>  	return ret;
+>  }
+>  
+> @@ -9179,6 +9184,7 @@ static int ufshcd_resume(struct ufs_hba *hba)
+>  	if (!hba->is_powered)
+>  		return 0;
+>  
+> +	hba->pm_op_in_progress = true;
+>  	ufshcd_hba_vreg_set_hpm(hba);
+>  	ret = ufshcd_vreg_set_hpm(hba);
+>  	if (ret)
+> @@ -9198,6 +9204,7 @@ static int ufshcd_resume(struct ufs_hba *hba)
+>  out:
+>  	if (ret)
+>  		ufshcd_update_evt_hist(hba, UFS_EVT_RESUME_ERR, (u32)ret);
+> +	hba->pm_op_in_progress = false;
+>  	return ret;
+>  }
+>  
+> @@ -9222,6 +9229,10 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+>  	trace_ufshcd_system_suspend(dev_name(hba->dev), ret,
+>  		ktime_to_us(ktime_sub(ktime_get(), start)),
+>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+> +
+> +	if (!ret)
+> +		hba->is_sys_suspended = true;
+> +
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(ufshcd_system_suspend);
+> @@ -9248,6 +9259,9 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+>  		ktime_to_us(ktime_sub(ktime_get(), start)),
+>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>  
+> +	if (!ret)
+> +		hba->is_sys_suspended = false;
+> +
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(ufshcd_system_resume);
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index c98d540..eaebb4e 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -752,7 +752,8 @@ struct ufs_hba {
+>  	enum ufs_pm_level spm_lvl;
+>  	struct device_attribute rpm_lvl_attr;
+>  	struct device_attribute spm_lvl_attr;
+> -	int pm_op_in_progress;
+> +	bool pm_op_in_progress;
+> +	bool wl_pm_op_in_progress;
+>  
+>  	/* Auto-Hibernate Idle Timer register value */
+>  	u32 ahit;
+> @@ -839,6 +840,7 @@ struct ufs_hba {
+>  	struct devfreq *devfreq;
+>  	struct ufs_clk_scaling clk_scaling;
+>  	bool is_sys_suspended;
+> +	bool is_wl_sys_suspended;
+>  
+>  	enum bkops_status urgent_bkops_lvl;
+>  	bool is_urgent_bkops_lvl_checked;
+> 
 
-spin_lock_irqsave() is already disabling interrupt, right? Why do we
-need another call to disable_irq()?
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmDB8t8RHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzlfNM9wDzUhu9Qf8DEV2wOBk/LUS2p/sG3bNfv8n6vpJAzGe
-b4ExG7WtxEcRBsAnqL9I9rDs+T0gtWLVGzznJVAZ7Lj9v37jVvMs2yKSkTbY80iV
-CpFiL1Yb+SD81+h76/aIBer26uDTEBP8ouhGxlcAg1EfXglrB03oob7o32upz47N
-UB1n1jXxGzAT15gwoWTaGd4+YzOZgxrSt7idBzlAtQ5cxh5BWSe1OGwXwKNlRpIR
-YWhDZVqEyx9yFwVOuSqsrvOoYL3dqrYiylDUT9bAng3fhGp7vFFl1A1y/rgJWTlp
-CAwRxKDbjugp9MUMnzImAtJ+5AlctkhO7B9aLAB+cWMYpkS5qJ6zHw==
-=bNqx
------END PGP SIGNATURE-----
---=-=-=--
