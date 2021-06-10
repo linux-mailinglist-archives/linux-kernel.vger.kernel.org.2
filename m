@@ -2,95 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E653A31FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449F43A3205
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhFJR1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:27:17 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:56133 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhFJR1P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:27:15 -0400
-Received: by mail-wm1-f54.google.com with SMTP id g204so6611970wmf.5;
-        Thu, 10 Jun 2021 10:25:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gHUSjbESYNfD7sG28gBLSykvdruQjgsFLHrNm+2HmfQ=;
-        b=emflGDuQWMyQVmaReahmSphhsN3tGq/01vqu6RyLp5Axnm+528aJAiwHnxjq+x+799
-         cmpg+bS8CflQUI6AO1f5ERbbfejwjnAFrpDyUXsJ/K5CvPIshDAZfh03ia6DUXm84Mbn
-         GEEeIKPyy0hH73WIJtWFc7G49QT9mQHthBxWLQqBtM0VNmpqXZF4H/fChX+dBKA6D1xi
-         GPcQloo24VIQ2z7F7nmAW6GdD83xhxL9IPoBN++47/8QwVt51XPKb1kfwdDQS6QN2B75
-         cG3/Hgfpp8hebVs5paQ+r9s1wzuCiH1cRWyvlV8WiL40nrtSEJw2FDXoFpzPA95dbeGK
-         hGwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gHUSjbESYNfD7sG28gBLSykvdruQjgsFLHrNm+2HmfQ=;
-        b=JfmynvajxoWxnUzv4bZIIIm3ElGokr4EZJmZKFZg1OrcsuNBthfUzgiARBPulWO7Ml
-         9DLuLZgJA7K3DPMkOqKGvgYDgFsHeH4wn06JcCB0snqd4EB20dOoKWnJPPsKczapS/xg
-         sG3oC5QLfhRkn1SxLgqpePjSGYLTcoP5dHFqv4Yx8uIgMJeftlIvE8b5cVjjVp4I1PT+
-         5l8UNJW/Od2UWuxiN1Yuo49BJ3VdN0gyDgL1iUoR9RXSSSvxlVCfTyIAo19GrV/24SSE
-         ZX7mDS0zeeCZapYxPxEIq/eYSy4+uAa8f4Vpy4jK0ReQ2i9k674Uy8ugIWbPijSzv7q4
-         FpwA==
-X-Gm-Message-State: AOAM532gkjkiqD0iskan4386ysIsIexJeYK56seypHQlKQeNkaP2WxQf
-        p9jZQttaCdkmz8OYS73pG9qbfipujTAq8g==
-X-Google-Smtp-Source: ABdhPJywlX06vBk6jltAnNjUFb5g1wiIIz5kiuW5Yo4w+tKby+/h5S0v09iWGBmzSvqcqV5BUF+rdA==
-X-Received: by 2002:a05:600c:3514:: with SMTP id h20mr3816566wmq.70.1623345857699;
-        Thu, 10 Jun 2021 10:24:17 -0700 (PDT)
-Received: from [192.168.181.98] (228.18.23.93.rev.sfr.net. [93.23.18.228])
-        by smtp.gmail.com with ESMTPSA id x125sm4033996wmg.37.2021.06.10.10.24.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 10:24:17 -0700 (PDT)
-Subject: Re: [PATCH v7 bpf-next 01/11] net: Introduce
- net.ipv4.tcp_migrate_req.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210521182104.18273-1-kuniyu@amazon.co.jp>
- <20210521182104.18273-2-kuniyu@amazon.co.jp>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <3a9ecbe4-fe7e-1acf-36b7-1f999f8f01d6@gmail.com>
-Date:   Thu, 10 Jun 2021 19:24:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231145AbhFJR2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:28:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230083AbhFJR2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 13:28:54 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 203BF601FD;
+        Thu, 10 Jun 2021 17:26:57 +0000 (UTC)
+Date:   Thu, 10 Jun 2021 13:26:55 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>
+Cc:     <20201106023546.720372267@goodmis.org>, <keescook@chromium.org>,
+        <ccross@android.com>, <linux-kernel@vger.kernel.org>,
+        Zhangjinhao <zhangjinhao2@huawei.com>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [BUG] I found a bug when try to enable record_ftrace
+Message-ID: <20210610132655.0201ab3d@oasis.local.home>
+In-Reply-To: <01472d0f-55c1-15ea-9beb-5d64b322bb44@huawei.com>
+References: <01472d0f-55c1-15ea-9beb-5d64b322bb44@huawei.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210521182104.18273-2-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2 Jun 2021 15:42:23 +0800
+"Zhengyejian (Zetta)" <zhengyejian1@huawei.com> wrote:
 
+> Enabling 'record_ftrace' seems a basic operation of pstore/ftrace, Does 
+> it mean this feature is not available for a while?
 
-On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
-> This commit adds a new sysctl option: net.ipv4.tcp_migrate_req. If this
-> option is enabled or eBPF program is attached, we will be able to migrate
-> child sockets from a listener to another in the same reuseport group after
-> close() or shutdown() syscalls.
-> 
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
-> ---
->  Documentation/networking/ip-sysctl.rst | 25 +++++++++++++++++++++++++
->  include/net/netns/ipv4.h               |  1 +
->  net/ipv4/sysctl_net_ipv4.c             |  9 +++++++++
->  3 files changed, 35 insertions(+)
+I think the update to the recursion protection of ftrace caused this to
+trigger. There's a time during context switch into an interrupt and
+before the context state is set where the recursion protection would
+trigger when it wasn't a real recursion. To handle this, the recursion
+protection allows for a single recursion to occur.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+But if this protection is used to protect against grabbing a lock, then
+it wont work, because a single recursion can cause a deadlock (as it
+looks to be what happened here).
 
+The below patch adds a version called ftrace_test_recursion_trylock_safe()
+that goes back to the old method, and not allow any recursion at the
+same context level (normal, softirq, irq and NMI), and will once again
+miss the case when a trace happens at the start of an interrupt but
+before the state is set to the interrupt context. But if you are
+grabbing locks, you should not be tracing in that area anyway.
+
+Does the below patch fix the issue for you?
+
+-- Steve
+
+diff --git a/fs/pstore/ftrace.c b/fs/pstore/ftrace.c
+index 5939595f0115..941df90a4506 100644
+--- a/fs/pstore/ftrace.c
++++ b/fs/pstore/ftrace.c
+@@ -41,7 +41,11 @@ static void notrace pstore_ftrace_call(unsigned long ip,
+ 	if (unlikely(oops_in_progress))
+ 		return;
+ 
+-	bit = ftrace_test_recursion_trylock(ip, parent_ip);
++	/* Locking is not safe to be taken in NMI */
++	if (in_nmi())
++		return;
++
++	bit = ftrace_test_recursion_trylock_safe(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+index a9f9c5714e65..302b895d806c 100644
+--- a/include/linux/trace_recursion.h
++++ b/include/linux/trace_recursion.h
+@@ -159,8 +159,9 @@ extern void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip);
+ # define do_ftrace_record_recursion(ip, pip)	do { } while (0)
+ #endif
+ 
+-static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
+-							int start, int max)
++static __always_inline int __trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
++							  int start, int max,
++							  bool safe)
+ {
+ 	unsigned int val = READ_ONCE(current->trace_recursion);
+ 	int bit;
+@@ -176,7 +177,7 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
+ 		 * a switch between contexts. Allow for a single recursion.
+ 		 */
+ 		bit = TRACE_TRANSITION_BIT;
+-		if (val & (1 << bit)) {
++		if (safe || (val & (1 << bit))) {
+ 			do_ftrace_record_recursion(ip, pip);
+ 			return -1;
+ 		}
+@@ -192,6 +193,28 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
+ 	return bit + 1;
+ }
+ 
++static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
++							int start, int max)
++{
++	return __trace_test_and_set_recursion(ip, pip, start, max, false);
++}
++
++/*
++ * The safe version does not let any recursion happen.
++ * The unsafe version will allow for a single recursion to deal with
++ * the period during a context switch from normal to interrupt to NMI
++ * that may be in the wrong context. But if the caller is expecting
++ * this to be safe for grabbing locks, it must use the safe version
++ * otherwise it could cause a deadlock. But it may still miss events
++ * in the period of context switches, but if it is grabbing locks
++ * it shouldn't be tracing in that period anyway.
++ */
++static __always_inline int trace_test_and_set_recursion_safe(unsigned long ip, unsigned long pip,
++							int start, int max)
++{
++	return __trace_test_and_set_recursion(ip, pip, start, max, true);
++}
++
+ static __always_inline void trace_clear_recursion(int bit)
+ {
+ 	if (!bit)
+@@ -208,6 +231,14 @@ static __always_inline void trace_clear_recursion(int bit)
+  * Use this for ftrace callbacks. This will detect if the function
+  * tracing recursed in the same context (normal vs interrupt),
+  *
++ * Note, this may allow one nested level of recursion, because of the
++ * way interrupts are tracked. If a trace happens at the start of
++ * an interrupt before the interrupts state is set, it needs to allow
++ * one recursion to handle this case.
++ *
++ * If this is used to protect locks, use the
++ * ftrace_test_recursion_trylock_safe() version instead.
++ * 
+  * Returns: -1 if a recursion happened.
+  *           >= 0 if no recursion
+  */
+@@ -216,6 +247,29 @@ static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+ {
+ 	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
+ }
++/**
++ * ftrace_test_recursion_trylock_safe - tests for recursion in same context
++ *
++ * Use this for ftrace callbacks. This will detect if the function
++ * tracing recursed in the same context (normal vs interrupt),
++ *
++ * Use this version if you depend on it for grabbing locks.
++ * You should also not be tracing in NMI either.
++ *
++ * This version is the same as the ftrace_test_recursion_trylock() except that
++ * it does not allow any recursion. It may produce a false positive if
++ * a trace occurs at the start of an interrupt but before the interrupt
++ * state is set. Any event that happens in that case will be considered
++ * a "recursion".
++ *
++ * Returns: -1 if a recursion happened.
++ *           >= 0 if no recursion
++ */
++static __always_inline int ftrace_test_recursion_trylock_safe(unsigned long ip,
++							 unsigned long parent_ip)
++{
++	return trace_test_and_set_recursion_safe(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
++}
+ 
+ /**
+  * ftrace_test_recursion_unlock - called when function callback is complete
