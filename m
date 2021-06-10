@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174EF3A28F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D5E3A28FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFJKGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 06:06:22 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:52605 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230230AbhFJKGU (ORCPT
+        id S230248AbhFJKGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 06:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhFJKGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 06:06:20 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 554BD2333;
-        Thu, 10 Jun 2021 06:04:23 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 10 Jun 2021 06:04:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=9WI5xCILPDtfU2J23fyUihMeujs
-        p3+nvIZghW3iHRHc=; b=IZFkCK0xZ/bXtTr+WlMMF8ItwBhwYM/KoXNNu+FfCc9
-        AyI3tT+au+cKpKHm6qser7g2DdoSVhjoNlM9T3TcOsNdrofSugaOT0I/AV5PsNzI
-        i7n0b5RJBW4NXBqq6Bzzh9wOaMC8HSB1ZB6Jl/lxuztGf9hfTTajjnIQ0Qs74vkG
-        egJHDMsQWZpQ6dntUDSV5vbshi3oNzIJ3Wk6Q6m4ggxGpd9uZam9o3MIY7dfqtKH
-        HdUlVRFYCTxp5OtTSSDOmPUx2TlzLZ/549hzusz8YWdf/Ni2iX69X32FAMId571I
-        dcbLxZ0zW/KBPM+b/HaQsk3JFSTGu83pHgbQWjSSqPQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=9WI5xC
-        ILPDtfU2J23fyUihMeujsp3+nvIZghW3iHRHc=; b=kYI4GDlQ0LwiIMhaUcPMYb
-        UFjQhLahV8ujxVLzU3h8/dPDinCC/laG2rs0U8Kcv9o3ED62wgRlm4uxuiyNnwCW
-        v//OF7HEXOzDEuI30gh5XULJJ+gvSlVmAbWIID9avgZc/FmYYBlPh8m04kIaxUDO
-        WK34wTnZR4zQtDNI0iXeSNe1Il4JKbGuh8i0FtQFI1q6Ng5UsSyEUT+kNqAj/QFT
-        3OixEgRp8RwxMHnxuzl1V7j4sEjqk8vOv/riBi1np+86H0c0kwtzRQvoBcV7REfJ
-        IHrwFJ+Ag2gCCgtMWCxHpxPCVjURwTL+KOKVwzQt9ofu6JHJlGUptAOxuxcHx5Cw
-        ==
-X-ME-Sender: <xms:puPBYJ2rGiTcw9mMPSndnojwvdYaaCYxBghmU_yaN9aR_y6ArQYszQ>
-    <xme:puPBYAE8PPhPseYkhU_FgqbUfaNYLuKO-9lLrSDD6esFZDuM9kqEJPgx_qNz5ZCgE
-    jbXPuh5Eyy2cw>
-X-ME-Received: <xmr:puPBYJ7K2vWRG4-AqXQmW7ulfdhwodtDwf2umovs1sCb-gOQtOdvc3D-IyRJ1eO92LHiLV04HQCcAdtZl4tJdAFwVmdF8Qks>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedufedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
-    necuggftrfgrthhtvghrnhepueelledtheekleethfeludduvdfhffeuvdffudevgeehke
-    egieffveehgeeftefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:puPBYG2lvVJlbkqWJV-UJ9vbc3V8jdN9r7rm1IXwGYW-8KtQH05ASg>
-    <xmx:puPBYMEhH-DERttWqIZe3P0gl_s6dYWjidWIXHsvWf79rsxbsLKdrw>
-    <xmx:puPBYH9hZ2K9zTjDDwleNARCz25DoYgVmik1fmW77Z2SN2Z9SpfwEw>
-    <xmx:puPBYKXv0Wz-Zjxi2H81HdSOEsEumRk85e_FaBgRlmFW1TJ0RQC50EMzKd4>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 10 Jun 2021 06:04:21 -0400 (EDT)
-Date:   Thu, 10 Jun 2021 12:04:18 +0200
-From:   Greg KH <greg@kroah.com>
-To:     torvic9@mailbox.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH] x86/Makefile: make -stack-alignment conditional on LLD <
- 13.0.0
-Message-ID: <YMHjomyjH/RwrHKQ@kroah.com>
-References: <214134496.67043.1623317284090@office.mailbox.org>
+        Thu, 10 Jun 2021 06:06:52 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357C7C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 03:04:49 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id i6so25299496ybm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 03:04:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y1t1gThwqk4P3CmoGImUqahvI/YhwYgwDOhTQsQgvaA=;
+        b=Fo5PxKwzHWbMPPS1iiWO2GC+MRsiSG+6qXKY/mJ/8+7ab/qIWgpJGQVg99FSMR59zt
+         L+z+SMHv4atQvkUU+725zAvAEtaDTy9Yh0HZGmPZkqEve5SDUZFOBscTmtgsyMenyG8S
+         IAi76+d89mduQPDfXVeeIyAVTDccEEn+imq2ABlI57gwY5WGv1pXTZaqp/BRpHisTPPS
+         GfaHjkwECD96YVgA8t1W0kmiioSEfBzKDGXtbuEV7jmAInCnH7zyVxf0GHB8pyzJZZiO
+         4EAZOM+pokM+kdAIbQR6JsQkllDWaMu7mFrz1GoNVlfNvBL4u4BlbvA7PYQ6pp0ynTax
+         zLNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y1t1gThwqk4P3CmoGImUqahvI/YhwYgwDOhTQsQgvaA=;
+        b=uABhrPZGpGpSAM2fHaODTftAdE2yfiNeKtA6tFxB7E2tQpBhHyB/eAqgrRoep4gAUF
+         LArc/kkAO133FbugkaQD7S6Q4tMahYO29nb3Wk4InqyiUHO8UtrSkso0c+TIHmZe8Sqe
+         4Ijn1+KQp34QGvG56yjqNlqGk3QLX0kHRFM7VWFycjqsMfr832zHcun1G3mXVp7lhAvW
+         YwC8gJ0O30LsV8cGX61I/TWa9yBfTKIokLJq/J7tVdBdzdRdv5DbdhDjJjo4ptsQ0Zt6
+         33padCrbJvxSHPS0Evr2dGeRmoACQhi/ImmrZOCANozmRHmH7LVVZptAW+0qngEeAQ7o
+         Ma2g==
+X-Gm-Message-State: AOAM531D1kk5eUrLT+Qt7o8WiujiDQ+46PY0Iz6BNwH44eItgVfkmD2N
+        8chv5z6qb+JUxiKgV6MZkjyx5A7tQITK/Yosc0jowA==
+X-Google-Smtp-Source: ABdhPJw8FlL5flBN8UKGv2Ytl7fRld47EDaX0RjIibn23UBr+CVj3m34UcaHSCn4L0eFgSgFRwvJl6oK4wC2nEgDyQ4=
+X-Received: by 2002:a05:6902:4b2:: with SMTP id r18mr6636440ybs.446.1623319488149;
+ Thu, 10 Jun 2021 03:04:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <214134496.67043.1623317284090@office.mailbox.org>
+References: <1623058534-78782-1-git-send-email-chengshuyi@linux.alibaba.com>
+ <CANn89iLNf+73MsPH7O7wX3PrN26FVLcjw_SmsN6jNwnjrYg4KQ@mail.gmail.com>
+ <0e938649-986d-ce79-e3c4-1f29bdcb64e0@linux.alibaba.com> <CANn89iKnT5Ebk5vovFJKHY4Fe7ERkN3ak_Nkqyc=vXL=VWvyPg@mail.gmail.com>
+ <258e3c94-f479-509c-a4b0-5a881779dd14@linux.alibaba.com>
+In-Reply-To: <258e3c94-f479-509c-a4b0-5a881779dd14@linux.alibaba.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 10 Jun 2021 12:04:37 +0200
+Message-ID: <CANn89iL8bkiJdDH110U5uD4mSJM7v9fU8xFa9BXAu4wCf+y13Q@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: tcp: Updating MSS, when the sending window
+ is smaller than MSS.
+To:     Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Mao Wenan <wenan.mao@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 11:28:04AM +0200, torvic9@mailbox.org wrote:
-> Since LLVM commit 3787ee4, the '-stack-alignment' flag has been dropped [1],
-> leading to the following error message when building a LTO kernel with
-> Clang-13 and LLD-13:
-> 
->     ld.lld: error: -plugin-opt=-: ld.lld: Unknown command line argument 
->     '-stack-alignment=8'.  Try 'ld.lld --help'
->     ld.lld: Did you mean '--stackrealign=8'?
-> 
-> It also appears that the '-code-model' flag is not necessary anymore starting
-> with LLVM-9 [2].
-> 
-> Drop '-code-model' and make '-stack-alignment' conditional on LLD < 13.0.0.
-> 
-> This is for linux-stable 5.12.
-> Another patch will be submitted for 5.13 shortly (unless there are objections).
+On Thu, Jun 10, 2021 at 8:00 AM Shuyi Cheng
+<chengshuyi@linux.alibaba.com> wrote:
 
+> Thank you very much for your reply!
+>
+> Maybe it's not clear enough that I described it. The scenario where the
+> above problem occurs is precisely because the tcp server sets the size
+> of RCVBUFF to be smaller after the connection is established. Here is a
+> sample code that caused the problem.
+>
+> # default tcp_rmem is 87380
 
-<formletter>
+Except that this value is overridden at connection establishment.
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+tcp_rmem[1] is only a floor value, say if you want a reasonable value
+even if MSS == 100
 
-</formletter>
+> tcpServerSocket= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+> tcpServerSocket.bind(server_addr)
+> tcpServerSocket.listen()
+> while True:
+>      connection,client_addr = tcpServerSocket.accept()
+>      # Shrink rmem
+>      connection.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 16*1024)
+>
+> Therefore, when the developer calls the sock_setsockopt function to
+> reset RCVBUF, we can use sock to determine the TCP state. When in the
+> connected state, it is not allowed to set RCVBUF smaller than mss.
+>
+
+Sure, but the application can _also_ set SO_RCVBUF before listen() or connect()
+
+We can not have assumptions about SO_RCVBUF values and socket states.
+Otherwise we would have to add some sk_rcvbuf adjustments every time
+the socket state is changed.
