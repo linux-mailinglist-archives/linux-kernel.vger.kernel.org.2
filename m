@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DEF3A2595
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB57C3A2584
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhFJHhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbhFJHhw (ORCPT
+        id S230120AbhFJHeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:34:14 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3933 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230117AbhFJHeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:37:52 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BA7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:35:56 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0cf6009da33271b50981fe.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:f600:9da3:3271:b509:81fe])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 788D51EC05B0;
-        Thu, 10 Jun 2021 09:35:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623310555;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=d1f5FabAps5EXKGAcxmRXWc+4yZjb0sbpXrvuTAR54o=;
-        b=GU3TrUtENkomGTUjovlUNoxbtpUSDk4XFoecTM+Y/gUNUemzP5gl/gq8zDYhcHG411Kkgg
-        jDCGKRHKFSVtZY/H6lMFWl68q1NeH9CIsYoV0t/Hvv04ba+E10cKkU+EdmdGwpv7shGtLf
-        CTDFIG5vhBW5bve671F2+TvHpZZhe6Q=
-Date:   Thu, 10 Jun 2021 09:35:48 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com, jroedel@suse.de, trix@redhat.com,
-        brijesh.singh@amd.com, rostedt@goodmis.org,
-        ying-tsun.huang@amd.com, linux-kernel@vger.kernel.org,
-        weiyongjun1@huawei.com, yuehaibing@huawei.com,
-        yangjihong1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH -next] x86/mm/mtrr: fix doc warnings in generic.c
-Message-ID: <YMHA1IFHVPHfNC2D@zn.tnic>
-References: <20210605064821.694432-1-libaokun1@huawei.com>
+        Thu, 10 Jun 2021 03:34:12 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0wZt3887z6xCk;
+        Thu, 10 Jun 2021 15:29:10 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 15:32:14 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
+ 2021 15:32:14 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <radhey.shyam.pandey@xilinx.com>
+Subject: [PATCH net-next] net: axienet: Use devm_platform_get_and_ioremap_resource()
+Date:   Thu, 10 Jun 2021 15:36:22 +0800
+Message-ID: <20210610073622.4078361-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210605064821.694432-1-libaokun1@huawei.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 02:48:21PM +0800, Baokun Li wrote:
-> @@ -104,7 +104,8 @@ static int check_type_overlap(u8 *prev, u8 *curr)
->  
->  /**
->   * mtrr_type_lookup_fixed - look up memory type in MTRR fixed entries
-> - *
-> + * @start: Start addaress.
+Use devm_platform_get_and_ioremap_resource() to simplify
+code.
 
-addaress?
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/net/ethernet/xilinx/xilinx_axienet_main.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Spellchecker?
-
-> + * @end: End address.
->   * Return the MTRR fixed memory type of 'start'.
->   *
->   * MTRR fixed entries are divided into the following ways:
-> @@ -143,7 +144,11 @@ static u8 mtrr_type_lookup_fixed(u64 start, u64 end)
->  
->  /**
->   * mtrr_type_lookup_variable - look up memory type in MTRR variable entries
-> - *
-> + * @start: Start addaress.
-
-addaress?
-
-Spellchecker?
-
-> + * @end: End address.
-> + * @partial_end: Partial end address.
-> + * @repeat: Memory is repeat or not.
-> + * @uniform: Memory is uniform or not.
-
-Did you actually read that whole comment to see that maybe "repeat" and
-"uniform" are explained a bit further down or are you blindly "fixing"
-warnings just so that the tool shuts up?
-
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+index e29ad9a86a3c..13cd799541aa 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+@@ -1894,8 +1894,7 @@ static int axienet_probe(struct platform_device *pdev)
+ 		goto cleanup_clk;
+ 
+ 	/* Map device registers */
+-	ethres = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	lp->regs = devm_ioremap_resource(&pdev->dev, ethres);
++	lp->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &ethres);
+ 	if (IS_ERR(lp->regs)) {
+ 		ret = PTR_ERR(lp->regs);
+ 		goto cleanup_clk;
+@@ -2010,9 +2009,7 @@ static int axienet_probe(struct platform_device *pdev)
+ 		lp->eth_irq = platform_get_irq_optional(pdev, 0);
+ 	} else {
+ 		/* Check for these resources directly on the Ethernet node. */
+-		struct resource *res = platform_get_resource(pdev,
+-							     IORESOURCE_MEM, 1);
+-		lp->dma_regs = devm_ioremap_resource(&pdev->dev, res);
++		lp->dma_regs = devm_platform_get_and_ioremap_resource(pdev, 1, NULL);
+ 		lp->rx_irq = platform_get_irq(pdev, 1);
+ 		lp->tx_irq = platform_get_irq(pdev, 0);
+ 		lp->eth_irq = platform_get_irq_optional(pdev, 2);
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
