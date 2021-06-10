@@ -2,150 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8133A2FFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F5C3A3002
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhFJQBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:01:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:35418 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230247AbhFJQBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:01:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1ABAED1;
-        Thu, 10 Jun 2021 08:59:42 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.7.234])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E6473F719;
-        Thu, 10 Jun 2021 08:59:40 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 16:59:30 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        valentin.schneider@arm.com, kernel-team@android.com
-Subject: Re: [PATCH] irqchip/gic-v3: Workaround inconsistent PMR setting on
- NMI entry
-Message-ID: <20210610155917.GA63335@C02TD0UTHF1T.local>
-References: <20210610145731.1350460-1-maz@kernel.org>
+        id S230217AbhFJQC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:02:28 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:44295 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhFJQC1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 12:02:27 -0400
+Received: from [192.168.1.155] ([95.115.39.199]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MuDPh-1l4MO33oXV-00uYtt; Thu, 10 Jun 2021 18:00:23 +0200
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <82bdf2e6-35fb-74e8-1b2c-198fe8d528e6@metux.net>
+Date:   Thu, 10 Jun 2021 18:00:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610145731.1350460-1-maz@kernel.org>
+In-Reply-To: <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:KQsiXSBnL3Xwtzh+4csb7zDCBty4K8v8NkMMz18y2IgJxDpNr5Y
+ CrCUFSbcYjjTQ5O21EC7wncPD4V+Gk6ezpYjgVNL9/GfLyBGPjPgnkXjpXfg7/s51ztQj+7
+ pFW9cNiVl/uYL2WzCges8+QrQCn47OK5jsGlrL9xl8jnLMLVaexqcraEC5OcyrsDvL64Yu4
+ tvhi+Zn62xFEIV+m3UjKA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:16ZCoke447c=:LBGHWn9Vn6ARMF7jtXetBG
+ rzMAW5C+Q7RmicndoG9vv77U7RlNn0FxWoYH8+AMP5xE83oxq7wGVOkkHP9bQRAEGIhGjb4YS
+ fyr029xkSMxaUHvCiwM+941JVgC5g98zZbLUE6NaV1b1JkePkrJY82CdHUvvy3FxMFBurTQHr
+ 4dAoKQFZN+OjBx234+uU2YrZcclQ9EWrLWVSE2FjkuDJ1PFBakQJDZ8fLZFZ37zl71px+S/Q3
+ LG4/7SKCmKOlNCTm2ss/r7OLEFXofAJ2J9bi4dft/VpcyoISQC9qudw4kJv8fEjiTpQTMxxSw
+ Alos9axtXZa080xASTQGT7KkgPMafcuTLiSyVm1yFd6EDsFI5mZI9eyk6O2YJceftZr4dGdGl
+ d9R4eoNBgAbgEfwXMrIbTYCseX6rZOcTrTN+Yp81605SYBw6mPisuaOppWZtEUiaCNCFZD0fF
+ cixXsh9fuKHLs+llJ4OB5QRpjJl+JuuCsvoUp85pTkkCBQoWN1xK/pHIDBdGad6JIy609WflN
+ +NPQwd0bQFWnpP4bvEfJi0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On 10.06.21 15:22, Arnd Bergmann wrote:
 
-On Thu, Jun 10, 2021 at 03:57:31PM +0100, Marc Zyngier wrote:
-> The arm64 entry code suffers from an annoying issue on taking
-> a NMI, as it sets PMR to a value that actually allows IRQs
-> to be acknowledged. This is done for consistency with other parts
-> of the code, and is in the process of being fixed. This shouldn't
-> be a problem, as we are not enabling interrupts whilst in NMI
-> context.
-> 
-> However, in the infortunate scenario that we took a spurious NMI
-> (retired before the read of IAR) *and* that there is an IRQ pending
-> at the same time, we'll ack the IRQ in NMI context. Too bad.
-> 
-> In order to avoid deadlocks while running something like perf,
-> teach the GICv3 driver about this situation: if we were in
-> a context where no interrupt should have fired, transiently
-> set PMR to a value that only allows NMIs before acking the pending
-> interrupt, and restore the original value after that.
-> 
-> This papers over the core issue for the time being, and makes
-> NMIs great again. Sort of.
-> 
-> Co-developed-by: Mark Rutland <mark.rutland@arm.com>
+> Can you give an example of how this would be hooked up to other drivers
+> using those gpios. Can you give an example of how using the "gpio-keys" or
+> "gpio-leds" drivers in combination with virtio-gpio looks like in the DT?
 
-According to the kernel documentation, a Co-developed-by should be
-immediately followed by that developer's Signed-off-by, so FWIW:
+Connecting between self-probing bus'es and DT is generally tricky. IMHO
+we don't have any generic mechanism for that.
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+I've made a few attempts, but nothing practically useful, which would be
+accepted by the corresponding maintainers, yet. We'd either need some
+very special logic in DT probing or pseudo-bus'es for the mapping.
+(DT wants to do those connections via phandle's, which in turn need the
+referenced nodes to be present in the DT).
 
-... unless you want to downgrade that to a Suggested-by, which is also
-fine by me!
+>  From what I can tell, both the mmio and pci variants of virtio can have their
+> dev->of_node populated, but I don't see the logic in register_virtio_device()
+> that looks up the of_node of the virtio_device that the of_gpio code then
+> tries to refer to.
 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+Have you ever successfully bound a virtio device via DT ?
 
-Having played about with a few options, I think this is the
-simplest/cleanest thing we can do for now, and given it's all in one
-place and "obviously correct", I think there's little risk that this
-will break something else. So:
 
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+--mtx
 
-We should probably also give this:
-
-Fixes: 4d6a38da8e79e94c ("arm64: entry: always set GIC_PRIO_PSR_I_SET during entry")
-
-... since prior to that commit the `gic_prio_irq_setup` gunk would
-prevent this specific problem (though other bits like
-local_daif_{save,restore}()) would be broken in NMI paths.
-
-Thanks,
-Mark.
-
-> ---
->  drivers/irqchip/irq-gic-v3.c | 36 +++++++++++++++++++++++++++++++++++-
->  1 file changed, 35 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> index 37a23aa6de37..3d3502efb807 100644
-> --- a/drivers/irqchip/irq-gic-v3.c
-> +++ b/drivers/irqchip/irq-gic-v3.c
-> @@ -642,11 +642,45 @@ static inline void gic_handle_nmi(u32 irqnr, struct pt_regs *regs)
->  		nmi_exit();
->  }
->  
-> +static u32 do_read_iar(struct pt_regs *regs)
-> +{
-> +	u32 iar;
-> +
-> +	if (gic_supports_nmi() && unlikely(!interrupts_enabled(regs))) {
-> +		u64 pmr;
-> +
-> +		/*
-> +		 * We were in a context with interrupt disabled. However,
-> +		 * the entry code has set PMR to a value that allows any
-> +		 * interrupt to be acknowledged, and not just NMIs. This can
-> +		 * lead to surprising effects if the NMI has been retired in
-> +		 * the meantime, and that there is an IRQ pending. The IRQ
-> +		 * would then be taken in NMI context, something that nobody
-> +		 * wants to debug a second time.
-> +		 *
-> +		 * Until we sort this, drop PMR again to a level that will
-> +		 * actually only allow NMIs before reading IAR, and then
-> +		 * restore it to what it was.
-> +		 */
-> +		pmr = gic_read_pmr();
-> +		gic_pmr_mask_irqs();
-> +		isb();
-> +
-> +		iar = gic_read_iar();
-> +
-> +		gic_write_pmr(pmr);
-> +	} else {
-> +		iar = gic_read_iar();
-> +	}
-> +
-> +	return iar;
-> +}
-> +
->  static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
->  {
->  	u32 irqnr;
->  
-> -	irqnr = gic_read_iar();
-> +	irqnr = do_read_iar(regs);
->  
->  	/* Check for special IDs first */
->  	if ((irqnr >= 1020 && irqnr <= 1023))
-> -- 
-> 2.30.2
-> 
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
