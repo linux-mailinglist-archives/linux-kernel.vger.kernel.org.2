@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA053A2F4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D813A2F5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbhFJPa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:30:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:34570 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231423AbhFJPa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:30:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 51706106F;
-        Thu, 10 Jun 2021 08:29:01 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3449F3F719;
-        Thu, 10 Jun 2021 08:29:00 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 16:28:57 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Beata Michalska <beata.michalska@arm.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: iowait boost is broken
-Message-ID: <20210610152857.lqtu2xl3364l6fyh@e107158-lin.cambridge.arm.com>
-References: <CAEXW_YTcO=hbmdq3nOx2RJfT2yPyoFnQx5niB38R2Lzpsp38bA@mail.gmail.com>
- <20210607191031.GA12489@e120325.cambridge.arm.com>
- <YL+tDv/EL5ogf/0w@hirez.programming.kicks-ass.net>
- <YMCOyL8eiu9UpnEz@google.com>
+        id S231676AbhFJPck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:32:40 -0400
+Received: from mail-wm1-f51.google.com ([209.85.128.51]:42697 "EHLO
+        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231374AbhFJPcg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 11:32:36 -0400
+Received: by mail-wm1-f51.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso6692733wms.1;
+        Thu, 10 Jun 2021 08:30:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oaRjenhc1WwiDGK8u6oFfetNiLL2rVHkSL9XAdr5Dbw=;
+        b=mEqyHv3MzfHQY3IEH7s9P82X1gstWrwozu0jwlEbye2p47KkY8Z7Ansypatb3ZQaQr
+         et+BAW0A0lOLVnBOw8NAC58S/IUpzAMdiHgItE2Qly7Qf04OhnBUn7jzLckO7cd3h+HP
+         99IK1H6JTJn732RAxP6LmOjxCLzvEQ0ui0JQzLc+lwfi8Nwp1zRhMKrf27Grz3pRImQX
+         NE8LeM+s2KqT2GlkuQMVynZc8RaZ6Kta3dksuzPNVAm7/zGD1oxpVMJO9eKpPoUT/M8K
+         BxGoVpd0w5tUp2GSNrOW6pzL2SOBMcW6Y77qAsMVcOD67kVHHaUqUu5K5BunQq6CCuyw
+         XOoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oaRjenhc1WwiDGK8u6oFfetNiLL2rVHkSL9XAdr5Dbw=;
+        b=uak3ZCDPegpCRUfh/vB/t29fMpkuPBs87dGxa+sHdCe4SrA7HU0jJnVHH+oPnMmKdT
+         EP+o69QXaYsNKvdN3/ddeNdRzm/vS8zEz6Ycg2ewBqe3N2w2FosP0Bnsp53/1q7wADVA
+         9aN5ogLBsOGflAyMLFPYvc+MoU9aQQh9+G5wCD9oynYeBx/NLeOhc+ftvpuFi2Qouj/x
+         JCVnHsLo0208JlTTW53nhPQ9tKeHiVjIQ/fUj8JZ+i5UF2CyezKtXf/4FwqviqOhMFq7
+         WakcJUiN3okxdUnHxOz8L8oyqKy5OCx3l+uBTwJdVEbpI250ETL7icOzET+jphKU5q6O
+         /fyQ==
+X-Gm-Message-State: AOAM530wDmbrCBCUQAM6fsbefENsoz44o1mjBnfdTpRFqyfTP31PYtjA
+        X7PBJeh8Qxi+HgXqGMuihts=
+X-Google-Smtp-Source: ABdhPJxKAGPcfo/suMMBuNxkPEEps4X4SvaC2vR2JcINz7wzqUUgEOPjX8FGdrDDODkZ7MECDlmrvg==
+X-Received: by 2002:a1c:f30a:: with SMTP id q10mr5650158wmq.138.1623338967558;
+        Thu, 10 Jun 2021 08:29:27 -0700 (PDT)
+Received: from localhost.localdomain (190.1.93.209.dyn.plus.net. [209.93.1.190])
+        by smtp.gmail.com with ESMTPSA id b22sm3309802wmj.22.2021.06.10.08.29.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Jun 2021 08:29:27 -0700 (PDT)
+From:   Dhiraj Shah <find.dhiraj@gmail.com>
+Cc:     find.dhiraj@gmail.com, "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shachar Raindel <shacharr@microsoft.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] function mana_hwc_create_wq leaks memory
+Date:   Thu, 10 Jun 2021 16:29:17 +0100
+Message-Id: <20210610152925.18145-1-find.dhiraj@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YMCOyL8eiu9UpnEz@google.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/09/21 09:50, Quentin Perret wrote:
-> On Tuesday 08 Jun 2021 at 19:46:54 (+0200), Peter Zijlstra wrote:
-> > On Mon, Jun 07, 2021 at 08:10:32PM +0100, Beata Michalska wrote:
-> > > So back to the expectations.
-> > > The main problem, as I see it, is what do we actually want to achieve with
-> > > the I/O boosting? Is it supposed to compensate the time lost while waiting
-> > > for the I/O request to be completed or is is supposed to optimize the rate
-> > > at which I/O requests are being made. 
-> > 
-> > The latter, you want to increase the race of submission.
-> > 
-> > > Do we want to boost I/O bound tasks by
-> > > default, no limits applied  or should we care about balancing performance
-> > > vs power ? And unless those expectations are clearly stated, we might not
-> > > get too far with any changes, really.
-> > 
-> > You want to not increase power beyond what is needed to match the rate
-> > of processing I suppose.
-> 
-> Note that in some cases we also don't care about throughput, and would
-> prefer to keep the frequency for some unimportant IO bound tasks (e.g.
-> background logging deamons and such). Uclamp.max indicates this to some
-> extent.
+memory space allocated for the queue in function
+mana_gd_create_hwc_queue is not freed during error condition.
 
-In theory, one can have a user space daemon that monitors IO (via BPF?) and
-auto boost via uclamp. You can have allow/disallow list per-app too to setup
-the limits.
+Signed-off-by: Dhiraj Shah <find.dhiraj@gmail.com>
+---
+ drivers/net/ethernet/microsoft/mana/hw_channel.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-So I say rm -rf iowait_boost and let's make it a user space problem :)
+diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+index 1a923fd99990..4aa4bda518fb 100644
+--- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
++++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+@@ -501,8 +501,10 @@ static int mana_hwc_create_wq(struct hw_channel_context *hwc,
+ 	*hwc_wq_ptr = hwc_wq;
+ 	return 0;
+ out:
+-	if (err)
++	if (err) {
++		kfree(queue);
+ 		mana_hwc_destroy_wq(hwc, hwc_wq);
++	}
+ 	return err;
+ }
+ 
+-- 
+2.30.1 (Apple Git-130)
 
-/me runs
-
---
-Qais Yousef
