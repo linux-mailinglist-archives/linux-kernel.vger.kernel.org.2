@@ -2,179 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B333A289B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C773A2896
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhFJJpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:45:00 -0400
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:39537 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhFJJo7 (ORCPT
+        id S230205AbhFJJnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:43:41 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3193 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhFJJni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:44:59 -0400
-Received: by mail-lj1-f179.google.com with SMTP id c11so3952388ljd.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:42:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IFMZ6hn0kBDDsWPrF5liecdZCHWos+7s4vNp0cU0WbY=;
-        b=nnbRmysLjM19RlYoarApxmIzyRFKTDudbr4x0aDJ/3oPZmwfDLOTi6tcrYVAXic6p8
-         QLUckwThgZy43B/xWRvybVeDrFIPDOv+wPR8iDYuDl12STDIi1h/SnJXESCaFCZIxqqf
-         koTjxzSqfhWjxKfWI7wk+Xd6v1QywOnFJgBUREU2kZq6qOSsocdU2EzjmvS8N2FcqyEz
-         7a94BH6azYi1YWLCj6fqw7p1/FOdYf5bPQ+NuSCHLFXf+svgvm6P3siLi8GD07ng/ftV
-         tarwBZJZ0wm5SWK/+sc4jY+cZWb8cZbgAGF1f0j73nwhKfWmq3ZUpBgnXD1BNG47tJx6
-         cQOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IFMZ6hn0kBDDsWPrF5liecdZCHWos+7s4vNp0cU0WbY=;
-        b=CUg/p+MDy0OqPt87Zn2+tq1+vy2E/eDoPsTm5u1INcNPmuz/+15xdcWOvOTBWC0e0E
-         gnJno+rVKoK3ZXMvFGF2r+Z1Xrquha3d4/eckcdMWIhk/RmvfK/Yko7/nW0Ri4f04e+k
-         y/rub9+uwfezDNkXTy3VNr8CJokgxwQ3PsdkfzLcUoEEQGcl5sHPmCxRflBo+1e3p36p
-         Xk7Ds6zQN12fp+lpDNRD7IAX0u+c4X5A50bEUlNruWUILaGbqb0UonDkAy6stnwOiYGn
-         TZgmLT9zjSznxr6KZkvaGeZ74EYzourm9hGcSyASR6VxGOP5k+79EgrGK98dgiSAjPse
-         jI0Q==
-X-Gm-Message-State: AOAM531UUf8ihkrzeXJyKAnoogk1de8Ko+uMUHPaOzDLEGZZBRy9u2lg
-        uwl5snZ/LdwAmbAiSKxeI3w3tXqTDbXWPy/dFmaTrA==
-X-Google-Smtp-Source: ABdhPJwFSXfqZYGxfXQ63mnzlge8gM8A+eCSch5sM4plDBY0DX/qgHy+3OFFLPXofCxHlFLkmbA4FPIq10uiTZSboZU=
-X-Received: by 2002:a2e:b5b0:: with SMTP id f16mr1493765ljn.221.1623318106290;
- Thu, 10 Jun 2021 02:41:46 -0700 (PDT)
+        Thu, 10 Jun 2021 05:43:38 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G0zDy6VvHz6M4Xm;
+        Thu, 10 Jun 2021 17:28:50 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 11:41:40 +0200
+Received: from localhost (10.52.126.112) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
+ 2021 10:41:39 +0100
+Date:   Thu, 10 Jun 2021 10:41:36 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Chris Lesiak <chris.lesiak@licor.com>
+CC:     Jonathan Cameron <jic23@kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: humidity: hdc100x: Add margin to the conversion
+ time
+Message-ID: <20210610104136.00002e4e@Huawei.com>
+In-Reply-To: <20210609193748.1709308-1-chris.lesiak@licor.com>
+References: <20210609193748.1709308-1-chris.lesiak@licor.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20210604080954.13915-1-lukasz.luba@arm.com> <20210604080954.13915-2-lukasz.luba@arm.com>
- <CAKfTPtA0j-hgXC2_LUcbRcWLkLsAB6H_EYewEHJJW+3dVu_hLQ@mail.gmail.com>
- <b01020e5-9f52-87aa-30e3-284e8f86a9df@arm.com> <CAKfTPtCA0svSBp=GG2XjLFqAdNY1FRFmsWNNOVADZf_CVqyORw@mail.gmail.com>
- <8f4156a7-46ca-361d-bcb7-1cbdc860ef37@arm.com>
-In-Reply-To: <8f4156a7-46ca-361d-bcb7-1cbdc860ef37@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 10 Jun 2021 11:41:35 +0200
-Message-ID: <CAKfTPtACEmidJgzU2JqCSG_D9KNkMicnYiV7+GUL+f6u+2o8Bw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] sched/fair: Take thermal pressure into account
- while estimating energy
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Quentin Perret <qperret@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Beata Michalska <Beata.Michalska@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.126.112]
+X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 at 11:36, Lukasz Luba <lukasz.luba@arm.com> wrote:
->
->
->
-> On 6/10/21 10:11 AM, Vincent Guittot wrote:
-> > On Thu, 10 Jun 2021 at 10:42, Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >>
-> >>
-> >>
-> >> On 6/10/21 8:59 AM, Vincent Guittot wrote:
-> >>> On Fri, 4 Jun 2021 at 10:10, Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >>>>
-> >>>> Energy Aware Scheduling (EAS) needs to be able to predict the frequency
-> >>>> requests made by the SchedUtil governor to properly estimate energy used
-> >>>> in the future. It has to take into account CPUs utilization and forecast
-> >>>> Performance Domain (PD) frequency. There is a corner case when the max
-> >>>> allowed frequency might be reduced due to thermal. SchedUtil is aware of
-> >>>> that reduced frequency, so it should be taken into account also in EAS
-> >>>> estimations.
-> >>>>
-> >>>> SchedUtil, as a CPUFreq governor, knows the maximum allowed frequency of
-> >>>> a CPU, thanks to cpufreq_driver_resolve_freq() and internal clamping
-> >>>> to 'policy::max'. SchedUtil is responsible to respect that upper limit
-> >>>> while setting the frequency through CPUFreq drivers. This effective
-> >>>> frequency is stored internally in 'sugov_policy::next_freq' and EAS has
-> >>>> to predict that value.
-> >>>>
-> >>>> In the existing code the raw value of arch_scale_cpu_capacity() is used
-> >>>> for clamping the returned CPU utilization from effective_cpu_util().
-> >>>> This patch fixes issue with too big single CPU utilization, by introducing
-> >>>> clamping to the allowed CPU capacity. The allowed CPU capacity is a CPU
-> >>>> capacity reduced by thermal pressure signal. We rely on this load avg
-> >>>> geometric series in similar way as other mechanisms in the scheduler.
-> >>>>
-> >>>> Thanks to knowledge about allowed CPU capacity, we don't get too big value
-> >>>> for a single CPU utilization, which is then added to the util sum. The
-> >>>> util sum is used as a source of information for estimating whole PD energy.
-> >>>> To avoid wrong energy estimation in EAS (due to capped frequency), make
-> >>>> sure that the calculation of util sum is aware of allowed CPU capacity.
-> >>>>
-> >>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> >>>> ---
-> >>>>    kernel/sched/fair.c | 17 ++++++++++++++---
-> >>>>    1 file changed, 14 insertions(+), 3 deletions(-)
-> >>>>
-> >>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> >>>> index 161b92aa1c79..1aeddecabc20 100644
-> >>>> --- a/kernel/sched/fair.c
-> >>>> +++ b/kernel/sched/fair.c
-> >>>> @@ -6527,6 +6527,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
-> >>>>           struct cpumask *pd_mask = perf_domain_span(pd);
-> >>>>           unsigned long cpu_cap = arch_scale_cpu_capacity(cpumask_first(pd_mask));
-> >>>>           unsigned long max_util = 0, sum_util = 0;
-> >>>> +       unsigned long _cpu_cap = cpu_cap;
-> >>>>           int cpu;
-> >>>>
-> >>>>           /*
-> >>>> @@ -6558,14 +6559,24 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
-> >>>>                                   cpu_util_next(cpu, p, -1) + task_util_est(p);
-> >>>>                   }
-> >>>>
-> >>>> +               /*
-> >>>> +                * Take the thermal pressure from non-idle CPUs. They have
-> >>>> +                * most up-to-date information. For idle CPUs thermal pressure
-> >>>> +                * signal is not updated so often.
-> >>>
-> >>> What do you mean by "not updated so often" ? Do you have a value ?
-> >>>
-> >>> Thermal pressure is updated at the same rate as other PELT values of
-> >>> an idle CPU. Why is it a problem there ?
-> >>>
-> >>
-> >>
-> >> For idle CPU the value is updated 'remotely' by some other CPU
-> >> running nohz_idle_balance(). That goes into
-> >> update_blocked_averages() if the flags and checks are OK inside
-> >> update_nohz_stats(). Sometimes this is not called
-> >> because other_have_blocked() returned false. It can happen for a long
-> >
-> > So i miss that you were in a loop and the below was called for each
-> > cpu and _cpu_cap was overwritten
-> >
-> > +               if (!idle_cpu(cpu))
-> > +                       _cpu_cap = cpu_cap - thermal_load_avg(cpu_rq(cpu));
-> >
-> > But that also means that if the 1st cpus of the pd are idle, they will
-> > use original capacity whereas the other ones will remove the thermal
-> > pressure. Isn't this a problem  ?  You don't use the same capacity for
-> > all cpus in the performance domain regarding the thermal pressure?
->
-> True, but in the experiments for idle CPUs I haven't
-> observed that they still have some big util (bigger than _cpu_cap).
-> It decayed already, so it's not a problem for idle CPUs.
+On Wed,  9 Jun 2021 14:37:48 -0500
+Chris Lesiak <chris.lesiak@licor.com> wrote:
 
-But it's a problem because there is a random behavior : some idle cpu
-will use original capacity whereas others will use the capped value
-set by non idle CPUs. You must have consistent behavior across all
-idle cpus.
+> The datasheets have the following note for the conversion time
+> specification: "This parameter is specified by design and/or
+> characterization and it is not tested in production."
+> 
+> Parts have been seen that require more time to do 14-bit conversions for
+> the relative humidity channel.  The result is ENXIO due to the address
+> phase of a transfer not getting an ACK.
+> 
+> Delay an additional 1 ms per conversion to allow for additional margin.
+> 
+> Signed-off-by: Chris Lesiak <chris.lesiak@licor.com>
 
-Then, if it's not a problem why adding the if (!idle_cpu(cpu))
+Hi Chris
 
->
-> Although, it might be my test case which didn't trigger something.
-> Is it worth to add the loop above this one, to be 100% sure and
-> get a thermal pressure signal from some running CPU?
-> Then apply the same value always inside the 2nd loop?
+Could you figure out a fixes tag for this one so we can get it backported
+into stable?
+
+If not I can probably guess when I catch up with applying patches.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/humidity/hdc100x.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/humidity/hdc100x.c b/drivers/iio/humidity/hdc100x.c
+> index 2a957f19048e..91790aa8beeb 100644
+> --- a/drivers/iio/humidity/hdc100x.c
+> +++ b/drivers/iio/humidity/hdc100x.c
+> @@ -166,7 +166,7 @@ static int hdc100x_get_measurement(struct hdc100x_data *data,
+>  				   struct iio_chan_spec const *chan)
+>  {
+>  	struct i2c_client *client = data->client;
+> -	int delay = data->adc_int_us[chan->address];
+> +	int delay = data->adc_int_us[chan->address] + 1000;
+>  	int ret;
+>  	__be16 val;
+>  
+> @@ -316,7 +316,7 @@ static irqreturn_t hdc100x_trigger_handler(int irq, void *p)
+>  	struct iio_dev *indio_dev = pf->indio_dev;
+>  	struct hdc100x_data *data = iio_priv(indio_dev);
+>  	struct i2c_client *client = data->client;
+> -	int delay = data->adc_int_us[0] + data->adc_int_us[1];
+> +	int delay = data->adc_int_us[0] + data->adc_int_us[1] + 2000;
+>  	int ret;
+>  
+>  	/* dual read starts at temp register */
+
