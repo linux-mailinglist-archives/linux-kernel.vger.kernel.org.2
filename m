@@ -2,138 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FCC3A2B12
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB0B3A2B07
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhFJMIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:08:52 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:46069 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbhFJMIo (ORCPT
+        id S230331AbhFJMHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:07:39 -0400
+Received: from smtprelay0164.hostedemail.com ([216.40.44.164]:60338 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230301AbhFJMHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:08:44 -0400
-Received: by mail-ot1-f42.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso14226948oto.12;
-        Thu, 10 Jun 2021 05:06:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n7jgvY2qmcoUNKWmM7+jxPH+b+Sh4qFDlgu1Os4TRlI=;
-        b=ljHhlO5xWyAGeYvV7C8NjGm7sv9TxbD9O2pSgHXSCws1Opl/DtnCHxhUhYtzEcCEbG
-         Vz3l7qJ3d20Ee2upLdYhV8uXYinKQX+igHOKhl7JhA9xoM0KMWuxiESqpGj31Wr1aCoj
-         EHuO7A+UnvBCJ1P4MOP6ZW6DpcoFzX5DAuhTXJ5j74uO9v6N0Qdusynzan4ly0Lv2DWx
-         dhYpu3thgqSjATMHGRk/DKzGvDa05v4o+UypSpYn5Amq1BK5GMfDQyOnbg6Bcy+VyJG4
-         JsBkYkzRU2IzYNWyBoNzUQF+7PIQ0wn21s5f49kOVp/9iiynT0Tk4e2v6TeiuyusMX0Z
-         076Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=n7jgvY2qmcoUNKWmM7+jxPH+b+Sh4qFDlgu1Os4TRlI=;
-        b=rCM9Y2Z5vCPt+fodWnshtDTH3LONd6b5lWQ1Je1I3tJukxuz2DT409f9OaUpneHyl/
-         ap7gRqWUVWMMFaLQ3hO7uedDu+1Gm6tpqHORq4OwxYytwh4LRnQDPTtXzDJJuyIxvU8X
-         cn803PnEe+Mye7J5FKsOn/uBYCD0xPvozkf6Q4M6izrsPogHdh5WTAIOP1E2Gsm1xx7v
-         IyhFKW0V8H09J+bR+Yg4xigP5oyW8ZE8eT66Fqszg968+i6CrumnvhcBB78aqij2w9ZW
-         75oGoSNEIe25IMGouGuvLtm6z5qpd7PG2/8i945Rq2jtBOPhyHYFswrEqlsBe6UAwxEr
-         zmOg==
-X-Gm-Message-State: AOAM533cicnPlRmYy9h0W+VUeWR4Cn5nVw50HlDDtMmm2qEp7WjaYB4u
-        Yt42lRXisSXpMSINGFP/Qk4=
-X-Google-Smtp-Source: ABdhPJxjnr/MsiG2dwCw9lwLV0UPm+EAcUQ5DSWNozu9qI2yaWVftJiC3lMeKsmFn8wcpArxJmRjKg==
-X-Received: by 2002:a05:6830:1002:: with SMTP id a2mr2077749otp.144.1623326734514;
-        Thu, 10 Jun 2021 05:05:34 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 5sm559675ots.67.2021.06.10.05.05.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 05:05:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 10 Jun 2021 05:05:31 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        David Brazdil <dbrazdil@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mikhail Petrov <Mikhail.Petrov@mir.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mfaltesek@google.com
-Subject: Re: [PATCH] kallsyms: fix nonconverging kallsyms table with lld
-Message-ID: <20210610120531.GA711216@roeck-us.net>
-References: <20210204152957.1288448-1-arnd@kernel.org>
- <20210609110531.GA1528247@roeck-us.net>
- <CAK8P3a2cVpJf+r2b-8YCbknOeOA4w=bY8njr-+vmzbmm8AAC3Q@mail.gmail.com>
- <20210609151608.GA3389541@roeck-us.net>
- <20210609191553.GA2535199@roeck-us.net>
- <CAK8P3a1kgc6+fSHr7ddMRHxh+znW6jL2ZSo=JLWa-Uuzw7UZ-w@mail.gmail.com>
+        Thu, 10 Jun 2021 08:07:38 -0400
+Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id D785D837F24D;
+        Thu, 10 Jun 2021 12:05:41 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id D2E5B13D97;
+        Thu, 10 Jun 2021 12:05:40 +0000 (UTC)
+Message-ID: <c8671b993095e58ca8f3f82cc69e2651666331c6.camel@perches.com>
+Subject: Re: [PATCH 1/1] lib: remove leading spaces before tabs
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Thu, 10 Jun 2021 05:05:39 -0700
+In-Reply-To: <YMHW80wUyFpW6Utf@smile.fi.intel.com>
+References: <20210608071430.12687-1-thunder.leizhen@huawei.com>
+         <CAHp75VfuMJ5kfRDB4tE2zr2Em79HiwrDJVROnw+kD3H+QNM4sg@mail.gmail.com>
+         <da4915c5-fa13-0cf2-f2d2-02779a64af1b@huawei.com>
+         <8a70d592e14f93822bf40832c7374d8e491c3afc.camel@perches.com>
+         <26ee1009-259d-07a6-495f-87557be9ed8a@huawei.com>
+         <3211e76c-d2a0-1e26-940b-9710073ee7d4@huawei.com>
+         <CAHp75VfQq=RkjyZQsc-PHLTLRCzXovm-D_Z+Pp3A6vWGA-GKug@mail.gmail.com>
+         <7e0f67a63b7093f4d20e0c0ccb076d9244e26a9a.camel@perches.com>
+         <YMHW80wUyFpW6Utf@smile.fi.intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1kgc6+fSHr7ddMRHxh+znW6jL2ZSo=JLWa-Uuzw7UZ-w@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.60
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: D2E5B13D97
+X-Stat-Signature: z3xsqei7c8kq88nousuibsybqqmswc4z
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+d4z/nAXJADwvBfwOEcNkpZUKMByUC0cc=
+X-HE-Tag: 1623326740-28987
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 10:30:23PM +0200, Arnd Bergmann wrote:
-> On Wed, Jun 9, 2021 at 9:15 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > On Wed, Jun 09, 2021 at 08:16:11AM -0700, Guenter Roeck wrote:
-> > > > I suppose we could improve the situation if scripts/link-vmlinux.sh was able
-> > > > to do that automatically, and compare the kallsyms output .S file between
-> > > > steps 1 and 2.
-> > >
-> > > Comparing the .S files doesn't result in useful data; turns out there are
-> > > always irrelevant differences. We'll try to run a diff on the output of
-> > > "objdump --syms". Hopefully that will generate something useful.
-> > >
-> >
-> > Turns out it wasn't that useful.
-> >
-> > chromeos-kernel-5_10-5.10.42-r406: Symbol file differences:
-> > chromeos-kernel-5_10-5.10.42-r406: 7c7
-> > chromeos-kernel-5_10-5.10.42-r406: < 00000000000325c8 g       .rodata   0000000000000000 kallsyms_relative_base
-> > chromeos-kernel-5_10-5.10.42-r406: ---
-> > chromeos-kernel-5_10-5.10.42-r406: > 00000000000325c0 g       .rodata   0000000000000000 kallsyms_relative_base
-> > chromeos-kernel-5_10-5.10.42-r406: 9,13c9,13
-> > chromeos-kernel-5_10-5.10.42-r406: < 00000000000325d0 g       .rodata   0000000000000000 kallsyms_num_syms
-> > chromeos-kernel-5_10-5.10.42-r406: < 00000000000325d8 g       .rodata   0000000000000000 kallsyms_names
-> > chromeos-kernel-5_10-5.10.42-r406: < 00000000000cd7f0 g       .rodata   0000000000000000 kallsyms_markers
-> > chromeos-kernel-5_10-5.10.42-r406: < 00000000000cdb18 g       .rodata   0000000000000000 kallsyms_token_table
-> > chromeos-kernel-5_10-5.10.42-r406: < 00000000000cde78 g       .rodata   0000000000000000 kallsyms_token_index
-> > chromeos-kernel-5_10-5.10.42-r406: ---
-> > chromeos-kernel-5_10-5.10.42-r406: > 00000000000325c8 g       .rodata   0000000000000000 kallsyms_num_syms
-> > chromeos-kernel-5_10-5.10.42-r406: > 00000000000325d0 g       .rodata   0000000000000000 kallsyms_names
-> > chromeos-kernel-5_10-5.10.42-r406: > 00000000000cd7d8 g       .rodata   0000000000000000 kallsyms_markers
-> > chromeos-kernel-5_10-5.10.42-r406: > 00000000000cdb00 g       .rodata   0000000000000000 kallsyms_token_table
-> > chromeos-kernel-5_10-5.10.42-r406: > 00000000000cde60 g       .rodata   0000000000000000 kallsyms_token_index
-> >
-> > I thought I'd see the added symbols, but it looks like the only difference
-> > between the two files is the addresses.
-> >
-> > What am I missing ?
-> 
-> I probably misremembered the part about 'objdump --syms' and there was
-> something more to it.
-> 
-> Maybe this was the last version before converging? It looks like the '<' version
-> has one extra symbol ompared to the '>' version. The diff has no context, but I
+On Thu, 2021-06-10 at 12:10 +0300, Andy Shevchenko wrote:
+> If you care about parallelism, the checkpatch should be doing it itself.
 
-It is the difference between step 1 and 2. Why would diff on objdump not
-show the additional symbol ? Is it possible that the symbol is not added
-to the object file ?
+ridiculous argument.  g'night...
 
-> assume the first symbol that has a different size is 'kallsyms_offsets', which
-> is generated by kallsyms.
 
-I'll give it another try and run diff -u.
 
-> 
-> I see that link-vmlinux.sh already compares the System.map files, using
-> "cmp -s System.map .tmp_System.map", which is roughly the same as the
-> objdump --syms diff you got, so comparing these files probably doesn't
-> help either. However, comparing the .tmp_System.map file with the previous
-> version might reveal the problem. This might need another step to filter out
-> the address and only compare the symbol names.
-
-I'll do that as well.
-
-Thanks!
-Guenter
