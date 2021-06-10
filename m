@@ -2,165 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7E63A31DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D66B3A31E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhFJRS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:18:29 -0400
-Received: from mail-pf1-f170.google.com ([209.85.210.170]:46659 "EHLO
-        mail-pf1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhFJRS1 (ORCPT
+        id S230406AbhFJRSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:18:47 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:59056 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229942AbhFJRSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:18:27 -0400
-Received: by mail-pf1-f170.google.com with SMTP id u126so2157703pfu.13;
-        Thu, 10 Jun 2021 10:16:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zkBxrdM96XkcLC7Mf6FMfniC4+3m8Q6iJkV6nmXxytY=;
-        b=AcB/C6G+8WoZbabAav7PghmOdMWuXEm3YhI/R2yOzSxNsxgoQcrJamUAP1APF7c53T
-         PrJeI8hH8sLpBDE9UpGJzqQVhCPYW0l85eCxUIJvXsUGi5ckq9IX6XHU9eWympPTI24h
-         J3fXBWvsiuX25aG8cPqIe1PdEkj4NTeAAdvLAMLWyzEb/w3TnxrR/soCiThlzaU2gKAh
-         afTajxDBJJZxv7THNwHiWK3EcgFLkofQ3RFegL8d7jADSos3mrhhyquiidrv0P6RFf2+
-         qXDkhcnna7Ntj5DPwyHl3XiYhzl6vgsl6vP+MhwlIdDyPiQDVxt7EpdqU9wcBOlJez4r
-         8pgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=zkBxrdM96XkcLC7Mf6FMfniC4+3m8Q6iJkV6nmXxytY=;
-        b=ez5gw0HPOYg279uSuE4tCvbUyPDP29RR0osP5nE0DTyjkX8uotcwUGJtE62a2ASAyS
-         Kcq5Ux6rKoWenvb+VScrUbrEPkUx1F/ljA86+IFFQ53ZR6ATT5/U8MvOepmO6NcQXOCr
-         pMK+ORl4uiYP55ccH8FGz2xL0thzeeq1nYxk4PWNTFi3B+/4APxit+iGGe42AvKn9Mvo
-         mSBFB1jFd38qGOBfG6+sR7pMPo0kkaPLEgNNfZT8ykhiB20HP5OoqLoj5ADGU77OM1ym
-         zTbBr6i8/4ZC2W5eTbh5ZgLSvkOqo2e0+fNeBoIJbS6U+3yNdzGxhLKkZKqELb82IY0R
-         yQfw==
-X-Gm-Message-State: AOAM5308F/3rZRZKxF+qH8A7h1k9Dgnza8b96w3D5w2a6zkD+XlnlAkh
-        fxA40ngBXVMEhvU7+SIH9lc=
-X-Google-Smtp-Source: ABdhPJw9goZ6PLKyK2T4kPEopP5L0GJG7/bVeN40thbAicNWSbhvAI6IqwgD1WlNHVClA8DYrwVnsQ==
-X-Received: by 2002:a63:1360:: with SMTP id 32mr5919655pgt.233.1623345321652;
-        Thu, 10 Jun 2021 10:15:21 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b21sm454939pgj.74.2021.06.10.10.15.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 10:15:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 10 Jun 2021 10:14:43 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        Erik Rosen <erik.rosen@metormote.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: hwmon: (pmbus) Add support for reading direct mode coefficients
-Message-ID: <20210610171443.GB3861769@roeck-us.net>
-References: <68276e1d-f262-d379-4600-88abdbecddd8@canonical.com>
+        Thu, 10 Jun 2021 13:18:45 -0400
+Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 9E24420B7188;
+        Thu, 10 Jun 2021 10:16:48 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9E24420B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623345408;
+        bh=QI9MxdMZ4JjR7zc8B0qW2kh7lEaVTJjZJKw3Xc8/UQ0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hYKpETYchAV79TiOrMuCXLIhfzGEeKQ98EXbpq1maqFIZeeQbaz4cgNwlwB8Od/f+
+         7DTdT5uoqH6Y2a40MMjVw4v+xqPY3EJUb5nSwnc8C7LigpG0YPgEnwKKR5x+GGmiiV
+         SY63En9FWjQIVgxetFCHejBBLPnBSCkwiu0T5tK8=
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+To:     zohar@linux.ibm.com, robh@kernel.org, bauerman@linux.ibm.com
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tusharsu@linux.microsoft.com
+Subject: [PATCH 1/2] ima: Fix warning: no previous prototype for function 'ima_add_kexec_buffer'
+Date:   Thu, 10 Jun 2021 10:15:52 -0700
+Message-Id: <20210610171553.3806-1-nramas@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68276e1d-f262-d379-4600-88abdbecddd8@canonical.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric,
+The function prototype for ima_add_kexec_buffer() is present
+in 'linux/ima.h'.  But this header file is not included in
+ima_kexec.c where the function is implemented.  This results
+in the following compiler warning when "-Wmissing-prototypes" flag
+is turned on:
 
-On Thu, Jun 10, 2021 at 05:55:40PM +0100, Colin Ian King wrote:
-> Hi,
-> 
-> Static analysis with Coverity on linux-next has detected a potential
-> issue in drivers/hwmon/pmbus/pmbus_core.c with the following commit:
-> 
-No need to send a patch - I fixed it up by pre-initializing ret.
+  security/integrity/ima/ima_kexec.c:81:6: warning: no previous prototype
+  for function 'ima_add_kexec_buffer' [-Wmissing-prototypes]
 
-Thanks,
-Guenter
+Include the header file 'linux/ima.h' in ima_kexec.c to fix
+the compiler warning.
 
-> commit 999d577d7c007d38ab83eee4532d107c2233f78f
-> Author: Erik Rosen <erik.rosen@metormote.com>
-> Date:   Wed Jun 9 11:32:06 2021 +0200
-> 
->     hwmon: (pmbus) Add support for reading direct mode coefficients
-> 
-> The analysis is as follows:
-> 
-> 2219 static int pmbus_init_coefficients(struct i2c_client *client,
-> 2220                                   struct pmbus_driver_info *info)
-> 2221 {
-> 
->     1. var_decl: Declaring variable ret without initializer.
-> 
-> 2222        int i, n, ret;
-> 2223        const struct pmbus_class_attr_map *map;
-> 2224        const struct pmbus_sensor_attr *attr;
-> 2225
-> 
->     2. Condition i < 6UL /* sizeof (class_attr_map) / sizeof
-> (class_attr_map[0]) + (int)sizeof (struct
-> pmbus_init_coefficients::[unnamed type]) */, taking true branch.
-> 
->     5. Condition i < 6UL /* sizeof (class_attr_map) / sizeof
-> (class_attr_map[0]) + (int)sizeof (struct
-> pmbus_init_coefficients::[unnamed type]) */, taking true branch.
-> 
->     8. Condition i < 6UL /* sizeof (class_attr_map) / sizeof
-> (class_attr_map[0]) + (int)sizeof (struct
-> pmbus_init_coefficients::[unnamed type]) */, taking true branch.
-> 
-> 2226        for (i = 0; i < ARRAY_SIZE(class_attr_map); i++) {
-> 2227                map = &class_attr_map[i];
-> 
->     3. Condition info->format[map->class] != direct, taking true branch.
->     6. Condition info->format[map->class] != direct, taking true branch.
->     9. Condition info->format[map->class] != direct, taking false branch.
-> 
-> 2228                if (info->format[map->class] != direct)
-> 
->     4. Continuing loop.
->     7. Continuing loop.
-> 
-> 2229                        continue;
-> 
->     10. Condition n < map->nattr, taking true branch.
->     13. Condition n < map->nattr, taking true branch.
->     16. Condition n < map->nattr, taking false branch.
-> 
-> 2230                for (n = 0; n < map->nattr; n++) {
-> 2231                        attr = &map->attr[n];
-> 
->     11. Condition map->class != attr->class, taking true branch.
->     14. Condition map->class != attr->class, taking true branch.
-> 2232                        if (map->class != attr->class)
->     12. Continuing loop.
->     15. Continuing loop.
-> 
-> 2233                                continue;
-> 2234                        ret = pmbus_read_coefficients(client, info,
-> attr);
-> 2235                        if (ret >= 0)
-> 2236                                break;
-> 2237                }
-> 
-> Uninitialized scalar variable (UNINIT)
->     17. uninit_use: Using uninitialized value ret.
-> 
-> 2238                if (ret < 0) {
-> 2239                        dev_err(&client->dev,
-> 2240                                "No coefficients found for sensor
-> class %d\n",
-> 2241                                map->class);
-> 2242                        return -EINVAL;
-> 2243                }
-> 2244        }
-> 2245
-> 2246        return 0;
-> 2247 }
-> 
-> With the continue statements on line 2233 (or if map->nattr is zero) it
-> may be possible that ret is never assigned a value and so the check on
-> line 2238 could be checking an uninitialized variable ret. I'm not sure
-> if this is a false positive, but it may be worth initializing ret to
-> some sane value to catch these corner cases.
-> 
-> Colin
-> 
+Fixes: dce92f6b11c3 (arm64: Enable passing IMA log to next kernel on kexec)
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+---
+ security/integrity/ima/ima_kexec.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
+index 667887665823..f799cc278a9a 100644
+--- a/security/integrity/ima/ima_kexec.c
++++ b/security/integrity/ima/ima_kexec.c
+@@ -11,6 +11,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/kexec.h>
+ #include <linux/of.h>
++#include <linux/ima.h>
+ #include "ima.h"
+ 
+ #ifdef CONFIG_IMA_KEXEC
+-- 
+2.25.1
+
