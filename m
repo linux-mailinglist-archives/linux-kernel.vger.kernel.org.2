@@ -2,237 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53923A25C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B96893A25A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFJHtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:49:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22542 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229910AbhFJHtJ (ORCPT
+        id S230167AbhFJHny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:43:54 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5477 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhFJHnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:49:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623311233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=loF5cb29gw2Qr4WX1KQpGHzr7ki9z/ToQpTxS3i6VWU=;
-        b=M5ctXOVP1oSvIgYF1KSfIBTTIh0uBkrT+p/jqdsYlgXdrwh1ezgU2Awc2zzhsO0xh4tBWV
-        6dJQZftu44rpYVA/gQqKEZ0jGzaAXpA0ovndTX8+jeuyJGgqJyXauJveV3TYsRecqckz3/
-        TTgc0OPT7JX4v2htHtZ0t9Cb31ORo1s=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-504-IX-NxYupPt64iQRPxuBkmw-1; Thu, 10 Jun 2021 03:47:12 -0400
-X-MC-Unique: IX-NxYupPt64iQRPxuBkmw-1
-Received: by mail-pf1-f197.google.com with SMTP id s13-20020a056a00194db02902ed97b465c2so790982pfk.17
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:47:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=loF5cb29gw2Qr4WX1KQpGHzr7ki9z/ToQpTxS3i6VWU=;
-        b=Bv26+h1LazXk0c68Pcsm5EL3fZT1EDyhm6i7R/JzF7ThziWhHM5qnmJVGwPDZYXVKS
-         ruTg8cSU+q4+Fmjvm1J2/acx7URhA5RJxvNFubRhFpsNpoZ0oqyJ0NtnbvL0klT7qrNI
-         yoWQ74VzxTSEVNJ23Kij6b7fDvgj2hoONyhCLJUs2QjmDEWZ1i0Qepxwwzn4QVIcAqIq
-         ccjoLUG1KmydSzz4mqPIkuXrx6VqgcEOGwtHtM4IqImd0hi6t51e2566L2E1BtORwUHn
-         uFUALwG1vhzk+7kapxb4AQeD1ZFqlEX+cT1Zi5NSs/Ns2N1Lfc2oZwW40rVVDqGWhI8R
-         wtIQ==
-X-Gm-Message-State: AOAM533GHNcWXxbyalDMPE0oEzQQdrRjIwiUHGi2RaGReATCTL8bAeDU
-        MR1Pnh5wUgwMFfuxnBm124PubWCHr9iwh2ljEl3LYOzeqX4DSJruvcA34/HrngI3BPfX3mFiOxy
-        8cbuY/SUgJr7tFBYtygIqukn+THGq9RSSDhjwHLokZNb9ZZrugcX6lNl2AoPdxLo4785bDGpENx
-        Zp
-X-Received: by 2002:a62:6805:0:b029:2e9:a7c9:2503 with SMTP id d5-20020a6268050000b02902e9a7c92503mr1763820pfc.26.1623311230835;
-        Thu, 10 Jun 2021 00:47:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqrvDw/tkXuYDtQELqf02BdCoSYQh21xwSXFSnN/JVfuMs/MqAAlU+YEIkeQA3no0RJlH3gQ==
-X-Received: by 2002:a62:6805:0:b029:2e9:a7c9:2503 with SMTP id d5-20020a6268050000b02902e9a7c92503mr1763775pfc.26.1623311230441;
-        Thu, 10 Jun 2021 00:47:10 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id n37sm1570183pfv.47.2021.06.10.00.47.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 00:47:09 -0700 (PDT)
-Subject: Re: [RFC v1 0/6] virtio/vsock: introduce SOCK_DGRAM support
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     "Jiang Wang ." <jiang.wang@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        jhansen@vmware.comments, cong.wang@bytedance.com,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Lu Wei <luwei32@huawei.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
-References: <20210609232501.171257-1-jiang.wang@bytedance.com>
- <da90f17a-1c24-b475-76ef-f6a7fc2bcdd5@redhat.com>
- <CAP_N_Z_VDd+JUJ_Y-peOEc7FgwNGB8O3uZpVumQT_DbW62Jpjw@mail.gmail.com>
- <ac0c241c-1013-1304-036f-504d0edc5fd7@redhat.com>
- <20210610072358.3fuvsahxec2sht4y@steredhat>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <47ce307b-f95e-25c7-ed58-9cd1cbff5b57@redhat.com>
-Date:   Thu, 10 Jun 2021 15:46:55 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Thu, 10 Jun 2021 03:43:53 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G0wpJ69GFzZfyS;
+        Thu, 10 Jun 2021 15:39:04 +0800 (CST)
+Received: from dggemi758-chm.china.huawei.com (10.1.198.144) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 15:41:55 +0800
+Received: from huawei.com (10.175.101.6) by dggemi758-chm.china.huawei.com
+ (10.1.198.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 10
+ Jun 2021 15:41:54 +0800
+From:   ChenXiaoSong <chenxiaosong2@huawei.com>
+To:     <rjw@rjwysocki.net>, <lenb@kernel.org>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
+        <chenxiaosong2@huawei.com>
+Subject: [PATCH -next] ACPI: fix doc warnings
+Date:   Thu, 10 Jun 2021 15:48:12 +0800
+Message-ID: <20210610074812.57973-1-chenxiaosong2@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <20210610072358.3fuvsahxec2sht4y@steredhat>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggemi758-chm.china.huawei.com (10.1.198.144)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix gcc W=1 warnings:
+drivers/acpi/cppc_acpi.c:1356: warning: Function parameter or member 'cpu_num' not described in 'cppc_get_transition_latency'
+drivers/acpi/cppc_acpi.c:573: warning: Function parameter or member 'pcc_ss_id' not described in 'pcc_data_alloc'
+drivers/acpi/dock.c:388: warning: Function parameter or member 'ds' not described in 'handle_eject_request'
+drivers/acpi/dock.c:388: warning: Function parameter or member 'event' not described in 'handle_eject_request'
+drivers/acpi/sleep.c:496: warning: Function parameter or member 'acpi_state' not described in 'acpi_pm_start'
+drivers/acpi/sleep.c:536: warning: Function parameter or member 'pm_state' not described in 'acpi_suspend_begin'
+drivers/acpi/sleep.c:663: warning: Function parameter or member 'pm_state' not described in 'acpi_suspend_begin_old'
+drivers/acpi/sleep.c:956: warning: Function parameter or member 'stage' not described in 'acpi_hibernation_begin_old'
 
-在 2021/6/10 下午3:23, Stefano Garzarella 写道:
-> On Thu, Jun 10, 2021 at 12:02:35PM +0800, Jason Wang wrote:
->>
->> 在 2021/6/10 上午11:43, Jiang Wang . 写道:
->>> On Wed, Jun 9, 2021 at 6:51 PM Jason Wang <jasowang@redhat.com> wrote:
->>>>
->>>> 在 2021/6/10 上午7:24, Jiang Wang 写道:
->>>>> This patchset implements support of SOCK_DGRAM for virtio
->>>>> transport.
->>>>>
->>>>> Datagram sockets are connectionless and unreliable. To avoid 
->>>>> unfair contention
->>>>> with stream and other sockets, add two more virtqueues and
->>>>> a new feature bit to indicate if those two new queues exist or not.
->>>>>
->>>>> Dgram does not use the existing credit update mechanism for
->>>>> stream sockets. When sending from the guest/driver, sending packets
->>>>> synchronously, so the sender will get an error when the virtqueue 
->>>>> is full.
->>>>> When sending from the host/device, send packets asynchronously
->>>>> because the descriptor memory belongs to the corresponding QEMU
->>>>> process.
->>>>
->>>> What's the use case for the datagram vsock?
->>>>
->>> One use case is for non critical info logging from the guest
->>> to the host, such as the performance data of some applications.
->>
->>
->> Anything that prevents you from using the stream socket?
->>
->>
->>>
->>> It can also be used to replace UDP communications between
->>> the guest and the host.
->>
->>
->> Any advantage for VSOCK in this case? Is it for performance (I guess 
->> not since I don't exepct vsock will be faster).
->
-> I think the general advantage to using vsock are for the guest agents 
-> that potentially don't need any configuration.
+Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
+---
+ drivers/acpi/cppc_acpi.c | 2 ++
+ drivers/acpi/dock.c      | 2 ++
+ drivers/acpi/sleep.c     | 4 ++++
+ 3 files changed, 8 insertions(+)
 
-
-Right, I wonder if we really need datagram consider the host to guest 
-communication is reliable.
-
-(Note that I don't object it since vsock has already supported that, 
-just wonder its use cases)
-
-
->
->>
->> An obvious drawback is that it breaks the migration. Using UDP you 
->> can have a very rich features support from the kernel where vsock can't.
->>
->
-> Thanks for bringing this up!
-> What features does UDP support and datagram on vsock could not support?
-
-
-E.g the sendpage() and busy polling. And using UDP means qdiscs and eBPF 
-can work.
-
-
->
->>
->>>
->>>>> The virtio spec patch is here:
->>>>> https://www.spinics.net/lists/linux-virtualization/msg50027.html
->>>>
->>>> Have a quick glance, I suggest to split mergeable rx buffer into an
->>>> separate patch.
->>> Sure.
->>>
->>>> But I think it's time to revisit the idea of unifying the 
->>>> virtio-net and
->>>> virtio-vsock. Otherwise we're duplicating features and bugs.
->>> For mergeable rxbuf related code, I think a set of common helper
->>> functions can be used by both virtio-net and virtio-vsock. For other
->>> parts, that may not be very beneficial. I will think about more.
->>>
->>> If there is a previous email discussion about this topic, could you 
->>> send me
->>> some links? I did a quick web search but did not find any related
->>> info. Thanks.
->>
->>
->> We had a lot:
->>
->> [1] 
->> https://patchwork.kernel.org/project/kvm/patch/5BDFF537.3050806@huawei.com/
->> [2] 
->> https://lists.linuxfoundation.org/pipermail/virtualization/2018-November/039798.html
->> [3] https://www.lkml.org/lkml/2020/1/16/2043
->>
->
-> When I tried it, the biggest problem that blocked me were all the 
-> features strictly related to TCP/IP stack and ethernet devices that 
-> vsock device doesn't know how to handle: TSO, GSO, checksums, MAC, 
-> napi, xdp, min ethernet frame size, MTU, etc.
-
-
-It depends on which level we want to share:
-
-1) sharing codes
-2) sharing devices
-3) make vsock a protocol that is understood by the network core
-
-We can start from 1), the low level tx/rx logic can be shared at both 
-virtio-net and vhost-net. For 2) we probably need some work on the spec, 
-probably with a new feature bit to demonstrate that it's a vsock device 
-not a ethernet device. Then if it is probed as a vsock device we won't 
-let packet to be delivered in the TCP/IP stack. For 3), it would be even 
-harder and I'm not sure it's worth to do that.
-
-
->
-> So in my opinion to unify them is not so simple, because vsock is not 
-> really an ethernet device, but simply a socket.
-
-
-We can start from sharing codes.
-
-
->
-> But I fully agree that we shouldn't duplicate functionality and code, 
-> so maybe we could find those common parts and create helpers to be 
-> used by both.
-
-
-Yes.
-
-Thanks
-
-
->
-> Thanks,
-> Stefano
->
+diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+index a4d4eebba1da..611938f2c132 100644
+--- a/drivers/acpi/cppc_acpi.c
++++ b/drivers/acpi/cppc_acpi.c
+@@ -561,6 +561,7 @@ bool __weak cpc_ffh_supported(void)
+ 
+ /**
+  * pcc_data_alloc() - Allocate the pcc_data memory for pcc subspace
++ * @pcc_ss_id: pcc subspace id.
+  *
+  * Check and allocate the cppc_pcc_data memory.
+  * In some processor configurations it is possible that same subspace
+@@ -1346,6 +1347,7 @@ EXPORT_SYMBOL_GPL(cppc_set_perf);
+ 
+ /**
+  * cppc_get_transition_latency - returns frequency transition latency in ns
++ * @cpu: CPU for which to get transition latency.
+  *
+  * ACPI CPPC does not explicitly specify how a platform can specify the
+  * transition latency for performance change requests. The closest we have
+diff --git a/drivers/acpi/dock.c b/drivers/acpi/dock.c
+index 7cf92158008f..6c0fb5c9b938 100644
+--- a/drivers/acpi/dock.c
++++ b/drivers/acpi/dock.c
+@@ -380,6 +380,8 @@ static int dock_in_progress(struct dock_station *ds)
+ 
+ /**
+  * handle_eject_request - handle an undock request checking for error conditions
++ * @ds: the dock station.
++ * @event: Event code.
+  *
+  * Check to make sure the dock device is still present, then undock and
+  * hotremove all the devices that may need removing.
+diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+index aaea10d39201..95521a8b49fc 100644
+--- a/drivers/acpi/sleep.c
++++ b/drivers/acpi/sleep.c
+@@ -491,6 +491,7 @@ static void acpi_pm_finish(void)
+ 
+ /**
+  * acpi_pm_start - Start system PM transition.
++ * @acpi_state: Power state value.
+  */
+ static void acpi_pm_start(u32 acpi_state)
+ {
+@@ -531,6 +532,7 @@ static u32 acpi_suspend_states[] = {
+ /**
+  *	acpi_suspend_begin - Set the target system sleep state to the state
+  *		associated with given @pm_state, if supported.
++ *	@pm_state: pm suspend state.
+  */
+ static int acpi_suspend_begin(suspend_state_t pm_state)
+ {
+@@ -658,6 +660,7 @@ static const struct platform_suspend_ops acpi_suspend_ops = {
+  *		state associated with given @pm_state, if supported, and
+  *		execute the _PTS control method.  This function is used if the
+  *		pre-ACPI 2.0 suspend ordering has been requested.
++ *	@pm_state: pm suspend state.
+  */
+ static int acpi_suspend_begin_old(suspend_state_t pm_state)
+ {
+@@ -951,6 +954,7 @@ static const struct platform_hibernation_ops acpi_hibernation_ops = {
+  *		ACPI_STATE_S4 and execute the _PTS control method.  This
+  *		function is used if the pre-ACPI 2.0 suspend ordering has been
+  *		requested.
++ *	@stage: pm event massage
+  */
+ static int acpi_hibernation_begin_old(pm_message_t stage)
+ {
+-- 
+2.25.4
 
