@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542DA3A245A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8AD3A245D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhFJGVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:21:31 -0400
-Received: from m12-14.163.com ([220.181.12.14]:34099 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhFJGVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:21:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=xhzqc
-        qyX7DowfdZyA5ftUwBoLpefEUNOStWWIOhwbL0=; b=pnPuqOQO7N5kCGW2NsmsZ
-        26vQ74Ec4AM2foplE4cWBEJ/0GGP0ghEi0wOpipJxOWSP0O+lJErqrz5BxiXrgcN
-        gf1vAIaj6XsvNFyO/cKBjj1rEv73eC1j0GyGUi3eddyo7v5/Y1Dnzyhq0K+/6Pph
-        lj03Fby226gP4Ooupx+7oU=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp10 (Coremail) with SMTP id DsCowAD3PmPQrsFgbKfaNw--.3761S2;
-        Thu, 10 Jun 2021 14:18:58 +0800 (CST)
-From:   13145886936@163.com
-To:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] tipc: socket.c: fix the use of copular verb
-Date:   Wed,  9 Jun 2021 23:18:53 -0700
-Message-Id: <20210610061853.38137-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230026AbhFJGWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:22:10 -0400
+Received: from smtprelay0094.hostedemail.com ([216.40.44.94]:50536 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229634AbhFJGWJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 02:22:09 -0400
+Received: from omf12.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 1B59E180A7FE8;
+        Thu, 10 Jun 2021 06:20:12 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id B7F8924023B;
+        Thu, 10 Jun 2021 06:20:10 +0000 (UTC)
+Message-ID: <f36df404d219ff11546c3244054db348538e21db.camel@perches.com>
+Subject: Re: [PATCH v2] scsi: lpfc: lpfc_init: deleted these repeated words
+From:   Joe Perches <joe@perches.com>
+To:     lijian_8010a29@163.com, james.smart@broadcom.com,
+        dick.kennedy@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Date:   Wed, 09 Jun 2021 23:20:09 -0700
+In-Reply-To: <20210610060921.67172-1-lijian_8010a29@163.com>
+References: <20210610060921.67172-1-lijian_8010a29@163.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowAD3PmPQrsFgbKfaNw--.3761S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GryDCFW5Gry5GF4rCw4fAFb_yoWfGFb_Ww
-        1UGF4kXrW8Cw4S9a4Uur4DXF4Iy3Wj9F4I9w13tFy3C3sYyFWvk3ykArs5Jry3Kr4UC3yU
-        C3y8t3Z3Aw47ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5O0eJUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiQhOtg1aD-NN8+QAAsA
+X-Spam-Status: No, score=1.22
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: B7F8924023B
+X-Stat-Signature: epojie33baoucrokunpomaa1buxnjias
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX182pRNdeCXYGCw9uVtg8ofXfe97+/XR8/s=
+X-HE-Tag: 1623306010-995556
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+On Thu, 2021-06-10 at 14:09 +0800, lijian_8010a29@163.com wrote:
+> From: lijian <lijian@yulong.com>
+> 
+> deleted these repeated words 'the', 'using' and 'be' in the comments.
+> 
+> Signed-off-by: lijian <lijian@yulong.com>
+> ---
+> v2: Fix these typos
+> Change 'irrelvant' to 'irrelevant'.
+> Change 'will be re-try' to 'will be retried'.
 
-Fix the use of copular verb.
+This should be part of the commit message.
+The content below the --- line is not added to any git commit.
+ 
+> diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
+[]
+> @@ -5894,7 +5894,7 @@ lpfc_sli4_async_fip_evt(struct lpfc_hba *phba,
+>  				phba->fcf.fcf_flag &= ~FCF_ACVL_DISC;
+>  				spin_unlock_irq(&phba->hbalock);
+>  				/*
+> -				 * Last resort will be re-try on
+> +				 * Last resort will be retried on
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- net/tipc/socket.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+retried on the current/to retry (with?) the current
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index 575a0238deb2..34a97ea36cc8 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -662,7 +662,7 @@ static int tipc_release(struct socket *sock)
-  * @skaddr: socket address describing name(s) and desired operation
-  * @alen: size of socket address data structure
-  *
-- * Name and name sequence binding is indicated using a positive scope value;
-+ * Name and name sequence binding are indicated using a positive scope value;
-  * a negative scope value unbinds the specified name.  Specifying no name
-  * (i.e. a socket address length of 0) unbinds all names from the socket.
-  *
--- 
-2.25.1
+Your spelling fixes seem reasonable but perhaps you could find a
+fully fluent English speaker/writer to review your proposals before
+submitting English grammar patches. 
+
 
