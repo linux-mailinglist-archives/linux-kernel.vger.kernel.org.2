@@ -2,68 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF813A3573
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4654E3A3597
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhFJVLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 17:11:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230281AbhFJVLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:11:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D00C6100A;
-        Thu, 10 Jun 2021 21:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623359350;
-        bh=3uaKX4KWu0Y7+XQgx32jwGfnVzT9DzauJXLAk/77HMY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=blEMPalfjEBPfhZPnkH5BgzoTabj85Ajnb0HACnx80mKy/nwDMJVwclzrSSJ+mamY
-         KAg2/DZHZ7f6ykjRUkB+dhEvC1nsbaZpCbJrGels74TVComEKM8CuLFy8nzsRCGlvn
-         bkCKZ+P94YHb5pT5FSjO9QuAfeHeE8G91zY1Jeus=
-Date:   Thu, 10 Jun 2021 14:09:09 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, cohuck@redhat.com, david@redhat.com,
-        linux-mm@kvack.org, Nicholas Piggin <npiggin@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v3 1/2] mm/vmalloc: add vmalloc_no_huge
-Message-Id: <20210610140909.781959d063608710e24e70c9@linux-foundation.org>
-In-Reply-To: <20210610154220.529122-2-imbrenda@linux.ibm.com>
-References: <20210610154220.529122-1-imbrenda@linux.ibm.com>
-        <20210610154220.529122-2-imbrenda@linux.ibm.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230492AbhFJVL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:11:58 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:60524 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231156AbhFJVLs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 17:11:48 -0400
+Received: from sequoia.work.tihix.com (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3745220B83CB;
+        Thu, 10 Jun 2021 14:09:50 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3745220B83CB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623359391;
+        bh=rS0KO2g5L8Xhkc4V95Ph1/HTme6zsuqiHbL+4FmEy0o=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HC7WlPPbsJsawizQdIikbgX8/Ami2E6QH32qPb8NDJsoE7jpuSCVaEbYFYL4cauXO
+         Ap/uC7IemAfkJGODp5MtlIrJlIEjFQfbPzWusP36l4j3NMZ6hutk+LyPe+EA9qe+JX
+         L3fLgCBt4ixF/jVzATUibqkw5o5ohs+Z5b6GdnJM=
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>
+Cc:     Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        op-tee@lists.trustedfirmware.org, linux-integrity@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 5/8] tee: add tee_shm_alloc_kernel_buf()
+Date:   Thu, 10 Jun 2021 16:09:10 -0500
+Message-Id: <20210610210913.536081-6-tyhicks@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
+References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 17:42:19 +0200 Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
+From: Jens Wiklander <jens.wiklander@linaro.org>
 
-> The recent patches to add support for hugepage vmalloc mappings added a
-> flag for __vmalloc_node_range to allow to request small pages.
-> This flag is not accessible when calling vmalloc, the only option is to
-> call directly __vmalloc_node_range, which is not exported.
+Adds a new function tee_shm_alloc_kernel_buf() to allocate shared memory
+from a kernel driver. This function can later be made more lightweight
+by unnecessary dma-buf export.
 
-I can find no patch which adds such a flag to __vmalloc_node_range(). 
-I assume you're referring to "mm/vmalloc: switch to bulk allocator in
-__vmalloc_area_node()"?
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+---
+ drivers/tee/tee_shm.c   | 18 ++++++++++++++++++
+ include/linux/tee_drv.h |  1 +
+ 2 files changed, 19 insertions(+)
 
-Please be quite specific when identifying patches.  More specific than
-"the recent patches"!
-
-Also, it appears from the discussion at
-https://lkml.kernel.org/r/YKUWKFyLdqTYliwu@infradead.org that we'll be
-seeing a new version of "mm/vmalloc: switch to bulk allocator in
-__vmalloc_area_node()".  Would it be better to build these s390 fixes into
-the next version of that patch series rather than as a separate
-followup thing?
+diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+index 00472f5ce22e..c65e44707cd6 100644
+--- a/drivers/tee/tee_shm.c
++++ b/drivers/tee/tee_shm.c
+@@ -193,6 +193,24 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+ }
+ EXPORT_SYMBOL_GPL(tee_shm_alloc);
+ 
++/**
++ * tee_shm_alloc_kernel_buf() - Allocate shared memory for kernel buffer
++ * @ctx:	Context that allocates the shared memory
++ * @size:	Requested size of shared memory
++ *
++ * The returned memory registered in secure world and is suitable to be
++ * passed as a memory buffer in parameter argument to
++ * tee_client_invoke_func(). The memory allocated is later freed with a
++ * call to tee_shm_free().
++ *
++ * @returns a pointer to 'struct tee_shm'
++ */
++struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
++{
++	return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
++}
++EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
++
+ struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
+ 				 size_t length, u32 flags)
+ {
+diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+index 54269e47ac9a..8990f7628387 100644
+--- a/include/linux/tee_drv.h
++++ b/include/linux/tee_drv.h
+@@ -332,6 +332,7 @@ void *tee_get_drvdata(struct tee_device *teedev);
+  * @returns a pointer to 'struct tee_shm'
+  */
+ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags);
++struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size);
+ 
+ /**
+  * tee_shm_register() - Register shared memory buffer
+-- 
+2.25.1
 
