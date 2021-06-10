@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D763A371E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEE73A3722
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 00:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhFJWbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 18:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
+        id S230230AbhFJWc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 18:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhFJWbc (ORCPT
+        with ESMTP id S230001AbhFJWcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 18:31:32 -0400
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [IPv6:2a01:37:3000::53df:4ef0:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE7AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:29:35 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 89852280011C3;
-        Fri, 11 Jun 2021 00:29:33 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 7E4F9F88D0; Fri, 11 Jun 2021 00:29:33 +0200 (CEST)
-Date:   Fri, 11 Jun 2021 00:29:33 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.12 03/43] spi: Fix spi device unregister flow
-Message-ID: <20210610222933.GB6120@wunner.de>
-References: <20210603170734.3168284-1-sashal@kernel.org>
- <20210603170734.3168284-3-sashal@kernel.org>
- <20210606111028.GA20948@wunner.de>
- <YMJR/FNCwDllHIDG@sashalap>
- <CAGETcx_w8pHs3OXQyVXYWV1CY4qGTWrZ9QNEwz=TL8SLbyq1bA@mail.gmail.com>
- <20210610192608.GA31461@wunner.de>
- <CAGETcx9xSsBMmxzKzgwkWYTrFbKidxY5ANmCmXsF6LduTMKtbA@mail.gmail.com>
+        Thu, 10 Jun 2021 18:32:25 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05880C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:30:29 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id b12so1797421plg.11
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 15:30:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bNl27/chKNf7nJqRZtYWTaY8Wo6h+Jsbjb7Fm98XfjM=;
+        b=jCiCmb87ZtZLGSYlrI52zzxIxynosBucCOjocRFX/sGizfI0ke6pcxMDE2tOp9tCa6
+         CKt1C5YkN09m3JxkQlvkUkVJSWfMU0dHG2NOhImoT3oK9NlOGtPxPkTwoweBizRwq09d
+         mgJ1X35tS2uQtOG/V98/eaKPoriNKeKlp8JLg43wjdPMz+pVNcCAAkz/HDDwhdvMeLFq
+         lhtSdgsIhRC0NcyCnsVMxGmvUwkjEnjfZ/DJm8QscBe8nQvJeyvbUJ8XfweUcriulmsU
+         2xz5sW/N7DUadJtUodY67+Q4szcZMHET3aHRqBtM9bm8XdNZjF/qe2z5DQAR9Gr/xVHC
+         k/aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bNl27/chKNf7nJqRZtYWTaY8Wo6h+Jsbjb7Fm98XfjM=;
+        b=fQmJ0AoM5yjsprNnpWQqVMrLuHWDlrPQKrTQhQkuGPC+ihV1InLo0dq9nXiUlar5AU
+         zpsigyLtpTafulGWgyOwcTO2W3y7mqwRQ+BY3u0eaxH5SsoyLKgE/fVzKaNkNNEhqnDM
+         fuXo/W0YoAIyoBladpoKseSzVww7KEB1hScwBFnqk8/+It1zb3yFLmqnq2ZsrIVLNshi
+         8fD/ydwYLlLRQP9kuKG2WpdPs42Vkw3gVtoWfJAClwLIhLIOxeF6iszulAk+gFFpeV1a
+         RNo9+Xn0e+lcZ+pQlmLmRDmYZNfKCQqWO+AFMp+63GHDv3Gk6sO3ZhH6Hp9+eM/BMWcl
+         H3mw==
+X-Gm-Message-State: AOAM533IL0xmY7S4kyQO8nQfYQTUPhsnnfADJ2XxQdSnvhiijmae21dr
+        4Lm9uu1LXEZwICuhha+aQAc4aA==
+X-Google-Smtp-Source: ABdhPJx9c9j/u3MaSBk3DA1HSUM+hQguDjnwUT3XsYHDbPDwYq2+P04SHbAygYF20BLqKLhu5wgpWw==
+X-Received: by 2002:a17:90a:bf87:: with SMTP id d7mr5616505pjs.118.1623364228440;
+        Thu, 10 Jun 2021 15:30:28 -0700 (PDT)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id l201sm3234885pfd.183.2021.06.10.15.30.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 15:30:27 -0700 (PDT)
+Subject: Re: [PATCH v3 0/2] Use libata platform drivers to replace deprecated
+ m68k IDE drivers
+To:     Finn Thain <fthain@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Joshua Thompson <funaho@jurai.org>, linux-ide@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Richard Zidlicky <rz@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>
+References: <cover.1623287706.git.fthain@linux-m68k.org>
+ <CAMuHMdWLJWBH5uz=PLL7pt2uEHz9uSO2Gh7twCDUTz3NDfhdEQ@mail.gmail.com>
+ <417a2d12-6085-e796-a8a5-605a58f131f@linux-m68k.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <eec9fc3a-f485-b0c8-2502-df899f4fcd71@kernel.dk>
+Date:   Thu, 10 Jun 2021 16:30:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx9xSsBMmxzKzgwkWYTrFbKidxY5ANmCmXsF6LduTMKtbA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <417a2d12-6085-e796-a8a5-605a58f131f@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 12:30:18PM -0700, Saravana Kannan wrote:
-> On Thu, Jun 10, 2021 at 12:26 PM Lukas Wunner <lukas@wunner.de> wrote:
-> >
-> > On Thu, Jun 10, 2021 at 12:22:40PM -0700, Saravana Kannan wrote:
-> > > On Thu, Jun 10, 2021 at 10:55 AM Sasha Levin <sashal@kernel.org> wrote:
-> > > > On Sun, Jun 06, 2021 at 01:10:28PM +0200, Lukas Wunner wrote:
-> > > > >On Thu, Jun 03, 2021 at 01:06:53PM -0400, Sasha Levin wrote:
-> > > > >> From: Saravana Kannan <saravanak@google.com>
-> > > > >>
-> > > > >> [ Upstream commit c7299fea67696db5bd09d924d1f1080d894f92ef ]
-> > > > >
-> > > > >This commit shouldn't be backported to stable by itself, it requires
-> > > > >that the following fixups are applied on top of it:
-> > > > >
-> > > > >* Upstream commit 27e7db56cf3d ("spi: Don't have controller clean up spi
-> > > > >  device before driver unbind")
-> > > > >
-> > > > >* spi.git commit 2ec6f20b33eb ("spi: Cleanup on failure of initial setup")
-> > > > >  https://git.kernel.org/broonie/spi/c/2ec6f20b33eb
-> > > > >
-> > > > >Note that the latter is queued for v5.13, but hasn't landed there yet.
-> > > > >So you probably need to back out c7299fea6769 from the stable queue and
-> > > > >wait for 2ec6f20b33eb to land in upstream.
-> > > > >
-> > > > >Since you've applied c7299fea6769 to v5.12, v5.10, v5.4, v4.14 and v4.19
-> > > > >stable trees, the two fixups listed above need to be backported to all
-> > > > >of them.
-> > > >
-> > > > I took those two patches into 5.12-5.4, but as they needed a more
-> > > > complex backport for 4.14 and 4.19, I've dropped c7299fea67 from those
-> > > > trees.
-> > >
-> > > Sounds good. Also, there was a subsequent "Fixes" for this patch and I
-> > > think another "Fixes" for the "Fixes". So, before picking this up,
-> > > maybe make sure those Fixes patches are pickable too?
-> >
-> > Aren't those the commits I've listed above?  Or did I miss any fixes?
-> > I'm not aware of any others besides these two.
+On 6/10/21 1:57 AM, Finn Thain wrote:
+> On Thu, 10 Jun 2021, Geert Uytterhoeven wrote:
 > 
-> Ah, those are the ones. I didn't see them. My bad.
+>> On Thu, Jun 10, 2021 at 3:34 AM Finn Thain <fthain@linux-m68k.org> wrote:
+>>> This patch series allows m68k platforms to switch from deprecated IDE
+>>> drivers to libata drivers.
+>>>
+>>> Changed since v1:
+>>>  - Added reviewed-by and tested-by tags.
+>>>  - Improved commit log.
+>>>
+>>> Changed since v2:
+>>>  - Added #ifdef guards to prevent build failure when CONFIG_ATARI=n.
+>>
+>> Thanks for the update!
+>>
+>> Note that Jens has already applied v2 to block/for-next.
+>> https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=9658506fbf8c1b629ca8a660862bc1ee57400506
+>>
+> 
+> Thanks for the tip. I gather that Jens' tree can't be rebased, so I'll 
+> have to send another patch...
 
-All good.  Sasha says that backporting the fixes is a little more
-involved in the case of 4.14 and 4.19.  Do you consider the issue
-critical enough that it should be addressed in those stable kernels
-as well?  (I assume the issue concerns Android devices, not sure
-in how far those are using 4.14 and 4.19?)
+It's top of tree for that branch, so not a huge issue to rebase it. Just
+did...
 
-Thanks,
+-- 
+Jens Axboe
 
-Lukas
