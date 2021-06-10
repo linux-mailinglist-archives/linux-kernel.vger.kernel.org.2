@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCCF3A23DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 07:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1CA3A23E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 07:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhFJFZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 01:25:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49828 "EHLO mail.kernel.org"
+        id S230217AbhFJFZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 01:25:05 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:40494 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230154AbhFJFY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 01:24:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72635613E1;
-        Thu, 10 Jun 2021 05:22:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623302566;
-        bh=kKp8oU7QwWVcxL3bQAssMPPgzG6/DfWTtdrYTafZCoc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R6Ye10hhufA/hdgGi3PrCWos3nqsMj0z2K+vp2phrtLj+tKIkHYnbxMRIjBcbcixv
-         L2ZXSltM7yJcJFb8uo4Pf+jk3XqMH3DvP1qzY5W/o5ZXcF650En0iIfHsEslM3O6lQ
-         FWSQycXuLbFhHSEKWkpbSS6I//mdskUeQgBj66PQ=
-Date:   Thu, 10 Jun 2021 07:22:42 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pascal Giard <pascal.giard@etsmtl.ca>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Daniel Nguyen <daniel.nguyen.1@ens.etsmtl.ca>
-Subject: Re: [PATCH] HID: sony: fix freeze when inserting ghlive ps3/wii
- dongles
-Message-ID: <YMGhotmI1kHFe3gL@kroah.com>
-References: <20210604161023.1498582-1-pascal.giard@etsmtl.ca>
- <YLsdEtbAWJxLB+GF@kroah.com>
- <CAJNNDmk7z=aJtx00C+8kpBOk0j_XVOk2fDMG9Xf9Na_ChXM2OA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJNNDmk7z=aJtx00C+8kpBOk0j_XVOk2fDMG9Xf9Na_ChXM2OA@mail.gmail.com>
+        id S230151AbhFJFZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 01:25:00 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4G0snM1wvZzBFGw;
+        Thu, 10 Jun 2021 07:23:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id oJRJkoBLoQ8A; Thu, 10 Jun 2021 07:23:03 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4G0snM12rWzBFGv;
+        Thu, 10 Jun 2021 07:23:03 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 05E898B7EC;
+        Thu, 10 Jun 2021 07:23:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id GS4GkurhvnBc; Thu, 10 Jun 2021 07:23:02 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A9FDE8B7E6;
+        Thu, 10 Jun 2021 07:23:02 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 6774264C8B; Thu, 10 Jun 2021 05:23:02 +0000 (UTC)
+Message-Id: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] fs: btrfs: Disable BTRFS on platforms having 256K pages
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-btrfs@vger.kernel.org, linux-hexagon@vger.kernel.org
+Date:   Thu, 10 Jun 2021 05:23:02 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 08:25:47PM -0400, Pascal Giard wrote:
-> On Sat, Jun 5, 2021 at 2:44 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Jun 04, 2021 at 12:10:23PM -0400, Pascal Giard wrote:
-> > > This commit fixes a freeze on insertion of a Guitar Hero Live PS3/WiiU
-> > > USB dongle. Indeed, with the current implementation, inserting one of
-> > > those USB dongles will lead to a hard freeze. I apologize for not
-> > > catching this earlier, it didn't occur on my old laptop.
-> > >
-> > > While the issue was isolated to memory alloc/free, I could not figure
-> > > out why it causes a freeze. So this patch fixes this issue by
-> > > simplifying memory allocation and usage.
-> > >
-> > > We remind that for the dongle to work properly, a control URB needs to
-> > > be sent periodically. We used to alloc/free the URB each time this URB
-> > > needed to be sent.
-> > >
-> > > With this patch, the memory for the URB is allocated on the probe, reused
-> > > for as long as the dongle is plugged in, and freed once the dongle is
-> > > unplugged.
-> > >
-> > > Signed-off-by: Pascal Giard <pascal.giard@etsmtl.ca>
-> > > ---
-> > >  drivers/hid/hid-sony.c | 98 +++++++++++++++++++++---------------------
-> > >  1 file changed, 49 insertions(+), 49 deletions(-)
-> >
-> > <formletter>
-> >
-> > This is not the correct way to submit patches for inclusion in the
-> > stable kernel tree.  Please read:
-> >     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> > for how to do this properly.
-> >
-> > </formletter>
-> 
-> Dear Greg,
-> 
-> I apologize for failing to follow the procedure. I had already read
-> these guidelines, and I actually thought I was following Option 1 :-/
+With a config having PAGE_SIZE set to 256K, BTRFS build fails
+with the following message
 
-Is this commit already in Linus's tree?  If so then we just need a git
-commit id and we can queue it up.
+ include/linux/compiler_types.h:326:38: error: call to '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
 
-> I thought that I had to get my patch merged into next first (patch
-> against dtor's git) and that by adding stable@ as CC, it would
-> automatically get considered for inclusion into stable once merged
-> into Linus' tree. Based on your email, I got that wrong...
+BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
+256K pages at the time being.
 
-It will, but you need to add that to the signed-off-by: area, as the
-document says.
+There are two platforms that can select 256K pages:
+ - hexagon
+ - powerpc
 
-thanks,
+Disable BTRFS when 256K page size is selected.
 
-greg k-h
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ fs/btrfs/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+index 68b95ad82126..520a0f6a7d9e 100644
+--- a/fs/btrfs/Kconfig
++++ b/fs/btrfs/Kconfig
+@@ -18,6 +18,8 @@ config BTRFS_FS
+ 	select RAID6_PQ
+ 	select XOR_BLOCKS
+ 	select SRCU
++	depends on !PPC_256K_PAGES	# powerpc
++	depends on !PAGE_SIZE_256KB	# hexagon
+ 
+ 	help
+ 	  Btrfs is a general purpose copy-on-write filesystem with extents,
+-- 
+2.25.0
+
