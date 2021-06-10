@@ -2,293 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62C93A25EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D393A25F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhFJH6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:58:49 -0400
-Received: from mail-lj1-f178.google.com ([209.85.208.178]:39527 "EHLO
-        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhFJH6s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:58:48 -0400
-Received: by mail-lj1-f178.google.com with SMTP id c11so3546304ljd.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:56:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=SA5Ivb0CCE59h380OTMfIw4pEztiT4MRBNH8ti8EjRg=;
-        b=UsnB/8xogJHe8G+HURPvdy9xSpG3q17OyaxwZos6B9OkmHr3UPdrILT14c6jXIojl+
-         k5fcp7oj/ZZ4j8DZKt7NTp+68VQAGcq0bmTDzQkGiLUhW1EFMYyqQq7N3CE/WtRuE3+N
-         KySdDSuuW9EhDIiadb2Cda85fZ0GYtk7gGNqinLYGI6q5xKPVMNkf4/K27+ljIX9Kklt
-         1UP11UZos81azcTn+0kTCJIZ5/jqxpc2h0qgfmWeoDJVWxAYQ0Q3SmLGnvN91VSLi4T3
-         7ABgyeXmcLUdBik/48NVhn3oixQ7Qrmhr0TRdaWTyCPzEFA/eFbg1qmsReEJ+lgBg4Ca
-         Z+MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=SA5Ivb0CCE59h380OTMfIw4pEztiT4MRBNH8ti8EjRg=;
-        b=qvIAKAPOtxlD/pk+o4cYjw6X+P4uPm4n/rnq0Jl7SziKmnPdr2ATOOcxdtewQ4aSz1
-         t0M3dnBnoCHD6j1dviNPuu7kW2YQ+yBgse30ki1MZhY4E+BE8BibdSdPvpBG36IioAVh
-         2TyWY/rMZRgtN04VBrmCSKeoIGC0PtM1OUF9/TfRHo48+ILAayIXITyxdb1YXY6LHL/A
-         Oqr0MO5mASz/8hMKJExtGz+sLPsHH7iKYytqPz3Xu8QPC3XXlxe0r0bYmUxL9AS5FtAA
-         /vJ+yrLbDySNZ+tuL/5o9TkNxq97OM/S8recd+ddZZPPWB+vziNMl2G9l7n4207z9yra
-         VS5g==
-X-Gm-Message-State: AOAM533I0RY6q6IvLiw+nRCFTmqRltp/TtrZmt1mq5K9dGANtuFFGwMk
-        ivk1Pz2iCmq3reb1g9QdViw=
-X-Google-Smtp-Source: ABdhPJx3RpDRGm7QQl5Suj8t19KY4oI1aFylsWb1rF9ssiZz1Ey/gILxkTKcx5cMo6mviJKQNFnryg==
-X-Received: by 2002:a05:651c:514:: with SMTP id o20mr1227077ljp.201.1623311738293;
-        Thu, 10 Jun 2021 00:55:38 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id r8sm240527lfc.90.2021.06.10.00.55.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 00:55:37 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 10:55:24 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        Mario Kleiner <mario.kleiner.de@gmail.com>
-Subject: Re: [PATCH v2 2/7] drm/uAPI: Add "active bpc" as feedback channel
- for "max bpc" drm property
-Message-ID: <20210610105524.4dd2a40f@eldfell>
-In-Reply-To: <20210608174320.37429-3-wse@tuxedocomputers.com>
-References: <20210608174320.37429-1-wse@tuxedocomputers.com>
-        <20210608174320.37429-3-wse@tuxedocomputers.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230083AbhFJH70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:59:26 -0400
+Received: from mail-eopbgr1300053.outbound.protection.outlook.com ([40.107.130.53]:60800
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229770AbhFJH7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 03:59:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WGRW1TKV+rJ5Sof0kTbTX08z//FsNXG9ApQ+JknzxfEpEIz5pJczzdZhJRCs3hstYCWTrMOvIUkJd8zQ7ES32M2y88+kmF6gwBwQIIyS4C/JRmA8T/2DSV9pSU8PbCtsME9e05vBdfM6BxMRGfT3CniveENoGY/6IE7BKiXUXNkkt+lhQvzSJ5HekLSOf6iFHpZrrcG0FjKBhQb0lYxgFR3RY8U0nPB7y1EMs3kgpNSDF5m+Qy5O5WNhEO1UvxYBtBfweQkIpi6C4fjWJ59j/cI66vcYDZsLpLWpFMSAWQKd2jv/e9hRu2OFzwOGX0ij7366/PNPEpicQQA7SXmadQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9OcXm7R18OzOVbCAjQxcteASyK6ESG5DDFhcZNpBxFs=;
+ b=LyilYGGloCM6Jn3dOEX5qaqe78Z4NQM/Kh/fi967NkhJGhfe0+bvLa5wnBdkFj6pmRXU1lgVhBKft1YHqOrYmLKuPDfxy9J35htSXqgICkjddUMYEznnYh1ybVImLMYuJCBu+niQtR66+dsEKG+fNoHzH4NN3dKx9WtIuxE9LvZHoNd+mVeFPfhVUhYKsUMTOl99q/sL52tsF3jxqUwyz73pSLYp+9YIDiCZ2cQ0VGi70lDcGpzMRM5MWuJqyxu+K8kV41CVwHSEVGvpa+YDcthKmczVajc569laBvMGaCyVyTJffHygHThdS9QxJz/qpW6hLSMxmHtbLtgWcdTmvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9OcXm7R18OzOVbCAjQxcteASyK6ESG5DDFhcZNpBxFs=;
+ b=KyMqxTX8ikWtc0R9uTDNe0uTAcTO7sVZwrdV72DQgGSB/vs1cyyusTCQxkZ4sNmqhsxEmcY2DLikK5zQaAt96SPWolAaxZAoz7jgntZKZ4HkFGkVHeCrI/5930CZaNH/nVTDlvfvoZTs3H4kZbuj17HPnWWWWWrvRSFAuYz/v50=
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
+ by TY2PR01MB2090.jpnprd01.prod.outlook.com (2603:1096:404:e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Thu, 10 Jun
+ 2021 07:57:26 +0000
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::751b:afbb:95df:b563]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::751b:afbb:95df:b563%5]) with mapi id 15.20.4195.030; Thu, 10 Jun 2021
+ 07:57:26 +0000
+From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>
+To:     Hugh Dickins <hughd@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
+        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 08/10] mm: rmap: make try_to_unmap() void function
+Thread-Topic: [PATCH v2 08/10] mm: rmap: make try_to_unmap() void function
+Thread-Index: AQHXXOd8oKmZHuRickmk71vY+VtY9asM4rGA
+Date:   Thu, 10 Jun 2021 07:57:25 +0000
+Message-ID: <20210610075725.GB1196948@hori.linux.bs1.fc.nec.co.jp>
+References: <af88612-1473-2eaa-903-8d1a448b26@google.com>
+ <bb27e3fe-6036-b637-5086-272befbfe3da@google.com>
+In-Reply-To: <bb27e3fe-6036-b637-5086-272befbfe3da@google.com>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=nec.com;
+x-originating-ip: [165.225.97.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ee3052ab-ddac-4575-b9fa-08d92be56326
+x-ms-traffictypediagnostic: TY2PR01MB2090:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TY2PR01MB20903A16C24CFEB8B397899AE7359@TY2PR01MB2090.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: LKh+72gt4Sy3w05Yu+Cw1/31Ly3o2kwNSsUck3fc7Ux+adzOXVCEiTkThEujALc5iRBlYIuT6A7hLq2ddz0UNIByjVPRzzLdzkfsSm4rWQUs8O9PJIDoTaQLdv9epQHu1uUJcwycr1SXekv4cVpfXZ3Koz9FLN3UCppg+DTL3toiFF+YTvNr2lzkglAYeidZQOjYYOYpNI+jxWo3AFmBo4L6PoUgE8zISIS7hDJdrUTYA0Be4MZH5LfJOTDYYzFv4znUM90eSv7xlr1EXICeelidDPBSifBOLrY+Egi1OeE9ouy/+FVSx96GNAbuqGf2ePCqjruYRBgrCpRjCwcATaeC+s6YM1uJZoHrTU6XAQM2JIy/WHAUQtoVRc8zfFxeg9yCBSUeIesQwza+j3sVpfRFTh492iKfkAtA+2Oh+zMg4N9lj74uBCB+CLUPdDQOUsRcIjWW42wW5cY7oJUW87Ng8pt21I9WKa1RMb9UkjWdmMGg8u/vUkhp3XysPq23YSfKQxRYub/y+afckwjzD3JqD4RK25F2eSEMTzGgoQJ2Pwp5isxw2PdgyJAGb8RCLvTailMoXh5J0bxY+tlkTeCzbE62VxK6mmIwGeLRI/o=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(396003)(366004)(39860400002)(6916009)(478600001)(38100700002)(54906003)(71200400001)(5660300002)(33656002)(122000001)(64756008)(6506007)(85182001)(186003)(55236004)(8936002)(66946007)(66556008)(76116006)(6486002)(7416002)(66476007)(86362001)(66446008)(316002)(4744005)(8676002)(2906002)(1076003)(4326008)(6512007)(9686003)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?cEZ6RmoybUtJQ1lQbGZDN0ovYVJwbTc2cEUwdkJHbWI4cU96Mk01NFBtYnpa?=
+ =?utf-8?B?bE5KZTc4SVRybjdSKzI0a3ZZOXZrWk93WGMyNHk0RGRvVmN3clJIVm90UTho?=
+ =?utf-8?B?OGN6VUJkUnBxT0tqV0tnck9tZ2pVZGoxOWhaZWp4a21FV1VraklpeUZKbSta?=
+ =?utf-8?B?Sis5bGNIdnpJTXB6Y1Q0OWI2SWpTT3FKem5aMjhWQ1g4ejgyTVlnUitKM3FS?=
+ =?utf-8?B?RHZ3TW9SbFg1Y1dEdGdocHdSTDZ0ak5vcitlMU41b2VLYTZzMTJBODM5Rkw1?=
+ =?utf-8?B?d0pUNVZhVjFVTHh2emV1bUJTL1VrRXlRVGc2dzFmMDhjK3FKMDJBK0dRVWo5?=
+ =?utf-8?B?WVh6QlBUWjVxM3JnR3NBZ0NjRG1HdThoWWkvRGExWElUeTFYa09kN2VsQjhX?=
+ =?utf-8?B?T25XbmFwYTdaSGl5OXlIcWdRNzAxUGdMck95N3pjaGc0Nkx6U1dvOVhGNldC?=
+ =?utf-8?B?U3QxeHJ3UjBPVllwVUIxQjZQWWJja3kxMGNDOHpTNnI1SW5sSm5xRElXK3dl?=
+ =?utf-8?B?V3QyZTM2ZUsyV3NUL0pqc2ZIY2UzNG9GbUtvTXJJTmc1S054a201WEkwaFQ4?=
+ =?utf-8?B?SmdPM0RFU0s4QjBRak5RV0F6aWZFNnFFbjZvSG5UQlkzY2g4QmR4a0ZmdjZ1?=
+ =?utf-8?B?bk44V2J2NGJFTU56b09HZzMrVlJ2RS9YNGcyOE02Tzd6eUMvRXJHR0Nkb1U0?=
+ =?utf-8?B?VG15K2FocWxuSEtycnFTVHJZOXlwOFJxOHB1dE9OTG8ySnp1WXZkaTBGU3lG?=
+ =?utf-8?B?cE5NZmZ6a1ZQQlZyNkx1aXB2NGxFMDNaNlFtOTBZc0xnd28rcXlVVTVlSnp5?=
+ =?utf-8?B?dXdnNkRwb2w0bFRIc2EreXBycUlvN1lkTmM2TVVSNVZsbzBRVytlWGRzcStl?=
+ =?utf-8?B?VDJqUFVlVDR2TUZuRW53Y04vUVREZW9xV0ZNM1BZNTJQRVlVdStzV0VUMG9u?=
+ =?utf-8?B?VXM2Q1JPbHlsRzViTVMrdHVLbDFJMTBEKzl6L1V0c0lrdW9UYVdma0paSTR3?=
+ =?utf-8?B?Q1N2bWxkMC9nZW10em51L3A4OGhYR0pNUXkyU0Q1REtLYnpIZjYrdllKa2Mz?=
+ =?utf-8?B?T1Nkd3VLa25xY2ZDUG90ZXN5NGhWT3NZaTA2VU5LTmp5MkdNM3F6ZWlHQnZ4?=
+ =?utf-8?B?ODVBYlFTbVV3S3VkQ1RGUW1xY1lUNUF2dWVPZjJReU1iNGxYMWZEbzFpa24v?=
+ =?utf-8?B?eWdSV2V1UmlTSWhTaGlQRzJ3MTBnN2tEaXhmdVBvTmNQSzd4TE9pdnp3RExi?=
+ =?utf-8?B?Z0JxNU5vOFFzdVM4ZmlrYnFpVWwvRkt3UEpUWk5UOWJ4WUtLTGJEbGVPck5G?=
+ =?utf-8?B?S2NNeDV1OUhrRTkvdDVIeW9TMklheWFPYmtJcFdmL2Rrd2kzeUVxWk1JeGVW?=
+ =?utf-8?B?VG5xaXBnOWJjRGdoak5FYXZpb3NuSHorM3MxL3VKUm1GejkwNVVSb2JIbHpP?=
+ =?utf-8?B?N1dReVlKVmU0a3YxOVNWYlBkNnFRMUlNTEMrWkRJVCt4SUhmcjFaLy9DczhY?=
+ =?utf-8?B?a2xvYmk2ZzlhZnZkTWlIcEk0bGJibEQ1TTR1T1RhS3Z3dEVVNGxYeXJlL3JM?=
+ =?utf-8?B?Wi84S0xQaklsUXFxYkd3SUZacmszam9yYjQ4cFNvcWZ4aXYzcWNodG5jYjdI?=
+ =?utf-8?B?cmlSbTY5S2l2aXBwOU8xK1U5UGR6MjYvb1dMMVNQMmxhaXk0cTE4dlgxazdt?=
+ =?utf-8?B?ZFZwQUtMQ3pyL1FCUDd3eWFVM1BVL1NPaUdSYTF5RVNySjdNY29qaFNCTWRU?=
+ =?utf-8?Q?e7ylYIsjbVitEKvLHJIp9vU02UWao/cHXtoCHhV?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BDA90027A1E1C5499877BE49B418273C@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/G9gjPWkKmqwLWKB6JjVFNYP"; protocol="application/pgp-signature"
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee3052ab-ddac-4575-b9fa-08d92be56326
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jun 2021 07:57:25.9809
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pZp+Tmi3FJAAvMdRhrLpY6DBKQvWoSL1NRLtZmmVjt6AF5c+aMSxIPtLiX2nfkfln9+SEARn0JttgSVxhq59GA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB2090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/G9gjPWkKmqwLWKB6JjVFNYP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-On Tue,  8 Jun 2021 19:43:15 +0200
-Werner Sembach <wse@tuxedocomputers.com> wrote:
-
-> Add a new general drm property "active bpc" which can be used by graphic =
-drivers
-> to report the applied bit depth per pixel back to userspace.
->=20
-> While "max bpc" can be used to change the color depth, there was no way t=
-o check
-> which one actually got used. While in theory the driver chooses the best/=
-highest
-> color depth within the max bpc setting a user might not be fully aware wh=
-at his
-> hardware is or isn't capable off. This is meant as a quick way to double =
-check
-> the setup.
->=20
-> In the future, automatic color calibration for screens might also depend =
-on this
-> information being available.
->=20
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> ---
->  drivers/gpu/drm/drm_atomic_uapi.c |  2 ++
->  drivers/gpu/drm/drm_connector.c   | 41 +++++++++++++++++++++++++++++++
->  include/drm/drm_connector.h       | 15 +++++++++++
->  3 files changed, 58 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atom=
-ic_uapi.c
-> index 268bb69c2e2f..7ae4e40936b5 100644
-> --- a/drivers/gpu/drm/drm_atomic_uapi.c
-> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
-> @@ -873,6 +873,8 @@ drm_atomic_connector_get_property(struct drm_connecto=
-r *connector,
->  		*val =3D 0;
->  	} else if (property =3D=3D connector->max_bpc_property) {
->  		*val =3D state->max_requested_bpc;
-> +	} else if (property =3D=3D connector->active_bpc_property) {
-> +		*val =3D state->active_bpc;
->  	} else if (connector->funcs->atomic_get_property) {
->  		return connector->funcs->atomic_get_property(connector,
->  				state, property, val);
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connec=
-tor.c
-> index 7631f76e7f34..c0c3c09bfed0 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-> @@ -1195,6 +1195,14 @@ static const struct drm_prop_enum_list dp_colorspa=
-ces[] =3D {
->   *	drm_connector_attach_max_bpc_property() to create and attach the
->   *	property to the connector during initialization.
->   *
-> + * active bpc:
-> + *	This read-only range property tells userspace the pixel color bit dep=
-th
-> + *	actually used by the hardware display engine on "the cable" on a
-> + *	connector. The chosen value depends on hardware capabilities, both
-> + *	display engine and connected monitor, and the "max bpc" property.
-> + *	Drivers shall use drm_connector_attach_active_bpc_property() to insta=
-ll
-> + *	this property.
-> + *
-
-This description is now clear to me, but I wonder, is it also how
-others understand it wrt. dithering?
-
-Dithering done on monitor is irrelevant, because we are talking about
-"on the cable" pixels. But since we are talking about "on the cable"
-pixels, also dithering done by the display engine must not factor in.
-Should the dithering done by display engine result in higher "active
-bpc" number than what is actually transmitted on the cable?
-
-I cannot guess what userspace would want exactly. I think the
-strict "on the cable" interpretation is a safe bet, because it then
-gives a lower limit on observed bpc. Dithering settings should be
-exposed with other KMS properties, so userspace can factor those in.
-But to be absolutely sure, we'd have to ask some color management
-experts.
-
-Cc'ing Mario in case he has an opinion.
-
-Since "active bpc" is related to "max bpc", the both should follow the
-same definition. Do they do that now?
-
-Maybe a clarifying note about interaction with dithering would still be
-good to have here.
-
-
-I recall reading some comments from you about having problems with
-making this immutable. Is it properly immutable now?
-
-That is, drm_info reports the property as "(immutable)".
-https://github.com/ascent12/drm_info
-
-If we are not sure if DSC could result in lower observed bpc than
-"active bpc", then DSC state would need to be exposed as a KMS property
-too, with a note that it invalidates what "active bpc" shows. Or maybe
-"active bpc" should be "unknown" in that case?
-
-
-Thanks,
-pq
-
->   * Connectors also have one standardized atomic property:
->   *
->   * CRTC_ID:
-> @@ -2150,6 +2158,39 @@ int drm_connector_attach_max_bpc_property(struct d=
-rm_connector *connector,
->  }
->  EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
-> =20
-> +/**
-> + * drm_connector_attach_active_bpc_property - attach "active bpc" proper=
-ty
-> + * @connector: connector to attach active bpc property on.
-> + * @min: The minimum bit depth supported by the connector.
-> + * @max: The maximum bit depth supported by the connector.
-> + *
-> + * This is used to check the applied bit depth on a connector.
-> + *
-> + * Returns:
-> + * Zero on success, negative errno on failure.
-> + */
-> +int drm_connector_attach_active_bpc_property(struct drm_connector *conne=
-ctor,
-> +					  int min, int max)
-> +{
-> +	struct drm_device *dev =3D connector->dev;
-> +	struct drm_property *prop;
-> +
-> +	prop =3D connector->active_bpc_property;
-> +	if (!prop) {
-> +		prop =3D drm_property_create_range(dev, 0, "active bpc", min, max);
-> +		if (!prop)
-> +			return -ENOMEM;
-> +
-> +		connector->active_bpc_property =3D prop;
-> +	}
-> +
-> +	drm_object_attach_property(&connector->base, prop, 0);
-> +	connector->state->active_bpc =3D 0;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drm_connector_attach_active_bpc_property);
-> +
->  /**
->   * drm_connector_set_vrr_capable_property - sets the variable refresh ra=
-te
->   * capable property for a connector
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index 1922b278ffad..c58cba2b6afe 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-> @@ -781,6 +781,13 @@ struct drm_connector_state {
->  	 */
->  	u8 max_bpc;
-> =20
-> +	/**
-> +	 * @active_bpc: Read only property set by the GPU driver to the actually
-> +	 * applied bit depth of the pixels after evaluating all hardware
-> +	 * limitations.
-> +	 */
-> +	u8 active_bpc;
-> +
->  	/**
->  	 * @hdr_output_metadata:
->  	 * DRM blob property for HDR output metadata
-> @@ -1380,6 +1387,12 @@ struct drm_connector {
->  	 */
->  	struct drm_property *max_bpc_property;
-> =20
-> +	/**
-> +	 * @active_bpc_property: Default connector property for the active bpc
-> +	 * to be driven out of the connector.
-> +	 */
-> +	struct drm_property *active_bpc_property;
-> +
->  #define DRM_CONNECTOR_POLL_HPD (1 << 0)
->  #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
->  #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
-> @@ -1698,6 +1711,8 @@ int drm_connector_set_panel_orientation_with_quirk(
->  	int width, int height);
->  int drm_connector_attach_max_bpc_property(struct drm_connector *connecto=
-r,
->  					  int min, int max);
-> +int drm_connector_attach_active_bpc_property(struct drm_connector *conne=
-ctor,
-> +					  int min, int max);
-> =20
->  /**
->   * struct drm_tile_group - Tile group metadata
-
-
---Sig_/G9gjPWkKmqwLWKB6JjVFNYP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIyBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDBxWwACgkQI1/ltBGq
-qqdx6Q/2Jx5o//7FCgMeDEoDPr3pod+Wxo2MlOMa8WmeEgg/7A4nmr0Of/btoEof
-IwDEbBZvN9gJIz0vA4GaLKNOjRFHek9l2ur6TsQ292J6CoC/MJclpee511ImuaCl
-a0GGw9vwcmUJLUInvM6fwcEzi9Vb+dj1H2VNqRq56QcpgX/+WjW5AkMc0LtsD+qi
-hs2DAnvHkTuaocgY7gCjLMlE9sBwmNUByzpvsl2Nwnn994hdUP2SylTXBJ5cm06j
-BKqEbFelKajhQzscjre7vU4d7EKalm7bKT83BubXg6Q3GAqYMMJhQU7IrH7YQPf4
-Ns+Yjw93SxM8V/Gesyu7ZTh6Nclz51oDpcWZZB5GIDXpQWr58+Fa8H+ZgXxSVP59
-A49M1SAjdmttofu0H1YCijuboKSlHOlq85zHJmIl/TRhMEqbKiej5Z4z/4FtjIHl
-HfiXcJIa2iWYcNYGeSktgFf0tu55+X06usqAippPXr8jiU0dYHeuHGrQjenKPWLg
-ooSpWddnrQgFpNhGOdtpiKHpYwWaob9P5tcgaEjt+lvGzJR2mDBi8IBAfBIWE7VZ
-qDRnSfZb0/0tWMftwxnTlbyv2Zyp9/aIaLShx3SmVmRVUzFK+oVwgXINju8Io+h/
-fiOW3tUyC43DGNqVoBYglrGDGeyrjv8z9s2HQ3JfJlWapvLRaw==
-=ap5H
------END PGP SIGNATURE-----
-
---Sig_/G9gjPWkKmqwLWKB6JjVFNYP--
+T24gVHVlLCBKdW4gMDgsIDIwMjEgYXQgMDk6MjU6MjJQTSAtMDcwMCwgSHVnaCBEaWNraW5zIHdy
+b3RlOg0KPiBGcm9tOiBZYW5nIFNoaSA8c2h5ODI4MzAxQGdtYWlsLmNvbT4NCj4gDQo+IEN1cnJl
+bnRseSB0cnlfdG9fdW5tYXAoKSByZXR1cm4gYm9vbCB2YWx1ZSBieSBjaGVja2luZyBwYWdlX21h
+cGNvdW50KCksDQo+IGhvd2V2ZXIgdGhpcyBtYXkgcmV0dXJuIGZhbHNlIHBvc2l0aXZlIHNpbmNl
+IHBhZ2VfbWFwY291bnQoKSBkb2Vzbid0DQo+IGNoZWNrIGFsbCBzdWJwYWdlcyBvZiBjb21wb3Vu
+ZCBwYWdlLiAgVGhlIHRvdGFsX21hcGNvdW50KCkgY291bGQgYmUgdXNlZA0KPiBpbnN0ZWFkLCBi
+dXQgaXRzIGNvc3QgaXMgaGlnaGVyIHNpbmNlIGl0IHRyYXZlcnNlcyBhbGwgc3VicGFnZXMuDQo+
+IA0KPiBBY3R1YWxseSB0aGUgbW9zdCBjYWxsZXJzIG9mIHRyeV90b191bm1hcCgpIGRvbid0IGNh
+cmUgYWJvdXQgdGhlDQo+IHJldHVybiB2YWx1ZSBhdCBhbGwuICBTbyBqdXN0IG5lZWQgY2hlY2sg
+aWYgcGFnZSBpcyBzdGlsbCBtYXBwZWQgYnkNCj4gcGFnZV9tYXBwZWQoKSB3aGVuIG5lY2Vzc2Fy
+eS4gIEFuZCBwYWdlX21hcHBlZCgpIGRvZXMgYmFpbCBvdXQgZWFybHkNCj4gd2hlbiBpdCBmaW5k
+cyBtYXBwZWQgc3VicGFnZS4NCj4gDQo+IFN1Z2dlc3RlZC1ieTogSHVnaCBEaWNraW5zIDxodWdo
+ZEBnb29nbGUuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBZYW5nIFNoaSA8c2h5ODI4MzAxQGdtYWls
+LmNvbT4NCj4gQWNrZWQtYnk6IE1pbmNoYW4gS2ltIDxtaW5jaGFuQGtlcm5lbC5vcmc+DQo+IFJl
+dmlld2VkLWJ5OiBTaGFrZWVsIEJ1dHQgPHNoYWtlZWxiQGdvb2dsZS5jb20+DQo+IEFja2VkLWJ5
+OiBLaXJpbGwgQS4gU2h1dGVtb3YgPGtpcmlsbC5zaHV0ZW1vdkBsaW51eC5pbnRlbC5jb20+DQo+
+IFNpZ25lZC1vZmYtYnk6IEh1Z2ggRGlja2lucyA8aHVnaGRAZ29vZ2xlLmNvbT4NCg0KTG9va3Mg
+Z29vZCB0byBtZSwgdGhhbmsgeW91Lg0KDQpBY2tlZC1ieTogTmFveWEgSG9yaWd1Y2hpIDxuYW95
+YS5ob3JpZ3VjaGlAbmVjLmNvbT4=
