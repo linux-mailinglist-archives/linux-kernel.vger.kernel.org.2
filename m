@@ -2,155 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC77F3A320C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636163A3210
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhFJRaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:30:11 -0400
-Received: from mail-mw2nam12on2097.outbound.protection.outlook.com ([40.107.244.97]:11781
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229935AbhFJRaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:30:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iCCmdx3H3Ld28yLx/TRsTXZnt323+5cYDNna2DaebcIyEmTPdiKtP2r16cpxzq4zmhk9nAgdyFcm+Ezyg8fHQ0BB9RqV5EUUFDqckPt2KQKx5K5ulZe4JcTtabakdT+56B9UKmX3ciV7kkaWlwL29OhBPxeUV4L5zhs57Nl2LcW8yKuGElB+UHWEeVydunJVje0OVYWUyBRyPe5GAz30DFgI772MzXUBYBaGNm/2KnCKhLXGHucSqdQqt2w15Zq/HrzrPnoVMF5bD/1wcKtnQk6TTMnG5/mpYgDGLwsx8/Xi61DaTYm5kN7cr4LrlWqAc2hMM8dMZEta7EZTB4AeLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZWHIcT75HpVAhUbGlIMNhULTfCwV2qwKj/t6229lxBQ=;
- b=SBO2ZRgBH+wSS0SaCTfXqvI17QKC5oeyq64XEz8K9C5hOPjKGFYWx4rjmUq85exnZUubEJVGt+Vt+3TnPZw64RDYEK8C6ygcelFWdH3/ueexcYsoCXiwCDy9ztvpm698vMo0VebDcCMoX71+/hQqFDNlnQuZ1ikdKemRup2CXzR7jFEtNyoOKzqRfxRJeX7zJcq4DO/KRhtN/nOPuDNoZnNNSDiQC911jmEDbfFOVOnmjYcWqMyBrGfevQjAr01jYt7jkiYxecZDFJ+GPN8dOdK1eczKdFAmFak7y7xJpcLgtfM49M3e6aD67dutwl5qMAqeBp7qjzrxJKTeLsTTrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZWHIcT75HpVAhUbGlIMNhULTfCwV2qwKj/t6229lxBQ=;
- b=AvUVpJjY/ITbXoC9MTNpOirq3A+ofg6DZb/t9ONp0OJfBUUKPAIaBvsm13tpzwt3vYBhSRpLeSNsjm9O7iY4o2JMjAVWHDoHZJxujhjHKD5n/7cY5HIjeXHEp5KdIhjyzGrxqdVg6WFiIGrgTJwfeEDWBl8TEUadEIf1a6tbmVM=
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com (2603:10b6:a03:105::15)
- by SJ0PR21MB1950.namprd21.prod.outlook.com (2603:10b6:a03:2a0::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.8; Thu, 10 Jun
- 2021 17:28:11 +0000
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::fcf8:a9d4:ac25:c7ce]) by BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::fcf8:a9d4:ac25:c7ce%3]) with mapi id 15.20.4242.012; Thu, 10 Jun 2021
- 17:28:11 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Dhiraj Shah <find.dhiraj@gmail.com>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shachar Raindel <shacharr@microsoft.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] function mana_hwc_create_wq leaks memory
-Thread-Topic: [PATCH] function mana_hwc_create_wq leaks memory
-Thread-Index: AQHXXg1ojJMEZe7SE0uvKv3Tzsr7JasNfBjAgAAB/jA=
-Date:   Thu, 10 Jun 2021 17:28:11 +0000
-Message-ID: <BYAPR21MB127087B408352336E0A8BF2ABF359@BYAPR21MB1270.namprd21.prod.outlook.com>
-References: <20210610152925.18145-1-find.dhiraj@gmail.com>
- <BYAPR21MB1270FC995760BE925179F353BF359@BYAPR21MB1270.namprd21.prod.outlook.com>
-In-Reply-To: <BYAPR21MB1270FC995760BE925179F353BF359@BYAPR21MB1270.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=aa31c948-516e-4a40-bcc8-6b4f69306577;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-06-10T17:14:41Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 35c2ed1d-b15c-40b0-765d-08d92c351eeb
-x-ms-traffictypediagnostic: SJ0PR21MB1950:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR21MB1950A22F1CDC98AC30680E4BBF359@SJ0PR21MB1950.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3173;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TS2Yrmv91+wAzlWrihRFHW+T2tYSPxB4NsGrPXRsCTFf8yb9UjNdTfRmB8R0yKSqqqXsuTLiBasrLKjsUaEwZhd0tKbZmv5fDnW+vadd7nkOvSNqV04bi5Fm5lVMthYl2hqE7yiB7q+H+Ug+CoPMOr5/e9NYdKxC+Oi/GH3/F4ZWmzSZVXTKuQTdP3KRQizCgkzxKMSXw1QKrIB1Z/k1ykmlP+ZeXYSEBpjbLQ5Rl2IDNSc/D/nEp0AZGUyjCwoxu6xFHBaKhSKRSA/wCfPAgCABJ8nQhqRXM1c2h5cqqg21uo+FK4CGcXqnp4Y5BOc0skyezR9yto941PCOGg5d5tPUfE3JChkbDwCl4jBfwNSUJyZo/XVy5zbY4v+Ihlgw9EQLkl+6PK4AessFhH06tS7ISG7NjgBYWxcs2l/zqFuI7Vj4euy04JmtOagY9bHgHWpnJRTYtE+0Oo61PI9xU3WURDvYEg0HGAsdLGTEAqYQbisHlnCWuddYNdcTXatyEbGE4xvoi23tlqzf/VbndZpBWoGDJmBVV2wsXxDz8voYJU8sQuHCtqiFTM9FSL0mg4bm6qaf9HweTOC0npFEIR0lIBiDYu5EzcfXYz4Scju6YAIHxMMKa3XpHSx+dUrFPoX/BcTXcwx2qlzJLRZ23w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1270.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(122000001)(4326008)(5660300002)(8676002)(76116006)(2940100002)(10290500003)(71200400001)(8990500004)(186003)(66446008)(6916009)(66946007)(64756008)(7696005)(316002)(82960400001)(82950400001)(8936002)(6506007)(54906003)(66476007)(66556008)(33656002)(9686003)(478600001)(52536014)(2906002)(86362001)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vBo1Es0ojnqfKfYq0wNhsCB4ihOuW9CwODgk/ZPyzXz43AVUqJsKG3pTTbmo?=
- =?us-ascii?Q?dzNUQO3Ri79Kfr0pspbQq3ur0nFWSFqEwVOEpHrgBdivvhPLHbs8G+w9mkrj?=
- =?us-ascii?Q?h4AZjE0OLVkBh3fWilt45WGXt4UV+6ZN1btGoPsKxm44nk+Pjxoq9T96bFRS?=
- =?us-ascii?Q?dyEayA+Kynnb8eJapH++50geyWMwhF5wA43O1f5X5mfpigJ0DCdo0KFUumVN?=
- =?us-ascii?Q?8XfcVWEnmqIzSyxntDDtXRH0xMQUWqCqMSSGPjbLAhnof3+0rX/9lCHHc1hS?=
- =?us-ascii?Q?u5tXYIeoelj70PQx4S3w1u/eFLT6WUD5ceKlNrrdqAaxCyN+G6OeWEeTjP0g?=
- =?us-ascii?Q?DAYD03fzqQ2lsNWFbG+Eut0cTi8vDat62nlN9SyCcxABsFKLQ3QccYANpP3/?=
- =?us-ascii?Q?W0gAlgwSXnfVKGwtVqN+u6L0Cwv6b4Ll6O5PwMgKv4dSnvdKyblgTjc3cTcX?=
- =?us-ascii?Q?2Q6sKwP3mo8mBM2Ad5cclDR1//JEJQzJzluS56+9vsvE4hodkAPRu8x1sh9A?=
- =?us-ascii?Q?ae++7U0g1jAf9Z6tNzeTMB68LLi9ZonfIfsRcSZT/jOkZ6lww1PLgNAx+WzF?=
- =?us-ascii?Q?iEGKWfipZS33QackV9iiisCUqv384glqjZX+W1ctQ66TW1shpCRaen4R2Krx?=
- =?us-ascii?Q?SytDTOygqnV6M5/cOQDcpbIKGuWLsUClVOsYFxuW0cVFLx7jdSYiwEUI82kP?=
- =?us-ascii?Q?UtE2sjeOJWdvpJlJReWWb9lhbK2xkOnm5S4feMI7Bh5WzidYhXtQ79OUFV4R?=
- =?us-ascii?Q?xO5ghU0r4GSaDYP02szr26cgTqeTD6oDC2T90gJQidYOfC355bNeGlTm2SZ4?=
- =?us-ascii?Q?fxIYrkNK9gdbuXa0buHXSdFnT2Bhuo94nGK//Y9EcbcUGLEAacKfHJ4GMnqF?=
- =?us-ascii?Q?1E6v+2UU3WyTKKlyyLONVbEK+7Ss3VtR5GebcWSQQFNwnt837S3O1uZIgmZi?=
- =?us-ascii?Q?hYIYt/6kk5iOQZeKUCs8sm5mFR5HNDUKlPdxUqsFbqqU89mJCO0t3j4pVWjE?=
- =?us-ascii?Q?OmoU3Ifhv9AlQTq8yiNCDJdP65RJgigG12C1dVusFz7ef5K8SclzTggGfA22?=
- =?us-ascii?Q?AZo+xw/U0PmbhR59L4K574hzX05w4CxbB9LNPYD2wr1osgg99AP9aP0OEi/w?=
- =?us-ascii?Q?FKrNu7qQ35AYDv2yYxps8CnHcNthreJW3pt8T6bLm7j1JQvkCkJvVDexI/Vd?=
- =?us-ascii?Q?1uRTEDBlImcpcuncBnq7pg0q2FgQV22EfFW7+xhfrckYNOa5FlN+d7kOzbk8?=
- =?us-ascii?Q?EoOR7XjAlKikii9VX+CUznMHMA7KestrhECE383GHI1K4DVfPjOtINCpQOUc?=
- =?us-ascii?Q?Ii4vt8aVmhquu7A05V+HDNC+YPCDRhg4hFy8naR3Ac7d2DUWIjKZPrnne168?=
- =?us-ascii?Q?4b1zSHZdW3dI0yeJTgPZCwuitPcK?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230402AbhFJRa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhFJRaz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 13:30:55 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A638FC061574;
+        Thu, 10 Jun 2021 10:28:58 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DADC28D4;
+        Thu, 10 Jun 2021 19:28:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623346135;
+        bh=sB/vPmsUpxNwX3o7X6dukEKBxTdhaGoLN9eEvahqVTs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qw2KxzdqcoipsyoNzLGyrhmA9Vr6EGsXuUVG2KueYrN7FxLm2NKrm5fGktJV1ifT5
+         DseUl+fluUP9G8uXvA+w22FpPoRX4kC/u1zxTR+rSSxUWjZt/c/K42eRQECv2rRGKe
+         UfLJSplr1jokw/rZDegAZQBTeOe+LUF9dZVpmQmA=
+Date:   Thu, 10 Jun 2021 20:28:36 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+Subject: Re: [PATCH v9 16/22] media: uvcvideo: Return -EACCES to inactive
+ controls
+Message-ID: <YMJLxPgH756t+4qY@pendragon.ideasonboard.com>
+References: <20210326095840.364424-1-ribalda@chromium.org>
+ <20210326095840.364424-17-ribalda@chromium.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1270.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35c2ed1d-b15c-40b0-765d-08d92c351eeb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jun 2021 17:28:11.1453
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lnfhGxE3vEszAmZVC9Z3SPTH7wlc6UeLEmMkbu/UEw2R1X/9cEQo+ZcD3iIjMA0vupBlQWYea2wxeSOqsL3UUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR21MB1950
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210326095840.364424-17-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Dexuan Cui <decui@microsoft.com>
-> Sent: Thursday, June 10, 2021 10:18 AM
-> ...
-> > diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> > b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> > index 1a923fd99990..4aa4bda518fb 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> > @@ -501,8 +501,10 @@ static int mana_hwc_create_wq(struct
-> > hw_channel_context *hwc,
-> >  	*hwc_wq_ptr =3D hwc_wq;
-> >  	return 0;
-> >  out:
-> > -	if (err)
-> > +	if (err) {
->=20
-> Here the 'err' must be non-zero. Can you please remove this 'if'?
->=20
-> > +		kfree(queue);
-> >  		mana_hwc_destroy_wq(hwc, hwc_wq);
-> > +	}
-> >  	return err;
-> >  }
->=20
-> Reviewed-by: Dexuan Cui <decui@microsoft.com>
+Hi Ricardo,
 
-Hi Dhiraj,
-I checked the code again and it looks like your patch is actually
-unnecessary as IMO there is no memory leak here: the 'queue'
-pointer is passed to mana_hwc_destroy_wq() as hwc_wq->gdma_wq,
-and is later freed in mana_gd_destroy_queue() ->
-mana_gd_destroy_queue().
+Thank you for the patch.
 
-The 'if' test can be removed as the 'err's is always non-zero there.
+On Fri, Mar 26, 2021 at 10:58:34AM +0100, Ricardo Ribalda wrote:
+> If a control is inactive return -EACCES to let the userspace know that
+> the value will not be applied automatically when the control is active
+> again.
 
-Thanks,
-Dexuan
+Isn't the device supposed to stall the control set in that case, with
+the bRequestErrorCode set to "Wrong state", which uvc_query_ctrl()
+translates to -EACCES already ? Could you elaborate on why this patch is
+needed ?
+
+> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/usb/uvc/uvc_ctrl.c | 71 +++++++++++++++++++++-----------
+>  1 file changed, 48 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index bcebf9d1a46f..d9d4add1e813 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -1082,13 +1082,36 @@ static const char *uvc_map_get_name(const struct uvc_control_mapping *map)
+>  	return "Unknown Control";
+>  }
+>  
+> +static bool uvc_ctrl_is_inactive(struct uvc_video_chain *chain,
+> +				 struct uvc_control *ctrl,
+> +				 struct uvc_control_mapping *mapping)
+> +{
+> +	struct uvc_control_mapping *master_map = NULL;
+> +	struct uvc_control *master_ctrl = NULL;
+> +	s32 val;
+> +	int ret;
+> +
+> +	if (!mapping->master_id)
+> +		return false;
+> +
+> +	__uvc_find_control(ctrl->entity, mapping->master_id, &master_map,
+> +			   &master_ctrl, 0);
+> +
+> +	if (!master_ctrl || !(master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
+> +		return false;
+> +
+> +	ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
+> +	if (ret < 0 || val == mapping->master_manual)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+>  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+>  	struct uvc_control *ctrl,
+>  	struct uvc_control_mapping *mapping,
+>  	struct v4l2_queryctrl *v4l2_ctrl)
+>  {
+> -	struct uvc_control_mapping *master_map = NULL;
+> -	struct uvc_control *master_ctrl = NULL;
+>  	const struct uvc_menu_info *menu;
+>  	unsigned int i;
+>  
+> @@ -1104,18 +1127,8 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+>  	if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR))
+>  		v4l2_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+>  
+> -	if (mapping->master_id)
+> -		__uvc_find_control(ctrl->entity, mapping->master_id,
+> -				   &master_map, &master_ctrl, 0);
+> -	if (master_ctrl && (master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR)) {
+> -		s32 val;
+> -		int ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
+> -		if (ret < 0)
+> -			return ret;
+
+There's a small change in behaviour here, the driver used to return an
+error, now it will ignore it. Is it intentional ?
+
+> -
+> -		if (val != mapping->master_manual)
+> -				v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
+> -	}
+> +	if (uvc_ctrl_is_inactive(chain, ctrl, mapping))
+> +		v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
+>  
+>  	if (!ctrl->cached) {
+>  		int ret = uvc_ctrl_populate_cache(chain, ctrl);
+> @@ -1638,25 +1651,37 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
+>  	return 0;
+>  }
+>  
+> -static int uvc_ctrl_find_ctrlidx(struct uvc_entity *entity,
+> +static int uvc_ctrl_commit_error(struct uvc_video_chain *chain,
+> +				 struct uvc_entity *entity,
+>  				 struct v4l2_ext_controls *ctrls,
+> -				 struct uvc_control *uvc_control)
+> +				 struct uvc_control *err_control,
+> +				 int ret)
+>  {
+>  	struct uvc_control_mapping *mapping;
+>  	struct uvc_control *ctrl_found;
+>  	unsigned int i;
+>  
+> -	if (!entity)
+> -		return ctrls->count;
+> +	if (!entity) {
+> +		ctrls->error_idx = ctrls->count;
+> +		return ret;
+> +	}
+>  
+>  	for (i = 0; i < ctrls->count; i++) {
+>  		__uvc_find_control(entity, ctrls->controls[i].id, &mapping,
+>  				   &ctrl_found, 0);
+> -		if (uvc_control == ctrl_found)
+> -			return i;
+> +		if (err_control == ctrl_found)
+> +			break;
+>  	}
+> +	ctrls->error_idx = i;
+
+I think this line should be moved after the next check.
+
+> +
+> +	/* We could not find the control that failed. */
+> +	if (i == ctrls->count)
+> +		return ret;
+>  
+> -	return ctrls->count;
+> +	if (uvc_ctrl_is_inactive(chain, err_control, mapping))
+> +		return -EACCES;
+> +
+> +	return ret;
+>  }
+>  
+>  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+> @@ -1679,8 +1704,8 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+>  		uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
+>  done:
+>  	if (ret < 0 && ctrls)
+> -		ctrls->error_idx = uvc_ctrl_find_ctrlidx(entity, ctrls,
+> -							 err_ctrl);
+> +		ret = uvc_ctrl_commit_error(chain, entity, ctrls, err_ctrl,
+> +					    ret);
+>  	mutex_unlock(&chain->ctrl_mutex);
+>  	return ret;
+>  }
+
+-- 
+Regards,
+
+Laurent Pinchart
