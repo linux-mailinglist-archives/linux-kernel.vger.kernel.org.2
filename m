@@ -2,76 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CDA3A27AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961D53A27AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhFJJFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:05:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230117AbhFJJFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:05:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB34360FD8;
-        Thu, 10 Jun 2021 09:03:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623315807;
-        bh=qGY0QZc6tRdG5jSPQ1whVRHSm4J+Iy/w7u4SlqbvRaw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DmGXI17K4+Ve2TeAZVAOf2YiXh4Yov1SyAtMZtCh/BP/ZGR/m8aSz1EvwAVNuyFBd
-         coBHql1i/eDZVrv3cInf3A2mYkQ4NCz72OCZ/h9QBBEsqpWZpEwSRzGVJUx3ia+CUJ
-         l0ne9Z9g0YfvkzWQgpBgqbh13WcENxO8hCqqoz9V8JvQ8zPzEal66SonDZxGz1tjcQ
-         n1nIzIEwUKacfEftegcCioPXqPvGSE07lxPAujLSjZ9kQBy1KxMFd8vRCFLCDj6hdE
-         Wlm1aZesClr9emvqe4gxV/+UvDpeDd+q0HnOxwvg9JpJbJIgWwMOyntO+FpxxOXMk4
-         /9jaVkwK8Mh6g==
-Date:   Thu, 10 Jun 2021 12:03:23 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     jeyu@kernel.org, keyrings@vger.kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, zohar@linux.ibm.com, nayna@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/2] Add support for ECDSA-signed kernel modules
-Message-ID: <20210610090323.f7b47xqxbkwnm5cx@kernel.org>
-References: <20210602143537.545132-1-stefanb@linux.ibm.com>
- <20210603064738.pwfq3n7erzmncdmw@kernel.org>
- <8b79651b-1fe4-48c0-3498-529344ac6243@linux.ibm.com>
- <20210609124412.engcrbo3fezuzyoq@kernel.org>
- <f22e7ae1-8779-e995-091c-8a899fd7fd76@linux.ibm.com>
+        id S230238AbhFJJGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229895AbhFJJGK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 05:06:10 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C77C061574;
+        Thu, 10 Jun 2021 02:04:14 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id h22-20020a05600c3516b02901a826f84095so5915263wmq.5;
+        Thu, 10 Jun 2021 02:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=yDSi4g0sV0qUX2g2a8fwt2TefXM0WRXPAMqlYc8RkCw=;
+        b=AtcxMSFxepFBTbASltWunKOHw5kXxcP1vkes0TGZRmUFRvk39Z3M+w2L9ItXrVpITE
+         Ek3yDpMC4xrwITjjqzNWB+bkNp+IKC4AiOR9yVugwFEL+NC43AmWSUJspD8ws61O6G0k
+         UFVe3KVlb4o+TBmrV+BwMljnCVSw+7yR1nOIbXJTTf5evRwb+UWsd3AHmYP7JtWM7Se6
+         2bELgmJerd3u+chMM4J8VYK4Xuuu5DU1DdSnYKAvDQ9EWdjAPbZL7VLd4kLT+y7a1asD
+         AyqbrhPf0MCcU0oRLaXh99bp6SpJOm5PTj5GFq2zJysxUaJty8uZ5wL93P8GAWZYq3U+
+         n8Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yDSi4g0sV0qUX2g2a8fwt2TefXM0WRXPAMqlYc8RkCw=;
+        b=TJqd0UIll6UP6jZp+ArXSzWkyqnKxvfvhdzWq4rYBa/z4no6MM6uj5AV2nxqgemoa7
+         Cf4qABxd894E4Qvv+uSoK3ZQarJJXV268jr56RrRKZtlomJWeZyrZn8xJUBkLNdOiGIA
+         /v7EDTSYQrZRsximZKr9iYwLPZEGB1zk703uORcTK0pYU+Egw0fERtXq2urTkh+087Sx
+         XkAykM1gxv+jvjDOwAhHj3+7QxzFmAwTwazsNx0/msnSiQd0Qk1hfzG0Dnsk2r92Bwir
+         VNGaTaCpL0okyMwM+wF71f7SuLEgZ6REgJyy7gXqpCyhSw1SIKKOek3BR+nonLVNYoe1
+         KaBQ==
+X-Gm-Message-State: AOAM532U6ngYDbz1vKz7eqT+AOiJuWEkrqoqFvkRy1a0aBdgw6FbbDnx
+        MLJKSknKYG1aYiQybbPATWk9RWGcKxua5r8m
+X-Google-Smtp-Source: ABdhPJw3Nwt8e0AaLQCYyL/1hMoJK4pRYYr2317OxuaAD8GO7a5Wm4rlnBsx5ast32fLq44g4/kHcQ==
+X-Received: by 2002:a05:600c:230b:: with SMTP id 11mr3921648wmo.81.1623315852124;
+        Thu, 10 Jun 2021 02:04:12 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.133.95])
+        by smtp.gmail.com with ESMTPSA id q5sm2829872wrm.15.2021.06.10.02.04.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 02:04:10 -0700 (PDT)
+Subject: Re: [PATCH] io_uring: reduce latency by reissueing the operation
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <60c13bec.1c69fb81.73967.f06dSMTPIN_ADDED_MISSING@mx.google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <84e42313-d738-fb19-c398-08a4ed0e0d9c@gmail.com>
+Date:   Thu, 10 Jun 2021 10:03:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f22e7ae1-8779-e995-091c-8a899fd7fd76@linux.ibm.com>
+In-Reply-To: <60c13bec.1c69fb81.73967.f06dSMTPIN_ADDED_MISSING@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 09:58:29AM -0400, Stefan Berger wrote:
+On 6/9/21 11:08 PM, Olivier Langlois wrote:
+> It is quite frequent that when an operation fails and returns EAGAIN,
+> the data becomes available between that failure and the call to
+> vfs_poll() done by io_arm_poll_handler().
 > 
-> On 6/9/21 8:44 AM, Jarkko Sakkinen wrote:
-> > On Thu, Jun 03, 2021 at 08:32:59AM -0400, Stefan Berger wrote:
-> > > On 6/3/21 2:47 AM, Jarkko Sakkinen wrote:
-> > > > > -- 
-> > > > > 2.29.2
-> > > > > 
-> > > > > 
-> > > > Please instead send a fix.
-> > > We have a Fixes tag in 1/2, so we want this to propagate to older kernels
-> > > and need the fix in 1/2 for that reason.
-> > > 
-> > >     Stefan
-> > So please do an additional fix and send it.
-> 
-> 1/2 is supposed to propagate to older kernels and needs to change as posted
-> here in v5 (assuming that this does indeed fix what the build bot was
-> complaining about). 2/2 also changes. A fix on top of v4 would fix 2/2 but
-> won't apply cleanly to 1/2 as cannot easily propagate to older kernels. Is
-> that what we want? Why can you not remove v4 from your queue and replace it
-> with v5?
-> 
->    Stefan
+> Detecting the situation and reissuing the operation is much faster
+> than going ahead and push the operation to the io-wq.
 
-What you can do is to send fix or fixes with appropriate fixes tags and
-I can then squash them for appropriate patches. That's less work for me.
+The poll stuff is not perfect and definitely can be improved,
+but there are drawbacks, with this one fairness may suffer
+with higher submit batching and make lat worse for all
+but one request.
 
-/Jarkko
+I'll get to it and another poll related email later,
+probably next week.
+
+> 
+> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+> ---
+>  fs/io_uring.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 42380ed563c4..98cf3e323d5e 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -5138,15 +5138,16 @@ static __poll_t __io_arm_poll_handler(struct io_kiocb *req,
+>  	return mask;
+>  }
+>  
+> -static bool io_arm_poll_handler(struct io_kiocb *req)
+> +static bool io_arm_poll_handler(struct io_kiocb *req, __poll_t *ret)
+>  {
+>  	const struct io_op_def *def = &io_op_defs[req->opcode];
+>  	struct io_ring_ctx *ctx = req->ctx;
+>  	struct async_poll *apoll;
+>  	struct io_poll_table ipt;
+> -	__poll_t mask, ret;
+> +	__poll_t mask;
+>  	int rw;
+>  
+> +	*ret = 0;
+>  	if (!req->file || !file_can_poll(req->file))
+>  		return false;
+>  	if (req->flags & REQ_F_POLLED)
+> @@ -5184,9 +5185,9 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
+>  
+>  	ipt.pt._qproc = io_async_queue_proc;
+>  
+> -	ret = __io_arm_poll_handler(req, &apoll->poll, &ipt, mask,
+> +	*ret = __io_arm_poll_handler(req, &apoll->poll, &ipt, mask,
+>  					io_async_wake);
+> -	if (ret || ipt.error) {
+> +	if (*ret || ipt.error) {
+>  		io_poll_remove_double(req);
+>  		spin_unlock_irq(&ctx->completion_lock);
+>  		return false;
+> @@ -6410,7 +6411,9 @@ static void __io_queue_sqe(struct io_kiocb *req)
+>  {
+>  	struct io_kiocb *linked_timeout = io_prep_linked_timeout(req);
+>  	int ret;
+> +	__poll_t poll_ret;
+>  
+> +issue_sqe:
+>  	ret = io_issue_sqe(req, IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
+>  
+>  	/*
+> @@ -6430,7 +6433,9 @@ static void __io_queue_sqe(struct io_kiocb *req)
+>  			io_put_req(req);
+>  		}
+>  	} else if (ret == -EAGAIN && !(req->flags & REQ_F_NOWAIT)) {
+> -		if (!io_arm_poll_handler(req)) {
+> +		if (!io_arm_poll_handler(req, &poll_ret)) {
+> +			if (poll_ret)
+> +				goto issue_sqe;
+>  			/*
+>  			 * Queued up for async execution, worker will release
+>  			 * submit reference when the iocb is actually submitted.
+> 
+
+-- 
+Pavel Begunkov
